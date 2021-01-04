@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import static kitchenpos.common.TestFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,8 +20,6 @@ import kitchenpos.domain.Product;
 
 @DisplayName("ProductService 테스트")
 class ProductServiceTest extends BaseTest {
-	private static final String 예제_상품명 = "피자";
-	private static final int 예제_상품_가격 = 15000;
 
 	@Autowired
 	private ProductService productService;

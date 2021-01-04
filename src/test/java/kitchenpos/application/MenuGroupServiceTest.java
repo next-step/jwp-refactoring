@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import static kitchenpos.common.TestFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,7 +17,6 @@ import kitchenpos.domain.MenuGroup;
 
 @DisplayName("MenuGroupService 테스트")
 class MenuGroupServiceTest extends BaseTest {
-	private static final String 예제_메뉴그룹명 = "인도요리";
 
 	@Autowired
 	private MenuGroupService menuGroupService;
