@@ -8,12 +8,17 @@ import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
 
 public class TestFixture {
-
 	public static final long 주문대상_테이블ID = 7L;
 	public static final long 빈_테이블ID = 1L;
 	public static final long 존재하지_않는_테이블ID = 999L;
 	public static final long 예제_테이블_그룹_ID = 1L;
 	public static final long 조리상태인_테이블그룹_ID = 2L;
+	public static final int 후라이드_가격 = 16000;
+	public static final int 양념치킨_가격 = 16000;
+	public static final int 예제_메뉴_가격 = 20000;
+	public static final Long 예제_메뉴_그룹_ID = 1L;
+	public static final String 예제_메뉴명 = "치킨 선물 박스";
+	public static final Long 메뉴_그룹_ID_없음 = null;
 	public static final OrderTable 예제테이블1 = TestDataUtil.createOrderTableById(1L);
 	public static final OrderTable 예제테이블2 = TestDataUtil.createOrderTableById(2L);
 	public static final OrderTable 존재하지않는테이블 = TestDataUtil.createOrderTableById(999L);
@@ -33,11 +38,5 @@ public class TestFixture {
 	public static final Product 양념 = TestDataUtil.createProductById(2L);
 	public static final MenuProduct 메뉴_후라이드 = TestDataUtil.createMenuProduct(후라이드.getId(), 1);
 	public static final MenuProduct 메뉴_양념 = TestDataUtil.createMenuProduct(양념.getId(), 1);
-	public static final int 후라이드_가격 = 16000;
-	public static final int 양념치킨_가격 = 16000;
-	public static final Long 예제_메뉴_그룹_ID = 1L;
-	public static final int 예제_메뉴_가격 = 20000;
-	public static final String 예제_메뉴명 = "치킨 선물 박스";
-	public static final Long 메뉴_그룹_ID_없음 = null;
 
 }
