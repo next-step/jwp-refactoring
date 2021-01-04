@@ -4,13 +4,13 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.ProductRequest;
 
 public class TestDataUtil {
@@ -43,8 +43,8 @@ public class TestDataUtil {
 		return orderTable;
 	}
 
-	public static MenuGroup createMenuGroup(String name) {
-		MenuGroup menuGroup = new MenuGroup();
+	public static MenuGroupRequest createMenuGroup(String name) {
+		MenuGroupRequest menuGroup = new MenuGroupRequest();
 		menuGroup.setName(name);
 		return menuGroup;
 	}
