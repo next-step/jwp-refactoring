@@ -101,6 +101,11 @@ class OrderServiceTest extends BaseTest {
 	void changeOrderStatusWhenCooking(String orderStatus) {
 		조리상태_주문.setOrderStatus(orderStatus);
 		orderService.changeOrderStatus(조리상태_주문.getId(), 조리상태_주문);
+
+		Order order = orderDao.findById(조리상태_주문.getId()).orElse(null);
+
+		assertThat(order.getOrderStatus()).isEqualTo(orderStatus);
+
 	}
 
 	@DisplayName("식사상태 주문은 상태변경할 수 있다.")
@@ -109,6 +114,11 @@ class OrderServiceTest extends BaseTest {
 	void changeOrderStatusWhenMeal(String orderStatus) {
 		식사상태_주문.setOrderStatus(orderStatus);
 		orderService.changeOrderStatus(식사상태_주문.getId(), 식사상태_주문);
+
+		Order order = orderDao.findById(식사상태_주문.getId()).orElse(null);
+
+		assertThat(order.getOrderStatus()).isEqualTo(orderStatus);
+
 	}
 
 	@DisplayName("완료상태 주문은 상태변경할 수 없다.")
