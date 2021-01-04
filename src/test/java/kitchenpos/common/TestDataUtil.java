@@ -10,13 +10,13 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.ProductRequest;
 
 public class TestDataUtil {
 
-	public static Product createProduct(String name, Integer price) {
-		Product product = new Product();
+	public static ProductRequest createProduct(String name, Integer price) {
+		ProductRequest product = new ProductRequest();
 		product.setName(name);
 		if (price != null) {
 			product.setPrice(BigDecimal.valueOf(price));
@@ -24,8 +24,8 @@ public class TestDataUtil {
 		return product;
 	}
 
-	public static Product createProductById(long productId) {
-		Product product = new Product();
+	public static ProductRequest createProductById(long productId) {
+		ProductRequest product = new ProductRequest();
 		product.setId(productId);
 		return product;
 	}

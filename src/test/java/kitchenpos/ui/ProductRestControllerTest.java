@@ -11,7 +11,7 @@ import org.springframework.http.MediaType;
 
 import kitchenpos.common.BaseControllerTest;
 import kitchenpos.common.TestDataUtil;
-import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductRequest;
 
 @DisplayName("ProductRestController 테스트")
 class ProductRestControllerTest extends BaseControllerTest {
@@ -22,7 +22,7 @@ class ProductRestControllerTest extends BaseControllerTest {
 		int expectedId = 7;
 		String name = "피자";
 		int price = 15000;
-		Product product = TestDataUtil.createProduct(name, price);
+		ProductRequest product = TestDataUtil.createProduct(name, price);
 
 		mockMvc.perform(post("/api/products")
 			.contentType(MediaType.APPLICATION_JSON)
