@@ -1,11 +1,9 @@
 package kitchenpos.common;
 
-import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.dto.ProductRequest;
 
 public class TestFixture {
 	public static final String 예제_메뉴그룹명 = "인도요리";
@@ -37,9 +35,7 @@ public class TestFixture {
 	public static final Order 조리상태_주문 = TestDataUtil.createOrderByIdAndStatus(1L, OrderStatus.COOKING);
 	public static final Order 식사상태_주문 = TestDataUtil.createOrderByIdAndStatus(2L, OrderStatus.MEAL);
 	public static final Order 완료상태_주문 = TestDataUtil.createOrderByIdAndStatus(5L, OrderStatus.COMPLETION);
-	public static final ProductRequest 후라이드 = TestDataUtil.createProductById(1L);
-	public static final ProductRequest 양념 = TestDataUtil.createProductById(2L);
-	public static final MenuProduct 메뉴_후라이드 = TestDataUtil.createMenuProduct(후라이드.getId(), 1);
-	public static final MenuProduct 메뉴_양념 = TestDataUtil.createMenuProduct(양념.getId(), 1);
+	public static final Long 메뉴_후라이드ID = 1L;
+	public static final Long 메뉴_양념ID = 2L;
 
 }

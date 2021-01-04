@@ -27,12 +27,12 @@ INSERT INTO menu (id, name, price, menu_group_id) VALUES (4, '돈까스', 16000,
 INSERT INTO menu (id, name, price, menu_group_id) VALUES (5, '감자탕', 17000, 2);
 INSERT INTO menu (id, name, price, menu_group_id) VALUES (6, '떡뽂이', 17000, 2);
 
-INSERT INTO menu_product (menu_id, product_id, quantity) VALUES (1, 1, 1);
-INSERT INTO menu_product (menu_id, product_id, quantity) VALUES (2, 2, 1);
-INSERT INTO menu_product (menu_id, product_id, quantity) VALUES (3, 3, 1);
-INSERT INTO menu_product (menu_id, product_id, quantity) VALUES (4, 4, 1);
-INSERT INTO menu_product (menu_id, product_id, quantity) VALUES (5, 5, 1);
-INSERT INTO menu_product (menu_id, product_id, quantity) VALUES (6, 6, 1);
+INSERT INTO menu_product (seq, menu_id, product_id, quantity) VALUES (1, 1, 1, 1);
+INSERT INTO menu_product (seq, menu_id, product_id, quantity) VALUES (2, 2, 2, 1);
+INSERT INTO menu_product (seq, menu_id, product_id, quantity) VALUES (3, 3, 3, 1);
+INSERT INTO menu_product (seq, menu_id, product_id, quantity) VALUES (4, 4, 4, 1);
+INSERT INTO menu_product (seq, menu_id, product_id, quantity) VALUES (5, 5, 5, 1);
+INSERT INTO menu_product (seq, menu_id, product_id, quantity) VALUES (6, 6, 6, 1);
 INSERT INTO table_group(id, created_date) VALUES(1, CURRENT_TIMESTAMP());
 INSERT INTO table_group(id, created_date) VALUES(2, CURRENT_TIMESTAMP());
 INSERT INTO order_table (id, number_of_guests, empty) VALUES (1, 0, true);

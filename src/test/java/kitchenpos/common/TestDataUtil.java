@@ -3,14 +3,14 @@ package kitchenpos.common;
 import java.math.BigDecimal;
 import java.util.List;
 
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.ProductRequest;
 
 public class TestDataUtil {
@@ -49,21 +49,21 @@ public class TestDataUtil {
 		return menuGroup;
 	}
 
-	public static MenuProduct createMenuProduct(long productId, int quantity) {
-		MenuProduct menuProduct = new MenuProduct();
+	public static MenuProductRequest createMenuProduct(long productId, int quantity) {
+		MenuProductRequest menuProduct = new MenuProductRequest();
 		menuProduct.setProductId(productId);
 		menuProduct.setQuantity(quantity);
 		return menuProduct;
 	}
 
-	public static Menu createMenu(String name, Integer price, Long menuGroupId, List<MenuProduct> menuProducts) {
-		Menu menu = new Menu();
+	public static MenuRequest createMenu(String name, Integer price, Long menuGroupId, List<Long> menuProductIds) {
+		MenuRequest menu = new MenuRequest();
 		menu.setName(name);
 		if (price != null) {
 			menu.setPrice(BigDecimal.valueOf(price));
 		}
 		menu.setMenuGroupId(menuGroupId);
-		menu.setMenuProducts(menuProducts);
+		menu.setMenuProductIds(menuProductIds);
 		return menu;
 	}
 

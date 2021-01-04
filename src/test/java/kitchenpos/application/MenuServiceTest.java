@@ -32,14 +32,14 @@ class MenuServiceTest extends BaseTest {
 	@Test
 	void create() {
 
-		Menu menu = menuService.create(TestDataUtil.createMenu(예제_메뉴명, 예제_메뉴_가격, 예제_메뉴_그룹_ID, Arrays.asList(메뉴_후라이드, 메뉴_양념)));
+		Menu menu = menuService.create(TestDataUtil.createMenu(예제_메뉴명, 예제_메뉴_가격, 예제_메뉴_그룹_ID, Arrays.asList(메뉴_후라이드ID, 메뉴_양념ID)));
 
 		Menu savedMenu = menuDao.findById(menu.getId()).orElse(null);
 		assertAll(
 			() -> assertThat(savedMenu.getId()).isNotNull(),
 			() -> assertThat(savedMenu.getPrice().intValue()).isEqualTo(예제_메뉴_가격),
 			() -> assertThat(savedMenu.getName()).isEqualTo(예제_메뉴명),
-			() -> assertThat(savedMenu.getMenuGroupId()).isEqualTo(예제_메뉴_그룹_ID)
+			() -> assertThat(savedMenu.getMenuGroup().getId()).isEqualTo(예제_메뉴_그룹_ID)
 		);
 	}
 
@@ -51,7 +51,7 @@ class MenuServiceTest extends BaseTest {
 
 		assertThatExceptionOfType(IllegalArgumentException.class)
 			.isThrownBy(() -> {
-				menuService.create(TestDataUtil.createMenu(예제_메뉴명, price, 예제_메뉴_그룹_ID, Arrays.asList(메뉴_후라이드, 메뉴_양념)));
+				menuService.create(TestDataUtil.createMenu(예제_메뉴명, price, 예제_메뉴_그룹_ID, Arrays.asList(메뉴_후라이드ID, 메뉴_양념ID)));
 			});
 
 	}
@@ -62,7 +62,7 @@ class MenuServiceTest extends BaseTest {
 
 		assertThatExceptionOfType(IllegalArgumentException.class)
 			.isThrownBy(() -> {
-				menuService.create(TestDataUtil.createMenu(예제_메뉴명, 예제_메뉴_가격, 메뉴_그룹_ID_없음, Arrays.asList(메뉴_후라이드, 메뉴_양념)));
+				menuService.create(TestDataUtil.createMenu(예제_메뉴명, 예제_메뉴_가격, 메뉴_그룹_ID_없음, Arrays.asList(메뉴_후라이드ID, 메뉴_양념ID)));
 			});
 
 	}
@@ -74,7 +74,7 @@ class MenuServiceTest extends BaseTest {
 		assertThatExceptionOfType(IllegalArgumentException.class)
 			.isThrownBy(() -> {
 				int 두_상품_합산_가격 = 후라이드_가격 + 양념치킨_가격 + 1;
-				menuService.create(TestDataUtil.createMenu(예제_메뉴명, 두_상품_합산_가격, 예제_메뉴_그룹_ID, Arrays.asList(메뉴_후라이드, 메뉴_양념)));
+				menuService.create(TestDataUtil.createMenu(예제_메뉴명, 두_상품_합산_가격, 예제_메뉴_그룹_ID, Arrays.asList(메뉴_후라이드ID, 메뉴_양념ID)));
 			});
 
 	}

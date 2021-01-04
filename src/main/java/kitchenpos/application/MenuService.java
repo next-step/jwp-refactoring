@@ -13,8 +13,10 @@ import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.MenuRequest;
 
 @Service
 public class MenuService {
@@ -36,18 +38,15 @@ public class MenuService {
 	}
 
 	@Transactional
-	public Menu create(final Menu menu) {
-		final BigDecimal price = menu.getPrice();
+	public Menu create(final MenuRequest menuRequest) {
+		final BigDecimal price = menuRequest.getPrice();
 
 		if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
 			throw new IllegalArgumentException();
 		}
 
-		if (menu.getMenuGroupId() == null || !menuGroupDao.existsById(menu.getMenuGroupId())) {
-			throw new IllegalArgumentException();
-		}
-
-		final List<MenuProduct> menuProducts = menu.getMenuProducts();
+		final List<Long> menuProductIds = menuRequest.getMenuProductIds();
+		List<MenuProduct> menuProducts = menuProductDao.findAllById(menuProductIds);
 
 		BigDecimal sum = BigDecimal.ZERO;
 		for (final MenuProduct menuProduct : menuProducts) {
@@ -60,12 +59,16 @@ public class MenuService {
 			throw new IllegalArgumentException();
 		}
 
-		final Menu savedMenu = menuDao.save(menu);
+		if (menuRequest.getMenuGroupId() == null) {
+			throw new IllegalArgumentException();
+		}
+		final MenuGroup menuGroup = menuGroupDao.findById(menuRequest.getMenuGroupId())
+			.orElseThrow(IllegalArgumentException::new);
+		final Menu savedMenu = menuDao.save(Menu.create(menuRequest.getName(), menuRequest.getPrice(), menuGroup));
 
-		final Long menuId = savedMenu.getId();
 		final List<MenuProduct> savedMenuProducts = new ArrayList<>();
 		for (final MenuProduct menuProduct : menuProducts) {
-			menuProduct.setMenuId(menuId);
+			menuProduct.setMenu(savedMenu);
 			savedMenuProducts.add(menuProductDao.save(menuProduct));
 		}
 		savedMenu.setMenuProducts(savedMenuProducts);
@@ -76,9 +79,9 @@ public class MenuService {
 	public List<Menu> list() {
 		final List<Menu> menus = menuDao.findAll();
 
-		for (final Menu menu : menus) {
+		/*for (final Menu menu : menus) {
 			menu.setMenuProducts(menuProductDao.findAllByMenuId(menu.getId()));
-		}
+		}*/
 
 		return menus;
 	}
