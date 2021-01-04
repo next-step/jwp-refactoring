@@ -6,12 +6,12 @@ import java.util.List;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.TableGroupRequest;
 
 public class TestDataUtil {
 
@@ -30,14 +30,14 @@ public class TestDataUtil {
 		return product;
 	}
 
-	public static OrderTable createOrderTable() {
-		OrderTable orderTable = new OrderTable();
+	public static OrderTableRequest createOrderTable() {
+		OrderTableRequest orderTable = new OrderTableRequest();
 		orderTable.setEmpty(true);
 		return orderTable;
 	}
 
-	public static OrderTable createOrderTableById(long id) {
-		OrderTable orderTable = new OrderTable();
+	public static OrderTableRequest createOrderTableById(long id) {
+		OrderTableRequest orderTable = new OrderTableRequest();
 		orderTable.setId(id);
 		orderTable.setEmpty(true);
 		return orderTable;
@@ -67,9 +67,9 @@ public class TestDataUtil {
 		return menu;
 	}
 
-	public static TableGroup createTableGroup(List<OrderTable> orderTables) {
-		TableGroup tableGroup = new TableGroup();
-		tableGroup.setOrderTables(orderTables);
+	public static TableGroupRequest createTableGroup(List<Long> orderTableIds) {
+		TableGroupRequest tableGroup = new TableGroupRequest();
+		tableGroup.setOrderTableIds(orderTableIds);
 		return tableGroup;
 	}
 

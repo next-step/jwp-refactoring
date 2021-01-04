@@ -11,7 +11,7 @@ import org.springframework.http.MediaType;
 
 import kitchenpos.common.BaseControllerTest;
 import kitchenpos.common.TestDataUtil;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderTableRequest;
 
 @DisplayName("TableRestController 테스트")
 class TableRestControllerTest extends BaseControllerTest {
@@ -20,7 +20,7 @@ class TableRestControllerTest extends BaseControllerTest {
 	@Test
 	void create() throws Exception {
 		int expectedId = 9;
-		OrderTable table = TestDataUtil.createOrderTable();
+		OrderTableRequest table = TestDataUtil.createOrderTable();
 
 		mockMvc.perform(post("/api/tables")
 			.contentType(MediaType.APPLICATION_JSON)
@@ -45,7 +45,7 @@ class TableRestControllerTest extends BaseControllerTest {
 	public void changeEmpty() throws Exception {
 		long targetId = 1L;
 		boolean isEmpty = false;
-		OrderTable table = TestDataUtil.createOrderTable();
+		OrderTableRequest table = TestDataUtil.createOrderTable();
 		table.setId(targetId);
 		table.setEmpty(isEmpty);
 
@@ -65,7 +65,7 @@ class TableRestControllerTest extends BaseControllerTest {
 		changeEmpty();
 		int guestNumber = 5;
 		long targetId = 1L;
-		OrderTable table = TestDataUtil.createOrderTable();
+		OrderTableRequest table = TestDataUtil.createOrderTable();
 		table.setId(targetId);
 		table.setNumberOfGuests(5);
 

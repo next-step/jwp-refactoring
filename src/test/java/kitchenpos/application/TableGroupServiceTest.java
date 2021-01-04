@@ -33,11 +33,11 @@ class TableGroupServiceTest extends BaseTest {
 	@Test
 	void create() {
 
-		TableGroup tableGroup = tableGroupService.create(TestDataUtil.createTableGroup(Arrays.asList(예제테이블1, 예제테이블2)));
+		TableGroup tableGroup = tableGroupService.create(TestDataUtil.createTableGroup(Arrays.asList(예제테이블1_ID, 예제테이블2_ID)));
 
 		TableGroup savedTableGroup = tableGroupDao.findById(tableGroup.getId()).orElse(null);
-		OrderTable targetTable1 = orderTableDao.findById(예제테이블1.getId()).orElse(null);
-		OrderTable targetTable2 = orderTableDao.findById(예제테이블2.getId()).orElse(null);
+		OrderTable targetTable1 = orderTableDao.findById(예제테이블1_ID).orElse(null);
+		OrderTable targetTable2 = orderTableDao.findById(예제테이블2_ID).orElse(null);
 
 		assertAll(
 			() -> assertThat(savedTableGroup.getId()).isNotNull(),
@@ -53,7 +53,7 @@ class TableGroupServiceTest extends BaseTest {
 
 		assertThatExceptionOfType(IllegalArgumentException.class)
 			.isThrownBy(() -> {
-				tableGroupService.create(TestDataUtil.createTableGroup(Arrays.asList(예제테이블1)));
+				tableGroupService.create(TestDataUtil.createTableGroup(Arrays.asList(예제테이블1_ID)));
 			});
 
 	}
@@ -64,7 +64,7 @@ class TableGroupServiceTest extends BaseTest {
 
 		assertThatExceptionOfType(IllegalArgumentException.class)
 			.isThrownBy(() -> {
-				tableGroupService.create(TestDataUtil.createTableGroup(Arrays.asList(존재하지않는테이블, 예제테이블1)));
+				tableGroupService.create(TestDataUtil.createTableGroup(Arrays.asList(존재하지않는테이블_ID, 예제테이블1_ID)));
 			});
 
 	}
@@ -75,7 +75,7 @@ class TableGroupServiceTest extends BaseTest {
 
 		assertThatExceptionOfType(IllegalArgumentException.class)
 			.isThrownBy(() -> {
-				tableGroupService.create(TestDataUtil.createTableGroup(Arrays.asList(비어있지않은테이블, 예제테이블1)));
+				tableGroupService.create(TestDataUtil.createTableGroup(Arrays.asList(비어있지않은테이블_ID, 예제테이블1_ID)));
 			});
 	}
 
@@ -85,7 +85,7 @@ class TableGroupServiceTest extends BaseTest {
 
 		assertThatExceptionOfType(IllegalArgumentException.class)
 			.isThrownBy(() -> {
-				tableGroupService.create(TestDataUtil.createTableGroup(Arrays.asList(단체지정되어있지만_주문없는_테이블, 예제테이블1)));
+				tableGroupService.create(TestDataUtil.createTableGroup(Arrays.asList(단체지정되어있지만_주문없는_테이블_ID, 예제테이블1_ID)));
 			});
 	}
 
@@ -95,11 +95,11 @@ class TableGroupServiceTest extends BaseTest {
 
 		tableGroupService.ungroup(예제_테이블_그룹_ID);
 
-		OrderTable 단체지정되어있던_테이블 = orderTableDao.findById(단체지정되어있지만_주문없는_테이블.getId()).orElse(null);
+		OrderTable 단체지정되어있던_테이블 = orderTableDao.findById(단체지정되어있지만_주문없는_테이블_ID).orElse(null);
 
 		assertAll(
 			() -> assertThat(단체지정되어있던_테이블).isNotNull(),
-			() -> assertThat(단체지정되어있던_테이블.getTableGroupId()).isNull()
+			() -> assertThat(단체지정되어있던_테이블.getTableGroup()).isNull()
 		);
 	}
 
