@@ -14,6 +14,7 @@ import kitchenpos.common.BaseTest;
 import kitchenpos.common.TestDataUtil;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupResponse;
 
 @DisplayName("MenuGroupService 테스트")
 class MenuGroupServiceTest extends BaseTest {
@@ -27,7 +28,7 @@ class MenuGroupServiceTest extends BaseTest {
 	@DisplayName("메뉴 그룹을 등록할 수 있다.")
 	@Test
 	void create() {
-		MenuGroup menuGroup = menuGroupService.create(TestDataUtil.createMenuGroup(예제_메뉴그룹명));
+		MenuGroupResponse menuGroup = menuGroupService.create(TestDataUtil.createMenuGroup(예제_메뉴그룹명));
 
 		MenuGroup savedMenuGroup = menuGroupDao.findById(menuGroup.getId()).orElse(null);
 
@@ -41,7 +42,7 @@ class MenuGroupServiceTest extends BaseTest {
 	@DisplayName("메뉴그룹을 조회할 수 있다.")
 	@Test
 	void list() {
-		List<MenuGroup> menuGroups = menuGroupService.list();
+		List<MenuGroupResponse> menuGroups = menuGroupService.list();
 
 		assertThat(menuGroups).hasSize(4);
 	}
