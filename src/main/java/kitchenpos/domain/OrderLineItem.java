@@ -1,40 +1,76 @@
 package kitchenpos.domain;
 
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+@Entity
 public class OrderLineItem {
-    private Long seq;
-    private Long orderId;
-    private Long menuId;
-    private long quantity;
 
-    public Long getSeq() {
-        return seq;
-    }
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long seq;
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
-    }
+	@JsonIgnore //memo [2021-01-4 22:14] 수정필요
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "order_id")
+	private Order order;
 
-    public Long getOrderId() {
-        return orderId;
-    }
+	@JsonIgnore //memo [2021-01-4 22:14] 수정필요
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "menu_id")
+	private Menu menu;
 
-    public void setOrderId(final Long orderId) {
-        this.orderId = orderId;
-    }
+	private long quantity;
 
-    public Long getMenuId() {
-        return menuId;
-    }
+	protected OrderLineItem() {
+	}
 
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
-    }
+	private OrderLineItem(Order order, Menu menu, long quantity) {
+		this.order = order;
+		this.menu = menu;
+		this.quantity = quantity;
+	}
 
-    public long getQuantity() {
-        return quantity;
-    }
+	public static OrderLineItem create(Order order, Menu menu, long quantity) {
+		return new OrderLineItem(order, menu, quantity);
+	}
 
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
-    }
+	public Long getSeq() {
+		return seq;
+	}
+
+	public void setSeq(final Long seq) {
+		this.seq = seq;
+	}
+
+	public Order getOrder() {
+		return order;
+	}
+
+	public void setOrder(Order order) {
+		this.order = order;
+	}
+
+	public Menu getMenu() {
+		return menu;
+	}
+
+	public void setMenu(Menu menu) {
+		this.menu = menu;
+	}
+
+	public long getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(final long quantity) {
+		this.quantity = quantity;
+	}
 }

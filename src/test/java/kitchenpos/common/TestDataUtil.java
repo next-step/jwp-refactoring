@@ -3,12 +3,11 @@ package kitchenpos.common;
 import java.math.BigDecimal;
 import java.util.List;
 
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.ProductRequest;
 import kitchenpos.dto.TableGroupRequest;
@@ -73,24 +72,18 @@ public class TestDataUtil {
 		return tableGroup;
 	}
 
-	public static Order createOrder(Long tableId, List<OrderLineItem> orderLineItems) {
-		Order order = new Order();
+	public static OrderRequest createOrder(Long tableId, List<Long> menuIds) {
+		OrderRequest order = new OrderRequest();
 		order.setOrderTableId(tableId);
-		order.setOrderLineItems(orderLineItems);
+		order.setMenuIds(menuIds);
 		return order;
 	}
 
-	public static Order createOrderByIdAndStatus(long id, OrderStatus orderStatus) {
-		Order order = new Order();
+	public static OrderRequest createOrderByIdAndStatus(long id, OrderStatus orderStatus) {
+		OrderRequest order = new OrderRequest();
 		order.setId(id);
 		order.setOrderStatus(orderStatus.name());
 		return order;
 	}
 
-	public static OrderLineItem createOrderLineItem(Long menuId, long quantity) {
-		OrderLineItem item = new OrderLineItem();
-		item.setMenuId(menuId);
-		item.setQuantity(quantity);
-		return item;
-	}
 }

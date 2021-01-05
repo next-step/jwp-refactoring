@@ -1,8 +1,7 @@
 package kitchenpos.common;
 
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
+import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderTableRequest;
 
 public class TestFixture {
@@ -31,12 +30,12 @@ public class TestFixture {
 	public static final OrderTableRequest 단체지정_테이블 = TestDataUtil.createOrderTableById(5L);
 	public static final OrderTableRequest 주문상태_조리인_테이블 = TestDataUtil.createOrderTableById(7L);
 	public static final OrderTableRequest 주문상태_식사인_테이블 = TestDataUtil.createOrderTableById(8L);
-	public static final OrderLineItem 예제주문_아이템_1 = TestDataUtil.createOrderLineItem(1L, 2L);
-	public static final OrderLineItem 예제주문_아이템_2 = TestDataUtil.createOrderLineItem(2L, 2L);
-	public static final OrderLineItem 존재하지않은메뉴가_포함된_주문_아이템 = TestDataUtil.createOrderLineItem(999L, 2L);
-	public static final Order 조리상태_주문 = TestDataUtil.createOrderByIdAndStatus(1L, OrderStatus.COOKING);
-	public static final Order 식사상태_주문 = TestDataUtil.createOrderByIdAndStatus(2L, OrderStatus.MEAL);
-	public static final Order 완료상태_주문 = TestDataUtil.createOrderByIdAndStatus(5L, OrderStatus.COMPLETION);
+	public static final Long 일반_메뉴1_ID = 1L;
+	public static final Long 일반_메뉴2_ID = 2L;
+	public static final Long 존재하지않은메뉴_ID = 999L;
+	public static final OrderRequest 조리상태_주문 = TestDataUtil.createOrderByIdAndStatus(1L, OrderStatus.COOKING);
+	public static final OrderRequest 식사상태_주문 = TestDataUtil.createOrderByIdAndStatus(2L, OrderStatus.MEAL);
+	public static final OrderRequest 완료상태_주문 = TestDataUtil.createOrderByIdAndStatus(5L, OrderStatus.COMPLETION);
 	public static final Long 메뉴_후라이드ID = 1L;
 	public static final Long 메뉴_양념ID = 2L;
 

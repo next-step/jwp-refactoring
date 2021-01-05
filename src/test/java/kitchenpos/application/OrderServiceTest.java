@@ -35,14 +35,14 @@ class OrderServiceTest extends BaseTest {
 	@DisplayName("주문 등록할 수 있다.")
 	@Test
 	void create() {
-		Order order = orderService.create(TestDataUtil.createOrder(주문대상_테이블ID, Arrays.asList(예제주문_아이템_1, 예제주문_아이템_2)));
+		Order order = orderService.create(TestDataUtil.createOrder(주문대상_테이블ID, Arrays.asList(일반_메뉴1_ID, 일반_메뉴2_ID)));
 
 		Order savedOrder = orderDao.findById(order.getId()).orElse(null);
 		List<OrderLineItem> savedOrderItems = orderLineItemDao.findAllByOrderId(savedOrder.getId());
 
 		assertAll(
 			() -> assertThat(savedOrder.getId()).isNotNull(),
-			() -> assertThat(savedOrder.getOrderTableId()).isEqualTo(주문대상_테이블ID),
+			() -> assertThat(savedOrder.getOrderTable().getId()).isEqualTo(주문대상_테이블ID),
 			() -> assertThat(savedOrderItems).hasSize(2)
 		);
 	}
@@ -62,7 +62,7 @@ class OrderServiceTest extends BaseTest {
 	void createThrow2() {
 		assertThatExceptionOfType(IllegalArgumentException.class)
 			.isThrownBy(() -> {
-				orderService.create(TestDataUtil.createOrder(주문대상_테이블ID, Arrays.asList(존재하지않은메뉴가_포함된_주문_아이템, 예제주문_아이템_2)));
+				orderService.create(TestDataUtil.createOrder(주문대상_테이블ID, Arrays.asList(존재하지않은메뉴_ID, 일반_메뉴2_ID)));
 			});
 
 	}
@@ -72,7 +72,7 @@ class OrderServiceTest extends BaseTest {
 	void createThrow3() {
 		assertThatExceptionOfType(IllegalArgumentException.class)
 			.isThrownBy(() -> {
-				orderService.create(TestDataUtil.createOrder(존재하지_않는_테이블ID, Arrays.asList(예제주문_아이템_1, 예제주문_아이템_2)));
+				orderService.create(TestDataUtil.createOrder(존재하지_않는_테이블ID, Arrays.asList(일반_메뉴1_ID, 일반_메뉴2_ID)));
 			});
 
 	}
@@ -82,7 +82,7 @@ class OrderServiceTest extends BaseTest {
 	void createThrow4() {
 		assertThatExceptionOfType(IllegalArgumentException.class)
 			.isThrownBy(() -> {
-				orderService.create(TestDataUtil.createOrder(빈_테이블ID, Arrays.asList(예제주문_아이템_1, 예제주문_아이템_2)));
+				orderService.create(TestDataUtil.createOrder(빈_테이블ID, Arrays.asList(일반_메뉴1_ID, 일반_메뉴2_ID)));
 			});
 
 	}
