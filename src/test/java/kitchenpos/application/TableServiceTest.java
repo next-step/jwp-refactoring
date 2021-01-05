@@ -7,6 +7,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -142,5 +144,20 @@ public class TableServiceTest {
 
         // then
         assertThat(orderTable.isEmpty()).isFalse();
+    }
+
+    @DisplayName("방문한 손님 수를 0명 이하로 바꿀 수 없다.")
+    @ParameterizedTest
+    @ValueSource(ints = { -1, -2 })
+    void changeNumberOfGuestsFailWithNegativeValueTest(int invalidValue) {
+        // given
+        Long targetId = 1L;
+
+        OrderTable orderTableRequest = new OrderTable();
+        orderTableRequest.setNumberOfGuests(invalidValue);
+
+        // when, then
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(targetId, orderTableRequest))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }
