@@ -10,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
+import org.mockito.internal.matchers.Or;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
@@ -161,7 +162,7 @@ public class TableServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("존재하지 않는 주문 테이블의 손님 수를 바꿀 수 없다.")
+    @DisplayName("존재하지 않는 주문 테이블의 방문한 손님 수를 바꿀 수 없다.")
     @Test
     void changeNumberOfGuestsFailWithNotExistOrderTableTest() {
         // given
@@ -175,7 +176,7 @@ public class TableServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("비어있는 주문 테이블의 손님 수를 바꿀 수 없다.")
+    @DisplayName("비어있는 주문 테이블의 방문한 손님 수를 바꿀 수 없다.")
     @Test
     void changeNumberOfGuestsFailWithEmptyOrderTableTest() {
         // given
@@ -190,5 +191,28 @@ public class TableServiceTest {
         // when, then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(targetId, orderTableRequest))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("주문 테이블의 방문한 손님 수를 바꿀 수 있다.")
+    @Test
+    void changeNumberOfGuestsTest() {
+        // given
+        Long targetId = 1L;
+        int numberOfGuests = 1;
+
+        OrderTable orderTableRequest = new OrderTable();
+        OrderTable savedOrderTable = new OrderTable();
+        savedOrderTable.setEmpty(false);
+        OrderTable changedOrderTable = new OrderTable();
+        changedOrderTable.setNumberOfGuests(numberOfGuests);
+
+        given(orderTableDao.findById(targetId)).willReturn(Optional.of(savedOrderTable));
+        given(orderTableDao.save(savedOrderTable)).willReturn(changedOrderTable);
+
+        // when
+        OrderTable orderTable = tableService.changeNumberOfGuests(targetId, orderTableRequest);
+
+        // then
+        assertThat(orderTable.getNumberOfGuests()).isEqualTo(numberOfGuests);
     }
 }
