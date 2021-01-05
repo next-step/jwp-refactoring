@@ -1,11 +1,14 @@
 package kitchenpos.domain;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import kitchenpos.exception.WrongProductPriceException;
 
 @Entity
 public class Product {
@@ -19,8 +22,15 @@ public class Product {
 	}
 
 	private Product(String name, BigDecimal price) {
+		validatePrice(price);
 		this.name = name;
 		this.price = price;
+	}
+
+	private void validatePrice(BigDecimal price) {
+		if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+			throw new WrongProductPriceException("상품의 가격이 없거나 0보다 작습니다.");
+		}
 	}
 
 	public static Product create(String name, BigDecimal price) {
@@ -31,23 +41,11 @@ public class Product {
 		return id;
 	}
 
-	public void setId(final Long id) {
-		this.id = id;
-	}
-
 	public String getName() {
 		return name;
 	}
 
-	public void setName(final String name) {
-		this.name = name;
-	}
-
 	public BigDecimal getPrice() {
 		return price;
-	}
-
-	public void setPrice(final BigDecimal price) {
-		this.price = price;
 	}
 }
