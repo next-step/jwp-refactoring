@@ -15,11 +15,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -76,5 +77,21 @@ class ProductServiceTest {
 
         // then
         assertThat(created.getId()).isEqualTo(productId);
+    }
+
+    @DisplayName("상품 목록을 조회할 수 있다.")
+    @Test
+    void getProductsTest() {
+        // given
+        Product product1 = new Product();
+        Product product2 = new Product();
+        List<Product> products = Arrays.asList(product1, product2);
+        given(productDao.findAll()).willReturn(products);
+
+        // when
+        List<Product> foundProducts = productService.list();
+
+        // then
+        assertThat(foundProducts).contains(product1, product2);
     }
 }
