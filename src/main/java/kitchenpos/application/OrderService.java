@@ -7,10 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
@@ -18,24 +14,28 @@ import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
 import kitchenpos.exception.NotFoundException;
+import kitchenpos.repository.MenuRepository;
+import kitchenpos.repository.OrderLineItemRepository;
+import kitchenpos.repository.OrderRepository;
+import kitchenpos.repository.OrderTableRepository;
 
 @Service
 public class OrderService {
-	private final MenuDao menuDao;
-	private final OrderDao orderDao;
-	private final OrderLineItemDao orderLineItemDao;
-	private final OrderTableDao orderTableDao;
+	private final MenuRepository menuRepository;
+	private final OrderRepository orderRepository;
+	private final OrderLineItemRepository orderLineItemRepository;
+	private final OrderTableRepository orderTableRepository;
 
 	public OrderService(
-		final MenuDao menuDao,
-		final OrderDao orderDao,
-		final OrderLineItemDao orderLineItemDao,
-		final OrderTableDao orderTableDao
+		final MenuRepository menuRepository,
+		final OrderRepository orderRepository,
+		final OrderLineItemRepository orderLineItemRepository,
+		final OrderTableRepository orderTableRepository
 	) {
-		this.menuDao = menuDao;
-		this.orderDao = orderDao;
-		this.orderLineItemDao = orderLineItemDao;
-		this.orderTableDao = orderTableDao;
+		this.menuRepository = menuRepository;
+		this.orderRepository = orderRepository;
+		this.orderLineItemRepository = orderLineItemRepository;
+		this.orderTableRepository = orderTableRepository;
 	}
 
 	@Transactional
@@ -46,20 +46,20 @@ public class OrderService {
 			throw new NotFoundException("요청된 메뉴 정보가 없습니다.");
 		}
 
-		if (menuIds.size() != menuDao.countByIdIn(menuIds)) {
+		if (menuIds.size() != menuRepository.countByIdIn(menuIds)) {
 			throw new NotFoundException("요청된 메뉴 정보 중 데이터베이스에 없는 정보가 존재합니다.");
 		}
 
-		final OrderTable orderTable = orderTableDao.findById(orderRequest.getOrderTableId())
+		final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
 			.orElseThrow(() -> new NotFoundException("주문테이블 정보를 찾을 수 없습니다."));
 
-		final List<Menu> menus = menuDao.findAllById(menuIds);
-		final Order savedOrder = orderDao.save(Order.create(orderTable, menus, orderRequest.getQuantities()));
+		final List<Menu> menus = menuRepository.findAllById(menuIds);
+		final Order savedOrder = orderRepository.save(Order.create(orderTable, menus, orderRequest.getQuantities()));
 		return OrderResponse.of(savedOrder);
 	}
 
 	public List<OrderResponse> list() {
-		final List<Order> orders = orderDao.findAll();
+		final List<Order> orders = orderRepository.findAll();
 		return orders.stream()
 			.map(OrderResponse::of)
 			.collect(Collectors.toList());
@@ -67,7 +67,7 @@ public class OrderService {
 
 	@Transactional
 	public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
-		final Order savedOrder = orderDao.findById(orderId)
+		final Order savedOrder = orderRepository.findById(orderId)
 			.orElseThrow(() -> new NotFoundException("주문 정보를 찾을 수 없습니다."));
 
 		final OrderStatus orderStatus = OrderStatus.valueOf(orderRequest.getOrderStatus());

@@ -11,12 +11,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import kitchenpos.common.BaseTest;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.dto.TableGroupResponse;
+import kitchenpos.repository.OrderTableRepository;
+import kitchenpos.repository.TableGroupRepository;
 
 @DisplayName("TableGroupService 테스트")
 class TableGroupServiceTest extends BaseTest {
@@ -25,10 +25,10 @@ class TableGroupServiceTest extends BaseTest {
 	private TableGroupService tableGroupService;
 
 	@Autowired
-	private TableGroupDao tableGroupDao;
+	private TableGroupRepository tableGroupRepository;
 
 	@Autowired
-	private OrderTableDao orderTableDao;
+	private OrderTableRepository orderTableRepository;
 
 	@DisplayName("테이블들을 단체 지정할 수 있다.")
 	@Test
@@ -36,9 +36,9 @@ class TableGroupServiceTest extends BaseTest {
 
 		TableGroupResponse tableGroup = tableGroupService.create(TableGroupRequest.of(Arrays.asList(예제테이블1_ID, 예제테이블2_ID)));
 
-		TableGroup savedTableGroup = tableGroupDao.findById(tableGroup.getId()).orElse(null);
-		OrderTable targetTable1 = orderTableDao.findById(예제테이블1_ID).orElse(null);
-		OrderTable targetTable2 = orderTableDao.findById(예제테이블2_ID).orElse(null);
+		TableGroup savedTableGroup = tableGroupRepository.findById(tableGroup.getId()).orElse(null);
+		OrderTable targetTable1 = orderTableRepository.findById(예제테이블1_ID).orElse(null);
+		OrderTable targetTable2 = orderTableRepository.findById(예제테이블2_ID).orElse(null);
 
 		assertAll(
 			() -> assertThat(savedTableGroup.getId()).isNotNull(),
@@ -96,7 +96,7 @@ class TableGroupServiceTest extends BaseTest {
 
 		tableGroupService.ungroup(예제_테이블_그룹_ID);
 
-		OrderTable 단체지정되어있던_테이블 = orderTableDao.findById(단체지정되어있지만_주문없는_테이블_ID).orElse(null);
+		OrderTable 단체지정되어있던_테이블 = orderTableRepository.findById(단체지정되어있지만_주문없는_테이블_ID).orElse(null);
 
 		assertAll(
 			() -> assertThat(단체지정되어있던_테이블).isNotNull(),

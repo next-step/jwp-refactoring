@@ -15,14 +15,14 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import kitchenpos.common.BaseTest;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
 import kitchenpos.exception.EmptyTableException;
 import kitchenpos.exception.NotFoundException;
+import kitchenpos.repository.OrderLineItemRepository;
+import kitchenpos.repository.OrderRepository;
 
 @DisplayName("OrderService 테스트")
 class OrderServiceTest extends BaseTest {
@@ -31,18 +31,18 @@ class OrderServiceTest extends BaseTest {
 	private OrderService orderService;
 
 	@Autowired
-	private OrderDao orderDao;
+	private OrderRepository orderRepository;
 
 	@Autowired
-	private OrderLineItemDao orderLineItemDao;
+	private OrderLineItemRepository orderLineItemRepository;
 
 	@DisplayName("주문 등록할 수 있다.")
 	@Test
 	void create() {
 		OrderResponse order = orderService.create(OrderRequest.of(주문대상_테이블ID, Arrays.asList(주문_메뉴1, 주문_메뉴2)));
 
-		Order savedOrder = orderDao.findById(order.getId()).orElse(null);
-		List<OrderLineItem> savedOrderItems = orderLineItemDao.findAllByOrderId(savedOrder.getId());
+		Order savedOrder = orderRepository.findById(order.getId()).orElse(null);
+		List<OrderLineItem> savedOrderItems = orderLineItemRepository.findAllByOrderId(savedOrder.getId());
 
 		assertAll(
 			() -> assertThat(savedOrder.getId()).isNotNull(),
@@ -106,7 +106,7 @@ class OrderServiceTest extends BaseTest {
 		OrderRequest orderRequest = OrderRequest.of(조리상태_주문ID, orderStatus);
 		orderService.changeOrderStatus(조리상태_주문ID, orderRequest);
 
-		Order order = orderDao.findById(조리상태_주문ID).orElse(null);
+		Order order = orderRepository.findById(조리상태_주문ID).orElse(null);
 
 		assertThat(order.getOrderStatus()).isEqualTo(orderStatus);
 
@@ -119,7 +119,7 @@ class OrderServiceTest extends BaseTest {
 		OrderRequest orderRequest = OrderRequest.of(식사상태_주문ID, orderStatus);
 		orderService.changeOrderStatus(식사상태_주문ID, orderRequest);
 
-		Order order = orderDao.findById(식사상태_주문ID).orElse(null);
+		Order order = orderRepository.findById(식사상태_주문ID).orElse(null);
 
 		assertThat(order.getOrderStatus()).isEqualTo(orderStatus);
 

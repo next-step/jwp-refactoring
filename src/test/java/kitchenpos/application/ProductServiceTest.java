@@ -17,10 +17,10 @@ import org.junit.jupiter.params.provider.NullSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import kitchenpos.common.BaseTest;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.ProductRequest;
 import kitchenpos.dto.ProductResponse;
+import kitchenpos.repository.ProductRepository;
 
 @DisplayName("ProductService 테스트")
 class ProductServiceTest extends BaseTest {
@@ -29,7 +29,7 @@ class ProductServiceTest extends BaseTest {
 	private ProductService productService;
 
 	@Autowired
-	private ProductDao productDao;
+	private ProductRepository productRepository;
 
 	@DisplayName("상품을 등록할 수 있다.")
 	@Test
@@ -37,7 +37,7 @@ class ProductServiceTest extends BaseTest {
 
 		ProductResponse product = productService.create(ProductRequest.of(예제_상품명, 예제_상품_가격));
 
-		Product savedProduct = productDao.findById(product.getId()).orElse(null);
+		Product savedProduct = productRepository.findById(product.getId()).orElse(null);
 		assertAll(
 			() -> assertThat(savedProduct.getId()).isNotNull(),
 			() -> assertThat(savedProduct.getName()).isEqualTo(예제_상품명),

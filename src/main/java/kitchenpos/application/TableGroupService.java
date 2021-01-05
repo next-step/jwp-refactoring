@@ -8,26 +8,26 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.dto.TableGroupResponse;
 import kitchenpos.exception.NotFoundException;
+import kitchenpos.repository.OrderRepository;
+import kitchenpos.repository.OrderTableRepository;
+import kitchenpos.repository.TableGroupRepository;
 
 @Service
 public class TableGroupService {
-	private final OrderDao orderDao;
-	private final OrderTableDao orderTableDao;
-	private final TableGroupDao tableGroupDao;
+	private final OrderRepository orderRepository;
+	private final OrderTableRepository orderTableRepository;
+	private final TableGroupRepository tableGroupRepository;
 
-	public TableGroupService(final OrderDao orderDao, final OrderTableDao orderTableDao, final TableGroupDao tableGroupDao) {
-		this.orderDao = orderDao;
-		this.orderTableDao = orderTableDao;
-		this.tableGroupDao = tableGroupDao;
+	public TableGroupService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository, final TableGroupRepository tableGroupRepository) {
+		this.orderRepository = orderRepository;
+		this.orderTableRepository = orderTableRepository;
+		this.tableGroupRepository = tableGroupRepository;
 	}
 
 	@Transactional
@@ -38,18 +38,18 @@ public class TableGroupService {
 			throw new IllegalArgumentException();
 		}
 
-		final List<OrderTable> savedOrderTables = orderTableDao.findAllByIdIn(orderTableIds);
+		final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
 
 		if (orderTableIds.size() != savedOrderTables.size()) {
 			throw new IllegalArgumentException();
 		}
-		final TableGroup savedTableGroup = tableGroupDao.save(TableGroup.create(savedOrderTables));
+		final TableGroup savedTableGroup = tableGroupRepository.save(TableGroup.create(savedOrderTables));
 		return TableGroupResponse.of(savedTableGroup);
 	}
 
 	@Transactional
 	public void ungroup(final Long tableGroupId) {
-		TableGroup tableGroup = tableGroupDao.findById(tableGroupId)
+		TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
 			.orElseThrow(() -> new NotFoundException("단체 테이블 정보를 찾을 수 없습니다."));
 		final List<OrderTable> orderTables = tableGroup.getOrderTables();
 
@@ -58,7 +58,7 @@ public class TableGroupService {
 			.collect(Collectors.toList());
 
 		//memo [2021-01-5 20:43] TableService와 동일한 코드가 있는데 어떻게 빼면 좋을까
-		if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
+		if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
 			orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
 			throw new IllegalArgumentException();
 		}

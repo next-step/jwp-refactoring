@@ -6,27 +6,27 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
+import kitchenpos.repository.MenuGroupRepository;
 
 @Service
 public class MenuGroupService {
-	private final MenuGroupDao menuGroupDao;
+	private final MenuGroupRepository menuGroupRepository;
 
-	public MenuGroupService(final MenuGroupDao menuGroupDao) {
-		this.menuGroupDao = menuGroupDao;
+	public MenuGroupService(final MenuGroupRepository menuGroupRepository) {
+		this.menuGroupRepository = menuGroupRepository;
 	}
 
 	@Transactional
 	public MenuGroupResponse create(final MenuGroupRequest menuGroupRequest) {
-		MenuGroup menuGroup = menuGroupDao.save(MenuGroup.create(menuGroupRequest.getName()));
+		MenuGroup menuGroup = menuGroupRepository.save(MenuGroup.create(menuGroupRequest.getName()));
 		return MenuGroupResponse.of(menuGroup);
 	}
 
 	public List<MenuGroupResponse> list() {
-		List<MenuGroup> menuGroups = menuGroupDao.findAll();
+		List<MenuGroup> menuGroups = menuGroupRepository.findAll();
 		return menuGroups.stream()
 			.map(MenuGroupResponse::of)
 			.collect(Collectors.toList());

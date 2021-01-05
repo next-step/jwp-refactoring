@@ -18,10 +18,10 @@ import org.junit.jupiter.params.provider.NullSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import kitchenpos.common.BaseTest;
-import kitchenpos.dao.MenuDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.MenuResponse;
+import kitchenpos.repository.MenuRepository;
 
 @DisplayName("MenuService 테스트")
 class MenuServiceTest extends BaseTest {
@@ -30,7 +30,7 @@ class MenuServiceTest extends BaseTest {
 	private MenuService menuService;
 
 	@Autowired
-	private MenuDao menuDao;
+	private MenuRepository menuRepository;
 
 	@DisplayName("메뉴를 등록할 수 있다.")
 	@Test
@@ -38,7 +38,7 @@ class MenuServiceTest extends BaseTest {
 
 		MenuResponse menu = menuService.create(MenuRequest.of(예제_메뉴명, 예제_메뉴_가격, 예제_메뉴_그룹_ID, Arrays.asList(메뉴_후라이드_갯수, 메뉴_양념_갯수)));
 
-		Menu savedMenu = menuDao.findById(menu.getId()).orElse(null);
+		Menu savedMenu = menuRepository.findById(menu.getId()).orElse(null);
 		assertAll(
 			() -> assertThat(savedMenu.getId()).isNotNull(),
 			() -> assertThat(savedMenu.getPrice()).isEqualTo(예제_메뉴_가격),

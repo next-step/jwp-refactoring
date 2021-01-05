@@ -13,10 +13,10 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import kitchenpos.common.BaseTest;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.repository.OrderTableRepository;
 
 @DisplayName("TableService 테스트")
 class TableServiceTest extends BaseTest {
@@ -25,14 +25,14 @@ class TableServiceTest extends BaseTest {
 	private TableService tableService;
 
 	@Autowired
-	private OrderTableDao orderTableDao;
+	private OrderTableRepository orderTableRepository;
 
 	@DisplayName("주문테이블을 생성할 수 있다.")
 	@Test
 	void create() {
 		OrderTableResponse table = tableService.create();
 
-		OrderTable savedTable = orderTableDao.findById(table.getId()).orElse(null);
+		OrderTable savedTable = orderTableRepository.findById(table.getId()).orElse(null);
 
 		assertAll(
 			() -> assertThat(savedTable.getId()).isNotNull(),
@@ -55,7 +55,7 @@ class TableServiceTest extends BaseTest {
 		OrderTableRequest orderTableRequest = OrderTableRequest.of(빈테이블ID, isEmpty);
 		tableService.changeEmpty(빈테이블ID, orderTableRequest);
 
-		OrderTable savedTable = orderTableDao.findById(빈테이블ID).orElse(null);
+		OrderTable savedTable = orderTableRepository.findById(빈테이블ID).orElse(null);
 
 		assertThat(savedTable.isEmpty()).isEqualTo(isEmpty);
 	}
@@ -111,7 +111,7 @@ class TableServiceTest extends BaseTest {
 		OrderTableRequest orderTableRequest = OrderTableRequest.of(주문상태_조리인_테이블ID, numberOfGuest);
 		tableService.changeNumberOfGuests(주문상태_조리인_테이블ID, orderTableRequest);
 
-		OrderTable savedTable = orderTableDao.findById(주문상태_조리인_테이블ID).orElse(null);
+		OrderTable savedTable = orderTableRepository.findById(주문상태_조리인_테이블ID).orElse(null);
 
 		assertThat(savedTable.getNumberOfGuests()).isEqualTo(numberOfGuest);
 	}
