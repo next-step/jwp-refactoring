@@ -15,13 +15,16 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
@@ -48,9 +51,11 @@ class TableGroupServiceTest {
         this.tableGroupService = new TableGroupService(orderDao, orderTableDao, tableGroupDao);
 
         emptyOrderTable1 = new OrderTable();
+        emptyOrderTable1.setId(1L);
         emptyOrderTable1.setEmpty(true);
 
         emptyOrderTable2 = new OrderTable();
+        emptyOrderTable1.setId(2L);
         emptyOrderTable2.setEmpty(true);
 
         fullAndGroupedOrderTable1 = new OrderTable();
@@ -116,5 +121,29 @@ class TableGroupServiceTest {
         // when, then
         assertThatThrownBy(() -> tableGroupService.create(tableGroupWithAlreadyGrouped))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("주문 테이블들을 단체 지정할 수 있다.")
+    @Test
+    void createTableGroup() {
+        // given
+        TableGroup tableGroupRequest = new TableGroup();
+        TableGroup savedTableGroup = new TableGroup();
+        savedTableGroup.setCreatedDate(LocalDateTime.now());
+        savedTableGroup.setId(1L);
+        tableGroupRequest.setOrderTables(emptyOrderTables);
+        given(orderTableDao.findAllByIdIn(Arrays.asList(emptyOrderTable1.getId(), emptyOrderTable2.getId())))
+                .willReturn(emptyOrderTables);
+        given(tableGroupDao.save(tableGroupRequest)).willReturn(savedTableGroup);
+
+        // when
+        TableGroup tableGroup = tableGroupService.create(tableGroupRequest);
+
+        // then
+        assertThat(tableGroup.getCreatedDate()).isNotNull();
+        emptyOrderTables.forEach(emptyOrderTable -> {
+            assertThat(emptyOrderTable.getTableGroupId()).isEqualTo(savedTableGroup.getId());
+            assertThat(emptyOrderTable.isEmpty()).isFalse();
+        });
     }
 }
