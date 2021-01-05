@@ -24,6 +24,8 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -59,9 +61,11 @@ class TableGroupServiceTest {
         emptyOrderTable2.setEmpty(true);
 
         fullAndGroupedOrderTable1 = new OrderTable();
+        fullAndGroupedOrderTable1.setId(4L);
         fullAndGroupedOrderTable1.setEmpty(false);
         fullAndGroupedOrderTable1.setTableGroupId(44L);
         fullAndGroupedOrderTable2 = new OrderTable();
+        fullAndGroupedOrderTable1.setId(5L);
         fullAndGroupedOrderTable2.setEmpty(false);
         fullAndGroupedOrderTable2.setTableGroupId(44L);
 
@@ -145,5 +149,17 @@ class TableGroupServiceTest {
             assertThat(emptyOrderTable.getTableGroupId()).isEqualTo(savedTableGroup.getId());
             assertThat(emptyOrderTable.isEmpty()).isFalse();
         });
+    }
+
+    @DisplayName("주문 상태가 조리나 식사인 단체를 해제할 수 없다.")
+    @Test
+    void unGroupFailWithInvalidOrderStatus() {
+        // given
+        Long targetTableGroup = 1L;
+        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willThrow(new IllegalArgumentException());
+
+        // when, then
+        assertThatThrownBy(() -> tableGroupService.ungroup(targetTableGroup))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }
