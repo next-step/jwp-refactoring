@@ -1,9 +1,11 @@
 package kitchenpos.common;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.Product;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.OrderRequest;
@@ -66,5 +68,21 @@ public class TestFixture {
 
 	public static OrderTable 빈_테이블_객체2() {
 		return OrderTable.create();
+	}
+
+	public static Product 예제_상품1() {
+		return Product.create("예제상품1", BigDecimal.valueOf(5000));
+	}
+
+	public static Product 예제_상품2() {
+		return Product.create("예제상품2", BigDecimal.valueOf(6000));
+	}
+
+	public static Product 오천원_상품() {
+		return Product.create("오천원_상품", BigDecimal.valueOf(5000));
+	}
+
+	public static Product 육천원_상품() {
+		return Product.create("육천원_상품", BigDecimal.valueOf(6000));
 	}
 }

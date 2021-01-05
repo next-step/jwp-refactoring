@@ -43,6 +43,10 @@ public class Menu {
 		this.menuGroup = menuGroup;
 	}
 
+	public static Menu create(String name, BigDecimal price, MenuGroup menuGroup, List<Product> products, List<Long> quantities) {
+		return new Menu(name, price, menuGroup, products, quantities);
+	}
+
 	private void addMenuProducts(BigDecimal price, List<Product> products, List<Long> quantities) {
 		BigDecimal sum = BigDecimal.ZERO;
 		for (int i = 0; i < products.size(); i++) {
@@ -59,10 +63,6 @@ public class Menu {
 		if (price.compareTo(sum) > 0) {
 			throw new WrongPriceException("메뉴의 가격이 상품가격의 총합보다 클 수 없습니다.");
 		}
-	}
-
-	public static Menu create(String name, BigDecimal price, MenuGroup menuGroup, List<Product> products, List<Long> quantities) {
-		return new Menu(name, price, menuGroup, products, quantities);
 	}
 
 	public Long getId() {
