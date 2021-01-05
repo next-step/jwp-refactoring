@@ -16,6 +16,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -91,6 +92,26 @@ public class TableServiceTest {
         savedOrderTable.setTableGroupId(1L);
 
         given(orderTableDao.findById(targetId)).willReturn(Optional.of(savedOrderTable));
+
+        // when, then
+        assertThatThrownBy(() -> tableService.changeEmpty(targetId, emptyRequest))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("주문 상태가 조리거나 식사인 주문 테이블의 비움 상태를 바꿀 수 없다.")
+    @Test
+    void changeEmptyFailWithInvalidOrderStatusTest() {
+        // given
+        Long targetId = 1L;
+
+        OrderTable emptyRequest = new OrderTable();
+        emptyRequest.setEmpty(false);
+
+        OrderTable savedOrderTable = new OrderTable();
+        savedOrderTable.setId(targetId);
+
+        given(orderTableDao.findById(targetId)).willReturn(Optional.of(savedOrderTable));
+        given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(true);
 
         // when, then
         assertThatThrownBy(() -> tableService.changeEmpty(targetId, emptyRequest))
