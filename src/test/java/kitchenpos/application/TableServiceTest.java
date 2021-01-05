@@ -10,6 +10,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
@@ -42,5 +45,19 @@ public class TableServiceTest {
 
         // then
         assertThat(orderTable.getId()).isNotNull();
+    }
+
+    @DisplayName("주문 테이블 목록을 조회할 수 있다.")
+    @Test
+    void orderTableListTest() {
+        // given
+        int expectedSize = 2;
+        given(orderTableDao.findAll()).willReturn(Arrays.asList(new OrderTable(), new OrderTable()));
+
+        // when
+        List<OrderTable> orderTables = tableService.list();
+
+        // then
+        assertThat(orderTables).hasSize(expectedSize);
     }
 }
