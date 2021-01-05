@@ -20,7 +20,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -167,5 +170,32 @@ public class MenuServiceTest {
         assertThat(created.getMenuProducts()).contains(savedMenuProduct1, savedMenuProduct2);
         assertThat(menuProduct1.getMenuId()).isEqualTo(menuId);
         assertThat(menuProduct2.getMenuId()).isEqualTo(menuId);
+    }
+
+    @DisplayName("메뉴 목록을 불러올 수 있다.")
+    @Test
+    void getMenusTest() {
+        // given
+        Menu menu1 = new Menu();
+        menu1.setId(1L);
+        Menu menu2 = new Menu();
+        menu2.setId(2L);
+
+        List<MenuProduct> menu1MenuProducts = Collections.singletonList(menuProduct1);
+        List<MenuProduct> menu2MenuProducts = Collections.singletonList(menuProduct2);
+
+        given(menuDao.findAll()).willReturn(Arrays.asList(menu1, menu2));
+        given(menuProductDao.findAllByMenuId(menu1.getId())).willReturn(menu1MenuProducts);
+        given(menuProductDao.findAllByMenuId(menu2.getId())).willReturn(menu2MenuProducts);
+
+        // when
+        List<Menu> menus = menuService.list();
+        List<List<MenuProduct>> menuProducts = menus.stream()
+                .map(Menu::getMenuProducts)
+                .collect(Collectors.toList());
+
+        // then
+        assertThat(menus).contains(menu1, menu2);
+        assertThat(menuProducts).contains(menu1MenuProducts, menu2MenuProducts);
     }
 }
