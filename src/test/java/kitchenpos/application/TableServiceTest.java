@@ -174,4 +174,21 @@ public class TableServiceTest {
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(targetId, orderTableRequest))
                 .isInstanceOf(IllegalArgumentException.class);
     }
+
+    @DisplayName("비어있는 주문 테이블의 손님 수를 바꿀 수 없다.")
+    @Test
+    void changeNumberOfGuestsFailWithEmptyOrderTableTest() {
+        // given
+        Long targetId = 1L;
+
+        OrderTable orderTableRequest = new OrderTable();
+        OrderTable savedOrderTable = new OrderTable();
+        savedOrderTable.setEmpty(true);
+
+        given(orderTableDao.findById(targetId)).willReturn(Optional.of(savedOrderTable));
+
+        // when, then
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(targetId, orderTableRequest))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
 }
