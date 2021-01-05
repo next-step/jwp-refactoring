@@ -2,7 +2,6 @@ package kitchenpos.application;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -43,36 +42,23 @@ public class TableService {
 		final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
 			.orElseThrow(IllegalArgumentException::new);
 
-		if (Objects.nonNull(savedOrderTable.getTableGroup())) {
-			throw new IllegalArgumentException();
-		}
-
 		if (orderDao.existsByOrderTableIdAndOrderStatusIn(
 			orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
 			throw new IllegalArgumentException();
 		}
 
-		savedOrderTable.setEmpty(orderTableRequest.isEmpty());
+		savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
 
 		return OrderTableResponse.of(savedOrderTable);
 	}
 
 	@Transactional
 	public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
-		final int numberOfGuests = orderTableRequest.getNumberOfGuests();
-
-		if (numberOfGuests < 0) {
-			throw new IllegalArgumentException();
-		}
 
 		final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
 			.orElseThrow(IllegalArgumentException::new);
 
-		if (savedOrderTable.isEmpty()) {
-			throw new IllegalArgumentException();
-		}
-
-		savedOrderTable.setNumberOfGuests(numberOfGuests);
+		savedOrderTable.changeNumberOfGuests(orderTableRequest.getNumberOfGuests());
 
 		return OrderTableResponse.of(savedOrderTable);
 	}

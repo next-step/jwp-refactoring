@@ -2,7 +2,6 @@ package kitchenpos.application;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -17,6 +16,7 @@ import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.dto.TableGroupResponse;
+import kitchenpos.exception.NotFoundException;
 
 @Service
 public class TableGroupService {
@@ -43,40 +43,27 @@ public class TableGroupService {
 		if (orderTableIds.size() != savedOrderTables.size()) {
 			throw new IllegalArgumentException();
 		}
-
-		for (final OrderTable savedOrderTable : savedOrderTables) {
-			if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup())) {
-				throw new IllegalArgumentException();
-			}
-		}
-
-		final TableGroup savedTableGroup = tableGroupDao.save(TableGroup.create());
-
-		for (final OrderTable savedOrderTable : savedOrderTables) {
-			savedOrderTable.setTableGroup(savedTableGroup);
-			savedOrderTable.setEmpty(false);
-			orderTableDao.save(savedOrderTable);
-		}
-		savedTableGroup.setOrderTables(savedOrderTables);
-
+		final TableGroup savedTableGroup = tableGroupDao.save(TableGroup.create(savedOrderTables));
 		return TableGroupResponse.of(savedTableGroup);
 	}
 
 	@Transactional
 	public void ungroup(final Long tableGroupId) {
-		final List<OrderTable> orderTables = orderTableDao.findAllByTableGroupId(tableGroupId);
+		TableGroup tableGroup = tableGroupDao.findById(tableGroupId)
+			.orElseThrow(() -> new NotFoundException("단체 테이블 정보를 찾을 수 없습니다."));
+		final List<OrderTable> orderTables = tableGroup.getOrderTables();
 
 		final List<Long> orderTableIds = orderTables.stream()
 			.map(OrderTable::getId)
 			.collect(Collectors.toList());
 
+		//memo [2021-01-5 20:43] TableService와 동일한 코드가 있는데 어떻게 빼면 좋을까
 		if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
 			orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
 			throw new IllegalArgumentException();
 		}
 
-		for (final OrderTable orderTable : orderTables) {
-			orderTable.setTableGroup(null);
-		}
+		tableGroup.ungroup();
+
 	}
 }
