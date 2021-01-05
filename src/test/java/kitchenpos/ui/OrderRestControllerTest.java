@@ -33,11 +33,10 @@ class OrderRestControllerTest extends BaseControllerTest {
 			.andDo(print())
 			.andExpect(header().string("Location", "/api/orders/" + expectedId))
 			.andExpect(status().isCreated())
-			.andExpect(jsonPath("$.id").value(expectedId));
-
-		//memo [2021-01-5 10:15] 수정필요
-			/*.andExpect(jsonPath("$.orderTableId").value(tableId))
-			.andExpect(jsonPath("$.orderLineItems", Matchers.hasSize(2)));*/
+			.andExpect(jsonPath("$.id").value(expectedId))
+			.andExpect(jsonPath("$.orderTable.id").value(tableId))
+			.andExpect(jsonPath("$.orderLineItems", Matchers.hasSize(2)));
+		;
 	}
 
 	@DisplayName("Order 목록 조회")

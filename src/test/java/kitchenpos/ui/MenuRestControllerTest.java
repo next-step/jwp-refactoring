@@ -36,11 +36,9 @@ class MenuRestControllerTest extends BaseControllerTest {
 			.andExpect(status().isCreated())
 			.andExpect(jsonPath("$.id").value(expectedId))
 			.andExpect(jsonPath("$.name").value(name))
-			.andExpect(jsonPath("$.price").value(price));
-
-		//memo [2021-01-4 22:16] 수정 필요
-			/*.andExpect(jsonPath("$.menuGroupId").value(menuGroupId))
-			.andExpect(jsonPath("$.menuProducts", Matchers.hasSize(2)));*/
+			.andExpect(jsonPath("$.price").value(price))
+			.andExpect(jsonPath("$.menuGroup.id").value(menuGroupId))
+			.andExpect(jsonPath("$.menuProducts", Matchers.hasSize(2)));
 	}
 
 	@DisplayName("Menu 목록 조회")
