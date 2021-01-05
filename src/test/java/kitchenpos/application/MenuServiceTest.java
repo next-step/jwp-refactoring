@@ -18,6 +18,7 @@ import kitchenpos.common.BaseTest;
 import kitchenpos.common.TestDataUtil;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.domain.Menu;
+import kitchenpos.dto.MenuResponse;
 
 @DisplayName("MenuService 테스트")
 class MenuServiceTest extends BaseTest {
@@ -32,7 +33,7 @@ class MenuServiceTest extends BaseTest {
 	@Test
 	void create() {
 
-		Menu menu = menuService.create(TestDataUtil.createMenu(예제_메뉴명, 예제_메뉴_가격, 예제_메뉴_그룹_ID, Arrays.asList(메뉴_후라이드ID, 메뉴_양념ID)));
+		MenuResponse menu = menuService.create(TestDataUtil.createMenu(예제_메뉴명, 예제_메뉴_가격, 예제_메뉴_그룹_ID, Arrays.asList(메뉴_후라이드ID, 메뉴_양념ID)));
 
 		Menu savedMenu = menuDao.findById(menu.getId()).orElse(null);
 		assertAll(
@@ -82,7 +83,7 @@ class MenuServiceTest extends BaseTest {
 	@DisplayName("메뉴을 조회할 수 있다.")
 	@Test
 	void list() {
-		List<Menu> menus = menuService.list();
+		List<MenuResponse> menus = menuService.list();
 
 		assertThat(menus).hasSize(6);
 	}

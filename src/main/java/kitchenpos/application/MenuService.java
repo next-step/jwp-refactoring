@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,7 @@ import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.MenuResponse;
 
 @Service
 public class MenuService {
@@ -38,7 +40,7 @@ public class MenuService {
 	}
 
 	@Transactional
-	public Menu create(final MenuRequest menuRequest) {
+	public MenuResponse create(final MenuRequest menuRequest) {
 		final BigDecimal price = menuRequest.getPrice();
 
 		if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
@@ -73,16 +75,13 @@ public class MenuService {
 		}
 		savedMenu.setMenuProducts(savedMenuProducts);
 
-		return savedMenu;
+		return MenuResponse.of(savedMenu);
 	}
 
-	public List<Menu> list() {
+	public List<MenuResponse> list() {
 		final List<Menu> menus = menuDao.findAll();
-
-		/*for (final Menu menu : menus) {
-			menu.setMenuProducts(menuProductDao.findAllByMenuId(menu.getId()));
-		}*/
-
-		return menus;
+		return menus.stream()
+			.map(MenuResponse::of)
+			.collect(Collectors.toList());
 	}
 }
