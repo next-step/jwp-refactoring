@@ -5,13 +5,11 @@ import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -25,6 +23,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 
@@ -135,5 +134,38 @@ public class MenuServiceTest {
         // when, then
         assertThatThrownBy(() -> menuService.create(menuWithNotExistProduct))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("메뉴를 등록할 수 있다.")
+    @Test
+    void createMenuTest() {
+        Long menuId = 1L;
+        Long menuGroupId = 1L;
+        Menu menu = new Menu();
+        menu.setPrice(BigDecimal.ONE);
+        menu.setMenuGroupId(menuGroupId);
+        menu.setMenuProducts(Arrays.asList(menuProduct1, menuProduct2));
+
+        Menu savedMenu = new Menu();
+        savedMenu.setId(menuId);
+
+        MenuProduct savedMenuProduct1 = new MenuProduct();
+        MenuProduct savedMenuProduct2 = new MenuProduct();
+
+        given(menuGroupDao.existsById(menuGroupId)).willReturn(true);
+        given(productDao.findById(product1.getId())).willReturn(Optional.of(product1));
+        given(productDao.findById(product2.getId())).willReturn(Optional.of(product2));
+        given(menuDao.save(menu)).willReturn(savedMenu);
+        given(menuProductDao.save(menuProduct1)).willReturn(savedMenuProduct1);
+        given(menuProductDao.save(menuProduct2)).willReturn(savedMenuProduct2);
+
+        // when
+        Menu created = menuService.create(menu);
+
+        // then
+        assertThat(created.getId()).isEqualTo(menuId);
+        assertThat(created.getMenuProducts()).contains(savedMenuProduct1, savedMenuProduct2);
+        assertThat(menuProduct1.getMenuId()).isEqualTo(menuId);
+        assertThat(menuProduct2.getMenuId()).isEqualTo(menuId);
     }
 }
