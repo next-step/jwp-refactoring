@@ -117,4 +117,30 @@ public class TableServiceTest {
         assertThatThrownBy(() -> tableService.changeEmpty(targetId, emptyRequest))
                 .isInstanceOf(IllegalArgumentException.class);
     }
+
+    @DisplayName("주문 테이블의 비움 상태를 바꿀 수 있다.")
+    @Test
+    void changeEmptyTest() {
+        // given
+        Long targetId = 1L;
+
+        OrderTable emptyRequest = new OrderTable();
+        emptyRequest.setEmpty(false);
+
+        OrderTable savedOrderTable = new OrderTable();
+        savedOrderTable.setId(targetId);
+
+        OrderTable changedOrderTable = new OrderTable();
+        changedOrderTable.setEmpty(emptyRequest.isEmpty());
+
+        given(orderTableDao.findById(targetId)).willReturn(Optional.of(savedOrderTable));
+        given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(false);
+        given(orderTableDao.save(savedOrderTable)).willReturn(changedOrderTable);
+
+        // when
+        OrderTable orderTable = tableService.changeEmpty(targetId, emptyRequest);
+
+        // then
+        assertThat(orderTable.isEmpty()).isFalse();
+    }
 }
