@@ -162,4 +162,21 @@ class TableGroupServiceTest {
         assertThatThrownBy(() -> tableGroupService.ungroup(targetTableGroup))
                 .isInstanceOf(IllegalArgumentException.class);
     }
+
+    @DisplayName("단체 지정을 해제할 수 있다.")
+    @Test
+    void unGroupTest() {
+        // given
+        Long targetTableGroup = 1L;
+        given(orderTableDao.findAllByTableGroupId(targetTableGroup)).willReturn(fullAndGroupedOrderTables);
+        fullAndGroupedOrderTables.forEach(fullAndGroupedOrderTable ->
+                assertThat(fullAndGroupedOrderTable1.getTableGroupId()).isNotNull());
+
+        // when
+        tableGroupService.ungroup(1L);
+
+        // then
+        fullAndGroupedOrderTables.forEach(fullAndGroupedOrderTable ->
+                assertThat(fullAndGroupedOrderTable1.getTableGroupId()).isNull());
+    }
 }
