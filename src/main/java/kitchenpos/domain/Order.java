@@ -1,7 +1,9 @@
 package kitchenpos.domain;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -13,6 +15,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import kitchenpos.exception.AlreadyOrderCompleteException;
+import kitchenpos.exception.EmptyTableException;
 
 @Entity
 @Table(name = "orders")
@@ -28,66 +33,63 @@ public class Order {
 	private LocalDateTime orderedTime;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<OrderLineItem> orderLineItems;
+	private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
 	protected Order() {
 	}
 
-	private Order(OrderTable orderTable) {
+	private Order(OrderTable orderTable, List<Menu> menus, List<Long> quantities) {
+		validateOrderTable(orderTable);
+		addOrderLineItems(menus, quantities);
 		this.orderTable = orderTable;
 		this.orderStatus = OrderStatus.COOKING.name();
 		this.orderedTime = LocalDateTime.now();
 	}
 
-	public static Order create(OrderTable orderTable) {
-		return new Order(orderTable);
+	public static Order create(OrderTable orderTable, List<Menu> menus, List<Long> quantities) {
+		return new Order(orderTable, menus, quantities);
+	}
+
+	public void changeOrderStatus(final String orderStatus) {
+		validateBeforeChangeStatus();
+		this.orderStatus = orderStatus;
+	}
+
+	private void addOrderLineItems(List<Menu> menus, List<Long> quantities) {
+		for (int i = 0; i < menus.size(); i++) {
+			orderLineItems.add(OrderLineItem.create(this, menus.get(i), quantities.get(i)));
+		}
+	}
+
+	private void validateOrderTable(OrderTable orderTable) {
+		if (orderTable.isEmpty()) {
+			throw new EmptyTableException("빈 테이블일 경우 주문을 진행할 수 없습니다.");
+		}
+	}
+
+	private void validateBeforeChangeStatus() {
+		if (Objects.equals(OrderStatus.COMPLETION.name(), this.orderStatus)) {
+			throw new AlreadyOrderCompleteException("이미 완료된 주문입니다.");
+		}
 	}
 
 	public Long getId() {
 		return id;
 	}
 
-	public void setId(final Long id) {
-		this.id = id;
-	}
-
 	public OrderTable getOrderTable() {
 		return orderTable;
 	}
 
-	public void setOrderTable(OrderTable orderTable) {
-		this.orderTable = orderTable;
-	}
-
-   /* public Long getOrderTableId() {
-        return orderTableId;
-    }
-
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
-    }*/
-
 	public String getOrderStatus() {
 		return orderStatus;
-	}
-
-	public void setOrderStatus(final String orderStatus) {
-		this.orderStatus = orderStatus;
 	}
 
 	public LocalDateTime getOrderedTime() {
 		return orderedTime;
 	}
 
-	public void setOrderedTime(final LocalDateTime orderedTime) {
-		this.orderedTime = orderedTime;
-	}
-
 	public List<OrderLineItem> getOrderLineItems() {
 		return orderLineItems;
-	}
-
-	public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-		this.orderLineItems = orderLineItems;
 	}
 }

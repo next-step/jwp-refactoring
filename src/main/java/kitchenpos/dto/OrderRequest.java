@@ -1,15 +1,14 @@
 package kitchenpos.dto;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class OrderRequest {
 	private Long id;
 	private Long orderTableId;
 	private String orderStatus;
-	private LocalDateTime orderedTime;
-	private List<Long> menuIds;
-	private long quantity;
+	private List<OrderLineItemRequest> orderItems = new ArrayList<>();
 
 	public Long getId() {
 		return id;
@@ -17,6 +16,14 @@ public class OrderRequest {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public List<OrderLineItemRequest> getOrderItems() {
+		return orderItems;
+	}
+
+	public void setOrderItems(List<OrderLineItemRequest> orderItems) {
+		this.orderItems = orderItems;
 	}
 
 	public Long getOrderTableId() {
@@ -35,27 +42,17 @@ public class OrderRequest {
 		this.orderStatus = orderStatus;
 	}
 
-	public LocalDateTime getOrderedTime() {
-		return orderedTime;
-	}
-
-	public void setOrderedTime(LocalDateTime orderedTime) {
-		this.orderedTime = orderedTime;
-	}
-
 	public List<Long> getMenuIds() {
-		return menuIds;
+		return this.orderItems
+			.stream()
+			.map(OrderLineItemRequest::getMenuId)
+			.collect(Collectors.toList());
 	}
 
-	public void setMenuIds(List<Long> menuIds) {
-		this.menuIds = menuIds;
-	}
-
-	public long getQuantity() {
-		return quantity;
-	}
-
-	public void setQuantity(long quantity) {
-		this.quantity = quantity;
+	public List<Long> getQuantities() {
+		return this.orderItems
+			.stream()
+			.map(OrderLineItemRequest::getQuantity)
+			.collect(Collectors.toList());
 	}
 }

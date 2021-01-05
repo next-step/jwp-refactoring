@@ -1,13 +1,18 @@
 package kitchenpos.common;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collections;
 
+import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderTableRequest;
 
@@ -37,9 +42,9 @@ public class TestFixture {
 	public static final OrderTableRequest 단체지정_테이블 = TestDataUtil.createOrderTableById(5L);
 	public static final OrderTableRequest 주문상태_조리인_테이블 = TestDataUtil.createOrderTableById(7L);
 	public static final OrderTableRequest 주문상태_식사인_테이블 = TestDataUtil.createOrderTableById(8L);
-	public static final Long 일반_메뉴1_ID = 1L;
-	public static final Long 일반_메뉴2_ID = 2L;
-	public static final Long 존재하지않은메뉴_ID = 999L;
+	public static final OrderLineItemRequest 주문_메뉴1 = OrderLineItemRequest.of(1L, 1L);
+	public static final OrderLineItemRequest 주문_메뉴2 = OrderLineItemRequest.of(2L, 1L);
+	public static final OrderLineItemRequest 주문_존재하지않은메뉴 = OrderLineItemRequest.of(999L, 1L);
 	public static final OrderRequest 조리상태_주문 = TestDataUtil.createOrderByIdAndStatus(1L, OrderStatus.COOKING);
 	public static final OrderRequest 식사상태_주문 = TestDataUtil.createOrderByIdAndStatus(2L, OrderStatus.MEAL);
 	public static final OrderRequest 완료상태_주문 = TestDataUtil.createOrderByIdAndStatus(5L, OrderStatus.COMPLETION);
@@ -84,5 +89,23 @@ public class TestFixture {
 
 	public static Product 육천원_상품() {
 		return Product.create("육천원_상품", BigDecimal.valueOf(6000));
+	}
+
+	public static Menu 일반_메뉴1() {
+		return Menu.create("일반1", BigDecimal.valueOf(4000L), MenuGroup.create("한식"), Arrays.asList(오천원_상품()), Arrays.asList(1L));
+	}
+
+	public static Menu 일반_메뉴2() {
+		return Menu.create("일반1", BigDecimal.valueOf(4000L), MenuGroup.create("한식"), Arrays.asList(오천원_상품()), Arrays.asList(1L));
+	}
+
+	public static Order 일반_주문() {
+		return Order.create(비어있지않은_테이블_객체(), Arrays.asList(일반_메뉴1(), 일반_메뉴2()), Arrays.asList(1L, 2L));
+	}
+
+	public static Order 완료된_주문() {
+		Order order = 일반_주문();
+		order.changeOrderStatus("COMPLETION");
+		return order;
 	}
 }

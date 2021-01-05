@@ -7,6 +7,7 @@ import kitchenpos.domain.OrderStatus;
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.ProductRequest;
@@ -65,10 +66,10 @@ public class TestDataUtil {
 		return tableGroup;
 	}
 
-	public static OrderRequest createOrder(Long tableId, List<Long> menuIds) {
+	public static OrderRequest createOrder(Long tableId, List<OrderLineItemRequest> orderLineItems) {
 		OrderRequest order = new OrderRequest();
 		order.setOrderTableId(tableId);
-		order.setMenuIds(menuIds);
+		order.setOrderItems(orderLineItems);
 		return order;
 	}
 

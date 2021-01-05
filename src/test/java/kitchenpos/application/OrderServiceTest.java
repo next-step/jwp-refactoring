@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
@@ -20,6 +21,8 @@ import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.dto.OrderResponse;
+import kitchenpos.exception.EmptyTableException;
+import kitchenpos.exception.NotFoundException;
 
 @DisplayName("OrderService 테스트")
 class OrderServiceTest extends BaseTest {
@@ -36,7 +39,7 @@ class OrderServiceTest extends BaseTest {
 	@DisplayName("주문 등록할 수 있다.")
 	@Test
 	void create() {
-		OrderResponse order = orderService.create(TestDataUtil.createOrder(주문대상_테이블ID, Arrays.asList(일반_메뉴1_ID, 일반_메뉴2_ID)));
+		OrderResponse order = orderService.create(TestDataUtil.createOrder(주문대상_테이블ID, Arrays.asList(주문_메뉴1, 주문_메뉴2)));
 
 		Order savedOrder = orderDao.findById(order.getId()).orElse(null);
 		List<OrderLineItem> savedOrderItems = orderLineItemDao.findAllByOrderId(savedOrder.getId());
@@ -51,9 +54,9 @@ class OrderServiceTest extends BaseTest {
 	@DisplayName("요청된 메뉴가 없으면 주문할 수 없다.")
 	@Test
 	void createThrow1() {
-		assertThatExceptionOfType(IllegalArgumentException.class)
+		assertThatExceptionOfType(NotFoundException.class)
 			.isThrownBy(() -> {
-				orderService.create(TestDataUtil.createOrder(주문대상_테이블ID, null));
+				orderService.create(TestDataUtil.createOrder(주문대상_테이블ID, Collections.emptyList()));
 			});
 
 	}
@@ -61,9 +64,9 @@ class OrderServiceTest extends BaseTest {
 	@DisplayName("요청된 메뉴가 실제 저장되어 있는 메뉴가 아닌 경우가 포함되어 있으면 주문할 수 없다.")
 	@Test
 	void createThrow2() {
-		assertThatExceptionOfType(IllegalArgumentException.class)
+		assertThatExceptionOfType(NotFoundException.class)
 			.isThrownBy(() -> {
-				orderService.create(TestDataUtil.createOrder(주문대상_테이블ID, Arrays.asList(존재하지않은메뉴_ID, 일반_메뉴2_ID)));
+				orderService.create(TestDataUtil.createOrder(주문대상_테이블ID, Arrays.asList(주문_존재하지않은메뉴, 주문_메뉴2)));
 			});
 
 	}
@@ -71,9 +74,9 @@ class OrderServiceTest extends BaseTest {
 	@DisplayName("존재하지 않는 테이블에는 주문할 수 없다.")
 	@Test
 	void createThrow3() {
-		assertThatExceptionOfType(IllegalArgumentException.class)
+		assertThatExceptionOfType(NotFoundException.class)
 			.isThrownBy(() -> {
-				orderService.create(TestDataUtil.createOrder(존재하지_않는_테이블ID, Arrays.asList(일반_메뉴1_ID, 일반_메뉴2_ID)));
+				orderService.create(TestDataUtil.createOrder(존재하지_않는_테이블ID, Arrays.asList(주문_메뉴1, 주문_메뉴2)));
 			});
 
 	}
@@ -81,9 +84,9 @@ class OrderServiceTest extends BaseTest {
 	@DisplayName("테이블이 빈테이블 상태인 경우 주문할 수 없다.")
 	@Test
 	void createThrow4() {
-		assertThatExceptionOfType(IllegalArgumentException.class)
+		assertThatExceptionOfType(EmptyTableException.class)
 			.isThrownBy(() -> {
-				orderService.create(TestDataUtil.createOrder(빈_테이블ID, Arrays.asList(일반_메뉴1_ID, 일반_메뉴2_ID)));
+				orderService.create(TestDataUtil.createOrder(빈_테이블ID, Arrays.asList(주문_메뉴1, 주문_메뉴2)));
 			});
 
 	}

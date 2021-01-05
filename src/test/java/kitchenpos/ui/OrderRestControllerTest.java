@@ -25,7 +25,7 @@ class OrderRestControllerTest extends BaseControllerTest {
 	void create() throws Exception {
 		int expectedId = 6;
 		long tableId = 7L;
-		OrderRequest order = TestDataUtil.createOrder(tableId, Arrays.asList(일반_메뉴1_ID, 일반_메뉴2_ID));
+		OrderRequest order = TestDataUtil.createOrder(tableId, Arrays.asList(주문_메뉴1, 주문_메뉴2));
 
 		mockMvc.perform(post("/api/orders")
 			.contentType(MediaType.APPLICATION_JSON)
