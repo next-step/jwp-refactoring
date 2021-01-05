@@ -36,19 +36,30 @@ class TableGroupServiceTest {
     @Mock
     private TableGroupDao tableGroupDao;
 
-    private OrderTable orderTable = new OrderTable();
+    private OrderTable orderTable1;
+    private OrderTable orderTable2;
+    private List<OrderTable> orderTables = new ArrayList<>();
 
     @BeforeEach
     void setup() {
         this.tableGroupService = new TableGroupService(orderDao, orderTableDao, tableGroupDao);
 
-        orderTable.setId(1L);
+        orderTable1 = new OrderTable();
+        orderTable1.setId(1L);
+        orderTable1.setEmpty(true);
+
+        orderTable2 = new OrderTable();
+        orderTable2.setId(2L);
+        orderTable2.setEmpty(true);
+
+        orderTables.add(orderTable1);
+        orderTables.add(orderTable2);
     }
 
     @DisplayName("2개 이하의 주문테이블로 단체 지정할 수 없다.")
     @ParameterizedTest
     @MethodSource("tableGroupFailWithEmptyTableResource")
-    void tableGroupFailWithEmptyTable(List<OrderTable> orderTables) {
+    void createTableGroupFailWithEmptyTable(List<OrderTable> orderTables) {
         // given
         TableGroup tableGroup = new TableGroup();
         tableGroup.setOrderTables(orderTables);
@@ -61,5 +72,17 @@ class TableGroupServiceTest {
                 Arguments.of(new ArrayList<>()),
                 Arguments.of(Collections.singletonList(new OrderTable()))
         );
+    }
+
+    @DisplayName("존재하지 않는 주문테이블들로 단체 지정할 수 없다.")
+    @Test
+    void createTableGroupFailWithNotExistTableGroups() {
+        // given
+        TableGroup tableGroupWithNotExistOrderTables = new TableGroup();
+        tableGroupWithNotExistOrderTables.setOrderTables(orderTables);
+
+        // when, then
+        assertThatThrownBy(() -> tableGroupService.create(tableGroupWithNotExistOrderTables))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }
