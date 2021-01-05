@@ -5,7 +5,6 @@ import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,9 +42,25 @@ public class MenuServiceTest {
     @Mock
     private ProductDao productDao;
 
+    private Product product1 = new Product();
+    private Product product2 = new Product();
+    private MenuProduct menuProduct1 = new MenuProduct();
+    private MenuProduct menuProduct2 = new MenuProduct();
+
+
     @BeforeEach
     void setup() {
         menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
+
+        product1.setPrice(BigDecimal.valueOf(100));
+        product1.setId(1L);
+        product2.setPrice(BigDecimal.valueOf(100));
+        product2.setId(2L);
+
+        menuProduct1.setProductId(product1.getId());
+        menuProduct1.setQuantity(1);
+        menuProduct2.setProductId(product2.getId());
+        menuProduct2.setQuantity(1);
     }
 
     @DisplayName("올바르지 않은 메뉴 가격으로 메뉴를 등록할 수 없다.")
@@ -71,30 +86,16 @@ public class MenuServiceTest {
     @Test
     void createFailWithTooExpensivePriceTest() {
         // given
-        Long product1Id = 1L;
-        Long product2Id = 2L;
-        Product product1 = new Product();
-        product1.setPrice(BigDecimal.valueOf(100));
-        Product product2 = new Product();
-        product2.setPrice(BigDecimal.valueOf(100));
-
-        MenuProduct menuProduct1 = new MenuProduct();
-        menuProduct1.setProductId(product1Id);
-        menuProduct1.setQuantity(1);
-        MenuProduct menuProduct2 = new MenuProduct();
-        menuProduct2.setProductId(product2Id);
-        menuProduct1.setQuantity(1);
-
+        Long menuGroupId = 1L;
         Menu tooExpensiveMenu = new Menu();
         BigDecimal menuProductPriceSum = product1.getPrice().add(product2.getPrice());
         tooExpensiveMenu.setPrice(menuProductPriceSum.add(BigDecimal.ONE));
         tooExpensiveMenu.setMenuProducts(Arrays.asList(menuProduct1, menuProduct2));
-        Long menuGroupId = 1L;
         tooExpensiveMenu.setMenuGroupId(menuGroupId);
 
         given(menuGroupDao.existsById(menuGroupId)).willReturn(true);
-        given(productDao.findById(product1Id)).willReturn(Optional.of(product1));
-        given(productDao.findById(product2Id)).willReturn(Optional.of(product2));
+        given(productDao.findById(product1.getId())).willReturn(Optional.of(product1));
+        given(productDao.findById(product2.getId())).willReturn(Optional.of(product2));
 
         // when, then
         assertThatThrownBy(() -> menuService.create(tooExpensiveMenu)).isInstanceOf(IllegalArgumentException.class);
