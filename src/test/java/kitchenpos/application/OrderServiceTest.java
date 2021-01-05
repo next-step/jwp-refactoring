@@ -36,9 +36,30 @@ class OrderServiceTest {
     @Mock
     private OrderTableDao orderTableDao;
 
+    private Order orderRequest;
+
+
+    private OrderLineItem orderLineItem;
+    private List<OrderLineItem> orderLineItems;
+
+    private OrderTable emptyOrderTable;
+    private OrderTable fullOrderTable;
+
     @BeforeEach
     void setup() {
         this.orderService = new OrderService(menuDao, orderDao, orderLineItemDao, orderTableDao);
+
+        orderLineItem = new OrderLineItem();
+        orderLineItems = Collections.singletonList(orderLineItem);
+
+        emptyOrderTable = new OrderTable();
+        emptyOrderTable.setEmpty(true);
+        fullOrderTable = new OrderTable();
+        fullOrderTable.setEmpty(false);
+
+        orderRequest = new Order();
+        orderRequest.setOrderTableId(1L);
+        orderRequest.setOrderLineItems(orderLineItems);
     }
 
     @DisplayName("1개 미만의 주문 항목으로 주문할 수 없다.")
@@ -56,11 +77,6 @@ class OrderServiceTest {
     @Test
     void createOrderFailWithNotExistMenuTest() {
         // given
-        Order orderRequest = new Order();
-        OrderLineItem orderLineItem = new OrderLineItem();
-        List<OrderLineItem> orderLineItems = Collections.singletonList(orderLineItem);
-        orderRequest.setOrderLineItems(orderLineItems);
-
         given(menuDao.countByIdIn(any())).willReturn(100L);
 
         // when, then
@@ -71,11 +87,6 @@ class OrderServiceTest {
     @Test
     void createOrderFailWithNotExistOrderTableTest() {
         // given
-        Order orderRequest = new Order();
-        OrderLineItem orderLineItem = new OrderLineItem();
-        List<OrderLineItem> orderLineItems = Collections.singletonList(orderLineItem);
-        orderRequest.setOrderLineItems(orderLineItems);
-
         given(menuDao.countByIdIn(any())).willReturn((long) orderLineItems.size());
 
         // when, then
@@ -86,18 +97,8 @@ class OrderServiceTest {
     @Test
     void createOrderFailWithEmptyOrderTable() {
         // given
-        Order orderRequest = new Order();
-        orderRequest.setOrderTableId(1L);
-
-        OrderLineItem orderLineItem = new OrderLineItem();
-        List<OrderLineItem> orderLineItems = Collections.singletonList(orderLineItem);
-        orderRequest.setOrderLineItems(orderLineItems);
-
-        OrderTable orderTable = new OrderTable();
-        orderTable.setEmpty(true);
-
         given(menuDao.countByIdIn(any())).willReturn((long) orderLineItems.size());
-        given(orderTableDao.findById(orderRequest.getOrderTableId())).willReturn(Optional.of(orderTable));
+        given(orderTableDao.findById(orderRequest.getOrderTableId())).willReturn(Optional.of(emptyOrderTable));
 
         // when, then
         assertThatThrownBy(() -> orderService.create(orderRequest)).isInstanceOf(IllegalArgumentException.class);
