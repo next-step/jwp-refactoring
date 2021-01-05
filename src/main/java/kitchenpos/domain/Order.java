@@ -14,8 +14,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 @Entity
 @Table(name = "orders")
 public class Order {
@@ -23,14 +21,12 @@ public class Order {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@JsonIgnore //memo [2021-01-4 22:14] 수정필요
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "order_table_id")
 	private OrderTable orderTable;
 	private String orderStatus;
 	private LocalDateTime orderedTime;
 
-	@JsonIgnore
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<OrderLineItem> orderLineItems;
 

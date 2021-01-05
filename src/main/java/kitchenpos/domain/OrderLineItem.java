@@ -8,8 +8,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 @Entity
 public class OrderLineItem {
 
@@ -17,12 +15,10 @@ public class OrderLineItem {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long seq;
 
-	@JsonIgnore //memo [2021-01-4 22:14] 수정필요
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "order_id")
 	private Order order;
 
-	@JsonIgnore //memo [2021-01-4 22:14] 수정필요
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "menu_id")
 	private Menu menu;

@@ -13,8 +13,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 @Entity
 public class Menu {
 
@@ -24,12 +22,10 @@ public class Menu {
 	private String name;
 	private BigDecimal price;
 
-	@JsonIgnore //memo [2021-01-4 22:14] 수정필요
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "menu_group_id")
 	private MenuGroup menuGroup;
 
-	@JsonIgnore //memo [2021-01-4 22:14] 수정필요
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<MenuProduct> menuProducts;
 

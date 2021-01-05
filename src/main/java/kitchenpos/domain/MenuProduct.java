@@ -24,6 +24,10 @@ public class MenuProduct {
 	private Product product;
 	private long quantity;
 
+	public Long getSeq() {
+		return seq;
+	}
+
 	public Long getProductId() {
 		return this.product.getId();
 	}

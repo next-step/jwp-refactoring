@@ -8,8 +8,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 @Entity
 public class OrderTable {
 
@@ -17,7 +15,6 @@ public class OrderTable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@JsonIgnore //memo [2021-01-4 22:37] 수정필요
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "table_group_id")
 	private TableGroup tableGroup;

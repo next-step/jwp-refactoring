@@ -12,8 +12,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 @Entity
 public class TableGroup {
 
@@ -22,12 +20,11 @@ public class TableGroup {
 	private Long id;
 	private LocalDateTime createdDate;
 
-	@JsonIgnore //memo [2021-01-4 22:36] 수정필요
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "tableGroup", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<OrderTable> orderTables = new ArrayList<>();
 
 	protected TableGroup() {
-		this.createdDate = LocalDateTime.now(); //memo refactoring 필요
+		this.createdDate = LocalDateTime.now();
 	}
 
 	public static TableGroup create() {
