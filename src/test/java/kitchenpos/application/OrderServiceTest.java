@@ -15,11 +15,11 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import kitchenpos.common.BaseTest;
-import kitchenpos.common.TestDataUtil;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
 import kitchenpos.exception.EmptyTableException;
 import kitchenpos.exception.NotFoundException;
@@ -39,7 +39,7 @@ class OrderServiceTest extends BaseTest {
 	@DisplayName("주문 등록할 수 있다.")
 	@Test
 	void create() {
-		OrderResponse order = orderService.create(TestDataUtil.createOrder(주문대상_테이블ID, Arrays.asList(주문_메뉴1, 주문_메뉴2)));
+		OrderResponse order = orderService.create(OrderRequest.of(주문대상_테이블ID, Arrays.asList(주문_메뉴1, 주문_메뉴2)));
 
 		Order savedOrder = orderDao.findById(order.getId()).orElse(null);
 		List<OrderLineItem> savedOrderItems = orderLineItemDao.findAllByOrderId(savedOrder.getId());
@@ -56,7 +56,7 @@ class OrderServiceTest extends BaseTest {
 	void createThrow1() {
 		assertThatExceptionOfType(NotFoundException.class)
 			.isThrownBy(() -> {
-				orderService.create(TestDataUtil.createOrder(주문대상_테이블ID, Collections.emptyList()));
+				orderService.create(OrderRequest.of(주문대상_테이블ID, Collections.emptyList()));
 			});
 
 	}
@@ -66,7 +66,7 @@ class OrderServiceTest extends BaseTest {
 	void createThrow2() {
 		assertThatExceptionOfType(NotFoundException.class)
 			.isThrownBy(() -> {
-				orderService.create(TestDataUtil.createOrder(주문대상_테이블ID, Arrays.asList(주문_존재하지않은메뉴, 주문_메뉴2)));
+				orderService.create(OrderRequest.of(주문대상_테이블ID, Arrays.asList(주문_존재하지않은메뉴, 주문_메뉴2)));
 			});
 
 	}
@@ -76,7 +76,7 @@ class OrderServiceTest extends BaseTest {
 	void createThrow3() {
 		assertThatExceptionOfType(NotFoundException.class)
 			.isThrownBy(() -> {
-				orderService.create(TestDataUtil.createOrder(존재하지_않는_테이블ID, Arrays.asList(주문_메뉴1, 주문_메뉴2)));
+				orderService.create(OrderRequest.of(존재하지_않는_테이블ID, Arrays.asList(주문_메뉴1, 주문_메뉴2)));
 			});
 
 	}
@@ -86,7 +86,7 @@ class OrderServiceTest extends BaseTest {
 	void createThrow4() {
 		assertThatExceptionOfType(EmptyTableException.class)
 			.isThrownBy(() -> {
-				orderService.create(TestDataUtil.createOrder(빈_테이블ID, Arrays.asList(주문_메뉴1, 주문_메뉴2)));
+				orderService.create(OrderRequest.of(빈_테이블ID, Arrays.asList(주문_메뉴1, 주문_메뉴2)));
 			});
 
 	}
@@ -103,10 +103,10 @@ class OrderServiceTest extends BaseTest {
 	@ParameterizedTest
 	@ValueSource(strings = {"MEAL", "COMPLETION"})
 	void changeOrderStatusWhenCooking(String orderStatus) {
-		조리상태_주문.setOrderStatus(orderStatus);
-		orderService.changeOrderStatus(조리상태_주문.getId(), 조리상태_주문);
+		OrderRequest orderRequest = OrderRequest.of(조리상태_주문ID, orderStatus);
+		orderService.changeOrderStatus(조리상태_주문ID, orderRequest);
 
-		Order order = orderDao.findById(조리상태_주문.getId()).orElse(null);
+		Order order = orderDao.findById(조리상태_주문ID).orElse(null);
 
 		assertThat(order.getOrderStatus()).isEqualTo(orderStatus);
 
@@ -116,10 +116,10 @@ class OrderServiceTest extends BaseTest {
 	@ParameterizedTest
 	@ValueSource(strings = {"COOKING", "COMPLETION"})
 	void changeOrderStatusWhenMeal(String orderStatus) {
-		식사상태_주문.setOrderStatus(orderStatus);
-		orderService.changeOrderStatus(식사상태_주문.getId(), 식사상태_주문);
+		OrderRequest orderRequest = OrderRequest.of(식사상태_주문ID, orderStatus);
+		orderService.changeOrderStatus(식사상태_주문ID, orderRequest);
 
-		Order order = orderDao.findById(식사상태_주문.getId()).orElse(null);
+		Order order = orderDao.findById(식사상태_주문ID).orElse(null);
 
 		assertThat(order.getOrderStatus()).isEqualTo(orderStatus);
 
@@ -131,8 +131,8 @@ class OrderServiceTest extends BaseTest {
 	void changeOrderStatusWhenCompletion(String orderStatus) {
 		assertThatExceptionOfType(IllegalArgumentException.class)
 			.isThrownBy(() -> {
-				완료상태_주문.setOrderStatus(orderStatus);
-				orderService.changeOrderStatus(완료상태_주문.getId(), 완료상태_주문);
+				OrderRequest orderRequest = OrderRequest.of(완료상태_주문ID, orderStatus);
+				orderService.changeOrderStatus(완료상태_주문ID, orderRequest);
 			});
 
 	}

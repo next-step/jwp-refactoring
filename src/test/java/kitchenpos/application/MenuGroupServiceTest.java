@@ -11,9 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import kitchenpos.common.BaseTest;
-import kitchenpos.common.TestDataUtil;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
 
 @DisplayName("MenuGroupService 테스트")
@@ -28,7 +28,7 @@ class MenuGroupServiceTest extends BaseTest {
 	@DisplayName("메뉴 그룹을 등록할 수 있다.")
 	@Test
 	void create() {
-		MenuGroupResponse menuGroup = menuGroupService.create(TestDataUtil.createMenuGroup(예제_메뉴그룹명));
+		MenuGroupResponse menuGroup = menuGroupService.create(MenuGroupRequest.of(예제_메뉴그룹명));
 
 		MenuGroup savedMenuGroup = menuGroupDao.findById(menuGroup.getId()).orElse(null);
 

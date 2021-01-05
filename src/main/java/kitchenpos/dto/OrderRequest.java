@@ -10,36 +10,41 @@ public class OrderRequest {
 	private String orderStatus;
 	private List<OrderLineItemRequest> orderItems = new ArrayList<>();
 
-	public Long getId() {
-		return id;
+	private OrderRequest() {
 	}
 
-	public void setId(Long id) {
+	private OrderRequest(Long id, String orderStatus) {
 		this.id = id;
+		this.orderStatus = orderStatus;
+	}
+
+	private OrderRequest(Long orderTableId, List<OrderLineItemRequest> orderItems) {
+		this.orderTableId = orderTableId;
+		this.orderItems = orderItems;
+	}
+
+	public static OrderRequest of(Long id, String orderStatus) {
+		return new OrderRequest(id, orderStatus);
+	}
+
+	public static OrderRequest of(Long orderTableId, List<OrderLineItemRequest> orderItems) {
+		return new OrderRequest(orderTableId, orderItems);
+	}
+
+	public Long getId() {
+		return id;
 	}
 
 	public List<OrderLineItemRequest> getOrderItems() {
 		return orderItems;
 	}
 
-	public void setOrderItems(List<OrderLineItemRequest> orderItems) {
-		this.orderItems = orderItems;
-	}
-
 	public Long getOrderTableId() {
 		return orderTableId;
 	}
 
-	public void setOrderTableId(Long orderTableId) {
-		this.orderTableId = orderTableId;
-	}
-
 	public String getOrderStatus() {
 		return orderStatus;
-	}
-
-	public void setOrderStatus(String orderStatus) {
-		this.orderStatus = orderStatus;
 	}
 
 	public List<Long> getMenuIds() {

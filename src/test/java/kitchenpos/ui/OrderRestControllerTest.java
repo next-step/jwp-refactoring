@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
 import kitchenpos.common.BaseControllerTest;
-import kitchenpos.common.TestDataUtil;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.dto.OrderRequest;
 
@@ -25,7 +24,7 @@ class OrderRestControllerTest extends BaseControllerTest {
 	void create() throws Exception {
 		int expectedId = 6;
 		long tableId = 7L;
-		OrderRequest order = TestDataUtil.createOrder(tableId, Arrays.asList(주문_메뉴1, 주문_메뉴2));
+		OrderRequest order = OrderRequest.of(tableId, Arrays.asList(주문_메뉴1, 주문_메뉴2));
 
 		mockMvc.perform(post("/api/orders")
 			.contentType(MediaType.APPLICATION_JSON)
@@ -52,7 +51,7 @@ class OrderRestControllerTest extends BaseControllerTest {
 	@Test
 	void changeOrderStatus() throws Exception {
 		long targetId = 1L;
-		OrderRequest order = TestDataUtil.createOrderByIdAndStatus(targetId, OrderStatus.MEAL);
+		OrderRequest order = OrderRequest.of(targetId, OrderStatus.MEAL.name());
 		mockMvc.perform(put("/api/orders/{orderId}/order-status", targetId)
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(objectMapper.writeValueAsString(order)))

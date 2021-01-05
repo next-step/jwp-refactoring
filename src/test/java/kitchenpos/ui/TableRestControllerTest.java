@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
 import kitchenpos.common.BaseControllerTest;
-import kitchenpos.common.TestDataUtil;
 import kitchenpos.dto.OrderTableRequest;
 
 @DisplayName("TableRestController 테스트")
@@ -20,11 +19,8 @@ class TableRestControllerTest extends BaseControllerTest {
 	@Test
 	void create() throws Exception {
 		int expectedId = 9;
-		OrderTableRequest table = TestDataUtil.createOrderTable();
 
-		mockMvc.perform(post("/api/tables")
-			.contentType(MediaType.APPLICATION_JSON)
-			.content(objectMapper.writeValueAsString(table)))
+		mockMvc.perform(post("/api/tables"))
 			.andDo(print())
 			.andExpect(header().string("Location", "/api/tables/" + expectedId))
 			.andExpect(status().isCreated())
@@ -45,9 +41,7 @@ class TableRestControllerTest extends BaseControllerTest {
 	public void changeEmpty() throws Exception {
 		long targetId = 1L;
 		boolean isEmpty = false;
-		OrderTableRequest table = TestDataUtil.createOrderTable();
-		table.setId(targetId);
-		table.setEmpty(isEmpty);
+		OrderTableRequest table = OrderTableRequest.of(targetId, isEmpty);
 
 		mockMvc.perform(put("/api/tables/{orderTableId}/empty", targetId)
 			.contentType(MediaType.APPLICATION_JSON)
@@ -65,9 +59,7 @@ class TableRestControllerTest extends BaseControllerTest {
 		changeEmpty();
 		int guestNumber = 5;
 		long targetId = 1L;
-		OrderTableRequest table = TestDataUtil.createOrderTable();
-		table.setId(targetId);
-		table.setNumberOfGuests(5);
+		OrderTableRequest table = OrderTableRequest.of(targetId, 5);
 
 		mockMvc.perform(put("/api/tables/{orderTableId}/number-of-guests", targetId)
 			.contentType(MediaType.APPLICATION_JSON)

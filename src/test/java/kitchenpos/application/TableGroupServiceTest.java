@@ -11,11 +11,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import kitchenpos.common.BaseTest;
-import kitchenpos.common.TestDataUtil;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.dto.TableGroupResponse;
 
 @DisplayName("TableGroupService 테스트")
@@ -34,7 +34,7 @@ class TableGroupServiceTest extends BaseTest {
 	@Test
 	void create() {
 
-		TableGroupResponse tableGroup = tableGroupService.create(TestDataUtil.createTableGroup(Arrays.asList(예제테이블1_ID, 예제테이블2_ID)));
+		TableGroupResponse tableGroup = tableGroupService.create(TableGroupRequest.of(Arrays.asList(예제테이블1_ID, 예제테이블2_ID)));
 
 		TableGroup savedTableGroup = tableGroupDao.findById(tableGroup.getId()).orElse(null);
 		OrderTable targetTable1 = orderTableDao.findById(예제테이블1_ID).orElse(null);
@@ -54,7 +54,7 @@ class TableGroupServiceTest extends BaseTest {
 
 		assertThatExceptionOfType(IllegalArgumentException.class)
 			.isThrownBy(() -> {
-				tableGroupService.create(TestDataUtil.createTableGroup(Arrays.asList(예제테이블1_ID)));
+				tableGroupService.create(TableGroupRequest.of(Arrays.asList(예제테이블1_ID)));
 			});
 
 	}
@@ -65,7 +65,7 @@ class TableGroupServiceTest extends BaseTest {
 
 		assertThatExceptionOfType(IllegalArgumentException.class)
 			.isThrownBy(() -> {
-				tableGroupService.create(TestDataUtil.createTableGroup(Arrays.asList(존재하지않는테이블_ID, 예제테이블1_ID)));
+				tableGroupService.create(TableGroupRequest.of(Arrays.asList(존재하지않는_테이블ID, 예제테이블1_ID)));
 			});
 
 	}
@@ -76,7 +76,7 @@ class TableGroupServiceTest extends BaseTest {
 
 		assertThatExceptionOfType(IllegalArgumentException.class)
 			.isThrownBy(() -> {
-				tableGroupService.create(TestDataUtil.createTableGroup(Arrays.asList(비어있지않은테이블_ID, 예제테이블1_ID)));
+				tableGroupService.create(TableGroupRequest.of(Arrays.asList(비어있지않은테이블_ID, 예제테이블1_ID)));
 			});
 	}
 
@@ -86,7 +86,7 @@ class TableGroupServiceTest extends BaseTest {
 
 		assertThatExceptionOfType(IllegalArgumentException.class)
 			.isThrownBy(() -> {
-				tableGroupService.create(TestDataUtil.createTableGroup(Arrays.asList(단체지정되어있지만_주문없는_테이블_ID, 예제테이블1_ID)));
+				tableGroupService.create(TableGroupRequest.of(Arrays.asList(단체지정되어있지만_주문없는_테이블_ID, 예제테이블1_ID)));
 			});
 	}
 

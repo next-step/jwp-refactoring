@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
 import kitchenpos.common.BaseControllerTest;
-import kitchenpos.common.TestDataUtil;
 import kitchenpos.dto.TableGroupRequest;
 
 @DisplayName("TableGroupRestController 테스트")
@@ -24,7 +23,7 @@ class TableGroupRestControllerTest extends BaseControllerTest {
 	void create() throws Exception {
 		int expectedId = 3;
 
-		TableGroupRequest tableGroup = TestDataUtil.createTableGroup(Arrays.asList(예제테이블1_ID, 예제테이블2_ID));
+		TableGroupRequest tableGroup = TableGroupRequest.of(Arrays.asList(예제테이블1_ID, 예제테이블2_ID));
 
 		mockMvc.perform(post("/api/table-groups")
 			.contentType(MediaType.APPLICATION_JSON)

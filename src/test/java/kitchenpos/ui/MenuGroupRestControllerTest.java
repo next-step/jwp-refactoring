@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
 import kitchenpos.common.BaseControllerTest;
-import kitchenpos.common.TestDataUtil;
 import kitchenpos.dto.MenuGroupRequest;
 
 @DisplayName("MenuGroupRestController 테스트")
@@ -21,7 +20,7 @@ class MenuGroupRestControllerTest extends BaseControllerTest {
 	void create() throws Exception {
 		long expectedId = 5L;
 		String name = "경양식";
-		MenuGroupRequest menuGroup = TestDataUtil.createMenuGroup(name);
+		MenuGroupRequest menuGroup = MenuGroupRequest.of(name);
 
 		mockMvc.perform(post("/api/menu-groups")
 			.contentType(MediaType.APPLICATION_JSON)
