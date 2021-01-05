@@ -17,6 +17,7 @@ import kitchenpos.common.BaseTest;
 import kitchenpos.common.TestDataUtil;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductResponse;
 
 @DisplayName("ProductService 테스트")
 class ProductServiceTest extends BaseTest {
@@ -31,7 +32,7 @@ class ProductServiceTest extends BaseTest {
 	@Test
 	void create() {
 
-		Product product = productService.create(TestDataUtil.createProduct(예제_상품명, 예제_상품_가격));
+		ProductResponse product = productService.create(TestDataUtil.createProduct(예제_상품명, 예제_상품_가격));
 
 		Product savedProduct = productDao.findById(product.getId()).orElse(null);
 		assertAll(
@@ -56,7 +57,7 @@ class ProductServiceTest extends BaseTest {
 	@DisplayName("상품을 조회할 수 있다.")
 	@Test
 	void list() {
-		List<Product> products = productService.list();
+		List<ProductResponse> products = productService.list();
 
 		assertThat(products).hasSize(6);
 	}
