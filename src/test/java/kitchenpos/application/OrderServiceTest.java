@@ -19,6 +19,7 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.dto.OrderResponse;
 
 @DisplayName("OrderService 테스트")
 class OrderServiceTest extends BaseTest {
@@ -35,7 +36,7 @@ class OrderServiceTest extends BaseTest {
 	@DisplayName("주문 등록할 수 있다.")
 	@Test
 	void create() {
-		Order order = orderService.create(TestDataUtil.createOrder(주문대상_테이블ID, Arrays.asList(일반_메뉴1_ID, 일반_메뉴2_ID)));
+		OrderResponse order = orderService.create(TestDataUtil.createOrder(주문대상_테이블ID, Arrays.asList(일반_메뉴1_ID, 일반_메뉴2_ID)));
 
 		Order savedOrder = orderDao.findById(order.getId()).orElse(null);
 		List<OrderLineItem> savedOrderItems = orderLineItemDao.findAllByOrderId(savedOrder.getId());
@@ -90,7 +91,7 @@ class OrderServiceTest extends BaseTest {
 	@DisplayName("주문을 조회할 수 있다.")
 	@Test
 	void list() {
-		List<Order> products = orderService.list();
+		List<OrderResponse> products = orderService.list();
 
 		assertThat(products).hasSize(5);
 	}

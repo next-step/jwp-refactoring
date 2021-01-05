@@ -3,6 +3,7 @@ package kitchenpos.application;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,7 @@ import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderResponse;
 
 @Service
 public class OrderService {
@@ -39,7 +41,7 @@ public class OrderService {
 	}
 
 	@Transactional
-	public Order create(final OrderRequest orderRequest) {
+	public OrderResponse create(final OrderRequest orderRequest) {
 		final List<Long> menuIds = orderRequest.getMenuIds();
 
 		if (CollectionUtils.isEmpty(menuIds)) {
@@ -67,21 +69,18 @@ public class OrderService {
 		}
 		savedOrder.setOrderLineItems(savedOrderLineItems);
 
-		return savedOrder;
+		return OrderResponse.of(savedOrder);
 	}
 
-	public List<Order> list() {
+	public List<OrderResponse> list() {
 		final List<Order> orders = orderDao.findAll();
-
-		/*for (final Order order : orders) {
-			order.setOrderLineItems(orderLineItemDao.findAllByOrderId(order.getId()));
-		}*/
-
-		return orders;
+		return orders.stream()
+			.map(OrderResponse::of)
+			.collect(Collectors.toList());
 	}
 
 	@Transactional
-	public Order changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
+	public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
 		final Order savedOrder = orderDao.findById(orderId)
 			.orElseThrow(IllegalArgumentException::new);
 
@@ -96,6 +95,6 @@ public class OrderService {
 
 		savedOrder.setOrderLineItems(orderLineItemDao.findAllByOrderId(orderId));
 
-		return savedOrder;
+		return OrderResponse.of(savedOrder);
 	}
 }
