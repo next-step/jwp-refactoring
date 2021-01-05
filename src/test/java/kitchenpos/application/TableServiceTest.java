@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -64,12 +65,32 @@ public class TableServiceTest {
 
     @DisplayName("존재하지 않는 주문 테이블의 비움 상태를 바꿀 수 없다.")
     @Test
-    void changeEmptyFAilWithNotExistOrderTableTest() {
+    void changeEmptyFailWithNotExistOrderTableTest() {
         // given
         Long targetId = 1L;
         OrderTable emptyRequest = new OrderTable();
         emptyRequest.setEmpty(false);
         given(orderTableDao.findById(targetId)).willThrow(new IllegalArgumentException());
+
+        // when, then
+        assertThatThrownBy(() -> tableService.changeEmpty(targetId, emptyRequest))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("단체 지정된 주문 테이블의 비움 상태를 바꿀 수 없다.")
+    @Test
+    void changeEmptyFailWithGroupedTableTest() {
+        // given
+        Long targetId = 1L;
+
+        OrderTable emptyRequest = new OrderTable();
+        emptyRequest.setEmpty(false);
+
+        OrderTable savedOrderTable = new OrderTable();
+        savedOrderTable.setId(targetId);
+        savedOrderTable.setTableGroupId(1L);
+
+        given(orderTableDao.findById(targetId)).willReturn(Optional.of(savedOrderTable));
 
         // when, then
         assertThatThrownBy(() -> tableService.changeEmpty(targetId, emptyRequest))
