@@ -38,10 +38,10 @@ class TableGroupServiceTest {
 
     private OrderTable emptyOrderTable1;
     private OrderTable emptyOrderTable2;
-    private OrderTable fullOrderTable1;
-    private OrderTable fullOrderTable2;
+    private OrderTable fullAndGroupedOrderTable1;
+    private OrderTable fullAndGroupedOrderTable2;
     private List<OrderTable> emptyOrderTables;
-    private List<OrderTable> fullOrderTables;
+    private List<OrderTable> fullAndGroupedOrderTables;
 
     @BeforeEach
     void setup() {
@@ -53,13 +53,15 @@ class TableGroupServiceTest {
         emptyOrderTable2 = new OrderTable();
         emptyOrderTable2.setEmpty(true);
 
-        fullOrderTable1 = new OrderTable();
-        fullOrderTable1.setEmpty(false);
-        fullOrderTable2 = new OrderTable();
-        fullOrderTable2.setEmpty(false);
+        fullAndGroupedOrderTable1 = new OrderTable();
+        fullAndGroupedOrderTable1.setEmpty(false);
+        fullAndGroupedOrderTable1.setTableGroupId(44L);
+        fullAndGroupedOrderTable2 = new OrderTable();
+        fullAndGroupedOrderTable2.setEmpty(false);
+        fullAndGroupedOrderTable2.setTableGroupId(44L);
 
         emptyOrderTables = Arrays.asList(emptyOrderTable1, emptyOrderTable2);
-        fullOrderTables = Arrays.asList(fullOrderTable1, fullOrderTable2);
+        fullAndGroupedOrderTables = Arrays.asList(fullAndGroupedOrderTable1, fullAndGroupedOrderTable2);
     }
 
     @DisplayName("2개 이하의 주문테이블로 단체 지정할 수 없다.")
@@ -97,10 +99,22 @@ class TableGroupServiceTest {
     void createTableGroupFailWithFullOrderTables() {
         // given
         TableGroup tableGroupWithFullOrderTables = new TableGroup();
-        tableGroupWithFullOrderTables.setOrderTables(fullOrderTables);
+        tableGroupWithFullOrderTables.setOrderTables(fullAndGroupedOrderTables);
 
         // when, then
         assertThatThrownBy(() -> tableGroupService.create(tableGroupWithFullOrderTables))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("이미 단체 지정된 주문 테이블들로 단체 지정할 수 없다.")
+    @Test
+    void createTableGroupFailWithAlreadyGrouped() {
+        // given
+        TableGroup tableGroupWithAlreadyGrouped = new TableGroup();
+        tableGroupWithAlreadyGrouped.setOrderTables(fullAndGroupedOrderTables);
+
+        // when, then
+        assertThatThrownBy(() -> tableGroupService.create(tableGroupWithAlreadyGrouped))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }
