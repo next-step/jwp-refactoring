@@ -9,6 +9,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -40,5 +43,20 @@ class MenuGroupServiceTest {
 
         // then
         assertThat(saved.getId()).isEqualTo(menuGroupId);
+    }
+
+    @DisplayName("메뉴 그룹 목록을 조회할 수 있다.")
+    @Test
+    void getMenuGroupsTest() {
+        // given
+        MenuGroup menuGroup1 = new MenuGroup();
+        MenuGroup menuGroup2 = new MenuGroup();
+        given(menuGroupDao.findAll()).willReturn(Arrays.asList(menuGroup1, menuGroup2));
+
+        // when
+        List<MenuGroup> foundMenuGroups = menuGroupService.list();
+
+        // then
+        assertThat(foundMenuGroups).contains(menuGroup1, menuGroup2);
     }
 }
