@@ -11,6 +11,7 @@ import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -116,5 +117,23 @@ public class MenuServiceTest {
 
         // when, then
         assertThatThrownBy(() -> menuService.create(tooExpensiveMenu)).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("존재하지 않는 상품으로 구성된 메뉴 상품으로 메뉴를 만들 수 없다.")
+    @Test
+    void createFailWithNotExistProduct() {
+        // given
+        Long menuGroupId = 1L;
+        Menu menuWithNotExistProduct = new Menu();
+        menuWithNotExistProduct.setPrice(BigDecimal.ONE);
+        menuWithNotExistProduct.setMenuGroupId(menuGroupId);
+        menuWithNotExistProduct.setMenuProducts(Arrays.asList(menuProduct1, menuProduct2));
+
+        given(menuGroupDao.existsById(menuGroupId)).willReturn(true);
+        given(productDao.findById(product1.getId())).willThrow(new IllegalArgumentException());
+
+        // when, then
+        assertThatThrownBy(() -> menuService.create(menuWithNotExistProduct))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }
