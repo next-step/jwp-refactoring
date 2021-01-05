@@ -16,6 +16,7 @@ import kitchenpos.common.BaseTest;
 import kitchenpos.common.TestDataUtil;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderTableResponse;
 
 @DisplayName("TableService 테스트")
 class TableServiceTest extends BaseTest {
@@ -29,7 +30,7 @@ class TableServiceTest extends BaseTest {
 	@DisplayName("주문테이블을 생성할 수 있다.")
 	@Test
 	void create() {
-		OrderTable table = tableService.create(TestDataUtil.createOrderTable());
+		OrderTableResponse table = tableService.create(TestDataUtil.createOrderTable());
 
 		OrderTable savedTable = orderTableDao.findById(table.getId()).orElse(null);
 
@@ -42,7 +43,7 @@ class TableServiceTest extends BaseTest {
 	@DisplayName("주문테이블을 조회할 수 있다.")
 	@Test
 	void list() {
-		List<OrderTable> orderTables = tableService.list();
+		List<OrderTableResponse> orderTables = tableService.list();
 
 		assertThat(orderTables).hasSize(8);
 	}

@@ -3,6 +3,7 @@ package kitchenpos.application;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +13,7 @@ import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
 
 @Service
 public class TableService {
@@ -24,16 +26,20 @@ public class TableService {
 	}
 
 	@Transactional
-	public OrderTable create(final OrderTableRequest orderTableRequest) {
-		return orderTableDao.save(OrderTable.create());
+	public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
+		OrderTable orderTable = orderTableDao.save(OrderTable.create());
+		return OrderTableResponse.of(orderTable);
 	}
 
-	public List<OrderTable> list() {
-		return orderTableDao.findAll();
+	public List<OrderTableResponse> list() {
+		List<OrderTable> orderTables = orderTableDao.findAll();
+		return orderTables.stream()
+			.map(OrderTableResponse::of)
+			.collect(Collectors.toList());
 	}
 
 	@Transactional
-	public OrderTable changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
+	public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
 		final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
 			.orElseThrow(IllegalArgumentException::new);
 
@@ -48,11 +54,11 @@ public class TableService {
 
 		savedOrderTable.setEmpty(orderTableRequest.isEmpty());
 
-		return orderTableDao.save(savedOrderTable);
+		return OrderTableResponse.of(savedOrderTable);
 	}
 
 	@Transactional
-	public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
+	public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
 		final int numberOfGuests = orderTableRequest.getNumberOfGuests();
 
 		if (numberOfGuests < 0) {
@@ -68,6 +74,6 @@ public class TableService {
 
 		savedOrderTable.setNumberOfGuests(numberOfGuests);
 
-		return orderTableDao.save(savedOrderTable);
+		return OrderTableResponse.of(savedOrderTable);
 	}
 }
