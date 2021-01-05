@@ -68,4 +68,19 @@ class OrderServiceTest {
         // when, then
         assertThatThrownBy(() -> orderService.create(orderRequest)).isInstanceOf(IllegalArgumentException.class);
     }
+
+    @DisplayName("존재하지 않는 주문테이블에서 주문할 수 없다.")
+    @Test
+    void createOrderFailWithNotExistOrderTableTest() {
+        // given
+        Order orderRequest = new Order();
+        OrderLineItem orderLineItem = new OrderLineItem();
+        List<OrderLineItem> orderLineItems = Collections.singletonList(orderLineItem);
+        orderRequest.setOrderLineItems(orderLineItems);
+
+        given(menuDao.countByIdIn(any())).willReturn((long) orderLineItems.size());
+
+        // when, then
+        assertThatThrownBy(() -> orderService.create(orderRequest)).isInstanceOf(IllegalArgumentException.class);
+    }
 }
