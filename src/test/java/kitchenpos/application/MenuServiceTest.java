@@ -5,6 +5,7 @@ import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
@@ -80,6 +81,22 @@ public class MenuServiceTest {
                 Arguments.of(BigDecimal.valueOf(-1)),
                 Arguments.of(BigDecimal.valueOf(-2))
         );
+    }
+
+    @DisplayName("존재하지 않는 메뉴 그룹으로 메뉴를 등록할 수 없다.")
+    @Test
+    void createFailWithNotExistMenuGroupTest() {
+        // given
+        Long notExistMenuGroupId = 4L;
+        Menu withNotExistMenuGroup = new Menu();
+        withNotExistMenuGroup.setMenuGroupId(notExistMenuGroupId);
+        withNotExistMenuGroup.setPrice(BigDecimal.ONE);
+
+        given(menuGroupDao.existsById(notExistMenuGroupId)).willReturn(false);
+
+        // when, then
+        assertThatThrownBy(() -> menuService.create(withNotExistMenuGroup))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("메뉴 상품들 가격의 총합보다 비싸게 메뉴 가격을 정할 수 없다.")
