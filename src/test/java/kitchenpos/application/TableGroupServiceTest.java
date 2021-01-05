@@ -36,24 +36,30 @@ class TableGroupServiceTest {
     @Mock
     private TableGroupDao tableGroupDao;
 
-    private OrderTable orderTable1;
-    private OrderTable orderTable2;
-    private List<OrderTable> orderTables = new ArrayList<>();
+    private OrderTable emptyOrderTable1;
+    private OrderTable emptyOrderTable2;
+    private OrderTable fullOrderTable1;
+    private OrderTable fullOrderTable2;
+    private List<OrderTable> emptyOrderTables;
+    private List<OrderTable> fullOrderTables;
 
     @BeforeEach
     void setup() {
         this.tableGroupService = new TableGroupService(orderDao, orderTableDao, tableGroupDao);
 
-        orderTable1 = new OrderTable();
-        orderTable1.setId(1L);
-        orderTable1.setEmpty(true);
+        emptyOrderTable1 = new OrderTable();
+        emptyOrderTable1.setEmpty(true);
 
-        orderTable2 = new OrderTable();
-        orderTable2.setId(2L);
-        orderTable2.setEmpty(true);
+        emptyOrderTable2 = new OrderTable();
+        emptyOrderTable2.setEmpty(true);
 
-        orderTables.add(orderTable1);
-        orderTables.add(orderTable2);
+        fullOrderTable1 = new OrderTable();
+        fullOrderTable1.setEmpty(false);
+        fullOrderTable2 = new OrderTable();
+        fullOrderTable2.setEmpty(false);
+
+        emptyOrderTables = Arrays.asList(emptyOrderTable1, emptyOrderTable2);
+        fullOrderTables = Arrays.asList(fullOrderTable1, fullOrderTable2);
     }
 
     @DisplayName("2개 이하의 주문테이블로 단체 지정할 수 없다.")
@@ -74,15 +80,27 @@ class TableGroupServiceTest {
         );
     }
 
-    @DisplayName("존재하지 않는 주문테이블들로 단체 지정할 수 없다.")
+    @DisplayName("존재하지 않는 주문 테이블들로 단체 지정할 수 없다.")
     @Test
     void createTableGroupFailWithNotExistTableGroups() {
         // given
         TableGroup tableGroupWithNotExistOrderTables = new TableGroup();
-        tableGroupWithNotExistOrderTables.setOrderTables(orderTables);
+        tableGroupWithNotExistOrderTables.setOrderTables(emptyOrderTables);
 
         // when, then
         assertThatThrownBy(() -> tableGroupService.create(tableGroupWithNotExistOrderTables))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("비어있지 않은 주문 테이블들로 단체 지정할 수 없다.")
+    @Test
+    void createTableGroupFailWithFullOrderTables() {
+        // given
+        TableGroup tableGroupWithFullOrderTables = new TableGroup();
+        tableGroupWithFullOrderTables.setOrderTables(fullOrderTables);
+
+        // when, then
+        assertThatThrownBy(() -> tableGroupService.create(tableGroupWithFullOrderTables))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }
