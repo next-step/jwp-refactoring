@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -59,5 +60,19 @@ public class TableServiceTest {
 
         // then
         assertThat(orderTables).hasSize(expectedSize);
+    }
+
+    @DisplayName("존재하지 않는 주문 테이블의 비움 상태를 바꿀 수 없다.")
+    @Test
+    void changeEmptyFAilWithNotExistOrderTableTest() {
+        // given
+        Long targetId = 1L;
+        OrderTable emptyRequest = new OrderTable();
+        emptyRequest.setEmpty(false);
+        given(orderTableDao.findById(targetId)).willThrow(new IllegalArgumentException());
+
+        // when, then
+        assertThatThrownBy(() -> tableService.changeEmpty(targetId, emptyRequest))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }
