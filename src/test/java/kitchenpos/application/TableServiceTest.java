@@ -160,4 +160,18 @@ public class TableServiceTest {
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(targetId, orderTableRequest))
                 .isInstanceOf(IllegalArgumentException.class);
     }
+
+    @DisplayName("존재하지 않는 주문 테이블의 손님 수를 바꿀 수 없다.")
+    @Test
+    void changeNumberOfGuestsFailWithNotExistOrderTableTest() {
+        // given
+        Long targetId = 1L;
+        OrderTable orderTableRequest = new OrderTable();
+
+        given(orderTableDao.findById(targetId)).willThrow(IllegalArgumentException.class);
+
+        // when, then
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(targetId, orderTableRequest))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
 }
