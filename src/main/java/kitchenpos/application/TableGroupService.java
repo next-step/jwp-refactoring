@@ -16,6 +16,7 @@ import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
 
 @Service
 public class TableGroupService {
@@ -30,7 +31,7 @@ public class TableGroupService {
 	}
 
 	@Transactional
-	public TableGroup create(final TableGroupRequest tableGroupRequest) {
+	public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
 		final List<Long> orderTableIds = tableGroupRequest.getOrderTableIds();
 
 		if (CollectionUtils.isEmpty(orderTableIds) || orderTableIds.size() < 2) {
@@ -58,7 +59,7 @@ public class TableGroupService {
 		}
 		savedTableGroup.setOrderTables(savedOrderTables);
 
-		return savedTableGroup;
+		return TableGroupResponse.of(savedTableGroup);
 	}
 
 	@Transactional
@@ -76,7 +77,6 @@ public class TableGroupService {
 
 		for (final OrderTable orderTable : orderTables) {
 			orderTable.setTableGroup(null);
-			orderTableDao.save(orderTable);
 		}
 	}
 }

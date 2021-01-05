@@ -16,6 +16,7 @@ import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.TableGroupResponse;
 
 @DisplayName("TableGroupService 테스트")
 class TableGroupServiceTest extends BaseTest {
@@ -33,7 +34,7 @@ class TableGroupServiceTest extends BaseTest {
 	@Test
 	void create() {
 
-		TableGroup tableGroup = tableGroupService.create(TestDataUtil.createTableGroup(Arrays.asList(예제테이블1_ID, 예제테이블2_ID)));
+		TableGroupResponse tableGroup = tableGroupService.create(TestDataUtil.createTableGroup(Arrays.asList(예제테이블1_ID, 예제테이블2_ID)));
 
 		TableGroup savedTableGroup = tableGroupDao.findById(tableGroup.getId()).orElse(null);
 		OrderTable targetTable1 = orderTableDao.findById(예제테이블1_ID).orElse(null);
