@@ -1,5 +1,6 @@
 package kitchenpos.ui;
 
+import static kitchenpos.common.TestFixture.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -26,7 +27,7 @@ class MenuRestControllerTest extends BaseControllerTest {
 		Long menuGroupId = 1L;
 		String name = "후라이드 한마리 + 양념 한마리";
 
-		MenuRequest menu = TestDataUtil.createMenu(name, price, menuGroupId, Arrays.asList(1L, 2L));
+		MenuRequest menu = TestDataUtil.createMenu(name, price, menuGroupId, Arrays.asList(메뉴_후라이드_갯수, 메뉴_양념_갯수));
 
 		mockMvc.perform(post("/api/menus")
 			.contentType(MediaType.APPLICATION_JSON)

@@ -8,7 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import kitchenpos.exception.WrongProductPriceException;
+import kitchenpos.exception.WrongPriceException;
 
 @Entity
 public class Product {
@@ -29,7 +29,7 @@ public class Product {
 
 	private void validatePrice(BigDecimal price) {
 		if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-			throw new WrongProductPriceException("상품의 가격이 없거나 0보다 작습니다.");
+			throw new WrongPriceException("상품의 가격이 없거나 0보다 작습니다.");
 		}
 	}
 

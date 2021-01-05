@@ -11,7 +11,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullSource;
 
-import kitchenpos.exception.WrongProductPriceException;
+import kitchenpos.exception.WrongPriceException;
 
 @DisplayName("Product 도메인 테스트")
 class ProductTest {
@@ -40,7 +40,7 @@ class ProductTest {
 	@NullSource
 	@MethodSource("paramProductThrow")
 	void productThrow(BigDecimal price) {
-		assertThatExceptionOfType(WrongProductPriceException.class)
+		assertThatExceptionOfType(WrongPriceException.class)
 			.isThrownBy(() -> {
 				Product.create("상품", price);
 			});

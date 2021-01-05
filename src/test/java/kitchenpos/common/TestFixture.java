@@ -5,6 +5,7 @@ import java.util.Collections;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderTableRequest;
 
@@ -40,8 +41,8 @@ public class TestFixture {
 	public static final OrderRequest 조리상태_주문 = TestDataUtil.createOrderByIdAndStatus(1L, OrderStatus.COOKING);
 	public static final OrderRequest 식사상태_주문 = TestDataUtil.createOrderByIdAndStatus(2L, OrderStatus.MEAL);
 	public static final OrderRequest 완료상태_주문 = TestDataUtil.createOrderByIdAndStatus(5L, OrderStatus.COMPLETION);
-	public static final Long 메뉴_후라이드ID = 1L;
-	public static final Long 메뉴_양념ID = 2L;
+	public static final MenuProductRequest 메뉴_후라이드_갯수 = MenuProductRequest.of(1L, 1L);
+	public static final MenuProductRequest 메뉴_양념_갯수 = MenuProductRequest.of(2L, 1L);
 
 	public static OrderTable 그룹_지정된_테이블_객체() {
 		OrderTable table = OrderTable.create();

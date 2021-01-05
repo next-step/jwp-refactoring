@@ -48,21 +48,14 @@ public class TestDataUtil {
 		return menuGroup;
 	}
 
-	public static MenuProductRequest createMenuProduct(long productId, int quantity) {
-		MenuProductRequest menuProduct = new MenuProductRequest();
-		menuProduct.setProductId(productId);
-		menuProduct.setQuantity(quantity);
-		return menuProduct;
-	}
-
-	public static MenuRequest createMenu(String name, Integer price, Long menuGroupId, List<Long> menuProductIds) {
+	public static MenuRequest createMenu(String name, Integer price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
 		MenuRequest menu = new MenuRequest();
 		menu.setName(name);
 		if (price != null) {
 			menu.setPrice(BigDecimal.valueOf(price));
 		}
 		menu.setMenuGroupId(menuGroupId);
-		menu.setMenuProductIds(menuProductIds);
+		menu.setMenuProducts(menuProducts);
 		return menu;
 	}
 
