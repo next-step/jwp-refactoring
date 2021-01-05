@@ -6,6 +6,7 @@ import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,10 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -79,6 +77,27 @@ class OrderServiceTest {
         orderRequest.setOrderLineItems(orderLineItems);
 
         given(menuDao.countByIdIn(any())).willReturn((long) orderLineItems.size());
+
+        // when, then
+        assertThatThrownBy(() -> orderService.create(orderRequest)).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("비어있는 주문 테이블에서 주문할 수 없다.")
+    @Test
+    void createOrderFailWithEmptyOrderTable() {
+        // given
+        Order orderRequest = new Order();
+        orderRequest.setOrderTableId(1L);
+
+        OrderLineItem orderLineItem = new OrderLineItem();
+        List<OrderLineItem> orderLineItems = Collections.singletonList(orderLineItem);
+        orderRequest.setOrderLineItems(orderLineItems);
+
+        OrderTable orderTable = new OrderTable();
+        orderTable.setEmpty(true);
+
+        given(menuDao.countByIdIn(any())).willReturn((long) orderLineItems.size());
+        given(orderTableDao.findById(orderRequest.getOrderTableId())).willReturn(Optional.of(orderTable));
 
         // when, then
         assertThatThrownBy(() -> orderService.create(orderRequest)).isInstanceOf(IllegalArgumentException.class);
