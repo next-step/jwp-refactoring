@@ -142,6 +142,7 @@ public class MenuServiceTest {
     @DisplayName("메뉴를 등록할 수 있다.")
     @Test
     void createMenuTest() {
+        // given
         Long menuId = 1L;
         Long menuGroupId = 1L;
         Menu menu = new Menu();
