@@ -50,7 +50,7 @@ public class OrderService {
 	}
 
 	public List<OrderResponse> list() {
-		final List<Order> orders = orderRepository.findAll();
+		final List<Order> orders = orderRepository.findAllFetch();
 		return orders.stream()
 			.map(OrderResponse::of)
 			.collect(Collectors.toList());
