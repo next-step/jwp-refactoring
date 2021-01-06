@@ -40,7 +40,7 @@ class OrderServiceTest {
     private OrderTableDao orderTableDao;
 
     private Order newOrderRequest;
-    private Order changeOrderStatusRequest;
+    private Order changeToCompleteRequest;
     private Order savedOrder;
     private OrderLineItem orderLineItem;
     private List<OrderLineItem> orderLineItems;
@@ -64,8 +64,8 @@ class OrderServiceTest {
         newOrderRequest.setOrderTableId(1L);
         newOrderRequest.setOrderLineItems(orderLineItems);
 
-        changeOrderStatusRequest = new Order();
-        changeOrderStatusRequest.setOrderStatus(OrderStatus.COOKING.name());
+        changeToCompleteRequest = new Order();
+        changeToCompleteRequest.setOrderStatus(OrderStatus.COMPLETION.name());
 
         savedOrder = new Order();
         savedOrder.setId(1L);
@@ -159,7 +159,7 @@ class OrderServiceTest {
         given(orderDao.findById(targetId)).willThrow(new IllegalArgumentException());
 
         // when, then
-        assertThatThrownBy(() -> orderService.changeOrderStatus(targetId, changeOrderStatusRequest))
+        assertThatThrownBy(() -> orderService.changeOrderStatus(targetId, changeToCompleteRequest))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -174,7 +174,24 @@ class OrderServiceTest {
         given(orderDao.findById(targetId)).willReturn(Optional.of(completeOrder));
 
         // when, then
-        assertThatThrownBy(() -> orderService.changeOrderStatus(targetId, changeOrderStatusRequest))
+        assertThatThrownBy(() -> orderService.changeOrderStatus(targetId, changeToCompleteRequest))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("주문의 주문 상태를 바꿀 수 있다.")
+    @Test
+    void changeOrderStatusTest() {
+        // given
+        Order completeOrder = new Order();
+        completeOrder.setOrderStatus(OrderStatus.MEAL.name());
+        Long targetId = 1L;
+
+        given(orderDao.findById(targetId)).willReturn(Optional.of(completeOrder));
+
+        // when
+        Order changedOrder = orderService.changeOrderStatus(targetId, changeToCompleteRequest);
+
+        // then
+        assertThat(changedOrder.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
     }
 }
