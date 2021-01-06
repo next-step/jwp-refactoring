@@ -130,4 +130,20 @@ class OrderServiceTest {
         assertThat(order.getOrderedTime()).isNotNull();
         assertThat(order.getOrderLineItems()).hasSize(1);
     }
+
+    @DisplayName("주문 목록을 조회할 수 있다.")
+    @Test
+    void getOrdersTest() {
+        // given
+        given(orderDao.findAll()).willReturn(Collections.singletonList(savedOrder));
+        given(orderLineItemDao.findAllByOrderId(savedOrder.getId()))
+                .willReturn(Collections.singletonList(orderLineItem));
+
+        // when
+        List<Order> orders = orderService.list();
+
+        // then
+        assertThat(orders).hasSize(1);
+        assertThat(orders.get(0).getOrderLineItems()).hasSize(1);
+    }
 }
