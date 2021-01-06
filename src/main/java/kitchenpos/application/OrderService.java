@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
@@ -62,8 +61,7 @@ public class OrderService {
 		final Order savedOrder = orderRepository.findById(orderId)
 			.orElseThrow(() -> new NotFoundException("주문 정보를 찾을 수 없습니다."));
 
-		final OrderStatus orderStatus = OrderStatus.valueOf(orderRequest.getOrderStatus());
-		savedOrder.changeOrderStatus(orderStatus.name());
+		savedOrder.changeOrderStatus(orderRequest.getOrderStatus());
 		return OrderResponse.of(savedOrder);
 	}
 }

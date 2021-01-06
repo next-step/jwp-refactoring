@@ -7,6 +7,7 @@ import java.util.Collections;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.TableGroup;
@@ -98,7 +99,7 @@ public class TestFixture {
 
 	public static Order 완료된_주문() {
 		Order order = 일반_주문();
-		order.changeOrderStatus("COMPLETION");
+		order.changeOrderStatus(OrderStatus.COMPLETION);
 		return order;
 	}
 }

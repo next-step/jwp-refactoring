@@ -6,16 +6,19 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import kitchenpos.common.BaseTest;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
 import kitchenpos.exception.AlreadyOrderCompleteException;
@@ -91,8 +94,8 @@ class OrderServiceTest extends BaseTest {
 
 	@DisplayName("조리상태 주문은 상태변경할 수 있다.")
 	@ParameterizedTest
-	@ValueSource(strings = {"MEAL", "COMPLETION"})
-	void changeOrderStatusWhenCooking(String orderStatus) {
+	@MethodSource("paramChangeOrderStatusWhenCooking")
+	void changeOrderStatusWhenCooking(OrderStatus orderStatus) {
 		OrderRequest orderRequest = OrderRequest.of(조리상태_주문ID, orderStatus);
 		orderService.changeOrderStatus(조리상태_주문ID, orderRequest);
 
@@ -102,10 +105,17 @@ class OrderServiceTest extends BaseTest {
 
 	}
 
+	public static Stream<Arguments> paramChangeOrderStatusWhenCooking() {
+		return Stream.of(
+			Arguments.of(OrderStatus.MEAL),
+			Arguments.of(OrderStatus.COMPLETION)
+		);
+	}
+
 	@DisplayName("식사상태 주문은 상태변경할 수 있다.")
 	@ParameterizedTest
-	@ValueSource(strings = {"COOKING", "COMPLETION"})
-	void changeOrderStatusWhenMeal(String orderStatus) {
+	@MethodSource("paramChangeOrderStatusWhenMeal")
+	void changeOrderStatusWhenMeal(OrderStatus orderStatus) {
 		OrderRequest orderRequest = OrderRequest.of(식사상태_주문ID, orderStatus);
 		orderService.changeOrderStatus(식사상태_주문ID, orderRequest);
 
@@ -115,16 +125,30 @@ class OrderServiceTest extends BaseTest {
 
 	}
 
+	public static Stream<Arguments> paramChangeOrderStatusWhenMeal() {
+		return Stream.of(
+			Arguments.of(OrderStatus.COOKING),
+			Arguments.of(OrderStatus.COMPLETION)
+		);
+	}
+
 	@DisplayName("완료상태 주문은 상태변경할 수 없다.")
 	@ParameterizedTest
-	@ValueSource(strings = {"COOKING", "MEAL"})
-	void changeOrderStatusWhenCompletion(String orderStatus) {
+	@MethodSource("paramChangeOrderStatusWhenCompletion")
+	void changeOrderStatusWhenCompletion(OrderStatus orderStatus) {
 		assertThatExceptionOfType(AlreadyOrderCompleteException.class)
 			.isThrownBy(() -> {
 				OrderRequest orderRequest = OrderRequest.of(완료상태_주문ID, orderStatus);
 				orderService.changeOrderStatus(완료상태_주문ID, orderRequest);
 			});
 
+	}
+
+	public static Stream<Arguments> paramChangeOrderStatusWhenCompletion() {
+		return Stream.of(
+			Arguments.of(OrderStatus.COOKING),
+			Arguments.of(OrderStatus.MEAL)
+		);
 	}
 
 }

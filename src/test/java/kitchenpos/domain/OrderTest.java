@@ -37,7 +37,7 @@ class OrderTest {
 	@DisplayName("changeOrderStatus 주문상태를 변경한다.")
 	@ParameterizedTest
 	@MethodSource("paramChangeOrder")
-	void changeOrderStatus(String orderStatus) {
+	void changeOrderStatus(OrderStatus orderStatus) {
 		Order order = 일반_주문();
 		order.changeOrderStatus(orderStatus);
 
@@ -47,7 +47,7 @@ class OrderTest {
 	@DisplayName("changeOrderStatus메서드는 완료된 주문 상태의 주문상태를 변경할 경우 AlreadyOrderCompleteException이 발생한다.")
 	@ParameterizedTest
 	@MethodSource("paramChangeOrder")
-	void changeOrderStatusThrow(String orderStatus) {
+	void changeOrderStatusThrow(OrderStatus orderStatus) {
 		assertThatExceptionOfType(AlreadyOrderCompleteException.class)
 			.isThrownBy(() -> {
 				Order order = 완료된_주문();
@@ -57,9 +57,9 @@ class OrderTest {
 
 	public static Stream<Arguments> paramChangeOrder() {
 		return Stream.of(
-			Arguments.of(OrderStatus.COOKING.name()),
-			Arguments.of(OrderStatus.MEAL.name()),
-			Arguments.of(OrderStatus.COMPLETION.name())
+			Arguments.of(OrderStatus.COOKING),
+			Arguments.of(OrderStatus.MEAL),
+			Arguments.of(OrderStatus.COMPLETION)
 		);
 	}
 

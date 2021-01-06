@@ -6,6 +6,8 @@ import java.util.Objects;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -27,7 +29,10 @@ public class Order {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "order_table_id")
 	private OrderTable orderTable;
-	private String orderStatus;
+
+	@Enumerated(EnumType.STRING)
+	private OrderStatus orderStatus;
+
 	private LocalDateTime orderedTime;
 
 	@Embedded
@@ -40,7 +45,7 @@ public class Order {
 		validateOrderTable(orderTable);
 		addOrderLineItems(menus, quantities);
 		this.orderTable = orderTable;
-		this.orderStatus = OrderStatus.COOKING.name();
+		this.orderStatus = OrderStatus.COOKING;
 		this.orderedTime = LocalDateTime.now();
 	}
 
@@ -48,7 +53,7 @@ public class Order {
 		return new Order(orderTable, menus, quantities);
 	}
 
-	public void changeOrderStatus(final String orderStatus) {
+	public void changeOrderStatus(final OrderStatus orderStatus) {
 		validateBeforeChangeStatus();
 		this.orderStatus = orderStatus;
 	}
@@ -64,7 +69,7 @@ public class Order {
 	}
 
 	private void validateBeforeChangeStatus() {
-		if (Objects.equals(OrderStatus.COMPLETION.name(), this.orderStatus)) {
+		if (Objects.equals(OrderStatus.COMPLETION, this.orderStatus)) {
 			throw new AlreadyOrderCompleteException("이미 완료된 주문입니다.");
 		}
 	}
@@ -77,7 +82,7 @@ public class Order {
 		return orderTable;
 	}
 
-	public String getOrderStatus() {
+	public OrderStatus getOrderStatus() {
 		return orderStatus;
 	}
 

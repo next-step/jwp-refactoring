@@ -45,7 +45,7 @@ public class TableService {
 		final OrderTable savedOrderTable = getOrderTableById(orderTableId);
 
 		if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-			orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+			orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
 			throw new AlreadyOrderException("이미 주문 진행 상태입니다.");
 		}
 

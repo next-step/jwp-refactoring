@@ -5,17 +5,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.exception.NotFoundException;
 
 public class OrderResponse {
 
 	private Long id;
 	private OrderTableResponse orderTable;
-	private String orderStatus;
+	private OrderStatus orderStatus;
 	private LocalDateTime orderedTime;
 	private List<OrderLineItemResponse> orderLineItems;
 
-	private OrderResponse(Long id, OrderTableResponse orderTable, String orderStatus, LocalDateTime orderedTime, List<OrderLineItemResponse> orderLineItems) {
+	private OrderResponse(Long id, OrderTableResponse orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItemResponse> orderLineItems) {
 		this.id = id;
 		this.orderTable = orderTable;
 		this.orderStatus = orderStatus;
@@ -42,7 +43,7 @@ public class OrderResponse {
 		return orderTable;
 	}
 
-	public String getOrderStatus() {
+	public OrderStatus getOrderStatus() {
 		return orderStatus;
 	}
 

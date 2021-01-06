@@ -81,7 +81,7 @@ class OrderRestControllerTest extends BaseControllerTest {
 	@Test
 	void changeOrderStatus() throws Exception {
 		long targetId = 1L;
-		OrderRequest order = OrderRequest.of(targetId, OrderStatus.MEAL.name());
+		OrderRequest order = OrderRequest.of(targetId, OrderStatus.MEAL);
 		mockMvc.perform(put("/api/orders/{orderId}/order-status", targetId)
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(objectMapper.writeValueAsString(order)))

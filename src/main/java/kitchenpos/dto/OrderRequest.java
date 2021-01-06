@@ -8,10 +8,12 @@ import javax.validation.constraints.NotEmpty;
 
 import org.apache.commons.collections4.CollectionUtils;
 
+import kitchenpos.domain.OrderStatus;
+
 public class OrderRequest {
 	private Long id;
 	private Long orderTableId;
-	private String orderStatus;
+	private OrderStatus orderStatus;
 
 	@NotEmpty(message = "주문 메뉴 정보가 없습니다.")
 	private List<OrderLineItemRequest> orderItems = new ArrayList<>();
@@ -19,7 +21,7 @@ public class OrderRequest {
 	private OrderRequest() {
 	}
 
-	private OrderRequest(Long id, String orderStatus) {
+	private OrderRequest(Long id, OrderStatus orderStatus) {
 		this.id = id;
 		this.orderStatus = orderStatus;
 	}
@@ -29,7 +31,7 @@ public class OrderRequest {
 		this.orderItems = orderItems;
 	}
 
-	public static OrderRequest of(Long id, String orderStatus) {
+	public static OrderRequest of(Long id, OrderStatus orderStatus) {
 		return new OrderRequest(id, orderStatus);
 	}
 
@@ -49,7 +51,7 @@ public class OrderRequest {
 		return orderTableId;
 	}
 
-	public String getOrderStatus() {
+	public OrderStatus getOrderStatus() {
 		return orderStatus;
 	}
 
