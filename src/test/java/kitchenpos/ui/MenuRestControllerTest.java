@@ -53,7 +53,9 @@ public class MenuRestControllerTest {
         given(menuService.create(any())).willReturn(savedMenu);
 
         // when, then
-        mockMvc.perform(post(url).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(menuRequest)))
+        mockMvc.perform(post(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(menuRequest)))
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location", url + "/" + savedMenu.getId()))
         ;
