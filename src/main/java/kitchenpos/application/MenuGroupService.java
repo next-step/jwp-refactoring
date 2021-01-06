@@ -12,6 +12,7 @@ import kitchenpos.dto.MenuGroupResponse;
 import kitchenpos.repository.MenuGroupRepository;
 
 @Service
+@Transactional(readOnly = true)
 public class MenuGroupService {
 	private final MenuGroupRepository menuGroupRepository;
 
