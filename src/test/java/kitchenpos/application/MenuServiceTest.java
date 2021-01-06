@@ -70,17 +70,6 @@ class MenuServiceTest extends BaseTest {
 		);
 	}
 
-	@DisplayName("메뉴 그룹 정보가 없으면 등록할 수 없다.")
-	@Test
-	void createThrow2() {
-
-		assertThatExceptionOfType(IllegalArgumentException.class)
-			.isThrownBy(() -> {
-				menuService.create(MenuRequest.of(예제_메뉴명, 예제_메뉴_가격, 메뉴_그룹_ID_없음, Arrays.asList(메뉴_후라이드_갯수, 메뉴_양념_갯수)));
-			});
-
-	}
-
 	@DisplayName("메뉴 가격은 메뉴에 포함된 상품가격 * 갯수 의 총합보다 크면 등록할 수 없다.")
 	@Test
 	void createThrow3() {

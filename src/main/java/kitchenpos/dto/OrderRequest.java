@@ -4,10 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.constraints.NotEmpty;
+
+import org.apache.commons.collections4.CollectionUtils;
+
 public class OrderRequest {
 	private Long id;
 	private Long orderTableId;
 	private String orderStatus;
+
+	@NotEmpty(message = "주문 메뉴 정보가 없습니다.")
 	private List<OrderLineItemRequest> orderItems = new ArrayList<>();
 
 	private OrderRequest() {
@@ -48,14 +54,14 @@ public class OrderRequest {
 	}
 
 	public List<Long> getMenuIds() {
-		return this.orderItems
+		return CollectionUtils.emptyIfNull(this.orderItems)
 			.stream()
 			.map(OrderLineItemRequest::getMenuId)
 			.collect(Collectors.toList());
 	}
 
 	public List<Long> getQuantities() {
-		return this.orderItems
+		return CollectionUtils.emptyIfNull(this.orderItems)
 			.stream()
 			.map(OrderLineItemRequest::getQuantity)
 			.collect(Collectors.toList());

@@ -48,17 +48,6 @@ class TableGroupServiceTest extends BaseTest {
 
 	}
 
-	@DisplayName("단체테이블로 지정할 테이블의 요청 갯수가 2개 미만이면 단체지정할 수 없다.")
-	@Test
-	void createThrow1() {
-
-		assertThatExceptionOfType(IllegalArgumentException.class)
-			.isThrownBy(() -> {
-				tableGroupService.create(TableGroupRequest.of(Arrays.asList(예제테이블1_ID)));
-			});
-
-	}
-
 	@DisplayName("요청된 테이블 중 실제 주문테이블이 존재하지 않은 테이블이 포함되면 단체 지정할수 없다.")
 	@Test
 	void createThrow2() {

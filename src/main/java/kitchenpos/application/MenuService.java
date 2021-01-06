@@ -41,12 +41,11 @@ public class MenuService {
 		final List<Long> productIds = menuRequest.getProductIds();
 		List<Product> products = productRepository.findAllById(productIds);
 
-		if (menuRequest.getMenuGroupId() == null) {
-			throw new IllegalArgumentException();
-		}
 		final MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
 			.orElseThrow(IllegalArgumentException::new);
+
 		final Menu savedMenu = menuRepository.save(Menu.create(menuRequest.getName(), menuRequest.getPrice(), menuGroup, products, menuRequest.getQuantities()));
+
 		return MenuResponse.of(savedMenu);
 	}
 

@@ -2,6 +2,8 @@ package kitchenpos.ui;
 
 import java.net.URI;
 
+import javax.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +24,7 @@ public class TableGroupRestController {
 	}
 
 	@PostMapping("/api/table-groups")
-	public ResponseEntity<TableGroupResponse> create(@RequestBody final TableGroupRequest tableGroup) {
+	public ResponseEntity<TableGroupResponse> create(@RequestBody @Valid final TableGroupRequest tableGroup) {
 		final TableGroupResponse created = tableGroupService.create(tableGroup);
 		final URI uri = URI.create("/api/table-groups/" + created.getId());
 		return ResponseEntity.created(uri)

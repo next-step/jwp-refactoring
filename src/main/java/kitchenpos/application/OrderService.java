@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order;
@@ -41,10 +40,6 @@ public class OrderService {
 	@Transactional
 	public OrderResponse create(final OrderRequest orderRequest) {
 		final List<Long> menuIds = orderRequest.getMenuIds();
-
-		if (CollectionUtils.isEmpty(menuIds)) {
-			throw new NotFoundException("요청된 메뉴 정보가 없습니다.");
-		}
 
 		if (menuIds.size() != menuRepository.countByIdIn(menuIds)) {
 			throw new NotFoundException("요청된 메뉴 정보 중 데이터베이스에 없는 정보가 존재합니다.");

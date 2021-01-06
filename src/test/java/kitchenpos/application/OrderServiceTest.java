@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
@@ -49,16 +48,6 @@ class OrderServiceTest extends BaseTest {
 			() -> assertThat(savedOrder.getOrderTable().getId()).isEqualTo(주문대상_테이블ID),
 			() -> assertThat(savedOrderItems).hasSize(2)
 		);
-	}
-
-	@DisplayName("요청된 메뉴가 없으면 주문할 수 없다.")
-	@Test
-	void createThrow1() {
-		assertThatExceptionOfType(NotFoundException.class)
-			.isThrownBy(() -> {
-				orderService.create(OrderRequest.of(주문대상_테이블ID, Collections.emptyList()));
-			});
-
 	}
 
 	@DisplayName("요청된 메뉴가 실제 저장되어 있는 메뉴가 아닌 경우가 포함되어 있으면 주문할 수 없다.")

@@ -42,6 +42,23 @@ class MenuRestControllerTest extends BaseControllerTest {
 			.andExpect(jsonPath("$.menuProducts", Matchers.hasSize(2)));
 	}
 
+	@DisplayName("Menu 생성 요청 시 메뉴 그룹 정보가 없으면 BadRequest가 발생한다.")
+	@Test
+	void createBadRequest() throws Exception {
+
+		BigDecimal price = BigDecimal.valueOf(20000);
+		String name = "후라이드 한마리 + 양념 한마리";
+		Long menuGroupId = null;
+
+		MenuRequest menu = MenuRequest.of(name, price, menuGroupId, Arrays.asList(메뉴_후라이드_갯수, 메뉴_양념_갯수));
+
+		mockMvc.perform(post("/api/menus")
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(objectMapper.writeValueAsString(menu)))
+			.andDo(print())
+			.andExpect(status().isBadRequest());
+	}
+
 	@DisplayName("Menu 목록 조회")
 	@Test
 	void list() throws Exception {

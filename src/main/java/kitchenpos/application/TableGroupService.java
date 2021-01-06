@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
@@ -33,10 +32,6 @@ public class TableGroupService {
 	@Transactional
 	public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
 		final List<Long> orderTableIds = tableGroupRequest.getOrderTableIds();
-
-		if (CollectionUtils.isEmpty(orderTableIds) || orderTableIds.size() < 2) {
-			throw new IllegalArgumentException();
-		}
 
 		final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
 

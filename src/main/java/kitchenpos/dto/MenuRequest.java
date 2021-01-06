@@ -4,9 +4,13 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.constraints.NotNull;
+
 public class MenuRequest {
 	private String name;
 	private BigDecimal price;
+
+	@NotNull(message = "메뉴 그룹 정보가 없습니다.")
 	private Long menuGroupId;
 	private List<MenuProductRequest> menuProducts;
 
