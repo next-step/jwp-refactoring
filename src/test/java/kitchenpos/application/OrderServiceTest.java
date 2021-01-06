@@ -39,7 +39,8 @@ class OrderServiceTest {
     @Mock
     private OrderTableDao orderTableDao;
 
-    private Order orderRequest;
+    private Order newOrderRequest;
+    private Order changeOrderStatusRequest;
     private Order savedOrder;
     private OrderLineItem orderLineItem;
     private List<OrderLineItem> orderLineItems;
@@ -59,9 +60,12 @@ class OrderServiceTest {
         fullOrderTable.setEmpty(false);
         fullOrderTable.setId(1L);
 
-        orderRequest = new Order();
-        orderRequest.setOrderTableId(1L);
-        orderRequest.setOrderLineItems(orderLineItems);
+        newOrderRequest = new Order();
+        newOrderRequest.setOrderTableId(1L);
+        newOrderRequest.setOrderLineItems(orderLineItems);
+
+        changeOrderStatusRequest = new Order();
+        changeOrderStatusRequest.setOrderStatus(OrderStatus.COOKING.name());
 
         savedOrder = new Order();
         savedOrder.setId(1L);
@@ -88,7 +92,7 @@ class OrderServiceTest {
         given(menuDao.countByIdIn(any())).willReturn(100L);
 
         // when, then
-        assertThatThrownBy(() -> orderService.create(orderRequest)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(newOrderRequest)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("존재하지 않는 주문테이블에서 주문할 수 없다.")
@@ -98,7 +102,7 @@ class OrderServiceTest {
         given(menuDao.countByIdIn(any())).willReturn((long) orderLineItems.size());
 
         // when, then
-        assertThatThrownBy(() -> orderService.create(orderRequest)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(newOrderRequest)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("비어있는 주문 테이블에서 주문할 수 없다.")
@@ -106,10 +110,10 @@ class OrderServiceTest {
     void createOrderFailWithEmptyOrderTable() {
         // given
         given(menuDao.countByIdIn(any())).willReturn((long) orderLineItems.size());
-        given(orderTableDao.findById(orderRequest.getOrderTableId())).willReturn(Optional.of(emptyOrderTable));
+        given(orderTableDao.findById(newOrderRequest.getOrderTableId())).willReturn(Optional.of(emptyOrderTable));
 
         // when, then
-        assertThatThrownBy(() -> orderService.create(orderRequest)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(newOrderRequest)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문할 수 있다.")
@@ -117,12 +121,12 @@ class OrderServiceTest {
     void createOrderTest() {
         // given
         given(menuDao.countByIdIn(any())).willReturn((long) orderLineItems.size());
-        given(orderTableDao.findById(orderRequest.getOrderTableId())).willReturn(Optional.of(fullOrderTable));
-        given(orderDao.save(orderRequest)).willReturn(savedOrder);
+        given(orderTableDao.findById(newOrderRequest.getOrderTableId())).willReturn(Optional.of(fullOrderTable));
+        given(orderDao.save(newOrderRequest)).willReturn(savedOrder);
         given(orderLineItemDao.save(any())).willReturn(orderLineItem);
 
         // when
-        Order order = orderService.create(orderRequest);
+        Order order = orderService.create(newOrderRequest);
 
         // then
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
@@ -145,5 +149,32 @@ class OrderServiceTest {
         // then
         assertThat(orders).hasSize(1);
         assertThat(orders.get(0).getOrderLineItems()).hasSize(1);
+    }
+
+    @DisplayName("존재하지 않는 주문의 주문 상태를 바꿀 수 없다.")
+    @Test
+    void changeOrderStatusFailWithNotExistOrderTest() {
+        // given
+        Long targetId = 1L;
+        given(orderDao.findById(targetId)).willThrow(new IllegalArgumentException());
+
+        // when, then
+        assertThatThrownBy(() -> orderService.changeOrderStatus(targetId, changeOrderStatusRequest))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("주문 상태가 계산 완료인 주문의 주문 상태를 바꿀 수 없다.")
+    @Test
+    void changeOrderStatusFailWithInvalidOrderStatus() {
+        // given
+        Order completeOrder = new Order();
+        completeOrder.setOrderStatus(OrderStatus.COMPLETION.name());
+        Long targetId = 1L;
+
+        given(orderDao.findById(targetId)).willReturn(Optional.of(completeOrder));
+
+        // when, then
+        assertThatThrownBy(() -> orderService.changeOrderStatus(targetId, changeOrderStatusRequest))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }
