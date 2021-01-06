@@ -10,7 +10,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
-import org.mockito.internal.matchers.Or;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
@@ -32,9 +31,14 @@ public class TableServiceTest {
     @Mock
     private OrderTableDao orderTableDao;
 
+    private OrderTable emptyRequest;
+
     @BeforeEach
     void setup() {
         this.tableService = new TableService(orderDao, orderTableDao);
+
+        emptyRequest = new OrderTable();
+        emptyRequest.setEmpty(false);
     }
 
     @DisplayName("주문 테이블을 생성할 수 있다.")
@@ -72,8 +76,6 @@ public class TableServiceTest {
     void changeEmptyFailWithNotExistOrderTableTest() {
         // given
         Long targetId = 1L;
-        OrderTable emptyRequest = new OrderTable();
-        emptyRequest.setEmpty(false);
         given(orderTableDao.findById(targetId)).willThrow(new IllegalArgumentException());
 
         // when, then
@@ -86,9 +88,6 @@ public class TableServiceTest {
     void changeEmptyFailWithGroupedTableTest() {
         // given
         Long targetId = 1L;
-
-        OrderTable emptyRequest = new OrderTable();
-        emptyRequest.setEmpty(false);
 
         OrderTable savedOrderTable = new OrderTable();
         savedOrderTable.setId(targetId);
@@ -107,9 +106,6 @@ public class TableServiceTest {
         // given
         Long targetId = 1L;
 
-        OrderTable emptyRequest = new OrderTable();
-        emptyRequest.setEmpty(false);
-
         OrderTable savedOrderTable = new OrderTable();
         savedOrderTable.setId(targetId);
 
@@ -126,9 +122,6 @@ public class TableServiceTest {
     void changeEmptyTest() {
         // given
         Long targetId = 1L;
-
-        OrderTable emptyRequest = new OrderTable();
-        emptyRequest.setEmpty(false);
 
         OrderTable savedOrderTable = new OrderTable();
         savedOrderTable.setId(targetId);

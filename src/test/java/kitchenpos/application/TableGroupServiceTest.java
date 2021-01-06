@@ -25,7 +25,6 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -136,6 +135,7 @@ class TableGroupServiceTest {
         savedTableGroup.setCreatedDate(LocalDateTime.now());
         savedTableGroup.setId(1L);
         tableGroupRequest.setOrderTables(emptyOrderTables);
+
         given(orderTableDao.findAllByIdIn(Arrays.asList(emptyOrderTable1.getId(), emptyOrderTable2.getId())))
                 .willReturn(emptyOrderTables);
         given(tableGroupDao.save(tableGroupRequest)).willReturn(savedTableGroup);
