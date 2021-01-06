@@ -34,9 +34,9 @@ class MenuGroupServiceTest {
         // given
         Long menuGroupId = 1L;
         MenuGroup menuGroup = new MenuGroup();
-        MenuGroup menuGroupWithId = new MenuGroup();
-        menuGroupWithId.setId(menuGroupId);
-        given(menuGroupDao.save(any())).willReturn(menuGroupWithId);
+        MenuGroup savedMenuGroup = new MenuGroup();
+        savedMenuGroup.setId(menuGroupId);
+        given(menuGroupDao.save(any())).willReturn(savedMenuGroup);
 
         // when
         MenuGroup saved = menuGroupService.create(menuGroup);
