@@ -1,11 +1,10 @@
 package kitchenpos.domain;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -13,7 +12,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import kitchenpos.exception.AlreadyOrderCompleteException;
@@ -32,8 +30,8 @@ public class Order {
 	private String orderStatus;
 	private LocalDateTime orderedTime;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<OrderLineItem> orderLineItems = new ArrayList<>();
+	@Embedded
+	private OrderLineItems orderLineItems = new OrderLineItems();
 
 	protected Order() {
 	}
@@ -56,9 +54,7 @@ public class Order {
 	}
 
 	private void addOrderLineItems(List<Menu> menus, List<Long> quantities) {
-		for (int i = 0; i < menus.size(); i++) {
-			orderLineItems.add(OrderLineItem.create(this, menus.get(i), quantities.get(i)));
-		}
+		orderLineItems.add(this, menus, quantities);
 	}
 
 	private void validateOrderTable(OrderTable orderTable) {
@@ -90,6 +86,6 @@ public class Order {
 	}
 
 	public List<OrderLineItem> getOrderLineItems() {
-		return orderLineItems;
+		return orderLineItems.getOrderLineItems();
 	}
 }
