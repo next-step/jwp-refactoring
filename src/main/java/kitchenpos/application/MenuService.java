@@ -13,7 +13,6 @@ import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.MenuResponse;
 import kitchenpos.exception.NotFoundException;
 import kitchenpos.repository.MenuGroupRepository;
-import kitchenpos.repository.MenuProductRepository;
 import kitchenpos.repository.MenuRepository;
 import kitchenpos.repository.ProductRepository;
 
@@ -22,18 +21,15 @@ import kitchenpos.repository.ProductRepository;
 public class MenuService {
 	private final MenuRepository menuRepository;
 	private final MenuGroupRepository menuGroupRepository;
-	private final MenuProductRepository menuProductRepository;
 	private final ProductRepository productRepository;
 
 	public MenuService(
 		final MenuRepository menuRepository,
 		final MenuGroupRepository menuGroupRepository,
-		final MenuProductRepository menuProductRepository,
 		final ProductRepository productRepository
 	) {
 		this.menuRepository = menuRepository;
 		this.menuGroupRepository = menuGroupRepository;
-		this.menuProductRepository = menuProductRepository;
 		this.productRepository = productRepository;
 	}
 

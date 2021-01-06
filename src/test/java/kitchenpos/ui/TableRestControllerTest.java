@@ -41,7 +41,7 @@ class TableRestControllerTest extends BaseControllerTest {
 	public void changeEmpty() throws Exception {
 		long targetId = 1L;
 		boolean isEmpty = false;
-		OrderTableRequest table = OrderTableRequest.of(targetId, isEmpty);
+		OrderTableRequest table = OrderTableRequest.of(isEmpty);
 
 		mockMvc.perform(put("/api/tables/{orderTableId}/empty", targetId)
 			.contentType(MediaType.APPLICATION_JSON)
@@ -59,7 +59,7 @@ class TableRestControllerTest extends BaseControllerTest {
 		changeEmpty();
 		int guestNumber = 5;
 		long targetId = 1L;
-		OrderTableRequest table = OrderTableRequest.of(targetId, 5);
+		OrderTableRequest table = OrderTableRequest.of(5);
 
 		mockMvc.perform(put("/api/tables/{orderTableId}/number-of-guests", targetId)
 			.contentType(MediaType.APPLICATION_JSON)
