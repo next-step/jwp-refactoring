@@ -18,6 +18,7 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
+import kitchenpos.exception.AlreadyOrderCompleteException;
 import kitchenpos.exception.EmptyTableException;
 import kitchenpos.exception.NotFoundException;
 import kitchenpos.repository.OrderLineItemRepository;
@@ -118,7 +119,7 @@ class OrderServiceTest extends BaseTest {
 	@ParameterizedTest
 	@ValueSource(strings = {"COOKING", "MEAL"})
 	void changeOrderStatusWhenCompletion(String orderStatus) {
-		assertThatExceptionOfType(IllegalArgumentException.class)
+		assertThatExceptionOfType(AlreadyOrderCompleteException.class)
 			.isThrownBy(() -> {
 				OrderRequest orderRequest = OrderRequest.of(완료상태_주문ID, orderStatus);
 				orderService.changeOrderStatus(완료상태_주문ID, orderRequest);

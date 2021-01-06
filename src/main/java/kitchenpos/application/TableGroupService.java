@@ -12,6 +12,7 @@ import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.dto.TableGroupResponse;
+import kitchenpos.exception.AlreadyOrderException;
 import kitchenpos.exception.NotFoundException;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
@@ -36,7 +37,7 @@ public class TableGroupService {
 		final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
 
 		if (orderTableIds.size() != savedOrderTables.size()) {
-			throw new IllegalArgumentException();
+			throw new NotFoundException("요청된 테이블 정보와 DB정보가 맞지 않습니다.");
 		}
 		final TableGroup savedTableGroup = tableGroupRepository.save(TableGroup.create(savedOrderTables));
 		return TableGroupResponse.of(savedTableGroup);
@@ -52,10 +53,9 @@ public class TableGroupService {
 			.map(OrderTable::getId)
 			.collect(Collectors.toList());
 
-		//memo [2021-01-5 20:43] TableService와 동일한 코드가 있는데 어떻게 빼면 좋을까
 		if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
 			orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-			throw new IllegalArgumentException();
+			throw new AlreadyOrderException("이미 주문 진행 상태입니다.");
 		}
 
 		tableGroup.ungroup();

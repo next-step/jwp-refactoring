@@ -20,6 +20,7 @@ import kitchenpos.common.BaseTest;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.ProductRequest;
 import kitchenpos.dto.ProductResponse;
+import kitchenpos.exception.WrongPriceException;
 import kitchenpos.repository.ProductRepository;
 
 @DisplayName("ProductService 테스트")
@@ -50,7 +51,7 @@ class ProductServiceTest extends BaseTest {
 	@NullSource
 	@MethodSource("paramCreateThrow")
 	void createThrow(BigDecimal price) {
-		assertThatExceptionOfType(IllegalArgumentException.class)
+		assertThatExceptionOfType(WrongPriceException.class)
 			.isThrownBy(() -> {
 				productService.create(ProductRequest.of(예제_상품명, price));
 			});

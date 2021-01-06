@@ -11,6 +11,8 @@ import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.exception.AlreadyOrderException;
+import kitchenpos.exception.NotFoundException;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 
@@ -39,12 +41,11 @@ public class TableService {
 
 	@Transactional
 	public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
-		final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-			.orElseThrow(IllegalArgumentException::new);
+		final OrderTable savedOrderTable = getOrderTableById(orderTableId);
 
 		if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
 			orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-			throw new IllegalArgumentException();
+			throw new AlreadyOrderException("이미 주문 진행 상태입니다.");
 		}
 
 		savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
@@ -55,11 +56,15 @@ public class TableService {
 	@Transactional
 	public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
 
-		final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-			.orElseThrow(IllegalArgumentException::new);
+		final OrderTable savedOrderTable = getOrderTableById(orderTableId);
 
 		savedOrderTable.changeNumberOfGuests(orderTableRequest.getNumberOfGuests());
 
 		return OrderTableResponse.of(savedOrderTable);
+	}
+
+	private OrderTable getOrderTableById(Long orderTableId) {
+		return orderTableRepository.findById(orderTableId)
+			.orElseThrow(() -> new NotFoundException("주문 테이블 정보가 없습니다."));
 	}
 }

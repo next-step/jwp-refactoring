@@ -16,6 +16,11 @@ import kitchenpos.common.BaseTest;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.exception.AlreadyOrderException;
+import kitchenpos.exception.AlreadyTableGroupException;
+import kitchenpos.exception.EmptyTableException;
+import kitchenpos.exception.NegativeNumberException;
+import kitchenpos.exception.NotFoundException;
 import kitchenpos.repository.OrderTableRepository;
 
 @DisplayName("TableService 테스트")
@@ -64,7 +69,7 @@ class TableServiceTest extends BaseTest {
 	@ParameterizedTest
 	@ValueSource(booleans = {false, true})
 	void changeEmptyThrow1(boolean isEmpty) {
-		assertThatExceptionOfType(IllegalArgumentException.class)
+		assertThatExceptionOfType(NotFoundException.class)
 			.isThrownBy(() -> {
 				OrderTableRequest orderTableRequest = OrderTableRequest.of(존재하지않는_테이블ID, isEmpty);
 				tableService.changeEmpty(존재하지않는_테이블ID, orderTableRequest);
@@ -75,7 +80,7 @@ class TableServiceTest extends BaseTest {
 	@ParameterizedTest
 	@ValueSource(booleans = {false, true})
 	void changeEmptyThrow2(boolean isEmpty) {
-		assertThatExceptionOfType(IllegalArgumentException.class)
+		assertThatExceptionOfType(AlreadyTableGroupException.class)
 			.isThrownBy(() -> {
 				OrderTableRequest orderTableRequest = OrderTableRequest.of(단체지정_테이블ID, isEmpty);
 				tableService.changeEmpty(단체지정_테이블ID, orderTableRequest);
@@ -86,7 +91,7 @@ class TableServiceTest extends BaseTest {
 	@ParameterizedTest
 	@ValueSource(booleans = {false, true})
 	void changeEmptyThrow3(boolean isEmpty) {
-		assertThatExceptionOfType(IllegalArgumentException.class)
+		assertThatExceptionOfType(AlreadyOrderException.class)
 			.isThrownBy(() -> {
 				OrderTableRequest orderTableRequest = OrderTableRequest.of(주문상태_조리인_테이블ID, isEmpty);
 				tableService.changeEmpty(주문상태_조리인_테이블ID, orderTableRequest);
@@ -97,7 +102,7 @@ class TableServiceTest extends BaseTest {
 	@ParameterizedTest
 	@ValueSource(booleans = {false, true})
 	void changeEmptyThrow4(boolean isEmpty) {
-		assertThatExceptionOfType(IllegalArgumentException.class)
+		assertThatExceptionOfType(AlreadyOrderException.class)
 			.isThrownBy(() -> {
 				OrderTableRequest orderTableRequest = OrderTableRequest.of(주문상태_식사인_테이블ID, isEmpty);
 				tableService.changeEmpty(주문상태_식사인_테이블ID, orderTableRequest);
@@ -120,7 +125,7 @@ class TableServiceTest extends BaseTest {
 	@ParameterizedTest
 	@ValueSource(ints = {-1, -2, -3, -4, -5, -100})
 	void changeNumberOfGuestsThrow1(int numberOfGuest) {
-		assertThatExceptionOfType(IllegalArgumentException.class)
+		assertThatExceptionOfType(NegativeNumberException.class)
 			.isThrownBy(() -> {
 				OrderTableRequest orderTableRequest = OrderTableRequest.of(주문상태_조리인_테이블ID, numberOfGuest);
 				tableService.changeNumberOfGuests(주문상태_조리인_테이블ID, orderTableRequest);
@@ -131,7 +136,7 @@ class TableServiceTest extends BaseTest {
 	@ParameterizedTest
 	@ValueSource(ints = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10})
 	void changeNumberOfGuestsThrow2(int numberOfGuest) {
-		assertThatExceptionOfType(IllegalArgumentException.class)
+		assertThatExceptionOfType(NotFoundException.class)
 			.isThrownBy(() -> {
 				OrderTableRequest orderTableRequest = OrderTableRequest.of(존재하지않는_테이블ID, numberOfGuest);
 				tableService.changeNumberOfGuests(존재하지않는_테이블ID, orderTableRequest);
@@ -142,7 +147,7 @@ class TableServiceTest extends BaseTest {
 	@ParameterizedTest
 	@ValueSource(ints = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10})
 	void changeNumberOfGuestsThrow3(int numberOfGuest) {
-		assertThatExceptionOfType(IllegalArgumentException.class)
+		assertThatExceptionOfType(EmptyTableException.class)
 			.isThrownBy(() -> {
 				OrderTableRequest orderTableRequest = OrderTableRequest.of(빈테이블ID, numberOfGuest);
 				tableService.changeNumberOfGuests(빈테이블ID, orderTableRequest);

@@ -11,6 +11,7 @@ import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.MenuResponse;
+import kitchenpos.exception.NotFoundException;
 import kitchenpos.repository.MenuGroupRepository;
 import kitchenpos.repository.MenuProductRepository;
 import kitchenpos.repository.MenuRepository;
@@ -42,7 +43,7 @@ public class MenuService {
 		List<Product> products = productRepository.findAllById(productIds);
 
 		final MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
-			.orElseThrow(IllegalArgumentException::new);
+			.orElseThrow(() -> new NotFoundException("메뉴 그룹 정보를 찾을 수 없습니다."));
 
 		final Menu savedMenu = menuRepository.save(Menu.create(menuRequest.getName(), menuRequest.getPrice(), menuGroup, products, menuRequest.getQuantities()));
 

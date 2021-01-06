@@ -15,6 +15,9 @@ import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.dto.TableGroupResponse;
+import kitchenpos.exception.AlreadyOrderException;
+import kitchenpos.exception.AlreadyTableGroupException;
+import kitchenpos.exception.NotFoundException;
 import kitchenpos.repository.OrderTableRepository;
 import kitchenpos.repository.TableGroupRepository;
 
@@ -52,7 +55,7 @@ class TableGroupServiceTest extends BaseTest {
 	@Test
 	void createThrow2() {
 
-		assertThatExceptionOfType(IllegalArgumentException.class)
+		assertThatExceptionOfType(NotFoundException.class)
 			.isThrownBy(() -> {
 				tableGroupService.create(TableGroupRequest.of(Arrays.asList(존재하지않는_테이블ID, 예제테이블1_ID)));
 			});
@@ -63,7 +66,7 @@ class TableGroupServiceTest extends BaseTest {
 	@Test
 	void createThrow3() {
 
-		assertThatExceptionOfType(IllegalArgumentException.class)
+		assertThatExceptionOfType(AlreadyTableGroupException.class)
 			.isThrownBy(() -> {
 				tableGroupService.create(TableGroupRequest.of(Arrays.asList(비어있지않은테이블_ID, 예제테이블1_ID)));
 			});
@@ -73,7 +76,7 @@ class TableGroupServiceTest extends BaseTest {
 	@Test
 	void createThrow4() {
 
-		assertThatExceptionOfType(IllegalArgumentException.class)
+		assertThatExceptionOfType(AlreadyTableGroupException.class)
 			.isThrownBy(() -> {
 				tableGroupService.create(TableGroupRequest.of(Arrays.asList(단체지정되어있지만_주문없는_테이블_ID, 예제테이블1_ID)));
 			});
@@ -97,7 +100,7 @@ class TableGroupServiceTest extends BaseTest {
 	@Test
 	void ungroupThrow() {
 
-		assertThatExceptionOfType(IllegalArgumentException.class)
+		assertThatExceptionOfType(AlreadyOrderException.class)
 			.isThrownBy(() -> {
 				tableGroupService.ungroup(조리상태인_테이블그룹_ID);
 			});
