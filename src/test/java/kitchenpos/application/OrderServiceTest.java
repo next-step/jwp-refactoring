@@ -66,7 +66,7 @@ class OrderServiceTest extends BaseTest {
 	void createThrow3() {
 		assertThatExceptionOfType(NotFoundException.class)
 			.isThrownBy(() -> {
-				orderService.create(OrderRequest.of(존재하지_않는_테이블ID, Arrays.asList(주문_메뉴1, 주문_메뉴2)));
+				orderService.create(OrderRequest.of(존재하지않는_테이블ID, Arrays.asList(주문_메뉴1, 주문_메뉴2)));
 			});
 
 	}
@@ -76,7 +76,7 @@ class OrderServiceTest extends BaseTest {
 	void createThrow4() {
 		assertThatExceptionOfType(EmptyTableException.class)
 			.isThrownBy(() -> {
-				orderService.create(OrderRequest.of(빈_테이블ID, Arrays.asList(주문_메뉴1, 주문_메뉴2)));
+				orderService.create(OrderRequest.of(빈테이블ID, Arrays.asList(주문_메뉴1, 주문_메뉴2)));
 			});
 
 	}
