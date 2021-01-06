@@ -96,7 +96,7 @@ class OrderServiceTest extends BaseTest {
 	@ParameterizedTest
 	@MethodSource("paramChangeOrderStatusWhenCooking")
 	void changeOrderStatusWhenCooking(OrderStatus orderStatus) {
-		OrderRequest orderRequest = OrderRequest.of(조리상태_주문ID, orderStatus);
+		OrderRequest orderRequest = OrderRequest.of(orderStatus);
 		orderService.changeOrderStatus(조리상태_주문ID, orderRequest);
 
 		Order order = orderRepository.findById(조리상태_주문ID).orElse(null);
@@ -116,7 +116,7 @@ class OrderServiceTest extends BaseTest {
 	@ParameterizedTest
 	@MethodSource("paramChangeOrderStatusWhenMeal")
 	void changeOrderStatusWhenMeal(OrderStatus orderStatus) {
-		OrderRequest orderRequest = OrderRequest.of(식사상태_주문ID, orderStatus);
+		OrderRequest orderRequest = OrderRequest.of(orderStatus);
 		orderService.changeOrderStatus(식사상태_주문ID, orderRequest);
 
 		Order order = orderRepository.findById(식사상태_주문ID).orElse(null);
@@ -138,7 +138,7 @@ class OrderServiceTest extends BaseTest {
 	void changeOrderStatusWhenCompletion(OrderStatus orderStatus) {
 		assertThatExceptionOfType(AlreadyOrderCompleteException.class)
 			.isThrownBy(() -> {
-				OrderRequest orderRequest = OrderRequest.of(완료상태_주문ID, orderStatus);
+				OrderRequest orderRequest = OrderRequest.of(orderStatus);
 				orderService.changeOrderStatus(완료상태_주문ID, orderRequest);
 			});
 

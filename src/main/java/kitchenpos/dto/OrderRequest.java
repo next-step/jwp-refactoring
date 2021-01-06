@@ -11,7 +11,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import kitchenpos.domain.OrderStatus;
 
 public class OrderRequest {
-	private Long id;
+
 	private Long orderTableId;
 	private OrderStatus orderStatus;
 
@@ -21,8 +21,7 @@ public class OrderRequest {
 	private OrderRequest() {
 	}
 
-	private OrderRequest(Long id, OrderStatus orderStatus) {
-		this.id = id;
+	private OrderRequest(OrderStatus orderStatus) {
 		this.orderStatus = orderStatus;
 	}
 
@@ -31,16 +30,12 @@ public class OrderRequest {
 		this.orderItems = orderItems;
 	}
 
-	public static OrderRequest of(Long id, OrderStatus orderStatus) {
-		return new OrderRequest(id, orderStatus);
+	public static OrderRequest of(OrderStatus orderStatus) {
+		return new OrderRequest(orderStatus);
 	}
 
 	public static OrderRequest of(Long orderTableId, List<OrderLineItemRequest> orderItems) {
 		return new OrderRequest(orderTableId, orderItems);
-	}
-
-	public Long getId() {
-		return id;
 	}
 
 	public List<OrderLineItemRequest> getOrderItems() {
