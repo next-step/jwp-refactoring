@@ -6,6 +6,7 @@ import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,8 +15,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -37,11 +40,9 @@ class OrderServiceTest {
     private OrderTableDao orderTableDao;
 
     private Order orderRequest;
-
-
+    private Order savedOrder;
     private OrderLineItem orderLineItem;
     private List<OrderLineItem> orderLineItems;
-
     private OrderTable emptyOrderTable;
     private OrderTable fullOrderTable;
 
@@ -56,10 +57,17 @@ class OrderServiceTest {
         emptyOrderTable.setEmpty(true);
         fullOrderTable = new OrderTable();
         fullOrderTable.setEmpty(false);
+        fullOrderTable.setId(1L);
 
         orderRequest = new Order();
         orderRequest.setOrderTableId(1L);
         orderRequest.setOrderLineItems(orderLineItems);
+
+        savedOrder = new Order();
+        savedOrder.setId(1L);
+        savedOrder.setOrderStatus(OrderStatus.COOKING.name());
+        savedOrder.setOrderTableId(fullOrderTable.getId());
+        savedOrder.setOrderedTime(LocalDateTime.now());
     }
 
     @DisplayName("1개 미만의 주문 항목으로 주문할 수 없다.")
@@ -102,5 +110,24 @@ class OrderServiceTest {
 
         // when, then
         assertThatThrownBy(() -> orderService.create(orderRequest)).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("주문할 수 있다.")
+    @Test
+    void createOrderTest() {
+        // given
+        given(menuDao.countByIdIn(any())).willReturn((long) orderLineItems.size());
+        given(orderTableDao.findById(orderRequest.getOrderTableId())).willReturn(Optional.of(fullOrderTable));
+        given(orderDao.save(orderRequest)).willReturn(savedOrder);
+        given(orderLineItemDao.save(any())).willReturn(orderLineItem);
+
+        // when
+        Order order = orderService.create(orderRequest);
+
+        // then
+        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(order.getOrderTableId()).isEqualTo(fullOrderTable.getId());
+        assertThat(order.getOrderedTime()).isNotNull();
+        assertThat(order.getOrderLineItems()).hasSize(1);
     }
 }
