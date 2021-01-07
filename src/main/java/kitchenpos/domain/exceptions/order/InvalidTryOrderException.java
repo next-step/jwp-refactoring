@@ -1,4 +1,4 @@
-package kitchenpos.domain.exceptions;
+package kitchenpos.domain.exceptions.order;
 
 public class InvalidTryOrderException extends RuntimeException {
     public InvalidTryOrderException(final String message) {

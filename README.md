@@ -84,7 +84,7 @@
       - 모든 오류가 같아서 정확하게 원하는 오류 상황이 발생하는지 확인이 어려움
   - [X] MenuGroupService
   - [X] MenuService
-  - [ ] OrderService
+  - [X] OrderService
   - [ ] ProductService
   - [ ] TableGroupService
   - [ ] TableService

@@ -1,4 +1,4 @@
-package kitchenpos.domain.exceptions;
+package kitchenpos.domain.exceptions.order;
 
 import kitchenpos.exceptions.EntityNotFoundException;
 

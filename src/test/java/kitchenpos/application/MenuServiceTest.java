@@ -3,6 +3,9 @@ package kitchenpos.application;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.exceptions.menu.InvalidMenuPriceException;
+import kitchenpos.domain.exceptions.menu.MenuGroupEntityNotFoundException;
+import kitchenpos.domain.exceptions.menu.ProductEntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +20,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -57,7 +59,9 @@ public class MenuServiceTest {
         menu.setPrice(invalidPrice);
 
         // when, then
-        assertThatThrownBy(() -> menuService.create(menu)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuService.create(menu))
+                .isInstanceOf(InvalidMenuPriceException.class)
+                .hasMessage("가격은 음수일 수 없습니다.");
     }
     public static Stream<Arguments> menuCreateFailByInvalidPriceResource() {
         return Stream.of(
@@ -77,7 +81,8 @@ public class MenuServiceTest {
 
         // when, then
         assertThatThrownBy(() -> menuService.create(withNotExistMenuGroup))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(MenuGroupEntityNotFoundException.class)
+                .hasMessage("존재하지 않은 메뉴 그룹으로 메뉴를 등록할 수 없습니다.");
     }
 
     @DisplayName("메뉴 상품들 가격의 총합보다 비싸게 메뉴 가격을 정할 수 없다.")
@@ -92,7 +97,9 @@ public class MenuServiceTest {
         tooExpensiveMenu.setName("너무 비싼 메뉴");
 
         // when, then
-        assertThatThrownBy(() -> menuService.create(tooExpensiveMenu)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuService.create(tooExpensiveMenu))
+                .isInstanceOf(InvalidMenuPriceException.class)
+                .hasMessage("메뉴의 가격은 구성된 메뉴 상품들의 가격 합보다 비쌀 수 없습니다.");
     }
 
     @DisplayName("존재하지 않는 상품으로 구성된 메뉴 상품으로 메뉴를 만들 수 없다.")
@@ -111,7 +118,8 @@ public class MenuServiceTest {
 
         // when, then
         assertThatThrownBy(() -> menuService.create(menuWithNotExistProduct))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(ProductEntityNotFoundException.class)
+                .hasMessage("존재하지 않는 상품으로 메뉴를 등록할 수 없습니다.");
     }
 
     @DisplayName("메뉴를 등록할 수 있다.")

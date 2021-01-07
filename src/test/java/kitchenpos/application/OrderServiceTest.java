@@ -1,10 +1,10 @@
 package kitchenpos.application;
 
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.exceptions.*;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.exceptions.order.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
