@@ -81,7 +81,7 @@
   - 인수 테스트를 적용하기엔 공수가 많이 들고, JDBC template을 쓰는 상황에서 인수 테스트 초기 구성을 위한 노력이 너무 많이 들어감.
   - 우선적으로 가장 쉽게 접근할 수 있는 서비스 레이어 테스트를 견고하게 만들고 이를 기반으로 리팩토링하면서 점진적으로 진행 필요.
   - [X] MenuGroupService
-  - [ ] MenuService
+  - [X] MenuService
   - [ ] OrderService
   - [ ] ProductService
   - [ ] TableGroupService
