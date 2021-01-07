@@ -64,22 +64,14 @@ public class MenuService {
             throw new InvalidMenuPriceException("메뉴의 가격은 구성된 메뉴 상품들의 가격 합보다 비쌀 수 없습니다.");
         }
 
-        final Menu menu = new Menu();
-        menu.setName(menuRequest.getName());
-        menu.setPrice(menuRequest.getPrice());
-        menu.setMenuGroupId(menuRequest.getMenuGroupId());
+        final Menu menu = Menu.of(menuRequest.getName(), menuRequest.getPrice(), menuRequest.getMenuGroupId());
         final Menu savedMenu = menuDao.save(menu);
 
-        final Long menuId = savedMenu.getId();
-        final List<MenuProduct> savedMenuProducts = new ArrayList<>();
         for (final MenuProductRequest menuProductRequest : menuProductRequests) {
-            final MenuProduct menuProduct = new MenuProduct();
-            menuProduct.setMenuId(menuId);
-            menuProduct.setProductId(menuProductRequest.getProductId());
-            menuProduct.setQuantity(menuProductRequest.getQuantity());
-            savedMenuProducts.add(menuProductDao.save(menuProduct));
+            final MenuProduct menuProduct = MenuProduct.of(
+                    savedMenu.getId(), menuProductRequest.getProductId(), menuProductRequest.getQuantity());
+            savedMenu.addMenuProduct(menuProduct);
         }
-        savedMenu.setMenuProducts(savedMenuProducts);
 
         return savedMenu;
     }

@@ -8,17 +8,17 @@ public class MenuRequest {
     private String name;
     private BigDecimal price;
     private Long menuGroupId;
-    private List<MenuProductRequest> menuProductRequests;
+    private List<MenuProductRequest> menuProducts;
 
     MenuRequest() {
     }
 
     MenuRequest(final String name, final BigDecimal price, final Long menuGroupId,
-                final List<MenuProductRequest> menuProductRequests) {
+                final List<MenuProductRequest> menuProducts) {
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
-        this.menuProductRequests = menuProductRequests;
+        this.menuProducts = menuProducts;
     }
 
     public static MenuRequest of(final String name, final BigDecimal price, final Long menuGroupId,
@@ -39,7 +39,7 @@ public class MenuRequest {
     }
 
     public List<MenuProductRequest> getMenuProducts() {
-        return menuProductRequests;
+        return menuProducts;
     }
 
     @Override
@@ -47,12 +47,12 @@ public class MenuRequest {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final MenuRequest that = (MenuRequest) o;
-        return Objects.equals(name, that.name) && Objects.equals(price, that.price) && Objects.equals(menuGroupId, that.menuGroupId) && Objects.equals(menuProductRequests, that.menuProductRequests);
+        return Objects.equals(name, that.name) && Objects.equals(price, that.price) && Objects.equals(menuGroupId, that.menuGroupId) && Objects.equals(menuProducts, that.menuProducts);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, price, menuGroupId, menuProductRequests);
+        return Objects.hash(name, price, menuGroupId, menuProducts);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class MenuRequest {
                 "name='" + name + '\'' +
                 ", price=" + price +
                 ", menuGroupId=" + menuGroupId +
-                ", menuProductRequests=" + menuProductRequests +
+                ", menuProducts=" + menuProducts +
                 '}';
     }
 }
