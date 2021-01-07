@@ -62,8 +62,7 @@ public class MenuService {
 				.orElseThrow(() -> new NotFoundException("상품 정보를 찾을 수 없습니다."));
 			MenuProduct menuProduct = MenuProduct.create(savedMenu, product, menuProductItem.getQuantity());
 			savedMenu.addMenuProduct(menuProductRepository.save(menuProduct));
-			sum = sum.add(product.getPrice()
-				.multiply(BigDecimal.valueOf(menuProductItem.getQuantity())));
+			sum = sum.add(menuProduct.getPrice());
 		}
 		validatePriceSum(menuRequest.getPrice(), sum);
 	}
