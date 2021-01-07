@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.MenuGroupService;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.ui.dto.MenuGroupRequest;
+import kitchenpos.ui.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -66,7 +67,9 @@ class MenuGroupRestControllerTest {
         // given
         String url = "/api/menu-groups";
 
-        given(menuGroupService.list()).willReturn(Arrays.asList(new MenuGroup(), new MenuGroup()));
+        MenuGroupResponse menuGroupResponse1 = new MenuGroupResponse(1L, "1");
+        MenuGroupResponse menuGroupResponse2 = new MenuGroupResponse(2L, "2");
+        given(menuGroupService.list()).willReturn(Arrays.asList(menuGroupResponse1, menuGroupResponse2));
 
         // when, then
         mockMvc.perform(get(url))

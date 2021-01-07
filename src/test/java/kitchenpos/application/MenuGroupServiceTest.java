@@ -3,6 +3,7 @@ package kitchenpos.application;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.ui.dto.MenuGroupRequest;
+import kitchenpos.ui.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -55,9 +56,9 @@ class MenuGroupServiceTest {
         given(menuGroupDao.findAll()).willReturn(Arrays.asList(menuGroup1, menuGroup2));
 
         // when
-        List<MenuGroup> foundMenuGroups = menuGroupService.list();
+        List<MenuGroupResponse> foundMenuGroups = menuGroupService.list();
 
         // then
-        assertThat(foundMenuGroups).contains(menuGroup1, menuGroup2);
+        assertThat(foundMenuGroups).hasSize(2);
     }
 }
