@@ -3,7 +3,6 @@ package kitchenpos.domain;
 import static kitchenpos.common.TestFixture.*;
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.Arrays;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DisplayName;
@@ -21,7 +20,7 @@ class OrderTest {
 	@DisplayName("create메서드는 주문테이블, 메뉴, 수량을 받아 Order 객체를 생성한다.")
 	@Test
 	void create() {
-		Order result = Order.create(비어있지않은_테이블_객체(), Arrays.asList(일반_메뉴1(), 일반_메뉴2()), Arrays.asList(1L, 2L));
+		Order result = Order.create(비어있지않은_테이블_객체());
 		assertThat(result).isInstanceOf(Order.class);
 	}
 
@@ -30,7 +29,7 @@ class OrderTest {
 	void createThrow() {
 		assertThatExceptionOfType(EmptyTableException.class)
 			.isThrownBy(() -> {
-				Order.create(빈_테이블_객체(), Arrays.asList(일반_메뉴1(), 일반_메뉴2()), Arrays.asList(1L, 2L));
+				Order.create(빈_테이블_객체());
 			});
 	}
 

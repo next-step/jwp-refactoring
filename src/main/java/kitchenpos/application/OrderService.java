@@ -8,11 +8,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderItem;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
 import kitchenpos.exception.NotFoundException;
 import kitchenpos.repository.MenuRepository;
+import kitchenpos.repository.OrderLineItemRepository;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 
@@ -22,15 +25,18 @@ public class OrderService {
 	private final MenuRepository menuRepository;
 	private final OrderRepository orderRepository;
 	private final OrderTableRepository orderTableRepository;
+	private final OrderLineItemRepository orderLineItemRepository;
 
 	public OrderService(
 		final MenuRepository menuRepository,
 		final OrderRepository orderRepository,
-		final OrderTableRepository orderTableRepository
+		final OrderTableRepository orderTableRepository,
+		final OrderLineItemRepository orderLineItemRepository
 	) {
 		this.menuRepository = menuRepository;
 		this.orderRepository = orderRepository;
 		this.orderTableRepository = orderTableRepository;
+		this.orderLineItemRepository = orderLineItemRepository;
 	}
 
 	@Transactional
@@ -44,9 +50,19 @@ public class OrderService {
 		final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
 			.orElseThrow(() -> new NotFoundException("주문테이블 정보를 찾을 수 없습니다."));
 
-		final List<Menu> menus = menuRepository.findAllById(menuIds);
-		final Order savedOrder = orderRepository.save(Order.create(orderTable, menus, orderRequest.getQuantities()));
+		final Order savedOrder = orderRepository.save(Order.create(orderTable));
+		addOrderItem(orderRequest, savedOrder);
 		return OrderResponse.of(savedOrder);
+	}
+
+	private void addOrderItem(OrderRequest orderRequest, Order savedOrder) {
+		List<OrderItem> orderItems = orderRequest.getOrderItems();
+		for (OrderItem orderItem : orderItems) {
+			Menu menu = menuRepository.findById(orderItem.getMenuId())
+				.orElseThrow(() -> new NotFoundException("메뉴 정보를 찾을 수 없습니다."));
+			OrderLineItem orderLineItem = OrderLineItem.create(savedOrder, menu, orderItem.getQuantity());
+			savedOrder.addOrderLineItems(orderLineItemRepository.save(orderLineItem));
+		}
 	}
 
 	public List<OrderResponse> findAll() {

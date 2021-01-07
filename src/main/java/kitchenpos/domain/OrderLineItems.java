@@ -14,10 +14,8 @@ public class OrderLineItems {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
-	public void add(Order order, List<Menu> menus, List<Long> quantities) {
-		for (int i = 0; i < menus.size(); i++) {
-			orderLineItems.add(OrderLineItem.create(order, menus.get(i), quantities.get(i)));
-		}
+	public void add(OrderLineItem orderLineItem) {
+		this.orderLineItems.add(orderLineItem);
 	}
 
 	public List<OrderLineItem> getOrderLineItems() {

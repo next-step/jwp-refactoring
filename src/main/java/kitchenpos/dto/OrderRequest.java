@@ -16,7 +16,7 @@ public class OrderRequest {
 	private OrderStatus orderStatus;
 
 	@NotEmpty(message = "주문 메뉴 정보가 없습니다.")
-	private List<OrderLineItemRequest> orderItems = new ArrayList<>();
+	private List<OrderItem> orderItems = new ArrayList<>();
 
 	private OrderRequest() {
 	}
@@ -25,7 +25,7 @@ public class OrderRequest {
 		this.orderStatus = orderStatus;
 	}
 
-	private OrderRequest(Long orderTableId, List<OrderLineItemRequest> orderItems) {
+	private OrderRequest(Long orderTableId, List<OrderItem> orderItems) {
 		this.orderTableId = orderTableId;
 		this.orderItems = orderItems;
 	}
@@ -34,11 +34,11 @@ public class OrderRequest {
 		return new OrderRequest(orderStatus);
 	}
 
-	public static OrderRequest of(Long orderTableId, List<OrderLineItemRequest> orderItems) {
+	public static OrderRequest of(Long orderTableId, List<OrderItem> orderItems) {
 		return new OrderRequest(orderTableId, orderItems);
 	}
 
-	public List<OrderLineItemRequest> getOrderItems() {
+	public List<OrderItem> getOrderItems() {
 		return orderItems;
 	}
 
@@ -53,14 +53,14 @@ public class OrderRequest {
 	public List<Long> getMenuIds() {
 		return CollectionUtils.emptyIfNull(this.orderItems)
 			.stream()
-			.map(OrderLineItemRequest::getMenuId)
+			.map(OrderItem::getMenuId)
 			.collect(Collectors.toList());
 	}
 
 	public List<Long> getQuantities() {
 		return CollectionUtils.emptyIfNull(this.orderItems)
 			.stream()
-			.map(OrderLineItemRequest::getQuantity)
+			.map(OrderItem::getQuantity)
 			.collect(Collectors.toList());
 	}
 }

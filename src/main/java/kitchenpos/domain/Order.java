@@ -41,16 +41,15 @@ public class Order {
 	protected Order() {
 	}
 
-	private Order(OrderTable orderTable, List<Menu> menus, List<Long> quantities) {
+	private Order(OrderTable orderTable) {
 		validateOrderTable(orderTable);
-		addOrderLineItems(menus, quantities);
 		this.orderTable = orderTable;
 		this.orderStatus = OrderStatus.COOKING;
 		this.orderedTime = LocalDateTime.now();
 	}
 
-	public static Order create(OrderTable orderTable, List<Menu> menus, List<Long> quantities) {
-		return new Order(orderTable, menus, quantities);
+	public static Order create(OrderTable orderTable) {
+		return new Order(orderTable);
 	}
 
 	public void changeOrderStatus(final OrderStatus orderStatus) {
@@ -58,8 +57,8 @@ public class Order {
 		this.orderStatus = orderStatus;
 	}
 
-	private void addOrderLineItems(List<Menu> menus, List<Long> quantities) {
-		orderLineItems.add(this, menus, quantities);
+	public void addOrderLineItems(OrderLineItem orderLineItem) {
+		orderLineItems.add(orderLineItem);
 	}
 
 	private void validateOrderTable(OrderTable orderTable) {
