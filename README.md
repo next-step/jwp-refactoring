@@ -76,6 +76,16 @@
 | 매장 식사 | eat in | 포장하지 않고 매장에서 식사하는 것 |
 
 ## Todo-list
+- [ ] 서비스 레이어 테스트를 실제 오브젝트 테스트로 전환
+  - 리팩토링 시 신뢰할만한 구간이 현재 Service 레이어 밖에 없느 상태
+  - 인수 테스트를 적용하기엔 공수가 많이 들고, JDBC template을 쓰는 상황에서 인수 테스트 초기 구성을 위한 노력이 너무 많이 들어감.
+  - 우선적으로 가장 쉽게 접근할 수 있는 서비스 레이어 테스트를 견고하게 만들고 이를 기반으로 리팩토링하면서 점진적으로 진행 필요.
+  - [X] MenuGroupService
+  - [ ] MenuService
+  - [ ] OrderService
+  - [ ] ProductService
+  - [ ] TableGroupService
+  - [ ] TableService
 - [ ] DTO를 통한 도메인, UI 레이어 분리
   - 도메인 오브젝트가 외부로 그대로 노출되면서 도메인 변경 시 영향 범위가 너무 크기 때문에 리팩토링이 어려움
   - [X] MenuGroup DTO 분리
