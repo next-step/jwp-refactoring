@@ -6,6 +6,8 @@ import kitchenpos.domain.Product;
 import kitchenpos.domain.exceptions.menu.InvalidMenuPriceException;
 import kitchenpos.domain.exceptions.menu.MenuGroupEntityNotFoundException;
 import kitchenpos.domain.exceptions.menu.ProductEntityNotFoundException;
+import kitchenpos.ui.dto.menu.MenuProductRequest;
+import kitchenpos.ui.dto.menu.MenuRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -56,11 +58,11 @@ public class MenuServiceTest {
     @MethodSource("menuCreateFailByInvalidPriceResource")
     void menuCreateFailByInvalidPrice(BigDecimal invalidPrice) {
         // given
-        Menu menu = new Menu();
-        menu.setPrice(invalidPrice);
+        List<MenuProductRequest> menuProductRequests = Collections.singletonList(MenuProductRequest.of(menuProduct1));
+        MenuRequest menuRequest = MenuRequest.of("menu", invalidPrice, 1L, menuProductRequests);
 
         // when, then
-        assertThatThrownBy(() -> menuService.create(menu))
+        assertThatThrownBy(() -> menuService.create(menuRequest))
                 .isInstanceOf(InvalidMenuPriceException.class)
                 .hasMessage("가격은 음수일 수 없습니다.");
     }
@@ -76,12 +78,11 @@ public class MenuServiceTest {
     void createFailWithNotExistMenuGroupTest() {
         // given
         Long notExistMenuGroupId = 1000L;
-        Menu withNotExistMenuGroup = new Menu();
-        withNotExistMenuGroup.setMenuGroupId(notExistMenuGroupId);
-        withNotExistMenuGroup.setPrice(BigDecimal.ONE);
+        List<MenuProductRequest> menuProductRequests = Collections.singletonList(MenuProductRequest.of(menuProduct1));
+        MenuRequest menuRequest = MenuRequest.of("menu", BigDecimal.ONE, notExistMenuGroupId, menuProductRequests);
 
         // when, then
-        assertThatThrownBy(() -> menuService.create(withNotExistMenuGroup))
+        assertThatThrownBy(() -> menuService.create(menuRequest))
                 .isInstanceOf(MenuGroupEntityNotFoundException.class)
                 .hasMessage("존재하지 않은 메뉴 그룹으로 메뉴를 등록할 수 없습니다.");
     }
@@ -93,14 +94,12 @@ public class MenuServiceTest {
         Long menuGroupId = 1L;
         BigDecimal tooExpensivePrice = BigDecimal.valueOf(1000000);
 
-        Menu tooExpensiveMenu = new Menu();
-        tooExpensiveMenu.setPrice(tooExpensivePrice);
-        tooExpensiveMenu.setMenuProducts(Arrays.asList(menuProduct1, menuProduct2));
-        tooExpensiveMenu.setMenuGroupId(menuGroupId);
-        tooExpensiveMenu.setName("너무 비싼 메뉴");
+        List<MenuProductRequest> menuProductRequests = Arrays.asList(
+                MenuProductRequest.of(menuProduct1), MenuProductRequest.of(menuProduct2));
+        MenuRequest menuRequest = MenuRequest.of("menu", tooExpensivePrice, menuGroupId, menuProductRequests);
 
         // when, then
-        assertThatThrownBy(() -> menuService.create(tooExpensiveMenu))
+        assertThatThrownBy(() -> menuService.create(menuRequest))
                 .isInstanceOf(InvalidMenuPriceException.class)
                 .hasMessage("메뉴의 가격은 구성된 메뉴 상품들의 가격 합보다 비쌀 수 없습니다.");
     }
@@ -113,14 +112,11 @@ public class MenuServiceTest {
 
         MenuProduct notExistMenuProduct= new MenuProduct();
 
-        Menu menuWithNotExistProduct = new Menu();
-        menuWithNotExistProduct.setPrice(BigDecimal.ONE);
-        menuWithNotExistProduct.setMenuGroupId(menuGroupId);
-        menuWithNotExistProduct.setMenuProducts(Collections.singletonList(notExistMenuProduct));
-        menuWithNotExistProduct.setName("상품이 없는 메뉴");
+        List<MenuProductRequest> menuProductRequests = Collections.singletonList(MenuProductRequest.of(notExistMenuProduct));
+        MenuRequest menuRequest = MenuRequest.of("menu", BigDecimal.ONE, menuGroupId, menuProductRequests);
 
         // when, then
-        assertThatThrownBy(() -> menuService.create(menuWithNotExistProduct))
+        assertThatThrownBy(() -> menuService.create(menuRequest))
                 .isInstanceOf(ProductEntityNotFoundException.class)
                 .hasMessage("존재하지 않는 상품으로 메뉴를 등록할 수 없습니다.");
     }
@@ -131,15 +127,15 @@ public class MenuServiceTest {
         // given
         int expectedSize = 2;
         Long menuGroupId = 1L;
+        BigDecimal menuPrice = BigDecimal.ONE;
+        String menuName = "신메뉴";
 
-        Menu menu = new Menu();
-        menu.setPrice(BigDecimal.ONE);
-        menu.setMenuGroupId(menuGroupId);
-        menu.setMenuProducts(Arrays.asList(menuProduct1, menuProduct2));
-        menu.setName("신메뉴");
+        List<MenuProductRequest> menuProductRequests = Arrays.asList(
+                MenuProductRequest.of(menuProduct1), MenuProductRequest.of(menuProduct2));
+        MenuRequest menuRequest = MenuRequest.of(menuName, menuPrice, menuGroupId, menuProductRequests);
 
         // when
-        Menu created = menuService.create(menu);
+        Menu created = menuService.create(menuRequest);
 
         // then
         assertThat(created.getId()).isNotNull();
@@ -150,16 +146,15 @@ public class MenuServiceTest {
     @Test
     void getMenusTest() {
         // given
-        String menuName = "신메뉴";
         Long menuGroupId = 1L;
+        BigDecimal menuPrice = BigDecimal.ONE;
+        String menuName = "새로 나온 엄청난 메뉴";
 
-        Menu menu = new Menu();
-        menu.setPrice(BigDecimal.ONE);
-        menu.setMenuGroupId(menuGroupId);
-        menu.setMenuProducts(Arrays.asList(menuProduct1, menuProduct2));
-        menu.setName(menuName);
+        List<MenuProductRequest> menuProductRequests = Arrays.asList(
+                MenuProductRequest.of(menuProduct1), MenuProductRequest.of(menuProduct2));
+        MenuRequest menuRequest = MenuRequest.of(menuName, menuPrice, menuGroupId, menuProductRequests);
 
-        menuService.create(menu);
+        menuService.create(menuRequest);
 
         // when
         List<Menu> menus = menuService.list();

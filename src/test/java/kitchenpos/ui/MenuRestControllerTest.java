@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.MenuService;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.ui.dto.menu.MenuProductRequest;
+import kitchenpos.ui.dto.menu.MenuRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +16,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
@@ -47,9 +52,12 @@ public class MenuRestControllerTest {
     void createMenuTest() throws Exception {
         // given
         String url = "/api/menus";
-        Menu menuRequest = new Menu();
+        String menuName = "new menu";
+        List<MenuProductRequest> menuProductRequests = Collections.singletonList(MenuProductRequest.of(1L, 1L));
+        MenuRequest menuRequest = MenuRequest.of(menuName, BigDecimal.ONE, 1L, menuProductRequests);
         Menu savedMenu = new Menu();
         savedMenu.setId(1L);
+
         given(menuService.create(any())).willReturn(savedMenu);
 
         // when, then
