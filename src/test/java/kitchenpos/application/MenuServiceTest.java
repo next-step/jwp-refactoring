@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.dao.MenuProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
@@ -34,7 +35,6 @@ public class MenuServiceTest {
     private Product product2 = new Product();
     private MenuProduct menuProduct1 = new MenuProduct();
     private MenuProduct menuProduct2 = new MenuProduct();
-
 
     @BeforeEach
     void setup() {
@@ -90,8 +90,10 @@ public class MenuServiceTest {
     void createFailWithTooExpensivePriceTest() {
         // given
         Long menuGroupId = 1L;
+        BigDecimal tooExpensivePrice = BigDecimal.valueOf(1000000);
+
         Menu tooExpensiveMenu = new Menu();
-        tooExpensiveMenu.setPrice(BigDecimal.valueOf(1000000));
+        tooExpensiveMenu.setPrice(tooExpensivePrice);
         tooExpensiveMenu.setMenuProducts(Arrays.asList(menuProduct1, menuProduct2));
         tooExpensiveMenu.setMenuGroupId(menuGroupId);
         tooExpensiveMenu.setName("너무 비싼 메뉴");
