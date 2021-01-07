@@ -6,6 +6,7 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.ui.dto.menu.MenuProductRequest;
 import kitchenpos.ui.dto.menu.MenuRequest;
+import kitchenpos.ui.dto.menu.MenuResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -53,19 +55,22 @@ public class MenuRestControllerTest {
         // given
         String url = "/api/menus";
         String menuName = "new menu";
-        List<MenuProductRequest> menuProductRequests = Collections.singletonList(MenuProductRequest.of(1L, 1L));
-        MenuRequest menuRequest = MenuRequest.of(menuName, BigDecimal.ONE, 1L, menuProductRequests);
-        Menu savedMenu = new Menu();
-        savedMenu.setId(1L);
+        BigDecimal menuPrice = BigDecimal.ONE;
+        Long menuGroupId = 1L;
+        Long menuId = 1L;
 
-        given(menuService.create(any())).willReturn(savedMenu);
+        List<MenuProductRequest> menuProductRequests = Collections.singletonList(MenuProductRequest.of(1L, 1L));
+        MenuRequest menuRequest = MenuRequest.of(menuName, menuPrice, menuGroupId, menuProductRequests);
+
+        given(menuService.create(any()))
+                .willReturn(MenuResponse.of(menuId, menuName, menuPrice, menuGroupId, new ArrayList<>()));
 
         // when, then
         mockMvc.perform(post(url)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(menuRequest)))
                 .andExpect(status().isCreated())
-                .andExpect(header().string("Location", url + "/" + savedMenu.getId()))
+                .andExpect(header().string("Location", url + "/" + menuId))
         ;
     }
 

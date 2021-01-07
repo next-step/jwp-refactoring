@@ -8,6 +8,7 @@ import kitchenpos.domain.exceptions.menu.MenuGroupEntityNotFoundException;
 import kitchenpos.domain.exceptions.menu.ProductEntityNotFoundException;
 import kitchenpos.ui.dto.menu.MenuProductRequest;
 import kitchenpos.ui.dto.menu.MenuRequest;
+import kitchenpos.ui.dto.menu.MenuResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -135,11 +136,11 @@ public class MenuServiceTest {
         MenuRequest menuRequest = MenuRequest.of(menuName, menuPrice, menuGroupId, menuProductRequests);
 
         // when
-        Menu created = menuService.create(menuRequest);
+        MenuResponse menuResponse = menuService.create(menuRequest);
 
         // then
-        assertThat(created.getId()).isNotNull();
-        assertThat(created.getMenuProducts()).hasSize(expectedSize);
+        assertThat(menuResponse.getId()).isNotNull();
+        assertThat(menuResponse.getMenuProducts()).hasSize(expectedSize);
     }
 
     @DisplayName("메뉴 목록을 불러올 수 있다.")

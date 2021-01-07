@@ -12,6 +12,7 @@ import kitchenpos.domain.exceptions.menu.MenuGroupEntityNotFoundException;
 import kitchenpos.domain.exceptions.menu.ProductEntityNotFoundException;
 import kitchenpos.ui.dto.menu.MenuProductRequest;
 import kitchenpos.ui.dto.menu.MenuRequest;
+import kitchenpos.ui.dto.menu.MenuResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,7 +41,7 @@ public class MenuService {
     }
 
     @Transactional
-    public Menu create(final MenuRequest menuRequest) {
+    public MenuResponse create(final MenuRequest menuRequest) {
         final BigDecimal price = menuRequest.getPrice();
 
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
@@ -70,10 +71,11 @@ public class MenuService {
         for (final MenuProductRequest menuProductRequest : menuProductRequests) {
             final MenuProduct menuProduct = MenuProduct.of(
                     savedMenu.getId(), menuProductRequest.getProductId(), menuProductRequest.getQuantity());
-            savedMenu.addMenuProduct(menuProduct);
+            MenuProduct savedMenuProduct = menuProductDao.save(menuProduct);
+            savedMenu.addMenuProduct(savedMenuProduct);
         }
 
-        return savedMenu;
+        return MenuResponse.of(savedMenu);
     }
 
     public List<Menu> list() {
