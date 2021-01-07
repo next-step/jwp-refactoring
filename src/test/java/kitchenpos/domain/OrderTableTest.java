@@ -87,11 +87,11 @@ class OrderTableTest {
 	void saveGroupInfo() {
 		OrderTable table = OrderTable.create();
 
-		table.saveGroupInfo(new TableGroup());
+		table.saveGroupInfo(예제_테이블_그룹_ID);
 
 		assertAll(
 			() -> assertThat(table.isEmpty()).isFalse(),
-			() -> assertThat(table.getTableGroup()).isNotNull()
+			() -> assertThat(table.getTableGroupId()).isNotNull()
 		);
 	}
 
@@ -102,7 +102,7 @@ class OrderTableTest {
 
 		table.ungroup();
 
-		assertThat(table.getTableGroup()).isNull();
+		assertThat(table.getTableGroupId()).isNull();
 	}
 
 }

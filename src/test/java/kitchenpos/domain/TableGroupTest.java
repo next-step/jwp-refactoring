@@ -55,7 +55,7 @@ class TableGroupTest {
 		tableGroup.ungroup();
 
 		assertThat(tableGroup.getOrderTables())
-			.extracting("tableGroup").containsExactly(null, null);
+			.extracting("tableGroupId").containsExactly(null, null);
 
 	}
 

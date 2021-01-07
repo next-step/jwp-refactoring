@@ -1,12 +1,10 @@
 package kitchenpos.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 import kitchenpos.exception.AlreadyTableGroupException;
 import kitchenpos.exception.EmptyTableException;
@@ -19,9 +17,8 @@ public class OrderTable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "table_group_id")
-	private TableGroup tableGroup;
+	@Column(name = "table_group_id")
+	private Long tableGroupId;
 	private int numberOfGuests;
 	private boolean empty;
 
@@ -38,8 +35,8 @@ public class OrderTable {
 		return id;
 	}
 
-	public TableGroup getTableGroup() {
-		return tableGroup;
+	public Long getTableGroupId() {
+		return tableGroupId;
 	}
 
 	public int getNumberOfGuests() {
@@ -72,17 +69,17 @@ public class OrderTable {
 	}
 
 	private void validationBeforeChangeEmpty() {
-		if (this.tableGroup != null) {
+		if (this.tableGroupId != null) {
 			throw new AlreadyTableGroupException("단체 테이블이 지정되어 있어 상태를 변경할 수 없습니다.");
 		}
 	}
 
-	public void saveGroupInfo(TableGroup tableGroup) {
+	public void saveGroupInfo(Long tableGroupId) {
 		changeEmpty(false);
-		this.tableGroup = tableGroup;
+		this.tableGroupId = tableGroupId;
 	}
 
 	public void ungroup() {
-		this.tableGroup = null;
+		this.tableGroupId = null;
 	}
 }
