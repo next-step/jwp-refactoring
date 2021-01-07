@@ -1,7 +1,6 @@
 package kitchenpos.common;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Collections;
 
 import kitchenpos.domain.Menu;
@@ -11,8 +10,8 @@ import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.TableGroup;
-import kitchenpos.dto.MenuProductRequest;
-import kitchenpos.dto.OrderLineItemRequest;
+import kitchenpos.dto.MenuProductItem;
+import kitchenpos.dto.OrderItem;
 
 public class TestFixture {
 	public static final String 예제_메뉴그룹명 = "인도요리";
@@ -39,11 +38,11 @@ public class TestFixture {
 	public static final long 식사상태_주문ID = 2L;
 	public static final long 완료상태_주문ID = 5L;
 
-	public static final OrderLineItemRequest 주문_메뉴1 = OrderLineItemRequest.of(1L, 1L);
-	public static final OrderLineItemRequest 주문_메뉴2 = OrderLineItemRequest.of(2L, 1L);
-	public static final OrderLineItemRequest 주문_존재하지않은메뉴 = OrderLineItemRequest.of(999L, 1L);
-	public static final MenuProductRequest 메뉴_후라이드_갯수 = MenuProductRequest.of(1L, 1L);
-	public static final MenuProductRequest 메뉴_양념_갯수 = MenuProductRequest.of(2L, 1L);
+	public static final OrderItem 주문_메뉴1 = OrderItem.of(1L, 1L);
+	public static final OrderItem 주문_메뉴2 = OrderItem.of(2L, 1L);
+	public static final OrderItem 주문_존재하지않은메뉴 = OrderItem.of(999L, 1L);
+	public static final MenuProductItem 메뉴_후라이드_갯수 = MenuProductItem.of(1L, 1L);
+	public static final MenuProductItem 메뉴_양념_갯수 = MenuProductItem.of(2L, 1L);
 
 	public static OrderTable 그룹_지정된_테이블_객체() {
 		OrderTable table = OrderTable.create();
@@ -86,15 +85,15 @@ public class TestFixture {
 	}
 
 	public static Menu 일반_메뉴1() {
-		return Menu.create("일반1", BigDecimal.valueOf(4000L), MenuGroup.create("한식"), Arrays.asList(오천원_상품()), Arrays.asList(1L));
+		return Menu.create("일반1", BigDecimal.valueOf(4000L), MenuGroup.create("한식"));
 	}
 
 	public static Menu 일반_메뉴2() {
-		return Menu.create("일반1", BigDecimal.valueOf(4000L), MenuGroup.create("한식"), Arrays.asList(오천원_상품()), Arrays.asList(1L));
+		return Menu.create("일반1", BigDecimal.valueOf(4000L), MenuGroup.create("한식"));
 	}
 
 	public static Order 일반_주문() {
-		return Order.create(비어있지않은_테이블_객체(), Arrays.asList(일반_메뉴1(), 일반_메뉴2()), Arrays.asList(1L, 2L));
+		return Order.create(비어있지않은_테이블_객체());
 	}
 
 	public static Order 완료된_주문() {

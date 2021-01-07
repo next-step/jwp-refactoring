@@ -12,19 +12,19 @@ public class MenuRequest {
 
 	@NotNull(message = "메뉴 그룹 정보가 없습니다.")
 	private Long menuGroupId;
-	private List<MenuProductRequest> menuProducts;
+	private List<MenuProductItem> menuProducts;
 
 	private MenuRequest() {
 	}
 
-	private MenuRequest(String name, BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
+	private MenuRequest(String name, BigDecimal price, Long menuGroupId, List<MenuProductItem> menuProducts) {
 		this.name = name;
 		this.price = price;
 		this.menuGroupId = menuGroupId;
 		this.menuProducts = menuProducts;
 	}
 
-	public static MenuRequest of(String name, BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
+	public static MenuRequest of(String name, BigDecimal price, Long menuGroupId, List<MenuProductItem> menuProducts) {
 		return new MenuRequest(name, price, menuGroupId, menuProducts);
 	}
 
@@ -40,19 +40,19 @@ public class MenuRequest {
 		return menuGroupId;
 	}
 
-	public List<MenuProductRequest> getMenuProducts() {
+	public List<MenuProductItem> getMenuProducts() {
 		return menuProducts;
 	}
 
 	public List<Long> getProductIds() {
 		return menuProducts.stream()
-			.map(MenuProductRequest::getProductId)
+			.map(MenuProductItem::getProductId)
 			.collect(Collectors.toList());
 	}
 
 	public List<Long> getQuantities() {
 		return menuProducts.stream()
-			.map(MenuProductRequest::getQuantity)
+			.map(MenuProductItem::getQuantity)
 			.collect(Collectors.toList());
 	}
 }

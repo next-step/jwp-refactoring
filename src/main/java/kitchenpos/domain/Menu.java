@@ -2,6 +2,7 @@ package kitchenpos.domain;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -11,6 +12,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+
+import kitchenpos.exception.WrongPriceException;
 
 @Entity
 public class Menu {
@@ -31,19 +34,25 @@ public class Menu {
 	protected Menu() {
 	}
 
-	private Menu(String name, BigDecimal price, MenuGroup menuGroup, List<Product> products, List<Long> quantities) {
-		addMenuProducts(price, products, quantities);
+	private Menu(String name, BigDecimal price, MenuGroup menuGroup) {
+		validatePrice(price);
 		this.name = name;
 		this.price = price;
 		this.menuGroup = menuGroup;
 	}
 
-	public static Menu create(String name, BigDecimal price, MenuGroup menuGroup, List<Product> products, List<Long> quantities) {
-		return new Menu(name, price, menuGroup, products, quantities);
+	private void validatePrice(BigDecimal price) {
+		if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+			throw new WrongPriceException("메뉴의 가격이 없거나 0보다 작습니다.");
+		}
 	}
 
-	private void addMenuProducts(BigDecimal price, List<Product> products, List<Long> quantities) {
-		this.menuProducts.add(this, price, products, quantities);
+	public static Menu create(String name, BigDecimal price, MenuGroup menuGroup) {
+		return new Menu(name, price, menuGroup);
+	}
+
+	public void addMenuProduct(MenuProduct menuProduct) {
+		this.menuProducts.add(menuProduct);
 	}
 
 	public Long getId() {

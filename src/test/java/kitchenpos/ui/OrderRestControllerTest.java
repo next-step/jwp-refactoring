@@ -21,7 +21,7 @@ import org.springframework.http.MediaType;
 
 import kitchenpos.common.BaseControllerTest;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.dto.OrderLineItemRequest;
+import kitchenpos.dto.OrderItem;
 import kitchenpos.dto.OrderRequest;
 
 @DisplayName("OrderRestController 테스트")
@@ -50,7 +50,7 @@ class OrderRestControllerTest extends BaseControllerTest {
 	@ParameterizedTest
 	@NullSource
 	@MethodSource("paramCreateBadRequest")
-	void createBadRequest(List<OrderLineItemRequest> orderItems) throws Exception {
+	void createBadRequest(List<OrderItem> orderItems) throws Exception {
 
 		long tableId = 7L;
 		OrderRequest order = OrderRequest.of(tableId, orderItems);
