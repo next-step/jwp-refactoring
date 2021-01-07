@@ -85,7 +85,7 @@
   - [X] MenuGroupService
   - [X] MenuService
   - [X] OrderService
-  - [ ] ProductService
+  - [X] ProductService
   - [ ] TableGroupService
   - [ ] TableService
 - [ ] DTO를 통한 도메인, UI 레이어 분리
