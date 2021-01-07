@@ -6,6 +6,8 @@ import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.exceptions.order.*;
 import kitchenpos.domain.exceptions.orderTable.OrderTableEntityNotFoundException;
+import kitchenpos.ui.dto.order.OrderLineItemRequest;
+import kitchenpos.ui.dto.order.OrderRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +33,8 @@ class OrderServiceTest {
     @Test
     void createOrderFailWithNotEnoughOrderLineItemsTest() {
         // given
-        Order orderRequest = new Order();
-        orderRequest.setOrderLineItems(new ArrayList<>());
+        Long orderTableId = 1L;
+        OrderRequest orderRequest = new OrderRequest(orderTableId, new ArrayList<>());
 
         // when, then
         assertThatThrownBy(() -> orderService.create(orderRequest))
@@ -44,15 +46,15 @@ class OrderServiceTest {
     @Test
     void createOrderFailWithNotExistMenuTest() {
         // given
-        OrderLineItem notInMenu = new OrderLineItem();
-        notInMenu.setMenuId(100000L);
+        Long orderTableId = 1L;
+        Long notExistMenuId = 10000L;
+        Long quantity = 1L;
 
-        Order withNotInMenuOrderRequest = new Order();
-        withNotInMenuOrderRequest.setOrderTableId(1L);
-        withNotInMenuOrderRequest.setOrderLineItems(Collections.singletonList(notInMenu));
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(notExistMenuId, quantity);
+        OrderRequest orderRequest = new OrderRequest(orderTableId, Collections.singletonList(orderLineItemRequest));
 
         // when, then
-        assertThatThrownBy(() -> orderService.create(withNotInMenuOrderRequest))
+        assertThatThrownBy(() -> orderService.create(orderRequest))
                 .isInstanceOf(MenuEntityNotFoundException.class)
                 .hasMessage("메뉴에 없는 주문 항목으로 주문할 수 없습니다.");
     }
@@ -61,15 +63,15 @@ class OrderServiceTest {
     @Test
     void createOrderFailWithNotExistOrderTableTest() {
         // given
-        OrderLineItem orderLineItem = new OrderLineItem();
-        orderLineItem.setMenuId(1L);
+        Long menuId = 1L;
+        Long quantity = 1L;
+        Long notExistOrderTableId = 100000L;
 
-        Order withNotExistOrderTable = new Order();
-        withNotExistOrderTable.setOrderTableId(100000L);
-        withNotExistOrderTable.setOrderLineItems(Collections.singletonList(orderLineItem));
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menuId, quantity);
+        OrderRequest orderRequest = new OrderRequest(notExistOrderTableId, Collections.singletonList(orderLineItemRequest));
 
         // when, then
-        assertThatThrownBy(() -> orderService.create(withNotExistOrderTable))
+        assertThatThrownBy(() -> orderService.create(orderRequest))
                 .isInstanceOf(OrderTableEntityNotFoundException.class)
                 .hasMessage("존재하지 않는 주문 테이블에서 주문할 수 없습니다.");
     }
@@ -78,19 +80,18 @@ class OrderServiceTest {
     @Test
     void createOrderFailWithEmptyOrderTable() {
         // given
+        Long menuId = 1L;
+        Long quantity = 1L;
+
         OrderTable orderTable = new OrderTable();
         orderTable.setEmpty(true);
         OrderTable emptyTable = tableService.create(orderTable);
 
-        OrderLineItem orderLineItem = new OrderLineItem();
-        orderLineItem.setMenuId(1L);
-
-        Order withEmptyOrderTable = new Order();
-        withEmptyOrderTable.setOrderTableId(emptyTable.getId());
-        withEmptyOrderTable.setOrderLineItems(Collections.singletonList(orderLineItem));
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menuId, quantity);
+        OrderRequest orderRequest = new OrderRequest(emptyTable.getId(), Collections.singletonList(orderLineItemRequest));
 
         // when, then
-        assertThatThrownBy(() -> orderService.create(withEmptyOrderTable))
+        assertThatThrownBy(() -> orderService.create(orderRequest))
                 .isInstanceOf(InvalidTryOrderException.class)
                 .hasMessage("비어있는 주문 테이블에서 주문할 수 없습니다.");
     }
@@ -99,16 +100,15 @@ class OrderServiceTest {
     @Test
     void createOrderTest() {
         // given
+        Long menuId = 1L;
+        Long quantity = 1L;
+
         OrderTable orderTable = new OrderTable();
         orderTable.setEmpty(false);
         OrderTable fullOrderTable = tableService.create(orderTable);
 
-        OrderLineItem orderLineItem = new OrderLineItem();
-        orderLineItem.setMenuId(1L);
-
-        Order orderRequest = new Order();
-        orderRequest.setOrderTableId(fullOrderTable.getId());
-        orderRequest.setOrderLineItems(Collections.singletonList(orderLineItem));
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menuId, quantity);
+        OrderRequest orderRequest = new OrderRequest(fullOrderTable.getId(), Collections.singletonList(orderLineItemRequest));
 
         // when
         Order order = orderService.create(orderRequest);
@@ -118,23 +118,21 @@ class OrderServiceTest {
         assertThat(order.getOrderTableId()).isEqualTo(fullOrderTable.getId());
         assertThat(order.getOrderedTime()).isNotNull();
         assertThat(order.getOrderLineItems()).hasSize(1);
-        assertThat(orderLineItem.getOrderId()).isEqualTo(order.getId());
     }
 
     @DisplayName("주문 목록을 조회할 수 있다.")
     @Test
     void getOrdersTest() {
         // given
+        Long menuId = 1L;
+        Long quantity = 1L;
+
         OrderTable orderTable = new OrderTable();
         orderTable.setEmpty(false);
         OrderTable fullOrderTable = tableService.create(orderTable);
 
-        OrderLineItem orderLineItem = new OrderLineItem();
-        orderLineItem.setMenuId(1L);
-
-        Order orderRequest = new Order();
-        orderRequest.setOrderTableId(fullOrderTable.getId());
-        orderRequest.setOrderLineItems(Collections.singletonList(orderLineItem));
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menuId, quantity);
+        OrderRequest orderRequest = new OrderRequest(fullOrderTable.getId(), Collections.singletonList(orderLineItemRequest));
 
         Order order = orderService.create(orderRequest);
 
@@ -166,16 +164,15 @@ class OrderServiceTest {
     @Test
     void changeOrderStatusTest() {
         // given
+        Long menuId = 1L;
+        Long quantity = 1L;
+
         OrderTable orderTable = new OrderTable();
         orderTable.setEmpty(false);
         OrderTable fullOrderTable = tableService.create(orderTable);
 
-        OrderLineItem orderLineItem = new OrderLineItem();
-        orderLineItem.setMenuId(1L);
-
-        Order orderRequest = new Order();
-        orderRequest.setOrderTableId(fullOrderTable.getId());
-        orderRequest.setOrderLineItems(Collections.singletonList(orderLineItem));
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menuId, quantity);
+        OrderRequest orderRequest = new OrderRequest(fullOrderTable.getId(), Collections.singletonList(orderLineItemRequest));
 
         Order order = orderService.create(orderRequest);
 
@@ -193,16 +190,15 @@ class OrderServiceTest {
     @Test
     void changeOrderStatusFailWithInvalidOrderStatus() {
         // given
+        Long menuId = 1L;
+        Long quantity = 1L;
+
         OrderTable orderTable = new OrderTable();
         orderTable.setEmpty(false);
         OrderTable fullOrderTable = tableService.create(orderTable);
 
-        OrderLineItem orderLineItem = new OrderLineItem();
-        orderLineItem.setMenuId(1L);
-
-        Order orderRequest = new Order();
-        orderRequest.setOrderTableId(fullOrderTable.getId());
-        orderRequest.setOrderLineItems(Collections.singletonList(orderLineItem));
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menuId, quantity);
+        OrderRequest orderRequest = new OrderRequest(fullOrderTable.getId(), Collections.singletonList(orderLineItemRequest));
 
         Order order = orderService.create(orderRequest);
 
