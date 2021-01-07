@@ -18,6 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
+@Transactional
 class OrderServiceTest {
     @Autowired
     private OrderService orderService;
@@ -25,7 +26,6 @@ class OrderServiceTest {
     @Autowired
     private TableService tableService;
 
-    @Transactional
     @DisplayName("1개 미만의 주문 항목으로 주문할 수 없다.")
     @Test
     void createOrderFailWithNotEnoughOrderLineItemsTest() {
@@ -39,7 +39,6 @@ class OrderServiceTest {
                 .hasMessage("주문하기 위해서는 1개 이상의 주문 항목이 필요합니다.");
     }
 
-    @Transactional
     @DisplayName("메뉴에 없는 주문 항목으로 주문할 수 없다.")
     @Test
     void createOrderFailWithNotExistMenuTest() {
@@ -57,7 +56,6 @@ class OrderServiceTest {
                 .hasMessage("메뉴에 없는 주문 항목으로 주문할 수 없습니다.");
     }
 
-    @Transactional
     @DisplayName("존재하지 않는 주문테이블에서 주문할 수 없다.")
     @Test
     void createOrderFailWithNotExistOrderTableTest() {
@@ -75,7 +73,6 @@ class OrderServiceTest {
                 .hasMessage("존재하지 않는 주문 테이블에서 주문할 수 없습니다.");
     }
 
-    @Transactional
     @DisplayName("비어있는 주문 테이블에서 주문할 수 없다.")
     @Test
     void createOrderFailWithEmptyOrderTable() {
@@ -97,7 +94,6 @@ class OrderServiceTest {
                 .hasMessage("비어있는 주문 테이블에서 주문할 수 없습니다.");
     }
 
-    @Transactional
     @DisplayName("주문할 수 있다.")
     @Test
     void createOrderTest() {
@@ -124,7 +120,6 @@ class OrderServiceTest {
         assertThat(orderLineItem.getOrderId()).isEqualTo(order.getId());
     }
 
-    @Transactional
     @DisplayName("주문 목록을 조회할 수 있다.")
     @Test
     void getOrdersTest() {
@@ -151,7 +146,6 @@ class OrderServiceTest {
         assertThat(ids).contains(order.getId());
     }
 
-    @Transactional
     @DisplayName("존재하지 않는 주문의 주문 상태를 바꿀 수 없다.")
     @Test
     void changeOrderStatusFailWithNotExistOrderTest() {
@@ -167,7 +161,6 @@ class OrderServiceTest {
                 .hasMessage("존재하지 않는 주문입니다.");
     }
 
-    @Transactional
     @DisplayName("주문의 주문 상태를 바꿀 수 있다.")
     @Test
     void changeOrderStatusTest() {
@@ -195,7 +188,6 @@ class OrderServiceTest {
         assertThat(changedOrder.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
     }
 
-    @Transactional
     @DisplayName("주문 상태가 계산 완료인 주문의 주문 상태를 바꿀 수 없다.")
     @Test
     void changeOrderStatusFailWithInvalidOrderStatus() {
