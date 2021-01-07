@@ -71,7 +71,7 @@ class ProductServiceTest extends BaseTest {
 	@DisplayName("상품을 조회할 수 있다.")
 	@Test
 	void list() {
-		List<ProductResponse> products = productService.list();
+		List<ProductResponse> products = productService.findAll();
 
 		assertThat(products).hasSize(6);
 	}

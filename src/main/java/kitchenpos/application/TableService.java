@@ -33,7 +33,7 @@ public class TableService {
 		return OrderTableResponse.of(orderTable);
 	}
 
-	public List<OrderTableResponse> list() {
+	public List<OrderTableResponse> findAll() {
 		List<OrderTable> orderTables = orderTableRepository.findAll();
 		return orderTables.stream()
 			.map(OrderTableResponse::of)

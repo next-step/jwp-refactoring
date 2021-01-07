@@ -47,7 +47,7 @@ public class MenuService {
 		return MenuResponse.of(savedMenu);
 	}
 
-	public List<MenuResponse> list() {
+	public List<MenuResponse> findAll() {
 		final List<Menu> menus = menuRepository.findAllFetch();
 		return menus.stream()
 			.map(MenuResponse::of)

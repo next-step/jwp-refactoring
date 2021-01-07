@@ -48,7 +48,7 @@ class TableServiceTest extends BaseTest {
 	@DisplayName("주문테이블을 조회할 수 있다.")
 	@Test
 	void list() {
-		List<OrderTableResponse> orderTables = tableService.list();
+		List<OrderTableResponse> orderTables = tableService.findAll();
 
 		assertThat(orderTables).hasSize(8);
 	}

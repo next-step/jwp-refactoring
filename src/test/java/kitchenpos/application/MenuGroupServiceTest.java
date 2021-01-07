@@ -42,7 +42,7 @@ class MenuGroupServiceTest extends BaseTest {
 	@DisplayName("메뉴그룹을 조회할 수 있다.")
 	@Test
 	void list() {
-		List<MenuGroupResponse> menuGroups = menuGroupService.list();
+		List<MenuGroupResponse> menuGroups = menuGroupService.findAll();
 
 		assertThat(menuGroups).hasSize(4);
 	}

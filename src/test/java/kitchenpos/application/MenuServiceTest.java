@@ -86,7 +86,7 @@ class MenuServiceTest extends BaseTest {
 	@DisplayName("메뉴을 조회할 수 있다.")
 	@Test
 	void list() {
-		List<MenuResponse> menus = menuService.list();
+		List<MenuResponse> menus = menuService.findAll();
 
 		assertThat(menus).hasSize(6);
 	}

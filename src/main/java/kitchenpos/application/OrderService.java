@@ -49,7 +49,7 @@ public class OrderService {
 		return OrderResponse.of(savedOrder);
 	}
 
-	public List<OrderResponse> list() {
+	public List<OrderResponse> findAll() {
 		final List<Order> orders = orderRepository.findAllFetch();
 		return orders.stream()
 			.map(OrderResponse::of)

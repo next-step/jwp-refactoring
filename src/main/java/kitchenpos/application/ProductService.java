@@ -26,7 +26,7 @@ public class ProductService {
 		return ProductResponse.of(product);
 	}
 
-	public List<ProductResponse> list() {
+	public List<ProductResponse> findAll() {
 		List<Product> products = productRepository.findAll();
 		return products.stream()
 			.map(ProductResponse::of)

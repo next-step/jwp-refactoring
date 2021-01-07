@@ -26,7 +26,7 @@ public class MenuGroupService {
 		return MenuGroupResponse.of(menuGroup);
 	}
 
-	public List<MenuGroupResponse> list() {
+	public List<MenuGroupResponse> findAll() {
 		List<MenuGroup> menuGroups = menuGroupRepository.findAll();
 		return menuGroups.stream()
 			.map(MenuGroupResponse::of)
