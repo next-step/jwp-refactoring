@@ -60,7 +60,7 @@ public class MenuService {
 		for (MenuProductItem menuProductItem : menuProductItems) {
 			Product product = productRepository.findById(menuProductItem.getProductId())
 				.orElseThrow(() -> new NotFoundException("상품 정보를 찾을 수 없습니다."));
-			MenuProduct menuProduct = MenuProduct.create(savedMenu, product, menuProductItem.getQuantity());
+			MenuProduct menuProduct = MenuProduct.create(savedMenu.getId(), product, menuProductItem.getQuantity());
 			menuProducts.add(menuProduct);
 		}
 		savedMenu.addMenuProduct(menuProducts);
