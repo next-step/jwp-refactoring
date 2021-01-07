@@ -6,6 +6,8 @@ import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.exceptions.orderTable.OrderTableEntityNotFoundException;
+import kitchenpos.domain.exceptions.tableGroup.InvalidTableGroupTryException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -33,7 +35,7 @@ public class TableGroupService {
         final List<OrderTable> orderTables = tableGroup.getOrderTables();
 
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException();
+            throw new InvalidTableGroupTryException("2개 미만의 주문 테이블로 단체 지정할 수 없다.");
         }
 
         final List<Long> orderTableIds = orderTables.stream()
@@ -43,12 +45,15 @@ public class TableGroupService {
         final List<OrderTable> savedOrderTables = orderTableDao.findAllByIdIn(orderTableIds);
 
         if (orderTables.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
+            throw new OrderTableEntityNotFoundException("존재하지 않는 주문 테이블로 단체 지정할 수 없습니다.");
         }
 
         for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
-                throw new IllegalArgumentException();
+            if (!savedOrderTable.isEmpty()) {
+                throw new InvalidTableGroupTryException("비어있지 않은 주문 테이블로 단체 지정할 수 없습니다.");
+            }
+            if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
+                throw new InvalidTableGroupTryException("이미 단체 지정된 주문 테이블을 또 단체 지정할 수 없습니다.");
             }
         }
 

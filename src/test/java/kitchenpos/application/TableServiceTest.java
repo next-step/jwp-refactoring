@@ -3,6 +3,9 @@ package kitchenpos.application;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.exceptions.orderTable.InvalidTryChangeEmptyException;
+import kitchenpos.domain.exceptions.orderTable.InvalidTryChangeGuestsException;
+import kitchenpos.domain.exceptions.orderTable.OrderTableEntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,10 +14,14 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -76,11 +83,11 @@ public class TableServiceTest {
     void changeEmptyFailWithNotExistOrderTableTest() {
         // given
         Long targetId = 1L;
-        given(orderTableDao.findById(targetId)).willThrow(new IllegalArgumentException());
+        given(orderTableDao.findById(targetId)).willThrow(new OrderTableEntityNotFoundException(""));
 
         // when, then
         assertThatThrownBy(() -> tableService.changeEmpty(targetId, emptyRequest))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(OrderTableEntityNotFoundException.class);
     }
 
     @DisplayName("단체 지정된 주문 테이블의 비움 상태를 바꿀 수 없다.")
@@ -97,7 +104,8 @@ public class TableServiceTest {
 
         // when, then
         assertThatThrownBy(() -> tableService.changeEmpty(targetId, emptyRequest))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidTryChangeEmptyException.class)
+                .hasMessage("단체 지정된 주문 테이블의 비움 상태를 바꿀 수 없습니다.");
     }
 
     @DisplayName("주문 상태가 조리거나 식사인 주문 테이블의 비움 상태를 바꿀 수 없다.")
@@ -114,7 +122,8 @@ public class TableServiceTest {
 
         // when, then
         assertThatThrownBy(() -> tableService.changeEmpty(targetId, emptyRequest))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidTryChangeEmptyException.class)
+                .hasMessage("조리중이거나 식사중인 주문 테이블의 비움 상태를 바꿀 수 없습니다.");
     }
 
     @DisplayName("주문 테이블의 비움 상태를 바꿀 수 있다.")
@@ -183,7 +192,8 @@ public class TableServiceTest {
 
         // when, then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(targetId, orderTableRequest))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidTryChangeGuestsException.class)
+                .hasMessage("비어있는 주문 테이블의 방문한 손님 수를 바꿀 수 없습니다.");
     }
 
     @DisplayName("주문 테이블의 방문한 손님 수를 바꿀 수 있다.")

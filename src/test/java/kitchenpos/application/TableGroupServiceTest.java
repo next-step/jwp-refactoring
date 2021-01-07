@@ -5,6 +5,8 @@ import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.exceptions.orderTable.OrderTableEntityNotFoundException;
+import kitchenpos.domain.exceptions.tableGroup.InvalidTableGroupTryException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +16,9 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -81,7 +86,9 @@ class TableGroupServiceTest {
         tableGroup.setOrderTables(orderTables);
 
         // when, then
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+                .isInstanceOf(InvalidTableGroupTryException.class)
+                .hasMessage("2개 미만의 주문 테이블로 단체 지정할 수 없다.");
     }
     public static Stream<Arguments> tableGroupFailWithEmptyTableResource() {
         return Stream.of(
@@ -99,7 +106,8 @@ class TableGroupServiceTest {
 
         // when, then
         assertThatThrownBy(() -> tableGroupService.create(tableGroupWithNotExistOrderTables))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(OrderTableEntityNotFoundException.class)
+                .hasMessage("존재하지 않는 주문 테이블로 단체 지정할 수 없습니다.");
     }
 
     @DisplayName("비어있지 않은 주문 테이블들로 단체 지정할 수 없다.")
@@ -111,7 +119,8 @@ class TableGroupServiceTest {
 
         // when, then
         assertThatThrownBy(() -> tableGroupService.create(tableGroupWithFullOrderTables))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(OrderTableEntityNotFoundException.class)
+                .hasMessage("존재하지 않는 주문 테이블로 단체 지정할 수 없습니다.");
     }
 
     @DisplayName("이미 단체 지정된 주문 테이블들로 단체 지정할 수 없다.")
@@ -123,7 +132,8 @@ class TableGroupServiceTest {
 
         // when, then
         assertThatThrownBy(() -> tableGroupService.create(tableGroupWithAlreadyGrouped))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(OrderTableEntityNotFoundException.class)
+                .hasMessage("존재하지 않는 주문 테이블로 단체 지정할 수 없습니다.");
     }
 
     @DisplayName("주문 테이블들을 단체 지정할 수 있다.")

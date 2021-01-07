@@ -6,6 +6,7 @@ import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.*;
 import kitchenpos.domain.exceptions.order.*;
+import kitchenpos.domain.exceptions.orderTable.OrderTableEntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
