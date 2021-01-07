@@ -14,8 +14,8 @@ public class MenuProducts {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<MenuProduct> menuProducts = new ArrayList<>();
 
-	public void add(MenuProduct menuProduct) {
-		menuProducts.add(menuProduct);
+	public void add(List<MenuProduct> menuProducts) {
+		this.menuProducts = menuProducts;
 	}
 
 	public List<MenuProduct> getMenuProducts() {

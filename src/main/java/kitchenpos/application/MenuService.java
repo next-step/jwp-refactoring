@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,7 +15,6 @@ import kitchenpos.dto.MenuProductItem;
 import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.MenuResponse;
 import kitchenpos.exception.NotFoundException;
-import kitchenpos.exception.WrongPriceException;
 import kitchenpos.repository.MenuGroupRepository;
 import kitchenpos.repository.MenuProductRepository;
 import kitchenpos.repository.MenuRepository;
@@ -55,22 +54,16 @@ public class MenuService {
 	}
 
 	private void addMenuProduct(MenuRequest menuRequest, Menu savedMenu) {
-		BigDecimal sum = BigDecimal.ZERO;
 		List<MenuProductItem> menuProductItems = menuRequest.getMenuProducts();
+
+		List<MenuProduct> menuProducts = new ArrayList<>();
 		for (MenuProductItem menuProductItem : menuProductItems) {
 			Product product = productRepository.findById(menuProductItem.getProductId())
 				.orElseThrow(() -> new NotFoundException("상품 정보를 찾을 수 없습니다."));
 			MenuProduct menuProduct = MenuProduct.create(savedMenu, product, menuProductItem.getQuantity());
-			savedMenu.addMenuProduct(menuProductRepository.save(menuProduct));
-			sum = sum.add(menuProduct.getPrice());
+			menuProducts.add(menuProduct);
 		}
-		validatePriceSum(menuRequest.getPrice(), sum);
-	}
-
-	private void validatePriceSum(BigDecimal price, BigDecimal sum) {
-		if (price.compareTo(sum) > 0) {
-			throw new WrongPriceException("메뉴의 가격이 상품가격의 총합보다 클 수 없습니다.");
-		}
+		savedMenu.addMenuProduct(menuProducts);
 	}
 
 	public List<MenuResponse> findAll() {

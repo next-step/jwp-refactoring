@@ -51,8 +51,20 @@ public class Menu {
 		return new Menu(name, price, menuGroup);
 	}
 
-	public void addMenuProduct(MenuProduct menuProduct) {
-		this.menuProducts.add(menuProduct);
+	public void addMenuProduct(List<MenuProduct> menuProducts) {
+		validatePriceSum(menuProducts);
+		this.menuProducts.add(menuProducts);
+	}
+
+	private void validatePriceSum(List<MenuProduct> menuProducts) {
+		BigDecimal totalPrice = menuProducts.stream()
+			.map(MenuProduct::getPrice)
+			.reduce(BigDecimal::add)
+			.orElse(BigDecimal.ZERO);
+
+		if (price.compareTo(totalPrice) > 0) {
+			throw new WrongPriceException("메뉴의 가격이 상품가격의 총합보다 클 수 없습니다.");
+		}
 	}
 
 	public Long getId() {
