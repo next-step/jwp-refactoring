@@ -22,7 +22,9 @@ public class MenuProducts {
 		BigDecimal sum = BigDecimal.ZERO;
 		for (int i = 0; i < products.size(); i++) {
 			this.menuProducts.add(MenuProduct.create(menu, products.get(i), quantities.get(i)));
-			sum = sum.add(products.get(i).getPrice().multiply(BigDecimal.valueOf(quantities.get(i))));
+			sum = sum.add(products.get(i)
+				.getPrice()
+				.multiply(BigDecimal.valueOf(quantities.get(i))));
 		}
 		validatePrice(price, sum);
 	}
