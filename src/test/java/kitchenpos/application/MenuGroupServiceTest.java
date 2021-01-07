@@ -1,8 +1,8 @@
 package kitchenpos.application;
 
 import kitchenpos.domain.MenuGroup;
-import kitchenpos.ui.dto.MenuGroupRequest;
-import kitchenpos.ui.dto.MenuGroupResponse;
+import kitchenpos.ui.dto.menuGroup.MenuGroupRequest;
+import kitchenpos.ui.dto.menuGroup.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +27,10 @@ class MenuGroupServiceTest {
         MenuGroupRequest menuGroupRequest = new MenuGroupRequest("testMenuGroup");
 
         // when
-        MenuGroup saved = menuGroupService.create(menuGroupRequest);
+        MenuGroupResponse response = menuGroupService.create(menuGroupRequest);
 
         // then
-        assertThat(saved.getId()).isNotNull();
+        assertThat(response.getId()).isNotNull();
     }
 
     @DisplayName("메뉴 그룹 목록을 조회할 수 있다.")
