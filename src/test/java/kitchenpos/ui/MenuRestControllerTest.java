@@ -79,13 +79,19 @@ public class MenuRestControllerTest {
     void getMenusTest() throws Exception {
         // given
         String url = "/api/menus";
+        String menuName = "menu";
+        BigDecimal menuPrice = BigDecimal.ONE;
+        Long menuGroupId = 1L;
+        Long menuId = 1L;
 
-        given(menuService.list()).willReturn(Arrays.asList(new Menu(), new Menu()));
+        MenuResponse menuResponse = MenuResponse.of(menuId, menuName, menuPrice, menuGroupId, new ArrayList<>());
+
+        given(menuService.list()).willReturn(Collections.singletonList(menuResponse));
 
         // when, then
         mockMvc.perform(get(url))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$", hasSize(1)))
         ;
     }
 }

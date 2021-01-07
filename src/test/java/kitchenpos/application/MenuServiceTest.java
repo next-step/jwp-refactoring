@@ -158,9 +158,9 @@ public class MenuServiceTest {
         menuService.create(menuRequest);
 
         // when
-        List<Menu> menus = menuService.list();
+        List<MenuResponse> menus = menuService.list();
         Stream<String> names = menus.stream()
-                .map(Menu::getName);
+                .map(MenuResponse::getName);
 
         // then
         assertThat(names).contains(menuName);
