@@ -74,3 +74,13 @@
 | 단체 지정 | table group | 통합 계산을 위해 개별 주문 테이블을 그룹화하는 기능 |
 | 주문 항목 | order line item | 주문에 속하는 수량이 있는 메뉴 |
 | 매장 식사 | eat in | 포장하지 않고 매장에서 식사하는 것 |
+
+## Todo-list
+- [ ] DTO를 통한 도메인, UI 레이어 분리
+  - 도메인 오브젝트가 외부로 그대로 노출되면서 도메인 변경 시 영향 범위가 너무 크기 때문에 리팩토링이 어려움
+  - [ ] MenuGroup DTO 분리
+  - [ ] Menu DTO 분리
+  - [ ] Order DTO 분리
+  - [ ] Product DTO 분리
+  - [ ] TableGroup DTO 분리
+  - [ ] Table DTO 분리
