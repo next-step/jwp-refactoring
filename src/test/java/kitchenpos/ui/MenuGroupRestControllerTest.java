@@ -3,6 +3,7 @@ package kitchenpos.ui;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.MenuGroupService;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.ui.dto.MenuGroupRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,7 +45,7 @@ class MenuGroupRestControllerTest {
     void createMenuGroupTest() throws Exception {
         // given
         String url = "/api/menu-groups";
-        MenuGroup menuGroupRequest = new MenuGroup();
+        MenuGroupRequest menuGroupRequest = new MenuGroupRequest("테스트 메뉴 그룹");
         MenuGroup saved = new MenuGroup();
         saved.setId(1L);
 

@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.ui.dto.MenuGroupRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,13 +34,13 @@ class MenuGroupServiceTest {
     void createMenuGroupTest() {
         // given
         Long menuGroupId = 1L;
-        MenuGroup menuGroup = new MenuGroup();
+        MenuGroupRequest menuGroupRequest = new MenuGroupRequest("testMenuGroup");
         MenuGroup savedMenuGroup = new MenuGroup();
         savedMenuGroup.setId(menuGroupId);
         given(menuGroupDao.save(any())).willReturn(savedMenuGroup);
 
         // when
-        MenuGroup saved = menuGroupService.create(menuGroup);
+        MenuGroup saved = menuGroupService.create(menuGroupRequest);
 
         // then
         assertThat(saved.getId()).isEqualTo(menuGroupId);
