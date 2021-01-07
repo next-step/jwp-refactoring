@@ -6,19 +6,26 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import kitchenpos.common.BaseTest;
-import kitchenpos.common.TestDataUtil;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderStatus;
+import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderResponse;
+import kitchenpos.exception.AlreadyOrderCompleteException;
+import kitchenpos.exception.EmptyTableException;
+import kitchenpos.exception.NotFoundException;
+import kitchenpos.repository.OrderLineItemRepository;
+import kitchenpos.repository.OrderRepository;
 
 @DisplayName("OrderService 테스트")
 class OrderServiceTest extends BaseTest {
@@ -27,42 +34,32 @@ class OrderServiceTest extends BaseTest {
 	private OrderService orderService;
 
 	@Autowired
-	private OrderDao orderDao;
+	private OrderRepository orderRepository;
 
 	@Autowired
-	private OrderLineItemDao orderLineItemDao;
+	private OrderLineItemRepository orderLineItemRepository;
 
 	@DisplayName("주문 등록할 수 있다.")
 	@Test
 	void create() {
-		Order order = orderService.create(TestDataUtil.createOrder(주문대상_테이블ID, Arrays.asList(예제주문_아이템_1, 예제주문_아이템_2)));
+		OrderResponse order = orderService.create(OrderRequest.of(주문대상_테이블ID, Arrays.asList(주문_메뉴1, 주문_메뉴2)));
 
-		Order savedOrder = orderDao.findById(order.getId()).orElse(null);
-		List<OrderLineItem> savedOrderItems = orderLineItemDao.findAllByOrderId(savedOrder.getId());
+		Order savedOrder = orderRepository.findById(order.getId()).orElse(null);
+		List<OrderLineItem> savedOrderItems = orderLineItemRepository.findAllByOrderId(savedOrder.getId());
 
 		assertAll(
 			() -> assertThat(savedOrder.getId()).isNotNull(),
-			() -> assertThat(savedOrder.getOrderTableId()).isEqualTo(주문대상_테이블ID),
+			() -> assertThat(savedOrder.getOrderTable().getId()).isEqualTo(주문대상_테이블ID),
 			() -> assertThat(savedOrderItems).hasSize(2)
 		);
-	}
-
-	@DisplayName("요청된 메뉴가 없으면 주문할 수 없다.")
-	@Test
-	void createThrow1() {
-		assertThatExceptionOfType(IllegalArgumentException.class)
-			.isThrownBy(() -> {
-				orderService.create(TestDataUtil.createOrder(주문대상_테이블ID, null));
-			});
-
 	}
 
 	@DisplayName("요청된 메뉴가 실제 저장되어 있는 메뉴가 아닌 경우가 포함되어 있으면 주문할 수 없다.")
 	@Test
 	void createThrow2() {
-		assertThatExceptionOfType(IllegalArgumentException.class)
+		assertThatExceptionOfType(NotFoundException.class)
 			.isThrownBy(() -> {
-				orderService.create(TestDataUtil.createOrder(주문대상_테이블ID, Arrays.asList(존재하지않은메뉴가_포함된_주문_아이템, 예제주문_아이템_2)));
+				orderService.create(OrderRequest.of(주문대상_테이블ID, Arrays.asList(주문_존재하지않은메뉴, 주문_메뉴2)));
 			});
 
 	}
@@ -70,9 +67,9 @@ class OrderServiceTest extends BaseTest {
 	@DisplayName("존재하지 않는 테이블에는 주문할 수 없다.")
 	@Test
 	void createThrow3() {
-		assertThatExceptionOfType(IllegalArgumentException.class)
+		assertThatExceptionOfType(NotFoundException.class)
 			.isThrownBy(() -> {
-				orderService.create(TestDataUtil.createOrder(존재하지_않는_테이블ID, Arrays.asList(예제주문_아이템_1, 예제주문_아이템_2)));
+				orderService.create(OrderRequest.of(존재하지않는_테이블ID, Arrays.asList(주문_메뉴1, 주문_메뉴2)));
 			});
 
 	}
@@ -80,9 +77,9 @@ class OrderServiceTest extends BaseTest {
 	@DisplayName("테이블이 빈테이블 상태인 경우 주문할 수 없다.")
 	@Test
 	void createThrow4() {
-		assertThatExceptionOfType(IllegalArgumentException.class)
+		assertThatExceptionOfType(EmptyTableException.class)
 			.isThrownBy(() -> {
-				orderService.create(TestDataUtil.createOrder(빈_테이블ID, Arrays.asList(예제주문_아이템_1, 예제주문_아이템_2)));
+				orderService.create(OrderRequest.of(빈테이블ID, Arrays.asList(주문_메뉴1, 주문_메뉴2)));
 			});
 
 	}
@@ -90,47 +87,68 @@ class OrderServiceTest extends BaseTest {
 	@DisplayName("주문을 조회할 수 있다.")
 	@Test
 	void list() {
-		List<Order> products = orderService.list();
+		List<OrderResponse> products = orderService.findAll();
 
 		assertThat(products).hasSize(5);
 	}
 
 	@DisplayName("조리상태 주문은 상태변경할 수 있다.")
 	@ParameterizedTest
-	@ValueSource(strings = {"MEAL", "COMPLETION"})
-	void changeOrderStatusWhenCooking(String orderStatus) {
-		조리상태_주문.setOrderStatus(orderStatus);
-		orderService.changeOrderStatus(조리상태_주문.getId(), 조리상태_주문);
+	@MethodSource("paramChangeOrderStatusWhenCooking")
+	void changeOrderStatusWhenCooking(OrderStatus orderStatus) {
+		OrderRequest orderRequest = OrderRequest.of(orderStatus);
+		orderService.changeOrderStatus(조리상태_주문ID, orderRequest);
 
-		Order order = orderDao.findById(조리상태_주문.getId()).orElse(null);
+		Order order = orderRepository.findById(조리상태_주문ID).orElse(null);
 
 		assertThat(order.getOrderStatus()).isEqualTo(orderStatus);
 
+	}
+
+	public static Stream<Arguments> paramChangeOrderStatusWhenCooking() {
+		return Stream.of(
+			Arguments.of(OrderStatus.MEAL),
+			Arguments.of(OrderStatus.COMPLETION)
+		);
 	}
 
 	@DisplayName("식사상태 주문은 상태변경할 수 있다.")
 	@ParameterizedTest
-	@ValueSource(strings = {"COOKING", "COMPLETION"})
-	void changeOrderStatusWhenMeal(String orderStatus) {
-		식사상태_주문.setOrderStatus(orderStatus);
-		orderService.changeOrderStatus(식사상태_주문.getId(), 식사상태_주문);
+	@MethodSource("paramChangeOrderStatusWhenMeal")
+	void changeOrderStatusWhenMeal(OrderStatus orderStatus) {
+		OrderRequest orderRequest = OrderRequest.of(orderStatus);
+		orderService.changeOrderStatus(식사상태_주문ID, orderRequest);
 
-		Order order = orderDao.findById(식사상태_주문.getId()).orElse(null);
+		Order order = orderRepository.findById(식사상태_주문ID).orElse(null);
 
 		assertThat(order.getOrderStatus()).isEqualTo(orderStatus);
 
 	}
 
+	public static Stream<Arguments> paramChangeOrderStatusWhenMeal() {
+		return Stream.of(
+			Arguments.of(OrderStatus.COOKING),
+			Arguments.of(OrderStatus.COMPLETION)
+		);
+	}
+
 	@DisplayName("완료상태 주문은 상태변경할 수 없다.")
 	@ParameterizedTest
-	@ValueSource(strings = {"COOKING", "MEAL"})
-	void changeOrderStatusWhenCompletion(String orderStatus) {
-		assertThatExceptionOfType(IllegalArgumentException.class)
+	@MethodSource("paramChangeOrderStatusWhenCompletion")
+	void changeOrderStatusWhenCompletion(OrderStatus orderStatus) {
+		assertThatExceptionOfType(AlreadyOrderCompleteException.class)
 			.isThrownBy(() -> {
-				완료상태_주문.setOrderStatus(orderStatus);
-				orderService.changeOrderStatus(완료상태_주문.getId(), 완료상태_주문);
+				OrderRequest orderRequest = OrderRequest.of(orderStatus);
+				orderService.changeOrderStatus(완료상태_주문ID, orderRequest);
 			});
 
+	}
+
+	public static Stream<Arguments> paramChangeOrderStatusWhenCompletion() {
+		return Stream.of(
+			Arguments.of(OrderStatus.COOKING),
+			Arguments.of(OrderStatus.MEAL)
+		);
 	}
 
 }

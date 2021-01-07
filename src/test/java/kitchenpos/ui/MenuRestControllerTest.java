@@ -1,11 +1,12 @@
 package kitchenpos.ui;
 
+import static kitchenpos.common.TestFixture.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.List;
 
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
@@ -13,9 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
 import kitchenpos.common.BaseControllerTest;
-import kitchenpos.common.TestDataUtil;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.dto.MenuRequest;
 
 @DisplayName("MenuRestController 테스트")
 class MenuRestControllerTest extends BaseControllerTest {
@@ -24,16 +23,11 @@ class MenuRestControllerTest extends BaseControllerTest {
 	@Test
 	void create() throws Exception {
 		long expectedId = 7L;
-		int price = 20000;
+		BigDecimal price = BigDecimal.valueOf(20000);
 		Long menuGroupId = 1L;
 		String name = "후라이드 한마리 + 양념 한마리";
 
-		List<MenuProduct> menuProducts = Arrays.asList(
-			TestDataUtil.createMenuProduct(1L, 1),
-			TestDataUtil.createMenuProduct(2L, 1)
-		);
-
-		Menu menu = TestDataUtil.createMenu(name, price, menuGroupId, menuProducts);
+		MenuRequest menu = MenuRequest.of(name, price, menuGroupId, Arrays.asList(메뉴_후라이드_갯수, 메뉴_양념_갯수));
 
 		mockMvc.perform(post("/api/menus")
 			.contentType(MediaType.APPLICATION_JSON)
@@ -44,8 +38,25 @@ class MenuRestControllerTest extends BaseControllerTest {
 			.andExpect(jsonPath("$.id").value(expectedId))
 			.andExpect(jsonPath("$.name").value(name))
 			.andExpect(jsonPath("$.price").value(price))
-			.andExpect(jsonPath("$.menuGroupId").value(menuGroupId))
+			.andExpect(jsonPath("$.menuGroup.id").value(menuGroupId))
 			.andExpect(jsonPath("$.menuProducts", Matchers.hasSize(2)));
+	}
+
+	@DisplayName("Menu 생성 요청 시 메뉴 그룹 정보가 없으면 BadRequest가 발생한다.")
+	@Test
+	void createBadRequest() throws Exception {
+
+		BigDecimal price = BigDecimal.valueOf(20000);
+		String name = "후라이드 한마리 + 양념 한마리";
+		Long menuGroupId = null;
+
+		MenuRequest menu = MenuRequest.of(name, price, menuGroupId, Arrays.asList(메뉴_후라이드_갯수, 메뉴_양념_갯수));
+
+		mockMvc.perform(post("/api/menus")
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(objectMapper.writeValueAsString(menu)))
+			.andDo(print())
+			.andExpect(status().isBadRequest());
 	}
 
 	@DisplayName("Menu 목록 조회")

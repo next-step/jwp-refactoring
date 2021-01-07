@@ -13,9 +13,15 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import kitchenpos.common.BaseTest;
-import kitchenpos.common.TestDataUtil;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.exception.AlreadyOrderException;
+import kitchenpos.exception.AlreadyTableGroupException;
+import kitchenpos.exception.EmptyTableException;
+import kitchenpos.exception.NegativeNumberException;
+import kitchenpos.exception.NotFoundException;
+import kitchenpos.repository.OrderTableRepository;
 
 @DisplayName("TableService 테스트")
 class TableServiceTest extends BaseTest {
@@ -24,14 +30,14 @@ class TableServiceTest extends BaseTest {
 	private TableService tableService;
 
 	@Autowired
-	private OrderTableDao orderTableDao;
+	private OrderTableRepository orderTableRepository;
 
 	@DisplayName("주문테이블을 생성할 수 있다.")
 	@Test
 	void create() {
-		OrderTable table = tableService.create(TestDataUtil.createOrderTable());
+		OrderTableResponse table = tableService.create();
 
-		OrderTable savedTable = orderTableDao.findById(table.getId()).orElse(null);
+		OrderTable savedTable = orderTableRepository.findById(table.getId()).orElse(null);
 
 		assertAll(
 			() -> assertThat(savedTable.getId()).isNotNull(),
@@ -42,7 +48,7 @@ class TableServiceTest extends BaseTest {
 	@DisplayName("주문테이블을 조회할 수 있다.")
 	@Test
 	void list() {
-		List<OrderTable> orderTables = tableService.list();
+		List<OrderTableResponse> orderTables = tableService.findAll();
 
 		assertThat(orderTables).hasSize(8);
 	}
@@ -51,10 +57,10 @@ class TableServiceTest extends BaseTest {
 	@ParameterizedTest
 	@ValueSource(booleans = {false, true})
 	void changeEmpty(boolean isEmpty) {
-		빈테이블.setEmpty(isEmpty);
-		tableService.changeEmpty(빈테이블.getId(), 빈테이블);
+		OrderTableRequest orderTableRequest = OrderTableRequest.of(isEmpty);
+		tableService.changeEmpty(빈테이블ID, orderTableRequest);
 
-		OrderTable savedTable = orderTableDao.findById(빈테이블.getId()).orElse(null);
+		OrderTable savedTable = orderTableRepository.findById(빈테이블ID).orElse(null);
 
 		assertThat(savedTable.isEmpty()).isEqualTo(isEmpty);
 	}
@@ -63,10 +69,10 @@ class TableServiceTest extends BaseTest {
 	@ParameterizedTest
 	@ValueSource(booleans = {false, true})
 	void changeEmptyThrow1(boolean isEmpty) {
-		assertThatExceptionOfType(IllegalArgumentException.class)
+		assertThatExceptionOfType(NotFoundException.class)
 			.isThrownBy(() -> {
-				존재하지않는테이블.setEmpty(isEmpty);
-				tableService.changeEmpty(존재하지않는테이블.getId(), 존재하지않는테이블);
+				OrderTableRequest orderTableRequest = OrderTableRequest.of(isEmpty);
+				tableService.changeEmpty(존재하지않는_테이블ID, orderTableRequest);
 			});
 	}
 
@@ -74,10 +80,10 @@ class TableServiceTest extends BaseTest {
 	@ParameterizedTest
 	@ValueSource(booleans = {false, true})
 	void changeEmptyThrow2(boolean isEmpty) {
-		assertThatExceptionOfType(IllegalArgumentException.class)
+		assertThatExceptionOfType(AlreadyTableGroupException.class)
 			.isThrownBy(() -> {
-				단체지정_테이블.setEmpty(isEmpty);
-				tableService.changeEmpty(단체지정_테이블.getId(), 단체지정_테이블);
+				OrderTableRequest orderTableRequest = OrderTableRequest.of(isEmpty);
+				tableService.changeEmpty(단체지정_테이블ID, orderTableRequest);
 			});
 	}
 
@@ -85,10 +91,10 @@ class TableServiceTest extends BaseTest {
 	@ParameterizedTest
 	@ValueSource(booleans = {false, true})
 	void changeEmptyThrow3(boolean isEmpty) {
-		assertThatExceptionOfType(IllegalArgumentException.class)
+		assertThatExceptionOfType(AlreadyOrderException.class)
 			.isThrownBy(() -> {
-				주문상태_조리인_테이블.setEmpty(isEmpty);
-				tableService.changeEmpty(주문상태_조리인_테이블.getId(), 주문상태_조리인_테이블);
+				OrderTableRequest orderTableRequest = OrderTableRequest.of(isEmpty);
+				tableService.changeEmpty(주문상태_조리인_테이블ID, orderTableRequest);
 			});
 	}
 
@@ -96,10 +102,10 @@ class TableServiceTest extends BaseTest {
 	@ParameterizedTest
 	@ValueSource(booleans = {false, true})
 	void changeEmptyThrow4(boolean isEmpty) {
-		assertThatExceptionOfType(IllegalArgumentException.class)
+		assertThatExceptionOfType(AlreadyOrderException.class)
 			.isThrownBy(() -> {
-				주문상태_식사인_테이블.setEmpty(isEmpty);
-				tableService.changeEmpty(주문상태_식사인_테이블.getId(), 주문상태_식사인_테이블);
+				OrderTableRequest orderTableRequest = OrderTableRequest.of(isEmpty);
+				tableService.changeEmpty(주문상태_식사인_테이블ID, orderTableRequest);
 			});
 	}
 
@@ -107,10 +113,10 @@ class TableServiceTest extends BaseTest {
 	@ParameterizedTest
 	@ValueSource(ints = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10})
 	void changeNumberOfGuests(int numberOfGuest) {
-		주문상태_조리인_테이블.setNumberOfGuests(numberOfGuest);
-		tableService.changeNumberOfGuests(주문상태_조리인_테이블.getId(), 주문상태_조리인_테이블);
+		OrderTableRequest orderTableRequest = OrderTableRequest.of(numberOfGuest);
+		tableService.changeNumberOfGuests(주문상태_조리인_테이블ID, orderTableRequest);
 
-		OrderTable savedTable = orderTableDao.findById(주문상태_조리인_테이블.getId()).orElse(null);
+		OrderTable savedTable = orderTableRepository.findById(주문상태_조리인_테이블ID).orElse(null);
 
 		assertThat(savedTable.getNumberOfGuests()).isEqualTo(numberOfGuest);
 	}
@@ -119,10 +125,10 @@ class TableServiceTest extends BaseTest {
 	@ParameterizedTest
 	@ValueSource(ints = {-1, -2, -3, -4, -5, -100})
 	void changeNumberOfGuestsThrow1(int numberOfGuest) {
-		assertThatExceptionOfType(IllegalArgumentException.class)
+		assertThatExceptionOfType(NegativeNumberException.class)
 			.isThrownBy(() -> {
-				주문상태_조리인_테이블.setNumberOfGuests(numberOfGuest);
-				tableService.changeNumberOfGuests(주문상태_조리인_테이블.getId(), 주문상태_조리인_테이블);
+				OrderTableRequest orderTableRequest = OrderTableRequest.of(numberOfGuest);
+				tableService.changeNumberOfGuests(주문상태_조리인_테이블ID, orderTableRequest);
 			});
 	}
 
@@ -130,10 +136,10 @@ class TableServiceTest extends BaseTest {
 	@ParameterizedTest
 	@ValueSource(ints = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10})
 	void changeNumberOfGuestsThrow2(int numberOfGuest) {
-		assertThatExceptionOfType(IllegalArgumentException.class)
+		assertThatExceptionOfType(NotFoundException.class)
 			.isThrownBy(() -> {
-				존재하지않는테이블.setNumberOfGuests(numberOfGuest);
-				tableService.changeNumberOfGuests(존재하지않는테이블.getId(), 존재하지않는테이블);
+				OrderTableRequest orderTableRequest = OrderTableRequest.of(numberOfGuest);
+				tableService.changeNumberOfGuests(존재하지않는_테이블ID, orderTableRequest);
 			});
 	}
 
@@ -141,10 +147,10 @@ class TableServiceTest extends BaseTest {
 	@ParameterizedTest
 	@ValueSource(ints = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10})
 	void changeNumberOfGuestsThrow3(int numberOfGuest) {
-		assertThatExceptionOfType(IllegalArgumentException.class)
+		assertThatExceptionOfType(EmptyTableException.class)
 			.isThrownBy(() -> {
-				빈테이블.setNumberOfGuests(numberOfGuest);
-				tableService.changeNumberOfGuests(빈테이블.getId(), 빈테이블);
+				OrderTableRequest orderTableRequest = OrderTableRequest.of(numberOfGuest);
+				tableService.changeNumberOfGuests(빈테이블ID, orderTableRequest);
 			});
 	}
 

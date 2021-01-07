@@ -4,14 +4,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.math.BigDecimal;
+
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
 import kitchenpos.common.BaseControllerTest;
-import kitchenpos.common.TestDataUtil;
-import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductRequest;
 
 @DisplayName("ProductRestController 테스트")
 class ProductRestControllerTest extends BaseControllerTest {
@@ -21,8 +22,8 @@ class ProductRestControllerTest extends BaseControllerTest {
 	void create() throws Exception {
 		int expectedId = 7;
 		String name = "피자";
-		int price = 15000;
-		Product product = TestDataUtil.createProduct(name, price);
+		BigDecimal price = BigDecimal.valueOf(15000);
+		ProductRequest product = ProductRequest.of(name, price);
 
 		mockMvc.perform(post("/api/products")
 			.contentType(MediaType.APPLICATION_JSON)

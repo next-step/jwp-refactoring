@@ -2,51 +2,94 @@ package kitchenpos.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import kitchenpos.exception.AlreadyOrderCompleteException;
+import kitchenpos.exception.EmptyTableException;
+
+@Entity
+@Table(name = "orders")
 public class Order {
-    private Long id;
-    private Long orderTableId;
-    private String orderStatus;
-    private LocalDateTime orderedTime;
-    private List<OrderLineItem> orderLineItems;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    public Long getId() {
-        return id;
-    }
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "order_table_id")
+	private OrderTable orderTable;
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
+	@Enumerated(EnumType.STRING)
+	private OrderStatus orderStatus;
 
-    public Long getOrderTableId() {
-        return orderTableId;
-    }
+	private LocalDateTime orderedTime;
 
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
-    }
+	@Embedded
+	private OrderLineItems orderLineItems = new OrderLineItems();
 
-    public String getOrderStatus() {
-        return orderStatus;
-    }
+	protected Order() {
+	}
 
-    public void setOrderStatus(final String orderStatus) {
-        this.orderStatus = orderStatus;
-    }
+	private Order(OrderTable orderTable) {
+		validateOrderTable(orderTable);
+		this.orderTable = orderTable;
+		this.orderStatus = OrderStatus.COOKING;
+		this.orderedTime = LocalDateTime.now();
+	}
 
-    public LocalDateTime getOrderedTime() {
-        return orderedTime;
-    }
+	public static Order create(OrderTable orderTable) {
+		return new Order(orderTable);
+	}
 
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
-    }
+	public void changeOrderStatus(final OrderStatus orderStatus) {
+		validateBeforeChangeStatus();
+		this.orderStatus = orderStatus;
+	}
 
-    public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
-    }
+	public void addOrderLineItems(OrderLineItem orderLineItem) {
+		orderLineItems.add(orderLineItem);
+	}
 
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
-    }
+	private void validateOrderTable(OrderTable orderTable) {
+		if (orderTable.isEmpty()) {
+			throw new EmptyTableException("빈 테이블일 경우 주문을 진행할 수 없습니다.");
+		}
+	}
+
+	private void validateBeforeChangeStatus() {
+		if (Objects.equals(OrderStatus.COMPLETION, this.orderStatus)) {
+			throw new AlreadyOrderCompleteException("이미 완료된 주문입니다.");
+		}
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public OrderTable getOrderTable() {
+		return orderTable;
+	}
+
+	public OrderStatus getOrderStatus() {
+		return orderStatus;
+	}
+
+	public LocalDateTime getOrderedTime() {
+		return orderedTime;
+	}
+
+	public List<OrderLineItem> getOrderLineItems() {
+		return orderLineItems.getOrderLineItems();
+	}
 }

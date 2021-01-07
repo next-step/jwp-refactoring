@@ -11,11 +11,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import kitchenpos.common.BaseTest;
-import kitchenpos.common.TestDataUtil;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
+import kitchenpos.exception.AlreadyOrderException;
+import kitchenpos.exception.AlreadyTableGroupException;
+import kitchenpos.exception.NotFoundException;
+import kitchenpos.repository.OrderTableRepository;
+import kitchenpos.repository.TableGroupRepository;
 
 @DisplayName("TableGroupService 테스트")
 class TableGroupServiceTest extends BaseTest {
@@ -24,20 +28,20 @@ class TableGroupServiceTest extends BaseTest {
 	private TableGroupService tableGroupService;
 
 	@Autowired
-	private TableGroupDao tableGroupDao;
+	private TableGroupRepository tableGroupRepository;
 
 	@Autowired
-	private OrderTableDao orderTableDao;
+	private OrderTableRepository orderTableRepository;
 
 	@DisplayName("테이블들을 단체 지정할 수 있다.")
 	@Test
 	void create() {
 
-		TableGroup tableGroup = tableGroupService.create(TestDataUtil.createTableGroup(Arrays.asList(예제테이블1, 예제테이블2)));
+		TableGroupResponse tableGroup = tableGroupService.create(TableGroupRequest.of(Arrays.asList(예제테이블1_ID, 예제테이블2_ID)));
 
-		TableGroup savedTableGroup = tableGroupDao.findById(tableGroup.getId()).orElse(null);
-		OrderTable targetTable1 = orderTableDao.findById(예제테이블1.getId()).orElse(null);
-		OrderTable targetTable2 = orderTableDao.findById(예제테이블2.getId()).orElse(null);
+		TableGroup savedTableGroup = tableGroupRepository.findById(tableGroup.getId()).orElse(null);
+		OrderTable targetTable1 = orderTableRepository.findById(예제테이블1_ID).orElse(null);
+		OrderTable targetTable2 = orderTableRepository.findById(예제테이블2_ID).orElse(null);
 
 		assertAll(
 			() -> assertThat(savedTableGroup.getId()).isNotNull(),
@@ -47,24 +51,13 @@ class TableGroupServiceTest extends BaseTest {
 
 	}
 
-	@DisplayName("단체테이블로 지정할 테이블의 요청 갯수가 2개 미만이면 단체지정할 수 없다.")
-	@Test
-	void createThrow1() {
-
-		assertThatExceptionOfType(IllegalArgumentException.class)
-			.isThrownBy(() -> {
-				tableGroupService.create(TestDataUtil.createTableGroup(Arrays.asList(예제테이블1)));
-			});
-
-	}
-
 	@DisplayName("요청된 테이블 중 실제 주문테이블이 존재하지 않은 테이블이 포함되면 단체 지정할수 없다.")
 	@Test
 	void createThrow2() {
 
-		assertThatExceptionOfType(IllegalArgumentException.class)
+		assertThatExceptionOfType(NotFoundException.class)
 			.isThrownBy(() -> {
-				tableGroupService.create(TestDataUtil.createTableGroup(Arrays.asList(존재하지않는테이블, 예제테이블1)));
+				tableGroupService.create(TableGroupRequest.of(Arrays.asList(존재하지않는_테이블ID, 예제테이블1_ID)));
 			});
 
 	}
@@ -73,9 +66,9 @@ class TableGroupServiceTest extends BaseTest {
 	@Test
 	void createThrow3() {
 
-		assertThatExceptionOfType(IllegalArgumentException.class)
+		assertThatExceptionOfType(AlreadyTableGroupException.class)
 			.isThrownBy(() -> {
-				tableGroupService.create(TestDataUtil.createTableGroup(Arrays.asList(비어있지않은테이블, 예제테이블1)));
+				tableGroupService.create(TableGroupRequest.of(Arrays.asList(비어있지않은테이블_ID, 예제테이블1_ID)));
 			});
 	}
 
@@ -83,9 +76,9 @@ class TableGroupServiceTest extends BaseTest {
 	@Test
 	void createThrow4() {
 
-		assertThatExceptionOfType(IllegalArgumentException.class)
+		assertThatExceptionOfType(AlreadyTableGroupException.class)
 			.isThrownBy(() -> {
-				tableGroupService.create(TestDataUtil.createTableGroup(Arrays.asList(단체지정되어있지만_주문없는_테이블, 예제테이블1)));
+				tableGroupService.create(TableGroupRequest.of(Arrays.asList(단체지정되어있지만_주문없는_테이블_ID, 예제테이블1_ID)));
 			});
 	}
 
@@ -95,11 +88,11 @@ class TableGroupServiceTest extends BaseTest {
 
 		tableGroupService.ungroup(예제_테이블_그룹_ID);
 
-		OrderTable 단체지정되어있던_테이블 = orderTableDao.findById(단체지정되어있지만_주문없는_테이블.getId()).orElse(null);
+		OrderTable 단체지정되어있던_테이블 = orderTableRepository.findById(단체지정되어있지만_주문없는_테이블_ID).orElse(null);
 
 		assertAll(
 			() -> assertThat(단체지정되어있던_테이블).isNotNull(),
-			() -> assertThat(단체지정되어있던_테이블.getTableGroupId()).isNull()
+			() -> assertThat(단체지정되어있던_테이블.getTableGroup()).isNull()
 		);
 	}
 
@@ -107,7 +100,7 @@ class TableGroupServiceTest extends BaseTest {
 	@Test
 	void ungroupThrow() {
 
-		assertThatExceptionOfType(IllegalArgumentException.class)
+		assertThatExceptionOfType(AlreadyOrderException.class)
 			.isThrownBy(() -> {
 				tableGroupService.ungroup(조리상태인_테이블그룹_ID);
 			});

@@ -11,9 +11,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import kitchenpos.common.BaseTest;
-import kitchenpos.common.TestDataUtil;
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
+import kitchenpos.repository.MenuGroupRepository;
 
 @DisplayName("MenuGroupService 테스트")
 class MenuGroupServiceTest extends BaseTest {
@@ -22,14 +23,14 @@ class MenuGroupServiceTest extends BaseTest {
 	private MenuGroupService menuGroupService;
 
 	@Autowired
-	private MenuGroupDao menuGroupDao;
+	private MenuGroupRepository menuGroupRepository;
 
 	@DisplayName("메뉴 그룹을 등록할 수 있다.")
 	@Test
 	void create() {
-		MenuGroup menuGroup = menuGroupService.create(TestDataUtil.createMenuGroup(예제_메뉴그룹명));
+		MenuGroupResponse menuGroup = menuGroupService.create(MenuGroupRequest.of(예제_메뉴그룹명));
 
-		MenuGroup savedMenuGroup = menuGroupDao.findById(menuGroup.getId()).orElse(null);
+		MenuGroup savedMenuGroup = menuGroupRepository.findById(menuGroup.getId()).orElse(null);
 
 		assertAll(
 			() -> assertThat(savedMenuGroup.getId()).isNotNull(),
@@ -41,7 +42,7 @@ class MenuGroupServiceTest extends BaseTest {
 	@DisplayName("메뉴그룹을 조회할 수 있다.")
 	@Test
 	void list() {
-		List<MenuGroup> menuGroups = menuGroupService.list();
+		List<MenuGroupResponse> menuGroups = menuGroupService.findAll();
 
 		assertThat(menuGroups).hasSize(4);
 	}
