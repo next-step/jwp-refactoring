@@ -78,7 +78,7 @@
 ## Todo-list
 - [ ] DTO를 통한 도메인, UI 레이어 분리
   - 도메인 오브젝트가 외부로 그대로 노출되면서 도메인 변경 시 영향 범위가 너무 크기 때문에 리팩토링이 어려움
-  - [ ] MenuGroup DTO 분리
+  - [X] MenuGroup DTO 분리
   - [ ] Menu DTO 분리
   - [ ] Order DTO 분리
   - [ ] Product DTO 분리

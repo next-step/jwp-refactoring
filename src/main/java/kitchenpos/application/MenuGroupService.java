@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class MenuGroupService {
     private final MenuGroupDao menuGroupDao;
 
@@ -27,6 +28,7 @@ public class MenuGroupService {
         return menuGroupDao.save(menuGroup);
     }
 
+    @Transactional(readOnly = true)
     public List<MenuGroupResponse> list() {
         List<MenuGroup> menuGroups = menuGroupDao.findAll();
 
