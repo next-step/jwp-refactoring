@@ -6,6 +6,7 @@ import kitchenpos.application.OrderService;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
+import kitchenpos.ui.dto.order.OrderResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.hamcrest.Matchers.*;
@@ -47,18 +50,20 @@ class OrderRestControllerTest {
     @Test
     void createOrderTest() throws Exception {
         // given
+        Long orderId = 1L;
         String url = "/api/orders";
         Order orderRequest = new Order();
-        Order savedOrder = new Order();
-        savedOrder.setId(1L);
-        given(orderService.create(any())).willReturn(savedOrder);
+        OrderResponse orderResponse = new OrderResponse(orderId, 1L, OrderStatus.MEAL.name(),
+                LocalDateTime.now(), new ArrayList<>());
+
+        given(orderService.create(any())).willReturn(orderResponse);
 
         // when, then
         mockMvc.perform(post(url)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(orderRequest)))
                 .andExpect(status().isCreated())
-                .andExpect(header().string("Location", url + "/" + savedOrder.getId()))
+                .andExpect(header().string("Location", url + "/" + orderResponse.getId()))
                 ;
     }
 

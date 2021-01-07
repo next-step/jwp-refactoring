@@ -2,12 +2,12 @@ package kitchenpos.application;
 
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.exceptions.order.*;
 import kitchenpos.domain.exceptions.orderTable.OrderTableEntityNotFoundException;
 import kitchenpos.ui.dto.order.OrderLineItemRequest;
 import kitchenpos.ui.dto.order.OrderRequest;
+import kitchenpos.ui.dto.order.OrderResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,13 +111,13 @@ class OrderServiceTest {
         OrderRequest orderRequest = new OrderRequest(fullOrderTable.getId(), Collections.singletonList(orderLineItemRequest));
 
         // when
-        Order order = orderService.create(orderRequest);
+        OrderResponse orderResponse = orderService.create(orderRequest);
 
         // then
-        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
-        assertThat(order.getOrderTableId()).isEqualTo(fullOrderTable.getId());
-        assertThat(order.getOrderedTime()).isNotNull();
-        assertThat(order.getOrderLineItems()).hasSize(1);
+        assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(orderResponse.getOrderTableId()).isEqualTo(fullOrderTable.getId());
+        assertThat(orderResponse.getOrderedTime()).isNotNull();
+        assertThat(orderResponse.getOrderLineItems()).hasSize(1);
     }
 
     @DisplayName("주문 목록을 조회할 수 있다.")
@@ -134,7 +134,7 @@ class OrderServiceTest {
         OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menuId, quantity);
         OrderRequest orderRequest = new OrderRequest(fullOrderTable.getId(), Collections.singletonList(orderLineItemRequest));
 
-        Order order = orderService.create(orderRequest);
+        OrderResponse orderResponse = orderService.create(orderRequest);
 
         // when
         List<Order> orders = orderService.list();
@@ -142,7 +142,7 @@ class OrderServiceTest {
                 .map(Order::getId);
 
         // then
-        assertThat(ids).contains(order.getId());
+        assertThat(ids).contains(orderResponse.getId());
     }
 
     @DisplayName("존재하지 않는 주문의 주문 상태를 바꿀 수 없다.")
@@ -174,13 +174,13 @@ class OrderServiceTest {
         OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menuId, quantity);
         OrderRequest orderRequest = new OrderRequest(fullOrderTable.getId(), Collections.singletonList(orderLineItemRequest));
 
-        Order order = orderService.create(orderRequest);
+        OrderResponse orderResponse = orderService.create(orderRequest);
 
         Order changeOrderRequest = new Order();
         changeOrderRequest.setOrderStatus(OrderStatus.COMPLETION.name());
 
         // when
-        Order changedOrder = orderService.changeOrderStatus(order.getId(), changeOrderRequest);
+        Order changedOrder = orderService.changeOrderStatus(orderResponse.getId(), changeOrderRequest);
 
         // then
         assertThat(changedOrder.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
@@ -200,15 +200,15 @@ class OrderServiceTest {
         OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menuId, quantity);
         OrderRequest orderRequest = new OrderRequest(fullOrderTable.getId(), Collections.singletonList(orderLineItemRequest));
 
-        Order order = orderService.create(orderRequest);
+        OrderResponse orderResponse = orderService.create(orderRequest);
 
         Order changeOrderRequest = new Order();
         changeOrderRequest.setOrderStatus(OrderStatus.COMPLETION.name());
 
-        orderService.changeOrderStatus(order.getId(), changeOrderRequest);
+        orderService.changeOrderStatus(orderResponse.getId(), changeOrderRequest);
 
         // when, then
-        assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), changeOrderRequest))
+        assertThatThrownBy(() -> orderService.changeOrderStatus(orderResponse.getId(), changeOrderRequest))
                 .isInstanceOf(InvalidTryChangeOrderStatusException.class)
                 .hasMessage("계산 완료된 주문의 상태를 바꿀 수 없습니다.");
     }

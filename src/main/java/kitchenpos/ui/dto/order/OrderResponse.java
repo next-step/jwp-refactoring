@@ -1,8 +1,12 @@
 package kitchenpos.ui.dto.order;
 
+import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderLineItem;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class OrderResponse {
     private Long id;
@@ -20,6 +24,15 @@ public class OrderResponse {
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
+    }
+
+    public static OrderResponse of(final Order order) {
+        List<OrderLineItemResponse> orderLineItems = order.getOrderLineItems().stream()
+                .map(OrderLineItemResponse::of)
+                .collect(Collectors.toList());
+
+        return new OrderResponse(order.getId(), order.getOrderTableId(), order.getOrderStatus(),
+                order.getOrderedTime(), orderLineItems);
     }
 
     public Long getId() {
