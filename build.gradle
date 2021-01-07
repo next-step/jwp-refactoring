@@ -23,6 +23,8 @@ dependencies {
     implementation 'org.apache.commons:commons-collections4:4.4'
     runtimeOnly 'com.h2database:h2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'com.tngtech.archunit:archunit-junit5-engine:0.15.0'
+
 }
 
 test {
