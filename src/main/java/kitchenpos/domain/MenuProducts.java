@@ -15,8 +15,8 @@ public class MenuProducts {
 	@JoinColumn(name = "menu_id")
 	private List<MenuProduct> menuProducts = new ArrayList<>();
 
-	public void add(List<MenuProduct> menuProducts) {
-		this.menuProducts = menuProducts;
+	public void add(MenuProduct menuProduct) {
+		this.menuProducts.add(menuProduct);
 	}
 
 	public List<MenuProduct> getMenuProducts() {

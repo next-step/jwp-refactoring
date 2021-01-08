@@ -12,8 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import kitchenpos.exception.WrongPriceException;
-
 @Entity
 public class Menu {
 
@@ -45,20 +43,8 @@ public class Menu {
 		return new Menu(name, price, menuGroup);
 	}
 
-	public void addMenuProduct(List<MenuProduct> menuProducts) {
-		validatePriceSum(menuProducts);
-		this.menuProducts.add(menuProducts);
-	}
-
-	private void validatePriceSum(List<MenuProduct> menuProducts) {
-		MenuPrice totalPrice = menuProducts.stream()
-			.map(MenuProduct::getMenuPrice)
-			.reduce(MenuPrice::add)
-			.orElse(MenuPrice.ZERO);
-
-		if (price.isGreaterThanProductTotal(totalPrice)) {
-			throw new WrongPriceException("메뉴의 가격이 상품가격의 총합보다 클 수 없습니다.");
-		}
+	public void addMenuProduct(MenuProduct menuProduct) {
+		this.menuProducts.add(menuProduct);
 	}
 
 	public Long getId() {
