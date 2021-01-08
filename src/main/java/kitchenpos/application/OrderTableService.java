@@ -30,11 +30,8 @@ public class OrderTableService {
     }
 
     @Transactional
-    public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setTableGroupId(null);
-        orderTable.setEmpty(orderTableRequest.isEmpty());
-        orderTable.setNumberOfGuests(orderTableRequest.getNumberOfGuests());
+    public OrderTableResponse create(final OrderTableRequest request) {
+        OrderTable orderTable = new OrderTable(request.getNumberOfGuests(), request.isEmpty());
         OrderTable saved = orderTableDao.save(orderTable);
 
         return OrderTableResponse.of(saved);
@@ -68,7 +65,7 @@ public class OrderTableService {
             throw new InvalidTryChangeEmptyException("조리중이거나 식사중인 주문 테이블의 비움 상태를 바꿀 수 없습니다.");
         }
 
-        savedOrderTable.setEmpty(changeEmptyRequest.isEmpty());
+        savedOrderTable.changeEmpty(changeEmptyRequest.isEmpty());
 
         OrderTable changed = orderTableDao.save(savedOrderTable);
 
@@ -93,7 +90,7 @@ public class OrderTableService {
             throw new InvalidTryChangeGuestsException("비어있는 주문 테이블의 방문한 손님 수를 바꿀 수 없습니다.");
         }
 
-        savedOrderTable.setNumberOfGuests(numberOfGuests);
+        savedOrderTable.changeNumberOfGuests(numberOfGuests);
 
         OrderTable changed = orderTableDao.save(savedOrderTable);
 

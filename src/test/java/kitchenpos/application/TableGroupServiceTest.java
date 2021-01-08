@@ -80,10 +80,8 @@ public class TableGroupServiceTest {
     @Test
     void createTableGroupFailWithNotExistTableGroups() {
         // given
-        OrderTable notExistTable1 = new OrderTable();
-        notExistTable1.setId(1000001L);
-        OrderTable notExistTable2 = new OrderTable();
-        notExistTable1.setId(1000002L);
+        OrderTable notExistTable1 = new OrderTable(100, true);
+        OrderTable notExistTable2 = new OrderTable(100, true);
 
         TableGroup tableGroupWithNotExistOrderTables = new TableGroup();
         tableGroupWithNotExistOrderTables.setOrderTables(Arrays.asList(notExistTable1, notExistTable2));
