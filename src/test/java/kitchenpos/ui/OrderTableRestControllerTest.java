@@ -14,6 +14,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.Arrays;
+
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -57,5 +60,22 @@ class OrderTableRestControllerTest {
                 .content(objectMapper.writeValueAsString(orderTableRequest)))
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location", url + "/" + orderTableId));
+    }
+
+    @DisplayName("주문 테이블 목록을 불러올 수 있다.")
+    @Test
+    void getOrderTablesTest() throws Exception {
+        // given
+        String url = "/api/order-tables";
+
+        OrderTableResponse orderTableResponse1 = new OrderTableResponse(1L, 1L, 3, false);
+        OrderTableResponse orderTableResponse2 = new OrderTableResponse(2L, 2L, 3, false);
+
+        given(orderTableService.list()).willReturn(Arrays.asList(orderTableResponse1, orderTableResponse2));
+
+        // when, then
+        mockMvc.perform(get(url))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)));
     }
 }
