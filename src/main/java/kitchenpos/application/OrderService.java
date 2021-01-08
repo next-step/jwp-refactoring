@@ -89,7 +89,7 @@ public class OrderService {
     }
 
     @Transactional
-    public Order changeOrderStatus(final Long orderId, final OrderStatusChangeRequest orderStatusChangeRequest) {
+    public OrderResponse changeOrderStatus(final Long orderId, final OrderStatusChangeRequest orderStatusChangeRequest) {
         final Order savedOrder = orderDao.findById(orderId)
                 .orElseThrow(() -> new OrderEntityNotFoundException("존재하지 않는 주문입니다."));
 
@@ -105,6 +105,6 @@ public class OrderService {
         List<OrderLineItem> orderLineItems = orderLineItemDao.findAllByOrderId(orderId);
         orderLineItems.forEach(statusChangedOrder::addOrderLineItem);
 
-        return statusChangedOrder;
+        return OrderResponse.of(statusChangedOrder);
     }
 }

@@ -90,13 +90,15 @@ class OrderRestControllerTest {
         // given
         Long targetId = 1L;
         String url = "/api/orders/"+ targetId +"/order-status";
+        OrderStatus changeStatus = OrderStatus.MEAL;
 
         Order changeOrderRequest = new Order();
-        changeOrderRequest.changeOrderStatus(OrderStatus.MEAL.name());
+        changeOrderRequest.changeOrderStatus(changeStatus.name());
 
-        Order changedOrder = Order.of(targetId, 1L, OrderStatus.MEAL.name(), LocalDateTime.now());
+        OrderResponse orderResponse = new OrderResponse(1L, 1L, changeStatus.name(),
+                LocalDateTime.now(), new ArrayList<>());
 
-        given(orderService.changeOrderStatus(eq(targetId), any())).willReturn(changedOrder);
+        given(orderService.changeOrderStatus(eq(targetId), any())).willReturn(orderResponse);
 
         // when, then
         mockMvc.perform(put(url)

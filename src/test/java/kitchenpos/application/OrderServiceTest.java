@@ -174,15 +174,15 @@ class OrderServiceTest {
         OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menuId, quantity);
         OrderRequest orderRequest = new OrderRequest(fullOrderTable.getId(), Collections.singletonList(orderLineItemRequest));
 
-        OrderResponse orderResponse = orderService.create(orderRequest);
+        OrderResponse created = orderService.create(orderRequest);
 
         OrderStatusChangeRequest changeOrderRequest = new OrderStatusChangeRequest(OrderStatus.COMPLETION.name());
 
         // when
-        Order changedOrder = orderService.changeOrderStatus(orderResponse.getId(), changeOrderRequest);
+        OrderResponse orderResponse = orderService.changeOrderStatus(created.getId(), changeOrderRequest);
 
         // then
-        assertThat(changedOrder.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
+        assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
     }
 
     @DisplayName("주문 상태가 계산 완료인 주문의 주문 상태를 바꿀 수 없다.")
