@@ -8,6 +8,7 @@ import kitchenpos.domain.exceptions.orderTable.OrderTableEntityNotFoundException
 import kitchenpos.ui.dto.order.OrderLineItemRequest;
 import kitchenpos.ui.dto.order.OrderRequest;
 import kitchenpos.ui.dto.order.OrderResponse;
+import kitchenpos.ui.dto.order.OrderStatusChangeRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -151,8 +152,7 @@ class OrderServiceTest {
         // given
         Long notExistOrder = 1L;
 
-        Order changeOrderRequest = new Order();
-        changeOrderRequest.setOrderStatus(OrderStatus.MEAL.name());
+        OrderStatusChangeRequest changeOrderRequest = new OrderStatusChangeRequest(OrderStatus.MEAL.name());
 
         // when, then
         assertThatThrownBy(() -> orderService.changeOrderStatus(notExistOrder, changeOrderRequest))
@@ -176,8 +176,7 @@ class OrderServiceTest {
 
         OrderResponse orderResponse = orderService.create(orderRequest);
 
-        Order changeOrderRequest = new Order();
-        changeOrderRequest.setOrderStatus(OrderStatus.COMPLETION.name());
+        OrderStatusChangeRequest changeOrderRequest = new OrderStatusChangeRequest(OrderStatus.COMPLETION.name());
 
         // when
         Order changedOrder = orderService.changeOrderStatus(orderResponse.getId(), changeOrderRequest);
@@ -202,8 +201,7 @@ class OrderServiceTest {
 
         OrderResponse orderResponse = orderService.create(orderRequest);
 
-        Order changeOrderRequest = new Order();
-        changeOrderRequest.setOrderStatus(OrderStatus.COMPLETION.name());
+        OrderStatusChangeRequest changeOrderRequest = new OrderStatusChangeRequest(OrderStatus.COMPLETION.name());
 
         orderService.changeOrderStatus(orderResponse.getId(), changeOrderRequest);
 
