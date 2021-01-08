@@ -1,7 +1,6 @@
 package kitchenpos.application;
 
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.exceptions.order.*;
 import kitchenpos.domain.exceptions.orderTable.OrderTableEntityNotFoundException;
