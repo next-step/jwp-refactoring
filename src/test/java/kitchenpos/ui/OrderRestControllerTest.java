@@ -94,9 +94,7 @@ class OrderRestControllerTest {
         Order changeOrderRequest = new Order();
         changeOrderRequest.changeOrderStatus(OrderStatus.MEAL.name());
 
-        Order changedOrder = new Order();
-        changedOrder.setId(targetId);
-        changedOrder.changeOrderStatus(OrderStatus.MEAL.name());
+        Order changedOrder = Order.of(targetId, 1L, OrderStatus.MEAL.name(), LocalDateTime.now());
 
         given(orderService.changeOrderStatus(eq(targetId), any())).willReturn(changedOrder);
 
