@@ -62,23 +62,15 @@ public class OrderService {
             throw new InvalidTryOrderException("비어있는 주문 테이블에서 주문할 수 없습니다.");
         }
 
-        Order order = new Order();
-        order.setOrderTableId(orderTable.getId());
-        order.setOrderStatus(OrderStatus.COOKING.name());
-        order.setOrderedTime(LocalDateTime.now());
-
+        final Order order = new Order(orderTable.getId(), OrderStatus.COOKING.name(), LocalDateTime.now());
         final Order savedOrder = orderDao.save(order);
 
         final Long orderId = savedOrder.getId();
-        final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
         for (final OrderLineItemRequest orderLineItemRequest : orderLineItems) {
-            OrderLineItem orderLineItem = new OrderLineItem();
-            orderLineItem.setOrderId(orderId);
-            orderLineItem.setMenuId(orderLineItemRequest.getMenuId());
-            orderLineItem.setQuantity(orderLineItemRequest.getQuantity());
-            savedOrderLineItems.add(orderLineItemDao.save(orderLineItem));
+            OrderLineItem orderLineItem = new OrderLineItem(orderId, orderLineItemRequest.getMenuId(),
+                    orderLineItemRequest.getQuantity());
+            savedOrder.addOrderLineItem(orderLineItemDao.save(orderLineItem));
         }
-        savedOrder.setOrderLineItems(savedOrderLineItems);
 
         return OrderResponse.of(savedOrder);
     }

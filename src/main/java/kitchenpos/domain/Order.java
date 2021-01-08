@@ -1,6 +1,9 @@
 package kitchenpos.domain;
 
+import kitchenpos.ui.dto.order.OrderLineItemRequest;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Order {
@@ -8,7 +11,26 @@ public class Order {
     private Long orderTableId;
     private String orderStatus;
     private LocalDateTime orderedTime;
-    private List<OrderLineItem> orderLineItems;
+    private List<OrderLineItem> orderLineItems = new ArrayList<>();
+
+    public Order() {
+    }
+
+    Order(final Long id, final Long orderTableId, final String orderStatus, final LocalDateTime orderedTime, final List<OrderLineItem> orderLineItems) {
+        this.id = id;
+        this.orderTableId = orderTableId;
+        this.orderStatus = orderStatus;
+        this.orderedTime = orderedTime;
+        this.orderLineItems = orderLineItems;
+    }
+
+    public Order(final Long orderTableId, final String orderStatus, final LocalDateTime orderedTime) {
+        this(null, orderTableId, orderStatus, orderedTime, new ArrayList<>());
+    }
+
+    public void addOrderLineItem(final OrderLineItem orderLineItem) {
+        this.orderLineItems.add(orderLineItem);
+    }
 
     public Long getId() {
         return id;
