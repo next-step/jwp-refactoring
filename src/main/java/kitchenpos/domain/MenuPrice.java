@@ -29,7 +29,7 @@ public class MenuPrice {
 		}
 	}
 
-	public boolean isPositive(BigDecimal totalPrice) {
+	public boolean isGreaterThanProductTotal(BigDecimal totalPrice) {
 		return price.compareTo(totalPrice) > 0;
 	}
 

@@ -56,7 +56,7 @@ public class Menu {
 			.reduce(BigDecimal::add)
 			.orElse(BigDecimal.ZERO);
 
-		if (price.isPositive(totalPrice)) {
+		if (price.isGreaterThanProductTotal(totalPrice)) {
 			throw new WrongPriceException("메뉴의 가격이 상품가격의 총합보다 클 수 없습니다.");
 		}
 	}
