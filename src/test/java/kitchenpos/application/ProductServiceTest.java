@@ -3,6 +3,7 @@ package kitchenpos.application;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.exceptions.product.InvalidProductPriceException;
+import kitchenpos.ui.dto.product.ProductRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,11 +40,11 @@ class ProductServiceTest {
     @MethodSource("createProductFailTestResource")
     void createProductFailTest(BigDecimal invalidPrice) {
         // given
-        Product product = new Product();
-        product.setPrice(invalidPrice);
+        String name = "new product";
+        ProductRequest productRequest = new ProductRequest(name, invalidPrice);
 
         // when, then
-        assertThatThrownBy(() -> productService.create(product))
+        assertThatThrownBy(() -> productService.create(productRequest))
                 .isInstanceOf(InvalidProductPriceException.class)
                 .hasMessage("상품의 가격은 반드시 있어야 하며, 0원 이상이어야 합니다.");
     }
@@ -61,12 +62,10 @@ class ProductServiceTest {
         // given
         String productName = "닭강정";
 
-        Product product = new Product();
-        product.setName(productName);
-        product.setPrice(BigDecimal.valueOf(price));
+        ProductRequest productRequest = new ProductRequest(productName, BigDecimal.valueOf(price));
 
         // when
-        Product created = productService.create(product);
+        Product created = productService.create(productRequest);
 
         // then
         assertThat(created.getId()).isNotNull();
@@ -78,11 +77,9 @@ class ProductServiceTest {
         // given
         String productName = "닭강정";
 
-        Product product = new Product();
-        product.setName(productName);
-        product.setPrice(BigDecimal.ONE);
+        ProductRequest productRequest = new ProductRequest(productName, BigDecimal.ONE);
 
-        Product saved = productService.create(product);
+        Product saved = productService.create(productRequest);
 
         // when
         List<Product> foundProducts = productService.list();

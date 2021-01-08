@@ -3,6 +3,7 @@ package kitchenpos.application;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.exceptions.product.InvalidProductPriceException;
+import kitchenpos.ui.dto.product.ProductRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,13 +20,16 @@ public class ProductService {
     }
 
     @Transactional
-    public Product create(final Product product) {
-        final BigDecimal price = product.getPrice();
+    public Product create(final ProductRequest productRequest) {
+        final BigDecimal price = productRequest.getPrice();
 
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new InvalidProductPriceException("상품의 가격은 반드시 있어야 하며, 0원 이상이어야 합니다.");
         }
 
+        Product product = new Product();
+        product.setName(productRequest.getName());
+        product.setPrice(productRequest.getPrice());
         return productDao.save(product);
     }
 
