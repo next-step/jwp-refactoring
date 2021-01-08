@@ -11,6 +11,7 @@ import kitchenpos.ui.dto.order.OrderRequest;
 import kitchenpos.ui.dto.order.OrderResponse;
 import kitchenpos.ui.dto.order.OrderStatusChangeRequest;
 import kitchenpos.ui.dto.orderTable.OrderTableRequest;
+import kitchenpos.ui.dto.orderTable.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -47,7 +48,7 @@ public class OrderTableServiceTest {
         boolean isEmpty = true;
 
         // when
-        OrderTable orderTable = orderTableService.create(new OrderTableRequest(numberOfGuests, isEmpty));
+        OrderTableResponse orderTable = orderTableService.create(new OrderTableRequest(numberOfGuests, isEmpty));
 
         // then
         assertThat(orderTable.getId()).isNotNull();
@@ -60,7 +61,7 @@ public class OrderTableServiceTest {
     @Test
     void orderTableListTest() {
         // given
-        OrderTable orderTable = this.createOrderTable(true, 0);
+        OrderTableResponse orderTable = this.createOrderTable(true, 0);
 
         // when
         List<OrderTable> orderTables = orderTableService.list();
@@ -90,8 +91,10 @@ public class OrderTableServiceTest {
     @Test
     void changeEmptyFailWithGroupedTableTest() {
         // given
-        OrderTable orderTable1 = this.createOrderTable(true, 0);
-        OrderTable orderTable2 = this.createOrderTable(true, 0);
+        OrderTableResponse orderTable1Response = this.createOrderTable(true, 0);
+        OrderTable orderTable1 = orderTableService.findOrderTable(orderTable1Response.getId());
+        OrderTableResponse orderTable2Response = this.createOrderTable(true, 0);
+        OrderTable orderTable2 = orderTableService.findOrderTable(orderTable2Response.getId());
 
         TableGroup tableGroup = new TableGroup();
         tableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
@@ -110,7 +113,7 @@ public class OrderTableServiceTest {
     @Test
     void changeEmptyFailWithInvalidOrderStatusTest() {
         // given
-        OrderTable orderTable = this.createOrderTable(false, 3);
+        OrderTableResponse orderTable = this.createOrderTable(false, 3);
 
         OrderRequest orderRequest = new OrderRequest(
                 orderTable.getId(), Collections.singletonList(new OrderLineItemRequest(1L, 1L)));
@@ -130,7 +133,7 @@ public class OrderTableServiceTest {
     @Test
     void changeEmptyTest() {
         // given
-        OrderTable orderTable = this.createOrderTable(false, 3);
+        OrderTableResponse orderTable = this.createOrderTable(false, 3);
 
         OrderRequest orderRequest = new OrderRequest(
                 orderTable.getId(), Collections.singletonList(new OrderLineItemRequest(1L, 1L)));
@@ -152,7 +155,7 @@ public class OrderTableServiceTest {
     @ValueSource(ints = { -1, -2 })
     void changeNumberOfGuestsFailWithNegativeValueTest(int invalidValue) {
         // given
-        OrderTable orderTable = this.createOrderTable(false, 3);
+        OrderTableResponse orderTable = this.createOrderTable(false, 3);
 
         OrderTable changeNumberOfGuestRequest = new OrderTable();
         changeNumberOfGuestRequest.setNumberOfGuests(invalidValue);
@@ -181,7 +184,7 @@ public class OrderTableServiceTest {
     @Test
     void changeNumberOfGuestsFailWithEmptyOrderTableTest() {
         // given
-        OrderTable orderTable = this.createOrderTable(true, 0);
+        OrderTableResponse orderTable = this.createOrderTable(true, 0);
 
         OrderTable changeNumberOfGuestRequest = new OrderTable();
         changeNumberOfGuestRequest.setNumberOfGuests(500);
@@ -197,7 +200,7 @@ public class OrderTableServiceTest {
     void changeNumberOfGuestsTest() {
         // given
         int numberOfGuests = 500;
-        OrderTable orderTable = this.createOrderTable(false, 3);
+        OrderTableResponse orderTable = this.createOrderTable(false, 3);
 
         OrderTable changeNumberOfGuestRequest = new OrderTable();
         changeNumberOfGuestRequest.setNumberOfGuests(numberOfGuests);
@@ -209,7 +212,7 @@ public class OrderTableServiceTest {
         assertThat(changed.getNumberOfGuests()).isEqualTo(numberOfGuests);
     }
 
-    private OrderTable createOrderTable(final boolean empty, final Integer numberOfGuests) {
+    private OrderTableResponse createOrderTable(final boolean empty, final Integer numberOfGuests) {
         OrderTableRequest orderTableRequest = new OrderTableRequest(numberOfGuests, empty);
 
         return orderTableService.create(orderTableRequest);

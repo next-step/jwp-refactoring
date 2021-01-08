@@ -8,6 +8,7 @@ import kitchenpos.domain.exceptions.orderTable.InvalidTryChangeEmptyException;
 import kitchenpos.domain.exceptions.orderTable.InvalidTryChangeGuestsException;
 import kitchenpos.domain.exceptions.orderTable.OrderTableEntityNotFoundException;
 import kitchenpos.ui.dto.orderTable.OrderTableRequest;
+import kitchenpos.ui.dto.orderTable.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,13 +27,20 @@ public class OrderTableService {
     }
 
     @Transactional
-    public OrderTable create(final OrderTableRequest orderTableRequest) {
+    public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
         OrderTable orderTable = new OrderTable();
         orderTable.setTableGroupId(null);
         orderTable.setEmpty(orderTableRequest.isEmpty());
         orderTable.setNumberOfGuests(orderTableRequest.getNumberOfGuests());
+        OrderTable saved = orderTableDao.save(orderTable);
 
-        return orderTableDao.save(orderTable);
+        return OrderTableResponse.of(saved);
+    }
+
+    @Transactional(readOnly = true)
+    public OrderTable findOrderTable(final Long id) {
+        return orderTableDao.findById(id)
+                .orElseThrow(() -> new OrderTableEntityNotFoundException("해당 OrderTable Entity가 존재하지 않습니다."));
     }
 
     public List<OrderTable> list() {

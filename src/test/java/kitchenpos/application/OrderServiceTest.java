@@ -1,7 +1,6 @@
 package kitchenpos.application;
 
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.exceptions.order.*;
 import kitchenpos.domain.exceptions.orderTable.OrderTableEntityNotFoundException;
 import kitchenpos.ui.dto.order.OrderLineItemRequest;
@@ -9,6 +8,7 @@ import kitchenpos.ui.dto.order.OrderRequest;
 import kitchenpos.ui.dto.order.OrderResponse;
 import kitchenpos.ui.dto.order.OrderStatusChangeRequest;
 import kitchenpos.ui.dto.orderTable.OrderTableRequest;
+import kitchenpos.ui.dto.orderTable.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,7 +84,7 @@ class OrderServiceTest {
         Long menuId = 1L;
         Long quantity = 1L;
 
-        OrderTable emptyTable = orderTableService.create(new OrderTableRequest(0, true));
+        OrderTableResponse emptyTable = orderTableService.create(new OrderTableRequest(0, true));
 
         OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menuId, quantity);
         OrderRequest orderRequest = new OrderRequest(emptyTable.getId(), Collections.singletonList(orderLineItemRequest));
@@ -102,7 +102,7 @@ class OrderServiceTest {
         Long menuId = 1L;
         Long quantity = 1L;
 
-        OrderTable fullOrderTable = orderTableService.create(new OrderTableRequest(500, false));
+        OrderTableResponse fullOrderTable = orderTableService.create(new OrderTableRequest(500, false));
 
         OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menuId, quantity);
         OrderRequest orderRequest = new OrderRequest(fullOrderTable.getId(), Collections.singletonList(orderLineItemRequest));
@@ -124,7 +124,7 @@ class OrderServiceTest {
         Long menuId = 1L;
         Long quantity = 1L;
 
-        OrderTable fullOrderTable = orderTableService.create(new OrderTableRequest(500, false));
+        OrderTableResponse fullOrderTable = orderTableService.create(new OrderTableRequest(500, false));
 
         OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menuId, quantity);
         OrderRequest orderRequest = new OrderRequest(fullOrderTable.getId(), Collections.singletonList(orderLineItemRequest));
@@ -161,7 +161,7 @@ class OrderServiceTest {
         Long menuId = 1L;
         Long quantity = 1L;
 
-        OrderTable fullOrderTable = orderTableService.create(new OrderTableRequest(500, false));
+        OrderTableResponse fullOrderTable = orderTableService.create(new OrderTableRequest(500, false));
 
         OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menuId, quantity);
         OrderRequest orderRequest = new OrderRequest(fullOrderTable.getId(), Collections.singletonList(orderLineItemRequest));
@@ -184,7 +184,7 @@ class OrderServiceTest {
         Long menuId = 1L;
         Long quantity = 1L;
 
-        OrderTable fullOrderTable = orderTableService.create(new OrderTableRequest(500, false));
+        OrderTableResponse fullOrderTable = orderTableService.create(new OrderTableRequest(500, false));
 
         OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menuId, quantity);
         OrderRequest orderRequest = new OrderRequest(fullOrderTable.getId(), Collections.singletonList(orderLineItemRequest));
