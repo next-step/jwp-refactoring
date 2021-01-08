@@ -9,6 +9,8 @@ import kitchenpos.ui.dto.order.OrderLineItemRequest;
 import kitchenpos.ui.dto.order.OrderRequest;
 import kitchenpos.ui.dto.order.OrderResponse;
 import kitchenpos.ui.dto.order.OrderStatusChangeRequest;
+import kitchenpos.ui.dto.orderTable.OrderTableRequest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -39,6 +41,19 @@ public class TableGroupServiceTest {
 
     @Autowired
     private OrderService orderService;
+
+    private OrderTableRequest emptyOrderTableRequest1;
+    private OrderTableRequest emptyOrderTableRequest2;
+    private OrderTableRequest fullOrderTableRequest1;
+    private OrderTableRequest fullOrderTableRequest2;
+
+    @BeforeEach
+    void setup() {
+        emptyOrderTableRequest1 = new OrderTableRequest(0, true);
+        emptyOrderTableRequest2 = new OrderTableRequest(0, true);
+        fullOrderTableRequest1 = new OrderTableRequest(500, false);
+        fullOrderTableRequest2 = new OrderTableRequest(500, false);
+    }
 
     @DisplayName("2개 이하의 주문테이블로 단체 지정할 수 없다.")
     @ParameterizedTest
@@ -82,16 +97,10 @@ public class TableGroupServiceTest {
     @Test
     void createTableGroupFailWithFullOrderTables() {
         // given
-        OrderTable fullOrderTable1 = new OrderTable();
-        fullOrderTable1.setEmpty(false);
-        fullOrderTable1.setNumberOfGuests(500);
-        OrderTable orderTable1 = orderTableService.create(fullOrderTable1);
+        OrderTable orderTable1 = orderTableService.create(fullOrderTableRequest1);
         assertThat(orderTable1.isEmpty()).isFalse();
 
-        OrderTable fullOrderTable2 = new OrderTable();
-        fullOrderTable2.setEmpty(false);
-        fullOrderTable2.setNumberOfGuests(500);
-        OrderTable orderTable2 = orderTableService.create(fullOrderTable2);
+        OrderTable orderTable2 = orderTableService.create(fullOrderTableRequest1);
         assertThat(orderTable2.isEmpty()).isFalse();
 
         TableGroup tableGroupWithFullOrderTables = new TableGroup();
@@ -107,16 +116,10 @@ public class TableGroupServiceTest {
     @Test
     void createTableGroup() {
         // given
-        OrderTable emptyOrderTable1 = new OrderTable();
-        emptyOrderTable1.setEmpty(true);
-        emptyOrderTable1.setNumberOfGuests(0);
-        OrderTable orderTable1 = orderTableService.create(emptyOrderTable1);
+        OrderTable orderTable1 = orderTableService.create(emptyOrderTableRequest1);
         assertThat(orderTable1.isEmpty()).isTrue();
 
-        OrderTable emptyOrderTable2 = new OrderTable();
-        emptyOrderTable2.setEmpty(true);
-        emptyOrderTable2.setNumberOfGuests(0);
-        OrderTable orderTable2 = orderTableService.create(emptyOrderTable2);
+        OrderTable orderTable2 = orderTableService.create(emptyOrderTableRequest2);
         assertThat(orderTable2.isEmpty()).isTrue();
 
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
@@ -138,16 +141,10 @@ public class TableGroupServiceTest {
     @Test
     void createTableGroupFailWithAlreadyGrouped() {
         // given
-        OrderTable emptyOrderTable1 = new OrderTable();
-        emptyOrderTable1.setEmpty(true);
-        emptyOrderTable1.setNumberOfGuests(0);
-        OrderTable orderTable1 = orderTableService.create(emptyOrderTable1);
+        OrderTable orderTable1 = orderTableService.create(emptyOrderTableRequest1);
         assertThat(orderTable1.isEmpty()).isTrue();
 
-        OrderTable emptyOrderTable2 = new OrderTable();
-        emptyOrderTable2.setEmpty(true);
-        emptyOrderTable2.setNumberOfGuests(0);
-        OrderTable orderTable2 = orderTableService.create(emptyOrderTable2);
+        OrderTable orderTable2 = orderTableService.create(emptyOrderTableRequest2);
         assertThat(orderTable2.isEmpty()).isTrue();
 
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
@@ -167,15 +164,8 @@ public class TableGroupServiceTest {
     @Test
     void unGroupFailWithInvalidOrderStatus() {
         // given
-        OrderTable fullOrderTable1 = new OrderTable();
-        fullOrderTable1.setEmpty(true);
-        fullOrderTable1.setNumberOfGuests(0);
-        OrderTable orderTable1 = orderTableService.create(fullOrderTable1);
-
-        OrderTable fullOrderTable2 = new OrderTable();
-        fullOrderTable2.setEmpty(true);
-        fullOrderTable2.setNumberOfGuests(0);
-        OrderTable orderTable2 = orderTableService.create(fullOrderTable2);
+        OrderTable orderTable1 = orderTableService.create(emptyOrderTableRequest1);
+        OrderTable orderTable2 = orderTableService.create(emptyOrderTableRequest2);
 
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
         TableGroup tableGroupRequest = new TableGroup();
@@ -199,15 +189,8 @@ public class TableGroupServiceTest {
     @Test
     void unGroupTest() {
         // given
-        OrderTable fullOrderTable1 = new OrderTable();
-        fullOrderTable1.setEmpty(true);
-        fullOrderTable1.setNumberOfGuests(0);
-        OrderTable orderTable1 = orderTableService.create(fullOrderTable1);
-
-        OrderTable fullOrderTable2 = new OrderTable();
-        fullOrderTable2.setEmpty(true);
-        fullOrderTable2.setNumberOfGuests(0);
-        OrderTable orderTable2 = orderTableService.create(fullOrderTable2);
+        OrderTable orderTable1 = orderTableService.create(emptyOrderTableRequest1);
+        OrderTable orderTable2 = orderTableService.create(emptyOrderTableRequest2);
 
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
         TableGroup tableGroupRequest = new TableGroup();

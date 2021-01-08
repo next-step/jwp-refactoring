@@ -10,6 +10,7 @@ import kitchenpos.ui.dto.order.OrderLineItemRequest;
 import kitchenpos.ui.dto.order.OrderRequest;
 import kitchenpos.ui.dto.order.OrderResponse;
 import kitchenpos.ui.dto.order.OrderStatusChangeRequest;
+import kitchenpos.ui.dto.orderTable.OrderTableRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -45,12 +46,8 @@ public class OrderTableServiceTest {
         int numberOfGuests = 0;
         boolean isEmpty = true;
 
-        OrderTable orderTableRequest = new OrderTable();
-        orderTableRequest.setEmpty(isEmpty);
-        orderTableRequest.setNumberOfGuests(numberOfGuests);
-
         // when
-        OrderTable orderTable = orderTableService.create(orderTableRequest);
+        OrderTable orderTable = orderTableService.create(new OrderTableRequest(numberOfGuests, isEmpty));
 
         // then
         assertThat(orderTable.getId()).isNotNull();
@@ -213,9 +210,7 @@ public class OrderTableServiceTest {
     }
 
     private OrderTable createOrderTable(final boolean empty, final Integer numberOfGuests) {
-        OrderTable orderTableRequest = new OrderTable();
-        orderTableRequest.setEmpty(empty);
-        orderTableRequest.setNumberOfGuests(numberOfGuests);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(numberOfGuests, empty);
 
         return orderTableService.create(orderTableRequest);
     }
