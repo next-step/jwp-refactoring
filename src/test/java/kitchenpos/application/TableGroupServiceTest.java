@@ -27,7 +27,6 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.BDDMockito.given;
 
 @SpringBootTest
 @Transactional
@@ -36,7 +35,7 @@ public class TableGroupServiceTest {
     private TableGroupService tableGroupService;
 
     @Autowired
-    private TableService tableService;
+    private OrderTableService orderTableService;
 
     @Autowired
     private OrderService orderService;
@@ -86,13 +85,13 @@ public class TableGroupServiceTest {
         OrderTable fullOrderTable1 = new OrderTable();
         fullOrderTable1.setEmpty(false);
         fullOrderTable1.setNumberOfGuests(500);
-        OrderTable orderTable1 = tableService.create(fullOrderTable1);
+        OrderTable orderTable1 = orderTableService.create(fullOrderTable1);
         assertThat(orderTable1.isEmpty()).isFalse();
 
         OrderTable fullOrderTable2 = new OrderTable();
         fullOrderTable2.setEmpty(false);
         fullOrderTable2.setNumberOfGuests(500);
-        OrderTable orderTable2 = tableService.create(fullOrderTable2);
+        OrderTable orderTable2 = orderTableService.create(fullOrderTable2);
         assertThat(orderTable2.isEmpty()).isFalse();
 
         TableGroup tableGroupWithFullOrderTables = new TableGroup();
@@ -111,13 +110,13 @@ public class TableGroupServiceTest {
         OrderTable emptyOrderTable1 = new OrderTable();
         emptyOrderTable1.setEmpty(true);
         emptyOrderTable1.setNumberOfGuests(0);
-        OrderTable orderTable1 = tableService.create(emptyOrderTable1);
+        OrderTable orderTable1 = orderTableService.create(emptyOrderTable1);
         assertThat(orderTable1.isEmpty()).isTrue();
 
         OrderTable emptyOrderTable2 = new OrderTable();
         emptyOrderTable2.setEmpty(true);
         emptyOrderTable2.setNumberOfGuests(0);
-        OrderTable orderTable2 = tableService.create(emptyOrderTable2);
+        OrderTable orderTable2 = orderTableService.create(emptyOrderTable2);
         assertThat(orderTable2.isEmpty()).isTrue();
 
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
@@ -142,13 +141,13 @@ public class TableGroupServiceTest {
         OrderTable emptyOrderTable1 = new OrderTable();
         emptyOrderTable1.setEmpty(true);
         emptyOrderTable1.setNumberOfGuests(0);
-        OrderTable orderTable1 = tableService.create(emptyOrderTable1);
+        OrderTable orderTable1 = orderTableService.create(emptyOrderTable1);
         assertThat(orderTable1.isEmpty()).isTrue();
 
         OrderTable emptyOrderTable2 = new OrderTable();
         emptyOrderTable2.setEmpty(true);
         emptyOrderTable2.setNumberOfGuests(0);
-        OrderTable orderTable2 = tableService.create(emptyOrderTable2);
+        OrderTable orderTable2 = orderTableService.create(emptyOrderTable2);
         assertThat(orderTable2.isEmpty()).isTrue();
 
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
@@ -171,12 +170,12 @@ public class TableGroupServiceTest {
         OrderTable fullOrderTable1 = new OrderTable();
         fullOrderTable1.setEmpty(true);
         fullOrderTable1.setNumberOfGuests(0);
-        OrderTable orderTable1 = tableService.create(fullOrderTable1);
+        OrderTable orderTable1 = orderTableService.create(fullOrderTable1);
 
         OrderTable fullOrderTable2 = new OrderTable();
         fullOrderTable2.setEmpty(true);
         fullOrderTable2.setNumberOfGuests(0);
-        OrderTable orderTable2 = tableService.create(fullOrderTable2);
+        OrderTable orderTable2 = orderTableService.create(fullOrderTable2);
 
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
         TableGroup tableGroupRequest = new TableGroup();
@@ -203,12 +202,12 @@ public class TableGroupServiceTest {
         OrderTable fullOrderTable1 = new OrderTable();
         fullOrderTable1.setEmpty(true);
         fullOrderTable1.setNumberOfGuests(0);
-        OrderTable orderTable1 = tableService.create(fullOrderTable1);
+        OrderTable orderTable1 = orderTableService.create(fullOrderTable1);
 
         OrderTable fullOrderTable2 = new OrderTable();
         fullOrderTable2.setEmpty(true);
         fullOrderTable2.setNumberOfGuests(0);
-        OrderTable orderTable2 = tableService.create(fullOrderTable2);
+        OrderTable orderTable2 = orderTableService.create(fullOrderTable2);
 
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
         TableGroup tableGroupRequest = new TableGroup();
@@ -231,7 +230,7 @@ public class TableGroupServiceTest {
         tableGroupService.ungroup(tableGroup.getId());
 
         // then
-        List<OrderTable> allOrderTables = tableService.list();
+        List<OrderTable> allOrderTables = orderTableService.list();
         List<OrderTable> found = allOrderTables.stream()
                 .filter(it -> it.getId().equals(orderTable1.getId()) || it.getId().equals(orderTable2.getId()))
                 .collect(Collectors.toList());

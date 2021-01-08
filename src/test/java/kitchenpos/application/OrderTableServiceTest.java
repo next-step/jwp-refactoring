@@ -28,9 +28,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
-public class TableServiceTest {
+public class OrderTableServiceTest {
     @Autowired
-    private TableService tableService;
+    private OrderTableService orderTableService;
 
     @Autowired
     private TableGroupService tableGroupService;
@@ -50,7 +50,7 @@ public class TableServiceTest {
         orderTableRequest.setNumberOfGuests(numberOfGuests);
 
         // when
-        OrderTable orderTable = tableService.create(orderTableRequest);
+        OrderTable orderTable = orderTableService.create(orderTableRequest);
 
         // then
         assertThat(orderTable.getId()).isNotNull();
@@ -66,7 +66,7 @@ public class TableServiceTest {
         OrderTable orderTable = this.createOrderTable(true, 0);
 
         // when
-        List<OrderTable> orderTables = tableService.list();
+        List<OrderTable> orderTables = orderTableService.list();
         List<Long> ids = orderTables.stream()
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
@@ -85,7 +85,7 @@ public class TableServiceTest {
         emptyRequest.setEmpty(true);
 
         // when, then
-        assertThatThrownBy(() -> tableService.changeEmpty(notExistId, emptyRequest))
+        assertThatThrownBy(() -> orderTableService.changeEmpty(notExistId, emptyRequest))
                 .isInstanceOf(OrderTableEntityNotFoundException.class);
     }
 
@@ -104,7 +104,7 @@ public class TableServiceTest {
         emptyRequest.setEmpty(true);
 
         // when, then
-        assertThatThrownBy(() -> tableService.changeEmpty(orderTable1.getId(), emptyRequest))
+        assertThatThrownBy(() -> orderTableService.changeEmpty(orderTable1.getId(), emptyRequest))
                 .isInstanceOf(InvalidTryChangeEmptyException.class)
                 .hasMessage("단체 지정된 주문 테이블의 비움 상태를 바꿀 수 없습니다.");
     }
@@ -124,7 +124,7 @@ public class TableServiceTest {
         emptyRequest.setEmpty(true);
 
         // when, then
-        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), emptyRequest))
+        assertThatThrownBy(() -> orderTableService.changeEmpty(orderTable.getId(), emptyRequest))
                 .isInstanceOf(InvalidTryChangeEmptyException.class)
                 .hasMessage("조리중이거나 식사중인 주문 테이블의 비움 상태를 바꿀 수 없습니다.");
     }
@@ -144,7 +144,7 @@ public class TableServiceTest {
         emptyRequest.setEmpty(true);
 
         // when
-        OrderTable changedOrderTable = tableService.changeEmpty(orderTable.getId(), emptyRequest);
+        OrderTable changedOrderTable = orderTableService.changeEmpty(orderTable.getId(), emptyRequest);
 
         // then
         assertThat(changedOrderTable.isEmpty()).isTrue();
@@ -161,7 +161,7 @@ public class TableServiceTest {
         changeNumberOfGuestRequest.setNumberOfGuests(invalidValue);
 
         // when, then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), changeNumberOfGuestRequest))
+        assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(orderTable.getId(), changeNumberOfGuestRequest))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -175,7 +175,7 @@ public class TableServiceTest {
         changeNumberOfGuestRequest.setNumberOfGuests(500);
 
         // when, then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(notExistTableId, changeNumberOfGuestRequest))
+        assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(notExistTableId, changeNumberOfGuestRequest))
                 .isInstanceOf(OrderTableEntityNotFoundException.class)
                 .hasMessage("존재하지 않는 주문 테이블의 방문한 손님 수를 바꿀 수 없습니다.");
     }
@@ -190,7 +190,7 @@ public class TableServiceTest {
         changeNumberOfGuestRequest.setNumberOfGuests(500);
 
         // when, then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), changeNumberOfGuestRequest))
+        assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(orderTable.getId(), changeNumberOfGuestRequest))
                 .isInstanceOf(InvalidTryChangeGuestsException.class)
                 .hasMessage("비어있는 주문 테이블의 방문한 손님 수를 바꿀 수 없습니다.");
     }
@@ -206,7 +206,7 @@ public class TableServiceTest {
         changeNumberOfGuestRequest.setNumberOfGuests(numberOfGuests);
 
         // when
-        OrderTable changed = tableService.changeNumberOfGuests(orderTable.getId(), changeNumberOfGuestRequest);
+        OrderTable changed = orderTableService.changeNumberOfGuests(orderTable.getId(), changeNumberOfGuestRequest);
 
         // then
         assertThat(changed.getNumberOfGuests()).isEqualTo(numberOfGuests);
@@ -217,6 +217,6 @@ public class TableServiceTest {
         orderTableRequest.setEmpty(empty);
         orderTableRequest.setNumberOfGuests(numberOfGuests);
 
-        return tableService.create(orderTableRequest);
+        return orderTableService.create(orderTableRequest);
     }
 }

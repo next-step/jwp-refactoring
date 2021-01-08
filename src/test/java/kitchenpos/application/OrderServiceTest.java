@@ -27,7 +27,7 @@ class OrderServiceTest {
     private OrderService orderService;
 
     @Autowired
-    private TableService tableService;
+    private OrderTableService orderTableService;
 
     @DisplayName("1개 미만의 주문 항목으로 주문할 수 없다.")
     @Test
@@ -85,7 +85,7 @@ class OrderServiceTest {
 
         OrderTable orderTable = new OrderTable();
         orderTable.setEmpty(true);
-        OrderTable emptyTable = tableService.create(orderTable);
+        OrderTable emptyTable = orderTableService.create(orderTable);
 
         OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menuId, quantity);
         OrderRequest orderRequest = new OrderRequest(emptyTable.getId(), Collections.singletonList(orderLineItemRequest));
@@ -105,7 +105,7 @@ class OrderServiceTest {
 
         OrderTable orderTable = new OrderTable();
         orderTable.setEmpty(false);
-        OrderTable fullOrderTable = tableService.create(orderTable);
+        OrderTable fullOrderTable = orderTableService.create(orderTable);
 
         OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menuId, quantity);
         OrderRequest orderRequest = new OrderRequest(fullOrderTable.getId(), Collections.singletonList(orderLineItemRequest));
@@ -129,7 +129,7 @@ class OrderServiceTest {
 
         OrderTable orderTable = new OrderTable();
         orderTable.setEmpty(false);
-        OrderTable fullOrderTable = tableService.create(orderTable);
+        OrderTable fullOrderTable = orderTableService.create(orderTable);
 
         OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menuId, quantity);
         OrderRequest orderRequest = new OrderRequest(fullOrderTable.getId(), Collections.singletonList(orderLineItemRequest));
@@ -168,7 +168,7 @@ class OrderServiceTest {
 
         OrderTable orderTable = new OrderTable();
         orderTable.setEmpty(false);
-        OrderTable fullOrderTable = tableService.create(orderTable);
+        OrderTable fullOrderTable = orderTableService.create(orderTable);
 
         OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menuId, quantity);
         OrderRequest orderRequest = new OrderRequest(fullOrderTable.getId(), Collections.singletonList(orderLineItemRequest));
@@ -193,7 +193,7 @@ class OrderServiceTest {
 
         OrderTable orderTable = new OrderTable();
         orderTable.setEmpty(false);
-        OrderTable fullOrderTable = tableService.create(orderTable);
+        OrderTable fullOrderTable = orderTableService.create(orderTable);
 
         OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menuId, quantity);
         OrderRequest orderRequest = new OrderRequest(fullOrderTable.getId(), Collections.singletonList(orderLineItemRequest));
