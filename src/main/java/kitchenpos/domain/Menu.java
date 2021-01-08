@@ -11,9 +11,6 @@ public class Menu {
     private Long menuGroupId;
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
-    public Menu() {
-    }
-
     Menu(final Long id, final String name, final BigDecimal price, final Long menuGroupId,
          final List<MenuProduct> menuProducts) {
         this.id = id;
@@ -21,6 +18,10 @@ public class Menu {
         this.price = price;
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
+    }
+
+    public Menu(final Long id, final String name, final BigDecimal price, final Long menuGroupId) {
+        this(id, name, price, menuGroupId, new ArrayList<>());
     }
 
     public static Menu of(final String name, final BigDecimal price, final Long menuGroupId) {
@@ -35,39 +36,19 @@ public class Menu {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
     }
 
     public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
-    }
-
     public Long getMenuGroupId() {
         return menuGroupId;
     }
 
-    public void setMenuGroupId(final Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
-    }
-
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
-    }
-
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
     }
 }
