@@ -72,8 +72,12 @@ class OrderRestControllerTest {
     void getOrdersTest() throws Exception {
         // given
         String url = "/api/orders";
+        OrderResponse orderResponse1 = new OrderResponse(1L, 1L, OrderStatus.MEAL.name(),
+                LocalDateTime.now(), new ArrayList<>());
+        OrderResponse orderResponse2 = new OrderResponse(2L, 1L, OrderStatus.MEAL.name(),
+                LocalDateTime.now(), new ArrayList<>());
 
-        given(orderService.list()).willReturn(Arrays.asList(new Order(), new Order()));
+        given(orderService.list()).willReturn(Arrays.asList(orderResponse1, orderResponse2));
 
         // when, then
         mockMvc.perform(get(url))

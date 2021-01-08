@@ -137,9 +137,9 @@ class OrderServiceTest {
         OrderResponse orderResponse = orderService.create(orderRequest);
 
         // when
-        List<Order> orders = orderService.list();
+        List<OrderResponse> orders = orderService.list();
         Stream<Long> ids = orders.stream()
-                .map(Order::getId);
+                .map(OrderResponse::getId);
 
         // then
         assertThat(ids).contains(orderResponse.getId());
