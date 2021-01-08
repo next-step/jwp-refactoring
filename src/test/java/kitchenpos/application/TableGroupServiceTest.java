@@ -226,8 +226,8 @@ public class TableGroupServiceTest {
         tableGroupService.ungroup(tableGroup.getId());
 
         // then
-        List<OrderTable> allOrderTables = orderTableService.list();
-        List<OrderTable> found = allOrderTables.stream()
+        List<OrderTableResponse> allOrderTables = orderTableService.list();
+        List<OrderTableResponse> found = allOrderTables.stream()
                 .filter(it -> it.getId().equals(orderTable1.getId()) || it.getId().equals(orderTable2.getId()))
                 .collect(Collectors.toList());
         found.forEach(it -> assertThat(it.getTableGroupId()).isNull());

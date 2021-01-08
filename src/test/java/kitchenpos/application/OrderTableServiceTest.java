@@ -64,9 +64,9 @@ public class OrderTableServiceTest {
         OrderTableResponse orderTable = this.createOrderTable(true, 0);
 
         // when
-        List<OrderTable> orderTables = orderTableService.list();
+        List<OrderTableResponse> orderTables = orderTableService.list();
         List<Long> ids = orderTables.stream()
-                .map(OrderTable::getId)
+                .map(OrderTableResponse::getId)
                 .collect(Collectors.toList());
 
         // then
