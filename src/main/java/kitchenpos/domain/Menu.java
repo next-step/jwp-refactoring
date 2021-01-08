@@ -51,10 +51,10 @@ public class Menu {
 	}
 
 	private void validatePriceSum(List<MenuProduct> menuProducts) {
-		BigDecimal totalPrice = menuProducts.stream()
-			.map(MenuProduct::getPrice)
-			.reduce(BigDecimal::add)
-			.orElse(BigDecimal.ZERO);
+		MenuPrice totalPrice = menuProducts.stream()
+			.map(MenuProduct::getMenuPrice)
+			.reduce(MenuPrice::add)
+			.orElse(MenuPrice.ZERO);
 
 		if (price.isGreaterThanProductTotal(totalPrice)) {
 			throw new WrongPriceException("메뉴의 가격이 상품가격의 총합보다 클 수 없습니다.");
@@ -69,7 +69,11 @@ public class Menu {
 		return name;
 	}
 
-	public BigDecimal getPrice() {
+	public MenuPrice getPrice() {
+		return price;
+	}
+
+	public BigDecimal getRealPrice() {
 		return price.getPrice();
 	}
 

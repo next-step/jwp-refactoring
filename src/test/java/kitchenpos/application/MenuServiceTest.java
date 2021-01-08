@@ -42,7 +42,7 @@ class MenuServiceTest extends BaseTest {
 		Menu savedMenu = menuRepository.findById(menu.getId()).orElse(null);
 		assertAll(
 			() -> assertThat(savedMenu.getId()).isNotNull(),
-			() -> assertThat(savedMenu.getPrice()).isEqualTo(예제_메뉴_가격),
+			() -> assertThat(savedMenu.getRealPrice()).isEqualTo(예제_메뉴_가격),
 			() -> assertThat(savedMenu.getName()).isEqualTo(예제_메뉴명),
 			() -> assertThat(savedMenu.getMenuGroup().getId()).isEqualTo(예제_메뉴_그룹_ID)
 		);

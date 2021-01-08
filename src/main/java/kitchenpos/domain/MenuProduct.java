@@ -39,11 +39,11 @@ public class MenuProduct {
 		return new MenuProduct(menuId, product, quantity);
 	}
 
-	public BigDecimal getPrice() {
+	public MenuPrice getMenuPrice() {
 		BigDecimal decimalQuantity = BigDecimal.valueOf(this.quantity);
-		return this.product
+		return MenuPrice.of(this.product
 			.getPrice()
-			.multiply(decimalQuantity);
+			.multiply(decimalQuantity));
 	}
 
 	public Long getSeq() {
