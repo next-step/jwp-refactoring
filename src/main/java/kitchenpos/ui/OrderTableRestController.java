@@ -2,6 +2,7 @@ package kitchenpos.ui;
 
 import kitchenpos.application.OrderTableService;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.ui.dto.orderTable.ChangeEmptyRequest;
 import kitchenpos.ui.dto.orderTable.OrderTableRequest;
 import kitchenpos.ui.dto.orderTable.OrderTableResponse;
 import org.springframework.http.ResponseEntity;
@@ -35,12 +36,12 @@ public class OrderTableRestController {
     }
 
     @PutMapping("/api/order-tables/{orderTableId}/empty")
-    public ResponseEntity<OrderTable> changeEmpty(
+    public ResponseEntity<OrderTableResponse> changeEmpty(
             @PathVariable final Long orderTableId,
-            @RequestBody final OrderTable orderTable
+            @RequestBody final ChangeEmptyRequest changeEmptyRequest
     ) {
         return ResponseEntity.ok()
-                .body(orderTableService.changeEmpty(orderTableId, orderTable))
+                .body(orderTableService.changeEmpty(orderTableId, changeEmptyRequest))
                 ;
     }
 

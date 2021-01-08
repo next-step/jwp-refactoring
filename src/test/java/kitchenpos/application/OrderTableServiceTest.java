@@ -10,6 +10,7 @@ import kitchenpos.ui.dto.order.OrderLineItemRequest;
 import kitchenpos.ui.dto.order.OrderRequest;
 import kitchenpos.ui.dto.order.OrderResponse;
 import kitchenpos.ui.dto.order.OrderStatusChangeRequest;
+import kitchenpos.ui.dto.orderTable.ChangeEmptyRequest;
 import kitchenpos.ui.dto.orderTable.OrderTableRequest;
 import kitchenpos.ui.dto.orderTable.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -79,11 +80,8 @@ public class OrderTableServiceTest {
         // given
         Long notExistId = 1000000L;
 
-        OrderTable emptyRequest = new OrderTable();
-        emptyRequest.setEmpty(true);
-
         // when, then
-        assertThatThrownBy(() -> orderTableService.changeEmpty(notExistId, emptyRequest))
+        assertThatThrownBy(() -> orderTableService.changeEmpty(notExistId, new ChangeEmptyRequest(true)))
                 .isInstanceOf(OrderTableEntityNotFoundException.class);
     }
 
@@ -100,11 +98,8 @@ public class OrderTableServiceTest {
         tableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
         tableGroupService.create(tableGroup);
 
-        OrderTable emptyRequest = new OrderTable();
-        emptyRequest.setEmpty(true);
-
         // when, then
-        assertThatThrownBy(() -> orderTableService.changeEmpty(orderTable1.getId(), emptyRequest))
+        assertThatThrownBy(() -> orderTableService.changeEmpty(orderTable1.getId(), new ChangeEmptyRequest(true)))
                 .isInstanceOf(InvalidTryChangeEmptyException.class)
                 .hasMessage("단체 지정된 주문 테이블의 비움 상태를 바꿀 수 없습니다.");
     }
@@ -120,11 +115,8 @@ public class OrderTableServiceTest {
         OrderResponse orderResponse = orderService.create(orderRequest);
         assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
 
-        OrderTable emptyRequest = new OrderTable();
-        emptyRequest.setEmpty(true);
-
         // when, then
-        assertThatThrownBy(() -> orderTableService.changeEmpty(orderTable.getId(), emptyRequest))
+        assertThatThrownBy(() -> orderTableService.changeEmpty(orderTable.getId(), new ChangeEmptyRequest(true)))
                 .isInstanceOf(InvalidTryChangeEmptyException.class)
                 .hasMessage("조리중이거나 식사중인 주문 테이블의 비움 상태를 바꿀 수 없습니다.");
     }
@@ -140,14 +132,11 @@ public class OrderTableServiceTest {
         OrderResponse orderResponse = orderService.create(orderRequest);
         orderService.changeOrderStatus(orderResponse.getId(), new OrderStatusChangeRequest(OrderStatus.COMPLETION.name()));
 
-        OrderTable emptyRequest = new OrderTable();
-        emptyRequest.setEmpty(true);
-
         // when
-        OrderTable changedOrderTable = orderTableService.changeEmpty(orderTable.getId(), emptyRequest);
+        OrderTableResponse response = orderTableService.changeEmpty(orderTable.getId(), new ChangeEmptyRequest(true));
 
         // then
-        assertThat(changedOrderTable.isEmpty()).isTrue();
+        assertThat(response.isEmpty()).isTrue();
     }
 
     @DisplayName("방문한 손님 수를 0명 이하로 바꿀 수 없다.")

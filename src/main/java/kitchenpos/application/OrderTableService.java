@@ -7,6 +7,7 @@ import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.exceptions.orderTable.InvalidTryChangeEmptyException;
 import kitchenpos.domain.exceptions.orderTable.InvalidTryChangeGuestsException;
 import kitchenpos.domain.exceptions.orderTable.OrderTableEntityNotFoundException;
+import kitchenpos.ui.dto.orderTable.ChangeEmptyRequest;
 import kitchenpos.ui.dto.orderTable.OrderTableRequest;
 import kitchenpos.ui.dto.orderTable.OrderTableResponse;
 import org.springframework.stereotype.Service;
@@ -53,7 +54,7 @@ public class OrderTableService {
     }
 
     @Transactional
-    public OrderTable changeEmpty(final Long orderTableId, final OrderTable orderTable) {
+    public OrderTableResponse changeEmpty(final Long orderTableId, final ChangeEmptyRequest changeEmptyRequest) {
         final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
                 .orElseThrow(() -> new OrderTableEntityNotFoundException("존재하지 않는 주문 테이블의 비움 상태를 바꿀 수 없습니다."));
 
@@ -66,9 +67,11 @@ public class OrderTableService {
             throw new InvalidTryChangeEmptyException("조리중이거나 식사중인 주문 테이블의 비움 상태를 바꿀 수 없습니다.");
         }
 
-        savedOrderTable.setEmpty(orderTable.isEmpty());
+        savedOrderTable.setEmpty(changeEmptyRequest.isEmpty());
 
-        return orderTableDao.save(savedOrderTable);
+        OrderTable changed = orderTableDao.save(savedOrderTable);
+
+        return OrderTableResponse.of(changed);
     }
 
     @Transactional

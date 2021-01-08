@@ -110,7 +110,7 @@
     - [X] 변경 영향을 파악하기 위해 service 레이어에서 실제 오브젝트로 테스트 진행
     - [ ] Controller 레이어에서 도메인 오브젝트 대신 DTO 사용
     - [ ] 도메인 오브젝트의 불필요한 setter 제거
-  - [ ] Table
+  - [ ] OrderTable
     - [X] 변경 영향을 파악하기 위해 service 레이어에서 실제 오브젝트로 테스트 진행
     - [ ] Controller 레이어에서 도메인 오브젝트 대신 DTO 사용
     - [ ] 도메인 오브젝트의 불필요한 setter 제거
