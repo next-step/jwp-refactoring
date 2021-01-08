@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -99,12 +98,13 @@ public class OrderService {
         }
 
         final OrderStatus orderStatus = OrderStatus.valueOf(orderStatusChangeRequest.getOrderStatus());
-        savedOrder.setOrderStatus(orderStatus.name());
+        savedOrder.changeOrderStatus(orderStatus.name());
 
-        orderDao.save(savedOrder);
+        Order statusChangedOrder = orderDao.save(savedOrder);
 
-        savedOrder.setOrderLineItems(orderLineItemDao.findAllByOrderId(orderId));
+        List<OrderLineItem> orderLineItems = orderLineItemDao.findAllByOrderId(orderId);
+        orderLineItems.forEach(statusChangedOrder::addOrderLineItem);
 
-        return savedOrder;
+        return statusChangedOrder;
     }
 }

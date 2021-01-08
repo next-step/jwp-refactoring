@@ -1,9 +1,7 @@
 package kitchenpos.ui;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.OrderService;
-import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.ui.dto.order.OrderResponse;
@@ -94,11 +92,11 @@ class OrderRestControllerTest {
         String url = "/api/orders/"+ targetId +"/order-status";
 
         Order changeOrderRequest = new Order();
-        changeOrderRequest.setOrderStatus(OrderStatus.MEAL.name());
+        changeOrderRequest.changeOrderStatus(OrderStatus.MEAL.name());
 
         Order changedOrder = new Order();
         changedOrder.setId(targetId);
-        changedOrder.setOrderStatus(OrderStatus.MEAL.name());
+        changedOrder.changeOrderStatus(OrderStatus.MEAL.name());
 
         given(orderService.changeOrderStatus(eq(targetId), any())).willReturn(changedOrder);
 

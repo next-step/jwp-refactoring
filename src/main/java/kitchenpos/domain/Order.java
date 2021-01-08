@@ -1,7 +1,5 @@
 package kitchenpos.domain;
 
-import kitchenpos.ui.dto.order.OrderLineItemRequest;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +50,7 @@ public class Order {
         return orderStatus;
     }
 
-    public void setOrderStatus(final String orderStatus) {
+    public void changeOrderStatus(final String orderStatus) {
         this.orderStatus = orderStatus;
     }
 
