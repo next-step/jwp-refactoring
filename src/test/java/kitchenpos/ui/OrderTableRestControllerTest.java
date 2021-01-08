@@ -2,6 +2,7 @@ package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.OrderTableService;
+import kitchenpos.ui.dto.orderTable.ChangeEmptyRequest;
 import kitchenpos.ui.dto.orderTable.OrderTableRequest;
 import kitchenpos.ui.dto.orderTable.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +18,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.Arrays;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -77,5 +79,25 @@ class OrderTableRestControllerTest {
         mockMvc.perform(get(url))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)));
+    }
+
+    @DisplayName("주문 테이블의 공석 여부를 바꿀 수 있다.")
+    @Test
+    void changeEmptyTest() throws Exception {
+        // given
+        Long targetId = 1L;
+        String url = "/api/order-tables/" + targetId + "/empty";
+        boolean empty = false;
+        ChangeEmptyRequest changeEmptyRequest = new ChangeEmptyRequest(empty);
+
+        given(orderTableService.changeEmpty(targetId, changeEmptyRequest))
+                .willReturn(new OrderTableResponse(targetId, 1L, 5, empty));
+
+        mockMvc.perform(put(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(changeEmptyRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.empty", is(empty)));
     }
 }
