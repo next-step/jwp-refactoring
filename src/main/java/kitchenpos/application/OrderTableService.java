@@ -8,6 +8,7 @@ import kitchenpos.domain.exceptions.orderTable.InvalidTryChangeEmptyException;
 import kitchenpos.domain.exceptions.orderTable.InvalidTryChangeGuestsException;
 import kitchenpos.domain.exceptions.orderTable.OrderTableEntityNotFoundException;
 import kitchenpos.ui.dto.orderTable.ChangeEmptyRequest;
+import kitchenpos.ui.dto.orderTable.ChangeNumberOfGuestsRequest;
 import kitchenpos.ui.dto.orderTable.OrderTableRequest;
 import kitchenpos.ui.dto.orderTable.OrderTableResponse;
 import org.springframework.stereotype.Service;
@@ -75,8 +76,10 @@ public class OrderTableService {
     }
 
     @Transactional
-    public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTable orderTable) {
-        final int numberOfGuests = orderTable.getNumberOfGuests();
+    public OrderTableResponse changeNumberOfGuests(
+            final Long orderTableId, final ChangeNumberOfGuestsRequest changeNumberOfGuestsRequest
+    ) {
+        final int numberOfGuests = changeNumberOfGuestsRequest.getNumberOfGuests();
 
         if (numberOfGuests < 0) {
             throw new IllegalArgumentException();
@@ -92,6 +95,8 @@ public class OrderTableService {
 
         savedOrderTable.setNumberOfGuests(numberOfGuests);
 
-        return orderTableDao.save(savedOrderTable);
+        OrderTable changed = orderTableDao.save(savedOrderTable);
+
+        return OrderTableResponse.of(changed);
     }
 }

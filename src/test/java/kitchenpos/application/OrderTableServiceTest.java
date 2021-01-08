@@ -11,6 +11,7 @@ import kitchenpos.ui.dto.order.OrderRequest;
 import kitchenpos.ui.dto.order.OrderResponse;
 import kitchenpos.ui.dto.order.OrderStatusChangeRequest;
 import kitchenpos.ui.dto.orderTable.ChangeEmptyRequest;
+import kitchenpos.ui.dto.orderTable.ChangeNumberOfGuestsRequest;
 import kitchenpos.ui.dto.orderTable.OrderTableRequest;
 import kitchenpos.ui.dto.orderTable.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -146,11 +147,8 @@ public class OrderTableServiceTest {
         // given
         OrderTableResponse orderTable = this.createOrderTable(false, 3);
 
-        OrderTable changeNumberOfGuestRequest = new OrderTable();
-        changeNumberOfGuestRequest.setNumberOfGuests(invalidValue);
-
         // when, then
-        assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(orderTable.getId(), changeNumberOfGuestRequest))
+        assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(orderTable.getId(), new ChangeNumberOfGuestsRequest(invalidValue)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -160,11 +158,8 @@ public class OrderTableServiceTest {
         // given
         Long notExistTableId = 1000000L;
 
-        OrderTable changeNumberOfGuestRequest = new OrderTable();
-        changeNumberOfGuestRequest.setNumberOfGuests(500);
-
         // when, then
-        assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(notExistTableId, changeNumberOfGuestRequest))
+        assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(notExistTableId, new ChangeNumberOfGuestsRequest(500)))
                 .isInstanceOf(OrderTableEntityNotFoundException.class)
                 .hasMessage("존재하지 않는 주문 테이블의 방문한 손님 수를 바꿀 수 없습니다.");
     }
@@ -175,11 +170,8 @@ public class OrderTableServiceTest {
         // given
         OrderTableResponse orderTable = this.createOrderTable(true, 0);
 
-        OrderTable changeNumberOfGuestRequest = new OrderTable();
-        changeNumberOfGuestRequest.setNumberOfGuests(500);
-
         // when, then
-        assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(orderTable.getId(), changeNumberOfGuestRequest))
+        assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(orderTable.getId(), new ChangeNumberOfGuestsRequest(500)))
                 .isInstanceOf(InvalidTryChangeGuestsException.class)
                 .hasMessage("비어있는 주문 테이블의 방문한 손님 수를 바꿀 수 없습니다.");
     }
@@ -191,11 +183,9 @@ public class OrderTableServiceTest {
         int numberOfGuests = 500;
         OrderTableResponse orderTable = this.createOrderTable(false, 3);
 
-        OrderTable changeNumberOfGuestRequest = new OrderTable();
-        changeNumberOfGuestRequest.setNumberOfGuests(numberOfGuests);
-
         // when
-        OrderTable changed = orderTableService.changeNumberOfGuests(orderTable.getId(), changeNumberOfGuestRequest);
+        OrderTableResponse changed = orderTableService.changeNumberOfGuests(
+                orderTable.getId(), new ChangeNumberOfGuestsRequest(numberOfGuests));
 
         // then
         assertThat(changed.getNumberOfGuests()).isEqualTo(numberOfGuests);

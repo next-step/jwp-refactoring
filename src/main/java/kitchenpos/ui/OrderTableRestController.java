@@ -3,6 +3,7 @@ package kitchenpos.ui;
 import kitchenpos.application.OrderTableService;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.ui.dto.orderTable.ChangeEmptyRequest;
+import kitchenpos.ui.dto.orderTable.ChangeNumberOfGuestsRequest;
 import kitchenpos.ui.dto.orderTable.OrderTableRequest;
 import kitchenpos.ui.dto.orderTable.OrderTableResponse;
 import org.springframework.http.ResponseEntity;
@@ -46,12 +47,12 @@ public class OrderTableRestController {
     }
 
     @PutMapping("/api/order-tables/{orderTableId}/number-of-guests")
-    public ResponseEntity<OrderTable> changeNumberOfGuests(
+    public ResponseEntity<OrderTableResponse> changeNumberOfGuests(
             @PathVariable final Long orderTableId,
-            @RequestBody final OrderTable orderTable
-    ) {
+            @RequestBody final ChangeNumberOfGuestsRequest changeNumberOfGuestsRequest
+            ) {
         return ResponseEntity.ok()
-                .body(orderTableService.changeNumberOfGuests(orderTableId, orderTable))
+                .body(orderTableService.changeNumberOfGuests(orderTableId, changeNumberOfGuestsRequest))
                 ;
     }
 }
