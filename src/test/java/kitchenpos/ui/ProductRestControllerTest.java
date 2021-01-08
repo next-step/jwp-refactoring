@@ -5,6 +5,7 @@ import kitchenpos.application.ProductService;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.Product;
 import kitchenpos.ui.dto.product.ProductRequest;
+import kitchenpos.ui.dto.product.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -52,16 +53,15 @@ class ProductRestControllerTest {
         BigDecimal price = BigDecimal.ONE;
         ProductRequest productRequest = new ProductRequest(name, price);
 
-        Product savedProduct = new Product();
-        savedProduct.setId(1L);
-        given(productService.create(productRequest)).willReturn(savedProduct);
+        ProductResponse productResponse = new ProductResponse(1L, name, price);
+        given(productService.create(productRequest)).willReturn(productResponse);
 
         // when, then
         mockMvc.perform(post(url)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(productRequest)))
                 .andExpect(status().isCreated())
-                .andExpect(header().string("Location", url + "/" + savedProduct.getId()))
+                .andExpect(header().string("Location", url + "/" + productResponse.getId()))
         ;
     }
 

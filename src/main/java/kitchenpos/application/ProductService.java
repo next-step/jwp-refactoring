@@ -4,6 +4,7 @@ import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.exceptions.product.InvalidProductPriceException;
 import kitchenpos.ui.dto.product.ProductRequest;
+import kitchenpos.ui.dto.product.ProductResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +21,7 @@ public class ProductService {
     }
 
     @Transactional
-    public Product create(final ProductRequest productRequest) {
+    public ProductResponse create(final ProductRequest productRequest) {
         final BigDecimal price = productRequest.getPrice();
 
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
@@ -30,7 +31,9 @@ public class ProductService {
         Product product = new Product();
         product.setName(productRequest.getName());
         product.setPrice(productRequest.getPrice());
-        return productDao.save(product);
+        Product saved = productDao.save(product);
+
+        return ProductResponse.of(saved);
     }
 
     public List<Product> list() {

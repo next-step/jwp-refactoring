@@ -4,6 +4,7 @@ import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.exceptions.product.InvalidProductPriceException;
 import kitchenpos.ui.dto.product.ProductRequest;
+import kitchenpos.ui.dto.product.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -65,7 +66,7 @@ class ProductServiceTest {
         ProductRequest productRequest = new ProductRequest(productName, BigDecimal.valueOf(price));
 
         // when
-        Product created = productService.create(productRequest);
+        ProductResponse created = productService.create(productRequest);
 
         // then
         assertThat(created.getId()).isNotNull();
@@ -79,7 +80,7 @@ class ProductServiceTest {
 
         ProductRequest productRequest = new ProductRequest(productName, BigDecimal.ONE);
 
-        Product saved = productService.create(productRequest);
+        ProductResponse saved = productService.create(productRequest);
 
         // when
         List<Product> foundProducts = productService.list();
