@@ -83,9 +83,9 @@ class ProductServiceTest {
         ProductResponse saved = productService.create(productRequest);
 
         // when
-        List<Product> foundProducts = productService.list();
+        List<ProductResponse> foundProducts = productService.list();
         Stream<Long> ids = foundProducts.stream()
-                .map(Product::getId);
+                .map(ProductResponse::getId);
 
         // then
         assertThat(ids).contains(saved.getId());

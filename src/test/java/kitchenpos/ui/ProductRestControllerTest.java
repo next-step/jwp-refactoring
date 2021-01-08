@@ -71,7 +71,9 @@ class ProductRestControllerTest {
         // given
         String url = "/api/products";
 
-        given(productService.list()).willReturn(Arrays.asList(new Product(), new Product()));
+        ProductResponse productResponse1 = new ProductResponse(1L, "test1", BigDecimal.ONE);
+        ProductResponse productResponse2 = new ProductResponse(2L, "test2", BigDecimal.TEN);
+        given(productService.list()).willReturn(Arrays.asList(productResponse1, productResponse2));
 
         // when, then
         mockMvc.perform(get(url))
