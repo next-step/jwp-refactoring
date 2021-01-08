@@ -29,9 +29,7 @@ public class ProductService {
             throw new InvalidProductPriceException("상품의 가격은 반드시 있어야 하며, 0원 이상이어야 합니다.");
         }
 
-        Product product = new Product();
-        product.setName(productRequest.getName());
-        product.setPrice(productRequest.getPrice());
+        Product product = new Product(productRequest.getName(), productRequest.getPrice());
         Product saved = productDao.save(product);
 
         return ProductResponse.of(saved);
