@@ -90,12 +90,29 @@
   ~~- [ ] TableService~~
   - TableGroup, OrderTable은 서로 의존관계가 너무 강하게 엮여 있어서 실제 오브젝트로 테스트하기 매우 어려움
   - 일단 기본적인 도메인 단위테스트들을 밀어넣으면 차근차근 변경 예정
-- [ ] DTO를 통한 도메인, UI 레이어 분리
-  - 도메인 오브젝트가 외부로 그대로 노출되면서 도메인 변경 시 영향 범위가 너무 크기 때문에 리팩토링이 어려움
-  - [X] MenuGroup DTO 분리
-  - [X] Menu DTO 분리
-  - [ ] Order DTO 분리
-  - [ ] Product DTO 분리
-  - [ ] TableGroup DTO 분리
-  - [ ] Table DTO 분리
-- [ ] 각 도메인의 setter 제거
+
+- [ ] 도메인 레이어 고립을 위한 기본사항 적용
+  - [ ] MenuGroup
+    - [X] 변경 영향을 파악하기 위해 service 레이어에서 실제 오브젝트로 테스트 진행
+    - [X] Controller 레이어에서 도메인 오브젝트 대신 DTO 사용
+    - [ ] 도메인 오브젝트의 불필요한 setter 제거
+  - [ ] Menu
+    - [X] 변경 영향을 파악하기 위해 service 레이어에서 실제 오브젝트로 테스트 진행
+    - [x] Controller 레이어에서 도메인 오브젝트 대신 DTO 사용
+    - [ ] 도메인 오브젝트의 불필요한 setter 제거
+  - [X] Order
+    - [x] 변경 영향을 파악하기 위해 service 레이어에서 실제 오브젝트로 테스트 진행
+    - [X] Controller 레이어에서 도메인 오브젝트 대신 DTO 사용
+    - [X] 도메인 오브젝트의 불필요한 setter 제거
+  - [ ] Product
+    - [ ] 변경 영향을 파악하기 위해 service 레이어에서 실제 오브젝트로 테스트 진행
+    - [ ] Controller 레이어에서 도메인 오브젝트 대신 DTO 사용
+    - [ ] 도메인 오브젝트의 불필요한 setter 제거
+  - [ ] TableGroup
+    - [ ] 변경 영향을 파악하기 위해 service 레이어에서 실제 오브젝트로 테스트 진행
+    - [ ] Controller 레이어에서 도메인 오브젝트 대신 DTO 사용
+    - [ ] 도메인 오브젝트의 불필요한 setter 제거
+  - [ ] Table
+    - [ ] 변경 영향을 파악하기 위해 service 레이어에서 실제 오브젝트로 테스트 진행
+    - [ ] Controller 레이어에서 도메인 오브젝트 대신 DTO 사용
+    - [ ] 도메인 오브젝트의 불필요한 setter 제거
