@@ -86,10 +86,8 @@
   - [X] MenuService
   - [X] OrderService
   - [X] ProductService
-  ~~- [ ] TableGroupService~~
-  ~~- [ ] TableService~~
-  - TableGroup, OrderTable은 서로 의존관계가 너무 강하게 엮여 있어서 실제 오브젝트로 테스트하기 매우 어려움
-  - 일단 기본적인 도메인 단위테스트들을 밀어넣으면 차근차근 변경 예정
+  - [X] TableGroupService
+  - [X] TableService
 
 - [ ] 도메인 레이어 고립을 위한 기본사항 적용
   - [ ] MenuGroup
@@ -105,14 +103,14 @@
     - [X] Controller 레이어에서 도메인 오브젝트 대신 DTO 사용
     - [X] 도메인 오브젝트의 불필요한 setter 제거
   - [ ] Product
-    - [ ] 변경 영향을 파악하기 위해 service 레이어에서 실제 오브젝트로 테스트 진행
+    - [X] 변경 영향을 파악하기 위해 service 레이어에서 실제 오브젝트로 테스트 진행
     - [ ] Controller 레이어에서 도메인 오브젝트 대신 DTO 사용
     - [ ] 도메인 오브젝트의 불필요한 setter 제거
   - [ ] TableGroup
-    - [ ] 변경 영향을 파악하기 위해 service 레이어에서 실제 오브젝트로 테스트 진행
+    - [X] 변경 영향을 파악하기 위해 service 레이어에서 실제 오브젝트로 테스트 진행
     - [ ] Controller 레이어에서 도메인 오브젝트 대신 DTO 사용
     - [ ] 도메인 오브젝트의 불필요한 setter 제거
   - [ ] Table
-    - [ ] 변경 영향을 파악하기 위해 service 레이어에서 실제 오브젝트로 테스트 진행
+    - [X] 변경 영향을 파악하기 위해 service 레이어에서 실제 오브젝트로 테스트 진행
     - [ ] Controller 레이어에서 도메인 오브젝트 대신 DTO 사용
     - [ ] 도메인 오브젝트의 불필요한 setter 제거

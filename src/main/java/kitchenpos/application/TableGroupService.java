@@ -49,11 +49,11 @@ public class TableGroupService {
         }
 
         for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty()) {
-                throw new InvalidTableGroupTryException("비어있지 않은 주문 테이블로 단체 지정할 수 없습니다.");
-            }
             if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
                 throw new InvalidTableGroupTryException("이미 단체 지정된 주문 테이블을 또 단체 지정할 수 없습니다.");
+            }
+            if (!savedOrderTable.isEmpty()) {
+                throw new InvalidTableGroupTryException("비어있지 않은 주문 테이블로 단체 지정할 수 없습니다.");
             }
         }
 
