@@ -3,6 +3,7 @@ package kitchenpos.ui;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.OrderTableService;
 import kitchenpos.ui.dto.orderTable.ChangeEmptyRequest;
+import kitchenpos.ui.dto.orderTable.ChangeNumberOfGuestsRequest;
 import kitchenpos.ui.dto.orderTable.OrderTableRequest;
 import kitchenpos.ui.dto.orderTable.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -93,11 +94,33 @@ class OrderTableRestControllerTest {
         given(orderTableService.changeEmpty(targetId, changeEmptyRequest))
                 .willReturn(new OrderTableResponse(targetId, 1L, 5, empty));
 
+        // when, then
         mockMvc.perform(put(url)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(changeEmptyRequest)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.empty", is(empty)));
+    }
+
+    @DisplayName("주문 테이블의 방문한 손님 수를 바꿀 수 있다.")
+    @Test
+    void changeNumberOfGuestsTest() throws Exception {
+        // given
+        Long targetId = 1L;
+        String url = "/api/order-tables/" + targetId + "/number-of-guests";
+        int numberOfGuests = 300;
+        ChangeNumberOfGuestsRequest changeNumberOfGuestsRequest = new ChangeNumberOfGuestsRequest(numberOfGuests);
+
+        given(orderTableService.changeNumberOfGuests(targetId, changeNumberOfGuestsRequest))
+                .willReturn(new OrderTableResponse(targetId, 1L, numberOfGuests, false));
+
+        // when, then
+        mockMvc.perform(put(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(changeNumberOfGuestsRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.numberOfGuests", is(numberOfGuests)));
     }
 }
