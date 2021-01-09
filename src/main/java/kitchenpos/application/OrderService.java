@@ -60,7 +60,7 @@ public class OrderService {
         }
 
         final OrderStatus orderStatus = OrderStatus.valueOf(orderStatusChangeRequest.getOrderStatus());
-        savedOrder.changeOrderStatus(orderStatus.name());
+        savedOrder.changeOrderStatus(orderStatus);
 
         Order statusChangedOrder = orderRepository.save(savedOrder);
 

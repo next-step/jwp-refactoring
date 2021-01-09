@@ -17,7 +17,8 @@ public class Order {
 
     private Long orderTableId;
 
-    private String orderStatus;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
 
     private LocalDateTime orderedTime;
 
@@ -28,7 +29,7 @@ public class Order {
     protected Order() {
     }
 
-    Order(final Long id, final Long orderTableId, final String orderStatus, final LocalDateTime orderedTime, final List<OrderLineItem> orderLineItems) {
+    Order(final Long id, final Long orderTableId, final OrderStatus orderStatus, final LocalDateTime orderedTime, final List<OrderLineItem> orderLineItems) {
         validate(orderLineItems);
         this.id = id;
         this.orderTableId = orderTableId;
@@ -38,7 +39,7 @@ public class Order {
     }
 
     public Order(final Long orderTableId, final List<OrderLineItem> orderLineItems) {
-        this(null, orderTableId, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItems);
+        this(null, orderTableId, OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
     }
 
     public Long getId() {
@@ -49,11 +50,11 @@ public class Order {
         return orderTableId;
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public void changeOrderStatus(final String orderStatus) {
+    public void changeOrderStatus(final OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 
