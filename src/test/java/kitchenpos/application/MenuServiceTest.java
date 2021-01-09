@@ -1,9 +1,9 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.exceptions.menu.InvalidMenuPriceException;
-import kitchenpos.domain.exceptions.menu.MenuGroupEntityNotFoundException;
-import kitchenpos.domain.exceptions.menu.ProductEntityNotFoundException;
+import kitchenpos.domain.menu.MenuProduct;
+import kitchenpos.domain.menu.exceptions.InvalidMenuPriceException;
+import kitchenpos.domain.menu.exceptions.MenuGroupEntityNotFoundException;
+import kitchenpos.domain.menu.exceptions.ProductEntityNotFoundException;
 import kitchenpos.ui.dto.menu.MenuProductRequest;
 import kitchenpos.ui.dto.menu.MenuRequest;
 import kitchenpos.ui.dto.menu.MenuResponse;
