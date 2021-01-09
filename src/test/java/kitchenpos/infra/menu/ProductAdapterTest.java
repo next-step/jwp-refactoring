@@ -66,7 +66,7 @@ class ProductAdapterTest {
     @Test
     void isValidMenuPriceTest() {
         // given
-        MenuPrice menuPrice = new MenuPrice(BigDecimal.valueOf(10000000));
+        BigDecimal menuPrice = BigDecimal.valueOf(10000000);
         List<MenuProduct> menuProducts = Arrays.asList(MenuProduct.of(1L, 1L, 1L), MenuProduct.of(2L, 2L, 2L));
 
         given(productDao.findById(1L)).willReturn(Optional.of(new Product("product", BigDecimal.ONE)));

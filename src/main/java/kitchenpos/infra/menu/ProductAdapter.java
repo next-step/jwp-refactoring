@@ -30,11 +30,11 @@ public class ProductAdapter implements SafeProduct {
     }
 
     @Override
-    public void isValidMenuPrice(final MenuPrice menuPrice, final List<MenuProduct> menuProducts) {
+    public void isValidMenuPrice(final BigDecimal menuPrice, final List<MenuProduct> menuProducts) {
         BigDecimal productTotalPrice = menuProducts.stream().map(this::calculateMenuProductPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        if (menuPrice.getValue().compareTo(productTotalPrice) > 0) {
+        if (menuPrice.compareTo(productTotalPrice) > 0) {
             throw new InvalidMenuPriceException("메뉴의 가격은 구성된 메뉴 상품들의 가격 합보다 비쌀 수 없습니다.");
         }
     }

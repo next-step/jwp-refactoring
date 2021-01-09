@@ -111,7 +111,7 @@ public class MenuServiceTest {
         // when, then
         assertThatThrownBy(() -> menuService.create(menuRequest))
                 .isInstanceOf(ProductEntityNotFoundException.class)
-                .hasMessage("존재하지 않는 상품으로 메뉴를 등록할 수 없습니다.");
+                .hasMessage("존재하지 않는 상품입니다.");
     }
 
     @DisplayName("메뉴를 등록할 수 있다.")

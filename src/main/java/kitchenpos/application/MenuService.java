@@ -9,6 +9,7 @@ import kitchenpos.domain.menu.MenuProduct;
 import kitchenpos.domain.product.Product;
 import kitchenpos.domain.menu.exceptions.InvalidMenuPriceException;
 import kitchenpos.domain.menu.exceptions.ProductEntityNotFoundException;
+import kitchenpos.infra.menu.ProductAdapter;
 import kitchenpos.ui.dto.menu.MenuProductRequest;
 import kitchenpos.ui.dto.menu.MenuRequest;
 import kitchenpos.ui.dto.menu.MenuResponse;
@@ -24,18 +25,18 @@ public class MenuService {
     private final MenuDao menuDao;
     private final MenuGroupAdapter menuGroupAdapter;
     private final MenuProductDao menuProductDao;
-    private final ProductDao productDao;
+    private final ProductAdapter productAdapter;
 
     public MenuService(
             final MenuDao menuDao,
             final MenuGroupAdapter menuGroupAdapter,
             final MenuProductDao menuProductDao,
-            final ProductDao productDao
+            final ProductAdapter productAdapter
     ) {
         this.menuDao = menuDao;
         this.menuGroupAdapter = menuGroupAdapter;
         this.menuProductDao = menuProductDao;
-        this.productDao = productDao;
+        this.productAdapter = productAdapter;
     }
 
     @Transactional
@@ -46,17 +47,11 @@ public class MenuService {
         menuGroupAdapter.isExistMenuGroup(menuRequest.getMenuGroupId());
 
         final List<MenuProductRequest> menuProductRequests = menuRequest.getMenuProducts();
+        List<MenuProduct> menuProducts = menuProductRequests.stream()
+                .map(it -> MenuProduct.of(null, it.getProductId(), it.getQuantity()))
+                .collect(Collectors.toList());
 
-        BigDecimal sum = BigDecimal.ZERO;
-        for (final MenuProductRequest menuProductRequest : menuProductRequests) {
-            final Product product = productDao.findById(menuProductRequest.getProductId())
-                    .orElseThrow(() -> new ProductEntityNotFoundException("존재하지 않는 상품으로 메뉴를 등록할 수 없습니다."));
-            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProductRequest.getQuantity())));
-        }
-
-        if (price.compareTo(sum) > 0) {
-            throw new InvalidMenuPriceException("메뉴의 가격은 구성된 메뉴 상품들의 가격 합보다 비쌀 수 없습니다.");
-        }
+        productAdapter.isValidMenuPrice(price, menuProducts);
 
         final Menu savedMenu = menuDao.save(menu);
 
