@@ -1,8 +1,11 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.exceptions.order.*;
+import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.exceptions.orderTable.OrderTableEntityNotFoundException;
+import kitchenpos.domain.order.exceptions.InvalidTryChangeOrderStatusException;
+import kitchenpos.domain.order.exceptions.InvalidTryOrderException;
+import kitchenpos.domain.order.exceptions.MenuEntityNotFoundException;
+import kitchenpos.domain.order.exceptions.OrderEntityNotFoundException;
 import kitchenpos.ui.dto.order.OrderLineItemRequest;
 import kitchenpos.ui.dto.order.OrderRequest;
 import kitchenpos.ui.dto.order.OrderResponse;

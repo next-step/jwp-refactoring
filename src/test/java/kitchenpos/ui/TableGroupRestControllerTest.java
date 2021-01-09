@@ -2,8 +2,6 @@ package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.TableGroupService;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.TableGroup;
 import kitchenpos.ui.dto.tableGroup.OrderTableInTableGroupRequest;
 import kitchenpos.ui.dto.tableGroup.TableGroupRequest;
 import kitchenpos.ui.dto.tableGroup.TableGroupResponse;

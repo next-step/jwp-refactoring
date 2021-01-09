@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.exceptions.orderTable.OrderTableEntityNotFoundException;
 import kitchenpos.domain.exceptions.tableGroup.InvalidTableGroupTryException;

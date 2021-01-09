@@ -2,7 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.exceptions.orderTable.InvalidTryChangeEmptyException;
 import kitchenpos.domain.exceptions.orderTable.InvalidTryChangeGuestsException;
