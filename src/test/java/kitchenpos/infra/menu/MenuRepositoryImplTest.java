@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -33,5 +34,17 @@ class MenuRepositoryImplTest {
             assertThat(it.getSeq()).isNotNull();
             assertThat(it.getMenuId()).isNotNull();
         });
+    }
+
+    @DisplayName("일관되게 Menu 목록을 불러 올 수 있다.")
+    @Test
+    void listTest() {
+        // when
+        List<Menu> menus = menuRepository.findAll();
+
+        // then
+        assertThat(menus.size()).isNotEqualTo(0);
+        assertThat(menus.get(0).getId()).isNotNull();
+        menus.get(0).getMenuProducts().forEach(it -> assertThat(it.getSeq()).isNotNull());
     }
 }

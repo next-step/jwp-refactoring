@@ -32,4 +32,16 @@ public class MenuRepositoryImpl implements MenuRepository {
                 menuProducts
         );
     }
+
+    @Override
+    public List<Menu> findAll() {
+        final List<Menu> menus = menuDao.findAll();
+
+        for (final Menu menu : menus) {
+            List<MenuProduct> menuProducts = menuProductDao.findAllByMenuId(menu.getId());
+            menuProducts.forEach(menu::addMenuProduct);
+        }
+
+        return menus;
+    }
 }

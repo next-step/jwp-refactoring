@@ -19,22 +19,16 @@ import java.util.stream.Collectors;
 
 @Service
 public class MenuService {
-    private final MenuDao menuDao;
     private final MenuGroupAdapter menuGroupAdapter;
-    private final MenuProductDao menuProductDao;
     private final ProductAdapter productAdapter;
     private final MenuRepository menuRepository;
 
     public MenuService(
-            final MenuDao menuDao,
             final MenuGroupAdapter menuGroupAdapter,
-            final MenuProductDao menuProductDao,
             final ProductAdapter productAdapter,
             final MenuRepository menuRepository
     ) {
-        this.menuDao = menuDao;
         this.menuGroupAdapter = menuGroupAdapter;
-        this.menuProductDao = menuProductDao;
         this.productAdapter = productAdapter;
         this.menuRepository = menuRepository;
     }
@@ -60,12 +54,7 @@ public class MenuService {
 
     @Transactional(readOnly = true)
     public List<MenuResponse> list() {
-        final List<Menu> menus = menuDao.findAll();
-
-        for (final Menu menu : menus) {
-            List<MenuProduct> menuProducts = menuProductDao.findAllByMenuId(menu.getId());
-            menuProducts.forEach(menu::addMenuProduct);
-        }
+        final List<Menu> menus = menuRepository.findAll();
 
         return menus.stream()
                 .map(MenuResponse::of)
