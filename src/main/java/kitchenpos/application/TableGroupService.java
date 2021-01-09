@@ -10,6 +10,7 @@ import kitchenpos.domain.exceptions.orderTable.OrderTableEntityNotFoundException
 import kitchenpos.domain.exceptions.tableGroup.InvalidTableGroupTryException;
 import kitchenpos.ui.dto.tableGroup.OrderTableInTableGroupRequest;
 import kitchenpos.ui.dto.tableGroup.TableGroupRequest;
+import kitchenpos.ui.dto.tableGroup.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -33,7 +34,7 @@ public class TableGroupService {
     }
 
     @Transactional
-    public TableGroup create(final TableGroupRequest tableGroupRequest) {
+    public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         final List<OrderTableInTableGroupRequest> orderTables = tableGroupRequest.getOrderTables();
 
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
@@ -71,7 +72,7 @@ public class TableGroupService {
         }
         savedTableGroup.setOrderTables(savedOrderTables);
 
-        return savedTableGroup;
+        return TableGroupResponse.of(savedTableGroup);
     }
 
     @Transactional

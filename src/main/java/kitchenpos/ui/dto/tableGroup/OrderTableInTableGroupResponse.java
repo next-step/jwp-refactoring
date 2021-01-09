@@ -1,5 +1,7 @@
 package kitchenpos.ui.dto.tableGroup;
 
+import kitchenpos.domain.OrderTable;
+
 import java.util.Objects;
 
 public class OrderTableInTableGroupResponse {
@@ -18,6 +20,13 @@ public class OrderTableInTableGroupResponse {
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
         this.grouped = grouped;
+    }
+
+    public static OrderTableInTableGroupResponse of(OrderTable orderTable) {
+        return new OrderTableInTableGroupResponse(
+                orderTable.getId(), orderTable.getTableGroupId(), orderTable.getNumberOfGuests(),
+                orderTable.isEmpty(), orderTable.isGrouped()
+        );
     }
 
     public Long getId() {

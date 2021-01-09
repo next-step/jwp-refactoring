@@ -6,6 +6,7 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.ui.dto.tableGroup.OrderTableInTableGroupRequest;
 import kitchenpos.ui.dto.tableGroup.TableGroupRequest;
+import kitchenpos.ui.dto.tableGroup.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -51,16 +54,15 @@ class TableGroupRestControllerTest {
         String url = "/api/table-groups";
         TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(
                 new OrderTableInTableGroupRequest(1L), new OrderTableInTableGroupRequest(2L)));
-        TableGroup savedTableGroup = new TableGroup();
-        savedTableGroup.setId(1L);
-        given(tableGroupService.create(tableGroupRequest)).willReturn(savedTableGroup);
+        TableGroupResponse tableGroupResponse = new TableGroupResponse(1L, LocalDateTime.now(), new ArrayList<>());
+        given(tableGroupService.create(tableGroupRequest)).willReturn(tableGroupResponse);
 
         // when, then
         mockMvc.perform(post(url)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(tableGroupRequest)))
                 .andExpect(status().isCreated())
-                .andExpect(header().string("Location", url + "/" + savedTableGroup.getId()))
+                .andExpect(header().string("Location", url + "/" + tableGroupResponse.getId()))
         ;
     }
 

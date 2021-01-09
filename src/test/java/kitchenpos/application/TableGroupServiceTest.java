@@ -2,7 +2,6 @@ package kitchenpos.application;
 
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
 import kitchenpos.domain.exceptions.orderTable.OrderTableEntityNotFoundException;
 import kitchenpos.domain.exceptions.tableGroup.InvalidTableGroupTryException;
 import kitchenpos.ui.dto.order.OrderLineItemRequest;
@@ -13,6 +12,7 @@ import kitchenpos.ui.dto.orderTable.OrderTableRequest;
 import kitchenpos.ui.dto.orderTable.OrderTableResponse;
 import kitchenpos.ui.dto.tableGroup.OrderTableInTableGroupRequest;
 import kitchenpos.ui.dto.tableGroup.TableGroupRequest;
+import kitchenpos.ui.dto.tableGroup.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -133,12 +133,12 @@ public class TableGroupServiceTest {
         ));
 
         // when
-        TableGroup tableGroup = tableGroupService.create(tableGroupRequest);
+        TableGroupResponse tableGroupResponse = tableGroupService.create(tableGroupRequest);
 
         // then
-        assertThat(tableGroup.getCreatedDate()).isNotNull();
-        tableGroup.getOrderTables().forEach(it -> {
-            assertThat(it.getTableGroupId()).isEqualTo(tableGroup.getId());
+        assertThat(tableGroupResponse.getCreatedDate()).isNotNull();
+        tableGroupResponse.getOrderTables().forEach(it -> {
+            assertThat(it.getTableGroupId()).isEqualTo(tableGroupResponse.getId());
             assertThat(it.isEmpty()).isFalse();
         });
     }
@@ -184,7 +184,7 @@ public class TableGroupServiceTest {
                 new OrderTableInTableGroupRequest(orderTable2.getId())
         ));
 
-        TableGroup tableGroup = tableGroupService.create(tableGroupRequest);
+        TableGroupResponse tableGroupResponse = tableGroupService.create(tableGroupRequest);
 
         OrderRequest orderRequest1 = new OrderRequest(
                 orderTable1.getId(), Collections.singletonList(new OrderLineItemRequest(1L, 1L)));
@@ -194,7 +194,7 @@ public class TableGroupServiceTest {
         orderService.create(orderRequest2);
 
         // when, then
-        assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))
+        assertThatThrownBy(() -> tableGroupService.ungroup(tableGroupResponse.getId()))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -213,7 +213,7 @@ public class TableGroupServiceTest {
                 new OrderTableInTableGroupRequest(orderTable2.getId())
         ));
 
-        TableGroup tableGroup = tableGroupService.create(tableGroupRequest);
+        TableGroupResponse tableGroupResponse = tableGroupService.create(tableGroupRequest);
 
         OrderRequest orderRequest1 = new OrderRequest(
                 orderTable1.getId(), Collections.singletonList(new OrderLineItemRequest(1L, 1L)));
@@ -227,7 +227,7 @@ public class TableGroupServiceTest {
         orderService.changeOrderStatus(orderResponse2.getId(), orderStatusChangeRequest);
 
         // when
-        tableGroupService.ungroup(tableGroup.getId());
+        tableGroupService.ungroup(tableGroupResponse.getId());
 
         // then
         List<OrderTableResponse> allOrderTables = orderTableService.list();
