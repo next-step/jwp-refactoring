@@ -6,13 +6,13 @@ import java.util.Objects;
 public class Product {
     private Long id;
     private String name;
-    private BigDecimal price;
+    private ProductPrice price;
 
     public Product(final Long id, final String name, final BigDecimal price) {
         validate(price);
         this.id = id;
         this.name = name;
-        this.price = price;
+        this.price = new ProductPrice(price);
     }
 
     public Product(final String name, final BigDecimal price) {
@@ -28,7 +28,7 @@ public class Product {
     }
 
     public BigDecimal getPrice() {
-        return price;
+        return price.getValue();
     }
 
     private void validate(final BigDecimal price) {
