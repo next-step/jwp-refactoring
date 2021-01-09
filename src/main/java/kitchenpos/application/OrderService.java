@@ -17,18 +17,15 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
-    private final OrderTableDao orderTableDao;
     private final OrderRepository orderRepository;
     private final SafeMenu safeMenu;
     private final SafeOrderTable safeOrderTable;
 
     public OrderService(
-            final OrderTableDao orderTableDao,
             final OrderRepository orderRepository,
             final SafeMenu safeMenu,
             final SafeOrderTable safeOrderTable
     ) {
-        this.orderTableDao = orderTableDao;
         this.orderRepository = orderRepository;
         this.safeMenu = safeMenu;
         this.safeOrderTable = safeOrderTable;
