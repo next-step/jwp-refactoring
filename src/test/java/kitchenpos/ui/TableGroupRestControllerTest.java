@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.TableGroupService;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.ui.dto.tableGroup.OrderTableInTableGroupRequest;
+import kitchenpos.ui.dto.tableGroup.TableGroupRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +15,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.Arrays;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -45,10 +49,11 @@ class TableGroupRestControllerTest {
     void createTableGroupTest() throws Exception {
         // given
         String url = "/api/table-groups";
-        TableGroup tableGroupRequest = new TableGroup();
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(
+                new OrderTableInTableGroupRequest(1L), new OrderTableInTableGroupRequest(2L)));
         TableGroup savedTableGroup = new TableGroup();
         savedTableGroup.setId(1L);
-        given(tableGroupService.create(any())).willReturn(savedTableGroup);
+        given(tableGroupService.create(tableGroupRequest)).willReturn(savedTableGroup);
 
         // when, then
         mockMvc.perform(post(url)

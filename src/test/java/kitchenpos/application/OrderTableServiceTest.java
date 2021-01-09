@@ -14,6 +14,8 @@ import kitchenpos.ui.dto.orderTable.ChangeEmptyRequest;
 import kitchenpos.ui.dto.orderTable.ChangeNumberOfGuestsRequest;
 import kitchenpos.ui.dto.orderTable.OrderTableRequest;
 import kitchenpos.ui.dto.orderTable.OrderTableResponse;
+import kitchenpos.ui.dto.tableGroup.OrderTableInTableGroupRequest;
+import kitchenpos.ui.dto.tableGroup.TableGroupRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -95,9 +97,11 @@ public class OrderTableServiceTest {
         OrderTableResponse orderTable2Response = this.createOrderTable(true, 0);
         OrderTable orderTable2 = orderTableService.findOrderTable(orderTable2Response.getId());
 
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
-        tableGroupService.create(tableGroup);
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(
+                new OrderTableInTableGroupRequest(orderTable1.getId()),
+                new OrderTableInTableGroupRequest(orderTable2.getId())
+        ));
+        tableGroupService.create(tableGroupRequest);
 
         // when, then
         assertThatThrownBy(() -> orderTableService.changeEmpty(orderTable1.getId(), new ChangeEmptyRequest(true)))

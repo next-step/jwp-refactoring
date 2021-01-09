@@ -11,6 +11,8 @@ import kitchenpos.ui.dto.order.OrderResponse;
 import kitchenpos.ui.dto.order.OrderStatusChangeRequest;
 import kitchenpos.ui.dto.orderTable.OrderTableRequest;
 import kitchenpos.ui.dto.orderTable.OrderTableResponse;
+import kitchenpos.ui.dto.tableGroup.OrderTableInTableGroupRequest;
+import kitchenpos.ui.dto.tableGroup.TableGroupRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -59,20 +61,19 @@ public class TableGroupServiceTest {
     @DisplayName("2개 이하의 주문테이블로 단체 지정할 수 없다.")
     @ParameterizedTest
     @MethodSource("tableGroupFailWithEmptyTableResource")
-    void createTableGroupFailWithEmptyTable(List<OrderTable> orderTables) {
+    void createTableGroupFailWithEmptyTable(List<OrderTableInTableGroupRequest> orderTables) {
         // given
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(orderTables);
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(orderTables);
 
         // when, then
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+        assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
                 .isInstanceOf(InvalidTableGroupTryException.class)
                 .hasMessage("2개 미만의 주문 테이블로 단체 지정할 수 없다.");
     }
     public static Stream<Arguments> tableGroupFailWithEmptyTableResource() {
         return Stream.of(
                 Arguments.of(new ArrayList<>()),
-                Arguments.of(Collections.singletonList(new OrderTable()))
+                Arguments.of(Collections.singletonList(new OrderTableInTableGroupRequest(1L)))
         );
     }
 
@@ -80,14 +81,13 @@ public class TableGroupServiceTest {
     @Test
     void createTableGroupFailWithNotExistTableGroups() {
         // given
-        OrderTable notExistTable1 = new OrderTable(100, true);
-        OrderTable notExistTable2 = new OrderTable(100, true);
+        OrderTableInTableGroupRequest notExist1 = new OrderTableInTableGroupRequest(10000L);
+        OrderTableInTableGroupRequest notExist2 = new OrderTableInTableGroupRequest(10001L);
 
-        TableGroup tableGroupWithNotExistOrderTables = new TableGroup();
-        tableGroupWithNotExistOrderTables.setOrderTables(Arrays.asList(notExistTable1, notExistTable2));
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(notExist1, notExist2));
 
         // when, then
-        assertThatThrownBy(() -> tableGroupService.create(tableGroupWithNotExistOrderTables))
+        assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
                 .isInstanceOf(OrderTableEntityNotFoundException.class)
                 .hasMessage("존재하지 않는 주문 테이블로 단체 지정할 수 없습니다.");
     }
@@ -104,11 +104,13 @@ public class TableGroupServiceTest {
         assertThat(orderTable2Response.isEmpty()).isFalse();
         OrderTable orderTable2 = orderTableService.findOrderTable(orderTable2Response.getId());
 
-        TableGroup tableGroupWithFullOrderTables = new TableGroup();
-        tableGroupWithFullOrderTables.setOrderTables(Arrays.asList(orderTable1, orderTable2));
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(
+                new OrderTableInTableGroupRequest(orderTable1.getId()),
+                new OrderTableInTableGroupRequest(orderTable2.getId())
+        ));
 
         // when, then
-        assertThatThrownBy(() -> tableGroupService.create(tableGroupWithFullOrderTables))
+        assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
                 .isInstanceOf(InvalidTableGroupTryException.class)
                 .hasMessage("비어있지 않은 주문 테이블로 단체 지정할 수 없습니다.");
     }
@@ -125,9 +127,10 @@ public class TableGroupServiceTest {
         assertThat(orderTable2Response.isEmpty()).isTrue();
         OrderTable orderTable2 = orderTableService.findOrderTable(orderTable2Response.getId());
 
-        List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
-        TableGroup tableGroupRequest = new TableGroup();
-        tableGroupRequest.setOrderTables(orderTables);
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(
+                new OrderTableInTableGroupRequest(orderTable1.getId()),
+                new OrderTableInTableGroupRequest(orderTable2.getId())
+        ));
 
         // when
         TableGroup tableGroup = tableGroupService.create(tableGroupRequest);
@@ -152,9 +155,10 @@ public class TableGroupServiceTest {
         assertThat(orderTable2Response.isEmpty()).isTrue();
         OrderTable orderTable2 = orderTableService.findOrderTable(orderTable2Response.getId());
 
-        List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
-        TableGroup tableGroupRequest = new TableGroup();
-        tableGroupRequest.setOrderTables(orderTables);
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(
+                new OrderTableInTableGroupRequest(orderTable1.getId()),
+                new OrderTableInTableGroupRequest(orderTable2.getId())
+        ));
 
         tableGroupService.create(tableGroupRequest);
 
@@ -175,9 +179,10 @@ public class TableGroupServiceTest {
         OrderTableResponse orderTable2Response = orderTableService.create(emptyOrderTableRequest2);
         OrderTable orderTable2 = orderTableService.findOrderTable(orderTable2Response.getId());
 
-        List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
-        TableGroup tableGroupRequest = new TableGroup();
-        tableGroupRequest.setOrderTables(orderTables);
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(
+                new OrderTableInTableGroupRequest(orderTable1.getId()),
+                new OrderTableInTableGroupRequest(orderTable2.getId())
+        ));
 
         TableGroup tableGroup = tableGroupService.create(tableGroupRequest);
 
@@ -203,9 +208,10 @@ public class TableGroupServiceTest {
         OrderTableResponse orderTable2Response = orderTableService.create(emptyOrderTableRequest2);
         OrderTable orderTable2 = orderTableService.findOrderTable(orderTable2Response.getId());
 
-        List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
-        TableGroup tableGroupRequest = new TableGroup();
-        tableGroupRequest.setOrderTables(orderTables);
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(
+                new OrderTableInTableGroupRequest(orderTable1.getId()),
+                new OrderTableInTableGroupRequest(orderTable2.getId())
+        ));
 
         TableGroup tableGroup = tableGroupService.create(tableGroupRequest);
 
