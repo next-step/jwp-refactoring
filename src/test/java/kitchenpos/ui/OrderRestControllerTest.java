@@ -4,7 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.OrderService;
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderStatus;
+import kitchenpos.ui.dto.order.OrderLineItemRequest;
+import kitchenpos.ui.dto.order.OrderRequest;
 import kitchenpos.ui.dto.order.OrderResponse;
+import kitchenpos.ui.dto.order.OrderStatusChangeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +21,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -50,7 +54,8 @@ class OrderRestControllerTest {
         // given
         Long orderId = 1L;
         String url = "/api/orders";
-        Order orderRequest = new Order();
+        OrderRequest orderRequest = new OrderRequest(
+                1L, Collections.singletonList(new OrderLineItemRequest(1L, 1L)));
         OrderResponse orderResponse = new OrderResponse(orderId, 1L, OrderStatus.MEAL.name(),
                 LocalDateTime.now(), new ArrayList<>());
 
@@ -92,8 +97,7 @@ class OrderRestControllerTest {
         String url = "/api/orders/"+ targetId +"/order-status";
         OrderStatus changeStatus = OrderStatus.MEAL;
 
-        Order changeOrderRequest = new Order();
-        changeOrderRequest.changeOrderStatus(changeStatus.name());
+        OrderStatusChangeRequest changeOrderRequest = new OrderStatusChangeRequest(changeStatus.name());
 
         OrderResponse orderResponse = new OrderResponse(1L, 1L, changeStatus.name(),
                 LocalDateTime.now(), new ArrayList<>());

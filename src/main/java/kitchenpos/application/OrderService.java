@@ -62,7 +62,7 @@ public class OrderService {
         List<OrderLineItem> orderLineItems = orderLineItemRequests.stream()
                 .map(it -> new OrderLineItem(it.getMenuId(), it.getQuantity()))
                 .collect(Collectors.toList());
-        final Order order = new Order(orderTable.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItems);
+        final Order order = new Order(orderTable.getId(), orderLineItems);
         final Order savedOrder = orderRepository.save(order);
 
         return OrderResponse.of(savedOrder);
