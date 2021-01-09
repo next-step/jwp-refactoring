@@ -89,7 +89,7 @@
   - [X] TableGroupService
   - [X] TableService
 
-- [ ] 도메인 레이어 고립을 위한 기본사항 적용
+- [X] 도메인 레이어 고립을 위한 기본사항 적용
   - [X] MenuGroup
     - [X] 변경 영향을 파악하기 위해 service 레이어에서 실제 오브젝트로 테스트 진행
     - [X] Controller 레이어에서 도메인 오브젝트 대신 DTO 사용
@@ -106,11 +106,17 @@
     - [X] 변경 영향을 파악하기 위해 service 레이어에서 실제 오브젝트로 테스트 진행
     - [X] Controller 레이어에서 도메인 오브젝트 대신 DTO 사용
     - [X] 도메인 오브젝트의 불필요한 setter 제거
-  - [ ] TableGroup
+  - [X] TableGroup
     - [X] 변경 영향을 파악하기 위해 service 레이어에서 실제 오브젝트로 테스트 진행
     - [X] Controller 레이어에서 도메인 오브젝트 대신 DTO 사용
-    - [ ] 도메인 오브젝트의 불필요한 setter 제거
+    - [X] 도메인 오브젝트의 불필요한 setter 제거
   - [X] OrderTable
     - [X] 변경 영향을 파악하기 위해 service 레이어에서 실제 오브젝트로 테스트 진행
     - [X] Controller 레이어에서 도메인 오브젝트 대신 DTO 사용
     - [X] 도메인 오브젝트의 불필요한 setter 제거
+  
+- [ ] 서비스 레이어의 도메인 로직을 도메인 레이어로 이동시키기
+  - 도메인 로직 응집도를 높이기 위한 코드 개선
+  - [ ] Product
+    - [ ] 가격 검증 기능을 도메인 안으로 이관
+      - [ ] ProductPrice 오브젝트로 래핑
