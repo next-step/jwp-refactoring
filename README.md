@@ -124,9 +124,9 @@
     - [X] 메뉴 가격 검증 로직 Menu 도메인으로 이관
     - [X] MenuGroupAdapter 구현
       - [X] 메뉴 그룹의 존재 여부에 대해 확인할 수 있음
-    - [ ] ProductAdapter 구현
+    - [X] ProductAdapter 구현
       - [X] 안전하게 제시된 상품의 가격을 불러올 수 있다.
-      - [ ] 제시된 상품들의 가격합과 메뉴 가격의 올바른 정도를 확인할 수 있다.
+      - [X] 제시된 상품들의 가격합과 메뉴 가격의 올바른 정도를 확인할 수 있다.
     - [ ] MenuRepository 구현
       - [ ] Menu, MenuProduct를 한번에 움직일 수 있는 Repository 구현
     - [ ] MenuProduct 컬렉션을 일급 컬렉션으로 전환
