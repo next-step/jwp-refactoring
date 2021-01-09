@@ -2,13 +2,8 @@ package kitchenpos.application;
 
 import kitchenpos.domain.order.*;
 import kitchenpos.domain.order.exceptions.InvalidTryChangeOrderStatusException;
-import kitchenpos.domain.order.exceptions.InvalidTryOrderException;
-import kitchenpos.domain.order.exceptions.MenuEntityNotFoundException;
 import kitchenpos.domain.order.exceptions.OrderEntityNotFoundException;
-import kitchenpos.infra.menu.MenuDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.*;
-import kitchenpos.domain.exceptions.orderTable.OrderTableEntityNotFoundException;
 import kitchenpos.ui.dto.order.OrderLineItemRequest;
 import kitchenpos.ui.dto.order.OrderRequest;
 import kitchenpos.ui.dto.order.OrderResponse;
@@ -41,15 +36,9 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        final List<OrderLineItemRequest> orderLineItemRequests = orderRequest.getOrderLineItems();
+        validateCreateRequest(orderRequest);
 
-        List<OrderLineItem> orderLineItems = orderLineItemRequests.stream()
-                .map(it -> new OrderLineItem(it.getMenuId(), it.getQuantity()))
-                .collect(Collectors.toList());
-        final Order order = new Order(orderRequest.getOrderTableId(), orderLineItems);
-
-        safeMenu.isMenuExists(orderLineItems);
-        safeOrderTable.canOrderAtThisTable(orderRequest.getOrderTableId());
+        Order order = parseToOrder(orderRequest);
 
         final Order savedOrder = orderRepository.save(order);
 
@@ -79,5 +68,24 @@ public class OrderService {
         Order statusChangedOrder = orderRepository.save(savedOrder);
 
         return OrderResponse.of(statusChangedOrder);
+    }
+
+    private List<OrderLineItem> parserToOrderLineItem(final OrderRequest orderRequest) {
+        final List<OrderLineItemRequest> orderLineItemRequests = orderRequest.getOrderLineItems();
+
+        return orderLineItemRequests.stream()
+                .map(it -> new OrderLineItem(it.getMenuId(), it.getQuantity()))
+                .collect(Collectors.toList());
+    }
+
+    private Order parseToOrder(final OrderRequest orderRequest) {
+        List<OrderLineItem> orderLineItems = parserToOrderLineItem(orderRequest);
+
+        return new Order(orderRequest.getOrderTableId(), orderLineItems);
+    }
+
+    private void validateCreateRequest(final OrderRequest orderRequest) {
+        safeMenu.isMenuExists(parserToOrderLineItem(orderRequest));
+        safeOrderTable.canOrderAtThisTable(orderRequest.getOrderTableId());
     }
 }
