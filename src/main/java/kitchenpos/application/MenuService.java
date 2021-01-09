@@ -42,11 +42,9 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        final BigDecimal price = menuRequest.getPrice();
+        final Menu menu = Menu.of(menuRequest.getName(), menuRequest.getPrice(), menuRequest.getMenuGroupId());
 
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new InvalidMenuPriceException("가격은 음수일 수 없습니다.");
-        }
+        final BigDecimal price = menuRequest.getPrice();
 
         if (!menuGroupDao.existsById(menuRequest.getMenuGroupId())) {
             throw new MenuGroupEntityNotFoundException("존재하지 않은 메뉴 그룹으로 메뉴를 등록할 수 없습니다.");
@@ -65,7 +63,6 @@ public class MenuService {
             throw new InvalidMenuPriceException("메뉴의 가격은 구성된 메뉴 상품들의 가격 합보다 비쌀 수 없습니다.");
         }
 
-        final Menu menu = Menu.of(menuRequest.getName(), menuRequest.getPrice(), menuRequest.getMenuGroupId());
         final Menu savedMenu = menuDao.save(menu);
 
         for (final MenuProductRequest menuProductRequest : menuProductRequests) {
