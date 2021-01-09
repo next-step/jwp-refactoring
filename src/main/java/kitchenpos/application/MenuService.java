@@ -5,6 +5,7 @@ import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.menu.Menu;
+import kitchenpos.domain.menu.MenuGroupAdapter;
 import kitchenpos.domain.menu.MenuProduct;
 import kitchenpos.domain.product.Product;
 import kitchenpos.domain.menu.exceptions.InvalidMenuPriceException;
@@ -24,31 +25,28 @@ import java.util.stream.Collectors;
 @Service
 public class MenuService {
     private final MenuDao menuDao;
-    private final MenuGroupDao menuGroupDao;
+    private final MenuGroupAdapter menuGroupAdapter;
     private final MenuProductDao menuProductDao;
     private final ProductDao productDao;
 
     public MenuService(
             final MenuDao menuDao,
-            final MenuGroupDao menuGroupDao,
+            final MenuGroupAdapter menuGroupAdapter,
             final MenuProductDao menuProductDao,
             final ProductDao productDao
     ) {
         this.menuDao = menuDao;
-        this.menuGroupDao = menuGroupDao;
+        this.menuGroupAdapter = menuGroupAdapter;
         this.menuProductDao = menuProductDao;
         this.productDao = productDao;
     }
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        final Menu menu = Menu.of(menuRequest.getName(), menuRequest.getPrice(), menuRequest.getMenuGroupId());
-
         final BigDecimal price = menuRequest.getPrice();
+        final Menu menu = Menu.of(menuRequest.getName(), price, menuRequest.getMenuGroupId());
 
-        if (!menuGroupDao.existsById(menuRequest.getMenuGroupId())) {
-            throw new MenuGroupEntityNotFoundException("존재하지 않은 메뉴 그룹으로 메뉴를 등록할 수 없습니다.");
-        }
+        menuGroupAdapter.isExistMenuGroup(menuRequest.getMenuGroupId());
 
         final List<MenuProductRequest> menuProductRequests = menuRequest.getMenuProducts();
 
