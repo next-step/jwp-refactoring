@@ -35,10 +35,17 @@ project(':kitchenpos-domain') {
         compile project(':kitchenpos-common')
     }
 }
+
+project(':kitchenpos-repository') {
+    dependencies {
+        compile project(':kitchenpos-domain')
+    }
+}
 project(':kitchenpos-ui') {
     dependencies {
         compile project(':kitchenpos-common')
         compile project(':kitchenpos-domain')
+        compile project(':kitchenpos-repository')
     }
 
     jar.enabled(false)

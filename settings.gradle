@@ -2,4 +2,5 @@ rootProject.name = 'kitchenpos'
 include 'kitchenpos-ui'
 include 'kitchenpos-common'
 include 'kitchenpos-domain'
+include 'kitchenpos-repository'
 
