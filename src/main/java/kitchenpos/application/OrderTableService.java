@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
+import kitchenpos.domain.order.OrderRepository;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.exceptions.orderTable.InvalidTryChangeEmptyException;
@@ -21,11 +21,11 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrderTableService {
-    private final OrderDao orderDao;
+    private final OrderRepository orderRepository;
     private final OrderTableDao orderTableDao;
 
-    public OrderTableService(final OrderDao orderDao, final OrderTableDao orderTableDao) {
-        this.orderDao = orderDao;
+    public OrderTableService(final OrderRepository orderRepository, final OrderTableDao orderTableDao) {
+        this.orderRepository = orderRepository;
         this.orderTableDao = orderTableDao;
     }
 
@@ -60,7 +60,7 @@ public class OrderTableService {
             throw new InvalidTryChangeEmptyException("단체 지정된 주문 테이블의 비움 상태를 바꿀 수 없습니다.");
         }
 
-        if (orderDao.existsByOrderTableIdAndOrderStatusIn(
+        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
                 orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
             throw new InvalidTryChangeEmptyException("조리중이거나 식사중인 주문 테이블의 비움 상태를 바꿀 수 없습니다.");
         }

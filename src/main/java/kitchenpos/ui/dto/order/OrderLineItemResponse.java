@@ -13,24 +13,18 @@ public class OrderLineItemResponse {
     OrderLineItemResponse() {
     }
 
-    public OrderLineItemResponse(final Long seq, final Long orderId, final Long menuId, final Long quantity) {
+    public OrderLineItemResponse(final Long seq, final Long menuId, final Long quantity) {
         this.seq = seq;
-        this.orderId = orderId;
         this.menuId = menuId;
         this.quantity = quantity;
     }
 
     public static OrderLineItemResponse of(OrderLineItem orderLineItem) {
-        return new OrderLineItemResponse(orderLineItem.getSeq(), orderLineItem.getOrderId(),
-                orderLineItem.getMenuId(), orderLineItem.getQuantity());
+        return new OrderLineItemResponse(orderLineItem.getSeq(), orderLineItem.getMenuId(), orderLineItem.getQuantity());
     }
 
     public Long getSeq() {
         return seq;
-    }
-
-    public Long getOrderId() {
-        return orderId;
     }
 
     public Long getMenuId() {

@@ -3,15 +3,26 @@ package kitchenpos.domain.order;
 import kitchenpos.domain.order.exceptions.InvalidTryOrderException;
 import org.springframework.util.CollectionUtils;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "orders")
 public class Order {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private Long orderTableId;
+
     private String orderStatus;
+
     private LocalDateTime orderedTime;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "order_id")
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     public Order() {
@@ -32,6 +43,14 @@ public class Order {
 
     public Order(final Long orderTableId, final String orderStatus, final LocalDateTime orderedTime) {
         this(null, orderTableId, orderStatus, orderedTime, new ArrayList<>());
+    }
+
+    public Order(final Long orderTableId, final String orderStatus, final LocalDateTime orderedTime, final List<OrderLineItem> orderLineItems) {
+        this(null, orderTableId, orderStatus, orderedTime, orderLineItems);
+    }
+
+    public Order(final Order order, final List<OrderLineItem> orderLineItems) {
+        this(order.id, order.orderTableId, order.orderStatus, order.orderedTime, orderLineItems);
     }
 
     public void addOrderLineItem(final OrderLineItem orderLineItem) {

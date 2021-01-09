@@ -10,6 +10,7 @@ import kitchenpos.ui.dto.order.OrderLineItemRequest;
 import kitchenpos.ui.dto.order.OrderRequest;
 import kitchenpos.ui.dto.order.OrderResponse;
 import kitchenpos.ui.dto.order.OrderStatusChangeRequest;
+import kitchenpos.ui.dto.orderTable.ChangeEmptyRequest;
 import kitchenpos.ui.dto.orderTable.OrderTableRequest;
 import kitchenpos.ui.dto.orderTable.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -39,6 +40,8 @@ class OrderServiceTest {
         // given
         Long orderTableId = 1L;
         OrderRequest orderRequest = new OrderRequest(orderTableId, new ArrayList<>());
+
+        orderTableService.changeEmpty(orderTableId, new ChangeEmptyRequest(false));
 
         // when, then
         assertThatThrownBy(() -> orderService.create(orderRequest))
