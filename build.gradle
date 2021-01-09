@@ -51,18 +51,12 @@ project(':kitchenpos-repository') {
 
 project(':kitchenpos-application') {
     dependencies {
-        compile project(':kitchenpos-common')
-        compile project(':kitchenpos-domain')
         compile project(':kitchenpos-dto')
         compile project(':kitchenpos-repository')
     }
 }
 project(':kitchenpos-ui') {
     dependencies {
-        compile project(':kitchenpos-common')
-        compile project(':kitchenpos-domain')
-        compile project(':kitchenpos-dto')
-        compile project(':kitchenpos-repository')
         compile project(':kitchenpos-application')
     }
 
