@@ -3,4 +3,5 @@ include 'kitchenpos-ui'
 include 'kitchenpos-common'
 include 'kitchenpos-domain'
 include 'kitchenpos-repository'
+include 'kitchenpos-dto'
 
