@@ -29,7 +29,8 @@ public class ProductAdapter implements SafeProduct {
 
     @Override
     public void isValidMenuPrice(Menu menu) {
-        BigDecimal productTotalPrice = menu.getMenuProducts().stream().map(this::calculateMenuProductPrice)
+        BigDecimal productTotalPrice = menu.getMenuProducts().stream()
+                .map(this::calculateMenuProductPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         if (menu.isMoreExpensive(productTotalPrice)) {

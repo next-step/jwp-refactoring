@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Menu {
-    private Long id;
-    private String name;
-    private MenuPrice price;
-    private Long menuGroupId;
-    private List<MenuProduct> menuProducts = new ArrayList<>();
+    private final Long id;
+    private final String name;
+    private final MenuPrice price;
+    private final Long menuGroupId;
+    private final List<MenuProduct> menuProducts;
 
     public Menu(final Long id, final String name, final BigDecimal price, final Long menuGroupId,
          final List<MenuProduct> menuProducts) {
@@ -28,12 +28,12 @@ public class Menu {
         return new Menu(null, name, price, menuGroupId, menuProducts);
     }
 
-    public static Menu of(final String name, final BigDecimal price, final Long menuGroupId) {
-        return new Menu(null, name, price, menuGroupId, new ArrayList<>());
+    public static Menu of(final Menu menu, final List<MenuProduct> menuProducts) {
+        return new Menu(menu.getId(), menu.getName(), menu.getPrice(), menu.getMenuGroupId(), menuProducts);
     }
 
-    public void addMenuProduct(final MenuProduct menuProduct) {
-        this.menuProducts.add(menuProduct);
+    public static Menu of(final String name, final BigDecimal price, final Long menuGroupId) {
+        return new Menu(null, name, price, menuGroupId, new ArrayList<>());
     }
 
     public boolean isMoreExpensive(final BigDecimal price) {

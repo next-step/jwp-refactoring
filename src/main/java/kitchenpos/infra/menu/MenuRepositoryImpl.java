@@ -37,11 +37,9 @@ public class MenuRepositoryImpl implements MenuRepository {
     public List<Menu> findAll() {
         final List<Menu> menus = menuDao.findAll();
 
-        for (final Menu menu : menus) {
-            List<MenuProduct> menuProducts = menuProductDao.findAllByMenuId(menu.getId());
-            menuProducts.forEach(menu::addMenuProduct);
-        }
-
-        return menus;
+        return menus.stream().map(it -> {
+            List<MenuProduct> menuProducts = menuProductDao.findAllByMenuId(it.getId());
+            return Menu.of(it, menuProducts);
+        }).collect(Collectors.toList());
     }
 }

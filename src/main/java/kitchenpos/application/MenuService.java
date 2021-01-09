@@ -35,17 +35,9 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        final BigDecimal price = menuRequest.getPrice();
+        final Menu menu = parseRequestToMenu(menuRequest);
 
-        final List<MenuProductRequest> menuProductRequests = menuRequest.getMenuProducts();
-        List<MenuProduct> menuProducts = menuProductRequests.stream()
-                .map(it -> MenuProduct.of(null, it.getProductId(), it.getQuantity()))
-                .collect(Collectors.toList());
-
-        final Menu menu = Menu.of(menuRequest.getName(), price, menuRequest.getMenuGroupId(), menuProducts);
-
-        menuGroupAdapter.isExistMenuGroup(menuRequest.getMenuGroupId());
-        productAdapter.isValidMenuPrice(menu);
+        validateMenuCreation(menu);
 
         final Menu savedMenu = menuRepository.save(menu);
 
@@ -59,5 +51,19 @@ public class MenuService {
         return menus.stream()
                 .map(MenuResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    private Menu parseRequestToMenu(final MenuRequest menuRequest) {
+        final List<MenuProductRequest> menuProductRequests = menuRequest.getMenuProducts();
+        List<MenuProduct> menuProducts = menuProductRequests.stream()
+                .map(it -> MenuProduct.of(null, it.getProductId(), it.getQuantity()))
+                .collect(Collectors.toList());
+
+        return Menu.of(menuRequest.getName(), menuRequest.getPrice(), menuRequest.getMenuGroupId(), menuProducts);
+    }
+
+    private void validateMenuCreation(final Menu menu) {
+        menuGroupAdapter.isExistMenuGroup(menu.getMenuGroupId());
+        productAdapter.isValidMenuPrice(menu);
     }
 }
