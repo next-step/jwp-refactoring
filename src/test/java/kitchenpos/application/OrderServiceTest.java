@@ -63,7 +63,7 @@ class OrderServiceTest {
         // when, then
         assertThatThrownBy(() -> orderService.create(orderRequest))
                 .isInstanceOf(MenuEntityNotFoundException.class)
-                .hasMessage("메뉴에 없는 주문 항목으로 주문할 수 없습니다.");
+                .hasMessage("존재하지 않는 메뉴가 있습니다.");
     }
 
     @DisplayName("존재하지 않는 주문테이블에서 주문할 수 없다.")

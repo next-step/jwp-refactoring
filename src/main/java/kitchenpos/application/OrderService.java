@@ -1,9 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.order.Order;
-import kitchenpos.domain.order.OrderLineItem;
-import kitchenpos.domain.order.OrderRepository;
-import kitchenpos.domain.order.OrderStatus;
+import kitchenpos.domain.order.*;
 import kitchenpos.domain.order.exceptions.InvalidTryChangeOrderStatusException;
 import kitchenpos.domain.order.exceptions.InvalidTryOrderException;
 import kitchenpos.domain.order.exceptions.MenuEntityNotFoundException;
@@ -19,7 +16,6 @@ import kitchenpos.ui.dto.order.OrderStatusChangeRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -29,28 +25,30 @@ public class OrderService {
     private final MenuDao menuDao;
     private final OrderTableDao orderTableDao;
     private final OrderRepository orderRepository;
+    private final SafeMenu safeMenu;
 
     public OrderService(
             final MenuDao menuDao,
             final OrderTableDao orderTableDao,
-            final OrderRepository orderRepository
+            final OrderRepository orderRepository,
+            final SafeMenu safeMenu
     ) {
         this.menuDao = menuDao;
         this.orderTableDao = orderTableDao;
         this.orderRepository = orderRepository;
+        this.safeMenu = safeMenu;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
         final List<OrderLineItemRequest> orderLineItemRequests = orderRequest.getOrderLineItems();
 
-        final List<Long> menuIds = orderLineItemRequests.stream()
-                .map(OrderLineItemRequest::getMenuId)
+        List<OrderLineItem> orderLineItems = orderLineItemRequests.stream()
+                .map(it -> new OrderLineItem(it.getMenuId(), it.getQuantity()))
                 .collect(Collectors.toList());
+        final Order order = new Order(orderRequest.getOrderTableId(), orderLineItems);
 
-        if (orderLineItemRequests.size() != menuDao.countByIdIn(menuIds)) {
-            throw new MenuEntityNotFoundException("메뉴에 없는 주문 항목으로 주문할 수 없습니다.");
-        }
+        safeMenu.isMenuExists(orderLineItems);
 
         final OrderTable orderTable = orderTableDao.findById(orderRequest.getOrderTableId())
                 .orElseThrow(() -> new OrderTableEntityNotFoundException("존재하지 않는 주문 테이블에서 주문할 수 없습니다."));
@@ -59,10 +57,6 @@ public class OrderService {
             throw new InvalidTryOrderException("비어있는 주문 테이블에서 주문할 수 없습니다.");
         }
 
-        List<OrderLineItem> orderLineItems = orderLineItemRequests.stream()
-                .map(it -> new OrderLineItem(it.getMenuId(), it.getQuantity()))
-                .collect(Collectors.toList());
-        final Order order = new Order(orderTable.getId(), orderLineItems);
         final Order savedOrder = orderRepository.save(order);
 
         return OrderResponse.of(savedOrder);
