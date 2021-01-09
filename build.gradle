@@ -29,9 +29,16 @@ subprojects {
 project(':kitchenpos-common') {
 
 }
+
+project(':kitchenpos-domain') {
+    dependencies {
+        compile project(':kitchenpos-common')
+    }
+}
 project(':kitchenpos-ui') {
     dependencies {
         compile project(':kitchenpos-common')
+        compile project(':kitchenpos-domain')
     }
 
     jar.enabled(false)
