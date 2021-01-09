@@ -49,10 +49,6 @@ public class OrderService {
     public OrderResponse create(final OrderRequest orderRequest) {
         final List<OrderLineItemRequest> orderLineItems = orderRequest.getOrderLineItems();
 
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new InvalidTryOrderException("주문하기 위해서는 1개 이상의 주문 항목이 필요합니다.");
-        }
-
         final List<Long> menuIds = orderLineItems.stream()
                 .map(OrderLineItemRequest::getMenuId)
                 .collect(Collectors.toList());
