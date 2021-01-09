@@ -120,7 +120,7 @@
   - [X] Product
     - [X] 가격 검증 기능을 도메인 안으로 이관
       - [X] ProductPrice 오브젝트로 래핑
-  - [ ] Menu
+  - [X] Menu
     - [X] 메뉴 가격 검증 로직 Menu 도메인으로 이관
     - [X] MenuGroupAdapter 구현
       - [X] 메뉴 그룹의 존재 여부에 대해 확인할 수 있음

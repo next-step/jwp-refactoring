@@ -17,7 +17,7 @@ public class Menu {
         this.name = name;
         this.price = new MenuPrice(price);
         this.menuGroupId = menuGroupId;
-        this.menuProducts = menuProducts;
+        this.menuProducts = new ArrayList<>(menuProducts);
     }
 
     public Menu(final Long id, final String name, final BigDecimal price, final Long menuGroupId) {
