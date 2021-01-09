@@ -1,9 +1,7 @@
 package kitchenpos.application;
 
 import kitchenpos.domain.order.*;
-import kitchenpos.domain.order.exceptions.InvalidTryChangeOrderStatusException;
 import kitchenpos.domain.order.exceptions.OrderEntityNotFoundException;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.ui.dto.order.OrderLineItemRequest;
 import kitchenpos.ui.dto.order.OrderRequest;
 import kitchenpos.ui.dto.order.OrderResponse;
@@ -12,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,6 +39,7 @@ public class OrderService {
         return OrderResponse.of(savedOrder);
     }
 
+    @Transactional(readOnly = true)
     public List<OrderResponse> list() {
         final List<Order> orders = orderRepository.findAll();
 
@@ -55,16 +53,10 @@ public class OrderService {
         final Order savedOrder = orderRepository.findById(orderId)
                 .orElseThrow(() -> new OrderEntityNotFoundException("존재하지 않는 주문입니다."));
 
-        if (Objects.equals(OrderStatus.COMPLETION.name(), savedOrder.getOrderStatus())) {
-            throw new InvalidTryChangeOrderStatusException("계산 완료된 주문의 상태를 바꿀 수 없습니다.");
-        }
-
-        final OrderStatus orderStatus = OrderStatus.valueOf(orderStatusChangeRequest.getOrderStatus());
+        final OrderStatus orderStatus = OrderStatus.find(orderStatusChangeRequest.getOrderStatus());
         savedOrder.changeOrderStatus(orderStatus);
 
-        Order statusChangedOrder = orderRepository.save(savedOrder);
-
-        return OrderResponse.of(statusChangedOrder);
+        return OrderResponse.of(savedOrder);
     }
 
     private List<OrderLineItem> parserToOrderLineItem(final OrderRequest orderRequest) {

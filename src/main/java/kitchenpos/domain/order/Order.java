@@ -1,5 +1,6 @@
 package kitchenpos.domain.order;
 
+import kitchenpos.domain.order.exceptions.InvalidTryChangeOrderStatusException;
 import kitchenpos.domain.order.exceptions.InvalidTryOrderException;
 import org.springframework.util.CollectionUtils;
 
@@ -55,6 +56,9 @@ public class Order {
     }
 
     public void changeOrderStatus(final OrderStatus orderStatus) {
+        if (!this.orderStatus.canChange()) {
+            throw new InvalidTryChangeOrderStatusException("계산 완료된 주문의 상태를 바꿀 수 없습니다.");
+        }
         this.orderStatus = orderStatus;
     }
 
