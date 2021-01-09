@@ -21,10 +21,6 @@ public class OrderLineItem {
         this.quantity = quantity;
     }
 
-    public OrderLineItem(final Long menuId, final long quantity) {
-        this(null, menuId, quantity);
-    }
-
     public OrderLineItem(final Long menuId, final Long quantity) {
         this(null, menuId, quantity);
     }
