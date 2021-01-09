@@ -32,7 +32,7 @@ public class MenuResponse {
 			.map(MenuProductResponse::of)
 			.collect(Collectors.toList());
 
-		return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(), MenuGroupResponse.of(menu.getMenuGroup()), menuProducts);
+		return new MenuResponse(menu.getId(), menu.getName(), menu.getRealPrice(), MenuGroupResponse.of(menu.getMenuGroup()), menuProducts);
 	}
 
 	public Long getId() {

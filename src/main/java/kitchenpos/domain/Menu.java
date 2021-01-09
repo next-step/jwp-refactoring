@@ -2,7 +2,6 @@ package kitchenpos.domain;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -13,8 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import kitchenpos.exception.WrongPriceException;
-
 @Entity
 public class Menu {
 
@@ -22,7 +19,9 @@ public class Menu {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String name;
-	private BigDecimal price;
+
+	@Embedded
+	private MenuPrice price;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "menu_group_id")
@@ -35,16 +34,9 @@ public class Menu {
 	}
 
 	private Menu(String name, BigDecimal price, MenuGroup menuGroup) {
-		validatePrice(price);
 		this.name = name;
-		this.price = price;
+		this.price = MenuPrice.of(price);
 		this.menuGroup = menuGroup;
-	}
-
-	private void validatePrice(BigDecimal price) {
-		if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-			throw new WrongPriceException("메뉴의 가격이 없거나 0보다 작습니다.");
-		}
 	}
 
 	public static Menu create(String name, BigDecimal price, MenuGroup menuGroup) {
@@ -63,8 +55,12 @@ public class Menu {
 		return name;
 	}
 
-	public BigDecimal getPrice() {
+	public MenuPrice getPrice() {
 		return price;
+	}
+
+	public BigDecimal getRealPrice() {
+		return price.getPrice();
 	}
 
 	public MenuGroup getMenuGroup() {

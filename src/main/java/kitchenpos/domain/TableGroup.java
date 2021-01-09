@@ -29,7 +29,7 @@ public class TableGroup {
 	}
 
 	private void add(List<OrderTable> orderTables) {
-		this.orderTables.add(this, orderTables);
+		this.orderTables.add(this.id, orderTables);
 
 	}
 

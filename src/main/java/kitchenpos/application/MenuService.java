@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuPrice;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuProductItem;
@@ -55,21 +55,23 @@ public class MenuService {
 	}
 
 	private void addMenuProduct(MenuRequest menuRequest, Menu savedMenu) {
-		BigDecimal sum = BigDecimal.ZERO;
+
+		MenuPrice sum = MenuPrice.ZERO;
 		List<MenuProductItem> menuProductItems = menuRequest.getMenuProducts();
+
 		for (MenuProductItem menuProductItem : menuProductItems) {
 			Product product = productRepository.findById(menuProductItem.getProductId())
 				.orElseThrow(() -> new NotFoundException("상품 정보를 찾을 수 없습니다."));
-			MenuProduct menuProduct = MenuProduct.create(savedMenu, product, menuProductItem.getQuantity());
+			MenuProduct menuProduct = MenuProduct.create(savedMenu.getId(), product, menuProductItem.getQuantity());
 			savedMenu.addMenuProduct(menuProductRepository.save(menuProduct));
-			sum = sum.add(product.getPrice()
-				.multiply(BigDecimal.valueOf(menuProductItem.getQuantity())));
+
+			sum = sum.add(menuProduct.getMenuPrice());
 		}
-		validatePriceSum(menuRequest.getPrice(), sum);
+		validatePriceSum(savedMenu.getPrice(), sum);
 	}
 
-	private void validatePriceSum(BigDecimal price, BigDecimal sum) {
-		if (price.compareTo(sum) > 0) {
+	private void validatePriceSum(MenuPrice menuPrice, MenuPrice sum) {
+		if (menuPrice.isGreaterThanProductTotal(sum)) {
 			throw new WrongPriceException("메뉴의 가격이 상품가격의 총합보다 클 수 없습니다.");
 		}
 	}

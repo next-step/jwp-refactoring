@@ -1,7 +1,6 @@
 package kitchenpos.common;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
@@ -9,7 +8,6 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
-import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.MenuProductItem;
 import kitchenpos.dto.OrderItem;
 
@@ -46,7 +44,7 @@ public class TestFixture {
 
 	public static OrderTable 그룹_지정된_테이블_객체() {
 		OrderTable table = OrderTable.create();
-		table.saveGroupInfo(TableGroup.create(Collections.emptyList()));
+		table.saveGroupInfo(1L);
 		return table;
 	}
 

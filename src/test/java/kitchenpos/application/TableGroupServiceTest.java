@@ -92,7 +92,7 @@ class TableGroupServiceTest extends BaseTest {
 
 		assertAll(
 			() -> assertThat(단체지정되어있던_테이블).isNotNull(),
-			() -> assertThat(단체지정되어있던_테이블.getTableGroup()).isNull()
+			() -> assertThat(단체지정되어있던_테이블.getTableGroupId()).isNull()
 		);
 	}
 

@@ -5,17 +5,18 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
-import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 @Embeddable
 public class MenuProducts {
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "menu_id")
 	private List<MenuProduct> menuProducts = new ArrayList<>();
 
 	public void add(MenuProduct menuProduct) {
-		menuProducts.add(menuProduct);
+		this.menuProducts.add(menuProduct);
 	}
 
 	public List<MenuProduct> getMenuProducts() {

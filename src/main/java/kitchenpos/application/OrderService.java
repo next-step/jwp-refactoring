@@ -60,7 +60,7 @@ public class OrderService {
 		for (OrderItem orderItem : orderItems) {
 			Menu menu = menuRepository.findById(orderItem.getMenuId())
 				.orElseThrow(() -> new NotFoundException("메뉴 정보를 찾을 수 없습니다."));
-			OrderLineItem orderLineItem = OrderLineItem.create(savedOrder, menu, orderItem.getQuantity());
+			OrderLineItem orderLineItem = OrderLineItem.create(savedOrder.getId(), menu, orderItem.getQuantity());
 			savedOrder.addOrderLineItems(orderLineItemRepository.save(orderLineItem));
 		}
 	}
