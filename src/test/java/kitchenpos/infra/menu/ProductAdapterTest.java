@@ -1,6 +1,7 @@
 package kitchenpos.infra.menu;
 
 import kitchenpos.dao.ProductDao;
+import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuPrice;
 import kitchenpos.domain.menu.MenuProduct;
 import kitchenpos.domain.menu.exceptions.InvalidMenuPriceException;
@@ -68,12 +69,13 @@ class ProductAdapterTest {
         // given
         BigDecimal menuPrice = BigDecimal.valueOf(10000000);
         List<MenuProduct> menuProducts = Arrays.asList(MenuProduct.of(1L, 1L, 1L), MenuProduct.of(2L, 2L, 2L));
+        Menu menu = Menu.of("menu", menuPrice, 1L, menuProducts);
 
         given(productDao.findById(1L)).willReturn(Optional.of(new Product("product", BigDecimal.ONE)));
         given(productDao.findById(2L)).willReturn(Optional.of(new Product("product", BigDecimal.ONE)));
 
         // when, then
-        assertThatThrownBy(() -> productAdapter.isValidMenuPrice(menuPrice, menuProducts))
+        assertThatThrownBy(() -> productAdapter.isValidMenuPrice(menu))
                 .isInstanceOf(InvalidMenuPriceException.class)
                 .hasMessage("메뉴의 가격은 구성된 메뉴 상품들의 가격 합보다 비쌀 수 없습니다.");
     }

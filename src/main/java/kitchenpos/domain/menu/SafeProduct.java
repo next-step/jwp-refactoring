@@ -5,5 +5,5 @@ import java.util.List;
 
 public interface SafeProduct {
     BigDecimal getProductPrice(Long productId);
-    void isValidMenuPrice(BigDecimal menuPrice, List<MenuProduct> menuProducts);
+    void isValidMenuPrice(Menu menu);
 }

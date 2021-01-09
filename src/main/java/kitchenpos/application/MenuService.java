@@ -51,13 +51,14 @@ public class MenuService {
         final Menu menu = Menu.of(menuRequest.getName(), price, menuRequest.getMenuGroupId(), menuProducts);
 
         menuGroupAdapter.isExistMenuGroup(menuRequest.getMenuGroupId());
-        productAdapter.isValidMenuPrice(price, menuProducts);
+        productAdapter.isValidMenuPrice(menu);
 
         final Menu savedMenu = menuRepository.save(menu);
 
         return MenuResponse.of(savedMenu);
     }
 
+    @Transactional(readOnly = true)
     public List<MenuResponse> list() {
         final List<Menu> menus = menuDao.findAll();
 
