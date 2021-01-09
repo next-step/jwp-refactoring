@@ -37,24 +37,8 @@ public class Order {
         this.orderLineItems = orderLineItems;
     }
 
-    public static Order of(final Long id, final Long orderTableId, final String orderStatus, final LocalDateTime orderedTime) {
-        return new Order(id, orderTableId, orderStatus, orderedTime, new ArrayList<>());
-    }
-
-    public Order(final Long orderTableId, final String orderStatus, final LocalDateTime orderedTime) {
-        this(null, orderTableId, orderStatus, orderedTime, new ArrayList<>());
-    }
-
     public Order(final Long orderTableId, final String orderStatus, final LocalDateTime orderedTime, final List<OrderLineItem> orderLineItems) {
         this(null, orderTableId, orderStatus, orderedTime, orderLineItems);
-    }
-
-    public Order(final Order order, final List<OrderLineItem> orderLineItems) {
-        this(order.id, order.orderTableId, order.orderStatus, order.orderedTime, orderLineItems);
-    }
-
-    public void addOrderLineItem(final OrderLineItem orderLineItem) {
-        this.orderLineItems.add(orderLineItem);
     }
 
     public Long getId() {

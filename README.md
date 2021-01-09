@@ -143,3 +143,4 @@
       - [ ] 메뉴의 주문 가능 여부를 알 수 있음
     - [ ] OrderTableAdapter 구현
       - [ ] 주문 테이블의 주문 가능 상태 여부를 알 수 있음
+- [ ] Product, Menu 도메인 JPA로 전환
