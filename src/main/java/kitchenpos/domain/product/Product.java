@@ -4,9 +4,9 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 public class Product {
-    private Long id;
-    private String name;
-    private ProductPrice price;
+    private final Long id;
+    private final String name;
+    private final ProductPrice price;
 
     public Product(final Long id, final String name, final BigDecimal price) {
         validate(price);
