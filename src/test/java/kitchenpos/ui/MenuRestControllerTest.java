@@ -26,16 +26,7 @@ class MenuRestControllerTest extends BaseControllerTest {
     @Test
     public void menuGroupCreateTest() throws Exception {
 
-        MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setProductId(6L);
-        menuProduct.setQuantity(1);
-        List<MenuProduct> menuProducts = Collections.singletonList(menuProduct);
-
-        Menu menu = new Menu();
-        menu.setName("메뉴");
-        menu.setPrice(BigDecimal.valueOf(17_000));
-        menu.setMenuGroupId(1L);
-        menu.setMenuProducts(menuProducts);
+        Menu menu = getMenu();
 
         mockMvc.perform(
                 post("/api/menus")
@@ -47,7 +38,6 @@ class MenuRestControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("name").value("메뉴"));
     }
 
-
     @DisplayName("메뉴 조회")
     @Test
     public void menuGroupSelectTest() throws Exception {
@@ -56,6 +46,21 @@ class MenuRestControllerTest extends BaseControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
+    }
+
+    private Menu getMenu() {
+        MenuProduct menuProduct = new MenuProduct();
+        menuProduct.setProductId(6L);
+        menuProduct.setQuantity(1);
+        List<MenuProduct> menuProducts = Collections.singletonList(menuProduct);
+
+        Menu menu = new Menu();
+        menu.setName("메뉴");
+        menu.setPrice(BigDecimal.valueOf(17_000));
+        menu.setMenuGroupId(1L);
+        menu.setMenuProducts(menuProducts);
+
+        return menu;
     }
 
 }
