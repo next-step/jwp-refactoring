@@ -117,6 +117,14 @@
   
 - [ ] 서비스 레이어의 도메인 로직을 도메인 레이어로 이동시키기
   - 도메인 로직 응집도를 높이기 위한 코드 개선
-  - [ ] Product
-    - [ ] 가격 검증 기능을 도메인 안으로 이관
-      - [ ] ProductPrice 오브젝트로 래핑
+  - [X] Product
+    - [X] 가격 검증 기능을 도메인 안으로 이관
+      - [X] ProductPrice 오브젝트로 래핑
+  - [ ] Menu
+    - [ ] 메뉴 가격 검증 로직 Menu 도메인으로 이관
+    - [ ] ProductAdapter 구현
+      - [ ] Product 존재 여부 확인 로직 이관
+      - [ ] Menu와 Product 목록 간 가격 검증 로직 이관
+    - [ ] MenuRepository 구현
+      - [ ] Menu, MenuProduct를 한번에 움직일 수 있는 Repository 구현
+    - [ ] MenuProduct 컬렉션을 일급 컬렉션으로 전환
