@@ -1,5 +1,8 @@
 package kitchenpos.domain.menu;
 
-public interface SafeProduct {
+import java.math.BigDecimal;
+import java.util.List;
 
+public interface SafeProduct {
+    BigDecimal getProductPrice(Long productId);
 }

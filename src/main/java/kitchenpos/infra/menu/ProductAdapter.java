@@ -1,0 +1,26 @@
+package kitchenpos.infra.menu;
+
+import kitchenpos.dao.ProductDao;
+import kitchenpos.domain.menu.SafeProduct;
+import kitchenpos.domain.menu.exceptions.ProductEntityNotFoundException;
+import kitchenpos.domain.product.Product;
+import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
+
+@Component
+public class ProductAdapter implements SafeProduct {
+    private final ProductDao productDao;
+
+    public ProductAdapter(final ProductDao productDao) {
+        this.productDao = productDao;
+    }
+
+    @Override
+    public BigDecimal getProductPrice(final Long productId) {
+        final Product product = productDao.findById(productId)
+                .orElseThrow(() -> new ProductEntityNotFoundException("존재하지 않는 상품입니다."));
+
+        return product.getPrice();
+    }
+}
