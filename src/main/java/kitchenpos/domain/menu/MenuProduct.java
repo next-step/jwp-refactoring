@@ -22,6 +22,10 @@ public class MenuProduct {
         return new MenuProduct(null, menuId, productId, quantity);
     }
 
+    public static MenuProduct of(final Long productId, final Long quantity) {
+        return new MenuProduct(null, null, productId, quantity);
+    }
+
     public BigDecimal calculateTotalPrice(final BigDecimal productPrice) {
         return productPrice.multiply(BigDecimal.valueOf(quantity));
     }

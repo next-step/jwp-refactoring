@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.domain.menu.MenuRepository;
 import kitchenpos.infra.menu.MenuDao;
 import kitchenpos.infra.menu.MenuProductDao;
 import kitchenpos.domain.menu.Menu;
@@ -22,41 +23,37 @@ public class MenuService {
     private final MenuGroupAdapter menuGroupAdapter;
     private final MenuProductDao menuProductDao;
     private final ProductAdapter productAdapter;
+    private final MenuRepository menuRepository;
 
     public MenuService(
             final MenuDao menuDao,
             final MenuGroupAdapter menuGroupAdapter,
             final MenuProductDao menuProductDao,
-            final ProductAdapter productAdapter
+            final ProductAdapter productAdapter,
+            final MenuRepository menuRepository
     ) {
         this.menuDao = menuDao;
         this.menuGroupAdapter = menuGroupAdapter;
         this.menuProductDao = menuProductDao;
         this.productAdapter = productAdapter;
+        this.menuRepository = menuRepository;
     }
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
         final BigDecimal price = menuRequest.getPrice();
-        final Menu menu = Menu.of(menuRequest.getName(), price, menuRequest.getMenuGroupId());
-
-        menuGroupAdapter.isExistMenuGroup(menuRequest.getMenuGroupId());
 
         final List<MenuProductRequest> menuProductRequests = menuRequest.getMenuProducts();
         List<MenuProduct> menuProducts = menuProductRequests.stream()
                 .map(it -> MenuProduct.of(null, it.getProductId(), it.getQuantity()))
                 .collect(Collectors.toList());
 
+        final Menu menu = Menu.of(menuRequest.getName(), price, menuRequest.getMenuGroupId(), menuProducts);
+
+        menuGroupAdapter.isExistMenuGroup(menuRequest.getMenuGroupId());
         productAdapter.isValidMenuPrice(price, menuProducts);
 
-        final Menu savedMenu = menuDao.save(menu);
-
-        for (final MenuProductRequest menuProductRequest : menuProductRequests) {
-            final MenuProduct menuProduct = MenuProduct.of(
-                    savedMenu.getId(), menuProductRequest.getProductId(), menuProductRequest.getQuantity());
-            MenuProduct savedMenuProduct = menuProductDao.save(menuProduct);
-            savedMenu.addMenuProduct(savedMenuProduct);
-        }
+        final Menu savedMenu = menuRepository.save(menu);
 
         return MenuResponse.of(savedMenu);
     }
