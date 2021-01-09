@@ -1,6 +1,4 @@
-package kitchenpos.domain;
-
-import kitchenpos.domain.exceptions.product.InvalidProductPriceException;
+package kitchenpos.domain.product;
 
 import java.math.BigDecimal;
 import java.util.Objects;

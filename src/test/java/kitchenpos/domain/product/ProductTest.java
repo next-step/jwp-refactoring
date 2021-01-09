@@ -1,6 +1,7 @@
-package kitchenpos.domain;
+package kitchenpos.domain.product;
 
-import kitchenpos.domain.exceptions.product.InvalidProductPriceException;
+import kitchenpos.domain.product.InvalidProductPriceException;
+import kitchenpos.domain.product.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

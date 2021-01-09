@@ -1,7 +1,6 @@
 package kitchenpos.application;
 
 import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
 import kitchenpos.domain.exceptions.menu.InvalidMenuPriceException;
 import kitchenpos.domain.exceptions.menu.MenuGroupEntityNotFoundException;
 import kitchenpos.domain.exceptions.menu.ProductEntityNotFoundException;
@@ -10,7 +9,6 @@ import kitchenpos.ui.dto.menu.MenuRequest;
 import kitchenpos.ui.dto.menu.MenuResponse;
 import kitchenpos.ui.dto.product.ProductRequest;
 import kitchenpos.ui.dto.product.ProductResponse;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
