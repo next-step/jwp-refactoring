@@ -103,7 +103,7 @@ public class MenuServiceTest {
         // given
         Long menuGroupId = 1L;
 
-        MenuProduct notExistMenuProduct= new MenuProduct();
+        MenuProduct notExistMenuProduct= MenuProduct.of(10000000L, 1L);
 
         List<MenuProductRequest> menuProductRequests = Collections.singletonList(MenuProductRequest.of(notExistMenuProduct));
         MenuRequest menuRequest = MenuRequest.of("menu", BigDecimal.ONE, menuGroupId, menuProductRequests);

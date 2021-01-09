@@ -2,13 +2,23 @@ package kitchenpos.domain.product;
 
 import kitchenpos.domain.product.exceptions.InvalidProductPriceException;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+@Entity
 public class Product {
-    private final Long id;
-    private final String name;
-    private final ProductPrice price;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+
+    @Embedded
+    private ProductPrice price;
+
+    protected Product() {
+    }
 
     public Product(final Long id, final String name, final BigDecimal price) {
         validate(price);
