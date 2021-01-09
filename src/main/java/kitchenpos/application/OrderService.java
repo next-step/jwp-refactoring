@@ -22,21 +22,21 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
-    private final MenuDao menuDao;
     private final OrderTableDao orderTableDao;
     private final OrderRepository orderRepository;
     private final SafeMenu safeMenu;
+    private final SafeOrderTable safeOrderTable;
 
     public OrderService(
-            final MenuDao menuDao,
             final OrderTableDao orderTableDao,
             final OrderRepository orderRepository,
-            final SafeMenu safeMenu
+            final SafeMenu safeMenu,
+            final SafeOrderTable safeOrderTable
     ) {
-        this.menuDao = menuDao;
         this.orderTableDao = orderTableDao;
         this.orderRepository = orderRepository;
         this.safeMenu = safeMenu;
+        this.safeOrderTable = safeOrderTable;
     }
 
     @Transactional
@@ -49,13 +49,7 @@ public class OrderService {
         final Order order = new Order(orderRequest.getOrderTableId(), orderLineItems);
 
         safeMenu.isMenuExists(orderLineItems);
-
-        final OrderTable orderTable = orderTableDao.findById(orderRequest.getOrderTableId())
-                .orElseThrow(() -> new OrderTableEntityNotFoundException("존재하지 않는 주문 테이블에서 주문할 수 없습니다."));
-
-        if (orderTable.isEmpty()) {
-            throw new InvalidTryOrderException("비어있는 주문 테이블에서 주문할 수 없습니다.");
-        }
+        safeOrderTable.canOrderAtThisTable(orderRequest.getOrderTableId());
 
         final Order savedOrder = orderRepository.save(order);
 
