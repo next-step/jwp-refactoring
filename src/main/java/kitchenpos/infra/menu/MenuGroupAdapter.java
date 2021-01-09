@@ -1,6 +1,7 @@
-package kitchenpos.domain.menu;
+package kitchenpos.infra.menu;
 
 import kitchenpos.dao.MenuGroupDao;
+import kitchenpos.domain.menu.SafeMenuGroup;
 import kitchenpos.domain.menu.exceptions.MenuGroupEntityNotFoundException;
 import org.springframework.stereotype.Component;
 

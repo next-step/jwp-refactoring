@@ -1,15 +1,13 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.menu.Menu;
-import kitchenpos.domain.menu.MenuGroupAdapter;
+import kitchenpos.infra.menu.MenuGroupAdapter;
 import kitchenpos.domain.menu.MenuProduct;
 import kitchenpos.domain.product.Product;
 import kitchenpos.domain.menu.exceptions.InvalidMenuPriceException;
-import kitchenpos.domain.menu.exceptions.MenuGroupEntityNotFoundException;
 import kitchenpos.domain.menu.exceptions.ProductEntityNotFoundException;
 import kitchenpos.ui.dto.menu.MenuProductRequest;
 import kitchenpos.ui.dto.menu.MenuRequest;
@@ -19,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service

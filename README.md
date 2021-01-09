@@ -125,8 +125,8 @@
     - [ ] MenuGroupAdapter 구현
       - [ ] 메뉴 그룹의 존재 여부에 대해 확인할 수 있음
     - [ ] ProductAdapter 구현
-      - [ ] Product 존재 여부 확인 로직 이관
-      - [ ] Menu와 Product 목록 간 가격 검증 로직 이관
+      - [ ] 안전하게 제시된 상품의 가격을 불러올 수 있다.
+      - [ ] 제시된 상품들의 가격합과 메뉴 가격의 올바른 정도를 확인할 수 있다.
     - [ ] MenuRepository 구현
       - [ ] Menu, MenuProduct를 한번에 움직일 수 있는 Repository 구현
     - [ ] MenuProduct 컬렉션을 일급 컬렉션으로 전환
