@@ -1,11 +1,13 @@
 package kitchenpos.domain.orderTable;
 
 import kitchenpos.domain.orderTable.exceptions.InvalidTryChangeEmptyException;
+import kitchenpos.domain.orderTable.exceptions.InvalidTryChangeGuestsException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.InstanceOfAssertFactories.PATH;
 
 class OrderTableTest {
     @DisplayName("공석 여부, 방문한 손님 수를 주입받아서 오브젝트를 생성할 수 있다.")
@@ -52,12 +54,24 @@ class OrderTableTest {
     @Test
     void changeEmptyFailTest() {
         // given
-        OrderTable orderTable = new OrderTable(3, true);
+        OrderTable orderTable = new OrderTable(3, false);
         orderTable.group(3L);
 
         // when, then
-        assertThatThrownBy(() -> orderTable.changeEmpty(false))
+        assertThatThrownBy(() -> orderTable.changeEmpty(true))
                 .isInstanceOf(InvalidTryChangeEmptyException.class)
                 .hasMessage("단체 지정된 주문 테이블의 비움 상태를 바꿀 수 없습니다.");
+    }
+
+    @DisplayName("비어있는 주문 테이블의 방문한 손님수를 바꿀 수 없다.")
+    @Test
+    void changeNumberOfGuestsFailTest() {
+        // given
+        OrderTable orderTable = new OrderTable(0, true);
+
+        // when, then
+        assertThatThrownBy(() -> orderTable.changeNumberOfGuests(3))
+                .isInstanceOf(InvalidTryChangeGuestsException.class)
+                .hasMessage("비어있는 주문 테이블의 방문한 손님 수를 바꿀 수 없습니다.");
     }
 }

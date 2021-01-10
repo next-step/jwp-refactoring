@@ -65,16 +65,10 @@ public class OrderTableService {
     ) {
         final int numberOfGuests = changeNumberOfGuestsRequest.getNumberOfGuests();
 
-        final OrderTable savedOrderTable = this.findOrderTable(orderTableId);
+        final OrderTable foundOrderTable = this.findOrderTable(orderTableId);
 
-        if (savedOrderTable.isEmpty()) {
-            throw new InvalidTryChangeGuestsException("비어있는 주문 테이블의 방문한 손님 수를 바꿀 수 없습니다.");
-        }
+        foundOrderTable.changeNumberOfGuests(numberOfGuests);
 
-        savedOrderTable.changeNumberOfGuests(numberOfGuests);
-
-        OrderTable changed = orderTableRepository.save(savedOrderTable);
-
-        return OrderTableResponse.of(changed);
+        return OrderTableResponse.of(foundOrderTable);
     }
 }

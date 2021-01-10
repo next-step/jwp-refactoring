@@ -1,6 +1,7 @@
 package kitchenpos.domain.orderTable;
 
 import kitchenpos.domain.orderTable.exceptions.InvalidTryChangeEmptyException;
+import kitchenpos.domain.orderTable.exceptions.InvalidTryChangeGuestsException;
 
 import javax.persistence.*;
 
@@ -43,6 +44,9 @@ public class OrderTable {
     }
 
     public void changeNumberOfGuests(final int numberOfGuests) {
+        if (this.isEmpty()) {
+            throw new InvalidTryChangeGuestsException("비어있는 주문 테이블의 방문한 손님 수를 바꿀 수 없습니다.");
+        }
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
     }
 
