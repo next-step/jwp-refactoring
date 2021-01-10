@@ -1,4 +1,4 @@
-package kitchenpos.domain.exceptions.tableGroup;
+package kitchenpos.domain.tableGroup.exceptions;
 
 public class InvalidTableGroupTryException extends RuntimeException {
     public InvalidTableGroupTryException(final String message) {

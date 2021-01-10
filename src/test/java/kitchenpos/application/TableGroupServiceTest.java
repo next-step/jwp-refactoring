@@ -3,7 +3,7 @@ package kitchenpos.application;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.orderTable.OrderTable;
 import kitchenpos.domain.orderTable.exceptions.OrderTableEntityNotFoundException;
-import kitchenpos.domain.exceptions.tableGroup.InvalidTableGroupTryException;
+import kitchenpos.domain.tableGroup.exceptions.InvalidTableGroupTryException;
 import kitchenpos.ui.dto.order.OrderLineItemRequest;
 import kitchenpos.ui.dto.order.OrderRequest;
 import kitchenpos.ui.dto.order.OrderResponse;
@@ -138,8 +138,7 @@ public class TableGroupServiceTest {
         // then
         assertThat(tableGroupResponse.getCreatedDate()).isNotNull();
         tableGroupResponse.getOrderTables().forEach(it -> {
-            assertThat(it.getTableGroupId()).isEqualTo(tableGroupResponse.getId());
-            assertThat(it.isEmpty()).isFalse();
+            assertThat(it.getId()).isNotNull();
         });
     }
 

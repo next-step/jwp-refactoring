@@ -5,48 +5,42 @@ import kitchenpos.domain.orderTable.OrderTable;
 import java.util.Objects;
 
 public class OrderTableInTableGroupResponse {
+    // TODO: 기능 복구되기 전의 임시 조치
     private Long id;
-    private Long tableGroupId;
-    private int numberOfGuests;
-    private boolean empty;
-    private boolean grouped;
+//    private Long tableGroupId;
+//    private int numberOfGuests;
+//    private boolean empty;
+//    private boolean grouped;
 
     public OrderTableInTableGroupResponse() {
     }
 
-    public OrderTableInTableGroupResponse(final Long id, final Long tableGroupId, final int numberOfGuests, final boolean empty, final boolean grouped) {
+//    public OrderTableInTableGroupResponse(final Long id, final Long tableGroupId, final int numberOfGuests, final boolean empty, final boolean grouped) {
+//        this.id = id;
+//        this.tableGroupId = tableGroupId;
+//        this.numberOfGuests = numberOfGuests;
+//        this.empty = empty;
+//        this.grouped = grouped;
+//    }
+
+
+    public OrderTableInTableGroupResponse(final Long id) {
         this.id = id;
-        this.tableGroupId = tableGroupId;
-        this.numberOfGuests = numberOfGuests;
-        this.empty = empty;
-        this.grouped = grouped;
     }
 
-    public static OrderTableInTableGroupResponse of(OrderTable orderTable) {
-        return new OrderTableInTableGroupResponse(
-                orderTable.getId(), orderTable.getTableGroupId(), orderTable.getNumberOfGuests(),
-                orderTable.isEmpty(), orderTable.isGrouped()
-        );
+    public static OrderTableInTableGroupResponse of(Long orderTableId) {
+        return new OrderTableInTableGroupResponse(orderTableId);
     }
+
+//    public static OrderTableInTableGroupResponse of(OrderTable orderTable) {
+//        return new OrderTableInTableGroupResponse(
+//                orderTable.getId(), orderTable.getTableGroupId(), orderTable.getNumberOfGuests(),
+//                orderTable.isEmpty(), orderTable.isGrouped()
+//        );
+//    }
 
     public Long getId() {
         return id;
-    }
-
-    public Long getTableGroupId() {
-        return tableGroupId;
-    }
-
-    public int getNumberOfGuests() {
-        return numberOfGuests;
-    }
-
-    public boolean isEmpty() {
-        return empty;
-    }
-
-    public boolean isGrouped() {
-        return grouped;
     }
 
     @Override
@@ -54,22 +48,18 @@ public class OrderTableInTableGroupResponse {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final OrderTableInTableGroupResponse that = (OrderTableInTableGroupResponse) o;
-        return numberOfGuests == that.numberOfGuests && empty == that.empty && grouped == that.grouped && Objects.equals(id, that.id) && Objects.equals(tableGroupId, that.tableGroupId);
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, tableGroupId, numberOfGuests, empty, grouped);
+        return Objects.hash(id);
     }
 
     @Override
     public String toString() {
         return "OrderTableInTableGroupResponse{" +
                 "id=" + id +
-                ", tableGroupId=" + tableGroupId +
-                ", numberOfGuests=" + numberOfGuests +
-                ", empty=" + empty +
-                ", grouped=" + grouped +
                 '}';
     }
 }

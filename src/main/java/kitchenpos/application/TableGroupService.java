@@ -1,13 +1,14 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.order.OrderRepository;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.orderTable.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.tableGroup.OrderTableInTableGroup;
+import kitchenpos.domain.tableGroup.TableGroup;
 import kitchenpos.domain.orderTable.OrderTableRepository;
 import kitchenpos.domain.orderTable.exceptions.OrderTableEntityNotFoundException;
-import kitchenpos.domain.exceptions.tableGroup.InvalidTableGroupTryException;
+import kitchenpos.domain.tableGroup.TableGroupRepository;
+import kitchenpos.domain.tableGroup.exceptions.InvalidTableGroupTryException;
 import kitchenpos.ui.dto.tableGroup.OrderTableInTableGroupRequest;
 import kitchenpos.ui.dto.tableGroup.TableGroupRequest;
 import kitchenpos.ui.dto.tableGroup.TableGroupResponse;
@@ -25,12 +26,15 @@ import java.util.stream.Collectors;
 public class TableGroupService {
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
-    private final TableGroupDao tableGroupDao;
+    private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository, final TableGroupDao tableGroupDao) {
+    public TableGroupService(
+            final OrderRepository orderRepository, final OrderTableRepository orderTableRepository,
+            final TableGroupRepository tableGroupRepository
+    ) {
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
-        this.tableGroupDao = tableGroupDao;
+        this.tableGroupRepository = tableGroupRepository;
     }
 
     @Transactional
@@ -60,16 +64,14 @@ public class TableGroupService {
             }
         }
 
-        TableGroup tableGroup = new TableGroup(LocalDateTime.now());
+        List<OrderTableInTableGroup> orderTablesInTableGroup = orderTables.stream()
+                .map(it -> new OrderTableInTableGroup(it.getId()))
+                .collect(Collectors.toList());
+        TableGroup tableGroup = new TableGroup(LocalDateTime.now(), orderTablesInTableGroup);
 
-        final TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
+        final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
 
-        final Long tableGroupId = savedTableGroup.getId();
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.group(tableGroupId);
-            OrderTable groupedOrderTable = orderTableRepository.save(savedOrderTable);
-            savedTableGroup.addOrderTable(groupedOrderTable);
-        }
+        // TODO: OrderTable에 그룹 지어주는 동작 필요
 
         return TableGroupResponse.of(savedTableGroup);
     }
