@@ -26,11 +26,6 @@ import static org.mockito.BDDMockito.given;
 @DisplayName("메뉴 비즈니스 로직을 처리하는 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
-    private static final Long MENU_ID = 1L;
-    private static final Long MENU_GROUP_ID = 1L;
-    private static final String MENU_NAME = "두마리메뉴";
-    private static final BigDecimal PRICE = new BigDecimal("29000");
-
     @Mock
     private MenuDao menuDao;
 
@@ -53,8 +48,13 @@ class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
+        final Long menu = 1L;
+        final Long menuGroupId = 1L;
+        final String menuName = "두마리메뉴";
+        final BigDecimal price = new BigDecimal("29000");
+
         menuProduct = new MenuProduct();
-        menuProduct.setMenuId(MENU_ID);
+        menuProduct.setMenuId(menu);
         menuProduct.setProductId(1L);
         menuProduct.setSeq(1L);
         menuProduct.setQuantity(2L);
@@ -62,12 +62,12 @@ class MenuServiceTest {
         menuProducts = new ArrayList<>();
         menuProducts.add(menuProduct);
 
-        menu = new Menu();
-        menu.setId(MENU_ID);
-        menu.setName(MENU_NAME);
-        menu.setPrice(PRICE);
-        menu.setMenuGroupId(MENU_GROUP_ID);
-        menu.setMenuProducts(menuProducts);
+        this.menu = new Menu();
+        this.menu.setId(menu);
+        this.menu.setName(menuName);
+        this.menu.setPrice(price);
+        this.menu.setMenuGroupId(menuGroupId);
+        this.menu.setMenuProducts(menuProducts);
 
         product = new Product();
         product.setId(1L);
