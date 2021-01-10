@@ -2,7 +2,6 @@ package kitchenpos.application;
 
 import kitchenpos.domain.orderTable.OrderTable;
 import kitchenpos.domain.orderTable.OrderTableRepository;
-import kitchenpos.domain.orderTable.exceptions.InvalidTryChangeEmptyException;
 import kitchenpos.domain.orderTable.exceptions.InvalidTryChangeGuestsException;
 import kitchenpos.domain.orderTable.exceptions.OrderTableEntityNotFoundException;
 import kitchenpos.infra.orderTable.OrderAdapter;
@@ -51,15 +50,13 @@ public class OrderTableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final ChangeEmptyRequest changeEmptyRequest) {
-        final OrderTable savedOrderTable = this.findOrderTable(orderTableId);
+        final OrderTable foundOrderTable = this.findOrderTable(orderTableId);
 
         orderAdapter.canChangeEmptyStatus(orderTableId);
 
-        savedOrderTable.changeEmpty(changeEmptyRequest.isEmpty());
+        foundOrderTable.changeEmpty(changeEmptyRequest.isEmpty());
 
-        OrderTable changed = orderTableRepository.save(savedOrderTable);
-
-        return OrderTableResponse.of(changed);
+        return OrderTableResponse.of(foundOrderTable);
     }
 
     @Transactional
