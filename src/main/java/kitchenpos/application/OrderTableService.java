@@ -1,9 +1,9 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.order.OrderRepository;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.orderTable.OrderTable;
+import kitchenpos.domain.orderTable.OrderTableRepository;
 import kitchenpos.domain.orderTable.exceptions.InvalidTryChangeEmptyException;
 import kitchenpos.domain.orderTable.exceptions.InvalidTryChangeGuestsException;
 import kitchenpos.domain.orderTable.exceptions.OrderTableEntityNotFoundException;
@@ -22,30 +22,30 @@ import java.util.stream.Collectors;
 @Service
 public class OrderTableService {
     private final OrderRepository orderRepository;
-    private final OrderTableDao orderTableDao;
+    private final OrderTableRepository orderTableRepository;
 
-    public OrderTableService(final OrderRepository orderRepository, final OrderTableDao orderTableDao) {
+    public OrderTableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
         this.orderRepository = orderRepository;
-        this.orderTableDao = orderTableDao;
+        this.orderTableRepository = orderTableRepository;
     }
 
     @Transactional
     public OrderTableResponse create(final OrderTableRequest request) {
         OrderTable orderTable = new OrderTable(request.getNumberOfGuests(), request.isEmpty());
-        OrderTable saved = orderTableDao.save(orderTable);
+        OrderTable saved = orderTableRepository.save(orderTable);
 
         return OrderTableResponse.of(saved);
     }
 
     @Transactional(readOnly = true)
     public OrderTable findOrderTable(final Long id) {
-        return orderTableDao.findById(id)
+        return orderTableRepository.findById(id)
                 .orElseThrow(() -> new OrderTableEntityNotFoundException("해당 OrderTable Entity가 존재하지 않습니다."));
     }
 
     @Transactional(readOnly = true)
     public List<OrderTableResponse> list() {
-        List<OrderTable> orderTables = orderTableDao.findAll();
+        List<OrderTable> orderTables = orderTableRepository.findAll();
 
         return orderTables.stream()
                 .map(OrderTableResponse::of)
@@ -54,7 +54,7 @@ public class OrderTableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final ChangeEmptyRequest changeEmptyRequest) {
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
+        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(() -> new OrderTableEntityNotFoundException("존재하지 않는 주문 테이블의 비움 상태를 바꿀 수 없습니다."));
 
         if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
@@ -68,7 +68,7 @@ public class OrderTableService {
 
         savedOrderTable.changeEmpty(changeEmptyRequest.isEmpty());
 
-        OrderTable changed = orderTableDao.save(savedOrderTable);
+        OrderTable changed = orderTableRepository.save(savedOrderTable);
 
         return OrderTableResponse.of(changed);
     }
@@ -83,7 +83,7 @@ public class OrderTableService {
             throw new IllegalArgumentException();
         }
 
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
+        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(() -> new OrderTableEntityNotFoundException(
                         "존재하지 않는 주문 테이블의 방문한 손님 수를 바꿀 수 없습니다."));
 
@@ -93,7 +93,7 @@ public class OrderTableService {
 
         savedOrderTable.changeNumberOfGuests(numberOfGuests);
 
-        OrderTable changed = orderTableDao.save(savedOrderTable);
+        OrderTable changed = orderTableRepository.save(savedOrderTable);
 
         return OrderTableResponse.of(changed);
     }

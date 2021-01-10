@@ -1,7 +1,7 @@
 package kitchenpos.infra.order;
 
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.orderTable.OrderTable;
+import kitchenpos.domain.orderTable.OrderTableRepository;
 import kitchenpos.domain.orderTable.exceptions.OrderTableEntityNotFoundException;
 import kitchenpos.domain.order.exceptions.InvalidTryOrderException;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,11 +21,11 @@ class OrderTableAdapterTest {
     private OrderTableAdapter orderTableAdapter;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @BeforeEach
     void setup() {
-        orderTableAdapter = new OrderTableAdapter(orderTableDao);
+        orderTableAdapter = new OrderTableAdapter(orderTableRepository);
     }
 
     @DisplayName("존재하지 않는 테이블에 주문 여부 확인 시 예외 발생")
@@ -45,7 +45,7 @@ class OrderTableAdapterTest {
     void canOrderAtThisTableFailWithEmptyTableTest() {
         // given
         Long orderTableId = 1L;
-        given(orderTableDao.findById(orderTableId))
+        given(orderTableRepository.findById(orderTableId))
                 .willReturn(Optional.of(new OrderTable(0, true)));
 
         // when, then
