@@ -1,8 +1,6 @@
 package kitchenpos.application;
 
 import kitchenpos.domain.order.OrderRepository;
-import kitchenpos.domain.order.OrderStatus;
-import kitchenpos.domain.orderTable.OrderTable;
 import kitchenpos.domain.tableGroup.*;
 import kitchenpos.domain.orderTable.OrderTableRepository;
 import kitchenpos.ui.dto.tableGroup.OrderTableInTableGroupRequest;
@@ -12,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,16 +18,14 @@ public class TableGroupService {
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
-    private final SafeOrderTableInTableGroup safeOrderTableInTableGroup;
 
     public TableGroupService(
             final OrderRepository orderRepository, final OrderTableRepository orderTableRepository,
-            final TableGroupRepository tableGroupRepository, final SafeOrderTableInTableGroup safeOrderTableInTableGroup
+            final TableGroupRepository tableGroupRepository
     ) {
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
-        this.safeOrderTableInTableGroup = safeOrderTableInTableGroup;
     }
 
     @Transactional

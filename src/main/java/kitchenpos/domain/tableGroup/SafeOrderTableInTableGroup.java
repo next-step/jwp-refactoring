@@ -1,7 +1,7 @@
 package kitchenpos.domain.tableGroup;
 
-import kitchenpos.domain.orderTable.OrderTable;
+import java.util.List;
 
 public interface SafeOrderTableInTableGroup {
-    OrderTable getOrderTable(Long orderTableId);
+    void canGroupTheseTables(List<Long> orderTableIds);
 }

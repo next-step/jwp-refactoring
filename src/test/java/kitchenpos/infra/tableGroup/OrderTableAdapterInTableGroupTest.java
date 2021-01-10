@@ -1,8 +1,7 @@
 package kitchenpos.infra.tableGroup;
 
-import kitchenpos.domain.orderTable.OrderTable;
 import kitchenpos.domain.orderTable.OrderTableRepository;
-import kitchenpos.domain.orderTable.exceptions.OrderTableEntityNotFoundException;
+import kitchenpos.domain.tableGroup.exceptions.InvalidTableGroupTryException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,9 +9,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
+import java.util.Arrays;
+import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 
@@ -28,29 +27,30 @@ class OrderTableAdapterInTableGroupTest {
         orderTableAdapterInTableGroup = new OrderTableAdapterInTableGroup(orderTableRepository);
     }
 
-    @DisplayName("안전하게 주문 테이블 정보를 불러 올 수 있다.")
+    @DisplayName("존재하지 않는 주문 테이블이 섞인 경우 예외 발생")
     @Test
-    void findOrderTableTest() {
+    void cannotGroupWithNotExistOrderTableTest() {
         // given
-        Long orderTableId = 1L;
-        given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(new OrderTable(0, true)));
-
-        // when
-        OrderTable orderTable = orderTableAdapterInTableGroup.getOrderTable(orderTableId);
-
-        // then
-        assertThat(orderTable.isEmpty()).isTrue();
-    }
-
-    @DisplayName("존재하지 않는 주문 테이블 요청 시 예외가 발생한다.")
-    @Test
-    void findOrderTableFailTest() {
-        // given
-        Long orderTableId = 1L;
-        given(orderTableRepository.findById(orderTableId)).willThrow(new OrderTableEntityNotFoundException(""));
+        List<Long> orderTableIds = Arrays.asList(1L, 2L);
+        given(orderTableRepository.countAllById(orderTableIds)).willReturn(1);
 
         // when, then
-        assertThatThrownBy(() -> orderTableAdapterInTableGroup.getOrderTable(orderTableId))
-                .isInstanceOf(OrderTableEntityNotFoundException.class);
+        assertThatThrownBy(() -> orderTableAdapterInTableGroup.canGroupTheseTables(orderTableIds))
+                .isInstanceOf(InvalidTableGroupTryException.class)
+                .hasMessage("존재하지 않는 주문 테이블을 단체 지정할 수 없습니다.");
+    }
+
+    @DisplayName("비어있지 않은 주문 테이블이 섞인 경우 예외 발생")
+    @Test
+    void cannotGroupWithNotEmptyOrderTableTest() {
+        // given
+        List<Long> orderTableIds = Arrays.asList(1L, 2L);
+        given(orderTableRepository.countAllById(orderTableIds)).willReturn(2);
+        given(orderTableRepository.countAllByIdAndEmpty(orderTableIds, false)).willReturn(1);
+
+        // when, then
+        assertThatThrownBy(() -> orderTableAdapterInTableGroup.canGroupTheseTables(orderTableIds))
+                .isInstanceOf(InvalidTableGroupTryException.class)
+                .hasMessage("빈 주문 테이블들로만 단체 지정할 수 있습니다.");
     }
 }
