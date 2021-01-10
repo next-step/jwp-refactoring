@@ -65,13 +65,11 @@ public class OrderTableService {
     ) {
         final int numberOfGuests = changeNumberOfGuestsRequest.getNumberOfGuests();
 
+        final OrderTable savedOrderTable = this.findOrderTable(orderTableId);
+
         if (numberOfGuests < 0) {
             throw new IllegalArgumentException();
         }
-
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(() -> new OrderTableEntityNotFoundException(
-                        "존재하지 않는 주문 테이블의 방문한 손님 수를 바꿀 수 없습니다."));
 
         if (savedOrderTable.isEmpty()) {
             throw new InvalidTryChangeGuestsException("비어있는 주문 테이블의 방문한 손님 수를 바꿀 수 없습니다.");
