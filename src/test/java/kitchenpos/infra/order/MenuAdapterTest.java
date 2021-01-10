@@ -1,5 +1,6 @@
 package kitchenpos.infra.order;
 
+import kitchenpos.application.MenuService;
 import kitchenpos.domain.menu.MenuRepository;
 import kitchenpos.domain.order.OrderLineItem;
 import kitchenpos.domain.order.exceptions.MenuEntityNotFoundException;
@@ -22,11 +23,11 @@ public class MenuAdapterTest {
     private MenuAdapter menuAdapter;
 
     @Mock
-    private MenuRepository menuRepository;
+    private MenuService menuService;
 
     @BeforeEach
     void setup() {
-        menuAdapter = new MenuAdapter(menuRepository);
+        menuAdapter = new MenuAdapter(menuService);
     }
 
     @DisplayName("제시된 주문 항목들 중 하나라도 존재하지 않으면 예외 발생")
@@ -34,7 +35,7 @@ public class MenuAdapterTest {
     void isExistMenusTest() {
         // given
         List<OrderLineItem> orderLineItems = Arrays.asList(new OrderLineItem(1L, 1L), new OrderLineItem(2L, 2L));
-        given(menuRepository.countByIdIn(any())).willReturn(1);
+        given(menuService.isMenusExist(Arrays.asList(1L, 2L))).willReturn(false);
 
         // when, then
         assertThatThrownBy(() -> menuAdapter.isMenuExists(orderLineItems))
