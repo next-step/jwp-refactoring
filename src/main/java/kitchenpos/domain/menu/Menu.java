@@ -25,7 +25,7 @@ public class Menu {
     protected Menu() {
     }
 
-    public Menu(final Long id, final String name, final BigDecimal price, final Long menuGroupId,
+    Menu(final Long id, final String name, final BigDecimal price, final Long menuGroupId,
                 final List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = name;
@@ -34,20 +34,8 @@ public class Menu {
         this.menuProducts = new ArrayList<>(menuProducts);
     }
 
-    public Menu(final Long id, final String name, final BigDecimal price, final Long menuGroupId) {
-        this(id, name, price, menuGroupId, new ArrayList<>());
-    }
-
     public static Menu of(final String name, final BigDecimal price, final Long menuGroupId, final List<MenuProduct> menuProducts) {
         return new Menu(null, name, price, menuGroupId, menuProducts);
-    }
-
-    public static Menu of(final Menu menu, final List<MenuProduct> menuProducts) {
-        return new Menu(menu.getId(), menu.getName(), menu.getPrice(), menu.getMenuGroupId(), menuProducts);
-    }
-
-    public static Menu of(final String name, final BigDecimal price, final Long menuGroupId) {
-        return new Menu(null, name, price, menuGroupId, new ArrayList<>());
     }
 
     public boolean isMoreExpensive(final BigDecimal price) {
