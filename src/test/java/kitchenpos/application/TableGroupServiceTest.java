@@ -88,8 +88,8 @@ public class TableGroupServiceTest {
 
         // when, then
         assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
-                .isInstanceOf(OrderTableEntityNotFoundException.class)
-                .hasMessage("존재하지 않는 주문 테이블입니다.");
+                .isInstanceOf(InvalidTableGroupTryException.class)
+                .hasMessage("존재하지 않는 주문 테이블을 단체 지정할 수 없습니다.");
     }
 
     @DisplayName("비어있지 않은 주문 테이블들로 단체 지정할 수 없다.")
@@ -112,7 +112,7 @@ public class TableGroupServiceTest {
         // when, then
         assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
                 .isInstanceOf(InvalidTableGroupTryException.class)
-                .hasMessage("이미 단체 지정된 주문 테이블을 또 단체 지정할 수 없습니다.");
+                .hasMessage("빈 주문 테이블들로만 단체 지정할 수 있습니다.");
     }
 
     @DisplayName("주문 테이블들을 단체 지정할 수 있다.")

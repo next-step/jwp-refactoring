@@ -32,7 +32,7 @@ class OrderTableAdapterInTableGroupTest {
     void cannotGroupWithNotExistOrderTableTest() {
         // given
         List<Long> orderTableIds = Arrays.asList(1L, 2L);
-        given(orderTableRepository.countAllById(orderTableIds)).willReturn(1);
+        given(orderTableRepository.countAllByIdIn(orderTableIds)).willReturn(1);
 
         // when, then
         assertThatThrownBy(() -> orderTableAdapterInTableGroup.canGroupTheseTables(orderTableIds))
@@ -45,8 +45,8 @@ class OrderTableAdapterInTableGroupTest {
     void cannotGroupWithNotEmptyOrderTableTest() {
         // given
         List<Long> orderTableIds = Arrays.asList(1L, 2L);
-        given(orderTableRepository.countAllById(orderTableIds)).willReturn(2);
-        given(orderTableRepository.countAllByIdAndEmpty(orderTableIds, false)).willReturn(1);
+        given(orderTableRepository.countAllByIdIn(orderTableIds)).willReturn(2);
+        given(orderTableRepository.countAllByIdInAndEmptyIs(orderTableIds, false)).willReturn(1);
 
         // when, then
         assertThatThrownBy(() -> orderTableAdapterInTableGroup.canGroupTheseTables(orderTableIds))

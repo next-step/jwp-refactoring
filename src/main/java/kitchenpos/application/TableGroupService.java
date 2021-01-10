@@ -15,22 +15,25 @@ import java.util.stream.Collectors;
 
 @Service
 public class TableGroupService {
-    private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
+    private final SafeOrderTableInTableGroup safeOrderTableInTableGroup;
     private final TableGroupRepository tableGroupRepository;
 
     public TableGroupService(
-            final OrderRepository orderRepository, final OrderTableRepository orderTableRepository,
+            final SafeOrderTableInTableGroup safeOrderTableInTableGroup,
             final TableGroupRepository tableGroupRepository
     ) {
-        this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
+        this.safeOrderTableInTableGroup = safeOrderTableInTableGroup;
         this.tableGroupRepository = tableGroupRepository;
     }
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         final List<OrderTableInTableGroupRequest> orderTables = tableGroupRequest.getOrderTables();
+        List<Long> orderTableIds = orderTables.stream()
+                .map(OrderTableInTableGroupRequest::getId)
+                .collect(Collectors.toList());
+
+        safeOrderTableInTableGroup.canGroupTheseTables(orderTableIds);
 
         List<OrderTableInTableGroup> orderTablesInTableGroup = orderTables.stream()
                 .map(it -> new OrderTableInTableGroup(it.getId()))

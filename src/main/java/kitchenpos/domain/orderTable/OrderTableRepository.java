@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface OrderTableRepository extends JpaRepository<OrderTable, Long> {
     List<OrderTable> findAllByIdIn(List<Long> orderTableIds);
-    int countAllById(List<Long> id);
-    int countAllByIdAndEmpty(List<Long> id, boolean empty);
+    int countAllByIdIn(List<Long> id);
+    int countAllByIdInAndEmptyIs(List<Long> id, boolean empty);
 }

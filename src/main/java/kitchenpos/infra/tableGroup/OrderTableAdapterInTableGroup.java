@@ -17,10 +17,10 @@ public class OrderTableAdapterInTableGroup implements SafeOrderTableInTableGroup
 
     @Override
     public void canGroupTheseTables(final List<Long> orderTableIds) {
-        if (orderTableRepository.countAllById(orderTableIds) != orderTableIds.size()) {
+        if (orderTableRepository.countAllByIdIn(orderTableIds) != orderTableIds.size()) {
             throw new InvalidTableGroupTryException("존재하지 않는 주문 테이블을 단체 지정할 수 없습니다.");
         }
-        if (orderTableRepository.countAllByIdAndEmpty(orderTableIds, false) != 0) {
+        if (orderTableRepository.countAllByIdInAndEmptyIs(orderTableIds, false) != 0) {
             throw new InvalidTableGroupTryException("빈 주문 테이블들로만 단체 지정할 수 있습니다.");
         }
     }
