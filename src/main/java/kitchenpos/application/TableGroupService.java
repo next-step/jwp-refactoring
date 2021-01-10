@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.GroupOrderTableEvent;
+import kitchenpos.domain.domainEvents.GroupOrderTableEvent;
 import kitchenpos.domain.tableGroup.*;
 import kitchenpos.domain.tableGroup.exceptions.InvalidTableGroupTryException;
 import kitchenpos.domain.tableGroup.exceptions.TableGroupEntityNotFoundException;

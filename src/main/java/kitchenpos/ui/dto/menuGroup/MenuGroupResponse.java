@@ -1,6 +1,6 @@
 package kitchenpos.ui.dto.menuGroup;
 
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.menuGroup.MenuGroup;
 
 import java.util.Objects;
 

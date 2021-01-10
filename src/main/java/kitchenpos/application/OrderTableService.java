@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.GroupOrderTableEvent;
+import kitchenpos.domain.domainEvents.GroupOrderTableEvent;
 import kitchenpos.domain.orderTable.OrderTable;
 import kitchenpos.domain.orderTable.OrderTableRepository;
 import kitchenpos.domain.orderTable.SafeOrder;

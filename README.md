@@ -164,7 +164,7 @@
   - 오히려 어댑터는 해당 도메인 중 외부 영역을 알아도 되는 영역
   - 서비스 레이어로 접근할 경우 고수준이 저수준에 의존성을 갖고 순환 참조를 발생시킬 수 
   - 도메인 간 의존성이 생기는 부분으 향후 도메인끼리 완전히 떨어지면 컨트롤러를 통해 의존하는 등의 방법으로 해소 가능
-- [ ] TableGroup
+- [X] TableGroup
   - [X] JPA 적용
   - [X] TableGroup 생성시 OrderTable 상태까지 바꾸도록 기능 추가
     - [X] OrderTableAdapter를 통해 안전하게 OrderTable 불러오도록 기능 추가
@@ -178,6 +178,9 @@
     - [X] OrderTableService에서 자리 비움 상태 변경 시 단체 지정 여부를 어댑터를 통해 물어봐야 함
   - [X] TableGroup의 도메인 로직은 모두 TableGroup에서 자체적으로 수행
       - [X] Order, OrderTable 관련 필요 사항은 모두 어댑터를 통해 질의
-  - [ ] 그룹 해제 시 주문 상태를 확인하는 기능을 어댑터 통해 질의하도록 변경
-  - [ ] TableGroup 생성 응답에 생성된 OrderTable 정보도 포함하도록 기능 변경
-  - [ ] 리팩토링 다 하고 나서 OrderTable API 응답 시 TableGroupId도 보이도록 기능 개선
+  - [X] 단체 지정 해제 시 주문 상태를 확인하는 기능을 어댑터 통해 질의하도록 변경
+  - [X] 단체 지정 시 이벤트 퍼블리셔를 통해 도메인 간 의존성을 최소화하도록 기능 구현
+- [X] MenuGroup
+    - [X] JPA를 사용하도록 기능 변경
+- [ ] TableGroup 생성 응답에 생성된 OrderTable 정보도 포함하도록 기능 변경
+- [ ] 리팩토링 다 하고 나서 OrderTable API 응답 시 TableGroupId도 보이도록 기능 개선

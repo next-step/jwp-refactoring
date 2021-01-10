@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.domain.domainEvents;
 
 import java.util.List;
 
