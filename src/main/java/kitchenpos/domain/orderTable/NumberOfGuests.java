@@ -2,6 +2,7 @@ package kitchenpos.domain.orderTable;
 
 import kitchenpos.domain.orderTable.exceptions.InvalidNumberOfGuestsException;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;
 import java.util.Objects;
@@ -11,6 +12,7 @@ public class NumberOfGuests {
     @Transient
     private static final int MIN_VALUE = 0;
 
+    @Column(name = "number_of_guests")
     private int value;
 
     protected NumberOfGuests() {
@@ -19,6 +21,10 @@ public class NumberOfGuests {
     public NumberOfGuests(final int value) {
         validate(value);
         this.value = value;
+    }
+
+    public int getValue() {
+        return value;
     }
 
     private void validate(final int value) {

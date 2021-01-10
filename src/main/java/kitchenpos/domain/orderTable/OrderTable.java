@@ -2,10 +2,7 @@ package kitchenpos.domain.orderTable;
 
 import kitchenpos.domain.orderTable.exceptions.InvalidTryChangeEmptyException;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class OrderTable {
@@ -15,7 +12,8 @@ public class OrderTable {
 
     private Long tableGroupId;
 
-    private int numberOfGuests;
+    @Embedded
+    private NumberOfGuests numberOfGuests;
 
     private boolean empty;
 
@@ -25,7 +23,7 @@ public class OrderTable {
     OrderTable(final Long id, final Long tableGroupId, final int numberOfGuests, final boolean empty) {
         this.id = id;
         this.tableGroupId = tableGroupId;
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = new NumberOfGuests(numberOfGuests);
         this.empty = empty;
     }
 
@@ -45,8 +43,7 @@ public class OrderTable {
     }
 
     public void changeNumberOfGuests(final int numberOfGuests) {
-        // TODO: 바꿀수 없는 불변식 여기로 이동 필요
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = new NumberOfGuests(numberOfGuests);
     }
 
     public void group(final Long tableGroupId) {
@@ -67,7 +64,7 @@ public class OrderTable {
     }
 
     public int getNumberOfGuests() {
-        return numberOfGuests;
+        return numberOfGuests.getValue();
     }
 
     public boolean isEmpty() {

@@ -36,7 +36,7 @@ public class OrderTableService {
     @Transactional(readOnly = true)
     public OrderTable findOrderTable(final Long id) {
         return orderTableRepository.findById(id)
-                .orElseThrow(() -> new OrderTableEntityNotFoundException("해당 OrderTable Entity가 존재하지 않습니다."));
+                .orElseThrow(() -> new OrderTableEntityNotFoundException("해당 주문 테이블이 존재하지 않습니다."));
     }
 
     @Transactional(readOnly = true)
@@ -66,10 +66,6 @@ public class OrderTableService {
         final int numberOfGuests = changeNumberOfGuestsRequest.getNumberOfGuests();
 
         final OrderTable savedOrderTable = this.findOrderTable(orderTableId);
-
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
-        }
 
         if (savedOrderTable.isEmpty()) {
             throw new InvalidTryChangeGuestsException("비어있는 주문 테이블의 방문한 손님 수를 바꿀 수 없습니다.");

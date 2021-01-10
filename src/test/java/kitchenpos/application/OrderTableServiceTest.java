@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.orderTable.OrderTable;
+import kitchenpos.domain.orderTable.exceptions.InvalidNumberOfGuestsException;
 import kitchenpos.domain.orderTable.exceptions.InvalidTryChangeEmptyException;
 import kitchenpos.domain.orderTable.exceptions.InvalidTryChangeGuestsException;
 import kitchenpos.domain.orderTable.exceptions.OrderTableEntityNotFoundException;
@@ -152,7 +153,8 @@ public class OrderTableServiceTest {
 
         // when, then
         assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(orderTable.getId(), new ChangeNumberOfGuestsRequest(invalidValue)))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidNumberOfGuestsException.class)
+                .hasMessage("방문한 손님수는 0명 미만일 수 없습니다.");
     }
 
     @DisplayName("존재하지 않는 주문 테이블의 방문한 손님 수를 바꿀 수 없다.")
@@ -164,7 +166,7 @@ public class OrderTableServiceTest {
         // when, then
         assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(notExistTableId, new ChangeNumberOfGuestsRequest(500)))
                 .isInstanceOf(OrderTableEntityNotFoundException.class)
-                .hasMessage("존재하지 않는 주문 테이블의 방문한 손님 수를 바꿀 수 없습니다.");
+                .hasMessage("해당 주문 테이블이 존재하지 않습니다.");
     }
 
     @DisplayName("비어있는 주문 테이블의 방문한 손님 수를 바꿀 수 없다.")
