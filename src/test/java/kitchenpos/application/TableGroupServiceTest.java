@@ -2,7 +2,6 @@ package kitchenpos.application;
 
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.orderTable.OrderTable;
-import kitchenpos.domain.orderTable.exceptions.OrderTableEntityNotFoundException;
 import kitchenpos.domain.tableGroup.exceptions.InvalidTableGroupTryException;
 import kitchenpos.ui.dto.order.OrderLineItemRequest;
 import kitchenpos.ui.dto.order.OrderRequest;
@@ -27,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -66,7 +64,7 @@ public class TableGroupServiceTest {
         TableGroupRequest tableGroupRequest = new TableGroupRequest(orderTables);
 
         // when, then
-        assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
+        assertThatThrownBy(() -> tableGroupService.group(tableGroupRequest))
                 .isInstanceOf(InvalidTableGroupTryException.class)
                 .hasMessage("2개 미만의 주문 테이블로 단체 지정할 수 없다.");
     }
@@ -87,7 +85,7 @@ public class TableGroupServiceTest {
         TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(notExist1, notExist2));
 
         // when, then
-        assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
+        assertThatThrownBy(() -> tableGroupService.group(tableGroupRequest))
                 .isInstanceOf(InvalidTableGroupTryException.class)
                 .hasMessage("존재하지 않는 주문 테이블을 단체 지정할 수 없습니다.");
     }
@@ -110,7 +108,7 @@ public class TableGroupServiceTest {
         ));
 
         // when, then
-        assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
+        assertThatThrownBy(() -> tableGroupService.group(tableGroupRequest))
                 .isInstanceOf(InvalidTableGroupTryException.class)
                 .hasMessage("빈 주문 테이블들로만 단체 지정할 수 있습니다.");
     }
@@ -133,7 +131,7 @@ public class TableGroupServiceTest {
         ));
 
         // when
-        TableGroupResponse tableGroupResponse = tableGroupService.create(tableGroupRequest);
+        TableGroupResponse tableGroupResponse = tableGroupService.group(tableGroupRequest);
 
         // then
         assertThat(tableGroupResponse.getCreatedDate()).isNotNull();
@@ -159,12 +157,12 @@ public class TableGroupServiceTest {
                 new OrderTableInTableGroupRequest(orderTable2.getId())
         ));
 
-        tableGroupService.create(tableGroupRequest);
+        tableGroupService.group(tableGroupRequest);
 
         // when, then
-        assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
+        assertThatThrownBy(() -> tableGroupService.group(tableGroupRequest))
                 .isInstanceOf(InvalidTableGroupTryException.class)
-                .hasMessage("이미 단체 지정된 주문 테이블을 또 단체 지정할 수 없습니다.");
+                .hasMessage("이미 단체 지정된 주문 테이블을 단체 지정할 수 없습니다.");
     }
 
     // TODO: 현재 상태로는 조리와 식사를 한 유닛 테스트에서 모두 확인하기 상당히 어려운 상태
@@ -183,7 +181,7 @@ public class TableGroupServiceTest {
                 new OrderTableInTableGroupRequest(orderTable2.getId())
         ));
 
-        TableGroupResponse tableGroupResponse = tableGroupService.create(tableGroupRequest);
+        TableGroupResponse tableGroupResponse = tableGroupService.group(tableGroupRequest);
 
         OrderRequest orderRequest1 = new OrderRequest(
                 orderTable1.getId(), Collections.singletonList(new OrderLineItemRequest(1L, 1L)));
@@ -212,7 +210,7 @@ public class TableGroupServiceTest {
                 new OrderTableInTableGroupRequest(orderTable2.getId())
         ));
 
-        TableGroupResponse tableGroupResponse = tableGroupService.create(tableGroupRequest);
+        TableGroupResponse tableGroupResponse = tableGroupService.group(tableGroupRequest);
 
         OrderRequest orderRequest1 = new OrderRequest(
                 orderTable1.getId(), Collections.singletonList(new OrderLineItemRequest(1L, 1L)));

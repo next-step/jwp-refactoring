@@ -3,6 +3,7 @@ package kitchenpos.application;
 import kitchenpos.domain.order.OrderRepository;
 import kitchenpos.domain.tableGroup.*;
 import kitchenpos.domain.orderTable.OrderTableRepository;
+import kitchenpos.domain.tableGroup.exceptions.InvalidTableGroupTryException;
 import kitchenpos.ui.dto.tableGroup.OrderTableInTableGroupRequest;
 import kitchenpos.ui.dto.tableGroup.TableGroupRequest;
 import kitchenpos.ui.dto.tableGroup.TableGroupResponse;
@@ -27,18 +28,10 @@ public class TableGroupService {
     }
 
     @Transactional
-    public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-        final List<OrderTableInTableGroupRequest> orderTables = tableGroupRequest.getOrderTables();
-        List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTableInTableGroupRequest::getId)
-                .collect(Collectors.toList());
+    public TableGroupResponse group(final TableGroupRequest tableGroupRequest) {
+        validateGroup(tableGroupRequest);
 
-        safeOrderTableInTableGroup.canGroupTheseTables(orderTableIds);
-
-        List<OrderTableInTableGroup> orderTablesInTableGroup = orderTables.stream()
-                .map(it -> new OrderTableInTableGroup(it.getId()))
-                .collect(Collectors.toList());
-        TableGroup tableGroup = new TableGroup(LocalDateTime.now(), orderTablesInTableGroup);
+        TableGroup tableGroup = parseToTableGroup(tableGroupRequest);
         TableGroup saved = tableGroupRepository.save(tableGroup);
 
         // TODO: 여기서 주문 테이블 정보 불러와서 보내도록 변경 필요
@@ -62,5 +55,24 @@ public class TableGroupService {
 //            orderTable.ungroup();
 //            orderTableRepository.save(orderTable);
 //        }
+    }
+
+    private void validateGroup(final TableGroupRequest tableGroupRequest) {
+        List<Long> orderTableIds = tableGroupRequest.getOrderTables().stream()
+                .map(OrderTableInTableGroupRequest::getId)
+                .collect(Collectors.toList());
+
+        safeOrderTableInTableGroup.canGroupTheseTables(orderTableIds);
+
+        if (tableGroupRepository.existsByOrderTablesOrderTableIdIn(orderTableIds)) {
+            throw new InvalidTableGroupTryException("이미 단체 지정된 주문 테이블을 단체 지정할 수 없습니다.");
+        }
+    }
+
+    private TableGroup parseToTableGroup(final TableGroupRequest tableGroupRequest) {
+        List<OrderTableInTableGroup> orderTablesInTableGroup = tableGroupRequest.getOrderTables().stream()
+                .map(it -> new OrderTableInTableGroup(it.getId()))
+                .collect(Collectors.toList());
+        return new TableGroup(LocalDateTime.now(), orderTablesInTableGroup);
     }
 }

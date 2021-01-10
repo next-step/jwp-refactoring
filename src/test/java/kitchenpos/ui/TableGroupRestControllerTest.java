@@ -53,7 +53,7 @@ class TableGroupRestControllerTest {
         TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(
                 new OrderTableInTableGroupRequest(1L), new OrderTableInTableGroupRequest(2L)));
         TableGroupResponse tableGroupResponse = new TableGroupResponse(1L, LocalDateTime.now(), new ArrayList<>());
-        given(tableGroupService.create(tableGroupRequest)).willReturn(tableGroupResponse);
+        given(tableGroupService.group(tableGroupRequest)).willReturn(tableGroupResponse);
 
         // when, then
         mockMvc.perform(post(url)

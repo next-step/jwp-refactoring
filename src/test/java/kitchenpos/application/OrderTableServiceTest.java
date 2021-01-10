@@ -97,7 +97,7 @@ public class OrderTableServiceTest {
                 new OrderTableInTableGroupRequest(orderTable1.getId()),
                 new OrderTableInTableGroupRequest(orderTable2.getId())
         ));
-        tableGroupService.create(tableGroupRequest);
+        tableGroupService.group(tableGroupRequest);
 
         // when, then
         assertThatThrownBy(() -> orderTableService.changeEmpty(orderTable1.getId(), new ChangeEmptyRequest(true)))
