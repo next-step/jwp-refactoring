@@ -175,4 +175,5 @@
       - 단순히 서로 메시지 주고 받고 물어보기만 해도 됨.
       - 정확하게는 OrderTable에서 TableGroup을 관리할 이유가 없음. 필요한 건 TableGroup에 물어보면 됨.
   - [ ] OrderTable에서 단체 지정 관련 로직 모두 제거
+      - [ ] 리팩토링 다 하고 나서 API 응답 시 TableGroupId도 보이도록 기능 개선
   - [ ] TableGroup 생성 응답에 생성된 OrderTable 정보도 포함하도록 기능 변경

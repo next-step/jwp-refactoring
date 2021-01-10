@@ -1,0 +1,1 @@
+ALTER TABLE order_table DROP COLUMN table_group_id;

@@ -55,7 +55,7 @@ class OrderTableRestControllerTest {
         OrderTableRequest orderTableRequest = new OrderTableRequest(numberOfGuests, empty);
 
         given(orderTableService.create(orderTableRequest))
-                .willReturn(new OrderTableResponse(orderTableId, tableGroupId, numberOfGuests, empty));
+                .willReturn(new OrderTableResponse(orderTableId, numberOfGuests, empty));
 
         // when, then
         mockMvc.perform(post(url)
@@ -71,8 +71,8 @@ class OrderTableRestControllerTest {
         // given
         String url = "/api/order-tables";
 
-        OrderTableResponse orderTableResponse1 = new OrderTableResponse(1L, 1L, 3, false);
-        OrderTableResponse orderTableResponse2 = new OrderTableResponse(2L, 2L, 3, false);
+        OrderTableResponse orderTableResponse1 = new OrderTableResponse(1L, 3, false);
+        OrderTableResponse orderTableResponse2 = new OrderTableResponse(2L, 3, false);
 
         given(orderTableService.list()).willReturn(Arrays.asList(orderTableResponse1, orderTableResponse2));
 
@@ -92,7 +92,7 @@ class OrderTableRestControllerTest {
         ChangeEmptyRequest changeEmptyRequest = new ChangeEmptyRequest(empty);
 
         given(orderTableService.changeEmpty(targetId, changeEmptyRequest))
-                .willReturn(new OrderTableResponse(targetId, 1L, 5, empty));
+                .willReturn(new OrderTableResponse(targetId, 5, empty));
 
         // when, then
         mockMvc.perform(put(url)
@@ -113,7 +113,7 @@ class OrderTableRestControllerTest {
         ChangeNumberOfGuestsRequest changeNumberOfGuestsRequest = new ChangeNumberOfGuestsRequest(numberOfGuests);
 
         given(orderTableService.changeNumberOfGuests(targetId, changeNumberOfGuestsRequest))
-                .willReturn(new OrderTableResponse(targetId, 1L, numberOfGuests, false));
+                .willReturn(new OrderTableResponse(targetId, numberOfGuests, false));
 
         // when, then
         mockMvc.perform(put(url)

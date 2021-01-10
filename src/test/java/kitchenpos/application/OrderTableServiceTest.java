@@ -55,7 +55,6 @@ public class OrderTableServiceTest {
         assertThat(orderTable.getId()).isNotNull();
         assertThat(orderTable.isEmpty()).isEqualTo(isEmpty);
         assertThat(orderTable.getNumberOfGuests()).isEqualTo(numberOfGuests);
-        assertThat(orderTable.getTableGroupId()).isNull();
     }
 
     @DisplayName("주문 테이블 목록을 조회할 수 있다.")

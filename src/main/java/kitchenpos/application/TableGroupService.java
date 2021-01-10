@@ -20,18 +20,15 @@ import java.util.stream.Collectors;
 public class TableGroupService {
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
-    private final GroupingService groupingService;
     private final TableGroupRepository tableGroupRepository;
     private final SafeOrderTableInTableGroup safeOrderTableInTableGroup;
 
     public TableGroupService(
             final OrderRepository orderRepository, final OrderTableRepository orderTableRepository,
-            final GroupingService groupingService, final TableGroupRepository tableGroupRepository,
-            final SafeOrderTableInTableGroup safeOrderTableInTableGroup
+            final TableGroupRepository tableGroupRepository, final SafeOrderTableInTableGroup safeOrderTableInTableGroup
     ) {
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
-        this.groupingService = groupingService;
         this.tableGroupRepository = tableGroupRepository;
         this.safeOrderTableInTableGroup = safeOrderTableInTableGroup;
     }
@@ -46,31 +43,26 @@ public class TableGroupService {
         TableGroup tableGroup = new TableGroup(LocalDateTime.now(), orderTablesInTableGroup);
         TableGroup saved = tableGroupRepository.save(tableGroup);
 
-        List<OrderTable> foundOrderTables = orderTables.stream()
-                .map(it -> safeOrderTableInTableGroup.getOrderTable(it.getId()))
-                .collect(Collectors.toList());
-
-        TableGroup group = groupingService.group(saved, foundOrderTables);
-
-        return TableGroupResponse.of(group);
+        // TODO: 여기서 주문 테이블 정보 불러와서 보내도록 변경 필요
+        return TableGroupResponse.of(saved);
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
-
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
-        }
-
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.ungroup();
-            orderTableRepository.save(orderTable);
-        }
+//        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
+//
+//        final List<Long> orderTableIds = orderTables.stream()
+//                .map(OrderTable::getId)
+//                .collect(Collectors.toList());
+//
+//        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
+//                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+//            throw new IllegalArgumentException();
+//        }
+//
+//        for (final OrderTable orderTable : orderTables) {
+//            orderTable.ungroup();
+//            orderTableRepository.save(orderTable);
+//        }
     }
 }
