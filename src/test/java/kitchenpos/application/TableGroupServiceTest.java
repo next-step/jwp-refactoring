@@ -3,6 +3,7 @@ package kitchenpos.application;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.orderTable.OrderTable;
 import kitchenpos.domain.tableGroup.exceptions.InvalidTableGroupTryException;
+import kitchenpos.domain.tableGroup.exceptions.InvalidTableUngroupTryException;
 import kitchenpos.ui.dto.order.OrderLineItemRequest;
 import kitchenpos.ui.dto.order.OrderRequest;
 import kitchenpos.ui.dto.order.OrderResponse;
@@ -191,7 +192,8 @@ public class TableGroupServiceTest {
 
         // when, then
         assertThatThrownBy(() -> tableGroupService.ungroup(tableGroupResponse.getId()))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidTableUngroupTryException.class)
+                .hasMessage("조리 중이거나 식사 중인 단체 지정을 해제할 수 없습니다.");
     }
 
     @DisplayName("단체 지정을 해제할 수 있다.")

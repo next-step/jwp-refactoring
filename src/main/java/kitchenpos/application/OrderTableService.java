@@ -1,11 +1,13 @@
 package kitchenpos.application;
 
+import kitchenpos.domain.GroupOrderTableEvent;
 import kitchenpos.domain.orderTable.OrderTable;
 import kitchenpos.domain.orderTable.OrderTableRepository;
 import kitchenpos.domain.orderTable.SafeOrder;
 import kitchenpos.domain.orderTable.SafeTableGroup;
 import kitchenpos.domain.orderTable.exceptions.OrderTableEntityNotFoundException;
 import kitchenpos.ui.dto.orderTable.*;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,6 +72,15 @@ public class OrderTableService {
         foundOrderTable.changeNumberOfGuests(numberOfGuests);
 
         return OrderTableResponse.of(foundOrderTable);
+    }
+
+    @EventListener
+    public void group(final GroupOrderTableEvent groupOrderTableEvent) {
+        List<Long> orderTableIds = groupOrderTableEvent.getOrderTableIds();
+
+        List<OrderTable> orderTables = orderTableRepository.findAllByIdIn(orderTableIds);
+
+        orderTables.forEach(it -> it.changeEmpty(false));
     }
 
     private void validateCanChangeEmpty(final Long orderTableId) {
