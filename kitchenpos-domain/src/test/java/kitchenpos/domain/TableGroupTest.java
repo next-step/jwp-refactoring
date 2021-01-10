@@ -1,6 +1,6 @@
 package kitchenpos.domain;
 
-import static kitchenpos.common.TestFixture.*;
+import static kitchenpos.domain.DomainTestFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
