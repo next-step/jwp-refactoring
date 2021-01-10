@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.orderTable.OrderTable;
+import kitchenpos.domain.tableGroup.TableGroupRepository;
 import kitchenpos.domain.tableGroup.exceptions.InvalidTableGroupTryException;
 import kitchenpos.domain.tableGroup.exceptions.InvalidTableUngroupTryException;
 import kitchenpos.ui.dto.order.OrderLineItemRequest;
@@ -43,6 +44,9 @@ public class TableGroupServiceTest {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private TableGroupRepository tableGroupRepository;
 
     private OrderTableRequest emptyOrderTableRequest1;
     private OrderTableRequest emptyOrderTableRequest2;
@@ -212,6 +216,7 @@ public class TableGroupServiceTest {
         ));
 
         TableGroupResponse tableGroupResponse = tableGroupService.group(tableGroupRequest);
+        assertThat(tableGroupRepository.existsById(tableGroupResponse.getId())).isTrue();
 
         OrderRequest orderRequest1 = new OrderRequest(
                 orderTable1.getId(), Collections.singletonList(new OrderLineItemRequest(1L, 1L)));
@@ -228,6 +233,6 @@ public class TableGroupServiceTest {
         tableGroupService.ungroup(tableGroupResponse.getId());
 
         // then
-        // TODO: 단체 지정 해제 관련 로직 자체가 수정되야 함.
+        assertThat(tableGroupRepository.existsById(tableGroupResponse.getId())).isFalse();
     }
 }
