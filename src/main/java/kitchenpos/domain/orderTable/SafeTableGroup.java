@@ -1,5 +1,5 @@
 package kitchenpos.domain.orderTable;
 
 public interface SafeTableGroup {
-    boolean isGroupedOrderTable(Long orderTableId);
+    void canChangeEmptyStatus(Long orderTableId);
 }

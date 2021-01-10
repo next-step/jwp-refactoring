@@ -1,6 +1,7 @@
 package kitchenpos.infra.orderTable;
 
 import kitchenpos.domain.orderTable.SafeTableGroup;
+import kitchenpos.domain.orderTable.exceptions.InvalidTryChangeEmptyException;
 import kitchenpos.domain.tableGroup.TableGroupRepository;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +14,9 @@ public class TableGroupAdapter implements SafeTableGroup {
     }
 
     @Override
-    public boolean isGroupedOrderTable(final Long orderTableId) {
-        return tableGroupRepository.existsByOrderTablesOrderTableId(orderTableId);
+    public void canChangeEmptyStatus(final Long orderTableId) {
+        if (tableGroupRepository.existsByOrderTablesOrderTableId(orderTableId)) {
+           throw new InvalidTryChangeEmptyException("단체 지정된 주문 테이블의 자리 비움 상태를 바꿀 수 없습니다.");
+        }
     }
 }

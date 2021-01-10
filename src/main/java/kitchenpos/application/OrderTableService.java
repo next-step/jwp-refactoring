@@ -3,6 +3,7 @@ package kitchenpos.application;
 import kitchenpos.domain.orderTable.OrderTable;
 import kitchenpos.domain.orderTable.OrderTableRepository;
 import kitchenpos.domain.orderTable.SafeOrder;
+import kitchenpos.domain.orderTable.SafeTableGroup;
 import kitchenpos.domain.orderTable.exceptions.OrderTableEntityNotFoundException;
 import kitchenpos.ui.dto.orderTable.*;
 import org.springframework.stereotype.Service;
@@ -14,10 +15,13 @@ import java.util.stream.Collectors;
 @Service
 public class OrderTableService {
     private final SafeOrder safeOrder;
+    private final SafeTableGroup safeTableGroup;
     private final OrderTableRepository orderTableRepository;
 
-    public OrderTableService(final SafeOrder safeOrder, final OrderTableRepository orderTableRepository) {
+    public OrderTableService(final SafeOrder safeOrder, final SafeTableGroup safeTableGroup,
+                             final OrderTableRepository orderTableRepository) {
         this.safeOrder = safeOrder;
+        this.safeTableGroup = safeTableGroup;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -48,7 +52,7 @@ public class OrderTableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final ChangeEmptyRequest changeEmptyRequest) {
         final OrderTable foundOrderTable = this.findOrderTable(orderTableId);
 
-        safeOrder.canChangeEmptyStatus(orderTableId);
+        validateCanChangeEmpty(orderTableId);
 
         foundOrderTable.changeEmpty(changeEmptyRequest.isEmpty());
 
@@ -66,5 +70,10 @@ public class OrderTableService {
         foundOrderTable.changeNumberOfGuests(numberOfGuests);
 
         return OrderTableResponse.of(foundOrderTable);
+    }
+
+    private void validateCanChangeEmpty(final Long orderTableId) {
+        safeTableGroup.canChangeEmptyStatus(orderTableId);
+        safeOrder.canChangeEmptyStatus(orderTableId);
     }
 }

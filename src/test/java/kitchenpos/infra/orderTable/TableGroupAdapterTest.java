@@ -1,5 +1,6 @@
 package kitchenpos.infra.orderTable;
 
+import kitchenpos.domain.orderTable.exceptions.InvalidTryChangeEmptyException;
 import kitchenpos.domain.tableGroup.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -9,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,13 +30,11 @@ class TableGroupAdapterTest {
     void isGroupedTest() {
         // given
         Long orderTableId = 1L;
-        boolean expected = true;
-        given(tableGroupRepository.existsByOrderTablesOrderTableId(1L)).willReturn(expected);
+        given(tableGroupRepository.existsByOrderTablesOrderTableId(1L)).willReturn(true);
 
-        // when
-        boolean result = tableGroupAdapter.isGroupedOrderTable(orderTableId);
-
-        // then
-        assertThat(result).isEqualTo(expected);
+        // when, then
+        assertThatThrownBy(() -> tableGroupAdapter.canChangeEmptyStatus(orderTableId))
+                .isInstanceOf(InvalidTryChangeEmptyException.class)
+                .hasMessage("단체 지정된 주문 테이블의 자리 비움 상태를 바꿀 수 없습니다.");
     }
 }

@@ -102,7 +102,7 @@ public class OrderTableServiceTest {
         // when, then
         assertThatThrownBy(() -> orderTableService.changeEmpty(orderTable1.getId(), new ChangeEmptyRequest(true)))
                 .isInstanceOf(InvalidTryChangeEmptyException.class)
-                .hasMessage("단체 지정된 주문 테이블의 비움 상태를 바꿀 수 없습니다.");
+                .hasMessage("단체 지정된 주문 테이블의 자리 비움 상태를 바꿀 수 없습니다.");
     }
 
     @DisplayName("주문 상태가 조리거나 식사인 주문 테이블의 비움 상태를 바꿀 수 없다.")
