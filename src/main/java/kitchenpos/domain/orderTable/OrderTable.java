@@ -1,5 +1,7 @@
 package kitchenpos.domain.orderTable;
 
+import kitchenpos.domain.orderTable.exceptions.InvalidTryChangeEmptyException;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -35,8 +37,10 @@ public class OrderTable {
         return tableGroupId != null;
     }
 
-    // TODO: 전략 객체에 의해 동작이 안전하게 수행되도록 기능 변경
     public void changeEmpty(final boolean empty) {
+        if (this.isGrouped()) {
+            throw new InvalidTryChangeEmptyException("단체 지정된 주문 테이블의 비움 상태를 바꿀 수 없습니다.");
+        }
         this.empty = empty;
     }
 

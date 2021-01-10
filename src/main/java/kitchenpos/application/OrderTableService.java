@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.order.OrderRepository;
 import kitchenpos.domain.orderTable.OrderTable;
 import kitchenpos.domain.orderTable.OrderTableRepository;
 import kitchenpos.domain.orderTable.exceptions.InvalidTryChangeEmptyException;
@@ -56,9 +55,6 @@ public class OrderTableService {
 
         orderAdapter.canChangeEmptyStatus(orderTableId);
 
-        if (savedOrderTable.isGrouped()) {
-            throw new InvalidTryChangeEmptyException("단체 지정된 주문 테이블의 비움 상태를 바꿀 수 없습니다.");
-        }
         savedOrderTable.changeEmpty(changeEmptyRequest.isEmpty());
 
         OrderTable changed = orderTableRepository.save(savedOrderTable);
