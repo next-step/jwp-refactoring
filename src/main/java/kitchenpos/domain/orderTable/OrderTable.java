@@ -22,6 +22,7 @@ public class OrderTable {
     }
 
     OrderTable(final Long id, final Long tableGroupId, final int numberOfGuests, final boolean empty) {
+        validate(numberOfGuests, empty);
         this.id = id;
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
@@ -73,5 +74,11 @@ public class OrderTable {
 
     public boolean isEmpty() {
         return empty;
+    }
+
+    private void validate(final int numberOfGuest, final boolean empty) {
+        if (empty && numberOfGuest != 0) {
+            throw new InvalidOrderTableException("비어 있는 경우 손님수는 0명이어야 한다.");
+        }
     }
 }
