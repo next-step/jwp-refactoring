@@ -165,7 +165,6 @@ public class TableGroupServiceTest {
                 .hasMessage("이미 단체 지정된 주문 테이블을 단체 지정할 수 없습니다.");
     }
 
-    // TODO: 현재 상태로는 조리와 식사를 한 유닛 테스트에서 모두 확인하기 상당히 어려운 상태
     @DisplayName("주문 상태가 조리나 식사인 단체 지정을 해제할 수 없다.")
     @Test
     void unGroupFailWithInvalidOrderStatus() {

@@ -175,7 +175,8 @@
       - 정확하게는 OrderTable에서 TableGroup을 관리할 이유가 없음. 필요한 건 TableGroup에 물어보면 됨.
   - [X] OrderTable에서 단체 지정 관련 로직 모두 제거
     - [X] OrderTableService에서 자리 비움 상태 변경 시 단체 지정 여부를 어댑터를 통해 물어봐야 함
-  - [ ] TableGroup의 도메인 로직은 모두 TableGroup에서 자체적으로 수행
-      - [ ] Order, OrderTable 관련 필요 사항은 모두 어댑터를 통해 질의
+  - [X] TableGroup의 도메인 로직은 모두 TableGroup에서 자체적으로 수행
+      - [X] Order, OrderTable 관련 필요 사항은 모두 어댑터를 통해 질의
+  - [ ] 그룹 해제 시 주문 상태를 확인하는 기능을 어댑터 통해 질의하도록 변경
   - [ ] TableGroup 생성 응답에 생성된 OrderTable 정보도 포함하도록 기능 변경
   - [ ] 리팩토링 다 하고 나서 OrderTable API 응답 시 TableGroupId도 보이도록 기능 개선

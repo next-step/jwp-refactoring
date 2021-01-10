@@ -4,6 +4,7 @@ import kitchenpos.domain.order.OrderRepository;
 import kitchenpos.domain.tableGroup.*;
 import kitchenpos.domain.orderTable.OrderTableRepository;
 import kitchenpos.domain.tableGroup.exceptions.InvalidTableGroupTryException;
+import kitchenpos.domain.tableGroup.exceptions.TableGroupEntityNotFoundException;
 import kitchenpos.ui.dto.tableGroup.OrderTableInTableGroupRequest;
 import kitchenpos.ui.dto.tableGroup.TableGroupRequest;
 import kitchenpos.ui.dto.tableGroup.TableGroupResponse;
@@ -17,13 +18,16 @@ import java.util.stream.Collectors;
 @Service
 public class TableGroupService {
     private final SafeOrderTableInTableGroup safeOrderTableInTableGroup;
+    private final SafeOrderInTableGroup safeOrderInTableGroup;
     private final TableGroupRepository tableGroupRepository;
 
     public TableGroupService(
             final SafeOrderTableInTableGroup safeOrderTableInTableGroup,
+            final SafeOrderInTableGroup safeOrderInTableGroup,
             final TableGroupRepository tableGroupRepository
     ) {
         this.safeOrderTableInTableGroup = safeOrderTableInTableGroup;
+        this.safeOrderInTableGroup = safeOrderInTableGroup;
         this.tableGroupRepository = tableGroupRepository;
     }
 
@@ -40,21 +44,16 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-//        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
-//
-//        final List<Long> orderTableIds = orderTables.stream()
-//                .map(OrderTable::getId)
-//                .collect(Collectors.toList());
-//
-//        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-//                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-//            throw new IllegalArgumentException();
-//        }
-//
-//        for (final OrderTable orderTable : orderTables) {
-//            orderTable.ungroup();
-//            orderTableRepository.save(orderTable);
-//        }
+        TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
+                .orElseThrow(() -> new TableGroupEntityNotFoundException("존재하지 않는 단체 지정입니다."));
+
+        List<Long> orderTableIds = tableGroup.getOrderTables().stream()
+                .map(OrderTableInTableGroup::getOrderTableId)
+                .collect(Collectors.toList());
+
+        safeOrderInTableGroup.canUngroup(orderTableIds);
+
+        tableGroupRepository.delete(tableGroup);
     }
 
     private void validateGroup(final TableGroupRequest tableGroupRequest) {
