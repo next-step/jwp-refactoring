@@ -5,13 +5,11 @@ import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.orderTable.OrderTable;
 import kitchenpos.domain.tableGroup.*;
 import kitchenpos.domain.orderTable.OrderTableRepository;
-import kitchenpos.domain.tableGroup.exceptions.InvalidTableGroupTryException;
 import kitchenpos.ui.dto.tableGroup.OrderTableInTableGroupRequest;
 import kitchenpos.ui.dto.tableGroup.TableGroupRequest;
 import kitchenpos.ui.dto.tableGroup.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;

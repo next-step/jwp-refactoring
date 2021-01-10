@@ -166,7 +166,13 @@
   - 도메인 간 의존성이 생기는 부분으 향후 도메인끼리 완전히 떨어지면 컨트롤러를 통해 의존하는 등의 방법으로 해소 가능
 - [ ] TableGroup
   - [X] JPA 적용
-  - [ ] TableGroup 생성시 OrderTable 상태까지 바꾸도록 기능 추가
-    - [ ] OrderTableAdapter를 통해 안전하게 OrderTable 불러오도록 기능 추가
-    - [ ] GroupingService 도메인 서비스를 통해 두 에그리거트가 동작하도록 개선
+  - [X] TableGroup 생성시 OrderTable 상태까지 바꾸도록 기능 추가
+    - [X] OrderTableAdapter를 통해 안전하게 OrderTable 불러오도록 기능 추가
+    - [X] GroupingService 도메인 서비스를 통해 두 에그리거트가 동작하도록 개선
+  ~~- [ ] 어댑터에서 RestTemplate을 이용해 OrderTable 의존성 완전 제거~~
+      ~~- [ ] OrderTable에서 TableGroup 생성하는 API 노출하도록 구현~~
+      - TableGroup과 OrderTable은 연관될 이유가 없음
+      - 단순히 서로 메시지 주고 받고 물어보기만 해도 됨.
+      - 정확하게는 OrderTable에서 TableGroup을 관리할 이유가 없음. 필요한 건 TableGroup에 물어보면 됨.
+  - [ ] OrderTable에서 단체 지정 관련 로직 모두 제거
   - [ ] TableGroup 생성 응답에 생성된 OrderTable 정보도 포함하도록 기능 변경

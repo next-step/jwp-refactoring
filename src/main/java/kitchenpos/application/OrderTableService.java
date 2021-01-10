@@ -4,10 +4,7 @@ import kitchenpos.domain.orderTable.OrderTable;
 import kitchenpos.domain.orderTable.OrderTableRepository;
 import kitchenpos.domain.orderTable.SafeOrder;
 import kitchenpos.domain.orderTable.exceptions.OrderTableEntityNotFoundException;
-import kitchenpos.ui.dto.orderTable.ChangeEmptyRequest;
-import kitchenpos.ui.dto.orderTable.ChangeNumberOfGuestsRequest;
-import kitchenpos.ui.dto.orderTable.OrderTableRequest;
-import kitchenpos.ui.dto.orderTable.OrderTableResponse;
+import kitchenpos.ui.dto.orderTable.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
