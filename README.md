@@ -167,4 +167,6 @@
 - [ ] TableGroup
   - [X] JPA 적용
   - [ ] TableGroup 생성시 OrderTable 상태까지 바꾸도록 기능 추가
+    - [ ] OrderTableAdapter를 통해 안전하게 OrderTable 불러오도록 기능 추가
+    - [ ] GroupingService 도메인 서비스를 통해 두 에그리거트가 동작하도록 개선
   - [ ] TableGroup 생성 응답에 생성된 OrderTable 정보도 포함하도록 기능 변경
