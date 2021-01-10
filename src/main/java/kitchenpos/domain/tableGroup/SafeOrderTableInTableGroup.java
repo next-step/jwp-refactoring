@@ -2,6 +2,6 @@ package kitchenpos.domain.tableGroup;
 
 import kitchenpos.domain.orderTable.OrderTable;
 
-public interface SafeOrderTable {
+public interface SafeOrderTableInTableGroup {
     OrderTable getOrderTable(Long orderTableId);
 }

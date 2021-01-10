@@ -1,6 +1,8 @@
 package kitchenpos.domain.tableGroup;
 
 import kitchenpos.domain.orderTable.OrderTable;
+import kitchenpos.domain.tableGroup.exceptions.InvalidTableGroupTryException;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -23,6 +25,7 @@ public class TableGroup {
     }
 
     TableGroup(final Long id, final LocalDateTime createdDate, final List<OrderTableInTableGroup> orderTables) {
+        validate(orderTables);
         this.id = id;
         this.createdDate = createdDate;
         this.orderTables = orderTables;
@@ -42,5 +45,11 @@ public class TableGroup {
 
     public List<OrderTableInTableGroup> getOrderTables() {
         return orderTables;
+    }
+
+    private void validate(final List<OrderTableInTableGroup> orderTables) {
+        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
+            throw new InvalidTableGroupTryException("2개 미만의 주문 테이블로 단체 지정할 수 없다.");
+        }
     }
 }

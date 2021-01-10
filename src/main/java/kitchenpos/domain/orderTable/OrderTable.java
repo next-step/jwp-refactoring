@@ -2,6 +2,7 @@ package kitchenpos.domain.orderTable;
 
 import kitchenpos.domain.orderTable.exceptions.InvalidTryChangeEmptyException;
 import kitchenpos.domain.orderTable.exceptions.InvalidTryChangeGuestsException;
+import kitchenpos.domain.orderTable.exceptions.InvalidTryGroupingException;
 
 import javax.persistence.*;
 
@@ -22,7 +23,7 @@ public class OrderTable {
     }
 
     OrderTable(final Long id, final Long tableGroupId, final int numberOfGuests, final boolean empty) {
-        validate(numberOfGuests, empty);
+        validateCreation(numberOfGuests, empty);
         this.id = id;
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
@@ -52,8 +53,9 @@ public class OrderTable {
     }
 
     public void group(final Long tableGroupId) {
+        validateGrouping();
+        changeEmpty(false);
         this.tableGroupId = tableGroupId;
-        this.empty = false;
     }
 
     public void ungroup() {
@@ -76,9 +78,18 @@ public class OrderTable {
         return empty;
     }
 
-    private void validate(final int numberOfGuest, final boolean empty) {
+    private void validateCreation(final int numberOfGuest, final boolean empty) {
         if (empty && numberOfGuest != 0) {
             throw new InvalidOrderTableException("비어 있는 경우 손님수는 0명이어야 한다.");
+        }
+    }
+
+    private void validateGrouping() {
+        if(this.isGrouped()) {
+            throw new InvalidTryGroupingException("이미 단체 지정된 주문 테이블을 단체 지정할 수 없습니다.");
+        }
+        if(!this.isEmpty()) {
+            throw new InvalidTryGroupingException("비어 있지 않은 주문 테이블을 단체 지정할 수 없습니다.");
         }
     }
 }

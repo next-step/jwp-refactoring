@@ -2,6 +2,7 @@ package kitchenpos.domain.orderTable;
 
 import kitchenpos.domain.orderTable.exceptions.InvalidTryChangeEmptyException;
 import kitchenpos.domain.orderTable.exceptions.InvalidTryChangeGuestsException;
+import kitchenpos.domain.orderTable.exceptions.InvalidTryGroupingException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -65,7 +66,7 @@ class OrderTableTest {
     @Test
     void changeEmptyFailTest() {
         // given
-        OrderTable orderTable = new OrderTable(3, false);
+        OrderTable orderTable = new OrderTable(0, true);
         orderTable.group(3L);
 
         // when, then
@@ -84,5 +85,32 @@ class OrderTableTest {
         assertThatThrownBy(() -> orderTable.changeNumberOfGuests(3))
                 .isInstanceOf(InvalidTryChangeGuestsException.class)
                 .hasMessage("비어있는 주문 테이블의 방문한 손님 수를 바꿀 수 없습니다.");
+    }
+
+    @DisplayName("비어 있지 않은 주문 테이블 단체 지정 시도 시 예외 발생")
+    @Test
+    void groupingFailWhenNotEmptyTest() {
+        // given
+        Long tableGroupId = 1L;
+        OrderTable orderTable = new OrderTable(3, false);
+
+        // when, then
+        assertThatThrownBy(() -> orderTable.group(tableGroupId))
+                .isInstanceOf(InvalidTryGroupingException.class)
+                .hasMessage("비어 있지 않은 주문 테이블을 단체 지정할 수 없습니다.");
+    }
+
+    @DisplayName("이미 단체 지정된 주문 테이블 단체 지정 시도 시 예외 발생")
+    @Test
+    void groupingFailWhenAlreadyGroupedTest() {
+        // given
+        Long tableGroupId = 1L;
+        OrderTable orderTable = new OrderTable(0, true);
+        orderTable.group(tableGroupId);
+
+        // when, then
+        assertThatThrownBy(() -> orderTable.group(tableGroupId))
+                .isInstanceOf(InvalidTryGroupingException.class)
+                .hasMessage("이미 단체 지정된 주문 테이블을 단체 지정할 수 없습니다.");
     }
 }
