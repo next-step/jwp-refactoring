@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@DisplayName("상품 컨트롤러 테스트")
+@DisplayName("테이블 그룹 컨트롤러 테스트")
 @WebMvcTest(TableGroupRestController.class)
 class TableGroupRestControllerTest {
     public static final String DEFAULT_TABLE_GROUPS_URI = "/api/table-groups/";
