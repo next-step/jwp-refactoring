@@ -35,4 +35,9 @@ public class MenuGroupService {
                 .map(MenuGroupResponse::of)
                 .collect(Collectors.toList());
     }
+
+    @Transactional(readOnly = true)
+    public boolean existsById(final Long menuGroupId) {
+        return menuGroupDao.existsById(menuGroupId);
+    }
 }
