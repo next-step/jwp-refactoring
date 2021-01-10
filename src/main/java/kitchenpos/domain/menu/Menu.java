@@ -1,18 +1,32 @@
 package kitchenpos.domain.menu;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
 public class Menu {
-    private final Long id;
-    private final String name;
-    private final MenuPrice price;
-    private final Long menuGroupId;
-    private final List<MenuProduct> menuProducts;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+
+    @Embedded
+    private MenuPrice price;
+
+    private Long menuGroupId;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "menu_id")
+    private List<MenuProduct> menuProducts;
+
+    protected Menu() {
+    }
 
     public Menu(final Long id, final String name, final BigDecimal price, final Long menuGroupId,
-         final List<MenuProduct> menuProducts) {
+                final List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = name;
         this.price = new MenuPrice(price);

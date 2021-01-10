@@ -148,3 +148,5 @@
       - [X] 한 상태에서 다른 상태로 바뀔 수 있는지 여부를 판단하고 바뀔 상태를 반환할 수 있음.
     - [X] Order의 OrderStatus를 enum 타입으로 전환
 - [ ] Product, Menu 도메인 JPA로 전환
+  - [X] Product
+  - [ ] Menu

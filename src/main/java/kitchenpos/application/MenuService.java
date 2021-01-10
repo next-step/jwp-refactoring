@@ -1,8 +1,6 @@
 package kitchenpos.application;
 
 import kitchenpos.domain.menu.MenuRepository;
-import kitchenpos.infra.menu.MenuDao;
-import kitchenpos.infra.menu.MenuProductDao;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.infra.menu.MenuGroupAdapter;
 import kitchenpos.domain.menu.MenuProduct;
@@ -13,7 +11,6 @@ import kitchenpos.ui.dto.menu.MenuResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,7 +53,7 @@ public class MenuService {
     private Menu parseRequestToMenu(final MenuRequest menuRequest) {
         final List<MenuProductRequest> menuProductRequests = menuRequest.getMenuProducts();
         List<MenuProduct> menuProducts = menuProductRequests.stream()
-                .map(it -> MenuProduct.of(null, it.getProductId(), it.getQuantity()))
+                .map(it -> MenuProduct.of(it.getProductId(), it.getQuantity()))
                 .collect(Collectors.toList());
 
         return Menu.of(menuRequest.getName(), menuRequest.getPrice(), menuRequest.getMenuGroupId(), menuProducts);

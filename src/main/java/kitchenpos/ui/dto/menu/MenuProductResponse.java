@@ -6,35 +6,24 @@ import java.util.Objects;
 
 public class MenuProductResponse {
     private Long seq;
-    private Long menuId;
     private Long productId;
     private Long quantity;
 
     MenuProductResponse() {
     }
 
-    MenuProductResponse(final Long seq, final Long menuId, final Long productId, final Long quantity) {
+    public MenuProductResponse(final Long seq, final Long productId, final Long quantity) {
         this.seq = seq;
-        this.menuId = menuId;
         this.productId = productId;
         this.quantity = quantity;
     }
 
-    public static MenuProductResponse of(final Long seq, final Long menuId, final Long productId, final Long quantity) {
-        return new MenuProductResponse(seq, menuId, productId, quantity);
-    }
-
     public static MenuProductResponse of(final MenuProduct menuProduct) {
-        return new MenuProductResponse(menuProduct.getSeq(), menuProduct.getMenuId(),
-                menuProduct.getProductId(), menuProduct.getQuantity());
+        return new MenuProductResponse(menuProduct.getSeq(), menuProduct.getProductId(), menuProduct.getQuantity());
     }
 
     public Long getSeq() {
         return seq;
-    }
-
-    public Long getMenuId() {
-        return menuId;
     }
 
     public Long getProductId() {
@@ -50,19 +39,18 @@ public class MenuProductResponse {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final MenuProductResponse that = (MenuProductResponse) o;
-        return Objects.equals(seq, that.seq) && Objects.equals(menuId, that.menuId) && Objects.equals(productId, that.productId) && Objects.equals(quantity, that.quantity);
+        return Objects.equals(seq, that.seq) && Objects.equals(productId, that.productId) && Objects.equals(quantity, that.quantity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(seq, menuId, productId, quantity);
+        return Objects.hash(seq, productId, quantity);
     }
 
     @Override
     public String toString() {
         return "MenuProductResponse{" +
                 "seq=" + seq +
-                ", menuId=" + menuId +
                 ", productId=" + productId +
                 ", quantity=" + quantity +
                 '}';

@@ -1,8 +1,8 @@
 package kitchenpos.infra.order;
 
+import kitchenpos.domain.menu.MenuRepository;
 import kitchenpos.domain.order.OrderLineItem;
 import kitchenpos.domain.order.exceptions.MenuEntityNotFoundException;
-import kitchenpos.infra.menu.MenuDao;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,11 +22,11 @@ public class MenuAdapterTest {
     private MenuAdapter menuAdapter;
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @BeforeEach
     void setup() {
-        menuAdapter = new MenuAdapter(menuDao);
+        menuAdapter = new MenuAdapter(menuRepository);
     }
 
     @DisplayName("제시된 주문 항목들 중 하나라도 존재하지 않으면 예외 발생")
@@ -34,7 +34,7 @@ public class MenuAdapterTest {
     void isExistMenusTest() {
         // given
         List<OrderLineItem> orderLineItems = Arrays.asList(new OrderLineItem(1L, 1L), new OrderLineItem(2L, 2L));
-        given(menuDao.countByIdIn(any())).willReturn(1L);
+        given(menuRepository.countByIdIn(any())).willReturn(1);
 
         // when, then
         assertThatThrownBy(() -> menuAdapter.isMenuExists(orderLineItems))

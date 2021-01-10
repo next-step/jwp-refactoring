@@ -1,10 +1,9 @@
 package kitchenpos.infra.order;
 
+import kitchenpos.domain.menu.MenuRepository;
 import kitchenpos.domain.order.OrderLineItem;
 import kitchenpos.domain.order.SafeMenu;
 import kitchenpos.domain.order.exceptions.MenuEntityNotFoundException;
-import kitchenpos.infra.menu.MenuDao;
-import kitchenpos.ui.dto.order.OrderLineItemRequest;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -12,10 +11,10 @@ import java.util.stream.Collectors;
 
 @Component
 public class MenuAdapter implements SafeMenu {
-    private final MenuDao menuDao;
+    private final MenuRepository menuRepository;
 
-    public MenuAdapter(final MenuDao menuDao) {
-        this.menuDao = menuDao;
+    public MenuAdapter(final MenuRepository menuRepository) {
+        this.menuRepository = menuRepository;
     }
 
     @Override
@@ -24,7 +23,7 @@ public class MenuAdapter implements SafeMenu {
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
 
-        if (orderLineItems.size() != menuDao.countByIdIn(menuIds)) {
+        if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
             throw new MenuEntityNotFoundException("존재하지 않는 메뉴가 있습니다.");
         }
     }
