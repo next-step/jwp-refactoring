@@ -1,10 +1,10 @@
 package kitchenpos.application;
 
 import kitchenpos.domain.order.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.exceptions.orderTable.InvalidTryChangeEmptyException;
-import kitchenpos.domain.exceptions.orderTable.InvalidTryChangeGuestsException;
-import kitchenpos.domain.exceptions.orderTable.OrderTableEntityNotFoundException;
+import kitchenpos.domain.orderTable.OrderTable;
+import kitchenpos.domain.orderTable.exceptions.InvalidTryChangeEmptyException;
+import kitchenpos.domain.orderTable.exceptions.InvalidTryChangeGuestsException;
+import kitchenpos.domain.orderTable.exceptions.OrderTableEntityNotFoundException;
 import kitchenpos.ui.dto.order.OrderLineItemRequest;
 import kitchenpos.ui.dto.order.OrderRequest;
 import kitchenpos.ui.dto.order.OrderResponse;

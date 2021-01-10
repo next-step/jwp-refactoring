@@ -150,3 +150,7 @@
 - [X] Product, Menu 도메인 JPA로 전환
   - [X] Product
   - [X] Menu
+- [ ] OrderTable
+  - [ ] JPA 적용
+  - [ ] 비움 상태를 바꿀 수 있는 기능을 OrderTable 도메인 오브젝트로 밀어 넣기
+  - [ ] 방문한 손님 수를 바꿀 수 있는 기능을 OrderTable 도메인 오브젝트로 밀어 넣기

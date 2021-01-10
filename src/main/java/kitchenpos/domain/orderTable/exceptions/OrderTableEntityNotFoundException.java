@@ -1,4 +1,4 @@
-package kitchenpos.domain.exceptions.orderTable;
+package kitchenpos.domain.orderTable.exceptions;
 
 public class OrderTableEntityNotFoundException extends RuntimeException {
     public OrderTableEntityNotFoundException(final String message) {

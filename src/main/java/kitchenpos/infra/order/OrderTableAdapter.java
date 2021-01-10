@@ -1,8 +1,8 @@
 package kitchenpos.infra.order;
 
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.exceptions.orderTable.OrderTableEntityNotFoundException;
+import kitchenpos.domain.orderTable.OrderTable;
+import kitchenpos.domain.orderTable.exceptions.OrderTableEntityNotFoundException;
 import kitchenpos.domain.order.SafeOrderTable;
 import kitchenpos.domain.order.exceptions.InvalidTryOrderException;
 import org.springframework.stereotype.Component;

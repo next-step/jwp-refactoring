@@ -1,5 +1,7 @@
 package kitchenpos.domain;
 
+import kitchenpos.domain.orderTable.OrderTable;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

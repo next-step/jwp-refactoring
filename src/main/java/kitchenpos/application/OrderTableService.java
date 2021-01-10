@@ -3,10 +3,10 @@ package kitchenpos.application;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.order.OrderRepository;
 import kitchenpos.domain.order.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.exceptions.orderTable.InvalidTryChangeEmptyException;
-import kitchenpos.domain.exceptions.orderTable.InvalidTryChangeGuestsException;
-import kitchenpos.domain.exceptions.orderTable.OrderTableEntityNotFoundException;
+import kitchenpos.domain.orderTable.OrderTable;
+import kitchenpos.domain.orderTable.exceptions.InvalidTryChangeEmptyException;
+import kitchenpos.domain.orderTable.exceptions.InvalidTryChangeGuestsException;
+import kitchenpos.domain.orderTable.exceptions.OrderTableEntityNotFoundException;
 import kitchenpos.ui.dto.orderTable.ChangeEmptyRequest;
 import kitchenpos.ui.dto.orderTable.ChangeNumberOfGuestsRequest;
 import kitchenpos.ui.dto.orderTable.OrderTableRequest;
@@ -43,6 +43,7 @@ public class OrderTableService {
                 .orElseThrow(() -> new OrderTableEntityNotFoundException("해당 OrderTable Entity가 존재하지 않습니다."));
     }
 
+    @Transactional(readOnly = true)
     public List<OrderTableResponse> list() {
         List<OrderTable> orderTables = orderTableDao.findAll();
 
