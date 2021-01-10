@@ -1,6 +1,7 @@
 package kitchenpos.infra.menu;
 
 import kitchenpos.application.MenuGroupService;
+import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.menu.exceptions.MenuGroupEntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,11 +18,11 @@ class MenuGroupAdapterTest {
     private MenuGroupAdapter menuGroupAdapter;
 
     @Mock
-    private MenuGroupService menuGroupService;
+    private MenuGroupDao menuGroupDao;
 
     @BeforeEach
     void setup() {
-        menuGroupAdapter = new MenuGroupAdapter(menuGroupService);
+        menuGroupAdapter = new MenuGroupAdapter(menuGroupDao);
     }
 
     @DisplayName("해당 메뉴 그룹이 존재하지 않는 경우 예외가 발생한다.")
@@ -29,7 +30,7 @@ class MenuGroupAdapterTest {
     void isExistMenuGroupTest() {
         // given
         Long menuGroupId = 1L;
-        given(menuGroupService.existsById(menuGroupId)).willReturn(false);
+        given(menuGroupDao.existsById(menuGroupId)).willReturn(false);
 
         // when, then
         assertThatThrownBy(() -> menuGroupAdapter.isExistMenuGroup(menuGroupId))

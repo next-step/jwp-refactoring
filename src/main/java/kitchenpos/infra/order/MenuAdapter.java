@@ -12,10 +12,10 @@ import java.util.stream.Collectors;
 
 @Component
 public class MenuAdapter implements SafeMenu {
-    private final MenuService menuService;
+    private final MenuRepository menuRepository;
 
-    public MenuAdapter(final MenuService menuService) {
-        this.menuService = menuService;
+    public MenuAdapter(final MenuRepository menuRepository) {
+        this.menuRepository = menuRepository;
     }
 
     @Override
@@ -24,7 +24,7 @@ public class MenuAdapter implements SafeMenu {
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
 
-        if (!menuService.isMenusExist(menuIds)) {
+        if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
             throw new MenuEntityNotFoundException("존재하지 않는 메뉴가 있습니다.");
         }
     }

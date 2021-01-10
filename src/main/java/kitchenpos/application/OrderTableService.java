@@ -2,9 +2,8 @@ package kitchenpos.application;
 
 import kitchenpos.domain.orderTable.OrderTable;
 import kitchenpos.domain.orderTable.OrderTableRepository;
-import kitchenpos.domain.orderTable.exceptions.InvalidTryChangeGuestsException;
+import kitchenpos.domain.orderTable.SafeOrder;
 import kitchenpos.domain.orderTable.exceptions.OrderTableEntityNotFoundException;
-import kitchenpos.infra.orderTable.OrderAdapter;
 import kitchenpos.ui.dto.orderTable.ChangeEmptyRequest;
 import kitchenpos.ui.dto.orderTable.ChangeNumberOfGuestsRequest;
 import kitchenpos.ui.dto.orderTable.OrderTableRequest;
@@ -17,11 +16,11 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrderTableService {
-    private final OrderAdapter orderAdapter;
+    private final SafeOrder safeOrder;
     private final OrderTableRepository orderTableRepository;
 
-    public OrderTableService(final OrderAdapter orderAdapter, final OrderTableRepository orderTableRepository) {
-        this.orderAdapter = orderAdapter;
+    public OrderTableService(final SafeOrder safeOrder, final OrderTableRepository orderTableRepository) {
+        this.safeOrder = safeOrder;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -52,7 +51,7 @@ public class OrderTableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final ChangeEmptyRequest changeEmptyRequest) {
         final OrderTable foundOrderTable = this.findOrderTable(orderTableId);
 
-        orderAdapter.canChangeEmptyStatus(orderTableId);
+        safeOrder.canChangeEmptyStatus(orderTableId);
 
         foundOrderTable.changeEmpty(changeEmptyRequest.isEmpty());
 

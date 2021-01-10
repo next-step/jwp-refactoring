@@ -79,7 +79,7 @@ class OrderServiceTest {
 
         // when, then
         assertThatThrownBy(() -> orderService.create(orderRequest))
-                .isInstanceOf(OrderTableEntityNotFoundException.class)
+                .isInstanceOf(InvalidTryOrderException.class)
                 .hasMessage("존재하지 않는 주문 테이블에서 주문할 수 없습니다.");
     }
 

@@ -60,12 +60,6 @@ public class OrderService {
         return OrderResponse.of(savedOrder);
     }
 
-    @Transactional(readOnly = true)
-    public boolean isThisTableInMealOrCooking(final Long orderTableId) {
-        return orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
-    }
-
     private List<OrderLineItem> parserToOrderLineItem(final OrderRequest orderRequest) {
         final List<OrderLineItemRequest> orderLineItemRequests = orderRequest.getOrderLineItems();
 

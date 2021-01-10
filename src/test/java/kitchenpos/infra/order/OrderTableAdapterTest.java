@@ -2,7 +2,6 @@ package kitchenpos.infra.order;
 
 import kitchenpos.domain.orderTable.OrderTable;
 import kitchenpos.domain.orderTable.OrderTableRepository;
-import kitchenpos.domain.orderTable.exceptions.OrderTableEntityNotFoundException;
 import kitchenpos.domain.order.exceptions.InvalidTryOrderException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,11 +32,11 @@ class OrderTableAdapterTest {
     void canOrderAtThisTableFailByNoExistTest() {
         // given
         Long orderTableId = 1L;
+        given(orderTableRepository.findById(orderTableId)).willThrow(new InvalidTryOrderException(""));
 
         // when, then
         assertThatThrownBy(() -> orderTableAdapter.canOrderAtThisTable(orderTableId))
-                .isInstanceOf(OrderTableEntityNotFoundException.class)
-                .hasMessage("존재하지 않는 주문 테이블에서 주문할 수 없습니다.");
+                .isInstanceOf(InvalidTryOrderException.class);
     }
 
     @DisplayName("비어있는 주문 테이블에 주문 여부 확인 시 예외 발생")

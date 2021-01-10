@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -23,11 +22,11 @@ public class MenuAdapterTest {
     private MenuAdapter menuAdapter;
 
     @Mock
-    private MenuService menuService;
+    private MenuRepository menuRepository;
 
     @BeforeEach
     void setup() {
-        menuAdapter = new MenuAdapter(menuService);
+        menuAdapter = new MenuAdapter(menuRepository);
     }
 
     @DisplayName("제시된 주문 항목들 중 하나라도 존재하지 않으면 예외 발생")
@@ -35,7 +34,7 @@ public class MenuAdapterTest {
     void isExistMenusTest() {
         // given
         List<OrderLineItem> orderLineItems = Arrays.asList(new OrderLineItem(1L, 1L), new OrderLineItem(2L, 2L));
-        given(menuService.isMenusExist(Arrays.asList(1L, 2L))).willReturn(false);
+        given(menuRepository.countByIdIn(Arrays.asList(1L, 2L))).willReturn(1);
 
         // when, then
         assertThatThrownBy(() -> menuAdapter.isMenuExists(orderLineItems))

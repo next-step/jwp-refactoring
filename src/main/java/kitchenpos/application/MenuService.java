@@ -50,13 +50,6 @@ public class MenuService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
-    public boolean isMenusExist(final List<Long> menuIds) {
-        int existMenuSize = menuRepository.countByIdIn(menuIds);
-
-        return menuIds.size() == existMenuSize;
-    }
-
     private Menu parseRequestToMenu(final MenuRequest menuRequest) {
         final List<MenuProductRequest> menuProductRequests = menuRequest.getMenuProducts();
         List<MenuProduct> menuProducts = menuProductRequests.stream()
