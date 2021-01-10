@@ -17,7 +17,7 @@ public class TableGroup {
 
     private LocalDateTime createdDate;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "table_group_id")
     private List<OrderTableInTableGroup> orderTables = new ArrayList<>();
 
