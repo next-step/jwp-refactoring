@@ -183,4 +183,4 @@
 - [X] MenuGroup
     - [X] JPA를 사용하도록 기능 변경
 - [ ] TableGroup 생성 응답에 생성된 OrderTable 정보도 포함하도록 기능 변경
-- [ ] 리팩토링 다 하고 나서 OrderTable API 응답 시 TableGroupId도 보이도록 기능 개선
+- [X] 리팩토링 다 하고 나서 OrderTable API 응답 시 TableGroupId도 보이도록 기능 개선

@@ -32,7 +32,7 @@ public class OrderTableService {
         OrderTable orderTable = new OrderTable(request.getNumberOfGuests(), request.isEmpty());
         OrderTable saved = orderTableRepository.save(orderTable);
 
-        return OrderTableResponse.of(saved);
+        return OrderTableResponse.of(saved, safeTableGroup.getTableGroupId(saved.getId()));
     }
 
     @Transactional(readOnly = true)
@@ -46,7 +46,7 @@ public class OrderTableService {
         List<OrderTable> orderTables = orderTableRepository.findAll();
 
         return orderTables.stream()
-                .map(OrderTableResponse::of)
+                .map(it -> OrderTableResponse.of(it, safeTableGroup.getTableGroupId(it.getId())))
                 .collect(Collectors.toList());
     }
 
@@ -58,7 +58,7 @@ public class OrderTableService {
 
         foundOrderTable.changeEmpty(changeEmptyRequest.isEmpty());
 
-        return OrderTableResponse.of(foundOrderTable);
+        return OrderTableResponse.of(foundOrderTable, safeTableGroup.getTableGroupId(foundOrderTable.getId()));
     }
 
     @Transactional
@@ -71,7 +71,7 @@ public class OrderTableService {
 
         foundOrderTable.changeNumberOfGuests(numberOfGuests);
 
-        return OrderTableResponse.of(foundOrderTable);
+        return OrderTableResponse.of(foundOrderTable, safeTableGroup.getTableGroupId(foundOrderTable.getId()));
     }
 
     @EventListener
