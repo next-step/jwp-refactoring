@@ -5,8 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
-import kitchenpos.dao.JdbcTemplateProductDao;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,8 +16,6 @@ class ProductServiceTest {
 
 	@Autowired
 	private ProductService productService;
-	@Autowired
-	private JdbcTemplateProductDao productDao;
 
 	@DisplayName("금액이 0원 이상인 상품을 등록한다.")
 	@Test
@@ -31,16 +27,13 @@ class ProductServiceTest {
 
 		//when
 		Product savedProduct = productService.create(product);
-		//then
-		상품이_등록됨(savedProduct);
 
-		//when
-		List<Product> list = productService.list();
 		//then
-		상품목록이_조회됨(list);
+		List<Product> list = productService.list();
+		assertThat(list).contains(savedProduct);
 	}
 
-	@DisplayName("금액이 없거나 0원미만인 상품은 등록할 수 없다.")
+	@DisplayName("금액이 0원미만이거나 없는 상품은 등록할 수 없다.")
 	@Test
 	void createWithUnderZeroPrice() {
 		//given
@@ -54,15 +47,6 @@ class ProductServiceTest {
 		product.setPrice(null);
 		//when
 		상품등록이_실패함(product);
-	}
-
-	private void 상품이_등록됨(Product savedProduct) {
-		Optional<Product> actual = productDao.findById(savedProduct.getId());
-		assertThat(actual.isPresent()).isTrue();
-	}
-
-	private void 상품목록이_조회됨(List<Product> list) {
-		assertThat(list.isEmpty()).isFalse();
 	}
 
 	private void 상품등록이_실패함(Product product) {
