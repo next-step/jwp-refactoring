@@ -23,15 +23,10 @@ public class TableGroup {
     protected TableGroup() {
     }
 
-    TableGroup(final Long id, final LocalDateTime createdDate, final List<OrderTableInTableGroup> orderTables) {
+    public TableGroup(final LocalDateTime createdDate, final List<OrderTableInTableGroup> orderTables) {
         validate(orderTables);
-        this.id = id;
         this.createdDate = createdDate;
         this.orderTables = orderTables;
-    }
-
-    public TableGroup(final LocalDateTime createdDate, final List<OrderTableInTableGroup> orderTables) {
-        this(null, createdDate, orderTables);
     }
 
     public Long getId() {

@@ -16,13 +16,8 @@ public class OrderTableInTableGroup {
     protected OrderTableInTableGroup() {
     }
 
-    OrderTableInTableGroup(final Long id, final Long orderTableId) {
-        this.id = id;
-        this.orderTableId = orderTableId;
-    }
-
     public OrderTableInTableGroup(final Long orderTableId) {
-        this(null, orderTableId);
+        this.orderTableId = orderTableId;
     }
 
     public Long getOrderTableId() {

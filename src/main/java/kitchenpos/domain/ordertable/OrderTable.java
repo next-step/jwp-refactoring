@@ -18,15 +18,10 @@ public class OrderTable {
     protected OrderTable() {
     }
 
-    OrderTable(final Long id, final int numberOfGuests, final boolean empty) {
+    public OrderTable(final int numberOfGuests, final boolean empty) {
         validateCreation(numberOfGuests, empty);
-        this.id = id;
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
         this.empty = empty;
-    }
-
-    public OrderTable(final int numberOfGuests, final boolean empty) {
-        this(null, numberOfGuests, empty);
     }
 
     public void changeEmpty(final boolean empty) {
