@@ -1,16 +1,15 @@
 package kitchenpos.domain.tablegroup;
 
+import kitchenpos.ValueObjectId;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.Objects;
 
 @Entity
-public class OrderTableInTableGroup {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long seq;
-
+public class OrderTableInTableGroup extends ValueObjectId {
     private Long orderTableId;
 
     protected OrderTableInTableGroup() {
@@ -22,5 +21,25 @@ public class OrderTableInTableGroup {
 
     public Long getOrderTableId() {
         return orderTableId;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final OrderTableInTableGroup that = (OrderTableInTableGroup) o;
+        return Objects.equals(orderTableId, that.orderTableId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(orderTableId);
+    }
+
+    @Override
+    public String toString() {
+        return "OrderTableInTableGroup{" +
+                "orderTableId=" + orderTableId +
+                '}';
     }
 }

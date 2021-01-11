@@ -16,9 +16,8 @@ public class TableGroup {
 
     private LocalDateTime createdDate;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "table_group_id")
-    private List<OrderTableInTableGroup> orderTables = new ArrayList<>();
+    @Embedded
+    private OrderTableInTableGroups orderTables;
 
     protected TableGroup() {
     }
@@ -26,7 +25,7 @@ public class TableGroup {
     public TableGroup(final LocalDateTime createdDate, final List<OrderTableInTableGroup> orderTables) {
         validate(orderTables);
         this.createdDate = createdDate;
-        this.orderTables = orderTables;
+        this.orderTables = new OrderTableInTableGroups(orderTables);
     }
 
     public Long getId() {
@@ -38,7 +37,7 @@ public class TableGroup {
     }
 
     public List<OrderTableInTableGroup> getOrderTables() {
-        return orderTables;
+        return orderTables.getList();
     }
 
     private void validate(final List<OrderTableInTableGroup> orderTables) {

@@ -64,7 +64,7 @@ public class TableGroupService {
     private void validateGroup(final TableGroupRequest tableGroupRequest) {
         List<Long> orderTableIds = parseToOrderTableIds(tableGroupRequest);
 
-        if (tableGroupRepository.existsByOrderTablesOrderTableIdIn(orderTableIds)) {
+        if (tableGroupRepository.findTableGroupsInOrderTableIds(orderTableIds).size() != 0) {
             throw new InvalidTableGroupTryException("이미 단체 지정된 주문 테이블을 단체 지정할 수 없습니다.");
         }
 
