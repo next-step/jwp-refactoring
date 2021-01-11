@@ -9,7 +9,7 @@ import javax.persistence.Id;
 public class OrderTableInTableGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long seq;
 
     private Long orderTableId;
 
