@@ -195,6 +195,6 @@
 ## Step3. 양방향을 단방향
 - [X] DB 상의 FK 제약조건 제거(단방향)
 - [ ] VO 컬렉션을 통해 OneToMany 연관 관계를 값으로 처리할 수 있도록 개선
-  - [ ] Menu
-  - [ ] Order
+  - [X] Menu
+  - [X] Order
   - [ ] TableGroup
