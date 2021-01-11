@@ -2,7 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.ui.dto.menuGroup.MenuGroupRequest;
 import kitchenpos.ui.dto.menuGroup.MenuGroupResponse;
-import kitchenpos.utils.FixtureCleanup;
+import kitchenpos.utils.FixtureUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class MenuGroupServiceTest extends FixtureCleanup {
+class MenuGroupServiceTest extends FixtureUtils {
     @Autowired
     private MenuGroupService menuGroupService;
 

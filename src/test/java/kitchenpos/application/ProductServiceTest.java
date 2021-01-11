@@ -3,6 +3,7 @@ package kitchenpos.application;
 import kitchenpos.domain.product.exceptions.InvalidProductPriceException;
 import kitchenpos.ui.dto.product.ProductRequest;
 import kitchenpos.ui.dto.product.ProductResponse;
+import kitchenpos.utils.FixtureUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -21,9 +22,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@SpringBootTest
-@Transactional
-class ProductServiceTest {
+class ProductServiceTest extends FixtureUtils {
     @Autowired
     private ProductService productService;
 

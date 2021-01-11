@@ -13,6 +13,7 @@ import kitchenpos.ui.dto.order.OrderStatusChangeRequest;
 import kitchenpos.ui.dto.orderTable.ChangeEmptyRequest;
 import kitchenpos.ui.dto.orderTable.OrderTableRequest;
 import kitchenpos.ui.dto.orderTable.OrderTableResponse;
+import kitchenpos.utils.FixtureUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +26,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@SpringBootTest
-@Transactional
-class OrderServiceTest {
+class OrderServiceTest extends FixtureUtils {
     @Autowired
     private OrderService orderService;
 
@@ -38,7 +37,9 @@ class OrderServiceTest {
     @Test
     void createOrderFailWithNotEnoughOrderLineItemsTest() {
         // given
-        Long orderTableId = 1L;
+        OrderTableResponse orderTableResponse = orderTableService.create(
+                new OrderTableRequest(3, false));
+        Long orderTableId = orderTableResponse.getId();
         OrderRequest orderRequest = new OrderRequest(orderTableId, new ArrayList<>());
 
         orderTableService.changeEmpty(orderTableId, new ChangeEmptyRequest(false));
@@ -79,15 +80,15 @@ class OrderServiceTest {
 
         // when, then
         assertThatThrownBy(() -> orderService.create(orderRequest))
-                .isInstanceOf(InvalidTryOrderException.class)
-                .hasMessage("존재하지 않는 주문 테이블에서 주문할 수 없습니다.");
+                .isInstanceOf(MenuEntityNotFoundException.class)
+                .hasMessage("존재하지 않는 메뉴가 있습니다.");
     }
 
     @DisplayName("비어있는 주문 테이블에서 주문할 수 없다.")
     @Test
     void createOrderFailWithEmptyOrderTable() {
         // given
-        Long menuId = 1L;
+        Long menuId = super.createMenuFixture();
         Long quantity = 1L;
 
         OrderTableResponse emptyTable = orderTableService.create(new OrderTableRequest(0, true));
@@ -105,7 +106,7 @@ class OrderServiceTest {
     @Test
     void createOrderTest() {
         // given
-        Long menuId = 1L;
+        Long menuId = super.createMenuFixture();
         Long quantity = 1L;
 
         OrderTableResponse fullOrderTable = orderTableService.create(new OrderTableRequest(500, false));
@@ -127,7 +128,7 @@ class OrderServiceTest {
     @Test
     void getOrdersTest() {
         // given
-        Long menuId = 1L;
+        Long menuId = super.createMenuFixture();
         Long quantity = 1L;
 
         OrderTableResponse fullOrderTable = orderTableService.create(new OrderTableRequest(500, false));
@@ -164,7 +165,7 @@ class OrderServiceTest {
     @Test
     void changeOrderStatusTest() {
         // given
-        Long menuId = 1L;
+        Long menuId = super.createMenuFixture();
         Long quantity = 1L;
 
         OrderTableResponse fullOrderTable = orderTableService.create(new OrderTableRequest(500, false));
@@ -187,7 +188,7 @@ class OrderServiceTest {
     @Test
     void changeOrderStatusFailWithInvalidOrderStatus() {
         // given
-        Long menuId = 1L;
+        Long menuId = super.createMenuFixture();
         Long quantity = 1L;
 
         OrderTableResponse fullOrderTable = orderTableService.create(new OrderTableRequest(500, false));

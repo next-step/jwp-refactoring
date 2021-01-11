@@ -14,28 +14,19 @@ import kitchenpos.ui.dto.orderTable.OrderTableResponse;
 import kitchenpos.ui.dto.tableGroup.OrderTableInTableGroupRequest;
 import kitchenpos.ui.dto.tableGroup.TableGroupRequest;
 import kitchenpos.ui.dto.tableGroup.TableGroupResponse;
+import kitchenpos.utils.FixtureUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@SpringBootTest
-@Transactional
-public class TableGroupServiceTest {
+public class TableGroupServiceTest extends FixtureUtils {
     @Autowired
     private TableGroupService tableGroupService;
 
@@ -61,23 +52,18 @@ public class TableGroupServiceTest {
         fullOrderTableRequest2 = new OrderTableRequest(500, false);
     }
 
-    @DisplayName("2개 이하의 주문테이블로 단체 지정할 수 없다.")
-    @ParameterizedTest
-    @MethodSource("tableGroupFailWithEmptyTableResource")
-    void createTableGroupFailWithEmptyTable(List<OrderTableInTableGroupRequest> orderTables) {
+    @DisplayName("2개 미만의 주문테이블로 단체 지정할 수 없다.")
+    @Test
+    void createTableGroupFailWithEmptyTable() {
         // given
-        TableGroupRequest tableGroupRequest = new TableGroupRequest(orderTables);
+        OrderTableResponse orderTableResponse = orderTableService.create(emptyOrderTableRequest1);
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(
+                Collections.singletonList(new OrderTableInTableGroupRequest(orderTableResponse.getId())));
 
         // when, then
         assertThatThrownBy(() -> tableGroupService.group(tableGroupRequest))
                 .isInstanceOf(InvalidTableGroupTryException.class)
                 .hasMessage("2개 미만의 주문 테이블로 단체 지정할 수 없다.");
-    }
-    public static Stream<Arguments> tableGroupFailWithEmptyTableResource() {
-        return Stream.of(
-                Arguments.of(new ArrayList<>()),
-                Arguments.of(Collections.singletonList(new OrderTableInTableGroupRequest(1L)))
-        );
     }
 
     @DisplayName("존재하지 않는 주문 테이블들로 단체 지정할 수 없다.")
@@ -140,9 +126,7 @@ public class TableGroupServiceTest {
 
         // then
         assertThat(tableGroupResponse.getCreatedDate()).isNotNull();
-        tableGroupResponse.getOrderTables().forEach(it -> {
-            assertThat(it.getId()).isNotNull();
-        });
+        tableGroupResponse.getOrderTables().forEach(it -> assertThat(it.getId()).isNotNull());
     }
 
     @DisplayName("이미 단체 지정된 주문 테이블들로 단체 지정할 수 없다.")
@@ -174,6 +158,8 @@ public class TableGroupServiceTest {
     @Test
     void unGroupFailWithInvalidOrderStatus() {
         // given
+        Long menuId = super.createMenuFixture();
+
         OrderTableResponse orderTable1Response = orderTableService.create(emptyOrderTableRequest1);
         OrderTable orderTable1 = orderTableService.findOrderTable(orderTable1Response.getId());
 
@@ -188,10 +174,10 @@ public class TableGroupServiceTest {
         TableGroupResponse tableGroupResponse = tableGroupService.group(tableGroupRequest);
 
         OrderRequest orderRequest1 = new OrderRequest(
-                orderTable1.getId(), Collections.singletonList(new OrderLineItemRequest(1L, 1L)));
+                orderTable1.getId(), Collections.singletonList(new OrderLineItemRequest(menuId, 1L)));
         orderService.create(orderRequest1);
         OrderRequest orderRequest2 = new OrderRequest(
-                orderTable2.getId(), Collections.singletonList(new OrderLineItemRequest(1L, 1L)));
+                orderTable2.getId(), Collections.singletonList(new OrderLineItemRequest(menuId, 1L)));
         orderService.create(orderRequest2);
 
         // when, then
@@ -204,6 +190,8 @@ public class TableGroupServiceTest {
     @Test
     void unGroupTest() {
         // given
+        Long menuId = super.createMenuFixture();
+
         OrderTableResponse orderTable1Response = orderTableService.create(emptyOrderTableRequest1);
         OrderTable orderTable1 = orderTableService.findOrderTable(orderTable1Response.getId());
 
@@ -219,10 +207,10 @@ public class TableGroupServiceTest {
         assertThat(tableGroupRepository.existsById(tableGroupResponse.getId())).isTrue();
 
         OrderRequest orderRequest1 = new OrderRequest(
-                orderTable1.getId(), Collections.singletonList(new OrderLineItemRequest(1L, 1L)));
+                orderTable1.getId(), Collections.singletonList(new OrderLineItemRequest(menuId, 1L)));
         OrderResponse orderResponse1 = orderService.create(orderRequest1);
         OrderRequest orderRequest2 = new OrderRequest(
-                orderTable2.getId(), Collections.singletonList(new OrderLineItemRequest(1L, 1L)));
+                orderTable2.getId(), Collections.singletonList(new OrderLineItemRequest(menuId, 1L)));
         OrderResponse orderResponse2 = orderService.create(orderRequest2);
 
         OrderStatusChangeRequest orderStatusChangeRequest = new OrderStatusChangeRequest(OrderStatus.COMPLETION.name());

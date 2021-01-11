@@ -188,6 +188,6 @@
 - [X] 리팩토링 다 하고 나서 OrderTable API 응답 시 TableGroupId도 보이도록 기능 개선
 
 ## Step2. 피드백 반영
-- [ ] Service 테스트에서 Transactional 대신 DB 초기화 사용해보기
+- [X] Service 테스트에서 Transactional 대신 DB 초기화 사용해보기
 - [ ] 패키지명 컨벤션 지키기
 - [ ] ID 할당 생성자 제거하기 (stub 안쓰기 때문에 필요 없음)
