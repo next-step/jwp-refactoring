@@ -19,14 +19,13 @@ public class MenuProduct {
     protected MenuProduct() {
     }
 
-    MenuProduct(final Long seq,final Long productId, final long quantity) {
-        this.seq = seq;
+    MenuProduct(final Long productId, final long quantity) {
         this.productId = productId;
         this.quantity = quantity;
     }
 
     public static MenuProduct of(final Long productId, final Long quantity) {
-        return new MenuProduct(null, productId, quantity);
+        return new MenuProduct(productId, quantity);
     }
 
     public BigDecimal calculateTotalPrice(final BigDecimal productPrice) {
