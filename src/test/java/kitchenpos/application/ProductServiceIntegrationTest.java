@@ -42,6 +42,6 @@ class ProductServiceIntegrationTest {
 
         assertThat(list)
                 .extracting("name")
-                .containsExactly("후라이드", "양념치킨", "반반치킨", "통구이", "간장치킨", "순살치킨");
+                .containsExactly("후라이드치킨", "양념치킨", "반반치킨", "통구이", "간장치킨", "순살치킨");
     }
 }
