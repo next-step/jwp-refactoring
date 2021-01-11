@@ -1,62 +1,51 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.domain.MenuGroup;
-import org.junit.jupiter.api.BeforeEach;
+import kitchenpos.ui.dto.menuGroup.MenuGroupRequest;
+import kitchenpos.ui.dto.menuGroup.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+@Transactional
 class MenuGroupServiceTest {
+    @Autowired
     private MenuGroupService menuGroupService;
-
-    @Mock
-    private MenuGroupDao menuGroupDao;
-
-    @BeforeEach
-    void setup() {
-        menuGroupService = new MenuGroupService(menuGroupDao);
-    }
 
     @DisplayName("메뉴 그룹을 등록할 수 있다.")
     @Test
     void createMenuGroupTest() {
         // given
-        Long menuGroupId = 1L;
-        MenuGroup menuGroup = new MenuGroup();
-        MenuGroup savedMenuGroup = new MenuGroup();
-        savedMenuGroup.setId(menuGroupId);
-        given(menuGroupDao.save(any())).willReturn(savedMenuGroup);
+        MenuGroupRequest menuGroupRequest = new MenuGroupRequest("testMenuGroup");
 
         // when
-        MenuGroup saved = menuGroupService.create(menuGroup);
+        MenuGroupResponse response = menuGroupService.create(menuGroupRequest);
 
         // then
-        assertThat(saved.getId()).isEqualTo(menuGroupId);
+        assertThat(response.getId()).isNotNull();
     }
 
     @DisplayName("메뉴 그룹 목록을 조회할 수 있다.")
     @Test
     void getMenuGroupsTest() {
         // given
-        MenuGroup menuGroup1 = new MenuGroup();
-        MenuGroup menuGroup2 = new MenuGroup();
-        given(menuGroupDao.findAll()).willReturn(Arrays.asList(menuGroup1, menuGroup2));
+        MenuGroupRequest menuGroupRequest = new MenuGroupRequest("testMenuGroup");
+        menuGroupService.create(menuGroupRequest);
 
         // when
-        List<MenuGroup> foundMenuGroups = menuGroupService.list();
+        List<MenuGroupResponse> foundMenuGroups = menuGroupService.list();
+        List<String> names = foundMenuGroups.stream()
+                .map(MenuGroupResponse::getName)
+                .collect(Collectors.toList());
 
         // then
-        assertThat(foundMenuGroups).contains(menuGroup1, menuGroup2);
+        assertThat(names).contains(menuGroupRequest.getName());
     }
 }

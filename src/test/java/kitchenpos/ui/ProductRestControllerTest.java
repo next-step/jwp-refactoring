@@ -2,8 +2,8 @@ package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.ProductService;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.Product;
+import kitchenpos.ui.dto.product.ProductRequest;
+import kitchenpos.ui.dto.product.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -46,17 +47,19 @@ class ProductRestControllerTest {
     void createProductsTest() throws Exception {
         // given
         String url = "/api/products";
-        Product productRequest = new Product();
-        Product savedProduct = new Product();
-        savedProduct.setId(1L);
-        given(productService.create(any())).willReturn(savedProduct);
+        String name = "new product";
+        BigDecimal price = BigDecimal.ONE;
+        ProductRequest productRequest = new ProductRequest(name, price);
+
+        ProductResponse productResponse = new ProductResponse(1L, name, price);
+        given(productService.create(productRequest)).willReturn(productResponse);
 
         // when, then
         mockMvc.perform(post(url)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(productRequest)))
                 .andExpect(status().isCreated())
-                .andExpect(header().string("Location", url + "/" + savedProduct.getId()))
+                .andExpect(header().string("Location", url + "/" + productResponse.getId()))
         ;
     }
 
@@ -66,7 +69,9 @@ class ProductRestControllerTest {
         // given
         String url = "/api/products";
 
-        given(productService.list()).willReturn(Arrays.asList(new Product(), new Product()));
+        ProductResponse productResponse1 = new ProductResponse(1L, "test1", BigDecimal.ONE);
+        ProductResponse productResponse2 = new ProductResponse(2L, "test2", BigDecimal.TEN);
+        given(productService.list()).willReturn(Arrays.asList(productResponse1, productResponse2));
 
         // when, then
         mockMvc.perform(get(url))

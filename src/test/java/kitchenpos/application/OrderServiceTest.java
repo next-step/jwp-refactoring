@@ -1,197 +1,209 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import org.junit.jupiter.api.BeforeEach;
+import kitchenpos.domain.order.OrderStatus;
+import kitchenpos.domain.orderTable.exceptions.OrderTableEntityNotFoundException;
+import kitchenpos.domain.order.exceptions.InvalidTryChangeOrderStatusException;
+import kitchenpos.domain.order.exceptions.InvalidTryOrderException;
+import kitchenpos.domain.order.exceptions.MenuEntityNotFoundException;
+import kitchenpos.domain.order.exceptions.OrderEntityNotFoundException;
+import kitchenpos.ui.dto.order.OrderLineItemRequest;
+import kitchenpos.ui.dto.order.OrderRequest;
+import kitchenpos.ui.dto.order.OrderResponse;
+import kitchenpos.ui.dto.order.OrderStatusChangeRequest;
+import kitchenpos.ui.dto.orderTable.ChangeEmptyRequest;
+import kitchenpos.ui.dto.orderTable.OrderTableRequest;
+import kitchenpos.ui.dto.orderTable.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+@Transactional
 class OrderServiceTest {
+    @Autowired
     private OrderService orderService;
 
-    @Mock
-    private MenuDao menuDao;
-
-    @Mock
-    private OrderDao orderDao;
-
-    @Mock
-    private OrderLineItemDao orderLineItemDao;
-
-    @Mock
-    private OrderTableDao orderTableDao;
-
-    private Order newOrderRequest;
-    private Order changeToCompleteRequest;
-    private Order savedOrder;
-    private OrderLineItem orderLineItem;
-    private List<OrderLineItem> orderLineItems;
-    private OrderTable emptyOrderTable;
-    private OrderTable fullOrderTable;
-
-    @BeforeEach
-    void setup() {
-        this.orderService = new OrderService(menuDao, orderDao, orderLineItemDao, orderTableDao);
-
-        orderLineItem = new OrderLineItem();
-        orderLineItems = Collections.singletonList(orderLineItem);
-
-        emptyOrderTable = new OrderTable();
-        emptyOrderTable.setEmpty(true);
-        fullOrderTable = new OrderTable();
-        fullOrderTable.setEmpty(false);
-        fullOrderTable.setId(1L);
-
-        newOrderRequest = new Order();
-        newOrderRequest.setOrderTableId(1L);
-        newOrderRequest.setOrderLineItems(orderLineItems);
-
-        changeToCompleteRequest = new Order();
-        changeToCompleteRequest.setOrderStatus(OrderStatus.COMPLETION.name());
-
-        savedOrder = new Order();
-        savedOrder.setId(1L);
-        savedOrder.setOrderStatus(OrderStatus.COOKING.name());
-        savedOrder.setOrderTableId(fullOrderTable.getId());
-        savedOrder.setOrderedTime(LocalDateTime.now());
-    }
+    @Autowired
+    private OrderTableService orderTableService;
 
     @DisplayName("1개 미만의 주문 항목으로 주문할 수 없다.")
     @Test
     void createOrderFailWithNotEnoughOrderLineItemsTest() {
         // given
-        Order orderRequest = new Order();
-        orderRequest.setOrderLineItems(new ArrayList<>());
+        Long orderTableId = 1L;
+        OrderRequest orderRequest = new OrderRequest(orderTableId, new ArrayList<>());
+
+        orderTableService.changeEmpty(orderTableId, new ChangeEmptyRequest(false));
 
         // when, then
-        assertThatThrownBy(() -> orderService.create(orderRequest)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(orderRequest))
+                .isInstanceOf(InvalidTryOrderException.class)
+                .hasMessage("주문하기 위해서는 1개 이상의 주문 항목이 필요합니다.");
     }
 
     @DisplayName("메뉴에 없는 주문 항목으로 주문할 수 없다.")
     @Test
     void createOrderFailWithNotExistMenuTest() {
         // given
-        given(menuDao.countByIdIn(any())).willReturn(100L);
+        Long orderTableId = 1L;
+        Long notExistMenuId = 10000L;
+        Long quantity = 1L;
+
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(notExistMenuId, quantity);
+        OrderRequest orderRequest = new OrderRequest(orderTableId, Collections.singletonList(orderLineItemRequest));
 
         // when, then
-        assertThatThrownBy(() -> orderService.create(newOrderRequest)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(orderRequest))
+                .isInstanceOf(MenuEntityNotFoundException.class)
+                .hasMessage("존재하지 않는 메뉴가 있습니다.");
     }
 
     @DisplayName("존재하지 않는 주문테이블에서 주문할 수 없다.")
     @Test
     void createOrderFailWithNotExistOrderTableTest() {
         // given
-        given(menuDao.countByIdIn(any())).willReturn((long) orderLineItems.size());
+        Long menuId = 1L;
+        Long quantity = 1L;
+        Long notExistOrderTableId = 100000L;
+
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menuId, quantity);
+        OrderRequest orderRequest = new OrderRequest(notExistOrderTableId, Collections.singletonList(orderLineItemRequest));
 
         // when, then
-        assertThatThrownBy(() -> orderService.create(newOrderRequest)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(orderRequest))
+                .isInstanceOf(InvalidTryOrderException.class)
+                .hasMessage("존재하지 않는 주문 테이블에서 주문할 수 없습니다.");
     }
 
     @DisplayName("비어있는 주문 테이블에서 주문할 수 없다.")
     @Test
     void createOrderFailWithEmptyOrderTable() {
         // given
-        given(menuDao.countByIdIn(any())).willReturn((long) orderLineItems.size());
-        given(orderTableDao.findById(newOrderRequest.getOrderTableId())).willReturn(Optional.of(emptyOrderTable));
+        Long menuId = 1L;
+        Long quantity = 1L;
+
+        OrderTableResponse emptyTable = orderTableService.create(new OrderTableRequest(0, true));
+
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menuId, quantity);
+        OrderRequest orderRequest = new OrderRequest(emptyTable.getId(), Collections.singletonList(orderLineItemRequest));
 
         // when, then
-        assertThatThrownBy(() -> orderService.create(newOrderRequest)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(orderRequest))
+                .isInstanceOf(InvalidTryOrderException.class)
+                .hasMessage("비어있는 주문 테이블에서 주문할 수 없습니다.");
     }
 
     @DisplayName("주문할 수 있다.")
     @Test
     void createOrderTest() {
         // given
-        given(menuDao.countByIdIn(any())).willReturn((long) orderLineItems.size());
-        given(orderTableDao.findById(newOrderRequest.getOrderTableId())).willReturn(Optional.of(fullOrderTable));
-        given(orderDao.save(newOrderRequest)).willReturn(savedOrder);
-        given(orderLineItemDao.save(any())).willReturn(orderLineItem);
+        Long menuId = 1L;
+        Long quantity = 1L;
+
+        OrderTableResponse fullOrderTable = orderTableService.create(new OrderTableRequest(500, false));
+
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menuId, quantity);
+        OrderRequest orderRequest = new OrderRequest(fullOrderTable.getId(), Collections.singletonList(orderLineItemRequest));
 
         // when
-        Order order = orderService.create(newOrderRequest);
+        OrderResponse orderResponse = orderService.create(orderRequest);
 
         // then
-        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
-        assertThat(order.getOrderTableId()).isEqualTo(fullOrderTable.getId());
-        assertThat(order.getOrderedTime()).isNotNull();
-        assertThat(order.getOrderLineItems()).hasSize(1);
+        assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(orderResponse.getOrderTableId()).isEqualTo(fullOrderTable.getId());
+        assertThat(orderResponse.getOrderedTime()).isNotNull();
+        assertThat(orderResponse.getOrderLineItems()).hasSize(1);
     }
 
     @DisplayName("주문 목록을 조회할 수 있다.")
     @Test
     void getOrdersTest() {
         // given
-        given(orderDao.findAll()).willReturn(Collections.singletonList(savedOrder));
-        given(orderLineItemDao.findAllByOrderId(savedOrder.getId()))
-                .willReturn(Collections.singletonList(orderLineItem));
+        Long menuId = 1L;
+        Long quantity = 1L;
+
+        OrderTableResponse fullOrderTable = orderTableService.create(new OrderTableRequest(500, false));
+
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menuId, quantity);
+        OrderRequest orderRequest = new OrderRequest(fullOrderTable.getId(), Collections.singletonList(orderLineItemRequest));
+
+        OrderResponse orderResponse = orderService.create(orderRequest);
 
         // when
-        List<Order> orders = orderService.list();
+        List<OrderResponse> orders = orderService.list();
+        Stream<Long> ids = orders.stream()
+                .map(OrderResponse::getId);
 
         // then
-        assertThat(orders).hasSize(1);
-        assertThat(orders.get(0).getOrderLineItems()).hasSize(1);
+        assertThat(ids).contains(orderResponse.getId());
     }
 
     @DisplayName("존재하지 않는 주문의 주문 상태를 바꿀 수 없다.")
     @Test
     void changeOrderStatusFailWithNotExistOrderTest() {
         // given
-        Long targetId = 1L;
-        given(orderDao.findById(targetId)).willThrow(new IllegalArgumentException());
+        Long notExistOrder = 1L;
+
+        OrderStatusChangeRequest changeOrderRequest = new OrderStatusChangeRequest(OrderStatus.MEAL.name());
 
         // when, then
-        assertThatThrownBy(() -> orderService.changeOrderStatus(targetId, changeToCompleteRequest))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("주문 상태가 계산 완료인 주문의 주문 상태를 바꿀 수 없다.")
-    @Test
-    void changeOrderStatusFailWithInvalidOrderStatus() {
-        // given
-        Order completeOrder = new Order();
-        completeOrder.setOrderStatus(OrderStatus.COMPLETION.name());
-        Long targetId = 1L;
-
-        given(orderDao.findById(targetId)).willReturn(Optional.of(completeOrder));
-
-        // when, then
-        assertThatThrownBy(() -> orderService.changeOrderStatus(targetId, changeToCompleteRequest))
-                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.changeOrderStatus(notExistOrder, changeOrderRequest))
+                .isInstanceOf(OrderEntityNotFoundException.class)
+                .hasMessage("존재하지 않는 주문입니다.");
     }
 
     @DisplayName("주문의 주문 상태를 바꿀 수 있다.")
     @Test
     void changeOrderStatusTest() {
         // given
-        Order completeOrder = new Order();
-        completeOrder.setOrderStatus(OrderStatus.MEAL.name());
-        Long targetId = 1L;
+        Long menuId = 1L;
+        Long quantity = 1L;
 
-        given(orderDao.findById(targetId)).willReturn(Optional.of(completeOrder));
+        OrderTableResponse fullOrderTable = orderTableService.create(new OrderTableRequest(500, false));
+
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menuId, quantity);
+        OrderRequest orderRequest = new OrderRequest(fullOrderTable.getId(), Collections.singletonList(orderLineItemRequest));
+
+        OrderResponse created = orderService.create(orderRequest);
+
+        OrderStatusChangeRequest changeOrderRequest = new OrderStatusChangeRequest(OrderStatus.COMPLETION.name());
 
         // when
-        Order changedOrder = orderService.changeOrderStatus(targetId, changeToCompleteRequest);
+        OrderResponse orderResponse = orderService.changeOrderStatus(created.getId(), changeOrderRequest);
 
         // then
-        assertThat(changedOrder.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
+        assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
+    }
+
+    @DisplayName("주문 상태가 계산 완료인 주문의 주문 상태를 바꿀 수 없다.")
+    @Test
+    void changeOrderStatusFailWithInvalidOrderStatus() {
+        // given
+        Long menuId = 1L;
+        Long quantity = 1L;
+
+        OrderTableResponse fullOrderTable = orderTableService.create(new OrderTableRequest(500, false));
+
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menuId, quantity);
+        OrderRequest orderRequest = new OrderRequest(fullOrderTable.getId(), Collections.singletonList(orderLineItemRequest));
+
+        OrderResponse orderResponse = orderService.create(orderRequest);
+
+        OrderStatusChangeRequest changeOrderRequest = new OrderStatusChangeRequest(OrderStatus.COMPLETION.name());
+
+        orderService.changeOrderStatus(orderResponse.getId(), changeOrderRequest);
+
+        // when, then
+        assertThatThrownBy(() -> orderService.changeOrderStatus(orderResponse.getId(), changeOrderRequest))
+                .isInstanceOf(InvalidTryChangeOrderStatusException.class)
+                .hasMessage("계산 완료된 주문의 상태를 바꿀 수 없습니다.");
     }
 }

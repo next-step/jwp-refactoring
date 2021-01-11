@@ -1,39 +1,31 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
-import org.junit.jupiter.api.BeforeEach;
+import kitchenpos.domain.product.exceptions.InvalidProductPriceException;
+import kitchenpos.ui.dto.product.ProductRequest;
+import kitchenpos.ui.dto.product.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.BDDMockito.given;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+@Transactional
 class ProductServiceTest {
+    @Autowired
     private ProductService productService;
-
-    @Mock
-    private ProductDao productDao;
-
-    @BeforeEach
-    void setup() {
-        productService = new ProductService(productDao);
-    }
 
     @DisplayName("요청한 상품의 가격이 null이거나 0원 미만인 경우 상품을 등록할 수 없다.")
     @ParameterizedTest
@@ -41,11 +33,13 @@ class ProductServiceTest {
     @MethodSource("createProductFailTestResource")
     void createProductFailTest(BigDecimal invalidPrice) {
         // given
-        Product product = new Product();
-        product.setPrice(invalidPrice);
+        String name = "new product";
+        ProductRequest productRequest = new ProductRequest(name, invalidPrice);
 
         // when, then
-        assertThatThrownBy(() -> productService.create(product)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> productService.create(productRequest))
+                .isInstanceOf(InvalidProductPriceException.class)
+                .hasMessage("상품의 가격은 반드시 있어야 하며, 0원 이상이어야 합니다.");
     }
     public static Stream<Arguments> createProductFailTestResource() {
         return Stream.of(
@@ -60,38 +54,32 @@ class ProductServiceTest {
     void createProductTest(Long price) {
         // given
         String productName = "닭강정";
-        Long productId = 1L;
-        Product product = new Product();
-        product.setName(productName);
-        product.setPrice(BigDecimal.valueOf(price));
 
-        Product saved = new Product();
-        saved.setId(productId);
-        saved.setName(productName);
-        saved.setPrice(BigDecimal.valueOf(price));
-
-        given(productDao.save(product)).willReturn(saved);
+        ProductRequest productRequest = new ProductRequest(productName, BigDecimal.valueOf(price));
 
         // when
-        Product created = productService.create(product);
+        ProductResponse created = productService.create(productRequest);
 
         // then
-        assertThat(created.getId()).isEqualTo(productId);
+        assertThat(created.getId()).isNotNull();
     }
 
     @DisplayName("상품 목록을 조회할 수 있다.")
     @Test
     void getProductsTest() {
         // given
-        Product product1 = new Product();
-        Product product2 = new Product();
-        List<Product> products = Arrays.asList(product1, product2);
-        given(productDao.findAll()).willReturn(products);
+        String productName = "닭강정";
+
+        ProductRequest productRequest = new ProductRequest(productName, BigDecimal.ONE);
+
+        ProductResponse saved = productService.create(productRequest);
 
         // when
-        List<Product> foundProducts = productService.list();
+        List<ProductResponse> foundProducts = productService.list();
+        Stream<Long> ids = foundProducts.stream()
+                .map(ProductResponse::getId);
 
         // then
-        assertThat(foundProducts).contains(product1, product2);
+        assertThat(ids).contains(saved.getId());
     }
 }

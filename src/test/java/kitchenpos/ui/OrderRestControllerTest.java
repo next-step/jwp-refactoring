@@ -1,11 +1,13 @@
 package kitchenpos.ui;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.OrderService;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.domain.order.Order;
+import kitchenpos.domain.order.OrderStatus;
+import kitchenpos.ui.dto.order.OrderLineItemRequest;
+import kitchenpos.ui.dto.order.OrderRequest;
+import kitchenpos.ui.dto.order.OrderResponse;
+import kitchenpos.ui.dto.order.OrderStatusChangeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +18,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -47,18 +52,21 @@ class OrderRestControllerTest {
     @Test
     void createOrderTest() throws Exception {
         // given
+        Long orderId = 1L;
         String url = "/api/orders";
-        Order orderRequest = new Order();
-        Order savedOrder = new Order();
-        savedOrder.setId(1L);
-        given(orderService.create(any())).willReturn(savedOrder);
+        OrderRequest orderRequest = new OrderRequest(
+                1L, Collections.singletonList(new OrderLineItemRequest(1L, 1L)));
+        OrderResponse orderResponse = new OrderResponse(orderId, 1L, OrderStatus.MEAL.name(),
+                LocalDateTime.now(), new ArrayList<>());
+
+        given(orderService.create(any())).willReturn(orderResponse);
 
         // when, then
         mockMvc.perform(post(url)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(orderRequest)))
                 .andExpect(status().isCreated())
-                .andExpect(header().string("Location", url + "/" + savedOrder.getId()))
+                .andExpect(header().string("Location", url + "/" + orderResponse.getId()))
                 ;
     }
 
@@ -67,8 +75,12 @@ class OrderRestControllerTest {
     void getOrdersTest() throws Exception {
         // given
         String url = "/api/orders";
+        OrderResponse orderResponse1 = new OrderResponse(1L, 1L, OrderStatus.MEAL.name(),
+                LocalDateTime.now(), new ArrayList<>());
+        OrderResponse orderResponse2 = new OrderResponse(2L, 1L, OrderStatus.MEAL.name(),
+                LocalDateTime.now(), new ArrayList<>());
 
-        given(orderService.list()).willReturn(Arrays.asList(new Order(), new Order()));
+        given(orderService.list()).willReturn(Arrays.asList(orderResponse1, orderResponse2));
 
         // when, then
         mockMvc.perform(get(url))
@@ -83,15 +95,14 @@ class OrderRestControllerTest {
         // given
         Long targetId = 1L;
         String url = "/api/orders/"+ targetId +"/order-status";
+        OrderStatus changeStatus = OrderStatus.MEAL;
 
-        Order changeOrderRequest = new Order();
-        changeOrderRequest.setOrderStatus(OrderStatus.MEAL.name());
+        OrderStatusChangeRequest changeOrderRequest = new OrderStatusChangeRequest(changeStatus.name());
 
-        Order changedOrder = new Order();
-        changedOrder.setId(targetId);
-        changedOrder.setOrderStatus(OrderStatus.MEAL.name());
+        OrderResponse orderResponse = new OrderResponse(1L, 1L, changeStatus.name(),
+                LocalDateTime.now(), new ArrayList<>());
 
-        given(orderService.changeOrderStatus(eq(targetId), any())).willReturn(changedOrder);
+        given(orderService.changeOrderStatus(eq(targetId), any())).willReturn(orderResponse);
 
         // when, then
         mockMvc.perform(put(url)

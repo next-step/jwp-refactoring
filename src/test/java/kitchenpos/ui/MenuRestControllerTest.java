@@ -2,8 +2,9 @@ package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.MenuService;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.ui.dto.menu.MenuProductRequest;
+import kitchenpos.ui.dto.menu.MenuRequest;
+import kitchenpos.ui.dto.menu.MenuResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.Arrays;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
@@ -47,17 +51,23 @@ public class MenuRestControllerTest {
     void createMenuTest() throws Exception {
         // given
         String url = "/api/menus";
-        Menu menuRequest = new Menu();
-        Menu savedMenu = new Menu();
-        savedMenu.setId(1L);
-        given(menuService.create(any())).willReturn(savedMenu);
+        String menuName = "new menu";
+        BigDecimal menuPrice = BigDecimal.ONE;
+        Long menuGroupId = 1L;
+        Long menuId = 1L;
+
+        List<MenuProductRequest> menuProductRequests = Collections.singletonList(MenuProductRequest.of(1L, 1L));
+        MenuRequest menuRequest = MenuRequest.of(menuName, menuPrice, menuGroupId, menuProductRequests);
+
+        given(menuService.create(any()))
+                .willReturn(MenuResponse.of(menuId, menuName, menuPrice, menuGroupId, new ArrayList<>()));
 
         // when, then
         mockMvc.perform(post(url)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(menuRequest)))
                 .andExpect(status().isCreated())
-                .andExpect(header().string("Location", url + "/" + savedMenu.getId()))
+                .andExpect(header().string("Location", url + "/" + menuId))
         ;
     }
 
@@ -66,13 +76,19 @@ public class MenuRestControllerTest {
     void getMenusTest() throws Exception {
         // given
         String url = "/api/menus";
+        String menuName = "menu";
+        BigDecimal menuPrice = BigDecimal.ONE;
+        Long menuGroupId = 1L;
+        Long menuId = 1L;
 
-        given(menuService.list()).willReturn(Arrays.asList(new Menu(), new Menu()));
+        MenuResponse menuResponse = MenuResponse.of(menuId, menuName, menuPrice, menuGroupId, new ArrayList<>());
+
+        given(menuService.list()).willReturn(Collections.singletonList(menuResponse));
 
         // when, then
         mockMvc.perform(get(url))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$", hasSize(1)))
         ;
     }
 }
