@@ -6,7 +6,6 @@ import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -35,13 +34,6 @@ class OrderServiceTest {
     @InjectMocks
     private OrderService orderService;
 
-    @BeforeEach
-    void setUp() {
-        orderTable = orderTable_생성(1L, tableGroup.getId(), 3);
-        orderLineItem = orderLineItem_생성(1L, menu.getId(), 2);
-        order = order_생성(1L, OrderStatus.COOKING.name(), Collections.singletonList(orderLineItem));
-    }
-
     @DisplayName("주문을 등록한다.")
     @Test
     void createOrder() {
@@ -51,22 +43,24 @@ class OrderServiceTest {
         given(orderLineItemDao.save(orderLineItem)).willReturn(orderLineItem에_orderId_추가(orderLineItem, order.getId()));
 
         Order result = orderService.create(order);
-        assertThat(result).isEqualTo(order);
+
+        assertThat(result.getOrderTableId()).isEqualTo(orderTable.getId());
+        assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(result.getOrderedTime()).isNotNull();
+        assertThat(result.getOrderLineItems().get(0).getOrderId()).isEqualTo(order.getId());
     }
 
     @DisplayName("주문 항목이 하나도 없을 경우 등록할 수 없다.")
     @Test
     void createOrderException1() {
-        order.setOrderLineItems(null);
-
-        assertThatThrownBy(() -> orderService.create(order))
+        assertThatThrownBy(() -> orderService.create(주문항목이_없는_order))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("선택한 주문 항목들이 모두 등록되어 있지 않으면 등록할 수 없다.")
     @Test
     void createOrderException2() {
-        given(menuDao.countByIdIn(anyList())).willReturn((long) 2);
+        given(menuDao.countByIdIn(anyList())).willReturn((long) order.getOrderLineItems().size() + 1);
 
         assertThatThrownBy(() -> orderService.create(order))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -96,31 +90,31 @@ class OrderServiceTest {
     @DisplayName("주문 상태를 변경할 수 있다.")
     @Test
     void changeOrderStatus() {
-        given(orderDao.findById(order.getId())).willReturn(Optional.of(order));
-        given(orderDao.save(order)).willReturn(order);
-        given(orderLineItemDao.findAllByOrderId(order.getId())).willReturn(Collections.singletonList(orderLineItem));
+        given(orderDao.findById(요리중_order.getId())).willReturn(Optional.of(요리중_order));
+        given(orderDao.save(요리중_order)).willReturn(요리중_order);
+        given(orderLineItemDao.findAllByOrderId(요리중_order.getId())).willReturn(Collections.singletonList(orderLineItem));
 
-        Order result = orderService.changeOrderStatus(order.getId(), order);
+        Order result = orderService.changeOrderStatus(요리중_order.getId(), 식사_order);
 
+        assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
         assertThat(result.getOrderLineItems()).containsExactlyElementsOf(Collections.singletonList(orderLineItem));
     }
 
     @DisplayName("주문이 등록되어 있지 않으면 변경할 수 없다.")
     @Test
     void changeOrderStatusException1() {
-        given(orderDao.findById(order.getId())).willReturn(Optional.empty());
+        given(orderDao.findById(요리중_order.getId())).willReturn(Optional.empty());
 
-        assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), order))
+        assertThatThrownBy(() -> orderService.changeOrderStatus(요리중_order.getId(), 요리중_order))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문 상태가 계산 완료일 경우 변경할 수 없다.")
     @Test
     void changeOrderStatusException2() {
-        order.setOrderStatus(OrderStatus.COMPLETION.name());
-        given(orderDao.findById(order.getId())).willReturn(Optional.of(order));
+        given(orderDao.findById(요리중_order.getId())).willReturn(Optional.of(완료된_order));
 
-        assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), order))
+        assertThatThrownBy(() -> orderService.changeOrderStatus(요리중_order.getId(), 요리중_order))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }
