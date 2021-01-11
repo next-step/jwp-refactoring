@@ -23,7 +23,6 @@ public class TableGroup {
     }
 
     public TableGroup(final LocalDateTime createdDate, final List<OrderTableInTableGroup> orderTables) {
-        validate(orderTables);
         this.createdDate = createdDate;
         this.orderTables = new OrderTableInTableGroups(orderTables);
     }
@@ -38,11 +37,5 @@ public class TableGroup {
 
     public List<OrderTableInTableGroup> getOrderTables() {
         return orderTables.getList();
-    }
-
-    private void validate(final List<OrderTableInTableGroup> orderTables) {
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new InvalidTableGroupTryException("2개 미만의 주문 테이블로 단체 지정할 수 없다.");
-        }
     }
 }
