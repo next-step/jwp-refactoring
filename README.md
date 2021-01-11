@@ -190,4 +190,11 @@
 ## Step2. 피드백 반영
 - [X] Service 테스트에서 Transactional 대신 DB 초기화 사용해보기
 - [X] 패키지명 컨벤션 지키기
-- [ ] ID 할당 생성자 제거하기 (stub 안쓰기 때문에 필요 없음)
+- [X] ID 할당 생성자 제거하기 (stub 안쓰기 때문에 필요 없음)
+
+## Step3. 양방향을 단방향
+- [X] DB 상의 FK 제약조건 제거(단방향)
+- [ ] VO 컬렉션을 통해 OneToMany 연관 관계를 값으로 처리할 수 있도록 개선
+  - [ ] Menu
+  - [ ] Order
+  - [ ] TableGroup
