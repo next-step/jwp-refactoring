@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -84,7 +85,32 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         메뉴_목록_포함됨(findResponse, Arrays.asList(createResponse));
     }
 
-    private ExtractableResponse<Response> 메뉴_등록_요청(final Map<String, Object> params) {
+    public static ExtractableResponse<Response> 메뉴_등록_되어있음(final MenuGroup menuGroup, List<Product> products) {
+        List<Map<String, Object>> menuProducts = products.stream()
+                .map(product -> {
+                    Map<String, Object> request = new HashMap<>();
+                    request.put("productId", product.getId());
+                    request.put("quantity", 1);
+                    return request;
+                })
+                .collect(Collectors.toList());
+
+        BigDecimal sum = products.stream()
+                .map(Product::getPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", "신메");
+        params.put("price", sum.intValue());
+        params.put("menuGroupId", menuGroup.getId());
+        params.put("menuProducts", menuProducts);
+
+        ExtractableResponse<Response> response = 메뉴_등록_요청(params);
+        메뉴_생성됨(response);
+        return response;
+    }
+
+    public static ExtractableResponse<Response> 메뉴_등록_요청(final Map<String, Object> params) {
         return RestAssured
                 .given().log().all().body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -101,11 +127,11 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 메뉴_생성됨(final ExtractableResponse<Response> response) {
+    public static void 메뉴_생성됨(final ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    private void 메뉴_생성_실패됨(final ExtractableResponse<Response> response) {
+    public static void 메뉴_생성_실패됨(final ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 

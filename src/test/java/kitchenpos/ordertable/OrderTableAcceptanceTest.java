@@ -59,8 +59,8 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 주문_테이블_등록_되어있음(final int numberOfGuests, final boolean empty) {
         Map<String, Object> params = new HashMap<>();
-        params.put("numberOfGuests", 0);
-        params.put("empty", true);
+        params.put("numberOfGuests", numberOfGuests);
+        params.put("empty", empty);
         ExtractableResponse<Response> response = 주문_테이블_생성_요청(params);
         주문_테이블_생성됨(response);
         return response;
