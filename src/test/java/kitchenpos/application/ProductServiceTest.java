@@ -1,9 +1,11 @@
 package kitchenpos.application;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
+import kitchenpos.application.creator.ProductHelper;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,6 +22,18 @@ class ProductServiceTest {
 
     @Autowired
     private ProductService productService;
+
+    @DisplayName("상품 등록 테스트")
+    @Test
+    void productCreateTest() {
+        Product product = ProductHelper.create("Test", 10_000);
+
+        Product savedProduct = productService.create(product);
+
+        assertThat(savedProduct.getId()).isNotNull();
+        assertThat(savedProduct.getName()).isEqualTo("Test");
+        assertThat(savedProduct.getPrice().longValue()).isEqualTo(10_000L);
+    }
 
     @DisplayName("상품 등록시 가격이 0원 미만인 경우")
     @Test

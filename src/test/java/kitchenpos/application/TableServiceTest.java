@@ -1,12 +1,10 @@
 package kitchenpos.application;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
+import kitchenpos.application.creator.OrderTableHelper;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,20 +21,33 @@ class TableServiceTest {
     @Autowired
     private TableService tableService;
 
+    @DisplayName("테이블 생성 테스트")
+    @Test
+    void tableCreateTest() {
+        OrderTable savedOrderTable = tableService.create(OrderTableHelper.create(false));
+
+        assertThat(savedOrderTable.getId()).isNotNull();
+        assertThat(savedOrderTable.getNumberOfGuests()).isEqualTo(0);
+    }
+
     @DisplayName("테이블 비어있는 값으로 변경시 존재하지 않는 테이블의 경우")
     @Test
     void tableChangeEmptyWithNotCompleteStateTest() {
-        OrderTable table = new OrderTable();
-        assertThatThrownBy(() -> tableService.changeEmpty(100L, table))
+        OrderTable orderTableForChangeEmpty = new OrderTable();
+        orderTableForChangeEmpty.setEmpty(false);
+
+        assertThatThrownBy(() -> tableService.changeEmpty(999L, orderTableForChangeEmpty))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("테이블 인원수 변경시 0명인 경우")
+    @DisplayName("테이블 인원수 변경시 0명 아래인 경우")
     @Test
     void tableChangeNumberOfGuestsWithZeroTest() {
-        OrderTable table = new OrderTable();
-        table.setNumberOfGuests(0);
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(100L, table))
+        OrderTable savedOrderTable = tableService.create(OrderTableHelper.create(false));
+        OrderTable orderTableForGuestNumberChange = new OrderTable();
+        orderTableForGuestNumberChange.setNumberOfGuests(-1);
+
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(savedOrderTable.getId(), orderTableForGuestNumberChange))
                 .isInstanceOf(IllegalArgumentException.class);
 
     }
@@ -44,13 +55,11 @@ class TableServiceTest {
     @DisplayName("테이블 인원 수 변경시 테이블이 비어있는 상태의 경우")
     @Test
     void tableChangeNumberOfGuestsWithEmptyTable() {
-        OrderTable table = new OrderTable();
-        table.setId(1L);
-        table.setEmpty(true);
-        tableService.changeEmpty(1L, table);
+        OrderTable savedOrderTable = tableService.create(OrderTableHelper.create(true));
+        OrderTable orderTableForGuestNumberChange = new OrderTable();
+        orderTableForGuestNumberChange.setNumberOfGuests(0);
 
-        table.setNumberOfGuests(0);
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, table))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(savedOrderTable.getId(), orderTableForGuestNumberChange))
                 .isInstanceOf(IllegalArgumentException.class);
 
     }
