@@ -40,6 +40,14 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         상품_목록_포함됨(findResponse, Arrays.asList(createResponse));
     }
 
+    public static ExtractableResponse<Response> 상품_등록되어_있음(final String name, final String price) {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", name);
+        params.put("price", price);
+        ExtractableResponse<Response> response = 상품_생성_요청(params);
+        상품_생성됨(response);
+        return response;
+    }
 
     public static ExtractableResponse<Response> 상품_목록_조회_요청() {
         return RestAssured

@@ -39,6 +39,14 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
         메뉴_그룹_포함됨(findResponse, Arrays.asList(createResponse));
     }
 
+    public static ExtractableResponse<Response> 메뉴_그룹_등록되어_있음(final String name) {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", name);
+        ExtractableResponse<Response> response = 메뉴_그룹_등록_요청(params);
+        메뉴_그룹_생성됨(response);
+        return response;
+    }
+
     public static ExtractableResponse<Response> 메뉴_그룹_등록_요청(final Map<String, String> params) {
         return RestAssured
                 .given().log().all().body(params)
