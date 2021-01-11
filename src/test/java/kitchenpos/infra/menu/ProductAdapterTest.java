@@ -2,6 +2,7 @@ package kitchenpos.infra.menu;
 
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuProduct;
+import kitchenpos.domain.menu.ProductPrice;
 import kitchenpos.domain.menu.exceptions.InvalidMenuPriceException;
 import kitchenpos.domain.menu.exceptions.ProductEntityNotFoundException;
 import kitchenpos.domain.product.Product;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -77,5 +79,24 @@ class ProductAdapterTest {
         assertThatThrownBy(() -> productAdapter.isValidMenuPrice(menu))
                 .isInstanceOf(InvalidMenuPriceException.class)
                 .hasMessage("메뉴의 가격은 구성된 메뉴 상품들의 가격 합보다 비쌀 수 없습니다.");
+    }
+
+    @DisplayName("제시된 상품 ID들의 상품 가격들을 반환받을 수 있다.")
+    @Test
+    void getProductPricesTest() {
+        Product product1 = new Product("product1", BigDecimal.ONE);
+        Product product2 = new Product("product2", BigDecimal.TEN);
+        ReflectionTestUtils.setField(product1, "id", 1L);
+        ReflectionTestUtils.setField(product2, "id", 2L);
+        // given
+        List<Long> productIds = Arrays.asList(1L, 2L);
+        given(productRepository.findAllById(productIds)).willReturn(Arrays.asList(product1, product2));
+
+        // when
+        List<ProductPrice> productPrices = productAdapter.getProductPrices(productIds);
+
+        // then
+        assertThat(productPrices).contains(
+                new ProductPrice(1L, BigDecimal.ONE), new ProductPrice(2L, BigDecimal.TEN));
     }
 }
