@@ -1,10 +1,10 @@
 package kitchenpos.ui;
 
 import kitchenpos.application.OrderTableService;
-import kitchenpos.ui.dto.orderTable.ChangeEmptyRequest;
-import kitchenpos.ui.dto.orderTable.ChangeNumberOfGuestsRequest;
-import kitchenpos.ui.dto.orderTable.OrderTableRequest;
-import kitchenpos.ui.dto.orderTable.OrderTableResponse;
+import kitchenpos.ui.dto.ordertable.ChangeEmptyRequest;
+import kitchenpos.ui.dto.ordertable.ChangeNumberOfGuestsRequest;
+import kitchenpos.ui.dto.ordertable.OrderTableRequest;
+import kitchenpos.ui.dto.ordertable.OrderTableResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

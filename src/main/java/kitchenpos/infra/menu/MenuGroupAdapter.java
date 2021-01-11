@@ -2,7 +2,7 @@ package kitchenpos.infra.menu;
 
 import kitchenpos.domain.menu.SafeMenuGroup;
 import kitchenpos.domain.menu.exceptions.MenuGroupEntityNotFoundException;
-import kitchenpos.domain.menuGroup.MenuGroupRepository;
+import kitchenpos.domain.menugroup.MenuGroupRepository;
 import org.springframework.stereotype.Component;
 
 @Component

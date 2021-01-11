@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
-import kitchenpos.ui.dto.menuGroup.MenuGroupRequest;
-import kitchenpos.ui.dto.menuGroup.MenuGroupResponse;
+import kitchenpos.ui.dto.menugroup.MenuGroupRequest;
+import kitchenpos.ui.dto.menugroup.MenuGroupResponse;
 import kitchenpos.utils.FixtureUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,12 +1,12 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.domainEvents.GroupOrderTableEvent;
-import kitchenpos.domain.tableGroup.*;
-import kitchenpos.domain.tableGroup.exceptions.InvalidTableGroupTryException;
-import kitchenpos.domain.tableGroup.exceptions.TableGroupEntityNotFoundException;
-import kitchenpos.ui.dto.tableGroup.OrderTableInTableGroupRequest;
-import kitchenpos.ui.dto.tableGroup.TableGroupRequest;
-import kitchenpos.ui.dto.tableGroup.TableGroupResponse;
+import kitchenpos.domain.domainevents.GroupOrderTableEvent;
+import kitchenpos.domain.tablegroup.*;
+import kitchenpos.domain.tablegroup.exceptions.InvalidTableGroupTryException;
+import kitchenpos.domain.tablegroup.exceptions.TableGroupEntityNotFoundException;
+import kitchenpos.ui.dto.tablegroup.OrderTableInTableGroupRequest;
+import kitchenpos.ui.dto.tablegroup.TableGroupRequest;
+import kitchenpos.ui.dto.tablegroup.TableGroupResponse;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

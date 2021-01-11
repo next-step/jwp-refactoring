@@ -1,7 +1,6 @@
 package kitchenpos.application;
 
 import kitchenpos.domain.order.OrderStatus;
-import kitchenpos.domain.orderTable.exceptions.OrderTableEntityNotFoundException;
 import kitchenpos.domain.order.exceptions.InvalidTryChangeOrderStatusException;
 import kitchenpos.domain.order.exceptions.InvalidTryOrderException;
 import kitchenpos.domain.order.exceptions.MenuEntityNotFoundException;
@@ -10,15 +9,13 @@ import kitchenpos.ui.dto.order.OrderLineItemRequest;
 import kitchenpos.ui.dto.order.OrderRequest;
 import kitchenpos.ui.dto.order.OrderResponse;
 import kitchenpos.ui.dto.order.OrderStatusChangeRequest;
-import kitchenpos.ui.dto.orderTable.ChangeEmptyRequest;
-import kitchenpos.ui.dto.orderTable.OrderTableRequest;
-import kitchenpos.ui.dto.orderTable.OrderTableResponse;
+import kitchenpos.ui.dto.ordertable.ChangeEmptyRequest;
+import kitchenpos.ui.dto.ordertable.OrderTableRequest;
+import kitchenpos.ui.dto.ordertable.OrderTableResponse;
 import kitchenpos.utils.FixtureUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Stream;

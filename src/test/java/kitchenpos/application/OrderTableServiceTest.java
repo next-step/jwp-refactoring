@@ -1,26 +1,24 @@
 package kitchenpos.application;
 
 import kitchenpos.domain.order.OrderStatus;
-import kitchenpos.domain.orderTable.OrderTable;
-import kitchenpos.domain.orderTable.exceptions.InvalidNumberOfGuestsException;
-import kitchenpos.domain.orderTable.exceptions.InvalidTryChangeEmptyException;
-import kitchenpos.domain.orderTable.exceptions.InvalidTryChangeGuestsException;
-import kitchenpos.domain.orderTable.exceptions.OrderTableEntityNotFoundException;
+import kitchenpos.domain.ordertable.OrderTable;
+import kitchenpos.domain.ordertable.exceptions.InvalidNumberOfGuestsException;
+import kitchenpos.domain.ordertable.exceptions.InvalidTryChangeEmptyException;
+import kitchenpos.domain.ordertable.exceptions.InvalidTryChangeGuestsException;
+import kitchenpos.domain.ordertable.exceptions.OrderTableEntityNotFoundException;
 import kitchenpos.ui.dto.order.OrderLineItemRequest;
 import kitchenpos.ui.dto.order.OrderRequest;
 import kitchenpos.ui.dto.order.OrderResponse;
 import kitchenpos.ui.dto.order.OrderStatusChangeRequest;
-import kitchenpos.ui.dto.orderTable.*;
-import kitchenpos.ui.dto.tableGroup.OrderTableInTableGroupRequest;
-import kitchenpos.ui.dto.tableGroup.TableGroupRequest;
+import kitchenpos.ui.dto.ordertable.*;
+import kitchenpos.ui.dto.tablegroup.OrderTableInTableGroupRequest;
+import kitchenpos.ui.dto.tablegroup.TableGroupRequest;
 import kitchenpos.utils.FixtureUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.Collections;
