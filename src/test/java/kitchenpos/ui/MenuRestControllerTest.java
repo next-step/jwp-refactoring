@@ -54,7 +54,7 @@ class MenuRestControllerTest {
 
     @DisplayName("매뉴의 목록을 조회할 수 있다.")
     @Test
-    void name() throws Exception {
+    void getMenus() throws Exception {
         Menu 후라이드_양념 = getMenu(1L, "후라이드+양념", 30000, 1L,
                 new MenuProduct(1L, 1), new MenuProduct(2L, 1));
 

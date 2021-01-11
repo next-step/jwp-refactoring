@@ -5,14 +5,18 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest
 class MenuServiceIntegrationTest extends IntegrationTest {
@@ -33,11 +37,12 @@ class MenuServiceIntegrationTest extends IntegrationTest {
 
     @DisplayName("메뉴의 가격이 올바르지 않으면 등록할 수 없다.")
     @Test
-    void name() {
-        assertThatThrownBy(() -> {
-            Menu 후라이드_양념 = getMenu("후라이드+양념", -1, new MenuProduct(1L, 1), new MenuProduct(2L, 1));
-            menuService.create(후라이드_양념);
-        }).isInstanceOf(IllegalArgumentException.class);
+    void isNotCollectMenuPrice() {
+        assertAll(
+                () -> assertThatThrownBy(() -> menuService.create(getMenu("후라이드+양념", -1, new MenuProduct(1L, 1))))
+                        .isInstanceOf(IllegalArgumentException.class),
+                () -> assertThatThrownBy(() -> menuService.create(new Menu("후라이드+간장", null, 1L, new ArrayList())))
+                        .isInstanceOf(IllegalArgumentException.class));
     }
 
     @DisplayName("메뉴의 가격이 메뉴의 상품 가격 * 수량보다 작아야 한다.")

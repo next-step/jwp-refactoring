@@ -1,6 +1,8 @@
 package kitchenpos.application;
 
 import kitchenpos.IntegrationTest;
+import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,10 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest
 class ProductServiceIntegrationTest extends IntegrationTest {
@@ -28,13 +32,15 @@ class ProductServiceIntegrationTest extends IntegrationTest {
         assertThat(product.getPrice()).isEqualTo(new BigDecimal("17000.00"));
     }
 
-    @DisplayName("상품 가격은 0원 이상이어야 한다.")
+    @DisplayName("상품 가격은 0원 이상이거나 null이 아니어야 한다.")
     @Test
-    void productPriceGraterThanZero() {
-        assertThatThrownBy(()-> productService.create(new Product("치킨", new BigDecimal(-1))))
-                .isInstanceOf(IllegalArgumentException.class);
+    void isNotCollectProductPrice() {
+        assertAll(
+                () -> assertThatThrownBy(() -> productService.create(new Product("치킨", new BigDecimal(-1))))
+                        .isInstanceOf(IllegalArgumentException.class),
+                () -> assertThatThrownBy(() -> productService.create(new Product("치킨", null)))
+                        .isInstanceOf(IllegalArgumentException.class));
     }
-
 
     @DisplayName("상품의 목록을 조회할 수 있다.")
     @Test
