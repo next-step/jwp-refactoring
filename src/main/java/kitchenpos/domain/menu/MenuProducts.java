@@ -6,7 +6,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Embeddable
 public class MenuProducts {
@@ -23,11 +22,5 @@ public class MenuProducts {
 
     public List<MenuProduct> getList() {
         return new ArrayList<>(menuProducts);
-    }
-
-    public List<Long> getProductIds() {
-        return this.menuProducts.stream()
-                .map(MenuProduct::getProductId)
-                .collect(Collectors.toList());
     }
 }

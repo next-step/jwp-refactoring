@@ -58,8 +58,4 @@ public class Menu {
     public List<MenuProduct> getMenuProducts() {
         return menuProducts.getList();
     }
-
-    public List<Long> getProductIds() {
-        return this.menuProducts.getProductIds();
-    }
 }

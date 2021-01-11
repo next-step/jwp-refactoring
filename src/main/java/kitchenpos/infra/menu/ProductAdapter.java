@@ -45,12 +45,4 @@ public class ProductAdapter implements SafeProduct {
         BigDecimal productPrice = this.getProductPrice(menuProduct.getProductId());
         return menuProduct.calculateTotalPrice(productPrice);
     }
-
-    public List<ProductPrice> getProductPrices(final List<Long> productIds) {
-        List<Product> products = productRepository.findAllById(productIds);
-
-        return products.stream()
-                .map(it -> new ProductPrice(it.getId(), it.getPrice()))
-                .collect(Collectors.toList());
-    }
 }
