@@ -13,6 +13,10 @@ public class Order {
     public Order() {
     }
 
+    public Order(String orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
     public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderLineItems = orderLineItems;

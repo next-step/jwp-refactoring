@@ -81,15 +81,13 @@ class OrderServiceIntegrationTest {
         order.setOrderStatus(OrderStatus.COMPLETION.name());
 
         // when then
-        orderService.changeOrderStatus(order.getId(), order);
+        orderService.changeOrderStatus(order.getId(), new Order(OrderStatus.COMPLETION.name()));
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
-        assertThatThrownBy(() -> {
-            order.setOrderStatus(OrderStatus.COOKING.name());
-            orderService.changeOrderStatus(order.getId(), order);
-        }).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), new Order(OrderStatus.COOKING.name())))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
-    private List<OrderLineItem> getOrderLineItems() {
+    public static List<OrderLineItem> getOrderLineItems() {
         return Arrays.asList(
                 new OrderLineItem(1L, 1),
                 new OrderLineItem(2L, 1)
