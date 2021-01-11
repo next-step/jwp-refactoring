@@ -20,7 +20,7 @@ class MenuGroupServiceTest {
     private MenuGroupService menuGroupService;
 
     @Test
-    public void test() {
+    public void createMenuGroup() {
         MenuGroup menuGroup = new MenuGroup();
         menuGroup.setId(1L);
         menuGroup.setName("두마리메뉴");
