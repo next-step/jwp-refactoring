@@ -1,5 +1,7 @@
 package kitchenpos.domain.menu;
 
+import kitchenpos.ValueObjectId;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -7,11 +9,7 @@ import javax.persistence.Id;
 import java.math.BigDecimal;
 
 @Entity
-public class MenuProduct {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long seq;
-
+public class MenuProduct extends ValueObjectId {
     private Long productId;
 
     private long quantity;
@@ -33,7 +31,7 @@ public class MenuProduct {
     }
 
     public Long getSeq() {
-        return seq;
+        return super.getSeq();
     }
 
     public Long getProductId() {

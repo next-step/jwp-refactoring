@@ -18,22 +18,21 @@ public class Menu {
 
     private Long menuGroupId;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "menu_id")
-    private List<MenuProduct> menuProducts;
+    @Embedded
+    private MenuProducts menuProducts;
 
     protected Menu() {
     }
 
-    Menu(final String name, final BigDecimal price, final Long menuGroupId, final List<MenuProduct> menuProducts) {
+    Menu(final String name, final BigDecimal price, final Long menuGroupId, final MenuProducts menuProducts) {
         this.name = name;
         this.price = new MenuPrice(price);
         this.menuGroupId = menuGroupId;
-        this.menuProducts = new ArrayList<>(menuProducts);
+        this.menuProducts = menuProducts;
     }
 
     public static Menu of(final String name, final BigDecimal price, final Long menuGroupId, final List<MenuProduct> menuProducts) {
-        return new Menu(name, price, menuGroupId, menuProducts);
+        return new Menu(name, price, menuGroupId, new MenuProducts(menuProducts));
     }
 
     public boolean isMoreExpensive(final BigDecimal price) {
@@ -57,6 +56,6 @@ public class Menu {
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
+        return menuProducts.getList();
     }
 }
