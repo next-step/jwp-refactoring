@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.IntegrationTest;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
-class ProductServiceIntegrationTest {
+class ProductServiceIntegrationTest extends IntegrationTest {
 
     @Autowired
     private ProductService productService;

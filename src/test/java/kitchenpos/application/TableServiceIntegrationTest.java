@@ -1,16 +1,15 @@
 package kitchenpos.application;
 
+import kitchenpos.IntegrationTest;
 import kitchenpos.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
-@SpringBootTest
-class TableServiceIntegrationTest {
+class TableServiceIntegrationTest extends IntegrationTest {
 
     @Autowired
     private TableService tableService;
@@ -23,7 +22,7 @@ class TableServiceIntegrationTest {
 
         // when then
         assertThat(orderTable.getNumberOfGuests()).isEqualTo(4);
-        assertThat(orderTable.isEmpty()).isFalse();
+        assertThat(orderTable.isEmpty()).isTrue();
     }
 
     @DisplayName("테이블에 상태값을 변경 가능하다.")
@@ -36,7 +35,7 @@ class TableServiceIntegrationTest {
         OrderTable changedTable = tableService.changeEmpty(orderTable.getId(), new OrderTable(false));
 
         // then
-        assertThat(changedTable.isEmpty()).isTrue();
+        assertThat(changedTable.isEmpty()).isFalse();
     }
 
     @DisplayName("테이블에 인원을 변경 가능하다.")

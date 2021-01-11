@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.IntegrationTest;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
@@ -17,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
-class OrderServiceIntegrationTest {
+class OrderServiceIntegrationTest extends IntegrationTest {
 
     @Autowired
     private TableService tableService;
@@ -33,7 +34,8 @@ class OrderServiceIntegrationTest {
         OrderTable orderTable = tableService.create(new OrderTable(4, false));
 
         // when
-        Order order = orderService.create(new Order(orderTable.getId(), getOrderLineItems()));
+        Order order = orderService.create(new Order(orderTable.getId(), getOrderLineItems(new OrderLineItem(1L, 1),
+                new OrderLineItem(2L, 1))));
 
         //then
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
@@ -44,8 +46,10 @@ class OrderServiceIntegrationTest {
     void findOrderList() {
         // given
         OrderTable orderTable = tableService.create(new OrderTable(4, false));
-        orderService.create(new Order(orderTable.getId(), getOrderLineItems()));
-        orderService.create(new Order(orderTable.getId(), getOrderLineItems()));
+        orderService.create(new Order(orderTable.getId(), getOrderLineItems(new OrderLineItem(1L, 1),
+                new OrderLineItem(2L, 1))));
+        orderService.create(new Order(orderTable.getId(), getOrderLineItems(new OrderLineItem(1L, 1),
+                new OrderLineItem(2L, 1))));
 
         // when then
         assertThat(orderService.list()).hasSize(2);
@@ -69,7 +73,8 @@ class OrderServiceIntegrationTest {
         OrderTable orderTable = tableService.create(new OrderTable(4, true));
 
         // when
-        assertThatThrownBy(() -> orderService.create(new Order(orderTable.getId(), getOrderLineItems()))).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(new Order(orderTable.getId(), getOrderLineItems(new OrderLineItem(1L, 1),
+                new OrderLineItem(2L, 1))))).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문 완료된 주문은 상태값 변경이 불가능하다.")
@@ -77,7 +82,9 @@ class OrderServiceIntegrationTest {
     void shouldNotChangeCompletedOrder() {
         // given
         OrderTable orderTable = tableService.create(new OrderTable(4, false));
-        Order order = orderService.create(new Order(orderTable.getId(), getOrderLineItems()));
+        Order order = orderService.create(new Order(orderTable.getId(), getOrderLineItems(
+                new OrderLineItem(1L, 1),
+                new OrderLineItem(2L, 1))));
         order.setOrderStatus(OrderStatus.COMPLETION.name());
 
         // when then
@@ -87,10 +94,9 @@ class OrderServiceIntegrationTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    public static List<OrderLineItem> getOrderLineItems() {
+    private List<OrderLineItem> getOrderLineItems(OrderLineItem... orderLineItems) {
         return Arrays.asList(
-                new OrderLineItem(1L, 1),
-                new OrderLineItem(2L, 1)
+                orderLineItems
         );
     }
 }
