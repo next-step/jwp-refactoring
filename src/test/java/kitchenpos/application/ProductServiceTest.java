@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import static kitchenpos.util.TestHelper.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @SpringBootTest
@@ -25,7 +26,7 @@ class ProductServiceTest {
     @DisplayName("상품을 등록할 수 있다.")
     @Test
     void createProduct() {
-        given(productDao.save(후라이드)).willReturn(후라이드);
+        given(productDao.save(any())).willReturn(후라이드);
 
         Product result = productService.create(후라이드);
 

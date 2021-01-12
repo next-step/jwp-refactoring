@@ -18,7 +18,7 @@ import java.util.Optional;
 import static kitchenpos.util.TestHelper.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
 @SpringBootTest
@@ -80,8 +80,7 @@ class OrderServiceTest {
     @Test
     void createOrderException4() {
         given(menuDao.countByIdIn(anyList())).willReturn((long) order.getOrderLineItems().size());
-        orderTable1.setEmpty(true);
-        given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable1));
+        given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(empty_orderTable1));
 
         assertThatThrownBy(() -> orderService.create(order))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -90,9 +89,9 @@ class OrderServiceTest {
     @DisplayName("주문 상태를 변경할 수 있다.")
     @Test
     void changeOrderStatus() {
-        given(orderDao.findById(요리중_order.getId())).willReturn(Optional.of(요리중_order));
-        given(orderDao.save(요리중_order)).willReturn(요리중_order);
-        given(orderLineItemDao.findAllByOrderId(요리중_order.getId())).willReturn(Collections.singletonList(orderLineItem));
+        given(orderDao.findById(anyLong())).willReturn(Optional.of(요리중_order));
+        given(orderDao.save(any())).willReturn(요리중_order);
+        given(orderLineItemDao.findAllByOrderId(anyLong())).willReturn(Collections.singletonList(orderLineItem));
 
         Order result = orderService.changeOrderStatus(요리중_order.getId(), 식사_order);
 
@@ -103,7 +102,7 @@ class OrderServiceTest {
     @DisplayName("주문이 등록되어 있지 않으면 변경할 수 없다.")
     @Test
     void changeOrderStatusException1() {
-        given(orderDao.findById(요리중_order.getId())).willReturn(Optional.empty());
+        given(orderDao.findById(anyLong())).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> orderService.changeOrderStatus(요리중_order.getId(), 요리중_order))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -112,7 +111,7 @@ class OrderServiceTest {
     @DisplayName("주문 상태가 계산 완료일 경우 변경할 수 없다.")
     @Test
     void changeOrderStatusException2() {
-        given(orderDao.findById(요리중_order.getId())).willReturn(Optional.of(완료된_order));
+        given(orderDao.findById(anyLong())).willReturn(Optional.of(완료된_order));
 
         assertThatThrownBy(() -> orderService.changeOrderStatus(요리중_order.getId(), 요리중_order))
                 .isInstanceOf(IllegalArgumentException.class);

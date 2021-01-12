@@ -19,9 +19,10 @@ public class TestHelper {
     public static final TableGroup init_tableGroup = tableGroup_생성(1L);
     public static final OrderTable empty_orderTable1 = 빈_orderTable_생성(1L);
     public static final OrderTable empty_orderTable2 = 빈_orderTable_생성(2L);
+    public static final OrderTable not_empty_orderTable = orderTable_생성(empty_orderTable1.getId(), false);
     public static final TableGroup tableGroup = tableGroup_orderTables_추가(init_tableGroup, Arrays.asList(empty_orderTable1, empty_orderTable2));
-    public static final OrderTable orderTable1 = orderTable_group으로_묶기(empty_orderTable1, tableGroup.getId());
-    public static final OrderTable orderTable2 = orderTable_group으로_묶기(empty_orderTable2, tableGroup.getId());
+    public static final OrderTable orderTable1 = orderTable_groupId_추가(empty_orderTable1, tableGroup.getId(), false);
+    public static final OrderTable orderTable2 = orderTable_groupId_추가(empty_orderTable2, tableGroup.getId(), false);
     public static final List<OrderTable> 그룹으로_묶여있는_orderTables = Arrays.asList(orderTable1, orderTable2);
 
     public static final OrderLineItem orderLineItem = orderLineItem_생성(1L, menu.getId(), 2);
@@ -90,25 +91,26 @@ public class TestHelper {
         return newTableGroup;
     }
 
-    public static OrderTable 빈_orderTable_생성(Long id) {
+    public static OrderTable orderTable_생성(Long id, boolean empty) {
         OrderTable orderTable = new OrderTable();
         orderTable.setId(id);
-        orderTable.setEmpty(true);
+        orderTable.setEmpty(empty);
         return orderTable;
     }
 
-    public static OrderTable orderTable_group으로_묶기(OrderTable orderTable, Long tableGroupId) {
-        OrderTable newOrderTable = new OrderTable();
-        newOrderTable.setId(orderTable.getId());
+    public static OrderTable 빈_orderTable_생성(Long id) {
+        return orderTable_생성(id, true);
+    }
+
+    public static OrderTable orderTable_groupId_추가(OrderTable orderTable, Long tableGroupId, boolean empty) {
+        OrderTable newOrderTable = orderTable_생성(orderTable.getId(), empty);
         newOrderTable.setTableGroupId(tableGroupId);
-        newOrderTable.setEmpty(false);
         return newOrderTable;
     }
 
-    public static OrderTable orderTable_groupId_추가(OrderTable orderTable, Long tableGroupId) {
-        OrderTable newOrderTable = new OrderTable();
-        newOrderTable.setId(orderTable.getId());
-        newOrderTable.setTableGroupId(tableGroupId);
+    public static OrderTable orderTable_numberOfGuests_추가(OrderTable orderTable, int numberOfGuests) {
+        OrderTable newOrderTable = orderTable_생성(orderTable.getId(), orderTable.isEmpty());
+        newOrderTable.setNumberOfGuests(numberOfGuests);
         return newOrderTable;
     }
 

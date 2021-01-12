@@ -18,7 +18,7 @@ import java.util.List;
 import static kitchenpos.util.TestHelper.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
 @SpringBootTest
@@ -36,7 +36,7 @@ class TableGroupServiceTest {
     @Test
     void createTableGroup() {
         given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(empty_orderTable1, empty_orderTable2));
-        given(tableGroupDao.save(tableGroup)).willReturn(tableGroup);
+        given(tableGroupDao.save(any())).willReturn(tableGroup);
         given(orderTableDao.save(orderTable1)).willReturn(orderTable1);
         given(orderTableDao.save(orderTable2)).willReturn(orderTable2);
 
@@ -78,7 +78,7 @@ class TableGroupServiceTest {
     @DisplayName("주문 테이블이 이미 단체 지정되어 있는 경우 지정할 수 없다.")
     @Test
     void createTableGroupException4() {
-        List<OrderTable> orderTables = Arrays.asList(orderTable_groupId_추가(empty_orderTable1, tableGroup.getId()), empty_orderTable2);
+        List<OrderTable> orderTables = Arrays.asList(orderTable_groupId_추가(empty_orderTable1, tableGroup.getId(), true), empty_orderTable2);
         given(orderTableDao.findAllByIdIn(anyList())).willReturn(orderTables);
 
         assertThatThrownBy(() -> tableGroupService.create(tableGroup_orderTables_추가(tableGroup, orderTables)))
@@ -88,7 +88,7 @@ class TableGroupServiceTest {
     @DisplayName("들어간 주문들 중에서 주문 상태가 조리 또는 식사가 하나라도 있을 경우 변경할 수 없다.")
     @Test
     void ungroupTableGroupException() {
-        given(orderTableDao.findAllByTableGroupId(tableGroup.getId())).willReturn(그룹으로_묶여있는_orderTables);
+        given(orderTableDao.findAllByTableGroupId(anyLong())).willReturn(그룹으로_묶여있는_orderTables);
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
 
         assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))
