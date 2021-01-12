@@ -38,13 +38,13 @@ class OrderServiceTest {
     @Test
     void createOrder() {
         given(menuDao.countByIdIn(anyList())).willReturn((long) order.getOrderLineItems().size());
-        given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
+        given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable1));
         given(orderDao.save(order)).willReturn(order);
         given(orderLineItemDao.save(orderLineItem)).willReturn(orderLineItem에_orderId_추가(orderLineItem, order.getId()));
 
         Order result = orderService.create(order);
 
-        assertThat(result.getOrderTableId()).isEqualTo(orderTable.getId());
+        assertThat(result.getOrderTableId()).isEqualTo(orderTable1.getId());
         assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
         assertThat(result.getOrderedTime()).isNotNull();
         assertThat(result.getOrderLineItems().get(0).getOrderId()).isEqualTo(order.getId());
@@ -80,8 +80,8 @@ class OrderServiceTest {
     @Test
     void createOrderException4() {
         given(menuDao.countByIdIn(anyList())).willReturn((long) order.getOrderLineItems().size());
-        orderTable.setEmpty(true);
-        given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
+        orderTable1.setEmpty(true);
+        given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable1));
 
         assertThatThrownBy(() -> orderService.create(order))
                 .isInstanceOf(IllegalArgumentException.class);

@@ -16,8 +16,14 @@ public class TestHelper {
     public static final Menu menu = menu_생성(1L, "후라이드양념치킨", BigDecimal.valueOf(16000), 두마리_메뉴그룹.getId(),
             Arrays.asList(후라이드_1개, 양념치킨_1개));
 
-    public static final TableGroup tableGroup = tableGroup_생성(1L);
-    public static final OrderTable orderTable = orderTable_생성(1L, tableGroup.getId(), 3);
+    public static final TableGroup init_tableGroup = tableGroup_생성(1L);
+    public static final OrderTable empty_orderTable1 = 빈_orderTable_생성(1L);
+    public static final OrderTable empty_orderTable2 = 빈_orderTable_생성(2L);
+    public static final TableGroup tableGroup = tableGroup_orderTables_추가(init_tableGroup, Arrays.asList(empty_orderTable1, empty_orderTable2));
+    public static final OrderTable orderTable1 = orderTable_group으로_묶기(empty_orderTable1, tableGroup.getId());
+    public static final OrderTable orderTable2 = orderTable_group으로_묶기(empty_orderTable2, tableGroup.getId());
+    public static final List<OrderTable> 그룹으로_묶여있는_orderTables = Arrays.asList(orderTable1, orderTable2);
+
     public static final OrderLineItem orderLineItem = orderLineItem_생성(1L, menu.getId(), 2);
     public static final Order order = order_생성(1L, Collections.singletonList(orderLineItem));
     public static final Order 주문항목이_없는_order = order_생성(1L, null);
@@ -78,12 +84,32 @@ public class TestHelper {
         return tableGroup;
     }
 
-    public static OrderTable orderTable_생성(Long id, Long tableGroupId, int numberOfGuests) {
+    public static TableGroup tableGroup_orderTables_추가(TableGroup tableGroup, List<OrderTable> orderTables) {
+        TableGroup newTableGroup = tableGroup_생성(tableGroup.getId());
+        newTableGroup.setOrderTables(orderTables);
+        return newTableGroup;
+    }
+
+    public static OrderTable 빈_orderTable_생성(Long id) {
         OrderTable orderTable = new OrderTable();
         orderTable.setId(id);
-        orderTable.setTableGroupId(tableGroupId);
-        orderTable.setNumberOfGuests(numberOfGuests);
+        orderTable.setEmpty(true);
         return orderTable;
+    }
+
+    public static OrderTable orderTable_group으로_묶기(OrderTable orderTable, Long tableGroupId) {
+        OrderTable newOrderTable = new OrderTable();
+        newOrderTable.setId(orderTable.getId());
+        newOrderTable.setTableGroupId(tableGroupId);
+        newOrderTable.setEmpty(false);
+        return newOrderTable;
+    }
+
+    public static OrderTable orderTable_groupId_추가(OrderTable orderTable, Long tableGroupId) {
+        OrderTable newOrderTable = new OrderTable();
+        newOrderTable.setId(orderTable.getId());
+        newOrderTable.setTableGroupId(tableGroupId);
+        return newOrderTable;
     }
 
     public static OrderLineItem orderLineItem_생성(Long seq, Long menuId, long quantity) {
