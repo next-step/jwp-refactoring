@@ -11,15 +11,12 @@ import kitchenpos.application.creator.MenuProductHelper;
 import kitchenpos.application.creator.ProductHelper;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.dto.MenuDto;
+import kitchenpos.dto.MenuGroupDto;
+import kitchenpos.dto.MenuProductDto;
+import kitchenpos.dto.ProductDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -44,8 +41,8 @@ class MenuServiceTest {
     @DisplayName("메뉴 생성")
     @Test
     void menuCreateTest() {
-        Menu menu = getMenu();
-        Menu savedMenu = menuService.create(menu);
+        MenuDto menu = getMenu();
+        MenuDto savedMenu = menuService.create(menu);
 
         assertThat(savedMenu.getId()).isNotNull();
         assertThat(savedMenu.getName()).isEqualTo(menu.getName());
@@ -62,7 +59,7 @@ class MenuServiceTest {
     @Test
     @DisplayName("메뉴 생성시 금액이 0원 아래일 경우")
     void menuCreateWithMinusPriceTest() {
-        Menu menu = getMenu();
+        MenuDto menu = getMenu();
         menu.setPrice(BigDecimal.valueOf(-1));
 
         assertThatThrownBy(() -> menuService.create(menu))
@@ -72,7 +69,7 @@ class MenuServiceTest {
     @DisplayName("메뉴 생성시 금액이 null인 경우")
     @Test
     void menuCreateWithNullPriceTest() {
-        Menu menu = getMenu();
+        MenuDto menu = getMenu();
         menu.setPrice(null);
 
         assertThatThrownBy(() -> menuService.create(menu))
@@ -82,7 +79,7 @@ class MenuServiceTest {
     @DisplayName("메뉴 생성시 메뉴 그룹이 존재하지 않을 경우")
     @Test
     void menuCreateWithoutMenuGroup() {
-        Menu menu = getMenu();
+        MenuDto menu = getMenu();
         menu.setMenuGroupId(20L);
 
         assertThatThrownBy(() -> menuService.create(menu))
@@ -92,7 +89,7 @@ class MenuServiceTest {
     @DisplayName("메뉴 생성시 메뉴의 합보다 같거나 작아야한다.")
     @Test
     void menuCreateWithWrongAmountTotalSum() {
-        Menu menu = getMenu();
+        MenuDto menu = getMenu();
         menu.setPrice(BigDecimal.valueOf(50_001));
         assertThatThrownBy(() -> menuService.create(menu))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -105,21 +102,21 @@ class MenuServiceTest {
         menuService.create(getMenu());
         menuService.create(getMenu());
 
-        List<Menu> list = menuService.list();
+        List<MenuDto> list = menuService.list();
         assertThat(list.size()).isGreaterThan(2);
     }
 
 
-    private Menu getMenu() {
-        Product savedProduct01 = productDao.save(
+    private MenuDto getMenu() {
+        ProductDto savedProduct01 = productDao.save(
                 ProductHelper.create("product01", 10_000));
-        Product savedProduct02 = productDao.save(
+        ProductDto savedProduct02 = productDao.save(
                 ProductHelper.create("product02", 20_000));
 
-        MenuProduct menuProduct01 = MenuProductHelper.create(savedProduct01, 1);
-        MenuProduct menuProduct02 = MenuProductHelper.create(savedProduct02, 2);
+        MenuProductDto menuProduct01 = MenuProductHelper.create(savedProduct01, 1);
+        MenuProductDto menuProduct02 = MenuProductHelper.create(savedProduct02, 2);
 
-        MenuGroup menuGroup = menuGroupDao.save(MenuGroupHelper.create("메뉴 그룹"));
+        MenuGroupDto menuGroup = menuGroupDao.save(MenuGroupHelper.create("메뉴 그룹"));
 
         return MenuHelper.create("메뉴", 50_000, menuGroup, menuProduct01, menuProduct02);
     }

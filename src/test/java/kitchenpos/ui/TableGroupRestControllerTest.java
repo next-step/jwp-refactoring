@@ -8,8 +8,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.OrderTableDto;
+import kitchenpos.dto.TableGroupDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -24,12 +24,12 @@ class TableGroupRestControllerTest extends BaseControllerTest {
     @DisplayName("테이블 그룹 생성 테스트")
     @Test
     void tableGroupCreateTest() throws Exception {
-        OrderTable table01 = new OrderTable();
+        OrderTableDto table01 = new OrderTableDto();
         table01.setId(3L);
-        OrderTable table02 = new OrderTable();
+        OrderTableDto table02 = new OrderTableDto();
         table02.setId(4L);
 
-        TableGroup group = new TableGroup();
+        TableGroupDto group = new TableGroupDto();
         group.setCreatedDate(LocalDateTime.now());
         group.setOrderTables(Arrays.asList(table01, table02));
 
@@ -44,12 +44,12 @@ class TableGroupRestControllerTest extends BaseControllerTest {
     @DisplayName("테이블 그룹 해제 테스트")
     @Test
     void tableGroupUngroupTest() throws Exception {
-        OrderTable table01 = new OrderTable();
+        OrderTableDto table01 = new OrderTableDto();
         table01.setId(5L);
-        OrderTable table02 = new OrderTable();
+        OrderTableDto table02 = new OrderTableDto();
         table02.setId(6L);
 
-        TableGroup group = new TableGroup();
+        TableGroupDto group = new TableGroupDto();
         group.setCreatedDate(LocalDateTime.now());
         group.setOrderTables(Arrays.asList(table01, table02));
 

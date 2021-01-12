@@ -1,8 +1,8 @@
-package kitchenpos.domain;
+package kitchenpos.dto;
 
 import java.math.BigDecimal;
 
-public class Product {
+public class ProductDto {
     private Long id;
     private String name;
     private BigDecimal price;

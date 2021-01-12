@@ -1,9 +1,9 @@
 package kitchenpos.application.creator;
 
 import java.util.Arrays;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderDto;
+import kitchenpos.dto.OrderLineItemDto;
+import kitchenpos.dto.OrderTableDto;
 
 /**
  * @author : leesangbae
@@ -12,8 +12,8 @@ import kitchenpos.domain.OrderTable;
  */
 public class OrderHelper {
 
-    public static Order create(OrderTable orderTable, OrderLineItem ...orderLineItems) {
-        Order order = new Order();
+    public static OrderDto create(OrderTableDto orderTable, OrderLineItemDto...orderLineItems) {
+        OrderDto order = new OrderDto();
         order.setOrderTableId(orderTable.getId());
         order.setOrderLineItems(Arrays.asList(orderLineItems));
         return order;

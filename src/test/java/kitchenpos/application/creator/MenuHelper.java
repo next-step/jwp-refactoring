@@ -2,9 +2,9 @@ package kitchenpos.application.creator;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.dto.MenuDto;
+import kitchenpos.dto.MenuGroupDto;
+import kitchenpos.dto.MenuProductDto;
 
 /**
  * @author : leesangbae
@@ -13,8 +13,8 @@ import kitchenpos.domain.MenuProduct;
  */
 public class MenuHelper {
 
-    public static Menu create(String name, int price, MenuGroup menuGroup, MenuProduct...products) {
-        Menu menu = new Menu();
+    public static MenuDto create(String name, int price, MenuGroupDto menuGroup, MenuProductDto...products) {
+        MenuDto menu = new MenuDto();
         menu.setName(name);
         menu.setPrice(BigDecimal.valueOf(price));
         menu.setMenuGroupId(menuGroup.getId());

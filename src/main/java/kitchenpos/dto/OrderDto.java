@@ -1,14 +1,14 @@
-package kitchenpos.domain;
+package kitchenpos.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class Order {
+public class OrderDto {
     private Long id;
     private Long orderTableId;
     private String orderStatus;
     private LocalDateTime orderedTime;
-    private List<OrderLineItem> orderLineItems;
+    private List<OrderLineItemDto> orderLineItems;
 
     public Long getId() {
         return id;
@@ -42,11 +42,11 @@ public class Order {
         this.orderedTime = orderedTime;
     }
 
-    public List<OrderLineItem> getOrderLineItems() {
+    public List<OrderLineItemDto> getOrderLineItems() {
         return orderLineItems;
     }
 
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
+    public void setOrderLineItems(final List<OrderLineItemDto> orderLineItems) {
         this.orderLineItems = orderLineItems;
     }
 }

@@ -1,11 +1,10 @@
 package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 import kitchenpos.application.creator.MenuGroupHelper;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +24,7 @@ class MenuGroupServiceTest {
     @DisplayName("메뉴 그룹 생성 테스트")
     @Test
     void menuGroupCreateTest() {
-        MenuGroup menuGroup = menuGroupService.create(MenuGroupHelper.create("메뉴 그룹"));
+        MenuGroupDto menuGroup = menuGroupService.create(MenuGroupHelper.create("메뉴 그룹"));
         assertThat(menuGroup.getId()).isNotNull();
         assertThat(menuGroup.getName()).isEqualTo("메뉴 그룹");
     }
@@ -37,7 +36,7 @@ class MenuGroupServiceTest {
         menuGroupService.create(MenuGroupHelper.create("메뉴 그룹 02"));
         menuGroupService.create(MenuGroupHelper.create("메뉴 그룹 03"));
 
-        List<MenuGroup> list = menuGroupService.list();
+        List<MenuGroupDto> list = menuGroupService.list();
         assertThat(list.size()).isGreaterThan(2);
     }
 

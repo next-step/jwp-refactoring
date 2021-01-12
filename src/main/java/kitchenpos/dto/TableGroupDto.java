@@ -1,12 +1,12 @@
-package kitchenpos.domain;
+package kitchenpos.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class TableGroup {
+public class TableGroupDto {
     private Long id;
     private LocalDateTime createdDate;
-    private List<OrderTable> orderTables;
+    private List<OrderTableDto> orderTables;
 
     public Long getId() {
         return id;
@@ -24,11 +24,11 @@ public class TableGroup {
         this.createdDate = createdDate;
     }
 
-    public List<OrderTable> getOrderTables() {
+    public List<OrderTableDto> getOrderTables() {
         return orderTables;
     }
 
-    public void setOrderTables(final List<OrderTable> orderTables) {
+    public void setOrderTables(final List<OrderTableDto> orderTables) {
         this.orderTables = orderTables;
     }
 }

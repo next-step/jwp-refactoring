@@ -17,14 +17,14 @@ import kitchenpos.application.creator.TableGroupHelper;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
+import kitchenpos.dto.MenuDto;
+import kitchenpos.dto.MenuGroupDto;
+import kitchenpos.dto.MenuProductDto;
+import kitchenpos.dto.OrderDto;
+import kitchenpos.dto.OrderLineItemDto;
+import kitchenpos.dto.OrderStatus;
+import kitchenpos.dto.OrderTableDto;
+import kitchenpos.dto.ProductDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,9 +56,9 @@ class OrderServiceTest {
     @DisplayName("주문 생성 테스트")
     @Test
     void orderCreateTest() {
-        Order order = getOrder();
+        OrderDto order = getOrder();
 
-        Order savedOrder = orderService.create(order);
+        OrderDto savedOrder = orderService.create(order);
 
         assertThat(savedOrder.getId()).isNotNull();
         assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
@@ -72,7 +72,7 @@ class OrderServiceTest {
     @DisplayName("주문 생성시 주문항목이 없는 경우")
     @Test
     void orderCreateWithOrderLineItemsTest() {
-        Order order = getOrder();
+        OrderDto order = getOrder();
         order.setOrderLineItems(Collections.emptyList());
 
         assertThatThrownBy(() -> orderService.create(order))
@@ -82,9 +82,9 @@ class OrderServiceTest {
     @DisplayName("주문 생성시 중복되는 주문항목이 있는 경우")
     @Test
     void orderCreateWithDuplicateOrderLineItemsTest() {
-        Order order = getOrder();
+        OrderDto order = getOrder();
 
-        List<OrderLineItem> list = new ArrayList<>();
+        List<OrderLineItemDto> list = new ArrayList<>();
         list.add(order.getOrderLineItems().get(0));
         list.add(order.getOrderLineItems().get(0));
         order.setOrderLineItems(list);
@@ -96,7 +96,7 @@ class OrderServiceTest {
     @DisplayName("주문 생성시 주문항목이 비어있는 경우")
     @Test
     void orderCreateWithEmptyOrderLineItemsTest() {
-        Order order = getOrder();
+        OrderDto order = getOrder();
         order.setOrderLineItems(Collections.emptyList());
 
         assertThatThrownBy(() -> orderService.create(order))
@@ -106,9 +106,9 @@ class OrderServiceTest {
     @DisplayName("주문 생성시 테이블이 공석인 경우")
     @Test
     void orderCreateWithNotEmptyTableTest() {
-        Order order = getOrder();
+        OrderDto order = getOrder();
 
-        OrderTable orderTable = new OrderTable();
+        OrderTableDto orderTable = new OrderTableDto();
         orderTable.setId(order.getOrderTableId());
         orderTable.setEmpty(true);
         orderTableDao.save(orderTable);
@@ -120,7 +120,7 @@ class OrderServiceTest {
     @DisplayName("주문 생성시 테이블이 존재하지 않는 경우")
     @Test
     void orderCreateWithNotRegisterTable() {
-        Order order = getOrder();
+        OrderDto order = getOrder();
         order.setOrderTableId(9999L);
 
         assertThatThrownBy(() -> orderService.create(order))
@@ -131,11 +131,11 @@ class OrderServiceTest {
     @DisplayName("주문 상태 변경")
     @Test
     void orderStateChange() {
-        Order order = orderService.create(getOrder());
-        Order orderForStateChange = new Order();
+        OrderDto order = orderService.create(getOrder());
+        OrderDto orderForStateChange = new OrderDto();
         orderForStateChange.setOrderStatus(OrderStatus.COMPLETION.name());
 
-        Order savedOrder = orderService.changeOrderStatus(order.getId(), orderForStateChange);
+        OrderDto savedOrder = orderService.changeOrderStatus(order.getId(), orderForStateChange);
         
         assertThat(savedOrder.getId()).isEqualTo(order.getId());
         assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
@@ -151,8 +151,8 @@ class OrderServiceTest {
     @DisplayName("주문 생성시 상태가 COMPLETION 상태인 경우")
     @Test
     void orderStateChangeWithCompletionState() {
-        Order order = orderService.create(getOrder());
-        Order orderForStateChange = new Order();
+        OrderDto order = orderService.create(getOrder());
+        OrderDto orderForStateChange = new OrderDto();
         orderForStateChange.setOrderStatus(OrderStatus.COMPLETION.name());
         orderService.changeOrderStatus(order.getId(), orderForStateChange);
 
@@ -161,28 +161,28 @@ class OrderServiceTest {
     }
 
 
-    private Order getOrder() {
-        Menu menu = menuService.create(getMenu());
+    private OrderDto getOrder() {
+        MenuDto menu = menuService.create(getMenu());
 
-        OrderLineItem orderLineItem = OrderLineItemHelper.create(menu, 1);
+        OrderLineItemDto orderLineItem = OrderLineItemHelper.create(menu, 1);
 
-        OrderTable orderTable = orderTableDao.save(OrderTableHelper.create(false));
+        OrderTableDto orderTable = orderTableDao.save(OrderTableHelper.create(false));
 
         TableGroupHelper.create(orderTable);
 
         return OrderHelper.create(orderTable, orderLineItem);
     }
 
-    private Menu getMenu() {
-        Product savedProduct01 = productDao.save(
+    private MenuDto getMenu() {
+        ProductDto savedProduct01 = productDao.save(
                 ProductHelper.create("product01", 10_000));
-        Product savedProduct02 = productDao.save(
+        ProductDto savedProduct02 = productDao.save(
                 ProductHelper.create("product02", 20_000));
 
-        MenuProduct menuProduct01 = MenuProductHelper.create(savedProduct01, 1);
-        MenuProduct menuProduct02 = MenuProductHelper.create(savedProduct02, 2);
+        MenuProductDto menuProduct01 = MenuProductHelper.create(savedProduct01, 1);
+        MenuProductDto menuProduct02 = MenuProductHelper.create(savedProduct02, 2);
 
-        MenuGroup menuGroup = menuGroupDao.save(MenuGroupHelper.create("메뉴 그룹"));
+        MenuGroupDto menuGroup = menuGroupDao.save(MenuGroupHelper.create("메뉴 그룹"));
 
         return MenuHelper.create("메뉴", 50_000, menuGroup, menuProduct01, menuProduct02);
     }

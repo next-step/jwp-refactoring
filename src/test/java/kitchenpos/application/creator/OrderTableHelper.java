@@ -1,6 +1,6 @@
 package kitchenpos.application.creator;
 
-import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderTableDto;
 
 /**
  * @author : leesangbae
@@ -9,8 +9,8 @@ import kitchenpos.domain.OrderTable;
  */
 public class OrderTableHelper {
 
-    public static OrderTable create(boolean isEmpty) {
-        OrderTable orderTable = new OrderTable();
+    public static OrderTableDto create(boolean isEmpty) {
+        OrderTableDto orderTable = new OrderTableDto();
         orderTable.setEmpty(isEmpty);
         orderTable.setNumberOfGuests(0);
         return orderTable;

@@ -8,9 +8,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Collections;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderDto;
+import kitchenpos.dto.OrderLineItemDto;
+import kitchenpos.dto.OrderTableDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -25,17 +25,17 @@ class OrderRestControllerTest extends BaseControllerTest {
     @DisplayName("주문 생성")
     @Test
     public void menuGroupCreateTest() throws Exception {
-        OrderLineItem orderLineItem = new OrderLineItem();
+        OrderLineItemDto orderLineItem = new OrderLineItemDto();
         orderLineItem.setMenuId(1L);
         orderLineItem.setQuantity(1);
 
-        Order order = new Order();
+        OrderDto order = new OrderDto();
         order.setOrderTableId(7L);
         order.setOrderLineItems(Collections.singletonList(orderLineItem));
 
         Long orderTableId = order.getOrderTableId();
 
-        OrderTable orderTable = new OrderTable();
+        OrderTableDto orderTable = new OrderTableDto();
         orderTable.setEmpty(false);
 
         mockMvc.perform(put("/api/tables/"+ orderTableId +"/empty")
@@ -69,17 +69,17 @@ class OrderRestControllerTest extends BaseControllerTest {
     @DisplayName("주문 상태 변경")
     @Test
     public void menuGroupChangeOrderStateTest() throws Exception {
-        OrderLineItem orderLineItem = new OrderLineItem();
+        OrderLineItemDto orderLineItem = new OrderLineItemDto();
         orderLineItem.setMenuId(1L);
         orderLineItem.setQuantity(1);
 
-        Order order = new Order();
+        OrderDto order = new OrderDto();
         order.setOrderTableId(8L);
         order.setOrderLineItems(Collections.singletonList(orderLineItem));
 
         Long orderTableId = order.getOrderTableId();
 
-        OrderTable orderTable = new OrderTable();
+        OrderTableDto orderTable = new OrderTableDto();
         orderTable.setEmpty(false);
 
         mockMvc.perform(put("/api/tables/"+ orderTableId +"/empty")

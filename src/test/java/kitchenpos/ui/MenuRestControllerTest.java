@@ -9,8 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.dto.MenuDto;
+import kitchenpos.dto.MenuProductDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -26,7 +26,7 @@ class MenuRestControllerTest extends BaseControllerTest {
     @Test
     public void menuGroupCreateTest() throws Exception {
 
-        Menu menu = getMenu();
+        MenuDto menu = getMenu();
 
         mockMvc.perform(
                 post("/api/menus")
@@ -48,13 +48,13 @@ class MenuRestControllerTest extends BaseControllerTest {
                 .andExpect(status().isOk());
     }
 
-    private Menu getMenu() {
-        MenuProduct menuProduct = new MenuProduct();
+    private MenuDto getMenu() {
+        MenuProductDto menuProduct = new MenuProductDto();
         menuProduct.setProductId(6L);
         menuProduct.setQuantity(1);
-        List<MenuProduct> menuProducts = Collections.singletonList(menuProduct);
+        List<MenuProductDto> menuProducts = Collections.singletonList(menuProduct);
 
-        Menu menu = new Menu();
+        MenuDto menu = new MenuDto();
         menu.setName("메뉴");
         menu.setPrice(BigDecimal.valueOf(17_000));
         menu.setMenuGroupId(1L);

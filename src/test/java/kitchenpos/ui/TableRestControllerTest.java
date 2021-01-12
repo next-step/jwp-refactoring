@@ -7,7 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderTableDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -23,7 +23,7 @@ class TableRestControllerTest extends BaseControllerTest {
     @Test
     void tableCreateTest() throws Exception {
 
-        OrderTable orderTable = getOrderTable();
+        OrderTableDto orderTable = getOrderTable();
 
         mockMvc.perform(post("/api/tables")
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -43,7 +43,7 @@ class TableRestControllerTest extends BaseControllerTest {
     @DisplayName("테이블 상태 변경 테스트")
     @Test
     void tableChangeEmptyTest() throws Exception  {
-        OrderTable orderTable = getOrderTable();
+        OrderTableDto orderTable = getOrderTable();
         orderTable.setEmpty(false);
         mockMvc.perform(put("/api/tables/1/empty")
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -59,7 +59,7 @@ class TableRestControllerTest extends BaseControllerTest {
     @DisplayName("테이블 인원 변경 테스트")
     @Test
     void tableChangeNumberOfGuestTest() throws Exception  {
-        OrderTable orderTable = getOrderTable();
+        OrderTableDto orderTable = getOrderTable();
         orderTable.setNumberOfGuests(8);
         orderTable.setEmpty(false);
 
@@ -77,8 +77,8 @@ class TableRestControllerTest extends BaseControllerTest {
                         .value(8));
     }
 
-    private OrderTable getOrderTable() {
-        OrderTable table = new OrderTable();
+    private OrderTableDto getOrderTable() {
+        OrderTableDto table = new OrderTableDto();
         table.setTableGroupId(1L);
         table.setEmpty(true);
         table.setNumberOfGuests(4);
