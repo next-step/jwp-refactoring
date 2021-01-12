@@ -10,7 +10,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 @SpringBootTest
 class ProductServiceTest {
 
@@ -33,7 +35,7 @@ class ProductServiceTest {
 		assertThat(list).contains(savedProduct);
 	}
 
-	@DisplayName("금액이 0원미만이거나 없는 상품은 등록할 수 없다.")
+	@DisplayName("금액이 0원미만 상품은 등록할 수 없다.")
 	@Test
 	void createWithUnderZeroPrice() {
 		//given
