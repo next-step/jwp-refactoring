@@ -1,43 +1,52 @@
 package kitchenpos.ui;
 
+import static kitchenpos.domain.TestFixture.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
 import kitchenpos.BaseControllerTest;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.TestDomainConstructor;
+import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.MenuRequest;
 
 @DisplayName("메뉴 Controller 테스트")
 public class MenuRestControllerTest extends BaseControllerTest {
+
+	private static final Long 존재하지않는_ID = 0L;
+	private MenuProductRequest menuProductRequest1;
+	private MenuProductRequest menuProductRequest2;
+	private List<MenuProductRequest> menuProductRequests;
+
+	@BeforeEach
+	public void setUp() {
+		menuProductRequest1 = new MenuProductRequest(null, 메뉴상품_신규_1_후라이드_ID, 메뉴상품_신규_1_후라이드_QUANTITY);
+		menuProductRequest2 = new MenuProductRequest(null, 메뉴상품_신규_2_양념_ID, 메뉴상품_신규_2_양념_QUANTITY);
+		menuProductRequests = Arrays.asList(menuProductRequest1, menuProductRequest2);
+	}
 
 	@Test
 	@DisplayName("메뉴를 등록할 수 있다 - 메뉴 등록 후, 등록된 메뉴의 아이디를 포함한 정보를 반환한다.")
 	void create() throws Exception {
 		//given
-		String name = "후라이드-양념 콤보";
-		BigDecimal price = BigDecimal.valueOf(10000);
-		MenuProduct menuProduct1 = TestDomainConstructor.menuProduct(null, 1L, 2);
-		MenuProduct menuProduct2 = TestDomainConstructor.menuProduct(null, 2L, 1);
-		Menu menu = TestDomainConstructor.menu(name, price, 1L, Arrays.asList(menuProduct1, menuProduct2));
+		MenuRequest menuRequest = new MenuRequest(메뉴_신규_NAME, 메뉴_신규_PRICE, 메뉴_신규_MENU_GROUP_ID, menuProductRequests);
 
 		//when-then
 		mockMvc.perform(post("/api/menus")
 			.contentType(MediaType.APPLICATION_JSON)
-			.content(objectMapper.writeValueAsString(menu)))
+			.content(objectMapper.writeValueAsString(menuRequest)))
 			.andDo(print())
 			.andExpect(status().isCreated())
 			.andExpect(jsonPath("$.id").isNotEmpty())
-			.andExpect(jsonPath("$.name").value(name))
-			.andExpect(jsonPath("$.price").value(price.longValue()));
+			.andExpect(jsonPath("$.name").value(메뉴_신규_NAME))
+			.andExpect(jsonPath("$.price").value(메뉴_신규_PRICE.longValue()));
 	}
 
 	@Test

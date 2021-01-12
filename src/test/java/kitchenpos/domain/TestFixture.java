@@ -58,6 +58,7 @@ public class TestFixture {
 	public static final int 메뉴상품_신규_1_후라이드_QUANTITY = 1;
 	public static final Long 메뉴상품_신규_2_양념_ID = 2L;
 	public static final int 메뉴상품_신규_2_양념_QUANTITY = 1;
+	public static final BigDecimal 메뉴상품_신규_가격_총합 = BigDecimal.valueOf(32000);
 	public static final MenuProduct 메뉴상품_신규_후라이드 = new MenuProduct(메뉴상품_신규_MENU_ID, 메뉴상품_신규_1_후라이드_ID, 메뉴상품_신규_1_후라이드_QUANTITY);
 	public static final MenuProduct 메뉴상품_신규_양념 = new MenuProduct(메뉴상품_신규_MENU_ID, 메뉴상품_신규_2_양념_ID, 메뉴상품_신규_2_양념_QUANTITY);
 	public static final Menu 메뉴_신규_후라이드양념두마리_WITH_상품목록 = new Menu(메뉴_신규_ID
