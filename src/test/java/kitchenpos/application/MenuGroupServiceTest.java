@@ -2,7 +2,6 @@ package kitchenpos.application;
 
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,16 +37,14 @@ class MenuGroupServiceTest {
     @DisplayName("메뉴 그룹의 목록을 조회할 수 있다.")
     @Test
     public void findAllMenuGroupTest() {
+        MenuGroup menuGroup1 = new MenuGroup(1L,"그룹1");
+        MenuGroup menuGroup2 = new MenuGroup(2L,"그룹2");
         given(dao.findAll()).willReturn(
-                Arrays.asList(new MenuGroup(1L,"그룹1"),
-                        new MenuGroup(2L,"그룹2")
-                )
+                Arrays.asList(menuGroup1, menuGroup2)
         );
 
         List<MenuGroup> results = service.list();
 
-        assertThat(results.size()).isEqualTo(2);
-        assertThat(results.get(0)).isEqualTo(new MenuGroup(1L,"그룹1"));
-        assertThat(results.get(1)).isEqualTo(new MenuGroup(2L,"그룹2"));
+        assertThat(results).contains(menuGroup1, menuGroup2);
     }
 }
