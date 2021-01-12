@@ -1,25 +1,9 @@
 package kitchenpos.domain;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class TestDomainConstructor {
-	public static Menu menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-		return new Menu(name, price, menuGroupId, menuProducts);
-	}
-
-	public static Menu menuWithId(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts, Long id) {
-		return new Menu(id, name, price, menuGroupId, menuProducts);
-	}
-
-	public static MenuProduct menuProduct(Long menuId, Long productId, long quantity) {
-		return new MenuProduct(menuId, productId, quantity);
-	}
-
-	public static MenuProduct menuProductWithSeq(Long menuId, Long productId, long quantity, Long seq) {
-		return new MenuProduct(seq, menuId, productId, quantity);
-	}
 
 	public static OrderTable orderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
 		return new OrderTable(tableGroupId, numberOfGuests, empty);
