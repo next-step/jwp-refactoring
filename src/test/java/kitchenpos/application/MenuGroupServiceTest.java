@@ -1,39 +1,34 @@
 package kitchenpos.application;
 
+import static kitchenpos.domain.TestFixture.*;
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.TestDomainConstructor;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
 
-@ExtendWith(MockitoExtension.class)
+
+
+@SpringBootTest
 public class MenuGroupServiceTest {
-	@Mock
-	private MenuGroupDao menuGroupDao;
-	@InjectMocks
+	@Autowired
 	private MenuGroupService menuGroupService;
 
 	@Test
 	@DisplayName("메뉴그룹을 등록할 수 있다.")
 	void create() {
 		//given
-		String name = "메뉴그룹1";
-		MenuGroup menuGroup = TestDomainConstructor.menuGroup(name);
-		MenuGroup savedMenuGroup = TestDomainConstructor.menuGroupWithId(name, 1L);
-		when(menuGroupDao.save(menuGroup)).thenReturn(savedMenuGroup);
+		MenuGroupRequest menuGroupRequest = new MenuGroupRequest(메뉴그룹_신규_NAME);
 
 		//when
-		MenuGroup result = menuGroupService.create(menuGroup);
+		MenuGroupResponse result = menuGroupService.create(menuGroupRequest);
 
 		//then
-		assertThat(result).isEqualTo(savedMenuGroup);
+		assertThat(result.getId()).isNotNull();
+		assertThat(result.getName()).isEqualTo(메뉴그룹_신규_NAME);
 	}
 }

@@ -13,14 +13,6 @@ public class TestDomainConstructor {
 		return new Product(id, name, price);
 	}
 
-	public static MenuGroup menuGroup(String name) {
-		return new MenuGroup(name);
-	}
-
-	public static MenuGroup menuGroupWithId(String name, Long id) {
-		return new MenuGroup(id, name);
-	}
-
 	public static Menu menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
 		return new Menu(name, price, menuGroupId, menuProducts);
 	}

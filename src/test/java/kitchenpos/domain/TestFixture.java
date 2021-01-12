@@ -4,8 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
-import org.mockito.internal.matchers.Or;
-
+//migration sql 기반 데이터
 public class TestFixture {
 	//MenuGroup
 	public static final MenuGroup 메뉴그룹_두마리메뉴 = new MenuGroup(1L, "두마리메뉴");
@@ -15,7 +14,6 @@ public class TestFixture {
 
 	public static final Long 메뉴그룹_신규_ID = 5L;
 	public static final String 메뉴그룹_신규_NAME = "윙봉콤보메뉴";
-	public static final MenuGroup 메뉴그룹_신규_윙봉콤보메뉴 = new MenuGroup(메뉴그룹_신규_ID, 메뉴그룹_신규_NAME);
 
 	//Product
 	public static final Product 상품_후라이드 = new Product(1L, "후라이드", BigDecimal.valueOf(16000));
