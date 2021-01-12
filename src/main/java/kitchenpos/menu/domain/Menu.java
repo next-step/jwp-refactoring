@@ -8,7 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import kitchenpos.common.domain.Price;
 
@@ -20,33 +21,25 @@ public class Menu {
     private String name;
     @Embedded
     private Price price;
-    private Long menuGroupId;
-    @OneToMany(mappedBy = "menu")
-    private List<MenuProduct> menuProducts;
+    @ManyToOne
+    @JoinColumn(name = "menu_group_id")
+    private MenuGroup menuGroup;
+    @Embedded
+    private MenuProducts menuProducts;
 
     protected Menu() {
     }
 
-    public Menu(Long id, String name, BigDecimal price, Long menuGroupId) {
+    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup) {
         this.id = id;
         this.name = name;
         this.price = new Price(price);
-        this.menuGroupId = menuGroupId;
+        this.menuGroup = menuGroup;
     }
 
-    public Menu(String name, BigDecimal price, Long menuGroupId) {
+    public Menu(String name, BigDecimal price) {
         this.name = name;
         this.price = new Price(price);
-        this.menuGroupId = menuGroupId;
-    }
-
-    public Menu(Long id, String name, BigDecimal price, Long menuGroupId,
-        List<MenuProduct> menuProducts) {
-        this.id = id;
-        this.name = name;
-        this.price = new Price(price);
-        this.menuGroupId = menuGroupId;
-        this.menuProducts = menuProducts;
     }
 
     public Long getId() {
@@ -62,18 +55,25 @@ public class Menu {
     }
 
     public Long getMenuGroupId() {
-        return menuGroupId;
+        return menuGroup.getId();
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
+        return menuProducts.list();
     }
 
-    public void changeMenuProducts(List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
+    public void updateMenuGroup(MenuGroup menuGroup) {
+        this.menuGroup = menuGroup;
     }
 
-    public boolean isPriceExpensiveThan(BigDecimal price) {
-        return this.price.isExpensiveThan(price);
+    public void updateMenuProducts(List<MenuProduct> menuProducts) {
+        this.menuProducts = new MenuProducts(this, menuProducts);
+        this.checkPriceExpensiveThanProductsPriceSum();
+    }
+
+    private void checkPriceExpensiveThanProductsPriceSum() {
+        if (this.price.isExpensiveThan(this.menuProducts.priceSum())) {
+            throw new IllegalArgumentException("메뉴의 가격이 메뉴의 속하는 상품 가격의 합보다 비쌉니다.");
+        }
     }
 }

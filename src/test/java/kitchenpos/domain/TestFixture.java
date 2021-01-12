@@ -17,7 +17,6 @@ public class TestFixture {
 	public static final MenuGroup 메뉴그룹_순살파닭두마리메뉴 = new MenuGroup(3L, "순살파닭두마리메뉴");
 	public static final MenuGroup 메뉴그룹_신메뉴 = new MenuGroup(4L, "신메뉴");
 
-	public static final Long 메뉴그룹_신규_ID = 5L;
 	public static final String 메뉴그룹_신규_NAME = "윙봉콤보메뉴";
 
 	//Product
@@ -28,24 +27,20 @@ public class TestFixture {
 	public static final Product 상품_간장치킨 = new Product(5L, "간장치킨", BigDecimal.valueOf(17000));
 	public static final Product 상품_순살치킨 = new Product(6L, "순살치킨", BigDecimal.valueOf(17000));
 
-	public static final Long 상품_신규_ID = 7L;
 	public static final String 상품_신규_NAME = "허니윙봉콤보";
 	public static final BigDecimal 상품_신규_PRICE = BigDecimal.valueOf(18000);
-	public static final Product 상품_신규_허니윙봉콤보 = new Product(상품_신규_ID, 상품_신규_NAME, 상품_신규_PRICE);
 
 	//Menu
-	public static final Menu 메뉴_후라이드 = new Menu(1L, "후라이드", BigDecimal.valueOf(16000), 2L);
-	public static final Menu 메뉴_양념치킨 = new Menu(2L, "양념치킨", BigDecimal.valueOf(16000), 2L);
-	public static final Menu 메뉴_반반치킨 = new Menu(3L, "반반치킨", BigDecimal.valueOf(16000), 2L);
-	public static final Menu 메뉴_통구이 = new Menu(4L, "통구이", BigDecimal.valueOf(16000), 2L);
-	public static final Menu 메뉴_간장치킨 = new Menu(5L, "간장치킨", BigDecimal.valueOf(17000), 2L);
-	public static final Menu 메뉴_순살치킨 = new Menu(6L, "순살치킨", BigDecimal.valueOf(17000), 2L);
+	public static final Menu 메뉴_후라이드 = new Menu(1L, "후라이드", BigDecimal.valueOf(16000), 메뉴그룹_한마리메뉴);
+	public static final Menu 메뉴_양념치킨 = new Menu(2L, "양념치킨", BigDecimal.valueOf(16000), 메뉴그룹_한마리메뉴);
+	public static final Menu 메뉴_반반치킨 = new Menu(3L, "반반치킨", BigDecimal.valueOf(16000), 메뉴그룹_한마리메뉴);
+	public static final Menu 메뉴_통구이 = new Menu(4L, "통구이", BigDecimal.valueOf(16000), 메뉴그룹_한마리메뉴);
+	public static final Menu 메뉴_간장치킨 = new Menu(5L, "간장치킨", BigDecimal.valueOf(17000), 메뉴그룹_한마리메뉴);
+	public static final Menu 메뉴_순살치킨 = new Menu(6L, "순살치킨", BigDecimal.valueOf(17000), 메뉴그룹_한마리메뉴);
 
-	public static final Long 메뉴_신규_ID = 7L;
 	public static final String 메뉴_신규_NAME = "후라이드양념두마리";
 	public static final BigDecimal 메뉴_신규_PRICE = BigDecimal.valueOf(25000);
 	public static final Long 메뉴_신규_MENU_GROUP_ID = 1L;
-	public static final Menu 메뉴_신규_후라이드양념두마리 = new Menu(메뉴_신규_ID, 메뉴_신규_NAME, 메뉴_신규_PRICE, 메뉴_신규_MENU_GROUP_ID);
 
 	//MenuProduct
 	public static final MenuProduct 메뉴상품_후라이드 = new MenuProduct(메뉴_후라이드, 상품_후라이드, 1);
@@ -55,19 +50,11 @@ public class TestFixture {
 	public static final MenuProduct 메뉴상품_간장치킨 = new MenuProduct(메뉴_간장치킨, 상품_간장치킨, 1);
 	public static final MenuProduct 메뉴상품_순살치킨 = new MenuProduct(메뉴_순살치킨, 상품_순살치킨, 1);
 
-	public static final Long 메뉴상품_신규_MENU_ID = 7L;
 	public static final Long 메뉴상품_신규_1_후라이드_ID = 1L;
 	public static final int 메뉴상품_신규_1_후라이드_QUANTITY = 1;
 	public static final Long 메뉴상품_신규_2_양념_ID = 2L;
 	public static final int 메뉴상품_신규_2_양념_QUANTITY = 1;
 	public static final BigDecimal 메뉴상품_신규_가격_총합 = BigDecimal.valueOf(32000);
-	public static final MenuProduct 메뉴상품_신규_후라이드 = new MenuProduct(메뉴_신규_후라이드양념두마리, 상품_후라이드, 메뉴상품_신규_1_후라이드_QUANTITY);
-	public static final MenuProduct 메뉴상품_신규_양념 = new MenuProduct(메뉴_신규_후라이드양념두마리, 상품_양념치킨, 메뉴상품_신규_2_양념_QUANTITY);
-	public static final Menu 메뉴_신규_후라이드양념두마리_WITH_상품목록 = new Menu(메뉴_신규_ID
-		, 메뉴_신규_NAME
-		, 메뉴_신규_PRICE
-		, 메뉴_신규_MENU_GROUP_ID
-		, Arrays.asList(메뉴상품_신규_후라이드, 메뉴상품_신규_양념));
 
 	//OrderTable
 	public static final OrderTable 테이블_비어있는_0명_1 = new OrderTable(1L, null,0, true);

@@ -39,6 +39,6 @@ public class MenuRequest {
 	}
 
 	public Menu toMenu() {
-		return new Menu(this.name, this.price, this.menuGroupId);
+		return new Menu(this.name, this.price);
 	}
 }
