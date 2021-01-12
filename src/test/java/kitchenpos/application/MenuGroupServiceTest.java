@@ -16,6 +16,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
+@DisplayName("메뉴 그룹 기능 테스트")
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
     private MenuGroup menuGroup1;

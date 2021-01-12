@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
+@DisplayName("단체 지정 기능 테스트")
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     private TableGroup tableGroup;

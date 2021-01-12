@@ -18,6 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 
+@DisplayName("상품 기능 테스트")
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
     private Product product1;

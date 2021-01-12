@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("메뉴 그룹 관련 테스트")
 @SpringBootTest
 class MenuGroupRestControllerTest {
-    public static final String PRODUCT_URI = "/api/menu-groups";
+    public static final String MENU_GROUPS_URI = "/api/menu-groups";
 
     private MenuGroup menuGroup1;
     private MenuGroup menuGroup2;
@@ -73,14 +73,14 @@ class MenuGroupRestControllerTest {
         given(menuGroupService.create(any())).willReturn(menuGroup1);
 
         // when
-        final ResultActions actions = mockMvc.perform(post(PRODUCT_URI)
+        final ResultActions actions = mockMvc.perform(post(MENU_GROUPS_URI)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(toJsonString(menuGroup1)));
 
         // then
         actions
                 .andExpect(status().isCreated())
-                .andExpect(header().string("location", PRODUCT_URI + "/1"))
+                .andExpect(header().string("location", MENU_GROUPS_URI + "/1"))
                 .andExpect(content().string(containsString("두마리메뉴")));
     }
 
@@ -91,7 +91,7 @@ class MenuGroupRestControllerTest {
         given(menuGroupService.list()).willReturn(Arrays.asList(menuGroup1, menuGroup2));
 
         // when
-        final ResultActions actions = mockMvc.perform(get(PRODUCT_URI)
+        final ResultActions actions = mockMvc.perform(get(MENU_GROUPS_URI)
                 .contentType(MediaType.APPLICATION_JSON));
 
         // then

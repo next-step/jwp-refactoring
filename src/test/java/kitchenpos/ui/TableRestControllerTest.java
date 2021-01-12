@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("주문 테이블 관련 테스트")
 @SpringBootTest
 class TableRestControllerTest {
-    public static final String PRODUCT_URI = "/api/tables";
+    public static final String ORDER_TABLE_URI = "/api/tables";
 
     private OrderTable orderTable1;
     private OrderTable orderTable2;
@@ -75,7 +75,7 @@ class TableRestControllerTest {
         given(tableService.create(any())).willReturn(orderTable1);
 
         // when
-        final ResultActions actions = mockMvc.perform(post(PRODUCT_URI)
+        final ResultActions actions = mockMvc.perform(post(ORDER_TABLE_URI)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(toJsonString(orderTable1)));
 
@@ -95,7 +95,7 @@ class TableRestControllerTest {
         given(tableService.list()).willReturn(Arrays.asList(orderTable1, orderTable2));
 
         // when
-        final ResultActions actions = mockMvc.perform(get(PRODUCT_URI)
+        final ResultActions actions = mockMvc.perform(get(ORDER_TABLE_URI)
                 .contentType(MediaType.APPLICATION_JSON));
 
         // then
@@ -116,7 +116,7 @@ class TableRestControllerTest {
         given(tableService.changeEmpty(orderTable1.getId(), orderTable1)).willReturn(orderTable1);
 
         // when
-        final ResultActions actions = mockMvc.perform(put(PRODUCT_URI+"/{orderTableId}/empty", orderTable1.getId())
+        final ResultActions actions = mockMvc.perform(put(ORDER_TABLE_URI +"/{orderTableId}/empty", orderTable1.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(toJsonString(orderTable1)));
 
@@ -131,7 +131,7 @@ class TableRestControllerTest {
         given(tableService.changeEmpty(orderTable1.getId(), orderTable1)).willReturn(orderTable1);
 
         // when
-        final ResultActions actions = mockMvc.perform(put(PRODUCT_URI+"/{orderTableId}/number-of-guests", orderTable1.getId())
+        final ResultActions actions = mockMvc.perform(put(ORDER_TABLE_URI +"/{orderTableId}/number-of-guests", orderTable1.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(toJsonString(orderTable1)));
 

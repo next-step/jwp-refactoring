@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.BDDMockito.given;
 
+@DisplayName("주문 테이블 기능 테스트")
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
     private OrderTable orderTable1;

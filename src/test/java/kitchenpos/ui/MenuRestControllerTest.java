@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("메뉴 관련 테스트")
 @SpringBootTest
 class MenuRestControllerTest {
-    public static final String PRODUCT_URI = "/api/menus";
+    public static final String MENUS_URI = "/api/menus";
 
     private Menu menu1;
     private Menu menu2;
@@ -78,14 +78,14 @@ class MenuRestControllerTest {
         given(menuService.create(any())).willReturn(menu1);
 
         // when
-        final ResultActions actions = mockMvc.perform(post(PRODUCT_URI)
+        final ResultActions actions = mockMvc.perform(post(MENUS_URI)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(toJsonString(menu1)));
 
         // then
         actions
                 .andExpect(status().isCreated())
-                .andExpect(header().string("location", PRODUCT_URI + "/1"))
+                .andExpect(header().string("location", MENUS_URI + "/1"))
                 .andExpect(content().string(containsString("1")))
                 .andExpect(content().string(containsString("후라이드치킨")))
                 .andExpect(content().string(containsString("16000")))
@@ -99,7 +99,7 @@ class MenuRestControllerTest {
         given(menuService.list()).willReturn(Arrays.asList(menu1, menu2));
 
         // when
-        final ResultActions actions = mockMvc.perform(get(PRODUCT_URI)
+        final ResultActions actions = mockMvc.perform(get(MENUS_URI)
                 .contentType(MediaType.APPLICATION_JSON));
 
         // then
