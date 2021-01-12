@@ -18,6 +18,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -46,7 +47,7 @@ class TableServiceTest {
     @Test
     void create() {
         // given
-        when(orderTableDao.save(orderTable)).thenReturn(orderTable);
+        given(orderTableDao.save(orderTable)).willReturn(orderTable);
 
         // when
         OrderTable actual = tableService.create(this.orderTable);
@@ -63,7 +64,7 @@ class TableServiceTest {
     @Test
     void findAll() {
         // given
-        when(orderTableDao.findAll()).thenReturn(Arrays.asList(orderTable));
+        given(orderTableDao.findAll()).willReturn(Arrays.asList(orderTable));
 
         // when
         List<OrderTable> list = tableService.list();
@@ -79,10 +80,10 @@ class TableServiceTest {
     @Test
     void changeEmpty() {
         // given
-        when(orderTableDao.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(orderTable.getId()
-                , Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(false);
-        when(orderTableDao.save(orderTable)).thenReturn(orderTable);
+        given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
+        given(orderDao.existsByOrderTableIdAndOrderStatusIn(orderTable.getId()
+                , Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(false);
+        given(orderTableDao.save(orderTable)).willReturn(orderTable);
 
         OrderTable updateOrderTable = new OrderTable();
         updateOrderTable.setEmpty(false);
@@ -99,7 +100,7 @@ class TableServiceTest {
     void inTableGroup() {
         // given
         orderTable.setTableGroupId(1L);
-        when(orderTableDao.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
+        given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
 
         OrderTable updateOrderTable = new OrderTable();
         updateOrderTable.setEmpty(false);
@@ -113,9 +114,9 @@ class TableServiceTest {
     void test() {
         // given
         boolean isCookingOrMeal = true;
-        when(orderTableDao.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(orderTable.getId()
-                , Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(isCookingOrMeal);
+        given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
+        given(orderDao.existsByOrderTableIdAndOrderStatusIn(orderTable.getId()
+                , Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(isCookingOrMeal);
 
         OrderTable updateOrderTable = new OrderTable();
         updateOrderTable.setEmpty(false);
@@ -129,8 +130,8 @@ class TableServiceTest {
     void numberOfGuests() {
         // given
         orderTable.setEmpty(false);
-        when(orderTableDao.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
-        when(orderTableDao.save(orderTable)).thenReturn(orderTable);
+        given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
+        given(orderTableDao.save(orderTable)).willReturn(orderTable);
 
         OrderTable updateOrderTable = new OrderTable();
         updateOrderTable.setNumberOfGuests(10);
@@ -147,7 +148,7 @@ class TableServiceTest {
     void emptyTable() {
         // given
         orderTable.setEmpty(true);
-        when(orderTableDao.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
+        given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
 
         OrderTable updateOrderTable = new OrderTable();
         updateOrderTable.setNumberOfGuests(10);

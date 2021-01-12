@@ -18,7 +18,7 @@ import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(value = MockitoExtension.class)
 @DisplayName("단체 지정에 대한 비즈니스 로직")
@@ -59,9 +59,9 @@ class TableGroupServiceTest {
         tableGroup.setId(1L);
         tableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
 
-        when(orderTableDao.findAllByIdIn(Arrays.asList(orderTable1.getId(), orderTable2.getId())))
-                .thenReturn(Arrays.asList(orderTable1, orderTable2));
-        when(tableGroupDao.save(tableGroup)).thenReturn(tableGroup);
+        given(orderTableDao.findAllByIdIn(Arrays.asList(orderTable1.getId(), orderTable2.getId())))
+                .willReturn(Arrays.asList(orderTable1, orderTable2));
+        given(tableGroupDao.save(tableGroup)).willReturn(tableGroup);
 
         // when
         TableGroup actual = tableGroupService.create(tableGroup);
@@ -93,8 +93,8 @@ class TableGroupServiceTest {
         tableGroup.setId(1L);
         tableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
 
-        when(orderTableDao.findAllByIdIn(Arrays.asList(orderTable1.getId(), orderTable2.getId())))
-                .thenReturn(Arrays.asList(orderTable1, orderTable2));
+        given(orderTableDao.findAllByIdIn(Arrays.asList(orderTable1.getId(), orderTable2.getId())))
+                .willReturn(Arrays.asList(orderTable1, orderTable2));
 
         // when / then
         assertThrows(IllegalArgumentException.class, () -> tableGroupService.create(tableGroup));
@@ -109,8 +109,8 @@ class TableGroupServiceTest {
         tableGroup.setId(1L);
         tableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
 
-        when(orderTableDao.findAllByIdIn(Arrays.asList(orderTable1.getId(), orderTable2.getId())))
-                .thenReturn(Arrays.asList(orderTable1, orderTable2));
+        given(orderTableDao.findAllByIdIn(Arrays.asList(orderTable1.getId(), orderTable2.getId())))
+                .willReturn(Arrays.asList(orderTable1, orderTable2));
 
         // when / then
         assertThrows(IllegalArgumentException.class, () -> tableGroupService.create(tableGroup));
@@ -126,11 +126,11 @@ class TableGroupServiceTest {
         orderTable1.setTableGroupId(1L);
         orderTable2.setTableGroupId(1L);
 
-        when(orderTableDao.findAllByTableGroupId(tableGroup.getId()))
-                .thenReturn(Arrays.asList(orderTable1, orderTable2));
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(orderTable1.getId(), orderTable2.getId())
+        given(orderTableDao.findAllByTableGroupId(tableGroup.getId()))
+                .willReturn(Arrays.asList(orderTable1, orderTable2));
+        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(orderTable1.getId(), orderTable2.getId())
                 , Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
-                .thenReturn(false);
+                .willReturn(false);
 
         // when
         tableGroupService.ungroup(tableGroup.getId());
@@ -151,11 +151,11 @@ class TableGroupServiceTest {
         orderTable1.setTableGroupId(1L);
         orderTable2.setTableGroupId(1L);
 
-        when(orderTableDao.findAllByTableGroupId(tableGroup.getId()))
-                .thenReturn(Arrays.asList(orderTable1, orderTable2));
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(orderTable1.getId(), orderTable2.getId())
+        given(orderTableDao.findAllByTableGroupId(tableGroup.getId()))
+                .willReturn(Arrays.asList(orderTable1, orderTable2));
+        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(orderTable1.getId(), orderTable2.getId())
                 , Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
-                .thenReturn(isCookingOrMeal);
+                .willReturn(isCookingOrMeal);
 
         // when / then
         assertThrows(IllegalArgumentException.class,

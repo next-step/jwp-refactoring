@@ -22,7 +22,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(value = MockitoExtension.class)
 @DisplayName("주문에 대한 비즈니스 로직")
@@ -64,12 +64,12 @@ class OrderServiceTest {
     void create() {
         // given
         Long menuId = orderLineItem.getMenuId();
-        when(menuDao.countByIdIn(Arrays.asList(menuId))).thenReturn(1L);
+        given(menuDao.countByIdIn(Arrays.asList(menuId))).willReturn(1L);
         OrderTable orderTable = new OrderTable();
         orderTable.setId(order.getOrderTableId());
-        when(orderTableDao.findById(order.getOrderTableId())).thenReturn(Optional.of(orderTable));
-        when(orderDao.save(order)).thenReturn(order);
-        when(orderLineItemDao.save(orderLineItem)).thenReturn(orderLineItem);
+        given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
+        given(orderDao.save(order)).willReturn(order);
+        given(orderLineItemDao.save(orderLineItem)).willReturn(orderLineItem);
 
         // when
         Order actual = orderService.create(this.order);
@@ -99,11 +99,11 @@ class OrderServiceTest {
     void emptyTable() {
         // given
         Long menuId = orderLineItem.getMenuId();
-        when(menuDao.countByIdIn(Arrays.asList(menuId))).thenReturn(1L);
+        given(menuDao.countByIdIn(Arrays.asList(menuId))).willReturn(1L);
         OrderTable orderTable = new OrderTable();
         orderTable.setId(order.getOrderTableId());
         orderTable.setEmpty(true);
-        when(orderTableDao.findById(order.getOrderTableId())).thenReturn(Optional.of(orderTable));
+        given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
 
         // when / then
         assertThrows(IllegalArgumentException.class, () -> orderService.create(order));
@@ -113,7 +113,7 @@ class OrderServiceTest {
     @Test
     void findAll() {
         // given
-        when(orderDao.findAll()).thenReturn(Arrays.asList(order));
+        given(orderDao.findAll()).willReturn(Arrays.asList(order));
 
         // when
         List<Order> list = orderService.list();
@@ -131,7 +131,7 @@ class OrderServiceTest {
     void changeStatus() {
         // given
         order.setOrderStatus(OrderStatus.MEAL.name());
-        when(orderDao.findById(order.getId())).thenReturn(Optional.of(order));
+        given(orderDao.findById(order.getId())).willReturn(Optional.of(order));
 
         Order updateOrder = new Order();
         updateOrder.setOrderStatus(OrderStatus.COMPLETION.name());
@@ -148,7 +148,7 @@ class OrderServiceTest {
     void complete() {
         // given
         order.setOrderStatus(OrderStatus.COMPLETION.name());
-        when(orderDao.findById(order.getId())).thenReturn(Optional.of(order));
+        given(orderDao.findById(order.getId())).willReturn(Optional.of(order));
 
         Order updateOrder = new Order();
         updateOrder.setOrderStatus(OrderStatus.MEAL.name());

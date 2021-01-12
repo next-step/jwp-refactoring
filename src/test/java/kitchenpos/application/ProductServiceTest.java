@@ -16,7 +16,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("상품에 대한 비즈니스 로직")
@@ -42,7 +42,7 @@ class ProductServiceTest {
     @Test
     void create() {
         // given
-        when(productDao.save(product)).thenReturn(product);
+        given(productDao.save(product)).willReturn(product);
 
         // when
         Product actual = productService.create(product);
@@ -53,7 +53,7 @@ class ProductServiceTest {
         assertThat(actual.getPrice()).isEqualTo(product.getPrice());
     }
 
-    @DisplayName("가격은 null이 아니고 0원 이상이어야 한다.")
+    @DisplayName("상품 가격은 0원 이상이어야 한다.")
     @Test
     void priceRange() {
         // given
@@ -69,7 +69,7 @@ class ProductServiceTest {
     @Test
     void findAll() {
         // given
-        when(productDao.findAll()).thenReturn(Arrays.asList(product));
+        given(productDao.findAll()).willReturn(Arrays.asList(product));
 
         // when
         List<Product> list = productService.list();

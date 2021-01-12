@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(value = MockitoExtension.class)
@@ -69,10 +70,10 @@ class MenuServiceTest {
         product.setName("후라이드");
         product.setPrice(new BigDecimal(10000));
 
-        when(menuGroupDao.existsById(1L)).thenReturn(true);
-        when(productDao.findById(1L)).thenReturn(Optional.of(product));
-        when(menuDao.save(menu)).thenReturn(menu);
-        when(menuProductDao.save(menuProduct)).thenReturn(menuProduct);
+        given(menuGroupDao.existsById(1L)).willReturn(true);
+        given(productDao.findById(1L)).willReturn(Optional.of(product));
+        given(menuDao.save(menu)).willReturn(menu);
+        given(menuProductDao.save(menuProduct)).willReturn(menuProduct);
 
         // when
         Menu actual = menuService.create(this.menu);
@@ -85,7 +86,19 @@ class MenuServiceTest {
         assertThat(actual.getMenuProducts()).isEqualTo(menu.getMenuProducts());
     }
 
-    @DisplayName("가격은 필수 정보이며 0 이상의 숫자여야 한다.")
+    @DisplayName("메뉴 상품이 하나 이상 존재해야 한다.")
+    @Test
+    void requiredProduct() {
+        // given
+        Menu notProductMenu = new Menu();
+        notProductMenu.setId(2L);
+        notProductMenu.setName("상품이 없는 메뉴");
+        notProductMenu.setMenuGroupId(1L);
+
+        assertThrows(IllegalArgumentException.class, () -> menuService.create(notProductMenu));
+    }
+
+    @DisplayName("메뉴 가격은 0원 이상이어야 한다.")
     @Test
     void priceRange() {
         // given
@@ -106,8 +119,8 @@ class MenuServiceTest {
         product.setName("후라이드");
         product.setPrice(new BigDecimal(5000));
 
-        when(menuGroupDao.existsById(1L)).thenReturn(true);
-        when(productDao.findById(1L)).thenReturn(Optional.of(product));
+        given(menuGroupDao.existsById(1L)).willReturn(true);
+        given(productDao.findById(1L)).willReturn(Optional.of(product));
 
         // when / then
         assertThrows(IllegalArgumentException.class, () -> menuService.create(menu));
@@ -117,7 +130,7 @@ class MenuServiceTest {
     @Test
     void findAll() {
         // given
-        when(menuDao.findAll()).thenReturn(Arrays.asList(menu));
+        given(menuDao.findAll()).willReturn(Arrays.asList(menu));
 
         // when
         List<Menu> list = menuService.list();

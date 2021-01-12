@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -40,7 +40,7 @@ class MenuGroupServiceTest {
     @Test
     void create() {
         // given
-        when(menuGroupDao.save(menuGroup)).thenReturn(menuGroup);
+        given(menuGroupDao.save(menuGroup)).willReturn(menuGroup);
 
         // when
         MenuGroup actual = menuGroupService.create(menuGroup);
@@ -54,7 +54,7 @@ class MenuGroupServiceTest {
     @Test
     void findAll() {
         // given
-        when(menuGroupDao.findAll()).thenReturn(Arrays.asList(menuGroup));
+        given(menuGroupDao.findAll()).willReturn(Arrays.asList(menuGroup));
 
         // when
         List<MenuGroup> list = menuGroupService.list();
