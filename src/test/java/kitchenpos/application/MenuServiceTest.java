@@ -89,12 +89,11 @@ class MenuServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @ParameterizedTest
-    @DisplayName("메뉴 생성시 메뉴의 합보다 작아야한다.")
-    @ValueSource(ints = {50_000, 50_001})
+    @DisplayName("메뉴 생성시 메뉴의 합보다 같거나 작아야한다.")
+    @Test
     void menuCreateWithWrongAmountTotalSum() {
         Menu menu = getMenu();
-        menu.setPrice(BigDecimal.valueOf(500_000_000));
+        menu.setPrice(BigDecimal.valueOf(50_001));
         assertThatThrownBy(() -> menuService.create(menu))
                 .isInstanceOf(IllegalArgumentException.class);
     }

@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import kitchenpos.application.creator.MenuGroupHelper;
@@ -16,7 +15,6 @@ import kitchenpos.application.creator.OrderTableHelper;
 import kitchenpos.application.creator.ProductHelper;
 import kitchenpos.application.creator.TableGroupHelper;
 import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
@@ -130,6 +128,37 @@ class OrderServiceTest {
     }
 
 
+    @DisplayName("주문 상태 변경")
+    @Test
+    void orderStateChange() {
+        Order order = orderService.create(getOrder());
+        Order orderForStateChange = new Order();
+        orderForStateChange.setOrderStatus(OrderStatus.COMPLETION.name());
+
+        Order savedOrder = orderService.changeOrderStatus(order.getId(), orderForStateChange);
+        
+        assertThat(savedOrder.getId()).isEqualTo(order.getId());
+        assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
+        assertThat(savedOrder.getOrderTableId()).isEqualTo(order.getOrderTableId());
+        assertThat(savedOrder.getOrderedTime()).isEqualTo(order.getOrderedTime());
+        assertThat(savedOrder.getOrderLineItems().get(0).getSeq()).isEqualTo(order.getOrderLineItems().get(0).getSeq());
+        assertThat(savedOrder.getOrderLineItems().get(0).getMenuId()).isEqualTo(order.getOrderLineItems().get(0).getMenuId());
+        assertThat(savedOrder.getOrderLineItems().get(0).getOrderId()).isEqualTo(order.getOrderLineItems().get(0).getOrderId());
+        assertThat(savedOrder.getOrderLineItems().get(0).getQuantity()).isEqualTo(order.getOrderLineItems().get(0).getQuantity());
+    }
+
+
+    @DisplayName("주문 생성시 상태가 COMPLETION 상태인 경우")
+    @Test
+    void orderStateChangeWithCompletionState() {
+        Order order = orderService.create(getOrder());
+        Order orderForStateChange = new Order();
+        orderForStateChange.setOrderStatus(OrderStatus.COMPLETION.name());
+        orderService.changeOrderStatus(order.getId(), orderForStateChange);
+
+        assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), orderForStateChange))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
 
 
     private Order getOrder() {
