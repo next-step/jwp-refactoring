@@ -19,16 +19,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.menu.dao.MenuGroupRepository;
 import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
+import kitchenpos.product.dao.ProductRepository;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
 import kitchenpos.domain.TestDomainConstructor;
 
 @ExtendWith(MockitoExtension.class)
 public class MenuServiceTest {
 	@Mock
-	private ProductDao productDao;
+	private ProductRepository productRepository;
 	@Mock
 	private MenuProductDao menuProductDao;
 	@Mock
@@ -69,7 +69,7 @@ public class MenuServiceTest {
 		MenuProduct savedMenuProduct2 = TestDomainConstructor.menuProductWithSeq(NEW_MENU_ID, SAVED_PRODUCT2_ID, 1, 2L);
 
 		when(menuGroupRepository.existsById(SAVED_MENU_GROUP_ID)).thenReturn(true);
-		when(productDao.findById(anyLong())).thenReturn(Optional.of(savedProduct), Optional.of(savedProduct2));
+		when(productRepository.findById(anyLong())).thenReturn(Optional.of(savedProduct), Optional.of(savedProduct2));
 		when(menuDao.save(menu)).thenReturn(savedMenu);
 		when(menuProductDao.save(any())).thenReturn(savedMenuProduct, savedMenuProduct2);
 
@@ -112,7 +112,7 @@ public class MenuServiceTest {
 		//given
 		Menu notExistProductMenu = TestDomainConstructor.menu("메뉴1", BigDecimal.valueOf(10000), SAVED_MENU_GROUP_ID, Arrays.asList(mock(MenuProduct.class)));
 		when(menuGroupRepository.existsById(any())).thenReturn(true);
-		when(productDao.findById(any())).thenReturn(Optional.empty());
+		when(productRepository.findById(any())).thenReturn(Optional.empty());
 
 		//when-then
 		assertThatThrownBy(() -> menuService.create(notExistProductMenu))
@@ -125,7 +125,7 @@ public class MenuServiceTest {
 		//given
 		Menu greaterThanSumOfProductPriceMenu = TestDomainConstructor.menu("메뉴1", BigDecimal.valueOf(100000), SAVED_MENU_GROUP_ID, menuProducts);
 		when(menuGroupRepository.existsById(SAVED_MENU_GROUP_ID)).thenReturn(true);
-		when(productDao.findById(anyLong())).thenReturn(Optional.of(savedProduct), Optional.of(savedProduct2));
+		when(productRepository.findById(anyLong())).thenReturn(Optional.of(savedProduct), Optional.of(savedProduct2));
 
 		//when-then
 		assertThatThrownBy(() -> menuService.create(greaterThanSumOfProductPriceMenu))

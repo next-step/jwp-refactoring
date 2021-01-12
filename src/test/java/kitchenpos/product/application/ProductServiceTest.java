@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.product.application;
 
 import static kitchenpos.domain.TestFixture.*;
 import static org.assertj.core.api.Assertions.*;
@@ -10,8 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import kitchenpos.dto.ProductRequest;
-import kitchenpos.dto.ProductResponse;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.product.application.ProductService;
 
 @SpringBootTest
 public class ProductServiceTest {

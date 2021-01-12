@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.product.domain.Product;
 
 //migration sql 기반 데이터
 public class TestFixture {
