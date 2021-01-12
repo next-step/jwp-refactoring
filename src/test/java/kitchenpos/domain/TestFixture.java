@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
+import kitchenpos.menu.domain.MenuGroup;
+
 //migration sql 기반 데이터
 public class TestFixture {
 	//MenuGroup

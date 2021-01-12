@@ -1,4 +1,4 @@
-package kitchenpos.ui;
+package kitchenpos.menu.ui;
 
 import static kitchenpos.domain.TestFixture.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
 import kitchenpos.BaseControllerTest;
-import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupRequest;
 
 @DisplayName("메뉴 그룹 Controller 테스트")
 public class MenuGroupRestControllerTest extends BaseControllerTest {
