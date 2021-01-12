@@ -20,7 +20,7 @@ class OrderTest {
     void createFailTest() {
         List<OrderLineItem> emptyOrderLineItems = new ArrayList<>();
 
-        assertThatThrownBy(() -> new Order(1L, 1L, OrderStatus.COOKING, LocalDateTime.now(), emptyOrderLineItems))
+        assertThatThrownBy(() -> new Order(1L, OrderStatus.COOKING, LocalDateTime.now(), emptyOrderLineItems))
                 .isInstanceOf(InvalidTryOrderException.class)
                 .hasMessage("주문하기 위해서는 1개 이상의 주문 항목이 필요합니다.");
     }

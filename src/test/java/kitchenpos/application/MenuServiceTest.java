@@ -7,8 +7,11 @@ import kitchenpos.domain.menu.exceptions.ProductEntityNotFoundException;
 import kitchenpos.ui.dto.menu.MenuProductRequest;
 import kitchenpos.ui.dto.menu.MenuRequest;
 import kitchenpos.ui.dto.menu.MenuResponse;
+import kitchenpos.ui.dto.menugroup.MenuGroupRequest;
+import kitchenpos.ui.dto.menugroup.MenuGroupResponse;
 import kitchenpos.ui.dto.product.ProductRequest;
 import kitchenpos.ui.dto.product.ProductResponse;
+import kitchenpos.utils.FixtureUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -16,8 +19,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -28,14 +29,15 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@SpringBootTest
-@Transactional
-public class MenuServiceTest {
+public class MenuServiceTest extends FixtureUtils {
     @Autowired
     private MenuService menuService;
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private MenuGroupService menuGroupService;
 
     @DisplayName("올바르지 않은 메뉴 가격으로 메뉴를 등록할 수 없다.")
     @ParameterizedTest
@@ -80,16 +82,17 @@ public class MenuServiceTest {
     @Test
     void createFailWithTooExpensivePriceTest() {
         // given
-        Long menuGroupId = 1L;
         BigDecimal tooExpensivePrice = BigDecimal.valueOf(1000000);
         String menuName = "너무너무 비싼 메뉴";
+
+        MenuGroupResponse menuGroup = menuGroupService.create(new MenuGroupRequest("놀라운 메뉴 그룹"));
 
         ProductResponse product1 = productService.create(new ProductRequest("test1", BigDecimal.ONE));
         ProductResponse product2 = productService.create(new ProductRequest("test2", BigDecimal.ONE));
 
         List<MenuProductRequest> menuProductRequests = Arrays.asList(
                 MenuProductRequest.of(product1.getId(), 1L), MenuProductRequest.of(product2.getId(), 1L));
-        MenuRequest menuRequest = MenuRequest.of(menuName, tooExpensivePrice, menuGroupId, menuProductRequests);
+        MenuRequest menuRequest = MenuRequest.of(menuName, tooExpensivePrice, menuGroup.getId(), menuProductRequests);
 
         // when, then
         assertThatThrownBy(() -> menuService.create(menuRequest))
@@ -101,12 +104,12 @@ public class MenuServiceTest {
     @Test
     void createFailWithNotExistProduct() {
         // given
-        Long menuGroupId = 1L;
+        MenuGroupResponse menuGroup = menuGroupService.create(new MenuGroupRequest("놀라운 메뉴 그룹"));
 
         MenuProduct notExistMenuProduct= MenuProduct.of(10000000L, 1L);
 
         List<MenuProductRequest> menuProductRequests = Collections.singletonList(MenuProductRequest.of(notExistMenuProduct));
-        MenuRequest menuRequest = MenuRequest.of("menu", BigDecimal.ONE, menuGroupId, menuProductRequests);
+        MenuRequest menuRequest = MenuRequest.of("menu", BigDecimal.ONE, menuGroup.getId(), menuProductRequests);
 
         // when, then
         assertThatThrownBy(() -> menuService.create(menuRequest))
@@ -119,16 +122,17 @@ public class MenuServiceTest {
     void createMenuTest() {
         // given
         int expectedSize = 2;
-        Long menuGroupId = 1L;
         BigDecimal menuPrice = BigDecimal.ONE;
         String menuName = "신메뉴";
+
+        MenuGroupResponse menuGroup = menuGroupService.create(new MenuGroupRequest("놀라운 메뉴 그룹"));
 
         ProductResponse product1 = productService.create(new ProductRequest("test1", BigDecimal.ONE));
         ProductResponse product2 = productService.create(new ProductRequest("test2", BigDecimal.ONE));
 
         List<MenuProductRequest> menuProductRequests = Arrays.asList(
                 MenuProductRequest.of(product1.getId(), 1L), MenuProductRequest.of(product2.getId(), 1L));
-        MenuRequest menuRequest = MenuRequest.of(menuName, menuPrice, menuGroupId, menuProductRequests);
+        MenuRequest menuRequest = MenuRequest.of(menuName, menuPrice, menuGroup.getId(), menuProductRequests);
 
         // when
         MenuResponse menuResponse = menuService.create(menuRequest);
@@ -142,16 +146,17 @@ public class MenuServiceTest {
     @Test
     void getMenusTest() {
         // given
-        Long menuGroupId = 1L;
         BigDecimal menuPrice = BigDecimal.ONE;
         String menuName = "새로 나온 엄청난 메뉴";
+
+        MenuGroupResponse menuGroup = menuGroupService.create(new MenuGroupRequest("놀라운 메뉴 그룹"));
 
         ProductResponse product1 = productService.create(new ProductRequest("test1", BigDecimal.ONE));
         ProductResponse product2 = productService.create(new ProductRequest("test2", BigDecimal.ONE));
 
         List<MenuProductRequest> menuProductRequests = Arrays.asList(
                 MenuProductRequest.of(product1.getId(), 1L), MenuProductRequest.of(product2.getId(), 1L));
-        MenuRequest menuRequest = MenuRequest.of(menuName, menuPrice, menuGroupId, menuProductRequests);
+        MenuRequest menuRequest = MenuRequest.of(menuName, menuPrice, menuGroup.getId(), menuProductRequests);
 
         menuService.create(menuRequest);
 

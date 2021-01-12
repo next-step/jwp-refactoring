@@ -1,7 +1,7 @@
 package kitchenpos.infra.order;
 
-import kitchenpos.domain.orderTable.OrderTable;
-import kitchenpos.domain.orderTable.OrderTableRepository;
+import kitchenpos.domain.ordertable.OrderTable;
+import kitchenpos.domain.ordertable.OrderTableRepository;
 import kitchenpos.domain.order.SafeOrderTable;
 import kitchenpos.domain.order.exceptions.InvalidTryOrderException;
 import org.springframework.stereotype.Component;

@@ -1,25 +1,24 @@
 package kitchenpos.application;
 
 import kitchenpos.domain.order.OrderStatus;
-import kitchenpos.domain.orderTable.OrderTable;
-import kitchenpos.domain.orderTable.exceptions.InvalidNumberOfGuestsException;
-import kitchenpos.domain.orderTable.exceptions.InvalidTryChangeEmptyException;
-import kitchenpos.domain.orderTable.exceptions.InvalidTryChangeGuestsException;
-import kitchenpos.domain.orderTable.exceptions.OrderTableEntityNotFoundException;
+import kitchenpos.domain.ordertable.OrderTable;
+import kitchenpos.domain.ordertable.exceptions.InvalidNumberOfGuestsException;
+import kitchenpos.domain.ordertable.exceptions.InvalidTryChangeEmptyException;
+import kitchenpos.domain.ordertable.exceptions.InvalidTryChangeGuestsException;
+import kitchenpos.domain.ordertable.exceptions.OrderTableEntityNotFoundException;
 import kitchenpos.ui.dto.order.OrderLineItemRequest;
 import kitchenpos.ui.dto.order.OrderRequest;
 import kitchenpos.ui.dto.order.OrderResponse;
 import kitchenpos.ui.dto.order.OrderStatusChangeRequest;
-import kitchenpos.ui.dto.orderTable.*;
-import kitchenpos.ui.dto.tableGroup.OrderTableInTableGroupRequest;
-import kitchenpos.ui.dto.tableGroup.TableGroupRequest;
+import kitchenpos.ui.dto.ordertable.*;
+import kitchenpos.ui.dto.tablegroup.OrderTableInTableGroupRequest;
+import kitchenpos.ui.dto.tablegroup.TableGroupRequest;
+import kitchenpos.utils.FixtureUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -29,9 +28,7 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@SpringBootTest
-@Transactional
-public class OrderTableServiceTest {
+public class OrderTableServiceTest extends FixtureUtils {
     @Autowired
     private OrderTableService orderTableService;
 
@@ -109,10 +106,12 @@ public class OrderTableServiceTest {
     @Test
     void changeEmptyFailWithInvalidOrderStatusTest() {
         // given
+        Long menuId = super.createMenuFixture();
+
         OrderTableResponse orderTable = this.createOrderTable(false, 3);
 
         OrderRequest orderRequest = new OrderRequest(
-                orderTable.getId(), Collections.singletonList(new OrderLineItemRequest(1L, 1L)));
+                orderTable.getId(), Collections.singletonList(new OrderLineItemRequest(menuId, 1L)));
         OrderResponse orderResponse = orderService.create(orderRequest);
         assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
 
@@ -126,10 +125,12 @@ public class OrderTableServiceTest {
     @Test
     void changeEmptyTest() {
         // given
+        Long menuId = super.createMenuFixture();
+
         OrderTableResponse orderTable = this.createOrderTable(false, 3);
 
         OrderRequest orderRequest = new OrderRequest(
-                orderTable.getId(), Collections.singletonList(new OrderLineItemRequest(1L, 1L)));
+                orderTable.getId(), Collections.singletonList(new OrderLineItemRequest(menuId, 1L)));
         OrderResponse orderResponse = orderService.create(orderRequest);
         orderService.changeOrderStatus(orderResponse.getId(), new OrderStatusChangeRequest(OrderStatus.COMPLETION.name()));
 

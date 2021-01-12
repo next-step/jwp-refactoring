@@ -1,7 +1,7 @@
 package kitchenpos.infra.menu;
 
 import kitchenpos.domain.menu.exceptions.MenuGroupEntityNotFoundException;
-import kitchenpos.domain.menuGroup.MenuGroupRepository;
+import kitchenpos.domain.menugroup.MenuGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

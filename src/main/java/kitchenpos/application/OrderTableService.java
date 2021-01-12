@@ -1,12 +1,12 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.domainEvents.GroupOrderTableEvent;
-import kitchenpos.domain.orderTable.OrderTable;
-import kitchenpos.domain.orderTable.OrderTableRepository;
-import kitchenpos.domain.orderTable.SafeOrder;
-import kitchenpos.domain.orderTable.SafeTableGroup;
-import kitchenpos.domain.orderTable.exceptions.OrderTableEntityNotFoundException;
-import kitchenpos.ui.dto.orderTable.*;
+import kitchenpos.domain.domainevents.GroupOrderTableEvent;
+import kitchenpos.domain.ordertable.OrderTable;
+import kitchenpos.domain.ordertable.OrderTableRepository;
+import kitchenpos.domain.ordertable.SafeOrder;
+import kitchenpos.domain.ordertable.SafeTableGroup;
+import kitchenpos.domain.ordertable.exceptions.OrderTableEntityNotFoundException;
+import kitchenpos.ui.dto.ordertable.*;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,13 +1,12 @@
 package kitchenpos.domain.order;
 
+import kitchenpos.ValueObjectId;
+
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
-public class OrderLineItem {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long seq;
-
+public class OrderLineItem extends ValueObjectId {
     private Long menuId;
 
     private long quantity;
@@ -15,18 +14,13 @@ public class OrderLineItem {
     protected OrderLineItem() {
     }
 
-    OrderLineItem(final Long seq, final Long menuId, final long quantity) {
-        this.seq = seq;
+    public OrderLineItem(final Long menuId, final long quantity) {
         this.menuId = menuId;
         this.quantity = quantity;
     }
 
-    public OrderLineItem(final Long menuId, final Long quantity) {
-        this(null, menuId, quantity);
-    }
-
     public Long getSeq() {
-        return seq;
+        return super.getSeq();
     }
 
     public Long getMenuId() {
@@ -35,5 +29,26 @@ public class OrderLineItem {
 
     public long getQuantity() {
         return quantity;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final OrderLineItem that = (OrderLineItem) o;
+        return quantity == that.quantity && Objects.equals(menuId, that.menuId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(menuId, quantity);
+    }
+
+    @Override
+    public String toString() {
+        return "OrderLineItem{" +
+                "menuId=" + menuId +
+                ", quantity=" + quantity +
+                '}';
     }
 }

@@ -23,24 +23,21 @@ public class Order {
 
     private LocalDateTime orderedTime;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "order_id")
-    private List<OrderLineItem> orderLineItems = new ArrayList<>();
+    @Embedded
+    private OrderLineItems orderLineItems;
 
     protected Order() {
     }
 
-    Order(final Long id, final Long orderTableId, final OrderStatus orderStatus, final LocalDateTime orderedTime, final List<OrderLineItem> orderLineItems) {
-        validate(orderLineItems);
-        this.id = id;
+    Order(final Long orderTableId, final OrderStatus orderStatus, final LocalDateTime orderedTime, final List<OrderLineItem> orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
-        this.orderLineItems = orderLineItems;
+        this.orderLineItems = new OrderLineItems(orderLineItems);
     }
 
     public Order(final Long orderTableId, final List<OrderLineItem> orderLineItems) {
-        this(null, orderTableId, OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
+        this(orderTableId, OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
     }
 
     public Long getId() {
@@ -67,12 +64,6 @@ public class Order {
     }
 
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
-    }
-
-    private void validate(final List<OrderLineItem> orderLineItems) {
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new InvalidTryOrderException("주문하기 위해서는 1개 이상의 주문 항목이 필요합니다.");
-        }
+        return orderLineItems.getList();
     }
 }

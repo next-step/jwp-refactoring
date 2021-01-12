@@ -1,21 +1,18 @@
 package kitchenpos.application;
 
-import kitchenpos.ui.dto.menuGroup.MenuGroupRequest;
-import kitchenpos.ui.dto.menuGroup.MenuGroupResponse;
+import kitchenpos.ui.dto.menugroup.MenuGroupRequest;
+import kitchenpos.ui.dto.menugroup.MenuGroupResponse;
+import kitchenpos.utils.FixtureUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-@Transactional
-class MenuGroupServiceTest {
+class MenuGroupServiceTest extends FixtureUtils {
     @Autowired
     private MenuGroupService menuGroupService;
 

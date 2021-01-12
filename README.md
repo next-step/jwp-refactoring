@@ -186,3 +186,15 @@
   - 이전과 다르게 이벤트 퍼블리싱 방식을 사용하기 때문에 응답 정합성을 보장하기 어려움 (혹시나 시간차 발생)
   - 이를 방지하기 위해 ID만 반환하도록 변경
 - [X] 리팩토링 다 하고 나서 OrderTable API 응답 시 TableGroupId도 보이도록 기능 개선
+
+## Step2. 피드백 반영
+- [X] Service 테스트에서 Transactional 대신 DB 초기화 사용해보기
+- [X] 패키지명 컨벤션 지키기
+- [X] ID 할당 생성자 제거하기 (stub 안쓰기 때문에 필요 없음)
+
+## Step3. 양방향을 단방향
+- [X] DB 상의 FK 제약조건 제거(단방향)
+- [X] VO 컬렉션을 통해 OneToMany 연관 관계를 값으로 처리할 수 있도록 개선
+  - [X] Menu
+  - [X] Order
+  - [X] TableGroup
