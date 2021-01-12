@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.menu.application;
 
 import static kitchenpos.domain.TestFixture.*;
 import static org.assertj.core.api.Assertions.*;
@@ -13,9 +13,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import kitchenpos.dto.MenuProductRequest;
-import kitchenpos.dto.MenuRequest;
-import kitchenpos.dto.MenuResponse;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 
 @SpringBootTest
 public class MenuServiceTest {
@@ -29,8 +29,8 @@ public class MenuServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		menuProductRequest1 = new MenuProductRequest(null, 메뉴상품_신규_1_후라이드_ID, 메뉴상품_신규_1_후라이드_QUANTITY);
-		menuProductRequest2 = new MenuProductRequest(null, 메뉴상품_신규_2_양념_ID, 메뉴상품_신규_2_양념_QUANTITY);
+		menuProductRequest1 = new MenuProductRequest(메뉴상품_신규_1_후라이드_ID, 메뉴상품_신규_1_후라이드_QUANTITY);
+		menuProductRequest2 = new MenuProductRequest(메뉴상품_신규_2_양념_ID, 메뉴상품_신규_2_양념_QUANTITY);
 		menuProductRequests = Arrays.asList(menuProductRequest1, menuProductRequest2);
 	}
 
@@ -81,7 +81,7 @@ public class MenuServiceTest {
 	@DisplayName("메뉴 등록 시, 상품이 등록되어있지 않으면 IllegalArgumentException을 throw 해야한다.")
 	void createNotExistProduct() {
 		//given
-		MenuProductRequest notExistProduct = new MenuProductRequest(null, 존재하지않는_ID, 1);
+		MenuProductRequest notExistProduct = new MenuProductRequest(존재하지않는_ID, 1);
 		MenuRequest notExistProductMenu = new MenuRequest(메뉴_신규_NAME, 메뉴_신규_PRICE, 메뉴_신규_MENU_GROUP_ID, Arrays.asList(notExistProduct));
 
 		//when-then

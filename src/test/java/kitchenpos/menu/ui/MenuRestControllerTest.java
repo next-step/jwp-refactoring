@@ -1,4 +1,4 @@
-package kitchenpos.ui;
+package kitchenpos.menu.ui;
 
 import static kitchenpos.domain.TestFixture.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -14,8 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
 import kitchenpos.BaseControllerTest;
-import kitchenpos.dto.MenuProductRequest;
-import kitchenpos.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
 
 @DisplayName("메뉴 Controller 테스트")
 public class MenuRestControllerTest extends BaseControllerTest {
@@ -27,8 +27,8 @@ public class MenuRestControllerTest extends BaseControllerTest {
 
 	@BeforeEach
 	public void setUp() {
-		menuProductRequest1 = new MenuProductRequest(null, 메뉴상품_신규_1_후라이드_ID, 메뉴상품_신규_1_후라이드_QUANTITY);
-		menuProductRequest2 = new MenuProductRequest(null, 메뉴상품_신규_2_양념_ID, 메뉴상품_신규_2_양념_QUANTITY);
+		menuProductRequest1 = new MenuProductRequest(메뉴상품_신규_1_후라이드_ID, 메뉴상품_신규_1_후라이드_QUANTITY);
+		menuProductRequest2 = new MenuProductRequest(메뉴상품_신규_2_양념_ID, 메뉴상품_신규_2_양념_QUANTITY);
 		menuProductRequests = Arrays.asList(menuProductRequest1, menuProductRequest2);
 	}
 

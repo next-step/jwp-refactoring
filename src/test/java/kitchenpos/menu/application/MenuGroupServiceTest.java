@@ -11,8 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
 
-
-
 @SpringBootTest
 public class MenuGroupServiceTest {
 	@Autowired

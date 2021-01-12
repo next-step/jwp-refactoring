@@ -19,7 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.MenuDao;
+import kitchenpos.menu.dao.MenuRepository;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
@@ -32,7 +32,7 @@ import kitchenpos.domain.TestDomainConstructor;
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
 	@Mock
-	private MenuDao menuDao;
+	private MenuRepository menuRepository;
 	@Mock
 	private OrderTableDao orderTableDao;
 	@Mock
@@ -74,7 +74,7 @@ public class OrderServiceTest {
 		OrderLineItem savedOrderLineItem = TestDomainConstructor.orderLineItemWithSeq(NEW_ORDER_ID, MENU_ID, 1, 1L);
 		OrderLineItem savedOrderLineItem2 = TestDomainConstructor.orderLineItemWithSeq(NEW_ORDER_ID, MENU2_ID, 1, 2L);
 
-		when(menuDao.countByIdIn(MENU_IDS)).thenReturn(orderLineItemsSize);
+		when(menuRepository.countByIdIn(MENU_IDS)).thenReturn(orderLineItemsSize);
 		when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(savedOrderTable));
 		//save 전에 3가지 정보가 setting 되어야 함
 		when(orderDao.save(argThat(allOf(
@@ -122,7 +122,7 @@ public class OrderServiceTest {
 	void createNotExistOrderTable() {
 		//given
 		Order notExistOrderTable = TestDomainConstructor.order(100L, null, null, orderLineItems);
-		when(menuDao.countByIdIn(MENU_IDS)).thenReturn(orderLineItemsSize);
+		when(menuRepository.countByIdIn(MENU_IDS)).thenReturn(orderLineItemsSize);
 		when(orderTableDao.findById(100L)).thenReturn(Optional.empty());
 
 		//when-then
@@ -135,7 +135,7 @@ public class OrderServiceTest {
 	void createNotExistMenus() {
 		//given
 		Order notExistMenus = TestDomainConstructor.order(NOT_EMPTY_TABLE_ID, null, null, orderLineItems);
-		when(menuDao.countByIdIn(MENU_IDS)).thenReturn(1L);
+		when(menuRepository.countByIdIn(MENU_IDS)).thenReturn(1L);
 
 		//when-then
 		assertThatThrownBy(() -> orderService.create(notExistMenus))
@@ -148,7 +148,7 @@ public class OrderServiceTest {
 		//given
 		OrderTable emptyTable = TestDomainConstructor.orderTableWithId(null, 0, true, 3L);
 		Order emptyTableOrder = TestDomainConstructor.order(3L, null, null, orderLineItems);
-		when(menuDao.countByIdIn(MENU_IDS)).thenReturn(orderLineItemsSize);
+		when(menuRepository.countByIdIn(MENU_IDS)).thenReturn(orderLineItemsSize);
 		when(orderTableDao.findById(3L)).thenReturn(Optional.of(emptyTable));
 
 		//when-then

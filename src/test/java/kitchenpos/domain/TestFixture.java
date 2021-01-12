@@ -4,7 +4,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
 
 //migration sql 기반 데이터
@@ -46,12 +48,12 @@ public class TestFixture {
 	public static final Menu 메뉴_신규_후라이드양념두마리 = new Menu(메뉴_신규_ID, 메뉴_신규_NAME, 메뉴_신규_PRICE, 메뉴_신규_MENU_GROUP_ID);
 
 	//MenuProduct
-	public static final MenuProduct 메뉴상품_후라이드 = new MenuProduct(1L, 1L, 1);
-	public static final MenuProduct 메뉴상품_양념치킨 = new MenuProduct(2L, 2L, 1);
-	public static final MenuProduct 메뉴상품_반반치킨 = new MenuProduct(3L, 3L, 1);
-	public static final MenuProduct 메뉴상품_통구이 = new MenuProduct(4L, 4L, 1);
-	public static final MenuProduct 메뉴상품_간장치킨 = new MenuProduct(5L, 5L, 1);
-	public static final MenuProduct 메뉴상품_순살치킨 = new MenuProduct(6L, 6L, 1);
+	public static final MenuProduct 메뉴상품_후라이드 = new MenuProduct(메뉴_후라이드, 상품_후라이드, 1);
+	public static final MenuProduct 메뉴상품_양념치킨 = new MenuProduct(메뉴_양념치킨, 상품_양념치킨, 1);
+	public static final MenuProduct 메뉴상품_반반치킨 = new MenuProduct(메뉴_반반치킨, 상품_반반치킨, 1);
+	public static final MenuProduct 메뉴상품_통구이 = new MenuProduct(메뉴_통구이, 상품_통구이, 1);
+	public static final MenuProduct 메뉴상품_간장치킨 = new MenuProduct(메뉴_간장치킨, 상품_간장치킨, 1);
+	public static final MenuProduct 메뉴상품_순살치킨 = new MenuProduct(메뉴_순살치킨, 상품_순살치킨, 1);
 
 	public static final Long 메뉴상품_신규_MENU_ID = 7L;
 	public static final Long 메뉴상품_신규_1_후라이드_ID = 1L;
@@ -59,8 +61,8 @@ public class TestFixture {
 	public static final Long 메뉴상품_신규_2_양념_ID = 2L;
 	public static final int 메뉴상품_신규_2_양념_QUANTITY = 1;
 	public static final BigDecimal 메뉴상품_신규_가격_총합 = BigDecimal.valueOf(32000);
-	public static final MenuProduct 메뉴상품_신규_후라이드 = new MenuProduct(메뉴상품_신규_MENU_ID, 메뉴상품_신규_1_후라이드_ID, 메뉴상품_신규_1_후라이드_QUANTITY);
-	public static final MenuProduct 메뉴상품_신규_양념 = new MenuProduct(메뉴상품_신규_MENU_ID, 메뉴상품_신규_2_양념_ID, 메뉴상품_신규_2_양념_QUANTITY);
+	public static final MenuProduct 메뉴상품_신규_후라이드 = new MenuProduct(메뉴_신규_후라이드양념두마리, 상품_후라이드, 메뉴상품_신규_1_후라이드_QUANTITY);
+	public static final MenuProduct 메뉴상품_신규_양념 = new MenuProduct(메뉴_신규_후라이드양념두마리, 상품_양념치킨, 메뉴상품_신규_2_양념_QUANTITY);
 	public static final Menu 메뉴_신규_후라이드양념두마리_WITH_상품목록 = new Menu(메뉴_신규_ID
 		, 메뉴_신규_NAME
 		, 메뉴_신규_PRICE
