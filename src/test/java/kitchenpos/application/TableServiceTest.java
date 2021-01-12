@@ -25,6 +25,7 @@ class TableServiceTest {
 	@MockBean
 	private OrderDao orderDao;
 
+	@DisplayName("주문 테이블을 등록한다.")
 	@Test
 	void create() {
 		//given
@@ -65,7 +66,8 @@ class TableServiceTest {
 		//when, then
 		assertThatIllegalArgumentException()
 			  .isThrownBy(() -> tableService
-					.changeNumberOfGuests(savedOrderTable.getId(), savedOrderTable));
+					.changeNumberOfGuests(savedOrderTable.getId(), savedOrderTable))
+			  .withMessage("게스트 수는 0명 이상이어야 합니다.");
 	}
 
 	@DisplayName("빈 테이블의 게스트 수를 변경할 수 없다.")
@@ -78,7 +80,8 @@ class TableServiceTest {
 		//when, then
 		assertThatIllegalArgumentException()
 			  .isThrownBy(() -> tableService
-					.changeNumberOfGuests(savedOrderTable.getId(), savedOrderTable));
+					.changeNumberOfGuests(savedOrderTable.getId(), savedOrderTable))
+			  .withMessage("테이블이 비어있습니다.");
 	}
 
 	@DisplayName("테이블 상태를 변경한다.")

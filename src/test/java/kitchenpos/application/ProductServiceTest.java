@@ -51,6 +51,7 @@ class ProductServiceTest {
 
 	private void 상품등록이_실패함(Product product) {
 		assertThatIllegalArgumentException()
-			  .isThrownBy(() -> productService.create(product));
+			  .isThrownBy(() -> productService.create(product))
+			  .withMessage("상품금액은 0원 이상이어야 합니다.");
 	}
 }

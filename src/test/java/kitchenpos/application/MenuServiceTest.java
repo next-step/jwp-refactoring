@@ -67,7 +67,8 @@ public class MenuServiceTest {
 
 		//when
 		assertThatIllegalArgumentException()
-			  .isThrownBy(() -> menuService.create(menu));
+			  .isThrownBy(() -> menuService.create(menu))
+			  .withMessage("메뉴그룹을 찾을 수 없습니다.");
 	}
 
 	@DisplayName("가격이 0원 미만이거나 메뉴상품 총 가격과 불일치하는 상품은 등록할 수 없다.")
@@ -89,12 +90,14 @@ public class MenuServiceTest {
 
 		//when, then
 		assertThatIllegalArgumentException()
-			  .isThrownBy(() -> menuService.create(menu));
+			  .isThrownBy(() -> menuService.create(menu))
+			  .withMessage("메뉴의 가격은 0원 이상이어야 합니다.");
 
 		//when
 		menu.setPrice(totalPrice.add(new BigDecimal(1)));
 		assertThatIllegalArgumentException()
-			  .isThrownBy(() -> menuService.create(menu));
+			  .isThrownBy(() -> menuService.create(menu))
+			  .withMessage("메뉴의 가격과 메뉴 항목들의 총 가격의 합이 맞지 않습니다.");
 	}
 
 	private List<MenuProduct> 메뉴_상품정보를_세팅한다(long... productIdList) {

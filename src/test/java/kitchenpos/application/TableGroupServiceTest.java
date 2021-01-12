@@ -60,7 +60,8 @@ class TableGroupServiceTest {
 
 		//when, then
 		assertThatIllegalArgumentException()
-			  .isThrownBy(() -> tableGroupService.create(tableGroup));
+			  .isThrownBy(() -> tableGroupService.create(tableGroup))
+			  .withMessage("단체 지정은 주문 테이블이 최소 2개 이상이어야 합니다.");
 	}
 
 	@DisplayName("등록된 주문 테이블이 아닌 경우 단체 지정을 할 수 없다.")
@@ -75,7 +76,8 @@ class TableGroupServiceTest {
 
 		//when, then
 		assertThatIllegalArgumentException()
-			  .isThrownBy(() -> tableGroupService.create(tableGroup));
+			  .isThrownBy(() -> tableGroupService.create(tableGroup))
+			  .withMessage("주문 테이블 정보를 찾을 수 없습니다.");
 	}
 
 	@DisplayName("빈 테이블이 아닌 경우 단체 지정을 할 수 없다.")
@@ -90,12 +92,14 @@ class TableGroupServiceTest {
 
 		//when, then
 		assertThatIllegalArgumentException()
-			  .isThrownBy(() -> tableGroupService.create(tableGroup));
+			  .isThrownBy(() -> tableGroupService.create(tableGroup))
+			  .withMessage("단체 지정이 불가능한 테이블입니다.");
 
 		//when, then
 		tableGroup.setOrderTables(Arrays.asList(orderTable1, inOtherTableGroup));
 		assertThatIllegalArgumentException()
-			  .isThrownBy(() -> tableGroupService.create(tableGroup));
+			  .isThrownBy(() -> tableGroupService.create(tableGroup))
+			  .withMessage("단체 지정이 불가능한 테이블입니다.");
 	}
 
 	@DisplayName("단체지정을 해제한다.")
@@ -121,7 +125,8 @@ class TableGroupServiceTest {
 
 		//when, then
 		assertThatIllegalArgumentException()
-			  .isThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()));
+			  .isThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))
+		.withMessage("단체지정 해제가 불가능한 테이블입니다.");
 	}
 
 	private void 단체지정정보가_등록됨(TableGroup savedTableGroup) {
