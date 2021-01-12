@@ -1,73 +1,79 @@
 package kitchenpos.menugroup.application;
 
-import kitchenpos.menugroup.dao.MenuGroupDao;
 import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.util.DatabaseCleanup;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 
 @DisplayName("메뉴 그룹의 비즈니스 로직을 처리하는 서비스 테스트")
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class MenuGroupServiceTest {
-    @Mock
-    private MenuGroupDao menuGroupDao;
+    private static final String 순살파닭두마리메뉴 = "순살파닭두마리메뉴";
+    private static final String 두마리메뉴 = "두마리메뉴";
+    private static final String 한마리메뉴 = "한마리메뉴";
+    private static final String 신메뉴 = "신메뉴";
 
-    @InjectMocks
+    @Autowired
     private MenuGroupService menuGroupService;
+
+    @Autowired
+    private DatabaseCleanup databaseCleanup;
+
+    @BeforeEach
+    public void setUp() {
+        databaseCleanup.execute();
+    }
 
     @DisplayName("메뉴 그룹을 생성한다.")
     @Test
     public void 메뉴_그룹_생성() {
-        final Long menuGroupId = 1L;
-        final String menuGroupName = "순살파닭두마리메뉴";
-
-        final MenuGroup expectedMenuGroup = new MenuGroup();
-        expectedMenuGroup.setId(menuGroupId);
-        expectedMenuGroup.setName(menuGroupName);
-
-        given(menuGroupDao.save(any())).willReturn(expectedMenuGroup);
-
         final MenuGroup newMenuGroup = new MenuGroup();
-        expectedMenuGroup.setName(menuGroupName);
+        newMenuGroup.setName(순살파닭두마리메뉴);
 
-        final MenuGroup createdMenuGroup = menuGroupService.create(newMenuGroup);
+        final MenuGroup createdMenuGroup = menuGroupCreate(newMenuGroup);
 
-        assertThat(createdMenuGroup.getId()).isEqualTo(expectedMenuGroup.getId());
-        assertThat(createdMenuGroup.getName()).isEqualTo(menuGroupName);
+        assertThat(createdMenuGroup.getId()).isNotNull();
+        assertThat(createdMenuGroup.getName()).isEqualTo(순살파닭두마리메뉴);
+    }
+
+    private MenuGroup menuGroupCreate(final MenuGroup newMenuGroup) {
+        return menuGroupService.create(newMenuGroup);
     }
 
     @DisplayName("메뉴 그룹을 조회한다.")
     @Test
     public void 메뉴_그룹_조회() {
-        final List<MenuGroup> expectedMenuGroups = new ArrayList<>();
         final MenuGroup firstMenuGroup = new MenuGroup();
-        firstMenuGroup.setId(11L);
-        firstMenuGroup.setName("순살파닭두마리메뉴");
-
+        firstMenuGroup.setName(두마리메뉴);
         final MenuGroup secondMenuGroup = new MenuGroup();
-        secondMenuGroup.setId(22L);
-        secondMenuGroup.setName("한마리메뉴");
+        secondMenuGroup.setName(한마리메뉴);
+        final MenuGroup thirdMenuGroup = new MenuGroup();
+        thirdMenuGroup.setName(순살파닭두마리메뉴);
+        final MenuGroup fourthMenuGroup = new MenuGroup();
+        fourthMenuGroup.setName(신메뉴);
 
-        expectedMenuGroups.add(firstMenuGroup);
-        expectedMenuGroups.add(secondMenuGroup);
-
-        given(menuGroupDao.findAll()).willReturn(expectedMenuGroups);
+        menuGroupCreate(firstMenuGroup);
+        menuGroupCreate(secondMenuGroup);
+        menuGroupCreate(thirdMenuGroup);
+        menuGroupCreate(fourthMenuGroup);
 
         final List<MenuGroup> menuGroups = menuGroupService.list();
 
-        assertThat(menuGroups.get(0).getId()).isEqualTo(expectedMenuGroups.get(0).getId());
-        assertThat(menuGroups.get(0).getName()).isEqualTo(expectedMenuGroups.get(0).getName());
-        assertThat(menuGroups.get(1).getId()).isEqualTo(expectedMenuGroups.get(1).getId());
-        assertThat(menuGroups.get(1).getName()).isEqualTo(expectedMenuGroups.get(1).getName());
+        assertThat(menuGroups.size()).isEqualTo(4);
+        assertThat(menuGroups.get(0).getId()).isNotNull();
+        assertThat(menuGroups.get(0).getName()).isEqualTo("두마리메뉴");
+        assertThat(menuGroups.get(1).getId()).isNotNull();
+        assertThat(menuGroups.get(1).getName()).isEqualTo("한마리메뉴");
+        assertThat(menuGroups.get(2).getId()).isNotNull();
+        assertThat(menuGroups.get(2).getName()).isEqualTo("순살파닭두마리메뉴");
+        assertThat(menuGroups.get(3).getId()).isNotNull();
+        assertThat(menuGroups.get(3).getName()).isEqualTo("신메뉴");
     }
 }
