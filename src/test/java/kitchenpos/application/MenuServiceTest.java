@@ -50,8 +50,8 @@ public class MenuServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		savedProduct = TestDomainConstructor.productWithId("후라이드치킨", BigDecimal.valueOf(16000), SAVED_PRODUCT_ID);
-		savedProduct2 = TestDomainConstructor.productWithId("양념치킨", BigDecimal.valueOf(16000), SAVED_PRODUCT2_ID);
+		savedProduct = new Product(SAVED_PRODUCT_ID, "후라이드치킨", BigDecimal.valueOf(16000));
+		savedProduct2 = new Product(SAVED_PRODUCT2_ID, "양념치킨", BigDecimal.valueOf(16000));
 		menuProduct = TestDomainConstructor.menuProduct(null, SAVED_PRODUCT_ID, 1);
 		menuProduct2 = TestDomainConstructor.menuProduct(null, SAVED_PRODUCT2_ID, 1);
 		menuProducts = Arrays.asList(menuProduct, menuProduct2);

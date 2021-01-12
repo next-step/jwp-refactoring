@@ -5,14 +5,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class TestDomainConstructor {
-	public static Product product(String name, BigDecimal price) {
-		return new Product(name, price);
-	}
-
-	public static Product productWithId(String name, BigDecimal price, Long id) {
-		return new Product(id, name, price);
-	}
-
 	public static Menu menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
 		return new Menu(name, price, menuGroupId, menuProducts);
 	}
