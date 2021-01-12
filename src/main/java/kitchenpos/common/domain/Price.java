@@ -21,6 +21,10 @@ public class Price {
 		return this.price;
 	}
 
+	public boolean isExpensiveThan(BigDecimal price) {
+		return this.price.compareTo(price) > 0;
+	}
+
 	private void validate(BigDecimal price) {
 		if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
 			throw new IllegalArgumentException();

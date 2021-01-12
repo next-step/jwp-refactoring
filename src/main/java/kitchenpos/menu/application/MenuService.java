@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,11 +40,6 @@ public class MenuService {
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
         Menu menu = menuRequest.toMenu();
-        final BigDecimal price = menu.getPrice();
-
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
 
         if (!menuGroupRepository.existsById(menu.getMenuGroupId())) {
             throw new IllegalArgumentException();
@@ -61,7 +55,7 @@ public class MenuService {
             menuProducts.add(menuProduct.toMenuProduct(null, product));
         }
 
-        if (price.compareTo(sum) > 0) {
+        if (menu.isPriceExpensiveThan(sum)) {
             throw new IllegalArgumentException();
         }
 
