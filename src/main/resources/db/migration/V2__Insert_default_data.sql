@@ -41,3 +41,7 @@ INSERT INTO order_table (id, table_group_id, number_of_guests, empty) VALUES (10
 -- tableGroupServiceTest.create
 INSERT INTO order_table (id, number_of_guests, empty) VALUES (11, 3, false);
 INSERT INTO order_table (id, table_group_id, number_of_guests, empty) VALUES (12, 1, 3, true);
+
+-- orderServiceTest
+INSERT INTO orders(id, order_table_id, order_status, ordered_time) VALUES(1, 11, 'COOKING', now());
+INSERT INTO orders(id, order_table_id, order_status, ordered_time) VALUES(2, 11, 'COMPLETION', now());
