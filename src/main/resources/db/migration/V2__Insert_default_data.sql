@@ -37,3 +37,7 @@ INSERT INTO order_table (id, number_of_guests, empty) VALUES (8, 0, true);
 INSERT INTO table_group (id, created_date) values (1, now());
 INSERT INTO order_table (id, table_group_id, number_of_guests, empty) VALUES (9, 1, 3, false);
 INSERT INTO order_table (id, table_group_id, number_of_guests, empty) VALUES (10, 1, 3, false);
+
+-- tableGroupServiceTest.create
+INSERT INTO order_table (id, number_of_guests, empty) VALUES (11, 3, false);
+INSERT INTO order_table (id, table_group_id, number_of_guests, empty) VALUES (12, 1, 3, true);
