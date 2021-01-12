@@ -4,6 +4,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.DisplayName;
@@ -23,7 +24,7 @@ public class MenuRestControllerTest extends BaseControllerTest {
 	void create() throws Exception {
 		//given
 		String name = "후라이드-양념 콤보";
-		int price = 10000;
+		BigDecimal price = BigDecimal.valueOf(10000);
 		MenuProduct menuProduct1 = TestDomainConstructor.menuProduct(null, 1L, 2);
 		MenuProduct menuProduct2 = TestDomainConstructor.menuProduct(null, 2L, 1);
 		Menu menu = TestDomainConstructor.menu(name, price, 1L, Arrays.asList(menuProduct1, menuProduct2));
@@ -36,7 +37,7 @@ public class MenuRestControllerTest extends BaseControllerTest {
 			.andExpect(status().isCreated())
 			.andExpect(jsonPath("$.id").isNotEmpty())
 			.andExpect(jsonPath("$.name").value(name))
-			.andExpect(jsonPath("$.price").value(price));
+			.andExpect(jsonPath("$.price").value(price.longValue()));
 	}
 
 	@Test

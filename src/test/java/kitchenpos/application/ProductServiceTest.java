@@ -3,6 +3,8 @@ package kitchenpos.application;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.math.BigDecimal;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,7 +28,7 @@ public class ProductServiceTest {
 	void create() {
 		//given
 		String name = "상품1";
-		int price = 1000;
+		BigDecimal price = BigDecimal.valueOf(1000);
 		Product product = TestDomainConstructor.product(name, price);
 		Product savedProduct = TestDomainConstructor.productWithId(name, price, 1L);
 		when(productDao.save(product)).thenReturn(savedProduct);
@@ -53,7 +55,7 @@ public class ProductServiceTest {
 	@DisplayName("상품 등록 시, 상품의 가격이 0 원 미만이면 IllegalArgumentException을 throw 해야한다.")
 	void createPriceLessThanZero() {
 		//given
-		Product negativePriceProduct = TestDomainConstructor.product("상품1", -200);
+		Product negativePriceProduct = TestDomainConstructor.product("상품1", BigDecimal.valueOf(-200));
 
 		//when-then
 		assertThatThrownBy(() -> productService.create(negativePriceProduct))

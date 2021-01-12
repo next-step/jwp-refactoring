@@ -4,6 +4,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.math.BigDecimal;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -20,7 +22,7 @@ public class ProductRestControllerTest extends BaseControllerTest {
 	void create() throws Exception {
 		//given
 		String name = "상품1";
-		int price = 1000;
+		BigDecimal price = BigDecimal.valueOf(1000);
 		Product product = TestDomainConstructor.product(name, price);
 
 		//when-then
@@ -31,7 +33,7 @@ public class ProductRestControllerTest extends BaseControllerTest {
 			.andExpect(status().isCreated())
 			.andExpect(jsonPath("$.id").isNotEmpty())
 			.andExpect(jsonPath("$.name").value(name))
-			.andExpect(jsonPath("$.price").value(price));
+			.andExpect(jsonPath("$.price").value(price.longValue()));
 	}
 
 	@Test
