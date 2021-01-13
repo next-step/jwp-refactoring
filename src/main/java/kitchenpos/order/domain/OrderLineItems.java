@@ -16,8 +16,8 @@ public class OrderLineItems {
     }
 
     public OrderLineItems(final List<OrderLineItem> orderLineItems, final Order order) {
-        assign(order);
         this.orderLineItems.addAll(orderLineItems);
+        assign(order);
     }
 
     private void assign(final Order order) {
