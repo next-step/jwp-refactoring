@@ -6,13 +6,12 @@ import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
+import kitchenpos.BaseServiceTest;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
 
-@SpringBootTest
-public class MenuGroupServiceTest {
+public class MenuGroupServiceTest extends BaseServiceTest {
 	@Autowired
 	private MenuGroupService menuGroupService;
 

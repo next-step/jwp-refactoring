@@ -11,24 +11,22 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
+import kitchenpos.BaseServiceTest;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 
-@SpringBootTest
-public class MenuServiceTest {
+public class MenuServiceTest extends BaseServiceTest {
 	@Autowired
 	private MenuService menuService;
 
-	private static final Long 존재하지않는_ID = 0L;
 	private MenuProductRequest menuProductRequest1;
 	private MenuProductRequest menuProductRequest2;
 	private List<MenuProductRequest> menuProductRequests;
 
 	@BeforeEach
-	void setUp() {
+	public void setUp() {
 		menuProductRequest1 = new MenuProductRequest(메뉴상품_신규_1_후라이드_ID, 메뉴상품_신규_1_후라이드_QUANTITY);
 		menuProductRequest2 = new MenuProductRequest(메뉴상품_신규_2_양념_ID, 메뉴상품_신규_2_양념_QUANTITY);
 		menuProductRequests = Arrays.asList(menuProductRequest1, menuProductRequest2);

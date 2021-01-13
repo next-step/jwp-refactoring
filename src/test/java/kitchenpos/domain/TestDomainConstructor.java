@@ -5,10 +5,6 @@ import java.util.List;
 
 public class TestDomainConstructor {
 
-	public static OrderTable orderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
-		return new OrderTable(tableGroupId, numberOfGuests, empty);
-	}
-
 	public static OrderTable orderTableWithId(Long tableGroupId, int numberOfGuests, boolean empty, Long id) {
 		return new OrderTable(id, tableGroupId, numberOfGuests, empty);
 	}

@@ -61,9 +61,6 @@ public class OrderRestControllerTest extends BaseControllerTest {
 	@Test
 	@DisplayName("주문의 목록을 조회할 수 있다.")
 	void list() throws Exception {
-		//given
-		create();
-
 		//when-then
 		mockMvc.perform(get("/api/orders"))
 			.andDo(print())
@@ -73,10 +70,10 @@ public class OrderRestControllerTest extends BaseControllerTest {
 			.andExpect(jsonPath("$..orderStatus").isNotEmpty())
 			.andExpect(jsonPath("$..orderedTime").isNotEmpty())
 			.andExpect(jsonPath("$..orderLineItems").isNotEmpty())
-			.andExpect(jsonPath("$..seq", hasSize(orderItemSize)))
-			.andExpect(jsonPath("$..orderId", hasSize(orderItemSize)))
-			.andExpect(jsonPath("$..menuId", hasSize(orderItemSize)))
-			.andExpect(jsonPath("$..quantity", hasSize(orderItemSize)));
+			.andExpect(jsonPath("$..seq").isNotEmpty())
+			.andExpect(jsonPath("$..orderId").isNotEmpty())
+			.andExpect(jsonPath("$..menuId").isNotEmpty())
+			.andExpect(jsonPath("$..quantity").isNotEmpty());
 	}
 
 	@Test
