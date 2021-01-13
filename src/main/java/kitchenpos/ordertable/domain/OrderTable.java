@@ -6,7 +6,7 @@ import java.util.Objects;
 @Entity
 public class OrderTable {
 
-    private static final int MIN_NUMBER_OF_GUESTS = 1;
+    private static final int MIN_NUMBER_OF_GUESTS = 0;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,7 +16,7 @@ public class OrderTable {
     @Column(name = "table_group_id")
     private Long tableGroupId;
 
-    @Column(name = "number_of_guest")
+    @Column(name = "number_of_guests")
     private int numberOfGuests;
 
     @Column(name = "empty")
