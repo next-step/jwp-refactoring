@@ -58,11 +58,12 @@ public class OrderTable {
     }
 
     public void updateTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
-
-        if(Objects.nonNull(tableGroup)) {
-            this.empty = false;
+        if(Objects.isNull(tableGroup)) {
+            throw new IllegalArgumentException("단체를 NULL 로 지정할 수 없습니다.");
         }
+
+        this.tableGroup = tableGroup;
+        this.empty = false;
     }
 
     public void updateEmpty(boolean empty) {
@@ -75,15 +76,15 @@ public class OrderTable {
         this.numberOfGuests.update(numberOfGuests);
     }
 
-    private void checkIsNotEmpty() {
-        if (empty) {
-            throw new IllegalArgumentException("빈 테이블의 손님 수는 변경할 수 없습니다.");
-        }
-    }
-
     private void checkTableGroup() {
         if (Objects.nonNull(tableGroup)) {
             throw new IllegalArgumentException("단체지정된 테이블의 공석여부는 변경할 수 없습니다.");
+        }
+    }
+
+    private void checkIsNotEmpty() {
+        if (empty) {
+            throw new IllegalArgumentException("빈 테이블의 손님 수는 변경할 수 없습니다.");
         }
     }
 }
