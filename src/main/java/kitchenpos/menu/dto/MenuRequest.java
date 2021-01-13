@@ -22,6 +22,14 @@ public class MenuRequest {
                 menuProducts);
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
     public Long getMenuGroupId() {
         return menuGroupId;
     }
