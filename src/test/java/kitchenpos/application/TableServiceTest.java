@@ -42,11 +42,11 @@ class TableServiceTest {
 	@Test
 	void changeNumberOfGuests() {
 		OrderTable orderTable = new OrderTable();
-		orderTable.setEmpty(false);
+		orderTable.changeEmpty(false);
 		OrderTable savedOrderTable = tableService.create(orderTable);
 
 		int newNumberOfGuests = savedOrderTable.getNumberOfGuests() + 1;
-		savedOrderTable.setNumberOfGuests(newNumberOfGuests);
+		savedOrderTable.changeNumberOfGuests(newNumberOfGuests);
 
 		//when
 		OrderTable actual = tableService
@@ -61,7 +61,7 @@ class TableServiceTest {
 	void changeNumberOfGuestsUnderZero() {
 		OrderTable orderTable = new OrderTable();
 		OrderTable savedOrderTable = tableService.create(orderTable);
-		savedOrderTable.setNumberOfGuests(-1);
+		savedOrderTable.changeNumberOfGuests(-1);
 
 		//when, then
 		assertThatIllegalArgumentException()
@@ -74,7 +74,7 @@ class TableServiceTest {
 	@Test
 	void changeNumberOfGuestsWithEmptyTable() {
 		OrderTable orderTable = new OrderTable();
-		orderTable.setEmpty(true);
+		orderTable.changeEmpty(true);
 		OrderTable savedOrderTable = tableService.create(orderTable);
 
 		//when, then
@@ -89,7 +89,7 @@ class TableServiceTest {
 	void changeEmpty() {
 		//given
 		OrderTable orderTable = tableService.create(new OrderTable());
-		orderTable.setEmpty(true);
+		orderTable.changeEmpty(true);
 
 		when(orderDao.existsByOrderTableIdAndOrderStatusIn(
 			  orderTable.getId(),
@@ -108,7 +108,7 @@ class TableServiceTest {
 	void changeEmptyWithTableGroup() {
 		//given
 		OrderTable orderTable = orderTableDao.findById(9L).get();
-		orderTable.setEmpty(true);
+		orderTable.changeEmpty(true);
 
 		//when, then
 		assertThatIllegalArgumentException()
@@ -120,7 +120,7 @@ class TableServiceTest {
 	void changeEmptyWithCookingOrder() {
 		//given
 		OrderTable orderTable = tableService.create(new OrderTable());
-		orderTable.setEmpty(true);
+		orderTable.changeEmpty(true);
 
 		when(orderDao.existsByOrderTableIdAndOrderStatusIn(
 			  orderTable.getId(),

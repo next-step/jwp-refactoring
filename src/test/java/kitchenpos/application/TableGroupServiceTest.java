@@ -39,8 +39,9 @@ class TableGroupServiceTest {
 		OrderTable orderTable1 = orderTableDao.findById(1L).get();
 		OrderTable orderTable2 = orderTableDao.findById(2L).get();
 
-		TableGroup tableGroup = new TableGroup();
-		tableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
+		TableGroup tableGroup = new TableGroup(
+			  Arrays.asList(orderTable1, orderTable2)
+		);
 
 		//when
 		TableGroup savedTableGroup = tableGroupService.create(tableGroup);
@@ -55,8 +56,7 @@ class TableGroupServiceTest {
 	void creatWithOneOrderTable() {
 		OrderTable orderTable1 = orderTableDao.findById(1L).get();
 
-		TableGroup tableGroup = new TableGroup();
-		tableGroup.setOrderTables(Arrays.asList(orderTable1));
+		TableGroup tableGroup = new TableGroup(Arrays.asList(orderTable1));
 
 		//when, then
 		assertThatIllegalArgumentException()
@@ -68,11 +68,9 @@ class TableGroupServiceTest {
 	@Test
 	void creatWithNotExistOrderTable() {
 		OrderTable orderTable1 = orderTableDao.findById(1L).get();
-		OrderTable orderTable2 = new OrderTable();
-		orderTable2.setId(0L);
+		OrderTable orderTable2 = new OrderTable(0L);
 
-		TableGroup tableGroup = new TableGroup();
-		tableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
+		TableGroup tableGroup = new TableGroup(Arrays.asList(orderTable1, orderTable2));
 
 		//when, then
 		assertThatIllegalArgumentException()
@@ -87,8 +85,7 @@ class TableGroupServiceTest {
 		OrderTable orderTable2 = orderTableDao.findById(11L).get();
 		OrderTable inOtherTableGroup = orderTableDao.findById(12L).get();
 
-		TableGroup tableGroup = new TableGroup();
-		tableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
+		TableGroup tableGroup = new TableGroup(Arrays.asList(orderTable1, orderTable2));
 
 		//when, then
 		assertThatIllegalArgumentException()

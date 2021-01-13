@@ -31,14 +31,16 @@ class OrderServiceTest {
 	@DisplayName("주문을 등록한다.")
 	@Test
 	void create() {
-		OrderLineItem orderLineItem = new OrderLineItem();
-		orderLineItem.setMenuId(menuDao.findById(1L).get().getId());
-		orderLineItem.setQuantity(1);
+		OrderLineItem orderLineItem = new OrderLineItem(
+			  menuDao.findById(1L).get().getId(),
+			  1
+		);
 
-		Order order = new Order();
-		order.setOrderLineItems(Arrays.asList(orderLineItem));
 		OrderTable nonEmptyOrderTable = orderTableDao.findById(11L).get();
-		order.setOrderTableId(nonEmptyOrderTable.getId());
+		Order order = new Order(
+			  nonEmptyOrderTable.getId(),
+			  Arrays.asList(orderLineItem)
+		);
 
 		//when
 		Order savedOrder = orderService.create(order);
@@ -51,9 +53,10 @@ class OrderServiceTest {
 	@DisplayName("주문항목이 없는경우 주문을 등록할 수 없다.")
 	@Test
 	void createWithEmptyOrderLineItems() {
-		Order order = new Order();
 		OrderTable nonEmptyOrderTable = orderTableDao.findById(11L).get();
-		order.setOrderTableId(nonEmptyOrderTable.getId());
+		Order order = new Order(
+			  nonEmptyOrderTable.getId(), null
+		);
 
 		//when, then
 		assertThatIllegalArgumentException()
@@ -64,12 +67,10 @@ class OrderServiceTest {
 	@DisplayName("등록되지 않은 메뉴는 주문할 수 없다.")
 	@Test
 	void createWithNotExistMenu() {
-		OrderLineItem orderLineItem = new OrderLineItem();
-		orderLineItem.setMenuId(0L);
-		orderLineItem.setQuantity(1);
-
-		Order order = new Order();
-		order.setOrderLineItems(Arrays.asList(orderLineItem));
+		OrderLineItem orderLineItem = new OrderLineItem(0L, 1);
+		Order order = new Order(
+			  null, Arrays.asList(orderLineItem)
+		);
 
 		//when, then
 		assertThatIllegalArgumentException()
@@ -80,14 +81,15 @@ class OrderServiceTest {
 	@DisplayName("빈 테이블은 주문할 수 없다.")
 	@Test
 	void createWithEmptyTable() {
-		OrderLineItem orderLineItem = new OrderLineItem();
-		orderLineItem.setMenuId(menuDao.findById(1L).get().getId());
-		orderLineItem.setQuantity(1);
+		OrderLineItem orderLineItem = new OrderLineItem(
+			  menuDao.findById(1L).get().getId(),
+			  1
+		);
 
-		Order order = new Order();
-		order.setOrderLineItems(Arrays.asList(orderLineItem));
 		OrderTable emptyTable = orderTableDao.findById(1L).get();
-		order.setOrderTableId(emptyTable.getId());
+		Order order = new Order(
+			  emptyTable.getId(), Arrays.asList(orderLineItem)
+		);
 
 		//when, then
 		assertThatIllegalArgumentException()
@@ -101,7 +103,7 @@ class OrderServiceTest {
 		Order order = orderDao.findById(1L).get();
 
 		//when
-		order.setOrderStatus(OrderStatus.COMPLETION.name());
+		order.changeOrderStatus(OrderStatus.COMPLETION.name());
 		Order changedOrder = orderService.changeOrderStatus(order.getId(), order);
 
 		//then
@@ -114,7 +116,7 @@ class OrderServiceTest {
 		Order order = orderDao.findById(2L).get();
 
 		//when
-		order.setOrderStatus(OrderStatus.MEAL.name());
+		order.changeOrderStatus(OrderStatus.MEAL.name());
 
 		//when, then
 		assertThatIllegalArgumentException()

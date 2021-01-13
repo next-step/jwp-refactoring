@@ -42,11 +42,12 @@ public class MenuServiceTest {
 		List<MenuProduct> menuProducts = 메뉴_상품정보를_세팅한다(product1.get().getId(),
 			  product2.get().getId());
 
-		Menu menu = new Menu();
-		menu.setMenuGroupId(menuGroup.get().getId());
-		menu.setName("치킨 두마리 세트");
-		menu.setPrice(totalPrice);
-		menu.setMenuProducts(menuProducts);
+		Menu menu = new Menu(
+			  "치킨 두마리 세트",
+			  totalPrice,
+			  menuGroup.get().getId(),
+			  menuProducts
+		);
 
 		//when
 		Menu savedMenu = menuService.create(menu);
@@ -59,11 +60,12 @@ public class MenuServiceTest {
 	@DisplayName("미등록 메뉴그룹의 메뉴는 등록할 수 없다.")
 	@Test
 	void createWithNotExistMenuGroup() {
-		Menu menu = new Menu();
-		menu.setMenuGroupId(999999L);
-		menu.setName("치킨 두마리 세트");
-		menu.setPrice(new BigDecimal(0));
-		menu.setMenuProducts(new ArrayList<>());
+		Menu menu = new Menu(
+			  "치킨 두마리 세트",
+			  new BigDecimal(0),
+			  999999L,
+			  new ArrayList<>()
+		);
 
 		//when
 		assertThatIllegalArgumentException()
@@ -82,11 +84,12 @@ public class MenuServiceTest {
 		List<MenuProduct> menuProducts = 메뉴_상품정보를_세팅한다(product1.get().getId(),
 			  product2.get().getId());
 
-		Menu menu = new Menu();
-		menu.setMenuGroupId(menuGroup.get().getId());
-		menu.setName("치킨 두마리 세트");
-		menu.setPrice(new BigDecimal(-1));
-		menu.setMenuProducts(menuProducts);
+		final Menu menu = new Menu(
+			  "치킨 두마리 세트",
+			  new BigDecimal(-1),
+			  menuGroup.get().getId(),
+			  menuProducts
+		);
 
 		//when, then
 		assertThatIllegalArgumentException()
@@ -94,18 +97,22 @@ public class MenuServiceTest {
 			  .withMessage("메뉴의 가격은 0원 이상이어야 합니다.");
 
 		//when
-		menu.setPrice(totalPrice.add(new BigDecimal(1)));
+		final Menu newMenu = new Menu(
+			  "치킨 두마리 세트",
+			  totalPrice.add(new BigDecimal(1)),
+			  menuGroup.get().getId(),
+			  menuProducts
+		);
+
 		assertThatIllegalArgumentException()
-			  .isThrownBy(() -> menuService.create(menu))
+			  .isThrownBy(() -> menuService.create(newMenu))
 			  .withMessage("메뉴의 가격과 메뉴 항목들의 총 가격의 합이 맞지 않습니다.");
 	}
 
 	private List<MenuProduct> 메뉴_상품정보를_세팅한다(long... productIdList) {
 		return Arrays.stream(productIdList)
-			  .mapToObj(id -> {
-				  MenuProduct menuProduct = new MenuProduct();
-				  menuProduct.setProductId(id);
-				  menuProduct.setQuantity(1);
+			  .mapToObj(productId -> {
+				  MenuProduct menuProduct = new MenuProduct(productId, 1);
 				  return menuProduct;
 			  })
 			  .collect(Collectors.toList());

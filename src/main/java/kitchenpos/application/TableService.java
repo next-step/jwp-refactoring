@@ -22,7 +22,7 @@ public class TableService {
 
     @Transactional
     public OrderTable create(final OrderTable orderTable) {
-        orderTable.setTableGroupId(null);
+        orderTable.ungroup(null);
 
         return orderTableDao.save(orderTable);
     }
@@ -45,7 +45,7 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-        savedOrderTable.setEmpty(orderTable.isEmpty());
+        savedOrderTable.changeEmpty(orderTable.isEmpty());
 
         return orderTableDao.save(savedOrderTable);
     }
@@ -65,7 +65,7 @@ public class TableService {
             throw new IllegalArgumentException("테이블이 비어있습니다.");
         }
 
-        savedOrderTable.setNumberOfGuests(numberOfGuests);
+        savedOrderTable.changeNumberOfGuests(numberOfGuests);
 
         return orderTableDao.save(savedOrderTable);
     }

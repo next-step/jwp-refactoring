@@ -21,9 +21,10 @@ class ProductServiceTest {
 	@Test
 	void create() {
 		//given
-		Product product = new Product();
-		product.setName("리코타치즈샐러드");
-		product.setPrice(new BigDecimal(6_000));
+		Product product = new Product(
+			  "리코타치즈샐러드",
+			  new BigDecimal(6_000)
+		);
 
 		//when
 		Product savedProduct = productService.create(product);
@@ -37,14 +38,18 @@ class ProductServiceTest {
 	@Test
 	void createWithUnderZeroPrice() {
 		//given
-		Product product = new Product();
-		product.setName("리코타치즈샐러드");
-		product.setPrice(new BigDecimal(-1));
+		Product product = new Product(
+			  "리코타치즈샐러드",
+			  new BigDecimal(-1)
+		);
 		//when
 		상품등록이_실패함(product);
 
 		//given
-		product.setPrice(null);
+		product = new Product(
+			  "리코타치즈샐러드",
+			  null
+		);
 		//when
 		상품등록이_실패함(product);
 	}

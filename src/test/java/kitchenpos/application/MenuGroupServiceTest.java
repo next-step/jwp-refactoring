@@ -18,8 +18,7 @@ class MenuGroupServiceTest {
 	@DisplayName("메뉴그룹을 추가한다.")
 	@Test
 	void create() {
-		MenuGroup menuGroup = new MenuGroup();
-		menuGroup.setName("샐러드");
+		MenuGroup menuGroup = new MenuGroup("샐러드");
 
 		//when
 		MenuGroup savedMenuGroup = menuGroupService.create(menuGroup);
