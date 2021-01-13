@@ -6,6 +6,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,7 +27,8 @@ public class Order {
     private Long id;
     @ManyToOne
     private OrderTable orderTable;
-    private String orderStatus;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
     @CreatedDate
     private LocalDateTime orderedTime;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -34,12 +37,12 @@ public class Order {
     protected Order() {
     }
 
-    public Order(OrderTable orderTable, String orderStatus) {
+    public Order(OrderTable orderTable, OrderStatus orderStatus) {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
     }
 
-    public Order(Long id, OrderTable orderTable, String orderStatus, LocalDateTime orderedTime) {
+    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
         this.id = id;
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
@@ -54,8 +57,12 @@ public class Order {
         return orderTable.getId();
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
+    }
+
+    public String getOrderStatusName() {
+        return orderStatus.name();
     }
 
     public LocalDateTime getOrderedTime() {
@@ -70,7 +77,7 @@ public class Order {
         this.orderTable = orderTable;
     }
 
-    public void updateOrderStatus(String orderStatus) {
+    public void updateOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 
@@ -79,6 +86,7 @@ public class Order {
     }
 
     public void updateOrderLineItems(List<OrderLineItem> orderLineItems) {
+        orderLineItems.forEach(orderLineItem -> orderLineItem.updateOrder(this));
         this.orderLineItems = orderLineItems;
     }
 }

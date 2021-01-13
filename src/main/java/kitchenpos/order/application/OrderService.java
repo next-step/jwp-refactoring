@@ -54,34 +54,21 @@ public class OrderService {
         }
 
         final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
-                .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 테이블입니다."));
 
         if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
+           throw new IllegalArgumentException("빈 테이블은 주문할 수 없습니다.");
         }
 
-        Order order = new Order(orderTable, OrderStatus.COOKING.name());
-
-        final Order savedOrder = orderRepository.save(order);
-
-        final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
-        for (final OrderLineItem orderLineItem : orderLineItems) {
-            orderLineItem.updateOrder(savedOrder);
-            savedOrderLineItems.add(orderLineItemRepository.save(orderLineItem));
-        }
-        savedOrder.updateOrderLineItems(savedOrderLineItems);
+        final Order savedOrder = orderRepository.save(new Order(orderTable, OrderStatus.COOKING));
+        savedOrder.updateOrderLineItems(orderLineItems);
 
         return OrderResponse.of(savedOrder);
     }
 
+    @Transactional(readOnly = true)
     public List<OrderResponse> list() {
-        final List<Order> orders = orderRepository.findAll();
-
-        for (final Order order : orders) {
-            order.updateOrderLineItems(orderLineItemRepository.findAllByOrder(order));
-        }
-
-        return orders.stream()
+        return orderRepository.findAll().stream()
             .map(OrderResponse::of)
             .collect(Collectors.toList());
     }
@@ -91,14 +78,13 @@ public class OrderService {
         final Order savedOrder = orderRepository.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        if (Objects.equals(OrderStatus.COMPLETION.name(), savedOrder.getOrderStatus())) {
+        if (Objects.equals(OrderStatus.COMPLETION, savedOrder.getOrderStatus())) {
             throw new IllegalArgumentException();
         }
 
         final OrderStatus orderStatus = OrderStatus.valueOf(orderRequest.getOrderStatus());
-        savedOrder.updateOrderStatus(orderStatus.name());
+        savedOrder.updateOrderStatus(orderStatus);
 
-        orderRepository.save(savedOrder);
-        return OrderResponse.of(savedOrder);
+        return OrderResponse.of(orderRepository.save(savedOrder));
     }
 }

@@ -52,7 +52,7 @@ public class TableGroupService {
         final List<OrderTable> orderTables = orderTableRepository.findAllByIdIn(tableGroup.orderTableIds());
 
         if (orderRepository.existsByOrderTableInAndOrderStatusIn(
-            orderTables, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+            orderTables, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException("주문 상태가 조리중이거나 식사중인 테이블의 단체 지정은 해지할 수 없습니다.");
         }
 

@@ -87,9 +87,9 @@ public class TestFixture {
 
 
 	//Order
-	public static final Order 주문_조리중_테이블11 = new Order(1L, 테이블_단체2_조리중_3명_11, OrderStatus.COOKING.name(), LocalDateTime.of(2021, 1, 28, 12, 30));
-	public static final Order 주문_식사중_테이블12 = new Order(2L, 테이블_식사중_4명_12, OrderStatus.MEAL.name(), LocalDateTime.of(2021, 1, 28, 13, 30));
-	public static final Order 주문_계산완료_테이블13 = new Order(3L, 테이블_계산완료_5명_13, OrderStatus.COMPLETION.name(), LocalDateTime.of(2021, 1, 28, 14, 30));
+	public static final Order 주문_조리중_테이블11 = new Order(1L, 테이블_단체2_조리중_3명_11, OrderStatus.COOKING, LocalDateTime.of(2021, 1, 28, 12, 30));
+	public static final Order 주문_식사중_테이블12 = new Order(2L, 테이블_식사중_4명_12, OrderStatus.MEAL, LocalDateTime.of(2021, 1, 28, 13, 30));
+	public static final Order 주문_계산완료_테이블13 = new Order(3L, 테이블_계산완료_5명_13, OrderStatus.COMPLETION, LocalDateTime.of(2021, 1, 28, 14, 30));
 
 	public static final Long 주문_신규_테이블_ID = 9L;
 	public static final String 주문_신규_주문상태 = OrderStatus.COOKING.name();
