@@ -1,6 +1,6 @@
 package kitchenpos.product.application;
 
-import static kitchenpos.domain.TestFixture.*;
+import static kitchenpos.utils.TestFixture.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.math.BigDecimal;

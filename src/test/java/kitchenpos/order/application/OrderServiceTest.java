@@ -1,6 +1,6 @@
-package kitchenpos.application;
+package kitchenpos.order.application;
 
-import static kitchenpos.domain.TestFixture.*;
+import static kitchenpos.utils.TestFixture.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.ArrayList;
@@ -13,10 +13,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import kitchenpos.BaseServiceTest;
-import kitchenpos.dto.OrderLineItemRequest;
-import kitchenpos.dto.OrderRequest;
-import kitchenpos.dto.OrderResponse;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.domain.OrderStatus;
 
 public class OrderServiceTest extends BaseServiceTest {
 	@Autowired

@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.utils;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -6,6 +6,9 @@ import java.time.LocalDateTime;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.TableGroup;
 import kitchenpos.product.domain.Product;
@@ -84,19 +87,19 @@ public class TestFixture {
 
 
 	//Order
-	public static final Order 주문_조리중_테이블11 = new Order(1L, 11L, OrderStatus.COOKING.name(), LocalDateTime.of(2021, 1, 28, 12, 30));
-	public static final Order 주문_식사중_테이블12 = new Order(2L, 12L, OrderStatus.MEAL.name(), LocalDateTime.of(2021, 1, 28, 13, 30));
-	public static final Order 주문_계산완료_테이블13 = new Order(3L, 13L, OrderStatus.COMPLETION.name(), LocalDateTime.of(2021, 1, 28, 14, 30));
+	public static final Order 주문_조리중_테이블11 = new Order(1L, 테이블_단체2_조리중_3명_11, OrderStatus.COOKING.name(), LocalDateTime.of(2021, 1, 28, 12, 30));
+	public static final Order 주문_식사중_테이블12 = new Order(2L, 테이블_식사중_4명_12, OrderStatus.MEAL.name(), LocalDateTime.of(2021, 1, 28, 13, 30));
+	public static final Order 주문_계산완료_테이블13 = new Order(3L, 테이블_계산완료_5명_13, OrderStatus.COMPLETION.name(), LocalDateTime.of(2021, 1, 28, 14, 30));
 
 	public static final Long 주문_신규_테이블_ID = 9L;
 	public static final String 주문_신규_주문상태 = OrderStatus.COOKING.name();
 	public static final LocalDateTime 주문_신규_ORDERED_DATE = LocalDateTime.of(2021, 1, 28, 19, 30);
 
 	//OrderLineItem
-	public static final OrderLineItem 주문아이템_조리중_테이블11_후라이드_1개 = new OrderLineItem(1L, 1L, 1L, 1);
-	public static final OrderLineItem 주문아이템_조리중_테이블11_양념_1개 = new OrderLineItem(2L, 1L, 2L, 1);
-	public static final OrderLineItem 주문아이템_식사중_테이블12_반반_2개 = new OrderLineItem(3L, 2L, 3L, 2);
-	public static final OrderLineItem 주문아이템_계산완료_테이블13_통구이_1개 = new OrderLineItem(4L, 3L, 4L, 1);
-	public static final OrderLineItem 주문아이템_계산완료_테이블13_간장_1개 = new OrderLineItem(5L, 3L, 5L, 1);
-	public static final OrderLineItem 주문아이템_계산완료_테이블13_순살_1개 = new OrderLineItem(6L, 3L, 6L, 1);
+	public static final OrderLineItem 주문아이템_조리중_테이블11_후라이드_1개 = new OrderLineItem(1L, 주문_조리중_테이블11, 메뉴_후라이드, 1);
+	public static final OrderLineItem 주문아이템_조리중_테이블11_양념_1개 = new OrderLineItem(2L, 주문_조리중_테이블11, 메뉴_양념치킨, 1);
+	public static final OrderLineItem 주문아이템_식사중_테이블12_반반_2개 = new OrderLineItem(3L, 주문_식사중_테이블12, 메뉴_반반치킨, 2);
+	public static final OrderLineItem 주문아이템_계산완료_테이블13_통구이_1개 = new OrderLineItem(4L, 주문_계산완료_테이블13, 메뉴_통구이, 1);
+	public static final OrderLineItem 주문아이템_계산완료_테이블13_간장_1개 = new OrderLineItem(5L, 주문_계산완료_테이블13, 메뉴_간장치킨, 1);
+	public static final OrderLineItem 주문아이템_계산완료_테이블13_순살_1개 = new OrderLineItem(6L, 주문_계산완료_테이블13, 메뉴_순살치킨, 1);
 }

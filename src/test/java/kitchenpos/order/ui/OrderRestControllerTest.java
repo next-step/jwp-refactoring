@@ -1,7 +1,6 @@
-package kitchenpos.ui;
+package kitchenpos.order.ui;
 
-import static kitchenpos.domain.TestFixture.*;
-import static org.hamcrest.Matchers.*;
+import static kitchenpos.utils.TestFixture.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -15,9 +14,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
 import kitchenpos.BaseControllerTest;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.dto.OrderLineItemRequest;
-import kitchenpos.dto.OrderRequest;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
 
 @DisplayName("주문 Controller 테스트")
 public class OrderRestControllerTest extends BaseControllerTest {

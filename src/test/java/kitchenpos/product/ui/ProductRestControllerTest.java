@@ -1,6 +1,6 @@
 package kitchenpos.product.ui;
 
-import static kitchenpos.domain.TestFixture.*;
+import static kitchenpos.utils.TestFixture.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;

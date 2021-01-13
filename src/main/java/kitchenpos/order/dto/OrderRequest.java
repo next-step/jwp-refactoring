@@ -1,12 +1,8 @@
-package kitchenpos.dto;
+package kitchenpos.order.dto;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
-
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
 
 public class OrderRequest {
 	private Long orderTableId;
@@ -39,15 +35,5 @@ public class OrderRequest {
 
 	public List<OrderLineItemRequest> getOrderLineItems() {
 		return orderLineItems;
-	}
-
-	public List<OrderLineItem> toOrderLineItems() {
-		return orderLineItems.stream()
-			.map(OrderLineItemRequest::toOrderLineItem)
-			.collect(Collectors.toList());
-	}
-
-	public Order toOder() {
-		return new Order(this.orderTableId, this.orderStatus);
 	}
 }
