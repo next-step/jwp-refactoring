@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Service
+//@Service
 public class MenuGroupService {
     private final MenuGroupDao menuGroupDao;
 
