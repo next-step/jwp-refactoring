@@ -1,5 +1,7 @@
 package kitchenpos.ui;
 
+import kitchenpos.infra.Money;
+import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.product.service.ProductServiceJpa;
 import kitchenpos.product.ui.ProductRestController;
 import org.hamcrest.Matchers;
@@ -11,7 +13,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 
 import static org.hamcrest.Matchers.*;
@@ -33,13 +34,10 @@ class ProductRestControllerTest {
     @DisplayName("상품의 목록을 조회할 수 있다.")
     @Test
     void findAllProduct() throws Exception {
-        int 치킨가격 = 17000;
-        kitchenpos.product.domain.Product 후라이드치킨 = new kitchenpos.product.domain.Product("후라이드치킨", new BigDecimal(치킨가격));
-        kitchenpos.product.domain.Product 양념치킨 = new kitchenpos.product.domain.Product("양념치킨", new BigDecimal(치킨가격));
-
         when(productService.list()).thenReturn(Arrays.asList(
-                후라이드치킨,
-                양념치킨));
+                new ProductResponse(1L, "후라이트치킨", 17000),
+                new ProductResponse(1L, "후라이트치킨", 17000)
+                ));
 
         mockMvc.perform(get("/api/products").contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())

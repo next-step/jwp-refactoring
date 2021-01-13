@@ -3,10 +3,12 @@ package kitchenpos.product.service;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -18,12 +20,20 @@ public class ProductServiceJpa {
         this.productRepository = productRepository;
     }
 
-    public Product create(final ProductRequest productRequest) {
-        return productRepository.save(ProductRequest.toProduct(productRequest));
+    public ProductResponse create(final ProductRequest productRequest) {
+        Product savedProduct = productRepository.save(ProductRequest.toProduct(productRequest));
+        return ProductResponse.of(savedProduct);
+    }
+
+    public Product findById(long id) {
+        return productRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("상품을 찾을수 없습니다."));
     }
 
     @Transactional(readOnly = true)
-    public List<Product> list() {
-        return productRepository.findAll();
+    public List<ProductResponse> list() {
+        return productRepository.findAll()
+                .stream()
+                .map(ProductResponse::of)
+                .collect(Collectors.toList());
     }
 }
