@@ -51,7 +51,7 @@ public class Order {
 
     private void validate(final OrderTable orderTable, final List<OrderLineItem> orderLineItems) {
         if (orderTable.isEmpty()) {
-            throw new IllegalStateException("주문 테이블이 등록 불가 상태인 경우 주문을 생성할 수 없다.");
+            throw new IllegalArgumentException("주문 테이블이 등록 불가 상태인 경우 주문을 생성할 수 없다.");
         }
 
         if (orderLineItems.size() < MIN_ORDER_ITEM_COUNT) {

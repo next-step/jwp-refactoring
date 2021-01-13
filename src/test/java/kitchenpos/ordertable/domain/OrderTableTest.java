@@ -6,11 +6,11 @@ import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("주문 테이블")
 class OrderTableTest {
@@ -57,10 +57,13 @@ class OrderTableTest {
     @Test
     void cantChangeEmpty2() {
         // given
-        OrderTable orderTable = new OrderTable(new TableGroup(new ArrayList<>()), 5, true);
+        OrderTable orderTable1 = new OrderTable(3, true);
+        OrderTable orderTable2 = new OrderTable(5, true);
+        List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
+        new TableGroup(orderTables);
 
         // when / then
-        assertThrows(IllegalStateException.class, () -> orderTable.changeEmpty(false));
+        assertThrows(IllegalStateException.class, () -> orderTable1.changeEmpty(false));
     }
 
     @DisplayName("주문 테이블에 손님 수를 변한다.")
