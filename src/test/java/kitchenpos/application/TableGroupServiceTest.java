@@ -1,65 +1,56 @@
 package kitchenpos.application;
 
+import static kitchenpos.domain.TestFixture.*;
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import kitchenpos.dao.OrderDao;
+import kitchenpos.BaseServiceTest;
+import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
 import kitchenpos.order.dao.OrderTableRepository;
-import kitchenpos.dao.TableGroupDao;
 import kitchenpos.order.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
-import kitchenpos.domain.TestDomainConstructor;
+import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.order.dto.OrderTableResponse;
 
-@ExtendWith(MockitoExtension.class)
-public class TableGroupServiceTest {
-	@Mock
-	private OrderDao orderDao;
-	@Mock
-	private OrderTableRepository orderTableRepository;
-	@Mock
-	private TableGroupDao tableGroupDao;
-	@InjectMocks
+public class TableGroupServiceTest extends BaseServiceTest {
+	@Autowired
 	private TableGroupService tableGroupService;
+
+	@Autowired
+	private OrderTableRepository orderTableRepository;
 
 	@Test
 	@DisplayName("단체를 지정할 수 있다.")
 	void create() {
 		//given
-		OrderTable orderTable = TestDomainConstructor.orderTableWithId(null, 0, true, 1L);
-		OrderTable orderTable2 = TestDomainConstructor.orderTableWithId(null, 0, true, 2L);
-		List<OrderTable> orderTables = Arrays.asList(orderTable, orderTable2);
+		OrderTableRequest orderTableRequest1 = new OrderTableRequest(테이블_비어있는_0명_1.getId());
+		OrderTableRequest orderTableRequest2 = new OrderTableRequest(테이블_비어있는_0명_2.getId());
 
-		Long tableGroupId = 1L;
-		TableGroup tableGroup = TestDomainConstructor.tableGroup(Arrays.asList(orderTable, orderTable2), null);
-		TableGroup savedTableGroup = TestDomainConstructor.tableGroupWithId(Arrays.asList(orderTable, orderTable2),
-			LocalDateTime.now(), tableGroupId);
-		when(orderTableRepository.findAllByIdIn(any())).thenReturn(orderTables);
-		when(tableGroupDao.save(tableGroup)).thenReturn(savedTableGroup);
-		when(orderTableRepository.save(any())).thenReturn(orderTable, orderTable2);
+		TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(orderTableRequest1, orderTableRequest2));
 
 		//when
-		TableGroup result = tableGroupService.create(tableGroup);
+		TableGroupResponse result = tableGroupService.create(tableGroupRequest);
 
 		//then
-		assertThat(result.getId()).isEqualTo(tableGroupId);
+		List<Long> tableGroupIds = result.getOrderTables().stream()
+			.map(OrderTableResponse::getTableGroupId)
+			.filter(Objects::nonNull)
+			.collect(Collectors.toList());
+
+		assertThat(result.getId()).isNotNull();
+		assertThat(tableGroupIds.size()).isEqualTo(2);
+		assertThat(tableGroupIds.stream()
+			.distinct().count()).isEqualTo(1);
 		assertThat(result.getOrderTables().stream()
-			.filter(table -> tableGroupId.equals(table.getTableGroupId()))
-			.count()).isEqualTo(2);
-		assertThat(result.getOrderTables().stream()
-			.filter(OrderTable::isEmpty)
+			.filter(OrderTableResponse::isEmpty)
 			.count()).isEqualTo(0);
 	}
 
@@ -67,10 +58,10 @@ public class TableGroupServiceTest {
 	@DisplayName("단체 지정할 시, 대상 테이블이 없으면 IllegalArgumentException을 throw 해야한다.")
 	void createTableGroupForNullTable() {
 		//given
-		TableGroup tableGroup = TestDomainConstructor.tableGroup(null, null);
+		TableGroupRequest tableGroupRequest = new TableGroupRequest(null);
 
 		//when-then
-		assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+		assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
@@ -78,10 +69,11 @@ public class TableGroupServiceTest {
 	@DisplayName("단체 지정할 시, 대상 테이블이 1개이면 IllegalArgumentException을 throw 해야한다.")
 	void createTableGroupForOneTable() {
 		//given
-		TableGroup tableGroup = TestDomainConstructor.tableGroup(Arrays.asList(mock(OrderTable.class)), null);
+		OrderTableRequest orderTableRequest2 = new OrderTableRequest(테이블_비어있는_0명_2.getId());
+		TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(orderTableRequest2));
 
 		//when-then
-		assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+		assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
@@ -89,11 +81,11 @@ public class TableGroupServiceTest {
 	@DisplayName("단체 지정할 시, 대상 테이블이 등록되어있지 않으면 IllegalArgumentException을 throw 해야한다.")
 	void createTableGroupForNotExistTable() {
 		//given
-		TableGroup tableGroup = TestDomainConstructor.tableGroup(Arrays.asList(mock(OrderTable.class), mock(OrderTable.class)), null);
-		when(orderTableRepository.findAllByIdIn(any())).thenReturn(new ArrayList<>());
+		OrderTableRequest notExistTable = new OrderTableRequest(존재하지않는_ID);
+		TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(notExistTable));
 
 		//when-then
-		assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+		assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
@@ -101,12 +93,12 @@ public class TableGroupServiceTest {
 	@DisplayName("단체 지정할 시, 대상 테이블이 빈 테이블이 아니면 IllegalArgumentException을 throw 해야한다.")
 	void createTableGroupForNotEmptyTable() {
 		//given
-		OrderTable notEmptyTable = TestDomainConstructor.orderTableWithId(null, 0, false, 1L);
-		TableGroup tableGroup = TestDomainConstructor.tableGroup(Arrays.asList(mock(OrderTable.class), mock(OrderTable.class)), null);
-		when(orderTableRepository.findAllByIdIn(any())).thenReturn(Arrays.asList(notEmptyTable, mock(OrderTable.class)));
+		OrderTableRequest orderTableRequestEmpty = new OrderTableRequest(테이블_비어있는_0명_1.getId());
+		OrderTableRequest orderTableRequestNotEmpty = new OrderTableRequest(테이블_비어있지않은_2명_9.getId());
+		TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(orderTableRequestEmpty, orderTableRequestNotEmpty));
 
 		//when-then
-		assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+		assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
@@ -114,12 +106,12 @@ public class TableGroupServiceTest {
 	@DisplayName("단체 지정할 시, 이미 그룹에 포함된 테이블이면 IllegalArgumentException을 throw 해야한다.")
 	void createTableGroupForAlreadyHaveGroup() {
 		//given
-		OrderTable havingGroupTable = TestDomainConstructor.orderTableWithId(3L, 0, true, 1L);
-		TableGroup tableGroup = TestDomainConstructor.tableGroup(Arrays.asList(mock(OrderTable.class), mock(OrderTable.class)), null);
-		when(orderTableRepository.findAllByIdIn(any())).thenReturn(Arrays.asList(havingGroupTable, mock(OrderTable.class)));
+		OrderTableRequest orderTableRequest = new OrderTableRequest(테이블_비어있는_0명_1.getId());
+		OrderTableRequest orderTableRequestHaveGroup = new OrderTableRequest(테이블_단체1_0명_10.getId());
+		TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(orderTableRequest, orderTableRequestHaveGroup));
 
 		//when-then
-		assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+		assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
@@ -127,31 +119,23 @@ public class TableGroupServiceTest {
 	@DisplayName("단체 지정을 해지할 수 있다.")
 	void ungroup() {
 		//given
-		Long tableGroupId = 1L;
-		OrderTable orderTable = TestDomainConstructor.orderTableWithId(tableGroupId, 0, false, 1L);
-		OrderTable orderTable2 = TestDomainConstructor.orderTableWithId(tableGroupId, 0, false, 2L);
-		List<OrderTable> orderTables = Arrays.asList(orderTable, orderTable2);
-
-		when(orderTableRepository.findAllByTableGroupId(any())).thenReturn(orderTables);
-		when(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(false);
+		Long tableGroupId = 테이블단체_1.getId();
+		List<OrderTable> orderTablesHavingGroup = orderTableRepository.findAllByTableGroupId(tableGroupId);
+		assertThat(orderTablesHavingGroup.size()).isEqualTo(2);
 
 		//when
 		tableGroupService.ungroup(tableGroupId);
 
 		//then
-		assertThat(orderTables.stream()
-			.filter(table -> table.getTableGroupId() == null)
-			.collect(Collectors.toList())).containsExactlyInAnyOrder(orderTable, orderTable2);
+		List<OrderTable> orderTablesAfterUngroup = orderTableRepository.findAllByTableGroupId(tableGroupId);
+		assertThat(orderTablesAfterUngroup.size()).isEqualTo(0);
 	}
 
 	@Test
 	@DisplayName("단체 지정을 해지 시, 주문 상태가 조리 또는 식사인 테이블이면 IllegalArgumentException을 throw 해야한다.")
 	void ungroupCookingTable() {
-		when(orderTableRepository.findAllByTableGroupId(any())).thenReturn(Arrays.asList(mock(OrderTable.class), mock(OrderTable.class)));
-		when(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(true);
-
 		//when-then
-		assertThatThrownBy(() -> tableGroupService.ungroup(1L))
+		assertThatThrownBy(() -> tableGroupService.ungroup(테이블_단체2_조리중_3명_11.getTableGroupId()))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 }

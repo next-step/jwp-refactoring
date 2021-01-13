@@ -3,10 +3,15 @@ package kitchenpos.order.dto;
 import kitchenpos.order.domain.OrderTable;
 
 public class OrderTableRequest {
+	private Long id;
 	private int numberOfGuests;
 	private boolean empty;
 
 	public OrderTableRequest() {
+	}
+
+	public OrderTableRequest(Long id) {
+		this.id = id;
 	}
 
 	public OrderTableRequest(int numberOfGuests) {
@@ -20,6 +25,10 @@ public class OrderTableRequest {
 	public OrderTableRequest(Integer numberOfGuests, Boolean empty) {
 		this.numberOfGuests = numberOfGuests;
 		this.empty = empty;
+	}
+
+	public Long getId() {
+		return id;
 	}
 
 	public int getNumberOfGuests() {

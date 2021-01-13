@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import kitchenpos.BaseServiceTest;
-import kitchenpos.order.application.TableService;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
 
@@ -63,7 +62,7 @@ public class TableServiceTest extends BaseServiceTest {
 	@DisplayName("빈 테이블 설정 변경 시, 단체 지정된 테이블이면 IllegalArgumentException을 throw 해야한다.")
 	void changeEmptyGroupTable() {
 		//given
-		Long orderTableId = 테이블_단체지정됨_0명_10.getId();
+		Long orderTableId = 테이블_단체1_0명_10.getId();
 		OrderTableRequest changeEmptyRequest = new OrderTableRequest(true);
 
 		//when-then
@@ -75,7 +74,7 @@ public class TableServiceTest extends BaseServiceTest {
 	@DisplayName("빈 테이블 설정 변경 시, 주문 상태가 조리 또는 식사인 테이블이면 IllegalArgumentException을 throw 해야한다.")
 	void changeEmptyCookingTable() {
 		//given
-		Long orderTableId = 테이블_요리중_3명_11.getId();
+		Long orderTableId = 테이블_식사중_4명_12.getId();
 		OrderTableRequest changeEmptyRequest = new OrderTableRequest(true);
 
 		//when-then
@@ -87,7 +86,7 @@ public class TableServiceTest extends BaseServiceTest {
 	@DisplayName("방문한 손님 수를 입력할 수 있다.")
 	void changeNumberOfGuests() {
 		//given
-		Long orderTableId = 테이블_단체지정됨_0명_10.getId();
+		Long orderTableId = 테이블_단체1_0명_10.getId();
 		int changeNumberOfGuests = 3;
 		OrderTableRequest changeNumberOfGuestsRequest = new OrderTableRequest(changeNumberOfGuests);
 
@@ -103,7 +102,7 @@ public class TableServiceTest extends BaseServiceTest {
 	@DisplayName("방문한 손님 수를 입력 시, 손님 수를 0 명 미만으로 입력하면 IllegalArgumentException을 throw 해야한다.")
 	void changeNegativeNumberOfGuests() {
 		//given
-		Long orderTableId = 테이블_단체지정됨_0명_10.getId();
+		Long orderTableId = 테이블_단체1_0명_10.getId();
 		OrderTableRequest changeNumberOfGuestsRequest = new OrderTableRequest(-10);
 
 		//when-then

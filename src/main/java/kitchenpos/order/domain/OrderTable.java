@@ -51,6 +51,10 @@ public class OrderTable {
 
     public void updateTableGroup(Long tableGroupId) {
         this.tableGroupId = tableGroupId;
+
+        if(tableGroupId != null) {
+            this.empty = false;
+        }
     }
 
     public void updateEmpty(boolean empty) {

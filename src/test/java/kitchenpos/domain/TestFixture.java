@@ -59,6 +59,10 @@ public class TestFixture {
 	public static final int 메뉴상품_신규_2_양념_QUANTITY = 1;
 	public static final BigDecimal 메뉴상품_신규_가격_총합 = BigDecimal.valueOf(32000);
 
+	//TableGroup
+	public static final TableGroup 테이블단체_1 = new TableGroup(1L, LocalDateTime.of(2021, 1, 28, 19, 30));
+	public static final TableGroup 테이블단체_2 = new TableGroup(1L, LocalDateTime.of(2021, 1, 28, 19, 30));
+
 	//OrderTable
 	public static final OrderTable 테이블_비어있는_0명_1 = new OrderTable(1L, null,0, true);
 	public static final OrderTable 테이블_비어있는_0명_2 = new OrderTable(2L, null,0, true);
@@ -66,11 +70,11 @@ public class TestFixture {
 	public static final OrderTable 테이블_비어있는_0명_4 = new OrderTable(4L, null,0, true);
 	public static final OrderTable 테이블_비어있는_0명_5 = new OrderTable(5L, null,0, true);
 	public static final OrderTable 테이블_비어있는_0명_6 = new OrderTable(6L, null,0, true);
-	public static final OrderTable 테이블_비어있는_0명_7 = new OrderTable(7L, null,0, true);
-	public static final OrderTable 테이블_비어있는_0명_8 = new OrderTable(8L, null,0, true);
+	public static final OrderTable 테이블_단체2_0명_7 = new OrderTable(7L, 2L,0, true);
+	public static final OrderTable 테이블_단체1_0명_8 = new OrderTable(8L, 1L,0, false);
 	public static final OrderTable 테이블_비어있지않은_2명_9 = new OrderTable(9L, null,2, false);
-	public static final OrderTable 테이블_단체지정됨_0명_10 = new OrderTable(10L, 1L,0, false);
-	public static final OrderTable 테이블_요리중_3명_11 = new OrderTable(11L, null,3, false);
+	public static final OrderTable 테이블_단체1_0명_10 = new OrderTable(10L, 1L,0, false);
+	public static final OrderTable 테이블_단체2_조리중_3명_11 = new OrderTable(11L, 2L,3, false);
 	public static final OrderTable 테이블_식사중_4명_12 = new OrderTable(12L, null,4, false);
 	public static final OrderTable 테이블_계산완료_5명_13 = new OrderTable(13L, null,5, false);
 
@@ -78,14 +82,9 @@ public class TestFixture {
 	public static final int 테이블_신규_NUM_OF_GUESTS = 0;
 	public static final boolean 테이블_신규_EMPTY = false;
 
-	//TableGroup
-	public static final TableGroup 테이블단체_1 = new TableGroup(1L, LocalDateTime.of(2021, 1, 28, 19, 30));
-
-	public static final Long 테이블단체_신규_ID = 1L;
-	public static final LocalDateTime 테이블단체_신규_CREATED_DATE = LocalDateTime.of(2021, 1, 28, 19, 30);
 
 	//Order
-	public static final Order 주문_요리중_테이블11 = new Order(1L, 11L, OrderStatus.COOKING.name(), LocalDateTime.of(2021, 1, 28, 12, 30));
+	public static final Order 주문_조리중_테이블11 = new Order(1L, 11L, OrderStatus.COOKING.name(), LocalDateTime.of(2021, 1, 28, 12, 30));
 	public static final Order 주문_식사중_테이블12 = new Order(2L, 12L, OrderStatus.MEAL.name(), LocalDateTime.of(2021, 1, 28, 13, 30));
 	public static final Order 주문_계산완료_테이블13 = new Order(3L, 13L, OrderStatus.COMPLETION.name(), LocalDateTime.of(2021, 1, 28, 14, 30));
 
@@ -96,8 +95,8 @@ public class TestFixture {
 	public static final Order 주문_신규 = new Order(주문_신규_ID, 주문_신규_테이블_ID, 주문_신규_주문상태, 주문_신규_ORDERED_DATE);
 
 	//OrderLineItem
-	public static final OrderLineItem 주문아이템_요리중_테이블11_후라이드_1개 = new OrderLineItem(1L, 1L, 1L, 1);
-	public static final OrderLineItem 주문아이템_요리중_테이블11_양념_1개 = new OrderLineItem(2L, 1L, 2L, 1);
+	public static final OrderLineItem 주문아이템_조리중_테이블11_후라이드_1개 = new OrderLineItem(1L, 1L, 1L, 1);
+	public static final OrderLineItem 주문아이템_조리중_테이블11_양념_1개 = new OrderLineItem(2L, 1L, 2L, 1);
 	public static final OrderLineItem 주문아이템_식사중_테이블12_반반_2개 = new OrderLineItem(3L, 2L, 3L, 2);
 	public static final OrderLineItem 주문아이템_계산완료_테이블13_통구이_1개 = new OrderLineItem(4L, 3L, 4L, 1);
 	public static final OrderLineItem 주문아이템_계산완료_테이블13_간장_1개 = new OrderLineItem(5L, 3L, 5L, 1);

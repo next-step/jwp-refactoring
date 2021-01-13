@@ -10,7 +10,7 @@ public class TableGroup {
     private LocalDateTime createdDate;
     private List<OrderTable> orderTables;
 
-    protected TableGroup() {
+    public TableGroup() {
     }
 
     public TableGroup(Long id, LocalDateTime createdDate) {
