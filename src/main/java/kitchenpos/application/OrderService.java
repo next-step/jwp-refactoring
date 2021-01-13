@@ -63,19 +63,19 @@ public class OrderService {
             throw new IllegalArgumentException();
         }
 
-        order.setOrderTableId(orderTable.getId());
-        order.setOrderStatus(OrderStatus.COOKING.name());
-        order.setOrderedTime(LocalDateTime.now());
+        order.updateOrderTable(orderTable.getId());
+        order.updateOrderStatus(OrderStatus.COOKING.name());
+        order.updateOrderedTime(LocalDateTime.now());
 
         final Order savedOrder = orderDao.save(order);
 
         final Long orderId = savedOrder.getId();
         final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
         for (final OrderLineItem orderLineItem : orderLineItems) {
-            orderLineItem.setOrderId(orderId);
+            orderLineItem.updateOrder(orderId);
             savedOrderLineItems.add(orderLineItemDao.save(orderLineItem));
         }
-        savedOrder.setOrderLineItems(savedOrderLineItems);
+        savedOrder.updateOrderLineItems(savedOrderLineItems);
 
         return OrderResponse.of(savedOrder);
     }
@@ -84,7 +84,7 @@ public class OrderService {
         final List<Order> orders = orderDao.findAll();
 
         for (final Order order : orders) {
-            order.setOrderLineItems(orderLineItemDao.findAllByOrderId(order.getId()));
+            order.updateOrderLineItems(orderLineItemDao.findAllByOrderId(order.getId()));
         }
 
         return orders.stream()
@@ -104,11 +104,11 @@ public class OrderService {
         }
 
         final OrderStatus orderStatus = OrderStatus.valueOf(order.getOrderStatus());
-        savedOrder.setOrderStatus(orderStatus.name());
+        savedOrder.updateOrderStatus(orderStatus.name());
 
         orderDao.save(savedOrder);
 
-        savedOrder.setOrderLineItems(orderLineItemDao.findAllByOrderId(orderId));
+        savedOrder.updateOrderLineItems(orderLineItemDao.findAllByOrderId(orderId));
 
         return OrderResponse.of(savedOrder);
     }
