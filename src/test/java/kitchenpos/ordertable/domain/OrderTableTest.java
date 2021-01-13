@@ -1,10 +1,13 @@
 package kitchenpos.ordertable.domain;
 
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -39,18 +42,15 @@ class OrderTableTest {
         assertThat(orderTable.isEmpty()).isFalse();
     }
 
-    // todo 주문 도메인 개발 후 진행 예정
     @DisplayName("주문 테이블의 주문이 조리 중이거나 식사 중일때는 상태를 변경할 수 없다.")
     @Test
     void cantChangeEmpty1() {
         // given
+        OrderTable orderTable = new OrderTable(5, false);
+        Order.of(orderTable, Arrays.asList(new OrderLineItem(null, 1)));
 
-
-        // when
-
-
-        // then
-
+        // when / then
+        assertThrows(IllegalStateException.class, () -> orderTable.changeEmpty(false));
     }
 
     @DisplayName("단체 지정이 되어 있다면 상태를 변경할 수 없다.")
@@ -67,7 +67,7 @@ class OrderTableTest {
     @Test
     void changeNumberOfGuests() {
         // given
-        OrderTable orderTable = new OrderTable( 5, false);
+        OrderTable orderTable = new OrderTable(5, false);
 
         // when
         orderTable.changeNumberOfGuests(3);
@@ -80,7 +80,7 @@ class OrderTableTest {
     @Test
     void requiredNumberOfGuests() {
         // given
-        OrderTable orderTable = new OrderTable( 5, false);
+        OrderTable orderTable = new OrderTable(5, false);
 
         // when / then
         assertThrows(IllegalArgumentException.class, () -> orderTable.changeNumberOfGuests(-1));
@@ -91,7 +91,7 @@ class OrderTableTest {
     @Test
     void cantChangeNumberOfGuests() {
         // given
-        OrderTable orderTable = new OrderTable( 5, true);
+        OrderTable orderTable = new OrderTable(5, true);
 
         // when / then
         assertThrows(IllegalStateException.class, () -> orderTable.changeNumberOfGuests(-1));

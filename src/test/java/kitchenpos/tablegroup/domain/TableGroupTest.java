@@ -77,17 +77,4 @@ class TableGroupTest {
         assertThat(orderTable1.getTableGroup()).isNull();
         assertThat(orderTable2.getTableGroup()).isNull();
     }
-
-    @DisplayName("해당 주문 테이블이 조리 중이거나 식사 중일때는 단체 지정을 삭제할 수 없다.")
-    @Test
-    void cantUngroup() {
-        // given
-        OrderTable orderTable1 = new OrderTable(5, false);
-        OrderTable orderTable2 = new OrderTable(3, false);
-        TableGroup tableGroup = new TableGroup(Arrays.asList(orderTable1, orderTable2));
-
-        // when / then
-        assertThrows(IllegalStateException.class, () -> tableGroup.ungroup());
-    }
-
 }
