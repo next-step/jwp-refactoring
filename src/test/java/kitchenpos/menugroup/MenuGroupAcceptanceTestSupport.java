@@ -30,6 +30,14 @@ public class MenuGroupAcceptanceTestSupport extends AcceptanceTest {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 메뉴_그룹_등록됨(String name) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", name);
+        ExtractableResponse<Response> response = 메뉴_그룹_등록_요청(params);
+        메뉴_그룹_생성_완료(response);
+        return response;
+    }
+
     public static void 메뉴_그룹_생성_완료(ExtractableResponse<Response> response) {
         HttpStatusAssertion.CREATED(response);
     }
