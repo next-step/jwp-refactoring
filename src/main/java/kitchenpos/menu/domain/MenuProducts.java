@@ -34,4 +34,8 @@ public class MenuProducts {
     public int size() {
         return menuProducts.size();
     }
+
+    public List<MenuProduct> getMenuProducts() {
+        return menuProducts;
+    }
 }

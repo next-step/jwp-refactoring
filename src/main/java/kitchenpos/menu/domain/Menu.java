@@ -4,6 +4,7 @@ import kitchenpos.common.Money;
 import kitchenpos.menugroup.domain.MenuGroup;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -50,5 +51,25 @@ public class Menu {
         if (price.compareTo(priceOfMenuProducts) > 0) {
             throw new IllegalArgumentException("메뉴 가격은 메뉴 상품들 가격의 합보다 높을 수 없습니다.");
         }
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Money getPrice() {
+        return price;
+    }
+
+    public MenuGroup getMenuGroup() {
+        return menuGroup;
+    }
+
+    public List<MenuProduct> getMenuProducts() {
+        return menuProducts.getMenuProducts();
     }
 }

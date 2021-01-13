@@ -41,4 +41,20 @@ public class MenuProduct {
         Money productPrice = product.getPrice();
         return productPrice.multiply(quantity);
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Menu getMenu() {
+        return menu;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public long getQuantity() {
+        return quantity;
+    }
 }
