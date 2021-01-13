@@ -1,6 +1,6 @@
 package kitchenpos.domain.tablegroup.exceptions;
 
-import kitchenpos.exceptions.EntityNotFoundException;
+import javax.persistence.EntityNotFoundException;
 
 public class TableGroupEntityNotFoundException extends EntityNotFoundException {
     public TableGroupEntityNotFoundException(final String message) {

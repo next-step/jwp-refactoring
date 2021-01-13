@@ -27,8 +27,19 @@ subprojects {
     bootJar.enabled(false)
 }
 
+project(':module-common') {
+}
+
+project(':module-domain') {
+    dependencies {
+        compile project(':module-common')
+    }
+}
+
 project(':module-api') {
     dependencies {
+        compile project(':module-common')
+        compile project(':module-domain')
     }
 
     jar.enabled(false)

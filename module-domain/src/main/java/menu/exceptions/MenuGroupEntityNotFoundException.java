@@ -1,6 +1,6 @@
 package kitchenpos.domain.menu.exceptions;
 
-import kitchenpos.exceptions.EntityNotFoundException;
+import javax.persistence.EntityNotFoundException;
 
 public class MenuGroupEntityNotFoundException extends EntityNotFoundException {
     public MenuGroupEntityNotFoundException(final String message) {
