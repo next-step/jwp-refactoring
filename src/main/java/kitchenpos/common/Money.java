@@ -3,7 +3,7 @@ package kitchenpos.common;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-public class Money {
+public class Money implements Comparable<Money> {
 
     private static final BigDecimal MIN_VALUE = BigDecimal.ZERO;
 
@@ -39,6 +39,11 @@ public class Money {
 
     public BigDecimal getAmount() {
         return amount;
+    }
+
+    @Override
+    public int compareTo(final Money other) {
+        return amount.compareTo(other.amount);
     }
 
     @Override
