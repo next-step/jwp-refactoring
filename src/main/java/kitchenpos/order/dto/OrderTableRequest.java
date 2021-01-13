@@ -40,6 +40,6 @@ public class OrderTableRequest {
 	}
 
 	public OrderTable toOrderTable() {
-		return new OrderTable(this.numberOfGuests, this.empty);
+		return new OrderTable(this.id, this.numberOfGuests, this.empty);
 	}
 }

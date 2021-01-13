@@ -46,6 +46,7 @@ public class TableGroupServiceTest extends BaseServiceTest {
 			.collect(Collectors.toList());
 
 		assertThat(result.getId()).isNotNull();
+		assertThat(result.getCreatedDate()).isNotNull();
 		assertThat(tableGroupIds.size()).isEqualTo(2);
 		assertThat(tableGroupIds.stream()
 			.distinct().count()).isEqualTo(1);

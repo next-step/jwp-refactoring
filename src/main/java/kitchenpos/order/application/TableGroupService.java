@@ -1,23 +1,18 @@
 package kitchenpos.order.application;
 
 import kitchenpos.dao.OrderDao;
+import kitchenpos.order.domain.OrderTables;
 import kitchenpos.order.dto.TableGroupRequest;
 import kitchenpos.order.dto.TableGroupResponse;
 import kitchenpos.order.dao.OrderTableRepository;
 import kitchenpos.order.dao.TableGroupRepository;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.TableGroup;
-import kitchenpos.order.dto.OrderTableRequest;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 public class TableGroupService {
@@ -33,61 +28,31 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-        final List<OrderTableRequest> orderTables = tableGroupRequest.getOrderTables();
+        final OrderTables savedOrderTables = new OrderTables(
+            orderTableRepository.findAllByIdIn(tableGroupRequest.orderTableIds())
+        );
 
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException();
+        if (!savedOrderTables.sameSizeWith(tableGroupRequest.orderTableSize())) {
+            throw new IllegalArgumentException("등록되지 않은 테이블이 포함되어 있습니다.");
         }
 
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTableRequest::getId)
-                .collect(Collectors.toList());
+        final TableGroup tableGroup = tableGroupRepository.save(new TableGroup());
+        tableGroup.updateOrderTables(savedOrderTables);
 
-        final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
-
-        if (orderTables.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
-        }
-
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        TableGroup tableGroup = new TableGroup();
-
-        final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
-
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.updateTableGroup(tableGroup);
-            orderTableRepository.save(savedOrderTable);
-        }
-        savedTableGroup.updateOrderTables(savedOrderTables);
-
-        return TableGroupResponse.of(savedTableGroup);
+        return TableGroupResponse.of(tableGroup);
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-
         final TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
             .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 단체 입니다."));
 
-        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroup(tableGroup);
-
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-
         if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
+            tableGroup.orderTableIds(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+            throw new IllegalArgumentException("주문 상태가 조리중이거나 식사중인 테이블의 단체 지정은 해지할 수 없습니다.");
         }
 
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.updateTableGroup(null);
-            orderTableRepository.save(orderTable);
-        }
+        tableGroup.unGroup();
+        tableGroupRepository.save(tableGroup);
     }
 }
