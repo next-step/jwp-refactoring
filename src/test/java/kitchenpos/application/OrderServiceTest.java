@@ -1,105 +1,66 @@
 package kitchenpos.application;
 
+import static kitchenpos.domain.TestFixture.*;
 import static org.assertj.core.api.Assertions.*;
-import static org.hamcrest.Matchers.*;
-import static org.mockito.Mockito.*;
-import static org.mockito.hamcrest.MockitoHamcrest.argThat;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import kitchenpos.menu.dao.MenuRepository;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.order.dao.OrderTableRepository;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
+import kitchenpos.BaseServiceTest;
+import kitchenpos.dto.OrderLineItemRequest;
+import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderResponse;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.domain.TestDomainConstructor;
 
-@ExtendWith(MockitoExtension.class)
-public class OrderServiceTest {
-	@Mock
-	private MenuRepository menuRepository;
-	@Mock
-	private OrderTableRepository orderTableRepository;
-	@Mock
-	private OrderLineItemDao orderLineItemDao;
-	@Mock
-	private OrderDao orderDao;
-	@InjectMocks
+public class OrderServiceTest extends BaseServiceTest {
+	@Autowired
 	private OrderService orderService;
 
-	private static final Long NEW_ORDER_ID = 1L;
-	private static final Long NOT_EMPTY_TABLE_ID = 9L;
-	private static final Long MENU_ID = 1L;
-	private static final Long MENU2_ID = 2L;
-	private static final List<Long> MENU_IDS = Arrays.asList(MENU_ID, MENU2_ID);
-	private OrderTable savedOrderTable;
-	private OrderLineItem orderLineItem;
-	private OrderLineItem orderLineItem2;
-	private List<OrderLineItem> orderLineItems;
-	private Order createdOrder;
-	private long orderLineItemsSize;
+	private static final Long 주문가능한_TABLE_ID = 테이블_비어있지않은_2명_9.getId();
+	private static final OrderRequest CHANGE_STATUS_REQUEST = new OrderRequest(OrderStatus.MEAL.name());
+	private OrderLineItemRequest orderLineItemRequest;
+	private OrderLineItemRequest orderLineItemRequest2;
+	private List<OrderLineItemRequest> orderLineItemRequests;
 
 	@BeforeEach
-	void setUp() {
-		savedOrderTable = TestDomainConstructor.orderTableWithId(1L, 2, false, NOT_EMPTY_TABLE_ID);
-		orderLineItem = TestDomainConstructor.orderLineItem(null, MENU_ID, 1);
-		orderLineItem2 = TestDomainConstructor.orderLineItem(null, MENU2_ID, 2);
-		orderLineItems = Arrays.asList(orderLineItem, orderLineItem2);
-		orderLineItemsSize = orderLineItems.size();
-		createdOrder = TestDomainConstructor.orderWithId(NOT_EMPTY_TABLE_ID, OrderStatus.COOKING.name(), LocalDateTime
-			.now(), orderLineItems, NEW_ORDER_ID);
+	public void setUp() {
+		orderLineItemRequest = new OrderLineItemRequest(메뉴_후라이드.getId(), 1);
+		orderLineItemRequest2 = new OrderLineItemRequest(메뉴_양념치킨.getId(), 1);
+		orderLineItemRequests = Arrays.asList(orderLineItemRequest, orderLineItemRequest2);
 	}
 
 	@Test
 	@DisplayName("주문을 등록할 수 있다.")
 	void create() {
 		//given
-		String orderStatus = OrderStatus.COOKING.name();
-		Order order = TestDomainConstructor.order(NOT_EMPTY_TABLE_ID, null, null, orderLineItems);
-		OrderLineItem savedOrderLineItem = TestDomainConstructor.orderLineItemWithSeq(NEW_ORDER_ID, MENU_ID, 1, 1L);
-		OrderLineItem savedOrderLineItem2 = TestDomainConstructor.orderLineItemWithSeq(NEW_ORDER_ID, MENU2_ID, 1, 2L);
-
-		when(menuRepository.countByIdIn(MENU_IDS)).thenReturn(orderLineItemsSize);
-		when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(savedOrderTable));
-		//save 전에 3가지 정보가 setting 되어야 함
-		when(orderDao.save(argThat(allOf(
-			hasProperty("orderTableId", is(NOT_EMPTY_TABLE_ID))
-			, hasProperty("orderStatus", is(orderStatus))
-			, hasProperty("orderedTime", notNullValue())
-		)))).thenReturn(createdOrder);
-		when(orderLineItemDao.save(any())).thenReturn(savedOrderLineItem, savedOrderLineItem2);
+		OrderRequest orderRequest = new OrderRequest(주문가능한_TABLE_ID, 주문_신규_주문상태, orderLineItemRequests);
 
 		//when
-		Order result = orderService.create(order);
+		OrderResponse result = orderService.create(orderRequest);
 
 		//then
-		assertThat(result.getId()).isEqualTo(NEW_ORDER_ID);
-		assertThat(result.getOrderStatus()).isEqualTo(orderStatus);
+		assertThat(result.getId()).isNotNull();
+		assertThat(result.getOrderStatus()).isEqualTo(주문_신규_주문상태);
 		assertThat(result.getOrderedTime()).isNotNull();
-		assertThat(result.getOrderTableId()).isEqualTo(NOT_EMPTY_TABLE_ID);
-		assertThat(result.getOrderLineItems()).containsExactlyInAnyOrder(savedOrderLineItem, savedOrderLineItem2);
+		assertThat(result.getOrderTableId()).isEqualTo(주문_신규_테이블_ID);
+		assertThat(result.getOrderLineItems().size()).isEqualTo(2);
+		assertThat(result.getOrderLineItems().get(0).getOrderId()).isEqualTo(result.getId());
+		assertThat(result.getOrderLineItems().get(0).getMenuId()).isEqualTo(메뉴_후라이드.getId());
+		assertThat(result.getOrderLineItems().get(1).getOrderId()).isEqualTo(result.getId());
+		assertThat(result.getOrderLineItems().get(1).getMenuId()).isEqualTo(메뉴_양념치킨.getId());
 	}
 
 	@Test
 	@DisplayName("주문 등록 시, 주문 아이템이 Null이면 IllegalArgumentException을 throw 해야한다.")
 	void createOrderItemNull() {
 		//given
-		Order nullItemOrder = TestDomainConstructor.order(NOT_EMPTY_TABLE_ID, null, null, null);
+		OrderRequest nullItemOrder = new OrderRequest(주문가능한_TABLE_ID, 주문_신규_주문상태, null);
 
 		//when-then
 		assertThatThrownBy(() -> orderService.create(nullItemOrder))
@@ -110,7 +71,7 @@ public class OrderServiceTest {
 	@DisplayName("주문 등록 시, 주문 아이템이 0개면 IllegalArgumentException을 throw 해야한다.")
 	void createOrderItemEmpty() {
 		//given
-		Order emptyItemOrder = TestDomainConstructor.order(NOT_EMPTY_TABLE_ID, null, null, new ArrayList<>());
+		OrderRequest emptyItemOrder = new OrderRequest(주문가능한_TABLE_ID, 주문_신규_주문상태, new ArrayList<>());
 
 		//when-then
 		assertThatThrownBy(() -> orderService.create(emptyItemOrder))
@@ -121,9 +82,7 @@ public class OrderServiceTest {
 	@DisplayName("주문 등록 시, 주문 테이블이 등록되어있지 않으면 IllegalArgumentException을 throw 해야한다.")
 	void createNotExistOrderTable() {
 		//given
-		Order notExistOrderTable = TestDomainConstructor.order(100L, null, null, orderLineItems);
-		when(menuRepository.countByIdIn(MENU_IDS)).thenReturn(orderLineItemsSize);
-		when(orderTableRepository.findById(100L)).thenReturn(Optional.empty());
+		OrderRequest notExistOrderTable = new OrderRequest(존재하지않는_ID, 주문_신규_주문상태, null);
 
 		//when-then
 		assertThatThrownBy(() -> orderService.create(notExistOrderTable))
@@ -134,11 +93,11 @@ public class OrderServiceTest {
 	@DisplayName("주문 등록 시, 메뉴가 모두 등록되어있지 않으면 IllegalArgumentException을 throw 해야한다.")
 	void createNotExistMenus() {
 		//given
-		Order notExistMenus = TestDomainConstructor.order(NOT_EMPTY_TABLE_ID, null, null, orderLineItems);
-		when(menuRepository.countByIdIn(MENU_IDS)).thenReturn(1L);
+		OrderLineItemRequest notExistMenus = new OrderLineItemRequest(존재하지않는_ID, 1);
+		OrderRequest notExistMenusOrder = new OrderRequest(주문가능한_TABLE_ID, 주문_신규_주문상태, Arrays.asList(notExistMenus));
 
 		//when-then
-		assertThatThrownBy(() -> orderService.create(notExistMenus))
+		assertThatThrownBy(() -> orderService.create(notExistMenusOrder))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
@@ -146,10 +105,7 @@ public class OrderServiceTest {
 	@DisplayName("주문 등록 시, 주문테이블이 빈 테이블이면 IllegalArgumentException을 throw 해야한다.")
 	void createPriceLessThanZero() {
 		//given
-		OrderTable emptyTable = TestDomainConstructor.orderTableWithId(null, 0, true, 3L);
-		Order emptyTableOrder = TestDomainConstructor.order(3L, null, null, orderLineItems);
-		when(menuRepository.countByIdIn(MENU_IDS)).thenReturn(orderLineItemsSize);
-		when(orderTableRepository.findById(3L)).thenReturn(Optional.of(emptyTable));
+		OrderRequest emptyTableOrder = new OrderRequest(테이블_비어있는_0명_1.getId(), 주문_신규_주문상태, orderLineItemRequests);
 
 		//when-then
 		assertThatThrownBy(() -> orderService.create(emptyTableOrder))
@@ -159,66 +115,39 @@ public class OrderServiceTest {
 	@Test
 	@DisplayName("주문의 목록을 주문의 상품목록과 함께 조회할 수 있다.")
 	void list() {
-		//given
-		OrderLineItem orderLineItem = mock(OrderLineItem.class);
-		Order orderWithTwoItems = TestDomainConstructor.orderWithId(NOT_EMPTY_TABLE_ID, null, null
-			, Arrays.asList(orderLineItem, orderLineItem), 1L);
-		Order orderWithThreeItems = TestDomainConstructor.orderWithId(NOT_EMPTY_TABLE_ID, null, null
-			, Arrays.asList(orderLineItem, orderLineItem, orderLineItem), 2L);
-
-		when(orderDao.findAll()).thenReturn(Arrays.asList(orderWithTwoItems, orderWithThreeItems));
-		when(orderLineItemDao.findAllByOrderId(anyLong())).thenReturn(orderWithTwoItems.getOrderLineItems(), orderWithThreeItems.getOrderLineItems());
-
 		//when
-		List<Order> results = orderService.list();
+		List<OrderResponse> results = orderService.list();
 
 		//then
-		assertThat(results.size()).isEqualTo(2);
-		assertThat(results.get(0).getOrderLineItems().size()).isEqualTo(2);
-		assertThat(results.get(1).getOrderLineItems().size()).isEqualTo(3);
+		assertThat(results).isNotEmpty();
+		assertThat(results.get(0).getOrderLineItems()).isNotEmpty();
+		assertThat(results.get(0).getOrderLineItems().get(0).getSeq()).isNotNull();
 	}
 
 	@Test
 	@DisplayName("주문 상태를 변경할 수 있다.")
 	void changeOrderStatus() {
-		//given
-		String changedStatus = OrderStatus.MEAL.name();
-		Order changeStatusOrder = TestDomainConstructor.order(NOT_EMPTY_TABLE_ID, changedStatus, null, orderLineItems);
-		when(orderDao.findById(NEW_ORDER_ID)).thenReturn(Optional.of(createdOrder));
-		when(orderLineItemDao.findAllByOrderId(NEW_ORDER_ID)).thenReturn(orderLineItems);
-
 		//when
-		Order result = orderService.changeOrderStatus(NEW_ORDER_ID, changeStatusOrder);
+		OrderResponse result = orderService.changeOrderStatus(주문_조리중_테이블11.getId(), CHANGE_STATUS_REQUEST);
 
 		//then
-		assertThat(result.getOrderStatus()).isEqualTo(changedStatus);
-		assertThat(result.getOrderLineItems().size()).isEqualTo(orderLineItems.size());
+		assertThat(result.getId()).isEqualTo(주문_조리중_테이블11.getId());
+		assertThat(result.getOrderStatus()).isEqualTo(CHANGE_STATUS_REQUEST.getOrderStatus());
 	}
 
 	@Test
 	@DisplayName("주문 상태를 변경 시, 주문이 등록되어있지 않으면 IllegalArgumentException을 throw 해야한다.")
 	void changeNotExistOrderStatus() {
-		//given
-		Long notExistOrderId = 200L;
-		Order changeStatusOrder = mock(Order.class);
-		when(orderDao.findById(notExistOrderId)).thenReturn(Optional.empty());
-
 		//when-then
-		assertThatThrownBy(() -> orderService.changeOrderStatus(notExistOrderId, changeStatusOrder))
+		assertThatThrownBy(() -> orderService.changeOrderStatus(존재하지않는_ID, CHANGE_STATUS_REQUEST))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@Test
 	@DisplayName("주문 상태를 변경 시, 주문 상태가 계산 완료인 경우 변경할 수 없다.")
 	void changeCompleteStatus() {
-		//given
-		Long completeStatusOrderId = 300L;
-		Order changeStatusOrder = TestDomainConstructor.order(NOT_EMPTY_TABLE_ID, OrderStatus.MEAL.name(), null, orderLineItems);
-		Order completeStatusOrder = TestDomainConstructor.orderWithId(NOT_EMPTY_TABLE_ID, OrderStatus.COMPLETION.name(), null, orderLineItems, completeStatusOrderId);
-		when(orderDao.findById(completeStatusOrderId)).thenReturn(Optional.of(completeStatusOrder));
-
 		//when-then
-		assertThatThrownBy(() -> orderService.changeOrderStatus(completeStatusOrderId, changeStatusOrder))
+		assertThatThrownBy(() -> orderService.changeOrderStatus(주문_계산완료_테이블13.getId(), CHANGE_STATUS_REQUEST))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 }

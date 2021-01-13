@@ -1,11 +1,11 @@
 package kitchenpos.ui;
 
+import static kitchenpos.domain.TestFixture.*;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,44 +15,40 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
 import kitchenpos.BaseControllerTest;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.TestDomainConstructor;
+import kitchenpos.dto.OrderLineItemRequest;
+import kitchenpos.dto.OrderRequest;
 
 @DisplayName("주문 Controller 테스트")
 public class OrderRestControllerTest extends BaseControllerTest {
 
-	private OrderLineItem orderLineItem;
-	private OrderLineItem orderLineItem2;
-	private List<OrderLineItem> orderLineItems;
-	private Order order;
-	private int orderItemSize;
-	private static final Long NEW_ORDER_ID = 1L;
-	private static final Long NOT_EMPTY_ORDER_TABLE_ID = 9L;
+	private static final Long 주문가능한_TABLE_ID = 테이블_비어있지않은_2명_9.getId();
+	private static final OrderRequest CHANGE_STATUS_REQUEST = new OrderRequest(OrderStatus.MEAL.name());
+	private OrderLineItemRequest orderLineItemRequest;
+	private OrderLineItemRequest orderLineItemRequest2;
+	private List<OrderLineItemRequest> orderLineItemRequests;
 
 	@BeforeEach
 	public void setUp() {
-		super.setUp();
-		orderLineItem = TestDomainConstructor.orderLineItem(null, 1L, 2);
-		orderLineItem2 = TestDomainConstructor.orderLineItem(null, 2L, 1);
-		orderLineItems = Arrays.asList(orderLineItem, orderLineItem2);
-		orderItemSize = orderLineItems.size();
-		order = TestDomainConstructor.order(
-			NOT_EMPTY_ORDER_TABLE_ID, null, null, Arrays.asList(orderLineItem, orderLineItem2));
+		orderLineItemRequest = new OrderLineItemRequest(메뉴_후라이드.getId(), 1);
+		orderLineItemRequest2 = new OrderLineItemRequest(메뉴_양념치킨.getId(), 1);
+		orderLineItemRequests = Arrays.asList(orderLineItemRequest, orderLineItemRequest2);
 	}
 
 	@Test
 	@DisplayName("주문을 등록할 수 있다 - 주문 등록 후, 등록된 주문의 아이디를 포함한 정보를 반환한다.")
 	void create() throws Exception {
+		//given
+		OrderRequest orderRequest = new OrderRequest(주문가능한_TABLE_ID, 주문_신규_주문상태, orderLineItemRequests);
+
 		//when-then
 		mockMvc.perform(post("/api/orders")
 			.contentType(MediaType.APPLICATION_JSON)
-			.content(objectMapper.writeValueAsString(order)))
+			.content(objectMapper.writeValueAsString(orderRequest)))
 			.andDo(print())
 			.andExpect(status().isCreated())
 			.andExpect(jsonPath("$.id").isNotEmpty())
-			.andExpect(jsonPath("$.orderStatus").value(OrderStatus.COOKING.name()))
+			.andExpect(jsonPath("$.orderStatus").value(주문_신규_주문상태))
 			.andExpect(jsonPath("$.orderedTime").isNotEmpty())
 			.andExpect(jsonPath("$..seq").isNotEmpty())
 			.andExpect(jsonPath("$..orderId").isNotEmpty());
@@ -79,22 +75,17 @@ public class OrderRestControllerTest extends BaseControllerTest {
 	@Test
 	@DisplayName("주문 상태를 변경할 수 있다.")
 	void changeOrderStatus() throws Exception {
-		//given
-		create();
-		Order savedOrder = TestDomainConstructor.orderWithId(NOT_EMPTY_ORDER_TABLE_ID, OrderStatus.MEAL.name(),
-			LocalDateTime.now(), orderLineItems, NEW_ORDER_ID);
-
 		//when-then
-		mockMvc.perform(put(String.format("/api/orders/%d/order-status", NEW_ORDER_ID))
+		mockMvc.perform(put(String.format("/api/orders/%d/order-status", 주문_조리중_테이블11.getId()))
 			.contentType(MediaType.APPLICATION_JSON)
-			.content(objectMapper.writeValueAsString(savedOrder)))
+			.content(objectMapper.writeValueAsString(CHANGE_STATUS_REQUEST)))
 			.andDo(print())
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.id").value(NEW_ORDER_ID))
-			.andExpect(jsonPath("$.orderStatus").value(OrderStatus.MEAL.name()))
+			.andExpect(jsonPath("$.id").value(주문_조리중_테이블11.getId()))
+			.andExpect(jsonPath("$.orderStatus").value(CHANGE_STATUS_REQUEST.getOrderStatus()))
 			.andExpect(jsonPath("$.orderedTime").isNotEmpty())
-			.andExpect(jsonPath("$..seq", hasSize(orderItemSize)))
-			.andExpect(jsonPath("$..orderId", hasSize(orderItemSize)));
+			.andExpect(jsonPath("$..seq").isNotEmpty())
+			.andExpect(jsonPath("$..orderId").isNotEmpty());
 	}
 }
 

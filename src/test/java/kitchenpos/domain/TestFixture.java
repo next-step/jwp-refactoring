@@ -79,7 +79,6 @@ public class TestFixture {
 	public static final OrderTable 테이블_식사중_4명_12 = new OrderTable(12L, null,4, false);
 	public static final OrderTable 테이블_계산완료_5명_13 = new OrderTable(13L, null,5, false);
 
-	public static final Long 테이블_신규_ID = 10L;
 	public static final int 테이블_신규_NUM_OF_GUESTS = 0;
 	public static final boolean 테이블_신규_EMPTY = false;
 
@@ -89,11 +88,9 @@ public class TestFixture {
 	public static final Order 주문_식사중_테이블12 = new Order(2L, 12L, OrderStatus.MEAL.name(), LocalDateTime.of(2021, 1, 28, 13, 30));
 	public static final Order 주문_계산완료_테이블13 = new Order(3L, 13L, OrderStatus.COMPLETION.name(), LocalDateTime.of(2021, 1, 28, 14, 30));
 
-	public static final Long 주문_신규_ID = 1L;
 	public static final Long 주문_신규_테이블_ID = 9L;
 	public static final String 주문_신규_주문상태 = OrderStatus.COOKING.name();
 	public static final LocalDateTime 주문_신규_ORDERED_DATE = LocalDateTime.of(2021, 1, 28, 19, 30);
-	public static final Order 주문_신규 = new Order(주문_신규_ID, 주문_신규_테이블_ID, 주문_신규_주문상태, 주문_신규_ORDERED_DATE);
 
 	//OrderLineItem
 	public static final OrderLineItem 주문아이템_조리중_테이블11_후라이드_1개 = new OrderLineItem(1L, 1L, 1L, 1);

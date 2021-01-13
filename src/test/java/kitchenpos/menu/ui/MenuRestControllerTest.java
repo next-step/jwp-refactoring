@@ -20,7 +20,6 @@ import kitchenpos.menu.dto.MenuRequest;
 @DisplayName("메뉴 Controller 테스트")
 public class MenuRestControllerTest extends BaseControllerTest {
 
-	private static final Long 존재하지않는_ID = 0L;
 	private MenuProductRequest menuProductRequest1;
 	private MenuProductRequest menuProductRequest2;
 	private List<MenuProductRequest> menuProductRequests;
