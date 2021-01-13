@@ -15,9 +15,6 @@ import kitchenpos.order.dto.OrderTableRequest;
 @DisplayName("주문 테이블 Controller 테스트")
 public class TableRestControllerTest extends BaseControllerTest {
 
-	private static final Long EMPTY_ORDER_TABLE_ID = 1L;
-	private static final Long NOT_EMPTY_ORDER_TABLE_ID = 9L;
-
 	@Test
 	@DisplayName("주문 테이블을 등록할 수 있다 - 테이블 등록 후, 등록된 테이블의 아이디를 포함한 정보를 반환한다.")
 	void create() throws Exception {
@@ -80,7 +77,7 @@ public class TableRestControllerTest extends BaseControllerTest {
 			.content(objectMapper.writeValueAsString(orderTableRequest)))
 			.andDo(print())
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.id").value(NOT_EMPTY_ORDER_TABLE_ID))
+			.andExpect(jsonPath("$.id").value(orderTableId))
 			.andExpect(jsonPath("$.tableGroupId").isEmpty())
 			.andExpect(jsonPath("$.empty").value(true));
 	}
@@ -99,7 +96,7 @@ public class TableRestControllerTest extends BaseControllerTest {
 			.content(objectMapper.writeValueAsString(orderTableRequest)))
 			.andDo(print())
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.id").value(NOT_EMPTY_ORDER_TABLE_ID))
+			.andExpect(jsonPath("$.id").value(orderTableId))
 			.andExpect(jsonPath("$.tableGroupId").isEmpty())
 			.andExpect(jsonPath("$.numberOfGuests").value(changeNumberOfGuests))
 			.andExpect(jsonPath("$.empty").value(false));

@@ -4,19 +4,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.TableGroup;
 
 public class TestDomainConstructor {
 
 	public static OrderTable orderTableWithId(Long tableGroupId, int numberOfGuests, boolean empty, Long id) {
-		return new OrderTable(id, tableGroupId, numberOfGuests, empty);
-	}
-
-	public static TableGroup tableGroup(List<OrderTable> orderTables, LocalDateTime createdDate) {
-		return new TableGroup(createdDate, orderTables);
-	}
-
-	public static TableGroup tableGroupWithId(List<OrderTable> orderTables, LocalDateTime createdDate, Long id) {
-		return new TableGroup(id, createdDate, orderTables);
+		return new OrderTable(id, new TableGroup(), numberOfGuests, empty);
 	}
 
 	public static Order order(Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {

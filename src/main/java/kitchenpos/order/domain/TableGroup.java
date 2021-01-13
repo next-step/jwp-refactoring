@@ -1,13 +1,22 @@
-package kitchenpos.domain;
+package kitchenpos.order.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import kitchenpos.order.domain.OrderTable;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
+@Entity
 public class TableGroup {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDateTime createdDate;
+    @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderTable> orderTables;
 
     public TableGroup() {
@@ -17,17 +26,6 @@ public class TableGroup {
     public TableGroup(Long id, LocalDateTime createdDate) {
         this.id = id;
         this.createdDate = createdDate;
-    }
-
-    public TableGroup(LocalDateTime createdDate, List<OrderTable> orderTables) {
-        this.createdDate = createdDate;
-        this.orderTables = orderTables;
-    }
-
-    public TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
-        this.id = id;
-        this.createdDate = createdDate;
-        this.orderTables = orderTables;
     }
 
     public Long getId() {

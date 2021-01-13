@@ -7,6 +7,7 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.TableGroup;
 import kitchenpos.product.domain.Product;
 
 //migration sql 기반 데이터
@@ -61,7 +62,7 @@ public class TestFixture {
 
 	//TableGroup
 	public static final TableGroup 테이블단체_1 = new TableGroup(1L, LocalDateTime.of(2021, 1, 28, 19, 30));
-	public static final TableGroup 테이블단체_2 = new TableGroup(1L, LocalDateTime.of(2021, 1, 28, 19, 30));
+	public static final TableGroup 테이블단체_2 = new TableGroup(2L, LocalDateTime.of(2021, 1, 28, 19, 30));
 
 	//OrderTable
 	public static final OrderTable 테이블_비어있는_0명_1 = new OrderTable(1L, null,0, true);
@@ -70,11 +71,11 @@ public class TestFixture {
 	public static final OrderTable 테이블_비어있는_0명_4 = new OrderTable(4L, null,0, true);
 	public static final OrderTable 테이블_비어있는_0명_5 = new OrderTable(5L, null,0, true);
 	public static final OrderTable 테이블_비어있는_0명_6 = new OrderTable(6L, null,0, true);
-	public static final OrderTable 테이블_단체2_0명_7 = new OrderTable(7L, 2L,0, true);
-	public static final OrderTable 테이블_단체1_0명_8 = new OrderTable(8L, 1L,0, false);
+	public static final OrderTable 테이블_단체2_0명_7 = new OrderTable(7L, 테이블단체_2,0, true);
+	public static final OrderTable 테이블_단체1_0명_8 = new OrderTable(8L, 테이블단체_1,0, false);
 	public static final OrderTable 테이블_비어있지않은_2명_9 = new OrderTable(9L, null,2, false);
-	public static final OrderTable 테이블_단체1_0명_10 = new OrderTable(10L, 1L,0, false);
-	public static final OrderTable 테이블_단체2_조리중_3명_11 = new OrderTable(11L, 2L,3, false);
+	public static final OrderTable 테이블_단체1_0명_10 = new OrderTable(10L, 테이블단체_1,0, false);
+	public static final OrderTable 테이블_단체2_조리중_3명_11 = new OrderTable(11L, 테이블단체_2,3, false);
 	public static final OrderTable 테이블_식사중_4명_12 = new OrderTable(12L, null,4, false);
 	public static final OrderTable 테이블_계산완료_5명_13 = new OrderTable(13L, null,5, false);
 

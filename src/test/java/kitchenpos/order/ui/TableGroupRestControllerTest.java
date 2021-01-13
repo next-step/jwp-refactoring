@@ -1,4 +1,4 @@
-package kitchenpos.ui;
+package kitchenpos.order.ui;
 
 import static kitchenpos.domain.TestFixture.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
 import kitchenpos.BaseControllerTest;
-import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.order.dto.TableGroupRequest;
 import kitchenpos.order.dto.OrderTableRequest;
 
 @DisplayName("테이블 단체 Controller 테스트")

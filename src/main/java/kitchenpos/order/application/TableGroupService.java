@@ -1,20 +1,19 @@
-package kitchenpos.application;
+package kitchenpos.order.application;
 
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dto.TableGroupRequest;
-import kitchenpos.dto.TableGroupResponse;
+import kitchenpos.order.dto.TableGroupRequest;
+import kitchenpos.order.dto.TableGroupResponse;
 import kitchenpos.order.dao.OrderTableRepository;
-import kitchenpos.dao.TableGroupDao;
+import kitchenpos.order.dao.TableGroupRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.order.domain.TableGroup;
 import kitchenpos.order.dto.OrderTableRequest;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -24,12 +23,12 @@ import java.util.stream.Collectors;
 public class TableGroupService {
     private final OrderDao orderDao;
     private final OrderTableRepository orderTableRepository;
-    private final TableGroupDao tableGroupDao;
+    private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final OrderDao orderDao, final OrderTableRepository orderTableRepository, final TableGroupDao tableGroupDao) {
+    public TableGroupService(final OrderDao orderDao, final OrderTableRepository orderTableRepository, final TableGroupRepository tableGroupRepository) {
         this.orderDao = orderDao;
         this.orderTableRepository = orderTableRepository;
-        this.tableGroupDao = tableGroupDao;
+        this.tableGroupRepository = tableGroupRepository;
     }
 
     @Transactional
@@ -58,11 +57,10 @@ public class TableGroupService {
 
         TableGroup tableGroup = new TableGroup();
 
-        final TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
+        final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
 
-        final Long tableGroupId = savedTableGroup.getId();
         for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.updateTableGroup(tableGroupId);
+            savedOrderTable.updateTableGroup(tableGroup);
             orderTableRepository.save(savedOrderTable);
         }
         savedTableGroup.updateOrderTables(savedOrderTables);
@@ -72,7 +70,11 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
+
+        final TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
+            .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 단체 입니다."));
+
+        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroup(tableGroup);
 
         final List<Long> orderTableIds = orderTables.stream()
                 .map(OrderTable::getId)

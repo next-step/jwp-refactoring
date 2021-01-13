@@ -7,13 +7,17 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long tableGroupId;
+    @ManyToOne
+    @JoinColumn(name = "table_group_id")
+    private TableGroup tableGroup;
     @Embedded
     private NumberOfGuests numberOfGuests;
     private boolean empty;
@@ -21,9 +25,9 @@ public class OrderTable {
     protected OrderTable() {
     }
 
-    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroupId = tableGroupId;
+        this.tableGroup = tableGroup;
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
         this.empty = empty;
     }
@@ -38,7 +42,10 @@ public class OrderTable {
     }
 
     public Long getTableGroupId() {
-        return tableGroupId;
+        if (this.tableGroup != null) {
+            return tableGroup.getId();
+        }
+        return null;
     }
 
     public int getNumberOfGuests() {
@@ -49,10 +56,10 @@ public class OrderTable {
         return empty;
     }
 
-    public void updateTableGroup(Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
+    public void updateTableGroup(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
 
-        if(tableGroupId != null) {
+        if(tableGroup != null) {
             this.empty = false;
         }
     }
@@ -74,7 +81,7 @@ public class OrderTable {
     }
 
     private void checkTableGroup() {
-        if (Objects.nonNull(this.tableGroupId)) {
+        if (Objects.nonNull(this.tableGroup)) {
             throw new IllegalArgumentException("단체지정된 테이블의 공석여부는 변경할 수 없습니다.");
         }
     }

@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.order.application;
 
 import static kitchenpos.domain.TestFixture.*;
 import static org.assertj.core.api.Assertions.*;
@@ -13,8 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import kitchenpos.BaseServiceTest;
-import kitchenpos.dto.TableGroupRequest;
-import kitchenpos.dto.TableGroupResponse;
+import kitchenpos.order.dto.TableGroupRequest;
+import kitchenpos.order.dto.TableGroupResponse;
 import kitchenpos.order.dao.OrderTableRepository;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.dto.OrderTableRequest;
@@ -120,14 +120,14 @@ public class TableGroupServiceTest extends BaseServiceTest {
 	void ungroup() {
 		//given
 		Long tableGroupId = 테이블단체_1.getId();
-		List<OrderTable> orderTablesHavingGroup = orderTableRepository.findAllByTableGroupId(tableGroupId);
+		List<OrderTable> orderTablesHavingGroup = orderTableRepository.findAllByTableGroup(테이블단체_1);
 		assertThat(orderTablesHavingGroup.size()).isEqualTo(2);
 
 		//when
 		tableGroupService.ungroup(tableGroupId);
 
 		//then
-		List<OrderTable> orderTablesAfterUngroup = orderTableRepository.findAllByTableGroupId(tableGroupId);
+		List<OrderTable> orderTablesAfterUngroup = orderTableRepository.findAllByTableGroup(테이블단체_1);
 		assertThat(orderTablesAfterUngroup.size()).isEqualTo(0);
 	}
 
