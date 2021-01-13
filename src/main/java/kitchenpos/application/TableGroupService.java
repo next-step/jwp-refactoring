@@ -57,7 +57,6 @@ public class TableGroupService {
         }
 
         TableGroup tableGroup = new TableGroup();
-        tableGroup.setCreatedDate(LocalDateTime.now());
 
         final TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
 
@@ -66,7 +65,7 @@ public class TableGroupService {
             savedOrderTable.updateTableGroup(tableGroupId);
             orderTableRepository.save(savedOrderTable);
         }
-        savedTableGroup.setOrderTables(savedOrderTables);
+        savedTableGroup.updateOrderTables(savedOrderTables);
 
         return TableGroupResponse.of(savedTableGroup);
     }
