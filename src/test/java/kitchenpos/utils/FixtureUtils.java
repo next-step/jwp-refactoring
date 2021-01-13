@@ -10,6 +10,8 @@ import kitchenpos.domain.ordertable.OrderTableRepository;
 import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.ProductRepository;
 import kitchenpos.domain.tablegroup.TableGroupRepository;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -37,7 +39,7 @@ public class FixtureUtils {
     @Autowired
     private MenuGroupRepository menuGroupRepository;
 
-    @BeforeEach
+    @AfterEach
     void cleanupFixtures() {
         tableGroupRepository.deleteAllInBatch();
         orderTableRepository.deleteAllInBatch();
@@ -45,14 +47,5 @@ public class FixtureUtils {
         productRepository.deleteAllInBatch();
         menuRepository.deleteAllInBatch();
         menuGroupRepository.deleteAllInBatch();
-    }
-
-    protected Long createMenuFixture() {
-        MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup("놀라운 메뉴 그룹"));
-        Product product = productRepository.save(new Product("놀라운 상품", BigDecimal.ONE));
-        Menu menu = menuRepository.save(Menu.of("놀라운 메뉴", BigDecimal.ZERO, menuGroup.getId(),
-                Collections.singletonList(MenuProduct.of(product.getId(), 1L))));
-
-        return menu.getId();
     }
 }

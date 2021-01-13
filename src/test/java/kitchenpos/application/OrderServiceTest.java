@@ -1,10 +1,17 @@
 package kitchenpos.application;
 
+import kitchenpos.domain.menu.Menu;
+import kitchenpos.domain.menu.MenuProduct;
+import kitchenpos.domain.menu.MenuRepository;
+import kitchenpos.domain.menugroup.MenuGroup;
+import kitchenpos.domain.menugroup.MenuGroupRepository;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.order.exceptions.InvalidTryChangeOrderStatusException;
 import kitchenpos.domain.order.exceptions.InvalidTryOrderException;
 import kitchenpos.domain.order.exceptions.MenuEntityNotFoundException;
 import kitchenpos.domain.order.exceptions.OrderEntityNotFoundException;
+import kitchenpos.domain.product.Product;
+import kitchenpos.domain.product.ProductRepository;
 import kitchenpos.ui.dto.order.OrderLineItemRequest;
 import kitchenpos.ui.dto.order.OrderRequest;
 import kitchenpos.ui.dto.order.OrderResponse;
@@ -17,6 +24,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -29,6 +37,15 @@ class OrderServiceTest extends FixtureUtils {
 
     @Autowired
     private OrderTableService orderTableService;
+
+    @Autowired
+    private MenuGroupRepository menuGroupRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private MenuRepository menuRepository;
 
     @DisplayName("1개 미만의 주문 항목으로 주문할 수 없다.")
     @Test
@@ -85,7 +102,11 @@ class OrderServiceTest extends FixtureUtils {
     @Test
     void createOrderFailWithEmptyOrderTable() {
         // given
-        Long menuId = super.createMenuFixture();
+        MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup("놀라운 메뉴 그룹"));
+        Product product = productRepository.save(new Product("놀라운 상품", BigDecimal.ONE));
+        Menu menu = menuRepository.save(Menu.of("놀라운 메뉴", BigDecimal.ZERO, menuGroup.getId(),
+                Collections.singletonList(MenuProduct.of(product.getId(), 1L))));
+        Long menuId = menu.getId();
         Long quantity = 1L;
 
         OrderTableResponse emptyTable = orderTableService.create(new OrderTableRequest(0, true));
@@ -103,7 +124,11 @@ class OrderServiceTest extends FixtureUtils {
     @Test
     void createOrderTest() {
         // given
-        Long menuId = super.createMenuFixture();
+        MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup("놀라운 메뉴 그룹"));
+        Product product = productRepository.save(new Product("놀라운 상품", BigDecimal.ONE));
+        Menu menu = menuRepository.save(Menu.of("놀라운 메뉴", BigDecimal.ZERO, menuGroup.getId(),
+                Collections.singletonList(MenuProduct.of(product.getId(), 1L))));
+        Long menuId = menu.getId();
         Long quantity = 1L;
 
         OrderTableResponse fullOrderTable = orderTableService.create(new OrderTableRequest(500, false));
@@ -125,7 +150,11 @@ class OrderServiceTest extends FixtureUtils {
     @Test
     void getOrdersTest() {
         // given
-        Long menuId = super.createMenuFixture();
+        MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup("놀라운 메뉴 그룹"));
+        Product product = productRepository.save(new Product("놀라운 상품", BigDecimal.ONE));
+        Menu menu = menuRepository.save(Menu.of("놀라운 메뉴", BigDecimal.ZERO, menuGroup.getId(),
+                Collections.singletonList(MenuProduct.of(product.getId(), 1L))));
+        Long menuId = menu.getId();
         Long quantity = 1L;
 
         OrderTableResponse fullOrderTable = orderTableService.create(new OrderTableRequest(500, false));
@@ -162,7 +191,11 @@ class OrderServiceTest extends FixtureUtils {
     @Test
     void changeOrderStatusTest() {
         // given
-        Long menuId = super.createMenuFixture();
+        MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup("놀라운 메뉴 그룹"));
+        Product product = productRepository.save(new Product("놀라운 상품", BigDecimal.ONE));
+        Menu menu = menuRepository.save(Menu.of("놀라운 메뉴", BigDecimal.ZERO, menuGroup.getId(),
+                Collections.singletonList(MenuProduct.of(product.getId(), 1L))));
+        Long menuId = menu.getId();
         Long quantity = 1L;
 
         OrderTableResponse fullOrderTable = orderTableService.create(new OrderTableRequest(500, false));
@@ -185,7 +218,11 @@ class OrderServiceTest extends FixtureUtils {
     @Test
     void changeOrderStatusFailWithInvalidOrderStatus() {
         // given
-        Long menuId = super.createMenuFixture();
+        MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup("놀라운 메뉴 그룹"));
+        Product product = productRepository.save(new Product("놀라운 상품", BigDecimal.ONE));
+        Menu menu = menuRepository.save(Menu.of("놀라운 메뉴", BigDecimal.ZERO, menuGroup.getId(),
+                Collections.singletonList(MenuProduct.of(product.getId(), 1L))));
+        Long menuId = menu.getId();
         Long quantity = 1L;
 
         OrderTableResponse fullOrderTable = orderTableService.create(new OrderTableRequest(500, false));

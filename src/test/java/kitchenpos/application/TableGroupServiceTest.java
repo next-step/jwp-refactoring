@@ -1,7 +1,14 @@
 package kitchenpos.application;
 
+import kitchenpos.domain.menu.Menu;
+import kitchenpos.domain.menu.MenuProduct;
+import kitchenpos.domain.menu.MenuRepository;
+import kitchenpos.domain.menugroup.MenuGroup;
+import kitchenpos.domain.menugroup.MenuGroupRepository;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.ordertable.OrderTable;
+import kitchenpos.domain.product.Product;
+import kitchenpos.domain.product.ProductRepository;
 import kitchenpos.domain.tablegroup.TableGroupRepository;
 import kitchenpos.domain.tablegroup.exceptions.InvalidTableGroupTryException;
 import kitchenpos.domain.tablegroup.exceptions.InvalidTableUngroupTryException;
@@ -20,6 +27,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -38,6 +46,15 @@ public class TableGroupServiceTest extends FixtureUtils {
 
     @Autowired
     private TableGroupRepository tableGroupRepository;
+
+    @Autowired
+    private MenuGroupRepository menuGroupRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private MenuRepository menuRepository;
 
     private OrderTableRequest emptyOrderTableRequest1;
     private OrderTableRequest emptyOrderTableRequest2;
@@ -158,7 +175,11 @@ public class TableGroupServiceTest extends FixtureUtils {
     @Test
     void unGroupFailWithInvalidOrderStatus() {
         // given
-        Long menuId = super.createMenuFixture();
+        MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup("놀라운 메뉴 그룹"));
+        Product product = productRepository.save(new Product("놀라운 상품", BigDecimal.ONE));
+        Menu menu = menuRepository.save(Menu.of("놀라운 메뉴", BigDecimal.ZERO, menuGroup.getId(),
+                Collections.singletonList(MenuProduct.of(product.getId(), 1L))));
+        Long menuId = menu.getId();
 
         OrderTableResponse orderTable1Response = orderTableService.create(emptyOrderTableRequest1);
         OrderTable orderTable1 = orderTableService.findOrderTable(orderTable1Response.getId());
@@ -190,7 +211,11 @@ public class TableGroupServiceTest extends FixtureUtils {
     @Test
     void unGroupTest() {
         // given
-        Long menuId = super.createMenuFixture();
+        MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup("놀라운 메뉴 그룹"));
+        Product product = productRepository.save(new Product("놀라운 상품", BigDecimal.ONE));
+        Menu menu = menuRepository.save(Menu.of("놀라운 메뉴", BigDecimal.ZERO, menuGroup.getId(),
+                Collections.singletonList(MenuProduct.of(product.getId(), 1L))));
+        Long menuId = menu.getId();
 
         OrderTableResponse orderTable1Response = orderTableService.create(emptyOrderTableRequest1);
         OrderTable orderTable1 = orderTableService.findOrderTable(orderTable1Response.getId());
