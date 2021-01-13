@@ -11,11 +11,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import kitchenpos.MySpringBootTest;
 import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,15 +28,15 @@ public class MenuServiceTest {
 	@Autowired
 	private MenuGroupDao menuGroupDao;
 	@Autowired
-	private ProductDao productDao;
+	private ProductRepository productRepository;
 
 	@DisplayName("메뉴를 등록한다.")
 	@Test
 	void create() {
 		//given
 		Optional<MenuGroup> menuGroup = menuGroupDao.findById(1L);
-		Optional<Product> product1 = productDao.findById(1L);
-		Optional<Product> product2 = productDao.findById(2L);
+		Optional<Product> product1 = productRepository.findById(1L);
+		Optional<Product> product2 = productRepository.findById(2L);
 		BigDecimal totalPrice = product1.get().getPrice().add(product2.get().getPrice());
 
 		List<MenuProduct> menuProducts = 메뉴_상품정보를_세팅한다(product1.get().getId(),
@@ -77,8 +77,8 @@ public class MenuServiceTest {
 	@Test
 	void createWithWrongPrice() {
 		Optional<MenuGroup> menuGroup = menuGroupDao.findById(1L);
-		Optional<Product> product1 = productDao.findById(1L);
-		Optional<Product> product2 = productDao.findById(2L);
+		Optional<Product> product1 = productRepository.findById(1L);
+		Optional<Product> product2 = productRepository.findById(2L);
 		BigDecimal totalPrice = product1.get().getPrice().add(product2.get().getPrice());
 
 		List<MenuProduct> menuProducts = 메뉴_상품정보를_세팅한다(product1.get().getId(),
