@@ -51,14 +51,14 @@ public class MenuService {
 
     private MenuGroup findMenuGroup(final Long menuGroupId) {
         return menuGroupRepository.findById(menuGroupId)
-            .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 메뉴그룹입니다."));
+            .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 메뉴그룹 입니다."));
     }
 
     private List<MenuProduct> findMenuProducts(final List<MenuProductRequest> menuProductRequests) {
         final List<MenuProduct> menuProducts = new ArrayList<>();
         for (final MenuProductRequest menuProduct : menuProductRequests) {
             final Product product = productRepository.findById(menuProduct.getProductId())
-                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 상품입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 상품 입니다."));
             menuProducts.add(menuProduct.toMenuProduct(product));
         }
         return menuProducts;

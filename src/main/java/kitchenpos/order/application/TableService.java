@@ -28,8 +28,6 @@ public class TableService {
     @Transactional
     public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
         OrderTable orderTable = orderTableRequest.toOrderTable();
-        orderTable.updateTableGroup(null);
-
         return OrderTableResponse.of(orderTableRepository.save(orderTable));
     }
 
@@ -42,11 +40,7 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
-            throw new IllegalArgumentException();
-        }
+                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 테이블 입니다."));
 
         if (orderDao.existsByOrderTableIdAndOrderStatusIn(
                 orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
@@ -54,27 +48,15 @@ public class TableService {
         }
 
         savedOrderTable.updateEmpty(orderTableRequest.isEmpty());
-
         return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
     }
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
-        final int numberOfGuests = orderTableRequest.getNumberOfGuests();
-
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
-        }
-
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 테이블 입니다."));
 
-        if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        savedOrderTable.updateNumberOfGuests(numberOfGuests);
-
+        savedOrderTable.updateNumberOfGuests(orderTableRequest.getNumberOfGuests());
         return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
     }
 }
