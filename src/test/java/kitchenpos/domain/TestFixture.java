@@ -2,11 +2,11 @@ package kitchenpos.domain;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.order.domain.OrderTable;
 import kitchenpos.product.domain.Product;
 
 //migration sql 기반 데이터

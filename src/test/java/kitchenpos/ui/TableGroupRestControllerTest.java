@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
 import kitchenpos.BaseControllerTest;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.order.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.domain.TestDomainConstructor;
 

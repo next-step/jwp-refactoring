@@ -3,6 +3,8 @@ package kitchenpos.domain;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import kitchenpos.order.domain.OrderTable;
+
 public class TestDomainConstructor {
 
 	public static OrderTable orderTableWithId(Long tableGroupId, int numberOfGuests, boolean empty, Long id) {

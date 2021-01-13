@@ -17,9 +17,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.order.dao.OrderTableRepository;
 import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.order.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.domain.TestDomainConstructor;
 
@@ -28,7 +28,7 @@ public class TableGroupServiceTest {
 	@Mock
 	private OrderDao orderDao;
 	@Mock
-	private OrderTableDao orderTableDao;
+	private OrderTableRepository orderTableRepository;
 	@Mock
 	private TableGroupDao tableGroupDao;
 	@InjectMocks
@@ -46,9 +46,9 @@ public class TableGroupServiceTest {
 		TableGroup tableGroup = TestDomainConstructor.tableGroup(Arrays.asList(orderTable, orderTable2), null);
 		TableGroup savedTableGroup = TestDomainConstructor.tableGroupWithId(Arrays.asList(orderTable, orderTable2),
 			LocalDateTime.now(), tableGroupId);
-		when(orderTableDao.findAllByIdIn(any())).thenReturn(orderTables);
+		when(orderTableRepository.findAllByIdIn(any())).thenReturn(orderTables);
 		when(tableGroupDao.save(tableGroup)).thenReturn(savedTableGroup);
-		when(orderTableDao.save(any())).thenReturn(orderTable, orderTable2);
+		when(orderTableRepository.save(any())).thenReturn(orderTable, orderTable2);
 
 		//when
 		TableGroup result = tableGroupService.create(tableGroup);
@@ -90,7 +90,7 @@ public class TableGroupServiceTest {
 	void createTableGroupForNotExistTable() {
 		//given
 		TableGroup tableGroup = TestDomainConstructor.tableGroup(Arrays.asList(mock(OrderTable.class), mock(OrderTable.class)), null);
-		when(orderTableDao.findAllByIdIn(any())).thenReturn(new ArrayList<>());
+		when(orderTableRepository.findAllByIdIn(any())).thenReturn(new ArrayList<>());
 
 		//when-then
 		assertThatThrownBy(() -> tableGroupService.create(tableGroup))
@@ -103,7 +103,7 @@ public class TableGroupServiceTest {
 		//given
 		OrderTable notEmptyTable = TestDomainConstructor.orderTableWithId(null, 0, false, 1L);
 		TableGroup tableGroup = TestDomainConstructor.tableGroup(Arrays.asList(mock(OrderTable.class), mock(OrderTable.class)), null);
-		when(orderTableDao.findAllByIdIn(any())).thenReturn(Arrays.asList(notEmptyTable, mock(OrderTable.class)));
+		when(orderTableRepository.findAllByIdIn(any())).thenReturn(Arrays.asList(notEmptyTable, mock(OrderTable.class)));
 
 		//when-then
 		assertThatThrownBy(() -> tableGroupService.create(tableGroup))
@@ -116,7 +116,7 @@ public class TableGroupServiceTest {
 		//given
 		OrderTable havingGroupTable = TestDomainConstructor.orderTableWithId(3L, 0, true, 1L);
 		TableGroup tableGroup = TestDomainConstructor.tableGroup(Arrays.asList(mock(OrderTable.class), mock(OrderTable.class)), null);
-		when(orderTableDao.findAllByIdIn(any())).thenReturn(Arrays.asList(havingGroupTable, mock(OrderTable.class)));
+		when(orderTableRepository.findAllByIdIn(any())).thenReturn(Arrays.asList(havingGroupTable, mock(OrderTable.class)));
 
 		//when-then
 		assertThatThrownBy(() -> tableGroupService.create(tableGroup))
@@ -132,7 +132,7 @@ public class TableGroupServiceTest {
 		OrderTable orderTable2 = TestDomainConstructor.orderTableWithId(tableGroupId, 0, false, 2L);
 		List<OrderTable> orderTables = Arrays.asList(orderTable, orderTable2);
 
-		when(orderTableDao.findAllByTableGroupId(any())).thenReturn(orderTables);
+		when(orderTableRepository.findAllByTableGroupId(any())).thenReturn(orderTables);
 		when(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(false);
 
 		//when
@@ -147,7 +147,7 @@ public class TableGroupServiceTest {
 	@Test
 	@DisplayName("단체 지정을 해지 시, 주문 상태가 조리 또는 식사인 테이블이면 IllegalArgumentException을 throw 해야한다.")
 	void ungroupCookingTable() {
-		when(orderTableDao.findAllByTableGroupId(any())).thenReturn(Arrays.asList(mock(OrderTable.class), mock(OrderTable.class)));
+		when(orderTableRepository.findAllByTableGroupId(any())).thenReturn(Arrays.asList(mock(OrderTable.class), mock(OrderTable.class)));
 		when(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(true);
 
 		//when-then
