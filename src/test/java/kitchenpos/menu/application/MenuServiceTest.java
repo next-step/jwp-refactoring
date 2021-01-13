@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -80,7 +81,7 @@ public class MenuServiceTest extends BaseServiceTest {
 	void createNotExistProduct() {
 		//given
 		MenuProductRequest notExistProduct = new MenuProductRequest(존재하지않는_ID, 1);
-		MenuRequest notExistProductMenu = new MenuRequest(메뉴_신규_NAME, 메뉴_신규_PRICE, 메뉴_신규_MENU_GROUP_ID, Arrays.asList(notExistProduct));
+		MenuRequest notExistProductMenu = new MenuRequest(메뉴_신규_NAME, 메뉴_신규_PRICE, 메뉴_신규_MENU_GROUP_ID, Collections.singletonList(notExistProduct));
 
 		//when-then
 		assertThatThrownBy(() -> menuService.create(notExistProductMenu))
