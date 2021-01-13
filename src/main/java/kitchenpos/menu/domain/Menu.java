@@ -68,13 +68,14 @@ public class Menu {
         this.menuGroup = menuGroup;
     }
 
-    public void updateMenuProducts(List<MenuProduct> menuProducts) {
-        this.menuProducts = new MenuProducts(this, menuProducts);
-        this.checkPriceExpensiveThanProductsPriceSum();
+    public void updateMenuProducts(MenuProducts menuProducts) {
+        checkPriceExpensiveThanProductsPriceSum(menuProducts);
+        menuProducts.updateMenu(this);
+        this.menuProducts = menuProducts;
     }
 
-    private void checkPriceExpensiveThanProductsPriceSum() {
-        if (this.price.isExpensiveThan(this.menuProducts.priceSum())) {
+    private void checkPriceExpensiveThanProductsPriceSum(MenuProducts menuProducts) {
+        if (price.isExpensiveThan(menuProducts.priceSum())) {
             throw new IllegalArgumentException("메뉴의 가격이 메뉴의 속하는 상품 가격의 합보다 비쌉니다.");
         }
     }

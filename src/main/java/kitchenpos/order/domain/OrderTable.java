@@ -43,7 +43,7 @@ public class OrderTable {
     }
 
     public Long getTableGroupId() {
-        if (this.tableGroup != null) {
+        if (Objects.nonNull(this.tableGroup)) {
             return tableGroup.getId();
         }
         return null;
@@ -60,7 +60,7 @@ public class OrderTable {
     public void updateTableGroup(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
 
-        if(tableGroup != null) {
+        if(Objects.nonNull(tableGroup)) {
             this.empty = false;
         }
     }
@@ -76,13 +76,13 @@ public class OrderTable {
     }
 
     private void checkIsNotEmpty() {
-        if (this.empty) {
+        if (empty) {
             throw new IllegalArgumentException("빈 테이블의 손님 수는 변경할 수 없습니다.");
         }
     }
 
     private void checkTableGroup() {
-        if (Objects.nonNull(this.tableGroup)) {
+        if (Objects.nonNull(tableGroup)) {
             throw new IllegalArgumentException("단체지정된 테이블의 공석여부는 변경할 수 없습니다.");
         }
     }

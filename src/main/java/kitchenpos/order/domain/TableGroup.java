@@ -45,16 +45,12 @@ public class TableGroup {
         return orderTables.list();
     }
 
-    public List<Long> orderTableIds() {
-        return orderTables.ids();
-    }
-
     public void updateOrderTables(OrderTables orderTables) {
         orderTables.updateTableGroup(this);
         this.orderTables = orderTables;
     }
 
     public void unGroup() {
-        this.orderTables.clear();
+        orderTables.clear();
     }
 }

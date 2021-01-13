@@ -38,7 +38,7 @@ public class OrderRestControllerTest extends BaseControllerTest {
 	@DisplayName("주문을 등록할 수 있다 - 주문 등록 후, 등록된 주문의 아이디를 포함한 정보를 반환한다.")
 	void create() throws Exception {
 		//given
-		OrderRequest orderRequest = new OrderRequest(주문가능한_TABLE_ID, 주문_신규_주문상태, orderLineItemRequests);
+		OrderRequest orderRequest = new OrderRequest(주문가능한_TABLE_ID, orderLineItemRequests);
 
 		//when-then
 		mockMvc.perform(post("/api/orders")

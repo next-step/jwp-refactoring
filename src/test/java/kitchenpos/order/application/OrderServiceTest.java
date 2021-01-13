@@ -39,7 +39,7 @@ public class OrderServiceTest extends BaseServiceTest {
 	@DisplayName("주문을 등록할 수 있다.")
 	void create() {
 		//given
-		OrderRequest orderRequest = new OrderRequest(주문가능한_TABLE_ID, 주문_신규_주문상태, orderLineItemRequests);
+		OrderRequest orderRequest = new OrderRequest(주문가능한_TABLE_ID, orderLineItemRequests);
 
 		//when
 		OrderResponse result = orderService.create(orderRequest);
@@ -60,7 +60,7 @@ public class OrderServiceTest extends BaseServiceTest {
 	@DisplayName("주문 등록 시, 주문 아이템이 Null이면 IllegalArgumentException을 throw 해야한다.")
 	void createOrderItemNull() {
 		//given
-		OrderRequest nullItemOrder = new OrderRequest(주문가능한_TABLE_ID, 주문_신규_주문상태, null);
+		OrderRequest nullItemOrder = new OrderRequest(주문가능한_TABLE_ID, null);
 
 		//when-then
 		assertThatThrownBy(() -> orderService.create(nullItemOrder))
@@ -71,7 +71,7 @@ public class OrderServiceTest extends BaseServiceTest {
 	@DisplayName("주문 등록 시, 주문 아이템이 0개면 IllegalArgumentException을 throw 해야한다.")
 	void createOrderItemEmpty() {
 		//given
-		OrderRequest emptyItemOrder = new OrderRequest(주문가능한_TABLE_ID, 주문_신규_주문상태, new ArrayList<>());
+		OrderRequest emptyItemOrder = new OrderRequest(주문가능한_TABLE_ID, new ArrayList<>());
 
 		//when-then
 		assertThatThrownBy(() -> orderService.create(emptyItemOrder))
@@ -82,7 +82,7 @@ public class OrderServiceTest extends BaseServiceTest {
 	@DisplayName("주문 등록 시, 주문 테이블이 등록되어있지 않으면 IllegalArgumentException을 throw 해야한다.")
 	void createNotExistOrderTable() {
 		//given
-		OrderRequest notExistOrderTable = new OrderRequest(존재하지않는_ID, 주문_신규_주문상태, null);
+		OrderRequest notExistOrderTable = new OrderRequest(존재하지않는_ID, null);
 
 		//when-then
 		assertThatThrownBy(() -> orderService.create(notExistOrderTable))
@@ -94,7 +94,7 @@ public class OrderServiceTest extends BaseServiceTest {
 	void createNotExistMenus() {
 		//given
 		OrderLineItemRequest notExistMenus = new OrderLineItemRequest(존재하지않는_ID, 1);
-		OrderRequest notExistMenusOrder = new OrderRequest(주문가능한_TABLE_ID, 주문_신규_주문상태, Arrays.asList(notExistMenus));
+		OrderRequest notExistMenusOrder = new OrderRequest(주문가능한_TABLE_ID, Arrays.asList(notExistMenus));
 
 		//when-then
 		assertThatThrownBy(() -> orderService.create(notExistMenusOrder))
@@ -105,7 +105,7 @@ public class OrderServiceTest extends BaseServiceTest {
 	@DisplayName("주문 등록 시, 주문테이블이 빈 테이블이면 IllegalArgumentException을 throw 해야한다.")
 	void createPriceLessThanZero() {
 		//given
-		OrderRequest emptyTableOrder = new OrderRequest(테이블_비어있는_0명_1.getId(), 주문_신규_주문상태, orderLineItemRequests);
+		OrderRequest emptyTableOrder = new OrderRequest(테이블_비어있는_0명_1.getId(), orderLineItemRequests);
 
 		//when-then
 		assertThatThrownBy(() -> orderService.create(emptyTableOrder))

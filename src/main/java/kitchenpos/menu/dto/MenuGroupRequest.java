@@ -17,6 +17,6 @@ public class MenuGroupRequest {
 	}
 
 	public MenuGroup toMenuGroup() {
-		return new MenuGroup(this.name);
+		return new MenuGroup(name);
 	}
 }

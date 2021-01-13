@@ -2,8 +2,10 @@ package kitchenpos.order.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
@@ -12,7 +14,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.springframework.data.annotation.CreatedDate;
@@ -31,15 +32,15 @@ public class Order {
     private OrderStatus orderStatus;
     @CreatedDate
     private LocalDateTime orderedTime;
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderLineItem> orderLineItems;
+    @Embedded
+    private OrderLineItems orderLineItems;
 
     protected Order() {
     }
 
-    public Order(OrderTable orderTable, OrderStatus orderStatus) {
+    public Order(OrderTable orderTable) {
         this.orderTable = orderTable;
-        this.orderStatus = orderStatus;
+        this.orderStatus = OrderStatus.COOKING;
     }
 
     public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
@@ -70,23 +71,20 @@ public class Order {
     }
 
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
+        return orderLineItems.list();
     }
 
-    public void updateOrderTable(OrderTable orderTable) {
-        this.orderTable = orderTable;
+    public boolean isStatusCompletion() {
+        return Objects.equals(OrderStatus.COMPLETION, this.orderStatus);
     }
 
-    public void updateOrderStatus(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
+    public void updateOrderStatus(String orderStatus) {
+        this.orderStatus = OrderStatus.valueOf(orderStatus);
     }
 
-    public void updateOrderedTime(LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
-    }
-
-    public void updateOrderLineItems(List<OrderLineItem> orderLineItems) {
-        orderLineItems.forEach(orderLineItem -> orderLineItem.updateOrder(this));
+    public void updateOrderLineItems(OrderLineItems orderLineItems) {
+        orderLineItems.updateOrder(this);
         this.orderLineItems = orderLineItems;
+
     }
 }

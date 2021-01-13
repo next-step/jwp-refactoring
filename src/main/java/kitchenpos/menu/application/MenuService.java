@@ -2,6 +2,7 @@ package kitchenpos.menu.application;
 
 import kitchenpos.menu.dao.MenuRepository;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -54,13 +55,13 @@ public class MenuService {
             .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 메뉴그룹 입니다."));
     }
 
-    private List<MenuProduct> findMenuProducts(final List<MenuProductRequest> menuProductRequests) {
+    private MenuProducts findMenuProducts(final List<MenuProductRequest> menuProductRequests) {
         final List<MenuProduct> menuProducts = new ArrayList<>();
         for (final MenuProductRequest menuProduct : menuProductRequests) {
             final Product product = productRepository.findById(menuProduct.getProductId())
                 .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 상품 입니다."));
             menuProducts.add(menuProduct.toMenuProduct(product));
         }
-        return menuProducts;
+        return new MenuProducts(menuProducts);
     }
 }

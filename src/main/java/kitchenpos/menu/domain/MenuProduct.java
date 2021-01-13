@@ -61,8 +61,9 @@ public class MenuProduct {
     }
 
     public BigDecimal priceForQuantity() {
-        return this.product.getPrice()
-            .multiply(BigDecimal.valueOf(this.quantity.value()));
+        return product.getPrice().multiply(
+            BigDecimal.valueOf(quantity.value())
+        );
     }
 
     public long getQuantity() {

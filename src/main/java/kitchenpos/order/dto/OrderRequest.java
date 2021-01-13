@@ -16,10 +16,9 @@ public class OrderRequest {
 		this.orderStatus = orderStatus;
 	}
 
-	public OrderRequest(Long orderTableId, String orderStatus,
+	public OrderRequest(Long orderTableId,
 		List<OrderLineItemRequest> orderLineItems) {
 		this.orderTableId = orderTableId;
-		this.orderStatus = orderStatus;
 		if (Objects.nonNull(orderLineItems)) {
 			this.orderLineItems = orderLineItems;
 		}

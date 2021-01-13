@@ -38,7 +38,7 @@ public class MenuTest {
 		Menu expensiveMenu = new Menu("비싼메뉴", expensivePrice);
 
 		//when-then
-		assertThatThrownBy(() -> expensiveMenu.updateMenuProducts(menuProducts))
+		assertThatThrownBy(() -> expensiveMenu.updateMenuProducts(new MenuProducts(menuProducts)))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 }

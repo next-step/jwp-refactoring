@@ -19,9 +19,8 @@ public class MenuProducts {
         this.menuProducts = menuProducts;
     }
 
-    public MenuProducts(Menu menu, List<MenuProduct> menuProducts) {
-        menuProducts.forEach(menuProduct -> menuProduct.updateMenu(menu));
-        this.menuProducts = menuProducts;
+    public List<MenuProduct> list() {
+        return this.menuProducts;
     }
 
     public BigDecimal priceSum() {
@@ -32,7 +31,7 @@ public class MenuProducts {
         return sum;
     }
 
-    public List<MenuProduct> list() {
-        return this.menuProducts;
+    public void updateMenu(Menu menu) {
+        menuProducts.forEach(menuProduct -> menuProduct.updateMenu(menu));
     }
 }

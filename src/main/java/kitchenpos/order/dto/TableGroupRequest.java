@@ -21,12 +21,8 @@ public class TableGroupRequest {
 		return orderTables;
 	}
 
-	public int orderTableSize() {
-		return this.orderTables.size();
-	}
-
 	public List<Long> orderTableIds() {
-		return this.orderTables.stream()
+		return orderTables.stream()
 			.map(OrderTableRequest::getId)
 			.collect(Collectors.toList());
 	}

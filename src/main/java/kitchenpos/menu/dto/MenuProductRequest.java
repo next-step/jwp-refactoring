@@ -24,6 +24,6 @@ public class MenuProductRequest {
 	}
 
 	public MenuProduct toMenuProduct(Product product) {
-		return new MenuProduct(product, this.quantity);
+		return new MenuProduct(product, quantity);
 	}
 }

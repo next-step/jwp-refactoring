@@ -2,7 +2,6 @@ package kitchenpos.order.domain;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -25,12 +24,6 @@ public class OrderTables {
 
     public List<OrderTable> list() {
         return this.orderTables;
-    }
-
-    public List<Long> ids() {
-        return this.orderTables.stream()
-            .map(OrderTable::getId)
-            .collect(Collectors.toList());
     }
 
     public boolean sameSizeWith(int size) {

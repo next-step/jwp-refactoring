@@ -25,6 +25,6 @@ public class ProductRequest {
 	}
 
 	public Product toProduct() {
-		return new Product(this.name, this.price);
+		return new Product(name, price);
 	}
 }

@@ -41,11 +41,7 @@ public class TableService {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 테이블 입니다."));
 
-        if (orderRepository.existsByOrderTableAndOrderStatusIn(
-            savedOrderTable, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
-        }
-
+        checkOrderStatus(savedOrderTable);
         savedOrderTable.updateEmpty(orderTableRequest.isEmpty());
         return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
     }
@@ -57,5 +53,12 @@ public class TableService {
 
         savedOrderTable.updateNumberOfGuests(orderTableRequest.getNumberOfGuests());
         return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
+    }
+
+    private void checkOrderStatus(OrderTable orderTable) {
+        if (orderRepository.existsByOrderTableAndOrderStatusIn(
+            orderTable, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+            throw new IllegalArgumentException("주문 상태가 조리중이거나 식사중인 테이블의 공석 여부는 변경할 수 없습니다.");
+        }
     }
 }
