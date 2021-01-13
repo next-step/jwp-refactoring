@@ -1,10 +1,10 @@
 package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.application.TableGroupService;
-import kitchenpos.ui.dto.tablegroup.OrderTableInTableGroupRequest;
-import kitchenpos.ui.dto.tablegroup.TableGroupRequest;
-import kitchenpos.ui.dto.tablegroup.TableGroupResponse;
+import dto.tablegroup.OrderTableInTableGroupRequest;
+import dto.tablegroup.TableGroupRequest;
+import dto.tablegroup.TableGroupResponse;
+import kitchenpos.TableGroupService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;

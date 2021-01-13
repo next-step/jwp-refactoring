@@ -1,13 +1,12 @@
 package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.application.OrderService;
-import kitchenpos.domain.order.Order;
+import dto.order.OrderLineItemRequest;
+import dto.order.OrderRequest;
+import dto.order.OrderResponse;
+import dto.order.OrderStatusChangeRequest;
+import kitchenpos.OrderService;
 import kitchenpos.domain.order.OrderStatus;
-import kitchenpos.ui.dto.order.OrderLineItemRequest;
-import kitchenpos.ui.dto.order.OrderRequest;
-import kitchenpos.ui.dto.order.OrderResponse;
-import kitchenpos.ui.dto.order.OrderStatusChangeRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

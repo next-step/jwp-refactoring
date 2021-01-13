@@ -1,8 +1,9 @@
 package kitchenpos.application;
 
+import kitchenpos.ProductService;
 import kitchenpos.domain.product.exceptions.InvalidProductPriceException;
-import kitchenpos.ui.dto.product.ProductRequest;
-import kitchenpos.ui.dto.product.ProductResponse;
+import dto.product.ProductRequest;
+import dto.product.ProductResponse;
 import kitchenpos.utils.FixtureUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,8 +13,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;

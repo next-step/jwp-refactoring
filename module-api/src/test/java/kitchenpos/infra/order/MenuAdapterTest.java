@@ -1,6 +1,5 @@
 package kitchenpos.infra.order;
 
-import kitchenpos.application.MenuService;
 import kitchenpos.domain.menu.MenuRepository;
 import kitchenpos.domain.order.OrderLineItem;
 import kitchenpos.domain.order.exceptions.MenuEntityNotFoundException;

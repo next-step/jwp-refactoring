@@ -1,5 +1,14 @@
 package kitchenpos.application;
 
+import dto.order.OrderLineItemRequest;
+import dto.order.OrderRequest;
+import dto.order.OrderResponse;
+import dto.order.OrderStatusChangeRequest;
+import dto.ordertable.ChangeEmptyRequest;
+import dto.ordertable.OrderTableRequest;
+import dto.ordertable.OrderTableResponse;
+import kitchenpos.OrderService;
+import kitchenpos.OrderTableService;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuProduct;
 import kitchenpos.domain.menu.MenuRepository;
@@ -12,13 +21,6 @@ import kitchenpos.domain.order.exceptions.MenuEntityNotFoundException;
 import kitchenpos.domain.order.exceptions.OrderEntityNotFoundException;
 import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.ProductRepository;
-import kitchenpos.ui.dto.order.OrderLineItemRequest;
-import kitchenpos.ui.dto.order.OrderRequest;
-import kitchenpos.ui.dto.order.OrderResponse;
-import kitchenpos.ui.dto.order.OrderStatusChangeRequest;
-import kitchenpos.ui.dto.ordertable.ChangeEmptyRequest;
-import kitchenpos.ui.dto.ordertable.OrderTableRequest;
-import kitchenpos.ui.dto.ordertable.OrderTableResponse;
 import kitchenpos.utils.FixtureUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

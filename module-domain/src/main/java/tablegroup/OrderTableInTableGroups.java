@@ -15,21 +15,21 @@ import java.util.Objects;
 public class OrderTableInTableGroups {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "table_group_id")
-    private List<OrderTableInTableGroup> orderTableInTableGroups;
+    private List<kitchenpos.domain.tablegroup.OrderTableInTableGroup> orderTableInTableGroups;
 
     protected OrderTableInTableGroups() {
     }
 
-    public OrderTableInTableGroups(final List<OrderTableInTableGroup> orderTableInTableGroups) {
+    public OrderTableInTableGroups(final List<kitchenpos.domain.tablegroup.OrderTableInTableGroup> orderTableInTableGroups) {
         validate(orderTableInTableGroups);
         this.orderTableInTableGroups = orderTableInTableGroups;
     }
 
-    public List<OrderTableInTableGroup> getList() {
+    public List<kitchenpos.domain.tablegroup.OrderTableInTableGroup> getList() {
         return new ArrayList<>(orderTableInTableGroups);
     }
 
-    private void validate(final List<OrderTableInTableGroup> orderTables) {
+    private void validate(final List<kitchenpos.domain.tablegroup.OrderTableInTableGroup> orderTables) {
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
             throw new InvalidTableGroupTryException("2개 미만의 주문 테이블로 단체 지정할 수 없다.");
         }

@@ -1,10 +1,10 @@
 package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.application.MenuService;
-import kitchenpos.ui.dto.menu.MenuProductRequest;
-import kitchenpos.ui.dto.menu.MenuRequest;
-import kitchenpos.ui.dto.menu.MenuResponse;
+import dto.menu.MenuProductRequest;
+import dto.menu.MenuRequest;
+import dto.menu.MenuResponse;
+import kitchenpos.MenuService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -56,7 +57,7 @@ public class MenuRestControllerTest {
         Long menuGroupId = 1L;
         Long menuId = 1L;
 
-        List<MenuProductRequest> menuProductRequests = Collections.singletonList(MenuProductRequest.of(1L, 1L));
+        List<MenuProductRequest> menuProductRequests = Arrays.asList(MenuProductRequest.of(1L, 1L));
         MenuRequest menuRequest = MenuRequest.of(menuName, menuPrice, menuGroupId, menuProductRequests);
 
         given(menuService.create(any()))

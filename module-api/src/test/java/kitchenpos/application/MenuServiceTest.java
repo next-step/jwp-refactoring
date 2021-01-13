@@ -1,16 +1,19 @@
 package kitchenpos.application;
 
+import kitchenpos.MenuGroupService;
+import kitchenpos.MenuService;
+import kitchenpos.ProductService;
 import kitchenpos.domain.menu.MenuProduct;
 import kitchenpos.domain.menu.exceptions.InvalidMenuPriceException;
 import kitchenpos.domain.menu.exceptions.MenuGroupEntityNotFoundException;
 import kitchenpos.domain.menu.exceptions.ProductEntityNotFoundException;
-import kitchenpos.ui.dto.menu.MenuProductRequest;
-import kitchenpos.ui.dto.menu.MenuRequest;
-import kitchenpos.ui.dto.menu.MenuResponse;
-import kitchenpos.ui.dto.menugroup.MenuGroupRequest;
-import kitchenpos.ui.dto.menugroup.MenuGroupResponse;
-import kitchenpos.ui.dto.product.ProductRequest;
-import kitchenpos.ui.dto.product.ProductResponse;
+import dto.menu.MenuProductRequest;
+import dto.menu.MenuRequest;
+import dto.menu.MenuResponse;
+import dto.menugroup.MenuGroupRequest;
+import dto.menugroup.MenuGroupResponse;
+import dto.product.ProductRequest;
+import dto.product.ProductResponse;
 import kitchenpos.utils.FixtureUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

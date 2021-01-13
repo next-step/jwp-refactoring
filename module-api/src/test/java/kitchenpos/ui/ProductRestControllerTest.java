@@ -1,9 +1,9 @@
 package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.application.ProductService;
-import kitchenpos.ui.dto.product.ProductRequest;
-import kitchenpos.ui.dto.product.ProductResponse;
+import dto.product.ProductRequest;
+import dto.product.ProductResponse;
+import kitchenpos.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;

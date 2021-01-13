@@ -1,9 +1,9 @@
 package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.application.MenuGroupService;
-import kitchenpos.ui.dto.menugroup.MenuGroupRequest;
-import kitchenpos.ui.dto.menugroup.MenuGroupResponse;
+import dto.menugroup.MenuGroupRequest;
+import dto.menugroup.MenuGroupResponse;
+import kitchenpos.MenuGroupService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
