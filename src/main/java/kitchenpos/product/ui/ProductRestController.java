@@ -1,7 +1,8 @@
-package kitchenpos.ui;
+package kitchenpos.product.ui;
 
-import kitchenpos.application.ProductService;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.service.ProductServiceJpa;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,15 +14,15 @@ import java.util.List;
 
 @RestController
 public class ProductRestController {
-    private final ProductService productService;
+    private final ProductServiceJpa productService;
 
-    public ProductRestController(final ProductService productService) {
+    public ProductRestController(ProductServiceJpa productService) {
         this.productService = productService;
     }
 
     @PostMapping("/api/products")
-    public ResponseEntity<Product> create(@RequestBody final Product product) {
-        final Product created = productService.create(product);
+    public ResponseEntity<kitchenpos.product.domain.Product> create(@RequestBody final ProductRequest product) {
+        final kitchenpos.product.domain.Product created = productService.create(product);
         final URI uri = URI.create("/api/products/" + created.getId());
         return ResponseEntity.created(uri)
                 .body(created)

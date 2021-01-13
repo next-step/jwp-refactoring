@@ -1,7 +1,7 @@
 package kitchenpos.ui;
 
-import kitchenpos.application.ProductService;
-import kitchenpos.domain.Product;
+import kitchenpos.product.service.ProductServiceJpa;
+import kitchenpos.product.ui.ProductRestController;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,14 +28,14 @@ class ProductRestControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    ProductService productService;
+    ProductServiceJpa productService;
 
     @DisplayName("상품의 목록을 조회할 수 있다.")
     @Test
     void findAllProduct() throws Exception {
         int 치킨가격 = 17000;
-        Product 후라이드치킨 = new Product("후라이드치킨", new BigDecimal(치킨가격));
-        Product 양념치킨 = new Product("양념치킨", new BigDecimal(치킨가격));
+        kitchenpos.product.domain.Product 후라이드치킨 = new kitchenpos.product.domain.Product("후라이드치킨", new BigDecimal(치킨가격));
+        kitchenpos.product.domain.Product 양념치킨 = new kitchenpos.product.domain.Product("양념치킨", new BigDecimal(치킨가격));
 
         when(productService.list()).thenReturn(Arrays.asList(
                 후라이드치킨,
