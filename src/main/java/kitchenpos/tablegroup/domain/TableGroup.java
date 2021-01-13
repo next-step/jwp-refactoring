@@ -30,6 +30,11 @@ public class TableGroup {
     }
 
     public TableGroup(final List<OrderTable> orderTables) {
+        validate(orderTables);
+        this.orderTables = new OrderTables(orderTables, this);
+    }
+
+    private void validate(final List<OrderTable> orderTables) {
         if (orderTables.size() < MIN_GROUP_SIZE) {
             throw new IllegalArgumentException(String.format("최소 %d개 이상 단체 지정 할 수 있습니다.", MIN_GROUP_SIZE));
         }
@@ -41,7 +46,6 @@ public class TableGroup {
         if (isAssigned(orderTables)) {
             throw new IllegalArgumentException("이미 단체 지정이 되어 있으면 지정할 수 없다.");
         }
-        this.orderTables = new OrderTables(orderTables, this);
     }
 
     private boolean isAssigned(final List<OrderTable> orderTables) {
@@ -66,7 +70,7 @@ public class TableGroup {
         return createdDate;
     }
 
-    public OrderTables getOrderTables() {
-        return orderTables;
+    public List<OrderTable> getOrderTables() {
+        return orderTables.getOrderTables();
     }
 }
