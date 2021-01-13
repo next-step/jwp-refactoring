@@ -39,12 +39,12 @@ public class FixtureUtils {
 
     @BeforeEach
     void cleanupFixtures() {
-        tableGroupRepository.deleteAll();
-        orderTableRepository.deleteAll();
-        orderRepository.deleteAll();
-        productRepository.deleteAll();
-        menuRepository.deleteAll();
-        menuGroupRepository.deleteAll();
+        tableGroupRepository.deleteAllInBatch();
+        orderTableRepository.deleteAllInBatch();
+        orderRepository.deleteAllInBatch();
+        productRepository.deleteAllInBatch();
+        menuRepository.deleteAllInBatch();
+        menuGroupRepository.deleteAllInBatch();
     }
 
     protected Long createMenuFixture() {
