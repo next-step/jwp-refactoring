@@ -1,7 +1,7 @@
-package kitchenpos.ui;
+package kitchenpos.menugroup.ui;
 
-import kitchenpos.application.MenuGroupService;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.service.MenuGroupServiceJpa;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,9 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -28,7 +26,7 @@ class MenuGroupRestControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    private MenuGroupService menuGroupService;
+    private MenuGroupServiceJpa menuGroupService;
 
     @DisplayName("메뉴 그룹을 등록할 수 있다.")
     @Test
