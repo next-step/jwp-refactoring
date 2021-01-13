@@ -6,7 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public class ValueObjectId {
+public abstract class ValueObjectId {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
