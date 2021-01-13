@@ -30,6 +30,12 @@ subprojects {
 project(':module-common') {
 }
 
+project(':module-infra') {
+    dependencies {
+        compile project(':module-domain')
+    }
+}
+
 project(':module-domain') {
     dependencies {
         compile project(':module-common')
@@ -40,6 +46,7 @@ project(':module-api') {
     dependencies {
         compile project(':module-common')
         compile project(':module-domain')
+        compile project(':module-infra')
     }
 
     jar.enabled(false)
