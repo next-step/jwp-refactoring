@@ -16,6 +16,9 @@ public class OrderResponse {
     private LocalDateTime orderedTime;
     private List<OrderLineItemResponse> orderLineItems;
 
+    public OrderResponse() {
+    }
+
     public OrderResponse(final Long id, final Long orderTableId, final String orderStatus,
                          final LocalDateTime orderedTime, final List<OrderLineItemResponse> orderLineItems) {
         this.id = id;
@@ -66,6 +69,9 @@ public class OrderResponse {
         private Long orderId;
         private Long menuId;
         private long quantity;
+
+        public OrderLineItemResponse() {
+        }
 
         private OrderLineItemResponse(final Long seq, final Long orderId, final Long menuId, final long quantity) {
             this.seq = seq;

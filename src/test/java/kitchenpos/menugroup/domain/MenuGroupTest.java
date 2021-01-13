@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@DisplayName("메뉴 그룹")
 class MenuGroupTest {
 
     @DisplayName("메뉴 그룹을 생성할 수 있다.")

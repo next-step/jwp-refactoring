@@ -4,8 +4,8 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.ordertable.OrderTableAcceptanceTest;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,16 +21,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("단체 지정 관련 기능")
 public class TableGroupAcceptanceTest extends AcceptanceTest {
 
-    private OrderTable orderTable1;
+    private OrderTableResponse orderTable1;
 
-    private OrderTable orderTable2;
+    private OrderTableResponse orderTable2;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        orderTable1 = OrderTableAcceptanceTest.주문_테이블_등록_되어있음(5, true).as(OrderTable.class);
-        orderTable2 = OrderTableAcceptanceTest.주문_테이블_등록_되어있음(3, true).as(OrderTable.class);
+        orderTable1 = OrderTableAcceptanceTest.주문_테이블_등록_되어있음(5, true).as(OrderTableResponse.class);
+        orderTable2 = OrderTableAcceptanceTest.주문_테이블_등록_되어있음(3, true).as(OrderTableResponse.class);
     }
 
     @DisplayName("단체 지정을 관리한.")

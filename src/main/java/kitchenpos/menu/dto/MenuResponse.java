@@ -15,6 +15,9 @@ public class MenuResponse {
     private Long menuGroupId;
     private List<MenuProductResponse> menuProducts;
 
+    public MenuResponse() {
+    }
+
     private MenuResponse(final Long id, final String name, final BigDecimal price,
                          final Long menuGroupId, final List<MenuProductResponse> menuProducts) {
         this.id = id;
@@ -67,6 +70,9 @@ public class MenuResponse {
         private Long menuId;
         private Long productId;
         private long quantity;
+
+        public MenuProductResponse() {
+        }
 
         private MenuProductResponse(final Long seq, final Long menuId, final Long productId, final long quantity) {
             this.seq = seq;
