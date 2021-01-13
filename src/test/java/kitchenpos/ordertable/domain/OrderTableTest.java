@@ -1,7 +1,10 @@
 package kitchenpos.ordertable.domain;
 
+import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -54,7 +57,7 @@ class OrderTableTest {
     @Test
     void cantChangeEmpty2() {
         // given
-        OrderTable orderTable = new OrderTable(1L, 5, true);
+        OrderTable orderTable = new OrderTable(new TableGroup(new ArrayList<>()), 5, true);
 
         // when / then
         assertThrows(IllegalStateException.class, () -> orderTable.changeEmpty(false));

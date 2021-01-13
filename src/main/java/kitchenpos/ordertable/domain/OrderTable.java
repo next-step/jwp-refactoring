@@ -1,5 +1,7 @@
 package kitchenpos.ordertable.domain;
 
+import kitchenpos.tablegroup.domain.TableGroup;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -13,8 +15,9 @@ public class OrderTable {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "table_group_id")
-    private Long tableGroupId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "table_group_id")
+    private TableGroup tableGroup;
 
     @Column(name = "number_of_guests")
     private int numberOfGuests;
@@ -29,30 +32,14 @@ public class OrderTable {
         this(null, numberOfGuests, empty);
     }
 
-    public OrderTable(final Long tableGroupId, final int numberOfGuests, final boolean empty) {
-        this.tableGroupId = tableGroupId;
+    public OrderTable(final TableGroup tableGroup, final int numberOfGuests, final boolean empty) {
+        this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public Long getTableGroupId() {
-        return tableGroupId;
-    }
-
-    public int getNumberOfGuests() {
-        return numberOfGuests;
-    }
-
-    public boolean isEmpty() {
-        return empty;
-    }
-
     public void changeEmpty(final boolean empty) {
-        if(Objects.nonNull(tableGroupId)){
+        if (Objects.nonNull(tableGroup)) {
             throw new IllegalStateException("단체 지정이 되어 있다면 등록 상태를 변경할 수 없습니다.");
         }
         this.empty = empty;
@@ -67,5 +54,29 @@ public class OrderTable {
             throw new IllegalArgumentException("손님 수는 0명 이상이어야 합니다.");
         }
         this.numberOfGuests = numberOfGuests;
+    }
+
+    public void assign(final TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
+    }
+
+    public void ungroup() {
+        this.tableGroup = null;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public TableGroup getTableGroup() {
+        return tableGroup;
+    }
+
+    public int getNumberOfGuests() {
+        return numberOfGuests;
+    }
+
+    public boolean isEmpty() {
+        return empty;
     }
 }

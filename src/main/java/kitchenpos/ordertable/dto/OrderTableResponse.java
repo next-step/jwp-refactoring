@@ -22,7 +22,8 @@ public class OrderTableResponse {
 
     public static OrderTableResponse of(final OrderTable orderTable) {
         return new OrderTableResponse(orderTable.getId(),
-                orderTable.getTableGroupId(),
+                orderTable.getTableGroup()
+                        .getId(),
                 orderTable.getNumberOfGuests(),
                 orderTable.isEmpty());
     }
