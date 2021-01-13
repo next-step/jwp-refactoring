@@ -33,13 +33,13 @@ public class Menu {
     protected Menu() {
     }
 
-    public Menu(final String name, final Money price, final MenuGroup menuGroup, final MenuProducts menuProducts) {
-        validate(menuProducts, price);
-        menuProducts.assign(this);
+    public Menu(final String name, final Money price, final MenuGroup menuGroup, final List<MenuProduct> menuProducts) {
+        MenuProducts newMenuProducts = new MenuProducts(menuProducts, this);
+        validate(newMenuProducts, price);
         this.name = Objects.requireNonNull(name);
         this.price = Objects.requireNonNull(price);
         this.menuGroup = Objects.requireNonNull(menuGroup);
-        this.menuProducts = Objects.requireNonNull(menuProducts);
+        this.menuProducts = newMenuProducts;
     }
 
     private void validate(final MenuProducts menuProducts, final Money price) {

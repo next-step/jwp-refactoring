@@ -17,8 +17,9 @@ public class MenuProducts {
     protected MenuProducts() {
     }
 
-    public MenuProducts(final List<MenuProduct> menuProducts) {
+    public MenuProducts(final List<MenuProduct> menuProducts, final Menu menu) {
         this.menuProducts.addAll(menuProducts);
+        assign(menu);
     }
 
     public void assign(final Menu menu) {

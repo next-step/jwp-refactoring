@@ -7,7 +7,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -17,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class MenuTest {
 
     private MenuGroup menuGroup;
-    private MenuProducts menuProducts;
+    private List<MenuProduct> menuProducts;
 
     @BeforeEach
     void setUp() {
@@ -25,16 +27,21 @@ class MenuTest {
 
         Product 강정치킨 = new Product("강정치킨", Money.valueOf(19000));
         Product 후라이드 = new Product("후라이드", Money.valueOf(15000));
-        menuProducts = new MenuProducts(Arrays.asList(
+        menuProducts = Arrays.asList(
                 new MenuProduct(강정치킨, 2),
-                new MenuProduct(후라이드, 2)));
+                new MenuProduct(후라이드, 2));
     }
 
     @DisplayName("메뉴를 생성한다.")
     @Test
     void create() {
+        // given
+        Money priceOfProducts = menuProducts.stream()
+                .map(MenuProduct::price)
+                .reduce(Money.zero(), Money::add);
+
         // when
-        Menu menu = new Menu("치킨두마리", menuProducts.price(), menuGroup, menuProducts);
+        Menu menu = new Menu("치킨두마리", priceOfProducts, menuGroup, menuProducts);
 
         // then
         assertThat(menu).isNotNull();
@@ -44,18 +51,23 @@ class MenuTest {
     @Test
     void requiredMenuProduct() {
         // given
-        MenuProducts emptyProducts = new MenuProducts();
+        Money priceOfProducts = menuProducts.stream()
+                .map(MenuProduct::price)
+                .reduce(Money.zero(), Money::add);
 
         // when / then
         assertThrows(IllegalArgumentException.class, () ->
-                new Menu("치킨두마리", menuProducts.price(), menuGroup, emptyProducts));
+                new Menu("치킨두마리", priceOfProducts, menuGroup, new ArrayList<>()));
     }
 
     @DisplayName("메뉴 가격이 메뉴 상품들의 가격 총합보다 비쌀 수 없다.")
     @Test
     void priceStrategy() {
         // given
-        Money overMoney = menuProducts.price().add(Money.valueOf(1000));
+        Money overMoney = menuProducts.stream()
+                .map(MenuProduct::price)
+                .reduce(Money.zero(), Money::add)
+                .add(Money.valueOf(100));
 
         // when / then
         assertThrows(IllegalArgumentException.class, () ->

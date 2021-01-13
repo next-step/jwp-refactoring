@@ -14,9 +14,7 @@ import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
-import static java.util.stream.Collectors.collectingAndThen;
-import static java.util.stream.Collectors.toList;
+import java.util.stream.Collectors;
 
 @Service
 public class MenuService {
@@ -37,7 +35,7 @@ public class MenuService {
 
     public MenuResponse create(final MenuRequest menuRequest) {
         MenuGroup menuGroup = toMenuGroup(menuRequest.getMenuGroupId());
-        MenuProducts menuProducts = toMenuProducts(menuRequest.getMenuProducts());
+        List<MenuProduct> menuProducts = toMenuProducts(menuRequest.getMenuProducts());
         Menu savedMenu = menuRepository.save(menuRequest.toMenu(menuGroup, menuProducts));
         return MenuResponse.of(savedMenu);
     }
@@ -47,10 +45,10 @@ public class MenuService {
                 .orElseThrow(() -> new IllegalArgumentException(String.format("%d에 해당하는 메뉴 그룹이 없습니다.", menuGroupId)));
     }
 
-    private MenuProducts toMenuProducts(final List<MenuProductRequest> menuProducts) {
+    private List<MenuProduct> toMenuProducts(final List<MenuProductRequest> menuProducts) {
         return menuProducts.stream()
                 .map(this::toMenuProduct)
-                .collect(collectingAndThen(toList(), MenuProducts::new));
+                .collect(Collectors.toList());
     }
 
     private MenuProduct toMenuProduct(final MenuProductRequest menuProductRequest) {
