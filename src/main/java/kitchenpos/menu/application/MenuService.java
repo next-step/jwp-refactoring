@@ -12,10 +12,12 @@ import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Transactional
 @Service
 public class MenuService {
 
@@ -58,6 +60,7 @@ public class MenuService {
         return new MenuProduct(product, menuProductRequest.getQuantity());
     }
 
+    @Transactional(readOnly = true)
     public List<MenuResponse> findAll() {
         List<Menu> menus = menuRepository.findAll();
         return MenuResponse.ofList(menus);

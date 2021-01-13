@@ -5,9 +5,11 @@ import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Transactional
 @Service
 public class TableService {
 
@@ -22,6 +24,7 @@ public class TableService {
         return OrderTableResponse.of(savedOrderTable);
     }
 
+    @Transactional(readOnly = true)
     public List<OrderTableResponse> findAll() {
         List<OrderTable> orderTables = orderTableRepository.findAll();
         return OrderTableResponse.ofList(orderTables);
