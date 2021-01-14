@@ -23,4 +23,8 @@ public final class HttpStatusAssertion {
     public static void INTERNAL_SERVER_ERROR(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
+
+    public static void NO_CONTENT(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
 }
