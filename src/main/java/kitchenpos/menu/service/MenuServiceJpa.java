@@ -1,5 +1,6 @@
 package kitchenpos.menu.service;
 
+import kitchenpos.infra.Money;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuRequest;
@@ -29,7 +30,7 @@ public class MenuServiceJpa {
     public MenuResponse create(final MenuRequest menuRequest) {
         checkProductsEmpty(menuRequest);
         MenuGroup menuGroup = menuGroupService.findById(menuRequest.getMenuGroupId());
-        kitchenpos.menu.domain.Menu menu = new kitchenpos.menu.domain.Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup);
+        kitchenpos.menu.domain.Menu menu = new kitchenpos.menu.domain.Menu(menuRequest.getName(), Money.price(menuRequest.getPrice()), menuGroup);
         List<MenuProduct> menuProducts = menuRequest.getMenuProducts()
                 .stream()
                 .map(request -> new MenuProduct(menu, productService.findById(request.getProductId()), request.getQuantity()))

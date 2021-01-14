@@ -3,10 +3,12 @@ package kitchenpos.menugroup.service;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Transactional
 @Service
@@ -17,8 +19,9 @@ public class MenuGroupServiceJpa {
         this.menuGroupRepository = menuGroupRepository;
     }
 
-    public MenuGroup create(final MenuGroupRequest menuGroup) {
-        return menuGroupRepository.save(menuGroup.of());
+    public MenuGroupResponse create(final MenuGroupRequest menuGroupRequest) {
+        MenuGroup savedGroup = menuGroupRepository.save(menuGroupRequest.toGroup());
+        return MenuGroupResponse.of(savedGroup);
     }
 
     @Transactional(readOnly = true)
@@ -27,7 +30,10 @@ public class MenuGroupServiceJpa {
     }
 
     @Transactional(readOnly = true)
-    public List<MenuGroup> list() {
-        return menuGroupRepository.findAll();
+    public List<MenuGroupResponse> list() {
+        return menuGroupRepository.findAll()
+                .stream()
+                .map(MenuGroupResponse::of)
+                .collect(Collectors.toList());
     }
 }

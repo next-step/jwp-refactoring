@@ -1,7 +1,9 @@
 package kitchenpos.menu.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuProductResponse;
+import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.service.MenuServiceJpa;
 import org.hamcrest.Matchers;
@@ -39,13 +41,17 @@ class MenuRestControllerTest {
     @DisplayName("메뉴를 등록할 수 있다.")
     @Test
     void createMenu() throws Exception {
+        MenuRequest menuRequest = new MenuRequest("후라이드+양념", 30000, 1L, Arrays.asList(
+                new MenuProductRequest(1L, 1),
+                new MenuProductRequest(2L, 1)));
+
         MenuResponse menuResponse = new MenuResponse(1L, "후라이드+양념", 30000, "추천메뉴", getMenuProducts(
                 new MenuProductResponse(1L, "후라이드치킨", 1),
                 new MenuProductResponse(2L, "양념치킨", 1)));
         when(menuServiceJpa.create(any())).thenReturn(menuResponse);
 
         mockMvc.perform(post("/api/menus")
-                .content(objectMapper.writeValueAsString(menuResponse)).contentType(MediaType.APPLICATION_JSON))
+                .content(objectMapper.writeValueAsString(menuRequest)).contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(redirectedUrl("/api/menus/" + menuResponse.getId()))
                 .andExpect(status().isCreated());

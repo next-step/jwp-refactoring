@@ -4,8 +4,8 @@ import kitchenpos.infra.Money;
 import kitchenpos.product.domain.Product;
 
 public class ProductRequest {
-    private String name;
-    private int price;
+    private final String name;
+    private final int price;
 
     public ProductRequest(String name, int price) {
         this.name = name;

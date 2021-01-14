@@ -1,6 +1,12 @@
 package kitchenpos.menugroup.ui;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import kitchenpos.menu.dto.MenuProductResponse;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.menugroup.service.MenuGroupServiceJpa;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
@@ -14,29 +20,51 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Arrays;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(MenuGroupRestController.class)
 class MenuGroupRestControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @MockBean
     private MenuGroupServiceJpa menuGroupService;
 
+
     @DisplayName("메뉴 그룹을 등록할 수 있다.")
     @Test
+    void createMenuGroups() throws Exception {
+        MenuGroupRequest menuGroupRequest = new MenuGroupRequest("추천메뉴");
+        MenuGroupResponse 추천메뉴 = new MenuGroupResponse(1L, "추천메뉴");
+        when(menuGroupService.create(any())).thenReturn(추천메뉴);
+
+        mockMvc.perform(post("/api/menu-groups")
+                .content(objectMapper.writeValueAsString(menuGroupRequest)).contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(redirectedUrl("/api/menu-groups/" + 추천메뉴.getId()))
+                .andExpect(status().isCreated());
+    }
+
+    @DisplayName("메뉴 그룹 목록을 가져올수 있다.")
+    @Test
     void listMenuGroup() throws Exception {
-        when(menuGroupService.list()).thenReturn(Arrays.asList(new MenuGroup("추천메뉴"), new MenuGroup("오늘의 메뉴")));
+        when(menuGroupService.list()).thenReturn(Arrays.asList(
+                new MenuGroupResponse(1L,"두마리메뉴"),
+                new MenuGroupResponse(2L,"한마리메뉴")));
 
         mockMvc.perform(get("/api/menu-groups").contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[*].name", Matchers.containsInAnyOrder("추천메뉴", "오늘의 메뉴")));
+                .andExpect(jsonPath("$[*].name", Matchers.containsInAnyOrder("두마리메뉴", "한마리메뉴")));
     }
 }

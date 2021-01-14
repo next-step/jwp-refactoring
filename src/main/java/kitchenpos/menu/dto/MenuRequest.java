@@ -6,11 +6,11 @@ import java.util.List;
 
 public class MenuRequest {
     private final String name;
-    private final long price;
+    private final int price;
     private final Long menuGroupId;
     private final List<MenuProductRequest> menuProducts;
 
-    public MenuRequest(String name, long price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
+    public MenuRequest(String name, int price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
@@ -21,8 +21,8 @@ public class MenuRequest {
         return name;
     }
 
-    public Money getPrice() {
-        return Money.price(price);
+    public int getPrice() {
+        return price;
     }
 
     public Long getMenuGroupId() {
