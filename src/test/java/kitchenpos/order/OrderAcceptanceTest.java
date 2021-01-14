@@ -4,14 +4,17 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
 import kitchenpos.menu.MenuAcceptanceTest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.MenuGroupAcceptanceTest;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.ordertable.OrderTableAcceptanceTest;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.product.ProductAcceptanceTest;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,21 +32,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("주문 관련 기능")
 public class OrderAcceptanceTest extends AcceptanceTest {
 
-    private OrderTable orderTable;
+    private OrderTableResponse orderTable;
 
-    private Menu menu;
+    private MenuResponse menu;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        orderTable = OrderTableAcceptanceTest.주문_테이블_등록_되어있음(3, false).as(OrderTable.class);
+        orderTable = OrderTableAcceptanceTest.주문_테이블_등록_되어있음(3, false).as(OrderTableResponse.class);
 
-        MenuGroup 추천메뉴 = MenuGroupAcceptanceTest.메뉴_그룹_등록되어_있음("추천메뉴").as(MenuGroup.class);
-        Product 고추치킨 = ProductAcceptanceTest.상품_등록되어_있음("고추치킨", "10000").as(Product.class);
-        Product 마늘치킨 = ProductAcceptanceTest.상품_등록되어_있음("마늘치킨", "10000").as(Product.class);
+        MenuGroupResponse 추천메뉴 = MenuGroupAcceptanceTest.메뉴_그룹_등록되어_있음("추천메뉴").as(MenuGroupResponse.class);
+        ProductResponse 고추치킨 = ProductAcceptanceTest.상품_등록되어_있음("고추치킨", "10000").as(ProductResponse.class);
+        ProductResponse 마늘치킨 = ProductAcceptanceTest.상품_등록되어_있음("마늘치킨", "10000").as(ProductResponse.class);
 
-        menu = MenuAcceptanceTest.메뉴_등록_되어있음(추천메뉴, Arrays.asList(고추치킨, 마늘치킨)).as(Menu.class);
+        menu = MenuAcceptanceTest.메뉴_등록_되어있음(추천메뉴, Arrays.asList(고추치킨, 마늘치킨)).as(MenuResponse.class);
     }
 
     @DisplayName("주문을 관리한다.")

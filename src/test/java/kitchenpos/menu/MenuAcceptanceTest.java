@@ -4,10 +4,11 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.Product;
 import kitchenpos.menugroup.MenuGroupAcceptanceTest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.product.ProductAcceptanceTest;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,19 +27,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("메뉴 관련 기능")
 public class MenuAcceptanceTest extends AcceptanceTest {
 
-    private MenuGroup 추천메뉴;
+    private MenuGroupResponse 추천메뉴;
 
-    private Product 고추치킨;
+    private ProductResponse 고추치킨;
 
-    private Product 마늘치킨;
+    private ProductResponse 마늘치킨;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        추천메뉴 = MenuGroupAcceptanceTest.메뉴_그룹_등록되어_있음("추천메뉴").as(MenuGroup.class);
-        고추치킨 = ProductAcceptanceTest.상품_등록되어_있음("고추치킨", "10000").as(Product.class);
-        마늘치킨 = ProductAcceptanceTest.상품_등록되어_있음("마늘치킨", "10000").as(Product.class);
+        추천메뉴 = MenuGroupAcceptanceTest.메뉴_그룹_등록되어_있음("추천메뉴").as(MenuGroupResponse.class);
+        고추치킨 = ProductAcceptanceTest.상품_등록되어_있음("고추치킨", "10000").as(ProductResponse.class);
+        마늘치킨 = ProductAcceptanceTest.상품_등록되어_있음("마늘치킨", "10000").as(ProductResponse.class);
     }
 
     @DisplayName("메뉴를 관리한다.")
@@ -85,7 +86,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         메뉴_목록_포함됨(findResponse, Arrays.asList(createResponse));
     }
 
-    public static ExtractableResponse<Response> 메뉴_등록_되어있음(final MenuGroup menuGroup, List<Product> products) {
+    public static ExtractableResponse<Response> 메뉴_등록_되어있음(final MenuGroupResponse menuGroup,
+                                                           final List<ProductResponse> products) {
         List<Map<String, Object>> menuProducts = products.stream()
                 .map(product -> {
                     Map<String, Object> request = new HashMap<>();
@@ -96,7 +98,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 .collect(Collectors.toList());
 
         BigDecimal sum = products.stream()
-                .map(Product::getPrice)
+                .map(ProductResponse::getPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         Map<String, Object> params = new HashMap<>();
