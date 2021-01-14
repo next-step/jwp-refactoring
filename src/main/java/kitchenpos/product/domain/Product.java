@@ -1,12 +1,13 @@
 package kitchenpos.product.domain;
 
+import kitchenpos.BaseEntity;
 import kitchenpos.menu.domain.Price;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
-public class Product {
+public class Product extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -14,6 +15,18 @@ public class Product {
 
     @Embedded
     private Price price;
+
+    protected Product() {
+    }
+
+    protected Product(final String name, final Price price) {
+        this.name = name;
+        this.price = price;
+    }
+
+    public static Product of(final String name, final Price price) {
+        return new Product(name, price);
+    }
 
     public Long getId() {
         return id;
