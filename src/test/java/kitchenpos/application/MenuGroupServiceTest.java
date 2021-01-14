@@ -1,51 +1,50 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class MenuGroupServiceTest {
 
-	@InjectMocks
+	@Autowired
 	private MenuGroupService menuGroupService;
 
-	@Mock
-	private MenuGroupDao menuGroupDao;
-
 	@DisplayName("메뉴 그룹을 생성한다.")
-	@Test
-	void create() {
-		MenuGroup menuGroup = mock(MenuGroup.class);
+	@ParameterizedTest
+	@ValueSource(strings = {"중식", "한식", "일식"})
+	void create(String name) {
+		// given
+		MenuGroupRequest request = new MenuGroupRequest(name);
 
-		menuGroupService.create(menuGroup);
+		// when
+		MenuGroupResponse response = menuGroupService.create(request);
 
-		verify(menuGroupDao).save(menuGroup);
+		// then
+		assertThat(response.getId()).isNotNull();
+		assertThat(response.getName()).isEqualTo(name);
 	}
 
 	@DisplayName("메뉴 그룹 리스트를 반환한다.")
-	@ParameterizedTest
-	@ValueSource(ints = {0, 1, 20})
-	void list(int size) {
-		given(menuGroupDao.findAll()).willReturn(MockFixture.anyMenuGroups(size));
+	@Test
+	void list() {
+		create("중식");
+		create("일식");
+		create("한식");
+		List<MenuGroupResponse> menuGroups = menuGroupService.list();
 
-		List<MenuGroup> menuGroups = menuGroupService.list();
+		assertThat(menuGroups)
+				.map(MenuGroupResponse::getName)
+				.contains("중식", "일식", "한식");
 
-		assertThat(menuGroups).hasSize(size);
 	}
-
 }

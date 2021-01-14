@@ -1,7 +1,8 @@
 package kitchenpos.ui;
 
 import kitchenpos.MockMvcTest;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -18,14 +19,13 @@ class MenuGroupRestControllerTest extends MockMvcTest {
 	@DisplayName("메뉴 그룹을 생성할 수 있다.")
 	@Test
 	void create() throws Exception {
-		MenuGroup menuGroup = new MenuGroup();
-		menuGroup.setName("aa");
+		MenuGroupRequest request = new MenuGroupRequest("aa");
 
-		MvcResult mvcResult = mockMvc.perform(postAsJson("/api/menu-groups", menuGroup))
+		MvcResult mvcResult = mockMvc.perform(postAsJson("/api/menu-groups", request))
 				.andExpect(status().isCreated())
 				.andReturn();
 
-		MenuGroup created = toObject(mvcResult.getResponse().getContentAsString(), MenuGroup.class);
+		MenuGroupResponse created = toObject(mvcResult.getResponse().getContentAsString(), MenuGroupResponse.class);
 		assertThat(created.getId()).isNotNull();
 		assertThat(created.getName()).isEqualTo("aa");
 	}
@@ -38,7 +38,7 @@ class MenuGroupRestControllerTest extends MockMvcTest {
 				.andExpect(status().isOk())
 				.andReturn();
 
-		List<MenuGroup> menuGroups = toList(mvcResult, MenuGroup.class);
+		List<MenuGroupResponse> menuGroups = toList(mvcResult, MenuGroupResponse.class);
 		assertThat(menuGroups).isNotEmpty();
 	}
 }
