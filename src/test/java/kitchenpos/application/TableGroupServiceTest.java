@@ -116,10 +116,6 @@ class TableGroupServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-
-
-
-
     private OrderDto getOrder(OrderTableDto orderTable) {
         MenuDto menu = menuService.create(getMenu());
 

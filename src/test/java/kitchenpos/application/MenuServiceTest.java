@@ -48,10 +48,8 @@ class MenuServiceTest {
         assertThat(savedMenu.getName()).isEqualTo(menu.getName());
         assertThat(savedMenu.getPrice().longValue()).isEqualTo(menu.getPrice().longValue());
         assertThat(savedMenu.getMenuGroupId()).isEqualTo(menu.getMenuGroupId());
-        assertThat(savedMenu.getMenuProducts().get(0).getMenuId()).isEqualTo(menu.getMenuProducts().get(0).getMenuId());
         assertThat(savedMenu.getMenuProducts().get(0).getQuantity()).isEqualTo(menu.getMenuProducts().get(0).getQuantity());
         assertThat(savedMenu.getMenuProducts().get(0).getProductId()).isEqualTo(menu.getMenuProducts().get(0).getProductId());
-        assertThat(savedMenu.getMenuProducts().get(1).getMenuId()).isEqualTo(menu.getMenuProducts().get(1).getMenuId());
         assertThat(savedMenu.getMenuProducts().get(1).getQuantity()).isEqualTo(menu.getMenuProducts().get(1).getQuantity());
         assertThat(savedMenu.getMenuProducts().get(1).getProductId()).isEqualTo(menu.getMenuProducts().get(1).getProductId());
     }

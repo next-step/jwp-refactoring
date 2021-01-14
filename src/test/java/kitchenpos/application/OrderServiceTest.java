@@ -65,8 +65,8 @@ class OrderServiceTest {
         assertThat(savedOrder.getOrderTableId()).isEqualTo(order.getOrderTableId());
         assertThat(savedOrder.getOrderLineItems().get(0).getSeq()).isNotNull();
         assertThat(savedOrder.getOrderLineItems().get(0).getMenuId()).isEqualTo(order.getOrderLineItems().get(0).getMenuId());
-        assertThat(savedOrder.getOrderLineItems().get(0).getOrderId()).isEqualTo(order.getOrderLineItems().get(0).getOrderId());
         assertThat(savedOrder.getOrderLineItems().get(0).getQuantity()).isEqualTo(order.getOrderLineItems().get(0).getQuantity());
+        assertThat(savedOrder.getOrderLineItems().get(0).getOrderId()).isEqualTo(savedOrder.getId());
     }
 
     @DisplayName("주문 생성시 주문항목이 없는 경우")
