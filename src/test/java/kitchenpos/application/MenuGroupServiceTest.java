@@ -35,7 +35,7 @@ class MenuGroupServiceTest {
         세트메뉴.setName("세트메뉴");
     }
 
-    @DisplayName("메뉴 그룹 생성")
+    @DisplayName("`메뉴 그룹`을 생성한다.")
     @Test
     void createMenuGroup() {
         // Given
@@ -50,7 +50,7 @@ class MenuGroupServiceTest {
         );
     }
 
-    @DisplayName("모든 메뉴 그룹 목록 조회")
+    @DisplayName("모든 `메뉴 그룹` 목록을 조회한다.")
     @Test
     void findAllMenuGroups() {
         // Given

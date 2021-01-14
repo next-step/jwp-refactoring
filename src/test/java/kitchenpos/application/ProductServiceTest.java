@@ -38,7 +38,7 @@ class ProductServiceTest {
         짬뽕.setPrice(new BigDecimal(8_000));
     }
 
-    @DisplayName("상품 생성")
+    @DisplayName("`상품`을 생성한다.")
     @Test
     void createProduct() {
         // Given
@@ -53,7 +53,7 @@ class ProductServiceTest {
         );
     }
 
-    @DisplayName("예외 - 잘못된 가격의 상품 생성")
+    @DisplayName("가격은 필수이고, 0원 이상이다.")
     @Test
     void exceptionToCreateProduct() {
         // Given
@@ -67,7 +67,7 @@ class ProductServiceTest {
 
     }
 
-    @DisplayName("모든 상품 목록 조회")
+    @DisplayName("모든 `상품` 목록을 조회한다.")
     @Test
     void findAllProducts() {
         // Given
