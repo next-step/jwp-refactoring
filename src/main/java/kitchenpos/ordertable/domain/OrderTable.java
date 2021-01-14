@@ -4,34 +4,38 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import kitchenpos.tablegroup.domain.TableGroup;
 
 @Entity(name = "order_table")
 public class OrderTable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private Long tableGroupId;
 	private int numberOfGuests;
 	private boolean empty;
+
+	@ManyToOne
+	@JoinColumn(name = "table_group_id")
+	private TableGroup tableGroup;
 
 	public OrderTable() {
 	}
 
-	public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
-		this.id = id;
-		this.tableGroupId = tableGroupId;
-		this.numberOfGuests = numberOfGuests;
-		this.empty = empty;
-	}
-
-	public OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
-		this.tableGroupId = tableGroupId;
-		this.numberOfGuests = numberOfGuests;
-		this.empty = empty;
-	}
-
 	public OrderTable(boolean empty) {
 		this.empty = empty;
+	}
+
+	public OrderTable(int numberOfGuests, boolean empty) {
+		this.numberOfGuests = numberOfGuests;
+		this.empty = empty;
+	}
+
+	public OrderTable(int numberOfGuests, boolean empty, TableGroup tableGroup) {
+		this.numberOfGuests = numberOfGuests;
+		this.empty = empty;
+		this.tableGroup = tableGroup;
 	}
 
 	public void changeNumberOfGuests(int numberOfGuests) {
@@ -44,24 +48,8 @@ public class OrderTable {
 		this.empty = empty;
 	}
 
-	public void setTableGroup(Long tableGroupId) {
-		validateTableGroup(tableGroupId);
-		this.tableGroupId = tableGroupId;
-		this.empty = false;
-	}
-
 	public void unTableGroup() {
-		this.tableGroupId = null;
-	}
-
-	private void validateTableGroup(Long tableGroupId) {
-		if (tableGroupId == null) {
-			throw new IllegalArgumentException("테이블그룹 ID가 없습니다.");
-		}
-
-		if (this.tableGroupId != null) {
-			throw new IllegalArgumentException("단체 지정이 불가능한 테이블입니다.");
-		}
+		this.tableGroup = null;
 	}
 
 	private void validateEmpty(int numberOfGuests) {
@@ -75,21 +63,33 @@ public class OrderTable {
 	}
 
 	private void validateNumberOfGuest() {
-		if (this.tableGroupId != null) {
+		if (this.tableGroup != null) {
 			throw new IllegalArgumentException("단체 지정된 테이블은 상태를 변경할 수 없습니다.");
 		}
+	}
+
+	public boolean isJoinedTableGroup() {
+		return this.tableGroup != null;
+	}
+
+	public void setTableGroup(TableGroup tableGroup) {
+		this.tableGroup = tableGroup;
 	}
 
 	public Long getId() {
 		return id;
 	}
 
-	public Long getTableGroupId() {
-		return tableGroupId;
+	public TableGroup getTableGroup() {
+		return tableGroup;
 	}
 
 	public int getNumberOfGuests() {
 		return numberOfGuests;
+	}
+
+	public Long getTableGroupId() {
+		return this.tableGroup == null ? null : this.tableGroup.getId();
 	}
 
 	public boolean isEmpty() {

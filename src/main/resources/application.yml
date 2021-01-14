@@ -1,0 +1,39 @@
+#logging.level.org.springframework.jdbc.core=TRACE
+#spring.jpa.properties.hibernate.show_sql=true
+#spring.jpa.properties.hibernate.format_sql=true
+#spring.jpa.properties.hibernate.use_sql_comments=true
+#logging.level.org.hibernate.type.descriptor.sql=trace
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+        use_sql_comments: true
+  h2:
+    console:
+      enabled: true
+  datasource:
+    data: classpath:db/migration/V3__Insert_default_data.sql
+
+logging:
+  level:
+    org:
+      springframework:
+        jdbc:
+          core: trace
+      hibernate:
+        type:
+          descriptor:
+            sql: trace
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  jpa:
+    hibernate:
+      ddl-auto: validate

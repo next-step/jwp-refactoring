@@ -19,18 +19,8 @@ public class OrderTableRequest {
 		this.empty = empty;
 	}
 
-	public OrderTableRequest(Long tableGroupId, int numberOfGuests, boolean empty) {
-		this.tableGroupId = tableGroupId;
-		this.numberOfGuests = numberOfGuests;
-		this.empty = empty;
-	}
-
 	public OrderTable newEntity() {
-		return new OrderTable(null, 0, true);
-	}
-
-	public OrderTable toEntity() {
-		return new OrderTable(this.tableGroupId, this.numberOfGuests, this.empty);
+		return new OrderTable(0, true);
 	}
 
 	public Long getId() {

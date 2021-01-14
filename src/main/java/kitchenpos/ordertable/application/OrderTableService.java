@@ -2,6 +2,7 @@ package kitchenpos.ordertable.application;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.domain.OrderStatus;
@@ -61,11 +62,7 @@ public class OrderTableService {
 			  .orElseThrow(IllegalArgumentException::new);
 	}
 
-	public List<OrderTable> findAllByOrderTableIds(List<Long> orderTableIds) {
+	public List<OrderTable> findAllByOrderTableIds(Set<Long> orderTableIds) {
 		return orderTableRepository.findAllById(orderTableIds);
-	}
-
-	public List<OrderTable> findAllByTableGroupId(Long tableGroupId) {
-		return orderTableRepository.findAllByTableGroupId(tableGroupId);
 	}
 }

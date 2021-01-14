@@ -3,8 +3,10 @@ package kitchenpos.ordertable.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
+import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 
 class OrderTableTest {
 
@@ -25,7 +27,9 @@ class OrderTableTest {
 	@Test
 	void changeEmptyWithGroupTable() {
 		//given
-		OrderTable orderTable = new OrderTable(1L, 1, false);
+		TableGroup tableGroup = new TableGroup();
+		ReflectionTestUtils.setField(tableGroup, "id", 1L);
+		OrderTable orderTable = new OrderTable(1, false, tableGroup);
 
 		//when, then
 		assertThatIllegalArgumentException()
@@ -37,7 +41,9 @@ class OrderTableTest {
 	@Test
 	void changeNumberOfGuests() {
 		//given
-		OrderTable orderTable = new OrderTable(1L, 0, false);
+		TableGroup tableGroup = new TableGroup();
+		ReflectionTestUtils.setField(tableGroup, "id", 1L);
+		OrderTable orderTable = new OrderTable(0, false, tableGroup);
 
 		//when
 		int newNumberOfGuest = 2;
@@ -51,7 +57,9 @@ class OrderTableTest {
 	@Test
 	void changeNumberOfGuestsWithWrongGuestNumber() {
 		//given
-		OrderTable orderTable = new OrderTable(1L, 0, false);
+		TableGroup tableGroup = new TableGroup();
+		ReflectionTestUtils.setField(tableGroup, "id", 1L);
+		OrderTable orderTable = new OrderTable(0, false, tableGroup);
 
 		//when, then
 		assertThatIllegalArgumentException()
@@ -59,55 +67,17 @@ class OrderTableTest {
 			  .withMessage("게스트 수는 0명 이상이어야 합니다.");
 	}
 
-	@DisplayName("게스트수가 0 미만인 경우 게스트수를 변경할 수 없다.")
+	@DisplayName("테이블이 비어있 경우 게스트수를 변경할 수 없다.")
 	@Test
 	void changeNumberOfGuestsWithEmptyTable() {
 		//given
-		OrderTable orderTable = new OrderTable(1L, 0, true);
+		TableGroup tableGroup = new TableGroup();
+		ReflectionTestUtils.setField(tableGroup, "id", 1L);
+		OrderTable orderTable = new OrderTable(0, true, tableGroup);
 
 		//when, then
 		assertThatIllegalArgumentException()
 			  .isThrownBy(() -> orderTable.changeNumberOfGuests(2))
 			  .withMessage("테이블이 비어있습니다.");
-	}
-
-	@DisplayName("테이블 그룹 지정")
-	@Test
-	void setGroup() {
-		//given
-		OrderTable orderTable = new OrderTable();
-
-		//when
-		orderTable.setTableGroup(1L);
-
-		//then
-		assertThat(orderTable.getTableGroupId()).isEqualTo(1L);
-	}
-
-	@DisplayName("단체테이블로 등록된 테이블은 단체설정을 할 수 없다.")
-	@Test
-	void setGroupOtherTableGroup() {
-		//given
-		OrderTable orderTable = new OrderTable();
-		orderTable.setTableGroup(1L);
-
-		//when, then
-		assertThatIllegalArgumentException()
-			  .isThrownBy(() -> orderTable.setTableGroup(2L))
-			  .withMessage("단체 지정이 불가능한 테이블입니다.");
-	}
-
-	@DisplayName("단체 테이블 지정 해제")
-	@Test
-	void unTableGroup() {
-		//given
-		OrderTable orderTable = new OrderTable();
-		orderTable.setTableGroup(1L);
-
-		//when
-		orderTable.unTableGroup();
-
-		//then
-		assertThat(orderTable.getTableGroupId()).isNull();
 	}
 }

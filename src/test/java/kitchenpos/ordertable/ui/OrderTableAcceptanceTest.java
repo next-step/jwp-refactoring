@@ -13,17 +13,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-class OrderTableAcceptanceTest extends AcceptanceTest {
+public class OrderTableAcceptanceTest extends AcceptanceTest {
 
 	@DisplayName("주문 테이블 목록을 조회한다.")
 	@Test
 	void list() {
 		//when
-		ExtractableResponse<Response> response = RestAssured.given().log().all()
-			  .contentType(MediaType.APPLICATION_JSON_VALUE)
-			  .when().get("/api/tables")
-			  .then().log().all()
-			  .extract();
+		ExtractableResponse<Response> response = 주문_테이블_목록을_조회한다();
 
 		//then
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -67,7 +63,7 @@ class OrderTableAcceptanceTest extends AcceptanceTest {
 		테이블_인원수가_변경됨(changeEmptyResponse, changeNumberOfGuestRequest, changeNumberOfGuest);
 	}
 
-	private ExtractableResponse<Response> 주문_테이블_등록을_요청한다(
+	public static ExtractableResponse<Response> 주문_테이블_등록을_요청한다(
 		  OrderTableRequest request) {
 		return RestAssured.given().log().all()
 			  .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -93,6 +89,14 @@ class OrderTableAcceptanceTest extends AcceptanceTest {
 			  .contentType(MediaType.APPLICATION_JSON_VALUE)
 			  .body(request)
 			  .when().put("/api/tables/" + orderTableId + "/number-of-guests")
+			  .then().log().all()
+			  .extract();
+	}
+
+	private ExtractableResponse<Response> 주문_테이블_목록을_조회한다() {
+		return RestAssured.given().log().all()
+			  .contentType(MediaType.APPLICATION_JSON_VALUE)
+			  .when().get("/api/tables")
 			  .then().log().all()
 			  .extract();
 	}
