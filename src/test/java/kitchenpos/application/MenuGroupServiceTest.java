@@ -14,16 +14,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
 
-    private MenuGroup menuGroup1;
-    private MenuGroup menuGroup2;
-    private MenuGroup menuGroup3;
+    private MenuGroup 치킨;
+    private MenuGroup 음료;
+    private MenuGroup 식사;
 
-    private List<MenuGroup> menuGroups = new ArrayList<>();
+    private List<MenuGroup> 메뉴그룹리스트 = new ArrayList<>();
     private MenuGroupService menuGroupService;
 
     @Mock
@@ -31,43 +32,40 @@ class MenuGroupServiceTest {
 
     @BeforeEach
     public void setUp() {
-        menuGroup1 = new MenuGroup("치킨");
-        menuGroup2 = new MenuGroup("음료");
-        menuGroup3 = new MenuGroup("식사");
+        치킨 = new MenuGroup("치킨");
+        음료 = new MenuGroup("음료");
+        식사 = new MenuGroup("식사");
 
-        menuGroups.add(menuGroup1);
-        menuGroups.add(menuGroup2);
-        menuGroups.add(menuGroup3);
+        메뉴그룹리스트.add(치킨);
+        메뉴그룹리스트.add(음료);
+        메뉴그룹리스트.add(식사);
         menuGroupService = new MenuGroupService(menuGroupDao);
     }
 
     @DisplayName("메뉴그룹 등록 테스트")
     @Test
     void createMenuGroup() {
-        mockSaveMenuGroup(menuGroup1);
-        mockSaveMenuGroup(menuGroup2);
-        mockSaveMenuGroup(menuGroup3);
-        checkMenuGroup(menuGroupService.create(menuGroup1), menuGroup1);
-        checkMenuGroup(menuGroupService.create(menuGroup2), menuGroup2);
-        checkMenuGroup(menuGroupService.create(menuGroup3), menuGroup3);
+        mockSaveMenuGroup(치킨);
+
+        MenuGroup resultMenuGroup = menuGroupService.create(치킨);
+        assertThat(resultMenuGroup.getName()).isEqualTo(치킨.getName());
     }
 
     @DisplayName("메뉴그룹 조회 테스트")
     @Test
     void findMenuGroupList() {
-        when(menuGroupDao.findAll()).thenReturn(menuGroups);
-        assertThat(menuGroupService.list().size()).isEqualTo(menuGroups.size());
-        List<String> menuGroupNames = menuGroupService.list().stream()
-                .map(menuGroup -> menuGroup.getName())
-                .collect(Collectors.toList());
-        List<String> expectedMenuGroupNames = menuGroups.stream()
-                .map(menuGroup -> menuGroup.getName())
-                .collect(Collectors.toList());
-        assertThat(menuGroupNames).containsExactlyElementsOf(expectedMenuGroupNames);
-    }
+        when(menuGroupDao.findAll()).thenReturn(메뉴그룹리스트);
 
-    private void checkMenuGroup(MenuGroup ResultMenuGroup, MenuGroup menuGroup) {
-        assertThat(ResultMenuGroup.getName()).isEqualTo(menuGroup.getName());
+        List<MenuGroup> resultMenuGroups = menuGroupService.list();
+        List<String> menuGroupNames = resultMenuGroups.stream()
+                .map(menuGroup -> menuGroup.getName())
+                .collect(Collectors.toList());
+        List<String> expectedMenuGroupNames = 메뉴그룹리스트.stream()
+                .map(menuGroup -> menuGroup.getName())
+                .collect(Collectors.toList());
+
+        assertThat(resultMenuGroups.size()).isEqualTo(메뉴그룹리스트.size());
+        assertThat(menuGroupNames).containsExactlyElementsOf(expectedMenuGroupNames);
     }
 
     private void mockSaveMenuGroup(MenuGroup menuGroup) {

@@ -66,16 +66,69 @@ class OrderServiceTest {
     void createOrder() {
         when(menuDao.countByIdIn(any())).thenReturn((long) orderLineItems.size());
         when(orderTableDao.findById(any())).thenReturn(java.util.Optional.ofNullable(orderTable));
-        mockSaveOrder(order1);
-        mockSaveOrder(order2);
-        mockSaveOrder(order3);
-        mockSaveOrderLineItem(orderLineItems.get(0));
-        mockSaveOrderLineItem(orderLineItems.get(1));
+        when(orderDao.save(order1)).thenReturn(order1);
+        when(orderLineItemDao.save(orderLineItems.get(0))).thenReturn(orderLineItems.get(0));
 
-        checkOrder(orderService.create(order1), order1);
-        checkOrder(orderService.create(order2), order2);
-        checkOrder(orderService.create(order3), order3);
+        Order resultOrder = orderService.create(order1);
+
+        assertAll(
+                () -> assertThat(resultOrder.getOrderTableId()).isEqualTo(order1.getOrderTableId()),
+                () -> assertThat(resultOrder.getOrderLineItems().size())
+                        .isEqualTo(order1.getOrderLineItems().size()),
+                () -> assertThat(resultOrder.getOrderLineItems().get(0).getMenuId())
+                        .isEqualTo(order1.getOrderLineItems().get(0).getMenuId())
+        );
     }
+
+    @DisplayName("주문 등록 예외테스트: 주문 상품들이 없는경우")
+    @Test
+    void emptyOrderLineItems() {
+        order1.setOrderLineItems(new ArrayList<>());
+        Throwable exception = assertThrows(IllegalArgumentException.class,
+                () -> orderService.create(order1)
+        );
+
+        assertThat(exception.getMessage()).isEqualTo("주문상품이 없습니다.");
+    }
+
+    @DisplayName("주문 등록 예외테스트: 주문 상품들랑 메뉴갯수 일치하지 않는경우")
+    @Test
+    void notMatchOrderList() {
+        when(menuDao.countByIdIn(any())).thenReturn(0L);
+
+        Throwable exception = assertThrows(IllegalArgumentException.class,
+                () -> orderService.create(order1)
+        );
+
+        assertThat(exception.getMessage()).isEqualTo("주문상품과 메뉴 갯수가 일치하지 않습니다.");
+    }
+
+    @DisplayName("주문 등록 예외테스트: 주문 테이블을 찾을 수 없는경우")
+    @Test
+    void notFoundOrderTable() {
+        when(menuDao.countByIdIn(any())).thenReturn((long) orderLineItems.size());
+
+        Throwable exception = assertThrows(IllegalArgumentException.class,
+                () -> orderService.create(order1)
+        );
+
+        assertThat(exception.getMessage()).isEqualTo("주문 테이블을 찾을 수 없습니다.");
+    }
+
+    @DisplayName("주문 등록 예외테스트: 주문 테이블이 비어있는경우")
+    @Test
+    void emptyOrderTable() {
+        when(menuDao.countByIdIn(any())).thenReturn((long) orderLineItems.size());
+        orderTable.setEmpty(true);
+        when(orderTableDao.findById(any())).thenReturn(java.util.Optional.ofNullable(orderTable));
+
+        Throwable exception = assertThrows(IllegalArgumentException.class,
+                () -> orderService.create(order1)
+        );
+
+        assertThat(exception.getMessage()).isEqualTo("테이블이 비어있지 않습니다.");
+    }
+
     @DisplayName("주문목록 조회 테스트")
     @Test
     void findOrderList() {
@@ -83,8 +136,6 @@ class OrderServiceTest {
         when(orderLineItemDao.findAllByOrderId(any())).thenReturn(orderLineItems);
 
         List<Order> resultOrders = orderService.list();
-
-        assertThat(resultOrders.size()).isEqualTo(orders.size());
         List<Long> orderTableIds =resultOrders.stream()
                 .map(order -> order.getOrderTableId())
                 .collect(Collectors.toList());
@@ -92,6 +143,7 @@ class OrderServiceTest {
                 .map(order -> order.getOrderTableId())
                 .collect(Collectors.toList());
 
+        assertThat(resultOrders.size()).isEqualTo(orders.size());
         assertThat(orderTableIds).containsExactlyElementsOf(expectedOrderTableIds);
     }
 
@@ -108,20 +160,27 @@ class OrderServiceTest {
         assertThat(resultOrder.getOrderStatus()).isEqualTo(order1.getOrderStatus());
     }
 
-    private void checkOrder(Order resultOrder, Order order) {
-        assertThat(resultOrder.getOrderTableId()).isEqualTo(order.getOrderTableId());
-        assertThat(resultOrder.getOrderLineItems().size())
-                .isEqualTo(order.getOrderLineItems().size());
-        assertThat(resultOrder.getOrderLineItems().get(0).getMenuId())
-                .isEqualTo(order.getOrderLineItems().get(0).getMenuId());
-    }
+    @DisplayName("주문 상태변경 예외테스트: 주문을 찾을 수 없는 경우")
+    @Test
+    void notFoundOrder() {
+        Throwable exception = assertThrows(IllegalArgumentException.class,
+                () -> orderService.changeOrderStatus(1L, order1)
+        );
 
-    private void mockSaveOrderLineItem(OrderLineItem orderLineItem) {
-        when(orderLineItemDao.save(orderLineItem)).thenReturn(orderLineItem);
+        assertThat(exception.getMessage()).isEqualTo("주문을 찾을 수 없습니다.");
     }
+    @DisplayName("주문 상태변경 예외테스트: 주문상태가 올바르지 않은 경우")
+    @Test
+    void invalidOrderStatus() {
+        when(orderDao.findById(any())).thenReturn(java.util.Optional.ofNullable(order1));
+        order1.setOrderStatus(OrderStatus.COMPLETION.name());
 
-    private void mockSaveOrder(Order order) {
-        when(orderDao.save(order)).thenReturn(order);
+        Throwable exception = assertThrows(IllegalArgumentException.class,
+                () -> orderService.changeOrderStatus(1L, order1)
+        );
+
+        assertThat(exception.getMessage()).isEqualTo("주문이 완료된 상태입니다.");
+
+
     }
-
 }
