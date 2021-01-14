@@ -2,7 +2,9 @@ package kitchenpos.ui;
 
 import kitchenpos.MockMvcTest;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.MenuResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -21,13 +23,10 @@ class MenuRestControllerTest extends MockMvcTest {
 	@DisplayName("메뉴를 생성하다.")
 	@Test
 	void create() throws Exception {
-		Menu menu = new Menu();
-		menu.setMenuProducts(Arrays.asList(getProduct(1L)));
-		menu.setPrice(new BigDecimal(1000L));
-		menu.setName("후라이드천원메뉴");
-		menu.setMenuGroupId(1L);
+		MenuRequest menuRequest = new MenuRequest("후라이드천원메뉴", new BigDecimal(1000L), 1L,
+				Arrays.asList(getProduct(1L)));
 
-		MvcResult mvcResult = mockMvc.perform(postAsJson("/api/menus", menu))
+		MvcResult mvcResult = mockMvc.perform(postAsJson("/api/menus", menuRequest))
 				.andExpect(status().isCreated())
 				.andReturn();
 
@@ -38,11 +37,8 @@ class MenuRestControllerTest extends MockMvcTest {
 		assertThat(created.getName()).isEqualTo("후라이드천원메뉴");
 	}
 
-	private MenuProduct getProduct(long productId) {
-		MenuProduct menuProduct = new MenuProduct();
-		menuProduct.setProductId(productId);
-		menuProduct.setQuantity(1L);
-		return menuProduct;
+	private MenuProductRequest getProduct(long productId) {
+		return new MenuProductRequest(1L, productId, 1L);
 	}
 
 	@DisplayName("메뉴를 조회한다.")
@@ -53,7 +49,7 @@ class MenuRestControllerTest extends MockMvcTest {
 				.andExpect(status().isOk())
 				.andReturn();
 
-		List<Menu> menus = toList(mvcResult, Menu.class);
+		List<MenuResponse> menus = toList(mvcResult, MenuResponse.class);
 		assertThat(menus).isNotEmpty();
 	}
 }
