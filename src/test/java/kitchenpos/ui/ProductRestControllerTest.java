@@ -2,6 +2,8 @@ package kitchenpos.ui;
 
 import kitchenpos.MockMvcTest;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -19,15 +21,13 @@ class ProductRestControllerTest extends MockMvcTest {
 	@DisplayName("상품을 생성한다.")
 	@Test
 	void create() throws Exception {
-		Product product = new Product();
-		product.setName("제품");
-		product.setPrice(new BigDecimal(1000L));
+		ProductRequest productRequest = new ProductRequest("제품", new BigDecimal(1000L));
 
-		MvcResult mvcResult = mockMvc.perform(postAsJson("/api/products", product))
+		MvcResult mvcResult = mockMvc.perform(postAsJson("/api/products", productRequest))
 				.andExpect(status().isCreated())
 				.andReturn();
 
-		Product created = toObject(mvcResult, Product.class);
+		ProductResponse created = toObject(mvcResult, ProductResponse.class);
 
 		assertThat(created.getId()).isNotNull();
 		assertThat(created.getName()).isEqualTo("제품");
@@ -42,8 +42,7 @@ class ProductRestControllerTest extends MockMvcTest {
 				.andExpect(status().isOk())
 				.andReturn();
 
-		List<Product> products = toList(mvcResult, Product.class);
+		List<ProductResponse> products = toList(mvcResult, ProductResponse.class);
 		assertThat(products).isNotEmpty();
 	}
-
 }
