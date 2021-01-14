@@ -2,6 +2,7 @@ package kitchenpos.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import kitchenpos.ordertable.domain.OrderTable;
 
 public class TableGroup {
     private Long id;
@@ -37,7 +38,7 @@ public class TableGroup {
         return orderTables;
     }
 
-    public void setOrderTables(final List<OrderTable> orderTables) {
+    public void setOrderTables(List<OrderTable> orderTables) {
         this.orderTables = orderTables;
     }
 }

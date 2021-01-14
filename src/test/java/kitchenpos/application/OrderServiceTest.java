@@ -7,11 +7,11 @@ import java.util.Arrays;
 import kitchenpos.MySpringBootTest;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.ordertable.application.OrderTableService;
+import kitchenpos.ordertable.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ class OrderServiceTest {
 	@Autowired
 	private MenuDao menuDao;
 	@Autowired
-	private OrderTableDao orderTableDao;
+	private OrderTableService orderTableService;
 
 	@DisplayName("주문을 등록한다.")
 	@Test
@@ -36,7 +36,7 @@ class OrderServiceTest {
 			  1
 		);
 
-		OrderTable nonEmptyOrderTable = orderTableDao.findById(11L).get();
+		OrderTable nonEmptyOrderTable = orderTableService.findById(11L);
 		Order order = new Order(
 			  nonEmptyOrderTable.getId(),
 			  Arrays.asList(orderLineItem)
@@ -53,7 +53,7 @@ class OrderServiceTest {
 	@DisplayName("주문항목이 없는경우 주문을 등록할 수 없다.")
 	@Test
 	void createWithEmptyOrderLineItems() {
-		OrderTable nonEmptyOrderTable = orderTableDao.findById(11L).get();
+		OrderTable nonEmptyOrderTable = orderTableService.findById(11L);
 		Order order = new Order(
 			  nonEmptyOrderTable.getId(), null
 		);
@@ -86,7 +86,7 @@ class OrderServiceTest {
 			  1
 		);
 
-		OrderTable emptyTable = orderTableDao.findById(1L).get();
+		OrderTable emptyTable = orderTableService.findById(1L);
 		Order order = new Order(
 			  emptyTable.getId(), Arrays.asList(orderLineItem)
 		);

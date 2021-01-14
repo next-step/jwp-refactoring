@@ -11,15 +11,16 @@ import java.util.List;
 import java.util.Optional;
 import kitchenpos.MySpringBootTest;
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @MySpringBootTest
 class TableGroupServiceTest {
@@ -27,17 +28,17 @@ class TableGroupServiceTest {
 	@Autowired
 	private TableGroupService tableGroupService;
 	@Autowired
-	private OrderTableDao orderTableDao;
-	@Autowired
 	private TableGroupDao tableGroupDao;
 	@MockBean
 	private OrderDao orderDao;
+	@Autowired
+	private OrderTableRepository orderTableRepository;
 
 	@DisplayName("단체 지정 정보를 등록한다.")
 	@Test
 	void create() {
-		OrderTable orderTable1 = orderTableDao.findById(1L).get();
-		OrderTable orderTable2 = orderTableDao.findById(2L).get();
+		OrderTable orderTable1 = orderTableRepository.findById(1L).get();
+		OrderTable orderTable2 = orderTableRepository.findById(2L).get();
 
 		TableGroup tableGroup = new TableGroup(
 			  Arrays.asList(orderTable1, orderTable2)
@@ -54,7 +55,7 @@ class TableGroupServiceTest {
 	@DisplayName("주문 테이블이 2개 미만인 경우 단체 지정을 할 수 없다.")
 	@Test
 	void creatWithOneOrderTable() {
-		OrderTable orderTable1 = orderTableDao.findById(1L).get();
+		OrderTable orderTable1 = orderTableRepository.findById(1L).get();
 
 		TableGroup tableGroup = new TableGroup(Arrays.asList(orderTable1));
 
@@ -67,8 +68,9 @@ class TableGroupServiceTest {
 	@DisplayName("등록된 주문 테이블이 아닌 경우 단체 지정을 할 수 없다.")
 	@Test
 	void creatWithNotExistOrderTable() {
-		OrderTable orderTable1 = orderTableDao.findById(1L).get();
-		OrderTable orderTable2 = new OrderTable(0L);
+		OrderTable orderTable1 = orderTableRepository.findById(1L).get();
+		OrderTable orderTable2 = new OrderTable();
+		ReflectionTestUtils.setField(orderTable2, "id", 0L);
 
 		TableGroup tableGroup = new TableGroup(Arrays.asList(orderTable1, orderTable2));
 
@@ -81,19 +83,12 @@ class TableGroupServiceTest {
 	@DisplayName("빈 테이블이 아닌 경우 단체 지정을 할 수 없다.")
 	@Test
 	void creatWithNotEmptyOrderTable() {
-		OrderTable orderTable1 = orderTableDao.findById(1L).get();
-		OrderTable orderTable2 = orderTableDao.findById(11L).get();
-		OrderTable inOtherTableGroup = orderTableDao.findById(12L).get();
+		OrderTable orderTable = orderTableRepository.findById(1L).get();
+		OrderTable inOtherTableGroup = orderTableRepository.findById(12L).get();
 
-		TableGroup tableGroup = new TableGroup(Arrays.asList(orderTable1, orderTable2));
-
-		//when, then
-		assertThatIllegalArgumentException()
-			  .isThrownBy(() -> tableGroupService.create(tableGroup))
-			  .withMessage("단체 지정이 불가능한 테이블입니다.");
+		TableGroup tableGroup = new TableGroup(Arrays.asList(orderTable, inOtherTableGroup));
 
 		//when, then
-		tableGroup.setOrderTables(Arrays.asList(orderTable1, inOtherTableGroup));
 		assertThatIllegalArgumentException()
 			  .isThrownBy(() -> tableGroupService.create(tableGroup))
 			  .withMessage("단체 지정이 불가능한 테이블입니다.");
@@ -107,7 +102,7 @@ class TableGroupServiceTest {
 		//when
 		tableGroupService.ungroup(tableGroup.getId());
 		//then
-		List<OrderTable> orderTables = orderTableDao
+		List<OrderTable> orderTables = orderTableRepository
 			  .findAllByTableGroupId(tableGroup.getId());
 		assertThat(orderTables).isEmpty();
 	}
@@ -123,7 +118,7 @@ class TableGroupServiceTest {
 		//when, then
 		assertThatIllegalArgumentException()
 			  .isThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))
-		.withMessage("단체지정 해제가 불가능한 테이블입니다.");
+			  .withMessage("단체지정 해제가 불가능한 테이블입니다.");
 	}
 
 	private void 단체지정정보가_등록됨(TableGroup savedTableGroup) {
@@ -132,7 +127,7 @@ class TableGroupServiceTest {
 	}
 
 	private void 주문_테이블이_단체지정_테이블로_변경됨(TableGroup savedTableGroup) {
-		List<OrderTable> orderTables = orderTableDao
+		List<OrderTable> orderTables = orderTableRepository
 			  .findAllByTableGroupId(savedTableGroup.getId());
 		assertThat(orderTables).hasSize(2);
 		orderTables.forEach(orderTable -> assertThat(orderTable.isEmpty()).isFalse());

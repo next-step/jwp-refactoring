@@ -3,14 +3,13 @@ package kitchenpos.application;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.ordertable.application.OrderTableService;
+import kitchenpos.ordertable.domain.OrderTable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -18,13 +17,15 @@ import org.springframework.util.CollectionUtils;
 @Service
 public class TableGroupService {
     private final OrderDao orderDao;
-    private final OrderTableDao orderTableDao;
     private final TableGroupDao tableGroupDao;
+    private final OrderTableService orderTableService;
 
-    public TableGroupService(final OrderDao orderDao, final OrderTableDao orderTableDao, final TableGroupDao tableGroupDao) {
+    public TableGroupService(final OrderDao orderDao,
+          final TableGroupDao tableGroupDao,
+          OrderTableService orderTableService) {
         this.orderDao = orderDao;
-        this.orderTableDao = orderTableDao;
         this.tableGroupDao = tableGroupDao;
+        this.orderTableService = orderTableService;
     }
 
     @Transactional
@@ -36,19 +37,13 @@ public class TableGroupService {
         }
 
         final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
+              .map(OrderTable::getId)
+              .collect(Collectors.toList());
 
-        final List<OrderTable> savedOrderTables = orderTableDao.findAllByIdIn(orderTableIds);
+        final List<OrderTable> savedOrderTables = orderTableService.findAllByOrderTableIds(orderTableIds);
 
         if (orderTables.size() != savedOrderTables.size()) {
             throw new IllegalArgumentException("주문 테이블 정보를 찾을 수 없습니다.");
-        }
-
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
-                throw new IllegalArgumentException("단체 지정이 불가능한 테이블입니다.");
-            }
         }
 
         tableGroup.setCreatedDate(LocalDateTime.now());
@@ -57,8 +52,7 @@ public class TableGroupService {
 
         final Long tableGroupId = savedTableGroup.getId();
         for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.group(tableGroupId);
-            orderTableDao.save(savedOrderTable);
+            savedOrderTable.setTableGroup(tableGroupId);
         }
         savedTableGroup.setOrderTables(savedOrderTables);
 
@@ -67,7 +61,7 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableDao.findAllByTableGroupId(tableGroupId);
+        final List<OrderTable> orderTables = orderTableService.findAllByTableGroupId(tableGroupId);
 
         final List<Long> orderTableIds = orderTables.stream()
                 .map(OrderTable::getId)
@@ -79,8 +73,7 @@ public class TableGroupService {
         }
 
         for (final OrderTable orderTable : orderTables) {
-            orderTable.ungroup(null);
-            orderTableDao.save(orderTable);
+            orderTable.unTableGroup();
         }
     }
 }
