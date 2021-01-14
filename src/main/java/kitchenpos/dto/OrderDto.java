@@ -2,6 +2,9 @@ package kitchenpos.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
+import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderLineItem;
 
 public class OrderDto {
     private Long id;
@@ -48,5 +51,31 @@ public class OrderDto {
 
     public void setOrderLineItems(final List<OrderLineItemDto> orderLineItems) {
         this.orderLineItems = orderLineItems;
+    }
+
+    public OrderDto() {
+    }
+
+    public OrderDto(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime,
+            List<OrderLineItemDto> orderLineItems) {
+        this.id = id;
+        this.orderTableId = orderTableId;
+        this.orderStatus = orderStatus;
+        this.orderedTime = orderedTime;
+        this.orderLineItems = orderLineItems;
+    }
+
+    public static OrderDto of(Order order) {
+        List<OrderLineItemDto> collect = order.getOrderListItems().stream()
+                .map(it -> OrderLineItemDto.of(it, order.getId()))
+                .collect(Collectors.toList());
+        return new OrderDto(order.getId(), order.getOrderTableId(), order.getOrderStatus().name(), order.getOrderedTime(), collect);
+    }
+
+    public Order toEntity() {
+        List<OrderLineItem> collect = orderLineItems.stream()
+                .map(OrderLineItemDto::toEntity)
+                .collect(Collectors.toList());
+        return new Order(orderTableId, OrderStatus.COOKING, LocalDateTime.now(), collect);
     }
 }

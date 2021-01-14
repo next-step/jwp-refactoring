@@ -1,6 +1,8 @@
 package kitchenpos.dto;
 
 import java.math.BigDecimal;
+import kitchenpos.domain.Money;
+import kitchenpos.domain.Product;
 
 public class ProductDto {
     private Long id;
@@ -29,5 +31,22 @@ public class ProductDto {
 
     public void setPrice(final BigDecimal price) {
         this.price = price;
+    }
+
+    public ProductDto() {
+    }
+
+    public ProductDto(Long id, String name, BigDecimal price) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+    }
+
+    public static ProductDto of(Product product) {
+        return new ProductDto(product.getId(), product.getName(), BigDecimal.valueOf(product.getPrice().amount));
+    }
+
+    public Product toEntity() {
+        return new Product(name, Money.won(price.longValue()));
     }
 }
