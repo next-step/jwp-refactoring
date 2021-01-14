@@ -11,6 +11,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MenuGroupAcceptanceTestSupport extends AcceptanceTest {
+    public static ExtractableResponse<Response> 메뉴_그룹_등록_되어있음(String name) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", name);
+        ExtractableResponse<Response> response = 메뉴_그룹_등록_요청(params);
+        메뉴_그룹_생성_완료(response);
+        return response;
+    }
+
     public static ExtractableResponse<Response> 메뉴_그룹_등록_요청(Map<String, Object> params) {
         return RestAssured
                 .given().log().all()

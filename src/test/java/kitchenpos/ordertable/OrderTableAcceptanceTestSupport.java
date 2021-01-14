@@ -11,6 +11,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class OrderTableAcceptanceTestSupport extends AcceptanceTest {
+    public static ExtractableResponse<Response> 주문_테이블_등록_되어있음(int numberOfGuests, boolean empty) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("numberOfGuests", numberOfGuests);
+        params.put("empty", empty);
+        ExtractableResponse<Response> response = 주문_테이블_생성_요청(params);
+        주문_테이블_생성_완료(response);
+        return response;
+    }
+
     public static ExtractableResponse<Response> 주문_테이블_생성_요청(Map<String, Object> params) {
         return RestAssured
                 .given().log().all()
