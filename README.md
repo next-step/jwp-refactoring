@@ -69,3 +69,31 @@
 | 단체 지정 | table group | 통합 계산을 위해 개별 주문 테이블을 그룹화하는 기능 |
 | 주문 항목 | order line item | 주문에 속하는 수량이 있는 메뉴 |
 | 매장 식사 | eat in | 포장하지 않고 매장에서 식사하는 것 |
+
+## 1단계 - 테스트를 통한 코드 보호 To Do List
+
+- [x] 키친포스의 요구 사항 작성
+- [ ] 상품 테스트 작성 
+  - [ ] Business Object Test 작성
+  - [ ] Service Test 작성
+  - [ ] Controller Test 작성
+- [ ] 메뉴 테스트 작성
+  - [ ] Business Object Test 작성
+  - [ ] Service Test 작성
+  - [ ] Controller Test 작성
+- [ ] 메뉴 그룹 테스트 작성
+  - [ ] Business Object Test 작성
+  - [ ] Service Test 작성
+  - [ ] Controller Test 작성
+- [ ] 주문 테이블 테스트 작성
+  - [ ] Business Object Test 작성
+  - [ ] Service Test 작성
+  - [ ] Controller Test 작성
+- [ ] 단체 지정 테스트 작성
+  - [ ] Business Object Test 작성
+  - [ ] Service Test 작성
+  - [ ] Controller Test 작성
+- [ ] 주문 테스트 작성
+  - [ ] Business Object Test 작성
+  - [ ] Service Test 작성
+  - [ ] Controller Test 작성
