@@ -7,6 +7,7 @@
 * 상품을 등록할 수 있다.
 * 상품의 가격이 올바르지 않으면 등록할 수 없다.
   * 상품의 가격은 0 원 이상이어야 한다.
+  * 상품의 가격이 지정되어 있어야 한다.
 * 상품의 목록을 조회할 수 있다.
 
 ### 메뉴 그룹
@@ -74,19 +75,15 @@
 
 - [x] 키친포스의 요구 사항 작성
 - [ ] 상품 테스트 작성 
-  - [ ] Business Object Test 작성
-  - [ ] Service Test 작성
+  - [x] Service Test 작성
   - [ ] Controller Test 작성
 - [ ] 메뉴 테스트 작성
-  - [ ] Business Object Test 작성
   - [ ] Service Test 작성
   - [ ] Controller Test 작성
 - [ ] 메뉴 그룹 테스트 작성
-  - [ ] Business Object Test 작성
-  - [ ] Service Test 작성
+  - [x] Service Test 작성
   - [ ] Controller Test 작성
 - [ ] 주문 테이블 테스트 작성
-  - [ ] Business Object Test 작성
   - [ ] Service Test 작성
   - [ ] Controller Test 작성
 - [ ] 단체 지정 테스트 작성
@@ -94,6 +91,5 @@
   - [ ] Service Test 작성
   - [ ] Controller Test 작성
 - [ ] 주문 테스트 작성
-  - [ ] Business Object Test 작성
   - [ ] Service Test 작성
   - [ ] Controller Test 작성
