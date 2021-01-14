@@ -27,7 +27,7 @@ class MenuServiceIntegrationTest extends IntegrationTest {
         Menu createdMenu = menuService.create(후라이드_양념);
 
         assertThat(createdMenu.getMenuProducts()).hasSize(2);
-        assertThat(createdMenu.getPrice()).isEqualTo(new BigDecimal("30000.00"));
+        assertThat(createdMenu.getPrice()).isEqualTo(new BigDecimal("30000"));
     }
 
 

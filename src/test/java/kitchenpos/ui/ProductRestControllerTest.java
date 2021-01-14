@@ -1,6 +1,5 @@
 package kitchenpos.ui;
 
-import kitchenpos.infra.Money;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.product.service.ProductServiceJpa;
 import kitchenpos.product.ui.ProductRestController;
@@ -15,7 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -35,8 +34,8 @@ class ProductRestControllerTest {
     @Test
     void findAllProduct() throws Exception {
         when(productService.list()).thenReturn(Arrays.asList(
-                new ProductResponse(1L, "후라이트치킨", 17000),
-                new ProductResponse(1L, "후라이트치킨", 17000)
+                new ProductResponse(1L, "후라이드치킨", 17000),
+                new ProductResponse(1L, "양념치킨", 17000)
                 ));
 
         mockMvc.perform(get("/api/products").contentType(MediaType.APPLICATION_JSON))

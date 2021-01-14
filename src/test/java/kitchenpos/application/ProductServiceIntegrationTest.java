@@ -29,7 +29,7 @@ class ProductServiceIntegrationTest extends IntegrationTest {
         Product product = productService.create(new Product("치킨", new BigDecimal("17000")));
 
         assertThat(product.getName()).isEqualTo("치킨");
-        assertThat(product.getPrice()).isEqualTo(new BigDecimal("17000.00"));
+        assertThat(product.getPrice()).isEqualTo(new BigDecimal("17000"));
     }
 
     @DisplayName("상품 가격은 0원 이상이거나 null이 아니어야 한다.")

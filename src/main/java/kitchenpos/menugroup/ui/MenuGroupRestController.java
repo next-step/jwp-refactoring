@@ -1,6 +1,5 @@
 package kitchenpos.menugroup.ui;
 
-import kitchenpos.application.MenuGroupService;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.service.MenuGroupServiceJpa;

@@ -22,6 +22,11 @@ public class MenuGroupServiceJpa {
     }
 
     @Transactional(readOnly = true)
+    public MenuGroup findById(long id) {
+        return menuGroupRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("메뉴 그룹을 찾을수 없습니다."));
+    }
+
+    @Transactional(readOnly = true)
     public List<MenuGroup> list() {
         return menuGroupRepository.findAll();
     }
