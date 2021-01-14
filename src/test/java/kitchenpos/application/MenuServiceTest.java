@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import kitchenpos.MySpringBootTest;
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -26,7 +26,7 @@ public class MenuServiceTest {
 	@Autowired
 	private MenuService menuService;
 	@Autowired
-	private MenuGroupDao menuGroupDao;
+	private MenuGroupRepository menuGroupRepository;
 	@Autowired
 	private ProductRepository productRepository;
 
@@ -34,7 +34,7 @@ public class MenuServiceTest {
 	@Test
 	void create() {
 		//given
-		Optional<MenuGroup> menuGroup = menuGroupDao.findById(1L);
+		Optional<MenuGroup> menuGroup = menuGroupRepository.findById(1L);
 		Optional<Product> product1 = productRepository.findById(1L);
 		Optional<Product> product2 = productRepository.findById(2L);
 		BigDecimal totalPrice = product1.get().getPrice().add(product2.get().getPrice());
@@ -76,7 +76,7 @@ public class MenuServiceTest {
 	@DisplayName("가격이 0원 미만이거나 메뉴상품 총 가격과 불일치하는 상품은 등록할 수 없다.")
 	@Test
 	void createWithWrongPrice() {
-		Optional<MenuGroup> menuGroup = menuGroupDao.findById(1L);
+		Optional<MenuGroup> menuGroup = menuGroupRepository.findById(1L);
 		Optional<Product> product1 = productRepository.findById(1L);
 		Optional<Product> product2 = productRepository.findById(2L);
 		BigDecimal totalPrice = product1.get().getPrice().add(product2.get().getPrice());
@@ -111,10 +111,7 @@ public class MenuServiceTest {
 
 	private List<MenuProduct> 메뉴_상품정보를_세팅한다(long... productIdList) {
 		return Arrays.stream(productIdList)
-			  .mapToObj(productId -> {
-				  MenuProduct menuProduct = new MenuProduct(productId, 1);
-				  return menuProduct;
-			  })
+			  .mapToObj(productId -> new MenuProduct(productId, 1))
 			  .collect(Collectors.toList());
 	}
 }

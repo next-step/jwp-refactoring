@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import org.springframework.stereotype.Service;
@@ -17,19 +17,19 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class MenuService {
     private final MenuDao menuDao;
-    private final MenuGroupDao menuGroupDao;
     private final MenuProductDao menuProductDao;
     private final ProductService productService;
+    private final MenuGroupService menuGroupService;
 
     public MenuService(
           final MenuDao menuDao,
-          final MenuGroupDao menuGroupDao,
           final MenuProductDao menuProductDao,
-          final ProductService productService) {
+          final ProductService productService,
+          MenuGroupService menuGroupService) {
         this.menuDao = menuDao;
-        this.menuGroupDao = menuGroupDao;
         this.menuProductDao = menuProductDao;
         this.productService = productService;
+        this.menuGroupService = menuGroupService;
     }
 
     @Transactional
@@ -40,7 +40,7 @@ public class MenuService {
             throw new IllegalArgumentException("메뉴의 가격은 0원 이상이어야 합니다.");
         }
 
-        if (!menuGroupDao.existsById(menu.getMenuGroupId())) {
+        if (!menuGroupService.existsById(menu.getMenuGroupId())) {
             throw new IllegalArgumentException("메뉴그룹을 찾을 수 없습니다.");
         }
 
