@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("메뉴 그룹의 비즈니스 로직을 처리하는 서비스 테스트")
 @SpringBootTest
-class MenuGroupServiceTest {
+class MenuRequestGroupServiceTest {
     private static final String 순살파닭두마리메뉴 = "순살파닭두마리메뉴";
     private static final String 두마리메뉴 = "두마리메뉴";
     private static final String 한마리메뉴 = "한마리메뉴";

@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DisplayName("메뉴 그룹 컨트롤러 테스트")
 @WebMvcTest(MenuGroupRestController.class)
-class MenuGroupRestControllerTest {
+class MenuRequestGroupRestControllerTest {
     public static final String DEFAULT_MENU_GROUP_URI = "/api/menu-groups";
 
     @Autowired

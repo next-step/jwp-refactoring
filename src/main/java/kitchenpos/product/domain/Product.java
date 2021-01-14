@@ -1,11 +1,19 @@
 package kitchenpos.product.domain;
 
+import kitchenpos.menu.domain.Price;
+
+import javax.persistence.*;
 import java.math.BigDecimal;
 
+@Entity
 public class Product {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private BigDecimal price;
+
+    @Embedded
+    private Price price;
 
     public Long getId() {
         return id;
@@ -24,10 +32,11 @@ public class Product {
     }
 
     public BigDecimal getPrice() {
-        return price;
+        return price.getPrice();
     }
 
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
+    public Product setPrice(final BigDecimal price) {
+        this.price = Price.of(price);
+        return this;
     }
 }

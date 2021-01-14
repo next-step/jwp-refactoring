@@ -53,10 +53,8 @@ class ProductServiceTest {
     @DisplayName("상품 가격이 음수인 경우 상품을 생성할 수 없다.")
     @Test
     void 가격이_음수인_경우_상품_생성() {
-        product.setPrice(new BigDecimal(-1));
-
         assertThatThrownBy(() -> {
-            final Product createdProduct = productService.create(this.product);
+            product.setPrice(new BigDecimal(-1));
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
