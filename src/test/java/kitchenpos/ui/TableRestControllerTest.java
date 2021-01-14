@@ -1,12 +1,13 @@
 package kitchenpos.ui;
 
 import kitchenpos.MockMvcTest;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderTableRequest_ChangeEmpty;
+import kitchenpos.dto.OrderTableRequest_ChangeGuests;
+import kitchenpos.dto.OrderTableRequest_Create;
+import kitchenpos.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
@@ -14,7 +15,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -23,13 +23,15 @@ class TableRestControllerTest extends MockMvcTest {
 	@DisplayName("주문 테이블을 생성한다.")
 	@Test
 	void create() throws Exception {
-		OrderTable orderTable = new OrderTable();
+		OrderTableRequest_Create request = new OrderTableRequest_Create(10, false);
 
-		MvcResult mvcResult = mockMvc.perform(postAsJson("/api/tables", orderTable))
+		MvcResult mvcResult = mockMvc.perform(postAsJson("/api/tables", request))
 				.andExpect(status().isCreated())
 				.andReturn();
-		OrderTable created = toObject(mvcResult, OrderTable.class);
+		OrderTableResponse created = toObject(mvcResult, OrderTableResponse.class);
 		assertThat(created.getId()).isNotNull();
+		assertThat(created.getNumberOfGuests()).isEqualTo(10);
+		assertThat(created.isEmpty()).isEqualTo(false);
 	}
 
 	@DisplayName("주문 테이블을 조회한다.")
@@ -40,32 +42,38 @@ class TableRestControllerTest extends MockMvcTest {
 				.andExpect(status().isOk())
 				.andReturn();
 
-		List<OrderTable> orderTables = toList(mvcResult, OrderTable.class);
+		List<OrderTableResponse> orderTables = toList(mvcResult, OrderTableResponse.class);
 		assertThat(orderTables).isNotEmpty();
 	}
 
 	@DisplayName("주문 테이블의 비어있는 상태를 변경한다.")
 	@ParameterizedTest
-	@CsvSource(value = {"5,true", "5,false"})
-	void changeEmpty(long id, boolean isEmpty) throws Exception{
-		OrderTable orderTable = new OrderTable();
-		orderTable.setEmpty(isEmpty);
-		String uri = String.format("/api/tables/%d/empty", id);
+	@ValueSource(booleans = {true, false})
+	void changeEmpty(boolean isEmpty) throws Exception {
+		OrderTableResponse orderTable = 주문_테이블_생성됨(20, false);
+		OrderTableRequest_ChangeEmpty request = new OrderTableRequest_ChangeEmpty(isEmpty);
+		String uri = String.format("/api/tables/%d/empty", orderTable.getId());
 
-		mockMvc.perform(putAsJson(uri, orderTable))
+		mockMvc.perform(putAsJson(uri, request))
 				.andExpect(status().isOk());
 	}
 
 	@DisplayName("주문 테이블의 인원수를 변경한다.")
-	@ParameterizedTest
-	@ValueSource(longs = {5})
-	void changeNumberOfGuests(long id) throws Exception {
-		changeEmpty(id, false);
-		OrderTable orderTable = new OrderTable();
-		orderTable.setNumberOfGuests(50);
-		String uri = String.format("/api/tables/%d/number-of-guests", id);
+	@Test
+	void changeNumberOfGuests() throws Exception {
+		OrderTableResponse orderTable = 주문_테이블_생성됨(20, false);
+		OrderTableRequest_ChangeGuests request = new OrderTableRequest_ChangeGuests(50);
+		String uri = String.format("/api/tables/%d/number-of-guests", orderTable.getId());
 
-		mockMvc.perform(putAsJson(uri, orderTable))
+		mockMvc.perform(putAsJson(uri, request))
 				.andExpect(status().isOk());
+	}
+
+	private OrderTableResponse 주문_테이블_생성됨(int numberOfGuests, boolean empty) throws Exception {
+		OrderTableRequest_Create request = new OrderTableRequest_Create(numberOfGuests, empty);
+		MvcResult mvcResult = mockMvc.perform(postAsJson("/api/tables", request))
+				.andExpect(status().isCreated())
+				.andReturn();
+		return toObject(mvcResult, OrderTableResponse.class);
 	}
 }

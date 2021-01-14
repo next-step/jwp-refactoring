@@ -1,137 +1,114 @@
 package kitchenpos.application;
 
-import kitchenpos.MockitoTest;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderTableRequest_ChangeEmpty;
+import kitchenpos.dto.OrderTableRequest_ChangeGuests;
+import kitchenpos.dto.OrderTableRequest_Create;
+import kitchenpos.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
-class TableServiceTest extends MockitoTest {
+@SpringBootTest
+class TableServiceTest {
 
-	@InjectMocks
+	@Autowired
 	private TableService tableService;
-
-	@Mock
-	private OrderDao orderDao;
-
-	@Mock
-	private OrderTableDao orderTableDao;
-
-	private OrderTable savedOrderTable;
+	private OrderTableRequest_Create orderTableRequestCreate;
+	private OrderTableResponse savedOrderTable;
 
 	@BeforeEach
 	void setUp() {
-		savedOrderTable = MockFixture.orderTable(1L, null, false, 0);
-
-		given(orderTableDao.findById(anyLong())).willReturn(Optional.of(savedOrderTable));
+		orderTableRequestCreate = new OrderTableRequest_Create(10, true);
+		savedOrderTable = tableService.create(new OrderTableRequest_Create(10, false));
 	}
 
 	@DisplayName("새로운 테이블을 생선한다.")
 	@Test
 	void create() {
-		// given
-		OrderTable orderTable = MockFixture.orderTableForCreate();
+		OrderTableResponse response = tableService.create(orderTableRequestCreate);
 
-		// when
-		tableService.create(orderTable);
-
-		// then
-		Mockito.verify(orderTable, times(1)).setTableGroupId(isNull());
-		Mockito.verify(orderTableDao, times(1)).save(orderTable);
+		assertThat(response.getId()).isNotNull();
+		assertThat(response.getNumberOfGuests()).isEqualTo(orderTableRequestCreate.getNumberOfGuests());
+		assertThat(response.isEmpty()).isEqualTo(orderTableRequestCreate.isEmpty());
+		assertThat(response.getTableGroupId()).isNull();
 	}
 
 	@DisplayName("테이블 리스트를 반환한다.")
-	@ParameterizedTest
-	@ValueSource(ints = {0, 1, 999})
-	void list(int size) {
+	@Test
+	void list() {
 		// given
-		List<OrderTable> orderTables = MockFixture.anyOrderTables(size);
-		given(orderTableDao.findAll()).willReturn(orderTables);
+		List<OrderTableResponse> orderTables = Arrays.asList(tableService.create(orderTableRequestCreate),
+				tableService.create(orderTableRequestCreate),
+				tableService.create(orderTableRequestCreate));
 
 		// when then
-		assertThat(tableService.list()).hasSize(size);
+		final List<Long> tableIds = orderTables.stream().map(OrderTableResponse::getId).collect(Collectors.toList());
+		assertThat(tableService.list())
+				.map(OrderTableResponse::getId)
+				.containsAll(tableIds);
 	}
 
 	@DisplayName("테이블의 비어있는 상태를 바꾼다.")
 	@ParameterizedTest
 	@ValueSource(booleans = {true, false})
 	void changeEmpty(boolean isEmpty) {
-		// given
-		given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(false);
+		OrderTableRequest_ChangeEmpty request = new OrderTableRequest_ChangeEmpty(isEmpty);
 
-		// when
-		tableService.changeEmpty(savedOrderTable.getId(), MockFixture.orderTable(null, null, isEmpty, 0));
+		OrderTableResponse response = tableService.changeEmpty(savedOrderTable.getId(), request);
 
-		// then
-		Mockito.verify(savedOrderTable).setEmpty(isEmpty);
-		Mockito.verify(orderTableDao).save(savedOrderTable);
+		assertThat(response.isEmpty()).isEqualTo(isEmpty);
 	}
 
 	@DisplayName("이미 단체지정된 테이블의 비어있는 상태 변경시 예외 발생.")
 	@Test
 	void changeEmpty_AlreadyTableGroupIncluded() {
 		// given
-		given(savedOrderTable.getTableGroupId()).willReturn(5L);
-
-		// when then
-		assertThatThrownBy(() -> tableService.changeEmpty(
-				savedOrderTable.getId(), MockFixture.orderTable(null, null, true, 0)))
-				.isInstanceOf(IllegalArgumentException.class);
+		// TODO: 2021-01-15 TableGroupService 완료 후 재작성
+		throw new UnsupportedOperationException("TableGroupService 완료 후 재작성");
 	}
 
 	@DisplayName("특정 상태인 테이블을 비우려고 하면 예외 발생.")
 	@Test
 	void changeEmpty_StatusWrong() {
 		// given
-		final boolean hasWrongStatus = true;
-		given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(hasWrongStatus);
-
-		// when
-		assertThatThrownBy(() -> tableService.changeEmpty(
-				savedOrderTable.getId(), MockFixture.orderTable(null, null, true, 0)))
-				.isInstanceOf(IllegalArgumentException.class);
+		// TODO: 2021-01-15 TableGroupService 완료 후 재작성
+		throw new UnsupportedOperationException("TableGroupService 완료 후 재작성");
 	}
 
 	@DisplayName("테이블의 인원수를 변경한다.")
-	@Test
-	void changeNumberOfGuests() {
+	@ParameterizedTest
+	@ValueSource(ints = {0, 1, 5, 99})
+	void changeNumberOfGuests(int numberOfGuests) {
 		// given
-		given(orderTableDao.save(savedOrderTable)).willReturn(savedOrderTable);
-		final int numberOfGuests = 20;
+		OrderTableRequest_ChangeGuests request = new OrderTableRequest_ChangeGuests(numberOfGuests);
 
 		// when
-		OrderTable param = MockFixture.orderTable(null, null, false, numberOfGuests);
-		savedOrderTable = tableService.changeNumberOfGuests(savedOrderTable.getId(), param);
+		OrderTableResponse response = tableService.changeNumberOfGuests(savedOrderTable.getId(), request);
 
 		// then
-		verify(orderTableDao).save(savedOrderTable);
-		verify(savedOrderTable).setNumberOfGuests(numberOfGuests);
+		assertThat(response.getNumberOfGuests()).isEqualTo(numberOfGuests);
 	}
 
 	@DisplayName("테이블 인원 변경시 음수로 설정하면 예외 발생.")
 	@ParameterizedTest
 	@ValueSource(ints = {-1, -999})
 	void changeNumberOfGuests_GuestWrong(int numberOfGuests) {
-		// when & then
-		OrderTable param = MockFixture.orderTable(null, null, false, numberOfGuests);
-		assertThatThrownBy(() -> tableService.changeNumberOfGuests(savedOrderTable.getId(), param))
+		// given
+		OrderTableRequest_ChangeGuests request = new OrderTableRequest_ChangeGuests(numberOfGuests);
+
+		// when then
+		assertThatThrownBy(() -> tableService.changeNumberOfGuests(savedOrderTable.getId(), request))
 				.isInstanceOf(IllegalArgumentException.class);
 	}
 
@@ -139,11 +116,11 @@ class TableServiceTest extends MockitoTest {
 	@Test
 	void changeNumberOfGuests_TableEmpty() {
 		// given
-		given(savedOrderTable.isEmpty()).willReturn(true);
+		tableService.changeEmpty(savedOrderTable.getId(), new OrderTableRequest_ChangeEmpty(true));
 
 		// when & then
-		OrderTable param = MockFixture.orderTable(null, null, false, 20);
-		assertThatThrownBy(() -> tableService.changeNumberOfGuests(savedOrderTable.getId(), param))
+		OrderTableRequest_ChangeGuests request = new OrderTableRequest_ChangeGuests(5);
+		assertThatThrownBy(() -> tableService.changeNumberOfGuests(savedOrderTable.getId(), request))
 				.isInstanceOf(IllegalArgumentException.class);
 	}
 }
