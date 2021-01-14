@@ -1,5 +1,6 @@
-package kitchenpos.domain.menugroup;
+package kitchenpos.menugroup;
 
+import kitchenpos.menugroup.domain.MenuGroup;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,5 +20,4 @@ class MenuGroupTest {
         // then
         Assertions.assertThat(menuGroup.getName()).isEqualTo(name);
     }
-
 }

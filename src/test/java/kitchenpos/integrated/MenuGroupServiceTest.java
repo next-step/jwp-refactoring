@@ -1,7 +1,9 @@
 package kitchenpos.integrated;
 
-import kitchenpos.application.MenuGroupService;
-import kitchenpos.domain.menugroup.MenuGroup;
+import kitchenpos.menugroup.application.MenuGroupService;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,7 +31,7 @@ class MenuGroupServiceTest {
     @DisplayName("메뉴 그룹을 등록할 수 있다.")
     public void create() throws Exception {
         // when
-        MenuGroup createdMenuGroup = menuGroupService.create(this.menuGroup1);
+        MenuGroupResponse createdMenuGroup = menuGroupService.create(new MenuGroupRequest(this.menuGroup1.getName()));
 
         // then
         assertThat(createdMenuGroup).isNotNull();
@@ -40,9 +42,9 @@ class MenuGroupServiceTest {
     @DisplayName("메뉴 그룹의 목록을 조회할 수 있다.")
     public void list() throws Exception {
         // when
-        List<MenuGroup> menuGroups = menuGroupService.list();
+        List<MenuGroupResponse> menuGroupResponses = menuGroupService.findAll();
 
         // then
-        assertThat(menuGroups).isNotEmpty();
+        assertThat(menuGroupResponses).isNotEmpty();
     }
 }
