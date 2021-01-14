@@ -1,7 +1,9 @@
 package kitchenpos.ui;
 
-import kitchenpos.application.TableGroupService;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupResponse;
+import kitchenpos.table.service.TableGroupServiceJpa;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,24 +11,24 @@ import java.net.URI;
 
 @RestController
 public class TableGroupRestController {
-    private final TableGroupService tableGroupService;
+    private final TableGroupServiceJpa tableGroupServiceJpa;
 
-    public TableGroupRestController(final TableGroupService tableGroupService) {
-        this.tableGroupService = tableGroupService;
+    public TableGroupRestController(TableGroupServiceJpa tableGroupServiceJpa) {
+        this.tableGroupServiceJpa = tableGroupServiceJpa;
     }
 
-    @PostMapping("/api/table-groups")
-    public ResponseEntity<TableGroup> create(@RequestBody final TableGroup tableGroup) {
-        final TableGroup created = tableGroupService.create(tableGroup);
-        final URI uri = URI.create("/api/table-groups/" + created.getId());
+    @PostMapping(value = "/api/table-groups")
+    public ResponseEntity<TableGroupResponse> create(@RequestBody final TableGroupRequest tableGroupRequest) {
+        final TableGroupResponse tableGroupResponse = tableGroupServiceJpa.create(tableGroupRequest);
+        final URI uri = URI.create("/api/table-groups/" + tableGroupResponse.getId());
         return ResponseEntity.created(uri)
-                .body(created)
+                .body(tableGroupResponse)
                 ;
     }
 
     @DeleteMapping("/api/table-groups/{tableGroupId}")
     public ResponseEntity<Void> ungroup(@PathVariable final Long tableGroupId) {
-        tableGroupService.ungroup(tableGroupId);
+        tableGroupServiceJpa.ungroup(tableGroupId);
         return ResponseEntity.noContent()
                 .build()
                 ;

@@ -1,9 +1,12 @@
-package kitchenpos.ui;
+package kitchenpos.table.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.application.TableGroupService;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.table.dto.OrderTableIdRequest;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupResponse;
+import kitchenpos.table.service.TableGroupServiceJpa;
+import kitchenpos.ui.TableGroupRestController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,21 +34,26 @@ class TableGroupRestControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    TableGroupService tableGroupService;
+    private TableGroupServiceJpa tableGroupServiceJpa;
 
     @DisplayName("테이블을 그룹화 할 수 있다.")
     @Test
     void createTableGroup() throws Exception {
-        OrderTable table1 = new OrderTable(4, true);
-        OrderTable table2 = new OrderTable(4, true);
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(
+                Arrays.asList(
+                        new OrderTableIdRequest(1L),
+                        new OrderTableIdRequest(2L)
+                ));
 
-        TableGroup tableGroup = new TableGroup(Arrays.asList(table1, table2));
+        TableGroupResponse tableGroupResponse = new TableGroupResponse(1L, Arrays.asList(
+                new OrderTableResponse(1L, 4, true),
+                new OrderTableResponse(1L, 4, true)));
 
-        when(tableGroupService.create(any())).thenReturn(tableGroup);
+        when(tableGroupServiceJpa.create(any())).thenReturn(tableGroupResponse);
 
 
         mockMvc.perform(post("/api/table-groups")
-                .content(objectMapper.writeValueAsString(tableGroup)).contentType(MediaType.APPLICATION_JSON))
+                .content(objectMapper.writeValueAsString(tableGroupRequest)).contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isCreated());
     }

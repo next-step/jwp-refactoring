@@ -2,15 +2,22 @@ package kitchenpos.table.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @JoinColumn(name = "tableGroupId")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private TableGroup tableGroup;
 
     @Column
     private int numberOfGuests;
@@ -44,5 +51,17 @@ public class OrderTable {
 
     public void changeNumberOfGuests(int numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
+    }
+
+    public void saveOrderTable(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
+    }
+
+    public boolean hasTableGroup() {
+        return tableGroup != null;
+    }
+
+    public void removeGroupTable() {
+        this.tableGroup = null;
     }
 }

@@ -1,4 +1,4 @@
-package kitchenpos.ui;
+package kitchenpos.product.ui;
 
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.product.service.ProductServiceJpa;

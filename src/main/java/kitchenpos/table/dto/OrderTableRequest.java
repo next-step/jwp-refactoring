@@ -3,6 +3,7 @@ package kitchenpos.table.dto;
 import kitchenpos.table.domain.OrderTable;
 
 public class OrderTableRequest {
+    private long id;
     private int numberOfGuests;
     private boolean empty;
 
@@ -17,6 +18,10 @@ public class OrderTableRequest {
     public OrderTableRequest(int numberOfGuests, boolean empty) {
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public int getNumberOfGuests() {
