@@ -1,103 +1,100 @@
 package kitchenpos.application;
 
-import kitchenpos.MockitoTest;
-import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
 
-class TableGroupServiceTest extends MockitoTest {
+@SpringBootTest
+@Transactional
+class TableGroupServiceTest {
 
-	@InjectMocks
+	@Autowired
 	private TableGroupService tableGroupService;
 
-	@Mock
-	private OrderDao orderDao;
+	@Autowired
+	private TableService tableService;
 
-	@Mock
+	@Autowired
 	private OrderTableDao orderTableDao;
 
-	@Mock
+	@Autowired
 	private TableGroupDao tableGroupDao;
 
-	private OrderTable orderTable1;
-	private OrderTable orderTable2;
-	private OrderTable orderTable3;
-	private TableGroup tableGroup;
-	private List<OrderTable> orderTables;
+	private OrderTableResponse orderTable1;
+	private OrderTableResponse orderTable2;
+	private OrderTableResponse orderTable3;
+	private List<Long> orderTableIds;
 
 	@BeforeEach
 	void setUp() {
-		orderTable1 = MockFixture.orderTable(1L, null, true, 10);
-		orderTable2 = MockFixture.orderTable(2L, null, true, 2);
-		orderTable3 = MockFixture.orderTable(3L, null, true, 7);
+		orderTable1 = tableService.create(new OrderTableRequest_Create(20, true));
+		orderTable2 = tableService.create(new OrderTableRequest_Create(10, true));
+		orderTable3 = tableService.create(new OrderTableRequest_Create(30, true));
 
-		orderTables = Arrays.asList(orderTable1, orderTable2, orderTable3);
-		tableGroup = MockFixture.tableGroupForCreate(orderTables);
+		orderTableIds = Arrays.asList(orderTable1.getId(), orderTable2.getId(), orderTable3.getId());
 	}
 
 	@DisplayName("여러 개의 테이블을 묶어 단체 지정한다.")
 	@Test
 	void create() {
-		// given
-		given(orderTableDao.findAllByIdIn(anyList())).willReturn(orderTables);
-		given(tableGroupDao.save(tableGroup)).willReturn(tableGroup);
+		TableGroupResponse response = tableGroupService.create(new TableGroupRequest_Create(orderTableIds));
 
-		// when
-		tableGroup = tableGroupService.create(tableGroup);
-
-		// then
-		verify(tableGroupDao).save(tableGroup);
-		orderTables.forEach(orderTable -> verify(orderTable).setTableGroupId(anyLong()));
+		assertThat(response.getId()).isNotNull();
+		assertThat(response.getOrderTables())
+				.map(OrderTableResponse::getId)
+				.containsExactly(orderTable1.getId(), orderTable2.getId(), orderTable3.getId());
+		// OrderTable 에 tableGroupId 변경 됐는지 확인
+		assertThat(response.getOrderTables())
+				.map(OrderTableResponse::getId)
+				.map(id -> orderTableDao.findById(id).orElseThrow(Exception::new))
+				.allSatisfy(orderTable -> assertThat(orderTable.getTableGroupId()).isEqualTo(response.getId()));
 	}
 
 	@DisplayName("단체 지정하려는 테이블 수가 적을 경우 예외 발생.")
-	@ParameterizedTest
-	@ValueSource(ints = {0, 1})
-	void create_OrderTablesLow(int size) {
-		List<OrderTable> orderTables = MockFixture.anyOrderTables(size);
-		final TableGroup tableGroup = MockFixture.tableGroupForCreate(orderTables);
-		given(orderTableDao.findAllByIdIn(anyList())).willReturn(orderTables);
-		given(tableGroupDao.save(tableGroup)).willReturn(tableGroup);
+	@Test
+	void create_OrderTablesLow() {
+		TableGroupRequest_Create request1 = new TableGroupRequest_Create(Collections.singletonList(orderTable1.getId()));
+		TableGroupRequest_Create request2 = new TableGroupRequest_Create(Collections.emptyList());
 
-		assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+		assertThatThrownBy(() -> tableGroupService.create(request1))
+				.isInstanceOf(IllegalArgumentException.class);
+		assertThatThrownBy(() -> tableGroupService.create(request2))
 				.isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@DisplayName("이미 단체 지정된 테이블을 단체 지정하려고 시도 할 경우 예외 발생.")
 	@Test
 	void create_AlreadyGroupExist() {
-		final TableGroup tableGroup = MockFixture.tableGroupForCreate(orderTables);
-		given(orderTableDao.findAllByIdIn(anyList())).willReturn(orderTables);
-		given(tableGroupDao.save(tableGroup)).willReturn(tableGroup);
+		// given
+		final TableGroupRequest_Create request = new TableGroupRequest_Create(orderTableIds);
+		tableGroupService.create(request);
 
-		assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+		// when then
+		assertThatThrownBy(() -> tableGroupService.create(request))
 				.isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@DisplayName("단체 지정시 테이블이 비어 있지 않은 경우 예외 발생.")
 	@Test
 	void create_EmptyFalse() {
-		given(orderTable1.isEmpty()).willReturn(false);
-		final TableGroup tableGroup = MockFixture.tableGroupForCreate(orderTables);
+		// given
+		tableService.changeEmpty(orderTable1.getId(), new OrderTableRequest_ChangeEmpty(false));
 
-		assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+		assertThatThrownBy(() -> tableGroupService.create(new TableGroupRequest_Create(orderTableIds)))
 				.isInstanceOf(IllegalArgumentException.class);
 	}
 
@@ -105,31 +102,25 @@ class TableGroupServiceTest extends MockitoTest {
 	@Test
 	void ungroup() {
 		// given
-		given(orderTableDao.findAllByTableGroupId(anyLong())).willReturn(orderTables);
-		given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
+		TableGroupResponse response = tableGroupService.create(new TableGroupRequest_Create(orderTableIds));
 
 		// when
-		tableGroupService.ungroup(1L);
+		tableGroupService.ungroup(response.getId());
 
 		// then
-		verify(orderTable1).setTableGroupId(isNull());
-		verify(orderTable2).setTableGroupId(isNull());
-		verify(orderTable3).setTableGroupId(isNull());
-		verify(orderTableDao).save(orderTable1);
-		verify(orderTableDao).save(orderTable2);
-		verify(orderTableDao).save(orderTable3);
+		assertThat(tableGroupDao.findById(response.getId())).isNotPresent();
+		// 각 테이블별로 그룹 ID 해제된 것 확인
+		assertThat(response.getOrderTables())
+				.map(OrderTableResponse::getId)
+				.map(id -> orderTableDao.findById(id).orElseThrow(Exception::new))
+				.map(OrderTable::getTableGroupId)
+				.allSatisfy(tableGroupId -> assertThat(tableGroupId).isNull());
 	}
 
-	@DisplayName("")
+	@DisplayName("단체 지정 해제가 불가능한 상태일때 단체지정을 요청할경우 예외 발생.")
 	@Test
 	void ungroup_StatusWrong() {
-		// given
-		given(orderTableDao.findAllByTableGroupId(anyLong())).willReturn(orderTables);
-		given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
-
-		// when then
-		assertThatThrownBy(() -> tableGroupService.ungroup(1L))
-				.isInstanceOf(IllegalArgumentException.class);
-
+		// TODO: 2021-01-15 : orderService 작성하고 테스트 완료할 것
+		throw new UnsupportedOperationException("orderService 작성하고 테스트 완료할 것");
 	}
 }

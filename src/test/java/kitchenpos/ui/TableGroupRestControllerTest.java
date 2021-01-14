@@ -1,16 +1,16 @@
 package kitchenpos.ui;
 
 import kitchenpos.MockMvcTest;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.TableGroupRequest_Create;
+import kitchenpos.dto.TableGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -19,32 +19,26 @@ class TableGroupRestControllerTest extends MockMvcTest {
 	@DisplayName("여러 테이블을 단체지정 한다.")
 	@Test
 	void create() throws Exception {
-		TableGroup created = createTableGroup(3, 4);
+		TableGroupResponse created = createTableGroup(3, 4);
 
 		assertThat(created.getId()).isNotNull();
 	}
 
-	private TableGroup createTableGroup(long id1, long id2) throws Exception {
-		TableGroup tableGroup = new TableGroup();
-		tableGroup.setOrderTables(Arrays.asList(getOrderTable(id1), getOrderTable(id2)));
+	private TableGroupResponse createTableGroup(long id1, long id2) throws Exception {
+		final List<Long> tableIds = Arrays.asList(id1, id2);
+		TableGroupRequest_Create request = new TableGroupRequest_Create(tableIds);
 
-		MvcResult mvcResult = mockMvc.perform(postAsJson("/api/table-groups", tableGroup))
+		MvcResult mvcResult = mockMvc.perform(postAsJson("/api/table-groups", request))
 				.andExpect(status().isCreated())
 				.andReturn();
-		return toObject(mvcResult, TableGroup.class);
-	}
-
-	private OrderTable getOrderTable(long id) {
-		OrderTable orderTable = new OrderTable();
-		orderTable.setId(id);
-		return orderTable;
+		return toObject(mvcResult, TableGroupResponse.class);
 	}
 
 	@DisplayName("단체지정 된 테이블을 해제한다.")
 	@Test
 	void ungroup() throws Exception {
 		// given
-		TableGroup created = createTableGroup(5, 6);
+		TableGroupResponse created = createTableGroup(5, 6);
 
 		// when
 		mockMvc.perform(delete(String.format("/api/table-groups/%d", created.getId())))
