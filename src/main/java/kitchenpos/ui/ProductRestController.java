@@ -13,25 +13,26 @@ import java.util.List;
 
 @RestController
 public class ProductRestController {
-    private final ProductService productService;
+	private final ProductService productService;
 
-    public ProductRestController(final ProductService productService) {
-        this.productService = productService;
-    }
+	public ProductRestController(final ProductService productService) {
+		this.productService = productService;
+	}
 
-    @PostMapping("/api/products")
-    public ResponseEntity<Product> create(@RequestBody final Product product) {
-        final Product created = productService.create(product);
-        final URI uri = URI.create("/api/products/" + created.getId());
-        return ResponseEntity.created(uri)
-                .body(created)
-                ;
-    }
+	// 상품을 등록한다.
+	// - 상품명, 가격
+	// 상품 목록을 조회한다.
+	@PostMapping("/api/products")
+	public ResponseEntity<Product> create(@RequestBody final Product product) {
+		final Product created = productService.create(product);
+		final URI uri = URI.create("/api/products/" + created.getId());
+		return ResponseEntity.created(uri)
+				.body(created);
+	}
 
-    @GetMapping("/api/products")
-    public ResponseEntity<List<Product>> list() {
-        return ResponseEntity.ok()
-                .body(productService.list())
-                ;
-    }
+	@GetMapping("/api/products")
+	public ResponseEntity<List<Product>> list() {
+		return ResponseEntity.ok()
+				.body(productService.list());
+	}
 }

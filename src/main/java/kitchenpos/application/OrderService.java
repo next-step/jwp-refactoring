@@ -53,6 +53,7 @@ public class OrderService {
             throw new IllegalArgumentException();
         }
 
+        // orderTableId, OrderStatus, orderedTime(현재시간),
         final OrderTable orderTable = orderTableDao.findById(order.getOrderTableId())
                 .orElseThrow(IllegalArgumentException::new);
 
