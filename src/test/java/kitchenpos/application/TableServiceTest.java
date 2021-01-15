@@ -27,6 +27,9 @@ class TableServiceTest {
 	@Autowired
 	private TableGroupService tableGroupService;
 
+	@Autowired
+	private TableTestSupport tableTestSupport;
+
 	private OrderTableRequest_Create orderTableRequestCreate;
 	private OrderTableResponse savedOrderTable1;
 	private OrderTableResponse savedOrderTable2;
@@ -93,9 +96,10 @@ class TableServiceTest {
 	@DisplayName("특정 상태인 테이블을 비우려고 하면 예외 발생.")
 	@Test
 	void changeEmpty_StatusWrong() {
-		// given
-		// TODO: 2021-01-15 TableGroupService 완료 후 재작성
-		throw new UnsupportedOperationException("TableGroupService 완료 후 재작성");
+		tableTestSupport.addOrder(savedOrderTable1.getId());
+
+		assertThatThrownBy(() -> tableService.changeEmpty(savedOrderTable1.getId(), new OrderTableRequest_ChangeEmpty(false)))
+				.isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@DisplayName("테이블의 인원수를 변경한다.")

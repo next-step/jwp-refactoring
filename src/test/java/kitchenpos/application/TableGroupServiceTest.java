@@ -34,6 +34,9 @@ class TableGroupServiceTest {
 	@Autowired
 	private TableGroupDao tableGroupDao;
 
+	@Autowired
+	private TableTestSupport tableTestSupport;
+
 	private OrderTableResponse orderTable1;
 	private OrderTableResponse orderTable2;
 	private OrderTableResponse orderTable3;
@@ -108,19 +111,26 @@ class TableGroupServiceTest {
 		tableGroupService.ungroup(response.getId());
 
 		// then
-		assertThat(tableGroupDao.findById(response.getId())).isNotPresent();
 		// 각 테이블별로 그룹 ID 해제된 것 확인
 		assertThat(response.getOrderTables())
 				.map(OrderTableResponse::getId)
 				.map(id -> orderTableDao.findById(id).orElseThrow(Exception::new))
 				.map(OrderTable::getTableGroupId)
 				.allSatisfy(tableGroupId -> assertThat(tableGroupId).isNull());
+
+		// TODO: 2021-01-15 테이블 그룹 삭제되도록 처리
+		assertThat(tableGroupDao.findById(response.getId())).isNotPresent();
 	}
 
 	@DisplayName("단체 지정 해제가 불가능한 상태일때 단체지정을 요청할경우 예외 발생.")
 	@Test
 	void ungroup_StatusWrong() {
-		// TODO: 2021-01-15 : orderService 작성하고 테스트 완료할 것
-		throw new UnsupportedOperationException("orderService 작성하고 테스트 완료할 것");
+		// given
+		TableGroupResponse response = tableGroupService.create(new TableGroupRequest_Create(orderTableIds));
+		tableTestSupport.addOrder(orderTableIds.get(0));
+
+		// when
+		assertThatThrownBy(() -> tableGroupService.ungroup(response.getId()))
+				.isInstanceOf(IllegalArgumentException.class);
 	}
 }
