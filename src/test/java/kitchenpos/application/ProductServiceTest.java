@@ -1,6 +1,7 @@
 package kitchenpos.application;
 
 import kitchenpos.domain.Product;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -15,6 +16,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
+@DisplayName("제품 서비스")
 public class ProductServiceTest extends ServiceTestBase {
     private final ProductService productService;
 
@@ -23,11 +25,15 @@ public class ProductServiceTest extends ServiceTestBase {
         this.productService = productService;
     }
 
+    @BeforeEach
+    void setUp() {
+        setUpProduct();
+    }
+
     @DisplayName("제품을 등록한다")
     @Test
     void createProduct() {
         Product savedProduct = productService.create(product);
-        assertThat(savedProduct.getId()).isEqualTo(product.getId());
         assertThat(savedProduct.getName()).isEqualTo(product.getName());
         assertThat(savedProduct.getPrice()).isEqualTo(product.getPrice());
     }
@@ -36,7 +42,7 @@ public class ProductServiceTest extends ServiceTestBase {
     @ParameterizedTest
     @MethodSource
     void createProductWithIllegalArguments(BigDecimal price) {
-        product.setPrice(null);
+        product.setPrice(price);
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> productService.create(product));
     }
