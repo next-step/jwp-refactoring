@@ -54,7 +54,7 @@ class OrderServiceTest {
 	private OrderLineItemRequest createRequest(String menuName, int price, int quantity) {
 		MenuGroupResponse menuGroup = menuGroupService.create(new MenuGroupRequest("음식"));
 		ProductResponse product = productService.create(new ProductRequest(menuName, new BigDecimal(price)));
-		MenuProductRequest menuProductRequest = new MenuProductRequest(1, product.getId(), 1);
+		MenuProductRequest menuProductRequest = new MenuProductRequest(product.getId(), 1);
 		MenuResponse menu = menuService.create(new MenuRequest("짜장면", new BigDecimal(price), menuGroup.getId(),
 				Collections.singletonList(menuProductRequest)));
 		return new OrderLineItemRequest(menu.getId(), quantity);

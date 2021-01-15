@@ -38,7 +38,7 @@ class MenuRestControllerTest extends MockMvcTest {
 	}
 
 	private MenuProductRequest getProduct(long productId) {
-		return new MenuProductRequest(1L, productId, 1L);
+		return new MenuProductRequest(productId, 1L);
 	}
 
 	@DisplayName("메뉴를 조회한다.")

@@ -81,7 +81,6 @@ public class MenuService {
 
 	private MenuProduct createMenuProduct(Menu savedMenu, MenuProductRequest menuProductRequest) {
 		MenuProduct menuProduct = new MenuProduct();
-		menuProduct.setSeq(menuProductRequest.getSeq());
 		menuProduct.setQuantity(menuProductRequest.getQuantity());
 		menuProduct.setMenuId(savedMenu.getId());
 		menuProduct.setProductId(menuProductRequest.getProductId());

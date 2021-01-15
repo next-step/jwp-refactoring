@@ -55,9 +55,9 @@ class MenuServiceTest {
 		콜라 = productService.create(new ProductRequest("콜라", new BigDecimal(콜라가격)));
 		감튀 = productService.create(new ProductRequest("감자튀김", new BigDecimal(감튀가격)));
 		버거 = productService.create(new ProductRequest("콰트로치즈와퍼", new BigDecimal(버거가격)));
-		요청_콜라 = new MenuProductRequest(1L, 콜라.getId(), 1L);
-		요청_감튀 = new MenuProductRequest(2L, 감튀.getId(), 1L);
-		요청_버거 = new MenuProductRequest(3L, 버거.getId(), 1L);
+		요청_콜라 = new MenuProductRequest(콜라.getId(), 1L);
+		요청_감튀 = new MenuProductRequest(감튀.getId(), 1L);
+		요청_버거 = new MenuProductRequest(버거.getId(), 1L);
 
 		메뉴_생성_요청_버거세트 = new MenuRequest("콰트로치즈와퍼세트",
 				new BigDecimal(콜라가격 + 감튀가격 + 버거가격 - 2000L),
