@@ -40,7 +40,7 @@ class OrdersTest {
 	void createWithEmptyOrderLineItems() {
 		//when, then
 		assertThatIllegalArgumentException()
-			  .isThrownBy(() -> new Orders(new OrderTable(), OrderStatus.COOKING.name(),
+			  .isThrownBy(() -> new Orders(new OrderTable(false), OrderStatus.COOKING.name(),
 					new ArrayList<>()))
 			  .withMessage("주문 항목이 비어있습니다.")
 		;

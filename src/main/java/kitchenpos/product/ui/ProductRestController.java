@@ -7,7 +7,6 @@ import kitchenpos.product.application.ProductService;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,19 +26,12 @@ public class ProductRestController {
 		final ProductResponse created = productService.create(request);
 		final URI uri = URI.create("/api/products/" + created.getId());
 		return ResponseEntity.created(uri)
-			  .body(created)
-			  ;
+			  .body(created);
 	}
 
 	@GetMapping("/api/products2")
 	public ResponseEntity<List<ProductResponse>> list() {
 		return ResponseEntity.ok()
-			  .body(productService.list())
-			  ;
-	}
-
-	@ExceptionHandler(RuntimeException.class)
-	public ResponseEntity handleException(Exception e) {
-		return ResponseEntity.badRequest().body(e.getMessage());
+			  .body(productService.list());
 	}
 }

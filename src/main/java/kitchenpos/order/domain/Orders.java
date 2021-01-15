@@ -33,7 +33,7 @@ public class Orders {
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
 
-    public Orders() {
+    protected Orders() {
     }
 
     public Orders(OrderTable orderTable, String orderStatus,
@@ -44,6 +44,10 @@ public class Orders {
         this.orderStatus = orderStatus;
         this.orderLineItems = orderLineItems;
         setOrder();
+    }
+
+    public Orders(String orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
     public void changeStatus(String orderStatus) {

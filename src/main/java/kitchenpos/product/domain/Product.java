@@ -17,7 +17,7 @@ public class Product {
 	private String name;
 	private BigDecimal price;
 
-	public Product() {
+	protected Product() {
 	}
 
 	public Product(String name, BigDecimal price) {

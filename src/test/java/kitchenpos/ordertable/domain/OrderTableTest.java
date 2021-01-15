@@ -30,7 +30,9 @@ class OrderTableTest {
 	@Test
 	void changeEmptyWithGroupTable() {
 		//given
-		TableGroup tableGroup = new TableGroup();
+		OrderTables orderTables = new OrderTables(
+			  Arrays.asList(new OrderTable(false), new OrderTable(false)), 2);
+		TableGroup tableGroup = new TableGroup(orderTables);
 		ReflectionTestUtils.setField(tableGroup, "id", 1L);
 		OrderTable orderTable = new OrderTable(1, false, tableGroup);
 
@@ -44,9 +46,8 @@ class OrderTableTest {
 	@Test
 	void changeEmptyWithNotCompleteOrder() {
 		//given
-		Orders orders = new Orders();
+		Orders orders = new Orders(OrderStatus.MEAL.name());
 		OrderTable orderTable = new OrderTable();
-		ReflectionTestUtils.setField(orders, "orderStatus", OrderStatus.MEAL.name());
 		ReflectionTestUtils.setField(orderTable, "orders", Arrays.asList(orders));
 
 		//when, then
@@ -59,7 +60,9 @@ class OrderTableTest {
 	@Test
 	void changeNumberOfGuests() {
 		//given
-		TableGroup tableGroup = new TableGroup();
+		OrderTables orderTables = new OrderTables(
+			  Arrays.asList(new OrderTable(false), new OrderTable(false)), 2);
+		TableGroup tableGroup = new TableGroup(orderTables);
 		ReflectionTestUtils.setField(tableGroup, "id", 1L);
 		OrderTable orderTable = new OrderTable(0, false, tableGroup);
 
@@ -75,7 +78,9 @@ class OrderTableTest {
 	@Test
 	void changeNumberOfGuestsWithWrongGuestNumber() {
 		//given
-		TableGroup tableGroup = new TableGroup();
+		OrderTables orderTables = new OrderTables(
+			  Arrays.asList(new OrderTable(false), new OrderTable(false)), 2);
+		TableGroup tableGroup = new TableGroup(orderTables);
 		ReflectionTestUtils.setField(tableGroup, "id", 1L);
 		OrderTable orderTable = new OrderTable(0, false, tableGroup);
 
@@ -89,7 +94,9 @@ class OrderTableTest {
 	@Test
 	void changeNumberOfGuestsWithEmptyTable() {
 		//given
-		TableGroup tableGroup = new TableGroup();
+		OrderTables orderTables = new OrderTables(
+			  Arrays.asList(new OrderTable(false), new OrderTable(false)), 2);
+		TableGroup tableGroup = new TableGroup(orderTables);
 		ReflectionTestUtils.setField(tableGroup, "id", 1L);
 		OrderTable orderTable = new OrderTable(0, true, tableGroup);
 

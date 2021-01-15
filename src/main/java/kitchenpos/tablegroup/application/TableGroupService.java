@@ -1,6 +1,7 @@
 package kitchenpos.tablegroup.application;
 
 import java.util.List;
+import javax.persistence.EntityNotFoundException;
 import kitchenpos.ordertable.application.OrderTableService;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTables;
@@ -43,6 +44,6 @@ public class TableGroupService {
 
 	private TableGroup findById(Long tableGroupId) {
 		return tableGroupRepository.findById(tableGroupId)
-			  .orElseThrow(IllegalArgumentException::new);
+			  .orElseThrow(EntityNotFoundException::new);
 	}
 }

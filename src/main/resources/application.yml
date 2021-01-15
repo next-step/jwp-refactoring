@@ -7,17 +7,6 @@ spring:
         format_sql: true
         show_sql: true
         use_sql_comments: true
-
-logging:
-  level:
-    org:
-      springframework:
-        jdbc:
-          core: trace
-      hibernate:
-        type:
-          descriptor:
-            sql: trace
 ---
 spring:
   config:
@@ -32,3 +21,10 @@ spring:
   datasource:
     data: classpath:db/migration/V3__Insert_default_data.sql
 
+logging:
+  level:
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql: trace

@@ -3,6 +3,7 @@ package kitchenpos.product.application;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.persistence.EntityNotFoundException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
@@ -34,13 +35,13 @@ public class ProductService {
 
 	public Product findById(Long productId) {
 		return productRepository.findById(productId)
-			  .orElseThrow(IllegalArgumentException::new);
+			  .orElseThrow(EntityNotFoundException::new);
 	}
 
 	public List<Product> findAllByIds(Set<Long> productIds) {
 		List<Product> products = productRepository.findAllById(productIds);
 		if (products.size() != productIds.size()) {
-			throw new IllegalArgumentException("상품정보를 찾을 수 없습니다.");
+			throw new EntityNotFoundException("상품정보를 찾을 수 없습니다.");
 		}
 
 		return products;

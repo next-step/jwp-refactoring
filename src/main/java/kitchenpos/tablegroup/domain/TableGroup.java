@@ -20,7 +20,7 @@ public class TableGroup {
 	@Embedded
 	private OrderTables orderTables = new OrderTables();
 
-	public TableGroup() {
+	protected TableGroup() {
 	}
 
 	public TableGroup(OrderTables orderTables) {

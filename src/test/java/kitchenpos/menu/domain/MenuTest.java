@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +16,7 @@ class MenuTest {
 	void createWithUnderZeroPrice() {
 		assertThatIllegalArgumentException()
 			  .isThrownBy(() ->
-					new Menu("신메뉴", new BigDecimal(-1), new MenuGroup(),
+					new Menu("신메뉴", new BigDecimal(-1), null,
 						  Arrays.asList(new MenuProduct()))
 			  )
 			  .withMessage("메뉴의 가격은 0원 이상이어야 합니다.");
@@ -33,7 +32,7 @@ class MenuTest {
 
 		assertThatIllegalArgumentException()
 			  .isThrownBy(() ->
-					new Menu("신메뉴", new BigDecimal(0), new MenuGroup(),
+					new Menu("신메뉴", new BigDecimal(0), null,
 						  Arrays.asList(menuProduct))
 			  )
 			  .withMessage("메뉴의 가격과 메뉴 항목들의 총 가격의 합이 맞지 않습니다.");

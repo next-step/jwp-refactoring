@@ -6,7 +6,6 @@ import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,19 +25,12 @@ public class MenuRestController {
 		final MenuResponse created = menuService.create(request);
 		final URI uri = URI.create("/api/menus/" + created.getId());
 		return ResponseEntity.created(uri)
-			  .body(created)
-			  ;
+			  .body(created);
 	}
 
 	@GetMapping("/api/menus")
 	public ResponseEntity<List<MenuResponse>> list2() {
 		return ResponseEntity.ok()
-			  .body(menuService.list())
-			  ;
-	}
-
-	@ExceptionHandler
-	public ResponseEntity handleException(Exception e) {
-		return ResponseEntity.badRequest().body(e.getMessage());
+			  .body(menuService.list());
 	}
 }

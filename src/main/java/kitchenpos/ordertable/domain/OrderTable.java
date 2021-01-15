@@ -29,7 +29,7 @@ public class OrderTable {
 	@OneToMany(mappedBy = "orderTable")
 	private List<Orders> orders = new ArrayList<>();
 
-	public OrderTable() {
+	protected OrderTable() {
 	}
 
 	public OrderTable(boolean empty) {
