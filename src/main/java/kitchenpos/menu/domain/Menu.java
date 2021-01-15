@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.BaseEntity;
 import kitchenpos.menugroup.domain.MenuGroup;
 
 import javax.persistence.*;
@@ -7,7 +8,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
-public class Menu {
+public class Menu extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
