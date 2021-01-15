@@ -9,6 +9,9 @@ public class TableGroupRequest {
 	private Long id;
 	private Set<Long> orderTableIds;
 
+	public TableGroupRequest() {
+	}
+
 	public TableGroupRequest(Set<Long> orderTableIds) {
 		this.orderTableIds = orderTableIds;
 	}

@@ -38,7 +38,7 @@ public class ProductRestController {
 			  ;
 	}
 
-	@ExceptionHandler
+	@ExceptionHandler(RuntimeException.class)
 	public ResponseEntity handleException(Exception e) {
 		return ResponseEntity.badRequest().body(e.getMessage());
 	}

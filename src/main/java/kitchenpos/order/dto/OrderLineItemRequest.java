@@ -1,21 +1,17 @@
-package kitchenpos.domain;
+package kitchenpos.order.dto;
 
 import java.util.Objects;
 
-public class OrderLineItem {
+public class OrderLineItemRequest {
     private Long seq;
     private Long orderId;
     private Long menuId;
     private long quantity;
 
-    public OrderLineItem(Long seq, Long orderId, Long menuId, long quantity) {
-        this.seq = seq;
-        this.orderId = orderId;
-        this.menuId = menuId;
-        this.quantity = quantity;
+    public OrderLineItemRequest() {
     }
 
-    public OrderLineItem(Long menuId, long quantity) {
+    public OrderLineItemRequest(Long menuId, long quantity) {
         this.menuId = menuId;
         this.quantity = quantity;
     }
@@ -48,7 +44,7 @@ public class OrderLineItem {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        OrderLineItem that = (OrderLineItem) o;
+        OrderLineItemRequest that = (OrderLineItemRequest) o;
         return Objects.equals(seq, that.seq);
     }
 

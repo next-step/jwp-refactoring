@@ -23,7 +23,7 @@ class ProductServiceTest {
 	void create() {
 		//given
 		ProductRequest request = new ProductRequest(
-			  "리코타치즈샐러드",
+			  "파마산치즈샐러드",
 			  new BigDecimal(6_000)
 		);
 
@@ -40,7 +40,7 @@ class ProductServiceTest {
 	void createWithUnderZeroPrice() {
 		//given
 		ProductRequest request = new ProductRequest(
-			  "리코타치즈샐러드",
+			  "아보카도샐러드",
 			  new BigDecimal(-1)
 		);
 
@@ -49,7 +49,7 @@ class ProductServiceTest {
 
 		//given
 		request = new ProductRequest(
-			  "리코타치즈샐러드",
+			  "햄엔치즈샐러드",
 			  null
 		);
 		//when

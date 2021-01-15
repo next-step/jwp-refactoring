@@ -3,6 +3,9 @@ package kitchenpos.ordertable.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
+import java.util.Arrays;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.Orders;
 import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,6 +38,21 @@ class OrderTableTest {
 		assertThatIllegalArgumentException()
 			  .isThrownBy(() -> orderTable.changeEmpty(true))
 			  .withMessage("단체 지정된 테이블은 상태를 변경할 수 없습니다.");
+	}
+
+	@DisplayName("조리, 식사중인 테이블은 상태를 변경할 수 없다.")
+	@Test
+	void changeEmptyWithNotCompleteOrder() {
+		//given
+		Orders orders = new Orders();
+		OrderTable orderTable = new OrderTable();
+		ReflectionTestUtils.setField(orders, "orderStatus", OrderStatus.MEAL.name());
+		ReflectionTestUtils.setField(orderTable, "orders", Arrays.asList(orders));
+
+		//when, then
+		assertThatIllegalArgumentException()
+			  .isThrownBy(() -> orderTable.changeEmpty(true))
+			  .withMessage("조리, 식사 상태의 테이블은 상태를 변경할 수 없습니다.");
 	}
 
 	@DisplayName("테이블의 게스트수를 변경한다.")

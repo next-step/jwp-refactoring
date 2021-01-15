@@ -73,7 +73,7 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
 			  .extract();
 	}
 
-	private ExtractableResponse<Response> 테이블_상태를_변경_요청한다(
+	private static ExtractableResponse<Response> 테이블_상태를_변경_요청한다(
 		  Long orderTableId, OrderTableRequest request) {
 		return RestAssured.given().log().all()
 			  .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -83,7 +83,7 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
 			  .extract();
 	}
 
-	private ExtractableResponse<Response> 테이블_인원수를_변경_요청한다(Long orderTableId,
+	private static ExtractableResponse<Response> 테이블_인원수를_변경_요청한다(Long orderTableId,
 		  OrderTableRequest request) {
 		return RestAssured.given().log().all()
 			  .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -117,5 +117,28 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 		assertThat(changeNumberOfGuest.body().as(OrderTableResponse.class).getNumberOfGuests())
 			  .isEqualTo(request.getNumberOfGuests());
+	}
+
+	public static Long 주문_테이블이_등록되어_있음(int numberOfGuest) {
+		ExtractableResponse<Response> createResponse = 주문_테이블_등록을_요청한다(new OrderTableRequest());
+
+		OrderTableResponse createResponseDto = createResponse.body().as(OrderTableResponse.class);
+		OrderTableRequest changeEmptyRequest = new OrderTableRequest(createResponseDto.getId(),
+			  createResponseDto.getTableGroupId(),
+			  createResponseDto.getNumberOfGuests(), !createResponseDto.isEmpty());
+
+		ExtractableResponse<Response> changeEmptyResponse = 테이블_상태를_변경_요청한다(
+			  createResponseDto.getId(), changeEmptyRequest);
+
+		Long orderTableId = changeEmptyResponse.body().as(OrderTableResponse.class).getId();
+		OrderTableRequest changeNumberOfGuestRequest = new OrderTableRequest(
+			  createResponseDto.getId(),
+			  createResponseDto.getTableGroupId(),
+			  numberOfGuest, !createResponseDto.isEmpty());
+
+		ExtractableResponse<Response> changeNumberOfGuest = 테이블_인원수를_변경_요청한다(orderTableId,
+			  changeNumberOfGuestRequest);
+
+		return changeNumberOfGuest.jsonPath().getLong("id");
 	}
 }

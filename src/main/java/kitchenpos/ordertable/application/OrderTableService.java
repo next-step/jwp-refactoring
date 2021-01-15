@@ -1,11 +1,9 @@
 package kitchenpos.ordertable.application;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.domain.OrderStatus;
+import javax.persistence.EntityNotFoundException;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.dto.OrderTableRequest;
@@ -17,11 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class OrderTableService {
 
-	private final OrderDao orderDao;
 	private final OrderTableRepository orderTableRepository;
 
-	public OrderTableService(OrderDao orderDao, OrderTableRepository orderTableRepository) {
-		this.orderDao = orderDao;
+	public OrderTableService(OrderTableRepository orderTableRepository) {
 		this.orderTableRepository = orderTableRepository;
 	}
 
@@ -39,12 +35,6 @@ public class OrderTableService {
 	public OrderTableResponse changeEmpty(final Long orderTableId,
 		  final OrderTableRequest request) {
 		OrderTable savedOrderTable = findById(orderTableId);
-
-		if (orderDao.existsByOrderTableIdAndOrderStatusIn(
-			  orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-			throw new IllegalArgumentException();
-		}
-
 		savedOrderTable.changeEmpty(request.isEmpty());
 		return OrderTableResponse.of(savedOrderTable);
 	}
@@ -59,7 +49,7 @@ public class OrderTableService {
 
 	public OrderTable findById(Long orderTableId) {
 		return orderTableRepository.findById(orderTableId)
-			  .orElseThrow(IllegalArgumentException::new);
+			  .orElseThrow(EntityNotFoundException::new);
 	}
 
 	public List<OrderTable> findAllByOrderTableIds(Set<Long> orderTableIds) {

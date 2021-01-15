@@ -1,7 +1,10 @@
 package kitchenpos.menu.application;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
+import javax.persistence.EntityNotFoundException;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -41,5 +44,14 @@ public class MenuService {
 		return menuRepository.findAll().stream()
 			  .map(MenuResponse::of)
 			  .collect(Collectors.toList());
+	}
+
+	public List<Menu> findAllByIds(Set<Long> menuIds) {
+		List<Menu> menus = menuRepository.findAllById(menuIds);
+		if (menus.isEmpty() || menus.size() != menuIds.size()) {
+			throw new EntityNotFoundException();
+		}
+
+		return menus;
 	}
 }
