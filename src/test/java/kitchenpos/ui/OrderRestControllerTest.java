@@ -1,13 +1,14 @@
 package kitchenpos.ui;
 
 import kitchenpos.MockMvcTest;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderLineItemRequest;
+import kitchenpos.dto.OrderRequest_ChangeStatus;
+import kitchenpos.dto.OrderRequest_Create;
+import kitchenpos.dto.OrderResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.internal.matchers.Or;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -15,7 +16,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -24,22 +24,20 @@ class OrderRestControllerTest extends MockMvcTest {
 	@DisplayName("주문을 요청한다.")
 	@Test
 	void create() throws Exception {
-		Order order = createOrder(2L);
+		long tableId = 2L;
+		setEmpty(tableId);
+		OrderRequest_Create request = createOrderRequest(tableId);
 
-		MvcResult mvcResult = mockMvc.perform(postAsJson("/api/orders", order))
+		MvcResult mvcResult = mockMvc.perform(postAsJson("/api/orders", request))
 				.andExpect(status().isCreated())
 				.andReturn();
 
-		Order created = toObject(mvcResult, Order.class);
+		OrderResponse created = toObject(mvcResult, OrderResponse.class);
 		assertThat(created.getId()).isNotNull();
 	}
 
-	private Order createOrder(long tableId) throws Exception {
-		Order order = new Order();
-		order.setOrderLineItems(Arrays.asList(getOrderLineItem(1L), getOrderLineItem(2L)));
-		order.setOrderTableId(tableId);
-		setEmpty(tableId);
-		return order;
+	private OrderRequest_Create createOrderRequest(long tableId) {
+		return new OrderRequest_Create(Arrays.asList(getOrderLineItem(1L), getOrderLineItem(2L)), tableId);
 	}
 
 	private void setEmpty(long tableId) throws Exception {
@@ -50,24 +48,26 @@ class OrderRestControllerTest extends MockMvcTest {
 		mockMvc.perform(putAsJson(uri, orderTable));
 	}
 
-	private OrderLineItem getOrderLineItem(long id) {
-		OrderLineItem orderLineItem = new OrderLineItem();
-		orderLineItem.setMenuId(id);
-		orderLineItem.setQuantity(1);
-		return orderLineItem;
+	private OrderLineItemRequest getOrderLineItem(long menuId) {
+		return new OrderLineItemRequest(menuId, 1);
 	}
 
 	@DisplayName("주문을 조회한다.")
 	@Test
 	void list() throws Exception {
-		mockMvc.perform(postAsJson("/api/orders", createOrder(8L)));
+		// given
+		final long tableId = 8L;
+		setEmpty(tableId);
+		mockMvc.perform(postAsJson("/api/orders", createOrderRequest(tableId)));
 
+		// when
 		MvcResult mvcResult = mockMvc.perform(get("/api/orders")
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andReturn();
 
-		List<Order> orders = toList(mvcResult, Order.class);
+		// then
+		List<OrderResponse> orders = toList(mvcResult, OrderResponse.class);
 		assertThat(orders).isNotEmpty();
 	}
 
@@ -75,15 +75,16 @@ class OrderRestControllerTest extends MockMvcTest {
 	@Test
 	void changeOrderStatus() throws Exception {
 		// given
-		MvcResult createMvcResult = mockMvc.perform(postAsJson("/api/orders", createOrder(7L)))
+		final long tableId = 7L;
+		setEmpty(tableId);
+		MvcResult createMvcResult = mockMvc.perform(postAsJson("/api/orders", createOrderRequest(tableId)))
 				.andReturn();
-		Order created = toObject(createMvcResult, Order.class);
-		Order param = new Order();
-		param.setOrderStatus(OrderStatus.COMPLETION.name());
-		String uri = String.format("/api/orders/%d/order-status", created.getId());
+		OrderResponse created = toObject(createMvcResult, OrderResponse.class);
+		OrderRequest_ChangeStatus request = new OrderRequest_ChangeStatus(OrderStatus.COMPLETION.name());
 
 		// when then
-		mockMvc.perform(putAsJson(uri, created))
+		String uri = String.format("/api/orders/%d/order-status", created.getId());
+		mockMvc.perform(putAsJson(uri, request))
 				.andExpect(status().isOk());
 	}
 }
