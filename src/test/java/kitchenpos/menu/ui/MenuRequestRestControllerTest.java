@@ -43,7 +43,7 @@ class MenuRequestRestControllerTest {
 
     @Autowired
     private MenuGroupService menuGroupService;
-    
+
     @DisplayName("메뉴를 생성한다.")
     @Test
     void 메뉴_생성() throws Exception {
