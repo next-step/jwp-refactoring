@@ -1,12 +1,12 @@
 package kitchenpos.order.application;
 
-import kitchenpos.menu.dao.MenuDao;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.dao.OrderDao;
 import kitchenpos.order.dao.OrderLineItemDao;
-import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,7 +16,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,7 +30,7 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
     private OrderDao orderDao;
@@ -83,7 +86,8 @@ class OrderServiceTest {
     @DisplayName("주문을 생성한다.")
     @Test
     void 주문_생성() {
-        given(menuDao.countByIdIn(menuIds)).willReturn((long) paramsOrder.getOrderLineItems().size());
+        given(menuRepository.countByIdIn(menuIds)).willReturn((long) paramsOrder.getOrderLineItems().size());
+
         given(orderTableDao.findById(paramsOrder.getOrderTableId())).willReturn(Optional.of(orderTable));
         given(orderDao.save(paramsOrder)).willReturn(expectedOrder);
         given(orderLineItemDao.save(orderLineItem)).willReturn(orderLineItem);
@@ -108,18 +112,17 @@ class OrderServiceTest {
     @DisplayName("메뉴에 등록되지 않은 상품을 주문하는 경우 주문을 생성할 수 없다.")
     @Test
     void 등록되지_않은_상품을_주문하는_경우_주문_생성() {
-        given(menuDao.countByIdIn(menuIds)).willReturn(0L);
+        given(menuRepository.countByIdIn(menuIds)).willReturn(0L);
 
         assertThatThrownBy(() -> {
             final Order createdOrder = orderService.create(paramsOrder);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
-    // 존재하지 않는(비어있는) 주문 테이블이라면 생성 불가
-    @DisplayName("존재하지 않는 주문 테이블을 주문하는 경우 주문을 생성할 수 없다.")
+    @DisplayName("존재하지 않는(비어있는) 주문 테이블을 주문하는 경우 주문을 생성할 수 없다.")
     @Test
     void 존재하지_않는_주문_테이블을_주문하는_경우_주문_생성() {
-        given(menuDao.countByIdIn(menuIds)).willReturn((long) paramsOrder.getOrderLineItems().size());
+        given(menuRepository.countByIdIn(menuIds)).willReturn((long) paramsOrder.getOrderLineItems().size());
         given(orderTableDao.findById(paramsOrder.getOrderTableId())).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> {
