@@ -17,6 +17,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class TableService {
 	private final OrderDao orderDao;
 	private final OrderTableDao orderTableDao;
