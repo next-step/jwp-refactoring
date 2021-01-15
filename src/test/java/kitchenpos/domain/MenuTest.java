@@ -42,7 +42,7 @@ public class MenuTest {
 	@Mock
 	private ProductDao productDao;
 
-	MenuService menuService;
+	private MenuService menuService;
 
 	@BeforeEach
 	void setUp() {

@@ -23,7 +23,7 @@ public class MenuGroupTest {
 	@Mock
 	private MenuGroupDao menuGroupDao;
 
-	MenuGroupService menuGroupService;
+	private MenuGroupService menuGroupService;
 
 	@BeforeEach
 	void setUp() {
