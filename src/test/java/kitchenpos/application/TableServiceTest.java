@@ -48,7 +48,7 @@ class TableServiceTest {
     @Test
     void createTable() {
         // Given
-        given(orderTableDao.save(any())).willReturn(orderTable);
+        given(orderTableDao.save(orderTable)).willReturn(orderTable);
         // When
         OrderTable actual = tableService.create(orderTable);
         // Then
@@ -84,10 +84,10 @@ class TableServiceTest {
     @Test
     void changeEmpty() {
         // Given
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(orderTable));
+        given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
         List<String> orderStatuses = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(orderTable.getId(), orderStatuses)).willReturn(false);
-        given(orderTableDao.save(any())).willReturn(orderTable);
+        given(orderTableDao.save(orderTable)).willReturn(orderTable);
         OrderTable updateOrderTable = new OrderTable();
         updateOrderTable.setEmpty(false);
         // When
@@ -100,7 +100,7 @@ class TableServiceTest {
     @Test
     void exceptionToChangeEmptyWithTableGroup() {
         // Given
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(orderTable));
+        given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
         orderTable.setTableGroupId(1L);
         OrderTable updateOrderTable = new OrderTable();
         updateOrderTable.setEmpty(false);
@@ -113,7 +113,7 @@ class TableServiceTest {
     @Test
     void exceptionToChangeEmptyWithCookingAndMeal() {
         // Given
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(orderTable));
+        given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
         List<String> orderStatuses = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(orderTable.getId(), orderStatuses))
                 .willReturn(true);
@@ -128,8 +128,8 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuests() {
         // Given
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(orderTable));
-        given(orderTableDao.save(any())).willReturn(orderTable);
+        given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
+        given(orderTableDao.save(orderTable)).willReturn(orderTable);
         orderTable.setEmpty(false);
         OrderTable updateOrderTable = new OrderTable();
         updateOrderTable.setNumberOfGuests(5);
@@ -154,7 +154,7 @@ class TableServiceTest {
     @Test
     void exceptionToChangeNumberOfGuestsWithoutOrderTable() {
         // Given
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(orderTable));
+        given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
         orderTable.setEmpty(true);
         OrderTable updateOrderTable = new OrderTable();
         updateOrderTable.setNumberOfGuests(5);
