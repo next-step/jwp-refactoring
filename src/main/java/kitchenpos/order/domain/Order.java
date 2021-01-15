@@ -1,52 +1,69 @@
 package kitchenpos.order.domain;
 
-import java.time.LocalDateTime;
+import kitchenpos.BaseEntity;
+
+import javax.persistence.*;
 import java.util.List;
 
-public class Order {
+@Entity
+@Table(name = "orders")
+public class Order extends BaseEntity {
+    private static final String ERR_TEXT_INVALID_ORDER_TABLE_ID = "유효하지 않은 주문 테이블 아이디 입니다.";
+    private static final int IS_LESS_THAN_ZERO = 0;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long orderTableId;
-    private String orderStatus;
-    private LocalDateTime orderedTime;
-    private List<OrderLineItem> orderLineItems;
+
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
+
+    @Embedded
+    private final OrderLineItems orderLineItems = OrderLineItems.createInstance();
+
+    protected Order() {
+    }
+
+    protected Order(final Long orderTableId) {
+        this.orderTableId = orderTableId;
+        this.orderStatus = OrderStatus.COOKING;
+    }
+
+    public static Order of(final Long orderTableId) {
+        if (orderTableId == null || orderTableId.compareTo(0L) <= IS_LESS_THAN_ZERO) {
+            throw new IllegalArgumentException(ERR_TEXT_INVALID_ORDER_TABLE_ID);
+        }
+
+        return new Order(orderTableId);
+    }
+
+    public void changeOrderStatus(final OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public void addOrderLineItems(final List<OrderLineItem> orderLineItems) {
+        this.orderLineItems.add(orderLineItems);
+        this.orderLineItems.linkOrderId(this.getId());
+    }
+
+    public boolean isOrderStatusEqualsCompletion() {
+        return this.orderStatus.isCompletion();
+    }
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
     }
 
     public Long getOrderTableId() {
         return orderTableId;
     }
 
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
-    }
-
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(final String orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
-    public LocalDateTime getOrderedTime() {
-        return orderedTime;
-    }
-
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
-    }
-
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
-    }
-
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
+        return this.orderLineItems.orderLineItems();
     }
 }

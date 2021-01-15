@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.persistence.*;
+import javax.persistence.metamodel.Attribute;
+import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,9 +23,17 @@ public class DatabaseCleanup implements InitializingBean {
     @Override
     public void afterPropertiesSet() {
         tableNames = entityManager.getMetamodel().getEntities().stream()
-                .filter(e -> e.getJavaType().getAnnotation(Entity.class) != null)
-                .map(e -> CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, e.getName()))
-                .collect(Collectors.toList());
+            .filter(e -> e.getJavaType().getAnnotation(Entity.class) != null)
+            .map(this::getTableName)
+            .collect(Collectors.toList());
+    }
+
+    private String getTableName(final javax.persistence.metamodel.EntityType<?> entity) {
+        final Table tableAnnotation = entity.getJavaType().getAnnotation(Table.class);
+        if (tableAnnotation != null) {
+            return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, tableAnnotation.name());
+        }
+        return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, entity.getName());
     }
 
     @Transactional

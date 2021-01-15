@@ -3,7 +3,6 @@ package kitchenpos.table.ui;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.ui.TableRestController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

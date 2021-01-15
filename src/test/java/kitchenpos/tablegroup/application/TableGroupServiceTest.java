@@ -1,10 +1,10 @@
 package kitchenpos.tablegroup.application;
 
-import kitchenpos.order.dao.OrderDao;
-import kitchenpos.table.dao.OrderTableDao;
-import kitchenpos.tablegroup.dao.TableGroupDao;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.tablegroup.dao.TableGroupDao;
 import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,7 +28,7 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
     private OrderTableDao orderTableDao;
@@ -140,8 +140,9 @@ class TableGroupServiceTest {
         secondOrderTable.setTableGroupId(1L);
 
         given(orderTableDao.findAllByTableGroupId(tableGroup.getId())).willReturn(orderTables);
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(orderTablesIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
-            .willReturn(false);
+//        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(orderTablesIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
+//            .willReturn(false);
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTablesIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).willReturn(false);
 
         tableGroupService.ungroup(tableGroup.getId());
 
@@ -162,7 +163,9 @@ class TableGroupServiceTest {
         secondOrderTable.setTableGroupId(1L);
 
         given(orderTableDao.findAllByTableGroupId(tableGroup.getId())).willReturn(orderTables);
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(orderTablesIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
+//        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(orderTablesIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
+//            .willReturn(true);
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTablesIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)))
             .willReturn(true);
 
         assertThatThrownBy(() -> {

@@ -1,9 +1,8 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.dao.OrderDao;
-import kitchenpos.table.application.TableService;
-import kitchenpos.table.dao.OrderTableDao;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,7 +25,7 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
     private OrderTableDao orderTableDao;
@@ -75,8 +74,14 @@ class TableServiceTest {
     @Test
     void 빈_테이블_설정() {
         given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(orderTable.getId(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
+
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTable.getId(), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)))
             .willReturn(false);
+
+//        given(orderDao.existsByOrderTableIdAndOrderStatusIn(orderTable.getId(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
+//            .willReturn(false);
+
+
         given(orderTableDao.save(orderTable)).willReturn(orderTable);
 
         final OrderTable changedOrderTable = tableService.changeEmpty(orderTable.getId(), orderTable);
@@ -113,8 +118,12 @@ class TableServiceTest {
     @Test
     void 주문_테이블_상태가_조리_또는_식사인_경우_빈_테이블_설정() {
         given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(orderTable.getId(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
+
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTable.getId(), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)))
             .willReturn(true);
+
+//        given(orderDao.existsByOrderTableIdAndOrderStatusIn(orderTable.getId(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
+//            .willReturn(true);
 
         assertThatThrownBy(() -> {
             final OrderTable changedOrderTable = tableService.changeEmpty(orderTable.getId(), orderTable);
