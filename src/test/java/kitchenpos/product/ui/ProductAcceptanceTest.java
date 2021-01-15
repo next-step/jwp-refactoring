@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-class ProductAcceptanceTest extends AcceptanceTest {
+public class ProductAcceptanceTest extends AcceptanceTest {
 
 	@DisplayName("상품을 관리한다.")
 	@Test
@@ -47,7 +47,13 @@ class ProductAcceptanceTest extends AcceptanceTest {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 	}
 
-	private ExtractableResponse<Response> 상품등록을_요청한다(ProductRequest request) {
+	public static Long 상품이_등록되어_있다(String name, int price) {
+		ExtractableResponse<Response> response = 상품등록을_요청한다(
+			  new ProductRequest(name, new BigDecimal(price)));
+		return response.jsonPath().getLong("id");
+	}
+
+	public static ExtractableResponse<Response> 상품등록을_요청한다(ProductRequest request) {
 		return RestAssured.given().log().all()
 			  .contentType(MediaType.APPLICATION_JSON_VALUE)
 			  .body(request)

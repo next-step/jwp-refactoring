@@ -2,6 +2,7 @@ package kitchenpos.menugroup.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.persistence.EntityNotFoundException;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
@@ -32,5 +33,10 @@ public class MenuGroupService {
 
 	public boolean existsById(Long menuGroupId) {
 		return menuGroupRepository.existsById(menuGroupId);
+	}
+
+	public MenuGroup findById(Long menuGroupId) {
+		return menuGroupRepository.findById(menuGroupId)
+			  .orElseThrow(EntityNotFoundException::new);
 	}
 }

@@ -14,6 +14,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
+@Deprecated
 @Repository
 public class JdbcTemplateMenuDao implements MenuDao {
     private static final String TABLE_NAME = "menu";
