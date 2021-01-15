@@ -43,6 +43,14 @@ public class Price {
         return this.price;
     }
 
+    public int intValue() {
+        return this.price.intValue();
+    }
+
+    public boolean isBiggerThan(Price other) {
+        return price.intValue() > other.get().intValue();
+    }
+
     private void validate(BigDecimal price) {
         if (price.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("가격은 0 원 이상이어야 합니다.");
