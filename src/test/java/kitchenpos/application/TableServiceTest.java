@@ -96,7 +96,7 @@ class TableServiceTest {
         assertThat(actual.isEmpty()).isEqualTo(updateOrderTable.isEmpty());
     }
 
-    @DisplayName("`주문 테이블`을 비어있는 상태로 만들려면, `단체 지정`이 되어있지 않아야한다.")
+    @DisplayName("`주문 테이블`이 `단체 지정`되어 있으면 비어있는 상태로 변경할 수 없다.")
     @Test
     void exceptionToChangeEmptyWithTableGroup() {
         // Given
@@ -109,7 +109,7 @@ class TableServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("`주문 테이블`을 비어있는 상태로 만들려면, `주문 상태`가 'COOKING' 이나 'MEAL' 상태가 아니어야한다.")
+    @DisplayName("`주문 테이블`의 `주문 상태`가 'COOKING' 이나 'MEAL' 상태가 이면 비어있는 상태로 변경할 수 없다.")
     @Test
     void exceptionToChangeEmptyWithCookingAndMeal() {
         // Given

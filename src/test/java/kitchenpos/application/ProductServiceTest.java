@@ -53,7 +53,7 @@ class ProductServiceTest {
         );
     }
 
-    @DisplayName("가격은 필수이고, 0원 이상이다.")
+    @DisplayName("가격은 필수이고, 0원 이상이 아니면 `상품`을 생성할 수 없다.")
     @Test
     void exceptionToCreateProduct() {
         // Given

@@ -82,7 +82,7 @@ class MenuServiceTest {
         assertThat(actual.getMenuProducts()).isEqualTo(짬뽕_짜장면.getMenuProducts());
     }
 
-    @DisplayName("`메뉴`의 가격은 필수이고, 0원 이상이다.")
+    @DisplayName("가격은 필수이고, 0원 이상이 아니면 `메뉴`를 생성할 수 없다.")
     @Test
     void priceRange() {
         // Given
@@ -93,7 +93,7 @@ class MenuServiceTest {
         assertThrows(IllegalArgumentException.class, () -> menuService.create(짬뽕_짜장면));
     }
 
-    @DisplayName("`메뉴`의 가격은 `메뉴 상품`의 가격의 합보다 크면 안된다.")
+    @DisplayName("`메뉴`의 가격이 `메뉴 상품`의 가격의 합보다 크면 `메뉴`를 생성할 수 없다.")
     @Test
     void exceptionToCreateMenuWithInvalidPriceOverSum() {
         // Given
