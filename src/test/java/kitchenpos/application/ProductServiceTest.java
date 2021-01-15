@@ -28,7 +28,7 @@ class ProductServiceTest {
     @DisplayName("상품 등록하기")
     @Test
     void addProductTest() {
-        Product expected = new Product(1L, "상품", new BigDecimal(1000));
+        Product expected = new Product("상품", new BigDecimal(1000));
         given(productDao.save(any())).willReturn(expected);
 
         Product saved = service.create(expected);
@@ -39,7 +39,7 @@ class ProductServiceTest {
     @DisplayName("상품의 가격이 0 이하 이면 Exception")
     @Test
     void addProductPriceExceptionTest() {
-        Product expected = new Product(1L, "상품", new BigDecimal(-10));
+        Product expected = new Product("상품", new BigDecimal(-10));
 
         assertThrows(IllegalArgumentException.class,
                 () -> service.create(expected));
@@ -48,8 +48,8 @@ class ProductServiceTest {
     @DisplayName("상품의 목록을 조회할 수 있다.")
     @Test
     void findAllProductTest() {
-        Product expected1 = new Product(1L, "상품1", new BigDecimal(10));
-        Product expected2 = new Product(2L, "상품2", new BigDecimal(10));
+        Product expected1 = new Product("상품1", new BigDecimal(10));
+        Product expected2 = new Product("상품2", new BigDecimal(10));
         given(productDao.findAll()).willReturn(
                 Arrays.asList(expected1, expected2)
         );
