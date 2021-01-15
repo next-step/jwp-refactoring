@@ -8,6 +8,9 @@ public class MenuRequest {
     private Long menuGroupId;
     private List<MenuProductRequest> products;
 
+    public MenuRequest() {
+    }
+
     public MenuRequest(final String name, final long price, final Long menuGroupId, final List<MenuProductRequest> products) {
         this.name = name;
         this.price = price;
