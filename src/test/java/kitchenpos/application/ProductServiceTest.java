@@ -72,7 +72,7 @@ class ProductServiceTest {
     void findAllProducts() {
         // Given
         Product 짜장면 = new Product();
-        짜장면.setId(1L);
+        짜장면.setId(2L);
         짜장면.setName("짜장면");
         짜장면.setPrice(new BigDecimal(6_000));
         given(productDao.findAll()).willReturn(Arrays.asList(짬뽕, 짜장면));

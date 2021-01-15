@@ -84,7 +84,7 @@ class MenuServiceTest {
 
     @DisplayName("가격은 필수이고, 0원 이상이 아니면 `메뉴`를 생성할 수 없다.")
     @Test
-    void priceRange() {
+    void exceptionToCreateMenuWithInvalidPrice() {
         // Given
         짬뽕_짜장면.setPrice(null);
         // When & Then
@@ -111,7 +111,7 @@ class MenuServiceTest {
     @Test
     void findAllMenus() {
         // Given
-        given(menuDao.findAll()).willReturn(Arrays.asList(짬뽕_짜장면));
+        given(menuDao.findAll()).willReturn(Collections.singletonList(짬뽕_짜장면));
         // When
         List<Menu> actual = menuService.list();
         // Then
