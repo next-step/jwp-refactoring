@@ -74,15 +74,15 @@
 ## 1단계 - 테스트를 통한 코드 보호 To Do List
 
 - [x] 키친포스의 요구 사항 작성
-- [ ] 상품 테스트 작성 
+- [x] 상품 테스트 작성 
   - [x] Service Test 작성
-  - [ ] Controller Test 작성
+  - [x] Controller Test 작성
 - [ ] 메뉴 테스트 작성
   - [ ] Service Test 작성
   - [ ] Controller Test 작성
-- [ ] 메뉴 그룹 테스트 작성
+- [x] 메뉴 그룹 테스트 작성
   - [x] Service Test 작성
-  - [ ] Controller Test 작성
+  - [x] Controller Test 작성
 - [ ] 주문 테이블 테스트 작성
   - [ ] Service Test 작성
   - [ ] Controller Test 작성

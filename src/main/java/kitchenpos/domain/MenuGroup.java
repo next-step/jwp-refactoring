@@ -19,4 +19,12 @@ public class MenuGroup {
     public void setName(final String name) {
         this.name = name;
     }
+
+    public MenuGroup() {
+    }
+
+    public MenuGroup(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }
