@@ -14,6 +14,12 @@ public class OrderTable {
         this.empty = empty;
     }
 
+    public OrderTable(Long id, int numberOfGuests, boolean empty) {
+        this.id = id;
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
+
     public OrderTable(Long id) {
         this.id = id;
     }

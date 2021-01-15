@@ -60,8 +60,8 @@ class TableServiceTest {
         OrderTable resultOrderTable = tableService.create(orderTable1);
 
         assertAll(
-                () -> assertThat(resultOrderTable.getNumberOfGuests()).isEqualTo(orderTable1.getNumberOfGuests()),
-                () -> assertThat(resultOrderTable.isEmpty()).isEqualTo(orderTable1.isEmpty())
+                () -> assertThat(resultOrderTable.getNumberOfGuests()).isEqualTo(1),
+                () -> assertThat(resultOrderTable.isEmpty()).isEqualTo(true)
         );
     }
 
@@ -97,7 +97,7 @@ class TableServiceTest {
 
         OrderTable resultOrderTable = tableService.changeNumberOfGuests(1L, orderTable1);
 
-        assertThat(resultOrderTable.getNumberOfGuests()).isEqualTo(orderTable1.getNumberOfGuests());
+        assertThat(resultOrderTable.getNumberOfGuests()).isEqualTo(10);
     }
 
     @DisplayName("손님수 변경 예외테스트: 테이블 인원이 0보다 작은경우")

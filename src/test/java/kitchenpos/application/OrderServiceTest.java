@@ -28,8 +28,6 @@ import static org.mockito.Mockito.when;
 class OrderServiceTest {
 
     private Order order1;
-    private Order order2;
-    private Order order3;
     private OrderTable orderTable;
     private List<Order> orders = new ArrayList<>();
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
@@ -53,19 +51,18 @@ class OrderServiceTest {
         orderLineItems.add(new OrderLineItem(2L, 2));
         orderTable = new OrderTable(11L);
         order1 = new Order(11L, orderLineItems);
-        order2 = new Order(11L, orderLineItems);
-        order3 = new Order(11L, orderLineItems);
         orders.add(order1);
-        orders.add(order2);
-        orders.add(order3);
         orderService = new OrderService(menuDao, orderDao, orderLineItemDao, orderTableDao);
     }
 
     @DisplayName("주문 등록 테스트")
     @Test
     void createOrder() {
-        when(menuDao.countByIdIn(any())).thenReturn((long) orderLineItems.size());
-        when(orderTableDao.findById(any())).thenReturn(java.util.Optional.ofNullable(orderTable));
+        List<Long> menuIds = orderLineItems.stream()
+                .map(OrderLineItem::getMenuId)
+                .collect(Collectors.toList());
+        when(menuDao.countByIdIn(menuIds)).thenReturn((long) orderLineItems.size());
+        when(orderTableDao.findById(orderTable.getId())).thenReturn(java.util.Optional.ofNullable(orderTable));
         when(orderDao.save(order1)).thenReturn(order1);
         when(orderLineItemDao.save(orderLineItems.get(0))).thenReturn(orderLineItems.get(0));
 

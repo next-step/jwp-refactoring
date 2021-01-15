@@ -49,8 +49,8 @@ class ProductServiceTest {
 
         Product resultProduct = productService.create(강정치킨);
 
-        assertThat(resultProduct.getName()).isEqualTo(강정치킨.getName());
-        assertThat(resultProduct.getPrice()).isEqualTo(강정치킨.getPrice());
+        assertThat(resultProduct.getName()).isEqualTo("강정치킨");
+        assertThat(resultProduct.getPrice()).isEqualTo("17000");
     }
 
     @DisplayName("상품목록 조회 테스트")

@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -40,9 +41,9 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        orderTables.add(new OrderTable(1, true));
-        orderTables.add(new OrderTable(2, true));
-        orderTables.add(new OrderTable(3, true));
+        orderTables.add(new OrderTable(1L, 1, true));
+        orderTables.add(new OrderTable(2L, 2, true));
+        orderTables.add(new OrderTable(3L, 3, true));
         tableGroup = new TableGroup(orderTables);
 
         tableGroupService = new TableGroupService(orderDao, orderTableDao, tableGroupDao);
@@ -51,9 +52,14 @@ class TableGroupServiceTest {
     @DisplayName("테이블그룹 생성 테스트")
     @Test
     void createTest() {
-        when(orderTableDao.findAllByIdIn(any())).thenReturn(orderTables);
+        List<Long> orderTableIds = orderTables.stream()
+                .map(OrderTable::getId)
+                .collect(Collectors.toList());
+        when(orderTableDao.findAllByIdIn(orderTableIds)).thenReturn(orderTables);
         when(tableGroupDao.save(tableGroup)).thenReturn(tableGroup);
-        when(orderTableDao.save(any())).thenReturn(any());
+        when(orderTableDao.save(orderTables.get(0))).thenReturn(orderTables.get(0));
+        when(orderTableDao.save(orderTables.get(1))).thenReturn(orderTables.get(1));
+        when(orderTableDao.save(orderTables.get(2))).thenReturn(orderTables.get(2));
 
         TableGroup resultGroup = tableGroupService.create(tableGroup);
 
