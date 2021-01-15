@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("상품 비즈니스 로직을 처리하는 서비스 테스트")
 @SpringBootTest
+@Sql("/db/test_data.sql")
 class ProductServiceTest {
     private static final String PRODUCT_NAME = "후라이드";
     private static final long PRICE = 19_000L;

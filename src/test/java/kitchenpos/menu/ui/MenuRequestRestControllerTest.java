@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -16,6 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DisplayName("메뉴 컨트롤러 테스트")
 @WebMvcTest(MenuRestController.class)
+@Sql("/db/test_data.sql")
 class MenuRequestRestControllerTest {
     public static final String DEFAULT_MENU_URI = "/api/menus";
 

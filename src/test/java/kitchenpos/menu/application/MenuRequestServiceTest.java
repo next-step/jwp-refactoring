@@ -12,6 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -25,6 +26,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("메뉴 비즈니스 로직을 처리하는 서비스 테스트")
 @SpringBootTest
+@Sql("/db/test_data.sql")
 class MenuRequestServiceTest {
     private static final String MENU_NAME = "두마리메뉴";
     private static final long PRICE = 29_000L;

@@ -1,12 +1,11 @@
 package kitchenpos.menugroup.application;
 
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.util.DatabaseCleanup;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
 
@@ -14,6 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("메뉴 그룹의 비즈니스 로직을 처리하는 서비스 테스트")
 @SpringBootTest
+@Sql("/db/test_data.sql")
 class MenuRequestGroupServiceTest {
     private static final String 순살파닭두마리메뉴 = "순살파닭두마리메뉴";
     private static final String 두마리메뉴 = "두마리메뉴";
@@ -22,14 +22,6 @@ class MenuRequestGroupServiceTest {
 
     @Autowired
     private MenuGroupService menuGroupService;
-
-    @Autowired
-    private DatabaseCleanup databaseCleanup;
-
-    @BeforeEach
-    public void setUp() {
-        databaseCleanup.execute();
-    }
 
     @DisplayName("메뉴 그룹을 생성한다.")
     @Test
@@ -66,7 +58,7 @@ class MenuRequestGroupServiceTest {
 
         final List<MenuGroup> menuGroups = menuGroupService.list();
 
-        assertThat(menuGroups.size()).isEqualTo(4);
+        assertThat(menuGroups.size()).isGreaterThan(4);
         assertThat(menuGroups.get(0).getId()).isNotNull();
         assertThat(menuGroups.get(0).getName()).isEqualTo("두마리메뉴");
         assertThat(menuGroups.get(1).getId()).isNotNull();
