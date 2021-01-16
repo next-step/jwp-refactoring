@@ -13,57 +13,57 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
-@DisplayName("상품 관련 기능")
-class ProductAcceptanceTest extends AcceptanceTest {
+@DisplayName("메뉴 그룹 관련 기능")
+class MenuGroupAcceptanceTest extends AcceptanceTest {
 
-    @DisplayName("상품 등록")
+    @DisplayName("메뉴 그룹 등록")
     @Test
     void create() {
         // given
         Map<String, Object> params = new HashMap<>();
-        params.put("name", "후라이드치킨");
-        params.put("price", 10000);
+        params.put("name", "안주메뉴");
 
         // when
-        ExtractableResponse<Response> response = 상품_등록_요청(params);
+        ExtractableResponse<Response> response = 메뉴_그룹_등록_요청(params);
 
         // then
-        상품_둥록됨(response);
+        메뉴_그룹_둥록됨(response);
     }
 
-    @DisplayName("상품 목록")
+    @DisplayName("메뉴 그룹 목록")
     @Test
     void list() {
         // when
-        ExtractableResponse<Response> response = 상품_목록_조회_요청();
+        ExtractableResponse<Response> response = 메뉴_그룹_목록_조회_요청();
 
         // then
-        상품_목록_조회됨(response, HttpStatus.OK);
+        메뉴_그룹_목록_조회됨(response, HttpStatus.OK);
     }
 
-    private ExtractableResponse<Response> 상품_목록_조회_요청() {
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .when().get("/api/products")
-                .then().log().all().extract();
-        return response;
-    }
-
-    private void 상품_목록_조회됨(ExtractableResponse<Response> response, HttpStatus ok) {
-        Assertions.assertThat(response.statusCode()).isEqualTo(ok.value());
-    }
-
-
-    private ExtractableResponse<Response> 상품_등록_요청(Map<String, Object> params) {
+    private ExtractableResponse<Response> 메뉴_그룹_등록_요청(Map<String, Object> params) {
         return RestAssured
                 .given().log().all()
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/api/products")
+                .when().post("/api/menu-groups")
                 .then().log().all().extract();
     }
 
-    private void 상품_둥록됨(ExtractableResponse<Response> response) {
+    private ExtractableResponse<Response> 메뉴_그룹_목록_조회_요청() {
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .when().get("/api/menu-groups")
+                .then().log().all().extract();
+        return response;
+    }
+
+    private void 메뉴_그룹_목록_조회됨(ExtractableResponse<Response> response, HttpStatus ok) {
+        Assertions.assertThat(response.statusCode()).isEqualTo(ok.value());
+    }
+
+
+
+    private void 메뉴_그룹_둥록됨(ExtractableResponse<Response> response) {
         Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
