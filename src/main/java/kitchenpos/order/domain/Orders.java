@@ -14,9 +14,7 @@ public class Orders {
     protected Orders() {
     }
 
-    public void checkOrderStatus() {
-        if (orders.stream().anyMatch(order -> OrderStatus.isUnchangeableStatus(order.getOrderStatus()))) {
-            throw new IllegalArgumentException("주문 상태가 조리중이거나 식사중인 테이블의 공석 여부는 변경할 수 없습니다.");
-        }
+    public boolean hasUnchangeableStatusOrder() {
+        return orders.stream().anyMatch(order -> OrderStatus.isUnchangeableStatus(order.getOrderStatus()));
     }
 }

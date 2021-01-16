@@ -6,7 +6,6 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.menu.dao.MenuRepository;
 import kitchenpos.order.dao.OrderRepository;
-import kitchenpos.order.dao.OrderLineItemRepository;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.dao.OrderTableRepository;
 import kitchenpos.order.domain.Order;
@@ -24,18 +23,15 @@ import java.util.List;
 public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
-    private final OrderLineItemRepository orderLineItemRepository;
     private final OrderTableRepository orderTableRepository;
 
     public OrderService(
             final MenuRepository menuRepository,
             final OrderRepository orderRepository,
-            final OrderLineItemRepository orderLineItemRepository,
             final OrderTableRepository orderTableRepository
     ) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
-        this.orderLineItemRepository = orderLineItemRepository;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -55,10 +51,6 @@ public class OrderService {
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
         final Order savedOrder = orderRepository.findById(orderId)
             .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 주문 입니다."));
-
-        if (savedOrder.isStatusCompletion()) {
-            throw new IllegalArgumentException("계산완료된 주문의 상태는 변경할 수 없습니다.");
-        }
 
         savedOrder.updateOrderStatus(orderRequest.getOrderStatus());
         return OrderResponse.of(orderRepository.save(savedOrder));

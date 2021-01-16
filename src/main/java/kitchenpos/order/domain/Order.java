@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -76,17 +75,19 @@ public class Order {
         return orderLineItems.findAll();
     }
 
-    public boolean isStatusCompletion() {
-        return Objects.equals(OrderStatus.COMPLETION, this.orderStatus);
-    }
-
     public void updateOrderStatus(String orderStatus) {
+        checkStatusCompletion();
         this.orderStatus = OrderStatus.valueOf(orderStatus);
     }
 
     public void updateOrderLineItems(OrderLineItems orderLineItems) {
         orderLineItems.updateOrder(this);
         this.orderLineItems = orderLineItems;
+    }
 
+    private void checkStatusCompletion() {
+        if (Objects.equals(OrderStatus.COMPLETION, this.orderStatus)) {
+            throw new IllegalArgumentException("계산완료된 주문의 상태는 변경할 수 없습니다.");
+        }
     }
 }
