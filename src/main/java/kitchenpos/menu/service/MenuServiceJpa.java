@@ -1,6 +1,7 @@
 package kitchenpos.menu.service;
 
 import kitchenpos.infra.Money;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductResponse;
@@ -52,6 +53,12 @@ public class MenuServiceJpa {
                 .stream()
                 .map(MenuResponse::ofMenu)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public Menu findById(long id) {
+        return menuRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("메뉴를 찾을수 없습니다."));
     }
 
 }

@@ -33,9 +33,9 @@ public class OrderTableServiceJpa {
                 .collect(Collectors.toList());
     }
 
-    public OrderTableResponse changeEmpty(Long id, OrderTableRequest orderTableRequest) {
+    public OrderTableResponse changeEmpty(Long id, boolean empty) {
         OrderTable tableById = findById(id);
-        tableById.changeEmpty(orderTableRequest.isEmpty());
+        tableById.changeEmpty(empty);
 
         return OrderTableResponse.of(tableById);
     }

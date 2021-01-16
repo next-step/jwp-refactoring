@@ -51,10 +51,7 @@ public class TableGroupServiceIntegrationTest extends IntegrationTest {
     @Test
     void tableGroupIsNotEmpty() {
         // given
-        orderTableServiceJpa.changeEmpty(1L,
-                new OrderTableBuilder()
-                        .withEmpty(false)
-                        .requestBuild());
+        orderTableServiceJpa.changeEmpty(1L, false);
         TableGroupRequest tableGroupRequest = new TableGroupRequestBuilder()
                 .addOrderTable(1L)
                 .addOrderTable(2L)

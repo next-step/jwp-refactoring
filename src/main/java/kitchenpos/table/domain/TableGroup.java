@@ -1,12 +1,14 @@
 package kitchenpos.table.domain;
 
 import kitchenpos.common.BaseEntity;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +20,9 @@ public class TableGroup extends BaseEntity {
 
     @OneToMany(mappedBy = "tableGroup")
     private List<OrderTable> orderTables = new ArrayList<>();
+
+    @CreatedDate
+    private LocalDateTime createdDate;
 
     public TableGroup() {
     }
@@ -32,6 +37,10 @@ public class TableGroup extends BaseEntity {
 
     public List<OrderTable> getOrderTables() {
         return orderTables;
+    }
+
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
     }
 
     public void addTable(OrderTable table) {

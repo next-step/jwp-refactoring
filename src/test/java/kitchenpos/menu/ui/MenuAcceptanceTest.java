@@ -80,13 +80,13 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    @DisplayName("")
+    @DisplayName("메뉴의 그룹이 생성 되어있지 않으면 등록할 수 없다.")
     @Test
     void notFoundMenuGroup() {
         // when
         ExtractableResponse<Response> response = 메뉴_등록되어_있음(new MenuRequestBuilder()
                 .withName("후라이드+양념")
-                .withPrice(-1)
+                .withPrice(10000)
                 .withGroupId(5L)
                 .addMenuProduct(1L, 1)
                 .addMenuProduct(2L, 1)

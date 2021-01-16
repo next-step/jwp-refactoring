@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
+import static kitchenpos.utils.ResponseUtil.getLocationCreatedId;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class OrderTableAcceptanceTest extends AcceptanceTest {
@@ -97,10 +98,6 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
 
     public static long 테이블_등록_되어_있음(OrderTableRequest params) {
         return getLocationCreatedId(테이블_등록_요청됨(params));
-    }
-
-    public static long getLocationCreatedId(ExtractableResponse<Response> createdResponse) {
-        return Long.parseLong(createdResponse.header("Location").split("/")[3]);
     }
 
     public static ExtractableResponse<Response> 테이블_상태_변경_요청(long id, boolean empty) {

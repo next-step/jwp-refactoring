@@ -14,8 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -67,7 +66,7 @@ class OrderTableRestControllerTest {
                         .withId(1L)
                         .withNumberOfGuests(5)
                         .withEmpty(false).responseBuilder();
-        when(tableService.changeEmpty(anyLong(), any(OrderTableRequest.class))).thenReturn(orderTableResponse);
+        when(tableService.changeEmpty(anyLong(), anyBoolean())).thenReturn(orderTableResponse);
 
         mockMvc.perform(put("/api/tables/{orderTableId}/empty", orderTableResponse.getId())
                 .content(objectMapper.writeValueAsString(orderTableRequest)).contentType(MediaType.APPLICATION_JSON))

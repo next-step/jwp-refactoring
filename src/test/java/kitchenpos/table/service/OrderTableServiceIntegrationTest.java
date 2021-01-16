@@ -48,10 +48,7 @@ class OrderTableServiceIntegrationTest extends IntegrationTest {
     @Test
     void changeStatus() {
         OrderTableResponse orderTableResponse = tableService.changeEmpty(
-                this.orderTableResponse.getId(),
-                new OrderTableBuilder()
-                        .withEmpty(false)
-                        .requestBuild());
+                this.orderTableResponse.getId(),false);
 
         // when then
         assertThat(orderTableResponse.isEmpty()).isFalse();
