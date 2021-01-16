@@ -36,12 +36,13 @@ class TableServiceTest {
     @Test
     void create() {
         //given
+        OrderTable newOrderTable = new OrderTable(null, null, 0, true);
+
         OrderTable savedTable = new OrderTable(1L, null, 0, true);
-        given(orderTableDao.save(any())).willReturn(savedTable);
+        given(orderTableDao.save(newOrderTable)).willReturn(savedTable);
 
         //when
-        OrderTable orderTable = new OrderTable(null, null, 0, true);
-        OrderTable createOrderTable = tableService.create(orderTable);
+        OrderTable createOrderTable = tableService.create(newOrderTable);
 
         //then
         assertThat(createOrderTable.getId()).isEqualTo(1L);
@@ -84,12 +85,12 @@ class TableServiceTest {
                 );
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any()))
                 .willReturn(false);
-        given(orderTableDao.save(any()))
+        given(orderTableDao.save(savedOrderTable))
                 .willReturn(savedOrderTable);
 
         //when
-        OrderTable orderTable = new OrderTable(2L, null, 0, false);
-        OrderTable changedOrderTable = tableService.changeEmpty(2L, orderTable);
+        OrderTable newOrderTable = new OrderTable(2L, null, 0, false);
+        OrderTable changedOrderTable = tableService.changeEmpty(2L, newOrderTable);
 
         //then
         assertThat(changedOrderTable.isEmpty()).isFalse();
@@ -135,7 +136,7 @@ class TableServiceTest {
         //given
         OrderTable findTable = new OrderTable(3L, null, 1, false);
         given(orderTableDao.findById(3L)).willReturn(Optional.of(findTable));
-        given(orderTableDao.save(any())).willReturn(findTable);
+        given(orderTableDao.save(findTable)).willReturn(findTable);
 
         //when
         OrderTable orderTable = new OrderTable(3L, null, 3, true);

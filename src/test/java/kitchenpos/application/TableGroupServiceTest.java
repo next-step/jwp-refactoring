@@ -44,6 +44,13 @@ class TableGroupServiceTest {
     @Test
     void create1() {
         //given
+        List<OrderTable> orderTables = new ArrayList<>();
+        orderTables.add(new OrderTable(1L, null, 0, true));
+        orderTables.add(new OrderTable(2L, null, 0, true));
+
+        TableGroup newTableGroup = new TableGroup(null, LocalDateTime.now(), orderTables);
+        newTableGroup.setOrderTables(orderTables);
+
         given(orderTableDao.findAllByIdIn(any()))
                 .willReturn(
                         Arrays.asList(
@@ -51,7 +58,7 @@ class TableGroupServiceTest {
                                 new OrderTable(2L, null, 0, true)
                         )
                 );
-        given(tableGroupDao.save(any()))
+        given(tableGroupDao.save(newTableGroup))
                 .willReturn(
                         new TableGroup(1L, LocalDateTime.now(),
                                 Arrays.asList(
@@ -60,13 +67,6 @@ class TableGroupServiceTest {
                                 )
                         )
                 );
-
-        List<OrderTable> orderTables = new ArrayList<>();
-        orderTables.add(new OrderTable(1L, null, 0, true));
-        orderTables.add(new OrderTable(2L, null, 0, true));
-
-        TableGroup newTableGroup = new TableGroup(null, LocalDateTime.now(), orderTables);
-        newTableGroup.setOrderTables(orderTables);
 
         //when
         TableGroup savedTableGroup = tableGroupService.create(newTableGroup);

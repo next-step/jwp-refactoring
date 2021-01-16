@@ -30,10 +30,11 @@ class MenuGroupServiceTest {
     @Test
     void create() {
         //given
-        given(menuGroupDao.save(any()))
-                .willReturn(new MenuGroup(1L, "일반메뉴"));
 
         MenuGroup menuGroup = new MenuGroup(null, "일반메뉴");
+
+        given(menuGroupDao.save(menuGroup))
+                .willReturn(new MenuGroup(1L, "일반메뉴"));
 
         //when
         MenuGroup createMenuGroup = menuGroupService.create(menuGroup);

@@ -45,18 +45,18 @@ class MenuServiceTest {
     @Test
     void create1() {
         //given
-        given(menuGroupDao.existsById(any()))
-                .willReturn(true);
-        given(productDao.findById(any()))
-                .willReturn(Optional.of(new Product(1L, "후라이드치킨", new BigDecimal("16000"))));
-        given(menuDao.save(any()))
-                .willReturn(new Menu(1L, "후라이드치킨", new BigDecimal("16000"), 2L));
-
         List<MenuProduct> menuProducts = new ArrayList<>();
         menuProducts.add(new MenuProduct(1L, 1L, 1));
 
         Menu newMenu = new Menu(null, "후라이드치킨", new BigDecimal("16000"), 2L);
         newMenu.setMenuProducts(menuProducts);
+
+        given(menuGroupDao.existsById(any()))
+                .willReturn(true);
+        given(productDao.findById(any()))
+                .willReturn(Optional.of(new Product(1L, "후라이드치킨", new BigDecimal("16000"))));
+        given(menuDao.save(newMenu))
+                .willReturn(new Menu(1L, "후라이드치킨", new BigDecimal("16000"), 2L));
 
         //when
         Menu createMenu = menuService.create(newMenu);

@@ -33,12 +33,12 @@ class ProductServiceTest {
     @Test
     void create1() {
         //given
-        given(productDao.save(any())).willReturn(new Product(2L, "김치찌개", new BigDecimal(6000)));
-
-        Product product = new Product(null, "김치찌개", new BigDecimal(6000));
+        Product newProduct = new Product(null, "김치찌개", new BigDecimal(6000));
+        given(productDao.save(newProduct))
+                .willReturn(new Product(2L, "김치찌개", new BigDecimal(6000)));
 
         //when
-        Product createProduct = productService.create(product);
+        Product createProduct = productService.create(newProduct);
 
         //then
         assertThat(createProduct.getId()).isEqualTo(2L);
@@ -50,11 +50,11 @@ class ProductServiceTest {
     @Test
     void create2() {
         //given
-        Product product = new Product(null, "김치찌개", new BigDecimal(-1));
+        Product newProduct = new Product(null, "김치찌개", new BigDecimal(-1));
 
         //when
         //then
-        assertThatThrownBy(() -> productService.create(product))
+        assertThatThrownBy(() -> productService.create(newProduct))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("상품의 가격은 0 원 이상이어야 합니다.");
     }
@@ -63,11 +63,11 @@ class ProductServiceTest {
     @Test
     void create3() {
         //given
-        Product product = new Product(null, "김치찌개", null);
+        Product newProduct = new Product(null, "김치찌개", null);
 
         //when
         //then
-        assertThatThrownBy(() -> productService.create(product))
+        assertThatThrownBy(() -> productService.create(newProduct))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("상품의 가격은 0 원 이상이어야 합니다.");
     }

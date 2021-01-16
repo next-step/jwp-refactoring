@@ -46,6 +46,12 @@ class OrderServiceTest {
     @Test
     void create1() {
         //given
+        Order newOrder = new Order();
+        List<OrderLineItem> orderLineItems = new ArrayList<>();
+        orderLineItems.add(new OrderLineItem());
+        orderLineItems.add(new OrderLineItem());
+        newOrder.setOrderLineItems(orderLineItems);
+
         given(orderDao.save(any()))
                 .willReturn(new Order());
         given(menuDao.countByIdIn(any()))
@@ -54,17 +60,12 @@ class OrderServiceTest {
                 .willReturn(Optional.of(new OrderTable()));
         given(orderLineItemDao.save(any()))
                 .willReturn(new OrderLineItem());
-        given(orderDao.save(any()))
+        given(orderDao.save(newOrder))
                 .willReturn(new Order(1L, 2L, "주문", LocalDateTime.now()));
 
-        Order order = new Order();
-        List<OrderLineItem> orderLineItems = new ArrayList<>();
-        orderLineItems.add(new OrderLineItem());
-        orderLineItems.add(new OrderLineItem());
-        order.setOrderLineItems(orderLineItems);
         //when
 
-        Order createOrder = orderService.create(order);
+        Order createOrder = orderService.create(newOrder);
 
         //then
         assertThat(createOrder.getId()).isEqualTo(1L);
@@ -77,11 +78,11 @@ class OrderServiceTest {
     @Test
     void create2() {
         //given
-        Order order = new Order();
-        order.setOrderLineItems(Collections.EMPTY_LIST);
+        Order newOrder = new Order();
+        newOrder.setOrderLineItems(Collections.EMPTY_LIST);
         //when
         //then
-        assertThatThrownBy(() -> orderService.create(order))
+        assertThatThrownBy(() -> orderService.create(newOrder))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("주문 항목이 비어있습니다.");
     }
@@ -96,12 +97,12 @@ class OrderServiceTest {
         orderLineItems.add(new OrderLineItem(1L, 1L, 3));
         orderLineItems.add(new OrderLineItem(2L, 2L, 3));
 
-        Order order = new Order();
-        order.setOrderLineItems(orderLineItems);
+        Order newOrder = new Order();
+        newOrder.setOrderLineItems(orderLineItems);
 
         //when
         //then
-        assertThatThrownBy(() -> orderService.create(order))
+        assertThatThrownBy(() -> orderService.create(newOrder))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("주문 항목에 등록하지 않은 메뉴가 있습니다.");
     }
@@ -118,11 +119,11 @@ class OrderServiceTest {
         orderLineItems.add(new OrderLineItem(1L, 1L, 3));
         orderLineItems.add(new OrderLineItem(2L, 2L, 3));
 
-        Order order = new Order();
-        order.setOrderLineItems(orderLineItems);
+        Order newOrder = new Order();
+        newOrder.setOrderLineItems(orderLineItems);
         //when
         //then
-        assertThatThrownBy(() -> orderService.create(order))
+        assertThatThrownBy(() -> orderService.create(newOrder))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("비어있는 주문 테이블입니다.");
     }
