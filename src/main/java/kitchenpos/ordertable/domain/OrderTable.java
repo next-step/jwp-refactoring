@@ -105,4 +105,7 @@ public class OrderTable {
 		this.numberOfGuests = numberOfGuests;
 	}
 
+	public void unTableGroup() {
+		this.tableGroup = null;
+	}
 }

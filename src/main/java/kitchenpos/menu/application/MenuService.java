@@ -1,22 +1,18 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProductRepository;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
-import kitchenpos.menu.domain.MenuProductRepository;
-import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class MenuService {
@@ -40,7 +36,7 @@ public class MenuService {
 	@Transactional
 	public MenuResponse create(final MenuRequest request) {
 		List<Product> products = productRepository.findAllById(request.getProductIds());
-		MenuGroup menuGroup = menuGroupRepository.findById(request.getMenuGroupId()).orElseThrow(()-> new IllegalArgumentException("메뉴 그룹 정보가 없습니다."));
+		MenuGroup menuGroup = menuGroupRepository.findById(request.getMenuGroupId()).orElseThrow(()-> new IllegalArgumentException());
 		Menu menu = request.toEntity(menuGroup, products);
 		Menu saved = menuRepository.save(menu);
 

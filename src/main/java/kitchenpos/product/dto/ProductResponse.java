@@ -12,7 +12,6 @@ public class ProductResponse {
 	private BigDecimal price;
 
 	public ProductResponse() {
-
 	}
 
 	public ProductResponse(long id, String name, BigDecimal price) {

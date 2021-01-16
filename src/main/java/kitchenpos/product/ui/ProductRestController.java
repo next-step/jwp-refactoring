@@ -1,7 +1,6 @@
 package kitchenpos.product.ui;
 
 import kitchenpos.product.application.ProductService;
-import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import org.springframework.http.ResponseEntity;
@@ -21,9 +20,6 @@ public class ProductRestController {
 		this.productService = productService;
 	}
 
-	// 상품을 등록한다.
-	// - 상품명, 가격
-	// 상품 목록을 조회한다.
 	@PostMapping("/api/products")
 	public ResponseEntity<ProductResponse> create(@RequestBody final ProductRequest request) {
 		final ProductResponse created = productService.create(request);

@@ -44,12 +44,12 @@ public class Menu {
 
 	private void validate(BigDecimal price, List<MenuProduct> menuProducts) {
 		if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-			throw new IllegalArgumentException("가격은 0원 이상이어야 합니다.");
+			throw new IllegalArgumentException();
 		}
 
 		BigDecimal sum = sumMenuProductsPrice(menuProducts);
 		if (price.compareTo(sum) > 0) {
-			throw new IllegalArgumentException("메뉴의 가격과 메뉴 항목들의 총 가격의 합이 맞지 않습니다.");
+			throw new IllegalArgumentException();
 		}
 	}
 
