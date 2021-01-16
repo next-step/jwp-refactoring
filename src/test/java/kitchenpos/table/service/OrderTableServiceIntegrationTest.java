@@ -4,6 +4,7 @@ import kitchenpos.IntegrationTest;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.util.OrderTableBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,7 +26,9 @@ class OrderTableServiceIntegrationTest extends IntegrationTest {
 
     @BeforeEach
     void setUp() {
-        orderTableResponse = tableService.create(new OrderTableRequest(4, true));
+        orderTableResponse = tableService.create(new OrderTableBuilder()
+                .withNumberOfGuests(4)
+                .withEmpty(true).requestBuild());
     }
 
     @AfterEach
@@ -44,7 +47,11 @@ class OrderTableServiceIntegrationTest extends IntegrationTest {
     @DisplayName("테이블에 상태값을 변경 가능하다.")
     @Test
     void changeStatus() {
-        OrderTableResponse orderTableResponse = tableService.changeEmpty(this.orderTableResponse.getId(), new OrderTableRequest(false));
+        OrderTableResponse orderTableResponse = tableService.changeEmpty(
+                this.orderTableResponse.getId(),
+                new OrderTableBuilder()
+                        .withEmpty(false)
+                        .requestBuild());
 
         // when then
         assertThat(orderTableResponse.isEmpty()).isFalse();
@@ -54,7 +61,10 @@ class OrderTableServiceIntegrationTest extends IntegrationTest {
     @Test
     void changeNumberOfGuests() {
         // when
-        OrderTableResponse orderTableResponse = tableService.changeNumberOfGuests(this.orderTableResponse.getId(), new OrderTableRequest(5));
+        OrderTableResponse orderTableResponse = tableService.changeNumberOfGuests(this.orderTableResponse.getId(),
+                new OrderTableBuilder()
+                        .withNumberOfGuests(5)
+                        .requestBuild());
 
         // then
         assertThat(orderTableResponse.getNumberOfGuests()).isEqualTo(5);
@@ -63,7 +73,11 @@ class OrderTableServiceIntegrationTest extends IntegrationTest {
     @DisplayName("테이블에 인원은 0명 이상이어야 한다.")
     @Test
     void tableNumberOfGuestsGraterThanZero() {
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableResponse.getId(), new OrderTableRequest(-1)))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableResponse.getId(),
+                new OrderTableBuilder()
+                        .withNumberOfGuests(-1)
+                        .requestBuild()
+        ))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

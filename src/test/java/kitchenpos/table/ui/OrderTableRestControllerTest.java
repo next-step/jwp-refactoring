@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.service.OrderTableServiceJpa;
+import kitchenpos.table.util.OrderTableBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +37,16 @@ class OrderTableRestControllerTest {
     @DisplayName("테이블을 등록할 수 있다.")
     @Test
     void createTable() throws Exception {
-        OrderTableRequest orderTableRequest = new OrderTableRequest(4, true);
-        OrderTableResponse orderTableResponse = new OrderTableResponse(1L, 4, true);
+        OrderTableRequest orderTableRequest =
+                new OrderTableBuilder()
+                        .withNumberOfGuests(4)
+                        .withEmpty(true).requestBuild();
+        OrderTableResponse orderTableResponse =
+                new OrderTableBuilder()
+                        .withId(1L)
+                        .withNumberOfGuests(4)
+                        .withEmpty(true).responseBuilder();
+
         when(tableService.create(any())).thenReturn(orderTableResponse);
 
         mockMvc.perform(post("/api/tables")
@@ -50,8 +59,14 @@ class OrderTableRestControllerTest {
     @DisplayName("테이블에 상태값을 변경 가능하다.")
     @Test
     void changeEmpty() throws Exception {
-        OrderTableRequest orderTableRequest = new OrderTableRequest( false);
-        OrderTableResponse orderTableResponse = new OrderTableResponse(1L, 4, false);
+        OrderTableRequest orderTableRequest =
+                new OrderTableBuilder()
+                        .withEmpty(false).requestBuild();
+        OrderTableResponse orderTableResponse =
+                new OrderTableBuilder()
+                        .withId(1L)
+                        .withNumberOfGuests(5)
+                        .withEmpty(false).responseBuilder();
         when(tableService.changeEmpty(anyLong(), any(OrderTableRequest.class))).thenReturn(orderTableResponse);
 
         mockMvc.perform(put("/api/tables/{orderTableId}/empty", orderTableResponse.getId())
@@ -64,8 +79,16 @@ class OrderTableRestControllerTest {
     @DisplayName("테이블에 인원을 변경 가능하다.")
     @Test
     void changeGuests() throws Exception {
-        OrderTableRequest orderTableRequest = new OrderTableRequest( 5);
-        OrderTableResponse orderTableResponse = new OrderTableResponse(1L, 5, true);
+        OrderTableRequest orderTableRequest =
+                new OrderTableBuilder()
+                        .withNumberOfGuests(5).requestBuild();
+
+        OrderTableResponse orderTableResponse =
+                new OrderTableBuilder()
+                        .withId(1L)
+                        .withNumberOfGuests(5)
+                        .withEmpty(true).responseBuilder();
+
         when(tableService.changeNumberOfGuests(anyLong(), any(OrderTableRequest.class))).thenReturn(orderTableResponse);
 
         mockMvc.perform(put("/api/tables/{orderTableId}/number-of-guests", orderTableResponse.getId())

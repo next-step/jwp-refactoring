@@ -5,6 +5,8 @@ import kitchenpos.table.dto.OrderTableIdRequest;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
+import kitchenpos.table.util.OrderTableBuilder;
+import kitchenpos.table.util.TableGroupRequestBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +26,11 @@ public class TableGroupServiceIntegrationTest extends IntegrationTest {
     @DisplayName("주문 테이블을 그룹화 할수 있다.")
     @Test
     void createTableGroup() {
-        TableGroupRequest tableGroupRequest = new TableGroupRequest(
-                Arrays.asList(
-                        new OrderTableIdRequest(1L),
-                        new OrderTableIdRequest(2L)
-                ));
+        TableGroupRequest tableGroupRequest =
+                new TableGroupRequestBuilder()
+                        .addOrderTable(1L)
+                        .addOrderTable(2L)
+                        .build();
         TableGroupResponse tableGroupResponse = tableGroupServiceJpa.create(tableGroupRequest);
         assertThat(tableGroupResponse.getOrderTables()).hasSize(2);
     }
@@ -36,10 +38,10 @@ public class TableGroupServiceIntegrationTest extends IntegrationTest {
     @DisplayName("테이블 그룹을 2개 이상이어야 한다.")
     @Test
     void tableGroupSizeGreaterThanOne() {
-        TableGroupRequest tableGroupRequest = new TableGroupRequest(
-                Arrays.asList(
-                        new OrderTableIdRequest(1L)
-                ));
+        TableGroupRequest tableGroupRequest =
+                new TableGroupRequestBuilder()
+                        .addOrderTable(1L)
+                        .build();
 
         assertThatThrownBy(() -> tableGroupServiceJpa.create(tableGroupRequest))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -49,12 +51,14 @@ public class TableGroupServiceIntegrationTest extends IntegrationTest {
     @Test
     void tableGroupIsNotEmpty() {
         // given
-        orderTableServiceJpa.changeEmpty(1L, new OrderTableRequest(false));
-        TableGroupRequest tableGroupRequest = new TableGroupRequest(
-                Arrays.asList(
-                        new OrderTableIdRequest(1L),
-                        new OrderTableIdRequest(2L)
-                ));
+        orderTableServiceJpa.changeEmpty(1L,
+                new OrderTableBuilder()
+                        .withEmpty(false)
+                        .requestBuild());
+        TableGroupRequest tableGroupRequest = new TableGroupRequestBuilder()
+                .addOrderTable(1L)
+                .addOrderTable(2L)
+                .build();
 
         // when then
         assertThatThrownBy(() -> tableGroupServiceJpa.create(tableGroupRequest))
@@ -65,11 +69,10 @@ public class TableGroupServiceIntegrationTest extends IntegrationTest {
     @Test
     void deleteTableGroup() {
         // given
-        TableGroupRequest tableGroupRequest = new TableGroupRequest(
-                Arrays.asList(
-                        new OrderTableIdRequest(1L),
-                        new OrderTableIdRequest(2L)
-                ));
+        TableGroupRequest tableGroupRequest = new TableGroupRequestBuilder()
+                .addOrderTable(1L)
+                .addOrderTable(2L)
+                .build();
         TableGroupResponse tableGroupResponse = tableGroupServiceJpa.create(tableGroupRequest);
 
         // when

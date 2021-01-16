@@ -1,11 +1,11 @@
 package kitchenpos.table.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.table.dto.OrderTableIdRequest;
-import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import kitchenpos.table.service.TableGroupServiceJpa;
+import kitchenpos.table.util.TableGroupRequestBuilder;
+import kitchenpos.table.util.TableGroupResponseBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +13,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.Arrays;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -38,15 +36,17 @@ class TableGroupRestControllerTest {
     @DisplayName("테이블을 그룹화 할 수 있다.")
     @Test
     void createTableGroup() throws Exception {
-        TableGroupRequest tableGroupRequest = new TableGroupRequest(
-                Arrays.asList(
-                        new OrderTableIdRequest(1L),
-                        new OrderTableIdRequest(2L)
-                ));
+        TableGroupRequest tableGroupRequest = new TableGroupRequestBuilder()
+                .addOrderTable(1L)
+                .addOrderTable(2L)
+                .build();
 
-        TableGroupResponse tableGroupResponse = new TableGroupResponse(1L, Arrays.asList(
-                new OrderTableResponse(1L, 4, true),
-                new OrderTableResponse(1L, 4, true)));
+        TableGroupResponse tableGroupResponse =
+                new TableGroupResponseBuilder()
+                        .withId(1L)
+                        .addOrderTable(1L, 4, true)
+                        .addOrderTable(2L, 4, true)
+                        .build();
 
         when(tableGroupServiceJpa.create(any())).thenReturn(tableGroupResponse);
 
