@@ -19,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
+@DisplayName("상품 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
 
@@ -33,7 +34,6 @@ class ProductServiceTest {
 
     @BeforeEach
     void setUp() {
-
         볶음밥 = new Product();
         볶음밥.setId(1L);
         볶음밥.setName("볶음밥");
@@ -93,6 +93,7 @@ class ProductServiceTest {
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
+    @DisplayName("상품의 목록을 조회할 수 있다")
     @Test
     void list() {
         //given

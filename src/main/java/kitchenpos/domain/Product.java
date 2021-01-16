@@ -30,4 +30,13 @@ public class Product {
     public void setPrice(final BigDecimal price) {
         this.price = price;
     }
+
+    public Product() {
+    }
+
+    public Product(Long id, String name, BigDecimal price) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+    }
 }

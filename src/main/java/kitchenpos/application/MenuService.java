@@ -43,7 +43,7 @@ public class MenuService {
         }
 
         if (!menuGroupDao.existsById(menu.getMenuGroupId())) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("메뉴그룹이 없습니다.");
         }
 
         final List<MenuProduct> menuProducts = menu.getMenuProducts();
@@ -56,7 +56,7 @@ public class MenuService {
         }
 
         if (price.compareTo(sum) > 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("메뉴의 가격이 상품목록 총합 가격보다 더 큽니다.");
         }
 
         final Menu savedMenu = menuDao.save(menu);

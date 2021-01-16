@@ -5,6 +5,7 @@ import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
+@DisplayName("메뉴 그룹 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
 
@@ -42,6 +44,7 @@ class MenuGroupServiceTest {
         스페셜메뉴.setName("스페셜메뉴");
     }
 
+    @DisplayName("메뉴 그룹을 등록할 수 있다.")
     @Test
     void create() {
         //given
@@ -55,6 +58,7 @@ class MenuGroupServiceTest {
         assertThat(createMenuGroup.getName()).isEqualTo("일반메뉴");
     }
 
+    @DisplayName("메뉴 그룹 목록을 조회할 수 있다.")
     @Test
     void list() {
         //given
