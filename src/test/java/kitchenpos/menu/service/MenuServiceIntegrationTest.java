@@ -35,29 +35,33 @@ class MenuServiceIntegrationTest extends IntegrationTest {
     @DisplayName("메뉴의 가격이 올바르지 않으면 등록할 수 없다.")
     @Test
     void isNotCollectMenuPrice() {
-        assertAll(
-                () -> assertThatThrownBy(() -> {
-                    MenuRequest menuRequest = new MenuRequestBuilder()
-                            .withName("후라이드+양념")
-                            .withPrice(-1)
-                            .withGroupId(1L)
-                            .addMenuProduct(2L, 1)
-                            .build();
-                    menuServiceJpa.create(menuRequest);
-                }).isInstanceOf(IllegalArgumentException.class),
-                () -> assertThatThrownBy(() -> {
-                    MenuRequest menuRequest = new MenuRequestBuilder()
-                            .withName("후라이드+양념")
-                            .withPrice(35000)
-                            .withGroupId(1L)
-                            .build();
-                    menuServiceJpa.create(menuRequest);
-                }).isInstanceOf(IllegalArgumentException.class));
+        assertThatThrownBy(() -> {
+            MenuRequest menuRequest = new MenuRequestBuilder()
+                    .withName("후라이드+양념")
+                    .withPrice(-1)
+                    .withGroupId(1L)
+                    .addMenuProduct(2L, 1)
+                    .build();
+            menuServiceJpa.create(menuRequest);
+        }).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("메뉴의 상품이 추가 되어있지 않으면 등록할 수 없다.")
+    @Test
+    void notAddedProductInMenu() {
+        assertThatThrownBy(() -> {
+            MenuRequest menuRequest = new MenuRequestBuilder()
+                    .withName("후라이드+양념")
+                    .withPrice(35000)
+                    .withGroupId(1L)
+                    .build();
+            menuServiceJpa.create(menuRequest);
+        }).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("메뉴의 가격이 메뉴의 상품 가격 * 수량보다 작아야 한다.")
     @Test
-    void existsMenuGroup() {
+    void menuPriceLessThanProductAllPrice() {
         assertThatThrownBy(() -> {
             menuServiceJpa.create(new MenuRequestBuilder()
                     .withName("후라이드+양념")
