@@ -1,13 +1,13 @@
 package kitchenpos.order.service;
 
-import kitchenpos.menu.service.MenuServiceJpa;
+import kitchenpos.menu.service.MenuService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.dto.OrderLineRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.service.OrderTableServiceJpa;
+import kitchenpos.table.service.OrderTableService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,20 +16,20 @@ import java.util.stream.Collectors;
 
 @Transactional
 @Service
-public class OrderServiceJpa {
-    private final MenuServiceJpa menuServiceJpa;
-    private final OrderTableServiceJpa orderTableServiceJpa;
+public class OrderService {
+    private final MenuService menuService;
+    private final OrderTableService orderTableService;
     private final OrderRepository orderRepository;
 
-    public OrderServiceJpa(MenuServiceJpa menuServiceJpa, OrderTableServiceJpa orderTableServiceJpa, OrderRepository orderRepository) {
-        this.menuServiceJpa = menuServiceJpa;
-        this.orderTableServiceJpa = orderTableServiceJpa;
+    public OrderService(MenuService menuService, OrderTableService orderTableService, OrderRepository orderRepository) {
+        this.menuService = menuService;
+        this.orderTableService = orderTableService;
         this.orderRepository = orderRepository;
     }
 
     public OrderResponse create(OrderRequest request) {
         checkOrderLineItemEmpty(request.getOrderLineItems());
-        OrderTable tableById = orderTableServiceJpa.findById(request.getOrderTableId());
+        OrderTable tableById = orderTableService.findById(request.getOrderTableId());
         checkOrderTableEmpty(tableById);
         Order savedOrder = orderRepository.save(createOrder(tableById, request.getOrderLineItems()));
         return OrderResponse.of(savedOrder);
@@ -38,7 +38,7 @@ public class OrderServiceJpa {
     private Order createOrder(OrderTable tableById, List<OrderLineRequest> items) {
         Order order = new Order(tableById);
         items.forEach(item -> order.addOrderMenu(
-                menuServiceJpa.findById(item.getMenuId()),
+                menuService.findById(item.getMenuId()),
                 item.getQuantity()));
         return order;
     }

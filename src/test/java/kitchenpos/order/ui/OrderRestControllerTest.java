@@ -1,11 +1,11 @@
 package kitchenpos.order.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
-import kitchenpos.order.service.OrderServiceJpa;
+import kitchenpos.order.service.OrderService;
 import kitchenpos.order.util.OrderRequestBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ class OrderRestControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private OrderServiceJpa orderServiceJpa;
+    private OrderService orderService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -46,7 +46,7 @@ class OrderRestControllerTest {
                 .addOrderLineItem(1L, 1)
                 .addOrderLineItem(2L, 1)
                 .build();
-        when(orderServiceJpa.create(any())).thenReturn(new OrderResponse(1L,"COOKING","2020-11-11"));
+        when(orderService.create(any())).thenReturn(new OrderResponse(1L,"COOKING","2020-11-11"));
 
         mockMvc.perform(post("/api/orders")
                 .content(objectMapper.writeValueAsString(orderRequest)).contentType(MediaType.APPLICATION_JSON))
@@ -57,7 +57,7 @@ class OrderRestControllerTest {
     @DisplayName("주문 목록을 가져올 수 있다.")
     @Test
     void findAllOrder() throws Exception {
-        when(orderServiceJpa.list()).thenReturn(Arrays.asList(
+        when(orderService.list()).thenReturn(Arrays.asList(
                 new OrderResponse(1L,"COOKING","2020-11-11"),
                 new OrderResponse(2L,"COOKING","2020-11-11")));
         mockMvc.perform(get("/api/orders"))
@@ -69,10 +69,10 @@ class OrderRestControllerTest {
     @DisplayName("주문의 상태값을 나타낼 수 있다.")
     @Test
     void changeOrderStatus() throws Exception {
-        when(orderServiceJpa.changeOrderStatus(anyLong(), anyString())).thenReturn(new OrderResponse(1L,"MEAL","2020-11-11"));
+        when(orderService.changeOrderStatus(anyLong(), anyString())).thenReturn(new OrderResponse(1L,"MEAL","2020-11-11"));
 
         mockMvc.perform(put("/api/orders/{orderId}/order-status", 1L)
-                .content(objectMapper.writeValueAsString(new OrderStatusRequest(OrderStatus.MEAL.name())))
+                .content(objectMapper.writeValueAsString(new OrderStatusRequest(Order.OrderStatus.MEAL.name())))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());

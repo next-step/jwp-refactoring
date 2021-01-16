@@ -3,7 +3,7 @@ package kitchenpos.table.ui;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.table.service.OrderTableServiceJpa;
+import kitchenpos.table.service.OrderTableService;
 import kitchenpos.table.util.OrderTableBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,7 +31,7 @@ class OrderTableRestControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private OrderTableServiceJpa tableService;
+    private OrderTableService tableService;
 
     @DisplayName("테이블을 등록할 수 있다.")
     @Test

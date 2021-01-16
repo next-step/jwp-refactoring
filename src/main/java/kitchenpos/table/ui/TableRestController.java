@@ -2,7 +2,7 @@ package kitchenpos.table.ui;
 
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.table.service.OrderTableServiceJpa;
+import kitchenpos.table.service.OrderTableService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,9 +16,9 @@ import java.util.List;
 
 @RestController
 public class TableRestController {
-    private final OrderTableServiceJpa tableService;
+    private final OrderTableService tableService;
 
-    public TableRestController(OrderTableServiceJpa tableService) {
+    public TableRestController(OrderTableService tableService) {
         this.tableService = tableService;
     }
 

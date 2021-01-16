@@ -1,6 +1,5 @@
 package kitchenpos.table.service;
 
-import kitchenpos.order.service.OrderServiceJpa;
 import kitchenpos.order.service.OrderStatusService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
@@ -16,14 +15,14 @@ import java.util.stream.Collectors;
 
 @Transactional
 @Service
-public class TableGroupServiceJpa {
+public class TableGroupService {
     private final TableGroupRepository tableGroupRepository;
-    private final OrderTableServiceJpa orderTableServiceJpa;
+    private final OrderTableService orderTableService;
     private final OrderStatusService orderStatusService;
 
-    public TableGroupServiceJpa(TableGroupRepository tableGroupRepository, OrderTableServiceJpa orderTableServiceJpa, OrderStatusService orderStatusService) {
+    public TableGroupService(TableGroupRepository tableGroupRepository, OrderTableService orderTableService, OrderStatusService orderStatusService) {
         this.tableGroupRepository = tableGroupRepository;
-        this.orderTableServiceJpa = orderTableServiceJpa;
+        this.orderTableService = orderTableService;
         this.orderStatusService = orderStatusService;
     }
 
@@ -45,7 +44,7 @@ public class TableGroupServiceJpa {
         return request.getOrderTables()
                 .stream()
                 .map(OrderTableIdRequest::getId)
-                .map(orderTableServiceJpa::findById)
+                .map(orderTableService::findById)
                 .collect(Collectors.toList());
     }
 

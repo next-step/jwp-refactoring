@@ -2,7 +2,7 @@ package kitchenpos.product.ui;
 
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
-import kitchenpos.product.service.ProductServiceJpa;
+import kitchenpos.product.service.ProductService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,9 +14,9 @@ import java.util.List;
 
 @RestController
 public class ProductRestController {
-    private final ProductServiceJpa productService;
+    private final ProductService productService;
 
-    public ProductRestController(ProductServiceJpa productService) {
+    public ProductRestController(ProductService productService) {
         this.productService = productService;
     }
 

@@ -13,10 +13,10 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class ProductServiceJpa {
+public class ProductService {
     private final ProductRepository productRepository;
 
-    public ProductServiceJpa(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 

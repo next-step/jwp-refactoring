@@ -3,7 +3,7 @@ package kitchenpos.table.ui;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
-import kitchenpos.table.service.TableGroupServiceJpa;
+import kitchenpos.table.service.TableGroupService;
 import kitchenpos.table.util.TableGroupRequestBuilder;
 import kitchenpos.table.util.TableGroupResponseBuilder;
 import org.junit.jupiter.api.DisplayName;
@@ -31,7 +31,7 @@ class TableGroupRestControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private TableGroupServiceJpa tableGroupServiceJpa;
+    private TableGroupService tableGroupService;
 
     @DisplayName("테이블을 그룹화 할 수 있다.")
     @Test
@@ -48,7 +48,7 @@ class TableGroupRestControllerTest {
                         .addOrderTable(2L, 4, true)
                         .build();
 
-        when(tableGroupServiceJpa.create(any())).thenReturn(tableGroupResponse);
+        when(tableGroupService.create(any())).thenReturn(tableGroupResponse);
 
 
         mockMvc.perform(post("/api/table-groups")

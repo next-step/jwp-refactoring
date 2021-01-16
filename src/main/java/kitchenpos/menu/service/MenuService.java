@@ -4,12 +4,11 @@ import kitchenpos.infra.Money;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.dto.MenuProductResponse;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.service.MenuGroupServiceJpa;
-import kitchenpos.product.service.ProductServiceJpa;
+import kitchenpos.menugroup.service.MenuGroupService;
+import kitchenpos.product.service.ProductService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,13 +16,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class MenuServiceJpa {
+public class MenuService {
 
     private final MenuRepository menuRepository;
-    private final MenuGroupServiceJpa menuGroupService;
-    private final ProductServiceJpa productService;
+    private final MenuGroupService menuGroupService;
+    private final ProductService productService;
 
-    public MenuServiceJpa(MenuRepository menuRepository, MenuGroupServiceJpa menuGroupService, ProductServiceJpa productService) {
+    public MenuService(MenuRepository menuRepository, MenuGroupService menuGroupService, ProductService productService) {
         this.menuRepository = menuRepository;
         this.menuGroupService = menuGroupService;
         this.productService = productService;

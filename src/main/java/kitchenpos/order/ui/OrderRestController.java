@@ -3,7 +3,7 @@ package kitchenpos.order.ui;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
-import kitchenpos.order.service.OrderServiceJpa;
+import kitchenpos.order.service.OrderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,15 +18,15 @@ import java.util.List;
 @RestController
 public class OrderRestController {
 
-    private final OrderServiceJpa orderServiceJpa;
+    private final OrderService orderService;
 
-    public OrderRestController(OrderServiceJpa orderServiceJpa) {
-        this.orderServiceJpa = orderServiceJpa;
+    public OrderRestController(OrderService orderService) {
+        this.orderService = orderService;
     }
 
     @PostMapping("/api/orders")
     public ResponseEntity<OrderResponse> create(@RequestBody final OrderRequest orderRequest) {
-        final OrderResponse orderResponse = orderServiceJpa.create(orderRequest);
+        final OrderResponse orderResponse = orderService.create(orderRequest);
         final URI uri = URI.create("/api/orders/" + orderResponse.getId());
         return ResponseEntity.created(uri)
                 .body(orderResponse)
@@ -36,7 +36,7 @@ public class OrderRestController {
     @GetMapping("/api/orders")
     public ResponseEntity<List<OrderResponse>> list() {
         return ResponseEntity.ok()
-                .body(orderServiceJpa.list())
+                .body(orderService.list())
                 ;
     }
 
@@ -45,6 +45,6 @@ public class OrderRestController {
             @PathVariable final Long orderId,
             @RequestBody final OrderStatusRequest orderRequest
     ) {
-        return ResponseEntity.ok(orderServiceJpa.changeOrderStatus(orderId, orderRequest.getOrderStatus()));
+        return ResponseEntity.ok(orderService.changeOrderStatus(orderId, orderRequest.getOrderStatus()));
     }
 }

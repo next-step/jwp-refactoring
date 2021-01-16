@@ -15,12 +15,12 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class MenuServiceIntegrationTest extends IntegrationTest {
 
     @Autowired
-    MenuServiceJpa menuServiceJpa;
+    MenuService menuService;
 
     @DisplayName("메뉴에 상품을 여러개 등록할 수 있다.")
     @Test
     void createMenu() {
-        MenuResponse menuResponse = menuServiceJpa.create(new MenuRequestBuilder()
+        MenuResponse menuResponse = menuService.create(new MenuRequestBuilder()
                 .withName("후라이드+양념")
                 .withPrice(31000)
                 .withGroupId(1L)
@@ -42,7 +42,7 @@ class MenuServiceIntegrationTest extends IntegrationTest {
                     .withGroupId(1L)
                     .addMenuProduct(2L, 1)
                     .build();
-            menuServiceJpa.create(menuRequest);
+            menuService.create(menuRequest);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -55,7 +55,7 @@ class MenuServiceIntegrationTest extends IntegrationTest {
                     .withPrice(35000)
                     .withGroupId(1L)
                     .build();
-            menuServiceJpa.create(menuRequest);
+            menuService.create(menuRequest);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -63,7 +63,7 @@ class MenuServiceIntegrationTest extends IntegrationTest {
     @Test
     void menuPriceLessThanProductAllPrice() {
         assertThatThrownBy(() -> {
-            menuServiceJpa.create(new MenuRequestBuilder()
+            menuService.create(new MenuRequestBuilder()
                     .withName("후라이드+양념")
                     .withPrice(35000)
                     .withGroupId(1L)

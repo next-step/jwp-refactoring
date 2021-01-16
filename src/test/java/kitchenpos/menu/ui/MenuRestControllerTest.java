@@ -5,7 +5,7 @@ import kitchenpos.menu.util.MenuRequestBuilder;
 import kitchenpos.menu.util.MenuResponseBuilder;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menu.service.MenuServiceJpa;
+import kitchenpos.menu.service.MenuService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,7 +34,7 @@ class MenuRestControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private MenuServiceJpa menuServiceJpa;
+    private MenuService menuService;
 
     @DisplayName("메뉴를 등록할 수 있다.")
     @Test
@@ -56,7 +56,7 @@ class MenuRestControllerTest {
                 .addMenuProduct(2L, "양념치킨", 1)
                 .build();
 
-        when(menuServiceJpa.create(any())).thenReturn(menuResponse);
+        when(menuService.create(any())).thenReturn(menuResponse);
 
         mockMvc.perform(post("/api/menus")
                 .content(objectMapper.writeValueAsString(menuRequest)).contentType(MediaType.APPLICATION_JSON))
@@ -87,7 +87,7 @@ class MenuRestControllerTest {
                 .addMenuProduct(2L, "통구이", 1)
                 .build();
 
-        when(menuServiceJpa.list()).thenReturn(Arrays.asList(menuResponse, menuResponse2));
+        when(menuService.list()).thenReturn(Arrays.asList(menuResponse, menuResponse2));
 
         mockMvc.perform(get("/api/menus"))
                 .andDo(print())

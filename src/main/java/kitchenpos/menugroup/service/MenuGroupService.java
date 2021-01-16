@@ -12,10 +12,10 @@ import java.util.stream.Collectors;
 
 @Transactional
 @Service
-public class MenuGroupServiceJpa {
+public class MenuGroupService {
     private final MenuGroupRepository menuGroupRepository;
 
-    public MenuGroupServiceJpa(MenuGroupRepository menuGroupRepository) {
+    public MenuGroupService(MenuGroupRepository menuGroupRepository) {
         this.menuGroupRepository = menuGroupRepository;
     }
 

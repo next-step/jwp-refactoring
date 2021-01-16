@@ -3,7 +3,7 @@ package kitchenpos.table.service;
 import kitchenpos.IntegrationTest;
 import kitchenpos.order.domain.OrderLineItemRepository;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.service.OrderServiceJpa;
+import kitchenpos.order.service.OrderService;
 import kitchenpos.order.util.OrderRequestBuilder;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableResponse;
@@ -20,7 +20,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 class OrderTableServiceIntegrationTest extends IntegrationTest {
 
     @Autowired
-    private OrderTableServiceJpa tableService;
+    private OrderTableService tableService;
 
     @Autowired
     private OrderTableRepository orderTableRepository;
@@ -32,7 +32,7 @@ class OrderTableServiceIntegrationTest extends IntegrationTest {
     private OrderRepository orderRepository;
 
     @Autowired
-    private OrderServiceJpa orderServiceJpa;
+    private OrderService orderService;
 
     private OrderTableResponse orderTableResponse;
 
@@ -71,7 +71,7 @@ class OrderTableServiceIntegrationTest extends IntegrationTest {
     @DisplayName("테이블의 주문 상태가 요리중, 식사중일때 빈 테이블로 바꿀수 없다.")
     @Test
     void expectedExceptionNotCompleteOrderWhenChangeTableEmpty() {
-        orderServiceJpa.create(new OrderRequestBuilder()
+        orderService.create(new OrderRequestBuilder()
                 .withOrderTableId(this.orderTableResponse.getId())
                 .addOrderLineItem(1L, 1)
                 .addOrderLineItem(2L, 1)

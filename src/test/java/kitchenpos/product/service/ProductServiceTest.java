@@ -13,10 +13,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-class ProductServiceJpaTest extends IntegrationTest {
+class ProductServiceTest extends IntegrationTest {
 
     @Autowired
-    private ProductServiceJpa productService;
+    private ProductService productService;
 
     @DisplayName("상품을 등록할 수 있다.")
     @Test

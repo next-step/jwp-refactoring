@@ -2,7 +2,7 @@ package kitchenpos.menu.ui;
 
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menu.service.MenuServiceJpa;
+import kitchenpos.menu.service.MenuService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,9 +14,9 @@ import java.util.List;
 
 @RestController
 public class MenuRestController {
-    private final MenuServiceJpa menuService;
+    private final MenuService menuService;
 
-    public MenuRestController(MenuServiceJpa menuService) {
+    public MenuRestController(MenuService menuService) {
         this.menuService = menuService;
     }
 

@@ -14,14 +14,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 class MenuGroupServiceIntegrationTest extends IntegrationTest {
 
     @Autowired
-    private MenuGroupServiceJpa menuGroupServiceJpa;
+    private MenuGroupService menuGroupService;
 
 
     @DisplayName("메뉴 그룹을 등록할 수 있다.")
     @Test
     void addMenus() {
 
-        MenuGroupResponse 할인메뉴 = menuGroupServiceJpa.create(new MenuGroupRequest("할인메뉴"));
+        MenuGroupResponse 할인메뉴 = menuGroupService.create(new MenuGroupRequest("할인메뉴"));
 
         assertThat(할인메뉴.getName()).isEqualTo("할인메뉴");
         assertThat(할인메뉴.getId()).isNotNull();
@@ -30,7 +30,7 @@ class MenuGroupServiceIntegrationTest extends IntegrationTest {
     @DisplayName("매뉴 그룹의 목록을 조회할 수 있다.")
     @Test
     void listMenu() {
-        List<MenuGroupResponse> menus = menuGroupServiceJpa.list();
+        List<MenuGroupResponse> menus = menuGroupService.list();
         assertThat(menus)
                 .extracting("name")
                 .containsExactly("두마리메뉴", "한마리메뉴", "순살파닭두마리메뉴", "신메뉴");

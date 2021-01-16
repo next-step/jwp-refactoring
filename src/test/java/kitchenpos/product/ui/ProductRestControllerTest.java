@@ -1,8 +1,7 @@
 package kitchenpos.product.ui;
 
 import kitchenpos.product.dto.ProductResponse;
-import kitchenpos.product.service.ProductServiceJpa;
-import kitchenpos.product.ui.ProductRestController;
+import kitchenpos.product.service.ProductService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,7 +27,7 @@ class ProductRestControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    ProductServiceJpa productService;
+    ProductService productService;
 
     @DisplayName("상품의 목록을 조회할 수 있다.")
     @Test

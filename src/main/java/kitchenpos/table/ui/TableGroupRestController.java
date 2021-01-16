@@ -2,7 +2,7 @@ package kitchenpos.table.ui;
 
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
-import kitchenpos.table.service.TableGroupServiceJpa;
+import kitchenpos.table.service.TableGroupService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,15 +14,15 @@ import java.net.URI;
 
 @RestController
 public class TableGroupRestController {
-    private final TableGroupServiceJpa tableGroupServiceJpa;
+    private final TableGroupService tableGroupService;
 
-    public TableGroupRestController(TableGroupServiceJpa tableGroupServiceJpa) {
-        this.tableGroupServiceJpa = tableGroupServiceJpa;
+    public TableGroupRestController(TableGroupService tableGroupService) {
+        this.tableGroupService = tableGroupService;
     }
 
     @PostMapping(value = "/api/table-groups")
     public ResponseEntity<TableGroupResponse> create(@RequestBody final TableGroupRequest tableGroupRequest) {
-        final TableGroupResponse tableGroupResponse = tableGroupServiceJpa.create(tableGroupRequest);
+        final TableGroupResponse tableGroupResponse = tableGroupService.create(tableGroupRequest);
         final URI uri = URI.create("/api/table-groups/" + tableGroupResponse.getId());
         return ResponseEntity.created(uri)
                 .body(tableGroupResponse)
@@ -31,7 +31,7 @@ public class TableGroupRestController {
 
     @DeleteMapping("/api/table-groups/{tableGroupId}")
     public ResponseEntity<Void> ungroup(@PathVariable final Long tableGroupId) {
-        tableGroupServiceJpa.ungroup(tableGroupId);
+        tableGroupService.ungroup(tableGroupId);
         return ResponseEntity.noContent()
                 .build()
                 ;

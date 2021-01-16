@@ -1,13 +1,9 @@
 package kitchenpos.menugroup.ui;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.menu.dto.MenuProductResponse;
-import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
-import kitchenpos.menugroup.service.MenuGroupServiceJpa;
+import kitchenpos.menugroup.service.MenuGroupService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,7 +33,7 @@ class MenuGroupRestControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private MenuGroupServiceJpa menuGroupService;
+    private MenuGroupService menuGroupService;
 
 
     @DisplayName("메뉴 그룹을 등록할 수 있다.")

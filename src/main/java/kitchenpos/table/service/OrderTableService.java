@@ -1,6 +1,5 @@
 package kitchenpos.table.service;
 
-import kitchenpos.order.service.OrderServiceJpa;
 import kitchenpos.order.service.OrderStatusService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -14,11 +13,11 @@ import java.util.stream.Collectors;
 
 @Transactional
 @Service
-public class OrderTableServiceJpa {
+public class OrderTableService {
     private final OrderTableRepository orderTableRepository;
     private final OrderStatusService orderstatusService;
 
-    public OrderTableServiceJpa(OrderTableRepository orderTableRepository, OrderStatusService orderstatusService) {
+    public OrderTableService(OrderTableRepository orderTableRepository, OrderStatusService orderstatusService) {
         this.orderTableRepository = orderTableRepository;
         this.orderstatusService = orderstatusService;
     }

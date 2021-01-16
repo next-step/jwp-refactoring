@@ -4,7 +4,7 @@ import kitchenpos.IntegrationTest;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.util.OrderRequestBuilder;
-import kitchenpos.table.service.OrderTableServiceJpa;
+import kitchenpos.table.service.OrderTableService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,16 +15,16 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class OrderServiceIntegrationTest extends IntegrationTest {
 
     @Autowired
-    private OrderServiceJpa orderServiceJpa;
+    private OrderService orderService;
 
     @Autowired
-    private OrderTableServiceJpa orderTableServiceJpa;
+    private OrderTableService orderTableService;
 
 
     @DisplayName("주문을 등록할 수 있다.")
     @Test
     void createOrder() {
-        OrderResponse orderResponse = orderServiceJpa.create(new OrderRequestBuilder()
+        OrderResponse orderResponse = orderService.create(new OrderRequestBuilder()
                 .withOrderTableId(1L)
                 .addOrderLineItem(1L, 1)
                 .addOrderLineItem(2L, 1)
@@ -37,7 +37,7 @@ public class OrderServiceIntegrationTest extends IntegrationTest {
     @Test
     void expectedExceptionOrderInMenuGraterThanOne() {
         // when then
-        assertThatThrownBy(() -> orderServiceJpa.create(new OrderRequestBuilder()
+        assertThatThrownBy(() -> orderService.create(new OrderRequestBuilder()
                 .withOrderTableId(1L)
                 .build()))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -48,10 +48,10 @@ public class OrderServiceIntegrationTest extends IntegrationTest {
     @Test
     void expectedExceptionNotEmptyTable() {
         // given
-        orderTableServiceJpa.changeEmpty(1L, false);
+        orderTableService.changeEmpty(1L, false);
 
         // when then
-        assertThatThrownBy(() -> orderServiceJpa.create(new OrderRequestBuilder()
+        assertThatThrownBy(() -> orderService.create(new OrderRequestBuilder()
                 .withOrderTableId(1L)
                 .addOrderLineItem(1L, 1)
                 .addOrderLineItem(2L, 1)
@@ -64,7 +64,7 @@ public class OrderServiceIntegrationTest extends IntegrationTest {
     @Test
     void expectedExceptionNotExistMenu() {
         // when then
-        assertThatThrownBy(() -> orderServiceJpa.create(new OrderRequestBuilder()
+        assertThatThrownBy(() -> orderService.create(new OrderRequestBuilder()
                 .withOrderTableId(1L)
                 .addOrderLineItem(10L, 1)
                 .build()))
@@ -75,34 +75,34 @@ public class OrderServiceIntegrationTest extends IntegrationTest {
     @DisplayName("주문 목록을 가져올 수 있다.")
     @Test
     void findAllOrders() {
-        orderServiceJpa.create(new OrderRequestBuilder()
+        orderService.create(new OrderRequestBuilder()
                 .withOrderTableId(1L)
                 .addOrderLineItem(1L, 1)
                 .addOrderLineItem(2L, 1)
                 .build());
 
-        orderServiceJpa.create(new OrderRequestBuilder()
+        orderService.create(new OrderRequestBuilder()
                 .withOrderTableId(1L)
                 .addOrderLineItem(1L, 1)
                 .addOrderLineItem(2L, 1)
                 .build());
 
-        assertThat(orderServiceJpa.list()).hasSize(2);
+        assertThat(orderService.list()).hasSize(2);
     }
 
     @DisplayName("완료된 주문 상태 변경 요청")
     @Test
     void expectedExceptionAlreadyCompleteOrderStatus() {
         // given
-        long orderId = orderServiceJpa.create(new OrderRequestBuilder()
+        long orderId = orderService.create(new OrderRequestBuilder()
                 .withOrderTableId(1L)
                 .addOrderLineItem(1L, 1)
                 .addOrderLineItem(2L, 1)
                 .build()).getId();
-        orderServiceJpa.changeOrderStatus(orderId, Order.OrderStatus.COMPLETION.name());
+        orderService.changeOrderStatus(orderId, Order.OrderStatus.COMPLETION.name());
 
         // when then
-        assertThatThrownBy(() -> orderServiceJpa.changeOrderStatus(orderId, Order.OrderStatus.MEAL.name()))
+        assertThatThrownBy(() -> orderService.changeOrderStatus(orderId, Order.OrderStatus.MEAL.name()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("이미 완료된 주문입니다.");
 
