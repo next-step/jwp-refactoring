@@ -9,8 +9,6 @@ import java.util.Objects;
  */
 public class Money {
 
-    public static Money ZERO = new Money(0L);
-
     public long amount;
 
     private Money(long amount) {
@@ -22,26 +20,6 @@ public class Money {
 
     public static Money won(long amount) {
         return new Money(amount);
-    }
-
-    public Money plus(Money money) {
-        return new Money(this.amount + money.amount);
-    }
-
-    public Money minus(Money money) {
-        return new Money(this.amount - money.amount);
-    }
-
-    public Money times(double percent) {
-        return new Money((long)(this.amount * percent));
-    }
-
-    public long getAmountLongValue() {
-        return amount;
-    }
-
-    public boolean isLessThen(Money otherMoney) {
-        return amount < otherMoney.amount;
     }
 
     @Override

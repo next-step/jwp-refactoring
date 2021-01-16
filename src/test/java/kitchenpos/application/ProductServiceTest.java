@@ -3,7 +3,6 @@ package kitchenpos.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.math.BigDecimal;
 import kitchenpos.application.creator.ProductHelper;
 import kitchenpos.dto.ProductCreateRequest;
 import kitchenpos.dto.ProductDto;

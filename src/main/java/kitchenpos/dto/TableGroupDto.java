@@ -7,8 +7,11 @@ import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 
 public class TableGroupDto {
+
     private Long id;
+
     private LocalDateTime createdDate;
+
     private List<OrderTableDto> orderTables;
 
     public Long getId() {

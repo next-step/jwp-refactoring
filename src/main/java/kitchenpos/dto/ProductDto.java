@@ -5,8 +5,11 @@ import kitchenpos.domain.Money;
 import kitchenpos.domain.Product;
 
 public class ProductDto {
+
     private Long id;
+
     private String name;
+
     private BigDecimal price;
 
     public Long getId() {

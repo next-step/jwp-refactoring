@@ -3,8 +3,6 @@ package kitchenpos.repository;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.dto.MenuDto;
 import org.springframework.data.repository.RepositoryDefinition;
 
 @RepositoryDefinition(idClass = Long.class, domainClass = Menu.class)
