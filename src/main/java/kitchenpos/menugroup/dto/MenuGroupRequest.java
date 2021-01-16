@@ -1,2 +1,27 @@
-package kitchenpos.menugroup.dio;public class MenuGroupRequest {
+package kitchenpos.menugroup.dto;
+
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.order.domain.Orders;
+
+public class MenuGroupRequest {
+
+	private String name;
+
+	public MenuGroup toEntity() {
+		return new MenuGroup(this.name);
+	}
+
+	public MenuGroupRequest() {
+	}
+	public MenuGroupRequest(String name) {
+		this.name = name;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 }
