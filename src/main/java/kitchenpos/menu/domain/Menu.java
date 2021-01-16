@@ -69,14 +69,7 @@ public class Menu {
     }
 
     public void updateMenuProducts(MenuProducts menuProducts) {
-        checkPriceExpensiveThanProductsPriceSum(menuProducts);
         menuProducts.updateMenu(this);
         this.menuProducts = menuProducts;
-    }
-
-    private void checkPriceExpensiveThanProductsPriceSum(MenuProducts menuProducts) {
-        if (price.isExpensiveThan(menuProducts.priceSum())) {
-            throw new IllegalArgumentException("메뉴의 가격이 메뉴의 속하는 상품 가격의 합보다 비쌉니다.");
-        }
     }
 }

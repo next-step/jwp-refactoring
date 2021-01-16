@@ -1,5 +1,7 @@
 package kitchenpos.common.domain;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Embeddable;
 
 import io.micrometer.core.instrument.util.StringUtils;
@@ -25,5 +27,9 @@ public class PositiveQuantity {
 
 	public long value() {
 		return this.quantity;
+	}
+
+	public BigDecimal toBigDecimal() {
+		return BigDecimal.valueOf(quantity);
 	}
 }

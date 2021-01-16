@@ -8,6 +8,8 @@ import java.math.BigDecimal;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import kitchenpos.common.domain.Price;
+
 public class MenuProductTest {
 
 	@Test
@@ -19,9 +21,9 @@ public class MenuProductTest {
 		BigDecimal expected = price.multiply(BigDecimal.valueOf(quantity));
 
 		//when
-		BigDecimal pricePerQuantity = 메뉴상품_후라이드.priceForQuantity();
+		Price pricePerQuantity = 메뉴상품_후라이드.findPriceForQuantity();
 
 		//then
-		assertThat(pricePerQuantity).isEqualByComparingTo(expected);
+		assertThat(pricePerQuantity.value()).isEqualByComparingTo(expected);
 	}
 }

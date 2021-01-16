@@ -7,6 +7,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
+import kitchenpos.common.domain.Price;
+
 @Embeddable
 public class MenuProducts {
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -23,15 +25,22 @@ public class MenuProducts {
         return this.menuProducts;
     }
 
-    public BigDecimal priceSum() {
-        BigDecimal sum = BigDecimal.ZERO;
-        for (final MenuProduct menuProduct : menuProducts) {
-            sum = sum.add(menuProduct.priceForQuantity());
-        }
-        return sum;
+    public void updateMenu(Menu menu) {
+        checkPriceExpensiveThanProductsPriceSum(new Price(menu.getPrice()));
+        menuProducts.forEach(menuProduct -> menuProduct.updateMenu(menu));
     }
 
-    public void updateMenu(Menu menu) {
-        menuProducts.forEach(menuProduct -> menuProduct.updateMenu(menu));
+    private void checkPriceExpensiveThanProductsPriceSum(Price menuPrice) {
+        if (menuPrice.isExpensiveThan(findPriceSum())) {
+            throw new IllegalArgumentException("메뉴의 가격이 메뉴의 속하는 상품 가격의 합보다 비쌉니다.");
+        }
+    }
+
+    protected Price findPriceSum() {
+        Price priceSum = new Price();
+        for (final MenuProduct menuProduct : menuProducts) {
+            priceSum.add(menuProduct.findPriceForQuantity());
+        }
+        return priceSum;
     }
 }

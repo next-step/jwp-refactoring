@@ -11,6 +11,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import kitchenpos.common.domain.Price;
+
 public class MenuProductsTest {
 
 	private MenuProduct menuProduct1;
@@ -37,9 +39,9 @@ public class MenuProductsTest {
 		MenuProducts actual = new MenuProducts(menuProducts);
 
 		//when
-		BigDecimal sum = actual.priceSum();
+		Price sum = actual.findPriceSum();
 
 		//then
-		assertThat(sum).isEqualByComparingTo(priceSum);
+		assertThat(sum.value()).isEqualByComparingTo(priceSum);
 	}
 }

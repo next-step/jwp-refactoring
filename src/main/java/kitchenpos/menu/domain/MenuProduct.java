@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import kitchenpos.common.domain.PositiveQuantity;
+import kitchenpos.common.domain.Price;
 import kitchenpos.product.domain.Product;
 
 @Entity
@@ -60,10 +61,8 @@ public class MenuProduct {
         return product.getId();
     }
 
-    public BigDecimal priceForQuantity() {
-        return product.getPrice().multiply(
-            BigDecimal.valueOf(quantity.value())
-        );
+    public Price findPriceForQuantity() {
+        return product.findPriceForQuantity(quantity);
     }
 
     public long getQuantity() {

@@ -14,9 +14,10 @@ public class PriceTest {
 	void isExpensiveThan() {
 		//given
 		Price basePrice = new Price(BigDecimal.TEN);
+		Price comparePrice = new Price(BigDecimal.ONE);
 
 		//when-then
-		assertThat(basePrice.isExpensiveThan(BigDecimal.ONE)).isTrue();
+		assertThat(basePrice.isExpensiveThan(comparePrice)).isTrue();
 	}
 
 	@Test
@@ -24,9 +25,10 @@ public class PriceTest {
 	void isSameWith() {
 		//given
 		Price basePrice = new Price(BigDecimal.TEN);
+		Price comparePrice = new Price(BigDecimal.TEN);
 
 		//when-then
-		assertThat(basePrice.isExpensiveThan(BigDecimal.TEN)).isFalse();
+		assertThat(basePrice.isExpensiveThan(comparePrice)).isFalse();
 	}
 
 	@Test
@@ -34,9 +36,10 @@ public class PriceTest {
 	void isCheaperThan() {
 		//given
 		Price basePrice = new Price(BigDecimal.ONE);
+		Price comparePrice = new Price(BigDecimal.TEN);
 
 		//when-then
-		assertThat(basePrice.isExpensiveThan(BigDecimal.TEN)).isFalse();
+		assertThat(basePrice.isExpensiveThan(comparePrice)).isFalse();
 	}
 
 	@Test

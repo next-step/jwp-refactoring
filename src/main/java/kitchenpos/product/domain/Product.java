@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import kitchenpos.common.domain.Name;
+import kitchenpos.common.domain.PositiveQuantity;
 import kitchenpos.common.domain.Price;
 
 @Entity
@@ -49,5 +50,9 @@ public class Product {
 
     public BigDecimal getPrice() {
         return price.value();
+    }
+
+    public Price findPriceForQuantity(PositiveQuantity quantity) {
+        return price.multiply(quantity.toBigDecimal());
     }
 }
