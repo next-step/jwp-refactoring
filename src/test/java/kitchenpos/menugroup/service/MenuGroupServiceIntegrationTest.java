@@ -11,7 +11,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class MenuGroupServiceJpaTest extends IntegrationTest {
+class MenuGroupServiceIntegrationTest extends IntegrationTest {
 
     @Autowired
     private MenuGroupServiceJpa menuGroupServiceJpa;
