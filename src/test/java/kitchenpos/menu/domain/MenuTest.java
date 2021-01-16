@@ -40,7 +40,7 @@ public class MenuTest {
 		assertThatThrownBy(() -> new Menu.Builder("비싼메뉴"
 			, expensivePrice
 			, new MenuGroup()
-			, new MenuProducts(menuProducts))
+			, menuProducts)
 			.build())
 			.isInstanceOf(IllegalArgumentException.class);
 	}

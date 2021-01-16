@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.springframework.util.CollectionUtils;
+
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 
@@ -65,16 +67,23 @@ public class Menu {
 
         private Long id;
 
-        public Builder(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        public Builder(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
             this.name = new Name(name);
             this.price = new Price(price);
             this.menuGroup = menuGroup;
-            this.menuProducts = menuProducts;
+            this.menuProducts = checkValidMenuProducts(menuProducts);
         }
 
         public Builder id(Long id) {
             this.id = id;
             return this;
+        }
+
+        private MenuProducts checkValidMenuProducts(List<MenuProduct> menuProducts) {
+            if (CollectionUtils.isEmpty(menuProducts)) {
+                throw new IllegalArgumentException("메뉴에는 1개 이상의 상품이 포함되어야합니다.");
+            }
+            return new MenuProducts(menuProducts);
         }
 
         public Menu build() {

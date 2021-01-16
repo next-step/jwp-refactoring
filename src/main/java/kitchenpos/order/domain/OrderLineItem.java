@@ -33,9 +33,8 @@ public class OrderLineItem {
         this.quantity = new PositiveQuantity(quantity);
     }
 
-    public OrderLineItem(Long seq, Order order, Menu menu, long quantity) {
+    public OrderLineItem(Long seq, Menu menu, long quantity) {
         this.seq = seq;
-        this.order = order;
         this.menu = menu;
         this.quantity = new PositiveQuantity(quantity);
     }

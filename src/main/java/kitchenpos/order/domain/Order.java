@@ -18,6 +18,7 @@ import javax.persistence.Table;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.util.CollectionUtils;
 
 @Entity
 @Table(name = "orders")
@@ -37,18 +38,6 @@ public class Order {
     private OrderLineItems orderLineItems;
 
     protected Order() {
-    }
-
-    public Order(OrderTable orderTable) {
-        this.orderTable = orderTable;
-        this.orderStatus = OrderStatus.COOKING;
-    }
-
-    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
-        this.id = id;
-        this.orderTable = orderTable;
-        this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
     }
 
     public Long getId() {
@@ -89,5 +78,60 @@ public class Order {
         if (Objects.equals(OrderStatus.COMPLETION, this.orderStatus)) {
             throw new IllegalArgumentException("계산완료된 주문의 상태는 변경할 수 없습니다.");
         }
+    }
+
+    public static class Builder {
+        private Long id;
+        private OrderTable orderTable;
+        private OrderStatus orderStatus;
+        private LocalDateTime orderedTime;
+        private OrderLineItems orderLineItems;
+
+        public Builder(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+            this.orderTable = checkValidTable(orderTable);
+            this.orderLineItems = checkValidOrderLineItems(orderLineItems);
+            this.orderStatus = OrderStatus.COOKING;
+        }
+
+        public Order.Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Order.Builder orderedTime(LocalDateTime orderedTime) {
+            this.orderedTime = orderedTime;
+            return this;
+        }
+
+        public Order.Builder orderStatus(OrderStatus orderStatus) {
+            this.orderStatus = orderStatus;
+            return this;
+        }
+
+        private OrderTable checkValidTable(OrderTable orderTable) {
+            if (orderTable.isEmpty()) {
+                throw new IllegalArgumentException("빈 테이블은 주문할 수 없습니다.");
+            }
+            return orderTable;
+        }
+
+        private OrderLineItems checkValidOrderLineItems(List<OrderLineItem> orderLineItems) {
+            if (CollectionUtils.isEmpty(orderLineItems)) {
+                throw new IllegalArgumentException("주문에는 1개 이상의 메뉴가 포함되어야합니다.");
+            }
+            return new OrderLineItems(orderLineItems);
+        }
+
+        public Order build() {
+            return new Order(this);
+        }
+    }
+
+    private Order (Order.Builder builder) {
+        this.id = builder.id;
+        this.orderTable = builder.orderTable;
+        this.orderStatus = builder.orderStatus;
+        this.orderedTime = builder.orderedTime;
+        updateOrderLineItems(builder.orderLineItems);
     }
 }

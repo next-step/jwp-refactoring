@@ -1,6 +1,5 @@
 package kitchenpos.order.application;
 
-import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
@@ -14,7 +13,6 @@ import kitchenpos.order.domain.OrderTable;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,8 +35,10 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        Order order = new Order(findOrderTable(orderRequest.getOrderTableId()));
-        order.updateOrderLineItems(findOrderLineItems(orderRequest.getOrderLineItems()));
+        Order order = new Order.Builder(
+            findOrderTable(orderRequest.getOrderTableId())
+            , findOrderLineItems(orderRequest.getOrderLineItems())
+        ).build();
         return OrderResponse.of(orderRepository.save(order));
     }
 
@@ -57,26 +57,17 @@ public class OrderService {
     }
 
     private OrderTable findOrderTable(final Long orderTableId) {
-        final OrderTable orderTable = orderTableRepository.findById(orderTableId)
+        return orderTableRepository.findById(orderTableId)
             .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 테이블 입니다."));
-
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException("빈 테이블은 주문할 수 없습니다.");
-        }
-        return orderTable;
     }
 
-    private OrderLineItems findOrderLineItems(final List<OrderLineItemRequest> orderLineItemRequests) {
-        if (CollectionUtils.isEmpty(orderLineItemRequests)) {
-            throw new IllegalArgumentException("주문에는 1개 이상의 메뉴가 포함되어야합니다.");
-        }
-
+    private List<OrderLineItem> findOrderLineItems(final List<OrderLineItemRequest> orderLineItemRequests) {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
-        for (OrderLineItemRequest orderLineItem : orderLineItemRequests) {
-            Menu menu = menuRepository.findById(orderLineItem.getMenuId())
+        for (final OrderLineItemRequest orderLineItem : orderLineItemRequests) {
+            final Menu menu = menuRepository.findById(orderLineItem.getMenuId())
                 .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 메뉴입니다."));
             orderLineItems.add(new OrderLineItem(menu, orderLineItem.getQuantity()));
         }
-        return new OrderLineItems(orderLineItems);
+        return orderLineItems;
     }
 }

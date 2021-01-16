@@ -55,13 +55,13 @@ public class MenuService {
             .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 메뉴그룹 입니다."));
     }
 
-    private MenuProducts findMenuProducts(final List<MenuProductRequest> menuProductRequests) {
-        final List<MenuProduct> menuProducts = new ArrayList<>();
+    private List<MenuProduct> findMenuProducts(final List<MenuProductRequest> menuProductRequests) {
+        List<MenuProduct> menuProducts = new ArrayList<>();
         for (final MenuProductRequest menuProduct : menuProductRequests) {
             final Product product = productRepository.findById(menuProduct.getProductId())
                 .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 상품 입니다."));
             menuProducts.add(menuProduct.toMenuProduct(product));
         }
-        return new MenuProducts(menuProducts);
+        return menuProducts;
     }
 }
