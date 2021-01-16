@@ -1,5 +1,6 @@
 package kitchenpos;
 
+import kitchenpos.utils.DatabaseCleanup;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,11 +12,10 @@ import org.springframework.test.context.TestPropertySource;
 public class IntegrationTest {
 
     @Autowired
-    private Flyway flyway;
+    private DatabaseCleanup databaseCleanup;
 
     @BeforeEach
     void setUp() {
-        flyway.clean();
-        flyway.migrate();
+        databaseCleanup.execute();
     }
 }
