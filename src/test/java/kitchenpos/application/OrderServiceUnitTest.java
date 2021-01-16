@@ -30,6 +30,8 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceUnitTest {
 
+    static OrderLineItem 주문_항목_후라이드치킨;
+
     @Mock
     private OrderDao orderDao;
 
@@ -42,11 +44,10 @@ public class OrderServiceUnitTest {
     @InjectMocks
     private OrderService orderService;
 
-    OrderLineItem 주문_항목_후라이드치킨;
 
     @BeforeAll
     static void setUp() {
-        OrderLineItem 주문_항목_후라이드치킨 = new OrderLineItem();
+        주문_항목_후라이드치킨 = new OrderLineItem();
         주문_항목_후라이드치킨.setMenuId(DefaultData.메뉴_후라이드치킨_ID);
     }
 
