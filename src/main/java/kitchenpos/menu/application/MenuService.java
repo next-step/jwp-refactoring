@@ -39,7 +39,7 @@ public class MenuService {
         return MenuResponse.of(menuRepository.save(menu));
     }
 
-    public List<MenuResponse> list() {
+    public List<MenuResponse> findAll() {
         List<Menu> menus = menuRepository.findAll();
         return menus.stream()
                 .map(MenuResponse::of)
