@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain;
 
-import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -12,7 +12,7 @@ import kitchenpos.common.domain.Price;
 @Embeddable
 public class MenuProducts {
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MenuProduct> menuProducts;
+    private List<MenuProduct> menuProducts = new ArrayList<>();
 
     protected MenuProducts() {
     }

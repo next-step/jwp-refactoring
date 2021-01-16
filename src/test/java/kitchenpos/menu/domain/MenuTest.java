@@ -34,11 +34,14 @@ public class MenuTest {
 	@DisplayName("메뉴구성상품 설정 시, 구성상품 가격의 합보다 메뉴의 가격이 비싸면 IllegalArgumentException 을 throw 해야한다.")
 	void priceSum() {
 		//given
-		BigDecimal expensivePrice = priceSum.add(BigDecimal.valueOf(10000));
-		Menu expensiveMenu = new Menu("비싼메뉴", expensivePrice);
+		BigDecimal expensivePrice = priceSum.add(BigDecimal.valueOf(100000));
 
 		//when-then
-		assertThatThrownBy(() -> expensiveMenu.updateMenuProducts(new MenuProducts(menuProducts)))
+		assertThatThrownBy(() -> new Menu.Builder("비싼메뉴"
+			, expensivePrice
+			, new MenuGroup()
+			, new MenuProducts(menuProducts))
+			.build())
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 }

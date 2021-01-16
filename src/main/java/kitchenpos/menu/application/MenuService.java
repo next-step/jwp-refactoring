@@ -35,9 +35,12 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        Menu menu = menuRequest.toMenu();
-        menu.updateMenuGroup(findMenuGroup(menuRequest.getMenuGroupId()));
-        menu.updateMenuProducts(findMenuProducts(menuRequest.getMenuProducts()));
+        Menu menu = new Menu.Builder(
+            menuRequest.getName()
+            , menuRequest.getPrice()
+            , findMenuGroup(menuRequest.getMenuGroupId())
+            , findMenuProducts(menuRequest.getMenuProducts())
+        ).build();
 
         return MenuResponse.of(menuRepository.save(menu));
     }
