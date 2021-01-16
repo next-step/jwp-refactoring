@@ -40,7 +40,7 @@ class ProductServiceTest {
         // then
         assertThat(productResponse).isNotNull();
         assertThat(productResponse.getName()).isEqualTo(this.product1.getName());
-        assertThat(productResponse.getPrice()).isEqualTo(this.product1.getPrice().get());
+        assertThat(productResponse.getPrice()).isEqualTo(this.product1.getPrice().getValue());
     }
 
     @Test

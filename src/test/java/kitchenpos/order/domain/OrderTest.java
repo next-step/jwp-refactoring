@@ -4,6 +4,9 @@ import kitchenpos.ordertable.domain.OrderTable;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -53,9 +56,10 @@ class OrderTest {
                 .withMessageMatching("빈 테이블에는 주문을 등록할 수 없습니다.");
     }
 
-    @Test
     @DisplayName("주문 상태를 변경할 수 있다.")
-    public void changeOrderStatus() throws Exception {
+    @ParameterizedTest
+    @EnumSource(value = OrderStatus.class, names = {"MEAL", "COMPLETION"})
+    public void changeOrderStatus(OrderStatus orderStatus) throws Exception {
         // given
         OrderTable orderTable = new OrderTable(0, false);
         OrderLineItem orderLineItem = new OrderLineItem();
@@ -63,14 +67,9 @@ class OrderTest {
         Order order = Order.of(orderTable, orderLineItems);
 
         // when
-        order.changeOrderStatus(OrderStatus.MEAL);
+        order.changeOrderStatus(orderStatus);
         // then
-        Assertions.assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
-
-        // when
-        order.changeOrderStatus(OrderStatus.COMPLETION);
-        // then
-        Assertions.assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
+        Assertions.assertThat(order.getOrderStatus()).isEqualTo(orderStatus);
     }
 
     @Test

@@ -56,7 +56,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 메뉴_등록_요청(String name, int price, MenuGroupResponse menuGroup, List<MenuProductRequest> menuProducts) {
-        MenuRequest menuRequest = new MenuRequest(name, Price.of(price).get(), menuGroup.getId(), menuProducts);
+        MenuRequest menuRequest = new MenuRequest(name, Price.of(price).getValue(), menuGroup.getId(), menuProducts);
 
         return RestAssured
                 .given().log().all()

@@ -33,10 +33,8 @@ public class MenuProducts {
     }
 
     public Price calculateSumPrice() {
-        int sum = menuProducts.stream()
+        return menuProducts.stream()
                 .map(MenuProduct::calculatePrice)
-                .mapToInt(Price::intValue)
-                .sum();
-        return Price.of(sum);
+                .reduce(Price.ZERO, Price::add);
     }
 }

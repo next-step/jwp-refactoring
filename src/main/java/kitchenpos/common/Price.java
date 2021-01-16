@@ -1,11 +1,15 @@
 package kitchenpos.common;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
 @Embeddable
 public class Price {
+    public static final Price ZERO = Price.of(0);
+
+    @Column
     private BigDecimal price;
 
     protected Price() {}
@@ -32,14 +36,14 @@ public class Price {
     }
 
     public Price subtract(Price other) {
-        return new Price(this.price.subtract(other.get()));
+        return new Price(this.price.subtract(other.getValue()));
     }
 
     public Price multiply(long count) {
         return new Price(this.price.multiply(BigDecimal.valueOf(count)));
     }
 
-    public BigDecimal get() {
+    public BigDecimal getValue() {
         return this.price;
     }
 
@@ -48,7 +52,7 @@ public class Price {
     }
 
     public boolean isBiggerThan(Price other) {
-        return price.intValue() > other.get().intValue();
+        return price.intValue() > other.getValue().intValue();
     }
 
     private void validate(BigDecimal price) {
