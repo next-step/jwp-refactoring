@@ -1,7 +1,7 @@
 package kitchenpos.domain;
 
 import kitchenpos.application.OrderService;
-import kitchenpos.dao.MenuDao;
+import kitchenpos.repository.MenuRepository;
 import kitchenpos.repository.OrderLineItemRepository;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
@@ -30,7 +30,7 @@ import static org.mockito.Mockito.mock;
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class OrderServiceTest {
 	@Mock
-	private MenuDao menuDao;
+	private MenuRepository menuRepository;
 
 	@Mock
 	private OrderRepository orderRepository;
@@ -48,7 +48,7 @@ public class OrderServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		orderService = new OrderService(menuDao, orderRepository, orderLineItemRepository, orderTableRepository);
+		orderService = new OrderService(menuRepository, orderRepository, orderLineItemRepository, orderTableRepository);
 		assertThat(orderService).isNotNull();
 		order = mock(Order.class);
 	}
@@ -58,7 +58,7 @@ public class OrderServiceTest {
 	void create() {
 		given(order.getId()).willReturn(1L);
 		given(order.getOrderTableId()).willReturn(1L);
-		given(menuDao.countByIdIn(anyList())).willReturn(2L);
+		given(menuRepository.countByIdIn(anyList())).willReturn(2);
 		given(orderTableRepository.findById(any())).willReturn(Optional.of(mock(OrderTable.class)));
 		given(order.getOrderLineItems()).willReturn(new ArrayList<>(Arrays.asList(mock(OrderLineItem.class), mock(OrderLineItem.class))));
 

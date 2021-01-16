@@ -1,9 +1,9 @@
 package kitchenpos.domain;
 
 import kitchenpos.application.MenuService;
-import kitchenpos.dao.MenuDao;
 import kitchenpos.repository.MenuGroupRepository;
 import kitchenpos.repository.MenuProductRepository;
+import kitchenpos.repository.MenuRepository;
 import kitchenpos.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,7 +30,7 @@ import static org.mockito.Mockito.*;
 public class MenuServiceTest {
 
 	@Mock
-	private MenuDao menuDao;
+	private MenuRepository menuRepository;
 
 	@Mock
 	private MenuGroupRepository menuGroupRepository;
@@ -48,7 +48,7 @@ public class MenuServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		menuService = new MenuService(menuDao, menuGroupRepository, menuProductRepository, productRepository);
+		menuService = new MenuService(menuRepository, menuGroupRepository, menuProductRepository, productRepository);
 		assertThat(menuService).isNotNull();
 		menu = mock(Menu.class);
 	}
@@ -72,7 +72,7 @@ public class MenuServiceTest {
 		given(menu.getMenuProducts()).willReturn(menuProducts);
 
 		given(menuProductRepository.save(menuProduct)).willReturn(menuProduct);
-		given(menuDao.save(menu)).willReturn(menu);
+		given(menuRepository.save(menu)).willReturn(menu);
 		assertThat(menuService.create(menu)).isEqualTo(menu);
 	}
 
@@ -91,7 +91,7 @@ public class MenuServiceTest {
 	@DisplayName("메뉴 목록을 조회한다")
 	void list(){
 		List<Menu> menus = new ArrayList<>(Arrays.asList(mock(Menu.class), mock(Menu.class)));
-		given(menuDao.findAll()).willReturn(menus);
+		given(menuRepository.findAll()).willReturn(menus);
 
 		assertThat(menuService.list()).isNotNull();
 		assertThat(menuService.list()).isNotEmpty();
