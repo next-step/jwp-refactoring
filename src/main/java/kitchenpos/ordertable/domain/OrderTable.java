@@ -27,9 +27,7 @@ public class OrderTable {
     }
 
     public OrderTable(int numberOfGuests, boolean empty) {
-        this.numberOfGuests = numberOfGuests;
-        this.empty = empty;
-        this.orders = new Orders();
+        this(null, numberOfGuests, empty);
     }
 
     public OrderTable(final TableGroup tableGroup, final int numberOfGuests, final boolean empty) {

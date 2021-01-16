@@ -35,7 +35,7 @@ public class Order {
         orderTable.addOrder(this);
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
-        this.orderLineItems = orderLineItems;
+        this.orderLineItems = new OrderLineItems(orderLineItems.getOrderLineItems(), this);
     }
 
     public static Order of(OrderTable orderTable, OrderLineItems orderLineItems) {

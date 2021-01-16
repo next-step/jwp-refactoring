@@ -20,6 +20,10 @@ public class MenuProducts {
         this.menuProducts.addAll(menuProducts);
     }
 
+    public void updateMenu(Menu menu){
+        menuProducts.forEach(menuProduct -> menuProduct.updateMenu(menu));
+    }
+
     public boolean isEmpty() {
         return menuProducts.isEmpty();
     }

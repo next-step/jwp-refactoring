@@ -46,4 +46,8 @@ public class MenuProduct {
     public long getQuantity() {
         return quantity;
     }
+
+    public void updateMenu(Menu menu) {
+        this.menu = menu;
+    }
 }

@@ -11,9 +11,7 @@ import kitchenpos.ordertable.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,9 +40,9 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponse changeOrderStatus(final Long orderId, final OrderStatus orderStatus) {
+    public OrderResponse changeOrderStatus(final Long orderId, final String orderStatus) {
         Order order = findOrderById(orderId);
-        order.changeOrderStatus(orderStatus);
+        order.changeOrderStatus(OrderStatus.valueOf(orderStatus));
         return OrderResponse.of(order);
     }
 

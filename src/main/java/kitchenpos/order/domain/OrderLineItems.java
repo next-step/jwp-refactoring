@@ -19,6 +19,11 @@ public class OrderLineItems {
         this.orderLineItems.addAll(orderLineItems);
     }
 
+    public OrderLineItems(List<OrderLineItem> orderLineItems, Order order) {
+        this.orderLineItems.addAll(orderLineItems);
+        updateOrder(order);
+    }
+
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
     }
@@ -28,5 +33,9 @@ public class OrderLineItems {
                 .map(OrderLineItem::getMenu)
                 .count();
         return count < minCount;
+    }
+
+    private void updateOrder(Order order) {
+        orderLineItems.forEach(orderLineItem -> orderLineItem.updateOrder(order));
     }
 }
