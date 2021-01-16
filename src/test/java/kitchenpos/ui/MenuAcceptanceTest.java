@@ -50,7 +50,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         메뉴_목록_조회됨(response, HttpStatus.OK);
     }
 
-    private ExtractableResponse<Response> 메뉴_등록_요청(Map<String, Object> params) {
+    public static ExtractableResponse<Response> 메뉴_등록_요청(Map<String, Object> params) {
         return RestAssured
                 .given().log().all()
                 .body(params)

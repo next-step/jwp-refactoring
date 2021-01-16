@@ -40,7 +40,7 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
         주문_테이블_목록_조회됨(response, HttpStatus.OK);
     }
 
-    private ExtractableResponse<Response> 주문_테이블_등록_요청(Map<String, Object> params) {
+    public static ExtractableResponse<Response> 주문_테이블_등록_요청(Map<String, Object> params) {
         return RestAssured
                 .given().log().all()
                 .body(params)
