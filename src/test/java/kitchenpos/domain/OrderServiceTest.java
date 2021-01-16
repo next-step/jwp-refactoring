@@ -2,8 +2,8 @@ package kitchenpos.domain;
 
 import kitchenpos.application.OrderService;
 import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
 import kitchenpos.repository.OrderLineItemRepository;
+import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,7 +33,7 @@ public class OrderServiceTest {
 	private MenuDao menuDao;
 
 	@Mock
-	private OrderDao orderDao;
+	private OrderRepository orderRepository;
 
 	@Mock
 	private OrderLineItemRepository orderLineItemRepository;
@@ -48,7 +48,7 @@ public class OrderServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		orderService = new OrderService(menuDao, orderDao, orderLineItemRepository, orderTableRepository);
+		orderService = new OrderService(menuDao, orderRepository, orderLineItemRepository, orderTableRepository);
 		assertThat(orderService).isNotNull();
 		order = mock(Order.class);
 	}
@@ -62,14 +62,14 @@ public class OrderServiceTest {
 		given(orderTableRepository.findById(any())).willReturn(Optional.of(mock(OrderTable.class)));
 		given(order.getOrderLineItems()).willReturn(new ArrayList<>(Arrays.asList(mock(OrderLineItem.class), mock(OrderLineItem.class))));
 
-		given(orderDao.save(any())).willReturn(order);
+		given(orderRepository.save(any())).willReturn(order);
 		assertThat(orderService.create(order).getOrderTableId()).isEqualTo(1L);
 	}
 
 	@Test
 	@DisplayName("주문을 조회한다")
 	void list() {
-		given(orderDao.findAll()).willReturn(new ArrayList<>(Arrays.asList(mock(Order.class), mock(Order.class))));
+		given(orderRepository.findAll()).willReturn(new ArrayList<>(Arrays.asList(mock(Order.class), mock(Order.class))));
 		given(order.getOrderLineItems()).willReturn(new ArrayList<>(Arrays.asList(mock(OrderLineItem.class), mock(OrderLineItem.class))));
 
 		assertNotNull(orderService.list());
@@ -80,9 +80,9 @@ public class OrderServiceTest {
 	@DisplayName("계산 완료 상태의 주문이 조회될 순 없다")
 	void givenOrderStatusCompletionWhenFindOrderThenError() {
 		given(order.getOrderStatus()).willReturn(OrderStatus.COMPLETION.name());
-		given(orderDao.findById(any())).willReturn(Optional.of(order));
+		given(orderRepository.findById(any())).willReturn(Optional.ofNullable(order));
 
-		assertThat(orderDao.findById(1L).get().getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
+		assertThat(orderRepository.findById(1L).get().getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
 		assertThrows(IllegalArgumentException.class, () -> orderService.changeOrderStatus(1L, any()));
 	}
 

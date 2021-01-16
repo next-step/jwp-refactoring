@@ -1,7 +1,7 @@
 package kitchenpos.domain;
 
 import kitchenpos.application.TableService;
-import kitchenpos.dao.OrderDao;
+import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,7 +26,7 @@ import static org.mockito.Mockito.*;
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class TableServiceTest {
 	@Mock
-	private OrderDao orderDao;
+	private OrderRepository orderRepository;
 
 	@Mock
 	private OrderTableRepository orderTableRepository;
@@ -38,7 +38,7 @@ public class TableServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		tableService = new TableService(orderDao, orderTableRepository);
+		tableService = new TableService(orderRepository, orderTableRepository);
 		assertThat(tableService).isNotNull();
 		orderTable = mock(OrderTable.class);
 	}
@@ -79,7 +79,7 @@ public class TableServiceTest {
 		given(orderTable.getTableGroupId()).willReturn(null);
 
 		given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(orderTable));
-		given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(false);
+		given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(false);
 
 		given(orderTableRepository.save(orderTable)).willReturn(orderTable);
 		assertThat(tableService.changeEmpty(1L, orderTable)).isEqualTo(orderTable);

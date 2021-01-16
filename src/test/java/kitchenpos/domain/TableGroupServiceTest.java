@@ -1,7 +1,7 @@
 package kitchenpos.domain;
 
 import kitchenpos.application.TableGroupService;
-import kitchenpos.dao.OrderDao;
+import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import kitchenpos.repository.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +29,7 @@ import static org.mockito.Mockito.*;
 public class TableGroupServiceTest {
 
 	@Mock
-	private OrderDao orderDao;
+	private OrderRepository orderRepository;
 
 	@Mock
 	private OrderTableRepository orderTableRepository;
@@ -44,7 +44,7 @@ public class TableGroupServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		tableGroupService = new TableGroupService(orderDao, orderTableRepository, tableGroupRepository);
+		tableGroupService = new TableGroupService(orderRepository, orderTableRepository, tableGroupRepository);
 		assertThat(tableGroupService).isNotNull();
 		tableGroup = mock(TableGroup.class);
 	}
@@ -97,7 +97,7 @@ public class TableGroupServiceTest {
 		List<OrderTable> orderTables = new ArrayList<>(Arrays.asList(orderTable));
 		given(orderTableRepository.save(orderTable)).willReturn(orderTable);
 		given(orderTableRepository.findAllByTableGroupId(any())).willReturn(orderTables);
-		given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
+		given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
 		tableGroupService.ungroup(1L);
 		verify(orderTableRepository, times(1)).save(orderTable);
 	}
@@ -111,7 +111,7 @@ public class TableGroupServiceTest {
 		orderTables.add(orderTable);
 
 		given(orderTableRepository.findAllByTableGroupId(1L)).willReturn(orderTables);
-		given(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(1L), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willThrow(new IllegalArgumentException());
+		given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(1L), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willThrow(new IllegalArgumentException());
 		assertThrows(IllegalArgumentException.class, () -> tableGroupService.ungroup(1L));
 	}
 
