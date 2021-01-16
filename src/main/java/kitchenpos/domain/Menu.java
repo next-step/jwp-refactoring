@@ -7,8 +7,8 @@ public class Menu {
     private Long id;
     private String name;
     private BigDecimal price;
-    private Long menuGroupId;
-    private List<MenuProduct> menuProducts;
+    private Long menuGroupId; //메뉴의 대분류
+    private List<MenuProduct> menuProducts; // 속한 메뉴
 
     public Long getId() {
         return id;

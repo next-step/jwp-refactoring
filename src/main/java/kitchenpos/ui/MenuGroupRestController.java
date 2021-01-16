@@ -13,25 +13,23 @@ import java.util.List;
 
 @RestController
 public class MenuGroupRestController {
-    private final MenuGroupService menuGroupService;
+	private final MenuGroupService menuGroupService;
 
-    public MenuGroupRestController(final MenuGroupService menuGroupService) {
-        this.menuGroupService = menuGroupService;
-    }
+	// 메뉴 그룹을 생성한다
+	// 메뉴 그룹 목록을 조회한다.
+	public MenuGroupRestController(final MenuGroupService menuGroupService) {
+		this.menuGroupService = menuGroupService;
+	}
 
-    @PostMapping("/api/menu-groups")
-    public ResponseEntity<MenuGroup> create(@RequestBody final MenuGroup menuGroup) {
-        final MenuGroup created = menuGroupService.create(menuGroup);
-        final URI uri = URI.create("/api/menu-groups/" + created.getId());
-        return ResponseEntity.created(uri)
-                .body(created)
-                ;
-    }
+	@PostMapping("/api/menu-groups")
+	public ResponseEntity<MenuGroup> create(@RequestBody final MenuGroup menuGroup) {
+		final MenuGroup created = menuGroupService.create(menuGroup);
+		final URI uri = URI.create("/api/menu-groups/" + created.getId());
+		return ResponseEntity.created(uri).body(created);
+	}
 
-    @GetMapping("/api/menu-groups")
-    public ResponseEntity<List<MenuGroup>> list() {
-        return ResponseEntity.ok()
-                .body(menuGroupService.list())
-                ;
-    }
+	@GetMapping("/api/menu-groups")
+	public ResponseEntity<List<MenuGroup>> list() {
+		return ResponseEntity.ok().body(menuGroupService.list());
+	}
 }
