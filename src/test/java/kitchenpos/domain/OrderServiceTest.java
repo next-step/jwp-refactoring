@@ -1,10 +1,14 @@
 package kitchenpos.domain;
 
-import kitchenpos.application.OrderService;
-import kitchenpos.repository.MenuRepository;
-import kitchenpos.repository.OrderLineItemRepository;
-import kitchenpos.repository.OrderRepository;
-import kitchenpos.repository.OrderTableRepository;
+import kitchenpos.order.application.OrderService;
+import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.order.domain.OrderLineItemRepository;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
