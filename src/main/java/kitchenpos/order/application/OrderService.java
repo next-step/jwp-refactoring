@@ -9,8 +9,8 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,14 +24,14 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderLineItemRepository orderLineItemRepository;
-    private final OrderTableDao orderTableDao;
+    private final OrderTableRepository orderTableRepository;
     private final MenuRepository menuRepository;
 
     public OrderService(final OrderRepository orderRepository, final OrderLineItemRepository orderLineItemRepository,
-                        final OrderTableDao orderTableDao, final MenuRepository menuRepository) {
+                        final OrderTableRepository orderTableRepository, final MenuRepository menuRepository) {
         this.orderRepository = orderRepository;
         this.orderLineItemRepository = orderLineItemRepository;
-        this.orderTableDao = orderTableDao;
+        this.orderTableRepository = orderTableRepository;
         this.menuRepository = menuRepository;
     }
 
@@ -46,7 +46,7 @@ public class OrderService {
             throw new IllegalArgumentException(ERR_TEXT_INVALID_ORDER);
         }
 
-        final OrderTable orderTable = orderTableDao.findById(orderRequest.getOrderTableId())
+        final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
             .orElseThrow(IllegalArgumentException::new);
 
         final List<OrderLineItem> orderLineItems = orderRequest.toOrderLineItemList();
