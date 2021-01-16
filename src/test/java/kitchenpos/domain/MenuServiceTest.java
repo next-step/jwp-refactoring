@@ -62,7 +62,7 @@ public class MenuServiceTest {
 
 		Product product = mock(Product.class);
 		given(product.getPrice()).willReturn(BigDecimal.valueOf(10000));
-		given(productDao.findById(any())).willReturn(java.util.Optional.of(product));
+		given(productDao.sumPriceByIdIn(any())).willReturn(BigDecimal.valueOf(10000));
 
 		List<MenuProduct> menuProducts = new ArrayList<>();
 		MenuProduct menuProduct = mock(MenuProduct.class);
