@@ -2,6 +2,7 @@ package kitchenpos.repository;
 
 import java.util.List;
 import java.util.Optional;
+import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
 import org.springframework.data.repository.RepositoryDefinition;
 
@@ -10,6 +11,8 @@ public interface ProductDao {
     Product save(Product entity);
 
     Optional<Product> findById(Long id);
+
+    List<Product> findAllByIdIn(List<Long> ids);
 
     List<Product> findAll();
 }

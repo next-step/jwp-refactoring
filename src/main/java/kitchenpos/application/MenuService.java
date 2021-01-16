@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import java.util.stream.Collectors;
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.Money;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuCreateRequest;
 import kitchenpos.dto.MenuDto;
@@ -34,8 +35,23 @@ public class MenuService {
     }
 
     public MenuDto create(final MenuCreateRequest menuDto) {
-        final BigDecimal price = menuDto.getPrice();
+        validate(menuDto);
+        final Menu savedMenu = menuDao.save(menuDto.toEntity());
+        return MenuDto.of(savedMenu);
+    }
 
+
+    @Transactional(readOnly = true)
+    public List<MenuDto> list() {
+        final List<Menu> menus = menuDao.findAll();
+        return menus.stream()
+                .map(MenuDto::of)
+                .collect(Collectors.toList());
+    }
+
+
+    private void validate(MenuCreateRequest menuDto) {
+        final BigDecimal price = menuDto.getPrice();
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException();
         }
@@ -44,29 +60,28 @@ public class MenuService {
             throw new IllegalArgumentException();
         }
 
-        final List<MenuProductRequest> menuProducts = menuDto.getMenuProducts();
-
-        BigDecimal sum = BigDecimal.ZERO;
-        for (final MenuProductRequest menuProduct : menuProducts) {
-            final Product product = productDao.findById(menuProduct.getProductId())
-                    .orElseThrow(IllegalArgumentException::new);
-            sum = sum.add(BigDecimal.valueOf(product.getPrice().amount * menuProduct.getQuantity()));
-        }
-
+        BigDecimal sum = calculateProductsPrice(menuDto.getMenuProducts());
         if (price.compareTo(sum) > 0) {
             throw new IllegalArgumentException();
         }
-
-        final Menu savedMenu = menuDao.save(menuDto.toEntity());
-
-        return MenuDto.of(savedMenu);
     }
 
-    @Transactional(readOnly = true)
-    public List<MenuDto> list() {
-        final List<Menu> menus = menuDao.findAll();
-        return menus.stream()
-                .map(MenuDto::of)
+    private BigDecimal calculateProductsPrice(List<MenuProductRequest> menuProducts) {
+        List<Long> productsIds = menuProducts.stream()
+                .map(MenuProductRequest::getProductId)
                 .collect(Collectors.toList());
+        List<Product> products = productDao.findAllByIdIn(productsIds);
+
+        if (productsIds.isEmpty() || productsIds.size() != products.size()) {
+            throw new IllegalArgumentException();
+        }
+
+        Money sum = Money.ZERO;
+        for (int i = 0; i < products.size(); i++) {
+            long quantity = menuProducts.get(i).getQuantity();
+            Money price = products.get(i).getPrice();
+            sum = sum.plus(price.times(quantity));
+        }
+        return BigDecimal.valueOf(sum.amount);
     }
 }

@@ -46,13 +46,6 @@ public class MenuDto {
         this.menuProducts = menuProducts;
     }
 
-    public Menu toEntity() {
-        List<MenuProduct> menuProductDtoList = menuProducts.stream()
-                .map(MenuProductDto::toEntity)
-                .collect(Collectors.toList());
-        return new Menu(id, name, Money.won(price.longValue()), menuGroupId, menuProductDtoList);
-    }
-
     public static MenuDto of(Menu menu) {
         List<MenuProductDto> menuProducts = menu.getMenuProduct().stream()
                 .map(it -> MenuProductDto.of(it, menu.getId()))

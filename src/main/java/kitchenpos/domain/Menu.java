@@ -42,17 +42,7 @@ public class Menu {
     protected Menu() {
     }
 
-    public Menu(String name, Money price, Long menuGroupId,
-            List<MenuProduct> menuProduct) {
-        this.name = name;
-        this.price = price;
-        this.menuGroupId = menuGroupId;
-        this.menuProduct = menuProduct;
-    }
-
-    public Menu(Long id, String name, Money price, Long menuGroupId,
-            List<MenuProduct> menuProduct) {
-        this.id = id;
+    public Menu(String name, Money price, Long menuGroupId, List<MenuProduct> menuProduct) {
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
