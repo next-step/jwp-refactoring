@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import kitchenpos.common.DefaultData;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderStatus;
