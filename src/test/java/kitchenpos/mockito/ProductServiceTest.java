@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.mockito;
 
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
