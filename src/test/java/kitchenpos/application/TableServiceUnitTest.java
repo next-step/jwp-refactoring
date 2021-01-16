@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import static kitchenpos.common.DefaultData.주문테이블_1번_ID;
+import static kitchenpos.common.DefaultData.주문테이블_미존재_ID;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.BDDMockito.given;
 
@@ -35,10 +36,10 @@ public class TableServiceUnitTest {
     void testChangeEmptyNonExistentOrderTable() {
         // given
         OrderTable orderTable = new OrderTable();
-        given(orderTableDao.findById(0L)).willReturn(Optional.empty());
+        given(orderTableDao.findById(주문테이블_미존재_ID)).willReturn(Optional.empty());
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> tableService.changeEmpty(0L, orderTable));
+        assertThatIllegalArgumentException().isThrownBy(() -> tableService.changeEmpty(주문테이블_미존재_ID, orderTable));
     }
 
     @DisplayName("단체 지정된 주문 테이블을 업데이트한다.")
@@ -47,6 +48,7 @@ public class TableServiceUnitTest {
         // given
         OrderTable orderTable = new OrderTable();
         OrderTable savedOrderTable = new OrderTable();
+        // 단체_지정됨
         savedOrderTable.setTableGroupId(1L);
         given(orderTableDao.findById(주문테이블_1번_ID)).willReturn(Optional.of(savedOrderTable));
 
@@ -86,11 +88,11 @@ public class TableServiceUnitTest {
         // given
         OrderTable orderTable = new OrderTable();
         orderTable.setNumberOfGuests(4);
-        given(orderTableDao.findById(0L)).willReturn(Optional.empty());
+        given(orderTableDao.findById(주문테이블_미존재_ID)).willReturn(Optional.empty());
 
         // when & then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableService.changeNumberOfGuests(0L, orderTable));
+                .isThrownBy(() -> tableService.changeNumberOfGuests(주문테이블_미존재_ID, orderTable));
     }
 
     @DisplayName("주문 등록 가능한 상태가 아닌 주문 테이블의 손님 수를 업데이트한다")

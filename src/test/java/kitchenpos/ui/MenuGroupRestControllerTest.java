@@ -18,7 +18,13 @@ public class MenuGroupRestControllerTest extends BaseControllerTest {
 
     @DisplayName("메뉴 그룹 등록")
     @Test
-    void testCreateMenuGroup() throws Exception {
+    void testManageMenuGroup() throws Exception {
+        메뉴_그룹_등록();
+
+        메뉴_그룹_추가됨_목록_조회();
+    }
+
+    void 메뉴_그룹_등록() throws Exception {
         // given
         String name = "추천메뉴";
         MenuGroup menuGroup = new MenuGroup();
@@ -34,13 +40,11 @@ public class MenuGroupRestControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("$.name").value(name));
     }
 
-    @DisplayName("메뉴 목록 조회")
-    @Test
-    void testGetMenuGroups() throws Exception {
+    void 메뉴_그룹_추가됨_목록_조회() throws Exception {
         mockMvc.perform(get("/api/menu-groups")
                 .contentType(APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(4)));
+                .andExpect(jsonPath("$", hasSize(5)));
     }
 }

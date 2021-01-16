@@ -8,6 +8,7 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,6 +21,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static kitchenpos.common.DefaultData.메뉴_미존재_ID;
+import static kitchenpos.common.DefaultData.주문테이블_1번_ID;
+import static kitchenpos.common.DefaultData.주문테이블_미존재_ID;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.BDDMockito.given;
 
@@ -38,6 +42,14 @@ public class OrderServiceUnitTest {
     @InjectMocks
     private OrderService orderService;
 
+    OrderLineItem 주문_항목_후라이드치킨;
+
+    @BeforeAll
+    static void setUp() {
+        OrderLineItem 주문_항목_후라이드치킨 = new OrderLineItem();
+        주문_항목_후라이드치킨.setMenuId(DefaultData.메뉴_후라이드치킨_ID);
+    }
+
     @DisplayName("주문 항목 개수를 0개로 등록한다")
     @Test
     void testCreateOrderWithZeroLineItem() {
@@ -52,16 +64,13 @@ public class OrderServiceUnitTest {
     @Test
     void testCreateOrderWithDuplicatedMenu() {
         // given
-        OrderLineItem orderLineItem1 = new OrderLineItem();
-        orderLineItem1.setMenuId(DefaultData.메뉴_후라이드치킨_ID);
-
-        OrderLineItem orderLineItem2 = new OrderLineItem();
-        orderLineItem2.setMenuId(0L);
+        OrderLineItem 미존재_메뉴_항목 = new OrderLineItem();
+        미존재_메뉴_항목.setMenuId(메뉴_미존재_ID);
 
         Order order = new Order();
-        order.setOrderLineItems(Arrays.asList(orderLineItem1, orderLineItem2));
+        order.setOrderLineItems(Arrays.asList(주문_항목_후라이드치킨, 미존재_메뉴_항목));
 
-        List<Long> menuIds = Arrays.asList(DefaultData.메뉴_후라이드치킨_ID, 0L);
+        List<Long> menuIds = Arrays.asList(DefaultData.메뉴_후라이드치킨_ID, 메뉴_미존재_ID);
 
         given(menuDao.countByIdIn(menuIds)).willReturn(1L);
 
@@ -73,17 +82,14 @@ public class OrderServiceUnitTest {
     @Test
     void testCreateOrderWithNonExistentOrderTable() {
         // given
-        OrderLineItem orderLineItem = new OrderLineItem();
-        orderLineItem.setMenuId(DefaultData.메뉴_후라이드치킨_ID);
-
         Order order = new Order();
-        order.setOrderLineItems(Collections.singletonList(orderLineItem));
-        order.setOrderTableId(0L);
+        order.setOrderLineItems(Collections.singletonList(주문_항목_후라이드치킨));
+        order.setOrderTableId(주문테이블_미존재_ID);
 
         List<Long> menuIds = Collections.singletonList(DefaultData.메뉴_후라이드치킨_ID);
 
         given(menuDao.countByIdIn(menuIds)).willReturn(1L);
-        given(orderTableDao.findById(0L)).willReturn(Optional.empty());
+        given(orderTableDao.findById(주문테이블_미존재_ID)).willReturn(Optional.empty());
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(order));
@@ -93,12 +99,9 @@ public class OrderServiceUnitTest {
     @Test
     void testCreateOrderWithEmptyOrderTable() {
         // given
-        OrderLineItem orderLineItem = new OrderLineItem();
-        orderLineItem.setMenuId(DefaultData.메뉴_후라이드치킨_ID);
-
         Order order = new Order();
-        order.setOrderLineItems(Collections.singletonList(orderLineItem));
-        order.setOrderTableId(DefaultData.주문테이블_1번_ID);
+        order.setOrderLineItems(Collections.singletonList(주문_항목_후라이드치킨));
+        order.setOrderTableId(주문테이블_1번_ID);
 
         OrderTable orderTable = new OrderTable();
         orderTable.setEmpty(true);
@@ -106,7 +109,7 @@ public class OrderServiceUnitTest {
         List<Long> menuIds = Collections.singletonList(DefaultData.메뉴_후라이드치킨_ID);
 
         given(menuDao.countByIdIn(menuIds)).willReturn(1L);
-        given(orderTableDao.findById(DefaultData.주문테이블_1번_ID)).willReturn(Optional.of(orderTable));
+        given(orderTableDao.findById(주문테이블_1번_ID)).willReturn(Optional.of(orderTable));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(order));
@@ -117,22 +120,23 @@ public class OrderServiceUnitTest {
     void testChangeOrderStatusWithNonExistent() {
         // given
         Order order = new Order();
-        given(orderDao.findById(0L)).willReturn(Optional.empty());
+        given(orderDao.findById(주문테이블_미존재_ID)).willReturn(Optional.empty());
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.changeOrderStatus(0L, order));
+        assertThatIllegalArgumentException().isThrownBy(() -> orderService.changeOrderStatus(주문테이블_미존재_ID, order));
     }
 
     @DisplayName("주문 상태가 계산 완료인 주문의 상태를 업데이트한다")
     @Test
     void testChangeOrderStatusWithCompletionOrder() {
         // given
+        Long 신규_주문_ID = 1L;
         Order order = new Order();
         Order savedOrder = new Order();
         savedOrder.setOrderStatus(OrderStatus.COMPLETION.name());
-        given(orderDao.findById(1L)).willReturn(Optional.of(savedOrder));
+        given(orderDao.findById(신규_주문_ID)).willReturn(Optional.of(savedOrder));
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.changeOrderStatus(1L, order));
+        assertThatIllegalArgumentException().isThrownBy(() -> orderService.changeOrderStatus(신규_주문_ID, order));
     }
 }

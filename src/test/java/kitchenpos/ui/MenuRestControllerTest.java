@@ -22,9 +22,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("메뉴 관련 기능")
 public class MenuRestControllerTest extends BaseControllerTest {
 
-    @DisplayName("메뉴 등록")
+    @DisplayName("메뉴 관리")
     @Test
-    void testCreateMenu() throws Exception {
+    void testManageMenu() throws Exception {
+        메뉴_등록();
+
+        메뉴_추가됨_목록_조회();
+    }
+
+    void 메뉴_등록() throws Exception {
         // given
         MenuProduct menuProduct = new MenuProduct();
         menuProduct.setProductId(상품_후라이드_ID);
@@ -51,13 +57,11 @@ public class MenuRestControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("$.menuProducts[0].quantity").value(menuProduct.getQuantity()));
     }
 
-    @DisplayName("메뉴 목록 조회")
-    @Test
-    void testGetMenus() throws Exception {
+    void 메뉴_추가됨_목록_조회() throws Exception {
         mockMvc.perform(get("/api/menus")
                 .contentType(APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(6)));
+                .andExpect(jsonPath("$", hasSize(7)));
     }
 }
