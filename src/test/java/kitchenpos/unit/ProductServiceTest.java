@@ -1,8 +1,6 @@
 package kitchenpos.unit;
 
 import kitchenpos.product.application.ProductService;
-import kitchenpos.product.domain.Price;
-import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,6 +45,6 @@ public class ProductServiceTest {
 	public void list() {
 		List<ProductResponse> responses =  productService.list();
 		assertThat(responses).isNotNull();
-		assertThat(responses.size()).isEqualTo(1);
+		assertThat(responses.size()).isEqualTo(7);
 	}
 }

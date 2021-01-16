@@ -1,8 +1,5 @@
 package kitchenpos.product.dto;
 
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.dto.MenuGroupResponse;
-import kitchenpos.order.dto.OrderLineItemResponse;
 import kitchenpos.product.domain.Product;
 
 import java.math.BigDecimal;

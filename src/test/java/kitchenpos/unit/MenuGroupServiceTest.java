@@ -34,7 +34,7 @@ public class MenuGroupServiceTest {
 	void list() {
 		this.create();
 		List<MenuGroupResponse> menuGroupResponses = menuGroupService.list();
-		assertThat(menuGroupResponses.size()).isEqualTo(1);
+		assertThat(menuGroupResponses.size()).isEqualTo(6);
 
 	}
 }
