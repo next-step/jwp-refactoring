@@ -1,6 +1,7 @@
 package kitchenpos.ui;
 
 import kitchenpos.domain.MenuGroup;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
@@ -10,21 +11,23 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-class MenuGroupRestSimpleWebMvcTest extends RestControllerTest {
+@DisplayName("메뉴 그룹 Controller Test")
+class MenuGroupRestControllerTest extends RestControllerTest {
 
     public static final String MENU_GROUPS_URL = "/api/menu-groups";
 
+    @DisplayName("메뉴 그룹을 등록할 수 있다.")
     @Test
     void create() throws Exception {
         //given
-        MenuGroup 일반메뉴요청 = new MenuGroup(null, "일반메뉴");
+        MenuGroup menuGroup = new MenuGroup(null, "일반메뉴");
 
         //when
         //then
         mockMvc.perform(
                 post(MENU_GROUPS_URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(toJsonString(일반메뉴요청))
+                        .content(toJsonString(menuGroup))
         )
                 .andDo(print())
                 .andExpect(status().isCreated())
@@ -33,7 +36,7 @@ class MenuGroupRestSimpleWebMvcTest extends RestControllerTest {
                 .andExpect(jsonPath("$.name", is("일반메뉴")));
     }
 
-
+    @DisplayName("메뉴 그룹 목록을 조회할 수 있다.")
     @Test
     void list() throws Exception {
         //given

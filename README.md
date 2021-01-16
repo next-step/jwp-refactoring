@@ -77,9 +77,9 @@
 - [x] 상품 테스트 작성
   - [x] Service Test 작성
   - [x] Controller Test 작성
-- [ ] 메뉴 테스트 작성
+- [x] 메뉴 테스트 작성
   - [x] Service Test 작성
-  - [ ] Controller Test 작성
+  - [x] Controller Test 작성
 - [x] 메뉴 그룹 테스트 작성
   - [x] Service Test 작성
   - [x] Controller Test 작성
