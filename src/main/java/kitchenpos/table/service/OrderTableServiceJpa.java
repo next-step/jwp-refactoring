@@ -20,6 +20,7 @@ public class OrderTableServiceJpa {
     }
 
     public OrderTableResponse create(OrderTableRequest request) {
+        checkNumberOfGuestsLessThanZero(request.getNumberOfGuests());
         OrderTable savedTable = orderTableRepository.save(request.toTable());
         return OrderTableResponse.of(savedTable);
     }
