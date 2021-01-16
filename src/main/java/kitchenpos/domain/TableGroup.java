@@ -31,4 +31,13 @@ public class TableGroup {
     public void setOrderTables(final List<OrderTable> orderTables) {
         this.orderTables = orderTables;
     }
+
+    public TableGroup() {
+    }
+
+    public TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
+        this.id = id;
+        this.createdDate = createdDate;
+        this.orderTables = orderTables;
+    }
 }

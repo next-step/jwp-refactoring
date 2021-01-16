@@ -33,7 +33,7 @@ public class TableGroupService {
         final List<OrderTable> orderTables = tableGroup.getOrderTables();
 
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("단체 지정할 주문 테이블은 2개 이상이어야 합니다.");
         }
 
         final List<Long> orderTableIds = orderTables.stream()
@@ -77,7 +77,7 @@ public class TableGroupService {
 
         if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
                 orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("지정한 주문 테이블들이 모두 완료상태여야 그룹 해제가 가능합니다.");
         }
 
         for (final OrderTable orderTable : orderTables) {

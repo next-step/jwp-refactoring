@@ -38,9 +38,9 @@
 ### 단체 지정
 
 * 복수의 주문 테이블을 단체 지정할 수 있다.
-  * 이미 등록한 주문 테이블 목록이 없거나 1개라면 단체 지정할 수 없다.
+  * 단체 지정할 주문 테이블은 2개 이상이어야 한다.
 * 이미 단체 지정된 것을 풀 수 있다.
-  * 지정된 주문 테이블 중에 하나라도 등록되지 않았거나, 이미 조리중, 식사중인 상태이면 지정을 풄 수 없다.
+  * 지정한 주문 테이블들이 모두 완료상태여야 그룹 해제가 가능하다.
 
 ### 주문
 
@@ -84,11 +84,10 @@
   - [x] Service Test 작성
   - [x] Controller Test 작성
 - [ ] 주문 테이블 테스트 작성
-  - [ ] Service Test 작성
+  - [x] Service Test 작성
   - [ ] Controller Test 작성
 - [ ] 단체 지정 테스트 작성
-  - [ ] Business Object Test 작성
-  - [ ] Service Test 작성
+  - [x] Service Test 작성
   - [ ] Controller Test 작성
 - [ ] 주문 테스트 작성
   - [ ] Service Test 작성
