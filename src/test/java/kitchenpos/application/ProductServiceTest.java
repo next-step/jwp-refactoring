@@ -1,7 +1,6 @@
 package kitchenpos.application;
 
 import kitchenpos.domain.Product;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -11,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,40 +25,54 @@ public class ProductServiceTest extends ServiceTestBase {
         this.productService = productService;
     }
 
-    @BeforeEach
-    void setUp() {
-        setUpProduct();
-    }
-
     @DisplayName("제품을 등록한다")
     @Test
-    void createProduct() {
+    void create() {
+        Product product = createProduct("강정치킨", 17_000L);
         Product savedProduct = productService.create(product);
-        assertThat(savedProduct.getName()).isEqualTo(product.getName());
-        assertThat(savedProduct.getPrice()).isEqualTo(product.getPrice());
+
+        assertThat(savedProduct.getId()).isNotNull();
     }
 
     @DisplayName("가격이 부적합한 제품을 등록한다")
     @ParameterizedTest
     @MethodSource
-    void createProductWithIllegalArguments(BigDecimal price) {
-        product.setPrice(price);
+    void createWithIllegalArguments(Long price) {
+        Product product = createProduct("강정치킨", price);
+
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> productService.create(product));
     }
 
-    private static Stream<Arguments> createProductWithIllegalArguments() {
+    private static Stream<Arguments> createWithIllegalArguments() {
         return Stream.of(
                 Arguments.of((Object)null),
-                Arguments.of(new BigDecimal(-1))
+                Arguments.of(-1L)
         );
     }
 
     @DisplayName("제품을 조회한다")
     @Test
-    void findAllProduct() {
+    void findAll() {
+        productService.create(createProduct("후라이드치킨", 13_000L));
+        productService.create(createProduct("양념치킨", 13_000L));
+
         List<Product> products = productService.list();
-        assertThat(products.size()).isEqualTo(1);
-        assertThat(products.get(0)).isEqualTo(product);
+
+        assertThat(products.size()).isEqualTo(2);
+        List<String> productNames = products.stream()
+                .map(Product::getName)
+                .collect(Collectors.toList());
+        assertThat(productNames).contains("후라이드치킨", "양념치킨");
+    }
+
+    public static Product createProduct(String name, Long price) {
+        Product product = new Product();
+        product.setName(name);
+        if (price != null) {
+            product.setPrice(new BigDecimal(price));
+        }
+
+        return product;
     }
 }
