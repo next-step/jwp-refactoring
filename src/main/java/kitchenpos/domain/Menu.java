@@ -1,9 +1,6 @@
 package kitchenpos.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -18,7 +15,8 @@ public class Menu {
     private BigDecimal price;
 
     private Long menuGroupId; //메뉴의 대분류
-    
+
+    @OneToMany
     private List<MenuProduct> menuProducts; // 속한 메뉴
 
     public Long getId() {

@@ -1,9 +1,6 @@
 package kitchenpos.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -19,6 +16,7 @@ public class Order {
 
     private LocalDateTime orderedTime;
 
+    @OneToMany
     private List<OrderLineItem> orderLineItems;
 
     public Long getId() {
