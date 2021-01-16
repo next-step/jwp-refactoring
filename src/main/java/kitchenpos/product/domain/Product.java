@@ -1,9 +1,6 @@
 package kitchenpos.product.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
@@ -15,6 +12,14 @@ public class Product {
     private String name;
 
     private BigDecimal price;
+
+    public Product(String name, BigDecimal price) {
+        this.name = name;
+        this.price = price;
+    }
+
+    public Product() {
+    }
 
     public Long getId() {
         return id;
