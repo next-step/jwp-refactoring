@@ -1,7 +1,7 @@
 package kitchenpos.domain;
 
 import kitchenpos.application.MenuGroupService;
-import kitchenpos.dao.MenuGroupDao;
+import kitchenpos.repository.MenuGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.mock;
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class MenuGroupServiceTest {
 	@Mock
-	private MenuGroupDao menuGroupDao;
+	private MenuGroupRepository menuGroupRepository;
 
 	private MenuGroupService menuGroupService;
 
@@ -32,7 +32,7 @@ public class MenuGroupServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		menuGroupService = new MenuGroupService(menuGroupDao);
+		menuGroupService = new MenuGroupService(menuGroupRepository);
 		assertThat(menuGroupService).isNotNull();
 		menuGroup = mock(MenuGroup.class);
 	}
@@ -40,14 +40,14 @@ public class MenuGroupServiceTest {
 	@Test
 	@DisplayName("메뉴 그룹을등록한다")
 	void create() {
-		given(menuGroupDao.save(any())).willReturn(menuGroup);
+		given(menuGroupRepository.save(any())).willReturn(menuGroup);
 		assertThat(menuGroupService.create(menuGroup)).isEqualTo(menuGroup);
 	}
 
 	@Test
 	@DisplayName("메뉴 그룹 목록을조회한다")
 	void list() {
-		given(menuGroupDao.findAll()).willReturn(new ArrayList<>(Arrays.asList(mock(MenuGroup.class), mock(MenuGroup.class))));
+		given(menuGroupRepository.findAll()).willReturn(new ArrayList<>(Arrays.asList(mock(MenuGroup.class), mock(MenuGroup.class))));
 
 		assertThat(menuGroupService.list()).isNotNull();
 		assertThat(menuGroupService.list()).isNotEmpty();
