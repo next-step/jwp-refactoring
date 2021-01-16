@@ -101,9 +101,9 @@ public class MenuServiceTest extends BaseServiceTest {
 
 	@Test
 	@DisplayName("메뉴의 목록을 메뉴의 상품목록과 함께 조회할 수 있다.")
-	void list() {
+	void findAll() {
 		//when
-		List<MenuResponse> results = menuService.list();
+		List<MenuResponse> results = menuService.findAll();
 
 		//then
 		assertThat(results).isNotEmpty();

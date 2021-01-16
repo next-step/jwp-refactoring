@@ -29,7 +29,7 @@ public class OrderTablesTest {
 		OrderTables result = new OrderTables(orderTables);
 
 		//then
-		assertThat(result.list()).containsExactlyInAnyOrder(단체가지정되지않은_빈테이블_1, 단체가지정되지않은_빈테이블_2);
+		assertThat(result.findAll()).containsExactlyInAnyOrder(단체가지정되지않은_빈테이블_1, 단체가지정되지않은_빈테이블_2);
 	}
 
 	@Test
@@ -102,6 +102,6 @@ public class OrderTablesTest {
 		orderTablesInGroup.clear();
 
 		//then
-		assertThat(orderTablesInGroup.list()).isEmpty();
+		assertThat(orderTablesInGroup.findAll()).isEmpty();
 	}
 }

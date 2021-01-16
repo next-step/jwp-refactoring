@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class TableService {
@@ -30,10 +29,8 @@ public class TableService {
         return OrderTableResponse.of(orderTableRepository.save(orderTable));
     }
 
-    public List<OrderTableResponse> list() {
-        return orderTableRepository.findAll().stream()
-            .map(OrderTableResponse::of)
-            .collect(Collectors.toList());
+    public List<OrderTableResponse> findAll() {
+        return OrderTableResponse.ofList(orderTableRepository.findAll());
     }
 
     @Transactional

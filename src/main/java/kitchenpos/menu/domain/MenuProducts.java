@@ -19,7 +19,7 @@ public class MenuProducts {
         this.menuProducts = menuProducts;
     }
 
-    public List<MenuProduct> list() {
+    public List<MenuProduct> findAll() {
         return this.menuProducts;
     }
 

@@ -42,7 +42,7 @@ public class TableGroup {
     }
 
     public List<OrderTable> getOrderTables() {
-        return orderTables.list();
+        return orderTables.findAll();
     }
 
     public void updateOrderTables(OrderTables orderTables) {

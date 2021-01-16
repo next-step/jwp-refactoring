@@ -46,14 +46,16 @@ public class OrderResponse {
 	}
 
 	public static OrderResponse of(Order order) {
-		List<OrderLineItemResponse> orderLineItemResponses = order.getOrderLineItems().stream()
-			.map(OrderLineItemResponse::of)
-			.collect(Collectors.toList());
-
 		return new OrderResponse(order.getId()
 			, order.getOrderTableId()
 			, order.getOrderStatusName()
 			, order.getOrderedTime()
-			, orderLineItemResponses);
+			, OrderLineItemResponse.ofList(order.getOrderLineItems()));
+	}
+
+	public static List<OrderResponse> ofList(List<Order> orders) {
+		return orders.stream()
+			.map(OrderResponse::of)
+			.collect(Collectors.toList());
 	}
 }

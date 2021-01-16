@@ -114,9 +114,9 @@ public class OrderServiceTest extends BaseServiceTest {
 
 	@Test
 	@DisplayName("주문의 목록을 주문의 상품목록과 함께 조회할 수 있다.")
-	void list() {
+	void findAll() {
 		//when
-		List<OrderResponse> results = orderService.list();
+		List<OrderResponse> results = orderService.findAll();
 
 		//then
 		assertThat(results).isNotEmpty();

@@ -71,7 +71,7 @@ public class Order {
     }
 
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems.list();
+        return orderLineItems.findAll();
     }
 
     public boolean isStatusCompletion() {

@@ -61,7 +61,7 @@ public class Menu {
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts.list();
+        return menuProducts.findAll();
     }
 
     public void updateMenuGroup(MenuGroup menuGroup) {

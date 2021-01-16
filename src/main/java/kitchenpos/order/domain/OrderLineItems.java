@@ -18,7 +18,7 @@ public class OrderLineItems {
         this.orderLineItems = orderLineItems;
     }
 
-    public List<OrderLineItem> list() {
+    public List<OrderLineItem> findAll() {
         return orderLineItems;
     }
 

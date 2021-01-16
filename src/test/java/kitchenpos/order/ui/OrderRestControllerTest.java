@@ -55,7 +55,7 @@ public class OrderRestControllerTest extends BaseControllerTest {
 
 	@Test
 	@DisplayName("주문의 목록을 조회할 수 있다.")
-	void list() throws Exception {
+	void findAll() throws Exception {
 		//when-then
 		mockMvc.perform(get("/api/orders"))
 			.andDo(print())

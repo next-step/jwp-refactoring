@@ -24,7 +24,7 @@ public class OrderTables {
         this.orderTables = orderTables;
     }
 
-    public List<OrderTable> list() {
+    public List<OrderTable> findAll() {
         return this.orderTables;
     }
 

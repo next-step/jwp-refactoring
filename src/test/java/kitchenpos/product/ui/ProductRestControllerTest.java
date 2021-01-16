@@ -34,7 +34,7 @@ public class ProductRestControllerTest extends BaseControllerTest {
 
 	@Test
 	@DisplayName("상품의 목록을 조회할 수 있다.")
-	void list() throws Exception {
+	void findAll() throws Exception {
 		//when-then
 		mockMvc.perform(get("/api/products"))
 			.andDo(print())

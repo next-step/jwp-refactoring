@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class MenuService {
@@ -44,10 +43,8 @@ public class MenuService {
     }
 
     @Transactional(readOnly = true)
-    public List<MenuResponse> list() {
-        return menuRepository.findAll().stream()
-            .map(MenuResponse::of)
-            .collect(Collectors.toList());
+    public List<MenuResponse> findAll() {
+        return MenuResponse.ofList(menuRepository.findAll());
     }
 
     private MenuGroup findMenuGroup(final Long menuGroupId) {

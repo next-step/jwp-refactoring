@@ -33,7 +33,7 @@ public class MenuGroupRestControllerTest extends BaseControllerTest {
 
 	@Test
 	@DisplayName("메뉴그룹의 목록을 조회할 수 있다.")
-	void list() throws Exception {
+	void findAll() throws Exception {
 		//when-then
 		mockMvc.perform(get("/api/menu-groups"))
 			.andDo(print())

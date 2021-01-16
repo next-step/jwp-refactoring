@@ -46,16 +46,17 @@ public class MenuResponse {
 	}
 
 	public static MenuResponse of(Menu menu) {
-		List<MenuProductResponse> menuProductResponses = menu.getMenuProducts()
-			.stream()
-			.map(MenuProductResponse::of)
-			.collect(Collectors.toList());
-
 		return new MenuResponse(menu.getId()
 			, menu.getName()
 			, menu.getPrice()
 			, menu.getMenuGroupId()
-			, menuProductResponses
+			, MenuProductResponse.ofList(menu.getMenuProducts())
 		);
+	}
+
+	public static List<MenuResponse> ofList(List<Menu> menus) {
+		return menus.stream()
+			.map(MenuResponse::of)
+			.collect(Collectors.toList());
 	}
 }
