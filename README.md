@@ -89,6 +89,6 @@
 - [x] 단체 지정 테스트 작성
   - [x] Service Test 작성
   - [x] Controller Test 작성
-- [ ] 주문 테스트 작성
+- [x] 주문 테스트 작성
   - [x] Service Test 작성
-  - [ ] Controller Test 작성
+  - [x] Controller Test 작성

@@ -5,7 +5,6 @@ import kitchenpos.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.Arrays;
@@ -15,7 +14,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @DisplayName("단체 지정 Controller Test")
 class TableGroupRestControllerTest extends RestControllerTest {
@@ -71,10 +69,5 @@ class TableGroupRestControllerTest extends RestControllerTest {
                         .content(toJsonString(tableGroup))
         )
                 .andDo(print());
-    }
-
-    private String getRedirectedUrl(ResultActions resultActions) {
-        MvcResult mvcResult = resultActions.andReturn();
-        return mvcResult.getResponse().getRedirectedUrl();
     }
 }

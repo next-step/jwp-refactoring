@@ -6,6 +6,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
@@ -34,5 +36,10 @@ public class RestControllerTest {
 
     protected String toJsonString(Object object) throws JsonProcessingException {
         return objectMapper.writeValueAsString(object);
+    }
+
+    protected String getRedirectedUrl(ResultActions resultActions) {
+        MvcResult mvcResult = resultActions.andReturn();
+        return mvcResult.getResponse().getRedirectedUrl();
     }
 }
