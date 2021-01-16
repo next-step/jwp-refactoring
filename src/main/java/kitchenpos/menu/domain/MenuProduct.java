@@ -22,16 +22,16 @@ public class MenuProduct {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    private long quantity;
+    @Embedded
+    private Quantity quantity;
 
     protected MenuProduct() {
     }
 
     public MenuProduct(final Product product, final long quantity) {
         this.product = Objects.requireNonNull(product);
-        this.quantity = quantity;
+        this.quantity = new Quantity(quantity);
     }
-
 
     public void assign(final Menu menu) {
         this.menu = menu;
@@ -39,7 +39,7 @@ public class MenuProduct {
 
     public Money price() {
         Money productPrice = product.getPrice();
-        return productPrice.multiply(quantity);
+        return productPrice.multiply(quantity.getQuantity());
     }
 
     public Long getId() {
@@ -55,6 +55,6 @@ public class MenuProduct {
     }
 
     public long getQuantity() {
-        return quantity;
+        return quantity.getQuantity();
     }
 }

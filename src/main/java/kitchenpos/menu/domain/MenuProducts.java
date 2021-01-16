@@ -11,6 +11,8 @@ import java.util.List;
 @Embeddable
 public class MenuProducts {
 
+    private static final int MIN_PRODUCT_COUNT = 1;
+
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
@@ -18,6 +20,10 @@ public class MenuProducts {
     }
 
     public MenuProducts(final List<MenuProduct> menuProducts, final Menu menu) {
+        if (menuProducts.size() < MIN_PRODUCT_COUNT) {
+            throw new IllegalArgumentException(String.format("상품은 최소 %d개 이상이어야 합니다.", MIN_PRODUCT_COUNT));
+        }
+
         this.menuProducts.addAll(menuProducts);
         assign(menu);
     }

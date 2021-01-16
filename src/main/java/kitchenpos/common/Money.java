@@ -37,6 +37,10 @@ public class Money implements Comparable<Money> {
         return new Money(amount.multiply(BigDecimal.valueOf(value)));
     }
 
+    public boolean isGreaterThan(final Money other) {
+        return compareTo(other) > 0;
+    }
+
     public BigDecimal getAmount() {
         return amount;
     }
