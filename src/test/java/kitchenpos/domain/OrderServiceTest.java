@@ -3,7 +3,7 @@ package kitchenpos.domain;
 import kitchenpos.application.OrderService;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
+import kitchenpos.repository.OrderLineItemRepository;
 import kitchenpos.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -36,7 +36,7 @@ public class OrderServiceTest {
 	private OrderDao orderDao;
 
 	@Mock
-	private OrderLineItemDao orderLineItemDao;
+	private OrderLineItemRepository orderLineItemRepository;
 
 	@Mock
 	private OrderTableRepository orderTableRepository;
@@ -48,7 +48,7 @@ public class OrderServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		orderService = new OrderService(menuDao, orderDao, orderLineItemDao, orderTableRepository);
+		orderService = new OrderService(menuDao, orderDao, orderLineItemRepository, orderTableRepository);
 		assertThat(orderService).isNotNull();
 		order = mock(Order.class);
 	}
