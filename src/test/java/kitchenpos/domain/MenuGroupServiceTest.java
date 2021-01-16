@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-public class MenuGroupTest {
+public class MenuGroupServiceTest {
 	@Mock
 	private MenuGroupDao menuGroupDao;
 

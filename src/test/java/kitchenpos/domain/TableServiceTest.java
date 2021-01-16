@@ -41,7 +41,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-public class TableTest {
+public class TableServiceTest {
 	@Mock
 	private OrderDao orderDao;
 
