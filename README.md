@@ -83,9 +83,9 @@
 - [x] 메뉴 그룹 테스트 작성
   - [x] Service Test 작성
   - [x] Controller Test 작성
-- [ ] 주문 테이블 테스트 작성
+- [x] 주문 테이블 테스트 작성
   - [x] Service Test 작성
-  - [ ] Controller Test 작성
+  - [x] Controller Test 작성
 - [ ] 단체 지정 테스트 작성
   - [x] Service Test 작성
   - [ ] Controller Test 작성
