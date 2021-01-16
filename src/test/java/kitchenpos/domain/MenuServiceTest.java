@@ -2,9 +2,9 @@ package kitchenpos.domain;
 
 import kitchenpos.application.MenuService;
 import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.repository.MenuGroupRepository;
+import kitchenpos.repository.MenuProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,7 +36,7 @@ public class MenuServiceTest {
 	private MenuGroupRepository menuGroupRepository;
 
 	@Mock
-	private MenuProductDao menuProductDao;
+	private MenuProductRepository menuProductRepository;
 
 	@Mock
 	private ProductDao productDao;
@@ -48,7 +48,7 @@ public class MenuServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		menuService = new MenuService(menuDao, menuGroupRepository, menuProductDao, productDao);
+		menuService = new MenuService(menuDao, menuGroupRepository, menuProductRepository, productDao);
 		assertThat(menuService).isNotNull();
 		menu = mock(Menu.class);
 	}
@@ -71,7 +71,7 @@ public class MenuServiceTest {
 		menuProducts.add(menuProduct);
 		given(menu.getMenuProducts()).willReturn(menuProducts);
 
-		given(menuProductDao.save(menuProduct)).willReturn(menuProduct);
+		given(menuProductRepository.save(menuProduct)).willReturn(menuProduct);
 		given(menuDao.save(menu)).willReturn(menu);
 		assertThat(menuService.create(menu)).isEqualTo(menu);
 	}
