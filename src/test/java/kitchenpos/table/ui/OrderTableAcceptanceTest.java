@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
+import static kitchenpos.order.ui.OrderAcceptanceTest.주문_되어있음;
 import static kitchenpos.utils.ResponseUtil.getLocationCreatedId;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -65,7 +66,22 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
         assertThat(response.as(OrderTableResponse.class).isEmpty()).isFalse();
     }
 
-    // TODO * 테이블의 주문 상태가 요리중, 식사중일때 빈 테이블로 바꿀수 없다.
+    @DisplayName("테이블의 주문 상태가 요리중, 식사중일때 빈 테이블로 바꿀수 없다.")
+    @Test
+    void expectedExceptionNotCompleteOrderWhenChangeTableEmpty() {
+        // given
+        long createdId = 테이블_등록_되어_있음(new OrderTableBuilder()
+                .withNumberOfGuests(4)
+                .withEmpty(true).requestBuild());
+
+        주문_되어있음(createdId);
+
+        // when
+        ExtractableResponse<Response> response = 테이블_상태_변경_요청(createdId, false);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
 
     @DisplayName("테이블에 인원을 변경 가능하다.")
     @Test

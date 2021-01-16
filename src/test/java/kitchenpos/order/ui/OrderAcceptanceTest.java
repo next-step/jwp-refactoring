@@ -8,6 +8,7 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.util.OrderRequestBuilder;
+import kitchenpos.utils.ResponseUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -99,7 +100,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    private ExtractableResponse<Response> 주문_상태_변경_요청(long createdOrderId, String status) {
+    public static ExtractableResponse<Response> 주문_상태_변경_요청(long createdOrderId, String status) {
         Map<String, String> params = new HashMap<>();
         params.put("orderStatus", status);
         return RestAssured.given().log().all().
@@ -145,7 +146,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 extract();
     }
 
-    private ExtractableResponse<Response> 주문_요청됨(OrderRequest params) {
+    public static ExtractableResponse<Response> 주문_요청됨(OrderRequest params) {
         return RestAssured.given().log().all().
                 body(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
@@ -154,6 +155,14 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 then().
                 log().all().
                 extract();
+    }
+
+    public static long 주문_되어있음(long id) {
+        return ResponseUtil.getLocationCreatedId(주문_요청됨(new OrderRequestBuilder()
+                .withOrderTableId(id)
+                .addOrderLineItem(1L, 1)
+                .addOrderLineItem(2L, 1)
+                .build()));
     }
 
     private List<Long> findOrderIds(ExtractableResponse<Response> response) {

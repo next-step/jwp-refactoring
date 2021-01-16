@@ -1,5 +1,7 @@
 package kitchenpos.table.service;
 
+import kitchenpos.order.service.OrderServiceJpa;
+import kitchenpos.order.service.OrderStatusService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -14,9 +16,11 @@ import java.util.stream.Collectors;
 @Service
 public class OrderTableServiceJpa {
     private final OrderTableRepository orderTableRepository;
+    private final OrderStatusService orderstatusService;
 
-    public OrderTableServiceJpa(OrderTableRepository orderTableRepository) {
+    public OrderTableServiceJpa(OrderTableRepository orderTableRepository, OrderStatusService orderstatusService) {
         this.orderTableRepository = orderTableRepository;
+        this.orderstatusService = orderstatusService;
     }
 
     public OrderTableResponse create(OrderTableRequest request) {
@@ -35,6 +39,9 @@ public class OrderTableServiceJpa {
 
     public OrderTableResponse changeEmpty(Long id, boolean empty) {
         OrderTable tableById = findById(id);
+        if(orderstatusService.isNotCompleteOrder(tableById)){
+            throw new IllegalArgumentException("주문이 완료되지 않아 빈 테이블로 바꿀수 없습니다.");
+        }
         tableById.changeEmpty(empty);
 
         return OrderTableResponse.of(tableById);

@@ -1,6 +1,8 @@
 package kitchenpos.table.service;
 
 import kitchenpos.IntegrationTest;
+import kitchenpos.order.service.OrderServiceJpa;
+import kitchenpos.order.util.OrderRequestBuilder;
 import kitchenpos.table.dto.OrderTableIdRequest;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.TableGroupRequest;
@@ -22,6 +24,8 @@ public class TableGroupServiceIntegrationTest extends IntegrationTest {
     private TableGroupServiceJpa tableGroupServiceJpa;
     @Autowired
     private OrderTableServiceJpa orderTableServiceJpa;
+    @Autowired
+    private OrderServiceJpa orderServiceJpa;
 
     @DisplayName("주문 테이블을 그룹화 할수 있다.")
     @Test
@@ -78,5 +82,27 @@ public class TableGroupServiceIntegrationTest extends IntegrationTest {
         // then
         assertThat(orderTableServiceJpa.findById(1L).hasTableGroup()).isFalse();
         assertThat(orderTableServiceJpa.findById(2L).hasTableGroup()).isFalse();
+    }
+
+    @DisplayName("주문 상태가 조리, 식사중일때 단체 지정을 해제 할 수 없다.")
+    @Test
+    void expectedExceptionOrderStatus() {
+        // given
+        orderServiceJpa.create(new OrderRequestBuilder()
+                .withOrderTableId(1L)
+                .addOrderLineItem(1L, 1)
+                .addOrderLineItem(2L, 1)
+                .build());
+
+        TableGroupResponse tableGroupResponse = tableGroupServiceJpa.create(new TableGroupRequestBuilder()
+                .addOrderTable(1L)
+                .addOrderTable(2L)
+                .build());
+
+        // when then
+        assertThatThrownBy(() ->tableGroupServiceJpa.ungroup(tableGroupResponse.getId()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("주문이 완료되지 않아 그룹 해제가 불가능합니다.");
+
     }
 }
