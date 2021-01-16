@@ -14,6 +14,8 @@ public class OrderTables {
     @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderTable> orderTables;
 
+    private static final int MINIMUM_TABLE_SIZE = 2;
+
     protected OrderTables() {
     }
 
@@ -46,7 +48,7 @@ public class OrderTables {
     }
 
     private void checkTableSize(List<OrderTable> orderTables) {
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
+        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < MINIMUM_TABLE_SIZE) {
             throw new IllegalArgumentException("2개 미만의 테이블은 단체 지정이 불가합니다.");
         }
     }

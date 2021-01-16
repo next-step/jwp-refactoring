@@ -7,6 +7,7 @@ import io.micrometer.core.instrument.util.StringUtils;
 @Embeddable
 public class PositiveQuantity {
 	private long quantity;
+	private static final int ZERO = 0;
 
 	protected PositiveQuantity() {
 	}
@@ -17,7 +18,7 @@ public class PositiveQuantity {
 	}
 
 	private void validate(long quantity) {
-		if (quantity <= 0) {
+		if (quantity <= ZERO) {
 			throw new IllegalArgumentException("수량은 0이거나 음수 일 수 없습니다.");
 		}
 	}
