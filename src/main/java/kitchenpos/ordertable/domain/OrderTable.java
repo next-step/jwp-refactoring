@@ -1,51 +1,108 @@
-package kitchenpos.table.domain;
+package kitchenpos.ordertable.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import kitchenpos.order.domain.Orders;
+import kitchenpos.tablegroup.domain.TableGroup;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class OrderTable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    private Long tableGroupId;
+	@ManyToOne
+	@JoinColumn(name = "table_group_id")
+	private TableGroup tableGroup;
 
-    private int numberOfGuests;
+	@OneToMany(mappedBy = "orderTable")
+	private List<Orders> orders = new ArrayList<>();
 
-    private boolean empty;
+	protected OrderTable() {
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public OrderTable(int numberOfGuests, boolean empty) {
+		this.numberOfGuests = numberOfGuests;
+		this.empty = empty;
+	}
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
+	public OrderTable(TableGroup tableGroup, List<Orders> orders, int numberOfGuests, boolean empty) {
+		this.id = id;
+		this.tableGroup = tableGroup;
+		this.orders = orders;
+		this.numberOfGuests = numberOfGuests;
+		this.empty = empty;
+	}
 
-    public Long getTableGroupId() {
-        return tableGroupId;
-    }
+	public List<Orders> getOrders() {
+		return orders;
+	}
 
-    public void setTableGroupId(final Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
-    }
+	public void setOrders(List<Orders> orders) {
+		this.orders = orders;
+	}
 
-    public int getNumberOfGuests() {
-        return numberOfGuests;
-    }
+	private int numberOfGuests;
 
-    public void setNumberOfGuests(final int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
-    }
+	private boolean empty;
 
-    public boolean isEmpty() {
-        return empty;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public void setEmpty(final boolean empty) {
-        this.empty = empty;
-    }
+	public void setId(final Long id) {
+		this.id = id;
+	}
+
+
+	public int getNumberOfGuests() {
+		return numberOfGuests;
+	}
+
+	public void setNumberOfGuests(final int numberOfGuests) {
+		this.numberOfGuests = numberOfGuests;
+	}
+
+	public boolean isEmpty() {
+		return empty;
+	}
+
+	public void setEmpty(final boolean empty) {
+		this.empty = empty;
+	}
+
+	public TableGroup getTableGroup() {
+		return tableGroup;
+	}
+
+	public void setTableGroup(TableGroup tableGroup) {
+		this.tableGroup = tableGroup;
+	}
+
+	public void setOrder(Orders orders) {
+		this.orders.add(orders);
+	}
+
+	public void changeEmpty(boolean empty) {
+		this.empty = empty;
+	}
+
+	private void validateOrderTable() {
+		if (numberOfGuests < 0) {
+			throw new IllegalArgumentException();
+		}
+
+		if (this.isEmpty()) {
+			throw new IllegalArgumentException();
+		}
+
+	}
+
+	public void changeNumberOfGuests(int numberOfGuests) {
+		validateOrderTable();
+		this.numberOfGuests = numberOfGuests;
+	}
+
 }

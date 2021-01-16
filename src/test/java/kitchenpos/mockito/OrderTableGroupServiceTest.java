@@ -1,7 +1,7 @@
 package kitchenpos.mockito;
 
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.tablegroup.application.TableGroupService;
+import kitchenpos.tablegroup.application.OrderTableGroupService;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTableRepository;
@@ -31,7 +31,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 @Disabled
-public class TableGroupServiceTest {
+public class OrderTableGroupServiceTest {
 
 	@Mock
 	private OrderRepository orderRepository;
@@ -42,15 +42,15 @@ public class TableGroupServiceTest {
 	@Mock
 	private TableGroupRepository tableGroupRepository;
 
-	private TableGroupService tableGroupService;
+	private OrderTableGroupService orderTableGroupService;
 
 	@Mock
 	private TableGroup tableGroup;
 
 	@BeforeEach
 	void setUp() {
-		tableGroupService = new TableGroupService(orderRepository, orderTableRepository, tableGroupRepository);
-		assertThat(tableGroupService).isNotNull();
+		orderTableGroupService = new OrderTableGroupService(orderRepository, orderTableRepository, tableGroupRepository);
+		assertThat(orderTableGroupService).isNotNull();
 		tableGroup = mock(TableGroup.class);
 	}
 
@@ -77,7 +77,7 @@ public class TableGroupServiceTest {
 		given(orderTableRepository.findAllByIdIn(anyList())).willReturn(orderTables);
 		given(tableGroupRepository.save(tableGroup)).willReturn(tableGroup);
 
-		assertThat(tableGroupService.create(tableGroup)).isEqualTo(tableGroup);
+		assertThat(orderTableGroupService.create(tableGroup)).isEqualTo(tableGroup);
 	}
 
 	@Test
@@ -92,7 +92,7 @@ public class TableGroupServiceTest {
 //		given(tableGroup.getOrderTables()).willReturn(orderTables);
 
 		given(orderTableRepository.findAllByIdIn(anyList())).willReturn(orderTables);
-		assertThrows(IllegalArgumentException.class, () -> tableGroupService.create(tableGroup));
+		assertThrows(IllegalArgumentException.class, () -> orderTableGroupService.create(tableGroup));
 	}
 
 	@Test
@@ -103,7 +103,7 @@ public class TableGroupServiceTest {
 		given(orderTableRepository.save(orderTable)).willReturn(orderTable);
 		given(orderTableRepository.findAllByTableGroupId(any())).willReturn(orderTables);
 		given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
-		tableGroupService.ungroup(1L);
+		orderTableGroupService.ungroup(1L);
 		verify(orderTableRepository, times(1)).save(orderTable);
 	}
 
@@ -117,7 +117,7 @@ public class TableGroupServiceTest {
 
 		given(orderTableRepository.findAllByTableGroupId(1L)).willReturn(orderTables);
 		given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(1L), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willThrow(new IllegalArgumentException());
-		assertThrows(IllegalArgumentException.class, () -> tableGroupService.ungroup(1L));
+		assertThrows(IllegalArgumentException.class, () -> orderTableGroupService.ungroup(1L));
 	}
 
 }

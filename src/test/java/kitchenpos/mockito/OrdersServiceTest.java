@@ -24,7 +24,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -61,7 +60,7 @@ public class OrdersServiceTest {
 	void create() {
 		given(orders.getId()).willReturn(1L);
 //		given(orders.getOrderTableId()).willReturn(1L);
-		given(menuRepository.countByIdIn(anyList())).willReturn(2);
+//		given(menuRepository.countByIdIn(anyList())).willReturn(2);
 		given(orderTableRepository.findById(any())).willReturn(Optional.of(mock(OrderTable.class)));
 		given(orders.getOrderLineItems()).willReturn(new ArrayList<>(Arrays.asList(mock(OrderLineItem.class), mock(OrderLineItem.class))));
 
