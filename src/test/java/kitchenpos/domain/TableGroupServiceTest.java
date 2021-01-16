@@ -1,11 +1,9 @@
 package kitchenpos.domain;
 
-import kitchenpos.application.ProductService;
 import kitchenpos.application.TableGroupService;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.ProductDao;
-import kitchenpos.dao.TableGroupDao;
+import kitchenpos.repository.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,7 +35,7 @@ public class TableGroupServiceTest {
 	private OrderTableDao orderTableDao;
 
 	@Mock
-	private TableGroupDao tableGroupDao;
+	private TableGroupRepository tableGroupRepository;
 
 	private TableGroupService tableGroupService;
 
@@ -46,7 +44,7 @@ public class TableGroupServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		tableGroupService = new TableGroupService(orderDao, orderTableDao, tableGroupDao);
+		tableGroupService = new TableGroupService(orderDao, orderTableDao, tableGroupRepository);
 		assertThat(tableGroupService).isNotNull();
 		tableGroup = mock(TableGroup.class);
 	}
@@ -72,7 +70,7 @@ public class TableGroupServiceTest {
 
 		given(tableGroup.getOrderTables()).willReturn(orderTables);
 		given(orderTableDao.findAllByIdIn(anyList())).willReturn(orderTables);
-		given(tableGroupDao.save(tableGroup)).willReturn(tableGroup);
+		given(tableGroupRepository.save(tableGroup)).willReturn(tableGroup);
 
 		assertThat(tableGroupService.create(tableGroup)).isEqualTo(tableGroup);
 	}
