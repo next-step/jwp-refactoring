@@ -1,6 +1,7 @@
 package kitchenpos.ui;
 
 import kitchenpos.application.TableGroupService;
+import kitchenpos.dto.TableGroupCreateRequest;
 import kitchenpos.dto.TableGroupDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +17,7 @@ public class TableGroupRestController {
     }
 
     @PostMapping("/api/table-groups")
-    public ResponseEntity<TableGroupDto> create(@RequestBody final TableGroupDto tableGroup) {
+    public ResponseEntity<TableGroupDto> create(@RequestBody final TableGroupCreateRequest tableGroup) {
         final TableGroupDto created = tableGroupService.create(tableGroup);
         final URI uri = URI.create("/api/table-groups/" + created.getId());
         return ResponseEntity.created(uri)

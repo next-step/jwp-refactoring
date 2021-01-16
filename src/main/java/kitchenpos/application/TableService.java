@@ -3,6 +3,7 @@ package kitchenpos.application;
 import java.util.stream.Collectors;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderStatus;
+import kitchenpos.dto.OrderTableCreateRequest;
 import kitchenpos.dto.OrderTableDto;
 import kitchenpos.repository.OrderDao;
 import kitchenpos.repository.OrderTableDao;
@@ -24,7 +25,7 @@ public class TableService {
         this.orderTableDao = orderTableDao;
     }
 
-    public OrderTableDto create(final OrderTableDto orderTable) {
+    public OrderTableDto create(final OrderTableCreateRequest orderTable) {
         OrderTable savedTable = orderTableDao.save(orderTable.toEntity());
         return OrderTableDto.of(savedTable);
     }
@@ -36,7 +37,7 @@ public class TableService {
                 .collect(Collectors.toList());
     }
 
-    public OrderTableDto changeEmpty(final Long orderTableId, final OrderTableDto orderTable) {
+    public OrderTableDto changeEmpty(final Long orderTableId, boolean empty) {
         final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
@@ -49,7 +50,7 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-        savedOrderTable.changeEmpty(orderTable.isEmpty());
+        savedOrderTable.changeEmpty(empty);
 
         OrderTable savedTable = orderTableDao.save(savedOrderTable);
 
@@ -57,8 +58,7 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTableDto changeNumberOfGuests(final Long orderTableId, final OrderTableDto orderTable) {
-        final int numberOfGuests = orderTable.getNumberOfGuests();
+    public OrderTableDto changeNumberOfGuests(final Long orderTableId, final int numberOfGuests) {
 
         if (numberOfGuests < 0) {
             throw new IllegalArgumentException();

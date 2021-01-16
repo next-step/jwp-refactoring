@@ -1,8 +1,7 @@
 package kitchenpos.application.creator;
 
 import java.util.Arrays;
-import kitchenpos.dto.OrderTableDto;
-import kitchenpos.dto.TableGroupDto;
+import kitchenpos.dto.TableGroupCreateRequest;
 
 /**
  * @author : leesangbae
@@ -11,10 +10,7 @@ import kitchenpos.dto.TableGroupDto;
  */
 public class TableGroupHelper {
 
-    public static TableGroupDto create(OrderTableDto...orderTable) {
-        TableGroupDto tableGroup = new TableGroupDto();
-        tableGroup.setOrderTables(Arrays.asList(orderTable));
-        return tableGroup;
+    public static TableGroupCreateRequest createRequest(Long ...orderTableIds) {
+        return new TableGroupCreateRequest(Arrays.asList(orderTableIds));
     }
-
 }

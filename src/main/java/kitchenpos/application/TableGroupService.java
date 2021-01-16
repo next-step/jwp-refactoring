@@ -3,7 +3,7 @@ package kitchenpos.application;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.OrderStatus;
-import kitchenpos.dto.OrderTableDto;
+import kitchenpos.dto.TableGroupCreateRequest;
 import kitchenpos.dto.TableGroupDto;
 import kitchenpos.repository.OrderDao;
 import kitchenpos.repository.OrderTableDao;
@@ -30,20 +30,16 @@ public class TableGroupService {
     }
 
     @Transactional
-    public TableGroupDto create(final TableGroupDto tableGroup) {
-        final List<OrderTableDto> orderTables = tableGroup.getOrderTables();
+    public TableGroupDto create(final TableGroupCreateRequest tableGroup) {
+        final List<Long> orderTableIds = tableGroup.getOrderTableIds();
 
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
+        if (CollectionUtils.isEmpty(orderTableIds) || orderTableIds.size() < 2) {
             throw new IllegalArgumentException();
         }
 
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTableDto::getId)
-                .collect(Collectors.toList());
-
         final List<OrderTable> savedOrderTables = orderTableDao.findAllByIdIn(orderTableIds);
 
-        if (orderTables.size() != savedOrderTables.size()) {
+        if (orderTableIds.size() != savedOrderTables.size()) {
             throw new IllegalArgumentException();
         }
 

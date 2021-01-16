@@ -24,7 +24,7 @@ class TableServiceTest {
     @DisplayName("테이블 생성 테스트")
     @Test
     void tableCreateTest() {
-        OrderTableDto savedOrderTable = tableService.create(OrderTableHelper.create(false));
+        OrderTableDto savedOrderTable = tableService.create(OrderTableHelper.createRequest(false));
 
         assertThat(savedOrderTable.getId()).isNotNull();
         assertThat(savedOrderTable.getNumberOfGuests()).isEqualTo(0);
@@ -33,34 +33,25 @@ class TableServiceTest {
     @DisplayName("테이블 비어있는 값으로 변경시 존재하지 않는 테이블의 경우")
     @Test
     void tableChangeEmptyWithNotCompleteStateTest() {
-        OrderTableDto orderTableForChangeEmpty = new OrderTableDto();
-        orderTableForChangeEmpty.setEmpty(false);
-
-        assertThatThrownBy(() -> tableService.changeEmpty(999L, orderTableForChangeEmpty))
+        assertThatThrownBy(() -> tableService.changeEmpty(999L, false))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("테이블 인원수 변경시 0명 아래인 경우")
     @Test
     void tableChangeNumberOfGuestsWithZeroTest() {
-        OrderTableDto savedOrderTable = tableService.create(OrderTableHelper.create(false));
-        OrderTableDto orderTableForGuestNumberChange = new OrderTableDto();
-        orderTableForGuestNumberChange.setNumberOfGuests(-1);
+        OrderTableDto savedOrderTable = tableService.create(OrderTableHelper.createRequest(false));
 
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(savedOrderTable.getId(), orderTableForGuestNumberChange))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(savedOrderTable.getId(), -1))
                 .isInstanceOf(IllegalArgumentException.class);
-
     }
 
     @DisplayName("테이블 인원 수 변경시 테이블이 비어있는 상태의 경우")
     @Test
     void tableChangeNumberOfGuestsWithEmptyTable() {
-        OrderTableDto savedOrderTable = tableService.create(OrderTableHelper.create(true));
-        OrderTableDto orderTableForGuestNumberChange = new OrderTableDto();
-        orderTableForGuestNumberChange.setNumberOfGuests(0);
+        OrderTableDto savedOrderTable = tableService.create(OrderTableHelper.createRequest(true));
 
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(savedOrderTable.getId(), orderTableForGuestNumberChange))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(savedOrderTable.getId(), 0))
                 .isInstanceOf(IllegalArgumentException.class);
-
     }
 }

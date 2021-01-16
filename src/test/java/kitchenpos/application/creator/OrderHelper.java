@@ -1,7 +1,12 @@
 package kitchenpos.application.creator;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderCreateRequest;
 import kitchenpos.dto.OrderDto;
+import kitchenpos.dto.OrderLineItemCreateRequest;
 import kitchenpos.dto.OrderLineItemDto;
 import kitchenpos.dto.OrderTableDto;
 
@@ -12,11 +17,7 @@ import kitchenpos.dto.OrderTableDto;
  */
 public class OrderHelper {
 
-    public static OrderDto create(OrderTableDto orderTable, OrderLineItemDto...orderLineItems) {
-        OrderDto order = new OrderDto();
-        order.setOrderTableId(orderTable.getId());
-        order.setOrderLineItems(Arrays.asList(orderLineItems));
-        return order;
+    public static OrderCreateRequest createRequest(OrderTable orderTable, List<OrderLineItemCreateRequest> orderLineItems) {
+        return new OrderCreateRequest(orderTable.getId(), orderLineItems);
     }
-
 }

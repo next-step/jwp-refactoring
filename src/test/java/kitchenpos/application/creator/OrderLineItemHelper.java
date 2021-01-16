@@ -1,6 +1,7 @@
 package kitchenpos.application.creator;
 
 import kitchenpos.dto.MenuDto;
+import kitchenpos.dto.OrderLineItemCreateRequest;
 import kitchenpos.dto.OrderLineItemDto;
 
 /**
@@ -10,11 +11,7 @@ import kitchenpos.dto.OrderLineItemDto;
  */
 public class OrderLineItemHelper {
 
-    public static OrderLineItemDto create(MenuDto menu, int quantity) {
-        OrderLineItemDto orderLineItem = new OrderLineItemDto();
-        orderLineItem.setMenuId(menu.getId());
-        orderLineItem.setQuantity(quantity);
-        return orderLineItem;
+    public static OrderLineItemCreateRequest createRequest(MenuDto menu, int quantity) {
+        return new OrderLineItemCreateRequest(menu.getId(), quantity);
     }
-
 }

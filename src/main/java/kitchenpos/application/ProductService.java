@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import java.util.stream.Collectors;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductCreateRequest;
 import kitchenpos.dto.ProductDto;
 import kitchenpos.repository.ProductDao;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,7 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductDto create(final ProductDto product) {
+    public ProductDto create(final ProductCreateRequest product) {
         final BigDecimal price = product.getPrice();
 
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {

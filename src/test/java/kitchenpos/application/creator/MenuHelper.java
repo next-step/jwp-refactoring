@@ -2,9 +2,12 @@ package kitchenpos.application.creator;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import kitchenpos.dto.MenuDto;
-import kitchenpos.dto.MenuGroupDto;
-import kitchenpos.dto.MenuProductDto;
+import java.util.List;
+import java.util.stream.Collectors;
+import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuProduct;
+import kitchenpos.dto.MenuCreateRequest;
+import kitchenpos.dto.MenuProductRequest;
 
 /**
  * @author : leesangbae
@@ -13,12 +16,11 @@ import kitchenpos.dto.MenuProductDto;
  */
 public class MenuHelper {
 
-    public static MenuDto create(String name, int price, MenuGroupDto menuGroup, MenuProductDto...products) {
-        MenuDto menu = new MenuDto();
-        menu.setName(name);
-        menu.setPrice(BigDecimal.valueOf(price));
-        menu.setMenuGroupId(menuGroup.getId());
-        menu.setMenuProducts(Arrays.asList(products));
-        return menu;
+    public static MenuCreateRequest createRequest(String name, Integer price, Long menuGroupId, List<MenuProductRequest> menuProductRequests) {
+        BigDecimal bigDecimal = null;
+        if (price != null) {
+            bigDecimal = BigDecimal.valueOf(price);
+        }
+        return new MenuCreateRequest(name, bigDecimal, menuGroupId, menuProductRequests);
     }
 }

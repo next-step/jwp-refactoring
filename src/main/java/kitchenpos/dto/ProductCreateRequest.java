@@ -4,14 +4,11 @@ import java.math.BigDecimal;
 import kitchenpos.domain.Money;
 import kitchenpos.domain.Product;
 
-public class ProductDto {
-    private Long id;
-    private String name;
-    private BigDecimal price;
+public class ProductCreateRequest {
 
-    public Long getId() {
-        return id;
-    }
+    private String name;
+
+    private BigDecimal price;
 
     public String getName() {
         return name;
@@ -21,17 +18,12 @@ public class ProductDto {
         return price;
     }
 
-    public ProductDto() {
+    protected ProductCreateRequest() {
     }
 
-    public ProductDto(Long id, String name, BigDecimal price) {
-        this.id = id;
+    public ProductCreateRequest(String name, BigDecimal price) {
         this.name = name;
         this.price = price;
-    }
-
-    public static ProductDto of(Product product) {
-        return new ProductDto(product.getId(), product.getName(), BigDecimal.valueOf(product.getPrice().amount));
     }
 
     public Product toEntity() {

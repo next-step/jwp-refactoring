@@ -2,8 +2,9 @@ package kitchenpos.application;
 
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderCreateRequest;
 import kitchenpos.dto.OrderDto;
-import kitchenpos.dto.OrderLineItemDto;
+import kitchenpos.dto.OrderLineItemCreateRequest;
 import kitchenpos.dto.OrderStatus;
 import kitchenpos.repository.MenuDao;
 import kitchenpos.repository.OrderDao;
@@ -33,15 +34,15 @@ public class OrderService {
         this.orderTableDao = orderTableDao;
     }
 
-    public OrderDto create(final OrderDto order) {
-        final List<OrderLineItemDto> orderLineItems = order.getOrderLineItems();
+    public OrderDto create(final OrderCreateRequest order) {
+        final List<OrderLineItemCreateRequest> orderLineItems = order.getOrderLineItems();
 
         if (CollectionUtils.isEmpty(orderLineItems)) {
             throw new IllegalArgumentException();
         }
 
         final List<Long> menuIds = orderLineItems.stream()
-                .map(OrderLineItemDto::getMenuId)
+                .map(OrderLineItemCreateRequest::getMenuId)
                 .collect(Collectors.toList());
 
         if (orderLineItems.size() != menuDao.countByIdIn(menuIds)) {
@@ -67,7 +68,7 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
-    public OrderDto changeOrderStatus(final Long orderId, final OrderDto order) {
+    public OrderDto changeOrderStatus(final Long orderId, final OrderStatus orderStatus) {
         final Order savedOrder = orderDao.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);
 
@@ -75,7 +76,6 @@ public class OrderService {
             throw new IllegalArgumentException();
         }
 
-        final OrderStatus orderStatus = OrderStatus.valueOf(order.getOrderStatus());
         savedOrder.changeOrderStatus(orderStatus);
 
         orderDao.save(savedOrder);

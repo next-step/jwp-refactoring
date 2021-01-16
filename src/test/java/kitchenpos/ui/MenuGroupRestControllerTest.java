@@ -6,7 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import kitchenpos.dto.MenuGroupDto;
+import kitchenpos.dto.MenuGroupCreateRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -21,9 +21,7 @@ class MenuGroupRestControllerTest extends BaseControllerTest {
     @DisplayName("메뉴 그룹 생성")
     @Test
     public void menuGroupCreateTest() throws Exception {
-
-        MenuGroupDto menuGroup = new MenuGroupDto();
-        menuGroup.setName("메뉴 그룹");
+        MenuGroupCreateRequest menuGroup = new MenuGroupCreateRequest("메뉴 그룹");
 
         mockMvc.perform(
                 post("/api/menu-groups")

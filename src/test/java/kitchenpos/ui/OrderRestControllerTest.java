@@ -8,9 +8,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Collections;
-import kitchenpos.dto.OrderDto;
-import kitchenpos.dto.OrderLineItemDto;
-import kitchenpos.dto.OrderTableDto;
+import kitchenpos.dto.OrderCreateRequest;
+import kitchenpos.dto.OrderLineItemCreateRequest;
+import kitchenpos.dto.OrderStatus;
+import kitchenpos.dto.OrderStatusChangeDto;
+import kitchenpos.dto.OrderTableEmptyChangeRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -25,22 +27,15 @@ class OrderRestControllerTest extends BaseControllerTest {
     @DisplayName("주문 생성")
     @Test
     public void menuGroupCreateTest() throws Exception {
-        OrderLineItemDto orderLineItem = new OrderLineItemDto();
-        orderLineItem.setMenuId(1L);
-        orderLineItem.setQuantity(1);
 
-        OrderDto order = new OrderDto();
-        order.setOrderTableId(7L);
-        order.setOrderLineItems(Collections.singletonList(orderLineItem));
-
+        OrderLineItemCreateRequest orderLineItem = new OrderLineItemCreateRequest(1L, 1);
+        OrderCreateRequest order = new OrderCreateRequest(7L, Collections.singletonList(orderLineItem));
         Long orderTableId = order.getOrderTableId();
 
-        OrderTableDto orderTable = new OrderTableDto();
-        orderTable.setEmpty(false);
-
+        OrderTableEmptyChangeRequest changeRequest = new OrderTableEmptyChangeRequest(false);
         mockMvc.perform(put("/api/tables/"+ orderTableId +"/empty")
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .content(objectMapper.writeValueAsString(orderTable)));
+                    .content(objectMapper.writeValueAsString(changeRequest)));
 
         mockMvc.perform(post("/api/orders")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -69,34 +64,26 @@ class OrderRestControllerTest extends BaseControllerTest {
     @DisplayName("주문 상태 변경")
     @Test
     public void menuGroupChangeOrderStateTest() throws Exception {
-        OrderLineItemDto orderLineItem = new OrderLineItemDto();
-        orderLineItem.setMenuId(1L);
-        orderLineItem.setQuantity(1);
+        OrderLineItemCreateRequest orderLineItem = new OrderLineItemCreateRequest(1L, 1);
+        OrderCreateRequest orderRequest = new OrderCreateRequest(8L, Collections.singletonList(orderLineItem));
 
-        OrderDto order = new OrderDto();
-        order.setOrderTableId(8L);
-        order.setOrderLineItems(Collections.singletonList(orderLineItem));
-
-        Long orderTableId = order.getOrderTableId();
-
-        OrderTableDto orderTable = new OrderTableDto();
-        orderTable.setEmpty(false);
-
+        Long orderTableId = orderRequest.getOrderTableId();
+        OrderTableEmptyChangeRequest statusChangeRequest = new OrderTableEmptyChangeRequest(false);
         mockMvc.perform(put("/api/tables/"+ orderTableId +"/empty")
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .content(objectMapper.writeValueAsString(orderTable)));
+                    .content(objectMapper.writeValueAsString(statusChangeRequest)));
 
         String url = mockMvc.perform(post("/api/orders")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(order)))
+                .content(objectMapper.writeValueAsString(orderRequest)))
                 .andReturn()
                 .getResponse()
                 .getHeader("Location");
 
-        order.setOrderStatus("COMPLETION");
+        OrderStatusChangeDto orderStatusChangeRequest = new OrderStatusChangeDto(OrderStatus.COMPLETION);
         mockMvc.perform(put(url + "/order-status")
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .content(objectMapper.writeValueAsString(order)))
+                    .content(objectMapper.writeValueAsString(orderStatusChangeRequest)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("orderStatus").value("COMPLETION"));
 

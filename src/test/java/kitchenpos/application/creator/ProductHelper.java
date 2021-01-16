@@ -1,7 +1,7 @@
 package kitchenpos.application.creator;
 
 import java.math.BigDecimal;
-import kitchenpos.dto.ProductDto;
+import kitchenpos.dto.ProductCreateRequest;
 
 /**
  * @author : leesangbae
@@ -10,10 +10,8 @@ import kitchenpos.dto.ProductDto;
  */
 public class ProductHelper {
 
-    public static ProductDto create(String name, int price) {
-        ProductDto product = new ProductDto();
-        product.setName(name);
-        product.setPrice(BigDecimal.valueOf(price));
-        return product;
+    public static ProductCreateRequest createRequest(String name, int price) {
+        return new ProductCreateRequest(name, BigDecimal.valueOf(price));
     }
+
 }

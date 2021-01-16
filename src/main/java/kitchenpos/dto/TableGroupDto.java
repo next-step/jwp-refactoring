@@ -15,27 +15,22 @@ public class TableGroupDto {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public LocalDateTime getCreatedDate() {
         return createdDate;
-    }
-
-    public void setCreatedDate(final LocalDateTime createdDate) {
-        this.createdDate = createdDate;
     }
 
     public List<OrderTableDto> getOrderTables() {
         return orderTables;
     }
 
-    public void setOrderTables(final List<OrderTableDto> orderTables) {
-        this.orderTables = orderTables;
+    public TableGroupDto() {
     }
 
-    public TableGroupDto() {
+    public TableGroupDto(LocalDateTime createdDate,
+            List<OrderTableDto> orderTables) {
+        this.id = id;
+        this.createdDate = createdDate;
+        this.orderTables = orderTables;
     }
 
     public TableGroupDto(Long id, LocalDateTime createdDate,

@@ -24,7 +24,7 @@ class MenuGroupServiceTest {
     @DisplayName("메뉴 그룹 생성 테스트")
     @Test
     void menuGroupCreateTest() {
-        MenuGroupDto menuGroup = menuGroupService.create(MenuGroupHelper.create("메뉴 그룹"));
+        MenuGroupDto menuGroup = menuGroupService.create(MenuGroupHelper.createRequest("메뉴 그룹"));
         assertThat(menuGroup.getId()).isNotNull();
         assertThat(menuGroup.getName()).isEqualTo("메뉴 그룹");
     }
@@ -32,9 +32,9 @@ class MenuGroupServiceTest {
     @DisplayName("메뉴 그룹 조회 테스트")
     @Test
     void menuGroupListTest() {
-        menuGroupService.create(MenuGroupHelper.create("메뉴 그룹 01"));
-        menuGroupService.create(MenuGroupHelper.create("메뉴 그룹 02"));
-        menuGroupService.create(MenuGroupHelper.create("메뉴 그룹 03"));
+        menuGroupService.create(MenuGroupHelper.createRequest("메뉴 그룹 01"));
+        menuGroupService.create(MenuGroupHelper.createRequest("메뉴 그룹 02"));
+        menuGroupService.create(MenuGroupHelper.createRequest("메뉴 그룹 03"));
 
         List<MenuGroupDto> list = menuGroupService.list();
         assertThat(list.size()).isGreaterThan(2);
