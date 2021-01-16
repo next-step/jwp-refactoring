@@ -4,7 +4,10 @@ import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.*;
+import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderStatus;
+import kitchenpos.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,8 +18,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -176,6 +179,7 @@ class OrderServiceTest {
         //given
         given(orderDao.findById(any()))
                 .willReturn(Optional.empty());
+
         //when
         //then
         Order changeOrder = new Order();
@@ -195,6 +199,7 @@ class OrderServiceTest {
 
         Order changeOrder = new Order();
         changeOrder.setOrderStatus("식사");
+
         //when
         //then
         assertThatThrownBy(() -> orderService.changeOrderStatus(1L, changeOrder))

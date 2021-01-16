@@ -19,7 +19,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -45,12 +44,22 @@ class TableGroupServiceTest {
     @Test
     void create1() {
         //given
-        OrderTable 제1번테이블 = new OrderTable(1L, null, 0, true);
-        OrderTable 제2번테이블 = new OrderTable(2L, null, 0, true);
         given(orderTableDao.findAllByIdIn(any()))
-                .willReturn(Arrays.asList(제1번테이블, 제2번테이블));
+                .willReturn(
+                        Arrays.asList(
+                                new OrderTable(1L, null, 0, true),
+                                new OrderTable(2L, null, 0, true)
+                        )
+                );
         given(tableGroupDao.save(any()))
-                .willReturn(new TableGroup(1L, LocalDateTime.now(), Arrays.asList(제1번테이블, 제2번테이블)));
+                .willReturn(
+                        new TableGroup(1L, LocalDateTime.now(),
+                                Arrays.asList(
+                                        new OrderTable(1L, null, 0, true),
+                                        new OrderTable(2L, null, 0, true)
+                                )
+                        )
+                );
 
         List<OrderTable> orderTables = new ArrayList<>();
         orderTables.add(new OrderTable(1L, null, 0, true));
@@ -87,20 +96,23 @@ class TableGroupServiceTest {
     @Test
     void ungroup1() {
         //given
-        //given
-        OrderTable 제1번테이블 = new OrderTable(1L, null, 0, true);
-        OrderTable 제2번테이블 = new OrderTable(2L, null, 0, true);
+        List<OrderTable> orderTables = Arrays.asList(
+                new OrderTable(1L, null, 0, true),
+                new OrderTable(2L, null, 0, true)
+        );
+
         given(orderTableDao.findAllByTableGroupId(any()))
-                .willReturn(Arrays.asList(제1번테이블, 제2번테이블));
+                .willReturn(orderTables);
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any()))
                 .willReturn(false);
+
         //when
         tableGroupService.ungroup(1L);
 
         //then
         verify(orderTableDao, times(2)).save(any());
-        verify(orderTableDao).save(제1번테이블);
-        verify(orderTableDao).save(제2번테이블);
+        verify(orderTableDao).save(orderTables.get(0));
+        verify(orderTableDao).save(orderTables.get(1));
     }
 
     @DisplayName("지정한 주문 테이블들이 모두 완료상태여야 그룹 해제가 가능합니다.")
@@ -109,6 +121,7 @@ class TableGroupServiceTest {
         //given
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any()))
                 .willReturn(true);
+
         //when
         //then
         assertThatThrownBy(() -> tableGroupService.ungroup(1L))

@@ -29,75 +29,61 @@ class ProductServiceTest {
     @InjectMocks
     ProductService productService;
 
-    private Product 볶음밥;
-    private Product 김치찌개;
-
-    @BeforeEach
-    void setUp() {
-        볶음밥 = new Product();
-        볶음밥.setId(1L);
-        볶음밥.setName("볶음밥");
-        볶음밥.setPrice(new BigDecimal(7000));
-
-        김치찌개 = new Product();
-        김치찌개.setId(2L);
-        김치찌개.setName("김치찌개");
-        김치찌개.setPrice(new BigDecimal(6000));
-    }
-
     @DisplayName("상품을 등록")
     @Test
     void create1() {
         //given
-        Product 저장전_김치찌개 = new Product();
-        저장전_김치찌개.setName("김치찌개");
-        저장전_김치찌개.setPrice(new BigDecimal("6000"));
+        given(productDao.save(any())).willReturn(new Product(2L, "김치찌개", new BigDecimal(6000)));
 
-        given(productDao.save(any())).willReturn(김치찌개);
+        Product product = new Product(null, "김치찌개", new BigDecimal(6000));
 
         //when
-        Product createProduct = productService.create(저장전_김치찌개);
+        Product createProduct = productService.create(product);
 
         //then
         assertThat(createProduct.getId()).isEqualTo(2L);
         assertThat(createProduct.getName()).isEqualTo("김치찌개");
-        assertThat(createProduct.getPrice()).isEqualTo(new BigDecimal("6000"));
+        assertThat(createProduct.getPrice()).isEqualTo(new BigDecimal(6000));
     }
 
     @DisplayName("상품을 등록 - 상품의 가격은 0 원 이상이어야 한다.")
     @Test
     void create2() {
         //given
-        Product 저장전_김치찌개 = new Product();
-        저장전_김치찌개.setName("김치찌개");
-        저장전_김치찌개.setPrice(new BigDecimal("-1"));
+        Product product = new Product(null, "김치찌개", new BigDecimal(-1));
 
         //when
         //then
-        assertThatThrownBy(() -> {
-            productService.create(저장전_김치찌개);
-        }).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> productService.create(product))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("상품의 가격은 0 원 이상이어야 합니다.");
     }
 
     @DisplayName("상품을 등록 - 상품의 가격이 지정되어 있어야 한다.")
     @Test
     void create3() {
         //given
-        Product 저장전_김치찌개 = new Product();
-        저장전_김치찌개.setName("김치찌개");
+        Product product = new Product(null, "김치찌개", null);
 
         //when
         //then
-        assertThatThrownBy(() -> {
-            productService.create(저장전_김치찌개);
-        }).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> productService.create(product))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("상품의 가격은 0 원 이상이어야 합니다.");
     }
 
     @DisplayName("상품의 목록을 조회할 수 있다")
     @Test
     void list() {
         //given
-        given(productDao.findAll()).willReturn(Arrays.asList(볶음밥, 김치찌개));
+        given(productDao.findAll())
+                .willReturn(
+                        Arrays.asList(
+                                new Product(1L, "볶음밥", new BigDecimal(7000)),
+                                new Product(2L, "김치찌개", new BigDecimal(6000))
+                        )
+                );
+
         //when
         List<Product> products = productService.list();
 

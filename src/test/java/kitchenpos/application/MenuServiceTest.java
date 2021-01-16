@@ -7,7 +7,6 @@ import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,27 +41,21 @@ class MenuServiceTest {
     @InjectMocks
     MenuService menuService;
 
-    private Menu 후라이드치킨;
-    private Menu 양념치킨;
-
-    @BeforeEach
-    void setUp() {
-        후라이드치킨 = new Menu(1L, "후라이드치킨", new BigDecimal("16000"), 2L);
-        양념치킨 = new Menu(2L, "양념치킨", new BigDecimal("16000"), 2L);
-    }
-
     @DisplayName("메뉴를 등록할 수 있다")
     @Test
     void create1() {
         //given
-        given(menuGroupDao.existsById(any())).willReturn(true);
+        given(menuGroupDao.existsById(any()))
+                .willReturn(true);
         given(productDao.findById(any()))
                 .willReturn(Optional.of(new Product(1L, "후라이드치킨", new BigDecimal("16000"))));
-        given(menuDao.save(any())).willReturn(후라이드치킨);
+        given(menuDao.save(any()))
+                .willReturn(new Menu(1L, "후라이드치킨", new BigDecimal("16000"), 2L));
 
-        Menu newMenu = new Menu(null, "후라이드치킨", new BigDecimal("16000"), 2L);
         List<MenuProduct> menuProducts = new ArrayList<>();
         menuProducts.add(new MenuProduct(1L, 1L, 1));
+
+        Menu newMenu = new Menu(null, "후라이드치킨", new BigDecimal("16000"), 2L);
         newMenu.setMenuProducts(menuProducts);
 
         //when
@@ -79,9 +72,8 @@ class MenuServiceTest {
     @Test
     void create2() {
         Menu newMenu = new Menu(null, "후라이드치킨", new BigDecimal("-1"), 2L);
-        assertThatThrownBy(() -> {
-            menuService.create(newMenu);
-        }).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuService.create(newMenu))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("메뉴를 등록할 수 있다 - 등록된 메뉴그룹이 선택되어 있어야 한다.")
@@ -90,22 +82,22 @@ class MenuServiceTest {
         // given
         given(menuGroupDao.existsById(any())).willReturn(false);
 
+        Menu newMenu = new Menu(null, "후라이드치킨", new BigDecimal("16000"), 2L);
         // when
         // then
-        Menu newMenu = new Menu(null, "후라이드치킨", new BigDecimal("16000"), 2L);
-        assertThatThrownBy(() -> {
-            menuService.create(newMenu);
-        }).isInstanceOf(IllegalArgumentException.class)
+        assertThatThrownBy(() -> menuService.create(newMenu))
+                .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("메뉴그룹이 없습니다.");
-
     }
 
     @DisplayName("메뉴를 등록할 수 있다 - 상품목록의 각 상품이 이미 등록되어 있어야 한다.")
     @Test
     void create4() {
         //given
-        given(menuGroupDao.existsById(any())).willReturn(true);
-        given(productDao.findById(any())).willReturn(Optional.empty());
+        given(menuGroupDao.existsById(any()))
+                .willReturn(true);
+        given(productDao.findById(any()))
+                .willReturn(Optional.empty());
 
         Menu newMenu = new Menu(null, "후라이드치킨", new BigDecimal("16000"), 2L);
         List<MenuProduct> menuProducts = new ArrayList<>();
@@ -114,29 +106,29 @@ class MenuServiceTest {
 
         //when
         //then
-        assertThatThrownBy(() -> {
-            menuService.create(newMenu);
-        }).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuService.create(newMenu))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("메뉴를 등록할 수 있다 - 메뉴의 가격이 상품목록 총합 가격보다 더 크면 안됨")
     @Test
     void create5() {
         //given
-        given(menuGroupDao.existsById(any())).willReturn(true);
+        given(menuGroupDao.existsById(any()))
+                .willReturn(true);
         given(productDao.findById(any()))
                 .willReturn(Optional.of(new Product(1L, "후라이드치킨", new BigDecimal("14000"))));
 
-        Menu newMenu = new Menu(null, "후라이드치킨", new BigDecimal("16000"), 2L);
         List<MenuProduct> menuProducts = new ArrayList<>();
         menuProducts.add(new MenuProduct(1L, 1L, 1));
+
+        Menu newMenu = new Menu(null, "후라이드치킨", new BigDecimal("16000"), 2L);
         newMenu.setMenuProducts(menuProducts);
 
         //when
         //then
-        assertThatThrownBy(() -> {
-            menuService.create(newMenu);
-        }).isInstanceOf(IllegalArgumentException.class)
+        assertThatThrownBy(() -> menuService.create(newMenu))
+                .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("메뉴의 가격이 상품목록 총합 가격보다 더 큽니다.");
     }
 
@@ -144,9 +136,14 @@ class MenuServiceTest {
     @Test
     void list() {
         //given
-        Menu 후라이드치킨 = new Menu(1L, "후라이드치킨", new BigDecimal("16000"), 1L);
-        Menu 양념치킨 = new Menu(2L, "양념치킨", new BigDecimal("16000"), 2L);
-        given(menuDao.findAll()).willReturn(Arrays.asList(후라이드치킨, 양념치킨));
+
+        given(menuDao.findAll())
+                .willReturn(
+                        Arrays.asList(
+                                new Menu(1L, "후라이드치킨", new BigDecimal("16000"), 1L),
+                                new Menu(2L, "양념치킨", new BigDecimal("16000"), 2L)
+                        )
+                );
         given(menuProductDao.findAllByMenuId(1L))
                 .willReturn(Collections.singletonList(new MenuProduct(1L, 1L, 1L)));
         given(menuProductDao.findAllByMenuId(2L))
