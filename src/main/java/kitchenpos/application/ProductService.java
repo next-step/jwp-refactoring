@@ -22,12 +22,6 @@ public class ProductService {
 
     @Transactional
     public ProductDto create(final ProductCreateRequest product) {
-        final BigDecimal price = product.getPrice();
-
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
-
         Product savedProduct = productDao.save(product.toEntity());
         return ProductDto.of(savedProduct);
     }

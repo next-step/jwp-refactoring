@@ -51,12 +51,12 @@ public class MenuService {
 
 
     private void validate(MenuCreateRequest menuDto) {
-        final BigDecimal price = menuDto.getPrice();
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+        if (!menuGroupDao.existsById(menuDto.getMenuGroupId())) {
             throw new IllegalArgumentException();
         }
 
-        if (!menuGroupDao.existsById(menuDto.getMenuGroupId())) {
+        final BigDecimal price = menuDto.getPrice();
+        if (price == null) {
             throw new IllegalArgumentException();
         }
 

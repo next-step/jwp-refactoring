@@ -32,6 +32,10 @@ public class Money {
         return new Money((long)(this.amount * percent));
     }
 
+    public boolean isLessThen(Money otherMoney) {
+        return amount < otherMoney.amount;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

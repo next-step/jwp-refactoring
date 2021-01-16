@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -43,6 +44,9 @@ public class Menu {
     }
 
     public Menu(String name, Money price, Long menuGroupId, List<MenuProduct> menuProduct) {
+        if (Objects.isNull(price) || price.isLessThen(Money.ZERO)) {
+            throw new IllegalArgumentException();
+        }
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;

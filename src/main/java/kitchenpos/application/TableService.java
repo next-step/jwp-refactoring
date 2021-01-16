@@ -41,14 +41,7 @@ public class TableService {
         final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
-            throw new IllegalArgumentException();
-        }
-
-        if (orderDao.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
-        }
+        validate(savedOrderTable);
 
         savedOrderTable.changeEmpty(empty);
 
@@ -75,5 +68,16 @@ public class TableService {
         OrderTable savedTable = orderTableDao.save(savedOrderTable);
 
         return OrderTableDto.of(savedTable);
+    }
+
+    private void validate(OrderTable savedOrderTable) {
+        if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
+            throw new IllegalArgumentException();
+        }
+
+        if (orderDao.existsByOrderTableIdAndOrderStatusIn(
+                savedOrderTable.getId(), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+            throw new IllegalArgumentException();
+        }
     }
 }

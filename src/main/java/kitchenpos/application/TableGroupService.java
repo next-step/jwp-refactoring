@@ -31,13 +31,31 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupDto create(final TableGroupCreateRequest tableGroup) {
+
+        final List<Long> orderTableIds = tableGroup.getOrderTableIds();
+        final List<OrderTable> savedOrderTables = orderTableDao.findAllByIdIn(orderTableIds);
+
+        validate(tableGroup, savedOrderTables);
+
+        final TableGroup savedTableGroup = tableGroupDao.save(tableGroup.toEntity());
+
+        final Long tableGroupId = savedTableGroup.getId();
+
+        for (final OrderTable savedOrderTable : savedOrderTables) {
+            savedOrderTable.changeTableGroupId(tableGroupId);
+            savedOrderTable.changeEmpty(false);
+            orderTableDao.save(savedOrderTable);
+        }
+
+        return TableGroupDto.of(savedTableGroup, savedOrderTables);
+    }
+
+    private void validate(TableGroupCreateRequest tableGroup, List<OrderTable> savedOrderTables) {
         final List<Long> orderTableIds = tableGroup.getOrderTableIds();
 
         if (CollectionUtils.isEmpty(orderTableIds) || orderTableIds.size() < 2) {
             throw new IllegalArgumentException();
         }
-
-        final List<OrderTable> savedOrderTables = orderTableDao.findAllByIdIn(orderTableIds);
 
         if (orderTableIds.size() != savedOrderTables.size()) {
             throw new IllegalArgumentException();
@@ -49,16 +67,6 @@ public class TableGroupService {
             }
         }
 
-        final TableGroup savedTableGroup = tableGroupDao.save(tableGroup.toEntity());
-
-        final Long tableGroupId = savedTableGroup.getId();
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.changeTableGroupId(tableGroupId);
-            savedOrderTable.changeEmpty(false);
-            orderTableDao.save(savedOrderTable);
-        }
-
-        return TableGroupDto.of(savedTableGroup, savedOrderTables);
     }
 
     @Transactional

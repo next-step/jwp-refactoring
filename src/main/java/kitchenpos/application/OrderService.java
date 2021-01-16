@@ -35,31 +35,11 @@ public class OrderService {
     }
 
     public OrderDto create(final OrderCreateRequest order) {
-        final List<OrderLineItemCreateRequest> orderLineItems = order.getOrderLineItems();
-
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
-        }
-
-        final List<Long> menuIds = orderLineItems.stream()
-                .map(OrderLineItemCreateRequest::getMenuId)
-                .collect(Collectors.toList());
-
-        if (orderLineItems.size() != menuDao.countByIdIn(menuIds)) {
-            throw new IllegalArgumentException();
-        }
-
-        final OrderTable orderTable = orderTableDao.findById(order.getOrderTableId())
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
+        validateCreate(order);
         final Order savedOrder = orderDao.save(order.toEntity());
-
         return OrderDto.of(savedOrder);
     }
+
 
     @Transactional(readOnly = true)
     public List<OrderDto> list() {
@@ -71,15 +51,31 @@ public class OrderService {
     public OrderDto changeOrderStatus(final Long orderId, final OrderStatus orderStatus) {
         final Order savedOrder = orderDao.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);
-
         if (Objects.equals(OrderStatus.COMPLETION, savedOrder.getOrderStatus())) {
             throw new IllegalArgumentException();
         }
-
         savedOrder.changeOrderStatus(orderStatus);
-
-        orderDao.save(savedOrder);
-
         return OrderDto.of(savedOrder);
+    }
+
+    private void validateCreate(OrderCreateRequest order) {
+        List<OrderLineItemCreateRequest> orderLineItems = order.getOrderLineItems();
+        if (CollectionUtils.isEmpty(orderLineItems)) {
+            throw new IllegalArgumentException();
+        }
+
+        final List<Long> menuIds = orderLineItems.stream()
+                .map(OrderLineItemCreateRequest::getMenuId)
+                .collect(Collectors.toList());
+        if (orderLineItems.size() != menuDao.countByIdIn(menuIds)) {
+            throw new IllegalArgumentException();
+        }
+
+        final OrderTable orderTable = orderTableDao.findById(order.getOrderTableId())
+                .orElseThrow(IllegalArgumentException::new);
+
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
     }
 }
