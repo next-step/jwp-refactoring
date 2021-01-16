@@ -7,6 +7,7 @@ import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -51,7 +52,8 @@ public class MenuTest {
 	}
 
 	@Test
-	void 메뉴를_등록한다(){
+	@DisplayName("메뉴를 등록한다")
+	void create(){
 		when(menuGroupDao.existsById(any())).thenReturn(true);
 
 		Product product = new Product();
@@ -74,7 +76,8 @@ public class MenuTest {
 	}
 
 	@Test
-	void 메뉴_등록_시_가격이_null_또는_0_미만이면_에러(){
+	@DisplayName("메뉴 등록 시 가격이 null 또는 0 미만이면 에러")
+	void givenPriceUnderZeroOrNullWhenCreateMenuThenError(){
 		Menu menu1 = new Menu();
 		menu1.setPrice(BigDecimal.valueOf(0));
 		assertThrows(IllegalArgumentException.class, () -> menuService.create(menu1));
@@ -85,7 +88,8 @@ public class MenuTest {
 
 	}
 	@Test
-	void 메뉴_목록을_조회한다(){
+	@DisplayName("메뉴 목록을 조회한다")
+	void list(){
 		List<Menu> menus = new ArrayList<>();
 		menus.add(new Menu());
 		menus.add(new Menu());

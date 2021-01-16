@@ -7,6 +7,7 @@ import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.dao.TableGroupDao;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -41,12 +42,13 @@ public class TableGroupTest {
 
 	@BeforeEach
 	void setUp() {
-		tableGroupService = new TableGroupService(orderDao, orderTableDao,tableGroupDao );
+		tableGroupService = new TableGroupService(orderDao, orderTableDao, tableGroupDao);
 		assertThat(tableGroupService).isNotNull();
 	}
 
 	@Test
-	void 테이블_그룹을_저장한다(){
+	@DisplayName("테이블 그룹을 저장한다")
+	void create() {
 		//- 테이블 그룹을 저장한다.
 //    - 테이블이 2개 이상 묶여야함
 		TableGroup tableGroup = new TableGroup();
@@ -68,7 +70,8 @@ public class TableGroupTest {
 	}
 
 	@Test
-	void 테이블_그룹을_저장_시_테이블은_2개_이상이어야함(){
+	@DisplayName("테이블 그룹을 저장 시 테이블은 2개 이상이어야함")
+	void whenSaveTableGroupHaveToUpperTwoTables() {
 		TableGroup tableGroup = new TableGroup();
 		List<OrderTable> orderTables = new ArrayList<>();
 		OrderTable orderTable = new OrderTable();
@@ -81,7 +84,8 @@ public class TableGroupTest {
 	}
 
 	@Test
-	void 테이블_그룹을_삭제한다(){
+	@DisplayName("테이블 그룹을 삭제한다")
+	void ungroup() {
 		OrderTable test = mock(OrderTable.class);
 		List<OrderTable> orderTables = new ArrayList<>(Arrays.asList(test));
 		when(orderTableDao.save(test)).thenReturn(test);
@@ -92,7 +96,8 @@ public class TableGroupTest {
 	}
 
 	@Test
-	void 조리_식사_상태의_테이블은_삭제할_수_없다(){
+	@DisplayName("조리 식사 상태의 테이블은 삭제할 수 없다")
+	void givenMealStatusWhenUngroupThenError조리_식사_상태의_테이블은_삭제할_수_없다() {
 		List<OrderTable> orderTables = new ArrayList<>();
 		OrderTable orderTable = new OrderTable();
 		orderTable.setId(1L);

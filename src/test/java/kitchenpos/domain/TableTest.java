@@ -5,6 +5,7 @@ import kitchenpos.application.TableService;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -56,14 +57,16 @@ public class TableTest {
 	}
 
 	@Test
-	void 주문_테이블을_등록한다() {
+	@DisplayName("주문 테이블을 등록한다")
+	void create() {
 		OrderTable orderTable = new OrderTable();
 		when(orderTableDao.save(orderTable)).thenReturn(orderTable);
 		assertThat(tableService.create(orderTable)).isEqualTo(orderTable);
 	}
 
 	@Test
-	void 주문_테이블_목록을_조회한다() {
+	@DisplayName("주문 테이블 목록을 조회한다")
+	void list() {
 		when(orderTableDao.findAll()).thenReturn(new ArrayList<>(Arrays.asList(new OrderTable(), new OrderTable())));
 		assertThat(tableService.list()).isNotNull();
 		assertThat(tableService.list()).isNotEmpty();
@@ -71,7 +74,8 @@ public class TableTest {
 	}
 
 	@Test
-	void 주문_테이블의_손님수를_업데이트할_수_있다() {
+	@DisplayName("주문 테이블의 손님수를 업데이트할 수 있다")
+	void changeNumberOfGuests() {
 		OrderTable orderTable = new OrderTable();
 		orderTable.setNumberOfGuests(2);
 		orderTable.setEmpty(false);
@@ -83,7 +87,8 @@ public class TableTest {
 	}
 
 	@Test
-	void 주문_테이블의_empty_여부를_업데이트할_수_있다() {
+	@DisplayName("주문 테이블의 empty 여부를 업데이트할 수 있다")
+	void changeEmpty() {
 		OrderTable orderTable = new OrderTable();
 		orderTable.setNumberOfGuests(2);
 		orderTable.setEmpty(false);

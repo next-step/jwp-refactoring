@@ -6,6 +6,7 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -49,7 +50,8 @@ public class OrderTest {
 	}
 
 	@Test
-	void 주문을_등록한다() {
+	@DisplayName("주문을 등록한다")
+	void create() {
 //		- 주문 항목은 필수다. (orderLineItems)
 //		- 주문 항목과 메뉴는 서로 포함되어야한다.
 		when(menuDao.countByIdIn(anyList())).thenReturn(2L);
@@ -67,7 +69,8 @@ public class OrderTest {
 	}
 
 	@Test
-	void 주문을_조회한다() {
+	@DisplayName("주문을 조회한다")
+	void list() {
 		when(orderDao.findAll()).thenReturn(new ArrayList<>(Arrays.asList(new Order(), new Order())));
 
 		List<OrderLineItem> orderLineItems = new ArrayList<>(Arrays.asList(new OrderLineItem(), new OrderLineItem(), new OrderLineItem()));
@@ -79,7 +82,8 @@ public class OrderTest {
 
 
 	@Test
-	void 계산_완료_상태의_주문이_조회될_순_없다() {
+	@DisplayName("계산 완료 상태의 주문이 조회될 순 없다")
+	void givenOrderStatusCompletionWhenFindOrderThenError() {
 		Order order = new Order();
 		order.setOrderStatus(OrderStatus.COMPLETION.name());
 		when(orderDao.findById(any())).thenReturn(Optional.of(order));

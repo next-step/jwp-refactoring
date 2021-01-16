@@ -3,6 +3,7 @@ package kitchenpos.domain;
 import kitchenpos.application.MenuGroupService;
 import kitchenpos.dao.MenuGroupDao;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -32,7 +33,8 @@ public class MenuGroupTest {
 	}
 
 	@Test
-	void 메뉴_그룹을_등록한다(){
+	@DisplayName("메뉴 그룹을등록한다")
+	void create(){
 		MenuGroup menuGroup = new MenuGroup();
 		when(menuGroupDao.save(any())).thenReturn( menuGroup);
 
@@ -40,7 +42,8 @@ public class MenuGroupTest {
 	}
 
 	@Test
-	void 메뉴_그룹_목록을_조회한다(){
+	@DisplayName("메뉴 그룹 목록을조회한다")
+	void list(){
 		when(menuGroupDao.findAll()).thenReturn(new ArrayList<>(Arrays.asList(new MenuGroup(), new MenuGroup())));
 
 		assertThat(menuGroupService.list()).isNotNull();

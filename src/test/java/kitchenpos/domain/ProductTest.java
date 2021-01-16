@@ -5,6 +5,7 @@ import kitchenpos.application.ProductService;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.ProductDao;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -35,7 +36,8 @@ public class ProductTest {
 	}
 
 	@Test
-	void 상품을_등록한다() {
+	@DisplayName("상품을 등록한다")
+	void create() {
 		Product product = new Product();
 		product.setPrice(BigDecimal.valueOf(10000));
 
@@ -45,7 +47,8 @@ public class ProductTest {
 	}
 
 	@Test
-	void 상품_목록을_조회한다() {
+	@DisplayName("상품 목록을 조회한다")
+	void list() {
 		when(productDao.findAll()).thenReturn(new ArrayList<>(Arrays.asList(new Product())));
 		assertThat(productService.list()).isNotNull();
 		assertThat(productService.list()).isNotEmpty();
