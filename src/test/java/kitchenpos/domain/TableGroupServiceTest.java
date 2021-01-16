@@ -2,7 +2,7 @@ package kitchenpos.domain;
 
 import kitchenpos.application.TableGroupService;
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.repository.OrderTableRepository;
 import kitchenpos.repository.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -32,7 +32,7 @@ public class TableGroupServiceTest {
 	private OrderDao orderDao;
 
 	@Mock
-	private OrderTableDao orderTableDao;
+	private OrderTableRepository orderTableRepository;
 
 	@Mock
 	private TableGroupRepository tableGroupRepository;
@@ -44,7 +44,7 @@ public class TableGroupServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		tableGroupService = new TableGroupService(orderDao, orderTableDao, tableGroupRepository);
+		tableGroupService = new TableGroupService(orderDao, orderTableRepository, tableGroupRepository);
 		assertThat(tableGroupService).isNotNull();
 		tableGroup = mock(TableGroup.class);
 	}
@@ -69,7 +69,7 @@ public class TableGroupServiceTest {
 		given(orderTables.get(1).getTableGroupId()).willReturn(null);
 
 		given(tableGroup.getOrderTables()).willReturn(orderTables);
-		given(orderTableDao.findAllByIdIn(anyList())).willReturn(orderTables);
+		given(orderTableRepository.findAllByIdIn(anyList())).willReturn(orderTables);
 		given(tableGroupRepository.save(tableGroup)).willReturn(tableGroup);
 
 		assertThat(tableGroupService.create(tableGroup)).isEqualTo(tableGroup);
@@ -86,7 +86,7 @@ public class TableGroupServiceTest {
 
 		given(tableGroup.getOrderTables()).willReturn(orderTables);
 
-		given(orderTableDao.findAllByIdIn(anyList())).willReturn(orderTables);
+		given(orderTableRepository.findAllByIdIn(anyList())).willReturn(orderTables);
 		assertThrows(IllegalArgumentException.class, () -> tableGroupService.create(tableGroup));
 	}
 
@@ -95,11 +95,11 @@ public class TableGroupServiceTest {
 	void ungroup() {
 		OrderTable orderTable = mock(OrderTable.class);
 		List<OrderTable> orderTables = new ArrayList<>(Arrays.asList(orderTable));
-		given(orderTableDao.save(orderTable)).willReturn(orderTable);
-		given(orderTableDao.findAllByTableGroupId(any())).willReturn(orderTables);
+		given(orderTableRepository.save(orderTable)).willReturn(orderTable);
+		given(orderTableRepository.findAllByTableGroupId(any())).willReturn(orderTables);
 		given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
 		tableGroupService.ungroup(1L);
-		verify(orderTableDao, times(1)).save(orderTable);
+		verify(orderTableRepository, times(1)).save(orderTable);
 	}
 
 	@Test
@@ -110,7 +110,7 @@ public class TableGroupServiceTest {
 		given(orderTable.getId()).willReturn(1L);
 		orderTables.add(orderTable);
 
-		given(orderTableDao.findAllByTableGroupId(1L)).willReturn(orderTables);
+		given(orderTableRepository.findAllByTableGroupId(1L)).willReturn(orderTables);
 		given(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(1L), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willThrow(new IllegalArgumentException());
 		assertThrows(IllegalArgumentException.class, () -> tableGroupService.ungroup(1L));
 	}

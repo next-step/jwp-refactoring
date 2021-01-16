@@ -2,7 +2,7 @@ package kitchenpos.domain;
 
 import kitchenpos.application.TableService;
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +29,7 @@ public class TableServiceTest {
 	private OrderDao orderDao;
 
 	@Mock
-	private OrderTableDao orderTableDao;
+	private OrderTableRepository orderTableRepository;
 
 	private TableService tableService;
 
@@ -38,7 +38,7 @@ public class TableServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		tableService = new TableService(orderDao, orderTableDao);
+		tableService = new TableService(orderDao, orderTableRepository);
 		assertThat(tableService).isNotNull();
 		orderTable = mock(OrderTable.class);
 	}
@@ -46,14 +46,14 @@ public class TableServiceTest {
 	@Test
 	@DisplayName("주문 테이블을 등록한다")
 	void create() {
-		given(orderTableDao.save(orderTable)).willReturn(orderTable);
+		given(orderTableRepository.save(orderTable)).willReturn(orderTable);
 		assertThat(tableService.create(orderTable)).isEqualTo(orderTable);
 	}
 
 	@Test
 	@DisplayName("주문 테이블 목록을 조회한다")
 	void list() {
-		given(orderTableDao.findAll()).willReturn(new ArrayList<>(Arrays.asList(mock(OrderTable.class), mock(OrderTable.class))));
+		given(orderTableRepository.findAll()).willReturn(new ArrayList<>(Arrays.asList(mock(OrderTable.class), mock(OrderTable.class))));
 		assertThat(tableService.list()).isNotNull();
 		assertThat(tableService.list()).isNotEmpty();
 		assertThat(tableService.list().size()).isEqualTo(2);
@@ -65,8 +65,8 @@ public class TableServiceTest {
 		given(orderTable.getNumberOfGuests()).willReturn(2);
 		given(orderTable.isEmpty()).willReturn(false);
 
-		given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
-		given(orderTableDao.save(orderTable)).willReturn(orderTable);
+		given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
+		given(orderTableRepository.save(orderTable)).willReturn(orderTable);
 
 		assertThat(tableService.changeNumberOfGuests(1L, orderTable)).isEqualTo(orderTable);
 	}
@@ -78,10 +78,10 @@ public class TableServiceTest {
 		given(orderTable.isEmpty()).willReturn(false);
 		given(orderTable.getTableGroupId()).willReturn(null);
 
-		given(orderTableDao.findById(any())).willReturn(Optional.ofNullable(orderTable));
+		given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(orderTable));
 		given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(false);
 
-		given(orderTableDao.save(orderTable)).willReturn(orderTable);
+		given(orderTableRepository.save(orderTable)).willReturn(orderTable);
 		assertThat(tableService.changeEmpty(1L, orderTable)).isEqualTo(orderTable);
 	}
 }

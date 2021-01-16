@@ -4,7 +4,7 @@ import kitchenpos.application.OrderService;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +25,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -40,7 +39,7 @@ public class OrderServiceTest {
 	private OrderLineItemDao orderLineItemDao;
 
 	@Mock
-	private OrderTableDao orderTableDao;
+	private OrderTableRepository orderTableRepository;
 
 	private OrderService orderService;
 
@@ -49,7 +48,7 @@ public class OrderServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		orderService = new OrderService(menuDao, orderDao, orderLineItemDao, orderTableDao);
+		orderService = new OrderService(menuDao, orderDao, orderLineItemDao, orderTableRepository);
 		assertThat(orderService).isNotNull();
 		order = mock(Order.class);
 	}
@@ -60,7 +59,7 @@ public class OrderServiceTest {
 		given(order.getId()).willReturn(1L);
 		given(order.getOrderTableId()).willReturn(1L);
 		given(menuDao.countByIdIn(anyList())).willReturn(2L);
-		given(orderTableDao.findById(any())).willReturn(Optional.of(mock(OrderTable.class)));
+		given(orderTableRepository.findById(any())).willReturn(Optional.of(mock(OrderTable.class)));
 		given(order.getOrderLineItems()).willReturn(new ArrayList<>(Arrays.asList(mock(OrderLineItem.class), mock(OrderLineItem.class))));
 
 		given(orderDao.save(any())).willReturn(order);
