@@ -9,6 +9,9 @@ public class ProductRequest {
     private String name;
     private BigDecimal price;
 
+    public ProductRequest() {
+    }
+
     public ProductRequest(String name, Price price) {
         this.name = name;
         this.price = price.get();

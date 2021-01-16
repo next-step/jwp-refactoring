@@ -48,7 +48,7 @@ public class MenuService {
 
     private MenuGroup findMenuGroup(Long menuGroupId) {
         return menuGroupRepository.findById(menuGroupId)
-                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 메뉴 그룹 입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("등록 되지 않은 메뉴 그룹 입니다."));
     }
 
     private MenuProducts findMenuProducts(List<MenuProductRequest> request) {
@@ -60,7 +60,7 @@ public class MenuService {
 
     private MenuProduct findMenuProduct(MenuProductRequest menuProductRequest) {
         Product product = productRepository.findById(menuProductRequest.getProductId())
-                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 상품 입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("등록 되지 않은 상품 입니다."));
         return new MenuProduct(product, menuProductRequest.getQuantity());
     }
 }

@@ -7,6 +7,9 @@ public class OrderTableRequest {
 
     private boolean empty;
 
+    public OrderTableRequest() {
+    }
+
     public OrderTableRequest(int numberOfGuests, boolean empty) {
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;

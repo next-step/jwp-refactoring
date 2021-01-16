@@ -2,6 +2,7 @@ package kitchenpos.ordertable.domain;
 
 import kitchenpos.order.domain.Order;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
@@ -9,7 +10,7 @@ import java.util.List;
 
 @Embeddable
 public class Orders {
-    @OneToMany(mappedBy = "orderTable")
+    @OneToMany(mappedBy = "orderTable", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Order> orders = new ArrayList<>();
 
     protected Orders() {
