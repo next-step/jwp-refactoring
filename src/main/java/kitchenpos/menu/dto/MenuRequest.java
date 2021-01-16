@@ -1,7 +1,5 @@
 package kitchenpos.menu.dto;
 
-import kitchenpos.infra.Money;
-
 import java.util.List;
 
 public class MenuRequest {

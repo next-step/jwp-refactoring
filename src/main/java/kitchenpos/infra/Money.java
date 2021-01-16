@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 public class Money {
-    public final static Money ZERO = ofZero();
+    public static final Money ZERO_MONEY = ofZero();
 
     private final BigDecimal amount;
 
@@ -19,10 +19,6 @@ public class Money {
 
     public static Money price(long amount) {
         return new Money(BigDecimal.valueOf(amount));
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
     }
 
     public Long longValue() {
@@ -65,12 +61,6 @@ public class Money {
     }
 
     public boolean isGraterThan(Money price) {
-        // 변수가 작을경우 1
-        // 31000 > 16000 true
-        // 31000 > 32000 false
-        // 변수가 클경우 -1
-        // 동일할 경우 0
-//        price.compareTo(sum) > 0
         return this.amount.compareTo(price.amount) > 0;
     }
 }

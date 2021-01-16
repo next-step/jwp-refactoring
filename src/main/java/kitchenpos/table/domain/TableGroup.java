@@ -39,10 +39,6 @@ public class TableGroup extends BaseEntity {
         return orderTables;
     }
 
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
-
     public void addTable(OrderTable table) {
         checkAddTableValidation(table);
         table.saveOrderTable(this);

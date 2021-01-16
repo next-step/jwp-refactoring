@@ -54,16 +54,8 @@ public class Order extends BaseEntity {
         return id;
     }
 
-    public OrderTable getOrderTableId() {
-        return orderTableId;
-    }
-
     public String getOrderStatus() {
         return orderStatus.name();
-    }
-
-    public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
     }
 
     public String getOrderedTime() {

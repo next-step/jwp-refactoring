@@ -69,7 +69,7 @@ public class Menu {
     public void addProducts(List<MenuProduct> menuProducts) {
         checkGraterThanMenuPrice(menuProducts.stream()
                 .map(MenuProduct::getAmount)
-                .reduce(Money.ZERO, Money::sum));
+                .reduce(Money.ZERO_MONEY, Money::sum));
         this.menuProducts.addAll(menuProducts);
     }
 
