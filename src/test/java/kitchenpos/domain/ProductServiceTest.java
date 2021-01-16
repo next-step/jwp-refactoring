@@ -1,7 +1,7 @@
 package kitchenpos.domain;
 
 import kitchenpos.application.ProductService;
-import kitchenpos.dao.ProductDao;
+import kitchenpos.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,7 @@ import static org.mockito.Mockito.mock;
 public class ProductServiceTest {
 
 	@Mock
-	private ProductDao productDao;
+	private ProductRepository productRepository;
 
 	private ProductService productService;
 
@@ -33,7 +33,7 @@ public class ProductServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		productService = new ProductService(productDao);
+		productService = new ProductService(productRepository);
 		assertThat(productService).isNotNull();
 		product = mock(Product.class);
 	}
@@ -42,7 +42,7 @@ public class ProductServiceTest {
 	@DisplayName("상품을 등록한다")
 	void create() {
 		given(product.getPrice()).willReturn(BigDecimal.valueOf(10000));
-		given(productDao.save(product)).willReturn(product);
+		given(productRepository.save(product)).willReturn(product);
 
 		assertThat(productService.create(product)).isEqualTo(product);
 	}
@@ -50,7 +50,7 @@ public class ProductServiceTest {
 	@Test
 	@DisplayName("상품 목록을 조회한다")
 	void list() {
-		given(productDao.findAll()).willReturn(new ArrayList<>(Arrays.asList(mock(Product.class))));
+		given(productRepository.findAll()).willReturn(new ArrayList<>(Arrays.asList(mock(Product.class))));
 
 		assertThat(productService.list()).isNotNull();
 		assertThat(productService.list()).isNotEmpty();

@@ -2,9 +2,9 @@ package kitchenpos.domain;
 
 import kitchenpos.application.MenuService;
 import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.repository.MenuGroupRepository;
 import kitchenpos.repository.MenuProductRepository;
+import kitchenpos.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,7 +39,7 @@ public class MenuServiceTest {
 	private MenuProductRepository menuProductRepository;
 
 	@Mock
-	private ProductDao productDao;
+	private ProductRepository productRepository;
 
 	private MenuService menuService;
 
@@ -48,7 +48,7 @@ public class MenuServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		menuService = new MenuService(menuDao, menuGroupRepository, menuProductRepository, productDao);
+		menuService = new MenuService(menuDao, menuGroupRepository, menuProductRepository, productRepository);
 		assertThat(menuService).isNotNull();
 		menu = mock(Menu.class);
 	}
@@ -62,7 +62,7 @@ public class MenuServiceTest {
 
 		Product product = mock(Product.class);
 		given(product.getPrice()).willReturn(BigDecimal.valueOf(10000));
-		given(productDao.findById(any())).willReturn(java.util.Optional.of(product));
+		given(productRepository.findById(any())).willReturn(java.util.Optional.of(product));
 //		given(productDao.sumPriceByIdIn(any())).willReturn(BigDecimal.valueOf(10000));
 
 		List<MenuProduct> menuProducts = new ArrayList<>();
