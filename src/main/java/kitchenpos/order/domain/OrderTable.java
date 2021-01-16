@@ -20,6 +20,8 @@ public class OrderTable {
     private TableGroup tableGroup;
     @Embedded
     private NumberOfGuests numberOfGuests;
+    @Embedded
+    private Orders orders = new Orders();
     private boolean empty;
 
     protected OrderTable() {
@@ -68,6 +70,7 @@ public class OrderTable {
 
     public void updateEmpty(boolean empty) {
         checkTableGroup();
+        orders.checkOrderStatus();
         this.empty = empty;
     }
 
