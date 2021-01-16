@@ -16,7 +16,8 @@ import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -26,25 +27,27 @@ public class MenuGroupServiceTest {
 
 	private MenuGroupService menuGroupService;
 
+	@Mock
+	private MenuGroup menuGroup;
+
 	@BeforeEach
 	void setUp() {
 		menuGroupService = new MenuGroupService(menuGroupDao);
 		assertThat(menuGroupService).isNotNull();
+		menuGroup = mock(MenuGroup.class);
 	}
 
 	@Test
 	@DisplayName("메뉴 그룹을등록한다")
-	void create(){
-		MenuGroup menuGroup = new MenuGroup();
-		when(menuGroupDao.save(any())).thenReturn( menuGroup);
-
+	void create() {
+		given(menuGroupDao.save(any())).willReturn(menuGroup);
 		assertThat(menuGroupService.create(menuGroup)).isEqualTo(menuGroup);
 	}
 
 	@Test
 	@DisplayName("메뉴 그룹 목록을조회한다")
-	void list(){
-		when(menuGroupDao.findAll()).thenReturn(new ArrayList<>(Arrays.asList(new MenuGroup(), new MenuGroup())));
+	void list() {
+		given(menuGroupDao.findAll()).willReturn(new ArrayList<>(Arrays.asList(mock(MenuGroup.class), mock(MenuGroup.class))));
 
 		assertThat(menuGroupService.list()).isNotNull();
 		assertThat(menuGroupService.list()).isNotEmpty();

@@ -1,6 +1,5 @@
 package kitchenpos.domain;
 
-import kitchenpos.application.MenuGroupService;
 import kitchenpos.application.MenuService;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
@@ -10,7 +9,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
@@ -24,8 +22,8 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -45,55 +43,55 @@ public class MenuServiceTest {
 
 	private MenuService menuService;
 
+	@Mock
+	private Menu menu;
+
 	@BeforeEach
 	void setUp() {
 		menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
 		assertThat(menuService).isNotNull();
+		menu = mock(Menu.class);
 	}
 
 	@Test
 	@DisplayName("메뉴를 등록한다")
 	void create(){
-		when(menuGroupDao.existsById(any())).thenReturn(true);
+		given(menu.getId()).willReturn(1L);
+		given(menu.getPrice()).willReturn(BigDecimal.valueOf(10000));
+		given(menuGroupDao.existsById(any())).willReturn(true);
 
-		Product product = new Product();
-		product.setPrice(BigDecimal.valueOf(10000));
-		when(productDao.findById(any())).thenReturn(java.util.Optional.of(product));
-
-		Menu menu = new Menu();
-		menu.setId(1L);
-		menu.setPrice(BigDecimal.valueOf(10000));
+		Product product = mock(Product.class);
+		given(product.getPrice()).willReturn(BigDecimal.valueOf(10000));
+		given(productDao.findById(any())).willReturn(java.util.Optional.of(product));
 
 		List<MenuProduct> menuProducts = new ArrayList<>();
-		MenuProduct menuProduct = new MenuProduct();
-		menuProduct.setQuantity(2);
+		MenuProduct menuProduct = mock(MenuProduct.class);
+		given(menuProduct.getQuantity()).willReturn(2L);
 		menuProducts.add(menuProduct);
-		menu.setMenuProducts(menuProducts);
+		given(menu.getMenuProducts()).willReturn(menuProducts);
 
-		when(menuProductDao.save(menuProduct)).thenReturn(menuProduct);
-		when(menuDao.save(menu)).thenReturn(menu);
+		given(menuProductDao.save(menuProduct)).willReturn(menuProduct);
+		given(menuDao.save(menu)).willReturn(menu);
 		assertThat(menuService.create(menu)).isEqualTo(menu);
 	}
 
 	@Test
 	@DisplayName("메뉴 등록 시 가격이 null 또는 0 미만이면 에러")
 	void givenPriceUnderZeroOrNullWhenCreateMenuThenError(){
-		Menu menu1 = new Menu();
-		menu1.setPrice(BigDecimal.valueOf(0));
-		assertThrows(IllegalArgumentException.class, () -> menuService.create(menu1));
+		given(menu.getPrice()).willReturn(BigDecimal.valueOf(0));
+		assertThrows(IllegalArgumentException.class, () -> menuService.create(menu));
 
-		Menu menu2 = new Menu();
-		menu2.setPrice(null);
-		assertThrows(IllegalArgumentException.class, () -> menuService.create(menu1));
+		Menu menu2 = mock(Menu.class);
+		given(menu2.getPrice()).willReturn(null);
+		assertThrows(IllegalArgumentException.class, () -> menuService.create(menu2));
 
 	}
 	@Test
 	@DisplayName("메뉴 목록을 조회한다")
 	void list(){
-		List<Menu> menus = new ArrayList<>();
-		menus.add(new Menu());
-		menus.add(new Menu());
-		when(menuDao.findAll()).thenReturn(menus);
+		List<Menu> menus = new ArrayList<>(Arrays.asList(mock(Menu.class), mock(Menu.class)));
+		given(menuDao.findAll()).willReturn(menus);
+
 		assertThat(menuService.list()).isNotNull();
 		assertThat(menuService.list()).isNotEmpty();
 		assertThat(menuService.list().size()).isEqualTo(2);

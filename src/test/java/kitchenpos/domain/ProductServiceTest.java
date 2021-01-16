@@ -18,7 +18,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -29,27 +30,30 @@ public class ProductServiceTest {
 
 	private ProductService productService;
 
+	@Mock
+	private Product product;
+
 	@BeforeEach
 	void setUp() {
 		productService = new ProductService(productDao);
 		assertThat(productService).isNotNull();
+		product = mock(Product.class);
 	}
 
 	@Test
 	@DisplayName("상품을 등록한다")
 	void create() {
-		Product product = new Product();
-		product.setPrice(BigDecimal.valueOf(10000));
+		given(product.getPrice()).willReturn(BigDecimal.valueOf(10000));
+		given(productDao.save(product)).willReturn(product);
 
-		when(productDao.save(product)).thenReturn(product);
 		assertThat(productService.create(product)).isEqualTo(product);
-
 	}
 
 	@Test
 	@DisplayName("상품 목록을 조회한다")
 	void list() {
-		when(productDao.findAll()).thenReturn(new ArrayList<>(Arrays.asList(new Product())));
+		given(productDao.findAll()).willReturn(new ArrayList<>(Arrays.asList(mock(Product.class))));
+
 		assertThat(productService.list()).isNotNull();
 		assertThat(productService.list()).isNotEmpty();
 		assertThat(productService.list().size()).isEqualTo(1);
