@@ -75,7 +75,7 @@ class TableGroupServiceTest extends BaseTest {
 
     private TableGroup createTableGroup() {
         TableGroup expected = tableGroupDao.findById(1L).get();
-        expected.setOrderTables(orderTableDao.findAll());
+        expected.setOrderTables(orderTableDao.findAll().subList(1,3));
 
         return tableGroupService.create(expected);
     }
