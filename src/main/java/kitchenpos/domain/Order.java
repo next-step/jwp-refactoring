@@ -10,12 +10,15 @@ public class Order {
     private LocalDateTime orderedTime;
     private List<OrderLineItem> orderLineItems;
 
-    public Long getId() {
-        return id;
+    public Order(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime) {
+        this.id = id;
+        this.orderTableId = orderTableId;
+        this.orderStatus = orderStatus;
+        this.orderedTime = orderedTime;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
+    public Long getId() {
+        return id;
     }
 
     public Long getOrderTableId() {
