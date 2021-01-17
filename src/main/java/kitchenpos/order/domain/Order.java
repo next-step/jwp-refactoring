@@ -39,7 +39,6 @@ public class Order {
 
     private Order(final OrderTable orderTable, final OrderStatus orderStatus, final List<OrderLineItem> orderLineItems) {
         validate(orderTable, orderLineItems);
-        orderTable.add(this);
         this.orderTable = Objects.requireNonNull(orderTable);
         this.orderStatus = Objects.requireNonNull(orderStatus);
         this.orderLineItems = new OrderLineItems(Objects.requireNonNull(orderLineItems), this);

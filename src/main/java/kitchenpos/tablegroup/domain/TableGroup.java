@@ -34,6 +34,12 @@ public class TableGroup {
         this.orderTables = new OrderTables(orderTables, this);
     }
 
+    public TableGroup(final Long id, final List<OrderTable> orderTables) {
+        validate(orderTables);
+        this.id = id;
+        this.orderTables = new OrderTables(orderTables, this);;
+    }
+
     private void validate(final List<OrderTable> orderTables) {
         if (orderTables.size() < MIN_GROUP_SIZE) {
             throw new IllegalArgumentException(String.format("최소 %d개 이상 단체 지정 할 수 있습니다.", MIN_GROUP_SIZE));

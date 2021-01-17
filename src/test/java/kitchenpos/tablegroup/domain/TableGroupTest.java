@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @DisplayName("단체 지정")
 class TableGroupTest {
 
-    @DisplayName("단체 지정을 생성한다.")
+    @DisplayName("단체 지정을 생성한다. (주문 테이블이 주문 등록 가능한 상태가 된다)")
     @Test
     void create() {
         // given
@@ -24,6 +24,8 @@ class TableGroupTest {
 
         // then
         assertThat(tableGroup).isNotNull();
+        assertThat(orderTable1.isEmpty()).isFalse();
+        assertThat(orderTable2.isEmpty()).isFalse();
     }
 
     @DisplayName("주문 테이블이 2개 이상이어야 한다.")
@@ -66,7 +68,7 @@ class TableGroupTest {
         // given
         OrderTable orderTable1 = new OrderTable(5, true);
         OrderTable orderTable2 = new OrderTable(3, true);
-        TableGroup tableGroup = new TableGroup(Arrays.asList(orderTable1, orderTable2));
+        TableGroup tableGroup = new TableGroup(1L, Arrays.asList(orderTable1, orderTable2));
 
         // when
         tableGroup.ungroup();
