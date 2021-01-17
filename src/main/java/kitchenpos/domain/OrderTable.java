@@ -51,15 +51,36 @@ public class OrderTable {
         return empty;
     }
 
-    public void changeTableGroupId(Long tableGroupId) {
+    public void changeNumberOfGuests(int numberOfGuests) {
+        if (numberOfGuests < 0) {
+            throw new IllegalArgumentException("주문 테이블에 변경 인원이 0명 이상이여야 합니다.");
+        }
+
+        if (this.empty) {
+            throw new IllegalArgumentException("주문 테이블이 비어있는 경우 인원 수 변경이 불가 합니다.");
+        }
+        this.numberOfGuests = numberOfGuests;
+    }
+
+    public void changeEmpty(boolean empty) {
+        if (!Objects.nonNull(this.tableGroupId)) {
+            throw new IllegalArgumentException("변경시에는 테이블 그룹이 존재해야 합니다.");
+        }
+        this.empty = empty;
+    }
+
+    public void groupBy(Long tableGroupId) {
+        if (!empty) {
+            throw new IllegalArgumentException("단체 지정의 모든 주문 테이블은 공석이여야 합니다.");
+        }
+        if (!Objects.nonNull(tableGroupId)) {
+            throw new IllegalArgumentException("단체 지정에 등록되지 않은 주문 테이블이 있어선 안됩니다.");
+        }
         this.tableGroupId = tableGroupId;
     }
 
-    public void changeNumberOfGuests(int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
-    }
-    public void changeEmpty(boolean empty) {
-        this.empty = empty;
+    public void ungroup() {
+        this.tableGroupId = null;
     }
 
     @Override
@@ -79,6 +100,7 @@ public class OrderTable {
     public int hashCode() {
         return Objects.hash(tableGroupId, numberOfGuests, empty);
     }
+
 
 
 }

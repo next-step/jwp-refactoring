@@ -21,7 +21,7 @@ import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.OrderCreateRequest;
 import kitchenpos.dto.OrderDto;
 import kitchenpos.dto.OrderLineItemCreateRequest;
-import kitchenpos.dto.OrderStatus;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.repository.MenuGroupDao;
 import kitchenpos.repository.OrderTableDao;
 import kitchenpos.repository.ProductDao;

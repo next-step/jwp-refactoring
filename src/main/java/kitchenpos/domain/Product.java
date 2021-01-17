@@ -1,6 +1,5 @@
 package kitchenpos.domain;
 
-import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -33,7 +32,7 @@ public class Product {
 
     public Product(String name, Money price) {
         if (Objects.isNull(price) || price.isLessThen(Money.ZERO)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("`상품`의 가격은 0원 이상이여야 합니다..");
         }
         this.name = name;
         this.price = price;
@@ -49,6 +48,10 @@ public class Product {
 
     public Money getPrice() {
         return price;
+    }
+
+    public Money calculate(long quantity) {
+        return this.price.times(quantity);
     }
 
     @Override

@@ -31,7 +31,6 @@ public class TableGroupDto {
 
     public TableGroupDto(LocalDateTime createdDate,
             List<OrderTableDto> orderTables) {
-        this.id = id;
         this.createdDate = createdDate;
         this.orderTables = orderTables;
     }

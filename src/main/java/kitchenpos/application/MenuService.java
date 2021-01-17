@@ -39,7 +39,6 @@ public class MenuService {
         return MenuDto.of(savedMenu);
     }
 
-
     @Transactional(readOnly = true)
     public List<MenuDto> list() {
         final List<Menu> menus = menuDao.findAll();
@@ -48,39 +47,36 @@ public class MenuService {
                 .collect(Collectors.toList());
     }
 
-
     private void validate(MenuCreateRequest menuDto) {
         if (!menuGroupDao.existsById(menuDto.getMenuGroupId())) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("메뉴가 속한 메뉴 그룹이 존재해야 합니다");
         }
 
         final BigDecimal price = menuDto.getPrice();
         if (price == null) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("메뉴의 가격이 null이여선 안됩니다.");
         }
 
-        BigDecimal sum = calculateProductsPrice(menuDto.getMenuProducts());
-        if (price.compareTo(sum) > 0) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    private BigDecimal calculateProductsPrice(List<MenuProductRequest> menuProducts) {
-        List<Long> productsIds = menuProducts.stream()
-                .map(MenuProductRequest::getProductId)
-                .collect(Collectors.toList());
+        List<Long> productsIds = menuDto.getMenuProductIds();
         List<Product> products = productDao.findAllByIdIn(productsIds);
 
         if (productsIds.isEmpty() || productsIds.size() != products.size()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("메뉴에 중복된 상품이 존재합니다.");
         }
 
+        BigDecimal sum = calculateProductsPrice(products, menuDto.getMenuProducts());
+        if (price.compareTo(sum) > 0) {
+            throw new IllegalArgumentException("메뉴에 속한 메뉴 상품의 총 합은 메뉴 가격보다 같거나 커야합니다.");
+        }
+    }
+
+    private BigDecimal calculateProductsPrice(List<Product> products, List<MenuProductRequest> menuProducts) {
         Money sum = Money.ZERO;
         for (int i = 0; i < products.size(); i++) {
-            long quantity = menuProducts.get(i).getQuantity();
-            Money price = products.get(i).getPrice();
-            sum = sum.plus(price.times(quantity));
+            MenuProductRequest menuProduct = menuProducts.get(i);
+            Product product = products.get(i);
+            sum = sum.plus(product.calculate(menuProduct.getQuantity()));
         }
-        return BigDecimal.valueOf(sum.amount);
+        return sum.amount;
     }
 }

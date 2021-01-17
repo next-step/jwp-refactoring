@@ -13,7 +13,7 @@ public class MoneyConverter implements AttributeConverter<Money, BigDecimal> {
 
     @Override
     public BigDecimal convertToDatabaseColumn(Money attribute) {
-        return BigDecimal.valueOf(attribute.amount);
+        return attribute.amount;
     }
 
     @Override

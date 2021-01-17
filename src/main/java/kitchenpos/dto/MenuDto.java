@@ -50,7 +50,7 @@ public class MenuDto {
         List<MenuProductDto> menuProducts = menu.getMenuProduct().stream()
                 .map(it -> MenuProductDto.of(it, menu.getId()))
                 .collect(Collectors.toList());
-        BigDecimal price = BigDecimal.valueOf(menu.getPrice().amount);
+        BigDecimal price = menu.getPrice().amount;
         return new MenuDto(menu.getId(), menu.getName(), price, menu.getMenuGroupId(), menuProducts);
     }
 }

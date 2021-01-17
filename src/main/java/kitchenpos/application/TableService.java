@@ -2,7 +2,7 @@ package kitchenpos.application;
 
 import java.util.stream.Collectors;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.dto.OrderStatus;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.dto.OrderTableCreateRequest;
 import kitchenpos.dto.OrderTableDto;
 import kitchenpos.repository.OrderDao;
@@ -38,8 +38,7 @@ public class TableService {
     }
 
     public OrderTableDto changeEmpty(final Long orderTableId, boolean empty) {
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+        final OrderTable savedOrderTable = findById(orderTableId);
 
         validate(savedOrderTable);
 
@@ -52,17 +51,8 @@ public class TableService {
 
     @Transactional
     public OrderTableDto changeNumberOfGuests(final Long orderTableId, final int numberOfGuests) {
+        final OrderTable savedOrderTable = findById(orderTableId);
 
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
-        }
-
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
         savedOrderTable.changeNumberOfGuests(numberOfGuests);
 
         OrderTable savedTable = orderTableDao.save(savedOrderTable);
@@ -71,14 +61,15 @@ public class TableService {
     }
 
     private void validate(OrderTable savedOrderTable) {
-        if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
-            throw new IllegalArgumentException();
-        }
-
         if (orderDao.existsByOrderTableIdAndOrderStatusIn(
                 savedOrderTable.getId(), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문 테이블이 조리, 식사 상태일 경우에는 테이블 상태 비우기가 불가능합니다.");
         }
+    }
+
+    private OrderTable findById(Long orderTableId) {
+        return orderTableDao.findById(orderTableId)
+                .orElseThrow(() -> new IllegalArgumentException("등록 된 주문 테이블이 존재하지 않습니다."));
     }
 }
 

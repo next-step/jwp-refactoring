@@ -1,5 +1,7 @@
 package kitchenpos.dto;
 
+import kitchenpos.domain.OrderStatus;
+
 /**
  * @author : leesangbae
  * @project : kitchenpos

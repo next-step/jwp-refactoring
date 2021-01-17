@@ -33,6 +33,12 @@ public class MenuCreateRequest {
         return menuProducts;
     }
 
+    public List<Long> getMenuProductIds() {
+        return menuProducts.stream()
+                .map(MenuProductRequest::getProductId)
+                .collect(Collectors.toList());
+    }
+
     public MenuCreateRequest(String name, BigDecimal price, Long menuGroupId,
             List<MenuProductRequest> menuProducts) {
         this.name = name;

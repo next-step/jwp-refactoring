@@ -2,10 +2,8 @@ package kitchenpos.repository;
 
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.Order;
-import kitchenpos.dto.OrderDto;
-import kitchenpos.dto.OrderStatus;
+import kitchenpos.domain.OrderStatus;
 import org.springframework.data.repository.RepositoryDefinition;
 
 @RepositoryDefinition(idClass = Long.class, domainClass = Order.class)

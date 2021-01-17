@@ -45,7 +45,7 @@ public class Menu {
 
     public Menu(String name, Money price, Long menuGroupId, List<MenuProduct> menuProduct) {
         if (Objects.isNull(price) || price.isLessThen(Money.ZERO)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("가격이 0원 이하이거나 null이여선 안됩니다.");
         }
         this.name = name;
         this.price = price;

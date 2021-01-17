@@ -34,7 +34,7 @@ public class ProductDto {
     }
 
     public static ProductDto of(Product product) {
-        return new ProductDto(product.getId(), product.getName(), BigDecimal.valueOf(product.getPrice().amount));
+        return new ProductDto(product.getId(), product.getName(), product.getPrice().amount);
     }
 
     public Product toEntity() {

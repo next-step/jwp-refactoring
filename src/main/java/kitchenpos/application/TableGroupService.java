@@ -2,7 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
-import kitchenpos.dto.OrderStatus;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.dto.TableGroupCreateRequest;
 import kitchenpos.dto.TableGroupDto;
 import kitchenpos.repository.OrderDao;
@@ -14,7 +14,6 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,8 +31,7 @@ public class TableGroupService {
     @Transactional
     public TableGroupDto create(final TableGroupCreateRequest tableGroup) {
 
-        final List<Long> orderTableIds = tableGroup.getOrderTableIds();
-        final List<OrderTable> savedOrderTables = orderTableDao.findAllByIdIn(orderTableIds);
+        final List<OrderTable> savedOrderTables = orderTableDao.findAllByIdIn(tableGroup.getOrderTableIds());
 
         validate(tableGroup, savedOrderTables);
 
@@ -42,8 +40,7 @@ public class TableGroupService {
         final Long tableGroupId = savedTableGroup.getId();
 
         for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.changeTableGroupId(tableGroupId);
-            savedOrderTable.changeEmpty(false);
+            savedOrderTable.groupBy(tableGroupId);
             orderTableDao.save(savedOrderTable);
         }
 
@@ -54,19 +51,12 @@ public class TableGroupService {
         final List<Long> orderTableIds = tableGroup.getOrderTableIds();
 
         if (CollectionUtils.isEmpty(orderTableIds) || orderTableIds.size() < 2) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("단체 지정에 주문 테이블은 2개 이상이여야 합니다.");
         }
 
         if (orderTableIds.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("단체 지정에 중복되는 주문 테이블이 존재합니다.");
         }
-
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
-                throw new IllegalArgumentException();
-            }
-        }
-
     }
 
     @Transactional
@@ -79,11 +69,11 @@ public class TableGroupService {
 
         if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
                 orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("단체 지정 해제시 주문 테이블중 하나라도 조리, 식사 상태인 경우에는 해재 불가 합니다.");
         }
 
         for (final OrderTable orderTable : orderTables) {
-            orderTable.changeTableGroupId(null);
+            orderTable.ungroup();
             orderTableDao.save(orderTable);
         }
     }
