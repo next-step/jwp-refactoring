@@ -37,4 +37,13 @@ public class MenuProduct {
     public void setQuantity(final long quantity) {
         this.quantity = quantity;
     }
+
+    public MenuProduct() {
+    }
+
+    public MenuProduct(Long menuId, Long productId, long quantity) {
+        this.menuId = menuId;
+        this.productId = productId;
+        this.quantity = quantity;
+    }
 }
