@@ -20,15 +20,15 @@ public class OrderLineItem {
     @JoinColumn(name = "menu_id")
     private Menu menu;
 
-    @Column(name = "quantity")
-    private long quantity;
+    @Embedded
+    private Quantity quantity;
 
     protected OrderLineItem() {
     }
 
     public OrderLineItem(final Menu menu, final long quantity) {
         this.menu = menu;
-        this.quantity = quantity;
+        this.quantity = new Quantity(quantity);
     }
 
     public void assign(final Order order) {
@@ -48,6 +48,6 @@ public class OrderLineItem {
     }
 
     public long getQuantity() {
-        return quantity;
+        return quantity.getQuantity();
     }
 }
