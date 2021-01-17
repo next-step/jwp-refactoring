@@ -30,7 +30,7 @@ public class TableService {
     @Transactional
     public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
         final OrderTable newOrderTable =
-            OrderTable.of(null, orderTableRequest.getNumberOfGuests(), orderTableRequest.isEmpty());
+            OrderTable.of(orderTableRequest.getTableGroupId(), orderTableRequest.getNumberOfGuests(), orderTableRequest.isEmpty());
 
         return new OrderTableResponse(orderTableRepository.save(newOrderTable));
     }

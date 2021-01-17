@@ -61,10 +61,6 @@ public class OrderTable {
         this.tableGroupId = null;
     }
 
-//    public void setTableGroupId(final Long tableGroupId) {
-//        this.tableGroupId = tableGroupId;
-//    }
-
     public int getNumberOfGuests() {
         return numberOfGuests;
     }
