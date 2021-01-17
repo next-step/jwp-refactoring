@@ -1,6 +1,7 @@
 package kitchenpos.application;
 
 import kitchenpos.domain.*;
+import kitchenpos.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ public class OrderServiceTest extends ServiceTestBase {
     @DisplayName("주문 생성")
     @Test
     void create() {
-        MenuGroup menuGroup = menuGroupService.create(MenuGroupServiceTest.createMenuGroup("추천메뉴"));
+        MenuGroupResponse menuGroup = menuGroupService.create(MenuGroupServiceTest.createRequest("추천메뉴"));
         Product product = productService.create(ProductServiceTest.createProduct("후라이드", 17_000L));
         List<MenuProduct> menuProducts = Collections.singletonList(MenuServiceTest.createMenuProduct(product.getId(), 2L));
         Menu menu = menuService.create(MenuServiceTest.createMenu("후라이드+후라이드", 19_000L, menuGroup.getId(), menuProducts));
@@ -84,7 +85,7 @@ public class OrderServiceTest extends ServiceTestBase {
     @DisplayName("주문 조회")
     @Test
     void find() {
-        MenuGroup menuGroup = menuGroupService.create(MenuGroupServiceTest.createMenuGroup("추천메뉴"));
+        MenuGroupResponse menuGroup = menuGroupService.create(MenuGroupServiceTest.createRequest("추천메뉴"));
         Product product = productService.create(ProductServiceTest.createProduct("후라이드", 17_000L));
         List<MenuProduct> menuProducts = Collections.singletonList(MenuServiceTest.createMenuProduct(product.getId(), 2L));
         Menu menu = menuService.create(MenuServiceTest.createMenu("후라이드+후라이드", 19_000L, menuGroup.getId(), menuProducts));
@@ -106,7 +107,7 @@ public class OrderServiceTest extends ServiceTestBase {
     @DisplayName("주문 상태 변경")
     @Test
     void changeStatus() {
-        MenuGroup menuGroup = menuGroupService.create(MenuGroupServiceTest.createMenuGroup("추천메뉴"));
+        MenuGroupResponse menuGroup = menuGroupService.create(MenuGroupServiceTest.createRequest("추천메뉴"));
         Product product = productService.create(ProductServiceTest.createProduct("후라이드", 17_000L));
         List<MenuProduct> menuProducts = Collections.singletonList(MenuServiceTest.createMenuProduct(product.getId(), 2L));
         Menu menu = menuService.create(MenuServiceTest.createMenu("후라이드+후라이드", 19_000L, menuGroup.getId(), menuProducts));
@@ -125,7 +126,7 @@ public class OrderServiceTest extends ServiceTestBase {
     @DisplayName("등록되지 않은 주문 상태 변경")
     @Test
     void changeStatusWithoutOrder() {
-        MenuGroup menuGroup = menuGroupService.create(MenuGroupServiceTest.createMenuGroup("추천메뉴"));
+        MenuGroupResponse menuGroup = menuGroupService.create(MenuGroupServiceTest.createRequest("추천메뉴"));
         Product product = productService.create(ProductServiceTest.createProduct("후라이드", 17_000L));
         List<MenuProduct> menuProducts = Collections.singletonList(MenuServiceTest.createMenuProduct(product.getId(), 2L));
         Menu menu = menuService.create(MenuServiceTest.createMenu("후라이드+후라이드", 19_000L, menuGroup.getId(), menuProducts));
@@ -143,7 +144,7 @@ public class OrderServiceTest extends ServiceTestBase {
     @DisplayName("이미 완료 된 주문 상태 변경")
     @Test
     void changeStatusWithCompletion() {
-        MenuGroup menuGroup = menuGroupService.create(MenuGroupServiceTest.createMenuGroup("추천메뉴"));
+        MenuGroupResponse menuGroup = menuGroupService.create(MenuGroupServiceTest.createRequest("추천메뉴"));
         Product product = productService.create(ProductServiceTest.createProduct("후라이드", 17_000L));
         List<MenuProduct> menuProducts = Collections.singletonList(MenuServiceTest.createMenuProduct(product.getId(), 2L));
         Menu menu = menuService.create(MenuServiceTest.createMenu("후라이드+후라이드", 19_000L, menuGroup.getId(), menuProducts));

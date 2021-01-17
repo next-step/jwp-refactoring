@@ -1,6 +1,7 @@
 package kitchenpos.application;
 
 import kitchenpos.domain.*;
+import kitchenpos.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,7 +77,7 @@ public class TableServiceTest extends ServiceTestBase {
     @DisplayName("테이블을 이용중인 경우의 착석 상태 변경")
     @Test
     void changeEmptyWithUsing() {
-        MenuGroup menuGroup = menuGroupService.create(MenuGroupServiceTest.createMenuGroup("추천메뉴"));
+        MenuGroupResponse menuGroup = menuGroupService.create(MenuGroupServiceTest.createRequest("추천메뉴"));
         Product product = productService.create(ProductServiceTest.createProduct("후라이드", 17_000L));
         List<MenuProduct> menuProducts = Collections.singletonList(MenuServiceTest.createMenuProduct(product.getId(), 2L));
         Menu menu = menuService.create(MenuServiceTest.createMenu("후라이드+후라이드", 19_000L, menuGroup.getId(), menuProducts));

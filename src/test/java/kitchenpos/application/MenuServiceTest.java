@@ -4,6 +4,7 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,7 +28,7 @@ public class MenuServiceTest extends ServiceTestBase {
     private final ProductService productService;
     private final MenuService menuService;
 
-    private MenuGroup menuGroup;
+    private MenuGroupResponse menuGroup;
     private Product product;
 
     @Autowired
@@ -41,7 +42,7 @@ public class MenuServiceTest extends ServiceTestBase {
     void setUp() {
         super.setUp();
 
-        menuGroup = menuGroupService.create(MenuGroupServiceTest.createMenuGroup("추천메뉴"));
+        menuGroup = menuGroupService.create(MenuGroupServiceTest.createRequest("추천메뉴"));
         product = productService.create(ProductServiceTest.createProduct("후라이드", 17_000L));
     }
 
