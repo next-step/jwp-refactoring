@@ -2,6 +2,7 @@ package kitchenpos.menu.dto;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 
@@ -17,6 +18,7 @@ public class MenuRequest {
 	public Long menuGroupId;
 	public List<MenuProductRequest> menuProducts;
 
+
 	public MenuRequest() {
 	}
 
@@ -31,17 +33,17 @@ public class MenuRequest {
 		return new Menu(this.name, this.price, menuGroup, toMenuGroup(products));
 	}
 
-	private List<MenuProduct> toMenuGroup(List<Product> products) {
+	private MenuProducts toMenuGroup(List<Product> products) {
 		Map<Long, Product> productInfo = products.stream()
 				.collect(Collectors.toMap(Product::getId, Function.identity()));
 
-		return menuProducts.stream()
+		return new MenuProducts(menuProducts.stream()
 				.filter(menuProduct -> productInfo.containsKey(menuProduct.getProductId()))
 				.map(menuProduct -> {
 					Product product = productInfo.get(menuProduct.getProductId());
 					return new MenuProduct(product, menuProduct.getQuantity());
 				})
-				.collect(Collectors.toList());
+				.collect(Collectors.toList()));
 	}
 
 	public String getName() {

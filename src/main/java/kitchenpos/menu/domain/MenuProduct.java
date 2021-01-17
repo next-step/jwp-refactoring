@@ -9,8 +9,6 @@ import java.math.BigDecimal;
 @Entity
 public class MenuProduct extends QuantityEntity {
 
-//	private static final long MIN_QUANTITY = 1;
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long seq;
@@ -61,5 +59,9 @@ public class MenuProduct extends QuantityEntity {
 	}
 	public void setMenu(Menu menu) {
 		this.menu = menu;
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
 	}
 }

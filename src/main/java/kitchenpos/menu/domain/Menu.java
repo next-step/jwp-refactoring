@@ -1,6 +1,7 @@
 package kitchenpos.menu.domain;
 
 import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.tablegroup.domain.OrderTables;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -22,44 +23,27 @@ public class Menu {
 	@JoinColumn(name = "menu_group_id")
 	private MenuGroup menuGroup;//메뉴의 대분류
 
-	@OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<MenuProduct> menuProducts = new ArrayList<>(); // 속한 메뉴
+	@Embedded
+	private MenuProducts menuProducts = new MenuProducts();
 
-	protected Menu() {
+	public Menu() {
 	}
 
-	public Menu(String name, BigDecimal price, MenuGroup menuGroup,
-	            List<MenuProduct> menuProducts) {
-		validate(price, menuProducts);
+	public Menu(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
+		validate(price);
 		this.name = name;
 		this.price = price;
 		this.menuGroup = menuGroup;
 		this.menuProducts = menuProducts;
-		setMenu();
+		menuProducts.setMenu(this);
+		menuProducts.validate(price);
 	}
 
-	private void setMenu() {
-		this.menuProducts.forEach(menuProduct -> menuProduct.setMenu(this));
-	}
-
-	private void validate(BigDecimal price, List<MenuProduct> menuProducts) {
+	private void validate(BigDecimal price) {
 		if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
 			throw new IllegalArgumentException("가격은 0보다 큰 숫자여야 합니다.");
 		}
-
-		BigDecimal sum = sumMenuProductsPrice(menuProducts);
-		if (price.compareTo(sum) > 0) {
-			throw new IllegalArgumentException("메뉴에 속한 메뉴 상품의 총 합은 메뉴 가격보다 같거나 커야합니다.");
-		}
 	}
-
-	private BigDecimal sumMenuProductsPrice(List<MenuProduct> menuProducts) {
-		return menuProducts.stream()
-				.map(menuProduct -> menuProduct.sumOfPrice())
-				.reduce((p1, p2) -> p1.add(p2))
-				.orElseThrow(IllegalArgumentException::new);
-	}
-
 
 	public Long getId() {
 		return id;
@@ -85,11 +69,11 @@ public class Menu {
 		this.price = price;
 	}
 
-	public List<MenuProduct> getMenuProducts() {
+	public MenuProducts getMenuProducts() {
 		return menuProducts;
 	}
 
-	public void setMenuProducts(final List<MenuProduct> menuProducts) {
+	public void setMenuProducts(final MenuProducts menuProducts) {
 		this.menuProducts = menuProducts;
 	}
 

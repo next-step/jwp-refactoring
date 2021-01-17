@@ -74,7 +74,7 @@ public class MenuServiceTest {
 		MenuProduct menuProduct = mock(MenuProduct.class);
 		given(menuProduct.getQuantity()).willReturn(2L);
 		menuProducts.add(menuProduct);
-		given(menu.getMenuProducts()).willReturn(menuProducts);
+//		given(menu.getMenuProducts()).willReturn(menuProducts);
 
 		given(menuProductRepository.save(menuProduct)).willReturn(menuProduct);
 		given(menuRepository.save(menu)).willReturn(menu);
