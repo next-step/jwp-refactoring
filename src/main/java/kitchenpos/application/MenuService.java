@@ -48,14 +48,14 @@ public class MenuService {
 
         final List<MenuProduct> menuProducts = menu.getMenuProducts();
 
-        BigDecimal sum = BigDecimal.ZERO;
+        long sum = 0;
         for (final MenuProduct menuProduct : menuProducts) {
             final Product product = productDao.findById(menuProduct.getProductId())
                     .orElseThrow(IllegalArgumentException::new);
-            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
+            sum += product.getPrice() * menuProduct.getQuantity();
         }
 
-        if (price.compareTo(sum) > 0) {
+        if (price.compareTo(new BigDecimal(sum)) > 0) {
             throw new IllegalArgumentException();
         }
 

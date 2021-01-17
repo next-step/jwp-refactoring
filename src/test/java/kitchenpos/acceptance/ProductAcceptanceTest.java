@@ -5,6 +5,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -22,7 +24,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     @Test
     void manage() {
         //when
-        Product request = createRequest();
+        ProductRequest request = createRequest();
         ExtractableResponse<Response> createdResponse = 생성_요청(request);
         //then
         생성됨(createdResponse, request);
@@ -32,15 +34,14 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         조회됨(selectedResponse);
     }
 
-    public static Product createRequest() {
-        Product request = new Product();
-        request.setName("강정치킨");
-        request.setPrice(new BigDecimal(17_000));
-
-        return request;
+    public static ProductRequest createRequest() {
+        return ProductRequest.builder()
+                .name("강정치킨")
+                .price(17_000L)
+                .build();
     }
 
-    public static ExtractableResponse<Response> 생성_요청(Product request) {
+    public static ExtractableResponse<Response> 생성_요청(ProductRequest request) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -50,11 +51,11 @@ public class ProductAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static void 생성됨(ExtractableResponse<Response> response, Product request) {
+    public static void 생성됨(ExtractableResponse<Response> response, ProductRequest request) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        Product product = response.as(Product.class);
+        ProductResponse product = response.as(ProductResponse.class);
         assertThat(product.getName()).isEqualTo(request.getName());
-        assertThat(product.getPrice().intValue()).isEqualTo(request.getPrice().intValue());
+        assertThat(product.getPrice()).isEqualTo(request.getPrice());
     }
 
     public static ExtractableResponse<Response> 조회_요청() {
@@ -68,7 +69,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 
     public static void 조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        List<Product> menuGroups = Arrays.asList(response.as(Product[].class));
+        List<ProductResponse> menuGroups = Arrays.asList(response.as(ProductResponse[].class));
         assertThat(menuGroups.size()).isEqualTo(1);
     }
 }

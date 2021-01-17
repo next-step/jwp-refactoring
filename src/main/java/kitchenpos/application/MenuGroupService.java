@@ -21,7 +21,7 @@ public class MenuGroupService {
 
     public MenuGroupResponse create(MenuGroupRequest request) {
         MenuGroup menuGroup = menuGroupRepository.save(toEntity(request));
-        return ofEntity(menuGroup);
+        return fromEntity(menuGroup);
     }
 
     @Transactional(readOnly = true)
@@ -29,7 +29,7 @@ public class MenuGroupService {
         List<MenuGroup> menuGroups = menuGroupRepository.findAll();
 
         return menuGroups.stream()
-                .map(this::ofEntity)
+                .map(this::fromEntity)
                 .collect(Collectors.toList());
     }
 
@@ -39,7 +39,7 @@ public class MenuGroupService {
                 .build();
     }
 
-    private MenuGroupResponse ofEntity(MenuGroup menuGroup) {
+    private MenuGroupResponse fromEntity(MenuGroup menuGroup) {
         return MenuGroupResponse.builder()
                 .id(menuGroup.getId())
                 .name(menuGroup.getName())
