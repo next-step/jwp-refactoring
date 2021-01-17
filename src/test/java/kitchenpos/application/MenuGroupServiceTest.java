@@ -2,28 +2,26 @@ package kitchenpos.application;
 
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
 
 @DisplayName("메뉴 그룹 서비스에 관련한 기능")
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class MenuGroupServiceTest {
-    @Mock
+    @Autowired
     private MenuGroupDao menuGroupDao;
-    @InjectMocks
+    @Autowired
     private MenuGroupService menuGroupService;
 
     private MenuGroup 세트메뉴;
@@ -39,16 +37,16 @@ class MenuGroupServiceTest {
     @Test
     void createMenuGroup() {
         // Given
-        given(menuGroupDao.save(any())).willReturn(세트메뉴);
+        MenuGroupRequest request = new MenuGroupRequest("세트메뉴");
 
         // When
-        MenuGroup actual = menuGroupService.create(세트메뉴);
+        MenuGroup actual = menuGroupService.create(request);
 
         // Then
         assertAll(
-                () -> assertNotNull(actual),
-                () -> assertEquals(세트메뉴.getId(), actual.getId()),
-                () -> assertEquals(세트메뉴.getName(), actual.getName())
+                () -> assertThat(actual).isNotNull(),
+                () -> assertThat(actual.getId()).isNotNull(),
+                () -> assertThat(actual.getName()).isEqualTo(request.getName())
         );
     }
 
