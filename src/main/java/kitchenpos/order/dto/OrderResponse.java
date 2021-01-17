@@ -29,12 +29,13 @@ public class OrderResponse {
     }
 
     public static OrderResponse of(final Order order) {
-        return new OrderResponse(order.getId(),
+        Long orderId = order.getId();
+        return new OrderResponse(orderId,
                 order.getOrderTable()
                         .getId(),
                 order.getOrderStatus().name(),
                 order.getOrderedTime(),
-                OrderLineItemResponse.ofList(order.getOrderLineItems()));
+                OrderLineItemResponse.ofList(order.getOrderLineItems(), orderId));
     }
 
     public static List<OrderResponse> ofList(final List<Order> orders) {
@@ -80,18 +81,17 @@ public class OrderResponse {
             this.quantity = quantity;
         }
 
-        public static OrderLineItemResponse of(final OrderLineItem orderLineItem) {
+        public static OrderLineItemResponse of(final OrderLineItem orderLineItem, final Long orderId) {
             return new OrderLineItemResponse(orderLineItem.getId(),
-                    orderLineItem.getOrder()
-                            .getId(),
+                    orderId,
                     orderLineItem.getMenu()
                             .getId(),
                     orderLineItem.getQuantity());
         }
 
-        public static List<OrderLineItemResponse> ofList(final List<OrderLineItem> orderLineItems) {
+        public static List<OrderLineItemResponse> ofList(final List<OrderLineItem> orderLineItems, final Long orderId) {
             return orderLineItems.stream()
-                    .map(OrderLineItemResponse::of)
+                    .map(orderLineItem -> of(orderLineItem, orderId))
                     .collect(Collectors.toList());
         }
 

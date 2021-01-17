@@ -12,8 +12,6 @@ import java.util.Objects;
 @Table(name = "orders")
 public class Order {
 
-    private static final int MIN_ORDER_ITEM_COUNT = 1;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -38,23 +36,19 @@ public class Order {
     }
 
     private Order(final OrderTable orderTable, final OrderStatus orderStatus, final List<OrderLineItem> orderLineItems) {
-        validate(orderTable, orderLineItems);
+        validate(orderTable);
         this.orderTable = Objects.requireNonNull(orderTable);
         this.orderStatus = Objects.requireNonNull(orderStatus);
-        this.orderLineItems = new OrderLineItems(Objects.requireNonNull(orderLineItems), this);
+        this.orderLineItems = new OrderLineItems(orderLineItems);
     }
 
     public static Order of(final OrderTable orderTable, final List<OrderLineItem> orderLineItem) {
         return new Order(orderTable, OrderStatus.COOKING, orderLineItem);
     }
 
-    private void validate(final OrderTable orderTable, final List<OrderLineItem> orderLineItems) {
+    private void validate(final OrderTable orderTable) {
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException("주문 테이블이 등록 불가 상태인 경우 주문을 생성할 수 없다.");
-        }
-
-        if (orderLineItems.size() < MIN_ORDER_ITEM_COUNT) {
-            throw new IllegalArgumentException(String.format("%d개 이상 주문 항목이 있어야 합니다.", MIN_ORDER_ITEM_COUNT));
         }
     }
 
@@ -64,11 +58,7 @@ public class Order {
         }
         this.orderStatus = Objects.requireNonNull(orderStatus);
     }
-
-    public boolean isNotComplete() {
-        return OrderStatus.COMPLETION != orderStatus;
-    }
-
+    
     public Long getId() {
         return id;
     }
