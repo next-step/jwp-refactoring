@@ -89,7 +89,7 @@ public class Orders {
 	}
 
 	public void changeStatus(String orderStatus) {
-		if (Objects.equals(OrderStatus.COMPLETION.name(), orderStatus)) {
+		if (orderStatus.isCompletion())) {
 			throw new IllegalArgumentException();
 		}
 		this.orderStatus = orderStatus;
