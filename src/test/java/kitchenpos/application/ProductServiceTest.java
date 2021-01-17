@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -16,16 +19,15 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
 @DisplayName("상품 서비스에 관련한 기능")
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class ProductServiceTest {
-    @Mock
+    @Autowired
     private ProductDao productDao;
-    @InjectMocks
+    @Autowired
     private ProductService productService;
 
     private Product 짬뽕;
@@ -42,16 +44,18 @@ class ProductServiceTest {
     @Test
     void createProduct() {
         // Given
-        given(productDao.save(짬뽕)).willReturn(짬뽕);
+        String name = "짬뽕";
+        BigDecimal price = BigDecimal.valueOf(8_000);
+        ProductRequest request = new ProductRequest(name, price);
 
         // When
-        Product actual = productService.create(짬뽕);
+        Product actual = productService.create(request);
 
         // Then
         assertAll(
-                () -> assertEquals(짬뽕.getId(), actual.getId()),
-                () -> assertEquals(짬뽕.getName(), actual.getName()),
-                () -> assertEquals(짬뽕.getPrice(), actual.getPrice())
+                () -> assertThat(actual.getId()).isNotNull(),
+                () -> assertThat(actual.getName()).isEqualTo(name),
+                () -> assertThat(actual.getPrice().intValue()).isEqualTo(price.intValue())
         );
     }
 
@@ -59,16 +63,16 @@ class ProductServiceTest {
     @Test
     void exceptionToCreateProduct() {
         // Given
-        짬뽕.setPrice(null);
+        ProductRequest invalidRequest1 = new ProductRequest("짬뽕", null);
 
         // When & Then
-        assertThatThrownBy(() -> productService.create(짬뽕)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> productService.create(invalidRequest1)).isInstanceOf(IllegalArgumentException.class);
 
         // Given
-        짬뽕.setPrice(new BigDecimal(-1));
+        ProductRequest invalidRequest2 = new ProductRequest("짬뽕", BigDecimal.valueOf(-1));
 
         // When & Then
-        assertThatThrownBy(() -> productService.create(짬뽕)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> productService.create(invalidRequest2)).isInstanceOf(IllegalArgumentException.class);
 
     }
 
