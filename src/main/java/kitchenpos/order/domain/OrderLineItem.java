@@ -1,11 +1,12 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.common.QuantityEntity;
 import kitchenpos.menu.domain.Menu;
 
 import javax.persistence.*;
 
 @Entity
-public class OrderLineItem {
+public class OrderLineItem extends QuantityEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long seq;
@@ -20,9 +21,9 @@ public class OrderLineItem {
 
 	private Long quantity;
 
-	public OrderLineItem(Menu menu, long quantity) {
+	public OrderLineItem(Menu menu, Long quantity) {
 		this.menu = menu;
-		this.quantity = quantity;
+		this.quantity = this.validate(quantity);
 	}
 
 	protected OrderLineItem() {

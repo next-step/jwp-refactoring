@@ -9,6 +9,8 @@ import java.util.List;
 
 @Entity
 public class OrderTable {
+
+	private static int MIN_NUMBER_OF_GUESTS = 0;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -90,7 +92,7 @@ public class OrderTable {
 	}
 
 	private void validateOrderTable() {
-		if (numberOfGuests < 0) {
+		if (numberOfGuests < MIN_NUMBER_OF_GUESTS) {
 			throw new IllegalArgumentException("손님의 수는 0보다 작을 수 없습니다.");
 		}
 

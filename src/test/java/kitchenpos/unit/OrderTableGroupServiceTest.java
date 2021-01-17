@@ -69,13 +69,19 @@ public class OrderTableGroupServiceTest {
 	@Test
 	@DisplayName("테이블 그룹을 삭제한다")
 	void ungroup() {
-		this.create();
-		orderTableGroupService.ungroup(1L);
+		Set<Long> orderTableIds = new HashSet<>();
+		orderTableIds.add(1L);
+		orderTableIds.add(2L);
+		TableGroupRequest tableGroupRequest = new TableGroupRequest(orderTableIds);
+		TableGroupResponse tableGroupResponse = orderTableGroupService.create(tableGroupRequest);
+		assertThat(tableGroupResponse.getOrderTables().size()).isEqualTo(2);
+
+		orderTableGroupService.ungroup(tableGroupResponse.getId());
 	}
 
 	void createChangeOrderStatus() {
 		List<OrderLineItemRequest> orderLineItemRequests = new ArrayList<>();
-		OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(1L, 2);
+		OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(1L, 2L);
 		orderLineItemRequests.add(orderLineItemRequest);
 		OrderRequest orderRequest = new OrderRequest(1L, orderLineItemRequests);
 
@@ -83,7 +89,7 @@ public class OrderTableGroupServiceTest {
 		assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
 
 		OrderRequest orderRequest2 = new OrderRequest(OrderStatus.MEAL.name());
-		OrderResponse orderResponse2 = orderService.changeOrderStatus(1L, orderRequest2);
+		OrderResponse orderResponse2 = orderService.changeOrderStatus(orderResponse.getId(), orderRequest2);
 		assertThat(orderResponse2.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
 	}
 

@@ -28,7 +28,7 @@ public class OrdersServiceTest {
 	@DisplayName("주문을 등록한다")
 	void create() {
 		List<OrderLineItemRequest> orderLineItemRequests = new ArrayList<>();
-		OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(1L, 2);
+		OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(1L, 2L);
 		orderLineItemRequests.add(orderLineItemRequest);
 		OrderRequest orderRequest = new OrderRequest(1L, orderLineItemRequests);
 
@@ -47,10 +47,17 @@ public class OrdersServiceTest {
 	@Test
 	@DisplayName("주문의 상태를 변경할 수 있다")
 	void changeOrderStatus() {
-		this.create();
-		OrderRequest orderRequest = new OrderRequest(OrderStatus.MEAL.name());
-		OrderResponse orderResponse = orderService.changeOrderStatus(1L, orderRequest);
-		assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
+		List<OrderLineItemRequest> orderLineItemRequests = new ArrayList<>();
+		OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(1L, 2L);
+		orderLineItemRequests.add(orderLineItemRequest);
+		OrderRequest orderRequest = new OrderRequest(1L, orderLineItemRequests);
+
+		OrderResponse orderResponse = orderService.create(orderRequest);
+		assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+
+		OrderRequest orderRequest2 = new OrderRequest(OrderStatus.MEAL.name());
+		OrderResponse orderResponse2 = orderService.changeOrderStatus(orderResponse.getId(), orderRequest2);
+		assertThat(orderResponse2.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
 	}
 
 	@Test

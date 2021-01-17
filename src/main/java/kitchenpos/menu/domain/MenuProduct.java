@@ -1,12 +1,15 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.common.QuantityEntity;
 import kitchenpos.product.domain.Product;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
-public class MenuProduct {
+public class MenuProduct extends QuantityEntity {
+
+//	private static final long MIN_QUANTITY = 1;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,9 +27,9 @@ public class MenuProduct {
 	}
 	private Long quantity;
 
-	public MenuProduct(Product product, long quantity) {
+	public MenuProduct(Product product, Long quantity) {
 		this.product = product;
-		this.quantity = quantity;
+		this.quantity = super.validate(quantity);
 	}
 
 	public Long getSeq() {
