@@ -81,6 +81,7 @@
 
 ## 리팩터링 구현 목록
 
+- [ ] 실제 변경 코드의 테스트를 고려하여, Service Layer 테스트를 통합테스트로 변경
 - [ ] Domain Logic 개선에 앞서, UI 전달되는 Domain Context를 Service Layer에 격리
 - [ ] Service Layer에 있는 Domain Logic를 Domain Layer로 이동
 - [ ] 도메인에 관계를 고려하여 JPA 적용 
