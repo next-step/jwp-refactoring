@@ -86,6 +86,6 @@
 - [ ] Domain Logic 개선에 앞서, UI 전달되는 Domain Context를 Service Layer에 격리
     - [ ] Product
         - [x] Service Layer에 Request DTO 적용
-        - [ ] Service Layer에 Response DTO 적용
+        - [x] Service Layer에 Response DTO 적용
 - [ ] Service Layer에 있는 Domain Logic를 Domain Layer로 이동
 - [ ] 도메인에 관계를 고려하여 JPA 적용 
