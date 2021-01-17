@@ -14,13 +14,13 @@ import java.util.stream.Collectors;
 public class MenuRequest {
 	public String name;
 	public BigDecimal price;
-	public long menuGroupId;
+	public Long menuGroupId;
 	public List<MenuProductRequest> menuProducts;
 
 	public MenuRequest() {
 	}
 
-	public MenuRequest(String name, BigDecimal price, long menuGroupId, List<MenuProductRequest> menuProducts) {
+	public MenuRequest(String name, BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
 		this.name = name;
 		this.price = price;
 		this.menuGroupId = menuGroupId;
@@ -64,7 +64,7 @@ public class MenuRequest {
 		return menuGroupId;
 	}
 
-	public void setMenuGroupId(long menuGroupId) {
+	public void setMenuGroupId(Long menuGroupId) {
 		this.menuGroupId = menuGroupId;
 	}
 

@@ -22,7 +22,7 @@ public class MenuProduct {
 
 	protected MenuProduct() {
 	}
-	private long quantity;
+	private Long quantity;
 
 	public MenuProduct(Product product, long quantity) {
 		this.product = product;
@@ -37,11 +37,11 @@ public class MenuProduct {
 		this.seq = seq;
 	}
 
-	public long getQuantity() {
+	public Long getQuantity() {
 		return quantity;
 	}
 
-	public void setQuantity(final long quantity) {
+	public void setQuantity(final Long quantity) {
 		this.quantity = quantity;
 	}
 
