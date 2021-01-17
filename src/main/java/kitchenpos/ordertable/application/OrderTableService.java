@@ -36,7 +36,7 @@ public class OrderTableService {
 		OrderTable orderTable = orderTableRepository.findById(orderTableId).orElseThrow(() -> new IllegalArgumentException());
 
 		if (orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("계산완료된 테이블인 경우에만 상태를 변경할 수 있습니다.");
 		}
 		orderTable.changeEmpty(request.isEmpty());
 		return OrderTableResponse.of(orderTable);

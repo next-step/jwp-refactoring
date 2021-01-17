@@ -90,7 +90,7 @@ public class Orders {
 
 	public void changeStatus(String orderStatus) {
 		if (Objects.equals(OrderStatus.COMPLETION.name(), orderStatus)) {
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("계산완료 주문인 경우, 상태를 변경할 수 없습니다");
 		}
 		this.orderStatus = orderStatus;
 	}

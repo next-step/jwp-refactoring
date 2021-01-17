@@ -75,7 +75,7 @@ public class TableGroup {
 
 	private void validateStatus(Orders order) {
 		if (order.getOrderStatus().equalsIgnoreCase(OrderStatus.COMPLETION.name())) {
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("계산완료 상태의 주문에 대해서는 테이블 그룹을 해제할 수 없습니다.");
 		}
 	}
 }

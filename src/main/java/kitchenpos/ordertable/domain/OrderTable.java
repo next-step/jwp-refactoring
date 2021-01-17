@@ -91,11 +91,11 @@ public class OrderTable {
 
 	private void validateOrderTable() {
 		if (numberOfGuests < 0) {
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("손님의 수는 0보다 작을 수 없습니다.");
 		}
 
 		if (this.isEmpty()) {
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("비어있는 테이블에는 손님의 수를 변경할 수 없습니다.");
 		}
 
 	}
