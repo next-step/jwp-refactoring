@@ -1,176 +1,140 @@
 package kitchenpos.tablegroup.application;
 
+import kitchenpos.common.exception.NotFoundException;
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.tablegroup.dao.TableGroupDao;
-import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.test.context.jdbc.Sql;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.BDDMockito.given;
 
 @DisplayName("테이블 그룹 비즈니스 로직을 처리하는 서비스 테스트")
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+@Sql("/db/test_data.sql")
+@EnableJpaAuditing
 class TableGroupServiceTest {
-    @Mock
+    @Autowired
     private OrderRepository orderRepository;
 
-    @Mock
-//    private OrderTableDao orderTableDao;
+    @Autowired
     private OrderTableRepository orderTableRepository;
 
-    @Mock
-    private TableGroupDao tableGroupDao;
+    @Autowired
+    private TableGroupRepository tableGroupRepository;
 
-    @InjectMocks
+    @Autowired
     private TableGroupService tableGroupService;
 
-    private List<OrderTable> orderTables = new ArrayList<>();
-    private OrderTable firstOrderTable;
-    private OrderTable secondOrderTable;
-    private TableGroup tableGroup;
+    private TableGroupRequest tableGroupRequest;
 
     @BeforeEach
     void setUp() {
-//        orderTables = new ArrayList<>();
-//
-//        firstOrderTable = new OrderTable();
-//        firstOrderTable.setId(1L);
-//        firstOrderTable.setEmpty(true);
-//        firstOrderTable.setNumberOfGuests(2);
-//
-//        secondOrderTable = new OrderTable();
-//        secondOrderTable.setId(2L);
-//        secondOrderTable.setEmpty(true);
-//        secondOrderTable.setNumberOfGuests(3);
-//
-//        orderTables.add(firstOrderTable);
-//        orderTables.add(secondOrderTable);
-//
-//        tableGroup = new TableGroup();
-//        tableGroup.setId(1L);
-//        tableGroup.setOrderTables(orderTables);
+        tableGroupRequest = new TableGroupRequest();
+        tableGroupRequest.setOrderTableIds(Arrays.asList(3L, 4L, 5L));
     }
 
-//    @DisplayName("테이블 그룹(단체 지정)을 생성한다.")
-//    @Test
-//    void 테이블_그룹_생성() {
-//        final List<Long> orderTablesIds = tableGroup.getOrderTables().stream()
-//            .map(OrderTable::getId)
-//            .collect(Collectors.toList());
-//
-//        given(orderTableDao.findAllByIdIn(orderTablesIds)).willReturn(orderTables);
-//        given(tableGroupDao.save(tableGroup)).willReturn(tableGroup);
-//        given(orderTableDao.save(firstOrderTable)).willReturn(firstOrderTable);
-//
-//        final TableGroup createdTableGroup = tableGroupService.create(this.tableGroup);
-//
-//        assertThat(createdTableGroup.getId()).isEqualTo(tableGroup.getId());
-//        assertThat(createdTableGroup.getOrderTables().get(0).getNumberOfGuests()).isEqualTo(tableGroup.getOrderTables().get(0).getNumberOfGuests());
-//        assertThat(createdTableGroup.getOrderTables().get(1).getNumberOfGuests()).isEqualTo(tableGroup.getOrderTables().get(1).getNumberOfGuests());
-//    }
-//
-//    @DisplayName("주문 테이블이 1개 이하인 경우 테이블 그룹을 생성할 수 없다.")
-//    @Test
-//    void 주문_테이블이_1개_이하인_경우_테이블_그룹_생성() {
-//        final List<OrderTable> orderTables = new ArrayList<>();
-//        orderTables.add(firstOrderTable);
-//
-//        tableGroup.setOrderTables(orderTables);
-//
-//        assertThatThrownBy(() -> {
-//            final TableGroup createdTableGroup = tableGroupService.create(this.tableGroup);
-//        }).isInstanceOf(IllegalArgumentException.class);
-//    }
-//
-//    @DisplayName("존재하지 않는 주문 테이블이 포함된 경우 테이블 그룹을 생성할 수 없다.")
-//    @Test
-//    void 존재하지_않는_주문_테이블이_존재하는_경우_테이블_그룹_생성() {
-//        final List<Long> orderTablesIds = tableGroup.getOrderTables().stream()
-//            .map(OrderTable::getId)
-//            .collect(Collectors.toList());
-//
-//        given(orderTableDao.findAllByIdIn(orderTablesIds)).willReturn(Collections.singletonList(firstOrderTable));
-//
-//        assertThatThrownBy(() -> {
-//            final TableGroup createdTableGroup = tableGroupService.create(this.tableGroup);
-//        }).isInstanceOf(IllegalArgumentException.class);
-//    }
-//
-//    @DisplayName("다른 테이블 그룹에 포함된 경우 테이블 그룹을 생성할 수 없다.")
-//    @Test
-//    void 다른_테이블_그룹_포함된_경우_테이블_그룹_생성() {
-//        firstOrderTable.setEmpty(false);
-//
-//        final List<Long> orderTablesIds = tableGroup.getOrderTables().stream()
-//            .map(OrderTable::getId)
-//            .collect(Collectors.toList());
-//
-//        given(orderTableDao.findAllByIdIn(orderTablesIds)).willReturn(orderTables);
-//
-//        assertThatThrownBy(() -> {
-//            final TableGroup createdTableGroup = tableGroupService.create(this.tableGroup);
-//        }).isInstanceOf(IllegalArgumentException.class);
-//    }
-//
-//    @DisplayName("테이블 그룹을 해제한다.")
-//    @Test
-//    void 테이블_그룹_해제() {
-//        final List<Long> orderTablesIds = tableGroup.getOrderTables().stream()
-//            .map(OrderTable::getId)
-//            .collect(Collectors.toList());
-//
-//        firstOrderTable.setEmpty(false);
-//        firstOrderTable.setTableGroupId(1L);
-//        secondOrderTable.setEmpty(false);
-//        secondOrderTable.setTableGroupId(1L);
-//
-//        given(orderTableDao.findAllByTableGroupId(tableGroup.getId())).willReturn(orderTables);
-////        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(orderTablesIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
-////            .willReturn(false);
-//        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTablesIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).willReturn(false);
-//
-//        tableGroupService.ungroup(tableGroup.getId());
-//
-//        assertThat(firstOrderTable.getTableGroupId()).isNull();
-//        assertThat(secondOrderTable.getTableGroupId()).isNull();
-//    }
-//
-//    @DisplayName("테이블 그룹의 주문 상태가 조리 또는 식사인 경우 해제할 수 없다.")
-//    @Test
-//    void 주문_상태가_조리_또는_식사인_경우_테이블_그룹_해제() {
-//        final List<Long> orderTablesIds = tableGroup.getOrderTables().stream()
-//            .map(OrderTable::getId)
-//            .collect(Collectors.toList());
-//
-//        firstOrderTable.setEmpty(false);
-//        firstOrderTable.setTableGroupId(1L);
-//        secondOrderTable.setEmpty(false);
-//        secondOrderTable.setTableGroupId(1L);
-//
-//        given(orderTableDao.findAllByTableGroupId(tableGroup.getId())).willReturn(orderTables);
-////        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(orderTablesIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
-////            .willReturn(true);
-//        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTablesIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)))
-//            .willReturn(true);
-//
-//        assertThatThrownBy(() -> {
-//            tableGroupService.ungroup(tableGroup.getId());
-//        }).isInstanceOf(IllegalArgumentException.class);
-//    }
+    @DisplayName("테이블 그룹(단체 지정)을 생성한다.")
+    @Test
+    void 테이블_그룹_생성() {
+        final TableGroupResponse savedTableGroup = tableGroupService.create(tableGroupRequest);
+
+        assertThat(savedTableGroup.getId()).isNotNull();
+        assertThat(savedTableGroup.getOrderTables().get(0).getTableGroupId()).isEqualTo(savedTableGroup.getId());
+        assertThat(savedTableGroup.getOrderTables().get(0).getNumberOfGuests()).isEqualTo(0);
+    }
+
+    @DisplayName("주문 테이블이 1개 이하인 경우 테이블 그룹을 생성할 수 없다.")
+    @Test
+    void 주문_테이블이_1개_이하인_경우_테이블_그룹_생성() {
+        tableGroupRequest.setOrderTableIds(Collections.singletonList(1L));
+
+        assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
+            .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("존재하지 않는 주문 테이블이 포함된 경우 테이블 그룹을 생성할 수 없다.")
+    @Test
+    void 존재하지_않는_주문_테이블이_존재하는_경우_테이블_그룹_생성() {
+        tableGroupRequest.setOrderTableIds(Arrays.asList(1L, 182L));
+
+        assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
+            .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("다른 테이블 그룹에 포함된 경우 테이블 그룹을 생성할 수 없다.")
+    @Test
+    void 다른_테이블_그룹_포함된_경우_테이블_그룹_생성() {
+        tableGroupRequest.setOrderTableIds(Arrays.asList(1L, 2L));
+        tableGroupService.create(tableGroupRequest);
+
+        final TableGroupRequest secondTableGroupRequest = new TableGroupRequest();
+        secondTableGroupRequest.setOrderTableIds(Arrays.asList(1L, 3L));
+
+        assertThatThrownBy(() -> tableGroupService.create(secondTableGroupRequest))
+            .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("테이블 그룹을 해제한다.")
+    @Test
+    void 테이블_그룹_해제() {
+        tableGroupRequest.setOrderTableIds(Arrays.asList(1L, 2L));
+        final TableGroupResponse savedTableGroup = tableGroupService.create(tableGroupRequest);
+
+        assertThat(savedTableGroup.getOrderTables().get(0).getTableGroupId()).isEqualTo(savedTableGroup.getId());
+        assertThat(savedTableGroup.getOrderTables().get(1).getTableGroupId()).isEqualTo(savedTableGroup.getId());
+
+        tableGroupService.ungroup(savedTableGroup.getId());
+
+        final List<OrderTable> orderTables = orderTableRepository.findAllByIdIn(Arrays.asList(1L, 2L));
+
+        assertThat(orderTables.get(0).getTableGroupId()).isNull();
+        assertThat(orderTables.get(1).getTableGroupId()).isNull();
+
+        assertThatThrownBy(() -> tableGroupRepository.findById(savedTableGroup.getId())
+            .orElseThrow(NotFoundException::new))
+            .isInstanceOf(NotFoundException.class);
+    }
+
+    @DisplayName("테이블 그룹의 주문 상태가 조리인 경우 해제할 수 없다.")
+    @Test
+    void 주문_상태가_조리인_경우_테이블_그룹_해제() {
+        final TableGroupResponse savedTableGroup = 주문_상태가_조리_또는_식사인_주문_생성(OrderStatus.COOKING);
+
+        assertThatThrownBy(() -> tableGroupService.ungroup(savedTableGroup.getId()))
+            .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    private TableGroupResponse 주문_상태가_조리_또는_식사인_주문_생성(final OrderStatus orderStatus) {
+        final Order cookingOrder = Order.of(1L);
+        cookingOrder.changeOrderStatus(orderStatus);
+        orderRepository.save(cookingOrder);
+
+        tableGroupRequest.setOrderTableIds(Arrays.asList(1L, 2L));
+        return tableGroupService.create(tableGroupRequest);
+    }
+
+    @DisplayName("테이블 그룹의 주문 상태가 식사인 경우 해제할 수 없다.")
+    @Test
+    void 주문_상태가_식사인_경우_테이블_그룹_해제() {
+        final TableGroupResponse savedTableGroup = 주문_상태가_조리_또는_식사인_주문_생성(OrderStatus.MEAL);
+
+        assertThatThrownBy(() -> tableGroupService.ungroup(savedTableGroup.getId()))
+            .isInstanceOf(IllegalArgumentException.class);
+    }
 }

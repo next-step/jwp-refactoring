@@ -1,9 +1,6 @@
 package kitchenpos.table.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class OrderTable {
@@ -14,6 +11,7 @@ public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "table_group_id")
     private Long tableGroupId;
     private int numberOfGuests;
     private boolean empty;
@@ -43,6 +41,10 @@ public class OrderTable {
         }
     }
 
+    public boolean alreadyContainsInOtherTableGroup() {
+        return (!this.empty) || (tableGroupId != null);
+    }
+
     public Long getId() {
         return id;
     }
@@ -51,10 +53,17 @@ public class OrderTable {
         return tableGroupId;
     }
 
-    public void setTableGroupId(final Long tableGroupId) {
+    public void linkTableGroup(final Long tableGroupId) {
         this.tableGroupId = tableGroupId;
     }
 
+    public void unGroup() {
+        this.tableGroupId = null;
+    }
+
+//    public void setTableGroupId(final Long tableGroupId) {
+//        this.tableGroupId = tableGroupId;
+//    }
 
     public int getNumberOfGuests() {
         return numberOfGuests;

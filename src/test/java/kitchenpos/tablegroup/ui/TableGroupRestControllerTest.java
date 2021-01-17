@@ -2,22 +2,21 @@ package kitchenpos.tablegroup.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.tablegroup.application.TableGroupService;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -25,7 +24,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("테이블 그룹 컨트롤러 테스트")
-@WebMvcTest(TableGroupRestController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
+@Sql("/db/test_data.sql")
+@EnableJpaAuditing
 class TableGroupRestControllerTest {
     public static final String DEFAULT_TABLE_GROUPS_URI = "/api/table-groups/";
 
@@ -35,48 +37,39 @@ class TableGroupRestControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @MockBean
+    @Autowired
     private TableGroupService tableGroupService;
 
-    private TableGroup tableGroup;
+    private TableGroupRequest tableGroupRequest;
 
     @BeforeEach
     void setUp() {
-//        final List<OrderTable> orderTables = new ArrayList<>();
-//        final OrderTable orderTable = new OrderTable();
-//        orderTable.setId(1L);
-//        orderTable.setTableGroupId(1L);
-//        orderTable.setEmpty(false);
-//        orderTable.setNumberOfGuests(2);
-//        orderTables.add(orderTable);
-//
-//        tableGroup = new TableGroup();
-//        tableGroup.setId(1L);
-//        tableGroup.setOrderTables(orderTables);
+        tableGroupRequest = new TableGroupRequest();
+        tableGroupRequest.setOrderTableIds(Arrays.asList(3L, 4L, 5L));
     }
 
-//    @DisplayName("테이블 그룹을 생성한다.")
-//    @Test
-//    void 테이블_그룹_생성() throws Exception {
-//        given(tableGroupService.create(any())).willReturn(tableGroup);
-//
-//        final String jsonTypeTableGroup = objectMapper.writeValueAsString(tableGroup);
-//
-//        mockMvc.perform(post(DEFAULT_TABLE_GROUPS_URI)
-//            .contentType(MediaType.APPLICATION_JSON_VALUE)
-//            .content(jsonTypeTableGroup))
-//            .andDo(print())
-//            .andExpect(status().isCreated())
-//            .andExpect(jsonPath("id").value(tableGroup.getId()))
-//            .andExpect(jsonPath("orderTables[0].id").value(tableGroup.getOrderTables().get(0).getId()))
-//            .andExpect(jsonPath("orderTables[0].numberOfGuests").value(tableGroup.getOrderTables().get(0).getNumberOfGuests()));
-//    }
-//
-//    @DisplayName("테이블 그룹을 해제한다.")
-//    @Test
-//    void 테이블_그룹_해제() throws Exception {
-//        mockMvc.perform(delete(DEFAULT_TABLE_GROUPS_URI + tableGroup.getId()))
-//            .andDo(print())
-//            .andExpect(status().isNoContent());
-//    }
+    @DisplayName("테이블 그룹을 생성한다.")
+    @Test
+    void 테이블_그룹_생성() throws Exception {
+        final String jsonTypeTableGroup = objectMapper.writeValueAsString(tableGroupRequest);
+
+        mockMvc.perform(post(DEFAULT_TABLE_GROUPS_URI)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .content(jsonTypeTableGroup))
+            .andDo(print())
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("id").exists())
+            .andExpect(jsonPath("orderTables[0].empty").value(true))
+            .andExpect(jsonPath("orderTables[0].numberOfGuests").value(0));
+    }
+
+    @DisplayName("테이블 그룹을 해제한다.")
+    @Test
+    void 테이블_그룹_해제() throws Exception {
+        final TableGroupResponse savedTableGroup = tableGroupService.create(tableGroupRequest);
+
+        mockMvc.perform(delete(DEFAULT_TABLE_GROUPS_URI + savedTableGroup.getId()))
+            .andDo(print())
+            .andExpect(status().isNoContent());
+    }
 }

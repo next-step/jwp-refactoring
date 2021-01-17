@@ -1,36 +1,42 @@
 package kitchenpos.tablegroup.domain;
 
+import kitchenpos.BaseEntity;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTables;
 
-import java.time.LocalDateTime;
+import javax.persistence.*;
 import java.util.List;
 
-public class TableGroup {
+@Entity
+public class TableGroup extends BaseEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDateTime createdDate;
-    private List<OrderTable> orderTables;
+
+    @Embedded
+    private final OrderTables orderTables = OrderTables.createInstance();
+
+    protected TableGroup() {
+    }
+
+    public static TableGroup createInstance() {
+        return new TableGroup();
+    }
+
+    public void groupingOrderTable(final List<OrderTable> orderTables) {
+        this.orderTables.add(orderTables);
+        this.orderTables.linkTableGroupId(this.id);
+    }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(final LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
     public List<OrderTable> getOrderTables() {
-        return orderTables;
+        return this.orderTables.getOrderTables();
     }
 
-    public void setOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
+    public void ungroup() {
+        orderTables.ungroup();
     }
 }

@@ -7,11 +7,14 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
@@ -22,12 +25,16 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @DisplayName("주문 테이블 비즈니스 로직을 처리하는 서비스 테스트")
 @SpringBootTest
 @Sql("/db/test_data.sql")
+@EnableJpaAuditing
 class TableServiceTest {
     @Autowired
     private OrderRepository orderRepository;
 
     @Autowired
     private OrderTableRepository orderTableRepository;
+
+    @Autowired
+    private TableGroupRepository tableGroupRepository;
 
     @Autowired
     private TableService tableService;
@@ -83,7 +90,9 @@ class TableServiceTest {
     @DisplayName("다른 테이블 그룹에 속한 주문 테이블인 경우 빈 테이블 설정을 할 수 없다.")
     @Test
     void 다른_테이블_그룹에_속한_주문_테이블을_빈_테이블_설정() {
-        final OrderTable newOrderTable = OrderTable.of(1L, 2, false);
+        final TableGroup savedTableGroup = tableGroupRepository.save(TableGroup.createInstance());
+
+        final OrderTable newOrderTable = OrderTable.of(savedTableGroup.getId(), 2, false);
         final OrderTable savedOrderTable = orderTableRepository.save(newOrderTable);
 
         assertThatThrownBy(() -> tableService.changeEmpty(savedOrderTable.getId(), orderTableRequest))
