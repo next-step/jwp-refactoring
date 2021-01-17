@@ -24,8 +24,6 @@ class TableGroupTest {
 
         // then
         assertThat(tableGroup).isNotNull();
-        assertThat(orderTable1.getTableGroup()).isNotNull();
-        assertThat(orderTable2.getTableGroup()).isNotNull();
     }
 
     @DisplayName("주문 테이블이 2개 이상이어야 한다.")
@@ -56,7 +54,7 @@ class TableGroupTest {
         // given
         OrderTable orderTable1 = new OrderTable(5, false);
         OrderTable orderTable2 = new OrderTable(3, false);
-        orderTable1.assign(new TableGroup());
+        orderTable1.assign(1L);
 
         // when / then
         assertThrows(IllegalArgumentException.class, () -> new TableGroup(Arrays.asList(orderTable1, orderTable2)));
@@ -74,7 +72,7 @@ class TableGroupTest {
         tableGroup.ungroup();
 
         // then
-        assertThat(orderTable1.getTableGroup()).isNull();
-        assertThat(orderTable2.getTableGroup()).isNull();
+        assertThat(orderTable1.getTableGroupId()).isNull();
+        assertThat(orderTable2.getTableGroupId()).isNull();
     }
 }

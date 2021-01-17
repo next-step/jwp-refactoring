@@ -4,6 +4,7 @@ import kitchenpos.ordertable.domain.OrderTable;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +12,8 @@ import java.util.List;
 @Embeddable
 public class OrderTables {
 
-    @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "table_group_id")
     private List<OrderTable> orderTables = new ArrayList<>();
 
     protected OrderTables() {
@@ -23,7 +25,7 @@ public class OrderTables {
     }
 
     private void assign(final TableGroup tableGroup) {
-        this.orderTables.forEach(orderTable -> orderTable.assign(tableGroup));
+        this.orderTables.forEach(orderTable -> orderTable.assign(tableGroup.getId()));
     }
 
     public void ungroup() {

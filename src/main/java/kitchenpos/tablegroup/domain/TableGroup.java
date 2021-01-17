@@ -50,7 +50,7 @@ public class TableGroup {
 
     private boolean isAssigned(final List<OrderTable> orderTables) {
         return orderTables.stream()
-                .anyMatch(orderTable -> Objects.nonNull(orderTable.getTableGroup()));
+                .anyMatch(orderTable -> Objects.nonNull(orderTable.getTableGroupId()));
     }
 
     private boolean hasNotEmptyTable(final List<OrderTable> orderTables) {

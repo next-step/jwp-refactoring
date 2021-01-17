@@ -1,7 +1,6 @@
 package kitchenpos.ordertable.domain;
 
 import kitchenpos.order.domain.Order;
-import kitchenpos.tablegroup.domain.TableGroup;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -16,9 +15,8 @@ public class OrderTable {
     @Column(name = "id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "table_group_id")
-    private TableGroup tableGroup;
+    @Column(name = "table_group_id")
+    private Long tableGroupId;
 
     @Column(name = "number_of_guests")
     private int numberOfGuests;
@@ -36,19 +34,19 @@ public class OrderTable {
         this(null, numberOfGuests, empty);
     }
 
-    public OrderTable(final TableGroup tableGroup, final int numberOfGuests, final boolean empty) {
-        this.tableGroup = tableGroup;
+    public OrderTable(final Long tableGroupId, final int numberOfGuests, final boolean empty) {
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
         this.orders = new Orders();
     }
 
     public void changeEmpty(final boolean empty) {
-        if (Objects.nonNull(tableGroup)) {
+        if (Objects.nonNull(tableGroupId)) {
             throw new IllegalStateException("단체 지정이 되어 있다면 등록 상태를 변경할 수 없습니다.");
         }
 
-        if(orders.hasNotComplete()){
+        if (orders.hasNotComplete()) {
             throw new IllegalStateException("주문이 완료되지 않았다면 상태를 변경할 수 없습니다.");
         }
         this.empty = empty;
@@ -65,15 +63,15 @@ public class OrderTable {
         this.numberOfGuests = numberOfGuests;
     }
 
-    public void assign(final TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
+    public void assign(final Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
     }
 
     public void ungroup() {
         if (orders.hasNotComplete()) {
             throw new IllegalArgumentException("주문이 완료되지 않은 테이블은 단체 지정을 삭제할 수 없다.");
         }
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 
     public void add(final Order order) {
@@ -84,8 +82,8 @@ public class OrderTable {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     public int getNumberOfGuests() {

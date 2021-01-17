@@ -116,8 +116,8 @@
     - 주문 시 등록 가능한 주문 테이블을 등록하여야한다.
 - OrderTable -> Order
     - 주문이 완료된 상태일때에만 주문 테이블 상태 변경이 가능하다. 
-- OrderTable -> TableGroup
-    - 주문 테이블 그룹과 양방향 연관관계
+- ~~OrderTable -> TableGroup~~
+    - ~~주문 테이블 그룹과 양방향 연관관계~~
 - TableGroup -> OrderTable -> Order
     - 단체 지정 해제 시 주문 테이블의 주문이 완료상태여야 한다.
     

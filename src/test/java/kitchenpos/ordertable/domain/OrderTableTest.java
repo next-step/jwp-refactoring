@@ -59,8 +59,8 @@ class OrderTableTest {
         // given
         OrderTable orderTable1 = new OrderTable(3, true);
         OrderTable orderTable2 = new OrderTable(5, true);
+        orderTable1.assign(1L);
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
-        new TableGroup(orderTables);
 
         // when / then
         assertThrows(IllegalStateException.class, () -> orderTable1.changeEmpty(false));

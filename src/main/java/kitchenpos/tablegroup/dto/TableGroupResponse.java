@@ -56,8 +56,7 @@ public class TableGroupResponse {
 
         public static OrderTableResponse of(final OrderTable orderTable) {
             return new OrderTableResponse(orderTable.getId(),
-                    orderTable.getTableGroup()
-                            .getId(),
+                    orderTable.getTableGroupId(),
                     orderTable.getNumberOfGuests(),
                     orderTable.isEmpty());
         }
