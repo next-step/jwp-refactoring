@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import static kitchenpos.dto.OrderStatus.COOKING;
+import static kitchenpos.domain.OrderStatus.COOKING;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Arrays;
@@ -114,12 +114,14 @@ class TableGroupServiceTest {
         TableGroupDto savedGroup = tableGroupService.create(tableGroup);
         OrderCreateRequest savedOrder = getSavedOrder(orderTable01);
 
+        tableService.changeEmpty(orderTable01.getId(), false);
+        tableService.changeEmpty(orderTable02.getId(), false);
+
         List<OrderLineItemCreateRequest> itemCreateRequests = savedOrder.getOrderLineItems().stream()
                 .map(it -> new OrderLineItemCreateRequest(it.getMenuId(), it.getQuantity()))
                 .collect(Collectors.toList());
         OrderCreateRequest orderCreateRequest = new OrderCreateRequest(orderTable01.getId(), itemCreateRequests);
         OrderDto order = orderService.create(orderCreateRequest);
-
 
         orderService.changeOrderStatus(order.getId(), COOKING);
 
