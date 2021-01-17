@@ -55,8 +55,9 @@
     - `단체 지정(table group)`할 `주문 테이블(order table)`이 `단체 지정(table group)`되어있으면 생성할 수 없다.
 - `단체 지정(table group)`을 해제한다.
     - `단체 지정(table group)`된 `주문 테이블(order table)`에서 `주문 상태(order status)`가 'COOKING' 이나 'MEAL' 이면 해제할 수 없다.
-  
+
 ### 주문 상태(order status)
+
 - `주문 상태(order status)`는 'COOKING'(조리중), 'MEAL'(식사중), 'COMPLETION'(계산완료) 로 구성된다.
 - `주문 상태(order status)`의 상태 변경 순서는 'COOKING'(조리중) -> 'MEAL'(식사중) -> 'COMPLETION'(계산완료) 진행된다.
 
@@ -77,3 +78,9 @@
 | 단체 지정 | table group | 통합 계산을 위해 개별 주문 테이블을 그룹화하는 기능 |
 | 주문 항목 | order line item | 주문에 속하는 수량이 있는 메뉴 |
 | 매장 식사 | eat in | 포장하지 않고 매장에서 식사하는 것 |
+
+## 리팩터링 구현 목록
+
+- [ ] Domain Logic 개선에 앞서, UI 전달되는 Domain Context를 Service Layer에 격리
+- [ ] Service Layer에 있는 Domain Logic를 Domain Layer로 이동
+- [ ] 도메인에 관계를 고려하여 JPA 적용 
