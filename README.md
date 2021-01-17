@@ -18,6 +18,7 @@
 - `메뉴(menu)`를 생성한다.
     - 가격은 필수이고, 0원 이상이 아니면 `메뉴(menu)`를 생성할 수 없다.
     - `메뉴(menu)`가 속한 `메뉴 그룹(menu group)`이 없으면 `메뉴(menu)`를 생성할 수 없다.
+    - `메뉴(menu)`는 등록된 `메뉴 상품(menu product)`이 없을 수도 있고, 포함할 수도 있다.
     - `메뉴(menu)`의 가격이 `메뉴 상품(menu product)`의 가격의 합보다 크면 `메뉴(menu)`를 생성할 수 없다.
 - 모든 `메뉴(menu)` 목록을 조회한다.
     - 각 `메뉴(menu)`의 `메뉴 상품(menu product)`을 같이 조회한다.
@@ -54,6 +55,10 @@
     - `단체 지정(table group)`할 `주문 테이블(order table)`이 `단체 지정(table group)`되어있으면 생성할 수 없다.
 - `단체 지정(table group)`을 해제한다.
     - `단체 지정(table group)`된 `주문 테이블(order table)`에서 `주문 상태(order status)`가 'COOKING' 이나 'MEAL' 이면 해제할 수 없다.
+  
+### 주문 상태(order status)
+- `주문 상태(order status)`는 'COOKING'(조리중), 'MEAL'(식사중), 'COMPLETION'(계산완료) 로 구성된다.
+- `주문 상태(order status)`의 상태 변경 순서는 'COOKING'(조리중) -> 'MEAL'(식사중) -> 'COMPLETION'(계산완료) 진행된다.
 
 ## 용어 사전
 
