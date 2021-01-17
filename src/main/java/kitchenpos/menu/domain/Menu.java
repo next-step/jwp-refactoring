@@ -5,7 +5,6 @@ import kitchenpos.menugroup.domain.MenuGroup;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class Menu {
@@ -32,15 +31,18 @@ public class Menu {
     }
 
     public Menu(final String name, final Money price, final MenuGroup menuGroup, final List<MenuProduct> menuProducts) {
-        MenuProducts newMenuProducts = new MenuProducts(menuProducts, this);
-        validate(price, newMenuProducts);
-        this.name = Objects.requireNonNull(name);
-        this.price = Objects.requireNonNull(price);
-        this.menuGroup = Objects.requireNonNull(menuGroup);
-        this.menuProducts = newMenuProducts;
+        this(name, price, menuGroup, new MenuProducts(menuProducts));
     }
 
-    private void validate(final Money price,final MenuProducts menuProducts) {
+    public Menu(final String name, final Money price, final MenuGroup menuGroup, final MenuProducts menuProducts) {
+        validate(price, menuProducts);
+        this.name = name;
+        this.price = price;
+        this.menuGroup = menuGroup;
+        this.menuProducts = menuProducts;
+    }
+
+    private void validate(final Money price, final MenuProducts menuProducts) {
         Money priceOfMenuProducts = menuProducts.price();
         if (price.isGreaterThan(priceOfMenuProducts)) {
             throw new IllegalArgumentException("메뉴 가격은 메뉴 상품들 가격의 합보다 높을 수 없습니다.");

@@ -28,13 +28,14 @@ public class MenuResponse {
     }
 
     public static MenuResponse of(final Menu menu) {
-        return new MenuResponse(menu.getId(),
+        Long menuId = menu.getId();
+        return new MenuResponse(menuId,
                 menu.getName(),
                 menu.getPrice()
                         .getAmount(),
                 menu.getMenuGroup()
                         .getId(),
-                MenuProductResponse.ofList(menu.getMenuProducts())
+                MenuProductResponse.ofList(menu.getMenuProducts(), menuId)
         );
     }
 
@@ -81,18 +82,17 @@ public class MenuResponse {
             this.quantity = quantity;
         }
 
-        public static MenuProductResponse of(final MenuProduct menuProduct) {
+        public static MenuProductResponse of(final MenuProduct menuProduct, final Long menuId) {
             return new MenuProductResponse(menuProduct.getId(),
-                    menuProduct.getMenu()
-                            .getId(),
+                    menuId,
                     menuProduct.getProduct()
                             .getId(),
                     menuProduct.getQuantity());
         }
 
-        public static List<MenuProductResponse> ofList(final List<MenuProduct> menuProducts) {
+        public static List<MenuProductResponse> ofList(final List<MenuProduct> menuProducts, final Long menuId) {
             return menuProducts.stream()
-                    .map(MenuProductResponse::of)
+                    .map(menuProduct -> of(menuProduct, menuId))
                     .collect(Collectors.toList());
         }
 

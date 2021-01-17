@@ -15,10 +15,6 @@ public class MenuProduct {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id")
-    private Menu menu;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Product product;
 
@@ -33,10 +29,6 @@ public class MenuProduct {
         this.quantity = new Quantity(quantity);
     }
 
-    public void assign(final Menu menu) {
-        this.menu = menu;
-    }
-
     public Money price() {
         Money productPrice = product.getPrice();
         return productPrice.multiply(quantity.getQuantity());
@@ -44,10 +36,6 @@ public class MenuProduct {
 
     public Long getId() {
         return id;
-    }
-
-    public Menu getMenu() {
-        return menu;
     }
 
     public Product getProduct() {
