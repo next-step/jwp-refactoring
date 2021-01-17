@@ -6,8 +6,6 @@ import java.util.Objects;
 @Entity
 public class OrderTable {
 
-    private static final int MIN_NUMBER_OF_GUESTS = 0;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -16,8 +14,8 @@ public class OrderTable {
     @Column(name = "table_group_id")
     private Long tableGroupId;
 
-    @Column(name = "number_of_guests")
-    private int numberOfGuests;
+    @Embedded
+    private NumberOfGuests numberOfGuests;
 
     @Column(name = "empty")
     private boolean empty;
@@ -31,7 +29,7 @@ public class OrderTable {
 
     public OrderTable(final Long tableGroupId, final int numberOfGuests, final boolean empty) {
         this.tableGroupId = tableGroupId;
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = new NumberOfGuests(numberOfGuests);
         this.empty = empty;
     }
 
@@ -48,10 +46,7 @@ public class OrderTable {
             throw new IllegalStateException("빈 테이블은 손님 수를 변경할 수 없습니다.");
         }
 
-        if (numberOfGuests < MIN_NUMBER_OF_GUESTS) {
-            throw new IllegalArgumentException("손님 수는 0명 이상이어야 합니다.");
-        }
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = new NumberOfGuests(numberOfGuests);
     }
 
     public void assign(final Long tableGroupId) {
@@ -75,7 +70,7 @@ public class OrderTable {
     }
 
     public int getNumberOfGuests() {
-        return numberOfGuests;
+        return numberOfGuests.getNumberOfGuests();
     }
 
     public boolean isEmpty() {
