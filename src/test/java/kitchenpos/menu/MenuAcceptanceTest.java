@@ -2,7 +2,9 @@ package kitchenpos.menu;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import kitchenpos.menugroup.MenuGroupAcceptanceTestSupport;
 import kitchenpos.product.ProductAcceptanceTestSupport;
@@ -10,9 +12,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 @DisplayName("메뉴 관련 기능")
 class MenuAcceptanceTest extends MenuAcceptanceTestSupport {
@@ -22,7 +23,7 @@ class MenuAcceptanceTest extends MenuAcceptanceTestSupport {
 
     @BeforeEach
     public void beforeEach() {
-        중화메뉴 = MenuGroupAcceptanceTestSupport.메뉴_그룹_등록됨("중화메뉴").as(MenuGroup.class);
+        중화메뉴 = MenuGroupAcceptanceTestSupport.메뉴_그룹_등록_되어있음("중화메뉴").as(MenuGroup.class);
         짬뽕 = ProductAcceptanceTestSupport.상품_등록되어_있음("짬뽕", 7_000).as(Product.class);
         짜장면 = ProductAcceptanceTestSupport.상품_등록되어_있음("자장면", 5_000).as(Product.class);
     }
@@ -31,17 +32,17 @@ class MenuAcceptanceTest extends MenuAcceptanceTestSupport {
     @Test
     void createMenu() {
         // Given
-        Map<String, Object> 짬뽕_추가 = new HashMap<>();
-        짬뽕_추가.put("productId", 짬뽕.getId());
-        짬뽕_추가.put("quantity", 1);
-        Map<String, Object> 짜장면_추가 = new HashMap<>();
-        짜장면_추가.put("productId", 짜장면.getId());
-        짜장면_추가.put("quantity", 2);
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", "짜장짬뽕세트");
-        params.put("price", 17_000);
-        params.put("menuGroupId", 중화메뉴.getId());
-        params.put("menuProducts", Arrays.asList(짬뽕_추가, 짜장면_추가));
+        MenuProduct 짬뽕_추가 = new MenuProduct();
+        짬뽕_추가.setProductId(짬뽕.getId());
+        짬뽕_추가.setQuantity(1);
+        MenuProduct 짜장면_추가 = new MenuProduct();
+        짜장면_추가.setProductId(짜장면.getId());
+        짜장면_추가.setQuantity(2);
+        Menu params = new Menu();
+        params.setName("짜장짬뽕세트");
+        params.setPrice(new BigDecimal(17_000));
+        params.setMenuGroupId(중화메뉴.getId());
+        params.setMenuProducts(Arrays.asList(짬뽕_추가, 짜장면_추가));
 
         // When
         ExtractableResponse<Response> createResponse = 메뉴_등록_요청(params);

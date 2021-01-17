@@ -2,10 +2,7 @@ package kitchenpos.order;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
+import kitchenpos.domain.*;
 import kitchenpos.menu.MenuAcceptanceTestSupport;
 import kitchenpos.menugroup.MenuGroupAcceptanceTestSupport;
 import kitchenpos.ordertable.OrderTableAcceptanceTestSupport;
@@ -15,8 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collections;
 
 @DisplayName("주문 관련 기능")
 class OrderAcceptanceTest extends OrderAcceptanceTestSupport {
@@ -36,12 +32,12 @@ class OrderAcceptanceTest extends OrderAcceptanceTestSupport {
     @Test
     void manageOrder() {
         // Given
-        Map<String, Object> menuParams = new HashMap<>();
-        menuParams.put("menuId", menu.getId());
-        menuParams.put("quantity", 1);
-        Map<String, Object> orderParams = new HashMap<>();
-        orderParams.put("orderTableId", orderTable.getId());
-        orderParams.put("orderLineItems", Arrays.asList(menuParams));
+        OrderLineItem menuParams = new OrderLineItem();
+        menuParams.setMenuId(menu.getId());
+        menuParams.setQuantity(1);
+        Order orderParams = new Order();
+        orderParams.setOrderTableId(orderTable.getId());
+        orderParams.setOrderLineItems(Collections.singletonList(menuParams));
 
         // When
         ExtractableResponse<Response> createResponse = 주문_생성_요청(orderParams);
@@ -56,16 +52,16 @@ class OrderAcceptanceTest extends OrderAcceptanceTestSupport {
         주문_응답(findResponse);
 
         // When
-        Map<String, String> updateParams = new HashMap<>();
-        updateParams.put("orderStatus", "COMPLETION");
+        Order updateParams = new Order();
+        updateParams.setOrderStatus("COMPLETION");
         ExtractableResponse<Response> updateResponse = 주문_상태_변경_요청(createResponse, updateParams);
 
         // Then
         주문_응답(updateResponse);
 
         // When
-        Map<String, String> wrongUpdateParams = new HashMap<>();
-        updateParams.put("orderStatus", "MEAL");
+        Order wrongUpdateParams = new Order();
+        wrongUpdateParams.setOrderStatus("COMPLETION");
         ExtractableResponse<Response> wrongResponse = 주문_상태_변경_요청(createResponse, wrongUpdateParams);
 
         // Then

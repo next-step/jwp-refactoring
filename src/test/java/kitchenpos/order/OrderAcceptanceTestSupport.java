@@ -5,12 +5,11 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.HttpStatusAssertion;
+import kitchenpos.domain.Order;
 import org.springframework.http.MediaType;
 
-import java.util.Map;
-
 public class OrderAcceptanceTestSupport extends AcceptanceTest {
-    public static ExtractableResponse<Response> 주문_생성_요청(Map<String, Object> params) {
+    public static ExtractableResponse<Response> 주문_생성_요청(Order params) {
         return RestAssured
                 .given().log().all().body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -27,7 +26,7 @@ public class OrderAcceptanceTestSupport extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 주문_상태_변경_요청(ExtractableResponse<Response> createResponse, Map<String, String> params) {
+    public static ExtractableResponse<Response> 주문_상태_변경_요청(ExtractableResponse<Response> createResponse, Order params) {
         String location = createResponse.header("Location");
         return RestAssured
                 .given().log().all().body(params)

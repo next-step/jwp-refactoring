@@ -5,29 +5,30 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.HttpStatusAssertion;
+import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MenuAcceptanceTestSupport extends AcceptanceTest {
     public static ExtractableResponse<Response> 메뉴_등록_되어있음(MenuGroup menuGroup, List<Product> products) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", "메뉴이름");
-        params.put("price", sumOfProductPrice(products));
-        params.put("menuGroupId", menuGroup.getId());
-        params.put("menuProducts", convertParamsOfProducts(products));
+        Menu params = new Menu();
+        params.setName("메뉴이름");
+        params.setPrice(new BigDecimal(sumOfProductPrice(products)));
+        params.setMenuGroupId(menuGroup.getId());
+        params.setMenuProducts(convertParamsOfProducts(products));
+
         ExtractableResponse<Response> response = 메뉴_등록_요청(params);
         메뉴_생성_완료(response);
         return response;
     }
 
-    public static ExtractableResponse<Response> 메뉴_등록_요청(Map<String, Object> params) {
+    public static ExtractableResponse<Response> 메뉴_등록_요청(Menu params) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -60,13 +61,13 @@ public class MenuAcceptanceTestSupport extends AcceptanceTest {
                 .sum();
     }
 
-    private static List<Map<String, Object>> convertParamsOfProducts(List<Product> products) {
+    private static List<MenuProduct> convertParamsOfProducts(List<Product> products) {
         return products.stream()
                 .map(product -> {
-                    Map<String, Object> request = new HashMap<>();
-                    request.put("productId", product.getId());
-                    request.put("quantity", 1);
-                    return request;
+                    MenuProduct menuProduct = new MenuProduct();
+                    menuProduct.setProductId(product.getId());
+                    menuProduct.setQuantity(1);
+                    return menuProduct;
                 })
                 .collect(Collectors.toList());
     }

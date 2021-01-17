@@ -2,11 +2,11 @@ package kitchenpos.product;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import kitchenpos.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.math.BigDecimal;
 
 @DisplayName("상품 관련 기능")
 class ProductAcceptanceTest extends ProductAcceptanceTestSupport {
@@ -14,9 +14,9 @@ class ProductAcceptanceTest extends ProductAcceptanceTestSupport {
     @Test
     void createProduct() {
         // Given
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", "명동칼국수");
-        params.put("price", 17_000);
+        Product params = new Product();
+        params.setName("명동칼국수");
+        params.setPrice(new BigDecimal(17_000));
 
         // When
         ExtractableResponse<Response> createResponse = 상품_생성_요청(params);

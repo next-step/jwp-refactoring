@@ -2,11 +2,9 @@ package kitchenpos.ordertable;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import kitchenpos.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @DisplayName("주문 테이블 관련 기능")
 class OrderTableAcceptanceTest extends OrderTableAcceptanceTestSupport {
@@ -14,9 +12,9 @@ class OrderTableAcceptanceTest extends OrderTableAcceptanceTestSupport {
     @Test
     void manageOrderTable() {
         // Given
-        Map<String, Object> params = new HashMap<>();
-        params.put("numberOfGuests", 0);
-        params.put("empty", true);
+        OrderTable params = new OrderTable();
+        params.setNumberOfGuests(0);
+        params.setEmpty(true);
 
         // When
         ExtractableResponse<Response> createResponse = 주문_테이블_생성_요청(params);
@@ -31,16 +29,16 @@ class OrderTableAcceptanceTest extends OrderTableAcceptanceTestSupport {
         주문_테이블_응답(findResponse);
 
         // When
-        Map<String, Object> emptyParams = new HashMap<>();
-        emptyParams.put("empty", false);
+        OrderTable emptyParams = new OrderTable();
+        emptyParams.setEmpty(false);
         ExtractableResponse<Response> emptyResponse = 주문_테이블_주문_상태_변경_요청(createResponse, emptyParams);
 
         // Then
         주문_테이블_응답(emptyResponse);
 
         // When
-        Map<String, Object> guestParams = new HashMap<>();
-        emptyParams.put("numberOfGuests", 4);
+        OrderTable guestParams = new OrderTable();
+        guestParams.setNumberOfGuests(4);
         ExtractableResponse<Response> guestResponse = 주문_테이블_방문한_손님_수_변경_요청(createResponse, guestParams);
 
         // Then

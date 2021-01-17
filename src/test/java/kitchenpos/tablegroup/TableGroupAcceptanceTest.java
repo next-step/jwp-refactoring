@@ -3,14 +3,13 @@ package kitchenpos.tablegroup;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.TableGroup;
 import kitchenpos.ordertable.OrderTableAcceptanceTestSupport;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 @DisplayName("단체 지정 관련 기능")
 class TableGroupAcceptanceTest extends TableGroupAcceptanceTestSupport {
@@ -27,15 +26,15 @@ class TableGroupAcceptanceTest extends TableGroupAcceptanceTestSupport {
     @Test
     void manageTableGroup() {
         // Given
-        Map<String, Object> tableParam = new HashMap<>();
-        tableParam.put("id", orderTable1.getId());
-        Map<String, Object> tableParam2 = new HashMap<>();
-        tableParam2.put("id", orderTable2.getId());
-        Map<String, Object> tableGroupParams = new HashMap<>();
-        tableGroupParams.put("orderTables", Arrays.asList(tableParam, tableParam2));
+        OrderTable param1 = new OrderTable();
+        param1.setId(orderTable1.getId());
+        OrderTable param2 = new OrderTable();
+        param2.setId(orderTable2.getId());
+        TableGroup params = new TableGroup();
+        params.setOrderTables(Arrays.asList(param1, param2));
 
         // When
-        ExtractableResponse<Response> createResponse = 단체_지정_생성_요청(tableGroupParams);
+        ExtractableResponse<Response> createResponse = 단체_지정_생성_요청(params);
 
         // Then
         단체_지정_생성_완료(createResponse);
