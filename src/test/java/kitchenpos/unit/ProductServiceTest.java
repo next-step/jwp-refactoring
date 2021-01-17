@@ -42,8 +42,8 @@ public class ProductServiceTest {
 
 	@Test
 	@DisplayName("상품 목록을 조회한다")
-	public void list() {
-		List<ProductResponse> responses =  productService.list();
+	public void listProduct() {
+		List<ProductResponse> responses =  productService.listProducts();
 		assertThat(responses).isNotNull();
 		assertThat(responses.size()).isEqualTo(7);
 	}

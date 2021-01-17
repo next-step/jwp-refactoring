@@ -70,12 +70,12 @@ public class OrdersServiceTest {
 
 	@Test
 	@DisplayName("주문을 조회한다")
-	void list() {
+	void listOrders() {
 		given(orderRepository.findAll()).willReturn(new ArrayList<>(Arrays.asList(mock(Orders.class), mock(Orders.class))));
 		given(orders.getOrderLineItems()).willReturn(new ArrayList<>(Arrays.asList(mock(OrderLineItem.class), mock(OrderLineItem.class))));
 
-		assertNotNull(orderService.list());
-		assertThat(orderService.list().size()).isEqualTo(2);
+		assertNotNull(orderService.listOrders());
+		assertThat(orderService.listOrders().size()).isEqualTo(2);
 	}
 
 	@Test

@@ -29,9 +29,9 @@ public class MenuGroupServiceTest {
 
 	@Test
 	@DisplayName("메뉴 그룹 목록을조회한다")
-	void list() {
+	void listMenuGroups() {
 		this.create();
-		List<MenuGroupResponse> menuGroupResponses = menuGroupService.list();
+		List<MenuGroupResponse> menuGroupResponses = menuGroupService.listMenuGroups();
 		assertThat(menuGroupResponses.size()).isEqualTo(6);
 
 	}

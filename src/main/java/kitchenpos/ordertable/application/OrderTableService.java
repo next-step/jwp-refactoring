@@ -27,7 +27,7 @@ public class OrderTableService {
 		return OrderTableResponse.of(orderTableRepository.save(request.toEntity()));
 	}
 
-	public List<OrderTableResponse> list() {
+	public List<OrderTableResponse> listTables() {
 		return OrderTableResponse.of(orderTableRepository.findAll());
 	}
 

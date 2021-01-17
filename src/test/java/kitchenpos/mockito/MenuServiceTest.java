@@ -98,8 +98,8 @@ public class MenuServiceTest {
 		List<Menu> menus = new ArrayList<>(Arrays.asList(mock(Menu.class), mock(Menu.class)));
 		given(menuRepository.findAll()).willReturn(menus);
 
-		assertThat(menuService.list()).isNotNull();
-		assertThat(menuService.list()).isNotEmpty();
-		assertThat(menuService.list().size()).isEqualTo(2);
+		assertThat(menuService.listMenus()).isNotNull();
+		assertThat(menuService.listMenus()).isNotEmpty();
+		assertThat(menuService.listMenus().size()).isEqualTo(2);
 	}
 }

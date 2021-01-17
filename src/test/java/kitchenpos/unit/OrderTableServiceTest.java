@@ -30,8 +30,8 @@ public class OrderTableServiceTest {
 
 	@Test
 	@DisplayName("주문 테이블 목록을 조회한다")
-	void list() {
-		List<OrderTableResponse> orderTableResponse = orderTableService.list();
+	void listOrderTable() {
+		List<OrderTableResponse> orderTableResponse = orderTableService.listTables();
 		assertThat(orderTableResponse).isNotNull();
 		assertThat(orderTableResponse.size()).isEqualTo(8);
 	}

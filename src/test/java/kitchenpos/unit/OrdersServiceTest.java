@@ -40,7 +40,7 @@ public class OrdersServiceTest {
 	@DisplayName("주문을 조회한다")
 	void list() {
 		this.create();
-		List<OrderResponse> orderResponses = orderService.list();
+		List<OrderResponse> orderResponses = orderService.listOrders();
 		assertThat(orderResponses.size()).isEqualTo(1);
 	}
 

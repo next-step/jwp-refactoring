@@ -43,7 +43,7 @@ public class MenuService {
 		return MenuResponse.of(saved);
 	}
 
-	public List<MenuResponse> list() {
+	public List<MenuResponse> listMenus() {
 		final List<Menu> menus = menuRepository.findAll();
 		return MenuResponse.of(menus);
 	}

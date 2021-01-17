@@ -55,11 +55,11 @@ public class OrderTableServiceTest {
 
 	@Test
 	@DisplayName("주문 테이블 목록을 조회한다")
-	void list() {
+	void listOrderTables() {
 		given(orderTableRepository.findAll()).willReturn(new ArrayList<>(Arrays.asList(mock(OrderTable.class), mock(OrderTable.class))));
-		assertThat(orderTableService.list()).isNotNull();
-		assertThat(orderTableService.list()).isNotEmpty();
-		assertThat(orderTableService.list().size()).isEqualTo(2);
+		assertThat(orderTableService.listTables()).isNotNull();
+		assertThat(orderTableService.listTables()).isNotEmpty();
+		assertThat(orderTableService.listTables().size()).isEqualTo(2);
 	}
 
 	@Test

@@ -54,8 +54,8 @@ public class MenuServiceTest {
 
 	@Test
 	@DisplayName("메뉴 목록을 조회한다")
-	void list() {
-		List<MenuResponse> menuResponses = menuService.list();
+	void listMenu() {
+		List<MenuResponse> menuResponses = menuService.listMenus();
 		assertThat(menuResponses.size()).isEqualTo(6);
 	}
 }

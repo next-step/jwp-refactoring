@@ -46,7 +46,7 @@ public class OrderService {
 		return OrderResponse.of(savedOrder);
 	}
 
-	public List<OrderResponse> list() {
+	public List<OrderResponse> listOrders() {
 		return OrderResponse.of(orderRepository.findAll());
 	}
 

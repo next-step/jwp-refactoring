@@ -47,12 +47,12 @@ public class MenuGroupServiceTest {
 
 	@Test
 	@DisplayName("메뉴 그룹 목록을조회한다")
-	void list() {
+	void listMenuGroups() {
 		given(menuGroupRepository.findAll()).willReturn(new ArrayList<>(Arrays.asList(mock(MenuGroup.class), mock(MenuGroup.class))));
 
-		assertThat(menuGroupService.list()).isNotNull();
-		assertThat(menuGroupService.list()).isNotEmpty();
-		assertThat(menuGroupService.list().size()).isEqualTo(2);
+		assertThat(menuGroupService.listMenuGroups()).isNotNull();
+		assertThat(menuGroupService.listMenuGroups()).isNotEmpty();
+		assertThat(menuGroupService.listMenuGroups().size()).isEqualTo(2);
 	}
 
 }

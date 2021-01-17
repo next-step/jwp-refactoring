@@ -52,12 +52,12 @@ public class ProductServiceTest {
 
 	@Test
 	@DisplayName("상품 목록을 조회한다")
-	void list() {
+	void listProducts() {
 		given(productRepository.findAll()).willReturn(new ArrayList<>(Arrays.asList(mock(Product.class))));
 
-		assertThat(productService.list()).isNotNull();
-		assertThat(productService.list()).isNotEmpty();
-		assertThat(productService.list().size()).isEqualTo(1);
+		assertThat(productService.listProducts()).isNotNull();
+		assertThat(productService.listProducts()).isNotEmpty();
+		assertThat(productService.listProducts().size()).isEqualTo(1);
 	}
 
 }

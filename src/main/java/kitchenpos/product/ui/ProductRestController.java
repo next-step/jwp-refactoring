@@ -29,7 +29,7 @@ public class ProductRestController {
 	}
 
 	@GetMapping("/api/products")
-	public ResponseEntity<List<ProductResponse>> list() {
-		return ResponseEntity.ok().body(productService.list());
+	public ResponseEntity<List<ProductResponse>> listProducts() {
+		return ResponseEntity.ok().body(productService.listProducts());
 	}
 }

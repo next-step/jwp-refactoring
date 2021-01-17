@@ -23,7 +23,7 @@ public class ProductService {
 		return ProductResponse.of(savedProduct);
 	}
 
-	public List<ProductResponse> list() {
+	public List<ProductResponse> listProducts() {
 		return ProductResponse.of(productRepository.findAll());
 	}
 }
