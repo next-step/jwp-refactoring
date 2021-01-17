@@ -6,19 +6,20 @@ import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,17 +28,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 
 @DisplayName("메뉴 서비스에 관련한 기능")
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class MenuServiceTest {
-    @Mock
+    @Autowired
     private MenuDao menuDao;
-    @Mock
-    private MenuGroupDao menuGroupDao;
-    @Mock
-    private MenuProductDao menuProductDao;
-    @Mock
-    private ProductDao productDao;
-    @InjectMocks
+    @Autowired
+    private ProductService productService;
+    @Autowired
     private MenuService menuService;
 
     private Menu 짬뽕_짜장면;
@@ -63,51 +60,70 @@ class MenuServiceTest {
     @Test
     void createMenu() {
         // Given
-        Product 짬뽕 = new Product();
-        짬뽕.setId(1L);
-        짬뽕.setName("짬뽕");
-        짬뽕.setPrice(new BigDecimal(8_000));
-        given(menuGroupDao.existsById(1L)).willReturn(true);
-        given(productDao.findById(1L)).willReturn(Optional.of(짬뽕));
-        given(menuDao.save(짬뽕_짜장면)).willReturn(짬뽕_짜장면);
-        given(menuProductDao.save(menuProduct)).willReturn(menuProduct);
+        ProductRequest productRequest1 = new ProductRequest("짬뽕", BigDecimal.valueOf(8_000));
+        ProductResponse 짬뽕 = productService.create(productRequest1);
+        ProductRequest productRequest2 = new ProductRequest("짜장면", BigDecimal.valueOf(6_000));
+        ProductResponse 짜장면 = productService.create(productRequest2);
+        MenuProductRequest menuProductRequest1 = new MenuProductRequest(짬뽕.getId(), 1L);
+        MenuProductRequest menuProductRequest2 = new MenuProductRequest(짜장면.getId(), 1L);
+        MenuRequest menuRequest = new MenuRequest("짬뽕_짜장면", BigDecimal.valueOf(14_000), 1L,
+                Arrays.asList(menuProductRequest1, menuProductRequest2));
 
         // When
-        Menu actual = menuService.create(짬뽕_짜장면);
+        Menu 짬뽕_짜장면2 = menuService.create(menuRequest);
 
         // Then
-        assertThat(actual.getId()).isEqualTo(짬뽕_짜장면.getId());
-        assertThat(actual.getName()).isEqualTo(짬뽕_짜장면.getName());
-        assertThat(actual.getPrice()).isEqualTo(짬뽕_짜장면.getPrice());
-        assertThat(actual.getMenuGroupId()).isEqualTo(짬뽕_짜장면.getMenuGroupId());
-        assertThat(actual.getMenuProducts()).isEqualTo(짬뽕_짜장면.getMenuProducts());
+        assertAll(
+                () -> assertThat(짬뽕_짜장면2.getId()).isNotNull(),
+                () -> assertThat(짬뽕_짜장면2.getName()).isEqualTo(menuRequest.getName()),
+                () -> assertThat(짬뽕_짜장면2.getPrice().intValue()).isEqualTo(menuRequest.getPrice().intValue()),
+                () -> assertThat(짬뽕_짜장면2.getMenuGroupId()).isEqualTo(menuRequest.getMenuGroupId()),
+                () -> assertThat(짬뽕_짜장면2.getMenuProducts()).extracting(MenuProduct::getProductId)
+                        .containsAnyElementsOf(Collections.singletonList(menuProductRequest1.getProductId())),
+                () -> assertThat(짬뽕_짜장면2.getMenuProducts()).extracting(MenuProduct::getQuantity)
+                        .containsAnyElementsOf(Collections.singletonList(menuProductRequest1.getQuantity()))
+        );
     }
 
     @DisplayName("가격은 필수이고, 0원 이상이 아니면 `메뉴`를 생성할 수 없다.")
     @Test
     void exceptionToCreateMenuWithInvalidPrice() {
         // Given
-        짬뽕_짜장면.setPrice(null);
+        ProductRequest productRequest1 = new ProductRequest("짬뽕", BigDecimal.valueOf(8_000));
+        ProductResponse 짬뽕 = productService.create(productRequest1);
+        ProductRequest productRequest2 = new ProductRequest("짜장면", BigDecimal.valueOf(6_000));
+        ProductResponse 짜장면 = productService.create(productRequest2);
+        MenuProductRequest menuProductRequest1 = new MenuProductRequest(짬뽕.getId(), 1L);
+        MenuProductRequest menuProductRequest2 = new MenuProductRequest(짜장면.getId(), 1L);
+        MenuRequest invalidMenuRequest1 = new MenuRequest("짬뽕_짜장면", null, 1L,
+                Arrays.asList(menuProductRequest1, menuProductRequest2));
 
         // When & Then
-        assertThrows(IllegalArgumentException.class, () -> menuService.create(짬뽕_짜장면));
-        짬뽕_짜장면.setPrice(new BigDecimal(-1));
-        assertThrows(IllegalArgumentException.class, () -> menuService.create(짬뽕_짜장면));
+        assertThrows(IllegalArgumentException.class, () -> menuService.create(invalidMenuRequest1));
+
+        // Given
+        MenuRequest invalidMenuRequest2 = new MenuRequest("짬뽕_짜장면", BigDecimal.valueOf(-1), 1L,
+                Arrays.asList(menuProductRequest1, menuProductRequest2));
+
+        // When & Then
+        assertThrows(IllegalArgumentException.class, () -> menuService.create(invalidMenuRequest2));
     }
 
     @DisplayName("`메뉴`의 가격이 `메뉴 상품`의 가격의 합보다 크면 `메뉴`를 생성할 수 없다.")
     @Test
     void exceptionToCreateMenuWithInvalidPriceOverSum() {
         // Given
-        Product 짬뽕 = new Product();
-        짬뽕.setId(1L);
-        짬뽕.setName("짬뽕");
-        짬뽕.setPrice(new BigDecimal(5_000));
-        given(menuGroupDao.existsById(1L)).willReturn(true);
-        given(productDao.findById(1L)).willReturn(Optional.of(짬뽕));
+        ProductRequest productRequest1 = new ProductRequest("짬뽕", BigDecimal.valueOf(8_000));
+        ProductResponse 짬뽕 = productService.create(productRequest1);
+        ProductRequest productRequest2 = new ProductRequest("짜장면", BigDecimal.valueOf(6_000));
+        ProductResponse 짜장면 = productService.create(productRequest2);
+        MenuProductRequest menuProductRequest1 = new MenuProductRequest(짬뽕.getId(), 1L);
+        MenuProductRequest menuProductRequest2 = new MenuProductRequest(짜장면.getId(), 1L);
+        MenuRequest menuRequest = new MenuRequest("짬뽕_짜장면", BigDecimal.valueOf(15_000), 1L,
+                Arrays.asList(menuProductRequest1, menuProductRequest2));
 
         // When & Then
-        assertThrows(IllegalArgumentException.class, () -> menuService.create(짬뽕_짜장면));
+        assertThrows(IllegalArgumentException.class, () -> menuService.create(menuRequest));
     }
 
     @DisplayName("모든 `메뉴` 목록을 조회한다.")

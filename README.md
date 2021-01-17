@@ -84,6 +84,7 @@
 - [ ] 실제 변경 코드의 테스트를 고려하여, Service Layer 테스트를 통합 테스트로 변경
     - [x] Product 통합 테스트 적용
     - [x] MenuGroup 통합 테스트 적용
+    - [x] Menu 통합 테스트 적용
 - [ ] Domain Logic 개선에 앞서, UI 전달되는 Domain Context를 Service Layer에 격리
     - [ ] Product
         - [x] Service Layer에 Request DTO 적용
@@ -91,5 +92,8 @@
     - [ ] MenuGroup
         - [x] Service Layer에 Request DTO 적용
         - [x] Service Layer에 Response DTO 적용
+    - [ ] Menu
+        - [x] Service Layer에 Request DTO 적용
+        - [ ] Service Layer에 Response DTO 적용
 - [ ] Service Layer에 있는 Domain Logic를 Domain Layer로 이동
 - [ ] 도메인에 관계를 고려하여 JPA 적용 
