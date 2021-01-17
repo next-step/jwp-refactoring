@@ -68,8 +68,10 @@ class OrderServiceTest {
         given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
         given(orderDao.save(order)).willReturn(order);
         given(orderLineItemDao.save(orderLineItem)).willReturn(orderLineItem);
+
         // When
         Order actual = orderService.create(order);
+
         // Then
         assertAll(
                 () -> assertThat(actual.getId()).isEqualTo(order.getId()),
@@ -86,6 +88,7 @@ class OrderServiceTest {
         // Given
         order.setId(1L);
         order.setOrderTableId(1L);
+
         // When & then
         assertThatThrownBy(() -> orderService.create(new Order())).isInstanceOf(IllegalArgumentException.class);
     }
@@ -99,6 +102,7 @@ class OrderServiceTest {
         orderTable.setId(order.getOrderTableId());
         orderTable.setEmpty(true);
         given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
+
         // When & Then
         assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
     }
@@ -108,8 +112,10 @@ class OrderServiceTest {
     void findAllOrders() {
         // Given
         given(orderDao.findAll()).willReturn(Collections.singletonList(order));
+
         // When
         List<Order> actual = orderService.list();
+
         // Then
         assertAll(
                 () -> assertThat(actual).extracting(Order::getId).containsExactly(order.getId()),
@@ -129,8 +135,10 @@ class OrderServiceTest {
         given(orderDao.findById(order.getId())).willReturn(Optional.of(order));
         Order updateOrder = new Order();
         updateOrder.setOrderStatus(OrderStatus.MEAL.name());
+
         // When
         Order actual = orderService.changeOrderStatus(order.getId(), updateOrder);
+
         // Then
         assertEquals(updateOrder.getOrderStatus(), actual.getOrderStatus());
     }
@@ -143,6 +151,7 @@ class OrderServiceTest {
         given(orderDao.findById(order.getId())).willReturn(Optional.of(order));
         Order updateOrder = new Order();
         updateOrder.setOrderStatus(OrderStatus.MEAL.name());
+
         // When & Then
         assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), updateOrder))
                 .isInstanceOf(IllegalArgumentException.class);

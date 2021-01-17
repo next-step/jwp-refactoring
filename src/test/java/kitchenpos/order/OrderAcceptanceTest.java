@@ -45,11 +45,13 @@ class OrderAcceptanceTest extends OrderAcceptanceTestSupport {
 
         // When
         ExtractableResponse<Response> createResponse = 주문_생성_요청(orderParams);
+
         // Then
         주문_생성_완료(createResponse);
 
         // When
         ExtractableResponse<Response> findResponse = 주문_목록_조회_요청();
+
         // Then
         주문_응답(findResponse);
 
@@ -57,6 +59,7 @@ class OrderAcceptanceTest extends OrderAcceptanceTestSupport {
         Map<String, String> updateParams = new HashMap<>();
         updateParams.put("orderStatus", "COMPLETION");
         ExtractableResponse<Response> updateResponse = 주문_상태_변경_요청(createResponse, updateParams);
+
         // Then
         주문_응답(updateResponse);
 
@@ -64,6 +67,7 @@ class OrderAcceptanceTest extends OrderAcceptanceTestSupport {
         Map<String, String> wrongUpdateParams = new HashMap<>();
         updateParams.put("orderStatus", "MEAL");
         ExtractableResponse<Response> wrongResponse = 주문_상태_변경_요청(createResponse, wrongUpdateParams);
+
         // Then
         주문_응답_실패(wrongResponse);
     }

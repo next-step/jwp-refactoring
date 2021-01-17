@@ -43,8 +43,10 @@ class ProductServiceTest {
     void createProduct() {
         // Given
         given(productDao.save(짬뽕)).willReturn(짬뽕);
+
         // When
         Product actual = productService.create(짬뽕);
+
         // Then
         assertAll(
                 () -> assertEquals(짬뽕.getId(), actual.getId()),
@@ -58,10 +60,13 @@ class ProductServiceTest {
     void exceptionToCreateProduct() {
         // Given
         짬뽕.setPrice(null);
+
         // When & Then
         assertThatThrownBy(() -> productService.create(짬뽕)).isInstanceOf(IllegalArgumentException.class);
+
         // Given
         짬뽕.setPrice(new BigDecimal(-1));
+
         // When & Then
         assertThatThrownBy(() -> productService.create(짬뽕)).isInstanceOf(IllegalArgumentException.class);
 
@@ -76,8 +81,10 @@ class ProductServiceTest {
         짜장면.setName("짜장면");
         짜장면.setPrice(new BigDecimal(6_000));
         given(productDao.findAll()).willReturn(Arrays.asList(짬뽕, 짜장면));
+
         // When
         List<Product> actual = productService.list();
+
         // Then
         assertAll(
                 () -> assertThat(actual).extracting(Product::getId)

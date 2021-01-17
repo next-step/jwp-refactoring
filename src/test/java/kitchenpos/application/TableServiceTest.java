@@ -20,8 +20,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
 @DisplayName("주문 테이블 서비스에 관련한 기능")
@@ -49,8 +47,10 @@ class TableServiceTest {
     void createTable() {
         // Given
         given(orderTableDao.save(orderTable)).willReturn(orderTable);
+
         // When
         OrderTable actual = tableService.create(orderTable);
+
         // Then
         assertAll(
                 () -> assertEquals(orderTable.getId(), actual.getId()),
@@ -65,8 +65,10 @@ class TableServiceTest {
     void findAllTables() {
         // Given
         given(orderTableDao.findAll()).willReturn(Collections.singletonList(orderTable));
+
         // When
         List<OrderTable> actual = tableService.list();
+
         // Then
         assertAll(
                 () -> assertThat(actual).extracting(OrderTable::getId)
@@ -90,8 +92,10 @@ class TableServiceTest {
         given(orderTableDao.save(orderTable)).willReturn(orderTable);
         OrderTable updateOrderTable = new OrderTable();
         updateOrderTable.setEmpty(false);
+
         // When
         OrderTable actual = tableService.changeEmpty(orderTable.getId(), updateOrderTable);
+
         // Then
         assertThat(actual.isEmpty()).isEqualTo(updateOrderTable.isEmpty());
     }
@@ -104,6 +108,7 @@ class TableServiceTest {
         orderTable.setTableGroupId(1L);
         OrderTable updateOrderTable = new OrderTable();
         updateOrderTable.setEmpty(false);
+
         // When & Then
         assertThatThrownBy(() -> tableService.changeEmpty(this.orderTable.getId(), updateOrderTable))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -119,6 +124,7 @@ class TableServiceTest {
                 .willReturn(true);
         OrderTable updateOrderTable = new OrderTable();
         updateOrderTable.setEmpty(false);
+
         // when & Then
         assertThatThrownBy(() -> tableService.changeEmpty(this.orderTable.getId(), updateOrderTable))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -133,8 +139,10 @@ class TableServiceTest {
         orderTable.setEmpty(false);
         OrderTable updateOrderTable = new OrderTable();
         updateOrderTable.setNumberOfGuests(5);
+
         // When
         OrderTable actual = tableService.changeNumberOfGuests(orderTable.getId(), updateOrderTable);
+
         // Then
         assertEquals(updateOrderTable.getNumberOfGuests(), actual.getNumberOfGuests());
     }
@@ -145,6 +153,7 @@ class TableServiceTest {
         // Given
         OrderTable updateOrderTable = new OrderTable();
         updateOrderTable.setNumberOfGuests(-1);
+
         // When & Then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), updateOrderTable))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -158,6 +167,7 @@ class TableServiceTest {
         orderTable.setEmpty(true);
         OrderTable updateOrderTable = new OrderTable();
         updateOrderTable.setNumberOfGuests(5);
+
         // When & Then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), updateOrderTable))
                 .isInstanceOf(IllegalArgumentException.class);

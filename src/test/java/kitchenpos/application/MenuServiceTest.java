@@ -16,7 +16,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -72,8 +71,10 @@ class MenuServiceTest {
         given(productDao.findById(1L)).willReturn(Optional.of(짬뽕));
         given(menuDao.save(짬뽕_짜장면)).willReturn(짬뽕_짜장면);
         given(menuProductDao.save(menuProduct)).willReturn(menuProduct);
+
         // When
         Menu actual = menuService.create(짬뽕_짜장면);
+
         // Then
         assertThat(actual.getId()).isEqualTo(짬뽕_짜장면.getId());
         assertThat(actual.getName()).isEqualTo(짬뽕_짜장면.getName());
@@ -87,6 +88,7 @@ class MenuServiceTest {
     void exceptionToCreateMenuWithInvalidPrice() {
         // Given
         짬뽕_짜장면.setPrice(null);
+
         // When & Then
         assertThrows(IllegalArgumentException.class, () -> menuService.create(짬뽕_짜장면));
         짬뽕_짜장면.setPrice(new BigDecimal(-1));
@@ -103,6 +105,7 @@ class MenuServiceTest {
         짬뽕.setPrice(new BigDecimal(5_000));
         given(menuGroupDao.existsById(1L)).willReturn(true);
         given(productDao.findById(1L)).willReturn(Optional.of(짬뽕));
+
         // When & Then
         assertThrows(IllegalArgumentException.class, () -> menuService.create(짬뽕_짜장면));
     }
@@ -112,8 +115,10 @@ class MenuServiceTest {
     void findAllMenus() {
         // Given
         given(menuDao.findAll()).willReturn(Collections.singletonList(짬뽕_짜장면));
+
         // When
         List<Menu> actual = menuService.list();
+
         // Then
         assertAll(
                 () -> assertThat(actual).extracting(Menu::getId).containsExactly(짬뽕_짜장면.getId()),

@@ -40,8 +40,10 @@ class MenuGroupServiceTest {
     void createMenuGroup() {
         // Given
         given(menuGroupDao.save(any())).willReturn(세트메뉴);
+
         // When
         MenuGroup actual = menuGroupService.create(세트메뉴);
+
         // Then
         assertAll(
                 () -> assertNotNull(actual),
@@ -58,8 +60,10 @@ class MenuGroupServiceTest {
         메인메뉴.setId(2L);
         메인메뉴.setName("메인메뉴");
         given(menuGroupDao.findAll()).willReturn(Arrays.asList(세트메뉴, 메인메뉴));
+
         // When
         List<MenuGroup> actual = menuGroupService.list();
+
         // Then
         assertAll(
                 () -> assertThat(actual).extracting(MenuGroup::getId)

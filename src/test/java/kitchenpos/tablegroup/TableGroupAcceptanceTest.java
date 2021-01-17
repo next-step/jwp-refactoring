@@ -36,11 +36,13 @@ class TableGroupAcceptanceTest extends TableGroupAcceptanceTestSupport {
 
         // When
         ExtractableResponse<Response> createResponse = 단체_지정_생성_요청(tableGroupParams);
+
         // Then
         단체_지정_생성_완료(createResponse);
 
         // When
         ExtractableResponse<Response> deleteResponse = 단체_지정_삭제_요청(createResponse);
+
         // Then
         단체_지정_삭제_완료(deleteResponse);
     }

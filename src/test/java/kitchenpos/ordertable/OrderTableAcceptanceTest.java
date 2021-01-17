@@ -17,13 +17,16 @@ class OrderTableAcceptanceTest extends OrderTableAcceptanceTestSupport {
         Map<String, Object> params = new HashMap<>();
         params.put("numberOfGuests", 0);
         params.put("empty", true);
+
         // When
         ExtractableResponse<Response> createResponse = 주문_테이블_생성_요청(params);
+
         // Then
         주문_테이블_생성_완료(createResponse);
 
         // When
         ExtractableResponse<Response> findResponse = 주문_테이블_목록_조회_요청();
+
         // Then
         주문_테이블_응답(findResponse);
 
@@ -31,6 +34,7 @@ class OrderTableAcceptanceTest extends OrderTableAcceptanceTestSupport {
         Map<String, Object> emptyParams = new HashMap<>();
         emptyParams.put("empty", false);
         ExtractableResponse<Response> emptyResponse = 주문_테이블_주문_상태_변경_요청(createResponse, emptyParams);
+
         // Then
         주문_테이블_응답(emptyResponse);
 
@@ -38,6 +42,7 @@ class OrderTableAcceptanceTest extends OrderTableAcceptanceTestSupport {
         Map<String, Object> guestParams = new HashMap<>();
         emptyParams.put("numberOfGuests", 4);
         ExtractableResponse<Response> guestResponse = 주문_테이블_방문한_손님_수_변경_요청(createResponse, guestParams);
+
         // Then
         주문_테이블_응답(guestResponse);
     }

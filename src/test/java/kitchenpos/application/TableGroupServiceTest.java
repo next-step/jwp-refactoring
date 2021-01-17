@@ -62,8 +62,10 @@ class TableGroupServiceTest {
         given(orderTableDao.findAllByIdIn(Arrays.asList(orderTable1.getId(), orderTable2.getId())))
                 .willReturn(Arrays.asList(orderTable1, orderTable2));
         given(tableGroupDao.save(tableGroup)).willReturn(tableGroup);
+
         // When
         TableGroup actual = tableGroupService.create(tableGroup);
+
         // Then
         assertAll(
                 () -> assertEquals(tableGroup.getId(), actual.getId()),
@@ -77,6 +79,7 @@ class TableGroupServiceTest {
     void exceptionToCreateTableGroupWithZeroOrOneOrderTable() {
         // Given
         tableGroup.setOrderTables(Collections.singletonList(orderTable1));
+
         // When & Then
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -89,6 +92,7 @@ class TableGroupServiceTest {
         orderTable1.setEmpty(false);
         given(orderTableDao.findAllByIdIn(Arrays.asList(orderTable1.getId(), orderTable2.getId())))
                 .willReturn(Arrays.asList(orderTable1, orderTable2));
+
         // When & Then
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -102,6 +106,7 @@ class TableGroupServiceTest {
         tableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
         given(orderTableDao.findAllByIdIn(Arrays.asList(orderTable1.getId(), orderTable2.getId())))
                 .willReturn(Arrays.asList(orderTable1, orderTable2));
+
         // When & Then
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -118,8 +123,10 @@ class TableGroupServiceTest {
         List<Long> orderTableIds = Arrays.asList(orderTable1.getId(), orderTable2.getId());
         List<String> orderStatuses = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, orderStatuses)).willReturn(false);
+
         // When
         tableGroupService.ungroup(tableGroup.getId());
+
         // Then
         assertAll(
                 () -> assertNull(orderTable1.getTableGroupId()),
@@ -138,6 +145,7 @@ class TableGroupServiceTest {
         List<Long> orderTableIds = Arrays.asList(orderTable1.getId(), orderTable2.getId());
         List<String> orderStatuses = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, orderStatuses)).willReturn(true);
+
         // When & Then
         assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))
                 .isInstanceOf(IllegalArgumentException.class);

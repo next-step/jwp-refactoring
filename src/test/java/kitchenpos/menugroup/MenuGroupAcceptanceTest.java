@@ -17,6 +17,7 @@ class MenuGroupAcceptanceTest extends MenuGroupAcceptanceTestSupport {
         Map<String, Object> params = new HashMap<>();
         params.put("name", "추천메뉴");
         ExtractableResponse<Response> createResponse = 메뉴_그룹_등록_요청(params);
+
         // Then
         메뉴_그룹_생성_완료(createResponse);
     }
@@ -26,6 +27,7 @@ class MenuGroupAcceptanceTest extends MenuGroupAcceptanceTestSupport {
     void findMenuGroups() {
         // When
         ExtractableResponse<Response> findResponse = 메뉴_그룹_목록_조회_요청();
+
         // Then
         메뉴_그룹_응답(findResponse);
     }

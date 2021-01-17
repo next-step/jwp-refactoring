@@ -42,8 +42,10 @@ class MenuAcceptanceTest extends MenuAcceptanceTestSupport {
         params.put("price", 17_000);
         params.put("menuGroupId", 중화메뉴.getId());
         params.put("menuProducts", Arrays.asList(짬뽕_추가, 짜장면_추가));
+
         // When
         ExtractableResponse<Response> createResponse = 메뉴_등록_요청(params);
+
         // Then
         메뉴_생성_완료(createResponse);
     }
@@ -53,6 +55,7 @@ class MenuAcceptanceTest extends MenuAcceptanceTestSupport {
     void findMenus() {
         // When
         ExtractableResponse<Response> findResponse = 메뉴_목록_조회_요청();
+
         // Then
         메뉴_목록_응답(findResponse);
     }

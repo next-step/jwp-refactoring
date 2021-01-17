@@ -17,8 +17,10 @@ class ProductAcceptanceTest extends ProductAcceptanceTestSupport {
         Map<String, Object> params = new HashMap<>();
         params.put("name", "명동칼국수");
         params.put("price", 17_000);
+
         // When
         ExtractableResponse<Response> createResponse = 상품_생성_요청(params);
+
         // Then
         상품_생성_완료(createResponse);
     }
@@ -28,6 +30,7 @@ class ProductAcceptanceTest extends ProductAcceptanceTestSupport {
     void findProducts() {
         // When
         ExtractableResponse<Response> findResponse = 모든_상품_목록_조회_요청();
+
         // Then
         상품_목록_응답(findResponse);
     }
