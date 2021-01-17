@@ -23,7 +23,7 @@ public class TableGroup {
 		this.orderTables = orderTables;
 	}
 
-	public TableGroup() {
+	protected TableGroup() {
 
 	}
 

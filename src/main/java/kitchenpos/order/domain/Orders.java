@@ -25,7 +25,7 @@ public class Orders {
 	@OneToMany(mappedBy = "orders", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
-	public Orders() {
+	protected Orders() {
 	}
 
 	public Orders(OrderTable orderTable, String orderStatus, List<OrderLineItem> orderLineItems) {

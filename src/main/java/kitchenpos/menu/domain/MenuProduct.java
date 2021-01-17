@@ -20,7 +20,7 @@ public class MenuProduct {
 	@JoinColumn(name = "product_id")
 	private Product product;
 
-	public MenuProduct() {
+	protected MenuProduct() {
 	}
 	private long quantity;
 

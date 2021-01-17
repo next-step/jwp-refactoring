@@ -21,7 +21,7 @@ public class Product {
         this.price = price;
     }
 
-    public Product() {
+    protected Product() {
     }
 
     public Long getId() {

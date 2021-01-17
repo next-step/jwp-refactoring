@@ -15,7 +15,7 @@ public class OrderTables {
 	@OneToMany(mappedBy = "tableGroup", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	private List<OrderTable> orderTables = new ArrayList<>();
 
-	public OrderTables() {
+	protected OrderTables() {
 	}
 
 	public OrderTables(List<OrderTable> orderTables, int requestSize) {
