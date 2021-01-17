@@ -3,7 +3,7 @@ package kitchenpos.application;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupRepository;
 import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
+import kitchenpos.dao.ProductRepository;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
@@ -20,13 +20,13 @@ public class MenuService {
     private final MenuDao menuDao;
     private final MenuGroupRepository menuGroupRepository;
     private final MenuProductDao menuProductDao;
-    private final ProductDao productDao;
+    private final ProductRepository productDao;
 
     public MenuService(
             final MenuDao menuDao,
             final MenuGroupRepository menuGroupRepository,
             final MenuProductDao menuProductDao,
-            final ProductDao productDao
+            final ProductRepository productDao
     ) {
         this.menuDao = menuDao;
         this.menuGroupRepository = menuGroupRepository;
