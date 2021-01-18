@@ -9,6 +9,7 @@ import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.MenuResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,8 +17,10 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class MenuService {
     private final MenuDao menuDao;
     private final MenuGroupDao menuGroupDao;
@@ -36,7 +39,6 @@ public class MenuService {
         this.productDao = productDao;
     }
 
-    @Transactional
     public Menu create(MenuRequest request) {
         final BigDecimal price = request.getPrice();
 
@@ -75,10 +77,14 @@ public class MenuService {
         return savedMenu;
     }
 
-    public List<Menu> list() {
-        final List<Menu> menus = menuDao.findAll();
+    @Transactional(readOnly = true)
+    public List<MenuResponse> list() {
+        final List<MenuResponse> menus = menuDao.findAll()
+                .stream()
+                .map(MenuResponse::from)
+                .collect(Collectors.toList());
 
-        for (final Menu menu : menus) {
+        for (final MenuResponse menu : menus) {
             menu.setMenuProducts(menuProductDao.findAllByMenuId(menu.getId()));
         }
 
