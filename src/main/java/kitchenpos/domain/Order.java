@@ -17,6 +17,11 @@ public class Order {
         this.orderedTime = orderedTime;
     }
 
+    public Order(Long orderTableId) {
+        this.orderTableId = orderTableId;
+        this.orderedTime = LocalDateTime.now();
+    }
+
     public Long getId() {
         return id;
     }

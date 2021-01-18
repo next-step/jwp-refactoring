@@ -17,6 +17,13 @@ public class Menu {
         this.menuGroupId = menuGroupId;
     }
 
+    public Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts){
+        this.name = name;
+        this.price = price;
+        this.menuGroupId = menuGroupId;
+        this.menuProducts = menuProducts;
+    }
+
     public Long getId() {
         return id;
     }
