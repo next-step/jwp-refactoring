@@ -63,9 +63,7 @@ class OrderServiceTest {
     @DisplayName("상품을 주문하지 않는 경우 주문을 생성할 수 없다.")
     @Test
     void 상품을_주문하지_않는_경우_주문_생성() {
-        orderRequest.setOrderLineItems(null);
-
-        assertThatThrownBy(() -> orderService.create(orderRequest))
+        assertThatThrownBy(() -> orderRequest.setOrderLineItems(null))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
