@@ -49,8 +49,8 @@ public class TableGroupService {
 
 		final TableGroup savedTableGroup = tableGroupDao.save(new TableGroup());
 		for (final OrderTable savedOrderTable : savedOrderTables) {
-			savedOrderTable.setTableGroup(savedTableGroup);
-			savedOrderTable.setEmpty(false); // TODO: 2021-01-15 이미 Empty 되어있는 테이블만 가능하므로 제거할 것
+			savedOrderTable.putIntoGroup(savedTableGroup);
+			savedOrderTable.changeEmpty(false);
 			orderTableDao.save(savedOrderTable);
 		}
 		savedTableGroup.setOrderTables(savedOrderTables);
@@ -72,7 +72,7 @@ public class TableGroupService {
 		}
 
 		for (final OrderTable orderTable : orderTables) {
-			orderTable.setTableGroup(null);
+			orderTable.ungroup();
 			orderTableDao.save(orderTable);
 		}
 		// TODO: 2021-01-15 delete TableGroup

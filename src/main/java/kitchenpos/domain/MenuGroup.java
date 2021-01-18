@@ -10,22 +10,17 @@ import javax.persistence.Table;
 @Table(name = "menu_group")
 public class MenuGroup extends BaseIdEntity {
 
-    @Column(name = "name", nullable = false)
-    private String name;
+	@Column(name = "name", nullable = false)
+	private String name;
 
-    protected MenuGroup() {
-    }
+	protected MenuGroup() {
+	}
 
-    public MenuGroup(String name) {
-        this.name = name;
-    }
+	public MenuGroup(String name) {
+		this.name = name;
+	}
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
-        // TODO: 2021-01-16 remove
-    }
+	public String getName() {
+		return name;
+	}
 }

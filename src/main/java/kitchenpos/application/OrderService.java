@@ -4,10 +4,7 @@ import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.*;
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest_ChangeStatus;
 import kitchenpos.dto.OrderRequest_Create;
@@ -70,33 +67,20 @@ public class OrderService {
 			OrderLineItem orderLineItem = orderLineItemDao.save(createOrderLineItem(savedOrder, iterRequest));
 			savedOrderLineItems.add(orderLineItem);
 		}
-		savedOrder.setOrderLineItems(savedOrderLineItems);
 		return OrderResponse.of(savedOrder);
 	}
 
 	private Order createOrder(OrderTable orderTable) {
-		Order order = new Order();
-		order.setOrderTable(orderTable);
-		order.setOrderStatus(OrderStatus.COOKING);
-		order.setOrderedTime(LocalDateTime.now());
-		return order;
+		return Order.createCookingOrder(orderTable);
 	}
 
 	private OrderLineItem createOrderLineItem(Order order, OrderLineItemRequest request) {
-		OrderLineItem orderLineItem = new OrderLineItem();
-		orderLineItem.setOrder(order);
-		orderLineItem.setMenu(menuDao.findById(request.getMenuId()).orElseThrow(() -> new IllegalArgumentException()));
-		orderLineItem.setQuantity(request.getQuantity());
-		return orderLineItem;
+		final Menu menu = menuDao.findById(request.getMenuId()).orElseThrow(() -> new IllegalArgumentException());
+		return new OrderLineItem(order, menu, request.getQuantity());
 	}
 
 	public List<OrderResponse> list() {
 		final List<Order> orders = orderDao.findAll();
-
-		for (final Order order : orders) {
-			order.setOrderLineItems(orderLineItemDao.findAllByOrderId(order.getId()));
-			// TODO: 2021-01-15 orderLineItem 을 order 하위로
-		}
 
 		return orders.stream()
 				.map(OrderResponse::of)
@@ -116,9 +100,6 @@ public class OrderService {
 		savedOrder.setOrderStatus(orderStatus);
 
 		orderDao.save(savedOrder);
-
-		savedOrder.setOrderLineItems(orderLineItemDao.findAllByOrderId(orderId));
-
 		return OrderResponse.of(savedOrder);
 	}
 }

@@ -29,10 +29,7 @@ public class ProductService {
 			throw new IllegalArgumentException();
 		}
 
-		Product product = new Product();
-		product.setPrice(request.getPrice());
-		product.setName(request.getName());
-		product = productDao.save(product);
+		Product product = productDao.save(new Product(request.getName(), request.getPrice()));
 		return ProductResponse.of(product);
 	}
 

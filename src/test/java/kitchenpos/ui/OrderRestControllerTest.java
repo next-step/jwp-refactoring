@@ -2,11 +2,7 @@ package kitchenpos.ui;
 
 import kitchenpos.MockMvcTest;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.dto.OrderLineItemRequest;
-import kitchenpos.dto.OrderRequest_ChangeStatus;
-import kitchenpos.dto.OrderRequest_Create;
-import kitchenpos.dto.OrderResponse;
+import kitchenpos.dto.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -41,11 +37,10 @@ class OrderRestControllerTest extends MockMvcTest {
 	}
 
 	private void setEmpty(long tableId) throws Exception {
-		OrderTable orderTable = new OrderTable();
-		orderTable.setEmpty(false);
+		OrderTableRequest_ChangeEmpty request = new OrderTableRequest_ChangeEmpty(false);
 		String uri = String.format("/api/tables/%d/empty", tableId);
 
-		mockMvc.perform(putAsJson(uri, orderTable));
+		mockMvc.perform(putAsJson(uri, request));
 	}
 
 	private OrderLineItemRequest getOrderLineItem(long menuId) {

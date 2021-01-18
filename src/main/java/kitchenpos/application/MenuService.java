@@ -57,7 +57,7 @@ public class MenuService {
 				.peek(menuProductDao::save)
 				.collect(Collectors.toList());
 
-		savedMenu.setMenuProducts(savedMenuProducts);
+		savedMenu.addMenuProducts(savedMenuProducts);
 
 		return MenuResponse.of(savedMenu);
 	}
@@ -76,21 +76,14 @@ public class MenuService {
 	}
 
 	private Menu createMenu(MenuRequest menuRequest, MenuGroup menuGroup) {
-		Menu menu = new Menu();
-		menu.setName(menuRequest.getName());
-		menu.setPrice(menuRequest.getPrice());
-		menu.setMenuGroup(menuGroup);
-		return menu;
+		return new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup);
 	}
 
 	private MenuProduct createMenuProduct(Menu savedMenu, MenuProductRequest menuProductRequest) {
 		final Product product = productDao.findById(menuProductRequest.getProductId())
 				.orElseThrow(IllegalArgumentException::new);
 
-		MenuProduct menuProduct = new MenuProduct();
-		menuProduct.setQuantity(menuProductRequest.getQuantity());
-		menuProduct.setMenu(savedMenu);
-		menuProduct.setProduct(product);
+		MenuProduct menuProduct = new MenuProduct(savedMenu, product, menuProductRequest.getQuantity());
 		return menuProduct;
 	}
 
@@ -98,7 +91,7 @@ public class MenuService {
 		final List<Menu> menus = menuDao.findAll();
 
 		for (final Menu menu : menus) {
-			menu.setMenuProducts(menuProductDao.findAllByMenuId(menu.getId()));
+			menu.addMenuProducts(menuProductDao.findAllByMenuId(menu.getId()));
 		}
 
 		return menus.stream()

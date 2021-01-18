@@ -6,6 +6,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -13,49 +14,59 @@ import java.util.List;
 @EntityListeners(AuditingEntityListener.class)
 public class Order extends BaseIdEntity {
 
-    @ManyToOne
-    @JoinColumn(name = "order_table_id", nullable = false)
-    private OrderTable orderTable;
+	@ManyToOne
+	@JoinColumn(name = "order_table_id", nullable = false)
+	private OrderTable orderTable;
 
-    @Enumerated(value = EnumType.STRING)
-    @Column(name = "order_status", nullable = false)
-    private OrderStatus orderStatus;
+	@Enumerated(value = EnumType.STRING)
+	@Column(name = "order_status", nullable = false)
+	private OrderStatus orderStatus;
 
-    @CreatedDate
-    @Column(name = "ordered_time", nullable = false)
-    private LocalDateTime orderedTime;
+	@CreatedDate
+	@Column(name = "ordered_time", nullable = false)
+	private LocalDateTime orderedTime;
 
-    @OneToMany(mappedBy = "order")
-    private List<OrderLineItem> orderLineItems;
+	@OneToMany(mappedBy = "order")
+	private List<OrderLineItem> orderLineItems;
 
-    public OrderTable getOrderTable() {
-        return orderTable;
-    }
+	protected Order() {
+	}
 
-    public void setOrderTable(OrderTable orderTable) {
-        this.orderTable = orderTable;
-    }
+	public static Order createCookingOrder(OrderTable orderTable) {
+		return new Order(orderTable, OrderStatus.COOKING);
+	}
 
-    public void setOrderStatus(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
-    }
+	private Order(OrderTable orderTable, OrderStatus orderStatus) {
+		this.orderTable = orderTable;
+		this.orderStatus = orderStatus;
+		this.orderLineItems = new ArrayList<>();
+	}
 
-    public OrderStatus getOrderStatus() {
-        return orderStatus;
-    }
-    public LocalDateTime getOrderedTime() {
-        return orderedTime;
-    }
+	public OrderTable getOrderTable() {
+		return orderTable;
+	}
 
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
-    }
+	public void setOrderStatus(OrderStatus orderStatus) {
+		this.orderStatus = orderStatus;
+	}
 
-    public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
-    }
+	public OrderStatus getOrderStatus() {
+		return orderStatus;
+	}
 
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
-    }
+	public LocalDateTime getOrderedTime() {
+		return orderedTime;
+	}
+
+	public List<OrderLineItem> getOrderLineItems() {
+		return orderLineItems;
+	}
+
+	public void addOrderLineItems(List<OrderLineItem> orderLineItems) {
+		this.orderLineItems.addAll(orderLineItems);
+	}
+
+	public void addOrderLineItem(OrderLineItem orderLineItem) {
+		this.orderLineItems.add(orderLineItem);
+	}
 }

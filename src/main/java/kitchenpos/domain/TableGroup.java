@@ -13,22 +13,25 @@ import java.util.List;
 @EntityListeners(AuditingEntityListener.class)
 public class TableGroup extends BaseIdEntity {
 
-    @CreatedDate
-    @Column(name = "created_date")
-    private LocalDateTime createdDate;
+	@CreatedDate
+	@Column(name = "created_date")
+	private LocalDateTime createdDate;
 
-    @OneToMany(mappedBy = "tableGroup")
-    private List<OrderTable> orderTables;
+	@OneToMany(mappedBy = "tableGroup")
+	private List<OrderTable> orderTables;
 
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
+	public TableGroup() {
+	}
 
-    public List<OrderTable> getOrderTables() {
-        return orderTables;
-    }
+	public LocalDateTime getCreatedDate() {
+		return createdDate;
+	}
 
-    public void setOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
-    }
+	public List<OrderTable> getOrderTables() {
+		return orderTables;
+	}
+
+	public void setOrderTables(final List<OrderTable> orderTables) {
+		this.orderTables = orderTables;
+	}
 }
