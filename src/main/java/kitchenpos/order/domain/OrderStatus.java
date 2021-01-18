@@ -12,7 +12,7 @@ public enum OrderStatus {
 
     public static OrderStatus matchOrderStatus(final String status) {
         return Arrays.stream(values())
-            .filter(orderStatus -> orderStatus.name().equals(status.toUpperCase()))
+            .filter(orderStatus -> orderStatus.name().equalsIgnoreCase(status))
             .findFirst()
             .orElseThrow(NotFoundException::new);
     }
