@@ -27,4 +27,10 @@ public class Price {
     public BigDecimal getPrice() {
         return BigDecimal.valueOf(price.doubleValue());
     }
+
+    public void isMustBeLessThanAllMenuProductsPrice(final Price allMenuProductsPrice) {
+        if (this.price.compareTo(allMenuProductsPrice.getPrice()) > LESS_THAN_ZERO) {
+            throw new IllegalArgumentException("[ERROR] Menu price can not be greater than all menu products price");
+        }
+    }
 }

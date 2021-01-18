@@ -28,18 +28,14 @@ public class MenuService {
 
     @Transactional
     public Menu create(final MenuRequest menuRequest) {
-        final Price price = Price.of(new BigDecimal(menuRequest.getPrice()));
+        final Price requestMenuPrice = Price.of(new BigDecimal(menuRequest.getPrice()));
         final MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
             .orElseThrow(NotFoundException::new);
         final MenuProducts menuProducts = generateMenuProducts(menuRequest);
 
-        if (price.getPrice().compareTo(menuProducts.getAllMenuProductsPrice()) > 0) {
-            throw new IllegalArgumentException("[ERROR] Menu price can not be greater than all menu products price");
-        }
+        requestMenuPrice.isMustBeLessThanAllMenuProductsPrice(Price.of(menuProducts.getAllMenuProductsPrice()));
 
-        final Menu newMenu = Menu.of(menuRequest.getName(), price, menuGroup, menuProducts);
-
-        return menuRepository.save(newMenu);
+        return menuRepository.save(Menu.of(menuRequest.getName(), requestMenuPrice, menuGroup, menuProducts));
     }
 
     private MenuProducts generateMenuProducts(final MenuRequest menuRequest) {
@@ -51,12 +47,10 @@ public class MenuService {
             })
             .collect(Collectors.toList());
 
-        final MenuProducts menuProducts = MenuProducts.of(menuProductList);
-        menuProducts.validateTotalPrice();
-
-        return menuProducts;
+        return MenuProducts.of(menuProductList);
     }
-
+    
+    @Transactional(readOnly = true)
     public List<Menu> findAllMenus() {
         return menuRepository.findAll();
     }

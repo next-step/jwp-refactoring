@@ -13,6 +13,7 @@ import java.util.List;
 @Embeddable
 public class MenuProducts {
     private static final int LESS_THAN_ZERO = 0;
+    private static final String ERR_TEXT_INVALID_PRICE_OR_QUANTITY = "상품 금액 또는 수량이 유효하지 않습니다.";
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "menu_id")
@@ -26,18 +27,19 @@ public class MenuProducts {
     }
 
     public static MenuProducts of(final List<MenuProduct> menuProducts) {
+        final BigDecimal allMenuProductsPrice = getAllMenuProductsPrice(menuProducts);
+        if (BigDecimal.ZERO.compareTo(allMenuProductsPrice) >= LESS_THAN_ZERO) {
+            throw new IllegalArgumentException(ERR_TEXT_INVALID_PRICE_OR_QUANTITY);
+        }
+
         return new MenuProducts(menuProducts);
     }
 
-    public void validateTotalPrice() {
-        final BigDecimal totalPrice = this.getAllMenuProductsPrice();
-
-        if (BigDecimal.ZERO.compareTo(totalPrice) >= LESS_THAN_ZERO) {
-            throw new IllegalArgumentException("상품 금액 또는 수량이 유효하지 않습니다.");
-        }
+    public BigDecimal getAllMenuProductsPrice() {
+        return getAllMenuProductsPrice(this.menuProducts);
     }
 
-    public BigDecimal getAllMenuProductsPrice() {
+    private static BigDecimal getAllMenuProductsPrice(final List<MenuProduct> menuProducts) {
         BigDecimal totalPrice = new BigDecimal(BigInteger.ZERO);
 
         for (MenuProduct menuProduct : menuProducts) {
