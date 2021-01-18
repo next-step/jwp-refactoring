@@ -1,13 +1,12 @@
 package kitchenpos.application;
 
+import kitchenpos.common.MenuValidationException;
+import kitchenpos.common.NotFoundException;
 import kitchenpos.dao.MenuProductDao;
-import kitchenpos.domain.MenuProduct;
 import kitchenpos.dto.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -93,7 +92,8 @@ class MenuServiceTest {
 
 		// when then
 		assertThatThrownBy(() -> menuService.create(콰트로치즈와퍼세트))
-				.isInstanceOf(IllegalArgumentException.class);
+				.isInstanceOf(MenuValidationException.class)
+				.hasMessageMatching(MenuService.MSG_PRICE_RULE);
 	}
 
 	@DisplayName("메뉴를 생성시 존재하지 않는 GroupId 사용시 예외발생.")
@@ -108,22 +108,24 @@ class MenuServiceTest {
 
 		// when
 		assertThatThrownBy(() -> menuService.create(콰트로치즈와퍼세트))
-				.isInstanceOf(IllegalArgumentException.class);
+				.isInstanceOf(NotFoundException.class)
+				.hasMessageMatching(MenuService.MSG_CANNOT_FIND_MENUGROUP);
 	}
 
-	@DisplayName("메뉴 생성시 가격이 음수일경우 예외 발생.")
-	@ParameterizedTest
-	@ValueSource(longs = {-1, -9999})
-	void create_PriceWrong(Long price) {
+	@DisplayName("메뉴 생성시 존재하지 않는 ProductId 사용시 예외발생.")
+	@Test
+	void create_WrongProductId() {
 		// given
-		MenuRequest 콰트로치즈와퍼세트 = new MenuRequest("콰트로치즈와퍼세트",
-				new BigDecimal(price),
+		final long 잘못된_ProductId = -55L;
+		MenuRequest 잘못된_요청 = new MenuRequest("콰트로치즈와퍼세트",
+				new BigDecimal(콜라가격 + 감튀가격 + 버거가격 - 2000L),
 				메뉴그룹.getId(),
-				Arrays.asList(요청_콜라, 요청_감튀, 요청_버거));
+				Arrays.asList(요청_콜라, 요청_감튀, new MenuProductRequest(잘못된_ProductId, 1)));
 
-		// when then
-		assertThatThrownBy(() -> menuService.create(콰트로치즈와퍼세트))
-				.isInstanceOf(IllegalArgumentException.class);
+		// when
+		assertThatThrownBy(() -> menuService.create(잘못된_요청))
+				.isInstanceOf(NotFoundException.class)
+				.hasMessageMatching(MenuService.MSG_CANNOT_FIND_PRODUCT);
 	}
 
 	@DisplayName("메뉴 리스트를 반환한다.")

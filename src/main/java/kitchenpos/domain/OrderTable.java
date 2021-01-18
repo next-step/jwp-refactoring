@@ -1,12 +1,15 @@
 package kitchenpos.domain;
 
 import kitchenpos.common.BaseIdEntity;
+import kitchenpos.common.TableValidationException;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "order_table")
 public class OrderTable extends BaseIdEntity {
+
+	static final String MSG_TABLE_GROUP_NOT_NULL = "tableGroup must not be null";
 
 	@ManyToOne
 	@JoinColumn(name = "table_group_id", nullable = true)
@@ -37,7 +40,8 @@ public class OrderTable extends BaseIdEntity {
 
 	public void putIntoGroup(TableGroup tableGroup) {
 		if (tableGroup == null) {
-			throw new IllegalArgumentException();
+			// TODO: 2021-01-19 테스트 작성
+			throw new TableValidationException(MSG_TABLE_GROUP_NOT_NULL);
 		}
 		this.tableGroup = tableGroup;
 	}

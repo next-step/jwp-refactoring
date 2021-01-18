@@ -15,7 +15,8 @@ class PriceTest {
 	@Test
 	void constructor_ExceptionNull() {
 		assertThatThrownBy(() -> new Price(null))
-				.isInstanceOf(IllegalArgumentException.class);
+				.isInstanceOf(ValidationException.class)
+				.hasMessageMatching(Price.MSG_PRICE_NOT_NULL);
 	}
 
 	@DisplayName("생성자에 음수를 사용할 경우 예외발생.")
@@ -23,7 +24,8 @@ class PriceTest {
 	@ValueSource(longs = {-1, -1000})
 	void constructor_ExceptionNegative(long value) {
 		assertThatThrownBy(() -> new Price(new BigDecimal(value)))
-				.isInstanceOf(IllegalArgumentException.class);
+				.isInstanceOf(ValidationException.class)
+				.hasMessageMatching(Price.MSG_PRICE_MUST_EQUAL_OR_GREATER_THAN_ZERO);
 	}
 
 	@DisplayName("올바른 인자를 사용하여 생성자 사용")

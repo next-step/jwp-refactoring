@@ -1,5 +1,7 @@
 package kitchenpos.application;
 
+import kitchenpos.common.MenuValidationException;
+import kitchenpos.common.NotFoundException;
 import kitchenpos.common.Price;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
@@ -22,6 +24,10 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 public class MenuService {
+	static final String MSG_CANNOT_FIND_PRODUCT = "Cannot find Product by productId";
+	static final String MSG_CANNOT_FIND_MENUGROUP = "Cannot find MenuGroup by menuGroupId";
+	static final String MSG_PRICE_RULE = "Menu price must be equal or low than products prices' total sum";
+
 	private final MenuDao menuDao;
 	private final MenuGroupDao menuGroupDao;
 	private final MenuProductDao menuProductDao;
@@ -39,11 +45,9 @@ public class MenuService {
 
 	@Transactional
 	public MenuResponse create(final MenuRequest menuRequest) {
-		// TODO: 2021-01-18 모든 예외 메세지 문자엺 추가
-		// TODO: 2021-01-18 모든 예외 커스텀 예외로
 		// TODO: 2021-01-18 모든 커스텀 예외 핸들러 처리
 		MenuGroup menuGroup = menuGroupDao.findById(menuRequest.getMenuGroupId())
-				.orElseThrow(() -> new IllegalArgumentException(""));
+				.orElseThrow(() -> new NotFoundException(MSG_CANNOT_FIND_MENUGROUP));
 
 		final List<MenuProductRequest> menuProductRequests = menuRequest.getMenuProductRequests();
 
@@ -63,14 +67,14 @@ public class MenuService {
 		Price sum = Price.ZERO;
 		for (final MenuProductRequest menuProductRequest : menuProductRequests) {
 			final Product product = productDao.findById(menuProductRequest.getProductId())
-					.orElseThrow(IllegalArgumentException::new);
+					.orElseThrow(() -> new NotFoundException(MSG_CANNOT_FIND_PRODUCT));
 			BigDecimal quantity = BigDecimal.valueOf(menuProductRequest.getQuantity());
 			sum = sum.add(product.getPrice().multiply(quantity));
 		}
 
 		Price price = new Price(menuRequest.getPrice());
 		if (price.compareTo(sum) > 0) {
-			throw new IllegalArgumentException();
+			throw new MenuValidationException(MSG_PRICE_RULE);
 		}
 	}
 
@@ -80,7 +84,7 @@ public class MenuService {
 
 	private MenuProduct createMenuProduct(Menu savedMenu, MenuProductRequest menuProductRequest) {
 		final Product product = productDao.findById(menuProductRequest.getProductId())
-				.orElseThrow(IllegalArgumentException::new);
+				.orElseThrow(() -> new NotFoundException(MSG_CANNOT_FIND_PRODUCT));
 
 		MenuProduct menuProduct = new MenuProduct(savedMenu, product, menuProductRequest.getQuantity());
 		return menuProduct;

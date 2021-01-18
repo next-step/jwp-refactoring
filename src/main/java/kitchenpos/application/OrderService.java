@@ -1,5 +1,7 @@
 package kitchenpos.application;
 
+import kitchenpos.common.NotFoundException;
+import kitchenpos.common.OrderValidationException;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
@@ -13,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -22,6 +23,13 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 public class OrderService {
+	static final String MSG_CANNOT_FIND_ORDER = "Cannot find Order by orderId";
+	static final String MSG_CANNOT_FIND_MENU = "Cannot find Menu by menuId";
+	static final String MSG_CANNOT_FIND_ORDER_TABLE = "Cannot find OrderTable by orderTableId";
+	static final String MSG_CANNOT_CREATE_EMPTY_ITEMS = "Cannot create Order By empty OrderLineItems";
+	static final String MSG_CANNOT_CREATE_EMPTY_ORDER_TABLE = "Cannot create Order By empty OrderTable";
+	static final String MSG_CANNOT_CHANGE_COMPLETION = "Cannot change orderStatus of already COMPLETION table";
+
 	private final MenuDao menuDao;
 	private final OrderDao orderDao;
 	private final OrderLineItemDao orderLineItemDao;
@@ -42,7 +50,7 @@ public class OrderService {
 		List<OrderLineItemRequest> orderLineItems = request.getOrderLineItems();
 
 		if (CollectionUtils.isEmpty(orderLineItems)) {
-			throw new IllegalArgumentException();
+			throw new OrderValidationException(MSG_CANNOT_CREATE_EMPTY_ITEMS);
 		}
 
 		final List<Long> menuIds = orderLineItems.stream()
@@ -50,14 +58,14 @@ public class OrderService {
 				.collect(Collectors.toList());
 
 		if (orderLineItems.size() != menuDao.countByIdIn(menuIds)) {
-			throw new IllegalArgumentException();
+			throw new NotFoundException(MSG_CANNOT_FIND_MENU);
 		}
 
 		final OrderTable orderTable = orderTableDao.findById(request.getOrderTableId())
-				.orElseThrow(IllegalArgumentException::new);
+				.orElseThrow(() -> new NotFoundException(MSG_CANNOT_FIND_ORDER_TABLE));
 
 		if (orderTable.isEmpty()) {
-			throw new IllegalArgumentException();
+			throw new OrderValidationException(MSG_CANNOT_CREATE_EMPTY_ORDER_TABLE);
 		}
 
 		final Order savedOrder = orderDao.save(createOrder(orderTable));
@@ -75,7 +83,8 @@ public class OrderService {
 	}
 
 	private OrderLineItem createOrderLineItem(Order order, OrderLineItemRequest request) {
-		final Menu menu = menuDao.findById(request.getMenuId()).orElseThrow(() -> new IllegalArgumentException());
+		final Menu menu = menuDao.findById(request.getMenuId()).orElseThrow(() ->
+				new NotFoundException(MSG_CANNOT_FIND_ORDER_TABLE));
 		return new OrderLineItem(order, menu, request.getQuantity());
 	}
 
@@ -90,10 +99,10 @@ public class OrderService {
 	@Transactional
 	public OrderResponse changeOrderStatus(long orderId, OrderRequest_ChangeStatus request) {
 		final Order savedOrder = orderDao.findById(orderId)
-				.orElseThrow(IllegalArgumentException::new);
+				.orElseThrow(() -> new NotFoundException(MSG_CANNOT_FIND_ORDER));
 
 		if (Objects.equals(OrderStatus.COMPLETION, savedOrder.getOrderStatus())) {
-			throw new IllegalArgumentException();
+			throw new OrderValidationException(MSG_CANNOT_CHANGE_COMPLETION);
 		}
 
 		final OrderStatus orderStatus = OrderStatus.valueOf(request.getOrderStatus());

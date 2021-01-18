@@ -6,6 +6,8 @@ import java.math.BigDecimal;
 
 @Embeddable
 public class Price implements Comparable<Price> {
+	static final String MSG_PRICE_NOT_NULL = "price must be not null";
+	static final String MSG_PRICE_MUST_EQUAL_OR_GREATER_THAN_ZERO = "price must be equal or greater than zero";
 	public static Price ZERO = new Price(BigDecimal.ZERO);
 
 	@Column(name = "price", nullable = false, columnDefinition = "DECIMAL(19,2)")
@@ -23,13 +25,13 @@ public class Price implements Comparable<Price> {
 
 	private void validateNull(Object price) {
 		if (price == null) {
-			throw new IllegalArgumentException("");
+			throw new ValidationException(MSG_PRICE_NOT_NULL);
 		}
 	}
 
 	private void validateBigDecimal(BigDecimal price) {
 		if (price.compareTo(BigDecimal.ZERO) < 0) {
-			throw new IllegalArgumentException("");
+			throw new ValidationException(MSG_PRICE_MUST_EQUAL_OR_GREATER_THAN_ZERO);
 		}
 	}
 

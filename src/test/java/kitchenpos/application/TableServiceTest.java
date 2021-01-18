@@ -1,5 +1,7 @@
 package kitchenpos.application;
 
+import kitchenpos.common.NotFoundException;
+import kitchenpos.common.TableValidationException;
 import kitchenpos.dto.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -78,6 +80,17 @@ class TableServiceTest {
 		assertThat(response.isEmpty()).isEqualTo(isEmpty);
 	}
 
+	@DisplayName("존재하지 않는 테이블의 비어있는 상태 변경시 예외 발생.")
+	@ParameterizedTest
+	@ValueSource(booleans = {true, false})
+	void changeEmpty_NotExistOrderTable(boolean isEmpty) {
+		OrderTableRequest_ChangeEmpty request = new OrderTableRequest_ChangeEmpty(isEmpty);
+
+		assertThatThrownBy(() -> tableService.changeEmpty(-55L, request))
+				.isInstanceOf(NotFoundException.class)
+				.hasMessageMatching(TableService.MSG_CANNOT_FIND_ORDER_TABLE);
+	}
+
 	@DisplayName("이미 단체지정된 테이블의 비어있는 상태 변경시 예외 발생.")
 	@Test
 	void changeEmpty_AlreadyTableGroupIncluded() {
@@ -90,7 +103,8 @@ class TableServiceTest {
 				savedOrderTable1.getId(), savedOrderTable2.getId())));
 
 		assertThatThrownBy(() -> tableService.changeEmpty(savedOrderTable1.getId(), new OrderTableRequest_ChangeEmpty(false)))
-				.isInstanceOf(IllegalArgumentException.class);
+				.isInstanceOf(TableValidationException.class)
+				.hasMessageMatching(TableService.MSG_CANNOT_CHANGE_EMPTY_ALREADY_GROUP);
 	}
 
 	@DisplayName("특정 상태인 테이블을 비우려고 하면 예외 발생.")
@@ -99,7 +113,8 @@ class TableServiceTest {
 		tableTestSupport.addOrder(savedOrderTable1.getId());
 
 		assertThatThrownBy(() -> tableService.changeEmpty(savedOrderTable1.getId(), new OrderTableRequest_ChangeEmpty(false)))
-				.isInstanceOf(IllegalArgumentException.class);
+				.isInstanceOf(TableValidationException.class)
+				.hasMessageMatching(TableService.MSG_CANNOT_CHANGE_EMPTY_ORDER_ONGOING);
 	}
 
 	@DisplayName("테이블의 인원수를 변경한다.")
@@ -116,16 +131,12 @@ class TableServiceTest {
 		assertThat(response.getNumberOfGuests()).isEqualTo(numberOfGuests);
 	}
 
-	@DisplayName("테이블 인원 변경시 음수로 설정하면 예외 발생.")
-	@ParameterizedTest
-	@ValueSource(ints = {-1, -999})
-	void changeNumberOfGuests_GuestWrong(int numberOfGuests) {
-		// given
-		OrderTableRequest_ChangeGuests request = new OrderTableRequest_ChangeGuests(numberOfGuests);
-
-		// when then
-		assertThatThrownBy(() -> tableService.changeNumberOfGuests(savedOrderTable1.getId(), request))
-				.isInstanceOf(IllegalArgumentException.class);
+	@DisplayName("존재하지 않는 테이블의 인원 변경시 예외 발생.")
+	@Test
+	void changeNumberOfGuests_NotExistTable() {
+		assertThatThrownBy(() -> tableService.changeNumberOfGuests(-1L, new OrderTableRequest_ChangeGuests(5)))
+				.isInstanceOf(NotFoundException.class)
+				.hasMessageMatching(TableService.MSG_CANNOT_FIND_ORDER_TABLE);
 	}
 
 	@DisplayName("테이블 인원 변경시 테이블이 비어있는 경우 예외 발생.")
@@ -137,6 +148,7 @@ class TableServiceTest {
 		// when & then
 		OrderTableRequest_ChangeGuests request = new OrderTableRequest_ChangeGuests(5);
 		assertThatThrownBy(() -> tableService.changeNumberOfGuests(savedOrderTable1.getId(), request))
-				.isInstanceOf(IllegalArgumentException.class);
+				.isInstanceOf(TableValidationException.class)
+				.hasMessageMatching(TableService.MSG_CANNOT_CHANGE_QUEST_WHILE_EMPTY);
 	}
 }

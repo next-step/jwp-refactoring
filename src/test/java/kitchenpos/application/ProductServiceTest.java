@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Transactional
@@ -37,17 +36,6 @@ class ProductServiceTest {
 		assertThat(response.getId()).isNotNull();
 		assertThat(response.getName()).isEqualTo(name);
 		assertThat(response.getPrice().longValue()).isEqualTo(price.longValue());
-	}
-
-	@DisplayName("잘못된 가격으로 상품 생성시 실패.")
-	@ParameterizedTest
-	@ValueSource(longs = {-1, -999999999})
-	void create_PriceException(long price) {
-		// given
-		ProductRequest productRequest = new ProductRequest("제품", new BigDecimal(price));
-
-		// when then
-		assertThatThrownBy(() -> productService.create(productRequest)).isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@DisplayName("상품 리스트를 반환한다.")

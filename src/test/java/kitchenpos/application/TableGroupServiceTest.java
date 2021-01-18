@@ -1,5 +1,7 @@
 package kitchenpos.application;
 
+import kitchenpos.common.NotFoundException;
+import kitchenpos.common.TableGroupValidationException;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.dto.*;
@@ -73,9 +75,20 @@ class TableGroupServiceTest {
 		TableGroupRequest_Create request2 = new TableGroupRequest_Create(Collections.emptyList());
 
 		assertThatThrownBy(() -> tableGroupService.create(request1))
-				.isInstanceOf(IllegalArgumentException.class);
+				.isInstanceOf(TableGroupValidationException.class)
+				.hasMessageMatching(TableGroupService.MSG_TABLE_ID_MUST_GREATER);
 		assertThatThrownBy(() -> tableGroupService.create(request2))
-				.isInstanceOf(IllegalArgumentException.class);
+				.isInstanceOf(TableGroupValidationException.class)
+				.hasMessageMatching(TableGroupService.MSG_TABLE_ID_MUST_GREATER);
+	}
+
+	@DisplayName("단체 지정하려는 테이블의 ID가 실제로 존재하지 않을 경우 예외 발생.")
+	@Test
+	void create_NotExistTable() {
+		final TableGroupRequest_Create request = new TableGroupRequest_Create(Arrays.asList(-1L, -99L));
+		assertThatThrownBy(() -> tableGroupService.create(request))
+				.isInstanceOf(NotFoundException.class)
+				.hasMessageMatching(TableGroupService.CANNOT_FIND_ORDER_TABLE);
 	}
 
 	@DisplayName("이미 단체 지정된 테이블을 단체 지정하려고 시도 할 경우 예외 발생.")
@@ -87,7 +100,8 @@ class TableGroupServiceTest {
 
 		// when then
 		assertThatThrownBy(() -> tableGroupService.create(request))
-				.isInstanceOf(IllegalArgumentException.class);
+				.isInstanceOf(TableGroupValidationException.class)
+				.hasMessageMatching(TableGroupService.MSG_ORDER_TABLE_ALREADY_GROUP);
 	}
 
 	@DisplayName("단체 지정시 테이블이 비어 있지 않은 경우 예외 발생.")
@@ -97,7 +111,8 @@ class TableGroupServiceTest {
 		tableService.changeEmpty(orderTable1.getId(), new OrderTableRequest_ChangeEmpty(false));
 
 		assertThatThrownBy(() -> tableGroupService.create(new TableGroupRequest_Create(orderTableIds)))
-				.isInstanceOf(IllegalArgumentException.class);
+				.isInstanceOf(TableGroupValidationException.class)
+				.hasMessageMatching(TableGroupService.MSG_ORDER_TABLE_EMPTY);
 	}
 
 	@DisplayName("단체 지정된 테이블의 단체지정을 해제한다.")
@@ -129,6 +144,7 @@ class TableGroupServiceTest {
 
 		// when
 		assertThatThrownBy(() -> tableGroupService.ungroup(response.getId()))
-				.isInstanceOf(IllegalArgumentException.class);
+				.isInstanceOf(NotFoundException.class)
+				.hasMessageMatching(TableGroupService.MSG_ORDER_TABLE_ONGOING);
 	}
 }

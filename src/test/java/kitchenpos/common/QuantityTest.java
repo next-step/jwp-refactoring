@@ -13,7 +13,8 @@ class QuantityTest {
 	@ValueSource(longs = {-1, -1000})
 	void constructor_Exception(long value) {
 		assertThatThrownBy(() -> new Quantity(value))
-				.isInstanceOf(IllegalArgumentException.class);
+				.isInstanceOf(ValidationException.class)
+				.hasMessageMatching(Quantity.MSG_QUANTITY_MUST_EQUAL_OR_GREATER_THAN_ZERO);
 	}
 
 	@DisplayName("정상적인 생성자 사용.")
