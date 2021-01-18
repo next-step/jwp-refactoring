@@ -108,6 +108,7 @@
         - [x] test case - `단체 지정`할 `주문 테이블`은 비어있어야한다.
         - [x] test case - `단체 지정`할 `주문 테이블`이 `단체 지정`되어있으면 생성할 수 없다.
         - [x] test case - `단체 지정`을 해제한다.
+        - [x] test case - `단체 지정`된 `주문 테이블`에서 `주문 상태`가 'COOKING' 이나 'MEAL' 이면 해제할 수 없다.
 - [ ] Domain Logic 개선에 앞서, UI 전달되는 Domain Context를 Service Layer에 격리
     - [ ] Product
         - [x] Service Layer에 Request DTO 적용
