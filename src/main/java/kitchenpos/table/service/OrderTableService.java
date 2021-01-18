@@ -22,9 +22,9 @@ public class OrderTableService {
         this.orderstatusService = orderstatusService;
     }
 
-    public OrderTableResponse create(OrderTableRequest request) {
+    public OrderTableResponse create(final OrderTableRequest request) {
         checkNumberOfGuestsLessThanZero(request.getNumberOfGuests());
-        OrderTable savedTable = orderTableRepository.save(request.toTable());
+        final OrderTable savedTable = orderTableRepository.save(request.toTable());
         return OrderTableResponse.of(savedTable);
     }
 
@@ -37,8 +37,8 @@ public class OrderTableService {
     }
 
     public OrderTableResponse changeEmpty(Long id, boolean empty) {
-        OrderTable tableById = findById(id);
-        if(orderstatusService.isNotCompleteOrder(tableById)){
+        final OrderTable tableById = findById(id);
+        if (orderstatusService.isNotCompleteOrder(tableById)) {
             throw new IllegalArgumentException("주문이 완료되지 않아 빈 테이블로 바꿀수 없습니다.");
         }
         tableById.changeEmpty(empty);
@@ -46,10 +46,10 @@ public class OrderTableService {
         return OrderTableResponse.of(tableById);
     }
 
-    public OrderTableResponse changeNumberOfGuests(Long id, OrderTableRequest orderTableRequest) {
+    public OrderTableResponse changeNumberOfGuests(Long id, final OrderTableRequest orderTableRequest) {
         int numberOfGuests = orderTableRequest.getNumberOfGuests();
         checkNumberOfGuestsLessThanZero(numberOfGuests);
-        OrderTable tableById = findById(id);
+        final OrderTable tableById = findById(id);
         tableById.changeNumberOfGuests(numberOfGuests);
 
         return OrderTableResponse.of(tableById);

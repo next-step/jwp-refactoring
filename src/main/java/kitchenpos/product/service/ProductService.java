@@ -21,7 +21,7 @@ public class ProductService {
     }
 
     public ProductResponse create(final ProductRequest productRequest) {
-        Product savedProduct = productRepository.save(ProductRequest.toProduct(productRequest));
+        final Product savedProduct = productRepository.save(ProductRequest.toProduct(productRequest));
         return ProductResponse.of(savedProduct);
     }
 

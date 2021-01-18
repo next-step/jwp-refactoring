@@ -26,21 +26,21 @@ public class TableGroupService {
         this.orderStatusService = orderStatusService;
     }
 
-    public TableGroupResponse create(TableGroupRequest request) {
+    public TableGroupResponse create(final TableGroupRequest request) {
         checkGroupValidation(request);
-        TableGroup tableGroup = new TableGroup();
+        final TableGroup tableGroup = new TableGroup();
         tableGroup.addAll(findOrderTables(request));
-        TableGroup save = tableGroupRepository.save(tableGroup);
+        final TableGroup save = tableGroupRepository.save(tableGroup);
         return TableGroupResponse.of(save);
     }
 
-    private void checkGroupValidation(TableGroupRequest request) {
+    private void checkGroupValidation(final TableGroupRequest request) {
         if (request.getOrderTables().isEmpty() || request.getOrderTables().size() < 2) {
             throw new IllegalArgumentException("단체 테이블을 지정할 수 없습니다.");
         }
     }
 
-    private List<OrderTable> findOrderTables(TableGroupRequest request) {
+    private List<OrderTable> findOrderTables(final TableGroupRequest request) {
         return request.getOrderTables()
                 .stream()
                 .map(OrderTableIdRequest::getId)

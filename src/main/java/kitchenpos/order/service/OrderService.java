@@ -27,29 +27,29 @@ public class OrderService {
         this.orderRepository = orderRepository;
     }
 
-    public OrderResponse create(OrderRequest request) {
+    public OrderResponse create(final OrderRequest request) {
         checkOrderLineItemEmpty(request.getOrderLineItems());
-        OrderTable tableById = orderTableService.findById(request.getOrderTableId());
+        final OrderTable tableById = orderTableService.findById(request.getOrderTableId());
         checkOrderTableEmpty(tableById);
-        Order savedOrder = orderRepository.save(createOrder(tableById, request.getOrderLineItems()));
+        final Order savedOrder = orderRepository.save(createOrder(tableById, request.getOrderLineItems()));
         return OrderResponse.of(savedOrder);
     }
 
-    private Order createOrder(OrderTable tableById, List<OrderLineRequest> items) {
-        Order order = new Order(tableById);
+    private Order createOrder(final OrderTable tableById, final List<OrderLineRequest> items) {
+        final Order order = new Order(tableById);
         items.forEach(item -> order.addOrderMenu(
                 menuService.findById(item.getMenuId()),
                 item.getQuantity()));
         return order;
     }
 
-    private void checkOrderTableEmpty(OrderTable tableById) {
+    private void checkOrderTableEmpty(final OrderTable tableById) {
         if (!tableById.isEmpty()) {
             throw new IllegalArgumentException("테이블이 비어있지 않습니다.");
         }
     }
 
-    private void checkOrderLineItemEmpty(List<OrderLineRequest> orderLineItems) {
+    private void checkOrderLineItemEmpty(final List<OrderLineRequest> orderLineItems) {
         if (orderLineItems.isEmpty()) {
             throw new IllegalArgumentException("주문 메뉴는 1개 이상이어야 합니다.");
         }

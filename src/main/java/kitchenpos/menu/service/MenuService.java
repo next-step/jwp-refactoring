@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Transactional
 @Service
 public class MenuService {
 
@@ -30,9 +31,9 @@ public class MenuService {
 
     public MenuResponse create(final MenuRequest menuRequest) {
         checkProductsEmpty(menuRequest);
-        MenuGroup menuGroup = menuGroupService.findById(menuRequest.getMenuGroupId());
-        kitchenpos.menu.domain.Menu menu = new kitchenpos.menu.domain.Menu(menuRequest.getName(), Money.price(menuRequest.getPrice()), menuGroup);
-        List<MenuProduct> menuProducts = menuRequest.getMenuProducts()
+        final MenuGroup menuGroup = menuGroupService.findById(menuRequest.getMenuGroupId());
+        final Menu menu = new Menu(menuRequest.getName(), Money.price(menuRequest.getPrice()), menuGroup);
+        final List<MenuProduct> menuProducts = menuRequest.getMenuProducts()
                 .stream()
                 .map(request -> new MenuProduct(menu, productService.findById(request.getProductId()), request.getQuantity()))
                 .collect(Collectors.toList());
@@ -40,7 +41,7 @@ public class MenuService {
         return MenuResponse.ofMenu(menuRepository.save(menu));
     }
 
-    private void checkProductsEmpty(MenuRequest menuRequest) {
+    private void checkProductsEmpty(final MenuRequest menuRequest) {
         if (menuRequest.isEmptyProducts()) {
             throw new IllegalArgumentException("상품이 비어있습니다.");
         }

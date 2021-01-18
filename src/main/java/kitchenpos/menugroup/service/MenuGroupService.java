@@ -20,7 +20,7 @@ public class MenuGroupService {
     }
 
     public MenuGroupResponse create(final MenuGroupRequest menuGroupRequest) {
-        MenuGroup savedGroup = menuGroupRepository.save(menuGroupRequest.toGroup());
+        final MenuGroup savedGroup = menuGroupRepository.save(menuGroupRequest.toGroup());
         return MenuGroupResponse.of(savedGroup);
     }
 
