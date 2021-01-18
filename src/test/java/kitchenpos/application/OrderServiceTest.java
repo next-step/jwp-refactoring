@@ -1,11 +1,10 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.*;
+import kitchenpos.domain.Menu;
+import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.dto.*;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,20 +14,14 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.BDDMockito.given;
 
 @DisplayName("주문 서비스에 관련한 기능")
 @SpringBootTest
 class OrderServiceTest {
-    @Autowired
-    private OrderDao orderDao;
     @Autowired
     private OrderService orderService;
     @Autowired
@@ -39,23 +32,6 @@ class OrderServiceTest {
     private MenuService menuService;
     @Autowired
     private TableService tableService;
-
-    private OrderLineItem orderLineItem;
-    private Order order;
-
-    @BeforeEach
-    void beforeEach() {
-        orderLineItem = new OrderLineItem();
-        orderLineItem.setSeq(1L);
-        orderLineItem.setOrderId(1L);
-        orderLineItem.setMenuId(1L);
-        orderLineItem.setQuantity(1);
-
-        order = new Order();
-        order.setId(1L);
-        order.setOrderTableId(1L);
-        order.setOrderLineItems(Collections.singletonList(orderLineItem));
-    }
 
     @DisplayName("`주문`을 생성한다.")
     @Test
@@ -175,13 +151,29 @@ class OrderServiceTest {
     @Test
     void exceptionToChangeOrderStatusWithCompletion() {
         // Given
-        order.setOrderStatus(OrderStatus.COMPLETION.name());
-        given(orderDao.findById(order.getId())).willReturn(Optional.of(order));
+        ProductResponse 짬뽕 = productService.create(new ProductRequest("짬뽕", BigDecimal.valueOf(8_000)));
+        ProductResponse 짜장면 = productService.create(new ProductRequest("짜장면", BigDecimal.valueOf(6_000)));
+        MenuGroupResponse 신메뉴그룹 = menuGroupService.create(new MenuGroupRequest("신메뉴그룹"));
+        Menu 추천메뉴 = menuService.create(new MenuRequest("추천메뉴", BigDecimal.valueOf(14_000), 신메뉴그룹.getId(),
+                Arrays.asList(new MenuProductRequest(짬뽕.getId(), 1L), new MenuProductRequest(짜장면.getId(), 1L)))
+        );
+        OrderTableResponse orderTable = tableService.create(new OrderTableRequest(3, false));
+        OrderLineItem menuParams = new OrderLineItem();
+        menuParams.setMenuId(추천메뉴.getId());
+        menuParams.setQuantity(1);
+        Order order = new Order();
+        order.setOrderTableId(orderTable.getId());
+        order.setOrderLineItems(Collections.singletonList(menuParams));
+        Order savedOrder = orderService.create(order);
+
         Order updateOrder = new Order();
+        updateOrder.setOrderStatus(OrderStatus.COMPLETION.name());
+        orderService.changeOrderStatus(savedOrder.getId(), updateOrder);
+
         updateOrder.setOrderStatus(OrderStatus.MEAL.name());
 
         // When & Then
-        assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), updateOrder))
+        assertThatThrownBy(() -> orderService.changeOrderStatus(savedOrder.getId(), updateOrder))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }
