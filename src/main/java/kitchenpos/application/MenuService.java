@@ -39,7 +39,7 @@ public class MenuService {
         this.productDao = productDao;
     }
 
-    public Menu create(MenuRequest request) {
+    public MenuResponse create(MenuRequest request) {
         final BigDecimal price = request.getPrice();
 
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
@@ -74,7 +74,7 @@ public class MenuService {
         }
         savedMenu.setMenuProducts(savedMenuProducts);
 
-        return savedMenu;
+        return MenuResponse.from(savedMenu);
     }
 
     @Transactional(readOnly = true)

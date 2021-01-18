@@ -47,7 +47,7 @@ class MenuServiceTest {
                 Arrays.asList(menuProductRequest1, menuProductRequest2));
 
         // When
-        Menu 짬뽕_짜장면 = menuService.create(menuRequest);
+        MenuResponse 짬뽕_짜장면 = menuService.create(menuRequest);
 
         // Then
         assertAll(
@@ -55,10 +55,10 @@ class MenuServiceTest {
                 () -> assertThat(짬뽕_짜장면.getName()).isEqualTo(menuRequest.getName()),
                 () -> assertThat(짬뽕_짜장면.getPrice().intValue()).isEqualTo(menuRequest.getPrice().intValue()),
                 () -> assertThat(짬뽕_짜장면.getMenuGroupId()).isEqualTo(menuRequest.getMenuGroupId()),
-                () -> assertThat(짬뽕_짜장면.getMenuProducts()).extracting(MenuProduct::getProductId)
-                        .containsAnyElementsOf(Collections.singletonList(menuProductRequest1.getProductId())),
-                () -> assertThat(짬뽕_짜장면.getMenuProducts()).extracting(MenuProduct::getQuantity)
-                        .containsAnyElementsOf(Collections.singletonList(menuProductRequest1.getQuantity()))
+                () -> assertThat(짬뽕_짜장면.getMenuProducts()).extracting(MenuProductResponse::getProductId)
+                        .containsAnyElementsOf(Arrays.asList(menuProductRequest1.getProductId(), menuProductRequest2.getProductId())),
+                () -> assertThat(짬뽕_짜장면.getMenuProducts()).extracting(MenuProductResponse::getQuantity)
+                        .containsAnyElementsOf(Arrays.asList(menuProductRequest1.getQuantity(), menuProductRequest2.getQuantity()))
         );
     }
 
@@ -97,7 +97,7 @@ class MenuServiceTest {
         // Given
         MenuRequest menuRequest = new MenuRequest("짬뽕_짜장면", BigDecimal.valueOf(14_000), 1L,
                 Arrays.asList(menuProductRequest1, menuProductRequest2));
-        Menu 짬뽕_짜장면 = menuService.create(menuRequest);
+        MenuResponse 짬뽕_짜장면 = menuService.create(menuRequest);
 
         // When
         List<MenuResponse> actual = menuService.list();
@@ -108,8 +108,7 @@ class MenuServiceTest {
                 () -> assertThat(actual).extracting(MenuResponse::getName).containsAnyElementsOf(Collections.singletonList(짬뽕_짜장면.getName())),
                 () -> assertThat(actual).extracting(MenuResponse::getPrice).containsAnyElementsOf(Collections.singletonList(짬뽕_짜장면.getPrice())),
                 () -> assertThat(actual).extracting(MenuResponse::getMenuGroupId).containsAnyElementsOf(Collections.singletonList(짬뽕_짜장면.getMenuGroupId())),
-                () -> assertThat(actual.stream().filter(mr -> mr.getId().equals(짬뽕_짜장면.getId())).findAny().get().getMenuProducts())
-                        .isEqualTo(짬뽕_짜장면.getMenuProducts().stream().map(MenuProductResponse::from).collect(Collectors.toList()))
+                () -> assertThat(actual).containsAnyElementsOf(Collections.singletonList(짬뽕_짜장면))
         );
     }
 }
