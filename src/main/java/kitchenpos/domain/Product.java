@@ -7,6 +7,10 @@ public class Product {
     private String name;
     private BigDecimal price;
 
+    protected Product() {
+
+    }
+
     public Product(Long id, String name, BigDecimal price) {
         this.id = id;
         this.name = name;
