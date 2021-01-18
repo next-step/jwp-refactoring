@@ -3,6 +3,7 @@ package kitchenpos.application;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.dto.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,17 +26,23 @@ class MenuServiceTest {
     private ProductService productService;
     @Autowired
     private MenuService menuService;
+    private MenuProductRequest menuProductRequest1;
+    private MenuProductRequest menuProductRequest2;
+
+    @BeforeEach
+    void beforeEach() {
+        ProductRequest productRequest1 = new ProductRequest("짬뽕", BigDecimal.valueOf(8_000));
+        ProductResponse 짬뽕 = productService.create(productRequest1);
+        ProductRequest productRequest2 = new ProductRequest("짜장면", BigDecimal.valueOf(6_000));
+        ProductResponse 짜장면 = productService.create(productRequest2);
+        menuProductRequest1 = new MenuProductRequest(짬뽕.getId(), 1L);
+        menuProductRequest2 = new MenuProductRequest(짜장면.getId(), 1L);
+    }
 
     @DisplayName("`메뉴`를 생성한다.")
     @Test
     void createMenu() {
         // Given
-        ProductRequest productRequest1 = new ProductRequest("짬뽕", BigDecimal.valueOf(8_000));
-        ProductResponse 짬뽕 = productService.create(productRequest1);
-        ProductRequest productRequest2 = new ProductRequest("짜장면", BigDecimal.valueOf(6_000));
-        ProductResponse 짜장면 = productService.create(productRequest2);
-        MenuProductRequest menuProductRequest1 = new MenuProductRequest(짬뽕.getId(), 1L);
-        MenuProductRequest menuProductRequest2 = new MenuProductRequest(짜장면.getId(), 1L);
         MenuRequest menuRequest = new MenuRequest("짬뽕_짜장면", BigDecimal.valueOf(14_000), 1L,
                 Arrays.asList(menuProductRequest1, menuProductRequest2));
 
@@ -59,12 +66,6 @@ class MenuServiceTest {
     @Test
     void exceptionToCreateMenuWithInvalidPrice() {
         // Given
-        ProductRequest productRequest1 = new ProductRequest("짬뽕", BigDecimal.valueOf(8_000));
-        ProductResponse 짬뽕 = productService.create(productRequest1);
-        ProductRequest productRequest2 = new ProductRequest("짜장면", BigDecimal.valueOf(6_000));
-        ProductResponse 짜장면 = productService.create(productRequest2);
-        MenuProductRequest menuProductRequest1 = new MenuProductRequest(짬뽕.getId(), 1L);
-        MenuProductRequest menuProductRequest2 = new MenuProductRequest(짜장면.getId(), 1L);
         MenuRequest invalidMenuRequest1 = new MenuRequest("짬뽕_짜장면", null, 1L,
                 Arrays.asList(menuProductRequest1, menuProductRequest2));
 
@@ -83,12 +84,6 @@ class MenuServiceTest {
     @Test
     void exceptionToCreateMenuWithInvalidPriceOverSum() {
         // Given
-        ProductRequest productRequest1 = new ProductRequest("짬뽕", BigDecimal.valueOf(8_000));
-        ProductResponse 짬뽕 = productService.create(productRequest1);
-        ProductRequest productRequest2 = new ProductRequest("짜장면", BigDecimal.valueOf(6_000));
-        ProductResponse 짜장면 = productService.create(productRequest2);
-        MenuProductRequest menuProductRequest1 = new MenuProductRequest(짬뽕.getId(), 1L);
-        MenuProductRequest menuProductRequest2 = new MenuProductRequest(짜장면.getId(), 1L);
         MenuRequest menuRequest = new MenuRequest("짬뽕_짜장면", BigDecimal.valueOf(15_000), 1L,
                 Arrays.asList(menuProductRequest1, menuProductRequest2));
 
@@ -100,12 +95,6 @@ class MenuServiceTest {
     @Test
     void findAllMenus() {
         // Given
-        ProductRequest productRequest1 = new ProductRequest("짬뽕", BigDecimal.valueOf(8_000));
-        ProductResponse 짬뽕 = productService.create(productRequest1);
-        ProductRequest productRequest2 = new ProductRequest("짜장면", BigDecimal.valueOf(6_000));
-        ProductResponse 짜장면 = productService.create(productRequest2);
-        MenuProductRequest menuProductRequest1 = new MenuProductRequest(짬뽕.getId(), 1L);
-        MenuProductRequest menuProductRequest2 = new MenuProductRequest(짜장면.getId(), 1L);
         MenuRequest menuRequest = new MenuRequest("짬뽕_짜장면", BigDecimal.valueOf(14_000), 1L,
                 Arrays.asList(menuProductRequest1, menuProductRequest2));
         Menu 짬뽕_짜장면 = menuService.create(menuRequest);
