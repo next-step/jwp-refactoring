@@ -1,40 +1,48 @@
 package kitchenpos.domain;
 
+import kitchenpos.exception.BadRequestException;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import java.util.Objects;
+
+@Entity
+@Getter
+@NoArgsConstructor
 public class OrderTable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long tableGroupId;
-    private int numberOfGuests;
-    private boolean empty;
+    private Integer numberOfGuests = 0;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public Long getTableGroupId() {
-        return tableGroupId;
-    }
-
-    public void setTableGroupId(final Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
-    }
-
-    public int getNumberOfGuests() {
-        return numberOfGuests;
-    }
-
-    public void setNumberOfGuests(final int numberOfGuests) {
+    public void update(Integer numberOfGuests) {
+        if (numberOfGuests == null) {
+            throw new BadRequestException("손님 수는 null로 변경할 수 없습니다.");
+        }
         this.numberOfGuests = numberOfGuests;
     }
 
     public boolean isEmpty() {
-        return empty;
+        return numberOfGuests.equals(0);
     }
 
-    public void setEmpty(final boolean empty) {
-        this.empty = empty;
+    public void group(Long tableGroupId) {
+        if (tableGroupId == null) {
+            throw new BadRequestException("Group Id는 null로 세팅할 수 없습니다.");
+        }
+        this.tableGroupId = tableGroupId;
+    }
+
+    public void ungroup() {
+        this.tableGroupId = null;
+    }
+
+    public boolean isGroupped() {
+        return Objects.nonNull(tableGroupId);
     }
 }
