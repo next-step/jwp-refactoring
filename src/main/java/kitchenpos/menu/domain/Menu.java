@@ -5,12 +5,9 @@ import kitchenpos.menugroup.domain.MenuGroup;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class Menu {
-
-    private static final int MIN_PRODUCT_COUNT = 1;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,21 +31,20 @@ public class Menu {
     }
 
     public Menu(final String name, final Money price, final MenuGroup menuGroup, final List<MenuProduct> menuProducts) {
-        MenuProducts newMenuProducts = new MenuProducts(menuProducts, this);
-        validate(newMenuProducts, price);
-        this.name = Objects.requireNonNull(name);
-        this.price = Objects.requireNonNull(price);
-        this.menuGroup = Objects.requireNonNull(menuGroup);
-        this.menuProducts = newMenuProducts;
+        this(name, price, menuGroup, new MenuProducts(menuProducts));
     }
 
-    private void validate(final MenuProducts menuProducts, final Money price) {
-        if (menuProducts.size() < MIN_PRODUCT_COUNT) {
-            throw new IllegalArgumentException(String.format("상품은 최소 %d개 이상이어야 합니다.", MIN_PRODUCT_COUNT));
-        }
+    public Menu(final String name, final Money price, final MenuGroup menuGroup, final MenuProducts menuProducts) {
+        validate(price, menuProducts);
+        this.name = name;
+        this.price = price;
+        this.menuGroup = menuGroup;
+        this.menuProducts = menuProducts;
+    }
 
+    private void validate(final Money price, final MenuProducts menuProducts) {
         Money priceOfMenuProducts = menuProducts.price();
-        if (price.compareTo(priceOfMenuProducts) > 0) {
+        if (price.isGreaterThan(priceOfMenuProducts)) {
             throw new IllegalArgumentException("메뉴 가격은 메뉴 상품들 가격의 합보다 높을 수 없습니다.");
         }
     }

@@ -28,7 +28,7 @@ class MenuProductsTest {
     @Test
     void create() {
         // when
-        MenuProducts menuProducts = new MenuProducts(Arrays.asList(강정치킨메뉴상품, 후라이드메뉴상품), null);
+        MenuProducts menuProducts = new MenuProducts(Arrays.asList(강정치킨메뉴상품, 후라이드메뉴상품));
 
         // then
         assertThat(menuProducts).isNotNull();
@@ -38,7 +38,7 @@ class MenuProductsTest {
     @Test
     void price() {
         // given
-        MenuProducts menuProducts = new MenuProducts(Arrays.asList(강정치킨메뉴상품, 후라이드메뉴상품), null);
+        MenuProducts menuProducts = new MenuProducts(Arrays.asList(강정치킨메뉴상품, 후라이드메뉴상품));
 
         // when
         Money price = menuProducts.price();

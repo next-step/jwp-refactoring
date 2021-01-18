@@ -2,10 +2,8 @@ package kitchenpos.ordertable.dto;
 
 
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.tablegroup.domain.TableGroup;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class OrderTableResponse {
@@ -26,9 +24,8 @@ public class OrderTableResponse {
     }
 
     public static OrderTableResponse of(final OrderTable orderTable) {
-        TableGroup tableGroup = orderTable.getTableGroup();
         return new OrderTableResponse(orderTable.getId(),
-                Objects.isNull(tableGroup) ? null : tableGroup.getId(),
+                orderTable.getTableGroupId(),
                 orderTable.getNumberOfGuests(),
                 orderTable.isEmpty());
     }

@@ -1,8 +1,5 @@
 package kitchenpos.ordertable.domain;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -42,25 +39,14 @@ class OrderTableTest {
         assertThat(orderTable.isEmpty()).isFalse();
     }
 
-    @DisplayName("주문 테이블의 주문이 조리 중이거나 식사 중일때는 상태를 변경할 수 없다.")
-    @Test
-    void cantChangeEmpty1() {
-        // given
-        OrderTable orderTable = new OrderTable(5, false);
-        Order.of(orderTable, Arrays.asList(new OrderLineItem(null, 1)));
-
-        // when / then
-        assertThrows(IllegalStateException.class, () -> orderTable.changeEmpty(false));
-    }
-
     @DisplayName("단체 지정이 되어 있다면 상태를 변경할 수 없다.")
     @Test
-    void cantChangeEmpty2() {
+    void cantChangeEmpty() {
         // given
         OrderTable orderTable1 = new OrderTable(3, true);
         OrderTable orderTable2 = new OrderTable(5, true);
+        orderTable1.assign(1L);
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
-        new TableGroup(orderTables);
 
         // when / then
         assertThrows(IllegalStateException.class, () -> orderTable1.changeEmpty(false));
