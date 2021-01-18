@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.common.Price;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
@@ -16,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,18 +39,15 @@ public class MenuService {
 
 	@Transactional
 	public MenuResponse create(final MenuRequest menuRequest) {
-		final BigDecimal price = menuRequest.getPrice();
-
-		if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-			throw new IllegalArgumentException();
-		}
-
+		// TODO: 2021-01-18 모든 예외 메세지 문자엺 추가
+		// TODO: 2021-01-18 모든 예외 커스텀 예외로
+		// TODO: 2021-01-18 모든 커스텀 예외 핸들러 처리
 		MenuGroup menuGroup = menuGroupDao.findById(menuRequest.getMenuGroupId())
 				.orElseThrow(() -> new IllegalArgumentException(""));
 
 		final List<MenuProductRequest> menuProductRequests = menuRequest.getMenuProductRequests();
 
-		validatePrice(price, menuProductRequests);
+		validatePrice(menuRequest, menuProductRequests);
 		final Menu savedMenu = menuDao.save(createMenu(menuRequest, menuGroup));
 		final List<MenuProduct> savedMenuProducts = menuProductRequests.stream()
 				.map(menuProductRequest -> createMenuProduct(savedMenu, menuProductRequest))
@@ -62,21 +59,23 @@ public class MenuService {
 		return MenuResponse.of(savedMenu);
 	}
 
-	private void validatePrice(BigDecimal price, List<MenuProductRequest> menuProductRequests) {
-		BigDecimal sum = BigDecimal.ZERO;
+	private void validatePrice(MenuRequest menuRequest, List<MenuProductRequest> menuProductRequests) {
+		Price sum = Price.ZERO;
 		for (final MenuProductRequest menuProductRequest : menuProductRequests) {
 			final Product product = productDao.findById(menuProductRequest.getProductId())
 					.orElseThrow(IllegalArgumentException::new);
-			sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProductRequest.getQuantity())));
+			BigDecimal quantity = BigDecimal.valueOf(menuProductRequest.getQuantity());
+			sum = sum.add(product.getPrice().multiply(quantity));
 		}
 
+		Price price = new Price(menuRequest.getPrice());
 		if (price.compareTo(sum) > 0) {
 			throw new IllegalArgumentException();
 		}
 	}
 
 	private Menu createMenu(MenuRequest menuRequest, MenuGroup menuGroup) {
-		return new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup);
+		return new Menu(menuRequest.getName(), new Price(menuRequest.getPrice()), menuGroup);
 	}
 
 	private MenuProduct createMenuProduct(Menu savedMenu, MenuProductRequest menuProductRequest) {
@@ -89,7 +88,7 @@ public class MenuService {
 
 	public List<MenuResponse> list() {
 		final List<Menu> menus = menuDao.findAll();
-
+		// TODO : fetch join
 		for (final Menu menu : menus) {
 			menu.addMenuProducts(menuProductDao.findAllByMenuId(menu.getId()));
 		}

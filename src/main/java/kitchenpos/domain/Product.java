@@ -1,11 +1,12 @@
 package kitchenpos.domain;
 
 import kitchenpos.common.BaseIdEntity;
+import kitchenpos.common.Price;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.math.BigDecimal;
 
 @Entity
 @Table(name = "product")
@@ -14,13 +15,13 @@ public class Product extends BaseIdEntity {
 	@Column(name = "name", nullable = false)
 	private String name;
 
-	@Column(name = "price", nullable = false)
-	private BigDecimal price;
+	@Embedded
+	private Price price;
 
 	protected Product() {
 	}
 
-	public Product(String name, BigDecimal price) {
+	public Product(String name, Price price) {
 		this.name = name;
 		this.price = price;
 	}
@@ -29,7 +30,7 @@ public class Product extends BaseIdEntity {
 		return name;
 	}
 
-	public BigDecimal getPrice() {
+	public Price getPrice() {
 		return price;
 	}
 }

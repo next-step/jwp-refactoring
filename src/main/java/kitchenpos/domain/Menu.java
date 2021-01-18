@@ -1,9 +1,9 @@
 package kitchenpos.domain;
 
 import kitchenpos.common.BaseIdEntity;
+import kitchenpos.common.Price;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,8 +14,8 @@ public class Menu extends BaseIdEntity {
 	@Column(name = "name", nullable = false)
 	private String name;
 
-	@Column(name = "price", nullable = false, columnDefinition = "DECIMAL(19,2)")
-	private BigDecimal price;
+	@Embedded
+	private Price price;
 
 	@ManyToOne
 	@JoinColumn(name = "menu_group_id", nullable = false)
@@ -27,7 +27,7 @@ public class Menu extends BaseIdEntity {
 	protected Menu() {
 	}
 
-	public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
+	public Menu(String name, Price price, MenuGroup menuGroup) {
 		this.name = name;
 		this.price = price;
 		this.menuGroup = menuGroup;
@@ -38,7 +38,7 @@ public class Menu extends BaseIdEntity {
 		return name;
 	}
 
-	public BigDecimal getPrice() {
+	public Price getPrice() {
 		return price;
 	}
 

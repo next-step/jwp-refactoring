@@ -4,11 +4,11 @@ import java.math.BigDecimal;
 
 public class ProductRequest {
 
-	public ProductRequest() {
-	}
-
 	private String name;
 	private BigDecimal price;
+
+	public ProductRequest() {
+	}
 
 	public ProductRequest(String name, BigDecimal price) {
 		this.name = name;
@@ -22,4 +22,5 @@ public class ProductRequest {
 	public BigDecimal getPrice() {
 		return price;
 	}
+
 }

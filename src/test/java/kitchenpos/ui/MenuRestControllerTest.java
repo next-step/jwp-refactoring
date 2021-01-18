@@ -30,7 +30,7 @@ class MenuRestControllerTest extends MockMvcTest {
 				.andExpect(status().isCreated())
 				.andReturn();
 
-		Menu created = toObject(mvcResult, Menu.class);
+		MenuResponse created = toObject(mvcResult, MenuResponse.class);
 
 		assertThat(created.getId()).isNotNull();
 		assertThat(created.getPrice().longValue()).isEqualTo(1000L);
