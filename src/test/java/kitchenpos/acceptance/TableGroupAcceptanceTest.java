@@ -21,9 +21,9 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void manage() {
         //given
-        OrderTable table1 = TableAcceptanceTest.생성_요청(TableAcceptanceTest.createRequest())
+        OrderTable table1 = TableAcceptanceTest.생성_요청()
                 .as(OrderTable.class);
-        OrderTable table2 = TableAcceptanceTest.생성_요청(TableAcceptanceTest.createRequest())
+        OrderTable table2 = TableAcceptanceTest.생성_요청()
                 .as(OrderTable.class);
         //when
         TableGroup request = createRequest(table1, table2);

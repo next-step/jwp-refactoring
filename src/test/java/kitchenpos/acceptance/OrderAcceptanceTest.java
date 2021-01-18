@@ -28,10 +28,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 .as(Product.class);
         Menu menu = MenuAcceptanceTest.생성_요청(MenuAcceptanceTest.createRequest(menuGroup, product))
                 .as(Menu.class);
-        OrderTable orderTable = TableAcceptanceTest.생성_요청(TableAcceptanceTest.createRequest())
+        OrderTable orderTable = TableAcceptanceTest.생성_요청()
                 .as(OrderTable.class);
-        orderTable.setEmpty(false);
-        TableAcceptanceTest.테이블_상태_변경_요청(orderTable);
         //when
         Order request = createRequest(orderTable, menu);
         ExtractableResponse<Response> createdResponse = 생성_요청(request);

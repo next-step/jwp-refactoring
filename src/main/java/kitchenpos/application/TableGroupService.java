@@ -1,8 +1,8 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
+import kitchenpos.dao.TableRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
@@ -19,17 +19,25 @@ import java.util.stream.Collectors;
 @Service
 public class TableGroupService {
     private final OrderDao orderDao;
-    private final OrderTableDao orderTableDao;
+    private final TableRepository tableRepository;
     private final TableGroupDao tableGroupDao;
 
-    public TableGroupService(final OrderDao orderDao, final OrderTableDao orderTableDao, final TableGroupDao tableGroupDao) {
+    public TableGroupService(OrderDao orderDao, TableRepository tableRepository, TableGroupDao tableGroupDao) {
         this.orderDao = orderDao;
-        this.orderTableDao = orderTableDao;
+        this.tableRepository = tableRepository;
         this.tableGroupDao = tableGroupDao;
     }
 
     @Transactional
-    public TableGroup create(final TableGroup tableGroup) {
+    public TableGroup create(Long ... tableIds) {
+        TableGroup tableGroup = new TableGroup();
+        List<OrderTable> tables = tableRepository.findAllById(Arrays.asList(tableIds));
+        tableGroup.setOrderTables(tables);
+        return create(tableGroup);
+    }
+
+    @Transactional
+    public TableGroup create(TableGroup tableGroup) {
         final List<OrderTable> orderTables = tableGroup.getOrderTables();
 
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
@@ -40,7 +48,7 @@ public class TableGroupService {
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
 
-        final List<OrderTable> savedOrderTables = orderTableDao.findAllByIdIn(orderTableIds);
+        final List<OrderTable> savedOrderTables = tableRepository.findAllByIdIn(orderTableIds);
 
         if (orderTables.size() != savedOrderTables.size()) {
             throw new IllegalArgumentException();
@@ -58,9 +66,8 @@ public class TableGroupService {
 
         final Long tableGroupId = savedTableGroup.getId();
         for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.setTableGroupId(tableGroupId);
-            savedOrderTable.setEmpty(false);
-            orderTableDao.save(savedOrderTable);
+            savedOrderTable.group(tableGroupId);
+            tableRepository.save(savedOrderTable);
         }
         savedTableGroup.setOrderTables(savedOrderTables);
 
@@ -69,7 +76,7 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableDao.findAllByTableGroupId(tableGroupId);
+        final List<OrderTable> orderTables = tableRepository.findAllByTableGroupId(tableGroupId);
 
         final List<Long> orderTableIds = orderTables.stream()
                 .map(OrderTable::getId)
@@ -81,8 +88,8 @@ public class TableGroupService {
         }
 
         for (final OrderTable orderTable : orderTables) {
-            orderTable.setTableGroupId(null);
-            orderTableDao.save(orderTable);
+            orderTable.ungroup();
+            tableRepository.save(orderTable);
         }
     }
 }

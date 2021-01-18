@@ -37,9 +37,7 @@ public class OrderServiceTest extends ServiceTestBase {
         ProductResponse product = productService.create(ProductServiceTest.createRequest("후라이드", 17_000L));
         List<MenuProductRequest> menuProducts = Collections.singletonList(MenuServiceTest.createMenuProduct(product.getId(), 2L));
         MenuResponse menu = menuService.create(MenuServiceTest.createRequest("후라이드+후라이드", 19_000L, menuGroup.getId(), menuProducts));
-        OrderTable savedTable = tableService.create(TableServiceTest.createTable());
-        savedTable.setEmpty(false);
-        tableService.changeEmpty(savedTable.getId(), savedTable);
+        TableResponse savedTable = tableService.create();
 
         List<OrderLineItem> orderLineItems = Collections.singletonList(OrderServiceTest.createOrderLineItem(menu.getId(), 1L));
         Order order = orderService.create(OrderServiceTest.createOrder(savedTable.getId(), orderLineItems));
@@ -50,9 +48,7 @@ public class OrderServiceTest extends ServiceTestBase {
     @DisplayName("메뉴가 비어있는 주문 생성")
     @Test
     void createWithEmptyMenu() {
-        OrderTable savedTable = tableService.create(TableServiceTest.createTable());
-        savedTable.setEmpty(false);
-        tableService.changeEmpty(savedTable.getId(), savedTable);
+        TableResponse savedTable = tableService.create();
 
         List<OrderLineItem> orderLineItems = Collections.emptyList();
 
@@ -63,9 +59,7 @@ public class OrderServiceTest extends ServiceTestBase {
     @DisplayName("메뉴가 등록되지 않은 주문 생성")
     @Test
     void createWithoutMenu() {
-        OrderTable savedTable = tableService.create(TableServiceTest.createTable());
-        savedTable.setEmpty(false);
-        tableService.changeEmpty(savedTable.getId(), savedTable);
+        TableResponse savedTable = tableService.create();
 
         List<OrderLineItem> orderLineItems = Collections.singletonList(OrderServiceTest.createOrderLineItem(1L, 1L));
 
@@ -89,9 +83,7 @@ public class OrderServiceTest extends ServiceTestBase {
         ProductResponse product = productService.create(ProductServiceTest.createRequest("후라이드", 17_000L));
         List<MenuProductRequest> menuProducts = Collections.singletonList(MenuServiceTest.createMenuProduct(product.getId(), 2L));
         MenuResponse menu = menuService.create(MenuServiceTest.createRequest("후라이드+후라이드", 19_000L, menuGroup.getId(), menuProducts));
-        OrderTable savedTable = tableService.create(TableServiceTest.createTable());
-        savedTable.setEmpty(false);
-        tableService.changeEmpty(savedTable.getId(), savedTable);
+        TableResponse savedTable = tableService.create();
 
         List<OrderLineItem> orderLineItems = Collections.singletonList(OrderServiceTest.createOrderLineItem(menu.getId(), 1L));
         Order order = orderService.create(OrderServiceTest.createOrder(savedTable.getId(), orderLineItems));
@@ -111,9 +103,7 @@ public class OrderServiceTest extends ServiceTestBase {
         ProductResponse product = productService.create(ProductServiceTest.createRequest("후라이드", 17_000L));
         List<MenuProductRequest> menuProducts = Collections.singletonList(MenuServiceTest.createMenuProduct(product.getId(), 2L));
         MenuResponse menu = menuService.create(MenuServiceTest.createRequest("후라이드+후라이드", 19_000L, menuGroup.getId(), menuProducts));
-        OrderTable savedTable = tableService.create(TableServiceTest.createTable());
-        savedTable.setEmpty(false);
-        tableService.changeEmpty(savedTable.getId(), savedTable);
+        TableResponse savedTable = tableService.create();
 
         List<OrderLineItem> orderLineItems = Collections.singletonList(OrderServiceTest.createOrderLineItem(menu.getId(), 1L));
         Order order = orderService.create(OrderServiceTest.createOrder(savedTable.getId(), orderLineItems));
@@ -130,9 +120,7 @@ public class OrderServiceTest extends ServiceTestBase {
         ProductResponse product = productService.create(ProductServiceTest.createRequest("후라이드", 17_000L));
         List<MenuProductRequest> menuProducts = Collections.singletonList(MenuServiceTest.createMenuProduct(product.getId(), 2L));
         MenuResponse menu = menuService.create(MenuServiceTest.createRequest("후라이드+후라이드", 19_000L, menuGroup.getId(), menuProducts));
-        OrderTable savedTable = tableService.create(TableServiceTest.createTable());
-        savedTable.setEmpty(false);
-        tableService.changeEmpty(savedTable.getId(), savedTable);
+        TableResponse savedTable = tableService.create();
 
         List<OrderLineItem> orderLineItems = Collections.singletonList(OrderServiceTest.createOrderLineItem(menu.getId(), 1L));
         Order order = OrderServiceTest.createOrder(savedTable.getId(), orderLineItems);
@@ -148,9 +136,7 @@ public class OrderServiceTest extends ServiceTestBase {
         ProductResponse product = productService.create(ProductServiceTest.createRequest("후라이드", 17_000L));
         List<MenuProductRequest> menuProducts = Collections.singletonList(MenuServiceTest.createMenuProduct(product.getId(), 2L));
         MenuResponse menu = menuService.create(MenuServiceTest.createRequest("후라이드+후라이드", 19_000L, menuGroup.getId(), menuProducts));
-        OrderTable savedTable = tableService.create(TableServiceTest.createTable());
-        savedTable.setEmpty(false);
-        tableService.changeEmpty(savedTable.getId(), savedTable);
+        TableResponse savedTable = tableService.create();
 
         List<OrderLineItem> orderLineItems = Collections.singletonList(OrderServiceTest.createOrderLineItem(menu.getId(), 1L));
         Order order = orderService.create(OrderServiceTest.createOrder(savedTable.getId(), orderLineItems));
