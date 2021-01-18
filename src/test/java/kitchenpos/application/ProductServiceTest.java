@@ -1,8 +1,8 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.ProductDao;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -26,7 +26,7 @@ import static org.mockito.BDDMockito.given;
 class ProductServiceTest {
 
     @Mock
-    ProductDao productDao;
+    ProductRepository productRepository;
 
     @InjectMocks
     ProductService productService;
@@ -38,7 +38,7 @@ class ProductServiceTest {
         ProductRequest newProduct = new ProductRequest(null, "김치찌개", new BigDecimal(6000));
         // TODO: 임시로 any() 로 돌려놓음.
 //        Product product = new Product(null, "김치찌개", new BigDecimal(6000));
-        given(productDao.save(any()))
+        given(productRepository.save(any()))
                 .willReturn(new Product(2L, "김치찌개", new BigDecimal(6000)));
 
         //when
@@ -80,7 +80,7 @@ class ProductServiceTest {
     @Test
     void list() {
         //given
-        given(productDao.findAll())
+        given(productRepository.findAll())
                 .willReturn(
                         Arrays.asList(
                                 new Product(1L, "볶음밥", new BigDecimal(7000)),
