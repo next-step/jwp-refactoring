@@ -109,13 +109,15 @@ class TableServiceTest {
     @Test
     void exceptionToChangeEmptyWithTableGroup() {
         // Given
-        given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
-        orderTable.setTableGroupId(1L);
-        OrderTable updateOrderTable = new OrderTable();
-        updateOrderTable.setEmpty(false);
+        OrderTable orderTable1 = tableService.create(new OrderTableRequest(3, true));
+        OrderTable orderTable2 = tableService.create(new OrderTableRequest(3, true));
+        TableGroup tableGroup = new TableGroup();
+        tableGroup.setId(1L);
+        tableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
+        tableGroupService.create(tableGroup);
 
         // When & Then
-        assertThatThrownBy(() -> tableService.changeEmpty(this.orderTable.getId(), updateOrderTable))
+        assertThatThrownBy(() -> tableService.changeEmpty(orderTable1.getId(), new OrderTableRequest(true)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
