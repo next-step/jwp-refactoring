@@ -95,10 +95,6 @@ class OrderServiceTest {
     @DisplayName("`주문`에 필요한 주문 메뉴를 담은 `주문 항목`이 없으면 `주문`을 생성할 수 없다.")
     @Test
     void exceptionToCreateOrderWithoutLineItem() {
-        // Given
-        order.setId(1L);
-        order.setOrderTableId(1L);
-
         // When & then
         assertThatThrownBy(() -> orderService.create(new Order())).isInstanceOf(IllegalArgumentException.class);
     }
