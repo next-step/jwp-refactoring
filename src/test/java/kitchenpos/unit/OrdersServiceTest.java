@@ -26,7 +26,7 @@ public class OrdersServiceTest {
 
 	@Test
 	@DisplayName("주문을 등록한다")
-	void create() {
+	void createOrders() {
 		List<OrderLineItemRequest> orderLineItemRequests = new ArrayList<>();
 		OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(1L, 2L);
 		orderLineItemRequests.add(orderLineItemRequest);
@@ -38,8 +38,8 @@ public class OrdersServiceTest {
 
 	@Test
 	@DisplayName("주문을 조회한다")
-	void list() {
-		this.create();
+	void listOrders() {
+		this.createOrders();
 		List<OrderResponse> orderResponses = orderService.listOrders();
 		assertThat(orderResponses.size()).isEqualTo(1);
 	}
@@ -63,7 +63,7 @@ public class OrdersServiceTest {
 	@Test
 	@DisplayName("계산 완료 상태의 주문이 조회될 순 없다")
 	void givenOrderStatusCompletionWhenFindOrderThenError() {
-		this.create();
+		this.createOrders();
 		OrderRequest orderRequest = new OrderRequest(OrderStatus.COMPLETION.name());
 		assertThrows(IllegalArgumentException.class, () -> orderService.changeOrderStatus(1L, orderRequest));
 	}

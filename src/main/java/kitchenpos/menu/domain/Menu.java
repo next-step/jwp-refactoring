@@ -1,12 +1,9 @@
 package kitchenpos.menu.domain;
 
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.tablegroup.domain.OrderTables;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 @Entity

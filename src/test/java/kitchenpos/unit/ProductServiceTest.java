@@ -30,7 +30,7 @@ public class ProductServiceTest {
 
 	@Test
 	@DisplayName("상품을 등록할 수 있다.")
-	public void create() {
+	public void createProduct() {
 		// when
 		ProductResponse response = productService.create(productRequest);
 

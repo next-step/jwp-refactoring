@@ -20,7 +20,7 @@ public class MenuGroupServiceTest {
 
 	@Test
 	@DisplayName("메뉴 그룹을등록한다")
-	void create() {
+	void createMenuGroup() {
 		MenuGroupRequest menuGroupRequest = new MenuGroupRequest("겨울신메뉴");
 		MenuGroupResponse menuGroupResponse = menuGroupService.create(menuGroupRequest);
 		assertThat(menuGroupResponse.getName()).isEqualTo(menuGroupRequest.getName());
@@ -30,7 +30,7 @@ public class MenuGroupServiceTest {
 	@Test
 	@DisplayName("메뉴 그룹 목록을조회한다")
 	void listMenuGroups() {
-		this.create();
+		this.createMenuGroup();
 		List<MenuGroupResponse> menuGroupResponses = menuGroupService.listMenuGroups();
 		assertThat(menuGroupResponses.size()).isEqualTo(6);
 

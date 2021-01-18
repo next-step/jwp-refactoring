@@ -1,7 +1,4 @@
-package kitchenpos.ordertable.domain;
-
-import kitchenpos.order.domain.Orders;
-import kitchenpos.tablegroup.domain.TableGroup;
+package kitchenpos.order.domain;
 
 import javax.persistence.*;
 import java.util.ArrayList;

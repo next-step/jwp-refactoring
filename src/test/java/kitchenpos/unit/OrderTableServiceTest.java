@@ -1,8 +1,8 @@
 package kitchenpos.unit;
 
-import kitchenpos.ordertable.application.OrderTableService;
-import kitchenpos.ordertable.dto.OrderTableRequest;
-import kitchenpos.ordertable.dto.OrderTableResponse;
+import kitchenpos.order.application.OrderTableService;
+import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.order.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ public class OrderTableServiceTest {
 
 	@Test
 	@DisplayName("주문 테이블을 등록한다")
-	void create() {
+	void createOrderTable() {
 		OrderTableRequest orderTableRequest = new OrderTableRequest();
 		OrderTableResponse orderTableResponse = orderTableService.create(orderTableRequest);
 		assertThat(orderTableResponse).isNotNull();
