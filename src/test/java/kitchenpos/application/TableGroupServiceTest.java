@@ -82,6 +82,9 @@ class TableGroupServiceTest {
     @Test
     void exceptionToCreateTableGroupWithZeroOrOneOrderTable() {
         // Given
+        OrderTableResponse savedOrderTable = tableService.create(new OrderTableRequest(3, true));
+        TableGroup tableGroup = new TableGroup();
+        tableGroup.setOrderTables(Collections.singletonList(savedOrderTable.toOrderTable()));
 
         // When & Then
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
