@@ -49,7 +49,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
         주문_테이블_응답됨(guestResponse);
     }
 
-    public static void 주문_테이블_목록_포함됨(ExtractableResponse<Response> findResponse, List<ExtractableResponse<Response>> createResponses) {
+    private void 주문_테이블_목록_포함됨(ExtractableResponse<Response> findResponse, List<ExtractableResponse<Response>> createResponses) {
         List<Long> expectedProductIds = createResponses.stream()
                 .map(create -> Long.parseLong(create.header("Location").split("/")[3]))
                 .collect(Collectors.toList());
@@ -72,11 +72,11 @@ public class TableAcceptanceTest extends AcceptanceTest {
         return 주문_테이블_생성_요청(orderTable);
     }
 
-    public static void 주문_테이블_생성됨(ExtractableResponse<Response> createResponse) {
+    private void 주문_테이블_생성됨(ExtractableResponse<Response> createResponse) {
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    public static ExtractableResponse<Response> 주문_테이블_목록_조회_요청() {
+    private ExtractableResponse<Response> 주문_테이블_목록_조회_요청() {
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -85,11 +85,11 @@ public class TableAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static void 주문_테이블_응답됨(ExtractableResponse<Response> findResponse) {
+    private void 주문_테이블_응답됨(ExtractableResponse<Response> findResponse) {
         assertThat(findResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static ExtractableResponse<Response> 주문_테이블_주문_상태_변경_요청(ExtractableResponse<Response> createResponse, OrderTable orderTable) {
+    private ExtractableResponse<Response> 주문_테이블_주문_상태_변경_요청(ExtractableResponse<Response> createResponse, OrderTable orderTable) {
         String location = createResponse.header("Location");
         return RestAssured
                 .given().log().all()
@@ -100,7 +100,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 주문_테이블_손님_수_변경_요청(ExtractableResponse<Response> createResponse, OrderTable orderTable) {
+    private ExtractableResponse<Response> 주문_테이블_손님_수_변경_요청(ExtractableResponse<Response> createResponse, OrderTable orderTable) {
         String location = createResponse.header("Location");
         return RestAssured
                 .given().log().all()

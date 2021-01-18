@@ -6,7 +6,6 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
-import kitchenpos.acceptance.TableAcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,7 +47,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         단체_지정_삭제됨(deleteResponse);
     }
 
-    public static ExtractableResponse<Response> 단체_지정_생성_요청(TableGroup tableGroup) {
+    private ExtractableResponse<Response> 단체_지정_생성_요청(TableGroup tableGroup) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -58,11 +57,11 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public void 단체_지정_생성됨(final ExtractableResponse<Response> response) {
+    private void 단체_지정_생성됨(final ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    public static ExtractableResponse<Response> 단체_지정_삭제_요청(ExtractableResponse<Response> createResponse) {
+    private ExtractableResponse<Response> 단체_지정_삭제_요청(ExtractableResponse<Response> createResponse) {
         String location = createResponse.header("Location");
         return RestAssured
                 .given().log().all()
@@ -71,7 +70,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static void 단체_지정_삭제됨(ExtractableResponse<Response> deleteResponse) {
+    private void 단체_지정_삭제됨(ExtractableResponse<Response> deleteResponse) {
         assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }

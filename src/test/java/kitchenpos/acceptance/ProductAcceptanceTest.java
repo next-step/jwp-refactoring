@@ -21,7 +21,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("상품을 관리한다.")
     @Test
-    void manage() {
+    void manageProduct() {
         // given
         Product 강정치킨 = new Product("강정치킨", BigDecimal.valueOf(17000));
 
@@ -53,11 +53,11 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         return 상품_생성_요청(product);
     }
 
-    public static void 상품_생성됨(ExtractableResponse<Response> createResponse) {
+    private void 상품_생성됨(ExtractableResponse<Response> createResponse) {
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    public static ExtractableResponse<Response> 상품_목록_조회_요청() {
+    private ExtractableResponse<Response> 상품_목록_조회_요청() {
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -66,11 +66,11 @@ public class ProductAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static void 상품_목록_응답됨(ExtractableResponse<Response> findResponse) {
+    private void 상품_목록_응답됨(ExtractableResponse<Response> findResponse) {
         assertThat(findResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static void 상품_목록_포함됨(ExtractableResponse<Response> findResponse, List<ExtractableResponse<Response>> createResponse) {
+    private void 상품_목록_포함됨(ExtractableResponse<Response> findResponse, List<ExtractableResponse<Response>> createResponse) {
         List<Long> createProductIds = createResponse.stream()
                 .map(create -> Long.parseLong(create.header("Location").split("/")[3]))
                 .collect(Collectors.toList());

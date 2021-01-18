@@ -84,15 +84,15 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         return 메뉴_등록_요청(new Menu("양념+후라이드", menuPrice, menuGroup.getId(), menuProducts));
     }
 
-    public static void 메뉴_생성됨(ExtractableResponse<Response> createResponse) {
+    private void 메뉴_생성됨(ExtractableResponse<Response> createResponse) {
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    public static void 메뉴_생성_실패됨(ExtractableResponse<Response> wrongResponse) {
+    private void 메뉴_생성_실패됨(ExtractableResponse<Response> wrongResponse) {
         assertThat(wrongResponse.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
-    public static ExtractableResponse<Response> 메뉴_목록_조회_요청() {
+    private ExtractableResponse<Response> 메뉴_목록_조회_요청() {
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)

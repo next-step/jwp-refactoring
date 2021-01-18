@@ -88,7 +88,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    public static ExtractableResponse<Response> 주문_목록_조회_요청() {
+    private ExtractableResponse<Response> 주문_목록_조회_요청() {
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -97,11 +97,11 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static void 주문_응답됨(final ExtractableResponse<Response> response) {
+    private void 주문_응답됨(final ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static void 주문_목록_포함됨(ExtractableResponse<Response> findResponse, List<ExtractableResponse<Response>> createResponses) {
+    private void 주문_목록_포함됨(ExtractableResponse<Response> findResponse, List<ExtractableResponse<Response>> createResponses) {
         List<Long> createOrderIds = createResponses.stream()
                 .map(create -> Long.parseLong(create.header("Location").split("/")[3]))
                 .collect(Collectors.toList());
@@ -110,7 +110,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         assertThat(findOrderIds).containsAll(createOrderIds);
     }
 
-    public static ExtractableResponse<Response> 주문_상태_변경_요청(ExtractableResponse<Response> createResponse, Order order) {
+    private ExtractableResponse<Response> 주문_상태_변경_요청(ExtractableResponse<Response> createResponse, Order order) {
         String location = createResponse.header("Location");
         return RestAssured
                 .given().log().all()
@@ -121,7 +121,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static void 주문_응답_실패됨(final ExtractableResponse<Response> response) {
+    private void 주문_응답_실패됨(final ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
