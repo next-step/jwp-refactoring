@@ -1,10 +1,17 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.converter.MoneyConverter;
-import kitchenpos.infra.Money;
+import kitchenpos.generic.Money;
 import kitchenpos.menugroup.domain.MenuGroup;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import java.util.List;
 
 @Entity
@@ -17,7 +24,6 @@ public class Menu {
     @Column
     private String name;
 
-    @Convert(converter = MoneyConverter.class)
     @Column
     private Money price;
 
@@ -59,15 +65,6 @@ public class Menu {
     }
 
     public void addProducts(List<MenuProduct> menuProducts) {
-        checkGraterThanMenuPrice(menuProducts.stream()
-                .map(MenuProduct::getAmount)
-                .reduce(Money.ZERO_MONEY, Money::sum));
-        this.menuProducts.addAll(menuProducts);
-    }
-
-    private void checkGraterThanMenuPrice(Money sum) {
-        if (price.isGraterThan(sum)) {
-            throw new IllegalArgumentException("메뉴의 가격이 상품 가격 보다 큽니다.");
-        }
+        this.menuProducts.addAll(price, menuProducts);
     }
 }

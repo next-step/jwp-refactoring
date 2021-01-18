@@ -1,6 +1,6 @@
 package kitchenpos.product.dto;
 
-import kitchenpos.infra.Money;
+import kitchenpos.generic.Money;
 import kitchenpos.product.domain.Product;
 
 public class ProductRequest {

@@ -1,6 +1,7 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.common.BaseEntity;
+import kitchenpos.generic.Quantity;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.table.domain.OrderTable;
 import org.springframework.data.annotation.CreatedDate;
@@ -70,7 +71,7 @@ public class Order extends BaseEntity {
         changeOrderStatus(OrderStatus.findOrderStatus(statusName));
     }
 
-    public void addOrderMenu(Menu menu, int quantity) {
+    public void addOrderMenu(Menu menu, Quantity quantity) {
         orderLineItems.add(new OrderLineItem(this, menu, quantity));
     }
 

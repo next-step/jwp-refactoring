@@ -1,6 +1,7 @@
 package kitchenpos.menu.service;
 
-import kitchenpos.infra.Money;
+import kitchenpos.generic.Money;
+import kitchenpos.generic.Quantity;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
@@ -35,7 +36,7 @@ public class MenuService {
         final Menu menu = new Menu(menuRequest.getName(), Money.price(menuRequest.getPrice()), menuGroup);
         menu.addProducts(menuRequest.getMenuProducts()
                 .stream()
-                .map(request -> new MenuProduct(menu, productService.findById(request.getProductId()), request.getQuantity()))
+                .map(request -> new MenuProduct(menu, productService.findById(request.getProductId()), Quantity.of(request.getQuantity())))
                 .collect(Collectors.toList()));
         return MenuResponse.ofMenu(menuRepository.save(menu));
     }

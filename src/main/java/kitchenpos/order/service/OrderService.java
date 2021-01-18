@@ -1,5 +1,6 @@
 package kitchenpos.order.service;
 
+import kitchenpos.generic.Quantity;
 import kitchenpos.menu.service.MenuService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
@@ -39,7 +40,8 @@ public class OrderService {
         final Order order = new Order(tableById);
         items.forEach(item -> order.addOrderMenu(
                 menuService.findById(item.getMenuId()),
-                item.getQuantity()));
+                Quantity.of(item.getQuantity())
+                ));
         return order;
     }
 
