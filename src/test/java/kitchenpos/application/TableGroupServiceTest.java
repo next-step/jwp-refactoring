@@ -6,6 +6,7 @@ import kitchenpos.dao.TableGroupDao;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -38,7 +39,7 @@ class TableGroupServiceTest {
     OrderTableDao orderTableDao;
 
     @Mock
-    TableGroupDao tableGroupDao;
+    TableGroupRepository tableGroupRepository;
 
     @InjectMocks
     TableGroupService tableGroupService;
@@ -62,7 +63,7 @@ class TableGroupServiceTest {
                         )
                 );
         // TODO: 임시로 any() 로 돌려놓음.
-        given(tableGroupDao.save(any()))
+        given(tableGroupRepository.save(any()))
                 .willReturn(
                         new TableGroup(1L, LocalDateTime.now(),
                                 Arrays.asList(

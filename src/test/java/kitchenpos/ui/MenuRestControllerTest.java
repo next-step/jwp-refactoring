@@ -2,6 +2,7 @@ package kitchenpos.ui;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -29,7 +30,8 @@ class MenuRestControllerTest extends RestControllerTest {
         menuProducts.add(new MenuProduct(null, 1L, 1));
         menuProducts.add(new MenuProduct(null, 2L, 1));
 
-        Menu menu = new Menu(null, "일반메뉴", new BigDecimal(13000), 2L, menuProducts);
+        MenuRequest menu = new MenuRequest(null, "일반메뉴", new BigDecimal(13000), 2L,
+                menuProducts);
 
         //when
         //then

@@ -3,6 +3,7 @@ package kitchenpos.application;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -24,7 +25,7 @@ import static org.mockito.BDDMockito.given;
 class MenuGroupServiceTest {
 
     @Mock
-    MenuGroupDao menuGroupDao;
+    MenuGroupRepository menuGroupRepository;
 
     @InjectMocks
     MenuGroupService menuGroupService;
@@ -37,7 +38,7 @@ class MenuGroupServiceTest {
         MenuGroupRequest menuGroup = new MenuGroupRequest(null, "일반메뉴");
 
         // TODO: 임시로 any() 로 돌려놓음.
-        given(menuGroupDao.save(any()))
+        given(menuGroupRepository.save(any()))
                 .willReturn(new MenuGroup(1L, "일반메뉴"));
 
         //when
@@ -52,7 +53,7 @@ class MenuGroupServiceTest {
     @Test
     void list() {
         //given
-        given(menuGroupDao.findAll())
+        given(menuGroupRepository.findAll())
                 .willReturn(
                         Arrays.asList(
                                 new MenuGroup(1L, "일반메뉴"),

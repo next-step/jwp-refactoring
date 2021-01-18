@@ -1,6 +1,7 @@
 package kitchenpos.ui;
 
 import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -20,14 +21,14 @@ class MenuGroupRestControllerTest extends RestControllerTest {
     @Test
     void create() throws Exception {
         //given
-        MenuGroup menuGroup = new MenuGroup(null, "일반메뉴");
+        MenuGroupRequest menuGroupRequest = new MenuGroupRequest(null, "일반메뉴");
 
         //when
         //then
         mockMvc.perform(
                 post(MENU_GROUPS_URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(toJsonString(menuGroup))
+                        .content(toJsonString(menuGroupRequest))
         )
                 .andDo(print())
                 .andExpect(status().isCreated())

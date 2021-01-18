@@ -2,10 +2,10 @@ package kitchenpos.tablegroup.application;
 
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
@@ -22,12 +22,12 @@ import java.util.stream.Collectors;
 public class TableGroupService {
     private final OrderDao orderDao;
     private final OrderTableDao orderTableDao;
-    private final TableGroupDao tableGroupDao;
+    private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final OrderDao orderDao, final OrderTableDao orderTableDao, final TableGroupDao tableGroupDao) {
+    public TableGroupService(OrderDao orderDao, OrderTableDao orderTableDao, TableGroupRepository tableGroupRepository) {
         this.orderDao = orderDao;
         this.orderTableDao = orderTableDao;
-        this.tableGroupDao = tableGroupDao;
+        this.tableGroupRepository = tableGroupRepository;
     }
 
     @Transactional
@@ -59,7 +59,7 @@ public class TableGroupService {
         TableGroup tableGroup = new TableGroup(tableGroupRequest.getId(), tableGroupRequest.getCreatedDate(),
                 tableGroupRequest.getOrderTables());
 
-        final TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
+        final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
 
         final Long tableGroupId = savedTableGroup.getId();
         for (final OrderTable savedOrderTable : savedOrderTables) {
