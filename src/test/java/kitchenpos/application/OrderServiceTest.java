@@ -147,16 +147,28 @@ class OrderServiceTest {
     @Test
     void changeOrderStatus() {
         // Given
-        order.setOrderStatus(OrderStatus.COOKING.name());
-        given(orderDao.findById(order.getId())).willReturn(Optional.of(order));
+        ProductResponse 짬뽕 = productService.create(new ProductRequest("짬뽕", BigDecimal.valueOf(8_000)));
+        ProductResponse 짜장면 = productService.create(new ProductRequest("짜장면", BigDecimal.valueOf(6_000)));
+        MenuGroupResponse 신메뉴그룹 = menuGroupService.create(new MenuGroupRequest("신메뉴그룹"));
+        Menu 추천메뉴 = menuService.create(new MenuRequest("추천메뉴", BigDecimal.valueOf(14_000), 신메뉴그룹.getId(),
+                Arrays.asList(new MenuProductRequest(짬뽕.getId(), 1L), new MenuProductRequest(짜장면.getId(), 1L)))
+        );
+        OrderTableResponse orderTable = tableService.create(new OrderTableRequest(3, false));
+        OrderLineItem menuParams = new OrderLineItem();
+        menuParams.setMenuId(추천메뉴.getId());
+        menuParams.setQuantity(1);
+        Order order = new Order();
+        order.setOrderTableId(orderTable.getId());
+        order.setOrderLineItems(Collections.singletonList(menuParams));
+        Order savedOrder = orderService.create(order);
         Order updateOrder = new Order();
-        updateOrder.setOrderStatus(OrderStatus.MEAL.name());
+        updateOrder.setOrderStatus(OrderStatus.COMPLETION.name());
 
         // When
-        Order actual = orderService.changeOrderStatus(order.getId(), updateOrder);
+        Order actual = orderService.changeOrderStatus(savedOrder.getId(), updateOrder);
 
         // Then
-        assertEquals(updateOrder.getOrderStatus(), actual.getOrderStatus());
+        assertThat(actual.getOrderStatus()).isEqualTo(updateOrder.getOrderStatus());
     }
 
     @DisplayName("`주문 상태`가 'COMPLETION' 인 경우 상태를 변경할 수 없다.")
