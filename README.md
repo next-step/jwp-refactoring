@@ -106,6 +106,7 @@
         - [x] test case - `단체 지정`을 생성한다.
         - [x] test case - `단체 지정`으로 등록할 `주문 테이블`이 2개 미만이면 생성할 수 없다.
         - [x] test case - `단체 지정`할 `주문 테이블`은 비어있어야한다.
+        - [x] test case - `단체 지정`할 `주문 테이블`이 `단체 지정`되어있으면 생성할 수 없다.
 - [ ] Domain Logic 개선에 앞서, UI 전달되는 Domain Context를 Service Layer에 격리
     - [ ] Product
         - [x] Service Layer에 Request DTO 적용

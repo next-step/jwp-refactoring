@@ -109,10 +109,11 @@ class TableGroupServiceTest {
     @Test
     void exceptionToCreateTableGroupWithRegisteredOrderTable() {
         // Given
-        orderTable1.setTableGroupId(1L);
-        tableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
-        given(orderTableDao.findAllByIdIn(Arrays.asList(orderTable1.getId(), orderTable2.getId())))
-                .willReturn(Arrays.asList(orderTable1, orderTable2));
+        OrderTableResponse savedOrderTable1 = tableService.create(new OrderTableRequest(3, true));
+        OrderTableResponse savedOrderTable2 = tableService.create(new OrderTableRequest(5, true));
+        TableGroup tableGroup = new TableGroup();
+        tableGroup.setOrderTables(Arrays.asList(savedOrderTable1.toOrderTable(), savedOrderTable2.toOrderTable()));
+        tableGroupService.create(tableGroup);
 
         // When & Then
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
