@@ -7,10 +7,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import java.util.Arrays;
 import java.util.Collections;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderCreateRequest;
+import kitchenpos.dto.OrderLineItemCreateRequest;
+import kitchenpos.domain.OrderStatus;
+import kitchenpos.dto.OrderStatusChangeDto;
+import kitchenpos.dto.OrderTableCreateRequest;
+import kitchenpos.dto.OrderTableEmptyChangeRequest;
+import kitchenpos.dto.TableGroupCreateRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -25,22 +31,14 @@ class OrderRestControllerTest extends BaseControllerTest {
     @DisplayName("주문 생성")
     @Test
     public void menuGroupCreateTest() throws Exception {
-        OrderLineItem orderLineItem = new OrderLineItem();
-        orderLineItem.setMenuId(1L);
-        orderLineItem.setQuantity(1);
+        Long orderTableId01 = createGroupedTable();
+        Long orderTableId02 = createGroupedTable();
+        createdTableGroupId(orderTableId01, orderTableId02);
+        tableStatusChange(orderTableId01, false);
+        tableStatusChange(orderTableId02, false);
 
-        Order order = new Order();
-        order.setOrderTableId(7L);
-        order.setOrderLineItems(Collections.singletonList(orderLineItem));
-
-        Long orderTableId = order.getOrderTableId();
-
-        OrderTable orderTable = new OrderTable();
-        orderTable.setEmpty(false);
-
-        mockMvc.perform(put("/api/tables/"+ orderTableId +"/empty")
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .content(objectMapper.writeValueAsString(orderTable)));
+        OrderLineItemCreateRequest orderLineItem = new OrderLineItemCreateRequest(1L, 1);
+        OrderCreateRequest order = new OrderCreateRequest(orderTableId01, Collections.singletonList(orderLineItem));
 
         mockMvc.perform(post("/api/orders")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -48,7 +46,7 @@ class OrderRestControllerTest extends BaseControllerTest {
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").exists())
-                .andExpect(jsonPath("orderTableId").value(orderTableId))
+                .andExpect(jsonPath("orderTableId").value(orderTableId01))
                 .andExpect(jsonPath("orderStatus").value("COOKING"))
                 .andExpect(jsonPath("orderLineItems[0].menuId")
                         .value(orderLineItem.getMenuId()))
@@ -69,38 +67,68 @@ class OrderRestControllerTest extends BaseControllerTest {
     @DisplayName("주문 상태 변경")
     @Test
     public void menuGroupChangeOrderStateTest() throws Exception {
-        OrderLineItem orderLineItem = new OrderLineItem();
-        orderLineItem.setMenuId(1L);
-        orderLineItem.setQuantity(1);
 
-        Order order = new Order();
-        order.setOrderTableId(8L);
-        order.setOrderLineItems(Collections.singletonList(orderLineItem));
+        Long orderTableId01 = createGroupedTable();
+        Long orderTableId02 = createGroupedTable();
+        createdTableGroupId(orderTableId01, orderTableId02);
+        tableStatusChange(orderTableId01, false);
+        tableStatusChange(orderTableId02, false);
 
-        Long orderTableId = order.getOrderTableId();
-
-        OrderTable orderTable = new OrderTable();
-        orderTable.setEmpty(false);
-
-        mockMvc.perform(put("/api/tables/"+ orderTableId +"/empty")
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .content(objectMapper.writeValueAsString(orderTable)));
+        OrderLineItemCreateRequest orderLineItem = new OrderLineItemCreateRequest(1L, 1);
+        OrderCreateRequest orderRequest = new OrderCreateRequest(orderTableId01, Collections.singletonList(orderLineItem));
 
         String url = mockMvc.perform(post("/api/orders")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(order)))
+                .content(objectMapper.writeValueAsString(orderRequest)))
                 .andReturn()
                 .getResponse()
                 .getHeader("Location");
 
-        order.setOrderStatus("COMPLETION");
+        OrderStatusChangeDto orderStatusChangeRequest = new OrderStatusChangeDto(OrderStatus.COMPLETION);
         mockMvc.perform(put(url + "/order-status")
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .content(objectMapper.writeValueAsString(order)))
+                    .content(objectMapper.writeValueAsString(orderStatusChangeRequest)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("orderStatus").value("COMPLETION"));
 
     }
 
+    private Long getCreateTableId() throws Exception {
+        String url = mockMvc.perform(post("/api/tables")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(new OrderTableCreateRequest(null, 4, true))))
+                .andReturn()
+                .getResponse()
+                .getHeader("Location").split("/")[3];
+
+        return Long.valueOf(url);
+    }
+
+    private void createdTableGroupId(Long ...tableId) throws Exception {
+        TableGroupCreateRequest createRequest = new TableGroupCreateRequest(Arrays.asList(tableId));
+
+        mockMvc.perform(post("/api/table-groups")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(createRequest)))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("id").exists());
+    }
+
+    private Long createGroupedTable() throws Exception {
+        Long tableId = getCreateTableId();
+
+        createdTableGroupId(tableId, getCreateTableId());
+
+        return tableId;
+    }
+
+    private void tableStatusChange(Long tableId, boolean empty) throws Exception {
+        OrderTableEmptyChangeRequest request = new OrderTableEmptyChangeRequest(empty);
+
+        mockMvc.perform(put("/api/tables/"+ tableId +"/empty")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(request)));
+    }
 
 }

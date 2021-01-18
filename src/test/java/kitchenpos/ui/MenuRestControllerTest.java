@@ -9,8 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.dto.MenuCreateRequest;
+import kitchenpos.dto.MenuProductRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -26,12 +26,15 @@ class MenuRestControllerTest extends BaseControllerTest {
     @Test
     public void menuGroupCreateTest() throws Exception {
 
-        Menu menu = getMenu();
+        MenuProductRequest menuProduct = new MenuProductRequest(6L, 1);
+        List<MenuProductRequest> menuProducts = Collections.singletonList(menuProduct);
+
+        MenuCreateRequest menuRequest = new MenuCreateRequest("메뉴", BigDecimal.valueOf(17_000), 1L, menuProducts);
 
         mockMvc.perform(
                 post("/api/menus")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(menu)))
+                    .content(objectMapper.writeValueAsString(menuRequest)))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").exists())
@@ -46,21 +49,6 @@ class MenuRestControllerTest extends BaseControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
-    }
-
-    private Menu getMenu() {
-        MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setProductId(6L);
-        menuProduct.setQuantity(1);
-        List<MenuProduct> menuProducts = Collections.singletonList(menuProduct);
-
-        Menu menu = new Menu();
-        menu.setName("메뉴");
-        menu.setPrice(BigDecimal.valueOf(17_000));
-        menu.setMenuGroupId(1L);
-        menu.setMenuProducts(menuProducts);
-
-        return menu;
     }
 
 }

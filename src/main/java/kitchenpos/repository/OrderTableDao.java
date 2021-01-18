@@ -1,10 +1,11 @@
-package kitchenpos.dao;
-
-import kitchenpos.domain.OrderTable;
+package kitchenpos.repository;
 
 import java.util.List;
 import java.util.Optional;
+import kitchenpos.domain.OrderTable;
+import org.springframework.data.repository.RepositoryDefinition;
 
+@RepositoryDefinition(idClass = Long.class, domainClass = OrderTable.class)
 public interface OrderTableDao {
     OrderTable save(OrderTable entity);
 

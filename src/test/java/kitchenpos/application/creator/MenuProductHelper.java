@@ -1,7 +1,6 @@
 package kitchenpos.application.creator;
 
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.dto.MenuProductRequest;
 
 /**
  * @author : leesangbae
@@ -10,17 +9,7 @@ import kitchenpos.domain.Product;
  */
 public class MenuProductHelper {
 
-    public static MenuProduct create(long productId, int quantity) {
-        MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setProductId(productId);
-        menuProduct.setQuantity(quantity);
-        return menuProduct;
-    }
-
-    public static MenuProduct create(Product product, int quantity) {
-        MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setProductId(product.getId());
-        menuProduct.setQuantity(quantity);
-        return menuProduct;
+    public static MenuProductRequest createRequest(long productId, int quantity) {
+        return new MenuProductRequest(productId, quantity);
     }
 }

@@ -6,10 +6,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.OrderTableCreateRequest;
+import kitchenpos.dto.TableGroupCreateRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -24,18 +23,11 @@ class TableGroupRestControllerTest extends BaseControllerTest {
     @DisplayName("테이블 그룹 생성 테스트")
     @Test
     void tableGroupCreateTest() throws Exception {
-        OrderTable table01 = new OrderTable();
-        table01.setId(3L);
-        OrderTable table02 = new OrderTable();
-        table02.setId(4L);
-
-        TableGroup group = new TableGroup();
-        group.setCreatedDate(LocalDateTime.now());
-        group.setOrderTables(Arrays.asList(table01, table02));
+        TableGroupCreateRequest createRequest = new TableGroupCreateRequest(Arrays.asList(getCreateTableId(), getCreateTableId()));
 
         mockMvc.perform(post("/api/table-groups")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(group)))
+                    .content(objectMapper.writeValueAsString(createRequest)))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").exists());
@@ -44,18 +36,11 @@ class TableGroupRestControllerTest extends BaseControllerTest {
     @DisplayName("테이블 그룹 해제 테스트")
     @Test
     void tableGroupUngroupTest() throws Exception {
-        OrderTable table01 = new OrderTable();
-        table01.setId(5L);
-        OrderTable table02 = new OrderTable();
-        table02.setId(6L);
-
-        TableGroup group = new TableGroup();
-        group.setCreatedDate(LocalDateTime.now());
-        group.setOrderTables(Arrays.asList(table01, table02));
+        TableGroupCreateRequest createRequest = new TableGroupCreateRequest(Arrays.asList(5L, 6L));
 
         String location = mockMvc.perform(post("/api/table-groups")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(group)))
+                    .content(objectMapper.writeValueAsString(createRequest)))
                 .andReturn()
                 .getResponse()
                 .getHeader("Location");
@@ -63,6 +48,18 @@ class TableGroupRestControllerTest extends BaseControllerTest {
         mockMvc.perform(delete(location))
                 .andDo(print())
                 .andExpect(status().isNoContent());
+    }
+
+
+    private Long getCreateTableId() throws Exception {
+        String url = mockMvc.perform(post("/api/tables")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(new OrderTableCreateRequest(null, 4, true))))
+                .andReturn()
+                .getResponse()
+                .getHeader("Location").split("/")[3];
+
+        return Long.valueOf(url);
     }
 
 }

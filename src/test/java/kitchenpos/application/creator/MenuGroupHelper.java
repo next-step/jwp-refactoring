@@ -1,6 +1,7 @@
 package kitchenpos.application.creator;
 
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupCreateRequest;
 
 /**
  * @author : leesangbae
@@ -10,9 +11,11 @@ import kitchenpos.domain.MenuGroup;
 public class MenuGroupHelper {
 
     public static MenuGroup create(String name) {
-        MenuGroup group = new MenuGroup();
-        group.setName(name);
-        return group;
+        return new MenuGroup(name);
+    }
+
+    public static MenuGroupCreateRequest createRequest(String name) {
+        return new MenuGroupCreateRequest(name);
     }
 
 }

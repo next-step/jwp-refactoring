@@ -1,40 +1,66 @@
 package kitchenpos.domain;
 
+import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+/**
+ * @author : leesangbae
+ * @project : kitchenpos
+ * @since : 2021-01-14
+ */
+@Entity
+@Table(name = "order_line_item")
 public class OrderLineItem {
-    private Long seq;
-    private Long orderId;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "seq")
+    private Long id;
+
     private Long menuId;
-    private long quantity;
 
-    public Long getSeq() {
-        return seq;
+    private Long quantity;
+
+    protected OrderLineItem() {
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
+    public OrderLineItem(Long menuId, Long quantity) {
+        this.menuId = menuId;
+        this.quantity = quantity;
     }
 
-    public Long getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(final Long orderId) {
-        this.orderId = orderId;
+    public Long getId() {
+        return id;
     }
 
     public Long getMenuId() {
         return menuId;
     }
 
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
-    }
-
-    public long getQuantity() {
+    public Long getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        OrderLineItem that = (OrderLineItem) o;
+        return Objects.equals(menuId, that.menuId) && Objects
+                .equals(quantity, that.quantity);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(menuId, quantity);
     }
 }

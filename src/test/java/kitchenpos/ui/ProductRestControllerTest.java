@@ -7,7 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.math.BigDecimal;
-import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductCreateRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -23,13 +23,11 @@ class ProductRestControllerTest extends BaseControllerTest {
     @Test
     void productCreateTest() throws Exception {
 
-        Product product = new Product();
-        product.setName("테스트");
-        product.setPrice(BigDecimal.valueOf(30_000));
+        ProductCreateRequest request = new ProductCreateRequest("테스트", BigDecimal.valueOf(30_000));
 
         mockMvc.perform(post("/api/products")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(product)))
+                    .content(objectMapper.writeValueAsString(request)))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").exists())
