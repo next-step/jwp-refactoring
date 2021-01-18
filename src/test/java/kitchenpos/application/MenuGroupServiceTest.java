@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-class MenuServiceTest {
+class MenuGroupServiceTest {
 
     private final String NEW_MENU_GROUP_NAME = "세번째메뉴";
 
