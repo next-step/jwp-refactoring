@@ -96,7 +96,7 @@
 
 ## 2단계 - 서비스 리팩터링 To Do List
 
-- [ ] spring data jpa 설정
+- [x] spring data jpa 설정
 - [ ] DTO 분리
 - [ ] 엔티티 새로 등록 및 변경
 - [ ] 엔티티간 연관관계 설정
