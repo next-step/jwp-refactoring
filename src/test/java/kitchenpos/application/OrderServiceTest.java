@@ -28,11 +28,7 @@ import static org.mockito.BDDMockito.given;
 @SpringBootTest
 class OrderServiceTest {
     @Autowired
-    private MenuDao menuDao;
-    @Autowired
     private OrderDao orderDao;
-    @Autowired
-    private OrderTableDao orderTableDao;
     @Autowired
     private OrderService orderService;
     @Autowired
@@ -103,11 +99,19 @@ class OrderServiceTest {
     @Test
     void exceptionToCreateOrderWithoutTable() {
         // Given
-        given(menuDao.countByIdIn(Collections.singletonList(orderLineItem.getMenuId()))).willReturn(1L);
-        OrderTable orderTable = new OrderTable();
-        orderTable.setId(order.getOrderTableId());
-        orderTable.setEmpty(true);
-        given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
+        ProductResponse 짬뽕 = productService.create(new ProductRequest("짬뽕", BigDecimal.valueOf(8_000)));
+        ProductResponse 짜장면 = productService.create(new ProductRequest("짜장면", BigDecimal.valueOf(6_000)));
+        MenuGroupResponse 신메뉴그룹 = menuGroupService.create(new MenuGroupRequest("신메뉴그룹"));
+        Menu 추천메뉴 = menuService.create(new MenuRequest("추천메뉴", BigDecimal.valueOf(14_000), 신메뉴그룹.getId(),
+                Arrays.asList(new MenuProductRequest(짬뽕.getId(), 1L), new MenuProductRequest(짜장면.getId(), 1L)))
+        );
+        OrderLineItem menuParams = new OrderLineItem();
+        menuParams.setMenuId(추천메뉴.getId());
+        menuParams.setQuantity(1);
+        long invalidMenuProductId = Long.MAX_VALUE;
+        Order order = new Order();
+        order.setOrderTableId(invalidMenuProductId);
+        order.setOrderLineItems(Collections.singletonList(menuParams));
 
         // When & Then
         assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
