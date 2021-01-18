@@ -83,9 +83,18 @@
 
 - [ ] 실제 변경 코드의 테스트를 고려하여, Service Layer 테스트를 통합 테스트로 변경
     - [ ] Product 통합 테스트 적용
+        - [x] test case - `상품`을 생성한다.
+        - [x] test case - 가격은 필수이고, 0원 이상이 아니면 `상품`을 생성할 수 없다.
+        - [x] test case - 모든 `상품` 목록을 조회한다.
     - [ ] MenuGroup 통합 테스트 적용
+        - [x] test case - `메뉴 그룹`을 생성한다.
+        - [x] test case - 모든 `메뉴 그룹` 목록을 조회한다.
     - [ ] Menu 통합 테스트 적용
         - [x] Menu Service Layer 테스트의 재사용되는 코드 응집화
+        - [x] test case - `메뉴`를 생성한다.
+        - [x] test case - 가격은 필수이고, 0원 이상이 아니면 `메뉴`를 생성할 수 없다.
+        - [x] test case - `메뉴`의 가격이 `메뉴 상품`의 가격의 합보다 크면 `메뉴`를 생성할 수 없다.
+        - [x] test case - 모든 `메뉴` 목록을 조회한다.
     - [ ] OrderTable 통합 테스트 적용
         - [x] test case - `주문 테이블`을 생성한다.
         - [x] test case - `주문 테이블`을 비어있는 상태로 변경한다.
