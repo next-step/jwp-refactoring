@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.advice.exception.ProductException;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
 import org.springframework.stereotype.Service;
@@ -30,5 +31,9 @@ public class ProductService {
 
     public List<Product> list() {
         return productDao.findAll();
+    }
+
+    public Product findById(Long id) {
+        return productDao.findById(id).orElseThrow(()->new ProductException("존재하지 않는 상품 id입니다", id));
     }
 }

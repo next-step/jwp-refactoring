@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.advice.exception.ProductException;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
@@ -50,8 +51,7 @@ public class MenuService {
 
         BigDecimal sum = BigDecimal.ZERO;
         for (final MenuProduct menuProduct : menuProducts) {
-            final Product product = productDao.findById(menuProduct.getProductId())
-                    .orElseThrow(IllegalArgumentException::new);
+            final Product product = findProductByProductId(menuProduct.getProductId());
             sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
         }
 
@@ -76,9 +76,18 @@ public class MenuService {
         final List<Menu> menus = menuDao.findAll();
 
         for (final Menu menu : menus) {
-            menu.setMenuProducts(menuProductDao.findAllByMenuId(menu.getId()));
+            menu.setMenuProducts(findMenuProductsByMenuId(menu.getId()));
         }
 
         return menus;
+    }
+
+    public List<MenuProduct> findMenuProductsByMenuId(Long id) {
+        return menuProductDao.findAllByMenuId(id);
+    }
+
+    public Product findProductByProductId(Long id) {
+        return productDao.findById(id)
+                .orElseThrow(()->new ProductException("존재하는 상품 id가 없습니다.", id));
     }
 }
