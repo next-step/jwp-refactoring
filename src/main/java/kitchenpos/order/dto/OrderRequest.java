@@ -38,14 +38,14 @@ public class OrderRequest {
 			  .collect(Collectors.toSet());
 	}
 
-	public Orders toEntity(OrderTable orderTable, List<Menu> menus) {
+	public Orders toOrderEntity(OrderTable orderTable) {
 		OrderStatus orderStatus = StringUtils.isBlank(this.orderStatus) ? OrderStatus.COOKING
 			  : OrderStatus.valueOf(this.orderStatus);
 
-		return new Orders(orderTable, orderStatus.name(), toOrderLineItems(menus));
+		return new Orders(orderTable, orderStatus.name());
 	}
 
-	private List<OrderLineItem> toOrderLineItems(List<Menu> menus) {
+	public List<OrderLineItem> toOrderLineItems(Orders order, List<Menu> menus) {
 		Map<Long, Menu> menuInfo = menus.stream()
 			  .collect(Collectors.toMap(Menu::getId, Function.identity()));
 
@@ -53,7 +53,7 @@ public class OrderRequest {
 			  .filter(orderLineItem -> menuInfo.containsKey(orderLineItem.getMenuId()))
 			  .map(orderLineItem -> {
 				  Menu menu = menuInfo.get(orderLineItem.getMenuId());
-				  return new OrderLineItem(menu, orderLineItem.getQuantity());
+				  return new OrderLineItem(order, menu, orderLineItem.getQuantity());
 			  })
 			  .collect(Collectors.toList());
 	}

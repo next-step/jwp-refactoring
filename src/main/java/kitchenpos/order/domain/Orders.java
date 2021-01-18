@@ -1,101 +1,75 @@
 package kitchenpos.order.domain;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import kitchenpos.ordertable.domain.OrderTable;
-import org.springframework.util.CollectionUtils;
 
 @Entity
 public class Orders {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "order_table_id")
-    private OrderTable orderTable;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    private String orderStatus;
+	@ManyToOne
+	@JoinColumn(name = "order_table_id")
+	private OrderTable orderTable;
 
-    private LocalDateTime orderedTime;
+	private String orderStatus;
 
-    @OneToMany(mappedBy = "orders", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderLineItem> orderLineItems = new ArrayList<>();
+	private LocalDateTime orderedTime;
 
+	protected Orders() {
+	}
 
-    protected Orders() {
-    }
+	public Orders(OrderTable orderTable, String orderStatus) {
+		validate(orderTable);
+		this.orderTable = orderTable;
+		this.orderStatus = orderStatus;
+	}
 
-    public Orders(OrderTable orderTable, String orderStatus,
-          List<OrderLineItem> orderLineItems) {
-        validate(orderTable, orderLineItems);
+	public Orders(String orderStatus) {
+		this.orderStatus = orderStatus;
+	}
 
-        this.orderTable = orderTable;
-        this.orderStatus = orderStatus;
-        this.orderLineItems = orderLineItems;
-        setOrder();
-    }
+	public void changeStatus(String orderStatus) {
+		if (OrderStatus.COMPLETION.name().equals(this.orderStatus)) {
+			throw new IllegalArgumentException("결제 완료된 주문은 상태를 변경할 수 없습니다.");
+		}
 
-    public Orders(String orderStatus) {
-        this.orderStatus = orderStatus;
-    }
+		this.orderStatus = orderStatus;
+	}
 
-    public void changeStatus(String orderStatus) {
-        if (OrderStatus.COMPLETION.name().equals(this.orderStatus)) {
-            throw new IllegalArgumentException("결제 완료된 주문은 상태를 변경할 수 없습니다.");
-        }
+	private void validate(OrderTable orderTable) {
+		if (orderTable.isEmpty()) {
+			throw new IllegalArgumentException("테이블이 비어있습니다.");
+		}
+	}
 
-        this.orderStatus = orderStatus;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    private void setOrder() {
-        this.orderLineItems.forEach(orderLineItem ->
-            orderLineItem.setOrder(this)
-        );
-    }
+	public OrderTable getOrderTable() {
+		return orderTable;
+	}
 
-    private void validate(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException("테이블이 비어있습니다.");
-        }
+	public String getOrderStatus() {
+		return orderStatus;
+	}
 
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException("주문 항목이 비어있습니다.");
-        }
-    }
+	public LocalDateTime getOrderedTime() {
+		return orderedTime;
+	}
 
-    public Long getId() {
-        return id;
-    }
-
-    public OrderTable getOrderTable() {
-        return orderTable;
-    }
-
-    public String getOrderStatus() {
-        return orderStatus;
-    }
-
-    public LocalDateTime getOrderedTime() {
-        return orderedTime;
-    }
-
-    public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
-    }
-
-    @PrePersist
-    public void prePersist() {
-        this.orderedTime = LocalDateTime.now();
-    }
+	@PrePersist
+	public void prePersist() {
+		this.orderedTime = LocalDateTime.now();
+	}
 }

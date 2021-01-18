@@ -5,7 +5,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.Orders;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
@@ -13,6 +13,7 @@ import kitchenpos.ordertable.application.OrderTableQueryService;
 import kitchenpos.ordertable.domain.OrderTable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 @Service
 public class OrderService {
@@ -20,17 +21,14 @@ public class OrderService {
 	private final OrderQueryService orderQueryService;
 	private final OrderTableQueryService orderTableQueryService;
 	private final MenuService menuService;
-	private final OrderRepository orderRepository;
 
 	public OrderService(
 		  OrderQueryService orderQueryService,
 		  OrderTableQueryService orderTableQueryService,
-		  MenuService menuService,
-		  OrderRepository orderRepository) {
+		  MenuService menuService) {
 		this.orderQueryService = orderQueryService;
 		this.orderTableQueryService = orderTableQueryService;
 		this.menuService = menuService;
-		this.orderRepository = orderRepository;
 	}
 
 	@Transactional
@@ -39,14 +37,24 @@ public class OrderService {
 		List<Menu> menus = menuService.findAllByIds(menuIds);
 		OrderTable orderTable = orderTableQueryService.findById(request.getOrderTableId());
 
-		Orders savedOrder = orderRepository.save(request.toEntity(orderTable, menus));
-		return OrderResponse.of(savedOrder);
+		Orders savedOrder = orderQueryService.save(request.toOrderEntity(orderTable));
+		List<OrderLineItem> orderLineItems = orderQueryService
+			  .saveOrderLineItems(request.toOrderLineItems(savedOrder, menus));
+		return OrderResponse.of(orderLineItems);
 	}
 
 	public List<OrderResponse> list() {
 		List<Orders> orders = orderQueryService.findAll();
 		return orders.stream()
-			  .map(OrderResponse::of)
+			  .map(order -> {
+				  List<OrderLineItem> orderLineItems = orderQueryService
+						.findAllOrderLineItems(order);
+				  if (CollectionUtils.isEmpty(orderLineItems)) {
+					  return OrderResponse.of(order);
+				  }
+
+				  return OrderResponse.of(orderLineItems);
+			  })
 			  .collect(Collectors.toList());
 	}
 

@@ -6,7 +6,6 @@ import kitchenpos.order.application.OrderQueryService;
 import kitchenpos.order.domain.OrderList;
 import kitchenpos.order.domain.Orders;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.tablegroup.domain.TableGroup;
@@ -19,24 +18,21 @@ public class OrderTableService {
 
 	private final OrderQueryService orderQueryService;
 	private final OrderTableQueryService orderTableQueryService;
-	private final OrderTableRepository orderTableRepository;
 
 	public OrderTableService(
 		  OrderQueryService orderQueryService,
-		  OrderTableQueryService orderTableQueryService,
-		  OrderTableRepository orderTableRepository) {
+		  OrderTableQueryService orderTableQueryService) {
 		this.orderQueryService = orderQueryService;
 		this.orderTableQueryService = orderTableQueryService;
-		this.orderTableRepository = orderTableRepository;
 	}
 
 	public OrderTableResponse create(final OrderTableRequest request) {
-		OrderTable savedOrderTable = orderTableRepository.save(request.newEntity());
+		OrderTable savedOrderTable = orderTableQueryService.save(request.newEntity());
 		return OrderTableResponse.of(savedOrderTable);
 	}
 
 	public List<OrderTableResponse> list() {
-		return orderTableRepository.findAll().stream()
+		return orderTableQueryService.findAll().stream()
 			  .map(OrderTableResponse::of)
 			  .collect(Collectors.toList());
 	}

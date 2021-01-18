@@ -14,19 +14,11 @@ public class OrderTables {
 		this.orderTables = savedOrderTables;
 	}
 
-	public OrderTables(List<OrderTable> savedOrderTables) {
-		this.orderTables = savedOrderTables;
-	}
-
 	public void group(TableGroup tableGroup) {
 		this.orderTables.forEach(
 			  orderTable -> orderTable.group(tableGroup)
 		);
 	}
-
-//	public void unTableGroup() {
-//		this.orderTables.forEach(OrderTable::unTableGroup);
-//	}
 
 	private void validate(List<OrderTable> savedOrderTables, int requestSize) {
 		if (CollectionUtils.isEmpty(savedOrderTables) || savedOrderTables.size() < 2) {

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class OrderTableQueryService {
+
 	private final OrderTableRepository orderTableRepository;
 
 	public OrderTableQueryService(
@@ -28,5 +29,13 @@ public class OrderTableQueryService {
 
 	public List<OrderTable> findAllByTableGroup(TableGroup tableGroup) {
 		return orderTableRepository.findAllByTableGroup(tableGroup);
+	}
+
+	public OrderTable save(OrderTable entity) {
+		return orderTableRepository.save(entity);
+	}
+
+	public List<OrderTable> findAll() {
+		return orderTableRepository.findAll();
 	}
 }
