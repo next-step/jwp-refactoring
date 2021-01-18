@@ -16,11 +16,10 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 
 import static org.hamcrest.Matchers.hasSize;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -39,7 +38,7 @@ class ProductRestControllerTest {
     @DisplayName("상품을 등록한다.")
     @Test
     void create() throws Exception {
-        Product product = new Product(1L,"product", new BigDecimal(10_000));
+        Product product = new Product(1L, "product", new BigDecimal(10_000));
         when(productService.create(any())).thenReturn(product);
 
         mockMvc.perform(post("/api/products")
