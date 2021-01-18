@@ -1,8 +1,8 @@
-package kitchenpos.infrastructure.jpa;
+package kitchenpos.domain.infrastructure.jpa;
 
 import java.math.BigDecimal;
 import javax.persistence.AttributeConverter;
-import kitchenpos.domain.Money;
+import kitchenpos.domain.model.Money;
 
 /**
  * @author : leesangbae

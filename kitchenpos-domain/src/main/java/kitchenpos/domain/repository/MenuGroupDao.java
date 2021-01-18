@@ -1,8 +1,8 @@
-package kitchenpos.repository;
+package kitchenpos.domain.repository;
 
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.model.MenuGroup;
 import org.springframework.data.repository.RepositoryDefinition;
 
 @RepositoryDefinition(idClass = Long.class, domainClass = MenuGroup.class)

@@ -1,8 +1,8 @@
 package kitchenpos.dto;
 
 import java.math.BigDecimal;
-import kitchenpos.domain.Money;
-import kitchenpos.domain.Product;
+import kitchenpos.domain.model.Money;
+import kitchenpos.domain.model.Product;
 
 public class ProductDto {
 

@@ -4,12 +4,23 @@ plugins {
     id 'java'
 }
 
-group = 'camp.nextstep.edu'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
+allprojects {
 
-repositories {
-    mavenCentral()
+    group = 'camp.nextstep.edu'
+    version = '0.0.1-SNAPSHOT'
+    sourceCompatibility = '1.8'
+
+    repositories {
+        mavenCentral()
+    }
+
+    apply {
+        plugin("io.spring.dependency-management")
+    }
+
+    test {
+        useJUnitPlatform()
+    }
 }
 
 dependencies {
@@ -23,8 +34,8 @@ dependencies {
     implementation 'org.flywaydb:flyway-core'
     runtimeOnly 'com.h2database:h2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    compile project(':kitchenpos-domain')
 }
 
-test {
-    useJUnitPlatform()
-}
+

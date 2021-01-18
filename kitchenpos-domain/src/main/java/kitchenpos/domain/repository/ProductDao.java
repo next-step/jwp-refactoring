@@ -1,9 +1,8 @@
-package kitchenpos.repository;
+package kitchenpos.domain.repository;
 
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
+import kitchenpos.domain.model.Product;
 import org.springframework.data.repository.RepositoryDefinition;
 
 @RepositoryDefinition(idClass = Long.class, domainClass = Product.class)

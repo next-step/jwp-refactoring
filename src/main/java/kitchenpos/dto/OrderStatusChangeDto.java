@@ -1,6 +1,6 @@
 package kitchenpos.dto;
 
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.domain.model.OrderStatus;
 
 /**
  * @author : leesangbae

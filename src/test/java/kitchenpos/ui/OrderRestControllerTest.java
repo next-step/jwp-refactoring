@@ -7,12 +7,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Arrays;
 import java.util.Collections;
 import kitchenpos.dto.OrderCreateRequest;
 import kitchenpos.dto.OrderLineItemCreateRequest;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.domain.model.OrderStatus;
 import kitchenpos.dto.OrderStatusChangeDto;
 import kitchenpos.dto.OrderTableCreateRequest;
 import kitchenpos.dto.OrderTableEmptyChangeRequest;

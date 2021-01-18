@@ -1,12 +1,12 @@
 package kitchenpos.application;
 
 import java.util.stream.Collectors;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.domain.model.OrderTable;
+import kitchenpos.domain.model.OrderStatus;
 import kitchenpos.dto.OrderTableCreateRequest;
 import kitchenpos.dto.OrderTableDto;
-import kitchenpos.repository.OrderDao;
-import kitchenpos.repository.OrderTableDao;
+import kitchenpos.domain.repository.OrderDao;
+import kitchenpos.domain.repository.OrderTableDao;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

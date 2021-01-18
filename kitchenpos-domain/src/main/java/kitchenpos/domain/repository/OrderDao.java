@@ -1,9 +1,9 @@
-package kitchenpos.repository;
+package kitchenpos.domain.repository;
 
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.domain.model.Order;
+import kitchenpos.domain.model.OrderStatus;
 import org.springframework.data.repository.RepositoryDefinition;
 
 @RepositoryDefinition(idClass = Long.class, domainClass = Order.class)

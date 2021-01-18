@@ -3,9 +3,9 @@ package kitchenpos.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.domain.model.Order;
+import kitchenpos.domain.model.OrderLineItem;
+import kitchenpos.domain.model.OrderStatus;
 
 public class OrderDto {
     private Long id;

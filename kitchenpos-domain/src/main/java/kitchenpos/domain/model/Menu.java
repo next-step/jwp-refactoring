@@ -1,6 +1,5 @@
-package kitchenpos.domain;
+package kitchenpos.domain.model;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -14,7 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import kitchenpos.infrastructure.jpa.MoneyConverter;
+import kitchenpos.domain.infrastructure.jpa.MoneyConverter;
 
 /**
  * @author : leesangbae

@@ -1,6 +1,6 @@
 package kitchenpos.dto;
 
-import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.model.OrderLineItem;
 
 public class OrderLineItemDto {
     private Long seq;

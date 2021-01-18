@@ -3,7 +3,7 @@ package kitchenpos.dto;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.model.TableGroup;
 
 public class TableGroupCreateRequest {
 

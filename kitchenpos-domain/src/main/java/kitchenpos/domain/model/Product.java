@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.domain.model;
 
 import java.util.Objects;
 import javax.persistence.Convert;
@@ -7,7 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import kitchenpos.infrastructure.jpa.MoneyConverter;
+import kitchenpos.domain.infrastructure.jpa.MoneyConverter;
 
 /**
  * @author : leesangbae

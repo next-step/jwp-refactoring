@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import static kitchenpos.domain.OrderStatus.COOKING;
+import static kitchenpos.domain.model.OrderStatus.COOKING;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Arrays;
@@ -15,9 +15,9 @@ import kitchenpos.application.creator.OrderLineItemHelper;
 import kitchenpos.application.creator.OrderTableHelper;
 import kitchenpos.application.creator.ProductHelper;
 import kitchenpos.application.creator.TableGroupHelper;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
+import kitchenpos.domain.model.MenuGroup;
+import kitchenpos.domain.model.OrderTable;
+import kitchenpos.domain.model.Product;
 import kitchenpos.dto.MenuCreateRequest;
 import kitchenpos.dto.MenuDto;
 import kitchenpos.dto.MenuProductRequest;
@@ -27,8 +27,8 @@ import kitchenpos.dto.OrderLineItemCreateRequest;
 import kitchenpos.dto.OrderTableDto;
 import kitchenpos.dto.TableGroupCreateRequest;
 import kitchenpos.dto.TableGroupDto;
-import kitchenpos.repository.MenuGroupDao;
-import kitchenpos.repository.ProductDao;
+import kitchenpos.domain.repository.MenuGroupDao;
+import kitchenpos.domain.repository.ProductDao;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
