@@ -2,16 +2,15 @@ package kitchenpos.application;
 
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.*;
+import kitchenpos.dto.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -19,18 +18,28 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
 
 @DisplayName("주문 테이블 서비스에 관련한 기능")
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class TableServiceTest {
-    @Mock
+    @Autowired
     private OrderDao orderDao;
-    @Mock
+    @Autowired
     private OrderTableDao orderTableDao;
-    @InjectMocks
+    @Autowired
     private TableService tableService;
+    @Autowired
+    private TableGroupService tableGroupService;
+    @Autowired
+    private OrderService orderService;
+    @Autowired
+    private ProductService productService;
+    @Autowired
+    private MenuService menuService;
+    @Autowired
+    private MenuGroupService menuGroupService;
 
     private OrderTable orderTable;
 
@@ -46,17 +55,17 @@ class TableServiceTest {
     @Test
     void createTable() {
         // Given
-        given(orderTableDao.save(orderTable)).willReturn(orderTable);
+        OrderTableRequest request = new OrderTableRequest(3, true);
 
         // When
-        OrderTable actual = tableService.create(orderTable);
+        OrderTable actual = tableService.create(request);
 
         // Then
         assertAll(
-                () -> assertEquals(orderTable.getId(), actual.getId()),
-                () -> assertEquals(orderTable.getNumberOfGuests(), actual.getNumberOfGuests()),
-                () -> assertEquals(orderTable.isEmpty(), actual.isEmpty()),
-                () -> assertNull(actual.getTableGroupId())
+                () -> assertThat(actual.getId()).isNotNull(),
+                () -> assertThat(actual.getNumberOfGuests()).isEqualTo(request.getNumberOfGuests()),
+                () -> assertThat(actual.isEmpty()).isEqualTo(request.isEmpty()),
+                () -> assertThat(actual.getTableGroupId()).isNull()
         );
     }
 

@@ -86,6 +86,8 @@
     - [x] MenuGroup 통합 테스트 적용
     - [x] Menu 통합 테스트 적용
         - [x] Menu Service Layer 테스트의 재사용되는 코드 응집화
+    - [x] OrderTable 통합 테스트 적용
+        - [x] test case - `주문 테이블`을 생성한다. 
 - [ ] Domain Logic 개선에 앞서, UI 전달되는 Domain Context를 Service Layer에 격리
     - [ ] Product
         - [x] Service Layer에 Request DTO 적용
@@ -96,5 +98,8 @@
     - [ ] Menu
         - [x] Service Layer에 Request DTO 적용
         - [x] Service Layer에 Response DTO 적용
+    - [ ] OrderTable
+        - [x] Service Layer에 Request DTO 적용
+        - [ ] Service Layer에 Response DTO 적용
 - [ ] Service Layer에 있는 Domain Logic를 Domain Layer로 이동
 - [ ] 도메인에 관계를 고려하여 JPA 적용 
