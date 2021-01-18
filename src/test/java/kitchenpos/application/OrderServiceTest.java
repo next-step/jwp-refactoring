@@ -121,20 +121,26 @@ class OrderServiceTest {
     @Test
     void findAllOrders() {
         // Given
-        given(orderDao.findAll()).willReturn(Collections.singletonList(order));
+        ProductResponse 짬뽕 = productService.create(new ProductRequest("짬뽕", BigDecimal.valueOf(8_000)));
+        ProductResponse 짜장면 = productService.create(new ProductRequest("짜장면", BigDecimal.valueOf(6_000)));
+        MenuGroupResponse 신메뉴그룹 = menuGroupService.create(new MenuGroupRequest("신메뉴그룹"));
+        Menu 추천메뉴 = menuService.create(new MenuRequest("추천메뉴", BigDecimal.valueOf(14_000), 신메뉴그룹.getId(),
+                Arrays.asList(new MenuProductRequest(짬뽕.getId(), 1L), new MenuProductRequest(짜장면.getId(), 1L)))
+        );
+        OrderTableResponse orderTable = tableService.create(new OrderTableRequest(3, false));
+        OrderLineItem menuParams = new OrderLineItem();
+        menuParams.setMenuId(추천메뉴.getId());
+        menuParams.setQuantity(1);
+        Order order = new Order();
+        order.setOrderTableId(orderTable.getId());
+        order.setOrderLineItems(Collections.singletonList(menuParams));
+        Order expected = orderService.create(order);
 
         // When
         List<Order> actual = orderService.list();
 
         // Then
-        assertAll(
-                () -> assertThat(actual).extracting(Order::getId).containsExactly(order.getId()),
-                () -> assertThat(actual).extracting(Order::getOrderTableId).containsExactly(order.getOrderTableId()),
-                () -> assertThat(actual).extracting(Order::getOrderStatus).containsExactly(order.getOrderStatus()),
-                () -> assertThat(actual).extracting(Order::getOrderedTime).containsExactly(order.getOrderedTime()),
-                () -> assertThat(actual.stream().map(Order::getOrderLineItems).collect(Collectors.toList()))
-                        .containsExactly(order.getOrderLineItems())
-        );
+        assertThat(actual).containsAnyElementsOf(Collections.singletonList(expected));
     }
 
     @DisplayName("`주문`의 `주문 상태`를 변경한다.")

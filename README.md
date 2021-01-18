@@ -99,6 +99,7 @@
         - [x] test case - `주문`을 생성한다.
         - [x] test case - `주문`에 필요한 주문 메뉴를 담은 `주문 항목`이 없으면 `주문`을 생성할 수 없다.
         - [x] test case - `주문`할 `주문 테이블`이 없으면, `주문`을 생성할 수 없다.
+        - [x] test case - 모든 `주문` 목록을 조회한다.
 - [ ] Domain Logic 개선에 앞서, UI 전달되는 Domain Context를 Service Layer에 격리
     - [ ] Product
         - [x] Service Layer에 Request DTO 적용
