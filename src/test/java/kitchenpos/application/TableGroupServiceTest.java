@@ -40,7 +40,7 @@ class TableGroupServiceTest {
         TableGroupRequest request = new TableGroupRequest(Arrays.asList(savedOrderTable1.toOrderTable(), savedOrderTable2.toOrderTable()));
 
         // When
-        TableGroup actual = tableGroupService.create(request);
+        TableGroupResponse actual = tableGroupService.create(request);
         OrderTable orderTable1 = tableService.findById(savedOrderTable1.getId());
         OrderTable orderTable2 = tableService.findById(savedOrderTable2.getId());
 
@@ -98,7 +98,7 @@ class TableGroupServiceTest {
         OrderTableResponse savedOrderTable1 = tableService.create(new OrderTableRequest(3, true));
         OrderTableResponse savedOrderTable2 = tableService.create(new OrderTableRequest(5, true));
         TableGroupRequest request = new TableGroupRequest(Arrays.asList(savedOrderTable1.toOrderTable(), savedOrderTable2.toOrderTable()));
-        TableGroup tableGroup = tableGroupService.create(request);
+        TableGroupResponse tableGroup = tableGroupService.create(request);
 
         // When
         tableGroupService.ungroup(tableGroup.getId());
@@ -119,7 +119,7 @@ class TableGroupServiceTest {
         OrderTableResponse savedOrderTable1 = tableService.create(new OrderTableRequest(0, true));
         OrderTableResponse savedOrderTable2 = tableService.create(new OrderTableRequest(0, true));
         TableGroupRequest request = new TableGroupRequest(Arrays.asList(savedOrderTable1.toOrderTable(), savedOrderTable2.toOrderTable()));
-        TableGroup savedTableGroup = tableGroupService.create(request);
+        TableGroupResponse savedTableGroup = tableGroupService.create(request);
 
         ProductResponse 짬뽕 = productService.create(new ProductRequest("짬뽕", BigDecimal.valueOf(8_000)));
         ProductResponse 짜장면 = productService.create(new ProductRequest("짜장면", BigDecimal.valueOf(6_000)));
