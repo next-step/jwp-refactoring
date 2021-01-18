@@ -93,3 +93,14 @@
 - [x] 주문 테스트 작성
   - [x] Service Test 작성
   - [x] Controller Test 작성
+
+## 2단계 - 서비스 리팩터링 To Do List
+
+- [ ] spring data jpa 설정
+- [ ] DTO 분리
+- [ ] 엔티티 새로 등록 및 변경
+- [ ] 엔티티간 연관관계 설정
+- [ ] dao -> jpa repository 변경 
+- [ ] service 리펙토링
+- [ ] controller 리팩토링
+- [ ] 전체 구조 리펙토링
