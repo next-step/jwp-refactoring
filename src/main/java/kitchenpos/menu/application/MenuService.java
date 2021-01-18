@@ -5,6 +5,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProductRepository;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -21,28 +23,36 @@ public class MenuService {
 	private final ProductService productService;
 	private final MenuGroupService menuGroupService;
 	private final MenuRepository menuRepository;
+	private final MenuProductRepository menuProductRepository;
 
 	public MenuService(
 		  final ProductService productService,
-		  MenuGroupService menuGroupService, MenuRepository menuRepository) {
+		  MenuGroupService menuGroupService, MenuRepository menuRepository,
+		  MenuProductRepository menuProductRepository) {
 		this.productService = productService;
 		this.menuGroupService = menuGroupService;
 		this.menuRepository = menuRepository;
+		this.menuProductRepository = menuProductRepository;
 	}
 
 	@Transactional
 	public MenuResponse create(final MenuRequest request) {
 		List<Product> products = productService.findAllByIds(request.getProductIds());
 		MenuGroup menuGroup = menuGroupService.findById(request.getMenuGroupId());
-		kitchenpos.menu.domain.Menu menu = request.toEntity(menuGroup, products);
-		kitchenpos.menu.domain.Menu saved = menuRepository.save(menu);
 
-		return MenuResponse.of(saved);
+		List<MenuProduct> menuProducts = request.toMenuProducts(menuGroup, products);
+		List<MenuProduct> savedMenuProducts = menuProductRepository.saveAll(menuProducts);
+
+		return MenuResponse.of(savedMenuProducts);
 	}
 
 	public List<MenuResponse> list() {
-		return menuRepository.findAll().stream()
-			  .map(MenuResponse::of)
+		List<Menu> savedMenus = menuRepository.findAll();
+		return savedMenus.stream()
+			  .map(menu -> {
+				  List<MenuProduct> menuProducts = menuProductRepository.findAllByMenu(menu);
+				  return MenuResponse.of(menuProducts);
+			  })
 			  .collect(Collectors.toList());
 	}
 

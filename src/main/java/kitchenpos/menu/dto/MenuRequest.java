@@ -26,6 +26,48 @@ public class MenuRequest {
         this.menuProductRequests = menuProductRequests;
     }
 
+    public Set<Long> getProductIds() {
+        return this.menuProductRequests.stream()
+              .map(MenuProductRequest::getProductId)
+              .collect(Collectors.toSet());
+    }
+
+    public List<MenuProduct> toMenuProducts(MenuGroup menuGroup, List<Product> products) {
+        Menu menu = toMenuEntity(menuGroup);
+
+        Map<Long, Product> productInfo = products.stream()
+              .collect(Collectors.toMap(Product::getId, Function.identity()));
+
+        List<MenuProduct> menuProducts = menuProductRequests.stream()
+              .filter(menuProductRequest -> productInfo
+                    .containsKey(menuProductRequest.getProductId()))
+              .map(menuProductRequest -> {
+                  Product product = productInfo.get(menuProductRequest.getProductId());
+                  return new MenuProduct(menu, product, menuProductRequest.getQuantity());
+              })
+              .collect(Collectors.toList());
+
+        validatePrice(sumOfMenuProductPrice(menuProducts));
+        return menuProducts;
+    }
+
+    private BigDecimal sumOfMenuProductPrice(List<MenuProduct> menuProducts) {
+        return menuProducts.stream()
+              .map(MenuProduct::sumOfPrice)
+              .reduce((p1, p2) -> p1.add(p2))
+              .orElseThrow(IllegalArgumentException::new);
+    }
+
+    private void validatePrice(BigDecimal sumOfMenuProductPrice) {
+        if (price.compareTo(sumOfMenuProductPrice) != 0) {
+            throw new IllegalArgumentException("메뉴의 가격과 메뉴 항목들의 총 가격의 합이 맞지 않습니다.");
+        }
+    }
+
+    private Menu toMenuEntity(MenuGroup menuGroup) {
+        return new Menu(this.name, this.price, menuGroup);
+    }
+
     public Long getId() {
         return id;
     }
@@ -44,28 +86,5 @@ public class MenuRequest {
 
     public List<MenuProductRequest> getMenuProductRequests() {
         return menuProductRequests;
-    }
-
-    public Set<Long> getProductIds() {
-        return this.menuProductRequests.stream()
-              .map(MenuProductRequest::getProductId)
-              .collect(Collectors.toSet());
-    }
-
-    public Menu toEntity(MenuGroup menuGroup, List<Product> products) {
-        return new Menu(this.name, this.price, menuGroup, toMenuGroupEntities(products));
-    }
-
-    private List<MenuProduct> toMenuGroupEntities(List<Product> products) {
-        Map<Long, Product> productInfo = products.stream()
-              .collect(Collectors.toMap(Product::getId, Function.identity()));
-
-        return menuProductRequests.stream()
-              .filter(menuProductRequest -> productInfo.containsKey(menuProductRequest.getProductId()))
-              .map(menuProductRequest -> {
-                  Product product = productInfo.get(menuProductRequest.getProductId());
-                  return new MenuProduct(product, menuProductRequest.getQuantity());
-              })
-              .collect(Collectors.toList());
     }
 }

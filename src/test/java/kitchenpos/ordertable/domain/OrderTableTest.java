@@ -3,9 +3,6 @@ package kitchenpos.ordertable.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
-import java.util.Arrays;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.Orders;
 import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,7 +17,7 @@ class OrderTableTest {
 		OrderTable orderTable = new OrderTable(false);
 
 		//when
-		orderTable.changeEmpty(true);
+		orderTable.changeEmpty(true, true);
 
 		//then
 		assertThat(orderTable.isEmpty()).isTrue();
@@ -30,15 +27,13 @@ class OrderTableTest {
 	@Test
 	void changeEmptyWithGroupTable() {
 		//given
-		OrderTables orderTables = new OrderTables(
-			  Arrays.asList(new OrderTable(false), new OrderTable(false)), 2);
-		TableGroup tableGroup = new TableGroup(orderTables);
+		TableGroup tableGroup = TableGroup.newInstance();
 		ReflectionTestUtils.setField(tableGroup, "id", 1L);
 		OrderTable orderTable = new OrderTable(1, false, tableGroup);
 
 		//when, then
 		assertThatIllegalArgumentException()
-			  .isThrownBy(() -> orderTable.changeEmpty(true))
+			  .isThrownBy(() -> orderTable.changeEmpty(true, true))
 			  .withMessage("단체 지정된 테이블은 상태를 변경할 수 없습니다.");
 	}
 
@@ -46,13 +41,11 @@ class OrderTableTest {
 	@Test
 	void changeEmptyWithNotCompleteOrder() {
 		//given
-		Orders orders = new Orders(OrderStatus.MEAL.name());
 		OrderTable orderTable = new OrderTable();
-		ReflectionTestUtils.setField(orderTable, "orders", Arrays.asList(orders));
 
 		//when, then
 		assertThatIllegalArgumentException()
-			  .isThrownBy(() -> orderTable.changeEmpty(true))
+			  .isThrownBy(() -> orderTable.changeEmpty(true, false))
 			  .withMessage("조리, 식사 상태의 테이블은 상태를 변경할 수 없습니다.");
 	}
 
@@ -60,9 +53,7 @@ class OrderTableTest {
 	@Test
 	void changeNumberOfGuests() {
 		//given
-		OrderTables orderTables = new OrderTables(
-			  Arrays.asList(new OrderTable(false), new OrderTable(false)), 2);
-		TableGroup tableGroup = new TableGroup(orderTables);
+		TableGroup tableGroup = TableGroup.newInstance();
 		ReflectionTestUtils.setField(tableGroup, "id", 1L);
 		OrderTable orderTable = new OrderTable(0, false, tableGroup);
 
@@ -78,9 +69,7 @@ class OrderTableTest {
 	@Test
 	void changeNumberOfGuestsWithWrongGuestNumber() {
 		//given
-		OrderTables orderTables = new OrderTables(
-			  Arrays.asList(new OrderTable(false), new OrderTable(false)), 2);
-		TableGroup tableGroup = new TableGroup(orderTables);
+		TableGroup tableGroup = TableGroup.newInstance();
 		ReflectionTestUtils.setField(tableGroup, "id", 1L);
 		OrderTable orderTable = new OrderTable(0, false, tableGroup);
 
@@ -94,9 +83,7 @@ class OrderTableTest {
 	@Test
 	void changeNumberOfGuestsWithEmptyTable() {
 		//given
-		OrderTables orderTables = new OrderTables(
-			  Arrays.asList(new OrderTable(false), new OrderTable(false)), 2);
-		TableGroup tableGroup = new TableGroup(orderTables);
+		TableGroup tableGroup = TableGroup.newInstance();
 		ReflectionTestUtils.setField(tableGroup, "id", 1L);
 		OrderTable orderTable = new OrderTable(0, true, tableGroup);
 

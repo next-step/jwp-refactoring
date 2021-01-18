@@ -3,6 +3,7 @@ package kitchenpos.order.dto;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.Orders;
 
 public class OrderResponse {
@@ -24,10 +25,16 @@ public class OrderResponse {
 	}
 
 	public static OrderResponse of(Orders savedOrders) {
-		List<OrderLineItemResponse> orderLineItemResponses = savedOrders.getOrderLineItems().stream()
+		return new OrderResponse(savedOrders.getId(), savedOrders.getOrderTable().getId(),
+			  savedOrders.getOrderStatus(), null);
+	}
+
+	public static OrderResponse of(List<OrderLineItem> orderLineItems) {
+		List<OrderLineItemResponse> orderLineItemResponses = orderLineItems.stream()
 			  .map(OrderLineItemResponse::of)
 			  .collect(Collectors.toList());
 
+		Orders savedOrders = orderLineItems.get(0).getOrder();
 		return new OrderResponse(savedOrders.getId(), savedOrders.getOrderTable().getId(),
 			  savedOrders.getOrderStatus(), orderLineItemResponses);
 	}

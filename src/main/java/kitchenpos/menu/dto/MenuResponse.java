@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
 
 public class MenuResponse {
 
@@ -26,13 +27,15 @@ public class MenuResponse {
 		this.menuProducts = menuProducts;
 	}
 
-	public static MenuResponse of(Menu menu) {
-		List<MenuProductResponse> menuProductResponse = menu.getMenuProducts().stream()
+	public static MenuResponse of(List<MenuProduct> savedMenuProducts) {
+		List<MenuProductResponse> menuProductResponse = savedMenuProducts.stream()
 			  .map(MenuProductResponse::of)
 			  .collect(Collectors.toList());
 
-		return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(),
-			  menu.getMenuGroup().getId(), menuProductResponse);
+		Menu savedMenu = savedMenuProducts.get(0).getMenu();
+
+		return new MenuResponse(savedMenu.getId(), savedMenu.getName(), savedMenu.getPrice(),
+			  savedMenu.getMenuGroup().getId(), menuProductResponse);
 	}
 
 	public Long getId() {
