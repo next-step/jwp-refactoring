@@ -1,4 +1,4 @@
-package kitchenpos.util;
+package kitchenpos.utils;
 
 import kitchenpos.domain.*;
 
@@ -33,10 +33,7 @@ public class TestHelper {
     public static final Order 완료된_order = order_status_추가(order, OrderStatus.COMPLETION.name());
 
     public static MenuGroup menuGroup_생성(Long id, String name) {
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setId(id);
-        menuGroup.setName(name);
-        return menuGroup;
+        return new MenuGroup(id, name);
     }
 
     public static Menu menu_생성(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
