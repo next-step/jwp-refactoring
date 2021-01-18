@@ -14,7 +14,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -125,15 +124,23 @@ class TableServiceTest {
     @Test
     void exceptionToChangeEmptyWithCookingAndMeal() {
         // Given
-        given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
-        List<String> orderStatuses = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(orderTable.getId(), orderStatuses))
-                .willReturn(true);
-        OrderTable updateOrderTable = new OrderTable();
-        updateOrderTable.setEmpty(false);
+        ProductResponse 짬뽕 = productService.create(new ProductRequest("짬뽕", BigDecimal.valueOf(8_000)));
+        ProductResponse 짜장면 = productService.create(new ProductRequest("짜장면", BigDecimal.valueOf(6_000)));
+        MenuGroupResponse 신메뉴그룹 = menuGroupService.create(new MenuGroupRequest("신메뉴그룹"));
+        Menu 추천메뉴 = menuService.create(new MenuRequest("추천메뉴", BigDecimal.valueOf(14_000), 신메뉴그룹.getId(),
+                Arrays.asList(new MenuProductRequest(짬뽕.getId(), 1L), new MenuProductRequest(짜장면.getId(), 1L)))
+        );
+        OrderTable orderTable = tableService.create(new OrderTableRequest(3, false));
+        OrderLineItem menuParams = new OrderLineItem();
+        menuParams.setMenuId(추천메뉴.getId());
+        menuParams.setQuantity(1);
+        Order orderParams = new Order();
+        orderParams.setOrderTableId(orderTable.getId());
+        orderParams.setOrderLineItems(Collections.singletonList(menuParams));
+        orderService.create(orderParams);
 
         // when & Then
-        assertThatThrownBy(() -> tableService.changeEmpty(this.orderTable.getId(), updateOrderTable))
+        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), new OrderTableRequest(true)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
