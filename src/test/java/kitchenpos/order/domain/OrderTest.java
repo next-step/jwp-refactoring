@@ -9,17 +9,17 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
-class OrdersTest {
+class OrderTest {
 
 	@DisplayName("결제완료된 주문은 상태를 변경할 수 없음")
 	@Test
 	void changeOrderStatus() {
-		Orders orders = new Orders();
-		ReflectionTestUtils.setField(orders, "orderStatus", OrderStatus.COMPLETION.name());
+		Orders order = new Orders();
+		ReflectionTestUtils.setField(order, "orderStatus", OrderStatus.COMPLETION.name());
 
 		//when, then
 		assertThatIllegalArgumentException()
-			  .isThrownBy(() -> orders.changeStatus(OrderStatus.MEAL.name()))
+			  .isThrownBy(() -> order.changeStatus(OrderStatus.MEAL.name()))
 			  .withMessage("결제 완료된 주문은 상태를 변경할 수 없습니다.")
 		;
 	}

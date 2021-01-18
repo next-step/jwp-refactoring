@@ -1,13 +1,15 @@
 package kitchenpos.ordertable.application;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
-import javax.persistence.EntityNotFoundException;
+import kitchenpos.order.application.OrderQueryService;
+import kitchenpos.order.domain.OrderList;
+import kitchenpos.order.domain.Orders;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
+import kitchenpos.tablegroup.domain.TableGroup;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,9 +17,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class OrderTableService {
 
+	private final OrderQueryService orderQueryService;
+	private final OrderTableQueryService orderTableQueryService;
 	private final OrderTableRepository orderTableRepository;
 
-	public OrderTableService(OrderTableRepository orderTableRepository) {
+	public OrderTableService(
+		  OrderQueryService orderQueryService,
+		  OrderTableQueryService orderTableQueryService,
+		  OrderTableRepository orderTableRepository) {
+		this.orderQueryService = orderQueryService;
+		this.orderTableQueryService = orderTableQueryService;
 		this.orderTableRepository = orderTableRepository;
 	}
 
@@ -34,25 +43,29 @@ public class OrderTableService {
 
 	public OrderTableResponse changeEmpty(final Long orderTableId,
 		  final OrderTableRequest request) {
-		OrderTable savedOrderTable = findById(orderTableId);
-		savedOrderTable.changeEmpty(request.isEmpty());
+		OrderTable savedOrderTable = orderTableQueryService.findById(orderTableId);
+		List<Orders> savedOrders = orderQueryService.findAllByOrderTable(savedOrderTable);
+		OrderList orderList = new OrderList(savedOrders);
+
+		savedOrderTable.changeEmpty(request.isEmpty(), orderList.isCompleteAllOrders());
 		return OrderTableResponse.of(savedOrderTable);
 	}
 
 	public OrderTableResponse changeNumberOfGuests(final Long orderTableId,
 		  final OrderTableRequest request) {
-		OrderTable orderTable = findById(orderTableId);
+		OrderTable orderTable = orderTableQueryService.findById(orderTableId);
 		orderTable.changeNumberOfGuests(request.getNumberOfGuests());
 
 		return OrderTableResponse.of(orderTable);
 	}
 
-	public OrderTable findById(Long orderTableId) {
-		return orderTableRepository.findById(orderTableId)
-			  .orElseThrow(EntityNotFoundException::new);
-	}
+	public void unGroup(TableGroup tableGroup) {
+		List<OrderTable> savedOrderTables = orderTableQueryService.findAllByTableGroup(tableGroup);
 
-	public List<OrderTable> findAllByOrderTableIds(Set<Long> orderTableIds) {
-		return orderTableRepository.findAllById(orderTableIds);
+		savedOrderTables.forEach(orderTable -> {
+			List<Orders> orders = orderQueryService.findAllByOrderTable(orderTable);
+			OrderList orderList = new OrderList(orders);
+			orderTable.unGroup(orderList.isCompleteAllOrders());
+		});
 	}
 }

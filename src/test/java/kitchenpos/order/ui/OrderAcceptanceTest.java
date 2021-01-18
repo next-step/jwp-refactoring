@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-class OrdersAcceptanceTest extends AcceptanceTest {
+class OrderAcceptanceTest extends AcceptanceTest {
 
 	@DisplayName("주문정보를 관리한다")
 	@Test
@@ -72,13 +72,12 @@ class OrdersAcceptanceTest extends AcceptanceTest {
 	}
 
 	private ExtractableResponse<Response> 주문_목록을_조회한다() {
-		ExtractableResponse<Response> listResponse = RestAssured.given().log().all()
+		return RestAssured.given().log().all()
 			  .contentType(MediaType.APPLICATION_JSON_VALUE)
 			  .when().get("/api/orders/")
 			  .then().log().all()
 			  .statusCode(HttpStatus.OK.value())
 			  .extract();
-		return listResponse;
 	}
 
 	private void 주문정보가_등록됨(ExtractableResponse<Response> response) {

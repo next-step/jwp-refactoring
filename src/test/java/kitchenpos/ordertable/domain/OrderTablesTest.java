@@ -29,10 +29,7 @@ class OrderTablesTest {
 	@DisplayName("다른 단체에 포함된 테이블은 단체 지정을 할 수 없음")
 	@Test
 	void createWithOtherTableGroup() {
-		OrderTables orderTables = new OrderTables(
-			  Arrays.asList(new OrderTable(false), new OrderTable(false)), 2);
-		TableGroup tableGroup = new TableGroup(orderTables);
-
+		TableGroup tableGroup = TableGroup.newInstance();
 		OrderTable otherGroupTable = new OrderTable();
 		ReflectionTestUtils.setField(otherGroupTable, "tableGroup", tableGroup);
 

@@ -59,10 +59,9 @@ public class Orders {
     }
 
     private void setOrder() {
-        this.orderTable.setOrder(this);
-        this.orderLineItems.forEach(orderLineItem -> {
-            orderLineItem.setOrder(this);
-        });
+        this.orderLineItems.forEach(orderLineItem ->
+            orderLineItem.setOrder(this)
+        );
     }
 
     private void validate(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
