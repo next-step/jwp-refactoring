@@ -2,6 +2,8 @@ package kitchenpos.application;
 
 import kitchenpos.domain.*;
 import kitchenpos.dto.MenuGroupResponse;
+import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.MenuResponse;
 import kitchenpos.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -115,8 +117,8 @@ public class TableGroupServiceTest extends ServiceTestBase {
     void ungroupWithUse() {
         MenuGroupResponse menuGroup = menuGroupService.create(MenuGroupServiceTest.createRequest("추천메뉴"));
         ProductResponse product = productService.create(ProductServiceTest.createRequest("후라이드", 17_000L));
-        List<MenuProduct> menuProducts = Collections.singletonList(MenuServiceTest.createMenuProduct(product.getId(), 2L));
-        Menu menu = menuService.create(MenuServiceTest.createMenu("후라이드+후라이드", 19_000L, menuGroup.getId(), menuProducts));
+        List<MenuProductRequest> menuProducts = Collections.singletonList(MenuServiceTest.createMenuProduct(product.getId(), 2L));
+        MenuResponse menu = menuService.create(MenuServiceTest.createRequest("후라이드+후라이드", 19_000L, menuGroup.getId(), menuProducts));
         OrderTable savedTable = tableService.create(TableServiceTest.createTable());
         OrderTable savedTable2 = tableService.create(TableServiceTest.createTable());
         TableGroup tableGroup = tableGroupService.create(createTableGroup(savedTable, savedTable2));
