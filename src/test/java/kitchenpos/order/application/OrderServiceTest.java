@@ -100,7 +100,7 @@ class OrderServiceTest {
     void 주문_조회() {
         orderService.create(orderRequest);
 
-        final List<OrderResponse> orderResponseList = orderService.list();
+        final List<OrderResponse> orderResponseList = orderService.getOrderList();
 
         assertThat(orderResponseList.size()).isGreaterThan(0);
     }
