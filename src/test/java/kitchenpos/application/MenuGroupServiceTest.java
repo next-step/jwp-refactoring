@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,39 +20,33 @@ class MenuGroupServiceTest {
     @Autowired
     private MenuGroupService menuGroupService;
 
+    private MenuGroupRequest request;
+    private MenuGroupResponse response;
+
+    @BeforeEach
+    void beforeEach() {
+        request = new MenuGroupRequest("세트메뉴");
+        response = menuGroupService.create(request);
+    }
+
     @DisplayName("`메뉴 그룹`을 생성한다.")
     @Test
     void createMenuGroup() {
-        // Given
-        MenuGroupRequest request = new MenuGroupRequest("세트메뉴");
-
-        // When
-        MenuGroupResponse actual = menuGroupService.create(request);
-
         // Then
         assertAll(
-                () -> assertThat(actual).isNotNull(),
-                () -> assertThat(actual.getId()).isNotNull(),
-                () -> assertThat(actual.getName()).isEqualTo(request.getName())
+                () -> assertThat(response).isNotNull(),
+                () -> assertThat(response.getId()).isNotNull(),
+                () -> assertThat(response.getName()).isEqualTo(request.getName())
         );
     }
 
     @DisplayName("모든 `메뉴 그룹` 목록을 조회한다.")
     @Test
     void findAllMenuGroups() {
-        // Given
-        MenuGroupRequest request = new MenuGroupRequest("세트메뉴");
-        MenuGroupResponse savedMenuGroup = menuGroupService.create(request);
-
         // When
         List<MenuGroupResponse> actual = menuGroupService.list();
 
         // Then
-        assertAll(
-                () -> assertThat(actual).extracting(MenuGroupResponse::getId)
-                        .containsAnyElementsOf(Collections.singletonList(savedMenuGroup.getId())),
-                () -> assertThat(actual).extracting(MenuGroupResponse::getName)
-                        .containsAnyElementsOf(Collections.singletonList(savedMenuGroup.getName()))
-        );
+        assertThat(actual).containsAnyElementsOf(Collections.singletonList(response));
     }
 }

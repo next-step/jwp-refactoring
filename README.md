@@ -89,6 +89,7 @@
     - [ ] MenuGroup 통합 테스트 적용
         - [x] test case - `메뉴 그룹`을 생성한다.
         - [x] test case - 모든 `메뉴 그룹` 목록을 조회한다.
+        - [x] Service Layer 테스트 케이스 리팩터링
     - [ ] Menu 통합 테스트 적용
         - [x] Menu Service Layer 테스트의 재사용되는 코드 응집화
         - [x] test case - `메뉴`를 생성한다.
