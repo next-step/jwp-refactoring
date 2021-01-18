@@ -8,6 +8,8 @@ import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.ordertable.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,7 +49,7 @@ class OrderServiceTest {
     @Test
     void create1() {
         //given
-        Order newOrder = new Order();
+        OrderRequest newOrder = new OrderRequest();
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         orderLineItems.add(new OrderLineItem());
         orderLineItems.add(new OrderLineItem());
@@ -61,12 +63,12 @@ class OrderServiceTest {
                 .willReturn(Optional.of(new OrderTable()));
         given(orderLineItemDao.save(any()))
                 .willReturn(new OrderLineItem());
-        given(orderDao.save(newOrder))
+        given(orderDao.save(any()))
                 .willReturn(new Order(1L, 2L, "주문", LocalDateTime.now()));
 
         //when
 
-        Order createOrder = orderService.create(newOrder);
+        OrderResponse createOrder = orderService.create(newOrder);
 
         //then
         assertThat(createOrder.getId()).isEqualTo(1L);
@@ -79,7 +81,7 @@ class OrderServiceTest {
     @Test
     void create2() {
         //given
-        Order newOrder = new Order();
+        OrderRequest newOrder = new OrderRequest();
         newOrder.setOrderLineItems(Collections.EMPTY_LIST);
         //when
         //then
@@ -98,7 +100,7 @@ class OrderServiceTest {
         orderLineItems.add(new OrderLineItem(1L, 1L, 3));
         orderLineItems.add(new OrderLineItem(2L, 2L, 3));
 
-        Order newOrder = new Order();
+        OrderRequest newOrder = new OrderRequest();
         newOrder.setOrderLineItems(orderLineItems);
 
         //when
@@ -120,7 +122,7 @@ class OrderServiceTest {
         orderLineItems.add(new OrderLineItem(1L, 1L, 3));
         orderLineItems.add(new OrderLineItem(2L, 2L, 3));
 
-        Order newOrder = new Order();
+        OrderRequest newOrder = new OrderRequest();
         newOrder.setOrderLineItems(orderLineItems);
         //when
         //then
@@ -141,7 +143,7 @@ class OrderServiceTest {
                         )
                 );
         //when
-        List<Order> orders = orderService.list();
+        List<OrderResponse> orders = orderService.list();
 
         //then
         assertThat(orders.size()).isEqualTo(2);
@@ -164,11 +166,11 @@ class OrderServiceTest {
                         Optional.of(new Order(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now()))
                 );
 
-        Order changeOrder = new Order();
+        OrderRequest changeOrder = new OrderRequest();
         changeOrder.setOrderStatus(OrderStatus.MEAL.name());
 
         //when
-        Order changedOrder = orderService.changeOrderStatus(1L, changeOrder);
+        OrderResponse changedOrder = orderService.changeOrderStatus(1L, changeOrder);
 
         //then
         assertThat(changedOrder.getId()).isEqualTo(1L);
@@ -184,7 +186,7 @@ class OrderServiceTest {
 
         //when
         //then
-        Order changeOrder = new Order();
+        OrderRequest changeOrder = new OrderRequest();
         changeOrder.setOrderStatus("식사");
         assertThatThrownBy(() -> orderService.changeOrderStatus(1L, changeOrder))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -199,7 +201,7 @@ class OrderServiceTest {
                         Optional.of(new Order(1L, 1L, OrderStatus.COMPLETION.name(), LocalDateTime.now()))
                 );
 
-        Order changeOrder = new Order();
+        OrderRequest changeOrder = new OrderRequest();
         changeOrder.setOrderStatus("식사");
 
         //when

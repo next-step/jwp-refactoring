@@ -6,6 +6,8 @@ import kitchenpos.dao.TableGroupDao;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,7 +51,7 @@ class TableGroupServiceTest {
         orderTables.add(new OrderTable(1L, null, 0, true));
         orderTables.add(new OrderTable(2L, null, 0, true));
 
-        TableGroup newTableGroup = new TableGroup(null, LocalDateTime.now(), orderTables);
+        TableGroupRequest newTableGroup = new TableGroupRequest(null, LocalDateTime.now(), orderTables);
         newTableGroup.setOrderTables(orderTables);
 
         given(orderTableDao.findAllByIdIn(any()))
@@ -59,7 +61,8 @@ class TableGroupServiceTest {
                                 new OrderTable(2L, null, 0, true)
                         )
                 );
-        given(tableGroupDao.save(newTableGroup))
+        // TODO: 임시로 any() 로 돌려놓음.
+        given(tableGroupDao.save(any()))
                 .willReturn(
                         new TableGroup(1L, LocalDateTime.now(),
                                 Arrays.asList(
@@ -70,7 +73,7 @@ class TableGroupServiceTest {
                 );
 
         //when
-        TableGroup savedTableGroup = tableGroupService.create(newTableGroup);
+        TableGroupResponse savedTableGroup = tableGroupService.create(newTableGroup);
 
         //then
         assertThat(savedTableGroup.getId()).isEqualTo(1L);
@@ -84,7 +87,7 @@ class TableGroupServiceTest {
         List<OrderTable> orderTables = new ArrayList<>();
         orderTables.add(new OrderTable(1L, null, 0, true));
 
-        TableGroup newTableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
+        TableGroupRequest newTableGroup = new TableGroupRequest(1L, LocalDateTime.now(), orderTables);
 
         //when
         //then

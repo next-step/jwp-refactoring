@@ -3,6 +3,8 @@ package kitchenpos.application;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,13 +34,14 @@ class MenuGroupServiceTest {
     void create() {
         //given
 
-        MenuGroup menuGroup = new MenuGroup(null, "일반메뉴");
+        MenuGroupRequest menuGroup = new MenuGroupRequest(null, "일반메뉴");
 
-        given(menuGroupDao.save(menuGroup))
+        // TODO: 임시로 any() 로 돌려놓음.
+        given(menuGroupDao.save(any()))
                 .willReturn(new MenuGroup(1L, "일반메뉴"));
 
         //when
-        MenuGroup createMenuGroup = menuGroupService.create(menuGroup);
+        MenuGroupResponse createMenuGroup = menuGroupService.create(menuGroup);
 
         //then
         assertThat(createMenuGroup.getId()).isNotNull();
@@ -57,7 +60,7 @@ class MenuGroupServiceTest {
                         )
                 );
         //when
-        List<MenuGroup> menuGroups = menuGroupService.list();
+        List<MenuGroupResponse> menuGroups = menuGroupService.list();
 
         //then
         assertThat(menuGroups.size()).isEqualTo(2);

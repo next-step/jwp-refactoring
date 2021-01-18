@@ -98,7 +98,7 @@
 
 - [x] spring data jpa 설정
 - [x] 패키지 구조를 도메인 별로 개편
-- [ ] DTO 분리
+- [x] DTO와 엔티티 분리
 - [ ] 엔티티 새로 등록 및 변경
 - [ ] 엔티티간 연관관계 설정
 - [ ] dao -> jpa repository 변경 

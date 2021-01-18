@@ -7,6 +7,8 @@ import kitchenpos.dao.ProductDao;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,18 +51,19 @@ class MenuServiceTest {
         List<MenuProduct> menuProducts = new ArrayList<>();
         menuProducts.add(new MenuProduct(1L, 1L, 1));
 
-        Menu newMenu = new Menu(null, "후라이드치킨", new BigDecimal("16000"), 2L);
+        MenuRequest newMenu = new MenuRequest(null, "후라이드치킨", new BigDecimal("16000"), 2L);
         newMenu.setMenuProducts(menuProducts);
 
+        // TODO: 임시로 any() 로 돌려놓음.
         given(menuGroupDao.existsById(any()))
                 .willReturn(true);
         given(productDao.findById(any()))
                 .willReturn(Optional.of(new Product(1L, "후라이드치킨", new BigDecimal("16000"))));
-        given(menuDao.save(newMenu))
+        given(menuDao.save(any()))
                 .willReturn(new Menu(1L, "후라이드치킨", new BigDecimal("16000"), 2L));
 
         //when
-        Menu createMenu = menuService.create(newMenu);
+        MenuResponse createMenu = menuService.create(newMenu);
 
         //then
         assertThat(createMenu.getId()).isEqualTo(1L);
@@ -72,7 +75,7 @@ class MenuServiceTest {
     @DisplayName("메뉴를 등록할 수 있다 - 메뉴의 가격은 0 원 이상이어야 한다.")
     @Test
     void create2() {
-        Menu newMenu = new Menu(null, "후라이드치킨", new BigDecimal("-1"), 2L);
+        MenuRequest newMenu = new MenuRequest(null, "후라이드치킨", new BigDecimal("-1"), 2L);
         assertThatThrownBy(() -> menuService.create(newMenu))
                 .isInstanceOf(IllegalArgumentException.class);
     }
@@ -83,7 +86,7 @@ class MenuServiceTest {
         // given
         given(menuGroupDao.existsById(any())).willReturn(false);
 
-        Menu newMenu = new Menu(null, "후라이드치킨", new BigDecimal("16000"), 2L);
+        MenuRequest newMenu = new MenuRequest(null, "후라이드치킨", new BigDecimal("16000"), 2L);
         // when
         // then
         assertThatThrownBy(() -> menuService.create(newMenu))
@@ -100,7 +103,7 @@ class MenuServiceTest {
         given(productDao.findById(any()))
                 .willReturn(Optional.empty());
 
-        Menu newMenu = new Menu(null, "후라이드치킨", new BigDecimal("16000"), 2L);
+        MenuRequest newMenu = new MenuRequest(null, "후라이드치킨", new BigDecimal("16000"), 2L);
         List<MenuProduct> menuProducts = new ArrayList<>();
         menuProducts.add(new MenuProduct(1L, 1L, 1));
         newMenu.setMenuProducts(menuProducts);
@@ -123,7 +126,7 @@ class MenuServiceTest {
         List<MenuProduct> menuProducts = new ArrayList<>();
         menuProducts.add(new MenuProduct(1L, 1L, 1));
 
-        Menu newMenu = new Menu(null, "후라이드치킨", new BigDecimal("16000"), 2L);
+        MenuRequest newMenu = new MenuRequest(null, "후라이드치킨", new BigDecimal("16000"), 2L);
         newMenu.setMenuProducts(menuProducts);
 
         //when
@@ -151,7 +154,7 @@ class MenuServiceTest {
                 .willReturn(Collections.singletonList(new MenuProduct(2L, 2L, 1L)));
 
         //when
-        List<Menu> menus = menuService.list();
+        List<MenuResponse> menus = menuService.list();
 
         //then
         assertThat(menus.size()).isEqualTo(2);

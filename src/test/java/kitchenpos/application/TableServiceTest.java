@@ -4,6 +4,8 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.ordertable.application.TableService;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,13 +39,14 @@ class TableServiceTest {
     @Test
     void create() {
         //given
-        OrderTable newOrderTable = new OrderTable(null, null, 0, true);
+        OrderTableRequest newOrderTable = new OrderTableRequest(null, null, 0, true);
 
         OrderTable savedTable = new OrderTable(1L, null, 0, true);
-        given(orderTableDao.save(newOrderTable)).willReturn(savedTable);
+        // TODO: any() 임시 사용
+        given(orderTableDao.save(any())).willReturn(savedTable);
 
         //when
-        OrderTable createOrderTable = tableService.create(newOrderTable);
+        OrderTableResponse createOrderTable = tableService.create(newOrderTable);
 
         //then
         assertThat(createOrderTable.getId()).isEqualTo(1L);
@@ -64,7 +67,7 @@ class TableServiceTest {
                 );
 
         //when
-        List<OrderTable> orderTables = tableService.list();
+        List<OrderTableResponse> orderTables = tableService.list();
 
         //then
         assertThat(orderTables.size()).isEqualTo(2);
@@ -90,8 +93,8 @@ class TableServiceTest {
                 .willReturn(savedOrderTable);
 
         //when
-        OrderTable newOrderTable = new OrderTable(2L, null, 0, false);
-        OrderTable changedOrderTable = tableService.changeEmpty(2L, newOrderTable);
+        OrderTableRequest newOrderTable = new OrderTableRequest(2L, null, 0, false);
+        OrderTableResponse changedOrderTable = tableService.changeEmpty(2L, newOrderTable);
 
         //then
         assertThat(changedOrderTable.isEmpty()).isFalse();
@@ -106,7 +109,7 @@ class TableServiceTest {
                         Optional.of(new OrderTable(2L, 1L, 0, true))
                 );
 
-        OrderTable orderTable = new OrderTable(2L, 1L, 0, false);
+        OrderTableRequest orderTable = new OrderTableRequest(2L, 1L, 0, false);
 
         //when
         //then
@@ -122,7 +125,7 @@ class TableServiceTest {
         given(orderTableDao.findById(2L)).willReturn(Optional.of(findTable));
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(true);
 
-        OrderTable orderTable = new OrderTable(2L, null, 0, false);
+        OrderTableRequest orderTable = new OrderTableRequest(2L, null, 0, false);
 
         //when
         //then
@@ -140,8 +143,8 @@ class TableServiceTest {
         given(orderTableDao.save(findTable)).willReturn(findTable);
 
         //when
-        OrderTable orderTable = new OrderTable(3L, null, 3, true);
-        OrderTable changedOrderTable = tableService.changeNumberOfGuests(orderTable.getId(), orderTable);
+        OrderTableRequest orderTable = new OrderTableRequest(3L, null, 3, true);
+        OrderTableResponse changedOrderTable = tableService.changeNumberOfGuests(orderTable.getId(), orderTable);
 
         //then
         assertThat(changedOrderTable.getNumberOfGuests()).isEqualTo(3);
@@ -151,7 +154,7 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuests2() {
         //given
-        OrderTable orderTable = new OrderTable(3L, null, -1, true);
+        OrderTableRequest orderTable = new OrderTableRequest(3L, null, -1, true);
 
         //when
         //then
@@ -166,7 +169,7 @@ class TableServiceTest {
         OrderTable findTable = new OrderTable(3L, null, 0, true);
         given(orderTableDao.findById(3L)).willReturn(Optional.of(findTable));
 
-        OrderTable orderTable = new OrderTable(3L, null, 3, true);
+        OrderTableRequest orderTable = new OrderTableRequest(3L, null, 3, true);
 
         //when
         //then

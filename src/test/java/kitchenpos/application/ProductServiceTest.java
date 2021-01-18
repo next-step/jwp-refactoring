@@ -3,6 +3,8 @@ package kitchenpos.application;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,12 +35,14 @@ class ProductServiceTest {
     @Test
     void create1() {
         //given
-        Product newProduct = new Product(null, "김치찌개", new BigDecimal(6000));
-        given(productDao.save(newProduct))
+        ProductRequest newProduct = new ProductRequest(null, "김치찌개", new BigDecimal(6000));
+        // TODO: 임시로 any() 로 돌려놓음.
+//        Product product = new Product(null, "김치찌개", new BigDecimal(6000));
+        given(productDao.save(any()))
                 .willReturn(new Product(2L, "김치찌개", new BigDecimal(6000)));
 
         //when
-        Product createProduct = productService.create(newProduct);
+        ProductResponse createProduct = productService.create(newProduct);
 
         //then
         assertThat(createProduct.getId()).isEqualTo(2L);
@@ -50,7 +54,7 @@ class ProductServiceTest {
     @Test
     void create2() {
         //given
-        Product newProduct = new Product(null, "김치찌개", new BigDecimal(-1));
+        ProductRequest newProduct = new ProductRequest(null, "김치찌개", new BigDecimal(-1));
 
         //when
         //then
@@ -63,7 +67,7 @@ class ProductServiceTest {
     @Test
     void create3() {
         //given
-        Product newProduct = new Product(null, "김치찌개", null);
+        ProductRequest newProduct = new ProductRequest(null, "김치찌개", null);
 
         //when
         //then
@@ -85,7 +89,7 @@ class ProductServiceTest {
                 );
 
         //when
-        List<Product> products = productService.list();
+        List<ProductResponse> products = productService.list();
 
         //then
         assertThat(products.size()).isEqualTo(2);
