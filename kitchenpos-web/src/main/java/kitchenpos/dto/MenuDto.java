@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.domain.model.Menu;
-import kitchenpos.domain.model.MenuProduct;
-import kitchenpos.domain.model.Money;
 
 public class MenuDto {
     private Long id;

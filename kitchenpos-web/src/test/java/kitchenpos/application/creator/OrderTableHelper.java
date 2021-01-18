@@ -1,8 +1,6 @@
 package kitchenpos.application.creator;
 
-import kitchenpos.domain.model.OrderTable;
 import kitchenpos.dto.OrderTableCreateRequest;
-import kitchenpos.dto.OrderTableRequest;
 
 /**
  * @author : leesangbae
