@@ -95,9 +95,10 @@ class TableGroupServiceTest {
     @Test
     void exceptionToCreateTableGroupWithNonemptyOrderTable() {
         // Given
-        orderTable1.setEmpty(false);
-        given(orderTableDao.findAllByIdIn(Arrays.asList(orderTable1.getId(), orderTable2.getId())))
-                .willReturn(Arrays.asList(orderTable1, orderTable2));
+        OrderTableResponse savedOrderTable1 = tableService.create(new OrderTableRequest(3, false));
+        OrderTableResponse savedOrderTable2 = tableService.create(new OrderTableRequest(5, false));
+        TableGroup tableGroup = new TableGroup();
+        tableGroup.setOrderTables(Arrays.asList(savedOrderTable1.toOrderTable(), savedOrderTable2.toOrderTable()));
 
         // When & Then
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
