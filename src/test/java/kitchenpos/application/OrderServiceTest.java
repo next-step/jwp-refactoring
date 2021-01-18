@@ -2,20 +2,17 @@ package kitchenpos.application;
 
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.*;
+import kitchenpos.dto.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -28,18 +25,24 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 
 @DisplayName("주문 서비스에 관련한 기능")
-@ExtendWith(value = MockitoExtension.class)
+@SpringBootTest
 class OrderServiceTest {
-    @Mock
+    @Autowired
     private MenuDao menuDao;
-    @Mock
+    @Autowired
     private OrderDao orderDao;
-    @Mock
-    private OrderLineItemDao orderLineItemDao;
-    @Mock
+    @Autowired
     private OrderTableDao orderTableDao;
-    @InjectMocks
+    @Autowired
     private OrderService orderService;
+    @Autowired
+    private ProductService productService;
+    @Autowired
+    private MenuGroupService menuGroupService;
+    @Autowired
+    private MenuService menuService;
+    @Autowired
+    private TableService tableService;
 
     private OrderLineItem orderLineItem;
     private Order order;
@@ -62,23 +65,28 @@ class OrderServiceTest {
     @Test
     void createOrder() {
         // Given
-        given(menuDao.countByIdIn(Collections.singletonList(orderLineItem.getMenuId()))).willReturn(1L);
-        OrderTable orderTable = new OrderTable();
-        orderTable.setId(order.getOrderTableId());
-        orderTable.setNumberOfGuests(3);
-        orderTable.setEmpty(false);
-        given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
-        given(orderDao.save(order)).willReturn(order);
-        given(orderLineItemDao.save(orderLineItem)).willReturn(orderLineItem);
+        ProductResponse 짬뽕 = productService.create(new ProductRequest("짬뽕", BigDecimal.valueOf(8_000)));
+        ProductResponse 짜장면 = productService.create(new ProductRequest("짜장면", BigDecimal.valueOf(6_000)));
+        MenuGroupResponse 신메뉴그룹 = menuGroupService.create(new MenuGroupRequest("신메뉴그룹"));
+        Menu 추천메뉴 = menuService.create(new MenuRequest("추천메뉴", BigDecimal.valueOf(14_000), 신메뉴그룹.getId(),
+                Arrays.asList(new MenuProductRequest(짬뽕.getId(), 1L), new MenuProductRequest(짜장면.getId(), 1L)))
+        );
+        OrderTableResponse orderTable = tableService.create(new OrderTableRequest(3, false));
+        OrderLineItem menuParams = new OrderLineItem();
+        menuParams.setMenuId(추천메뉴.getId());
+        menuParams.setQuantity(1);
+        Order order = new Order();
+        order.setOrderTableId(orderTable.getId());
+        order.setOrderLineItems(Collections.singletonList(menuParams));
 
         // When
         Order actual = orderService.create(order);
 
         // Then
         assertAll(
-                () -> assertThat(actual.getId()).isEqualTo(order.getId()),
+                () -> assertThat(actual.getId()).isNotNull(),
                 () -> assertThat(actual.getOrderTableId()).isEqualTo(order.getOrderTableId()),
-                () -> assertThat(actual.getOrderLineItems()).isEqualTo(order.getOrderLineItems()),
+                () -> assertThat(actual.getOrderLineItems()).isNotNull(),
                 () -> assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name()),
                 () -> assertThat(actual.getOrderedTime()).isNotNull()
         );

@@ -82,9 +82,9 @@
 ## 리팩터링 구현 목록
 
 - [ ] 실제 변경 코드의 테스트를 고려하여, Service Layer 테스트를 통합 테스트로 변경
-    - [x] Product 통합 테스트 적용
-    - [x] MenuGroup 통합 테스트 적용
-    - [x] Menu 통합 테스트 적용
+    - [ ] Product 통합 테스트 적용
+    - [ ] MenuGroup 통합 테스트 적용
+    - [ ] Menu 통합 테스트 적용
         - [x] Menu Service Layer 테스트의 재사용되는 코드 응집화
     - [ ] OrderTable 통합 테스트 적용
         - [x] test case - `주문 테이블`을 생성한다.
@@ -95,6 +95,8 @@
         - [x] test case - 하나의 `주문 테이블`의 `방문한 손님 수`가 0명보다 적으면, `방문한 손님 수`를 변경할 수 없다.
         - [x] test case - `주문 테이블`이 비어있으면, `방문한 손님 수`를 변경할 수 없다.
         - [x] test case - 모든 `주문 테이블` 목록을 조회한다.
+    - [ ] Order 통합 테스트 적용
+        - [x] test case - `주문`을 생성한다.
 - [ ] Domain Logic 개선에 앞서, UI 전달되는 Domain Context를 Service Layer에 격리
     - [ ] Product
         - [x] Service Layer에 Request DTO 적용
