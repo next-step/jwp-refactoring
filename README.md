@@ -8,6 +8,7 @@
 
 ### 메뉴(/menus)
 * 메뉴를 등록할 수 있다
+    * 메뉴를 등록할 때 메뉴그룹과 메뉴상품 목록이 필요하다 
 * 메뉴 목록을 조회할 수 있다
 
 ### 주문(/orders)
@@ -34,6 +35,26 @@
 
 ### 요구 사항 2
 * 요구사항 1을 토대로 테스트 코드를 작성한다
+### 메뉴그룹(/menu-groups)
+* MenuGroupRestControllerTest
+    * 등록 및 조회 Controller 테스트
+* MenuServiceTest
+    * 등록 및 조회 Service 테스트
+
+### 메뉴(/menus)
+* MenuGroupRestControllerTest
+    * 등록 및 조회 Controller 테스트
+        * 등록 전에 메뉴그룹, 메뉴상품 목록을 생성한다
+* MenuServiceTest
+    * 등록 및 조회 Service 테스트
+
+### 주문(/orders)
+
+### 상품(/products)
+
+
+### 테이블(/tables)
+
 
 
 ## 용어 사전

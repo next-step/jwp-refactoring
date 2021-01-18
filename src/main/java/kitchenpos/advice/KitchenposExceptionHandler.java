@@ -1,6 +1,7 @@
 package kitchenpos.advice;
 
 
+import kitchenpos.advice.exception.MenuException;
 import kitchenpos.advice.exception.MenuGroupException;
 import kitchenpos.advice.exception.ProductException;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,13 @@ public class KitchenposExceptionHandler {
     @ExceptionHandler(ProductException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     ResponseEntity check(ProductException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+
+    }
+
+    @ExceptionHandler(MenuException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    ResponseEntity check(MenuException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 
     }

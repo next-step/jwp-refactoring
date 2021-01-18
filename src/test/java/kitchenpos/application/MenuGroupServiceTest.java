@@ -28,7 +28,7 @@ class MenuGroupServiceTest {
         assertThat(newMenuGroup.getName()).isEqualTo(NEW_MENU_GROUP_NAME);
     }
 
-    @DisplayName("메뉴 그룹을 조회한다")
+    @DisplayName("메뉴그룹을 조회한다")
     @Test
     void list() {
         menuGroupService.create(new MenuGroup(NEW_MENU_GROUP_NAME));
