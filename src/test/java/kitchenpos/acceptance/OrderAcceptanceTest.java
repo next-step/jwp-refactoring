@@ -1,14 +1,10 @@
-package kitchenpos.order.acceptance;
+package kitchenpos.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.*;
-import kitchenpos.menu.acceptance.MenuAcceptanceTest;
-import kitchenpos.menugroup.acceptance.MenuGroupAcceptanceTest;
-import kitchenpos.ordertable.acceptance.TableAcceptanceTest;
-import kitchenpos.product.acceptance.ProductAcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
