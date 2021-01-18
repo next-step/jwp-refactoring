@@ -5,6 +5,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -25,7 +27,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     }
 
     private void 메뉴_그룹_생성() {
-        MenuGroup request = createRequest();
+        MenuGroupRequest request = createRequest();
         ExtractableResponse<Response> createdResponse = 생성_요청(request);
 
         생성됨(createdResponse, request);
@@ -37,14 +39,13 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
         조회됨(selectedResponse);
     }
 
-    public static MenuGroup createRequest() {
-        MenuGroup request = new MenuGroup();
-        request.setName("추천메뉴");
-
-        return request;
+    public static MenuGroupRequest createRequest() {
+        return MenuGroupRequest.builder()
+                .name("추천메뉴")
+                .build();
     }
 
-    public static ExtractableResponse<Response> 생성_요청(MenuGroup request) {
+    public static ExtractableResponse<Response> 생성_요청(MenuGroupRequest request) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -54,7 +55,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static void 생성됨(ExtractableResponse<Response> response, MenuGroup request) {
+    public static void 생성됨(ExtractableResponse<Response> response, MenuGroupRequest request) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         MenuGroup menuGroup = response.as(MenuGroup.class);
         assertThat(menuGroup.getName()).isEqualTo(request.getName());
@@ -71,7 +72,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
 
     public static void 조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        List<MenuGroup> menuGroups = Arrays.asList(response.as(MenuGroup[].class));
+        List<MenuGroupResponse> menuGroups = Arrays.asList(response.as(MenuGroupResponse[].class));
         assertThat(menuGroups.size()).isEqualTo(1);
     }
 }

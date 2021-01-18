@@ -1,9 +1,11 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.*;
+import kitchenpos.exception.BadPriceException;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,6 +13,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
+
 
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -21,14 +24,24 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
+import org.springframework.dao.DataIntegrityViolationException;
+
+import javax.persistence.EntityNotFoundException;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.*;
+
+
 @DisplayName("메뉴 서비스")
 public class MenuServiceTest extends ServiceTestBase {
     private final MenuGroupService menuGroupService;
     private final ProductService productService;
     private final MenuService menuService;
 
-    private MenuGroup menuGroup;
-    private Product product;
+    private MenuGroupResponse menuGroup;
+    private ProductResponse product;
 
     @Autowired
     public MenuServiceTest(MenuGroupService menuGroupService, ProductService productService, MenuService menuService) {
@@ -41,93 +54,75 @@ public class MenuServiceTest extends ServiceTestBase {
     void setUp() {
         super.setUp();
 
-        menuGroup = menuGroupService.create(MenuGroupServiceTest.createMenuGroup("추천메뉴"));
-        product = productService.create(ProductServiceTest.createProduct("후라이드", 17_000L));
+        menuGroup = menuGroupService.create(MenuGroupServiceTest.createRequest("추천메뉴"));
+        product = productService.create(ProductServiceTest.createRequest("후라이드", 17_000L));
     }
 
     @DisplayName("메뉴를 등록한다")
     @Test
-    void createMenu() {
-        List<MenuProduct> menuProducts = Collections.singletonList(createMenuProduct(product.getId(), 2L));
-        Menu menu = createMenu("후라이드+후라이드", 19_000L, menuGroup.getId(), menuProducts);
-        Menu savedMenu = menuService.create(menu);
+    void createRequest() {
+        List<MenuProductRequest> menuProducts = Collections.singletonList(createMenuProduct(product.getId(), 2L));
+        MenuRequest request = createRequest("후라이드+후라이드", 19_000L, menuGroup.getId(), menuProducts);
+        MenuResponse savedMenu = menuService.create(request);
 
         assertThat(savedMenu.getId()).isNotNull();
     }
 
     @DisplayName("가격이 부적합한 메뉴를 등록한다")
-    @ParameterizedTest
-    @MethodSource
-    void createMenuWithIllegalArguments(Long price) {
-        List<MenuProduct> menuProducts = Collections.singletonList(createMenuProduct(product.getId(), 2L));
-        Menu menu = createMenu("후라이드+후라이드", price, menuGroup.getId(), menuProducts);
+    @Test
+    void createMenuWithIllegalArguments() {
+        List<MenuProductRequest> menuProducts = Collections.singletonList(createMenuProduct(product.getId(), 2L));
+        MenuRequest request = createRequest("후라이드+후라이드", 300000L, menuGroup.getId(), menuProducts);
 
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> menuService.create(menu));
-    }
-
-    private static Stream<Arguments> createMenuWithIllegalArguments() {
-        return Stream.of(
-                Arguments.of((Object)null),
-                Arguments.of(-1L),
-                Arguments.of(300000L)
-        );
+        assertThatExceptionOfType(BadPriceException.class)
+                .isThrownBy(() -> menuService.create(request));
     }
 
     @DisplayName("메뉴 그룹이 등록되지 않은 메뉴를 등록한다")
     @Test
     void createMenuWithNotExistsMenuGroup() {
-        List<MenuProduct> menuProducts = Collections.singletonList(createMenuProduct(product.getId(), 2L));
-        Menu menu = createMenu("후라이드+후라이드", 19_000L, 99L, menuProducts);
+        List<MenuProductRequest> menuProducts = Collections.singletonList(createMenuProduct(product.getId(), 2L));
+        MenuRequest request = createRequest("후라이드+후라이드", 19_000L, 99L, menuProducts);
 
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> menuService.create(menu));
+        assertThatExceptionOfType(DataIntegrityViolationException.class)
+                .isThrownBy(() -> menuService.create(request));
     }
 
     @DisplayName("제품이 등록되지 않은 메뉴를 등록한다")
     @Test
     void createMenuWithNotExistsProduct() {
-        List<MenuProduct> menuProducts = Collections.singletonList(createMenuProduct(99L, 2L));
-        Menu menu = createMenu("후라이드+후라이드", 19_000L, menuGroup.getId(), menuProducts);
+        List<MenuProductRequest> menuProducts = Collections.singletonList(createMenuProduct(99L, 2L));
+        MenuRequest request = createRequest("후라이드+후라이드", 19_000L, menuGroup.getId(), menuProducts);
 
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> menuService.create(menu));
+        assertThatExceptionOfType(EntityNotFoundException.class)
+                .isThrownBy(() -> menuService.create(request));
     }
 
     @DisplayName("제품을 조회한다")
     @Test
     void findAllProduct() {
-        List<MenuProduct> menuProducts = Collections.singletonList(createMenuProduct(product.getId(), 2L));
-        menuService.create(createMenu("후라이드+후라이드", 19_000L, menuGroup.getId(), menuProducts));
-        menuService.create(createMenu("양념+후라이드", 20_000L, menuGroup.getId(), menuProducts));
+        List<MenuProductRequest> menuProducts = Collections.singletonList(createMenuProduct(product.getId(), 2L));
+        MenuResponse createdResponse = menuService.create(createRequest("후라이드+후라이드", 19_000L, menuGroup.getId(), menuProducts));
+        MenuResponse createdResponse2 = menuService.create(createRequest("양념+후라이드", 20_000L, menuGroup.getId(), menuProducts));
 
-        List<Menu> menus = menuService.list();
+        List<MenuResponse> menus = menuService.list();
         assertThat(menus.size()).isEqualTo(2);
-        List<String> menuNames = menus.stream()
-                .map(Menu::getName)
-                .collect(Collectors.toList());
-        assertThat(menuNames).contains("후라이드+후라이드", "양념+후라이드");
+        assertThat(menus).contains(createdResponse, createdResponse2);
     }
 
-    public static Menu createMenu(String name, Long price, Long menuGroupId, List<MenuProduct> menuProuducts) {
-        Menu menu = new Menu();
-
-        menu.setName(name);
-        if (price != null) {
-            menu.setPrice(new BigDecimal(price));
-        }
-        menu.setMenuGroupId(menuGroupId);
-        menu.setMenuProducts(menuProuducts);
-
-        return menu;
+    public static MenuRequest createRequest(String name, long price, Long menuGroupId, List<MenuProductRequest> menuProuducts) {
+        return MenuRequest.builder()
+                .name(name)
+                .price(price)
+                .menuGroupId(menuGroupId)
+                .menuProducts(menuProuducts)
+                .build();
     }
 
-    public static MenuProduct createMenuProduct(Long productId, Long quantity) {
-        MenuProduct menuProduct = new MenuProduct();
-
-        menuProduct.setProductId(productId);
-        menuProduct.setQuantity(quantity);
-
-        return menuProduct;
+    public static MenuProductRequest createMenuProduct(Long productId, Long quantity) {
+        return MenuProductRequest.builder()
+                .productId(productId)
+                .quantity(quantity)
+                .build();
     }
 }

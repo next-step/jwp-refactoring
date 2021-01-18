@@ -4,16 +4,16 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.MenuResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -35,7 +35,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         Product product = ProductAcceptanceTest.생성_요청(ProductAcceptanceTest.createRequest())
                 .as(Product.class);
 
-        Menu request = createRequest(menuGroup, product);
+        MenuRequest request = createRequest(menuGroup, product);
         ExtractableResponse<Response> createdResponse = 생성_요청(request);
 
         생성됨(createdResponse, request);
@@ -47,23 +47,23 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         조회됨(selectedResponse);
     }
 
-    public static Menu createRequest(MenuGroup menuGroup, Product product) {
-        MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setProductId(product.getId());
-        menuProduct.setQuantity(2);
+    public static MenuRequest createRequest(MenuGroup menuGroup, Product product) {
+        MenuProductRequest menuProductRequest = MenuProductRequest.builder()
+                .productId(product.getId())
+                .quantity(2)
+                .build();
 
-        List<MenuProduct> menuProducts = Collections.singletonList(menuProduct);
+        List<MenuProductRequest> menuProductRequests = Collections.singletonList(menuProductRequest);
 
-        Menu request = new Menu();
-        request.setName("후라이드+후라이드");
-        request.setPrice(new BigDecimal(19_000));
-        request.setMenuGroupId(menuGroup.getId());
-        request.setMenuProducts(menuProducts);
-
-        return request;
+        return MenuRequest.builder()
+                .name("후라이드+후라이드")
+                .price(19_000)
+                .menuGroupId(menuGroup.getId())
+                .menuProducts(menuProductRequests)
+                .build();
     }
 
-    public static ExtractableResponse<Response> 생성_요청(Menu request) {
+    public static ExtractableResponse<Response> 생성_요청(MenuRequest request) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -73,11 +73,11 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static void 생성됨(ExtractableResponse<Response> response, Menu request) {
+    public static void 생성됨(ExtractableResponse<Response> response, MenuRequest request) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        Menu menu = response.as(Menu.class);
+        MenuResponse menu = response.as(MenuResponse.class);
         assertThat(menu.getName()).isEqualTo(request.getName());
-        assertThat(menu.getPrice().intValue()).isEqualTo(request.getPrice().intValue());
+        assertThat(menu.getPrice()).isEqualTo(request.getPrice());
         assertThat(menu.getMenuGroupId()).isEqualTo(request.getMenuGroupId());
     }
 
@@ -92,7 +92,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
     public static void 조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        List<Menu> menu = Arrays.asList(response.as(Menu[].class));
+        List<MenuResponse> menu = Arrays.asList(response.as(MenuResponse[].class));
         assertThat(menu.size()).isEqualTo(1);
     }
 }
