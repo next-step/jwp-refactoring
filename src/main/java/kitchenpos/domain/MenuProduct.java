@@ -1,40 +1,33 @@
 package kitchenpos.domain;
 
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+
+@Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MenuProduct {
-    private Long seq;
-    private Long menuId;
-    private Long productId;
-    private long quantity;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @ManyToOne
+    private Menu menu;
+    @ManyToOne
+    private Product product;
+    private Long quantity;
 
-    public Long getSeq() {
-        return seq;
-    }
-
-    public void setSeq(final Long seq) {
-        this.seq = seq;
-    }
-
-    public Long getMenuId() {
-        return menuId;
-    }
-
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
-    }
-
-    public Long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(final Long productId) {
-        this.productId = productId;
-    }
-
-    public long getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(final long quantity) {
+    @Builder
+    public MenuProduct(Menu menu, Product product, Long quantity) {
+        this.menu = menu;
+        this.product = product;
         this.quantity = quantity;
+    }
+
+    public long getPrice() {
+        return product.getPrice() * quantity;
     }
 }

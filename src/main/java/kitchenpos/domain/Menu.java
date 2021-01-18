@@ -1,52 +1,42 @@
 package kitchenpos.domain;
 
-import java.math.BigDecimal;
-import java.util.List;
+import kitchenpos.exception.BadPriceException;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
+
+@Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Menu {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private BigDecimal price;
-    private Long menuGroupId;
-    private List<MenuProduct> menuProducts;
+    private Long price;
+    @ManyToOne
+    private MenuGroup menuGroup;
+    @Embedded
+    private final MenuProducts menuProducts = new MenuProducts();
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(final String name) {
+    @Builder
+    public Menu(String name, Long price, MenuGroup menuGroup) {
         this.name = name;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(final BigDecimal price) {
         this.price = price;
+        this.menuGroup = menuGroup;
     }
 
-    public Long getMenuGroupId() {
-        return menuGroupId;
+    public void add(Product product, Long quantity) {
+        this.menuProducts.add(new MenuProduct(this, product, quantity));
+        if (this.menuProducts.sumTotalPrice() < price) {
+            throw new BadPriceException("메뉴의 가격은 전체 상품 가격보다 높을 수 없습니다.");
+        }
     }
 
-    public void setMenuGroupId(final Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
-    }
-
-    public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
-    }
-
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
+    public long getMenuGroupId() {
+        return menuGroup.getId();
     }
 }
