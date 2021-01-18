@@ -2,7 +2,6 @@ package kitchenpos.application;
 
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -64,7 +63,7 @@ class TableGroupServiceTest {
 		assertThat(response.getOrderTables())
 				.map(OrderTableResponse::getId)
 				.map(id -> orderTableDao.findById(id).orElseThrow(Exception::new))
-				.allSatisfy(orderTable -> assertThat(orderTable.getTableGroupId()).isEqualTo(response.getId()));
+				.allSatisfy(orderTable -> assertThat(orderTable.getTableGroup().getId()).isEqualTo(response.getId()));
 	}
 
 	@DisplayName("단체 지정하려는 테이블 수가 적을 경우 예외 발생.")
@@ -115,8 +114,7 @@ class TableGroupServiceTest {
 		assertThat(response.getOrderTables())
 				.map(OrderTableResponse::getId)
 				.map(id -> orderTableDao.findById(id).orElseThrow(Exception::new))
-				.map(OrderTable::getTableGroupId)
-				.allSatisfy(tableGroupId -> assertThat(tableGroupId).isNull());
+				.allSatisfy(orderTable -> assertThat(orderTable.getTableGroup()).isNull());
 
 		// TODO: 2021-01-15 테이블 그룹 삭제되도록 처리
 		assertThat(tableGroupDao.findById(response.getId())).isNotPresent();

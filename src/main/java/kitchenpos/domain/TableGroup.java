@@ -1,27 +1,27 @@
 package kitchenpos.domain;
 
+import kitchenpos.common.BaseIdEntity;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class TableGroup {
-    private Long id;
+@Entity
+@Table(name = "table_group")
+@EntityListeners(AuditingEntityListener.class)
+public class TableGroup extends BaseIdEntity {
+
+    @CreatedDate
+    @Column(name = "created_date")
     private LocalDateTime createdDate;
+
+    @OneToMany(mappedBy = "tableGroup")
     private List<OrderTable> orderTables;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
-    }
 
     public LocalDateTime getCreatedDate() {
         return createdDate;
-    }
-
-    public void setCreatedDate(final LocalDateTime createdDate) {
-        this.createdDate = createdDate;
     }
 
     public List<OrderTable> getOrderTables() {

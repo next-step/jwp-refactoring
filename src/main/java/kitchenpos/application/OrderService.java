@@ -63,7 +63,7 @@ public class OrderService {
 			throw new IllegalArgumentException();
 		}
 
-		final Order savedOrder = orderDao.save(createOrder(request));
+		final Order savedOrder = orderDao.save(createOrder(orderTable));
 
 		final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
 		for (final OrderLineItemRequest iterRequest : orderLineItems) {
@@ -74,18 +74,18 @@ public class OrderService {
 		return OrderResponse.of(savedOrder);
 	}
 
-	private Order createOrder(OrderRequest_Create request) {
+	private Order createOrder(OrderTable orderTable) {
 		Order order = new Order();
-		order.setOrderTableId(request.getOrderTableId());
-		order.setOrderStatus(OrderStatus.COOKING.name());
+		order.setOrderTable(orderTable);
+		order.setOrderStatus(OrderStatus.COOKING);
 		order.setOrderedTime(LocalDateTime.now());
 		return order;
 	}
 
 	private OrderLineItem createOrderLineItem(Order order, OrderLineItemRequest request) {
 		OrderLineItem orderLineItem = new OrderLineItem();
-		orderLineItem.setOrderId(order.getId());
-		orderLineItem.setMenuId(request.getMenuId());
+		orderLineItem.setOrder(order);
+		orderLineItem.setMenu(menuDao.findById(request.getMenuId()).orElseThrow(() -> new IllegalArgumentException()));
 		orderLineItem.setQuantity(request.getQuantity());
 		return orderLineItem;
 	}
@@ -108,12 +108,12 @@ public class OrderService {
 		final Order savedOrder = orderDao.findById(orderId)
 				.orElseThrow(IllegalArgumentException::new);
 
-		if (Objects.equals(OrderStatus.COMPLETION.name(), savedOrder.getOrderStatus())) {
+		if (Objects.equals(OrderStatus.COMPLETION, savedOrder.getOrderStatus())) {
 			throw new IllegalArgumentException();
 		}
 
 		final OrderStatus orderStatus = OrderStatus.valueOf(request.getOrderStatus());
-		savedOrder.setOrderStatus(orderStatus.name());
+		savedOrder.setOrderStatus(orderStatus);
 
 		orderDao.save(savedOrder);
 

@@ -1,6 +1,9 @@
 package kitchenpos.dto;
 
+import kitchenpos.common.BaseIdEntity;
 import kitchenpos.domain.OrderTable;
+
+import java.util.Optional;
 
 public class OrderTableResponse {
 	private long id;
@@ -12,8 +15,11 @@ public class OrderTableResponse {
 	}
 
 	public static OrderTableResponse of(OrderTable orderTable) {
-		return new OrderTableResponse(orderTable.getId(), orderTable.getTableGroupId(),
-				orderTable.getNumberOfGuests(), orderTable.isEmpty());
+		Long tableGroupId = Optional.ofNullable(orderTable.getTableGroup())
+				.map(BaseIdEntity::getId)
+				.orElse(null);
+		return new OrderTableResponse(orderTable.getId(),
+				tableGroupId, orderTable.getNumberOfGuests(), orderTable.isEmpty());
 	}
 
 	public OrderTableResponse(long id, Long tableGroupId, int numberOfGuests, boolean empty) {

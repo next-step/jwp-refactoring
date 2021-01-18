@@ -1,25 +1,29 @@
 package kitchenpos.domain;
 
-public class OrderTable {
-    private Long id;
-    private Long tableGroupId;
+import kitchenpos.common.BaseIdEntity;
+
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "order_table")
+public class OrderTable extends BaseIdEntity {
+
+    @ManyToOne
+    @JoinColumn(name = "table_group_id", nullable = true)
+    private TableGroup tableGroup;
+
     private int numberOfGuests;
     private boolean empty;
 
-    public Long getId() {
-        return id;
+    public TableGroup getTableGroup() {
+        return tableGroup;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public Long getTableGroupId() {
-        return tableGroupId;
-    }
-
-    public void setTableGroupId(final Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
+    public void setTableGroup(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
     }
 
     public int getNumberOfGuests() {

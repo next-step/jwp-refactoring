@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -43,27 +42,20 @@ public class TableGroupService {
 		}
 
 		for (final OrderTable savedOrderTable : savedOrderTables) {
-			if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
+			if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup())) {
 				throw new IllegalArgumentException();
 			}
 		}
 
-		final TableGroup savedTableGroup = tableGroupDao.save(createTableGroup());
-		final Long tableGroupId = savedTableGroup.getId();
+		final TableGroup savedTableGroup = tableGroupDao.save(new TableGroup());
 		for (final OrderTable savedOrderTable : savedOrderTables) {
-			savedOrderTable.setTableGroupId(tableGroupId);
+			savedOrderTable.setTableGroup(savedTableGroup);
 			savedOrderTable.setEmpty(false); // TODO: 2021-01-15 이미 Empty 되어있는 테이블만 가능하므로 제거할 것
 			orderTableDao.save(savedOrderTable);
 		}
 		savedTableGroup.setOrderTables(savedOrderTables);
 
 		return TableGroupResponse.of(savedTableGroup);
-	}
-
-	private TableGroup createTableGroup() {
-		TableGroup tableGroup = new TableGroup();
-		tableGroup.setCreatedDate(LocalDateTime.now());
-		return tableGroup;
 	}
 
 	@Transactional
@@ -75,12 +67,12 @@ public class TableGroupService {
 				.collect(Collectors.toList());
 
 		if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
-				orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+				orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
 			throw new IllegalArgumentException();
 		}
 
 		for (final OrderTable orderTable : orderTables) {
-			orderTable.setTableGroupId(null);
+			orderTable.setTableGroup(null);
 			orderTableDao.save(orderTable);
 		}
 		// TODO: 2021-01-15 delete TableGroup

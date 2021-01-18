@@ -1,39 +1,48 @@
 package kitchenpos.domain;
 
+import kitchenpos.common.BaseIdEntity;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class Order {
-    private Long id;
-    private Long orderTableId;
-    private String orderStatus;
+@Entity
+@Table(name = "orders")
+@EntityListeners(AuditingEntityListener.class)
+public class Order extends BaseIdEntity {
+
+    @ManyToOne
+    @JoinColumn(name = "order_table_id", nullable = false)
+    private OrderTable orderTable;
+
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "order_status", nullable = false)
+    private OrderStatus orderStatus;
+
+    @CreatedDate
+    @Column(name = "ordered_time", nullable = false)
     private LocalDateTime orderedTime;
+
+    @OneToMany(mappedBy = "order")
     private List<OrderLineItem> orderLineItems;
 
-    public Long getId() {
-        return id;
+    public OrderTable getOrderTable() {
+        return orderTable;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
+    public void setOrderTable(OrderTable orderTable) {
+        this.orderTable = orderTable;
     }
 
-    public Long getOrderTableId() {
-        return orderTableId;
-    }
-
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
-    }
-
-    public String getOrderStatus() {
-        return orderStatus;
-    }
-
-    public void setOrderStatus(final String orderStatus) {
+    public void setOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
     public LocalDateTime getOrderedTime() {
         return orderedTime;
     }

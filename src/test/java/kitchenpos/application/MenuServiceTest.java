@@ -77,7 +77,7 @@ class MenuServiceTest {
 		assertThat(menuResponse.getMenuGroupId()).isEqualTo(메뉴그룹.getId());
 		assertThat(menuProductDao.findAllByMenuId(menuResponse.getId()))
 				.hasSize(3)
-				.map(MenuProduct::getProductId)
+				.map(menuProduct -> menuProduct.getProduct().getId())
 				.containsExactly(콜라.getId(), 감튀.getId(), 버거.getId());
 	}
 

@@ -70,7 +70,7 @@ class OrderServiceTest {
 		// then
 		assertThat(orderResponse.getId()).isNotNull();
 		assertThat(orderResponse.getOrderTableId()).isEqualTo(orderTable.getId());
-		assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+		assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
 		assertThat(orderResponse.getOrderLineItems())
 				.hasSize(2)
 				.allSatisfy(lineItem -> assertThat(lineItem.getOrderId()).isEqualTo(orderResponse.getId()))
@@ -135,7 +135,7 @@ class OrderServiceTest {
 		assertThat(orderDao.findById(orderResponse.getId())).isPresent()
 				.get()
 				.extracting(Order::getOrderStatus)
-				.isEqualTo(OrderStatus.MEAL.name());
+				.isEqualTo(OrderStatus.MEAL);
 	}
 
 	@DisplayName("주문 상태 변경시 이미 완료된 주문을 바꿀시 예외 발생.")

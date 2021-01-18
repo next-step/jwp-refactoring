@@ -1,19 +1,16 @@
 package kitchenpos.domain;
 
+import kitchenpos.common.BaseIdEntity;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 
-public class Product {
-    private Long id;
+@Entity
+@Table(name = "product")
+public class Product extends BaseIdEntity {
     private String name;
     private BigDecimal price;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;

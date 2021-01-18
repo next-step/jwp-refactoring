@@ -1,22 +1,23 @@
 package kitchenpos.domain;
 
-public class MenuGroup {
-    private Long id;
+import kitchenpos.common.BaseIdEntity;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "menu_group")
+public class MenuGroup extends BaseIdEntity {
+
+    @Column(name = "name", nullable = false)
     private String name;
 
-    public MenuGroup() {
+    protected MenuGroup() {
     }
 
     public MenuGroup(String name) {
         this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -25,5 +26,6 @@ public class MenuGroup {
 
     public void setName(final String name) {
         this.name = name;
+        // TODO: 2021-01-16 remove
     }
 }

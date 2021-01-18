@@ -1,22 +1,27 @@
 package kitchenpos.domain;
 
+import kitchenpos.common.BaseIdEntity;
+
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class Menu {
-    private Long id;
+@Entity
+@Table(name = "menu")
+public class Menu extends BaseIdEntity {
+
+    @Column(name = "name", nullable = false)
     private String name;
+
+    @Column(name = "price", nullable = false, columnDefinition = "DECIMAL(19,2)")
     private BigDecimal price;
-    private Long menuGroupId;
+
+    @ManyToOne
+    @JoinColumn(name = "menu_group_id", nullable = false)
+    private MenuGroup menuGroup;
+
+    @OneToMany(mappedBy = "menu") // TODO: 2021-01-16 consider cascade, orphanRemoval
     private List<MenuProduct> menuProducts;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
@@ -34,12 +39,13 @@ public class Menu {
         this.price = price;
     }
 
-    public Long getMenuGroupId() {
-        return menuGroupId;
+
+    public MenuGroup getMenuGroup() {
+        return menuGroup;
     }
 
-    public void setMenuGroupId(final Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
+    public void setMenuGroup(MenuGroup menuGroup) {
+        this.menuGroup = menuGroup;
     }
 
     public List<MenuProduct> getMenuProducts() {

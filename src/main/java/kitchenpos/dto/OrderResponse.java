@@ -1,6 +1,7 @@
 package kitchenpos.dto;
 
 import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.stream.Collectors;
 public class OrderResponse {
 	private long id;
 	private long orderTableId;
-	private String orderStatus; // TODO: 2021-01-15 changetoEnum
+	private OrderStatus orderStatus; // TODO: 2021-01-15 changetoEnum
 	private LocalDateTime orderedTime;
 	List<OrderLineItemResponse> orderLineItems;
 
@@ -20,11 +21,11 @@ public class OrderResponse {
 		List<OrderLineItemResponse> itemResponses = order.getOrderLineItems().stream()
 				.map(OrderLineItemResponse::of)
 				.collect(Collectors.toList());
-		return new OrderResponse(order.getId(), order.getOrderTableId(), order.getOrderStatus(), order.getOrderedTime(),
+		return new OrderResponse(order.getId(), order.getOrderTable().getId(), order.getOrderStatus(), order.getOrderedTime(),
 				itemResponses);
 	}
 
-	public OrderResponse(long id, long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItemResponse> orderLineItems) {
+	public OrderResponse(long id, long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItemResponse> orderLineItems) {
 		this.id = id;
 		this.orderTableId = orderTableId;
 		this.orderStatus = orderStatus;
@@ -40,7 +41,7 @@ public class OrderResponse {
 		return orderTableId;
 	}
 
-	public String getOrderStatus() {
+	public OrderStatus getOrderStatus() {
 		return orderStatus;
 	}
 

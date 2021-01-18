@@ -1,33 +1,40 @@
 package kitchenpos.domain;
 
-public class OrderLineItem {
-    private Long seq;
-    private Long orderId;
-    private Long menuId;
+import kitchenpos.common.BaseSeqEntity;
+
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "order_line_item")
+public class OrderLineItem extends BaseSeqEntity {
+
+    @ManyToOne
+    @JoinColumn(name = "order_id", nullable = false)
+    private Order order;
+
+    @ManyToOne
+    @JoinColumn(name = "menu_id", nullable = false)
+    private Menu menu;
+
     private long quantity;
 
-    public Long getSeq() {
-        return seq;
+    public Order getOrder() {
+        return order;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
+    public void setOrder(Order order) {
+        this.order = order;
     }
 
-    public Long getOrderId() {
-        return orderId;
+    public Menu getMenu() {
+        return menu;
     }
 
-    public void setOrderId(final Long orderId) {
-        this.orderId = orderId;
-    }
-
-    public Long getMenuId() {
-        return menuId;
-    }
-
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
+    public void setMenu(Menu menu) {
+        this.menu = menu;
     }
 
     public long getQuantity() {
