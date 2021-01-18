@@ -50,7 +50,7 @@ class OrderServiceTest {
         OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(menuParams));
 
         // When
-        Order actual = orderService.create(orderRequest);
+        OrderResponse actual = orderService.create(orderRequest);
 
         // Then
         assertAll(
@@ -104,10 +104,10 @@ class OrderServiceTest {
         menuParams.setMenuId(추천메뉴.getId());
         menuParams.setQuantity(1);
         OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(menuParams));
-        Order expected = orderService.create(orderRequest);
+        OrderResponse expected = orderService.create(orderRequest);
 
         // When
-        List<Order> actual = orderService.list();
+        List<OrderResponse> actual = orderService.list();
 
         // Then
         assertThat(actual).containsAnyElementsOf(Collections.singletonList(expected));
@@ -128,7 +128,7 @@ class OrderServiceTest {
         menuParams.setMenuId(추천메뉴.getId());
         menuParams.setQuantity(1);
         OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(menuParams));
-        Order savedOrder = orderService.create(orderRequest);
+        OrderResponse savedOrder = orderService.create(orderRequest);
         OrderRequest updateOrder = new OrderRequest(OrderStatus.COMPLETION.name());
 
         // When
@@ -153,7 +153,7 @@ class OrderServiceTest {
         menuParams.setMenuId(추천메뉴.getId());
         menuParams.setQuantity(1);
         OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(menuParams));
-        Order savedOrder = orderService.create(orderRequest);
+        OrderResponse savedOrder = orderService.create(orderRequest);
 
         OrderRequest updateOrder = new OrderRequest(OrderStatus.COMPLETION.name());
         orderService.changeOrderStatus(savedOrder.getId(), updateOrder);

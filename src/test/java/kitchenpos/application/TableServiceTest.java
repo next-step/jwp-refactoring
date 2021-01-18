@@ -179,7 +179,7 @@ class TableServiceTest {
         menuParams.setMenuId(추천메뉴.getId());
         menuParams.setQuantity(1);
         OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(menuParams));
-        Order order = orderService.create(orderRequest);
+        OrderResponse order = orderService.create(orderRequest);
         orderService.changeOrderStatus(order.getId(), new OrderRequest(OrderStatus.COMPLETION.name()));
         tableService.changeEmpty(orderTable.getId(), new OrderTableRequest(true));
 

@@ -133,7 +133,7 @@
         - [x] Service Layer에 Response DTO 적용
     - [ ] Order
         - [x] Service Layer에 Request DTO 적용
-        - [ ] Service Layer에 Response DTO 적용
+        - [x] Service Layer에 Response DTO 적용
     - [ ] TableGroup
         - [ ] Service Layer에 Request DTO 적용
         - [ ] Service Layer에 Response DTO 적용
