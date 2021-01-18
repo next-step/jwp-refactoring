@@ -39,7 +39,7 @@ class TableServiceTest {
         OrderTableRequest request = new OrderTableRequest(3, true);
 
         // When
-        OrderTable actual = tableService.create(request);
+        OrderTableResponse actual = tableService.create(request);
 
         // Then
         assertAll(
@@ -55,24 +55,24 @@ class TableServiceTest {
     void findAllTables() {
         // Given
         OrderTableRequest request = new OrderTableRequest(3, true);
-        OrderTable orderTable = tableService.create(request);
+        OrderTableResponse expected = tableService.create(request);
 
         // When
         List<OrderTableResponse> actual = tableService.list();
 
         // Then
-        assertThat(actual).containsAnyElementsOf(Collections.singletonList(OrderTableResponse.from(orderTable)));
+        assertThat(actual).containsAnyElementsOf(Collections.singletonList(expected));
     }
 
     @DisplayName("`주문 테이블`을 비어있는 상태로 변경한다.")
     @Test
     void changeEmpty() {
         // Given
-        OrderTable orderTable = tableService.create(new OrderTableRequest(3, false));
+        OrderTableResponse orderTable = tableService.create(new OrderTableRequest(3, false));
         OrderTableRequest request = new OrderTableRequest(true);
 
         // When
-        OrderTable actual = tableService.changeEmpty(orderTable.getId(), request);
+        OrderTableResponse actual = tableService.changeEmpty(orderTable.getId(), request);
 
         // Then
         assertThat(actual.isEmpty()).isEqualTo(request.isEmpty());
@@ -82,11 +82,11 @@ class TableServiceTest {
     @Test
     void exceptionToChangeEmptyWithTableGroup() {
         // Given
-        OrderTable orderTable1 = tableService.create(new OrderTableRequest(3, true));
-        OrderTable orderTable2 = tableService.create(new OrderTableRequest(3, true));
+        OrderTableResponse orderTable1 = tableService.create(new OrderTableRequest(3, true));
+        OrderTableResponse orderTable2 = tableService.create(new OrderTableRequest(3, true));
         TableGroup tableGroup = new TableGroup();
         tableGroup.setId(1L);
-        tableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
+        tableGroup.setOrderTables(Arrays.asList(orderTable1.toOrderTable(), orderTable2.toOrderTable()));
         tableGroupService.create(tableGroup);
 
         // When & Then
@@ -104,7 +104,7 @@ class TableServiceTest {
         Menu 추천메뉴 = menuService.create(new MenuRequest("추천메뉴", BigDecimal.valueOf(14_000), 신메뉴그룹.getId(),
                 Arrays.asList(new MenuProductRequest(짬뽕.getId(), 1L), new MenuProductRequest(짜장면.getId(), 1L)))
         );
-        OrderTable orderTable = tableService.create(new OrderTableRequest(3, false));
+        OrderTableResponse orderTable = tableService.create(new OrderTableRequest(3, false));
         OrderLineItem menuParams = new OrderLineItem();
         menuParams.setMenuId(추천메뉴.getId());
         menuParams.setQuantity(1);
@@ -128,7 +128,7 @@ class TableServiceTest {
         Menu 추천메뉴 = menuService.create(new MenuRequest("추천메뉴", BigDecimal.valueOf(14_000), 신메뉴그룹.getId(),
                 Arrays.asList(new MenuProductRequest(짬뽕.getId(), 1L), new MenuProductRequest(짜장면.getId(), 1L)))
         );
-        OrderTable orderTable = tableService.create(new OrderTableRequest(3, false));
+        OrderTableResponse orderTable = tableService.create(new OrderTableRequest(3, false));
         OrderLineItem menuParams = new OrderLineItem();
         menuParams.setMenuId(추천메뉴.getId());
         menuParams.setQuantity(1);
@@ -139,7 +139,7 @@ class TableServiceTest {
 
         // When
         int updateNumberOfGuests = 5;
-        OrderTable actual = tableService.changeNumberOfGuests(orderTable.getId(), new OrderTableRequest(updateNumberOfGuests));
+        OrderTableResponse actual = tableService.changeNumberOfGuests(orderTable.getId(), new OrderTableRequest(updateNumberOfGuests));
 
         // Then
         assertThat(actual.getNumberOfGuests()).isEqualTo(updateNumberOfGuests);
@@ -155,7 +155,7 @@ class TableServiceTest {
         Menu 추천메뉴 = menuService.create(new MenuRequest("추천메뉴", BigDecimal.valueOf(14_000), 신메뉴그룹.getId(),
                 Arrays.asList(new MenuProductRequest(짬뽕.getId(), 1L), new MenuProductRequest(짜장면.getId(), 1L)))
         );
-        OrderTable orderTable = tableService.create(new OrderTableRequest(3, false));
+        OrderTableResponse orderTable = tableService.create(new OrderTableRequest(3, false));
         OrderLineItem menuParams = new OrderLineItem();
         menuParams.setMenuId(추천메뉴.getId());
         menuParams.setQuantity(1);
@@ -180,7 +180,7 @@ class TableServiceTest {
         Menu 추천메뉴 = menuService.create(new MenuRequest("추천메뉴", BigDecimal.valueOf(14_000), 신메뉴그룹.getId(),
                 Arrays.asList(new MenuProductRequest(짬뽕.getId(), 1L), new MenuProductRequest(짜장면.getId(), 1L)))
         );
-        OrderTable orderTable = tableService.create(new OrderTableRequest(3, false));
+        OrderTableResponse orderTable = tableService.create(new OrderTableRequest(3, false));
         OrderLineItem menuParams = new OrderLineItem();
         menuParams.setMenuId(추천메뉴.getId());
         menuParams.setQuantity(1);

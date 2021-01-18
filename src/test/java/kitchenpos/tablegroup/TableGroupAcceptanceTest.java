@@ -28,8 +28,12 @@ class TableGroupAcceptanceTest extends TableGroupAcceptanceTestSupport {
         // Given
         OrderTable param1 = new OrderTable();
         param1.setId(orderTable1.getId());
+        param1.setNumberOfGuests(3);
+        param1.setEmpty(false);
         OrderTable param2 = new OrderTable();
         param2.setId(orderTable2.getId());
+        param2.setNumberOfGuests(5);
+        param2.setEmpty(false);
         TableGroup params = new TableGroup();
         params.setOrderTables(Arrays.asList(param1, param2));
 

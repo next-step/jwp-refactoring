@@ -31,6 +31,7 @@ class OrderTableAcceptanceTest extends OrderTableAcceptanceTestSupport {
         // When
         OrderTable emptyParams = new OrderTable();
         emptyParams.setEmpty(false);
+        emptyParams.setNumberOfGuests(5);
         ExtractableResponse<Response> emptyResponse = 주문_테이블_주문_상태_변경_요청(createResponse, emptyParams);
 
         // Then
@@ -38,6 +39,7 @@ class OrderTableAcceptanceTest extends OrderTableAcceptanceTestSupport {
 
         // When
         OrderTable guestParams = new OrderTable();
+        guestParams.setEmpty(false);
         guestParams.setNumberOfGuests(4);
         ExtractableResponse<Response> guestResponse = 주문_테이블_방문한_손님_수_변경_요청(createResponse, guestParams);
 

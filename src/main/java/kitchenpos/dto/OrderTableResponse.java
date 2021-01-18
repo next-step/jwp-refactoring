@@ -21,6 +21,10 @@ public class OrderTableResponse {
         this.empty = empty;
     }
 
+    public OrderTable toOrderTable() {
+        return new OrderTable(id, tableGroupId, numberOfGuests, empty);
+    }
+
     public Long getId() {
         return id;
     }
@@ -33,7 +37,7 @@ public class OrderTableResponse {
         return numberOfGuests;
     }
 
-    public Boolean getEmpty() {
+    public Boolean isEmpty() {
         return empty;
     }
 

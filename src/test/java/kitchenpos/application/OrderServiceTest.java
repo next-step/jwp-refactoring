@@ -65,6 +65,8 @@ class OrderServiceTest {
         given(menuDao.countByIdIn(Collections.singletonList(orderLineItem.getMenuId()))).willReturn(1L);
         OrderTable orderTable = new OrderTable();
         orderTable.setId(order.getOrderTableId());
+        orderTable.setNumberOfGuests(3);
+        orderTable.setEmpty(false);
         given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
         given(orderDao.save(order)).willReturn(order);
         given(orderLineItemDao.save(orderLineItem)).willReturn(orderLineItem);

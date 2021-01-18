@@ -25,11 +25,11 @@ public class TableService {
         this.orderTableDao = orderTableDao;
     }
 
-    public OrderTable create(OrderTableRequest request) {
+    public OrderTableResponse create(OrderTableRequest request) {
         OrderTable orderTable = request.toOrderTable();
         orderTable.setTableGroupId(null);
 
-        return orderTableDao.save(orderTable);
+        return OrderTableResponse.from(orderTableDao.save(orderTable));
     }
 
     @Transactional(readOnly = true)
@@ -40,7 +40,7 @@ public class TableService {
                 .collect(Collectors.toList());
     }
 
-    public OrderTable changeEmpty(Long orderTableId, OrderTableRequest request) {
+    public OrderTableResponse changeEmpty(Long orderTableId, OrderTableRequest request) {
         OrderTable orderTable = request.toOrderTable();
         final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
@@ -56,10 +56,10 @@ public class TableService {
 
         savedOrderTable.setEmpty(orderTable.isEmpty());
 
-        return orderTableDao.save(savedOrderTable);
+        return OrderTableResponse.from(orderTableDao.save(savedOrderTable));
     }
     
-    public OrderTable changeNumberOfGuests(final Long orderTableId, OrderTableRequest request) {
+    public OrderTableResponse changeNumberOfGuests(final Long orderTableId, OrderTableRequest request) {
         OrderTable orderTable = request.toOrderTable();
         final int numberOfGuests = orderTable.getNumberOfGuests();
 
@@ -76,6 +76,6 @@ public class TableService {
 
         savedOrderTable.setNumberOfGuests(numberOfGuests);
 
-        return orderTableDao.save(savedOrderTable);
+        return OrderTableResponse.from(orderTableDao.save(savedOrderTable));
     }
 }
