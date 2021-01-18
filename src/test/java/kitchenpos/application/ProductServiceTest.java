@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.dto.ProductRequest;
 import kitchenpos.dto.ProductResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,22 +22,23 @@ class ProductServiceTest {
     @Autowired
     private ProductService productService;
 
+    private ProductRequest request;
+    private ProductResponse response;
+
+    @BeforeEach
+    void beforeEach() {
+        request = new ProductRequest("짬뽕", BigDecimal.valueOf(8_000));
+        response = productService.create(request);
+    }
+
     @DisplayName("`상품`을 생성한다.")
     @Test
     void createProduct() {
-        // Given
-        String name = "짬뽕";
-        BigDecimal price = BigDecimal.valueOf(8_000);
-        ProductRequest request = new ProductRequest(name, price);
-
-        // When
-        ProductResponse actual = productService.create(request);
-
         // Then
         assertAll(
-                () -> assertThat(actual.getId()).isNotNull(),
-                () -> assertThat(actual.getName()).isEqualTo(name),
-                () -> assertThat(actual.getPrice().intValue()).isEqualTo(price.intValue())
+                () -> assertThat(response.getId()).isNotNull(),
+                () -> assertThat(response.getName()).isEqualTo(request.getName()),
+                () -> assertThat(response.getPrice().intValue()).isEqualTo(request.getPrice().intValue())
         );
     }
 
@@ -60,20 +62,10 @@ class ProductServiceTest {
     @DisplayName("모든 `상품` 목록을 조회한다.")
     @Test
     void findAllProducts() {
-        // Given
-        ProductResponse savedProduct = productService.create(new ProductRequest("짬뽕", BigDecimal.valueOf(8_000)));
-
         // When
         List<ProductResponse> actual = productService.list();
 
         // Then
-        assertAll(
-                () -> assertThat(actual).extracting(ProductResponse::getId)
-                        .containsAnyElementsOf(Collections.singletonList(savedProduct.getId())),
-                () -> assertThat(actual).extracting(ProductResponse::getName)
-                        .containsAnyElementsOf(Collections.singletonList(savedProduct.getName())),
-                () -> assertThat(actual).extracting(ProductResponse::getPrice)
-                        .containsAnyElementsOf(Collections.singletonList(savedProduct.getPrice()))
-        );
+        assertThat(actual).containsAnyElementsOf(Collections.singletonList(response));
     }
 }

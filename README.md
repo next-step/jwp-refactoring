@@ -86,6 +86,7 @@
         - [x] test case - `상품`을 생성한다.
         - [x] test case - 가격은 필수이고, 0원 이상이 아니면 `상품`을 생성할 수 없다.
         - [x] test case - 모든 `상품` 목록을 조회한다.
+        - [x] Service Layer 테스트 케이스 리팩터링
     - [ ] MenuGroup 통합 테스트 적용
         - [x] test case - `메뉴 그룹`을 생성한다.
         - [x] test case - 모든 `메뉴 그룹` 목록을 조회한다.
