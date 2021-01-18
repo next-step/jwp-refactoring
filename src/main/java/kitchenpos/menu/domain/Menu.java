@@ -5,7 +5,6 @@ import kitchenpos.infra.Money;
 import kitchenpos.menugroup.domain.MenuGroup;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -26,23 +25,17 @@ public class Menu {
     @ManyToOne(fetch = FetchType.LAZY)
     private MenuGroup menuGroup;
 
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MenuProduct> menuProducts = new ArrayList<>();
+    @Embedded
+    private final MenuProducts menuProducts = new MenuProducts();
 
-    public Menu() {
+    protected Menu() {
     }
 
     public Menu(String name, Money price, MenuGroup menuGroup) {
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
-    }
 
-    public Menu(String name, Money price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        this.name = name;
-        this.price = price;
-        this.menuGroup = menuGroup;
-        this.menuProducts = menuProducts;
     }
 
     public Long getId() {
@@ -62,9 +55,8 @@ public class Menu {
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
+        return menuProducts.getProducts();
     }
-
 
     public void addProducts(List<MenuProduct> menuProducts) {
         checkGraterThanMenuPrice(menuProducts.stream()
@@ -74,7 +66,7 @@ public class Menu {
     }
 
     private void checkGraterThanMenuPrice(Money sum) {
-        if (this.price.isGraterThan(sum)) {
+        if (price.isGraterThan(sum)) {
             throw new IllegalArgumentException("메뉴의 가격이 상품 가격 보다 큽니다.");
         }
     }

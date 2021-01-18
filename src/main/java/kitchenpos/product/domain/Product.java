@@ -23,9 +23,8 @@ public class Product {
     @Column(nullable = false)
     private Money price;
 
-    public Product() {
+    protected Product() {
     }
-
 
     public Product(String name, Money price) {
         this.name = name;

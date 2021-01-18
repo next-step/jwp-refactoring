@@ -19,16 +19,16 @@ public class TableGroup extends BaseEntity {
     private Long id;
 
     @OneToMany(mappedBy = "tableGroup")
-    private List<OrderTable> orderTables = new ArrayList<>();
+    private final List<OrderTable> orderTables = new ArrayList<>();
 
     @CreatedDate
     private LocalDateTime createdDate;
 
-    public TableGroup() {
+    protected TableGroup() {
     }
 
     public TableGroup(List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
+        orderTables.forEach(this::addTable);
     }
 
     public Long getId() {
@@ -53,9 +53,5 @@ public class TableGroup extends BaseEntity {
         if (table.hasTableGroup()) {
             throw new IllegalArgumentException("테이블에 단체가 지정 되어 있습니다.");
         }
-    }
-
-    public void addAll(List<OrderTable> orderTables) {
-        orderTables.forEach(this::addTable);
     }
 }

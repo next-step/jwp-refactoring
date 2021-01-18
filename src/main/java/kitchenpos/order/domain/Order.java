@@ -42,7 +42,7 @@ public class Order extends BaseEntity {
     @CreatedDate
     private LocalDateTime orderedTime;
 
-    public Order() {
+    protected Order() {
     }
 
     public Order(OrderTable orderTableId) {

@@ -28,8 +28,7 @@ public class TableGroupService {
 
     public TableGroupResponse create(final TableGroupRequest request) {
         checkGroupValidation(request);
-        final TableGroup tableGroup = new TableGroup();
-        tableGroup.addAll(findOrderTables(request));
+        final TableGroup tableGroup = new TableGroup(findOrderTables(request));
         final TableGroup save = tableGroupRepository.save(tableGroup);
         return TableGroupResponse.of(save);
     }

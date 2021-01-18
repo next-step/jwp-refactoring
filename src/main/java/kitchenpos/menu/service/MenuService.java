@@ -33,11 +33,10 @@ public class MenuService {
         checkProductsEmpty(menuRequest);
         final MenuGroup menuGroup = menuGroupService.findById(menuRequest.getMenuGroupId());
         final Menu menu = new Menu(menuRequest.getName(), Money.price(menuRequest.getPrice()), menuGroup);
-        final List<MenuProduct> menuProducts = menuRequest.getMenuProducts()
+        menu.addProducts(menuRequest.getMenuProducts()
                 .stream()
                 .map(request -> new MenuProduct(menu, productService.findById(request.getProductId()), request.getQuantity()))
-                .collect(Collectors.toList());
-        menu.addProducts(menuProducts);
+                .collect(Collectors.toList()));
         return MenuResponse.ofMenu(menuRepository.save(menu));
     }
 

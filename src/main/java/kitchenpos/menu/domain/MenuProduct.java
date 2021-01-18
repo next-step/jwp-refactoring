@@ -30,7 +30,7 @@ public class MenuProduct {
     @Column
     private long quantity;
 
-    public MenuProduct() {
+    protected MenuProduct() {
     }
 
     public MenuProduct(Menu menu, Product product, long quantity) {
