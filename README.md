@@ -102,6 +102,8 @@
         - [x] test case - 모든 `주문` 목록을 조회한다.
         - [x] test case - `주문`의 `주문 상태`를 변경한다.
         - [x] test case - `주문 상태`가 'COMPLETION' 인 경우 상태를 변경할 수 없다.
+    - [ ] TableGroup 통합 테스트 적용
+        - [x] test case - `단체 지정`을 생성한다.
 - [ ] Domain Logic 개선에 앞서, UI 전달되는 Domain Context를 Service Layer에 격리
     - [ ] Product
         - [x] Service Layer에 Request DTO 적용

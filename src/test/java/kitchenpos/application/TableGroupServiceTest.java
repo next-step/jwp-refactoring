@@ -2,37 +2,38 @@ package kitchenpos.application;
 
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.BDDMockito.given;
 
 @DisplayName("단체 지정 서비스에 관련한 기능")
-@ExtendWith(value = MockitoExtension.class)
+@SpringBootTest
 class TableGroupServiceTest {
-    @Mock
+    @Autowired
     private OrderDao orderDao;
-    @Mock
+    @Autowired
     private OrderTableDao orderTableDao;
-    @Mock
-    private TableGroupDao tableGroupDao;
-    @InjectMocks
+    @Autowired
     private TableGroupService tableGroupService;
+    @Autowired
+    private TableService tableService;
 
     private OrderTable orderTable1;
     private OrderTable orderTable2;
@@ -59,18 +60,21 @@ class TableGroupServiceTest {
     @Test
     void createTableGroup() {
         // Given
-        given(orderTableDao.findAllByIdIn(Arrays.asList(orderTable1.getId(), orderTable2.getId())))
-                .willReturn(Arrays.asList(orderTable1, orderTable2));
-        given(tableGroupDao.save(tableGroup)).willReturn(tableGroup);
+        OrderTableResponse savedOrderTable1 = tableService.create(new OrderTableRequest(3, true));
+        OrderTableResponse savedOrderTable2 = tableService.create(new OrderTableRequest(5, true));
+        TableGroup tableGroup = new TableGroup();
+        tableGroup.setOrderTables(Arrays.asList(savedOrderTable1.toOrderTable(), savedOrderTable2.toOrderTable()));
 
         // When
         TableGroup actual = tableGroupService.create(tableGroup);
+        OrderTable orderTable1 = tableService.findById(savedOrderTable1.getId());
+        OrderTable orderTable2 = tableService.findById(savedOrderTable2.getId());
 
         // Then
         assertAll(
-                () -> assertEquals(tableGroup.getId(), actual.getId()),
-                () -> assertEquals(tableGroup.getOrderTables(), actual.getOrderTables()),
-                () -> assertNotNull(actual.getCreatedDate())
+                () -> assertThat(actual.getId()).isNotNull(),
+                () -> assertThat(actual.getOrderTables()).containsAnyElementsOf(Arrays.asList(orderTable1, orderTable2)),
+                () -> assertThat(actual.getCreatedDate()).isNotNull()
         );
     }
 
@@ -78,7 +82,6 @@ class TableGroupServiceTest {
     @Test
     void exceptionToCreateTableGroupWithZeroOrOneOrderTable() {
         // Given
-        tableGroup.setOrderTables(Collections.singletonList(orderTable1));
 
         // When & Then
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
