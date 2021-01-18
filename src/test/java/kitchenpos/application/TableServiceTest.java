@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -148,17 +149,27 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuests() {
         // Given
-        given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
-        given(orderTableDao.save(orderTable)).willReturn(orderTable);
-        orderTable.setEmpty(false);
-        OrderTable updateOrderTable = new OrderTable();
-        updateOrderTable.setNumberOfGuests(5);
+        ProductResponse 짬뽕 = productService.create(new ProductRequest("짬뽕", BigDecimal.valueOf(8_000)));
+        ProductResponse 짜장면 = productService.create(new ProductRequest("짜장면", BigDecimal.valueOf(6_000)));
+        MenuGroupResponse 신메뉴그룹 = menuGroupService.create(new MenuGroupRequest("신메뉴그룹"));
+        Menu 추천메뉴 = menuService.create(new MenuRequest("추천메뉴", BigDecimal.valueOf(14_000), 신메뉴그룹.getId(),
+                Arrays.asList(new MenuProductRequest(짬뽕.getId(), 1L), new MenuProductRequest(짜장면.getId(), 1L)))
+        );
+        OrderTable orderTable = tableService.create(new OrderTableRequest(3, false));
+        OrderLineItem menuParams = new OrderLineItem();
+        menuParams.setMenuId(추천메뉴.getId());
+        menuParams.setQuantity(1);
+        Order orderParams = new Order();
+        orderParams.setOrderTableId(orderTable.getId());
+        orderParams.setOrderLineItems(Collections.singletonList(menuParams));
+        orderService.create(orderParams);
 
         // When
-        OrderTable actual = tableService.changeNumberOfGuests(orderTable.getId(), updateOrderTable);
+        int updateNumberOfGuests = 5;
+        OrderTable actual = tableService.changeNumberOfGuests(orderTable.getId(), new OrderTableRequest(updateNumberOfGuests));
 
         // Then
-        assertEquals(updateOrderTable.getNumberOfGuests(), actual.getNumberOfGuests());
+        assertThat(actual.getNumberOfGuests()).isEqualTo(updateNumberOfGuests);
     }
 
     @DisplayName("하나의 `주문 테이블`의 `방문한 손님 수`가 0명보다 적으면, `방문한 손님 수`를 변경할 수 없다.")

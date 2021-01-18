@@ -4,9 +4,9 @@ public class OrderTable {
     private Long id;
     private Long tableGroupId;
     private Integer numberOfGuests;
-    private boolean empty;
+    private Boolean empty;
 
-    public OrderTable(Integer numberOfGuests, boolean empty) {
+    public OrderTable(Integer numberOfGuests, Boolean empty) {
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }

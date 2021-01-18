@@ -17,6 +17,10 @@ public class OrderTableRequest {
         this.empty = empty;
     }
 
+    public OrderTableRequest(Integer numberOfGuests) {
+        this.numberOfGuests = numberOfGuests;
+    }
+
     public OrderTableRequest() {
     }
 
