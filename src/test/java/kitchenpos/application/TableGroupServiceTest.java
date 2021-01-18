@@ -136,10 +136,8 @@ class TableGroupServiceTest {
         OrderLineItem menuParams = new OrderLineItem();
         menuParams.setMenuId(추천메뉴.getId());
         menuParams.setQuantity(1);
-        Order order = new Order();
-        order.setOrderTableId(savedOrderTable1.getId());
-        order.setOrderLineItems(Collections.singletonList(menuParams));
-        orderService.create(order);
+        OrderRequest orderRequest = new OrderRequest(savedOrderTable1.getId(), Collections.singletonList(menuParams));
+        orderService.create(orderRequest);
 
         // When & Then
         assertThatThrownBy(() -> tableGroupService.ungroup(savedTableGroup.getId()))

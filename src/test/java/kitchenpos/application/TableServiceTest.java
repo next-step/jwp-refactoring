@@ -108,10 +108,8 @@ class TableServiceTest {
         OrderLineItem menuParams = new OrderLineItem();
         menuParams.setMenuId(추천메뉴.getId());
         menuParams.setQuantity(1);
-        Order orderParams = new Order();
-        orderParams.setOrderTableId(orderTable.getId());
-        orderParams.setOrderLineItems(Collections.singletonList(menuParams));
-        orderService.create(orderParams);
+        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(menuParams));
+        orderService.create(orderRequest);
 
         // when & Then
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), new OrderTableRequest(true)))
@@ -132,10 +130,8 @@ class TableServiceTest {
         OrderLineItem menuParams = new OrderLineItem();
         menuParams.setMenuId(추천메뉴.getId());
         menuParams.setQuantity(1);
-        Order orderParams = new Order();
-        orderParams.setOrderTableId(orderTable.getId());
-        orderParams.setOrderLineItems(Collections.singletonList(menuParams));
-        orderService.create(orderParams);
+        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(menuParams));
+        orderService.create(orderRequest);
 
         // When
         int updateNumberOfGuests = 5;
@@ -159,10 +155,8 @@ class TableServiceTest {
         OrderLineItem menuParams = new OrderLineItem();
         menuParams.setMenuId(추천메뉴.getId());
         menuParams.setQuantity(1);
-        Order orderParams = new Order();
-        orderParams.setOrderTableId(orderTable.getId());
-        orderParams.setOrderLineItems(Collections.singletonList(menuParams));
-        orderService.create(orderParams);
+        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(menuParams));
+        orderService.create(orderRequest);
 
         // When & Then
         int invalidNumberOfGuests = -1;
@@ -184,12 +178,9 @@ class TableServiceTest {
         OrderLineItem menuParams = new OrderLineItem();
         menuParams.setMenuId(추천메뉴.getId());
         menuParams.setQuantity(1);
-        Order order = new Order();
-        order.setOrderTableId(orderTable.getId());
-        order.setOrderLineItems(Collections.singletonList(menuParams));
-        order = orderService.create(order);
-        order.setOrderStatus(OrderStatus.COMPLETION.name());
-        orderService.changeOrderStatus(order.getId(), order);
+        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(menuParams));
+        Order order = orderService.create(orderRequest);
+        orderService.changeOrderStatus(order.getId(), new OrderRequest(OrderStatus.COMPLETION.name()));
         tableService.changeEmpty(orderTable.getId(), new OrderTableRequest(true));
 
         // When & Then

@@ -47,17 +47,15 @@ class OrderServiceTest {
         OrderLineItem menuParams = new OrderLineItem();
         menuParams.setMenuId(추천메뉴.getId());
         menuParams.setQuantity(1);
-        Order order = new Order();
-        order.setOrderTableId(orderTable.getId());
-        order.setOrderLineItems(Collections.singletonList(menuParams));
+        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(menuParams));
 
         // When
-        Order actual = orderService.create(order);
+        Order actual = orderService.create(orderRequest);
 
         // Then
         assertAll(
                 () -> assertThat(actual.getId()).isNotNull(),
-                () -> assertThat(actual.getOrderTableId()).isEqualTo(order.getOrderTableId()),
+                () -> assertThat(actual.getOrderTableId()).isEqualTo(orderTable.getId()),
                 () -> assertThat(actual.getOrderLineItems()).isNotNull(),
                 () -> assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name()),
                 () -> assertThat(actual.getOrderedTime()).isNotNull()
@@ -68,7 +66,7 @@ class OrderServiceTest {
     @Test
     void exceptionToCreateOrderWithoutLineItem() {
         // When & then
-        assertThatThrownBy(() -> orderService.create(new Order())).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(new OrderRequest())).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("`주문`할 `주문 테이블`이 없으면, `주문`을 생성할 수 없다.")
@@ -85,12 +83,10 @@ class OrderServiceTest {
         menuParams.setMenuId(추천메뉴.getId());
         menuParams.setQuantity(1);
         long invalidMenuProductId = Long.MAX_VALUE;
-        Order order = new Order();
-        order.setOrderTableId(invalidMenuProductId);
-        order.setOrderLineItems(Collections.singletonList(menuParams));
+        OrderRequest orderRequest = new OrderRequest(invalidMenuProductId, Collections.singletonList(menuParams));
 
         // When & Then
-        assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(orderRequest)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("모든 `주문` 목록을 조회한다.")
@@ -107,10 +103,8 @@ class OrderServiceTest {
         OrderLineItem menuParams = new OrderLineItem();
         menuParams.setMenuId(추천메뉴.getId());
         menuParams.setQuantity(1);
-        Order order = new Order();
-        order.setOrderTableId(orderTable.getId());
-        order.setOrderLineItems(Collections.singletonList(menuParams));
-        Order expected = orderService.create(order);
+        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(menuParams));
+        Order expected = orderService.create(orderRequest);
 
         // When
         List<Order> actual = orderService.list();
@@ -133,12 +127,9 @@ class OrderServiceTest {
         OrderLineItem menuParams = new OrderLineItem();
         menuParams.setMenuId(추천메뉴.getId());
         menuParams.setQuantity(1);
-        Order order = new Order();
-        order.setOrderTableId(orderTable.getId());
-        order.setOrderLineItems(Collections.singletonList(menuParams));
-        Order savedOrder = orderService.create(order);
-        Order updateOrder = new Order();
-        updateOrder.setOrderStatus(OrderStatus.COMPLETION.name());
+        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(menuParams));
+        Order savedOrder = orderService.create(orderRequest);
+        OrderRequest updateOrder = new OrderRequest(OrderStatus.COMPLETION.name());
 
         // When
         Order actual = orderService.changeOrderStatus(savedOrder.getId(), updateOrder);
@@ -161,19 +152,14 @@ class OrderServiceTest {
         OrderLineItem menuParams = new OrderLineItem();
         menuParams.setMenuId(추천메뉴.getId());
         menuParams.setQuantity(1);
-        Order order = new Order();
-        order.setOrderTableId(orderTable.getId());
-        order.setOrderLineItems(Collections.singletonList(menuParams));
-        Order savedOrder = orderService.create(order);
+        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(menuParams));
+        Order savedOrder = orderService.create(orderRequest);
 
-        Order updateOrder = new Order();
-        updateOrder.setOrderStatus(OrderStatus.COMPLETION.name());
+        OrderRequest updateOrder = new OrderRequest(OrderStatus.COMPLETION.name());
         orderService.changeOrderStatus(savedOrder.getId(), updateOrder);
 
-
         // When & Then
-        updateOrder.setOrderStatus(OrderStatus.MEAL.name());
-        assertThatThrownBy(() -> orderService.changeOrderStatus(savedOrder.getId(), updateOrder))
+        assertThatThrownBy(() -> orderService.changeOrderStatus(savedOrder.getId(), new OrderRequest(OrderStatus.MEAL.name())))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }
