@@ -95,18 +95,14 @@ class TableServiceTest {
     @Test
     void changeEmpty() {
         // Given
-        given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
-        List<String> orderStatuses = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(orderTable.getId(), orderStatuses)).willReturn(false);
-        given(orderTableDao.save(orderTable)).willReturn(orderTable);
-        OrderTable updateOrderTable = new OrderTable();
-        updateOrderTable.setEmpty(false);
+        OrderTable orderTable = tableService.create(new OrderTableRequest(3, false));
+        OrderTableRequest request = new OrderTableRequest(true);
 
         // When
-        OrderTable actual = tableService.changeEmpty(orderTable.getId(), updateOrderTable);
+        OrderTable actual = tableService.changeEmpty(orderTable.getId(), request);
 
         // Then
-        assertThat(actual.isEmpty()).isEqualTo(updateOrderTable.isEmpty());
+        assertThat(actual.isEmpty()).isEqualTo(request.isEmpty());
     }
 
     @DisplayName("`주문 테이블`이 `단체 지정`되어 있으면 비어있는 상태로 변경할 수 없다.")
