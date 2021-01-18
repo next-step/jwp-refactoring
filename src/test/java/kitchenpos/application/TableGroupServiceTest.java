@@ -124,21 +124,21 @@ class TableGroupServiceTest {
     @Test
     void ungroupTableGroup() {
         // Given
-        orderTable1.setTableGroupId(1L);
-        orderTable2.setTableGroupId(1L);
-        given(orderTableDao.findAllByTableGroupId(tableGroup.getId()))
-                .willReturn(Arrays.asList(orderTable1, orderTable2));
-        List<Long> orderTableIds = Arrays.asList(orderTable1.getId(), orderTable2.getId());
-        List<String> orderStatuses = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, orderStatuses)).willReturn(false);
+        OrderTableResponse savedOrderTable1 = tableService.create(new OrderTableRequest(3, true));
+        OrderTableResponse savedOrderTable2 = tableService.create(new OrderTableRequest(5, true));
+        TableGroup tableGroup = new TableGroup();
+        tableGroup.setOrderTables(Arrays.asList(savedOrderTable1.toOrderTable(), savedOrderTable2.toOrderTable()));
+        tableGroup = tableGroupService.create(tableGroup);
 
         // When
         tableGroupService.ungroup(tableGroup.getId());
+        OrderTable orderTable1 = tableService.findById(savedOrderTable1.getId());
+        OrderTable orderTable2 = tableService.findById(savedOrderTable2.getId());
 
         // Then
         assertAll(
-                () -> assertNull(orderTable1.getTableGroupId()),
-                () -> assertNull(orderTable2.getTableGroupId())
+                () -> assertThat(orderTable1.getTableGroupId()).isNull(),
+                () -> assertThat(orderTable2.getTableGroupId()).isNull()
         );
     }
 
