@@ -5,13 +5,14 @@ import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -32,8 +33,11 @@ public class TableService {
     }
 
     @Transactional(readOnly = true)
-    public List<OrderTable> list() {
-        return orderTableDao.findAll();
+    public List<OrderTableResponse> list() {
+        return orderTableDao.findAll()
+                .stream()
+                .map(OrderTableResponse::from)
+                .collect(Collectors.toList());
     }
 
     public OrderTable changeEmpty(Long orderTableId, OrderTableRequest request) {

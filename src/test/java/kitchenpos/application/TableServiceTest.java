@@ -1,9 +1,7 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.*;
 import kitchenpos.dto.*;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +15,10 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.BDDMockito.given;
 
 @DisplayName("주문 테이블 서비스에 관련한 기능")
 @SpringBootTest
 class TableServiceTest {
-    @Autowired
-    private OrderTableDao orderTableDao;
     @Autowired
     private TableService tableService;
     @Autowired
@@ -36,16 +31,6 @@ class TableServiceTest {
     private MenuService menuService;
     @Autowired
     private MenuGroupService menuGroupService;
-
-    private OrderTable orderTable;
-
-    @BeforeEach
-    void beforeEach() {
-        orderTable = new OrderTable();
-        orderTable.setId(1L);
-        orderTable.setNumberOfGuests(3);
-        orderTable.setEmpty(true);
-    }
 
     @DisplayName("`주문 테이블`을 생성한다.")
     @Test
@@ -69,22 +54,14 @@ class TableServiceTest {
     @Test
     void findAllTables() {
         // Given
-        given(orderTableDao.findAll()).willReturn(Collections.singletonList(orderTable));
+        OrderTableRequest request = new OrderTableRequest(3, true);
+        OrderTable orderTable = tableService.create(request);
 
         // When
-        List<OrderTable> actual = tableService.list();
+        List<OrderTableResponse> actual = tableService.list();
 
         // Then
-        assertAll(
-                () -> assertThat(actual).extracting(OrderTable::getId)
-                        .containsExactly(orderTable.getId()),
-                () -> assertThat(actual).extracting(OrderTable::getNumberOfGuests)
-                        .containsExactly(orderTable.getNumberOfGuests()),
-                () -> assertThat(actual).extracting(OrderTable::isEmpty)
-                        .containsExactly(orderTable.isEmpty()),
-                () -> assertThat(actual).extracting(OrderTable::getTableGroupId)
-                        .containsExactly(orderTable.getTableGroupId())
-        );
+        assertThat(actual).containsAnyElementsOf(Collections.singletonList(OrderTableResponse.from(orderTable)));
     }
 
     @DisplayName("`주문 테이블`을 비어있는 상태로 변경한다.")
