@@ -31,7 +31,7 @@ class OrderRestControllerTest extends RestControllerTest {
     void setUp() {
         super.setUp();
 
-        order = new Order(null, 1L, OrderStatus.COOKING.name(), LocalDateTime.now());
+        order = new Order(null, 1L, OrderStatus.COOKING, LocalDateTime.now());
         order.setOrderLineItems(Arrays.asList(
                 new OrderLineItem(0L, 1L, 1L,1),
                 new OrderLineItem(1L, 1L, 2L,1))

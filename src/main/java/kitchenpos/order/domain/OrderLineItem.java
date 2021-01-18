@@ -1,9 +1,23 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.menu.domain.Menu;
+
+import javax.persistence.*;
+
+@Entity
 public class OrderLineItem {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private Long seq;
+
+    @ManyToOne
+    private Order order;
     private Long orderId;
+
+    @ManyToOne
+    private Menu menu;
     private Long menuId;
+
     private long quantity;
 
     public Long getSeq() {

@@ -1,14 +1,26 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.menugroup.domain.MenuGroup;
+
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
+@Entity
 public class Menu {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private BigDecimal price;
+
+    @ManyToOne
+//    @JoinColumn(name = "menu_group_id")
+    private MenuGroup menuGroup;
     private Long menuGroupId;
+
+    @OneToMany(mappedBy = "menu_id")
     private List<MenuProduct> menuProducts;
 
     public Long getId() {

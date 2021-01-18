@@ -64,7 +64,7 @@ class OrderServiceTest {
         given(orderLineItemDao.save(any()))
                 .willReturn(new OrderLineItem());
         given(orderDao.save(any()))
-                .willReturn(new Order(1L, 2L, "주문", LocalDateTime.now()));
+                .willReturn(new Order(1L, 2L, OrderStatus.MEAL, LocalDateTime.now()));
 
         //when
 
@@ -73,7 +73,7 @@ class OrderServiceTest {
         //then
         assertThat(createOrder.getId()).isEqualTo(1L);
         assertThat(createOrder.getOrderTableId()).isEqualTo(2L);
-        assertThat(createOrder.getOrderStatus()).isEqualTo("주문");
+        assertThat(createOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
     }
 
 
@@ -138,8 +138,8 @@ class OrderServiceTest {
         given(orderDao.findAll())
                 .willReturn(
                         Arrays.asList(
-                                new Order(1L, 2L, "조리", LocalDateTime.now()),
-                                new Order(2L, 3L, "식사", LocalDateTime.now())
+                                new Order(1L, 2L, OrderStatus.COOKING, LocalDateTime.now()),
+                                new Order(2L, 3L, OrderStatus.MEAL, LocalDateTime.now())
                         )
                 );
         //when
@@ -150,11 +150,11 @@ class OrderServiceTest {
 
         assertThat(orders.get(0).getId()).isEqualTo(1L);
         assertThat(orders.get(0).getOrderTableId()).isEqualTo(2L);
-        assertThat(orders.get(0).getOrderStatus()).isEqualTo("조리");
+        assertThat(orders.get(0).getOrderStatus()).isEqualTo(OrderStatus.COOKING);
 
         assertThat(orders.get(1).getId()).isEqualTo(2L);
         assertThat(orders.get(1).getOrderTableId()).isEqualTo(3L);
-        assertThat(orders.get(1).getOrderStatus()).isEqualTo("식사");
+        assertThat(orders.get(1).getOrderStatus()).isEqualTo(OrderStatus.MEAL);
     }
 
     @DisplayName("주문 상태를 변경한다.")
@@ -163,18 +163,18 @@ class OrderServiceTest {
         //given
         given(orderDao.findById(any()))
                 .willReturn(
-                        Optional.of(new Order(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now()))
+                        Optional.of(new Order(1L, 1L, OrderStatus.COOKING, LocalDateTime.now()))
                 );
 
         OrderRequest changeOrder = new OrderRequest();
-        changeOrder.setOrderStatus(OrderStatus.MEAL.name());
+        changeOrder.setOrderStatus(OrderStatus.MEAL);
 
         //when
         OrderResponse changedOrder = orderService.changeOrderStatus(1L, changeOrder);
 
         //then
         assertThat(changedOrder.getId()).isEqualTo(1L);
-        assertThat(changedOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
+        assertThat(changedOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
     }
 
     @DisplayName("주문 상태를 변경한다. - 신청하지 않은 주문은 상태를 변경할 수 없다.")
@@ -187,7 +187,7 @@ class OrderServiceTest {
         //when
         //then
         OrderRequest changeOrder = new OrderRequest();
-        changeOrder.setOrderStatus("식사");
+        changeOrder.setOrderStatus(OrderStatus.MEAL);
         assertThatThrownBy(() -> orderService.changeOrderStatus(1L, changeOrder))
                 .isInstanceOf(IllegalArgumentException.class);
     }
@@ -198,11 +198,11 @@ class OrderServiceTest {
         //given
         given(orderDao.findById(any()))
                 .willReturn(
-                        Optional.of(new Order(1L, 1L, OrderStatus.COMPLETION.name(), LocalDateTime.now()))
+                        Optional.of(new Order(1L, 1L, OrderStatus.COMPLETION, LocalDateTime.now()))
                 );
 
         OrderRequest changeOrder = new OrderRequest();
-        changeOrder.setOrderStatus("식사");
+        changeOrder.setOrderStatus(OrderStatus.MEAL);
 
         //when
         //then
