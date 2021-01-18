@@ -1,11 +1,9 @@
 package kitchenpos.domain;
 
 import kitchenpos.common.BaseSeqEntity;
+import kitchenpos.common.Quantity;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "order_line_item")
@@ -19,7 +17,8 @@ public class OrderLineItem extends BaseSeqEntity {
 	@JoinColumn(name = "menu_id", nullable = false)
 	private Menu menu;
 
-	private long quantity;
+	@Embedded
+	private Quantity quantity;
 
 	protected OrderLineItem() {
 	}
@@ -27,7 +26,7 @@ public class OrderLineItem extends BaseSeqEntity {
 	public OrderLineItem(Order order, Menu menu, long quantity) {
 		this.order = order;
 		this.menu = menu;
-		this.quantity = quantity;
+		this.quantity = new Quantity(quantity);
 		this.order.addOrderLineItem(this);
 	}
 
@@ -39,7 +38,7 @@ public class OrderLineItem extends BaseSeqEntity {
 		return menu;
 	}
 
-	public long getQuantity() {
+	public Quantity getQuantity() {
 		return quantity;
 	}
 }

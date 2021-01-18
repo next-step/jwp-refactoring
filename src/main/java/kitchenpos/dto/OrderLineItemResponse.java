@@ -13,7 +13,8 @@ public class OrderLineItemResponse {
 	}
 
 	public static OrderLineItemResponse of(OrderLineItem item) {
-		return new OrderLineItemResponse(item.getSeq(), item.getOrder().getId(), item.getMenu().getId(), item.getQuantity());
+		return new OrderLineItemResponse(item.getSeq(), item.getOrder().getId(), item.getMenu().getId(),
+				item.getQuantity().getValue());
 	}
 
 	public OrderLineItemResponse(long seq, long orderId, long menuId, long quantity) {
