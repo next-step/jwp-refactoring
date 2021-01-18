@@ -1,15 +1,14 @@
 package kitchenpos.menu.service;
 
 import kitchenpos.generic.Money;
-import kitchenpos.generic.Quantity;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.dto.MenuProductResponse;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.service.MenuGroupService;
-import kitchenpos.product.service.ProductService;
+import kitchenpos.menuproduct.service.MenuProductService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,23 +21,20 @@ public class MenuService {
 
     private final MenuRepository menuRepository;
     private final MenuGroupService menuGroupService;
-    private final ProductService productService;
+    private final MenuProductService menuProductService;
 
-    public MenuService(MenuRepository menuRepository, MenuGroupService menuGroupService, ProductService productService) {
+    public MenuService(MenuRepository menuRepository, MenuGroupService menuGroupService, MenuProductService menuProductService) {
         this.menuRepository = menuRepository;
         this.menuGroupService = menuGroupService;
-        this.productService = productService;
+        this.menuProductService = menuProductService;
     }
 
     public MenuResponse create(final MenuRequest menuRequest) {
         checkProductsEmpty(menuRequest);
         final MenuGroup menuGroup = menuGroupService.findById(menuRequest.getMenuGroupId());
-        final Menu menu = new Menu(menuRequest.getName(), Money.price(menuRequest.getPrice()), menuGroup);
-        menu.addProducts(menuRequest.getMenuProducts()
-                .stream()
-                .map(request -> new MenuProduct(menu, productService.findById(request.getProductId()), Quantity.of(request.getQuantity())))
-                .collect(Collectors.toList()));
-        return MenuResponse.ofMenu(menuRepository.save(menu));
+        final Menu menu = menuRepository.save(new Menu(menuRequest.getName(), Money.price(menuRequest.getPrice()), menuGroup));
+        List<MenuProductResponse> menuProductResponses = menuProductService.saveProducts(menu, menuRequest.getMenuProducts());
+        return MenuResponse.ofMenu(menu, menuProductResponses);
     }
 
     private void checkProductsEmpty(final MenuRequest menuRequest) {
@@ -51,7 +47,7 @@ public class MenuService {
     public List<MenuResponse> list() {
         return menuRepository.findAll()
                 .stream()
-                .map(MenuResponse::ofMenu)
+                .map(menu -> MenuResponse.ofMenu(menu, menuProductService.list(menu)))
                 .collect(Collectors.toList());
     }
 
