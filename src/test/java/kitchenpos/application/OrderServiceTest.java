@@ -43,7 +43,7 @@ class OrderServiceTest {
         Menu 추천메뉴 = menuService.create(new MenuRequest("추천메뉴", BigDecimal.valueOf(14_000), 신메뉴그룹.getId(),
                 Arrays.asList(new MenuProductRequest(짬뽕.getId(), 1L), new MenuProductRequest(짜장면.getId(), 1L)))
         );
-        OrderTableResponse orderTable = tableService.create(new OrderTableRequest(0, true));
+        OrderTableResponse orderTable = tableService.create(new OrderTableRequest(3, false));
         OrderLineItem menuParams = new OrderLineItem();
         menuParams.setMenuId(추천메뉴.getId());
         menuParams.setQuantity(1);
