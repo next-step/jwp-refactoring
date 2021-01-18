@@ -20,31 +20,38 @@ public class TableAcceptanceTest extends AcceptanceTest {
     @DisplayName("테이블을 관리한다")
     @Test
     void manage() {
-        //when
+        OrderTable orderTable = 테이블_생성();
+        테이블_조회();
+        테이블_상태_변경(orderTable);
+        테이블_고객_수_변경(orderTable);
+    }
+
+    private OrderTable 테이블_생성() {
         OrderTable request = createRequest();
         ExtractableResponse<Response> createdResponse = 생성_요청(request);
-        //then
+
         생성됨(createdResponse, request);
-        OrderTable createdOrderTable = createdResponse.as(OrderTable.class);
-        //when
+        return createdResponse.as(OrderTable.class);
+    }
+
+    private void 테이블_조회() {
         ExtractableResponse<Response> selectedResponse = 조회_요청();
-        //then
+
         조회됨(selectedResponse);
-        //when
-        createdOrderTable.setEmpty(false);
-        ExtractableResponse<Response> updatedResponse = 테이블_상태_변경_요청(createdOrderTable);
-        //then
-        테이블_상태_변경됨(updatedResponse, createdOrderTable);
-        //when
-        createdOrderTable.setNumberOfGuests(4);
-        updatedResponse = 고객_수_변경_요청(createdOrderTable);
-        //then
-        고객_수_변경됨(updatedResponse, createdOrderTable);
-        //when
-        createdOrderTable.setEmpty(true);
-        updatedResponse = 테이블_상태_변경_요청(createdOrderTable);
-        //then
-        테이블_상태_변경됨(updatedResponse, createdOrderTable);
+    }
+
+    private void 테이블_상태_변경(OrderTable orderTable) {
+        orderTable.setEmpty(false);
+        ExtractableResponse<Response> updatedResponse = 테이블_상태_변경_요청(orderTable);
+
+        테이블_상태_변경됨(updatedResponse, orderTable);
+    }
+
+    private void 테이블_고객_수_변경(OrderTable orderTable) {
+        orderTable.setNumberOfGuests(4);
+        ExtractableResponse<Response> updatedResponse = 고객_수_변경_요청(orderTable);
+
+        고객_수_변경됨(updatedResponse, orderTable);
     }
 
     public static OrderTable createRequest() {

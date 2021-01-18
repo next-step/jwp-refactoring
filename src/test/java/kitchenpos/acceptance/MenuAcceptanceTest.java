@@ -25,20 +25,25 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @DisplayName("메뉴를 관리한다")
     @Test
     void manage() {
-        //given
+        메뉴_생성();
+        메뉴_조회();
+    }
+
+    private void 메뉴_생성() {
         MenuGroup menuGroup = MenuGroupAcceptanceTest.생성_요청(MenuGroupAcceptanceTest.createRequest())
                 .as(MenuGroup.class);
         Product product = ProductAcceptanceTest.생성_요청(ProductAcceptanceTest.createRequest())
                 .as(Product.class);
 
-        //when
         Menu request = createRequest(menuGroup, product);
         ExtractableResponse<Response> createdResponse = 생성_요청(request);
-        //then
+
         생성됨(createdResponse, request);
-        //when
+    }
+
+    private void 메뉴_조회() {
         ExtractableResponse<Response> selectedResponse = 조회_요청();
-        //then
+
         조회됨(selectedResponse);
     }
 

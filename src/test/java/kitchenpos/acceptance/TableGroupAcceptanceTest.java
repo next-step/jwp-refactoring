@@ -20,20 +20,26 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     @DisplayName("테이블 그룹을 관리한다")
     @Test
     void manage() {
-        //given
+        TableGroup tableGroup = 테이블_그룹_생성();
+        테이블_그룹_삭제(tableGroup);
+    }
+
+    private TableGroup 테이블_그룹_생성() {
         OrderTable table1 = TableAcceptanceTest.생성_요청(TableAcceptanceTest.createRequest())
                 .as(OrderTable.class);
         OrderTable table2 = TableAcceptanceTest.생성_요청(TableAcceptanceTest.createRequest())
                 .as(OrderTable.class);
-        //when
+
         TableGroup request = createRequest(table1, table2);
         ExtractableResponse<Response> createdResponse = 생성_요청(request);
-        //then
+
         생성됨(createdResponse);
-        //when
-        TableGroup tableGroup = createdResponse.as(TableGroup.class);
+        return createdResponse.as(TableGroup.class);
+    }
+
+    private void 테이블_그룹_삭제(TableGroup tableGroup) {
         ExtractableResponse<Response> deletedResponse = 삭제_요청(tableGroup.getId());
-        //then
+
         삭제됨(deletedResponse);
     }
 

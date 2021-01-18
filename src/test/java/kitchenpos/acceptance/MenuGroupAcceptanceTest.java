@@ -20,14 +20,20 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     @DisplayName("메뉴 그룹을 관리한다")
     @Test
     void manage() {
-        //when
+        메뉴_그룹_생성();
+        메뉴_그룹_조회();
+    }
+
+    private void 메뉴_그룹_생성() {
         MenuGroup request = createRequest();
         ExtractableResponse<Response> createdResponse = 생성_요청(request);
-        //then
+
         생성됨(createdResponse, request);
-        //when
+    }
+
+    private void 메뉴_그룹_조회() {
         ExtractableResponse<Response> selectedResponse = 조회_요청();
-        //then
+
         조회됨(selectedResponse);
     }
 

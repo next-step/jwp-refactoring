@@ -21,7 +21,12 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @DisplayName("주문을 관리한다")
     @Test
     void manage() {
-        //given
+        Order order = 주문_생성();
+        주문_조회();
+        주문_상태_변경(order);
+    }
+
+    private Order 주문_생성() {
         MenuGroup menuGroup = MenuGroupAcceptanceTest.생성_요청(MenuGroupAcceptanceTest.createRequest())
                 .as(MenuGroup.class);
         Product product = ProductAcceptanceTest.생성_요청(ProductAcceptanceTest.createRequest())
@@ -32,20 +37,25 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 .as(OrderTable.class);
         orderTable.setEmpty(false);
         TableAcceptanceTest.테이블_상태_변경_요청(orderTable);
-        //when
+
         Order request = createRequest(orderTable, menu);
         ExtractableResponse<Response> createdResponse = 생성_요청(request);
-        //then
+
         생성됨(createdResponse, request);
-        //when
+
+        return createdResponse.as(Order.class);
+    }
+
+    private void 주문_조회() {
         ExtractableResponse<Response> selectedResponse = 조회_요청();
-        //then
+
         조회됨(selectedResponse);
-        //when
-        Order order = createdResponse.as(Order.class);
+    }
+
+    private void 주문_상태_변경(Order order) {
         order.setOrderStatus(OrderStatus.MEAL.name());
         ExtractableResponse<Response> updatedResponse = 상태_변경_요청(order);
-        //then
+
         상태_변경됨(updatedResponse, order);
     }
 
