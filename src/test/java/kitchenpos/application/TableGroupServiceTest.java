@@ -37,11 +37,10 @@ class TableGroupServiceTest {
         // Given
         OrderTableResponse savedOrderTable1 = tableService.create(new OrderTableRequest(3, true));
         OrderTableResponse savedOrderTable2 = tableService.create(new OrderTableRequest(5, true));
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Arrays.asList(savedOrderTable1.toOrderTable(), savedOrderTable2.toOrderTable()));
+        TableGroupRequest request = new TableGroupRequest(Arrays.asList(savedOrderTable1.toOrderTable(), savedOrderTable2.toOrderTable()));
 
         // When
-        TableGroup actual = tableGroupService.create(tableGroup);
+        TableGroup actual = tableGroupService.create(request);
         OrderTable orderTable1 = tableService.findById(savedOrderTable1.getId());
         OrderTable orderTable2 = tableService.findById(savedOrderTable2.getId());
 
@@ -58,11 +57,10 @@ class TableGroupServiceTest {
     void exceptionToCreateTableGroupWithZeroOrOneOrderTable() {
         // Given
         OrderTableResponse savedOrderTable = tableService.create(new OrderTableRequest(3, true));
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Collections.singletonList(savedOrderTable.toOrderTable()));
+        TableGroupRequest request = new TableGroupRequest(Collections.singletonList(savedOrderTable.toOrderTable()));
 
         // When & Then
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+        assertThatThrownBy(() -> tableGroupService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -72,11 +70,10 @@ class TableGroupServiceTest {
         // Given
         OrderTableResponse savedOrderTable1 = tableService.create(new OrderTableRequest(3, false));
         OrderTableResponse savedOrderTable2 = tableService.create(new OrderTableRequest(5, false));
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Arrays.asList(savedOrderTable1.toOrderTable(), savedOrderTable2.toOrderTable()));
+        TableGroupRequest request = new TableGroupRequest(Arrays.asList(savedOrderTable1.toOrderTable(), savedOrderTable2.toOrderTable()));
 
         // When & Then
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+        assertThatThrownBy(() -> tableGroupService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -86,12 +83,11 @@ class TableGroupServiceTest {
         // Given
         OrderTableResponse savedOrderTable1 = tableService.create(new OrderTableRequest(3, true));
         OrderTableResponse savedOrderTable2 = tableService.create(new OrderTableRequest(5, true));
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Arrays.asList(savedOrderTable1.toOrderTable(), savedOrderTable2.toOrderTable()));
-        tableGroupService.create(tableGroup);
+        TableGroupRequest request = new TableGroupRequest(Arrays.asList(savedOrderTable1.toOrderTable(), savedOrderTable2.toOrderTable()));
+        tableGroupService.create(request);
 
         // When & Then
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+        assertThatThrownBy(() -> tableGroupService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -101,9 +97,8 @@ class TableGroupServiceTest {
         // Given
         OrderTableResponse savedOrderTable1 = tableService.create(new OrderTableRequest(3, true));
         OrderTableResponse savedOrderTable2 = tableService.create(new OrderTableRequest(5, true));
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Arrays.asList(savedOrderTable1.toOrderTable(), savedOrderTable2.toOrderTable()));
-        tableGroup = tableGroupService.create(tableGroup);
+        TableGroupRequest request = new TableGroupRequest(Arrays.asList(savedOrderTable1.toOrderTable(), savedOrderTable2.toOrderTable()));
+        TableGroup tableGroup = tableGroupService.create(request);
 
         // When
         tableGroupService.ungroup(tableGroup.getId());
@@ -123,9 +118,8 @@ class TableGroupServiceTest {
         // Given
         OrderTableResponse savedOrderTable1 = tableService.create(new OrderTableRequest(0, true));
         OrderTableResponse savedOrderTable2 = tableService.create(new OrderTableRequest(0, true));
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Arrays.asList(savedOrderTable1.toOrderTable(), savedOrderTable2.toOrderTable()));
-        TableGroup savedTableGroup = tableGroupService.create(tableGroup);
+        TableGroupRequest request = new TableGroupRequest(Arrays.asList(savedOrderTable1.toOrderTable(), savedOrderTable2.toOrderTable()));
+        TableGroup savedTableGroup = tableGroupService.create(request);
 
         ProductResponse 짬뽕 = productService.create(new ProductRequest("짬뽕", BigDecimal.valueOf(8_000)));
         ProductResponse 짜장면 = productService.create(new ProductRequest("짜장면", BigDecimal.valueOf(6_000)));
