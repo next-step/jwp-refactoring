@@ -86,13 +86,14 @@
     - [x] MenuGroup 통합 테스트 적용
     - [x] Menu 통합 테스트 적용
         - [x] Menu Service Layer 테스트의 재사용되는 코드 응집화
-    - [x] OrderTable 통합 테스트 적용
+    - [ ] OrderTable 통합 테스트 적용
         - [x] test case - `주문 테이블`을 생성한다.
         - [x] test case - `주문 테이블`을 비어있는 상태로 변경한다.
         - [x] test case - `주문 테이블`이 `단체 지정`되어 있으면 비어있는 상태로 변경할 수 없다.
         - [x] test case - `주문 테이블`의 `주문 상태`가 'COOKING' 이나 'MEAL' 상태가 이면 비어있는 상태로 변경할 수 없다.
         - [x] test case - `주문 테이블`에 `방문한 손님 수`를 변경한다.
         - [x] test case - 하나의 `주문 테이블`의 `방문한 손님 수`가 0명보다 적으면, `방문한 손님 수`를 변경할 수 없다.
+        - [x] test case - `주문 테이블`이 비어있으면, `방문한 손님 수`를 변경할 수 없다.
 - [ ] Domain Logic 개선에 앞서, UI 전달되는 Domain Context를 Service Layer에 격리
     - [ ] Product
         - [x] Service Layer에 Request DTO 적용
