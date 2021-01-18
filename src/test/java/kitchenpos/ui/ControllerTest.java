@@ -12,6 +12,9 @@ import org.springframework.test.web.servlet.MockMvc;
 public class ControllerTest {
 
     protected final String MENU_GROUP_URI = "/api/menu-groups";
+    protected final String MENU_URI = "/api/menus";
+
+
 
     @Autowired
     protected MockMvc mockMvc;
