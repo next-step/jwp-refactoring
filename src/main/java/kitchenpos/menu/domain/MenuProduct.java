@@ -22,15 +22,11 @@ public class MenuProduct {
         return seq;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
-    }
-
     public Menu getMenu() {
         return menu;
     }
 
-    public void setMenu(Menu menu) {
+    public void changeMenu(Menu menu) {
         this.menu = menu;
     }
 
@@ -40,10 +36,6 @@ public class MenuProduct {
 
     public long getQuantity() {
         return quantity;
-    }
-
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
     }
 
     public MenuProduct() {
