@@ -54,7 +54,7 @@ class MenuServiceTest {
         Menu result = menuService.create(menu);
 
         // then
-        assertThat(result.getId()).isEqualTo(menu.getId());
+        assertThat(result).isEqualTo(menu);
 
         MenuProduct resultMenuProduct = result.getMenuProducts().get(0);
         assertThat(resultMenuProduct.getMenuId()).isEqualTo(menu.getId());

@@ -39,12 +39,11 @@ public class MenuGroup {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MenuGroup menuGroup = (MenuGroup) o;
-        return Objects.equals(id, menuGroup.id) &&
-                Objects.equals(name, menuGroup.name);
+        return Objects.equals(id, menuGroup.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(id);
     }
 }

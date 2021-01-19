@@ -8,9 +8,10 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -21,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
+@Transactional
 @SpringBootTest
 class OrderServiceTest {
     @Mock
@@ -31,7 +33,7 @@ class OrderServiceTest {
     private OrderLineItemDao orderLineItemDao;
     @Mock
     private OrderTableDao orderTableDao;
-    @InjectMocks
+    @Autowired
     private OrderService orderService;
 
     @DisplayName("주문을 등록한다.")
