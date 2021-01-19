@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.dto.*;
 import org.junit.jupiter.api.DisplayName;
@@ -124,7 +123,7 @@ class OrderServiceTest {
 
         // When
         OrderRequest updateOrder = new OrderRequest(OrderStatus.COMPLETION.name());
-        Order actual = orderService.changeOrderStatus(savedOrder.getId(), updateOrder);
+        OrderResponse actual = orderService.changeOrderStatus(savedOrder.getId(), updateOrder);
 
         // Then
         assertThat(actual.getOrderStatus()).isEqualTo(updateOrder.getOrderStatus());
