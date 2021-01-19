@@ -35,7 +35,7 @@ class ProductServiceTest {
     @Test
     void create1() {
         //given
-        ProductRequest newProduct = new ProductRequest(null, "김치찌개", new BigDecimal(6000));
+        ProductRequest newProduct = new ProductRequest("김치찌개", new BigDecimal(6000));
         // TODO: 임시로 any() 로 돌려놓음.
 //        Product product = new Product(null, "김치찌개", new BigDecimal(6000));
         given(productRepository.save(any()))
@@ -54,7 +54,7 @@ class ProductServiceTest {
     @Test
     void create2() {
         //given
-        ProductRequest newProduct = new ProductRequest(null, "김치찌개", new BigDecimal(-1));
+        ProductRequest newProduct = new ProductRequest("김치찌개", new BigDecimal(-1));
 
         //when
         //then
@@ -67,7 +67,7 @@ class ProductServiceTest {
     @Test
     void create3() {
         //given
-        ProductRequest newProduct = new ProductRequest(null, "김치찌개", null);
+        ProductRequest newProduct = new ProductRequest("김치찌개", null);
 
         //when
         //then

@@ -34,14 +34,14 @@ class MenuGroupServiceTest {
     void create() {
         //given
 
-        MenuGroupRequest menuGroup = new MenuGroupRequest(null, "일반메뉴");
+        MenuGroupRequest menuGroupRequest = new MenuGroupRequest("일반메뉴");
 
         // TODO: 임시로 any() 로 돌려놓음.
         given(menuGroupRepository.save(any()))
                 .willReturn(new MenuGroup(1L, "일반메뉴"));
 
         //when
-        MenuGroupResponse createMenuGroup = menuGroupService.create(menuGroup);
+        MenuGroupResponse createMenuGroup = menuGroupService.create(menuGroupRequest);
 
         //then
         assertThat(createMenuGroup.getId()).isNotNull();

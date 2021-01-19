@@ -20,7 +20,7 @@ class MenuGroupRestControllerTest extends RestControllerTest {
     @Test
     void create() throws Exception {
         //given
-        MenuGroupRequest menuGroupRequest = new MenuGroupRequest(null, "일반메뉴");
+        MenuGroupRequest menuGroupRequest = new MenuGroupRequest("일반메뉴");
 
         //when
         //then
