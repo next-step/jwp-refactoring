@@ -12,10 +12,10 @@ INSERT INTO product (id, name, price) VALUES (6, '순살치킨', 17000);
 
 INSERT INTO menu (id, name, price, menu_group_id) VALUES (1, '후라이드치킨', 16000, 2);
 INSERT INTO menu (id, name, price, menu_group_id) VALUES (2, '양념치킨', 16000, 2);
-INSERT INTO menu (id, name, price, menu_group_id) VALUES (3, '반반치킨', 16000, 2);
-INSERT INTO menu (id, name, price, menu_group_id) VALUES (4, '통구이', 16000, 2);
-INSERT INTO menu (id, name, price, menu_group_id) VALUES (5, '간장치킨', 17000, 2);
-INSERT INTO menu (id, name, price, menu_group_id) VALUES (6, '순살치킨', 17000, 2);
+INSERT INTO menu (id, name, price, menu_group_id) VALUES (3, '반반치킨', 16000, 3);
+INSERT INTO menu (id, name, price, menu_group_id) VALUES (4, '통구이', 16000, 3);
+INSERT INTO menu (id, name, price, menu_group_id) VALUES (5, '간장치킨', 17000, 4);
+INSERT INTO menu (id, name, price, menu_group_id) VALUES (6, '순살치킨', 17000, 4);
 
 INSERT INTO menu_product (menu_id, product_id, quantity) VALUES (1, 1, 1);
 INSERT INTO menu_product (menu_id, product_id, quantity) VALUES (2, 2, 1);
