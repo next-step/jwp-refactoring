@@ -62,7 +62,7 @@ public class MenuResponse {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MenuResponse that = (MenuResponse) o;
-        return Objects.equals(name, that.name) && Objects.equals(price, that.price) && Objects.equals(menuGroupId, that.menuGroupId) && Objects.equals(menuProducts, that.menuProducts);
+        return Objects.equals(name, that.name) && price.compareTo(that.price) == 0 && Objects.equals(menuGroupId, that.menuGroupId) && Objects.equals(menuProducts, that.menuProducts);
     }
 
     @Override

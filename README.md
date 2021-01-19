@@ -156,3 +156,5 @@
         - [x] JPA Entity, Repository 적용
     - [ ] MenuGroup
         - [x] JPA Entity, Repository 적용
+    - [ ] Menu
+        - [x] JPA Entity, Repository 적용
