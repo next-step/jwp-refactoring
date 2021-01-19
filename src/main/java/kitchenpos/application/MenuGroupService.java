@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuGroupDao;
+import kitchenpos.dao.MenuGroupRepository;
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
 import org.springframework.stereotype.Service;
@@ -12,19 +12,19 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class MenuGroupService {
-    private final MenuGroupDao menuGroupDao;
+    private final MenuGroupRepository menuGroupRepository;
 
-    public MenuGroupService(final MenuGroupDao menuGroupDao) {
-        this.menuGroupDao = menuGroupDao;
+    public MenuGroupService(final MenuGroupRepository menuGroupRepository) {
+        this.menuGroupRepository = menuGroupRepository;
     }
 
     public MenuGroupResponse create(MenuGroupRequest request) {
-        return MenuGroupResponse.from(menuGroupDao.save(request.toMenuGroup()));
+        return MenuGroupResponse.from(menuGroupRepository.save(request.toMenuGroup()));
     }
 
     @Transactional(readOnly = true)
     public List<MenuGroupResponse> list() {
-        return menuGroupDao.findAll()
+        return menuGroupRepository.findAll()
                 .stream()
                 .map(MenuGroupResponse::from)
                 .collect(Collectors.toList());
