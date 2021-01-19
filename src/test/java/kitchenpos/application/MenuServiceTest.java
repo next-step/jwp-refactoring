@@ -61,10 +61,9 @@ class MenuServiceTest {
 		MenuProduct 후라이드치킨_수량 = new MenuProduct(후라이드치킨.getId(), 후라이드_id, 1L);
 		후라이드치킨.addMenuProduct(후라이드치킨_수량);
 
-		MenuService menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
-
 		when(menuGroupDao.existsById(후라이드치킨.getMenuGroupId())).thenReturn(true);
 		when(productDao.findById(후라이드_id)).thenReturn(ofNullable(후라이드));
+		MenuService menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
 
 		Menu expectedMenu = mock(Menu.class);
 		when(expectedMenu.getId()).thenReturn(1L);
@@ -88,7 +87,11 @@ class MenuServiceTest {
 	@Test
 	void priceMustOverZero() {
 		// given
-		Menu 돈주고파는후라이드치킨 = new Menu("후라이드치킨", BigDecimal.valueOf(-10000), 2L);
+		Long 두마리메뉴_id = 1L;
+		Long 한마리메뉴_id = 2L;
+		when(두마리메뉴.getId()).thenReturn(두마리메뉴_id);
+		when(한마리메뉴.getId()).thenReturn(한마리메뉴_id);
+		Menu 돈주고파는후라이드치킨 = new Menu("후라이드치킨", BigDecimal.valueOf(-10000), 한마리메뉴_id);
 		MenuService menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
 
 		// when - then
@@ -114,4 +117,29 @@ class MenuServiceTest {
 		}).isInstanceOf(IllegalArgumentException.class);
 	}
 
+
+	@DisplayName("메뉴의 가격은 메뉴내 상품들의 가격 합보다 클 수 없다.")
+	@Test
+	void menuPriceCannotOverProduct() {
+		// given
+		Long 두마리메뉴_id = 1L;
+		Long 한마리메뉴_id = 2L;
+		when(두마리메뉴.getId()).thenReturn(두마리메뉴_id);
+		when(한마리메뉴.getId()).thenReturn(한마리메뉴_id);
+
+		Menu 후라이드치킨 = mock(Menu.class);
+		when(후라이드치킨.getPrice()).thenReturn(BigDecimal.valueOf(5000000));
+		when(후라이드치킨.getMenuGroupId()).thenReturn(한마리메뉴_id);
+
+		Product 후라이드 = mock(Product.class);
+		when(후라이드치킨.getPrice()).thenReturn(BigDecimal.valueOf(16000));
+
+		when(menuGroupDao.existsById(후라이드치킨.getMenuGroupId())).thenReturn(true);
+		MenuService menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
+
+		// when - then
+		assertThatThrownBy(() -> {
+			menuService.create(후라이드치킨);
+		}).isInstanceOf(IllegalArgumentException.class);
+	}
 }
