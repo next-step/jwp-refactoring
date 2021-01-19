@@ -8,6 +8,8 @@ import kitchenpos.domain.MenuProduct;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -15,6 +17,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("메뉴 관련 기능")
 public class MenuAcceptanceTest extends AcceptanceTest {
@@ -38,6 +42,34 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
         // then
         메뉴_둥록됨(response);
+    }
+
+    @DisplayName("미등록 메뉴그룹의 메뉴 등록")
+    @Test
+    void validNotExistMenuGroup() {
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", "후라이드치킨");
+        params.put("price", 16000);
+        params.put("menuGroupId", 0);
+
+        // when
+        assertThatThrownBy(() -> {
+            ExtractableResponse<Response> response = 메뉴_등록_요청(params);
+        }).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @ParameterizedTest
+    @DisplayName("가격이 0원 미만이거나 메뉴상품 총 가격과 불일치하는 상품 등록 예외")
+    @ValueSource(ints = {-1, 1000000})
+    void validPrice(int price) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", "후라이드치킨");
+        params.put("price", price);
+        params.put("menuGroupId", 2);
+
+        ExtractableResponse<Response> response = 메뉴_등록_요청(params);
+
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     @DisplayName("메뉴 목록")

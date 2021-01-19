@@ -1,6 +1,8 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.TableGroupDao;
+import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
@@ -56,6 +58,7 @@ class TableServiceTest extends BaseTest {
             tableService.changeEmpty(expected.getId(), expected);
         }).isInstanceOf(IllegalArgumentException.class);
     }
+
 
     @DisplayName("손님의 수 변경")
     @Test
