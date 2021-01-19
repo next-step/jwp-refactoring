@@ -10,9 +10,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static kitchenpos.utils.TestHelper.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,8 +31,10 @@ class OrderServiceTest extends BaseServiceTest {
         orderLineItems = Collections.singletonList(OrderLineItem.of(1L, 등록된_menu_id, 2));
 
         Order order = Order.of(1L, 비어있지_않은_orderTable_id, orderLineItems);
-        Order result = orderService.create(order);
-        System.out.println(result.getId());
+        order.setOrderTableId(비어있지_않은_orderTable_id);
+        order.setOrderStatus(OrderStatus.COOKING.name());
+        order.setOrderedTime(LocalDateTime.now());
+        orderDao.save(order);
     }
 
     @DisplayName("주문을 등록한다.")
@@ -106,14 +108,12 @@ class OrderServiceTest extends BaseServiceTest {
     @DisplayName("주문 상태가 계산 완료일 경우 변경할 수 없다.")
     @Test
     void changeOrderStatusException2() {
-        Optional<Order> order = orderDao.findById(1L);
-        order.get().setOrderStatus(OrderStatus.COMPLETION.name());
-        orderDao.save(order.get());
-//        order.setOrderedTime(LocalDateTime.now());
-//        order.changeOrderStatus(OrderStatus.COMPLETION.name());
-//        orderDao.save(order);
+        Order order = orderService.list().get(0);
+        order.setOrderStatus(OrderStatus.COMPLETION.name());
+        orderDao.save(order);
+
         Order changeOrder = Order.of(1L,비어있지_않은_orderTable_id, orderLineItems);
-        changeOrder.setOrderStatus(OrderStatus.COMPLETION.name());
+        changeOrder.setOrderStatus(OrderStatus.MEAL.name());
 
         assertThatThrownBy(() -> orderService.changeOrderStatus(1L, changeOrder))
                 .isInstanceOf(IllegalArgumentException.class);

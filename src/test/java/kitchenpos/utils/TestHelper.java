@@ -17,8 +17,6 @@ public class TestHelper {
     public static final Long 비어있지_않은_orderTable_id = 3L;
     public static final Long 등록되어_있지_않은_orderTable_id = 4L;
 
-    public static final Menu menu = menu_생성(1L, "후라이드양념치킨", BigDecimal.valueOf(16000), 1L);
-
     public static final TableGroup init_tableGroup = tableGroup_생성(1L);
     public static final OrderTable empty_orderTable1 = 빈_orderTable_생성(1L);
     public static final OrderTable empty_orderTable2 = 빈_orderTable_생성(2L);
@@ -70,18 +68,5 @@ public class TestHelper {
         OrderTable newOrderTable = orderTable_생성(orderTable.getId(), orderTable.isEmpty());
         newOrderTable.setNumberOfGuests(numberOfGuests);
         return newOrderTable;
-    }
-
-    public static OrderLineItem orderLineItem_생성(Long seq, Long menuId, long quantity) {
-        return OrderLineItem.of(seq, menuId, quantity);
-    }
-
-    public static Order order_생성(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
-        return Order.of(id, orderTableId, orderLineItems);
-    }
-
-    public static Order order_status_추가(Order order, String status) {
-        order.setOrderStatus(status);
-        return order;
     }
 }
