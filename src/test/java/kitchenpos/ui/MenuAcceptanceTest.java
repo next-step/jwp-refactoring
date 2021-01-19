@@ -22,7 +22,7 @@ import static kitchenpos.utils.TestHelper.*;
 import static kitchenpos.utils.TestHelper.menu_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("메뉴 그룹 관련 기능")
+@DisplayName("메뉴 관련 기능")
 class MenuAcceptanceTest extends AcceptanceTest {
 
     @Test
