@@ -1,5 +1,6 @@
 package kitchenpos.order.application;
 
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemRequest;
@@ -12,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -55,30 +55,24 @@ public class OrderService {
         }
 
         Order order = new Order();
-//        order.setOrderLineItems(orderLineItemRequests);
         order.setOrderTable(orderTable);
         order.setOrderStatus(OrderStatus.COOKING);
         order.setOrderedTime(LocalDateTime.now());
 
-        final Order savedOrder = orderRepository.save(order);
-
-// 향후 반영하기.
-        final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
-        for (final OrderLineItem orderLineItem : savedOrderLineItems) {
-            orderLineItem.setOrder(order);
-            savedOrderLineItems.add(orderLineItemRepository.save(orderLineItem));
+        for (final OrderLineItemRequest orderLineItemRequest : orderLineItemRequests) {
+            Menu menu = menuRepository.getOne(orderLineItemRequest.getMenuId());
+            order.addOrderLineItem(
+                    OrderLineItem.createOrderLineItem(
+                            order, menu, orderLineItemRequest.getQuantity()
+                    )
+            );
         }
-        savedOrder.setOrderLineItems(savedOrderLineItems);
 
-        return OrderResponse.of(savedOrder);
+        return OrderResponse.of(orderRepository.save(order));
     }
 
     public List<OrderResponse> list() {
         final List<Order> orders = orderRepository.findAll();
-
-        for (final Order order : orders) {
-            order.setOrderLineItems(orderLineItemRepository.findAllByOrderId(order.getId()));
-        }
 
         return orders.stream()
                 .map(OrderResponse::of)
@@ -94,12 +88,7 @@ public class OrderService {
             throw new IllegalArgumentException("이미 왼료상태인 주문은 상태 변경이 불가합니다.");
         }
 
-        final OrderStatus orderStatus = order.getOrderStatus();
-        savedOrder.setOrderStatus(orderStatus);
-
-        orderRepository.save(savedOrder);
-
-        savedOrder.setOrderLineItems(orderLineItemRepository.findAllByOrderId(orderId));
+        savedOrder.setOrderStatus(order.getOrderStatus());
 
         return OrderResponse.of(savedOrder);
     }

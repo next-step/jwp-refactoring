@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,19 +23,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class OrderRestControllerTest extends RestControllerTest {
 
     public static final String ORDERS_URL = "/api/orders";
-    private OrderRequest order;
+
+    private OrderRequest orderRequest;
 
     @Override
     @BeforeEach
     void setUp() {
         super.setUp();
 
-        order = new OrderRequest(null, 1L, OrderStatus.COOKING, LocalDateTime.now());
-        order.setOrderLineItems(Arrays.asList(
+        orderRequest = new OrderRequest(1L, OrderStatus.COOKING);
+        orderRequest.setOrderLineItems(Arrays.asList(
                 new OrderLineItemRequest(1L,1),
                 new OrderLineItemRequest(2L,1))
         );
-        order.setOrderTableId(1L);
+        orderRequest.setOrderTableId(1L);
     }
 
     @DisplayName("주문을 신청한다.")
@@ -45,13 +45,13 @@ class OrderRestControllerTest extends RestControllerTest {
         //given
         //when
         //then
-        주문요청(order)
+        주문요청(orderRequest)
                 .andExpect(status().isCreated())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(redirectedUrlPattern(ORDERS_URL+ "/*"))
                 .andExpect(jsonPath("$.id", notNullValue()))
                 .andExpect(jsonPath("$.orderStatus", is(OrderStatus.COOKING.name())))
-//                .andExpect(jsonPath("$.orderLineItems.length()", is(2)))
+                .andExpect(jsonPath("$.orderLineItems.length()", is(2)))
                 .andExpect(jsonPath("$.orderTableId", is(1)));
     }
 
@@ -59,7 +59,7 @@ class OrderRestControllerTest extends RestControllerTest {
     @Test
     void list() throws Exception {
         //given
-        주문요청(order);
+        주문요청(orderRequest);
         //when
         //then
         mockMvc.perform(get(ORDERS_URL))
@@ -67,15 +67,15 @@ class OrderRestControllerTest extends RestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.length()", is(1)))
-                .andExpect(jsonPath("$[0]['orderStatus']", is(OrderStatus.COOKING.name())));
-//                .andExpect(jsonPath("$[0]['orderLineItems'].length()", is(2)));
+                .andExpect(jsonPath("$[0]['orderStatus']", is(OrderStatus.COOKING.name())))
+                .andExpect(jsonPath("$[0]['orderLineItems'].length()", is(2)));
     }
 
     @DisplayName("주문 상태를 변경한다.")
     @Test
     void changeOrderStatus() throws Exception {
         //given
-        ResultActions resultActions = 주문요청(order);
+        ResultActions resultActions = 주문요청(orderRequest);
         String redirectedUrl = getRedirectedUrl(resultActions);
 
         Map<String, String> requestBody = new HashMap<>();

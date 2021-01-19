@@ -1,19 +1,19 @@
 package kitchenpos.order.dto;
 
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class OrderResponse {
     private Long id;
     private Long orderTableId;
     private OrderStatus orderStatus;
     private LocalDateTime orderedTime;
-    private List<OrderLineItem> orderLineItems;
+    private List<OrderLineItemResponse> orderLineItems;
 
     public static OrderResponse of(Order order) {
         OrderResponse orderResponse = new OrderResponse(order.getId(), order.getOrderStatus(), order.getOrderedTime());
@@ -22,7 +22,12 @@ public class OrderResponse {
         if (orderTable != null) {
             orderResponse.setOrderTableId(orderTable.getId());
         }
-        orderResponse.setOrderLineItems(order.getOrderLineItems());
+
+        orderResponse.setOrderLineItems(
+                order.getOrderLineItems().stream()
+                        .map(OrderLineItemResponse::of)
+                        .collect(Collectors.toList())
+        );
         return orderResponse;
     }
 
@@ -58,11 +63,11 @@ public class OrderResponse {
         this.orderedTime = orderedTime;
     }
 
-    public List<OrderLineItem> getOrderLineItems() {
+    public List<OrderLineItemResponse> getOrderLineItems() {
         return orderLineItems;
     }
 
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
+    public void setOrderLineItems(final List<OrderLineItemResponse> orderLineItems) {
         this.orderLineItems = orderLineItems;
     }
 
@@ -73,14 +78,5 @@ public class OrderResponse {
         this.id = id;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
-    }
-
-    public OrderResponse(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime,
-                         List<OrderLineItem> orderLineItems) {
-        this.id = id;
-        this.orderTableId = orderTableId;
-        this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
-        this.orderLineItems = orderLineItems;
     }
 }

@@ -2,7 +2,10 @@ package kitchenpos.application;
 
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.application.OrderService;
-import kitchenpos.order.domain.*;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItemRepository;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
@@ -46,11 +49,11 @@ class OrderServiceTest {
     @Test
     void create1() {
         //given
-        OrderRequest newOrder = new OrderRequest();
+        OrderRequest orderRequest = new OrderRequest();
         List<OrderLineItemRequest> orderLineItems = new ArrayList<>();
         orderLineItems.add(new OrderLineItemRequest(1L, 1));
         orderLineItems.add(new OrderLineItemRequest(2L, 1));
-        newOrder.setOrderLineItems(orderLineItems);
+        orderRequest.setOrderLineItems(orderLineItems);
 
         given(orderRepository.save(any()))
                 .willReturn(new Order());
@@ -58,8 +61,6 @@ class OrderServiceTest {
                 .willReturn(2L);
         given(orderTableRepository.findById(any()))
                 .willReturn(Optional.of(new OrderTable()));
-//        given(orderLineItemRepository.save(any()))
-//                .willReturn(new OrderLineItem());
         Order order = new Order(1L, OrderStatus.MEAL, LocalDateTime.now());
         OrderTable orderTable = new OrderTable();
         orderTable.setId(2L);
@@ -68,8 +69,7 @@ class OrderServiceTest {
                 .willReturn(order);
 
         //when
-
-        OrderResponse createOrder = orderService.create(newOrder);
+        OrderResponse createOrder = orderService.create(orderRequest);
 
         //then
         assertThat(createOrder.getId()).isEqualTo(1L);
@@ -144,18 +144,16 @@ class OrderServiceTest {
                         )
                 );
         //when
-        List<OrderResponse> orders = orderService.list();
+        List<OrderResponse> orderResponses = orderService.list();
 
         //then
-        assertThat(orders.size()).isEqualTo(2);
+        assertThat(orderResponses.size()).isEqualTo(2);
 
-        assertThat(orders.get(0).getId()).isEqualTo(1L);
-//        assertThat(orders.get(0).getOrderTableId()).isEqualTo(2L);
-        assertThat(orders.get(0).getOrderStatus()).isEqualTo(OrderStatus.COOKING);
+        assertThat(orderResponses.get(0).getId()).isEqualTo(1L);
+        assertThat(orderResponses.get(0).getOrderStatus()).isEqualTo(OrderStatus.COOKING);
 
-        assertThat(orders.get(1).getId()).isEqualTo(2L);
-//        assertThat(orders.get(1).getOrderTableId()).isEqualTo(3L);
-        assertThat(orders.get(1).getOrderStatus()).isEqualTo(OrderStatus.MEAL);
+        assertThat(orderResponses.get(1).getId()).isEqualTo(2L);
+        assertThat(orderResponses.get(1).getOrderStatus()).isEqualTo(OrderStatus.MEAL);
     }
 
     @DisplayName("주문 상태를 변경한다.")

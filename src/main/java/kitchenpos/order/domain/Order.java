@@ -4,6 +4,7 @@ import kitchenpos.table.domain.OrderTable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
 
 @Entity(name = "orders")
@@ -20,8 +21,8 @@ public class Order {
 
     private LocalDateTime orderedTime;
 
-    @OneToMany(mappedBy = "order")
-    private List<OrderLineItem> orderLineItems;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<OrderLineItem> orderLineItems = new LinkedList<>();
 
     public Long getId() {
         return id;
@@ -59,8 +60,8 @@ public class Order {
         return orderLineItems;
     }
 
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
+    public void addOrderLineItem(final OrderLineItem orderLineItem) {
+        this.orderLineItems.add(orderLineItem);
     }
 
     public Order() {

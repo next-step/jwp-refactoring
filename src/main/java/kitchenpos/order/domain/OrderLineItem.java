@@ -11,9 +11,11 @@ public class OrderLineItem {
     private Long seq;
 
     @ManyToOne
+    @JoinColumn(name = "order_id")
     private Order order;
 
     @ManyToOne
+    @JoinColumn(name = "menu_id")
     private Menu menu;
 
     private long quantity;
@@ -62,5 +64,9 @@ public class OrderLineItem {
         this.order = order;
         this.menu = menu;
         this.quantity = quantity;
+    }
+
+    public static OrderLineItem createOrderLineItem(Order order, Menu menu, long quantity) {
+        return new OrderLineItem(order, menu, quantity);
     }
 }
