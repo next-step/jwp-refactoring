@@ -8,6 +8,7 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
 import org.springframework.stereotype.Service;
@@ -41,14 +42,14 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(OrderRequest request) {
-        final List<OrderLineItem> orderLineItems = request.getOrderLineItems();
+        final List<OrderLineItemRequest> orderLineItems = request.getOrderLineItems();
 
         if (CollectionUtils.isEmpty(orderLineItems)) {
             throw new IllegalArgumentException();
         }
 
         final List<Long> menuIds = orderLineItems.stream()
-                .map(OrderLineItem::getMenuId)
+                .map(OrderLineItemRequest::getMenuId)
                 .collect(Collectors.toList());
 
         if (orderLineItems.size() != menuDao.countByIdIn(menuIds)) {
@@ -71,9 +72,12 @@ public class OrderService {
 
         final Long orderId = savedOrder.getId();
         final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
-        for (final OrderLineItem orderLineItem : orderLineItems) {
-            orderLineItem.setOrderId(orderId);
-            savedOrderLineItems.add(orderLineItemDao.save(orderLineItem));
+        for (final OrderLineItemRequest orderLineItemRequest : orderLineItems) {
+            OrderLineItem saveOrderLineItem = new OrderLineItem();
+            saveOrderLineItem.setOrderId(orderId);
+            saveOrderLineItem.setMenuId(orderLineItemRequest.getMenuId());
+            saveOrderLineItem.setQuantity(orderLineItemRequest.getQuantity());
+            savedOrderLineItems.add(orderLineItemDao.save(saveOrderLineItem));
         }
         savedOrder.setOrderLineItems(savedOrderLineItems);
 

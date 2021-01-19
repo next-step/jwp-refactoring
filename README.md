@@ -138,6 +138,7 @@
     - [ ] Order
         - [x] Service Layer에 Request DTO 적용
         - [x] Service Layer에 Response DTO 적용
+        - [x] Order와 Menu의 정보와 갯수를 전달하기 위한 Request DTO 적용
     - [ ] TableGroup
         - [x] Service Layer에 Request DTO 적용
         - [x] Service Layer에 Response DTO 적용

@@ -1,8 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.dto.*;
 import org.junit.jupiter.api.DisplayName;
@@ -44,10 +42,8 @@ class OrderServiceTest {
                 Arrays.asList(new MenuProductRequest(짬뽕.getId(), 1L), new MenuProductRequest(짜장면.getId(), 1L)))
         );
         OrderTableResponse orderTable = tableService.create(new OrderTableRequest(3, false));
-        OrderLineItem menuParams = new OrderLineItem();
-        menuParams.setMenuId(추천메뉴.getId());
-        menuParams.setQuantity(1);
-        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(menuParams));
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(추천메뉴.getId(), 1L);
+        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(orderLineItemRequest));
 
         // When
         OrderResponse actual = orderService.create(orderRequest);
@@ -79,11 +75,9 @@ class OrderServiceTest {
         MenuResponse 추천메뉴 = menuService.create(new MenuRequest("추천메뉴", BigDecimal.valueOf(14_000), 신메뉴그룹.getId(),
                 Arrays.asList(new MenuProductRequest(짬뽕.getId(), 1L), new MenuProductRequest(짜장면.getId(), 1L)))
         );
-        OrderLineItem menuParams = new OrderLineItem();
-        menuParams.setMenuId(추천메뉴.getId());
-        menuParams.setQuantity(1);
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(추천메뉴.getId(), 1L);
         long invalidMenuProductId = Long.MAX_VALUE;
-        OrderRequest orderRequest = new OrderRequest(invalidMenuProductId, Collections.singletonList(menuParams));
+        OrderRequest orderRequest = new OrderRequest(invalidMenuProductId, Collections.singletonList(orderLineItemRequest));
 
         // When & Then
         assertThatThrownBy(() -> orderService.create(orderRequest)).isInstanceOf(IllegalArgumentException.class);
@@ -100,10 +94,9 @@ class OrderServiceTest {
                 Arrays.asList(new MenuProductRequest(짬뽕.getId(), 1L), new MenuProductRequest(짜장면.getId(), 1L)))
         );
         OrderTableResponse orderTable = tableService.create(new OrderTableRequest(3, false));
-        OrderLineItem menuParams = new OrderLineItem();
-        menuParams.setMenuId(추천메뉴.getId());
-        menuParams.setQuantity(1);
-        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(menuParams));
+
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(추천메뉴.getId(), 1L);
+        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(orderLineItemRequest));
         OrderResponse expected = orderService.create(orderRequest);
 
         // When
@@ -124,14 +117,13 @@ class OrderServiceTest {
                 Arrays.asList(new MenuProductRequest(짬뽕.getId(), 1L), new MenuProductRequest(짜장면.getId(), 1L)))
         );
         OrderTableResponse orderTable = tableService.create(new OrderTableRequest(3, false));
-        OrderLineItem menuParams = new OrderLineItem();
-        menuParams.setMenuId(추천메뉴.getId());
-        menuParams.setQuantity(1);
-        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(menuParams));
+
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(추천메뉴.getId(), 1L);
+        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(orderLineItemRequest));
         OrderResponse savedOrder = orderService.create(orderRequest);
-        OrderRequest updateOrder = new OrderRequest(OrderStatus.COMPLETION.name());
 
         // When
+        OrderRequest updateOrder = new OrderRequest(OrderStatus.COMPLETION.name());
         Order actual = orderService.changeOrderStatus(savedOrder.getId(), updateOrder);
 
         // Then
@@ -149,14 +141,12 @@ class OrderServiceTest {
                 Arrays.asList(new MenuProductRequest(짬뽕.getId(), 1L), new MenuProductRequest(짜장면.getId(), 1L)))
         );
         OrderTableResponse orderTable = tableService.create(new OrderTableRequest(3, false));
-        OrderLineItem menuParams = new OrderLineItem();
-        menuParams.setMenuId(추천메뉴.getId());
-        menuParams.setQuantity(1);
-        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(menuParams));
+
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(추천메뉴.getId(), 1L);
+        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(orderLineItemRequest));
         OrderResponse savedOrder = orderService.create(orderRequest);
 
-        OrderRequest updateOrder = new OrderRequest(OrderStatus.COMPLETION.name());
-        orderService.changeOrderStatus(savedOrder.getId(), updateOrder);
+        orderService.changeOrderStatus(savedOrder.getId(), new OrderRequest(OrderStatus.COMPLETION.name()));
 
         // When & Then
         assertThatThrownBy(() -> orderService.changeOrderStatus(savedOrder.getId(), new OrderRequest(OrderStatus.MEAL.name())))

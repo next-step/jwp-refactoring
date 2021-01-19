@@ -1,9 +1,7 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.*;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,7 +129,9 @@ class TableGroupServiceTest {
                 Arrays.asList(new MenuProductRequest(짬뽕.getId(), 1L), new MenuProductRequest(짜장면.getId(), 1L)))
         );
 
-        orderService.create(new OrderRequest(tableGroup.getId(), Collections.singletonList(new OrderLineItemRequest(추천메뉴.getId(), 1L))));
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(추천메뉴.getId(), 1L);
+        OrderRequest orderRequest = new OrderRequest(orderTable1.getId(), Collections.singletonList(orderLineItemRequest));
+        orderService.create(orderRequest);
 
         // When & Then
         assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))
