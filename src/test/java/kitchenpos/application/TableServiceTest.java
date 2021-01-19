@@ -40,7 +40,7 @@ class TableServiceTest {
     @Test
     void create() {
         //given
-        OrderTableRequest newOrderTable = new OrderTableRequest(null, null, 0, true);
+        OrderTableRequest newOrderTable = new OrderTableRequest(null, 0, true);
 
         OrderTable savedTable = new OrderTable(1L, null, 0, true);
         // TODO: any() 임시 사용
@@ -94,7 +94,7 @@ class TableServiceTest {
                 .willReturn(savedOrderTable);
 
         //when
-        OrderTableRequest newOrderTable = new OrderTableRequest(2L, null, 0, false);
+        OrderTableRequest newOrderTable = new OrderTableRequest(2L, 0, false);
         OrderTableResponse changedOrderTable = tableService.changeEmpty(2L, newOrderTable);
 
         //then
@@ -112,7 +112,7 @@ class TableServiceTest {
                         Optional.of(new OrderTable(2L, tableGroup, 0, true))
                 );
 
-        OrderTableRequest orderTable = new OrderTableRequest(2L, 1L, 0, false);
+        OrderTableRequest orderTable = new OrderTableRequest(1L, 0, false);
 
         //when
         //then
@@ -128,7 +128,7 @@ class TableServiceTest {
         given(orderTableRepository.findById(2L)).willReturn(Optional.of(findTable));
         given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(true);
 
-        OrderTableRequest orderTable = new OrderTableRequest(2L, null, 0, false);
+        OrderTableRequest orderTable = new OrderTableRequest(null, 0, false);
 
         //when
         //then
@@ -146,8 +146,8 @@ class TableServiceTest {
         given(orderTableRepository.save(findTable)).willReturn(findTable);
 
         //when
-        OrderTableRequest orderTable = new OrderTableRequest(3L, null, 3, true);
-        OrderTableResponse changedOrderTable = tableService.changeNumberOfGuests(orderTable.getId(), orderTable);
+        OrderTableRequest orderTable = new OrderTableRequest(null, 3, true);
+        OrderTableResponse changedOrderTable = tableService.changeNumberOfGuests(3L, orderTable);
 
         //then
         assertThat(changedOrderTable.getNumberOfGuests()).isEqualTo(3);
@@ -157,11 +157,11 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuests2() {
         //given
-        OrderTableRequest orderTable = new OrderTableRequest(3L, null, -1, true);
+        OrderTableRequest orderTable = new OrderTableRequest(null, -1, true);
 
         //when
         //then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), orderTable))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(3L, orderTable))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -172,11 +172,11 @@ class TableServiceTest {
         OrderTable findTable = new OrderTable(3L, null, 0, true);
         given(orderTableRepository.findById(3L)).willReturn(Optional.of(findTable));
 
-        OrderTableRequest orderTable = new OrderTableRequest(3L, null, 3, true);
+        OrderTableRequest orderTable = new OrderTableRequest(null, 3, true);
 
         //when
         //then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), orderTable))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(3L, orderTable))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

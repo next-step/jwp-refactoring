@@ -1,18 +1,9 @@
 package kitchenpos.table.dto;
 
 public class OrderTableRequest {
-    private Long id;
     private Long tableGroupId;
     private int numberOfGuests;
     private boolean empty;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
-    }
 
     public Long getTableGroupId() {
         return tableGroupId;
@@ -41,8 +32,7 @@ public class OrderTableRequest {
     public OrderTableRequest() {
     }
 
-    public OrderTableRequest(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
-        this.id = id;
+    public OrderTableRequest(Long tableGroupId, int numberOfGuests, boolean empty) {
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
