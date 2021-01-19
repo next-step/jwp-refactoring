@@ -20,17 +20,17 @@ public class TableGroup {
     public TableGroup() {
     }
 
+    public TableGroup(OrderTables orderTables) {
+        this.orderTables = orderTables;
+        this.createdDate = LocalDateTime.now();
+    }
+
     public void removeTable(OrderTable orderTable) {
         orderTables.removeTable(orderTable);
     }
 
     public void addTable(OrderTable orderTable) {
         orderTables.addTable(orderTable);
-    }
-
-    public TableGroup(OrderTables orderTables) {
-        this.orderTables = orderTables;
-        this.createdDate = LocalDateTime.now();
     }
 
     public Long getId() {
