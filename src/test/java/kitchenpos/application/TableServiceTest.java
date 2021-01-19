@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.dto.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,65 +33,59 @@ class TableServiceTest {
     @Autowired
     private MenuGroupService menuGroupService;
 
+    private OrderTableRequest request;
+    private OrderTableResponse orderTableResponse;
+
+    @BeforeEach
+    void beforeEach() {
+        request = new OrderTableRequest(3, false);
+        orderTableResponse = tableService.create(request);
+    }
+
     @DisplayName("`주문 테이블`을 생성한다.")
     @Test
     void createTable() {
-        // Given
-        OrderTableRequest request = new OrderTableRequest(3, true);
-
-        // When
-        OrderTableResponse actual = tableService.create(request);
-
         // Then
         assertAll(
-                () -> assertThat(actual.getId()).isNotNull(),
-                () -> assertThat(actual.getNumberOfGuests()).isEqualTo(request.getNumberOfGuests()),
-                () -> assertThat(actual.isEmpty()).isEqualTo(request.isEmpty()),
-                () -> assertThat(actual.getTableGroupId()).isNull()
+                () -> assertThat(orderTableResponse.getId()).isNotNull(),
+                () -> assertThat(orderTableResponse.getNumberOfGuests()).isEqualTo(request.getNumberOfGuests()),
+                () -> assertThat(orderTableResponse.isEmpty()).isEqualTo(request.isEmpty()),
+                () -> assertThat(orderTableResponse.getTableGroupId()).isNull()
         );
     }
 
     @DisplayName("모든 `주문 테이블` 목록을 조회한다.")
     @Test
     void findAllTables() {
-        // Given
-        OrderTableRequest request = new OrderTableRequest(3, true);
-        OrderTableResponse expected = tableService.create(request);
-
         // When
         List<OrderTableResponse> actual = tableService.list();
 
         // Then
-        assertThat(actual).containsAnyElementsOf(Collections.singletonList(expected));
+        assertThat(actual).containsAnyElementsOf(Collections.singletonList(orderTableResponse));
     }
 
     @DisplayName("`주문 테이블`을 비어있는 상태로 변경한다.")
     @Test
     void changeEmpty() {
-        // Given
-        OrderTableResponse orderTable = tableService.create(new OrderTableRequest(3, false));
-        OrderTableRequest request = new OrderTableRequest(true);
-
         // When
-        OrderTableResponse actual = tableService.changeEmpty(orderTable.getId(), request);
+        OrderTableResponse actual = tableService.changeEmpty(orderTableResponse.getId(), new OrderTableRequest(true));
 
         // Then
-        assertThat(actual.isEmpty()).isEqualTo(request.isEmpty());
+        assertThat(actual.isEmpty()).isTrue();
     }
 
     @DisplayName("`주문 테이블`이 `단체 지정`되어 있으면 비어있는 상태로 변경할 수 없다.")
     @Test
     void exceptionToChangeEmptyWithTableGroup() {
         // Given
-        OrderTableResponse savedOrderTable1 = tableService.create(new OrderTableRequest(3, true));
-        OrderTableResponse savedOrderTable2 = tableService.create(new OrderTableRequest(3, true));
-        List<OrderTableRequest> orderTableRequests = Arrays.asList(new OrderTableRequest(savedOrderTable1.getId()),
-                new OrderTableRequest(savedOrderTable2.getId()));
-        TableGroupRequest request = new TableGroupRequest(orderTableRequests);
-        tableGroupService.create(request);
+        OrderTableResponse orderTableResponse1 = tableService.create(new OrderTableRequest(0, true));
+        OrderTableResponse orderTableResponse2 = tableService.create(new OrderTableRequest(0, true));
+        List<OrderTableRequest> orderTableRequests = Arrays.asList(new OrderTableRequest(orderTableResponse1.getId()),
+                new OrderTableRequest(orderTableResponse2.getId()));
+        tableGroupService.create(new TableGroupRequest(orderTableRequests));
 
         // When & Then
-        assertThatThrownBy(() -> tableService.changeEmpty(savedOrderTable1.getId(), new OrderTableRequest(true)))
+        assertThatThrownBy(() -> tableService.changeEmpty(orderTableResponse1.getId(), new OrderTableRequest(true)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -104,14 +99,13 @@ class TableServiceTest {
         MenuResponse 추천메뉴 = menuService.create(new MenuRequest("추천메뉴", BigDecimal.valueOf(14_000), 신메뉴그룹.getId(),
                 Arrays.asList(new MenuProductRequest(짬뽕.getId(), 1L), new MenuProductRequest(짜장면.getId(), 1L)))
         );
-        OrderTableResponse orderTable = tableService.create(new OrderTableRequest(3, false));
 
         OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(추천메뉴.getId(), 1L);
-        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(orderLineItemRequest));
+        OrderRequest orderRequest = new OrderRequest(orderTableResponse.getId(), Collections.singletonList(orderLineItemRequest));
         orderService.create(orderRequest);
 
         // when & Then
-        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), new OrderTableRequest(true)))
+        assertThatThrownBy(() -> tableService.changeEmpty(orderTableResponse.getId(), new OrderTableRequest(true)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -125,15 +119,14 @@ class TableServiceTest {
         MenuResponse 추천메뉴 = menuService.create(new MenuRequest("추천메뉴", BigDecimal.valueOf(14_000), 신메뉴그룹.getId(),
                 Arrays.asList(new MenuProductRequest(짬뽕.getId(), 1L), new MenuProductRequest(짜장면.getId(), 1L)))
         );
-        OrderTableResponse orderTable = tableService.create(new OrderTableRequest(3, false));
 
         OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(추천메뉴.getId(), 1L);
-        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(orderLineItemRequest));
+        OrderRequest orderRequest = new OrderRequest(orderTableResponse.getId(), Collections.singletonList(orderLineItemRequest));
         orderService.create(orderRequest);
 
         // When
         int updateNumberOfGuests = 5;
-        OrderTableResponse actual = tableService.changeNumberOfGuests(orderTable.getId(), new OrderTableRequest(updateNumberOfGuests));
+        OrderTableResponse actual = tableService.changeNumberOfGuests(orderTableResponse.getId(), new OrderTableRequest(updateNumberOfGuests));
 
         // Then
         assertThat(actual.getNumberOfGuests()).isEqualTo(updateNumberOfGuests);
@@ -149,15 +142,14 @@ class TableServiceTest {
         MenuResponse 추천메뉴 = menuService.create(new MenuRequest("추천메뉴", BigDecimal.valueOf(14_000), 신메뉴그룹.getId(),
                 Arrays.asList(new MenuProductRequest(짬뽕.getId(), 1L), new MenuProductRequest(짜장면.getId(), 1L)))
         );
-        OrderTableResponse orderTable = tableService.create(new OrderTableRequest(3, false));
 
         OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(추천메뉴.getId(), 1L);
-        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(orderLineItemRequest));
+        OrderRequest orderRequest = new OrderRequest(orderTableResponse.getId(), Collections.singletonList(orderLineItemRequest));
         orderService.create(orderRequest);
 
         // When & Then
         int invalidNumberOfGuests = -1;
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), new OrderTableRequest(invalidNumberOfGuests)))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableResponse.getId(), new OrderTableRequest(invalidNumberOfGuests)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -171,18 +163,17 @@ class TableServiceTest {
         MenuResponse 추천메뉴 = menuService.create(new MenuRequest("추천메뉴", BigDecimal.valueOf(14_000), 신메뉴그룹.getId(),
                 Arrays.asList(new MenuProductRequest(짬뽕.getId(), 1L), new MenuProductRequest(짜장면.getId(), 1L)))
         );
-        OrderTableResponse orderTable = tableService.create(new OrderTableRequest(3, false));
 
         OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(추천메뉴.getId(), 1L);
-        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(orderLineItemRequest));
+        OrderRequest orderRequest = new OrderRequest(orderTableResponse.getId(), Collections.singletonList(orderLineItemRequest));
         OrderResponse order = orderService.create(orderRequest);
 
         orderService.changeOrderStatus(order.getId(), new OrderRequest(OrderStatus.COMPLETION.name()));
-        tableService.changeEmpty(orderTable.getId(), new OrderTableRequest(true));
+        tableService.changeEmpty(orderTableResponse.getId(), new OrderTableRequest(true));
 
         // When & Then
         int updateNumberOfGuests = 5;
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), new OrderTableRequest(updateNumberOfGuests)))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableResponse.getId(), new OrderTableRequest(updateNumberOfGuests)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }
