@@ -1,6 +1,9 @@
 package kitchenpos.tablegroup.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kitchenpos.common.BaseTest;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
@@ -8,11 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
@@ -24,11 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("테이블 그룹 컨트롤러 테스트")
-@SpringBootTest
-@AutoConfigureMockMvc
-@Sql("/db/test_data.sql")
-@EnableJpaAuditing
-class TableGroupRestControllerTest {
+class TableGroupRestControllerTest extends BaseTest {
     public static final String DEFAULT_TABLE_GROUPS_URI = "/api/table-groups/";
 
     @Autowired
@@ -40,10 +35,22 @@ class TableGroupRestControllerTest {
     @Autowired
     private TableGroupService tableGroupService;
 
+    @Autowired
+    private OrderTableRepository orderTableRepository;
+
     private TableGroupRequest tableGroupRequest;
 
     @BeforeEach
     void setUp() {
+        orderTableRepository.save(OrderTable.of(null, 0, true));
+        orderTableRepository.save(OrderTable.of(null, 0, true));
+        orderTableRepository.save(OrderTable.of(null, 0, true));
+        orderTableRepository.save(OrderTable.of(null, 0, true));
+        orderTableRepository.save(OrderTable.of(null, 0, true));
+        orderTableRepository.save(OrderTable.of(null, 0, true));
+        orderTableRepository.save(OrderTable.of(null, 0, true));
+        orderTableRepository.save(OrderTable.of(null, 0, true));
+
         tableGroupRequest = new TableGroupRequest();
         tableGroupRequest.setOrderTableIds(Arrays.asList(3L, 4L, 5L));
     }
