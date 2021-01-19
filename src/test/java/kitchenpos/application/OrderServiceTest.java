@@ -10,11 +10,13 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.product.domain.Product;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -27,6 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 @DisplayName("주문 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -48,6 +51,8 @@ class OrderServiceTest {
     @Test
     void create1() {
         //given
+        ArgumentCaptor<Order> argumentCaptor = ArgumentCaptor.forClass(Order.class);
+
         given(orderRepository.save(any()))
                 .willReturn(new Order());
         given(menuRepository.findAllById(Arrays.asList(1L, 2L)))
@@ -62,24 +67,29 @@ class OrderServiceTest {
         OrderTable orderTable = new OrderTable();
         orderTable.setId(2L);
 
-        Order order = new Order(1L, OrderStatus.MEAL, LocalDateTime.now());
+        Order order = new Order(1L, OrderStatus.COOKING, LocalDateTime.now());
         order.setOrderTable(orderTable);
 
         given(orderRepository.save(any())).willReturn(order);
 
         //when
-        OrderRequest orderRequest = new OrderRequest();
         List<OrderLineItemRequest> orderLineItems = new ArrayList<>();
         orderLineItems.add(new OrderLineItemRequest(1L, 1));
         orderLineItems.add(new OrderLineItemRequest(2L, 1));
+
+        OrderRequest orderRequest = new OrderRequest(1L, OrderStatus.MEAL);
         orderRequest.setOrderLineItems(orderLineItems);
-        orderRequest.setOrderTableId(1L);
         OrderResponse createOrder = orderService.create(orderRequest);
 
         //then
+        verify(orderRepository).save(argumentCaptor.capture());
+        assertThat(argumentCaptor.getValue().getId()).isNull();
+        assertThat(argumentCaptor.getValue().getOrderStatus()).isEqualTo(OrderStatus.COOKING);
+        assertThat(argumentCaptor.getValue().getOrderTable().getId()).isEqualTo(1L);
+
         assertThat(createOrder.getId()).isEqualTo(1L);
         assertThat(createOrder.getOrderTableId()).isEqualTo(2L);
-        assertThat(createOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
+        assertThat(createOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
     }
 
 

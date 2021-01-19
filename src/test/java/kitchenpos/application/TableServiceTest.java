@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.application.TableService;
@@ -11,6 +12,7 @@ import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -24,6 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 @DisplayName("주문 테이블 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -39,14 +42,18 @@ class TableServiceTest {
     @Test
     void create() {
         //given
+        ArgumentCaptor<OrderTable> argumentCaptor = ArgumentCaptor.forClass(OrderTable.class);
         OrderTableRequest orderTableRequest = new OrderTableRequest(null, 0, true);
 
-        // TODO: any() 임시 사용
         given(orderTableRepository.save(any()))
                 .willReturn(new OrderTable(1L, null, 0, true));
 
         //when
         OrderTableResponse createOrderTable = tableService.create(orderTableRequest);
+        verify(orderTableRepository).save(argumentCaptor.capture());
+        assertThat(argumentCaptor.getValue().getId()).isNull();
+        assertThat(argumentCaptor.getValue().getNumberOfGuests()).isEqualTo(0);
+        assertThat(argumentCaptor.getValue().isEmpty()).isEqualTo(true);
 
         //then
         assertThat(createOrderTable.getId()).isEqualTo(1L);

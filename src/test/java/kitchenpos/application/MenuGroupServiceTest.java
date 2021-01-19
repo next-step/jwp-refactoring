@@ -8,6 +8,7 @@ import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -18,6 +19,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 @DisplayName("메뉴 그룹 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -33,16 +35,19 @@ class MenuGroupServiceTest {
     @Test
     void create() {
         //given
-        MenuGroupRequest menuGroupRequest = new MenuGroupRequest("일반메뉴");
-
-        // TODO: 임시로 any() 로 돌려놓음.
+        ArgumentCaptor<MenuGroup> argumentCaptor = ArgumentCaptor.forClass(MenuGroup.class);
         given(menuGroupRepository.save(any()))
                 .willReturn(new MenuGroup(1L, "일반메뉴"));
 
         //when
+        MenuGroupRequest menuGroupRequest = new MenuGroupRequest("일반메뉴");
         MenuGroupResponse createMenuGroup = menuGroupService.create(menuGroupRequest);
 
         //then
+        verify(menuGroupRepository).save(argumentCaptor.capture());
+        assertThat(argumentCaptor.getValue().getId()).isNull();
+        assertThat(argumentCaptor.getValue().getName()).isEqualTo("일반메뉴");
+
         assertThat(createMenuGroup.getId()).isNotNull();
         assertThat(createMenuGroup.getName()).isEqualTo("일반메뉴");
     }

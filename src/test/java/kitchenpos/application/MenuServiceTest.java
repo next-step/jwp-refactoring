@@ -14,6 +14,7 @@ import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -25,6 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 @DisplayName("메뉴 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -37,9 +39,6 @@ class MenuServiceTest {
     MenuGroupRepository menuGroupRepository;
 
     @Mock
-    MenuProductRepository menuProductRepository;
-
-    @Mock
     ProductRepository productRepository;
 
     @InjectMocks
@@ -49,15 +48,15 @@ class MenuServiceTest {
     @Test
     void create1() {
         //given
+        ArgumentCaptor<Menu> argumentCaptor = ArgumentCaptor.forClass(Menu.class);
         List<MenuProductRequest> menuProductRequests = new ArrayList<>();
         menuProductRequests.add(new MenuProductRequest(1L, 1));
 
         MenuRequest menuRequest = new MenuRequest("후라이드치킨", new BigDecimal("16000"), 2L);
         menuRequest.setMenuProducts(menuProductRequests);
 
-        // TODO: 임시로 any() 로 돌려놓음.
         given(menuGroupRepository.findById(2L))
-                .willReturn(Optional.of(new MenuGroup(2L, "메뉴그롭1")));
+                .willReturn(Optional.of(new MenuGroup(2L, "메뉴그롭2")));
         given(productRepository.findAllByIdIn(Collections.singletonList(1L)))
                 .willReturn(Collections.singletonList(
                         new Product(1L, "후라이드치킨", new BigDecimal("16000"))
@@ -66,7 +65,7 @@ class MenuServiceTest {
                 .willReturn(
                         new Menu(
                                 1L, "후라이드치킨", new BigDecimal("16000"),
-                                new MenuGroup(2L, "메뉴그룹2")
+                                new MenuGroup(2L, "메뉴그롭2")
                         )
                 );
 
@@ -74,9 +73,14 @@ class MenuServiceTest {
         MenuResponse createMenu = menuService.create(menuRequest);
 
         //then
+        verify(menuRepository).save(argumentCaptor.capture());
+        assertThat(argumentCaptor.getValue().getName()).isEqualTo("후라이드치킨");
+        assertThat(argumentCaptor.getValue().getPrice()).isEqualTo(new BigDecimal(16000));
+        assertThat(argumentCaptor.getValue().getMenuGroup().getName()).isEqualTo("메뉴그롭2");
+
         assertThat(createMenu.getId()).isEqualTo(1L);
         assertThat(createMenu.getName()).isEqualTo("후라이드치킨");
-        assertThat(createMenu.getPrice()).isEqualTo(new BigDecimal("16000"));
+        assertThat(createMenu.getPrice()).isEqualTo(new BigDecimal(16000));
         assertThat(createMenu.getMenuGroupId()).isEqualTo(2L);
     }
 

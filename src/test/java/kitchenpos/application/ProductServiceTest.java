@@ -5,9 +5,11 @@ import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -20,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 @DisplayName("상품 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -35,9 +38,9 @@ class ProductServiceTest {
     @Test
     void create1() {
         //given
+        ArgumentCaptor<Product> argumentCaptor = ArgumentCaptor.forClass(Product.class);
+
         ProductRequest newProduct = new ProductRequest("김치찌개", new BigDecimal(6000));
-        // TODO: 임시로 any() 로 돌려놓음.
-//        Product product = new Product(null, "김치찌개", new BigDecimal(6000));
         given(productRepository.save(any()))
                 .willReturn(new Product(2L, "김치찌개", new BigDecimal(6000)));
 
@@ -45,6 +48,11 @@ class ProductServiceTest {
         ProductResponse createProduct = productService.create(newProduct);
 
         //then
+        verify(productRepository).save(argumentCaptor.capture());
+        assertThat(argumentCaptor.getValue().getId()).isNull();
+        assertThat(argumentCaptor.getValue().getName()).isEqualTo("김치찌개");
+        assertThat(argumentCaptor.getValue().getPrice()).isEqualTo(new BigDecimal(6000));
+
         assertThat(createProduct.getId()).isEqualTo(2L);
         assertThat(createProduct.getName()).isEqualTo("김치찌개");
         assertThat(createProduct.getPrice()).isEqualTo(new BigDecimal(6000));

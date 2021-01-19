@@ -12,6 +12,7 @@ import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -48,14 +49,9 @@ class TableGroupServiceTest {
     @Test
     void create1() {
         //given
-        List<OrderTableIdRequest> orderTables = new ArrayList<>();
-        orderTables.add(new OrderTableIdRequest(1L));
-        orderTables.add(new OrderTableIdRequest(2L));
+        ArgumentCaptor<TableGroup> argumentCaptor = ArgumentCaptor.forClass(TableGroup.class);
 
-        TableGroupRequest newTableGroup = new TableGroupRequest(orderTables);
-        newTableGroup.setOrderTables(orderTables);
-
-        given(orderTableRepository.findAllByIdIn(any()))
+        given(orderTableRepository.findAllByIdIn(Arrays.asList(1L, 2L)))
                 .willReturn(
                         Arrays.asList(
                                 new OrderTable(1L, null, 0, true),
@@ -69,9 +65,19 @@ class TableGroupServiceTest {
         given(tableGroupRepository.save(any())).willReturn(tableGroup);
 
         //when
-        TableGroupResponse savedTableGroup = tableGroupService.create(newTableGroup);
+        List<OrderTableIdRequest> orderTables = new ArrayList<>();
+        orderTables.add(new OrderTableIdRequest(1L));
+        orderTables.add(new OrderTableIdRequest(2L));
+
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(orderTables);
+        tableGroupRequest.setOrderTables(orderTables);
+        TableGroupResponse savedTableGroup = tableGroupService.create(tableGroupRequest);
 
         //then
+        verify(tableGroupRepository).save(argumentCaptor.capture());
+        assertThat(argumentCaptor.getValue().getId()).isNull();
+        assertThat(argumentCaptor.getValue().getOrderTables().size()).isEqualTo(2);
+
         assertThat(savedTableGroup.getId()).isEqualTo(1L);
         assertThat(savedTableGroup.getOrderTables().size()).isEqualTo(2);
     }
