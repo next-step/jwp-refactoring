@@ -44,8 +44,8 @@ class TableGroupServiceTest {
 
         // When
         TableGroupResponse response = tableGroupService.create(request);
-        OrderTable foundOrderTable1 = tableService.findById(orderTable1.getId());
-        OrderTable foundOrderTable2 = tableService.findById(orderTable2.getId());
+        OrderTableResponse foundOrderTable1 = tableService.findResponseById(orderTable1.getId());
+        OrderTableResponse foundOrderTable2 = tableService.findResponseById(orderTable2.getId());
 
         // Then
         assertAll(
@@ -118,8 +118,8 @@ class TableGroupServiceTest {
 
         // Then
         assertAll(
-                () -> assertThat(foundOrderTable1.getTableGroupId()).isNull(),
-                () -> assertThat(foundOrderTable2.getTableGroupId()).isNull()
+                () -> assertThat(foundOrderTable1.getTableGroup()).isNull(),
+                () -> assertThat(foundOrderTable2.getTableGroup()).isNull()
         );
     }
 

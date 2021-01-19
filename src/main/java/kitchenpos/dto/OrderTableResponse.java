@@ -5,13 +5,26 @@ import kitchenpos.domain.OrderTable;
 import java.util.Objects;
 
 public class OrderTableResponse {
-    private final Long id;
-    private final Long tableGroupId;
-    private final Integer numberOfGuests;
-    private final Boolean empty;
+    private Long id;
+    private Long tableGroupId;
+    private Integer numberOfGuests;
+    private Boolean empty;
 
     public static OrderTableResponse from(OrderTable orderTable) {
-        return new OrderTableResponse(orderTable.getId(), orderTable.getTableGroupId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
+        return new OrderTableResponse(orderTable.getId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
+    }
+
+    public static OrderTableResponse of(OrderTable orderTable, Long tableGroupId) {
+        return new OrderTableResponse(orderTable.getId(), tableGroupId, orderTable.getNumberOfGuests(), orderTable.isEmpty());
+    }
+
+    public OrderTableResponse() {
+    }
+
+    public OrderTableResponse(Long id, Integer numberOfGuests, Boolean empty) {
+        this.id = id;
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
     }
 
     private OrderTableResponse(Long id, Long tableGroupId, Integer numberOfGuests, Boolean empty) {
@@ -19,10 +32,6 @@ public class OrderTableResponse {
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
-    }
-
-    public OrderTable toOrderTable() {
-        return new OrderTable(id, tableGroupId, numberOfGuests, empty);
     }
 
     public Long getId() {

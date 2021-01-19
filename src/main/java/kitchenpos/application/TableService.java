@@ -81,6 +81,10 @@ public class TableService {
         return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
     }
 
+    public OrderTableResponse findResponseById(Long id) {
+        return OrderTableResponse.from(findById(id));
+    }
+
     public OrderTable findById(Long id) {
         return orderTableRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("OrderTable id:" + id + "가 존재하지 않습니다."));

@@ -5,11 +5,11 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.HttpStatusAssertion;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.TableGroupRequest;
 import org.springframework.http.MediaType;
 
 public class TableGroupAcceptanceTestSupport extends AcceptanceTest {
-    public ExtractableResponse<Response> 단체_지정_생성_요청(TableGroup params) {
+    public ExtractableResponse<Response> 단체_지정_생성_요청(TableGroupRequest params) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

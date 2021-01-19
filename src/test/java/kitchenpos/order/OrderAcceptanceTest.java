@@ -3,6 +3,9 @@ package kitchenpos.order;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.*;
+import kitchenpos.dto.OrderLineItemRequest;
+import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.menu.MenuAcceptanceTestSupport;
 import kitchenpos.menugroup.MenuGroupAcceptanceTestSupport;
 import kitchenpos.ordertable.OrderTableAcceptanceTestSupport;
@@ -16,12 +19,12 @@ import java.util.Collections;
 
 @DisplayName("주문 관련 기능")
 class OrderAcceptanceTest extends OrderAcceptanceTestSupport {
-    private OrderTable orderTable;
+    private OrderTableResponse orderTable;
     private Menu menu;
 
     @BeforeEach
     public void beforeEach() {
-        orderTable = OrderTableAcceptanceTestSupport.주문_테이블_등록_되어있음(3, false).as(OrderTable.class);
+        orderTable = OrderTableAcceptanceTestSupport.주문_테이블_등록_되어있음(3, false).as(OrderTableResponse.class);
         MenuGroup 중화메뉴 = MenuGroupAcceptanceTestSupport.메뉴_그룹_등록_되어있음("중화메뉴").as(MenuGroup.class);
         Product 짬뽕 = ProductAcceptanceTestSupport.상품_등록되어_있음("짬뽕", 7_000).as(Product.class);
         Product 짜장면 = ProductAcceptanceTestSupport.상품_등록되어_있음("짜장면", 5_000).as(Product.class);
@@ -32,15 +35,10 @@ class OrderAcceptanceTest extends OrderAcceptanceTestSupport {
     @Test
     void manageOrder() {
         // Given
-        OrderLineItem menuParams = new OrderLineItem();
-        menuParams.setMenuId(menu.getId());
-        menuParams.setQuantity(1);
-        Order orderParams = new Order();
-        orderParams.setOrderTableId(orderTable.getId());
-        orderParams.setOrderLineItems(Collections.singletonList(menuParams));
+        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(new OrderLineItemRequest(menu.getId(), 1L)));
 
         // When
-        ExtractableResponse<Response> createResponse = 주문_생성_요청(orderParams);
+        ExtractableResponse<Response> createResponse = 주문_생성_요청(orderRequest);
 
         // Then
         주문_생성_완료(createResponse);

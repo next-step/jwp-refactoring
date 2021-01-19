@@ -6,10 +6,11 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.HttpStatusAssertion;
 import kitchenpos.domain.Order;
+import kitchenpos.dto.OrderRequest;
 import org.springframework.http.MediaType;
 
 public class OrderAcceptanceTestSupport extends AcceptanceTest {
-    public static ExtractableResponse<Response> 주문_생성_요청(Order params) {
+    public static ExtractableResponse<Response> 주문_생성_요청(OrderRequest params) {
         return RestAssured
                 .given().log().all().body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
