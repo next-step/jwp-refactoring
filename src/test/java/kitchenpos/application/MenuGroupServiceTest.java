@@ -4,9 +4,12 @@ import kitchenpos.domain.MenuGroup;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
+import static kitchenpos.utils.TestHelper.menuGroup_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Transactional
 @SpringBootTest
 class MenuGroupServiceTest {
     @Autowired
@@ -14,11 +17,10 @@ class MenuGroupServiceTest {
 
     @Test
     public void createMenuGroup() {
-        MenuGroup menuGroup = new MenuGroup(1L, "두마리메뉴");
+        MenuGroup menuGroup = menuGroup_생성(5L, "핫메뉴");
 
         MenuGroup result = menuGroupService.create(menuGroup);
 
-        assertThat(result.getId()).isNotNull();
-        assertThat(result.getName()).isEqualTo("두마리메뉴");
+        assertThat(result).isEqualTo(menuGroup);
     }
 }

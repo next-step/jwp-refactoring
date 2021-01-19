@@ -14,14 +14,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static kitchenpos.utils.TestHelper.menuGroup_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("메뉴 그룹 관련 기능")
-class MenuGroupAcceptanceTest  extends AcceptanceTest {
+class MenuGroupAcceptanceTest extends AcceptanceTest {
 
     @Test
     void createMenuGroup() {
-        MenuGroup menuGroup = new MenuGroup(1L, "두마리메뉴");
+        MenuGroup menuGroup = menuGroup_생성(5L, "핫메뉴");
 
         ExtractableResponse<Response> response = 메뉴_그룹_생성_요청(menuGroup);
 
@@ -30,17 +31,10 @@ class MenuGroupAcceptanceTest  extends AcceptanceTest {
 
     @Test
     void getMenuGroupList() {
-        메뉴_그룹_등록되어_있음(new MenuGroup(1L, "두마리메뉴"));
-        메뉴_그룹_등록되어_있음(new MenuGroup(2L, "한마리메뉴"));
-
         ExtractableResponse<Response> response = 메뉴_그룹_목록_조회_요청();
 
         메뉴_그룹_목록_조회됨(response);
-        메뉴_그룹_목록_포함됨(response, Arrays.asList("두마리메뉴", "한마리메뉴"));
-    }
-
-    private static ExtractableResponse<Response> 메뉴_그룹_등록되어_있음(MenuGroup menuGroup) {
-        return 메뉴_그룹_생성_요청(menuGroup);
+        메뉴_그룹_목록_포함됨(response, Arrays.asList("두마리메뉴", "한마리메뉴", "순살파닭두마리메뉴", "신메뉴"));
     }
 
     private static ExtractableResponse<Response> 메뉴_그룹_생성_요청(MenuGroup menuGroup) {

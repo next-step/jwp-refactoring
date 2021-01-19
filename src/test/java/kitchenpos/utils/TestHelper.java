@@ -11,10 +11,9 @@ public class TestHelper {
     public static final MenuGroup 두마리_메뉴그룹 = menuGroup_생성(1L, "두마리메뉴");
     public static final Product 후라이드 = product_생성(1L, "후라이드", BigDecimal.valueOf(16000));
     public static final Product 양념치킨 = product_생성(2L, "양념치킨", BigDecimal.valueOf(16000));
-    public static final MenuProduct 후라이드_1개 = menuProduct_생성(1L, 후라이드.getId(), 1);
-    public static final MenuProduct 양념치킨_1개 = menuProduct_생성(1L, 양념치킨.getId(), 1);
-    public static final Menu menu = menu_생성(1L, "후라이드양념치킨", BigDecimal.valueOf(16000), 두마리_메뉴그룹.getId(),
-            Arrays.asList(후라이드_1개, 양념치킨_1개));
+    public static final MenuProduct 후라이드_1개 = menuProduct_생성(후라이드.getId(), 1);
+    public static final MenuProduct 양념치킨_1개 = menuProduct_생성(양념치킨.getId(), 1);
+    public static final Menu menu = menu_생성(1L, "후라이드양념치킨", BigDecimal.valueOf(16000), 두마리_메뉴그룹.getId());
 
     public static final TableGroup init_tableGroup = tableGroup_생성(1L);
     public static final OrderTable empty_orderTable1 = 빈_orderTable_생성(1L);
@@ -33,47 +32,31 @@ public class TestHelper {
     public static final Order 완료된_order = order_status_추가(order, OrderStatus.COMPLETION.name());
 
     public static MenuGroup menuGroup_생성(Long id, String name) {
-        return new MenuGroup(id, name);
+        return MenuGroup.of(id, name);
     }
 
-    public static Menu menu_생성(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        Menu menu = new Menu();
-        menu.setId(id);
-        menu.setName(name);
-        menu.setPrice(price);
-        menu.setMenuGroupId(menuGroupId);
-        menu.setMenuProducts(menuProducts);
-        return menu;
+    public static Menu menu_생성(Long id, String name, BigDecimal price, Long menuGroupId) {
+        return Menu.of(id, name, price, menuGroupId);
     }
 
     public static Menu menu_price_변경(Menu menu, BigDecimal price) {
-        return menu_생성(menu.getId(), menu.getName(), price, menu.getMenuGroupId(), menu.getMenuProducts());
+        return menu_생성(menu.getId(), menu.getName(), price, menu.getMenuGroupId());
+    }
+
+    public static Menu menu_menuGroupId_변경(Menu menu, Long menuGroupId) {
+        return menu_생성(menu.getId(), menu.getName(), menu.getPrice(), menuGroupId);
     }
 
     public static Product product_생성(Long id, String name, BigDecimal price) {
-        Product product = new Product();
-        product.setId(id);
-        product.setName(name);
-        product.setPrice(price);
-        return product;
+        return Product.of(id, name, price);
     }
 
     public static Product product_price_변경(Product product, BigDecimal price) {
         return product_생성(product.getId(), product.getName(), price);
     }
 
-    public static MenuProduct menuProduct_생성(Long seq, Long productId, long quantity) {
-        MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setSeq(seq);
-        menuProduct.setProductId(productId);
-        menuProduct.setQuantity(quantity);
-        return menuProduct;
-    }
-
-    public static MenuProduct menuProduct에_menuId_추가(MenuProduct menuProduct, Long menuId) {
-        MenuProduct newMenuProduct = menuProduct_생성(menuProduct.getSeq(), menuProduct.getProductId(), menuProduct.getQuantity());
-        newMenuProduct.setMenuId(menuId);
-        return newMenuProduct;
+    public static MenuProduct menuProduct_생성(Long productId, long quantity) {
+        return MenuProduct.of(productId, quantity);
     }
 
     public static TableGroup tableGroup_생성(Long id) {

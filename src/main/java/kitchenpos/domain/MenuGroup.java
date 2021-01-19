@@ -1,5 +1,7 @@
 package kitchenpos.domain;
 
+import java.util.Objects;
+
 public class MenuGroup {
     private Long id;
     private String name;
@@ -7,9 +9,13 @@ public class MenuGroup {
     public MenuGroup() {
     }
 
-    public MenuGroup(Long id, String name) {
+    private MenuGroup(Long id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public static MenuGroup of(Long id, String name) {
+        return new MenuGroup(id, name);
     }
 
     public Long getId() {
@@ -26,5 +32,19 @@ public class MenuGroup {
 
     public void setName(final String name) {
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MenuGroup menuGroup = (MenuGroup) o;
+        return Objects.equals(id, menuGroup.id) &&
+                Objects.equals(name, menuGroup.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 }
