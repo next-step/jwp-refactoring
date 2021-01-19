@@ -53,7 +53,7 @@ public class OrderTable {
         this.numberOfGuests = numberOfGuests;
     }
 
-    public void saveOrderTable(TableGroup tableGroup) {
+    public void saveTableGroup(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
     }
 
