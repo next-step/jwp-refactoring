@@ -1,6 +1,7 @@
 package kitchenpos.domain;
 
 import kitchenpos.common.BaseIdEntity;
+import kitchenpos.common.NumberOfGuests;
 import kitchenpos.common.TableValidationException;
 
 import javax.persistence.*;
@@ -15,8 +16,8 @@ public class OrderTable extends BaseIdEntity {
 	@JoinColumn(name = "table_group_id", nullable = true)
 	private TableGroup tableGroup;
 
-	@Column(name = "numberOfGuests", nullable = false)
-	private int numberOfGuests;
+	@Embedded
+	private NumberOfGuests numberOfGuests;
 
 	@Column(name = "empty", nullable = false)
 	private boolean empty;
@@ -30,7 +31,7 @@ public class OrderTable extends BaseIdEntity {
 
 	private OrderTable(int numberOfGuests, boolean empty, TableGroup tableGroup) {
 		this.tableGroup = tableGroup;
-		this.numberOfGuests = numberOfGuests;
+		this.numberOfGuests = new NumberOfGuests(numberOfGuests);
 		this.empty = empty;
 	}
 
@@ -50,12 +51,12 @@ public class OrderTable extends BaseIdEntity {
 		this.tableGroup = null;
 	}
 
-	public int getNumberOfGuests() {
+	public NumberOfGuests getNumberOfGuests() {
 		return numberOfGuests;
 	}
 
 	public void changeNumberOfGuests(final int numberOfGuests) {
-		this.numberOfGuests = numberOfGuests;
+		this.numberOfGuests = new NumberOfGuests(numberOfGuests);
 	}
 
 	public boolean isEmpty() {

@@ -19,7 +19,9 @@ public class OrderTableResponse {
 				.map(BaseIdEntity::getId)
 				.orElse(null);
 		return new OrderTableResponse(orderTable.getId(),
-				tableGroupId, orderTable.getNumberOfGuests(), orderTable.isEmpty());
+				tableGroupId,
+				orderTable.getNumberOfGuests().getValue(),
+				orderTable.isEmpty());
 	}
 
 	public OrderTableResponse(long id, Long tableGroupId, int numberOfGuests, boolean empty) {

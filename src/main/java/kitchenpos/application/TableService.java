@@ -71,12 +71,6 @@ public class TableService {
 
 	@Transactional
 	public OrderTableResponse changeNumberOfGuests(final Long orderTableId, OrderTableRequest_ChangeGuests request) {
-		// TODO: 2021-01-19 Guest 객체화
-		final int numberOfGuests = request.getNumberOfGuests();
-		if (numberOfGuests < 0) {
-			throw new ValidationException("numberOfGuests must be equal or greater than zero");
-		}
-
 		final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
 				.orElseThrow(() -> new NotFoundException(MSG_CANNOT_FIND_ORDER_TABLE));
 
@@ -84,8 +78,7 @@ public class TableService {
 			throw new TableValidationException(MSG_CANNOT_CHANGE_QUEST_WHILE_EMPTY);
 		}
 
-		savedOrderTable.changeNumberOfGuests(numberOfGuests);
-
+		savedOrderTable.changeNumberOfGuests(request.getNumberOfGuests());
 		return OrderTableResponse.of(orderTableDao.save(savedOrderTable));
 	}
 }
