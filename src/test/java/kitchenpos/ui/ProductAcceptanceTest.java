@@ -15,13 +15,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static kitchenpos.utils.TestHelper.등록되어_있지_않은_product_id;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("상품 관련 기능")
 class ProductAcceptanceTest extends AcceptanceTest {
     @Test
     void createProduct() {
-        Product product = Product.of(7L, "스노윙치킨", BigDecimal.valueOf(18000));
+        Product product = Product.of(등록되어_있지_않은_product_id, "스노윙치킨", BigDecimal.valueOf(18000));
 
         ExtractableResponse<Response> response = 상품_생성_요청(product);
 

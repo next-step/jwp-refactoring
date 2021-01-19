@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static kitchenpos.utils.TestHelper.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("메뉴 관련 기능")
@@ -25,10 +26,10 @@ class MenuAcceptanceTest extends AcceptanceTest {
 
     @Test
     void createMenu() {
-        MenuGroup menuGroup = MenuGroup.of(2L, "한마리메뉴");
-        Product product = Product.of(1L, "후라이드", BigDecimal.valueOf(16000));
+        MenuGroup menuGroup = MenuGroup.of(등록된_menuGroup_id, "한마리메뉴");
+        Product product = Product.of(등록된_product_id, "후라이드", BigDecimal.valueOf(16000));
         MenuProduct menuProduct = MenuProduct.of(product.getId(), 1);
-        Menu menu = Menu.of(7L, "후라이드양념치킨", BigDecimal.valueOf(16000), menuGroup.getId());
+        Menu menu = Menu.of(등록되어_있지_않은_menu_id, "후라이드양념치킨", BigDecimal.valueOf(16000), menuGroup.getId());
         menu.addMenuProduct(menuProduct);
 
         ExtractableResponse<Response> response = 메뉴_생성_요청(menu);
@@ -39,8 +40,8 @@ class MenuAcceptanceTest extends AcceptanceTest {
     @DisplayName("메뉴 그룹이 등록되어 있지 않을 경우 생성하지 못한다.")
     @Test
     void createMenuException1() {
-        MenuGroup menuGroup = MenuGroup.of(5L, "핫메뉴");
-        Menu menu = Menu.of(7L, "후라이드양념치킨", BigDecimal.valueOf(16000), menuGroup.getId());
+        MenuGroup menuGroup = MenuGroup.of(등록되어_있지_않은_menuGroup_id, "핫메뉴");
+        Menu menu = Menu.of(등록되어_있지_않은_menu_id, "후라이드양념치킨", BigDecimal.valueOf(16000), menuGroup.getId());
 
         ExtractableResponse<Response> response = 메뉴_생성_요청(menu);
 
@@ -50,9 +51,9 @@ class MenuAcceptanceTest extends AcceptanceTest {
     @DisplayName("등록되어 있지 않은 상품으로 만들어진 메뉴 상품이 있으면 생성할 수 없다.")
     @Test
     void createMenuException2() {
-        MenuGroup menuGroup = MenuGroup.of(2L, "한마리메뉴");
-        Menu menu = Menu.of(7L, "후라이드양념치킨", BigDecimal.valueOf(16000), menuGroup.getId());
-        menu.addMenuProduct(MenuProduct.of(7L, 1));
+        MenuGroup menuGroup = MenuGroup.of(등록된_menuGroup_id, "한마리메뉴");
+        Menu menu = Menu.of(등록되어_있지_않은_menu_id, "후라이드양념치킨", BigDecimal.valueOf(16000), menuGroup.getId());
+        menu.addMenuProduct(MenuProduct.of(등록되어_있지_않은_product_id, 1));
 
         ExtractableResponse<Response> response = 메뉴_생성_요청(menu);
 

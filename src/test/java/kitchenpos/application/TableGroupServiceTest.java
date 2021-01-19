@@ -87,7 +87,7 @@ class TableGroupServiceTest extends BaseServiceTest {
         OrderTable orderTable2 = orderTableDao.findById(빈_orderTable_id2).get();
         TableGroup tableGroup = tableGroupService.create(TableGroup.of(1L, Arrays.asList(orderTable1, orderTable2)));
 
-        Order order = Order.of(1L, orderTable1.getId(), Collections.singletonList(OrderLineItem.of(1L, 등록된_menu_id, 2)));
+        Order order = Order.of(orderTable1.getId(), Collections.singletonList(OrderLineItem.of(1L, 등록된_menu_id, 2)));
         orderService.create(order);
 
         assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))

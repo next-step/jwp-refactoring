@@ -67,7 +67,7 @@ class TableServiceTest extends BaseServiceTest {
     @Test
     void changeEmptyException3() {
         List<OrderLineItem> orderLineItems = Collections.singletonList(OrderLineItem.of(1L, 등록된_menu_id, 2));
-        orderService.create(Order.of(1L, 비어있지_않은_orderTable_id, orderLineItems));
+        orderService.create(Order.of(비어있지_않은_orderTable_id, orderLineItems));
 
         assertThatThrownBy(() -> tableService.changeEmpty(비어있지_않은_orderTable_id,
                 OrderTable.of(등록되어_있지_않은_orderTable_id, 0, true)))

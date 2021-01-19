@@ -13,14 +13,13 @@ public class Order {
     public Order() {
     }
 
-    private Order(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
-        //this.id = id;
+    private Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderLineItems = orderLineItems;
     }
 
-    public static Order of(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
-        return new Order(id, orderTableId, orderLineItems);
+    public static Order of(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        return new Order(orderTableId, orderLineItems);
     }
 
     public Long getId() {

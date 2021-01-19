@@ -30,7 +30,7 @@ class OrderServiceTest extends BaseServiceTest {
     void beforeSetUp() {
         orderLineItems = Collections.singletonList(OrderLineItem.of(1L, 등록된_menu_id, 2));
 
-        Order order = Order.of(1L, 비어있지_않은_orderTable_id, orderLineItems);
+        Order order = Order.of(비어있지_않은_orderTable_id, orderLineItems);
         order.setOrderTableId(비어있지_않은_orderTable_id);
         order.setOrderStatus(OrderStatus.COOKING.name());
         order.setOrderedTime(LocalDateTime.now());
@@ -40,7 +40,7 @@ class OrderServiceTest extends BaseServiceTest {
     @DisplayName("주문을 등록한다.")
     @Test
     void createOrder() {
-        Order order = Order.of(2L, 비어있지_않은_orderTable_id, orderLineItems);
+        Order order = Order.of(비어있지_않은_orderTable_id, orderLineItems);
         Order result = orderService.create(order);
 
         assertThat(result.getOrderTableId()).isEqualTo(비어있지_않은_orderTable_id);
@@ -52,7 +52,7 @@ class OrderServiceTest extends BaseServiceTest {
     @DisplayName("주문 항목이 하나도 없을 경우 등록할 수 없다.")
     @Test
     void createOrderException1() {
-        assertThatThrownBy(() -> orderService.create(Order.of(2L, 비어있지_않은_orderTable_id, null)))
+        assertThatThrownBy(() -> orderService.create(Order.of(비어있지_않은_orderTable_id, null)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -60,7 +60,7 @@ class OrderServiceTest extends BaseServiceTest {
     @Test
     void createOrderException2() {
         OrderLineItem orderLineItem = OrderLineItem.of(1L, 등록되어_있지_않은_menu_id, 2);
-        Order order = Order.of(2L, 비어있지_않은_orderTable_id, Collections.singletonList(orderLineItem));
+        Order order = Order.of(비어있지_않은_orderTable_id, Collections.singletonList(orderLineItem));
 
         assertThatThrownBy(() -> orderService.create(order))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -69,7 +69,7 @@ class OrderServiceTest extends BaseServiceTest {
     @DisplayName("해당 주문 테이블이 등록되어 있지 않으면 등록할 수 없다.")
     @Test
     void createOrderException3() {
-        Order order = Order.of(2L, 등록되어_있지_않은_orderTable_id, orderLineItems);
+        Order order = Order.of(등록되어_있지_않은_orderTable_id, orderLineItems);
 
         assertThatThrownBy(() -> orderService.create(order))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -78,7 +78,7 @@ class OrderServiceTest extends BaseServiceTest {
     @DisplayName("빈 테이블일 경우 등록할 수 없다.")
     @Test
     void createOrderException4() {
-        Order order = Order.of(2L, 빈_orderTable_id1, orderLineItems);
+        Order order = Order.of(빈_orderTable_id1, orderLineItems);
 
         assertThatThrownBy(() -> orderService.create(order))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -87,7 +87,7 @@ class OrderServiceTest extends BaseServiceTest {
     @DisplayName("주문 상태를 변경할 수 있다.")
     @Test
     void changeOrderStatus() {
-        Order changeOrder = Order.of(1L, 비어있지_않은_orderTable_id, orderLineItems);
+        Order changeOrder = Order.of(비어있지_않은_orderTable_id, orderLineItems);
         changeOrder.setOrderStatus(OrderStatus.MEAL.name());
 
         Order result = orderService.changeOrderStatus(1L, changeOrder);
@@ -98,7 +98,7 @@ class OrderServiceTest extends BaseServiceTest {
     @DisplayName("주문이 등록되어 있지 않으면 변경할 수 없다.")
     @Test
     void changeOrderStatusException1() {
-        Order changeOrder = Order.of(2L, 비어있지_않은_orderTable_id, orderLineItems);
+        Order changeOrder = Order.of(비어있지_않은_orderTable_id, orderLineItems);
         changeOrder.setOrderStatus(OrderStatus.COOKING.name());
 
         assertThatThrownBy(() -> orderService.changeOrderStatus(2L, changeOrder))
@@ -112,7 +112,7 @@ class OrderServiceTest extends BaseServiceTest {
         order.setOrderStatus(OrderStatus.COMPLETION.name());
         orderDao.save(order);
 
-        Order changeOrder = Order.of(1L,비어있지_않은_orderTable_id, orderLineItems);
+        Order changeOrder = Order.of(비어있지_않은_orderTable_id, orderLineItems);
         changeOrder.setOrderStatus(OrderStatus.MEAL.name());
 
         assertThatThrownBy(() -> orderService.changeOrderStatus(1L, changeOrder))
