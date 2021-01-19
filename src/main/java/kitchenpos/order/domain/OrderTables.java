@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,7 +26,7 @@ public class OrderTables {
     }
 
     public List<OrderTable> findAll() {
-        return this.orderTables;
+        return Collections.unmodifiableList(this.orderTables);
     }
 
     public boolean sameSizeWith(int size) {
