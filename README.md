@@ -160,3 +160,5 @@
         - [x] JPA Entity, Repository 적용
     - [ ] OrderLineItem
         - [x] JPA Entity, Repository 적용
+    - [ ] Order
+        - [x] JPA Entity, Repository 적용
