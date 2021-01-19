@@ -4,7 +4,7 @@ plugins {
     id 'java'
 }
 
-allprojects {
+subprojects {
 
     group = 'camp.nextstep.edu'
     version = '0.0.1-SNAPSHOT'
@@ -14,9 +14,7 @@ allprojects {
         mavenCentral()
     }
 
-    apply {
-        plugin("io.spring.dependency-management")
-    }
+    apply plugin: "io.spring.dependency-management"
 
     test {
         useJUnitPlatform()
