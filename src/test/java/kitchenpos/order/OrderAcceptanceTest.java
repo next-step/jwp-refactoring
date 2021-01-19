@@ -10,6 +10,7 @@ import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.MenuGroupAcceptanceTest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.ordertable.OrderTableAcceptanceTest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
@@ -27,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.iterable;
 
 @DisplayName("주문 기능")
 public class OrderAcceptanceTest extends AcceptanceTest {
@@ -103,6 +105,11 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
     private void 주문_목록_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getList(".", OrderResponse.class)
+                .stream()
+                .map(OrderResponse::getOrderTableId)
+                .anyMatch(it -> it.equals(주문테이블.getId())))
+                .isTrue();
     }
 
     private ExtractableResponse<Response> 주문_상태_변경_요청(ExtractableResponse<Response> response, OrderStatus orderStatus) {

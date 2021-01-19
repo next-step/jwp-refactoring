@@ -7,6 +7,7 @@ import kitchenpos.AcceptanceTest;
 import kitchenpos.common.Price;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.MenuGroupAcceptanceTest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.product.ProductAcceptanceTest;
@@ -82,5 +83,10 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
     public static void 메뉴_목록_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getList(".", MenuResponse.class)
+                .stream()
+                .map(MenuResponse::getName)
+                .anyMatch(s -> s.equals("후양 두마리 세트")))
+                .isTrue();
     }
 }

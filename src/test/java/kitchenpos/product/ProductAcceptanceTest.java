@@ -5,7 +5,9 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.common.Price;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -57,5 +59,10 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 
     public static void 상품_목록_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getList(".", ProductResponse.class)
+                .stream()
+                .map(ProductResponse::getName)
+                .anyMatch(it -> it.equals("후라이드 치킨")))
+                .isTrue();
     }
 }

@@ -4,7 +4,9 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -67,6 +69,11 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
 
     public static void 주문_테이블_목록_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getList(".", OrderTableResponse.class)
+                .stream()
+                .map(OrderTableResponse::getNumberOfGuests)
+                .anyMatch(it -> it.equals(0)))
+                .isTrue();
     }
 
     public static ExtractableResponse<Response> 주문_테이블_상태_변경_요청(ExtractableResponse<Response> response, boolean empty) {

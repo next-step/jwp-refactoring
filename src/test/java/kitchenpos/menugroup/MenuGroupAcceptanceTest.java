@@ -4,7 +4,9 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -56,5 +58,10 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
 
     public static void 메뉴_그룹_목록_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getList(".", MenuGroupResponse.class)
+                .stream()
+                .map(MenuGroupResponse::getName)
+                .anyMatch(s -> s.equals("후라이드 치킨 두마리")))
+                .isTrue();
     }
 }
