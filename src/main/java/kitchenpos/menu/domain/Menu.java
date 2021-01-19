@@ -1,7 +1,6 @@
 package kitchenpos.menu.domain;
 
 import kitchenpos.generic.Money;
-import kitchenpos.menugroup.domain.MenuGroup;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

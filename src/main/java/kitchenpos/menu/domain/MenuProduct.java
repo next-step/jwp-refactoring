@@ -1,4 +1,4 @@
-package kitchenpos.menuproduct.domain;
+package kitchenpos.menu.domain;
 
 import kitchenpos.generic.Money;
 import kitchenpos.generic.Quantity;

@@ -1,12 +1,11 @@
-package kitchenpos.menuproduct.service;
+package kitchenpos.menu.service;
 
 import kitchenpos.generic.Money;
-import kitchenpos.generic.Quantity;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuProductResponse;
-import kitchenpos.menuproduct.domain.MenuProduct;
-import kitchenpos.menuproduct.domain.MenuProductRepository;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProductRepository;
 import kitchenpos.product.service.ProductService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

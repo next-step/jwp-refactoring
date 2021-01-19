@@ -1,6 +1,5 @@
 package kitchenpos.order.service;
 
-import kitchenpos.generic.Quantity;
 import kitchenpos.menu.service.MenuService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
