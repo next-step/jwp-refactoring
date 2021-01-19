@@ -1,5 +1,7 @@
 package kitchenpos.menu.domain;
 
+import javafx.beans.binding.Bindings;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 
@@ -26,5 +28,9 @@ public class Product {
         if (BigDecimal.ZERO.compareTo(price) > 0) {
             throw new IllegalArgumentException("가격이 0보다 적을 수 없습니다.");
         }
+    }
+
+    public BigDecimal getPrice() {
+        return price;
     }
 }
