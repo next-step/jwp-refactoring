@@ -1,12 +1,8 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.domain.*;
+import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.MenuResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,50 +26,49 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
 
-    private Menu 강정치킨과양념치킨;
+    private MenuRequest 강정치킨과양념치킨;
     private Product 강정치킨;
     private Product 양념치킨;
-    private List<Menu> 메뉴리스트 = new ArrayList<>();
+    private Menu 강정치킨과양념치킨메뉴;
     private List<MenuProduct> 상품리스트 = new ArrayList<>();
+    private List<Menu> 메뉴리스트 = new ArrayList<>();
+    private MenuGroup menuGroup = new MenuGroup(20L, "치킨");
 
     private MenuService menuService;
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
     @Mock
-    private MenuProductDao menuProductDao;
-    @Mock
-    private ProductDao productDao;
+    private MenuProductRepository menuProductRepository;
 
     @BeforeEach
     public void setUp() {
         강정치킨 = new Product(1L,"강정치킨",new BigDecimal(20000));
         양념치킨 = new Product(2L,"양념치킨",new BigDecimal(20000));
-        상품리스트.add(new MenuProduct(강정치킨.getId(),1));
-        상품리스트.add(new MenuProduct(양념치킨.getId(),1));
-        강정치킨과양념치킨 = new Menu("강정치킨", new BigDecimal(17000),1L, 상품리스트);
-        메뉴리스트.add(강정치킨과양념치킨);
-        menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
+        상품리스트.add(new MenuProduct(1L, 강정치킨,1));
+        상품리스트.add(new MenuProduct(2L, 양념치킨,1));
+        강정치킨과양념치킨 = new MenuRequest("강정치킨", new BigDecimal(17000), menuGroup.getId(), 상품리스트);
+        강정치킨과양념치킨메뉴 = new Menu(강정치킨과양념치킨.getName(), 강정치킨과양념치킨.getPrice(), menuGroup);
+        메뉴리스트.add(강정치킨과양념치킨메뉴);
+        menuService = new MenuService(menuRepository, menuGroupRepository, menuProductRepository);
     }
 
     @DisplayName("메뉴 등록 테스트")
     @Test
     void createMenu() {
-        when(menuGroupDao.existsById(1L)).thenReturn(true);
-        when(productDao.findById(강정치킨.getId())).thenReturn(Optional.ofNullable(강정치킨));
-        when(productDao.findById(양념치킨.getId())).thenReturn(Optional.ofNullable(양념치킨));
-        mockSaveMenu(강정치킨과양념치킨);
-        mockSaveMenuProduct(상품리스트.get(0));
+        when(menuGroupRepository.findById(20L)).thenReturn(Optional.ofNullable(menuGroup));
+        when(menuRepository.save(강정치킨과양념치킨메뉴)).thenReturn(강정치킨과양념치킨메뉴);
+        when(menuProductRepository.save(상품리스트.get(0))).thenReturn(상품리스트.get(0));
 
-        Menu resultMenu = menuService.create(강정치킨과양념치킨);
+        MenuResponse resultMenu = menuService.create(강정치킨과양념치킨);
 
         assertAll(
                 () -> assertThat(resultMenu.getName()).isEqualTo("강정치킨"),
                 () -> assertThat(resultMenu.getPrice()).isEqualTo(new BigDecimal(17000)),
-                () -> assertThat(resultMenu.getMenuProducts().size()).isEqualTo(강정치킨과양념치킨.getMenuProducts().size()),
-                () -> assertThat(resultMenu.getMenuProducts().get(0).getProductId()).isEqualTo(강정치킨과양념치킨.getMenuProducts().get(0).getProductId())
+                () -> assertThat(resultMenu.getMenuProducts().size()).isEqualTo(2),
+                () -> assertThat(resultMenu.getMenuProducts().get(0).getId()).isEqualTo(1L)
         );
     }
 
@@ -87,11 +82,13 @@ class MenuServiceTest {
     @DisplayName("메뉴 등록 예외 테스트: 가격정보 null or 음수")
     @Test
     void invaildPrice() {
-        강정치킨과양념치킨.setPrice(null);
+        when(menuGroupRepository.findById(20L)).thenReturn(Optional.ofNullable(menuGroup));
+
+        강정치킨과양념치킨 = new MenuRequest("강정치킨", null, menuGroup.getId(), 상품리스트);
         assertThatThrownBy(() -> menuService.create(강정치킨과양념치킨))
                 .isInstanceOf(IllegalArgumentException.class);
 
-        강정치킨과양념치킨.setPrice(new BigDecimal(-500));
+        강정치킨과양념치킨 = new MenuRequest("강정치킨", new BigDecimal(-17000), menuGroup.getId(), 상품리스트);
         assertThatThrownBy(() -> menuService.create(강정치킨과양념치킨))
                 .isInstanceOf(IllegalArgumentException.class);
 
@@ -104,33 +101,19 @@ class MenuServiceTest {
     @DisplayName("메뉴 등록 예외 테스트: 메뉴그룹값 올바르지 않을때")
     @Test
     void invalidMenuGroup() {
-        when(menuGroupDao.existsById(any())).thenReturn(false);
-
-        Throwable exception = assertThrows(IllegalArgumentException.class,
-                () -> menuService.create(강정치킨과양념치킨)
-        );
-        assertThat(exception.getMessage()).isEqualTo("메뉴그룹 값을 찾을 수 없습니다.");
-    }
-
-
-    @DisplayName("메뉴 등록 예외 테스트: 메뉴의 상품정보가 잘못 된 경우")
-    @Test
-    void invalidProductInfo() {
-        when(menuGroupDao.existsById(any())).thenReturn(true);
-
-        Throwable exception = assertThrows(IllegalArgumentException.class,
-                () -> menuService.create(강정치킨과양념치킨)
-        );
-        assertThat(exception.getMessage()).isEqualTo("상품을 찾을 수 없습니다.");
+        assertThatThrownBy(() -> menuService.create(강정치킨과양념치킨))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("메뉴 등록 예외 테스트: 메뉴 가격이 잘못된 경우")
     @Test
     void invalidTotalPrice() {
-        when(menuGroupDao.existsById(any())).thenReturn(true);
-        when(productDao.findById(강정치킨.getId())).thenReturn(Optional.ofNullable(강정치킨));
-        when(productDao.findById(양념치킨.getId())).thenReturn(Optional.ofNullable(양념치킨));
-        강정치킨과양념치킨.setPrice(new BigDecimal(500000));
+        when(menuGroupRepository.findById(20L)).thenReturn(Optional.ofNullable(menuGroup));
+        when(menuProductRepository.save(상품리스트.get(0))).thenReturn(상품리스트.get(0));
+
+        강정치킨과양념치킨메뉴 = new Menu(강정치킨과양념치킨.getName(), new BigDecimal(5000000), menuGroup);
+        when(menuRepository.save(any())).thenReturn(강정치킨과양념치킨메뉴);
+
         Throwable exception = assertThrows(IllegalArgumentException.class,
                 () -> menuService.create(강정치킨과양념치킨)
         );
@@ -140,28 +123,16 @@ class MenuServiceTest {
     @DisplayName("메뉴목록 조회 테스트")
     @Test
     void findMenuList() {
-        when(menuDao.findAll()).thenReturn(메뉴리스트);
-        when(menuProductDao.findAllByMenuId(any())).thenReturn(상품리스트);
+        when(menuRepository.findAll()).thenReturn(메뉴리스트);
 
-        List<Menu> resultMenus = menuService.list();
+        List<MenuResponse> resultMenus = menuService.list();
 
         List<String> menuNames =resultMenus.stream()
                 .map(menu -> menu.getName())
                 .collect(Collectors.toList());
-        List<String> expectedMenuNames = 메뉴리스트.stream()
-                .map(menu -> menu.getName())
-                .collect(Collectors.toList());
 
-        assertThat(resultMenus.size()).isEqualTo(메뉴리스트.size());
-        assertThat(menuNames).containsExactlyElementsOf(expectedMenuNames);
+        assertThat(resultMenus.size()).isEqualTo(1);
+        assertThat(menuNames).contains("강정치킨");
+   }
 
-    }
-
-    private void mockSaveMenuProduct(MenuProduct menuProduct) {
-        when(menuProductDao.save(menuProduct)).thenReturn(menuProduct);
-    }
-
-    private void mockSaveMenu(Menu menu) {
-        when(menuDao.save(menu)).thenReturn(menu);
-    }
 }
