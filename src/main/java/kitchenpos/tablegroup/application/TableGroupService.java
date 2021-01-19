@@ -65,7 +65,7 @@ public class TableGroupService {
         }
 
         for (final OrderTable orderTable : orderTables) {
-            orderTable.setTableGroup(null);
+            orderTable.changeTableGroup(null);
             orderTableRepository.save(orderTable);
         }
     }

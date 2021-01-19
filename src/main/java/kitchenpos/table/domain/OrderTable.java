@@ -35,16 +35,12 @@ public class OrderTable {
         return tableGroup;
     }
 
-    public void setTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
-    }
-
     public int getNumberOfGuests() {
         return numberOfGuests;
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
+    public boolean isEmpty() {
+        return empty;
     }
 
     public void updateNumberOfGuests(final int numberOfGuests) {
@@ -57,10 +53,6 @@ public class OrderTable {
         }
 
         this.numberOfGuests = numberOfGuests;
-    }
-
-    public boolean isEmpty() {
-        return empty;
     }
 
     public void changeEmpty(final boolean empty) {
@@ -81,6 +73,10 @@ public class OrderTable {
         if (orders.stream().anyMatch(Order::isRestrictedChangeEmpty)) {
             throw new IllegalArgumentException();
         }
+    }
+
+    public void changeTableGroup(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
     }
 
     public OrderTable() {

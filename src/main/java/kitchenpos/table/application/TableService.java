@@ -33,7 +33,7 @@ public class TableService {
 
         Long tableGroupId = orderTableRequest.getTableGroupId();
         if (tableGroupId != null) {
-            orderTable.setTableGroup(tableGroupService.findById(tableGroupId));
+            orderTable.changeTableGroup(tableGroupService.findById(tableGroupId));
         }
 
         return OrderTableResponse.of(orderTableRepository.save(orderTable));

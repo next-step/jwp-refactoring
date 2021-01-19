@@ -100,8 +100,7 @@ class TableServiceTest {
     @Test
     void changeEmpty2() {
         //given
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setId(1L);
+        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());
         given(orderTableRepository.findById(2L))
                 .willReturn(
                         Optional.of(new OrderTable(2L, tableGroup, 0, true))
