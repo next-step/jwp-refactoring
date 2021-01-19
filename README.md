@@ -145,6 +145,9 @@
         - [x] Service Layer에 Response DTO 적용
         - [x] TableGroup에서 OrderTable들과의 정보와 갯수를 전달하기 위한 Request DTO 적용
 - [ ] Service Layer에 있는 Domain Logic를 Domain Layer로 이동
-- [ ] 도메인에 관계를 고려하여 JPA 적용 
+- [ ] JPA 도메인 리팩터링 
     - [ ] Product
         - [x] JPA Entity, Repository 적용
+    - [ ] OrderTable
+        - [x] JPA Entity, Repository 적용
+    

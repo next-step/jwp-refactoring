@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.dao.OrderTableRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderTableRequest;
@@ -19,23 +19,23 @@ import java.util.stream.Collectors;
 @Transactional
 public class TableService {
     private final OrderDao orderDao;
-    private final OrderTableDao orderTableDao;
+    private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderDao orderDao, final OrderTableDao orderTableDao) {
+    public TableService(final OrderDao orderDao, final OrderTableRepository orderTableRepository) {
         this.orderDao = orderDao;
-        this.orderTableDao = orderTableDao;
+        this.orderTableRepository = orderTableRepository;
     }
 
     public OrderTableResponse create(OrderTableRequest request) {
         OrderTable orderTable = request.toOrderTable();
         orderTable.setTableGroupId(null);
 
-        return OrderTableResponse.from(orderTableDao.save(orderTable));
+        return OrderTableResponse.from(orderTableRepository.save(orderTable));
     }
 
     @Transactional(readOnly = true)
     public List<OrderTableResponse> list() {
-        return orderTableDao.findAll()
+        return orderTableRepository.findAll()
                 .stream()
                 .map(OrderTableResponse::from)
                 .collect(Collectors.toList());
@@ -43,7 +43,7 @@ public class TableService {
 
     public OrderTableResponse changeEmpty(Long orderTableId, OrderTableRequest request) {
         OrderTable orderTable = request.toOrderTable();
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
+        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
         if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
@@ -57,7 +57,7 @@ public class TableService {
 
         savedOrderTable.setEmpty(orderTable.isEmpty());
 
-        return OrderTableResponse.from(orderTableDao.save(savedOrderTable));
+        return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
     }
     
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, OrderTableRequest request) {
@@ -68,7 +68,7 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
+        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
         if (savedOrderTable.isEmpty()) {
@@ -77,11 +77,11 @@ public class TableService {
 
         savedOrderTable.setNumberOfGuests(numberOfGuests);
 
-        return OrderTableResponse.from(orderTableDao.save(savedOrderTable));
+        return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
     }
 
     public OrderTable findById(Long id) {
-        return orderTableDao.findById(id)
+        return orderTableRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("OrderTable id:" + id + "가 존재하지 않습니다."));
     }
 }
