@@ -2,13 +2,15 @@ package kitchenpos.menu.domain;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 
 @Embeddable
 public class MenuProducts {
-    @OneToMany(mappedBy = "menu", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @JoinColumn(name = "menu_id")
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
     public void add(List<MenuProduct> menuProducts) {

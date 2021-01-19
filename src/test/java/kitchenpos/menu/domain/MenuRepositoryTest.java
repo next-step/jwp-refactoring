@@ -4,7 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -55,7 +55,7 @@ public class MenuRepositoryTest {
 
         assertThatThrownBy(() -> {
             Menu actual = menuRepository.save(expected);
-        }).isInstanceOf(DataIntegrityViolationException.class);
+        }).isInstanceOf(InvalidDataAccessApiUsageException.class);
     }
 
     @DisplayName("메뉴 가격이 메뉴별 상품의 총 가격보다 클 경우 예외")
@@ -65,7 +65,7 @@ public class MenuRepositoryTest {
         Product 탕수육 = productRepository.save(new Product("탕수육", BigDecimal.valueOf(15000)));
         MenuGroup 세트_메뉴 = menuGroupRepository.save(new MenuGroup("세트 메뉴"));
         Menu A세트 = new Menu("A세트",BigDecimal.valueOf(400000), 세트_메뉴);
-        List<MenuProduct> 짬뽕_2개_탕수육_1개 = Arrays.asList(new MenuProduct(A세트, 짬뽕, 2), new MenuProduct(A세트, 탕수육, 1));
+        List<MenuProduct> 짬뽕_2개_탕수육_1개 = Arrays.asList(new MenuProduct(A세트.getId(), 짬뽕, 2), new MenuProduct(A세트.getId(), 탕수육, 1));
 
         assertThatThrownBy(() -> {
             A세트.addAllMenuProducts(짬뽕_2개_탕수육_1개);

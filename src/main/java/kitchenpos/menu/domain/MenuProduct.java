@@ -9,9 +9,8 @@ public class MenuProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "menu_id", nullable = false)
-    private Menu menu;
+    @Column(name = "menu_id", nullable = false)
+    private Long menuId;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "product_id", nullable = false)
@@ -23,9 +22,9 @@ public class MenuProduct {
     protected MenuProduct() {
     }
 
-    public MenuProduct(Menu menu, Product product, long quantity) {
+    public MenuProduct(Long menu, Product product, long quantity) {
         validateNotGreaterThanZero(quantity);
-        this.menu = menu;
+        this.menuId = menu;
         this.product = product;
         this.quantity = quantity;
     }
@@ -38,5 +37,9 @@ public class MenuProduct {
 
     public BigDecimal getPrice() {
         return product.getPrice().multiply(BigDecimal.valueOf(quantity));
+    }
+
+    public Long getMenuId() {
+        return menuId;
     }
 }

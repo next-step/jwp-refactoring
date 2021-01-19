@@ -15,11 +15,11 @@ public class Menu {
     private BigDecimal price;
 
     @ManyToOne
-    @JoinColumn(name = "menu_group_id")
+    @JoinColumn(name = "menu_group_id", nullable = false)
     private MenuGroup menuGroup;
 
     @Embedded
-    private MenuProducts menuProducts;
+    private MenuProducts menuProducts = new MenuProducts();
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
         validateLessThanZero(price);
@@ -51,5 +51,9 @@ public class Menu {
         if (price.compareTo(sum) > 0) {
             throw new IllegalArgumentException("메뉴 가격이 메뉴별 상품의 총 가격보다 클 수 없습니다.");
         }
+    }
+
+    public Long getId() {
+        return this.id;
     }
 }
