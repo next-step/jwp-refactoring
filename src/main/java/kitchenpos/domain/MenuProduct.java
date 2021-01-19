@@ -1,6 +1,7 @@
 package kitchenpos.domain;
 
 import kitchenpos.common.BaseSeqEntity;
+import kitchenpos.common.Price;
 import kitchenpos.common.Quantity;
 
 import javax.persistence.*;
@@ -27,6 +28,10 @@ public class MenuProduct extends BaseSeqEntity {
 		this.menu = menu;
 		this.product = product;
 		this.quantity = new Quantity(quantity);
+	}
+
+	public Price getQuantityPrice() {
+		return product.getPrice().multiply(quantity);
 	}
 
 	public Menu getMenu() {

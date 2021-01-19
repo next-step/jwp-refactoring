@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import kitchenpos.common.MenuValidationException;
 import kitchenpos.common.NotFoundException;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dto.*;
@@ -78,22 +77,6 @@ class MenuServiceTest {
 				.hasSize(3)
 				.map(menuProduct -> menuProduct.getProduct().getId())
 				.containsExactly(콜라.getId(), 감튀.getId(), 버거.getId());
-	}
-
-	@DisplayName("메뉴 가격이 메뉴 포함된 모든 상품의 가격합보다 높을때 예외발생.")
-	@Test
-	void create_ProductPriceGreaterThanMenuPrice() {
-		// given
-		final long 잘못된_추가가격 = 1000;
-		MenuRequest 콰트로치즈와퍼세트 = new MenuRequest("콰트로치즈와퍼세트",
-				new BigDecimal(콜라가격 + 감튀가격 + 버거가격 + 잘못된_추가가격),
-				메뉴그룹.getId(),
-				Arrays.asList(요청_콜라, 요청_감튀, 요청_버거));
-
-		// when then
-		assertThatThrownBy(() -> menuService.create(콰트로치즈와퍼세트))
-				.isInstanceOf(MenuValidationException.class)
-				.hasMessageMatching(MenuService.MSG_PRICE_RULE);
 	}
 
 	@DisplayName("메뉴를 생성시 존재하지 않는 GroupId 사용시 예외발생.")

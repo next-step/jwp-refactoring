@@ -6,9 +6,9 @@ import java.math.BigDecimal;
 
 @Embeddable
 public class Price implements Comparable<Price> {
+	public static Price ZERO = new Price(BigDecimal.ZERO);
 	static final String MSG_PRICE_NOT_NULL = "price must be not null";
 	static final String MSG_PRICE_MUST_EQUAL_OR_GREATER_THAN_ZERO = "price must be equal or greater than zero";
-	public static Price ZERO = new Price(BigDecimal.ZERO);
 
 	@Column(name = "price", nullable = false, columnDefinition = "DECIMAL(19,2)")
 	private final BigDecimal price;
@@ -41,11 +41,14 @@ public class Price implements Comparable<Price> {
 	}
 
 	public Price add(Price price) {
+		// TODO: 2021-01-19 add test
 		return new Price(this.price.add(price.price));
 	}
 
-	public Price multiply(BigDecimal multiplier) {
-		return new Price(this.price.multiply(multiplier));
+	public Price multiply(Quantity quantity) {
+		// TODO: 2021-01-19 add test
+		final BigDecimal multiplicand = new BigDecimal(quantity.getValue());
+		return new Price(this.price.multiply(multiplicand));
 	}
 
 	public BigDecimal getValue() {
