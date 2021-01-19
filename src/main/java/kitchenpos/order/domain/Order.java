@@ -5,6 +5,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "orders")
@@ -23,6 +24,9 @@ public class Order {
     @CreationTimestamp
     private LocalDateTime orderedTime;
 
+    @Embedded
+    private OrderLineItems orderLineItems;
+
     protected Order() {
     }
 
@@ -31,6 +35,7 @@ public class Order {
         orderTable.addOrder(this);
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
+        this.orderLineItems = new OrderLineItems(orderLineItems.getOrderLineItems(), this);
     }
 
     public static Order of(OrderTable orderTable, OrderLineItems orderLineItems) {
@@ -76,5 +81,9 @@ public class Order {
 
     public LocalDateTime getOrderedTime() {
         return orderedTime;
+    }
+
+    public List<OrderLineItem> getOrderLineItems() {
+        return orderLineItems.getOrderLineItems();
     }
 }
