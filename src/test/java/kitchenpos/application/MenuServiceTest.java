@@ -1,7 +1,5 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
 import kitchenpos.dto.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,7 +11,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -103,12 +100,6 @@ class MenuServiceTest {
         List<MenuResponse> actual = menuService.list();
 
         // Then
-        assertAll(
-                () -> assertThat(actual).extracting(MenuResponse::getId).containsAnyElementsOf(Collections.singletonList(짬뽕_짜장면.getId())),
-                () -> assertThat(actual).extracting(MenuResponse::getName).containsAnyElementsOf(Collections.singletonList(짬뽕_짜장면.getName())),
-                () -> assertThat(actual).extracting(MenuResponse::getPrice).containsAnyElementsOf(Collections.singletonList(짬뽕_짜장면.getPrice())),
-                () -> assertThat(actual).extracting(MenuResponse::getMenuGroupId).containsAnyElementsOf(Collections.singletonList(짬뽕_짜장면.getMenuGroupId())),
-                () -> assertThat(actual).containsAnyElementsOf(Collections.singletonList(짬뽕_짜장면))
-        );
+        assertThat(actual).containsAnyElementsOf(Collections.singletonList(짬뽕_짜장면));
     }
 }

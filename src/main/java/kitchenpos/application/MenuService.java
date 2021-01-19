@@ -79,15 +79,14 @@ public class MenuService {
 
     @Transactional(readOnly = true)
     public List<MenuResponse> list() {
-        final List<MenuResponse> menus = menuDao.findAll()
-                .stream()
-                .map(MenuResponse::from)
-                .collect(Collectors.toList());
+        final List<Menu> menus = menuDao.findAll();
 
-        for (final MenuResponse menu : menus) {
+        for (final Menu menu : menus) {
             menu.setMenuProducts(menuProductDao.findAllByMenuId(menu.getId()));
         }
 
-        return menus;
+        return menus.stream()
+                .map(MenuResponse::from)
+                .collect(Collectors.toList());
     }
 }
