@@ -8,6 +8,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class TestHelper {
+    public static final Long 등록된_menuGroup_id = 2L;
+    public static final Long 등록되어_있지_않은_menuGroup_id = 5L;
     public static final MenuGroup 두마리_메뉴그룹 = menuGroup_생성(1L, "두마리메뉴");
     public static final Product 후라이드 = product_생성(1L, "후라이드", BigDecimal.valueOf(16000));
     public static final Product 양념치킨 = product_생성(2L, "양념치킨", BigDecimal.valueOf(16000));
@@ -24,9 +26,9 @@ public class TestHelper {
     public static final OrderTable orderTable2 = orderTable_groupId_추가(empty_orderTable2, tableGroup.getId(), false);
     public static final List<OrderTable> 그룹으로_묶여있는_orderTables = Arrays.asList(orderTable1, orderTable2);
 
-    public static final OrderLineItem orderLineItem = orderLineItem_생성(1L, menu.getId(), 2);
+    public static final OrderLineItem orderLineItem = orderLineItem_생성(menu.getId(), 2);
     public static final Order order = order_생성(1L, Collections.singletonList(orderLineItem));
-    public static final Order 주문항목이_없는_order = order_생성(1L, null);
+    public static final Order 주문항목이_없는_order = order_생성(1L,null);
     public static final Order 요리중_order = order_status_추가(order, OrderStatus.COOKING.name());
     public static final Order 식사_order = order_status_추가(order, OrderStatus.MEAL.name());
     public static final Order 완료된_order = order_status_추가(order, OrderStatus.COMPLETION.name());
@@ -72,10 +74,7 @@ public class TestHelper {
     }
 
     public static OrderTable orderTable_생성(Long id, boolean empty) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setId(id);
-        orderTable.setEmpty(empty);
-        return orderTable;
+        return OrderTable.of(id, 0, empty);
     }
 
     public static OrderTable 빈_orderTable_생성(Long id) {
@@ -94,30 +93,22 @@ public class TestHelper {
         return newOrderTable;
     }
 
-    public static OrderLineItem orderLineItem_생성(Long seq, Long menuId, long quantity) {
-        OrderLineItem orderLineItem = new OrderLineItem();
-        orderLineItem.setSeq(seq);
-        orderLineItem.setMenuId(menuId);
-        orderLineItem.setQuantity(quantity);
-        return orderLineItem;
+    public static OrderLineItem orderLineItem_생성(Long menuId, long quantity) {
+        return OrderLineItem.of(menuId, quantity);
     }
 
     public static OrderLineItem orderLineItem에_orderId_추가(OrderLineItem orderLineItem, Long orderId) {
-        OrderLineItem newOrderLineItem = orderLineItem_생성(orderLineItem.getSeq(), orderLineItem.getMenuId(), orderLineItem.getQuantity());
+        OrderLineItem newOrderLineItem = orderLineItem_생성(orderLineItem.getMenuId(), orderLineItem.getQuantity());
         newOrderLineItem.setOrderId(orderId);
         return newOrderLineItem;
     }
 
-    public static Order order_생성(Long id, List<OrderLineItem> orderLineItems) {
-        Order order = new Order();
-        order.setId(id);
-        order.setOrderLineItems(orderLineItems);
-        return order;
+    public static Order order_생성(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        return Order.of(orderTableId, orderLineItems);
     }
 
     public static Order order_status_추가(Order order, String status) {
-        Order newOrder = order_생성(order.getId(), order.getOrderLineItems());
-        newOrder.setOrderStatus(status);
-        return newOrder;
+        order.setOrderStatus(status);
+        return order;
     }
 }

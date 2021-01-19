@@ -37,7 +37,7 @@ class MenuServiceTest {
      **/
     @BeforeEach
     void setUp() {
-        MenuGroup menuGroup = menuGroup_생성(2L, "한마리메뉴");
+        MenuGroup menuGroup = MenuGroup.of(등록된_menuGroup_id, "한마리메뉴");
         product = product_생성(1L, "후라이드", BigDecimal.valueOf(16000));
         menuProduct = menuProduct_생성(product.getId(), 1);
 

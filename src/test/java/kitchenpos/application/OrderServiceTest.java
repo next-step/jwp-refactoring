@@ -1,68 +1,55 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.Optional;
 
 import static kitchenpos.utils.TestHelper.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.given;
 
 @Transactional
 @SpringBootTest
 class OrderServiceTest {
-    @Mock
-    private MenuDao menuDao;
-    @Mock
+    @Autowired
     private OrderDao orderDao;
-    @Mock
-    private OrderLineItemDao orderLineItemDao;
-    @Mock
-    private OrderTableDao orderTableDao;
     @Autowired
     private OrderService orderService;
+
+    private Order order;
 
     @DisplayName("주문을 등록한다.")
     @Test
     void createOrder() {
-        given(menuDao.countByIdIn(anyList())).willReturn((long) order.getOrderLineItems().size());
-        given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable1));
-        given(orderDao.save(order)).willReturn(order);
-        given(orderLineItemDao.save(orderLineItem)).willReturn(orderLineItem에_orderId_추가(orderLineItem, order.getId()));
-
+        order = order_생성(3L, Collections.singletonList(OrderLineItem.of(1L, 4)));
         Order result = orderService.create(order);
 
-        assertThat(result.getOrderTableId()).isEqualTo(orderTable1.getId());
+        assertThat(result.getOrderTableId()).isEqualTo(3L);
         assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
         assertThat(result.getOrderedTime()).isNotNull();
-        assertThat(result.getOrderLineItems().get(0).getOrderId()).isEqualTo(order.getId());
+        assertThat(result.getOrderLineItems().get(0).getOrderId()).isEqualTo(2L);
     }
 
     @DisplayName("주문 항목이 하나도 없을 경우 등록할 수 없다.")
     @Test
     void createOrderException1() {
-        assertThatThrownBy(() -> orderService.create(주문항목이_없는_order))
+        assertThatThrownBy(() -> orderService.create(order_생성(1L, null)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("선택한 주문 항목들이 모두 등록되어 있지 않으면 등록할 수 없다.")
+    @DisplayName("선택한 주문 항목의 메뉴가 등록되어 있지 않으면 등록할 수 없다.")
     @Test
     void createOrderException2() {
-        given(menuDao.countByIdIn(anyList())).willReturn((long) order.getOrderLineItems().size() + 1);
+        order = order_생성(1L, Collections.singletonList(orderLineItem_생성(7L, 2)));
 
         assertThatThrownBy(() -> orderService.create(order))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -71,8 +58,7 @@ class OrderServiceTest {
     @DisplayName("해당 주문 테이블이 등록되어 있지 않으면 등록할 수 없다.")
     @Test
     void createOrderException3() {
-        given(menuDao.countByIdIn(anyList())).willReturn((long) order.getOrderLineItems().size());
-        given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.empty());
+        order = order_생성(4L, Collections.singletonList(orderLineItem));
 
         assertThatThrownBy(() -> orderService.create(order))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -81,8 +67,7 @@ class OrderServiceTest {
     @DisplayName("빈 테이블일 경우 등록할 수 없다.")
     @Test
     void createOrderException4() {
-        given(menuDao.countByIdIn(anyList())).willReturn((long) order.getOrderLineItems().size());
-        given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(empty_orderTable1));
+        order = order_생성(1L, Collections.singletonList(orderLineItem));
 
         assertThatThrownBy(() -> orderService.create(order))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -91,31 +76,43 @@ class OrderServiceTest {
     @DisplayName("주문 상태를 변경할 수 있다.")
     @Test
     void changeOrderStatus() {
-        given(orderDao.findById(anyLong())).willReturn(Optional.of(요리중_order));
-        given(orderDao.save(any())).willReturn(요리중_order);
-        given(orderLineItemDao.findAllByOrderId(anyLong())).willReturn(Collections.singletonList(orderLineItem));
+        order = order_생성(3L, Collections.singletonList(OrderLineItem.of(1L, 4)));
+        orderService.create(order);
+        Order order2 = order_생성(3L, Collections.singletonList(OrderLineItem.of(1L, 4)));
+        order2.setOrderStatus(OrderStatus.MEAL.name());
 
-        Order result = orderService.changeOrderStatus(요리중_order.getId(), 식사_order);
+        Order result = orderService.changeOrderStatus(1L, order2);
 
         assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
-        assertThat(result.getOrderLineItems()).containsExactlyElementsOf(Collections.singletonList(orderLineItem));
     }
 
     @DisplayName("주문이 등록되어 있지 않으면 변경할 수 없다.")
     @Test
     void changeOrderStatusException1() {
-        given(orderDao.findById(anyLong())).willReturn(Optional.empty());
+        order = order_생성(3L, Collections.singletonList(OrderLineItem.of(1L, 4)));
+        Order order2 = order_생성(3L, Collections.singletonList(OrderLineItem.of(1L, 4)));
+        order2.changeOrderStatus(OrderStatus.COOKING.name());
+        //given(orderDao.findById(anyLong())).willReturn(Optional.empty());
 
-        assertThatThrownBy(() -> orderService.changeOrderStatus(요리중_order.getId(), 요리중_order))
+        assertThatThrownBy(() -> orderService.changeOrderStatus(2L, order2))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문 상태가 계산 완료일 경우 변경할 수 없다.")
     @Test
     void changeOrderStatusException2() {
-        given(orderDao.findById(anyLong())).willReturn(Optional.of(완료된_order));
+        order = order_생성(3L, Collections.singletonList(OrderLineItem.of(1L, 4)));
+//        orderService.create(order);
+//        Optional<Order> order1 = orderDao.findById(1L);
+//        order1.get().setOrderStatus(OrderStatus.COMPLETION.name());
+//        orderDao.save(order1.get());
+        order.setOrderedTime(LocalDateTime.now());
+        order.changeOrderStatus(OrderStatus.COMPLETION.name());
+        orderDao.save(order);
+        Order order2 = order_생성(3L, Collections.singletonList(OrderLineItem.of(1L, 4)));
+        order2.setOrderStatus(OrderStatus.COMPLETION.name());
 
-        assertThatThrownBy(() -> orderService.changeOrderStatus(요리중_order.getId(), 요리중_order))
+        assertThatThrownBy(() -> orderService.changeOrderStatus(1L, order2))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }
