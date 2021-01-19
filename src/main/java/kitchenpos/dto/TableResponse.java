@@ -13,7 +13,7 @@ public class TableResponse {
     private int numberOfGuests;
 
     @Builder
-    public TableResponse(long id, Long tableGroupId, int numberOfGuests) {
+    private TableResponse(long id, Long tableGroupId, int numberOfGuests) {
         this.id = id;
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;

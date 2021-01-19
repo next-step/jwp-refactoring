@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
 @Transactional
 @Service
 public class TableService {
+    private static final int EMPTY_COUNT = 0;
+
     private final OrderDao orderDao;
     private final TableRepository tableRepository;
 
@@ -33,29 +35,36 @@ public class TableService {
     public List<TableResponse> list() {
         return tableRepository.findAll()
                 .stream()
-                .map(this::fromEntity)
+                .map(TableService::fromEntity)
                 .collect(Collectors.toList());
     }
 
     public TableResponse update(Long tableId, TableRequest request) {
         OrderTable savedOrderTable = tableRepository.getOne(tableId);
-        if (savedOrderTable.isGroupped()) {
-            throw new TableInUseException("그룹이 지어진 테이블은 변경 할 수 없습니다.");
-        }
 
-        if (orderDao.existsByOrderTableIdAndOrderStatusIn(tableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new TableInUseException("이용중인 테이블은 변경 할 수 없습니다.");
+        if (request.getNumberOfGuests() == EMPTY_COUNT) {
+            validateEmptyTable(savedOrderTable);
         }
 
         savedOrderTable.update(request.getNumberOfGuests());
         return fromEntity(savedOrderTable);
     }
 
-    private TableResponse fromEntity(OrderTable table) {
+    public static TableResponse fromEntity(OrderTable table) {
         return TableResponse.builder()
                 .id(table.getId())
                 .tableGroupId(table.getTableGroupId())
                 .numberOfGuests(table.getNumberOfGuests())
                 .build();
+    }
+
+    private void validateEmptyTable(OrderTable savedOrderTable) {
+        if (savedOrderTable.isGroupped()) {
+            throw new TableInUseException("그룹이 지어진 테이블은 변경 할 수 없습니다.");
+        }
+
+        if (orderDao.existsByOrderTableIdAndOrderStatusIn(savedOrderTable.getId(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+            throw new TableInUseException("이용중인 테이블은 변경 할 수 없습니다.");
+        }
     }
 }
