@@ -3,6 +3,7 @@ package kitchenpos.ordertable;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderTableRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -12,12 +13,10 @@ class OrdersTableAcceptanceTest extends OrderTableAcceptanceTestSupport {
     @Test
     void manageOrderTable() {
         // Given
-        OrderTable params = new OrderTable();
-        params.setNumberOfGuests(0);
-        params.setEmpty(true);
+        OrderTableRequest request = new OrderTableRequest(0, true);
 
         // When
-        ExtractableResponse<Response> createResponse = 주문_테이블_생성_요청(params);
+        ExtractableResponse<Response> createResponse = 주문_테이블_생성_요청(request);
 
         // Then
         주문_테이블_생성_완료(createResponse);
@@ -29,19 +28,15 @@ class OrdersTableAcceptanceTest extends OrderTableAcceptanceTestSupport {
         주문_테이블_응답(findResponse);
 
         // When
-        OrderTable emptyParams = new OrderTable();
-        emptyParams.setEmpty(false);
-        emptyParams.setNumberOfGuests(5);
-        ExtractableResponse<Response> emptyResponse = 주문_테이블_주문_상태_변경_요청(createResponse, emptyParams);
+        OrderTableRequest emptyRequest = new OrderTableRequest(5, false);
+        ExtractableResponse<Response> emptyResponse = 주문_테이블_주문_상태_변경_요청(createResponse, emptyRequest);
 
         // Then
         주문_테이블_응답(emptyResponse);
 
         // When
-        OrderTable guestParams = new OrderTable();
-        guestParams.setEmpty(false);
-        guestParams.setNumberOfGuests(4);
-        ExtractableResponse<Response> guestResponse = 주문_테이블_방문한_손님_수_변경_요청(createResponse, guestParams);
+        OrderTableRequest guestRequest = new OrderTableRequest(4, false);
+        ExtractableResponse<Response> guestResponse = 주문_테이블_방문한_손님_수_변경_요청(createResponse, guestRequest);
 
         // Then
         주문_테이블_응답(guestResponse);

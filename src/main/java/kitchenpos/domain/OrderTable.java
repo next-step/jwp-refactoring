@@ -27,7 +27,7 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public OrderTable() {
+    protected OrderTable() {
     }
 
     public Long getId() {

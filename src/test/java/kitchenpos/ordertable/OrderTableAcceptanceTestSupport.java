@@ -6,19 +6,18 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.HttpStatusAssertion;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderTableRequest;
 import org.springframework.http.MediaType;
 
 public class OrderTableAcceptanceTestSupport extends AcceptanceTest {
     public static ExtractableResponse<Response> 주문_테이블_등록_되어있음(int numberOfGuests, boolean empty) {
-        OrderTable params = new OrderTable();
-        params.setNumberOfGuests(numberOfGuests);
-        params.setEmpty(empty);
+        OrderTableRequest params = new OrderTableRequest(numberOfGuests, empty);
         ExtractableResponse<Response> response = 주문_테이블_생성_요청(params);
         주문_테이블_생성_완료(response);
         return response;
     }
 
-    public static ExtractableResponse<Response> 주문_테이블_생성_요청(OrderTable params) {
+    public static ExtractableResponse<Response> 주문_테이블_생성_요청(OrderTableRequest params) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -36,18 +35,18 @@ public class OrderTableAcceptanceTestSupport extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 주문_테이블_주문_상태_변경_요청(ExtractableResponse<Response> createResponse, OrderTable params) {
+    public static ExtractableResponse<Response> 주문_테이블_주문_상태_변경_요청(ExtractableResponse<Response> createResponse, OrderTableRequest request) {
         String location = createResponse.header("Location");
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
+                .body(request)
                 .when().put(location + "/empty")
                 .then().log().all()
                 .extract();
     }
 
-    public ExtractableResponse<Response> 주문_테이블_방문한_손님_수_변경_요청(ExtractableResponse<Response> createResponse, OrderTable params) {
+    public ExtractableResponse<Response> 주문_테이블_방문한_손님_수_변경_요청(ExtractableResponse<Response> createResponse, OrderTableRequest params) {
         String location = createResponse.header("Location");
         return RestAssured
                 .given().log().all()

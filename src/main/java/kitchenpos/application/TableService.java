@@ -27,10 +27,7 @@ public class TableService {
     }
 
     public OrderTableResponse create(OrderTableRequest request) {
-        OrderTable orderTable = request.toOrderTable();
-        orderTable.setTableGroup(null);
-
-        return OrderTableResponse.from(orderTableRepository.save(orderTable));
+        return OrderTableResponse.from(orderTableRepository.save(new OrderTable(request.getNumberOfGuests(), request.isEmpty())));
     }
 
     @Transactional(readOnly = true)
