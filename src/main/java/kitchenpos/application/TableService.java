@@ -43,7 +43,7 @@ public class TableService {
 
         if (orderDao.existsByOrderTableIdAndOrderStatusIn(
                 orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("`조리중`과 `식사중`에는 변경할 수 없다.");
         }
 
         savedOrderTable.setEmpty(orderTable.isEmpty());
@@ -56,15 +56,11 @@ public class TableService {
         final int numberOfGuests = orderTable.getNumberOfGuests();
 
         if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("게스트 인원이 0보다 커야한다.");
         }
 
         final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
+                .orElseThrow(() -> new IllegalArgumentException("변경하고자 하는 테이블이 등록되어 있어야 한다."));
 
         savedOrderTable.setNumberOfGuests(numberOfGuests);
 

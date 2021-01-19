@@ -50,15 +50,11 @@ public class OrderService {
                 .collect(Collectors.toList());
 
         if (orderLineItems.size() != menuDao.countByIdIn(menuIds)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문하고자 하는 메뉴가 등록되어 있어야 한다.");
         }
 
         final OrderTable orderTable = orderTableDao.findById(order.getOrderTableId())
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
+                .orElseThrow(() -> new IllegalArgumentException("주문하고자 하는 테이블이 등록되어 있어야 한다."));
 
         order.setOrderTableId(orderTable.getId());
         order.setOrderStatus(OrderStatus.COOKING.name());
@@ -93,7 +89,7 @@ public class OrderService {
                 .orElseThrow(IllegalArgumentException::new);
 
         if (Objects.equals(OrderStatus.COMPLETION.name(), savedOrder.getOrderStatus())) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("이미 완료 상태는 변경할 수 없다.");
         }
 
         final OrderStatus orderStatus = OrderStatus.valueOf(order.getOrderStatus());

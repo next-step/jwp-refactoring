@@ -39,11 +39,11 @@ public class MenuService {
         final BigDecimal price = menu.getPrice();
 
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("메뉴 금액은 0보다 커야 한다.");
         }
 
         if (!menuGroupDao.existsById(menu.getMenuGroupId())) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("메뉴는 메뉴 그룹에 속해야 한다.");
         }
 
         final List<MenuProduct> menuProducts = menu.getMenuProducts();
@@ -55,8 +55,8 @@ public class MenuService {
             sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
         }
 
-        if (price.compareTo(sum) > 0) {
-            throw new IllegalArgumentException();
+        if (!price.equals(sum)) {
+            throw new IllegalArgumentException("메뉴의 금액은 메뉴 상품의 합과 같아야 한다.");
         }
 
         final Menu savedMenu = menuDao.save(menu);

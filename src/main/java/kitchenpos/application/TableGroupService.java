@@ -33,7 +33,7 @@ public class TableGroupService {
         final List<OrderTable> orderTables = tableGroup.getOrderTables();
 
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("테이블 목록이 2개 이상이어야 한다.");
         }
 
         final List<Long> orderTableIds = orderTables.stream()
@@ -43,12 +43,12 @@ public class TableGroupService {
         final List<OrderTable> savedOrderTables = orderTableDao.findAllByIdIn(orderTableIds);
 
         if (orderTables.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("테이블 목록이 등록되어 있어야 한다.");
         }
 
         for (final OrderTable savedOrderTable : savedOrderTables) {
             if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("테이블 목록이 이미 다른 테이블 그룹에 속해있지 않아야 한다.");
             }
         }
 
@@ -77,7 +77,7 @@ public class TableGroupService {
 
         if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
                 orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("`조리중`과 `식사중`에는 변경할 수 없다.");
         }
 
         for (final OrderTable orderTable : orderTables) {
