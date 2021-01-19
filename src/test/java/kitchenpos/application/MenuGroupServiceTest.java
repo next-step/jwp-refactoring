@@ -2,6 +2,8 @@ package kitchenpos.application;
 
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
+import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupRequestTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,8 +46,6 @@ public class MenuGroupServiceTest extends ServiceTestBase {
     }
 
     public static MenuGroupRequest createRequest(String name) {
-        return MenuGroupRequest.builder()
-                .name(name)
-                .build();
+        return new MenuGroupRequest(name);
     }
 }

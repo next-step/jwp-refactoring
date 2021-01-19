@@ -51,19 +51,19 @@ public class TableServiceTest extends ServiceTestBase {
         assertThat(updatedTable.getNumberOfGuests()).isEqualTo(4);
     }
 
-    @DisplayName("그룹이 지어진 테이블의 고객 수 변경")
+    @DisplayName("그룹이 지어진 테이블의 고객 수를 0으로 변경")
     @Test
     void changeNumberOfGuestWithGroup() {
         TableResponse savedTable = tableService.create();
         TableResponse savedTable2 = tableService.create();
 
-        tableGroupService.create(savedTable.getId(), savedTable2.getId());
+        tableGroupService.create(TableGroupServiceTest.createTableGroup(savedTable, savedTable2));
 
         assertThatExceptionOfType(TableInUseException.class)
-                .isThrownBy(() -> tableService.update(savedTable.getId(), createRequest(4)));
+                .isThrownBy(() -> tableService.update(savedTable.getId(), createRequest(0)));
     }
 
-    @DisplayName("테이블을 이용중인 경우의 착석 상태 변경")
+    @DisplayName("이용중인 테이블의 고객 수를 0으로 변경")
     @Test
     void changeEmptyWithUsing() {
         MenuGroupResponse menuGroup = menuGroupService.create(MenuGroupServiceTest.createRequest("추천메뉴"));
@@ -86,7 +86,7 @@ public class TableServiceTest extends ServiceTestBase {
                 .isThrownBy(() -> tableService.update(99L, createRequest(4)));
     }
 
-    private TableRequest createRequest(int numberOfGuests) {
+    public static TableRequest createRequest(int numberOfGuests) {
         return TableRequest.builder()
                 .numberOfGuests(numberOfGuests)
                 .build();

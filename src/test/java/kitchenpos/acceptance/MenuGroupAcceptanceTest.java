@@ -40,9 +40,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     }
 
     public static MenuGroupRequest createRequest() {
-        return MenuGroupRequest.builder()
-                .name("추천메뉴")
-                .build();
+        return new MenuGroupRequest("추천메뉴");
     }
 
     public static ExtractableResponse<Response> 생성_요청(MenuGroupRequest request) {
