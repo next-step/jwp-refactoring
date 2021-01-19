@@ -43,39 +43,19 @@ public class Menu extends BaseEntity {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
     }
 
     public BigDecimal getPrice() {
         return price.getPrice();
     }
 
-    public Menu setPrice(final Price price) {
-        this.price = price;
-        return this;
-    }
-
     public Long getMenuGroupId() {
         return menuGroup.getId();
     }
-//
-//    public void setMenuGroupId(final Long menuGroupId) {
-//    }
-//
+
     public List<MenuProduct> getMenuProducts() {
         return menuProducts.getMenuProducts();
     }
-//
-//    public void setMenuProducts(final List<MenuProduct> menuProducts) {
-//        this.menuProducts.setMenuProducts(menuProducts);
-//    }
 }
