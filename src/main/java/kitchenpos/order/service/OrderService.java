@@ -36,8 +36,8 @@ public class OrderService {
         return OrderResponse.of(savedOrder, orderLineResponses);
     }
 
-    private void checkOrderTableEmpty(final OrderTable tableById) {
-        if (!tableById.isEmpty()) {
+    private void checkOrderTableEmpty(final OrderTable table) {
+        if (!table.isEmpty()) {
             throw new IllegalArgumentException("테이블이 비어있지 않습니다.");
         }
     }

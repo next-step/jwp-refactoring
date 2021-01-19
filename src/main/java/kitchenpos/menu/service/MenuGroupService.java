@@ -26,12 +26,15 @@ public class MenuGroupService {
 
     @Transactional(readOnly = true)
     public MenuGroup findById(long id) {
-        return menuGroupRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("메뉴 그룹을 찾을수 없습니다."));
+        return menuGroupRepository
+                .findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("메뉴 그룹을 찾을수 없습니다."));
     }
 
     @Transactional(readOnly = true)
     public List<MenuGroupResponse> list() {
-        return menuGroupRepository.findAll()
+        return menuGroupRepository
+                .findAll()
                 .stream()
                 .map(MenuGroupResponse::of)
                 .collect(Collectors.toList());

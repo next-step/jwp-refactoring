@@ -1,16 +1,15 @@
 package kitchenpos.menu.service;
 
 import kitchenpos.IntegrationTest;
-import kitchenpos.menu.util.MenuRequestBuilder;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.util.MenuRequestBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 class MenuServiceIntegrationTest extends IntegrationTest {
 

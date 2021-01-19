@@ -35,7 +35,7 @@ public class TableGroupService {
     }
 
     public void ungroup(long id) {
-        TableGroup groupById = findGroupById(id);
+        final TableGroup groupById = findGroupById(id);
         orderTableGroupService.ungroup(groupById);
         tableGroupRepository.delete(groupById);
     }

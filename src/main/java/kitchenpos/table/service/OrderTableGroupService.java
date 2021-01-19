@@ -28,10 +28,10 @@ public class OrderTableGroupService {
     }
 
     public List<OrderTableResponse> saveAll(TableGroup tableGroup, List<OrderTableIdRequest> orderTables) {
-        return changeGroupById(tableGroup, orderTables);
+        return addTableGroupAll(tableGroup, orderTables);
     }
 
-    private List<OrderTableResponse> changeGroupById(TableGroup tableGroup, List<OrderTableIdRequest> orderTables) {
+    private List<OrderTableResponse> addTableGroupAll(TableGroup tableGroup, List<OrderTableIdRequest> orderTables) {
         return orderTables
                 .stream()
                 .map(OrderTableIdRequest::getId)

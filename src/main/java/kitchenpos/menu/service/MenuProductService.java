@@ -26,7 +26,8 @@ public class MenuProductService {
 
     public List<MenuProductResponse> saveProducts(final Menu menu, final List<MenuProductRequest> menuProducts) {
         List<MenuProduct> products = getMenuProducts(menu, menuProducts);
-        checkGraterThanMenuPrice(menu.getPrice(), products.stream()
+        checkGraterThanMenuPrice(menu.getPrice(), products
+                .stream()
                 .map(MenuProduct::getAmount)
                 .reduce(Money.ZERO_MONEY, Money::sum));
         return MenuProductResponse.ofProducts(menuProductRepository.saveAll(products));

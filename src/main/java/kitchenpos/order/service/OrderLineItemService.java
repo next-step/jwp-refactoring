@@ -23,13 +23,17 @@ public class OrderLineItemService {
         this.menuService = menuService;
     }
 
-    public List<OrderLineResponse> saveLineItems(Order savedOrder, List<OrderLineRequest> orderLineItems) {
-        List<OrderLineItem> lineItems = orderLineItems.stream()
+    public List<OrderLineResponse> saveLineItems(final Order savedOrder, final List<OrderLineRequest> orderLineItems) {
+        final List<OrderLineItem> lineItems = orderLineItems
+                .stream()
                 .map(request -> new OrderLineItem(savedOrder, menuService.findById(request.getMenuId()), request.ofQuantity()))
                 .collect(Collectors.toList());
         orderLineItemRepository.saveAll(lineItems);
 
-        return lineItems.stream().map(OrderLineResponse::of).collect(Collectors.toList());
+        return lineItems
+                .stream()
+                .map(OrderLineResponse::of)
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
