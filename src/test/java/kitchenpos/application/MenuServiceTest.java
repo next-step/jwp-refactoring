@@ -41,28 +41,30 @@ class MenuServiceTest {
 	MenuGroup 두마리메뉴 = mock(MenuGroup.class);
 	MenuGroup 한마리메뉴 = mock(MenuGroup.class);
 
-	Product 후라이드 = new Product(1L, "후라이드", BigDecimal.valueOf(16000));
-	Product 양념치킨 = new Product(2L, "양념치킨", BigDecimal.valueOf(16000));
-
+	Product 후라이드 = mock(Product.class);
 
 	@DisplayName("메뉴를 등록할 수 있다.")
 	@Test
 	void create() {
+		// given
 		Long 두마리메뉴_id = 1L;
 		Long 한마리메뉴_id = 2L;
-
 		when(두마리메뉴.getId()).thenReturn(두마리메뉴_id);
 		when(한마리메뉴.getId()).thenReturn(한마리메뉴_id);
 
-		// given
+		Long 후라이드_id = 1L;
+		when(후라이드.getId()).thenReturn(후라이드_id);
+		when(후라이드.getName()).thenReturn("후라이드");
+		when(후라이드.getPrice()).thenReturn(BigDecimal.valueOf(16000));
+
 		Menu 후라이드치킨 = new Menu("후라이드치킨", BigDecimal.valueOf(16000), 한마리메뉴.getId());
-		MenuProduct 후라이드치킨_수량 = new MenuProduct(후라이드치킨.getId(), 후라이드.getId(), 1L);
+		MenuProduct 후라이드치킨_수량 = new MenuProduct(후라이드치킨.getId(), 후라이드_id, 1L);
 		후라이드치킨.addMenuProduct(후라이드치킨_수량);
 
 		MenuService menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
 
 		when(menuGroupDao.existsById(후라이드치킨.getMenuGroupId())).thenReturn(true);
-		when(productDao.findById(후라이드.getId())).thenReturn(ofNullable(후라이드));
+		when(productDao.findById(후라이드_id)).thenReturn(ofNullable(후라이드));
 
 		Menu expectedMenu = mock(Menu.class);
 		when(expectedMenu.getId()).thenReturn(1L);

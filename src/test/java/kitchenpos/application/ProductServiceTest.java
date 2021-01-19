@@ -34,7 +34,13 @@ class ProductServiceTest {
 	void create(){
 		// given
 		Product product = new Product("후라이드", BigDecimal.valueOf(16000));
-		when(productDao.save(product)).thenReturn(new Product(1L, "후라이드", BigDecimal.valueOf(16000)));
+
+		Product expectedProduct = mock(Product.class);
+		when(expectedProduct.getId()).thenReturn(1L);
+		when(expectedProduct.getName()).thenReturn("후라이드");
+		when(expectedProduct.getPrice()).thenReturn(BigDecimal.valueOf(16000));
+
+		when(productDao.save(product)).thenReturn(expectedProduct);
 		ProductService productService = new ProductService(productDao);
 
 		// when
@@ -65,15 +71,15 @@ class ProductServiceTest {
 	@Test
 	void list() {
 		// given
-		Product 후라이드 = new Product(1L, "후라이드", BigDecimal.valueOf(16000));
-		when(productDao.findAll()).thenReturn(Arrays.asList(후라이드));
+		Product expectedProduct = mock(Product.class);
+		when(productDao.findAll()).thenReturn(Arrays.asList(expectedProduct));
 		ProductService productService = new ProductService(productDao);
 
 		//when
 		List<Product> products = productService.list();
 
 		//then
-		assertThat(products).containsExactly(후라이드);
+		assertThat(products).containsExactly(expectedProduct);
 	}
 
 }
