@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableRepository;
+import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderTableRequest;
@@ -28,7 +29,7 @@ public class TableService {
 
     public OrderTableResponse create(OrderTableRequest request) {
         OrderTable orderTable = request.toOrderTable();
-        orderTable.setTableGroupId(null);
+        orderTable.setTableGroup(null);
 
         return OrderTableResponse.from(orderTableRepository.save(orderTable));
     }
@@ -46,7 +47,7 @@ public class TableService {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
+        if (Objects.nonNull(savedOrderTable.getTableGroup())) {
             throw new IllegalArgumentException();
         }
 

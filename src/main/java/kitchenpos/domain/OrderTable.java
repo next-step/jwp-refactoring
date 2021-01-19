@@ -8,16 +8,16 @@ public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column
-    private Long tableGroupId;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn
+    private TableGroup tableGroup;
     @Column
     private Integer numberOfGuests;
     @Column
     private Boolean empty;
 
-    public OrderTable(Long id, Long tableGroupId, Integer numberOfGuests, Boolean empty) {
+    public OrderTable(Long id, Integer numberOfGuests, Boolean empty) {
         this.id = id;
-        this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
@@ -38,12 +38,12 @@ public class OrderTable {
         this.id = id;
     }
 
-    public Long getTableGroupId() {
-        return tableGroupId;
+    public TableGroup getTableGroup() {
+        return tableGroup;
     }
 
-    public void setTableGroupId(final Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
+    public void setTableGroup(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
     }
 
     public int getNumberOfGuests() {
@@ -67,11 +67,11 @@ public class OrderTable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OrderTable that = (OrderTable) o;
-        return Objects.equals(id, that.id) && Objects.equals(tableGroupId, that.tableGroupId) && Objects.equals(numberOfGuests, that.numberOfGuests) && Objects.equals(empty, that.empty);
+        return Objects.equals(id, that.id) && Objects.equals(tableGroup, that.tableGroup) && Objects.equals(numberOfGuests, that.numberOfGuests) && Objects.equals(empty, that.empty);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, tableGroupId, numberOfGuests, empty);
+        return Objects.hash(id, tableGroup, numberOfGuests, empty);
     }
 }
