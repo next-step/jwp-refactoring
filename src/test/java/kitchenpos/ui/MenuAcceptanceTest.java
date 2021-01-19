@@ -18,8 +18,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static kitchenpos.utils.TestHelper.*;
-import static kitchenpos.utils.TestHelper.menu_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("메뉴 관련 기능")
@@ -28,9 +26,9 @@ class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     void createMenu() {
         MenuGroup menuGroup = MenuGroup.of(2L, "한마리메뉴");
-        Product product = product_생성(1L, "후라이드", BigDecimal.valueOf(16000));
-        MenuProduct menuProduct = menuProduct_생성(product.getId(), 1);
-        Menu menu = menu_생성(7L, "후라이드양념치킨", BigDecimal.valueOf(16000), menuGroup.getId());
+        Product product = Product.of(1L, "후라이드", BigDecimal.valueOf(16000));
+        MenuProduct menuProduct = MenuProduct.of(product.getId(), 1);
+        Menu menu = Menu.of(7L, "후라이드양념치킨", BigDecimal.valueOf(16000), menuGroup.getId());
         menu.addMenuProduct(menuProduct);
 
         ExtractableResponse<Response> response = 메뉴_생성_요청(menu);
@@ -42,7 +40,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     void createMenuException1() {
         MenuGroup menuGroup = MenuGroup.of(5L, "핫메뉴");
-        Menu menu = menu_생성(7L, "후라이드양념치킨", BigDecimal.valueOf(16000), menuGroup.getId());
+        Menu menu = Menu.of(7L, "후라이드양념치킨", BigDecimal.valueOf(16000), menuGroup.getId());
 
         ExtractableResponse<Response> response = 메뉴_생성_요청(menu);
 
@@ -53,8 +51,8 @@ class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     void createMenuException2() {
         MenuGroup menuGroup = MenuGroup.of(2L, "한마리메뉴");
-        Menu menu = menu_생성(7L, "후라이드양념치킨", BigDecimal.valueOf(16000), menuGroup.getId());
-        menu.addMenuProduct(menuProduct_생성(7L, 1));
+        Menu menu = Menu.of(7L, "후라이드양념치킨", BigDecimal.valueOf(16000), menuGroup.getId());
+        menu.addMenuProduct(MenuProduct.of(7L, 1));
 
         ExtractableResponse<Response> response = 메뉴_생성_요청(menu);
 
