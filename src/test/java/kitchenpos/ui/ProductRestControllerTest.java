@@ -1,6 +1,6 @@
 package kitchenpos.ui;
 
-import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -22,7 +22,7 @@ class ProductRestControllerTest extends RestControllerTest {
     @Test
     void create() throws Exception {
         //given
-        Product 볶음밥 = new Product();
+        ProductRequest 볶음밥 = new ProductRequest();
         볶음밥.setId(1L);
         볶음밥.setName("볶음밥");
         볶음밥.setPrice(new BigDecimal(7000));

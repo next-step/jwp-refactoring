@@ -6,21 +6,21 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Entity
+@Entity(name = "orders")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long orderTableId;
 
     @ManyToOne
     private OrderTable orderTable;
 
+    @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
     private LocalDateTime orderedTime;
 
-    @OneToMany
+    @OneToMany(mappedBy = "order")
     private List<OrderLineItem> orderLineItems;
 
     public Long getId() {
@@ -31,12 +31,12 @@ public class Order {
         this.id = id;
     }
 
-    public Long getOrderTableId() {
-        return orderTableId;
+    public OrderTable getOrderTable() {
+        return orderTable;
     }
 
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
+    public void setOrderTable(OrderTable orderTable) {
+        this.orderTable = orderTable;
     }
 
     public OrderStatus getOrderStatus() {
@@ -66,9 +66,8 @@ public class Order {
     public Order() {
     }
 
-    public Order(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime) {
+    public Order(Long id, OrderStatus orderStatus, LocalDateTime orderedTime) {
         this.id = id;
-        this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
     }

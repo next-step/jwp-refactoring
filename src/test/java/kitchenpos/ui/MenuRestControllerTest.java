@@ -1,7 +1,6 @@
 package kitchenpos.ui;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,12 +25,13 @@ class MenuRestControllerTest extends RestControllerTest {
     @Test
     void create() throws Exception {
         //given
-        List<MenuProduct> menuProducts = new ArrayList<>();
-        menuProducts.add(new MenuProduct(null, 1L, 1));
-        menuProducts.add(new MenuProduct(null, 2L, 1));
+        MenuRequest menu = new MenuRequest(null, "일반메뉴", new BigDecimal(13000), 2L);
 
-        MenuRequest menu = new MenuRequest(null, "일반메뉴", new BigDecimal(13000), 2L,
-                menuProducts);
+        List<MenuProductRequest> menuProductRequests = new ArrayList<>();
+        menuProductRequests.add(new MenuProductRequest(1L, 1));
+        menuProductRequests.add(new MenuProductRequest(2L, 1));
+
+        menu.setMenuProducts(menuProductRequests);
 
         //when
         //then

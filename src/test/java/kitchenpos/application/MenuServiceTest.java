@@ -1,15 +1,16 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProductRepository;
+import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,16 +31,16 @@ import static org.mockito.BDDMockito.given;
 class MenuServiceTest {
 
     @Mock
-    MenuDao menuDao;
+    MenuRepository menuRepository;
 
     @Mock
-    MenuGroupDao menuGroupDao;
+    MenuGroupRepository menuGroupRepository;
 
     @Mock
-    MenuProductDao menuProductDao;
+    MenuProductRepository menuProductRepository;
 
     @Mock
-    ProductDao productDao;
+    ProductRepository productRepository;
 
     @InjectMocks
     MenuService menuService;
@@ -48,19 +49,20 @@ class MenuServiceTest {
     @Test
     void create1() {
         //given
-        List<MenuProduct> menuProducts = new ArrayList<>();
-        menuProducts.add(new MenuProduct(1L, 1L, 1));
+        List<MenuProductRequest> menuProductRequests = new ArrayList<>();
+        menuProductRequests.add(new MenuProductRequest(1L, 1));
 
         MenuRequest newMenu = new MenuRequest(null, "후라이드치킨", new BigDecimal("16000"), 2L);
-        newMenu.setMenuProducts(menuProducts);
+        newMenu.setMenuProducts(menuProductRequests);
 
         // TODO: 임시로 any() 로 돌려놓음.
-        given(menuGroupDao.existsById(any()))
+        given(menuGroupRepository.existsById(any()))
                 .willReturn(true);
-        given(productDao.findById(any()))
+        given(productRepository.findById(any()))
                 .willReturn(Optional.of(new Product(1L, "후라이드치킨", new BigDecimal("16000"))));
-        given(menuDao.save(any()))
-                .willReturn(new Menu(1L, "후라이드치킨", new BigDecimal("16000"), 2L));
+        given(menuRepository.save(any()))
+                .willReturn(new Menu(1L, "후라이드치킨", new BigDecimal("16000"), null));
+//                .willReturn(new Menu(1L, "후라이드치킨", new BigDecimal("16000"), 2L));
 
         //when
         MenuResponse createMenu = menuService.create(newMenu);
@@ -84,7 +86,7 @@ class MenuServiceTest {
     @Test
     void create3() {
         // given
-        given(menuGroupDao.existsById(any())).willReturn(false);
+        given(menuGroupRepository.existsById(any())).willReturn(false);
 
         MenuRequest newMenu = new MenuRequest(null, "후라이드치킨", new BigDecimal("16000"), 2L);
         // when
@@ -98,15 +100,15 @@ class MenuServiceTest {
     @Test
     void create4() {
         //given
-        given(menuGroupDao.existsById(any()))
+        given(menuGroupRepository.existsById(any()))
                 .willReturn(true);
-        given(productDao.findById(any()))
+        given(productRepository.findById(any()))
                 .willReturn(Optional.empty());
 
         MenuRequest newMenu = new MenuRequest(null, "후라이드치킨", new BigDecimal("16000"), 2L);
-        List<MenuProduct> menuProducts = new ArrayList<>();
-        menuProducts.add(new MenuProduct(1L, 1L, 1));
-        newMenu.setMenuProducts(menuProducts);
+        List<MenuProductRequest> menuProductRequests = new ArrayList<>();
+        menuProductRequests.add(new MenuProductRequest(1L, 1));
+        newMenu.setMenuProducts(menuProductRequests);
 
         //when
         //then
@@ -118,13 +120,13 @@ class MenuServiceTest {
     @Test
     void create5() {
         //given
-        given(menuGroupDao.existsById(any()))
+        given(menuGroupRepository.existsById(any()))
                 .willReturn(true);
-        given(productDao.findById(any()))
+        given(productRepository.findById(any()))
                 .willReturn(Optional.of(new Product(1L, "후라이드치킨", new BigDecimal("14000"))));
 
-        List<MenuProduct> menuProducts = new ArrayList<>();
-        menuProducts.add(new MenuProduct(1L, 1L, 1));
+        List<MenuProductRequest> menuProducts = new ArrayList<>();
+        menuProducts.add(new MenuProductRequest(1L, 1));
 
         MenuRequest newMenu = new MenuRequest(null, "후라이드치킨", new BigDecimal("16000"), 2L);
         newMenu.setMenuProducts(menuProducts);
@@ -140,18 +142,22 @@ class MenuServiceTest {
     @Test
     void list() {
         //given
+        Menu menu1 = new Menu(1L, "후라이드치킨", new BigDecimal("16000"), null);
+        Menu menu2 = new Menu(2L, "양념치킨", new BigDecimal("16000"), null);
 
-        given(menuDao.findAll())
+        given(menuRepository.findAll())
                 .willReturn(
                         Arrays.asList(
-                                new Menu(1L, "후라이드치킨", new BigDecimal("16000"), 1L),
-                                new Menu(2L, "양념치킨", new BigDecimal("16000"), 2L)
+//                                new Menu(1L, "후라이드치킨", new BigDecimal("16000"), 1L),
+//                                new Menu(2L, "양념치킨", new BigDecimal("16000"), 2L)
+                                menu1,
+                                menu2
                         )
                 );
-        given(menuProductDao.findAllByMenuId(1L))
-                .willReturn(Collections.singletonList(new MenuProduct(1L, 1L, 1L)));
-        given(menuProductDao.findAllByMenuId(2L))
-                .willReturn(Collections.singletonList(new MenuProduct(2L, 2L, 1L)));
+        given(menuProductRepository.findAllByMenuId(1L))
+                .willReturn(Collections.singletonList(new MenuProduct(menu1, new Product(), 1L)));
+        given(menuProductRepository.findAllByMenuId(2L))
+                .willReturn(Collections.singletonList(new MenuProduct(menu2, new Product(), 1L)));
 
         //when
         List<MenuResponse> menus = menuService.list();

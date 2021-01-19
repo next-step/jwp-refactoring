@@ -1,8 +1,8 @@
 package kitchenpos.ui;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,17 +24,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class OrderRestControllerTest extends RestControllerTest {
 
     public static final String ORDERS_URL = "/api/orders";
-    private Order order;
+    private OrderRequest order;
 
     @Override
     @BeforeEach
     void setUp() {
         super.setUp();
 
-        order = new Order(null, 1L, OrderStatus.COOKING, LocalDateTime.now());
+        order = new OrderRequest(null, 1L, OrderStatus.COOKING, LocalDateTime.now());
         order.setOrderLineItems(Arrays.asList(
-                new OrderLineItem(0L, 1L, 1L,1),
-                new OrderLineItem(1L, 1L, 2L,1))
+                new OrderLineItemRequest(1L,1),
+                new OrderLineItemRequest(2L,1))
         );
         order.setOrderTableId(1L);
     }
@@ -94,11 +94,11 @@ class OrderRestControllerTest extends RestControllerTest {
                 .andExpect(jsonPath("$.orderStatus", is(OrderStatus.MEAL.name())));
     }
 
-    private ResultActions 주문요청(Order order) throws Exception {
+    private ResultActions 주문요청(OrderRequest orderRequest) throws Exception {
         return mockMvc.perform(
                 post(ORDERS_URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(toJsonString(order))
+                        .content(toJsonString(orderRequest))
         )
                 .andDo(print());
     }

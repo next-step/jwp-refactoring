@@ -4,6 +4,7 @@ import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
+import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
@@ -36,24 +37,24 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-        final List<OrderTable> orderTables = tableGroupRequest.getOrderTables();
+        final List<OrderTableRequest> orderTableRequests = tableGroupRequest.getOrderTables();
 
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
+        if (CollectionUtils.isEmpty(orderTableRequests) || orderTableRequests.size() < 2) {
             throw new IllegalArgumentException("단체 지정할 주문 테이블은 2개 이상이어야 합니다.");
         }
 
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
+        final List<Long> orderTableIds = orderTableRequests.stream()
+                .map(OrderTableRequest::getId)
                 .collect(Collectors.toList());
 
         final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
 
-        if (orderTables.size() != savedOrderTables.size()) {
+        if (orderTableRequests.size() != savedOrderTables.size()) {
             throw new IllegalArgumentException();
         }
 
         for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
+            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup())) {
                 throw new IllegalArgumentException();
             }
         }
@@ -61,13 +62,12 @@ public class TableGroupService {
         tableGroupRequest.setCreatedDate(LocalDateTime.now());
 
         TableGroup tableGroup = new TableGroup(tableGroupRequest.getId(), tableGroupRequest.getCreatedDate(),
-                tableGroupRequest.getOrderTables());
+                savedOrderTables);
 
         final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
 
-        final Long tableGroupId = savedTableGroup.getId();
         for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.setTableGroupId(tableGroupId);
+            savedOrderTable.setTableGroup(savedTableGroup);
             savedOrderTable.setEmpty(false);
             orderTableRepository.save(savedOrderTable);
         }
@@ -90,7 +90,7 @@ public class TableGroupService {
         }
 
         for (final OrderTable orderTable : orderTables) {
-            orderTable.setTableGroupId(null);
+            orderTable.setTableGroup(null);
             orderTableRepository.save(orderTable);
         }
     }

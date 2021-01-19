@@ -6,17 +6,15 @@ import javax.persistence.*;
 
 @Entity
 public class OrderLineItem {
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
     private Long seq;
 
     @ManyToOne
     private Order order;
-    private Long orderId;
 
     @ManyToOne
     private Menu menu;
-    private Long menuId;
 
     private long quantity;
 
@@ -28,22 +26,6 @@ public class OrderLineItem {
         this.seq = seq;
     }
 
-    public Long getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(final Long orderId) {
-        this.orderId = orderId;
-    }
-
-    public Long getMenuId() {
-        return menuId;
-    }
-
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
-    }
-
     public long getQuantity() {
         return quantity;
     }
@@ -52,19 +34,33 @@ public class OrderLineItem {
         this.quantity = quantity;
     }
 
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    public Menu getMenu() {
+        return menu;
+    }
+
+    public void setMenu(Menu menu) {
+        this.menu = menu;
+    }
+
     public OrderLineItem() {
     }
 
-    public OrderLineItem(Long orderId, Long menuId, long quantity) {
-        this.orderId = orderId;
-        this.menuId = menuId;
-        this.quantity = quantity;
+    public OrderLineItem(Order order, Menu menu, long quantity) {
+        this(null, order, menu, quantity);
     }
 
-    public OrderLineItem(Long seq, Long orderId, Long menuId, long quantity) {
+    public OrderLineItem(Long seq, Order order, Menu menu, long quantity) {
         this.seq = seq;
-        this.orderId = orderId;
-        this.menuId = menuId;
+        this.order = order;
+        this.menu = menu;
         this.quantity = quantity;
     }
 }

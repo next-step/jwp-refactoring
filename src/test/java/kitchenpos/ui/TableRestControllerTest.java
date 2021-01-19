@@ -1,6 +1,6 @@
 package kitchenpos.ui;
 
-import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.dto.OrderTableRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -23,7 +23,7 @@ class TableRestControllerTest extends RestControllerTest {
     @Test
     void create() throws Exception {
         //given
-        OrderTable orderTable = new OrderTable();
+        OrderTableRequest orderTable = new OrderTableRequest();
         orderTable.setNumberOfGuests(3);
         orderTable.setEmpty(false);
 

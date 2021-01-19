@@ -1,9 +1,9 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTableRepository;
+import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
@@ -33,10 +33,10 @@ import static org.mockito.Mockito.verify;
 class TableGroupServiceTest {
 
     @Mock
-    OrderDao orderDao;
+    OrderRepository orderRepository;
 
     @Mock
-    OrderTableDao orderTableDao;
+    OrderTableRepository orderTableRepository;
 
     @Mock
     TableGroupRepository tableGroupRepository;
@@ -48,14 +48,14 @@ class TableGroupServiceTest {
     @Test
     void create1() {
         //given
-        List<OrderTable> orderTables = new ArrayList<>();
-        orderTables.add(new OrderTable(1L, null, 0, true));
-        orderTables.add(new OrderTable(2L, null, 0, true));
+        List<OrderTableRequest> orderTables = new ArrayList<>();
+        orderTables.add(new OrderTableRequest(1L, null, 0, true));
+        orderTables.add(new OrderTableRequest(2L, null, 0, true));
 
         TableGroupRequest newTableGroup = new TableGroupRequest(null, LocalDateTime.now(), orderTables);
         newTableGroup.setOrderTables(orderTables);
 
-        given(orderTableDao.findAllByIdIn(any()))
+        given(orderTableRepository.findAllByIdIn(any()))
                 .willReturn(
                         Arrays.asList(
                                 new OrderTable(1L, null, 0, true),
@@ -85,8 +85,8 @@ class TableGroupServiceTest {
     @Test
     void create2() {
         //given
-        List<OrderTable> orderTables = new ArrayList<>();
-        orderTables.add(new OrderTable(1L, null, 0, true));
+        List<OrderTableRequest> orderTables = new ArrayList<>();
+        orderTables.add(new OrderTableRequest(1L, null, 0, true));
 
         TableGroupRequest newTableGroup = new TableGroupRequest(1L, LocalDateTime.now(), orderTables);
 
@@ -106,25 +106,25 @@ class TableGroupServiceTest {
                 new OrderTable(2L, null, 0, true)
         );
 
-        given(orderTableDao.findAllByTableGroupId(any()))
+        given(orderTableRepository.findAllByTableGroupId(any()))
                 .willReturn(orderTables);
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any()))
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any()))
                 .willReturn(false);
 
         //when
         tableGroupService.ungroup(1L);
 
         //then
-        verify(orderTableDao, times(2)).save(any());
-        verify(orderTableDao).save(orderTables.get(0));
-        verify(orderTableDao).save(orderTables.get(1));
+        verify(orderTableRepository, times(2)).save(any());
+        verify(orderTableRepository).save(orderTables.get(0));
+        verify(orderTableRepository).save(orderTables.get(1));
     }
 
     @DisplayName("지정한 주문 테이블들이 모두 완료상태여야 그룹 해제가 가능합니다.")
     @Test
     void ungroup2() {
         //given
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any()))
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any()))
                 .willReturn(true);
 
         //when

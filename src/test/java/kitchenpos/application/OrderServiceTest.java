@@ -1,16 +1,13 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.application.OrderService;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.*;
+import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,16 +28,16 @@ import static org.mockito.BDDMockito.given;
 class OrderServiceTest {
 
     @Mock
-    MenuDao menuDao;
+    MenuRepository menuRepository;
 
     @Mock
-    OrderDao orderDao;
+    OrderRepository orderRepository;
 
     @Mock
-    OrderLineItemDao orderLineItemDao;
+    OrderLineItemRepository orderLineItemRepository;
 
     @Mock
-    OrderTableDao orderTableDao;
+    OrderTableRepository orderTableRepository;
 
     @InjectMocks
     OrderService orderService;
@@ -50,21 +47,21 @@ class OrderServiceTest {
     void create1() {
         //given
         OrderRequest newOrder = new OrderRequest();
-        List<OrderLineItem> orderLineItems = new ArrayList<>();
-        orderLineItems.add(new OrderLineItem());
-        orderLineItems.add(new OrderLineItem());
+        List<OrderLineItemRequest> orderLineItems = new ArrayList<>();
+        orderLineItems.add(new OrderLineItemRequest(1L, 1));
+        orderLineItems.add(new OrderLineItemRequest(2L, 1));
         newOrder.setOrderLineItems(orderLineItems);
 
-        given(orderDao.save(any()))
+        given(orderRepository.save(any()))
                 .willReturn(new Order());
-        given(menuDao.countByIdIn(any()))
+        given(menuRepository.countByIdIn(any()))
                 .willReturn(2L);
-        given(orderTableDao.findById(any()))
+        given(orderTableRepository.findById(any()))
                 .willReturn(Optional.of(new OrderTable()));
-        given(orderLineItemDao.save(any()))
+        given(orderLineItemRepository.save(any()))
                 .willReturn(new OrderLineItem());
-        given(orderDao.save(any()))
-                .willReturn(new Order(1L, 2L, OrderStatus.MEAL, LocalDateTime.now()));
+        given(orderRepository.save(any()))
+                .willReturn(new Order(1L, OrderStatus.MEAL, LocalDateTime.now()));
 
         //when
 
@@ -94,11 +91,11 @@ class OrderServiceTest {
     @Test
     void create3() {
         //given
-        given(menuDao.countByIdIn(any())).willReturn(1L);
+        given(menuRepository.countByIdIn(any())).willReturn(1L);
 
-        List<OrderLineItem> orderLineItems = new ArrayList<>();
-        orderLineItems.add(new OrderLineItem(1L, 1L, 3));
-        orderLineItems.add(new OrderLineItem(2L, 2L, 3));
+        List<OrderLineItemRequest> orderLineItems = new ArrayList<>();
+        orderLineItems.add(new OrderLineItemRequest(1L, 3));
+        orderLineItems.add(new OrderLineItemRequest(2L, 3));
 
         OrderRequest newOrder = new OrderRequest();
         newOrder.setOrderLineItems(orderLineItems);
@@ -114,13 +111,13 @@ class OrderServiceTest {
     @Test
     void create4() {
         //given
-        given(menuDao.countByIdIn(any())).willReturn(2L);
-        given(orderTableDao.findById(any()))
-                .willReturn(Optional.of(new OrderTable(1L, 2L, 0, true)));
+        given(menuRepository.countByIdIn(any())).willReturn(2L);
+        given(orderTableRepository.findById(any()))
+                .willReturn(Optional.of(new OrderTable(1L, null, 0, true)));
 
-        List<OrderLineItem> orderLineItems = new ArrayList<>();
-        orderLineItems.add(new OrderLineItem(1L, 1L, 3));
-        orderLineItems.add(new OrderLineItem(2L, 2L, 3));
+        List<OrderLineItemRequest> orderLineItems = new ArrayList<>();
+        orderLineItems.add(new OrderLineItemRequest(1L, 3));
+        orderLineItems.add(new OrderLineItemRequest(2L, 3));
 
         OrderRequest newOrder = new OrderRequest();
         newOrder.setOrderLineItems(orderLineItems);
@@ -135,11 +132,11 @@ class OrderServiceTest {
     @Test
     void list() {
         //given
-        given(orderDao.findAll())
+        given(orderRepository.findAll())
                 .willReturn(
                         Arrays.asList(
-                                new Order(1L, 2L, OrderStatus.COOKING, LocalDateTime.now()),
-                                new Order(2L, 3L, OrderStatus.MEAL, LocalDateTime.now())
+                                new Order(1L, OrderStatus.COOKING, LocalDateTime.now()),
+                                new Order(2L, OrderStatus.MEAL, LocalDateTime.now())
                         )
                 );
         //when
@@ -161,9 +158,9 @@ class OrderServiceTest {
     @Test
     void changeOrderStatus1() {
         //given
-        given(orderDao.findById(any()))
+        given(orderRepository.findById(any()))
                 .willReturn(
-                        Optional.of(new Order(1L, 1L, OrderStatus.COOKING, LocalDateTime.now()))
+                        Optional.of(new Order(1L, OrderStatus.COOKING, LocalDateTime.now()))
                 );
 
         OrderRequest changeOrder = new OrderRequest();
@@ -181,7 +178,7 @@ class OrderServiceTest {
     @Test
     void changeOrderStatus2() {
         //given
-        given(orderDao.findById(any()))
+        given(orderRepository.findById(any()))
                 .willReturn(Optional.empty());
 
         //when
@@ -196,9 +193,9 @@ class OrderServiceTest {
     @Test
     void changeOrderStatus3() {
         //given
-        given(orderDao.findById(any()))
+        given(orderRepository.findById(any()))
                 .willReturn(
-                        Optional.of(new Order(1L, 1L, OrderStatus.COMPLETION, LocalDateTime.now()))
+                        Optional.of(new Order(1L, OrderStatus.COMPLETION, LocalDateTime.now()))
                 );
 
         OrderRequest changeOrder = new OrderRequest();

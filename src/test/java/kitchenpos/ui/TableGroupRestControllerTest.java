@@ -1,7 +1,7 @@
 package kitchenpos.ui;
 
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -24,11 +24,11 @@ class TableGroupRestControllerTest extends RestControllerTest {
     @Test
     void create() throws Exception {
         //given
-        TableGroup tableGroup = new TableGroup();
+        TableGroupRequest tableGroup = new TableGroupRequest();
         tableGroup.setOrderTables(
                 Arrays.asList(
-                        new OrderTable(2L ,2L, 0, true),
-                        new OrderTable(4L ,2L, 0, true)
+                        new OrderTableRequest(2L ,2L, 0, true),
+                        new OrderTableRequest(4L ,2L, 0, true)
                 )
         );
 
@@ -45,11 +45,11 @@ class TableGroupRestControllerTest extends RestControllerTest {
     @Test
     void ungroup() throws Exception {
         //given
-        TableGroup tableGroup = new TableGroup();
+        TableGroupRequest tableGroup = new TableGroupRequest();
         tableGroup.setOrderTables(
                 Arrays.asList(
-                        new OrderTable(2L ,2L, 0, true),
-                        new OrderTable(4L ,2L, 0, true)
+                        new OrderTableRequest(2L ,2L, 0, true),
+                        new OrderTableRequest(4L ,2L, 0, true)
                 )
         );
         ResultActions resultActions = 단체지정요청(tableGroup);
@@ -62,7 +62,7 @@ class TableGroupRestControllerTest extends RestControllerTest {
                 .andExpect(status().isNoContent());
     }
 
-    private ResultActions 단체지정요청(TableGroup tableGroup) throws Exception {
+    private ResultActions 단체지정요청(TableGroupRequest tableGroup) throws Exception {
         return mockMvc.perform(
                 post(TABLE_GROUPS_URL)
                         .contentType(MediaType.APPLICATION_JSON)

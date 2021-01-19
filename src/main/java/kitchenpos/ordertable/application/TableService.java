@@ -6,6 +6,7 @@ import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,10 +19,12 @@ import java.util.stream.Collectors;
 public class TableService {
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
+    private final TableGroupRepository tableGroupRepository;
 
-    public TableService(OrderRepository orderRepository, OrderTableRepository orderTableRepository) {
+    public TableService(OrderRepository orderRepository, OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository) {
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
+        this.tableGroupRepository = tableGroupRepository;
     }
 
     @Transactional
@@ -30,7 +33,8 @@ public class TableService {
 
         OrderTable orderTable = new OrderTable();
         orderTable.setNumberOfGuests(orderTableRequest.getNumberOfGuests());
-        orderTable.setTableGroupId(orderTableRequest.getTableGroupId());
+        Long tableGroupId = orderTableRequest.getTableGroupId();
+        orderTable.setTableGroup(tableGroupRepository.getOne(tableGroupId));
         orderTable.setEmpty(orderTableRequest.isEmpty());
 
         return OrderTableResponse.of(orderTableRepository.save(orderTable));
@@ -47,7 +51,7 @@ public class TableService {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
+        if (Objects.nonNull(savedOrderTable.getTableGroup())) {
             throw new IllegalArgumentException();
         }
 

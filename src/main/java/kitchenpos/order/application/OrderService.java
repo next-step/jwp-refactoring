@@ -1,11 +1,11 @@
 package kitchenpos.order.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.order.domain.*;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItemRepository;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.ordertable.domain.OrderTable;
@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -36,17 +35,17 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        final List<OrderLineItem> orderLineItems = orderRequest.getOrderLineItems();
+        final List<OrderLineItemRequest> orderLineItemRequests = orderRequest.getOrderLineItems();
 
-        if (CollectionUtils.isEmpty(orderLineItems)) {
+        if (CollectionUtils.isEmpty(orderLineItemRequests)) {
             throw new IllegalArgumentException("주문 항목이 비어있습니다.");
         }
 
-        final List<Long> menuIds = orderLineItems.stream()
-                .map(OrderLineItem::getMenuId)
+        final List<Long> menuIds = orderLineItemRequests.stream()
+                .map(OrderLineItemRequest::getMenuId)
                 .collect(Collectors.toList());
 
-        if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
+        if (orderLineItemRequests.size() != menuRepository.countByIdIn(menuIds)) {
             throw new IllegalArgumentException("주문 항목에 등록하지 않은 메뉴가 있습니다.");
         }
 
@@ -58,20 +57,21 @@ public class OrderService {
         }
 
         Order order = new Order();
-        order.setOrderLineItems(orderLineItems);
-        order.setOrderTableId(orderTable.getId());
+//        order.setOrderLineItems(orderLineItemRequests);
+        order.setOrderTable(orderTable);
         order.setOrderStatus(OrderStatus.COOKING);
         order.setOrderedTime(LocalDateTime.now());
 
         final Order savedOrder = orderRepository.save(order);
 
-        final Long orderId = savedOrder.getId();
-        final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
-        for (final OrderLineItem orderLineItem : orderLineItems) {
-            orderLineItem.setOrderId(orderId);
-            savedOrderLineItems.add(orderLineItemRepository.save(orderLineItem));
-        }
-        savedOrder.setOrderLineItems(savedOrderLineItems);
+// 향후 반영하기.
+//        final Long orderId = savedOrder.getId();
+//        final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
+//        for (final OrderLineItem orderLineItem : orderLineItems) {
+//            orderLineItem.setOrderId(orderId);
+//            savedOrderLineItems.add(orderLineItemRepository.save(orderLineItem));
+//        }
+//        savedOrder.setOrderLineItems(savedOrderLineItems);
 
         return OrderResponse.of(savedOrder);
     }

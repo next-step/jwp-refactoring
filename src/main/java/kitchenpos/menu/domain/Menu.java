@@ -4,7 +4,6 @@ import kitchenpos.menugroup.domain.MenuGroup;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -16,11 +15,10 @@ public class Menu {
     private BigDecimal price;
 
     @ManyToOne
-//    @JoinColumn(name = "menu_group_id")
+    @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
-    private Long menuGroupId;
 
-    @OneToMany(mappedBy = "menu_id")
+    @OneToMany(mappedBy = "menu")
     private List<MenuProduct> menuProducts;
 
     public Long getId() {
@@ -47,12 +45,12 @@ public class Menu {
         this.price = price;
     }
 
-    public Long getMenuGroupId() {
-        return menuGroupId;
+    public MenuGroup getMenuGroup() {
+        return menuGroup;
     }
 
-    public void setMenuGroupId(final Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
+    public void setMenuGroup(MenuGroup menuGroup) {
+        this.menuGroup = menuGroup;
     }
 
     public List<MenuProduct> getMenuProducts() {
@@ -66,15 +64,18 @@ public class Menu {
     public Menu() {
     }
 
-    public Menu(Long id, String name, BigDecimal price, Long menuGroupId) {
-        this(id, name, price, menuGroupId, Collections.emptyList());
-    }
-
-    public Menu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup) {
         this.id = id;
         this.name = name;
         this.price = price;
-        this.menuGroupId = menuGroupId;
+        this.menuGroup = menuGroup;
+    }
+
+    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
     }
 }

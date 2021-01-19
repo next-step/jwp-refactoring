@@ -12,7 +12,7 @@ public class TableGroup {
     private Long id;
     private LocalDateTime createdDate;
 
-    @OneToMany(mappedBy = "tableGroupId")
+    @OneToMany(mappedBy = "tableGroup")
     private List<OrderTable> orderTables;
 
     public Long getId() {

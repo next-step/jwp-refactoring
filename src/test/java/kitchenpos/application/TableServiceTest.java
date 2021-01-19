@@ -1,7 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.ordertable.application.TableService;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
@@ -28,7 +27,7 @@ import static org.mockito.BDDMockito.given;
 class TableServiceTest {
 
     @Mock
-    OrderDao orderDao;
+    OrderRepository orderRepository;
 
     @Mock
     OrderTableRepository orderTableRepository;
@@ -88,7 +87,7 @@ class TableServiceTest {
                 .willReturn(
                         Optional.of(savedOrderTable)
                 );
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any()))
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any()))
                 .willReturn(false);
         given(orderTableRepository.save(savedOrderTable))
                 .willReturn(savedOrderTable);
@@ -107,7 +106,7 @@ class TableServiceTest {
         //given
         given(orderTableRepository.findById(2L))
                 .willReturn(
-                        Optional.of(new OrderTable(2L, 1L, 0, true))
+                        Optional.of(new OrderTable(2L, null, 0, true))
                 );
 
         OrderTableRequest orderTable = new OrderTableRequest(2L, 1L, 0, false);
@@ -124,7 +123,7 @@ class TableServiceTest {
         //given
         OrderTable findTable = new OrderTable(2L, null, 0, true);
         given(orderTableRepository.findById(2L)).willReturn(Optional.of(findTable));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(true);
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(true);
 
         OrderTableRequest orderTable = new OrderTableRequest(2L, null, 0, false);
 
