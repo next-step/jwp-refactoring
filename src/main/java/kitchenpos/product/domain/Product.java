@@ -34,6 +34,10 @@ public class Product {
         return price;
     }
 
+    public BigDecimal getSumPrice(long quantity) {
+        return price.multiply(BigDecimal.valueOf(quantity));
+    }
+
     public void updatePrice(final BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("상품의 가격은 0 원 이상이어야 합니다.");

@@ -1,5 +1,10 @@
 package kitchenpos.menu.dto;
 
+import kitchenpos.product.domain.Product;
+
+import java.math.BigDecimal;
+import java.util.List;
+
 public class MenuProductRequest {
 
     private long productId;

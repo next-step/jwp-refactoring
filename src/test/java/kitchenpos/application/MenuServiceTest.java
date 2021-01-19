@@ -2,7 +2,6 @@ package kitchenpos.application;
 
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProductRepository;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
@@ -57,14 +56,12 @@ class MenuServiceTest {
         menuRequest.setMenuProducts(menuProductRequests);
 
         // TODO: 임시로 any() 로 돌려놓음.
-        given(menuGroupRepository.existsById(any()))
-                .willReturn(true);
-
-        given(menuGroupRepository.getOne(any()))
-                .willReturn(new MenuGroup(2L, "메뉴그롭1"));
-
-        given(productRepository.findById(any()))
-                .willReturn(Optional.of(new Product(1L, "후라이드치킨", new BigDecimal("16000"))));
+        given(menuGroupRepository.findById(2L))
+                .willReturn(Optional.of(new MenuGroup(2L, "메뉴그롭1")));
+        given(productRepository.findAllByIdIn(Collections.singletonList(1L)))
+                .willReturn(Collections.singletonList(
+                        new Product(1L, "후라이드치킨", new BigDecimal("16000"))
+                ));
         given(menuRepository.save(any()))
                 .willReturn(
                         new Menu(
@@ -95,12 +92,11 @@ class MenuServiceTest {
     @Test
     void create3() {
         // given
-        given(menuGroupRepository.existsById(any())).willReturn(false);
+        MenuRequest menuRequest = new MenuRequest("후라이드치킨", new BigDecimal("16000"), 2L);
 
-        MenuRequest newMenu = new MenuRequest("후라이드치킨", new BigDecimal("16000"), 2L);
         // when
         // then
-        assertThatThrownBy(() -> menuService.create(newMenu))
+        assertThatThrownBy(() -> menuService.create(menuRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("메뉴그룹이 없습니다.");
     }
@@ -109,19 +105,15 @@ class MenuServiceTest {
     @Test
     void create4() {
         //given
-        given(menuGroupRepository.existsById(any()))
-                .willReturn(true);
-        given(productRepository.findById(any()))
-                .willReturn(Optional.empty());
-
-        MenuRequest newMenu = new MenuRequest( "후라이드치킨", new BigDecimal("16000"), 2L);
         List<MenuProductRequest> menuProductRequests = new ArrayList<>();
         menuProductRequests.add(new MenuProductRequest(1L, 1));
-        newMenu.setMenuProducts(menuProductRequests);
+
+        MenuRequest menuRequest = new MenuRequest( "후라이드치킨", new BigDecimal("16000"), 2L);
+        menuRequest.setMenuProducts(menuProductRequests);
 
         //when
         //then
-        assertThatThrownBy(() -> menuService.create(newMenu))
+        assertThatThrownBy(() -> menuService.create(menuRequest))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -129,20 +121,22 @@ class MenuServiceTest {
     @Test
     void create5() {
         //given
-        given(menuGroupRepository.existsById(any()))
-                .willReturn(true);
-        given(productRepository.findById(any()))
-                .willReturn(Optional.of(new Product(1L, "후라이드치킨", new BigDecimal("14000"))));
+        given(menuGroupRepository.findById(2L))
+                .willReturn(Optional.of(new MenuGroup(2L, "후라이드치킨")));
+        given(productRepository.findAllByIdIn(Collections.singletonList(1L)))
+                .willReturn(
+                        Collections.singletonList(new Product(1L, "후라이드치킨", new BigDecimal("14000")))
+                );
 
         List<MenuProductRequest> menuProducts = new ArrayList<>();
         menuProducts.add(new MenuProductRequest(1L, 1));
 
-        MenuRequest newMenu = new MenuRequest("후라이드치킨", new BigDecimal("16000"), 2L);
-        newMenu.setMenuProducts(menuProducts);
+        MenuRequest menuRequest = new MenuRequest("후라이드치킨", new BigDecimal("16000"), 2L);
+        menuRequest.setMenuProducts(menuProducts);
 
         //when
         //then
-        assertThatThrownBy(() -> menuService.create(newMenu))
+        assertThatThrownBy(() -> menuService.create(menuRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("메뉴의 가격이 상품목록 총합 가격보다 더 큽니다.");
     }

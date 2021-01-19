@@ -1,6 +1,10 @@
 package kitchenpos.menu.dto;
 
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.product.domain.Product;
+
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -54,5 +58,33 @@ public class MenuRequest {
         this.price = price;
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
+    }
+
+    public BigDecimal getSumPrice(List<Product> products) {
+        BigDecimal sum = BigDecimal.ZERO;
+        for (MenuProductRequest menuProductRequest : menuProducts) {
+            Product product = products.stream()
+                    .filter(filterProduct -> menuProductRequest.getProductId() == filterProduct.getId())
+                    .findFirst()
+                    .orElseThrow(IllegalArgumentException::new);
+
+            sum = sum.add(product.getSumPrice(menuProductRequest.getQuantity()));
+        }
+
+        return sum;
+    }
+
+    public List<MenuProduct> createMenuProducts(List<Product> products) {
+        List<MenuProduct> createMenuProducts = new ArrayList<>();
+        for (MenuProductRequest menuProductRequest : menuProducts) {
+            Product product = products.stream()
+                    .filter(filterProduct -> menuProductRequest.getProductId() == filterProduct.getId())
+                    .findFirst()
+                    .orElseThrow(IllegalArgumentException::new);
+
+            createMenuProducts.add(new MenuProduct(product, menuProductRequest.getQuantity()));
+        }
+
+        return createMenuProducts;
     }
 }

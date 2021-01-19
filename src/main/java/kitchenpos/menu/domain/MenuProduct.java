@@ -30,6 +30,10 @@ public class MenuProduct {
         return menu;
     }
 
+    public void setMenu(Menu menu) {
+        this.menu = menu;
+    }
+
     public Product getProduct() {
         return product;
     }
@@ -45,8 +49,8 @@ public class MenuProduct {
     public MenuProduct() {
     }
 
-    public MenuProduct(Menu menu, Product product, long quantity) {
-        this(null, menu, product, quantity);
+    public MenuProduct(Product product, long quantity) {
+        this(null, null, product, quantity);
     }
 
     public MenuProduct(Long seq, Menu menu, Product product, long quantity) {

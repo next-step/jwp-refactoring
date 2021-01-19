@@ -33,7 +33,6 @@ class MenuGroupServiceTest {
     @Test
     void create() {
         //given
-
         MenuGroupRequest menuGroupRequest = new MenuGroupRequest("일반메뉴");
 
         // TODO: 임시로 any() 로 돌려놓음.
