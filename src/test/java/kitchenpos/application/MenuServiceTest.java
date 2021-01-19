@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -117,7 +119,6 @@ class MenuServiceTest {
 		}).isInstanceOf(IllegalArgumentException.class);
 	}
 
-
 	@DisplayName("메뉴의 가격은 메뉴내 상품들의 가격 합보다 클 수 없다.")
 	@Test
 	void menuPriceCannotOverProduct() {
@@ -142,4 +143,25 @@ class MenuServiceTest {
 			menuService.create(후라이드치킨);
 		}).isInstanceOf(IllegalArgumentException.class);
 	}
+
+	@DisplayName("메뉴의 목록을 조회할 수 있다.")
+	@Test
+	void list() {
+		// given
+		Menu menu = mock(Menu.class);
+		when(menu.getId()).thenReturn(1L);
+
+		MenuProduct menuProduct = mock(MenuProduct.class);
+
+		when(menuDao.findAll()).thenReturn(Arrays.asList(menu));
+		when(menuProductDao.findAllByMenuId(menu.getId())).thenReturn(Arrays.asList(menuProduct));
+		MenuService menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
+
+		// when
+		List<Menu> menus = menuService.list();
+
+		// then
+		assertThat(menus).contains(menu);
+	}
+
 }
