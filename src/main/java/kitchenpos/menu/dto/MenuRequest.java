@@ -5,19 +5,10 @@ import java.util.Collections;
 import java.util.List;
 
 public class MenuRequest {
-    private Long id;
     private String name;
     private BigDecimal price;
     private Long menuGroupId;
     private List<MenuProductRequest> menuProducts;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
@@ -54,12 +45,11 @@ public class MenuRequest {
     public MenuRequest() {
     }
 
-    public MenuRequest(Long id, String name, BigDecimal price, Long menuGroupId) {
-        this(id, name, price, menuGroupId, Collections.emptyList());
+    public MenuRequest(String name, BigDecimal price, Long menuGroupId) {
+        this(name, price, menuGroupId, Collections.emptyList());
     }
 
-    public MenuRequest(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
-        this.id = id;
+    public MenuRequest(String name, BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;

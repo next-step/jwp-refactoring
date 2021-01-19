@@ -64,18 +64,14 @@ public class Menu {
     public Menu() {
     }
 
+    public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
+        this(null, name, price, menuGroup);
+    }
+
     public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
-    }
-
-    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.menuGroup = menuGroup;
-        this.menuProducts = menuProducts;
     }
 }

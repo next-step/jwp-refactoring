@@ -53,7 +53,7 @@ class MenuServiceTest {
         List<MenuProductRequest> menuProductRequests = new ArrayList<>();
         menuProductRequests.add(new MenuProductRequest(1L, 1));
 
-        MenuRequest menuRequest = new MenuRequest(null, "후라이드치킨", new BigDecimal("16000"), 2L);
+        MenuRequest menuRequest = new MenuRequest("후라이드치킨", new BigDecimal("16000"), 2L);
         menuRequest.setMenuProducts(menuProductRequests);
 
         // TODO: 임시로 any() 로 돌려놓음.
@@ -86,7 +86,7 @@ class MenuServiceTest {
     @DisplayName("메뉴를 등록할 수 있다 - 메뉴의 가격은 0 원 이상이어야 한다.")
     @Test
     void create2() {
-        MenuRequest newMenu = new MenuRequest(null, "후라이드치킨", new BigDecimal("-1"), 2L);
+        MenuRequest newMenu = new MenuRequest("후라이드치킨", new BigDecimal("-1"), 2L);
         assertThatThrownBy(() -> menuService.create(newMenu))
                 .isInstanceOf(IllegalArgumentException.class);
     }
@@ -97,7 +97,7 @@ class MenuServiceTest {
         // given
         given(menuGroupRepository.existsById(any())).willReturn(false);
 
-        MenuRequest newMenu = new MenuRequest(null, "후라이드치킨", new BigDecimal("16000"), 2L);
+        MenuRequest newMenu = new MenuRequest("후라이드치킨", new BigDecimal("16000"), 2L);
         // when
         // then
         assertThatThrownBy(() -> menuService.create(newMenu))
@@ -114,7 +114,7 @@ class MenuServiceTest {
         given(productRepository.findById(any()))
                 .willReturn(Optional.empty());
 
-        MenuRequest newMenu = new MenuRequest(null, "후라이드치킨", new BigDecimal("16000"), 2L);
+        MenuRequest newMenu = new MenuRequest( "후라이드치킨", new BigDecimal("16000"), 2L);
         List<MenuProductRequest> menuProductRequests = new ArrayList<>();
         menuProductRequests.add(new MenuProductRequest(1L, 1));
         newMenu.setMenuProducts(menuProductRequests);
@@ -137,7 +137,7 @@ class MenuServiceTest {
         List<MenuProductRequest> menuProducts = new ArrayList<>();
         menuProducts.add(new MenuProductRequest(1L, 1));
 
-        MenuRequest newMenu = new MenuRequest(null, "후라이드치킨", new BigDecimal("16000"), 2L);
+        MenuRequest newMenu = new MenuRequest("후라이드치킨", new BigDecimal("16000"), 2L);
         newMenu.setMenuProducts(menuProducts);
 
         //when
@@ -151,18 +151,12 @@ class MenuServiceTest {
     @Test
     void list() {
         //given
-        Menu menu1 = new Menu(1L, "후라이드치킨", new BigDecimal("16000"), null);
-        Menu menu2 = new Menu(2L, "양념치킨", new BigDecimal("16000"), null);
+        MenuGroup menuGroup = new MenuGroup(1L, "메뉴그룹1");
+        Menu menu1 = new Menu(1L, "후라이드치킨", new BigDecimal("16000"), menuGroup);
+        Menu menu2 = new Menu(2L, "양념치킨", new BigDecimal("16000"), menuGroup);
 
         given(menuRepository.findAll())
-                .willReturn(
-                        Arrays.asList(
-//                                new Menu(1L, "후라이드치킨", new BigDecimal("16000"), 1L),
-//                                new Menu(2L, "양념치킨", new BigDecimal("16000"), 2L)
-                                menu1,
-                                menu2
-                        )
-                );
+                .willReturn(Arrays.asList(menu1, menu2));
         given(menuProductRepository.findAllByMenuId(1L))
                 .willReturn(Collections.singletonList(new MenuProduct(menu1, new Product(), 1L)));
         given(menuProductRepository.findAllByMenuId(2L))

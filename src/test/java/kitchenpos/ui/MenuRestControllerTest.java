@@ -25,7 +25,7 @@ class MenuRestControllerTest extends RestControllerTest {
     @Test
     void create() throws Exception {
         //given
-        MenuRequest menu = new MenuRequest(null, "일반메뉴", new BigDecimal(13000), 2L);
+        MenuRequest menu = new MenuRequest("일반메뉴", new BigDecimal(13000), 2L);
 
         List<MenuProductRequest> menuProductRequests = new ArrayList<>();
         menuProductRequests.add(new MenuProductRequest(1L, 1));

@@ -64,7 +64,7 @@ public class MenuService {
         }
 
         MenuGroup menuGroup = menuGroupRepository.getOne(menuRequest.getMenuGroupId());
-        Menu menu = new Menu(menuRequest.getId(), menuRequest.getName(), menuRequest.getPrice(), menuGroup);
+        Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup);
         menu.setMenuProducts(
                 menuProductRequests.stream()
                         .map(menuProductRequest -> {
