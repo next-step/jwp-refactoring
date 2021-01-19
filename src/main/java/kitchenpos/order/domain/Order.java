@@ -62,9 +62,14 @@ public class Order {
 
     public void addOrderLineItem(final OrderLineItem orderLineItem) {
         this.orderLineItems.add(orderLineItem);
+        orderLineItem.setOrder(this);
     }
 
     public Order() {
+    }
+
+    public Order(OrderStatus orderStatus, LocalDateTime orderedTime) {
+        this(null, orderStatus, orderedTime);
     }
 
     public Order(Long id, OrderStatus orderStatus, LocalDateTime orderedTime) {
@@ -75,5 +80,24 @@ public class Order {
 
     public boolean isRestrictedChangeEmpty() {
         return orderStatus.isRestrictedChangeEmpty();
+    }
+
+    public void changeOrderStatus(final OrderStatus orderStatus) {
+        if(this.orderStatus.isRestrictedChangeOrderStatus()) {
+            throw new IllegalArgumentException("이미 왼료상태인 주문은 상태 변경이 불가합니다.");
+        }
+
+        this.orderStatus = orderStatus;
+    }
+
+    public static Order createOrder(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException("비어있는 주문 테이블입니다.");
+        }
+
+        Order order = new Order(OrderStatus.COOKING, LocalDateTime.now());
+        order.setOrderTable(orderTable);
+        orderLineItems.forEach(order::addOrderLineItem);
+        return order;
     }
 }

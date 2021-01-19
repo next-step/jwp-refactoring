@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
@@ -18,6 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -37,9 +39,6 @@ class OrderServiceTest {
     OrderRepository orderRepository;
 
     @Mock
-    OrderLineItemRepository orderLineItemRepository;
-
-    @Mock
     OrderTableRepository orderTableRepository;
 
     @InjectMocks
@@ -49,26 +48,32 @@ class OrderServiceTest {
     @Test
     void create1() {
         //given
+        given(orderRepository.save(any()))
+                .willReturn(new Order());
+        given(menuRepository.findAllById(Arrays.asList(1L, 2L)))
+                .willReturn(Arrays.asList(
+                        new Menu(1L, "메뉴1", new BigDecimal(16000), null),
+                        new Menu(2L, "메뉴2", new BigDecimal(16000), null)
+                ));
+        given(orderTableRepository.findById(1L))
+                .willReturn(
+                        Optional.of(new OrderTable(1L, null, 3, false))
+                );
+        OrderTable orderTable = new OrderTable();
+        orderTable.setId(2L);
+
+        Order order = new Order(1L, OrderStatus.MEAL, LocalDateTime.now());
+        order.setOrderTable(orderTable);
+
+        given(orderRepository.save(any())).willReturn(order);
+
+        //when
         OrderRequest orderRequest = new OrderRequest();
         List<OrderLineItemRequest> orderLineItems = new ArrayList<>();
         orderLineItems.add(new OrderLineItemRequest(1L, 1));
         orderLineItems.add(new OrderLineItemRequest(2L, 1));
         orderRequest.setOrderLineItems(orderLineItems);
-
-        given(orderRepository.save(any()))
-                .willReturn(new Order());
-        given(menuRepository.countByIdIn(any()))
-                .willReturn(2L);
-        given(orderTableRepository.findById(any()))
-                .willReturn(Optional.of(new OrderTable()));
-        Order order = new Order(1L, OrderStatus.MEAL, LocalDateTime.now());
-        OrderTable orderTable = new OrderTable();
-        orderTable.setId(2L);
-        order.setOrderTable(orderTable);
-        given(orderRepository.save(any()))
-                .willReturn(order);
-
-        //when
+        orderRequest.setOrderTableId(1L);
         OrderResponse createOrder = orderService.create(orderRequest);
 
         //then
@@ -95,7 +100,10 @@ class OrderServiceTest {
     @Test
     void create3() {
         //given
-        given(menuRepository.countByIdIn(any())).willReturn(1L);
+        given(menuRepository.findAllById(Arrays.asList(1L, 2L)))
+                .willReturn(Collections.singletonList(
+                        new Menu(2L, "메뉴2", new BigDecimal(16000), null)
+                ));
 
         List<OrderLineItemRequest> orderLineItems = new ArrayList<>();
         orderLineItems.add(new OrderLineItemRequest(1L, 3));
@@ -115,7 +123,11 @@ class OrderServiceTest {
     @Test
     void create4() {
         //given
-        given(menuRepository.countByIdIn(any())).willReturn(2L);
+        given(menuRepository.findAllById(Arrays.asList(1L, 2L)))
+                .willReturn(Arrays.asList(
+                        new Menu(1L, "메뉴1", new BigDecimal(16000), null),
+                        new Menu(2L, "메뉴2", new BigDecimal(16000), null)
+                ));
         given(orderTableRepository.findById(any()))
                 .willReturn(Optional.of(new OrderTable(1L, null, 0, true)));
 

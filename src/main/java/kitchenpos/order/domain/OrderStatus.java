@@ -8,4 +8,8 @@ public enum OrderStatus {
     public boolean isRestrictedChangeEmpty() {
         return Arrays.asList(COOKING, MEAL).contains(this);
     }
+
+    public boolean isRestrictedChangeOrderStatus() {
+        return COMPLETION.equals(this);
+    }
 }

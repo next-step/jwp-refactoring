@@ -5,8 +5,8 @@ import kitchenpos.tablegroup.domain.TableGroup;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class OrderTable {
