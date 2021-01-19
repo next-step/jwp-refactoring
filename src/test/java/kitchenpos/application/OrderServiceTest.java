@@ -78,7 +78,7 @@ class OrderServiceTest extends BaseServiceTest {
     @DisplayName("빈 테이블일 경우 등록할 수 없다.")
     @Test
     void createOrderException4() {
-        Order order = Order.of(2L, 빈_orderTable_id, orderLineItems);
+        Order order = Order.of(2L, 빈_orderTable_id1, orderLineItems);
 
         assertThatThrownBy(() -> orderService.create(order))
                 .isInstanceOf(IllegalArgumentException.class);
