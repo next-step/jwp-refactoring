@@ -6,17 +6,14 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
-import kitchenpos.tablegroup.dto.OrderTableIdRequest;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,31 +39,15 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-        final List<OrderTableIdRequest> orderTableIdRequests = tableGroupRequest.getOrderTables();
+        tableGroupRequest.validateOrderTableRequestSize();
 
-        if (CollectionUtils.isEmpty(orderTableIdRequests) || orderTableIdRequests.size() < 2) {
-            throw new IllegalArgumentException("단체 지정할 주문 테이블은 2개 이상이어야 합니다.");
-        }
+        final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(
+                tableGroupRequest.getOrderTableIds()
+        );
 
-        final List<Long> orderTableIds = orderTableIdRequests.stream()
-                .map(OrderTableIdRequest::getId)
-                .collect(Collectors.toList());
+        tableGroupRequest.validateOrderTableSavedSize(savedOrderTables);
 
-        final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
-
-        if (orderTableIdRequests.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
-        }
-
-        TableGroup tableGroup = new TableGroup(LocalDateTime.now());
-
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup())) {
-                throw new IllegalArgumentException();
-            }
-            tableGroup.addOrderTables(savedOrderTable);
-        }
-
+        TableGroup tableGroup = TableGroup.createTableGroup(LocalDateTime.now(), savedOrderTables);
         return TableGroupResponse.of(tableGroupRepository.save(tableGroup));
     }
 

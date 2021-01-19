@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class TableGroup {
@@ -50,5 +51,20 @@ public class TableGroup {
     public TableGroup(Long id, LocalDateTime createdDate) {
         this.id = id;
         this.createdDate = createdDate;
+    }
+
+    public static TableGroup createTableGroup(LocalDateTime createdDate, List<OrderTable> orderTables) {
+        TableGroup tableGroup = new TableGroup(createdDate);
+        if(validOrderTables(orderTables)) {
+            throw new IllegalArgumentException();
+        }
+
+        tableGroup.orderTables.addAll(orderTables);
+        return tableGroup;
+    }
+
+    private static boolean validOrderTables(List<OrderTable> orderTables) {
+        return orderTables.stream()
+                .anyMatch(orderTable -> !orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup()));
     }
 }
