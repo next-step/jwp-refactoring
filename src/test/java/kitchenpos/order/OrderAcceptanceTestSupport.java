@@ -5,7 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.HttpStatusAssertion;
-import kitchenpos.domain.Order;
+import kitchenpos.domain.Orders;
 import kitchenpos.dto.OrderRequest;
 import org.springframework.http.MediaType;
 
@@ -27,7 +27,7 @@ public class OrderAcceptanceTestSupport extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 주문_상태_변경_요청(ExtractableResponse<Response> createResponse, Order params) {
+    public static ExtractableResponse<Response> 주문_상태_변경_요청(ExtractableResponse<Response> createResponse, Orders params) {
         String location = createResponse.header("Location");
         return RestAssured
                 .given().log().all().body(params)

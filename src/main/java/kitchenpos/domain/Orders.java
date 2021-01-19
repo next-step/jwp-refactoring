@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-public class Order {
+public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -64,8 +64,8 @@ public class Order {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Order order = (Order) o;
-        return Objects.equals(id, order.id) && Objects.equals(orderTableId, order.orderTableId) && Objects.equals(orderStatus, order.orderStatus) && Objects.equals(orderedTime, order.orderedTime) && Objects.equals(orderLineItems, order.orderLineItems);
+        Orders orders = (Orders) o;
+        return Objects.equals(id, orders.id) && Objects.equals(orderTableId, orders.orderTableId) && Objects.equals(orderStatus, orders.orderStatus) && Objects.equals(orderedTime, orders.orderedTime) && Objects.equals(orderLineItems, orders.orderLineItems);
     }
 
     @Override

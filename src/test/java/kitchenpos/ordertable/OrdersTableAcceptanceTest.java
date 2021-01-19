@@ -7,7 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("주문 테이블 관련 기능")
-class OrderTableAcceptanceTest extends OrderTableAcceptanceTestSupport {
+class OrdersTableAcceptanceTest extends OrderTableAcceptanceTestSupport {
     @DisplayName("주문 테이블의 생성 / 목록 조회 / 주문 상태 변경 / 방문한 손님 수 변경")
     @Test
     void manageOrderTable() {

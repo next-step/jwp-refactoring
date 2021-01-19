@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 @DisplayName("주문 관련 기능")
-class OrderAcceptanceTest extends OrderAcceptanceTestSupport {
+class OrdersAcceptanceTest extends OrderAcceptanceTestSupport {
     private OrderTableResponse orderTable;
     private Menu menu;
 
@@ -50,7 +50,7 @@ class OrderAcceptanceTest extends OrderAcceptanceTestSupport {
         주문_응답(findResponse);
 
         // When
-        Order updateParams = new Order();
+        Orders updateParams = new Orders();
         updateParams.setOrderStatus("COMPLETION");
         ExtractableResponse<Response> updateResponse = 주문_상태_변경_요청(createResponse, updateParams);
 
@@ -58,7 +58,7 @@ class OrderAcceptanceTest extends OrderAcceptanceTestSupport {
         주문_응답(updateResponse);
 
         // When
-        Order wrongUpdateParams = new Order();
+        Orders wrongUpdateParams = new Orders();
         wrongUpdateParams.setOrderStatus("COMPLETION");
         ExtractableResponse<Response> wrongResponse = 주문_상태_변경_요청(createResponse, wrongUpdateParams);
 
