@@ -37,7 +37,7 @@ public class ProductResponse {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ProductResponse that = (ProductResponse) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(price, that.price);
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && price.compareTo(that.price) == 0;
     }
 
     @Override
