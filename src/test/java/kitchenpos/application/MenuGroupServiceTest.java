@@ -31,13 +31,19 @@ class MenuGroupServiceTest {
 	void create() {
 		// given
 		MenuGroup menuGroup = new MenuGroup("한식");
-		when(menuGroupDao.save(menuGroup)).thenReturn(new MenuGroup(1L, "한식"));
+
+		MenuGroup expectedMenuGroup = mock(MenuGroup.class);
+		when(expectedMenuGroup.getId()).thenReturn(1L);
+		when(expectedMenuGroup.getName()).thenReturn("한식");
+
+		when(menuGroupDao.save(menuGroup)).thenReturn(expectedMenuGroup);
 		MenuGroupService menuGroupService = new MenuGroupService(menuGroupDao);
 
 		// when
 		MenuGroup savedMenuGroup = menuGroupService.create(menuGroup);
 
 		// then
+		assertThat(savedMenuGroup.getId()).isNotNull();
 		assertThat(savedMenuGroup.getName()).isEqualTo(menuGroup.getName());
 	}
 
@@ -45,14 +51,15 @@ class MenuGroupServiceTest {
 	@Test
 	void list() {
 		// given
-		MenuGroup 한식 = new MenuGroup(1L, "한식");
-		when(menuGroupDao.findAll()).thenReturn(Arrays.asList(한식));
+		MenuGroup expectedMenuGroup = mock(MenuGroup.class);
+
+		when(menuGroupDao.findAll()).thenReturn(Arrays.asList(expectedMenuGroup));
 		MenuGroupService menuGroupService = new MenuGroupService(menuGroupDao);
 
 		// when
 		List<MenuGroup> menuGroups = menuGroupService.list();
 
 		// then
-		assertThat(menuGroups).containsExactly(한식);
+		assertThat(menuGroups).containsExactly(expectedMenuGroup);
 	}
 }
