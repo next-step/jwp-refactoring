@@ -1,7 +1,9 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.*;
+import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,20 +37,21 @@ class TableGroupServiceTest {
     @Test
     void createTableGroup() {
         // Given
-        OrderTableResponse savedOrderTable1 = tableService.create(new OrderTableRequest(3, true));
-        OrderTableResponse savedOrderTable2 = tableService.create(new OrderTableRequest(5, true));
-        TableGroupRequest request = new TableGroupRequest(Arrays.asList(savedOrderTable1.toOrderTable(), savedOrderTable2.toOrderTable()));
+        OrderTableResponse orderTable1 = tableService.create(new OrderTableRequest(0, true));
+        OrderTableResponse orderTable2 = tableService.create(new OrderTableRequest(0, true));
+        TableGroupRequest request = new TableGroupRequest(Arrays.asList(orderTable1.toOrderTable(), orderTable2.toOrderTable()));
 
         // When
-        TableGroupResponse actual = tableGroupService.create(request);
-        OrderTable orderTable1 = tableService.findById(savedOrderTable1.getId());
-        OrderTable orderTable2 = tableService.findById(savedOrderTable2.getId());
+        TableGroupResponse response = tableGroupService.create(request);
+        OrderTable foundOrderTable1 = tableService.findById(orderTable1.getId());
+        OrderTable foundOrderTable2 = tableService.findById(orderTable2.getId());
 
         // Then
         assertAll(
-                () -> assertThat(actual.getId()).isNotNull(),
-                () -> assertThat(actual.getOrderTables()).containsAnyElementsOf(Arrays.asList(orderTable1, orderTable2)),
-                () -> assertThat(actual.getCreatedDate()).isNotNull()
+                () -> assertThat(response).isNotNull(),
+                () -> assertThat(response.getId()).isNotNull(),
+                () -> assertThat(response.getOrderTables()).containsAnyElementsOf(Arrays.asList(foundOrderTable1, foundOrderTable2)),
+                () -> assertThat(response.getCreatedDate()).isNotNull()
         );
     }
 
@@ -56,8 +59,8 @@ class TableGroupServiceTest {
     @Test
     void exceptionToCreateTableGroupWithZeroOrOneOrderTable() {
         // Given
-        OrderTableResponse savedOrderTable = tableService.create(new OrderTableRequest(3, true));
-        TableGroupRequest request = new TableGroupRequest(Collections.singletonList(savedOrderTable.toOrderTable()));
+        OrderTableResponse orderTable1 = tableService.create(new OrderTableRequest(0, true));
+        TableGroupRequest request = new TableGroupRequest(Collections.singletonList(orderTable1.toOrderTable()));
 
         // When & Then
         assertThatThrownBy(() -> tableGroupService.create(request))
@@ -68,9 +71,9 @@ class TableGroupServiceTest {
     @Test
     void exceptionToCreateTableGroupWithNonemptyOrderTable() {
         // Given
-        OrderTableResponse savedOrderTable1 = tableService.create(new OrderTableRequest(3, false));
-        OrderTableResponse savedOrderTable2 = tableService.create(new OrderTableRequest(5, false));
-        TableGroupRequest request = new TableGroupRequest(Arrays.asList(savedOrderTable1.toOrderTable(), savedOrderTable2.toOrderTable()));
+        OrderTableResponse invalidOrderTable1 = tableService.create(new OrderTableRequest(3, false));
+        OrderTableResponse invalidOrderTable2 = tableService.create(new OrderTableRequest(5, false));
+        TableGroupRequest request = new TableGroupRequest(Arrays.asList(invalidOrderTable1.toOrderTable(), invalidOrderTable2.toOrderTable()));
 
         // When & Then
         assertThatThrownBy(() -> tableGroupService.create(request))
@@ -81,9 +84,9 @@ class TableGroupServiceTest {
     @Test
     void exceptionToCreateTableGroupWithRegisteredOrderTable() {
         // Given
-        OrderTableResponse savedOrderTable1 = tableService.create(new OrderTableRequest(3, true));
-        OrderTableResponse savedOrderTable2 = tableService.create(new OrderTableRequest(5, true));
-        TableGroupRequest request = new TableGroupRequest(Arrays.asList(savedOrderTable1.toOrderTable(), savedOrderTable2.toOrderTable()));
+        OrderTableResponse orderTable1 = tableService.create(new OrderTableRequest(0, true));
+        OrderTableResponse orderTable2 = tableService.create(new OrderTableRequest(0, true));
+        TableGroupRequest request = new TableGroupRequest(Arrays.asList(orderTable1.toOrderTable(), orderTable2.toOrderTable()));
         tableGroupService.create(request);
 
         // When & Then
@@ -95,20 +98,20 @@ class TableGroupServiceTest {
     @Test
     void ungroupTableGroup() {
         // Given
-        OrderTableResponse savedOrderTable1 = tableService.create(new OrderTableRequest(3, true));
-        OrderTableResponse savedOrderTable2 = tableService.create(new OrderTableRequest(5, true));
-        TableGroupRequest request = new TableGroupRequest(Arrays.asList(savedOrderTable1.toOrderTable(), savedOrderTable2.toOrderTable()));
+        OrderTableResponse orderTable1 = tableService.create(new OrderTableRequest(0, true));
+        OrderTableResponse orderTable2 = tableService.create(new OrderTableRequest(0, true));
+        TableGroupRequest request = new TableGroupRequest(Arrays.asList(orderTable1.toOrderTable(), orderTable2.toOrderTable()));
         TableGroupResponse tableGroup = tableGroupService.create(request);
 
         // When
         tableGroupService.ungroup(tableGroup.getId());
-        OrderTable orderTable1 = tableService.findById(savedOrderTable1.getId());
-        OrderTable orderTable2 = tableService.findById(savedOrderTable2.getId());
+        OrderTable foundOrderTable1 = tableService.findById(orderTable1.getId());
+        OrderTable foundOrderTable2 = tableService.findById(orderTable2.getId());
 
         // Then
         assertAll(
-                () -> assertThat(orderTable1.getTableGroupId()).isNull(),
-                () -> assertThat(orderTable2.getTableGroupId()).isNull()
+                () -> assertThat(foundOrderTable1.getTableGroupId()).isNull(),
+                () -> assertThat(foundOrderTable2.getTableGroupId()).isNull()
         );
     }
 
@@ -116,10 +119,10 @@ class TableGroupServiceTest {
     @Test
     void exceptionToUngroupTableGroup() {
         // Given
-        OrderTableResponse savedOrderTable1 = tableService.create(new OrderTableRequest(0, true));
-        OrderTableResponse savedOrderTable2 = tableService.create(new OrderTableRequest(0, true));
-        TableGroupRequest request = new TableGroupRequest(Arrays.asList(savedOrderTable1.toOrderTable(), savedOrderTable2.toOrderTable()));
-        TableGroupResponse savedTableGroup = tableGroupService.create(request);
+        OrderTableResponse orderTable1 = tableService.create(new OrderTableRequest(0, true));
+        OrderTableResponse orderTable2 = tableService.create(new OrderTableRequest(0, true));
+        TableGroupRequest request = new TableGroupRequest(Arrays.asList(orderTable1.toOrderTable(), orderTable2.toOrderTable()));
+        TableGroupResponse tableGroup = tableGroupService.create(request);
 
         ProductResponse 짬뽕 = productService.create(new ProductRequest("짬뽕", BigDecimal.valueOf(8_000)));
         ProductResponse 짜장면 = productService.create(new ProductRequest("짜장면", BigDecimal.valueOf(6_000)));
@@ -127,14 +130,11 @@ class TableGroupServiceTest {
         MenuResponse 추천메뉴 = menuService.create(new MenuRequest("추천메뉴", BigDecimal.valueOf(14_000), 신메뉴그룹.getId(),
                 Arrays.asList(new MenuProductRequest(짬뽕.getId(), 1L), new MenuProductRequest(짜장면.getId(), 1L)))
         );
-        OrderLineItem menuParams = new OrderLineItem();
-        menuParams.setMenuId(추천메뉴.getId());
-        menuParams.setQuantity(1);
-        OrderRequest orderRequest = new OrderRequest(savedOrderTable1.getId(), Collections.singletonList(menuParams));
-        orderService.create(orderRequest);
+
+        orderService.create(new OrderRequest(tableGroup.getId(), Collections.singletonList(new OrderLineItemRequest(추천메뉴.getId(), 1L))));
 
         // When & Then
-        assertThatThrownBy(() -> tableGroupService.ungroup(savedTableGroup.getId()))
+        assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }
