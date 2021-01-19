@@ -59,6 +59,10 @@ public class OrderTable {
         return empty;
     }
 
+    public boolean hasGroup() {
+        return Objects.nonNull(tableGroup);
+    }
+
     public void updateTableGroup(TableGroup tableGroup) {
         if(Objects.isNull(tableGroup)) {
             throw new IllegalArgumentException("단체를 NULL 로 지정할 수 없습니다.");
@@ -84,7 +88,7 @@ public class OrderTable {
     }
 
     private void checkTableGroup() {
-        if (Objects.nonNull(tableGroup)) {
+        if (hasGroup()) {
             throw new IllegalArgumentException("단체지정된 테이블의 공석여부는 변경할 수 없습니다.");
         }
     }

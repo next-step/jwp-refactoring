@@ -2,7 +2,6 @@ package kitchenpos.order.domain;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -61,7 +60,7 @@ public class OrderTables {
     }
 
     private void checkEmptyOrAlreadyGroup(OrderTable orderTable) {
-        if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroupId())) {
+        if (!orderTable.isEmpty() || orderTable.hasGroup()) {
             throw new IllegalArgumentException("비어있지 않거나 이미 단체 지정된 테이블은 단체 지정이 불가합니다.");
         }
     }
