@@ -32,6 +32,14 @@ public class OrderLineItem {
     protected OrderLineItem() {
     }
 
+    public long getMenuId() {
+        return menu.getId();
+    }
+
+    public long getQuantity() {
+        return quantity.longValue();
+    }
+
     public OrderLineItem(Order order, Menu menu, Quantity quantity) {
         this.order = order;
         this.menu = menu;

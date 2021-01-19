@@ -1,10 +1,9 @@
 package kitchenpos.order.service;
 
-import kitchenpos.generic.Quantity;
-import kitchenpos.menu.service.MenuService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.dto.OrderLineRequest;
+import kitchenpos.order.dto.OrderLineResponse;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.domain.OrderTable;
@@ -18,31 +17,23 @@ import java.util.stream.Collectors;
 @Transactional
 @Service
 public class OrderService {
-    private final MenuService menuService;
     private final OrderTableService orderTableService;
     private final OrderRepository orderRepository;
+    private final OrderLineItemService orderLineItemService;
 
-    public OrderService(MenuService menuService, OrderTableService orderTableService, OrderRepository orderRepository) {
-        this.menuService = menuService;
+    public OrderService(OrderTableService orderTableService, OrderRepository orderRepository, OrderLineItemService orderLineItemService) {
         this.orderTableService = orderTableService;
         this.orderRepository = orderRepository;
+        this.orderLineItemService = orderLineItemService;
     }
 
     public OrderResponse create(final OrderRequest request) {
         checkOrderLineItemEmpty(request.getOrderLineItems());
         final OrderTable tableById = orderTableService.findById(request.getOrderTableId());
         checkOrderTableEmpty(tableById);
-        final Order savedOrder = orderRepository.save(createOrder(tableById, request.getOrderLineItems()));
-        return OrderResponse.of(savedOrder);
-    }
-
-    private Order createOrder(final OrderTable tableById, final List<OrderLineRequest> items) {
-        final Order order = new Order(tableById);
-        items.forEach(item -> order.addOrderMenu(
-                menuService.findById(item.getMenuId()),
-                Quantity.of(item.getQuantity())
-                ));
-        return order;
+        final Order savedOrder = orderRepository.save(new Order(tableById));
+        final List<OrderLineResponse> orderLineResponses = orderLineItemService.saveLineItems(savedOrder, request.getOrderLineItems());
+        return OrderResponse.of(savedOrder, orderLineResponses);
     }
 
     private void checkOrderTableEmpty(final OrderTable tableById) {
@@ -60,7 +51,8 @@ public class OrderService {
     @Transactional(readOnly = true)
     public List<OrderResponse> list() {
         return orderRepository.findAll()
-                .stream().map(OrderResponse::of)
+                .stream()
+                .map(order -> OrderResponse.of(order, orderLineItemService.list(order)))
                 .collect(Collectors.toList());
     }
 

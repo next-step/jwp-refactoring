@@ -7,6 +7,7 @@ import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.order.service.OrderService;
 import kitchenpos.order.util.OrderRequestBuilder;
+import kitchenpos.order.util.OrderResponseBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.*;
@@ -46,7 +48,14 @@ class OrderRestControllerTest {
                 .addOrderLineItem(1L, 1)
                 .addOrderLineItem(2L, 1)
                 .build();
-        when(orderService.create(any())).thenReturn(new OrderResponse(1L,"COOKING","2020-11-11"));
+        OrderResponse orderResponse = new OrderResponseBuilder()
+                .withOrderId(1L)
+                .withOrderStatus("COOKING")
+                .withOrderedTime("2020-11-11")
+                .addOrderLineItem(1L, 1)
+                .addOrderLineItem(2L, 1)
+                .build();
+        when(orderService.create(any())).thenReturn(orderResponse);
 
         mockMvc.perform(post("/api/orders")
                 .content(objectMapper.writeValueAsString(orderRequest)).contentType(MediaType.APPLICATION_JSON))
@@ -57,9 +66,18 @@ class OrderRestControllerTest {
     @DisplayName("주문 목록을 가져올 수 있다.")
     @Test
     void findAllOrder() throws Exception {
-        when(orderService.list()).thenReturn(Arrays.asList(
-                new OrderResponse(1L,"COOKING","2020-11-11"),
-                new OrderResponse(2L,"COOKING","2020-11-11")));
+        List<OrderResponse> orderResponses = Arrays.asList(new OrderResponseBuilder()
+                        .withOrderId(1L)
+                        .withOrderStatus("COOKING")
+                        .withOrderedTime("2020-11-11")
+                        .build(),
+                new OrderResponseBuilder()
+                        .withOrderId(2L)
+                        .withOrderStatus("COOKING")
+                        .withOrderedTime("2020-11-11")
+                        .build());
+
+        when(orderService.list()).thenReturn(orderResponses);
         mockMvc.perform(get("/api/orders"))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -69,7 +87,14 @@ class OrderRestControllerTest {
     @DisplayName("주문의 상태값을 나타낼 수 있다.")
     @Test
     void changeOrderStatus() throws Exception {
-        when(orderService.changeOrderStatus(anyLong(), anyString())).thenReturn(new OrderResponse(1L,"MEAL","2020-11-11"));
+        OrderResponse orderResponse = new OrderResponseBuilder()
+                .withOrderId(1L)
+                .withOrderStatus("COOKING")
+                .withOrderedTime("2020-11-11")
+                .addOrderLineItem(1L, 1)
+                .addOrderLineItem(2L, 1)
+                .build();
+        when(orderService.changeOrderStatus(anyLong(), anyString())).thenReturn(orderResponse);
 
         mockMvc.perform(put("/api/orders/{orderId}/order-status", 1L)
                 .content(objectMapper.writeValueAsString(new OrderStatusRequest(Order.OrderStatus.MEAL.name())))
