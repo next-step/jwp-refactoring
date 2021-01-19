@@ -6,6 +6,8 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,14 +21,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class TableGroupAcceptanceTest extends AcceptanceTest {
     private List<OrderTable> orderTables = new ArrayList<>();
-    private TableGroup tableGroup;
+    private TableGroupRequest tableGroupRequest;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        orderTables.add(new OrderTable(1L));
-        orderTables.add(new OrderTable(3L));
-        tableGroup = new TableGroup(orderTables);
+        orderTables.add(new OrderTable(1L, 4, true));
+        orderTables.add(new OrderTable(2L, 4, true));
+        tableGroupRequest = new TableGroupRequest(orderTables);
 
     }
 
@@ -34,7 +36,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void manageTableGrouping() {
         //등록
-        ExtractableResponse<Response> createResponse = 테이블그룹핑_등록_요청(tableGroup);
+        ExtractableResponse<Response> createResponse = 테이블그룹핑_등록_요청(tableGroupRequest);
         테이블그룹핑_등록됨(createResponse);
 
         //해제
@@ -42,9 +44,9 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         테이블그룹핑_해제됨(removeResponse);
     }
 
-    private ExtractableResponse<Response> 테이블그룹핑_등록_요청(TableGroup tableGroup) {
+    private ExtractableResponse<Response> 테이블그룹핑_등록_요청(TableGroupRequest tableGroupRequest) {
         return RestAssured.given().log().all().
-                body(tableGroup).
+                body(tableGroupRequest).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 when().post("/api/table-groups").
                 then().log().all().
@@ -62,11 +64,11 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
 
     private void 테이블그룹핑_등록됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(response.as(TableGroup.class).getOrderTables().get(0).getTableGroupId()).
-                isEqualTo(response.as(TableGroup.class).getId());
-        assertThat(response.as(TableGroup.class).getOrderTables().get(1).getTableGroupId()).
-                isEqualTo(response.as(TableGroup.class).getId());
-        assertThat(response.as(TableGroup.class).getCreatedDate()).isNotNull();
+        assertThat(response.as(TableGroupResponse.class).getOrderTables().get(0).getId()).
+                isEqualTo(1L);
+        assertThat(response.as(TableGroupResponse.class).getOrderTables().get(1).getId()).
+                isEqualTo(2L);
+        assertThat(response.as(TableGroupResponse.class).getCreatedDate()).isNotNull();
     }
 
     private void 테이블그룹핑_해제됨(ExtractableResponse<Response> response) {

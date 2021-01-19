@@ -1,11 +1,8 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.*;
+import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,79 +25,75 @@ import static org.mockito.Mockito.when;
 class TableGroupServiceTest {
     private List<OrderTable> orderTables = new ArrayList<>();
     private TableGroup tableGroup;
+    private TableGroupRequest tableGroupRequest;
     private TableGroupService tableGroupService;
 
     @Mock
-    private OrderDao orderDao;
+    private  OrderRepository orderRepository;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private  OrderTableRepository orderTableRepository;
 
     @Mock
-    private TableGroupDao tableGroupDao;
+    private  TableGroupRepository tableGroupRepository;
 
     @BeforeEach
     void setUp() {
         orderTables.add(new OrderTable(1L, 1, true));
         orderTables.add(new OrderTable(2L, 2, true));
         orderTables.add(new OrderTable(3L, 3, true));
-        tableGroup = new TableGroup(orderTables);
+        tableGroup = new TableGroup(new OrderTables(orderTables));
+        tableGroupRequest = new TableGroupRequest(orderTables);
 
-        tableGroupService = new TableGroupService(orderDao, orderTableDao, tableGroupDao);
+        tableGroupService = new TableGroupService(orderRepository, orderTableRepository, tableGroupRepository);
     }
 
     @DisplayName("테이블그룹 생성 테스트")
     @Test
     void createTest() {
+
+        when(tableGroupRepository.save(any())).thenReturn(tableGroup);
+        when(orderTableRepository.save(orderTables.get(0))).thenReturn(orderTables.get(0));
+        when(orderTableRepository.save(orderTables.get(1))).thenReturn(orderTables.get(1));
+        when(orderTableRepository.save(orderTables.get(2))).thenReturn(orderTables.get(2));
+
+        TableGroupResponse resultGroupResponse = tableGroupService.create(tableGroupRequest);
+
+        assertThat(resultGroupResponse.getOrderTables().size()).isEqualTo(tableGroup.getOrderTables().getSize());
+        List<Long> resultTableIds = resultGroupResponse.getOrderTables()
+                .stream()
+                .map(orderTableResponse -> orderTableResponse.getId())
+                .collect(Collectors.toList());
         List<Long> orderTableIds = orderTables.stream()
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
-        when(orderTableDao.findAllByIdIn(orderTableIds)).thenReturn(orderTables);
-        when(tableGroupDao.save(tableGroup)).thenReturn(tableGroup);
-        when(orderTableDao.save(orderTables.get(0))).thenReturn(orderTables.get(0));
-        when(orderTableDao.save(orderTables.get(1))).thenReturn(orderTables.get(1));
-        when(orderTableDao.save(orderTables.get(2))).thenReturn(orderTables.get(2));
 
-        TableGroup resultGroup = tableGroupService.create(tableGroup);
-
-        assertThat(resultGroup.getOrderTables().size()).isEqualTo(tableGroup.getOrderTables().size());
-        assertThat(resultGroup.getOrderTables()).containsExactlyElementsOf(orderTables);
+        assertThat(resultTableIds).containsExactlyElementsOf(orderTableIds);
     }
-    //그룹핑시
+
+
     @DisplayName("테이블그룹 생성 예외테스트: 테이블이 2개이하인 경우")
     @Test
     void notEnoughTable() {
         orderTables.remove(0);
         orderTables.remove(1);
-        tableGroup.setOrderTables(orderTables);
+        tableGroupRequest = new TableGroupRequest(orderTables);
 
         Throwable exception = assertThrows(IllegalArgumentException.class,
-                () -> tableGroupService.create(tableGroup)
+                () -> tableGroupService.create(tableGroupRequest)
         );
 
         assertThat(exception.getMessage()).isEqualTo("그룹핑할 테이블이 부족합니다.");
     }
-    @DisplayName("테이블그룹 생성 예외테스트: 조회한 테이블 갯수가 일치하지 않는 경우")
-    @Test
-    void notMatchedTableSize() {
-        List<OrderTable> findOrderTables = new ArrayList<>();
-        findOrderTables.add(new OrderTable(1, true));
-        findOrderTables.add(new OrderTable(2, true));
-        when(orderTableDao.findAllByIdIn(any())).thenReturn(findOrderTables);
 
-        Throwable exception = assertThrows(IllegalArgumentException.class,
-                () -> tableGroupService.create(tableGroup)
-        );
 
-        assertThat(exception.getMessage()).isEqualTo("테이블 갯수가 일치하지 않습니다.");
-    }
     @DisplayName("테이블그룹 생성 예외테스트: 테이블이 비어있지 않은 경우")
     @Test
     void notEmptyTable() {
-        orderTables.get(0).setEmpty(false);
-        when(orderTableDao.findAllByIdIn(any())).thenReturn(orderTables);
+        orderTables.get(0).changeStatus(false);
+        //when(tableGroupRepository.save(any())).thenReturn(orderTables);
         Throwable exception = assertThrows(IllegalArgumentException.class,
-                () -> tableGroupService.create(tableGroup)
+                () -> tableGroupService.create(tableGroupRequest)
         );
 
         assertThat(exception.getMessage()).isEqualTo("테이블이 사용중이거나 이미 그룹핑되어 있습니다.");
@@ -109,37 +102,20 @@ class TableGroupServiceTest {
     @DisplayName("테이블그룹 생성 예외테스트: 테이블에 그룹아이디가 있는경우")
     @Test
     void existGroupId() {
-        orderTables.get(0).setTableGroupId(1L);
-        when(orderTableDao.findAllByIdIn(any())).thenReturn(orderTables);
+        orderTables.add(new OrderTable(new TableGroup()));
+        //when(orderTableDao.findAllByIdIn(any())).thenReturn(orderTables);
         Throwable exception = assertThrows(IllegalArgumentException.class,
-                () -> tableGroupService.create(tableGroup)
+                () -> tableGroupService.create(tableGroupRequest)
         );
 
         assertThat(exception.getMessage()).isEqualTo("테이블이 사용중이거나 이미 그룹핑되어 있습니다.");
     }
 
-
-
-    @DisplayName("테이블그룹 해제 테스트")
-    @Test
-    void upgroupTest() {
-        when(orderTableDao.findAllByTableGroupId(any())).thenReturn(orderTables);
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(
-                any(), eq(Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))
-        )).thenReturn(false);
-        when(orderTableDao.save(any())).thenReturn(any());
-        orderTables.forEach(orderTable -> orderTable.setTableGroupId(1L));
-
-        tableGroupService.ungroup(1L);
-
-        orderTables.forEach(orderTable -> assertThat(orderTable.getTableGroupId()).isNull());
-    }
-
     @DisplayName("테이블그룹 해제 예외테스트: 테이블상태가 유효하지 않은 경우")
     @Test
     void invalidTableStatus() {
-        when(orderTableDao.findAllByTableGroupId(any())).thenReturn(orderTables);
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(
+        when(tableGroupRepository.findById(any())).thenReturn(java.util.Optional.ofNullable(tableGroup));
+        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(
                 any(), eq(Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))
         )).thenReturn(true);
 

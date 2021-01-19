@@ -1,9 +1,8 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.*;
+import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,41 +26,40 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
 
-    private OrderTable orderTable1;
-    private OrderTable orderTable2;
-    private OrderTable orderTable3;
+    private OrderTable notEmptyTable;
+    private OrderTableRequest orderTableRequest;
+    private OrderTable emptyTable;
     private List<OrderTable> orderTables = new ArrayList<>();
 
     private TableService tableService;
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @BeforeEach
     void setUp() {
-        orderTable1 = new OrderTable(1, true);
-        orderTable2 = new OrderTable(2, true);
-        orderTable3 = new OrderTable(3, true);
-        orderTables.add(orderTable1);
-        orderTables.add(orderTable2);
-        orderTables.add(orderTable3);
+        notEmptyTable = new OrderTable(1L,1, false);
+        orderTableRequest = new OrderTableRequest(1, false);
+        emptyTable = new OrderTable(2L,2, true);
+        orderTables.add(notEmptyTable);
+        orderTables.add(emptyTable);
 
-        tableService = new TableService(orderDao, orderTableDao);
+        tableService = new TableService(orderRepository, orderTableRepository);
     }
 
     @DisplayName("주문테이블 등록 테스트")
     @Test
     void createOrderTable() {
-        mockSaveOrderTable(orderTable1);
+        when(orderTableRepository.save(any())).thenReturn(notEmptyTable);
 
-        OrderTable resultOrderTable = tableService.create(orderTable1);
+        OrderTableResponse resultOrderTable = tableService.create(orderTableRequest);
 
         assertAll(
                 () -> assertThat(resultOrderTable.getNumberOfGuests()).isEqualTo(1),
-                () -> assertThat(resultOrderTable.isEmpty()).isEqualTo(true)
+                () -> assertThat(resultOrderTable.isEmpty()).isEqualTo(false)
         );
     }
 
@@ -75,8 +73,8 @@ class TableServiceTest {
     @DisplayName("주문테이블 목록 조회 테스트")
     @Test
     void findOrderTableList() {
-        when(orderTableDao.findAll()).thenReturn(orderTables);
-        List<OrderTable> resultOrderTables = tableService.list();
+        when(orderTableRepository.findAll()).thenReturn(orderTables);
+        List<OrderTableResponse> resultOrderTables = tableService.list();
         List<Integer> resultOrderTableNumOfGuests = resultOrderTables.stream()
                 .map(resultOrderTable ->resultOrderTable.getNumberOfGuests())
                 .collect(Collectors.toList());
@@ -90,12 +88,9 @@ class TableServiceTest {
     @DisplayName("손님 숫자 변경 테스트")
     @Test
     void changeNumberOfGuestTest() {
-        mockSaveOrderTable(orderTable1);
-        when(orderTableDao.findById(any())).thenReturn(java.util.Optional.ofNullable(orderTable1));
-        orderTable1.setNumberOfGuests(10);
-        orderTable1.setEmpty(false);
+        when(orderTableRepository.findById(any())).thenReturn(java.util.Optional.ofNullable(notEmptyTable));
 
-        OrderTable resultOrderTable = tableService.changeNumberOfGuests(1L, orderTable1);
+        OrderTableResponse resultOrderTable = tableService.changeNumberOfGuests(1L, 10);
 
         assertThat(resultOrderTable.getNumberOfGuests()).isEqualTo(10);
     }
@@ -103,9 +98,9 @@ class TableServiceTest {
     @DisplayName("손님수 변경 예외테스트: 테이블 인원이 0보다 작은경우")
     @Test
     void invalidGuestNum() {
-        orderTable1.setNumberOfGuests(-3);
+        when(orderTableRepository.findById(any())).thenReturn(java.util.Optional.ofNullable(notEmptyTable));
         Throwable exception = assertThrows(IllegalArgumentException.class,
-                () -> tableService.changeNumberOfGuests(1L, orderTable1)
+                () -> tableService.changeNumberOfGuests(1L, -3)
         );
         assertThat(exception.getMessage()).isEqualTo("손님 수가 올바르지 않습니다.");
     }
@@ -113,9 +108,8 @@ class TableServiceTest {
     @DisplayName("손님수 변경 예외테스트: 테이블이 조회 안되는 경우")
     @Test
     void notFoundTable() {
-        orderTable1.setNumberOfGuests(10);
         Throwable exception = assertThrows(IllegalArgumentException.class,
-                () -> tableService.changeNumberOfGuests(1L, orderTable1)
+                () -> tableService.changeNumberOfGuests(11L, 10)
         );
         assertThat(exception.getMessage()).isEqualTo("테이블을 찾을 수 없습니다.");
     }
@@ -123,12 +117,10 @@ class TableServiceTest {
     @DisplayName("손님수 변경 예외테스트: 테이블이 비어있는경우")
     @Test
     void EmptyTable() {
-        when(orderTableDao.findById(any())).thenReturn(java.util.Optional.ofNullable(orderTable1));
-        orderTable1.setNumberOfGuests(10);
-        orderTable1.setEmpty(true);
+        when(orderTableRepository.findById(any())).thenReturn(java.util.Optional.ofNullable(emptyTable));
 
         Throwable exception = assertThrows(IllegalArgumentException.class,
-                () -> tableService.changeNumberOfGuests(1L, orderTable1)
+                () -> tableService.changeNumberOfGuests(2L, 10)
         );
         assertThat(exception.getMessage()).isEqualTo("테이블이 비어있습니다.");
     }
@@ -136,25 +128,25 @@ class TableServiceTest {
     @DisplayName("테이블 상태 변경 테스트")
     @Test
     void changeEmptyTest() {
-        mockSaveOrderTable(orderTable1);
-        when(orderTableDao.findById(any())).thenReturn(java.util.Optional.ofNullable(orderTable1));
+        when(orderTableRepository.findById(any())).thenReturn(java.util.Optional.ofNullable(notEmptyTable));
         List<String> orderStatus = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), eq(orderStatus)))
+        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), eq(orderStatus)))
                 .thenReturn(false);
 
-        OrderTable resultTable = tableService.changeEmpty(1L, orderTable1);
+        OrderTableResponse resultTable = tableService.changeEmpty(1L, true);
 
-        assertThat(resultTable.isEmpty()).isEqualTo(orderTable1.isEmpty());
+        assertThat(resultTable.isEmpty()).isEqualTo(true);
     }
 
     @DisplayName("테이블 상태 변경 예외테스트: 그룹핑된 테이블")
     @Test
     void existTableGroup() {
-        when(orderTableDao.findById(any())).thenReturn(java.util.Optional.ofNullable(orderTable1));
-        orderTable1.setTableGroupId(3L);
+        when(orderTableRepository.findById(any())).thenReturn(java.util.Optional.ofNullable(notEmptyTable));
+        //orderTable1.setTableGroupId(3L);
+        notEmptyTable.initialTableGroup(new TableGroup());
 
         Throwable exception = assertThrows(IllegalArgumentException.class,
-                () -> tableService.changeEmpty(1L, orderTable1)
+                () -> tableService.changeEmpty(1L, true)
         );
         assertThat(exception.getMessage()).isEqualTo("그룹핑된 상태입니다.");
     }
@@ -162,18 +154,14 @@ class TableServiceTest {
     @DisplayName("테이블 상태 변경 예외테스트: 완료되지않은 테이블 상태")
     @Test
     void unCompleteTableStatus() {
-        when(orderTableDao.findById(any())).thenReturn(java.util.Optional.ofNullable(orderTable1));
+        when(orderTableRepository.findById(any())).thenReturn(java.util.Optional.ofNullable(notEmptyTable));
         List<String> orderStatus = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), eq(orderStatus)))
+        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), eq(orderStatus)))
                 .thenReturn(true);
 
         Throwable exception = assertThrows(IllegalArgumentException.class,
-                () -> tableService.changeEmpty(1L, orderTable1)
+                () -> tableService.changeEmpty(1L, true)
         );
         assertThat(exception.getMessage()).isEqualTo("주문이 완료되지 않았습니다.");
-    }
-
-    private void mockSaveOrderTable(OrderTable orderTable) {
-        when(orderTableDao.save(orderTable)).thenReturn(orderTable);
     }
 }
