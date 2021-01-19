@@ -8,6 +8,7 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
@@ -52,20 +53,28 @@ class MenuServiceTest {
         List<MenuProductRequest> menuProductRequests = new ArrayList<>();
         menuProductRequests.add(new MenuProductRequest(1L, 1));
 
-        MenuRequest newMenu = new MenuRequest(null, "후라이드치킨", new BigDecimal("16000"), 2L);
-        newMenu.setMenuProducts(menuProductRequests);
+        MenuRequest menuRequest = new MenuRequest(null, "후라이드치킨", new BigDecimal("16000"), 2L);
+        menuRequest.setMenuProducts(menuProductRequests);
 
         // TODO: 임시로 any() 로 돌려놓음.
         given(menuGroupRepository.existsById(any()))
                 .willReturn(true);
+
+        given(menuGroupRepository.getOne(any()))
+                .willReturn(new MenuGroup(2L, "메뉴그롭1"));
+
         given(productRepository.findById(any()))
                 .willReturn(Optional.of(new Product(1L, "후라이드치킨", new BigDecimal("16000"))));
         given(menuRepository.save(any()))
-                .willReturn(new Menu(1L, "후라이드치킨", new BigDecimal("16000"), null));
-//                .willReturn(new Menu(1L, "후라이드치킨", new BigDecimal("16000"), 2L));
+                .willReturn(
+                        new Menu(
+                                1L, "후라이드치킨", new BigDecimal("16000"),
+                                new MenuGroup(2L, "메뉴그룹2")
+                        )
+                );
 
         //when
-        MenuResponse createMenu = menuService.create(newMenu);
+        MenuResponse createMenu = menuService.create(menuRequest);
 
         //then
         assertThat(createMenu.getId()).isEqualTo(1L);

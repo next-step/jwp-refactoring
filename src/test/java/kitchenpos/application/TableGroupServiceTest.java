@@ -3,10 +3,10 @@ package kitchenpos.application;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
-import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
+import kitchenpos.tablegroup.dto.OrderTableIdRequest;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -48,9 +48,9 @@ class TableGroupServiceTest {
     @Test
     void create1() {
         //given
-        List<OrderTableRequest> orderTables = new ArrayList<>();
-        orderTables.add(new OrderTableRequest(1L, null, 0, true));
-        orderTables.add(new OrderTableRequest(2L, null, 0, true));
+        List<OrderTableIdRequest> orderTables = new ArrayList<>();
+        orderTables.add(new OrderTableIdRequest(1L));
+        orderTables.add(new OrderTableIdRequest(2L));
 
         TableGroupRequest newTableGroup = new TableGroupRequest(null, LocalDateTime.now(), orderTables);
         newTableGroup.setOrderTables(orderTables);
@@ -85,8 +85,8 @@ class TableGroupServiceTest {
     @Test
     void create2() {
         //given
-        List<OrderTableRequest> orderTables = new ArrayList<>();
-        orderTables.add(new OrderTableRequest(1L, null, 0, true));
+        List<OrderTableIdRequest> orderTables = new ArrayList<>();
+        orderTables.add(new OrderTableIdRequest(1L));
 
         TableGroupRequest newTableGroup = new TableGroupRequest(1L, LocalDateTime.now(), orderTables);
 

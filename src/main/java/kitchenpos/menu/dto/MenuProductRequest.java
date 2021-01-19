@@ -22,6 +22,9 @@ public class MenuProductRequest {
         this.quantity = quantity;
     }
 
+    public MenuProductRequest() {
+    }
+
     public MenuProductRequest(long productId, long quantity) {
         this.productId = productId;
         this.quantity = quantity;

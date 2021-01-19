@@ -1,12 +1,13 @@
 package kitchenpos.ui;
 
-import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.tablegroup.dto.OrderTableIdRequest;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import static org.hamcrest.Matchers.is;
@@ -25,10 +26,11 @@ class TableGroupRestControllerTest extends RestControllerTest {
     void create() throws Exception {
         //given
         TableGroupRequest tableGroup = new TableGroupRequest();
+        tableGroup.setCreatedDate(LocalDateTime.now());
         tableGroup.setOrderTables(
                 Arrays.asList(
-                        new OrderTableRequest(2L ,2L, 0, true),
-                        new OrderTableRequest(4L ,2L, 0, true)
+                        new OrderTableIdRequest(2L),
+                        new OrderTableIdRequest(4L )
                 )
         );
 
@@ -45,14 +47,14 @@ class TableGroupRestControllerTest extends RestControllerTest {
     @Test
     void ungroup() throws Exception {
         //given
-        TableGroupRequest tableGroup = new TableGroupRequest();
-        tableGroup.setOrderTables(
+        TableGroupRequest tableGroupRequest = new TableGroupRequest();
+        tableGroupRequest.setOrderTables(
                 Arrays.asList(
-                        new OrderTableRequest(2L ,2L, 0, true),
-                        new OrderTableRequest(4L ,2L, 0, true)
+                        new OrderTableIdRequest(2L ),
+                        new OrderTableIdRequest(4L )
                 )
         );
-        ResultActions resultActions = 단체지정요청(tableGroup);
+        ResultActions resultActions = 단체지정요청(tableGroupRequest);
         String redirectedUrl = getRedirectedUrl(resultActions);
 
         //when

@@ -6,6 +6,7 @@ import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
+import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -104,9 +105,11 @@ class TableServiceTest {
     @Test
     void changeEmpty2() {
         //given
+        TableGroup tableGroup = new TableGroup();
+        tableGroup.setId(1L);
         given(orderTableRepository.findById(2L))
                 .willReturn(
-                        Optional.of(new OrderTable(2L, null, 0, true))
+                        Optional.of(new OrderTable(2L, tableGroup, 0, true))
                 );
 
         OrderTableRequest orderTable = new OrderTableRequest(2L, 1L, 0, false);

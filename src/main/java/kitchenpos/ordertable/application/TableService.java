@@ -6,6 +6,7 @@ import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
+import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +35,10 @@ public class TableService {
         OrderTable orderTable = new OrderTable();
         orderTable.setNumberOfGuests(orderTableRequest.getNumberOfGuests());
         Long tableGroupId = orderTableRequest.getTableGroupId();
-        orderTable.setTableGroup(tableGroupRepository.getOne(tableGroupId));
+        if (tableGroupId != null) {
+            TableGroup group = tableGroupRepository.getOne(tableGroupId);
+            orderTable.setTableGroup(group);
+        }
         orderTable.setEmpty(orderTableRequest.isEmpty());
 
         return OrderTableResponse.of(orderTableRepository.save(orderTable));

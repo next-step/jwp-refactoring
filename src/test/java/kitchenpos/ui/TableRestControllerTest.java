@@ -23,16 +23,17 @@ class TableRestControllerTest extends RestControllerTest {
     @Test
     void create() throws Exception {
         //given
-        OrderTableRequest orderTable = new OrderTableRequest();
-        orderTable.setNumberOfGuests(3);
-        orderTable.setEmpty(false);
+        OrderTableRequest orderTableRequest = new OrderTableRequest();
+        orderTableRequest.setNumberOfGuests(3);
+        orderTableRequest.setEmpty(false);
+        orderTableRequest.setTableGroupId(1L);
 
         //when
         //then
         mockMvc.perform(
                 post(TABLES_URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(toJsonString(orderTable))
+                        .content(toJsonString(orderTableRequest))
         )
                 .andDo(print())
                 .andExpect(status().isCreated())

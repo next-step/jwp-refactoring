@@ -58,10 +58,14 @@ class OrderServiceTest {
                 .willReturn(2L);
         given(orderTableRepository.findById(any()))
                 .willReturn(Optional.of(new OrderTable()));
-        given(orderLineItemRepository.save(any()))
-                .willReturn(new OrderLineItem());
+//        given(orderLineItemRepository.save(any()))
+//                .willReturn(new OrderLineItem());
+        Order order = new Order(1L, OrderStatus.MEAL, LocalDateTime.now());
+        OrderTable orderTable = new OrderTable();
+        orderTable.setId(2L);
+        order.setOrderTable(orderTable);
         given(orderRepository.save(any()))
-                .willReturn(new Order(1L, OrderStatus.MEAL, LocalDateTime.now()));
+                .willReturn(order);
 
         //when
 
@@ -146,11 +150,11 @@ class OrderServiceTest {
         assertThat(orders.size()).isEqualTo(2);
 
         assertThat(orders.get(0).getId()).isEqualTo(1L);
-        assertThat(orders.get(0).getOrderTableId()).isEqualTo(2L);
+//        assertThat(orders.get(0).getOrderTableId()).isEqualTo(2L);
         assertThat(orders.get(0).getOrderStatus()).isEqualTo(OrderStatus.COOKING);
 
         assertThat(orders.get(1).getId()).isEqualTo(2L);
-        assertThat(orders.get(1).getOrderTableId()).isEqualTo(3L);
+//        assertThat(orders.get(1).getOrderTableId()).isEqualTo(3L);
         assertThat(orders.get(1).getOrderStatus()).isEqualTo(OrderStatus.MEAL);
     }
 
