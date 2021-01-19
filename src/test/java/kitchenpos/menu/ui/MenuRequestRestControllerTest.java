@@ -1,20 +1,23 @@
 package kitchenpos.menu.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kitchenpos.common.BaseTest;
 import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.Price;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,11 +29,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("메뉴 컨트롤러 테스트")
-@SpringBootTest
-@AutoConfigureMockMvc
-@Sql("/db/test_data.sql")
-class MenuRequestRestControllerTest {
+class MenuRequestRestControllerTest extends BaseTest {
     private static final String DEFAULT_MENU_URI = "/api/menus";
+
+    @Autowired
+    private ProductRepository productRepository;
 
     @Autowired
     private MockMvc mockMvc;
@@ -43,6 +46,16 @@ class MenuRequestRestControllerTest {
 
     @Autowired
     private MenuGroupService menuGroupService;
+
+    @BeforeEach
+    void setUp() {
+        productRepository.save(Product.of("후라이드", Price.of(new BigDecimal(16_000L))));
+        productRepository.save(Product.of("양념치킨", Price.of(new BigDecimal(16_000L))));
+        productRepository.save(Product.of("반반치킨", Price.of(new BigDecimal(16_000L))));
+        productRepository.save(Product.of("통구이", Price.of(new BigDecimal(16_000L))));
+        productRepository.save(Product.of("간장치킨", Price.of(new BigDecimal(16_000L))));
+        productRepository.save(Product.of("순살치킨", Price.of(new BigDecimal(16_000L))));
+    }
 
     @DisplayName("메뉴를 생성한다.")
     @Test
@@ -94,10 +107,10 @@ class MenuRequestRestControllerTest {
             .contentType(MediaType.APPLICATION_JSON_VALUE))
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(8)))
-            .andExpect(jsonPath("$[6].id").exists())
-            .andExpect(jsonPath("$[6].name").value(firstMenuRequest.getName()))
-            .andExpect(jsonPath("$[7].id").exists())
-            .andExpect(jsonPath("$[7].name").value(secondMenuRequest.getName()));
+            .andExpect(jsonPath("$", hasSize(2)))
+            .andExpect(jsonPath("$[0].id").exists())
+            .andExpect(jsonPath("$[0].name").value(firstMenuRequest.getName()))
+            .andExpect(jsonPath("$[1].id").exists())
+            .andExpect(jsonPath("$[1].name").value(secondMenuRequest.getName()));
     }
 }
