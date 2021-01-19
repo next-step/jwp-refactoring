@@ -52,7 +52,7 @@ class TableGroupServiceTest {
         orderTables.add(new OrderTableIdRequest(1L));
         orderTables.add(new OrderTableIdRequest(2L));
 
-        TableGroupRequest newTableGroup = new TableGroupRequest(null, LocalDateTime.now(), orderTables);
+        TableGroupRequest newTableGroup = new TableGroupRequest(orderTables);
         newTableGroup.setOrderTables(orderTables);
 
         given(orderTableRepository.findAllByIdIn(any()))
@@ -88,7 +88,7 @@ class TableGroupServiceTest {
         List<OrderTableIdRequest> orderTables = new ArrayList<>();
         orderTables.add(new OrderTableIdRequest(1L));
 
-        TableGroupRequest newTableGroup = new TableGroupRequest(1L, LocalDateTime.now(), orderTables);
+        TableGroupRequest newTableGroup = new TableGroupRequest(orderTables);
 
         //when
         //then

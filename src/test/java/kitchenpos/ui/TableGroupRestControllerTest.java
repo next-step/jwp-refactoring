@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import static org.hamcrest.Matchers.is;
@@ -26,12 +25,8 @@ class TableGroupRestControllerTest extends RestControllerTest {
     void create() throws Exception {
         //given
         TableGroupRequest tableGroup = new TableGroupRequest();
-        tableGroup.setCreatedDate(LocalDateTime.now());
         tableGroup.setOrderTables(
-                Arrays.asList(
-                        new OrderTableIdRequest(2L),
-                        new OrderTableIdRequest(4L )
-                )
+                Arrays.asList(new OrderTableIdRequest(2L), new OrderTableIdRequest(4L))
         );
 
         //when
@@ -49,10 +44,7 @@ class TableGroupRestControllerTest extends RestControllerTest {
         //given
         TableGroupRequest tableGroupRequest = new TableGroupRequest();
         tableGroupRequest.setOrderTables(
-                Arrays.asList(
-                        new OrderTableIdRequest(2L ),
-                        new OrderTableIdRequest(4L )
-                )
+                Arrays.asList(new OrderTableIdRequest(2L), new OrderTableIdRequest(4L))
         );
         ResultActions resultActions = 단체지정요청(tableGroupRequest);
         String redirectedUrl = getRedirectedUrl(resultActions);

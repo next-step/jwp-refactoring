@@ -59,12 +59,9 @@ public class TableGroupService {
             }
         }
 
-        tableGroupRequest.setCreatedDate(LocalDateTime.now());
-
-        TableGroup tableGroup = new TableGroup(tableGroupRequest.getId(), tableGroupRequest.getCreatedDate(),
-                savedOrderTables);
-
-        final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
+        final TableGroup savedTableGroup = tableGroupRepository.save(
+                new TableGroup(LocalDateTime.now(), savedOrderTables)
+        );
 
         for (final OrderTable savedOrderTable : savedOrderTables) {
 //            savedOrderTable.setTableGroup(savedTableGroup);
