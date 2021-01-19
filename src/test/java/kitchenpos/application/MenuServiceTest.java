@@ -157,10 +157,6 @@ class MenuServiceTest {
 
         given(menuRepository.findAll())
                 .willReturn(Arrays.asList(menu1, menu2));
-        given(menuProductRepository.findAllByMenuId(1L))
-                .willReturn(Collections.singletonList(new MenuProduct(menu1, new Product(), 1L)));
-        given(menuProductRepository.findAllByMenuId(2L))
-                .willReturn(Collections.singletonList(new MenuProduct(menu2, new Product(), 1L)));
 
         //when
         List<MenuResponse> menus = menuService.list();

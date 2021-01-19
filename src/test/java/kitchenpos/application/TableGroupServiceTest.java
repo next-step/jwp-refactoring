@@ -63,15 +63,10 @@ class TableGroupServiceTest {
                         )
                 );
         // TODO: 임시로 any() 로 돌려놓음.
-        given(tableGroupRepository.save(any()))
-                .willReturn(
-                        new TableGroup(1L, LocalDateTime.now(),
-                                Arrays.asList(
-                                        new OrderTable(1L, null, 0, true),
-                                        new OrderTable(2L, null, 0, true)
-                                )
-                        )
-                );
+        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());
+        tableGroup.addOrderTables(new OrderTable(1L, null, 0, true));
+        tableGroup.addOrderTables(new OrderTable(2L, null, 0, true));
+        given(tableGroupRepository.save(any())).willReturn(tableGroup);
 
         //when
         TableGroupResponse savedTableGroup = tableGroupService.create(newTableGroup);

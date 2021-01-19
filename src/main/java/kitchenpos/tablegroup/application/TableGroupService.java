@@ -53,24 +53,16 @@ public class TableGroupService {
             throw new IllegalArgumentException();
         }
 
+        TableGroup tableGroup = new TableGroup(LocalDateTime.now());
+
         for (final OrderTable savedOrderTable : savedOrderTables) {
             if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup())) {
                 throw new IllegalArgumentException();
             }
+            tableGroup.addOrderTables(savedOrderTable);
         }
 
-        final TableGroup savedTableGroup = tableGroupRepository.save(
-                new TableGroup(LocalDateTime.now(), savedOrderTables)
-        );
-
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-//            savedOrderTable.setTableGroup(savedTableGroup);
-            savedOrderTable.setEmpty(false);
-            orderTableRepository.save(savedOrderTable);
-        }
-        savedTableGroup.setOrderTables(savedOrderTables);
-
-        return TableGroupResponse.of(savedTableGroup);
+        return TableGroupResponse.of(tableGroupRepository.save(tableGroup));
     }
 
     @Transactional

@@ -4,6 +4,7 @@ import kitchenpos.menugroup.domain.MenuGroup;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,8 +19,8 @@ public class Menu {
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
 
-    @OneToMany(mappedBy = "menu")
-    private List<MenuProduct> menuProducts;
+    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<MenuProduct> menuProducts = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -49,7 +50,7 @@ public class Menu {
         return menuGroup;
     }
 
-    public void setMenuGroup(MenuGroup menuGroup) {
+    public void changeMenuGroup(MenuGroup menuGroup) {
         this.menuGroup = menuGroup;
     }
 
@@ -57,8 +58,8 @@ public class Menu {
         return menuProducts;
     }
 
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
+    public void addMenuProduct(final MenuProduct menuProduct) {
+        this.menuProducts.add(menuProduct);
     }
 
     public Menu() {

@@ -23,18 +23,15 @@ import java.util.stream.Collectors;
 public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
-    private final MenuProductRepository menuProductRepository;
     private final ProductRepository productRepository;
 
     public MenuService(
             final MenuRepository menuRepository,
             final MenuGroupRepository menuGroupRepository,
-            final MenuProductRepository menuProductRepository,
             final ProductRepository productRepository
     ) {
         this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
-        this.menuProductRepository = menuProductRepository;
         this.productRepository = productRepository;
     }
 
@@ -65,27 +62,19 @@ public class MenuService {
 
         MenuGroup menuGroup = menuGroupRepository.getOne(menuRequest.getMenuGroupId());
         Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup);
-        menu.setMenuProducts(
-                menuProductRequests.stream()
-                        .map(menuProductRequest -> {
-                            Product product = productRepository.findById(menuProductRequest.getProductId())
-                                    .orElseThrow(IllegalArgumentException::new);
-                            return new MenuProduct(menu, product, menuProductRequest.getQuantity());
-                        })
-                        .collect(Collectors.toList())
-        );
+        menuProductRequests.stream()
+                .forEach(menuProductRequest -> {
+                    Product product = productRepository.findById(menuProductRequest.getProductId())
+                            .orElseThrow(IllegalArgumentException::new);
+                    menu.addMenuProduct(new MenuProduct(menu, product, menuProductRequest.getQuantity()));
+                });
 
         return MenuResponse.of(menuRepository.save(menu));
     }
 
     public List<MenuResponse> list() {
-        final List<Menu> menus = menuRepository.findAll();
 
-        for (final Menu menu : menus) {
-            menu.setMenuProducts(menuProductRepository.findAllByMenuId(menu.getId()));
-        }
-
-        return menus.stream()
+        return menuRepository.findAll().stream()
                 .map(MenuResponse::of)
                 .collect(Collectors.toList());
     }

@@ -1,7 +1,6 @@
 package kitchenpos.menu.dto;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menugroup.domain.MenuGroup;
 
 import java.math.BigDecimal;
@@ -24,13 +23,12 @@ public class MenuResponse {
             menuResponse.setMenuGroupId(menuGroup.getId());
         }
 
-        List<MenuProduct> menuProducts = menu.getMenuProducts();
-        if (menuProducts != null) {
-            menuResponse.setMenuProducts(menuProducts
-                    .stream()
-                    .map(MenuProductResponse::of)
-                    .collect(Collectors.toList()));
-        }
+        menuResponse.setMenuProducts(
+                menu.getMenuProducts()
+                        .stream()
+                        .map(MenuProductResponse::of)
+                        .collect(Collectors.toList())
+        );
         return menuResponse;
     }
 
