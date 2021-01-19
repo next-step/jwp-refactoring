@@ -4,18 +4,20 @@ import kitchenpos.domain.*;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class TestHelper {
     public static final Long 등록된_menuGroup_id = 2L;
     public static final Long 등록되어_있지_않은_menuGroup_id = 5L;
-    public static final MenuGroup 두마리_메뉴그룹 = menuGroup_생성(1L, "두마리메뉴");
-    public static final Product 후라이드 = product_생성(1L, "후라이드", BigDecimal.valueOf(16000));
-    public static final Product 양념치킨 = product_생성(2L, "양념치킨", BigDecimal.valueOf(16000));
-    public static final MenuProduct 후라이드_1개 = menuProduct_생성(후라이드.getId(), 1);
-    public static final MenuProduct 양념치킨_1개 = menuProduct_생성(양념치킨.getId(), 1);
-    public static final Menu menu = menu_생성(1L, "후라이드양념치킨", BigDecimal.valueOf(16000), 두마리_메뉴그룹.getId());
+    public static final Long 등록된_product_id = 1L;
+    public static final Long 등록되어_있지_않은_product_id = 7L;
+    public static final Long 등록된_menu_id = 1L;
+    public static final Long 등록되어_있지_않은_menu_id = 7L;
+    public static final Long 빈_orderTable_id = 1L;
+    public static final Long 비어있지_않은_orderTable_id = 3L;
+    public static final Long 등록되어_있지_않은_orderTable_id = 4L;
+
+    public static final Menu menu = menu_생성(1L, "후라이드양념치킨", BigDecimal.valueOf(16000), 1L);
 
     public static final TableGroup init_tableGroup = tableGroup_생성(1L);
     public static final OrderTable empty_orderTable1 = 빈_orderTable_생성(1L);
@@ -26,35 +28,12 @@ public class TestHelper {
     public static final OrderTable orderTable2 = orderTable_groupId_추가(empty_orderTable2, tableGroup.getId(), false);
     public static final List<OrderTable> 그룹으로_묶여있는_orderTables = Arrays.asList(orderTable1, orderTable2);
 
-    public static final OrderLineItem orderLineItem = orderLineItem_생성(menu.getId(), 2);
-    public static final Order order = order_생성(1L, Collections.singletonList(orderLineItem));
-    public static final Order 주문항목이_없는_order = order_생성(1L,null);
-    public static final Order 요리중_order = order_status_추가(order, OrderStatus.COOKING.name());
-    public static final Order 식사_order = order_status_추가(order, OrderStatus.MEAL.name());
-    public static final Order 완료된_order = order_status_추가(order, OrderStatus.COMPLETION.name());
-
-    public static MenuGroup menuGroup_생성(Long id, String name) {
-        return MenuGroup.of(id, name);
-    }
-
     public static Menu menu_생성(Long id, String name, BigDecimal price, Long menuGroupId) {
         return Menu.of(id, name, price, menuGroupId);
     }
 
-    public static Menu menu_price_변경(Menu menu, BigDecimal price) {
-        return menu_생성(menu.getId(), menu.getName(), price, menu.getMenuGroupId());
-    }
-
-    public static Menu menu_menuGroupId_변경(Menu menu, Long menuGroupId) {
-        return menu_생성(menu.getId(), menu.getName(), menu.getPrice(), menuGroupId);
-    }
-
     public static Product product_생성(Long id, String name, BigDecimal price) {
         return Product.of(id, name, price);
-    }
-
-    public static Product product_price_변경(Product product, BigDecimal price) {
-        return product_생성(product.getId(), product.getName(), price);
     }
 
     public static MenuProduct menuProduct_생성(Long productId, long quantity) {
@@ -93,18 +72,12 @@ public class TestHelper {
         return newOrderTable;
     }
 
-    public static OrderLineItem orderLineItem_생성(Long menuId, long quantity) {
-        return OrderLineItem.of(menuId, quantity);
+    public static OrderLineItem orderLineItem_생성(Long seq, Long menuId, long quantity) {
+        return OrderLineItem.of(seq, menuId, quantity);
     }
 
-    public static OrderLineItem orderLineItem에_orderId_추가(OrderLineItem orderLineItem, Long orderId) {
-        OrderLineItem newOrderLineItem = orderLineItem_생성(orderLineItem.getMenuId(), orderLineItem.getQuantity());
-        newOrderLineItem.setOrderId(orderId);
-        return newOrderLineItem;
-    }
-
-    public static Order order_생성(Long orderTableId, List<OrderLineItem> orderLineItems) {
-        return Order.of(orderTableId, orderLineItems);
+    public static Order order_생성(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
+        return Order.of(id, orderTableId, orderLineItems);
     }
 
     public static Order order_status_추가(Order order, String status) {

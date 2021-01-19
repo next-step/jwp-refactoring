@@ -27,7 +27,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
 
     @Test
     void createMenu() {
-        MenuGroup menuGroup = menuGroup_생성(2L, "한마리메뉴");
+        MenuGroup menuGroup = MenuGroup.of(2L, "한마리메뉴");
         Product product = product_생성(1L, "후라이드", BigDecimal.valueOf(16000));
         MenuProduct menuProduct = menuProduct_생성(product.getId(), 1);
         Menu menu = menu_생성(7L, "후라이드양념치킨", BigDecimal.valueOf(16000), menuGroup.getId());
@@ -41,7 +41,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
     @DisplayName("메뉴 그룹이 등록되어 있지 않을 경우 생성하지 못한다.")
     @Test
     void createMenuException1() {
-        MenuGroup menuGroup = menuGroup_생성(5L, "핫메뉴");
+        MenuGroup menuGroup = MenuGroup.of(5L, "핫메뉴");
         Menu menu = menu_생성(7L, "후라이드양념치킨", BigDecimal.valueOf(16000), menuGroup.getId());
 
         ExtractableResponse<Response> response = 메뉴_생성_요청(menu);
@@ -52,7 +52,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
     @DisplayName("등록되어 있지 않은 상품으로 만들어진 메뉴 상품이 있으면 생성할 수 없다.")
     @Test
     void createMenuException2() {
-        MenuGroup menuGroup = menuGroup_생성(2L, "한마리메뉴");
+        MenuGroup menuGroup = MenuGroup.of(2L, "한마리메뉴");
         Menu menu = menu_생성(7L, "후라이드양념치킨", BigDecimal.valueOf(16000), menuGroup.getId());
         menu.addMenuProduct(menuProduct_생성(7L, 1));
 

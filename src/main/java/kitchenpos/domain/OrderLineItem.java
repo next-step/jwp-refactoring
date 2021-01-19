@@ -9,13 +9,14 @@ public class OrderLineItem {
     public OrderLineItem() {
     }
 
-    private OrderLineItem(Long menuId, long quantity) {
+    private OrderLineItem(Long seq, Long menuId, long quantity) {
+        this.seq = seq;
         this.menuId = menuId;
         this.quantity = quantity;
     }
 
-    public static OrderLineItem of(Long menuId, long quantity) {
-        return new OrderLineItem(menuId, quantity);
+    public static OrderLineItem of(Long seq, Long menuId, long quantity) {
+        return new OrderLineItem(seq, menuId, quantity);
     }
 
     public Long getSeq() {

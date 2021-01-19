@@ -14,7 +14,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static kitchenpos.utils.TestHelper.menuGroup_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("메뉴 그룹 관련 기능")
@@ -22,7 +21,7 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
 
     @Test
     void createMenuGroup() {
-        MenuGroup menuGroup = menuGroup_생성(5L, "핫메뉴");
+        MenuGroup menuGroup = MenuGroup.of(5L, "핫메뉴");
 
         ExtractableResponse<Response> response = 메뉴_그룹_생성_요청(menuGroup);
 
