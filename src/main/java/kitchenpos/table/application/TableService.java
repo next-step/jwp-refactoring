@@ -1,45 +1,40 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.domain.TableGroupRepository;
+import kitchenpos.tablegroup.application.TableGroupService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
 public class TableService {
-    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
-    private final TableGroupRepository tableGroupRepository;
+    private final TableGroupService tableGroupService;
 
-    public TableService(OrderRepository orderRepository, OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository) {
-        this.orderRepository = orderRepository;
+    public TableService(
+            OrderTableRepository orderTableRepository,
+            TableGroupService tableGroupService
+    ) {
         this.orderTableRepository = orderTableRepository;
-        this.tableGroupRepository = tableGroupRepository;
+        this.tableGroupService = tableGroupService;
     }
 
     @Transactional
     public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
-        orderTableRequest.setTableGroupId(null);
+        OrderTable orderTable = new OrderTable(
+                orderTableRequest.getNumberOfGuests(),
+                orderTableRequest.isEmpty()
+        );
 
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(orderTableRequest.getNumberOfGuests());
         Long tableGroupId = orderTableRequest.getTableGroupId();
         if (tableGroupId != null) {
-            TableGroup group = tableGroupRepository.getOne(tableGroupId);
-            orderTable.setTableGroup(group);
+            orderTable.setTableGroup(tableGroupService.findById(tableGroupId));
         }
-        orderTable.setEmpty(orderTableRequest.isEmpty());
 
         return OrderTableResponse.of(orderTableRepository.save(orderTable));
     }
@@ -55,37 +50,19 @@ public class TableService {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        if (Objects.nonNull(savedOrderTable.getTableGroup())) {
-            throw new IllegalArgumentException();
-        }
+        savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
 
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
-        }
-
-        savedOrderTable.setEmpty(orderTableRequest.isEmpty());
-
-        return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
+        return OrderTableResponse.of(savedOrderTable);
     }
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
-        final int numberOfGuests = orderTableRequest.getNumberOfGuests();
-
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
-        }
-
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
+        savedOrderTable.updateNumberOfGuests(orderTableRequest.getNumberOfGuests());
 
-        savedOrderTable.setNumberOfGuests(numberOfGuests);
+        return OrderTableResponse.of(savedOrderTable);
 
-        return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
     }
 }

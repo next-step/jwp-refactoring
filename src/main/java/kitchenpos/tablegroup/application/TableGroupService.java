@@ -35,6 +35,11 @@ public class TableGroupService {
         this.tableGroupRepository = tableGroupRepository;
     }
 
+    public TableGroup findById(Long tableGroupId) {
+        return tableGroupRepository.findById(tableGroupId)
+                .orElseThrow(IllegalArgumentException::new);
+    }
+
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         final List<OrderTableIdRequest> orderTableIdRequests = tableGroupRequest.getOrderTables();

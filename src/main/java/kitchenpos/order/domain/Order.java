@@ -72,4 +72,8 @@ public class Order {
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
     }
+
+    public boolean isRestrictedChangeEmpty() {
+        return orderStatus.isRestrictedChangeEmpty();
+    }
 }
