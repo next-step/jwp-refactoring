@@ -1,6 +1,6 @@
 package kitchenpos.ui;
 
-import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
