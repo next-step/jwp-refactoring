@@ -152,3 +152,5 @@
         - [x] JPA Entity, Repository 적용
     - [ ] TableGroup
         - [x] JPA Entity, Repository 적용
+    - [ ] MenuProduct
+        - [x] JPA Entity, Repository 적용
