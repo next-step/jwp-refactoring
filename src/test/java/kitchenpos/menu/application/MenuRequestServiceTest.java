@@ -1,10 +1,10 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.common.exception.NotFoundException;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuProductResponse;
 import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.menugroup.domain.MenuGroup;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,8 +15,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -57,13 +55,11 @@ class MenuRequestServiceTest {
     @DisplayName("메뉴를 생성한다.")
     @Test
     public void 메뉴_생성() {
-        final Menu savedMenu = menuService.create(menuRequest);
+        final MenuResponse savedMenu = menuService.create(menuRequest);
 
         assertThat(savedMenu.getId()).isNotNull();
         assertThat(savedMenu.getName()).isEqualTo(MENU_NAME);
-        assertThat(savedMenu.getPrice().setScale(0, RoundingMode.CEILING))
-            .isEqualTo(new BigDecimal((int) PRICE).setScale(0, RoundingMode.CEILING));
-        assertThat(savedMenu.getMenuGroupId()).isEqualTo(savedMenu.getMenuGroupId());
+        assertThat(savedMenu.getPrice()).isEqualTo(PRICE);
     }
 
     @DisplayName("메뉴 가격이 음수인 경우 메뉴를 생성할 수 없다.")
@@ -102,8 +98,8 @@ class MenuRequestServiceTest {
     @Test
     @Transactional
     void 메뉴_조회() {
-        final List<Menu> responseMenus = menuService.findAllMenus();
-        final List<MenuProduct> menuProducts = responseMenus.stream()
+        final List<MenuResponse> responseMenus = menuService.findAllMenus();
+        final List<MenuProductResponse> menuProducts = responseMenus.stream()
             .flatMap(menu -> menu.getMenuProducts().stream())
             .collect(Collectors.toList());
 
