@@ -6,6 +6,7 @@ import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
@@ -32,14 +33,14 @@ public class TableGroupService {
     }
 
     public TableGroupResponse create(TableGroupRequest request) {
-        final List<OrderTable> orderTables = request.getOrderTables();
+        final List<OrderTableRequest> orderTables = request.getOrderTables();
 
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
             throw new IllegalArgumentException();
         }
 
         final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
+                .map(OrderTableRequest::getId)
                 .collect(Collectors.toList());
 
         final List<OrderTable> savedOrderTables = orderTableDao.findAllByIdIn(orderTableIds);

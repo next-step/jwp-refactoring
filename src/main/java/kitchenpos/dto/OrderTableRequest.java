@@ -5,8 +5,13 @@ import kitchenpos.domain.OrderTable;
 import java.util.Objects;
 
 public class OrderTableRequest {
+    private Long id;
     private Integer numberOfGuests;
     private Boolean empty;
+
+    public OrderTableRequest(Long id) {
+        this.id = id;
+    }
 
     public OrderTableRequest(Integer numberOfGuests, Boolean empty) {
         this.numberOfGuests = numberOfGuests;
@@ -26,6 +31,10 @@ public class OrderTableRequest {
 
     public OrderTable toOrderTable() {
         return new OrderTable(numberOfGuests, empty);
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public Integer getNumberOfGuests() {

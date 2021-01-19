@@ -84,7 +84,9 @@ class TableServiceTest {
         // Given
         OrderTableResponse savedOrderTable1 = tableService.create(new OrderTableRequest(3, true));
         OrderTableResponse savedOrderTable2 = tableService.create(new OrderTableRequest(3, true));
-        TableGroupRequest request = new TableGroupRequest(Arrays.asList(savedOrderTable1.toOrderTable(), savedOrderTable2.toOrderTable()));
+        List<OrderTableRequest> orderTableRequests = Arrays.asList(new OrderTableRequest(savedOrderTable1.getId()),
+                new OrderTableRequest(savedOrderTable2.getId()));
+        TableGroupRequest request = new TableGroupRequest(orderTableRequests);
         tableGroupService.create(request);
 
         // When & Then
