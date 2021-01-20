@@ -1,10 +1,10 @@
-package kitchenpos.acceptance;
+package kitchenpos.order.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.order.dto.OrderTableRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -22,8 +22,8 @@ public class TableAcceptanceTest extends AcceptanceTest {
     @Test
     void manageOrderTable() {
         // when
-        OrderTable orderTable = new OrderTable(0, true);
-        ExtractableResponse<Response> createResponse = 주문_테이블_생성_요청(orderTable);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(0, true);
+        ExtractableResponse<Response> createResponse = 주문_테이블_생성_요청(orderTableRequest);
 
         // then
         주문_테이블_생성됨(createResponse);
@@ -36,14 +36,14 @@ public class TableAcceptanceTest extends AcceptanceTest {
         주문_테이블_목록_포함됨(findResponse, Arrays.asList(createResponse));
 
         // when
-        orderTable.setEmpty(false);
-        ExtractableResponse<Response> emptyResponse = 주문_테이블_주문_상태_변경_요청(createResponse, orderTable);
+        orderTableRequest.setEmpty(false);
+        ExtractableResponse<Response> emptyResponse = 주문_테이블_주문_상태_변경_요청(createResponse, orderTableRequest);
 
         // then
         주문_테이블_응답됨(emptyResponse);
 
-        orderTable.setTableGroupId(4L);
-        ExtractableResponse<Response> guestResponse = 주문_테이블_손님_수_변경_요청(createResponse, orderTable);
+        orderTableRequest.setNumberOfGuests(4);
+        ExtractableResponse<Response> guestResponse = 주문_테이블_손님_수_변경_요청(createResponse, orderTableRequest);
 
         // then
         주문_테이블_응답됨(guestResponse);
@@ -58,18 +58,18 @@ public class TableAcceptanceTest extends AcceptanceTest {
         assertThat(actualIds).containsAll(expectedProductIds);
     }
 
-    public static ExtractableResponse<Response> 주문_테이블_생성_요청(OrderTable orderTable) {
+    public static ExtractableResponse<Response> 주문_테이블_생성_요청(OrderTableRequest orderTableRequest) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(orderTable)
+                .body(orderTableRequest)
                 .when().post("/api/tables")
                 .then().log().all()
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 주문_테이블_등록_되어있음(OrderTable orderTable) {
-        return 주문_테이블_생성_요청(orderTable);
+    public static ExtractableResponse<Response> 주문_테이블_등록_되어있음(OrderTableRequest orderTableRequest) {
+        return 주문_테이블_생성_요청(orderTableRequest);
     }
 
     private void 주문_테이블_생성됨(ExtractableResponse<Response> createResponse) {
@@ -89,26 +89,25 @@ public class TableAcceptanceTest extends AcceptanceTest {
         assertThat(findResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private ExtractableResponse<Response> 주문_테이블_주문_상태_변경_요청(ExtractableResponse<Response> createResponse, OrderTable orderTable) {
+    private ExtractableResponse<Response> 주문_테이블_주문_상태_변경_요청(ExtractableResponse<Response> createResponse, OrderTableRequest orderTableRequest) {
         String location = createResponse.header("Location");
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(orderTable)
+                .body(orderTableRequest)
                 .when().put(location+ "/empty")
                 .then().log().all()
                 .extract();
     }
 
-    private ExtractableResponse<Response> 주문_테이블_손님_수_변경_요청(ExtractableResponse<Response> createResponse, OrderTable orderTable) {
+    private ExtractableResponse<Response> 주문_테이블_손님_수_변경_요청(ExtractableResponse<Response> createResponse, OrderTableRequest orderTableRequest) {
         String location = createResponse.header("Location");
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(orderTable)
+                .body(orderTableRequest)
                 .when().put(location + "/number-of-guests")
                 .then().log().all()
                 .extract();
     }
-
 }
