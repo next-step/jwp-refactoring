@@ -168,7 +168,7 @@ class TableServiceTest {
         OrderRequest orderRequest = new OrderRequest(orderTableResponse.getId(), Collections.singletonList(orderLineItemRequest));
         OrderResponse order = orderService.create(orderRequest);
 
-        orderService.changeOrderStatus(order.getId(), new OrderRequest(OrderStatus.COMPLETION.name()));
+        orderService.changeOrderStatus(order.getId(), new OrderRequest(OrderStatus.COMPLETION));
         tableService.changeEmpty(orderTableResponse.getId(), new OrderTableRequest(true));
 
         // When & Then

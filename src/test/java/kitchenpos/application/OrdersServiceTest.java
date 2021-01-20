@@ -52,7 +52,7 @@ class OrdersServiceTest {
                 () -> assertThat(actual.getId()).isNotNull(),
                 () -> assertThat(actual.getOrderTableId()).isEqualTo(orderTable.getId()),
                 () -> assertThat(actual.getOrderLineItems()).isNotNull(),
-                () -> assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name()),
+                () -> assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.COOKING),
                 () -> assertThat(actual.getOrderedTime()).isNotNull()
         );
     }
@@ -122,7 +122,7 @@ class OrdersServiceTest {
         OrderResponse savedOrder = orderService.create(orderRequest);
 
         // When
-        OrderRequest updateOrder = new OrderRequest(OrderStatus.COMPLETION.name());
+        OrderRequest updateOrder = new OrderRequest(OrderStatus.COMPLETION);
         OrderResponse actual = orderService.changeOrderStatus(savedOrder.getId(), updateOrder);
 
         // Then
@@ -145,10 +145,10 @@ class OrdersServiceTest {
         OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(orderLineItemRequest));
         OrderResponse savedOrder = orderService.create(orderRequest);
 
-        orderService.changeOrderStatus(savedOrder.getId(), new OrderRequest(OrderStatus.COMPLETION.name()));
+        orderService.changeOrderStatus(savedOrder.getId(), new OrderRequest(OrderStatus.COMPLETION));
 
         // When & Then
-        assertThatThrownBy(() -> orderService.changeOrderStatus(savedOrder.getId(), new OrderRequest(OrderStatus.MEAL.name())))
+        assertThatThrownBy(() -> orderService.changeOrderStatus(savedOrder.getId(), new OrderRequest(OrderStatus.MEAL)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

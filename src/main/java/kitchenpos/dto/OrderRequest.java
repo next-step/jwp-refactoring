@@ -2,6 +2,7 @@ package kitchenpos.dto;
 
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderStatus;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
@@ -10,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class OrderRequest {
     private Long orderTableId;
-    private String orderStatus;
+    private OrderStatus orderStatus;
     private List<OrderLineItemRequest> orderLineItems;
 
     public OrderRequest(Long orderTableId, List<OrderLineItemRequest> orderLineItems) {
@@ -18,7 +19,7 @@ public class OrderRequest {
         this.orderLineItems = orderLineItems;
     }
 
-    public OrderRequest(String orderStatus) {
+    public OrderRequest(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 
@@ -62,7 +63,7 @@ public class OrderRequest {
         return orderTableId;
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 

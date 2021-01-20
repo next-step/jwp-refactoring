@@ -168,3 +168,4 @@
         - [x] JPA Entity, Repository 적용
     - [ ] Order
         - [x] JPA Entity, Repository 적용
+        - [x] 문자열 orderStatus @Enumerated OrderStatus 적용
