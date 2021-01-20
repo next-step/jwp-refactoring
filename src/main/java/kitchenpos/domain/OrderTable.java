@@ -14,6 +14,9 @@ public class OrderTable extends BaseIdEntity {
 	static final String MSG_ORDER_TABLE_ALREADY_GROUP = "OrderTable already has TableGroup";
 	static final String MSG_ORDER_TABLE_ONGOING = "OrderTable's OrderStatus is ongoing";
 	static final String MSG_ORDER_TABLE_EMPTY = "OrderTable must be empty";
+	static final String MSG_CANNOT_CHANGE_EMPTY_ALREADY_GROUP = "Cannot change empty of already in TableGroup";
+	static final String MSG_CANNOT_CHANGE_EMPTY_ONGOING_ORDER = "Cannot change empty while Order is ongoing";
+	static final String MSG_CANNOT_CHANGE_GUEST_WHILE_EMPTY = "Cannot change guests while OrderTable is empty";
 
 	@ManyToOne
 	@JoinColumn(name = "table_group_id", nullable = true)
@@ -24,6 +27,8 @@ public class OrderTable extends BaseIdEntity {
 
 	@Column(name = "empty", nullable = false)
 	private boolean empty;
+
+	// TODO: 2021-01-21 Order 를 OneToMany 로 소유
 
 	protected OrderTable() {
 	}
@@ -38,6 +43,25 @@ public class OrderTable extends BaseIdEntity {
 		this.empty = empty;
 	}
 
+	public void changeEmpty(boolean empty) {
+		if (this.tableGroup != null) {
+			throw new TableValidationException(MSG_CANNOT_CHANGE_EMPTY_ALREADY_GROUP);
+		}
+
+		if (hasOngoingOrder()) {
+			throw new TableValidationException(MSG_CANNOT_CHANGE_EMPTY_ONGOING_ORDER);
+		}
+
+		this.empty = empty;
+	}
+
+	public void changeNumberOfGuests(int numberOfGuests) {
+		if (this.empty) {
+			throw new TableValidationException(MSG_CANNOT_CHANGE_GUEST_WHILE_EMPTY);
+		}
+		this.numberOfGuests = new NumberOfGuests(numberOfGuests);
+	}
+
 	void putIntoGroup(TableGroup tableGroup) {
 		if (tableGroup == null) {
 			throw new TableValidationException(MSG_TABLE_GROUP_NOT_NULL);
@@ -50,6 +74,7 @@ public class OrderTable extends BaseIdEntity {
 		if (!this.empty) {
 			throw new TableValidationException(MSG_ORDER_TABLE_EMPTY);
 		}
+
 		this.tableGroup = tableGroup;
 		this.empty = false;
 	}
@@ -74,15 +99,7 @@ public class OrderTable extends BaseIdEntity {
 		return numberOfGuests;
 	}
 
-	public void changeNumberOfGuests(final int numberOfGuests) {
-		this.numberOfGuests = new NumberOfGuests(numberOfGuests);
-	}
-
 	public boolean isEmpty() {
 		return empty;
-	}
-
-	public void changeEmpty(final boolean empty) {
-		this.empty = empty;
 	}
 }

@@ -2,6 +2,7 @@ package kitchenpos.common;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.util.Objects;
 
 @Embeddable
 public class NumberOfGuests {
@@ -24,6 +25,19 @@ public class NumberOfGuests {
 		if (numberOfGuests < 0) {
 			throw new ValidationException(MSG_VALIDATE_GUESTS);
 		}
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof NumberOfGuests)) return false;
+		NumberOfGuests that = (NumberOfGuests) o;
+		return numberOfGuests == that.numberOfGuests;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(numberOfGuests);
 	}
 
 	public int getValue() {
