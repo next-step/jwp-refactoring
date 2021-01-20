@@ -4,7 +4,6 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -87,7 +86,8 @@ public class TableAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
         List<OrderTableResponse> orderTables = response.jsonPath().getList(".", OrderTableResponse.class);
-        assertThat(orderTables.size()).isEqualTo(9);
+        assertThat(orderTables.get(0).getId()).isEqualTo(1);
+        assertThat(orderTables.get(1).getId()).isEqualTo(2);
     }
 
     private void 주문테이블상태_변경됨(ExtractableResponse<Response> response) {

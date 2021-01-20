@@ -19,7 +19,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -30,6 +29,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     private List<OrderTable> orderTables = new ArrayList<>();
+    private List<Long> orderTableRequests = new ArrayList<>();
     private TableGroup tableGroup;
     private TableGroupRequest tableGroupRequest;
     private TableGroupService tableGroupService;
@@ -49,7 +49,11 @@ class TableGroupServiceTest {
         orderTables.add(new OrderTable(2L, 2, true));
         orderTables.add(new OrderTable(3L, 3, true));
         tableGroup = new TableGroup(new OrderTables(orderTables));
-        tableGroupRequest = new TableGroupRequest(orderTables);
+
+        orderTableRequests.add(1L);
+        orderTableRequests.add(2L);
+        orderTableRequests.add(3L);
+        tableGroupRequest = new TableGroupRequest(orderTableRequests);
 
         tableGroupService = new TableGroupService(orderRepository, orderTableRepository, tableGroupRepository);
     }
@@ -57,24 +61,12 @@ class TableGroupServiceTest {
     @DisplayName("테이블그룹 생성 테스트")
     @Test
     void createTest() {
-
         when(tableGroupRepository.save(any())).thenReturn(tableGroup);
-        when(orderTableRepository.save(orderTables.get(0))).thenReturn(orderTables.get(0));
-        when(orderTableRepository.save(orderTables.get(1))).thenReturn(orderTables.get(1));
-        when(orderTableRepository.save(orderTables.get(2))).thenReturn(orderTables.get(2));
+        when(orderTableRepository.findAllByIdIn(any())).thenReturn(orderTables);
 
         TableGroupResponse resultGroupResponse = tableGroupService.create(tableGroupRequest);
 
-        assertThat(resultGroupResponse.getOrderTables().size()).isEqualTo(tableGroup.getOrderTables().getSize());
-        List<Long> resultTableIds = resultGroupResponse.getOrderTables()
-                .stream()
-                .map(orderTableResponse -> orderTableResponse.getId())
-                .collect(Collectors.toList());
-        List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-
-        assertThat(resultTableIds).containsExactlyElementsOf(orderTableIds);
+        assertThat(resultGroupResponse.getOrderTables().size()).isEqualTo(3);
     }
 
 
@@ -83,7 +75,8 @@ class TableGroupServiceTest {
     void notEnoughTable() {
         orderTables.remove(0);
         orderTables.remove(1);
-        tableGroupRequest = new TableGroupRequest(orderTables);
+        when(orderTableRepository.findAllByIdIn(any())).thenReturn(orderTables);
+        tableGroupRequest = new TableGroupRequest(orderTableRequests);
 
         Throwable exception = assertThrows(IllegalArgumentException.class,
                 () -> tableGroupService.create(tableGroupRequest)
@@ -96,8 +89,9 @@ class TableGroupServiceTest {
     @DisplayName("테이블그룹 생성 예외테스트: 테이블이 비어있지 않은 경우")
     @Test
     void notEmptyTable() {
+        when(orderTableRepository.findAllByIdIn(any())).thenReturn(orderTables);
         orderTables.get(0).changeStatus(false);
-        //when(tableGroupRepository.save(any())).thenReturn(orderTables);
+
         Throwable exception = assertThrows(IllegalArgumentException.class,
                 () -> tableGroupService.create(tableGroupRequest)
         );
@@ -108,8 +102,9 @@ class TableGroupServiceTest {
     @DisplayName("테이블그룹 생성 예외테스트: 테이블에 그룹아이디가 있는경우")
     @Test
     void existGroupId() {
-        orderTables.add(new OrderTable(new TableGroup()));
-        //when(orderTableDao.findAllByIdIn(any())).thenReturn(orderTables);
+        orderTables.add(new OrderTable(TableGroup.empty()));
+        when(orderTableRepository.findAllByIdIn(any())).thenReturn(orderTables);
+
         Throwable exception = assertThrows(IllegalArgumentException.class,
                 () -> tableGroupService.create(tableGroupRequest)
         );
@@ -122,7 +117,7 @@ class TableGroupServiceTest {
     void invalidTableStatus() {
         when(tableGroupRepository.findById(any())).thenReturn(java.util.Optional.ofNullable(tableGroup));
         when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                any(), eq(Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))
+                any(), eq(Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))
         )).thenReturn(true);
 
         Throwable exception = assertThrows(IllegalArgumentException.class,

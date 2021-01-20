@@ -2,7 +2,6 @@ package kitchenpos.table.application;
 
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.application.TableService;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.domain.OrderTable;
@@ -134,7 +133,7 @@ class TableServiceTest {
     @Test
     void changeEmptyTest() {
         when(orderTableRepository.findById(any())).thenReturn(java.util.Optional.ofNullable(notEmptyTable));
-        List<String> orderStatus = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
+        List<OrderStatus> orderStatus = Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL);
         when(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), eq(orderStatus)))
                 .thenReturn(false);
 
@@ -147,8 +146,7 @@ class TableServiceTest {
     @Test
     void existTableGroup() {
         when(orderTableRepository.findById(any())).thenReturn(java.util.Optional.ofNullable(notEmptyTable));
-        //orderTable1.setTableGroupId(3L);
-        notEmptyTable.initialTableGroup(new TableGroup());
+        notEmptyTable.addTableGroup(TableGroup.empty());
 
         Throwable exception = assertThrows(IllegalArgumentException.class,
                 () -> tableService.changeEmpty(1L, true)
@@ -160,7 +158,7 @@ class TableServiceTest {
     @Test
     void unCompleteTableStatus() {
         when(orderTableRepository.findById(any())).thenReturn(java.util.Optional.ofNullable(notEmptyTable));
-        List<String> orderStatus = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
+        List<OrderStatus> orderStatus = Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL);
         when(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), eq(orderStatus)))
                 .thenReturn(true);
 

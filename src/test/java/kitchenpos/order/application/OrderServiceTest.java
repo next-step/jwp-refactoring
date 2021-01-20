@@ -2,8 +2,8 @@ package kitchenpos.order.application;
 
 
 
-import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.*;
+import kitchenpos.order.dto.OrderLIneItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.menu.domain.Menu;
@@ -34,6 +34,7 @@ class OrderServiceTest {
     private Menu secondMenu;
     private OrderTable orderTable;
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
+    private List<OrderLIneItemRequest> orderLIneItemRequests = new ArrayList<>();
     private OrderService orderService;
 
     @Mock
@@ -52,9 +53,11 @@ class OrderServiceTest {
         secondMenu = new Menu(2L);
         orderLineItems.add(new OrderLineItem(1L, firstMenu, 5));
         orderLineItems.add(new OrderLineItem(2L, secondMenu, 2));
-        orderRequest = new OrderRequest(1L, orderLineItems);
+        orderLIneItemRequests.add(new OrderLIneItemRequest(firstMenu.getId(), 5L));
+        orderLIneItemRequests.add(new OrderLIneItemRequest(secondMenu.getId(), 2L));
+        orderRequest = new OrderRequest(1L, orderLIneItemRequests);
         orderTable = new OrderTable(1L, 0, false);
-        order = new Order (1L, OrderStatus.COOKING.name(), orderTable);
+        order = new Order (1L, orderTable, orderLineItems);
         orderService = new OrderService(orderRepository, orderLineItemRepository, orderTableRepository);
     }
 
@@ -63,13 +66,11 @@ class OrderServiceTest {
     void createOrder() {
         when(orderTableRepository.findById(orderRequest.getOrderTableId())).thenReturn(java.util.Optional.ofNullable(orderTable));
         when(orderRepository.save(any())).thenReturn(order);
-        when(orderLineItemRepository.save(orderLineItems.get(0))).thenReturn(orderLineItems.get(0));
-        when(orderLineItemRepository.save(orderLineItems.get(1))).thenReturn(orderLineItems.get(1));
 
         OrderResponse resultOrder = orderService.create(orderRequest);
 
         assertAll(
-                () -> assertThat(resultOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name()),
+                () -> assertThat(resultOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING),
                 () -> assertThat(resultOrder.getOrderTableResponse().getId())
                         .isEqualTo(1L)
         );
@@ -89,12 +90,8 @@ class OrderServiceTest {
     @Test
     void emptyOrderTable() {
         when(orderTableRepository.findById(orderRequest.getOrderTableId())).thenReturn(java.util.Optional.ofNullable(orderTable));
-        when(orderRepository.save(any())).thenReturn(order);
-        when(orderLineItemRepository.save(orderLineItems.get(0))).thenReturn(orderLineItems.get(0));
-        when(orderLineItemRepository.save(orderLineItems.get(1))).thenReturn(orderLineItems.get(1));
 
         orderTable.changeStatus(true);
-
 
         Throwable exception = assertThrows(IllegalArgumentException.class,
                 () -> orderService.create(orderRequest)
@@ -127,7 +124,7 @@ class OrderServiceTest {
     void changeOrderStatus() {
         when(orderRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(order));
 
-        OrderResponse resultOrder = orderService.changeOrderStatus(1L, OrderStatus.MEAL.name());
+        OrderResponse resultOrder = orderService.changeOrderStatus(1L, OrderStatus.MEAL);
 
         assertThat(resultOrder.getOrderStatus()).isEqualTo(order.getOrderStatus());
     }
@@ -136,7 +133,7 @@ class OrderServiceTest {
     @Test
     void notFoundOrder() {
         Throwable exception = assertThrows(IllegalArgumentException.class,
-                () -> orderService.changeOrderStatus(1L, OrderStatus.MEAL.name())
+                () -> orderService.changeOrderStatus(1L, OrderStatus.MEAL)
         );
 
         assertThat(exception.getMessage()).isEqualTo("주문을 찾을 수 없습니다.");
@@ -144,11 +141,12 @@ class OrderServiceTest {
     @DisplayName("주문 상태변경 예외테스트: 주문상태가 올바르지 않은 경우")
     @Test
     void invalidOrderStatus() {
-        when(orderRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(order));
         order.changeOrderStatus(OrderStatus.COMPLETION);
+        when(orderRepository.findById(1L)).thenReturn(java.util.Optional.ofNullable(order));
+
 
         Throwable exception = assertThrows(IllegalArgumentException.class,
-                () -> orderService.changeOrderStatus(1L, OrderStatus.MEAL.name())
+                () -> orderService.changeOrderStatus(1L, OrderStatus.MEAL)
         );
 
         assertThat(exception.getMessage()).isEqualTo("주문이 완료된 상태입니다.");

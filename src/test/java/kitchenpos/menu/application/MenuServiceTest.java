@@ -1,15 +1,16 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProductRepository;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.menuGroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.dto.ProductRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,6 +35,7 @@ import static org.mockito.Mockito.when;
 class MenuServiceTest {
 
     private MenuRequest 강정치킨과양념치킨;
+    private List<MenuProductRequest> 상품리스트요청 = new ArrayList<>();
     private Product 강정치킨;
     private Product 양념치킨;
     private Menu 강정치킨과양념치킨메뉴;
@@ -48,26 +50,30 @@ class MenuServiceTest {
     @Mock
     private MenuGroupRepository menuGroupRepository;
     @Mock
-    private MenuProductRepository menuProductRepository;
+    private ProductRepository productRepository;
 
     @BeforeEach
     public void setUp() {
         강정치킨 = new Product(1L,"강정치킨",new BigDecimal(20000));
         양념치킨 = new Product(2L,"양념치킨",new BigDecimal(20000));
-        상품리스트.add(new MenuProduct(1L, 강정치킨,1));
-        상품리스트.add(new MenuProduct(2L, 양념치킨,1));
-        강정치킨과양념치킨 = new MenuRequest("강정치킨", new BigDecimal(17000), menuGroup.getId(), 상품리스트);
-        강정치킨과양념치킨메뉴 = new Menu(강정치킨과양념치킨.getName(), 강정치킨과양념치킨.getPrice(), menuGroup);
+
+        상품리스트요청.add(new MenuProductRequest(강정치킨.getId(), 1L));
+        상품리스트요청.add(new MenuProductRequest(양념치킨.getId(), 1L));
+        상품리스트.add(new MenuProduct(강정치킨, 1L));
+        상품리스트.add(new MenuProduct(양념치킨, 1L));
+        강정치킨과양념치킨 = new MenuRequest("강정치킨", new BigDecimal(17000), menuGroup.getId(), 상품리스트요청);
+        강정치킨과양념치킨메뉴 = new Menu(강정치킨과양념치킨.getName(), 강정치킨과양념치킨.getPrice(), menuGroup, 상품리스트);
         메뉴리스트.add(강정치킨과양념치킨메뉴);
-        menuService = new MenuService(menuRepository, menuGroupRepository, menuProductRepository);
+        menuService = new MenuService(menuRepository, menuGroupRepository, productRepository);
     }
 
     @DisplayName("메뉴 등록 테스트")
     @Test
     void createMenu() {
-        when(menuGroupRepository.findById(20L)).thenReturn(Optional.ofNullable(menuGroup));
-        when(menuRepository.save(강정치킨과양념치킨메뉴)).thenReturn(강정치킨과양념치킨메뉴);
-        when(menuProductRepository.save(상품리스트.get(0))).thenReturn(상품리스트.get(0));
+        when(menuGroupRepository.findById(menuGroup.getId())).thenReturn(Optional.ofNullable(menuGroup));
+        when(menuRepository.save(any())).thenReturn(강정치킨과양념치킨메뉴);
+        when(productRepository.findById(강정치킨.getId())).thenReturn(Optional.ofNullable(강정치킨));
+        when(productRepository.findById(양념치킨.getId())).thenReturn(Optional.ofNullable(양념치킨));
 
         MenuResponse resultMenu = menuService.create(강정치킨과양념치킨);
 
@@ -75,7 +81,7 @@ class MenuServiceTest {
                 () -> assertThat(resultMenu.getName()).isEqualTo("강정치킨"),
                 () -> assertThat(resultMenu.getPrice()).isEqualTo(new BigDecimal(17000)),
                 () -> assertThat(resultMenu.getMenuProducts().size()).isEqualTo(2),
-                () -> assertThat(resultMenu.getMenuProducts().get(0).getId()).isEqualTo(1L)
+                () -> assertThat(resultMenu.getMenuProducts().get(0).getProductResponse().getId()).isEqualTo(1L)
         );
     }
 
@@ -90,12 +96,14 @@ class MenuServiceTest {
     @Test
     void invaildPrice() {
         when(menuGroupRepository.findById(20L)).thenReturn(Optional.ofNullable(menuGroup));
+        when(productRepository.findById(강정치킨.getId())).thenReturn(Optional.ofNullable(강정치킨));
+        when(productRepository.findById(양념치킨.getId())).thenReturn(Optional.ofNullable(양념치킨));
 
-        강정치킨과양념치킨 = new MenuRequest("강정치킨", null, menuGroup.getId(), 상품리스트);
+        강정치킨과양념치킨 = new MenuRequest("강정치킨", null, menuGroup.getId(), 상품리스트요청);
         assertThatThrownBy(() -> menuService.create(강정치킨과양념치킨))
                 .isInstanceOf(IllegalArgumentException.class);
 
-        강정치킨과양념치킨 = new MenuRequest("강정치킨", new BigDecimal(-17000), menuGroup.getId(), 상품리스트);
+        강정치킨과양념치킨 = new MenuRequest("강정치킨", new BigDecimal(-17000), menuGroup.getId(), 상품리스트요청);
         assertThatThrownBy(() -> menuService.create(강정치킨과양념치킨))
                 .isInstanceOf(IllegalArgumentException.class);
 
@@ -116,10 +124,10 @@ class MenuServiceTest {
     @Test
     void invalidTotalPrice() {
         when(menuGroupRepository.findById(20L)).thenReturn(Optional.ofNullable(menuGroup));
-        when(menuProductRepository.save(상품리스트.get(0))).thenReturn(상품리스트.get(0));
+        when(productRepository.findById(강정치킨.getId())).thenReturn(Optional.ofNullable(강정치킨));
+        when(productRepository.findById(양념치킨.getId())).thenReturn(Optional.ofNullable(양념치킨));
 
-        강정치킨과양념치킨메뉴 = new Menu(강정치킨과양념치킨.getName(), new BigDecimal(5000000), menuGroup);
-        when(menuRepository.save(any())).thenReturn(강정치킨과양념치킨메뉴);
+        강정치킨과양념치킨 = new MenuRequest("강정치킨", new BigDecimal(5000000), menuGroup.getId(), 상품리스트요청);
 
         Throwable exception = assertThrows(IllegalArgumentException.class,
                 () -> menuService.create(강정치킨과양념치킨)

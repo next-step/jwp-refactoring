@@ -4,11 +4,11 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLIneItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.dto.OrderStatusRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,13 +23,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class OrderAcceptanceTest extends AcceptanceTest {
     private OrderRequest orderRequest;
-    private List<OrderLineItem> orderLineItems = new ArrayList<>();
+    private List<OrderLIneItemRequest> orderLineItems = new ArrayList<>();
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        orderLineItems.add(new OrderLineItem(new Menu(2L), 2));
-        orderLineItems.add(new OrderLineItem(new Menu(1L), 1));
+        orderLineItems.add(new OrderLIneItemRequest(2L, 2L));
+        orderLineItems.add(new OrderLIneItemRequest(1L, 1L));
 
         orderRequest = new OrderRequest(2L, orderLineItems);
     }
@@ -44,14 +44,14 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> findResponse = 주문내역_조회_요청();
         주문내역_조회됨(findResponse);
         //주문 상태 변경
-        ExtractableResponse<Response> changeResponse = 주문상태_변경_요청(createResponse, OrderStatus.MEAL.name());
+        ExtractableResponse<Response> changeResponse = 주문상태_변경_요청(createResponse, new OrderStatusRequest(OrderStatus.MEAL));
         주문상태_변경됨(changeResponse);
     }
 
-    private ExtractableResponse<Response> 주문상태_변경_요청(ExtractableResponse<Response> response, String orderStatus) {
+    private ExtractableResponse<Response> 주문상태_변경_요청(ExtractableResponse<Response> response, OrderStatusRequest orderStatusRequest) {
         String uri = response.header("Location");
         return RestAssured.given().log().all().
-                body(orderStatus).
+                body(orderStatusRequest).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 when().put(uri + "/order-status").
                 then().log().all().
@@ -77,7 +77,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     private void 주문_등록됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.as(OrderResponse.class).getOrderTableResponse().getId()).isEqualTo(2L);
-        assertThat(response.as(OrderResponse.class).getOrderStatus()).isEqualTo(OrderStatus.COOKING.toString());
+        assertThat(response.as(OrderResponse.class).getOrderStatus()).isEqualTo(OrderStatus.COOKING);
     }
 
     private void 주문내역_조회됨(ExtractableResponse<Response> response) {
@@ -93,6 +93,6 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
     private void 주문상태_변경됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.as(OrderResponse.class).getOrderStatus()).isEqualTo(OrderStatus.MEAL.toString());
+        assertThat(response.as(OrderResponse.class).getOrderStatus()).isEqualTo(OrderStatus.MEAL);
     }
 }

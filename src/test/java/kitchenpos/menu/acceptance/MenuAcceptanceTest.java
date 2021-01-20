@@ -4,11 +4,12 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menuGroup.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.product.dto.ProductRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,18 +25,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MenuAcceptanceTest extends AcceptanceTest {
     private MenuRequest menuRequest;
-    private List<MenuProduct> menuProducts = new ArrayList<>();
-    private Product 강정치킨 = new Product("강정치킨상품", new BigDecimal(8000));
-    private Product 양념치킨 = new Product("양념치킨상품", new BigDecimal(7000));
+    private List<MenuProductRequest> menuProductRequests = new ArrayList<>();
+    private ProductRequest 강정치킨 = new ProductRequest("강정치킨상품", new BigDecimal(8000));
+    private ProductRequest 양념치킨 = new ProductRequest("양념치킨상품", new BigDecimal(7000));
     private MenuGroup menuGroup = new MenuGroup("치킨");
 
     @BeforeEach
     public void setUp() {
         super.setUp();
         ExtractableResponse<Response> createResponse = 메뉴그룹_등록되어_있음(menuGroup);
-        menuProducts.add(new MenuProduct(상품_등록되어_있음(강정치킨).as(Product.class),1));
-        menuProducts.add(new MenuProduct(상품_등록되어_있음(양념치킨).as(Product.class),1));
-        menuRequest = new MenuRequest("강정치킨", new BigDecimal(15000), createResponse.as(MenuGroup.class).getId(), menuProducts);
+        menuProductRequests.add(new MenuProductRequest(상품_등록되어_있음(강정치킨).as(Product.class).getId(),1L));
+        menuProductRequests.add(new MenuProductRequest(상품_등록되어_있음(양념치킨).as(Product.class).getId(),1L));
+        menuRequest = new MenuRequest("강정치킨", new BigDecimal(15000), createResponse.as(MenuGroup.class).getId(), menuProductRequests);
     }
 
     @DisplayName("메뉴를 관리한다.")
@@ -50,7 +51,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         메뉴목록_조회됨(findResponse);
     }
 
-    private ExtractableResponse<Response> 상품_등록되어_있음(Product product) {
+    private ExtractableResponse<Response> 상품_등록되어_있음(ProductRequest product) {
         return RestAssured.given().log().all().
                 body(product).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
