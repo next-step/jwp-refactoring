@@ -6,9 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.junit.jupiter.params.provider.ValueSource;
 
-import java.util.ArrayList;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -28,18 +26,6 @@ class OrderTest {
 
         // then
         Assertions.assertThat(order).isNotNull();
-    }
-
-    @Test
-    @DisplayName("1 개 이상의 등록된 메뉴로 주문을 등록할 수 있다.")
-    public void createFail1() throws Exception {
-        // given
-        OrderTable orderTable = new OrderTable(0, false);
-
-        // when then
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> Order.of(orderTable, new OrderLineItems(new ArrayList<>())))
-                .withMessageMatching("최소 주문 메뉴 개수를 만족하지 못하여 주문을 등록할 수 없습니다.");
     }
 
     @Test

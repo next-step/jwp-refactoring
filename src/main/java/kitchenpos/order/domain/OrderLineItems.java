@@ -28,13 +28,6 @@ public class OrderLineItems {
         return orderLineItems;
     }
 
-    public boolean isRegisteredMenuNotMore(int minCount) {
-        long count = orderLineItems.stream()
-                .map(OrderLineItem::getMenu)
-                .count();
-        return count < minCount;
-    }
-
     private void updateOrder(Order order) {
         orderLineItems.forEach(orderLineItem -> orderLineItem.updateOrder(order));
     }

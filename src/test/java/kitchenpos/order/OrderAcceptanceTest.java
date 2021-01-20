@@ -78,11 +78,48 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         주문_상태_변경됨(주문_상태_변경);
     }
 
-    private ExtractableResponse<Response> 주문_등록_요청(Map<String, Object> menuRequest) {
+    @Test
+    @DisplayName("시나리오2: 주문하려는 메뉴가 등록이 되어있지 않으면 주문할 수 없습니다.")
+    public void scenarioTest2() throws Exception {
+        // given
+        Long unregisteredMenuId = 10L;
+        Map<String, Object> menuRequest = new HashMap<>();
+        menuRequest.put("menuId", unregisteredMenuId);
+        menuRequest.put("quantity", 1);
+
+        Map<String, Object> orderRequest = new HashMap<>();
+        orderRequest.put("orderTableId", 주문테이블.getId());
+        orderRequest.put("orderLineItems", Collections.singletonList(menuRequest));
+
+        // when 주문 등록 요청
+        ExtractableResponse<Response> 주문_등록 = 주문_등록_요청(orderRequest);
+        // then 주문 등록 요청 실패됨
+        주문_등록_실패됨(주문_등록);
+    }
+
+    @Test
+    @DisplayName("시나리오3: 주문 수량이 0 이하 이면 주문할 수 없습니다.")
+    public void scenarioTest3() throws Exception {
+        // given
+        Map<String, Object> menuRequest = new HashMap<>();
+        menuRequest.put("menuId", 메뉴.getId());
+        menuRequest.put("quantity", 0);
+
+        Map<String, Object> orderRequest = new HashMap<>();
+        orderRequest.put("orderTableId", 주문테이블.getId());
+        orderRequest.put("orderLineItems", Collections.singletonList(menuRequest));
+
+        // when 주문 등록 요청
+        ExtractableResponse<Response> 주문_등록 = 주문_등록_요청(orderRequest);
+        // then 주문 등록 요청 실패됨
+        주문_등록_실패됨(주문_등록);
+    }
+
+    private ExtractableResponse<Response> 주문_등록_요청(Map<String, Object> orderRequest) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(menuRequest)
+                .body(orderRequest)
                 .when().post("/api/orders")
                 .then().log().all()
                 .extract();
@@ -120,6 +157,10 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(addedOrderResponse.getOrderLineItems()).hasSize(1)
                         .extracting(OrderLineItemResponse::getQuantity).containsOnly(1L)
         );
+    }
+
+    private void 주문_등록_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     private ExtractableResponse<Response> 주문_상태_변경_요청(ExtractableResponse<Response> response, OrderStatus orderStatus) {

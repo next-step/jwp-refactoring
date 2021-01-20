@@ -66,6 +66,6 @@ public class OrderService {
     private OrderLineItem toOrderLineItem(OrderLineItemResponse orderLineItemResponse) {
         Menu menu = menuRepository.findById(orderLineItemResponse.getMenuId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 메뉴입니다."));
-        return new OrderLineItem(menu, orderLineItemResponse.getQuantity());
+        return new OrderLineItem(menu.getId(), orderLineItemResponse.getQuantity());
     }
 }

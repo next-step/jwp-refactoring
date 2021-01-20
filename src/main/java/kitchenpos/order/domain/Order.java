@@ -31,7 +31,7 @@ public class Order {
     }
 
     private Order(OrderTable orderTable, OrderStatus orderStatus, OrderLineItems orderLineItems) {
-        validate(orderTable, orderLineItems);
+        validate(orderTable);
         orderTable.addOrder(this);
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
@@ -51,13 +51,9 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
-    private void validate(OrderTable orderTable, OrderLineItems orderLineItems) {
+    private void validate(OrderTable orderTable) {
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException("빈 테이블에는 주문을 등록할 수 없습니다.");
-        }
-
-        if (orderLineItems.isRegisteredMenuNotMore(1)) {
-            throw new IllegalArgumentException("최소 주문 메뉴 개수를 만족하지 못하여 주문을 등록할 수 없습니다.");
         }
     }
 
