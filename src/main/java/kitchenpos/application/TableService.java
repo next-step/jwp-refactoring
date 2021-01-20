@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,11 +38,9 @@ public class TableService {
     }
 
     public OrderTableResponse changeEmpty(Long orderTableId, OrderTableRequest request) {
-        OrderTable orderTable = request.toOrderTable();
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+        OrderTable savedOrderTable = findById(orderTableId);
 
-        if (Objects.nonNull(savedOrderTable.getTableGroup())) {
+        if (savedOrderTable.hasTableGroup()) {
             throw new IllegalArgumentException();
         }
 
@@ -52,29 +49,27 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-        savedOrderTable.setEmpty(orderTable.isEmpty());
+        savedOrderTable.changeEmpty(request.isEmpty());
 
-        return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
+        return OrderTableResponse.from(savedOrderTable);
     }
-    
+
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, OrderTableRequest request) {
-        OrderTable orderTable = request.toOrderTable();
-        final int numberOfGuests = orderTable.getNumberOfGuests();
+        final int numberOfGuests = request.getNumberOfGuests();
 
         if (numberOfGuests < 0) {
             throw new IllegalArgumentException();
         }
 
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+        final OrderTable savedOrderTable = findById(orderTableId);
 
         if (savedOrderTable.isEmpty()) {
             throw new IllegalArgumentException();
         }
 
-        savedOrderTable.setNumberOfGuests(numberOfGuests);
+        savedOrderTable.changeNumberOfGuests(numberOfGuests);
 
-        return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
+        return OrderTableResponse.from(savedOrderTable);
     }
 
     public OrderTableResponse findResponseById(Long id) {

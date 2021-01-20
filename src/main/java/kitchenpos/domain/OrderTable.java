@@ -30,6 +30,10 @@ public class OrderTable {
     protected OrderTable() {
     }
 
+    public boolean hasTableGroup() {
+        return tableGroup != null;
+    }
+
     public Long getId() {
         return id;
     }
@@ -50,7 +54,7 @@ public class OrderTable {
         return numberOfGuests;
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
+    public void changeNumberOfGuests(final int numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
     }
 
@@ -58,7 +62,7 @@ public class OrderTable {
         return empty;
     }
 
-    public void setEmpty(final boolean empty) {
+    public void changeEmpty(boolean empty) {
         this.empty = empty;
     }
 
