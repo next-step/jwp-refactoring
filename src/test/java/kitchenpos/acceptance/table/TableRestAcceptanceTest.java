@@ -48,10 +48,10 @@ public class TableRestAcceptanceTest extends TableRestAcceptance {
 		OrderTable expected = 주문_테이블_등록_요청(OrderTable.of(null, null, 0, true)).as(OrderTable.class);
 
 		// when
-		ExtractableResponse<Response> response = 주문_테이블_상태변경_요청(expected, OrderTable.of(null, null, 0, true));
+		ExtractableResponse<Response> response = 주문_테이블_상태변경_요청(expected, OrderTable.of(null, null, 2, false));
 
 		// then
-		주문_테이블_상태변경됨(response, true);
+		주문_테이블_상태변경됨(response, false);
 	}
 
 	@DisplayName("주문 테이블 인원수를 변경한다.")

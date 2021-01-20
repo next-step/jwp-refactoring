@@ -45,7 +45,7 @@ public class TableRestAcceptance extends AcceptanceTest {
 			.given().log().all()
 			.body(expected)
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.when().put(TABLE_REQUEST_URL + "/{orderTableId}/empty", expected.getId())
+			.when().put(TABLE_REQUEST_URL + "/{orderTableId}/empty", orderTable.getId())
 			.then().log().all().extract();
 	}
 
