@@ -42,4 +42,10 @@ public class OrderTableRequest {
     public Boolean isEmpty() {
         return empty;
     }
+
+    public void validateNumberOfGuests() {
+        if (numberOfGuests < 0) {
+            throw new IllegalArgumentException("손님 수는 0명 이상이어야합니다.");
+        }
+    }
 }

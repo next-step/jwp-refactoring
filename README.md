@@ -148,6 +148,7 @@
     - [ ] OrderTable
         - [x] Service method 개선 : OrderTable 생성
         - [x] Service method 개선 : OrderTable Status 변경
+        - [x] Service method 개선 : OrderTable 손님 수 변경
     - [ ] Product
         - [x] Service method 개선 : Product 생성
     - [ ] Order

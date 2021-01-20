@@ -39,21 +39,14 @@ public class TableService {
         return OrderTableResponse.from(orderTable);
     }
 
-    public OrderTableResponse changeNumberOfGuests(final Long orderTableId, OrderTableRequest request) {
-        final int numberOfGuests = request.getNumberOfGuests();
-
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
-        }
-
-        final OrderTable savedOrderTable = findById(orderTableId);
-
+    public OrderTableResponse changeNumberOfGuests(Long orderTableId, OrderTableRequest request) {
+        int numberOfGuests = request.getNumberOfGuests();
+        request.validateNumberOfGuests();
+        OrderTable savedOrderTable = findById(orderTableId);
         if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("비어있는 테이블은 손님 수를 변경할 수 없습니다.");
         }
-
         savedOrderTable.changeNumberOfGuests(numberOfGuests);
-
         return OrderTableResponse.from(savedOrderTable);
     }
 
