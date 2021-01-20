@@ -166,6 +166,7 @@
         - [x] JPA Entity, Repository 적용
     - [ ] TableGroup
         - [x] JPA Entity, Repository 적용
+        - [x] 잘못 지정된 orderTables의 @OneToMany 옵션 개선
     - [ ] MenuProduct
         - [x] JPA Entity, Repository 적용
         - [x] 엔티티 필드 연관 관계 개선 

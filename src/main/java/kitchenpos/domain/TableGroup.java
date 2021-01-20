@@ -12,8 +12,7 @@ public class TableGroup {
     private Long id;
     @Column
     private LocalDateTime createdDate;
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "table_group_id")
+    @OneToMany(mappedBy = "tableGroup")
     private final List<OrderTable> orderTables = new ArrayList<>();
 
     public static TableGroup createTableGroup(LocalDateTime createdDate, List<OrderTable> orderTables) {
