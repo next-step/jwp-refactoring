@@ -6,12 +6,13 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.HttpStatusAssertion;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductRequest;
 import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
 
 public class ProductAcceptanceTestSupport extends AcceptanceTest {
-    public static ExtractableResponse<Response> 상품_생성_요청(Product params) {
+    public static ExtractableResponse<Response> 상품_생성_요청(ProductRequest params) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -30,10 +31,8 @@ public class ProductAcceptanceTestSupport extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 상품_등록되어_있음(String name, int price) {
-        Product params = new Product();
-        params.setName(name);
-        params.setPrice(new BigDecimal(price));
-        ExtractableResponse<Response> createResponse = 상품_생성_요청(params);
+        ProductRequest request = new ProductRequest(name, BigDecimal.valueOf(price));
+        ExtractableResponse<Response> createResponse = 상품_생성_요청(request);
         상품_생성_완료(createResponse);
         return createResponse;
     }

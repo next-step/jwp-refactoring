@@ -3,6 +3,7 @@ package kitchenpos.product;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -14,12 +15,10 @@ class ProductAcceptanceTest extends ProductAcceptanceTestSupport {
     @Test
     void createProduct() {
         // Given
-        Product params = new Product();
-        params.setName("명동칼국수");
-        params.setPrice(new BigDecimal(17_000));
+        ProductRequest request = new ProductRequest("명동칼국수", BigDecimal.valueOf(8_000));
 
         // When
-        ExtractableResponse<Response> createResponse = 상품_생성_요청(params);
+        ExtractableResponse<Response> createResponse = 상품_생성_요청(request);
 
         // Then
         상품_생성_완료(createResponse);
