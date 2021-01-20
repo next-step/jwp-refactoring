@@ -14,9 +14,16 @@ public class TableGroup {
     private LocalDateTime createdDate;
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "table_group_id")
-    private List<OrderTable> orderTables = new ArrayList<>();
+    private final List<OrderTable> orderTables = new ArrayList<>();
 
-    public TableGroup(LocalDateTime createdDate) {
+    public static TableGroup createTableGroup(LocalDateTime createdDate, List<OrderTable> orderTables) {
+        validate(orderTables);
+        TableGroup tableGroup = new TableGroup(createdDate);
+        tableGroup.orderTables.addAll(orderTables);
+        return tableGroup;
+    }
+
+    private TableGroup(LocalDateTime createdDate) {
         this.createdDate = createdDate;
     }
 
@@ -37,5 +44,16 @@ public class TableGroup {
 
     public List<OrderTable> getOrderTables() {
         return orderTables;
+    }
+
+    private static void validate(List<OrderTable> orderTables) {
+        if (isNotValidOrderTables(orderTables)) {
+            throw new IllegalArgumentException("주문 그룹으로 설정될 주문 테이블은 Group으로 설정되지 않거나, 점유되어있지 않아야합니다.");
+        }
+    }
+
+    private static boolean isNotValidOrderTables(List<OrderTable> orderTables) {
+        return orderTables.stream()
+                .anyMatch(orderTable -> orderTable.isNotEmpty() || orderTable.hasTableGroup());
     }
 }
