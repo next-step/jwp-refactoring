@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
+import kitchenpos.dao.OrderRepository;
 import kitchenpos.dao.TableGroupRepository;
 import kitchenpos.dao.TableRepository;
 import kitchenpos.domain.OrderStatus;
@@ -10,7 +10,6 @@ import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.dto.TableGroupResponse;
 import kitchenpos.dto.TableResponse;
-import kitchenpos.exception.BadRequestException;
 import kitchenpos.exception.NotFoundEntityException;
 import kitchenpos.exception.TableInUseException;
 import org.springframework.stereotype.Service;
@@ -24,12 +23,12 @@ import java.util.stream.Collectors;
 @Transactional
 @Service
 public class TableGroupService {
-    private final OrderDao orderDao;
+    private final OrderRepository orderRepository;
     private final TableRepository tableRepository;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(OrderDao orderDao, TableRepository tableRepository, TableGroupRepository tableGroupRepository) {
-        this.orderDao = orderDao;
+    public TableGroupService(OrderRepository orderRepository, TableRepository tableRepository, TableGroupRepository tableGroupRepository) {
+        this.orderRepository = orderRepository;
         this.tableRepository = tableRepository;
         this.tableGroupRepository = tableGroupRepository;
     }
@@ -49,10 +48,10 @@ public class TableGroupService {
 
     public void ungroup(Long tableGroupId) {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
-                .orElseThrow(EntityNotFoundException::new);;
+                .orElseThrow(EntityNotFoundException::new);
 
-        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
-                tableGroup.getOrderTableIds(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+        if (orderRepository.existsByOrderTableInAndOrderStatusIn(
+                tableGroup.getOrderTables(), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new TableInUseException("사용중인 테이블의 그룹은 해제할 수 없습니다");
         }
 
@@ -68,7 +67,7 @@ public class TableGroupService {
                 .build();
     }
 
-    private List<TableResponse> fromTableEntities(OrderTables orderTables) {
+    private List<TableResponse> fromTableEntities(List<OrderTable> orderTables) {
         return orderTables.stream()
                 .map(TableService::fromEntity)
                 .collect(Collectors.toList());

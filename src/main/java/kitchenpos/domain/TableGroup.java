@@ -29,10 +29,8 @@ public class TableGroup {
         this.orderTables = orderTables;
     }
 
-    public List<Long> getOrderTableIds() {
-        return orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
+    public List<OrderTable> getOrderTables() {
+        return orderTables.getOrderTables();
     }
 
     public void unGroup() {

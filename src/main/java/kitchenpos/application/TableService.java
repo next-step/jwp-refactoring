@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
+import kitchenpos.dao.OrderRepository;
 import kitchenpos.dao.TableRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
@@ -20,11 +20,11 @@ import java.util.stream.Collectors;
 public class TableService {
     private static final int EMPTY_COUNT = 0;
 
-    private final OrderDao orderDao;
+    private final OrderRepository orderRepository;
     private final TableRepository tableRepository;
 
-    public TableService(OrderDao orderDao, TableRepository tableRepository) {
-        this.orderDao = orderDao;
+    public TableService(OrderRepository orderRepository, TableRepository tableRepository) {
+        this.orderRepository = orderRepository;
         this.tableRepository = tableRepository;
     }
 
@@ -42,7 +42,7 @@ public class TableService {
 
     public TableResponse update(Long tableId, TableRequest request) {
         OrderTable savedOrderTable = tableRepository.findById(tableId)
-                .orElseThrow(EntityNotFoundException::new);;
+                .orElseThrow(EntityNotFoundException::new);
 
         if (request.getNumberOfGuests() == EMPTY_COUNT) {
             validateEmptyTable(savedOrderTable);
@@ -65,7 +65,7 @@ public class TableService {
             throw new TableInUseException("그룹이 지어진 테이블은 변경 할 수 없습니다.");
         }
 
-        if (orderDao.existsByOrderTableIdAndOrderStatusIn(savedOrderTable.getId(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+        if (orderRepository.existsByOrderTableAndOrderStatusIn(savedOrderTable, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new TableInUseException("이용중인 테이블은 변경 할 수 없습니다.");
         }
     }

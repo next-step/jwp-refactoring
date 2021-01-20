@@ -33,6 +33,10 @@ public class OrderTables {
         this.orderTables = orderTables;
     }
 
+    public List<OrderTable> getOrderTables() {
+        return orderTables;
+    }
+
     public Stream<OrderTable> stream() {
         return orderTables.stream();
     }
