@@ -10,6 +10,7 @@ import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.MenuGroupAcceptanceTest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemResponse;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.ordertable.OrderTableAcceptanceTest;
@@ -22,13 +23,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.iterable;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("주문 기능")
 public class OrderAcceptanceTest extends AcceptanceTest {
@@ -47,8 +45,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         후라이드 = ProductAcceptanceTest.상품_등록_요청("후라이드", 15000).as(ProductResponse.class);
         양념치킨 = ProductAcceptanceTest.상품_등록_요청("양념치킨", 15000).as(ProductResponse.class);
 
-        MenuProductRequest 메뉴상품1 = new MenuProductRequest(오늘의메뉴.getId(), 후라이드.getId(), 1);
-        MenuProductRequest 메뉴상품2 = new MenuProductRequest(오늘의메뉴.getId(), 양념치킨.getId(), 1);
+        MenuProductRequest 메뉴상품1 = new MenuProductRequest(후라이드.getId(), 1);
+        MenuProductRequest 메뉴상품2 = new MenuProductRequest(양념치킨.getId(), 1);
         메뉴 = MenuAcceptanceTest.메뉴_등록_요청("후양 두마리 세트", 28000, 오늘의메뉴, Arrays.asList(메뉴상품1, 메뉴상품2)).as(MenuResponse.class);
     }
 
@@ -105,11 +103,23 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
     private void 주문_목록_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.jsonPath().getList(".", OrderResponse.class)
-                .stream()
-                .map(OrderResponse::getOrderTableId)
-                .anyMatch(it -> it.equals(주문테이블.getId())))
-                .isTrue();
+        List<OrderResponse> orderResponses = response.jsonPath().getList(".", OrderResponse.class);
+        OrderResponse addedOrderResponse = orderResponses.get(orderResponses.size() - 1);
+        assertAll(
+                () -> assertThat(addedOrderResponse.getId()).isNotNull(),
+                () -> assertThat(addedOrderResponse.getOrderTableId()).isEqualTo(주문테이블.getId()),
+                () -> assertThat(addedOrderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name()),
+                () -> assertThat(addedOrderResponse.getOrderedTime()).isNotNull(),
+                () -> assertThat(addedOrderResponse.getOrderLineItems()).hasSize(1),
+                () -> assertThat(addedOrderResponse.getOrderLineItems()).hasSize(1)
+                        .extracting(OrderLineItemResponse::getSeq).isNotNull(),
+                () -> assertThat(addedOrderResponse.getOrderLineItems()).hasSize(1)
+                        .extracting(OrderLineItemResponse::getOrderId).containsOnly(addedOrderResponse.getId()),
+                () -> assertThat(addedOrderResponse.getOrderLineItems()).hasSize(1)
+                        .extracting(OrderLineItemResponse::getMenuId).containsOnly(메뉴.getId()),
+                () -> assertThat(addedOrderResponse.getOrderLineItems()).hasSize(1)
+                        .extracting(OrderLineItemResponse::getQuantity).containsOnly(1L)
+        );
     }
 
     private ExtractableResponse<Response> 주문_상태_변경_요청(ExtractableResponse<Response> response, OrderStatus orderStatus) {

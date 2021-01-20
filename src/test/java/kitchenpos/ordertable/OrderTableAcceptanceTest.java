@@ -4,7 +4,6 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -12,16 +11,20 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("주문 테이블 기능")
 public class OrderTableAcceptanceTest extends AcceptanceTest {
+    private final static int DEFAULT_GUESTS = 0;
 
     @Test
     @DisplayName("시나리오1: 주문 테이블을 등록하고 관리할 수 있다.")
     public void scenarioTest() throws Exception {
         // when 주문 테이블 등록 요청
-        ExtractableResponse<Response> 주문_테이블_등록 = 주문_테이블_등록_요청(0, true);
+        ExtractableResponse<Response> 주문_테이블_등록 = 주문_테이블_등록_요청(DEFAULT_GUESTS, true);
         // then 주문 테이블 등록됨
         주문_테이블_등록됨(주문_테이블_등록);
 
@@ -69,11 +72,13 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
 
     public static void 주문_테이블_목록_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.jsonPath().getList(".", OrderTableResponse.class)
-                .stream()
-                .map(OrderTableResponse::getNumberOfGuests)
-                .anyMatch(it -> it.equals(0)))
-                .isTrue();
+        List<OrderTableResponse> orderTableResponses = response.jsonPath().getList(".", OrderTableResponse.class);
+        OrderTableResponse addedOrderTableResponse = orderTableResponses.get(orderTableResponses.size() - 1);
+        assertAll(
+                () -> assertThat(addedOrderTableResponse.getId()).isNotNull(),
+                () -> assertThat(addedOrderTableResponse.getNumberOfGuests()).isEqualTo(DEFAULT_GUESTS),
+                () -> assertThat(addedOrderTableResponse.isEmpty()).isEqualTo(true)
+        );
     }
 
     public static ExtractableResponse<Response> 주문_테이블_상태_변경_요청(ExtractableResponse<Response> response, boolean empty) {
