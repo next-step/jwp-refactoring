@@ -13,13 +13,14 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
+    @JoinColumn(name = "order_table_id")
     private OrderTable orderTable;
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
     @Column
     private LocalDateTime orderedTime;
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<OrderLineItem> orderLineItems = new ArrayList<>();
+    @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
+    private final List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     public Order(OrderTable orderTable) {
         this.orderTable = orderTable;

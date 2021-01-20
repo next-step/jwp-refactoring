@@ -183,3 +183,4 @@
     - [ ] Order
         - [x] JPA Entity, Repository 적용
         - [x] 문자열 orderStatus @Enumerated OrderStatus 적용
+        - [x] 누락된 필드 제약사항 수정
