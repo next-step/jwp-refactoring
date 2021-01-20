@@ -98,11 +98,8 @@ public class OrderService {
 
         final OrderStatus orderStatus = OrderStatus.valueOf(order.getOrderStatus());
         savedOrder.setOrderStatus(orderStatus.name());
-
         orderDao.save(savedOrder);
-
         savedOrder.setOrderLineItems(orderLineItemDao.findAllByOrderId(orderId));
-
         return savedOrder;
     }
 }
