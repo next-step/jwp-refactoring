@@ -45,10 +45,6 @@ public class MenuResponse {
         return price;
     }
 
-    public MenuGroupResponse getMenuGroupResponse() {
-        return menuGroupResponse;
-    }
-
     public List<MenuProductResponse> getMenuProducts() {
         return menuProducts;
     }

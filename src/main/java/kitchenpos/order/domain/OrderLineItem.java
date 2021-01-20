@@ -34,14 +34,6 @@ public class OrderLineItem {
         this.quantity = quantity;
     }
 
-    public Long getSeq() {
-        return seq;
-    }
-
-    public long getQuantity() {
-        return quantity;
-    }
-
     public Order getOrder() {
         return order;
     }
@@ -52,5 +44,9 @@ public class OrderLineItem {
 
     public void addOrder(Order order) {
         this.order = order;
+    }
+
+    public static OrderLineItem empty() {
+        return new OrderLineItem();
     }
 }
