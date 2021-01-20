@@ -1,30 +1,28 @@
-package kitchenpos.ui;
+package kitchenpos.menu.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.AcceptanceTest;
+import kitchenpos.AcceptanceNewTest;
+import kitchenpos.menu.dto.MenuGroupRequest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @DisplayName("메뉴 그룹 관련 기능")
-class MenuGroupAcceptanceTest extends AcceptanceTest {
+class MenuGroupAcceptanceTest extends AcceptanceNewTest {
+
 
     @DisplayName("메뉴 그룹 등록")
     @Test
     void create() {
         // given
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", "안주메뉴");
+        MenuGroupRequest request = new MenuGroupRequest("안주메뉴");
 
         // when
-        ExtractableResponse<Response> response = 메뉴_그룹_등록_요청(params);
+        ExtractableResponse<Response> response = 메뉴_그룹_등록_요청(request);
 
         // then
         메뉴_그룹_둥록됨(response);
@@ -33,6 +31,8 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
     @DisplayName("메뉴 그룹 목록")
     @Test
     void list() {
+        메뉴_그룹_등록_요청(new MenuGroupRequest("치킨메뉴"));
+        메뉴_그룹_등록_요청(new MenuGroupRequest("안주메뉴"));
         // when
         ExtractableResponse<Response> response = 메뉴_그룹_목록_조회_요청();
 
@@ -40,7 +40,7 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
         메뉴_그룹_목록_조회됨(response, HttpStatus.OK);
     }
 
-    private ExtractableResponse<Response> 메뉴_그룹_등록_요청(Map<String, Object> params) {
+    private ExtractableResponse<Response> 메뉴_그룹_등록_요청(MenuGroupRequest params) {
         return RestAssured
                 .given().log().all()
                 .body(params)
