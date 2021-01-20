@@ -6,8 +6,10 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.MenuGroupResponse;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.ProductResponse;
 import kitchenpos.menugroup.MenuGroupAcceptanceTestSupport;
 import kitchenpos.product.ProductAcceptanceTestSupport;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,15 +21,15 @@ import java.util.Arrays;
 
 @DisplayName("메뉴 관련 기능")
 class MenuAcceptanceTest extends MenuAcceptanceTestSupport {
-    private MenuGroup 중화메뉴;
-    private Product 짬뽕;
-    private Product 짜장면;
+    private MenuGroupResponse 중화메뉴;
+    private ProductResponse 짬뽕;
+    private ProductResponse 짜장면;
 
     @BeforeEach
     public void beforeEach() {
-        중화메뉴 = MenuGroupAcceptanceTestSupport.메뉴_그룹_등록_되어있음("중화메뉴").as(MenuGroup.class);
-        짬뽕 = ProductAcceptanceTestSupport.상품_등록되어_있음("짬뽕", 7_000).as(Product.class);
-        짜장면 = ProductAcceptanceTestSupport.상품_등록되어_있음("자장면", 5_000).as(Product.class);
+        중화메뉴 = MenuGroupAcceptanceTestSupport.메뉴_그룹_등록_되어있음("중화메뉴").as(MenuGroupResponse.class);
+        짬뽕 = ProductAcceptanceTestSupport.상품_등록되어_있음("짬뽕", 7_000).as(ProductResponse.class);
+        짜장면 = ProductAcceptanceTestSupport.상품_등록되어_있음("자장면", 5_000).as(ProductResponse.class);
     }
 
     @DisplayName("메뉴 생성")
