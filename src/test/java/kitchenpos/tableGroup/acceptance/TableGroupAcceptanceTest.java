@@ -25,8 +25,8 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        orderTables.add(new OrderTable(1L, 4, true));
-        orderTables.add(new OrderTable(2L, 4, true));
+        orderTables.add(new OrderTable(13L, 4, true));
+        orderTables.add(new OrderTable(14L, 4, true));
         tableGroupRequest = new TableGroupRequest(orderTables);
 
     }
@@ -64,9 +64,9 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     private void 테이블그룹핑_등록됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.as(TableGroupResponse.class).getOrderTables().get(0).getId()).
-                isEqualTo(1L);
+                isEqualTo(13L);
         assertThat(response.as(TableGroupResponse.class).getOrderTables().get(1).getId()).
-                isEqualTo(2L);
+                isEqualTo(14L);
         assertThat(response.as(TableGroupResponse.class).getCreatedDate()).isNotNull();
     }
 

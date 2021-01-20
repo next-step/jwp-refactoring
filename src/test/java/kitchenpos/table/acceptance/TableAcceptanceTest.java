@@ -18,14 +18,12 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TableAcceptanceTest extends AcceptanceTest {
-    private OrderTable orderTable;
     private OrderTableRequest orderTableRequest;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        orderTable = new OrderTable(4, true);
-        orderTableRequest = new OrderTableRequest(4, true);
+        orderTableRequest = new OrderTableRequest(9, true);
     }
     @DisplayName("테이블을 관리한다.")
     @Test
@@ -46,7 +44,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> 주문테이블_등록_요청(OrderTableRequest orderTableRequest) {
         return RestAssured.given().log().all().
-                body(orderTable).
+                body(orderTableRequest).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 when().post("/api/tables").
                 then().log().all().
@@ -81,7 +79,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
 
     private void 주문테이블_등록됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(response.as(OrderTableResponse.class).getNumberOfGuests()).isEqualTo(4);
+        assertThat(response.as(OrderTableResponse.class).getNumberOfGuests()).isEqualTo(9);
         assertThat(response.as(OrderTableResponse.class).isEmpty()).isEqualTo(true);
     }
 
