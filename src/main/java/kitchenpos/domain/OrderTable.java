@@ -46,10 +46,6 @@ public class OrderTable {
         return tableGroup;
     }
 
-    public void setTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
-    }
-
     public int getNumberOfGuests() {
         return numberOfGuests;
     }
@@ -60,6 +56,20 @@ public class OrderTable {
 
     public boolean isEmpty() {
         return empty;
+    }
+
+    public void occupy(TableGroup tableGroup) {
+        this.updateGroup(tableGroup);
+        this.empty = false;
+    }
+
+    public void updateGroup(TableGroup tableGroup) {
+        tableGroup.getOrderTables().add(this);
+        this.tableGroup = tableGroup;
+    }
+
+    public void releaseInGroup() {
+        this.tableGroup = null;
     }
 
     public void changeEmpty(boolean empty) {
