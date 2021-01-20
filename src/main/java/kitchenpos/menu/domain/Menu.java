@@ -1,5 +1,7 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.menu.dto.MenuProductResponse;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
@@ -21,6 +23,9 @@ public class Menu {
     @Embedded
     private MenuProducts menuProducts = new MenuProducts();
 
+    protected Menu() {
+    }
+
     public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
         validateLessThanZero(price);
         this.name = name;
@@ -35,7 +40,7 @@ public class Menu {
     }
 
     public void add(List<MenuProduct> menuProduct) {
-        menuProducts.add(menuProduct);
+        menuProducts.add(this.id, menuProduct);
     }
 
     public void addAllMenuProducts(List<MenuProduct> menuProducts) {
@@ -54,6 +59,22 @@ public class Menu {
     }
 
     public Long getId() {
-        return this.id;
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public Long getMenuGroupId() {
+        return menuGroup.getId();
+    }
+
+    public List<MenuProductResponse> getMenuProductResponses() {
+        return menuProducts.getMenuProductResponses();
     }
 }

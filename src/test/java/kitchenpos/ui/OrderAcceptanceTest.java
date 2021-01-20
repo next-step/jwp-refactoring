@@ -7,6 +7,7 @@ import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.menu.acceptance.MenuAcceptanceTest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

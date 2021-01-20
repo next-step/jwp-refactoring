@@ -1,4 +1,4 @@
-package kitchenpos.ui;
+package kitchenpos.menu.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -17,8 +17,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("메뉴 관련 기능")
 public class MenuAcceptanceTest extends AcceptanceTest {
@@ -52,10 +50,9 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         params.put("price", 16000);
         params.put("menuGroupId", 0);
 
-        // when
-        assertThatThrownBy(() -> {
-            ExtractableResponse<Response> response = 메뉴_등록_요청(params);
-        }).isInstanceOf(IllegalArgumentException.class);
+        ExtractableResponse<Response> response = 메뉴_등록_요청(params);
+
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     @ParameterizedTest
@@ -103,11 +100,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         Assertions.assertThat(response.statusCode()).isEqualTo(ok.value());
     }
 
-
-
     private void 메뉴_둥록됨(ExtractableResponse<Response> response) {
         Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
-
-
 }

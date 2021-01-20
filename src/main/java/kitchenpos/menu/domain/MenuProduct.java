@@ -22,6 +22,12 @@ public class MenuProduct {
     protected MenuProduct() {
     }
 
+    public MenuProduct(Product product, long quantity) {
+        validateNotGreaterThanZero(quantity);
+        this.product = product;
+        this.quantity = quantity;
+    }
+
     public MenuProduct(Long menu, Product product, long quantity) {
         validateNotGreaterThanZero(quantity);
         this.menuId = menu;
@@ -35,11 +41,27 @@ public class MenuProduct {
         }
     }
 
+    public void changeMenuId(Long menuId) {
+        this.menuId = menuId;
+    }
+
     public BigDecimal getPrice() {
         return product.getPrice().multiply(BigDecimal.valueOf(quantity));
     }
 
     public Long getMenuId() {
         return menuId;
+    }
+
+    public Long getSeq() {
+        return seq;
+    }
+
+    public Long getProductId() {
+        return product.getId();
+    }
+
+    public long getQuantity() {
+        return quantity;
     }
 }
