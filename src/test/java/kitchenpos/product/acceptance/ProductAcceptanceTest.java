@@ -1,10 +1,10 @@
-package kitchenpos.acceptance;
+package kitchenpos.product.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -23,10 +23,10 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     @Test
     void manageProduct() {
         // given
-        Product 강정치킨 = new Product("강정치킨", BigDecimal.valueOf(17000));
+        ProductRequest productRequest = new ProductRequest("강정치킨", BigDecimal.valueOf(17000));
 
         // when
-        ExtractableResponse<Response> createResponse = 상품_생성_요청(강정치킨);
+        ExtractableResponse<Response> createResponse = 상품_생성_요청(productRequest);
 
         // then
         상품_생성됨(createResponse);
@@ -39,18 +39,18 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         상품_목록_포함됨(findResponse, Arrays.asList(createResponse));
     }
 
-    public static ExtractableResponse<Response> 상품_생성_요청(Product product) {
+    public static ExtractableResponse<Response> 상품_생성_요청(ProductRequest productRequest) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(product)
+                .body(productRequest)
                 .when().post("/api/products")
                 .then().log().all()
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 상품_등록되어_있음(Product product) {
-        return 상품_생성_요청(product);
+    public static ExtractableResponse<Response> 상품_등록되어_있음(ProductRequest productRequest) {
+        return 상품_생성_요청(productRequest);
     }
 
     private void 상품_생성됨(ExtractableResponse<Response> createResponse) {
