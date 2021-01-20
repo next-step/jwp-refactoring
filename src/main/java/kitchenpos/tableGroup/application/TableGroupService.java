@@ -26,18 +26,15 @@ public class TableGroupService {
     }
 
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-        TableGroup tableGroup = tableGroupRequest.toTableGroup();
+        TableGroup tableGroup = new TableGroup(
+                new OrderTables(
+                        orderTableRepository.findAllByIdIn(tableGroupRequest.getOrderTableIds())
+                )
+        );
         OrderTables orderTables = tableGroup.getOrderTables();
 
-        orderTables.checkOrderTables();
-        orderTables.checkTableStatus();
-
         final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
-
-        for (final OrderTable savedOrderTable : orderTables.getOrderTables()) {
-            savedOrderTable.initialTableGroup(savedTableGroup);
-            orderTableRepository.save(savedOrderTable);
-        }
+        orderTables.initialTableGroup(savedTableGroup);
 
         return TableGroupResponse.of(savedTableGroup);
     }
@@ -47,13 +44,9 @@ public class TableGroupService {
         OrderTables orderTables = tableGroup.getOrderTables();
 
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTables.getOrderTablesIds(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+                orderTables.getOrderTablesIds(), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException("주문이 완료되지 않았습니다.");
         }
-
-        for (final OrderTable orderTable : orderTables.getOrderTables()) {
-            orderTable.unGroupingTable();
-            orderTableRepository.save(orderTable);
-        }
+        orderTables.unGroupingTable();
     }
 }

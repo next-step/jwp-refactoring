@@ -18,7 +18,7 @@ public class Menu {
     private String name;
     private BigDecimal price;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
 
@@ -33,29 +33,35 @@ public class Menu {
     }
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
-        this.name = name;
-        this.price = price;
-        this.menuGroup = menuGroup;
+        this(name, price, menuGroup, Collections.emptyList());
     }
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+
         this.name = name;
-        this.price = price;
+        this.price = validationCheck(price);
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
+        checkPrice();
     }
 
     public Menu(Long id, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.id = id;
-        this.price = price;
+        this.price = validationCheck(price);
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
+        checkPrice();
     }
 
-    public void validationCheck() {
+    public void initialMenuProduct() {
+        menuProducts.forEach(menuProduct -> menuProduct.addMenu(this));
+    }
+
+    public BigDecimal validationCheck(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("입력된 가격이 올바르지 않습니다.");
         }
+        return price;
     }
 
     public void checkPrice() {

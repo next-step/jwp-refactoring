@@ -1,13 +1,11 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProductRepository;
+import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.menuGroup.domain.MenuGroupRepository;
+import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
 
 
@@ -19,29 +17,29 @@ public class MenuService {
 
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
-    private final MenuProductRepository menuProductRepository;
+    private final ProductRepository productRepository;
 
     public MenuService(MenuRepository menuRepository,
                        MenuGroupRepository menuGroupRepository,
-                       MenuProductRepository menuProductRepository
+                       ProductRepository productRepository
     ) {
         this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
-        this.menuProductRepository = menuProductRepository;
+        this.productRepository = productRepository;
     }
 
     public MenuResponse create(final MenuRequest menuRequest) {
         MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId()).orElseThrow(IllegalArgumentException::new);
-        Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup);
-        menu.validationCheck();
+        List<MenuProduct> menuProducts = menuRequest.getMenuProducts().stream()
+                .map(menuProductRequest ->
+                        new MenuProduct(productRepository.findById(menuProductRequest.getProductId()).orElseThrow(IllegalArgumentException::new),
+                                menuProductRequest.getQuantity()))
+                .collect(Collectors.toList());
+
+        Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup, menuProducts);
 
         final Menu savedMenu = menuRepository.save(menu);
-
-        for (final MenuProduct menuProduct : menuRequest.getMenuProducts()) {
-            menuProduct.addMenu(savedMenu);
-            menuProductRepository.save(menuProduct);
-        }
-        savedMenu.checkPrice();
+        savedMenu.initialMenuProduct();
 
         return MenuResponse.of(savedMenu);
     }

@@ -21,6 +21,10 @@ public class OrderTable {
     protected OrderTable() {
     }
 
+    public static OrderTable empty() {
+        return new OrderTable();
+    }
+
     public OrderTable(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
     }
@@ -36,7 +40,7 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public void unGroupingTable() {
+    public void removeTableGroup() {
         if(Objects.nonNull(tableGroup) && tableGroup.hasContain(this)) {
             tableGroup.removeTable(this);
         }
@@ -75,13 +79,14 @@ public class OrderTable {
     }
 
     public void changeNumberOfGuests(int numberOfGuests) {
+        checkEmpty();
         if (numberOfGuests < 0) {
             throw new IllegalArgumentException("손님 수가 올바르지 않습니다.");
         }
         this.numberOfGuests = numberOfGuests;
     }
 
-    public void initialTableGroup(TableGroup tableGroup) {
+    public void addTableGroup(TableGroup tableGroup) {
         if(!tableGroup.getOrderTables().hasContain(this)) {
             tableGroup.addTable(this);
         }

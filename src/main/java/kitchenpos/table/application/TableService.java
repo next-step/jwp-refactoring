@@ -24,7 +24,7 @@ public class TableService {
 
     public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
         OrderTable orderTable = new OrderTable(orderTableRequest.getNumberOfGuests(), orderTableRequest.isEmpty());
-        orderTable.unGroupingTable();
+        orderTable.removeTableGroup();
         return OrderTableResponse.of(orderTableRepository.save(orderTable));
     }
 
@@ -41,22 +41,19 @@ public class TableService {
         savedOrderTable.checkGrouping();
 
         if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException("주문이 완료되지 않았습니다.");
         }
 
         savedOrderTable.changeStatus(tableStatus);
-
         return OrderTableResponse.of(savedOrderTable);
     }
 
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final int numberOfGuests) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(() -> new IllegalArgumentException("테이블을 찾을 수 없습니다."));
-        savedOrderTable.checkEmpty();
 
         savedOrderTable.changeNumberOfGuests(numberOfGuests);
-
         return OrderTableResponse.of(savedOrderTable);
     }
 }

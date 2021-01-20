@@ -29,16 +29,13 @@ public class OrderService {
     public OrderResponse create(final OrderRequest orderRequest) {
         OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
                 .orElseThrow(() -> new IllegalArgumentException("주문 테이블을 찾을 수 없습니다."));
+        List<OrderLineItem> orderLineItems = orderRequest.getOrderLineItems().stream()
+                .map(orderLIneItemRequest -> orderLIneItemRequest.toOrderLineItem())
+                .collect(Collectors.toList());
 
-        Order order = new Order (orderTable);
-        order.changeOrderStatus(OrderStatus.COOKING);
+        final Order savedOrder = orderRepository.save(new Order(orderTable, orderLineItems));
+        savedOrder.initialItems();
 
-        final Order savedOrder = orderRepository.save(order);
-
-        for (final OrderLineItem orderLineItem : orderRequest.getOrderLineItems()) {
-            orderLineItem.addOrder(savedOrder);
-            orderLineItemRepository.save(orderLineItem);
-        }
         return OrderResponse.of(savedOrder);
     }
 
@@ -50,12 +47,11 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
-    public OrderResponse changeOrderStatus(final Long orderId, final String orderStatus) {
+    public OrderResponse changeOrderStatus(final Long orderId, final OrderStatus orderStatus) {
         final Order savedOrder = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("주문을 찾을 수 없습니다."));
 
-        savedOrder.checkOrderStatus();
-        savedOrder.changeOrderStatus(OrderStatus.valueOf(orderStatus));
+        savedOrder.changeOrderStatus(orderStatus);
 
         return OrderResponse.of(savedOrder);
     }

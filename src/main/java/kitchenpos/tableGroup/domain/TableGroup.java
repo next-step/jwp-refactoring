@@ -13,7 +13,7 @@ public class TableGroup {
     private Long id;
 
     @Embedded
-    private OrderTables orderTables = new OrderTables();
+    private OrderTables orderTables = OrderTables.empty();
 
     private LocalDateTime createdDate;
 
@@ -23,6 +23,12 @@ public class TableGroup {
     public TableGroup(OrderTables orderTables) {
         this.orderTables = orderTables;
         this.createdDate = LocalDateTime.now();
+
+        orderTables.checkOrderTables();
+    }
+
+    public static TableGroup empty() {
+        return new TableGroup();
     }
 
     public void removeTable(OrderTable orderTable) {

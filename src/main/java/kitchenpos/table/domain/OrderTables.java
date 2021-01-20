@@ -1,5 +1,6 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.tableGroup.domain.TableGroup;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.Embeddable;
@@ -14,7 +15,7 @@ public class OrderTables {
     @OneToMany(mappedBy = "tableGroup", orphanRemoval = true)
     private List<OrderTable> orderTables;
 
-    public OrderTables() {
+    protected OrderTables() {
         orderTables = new ArrayList<>();
     }
 
@@ -26,6 +27,24 @@ public class OrderTables {
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
             throw new IllegalArgumentException("그룹핑할 테이블이 부족합니다.");
         }
+
+        for (final OrderTable orderTable : orderTables) {
+            if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup())) {
+                throw new IllegalArgumentException("테이블이 사용중이거나 이미 그룹핑되어 있습니다.");
+            }
+        }
+    }
+
+    public static OrderTables empty() {
+        return new OrderTables();
+    }
+
+    public void initialTableGroup(TableGroup tableGroup) {
+        orderTables.forEach(orderTable -> orderTable.addTableGroup(tableGroup));
+    }
+
+    public void unGroupingTable() {
+        orderTables.forEach(orderTable -> orderTable.removeTableGroup());
     }
 
     public List<Long> getOrderTablesIds() {
@@ -38,24 +57,12 @@ public class OrderTables {
         return orderTables;
     }
 
-   public int getSize() {
-        return this.orderTables.size();
-    }
-
     public boolean hasContain(OrderTable orderTable) {
         return orderTables.contains(orderTable);
     }
 
     public void removeTable(OrderTable orderTable) {
         orderTables.remove(orderTable);
-    }
-
-    public void checkTableStatus() {
-        for (final OrderTable orderTable : orderTables) {
-            if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup())) {
-                throw new IllegalArgumentException("테이블이 사용중이거나 이미 그룹핑되어 있습니다.");
-            }
-        }
     }
 
     public void addTable(OrderTable orderTable) {
