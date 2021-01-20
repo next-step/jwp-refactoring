@@ -5,6 +5,7 @@ import kitchenpos.menuGroup.domain.MenuGroup;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,6 +28,10 @@ public class Menu {
     protected Menu() {
     }
 
+    public Menu(Long id) {
+        this(id, BigDecimal.ZERO, MenuGroup.empty(), Collections.emptyList());
+    }
+
     public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
         this.name = name;
         this.price = price;
@@ -35,6 +40,13 @@ public class Menu {
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.name = name;
+        this.price = price;
+        this.menuGroup = menuGroup;
+        this.menuProducts = menuProducts;
+    }
+
+    public Menu(Long id, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        this.id = id;
         this.price = price;
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
