@@ -128,7 +128,7 @@ class TableServiceTest {
 		);
 	}
 
-	@DisplayName("주문 테이블[예외]: 손님 인원수 변경 테스트(1. 변경 인원수아 0 이하일 수 없다.)")
+	@DisplayName("주문 테이블[예외]: 손님 인원수 변경 테스트(1. 변경 인원수가 0 이하일 수 없다.)")
 	@Test
 	void errorChangeNumberTest() {
 		// given // when

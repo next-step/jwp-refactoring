@@ -36,6 +36,10 @@ public class TableRestAcceptance extends AcceptanceTest {
 		return response;
 	}
 
+	public static ExtractableResponse<Response> 주문_빈_테이블_등록되어있음() {
+		return 주문_테이블_등록_요청(OrderTable.of(null, null, 0, true));
+	}
+
 	public static ExtractableResponse<Response> 주문_테이블_상태변경_요청(OrderTable orderTable, OrderTable expected) {
 		return RestAssured
 			.given().log().all()
