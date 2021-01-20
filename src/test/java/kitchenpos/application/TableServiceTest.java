@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import static java.util.Optional.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -15,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 
@@ -63,4 +65,30 @@ class TableServiceTest {
 		// then
 		assertThat(orderTables).contains(savedOrderTable);
 	}
+
+	@DisplayName("테이블을 비울 수 있다.")
+	@Test
+	void changeEmpty(){
+		// given
+		Long orderTableId = 1L;
+		OrderTable orderTable = mock(OrderTable.class);
+		when(orderTable.getId()).thenReturn(orderTableId);
+		when(orderTable.getTableGroupId()).thenReturn(null);
+
+		when(orderTableDao.findById(orderTable.getId())).thenReturn(of(orderTable));
+		when(orderDao.existsByOrderTableIdAndOrderStatusIn(
+			orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(false);
+
+		OrderTable savedOrderTable = mock(OrderTable.class);
+		when(savedOrderTable.isEmpty()).thenReturn(true);
+		when(orderTableDao.save(orderTable)).thenReturn(savedOrderTable);
+		TableService tableService = new TableService(orderDao, orderTableDao);
+
+		// when
+		OrderTable finalSavedOrderTable = tableService.changeEmpty(orderTableId, orderTable);
+
+		// then
+		assertThat(finalSavedOrderTable.isEmpty()).isTrue();
+	}
+
 }
