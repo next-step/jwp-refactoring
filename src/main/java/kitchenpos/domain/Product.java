@@ -19,16 +19,11 @@ public class Product {
         this.price = price;
     }
 
-    private void validate(BigDecimal price) {
-        if (price == null) {
-            throw new IllegalArgumentException("Product의 price는 필수입니다.");
-        }
-        if (price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("Product의 price는 0이상이어야합니다.");
-        }
+    public Product() {
     }
 
-    public Product() {
+    public BigDecimal getSumPrice(Long quantity) {
+        return price.multiply(BigDecimal.valueOf(quantity));
     }
 
     public Long getId() {
@@ -41,5 +36,14 @@ public class Product {
 
     public BigDecimal getPrice() {
         return price;
+    }
+
+    private void validate(BigDecimal price) {
+        if (price == null) {
+            throw new IllegalArgumentException("Product의 price는 필수입니다.");
+        }
+        if (price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Product의 price는 0이상이어야합니다.");
+        }
     }
 }

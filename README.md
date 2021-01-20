@@ -163,10 +163,12 @@
         - [x] JPA Entity, Repository 적용
     - [ ] MenuProduct
         - [x] JPA Entity, Repository 적용
+        - [x] 엔티티 필드 연관 관계 개선 
     - [ ] MenuGroup
         - [x] JPA Entity, Repository 적용
     - [ ] Menu
         - [x] JPA Entity, Repository 적용
+        - [x] 엔티티 필드 연관 관계 개선
     - [ ] OrderLineItem
         - [x] JPA Entity, Repository 적용
     - [ ] Order
