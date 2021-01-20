@@ -2,8 +2,6 @@ package kitchenpos.dto;
 
 import kitchenpos.domain.OrderTable;
 
-import java.util.Objects;
-
 public class OrderTableRequest {
     private Long id;
     private Integer numberOfGuests;
@@ -43,26 +41,5 @@ public class OrderTableRequest {
 
     public Boolean isEmpty() {
         return empty;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        OrderTableRequest that = (OrderTableRequest) o;
-        return Objects.equals(numberOfGuests, that.numberOfGuests) && Objects.equals(empty, that.empty);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(numberOfGuests, empty);
-    }
-
-    @Override
-    public String toString() {
-        return "OrderTableRequest{" +
-                "numberOfGuests=" + numberOfGuests +
-                ", empty=" + empty +
-                '}';
     }
 }

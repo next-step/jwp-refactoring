@@ -9,7 +9,7 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn
+    @JoinColumn(name = "table_group_id")
     private TableGroup tableGroup;
     @Column
     private Integer numberOfGuests;
