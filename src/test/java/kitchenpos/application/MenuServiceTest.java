@@ -1,11 +1,11 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ class MenuServiceTest {
     @Autowired
     private MenuGroupDao menuGroupDao;
     @Autowired
-    private ProductDao productDao;
+    private ProductService productService;
     @Autowired
     private MenuService menuService;
 
@@ -39,8 +39,8 @@ class MenuServiceTest {
     void create() {
         // given
         MenuGroup menuGroup = menuGroupDao.findById(4L).get();
-        Product product1 = productDao.findById(1L).get();
-        Product product2 = productDao.findById(2L).get();
+        Product product1 = productService.findById(1L);
+        Product product2 = productService.findById(2L);
         List<MenuProduct> menuProducts = Arrays.asList(
             new MenuProduct(1L, product1.getId(), 1),
             new MenuProduct(2L, product2.getId(), 1)
@@ -90,8 +90,8 @@ class MenuServiceTest {
     void create_exception3() {
         // given
         MenuGroup menuGroup = menuGroupDao.findById(4L).get();
-        Product product1 = productDao.findById(1L).get();
-        Product product2 = productDao.findById(2L).get();
+        Product product1 = productService.findById(1L);
+        Product product2 = productService.findById(2L);
         List<MenuProduct> menuProducts = Arrays.asList(
             new MenuProduct(1L, product1.getId(), 1),
             new MenuProduct(2L, product2.getId(), 1)

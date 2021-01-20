@@ -1,6 +1,7 @@
-package kitchenpos.application;
+package kitchenpos.product.application;
 
-import kitchenpos.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +23,14 @@ class ProductServiceTest {
     @Test
     void create() {
         // given
-        Product product = new Product("사이다", BigDecimal.valueOf(1_000));
+        ProductRequest product = new ProductRequest("사이다", BigDecimal.valueOf(1_000));
 
         // when
-        Product savedProduct = productService.create(product);
+        ProductResponse response = productService.create(product);
 
         // then
-        assertThat(savedProduct.getId()).isNotNull();
-        assertThat(savedProduct.getName()).isEqualTo("사이다");
+        assertThat(response.getId()).isNotNull();
+        assertThat(response.getName()).isEqualTo("사이다");
     }
 
     @DisplayName("상품 등록 예외 - 상품 금액은 0보다 커야 한다.")
@@ -37,7 +38,7 @@ class ProductServiceTest {
     void create_exception1() {
         // when, then
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> productService.create(new Product("사이다", BigDecimal.valueOf(-1))))
+            .isThrownBy(() -> productService.create(new ProductRequest("사이다", BigDecimal.valueOf(-1))))
             .withMessage("상품 금액은 0보다 커야 한다.");
     }
 
@@ -45,9 +46,10 @@ class ProductServiceTest {
     @Test
     void list() {
         // when
-        List<Product> list = productService.list();
+        List<ProductResponse> list = productService.list();
 
         // then
         assertThat(list.size()).isGreaterThan(0);
     }
+
 }

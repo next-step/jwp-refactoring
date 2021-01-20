@@ -1,8 +1,8 @@
-package kitchenpos.ui;
+package kitchenpos.product.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.application.ProductService;
-import kitchenpos.domain.Product;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.dto.ProductResponse;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,7 +38,7 @@ class ProductRestControllerTest {
     @DisplayName("상품을 등록한다.")
     @Test
     void create() throws Exception {
-        Product product = new Product(1L, "product", new BigDecimal(10_000));
+        ProductResponse product = new ProductResponse(1L, "product", new BigDecimal(10_000));
         when(productService.create(any())).thenReturn(product);
 
         mockMvc.perform(post("/api/products")
@@ -51,8 +51,8 @@ class ProductRestControllerTest {
     @DisplayName("상품 목록을 조회한다.")
     @Test
     void list() throws Exception {
-        Product product1 = new Product("product1", new BigDecimal(10_000));
-        Product product2 = new Product("product2", new BigDecimal(10_000));
+        ProductResponse product1 = new ProductResponse(1L, "product1", new BigDecimal(10_000));
+        ProductResponse product2 = new ProductResponse(2L, "product2", new BigDecimal(10_000));
 
         when(productService.list()).thenReturn(Arrays.asList(product1, product2));
 
