@@ -24,11 +24,7 @@ public class Menu {
     @OneToMany(mappedBy = "menu", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
-    public Menu() {
-    }
-
-    public Menu(Long id) {
-        this.id = id;
+    protected Menu() {
     }
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup) {

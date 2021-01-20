@@ -19,7 +19,7 @@ public class Order {
     private String orderStatus;
     private LocalDateTime orderedTime;
 
-    public Order() {
+    protected Order() {
     }
 
     public Order(OrderTable orderTable) {
