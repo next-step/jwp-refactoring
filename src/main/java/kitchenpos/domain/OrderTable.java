@@ -11,6 +11,9 @@ import javax.persistence.*;
 public class OrderTable extends BaseIdEntity {
 
 	static final String MSG_TABLE_GROUP_NOT_NULL = "tableGroup must not be null";
+	static final String MSG_ORDER_TABLE_ALREADY_GROUP = "OrderTable already has TableGroup";
+	static final String MSG_ORDER_TABLE_ONGOING = "OrderTable's OrderStatus is ongoing";
+	static final String MSG_ORDER_TABLE_EMPTY = "OrderTable must be empty";
 
 	@ManyToOne
 	@JoinColumn(name = "table_group_id", nullable = true)
@@ -35,20 +38,36 @@ public class OrderTable extends BaseIdEntity {
 		this.empty = empty;
 	}
 
-	public TableGroup getTableGroup() {
-		return tableGroup;
-	}
-
-	public void putIntoGroup(TableGroup tableGroup) {
+	void putIntoGroup(TableGroup tableGroup) {
 		if (tableGroup == null) {
-			// TODO: 2021-01-19 테스트 작성
 			throw new TableValidationException(MSG_TABLE_GROUP_NOT_NULL);
 		}
+
+		if (this.tableGroup != null) {
+			throw new TableValidationException(MSG_ORDER_TABLE_ALREADY_GROUP);
+		}
+
+		if (!this.empty) {
+			throw new TableValidationException(MSG_ORDER_TABLE_EMPTY);
+		}
 		this.tableGroup = tableGroup;
+		this.empty = false;
 	}
 
-	public void ungroup() {
+	void ungroup() {
+		if (hasOngoingOrder()) {
+			throw new TableValidationException(MSG_ORDER_TABLE_ONGOING);
+		}
 		this.tableGroup = null;
+	}
+
+	private boolean hasOngoingOrder() {
+		// TODO: 2021-01-21 주문테이블 상태비교
+		return false;
+	}
+
+	public TableGroup getTableGroup() {
+		return tableGroup;
 	}
 
 	public NumberOfGuests getNumberOfGuests() {

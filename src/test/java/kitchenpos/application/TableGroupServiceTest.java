@@ -1,10 +1,12 @@
 package kitchenpos.application;
 
 import kitchenpos.common.NotFoundException;
-import kitchenpos.common.TableGroupValidationException;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
-import kitchenpos.dto.*;
+import kitchenpos.dto.OrderTableRequest_Create;
+import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.dto.TableGroupRequest_Create;
+import kitchenpos.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +15,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,9 +35,6 @@ class TableGroupServiceTest {
 
 	@Autowired
 	private TableGroupDao tableGroupDao;
-
-	@Autowired
-	private TableTestSupport tableTestSupport;
 
 	private OrderTableResponse orderTable1;
 	private OrderTableResponse orderTable2;
@@ -68,51 +66,13 @@ class TableGroupServiceTest {
 				.allSatisfy(orderTable -> assertThat(orderTable.getTableGroup().getId()).isEqualTo(response.getId()));
 	}
 
-	@DisplayName("단체 지정하려는 테이블 수가 적을 경우 예외 발생.")
-	@Test
-	void create_OrderTablesLow() {
-		TableGroupRequest_Create request1 = new TableGroupRequest_Create(Collections.singletonList(orderTable1.getId()));
-		TableGroupRequest_Create request2 = new TableGroupRequest_Create(Collections.emptyList());
-
-		assertThatThrownBy(() -> tableGroupService.create(request1))
-				.isInstanceOf(TableGroupValidationException.class)
-				.hasMessageMatching(TableGroupService.MSG_TABLE_ID_MUST_GREATER);
-		assertThatThrownBy(() -> tableGroupService.create(request2))
-				.isInstanceOf(TableGroupValidationException.class)
-				.hasMessageMatching(TableGroupService.MSG_TABLE_ID_MUST_GREATER);
-	}
-
 	@DisplayName("단체 지정하려는 테이블의 ID가 실제로 존재하지 않을 경우 예외 발생.")
 	@Test
-	void create_NotExistTable() {
+	void create_ExceptionNotExistTable() {
 		final TableGroupRequest_Create request = new TableGroupRequest_Create(Arrays.asList(-1L, -99L));
 		assertThatThrownBy(() -> tableGroupService.create(request))
 				.isInstanceOf(NotFoundException.class)
 				.hasMessageMatching(TableGroupService.CANNOT_FIND_ORDER_TABLE);
-	}
-
-	@DisplayName("이미 단체 지정된 테이블을 단체 지정하려고 시도 할 경우 예외 발생.")
-	@Test
-	void create_AlreadyGroupExist() {
-		// given
-		final TableGroupRequest_Create request = new TableGroupRequest_Create(orderTableIds);
-		tableGroupService.create(request);
-
-		// when then
-		assertThatThrownBy(() -> tableGroupService.create(request))
-				.isInstanceOf(TableGroupValidationException.class)
-				.hasMessageMatching(TableGroupService.MSG_ORDER_TABLE_ALREADY_GROUP);
-	}
-
-	@DisplayName("단체 지정시 테이블이 비어 있지 않은 경우 예외 발생.")
-	@Test
-	void create_EmptyFalse() {
-		// given
-		tableService.changeEmpty(orderTable1.getId(), new OrderTableRequest_ChangeEmpty(false));
-
-		assertThatThrownBy(() -> tableGroupService.create(new TableGroupRequest_Create(orderTableIds)))
-				.isInstanceOf(TableGroupValidationException.class)
-				.hasMessageMatching(TableGroupService.MSG_ORDER_TABLE_EMPTY);
 	}
 
 	@DisplayName("단체 지정된 테이블의 단체지정을 해제한다.")
@@ -131,20 +91,14 @@ class TableGroupServiceTest {
 				.map(id -> orderTableDao.findById(id).orElseThrow(Exception::new))
 				.allSatisfy(orderTable -> assertThat(orderTable.getTableGroup()).isNull());
 
-		// TODO: 2021-01-15 테이블 그룹 삭제되도록 처리
 		assertThat(tableGroupDao.findById(response.getId())).isNotPresent();
 	}
 
-	@DisplayName("단체 지정 해제가 불가능한 상태일때 단체지정을 요청할경우 예외 발생.")
+	@DisplayName("단체지정 해제하려는 테이블의 ID가 실제로 존재하지 않을 경우 예외 발생")
 	@Test
-	void ungroup_StatusWrong() {
-		// given
-		TableGroupResponse response = tableGroupService.create(new TableGroupRequest_Create(orderTableIds));
-		tableTestSupport.addOrder(orderTableIds.get(0));
-
-		// when
-		assertThatThrownBy(() -> tableGroupService.ungroup(response.getId()))
+	void ungroup_ExceptionNotExistGroup() {
+		assertThatThrownBy(() -> tableGroupService.ungroup(-1))
 				.isInstanceOf(NotFoundException.class)
-				.hasMessageMatching(TableGroupService.MSG_ORDER_TABLE_ONGOING);
+				.hasMessageMatching(TableGroupService.MSG_CANNOT_FIND_TABLE_GROUP);
 	}
 }
