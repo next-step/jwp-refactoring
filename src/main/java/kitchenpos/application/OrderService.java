@@ -1,11 +1,9 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.MenuRepository;
-import kitchenpos.dao.OrderLineItemRepository;
 import kitchenpos.dao.OrderRepository;
 import kitchenpos.dao.OrderTableRepository;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Orders;
 import kitchenpos.dto.OrderRequest;
@@ -14,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,18 +19,15 @@ import java.util.stream.Collectors;
 public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
-    private final OrderLineItemRepository orderLineItemRepository;
     private final OrderTableRepository orderTableRepository;
 
     public OrderService(
-            final MenuRepository menuRepository,
-            final OrderRepository orderRepository,
-            final OrderLineItemRepository orderLineItemRepository,
-            final OrderTableRepository orderTableRepository
+            MenuRepository menuRepository,
+            OrderRepository orderRepository,
+            OrderTableRepository orderTableRepository
     ) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
-        this.orderLineItemRepository = orderLineItemRepository;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -54,19 +48,11 @@ public class OrderService {
     }
 
     public OrderResponse changeOrderStatus(final Long orderId, OrderRequest request) {
-        final Orders savedOrders = orderRepository.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (Objects.equals(OrderStatus.COMPLETION, savedOrders.getOrderStatus())) {
-            throw new IllegalArgumentException();
+        final Orders savedOrders = findById(orderId);
+        if (savedOrders.isCompleted()) {
+            throw new IllegalArgumentException("종료된 주문의 상태는 변경할 수 없습니다.");
         }
-
-        savedOrders.setOrderStatus(request.getOrderStatus());
-
-        orderRepository.save(savedOrders);
-
-        savedOrders.setOrderLineItems(orderLineItemRepository.findAllByOrderId(orderId));
-
+        savedOrders.changeStatus(request.getOrderStatus());
         return OrderResponse.from(savedOrders);
     }
 
@@ -74,5 +60,10 @@ public class OrderService {
         return orderTableRepository.findById(id)
                 .filter(OrderTable::isNotEmpty)
                 .orElseThrow(() -> new IllegalArgumentException("주문을 생성할 수 있는 테이블이 존재하지 않습니다."));
+    }
+
+    public Orders findById(Long id) {
+        return orderRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Order id:" + id + "는 존재하지 않습니다."));
     }
 }

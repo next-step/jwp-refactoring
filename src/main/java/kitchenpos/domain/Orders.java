@@ -43,6 +43,14 @@ public class Orders {
         orderLineItems.add(orderLineItem);
     }
 
+    public void changeStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public boolean isCompleted() {
+        return orderStatus == OrderStatus.COMPLETION;
+    }
+
     public Long getId() {
         return id;
     }
@@ -57,10 +65,6 @@ public class Orders {
 
     public OrderStatus getOrderStatus() {
         return orderStatus;
-    }
-
-    public void setOrderStatus(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
     }
 
     public LocalDateTime getOrderedTime() {
