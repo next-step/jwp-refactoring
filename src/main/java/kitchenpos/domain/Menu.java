@@ -12,8 +12,8 @@ public class Menu {
     private Long id;
     @Column
     private String name;
-    @Column
-    private BigDecimal price;
+    @Embedded
+    private MenuPrice price;
     @ManyToOne
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
@@ -21,7 +21,6 @@ public class Menu {
     private final List<MenuProduct> menuProducts = new ArrayList<>();
 
     public static Menu create(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        validatePrice(price);
         Menu menu = new Menu(name, price, menuGroup);
         menuProducts.forEach(menu::addMenuProduct);
         return menu;
@@ -29,7 +28,7 @@ public class Menu {
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
         this.name = name;
-        this.price = price;
+        this.price = new MenuPrice(price);
         this.menuGroup = menuGroup;
     }
 
@@ -49,7 +48,7 @@ public class Menu {
     }
 
     public BigDecimal getPrice() {
-        return price;
+        return price.getPrice();
     }
 
     public MenuGroup getMenuGroup() {
@@ -58,11 +57,5 @@ public class Menu {
 
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
-    }
-
-    private static void validatePrice(BigDecimal price) {
-        if (price == null || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
     }
 }

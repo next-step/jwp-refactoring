@@ -172,6 +172,7 @@
     - [ ] Menu
         - [x] JPA Entity, Repository 적용
         - [x] 엔티티 필드 연관 관계 개선
+        - [x] price 필드 Embedded 타입 반영
     - [ ] OrderLineItem
         - [x] JPA Entity, Repository 적용
     - [ ] Order
