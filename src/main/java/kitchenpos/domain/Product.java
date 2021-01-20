@@ -10,20 +10,19 @@ public class Product {
     private Long id;
     @Column
     private String name;
-    @Column(nullable = false)
-    private BigDecimal price;
+    @Embedded
+    private ProductPrice price;
 
     public Product(String name, BigDecimal price) {
-        validate(price);
         this.name = name;
-        this.price = price;
+        this.price = new ProductPrice(price);
     }
 
     protected Product() {
     }
 
-    public BigDecimal getSumPrice(Long quantity) {
-        return price.multiply(BigDecimal.valueOf(quantity));
+    public BigDecimal getSumOfProducts(Long quantity) {
+        return price.multiply(quantity);
     }
 
     public Long getId() {
@@ -35,15 +34,6 @@ public class Product {
     }
 
     public BigDecimal getPrice() {
-        return price;
-    }
-
-    private void validate(BigDecimal price) {
-        if (price == null) {
-            throw new IllegalArgumentException("Product의 price는 필수입니다.");
-        }
-        if (price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("Product의 price는 0이상이어야합니다.");
-        }
+        return price.getPrice();
     }
 }

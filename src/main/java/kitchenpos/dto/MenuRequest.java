@@ -59,7 +59,7 @@ public class MenuRequest {
                     .filter(filterProduct -> menuProductRequest.getProductId().equals(filterProduct.getId()))
                     .findFirst()
                     .orElseThrow(IllegalArgumentException::new);
-            sum = sum.add(product.getSumPrice(menuProductRequest.getQuantity()));
+            sum = sum.add(product.getSumOfProducts(menuProductRequest.getQuantity()));
         }
         return sum;
     }

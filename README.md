@@ -159,6 +159,7 @@
 - [ ] JPA 도메인 리팩터링
     - [ ] Product
         - [x] JPA Entity, Repository 적용
+        - [x] price 필드 Embedded 타입 반영
     - [ ] OrderTable
         - [x] JPA Entity, Repository 적용
     - [ ] TableGroup
