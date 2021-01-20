@@ -151,6 +151,34 @@ class TableServiceTest {
 		assertThat(finalSavedOrderTable.getNumberOfGuests()).isEqualTo(orderTable.getNumberOfGuests());
 	}
 
+	@DisplayName("손님은 항상 존재해야 한다.")
+	@Test
+	void numberOfGuestMustExist(){
+		// given
+		Long orderTableId = 1L;
+		OrderTable orderTable = new OrderTable();
+		orderTable.setNumberOfGuests(-5);
+		TableService tableService = new TableService(orderDao, orderTableDao);
 
+		// when - then
+		assertThatThrownBy(() -> {
+			tableService.changeEmpty(orderTableId, orderTable);
+		}).isInstanceOf(IllegalArgumentException.class);
+	}
+
+	@DisplayName("테이블은 항상 존재해야 한다.")
+	@Test
+	void orderTableMustExist(){
+		Long orderTableId = 1L;
+		OrderTable orderTable = new OrderTable();
+		orderTable.setNumberOfGuests(5);
+		TableService tableService = new TableService(orderDao, orderTableDao);
+
+		// when - then
+		assertThatThrownBy(() -> {
+			tableService.changeEmpty(orderTableId, orderTable);
+		}).isInstanceOf(IllegalArgumentException.class);
+
+	}
 
 }
