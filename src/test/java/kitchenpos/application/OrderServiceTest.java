@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -100,7 +101,6 @@ class OrderServiceTest {
 	@Test
 	void empTyOrderTableCannotOrder(){
 		// given
-		// given
 		Order order = mock(Order.class);
 
 		OrderLineItem orderLineItem = mock(OrderLineItem.class);
@@ -114,6 +114,25 @@ class OrderServiceTest {
 		assertThatThrownBy(() -> {
 			orderService.create(order);
 		}).isInstanceOf(IllegalArgumentException.class);
+	}
+
+	@DisplayName("주문의 목록을 조회할 수 있다.")
+	@Test
+	void list(){
+		// given
+		Order order = mock(Order.class);
+		when(order.getId()).thenReturn(1L);
+		when(orderDao.findAll()).thenReturn(Arrays.asList(order));
+
+		OrderLineItem orderLineItem = mock(OrderLineItem.class);
+		when(orderLineItemDao.findAllByOrderId(any())).thenReturn(Arrays.asList(orderLineItem));
+		OrderService orderService = new OrderService(menuDao, orderDao, orderLineItemDao, orderTableDao);
+
+		// when
+		List<Order> orders = orderService.list();
+
+		// then
+		assertThat(orders).contains(order);
 	}
 
 }
