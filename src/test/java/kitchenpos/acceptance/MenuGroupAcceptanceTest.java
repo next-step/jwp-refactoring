@@ -4,7 +4,6 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -55,7 +54,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
 
     public static void 생성됨(ExtractableResponse<Response> response, MenuGroupRequest request) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        MenuGroup menuGroup = response.as(MenuGroup.class);
+        MenuGroupResponse menuGroup = response.as(MenuGroupResponse.class);
         assertThat(menuGroup.getName()).isEqualTo(request.getName());
     }
 

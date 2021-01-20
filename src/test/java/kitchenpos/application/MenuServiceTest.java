@@ -84,7 +84,7 @@ public class MenuServiceTest extends ServiceTestBase {
         List<MenuProductRequest> menuProducts = Collections.singletonList(createMenuProduct(product.getId(), 2L));
         MenuRequest request = createRequest("후라이드+후라이드", 19_000L, 99L, menuProducts);
 
-        assertThatExceptionOfType(DataIntegrityViolationException.class)
+        assertThatExceptionOfType(EntityNotFoundException.class)
                 .isThrownBy(() -> menuService.create(request));
     }
 

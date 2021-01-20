@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.OrderLineItem;
 import kitchenpos.dto.*;
 import kitchenpos.exception.TableInUseException;
 import org.junit.jupiter.api.DisplayName;
@@ -72,8 +71,8 @@ public class TableServiceTest extends ServiceTestBase {
         MenuResponse menu = menuService.create(MenuServiceTest.createRequest("후라이드+후라이드", 19_000L, menuGroup.getId(), menuProducts));
         TableResponse orderTable = tableService.create();
         tableService.update(orderTable.getId(), createRequest(4));
-        List<OrderLineItem> orderLineItems = Collections.singletonList(OrderServiceTest.createOrderLineItem(menu.getId(), 1L));
-        orderService.create(OrderServiceTest.createOrder(orderTable.getId(), orderLineItems));
+        List<OrderMenuRequest> orderMenus = Collections.singletonList(OrderServiceTest.createOrderLineItem(menu.getId(), 1L));
+        orderService.create(OrderServiceTest.createOrder(orderTable.getId(), orderMenus));
 
         assertThatExceptionOfType(TableInUseException.class)
                 .isThrownBy(() -> tableService.update(orderTable.getId(), createRequest(0)));

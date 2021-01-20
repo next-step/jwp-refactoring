@@ -6,9 +6,7 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.Product;
-import kitchenpos.dto.MenuProductRequest;
-import kitchenpos.dto.MenuRequest;
-import kitchenpos.dto.MenuResponse;
+import kitchenpos.dto.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -30,10 +28,10 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     }
 
     private void 메뉴_생성() {
-        MenuGroup menuGroup = MenuGroupAcceptanceTest.생성_요청(MenuGroupAcceptanceTest.createRequest())
-                .as(MenuGroup.class);
-        Product product = ProductAcceptanceTest.생성_요청(ProductAcceptanceTest.createRequest())
-                .as(Product.class);
+        MenuGroupResponse menuGroup = MenuGroupAcceptanceTest.생성_요청(MenuGroupAcceptanceTest.createRequest())
+                .as(MenuGroupResponse.class);
+        ProductResponse product = ProductAcceptanceTest.생성_요청(ProductAcceptanceTest.createRequest())
+                .as(ProductResponse.class);
 
         MenuRequest request = createRequest(menuGroup, product);
         ExtractableResponse<Response> createdResponse = 생성_요청(request);
@@ -47,7 +45,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         조회됨(selectedResponse);
     }
 
-    public static MenuRequest createRequest(MenuGroup menuGroup, Product product) {
+    public static MenuRequest createRequest(MenuGroupResponse menuGroup, ProductResponse product) {
         MenuProductRequest menuProductRequest = MenuProductRequest.builder()
                 .productId(product.getId())
                 .quantity(2)

@@ -1,7 +1,6 @@
 package kitchenpos.domain;
 
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -20,7 +19,6 @@ public class MenuProduct {
     private Product product;
     private Long quantity;
 
-    @Builder
     public MenuProduct(Menu menu, Product product, Long quantity) {
         this.menu = menu;
         this.product = product;

@@ -1,19 +1,20 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.*;
 import kitchenpos.dto.*;
-import kitchenpos.exception.*;
+import kitchenpos.exception.InvalidTableCountException;
+import kitchenpos.exception.NotFoundEntityException;
+import kitchenpos.exception.TableInUseException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @DisplayName("테이블 그룹 서비스")
 public class TableGroupServiceTest extends ServiceTestBase {
@@ -119,8 +120,8 @@ public class TableGroupServiceTest extends ServiceTestBase {
         TableResponse savedTable2 = tableService.create();
         TableGroupResponse savedTableGroup = tableGroupService.create(createTableGroup(savedTable, savedTable2));
         tableService.update(savedTable.getId(), TableServiceTest.createRequest(4));
-        List<OrderLineItem> orderLineItems = Collections.singletonList(OrderServiceTest.createOrderLineItem(menu.getId(), 1L));
-        orderService.create(OrderServiceTest.createOrder(savedTable.getId(), orderLineItems));
+        List<OrderMenuRequest> orderMenus = Collections.singletonList(OrderServiceTest.createOrderLineItem(menu.getId(), 1L));
+        orderService.create(OrderServiceTest.createOrder(savedTable.getId(), orderMenus));
 
         assertThatExceptionOfType(TableInUseException.class)
                 .isThrownBy(() -> tableGroupService.ungroup(savedTableGroup.getId()));
