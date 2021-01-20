@@ -1,5 +1,6 @@
 package kitchenpos.tablegroup.application;
 
+import kitchenpos.common.BaseTest;
 import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
@@ -13,9 +14,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
-import org.springframework.test.context.jdbc.Sql;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -25,10 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("테이블 그룹 비즈니스 로직을 처리하는 서비스 테스트")
-@SpringBootTest
-@Sql("/db/test_data.sql")
-@EnableJpaAuditing
-class TableGroupServiceTest {
+class TableGroupServiceTest extends BaseTest {
     @Autowired
     private OrderRepository orderRepository;
 
@@ -45,6 +40,15 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
+        orderTableRepository.save(OrderTable.of(null, 0, true));
+        orderTableRepository.save(OrderTable.of(null, 0, true));
+        orderTableRepository.save(OrderTable.of(null, 0, true));
+        orderTableRepository.save(OrderTable.of(null, 0, true));
+        orderTableRepository.save(OrderTable.of(null, 0, true));
+        orderTableRepository.save(OrderTable.of(null, 0, true));
+        orderTableRepository.save(OrderTable.of(null, 0, true));
+        orderTableRepository.save(OrderTable.of(null, 0, true));
+
         tableGroupRequest = new TableGroupRequest();
         tableGroupRequest.setOrderTableIds(Arrays.asList(3L, 4L, 5L));
     }

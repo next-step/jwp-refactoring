@@ -7,6 +7,8 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 public class OrderRequest {
+    private static final String ERR_TEXT_INVALID_ORDER = "유효하지 않은 주문 정보입니다.";
+
     private Long id;
     private Long orderTableId;
     private String orderStatus;
@@ -51,6 +53,10 @@ public class OrderRequest {
     }
 
     public void setOrderLineItems(final List<OrderLineItemRequest> orderLineItems) {
+        if (orderLineItems == null || orderLineItems.isEmpty()) {
+            throw new IllegalArgumentException(ERR_TEXT_INVALID_ORDER);
+        }
+
         this.orderLineItems = orderLineItems;
     }
 

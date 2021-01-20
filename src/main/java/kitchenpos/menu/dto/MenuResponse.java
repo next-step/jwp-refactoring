@@ -1,54 +1,51 @@
 package kitchenpos.menu.dto;
 
-import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
+
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 public class MenuResponse {
-    private String name;
-    private long price;
-    private MenuGroup menuGroup;
-    private MenuProducts menuProducts;
+    private final Long id;
+    private final String name;
+    private final long price;
+    private final MenuGroupResponse menuGroup;
+    private final List<MenuProductResponse> menuProducts;
 
-    public MenuResponse(final String name, final long price, final MenuGroup menuGroup, final MenuProducts menuProducts) {
+    public MenuResponse(final Long id, final String name, final long price, final MenuGroupResponse menuGroup, final List<MenuProduct> menuProducts) {
+        this.id = id;
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
-        this.menuProducts = menuProducts;
+        this.menuProducts = menuProducts.stream()
+            .map(MenuProductResponse::new)
+            .collect(toList());
+    }
+
+    public MenuResponse(final Menu menu) {
+        this(menu.getId(), menu.getName(), menu.getPrice().longValue(), new MenuGroupResponse(menu.getMenuGroup()), menu.getMenuProducts());
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getName() {
         return name;
     }
 
-    public MenuResponse setName(final String name) {
-        this.name = name;
-        return this;
-    }
-
     public long getPrice() {
         return price;
     }
 
-    public MenuResponse setPrice(final long price) {
-        this.price = price;
-        return this;
-    }
-
-    public MenuGroup getMenuGroup() {
+    public MenuGroupResponse getMenuGroup() {
         return menuGroup;
     }
 
-    public MenuResponse setMenuGroup(final MenuGroup menuGroup) {
-        this.menuGroup = menuGroup;
-        return this;
-    }
-
-    public MenuProducts getMenuProducts() {
+    public List<MenuProductResponse> getMenuProducts() {
         return menuProducts;
-    }
-
-    public MenuResponse setMenuProducts(final MenuProducts menuProducts) {
-        this.menuProducts = menuProducts;
-        return this;
     }
 }

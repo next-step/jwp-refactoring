@@ -1,5 +1,6 @@
 package kitchenpos.table.application;
 
+import kitchenpos.common.BaseTest;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
@@ -13,9 +14,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
-import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
 
@@ -23,10 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("주문 테이블 비즈니스 로직을 처리하는 서비스 테스트")
-@SpringBootTest
-@Sql("/db/test_data.sql")
-@EnableJpaAuditing
-class TableServiceTest {
+class TableServiceTest extends BaseTest {
     @Autowired
     private OrderRepository orderRepository;
 
@@ -63,6 +58,8 @@ class TableServiceTest {
     @DisplayName("주문 테이블을 조회한다.")
     @Test
     void 주문_테이블_조회() {
+        orderTableRepository.save(OrderTable.of(null, 1, true));
+
         final List<OrderTableResponse> orderTables = tableService.list();
 
         assertThat(orderTables.size()).isGreaterThan(0);

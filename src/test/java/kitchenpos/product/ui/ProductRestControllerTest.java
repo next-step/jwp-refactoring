@@ -1,16 +1,19 @@
 package kitchenpos.product.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kitchenpos.common.BaseTest;
+import kitchenpos.menu.domain.Price;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.math.BigDecimal;
 
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasSize;
@@ -21,10 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("상품 컨트롤러 테스트")
-@SpringBootTest
-@AutoConfigureMockMvc
-@Sql("/db/test_data.sql")
-class ProductRestControllerTest {
+class ProductRestControllerTest extends BaseTest {
     public static final String DEFAULT_PRODUCTS_URI = "/api/products/";
 
     @Autowired
@@ -32,6 +32,9 @@ class ProductRestControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private ProductRepository productRepository;
 
     private ProductRequest productRequest;
 
@@ -57,10 +60,12 @@ class ProductRestControllerTest {
     @DisplayName("상품을 조회한다.")
     @Test
     void 상품_조회() throws Exception {
+        productRepository.save(Product.of("후라이드", Price.of(new BigDecimal(19_000L))));
+
         mockMvc.perform(get(DEFAULT_PRODUCTS_URI)
             .contentType(MediaType.APPLICATION_JSON_VALUE))
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(greaterThan(5))));
+            .andExpect(jsonPath("$", hasSize(greaterThan(0))));
     }
 }

@@ -38,13 +38,8 @@ public class OrderService {
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
         final List<OrderLineItemRequest> requestOrderLineItems = orderRequest.getOrderLineItems();
-        if (requestOrderLineItems == null || requestOrderLineItems.size() <= 0) {
-            throw new IllegalArgumentException(ERR_TEXT_INVALID_ORDER);
-        }
 
-        if (requestOrderLineItems.size() != menuRepository.countByIdIn(orderRequest.getMenuIds())) {
-            throw new IllegalArgumentException(ERR_TEXT_INVALID_ORDER);
-        }
+        checkRequestOrderMenuIsExist(orderRequest, requestOrderLineItems);
 
         final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
             .orElseThrow(IllegalArgumentException::new);
@@ -58,8 +53,14 @@ public class OrderService {
         return OrderResponse.of(savedOrder);
     }
 
-    @Transactional
-    public List<OrderResponse> list() {
+    private void checkRequestOrderMenuIsExist(final OrderRequest orderRequest, final List<OrderLineItemRequest> requestOrderLineItems) {
+        if (requestOrderLineItems.size() != menuRepository.countByIdIn(orderRequest.getMenuIds())) {
+            throw new IllegalArgumentException(ERR_TEXT_INVALID_ORDER);
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrderResponse> getOrderList() {
         return orderRepository.findAll().stream()
             .map(OrderResponse::of)
             .collect(Collectors.toList());

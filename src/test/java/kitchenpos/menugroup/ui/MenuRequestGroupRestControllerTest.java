@@ -1,15 +1,13 @@
 package kitchenpos.menugroup.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kitchenpos.common.BaseTest;
 import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.menugroup.domain.MenuGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
@@ -23,10 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("메뉴 그룹 컨트롤러 테스트")
-@SpringBootTest
-@AutoConfigureMockMvc
-@Sql("/db/test_data.sql")
-class MenuRequestGroupRestControllerTest {
+class MenuRequestGroupRestControllerTest extends BaseTest {
     private static final String DEFAULT_MENU_GROUP_URI = "/api/menu-groups";
 
     @Autowired
@@ -85,10 +80,10 @@ class MenuRequestGroupRestControllerTest {
             .contentType(MediaType.APPLICATION_JSON_VALUE))
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(6)))
-            .andExpect(jsonPath("$[4].id").exists())
-            .andExpect(jsonPath("$[4].name").value(firstMenuGroup.getName()))
-            .andExpect(jsonPath("$[5].id").exists())
-            .andExpect(jsonPath("$[5].name").value(secondMenuGroup.getName()));
+            .andExpect(jsonPath("$", hasSize(2)))
+            .andExpect(jsonPath("$[0].id").exists())
+            .andExpect(jsonPath("$[0].name").value(firstMenuGroup.getName()))
+            .andExpect(jsonPath("$[1].id").exists())
+            .andExpect(jsonPath("$[1].name").value(secondMenuGroup.getName()));
     }
 }

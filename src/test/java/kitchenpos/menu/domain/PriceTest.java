@@ -22,9 +22,7 @@ class PriceTest {
     @Test
     void createMenuWhenGivenPriceBeLessThanZero() {
         assertThatThrownBy(
-            () -> {
-                final Price price = Price.of(new BigDecimal(0));
-            }
+            () -> Price.of(new BigDecimal(0))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 }

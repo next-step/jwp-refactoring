@@ -1,6 +1,7 @@
 package kitchenpos.table.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kitchenpos.common.BaseTest;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -10,14 +11,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -26,11 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("주문 테이블 컨트롤러 테스트")
-@SpringBootTest
-@AutoConfigureMockMvc
-@Sql("/db/test_data.sql")
-@EnableJpaAuditing
-class TableRestControllerTest {
+class TableRestControllerTest extends BaseTest {
     public static final String DEFAULT_TABLES_URI = "/api/tables/";
 
     @Autowired
@@ -76,13 +68,13 @@ class TableRestControllerTest {
     @DisplayName("주문 테이블을 조회한다.")
     @Test
     void 주문_테이블_조회() throws Exception {
-        assertThat(orderTableRepository.findAll().size()).isEqualTo(8);
+        orderTableRepository.save(OrderTable.of(null, 1, true));
 
         mockMvc.perform(get(DEFAULT_TABLES_URI)
             .contentType(MediaType.APPLICATION_JSON_VALUE))
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(greaterThan(7))));
+            .andExpect(jsonPath("$", hasSize(greaterThan(0))));
     }
 
     @DisplayName("빈 테이블 설정한다.")

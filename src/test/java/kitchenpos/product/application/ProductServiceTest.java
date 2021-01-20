@@ -1,13 +1,12 @@
 package kitchenpos.product.application;
 
+import kitchenpos.common.BaseTest;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
 
@@ -15,9 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("상품 비즈니스 로직을 처리하는 서비스 테스트")
-@SpringBootTest
-@Sql("/db/test_data.sql")
-class ProductServiceTest {
+class ProductServiceTest extends BaseTest {
     private static final String PRODUCT_NAME = "후라이드";
     private static final long PRICE = 19_000L;
 
@@ -52,6 +49,8 @@ class ProductServiceTest {
     @DisplayName("상품을 조회한다.")
     @Test
     void 상품_조회() {
+        productService.create(productRequest);
+
         final List<ProductResponse> responseProducts = productService.list();
 
         assertThat(responseProducts.get(0).getId()).isNotNull();

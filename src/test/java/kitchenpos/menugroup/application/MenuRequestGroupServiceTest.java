@@ -1,20 +1,17 @@
 package kitchenpos.menugroup.application;
 
+import kitchenpos.common.BaseTest;
 import kitchenpos.menugroup.domain.MenuGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("메뉴 그룹의 비즈니스 로직을 처리하는 서비스 테스트")
-@SpringBootTest
-@Sql("/db/test_data.sql")
-class MenuRequestGroupServiceTest {
+class MenuRequestGroupServiceTest extends BaseTest {
     private static final String 순살파닭두마리메뉴 = "순살파닭두마리메뉴";
     private static final String 두마리메뉴 = "두마리메뉴";
     private static final String 한마리메뉴 = "한마리메뉴";
@@ -58,7 +55,7 @@ class MenuRequestGroupServiceTest {
 
         final List<MenuGroup> menuGroups = menuGroupService.list();
 
-        assertThat(menuGroups.size()).isGreaterThan(4);
+        assertThat(menuGroups.size()).isGreaterThan(3);
         assertThat(menuGroups.get(0).getId()).isNotNull();
         assertThat(menuGroups.get(0).getName()).isEqualTo("두마리메뉴");
         assertThat(menuGroups.get(1).getId()).isNotNull();

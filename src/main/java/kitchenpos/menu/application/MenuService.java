@@ -3,6 +3,7 @@ package kitchenpos.menu.application;
 import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
@@ -12,7 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class MenuService {
@@ -27,19 +29,15 @@ public class MenuService {
     }
 
     @Transactional
-    public Menu create(final MenuRequest menuRequest) {
-        final Price price = Price.of(new BigDecimal(menuRequest.getPrice()));
+    public MenuResponse create(final MenuRequest menuRequest) {
+        final Price requestMenuPrice = Price.of(new BigDecimal(menuRequest.getPrice()));
         final MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
             .orElseThrow(NotFoundException::new);
         final MenuProducts menuProducts = generateMenuProducts(menuRequest);
 
-        if (price.getPrice().compareTo(menuProducts.getAllMenuProductsPrice()) > 0) {
-            throw new IllegalArgumentException("[ERROR] Menu price can not be greater than all menu products price");
-        }
+        requestMenuPrice.isMustBeLessThanAllMenuProductsPrice(Price.of(menuProducts.getAllMenuProductsPrice()));
 
-        final Menu newMenu = Menu.of(menuRequest.getName(), price, menuGroup, menuProducts);
-
-        return menuRepository.save(newMenu);
+        return new MenuResponse(menuRepository.save(Menu.of(menuRequest.getName(), requestMenuPrice, menuGroup, menuProducts)));
     }
 
     private MenuProducts generateMenuProducts(final MenuRequest menuRequest) {
@@ -49,15 +47,15 @@ public class MenuService {
                     .orElseThrow(NotFoundException::new);
                 return MenuProduct.of(foundProduct, product.getQuantity());
             })
-            .collect(Collectors.toList());
+            .collect(toList());
 
-        final MenuProducts menuProducts = MenuProducts.of(menuProductList);
-        menuProducts.validateTotalPrice();
-
-        return menuProducts;
+        return MenuProducts.of(menuProductList);
     }
 
-    public List<Menu> findAllMenus() {
-        return menuRepository.findAll();
+    @Transactional(readOnly = true)
+    public List<MenuResponse> findAllMenus() {
+        return menuRepository.findAll().stream()
+            .map(MenuResponse::new)
+            .collect(toList());
     }
 }

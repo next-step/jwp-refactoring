@@ -1,22 +1,29 @@
 package kitchenpos.order.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kitchenpos.common.BaseTest;
+import kitchenpos.menu.domain.*;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -26,10 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("주문 컨트롤러 테스트")
-@SpringBootTest
-@AutoConfigureMockMvc
-@Sql("/db/test_data.sql")
-class OrderRestControllerTest {
+class OrderRestControllerTest extends BaseTest {
     public static final String DEFAULT_ORDERS_URI = "/api/orders/";
 
     @Autowired
@@ -41,12 +45,91 @@ class OrderRestControllerTest {
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private MenuGroupRepository menuGroupRepository;
+
+    @Autowired
+    private MenuProductRepository menuProductRepository;
+
+    @Autowired
+    private MenuRepository menuRepository;
+
+    @Autowired
+    private OrderTableRepository orderTableRepository;
+
     private OrderRequest orderRequest;
     private List<OrderLineItemRequest> orderLineItemRequestList;
     private OrderLineItemRequest orderLineItemRequest;
 
     @BeforeEach
     void setUp() {
+        final Product 후라이드 = productRepository.save(Product.of("후라이드", Price.of(new BigDecimal(16_000L))));
+        final Product 양념치킨 = productRepository.save(Product.of("양념치킨", Price.of(new BigDecimal(16_000L))));
+        final Product 반반치킨 = productRepository.save(Product.of("반반치킨", Price.of(new BigDecimal(16_000L))));
+        final Product 통구이 = productRepository.save(Product.of("통구이", Price.of(new BigDecimal(16_000L))));
+        final Product 간장치킨 = productRepository.save(Product.of("간장치킨", Price.of(new BigDecimal(16_000L))));
+        final Product 순살치킨 = productRepository.save(Product.of("순살치킨", Price.of(new BigDecimal(16_000L))));
+
+        final MenuGroup newMenuGroup = new MenuGroup();
+        newMenuGroup.setName("두마리메뉴");
+        menuGroupRepository.save(newMenuGroup);
+        newMenuGroup.setName("한마리메뉴");
+        final MenuGroup secondMenuGroup = menuGroupRepository.save(newMenuGroup);
+        newMenuGroup.setName("순살파닭두마리메뉴");
+        menuGroupRepository.save(newMenuGroup);
+        newMenuGroup.setName("신메뉴");
+        menuGroupRepository.save(newMenuGroup);
+
+        final Menu 후라이드치킨메뉴 = menuRepository.save(
+            Menu.of("후라이드치킨",
+                Price.of(new BigDecimal(16_000L)),
+                secondMenuGroup,
+                MenuProducts.of(Arrays.asList(MenuProduct.of(후라이드, 1L)))));
+        final Menu 양념치킨메뉴 = menuRepository.save(
+            Menu.of("양념치킨",
+                Price.of(new BigDecimal(16_000L)),
+                secondMenuGroup,
+                MenuProducts.of(Arrays.asList(MenuProduct.of(양념치킨, 1L)))));
+        final Menu 반반치킨메뉴 = menuRepository.save(
+            Menu.of("반반치킨",
+                Price.of(new BigDecimal(16_000L)),
+                secondMenuGroup,
+                MenuProducts.of(Arrays.asList(MenuProduct.of(반반치킨, 1L)))));
+        final Menu 통구이메뉴 = menuRepository.save(
+            Menu.of("통구이",
+                Price.of(new BigDecimal(16_000L)),
+                secondMenuGroup,
+                MenuProducts.of(Arrays.asList(MenuProduct.of(통구이, 1L)))));
+        final Menu 간장치킨메뉴 = menuRepository.save(
+            Menu.of("간장치킨",
+                Price.of(new BigDecimal(17_000L)),
+                secondMenuGroup,
+                MenuProducts.of(Arrays.asList(MenuProduct.of(간장치킨, 1L)))));
+        final Menu 순살치킨메뉴 = menuRepository.save(
+            Menu.of("순살치킨",
+                Price.of(new BigDecimal(17_000L)),
+                secondMenuGroup,
+                MenuProducts.of(Arrays.asList(MenuProduct.of(순살치킨, 1L)))));
+
+        menuProductRepository.save(후라이드치킨메뉴.getMenuProducts().get(0));
+        menuProductRepository.save(양념치킨메뉴.getMenuProducts().get(0));
+        menuProductRepository.save(반반치킨메뉴.getMenuProducts().get(0));
+        menuProductRepository.save(통구이메뉴.getMenuProducts().get(0));
+        menuProductRepository.save(간장치킨메뉴.getMenuProducts().get(0));
+        menuProductRepository.save(순살치킨메뉴.getMenuProducts().get(0));
+
+        orderTableRepository.save(OrderTable.of(null, 0, true));
+        orderTableRepository.save(OrderTable.of(null, 0, true));
+        orderTableRepository.save(OrderTable.of(null, 0, true));
+        orderTableRepository.save(OrderTable.of(null, 0, true));
+        orderTableRepository.save(OrderTable.of(null, 0, true));
+        orderTableRepository.save(OrderTable.of(null, 0, true));
+        orderTableRepository.save(OrderTable.of(null, 0, true));
+        orderTableRepository.save(OrderTable.of(null, 0, true));
+
         orderLineItemRequestList = new ArrayList<>();
 
         orderLineItemRequest = new OrderLineItemRequest();
