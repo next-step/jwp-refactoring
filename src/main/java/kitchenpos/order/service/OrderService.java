@@ -1,9 +1,9 @@
 package kitchenpos.order.service;
 
+import kitchenpos.menu.service.MenuService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.dto.OrderLineRequest;
-import kitchenpos.order.dto.OrderLineResponse;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.domain.OrderTable;
@@ -17,27 +17,34 @@ import java.util.stream.Collectors;
 @Transactional
 @Service
 public class OrderService {
+    private final MenuService menuService;
     private final OrderTableService orderTableService;
     private final OrderRepository orderRepository;
-    private final OrderLineItemService orderLineItemService;
 
-    public OrderService(OrderTableService orderTableService, OrderRepository orderRepository, OrderLineItemService orderLineItemService) {
+    public OrderService(MenuService menuService, OrderTableService orderTableService, OrderRepository orderRepository) {
+        this.menuService = menuService;
         this.orderTableService = orderTableService;
         this.orderRepository = orderRepository;
-        this.orderLineItemService = orderLineItemService;
     }
 
     public OrderResponse create(final OrderRequest request) {
         checkOrderLineItemEmpty(request.getOrderLineItems());
         final OrderTable tableById = orderTableService.findById(request.getOrderTableId());
         checkOrderTableEmpty(tableById);
-        final Order savedOrder = orderRepository.save(new Order(tableById));
-        final List<OrderLineResponse> orderLineResponses = orderLineItemService.saveLineItems(savedOrder, request.getOrderLineItems());
-        return OrderResponse.of(savedOrder, orderLineResponses);
+        final Order savedOrder = orderRepository.save(createOrder(tableById.getId(), request.getOrderLineItems()));
+        return OrderResponse.of(savedOrder);
     }
 
-    private void checkOrderTableEmpty(final OrderTable table) {
-        if (!table.isEmpty()) {
+    private Order createOrder(final long tableId, final List<OrderLineRequest> items) {
+        final Order order = new Order(tableId);
+        items.forEach(item -> order.addOrderMenu(
+                menuService.findById(item.getMenuId()),
+                item.ofQuantity()));
+        return order;
+    }
+
+    private void checkOrderTableEmpty(final OrderTable tableById) {
+        if (!tableById.isEmpty()) {
             throw new IllegalArgumentException("테이블이 비어있지 않습니다.");
         }
     }
@@ -51,8 +58,7 @@ public class OrderService {
     @Transactional(readOnly = true)
     public List<OrderResponse> list() {
         return orderRepository.findAll()
-                .stream()
-                .map(order -> OrderResponse.of(order, orderLineItemService.list(order)))
+                .stream().map(OrderResponse::of)
                 .collect(Collectors.toList());
     }
 

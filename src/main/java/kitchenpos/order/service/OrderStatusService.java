@@ -2,7 +2,6 @@ package kitchenpos.order.service;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.table.domain.OrderTable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,8 +16,8 @@ public class OrderStatusService {
     }
 
     @Transactional(readOnly = true)
-    public boolean isNotCompleteOrder(OrderTable table) {
-        return !Optional.ofNullable(orderRepository.findByOrderTableIdEquals(table))
+    public boolean isNotCompleteOrder(long tableId) {
+        return !Optional.ofNullable(orderRepository.findByOrderTableIdEquals(tableId))
                 .map(Order::isComplete)
                 .orElse(true);
     }

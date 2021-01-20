@@ -38,7 +38,7 @@ public class OrderTableService {
 
     public OrderTableResponse changeEmpty(Long id, boolean empty) {
         final OrderTable tableById = findById(id);
-        if (orderstatusService.isNotCompleteOrder(tableById)) {
+        if (orderstatusService.isNotCompleteOrder(tableById.getId())) {
             throw new IllegalArgumentException("주문이 완료되지 않아 빈 테이블로 바꿀수 없습니다.");
         }
         tableById.changeEmpty(empty);

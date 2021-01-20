@@ -11,7 +11,7 @@ public class TableValidator {
         this.orderStatusService = orderStatusService;
     }
 
-    public void isPossibleUnGroup(OrderTable tableId) {
+    public void isPossibleUnGroup(long tableId) {
         if (orderStatusService.isNotCompleteOrder(tableId)) {
             throw new IllegalArgumentException("주문이 완료되지 않아 그룹 해제가 불가능합니다.");
         }

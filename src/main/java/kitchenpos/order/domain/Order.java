@@ -1,20 +1,16 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.common.BaseEntity;
+import kitchenpos.generic.Quantity;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.table.domain.OrderTable;
 import org.springframework.data.annotation.CreatedDate;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 @Table(name = "orders")
 @Entity
@@ -34,20 +30,22 @@ public class Order extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JoinColumn(name = "orderTableId")
-    @ManyToOne
-    private OrderTable orderTableId;
+    @Column
+    private long orderTableId;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderLineItem> orderLineItems = new ArrayList<>();
+
     @CreatedDate
     private LocalDateTime orderedTime;
 
-    protected Order() {
+    public Order() {
     }
 
-    public Order(OrderTable orderTableId) {
+    public Order(long orderTableId) {
         this.orderTableId = orderTableId;
         changeOrderStatus(OrderStatus.COOKING);
     }
@@ -64,12 +62,20 @@ public class Order extends BaseEntity {
         return String.valueOf(orderedTime);
     }
 
+    public List<OrderLineItem> getOrderLineItems() {
+        return orderLineItems;
+    }
+
     public void changeOrderStatus(OrderStatus status) {
         this.orderStatus = status;
     }
 
     public void changeOrderStatusByName(String statusName) {
         changeOrderStatus(OrderStatus.findOrderStatus(statusName));
+    }
+
+    public void addOrderMenu(Menu menu, Quantity quantity) {
+        orderLineItems.add(new OrderLineItem(this, menu, quantity));
     }
 
     public boolean isComplete() {

@@ -57,7 +57,7 @@ public class OrderTableGroupService {
     public void ungroup(TableGroup groupById) {
         orderTableRepository.findAllByTableGroup(groupById)
                 .forEach(table -> {
-                    tableValidator.isPossibleUnGroup(table);
+                    tableValidator.isPossibleUnGroup(table.getId());
                     table.removeGroupTable();
                 });
     }
