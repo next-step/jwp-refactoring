@@ -1,4 +1,4 @@
-package kitchenpos.acceptance.Menu;
+package kitchenpos.acceptance.menu;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;

@@ -1,4 +1,4 @@
-package kitchenpos.acceptance.Menu;
+package kitchenpos.acceptance.menu;
 
 import java.util.Arrays;
 

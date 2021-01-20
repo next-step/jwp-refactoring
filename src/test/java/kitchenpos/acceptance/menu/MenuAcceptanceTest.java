@@ -1,4 +1,4 @@
-package kitchenpos.acceptance.Menu;
+package kitchenpos.acceptance.menu;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -35,7 +35,7 @@ public class MenuAcceptanceTest extends MenuAcceptance {
 		products = Arrays.asList(MenuProduct.of(치킨, 2), MenuProduct.of(피자, 1));
 	}
 
-	@DisplayName("메뉴룰 생성한다.")
+	@DisplayName("메뉴를 생성한다.")
 	@Test
 	void createMenuTest() {
 		// given
@@ -48,9 +48,9 @@ public class MenuAcceptanceTest extends MenuAcceptance {
 		메뉴_등록됨(response);
 	}
 
-	@DisplayName("메뉴룰 생성에 실패한다.")
+	@DisplayName("메뉴 생성에 실패한다.")
 	@ParameterizedTest
-	@ValueSource(longs = {0, -50000, 55000})
+	@ValueSource(longs = {-50000, 55000})
 	void createErrorMenuTest(long price) {
 		// given
 		Menu menu = Menu.of(null, "치피세트", price, food.getId(), products);

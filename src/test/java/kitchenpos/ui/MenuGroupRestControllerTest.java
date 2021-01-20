@@ -20,19 +20,17 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import kitchenpos.acceptance.Menu.MenuGroupAcceptance;
+import kitchenpos.acceptance.menu.MenuGroupAcceptance;
 import kitchenpos.application.MenuGroupService;
 import kitchenpos.domain.MenuGroup;
 
+@DisplayName("메뉴 그룹 Controller 테스트")
 @WebMvcTest(MenuGroupRestController.class)
 class MenuGroupRestControllerTest {
-
 	@Autowired
 	private MockMvc mvc;
-
 	@Autowired
 	private ObjectMapper mapper;
-
 	@MockBean
 	private MenuGroupService menuGroupService;
 

@@ -20,13 +20,14 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import kitchenpos.acceptance.Menu.MenuAcceptance;
+import kitchenpos.acceptance.menu.MenuAcceptance;
 import kitchenpos.application.MenuService;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 
+@DisplayName("메뉴 Controller 테스트")
 @WebMvcTest(MenuRestController.class)
 class MenuRestControllerTest {
 	@Autowired
