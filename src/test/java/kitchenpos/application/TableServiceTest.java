@@ -128,4 +128,29 @@ class TableServiceTest {
 		}).isInstanceOf(IllegalArgumentException.class);
 	}
 
+
+	@DisplayName("테이블의 손님 수를 변경할 수 있다.")
+	@Test
+	void changeNumberOfGuests(){
+		// given
+		Long orderTableId = 1L;
+		OrderTable orderTable = mock(OrderTable.class);
+		when(orderTable.getNumberOfGuests()).thenReturn(5);
+
+		when(orderTableDao.findById(orderTableId)).thenReturn(of(orderTable));
+
+		OrderTable expectedSavedOrderTable = mock(OrderTable.class);
+		when(expectedSavedOrderTable.getNumberOfGuests()).thenReturn(5);
+		when(orderTableDao.save(orderTable)).thenReturn(expectedSavedOrderTable);
+		TableService tableService = new TableService(orderDao, orderTableDao);
+
+		// when
+		OrderTable finalSavedOrderTable = tableService.changeNumberOfGuests(orderTableId, orderTable);
+
+		// then
+		assertThat(finalSavedOrderTable.getNumberOfGuests()).isEqualTo(orderTable.getNumberOfGuests());
+	}
+
+
+
 }
