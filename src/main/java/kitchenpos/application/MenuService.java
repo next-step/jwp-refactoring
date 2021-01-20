@@ -5,18 +5,13 @@ import kitchenpos.dao.MenuRepository;
 import kitchenpos.dao.ProductRepository;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
-import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.MenuResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,32 +32,13 @@ public class MenuService {
     }
 
     public MenuResponse create(MenuRequest request) {
-        final BigDecimal price = request.getPrice();
         request.validatePrice();
-        Optional<MenuGroup> menuGroup = menuGroupRepository.findById(request.getMenuGroupId());
-        if (!menuGroup.isPresent()) {
-            throw new IllegalArgumentException();
-        }
-
-        final List<MenuProductRequest> menuProducts = request.getMenuProducts();
-
+        MenuGroup menuGroup = menuGroupRepository.findById(request.getMenuGroupId())
+                .orElseThrow(() -> new IllegalArgumentException("등록하려는 메뉴 그룹: " + request.getMenuGroupId() + "이 존재하지 않습니다."));
         List<Product> products = productRepository.findByIdIn(request.getProductIds());
-        BigDecimal sum = request.sumOfPriceForProducts(products);
-
-        if (price.compareTo(sum) > 0) {
-            throw new IllegalArgumentException();
-        }
-
-        final Menu savedMenu = menuRepository.save(new Menu(request.getName(), price, menuGroup.get()));
-
-        for (final MenuProductRequest menuProductRequest : menuProducts) {
-            Product product = productRepository.findById(menuProductRequest.getProductId())
-                    .orElseThrow(NoSuchElementException::new);
-            MenuProduct menuProduct = new MenuProduct(savedMenu, product, menuProductRequest.getQuantity());
-            savedMenu.addMenuProduct(menuProduct);
-        }
-
-        return MenuResponse.from(savedMenu);
+        request.validateSumForProducts(products);
+        Menu savedMenu = Menu.create(request.getName(), request.getPrice(), menuGroup, request.createMenuProducts(products));
+        return MenuResponse.from(menuRepository.save(savedMenu));
     }
 
     @Transactional(readOnly = true)

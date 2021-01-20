@@ -4,7 +4,6 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 public class Menu {
@@ -21,24 +20,24 @@ public class Menu {
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<MenuProduct> menuProducts = new ArrayList<>();
 
+    public static Menu create(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        validatePrice(price);
+        Menu menu = new Menu(name, price, menuGroup);
+        menuProducts.forEach(menu::addMenuProduct);
+        return menu;
+    }
+
     public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
     }
 
-    public Menu() {
-    }
+    protected Menu() {}
 
     public void addMenuProduct(MenuProduct menuProduct) {
-        menuProduct.setMenu(this);
+        menuProduct.updateMenu(this);
         menuProducts.add(menuProduct);
-    }
-
-    public List<Product> getProducts() {
-        return menuProducts.stream()
-                .map(MenuProduct::getProduct)
-                .collect(Collectors.toList());
     }
 
     public Long getId() {
@@ -59,5 +58,11 @@ public class Menu {
 
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
+    }
+
+    private static void validatePrice(BigDecimal price) {
+        if (price == null || price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException();
+        }
     }
 }

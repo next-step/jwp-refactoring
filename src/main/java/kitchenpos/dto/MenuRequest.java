@@ -1,8 +1,10 @@
 package kitchenpos.dto;
 
+import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,7 +52,7 @@ public class MenuRequest {
         }
     }
 
-    public BigDecimal sumOfPriceForProducts(List<Product> products) {
+    private BigDecimal sumOfPriceForProducts(List<Product> products) {
         BigDecimal sum = BigDecimal.ZERO;
         for (MenuProductRequest menuProductRequest : menuProducts) {
             Product product = products.stream()
@@ -60,5 +62,24 @@ public class MenuRequest {
             sum = sum.add(product.getSumPrice(menuProductRequest.getQuantity()));
         }
         return sum;
+    }
+
+    public void validateSumForProducts(List<Product> products) {
+        BigDecimal sum = sumOfPriceForProducts(products);
+        if (price.compareTo(sum) > 0) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public List<MenuProduct> createMenuProducts(List<Product> products) {
+        List<MenuProduct> createMenuProducts = new ArrayList<>();
+        for (MenuProductRequest menuProductRequest : menuProducts) {
+            Product product = products.stream()
+                    .filter(p -> menuProductRequest.getProductId().equals(p.getId()))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException("메뉴로 등록하려는 상품이 존재하지 않습니다."));
+            createMenuProducts.add(new MenuProduct(product, menuProductRequest.getQuantity()));
+        }
+        return createMenuProducts;
     }
 }
