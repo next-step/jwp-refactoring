@@ -46,12 +46,6 @@ public class MenuRequest {
         return menuProducts;
     }
 
-    public void validatePrice() {
-        if (price == null || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("메뉴의 가격은 필수이고, 0원 이상이어야합니다.");
-        }
-    }
-
     private BigDecimal sumOfPriceForProducts(List<Product> products) {
         BigDecimal sum = BigDecimal.ZERO;
         for (MenuProductRequest menuProductRequest : menuProducts) {
@@ -66,8 +60,11 @@ public class MenuRequest {
 
     public void validateSumForProducts(List<Product> products) {
         BigDecimal sum = sumOfPriceForProducts(products);
+        if(price == null) {
+            throw new IllegalArgumentException("price 정보는 필수입니다.");
+        }
         if (price.compareTo(sum) > 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("메뉴의 가격은 상품들 가격의 총합보다 클 수 없습니다.");
         }
     }
 

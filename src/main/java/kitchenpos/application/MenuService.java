@@ -32,7 +32,6 @@ public class MenuService {
     }
 
     public MenuResponse create(MenuRequest request) {
-        request.validatePrice();
         MenuGroup menuGroup = menuGroupRepository.findById(request.getMenuGroupId())
                 .orElseThrow(() -> new IllegalArgumentException("등록하려는 메뉴 그룹: " + request.getMenuGroupId() + "이 존재하지 않습니다."));
         List<Product> products = productRepository.findByIdIn(request.getProductIds());
