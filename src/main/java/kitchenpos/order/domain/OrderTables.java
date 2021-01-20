@@ -28,6 +28,7 @@ public class OrderTables {
 
             orderTable.changeEmpty(false);
             orderTable.changeTableGroupId(tableGroupId);
+            this.orderTables.add(orderTable);
         }
     }
 }

@@ -23,6 +23,22 @@ public class OrderLineItem {
     protected  OrderLineItem() {
     }
 
+    public OrderLineItem(Menu menu, long quantity) {
+        validateNotGreaterThanZero(quantity);
+        this.menu = menu;
+        this.quantity = quantity;
+    }
+
+    private void validateNotGreaterThanZero(long quantity) {
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("수량은 0보다 커야합니다.");
+        }
+    }
+
+    public void changeOrderId(Long orderId) {
+        this.orderId = orderId;
+    }
+
     public Long getOrderId() {
         return orderId;
     }
