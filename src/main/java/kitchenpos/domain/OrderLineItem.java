@@ -9,14 +9,14 @@ public class OrderLineItem {
     private Long seq;
     @ManyToOne
     @JoinColumn(name = "order_id")
-    private Orders order;
+    private Order order;
     @ManyToOne
     @JoinColumn(name = "menu_id")
     private Menu menu;
     @Column
     private long quantity;
 
-    public OrderLineItem(Orders order, Menu menu, Long quantity) {
+    public OrderLineItem(Order order, Menu menu, Long quantity) {
         this.order = order;
         this.menu = menu;
         this.quantity = quantity;
@@ -30,7 +30,7 @@ public class OrderLineItem {
     protected OrderLineItem() {
     }
 
-    public void setOrder(Orders order) {
+    public void setOrder(Order order) {
         this.order = order;
     }
 
@@ -38,7 +38,7 @@ public class OrderLineItem {
         return seq;
     }
 
-    public Orders getOrder() {
+    public Order getOrder() {
         return order;
     }
 

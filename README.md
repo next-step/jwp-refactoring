@@ -23,43 +23,43 @@
 - 모든 `메뉴(menu)` 목록을 조회한다.
     - 각 `메뉴(menu)`의 `메뉴 상품(menu product)`을 같이 조회한다.
 
-### 주문(orders)
+### 주문(order)
 
-- `주문(orders)`을 생성한다.
-    - `주문(orders)`에 필요한 주문 메뉴를 담은 `주문 항목(orders line item)`이 없으면 `주문(orders)`을 생성할 수 없다.
-    - 모든 `주문 항목(orders line item)`의 `메뉴(menu)`는 등록되어 있어야한다.
-    - `주문(orders)`할 `주문 테이블(orders table)`이 없으면, `주문(orders)`을 생성할 수 없다.
-    - `주문(orders)`이 되면 `주문 상태(orders status)`는 'COOKING' 이다.
-- 모든 `주문(orders)` 목록을 조회한다.
-    - 각 `주문(orders)`의 `주문 항목(orders line item)`을 같이 조회한다.
-- `주문(orders)`의 `주문 상태(orders status)`를 변경한다.
-    - `주문 상태(orders status)`가 'COMPLETION' 인 경우 상태를 변경할 수 없다.
+- `주문(order)`을 생성한다.
+    - `주문(order)`에 필요한 주문 메뉴를 담은 `주문 항목(order line item)`이 없으면 `주문(order)`을 생성할 수 없다.
+    - 모든 `주문 항목(order line item)`의 `메뉴(menu)`는 등록되어 있어야한다.
+    - `주문(order)`할 `주문 테이블(order table)`이 없으면, `주문(order)`을 생성할 수 없다.
+    - `주문(order)`이 되면 `주문 상태(order status)`는 'COOKING' 이다.
+- 모든 `주문(order)` 목록을 조회한다.
+    - 각 `주문(order)`의 `주문 항목(order line item)`을 같이 조회한다.
+- `주문(order)`의 `주문 상태(order status)`를 변경한다.
+    - `주문 상태(order status)`가 'COMPLETION' 인 경우 상태를 변경할 수 없다.
 
-### 주문 테이블(orders table)
+### 주문 테이블(order table)
 
-- `주문 테이블(orders table)`을 생성한다.
-- 모든 `주문 테이블(orders table)` 목록을 조회한다.
-- `주문 테이블(orders table)`을 비어있는 상태로 변경한다.
-    - `주문 테이블(orders table)`이 존재해야한다.
-    - `주문 테이블(orders table)`이 `단체 지정(table group)`되어 있으면 비어있는 상태로 변경할 수 없다.
-    - `주문 테이블(orders table)`의 `주문 상태(orders status)`가 'COOKING' 이나 'MEAL' 상태가 이면 비어있는 상태로 변경할 수 없다.
-- `주문 테이블(orders table)`에 `방문한 손님 수(number of guests)`를 변경한다.
-    - 하나의 `주문 테이블(orders table)`의 `방문한 손님 수(number of guests)`가 0명보다 적으면, `방문한 손님 수(number of guests)`를 변경할 수 없다.
-    - `주문 테이블(orders table)`이 비어있으면, `방문한 손님 수(number of guests)`를 변경할 수 없다.
+- `주문 테이블(order table)`을 생성한다.
+- 모든 `주문 테이블(order table)` 목록을 조회한다.
+- `주문 테이블(order table)`을 비어있는 상태로 변경한다.
+    - `주문 테이블(order table)`이 존재해야한다.
+    - `주문 테이블(order table)`이 `단체 지정(table group)`되어 있으면 비어있는 상태로 변경할 수 없다.
+    - `주문 테이블(order table)`의 `주문 상태(order status)`가 'COOKING' 이나 'MEAL' 상태가 이면 비어있는 상태로 변경할 수 없다.
+- `주문 테이블(order table)`에 `방문한 손님 수(number of guests)`를 변경한다.
+    - 하나의 `주문 테이블(order table)`의 `방문한 손님 수(number of guests)`가 0명보다 적으면, `방문한 손님 수(number of guests)`를 변경할 수 없다.
+    - `주문 테이블(order table)`이 비어있으면, `방문한 손님 수(number of guests)`를 변경할 수 없다.
 
 ### 단체 지정(table group)
 
 - `단체 지정(table group)`을 생성한다.
-    - `단체 지정(table group)`으로 등록할 `주문 테이블(orders table)`이 2개 미만이면 생성할 수 없다.
-    - `단체 지정(table group)`할 `주문 테이블(orders table)`은 비어있어야한다.
-    - `단체 지정(table group)`할 `주문 테이블(orders table)`이 `단체 지정(table group)`되어있으면 생성할 수 없다.
+    - `단체 지정(table group)`으로 등록할 `주문 테이블(order table)`이 2개 미만이면 생성할 수 없다.
+    - `단체 지정(table group)`할 `주문 테이블(order table)`은 비어있어야한다.
+    - `단체 지정(table group)`할 `주문 테이블(order table)`이 `단체 지정(table group)`되어있으면 생성할 수 없다.
 - `단체 지정(table group)`을 해제한다.
-    - `단체 지정(table group)`된 `주문 테이블(orders table)`에서 `주문 상태(orders status)`가 'COOKING' 이나 'MEAL' 이면 해제할 수 없다.
+    - `단체 지정(table group)`된 `주문 테이블(order table)`에서 `주문 상태(order status)`가 'COOKING' 이나 'MEAL' 이면 해제할 수 없다.
 
-### 주문 상태(orders status)
+### 주문 상태(order status)
 
-- `주문 상태(orders status)`는 'COOKING'(조리중), 'MEAL'(식사중), 'COMPLETION'(계산완료) 로 구성된다.
-- `주문 상태(orders status)`의 상태 변경 순서는 'COOKING'(조리중) -> 'MEAL'(식사중) -> 'COMPLETION'(계산완료) 진행된다.
+- `주문 상태(order status)`는 'COOKING'(조리중), 'MEAL'(식사중), 'COMPLETION'(계산완료) 로 구성된다.
+- `주문 상태(order status)`의 상태 변경 순서는 'COOKING'(조리중) -> 'MEAL'(식사중) -> 'COMPLETION'(계산완료) 진행된다.
 
 ## 용어 사전
 
@@ -70,13 +70,13 @@
 | 메뉴 | menu | 메뉴 그룹에 속하는 실제 주문 가능 단위 |
 | 메뉴 상품 | menu product | 메뉴에 속하는 수량이 있는 상품 |
 | 금액 | amount | 가격 * 수량 |
-| 주문 테이블 | orders table | 매장에서 주문이 발생하는 영역 |
+| 주문 테이블 | order table | 매장에서 주문이 발생하는 영역 |
 | 빈 테이블 | empty table | 주문을 등록할 수 없는 주문 테이블 |
-| 주문 | orders | 매장에서 발생하는 주문 |
-| 주문 상태 | orders status | 주문은 조리 ➜ 식사 ➜ 계산 완료 순서로 진행된다. |
+| 주문 | order | 매장에서 발생하는 주문 |
+| 주문 상태 | order status | 주문은 조리 ➜ 식사 ➜ 계산 완료 순서로 진행된다. |
 | 방문한 손님 수 | number of guests | 필수 사항은 아니며 주문은 0명으로 등록할 수 있다. |
 | 단체 지정 | table group | 통합 계산을 위해 개별 주문 테이블을 그룹화하는 기능 |
-| 주문 항목 | orders line item | 주문에 속하는 수량이 있는 메뉴 |
+| 주문 항목 | order line item | 주문에 속하는 수량이 있는 메뉴 |
 | 매장 식사 | eat in | 포장하지 않고 매장에서 식사하는 것 |
 
 ## 리팩터링 구현 목록

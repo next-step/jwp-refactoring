@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("주문 서비스에 관련한 기능")
 @SpringBootTest
-class OrdersServiceTest {
+class OrderServiceTest {
     @Autowired
     private OrderService orderService;
     @Autowired

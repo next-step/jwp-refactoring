@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 @DisplayName("주문 관련 기능")
-class OrdersAcceptanceTest extends OrderAcceptanceTestSupport {
+class OrderAcceptanceTest extends OrderAcceptanceTestSupport {
     private OrderTableResponse orderTable;
     private Menu menu;
 

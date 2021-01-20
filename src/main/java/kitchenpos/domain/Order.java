@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity(name = "orders")
-public class Orders {
+public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,23 +19,23 @@ public class Orders {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
-    public Orders(OrderTable orderTable) {
+    public Order(OrderTable orderTable) {
         this.orderTable = orderTable;
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
     }
 
-    public static Orders createOrder(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+    public static Order createOrder(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException("비어있는 주문 테이블입니다.");
         }
 
-        Orders order = new Orders(orderTable);
+        Order order = new Order(orderTable);
         orderLineItems.forEach(order::addOrderLineItem);
         return order;
     }
 
-    protected Orders() {
+    protected Order() {
     }
 
     public void addOrderLineItem(OrderLineItem orderLineItem) {

@@ -4,8 +4,8 @@ import kitchenpos.dao.MenuRepository;
 import kitchenpos.dao.OrderRepository;
 import kitchenpos.dao.OrderTableRepository;
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Orders;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
 import org.springframework.stereotype.Service;
@@ -35,7 +35,7 @@ public class OrderService {
         request.validateEmptyOrderLineItems();
         List<Menu> menus = menuRepository.findByIdIn(request.getMenuIds());
         request.validateExistingSizeMenus(menus);
-        Orders order = Orders.createOrder(findAvailableTableForOrder(request.getOrderTableId()),
+        Order order = Order.createOrder(findAvailableTableForOrder(request.getOrderTableId()),
                 request.createOrderLineItems(menus));
         return OrderResponse.from(orderRepository.save(order));
     }
@@ -48,12 +48,12 @@ public class OrderService {
     }
 
     public OrderResponse changeOrderStatus(final Long orderId, OrderRequest request) {
-        final Orders savedOrders = findById(orderId);
-        if (savedOrders.isCompleted()) {
+        final Order savedOrder = findById(orderId);
+        if (savedOrder.isCompleted()) {
             throw new IllegalArgumentException("종료된 주문의 상태는 변경할 수 없습니다.");
         }
-        savedOrders.changeStatus(request.getOrderStatus());
-        return OrderResponse.from(savedOrders);
+        savedOrder.changeStatus(request.getOrderStatus());
+        return OrderResponse.from(savedOrder);
     }
 
     private OrderTable findAvailableTableForOrder(Long id) {
@@ -62,7 +62,7 @@ public class OrderService {
                 .orElseThrow(() -> new IllegalArgumentException("주문을 생성할 수 있는 테이블이 존재하지 않습니다."));
     }
 
-    public Orders findById(Long id) {
+    public Order findById(Long id) {
         return orderRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Order id:" + id + "는 존재하지 않습니다."));
     }
