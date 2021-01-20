@@ -1,10 +1,10 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import org.springframework.stereotype.Service;
@@ -18,18 +18,18 @@ import java.util.Objects;
 @Service
 public class MenuService {
     private final MenuDao menuDao;
-    private final MenuGroupDao menuGroupDao;
+    private final MenuGroupService menuGroupService;
     private final MenuProductDao menuProductDao;
     private final ProductService productService;
 
     public MenuService(
             final MenuDao menuDao,
-            final MenuGroupDao menuGroupDao,
+            final MenuGroupService menuGroupService,
             final MenuProductDao menuProductDao,
             final ProductService productService
     ) {
         this.menuDao = menuDao;
-        this.menuGroupDao = menuGroupDao;
+        this.menuGroupService = menuGroupService;
         this.menuProductDao = menuProductDao;
         this.productService = productService;
     }
@@ -42,7 +42,7 @@ public class MenuService {
             throw new IllegalArgumentException("메뉴 금액은 0보다 커야 한다.");
         }
 
-        if (!menuGroupDao.existsById(menu.getMenuGroupId())) {
+        if (!menuGroupService.existsById(menu.getMenuGroupId())) {
             throw new IllegalArgumentException("메뉴는 메뉴 그룹에 속해야 한다.");
         }
 

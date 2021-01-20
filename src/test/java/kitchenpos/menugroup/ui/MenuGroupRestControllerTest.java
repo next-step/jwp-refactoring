@@ -1,8 +1,8 @@
-package kitchenpos.ui;
+package kitchenpos.menugroup.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.application.MenuGroupService;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menugroup.application.MenuGroupService;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,8 +37,8 @@ class MenuGroupRestControllerTest {
     @DisplayName("메뉴 그룹을 등록한다.")
     @Test
     void create() throws Exception {
-        MenuGroup menuGroup1 = new MenuGroup(1L, "menuGroup1");
-        MenuGroup menuGroup2 = new MenuGroup(2L, "menuGroup2");
+        MenuGroupResponse menuGroup1 = new MenuGroupResponse(1L, "menuGroup1");
+        MenuGroupResponse menuGroup2 = new MenuGroupResponse(2L, "menuGroup2");
         when(menuGroupService.list()).thenReturn(Arrays.asList(menuGroup1, menuGroup2));
 
         mockMvc.perform(get("/api/menu-groups").contentType(MediaType.APPLICATION_JSON))
@@ -51,8 +51,8 @@ class MenuGroupRestControllerTest {
     @DisplayName("메뉴 그룹 목록을 조회한다.")
     @Test
     void list() throws Exception {
-        MenuGroup menuGroup1 = new MenuGroup(1L, "menuGroup1");
-        MenuGroup menuGroup2 = new MenuGroup(2L, "menuGroup2");
+        MenuGroupResponse menuGroup1 = new MenuGroupResponse(1L, "menuGroup1");
+        MenuGroupResponse menuGroup2 = new MenuGroupResponse(2L, "menuGroup2");
 
         when(menuGroupService.list()).thenReturn(Arrays.asList(menuGroup1, menuGroup2));
 

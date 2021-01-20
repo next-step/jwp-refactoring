@@ -1,6 +1,8 @@
-package kitchenpos.application;
+package kitchenpos.menugroup.application;
 
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,27 +24,29 @@ class MenuGroupServiceTest {
     @Test
     void create() {
         // given
-        MenuGroup menuGroup = new MenuGroup("음료수");
+        MenuGroupRequest menuGroup = new MenuGroupRequest("음료수");
 
         // when
-        MenuGroup savedMenuGroup = menuGroupService.create(menuGroup);
+        MenuGroupResponse response = menuGroupService.create(menuGroup);
 
         // then
-        assertThat(savedMenuGroup.getId()).isNotNull();
-        assertThat(savedMenuGroup.getName()).isEqualTo("음료수");
+        assertThat(response.getId()).isNotNull();
+        assertThat(response.getName()).isEqualTo("음료수");
     }
 
     @DisplayName("메뉴 그룹 목록을 조회한다.")
     @Test
     void list() {
         // given
-        MenuGroup menuGroup = new MenuGroup("음료수");
-        MenuGroup savedMenuGroup = menuGroupService.create(menuGroup);
+        MenuGroupRequest menuGroup = new MenuGroupRequest("음료수");
+        MenuGroupResponse savedMenuGroup = menuGroupService.create(menuGroup);
 
         // when
-        List<MenuGroup> list = menuGroupService.list();
+        List<MenuGroupResponse> list = menuGroupService.list();
 
         // then
         assertThat(list).extracting("id").contains(savedMenuGroup.getId());
     }
+
+
 }

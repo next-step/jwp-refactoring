@@ -1,9 +1,9 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.menugroup.application.MenuGroupService;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
@@ -28,7 +28,7 @@ class MenuServiceTest {
     private static final BigDecimal PRICE = BigDecimal.valueOf(10_000);
 
     @Autowired
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupService menuGroupService;
     @Autowired
     private ProductService productService;
     @Autowired
@@ -38,7 +38,7 @@ class MenuServiceTest {
     @Test
     void create() {
         // given
-        MenuGroup menuGroup = menuGroupDao.findById(4L).get();
+        MenuGroup menuGroup = menuGroupService.findById(4L);
         Product product1 = productService.findById(1L);
         Product product2 = productService.findById(2L);
         List<MenuProduct> menuProducts = Arrays.asList(
@@ -89,7 +89,7 @@ class MenuServiceTest {
     @Test
     void create_exception3() {
         // given
-        MenuGroup menuGroup = menuGroupDao.findById(4L).get();
+        MenuGroup menuGroup = menuGroupService.findById(4L);
         Product product1 = productService.findById(1L);
         Product product2 = productService.findById(2L);
         List<MenuProduct> menuProducts = Arrays.asList(

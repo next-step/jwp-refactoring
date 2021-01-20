@@ -16,7 +16,7 @@ class ProductTest {
         // when
         Product product = new Product("name", BigDecimal.valueOf(100));
 
-        // thgen
+        // then
         assertThat(product).isNotNull();
         assertThat(product.getName()).isEqualTo("name");
     }
