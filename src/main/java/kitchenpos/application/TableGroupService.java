@@ -16,6 +16,7 @@ import kitchenpos.exception.TableInUseException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,7 +48,8 @@ public class TableGroupService {
     }
 
     public void ungroup(Long tableGroupId) {
-        TableGroup tableGroup = tableGroupRepository.getOne(tableGroupId);
+        TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
+                .orElseThrow(EntityNotFoundException::new);;
 
         if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
                 tableGroup.getOrderTableIds(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {

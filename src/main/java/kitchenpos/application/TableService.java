@@ -10,6 +10,7 @@ import kitchenpos.exception.TableInUseException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,7 +41,8 @@ public class TableService {
     }
 
     public TableResponse update(Long tableId, TableRequest request) {
-        OrderTable savedOrderTable = tableRepository.getOne(tableId);
+        OrderTable savedOrderTable = tableRepository.findById(tableId)
+                .orElseThrow(EntityNotFoundException::new);;
 
         if (request.getNumberOfGuests() == EMPTY_COUNT) {
             validateEmptyTable(savedOrderTable);

@@ -4,7 +4,7 @@ import kitchenpos.dao.MenuGroupRepository;
 import kitchenpos.dao.MenuRepository;
 import kitchenpos.dao.ProductRepository;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
@@ -12,6 +12,7 @@ import kitchenpos.dto.MenuResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,7 +36,8 @@ public class MenuService {
     public MenuResponse create(MenuRequest request) {
         Menu menu = toEntity(request);
         for (MenuProductRequest menuProductRequest : request.getMenuProducts()) {
-            Product product = productRepository.getOne(menuProductRequest.getProductId());
+            Product product = productRepository.findById(menuProductRequest.getProductId())
+                    .orElseThrow(EntityNotFoundException::new);;
             menu.add(product, menuProductRequest.getQuantity());
         }
         return fromEntity(menuRepository.save(menu));
@@ -50,23 +52,12 @@ public class MenuService {
     }
 
     private Menu toEntity(MenuRequest request) {
+        MenuGroup menuGroup = menuGroupRepository.findById(request.getMenuGroupId())
+                .orElseThrow(EntityNotFoundException::new);
         return Menu.builder()
                 .name(request.getName())
                 .price(request.getPrice())
-                .menuGroup(menuGroupRepository.getOne(request.getMenuGroupId()))
-                .build();
-    }
-
-    private List<MenuProduct> toMenuProducts(List<MenuProductRequest> menuProductRequests) {
-        return menuProductRequests.stream()
-                .map(this::toMenuProduct)
-                .collect(Collectors.toList());
-    }
-
-    private MenuProduct toMenuProduct(MenuProductRequest menuProductRequest) {
-        return MenuProduct.builder()
-                .product(productRepository.getOne(menuProductRequest.getProductId()))
-                .quantity(menuProductRequest.getQuantity())
+                .menuGroup(menuGroup)
                 .build();
     }
 

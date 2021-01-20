@@ -1,105 +1,92 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.*;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.dao.MenuRepository;
+import kitchenpos.dao.OrderRepository;
+import kitchenpos.dao.TableRepository;
+import kitchenpos.domain.*;
+import kitchenpos.dto.OrderMenuRequest;
+import kitchenpos.dto.OrderMenuResponse;
+import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderResponse;
+import kitchenpos.exception.AlreadyCompleteException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
+@Transactional
 @Service
 public class OrderService {
     private final MenuRepository menuRepository;
-    private final OrderDao orderDao;
-    private final OrderLineItemDao orderLineItemDao;
+    private final OrderRepository orderRepository;
     private final TableRepository tableRepository;
 
     public OrderService(
-            final MenuRepository menuRepository,
-            final OrderDao orderDao,
-            final OrderLineItemDao orderLineItemDao,
-            final TableRepository tableRepository
+            MenuRepository menuRepository,
+            OrderRepository orderRepository,
+            TableRepository tableRepository
     ) {
         this.menuRepository = menuRepository;
-        this.orderDao = orderDao;
-        this.orderLineItemDao = orderLineItemDao;
+        this.orderRepository = orderRepository;
         this.tableRepository = tableRepository;
     }
 
-    @Transactional
-    public Order create(final Order order) {
-        final List<OrderLineItem> orderLineItems = order.getOrderLineItems();
+    public OrderResponse create(OrderRequest request) {
+        OrderTable table = tableRepository.findById(request.getOrderTableId())
+                .orElseThrow(EntityNotFoundException::new);
+        Order order = new Order(table);
 
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
+        for (OrderMenuRequest orderMenuRequest : request.getOrderMenuRequests()) {
+            Menu menu = menuRepository.findById(orderMenuRequest.getMenuId())
+                    .orElseThrow(EntityNotFoundException::new);;
+            order.add(menu, orderMenuRequest.getQuantity());
         }
+        return fromEntity(orderRepository.save(order));
+    }
 
-        final List<Long> menuIds = orderLineItems.stream()
-                .map(OrderLineItem::getMenuId)
+    @Transactional(readOnly = true)
+    public List<OrderResponse> list() {
+        return orderRepository.findAll()
+                .stream()
+                .map(this::fromEntity)
                 .collect(Collectors.toList());
-
-        if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
-            throw new IllegalArgumentException();
-        }
-
-        final OrderTable orderTable = tableRepository.findById(order.getOrderTableId())
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        order.setOrderTableId(orderTable.getId());
-        order.setOrderStatus(OrderStatus.COOKING.name());
-        order.setOrderedTime(LocalDateTime.now());
-
-        final Order savedOrder = orderDao.save(order);
-
-        final Long orderId = savedOrder.getId();
-        final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
-        for (final OrderLineItem orderLineItem : orderLineItems) {
-            orderLineItem.setOrderId(orderId);
-            savedOrderLineItems.add(orderLineItemDao.save(orderLineItem));
-        }
-        savedOrder.setOrderLineItems(savedOrderLineItems);
-
-        return savedOrder;
     }
 
-    public List<Order> list() {
-        final List<Order> orders = orderDao.findAll();
+    public OrderResponse changeOrderStatus(Long orderId, OrderStatus orderStatus) {
+        Order savedOrder = orderRepository.findById(orderId)
+                .orElseThrow(EntityNotFoundException::new);;
 
-        for (final Order order : orders) {
-            order.setOrderLineItems(orderLineItemDao.findAllByOrderId(order.getId()));
+        if (savedOrder.isComplete()) {
+            throw new AlreadyCompleteException("이미 완료된 주문입니다.");
         }
 
-        return orders;
+        savedOrder.changeStatus(orderStatus);
+        return fromEntity(savedOrder);
     }
 
-    @Transactional
-    public Order changeOrderStatus(final Long orderId, final Order order) {
-        final Order savedOrder = orderDao.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
+    private OrderResponse fromEntity(Order order) {
+        return OrderResponse.builder()
+                .id(order.getId())
+                .createdTime(order.getCreatedTime())
+                .orderStatus(order.getOrderStatus())
+                .orderTableId(order.getOrderTableId())
+                .orderMenuResponses(fromOrderMenus(order.getOrderMenus()))
+                .build();
+    }
 
-        if (Objects.equals(OrderStatus.COMPLETION.name(), savedOrder.getOrderStatus())) {
-            throw new IllegalArgumentException();
-        }
+    private List<OrderMenuResponse> fromOrderMenus(List<OrderMenu> orderMenus) {
+        return orderMenus.stream()
+                .map(this::fromOrderMenu)
+                .collect(Collectors.toList());
+    }
 
-        final OrderStatus orderStatus = OrderStatus.valueOf(order.getOrderStatus());
-        savedOrder.setOrderStatus(orderStatus.name());
-
-        orderDao.save(savedOrder);
-
-        savedOrder.setOrderLineItems(orderLineItemDao.findAllByOrderId(orderId));
-
-        return savedOrder;
+    private OrderMenuResponse fromOrderMenu(OrderMenu orderMenu) {
+        return OrderMenuResponse.builder()
+                .id(orderMenu.getId())
+                .menuId(orderMenu.getMenuId())
+                .quantity(orderMenu.getQuantity())
+                .build();
     }
 }
