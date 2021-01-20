@@ -58,6 +58,10 @@ public class OrderTable {
         return empty;
     }
 
+    public boolean isNotEmpty() {
+        return !empty;
+    }
+
     public void occupy(TableGroup tableGroup) {
         this.updateGroup(tableGroup);
         this.empty = false;

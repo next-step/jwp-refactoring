@@ -149,6 +149,8 @@
         - [x] Service method 개선 : OrderTable 생성
     - [ ] Product
         - [x] Service method 개선 : Product 생성
+    - [ ] Order
+        - [x] Service method 개선 : Order 생성
 - [ ] JPA 도메인 리팩터링
     - [ ] Product
         - [x] JPA Entity, Repository 적용

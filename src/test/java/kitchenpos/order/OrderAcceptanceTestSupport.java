@@ -27,10 +27,10 @@ public class OrderAcceptanceTestSupport extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 주문_상태_변경_요청(ExtractableResponse<Response> createResponse, Orders params) {
+    public static ExtractableResponse<Response> 주문_상태_변경_요청(ExtractableResponse<Response> createResponse, OrderRequest request) {
         String location = createResponse.header("Location");
         return RestAssured
-                .given().log().all().body(params)
+                .given().log().all().body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().put(location + "/order-status")
                 .then().log().all()

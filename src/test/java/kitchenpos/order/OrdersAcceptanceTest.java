@@ -50,17 +50,15 @@ class OrdersAcceptanceTest extends OrderAcceptanceTestSupport {
         주문_응답(findResponse);
 
         // When
-        Orders updateParams = new Orders();
-        updateParams.setOrderStatus("COMPLETION");
-        ExtractableResponse<Response> updateResponse = 주문_상태_변경_요청(createResponse, updateParams);
+        OrderRequest updateRequest = new OrderRequest("COMPLETION");
+        ExtractableResponse<Response> updateResponse = 주문_상태_변경_요청(createResponse, updateRequest);
 
         // Then
         주문_응답(updateResponse);
 
         // When
-        Orders wrongUpdateParams = new Orders();
-        wrongUpdateParams.setOrderStatus("COMPLETION");
-        ExtractableResponse<Response> wrongResponse = 주문_상태_변경_요청(createResponse, wrongUpdateParams);
+        OrderRequest invalidUpdateRequest = new OrderRequest("COMPLETION");
+        ExtractableResponse<Response> wrongResponse = 주문_상태_변경_요청(createResponse, invalidUpdateRequest);
 
         // Then
         주문_응답_실패(wrongResponse);

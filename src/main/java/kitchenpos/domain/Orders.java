@@ -4,21 +4,44 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-@Entity
+@Entity(name = "orders")
 public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column
-    private Long orderTableId;
+    @ManyToOne
+    private OrderTable orderTable;
     @Column
     private String orderStatus;
     @Column
     private LocalDateTime orderedTime;
-    @OneToMany(mappedBy = "orderId", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
+
+    public Orders(OrderTable orderTable) {
+        this.orderTable = orderTable;
+        this.orderStatus = OrderStatus.COOKING.name();
+        this.orderedTime = LocalDateTime.now();
+    }
+
+    public static Orders createOrder(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException("비어있는 주문 테이블입니다.");
+        }
+
+        Orders order = new Orders(orderTable);
+        orderLineItems.forEach(order::addOrderLineItem);
+        return order;
+    }
+
+    protected Orders() {
+    }
+
+    public void addOrderLineItem(OrderLineItem orderLineItem) {
+        orderLineItem.setOrder(this);
+        orderLineItems.add(orderLineItem);
+    }
 
     public Long getId() {
         return id;
@@ -28,12 +51,8 @@ public class Orders {
         this.id = id;
     }
 
-    public Long getOrderTableId() {
-        return orderTableId;
-    }
-
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
+    public OrderTable getOrderTable() {
+        return orderTable;
     }
 
     public String getOrderStatus() {
@@ -48,28 +67,11 @@ public class Orders {
         return orderedTime;
     }
 
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
-    }
-
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
     }
 
     public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
         this.orderLineItems = orderLineItems;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Orders orders = (Orders) o;
-        return Objects.equals(id, orders.id) && Objects.equals(orderTableId, orders.orderTableId) && Objects.equals(orderStatus, orders.orderStatus) && Objects.equals(orderedTime, orders.orderedTime) && Objects.equals(orderLineItems, orders.orderLineItems);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, orderTableId, orderStatus, orderedTime, orderLineItems);
     }
 }
