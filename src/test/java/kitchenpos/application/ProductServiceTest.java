@@ -48,26 +48,6 @@ class ProductServiceTest {
 		);
 	}
 
-	@DisplayName("상품[중복생성]: 동일한 상품 생성 테스트")
-	@Test
-	void createDuplicateTest() {
-		// given
-		Product product = Product.of(null, "맥주", 5000);
-		given(productDao.save(product)).willReturn(product);
-
-		// when
-		Product result1 = productService.create(product);
-		Product result2 = productService.create(product);
-
-		// then
-		assertAll(
-			() -> assertThat(result1).isNotNull(),
-			() -> assertThat(result1.getName()).isEqualTo(product.getName()),
-			() -> assertThat(result2).isNotNull(),
-			() -> assertThat(result2.getName()).isEqualTo(product.getName())
-		);
-	}
-
 	@DisplayName("상품: 상품 가격은 0보다 커야한다.")
 	@Test
 	void priceErrorTest() {

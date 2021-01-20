@@ -22,7 +22,7 @@ public class ProductAcceptanceTest extends ProductAcceptance {
 		ExtractableResponse<Response> response = 상품_등록_요청(product);
 
 		// then
-		상품_등록됨(product, response);
+		상품_등록됨(response);
 	}
 
 	@DisplayName("상품을 생성한다.")
@@ -35,7 +35,7 @@ public class ProductAcceptanceTest extends ProductAcceptance {
 		ExtractableResponse<Response> response = 상품_등록_요청(product);
 
 		// then
-		상품_등록됨(product, response);
+		상품_등록됨(response);
 	}
 
 	@DisplayName("상품을 중복 생성한다[중복 생성 된다].")
@@ -49,8 +49,8 @@ public class ProductAcceptanceTest extends ProductAcceptance {
 		ExtractableResponse<Response> response2 = 상품_등록_요청(product);
 
 		// then
-		상품_등록됨(product, response1);
-		상품_등록됨(product, response2);
+		상품_등록됨(response1);
+		상품_등록됨(response2);
 	}
 
 	@DisplayName("상품들을 조회한다.")

@@ -39,13 +39,13 @@ public class ProductAcceptance extends AcceptanceTest {
 		return 상품_등록_요청(Product.of(null, name, price));
 	}
 
-	public static void 상품_등록됨(Product product, ExtractableResponse<Response> response) {
-		Product newProduct = response.as(Product.class);
+	public static void 상품_등록됨(ExtractableResponse<Response> response) {
+		Product expected = response.as(Product.class);
 		assertAll(
-			() -> assertThat(newProduct).isNotNull(),
-			() -> assertThat(newProduct.getName()).isEqualTo(product.getName()),
+			() -> assertThat(expected).isNotNull(),
+			() -> assertThat(expected.getId()).isNotNull(),
 			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-			() -> assertThat(response.header("Location")).isEqualTo(PRODUCT_REQUEST_URL + "/" + newProduct.getId())
+			() -> assertThat(response.header("Location")).isEqualTo(PRODUCT_REQUEST_URL + "/" + expected.getId())
 		);
 	}
 
@@ -53,10 +53,9 @@ public class ProductAcceptance extends AcceptanceTest {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 	}
 
-	public static void 상품_목록_포함됨(ExtractableResponse<Response> response,
-		List<ExtractableResponse<Response>> createResponses) {
+	public static void 상품_목록_포함됨(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> expected) {
 
-		List<Long> expectedProductIds = createResponses.stream()
+		List<Long> expectedProductIds = expected.stream()
 			.map(it -> it.as(Product.class).getId())
 			.collect(Collectors.toList());
 
