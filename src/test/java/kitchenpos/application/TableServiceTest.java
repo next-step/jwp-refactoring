@@ -4,6 +4,9 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,5 +47,20 @@ class TableServiceTest {
 
 		// then
 		assertThat(createdOrderTable.getId()).isNotNull();
+	}
+
+	@DisplayName("테이블 목록을 조회할 수 있다.")
+	@Test
+	void list() {
+		// given
+		OrderTable savedOrderTable = mock(OrderTable.class);
+		when(orderTableDao.findAll()).thenReturn(Arrays.asList(savedOrderTable));
+		TableService tableService = new TableService(orderDao, orderTableDao);
+
+		// when
+		List<OrderTable> orderTables = tableService.list();
+
+		// then
+		assertThat(orderTables).contains(savedOrderTable);
 	}
 }
