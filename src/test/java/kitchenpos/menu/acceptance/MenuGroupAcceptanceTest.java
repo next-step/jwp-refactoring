@@ -1,10 +1,10 @@
-package kitchenpos.acceptance;
+package kitchenpos.menu.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuGroupRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -22,7 +22,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void manageMenuGroup() {
         // given
-        MenuGroup 추천메뉴 = new MenuGroup("추천메뉴");
+        MenuGroupRequest 추천메뉴 = new MenuGroupRequest("추천메뉴");
         ExtractableResponse<Response> createResponse = 메뉴_그룹_등록_요청(추천메뉴);
 
         // then
@@ -36,18 +36,18 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
         메뉴_그룹_포함됨(findResponse, Arrays.asList(createResponse));
     }
 
-    public static ExtractableResponse<Response> 메뉴_그룹_등록_요청(MenuGroup menuGroup) {
+    public static ExtractableResponse<Response> 메뉴_그룹_등록_요청(MenuGroupRequest menuGroupRequest) {
         return RestAssured
                 .given().log().all()
+                .body(menuGroupRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(menuGroup)
                 .when().post("/api/menu-groups")
                 .then().log().all()
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 메뉴_그룹_등록되어_있음(MenuGroup menuGroup) {
-        return 메뉴_그룹_등록_요청(menuGroup);
+    public static ExtractableResponse<Response> 메뉴_그룹_등록되어_있음(MenuGroupRequest menuGroupRequest) {
+        return 메뉴_그룹_등록_요청(menuGroupRequest);
     }
 
     private void 메뉴_그룹_생성됨(ExtractableResponse<Response> createResponse) {
