@@ -1,6 +1,5 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.menu.domain.MenuProduct;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -8,8 +7,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
-@Entity
-@Table(name = "orders")
+@Entity(name = "orders")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
