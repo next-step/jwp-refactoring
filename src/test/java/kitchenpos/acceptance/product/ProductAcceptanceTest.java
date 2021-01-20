@@ -25,7 +25,7 @@ public class ProductAcceptanceTest extends ProductAcceptance {
 		상품_등록됨(response);
 	}
 
-	@DisplayName("상품을 생성한다.")
+	@DisplayName("0보다 작은 금액으로 상품을 생성한다.")
 	@Test
 	void createProductErrorTest() {
 		// given
@@ -35,7 +35,7 @@ public class ProductAcceptanceTest extends ProductAcceptance {
 		ExtractableResponse<Response> response = 상품_등록_요청(product);
 
 		// then
-		상품_등록됨(response);
+		상품_등록_실패됨(response);
 	}
 
 	@DisplayName("상품을 중복 생성한다[중복 생성 된다].")

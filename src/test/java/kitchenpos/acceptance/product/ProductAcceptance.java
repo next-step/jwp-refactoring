@@ -65,4 +65,8 @@ public class ProductAcceptance extends AcceptanceTest {
 
 		assertThat(resultProductIds).containsAll(expectedProductIds);
 	}
+
+	public static void 상품_등록_실패됨(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+	}
 }

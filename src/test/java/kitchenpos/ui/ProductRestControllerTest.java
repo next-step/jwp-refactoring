@@ -27,13 +27,10 @@ import kitchenpos.domain.Product;
 @DisplayName("상품 Controller 테스트")
 @WebMvcTest(ProductRestController.class)
 class ProductRestControllerTest {
-
 	@Autowired
 	private MockMvc mvc;
-
 	@Autowired
 	private ObjectMapper mapper;
-
 	@MockBean
 	private ProductService productService;
 
