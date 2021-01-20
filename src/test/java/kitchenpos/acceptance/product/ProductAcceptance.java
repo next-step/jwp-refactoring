@@ -19,6 +19,10 @@ public class ProductAcceptance extends AcceptanceTest {
 
 	public static final String PRODUCT_REQUEST_URL = "/api/products";
 
+	public static ExtractableResponse<Response> 상품_등록되어_있음(String name, long price) {
+		return 상품_등록_요청(Product.of(null, name, price));
+	}
+
 	public static ExtractableResponse<Response> 상품_등록_요청(Product product) {
 		return RestAssured
 			.given().log().all()
@@ -33,10 +37,6 @@ public class ProductAcceptance extends AcceptanceTest {
 			.given().log().all()
 			.when().get(PRODUCT_REQUEST_URL)
 			.then().log().all().extract();
-	}
-
-	public static ExtractableResponse<Response> 상품_등록되어_있음(String name, long price) {
-		return 상품_등록_요청(Product.of(null, name, price));
 	}
 
 	public static void 상품_등록됨(ExtractableResponse<Response> response) {
