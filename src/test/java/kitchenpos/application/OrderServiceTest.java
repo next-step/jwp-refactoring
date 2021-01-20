@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import static java.util.Optional.*;
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.BDDMockito.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
@@ -19,6 +20,7 @@ import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 
 /**
@@ -135,4 +137,44 @@ class OrderServiceTest {
 		assertThat(orders).contains(order);
 	}
 
+	@DisplayName("주문의 상태를 변경할 수 있다.")
+	@Test
+	void changeOrderStatus() {
+		Long orderId = 1L;
+		Order order = new Order();
+		order.setOrderStatus(OrderStatus.COMPLETION.name());
+
+		Order savedOrder = new Order();
+		savedOrder.setOrderStatus(OrderStatus.MEAL.name());
+		when(orderDao.findById(orderId)).thenReturn(of(savedOrder));
+
+		Order expectedChangedOrder = mock(Order.class);
+		when(orderDao.save(any())).thenReturn(expectedChangedOrder);
+		OrderService orderService = new OrderService(menuDao, orderDao, orderLineItemDao, orderTableDao);
+
+		// when
+		Order changedOrder = orderService.changeOrderStatus(orderId, order);
+
+		// then
+		assertThat(changedOrder.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
+	}
+
+	@DisplayName("완료된 주문은 상태를 변경할 수 없다.")
+	@Test
+	void completedOrderCannotChange(){
+		// given
+		Long orderId = 1L;
+		Order order = new Order();
+		order.setOrderStatus(OrderStatus.COMPLETION.name());
+
+		Order savedOrder = new Order();
+		savedOrder.setOrderStatus(OrderStatus.COMPLETION.name());
+		when(orderDao.findById(orderId)).thenReturn(of(savedOrder));
+		OrderService orderService = new OrderService(menuDao, orderDao, orderLineItemDao, orderTableDao);
+
+		// when
+		assertThatThrownBy(() -> {
+			orderService.changeOrderStatus(orderId, order);
+		}).isInstanceOf(IllegalArgumentException.class);
+	}
 }
