@@ -111,18 +111,10 @@ public class MenuServiceTest extends ServiceTestBase {
     }
 
     public static MenuRequest createRequest(String name, long price, Long menuGroupId, List<MenuProductRequest> menuProuducts) {
-        return MenuRequest.builder()
-                .name(name)
-                .price(price)
-                .menuGroupId(menuGroupId)
-                .menuProducts(menuProuducts)
-                .build();
+        return new MenuRequest(name, price, menuGroupId, menuProuducts);
     }
 
     public static MenuProductRequest createMenuProduct(Long productId, Long quantity) {
-        return MenuProductRequest.builder()
-                .productId(productId)
-                .quantity(quantity)
-                .build();
+        return new MenuProductRequest(productId, quantity);
     }
 }

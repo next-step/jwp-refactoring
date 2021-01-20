@@ -8,9 +8,7 @@ public class ProductRequestTest extends ValidateBase {
     @DisplayName("가격이 음수인 경우")
     @Test
     public void validatePrice() {
-        ProductRequest request = ProductRequest.builder()
-                .price(-1)
-                .build();
+        ProductRequest request = new ProductRequest("", -1);
 
         validate(request);
     }

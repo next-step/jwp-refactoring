@@ -10,10 +10,7 @@ public class OrderRequestTest extends ValidateBase {
     @DisplayName("메뉴 리스트가 비었을 경우")
     @Test
     public void emptyMenuList() {
-        OrderRequest request = OrderRequest.builder()
-                .orderTableId(1L)
-                .orderMenuRequests(Collections.emptyList())
-                .build();
+        OrderRequest request = new OrderRequest(1L, Collections.emptyList());
 
         validate(request);
     }
@@ -21,10 +18,7 @@ public class OrderRequestTest extends ValidateBase {
     @DisplayName("메뉴 리스트가 null인 경우")
     @Test
     public void nullMenuList() {
-        OrderRequest request = OrderRequest.builder()
-                .orderTableId(1L)
-                .orderMenuRequests(null)
-                .build();
+        OrderRequest request = new OrderRequest(1L, null);
 
         validate(request);
     }

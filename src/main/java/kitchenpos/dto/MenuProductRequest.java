@@ -1,19 +1,21 @@
 package kitchenpos.dto;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter
 public class MenuProductRequest {
     private long productId;
     private long quantity;
 
-    @Builder
+    protected MenuProductRequest(){}
+
     public MenuProductRequest(long productId, long quantity) {
         this.productId = productId;
         this.quantity = quantity;
+    }
+
+    public long getProductId() {
+        return productId;
+    }
+
+    public long getQuantity() {
+        return quantity;
     }
 }

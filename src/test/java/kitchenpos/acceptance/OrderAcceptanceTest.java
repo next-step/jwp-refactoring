@@ -57,10 +57,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     public static OrderRequest createRequest(TableResponse orderTable, MenuResponse menu) {
-        return OrderRequest.builder()
-                .orderTableId(orderTable.getId())
-                .orderMenuRequests(Collections.singletonList(new OrderMenuRequest(menu.getId(), 1L)))
-                .build();
+        List<OrderMenuRequest> orderMenuRequests = Collections.singletonList(new OrderMenuRequest(menu.getId(), 1L));
+        return new OrderRequest(orderTable.getId(), orderMenuRequests);
     }
 
     public static ExtractableResponse<Response> 생성_요청(OrderRequest request) {

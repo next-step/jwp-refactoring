@@ -8,9 +8,7 @@ public class TableRequestTest extends ValidateBase {
     @DisplayName("고객 수가 음수인 경우")
     @Test
     public void validateGuests() {
-        TableRequest request = TableRequest.builder()
-                .numberOfGuests(-1)
-                .build();
+        TableRequest request = new TableRequest(-1);
 
         validate(request);
     }

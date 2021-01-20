@@ -59,9 +59,7 @@ public class TableGroupServiceTest extends ServiceTestBase {
     @Test
     void createWithNotExistsTable() {
         TableResponse savedTable = tableService.create();
-        TableResponse newTable = TableResponse.builder()
-                .id(99L)
-                .build();
+        TableResponse newTable = new TableResponse(99L, null, 0);
 
         assertThatExceptionOfType(NotFoundEntityException.class)
                 .isThrownBy(() -> tableGroupService.create(createTableGroup(savedTable, newTable)));
@@ -120,7 +118,7 @@ public class TableGroupServiceTest extends ServiceTestBase {
         TableResponse savedTable2 = tableService.create();
         TableGroupResponse savedTableGroup = tableGroupService.create(createTableGroup(savedTable, savedTable2));
         tableService.update(savedTable.getId(), TableServiceTest.createRequest(4));
-        List<OrderMenuRequest> orderMenus = Collections.singletonList(OrderServiceTest.createOrderLineItem(menu.getId(), 1L));
+        List<OrderMenuRequest> orderMenus = Collections.singletonList(OrderServiceTest.createOrderMenu(menu.getId(), 1L));
         orderService.create(OrderServiceTest.createOrder(savedTable.getId(), orderMenus));
 
         assertThatExceptionOfType(TableInUseException.class)

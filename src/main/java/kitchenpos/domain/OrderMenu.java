@@ -1,13 +1,7 @@
 package kitchenpos.domain;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
 
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter
 @Entity
 public class OrderMenu {
     @Id
@@ -19,10 +13,20 @@ public class OrderMenu {
     private Menu menu;
     private Long quantity;
 
+    protected OrderMenu(){}
+
     public OrderMenu(Order order, Menu menu, Long quantity) {
         this.order = order;
         this.menu = menu;
         this.quantity = quantity;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Long getQuantity() {
+        return quantity;
     }
 
     public Long getMenuId() {

@@ -47,9 +47,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
     }
 
     public static TableRequest createRequest(int numberOfGuests) {
-        return TableRequest.builder()
-                .numberOfGuests(numberOfGuests)
-                .build();
+        return new TableRequest(numberOfGuests);
     }
 
     public static ExtractableResponse<Response> 생성_요청() {

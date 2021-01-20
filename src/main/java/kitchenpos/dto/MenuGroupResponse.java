@@ -1,20 +1,22 @@
 package kitchenpos.dto;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter
 public class MenuGroupResponse {
     private long id;
     private String name;
 
-    @Builder
+    protected MenuGroupResponse(){}
+
     public MenuGroupResponse(long id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
     }
 }
 

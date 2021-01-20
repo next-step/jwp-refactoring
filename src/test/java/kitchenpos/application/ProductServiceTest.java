@@ -45,9 +45,6 @@ public class ProductServiceTest extends ServiceTestBase {
     }
 
     public static ProductRequest createRequest(String name, long price) {
-        return ProductRequest.builder()
-                .name(name)
-                .price(price)
-                .build();
+        return new ProductRequest(name, price);
     }
 }

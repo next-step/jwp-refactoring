@@ -40,7 +40,7 @@ public class OrderService {
 
         for (OrderMenuRequest orderMenuRequest : request.getOrderMenuRequests()) {
             Menu menu = menuRepository.findById(orderMenuRequest.getMenuId())
-                    .orElseThrow(EntityNotFoundException::new);;
+                    .orElseThrow(EntityNotFoundException::new);
             order.add(menu, orderMenuRequest.getQuantity());
         }
         return fromEntity(orderRepository.save(order));
@@ -56,7 +56,7 @@ public class OrderService {
 
     public OrderResponse changeOrderStatus(Long orderId, OrderStatus orderStatus) {
         Order savedOrder = orderRepository.findById(orderId)
-                .orElseThrow(EntityNotFoundException::new);;
+                .orElseThrow(EntityNotFoundException::new);
 
         if (savedOrder.isComplete()) {
             throw new AlreadyCompleteException("이미 완료된 주문입니다.");
@@ -67,13 +67,8 @@ public class OrderService {
     }
 
     private OrderResponse fromEntity(Order order) {
-        return OrderResponse.builder()
-                .id(order.getId())
-                .createdTime(order.getCreatedTime())
-                .orderStatus(order.getOrderStatus())
-                .orderTableId(order.getOrderTableId())
-                .orderMenuResponses(fromOrderMenus(order.getOrderMenus()))
-                .build();
+        return new OrderResponse(order.getId(), order.getOrderTableId(), order.getOrderStatus(),
+                order.getCreatedTime(), fromOrderMenus(order.getOrderMenus()));
     }
 
     private List<OrderMenuResponse> fromOrderMenus(List<OrderMenu> orderMenus) {
@@ -83,10 +78,6 @@ public class OrderService {
     }
 
     private OrderMenuResponse fromOrderMenu(OrderMenu orderMenu) {
-        return OrderMenuResponse.builder()
-                .id(orderMenu.getId())
-                .menuId(orderMenu.getMenuId())
-                .quantity(orderMenu.getQuantity())
-                .build();
+        return new OrderMenuResponse(orderMenu.getId(), orderMenu.getMenuId(), orderMenu.getQuantity());
     }
 }

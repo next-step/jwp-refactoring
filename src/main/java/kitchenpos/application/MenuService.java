@@ -37,7 +37,7 @@ public class MenuService {
         Menu menu = toEntity(request);
         for (MenuProductRequest menuProductRequest : request.getMenuProducts()) {
             Product product = productRepository.findById(menuProductRequest.getProductId())
-                    .orElseThrow(EntityNotFoundException::new);;
+                    .orElseThrow(EntityNotFoundException::new);
             menu.add(product, menuProductRequest.getQuantity());
         }
         return fromEntity(menuRepository.save(menu));
@@ -54,19 +54,10 @@ public class MenuService {
     private Menu toEntity(MenuRequest request) {
         MenuGroup menuGroup = menuGroupRepository.findById(request.getMenuGroupId())
                 .orElseThrow(EntityNotFoundException::new);
-        return Menu.builder()
-                .name(request.getName())
-                .price(request.getPrice())
-                .menuGroup(menuGroup)
-                .build();
+        return new Menu(request.getName(), request.getPrice(), menuGroup);
     }
 
     private MenuResponse fromEntity(Menu menu) {
-        return MenuResponse.builder()
-                .id(menu.getId())
-                .name(menu.getName())
-                .price(menu.getPrice())
-                .menuGroupId(menu.getMenuGroupId())
-                .build();
+        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(), menu.getMenuGroupId());
     }
 }

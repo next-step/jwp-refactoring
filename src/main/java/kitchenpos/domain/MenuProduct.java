@@ -1,14 +1,8 @@
 package kitchenpos.domain;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
 
 @Entity
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MenuProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,10 +13,16 @@ public class MenuProduct {
     private Product product;
     private Long quantity;
 
+    protected MenuProduct(){}
+
     public MenuProduct(Menu menu, Product product, Long quantity) {
         this.menu = menu;
         this.product = product;
         this.quantity = quantity;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public long getPrice() {

@@ -1,8 +1,5 @@
 package kitchenpos.domain;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -12,8 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "orders")
 @EntityListeners(AuditingEntityListener.class)
 public class Order {
@@ -29,8 +24,26 @@ public class Order {
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<OrderMenu> orderMenus = new ArrayList<>();
 
+    protected Order(){}
+
     public Order(OrderTable orderTable) {
         this.orderTable = orderTable;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+
+    public LocalDateTime getCreatedTime() {
+        return createdTime;
+    }
+
+    public List<OrderMenu> getOrderMenus() {
+        return orderMenus;
     }
 
     public void add(Menu menu, Long quantity) {

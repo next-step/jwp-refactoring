@@ -33,17 +33,10 @@ public class ProductService {
     }
 
     private Product toEntity(ProductRequest request) {
-        return Product.builder()
-                .name(request.getName())
-                .price(request.getPrice())
-                .build();
+        return new Product(request.getName(), request.getPrice());
     }
 
     private ProductResponse fromEntity(Product product) {
-        return ProductResponse.builder()
-                .id(product.getId())
-                .name(product.getName())
-                .price(product.getPrice())
-                .build();
+        return new ProductResponse(product.getId(), product.getName(), product.getPrice());
     }
 }

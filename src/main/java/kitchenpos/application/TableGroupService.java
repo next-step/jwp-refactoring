@@ -60,11 +60,8 @@ public class TableGroupService {
     }
 
     private TableGroupResponse fromEntity(TableGroup tableGroup) {
-        return TableGroupResponse.builder()
-                .id(tableGroup.getId())
-                .createdDate(tableGroup.getCreatedDate())
-                .tableResponses(fromTableEntities(tableGroup.getOrderTables()))
-                .build();
+        return new TableGroupResponse(tableGroup.getId(), tableGroup.getCreatedDate(),
+                fromTableEntities(tableGroup.getOrderTables()));
     }
 
     private List<TableResponse> fromTableEntities(List<OrderTable> orderTables) {

@@ -1,10 +1,7 @@
 package kitchenpos.domain;
 
-import kitchenpos.exception.BadRequestException;
 import kitchenpos.exception.InvalidTableCountException;
 import kitchenpos.exception.TableInUseException;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -14,12 +11,13 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @Embeddable
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderTables {
     private static final int MINIMUM_GROUP_SIZE = 2;
 
     @OneToMany(mappedBy = "tableGroup", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private List<OrderTable> orderTables;
+
+    protected OrderTables(){}
 
     public OrderTables(List<OrderTable> orderTables) {
         if (orderTables.size() < MINIMUM_GROUP_SIZE) {

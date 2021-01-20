@@ -41,10 +41,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     }
 
     public static ProductRequest createRequest() {
-        return ProductRequest.builder()
-                .name("강정치킨")
-                .price(17_000L)
-                .build();
+        return new ProductRequest("강정치킨", 17_000);
     }
 
     public static ExtractableResponse<Response> 생성_요청(ProductRequest request) {

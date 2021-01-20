@@ -4,8 +4,6 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.Product;
 import kitchenpos.dto.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,19 +44,10 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     }
 
     public static MenuRequest createRequest(MenuGroupResponse menuGroup, ProductResponse product) {
-        MenuProductRequest menuProductRequest = MenuProductRequest.builder()
-                .productId(product.getId())
-                .quantity(2)
-                .build();
-
+        MenuProductRequest menuProductRequest = new MenuProductRequest(product.getId(), 2);
         List<MenuProductRequest> menuProductRequests = Collections.singletonList(menuProductRequest);
 
-        return MenuRequest.builder()
-                .name("후라이드+후라이드")
-                .price(19_000)
-                .menuGroupId(menuGroup.getId())
-                .menuProducts(menuProductRequests)
-                .build();
+        return new MenuRequest("후라이드_후라이드", 19_000, menuGroup.getId(), menuProductRequests);
     }
 
     public static ExtractableResponse<Response> 생성_요청(MenuRequest request) {

@@ -1,16 +1,10 @@
 package kitchenpos.domain;
 
 import kitchenpos.exception.BadPriceException;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Menu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +16,8 @@ public class Menu {
     @Embedded
     private final MenuProducts menuProducts = new MenuProducts();
 
-    @Builder
+    protected Menu(){}
+
     public Menu(String name, Long price, MenuGroup menuGroup) {
         this.name = name;
         this.price = price;
@@ -34,6 +29,18 @@ public class Menu {
         if (this.menuProducts.sumTotalPrice() < price) {
             throw new BadPriceException("메뉴의 가격은 전체 상품 가격보다 높을 수 없습니다.");
         }
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Long getPrice() {
+        return price;
     }
 
     public long getMenuGroupId() {

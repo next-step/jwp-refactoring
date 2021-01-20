@@ -40,7 +40,7 @@ public class OrderServiceTest extends ServiceTestBase {
         MenuResponse menu = menuService.create(MenuServiceTest.createRequest("후라이드+후라이드", 19_000L, menuGroup.getId(), menuProducts));
         TableResponse savedTable = tableService.create();
 
-        List<OrderMenuRequest> orderMenus = Collections.singletonList(OrderServiceTest.createOrderLineItem(menu.getId(), 1L));
+        List<OrderMenuRequest> orderMenus = Collections.singletonList(OrderServiceTest.createOrderMenu(menu.getId(), 1L));
         OrderResponse order = orderService.create(OrderServiceTest.createOrder(savedTable.getId(), orderMenus));
 
         assertThat(order.getId()).isNotNull();
@@ -51,7 +51,7 @@ public class OrderServiceTest extends ServiceTestBase {
     void createWithoutMenu() {
         TableResponse savedTable = tableService.create();
 
-        List<OrderMenuRequest> orderMenus = Collections.singletonList(OrderServiceTest.createOrderLineItem(1L, 1L));
+        List<OrderMenuRequest> orderMenus = Collections.singletonList(OrderServiceTest.createOrderMenu(1L, 1L));
 
         assertThatExceptionOfType(EntityNotFoundException.class)
                 .isThrownBy(() -> orderService.create(OrderServiceTest.createOrder(savedTable.getId(), orderMenus)));
@@ -60,7 +60,7 @@ public class OrderServiceTest extends ServiceTestBase {
     @DisplayName("테이블이 등록되지 않은 주문 생성")
     @Test
     void createWithoutTable() {
-        List<OrderMenuRequest> orderMenus = Collections.singletonList(OrderServiceTest.createOrderLineItem(1L, 1L));
+        List<OrderMenuRequest> orderMenus = Collections.singletonList(OrderServiceTest.createOrderMenu(1L, 1L));
 
         assertThatExceptionOfType(EntityNotFoundException.class)
                 .isThrownBy(() -> orderService.create(OrderServiceTest.createOrder(1L, orderMenus)));
@@ -75,7 +75,7 @@ public class OrderServiceTest extends ServiceTestBase {
         MenuResponse menu = menuService.create(MenuServiceTest.createRequest("후라이드+후라이드", 19_000L, menuGroup.getId(), menuProducts));
         TableResponse savedTable = tableService.create();
 
-        List<OrderMenuRequest> orderMenus = Collections.singletonList(OrderServiceTest.createOrderLineItem(menu.getId(), 1L));
+        List<OrderMenuRequest> orderMenus = Collections.singletonList(OrderServiceTest.createOrderMenu(menu.getId(), 1L));
         OrderResponse order = orderService.create(OrderServiceTest.createOrder(savedTable.getId(), orderMenus));
         List<OrderResponse> orders = orderService.list();
 
@@ -95,7 +95,7 @@ public class OrderServiceTest extends ServiceTestBase {
         MenuResponse menu = menuService.create(MenuServiceTest.createRequest("후라이드+후라이드", 19_000L, menuGroup.getId(), menuProducts));
         TableResponse savedTable = tableService.create();
 
-        List<OrderMenuRequest> orderMenus = Collections.singletonList(OrderServiceTest.createOrderLineItem(menu.getId(), 1L));
+        List<OrderMenuRequest> orderMenus = Collections.singletonList(OrderServiceTest.createOrderMenu(menu.getId(), 1L));
         OrderResponse order = orderService.create(OrderServiceTest.createOrder(savedTable.getId(), orderMenus));
         OrderResponse updatedOrder = orderService.changeOrderStatus(order.getId(), OrderStatus.MEAL);
 
@@ -118,7 +118,7 @@ public class OrderServiceTest extends ServiceTestBase {
         MenuResponse menu = menuService.create(MenuServiceTest.createRequest("후라이드+후라이드", 19_000L, menuGroup.getId(), menuProducts));
         TableResponse savedTable = tableService.create();
 
-        List<OrderMenuRequest> orderMenus = Collections.singletonList(OrderServiceTest.createOrderLineItem(menu.getId(), 1L));
+        List<OrderMenuRequest> orderMenus = Collections.singletonList(OrderServiceTest.createOrderMenu(menu.getId(), 1L));
         OrderResponse order = orderService.create(OrderServiceTest.createOrder(savedTable.getId(), orderMenus));
         orderService.changeOrderStatus(order.getId(), OrderStatus.COMPLETION);
 
@@ -127,16 +127,10 @@ public class OrderServiceTest extends ServiceTestBase {
     }
 
     public static OrderRequest createOrder(Long orderTableId, List<OrderMenuRequest> orderMenus) {
-        return OrderRequest.builder()
-                .orderTableId(orderTableId)
-                .orderMenuRequests(orderMenus)
-                .build();
+        return new OrderRequest(orderTableId, orderMenus);
     }
 
-    public static OrderMenuRequest createOrderLineItem(Long menuId, Long quantity) {
-        return OrderMenuRequest.builder()
-                .menuId(menuId)
-                .quantity(quantity)
-                .build();
+    public static OrderMenuRequest createOrderMenu(Long menuId, Long quantity) {
+        return new OrderMenuRequest(menuId, quantity);
     }
 }

@@ -1,26 +1,36 @@
 package kitchenpos.dto;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
 import java.util.Objects;
 
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter
 public class MenuResponse {
     private long id;
     private String name;
     private long price;
     private long menuGroupId;
 
-    @Builder
+    protected MenuResponse(){}
+
     public MenuResponse(long id, String name, long price, long menuGroupId) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public long getPrice() {
+        return price;
+    }
+
+    public long getMenuGroupId() {
+        return menuGroupId;
     }
 
     @Override

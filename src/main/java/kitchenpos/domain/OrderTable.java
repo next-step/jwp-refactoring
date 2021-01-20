@@ -1,15 +1,11 @@
 package kitchenpos.domain;
 
 import kitchenpos.exception.BadRequestException;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Getter
-@NoArgsConstructor
 public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +19,14 @@ public class OrderTable {
             throw new BadRequestException("손님 수는 null로 변경할 수 없습니다.");
         }
         this.numberOfGuests = numberOfGuests;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Integer getNumberOfGuests() {
+        return numberOfGuests;
     }
 
     public boolean isEmpty() {

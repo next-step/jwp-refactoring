@@ -34,15 +34,10 @@ public class MenuGroupService {
     }
 
     private MenuGroup toEntity(MenuGroupRequest request) {
-        return MenuGroup.builder()
-                .name(request.getName())
-                .build();
+        return new MenuGroup(request.getName());
     }
 
     private MenuGroupResponse fromEntity(MenuGroup menuGroup) {
-        return MenuGroupResponse.builder()
-                .id(menuGroup.getId())
-                .name(menuGroup.getName())
-                .build();
+        return new MenuGroupResponse(menuGroup.getId(), menuGroup.getName());
     }
 }

@@ -71,7 +71,7 @@ public class TableServiceTest extends ServiceTestBase {
         MenuResponse menu = menuService.create(MenuServiceTest.createRequest("후라이드+후라이드", 19_000L, menuGroup.getId(), menuProducts));
         TableResponse orderTable = tableService.create();
         tableService.update(orderTable.getId(), createRequest(4));
-        List<OrderMenuRequest> orderMenus = Collections.singletonList(OrderServiceTest.createOrderLineItem(menu.getId(), 1L));
+        List<OrderMenuRequest> orderMenus = Collections.singletonList(OrderServiceTest.createOrderMenu(menu.getId(), 1L));
         orderService.create(OrderServiceTest.createOrder(orderTable.getId(), orderMenus));
 
         assertThatExceptionOfType(TableInUseException.class)
@@ -86,8 +86,6 @@ public class TableServiceTest extends ServiceTestBase {
     }
 
     public static TableRequest createRequest(int numberOfGuests) {
-        return TableRequest.builder()
-                .numberOfGuests(numberOfGuests)
-                .build();
+        return new TableRequest(numberOfGuests);
     }
 }

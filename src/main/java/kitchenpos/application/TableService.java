@@ -53,11 +53,7 @@ public class TableService {
     }
 
     public static TableResponse fromEntity(OrderTable table) {
-        return TableResponse.builder()
-                .id(table.getId())
-                .tableGroupId(table.getTableGroupId())
-                .numberOfGuests(table.getNumberOfGuests())
-                .build();
+        return new TableResponse(table.getId(), table.getTableGroupId(), table.getNumberOfGuests());
     }
 
     private void validateEmptyTable(OrderTable savedOrderTable) {
