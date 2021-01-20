@@ -1,20 +1,25 @@
 package kitchenpos.domain;
 
 import javax.persistence.*;
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "table_group_id")
-    private TableGroup tableGroup;
     @Column
     private Integer numberOfGuests;
     @Column
     private Boolean empty;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "table_group_id")
+    private TableGroup tableGroup;
+
+    @OneToMany(mappedBy = "orderTable")
+    private final List<Order> orders = new ArrayList<>();
 
     public OrderTable(Long id, Integer numberOfGuests, Boolean empty) {
         this.id = id;
@@ -80,16 +85,12 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        OrderTable that = (OrderTable) o;
-        return Objects.equals(id, that.id) && Objects.equals(tableGroup, that.tableGroup) && Objects.equals(numberOfGuests, that.numberOfGuests) && Objects.equals(empty, that.empty);
+    public boolean isNotPaymentFinished() {
+        return orders.stream()
+                .anyMatch(Order::isNotCompleted);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, tableGroup, numberOfGuests, empty);
+    public List<Order> getOrders() {
+        return orders;
     }
 }

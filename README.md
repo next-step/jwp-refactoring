@@ -147,6 +147,7 @@
 - [ ] Service Layer에 있는 Domain Logic를 Domain Layer로 이동
     - [ ] OrderTable
         - [x] Service method 개선 : OrderTable 생성
+        - [x] Service method 개선 : OrderTable Status 변경
     - [ ] Product
         - [x] Service method 개선 : Product 생성
     - [ ] Order

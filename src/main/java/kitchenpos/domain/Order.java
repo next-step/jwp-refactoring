@@ -51,6 +51,10 @@ public class Order {
         return orderStatus == OrderStatus.COMPLETION;
     }
 
+    public boolean isNotCompleted() {
+        return orderStatus != OrderStatus.COMPLETION;
+    }
+
     public Long getId() {
         return id;
     }

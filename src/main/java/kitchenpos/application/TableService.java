@@ -1,15 +1,12 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderRepository;
 import kitchenpos.dao.OrderTableRepository;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -17,11 +14,9 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class TableService {
-    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
-        this.orderRepository = orderRepository;
+    public TableService(OrderTableRepository orderTableRepository) {
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -38,20 +33,10 @@ public class TableService {
     }
 
     public OrderTableResponse changeEmpty(Long orderTableId, OrderTableRequest request) {
-        OrderTable savedOrderTable = findById(orderTableId);
-
-        if (savedOrderTable.hasTableGroup()) {
-            throw new IllegalArgumentException();
-        }
-
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
-        }
-
-        savedOrderTable.changeEmpty(request.isEmpty());
-
-        return OrderTableResponse.from(savedOrderTable);
+        OrderTable orderTable = findById(orderTableId);
+        validateOrderTable(orderTable);
+        orderTable.changeEmpty(request.isEmpty());
+        return OrderTableResponse.from(orderTable);
     }
 
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, OrderTableRequest request) {
@@ -79,5 +64,14 @@ public class TableService {
     public OrderTable findById(Long id) {
         return orderTableRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("OrderTable id:" + id + "가 존재하지 않습니다."));
+    }
+
+    private void validateOrderTable(OrderTable orderTable) {
+        if (orderTable.hasTableGroup()) {
+            throw new IllegalArgumentException("테이블이 속한 테이블 그룹이 있으면 테이블을 비울 수 없습니다.");
+        }
+        if (orderTable.isNotPaymentFinished()) {
+            throw new IllegalArgumentException("아직 계산을 마치지 않은 테이블은 비울 수 없습니다.");
+        }
     }
 }
