@@ -10,7 +10,7 @@ public class Product {
     private Long id;
     @Column
     private String name;
-    @Column
+    @Column(nullable = false)
     private BigDecimal price;
 
     public Product(String name, BigDecimal price) {
@@ -19,7 +19,7 @@ public class Product {
         this.price = price;
     }
 
-    public Product() {
+    protected Product() {
     }
 
     public BigDecimal getSumPrice(Long quantity) {
