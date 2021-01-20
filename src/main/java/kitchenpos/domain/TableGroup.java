@@ -29,6 +29,11 @@ public class TableGroup {
     protected TableGroup() {
     }
 
+    public boolean isNotPaymentFinished() {
+        return orderTables.stream()
+                .anyMatch(OrderTable::isNotPaymentFinished);
+    }
+
     public void clearTables() {
         orderTables.forEach(OrderTable::releaseInGroup);
     }

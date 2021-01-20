@@ -158,6 +158,7 @@
         - [x] Service method 개선 : Menu 생성
     - [ ] TableGroup
         - [x] Service method 개선 : TableGroup 생성
+        - [x] Service method 개선 : TableGroup 단체 지정 해제
 - [ ] JPA 도메인 리팩터링
     - [ ] Product
         - [x] JPA Entity, Repository 적용
