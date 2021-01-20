@@ -16,7 +16,7 @@ public class MenuResponse {
     private List<MenuProductResponse> menuProducts;
 
     public static MenuResponse from(Menu menu) {
-        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(), menu.getMenuGroup().getId(), toMenuProducts(menu.getMenuProducts()));
+        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(), menu.getMenuGroupId(), toMenuProducts(menu.getMenuProducts()));
     }
 
     private static List<MenuProductResponse> toMenuProducts(List<MenuProduct> menuProducts) {

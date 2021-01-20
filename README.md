@@ -173,6 +173,7 @@
         - [x] JPA Entity, Repository 적용
         - [x] 엔티티 필드 연관 관계 개선
         - [x] price 필드 Embedded 타입 반영
+        - [x] 필드 제약사항 추가와 파라미터 검증
     - [ ] OrderLineItem
         - [x] JPA Entity, Repository 적용
     - [ ] Order
