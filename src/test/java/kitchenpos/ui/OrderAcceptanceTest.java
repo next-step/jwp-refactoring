@@ -89,7 +89,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
         주문_상태_변경_실패(response);
     }
 
-    private static ExtractableResponse<Response> 주문_생성_요청(Order order) {
+    public static ExtractableResponse<Response> 주문_생성_요청(Order order) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
