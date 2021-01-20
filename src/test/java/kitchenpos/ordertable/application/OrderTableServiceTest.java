@@ -1,10 +1,11 @@
-package kitchenpos.application;
+package kitchenpos.ordertable.application;
 
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,17 +19,14 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 
 @Transactional
 @SpringBootTest
-class TableServiceTest {
+class OrderTableServiceTest {
 
     private static final int NUMBER_OF_GUESTS = 10;
     private static final int NEW_NUMBER_OF_GUESTS = 11;
     private static final boolean IS_EMPTY = false;
 
     @Autowired
-    private TableService tableService;
-
-    @Autowired
-    private OrderTableDao orderTableDao;
+    private OrderTableService orderTableService;
 
     @Autowired
     private OrderDao orderDao;
@@ -37,10 +35,10 @@ class TableServiceTest {
     @Test
     void create() {
         // given
-        OrderTable orderTable = new OrderTable();
+        OrderTableRequest orderTable = new OrderTableRequest(1L, 10, false);
 
         // when
-        OrderTable savedOrderTable = tableService.create(orderTable);
+        OrderTableResponse savedOrderTable = orderTableService.create(orderTable);
 
         // then
         assertThat(savedOrderTable.getId()).isNotNull();
@@ -50,13 +48,13 @@ class TableServiceTest {
     @Test
     void list() {
         // given
-        OrderTable orderTable = new OrderTable();
+        OrderTableRequest orderTable = new OrderTableRequest(1L, 10, false);
 
         // when
-        OrderTable savedOrderTable = tableService.create(orderTable);
+        OrderTableResponse savedOrderTable = orderTableService.create(orderTable);
 
         // then
-        List<OrderTable> list = tableService.list();
+        List<OrderTableResponse> list = orderTableService.list();
         assertThat(list).extracting("id").contains(savedOrderTable.getId());
     }
 
@@ -64,15 +62,16 @@ class TableServiceTest {
     @Test
     void changeEmpty() {
         // given
-        OrderTable orderTable = orderTableDao.findById(1L).get();
-        orderTable.setTableGroupId(1L);
+        OrderTable orderTable = orderTableService.findById(1L);
+//        orderTable.setTableGroupId(1L);
+        OrderTableRequest request = new OrderTableRequest(1L, orderTable.getNumberOfGuests(), orderTable.isEmpty());
 
         Order order = new Order(orderTable.getId());
         order.setOrderStatus(OrderStatus.COMPLETION.name());
         orderDao.save(order);
 
         // when
-        OrderTable changedOrderTable = tableService.changeEmpty(orderTable.getId(), orderTable);
+        OrderTableResponse changedOrderTable = orderTableService.changeEmpty(1L, request);
 
         // then
         assertThat(changedOrderTable.isEmpty()).isTrue();
@@ -82,8 +81,9 @@ class TableServiceTest {
     @Test
     void changeEmpty_exception1() {
         // given
-        OrderTable orderTable = orderTableDao.findById(1L).get();
-        orderTable.setTableGroupId(1L);
+        OrderTable orderTable = orderTableService.findById(1L);
+//        orderTable.setTableGroupId(1L);
+        OrderTableRequest request = new OrderTableRequest(1L, orderTable.getNumberOfGuests(), orderTable.isEmpty());
 
         Order order = new Order(orderTable.getId());
         order.setOrderStatus(OrderStatus.MEAL.name());
@@ -91,7 +91,7 @@ class TableServiceTest {
 
         // when, then
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> tableService.changeEmpty(orderTable.getId(), orderTable))
+            .isThrownBy(() -> orderTableService.changeEmpty(orderTable.getId(), request))
             .withMessage("`조리중`과 `식사중`에는 변경할 수 없다.");
     }
 
@@ -99,11 +99,12 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuests() {
         // given
-        OrderTable orderTable = orderTableDao.findById(1L).get();
-        orderTable.setNumberOfGuests(NEW_NUMBER_OF_GUESTS);
+        OrderTable orderTable = orderTableService.findById(1L);
+//        orderTable.setNumberOfGuests(NEW_NUMBER_OF_GUESTS);
+        OrderTableRequest request = new OrderTableRequest(1L, NEW_NUMBER_OF_GUESTS, orderTable.isEmpty());
 
         // when
-        OrderTable changedOrderTable = tableService.changeNumberOfGuests(orderTable.getId(), orderTable);
+        OrderTableResponse changedOrderTable = orderTableService.changeNumberOfGuests(orderTable.getId(), request);
 
         // then
         assertThat(changedOrderTable.getNumberOfGuests()).isEqualTo(NEW_NUMBER_OF_GUESTS);
@@ -113,12 +114,12 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuests_exception1() {
         // given
-        OrderTable orderTable = orderTableDao.findById(1L).get();
-        orderTable.setNumberOfGuests(-1);
+        OrderTable orderTable = orderTableService.findById(1L);
+        OrderTableRequest request = new OrderTableRequest(1L, -1, orderTable.isEmpty());
 
         // when, then
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), orderTable))
+            .isThrownBy(() -> orderTableService.changeNumberOfGuests(orderTable.getId(), request))
             .withMessage("게스트 인원이 0보다 커야한다.");
     }
 
@@ -126,12 +127,13 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuests_exception2() {
         // given
-        OrderTable orderTable = orderTableDao.findById(1L).get();
-        orderTable.setNumberOfGuests(NEW_NUMBER_OF_GUESTS);
+        OrderTable orderTable = orderTableService.findById(1L);
+        OrderTableRequest request = new OrderTableRequest(1L, NEW_NUMBER_OF_GUESTS, orderTable.isEmpty());
 
         // when, then
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> tableService.changeNumberOfGuests(999999L, orderTable))
-            .withMessage("변경하고자 하는 테이블이 등록되어 있어야 한다.");
+            .isThrownBy(() -> orderTableService.changeNumberOfGuests(999999L, request))
+            .withMessage("테이블이 등록되어 있어야 한다.");
     }
+
 }

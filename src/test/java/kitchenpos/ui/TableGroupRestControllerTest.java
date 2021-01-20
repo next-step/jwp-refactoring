@@ -2,8 +2,8 @@ package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.TableGroupService;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.ordertable.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +38,8 @@ class TableGroupRestControllerTest {
     @Test
     void create() throws Exception {
         List<OrderTable> orderTables = Arrays.asList(
-            new OrderTable(1L, 1L, 10, false),
-            new OrderTable(2L, 1L, 5, false)
+            new OrderTable(1L, 10, false),
+            new OrderTable(1L, 5, false)
         );
         TableGroup tableGroup = new TableGroup(orderTables);
 

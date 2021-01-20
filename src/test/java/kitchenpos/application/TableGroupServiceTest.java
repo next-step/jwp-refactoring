@@ -1,12 +1,12 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.ordertable.application.OrderTableService;
+import kitchenpos.ordertable.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 class TableGroupServiceTest {
 
     @Autowired
-    private OrderTableDao orderTableDao;
+    private OrderTableService orderTableService;
 
     @Autowired
     private TableGroupService tableGroupService;
@@ -40,8 +40,8 @@ class TableGroupServiceTest {
     void create() {
         // given
         List<OrderTable> orderTables = Arrays.asList(
-            orderTableDao.findById(1L).get(),
-            orderTableDao.findById(2L).get()
+            orderTableService.findById(1L),
+            orderTableService.findById(2L)
         );
         TableGroup tableGroup = new TableGroup(orderTables);
 
@@ -58,7 +58,7 @@ class TableGroupServiceTest {
     void create_exception1() {
         // given
         List<OrderTable> orderTables = Arrays.asList(
-            orderTableDao.findById(1L).get()
+            orderTableService.findById(1L)
         );
         TableGroup tableGroup = new TableGroup(orderTables);
 
@@ -73,8 +73,8 @@ class TableGroupServiceTest {
     void create_exception2() {
         // given
         List<OrderTable> orderTables = Arrays.asList(
-            orderTableDao.findById(1L).get(),
-            orderTableDao.findById(2L).get(),
+            orderTableService.findById(1L),
+            orderTableService.findById(2L),
             new OrderTable()
         );
         TableGroup tableGroup = new TableGroup(orderTables);
@@ -89,11 +89,11 @@ class TableGroupServiceTest {
     @Test
     void create_exception3() {
         // given
-        OrderTable orderTable = orderTableDao.findById(1L).get();
+        OrderTable orderTable = orderTableService.findById(1L);
         orderTable.setTableGroupId(1L);
         List<OrderTable> orderTables = Arrays.asList(
-            orderTableDao.save(orderTable),
-            orderTableDao.findById(2L).get()
+            orderTable,
+            orderTableService.findById(2L)
         );
         TableGroup tableGroup = new TableGroup(orderTables);
 
@@ -108,7 +108,7 @@ class TableGroupServiceTest {
     void ungroup() {
         // given
         TableGroup tableGroup = tableGroupDao.findById(2L).get();
-        Long orderTableId = orderTableDao.findAllByTableGroupId(tableGroup.getId()).get(0).getId();
+        Long orderTableId = orderTableService.findAllByTableGroupId(tableGroup.getId()).get(0).getId();
         Order order = new Order(orderTableId);
         order.setOrderStatus(OrderStatus.COMPLETION.name());
         orderDao.save(order);
@@ -117,7 +117,7 @@ class TableGroupServiceTest {
         tableGroupService.ungroup(tableGroup.getId());
 
         // then
-        OrderTable updatedOrderTable = orderTableDao.findById(orderTableId).get();
+        OrderTable updatedOrderTable = orderTableService.findById(orderTableId);
         assertThat(updatedOrderTable.getTableGroupId()).isNull();
     }
 
@@ -126,7 +126,7 @@ class TableGroupServiceTest {
     void ungroup_exception1() {
         // given
         TableGroup tableGroup = tableGroupDao.findById(2L).get();
-        Long orderTableId = orderTableDao.findAllByTableGroupId(tableGroup.getId()).get(0).getId();
+        Long orderTableId = orderTableService.findAllByTableGroupId(tableGroup.getId()).get(0).getId();
         Order order = new Order(orderTableId);
         order.setOrderStatus(OrderStatus.MEAL.name());
         orderDao.save(order);

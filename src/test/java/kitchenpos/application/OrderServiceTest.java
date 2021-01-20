@@ -2,8 +2,12 @@ package kitchenpos.application;
 
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.*;
+import kitchenpos.domain.Menu;
+import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderStatus;
+import kitchenpos.ordertable.application.OrderTableService;
+import kitchenpos.ordertable.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +27,7 @@ class OrderServiceTest {
     @Autowired
     private MenuDao menuDao;
     @Autowired
-    private OrderTableDao orderTableDao;
+    private OrderTableService orderTableService;
     @Autowired
     private OrderDao orderDao;
     @Autowired
@@ -35,7 +39,7 @@ class OrderServiceTest {
         // given
         Menu menu1 = menuDao.findById(1L).get();
         Menu menu2 = menuDao.findById(2L).get();
-        OrderTable orderTable = orderTableDao.findById(1L).get();
+        OrderTable orderTable = orderTableService.findById(1L);
         List<OrderLineItem> orderLineItems = Arrays.asList(
             new OrderLineItem(menu1.getId(), 1),
             new OrderLineItem(menu2.getId(), 1)
@@ -56,7 +60,7 @@ class OrderServiceTest {
     void create_exception1() {
         // given
         Menu menu1 = menuDao.findById(1L).get();
-        OrderTable orderTable = orderTableDao.findById(1L).get();
+        OrderTable orderTable = orderTableService.findById(1L);
         List<OrderLineItem> orderLineItems = Arrays.asList(
             new OrderLineItem(menu1.getId(), 1),
             new OrderLineItem(999999L, 1)
@@ -86,7 +90,7 @@ class OrderServiceTest {
         // when, then
         assertThatIllegalArgumentException()
             .isThrownBy(() -> orderService.create(order))
-            .withMessage("주문하고자 하는 테이블이 등록되어 있어야 한다.");
+            .withMessage("테이블이 등록되어 있어야 한다.");
     }
 
     @DisplayName("주문 목록을 조회한다.")
@@ -95,7 +99,7 @@ class OrderServiceTest {
         // given
         Menu menu1 = menuDao.findById(1L).get();
         Menu menu2 = menuDao.findById(2L).get();
-        OrderTable orderTable = orderTableDao.findById(1L).get();
+        OrderTable orderTable = orderTableService.findById(1L);
         List<OrderLineItem> orderLineItems = Arrays.asList(
             new OrderLineItem(menu1.getId(), 1),
             new OrderLineItem(menu2.getId(), 1)
