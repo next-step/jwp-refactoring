@@ -3,9 +3,7 @@ package kitchenpos.order;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.*;
-import kitchenpos.dto.OrderLineItemRequest;
-import kitchenpos.dto.OrderRequest;
-import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.dto.*;
 import kitchenpos.menu.MenuAcceptanceTestSupport;
 import kitchenpos.menugroup.MenuGroupAcceptanceTestSupport;
 import kitchenpos.ordertable.OrderTableAcceptanceTestSupport;
@@ -20,15 +18,15 @@ import java.util.Collections;
 @DisplayName("주문 관련 기능")
 class OrderAcceptanceTest extends OrderAcceptanceTestSupport {
     private OrderTableResponse orderTable;
-    private Menu menu;
+    private MenuResponse menu;
 
     @BeforeEach
     public void beforeEach() {
         orderTable = OrderTableAcceptanceTestSupport.주문_테이블_등록_되어있음(3, false).as(OrderTableResponse.class);
-        MenuGroup 중화메뉴 = MenuGroupAcceptanceTestSupport.메뉴_그룹_등록_되어있음("중화메뉴").as(MenuGroup.class);
-        Product 짬뽕 = ProductAcceptanceTestSupport.상품_등록되어_있음("짬뽕", 7_000).as(Product.class);
-        Product 짜장면 = ProductAcceptanceTestSupport.상품_등록되어_있음("짜장면", 5_000).as(Product.class);
-        menu = MenuAcceptanceTestSupport.메뉴_등록_되어있음(중화메뉴, Arrays.asList(짬뽕, 짜장면)).as(Menu.class);
+        MenuGroupResponse 중화메뉴 = MenuGroupAcceptanceTestSupport.메뉴_그룹_등록_되어있음("중화메뉴").as(MenuGroupResponse.class);
+        ProductResponse 짬뽕 = ProductAcceptanceTestSupport.상품_등록되어_있음("짬뽕", 7_000).as(ProductResponse.class);
+        ProductResponse 짜장면 = ProductAcceptanceTestSupport.상품_등록되어_있음("짜장면", 5_000).as(ProductResponse.class);
+        menu = MenuAcceptanceTestSupport.메뉴_등록_되어있음(중화메뉴, Arrays.asList(짬뽕, 짜장면)).as(MenuResponse.class);
     }
 
     @DisplayName("주문의 생성 / 목록 조회 / 주문 상태 변경")

@@ -1,12 +1,7 @@
 package kitchenpos.dto;
 
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
-
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class MenuRequest {
     private String name;
@@ -22,16 +17,6 @@ public class MenuRequest {
     }
 
     public MenuRequest() {
-    }
-
-    public Menu toMenu() {
-        return new Menu(name, price, menuGroupId, toMenuProducts());
-    }
-
-    private List<MenuProduct> toMenuProducts() {
-        return menuProducts.stream()
-                .map(MenuProductRequest::toMenuProduct)
-                .collect(Collectors.toList());
     }
 
     public String getName() {
@@ -50,26 +35,9 @@ public class MenuRequest {
         return menuProducts;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        MenuRequest that = (MenuRequest) o;
-        return Objects.equals(name, that.name) && Objects.equals(price, that.price) && Objects.equals(menuGroupId, that.menuGroupId) && Objects.equals(menuProducts, that.menuProducts);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, price, menuGroupId, menuProducts);
-    }
-
-    @Override
-    public String toString() {
-        return "MenuRequest{" +
-                "name='" + name + '\'' +
-                ", price=" + price +
-                ", menuGroupId=" + menuGroupId +
-                ", menuProducts=" + menuProducts +
-                '}';
+    public void validatePrice() {
+        if (price == null || price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("메뉴의 가격은 필수이고, 0원 이상이어야합니다.");
+        }
     }
 }

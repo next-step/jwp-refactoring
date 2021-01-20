@@ -9,6 +9,7 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.*;
 import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
@@ -16,19 +17,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class MenuAcceptanceTestSupport extends AcceptanceTest {
-    public static ExtractableResponse<Response> 메뉴_등록_되어있음(MenuGroup menuGroup, List<Product> products) {
-        Menu params = new Menu();
-        params.setName("메뉴이름");
-        params.setPrice(new BigDecimal(sumOfProductPrice(products)));
-        params.setMenuGroupId(menuGroup.getId());
-        params.setMenuProducts(convertParamsOfProducts(products));
+    public static ExtractableResponse<Response> 메뉴_등록_되어있음(MenuGroupResponse menuGroup, List<ProductResponse> products) {
+        MenuRequest params = new MenuRequest("메뉴이름", BigDecimal.valueOf(sumOfProductPrice(products)),
+                menuGroup.getId(), convertParamsOfProducts(products));
 
         ExtractableResponse<Response> response = 메뉴_등록_요청(params);
         메뉴_생성_완료(response);
         return response;
     }
 
-    public static ExtractableResponse<Response> 메뉴_등록_요청(Menu params) {
+    public static ExtractableResponse<Response> 메뉴_등록_요청(MenuRequest params) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -54,21 +52,16 @@ public class MenuAcceptanceTestSupport extends AcceptanceTest {
         HttpStatusAssertion.OK(response);
     }
 
-    private static int sumOfProductPrice(List<Product> products) {
+    private static int sumOfProductPrice(List<ProductResponse> products) {
         return products.stream()
-                .map(Product::getPrice)
+                .map(ProductResponse::getPrice)
                 .mapToInt(BigDecimal::intValue)
                 .sum();
     }
 
-    private static List<MenuProduct> convertParamsOfProducts(List<Product> products) {
+    private static List<MenuProductRequest> convertParamsOfProducts(List<ProductResponse> products) {
         return products.stream()
-                .map(product -> {
-                    MenuProduct menuProduct = new MenuProduct();
-                    menuProduct.setProductId(product.getId());
-                    menuProduct.setQuantity(1);
-                    return menuProduct;
-                })
+                .map(product -> new MenuProductRequest(product.getId(), 1L))
                 .collect(Collectors.toList());
     }
 }

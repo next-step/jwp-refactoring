@@ -6,6 +6,8 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.MenuRequest;
 import kitchenpos.menugroup.MenuGroupAcceptanceTestSupport;
 import kitchenpos.product.ProductAcceptanceTestSupport;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,17 +34,10 @@ class MenuAcceptanceTest extends MenuAcceptanceTestSupport {
     @Test
     void createMenu() {
         // Given
-        MenuProduct 짬뽕_추가 = new MenuProduct();
-        짬뽕_추가.setProductId(짬뽕.getId());
-        짬뽕_추가.setQuantity(1);
-        MenuProduct 짜장면_추가 = new MenuProduct();
-        짜장면_추가.setProductId(짜장면.getId());
-        짜장면_추가.setQuantity(2);
-        Menu params = new Menu();
-        params.setName("짜장짬뽕세트");
-        params.setPrice(new BigDecimal(17_000));
-        params.setMenuGroupId(중화메뉴.getId());
-        params.setMenuProducts(Arrays.asList(짬뽕_추가, 짜장면_추가));
+        MenuProductRequest 짬뽕_추가 = new MenuProductRequest(짬뽕.getId(), 1L);
+        MenuProductRequest 짜장면_추가 = new MenuProductRequest(짜장면.getId(), 2L);
+        MenuRequest params = new MenuRequest("짜장짬뽕세트", BigDecimal.valueOf(17_000),
+                중화메뉴.getId(), Arrays.asList(짬뽕_추가, 짜장면_추가));
 
         // When
         ExtractableResponse<Response> createResponse = 메뉴_등록_요청(params);

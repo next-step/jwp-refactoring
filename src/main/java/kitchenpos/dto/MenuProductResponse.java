@@ -5,13 +5,13 @@ import kitchenpos.domain.MenuProduct;
 import java.util.Objects;
 
 public class MenuProductResponse {
-    private final Long seq;
-    private final Long menuId;
-    private final Long productId;
-    private final Long quantity;
+    private Long seq;
+    private Long menuId;
+    private Long productId;
+    private Long quantity;
 
     public static MenuProductResponse from(MenuProduct menuProduct) {
-        return new MenuProductResponse(menuProduct.getSeq(), menuProduct.getMenuId(), menuProduct.getProductId(), menuProduct.getQuantity());
+        return new MenuProductResponse(menuProduct.getSeq(), menuProduct.getMenu().getId(), menuProduct.getProduct().getId(), menuProduct.getQuantity());
     }
 
     private MenuProductResponse(Long seq, Long menuId, Long productId, Long quantity) {
@@ -19,6 +19,9 @@ public class MenuProductResponse {
         this.menuId = menuId;
         this.productId = productId;
         this.quantity = quantity;
+    }
+
+    public MenuProductResponse() {
     }
 
     public Long getSeq() {

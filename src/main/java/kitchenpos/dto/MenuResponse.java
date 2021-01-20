@@ -9,14 +9,14 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class MenuResponse {
-    private final Long id;
-    private final String name;
-    private final BigDecimal price;
-    private final Long menuGroupId;
+    private Long id;
+    private String name;
+    private BigDecimal price;
+    private Long menuGroupId;
     private List<MenuProductResponse> menuProducts;
 
     public static MenuResponse from(Menu menu) {
-        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(), menu.getMenuGroupId(), menu.getMenuProducts());
+        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(), menu.getMenuGroup().getId(), toMenuProducts(menu.getMenuProducts()));
     }
 
     private static List<MenuProductResponse> toMenuProducts(List<MenuProduct> menuProducts) {
@@ -25,16 +25,15 @@ public class MenuResponse {
                 .collect(Collectors.toList());
     }
 
-    private MenuResponse(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    private MenuResponse(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProductResponse> menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
-        this.menuProducts = toMenuProducts(menuProducts);
+        this.menuProducts = menuProducts;
     }
 
-    public void setMenuProducts(List<MenuProduct> menuProducts) {
-        this.menuProducts = toMenuProducts(menuProducts);
+    public MenuResponse() {
     }
 
     public Long getId() {
@@ -62,12 +61,12 @@ public class MenuResponse {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MenuResponse that = (MenuResponse) o;
-        return Objects.equals(name, that.name) && price.compareTo(that.price) == 0 && Objects.equals(menuGroupId, that.menuGroupId) && Objects.equals(menuProducts, that.menuProducts);
+        return Objects.equals(name, that.name) && price.compareTo(that.price) == 0 && Objects.equals(menuGroupId, that.menuGroupId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, price, menuGroupId, menuProducts);
+        return Objects.hash(name, price, menuGroupId);
     }
 
     @Override
