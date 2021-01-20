@@ -1,6 +1,7 @@
 package kitchenpos.order.domain;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class OrderTable {
@@ -21,15 +22,29 @@ public class OrderTable {
     }
 
     public OrderTable(int numberOfGuests, boolean empty) {
+        validateLessThanZero(numberOfGuests);
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
 
+    private void validateLessThanZero(int numberOfGuests) {
+        if (numberOfGuests < 0) {
+            throw new IllegalArgumentException("손님의 수가 0보다 작을 수 없습니다.");
+        }
+    }
+
     public void changeEmpty(boolean empty) {
+        validateIsTableGroup();
         this.empty = empty;
     }
 
-    public void changeTableGroup(Long tableGroupId) {
+    private void validateIsTableGroup() {
+        if (Objects.nonNull(tableGroupId)) {
+            throw new IllegalArgumentException("단체지정이 되어있는 경우 빈 테이블 상태 변경 불가합니다.");
+        }
+    }
+
+    public void changeTableGroupId(Long tableGroupId) {
         this.tableGroupId = tableGroupId;
     }
 
@@ -37,7 +52,20 @@ public class OrderTable {
         return empty;
     }
 
+    public void changeNumberOfGuests(int numberOfGuests) {
+        validateLessThanZero(numberOfGuests);
+        this.numberOfGuests = numberOfGuests;
+    }
+
     public Long getTableGroupId() {
         return tableGroupId;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public int getNumberOfGuests() {
+        return numberOfGuests;
     }
 }

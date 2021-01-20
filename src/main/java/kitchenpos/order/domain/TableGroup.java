@@ -24,4 +24,8 @@ public class TableGroup {
     public TableGroup(List<OrderTable> orderTables) {
         this.orderTables.add(this.id, orderTables);
     }
+
+    public Long getId() {
+        return id;
+    }
 }

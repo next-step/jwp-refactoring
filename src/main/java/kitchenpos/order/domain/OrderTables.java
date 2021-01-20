@@ -1,6 +1,5 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.menu.domain.MenuProduct;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.CascadeType;
@@ -28,7 +27,7 @@ public class OrderTables {
             }
 
             orderTable.changeEmpty(false);
-            orderTable.changeTableGroup(tableGroupId);
+            orderTable.changeTableGroupId(tableGroupId);
         }
     }
 }
