@@ -2,10 +2,9 @@ package kitchenpos.tablegroup;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.dto.OrderRequest;
-import kitchenpos.dto.OrderTableRequest;
-import kitchenpos.dto.OrderTableResponse;
-import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.ordertable.OrderTableAcceptanceTestSupport;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

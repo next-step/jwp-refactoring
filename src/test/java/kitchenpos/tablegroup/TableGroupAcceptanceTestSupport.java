@@ -5,7 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.HttpStatusAssertion;
-import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
 import org.springframework.http.MediaType;
 
 public class TableGroupAcceptanceTestSupport extends AcceptanceTest {

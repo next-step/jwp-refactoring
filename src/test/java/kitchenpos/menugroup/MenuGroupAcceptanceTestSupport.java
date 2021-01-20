@@ -5,8 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.HttpStatusAssertion;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
 import org.springframework.http.MediaType;
 
 public class MenuGroupAcceptanceTestSupport extends AcceptanceTest {

@@ -2,8 +2,7 @@ package kitchenpos.product;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.Product;
-import kitchenpos.dto.ProductRequest;
+import kitchenpos.product.dto.ProductRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

@@ -5,8 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.HttpStatusAssertion;
-import kitchenpos.domain.Product;
-import kitchenpos.dto.ProductRequest;
+import kitchenpos.product.dto.ProductRequest;
 import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;

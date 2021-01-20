@@ -5,8 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.HttpStatusAssertion;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableRequest;
 import org.springframework.http.MediaType;
 
 public class OrderTableAcceptanceTestSupport extends AcceptanceTest {
