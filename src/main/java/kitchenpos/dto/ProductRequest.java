@@ -3,7 +3,6 @@ package kitchenpos.dto;
 import kitchenpos.domain.Product;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
 public class ProductRequest {
     private String name;
