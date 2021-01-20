@@ -1,4 +1,4 @@
-package kitchenpos.menugroup.domain;
+package kitchenpos.menu.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,7 +16,7 @@ public class MenuGroup {
     @Column
     private String name;
 
-    public MenuGroup() {
+    protected MenuGroup() {
     }
 
     public MenuGroup(String name) {

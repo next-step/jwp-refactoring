@@ -3,6 +3,9 @@ package kitchenpos.menu.dto;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.dto.ProductResponse;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class MenuProductResponse {
     private final long id;
     private final String productName;
@@ -12,6 +15,12 @@ public class MenuProductResponse {
         this.id = id;
         this.productName = productName;
         this.quantity = quantity;
+    }
+
+    public static List<MenuProductResponse> ofProducts(List<MenuProduct> saveAll) {
+        return saveAll.stream()
+                .map(MenuProductResponse::ofProduct)
+                .collect(Collectors.toList());
     }
 
     public long getId() {

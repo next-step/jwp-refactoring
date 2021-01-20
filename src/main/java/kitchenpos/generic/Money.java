@@ -1,4 +1,4 @@
-package kitchenpos.infra;
+package kitchenpos.generic;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -48,8 +48,8 @@ public class Money {
         return Objects.hash(amount);
     }
 
-    public Money multiply(long quantity) {
-        return new Money(this.amount.multiply(BigDecimal.valueOf(quantity)));
+    public BigDecimal multiply(long quantity) {
+        return this.amount.multiply(BigDecimal.valueOf(quantity));
     }
 
     public Money add(Money money) {

@@ -1,6 +1,8 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.infra.Money;
+import kitchenpos.generic.Money;
+import kitchenpos.generic.Quantity;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.product.domain.Product;
 
 import javax.persistence.Column;
@@ -28,12 +30,12 @@ public class MenuProduct {
     private Product product;
 
     @Column
-    private long quantity;
+    private Quantity quantity;
 
-    public MenuProduct() {
+    protected MenuProduct() {
     }
 
-    public MenuProduct(Menu menu, Product product, long quantity) {
+    public MenuProduct(Menu menu, Product product, Quantity quantity) {
         this.menu = menu;
         this.product = product;
         this.quantity = quantity;
@@ -48,10 +50,10 @@ public class MenuProduct {
     }
 
     public long getQuantity() {
-        return quantity;
+        return quantity.longValue();
     }
 
     public Money getAmount() {
-        return product.getPrice().multiply(quantity);
+        return quantity.of(product.getPrice());
     }
 }

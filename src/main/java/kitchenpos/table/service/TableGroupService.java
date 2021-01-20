@@ -1,37 +1,31 @@
 package kitchenpos.table.service;
 
-import kitchenpos.order.service.OrderStatusService;
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
-import kitchenpos.table.dto.OrderTableIdRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Transactional
 @Service
 public class TableGroupService {
     private final TableGroupRepository tableGroupRepository;
-    private final OrderTableService orderTableService;
-    private final OrderStatusService orderStatusService;
+    private final OrderTableGroupService orderTableGroupService;
 
-    public TableGroupService(TableGroupRepository tableGroupRepository, OrderTableService orderTableService, OrderStatusService orderStatusService) {
+    public TableGroupService(TableGroupRepository tableGroupRepository, OrderTableGroupService orderTableGroupService) {
         this.tableGroupRepository = tableGroupRepository;
-        this.orderTableService = orderTableService;
-        this.orderStatusService = orderStatusService;
+        this.orderTableGroupService = orderTableGroupService;
     }
 
     public TableGroupResponse create(final TableGroupRequest request) {
         checkGroupValidation(request);
-        final TableGroup tableGroup = new TableGroup();
-        tableGroup.addAll(findOrderTables(request));
-        final TableGroup save = tableGroupRepository.save(tableGroup);
-        return TableGroupResponse.of(save);
+        final TableGroup save = tableGroupRepository.save(new TableGroup());
+        final List<OrderTableResponse> orderTableResponses = orderTableGroupService.saveAll(save, request.getOrderTables());
+        return TableGroupResponse.of(save, orderTableResponses);
     }
 
     private void checkGroupValidation(final TableGroupRequest request) {
@@ -40,27 +34,10 @@ public class TableGroupService {
         }
     }
 
-    private List<OrderTable> findOrderTables(final TableGroupRequest request) {
-        return request.getOrderTables()
-                .stream()
-                .map(OrderTableIdRequest::getId)
-                .map(orderTableService::findById)
-                .collect(Collectors.toList());
-    }
-
-
     public void ungroup(long id) {
-        final List<OrderTable> orderTables = findGroupById(id).getOrderTables();
-        orderTables.forEach(table -> {
-            checkIsNotCompleteOrder(table);
-            table.removeGroupTable();
-        });
-    }
-
-    private void checkIsNotCompleteOrder(OrderTable tableId) {
-        if (orderStatusService.isNotCompleteOrder(tableId)) {
-            throw new IllegalArgumentException("주문이 완료되지 않아 그룹 해제가 불가능합니다.");
-        }
+        final TableGroup groupById = findGroupById(id);
+        orderTableGroupService.ungroup(groupById);
+        tableGroupRepository.delete(groupById);
     }
 
     @Transactional(readOnly = true)

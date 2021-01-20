@@ -8,7 +8,7 @@ import java.util.List;
 
 public class MenuRequestBuilder {
     private String name;
-    private int price;
+    private long price;
     private Long menuGroupId;
     private final List<MenuProductRequest> menuProducts = new ArrayList<>();
 
@@ -17,7 +17,7 @@ public class MenuRequestBuilder {
         return this;
     }
 
-    public MenuRequestBuilder withPrice(int price) {
+    public MenuRequestBuilder withPrice(long price) {
         this.price = price;
         return this;
     }
@@ -27,7 +27,7 @@ public class MenuRequestBuilder {
         return this;
     }
 
-    public MenuRequestBuilder addMenuProduct(long productId, int quantity) {
+    public MenuRequestBuilder addMenuProduct(long productId, long quantity) {
         menuProducts.add(new MenuProductRequest(productId, quantity));
         return this;
     }
