@@ -10,7 +10,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -30,11 +29,7 @@ class OrderServiceTest extends BaseServiceTest {
     void beforeSetUp() {
         orderLineItems = Collections.singletonList(OrderLineItem.of(1L, 등록된_menu_id, 2));
 
-        Order order = Order.of(비어있지_않은_orderTable_id, orderLineItems);
-        order.setOrderTableId(비어있지_않은_orderTable_id);
-        order.setOrderStatus(OrderStatus.COOKING.name());
-        order.setOrderedTime(LocalDateTime.now());
-        orderDao.save(order);
+        orderService.create(Order.of(비어있지_않은_orderTable_id, orderLineItems));
     }
 
     @DisplayName("주문을 등록한다.")

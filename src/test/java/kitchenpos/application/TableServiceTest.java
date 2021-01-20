@@ -37,8 +37,8 @@ class TableServiceTest extends BaseServiceTest {
     @DisplayName("빈 테이블로 변경할 수 있다.")
     @Test
     void changeEmpty() {
-        OrderTable result = tableService.changeEmpty(비어있지_않은_orderTable_id,
-                OrderTable.of(등록되어_있지_않은_orderTable_id, 0, true));
+        OrderTable orderTable = OrderTable.of(비어있지_않은_orderTable_id, 0, true);
+        OrderTable result = tableService.changeEmpty(orderTable.getId(), orderTable);
 
         assertThat(result.isEmpty()).isTrue();
     }
@@ -69,8 +69,9 @@ class TableServiceTest extends BaseServiceTest {
         List<OrderLineItem> orderLineItems = Collections.singletonList(OrderLineItem.of(1L, 등록된_menu_id, 2));
         orderService.create(Order.of(비어있지_않은_orderTable_id, orderLineItems));
 
-        assertThatThrownBy(() -> tableService.changeEmpty(비어있지_않은_orderTable_id,
-                OrderTable.of(등록되어_있지_않은_orderTable_id, 0, true)))
+        OrderTable orderTable = OrderTable.of(비어있지_않은_orderTable_id, 0, true);
+
+        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), orderTable))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
