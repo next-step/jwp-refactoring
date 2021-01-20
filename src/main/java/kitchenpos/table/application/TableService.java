@@ -1,7 +1,7 @@
 package kitchenpos.table.application;
 
-import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;

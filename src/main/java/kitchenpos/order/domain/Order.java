@@ -41,7 +41,7 @@ public class Order {
     }
 
     public void addOrderLineItem(OrderLineItem orderLineItem) {
-        orderLineItem.setOrder(this);
+        orderLineItem.changeOrder(this);
         orderLineItems.add(orderLineItem);
     }
 
@@ -61,10 +61,6 @@ public class Order {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public OrderTable getOrderTable() {
         return orderTable;
     }
@@ -79,9 +75,5 @@ public class Order {
 
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
-    }
-
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
     }
 }

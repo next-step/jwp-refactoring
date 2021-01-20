@@ -1,7 +1,7 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.order.domain.Order;
+import kitchenpos.tablegroup.domain.TableGroup;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -24,12 +24,6 @@ public class OrderTable {
     @OneToMany(mappedBy = "orderTable")
     private final List<Order> orders = new ArrayList<>();
 
-    public OrderTable(Long id, Integer numberOfGuests, Boolean empty) {
-        this.id = id;
-        this.numberOfGuests = numberOfGuests;
-        this.empty = empty;
-    }
-
     public OrderTable(Integer numberOfGuests, Boolean empty) {
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
@@ -44,10 +38,6 @@ public class OrderTable {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
     }
 
     public TableGroup getTableGroup() {

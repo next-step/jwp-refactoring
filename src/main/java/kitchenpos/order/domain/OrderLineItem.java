@@ -1,7 +1,6 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.order.domain.Order;
 
 import javax.persistence.*;
 
@@ -19,13 +18,7 @@ public class OrderLineItem {
     @Column
     private long quantity;
 
-    public OrderLineItem(Order order, Menu menu, Long quantity) {
-        this.order = order;
-        this.menu = menu;
-        this.quantity = quantity;
-    }
-
-    public OrderLineItem(Menu menu, long quantity) {
+    public OrderLineItem(Menu menu, Long quantity) {
         this.menu = menu;
         this.quantity = quantity;
     }
@@ -33,7 +26,7 @@ public class OrderLineItem {
     protected OrderLineItem() {
     }
 
-    public void setOrder(Order order) {
+    public void changeOrder(Order order) {
         this.order = order;
     }
 
