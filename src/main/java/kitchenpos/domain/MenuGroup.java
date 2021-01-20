@@ -14,7 +14,7 @@ public class MenuGroup {
         this.name = name;
     }
 
-    public MenuGroup() {
+    protected MenuGroup() {
     }
 
     public Long getId() {

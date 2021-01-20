@@ -6,18 +6,18 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.HttpStatusAssertion;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupRequest;
 import org.springframework.http.MediaType;
 
 public class MenuGroupAcceptanceTestSupport extends AcceptanceTest {
     public static ExtractableResponse<Response> 메뉴_그룹_등록_되어있음(String name) {
-        MenuGroup params = new MenuGroup();
-        params.setName(name);
-        ExtractableResponse<Response> response = 메뉴_그룹_등록_요청(params);
+        MenuGroupRequest request = new MenuGroupRequest(name);
+        ExtractableResponse<Response> response = 메뉴_그룹_등록_요청(request);
         메뉴_그룹_생성_완료(response);
         return response;
     }
 
-    public static ExtractableResponse<Response> 메뉴_그룹_등록_요청(MenuGroup params) {
+    public static ExtractableResponse<Response> 메뉴_그룹_등록_요청(MenuGroupRequest params) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

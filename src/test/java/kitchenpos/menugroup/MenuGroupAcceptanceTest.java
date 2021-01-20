@@ -3,6 +3,7 @@ package kitchenpos.menugroup;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -12,8 +13,7 @@ class MenuGroupAcceptanceTest extends MenuGroupAcceptanceTestSupport {
     @Test
     void createMenuGroup() {
         // When
-        MenuGroup params = new MenuGroup();
-        params.setName("추천메뉴");
+        MenuGroupRequest params = new MenuGroupRequest("추천메뉴");
         ExtractableResponse<Response> createResponse = 메뉴_그룹_등록_요청(params);
 
         // Then
