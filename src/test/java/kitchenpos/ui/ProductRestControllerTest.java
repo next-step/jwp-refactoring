@@ -1,13 +1,12 @@
 package kitchenpos.ui;
 
 import kitchenpos.common.BaseControllerTest;
-import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
-import java.math.BigDecimal;
-
+import static kitchenpos.common.Fixtures.productRequest;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -28,21 +27,17 @@ public class ProductRestControllerTest extends BaseControllerTest {
 
     void 상품_등록() throws Exception {
         // given
-        String name = "강정치킨";
-        int price = 17000;
-        Product product = new Product();
-        product.setName(name);
-        product.setPrice(new BigDecimal(price));
+        ProductRequest productRequest = productRequest().build();
 
         // when & then
         mockMvc.perform(post("/api/products")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(product)))
+                .content(objectMapper.writeValueAsString(productRequest)))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").isNotEmpty())
-                .andExpect(jsonPath("name").value(name))
-                .andExpect(jsonPath("price").value(price));
+                .andExpect(jsonPath("name").value(productRequest.getName()))
+                .andExpect(jsonPath("price").value(productRequest.getPrice()));
     }
 
     void 상품_추가됨_목록_조회() throws Exception {
