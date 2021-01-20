@@ -36,16 +36,24 @@ public class TableGroupService {
                 .collect(Collectors.toList());
 
         for (final OrderTable savedOrderTable : orderTables) {
-            if (!savedOrderTable.isEmpty()) {
-                throw new IllegalStateException("Cannot create table group if table is not empty");
-            }
-            if (savedOrderTable.hasTableGroup()) {
-                throw new AlreadyGroupedTableException(savedOrderTable.getId());
-            }
+            checkTableIsNotEmpty(savedOrderTable);
+            checkTableHasGroup(savedOrderTable);
         }
         TableGroup tableGroup = tableGroupRepository.save(new TableGroup(orderTables));
 
         return TableGroupResponse.of(tableGroup, orderTables);
+    }
+
+    private void checkTableHasGroup(OrderTable savedOrderTable) {
+        if (savedOrderTable.hasTableGroup()) {
+            throw new AlreadyGroupedTableException(savedOrderTable.getId());
+        }
+    }
+
+    private void checkTableIsNotEmpty(OrderTable savedOrderTable) {
+        if (!savedOrderTable.isEmpty()) {
+            throw new IllegalStateException("Cannot create table group if table is not empty");
+        }
     }
 
     @Transactional
