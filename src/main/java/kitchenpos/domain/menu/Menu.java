@@ -29,7 +29,7 @@ public class Menu {
     @Column(name = "menu_group_id", nullable = false)
     private Long menuGroupId;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "menu_id")
     private List<MenuProduct> menuProducts;
 
