@@ -8,13 +8,14 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.dao.ProductRepository;
-import kitchenpos.product.domain.Product;
 import kitchenpos.menu.dao.MenuGroupRepository;
+import kitchenpos.product.domain.Product;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MenuService {
@@ -50,11 +51,20 @@ public class MenuService {
 
     private List<MenuProduct> findMenuProducts(List<MenuProductRequest> menuProductRequests) {
         List<MenuProduct> menuProducts = new ArrayList<>();
+
+        List<Long> menuProductIds = menuProductRequests.stream()
+                .map(menuProduct -> menuProduct.getProductId())
+                .collect(Collectors.toList());
+
+        List<Product> products = productRepository.findAllById(menuProductIds);
+
         for (MenuProductRequest menuProduct : menuProductRequests) {
-            Product product = productRepository.findById(menuProduct.getProductId())
-                    .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 상품 입니다."));
-            menuProducts.add(menuProduct.toMenuProduct(product));
+            menuProducts.add(products.stream()
+                    .filter(menuProduct::isSameProductId)
+                    .map(menuProduct::toMenuProduct).findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 상품 입니다.")));
         }
+
         return menuProducts;
     }
 
