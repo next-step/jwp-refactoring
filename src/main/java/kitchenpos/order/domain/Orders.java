@@ -21,9 +21,9 @@ public class Orders {
 	}
 
 	public Orders(OrderTable orderTable, String orderStatus) {
+		validate(orderTable);
 		this.orderTable = orderTable;
 		this.orderStatus = orderStatus;
-		setOrder();
 	}
 
 	public Long getId() {
@@ -64,14 +64,16 @@ public class Orders {
 		this.orderedTime = LocalDateTime.now();
 	}
 
-	private void setOrder() {
-		this.orderTable.setOrder(this);
-	}
-
 	public void changeStatus(String orderStatus) {
 		if (OrderStatus.isCompletion(orderStatus)) {
-				throw new IllegalArgumentException("계산완료 주문인 경우, 상태를 변경할 수 없습니다");
+			throw new IllegalArgumentException("계산완료 주문인 경우, 상태를 변경할 수 없습니다");
 		}
 		this.orderStatus = orderStatus;
+	}
+
+	private void validate(OrderTable orderTable) {
+		if (orderTable.isEmpty()) {
+			throw new IllegalArgumentException("테이블이 비어있습니다.");
+		}
 	}
 }

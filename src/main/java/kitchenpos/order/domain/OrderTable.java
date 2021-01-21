@@ -1,13 +1,12 @@
 package kitchenpos.order.domain;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity(name = "order_table")
 public class OrderTable {
 
 	private static int MIN_NUMBER_OF_GUESTS = 0;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -17,9 +16,6 @@ public class OrderTable {
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "table_group_id")
 	private TableGroup tableGroup;
-
-	@OneToMany(mappedBy = "orderTable")
-	private List<Orders> orders = new ArrayList<>();
 
 	protected OrderTable() {
 	}
@@ -38,15 +34,6 @@ public class OrderTable {
 		this.empty = empty;
 		this.tableGroup = tableGroup;
 	}
-
-	public List<Orders> getOrders() {
-		return orders;
-	}
-
-	public void setOrders(List<Orders> orders) {
-		this.orders = orders;
-	}
-
 
 	public Long getId() {
 		return id;
@@ -77,10 +64,6 @@ public class OrderTable {
 		return tableGroup;
 	}
 
-
-	public void setOrder(Orders orders) {
-		this.orders.add(orders);
-	}
 
 	public void changeEmpty(boolean empty) {
 		this.empty = empty;
