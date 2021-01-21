@@ -2,13 +2,13 @@ package kitchenpos.order.application;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.order.domain.OrderLineItemRepository;
-import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.repository.OrderLineItemRepository;
+import kitchenpos.order.domain.repository.OrderRepository;
 import kitchenpos.order.domain.Orders;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTableRepository;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.repository.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,19 +20,19 @@ import java.util.Set;
 public class OrderService {
 	private final MenuRepository menuRepository;
 	private final OrderRepository orderRepository;
-	private final OrderLineItemRepository orderLineItemRepository;
 	private final OrderTableRepository orderTableRepository;
+	private final OrderLineItemRepository orderLineItemRepository;
 
 	public OrderService(
 			final MenuRepository menuRepository,
 			final OrderRepository orderRepository,
-			final OrderLineItemRepository orderLineItemRepository,
-			final OrderTableRepository orderTableRepository
+			final OrderTableRepository orderTableRepository,
+			OrderLineItemRepository orderLineItemRepository
 	) {
 		this.menuRepository = menuRepository;
 		this.orderRepository = orderRepository;
-		this.orderLineItemRepository = orderLineItemRepository;
 		this.orderTableRepository = orderTableRepository;
+		this.orderLineItemRepository = orderLineItemRepository;
 	}
 
 	@Transactional
@@ -41,7 +41,8 @@ public class OrderService {
 
 		Set<Long> menuIds = orderRequest.menuIds();
 		List<Menu> menus = menuRepository.findAllByIdIn(new ArrayList<>(menuIds));
-		Orders savedOrder = orderRepository.save(orderRequest.toEntity(orderTable, menus));
+		Orders savedOrder = orderRepository.save(orderRequest.toEntity(orderTable));
+		orderLineItemRepository.saveAll(orderRequest.toOrderLineItems(savedOrder, menus));
 
 		return OrderResponse.of(savedOrder);
 	}

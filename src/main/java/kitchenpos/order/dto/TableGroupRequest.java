@@ -1,7 +1,4 @@
-package kitchenpos.tablegroup.dto;
-
-import kitchenpos.tablegroup.domain.OrderTables;
-import kitchenpos.tablegroup.domain.TableGroup;
+package kitchenpos.order.dto;
 
 import java.util.Set;
 
@@ -23,7 +20,4 @@ public class TableGroupRequest {
 		this.orderTableIds = orderTableIds;
 	}
 
-	public TableGroup toEntity(OrderTables orderTables) {
-		return new TableGroup(orderTables);
-	}
 }

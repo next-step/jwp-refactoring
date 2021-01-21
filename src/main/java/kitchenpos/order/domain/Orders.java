@@ -1,12 +1,7 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.ordertable.domain.OrderTable;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class Orders {
@@ -22,17 +17,13 @@ public class Orders {
 
 	private LocalDateTime orderedTime;
 
-	@OneToMany(mappedBy = "orders", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<OrderLineItem> orderLineItems = new ArrayList<>();
-
 	protected Orders() {
 	}
 
-	public Orders(OrderTable orderTable, String orderStatus, List<OrderLineItem> orderLineItems) {
+	public Orders(OrderTable orderTable, String orderStatus) {
+		validate(orderTable);
 		this.orderTable = orderTable;
 		this.orderStatus = orderStatus;
-		this.orderLineItems = orderLineItems;
-		setOrder();
 	}
 
 	public Long getId() {
@@ -60,14 +51,6 @@ public class Orders {
 		this.orderedTime = orderedTime;
 	}
 
-	public List<OrderLineItem> getOrderLineItems() {
-		return orderLineItems;
-	}
-
-	public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-		this.orderLineItems = orderLineItems;
-	}
-
 	public OrderTable getOrderTable() {
 		return orderTable;
 	}
@@ -81,17 +64,16 @@ public class Orders {
 		this.orderedTime = LocalDateTime.now();
 	}
 
-	private void setOrder() {
-		this.orderTable.setOrder(this);
-		this.orderLineItems.forEach(orderLineItem -> {
-			orderLineItem.setOrder(this);
-		});
-	}
-
 	public void changeStatus(String orderStatus) {
 		if (OrderStatus.isCompletion(orderStatus)) {
-				throw new IllegalArgumentException("계산완료 주문인 경우, 상태를 변경할 수 없습니다");
+			throw new IllegalArgumentException("계산완료 주문인 경우, 상태를 변경할 수 없습니다");
 		}
 		this.orderStatus = orderStatus;
+	}
+
+	private void validate(OrderTable orderTable) {
+		if (orderTable.isEmpty()) {
+			throw new IllegalArgumentException("테이블이 비어있습니다.");
+		}
 	}
 }

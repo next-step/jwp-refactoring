@@ -1,8 +1,8 @@
 package kitchenpos.unit;
 
-import kitchenpos.ordertable.application.OrderTableService;
-import kitchenpos.ordertable.dto.OrderTableRequest;
-import kitchenpos.ordertable.dto.OrderTableResponse;
+import kitchenpos.order.application.OrderTableService;
+import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.order.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 public class OrderTableServiceTest {
@@ -22,7 +21,7 @@ public class OrderTableServiceTest {
 
 	@Test
 	@DisplayName("주문 테이블을 등록한다")
-	void create() {
+	void createOrderTable() {
 		OrderTableRequest orderTableRequest = new OrderTableRequest();
 		OrderTableResponse orderTableResponse = orderTableService.create(orderTableRequest);
 		assertThat(orderTableResponse).isNotNull();
@@ -33,7 +32,7 @@ public class OrderTableServiceTest {
 	void listOrderTable() {
 		List<OrderTableResponse> orderTableResponse = orderTableService.listTables();
 		assertThat(orderTableResponse).isNotNull();
-		assertThat(orderTableResponse.size()).isEqualTo(8);
+		assertThat(orderTableResponse.size()).isEqualTo(9);
 	}
 
 	@Test

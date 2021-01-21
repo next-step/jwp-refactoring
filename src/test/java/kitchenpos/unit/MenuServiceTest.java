@@ -32,9 +32,9 @@ public class MenuServiceTest {
 
 	@Test
 	@DisplayName("메뉴를 등록한다")
-	void create() {
+	void createMenu() {
 		List<MenuProductRequest> menuProductRequests = new ArrayList<>();
-		MenuProductRequest menuProductRequest = new MenuProductRequest(1L, 2L);
+		MenuProductRequest menuProductRequest = new MenuProductRequest(1L, 1L);
 		menuProductRequests.add(menuProductRequest);
 		MenuRequest menuRequest = new MenuRequest("양념치킨", BigDecimal.valueOf(16_000), 1L, menuProductRequests);
 

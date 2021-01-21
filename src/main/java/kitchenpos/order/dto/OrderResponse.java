@@ -19,12 +19,8 @@ public class OrderResponse {
 	}
 
 	public static OrderResponse of(Orders savedOrders) {
-		List<OrderLineItemResponse> orderLineItemResponses = savedOrders.getOrderLineItems().stream()
-				.map(OrderLineItemResponse::of)
-				.collect(Collectors.toList());
-
 		return new OrderResponse(savedOrders.getId(), savedOrders.getOrderTable().getId(),
-				savedOrders.getOrderStatus(), orderLineItemResponses);
+				savedOrders.getOrderStatus(), null);
 	}
 
 	public static List<OrderResponse> of(List<Orders> orders) {

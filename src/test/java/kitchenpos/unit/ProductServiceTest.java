@@ -30,7 +30,7 @@ public class ProductServiceTest {
 
 	@Test
 	@DisplayName("상품을 등록할 수 있다.")
-	public void create() {
+	public void createProduct() {
 		// when
 		ProductResponse response = productService.create(productRequest);
 
@@ -45,6 +45,6 @@ public class ProductServiceTest {
 	public void listProduct() {
 		List<ProductResponse> responses =  productService.listProducts();
 		assertThat(responses).isNotNull();
-		assertThat(responses.size()).isEqualTo(7);
+		assertThat(responses.size()).isEqualTo(6);
 	}
 }

@@ -1,11 +1,11 @@
-package kitchenpos.ordertable.application;
+package kitchenpos.order.application;
 
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTableRepository;
-import kitchenpos.ordertable.dto.OrderTableRequest;
-import kitchenpos.ordertable.dto.OrderTableResponse;
+import kitchenpos.order.domain.*;
+import kitchenpos.order.domain.repository.OrderRepository;
+import kitchenpos.order.domain.repository.OrderTableRepository;
+import kitchenpos.order.domain.repository.TableGroupRepository;
+import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.order.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,10 +16,12 @@ import java.util.List;
 public class OrderTableService {
 	private final OrderRepository orderRepository;
 	private final OrderTableRepository orderTableRepository;
+	private final TableGroupRepository tableGroupRepository;
 
-	public OrderTableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
+	public OrderTableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository, final TableGroupRepository tableGroupRepository) {
 		this.orderRepository = orderRepository;
 		this.orderTableRepository = orderTableRepository;
+		this.tableGroupRepository = tableGroupRepository;
 	}
 
 	@Transactional
@@ -47,5 +49,15 @@ public class OrderTableService {
 		OrderTable orderTable = orderTableRepository.findById(orderTableId).orElseThrow(() -> new IllegalArgumentException());
 		orderTable.changeNumberOfGuests(request.getNumberOfGuests());
 		return OrderTableResponse.of(orderTable);
+	}
+
+	public void unGroup(TableGroup tableGroup) {
+		List<OrderTable> orderTables = orderTableRepository.findAllByTableGroup(tableGroup);
+
+		orderTables.forEach(orderTable -> {
+			List<Orders> orders = orderRepository.findAllByOrderTableId(orderTable.getId());
+			OrderList orderList = new OrderList(orders);
+			orderTable.unGroup(orderList.isCompleteAllOrders());
+		});
 	}
 }

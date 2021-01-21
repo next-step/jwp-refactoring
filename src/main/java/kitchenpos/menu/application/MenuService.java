@@ -1,8 +1,10 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProductRepository;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.dto.MenuProductResponse;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
@@ -13,38 +15,56 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MenuService {
 	private final MenuRepository menuRepository;
 	private final MenuGroupRepository menuGroupRepository;
-	private final MenuProductRepository menuProductRepository;
 	private final ProductRepository productRepository;
+	private final MenuProductRepository menuProductRepository;
 
 	public MenuService(
 			final MenuRepository menuRepository,
 			final MenuGroupRepository menuGroupRepository,
-			final MenuProductRepository menuProductRepository,
-			final ProductRepository productRepository
+			final ProductRepository productRepository,
+			final MenuProductRepository menuProductRepository
 	) {
 		this.menuRepository = menuRepository;
 		this.menuGroupRepository = menuGroupRepository;
-		this.menuProductRepository = menuProductRepository;
 		this.productRepository = productRepository;
+		this.menuProductRepository = menuProductRepository;
 	}
 
 	@Transactional
 	public MenuResponse create(final MenuRequest request) {
 		List<Product> products = productRepository.findAllById(request.getProductIds());
-		MenuGroup menuGroup = menuGroupRepository.findById(request.getMenuGroupId()).orElseThrow(()-> new IllegalArgumentException());
-		Menu menu = request.toEntity(menuGroup, products);
-		Menu saved = menuRepository.save(menu);
+		MenuGroup menuGroup = menuGroupRepository.findById(request.getMenuGroupId()).orElseThrow(() -> new IllegalArgumentException());
 
-		return MenuResponse.of(saved);
+		List<MenuProduct> menuProducts = request.toMenuProducts(menuGroup, products);
+		List<MenuProduct> savedMenuProducts = menuProductRepository.saveAll(menuProducts);
+
+		return MenuResponse.of(savedMenuProducts);
+	}
+
+	public static MenuResponse of(List<MenuProduct> savedMenuProducts) {
+		List<MenuProductResponse> menuProductResponse = savedMenuProducts.stream()
+				.map(MenuProductResponse::of)
+				.collect(Collectors.toList());
+
+		Menu savedMenu = savedMenuProducts.get(0).getMenu();
+
+		return new MenuResponse(savedMenu.getId(), savedMenu.getName(), savedMenu.getPrice(),
+				savedMenu.getMenuGroup().getId(), menuProductResponse);
 	}
 
 	public List<MenuResponse> listMenus() {
-		final List<Menu> menus = menuRepository.findAll();
-		return MenuResponse.of(menus);
+		List<Menu> savedMenus = menuRepository.findAll();
+		return savedMenus.stream()
+				.map(menu -> {
+					List<MenuProduct> menuProducts = menuProductRepository.findAllByMenu(menu);
+					return MenuResponse.of(menuProducts);
+				})
+				.collect(Collectors.toList());
 	}
 }

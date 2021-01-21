@@ -1,11 +1,8 @@
-package kitchenpos.ordertable.dto;
+package kitchenpos.order.dto;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.order.domain.OrderTable;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class OrderTableResponse {
@@ -27,10 +24,8 @@ public class OrderTableResponse {
 	}
 
 	public static OrderTableResponse of(OrderTable orderTable) {
-		if (Objects.isNull(orderTable.getTableGroup())) {
-			return new OrderTableResponse(orderTable.getId(), null, orderTable.getNumberOfGuests(), orderTable.isEmpty());
-		}
-		return new OrderTableResponse(orderTable.getId(), orderTable.getTableGroup().getId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
+		return new OrderTableResponse(orderTable.getId(), orderTable.getTableGroupId(), orderTable.getNumberOfGuests(),
+				orderTable.isEmpty());
 	}
 
 	public Long getId() {

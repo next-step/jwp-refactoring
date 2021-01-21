@@ -21,7 +21,8 @@ public class OrderLineItem extends QuantityEntity {
 
 	private Long quantity;
 
-	public OrderLineItem(Menu menu, Long quantity) {
+	public OrderLineItem(Orders orders, Menu menu, Long quantity) {
+		this.orders = orders;
 		this.menu = menu;
 		this.quantity = this.validate(quantity);
 	}

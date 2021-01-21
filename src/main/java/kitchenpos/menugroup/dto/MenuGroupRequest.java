@@ -10,7 +10,7 @@ public class MenuGroupRequest {
 		return new MenuGroup(this.name);
 	}
 
-	public MenuGroupRequest() {
+	protected MenuGroupRequest() {
 	}
 	public MenuGroupRequest(String name) {
 		this.name = name;

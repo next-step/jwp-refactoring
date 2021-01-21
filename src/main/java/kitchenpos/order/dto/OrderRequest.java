@@ -5,7 +5,7 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.Orders;
-import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.order.domain.OrderTable;
 
 import java.util.*;
 import java.util.function.Function;
@@ -67,21 +67,22 @@ public class OrderRequest {
 		return new HashSet<>(menuIds);
 	}
 
-	public Orders toEntity(OrderTable orderTable, List<Menu> menus) {
+	public Orders toEntity(OrderTable orderTable) {
 		OrderStatus orderStatus = StringUtils.isBlank(this.orderStatus) ? OrderStatus.COOKING
 				: OrderStatus.valueOf(this.orderStatus);
 
-		return new Orders(orderTable, orderStatus.name(), toOrderLineItems(menus));
+		return new Orders(orderTable, orderStatus.name());
 	}
 
-	private List<OrderLineItem> toOrderLineItems(List<Menu> menus) {
-		Map<Long, Menu> menuInfo = menus.stream().collect(Collectors.toMap(Menu::getId, Function.identity()));
+	public List<OrderLineItem> toOrderLineItems(Orders order, List<Menu> menus) {
+		Map<Long, Menu> menuInfo = menus.stream()
+				.collect(Collectors.toMap(Menu::getId, Function.identity()));
 
 		return this.orderLineItems.stream()
 				.filter(orderLineItem -> menuInfo.containsKey(orderLineItem.getMenuId()))
 				.map(orderLineItem -> {
 					Menu menu = menuInfo.get(orderLineItem.getMenuId());
-					return new OrderLineItem(menu, orderLineItem.getQuantity());
+					return new OrderLineItem(order, menu, orderLineItem.getQuantity());
 				})
 				.collect(Collectors.toList());
 	}

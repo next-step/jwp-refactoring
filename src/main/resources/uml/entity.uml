@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>kitchenpos.order.domain.OrderLineItem</OriginalElement>
+  <nodes>
+    <node x="414.25" y="79.0">javax.persistence.Entity</node>
+    <node x="368.0" y="188.0">kitchenpos.menu.domain.Menu</node>
+    <node x="575.0" y="188.0">kitchenpos.order.domain.TableGroup</node>
+    <node x="128.0" y="188.0">kitchenpos.order.domain.OrderLineItem</node>
+    <node x="698.0" y="188.0">kitchenpos.order.domain.OrderTable</node>
+    <node x="17.528409090909122" y="0.0">javax.persistence.MappedSuperclass</node>
+    <node x="0.0" y="341.0">kitchenpos.order.domain.OrderTables</node>
+    <node x="458.0" y="188.0">kitchenpos.menugroup.domain.MenuGroup</node>
+    <node x="23.028409090909122" y="79.0">kitchenpos.common.QuantityEntity</node>
+    <node x="821.0" y="188.0">kitchenpos.product.domain.Product</node>
+    <node x="267.0" y="188.0">kitchenpos.order.domain.Orders</node>
+    <node x="128.0" y="341.0">kitchenpos.menu.domain.MenuProducts</node>
+    <node x="67.75" y="262.0">javax.persistence.Embeddable</node>
+    <node x="0.0" y="188.0">kitchenpos.menu.domain.MenuProduct</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="kitchenpos.order.domain.OrderLineItem" target="javax.persistence.Entity">
+      <point x="29.75" y="-14.5" />
+      <point x="217.25" y="148.0" />
+      <point x="429.4375" y="148.0" />
+      <point x="-25.3125" y="14.5" />
+    </edge>
+    <edge source="kitchenpos.menu.domain.MenuProduct" target="javax.persistence.Entity">
+      <point x="27.0" y="-14.5" />
+      <point x="81.0" y="138.0" />
+      <point x="419.3125" y="138.0" />
+      <point x="-35.4375" y="14.5" />
+    </edge>
+    <edge source="kitchenpos.menu.domain.Menu" target="javax.persistence.Entity">
+      <point x="0.0" y="-14.5" />
+      <point x="403.0" y="168.0" />
+      <point x="449.6875" y="168.0" />
+      <point x="-5.0625" y="14.5" />
+    </edge>
+    <edge source="kitchenpos.order.domain.OrderTable" target="javax.persistence.Entity">
+      <point x="0.0" y="-14.5" />
+      <point x="749.5" y="148.0" />
+      <point x="480.0625" y="148.0" />
+      <point x="25.3125" y="14.5" />
+    </edge>
+    <edge source="kitchenpos.order.domain.TableGroup" target="javax.persistence.Entity">
+      <point x="0.0" y="-14.5" />
+      <point x="626.5" y="158.0" />
+      <point x="469.9375" y="158.0" />
+      <point x="15.1875" y="14.5" />
+    </edge>
+    <edge source="kitchenpos.product.domain.Product" target="javax.persistence.Entity">
+      <point x="0.0" y="-14.5" />
+      <point x="864.0" y="138.0" />
+      <point x="490.1875" y="138.0" />
+      <point x="35.4375" y="14.5" />
+    </edge>
+    <edge source="kitchenpos.common.QuantityEntity" target="javax.persistence.MappedSuperclass">
+      <point x="0.0" y="-14.5" />
+      <point x="0.0" y="14.5" />
+    </edge>
+    <edge source="kitchenpos.order.domain.OrderTables" target="javax.persistence.Embeddable">
+      <point x="0.0" y="-14.5" />
+      <point x="54.0" y="316.0" />
+      <point x="93.5" y="316.0" />
+      <point x="-25.75" y="14.5" />
+    </edge>
+    <edge source="kitchenpos.menu.domain.MenuProduct" target="kitchenpos.common.QuantityEntity">
+      <point x="-27.0" y="-14.5" />
+      <point x="27.0" y="168.0" />
+      <point x="54.02840909090912" y="168.0" />
+      <point x="-31.0" y="14.5" />
+    </edge>
+    <edge source="kitchenpos.order.domain.OrderLineItem" target="kitchenpos.common.QuantityEntity">
+      <point x="-29.75" y="-14.5" />
+      <point x="157.75" y="128.0" />
+      <point x="116.02840909090912" y="128.0" />
+      <point x="31.0" y="14.5" />
+    </edge>
+    <edge source="kitchenpos.menu.domain.MenuProducts" target="javax.persistence.Embeddable">
+      <point x="0.0" y="-14.5" />
+      <point x="184.5" y="316.0" />
+      <point x="145.0" y="316.0" />
+      <point x="25.75" y="14.5" />
+    </edge>
+    <edge source="kitchenpos.order.domain.Orders" target="javax.persistence.Entity">
+      <point x="0.0" y="-14.5" />
+      <point x="307.5" y="158.0" />
+      <point x="439.5625" y="158.0" />
+      <point x="-15.1875" y="14.5" />
+    </edge>
+    <edge source="kitchenpos.menugroup.domain.MenuGroup" target="javax.persistence.Entity">
+      <point x="0.0" y="-14.5" />
+      <point x="506.5" y="168.0" />
+      <point x="459.8125" y="168.0" />
+      <point x="5.0625" y="14.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="453.5" y="185.0" />
+  <SelectedNodes>
+    <node>kitchenpos.order.domain.OrderLineItem</node>
+  </SelectedNodes>
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
