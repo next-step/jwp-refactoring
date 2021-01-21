@@ -27,13 +27,7 @@ subprojects {
     bootJar.enabled(false)
 }
 
-//group = 'camp.nextstep.edu'
-//version = '0.0.1-SNAPSHOT'
-//sourceCompatibility = '1.8'
-
 project(':module-common') {
-    jar.enabled(true)
-    bootJar.enabled(false)
 }
 
 project(':module-domain') {
@@ -46,6 +40,7 @@ project(':module-application') {
     dependencies {
         implementation project(':module-common')
         implementation project(':module-domain')
+        testImplementation project(':module-common')
     }
 }
 

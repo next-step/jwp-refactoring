@@ -1,5 +1,5 @@
 ###
-POST {{host}}/api/kitchenpos.table-groups
+POST {{host}}/api/kitchenpos.application.table-groups
 Content-Type: application/json
 
 {
@@ -14,6 +14,6 @@ Content-Type: application/json
 }
 
 ###
-DELETE {{host}}/api/kitchenpos.table-groups/1
+DELETE {{host}}/api/kitchenpos.application.table-groups/1
 
 ###
