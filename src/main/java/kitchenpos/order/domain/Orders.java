@@ -2,8 +2,6 @@ package kitchenpos.order.domain;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 public class Orders {
@@ -19,16 +17,12 @@ public class Orders {
 
 	private LocalDateTime orderedTime;
 
-	@OneToMany(mappedBy = "orders", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<OrderLineItem> orderLineItems = new ArrayList<>();
-
 	protected Orders() {
 	}
 
-	public Orders(OrderTable orderTable, String orderStatus, List<OrderLineItem> orderLineItems) {
+	public Orders(OrderTable orderTable, String orderStatus) {
 		this.orderTable = orderTable;
 		this.orderStatus = orderStatus;
-		this.orderLineItems = orderLineItems;
 		setOrder();
 	}
 
@@ -57,14 +51,6 @@ public class Orders {
 		this.orderedTime = orderedTime;
 	}
 
-	public List<OrderLineItem> getOrderLineItems() {
-		return orderLineItems;
-	}
-
-	public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-		this.orderLineItems = orderLineItems;
-	}
-
 	public OrderTable getOrderTable() {
 		return orderTable;
 	}
@@ -80,9 +66,6 @@ public class Orders {
 
 	private void setOrder() {
 		this.orderTable.setOrder(this);
-		this.orderLineItems.forEach(orderLineItem -> {
-			orderLineItem.setOrder(this);
-		});
 	}
 
 	public void changeStatus(String orderStatus) {

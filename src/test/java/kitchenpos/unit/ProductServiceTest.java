@@ -45,6 +45,6 @@ public class ProductServiceTest {
 	public void listProduct() {
 		List<ProductResponse> responses =  productService.listProducts();
 		assertThat(responses).isNotNull();
-		assertThat(responses.size()).isEqualTo(7);
+		assertThat(responses.size()).isEqualTo(6);
 	}
 }

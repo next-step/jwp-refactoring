@@ -4,15 +4,17 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+@Entity(name = "order_table")
 public class OrderTable {
 
 	private static int MIN_NUMBER_OF_GUESTS = 0;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	private int numberOfGuests;
+	private boolean empty;
 
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "table_group_id")
 	private TableGroup tableGroup;
 
@@ -22,17 +24,19 @@ public class OrderTable {
 	protected OrderTable() {
 	}
 
+	public OrderTable(boolean empty) {
+		this.empty = empty;
+	}
+
 	public OrderTable(int numberOfGuests, boolean empty) {
 		this.numberOfGuests = numberOfGuests;
 		this.empty = empty;
 	}
 
-	public OrderTable(TableGroup tableGroup, List<Orders> orders, int numberOfGuests, boolean empty) {
-		this.id = id;
-		this.tableGroup = tableGroup;
-		this.orders = orders;
+	public OrderTable(int numberOfGuests, boolean empty, TableGroup tableGroup) {
 		this.numberOfGuests = numberOfGuests;
 		this.empty = empty;
+		this.tableGroup = tableGroup;
 	}
 
 	public List<Orders> getOrders() {
@@ -43,9 +47,6 @@ public class OrderTable {
 		this.orders = orders;
 	}
 
-	private int numberOfGuests;
-
-	private boolean empty;
 
 	public Long getId() {
 		return id;
@@ -76,9 +77,6 @@ public class OrderTable {
 		return tableGroup;
 	}
 
-	public void setTableGroup(TableGroup tableGroup) {
-		this.tableGroup = tableGroup;
-	}
 
 	public void setOrder(Orders orders) {
 		this.orders.add(orders);
@@ -104,7 +102,25 @@ public class OrderTable {
 		this.numberOfGuests = numberOfGuests;
 	}
 
-	public void unTableGroup() {
+
+	public void unGroup(boolean allOrderCompleted) {
+		validateCompleteAllOrders(allOrderCompleted);
 		this.tableGroup = null;
 	}
+
+	private void validateCompleteAllOrders(boolean allOrderCompleted) {
+		if (!allOrderCompleted) {
+			throw new IllegalArgumentException("계산완료 테이블 상태일때만 상태를 변경할 수 있습니다.");
+		}
+	}
+
+	public Long getTableGroupId() {
+		return this.tableGroup == null ? null : this.tableGroup.getId();
+	}
+
+	public void group(TableGroup tableGroup) {
+		this.tableGroup = tableGroup;
+	}
+
+
 }

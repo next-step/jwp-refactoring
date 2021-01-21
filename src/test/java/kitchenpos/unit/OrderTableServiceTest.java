@@ -11,7 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 public class OrderTableServiceTest {
@@ -33,7 +32,7 @@ public class OrderTableServiceTest {
 	void listOrderTable() {
 		List<OrderTableResponse> orderTableResponse = orderTableService.listTables();
 		assertThat(orderTableResponse).isNotNull();
-		assertThat(orderTableResponse.size()).isEqualTo(8);
+		assertThat(orderTableResponse.size()).isEqualTo(9);
 	}
 
 	@Test

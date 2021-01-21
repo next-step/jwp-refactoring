@@ -13,7 +13,7 @@ public class MenuProduct extends QuantityEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long seq;
 
-	@ManyToOne
+	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinColumn(name = "menu_id")
 	private Menu menu;
 
@@ -21,21 +21,19 @@ public class MenuProduct extends QuantityEntity {
 	@JoinColumn(name = "product_id")
 	private Product product;
 
+	private Long quantity;
+	
 	protected MenuProduct() {
 	}
-	private Long quantity;
 
-	public MenuProduct(Product product, Long quantity) {
+	public MenuProduct(Menu menu, Product product, long quantity) {
+		this.menu = menu;
 		this.product = product;
-		this.quantity = super.validate(quantity);
+		this.quantity = quantity;
 	}
 
 	public Long getSeq() {
 		return seq;
-	}
-
-	public void setSeq(final Long seq) {
-		this.seq = seq;
 	}
 
 	public Long getQuantity() {
@@ -57,6 +55,7 @@ public class MenuProduct extends QuantityEntity {
 	public BigDecimal sumOfPrice() {
 		return this.product.getPrice().multiply(new BigDecimal(this.quantity));
 	}
+
 	public void setMenu(Menu menu) {
 		this.menu = menu;
 	}
