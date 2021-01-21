@@ -33,6 +33,7 @@ public class OrderTable {
         }
     }
 
+
     public void changeEmpty(boolean empty) {
         validateIsTableGroup();
         this.empty = empty;
@@ -44,6 +45,8 @@ public class OrderTable {
         }
     }
 
+
+
     public void changeTableGroupId(Long tableGroupId) {
         this.tableGroupId = tableGroupId;
     }
@@ -53,8 +56,15 @@ public class OrderTable {
     }
 
     public void changeNumberOfGuests(int numberOfGuests) {
+        validateIsEmpty();
         validateLessThanZero(numberOfGuests);
         this.numberOfGuests = numberOfGuests;
+    }
+
+    private void validateIsEmpty() {
+        if (empty) {
+            throw new IllegalArgumentException("빈테이블은 손님의 수 변경할 수 없습니다.");
+        }
     }
 
     public Long getTableGroupId() {

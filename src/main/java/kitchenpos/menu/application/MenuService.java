@@ -6,9 +6,10 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import javax.transaction.Transactional;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,6 +49,7 @@ public class MenuService {
         return menuProducts;
     }
 
+    @Transactional(readOnly = true)
     public List<MenuResponse> list() {
         List<Menu> menus = menuRepository.findAll();
         return menus.stream()

@@ -18,7 +18,7 @@ public class TableGroup {
     @Embedded
     private OrderTables orderTables = new OrderTables();
 
-    protected TableGroup() {
+    public TableGroup() {
     }
 
     public TableGroup(List<OrderTable> orderTables) {
