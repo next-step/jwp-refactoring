@@ -1,4 +1,4 @@
-package kitchenpos.ui;
+package kitchenpos.acceptance.product.ui;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.BDDMockito.any;
@@ -21,29 +21,32 @@ import org.springframework.test.web.servlet.ResultActions;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kitchenpos.acceptance.product.ProductAcceptanceTemp;
-import kitchenpos.application.ProductServiceDelete;
-import kitchenpos.domain.Product;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.product.ui.ProductRestController;
 
 @DisplayName("상품 Controller 테스트")
-@WebMvcTest(ProductRestControllerDelete.class)
+@WebMvcTest(ProductRestController.class)
 class ProductRestControllerTest {
 	@Autowired
 	private MockMvc mvc;
 	@Autowired
 	private ObjectMapper mapper;
 	@MockBean
-	private ProductServiceDelete productServiceDelete;
+	private ProductService productService;
 
 	@DisplayName("상품을 상품목록에 등록한다.")
 	@Test
 	void addProductTest() throws Exception {
 		// given
-		Product newProduct = Product.of(1L, "치킨", 20000L);
-		given(productServiceDelete.create(any())).willReturn(newProduct);
+		ProductRequest request = ProductRequest.of("치킨", 20000L);
+		ProductResponse response = ProductResponse.of(1L, "치킨", 20000L);
+		given(productService.create(any())).willReturn(response);
 
 		// when
 		final ResultActions resultActions = mvc.perform(post(ProductAcceptanceTemp.PRODUCT_REQUEST_URL)
-			.content(mapper.writeValueAsString(newProduct))
+			.content(mapper.writeValueAsString(request))
 			.contentType(MediaType.APPLICATION_JSON))
 			.andDo(print());
 
@@ -51,8 +54,8 @@ class ProductRestControllerTest {
 		resultActions
 			.andExpect(status().isCreated())
 			.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-			.andExpect(redirectedUrl(ProductAcceptanceTemp.PRODUCT_REQUEST_URL + "/" + newProduct.getId()))
-			.andExpect(jsonPath("$.name").value(newProduct.getName()))
+			.andExpect(redirectedUrl(ProductAcceptanceTemp.PRODUCT_REQUEST_URL + "/" + response.getId()))
+			.andExpect(jsonPath("$.name").value(request.getName()))
 			.andDo(log());
 	}
 
@@ -60,9 +63,9 @@ class ProductRestControllerTest {
 	@Test
 	void getProductListTest() throws Exception {
 		// given
-		given(productServiceDelete.list()).willReturn(Arrays.asList(
-			Product.of(1L, "치킨", 10000L),
-			Product.of(2L, "피자", 20000L)
+		given(productService.list()).willReturn(Arrays.asList(
+			ProductResponse.of(1L, "치킨", 10000L),
+			ProductResponse.of(2L, "피자", 20000L)
 		));
 
 		// when

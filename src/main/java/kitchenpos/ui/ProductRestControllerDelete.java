@@ -10,27 +10,27 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import kitchenpos.application.ProductService;
+import kitchenpos.application.ProductServiceDelete;
 import kitchenpos.domain.Product;
 
 @RestController
-@RequestMapping("/api/products")
-public class ProductRestController {
-	private final ProductService productService;
+@RequestMapping("/api/product")
+public class ProductRestControllerDelete {
+	private final ProductServiceDelete productServiceDelete;
 
-	public ProductRestController(final ProductService productService) {
-		this.productService = productService;
+	public ProductRestControllerDelete(final ProductServiceDelete productServiceDelete) {
+		this.productServiceDelete = productServiceDelete;
 	}
 
 	@PostMapping
 	public ResponseEntity<Product> create(@RequestBody final Product product) {
-		final Product created = productService.create(product);
+		final Product created = productServiceDelete.create(product);
 		final URI uri = URI.create("/api/products/" + created.getId());
 		return ResponseEntity.created(uri).body(created);
 	}
 
 	@GetMapping
 	public ResponseEntity<List<Product>> list() {
-		return ResponseEntity.ok().body(productService.list());
+		return ResponseEntity.ok().body(productServiceDelete.list());
 	}
 }

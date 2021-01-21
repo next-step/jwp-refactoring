@@ -12,7 +12,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.acceptance.product.ProductAcceptance;
+import kitchenpos.acceptance.product.ProductAcceptanceTemp;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
@@ -28,8 +28,8 @@ public class MenuAcceptanceTest extends MenuAcceptance {
 
 	@BeforeEach
 	void initData() {
-		치킨 = ProductAcceptance.상품_등록되어_있음("치킨", 16000).as(Product.class);
-		피자 = ProductAcceptance.상품_등록되어_있음("피자", 20000).as(Product.class);
+		치킨 = ProductAcceptanceTemp.상품_등록되어_있음("치킨", 16000).as(Product.class);
+		피자 = ProductAcceptanceTemp.상품_등록되어_있음("피자", 20000).as(Product.class);
 		food = MenuGroupAcceptance.메뉴_그룹_등록되어_있음("음식").as(MenuGroup.class);
 
 		products = Arrays.asList(MenuProduct.of(치킨, 2), MenuProduct.of(피자, 1));

@@ -14,20 +14,19 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.acceptance.util.AcceptanceTest;
 import kitchenpos.domain.Product;
-import kitchenpos.product.dto.ProductRequest;
 
-public class ProductAcceptance extends AcceptanceTest {
+public class ProductAcceptanceTemp extends AcceptanceTest {
 
-	public static final String PRODUCT_REQUEST_URL = "/api/products";
+	public static final String PRODUCT_REQUEST_URL = "/api/product";
 
 	public static ExtractableResponse<Response> 상품_등록되어_있음(String name, long price) {
-		return 상품_등록_요청(ProductRequest.of(name, price));
+		return 상품_등록_요청(Product.of(null, name, price));
 	}
 
-	public static ExtractableResponse<Response> 상품_등록_요청(ProductRequest request) {
+	public static ExtractableResponse<Response> 상품_등록_요청(Product product) {
 		return RestAssured
 			.given().log().all()
-			.body(request)
+			.body(product)
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.when().post(PRODUCT_REQUEST_URL)
 			.then().log().all().extract();

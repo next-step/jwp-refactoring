@@ -19,16 +19,16 @@ import kitchenpos.domain.Product;
 
 @DisplayName("상품 Stubbing 테스트")
 @ExtendWith(MockitoExtension.class)
-class ProductServiceTest {
+class ProductServiceDeleteTest {
 
 	@Mock
 	private ProductDao productDao;
 
-	private ProductService productService;
+	private ProductServiceDelete productServiceDelete;
 
 	@BeforeEach
 	void setUp() {
-		productService = new ProductService(productDao);
+		productServiceDelete = new ProductServiceDelete(productDao);
 	}
 
 	@DisplayName("상품: 상품 생성 테스트")
@@ -39,7 +39,7 @@ class ProductServiceTest {
 		given(productDao.save(any())).willReturn(product);
 
 		// when
-		Product result = productService.create(product);
+		Product result = productServiceDelete.create(product);
 
 		// then
 		assertAll(
@@ -55,7 +55,7 @@ class ProductServiceTest {
 		Product product = Product.of(null, "맥주", -5000);
 
 		// then
-		assertThatIllegalArgumentException().isThrownBy(() -> productService.create(product));
+		assertThatIllegalArgumentException().isThrownBy(() -> productServiceDelete.create(product));
 	}
 
 	@DisplayName("상품: 상품 목록 조회 테스트")
@@ -68,7 +68,7 @@ class ProductServiceTest {
 		given(productDao.findAll()).willReturn(Arrays.asList(product1, product2, product3));
 
 		// when
-		List<Product> result = productService.list();
+		List<Product> result = productServiceDelete.list();
 
 		// then
 		assertAll(
