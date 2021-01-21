@@ -25,20 +25,17 @@ public class MenuProductResponse {
         this.quantity = quantity;
     }
 
-    public MenuProductResponse() {
-    }
-
     public MenuProductResponse(long productId, long quantity) {
         this.productId = productId;
         this.quantity = quantity;
     }
     public static MenuProductResponse of(MenuProduct menuProduct) {
         Product product = menuProduct.getProduct();
-        MenuProductResponse menuProductResponse = new MenuProductResponse();
-        if(product != null) {
-            menuProductResponse.setProductId(menuProductResponse.getProductId());
+
+        if (product == null) {
+            throw new IllegalArgumentException();
         }
-        menuProductResponse.setQuantity(menuProduct.getQuantity());
-        return menuProductResponse;
+
+        return new MenuProductResponse(product.getId(), menuProduct.getQuantity());
     }
 }
