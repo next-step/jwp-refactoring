@@ -57,11 +57,6 @@ public class Order {
     }
 
     public Order(OrderStatus orderStatus, LocalDateTime orderedTime) {
-        this(null, orderStatus, orderedTime);
-    }
-
-    public Order(Long id, OrderStatus orderStatus, LocalDateTime orderedTime) {
-        this.id = id;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
     }

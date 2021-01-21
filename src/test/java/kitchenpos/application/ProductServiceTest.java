@@ -13,6 +13,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -41,8 +42,10 @@ class ProductServiceTest {
         ArgumentCaptor<Product> argumentCaptor = ArgumentCaptor.forClass(Product.class);
 
         ProductRequest newProduct = new ProductRequest("김치찌개", new BigDecimal(6000));
+        Product product = new Product("김치찌개", new BigDecimal(6000));
+        ReflectionTestUtils.setField(product, "id", 2L);
         given(productRepository.save(any()))
-                .willReturn(new Product(2L, "김치찌개", new BigDecimal(6000)));
+                .willReturn(product);
 
         //when
         ProductResponse createProduct = productService.create(newProduct);
@@ -88,17 +91,16 @@ class ProductServiceTest {
     @Test
     void list() {
         //given
+        Product 볶음밥 = new Product("볶음밥", new BigDecimal(7000));
+        Product 김치찌개 = new Product("김치찌개", new BigDecimal(6000));
+        ReflectionTestUtils.setField(볶음밥, "id", 1L);
+        ReflectionTestUtils.setField(김치찌개, "id", 2L);
+
         given(productRepository.findAll())
-                .willReturn(
-                        Arrays.asList(
-                                new Product(1L, "볶음밥", new BigDecimal(7000)),
-                                new Product(2L, "김치찌개", new BigDecimal(6000))
-                        )
-                );
+                .willReturn(Arrays.asList(볶음밥, 김치찌개));
 
         //when
         List<ProductResponse> products = productService.list();
-
         //then
         assertThat(products.size()).isEqualTo(2);
         assertThat(products.get(0).getName()).isEqualTo("볶음밥");

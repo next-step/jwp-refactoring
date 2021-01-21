@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.application.TableService;
@@ -16,6 +15,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -45,8 +45,11 @@ class TableServiceTest {
         ArgumentCaptor<OrderTable> argumentCaptor = ArgumentCaptor.forClass(OrderTable.class);
         OrderTableRequest orderTableRequest = new OrderTableRequest(null, 0, true);
 
+        OrderTable orderTable = new OrderTable(0, true);
+        ReflectionTestUtils.setField(orderTable, "id", 1L);
+
         given(orderTableRepository.save(any()))
-                .willReturn(new OrderTable(1L, null, 0, true));
+                .willReturn(orderTable);
 
         //when
         OrderTableResponse createOrderTable = tableService.create(orderTableRequest);
@@ -65,13 +68,13 @@ class TableServiceTest {
     @Test
     void list() {
         //given
+        OrderTable 제1번테이블 = new OrderTable(0, true);
+        OrderTable 제2번테이블 = new OrderTable(0, true);
+        ReflectionTestUtils.setField(제1번테이블, "id", 1L);
+        ReflectionTestUtils.setField(제2번테이블, "id", 2L);
+
         given(orderTableRepository.findAll())
-                .willReturn(
-                        Arrays.asList(
-                                new OrderTable(1L, null, 0, true),
-                                new OrderTable(2L, null, 0, true)
-                        )
-                );
+                .willReturn(Arrays.asList(제1번테이블, 제2번테이블));
 
         //when
         List<OrderTableResponse> orderTables = tableService.list();
@@ -88,7 +91,8 @@ class TableServiceTest {
     @Test
     void changeEmpty1() {
         //given
-        OrderTable savedOrderTable = new OrderTable(2L, null, 0, true);
+        OrderTable savedOrderTable = new OrderTable(0, true);
+        ReflectionTestUtils.setField(savedOrderTable, "id", 2L);
 
         given(orderTableRepository.findById(2L))
                 .willReturn(
@@ -107,17 +111,22 @@ class TableServiceTest {
     @Test
     void changeEmpty2() {
         //given
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());
+        TableGroup tableGroup = new TableGroup(LocalDateTime.now());
+        ReflectionTestUtils.setField(tableGroup, "id", 1L);
+
+        OrderTable orderTable = new OrderTable(tableGroup, 0, true);
+        ReflectionTestUtils.setField(orderTable, "id", 2L);
+
         given(orderTableRepository.findById(2L))
                 .willReturn(
-                        Optional.of(new OrderTable(2L, tableGroup, 0, true))
+                        Optional.of(orderTable)
                 );
 
-        OrderTableRequest orderTable = new OrderTableRequest(1L, 0, false);
 
         //when
         //then
-        assertThatThrownBy(() -> tableService.changeEmpty(2L, orderTable))
+        OrderTableRequest orderTableRequest = new OrderTableRequest(1L, 0, false);
+        assertThatThrownBy(() -> tableService.changeEmpty(2L, orderTableRequest))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -125,10 +134,19 @@ class TableServiceTest {
     @Test
     void changeEmpty3() {
         //given
-        OrderTable orderTable = new OrderTable(2L, null, 0, true);
-        orderTable.addOrder(new Order(1L, OrderStatus.COMPLETION, LocalDateTime.now()));
-        orderTable.addOrder(new Order(2L, OrderStatus.COMPLETION, LocalDateTime.now()));
-        orderTable.addOrder(new Order(3L, OrderStatus.MEAL, LocalDateTime.now()));
+        OrderTable orderTable = new OrderTable(0, true);
+        ReflectionTestUtils.setField(orderTable, "id", 2L);
+
+        Order order1 = new Order(OrderStatus.COMPLETION, LocalDateTime.now());
+        ReflectionTestUtils.setField(order1, "id", 1L);
+        Order order2 = new Order(OrderStatus.COMPLETION, LocalDateTime.now());
+        ReflectionTestUtils.setField(order2, "id", 2L);
+        Order order3 = new Order(OrderStatus.MEAL, LocalDateTime.now());
+        ReflectionTestUtils.setField(order3, "id", 3L);
+
+        orderTable.addOrder(order1);
+        orderTable.addOrder(order2);
+        orderTable.addOrder(order3);
 
         given(orderTableRepository.findById(2L))
                 .willReturn(Optional.of(orderTable));
@@ -146,8 +164,10 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuests1() {
         //given
+        OrderTable orderTable = new OrderTable(1, false);
+        ReflectionTestUtils.setField(orderTable, "id", 3L);
         given(orderTableRepository.findById(3L))
-                .willReturn(Optional.of(new OrderTable(3L, null, 1, false)));
+                .willReturn(Optional.of(orderTable));
 
         //when
         OrderTableRequest orderTableRequest = new OrderTableRequest(null, 3, true);
@@ -173,8 +193,11 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuests3() {
         //given
+        OrderTable orderTable = new OrderTable(0, true);
+        ReflectionTestUtils.setField(orderTable, "id", 3L);
+
         given(orderTableRepository.findById(3L))
-                .willReturn(Optional.of(new OrderTable(3L, null, 0, true)));
+                .willReturn(Optional.of(orderTable));
 
         OrderTableRequest orderTableRequest = new OrderTableRequest(null, 3, true);
 

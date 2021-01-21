@@ -11,6 +11,7 @@ import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,8 +19,10 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -55,19 +58,22 @@ class MenuServiceTest {
         MenuRequest menuRequest = new MenuRequest("후라이드치킨", new BigDecimal("16000"), 2L);
         menuRequest.setMenuProducts(menuProductRequests);
 
+        Product product = new Product("후라이드치킨", new BigDecimal("16000"));
+        ReflectionTestUtils.setField(product, "id", 2L);
+
+        MenuGroup menuGroup = new MenuGroup("메뉴그롭2");
+        ReflectionTestUtils.setField(menuGroup, "id", 2L);
+
+
         given(menuGroupRepository.findById(2L))
-                .willReturn(Optional.of(new MenuGroup(2L, "메뉴그롭2")));
+                .willReturn(Optional.of(menuGroup));
         given(productRepository.findAllByIdIn(Collections.singletonList(1L)))
-                .willReturn(Collections.singletonList(
-                        new Product(1L, "후라이드치킨", new BigDecimal("16000"))
-                ));
+                .willReturn(Collections.singletonList(product));
+
+        Menu menu = new Menu("후라이드치킨", new BigDecimal("16000"), menuGroup);
+        ReflectionTestUtils.setField(menu, "id", 1L);
         given(menuRepository.save(any()))
-                .willReturn(
-                        new Menu(
-                                1L, "후라이드치킨", new BigDecimal("16000"),
-                                new MenuGroup(2L, "메뉴그롭2")
-                        )
-                );
+                .willReturn(menu);
 
         //when
         MenuResponse createMenu = menuService.create(menuRequest);
@@ -125,12 +131,15 @@ class MenuServiceTest {
     @Test
     void create5() {
         //given
+        Product product = new Product("후라이드치킨", new BigDecimal("14000"));
+        ReflectionTestUtils.setField(product, "id", 2L);
+        MenuGroup menuGroup = new MenuGroup("후라이드치킨");
+        ReflectionTestUtils.setField(menuGroup, "id", 2L);
+
         given(menuGroupRepository.findById(2L))
-                .willReturn(Optional.of(new MenuGroup(2L, "후라이드치킨")));
+                .willReturn(Optional.of(menuGroup));
         given(productRepository.findAllByIdIn(Collections.singletonList(1L)))
-                .willReturn(
-                        Collections.singletonList(new Product(1L, "후라이드치킨", new BigDecimal("14000")))
-                );
+                .willReturn(Collections.singletonList(product));
 
         List<MenuProductRequest> menuProducts = new ArrayList<>();
         menuProducts.add(new MenuProductRequest(1L, 1));
@@ -149,9 +158,13 @@ class MenuServiceTest {
     @Test
     void list() {
         //given
-        MenuGroup menuGroup = new MenuGroup(1L, "메뉴그룹1");
-        Menu menu1 = new Menu(1L, "후라이드치킨", new BigDecimal("16000"), menuGroup);
-        Menu menu2 = new Menu(2L, "양념치킨", new BigDecimal("16000"), menuGroup);
+        MenuGroup menuGroup = new MenuGroup("메뉴그룹1");
+        ReflectionTestUtils.setField(menuGroup, "id", 1L);
+
+        Menu menu1 = new Menu("후라이드치킨", new BigDecimal("16000"), menuGroup);
+        ReflectionTestUtils.setField(menu1, "id", 1L);
+        Menu menu2 = new Menu("양념치킨", new BigDecimal("16000"), menuGroup);
+        ReflectionTestUtils.setField(menu2, "id", 2L);
 
         given(menuRepository.findAll())
                 .willReturn(Arrays.asList(menu1, menu2));

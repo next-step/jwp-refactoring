@@ -20,6 +20,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -55,19 +56,24 @@ class OrderServiceTest {
 
         given(orderRepository.save(any()))
                 .willReturn(new Order(OrderStatus.COOKING, LocalDateTime.now()));
-        given(menuRepository.findAllById(Arrays.asList(1L, 2L)))
-                .willReturn(Arrays.asList(
-                        new Menu(1L, "메뉴1", new BigDecimal(16000), null),
-                        new Menu(2L, "메뉴2", new BigDecimal(16000), null)
-                ));
-        given(orderTableRepository.findById(1L))
-                .willReturn(
-                        Optional.of(new OrderTable(1L, null, 3, false))
-                );
-        OrderTable orderTable = new OrderTable(3, false);
-        orderTable.setId(2L);
 
-        Order order = new Order(1L, OrderStatus.COOKING, LocalDateTime.now());
+        Menu menu1 = new Menu("메뉴1", new BigDecimal(16000), null);
+        Menu menu2 = new Menu("메뉴2", new BigDecimal(16000), null);
+        ReflectionTestUtils.setField(menu1, "id", 1L);
+        ReflectionTestUtils.setField(menu2, "id", 2L);
+        given(menuRepository.findAllById(Arrays.asList(1L, 2L)))
+                .willReturn(Arrays.asList(menu1, menu2));
+
+        OrderTable orderTable1 = new OrderTable(3, false);
+        ReflectionTestUtils.setField(orderTable1, "id", 1L);
+        given(orderTableRepository.findById(1L))
+                .willReturn(Optional.of(orderTable1));
+
+        OrderTable orderTable = new OrderTable(3, false);
+        ReflectionTestUtils.setField(orderTable, "id", 2L);
+
+        Order order = new Order(OrderStatus.COOKING, LocalDateTime.now());
+        ReflectionTestUtils.setField(order, "id", 1L);
         order.setOrderTable(orderTable);
 
         given(orderRepository.save(any())).willReturn(order);
@@ -110,10 +116,10 @@ class OrderServiceTest {
     @Test
     void create3() {
         //given
+        Menu menu = new Menu( "메뉴2", new BigDecimal(16000), null);
+        ReflectionTestUtils.setField(menu, "id", 2L);
         given(menuRepository.findAllById(Arrays.asList(1L, 2L)))
-                .willReturn(Collections.singletonList(
-                        new Menu(2L, "메뉴2", new BigDecimal(16000), null)
-                ));
+                .willReturn(Collections.singletonList(menu));
 
         List<OrderLineItemRequest> orderLineItems = new ArrayList<>();
         orderLineItems.add(new OrderLineItemRequest(1L, 3));
@@ -133,13 +139,17 @@ class OrderServiceTest {
     @Test
     void create4() {
         //given
+        Menu menu1 = new Menu("메뉴1", new BigDecimal(16000), null);
+        Menu menu2 = new Menu("메뉴2", new BigDecimal(16000), null);
+        ReflectionTestUtils.setField(menu1, "id", 1L);
+        ReflectionTestUtils.setField(menu2, "id", 2L);
         given(menuRepository.findAllById(Arrays.asList(1L, 2L)))
-                .willReturn(Arrays.asList(
-                        new Menu(1L, "메뉴1", new BigDecimal(16000), null),
-                        new Menu(2L, "메뉴2", new BigDecimal(16000), null)
-                ));
+                .willReturn(Arrays.asList(menu1, menu2));
+
+        OrderTable orderTable = new OrderTable(0, true);
+        ReflectionTestUtils.setField(orderTable, "id", 1L);
         given(orderTableRepository.findById(any()))
-                .willReturn(Optional.of(new OrderTable(1L, null, 0, true)));
+                .willReturn(Optional.of(orderTable));
 
         List<OrderLineItemRequest> orderLineItems = new ArrayList<>();
         orderLineItems.add(new OrderLineItemRequest(1L, 3));
@@ -158,13 +168,13 @@ class OrderServiceTest {
     @Test
     void list() {
         //given
+        Order order1 = new Order(OrderStatus.COOKING, LocalDateTime.now());
+        Order order2 = new Order(OrderStatus.MEAL, LocalDateTime.now());
+        ReflectionTestUtils.setField(order1, "id", 1L);
+        ReflectionTestUtils.setField(order2, "id", 2L);
+
         given(orderRepository.findAll())
-                .willReturn(
-                        Arrays.asList(
-                                new Order(1L, OrderStatus.COOKING, LocalDateTime.now()),
-                                new Order(2L, OrderStatus.MEAL, LocalDateTime.now())
-                        )
-                );
+                .willReturn(Arrays.asList(order1, order2));
         //when
         List<OrderResponse> orderResponses = orderService.list();
 
@@ -182,10 +192,10 @@ class OrderServiceTest {
     @Test
     void changeOrderStatus1() {
         //given
+        Order order = new Order(OrderStatus.COOKING, LocalDateTime.now());
+        ReflectionTestUtils.setField(order, "id", 1L);
         given(orderRepository.findById(any()))
-                .willReturn(
-                        Optional.of(new Order(1L, OrderStatus.COOKING, LocalDateTime.now()))
-                );
+                .willReturn(Optional.of(order));
 
         OrderRequest changeOrder = new OrderRequest();
         changeOrder.setOrderStatus(OrderStatus.MEAL);
@@ -217,10 +227,11 @@ class OrderServiceTest {
     @Test
     void changeOrderStatus3() {
         //given
+        Order order = new Order(OrderStatus.COMPLETION, LocalDateTime.now());
+        ReflectionTestUtils.setField(order, "id", 1L);
+
         given(orderRepository.findById(any()))
-                .willReturn(
-                        Optional.of(new Order(1L, OrderStatus.COMPLETION, LocalDateTime.now()))
-                );
+                .willReturn(Optional.of(order));
 
         OrderRequest changeOrder = new OrderRequest();
         changeOrder.setOrderStatus(OrderStatus.MEAL);

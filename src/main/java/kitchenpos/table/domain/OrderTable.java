@@ -27,10 +27,6 @@ public class OrderTable {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public TableGroup getTableGroup() {
         return tableGroup;
     }
@@ -87,8 +83,7 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
-        this.id = id;
+    public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
         this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;

@@ -16,6 +16,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -51,17 +52,23 @@ class TableGroupServiceTest {
         //given
         ArgumentCaptor<TableGroup> argumentCaptor = ArgumentCaptor.forClass(TableGroup.class);
 
+        OrderTable orderTable1 = new OrderTable(0, true);
+        OrderTable orderTable2 = new OrderTable(0, true);
+        ReflectionTestUtils.setField(orderTable1, "id", 1L);
+        ReflectionTestUtils.setField(orderTable2, "id", 2L);
+
         given(orderTableRepository.findAllByIdIn(Arrays.asList(1L, 2L)))
                 .willReturn(
                         Arrays.asList(
-                                new OrderTable(1L, null, 0, true),
-                                new OrderTable(2L, null, 0, true)
+                                orderTable1,
+                                orderTable2
                         )
                 );
-        // TODO: 임시로 any() 로 돌려놓음.
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());
-        tableGroup.addOrderTables(new OrderTable(1L, null, 0, true));
-        tableGroup.addOrderTables(new OrderTable(2L, null, 0, true));
+
+        TableGroup tableGroup = new TableGroup(LocalDateTime.now());
+        ReflectionTestUtils.setField(tableGroup, "id", 1L);
+        tableGroup.addOrderTables(new OrderTable(0, true));
+        tableGroup.addOrderTables(new OrderTable(0, true));
         given(tableGroupRepository.save(any())).willReturn(tableGroup);
 
         //when
@@ -102,13 +109,13 @@ class TableGroupServiceTest {
     @Test
     void ungroup1() {
         //given
-        List<OrderTable> orderTables = Arrays.asList(
-                new OrderTable(1L, null, 0, true),
-                new OrderTable(2L, null, 0, true)
-        );
+        OrderTable orderTable1 = new OrderTable(0, true);
+        OrderTable orderTable2 = new OrderTable(0, true);
+        ReflectionTestUtils.setField(orderTable1, "id", 1L);
+        ReflectionTestUtils.setField(orderTable2, "id", 2L);
 
         given(orderTableRepository.findAllByTableGroupId(any()))
-                .willReturn(orderTables);
+                .willReturn(Arrays.asList(orderTable1, orderTable2));
         given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any()))
                 .willReturn(false);
 
@@ -117,8 +124,8 @@ class TableGroupServiceTest {
 
         //then
         verify(orderTableRepository, times(2)).save(any());
-        verify(orderTableRepository).save(orderTables.get(0));
-        verify(orderTableRepository).save(orderTables.get(1));
+        verify(orderTableRepository).save(Arrays.asList(orderTable1, orderTable2).get(0));
+        verify(orderTableRepository).save(Arrays.asList(orderTable1, orderTable2).get(1));
     }
 
     @DisplayName("지정한 주문 테이블들이 모두 완료상태여야 그룹 해제가 가능합니다.")

@@ -12,6 +12,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,8 +37,11 @@ class MenuGroupServiceTest {
     void create() {
         //given
         ArgumentCaptor<MenuGroup> argumentCaptor = ArgumentCaptor.forClass(MenuGroup.class);
+        MenuGroup menuGroup = new MenuGroup("일반메뉴");
+        ReflectionTestUtils.setField(menuGroup, "id", 1L);
+
         given(menuGroupRepository.save(any()))
-                .willReturn(new MenuGroup(1L, "일반메뉴"));
+                .willReturn(menuGroup);
 
         //when
         MenuGroupRequest menuGroupRequest = new MenuGroupRequest("일반메뉴");
@@ -56,13 +60,13 @@ class MenuGroupServiceTest {
     @Test
     void list() {
         //given
+        MenuGroup menuGroup1 = new MenuGroup("일반메뉴");
+        MenuGroup menuGroup2 = new MenuGroup("스페셜메뉴");
+        ReflectionTestUtils.setField(menuGroup1, "id", 1L);
+        ReflectionTestUtils.setField(menuGroup2, "id", 2L);
+
         given(menuGroupRepository.findAll())
-                .willReturn(
-                        Arrays.asList(
-                                new MenuGroup(1L, "일반메뉴"),
-                                new MenuGroup(1L, "스페셜메뉴")
-                        )
-                );
+                .willReturn(Arrays.asList(menuGroup1, menuGroup2));
         //when
         List<MenuGroupResponse> menuGroups = menuGroupService.list();
 

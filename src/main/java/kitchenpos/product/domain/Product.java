@@ -42,11 +42,6 @@ public class Product {
     }
 
     public Product(String name, BigDecimal price) {
-        this(null, name, price);
-    }
-
-    public Product(Long id, String name, BigDecimal price) {
-        this.id = id;
         this.name = name;
         updatePrice(price);
     }
