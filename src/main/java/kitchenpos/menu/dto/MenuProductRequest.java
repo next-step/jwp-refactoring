@@ -26,4 +26,8 @@ public class MenuProductRequest {
     public MenuProduct toMenuProduct(Product product) {
         return new MenuProduct(product, quantity);
     }
+
+    public boolean isSameProductId(Product product) {
+        return this.productId.equals(product.getId());
+    }
 }

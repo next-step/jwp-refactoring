@@ -38,7 +38,7 @@ public class MenuProducts {
     }
 
     protected Price findPriceSum() {
-        Price priceSum = new Price();
+        Price priceSum = Price.zero();
         for (MenuProduct menuProduct : menuProducts) {
             priceSum.add(menuProduct.getPricePerQuantity());
         }

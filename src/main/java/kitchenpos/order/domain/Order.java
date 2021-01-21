@@ -35,10 +35,25 @@ public class Order {
 
     private Order(Builder builder) {
         this.id = builder.id;
-        this.orderTable = builder.orderTable;
+        this.orderTable = checkValidTable(builder.orderTable);
         this.orderStatus = builder.orderStatus;
         this.orderedTime = builder.orderedTime;
-        updateOrderLineItems(builder.orderLineItems);
+        this.orderLineItems = checkValidOrderLineItems(builder.orderLineItems);
+        updateOrderLineItems(this.orderLineItems);
+    }
+
+    private OrderTable checkValidTable(OrderTable orderTable) {
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException("빈 테이블은 주문할 수 없습니다.");
+        }
+        return orderTable;
+    }
+
+    private OrderLineItems checkValidOrderLineItems(List<OrderLineItem> orderLineItems) {
+        if (CollectionUtils.isEmpty(orderLineItems)) {
+            throw new IllegalArgumentException("주문은 1개 이상의 메뉴가 포함되어 있어야 합니다.");
+        }
+        return new OrderLineItems(orderLineItems);
     }
 
     public void updateOrderLineItems(OrderLineItems orderLineItems) {
@@ -90,7 +105,7 @@ public class Order {
         private OrderTable orderTable;
         private OrderStatus orderStatus = OrderStatus.COOKING;
         private LocalDateTime orderedTime;
-        private OrderLineItems orderLineItems;
+        private List<OrderLineItem> orderLineItems;
 
         public Builder id(Long id) {
             this.id = id;
@@ -98,15 +113,8 @@ public class Order {
         }
 
         public Builder orderTable(OrderTable orderTable) {
-            this.orderTable = checkValidTable(orderTable);
+            this.orderTable = orderTable;
             return this;
-        }
-
-        private OrderTable checkValidTable(OrderTable orderTable) {
-            if (orderTable.isEmpty()) {
-                throw new IllegalArgumentException("빈 테이블은 주문할 수 없습니다.");
-            }
-            return orderTable;
         }
 
         public Builder orderStatus(OrderStatus orderStatus) {
@@ -120,15 +128,8 @@ public class Order {
         }
 
         public Builder orderLineItems(List<OrderLineItem> orderLineItems) {
-            this.orderLineItems = checkValidOrderLineItems(orderLineItems);
+            this.orderLineItems = orderLineItems;
             return this;
-        }
-
-        private OrderLineItems checkValidOrderLineItems(List<OrderLineItem> orderLineItems) {
-            if (CollectionUtils.isEmpty(orderLineItems)) {
-                throw new IllegalArgumentException("주문은 1개 이상의 메뉴가 포함되어 있어야 합니다.");
-            }
-            return new OrderLineItems(orderLineItems);
         }
 
         public Order build() {

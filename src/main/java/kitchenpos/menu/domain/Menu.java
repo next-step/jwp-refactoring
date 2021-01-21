@@ -27,7 +27,7 @@ public class Menu {
     @Embedded
     private MenuProducts menuProducts;
 
-    public Menu() {
+    protected Menu() {
     }
 
     private Menu(Builder builder) {
@@ -35,12 +35,20 @@ public class Menu {
         this.name = builder.name;
         this.price = builder.price;
         this.menuGroup = builder.menuGroup;
-        updateMenuProducts(builder.menuProducts);
+        this.menuProducts = checkValidMenuProducts(builder.menuProducts);
+        updateMenuProducts(this.menuProducts);
+    }
+
+    private MenuProducts checkValidMenuProducts(List<MenuProduct> menuProducts) {
+        if (CollectionUtils.isEmpty(menuProducts)) {
+            throw new IllegalArgumentException("메뉴에는 1개 이상의 상품이 포함되어야 합니다.");
+        }
+        return new MenuProducts(menuProducts);
     }
 
     public void updateMenuProducts(MenuProducts menuProducts) {
-        menuProducts.updateMenu(this);
         this.menuProducts = menuProducts;
+        menuProducts.updateMenu(this);
     }
 
     public Long getId() {
@@ -68,7 +76,7 @@ public class Menu {
         private String name;
         private Price price;
         private MenuGroup menuGroup;
-        private MenuProducts menuProducts;
+        private List<MenuProduct> menuProducts;
 
         public Builder id(Long id) {
             this.id = id;
@@ -91,20 +99,12 @@ public class Menu {
         }
 
         public Builder menuProducts(List<MenuProduct> menuProducts) {
-            this.menuProducts = checkValidMenuProducts(menuProducts);
+            this.menuProducts = menuProducts;
             return this;
         }
 
         public Menu build() {
             return new Menu(this);
         }
-
-        private MenuProducts checkValidMenuProducts(List<MenuProduct> menuProducts) {
-            if (CollectionUtils.isEmpty(menuProducts)) {
-                throw new IllegalArgumentException("메뉴에는 1개 이상의 상품이 포함되어야 합니다.");
-            }
-            return new MenuProducts(menuProducts);
-        }
     }
-
 }

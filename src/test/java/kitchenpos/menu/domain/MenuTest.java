@@ -38,7 +38,7 @@ public class MenuTest {
             new Menu.Builder()
                     .name("가격이 잘못된 메뉴")
                     .price(newMenuPrice)
-                    .menuGroup(new MenuGroup())
+                    .menuGroup(new MenuGroup("추천메뉴"))
                     .menuProducts(menuProducts)
                     .build();
         }).withMessageMatching("메뉴 가격이 속한 상품 가격들의 합보다 비쌉니다.");
