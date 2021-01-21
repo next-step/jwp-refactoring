@@ -1,4 +1,4 @@
-package kitchenpos.ui;
+package kitchenpos.acceptance.menugroup.ui;
 
 import static org.hamcrest.collection.IsCollectionWithSize.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -20,9 +20,11 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import kitchenpos.acceptance.menu.MenuGroupAcceptance;
-import kitchenpos.application.MenuGroupService;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.acceptance.menugroup.MenuGroupAcceptance;
+import kitchenpos.menugroup.application.MenuGroupService;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
+import kitchenpos.menugroup.ui.MenuGroupRestController;
 
 @DisplayName("메뉴 그룹 Controller 테스트")
 @WebMvcTest(MenuGroupRestController.class)
@@ -38,12 +40,13 @@ class MenuGroupRestControllerTest {
 	@Test
 	void createMenuGroupTest() throws Exception {
 		// given
-		MenuGroup menuGroup = MenuGroup.of(1L, "세마리메뉴");
-		given(menuGroupService.create(any())).willReturn(menuGroup);
+		MenuGroupRequest request = MenuGroupRequest.of("세마리메뉴");
+		MenuGroupResponse response = MenuGroupResponse.of(1L, "세마리메뉴");
+		given(menuGroupService.create(any())).willReturn(response);
 
 		// when
 		final ResultActions resultActions = mvc.perform(post(MenuGroupAcceptance.MENU_GROUP_REQUEST_URL)
-			.content(mapper.writeValueAsString(menuGroup))
+			.content(mapper.writeValueAsString(request))
 			.contentType(MediaType.APPLICATION_JSON))
 			.andDo(print());
 
@@ -51,8 +54,8 @@ class MenuGroupRestControllerTest {
 		resultActions
 			.andExpect(status().isCreated())
 			.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-			.andExpect(redirectedUrl(MenuGroupAcceptance.MENU_GROUP_REQUEST_URL + "/" + menuGroup.getId()))
-			.andExpect(jsonPath("$.name").value(menuGroup.getName()))
+			.andExpect(redirectedUrl(MenuGroupAcceptance.MENU_GROUP_REQUEST_URL + "/" + response.getId()))
+			.andExpect(jsonPath("$.name").value(request.getName()))
 			.andDo(log());
 	}
 
@@ -61,9 +64,9 @@ class MenuGroupRestControllerTest {
 	void selectMenuGroupListTest() throws Exception {
 		// given
 		given(menuGroupService.list()).willReturn(Arrays.asList(
-			MenuGroup.of(1L, "두마리메뉴"),
-			MenuGroup.of(2L, "세마리메뉴"),
-			MenuGroup.of(3L, "온가족세트")
+			MenuGroupResponse.of(1L, "두마리메뉴"),
+			MenuGroupResponse.of(2L, "세마리메뉴"),
+			MenuGroupResponse.of(3L, "온가족세트")
 		));
 
 		// when

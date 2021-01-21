@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.acceptance.menugroup.application;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.application.MenuGroupServiceDelete;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
 
@@ -23,11 +24,11 @@ class MenuGroupServiceTest {
 	@Mock
 	private MenuGroupDao menuGroupDao;
 
-	private MenuGroupService menuGroupService;
+	private MenuGroupServiceDelete menuGroupService;
 
 	@BeforeEach
 	void setUp() {
-		menuGroupService = new MenuGroupService(menuGroupDao);
+		menuGroupService = new MenuGroupServiceDelete(menuGroupDao);
 	}
 
 	@DisplayName("메뉴 그룹: 메뉴 그룹 생성 테스트")

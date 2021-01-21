@@ -1,4 +1,4 @@
-package kitchenpos.acceptance.menu;
+package kitchenpos.acceptance.menugroup;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -14,15 +14,17 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.acceptance.util.AcceptanceTest;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 
 public class MenuGroupAcceptance extends AcceptanceTest {
 
 	public static final String MENU_GROUP_REQUEST_URL = "/api/menu-groups";
 
-	public static ExtractableResponse<Response> 메뉴_그룹_등록_요청(MenuGroup menuGroup) {
+	public static ExtractableResponse<Response> 메뉴_그룹_등록_요청(MenuGroupRequest request) {
 		return RestAssured
 			.given().log().all()
-			.body(menuGroup)
+			.body(request)
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.when().post(MENU_GROUP_REQUEST_URL)
 			.then().log().all().extract();
@@ -36,11 +38,11 @@ public class MenuGroupAcceptance extends AcceptanceTest {
 	}
 
 	public static ExtractableResponse<Response> 메뉴_그룹_등록되어_있음(String menuName) {
-		return 메뉴_그룹_등록_요청(MenuGroup.of(null, menuName));
+		return 메뉴_그룹_등록_요청(MenuGroupRequest.of(menuName));
 	}
 
 	public static void 메뉴_그룹_등록됨(ExtractableResponse<Response> response) {
-		MenuGroup expected = response.as(MenuGroup.class);
+		MenuGroupResponse expected = response.as(MenuGroupResponse.class);
 		assertAll(
 			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
 			() -> assertThat(response.contentType()).isEqualTo(MediaType.APPLICATION_JSON_VALUE),

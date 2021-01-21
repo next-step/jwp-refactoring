@@ -20,7 +20,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import kitchenpos.acceptance.product.ProductAcceptanceTemp;
+import kitchenpos.acceptance.product.ProductAcceptance;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
@@ -45,7 +45,7 @@ class ProductRestControllerTest {
 		given(productService.create(any())).willReturn(response);
 
 		// when
-		final ResultActions resultActions = mvc.perform(post(ProductAcceptanceTemp.PRODUCT_REQUEST_URL)
+		final ResultActions resultActions = mvc.perform(post(ProductAcceptance.PRODUCT_REQUEST_URL)
 			.content(mapper.writeValueAsString(request))
 			.contentType(MediaType.APPLICATION_JSON))
 			.andDo(print());
@@ -54,7 +54,7 @@ class ProductRestControllerTest {
 		resultActions
 			.andExpect(status().isCreated())
 			.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-			.andExpect(redirectedUrl(ProductAcceptanceTemp.PRODUCT_REQUEST_URL + "/" + response.getId()))
+			.andExpect(redirectedUrl(ProductAcceptance.PRODUCT_REQUEST_URL + "/" + response.getId()))
 			.andExpect(jsonPath("$.name").value(request.getName()))
 			.andDo(log());
 	}
@@ -69,7 +69,7 @@ class ProductRestControllerTest {
 		));
 
 		// when
-		final ResultActions resultActions = mvc.perform(get(ProductAcceptanceTemp.PRODUCT_REQUEST_URL)
+		final ResultActions resultActions = mvc.perform(get(ProductAcceptance.PRODUCT_REQUEST_URL)
 			.contentType(MediaType.APPLICATION_JSON))
 			.andDo(print());
 

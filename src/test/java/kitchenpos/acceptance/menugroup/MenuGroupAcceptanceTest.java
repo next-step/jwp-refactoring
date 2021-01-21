@@ -1,4 +1,4 @@
-package kitchenpos.acceptance.menu;
+package kitchenpos.acceptance.menugroup;
 
 import java.util.Arrays;
 
@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
 
 public class MenuGroupAcceptanceTest extends MenuGroupAcceptance {
 
@@ -15,10 +15,10 @@ public class MenuGroupAcceptanceTest extends MenuGroupAcceptance {
 	@Test
 	void createMenuGroupTest() {
 		// given
-		MenuGroup menuGroup = MenuGroup.of(null, "두마리메뉴");
+		MenuGroupRequest request = MenuGroupRequest.of("두마리메뉴");
 
 		// when
-		ExtractableResponse<Response> response = 메뉴_그룹_등록_요청(menuGroup);
+		ExtractableResponse<Response> response = 메뉴_그룹_등록_요청(request);
 
 		// then
 		메뉴_그룹_등록됨(response);
@@ -28,11 +28,11 @@ public class MenuGroupAcceptanceTest extends MenuGroupAcceptance {
 	@Test
 	void createDuplicateMenuGroupTest() {
 		// given
-		MenuGroup menuGroup = MenuGroup.of(null, "두마리메뉴");
+		MenuGroupRequest request = MenuGroupRequest.of("두마리메뉴");
 
 		// when
-		ExtractableResponse<Response> response1 = 메뉴_그룹_등록_요청(menuGroup);
-		ExtractableResponse<Response> response2 = 메뉴_그룹_등록_요청(menuGroup);
+		ExtractableResponse<Response> response1 = 메뉴_그룹_등록_요청(request);
+		ExtractableResponse<Response> response2 = 메뉴_그룹_등록_요청(request);
 
 		// then
 		메뉴_그룹_등록됨(response1);
@@ -43,10 +43,10 @@ public class MenuGroupAcceptanceTest extends MenuGroupAcceptance {
 	@Test
 	void createBlankMenuGroupTest() {
 		// given
-		MenuGroup menuGroup = MenuGroup.of(null, "");
+		MenuGroupRequest request = MenuGroupRequest.of("");
 
 		// when
-		ExtractableResponse<Response> response = 메뉴_그룹_등록_요청(menuGroup);
+		ExtractableResponse<Response> response = 메뉴_그룹_등록_요청(request);
 
 		// then
 		메뉴_그룹_등록됨(response);
