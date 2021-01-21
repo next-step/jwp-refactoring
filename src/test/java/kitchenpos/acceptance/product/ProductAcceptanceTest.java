@@ -29,7 +29,7 @@ public class ProductAcceptanceTest extends ProductAcceptance {
 	@Test
 	void createProductErrorTest() {
 		// given
-		ProductRequest request = ProductRequest.of("교촌치킨", -100);
+		ProductRequest request = ProductRequest.of("교촌치킨", -1000);
 
 		// when
 		ExtractableResponse<Response> response = 상품_등록_요청(request);

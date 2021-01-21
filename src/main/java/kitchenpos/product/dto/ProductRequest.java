@@ -3,11 +3,8 @@ package kitchenpos.product.dto;
 import kitchenpos.product.domain.Product;
 
 public class ProductRequest {
-	private String name;
-	private long price;
-
-	public ProductRequest() {
-	}
+	private final String name;
+	private final long price;
 
 	public ProductRequest(String name, long price) {
 		this.name = name;
@@ -18,11 +15,15 @@ public class ProductRequest {
 		return new ProductRequest(name, price);
 	}
 
-	public Product toProduct() {
+	public Product toEntity() {
 		return Product.of(name, price);
 	}
 
 	public String getName() {
 		return this.name;
+	}
+
+	public long getPrice() {
+		return this.price;
 	}
 }

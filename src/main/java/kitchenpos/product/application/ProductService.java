@@ -21,7 +21,7 @@ public class ProductService {
 
 	@Transactional
 	public ProductResponse create(final ProductRequest request) {
-		kitchenpos.product.domain.Product persistProduct = productRepository.save(request.toProduct());
+		kitchenpos.product.domain.Product persistProduct = productRepository.save(request.toEntity());
 		return ProductResponse.of(persistProduct);
 	}
 

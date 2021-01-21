@@ -39,7 +39,7 @@ class ProductServiceTest {
 	void createTest() {
 		// given
 		ProductRequest request = ProductRequest.of("맥주", 5000);
-		given(productRepository.save(any())).willReturn(request.toProduct());
+		given(productRepository.save(any())).willReturn(request.toEntity());
 
 		// when
 		ProductResponse result = productService.create(request);
@@ -65,9 +65,9 @@ class ProductServiceTest {
 	@Test
 	void findAllProductsTest() {
 		// given
-		Product product1 = ProductRequest.of("국밥", 7000).toProduct();
-		Product product2 = ProductRequest.of("설렁탕", 9000).toProduct();
-		Product product3 = ProductRequest.of("갈비탕", 16000).toProduct();
+		Product product1 = ProductRequest.of("국밥", 7000).toEntity();
+		Product product2 = ProductRequest.of("설렁탕", 9000).toEntity();
+		Product product3 = ProductRequest.of("갈비탕", 16000).toEntity();
 		given(productRepository.findAll()).willReturn(Arrays.asList(product1, product2, product3));
 
 		// when

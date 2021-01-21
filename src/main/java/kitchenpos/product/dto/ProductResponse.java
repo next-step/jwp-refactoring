@@ -3,12 +3,9 @@ package kitchenpos.product.dto;
 import kitchenpos.product.domain.Product;
 
 public class ProductResponse {
-	private Long id;
-	private String name;
-	private long price;
-
-	public ProductResponse() {
-	}
+	private final Long id;
+	private final String name;
+	private final long price;
 
 	private ProductResponse(Long id, String name, Long price) {
 		this.id = id;
@@ -20,7 +17,7 @@ public class ProductResponse {
 		return new ProductResponse(id, name, price);
 	}
 
-	public static ProductResponse of(Product product) {
+	public static ProductResponse of(final Product product) {
 		return of(product.getId(), product.getName(), product.price());
 	}
 

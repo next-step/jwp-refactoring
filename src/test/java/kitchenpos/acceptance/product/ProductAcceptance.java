@@ -15,6 +15,7 @@ import io.restassured.response.Response;
 import kitchenpos.acceptance.util.AcceptanceTest;
 import kitchenpos.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 
 public class ProductAcceptance extends AcceptanceTest {
 
@@ -41,7 +42,7 @@ public class ProductAcceptance extends AcceptanceTest {
 	}
 
 	public static void 상품_등록됨(ExtractableResponse<Response> response) {
-		Product expected = response.as(Product.class);
+		ProductResponse expected = response.as(ProductResponse.class);
 		assertAll(
 			() -> assertThat(expected).isNotNull(),
 			() -> assertThat(expected.getId()).isNotNull(),
