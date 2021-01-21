@@ -1,13 +1,18 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menugroup.application.MenuGroupService;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -15,31 +20,38 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 @DisplayName("메뉴 그룹 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
 
     @Mock
-    MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @InjectMocks
-    MenuGroupService menuGroupService;
+    private MenuGroupService menuGroupService;
 
     @DisplayName("메뉴 그룹을 등록할 수 있다.")
     @Test
     void create() {
         //given
+        ArgumentCaptor<MenuGroup> argumentCaptor = ArgumentCaptor.forClass(MenuGroup.class);
+        MenuGroup menuGroup = new MenuGroup("일반메뉴");
+        ReflectionTestUtils.setField(menuGroup, "id", 1L);
 
-        MenuGroup menuGroup = new MenuGroup(null, "일반메뉴");
-
-        given(menuGroupDao.save(menuGroup))
-                .willReturn(new MenuGroup(1L, "일반메뉴"));
+        given(menuGroupRepository.save(any()))
+                .willReturn(menuGroup);
 
         //when
-        MenuGroup createMenuGroup = menuGroupService.create(menuGroup);
+        MenuGroupRequest menuGroupRequest = new MenuGroupRequest("일반메뉴");
+        MenuGroupResponse createMenuGroup = menuGroupService.create(menuGroupRequest);
 
         //then
+        verify(menuGroupRepository).save(argumentCaptor.capture());
+        assertThat(argumentCaptor.getValue().getId()).isNull();
+        assertThat(argumentCaptor.getValue().getName()).isEqualTo("일반메뉴");
+
         assertThat(createMenuGroup.getId()).isNotNull();
         assertThat(createMenuGroup.getName()).isEqualTo("일반메뉴");
     }
@@ -48,15 +60,15 @@ class MenuGroupServiceTest {
     @Test
     void list() {
         //given
-        given(menuGroupDao.findAll())
-                .willReturn(
-                        Arrays.asList(
-                                new MenuGroup(1L, "일반메뉴"),
-                                new MenuGroup(1L, "스페셜메뉴")
-                        )
-                );
+        MenuGroup menuGroup1 = new MenuGroup("일반메뉴");
+        MenuGroup menuGroup2 = new MenuGroup("스페셜메뉴");
+        ReflectionTestUtils.setField(menuGroup1, "id", 1L);
+        ReflectionTestUtils.setField(menuGroup2, "id", 2L);
+
+        given(menuGroupRepository.findAll())
+                .willReturn(Arrays.asList(menuGroup1, menuGroup2));
         //when
-        List<MenuGroup> menuGroups = menuGroupService.list();
+        List<MenuGroupResponse> menuGroups = menuGroupService.list();
 
         //then
         assertThat(menuGroups.size()).isEqualTo(2);

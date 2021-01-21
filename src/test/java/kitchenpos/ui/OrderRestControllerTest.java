@@ -1,15 +1,14 @@
 package kitchenpos.ui;
 
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,19 +23,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class OrderRestControllerTest extends RestControllerTest {
 
     public static final String ORDERS_URL = "/api/orders";
-    private Order order;
+
+    private OrderRequest orderRequest;
 
     @Override
     @BeforeEach
     void setUp() {
         super.setUp();
 
-        order = new Order(null, 1L, OrderStatus.COOKING.name(), LocalDateTime.now());
-        order.setOrderLineItems(Arrays.asList(
-                new OrderLineItem(0L, 1L, 1L,1),
-                new OrderLineItem(1L, 1L, 2L,1))
+        orderRequest = new OrderRequest(1L, OrderStatus.COOKING);
+        orderRequest.setOrderLineItems(Arrays.asList(
+                new OrderLineItemRequest(1L,1),
+                new OrderLineItemRequest(2L,1))
         );
-        order.setOrderTableId(1L);
+        orderRequest.setOrderTableId(1L);
     }
 
     @DisplayName("주문을 신청한다.")
@@ -45,7 +45,7 @@ class OrderRestControllerTest extends RestControllerTest {
         //given
         //when
         //then
-        주문요청(order)
+        주문요청(orderRequest)
                 .andExpect(status().isCreated())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(redirectedUrlPattern(ORDERS_URL+ "/*"))
@@ -59,7 +59,7 @@ class OrderRestControllerTest extends RestControllerTest {
     @Test
     void list() throws Exception {
         //given
-        주문요청(order);
+        주문요청(orderRequest);
         //when
         //then
         mockMvc.perform(get(ORDERS_URL))
@@ -75,7 +75,7 @@ class OrderRestControllerTest extends RestControllerTest {
     @Test
     void changeOrderStatus() throws Exception {
         //given
-        ResultActions resultActions = 주문요청(order);
+        ResultActions resultActions = 주문요청(orderRequest);
         String redirectedUrl = getRedirectedUrl(resultActions);
 
         Map<String, String> requestBody = new HashMap<>();
@@ -94,11 +94,11 @@ class OrderRestControllerTest extends RestControllerTest {
                 .andExpect(jsonPath("$.orderStatus", is(OrderStatus.MEAL.name())));
     }
 
-    private ResultActions 주문요청(Order order) throws Exception {
+    private ResultActions 주문요청(OrderRequest orderRequest) throws Exception {
         return mockMvc.perform(
                 post(ORDERS_URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(toJsonString(order))
+                        .content(toJsonString(orderRequest))
         )
                 .andDo(print());
     }

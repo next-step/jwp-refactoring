@@ -1,16 +1,22 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.tablegroup.application.TableGroupService;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
+import kitchenpos.tablegroup.dto.OrderTableIdRequest;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -29,49 +35,56 @@ import static org.mockito.Mockito.verify;
 class TableGroupServiceTest {
 
     @Mock
-    OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
-    OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @Mock
-    TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
 
     @InjectMocks
-    TableGroupService tableGroupService;
+    private TableGroupService tableGroupService;
 
     @DisplayName("복수의 주문 테이블을 단체 지정할 수 있다.")
     @Test
     void create1() {
         //given
-        List<OrderTable> orderTables = new ArrayList<>();
-        orderTables.add(new OrderTable(1L, null, 0, true));
-        orderTables.add(new OrderTable(2L, null, 0, true));
+        ArgumentCaptor<TableGroup> argumentCaptor = ArgumentCaptor.forClass(TableGroup.class);
 
-        TableGroup newTableGroup = new TableGroup(null, LocalDateTime.now(), orderTables);
-        newTableGroup.setOrderTables(orderTables);
+        OrderTable orderTable1 = new OrderTable(0, true);
+        OrderTable orderTable2 = new OrderTable(0, true);
+        ReflectionTestUtils.setField(orderTable1, "id", 1L);
+        ReflectionTestUtils.setField(orderTable2, "id", 2L);
 
-        given(orderTableDao.findAllByIdIn(any()))
+        given(orderTableRepository.findAllByIdIn(Arrays.asList(1L, 2L)))
                 .willReturn(
                         Arrays.asList(
-                                new OrderTable(1L, null, 0, true),
-                                new OrderTable(2L, null, 0, true)
+                                orderTable1,
+                                orderTable2
                         )
                 );
-        given(tableGroupDao.save(newTableGroup))
-                .willReturn(
-                        new TableGroup(1L, LocalDateTime.now(),
-                                Arrays.asList(
-                                        new OrderTable(1L, null, 0, true),
-                                        new OrderTable(2L, null, 0, true)
-                                )
-                        )
-                );
+
+        TableGroup tableGroup = new TableGroup(LocalDateTime.now());
+        ReflectionTestUtils.setField(tableGroup, "id", 1L);
+        tableGroup.addOrderTables(new OrderTable(0, true));
+        tableGroup.addOrderTables(new OrderTable(0, true));
+        given(tableGroupRepository.save(any())).willReturn(tableGroup);
 
         //when
-        TableGroup savedTableGroup = tableGroupService.create(newTableGroup);
+        List<OrderTableIdRequest> orderTables = new ArrayList<>();
+        orderTables.add(new OrderTableIdRequest(1L));
+        orderTables.add(new OrderTableIdRequest(2L));
+
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(orderTables);
+        tableGroupRequest.setOrderTables(orderTables);
+        TableGroupResponse savedTableGroup = tableGroupService.create(tableGroupRequest);
 
         //then
+        verify(tableGroupRepository).save(argumentCaptor.capture());
+        assertThat(argumentCaptor.getValue().getId()).isNull();
+        assertThat(argumentCaptor.getValue().getOrderTables().size()).isEqualTo(2);
+
         assertThat(savedTableGroup.getId()).isEqualTo(1L);
         assertThat(savedTableGroup.getOrderTables().size()).isEqualTo(2);
     }
@@ -80,10 +93,10 @@ class TableGroupServiceTest {
     @Test
     void create2() {
         //given
-        List<OrderTable> orderTables = new ArrayList<>();
-        orderTables.add(new OrderTable(1L, null, 0, true));
+        List<OrderTableIdRequest> orderTables = new ArrayList<>();
+        orderTables.add(new OrderTableIdRequest(1L));
 
-        TableGroup newTableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
+        TableGroupRequest newTableGroup = new TableGroupRequest(orderTables);
 
         //when
         //then
@@ -96,30 +109,30 @@ class TableGroupServiceTest {
     @Test
     void ungroup1() {
         //given
-        List<OrderTable> orderTables = Arrays.asList(
-                new OrderTable(1L, null, 0, true),
-                new OrderTable(2L, null, 0, true)
-        );
+        OrderTable orderTable1 = new OrderTable(0, true);
+        OrderTable orderTable2 = new OrderTable(0, true);
+        ReflectionTestUtils.setField(orderTable1, "id", 1L);
+        ReflectionTestUtils.setField(orderTable2, "id", 2L);
 
-        given(orderTableDao.findAllByTableGroupId(any()))
-                .willReturn(orderTables);
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any()))
+        given(orderTableRepository.findAllByTableGroupId(any()))
+                .willReturn(Arrays.asList(orderTable1, orderTable2));
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any()))
                 .willReturn(false);
 
         //when
         tableGroupService.ungroup(1L);
 
         //then
-        verify(orderTableDao, times(2)).save(any());
-        verify(orderTableDao).save(orderTables.get(0));
-        verify(orderTableDao).save(orderTables.get(1));
+        verify(orderTableRepository, times(2)).save(any());
+        verify(orderTableRepository).save(Arrays.asList(orderTable1, orderTable2).get(0));
+        verify(orderTableRepository).save(Arrays.asList(orderTable1, orderTable2).get(1));
     }
 
     @DisplayName("지정한 주문 테이블들이 모두 완료상태여야 그룹 해제가 가능합니다.")
     @Test
     void ungroup2() {
         //given
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any()))
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any()))
                 .willReturn(true);
 
         //when

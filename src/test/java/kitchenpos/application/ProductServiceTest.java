@@ -1,14 +1,19 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
-import org.junit.jupiter.api.BeforeEach;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -18,29 +23,39 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 @DisplayName("상품 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
 
     @Mock
-    ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
-    ProductService productService;
+    private ProductService productService;
 
     @DisplayName("상품을 등록")
     @Test
     void create1() {
         //given
-        Product newProduct = new Product(null, "김치찌개", new BigDecimal(6000));
-        given(productDao.save(newProduct))
-                .willReturn(new Product(2L, "김치찌개", new BigDecimal(6000)));
+        ArgumentCaptor<Product> argumentCaptor = ArgumentCaptor.forClass(Product.class);
+
+        ProductRequest newProduct = new ProductRequest("김치찌개", new BigDecimal(6000));
+        Product product = new Product("김치찌개", new BigDecimal(6000));
+        ReflectionTestUtils.setField(product, "id", 2L);
+        given(productRepository.save(any()))
+                .willReturn(product);
 
         //when
-        Product createProduct = productService.create(newProduct);
+        ProductResponse createProduct = productService.create(newProduct);
 
         //then
+        verify(productRepository).save(argumentCaptor.capture());
+        assertThat(argumentCaptor.getValue().getId()).isNull();
+        assertThat(argumentCaptor.getValue().getName()).isEqualTo("김치찌개");
+        assertThat(argumentCaptor.getValue().getPrice()).isEqualTo(new BigDecimal(6000));
+
         assertThat(createProduct.getId()).isEqualTo(2L);
         assertThat(createProduct.getName()).isEqualTo("김치찌개");
         assertThat(createProduct.getPrice()).isEqualTo(new BigDecimal(6000));
@@ -50,7 +65,7 @@ class ProductServiceTest {
     @Test
     void create2() {
         //given
-        Product newProduct = new Product(null, "김치찌개", new BigDecimal(-1));
+        ProductRequest newProduct = new ProductRequest("김치찌개", new BigDecimal(-1));
 
         //when
         //then
@@ -63,7 +78,7 @@ class ProductServiceTest {
     @Test
     void create3() {
         //given
-        Product newProduct = new Product(null, "김치찌개", null);
+        ProductRequest newProduct = new ProductRequest("김치찌개", null);
 
         //when
         //then
@@ -76,17 +91,16 @@ class ProductServiceTest {
     @Test
     void list() {
         //given
-        given(productDao.findAll())
-                .willReturn(
-                        Arrays.asList(
-                                new Product(1L, "볶음밥", new BigDecimal(7000)),
-                                new Product(2L, "김치찌개", new BigDecimal(6000))
-                        )
-                );
+        Product 볶음밥 = new Product("볶음밥", new BigDecimal(7000));
+        Product 김치찌개 = new Product("김치찌개", new BigDecimal(6000));
+        ReflectionTestUtils.setField(볶음밥, "id", 1L);
+        ReflectionTestUtils.setField(김치찌개, "id", 2L);
+
+        given(productRepository.findAll())
+                .willReturn(Arrays.asList(볶음밥, 김치찌개));
 
         //when
-        List<Product> products = productService.list();
-
+        List<ProductResponse> products = productService.list();
         //then
         assertThat(products.size()).isEqualTo(2);
         assertThat(products.get(0).getName()).isEqualTo("볶음밥");

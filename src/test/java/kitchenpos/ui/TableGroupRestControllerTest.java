@@ -1,7 +1,7 @@
 package kitchenpos.ui;
 
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.tablegroup.dto.OrderTableIdRequest;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -24,12 +24,9 @@ class TableGroupRestControllerTest extends RestControllerTest {
     @Test
     void create() throws Exception {
         //given
-        TableGroup tableGroup = new TableGroup();
+        TableGroupRequest tableGroup = new TableGroupRequest();
         tableGroup.setOrderTables(
-                Arrays.asList(
-                        new OrderTable(2L ,2L, 0, true),
-                        new OrderTable(4L ,2L, 0, true)
-                )
+                Arrays.asList(new OrderTableIdRequest(2L), new OrderTableIdRequest(4L))
         );
 
         //when
@@ -45,14 +42,11 @@ class TableGroupRestControllerTest extends RestControllerTest {
     @Test
     void ungroup() throws Exception {
         //given
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(
-                Arrays.asList(
-                        new OrderTable(2L ,2L, 0, true),
-                        new OrderTable(4L ,2L, 0, true)
-                )
+        TableGroupRequest tableGroupRequest = new TableGroupRequest();
+        tableGroupRequest.setOrderTables(
+                Arrays.asList(new OrderTableIdRequest(2L), new OrderTableIdRequest(4L))
         );
-        ResultActions resultActions = 단체지정요청(tableGroup);
+        ResultActions resultActions = 단체지정요청(tableGroupRequest);
         String redirectedUrl = getRedirectedUrl(resultActions);
 
         //when
@@ -62,7 +56,7 @@ class TableGroupRestControllerTest extends RestControllerTest {
                 .andExpect(status().isNoContent());
     }
 
-    private ResultActions 단체지정요청(TableGroup tableGroup) throws Exception {
+    private ResultActions 단체지정요청(TableGroupRequest tableGroup) throws Exception {
         return mockMvc.perform(
                 post(TABLE_GROUPS_URL)
                         .contentType(MediaType.APPLICATION_JSON)

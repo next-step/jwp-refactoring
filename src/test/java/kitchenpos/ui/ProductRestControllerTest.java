@@ -1,6 +1,6 @@
 package kitchenpos.ui;
 
-import kitchenpos.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -22,16 +22,15 @@ class ProductRestControllerTest extends RestControllerTest {
     @Test
     void create() throws Exception {
         //given
-        Product 볶음밥 = new Product();
-        볶음밥.setId(1L);
-        볶음밥.setName("볶음밥");
-        볶음밥.setPrice(new BigDecimal(7000));
+        ProductRequest productRequest = new ProductRequest();
+        productRequest.setName("볶음밥");
+        productRequest.setPrice(new BigDecimal(7000));
 
         //when
         mockMvc.perform(
                 post(PRODUCTS_API_URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(toJsonString(볶음밥))
+                        .content(toJsonString(productRequest))
         )
                 .andDo(print())
                 .andExpect(status().isCreated())

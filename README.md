@@ -93,3 +93,21 @@
 - [x] 주문 테스트 작성
   - [x] Service Test 작성
   - [x] Controller Test 작성
+
+## 2단계 - 서비스 리팩터링 To Do List
+
+- [x] spring data jpa 설정
+- [x] 패키지 구조를 도메인 별로 개편
+- [x] DTO와 엔티티 분리
+- [x] 엔티티 새로 등록 및 변경
+  - [x] 테이블, 상품 변경
+  - [x] 테이블 그룹, 메뉴 그룹 변경
+  - [x] 주문, 메뉴 변경
+- [x] 엔티티간 연관관계 설정
+- [x] dao -> jpa repository 변경 
+- [x] service 리펙토링
+  - [x] 테이블 서비스 -> 엔티티
+  - [x] 매뉴 서비스 -> 엔티티
+  - [x] 주문 서비스 -> 엔티티
+- [x] controller 리팩토링
+- [x] 전체 구조 리펙토링
