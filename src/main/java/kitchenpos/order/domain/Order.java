@@ -1,6 +1,9 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.BaseOrderEntity;
+import kitchenpos.order.dto.OrderLineItemResponse;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -8,7 +11,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity(name = "orders")
-public class Order {
+public class Order extends BaseOrderEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,9 +22,6 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
-
-    @CreatedDate
-    private LocalDateTime orderedTime;
 
     @Embedded
     private OrderLineItems orderLineItems = new OrderLineItems();
@@ -67,5 +67,17 @@ public class Order {
 
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems.getOrderLineItems();
+    }
+
+    public Long getOrderTableId() {
+        return orderTable.getId();
+    }
+
+    public List<OrderLineItemResponse> getOrderLineItemResponses() {
+        return orderLineItems.getOrderLineItemResponse();
+    }
+
+    public OrderTable getOrderTable() {
+        return orderTable;
     }
 }

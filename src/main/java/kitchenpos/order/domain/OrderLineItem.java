@@ -42,4 +42,16 @@ public class OrderLineItem {
     public Long getOrderId() {
         return orderId;
     }
+
+    public long getQuantity() {
+        return quantity;
+    }
+
+    public Long getMenuId() {
+        return menu.getId();
+    }
+
+    public Long getSeq() {
+        return seq;
+    }
 }

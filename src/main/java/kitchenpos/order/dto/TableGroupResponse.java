@@ -4,12 +4,13 @@ import kitchenpos.domain.OrderTable;
 import kitchenpos.order.domain.TableGroup;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TableGroupResponse {
     private Long id;
     private LocalDateTime createdDate;
-    private List<OrderTableResponse> orderTables;
+    private List<OrderTableResponse> orderTables = new ArrayList<>();
 
     public TableGroupResponse() {
     }

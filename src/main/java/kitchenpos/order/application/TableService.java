@@ -41,15 +41,15 @@ public class TableService {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        validateOrderStatusCookingOrMeal(orderTableId);
+        validateOrderStatusCookingOrMeal(savedOrderTable);
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
 
         return OrderTableResponse.of(savedOrderTable);
     }
 
-    private void validateOrderStatusCookingOrMeal(Long orderTableId) {
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+    private void validateOrderStatusCookingOrMeal(OrderTable orderTable) {
+        if (orderRepository.existsByOrderTableAndOrderStatusIn(
+                orderTable, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException("요리중이거나 식사중인 테이블은 변경 불가합니다.");
         }
     }

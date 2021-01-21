@@ -58,16 +58,16 @@ public class TableGroupService {
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
 
-        validateOrderStatusCookingOrMeal(orderTableIds);
+        validateOrderStatusCookingOrMeal(orderTables);
 
         for (final OrderTable orderTable : orderTables) {
             orderTable.changeTableGroupId(null);
         }
     }
 
-    private void validateOrderStatusCookingOrMeal(List<Long> orderTableIds) {
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+    private void validateOrderStatusCookingOrMeal(List<OrderTable> orderTables) {
+        if (orderRepository.existsByOrderTableInAndOrderStatusIn(
+                orderTables, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException("요리중이거나 식사중인 테이블은 변경 불가합니다.");
         }
     }

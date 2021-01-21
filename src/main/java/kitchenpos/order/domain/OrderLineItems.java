@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.order.dto.OrderLineItemResponse;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.CascadeType;
@@ -9,6 +10,7 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class OrderLineItems {
@@ -29,5 +31,11 @@ public class OrderLineItems {
 
     public List<OrderLineItem> getOrderLineItems() {
         return Collections.unmodifiableList(orderLineItems);
+    }
+
+    public List<OrderLineItemResponse> getOrderLineItemResponse() {
+        return orderLineItems.stream()
+                .map(OrderLineItemResponse::of)
+                .collect(Collectors.toList());
     }
 }
