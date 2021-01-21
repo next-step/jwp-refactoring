@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MenuRequest {
     private String name;
@@ -75,16 +76,12 @@ public class MenuRequest {
     }
 
     public List<MenuProduct> createMenuProducts(List<Product> products) {
-        List<MenuProduct> createMenuProducts = new ArrayList<>();
-        for (MenuProductRequest menuProductRequest : menuProducts) {
+        return menuProducts.stream().map(menuProductRequest -> {
             Product product = products.stream()
                     .filter(filterProduct -> menuProductRequest.getProductId() == filterProduct.getId())
                     .findFirst()
                     .orElseThrow(IllegalArgumentException::new);
-
-            createMenuProducts.add(new MenuProduct(product, menuProductRequest.getQuantity()));
-        }
-
-        return createMenuProducts;
+            return new MenuProduct(product, menuProductRequest.getQuantity());
+        }).collect(Collectors.toList());
     }
 }
