@@ -9,7 +9,7 @@ public class Price {
     private static final int ZERO_VALUE = 0;
     private BigDecimal price = BigDecimal.ZERO;
 
-    public Price() {
+    protected Price() {
     }
 
     public Price(BigDecimal price) {
@@ -21,6 +21,10 @@ public class Price {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < ZERO_VALUE) {
             throw new IllegalArgumentException("가격은 0원 이상이어야 합니다.");
         }
+    }
+
+    public static Price zero() {
+        return new Price(BigDecimal.ZERO);
     }
 
     public void add(Price otherPrice) {
