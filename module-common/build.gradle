@@ -1,0 +1,28 @@
+configurations {
+    baseTestClass {
+        extendsFrom(testRuntime)
+    }
+}
+
+task testJar(type: Jar) {
+    classifier "test"
+    from sourceSets.test.output
+}
+
+artifacts {
+    baseTestClass testJar
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'pl.allegro.tech.boot:handlebars-spring-boot-starter:0.3.0'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.flywaydb:flyway-core'
+    runtimeOnly 'com.h2database:h2'
+    compile group: 'com.sun.xml.bind', name: 'jaxb-osgi', version: '3.0.0'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'io.rest-assured:rest-assured:3.3.0'
+    testImplementation 'com.tngtech.archunit:archunit-junit5-engine:0.15.0'
+}

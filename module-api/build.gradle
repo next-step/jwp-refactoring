@@ -1,0 +1,12 @@
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'pl.allegro.tech.boot:handlebars-spring-boot-starter:0.3.0'
+    implementation 'com.h2database:h2'
+    compile group: 'com.sun.xml.bind', name: 'jaxb-osgi', version: '3.0.0'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'io.rest-assured:rest-assured:3.3.0'
+    testImplementation project(path: ':module-common', configuration: 'baseTestClass')
+}
