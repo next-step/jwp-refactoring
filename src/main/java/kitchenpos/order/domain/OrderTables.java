@@ -46,7 +46,9 @@ public class OrderTables {
     }
 
     public void checkOrderTableStatus() {
-        if (orderTables.stream().anyMatch(OrderTable::isNotComplete)) {
+        boolean hasNotCompleteOrder = orderTables.stream()
+                .anyMatch(OrderTable::isNotComplete);
+        if (hasNotCompleteOrder) {
             throw new IllegalArgumentException("주문 상태가 조리중이거나 식사중인 테이블의 그룹 지정은 해지할 수 없습니다.");
         }
     }
