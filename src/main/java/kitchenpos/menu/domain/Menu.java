@@ -61,17 +61,20 @@ public class Menu {
         this.menuGroup = menuGroup;
     }
 
-    public static Menu createMenu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
+    public static Menu createMenu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts,
+                                  BigDecimal sumPrice) {
+        validatePrice(price, sumPrice);
 
         Menu menu = new Menu(name, price, menuGroup);
         menuProducts.forEach(menu::addMenuProduct);
         return menu;
     }
 
-    public void validateSumPrice(BigDecimal sum) {
+    public static void validatePrice(BigDecimal price, BigDecimal sum) {
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException();
+        }
+
         if (price.compareTo(sum) > 0) {
             throw new IllegalArgumentException("메뉴의 가격이 상품목록 총합 가격보다 더 큽니다.");
         }

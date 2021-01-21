@@ -12,7 +12,6 @@ import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,11 +46,9 @@ public class MenuService {
                 menuRequest.getName(),
                 menuRequest.getPrice(),
                 menuGroup,
-                menuRequest.createMenuProducts(products)
+                menuRequest.createMenuProducts(products),
+                menuRequest.getSumPrice(products)
         );
-
-        BigDecimal sumPrice = menuRequest.getSumPrice(products);
-        menu.validateSumPrice(sumPrice);
 
         return MenuResponse.of(menuRepository.save(menu));
     }
