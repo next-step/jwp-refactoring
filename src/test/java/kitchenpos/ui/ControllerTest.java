@@ -13,6 +13,7 @@ public class ControllerTest {
 
     protected final String MENU_GROUP_URI = "/api/menu-groups";
     protected final String MENU_URI = "/api/menus";
+    protected final String PRODUCT_URI = "/api/products";
 
 
 
