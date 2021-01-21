@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.domain.Products;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 
@@ -29,5 +30,9 @@ public class ProductService {
 		return productRepository.findAll().stream()
 			.map(ProductResponse::of)
 			.collect(Collectors.toList());
+	}
+
+	public Products findAllByIds(List<Long> productIds) {
+		return Products.of(productRepository.findAllById(productIds));
 	}
 }
