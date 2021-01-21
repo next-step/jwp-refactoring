@@ -11,11 +11,11 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private Long price;
+    private long price;
 
     protected Product(){}
 
-    public Product(String name, Long price) {
+    public Product(String name, long price) {
         this.name = name;
         this.price = price;
     }
@@ -28,7 +28,7 @@ public class Product {
         return name;
     }
 
-    public Long getPrice() {
+    public long getPrice() {
         return price;
     }
 }

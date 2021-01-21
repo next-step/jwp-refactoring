@@ -10,7 +10,7 @@ public class Menu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private Long price;
+    private long price;
     @ManyToOne
     private MenuGroup menuGroup;
     @Embedded
@@ -18,13 +18,13 @@ public class Menu {
 
     protected Menu(){}
 
-    public Menu(String name, Long price, MenuGroup menuGroup) {
+    public Menu(String name, long price, MenuGroup menuGroup) {
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
     }
 
-    public void add(Product product, Long quantity) {
+    public void add(Product product, long quantity) {
         this.menuProducts.add(new MenuProduct(this, product, quantity));
         if (this.menuProducts.sumTotalPrice() < price) {
             throw new BadPriceException("메뉴의 가격은 전체 상품 가격보다 높을 수 없습니다.");
@@ -39,7 +39,7 @@ public class Menu {
         return name;
     }
 
-    public Long getPrice() {
+    public long getPrice() {
         return price;
     }
 

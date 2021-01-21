@@ -11,11 +11,11 @@ public class MenuProduct {
     private Menu menu;
     @ManyToOne
     private Product product;
-    private Long quantity;
+    private long quantity;
 
     protected MenuProduct(){}
 
-    public MenuProduct(Menu menu, Product product, Long quantity) {
+    public MenuProduct(Menu menu, Product product, long quantity) {
         this.menu = menu;
         this.product = product;
         this.quantity = quantity;

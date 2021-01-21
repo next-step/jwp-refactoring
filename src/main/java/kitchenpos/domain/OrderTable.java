@@ -7,17 +7,15 @@ import java.util.Objects;
 
 @Entity
 public class OrderTable {
+    private static final int EMPTY_NUMBER = 0;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
     private TableGroup tableGroup;
-    private Integer numberOfGuests = 0;
+    private int numberOfGuests = EMPTY_NUMBER;
 
-    public void update(Integer numberOfGuests) {
-        if (numberOfGuests == null) {
-            throw new BadRequestException("손님 수는 null로 변경할 수 없습니다.");
-        }
+    public void update(int numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
     }
 
@@ -25,12 +23,12 @@ public class OrderTable {
         return id;
     }
 
-    public Integer getNumberOfGuests() {
+    public int getNumberOfGuests() {
         return numberOfGuests;
     }
 
     public boolean isEmpty() {
-        return numberOfGuests.equals(0);
+        return numberOfGuests == EMPTY_NUMBER;
     }
 
     public void group(TableGroup tableGroup) {

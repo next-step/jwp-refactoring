@@ -11,11 +11,11 @@ public class OrderMenu {
     private Order order;
     @ManyToOne
     private Menu menu;
-    private Long quantity;
+    private long quantity;
 
     protected OrderMenu(){}
 
-    public OrderMenu(Order order, Menu menu, Long quantity) {
+    public OrderMenu(Order order, Menu menu, long quantity) {
         this.order = order;
         this.menu = menu;
         this.quantity = quantity;
@@ -25,7 +25,7 @@ public class OrderMenu {
         return id;
     }
 
-    public Long getQuantity() {
+    public long getQuantity() {
         return quantity;
     }
 
