@@ -1,12 +1,11 @@
 package kitchenpos.menugroup.domain;
 
+import kitchenpos.common.domain.BaseEntity;
+
 import javax.persistence.*;
 
 @Entity
-public class MenuGroup {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class MenuGroup extends BaseEntity {
     @Column
     private String name;
 
@@ -15,10 +14,6 @@ public class MenuGroup {
     }
 
     protected MenuGroup() {
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public String getName() {

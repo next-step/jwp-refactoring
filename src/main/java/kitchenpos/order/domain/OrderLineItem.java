@@ -1,14 +1,12 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.common.domain.BaseEntity;
 import kitchenpos.menu.domain.Menu;
 
 import javax.persistence.*;
 
 @Entity
-public class OrderLineItem {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long seq;
+public class OrderLineItem extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
@@ -28,10 +26,6 @@ public class OrderLineItem {
 
     public void changeOrder(Order order) {
         this.order = order;
-    }
-
-    public Long getSeq() {
-        return seq;
     }
 
     public Order getOrder() {

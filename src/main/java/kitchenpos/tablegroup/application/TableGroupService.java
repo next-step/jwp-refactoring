@@ -31,7 +31,7 @@ public class TableGroupService {
         request.validateRequestedSizeOfOrderTables();
         final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(request.getOrderTableIds());
         request.validateSavedSizeOfOrderTables(savedOrderTables);
-        final TableGroup savedTableGroup = tableGroupRepository.save(TableGroup.createTableGroup(LocalDateTime.now(), savedOrderTables));
+        final TableGroup savedTableGroup = tableGroupRepository.save(TableGroup.createTableGroup(savedOrderTables));
         savedOrderTables.forEach(ot -> ot.occupy(savedTableGroup));
         return TableGroupResponse.from(savedTableGroup);
     }

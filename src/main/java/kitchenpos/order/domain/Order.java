@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.common.domain.BaseEntity;
 import kitchenpos.table.domain.OrderTable;
 
 import javax.persistence.*;
@@ -8,24 +9,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity(name = "orders")
-public class Order {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Order extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "order_table_id")
     private OrderTable orderTable;
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
-    @Column
-    private LocalDateTime orderedTime;
     @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
     private final List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     public Order(OrderTable orderTable) {
         this.orderTable = orderTable;
         this.orderStatus = OrderStatus.COOKING;
-        this.orderedTime = LocalDateTime.now();
     }
 
     public static Order createOrder(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
@@ -58,20 +53,12 @@ public class Order {
         return orderStatus != OrderStatus.COMPLETION;
     }
 
-    public Long getId() {
-        return id;
-    }
-
     public OrderTable getOrderTable() {
         return orderTable;
     }
 
     public OrderStatus getOrderStatus() {
         return orderStatus;
-    }
-
-    public LocalDateTime getOrderedTime() {
-        return orderedTime;
     }
 
     public List<OrderLineItem> getOrderLineItems() {

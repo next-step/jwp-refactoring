@@ -5,17 +5,17 @@ import kitchenpos.menu.domain.MenuProduct;
 import java.util.Objects;
 
 public class MenuProductResponse {
-    private Long seq;
+    private Long id;
     private Long menuId;
     private Long productId;
     private Long quantity;
 
     public static MenuProductResponse from(MenuProduct menuProduct) {
-        return new MenuProductResponse(menuProduct.getSeq(), menuProduct.getMenu().getId(), menuProduct.getProduct().getId(), menuProduct.getQuantity());
+        return new MenuProductResponse(menuProduct.getId(), menuProduct.getMenu().getId(), menuProduct.getProduct().getId(), menuProduct.getQuantity());
     }
 
-    private MenuProductResponse(Long seq, Long menuId, Long productId, Long quantity) {
-        this.seq = seq;
+    private MenuProductResponse(Long id, Long menuId, Long productId, Long quantity) {
+        this.id = id;
         this.menuId = menuId;
         this.productId = productId;
         this.quantity = quantity;
@@ -24,8 +24,8 @@ public class MenuProductResponse {
     public MenuProductResponse() {
     }
 
-    public Long getSeq() {
-        return seq;
+    public Long getId() {
+        return id;
     }
 
     public Long getMenuId() {
@@ -45,18 +45,18 @@ public class MenuProductResponse {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MenuProductResponse that = (MenuProductResponse) o;
-        return Objects.equals(seq, that.seq) && Objects.equals(menuId, that.menuId) && Objects.equals(productId, that.productId) && Objects.equals(quantity, that.quantity);
+        return Objects.equals(id, that.id) && Objects.equals(menuId, that.menuId) && Objects.equals(productId, that.productId) && Objects.equals(quantity, that.quantity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(seq, menuId, productId, quantity);
+        return Objects.hash(id, menuId, productId, quantity);
     }
 
     @Override
     public String toString() {
         return "MenuProductResponse{" +
-                "seq=" + seq +
+                "seq=" + id +
                 ", menuId=" + menuId +
                 ", productId=" + productId +
                 ", quantity=" + quantity +

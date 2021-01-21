@@ -160,6 +160,7 @@
         - [x] Service method 개선 : TableGroup 생성
         - [x] Service method 개선 : TableGroup 단체 지정 해제
 - [ ] JPA 도메인 리팩터링
+    - [x] 모든 도메인에서 사용하는 PK와 시간 추상화 적용
     - [ ] Product
         - [x] JPA Entity, Repository 적용
         - [x] price 필드 Embedded 타입 반영

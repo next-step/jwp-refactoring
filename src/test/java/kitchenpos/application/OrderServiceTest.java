@@ -69,7 +69,7 @@ class OrderServiceTest {
                 () -> assertThat(actual.getOrderTableId()).isEqualTo(orderTable.getId()),
                 () -> assertThat(actual.getOrderLineItems()).isNotNull(),
                 () -> assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.COOKING),
-                () -> assertThat(actual.getOrderedTime()).isNotNull()
+                () -> assertThat(actual.getCreatedAt()).isNotNull()
         );
     }
 

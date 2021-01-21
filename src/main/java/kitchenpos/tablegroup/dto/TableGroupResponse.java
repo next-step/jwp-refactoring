@@ -11,16 +11,16 @@ import java.util.stream.Collectors;
 
 public class TableGroupResponse {
     private final Long id;
-    private final LocalDateTime createdDate;
+    private final LocalDateTime createdAt;
     private final List<OrderTableResponse> orderTables;
 
     public static TableGroupResponse from(TableGroup tableGroup) {
-        return new TableGroupResponse(tableGroup.getId(), tableGroup.getCreatedDate(), convertOrderTableResponse(tableGroup.getOrderTables()));
+        return new TableGroupResponse(tableGroup.getId(), tableGroup.getCreatedAt(), convertOrderTableResponse(tableGroup.getOrderTables()));
     }
 
-    private TableGroupResponse(Long id, LocalDateTime createdDate, List<OrderTableResponse> orderTables) {
+    private TableGroupResponse(Long id, LocalDateTime createdAt, List<OrderTableResponse> orderTables) {
         this.id = id;
-        this.createdDate = createdDate;
+        this.createdAt = createdAt;
         this.orderTables = orderTables;
     }
 
@@ -28,8 +28,8 @@ public class TableGroupResponse {
         return id;
     }
 
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
     public List<OrderTableResponse> getOrderTables() {
@@ -47,19 +47,19 @@ public class TableGroupResponse {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TableGroupResponse that = (TableGroupResponse) o;
-        return Objects.equals(id, that.id) && Objects.equals(createdDate, that.createdDate) && Objects.equals(orderTables, that.orderTables);
+        return Objects.equals(id, that.id) && Objects.equals(createdAt, that.createdAt) && Objects.equals(orderTables, that.orderTables);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, createdDate, orderTables);
+        return Objects.hash(id, createdAt, orderTables);
     }
 
     @Override
     public String toString() {
         return "TableGroupResponse{" +
                 "id=" + id +
-                ", createdDate=" + createdDate +
+                ", createdDate=" + createdAt +
                 ", orderTables=" + orderTables +
                 '}';
     }

@@ -1,5 +1,6 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.common.domain.BaseEntity;
 import kitchenpos.order.domain.Order;
 import kitchenpos.tablegroup.domain.TableGroup;
 
@@ -8,10 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class OrderTable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class OrderTable extends BaseEntity {
     @Column
     private Integer numberOfGuests;
     @Column
@@ -34,10 +32,6 @@ public class OrderTable {
 
     public boolean hasTableGroup() {
         return tableGroup != null;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public TableGroup getTableGroup() {

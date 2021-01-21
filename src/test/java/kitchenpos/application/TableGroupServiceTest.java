@@ -70,7 +70,7 @@ class TableGroupServiceTest {
                 () -> assertThat(response).isNotNull(),
                 () -> assertThat(response.getId()).isNotNull(),
                 () -> assertThat(response.getOrderTables()).containsAnyElementsOf(Arrays.asList(foundOrderTable1, foundOrderTable2)),
-                () -> assertThat(response.getCreatedDate()).isNotNull()
+                () -> assertThat(response.getCreatedAt()).isNotNull()
         );
     }
 

@@ -13,18 +13,18 @@ public class OrderResponse {
     private final Long id;
     private final Long orderTableId;
     private final OrderStatus orderStatus;
-    private final LocalDateTime orderedTime;
+    private final LocalDateTime createdAt;
     private final List<OrderLineItemResponse> orderLineItems;
 
     public static OrderResponse from(Order order) {
-        return new OrderResponse(order.getId(), order.getOrderTable().getId(), order.getOrderStatus(), order.getOrderedTime(), convertOrderLineItemResponses(order.getOrderLineItems()));
+        return new OrderResponse(order.getId(), order.getOrderTable().getId(), order.getOrderStatus(), order.getCreatedAt(), convertOrderLineItemResponses(order.getOrderLineItems()));
     }
 
-    private OrderResponse(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItemResponse> orderLineItems) {
+    private OrderResponse(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime createdAt, List<OrderLineItemResponse> orderLineItems) {
         this.id = id;
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
+        this.createdAt = createdAt;
         this.orderLineItems = orderLineItems;
     }
 
@@ -40,8 +40,8 @@ public class OrderResponse {
         return orderStatus;
     }
 
-    public LocalDateTime getOrderedTime() {
-        return orderedTime;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
     public List<OrderLineItemResponse> getOrderLineItems() {
@@ -59,12 +59,12 @@ public class OrderResponse {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OrderResponse that = (OrderResponse) o;
-        return Objects.equals(id, that.id) && Objects.equals(orderTableId, that.orderTableId) && Objects.equals(orderStatus, that.orderStatus) && Objects.equals(orderedTime, that.orderedTime);
+        return Objects.equals(id, that.id) && Objects.equals(orderTableId, that.orderTableId) && Objects.equals(orderStatus, that.orderStatus) && Objects.equals(createdAt, that.createdAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, orderTableId, orderStatus, orderedTime);
+        return Objects.hash(id, orderTableId, orderStatus, createdAt);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class OrderResponse {
                 "id=" + id +
                 ", orderTableId=" + orderTableId +
                 ", orderStatus='" + orderStatus + '\'' +
-                ", orderedTime=" + orderedTime +
+                ", orderedTime=" + createdAt +
                 ", orderLineItems=" + orderLineItems +
                 '}';
     }

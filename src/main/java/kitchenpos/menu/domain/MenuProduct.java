@@ -1,14 +1,12 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.common.domain.BaseEntity;
 import kitchenpos.product.domain.Product;
 
 import javax.persistence.*;
 
 @Entity
-public class MenuProduct {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long seq;
+public class MenuProduct extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "menu_id")
     private Menu menu;
@@ -33,10 +31,6 @@ public class MenuProduct {
 
     public void updateMenu(Menu menu) {
         this.menu = menu;
-    }
-
-    public Long getSeq() {
-        return seq;
     }
 
     public Menu getMenu() {

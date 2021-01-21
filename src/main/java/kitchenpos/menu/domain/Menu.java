@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.common.domain.BaseEntity;
 import kitchenpos.menugroup.domain.MenuGroup;
 
 import javax.persistence.*;
@@ -8,12 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Menu {
+public class Menu extends BaseEntity {
     private static final int MIN_SIZE_PRODUCTS_IN_MENU = 2;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
     @Column
     private String name;
     @Embedded
@@ -43,10 +41,6 @@ public class Menu {
     private void addMenuProduct(MenuProduct menuProduct) {
         menuProduct.updateMenu(this);
         menuProducts.add(menuProduct);
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public String getName() {
