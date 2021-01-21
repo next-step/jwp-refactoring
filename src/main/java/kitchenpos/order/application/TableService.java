@@ -50,7 +50,7 @@ public class TableService {
     private void validateOrderStatusCookingOrMeal(Long orderTableId) {
         if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
                 orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("요리중이거나 식사중인 테이블은 변경 불가합니다.");
         }
     }
 

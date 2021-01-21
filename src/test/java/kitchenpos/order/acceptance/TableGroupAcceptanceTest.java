@@ -1,4 +1,4 @@
-package kitchenpos.ui;
+package kitchenpos.order.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -6,7 +6,6 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
-import kitchenpos.order.acceptance.OrderTableAcceptanceTest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,7 +29,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         orderTables = listResponse.jsonPath().getList(".", OrderTable.class);
     }
 
-    @DisplayName("단체 지정")
+    @DisplayName("단체 지정 - 이미 그룹 지정")
     @Test
     void create() {
         // when
@@ -78,7 +77,6 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     private void 주문_단체_해제됨(ExtractableResponse<Response> response, HttpStatus ok) {
         Assertions.assertThat(response.statusCode()).isEqualTo(ok.value());
     }
-
 
 
     private void 주문_단체_둥록됨(ExtractableResponse<Response> response) {

@@ -1,19 +1,16 @@
 package kitchenpos.order.domain;
 
-import org.springframework.data.annotation.CreatedDate;
+import kitchenpos.BaseEntity;
+import kitchenpos.order.dto.OrderTableResponse;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-public class TableGroup {
+public class TableGroup extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @CreatedDate
-    private LocalDateTime createdDate;
 
     @Embedded
     private OrderTables orderTables = new OrderTables();
@@ -21,11 +18,15 @@ public class TableGroup {
     public TableGroup() {
     }
 
-    public TableGroup(List<OrderTable> orderTables) {
+    public void add(List<OrderTable> orderTables) {
         this.orderTables.add(this.id, orderTables);
     }
 
     public Long getId() {
         return id;
+    }
+
+    public List<OrderTableResponse> getOrderTableResponses() {
+        return orderTables.getOrderTableResponses();
     }
 }

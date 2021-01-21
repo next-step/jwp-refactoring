@@ -16,6 +16,10 @@ public class OrderTableRequest {
         this.empty = empty;
     }
 
+    public OrderTableRequest(Long id) {
+        this.id = id;
+    }
+
     public OrderTableRequest(Long tableGroupId, int numberOfGuests, boolean empty) {
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
