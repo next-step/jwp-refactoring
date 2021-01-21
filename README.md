@@ -81,24 +81,24 @@
 
 ## 리팩터링 구현 목록
 
-- [ ] 실제 변경 코드의 테스트를 고려하여, Service Layer 테스트를 통합 테스트로 변경
-    - [ ] Product 통합 테스트 적용
+- [x] 실제 변경 코드의 테스트를 고려하여, Service Layer 테스트를 통합 테스트로 변경
+    - [x] Product 통합 테스트 적용
         - [x] test case - `상품`을 생성한다.
         - [x] test case - 가격은 필수이고, 0원 이상이 아니면 `상품`을 생성할 수 없다.
         - [x] test case - 모든 `상품` 목록을 조회한다.
         - [x] Service Layer 테스트 케이스 리팩터링
-    - [ ] MenuGroup 통합 테스트 적용
+    - [x] MenuGroup 통합 테스트 적용
         - [x] test case - `메뉴 그룹`을 생성한다.
         - [x] test case - 모든 `메뉴 그룹` 목록을 조회한다.
         - [x] Service Layer 테스트 케이스 리팩터링
-    - [ ] Menu 통합 테스트 적용
+    - [x] Menu 통합 테스트 적용
         - [x] Menu Service Layer 테스트의 재사용되는 코드 응집화
         - [x] test case - `메뉴`를 생성한다.
         - [x] test case - 가격은 필수이고, 0원 이상이 아니면 `메뉴`를 생성할 수 없다.
         - [x] test case - `메뉴`의 가격이 `메뉴 상품`의 가격의 합보다 크면 `메뉴`를 생성할 수 없다.
         - [x] test case - 모든 `메뉴` 목록을 조회한다.
         - [x] Service Layer 테스트 케이스 리팩터링
-    - [ ] OrderTable 통합 테스트 적용
+    - [x] OrderTable 통합 테스트 적용
         - [x] test case - `주문 테이블`을 생성한다.
         - [x] test case - `주문 테이블`을 비어있는 상태로 변경한다.
         - [x] test case - `주문 테이블`이 `단체 지정`되어 있으면 비어있는 상태로 변경할 수 없다.
@@ -108,14 +108,14 @@
         - [x] test case - `주문 테이블`이 비어있으면, `방문한 손님 수`를 변경할 수 없다.
         - [x] test case - 모든 `주문 테이블` 목록을 조회한다.
         - [x] Service Layer 테스트 케이스 리팩터링
-    - [ ] Order 통합 테스트 적용
+    - [x] Order 통합 테스트 적용
         - [x] test case - `주문`을 생성한다.
         - [x] test case - `주문`에 필요한 주문 메뉴를 담은 `주문 항목`이 없으면 `주문`을 생성할 수 없다.
         - [x] test case - `주문`할 `주문 테이블`이 없으면, `주문`을 생성할 수 없다.
         - [x] test case - 모든 `주문` 목록을 조회한다.
         - [x] test case - `주문`의 `주문 상태`를 변경한다.
         - [x] test case - `주문 상태`가 'COMPLETION' 인 경우 상태를 변경할 수 없다.
-    - [ ] TableGroup 통합 테스트 적용
+    - [x] TableGroup 통합 테스트 적용
         - [x] test case - `단체 지정`을 생성한다.
         - [x] test case - `단체 지정`으로 등록할 `주문 테이블`이 2개 미만이면 생성할 수 없다.
         - [x] test case - `단체 지정`할 `주문 테이블`은 비어있어야한다.
@@ -123,65 +123,65 @@
         - [x] test case - `단체 지정`을 해제한다.
         - [x] test case - `단체 지정`된 `주문 테이블`에서 `주문 상태`가 'COOKING' 이나 'MEAL' 이면 해제할 수 없다.
         - [x] Service Layer 테스트 케이스 리팩터링
-- [ ] Domain Logic 개선에 앞서, UI 전달되는 Domain Context를 Service Layer에 격리
-    - [ ] Product
+- [x] Domain Logic 개선에 앞서, UI 전달되는 Domain Context를 Service Layer에 격리
+    - [x] Product
         - [x] Service Layer에 Request DTO 적용
         - [x] Service Layer에 Response DTO 적용
-    - [ ] MenuGroup
+    - [x] MenuGroup
         - [x] Service Layer에 Request DTO 적용
         - [x] Service Layer에 Response DTO 적용
-    - [ ] Menu
+    - [x] Menu
         - [x] Service Layer에 Request DTO 적용
         - [x] Service Layer에 Response DTO 적용
-    - [ ] OrderTable
+    - [x] OrderTable
         - [x] Service Layer에 Request DTO 적용
         - [x] Service Layer에 Response DTO 적용
-    - [ ] Order
+    - [x] Order
         - [x] Service Layer에 Request DTO 적용
         - [x] Service Layer에 Response DTO 적용
         - [x] Order와 Menu의 정보와 갯수를 전달하기 위한 Request DTO 적용
-    - [ ] TableGroup
+    - [x] TableGroup
         - [x] Service Layer에 Request DTO 적용
         - [x] Service Layer에 Response DTO 적용
         - [x] TableGroup에서 OrderTable들과의 정보와 갯수를 전달하기 위한 Request DTO 적용
-- [ ] Service Layer에 있는 Domain Logic를 Domain Layer로 이동
-    - [ ] OrderTable
+- [x] Service Layer에 있는 Domain Logic를 Domain Layer로 이동
+    - [x] OrderTable
         - [x] Service method 개선 : OrderTable 생성
         - [x] Service method 개선 : OrderTable Status 변경
         - [x] Service method 개선 : OrderTable 손님 수 변경
-    - [ ] Product
+    - [x] Product
         - [x] Service method 개선 : Product 생성
-    - [ ] Order
+    - [x] Order
         - [x] Service method 개선 : Order 생성
         - [x] Service method 개선 : Order Status 변경
-    - [ ] Menu
+    - [x] Menu
         - [x] Service method 개선 : Menu 생성
-    - [ ] TableGroup
+    - [x] TableGroup
         - [x] Service method 개선 : TableGroup 생성
         - [x] Service method 개선 : TableGroup 단체 지정 해제
-- [ ] JPA 도메인 리팩터링
+- [x] JPA 도메인 리팩터링
     - [x] 모든 도메인에서 사용하는 PK와 시간 추상화 적용
-    - [ ] Product
+    - [x] Product
         - [x] JPA Entity, Repository 적용
         - [x] price 필드 Embedded 타입 반영
-    - [ ] OrderTable
+    - [x] OrderTable
         - [x] JPA Entity, Repository 적용
-    - [ ] TableGroup
+    - [x] TableGroup
         - [x] JPA Entity, Repository 적용
         - [x] 잘못 지정된 orderTables의 @OneToMany 옵션 개선
-    - [ ] MenuProduct
+    - [x] MenuProduct
         - [x] JPA Entity, Repository 적용
-        - [x] 엔티티 필드 연관 관계 개선 
-    - [ ] MenuGroup
+        - [x] 엔티티 필드 연관 관계 개선
+    - [x] MenuGroup
         - [x] JPA Entity, Repository 적용
-    - [ ] Menu
+    - [x] Menu
         - [x] JPA Entity, Repository 적용
         - [x] 엔티티 필드 연관 관계 개선
         - [x] price 필드 Embedded 타입 반영
         - [x] 필드 제약사항 추가와 파라미터 검증
-    - [ ] OrderLineItem
+    - [x] OrderLineItem
         - [x] JPA Entity, Repository 적용
-    - [ ] Order
+    - [x] Order
         - [x] JPA Entity, Repository 적용
         - [x] 문자열 orderStatus @Enumerated OrderStatus 적용
         - [x] 누락된 필드 제약사항 수정
