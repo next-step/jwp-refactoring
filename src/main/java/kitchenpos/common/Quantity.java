@@ -2,6 +2,7 @@ package kitchenpos.common;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.util.Objects;
 
 @Embeddable
 public class Quantity {
@@ -28,5 +29,18 @@ public class Quantity {
 
 	public long getValue() {
 		return quantity;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof Quantity)) return false;
+		Quantity quantity1 = (Quantity) o;
+		return quantity == quantity1.quantity;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(quantity);
 	}
 }

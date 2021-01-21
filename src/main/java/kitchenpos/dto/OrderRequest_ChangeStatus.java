@@ -1,18 +1,19 @@
 package kitchenpos.dto;
 
+import kitchenpos.domain.OrderStatus;
+
 public class OrderRequest_ChangeStatus {
 
-	// TODO: 2021-01-19 changeToEnum
-	private String orderStatus;
+	private OrderStatus orderStatus;
 
 	public OrderRequest_ChangeStatus() {
 	}
 
-	public OrderRequest_ChangeStatus(String orderStatus) {
+	public OrderRequest_ChangeStatus(OrderStatus orderStatus) {
 		this.orderStatus = orderStatus;
 	}
 
-	public String getOrderStatus() {
+	public OrderStatus getOrderStatus() {
 		return orderStatus;
 	}
 }

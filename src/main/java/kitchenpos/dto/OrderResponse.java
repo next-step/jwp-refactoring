@@ -10,9 +10,9 @@ import java.util.stream.Collectors;
 public class OrderResponse {
 	private long id;
 	private long orderTableId;
-	private OrderStatus orderStatus; // TODO: 2021-01-15 changetoEnum
+	private OrderStatus orderStatus;
 	private LocalDateTime orderedTime;
-	List<OrderLineItemResponse> orderLineItems;
+	private List<OrderLineItemResponse> orderLineItems;
 
 	public OrderResponse() {
 	}
@@ -21,7 +21,10 @@ public class OrderResponse {
 		List<OrderLineItemResponse> itemResponses = order.getOrderLineItems().stream()
 				.map(OrderLineItemResponse::of)
 				.collect(Collectors.toList());
-		return new OrderResponse(order.getId(), order.getOrderTable().getId(), order.getOrderStatus(), order.getOrderedTime(),
+		return new OrderResponse(order.getId(),
+				order.getOrderTable().getId(),
+				order.getOrderStatus(),
+				order.getOrderedTime(),
 				itemResponses);
 	}
 

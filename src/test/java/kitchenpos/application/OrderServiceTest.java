@@ -1,7 +1,6 @@
 package kitchenpos.application;
 
 import kitchenpos.common.NotFoundException;
-import kitchenpos.common.OrderValidationException;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
@@ -80,14 +79,6 @@ class OrderServiceTest {
 				.allSatisfy(quantity -> assertThat(quantity).isEqualTo(2));
 	}
 
-	@DisplayName("주문 생성시 인자에 메뉴가 없을 경우 예외 발생.")
-	@Test
-	void create_EmptyOrderLineItems() {
-		assertThatThrownBy(() -> orderService.create(new OrderRequest_Create(Collections.emptyList(), orderTable.getId())))
-				.isInstanceOf(OrderValidationException.class)
-				.hasMessageMatching(OrderService.MSG_CANNOT_CREATE_EMPTY_ITEMS);
-	}
-
 	@DisplayName("주문 생성시 실제 존재하지 않는 메뉴를 인자로 했을 경우 예외 발생.")
 	@Test
 	void create_NotExistOrderLineItems() {
@@ -105,15 +96,6 @@ class OrderServiceTest {
 		assertThatThrownBy(() -> orderService.create(new OrderRequest_Create(Arrays.asList(request1, request2), -5)))
 				.isInstanceOf(NotFoundException.class)
 				.hasMessageMatching(OrderService.MSG_CANNOT_FIND_ORDER_TABLE);
-	}
-
-	@DisplayName("주문 생성시 테이블이 비어있을 경우 예외 발생.")
-	@Test
-	void create_EmptyOrderTable() {
-		tableService.changeEmpty(orderTable.getId(), new OrderTableRequest_ChangeEmpty(true));
-		assertThatThrownBy(() -> orderService.create(new OrderRequest_Create(Arrays.asList(request1, request2), orderTable.getId())))
-				.isInstanceOf(OrderValidationException.class)
-				.hasMessageMatching(OrderService.MSG_CANNOT_CREATE_EMPTY_ORDER_TABLE);
 	}
 
 	@DisplayName("모든 주문을 조회한다.")
@@ -135,7 +117,7 @@ class OrderServiceTest {
 		OrderResponse orderResponse = orderService.create(new OrderRequest_Create(Arrays.asList(request1, request2),
 				orderTable.getId()));
 
-		orderService.changeOrderStatus(orderResponse.getId(), new OrderRequest_ChangeStatus(OrderStatus.MEAL.name()));
+		orderService.changeOrderStatus(orderResponse.getId(), new OrderRequest_ChangeStatus(OrderStatus.MEAL));
 
 		assertThat(orderDao.findById(orderResponse.getId())).isPresent()
 				.get()
@@ -146,21 +128,8 @@ class OrderServiceTest {
 	@DisplayName("존재하지 않는 주문의 상태 변경시 예외 발생.")
 	@Test
 	void changeOrderStatus_NotExistOrder() {
-		assertThatThrownBy(() -> orderService.changeOrderStatus(-1L, new OrderRequest_ChangeStatus("MEAL")))
+		assertThatThrownBy(() -> orderService.changeOrderStatus(-1L, new OrderRequest_ChangeStatus(OrderStatus.MEAL)))
 				.isInstanceOf(NotFoundException.class)
 				.hasMessageMatching(OrderService.MSG_CANNOT_FIND_ORDER);
-	}
-
-	@DisplayName("주문 상태 변경시 이미 완료된 주문을 바꿀시 예외 발생.")
-	@Test
-	void changeOrderStatus_StatusWrong() {
-		// given
-		OrderResponse orderResponse = orderService.create(new OrderRequest_Create(Arrays.asList(request1, request2),
-				orderTable.getId()));
-		orderService.changeOrderStatus(orderResponse.getId(), new OrderRequest_ChangeStatus(OrderStatus.COMPLETION.name()));
-
-		assertThatThrownBy(() -> orderService.changeOrderStatus(orderResponse.getId(), new OrderRequest_ChangeStatus(OrderStatus.MEAL.name())))
-				.isInstanceOf(OrderValidationException.class)
-				.hasMessageMatching(OrderService.MSG_CANNOT_CHANGE_COMPLETION);
 	}
 }

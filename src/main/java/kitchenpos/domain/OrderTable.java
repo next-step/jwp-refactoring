@@ -5,6 +5,7 @@ import kitchenpos.common.NumberOfGuests;
 import kitchenpos.common.TableValidationException;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "order_table")
@@ -17,6 +18,7 @@ public class OrderTable extends BaseIdEntity {
 	static final String MSG_CANNOT_CHANGE_EMPTY_ALREADY_GROUP = "Cannot change empty of already in TableGroup";
 	static final String MSG_CANNOT_CHANGE_EMPTY_ONGOING_ORDER = "Cannot change empty while Order is ongoing";
 	static final String MSG_CANNOT_CHANGE_GUEST_WHILE_EMPTY = "Cannot change guests while OrderTable is empty";
+	static final String MSG_CANNOT_ADD_ORDER_TABLE_EMPTY = "Cannot add order while OrderTable is empty";
 
 	@ManyToOne
 	@JoinColumn(name = "table_group_id", nullable = true)
@@ -28,7 +30,8 @@ public class OrderTable extends BaseIdEntity {
 	@Column(name = "empty", nullable = false)
 	private boolean empty;
 
-	// TODO: 2021-01-21 Order 를 OneToMany 로 소유
+	@Embedded
+	private TableOrders orders;
 
 	protected OrderTable() {
 	}
@@ -41,6 +44,7 @@ public class OrderTable extends BaseIdEntity {
 		this.tableGroup = tableGroup;
 		this.numberOfGuests = new NumberOfGuests(numberOfGuests);
 		this.empty = empty;
+		this.orders = new TableOrders();
 	}
 
 	public void changeEmpty(boolean empty) {
@@ -48,10 +52,9 @@ public class OrderTable extends BaseIdEntity {
 			throw new TableValidationException(MSG_CANNOT_CHANGE_EMPTY_ALREADY_GROUP);
 		}
 
-		if (hasOngoingOrder()) {
+		if (this.orders.hasOngoingOrder()) {
 			throw new TableValidationException(MSG_CANNOT_CHANGE_EMPTY_ONGOING_ORDER);
 		}
-
 		this.empty = empty;
 	}
 
@@ -80,15 +83,18 @@ public class OrderTable extends BaseIdEntity {
 	}
 
 	void ungroup() {
-		if (hasOngoingOrder()) {
+		if (orders.hasOngoingOrder()) {
 			throw new TableValidationException(MSG_ORDER_TABLE_ONGOING);
 		}
 		this.tableGroup = null;
 	}
 
-	private boolean hasOngoingOrder() {
-		// TODO: 2021-01-21 주문테이블 상태비교
-		return false;
+	public Order order(List<OrderItem> items) {
+		if (this.empty) {
+			throw new TableValidationException(MSG_CANNOT_ADD_ORDER_TABLE_EMPTY);
+		}
+
+		return this.orders.createNewOrder(this, items);
 	}
 
 	public TableGroup getTableGroup() {

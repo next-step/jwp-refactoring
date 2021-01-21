@@ -23,11 +23,10 @@ public class OrderLineItem extends BaseSeqEntity {
 	protected OrderLineItem() {
 	}
 
-	public OrderLineItem(Order order, Menu menu, long quantity) {
+	public OrderLineItem(Order order, Menu menu, Quantity quantity) {
 		this.order = order;
 		this.menu = menu;
-		this.quantity = new Quantity(quantity);
-		this.order.addOrderLineItem(this);
+		this.quantity = quantity;
 	}
 
 	public Order getOrder() {

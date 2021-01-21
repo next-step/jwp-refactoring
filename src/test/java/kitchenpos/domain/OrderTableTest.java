@@ -1,12 +1,16 @@
 package kitchenpos.domain;
 
 import kitchenpos.common.NumberOfGuests;
+import kitchenpos.common.Quantity;
 import kitchenpos.common.TableValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -15,11 +19,27 @@ class OrderTableTest {
 
 	private OrderTable orderTable;
 	private TableGroup tableGroup;
+	private Menu 짜장면;
+	private Menu 짬뽕;
+	private OrderItem orderItem_짬뽕;
+	private OrderItem orderItem_짜장면;
 
 	@BeforeEach
 	void setUp() {
 		orderTable = new OrderTable(20, true);
 		tableGroup = new TableGroup();
+		MenuGroup 중식 = new MenuGroup("중식");
+
+		짜장면 = new Menu("짜장면", 7000, 중식);
+		MenuProduct menuProduct1 = new MenuProduct(짜장면, new Product("짜장면", 7000), 1);
+		짜장면.addMenuProducts(Collections.singletonList(menuProduct1));
+
+		짬뽕 = new Menu("짬뽕", 6000, 중식);
+		MenuProduct menuProduct2 = new MenuProduct(짬뽕, new Product("짬뽕", 6000), 1);
+		짬뽕.addMenuProducts(Collections.singletonList(menuProduct2));
+
+		orderItem_짜장면 = OrderItem.of(짜장면, new Quantity(77));
+		orderItem_짬뽕 = OrderItem.of(짬뽕, new Quantity(99));
 	}
 
 	@DisplayName("주문테이블의 공석 상태를 변경한다.")
@@ -46,8 +66,12 @@ class OrderTableTest {
 	@DisplayName("진행중인 주문이 있는 주문테이블의 공석상태를 변경하려 할 때 예외 발생.")
 	@Test
 	void changeEmpty_ExceptionWhileOngoingOrder() {
-		// TODO: 2021-01-21 테이블에 주문 넣기
+		// given: 테이블에 주문 넣기
+		// 주문을 넣기 위한 사전 설정
+		orderTable.changeEmpty(false);
+		orderTable.order(Arrays.asList(orderItem_짜장면, orderItem_짬뽕));
 
+		// when then
 		assertThatThrownBy(() -> orderTable.changeEmpty(true))
 				.isInstanceOf(TableValidationException.class)
 				.hasMessageMatching(OrderTable.MSG_CANNOT_CHANGE_EMPTY_ONGOING_ORDER);
@@ -127,11 +151,36 @@ class OrderTableTest {
 	@DisplayName("단체지정을 해제할 때 진행중인 주문이 있을경우 예외 발생.")
 	@Test
 	void ungroup_OngoingOrder() {
-		// TODO: 2021-01-21 단체지정하기
-		// TODO: 2021-01-21 테이블에 주문 넣기
+		// given: 그룹화, 테이블에 주문 넣기
+		orderTable.putIntoGroup(tableGroup);
+		orderTable.order(Arrays.asList(orderItem_짜장면, orderItem_짬뽕));
 
 		assertThatThrownBy(() -> orderTable.ungroup())
 				.isInstanceOf(TableValidationException.class)
 				.hasMessageMatching(OrderTable.MSG_ORDER_TABLE_ONGOING);
+	}
+
+	@DisplayName("주문테이블에서 주문을 한다.")
+	@Test
+	void order() {
+		// given
+		orderTable.changeEmpty(false);
+
+		// when
+		Order order = orderTable.order(Arrays.asList(orderItem_짬뽕, orderItem_짜장면));
+
+		// then
+		assertThat(order).isNotNull();
+		assertThat(order.getOrderTable()).isEqualTo(orderTable);
+	}
+
+	@DisplayName("주문테이블이 공석일때 주문을 할 경우 예외 발생.")
+	@Test
+	void order_ExceptionEmpty() {
+		orderTable.changeEmpty(true);
+
+		assertThatThrownBy(() -> orderTable.order(Arrays.asList(orderItem_짬뽕, orderItem_짜장면)))
+				.isInstanceOf(TableValidationException.class)
+				.hasMessageMatching(OrderTable.MSG_CANNOT_ADD_ORDER_TABLE_EMPTY);
 	}
 }

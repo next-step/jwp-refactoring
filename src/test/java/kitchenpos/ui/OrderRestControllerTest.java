@@ -75,7 +75,7 @@ class OrderRestControllerTest extends MockMvcTest {
 		MvcResult createMvcResult = mockMvc.perform(postAsJson("/api/orders", createOrderRequest(tableId)))
 				.andReturn();
 		OrderResponse created = toObject(createMvcResult, OrderResponse.class);
-		OrderRequest_ChangeStatus request = new OrderRequest_ChangeStatus(OrderStatus.COMPLETION.name());
+		OrderRequest_ChangeStatus request = new OrderRequest_ChangeStatus(OrderStatus.COMPLETION);
 
 		// when then
 		String uri = String.format("/api/orders/%d/order-status", created.getId());
