@@ -1,6 +1,7 @@
 package kitchenpos.ordertable.dto;
 
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertablegroup.domain.OrderTableGroup;
 
 public class OrderTableRequest {
     private Long id;
@@ -24,12 +25,8 @@ public class OrderTableRequest {
         this.empty = empty;
     }
 
-    public OrderTable toEntity() {
-        return new OrderTable(this.tableGroupId, this.numberOfGuests, this.empty);
-    }
-
-    public OrderTable toEntity(Long tableGroupId, int numberOfGuests, boolean empty) {
-        return new OrderTable(tableGroupId, numberOfGuests, empty);
+    public OrderTable toEntity(OrderTableGroup orderTableGroup, int numberOfGuests, boolean empty) {
+        return new OrderTable(orderTableGroup, numberOfGuests, empty);
     }
 
     public Long getId() {

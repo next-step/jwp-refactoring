@@ -1,24 +1,32 @@
 package kitchenpos.ordertable.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import kitchenpos.ordertablegroup.domain.OrderTableGroup;
 
-@Entity
+import javax.persistence.*;
+import java.util.Objects;
+
+@Entity(name = "order_table")
 public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long tableGroupId;
     private int numberOfGuests;
     private boolean empty;
+
+    @ManyToOne
+    @JoinColumn(name = "table_group_id")
+    private OrderTableGroup orderTableGroup;
 
     public OrderTable() {
     }
 
-    public OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
-        this.tableGroupId = tableGroupId;
+    public OrderTable(int numberOfGuests, boolean empty) {
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
+
+    public OrderTable(OrderTableGroup orderTableGroup, int numberOfGuests, boolean empty) {
+        this.orderTableGroup = orderTableGroup;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
@@ -27,8 +35,12 @@ public class OrderTable {
         return id;
     }
 
-    public Long getTableGroupId() {
-        return tableGroupId;
+    public OrderTableGroup getOrderTableGroup() {
+        return orderTableGroup;
+    }
+
+    public void setOrderTableGroup(OrderTableGroup orderTableGroup) {
+        this.orderTableGroup = orderTableGroup;
     }
 
     public int getNumberOfGuests() {
@@ -37,11 +49,6 @@ public class OrderTable {
 
     public boolean isEmpty() {
         return empty;
-    }
-
-    public void setTableGroupId(final Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
-        this.empty = false;
     }
 
     public void setNumberOfGuests(final int numberOfGuests) {
@@ -53,7 +60,14 @@ public class OrderTable {
     }
 
     public void ungroupTable() {
-        this.tableGroupId = null;
+        this.orderTableGroup = null;
     }
 
+    public boolean isNotAvailableOrderTable() {
+        return Objects.nonNull(this.getOrderTableGroup());
+    }
+
+    public Long getTableGroupId() {
+        return orderTableGroup.getId() == null ? null : orderTableGroup.getId();
+    }
 }

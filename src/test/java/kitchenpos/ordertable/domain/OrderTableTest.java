@@ -1,5 +1,6 @@
 package kitchenpos.ordertable.domain;
 
+import kitchenpos.ordertablegroup.domain.OrderTableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -12,30 +13,17 @@ class OrderTableTest {
     @Test
     void constructor() {
         // when
-        OrderTable orderTable = new OrderTable(1L, 10, true);
+        OrderTable orderTable = new OrderTable(10, true);
 
         // then
         assertThat(orderTable).isNotNull();
-        assertThat(orderTable.getTableGroupId()).isEqualTo(1L);
-    }
-
-    @DisplayName("주문 테이블의 그룹 아이디를 셋팅한다.")
-    @Test
-    void setTableGroupId() {
-        // when
-        OrderTable orderTable = new OrderTable(1L, 10, true);
-        orderTable.setTableGroupId(2L);
-
-        // then
-        assertThat(orderTable.getTableGroupId()).isEqualTo(2L);
-        assertThat(orderTable.isEmpty()).isFalse();
     }
 
     @DisplayName("주문 테이블의 그룹 아이디를 리셋한다.")
     @Test
     void ungroupTable() {
         // when
-        OrderTable orderTable = new OrderTable(1L, 10, true);
+        OrderTable orderTable = new OrderTable(10, true);
         orderTable.ungroupTable();
 
         // then

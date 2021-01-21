@@ -38,8 +38,8 @@ class TableGroupRestControllerTest {
     @Test
     void create() throws Exception {
         List<OrderTable> orderTables = Arrays.asList(
-            new OrderTable(1L, 10, false),
-            new OrderTable(1L, 5, false)
+            new OrderTable(10, false),
+            new OrderTable(5, false)
         );
         TableGroup tableGroup = new TableGroup(orderTables);
 

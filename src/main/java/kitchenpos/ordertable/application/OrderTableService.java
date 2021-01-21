@@ -78,8 +78,4 @@ public class OrderTableService {
     public List<OrderTable> findAllByIdIn(List<Long> orderTableIds) {
         return orderTableRepository.findAllById(orderTableIds);
     }
-
-    public List<OrderTable> findAllByTableGroupId(Long tableGroupId) {
-        return orderTableRepository.findAllByTableGroupId(tableGroupId);
-    }
 }

@@ -47,7 +47,7 @@ public class TableGroupService {
         }
 
         for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
+            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getOrderTableGroup().getId())) {
                 throw new IllegalArgumentException("테이블 목록이 이미 다른 테이블 그룹에 속해있지 않아야 한다.");
             }
         }
@@ -57,9 +57,9 @@ public class TableGroupService {
         final TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
 
         final Long tableGroupId = savedTableGroup.getId();
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.setTableGroupId(tableGroupId);
-        }
+//        for (final OrderTable savedOrderTable : savedOrderTables) {
+//            savedOrderTable.setOrderTableGroup(tableGroupId);
+//        }
         savedTableGroup.setOrderTables(savedOrderTables);
 
         return savedTableGroup;
@@ -67,19 +67,19 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableService.findAllByTableGroupId(tableGroupId);
-
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-
-        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException("`조리중`과 `식사중`에는 변경할 수 없다.");
-        }
-
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.ungroupTable();
-        }
+//        final List<OrderTable> orderTables = orderTableService.findAllByTableGroupId(tableGroupId);
+//
+//        final List<Long> orderTableIds = orderTables.stream()
+//                .map(OrderTable::getId)
+//                .collect(Collectors.toList());
+//
+//        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
+//                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+//            throw new IllegalArgumentException("`조리중`과 `식사중`에는 변경할 수 없다.");
+//        }
+//
+//        for (final OrderTable orderTable : orderTables) {
+//            orderTable.ungroupTable();
+//        }
     }
 }
