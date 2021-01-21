@@ -32,14 +32,14 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = findById(orderTableId);
         savedOrderTable.updateEmpty(orderTableRequest.isEmpty());
-        return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
+        return OrderTableResponse.of(savedOrderTable);
     }
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = findById(orderTableId);
         savedOrderTable.updateNumberOfGuests(orderTableRequest.getNumberOfGuests());
-        return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
+        return OrderTableResponse.of(savedOrderTable);
     }
 
     private OrderTable findById(final Long orderTableId) {

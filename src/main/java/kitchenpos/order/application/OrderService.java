@@ -68,6 +68,6 @@ public class OrderService {
                 .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 주문 입니다."));
 
         savedOrder.updateOrderStatus(orderRequest.getOrderStatus());
-        return OrderResponse.of(orderRepository.save(savedOrder));
+        return OrderResponse.of(savedOrder);
     }
 }

@@ -40,6 +40,5 @@ public class TableGroupService {
         final TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
                 .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 그룹 입니다."));
         tableGroup.unGroup();
-        tableGroupRepository.save(tableGroup);
     }
 }
