@@ -17,7 +17,7 @@ public class Order {
     private OrderTable orderTable;
 
     @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus;
+    private OrderStatus orderStatus = OrderStatus.COOKING;
 
     private LocalDateTime orderedTime;
 
