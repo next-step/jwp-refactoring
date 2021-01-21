@@ -10,7 +10,6 @@ import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.dto.TableGroupResponse;
 import kitchenpos.dto.TableResponse;
-import kitchenpos.exception.NotFoundEntityException;
 import kitchenpos.exception.TableInUseException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +37,7 @@ public class TableGroupService {
         List<OrderTable> orderTables = tableRepository.findAllById(tableIds);
 
         if (orderTables.size() != tableIds.size()) {
-            throw new NotFoundEntityException("등록되지 않은 테이블은 그룹에 포함시킬 수 없습니다");
+            throw new EntityNotFoundException("등록되지 않은 테이블은 그룹에 포함시킬 수 없습니다");
         }
 
         OrderTables tables = new OrderTables(orderTables);

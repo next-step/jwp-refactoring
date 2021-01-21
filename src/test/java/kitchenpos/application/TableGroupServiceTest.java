@@ -2,12 +2,12 @@ package kitchenpos.application;
 
 import kitchenpos.dto.*;
 import kitchenpos.exception.InvalidTableCountException;
-import kitchenpos.exception.NotFoundEntityException;
 import kitchenpos.exception.TableInUseException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -61,7 +61,7 @@ public class TableGroupServiceTest extends ServiceTestBase {
         TableResponse savedTable = tableService.create();
         TableResponse newTable = new TableResponse(99L, null, 0);
 
-        assertThatExceptionOfType(NotFoundEntityException.class)
+        assertThatExceptionOfType(EntityNotFoundException.class)
                 .isThrownBy(() -> tableGroupService.create(createTableGroup(savedTable, newTable)));
     }
 
