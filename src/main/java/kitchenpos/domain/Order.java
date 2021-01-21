@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import kitchenpos.exception.AlreadyCompleteException;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -54,11 +55,14 @@ public class Order {
         return orderTable.getId();
     }
 
-    public boolean isComplete() {
-        return orderStatus.equals(OrderStatus.COMPLETION);
+    public void changeStatus(OrderStatus orderStatus) {
+        if (isComplete()) {
+            throw new AlreadyCompleteException("이미 완료된 주문입니다.");
+        }
+        this.orderStatus = orderStatus;
     }
 
-    public void changeStatus(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
+    private boolean isComplete() {
+        return orderStatus.equals(OrderStatus.COMPLETION);
     }
 }

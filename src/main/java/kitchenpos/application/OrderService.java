@@ -58,10 +58,6 @@ public class OrderService {
         Order savedOrder = orderRepository.findById(orderId)
                 .orElseThrow(EntityNotFoundException::new);
 
-        if (savedOrder.isComplete()) {
-            throw new AlreadyCompleteException("이미 완료된 주문입니다.");
-        }
-
         savedOrder.changeStatus(orderStatus);
         return fromEntity(savedOrder);
     }
