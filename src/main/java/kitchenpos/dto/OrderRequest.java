@@ -2,6 +2,7 @@ package kitchenpos.dto;
 
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class OrderRequest {
     private long orderTableId;

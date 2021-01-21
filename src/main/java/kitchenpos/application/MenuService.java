@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Transactional
@@ -35,12 +37,28 @@ public class MenuService {
 
     public MenuResponse create(MenuRequest request) {
         Menu menu = toEntity(request);
-        for (MenuProductRequest menuProductRequest : request.getMenuProducts()) {
-            Product product = productRepository.findById(menuProductRequest.getProductId())
-                    .orElseThrow(EntityNotFoundException::new);
-            menu.add(product, menuProductRequest.getQuantity());
-        }
+        addProducts(menu, request.getMenuProducts());
         return fromEntity(menuRepository.save(menu));
+    }
+
+    private void addProducts(Menu menu, List<MenuProductRequest> menuProductRequests) {
+        Map<Long,MenuProductRequest> menuProductRequestMap = menuProductRequests.stream()
+                .collect(Collectors.toMap(MenuProductRequest::getProductId, it -> it));
+        List<Product> products = findProducts(menuProductRequestMap.keySet());
+
+        for (Product product : products) {
+            MenuProductRequest request = menuProductRequestMap.get(product.getId());
+            menu.add(product, request.getQuantity());
+        }
+    }
+
+    private List<Product> findProducts(Set<Long> menuIds) {
+        List<Product> products = productRepository.findAllById(menuIds);
+
+        if (products.size() != menuIds.size()) {
+            throw new EntityNotFoundException("등록되지 않은 제품입니다.");
+        }
+        return products;
     }
 
     @Transactional(readOnly = true)

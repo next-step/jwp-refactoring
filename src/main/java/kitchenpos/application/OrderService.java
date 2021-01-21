@@ -8,12 +8,13 @@ import kitchenpos.dto.OrderMenuRequest;
 import kitchenpos.dto.OrderMenuResponse;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
-import kitchenpos.exception.AlreadyCompleteException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Transactional
@@ -37,12 +38,8 @@ public class OrderService {
         OrderTable table = tableRepository.findById(request.getOrderTableId())
                 .orElseThrow(EntityNotFoundException::new);
         Order order = new Order(table);
+        addMenus(order, request.getOrderMenuRequests());
 
-        for (OrderMenuRequest orderMenuRequest : request.getOrderMenuRequests()) {
-            Menu menu = menuRepository.findById(orderMenuRequest.getMenuId())
-                    .orElseThrow(EntityNotFoundException::new);
-            order.add(menu, orderMenuRequest.getQuantity());
-        }
         return fromEntity(orderRepository.save(order));
     }
 
@@ -60,6 +57,26 @@ public class OrderService {
 
         savedOrder.changeStatus(orderStatus);
         return fromEntity(savedOrder);
+    }
+
+    private void addMenus(Order order, List<OrderMenuRequest> orderMenuRequests) {
+        Map<Long,OrderMenuRequest> orderMenuRequestMap = orderMenuRequests.stream()
+                .collect(Collectors.toMap(OrderMenuRequest::getMenuId, it -> it));
+        List<Menu> menus = findMenus(orderMenuRequestMap.keySet());
+
+        for (Menu menu : menus) {
+            OrderMenuRequest request = orderMenuRequestMap.get(menu.getId());
+            order.add(menu, request.getQuantity());
+        }
+    }
+
+    private List<Menu> findMenus(Set<Long> menuIds) {
+        List<Menu> menus = menuRepository.findAllById(menuIds);
+
+        if (menus.size() != menuIds.size()) {
+            throw new EntityNotFoundException("등록되지 않은 메뉴입니다.");
+        }
+        return menus;
     }
 
     private OrderResponse fromEntity(Order order) {
