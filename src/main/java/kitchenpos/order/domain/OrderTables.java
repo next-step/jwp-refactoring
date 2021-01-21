@@ -36,12 +36,6 @@ public class OrderTables {
         orderTables.forEach(table -> table.updateTableGroup(tableGroup));
     }
 
-    public void checkOrderStatus() {
-        if (orderTables.stream().anyMatch(OrderTable::hasUnchangeableStatusOrder)) {
-            throw new IllegalArgumentException("주문 상태가 조리중이거나 식사중인 테이블의 단체 지정은 해지할 수 없습니다.");
-        }
-    }
-
     public void clear() {
         this.orderTables.clear();
     }

@@ -20,8 +20,6 @@ public class OrderTable {
     private TableGroup tableGroup;
     @Embedded
     private NumberOfGuests numberOfGuests;
-    @Embedded
-    private Orders orders = new Orders();
     private boolean empty;
 
     protected OrderTable() {
@@ -74,12 +72,7 @@ public class OrderTable {
 
     public void updateEmpty(boolean empty) {
         checkTableGroup();
-        checkOrderStatus();
         this.empty = empty;
-    }
-
-    public boolean hasUnchangeableStatusOrder() {
-        return this.orders.hasUnchangeableStatusOrder();
     }
 
     public void updateNumberOfGuests(int numberOfGuests) {
@@ -90,12 +83,6 @@ public class OrderTable {
     private void checkTableGroup() {
         if (hasGroup()) {
             throw new IllegalArgumentException("단체지정된 테이블의 공석여부는 변경할 수 없습니다.");
-        }
-    }
-
-    private void checkOrderStatus() {
-        if (hasUnchangeableStatusOrder()) {
-            throw new IllegalArgumentException("주문 상태가 조리중이거나 식사중인 테이블의 공석 여부는 변경할 수 없습니다.");
         }
     }
 
