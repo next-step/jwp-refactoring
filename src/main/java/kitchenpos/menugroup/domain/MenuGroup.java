@@ -19,7 +19,7 @@ public class MenuGroup {
         return name;
     }
 
-    public MenuGroup() {
+    protected MenuGroup() {
     }
 
     public MenuGroup(String name) {

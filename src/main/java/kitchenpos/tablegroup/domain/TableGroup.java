@@ -33,7 +33,7 @@ public class TableGroup {
         this.orderTables.add(orderTable);
     }
 
-    public TableGroup() {
+    protected TableGroup() {
     }
 
     public TableGroup(LocalDateTime createdDate) {

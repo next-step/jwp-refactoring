@@ -53,7 +53,7 @@ public class Order {
         orderLineItem.setOrder(this);
     }
 
-    public Order() {
+    protected Order() {
     }
 
     public Order(OrderStatus orderStatus, LocalDateTime orderedTime) {

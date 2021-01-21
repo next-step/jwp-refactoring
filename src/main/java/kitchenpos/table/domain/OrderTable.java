@@ -79,7 +79,7 @@ public class OrderTable {
         this.tableGroup = tableGroup;
     }
 
-    public OrderTable() {
+    protected OrderTable() {
     }
 
     public OrderTable(int numberOfGuests, boolean empty) {

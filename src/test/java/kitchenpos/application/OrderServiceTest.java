@@ -54,7 +54,7 @@ class OrderServiceTest {
         ArgumentCaptor<Order> argumentCaptor = ArgumentCaptor.forClass(Order.class);
 
         given(orderRepository.save(any()))
-                .willReturn(new Order());
+                .willReturn(new Order(OrderStatus.COOKING, LocalDateTime.now()));
         given(menuRepository.findAllById(Arrays.asList(1L, 2L)))
                 .willReturn(Arrays.asList(
                         new Menu(1L, "메뉴1", new BigDecimal(16000), null),
@@ -64,7 +64,7 @@ class OrderServiceTest {
                 .willReturn(
                         Optional.of(new OrderTable(1L, null, 3, false))
                 );
-        OrderTable orderTable = new OrderTable();
+        OrderTable orderTable = new OrderTable(3, false);
         orderTable.setId(2L);
 
         Order order = new Order(1L, OrderStatus.COOKING, LocalDateTime.now());

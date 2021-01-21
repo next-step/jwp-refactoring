@@ -48,8 +48,7 @@ public class Menu {
         menuProduct.changeMenu(this);
     }
 
-    public Menu() {
-    }
+    protected Menu() {}
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
         this(null, name, price, menuGroup);
