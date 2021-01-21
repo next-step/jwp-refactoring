@@ -20,7 +20,7 @@ public class MenuRequestTest extends ValidateBase {
     @DisplayName("제품 리스트가 비어있는 경우")
     @Test
     public void emptyProductList() {
-        MenuRequest request = new MenuRequest("샘플", -1, 1L,
+        MenuRequest request = new MenuRequest("샘플", 100L, 1L,
                 Collections.emptyList());
 
         validate(request);
@@ -29,7 +29,7 @@ public class MenuRequestTest extends ValidateBase {
     @DisplayName("제품 리스트가 null인 경우")
     @Test
     public void nullProductList() {
-        MenuRequest request = new MenuRequest("샘플", -1, 1L, null);
+        MenuRequest request = new MenuRequest("샘플", 100L, 1L, null);
 
         validate(request);
     }

@@ -1,7 +1,10 @@
 package kitchenpos.dto;
 
+import javax.validation.constraints.Min;
+
 public class MenuProductRequest {
     private long productId;
+    @Min(1)
     private long quantity;
 
     protected MenuProductRequest(){}
