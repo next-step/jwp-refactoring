@@ -39,6 +39,7 @@ public class TableService {
         return OrderTableResponse.of(orderTableRepository.save(orderTable));
     }
 
+    @Transactional(readOnly = true)
     public List<OrderTableResponse> list() {
         return orderTableRepository.findAll().stream()
                 .map(OrderTableResponse::of)

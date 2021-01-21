@@ -44,6 +44,7 @@ public class OrderService {
         return OrderResponse.of(orderRepository.save(order));
     }
 
+    @Transactional(readOnly = true)
     public List<OrderResponse> list() {
         return orderRepository.findAll().stream()
                 .map(OrderResponse::of)

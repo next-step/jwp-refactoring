@@ -53,6 +53,7 @@ public class MenuService {
         return MenuResponse.of(menuRepository.save(menu));
     }
 
+    @Transactional(readOnly = true)
     public List<MenuResponse> list() {
         return menuRepository.findAll().stream()
                 .map(MenuResponse::of)
