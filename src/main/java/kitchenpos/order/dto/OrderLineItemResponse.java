@@ -22,7 +22,7 @@ public class OrderLineItemResponse {
     }
 
     public static OrderLineItemResponse of(OrderLineItem orderLineItem) {
-        return new OrderLineItemResponse(orderLineItem.getId(), orderLineItem.getOrder().getId(), orderLineItem.getMenu().getId(), orderLineItem.getQuantity());
+        return new OrderLineItemResponse(orderLineItem.getId(), orderLineItem.getOrder().getId(), orderLineItem.getMenuId(), orderLineItem.getQuantity());
     }
 
     public static List<OrderLineItemResponse> ofList(final List<OrderLineItem> orderLineItems) {

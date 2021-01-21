@@ -14,7 +14,7 @@ public class ProductRequest {
 
     public ProductRequest(String name, Price price) {
         this.name = name;
-        this.price = price.get();
+        this.price = price.getValue();
     }
 
     public String getName() {

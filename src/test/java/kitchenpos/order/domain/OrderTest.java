@@ -4,8 +4,9 @@ import kitchenpos.ordertable.domain.OrderTable;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
-import java.util.ArrayList;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -28,18 +29,6 @@ class OrderTest {
     }
 
     @Test
-    @DisplayName("1 개 이상의 등록된 메뉴로 주문을 등록할 수 있다.")
-    public void createFail1() throws Exception {
-        // given
-        OrderTable orderTable = new OrderTable(0, false);
-
-        // when then
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> Order.of(orderTable, new OrderLineItems(new ArrayList<>())))
-                .withMessageMatching("최소 주문 메뉴 개수를 만족하지 못하여 주문을 등록할 수 없습니다.");
-    }
-
-    @Test
     @DisplayName("빈 테이블에는 주문을 등록할 수 없다.")
     public void createFail2() throws Exception {
         // given
@@ -53,9 +42,10 @@ class OrderTest {
                 .withMessageMatching("빈 테이블에는 주문을 등록할 수 없습니다.");
     }
 
-    @Test
     @DisplayName("주문 상태를 변경할 수 있다.")
-    public void changeOrderStatus() throws Exception {
+    @ParameterizedTest
+    @EnumSource(value = OrderStatus.class, names = {"MEAL", "COMPLETION"})
+    public void changeOrderStatus(OrderStatus orderStatus) throws Exception {
         // given
         OrderTable orderTable = new OrderTable(0, false);
         OrderLineItem orderLineItem = new OrderLineItem();
@@ -63,14 +53,9 @@ class OrderTest {
         Order order = Order.of(orderTable, orderLineItems);
 
         // when
-        order.changeOrderStatus(OrderStatus.MEAL);
+        order.changeOrderStatus(orderStatus);
         // then
-        Assertions.assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
-
-        // when
-        order.changeOrderStatus(OrderStatus.COMPLETION);
-        // then
-        Assertions.assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
+        Assertions.assertThat(order.getOrderStatus()).isEqualTo(orderStatus);
     }
 
     @Test

@@ -27,6 +27,7 @@ public class Menu {
     }
 
     public Menu(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        menuProducts.updateMenu(this);
         validate(price, menuProducts);
         this.name = name;
         this.price = price;
