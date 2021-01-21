@@ -1,6 +1,7 @@
 package kitchenpos.menu.domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -22,7 +23,7 @@ public class MenuProducts {
     }
 
     public List<MenuProduct> findAll() {
-        return this.menuProducts;
+        return Collections.unmodifiableList(this.menuProducts);
     }
 
     public void updateMenu(Menu menu) {

@@ -1,7 +1,7 @@
 package kitchenpos.order.domain;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -25,7 +25,7 @@ public class OrderTables {
     }
 
     public List<OrderTable> findAll() {
-        return this.orderTables;
+        return Collections.unmodifiableList(this.orderTables);
     }
 
     public boolean sameSizeWith(int size) {
@@ -34,12 +34,6 @@ public class OrderTables {
 
     public void updateTableGroup(TableGroup tableGroup) {
         orderTables.forEach(table -> table.updateTableGroup(tableGroup));
-    }
-
-    public void checkOrderStatus() {
-        if (orderTables.stream().anyMatch(OrderTable::hasUnchangeableStatusOrder)) {
-            throw new IllegalArgumentException("주문 상태가 조리중이거나 식사중인 테이블의 단체 지정은 해지할 수 없습니다.");
-        }
     }
 
     public void clear() {
@@ -60,7 +54,7 @@ public class OrderTables {
     }
 
     private void checkEmptyOrAlreadyGroup(OrderTable orderTable) {
-        if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroupId())) {
+        if (!orderTable.isEmpty() || orderTable.hasGroup()) {
             throw new IllegalArgumentException("비어있지 않거나 이미 단체 지정된 테이블은 단체 지정이 불가합니다.");
         }
     }
