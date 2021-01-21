@@ -4,49 +4,66 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class Order {
-    private Long id;
-    private Long orderTableId;
-    private String orderStatus;
-    private LocalDateTime orderedTime;
-    private List<OrderLineItem> orderLineItems;
+	private Long id;
+	private Long orderTableId;
+	private String orderStatus;
+	private LocalDateTime orderedTime;
+	private List<OrderLineItem> orderLineItems;
 
-    public Long getId() {
-        return id;
-    }
+	public Order() {
+	}
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
+	private Order(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime,
+		List<OrderLineItem> orderLineItems) {
+		this.id = id;
+		this.orderTableId = orderTableId;
+		this.orderStatus = orderStatus;
+		this.orderedTime = orderedTime;
+		this.orderLineItems = orderLineItems;
+	}
 
-    public Long getOrderTableId() {
-        return orderTableId;
-    }
+	public static Order of(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime,
+		List<OrderLineItem> orderLineItems) {
+		return new Order(id, orderTableId, orderStatus, orderedTime, orderLineItems);
+	}
 
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public String getOrderStatus() {
-        return orderStatus;
-    }
+	public void setId(final Long id) {
+		this.id = id;
+	}
 
-    public void setOrderStatus(final String orderStatus) {
-        this.orderStatus = orderStatus;
-    }
+	public Long getOrderTableId() {
+		return orderTableId;
+	}
 
-    public LocalDateTime getOrderedTime() {
-        return orderedTime;
-    }
+	public void setOrderTableId(final Long orderTableId) {
+		this.orderTableId = orderTableId;
+	}
 
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
-    }
+	public String getOrderStatus() {
+		return orderStatus;
+	}
 
-    public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
-    }
+	public void setOrderStatus(final String orderStatus) {
+		this.orderStatus = orderStatus;
+	}
 
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
-    }
+	public LocalDateTime getOrderedTime() {
+		return orderedTime;
+	}
+
+	public void setOrderedTime(final LocalDateTime orderedTime) {
+		this.orderedTime = orderedTime;
+	}
+
+	public List<OrderLineItem> getOrderLineItems() {
+		return orderLineItems;
+	}
+
+	public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
+		this.orderLineItems = orderLineItems;
+	}
 }
