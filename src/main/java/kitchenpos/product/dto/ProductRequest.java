@@ -6,12 +6,12 @@ public class ProductRequest {
 	private final String name;
 	private final long price;
 
-	public ProductRequest(String name, long price) {
+	public ProductRequest(final String name, final long price) {
 		this.name = name;
 		this.price = price;
 	}
 
-	public static ProductRequest of(String name, long price) {
+	public static ProductRequest of(final String name, final long price) {
 		return new ProductRequest(name, price);
 	}
 

@@ -7,13 +7,13 @@ public class ProductResponse {
 	private final String name;
 	private final long price;
 
-	private ProductResponse(Long id, String name, Long price) {
+	private ProductResponse(final Long id, final String name, final Long price) {
 		this.id = id;
 		this.name = name;
 		this.price = price;
 	}
 
-	public static ProductResponse of(Long id, String name, Long price) {
+	public static ProductResponse of(final Long id, final String name, final Long price) {
 		return new ProductResponse(id, name, price);
 	}
 

@@ -6,16 +6,16 @@ public class MenuGroupResponse {
 	private final Long id;
 	private final String name;
 
-	public MenuGroupResponse(Long id, String name) {
+	public MenuGroupResponse(final Long id, final String name) {
 		this.id = id;
 		this.name = name;
 	}
 
-	public static MenuGroupResponse of(MenuGroup menuGroup) {
+	public static MenuGroupResponse of(final MenuGroup menuGroup) {
 		return of(menuGroup.getId(), menuGroup.getName());
 	}
 
-	public static MenuGroupResponse of(Long id, String name) {
+	public static MenuGroupResponse of(final Long id, final String name) {
 		return new MenuGroupResponse(id, name);
 	}
 
