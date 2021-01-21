@@ -13,7 +13,7 @@ public class TableGroup extends BaseEntity {
     private Long id;
 
     @Embedded
-    private OrderTables orderTables = new OrderTables();
+    private final OrderTables orderTables = new OrderTables();
 
     public TableGroup() {
     }

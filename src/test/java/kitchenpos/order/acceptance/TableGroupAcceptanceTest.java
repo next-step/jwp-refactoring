@@ -4,8 +4,8 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.dto.TableGroupResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -48,7 +48,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         Map<String, Object> params = new HashMap<>();
         params.put("orderTables", orderTables);
         ExtractableResponse<Response> createdResponse = 주문_단체_등록_요청(params);
-        TableGroup tableGroup = createdResponse.as(TableGroup.class);
+        TableGroupResponse tableGroup = createdResponse.as(TableGroupResponse.class);
 
         // when
         ExtractableResponse<Response> response = 주문_단체_해제_요청(tableGroup.getId());

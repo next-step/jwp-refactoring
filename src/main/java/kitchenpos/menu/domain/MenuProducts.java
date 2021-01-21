@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class MenuProducts {
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "menu_id")
-    private List<MenuProduct> menuProducts = new ArrayList<>();
+    private final List<MenuProduct> menuProducts = new ArrayList<>();
 
     public void add(Long menuId, List<MenuProduct> menuProducts) {
         for (MenuProduct menuProduct : menuProducts) {

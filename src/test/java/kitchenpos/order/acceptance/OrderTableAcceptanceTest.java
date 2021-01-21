@@ -61,8 +61,6 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
         Assertions.assertThat(response.statusCode()).isEqualTo(ok.value());
     }
 
-
-
     private void 주문_테이블_둥록됨(ExtractableResponse<Response> response) {
         Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }

@@ -70,7 +70,6 @@ class TableGroupServiceTest {
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
-
     @DisplayName("단체 지정 해제")
     @Test
     void ungroup() {
@@ -79,7 +78,6 @@ class TableGroupServiceTest {
         tableGroupService.ungroup(tableGroup.getId());
 
         assertThat(orderTableRepository.findAllByTableGroupId(tableGroup.getId())).isEmpty();
-
     }
 
     private TableGroupResponse createTableGroup() {

@@ -4,7 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuProductRequest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,10 +24,10 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     void create() {
         // given
-        List<MenuProduct> menuProducts = new ArrayList<>();
-        menuProducts.add(new MenuProduct(1L, 1L, 1L));
-        menuProducts.add(new MenuProduct(2L, 2L, 1L));
-        menuProducts.add(new MenuProduct(3L, 3L, 1L));
+        List<MenuProductRequest> menuProducts = new ArrayList<>();
+        menuProducts.add(new MenuProductRequest(1L, 1L));
+        menuProducts.add(new MenuProductRequest(2L, 1L));
+        menuProducts.add(new MenuProductRequest(3L, 1L));
 
         Map<String, Object> params = new HashMap<>();
         params.put("name", "후라이드치킨");

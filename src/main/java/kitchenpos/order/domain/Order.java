@@ -24,7 +24,7 @@ public class Order extends BaseOrderEntity {
     private OrderStatus orderStatus;
 
     @Embedded
-    private OrderLineItems orderLineItems = new OrderLineItems();
+    private final OrderLineItems orderLineItems = new OrderLineItems();
 
     protected Order() {
     }

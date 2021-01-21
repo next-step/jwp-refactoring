@@ -4,11 +4,10 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.menu.acceptance.MenuAcceptanceTest;
-import kitchenpos.order.acceptance.OrderTableAcceptanceTest;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.order.dto.OrderTableResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,8 +25,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void create() {
         // given
-       Menu menu = 메뉴_등록_되어짐().as(Menu.class);
-       OrderTable orderTable = 주문_테이블_등록_되어짐().as(OrderTable.class);
+        MenuResponse menu = 메뉴_등록_되어짐().as(MenuResponse.class);
+        OrderTableResponse orderTable = 주문_테이블_등록_되어짐().as(OrderTableResponse.class);
 
         Map<String, Object> params = new HashMap<>();
         params.put("orderTableId", orderTable.getId());
@@ -47,10 +46,10 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 메뉴_등록_되어짐() {
-        List<MenuProduct> menuProducts = new ArrayList<>();
-        menuProducts.add(new MenuProduct(1L, 1L, 1L));
-        menuProducts.add(new MenuProduct(2L, 2L, 1L));
-        menuProducts.add(new MenuProduct(3L, 3L, 1L));
+        List<MenuProductRequest> menuProducts = new ArrayList<>();
+        menuProducts.add(new MenuProductRequest(1L, 1L));
+        menuProducts.add(new MenuProductRequest(2L, 1L));
+        menuProducts.add(new MenuProductRequest(3L, 1L));
 
         Map<String, Object> params = new HashMap<>();
         params.put("name", "후라이드치킨");

@@ -15,7 +15,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 class TableServiceTest {
-
     @Autowired
     private TableService tableService;
 
@@ -27,7 +26,6 @@ class TableServiceTest {
 
     @Autowired
     private OrderRepository orderRepository;
-
 
     @AfterEach
     void cleanup() {
@@ -42,7 +40,6 @@ class TableServiceTest {
     void create() {
         OrderTableRequest request = new OrderTableRequest(0, true);
         OrderTableResponse actual = tableService.create(request);
-
 
         assertThat(actual.getNumberOfGuests()).isEqualTo(request.getNumberOfGuests());
         assertThat(actual.isEmpty()).isEqualTo(request.isEmpty());

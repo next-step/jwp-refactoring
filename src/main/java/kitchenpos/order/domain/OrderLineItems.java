@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class OrderLineItems {
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "order_id")
-    private List<OrderLineItem> orderLineItems = new ArrayList<>();
+    private final List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     public void add(Long orderId, List<OrderLineItem> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {

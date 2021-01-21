@@ -13,8 +13,6 @@ import org.springframework.http.MediaType;
 
 @DisplayName("메뉴 그룹 관련 기능")
 class MenuGroupAcceptanceTest extends AcceptanceNewTest {
-
-
     @DisplayName("메뉴 그룹 등록")
     @Test
     void create() {
@@ -60,8 +58,6 @@ class MenuGroupAcceptanceTest extends AcceptanceNewTest {
     private void 메뉴_그룹_목록_조회됨(ExtractableResponse<Response> response, HttpStatus ok) {
         Assertions.assertThat(response.statusCode()).isEqualTo(ok.value());
     }
-
-
 
     private void 메뉴_그룹_둥록됨(ExtractableResponse<Response> response) {
         Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
