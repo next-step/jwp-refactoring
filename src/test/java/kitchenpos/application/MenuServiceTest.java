@@ -33,16 +33,16 @@ import static org.mockito.Mockito.verify;
 class MenuServiceTest {
 
     @Mock
-    MenuRepository menuRepository;
+    private MenuRepository menuRepository;
 
     @Mock
-    MenuGroupRepository menuGroupRepository;
+    private MenuGroupRepository menuGroupRepository;
 
     @Mock
-    ProductRepository productRepository;
+    private ProductRepository productRepository;
 
     @InjectMocks
-    MenuService menuService;
+    private MenuService menuService;
 
     @DisplayName("메뉴를 등록할 수 있다")
     @Test

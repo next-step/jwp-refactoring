@@ -36,16 +36,16 @@ import static org.mockito.Mockito.verify;
 class OrderServiceTest {
 
     @Mock
-    MenuRepository menuRepository;
+    private MenuRepository menuRepository;
 
     @Mock
-    OrderRepository orderRepository;
+    private OrderRepository orderRepository;
 
     @Mock
-    OrderTableRepository orderTableRepository;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
-    OrderService orderService;
+    private OrderService orderService;
 
     @DisplayName("주문을 신청한다.")
     @Test

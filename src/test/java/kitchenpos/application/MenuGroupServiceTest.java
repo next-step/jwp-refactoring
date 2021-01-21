@@ -26,10 +26,10 @@ import static org.mockito.Mockito.verify;
 class MenuGroupServiceTest {
 
     @Mock
-    MenuGroupRepository menuGroupRepository;
+    private MenuGroupRepository menuGroupRepository;
 
     @InjectMocks
-    MenuGroupService menuGroupService;
+    private MenuGroupService menuGroupService;
 
     @DisplayName("메뉴 그룹을 등록할 수 있다.")
     @Test

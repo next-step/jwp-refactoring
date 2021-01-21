@@ -34,16 +34,16 @@ import static org.mockito.Mockito.verify;
 class TableGroupServiceTest {
 
     @Mock
-    OrderRepository orderRepository;
+    private OrderRepository orderRepository;
 
     @Mock
-    OrderTableRepository orderTableRepository;
+    private OrderTableRepository orderTableRepository;
 
     @Mock
-    TableGroupRepository tableGroupRepository;
+    private TableGroupRepository tableGroupRepository;
 
     @InjectMocks
-    TableGroupService tableGroupService;
+    private TableGroupService tableGroupService;
 
     @DisplayName("복수의 주문 테이블을 단체 지정할 수 있다.")
     @Test
