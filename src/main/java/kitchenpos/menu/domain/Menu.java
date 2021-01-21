@@ -48,6 +48,10 @@ public class Menu {
         menuProduct.changeMenu(this);
     }
 
+    public boolean isSameById(Long menuId) {
+        return id.equals(menuId);
+    }
+
     protected Menu() {}
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup) {

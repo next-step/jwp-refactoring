@@ -65,13 +65,12 @@ public class OrderRequest {
 
     public List<OrderLineItem> createOrderLineItems(List<Menu> menus) {
         return orderLineItems.stream()
-                .map(orderLineItem -> {
-                    Menu menu = menus.stream()
-                            .filter(filterMenu -> filterMenu.getId() == orderLineItem.getMenuId())
-                            .findFirst()
-                            .orElseThrow(IllegalArgumentException::new);
-
-                    return OrderLineItem.createOrderLineItem(null, menu, orderLineItem.getQuantity());
-                }).collect(Collectors.toList());
+                .map(orderLineItem -> OrderLineItem.createOrderLineItem(null,
+                        menus.stream()
+                                .filter(menu -> menu.isSameById(orderLineItem.getMenuId()))
+                                .findFirst()
+                                .orElseThrow(IllegalArgumentException::new),
+                        orderLineItem.getQuantity()
+                )).collect(Collectors.toList());
     }
 }
