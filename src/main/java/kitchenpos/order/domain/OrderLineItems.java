@@ -3,6 +3,7 @@ package kitchenpos.order.domain;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import java.util.Collections;
 import java.util.List;
 
 @Embeddable
@@ -19,7 +20,7 @@ public class OrderLineItems {
     }
 
     public List<OrderLineItem> findAll() {
-        return orderLineItems;
+        return Collections.unmodifiableList(orderLineItems);
     }
 
     public void updateOrder(Order order) {
