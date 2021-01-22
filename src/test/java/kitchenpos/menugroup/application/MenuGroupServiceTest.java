@@ -1,7 +1,8 @@
 package kitchenpos.menugroup.application;
 
 import kitchenpos.BaseServiceTest;
-import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -14,10 +15,10 @@ class MenuGroupServiceTest extends BaseServiceTest {
 
     @Test
     public void createMenuGroup() {
-        MenuGroup menuGroup = MenuGroup.of(등록되어_있지_않은_menuGroup_id, "핫메뉴");
+        MenuGroupRequest menuGroupRequest = new MenuGroupRequest(등록되어_있지_않은_menuGroup_id, "핫메뉴");
 
-        MenuGroup result = menuGroupService.create(menuGroup);
+        MenuGroupResponse menuGroupResponse = menuGroupService.create(menuGroupRequest);
 
-        assertThat(result).isEqualTo(menuGroup);
+        assertThat(menuGroupResponse.getId()).isEqualTo(menuGroupRequest.getId());
     }
 }
