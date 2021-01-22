@@ -5,6 +5,7 @@ import kitchenpos.repository.MenuProductRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.product.service.ProductService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -18,6 +19,7 @@ public class MenuProductService {
         this.productService = productService;
     }
 
+    @Transactional(propagation = Propagation.MANDATORY)
     public MenuProduct saveProduct(long menuId, MenuProductRequest menuProductRequest) {
         return menuProductRepository.save(MenuProduct.of(
                 menuId,

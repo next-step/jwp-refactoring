@@ -25,6 +25,7 @@ public class ProductService {
         return ProductResponse.of(savedProduct);
     }
 
+    @Transactional(readOnly = true)
     public Product findById(long id) {
         return productRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("상품을 찾을수 없습니다."));
     }

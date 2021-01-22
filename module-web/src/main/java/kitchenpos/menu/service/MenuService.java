@@ -6,10 +6,13 @@ import kitchenpos.repository.MenuRepository;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 
 @Transactional
 @Service
@@ -25,6 +28,7 @@ public class MenuService {
         this.menuProductService = menuProductService;
     }
 
+    @Transactional(isolation = REPEATABLE_READ, readOnly = true)
     public MenuResponse create(final MenuRequest menuRequest) {
         checkProductsEmpty(menuRequest);
         final MenuGroup menuGroup = menuGroupService.findById(menuRequest.getMenuGroupId());

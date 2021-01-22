@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
+
 @Transactional
 @Service
 public class OrderService {
@@ -27,6 +29,7 @@ public class OrderService {
         this.orderRepository = orderRepository;
     }
 
+    @Transactional(isolation = REPEATABLE_READ, readOnly = true)
     public OrderResponse create(final OrderRequest request) {
         checkOrderLineItemEmpty(request.getOrderLineItems());
         final OrderTable tableById = orderTableService.findById(request.getOrderTableId());
