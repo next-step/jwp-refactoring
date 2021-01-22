@@ -29,10 +29,10 @@ public class TableGroup extends BaseIdEntity {
 		return new TableGroup(orderTables);
 	}
 
-	protected TableGroup() {
+	TableGroup() {
 	}
 
-	protected TableGroup(List<OrderTable> orderTables) {
+	TableGroup(List<OrderTable> orderTables) {
 		groupTables(orderTables);
 	}
 

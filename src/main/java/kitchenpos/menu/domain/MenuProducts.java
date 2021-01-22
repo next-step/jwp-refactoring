@@ -20,11 +20,11 @@ public class MenuProducts implements Iterable<MenuProduct> {
 	@OneToMany(mappedBy = "menu", cascade = {CascadeType.PERSIST}, orphanRemoval = true)
 	private List<MenuProduct> menuProducts;
 
-	protected MenuProducts() {
+	MenuProducts() {
 		this(new ArrayList<>());
 	}
 
-	public MenuProducts(List<MenuProduct> menuProducts) {
+	MenuProducts(List<MenuProduct> menuProducts) {
 		this.menuProducts = menuProducts;
 	}
 
@@ -33,14 +33,14 @@ public class MenuProducts implements Iterable<MenuProduct> {
 		return menuProducts.iterator();
 	}
 
-	public Price getAllPrice() {
+	Price getAllPrice() {
 		return menuProducts.stream()
 				.map(MenuProduct::getQuantityPrice)
 				.reduce(Price::add)
 				.orElse(Price.ZERO);
 	}
 
-	public void add(List<MenuProduct> menuProducts) {
+	void add(List<MenuProduct> menuProducts) {
 		this.menuProducts.addAll(menuProducts);
 	}
 }

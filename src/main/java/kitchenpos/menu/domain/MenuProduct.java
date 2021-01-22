@@ -30,7 +30,7 @@ public class MenuProduct extends BaseSeqEntity {
 		this.quantity = new Quantity(quantity);
 	}
 
-	public Price getQuantityPrice() {
+	Price getQuantityPrice() {
 		return product.getPrice().multiply(quantity);
 	}
 

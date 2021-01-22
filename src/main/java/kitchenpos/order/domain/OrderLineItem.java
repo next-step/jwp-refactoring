@@ -21,10 +21,10 @@ public class OrderLineItem extends BaseSeqEntity {
 	@Embedded
 	private Quantity quantity;
 
-	protected OrderLineItem() {
+	OrderLineItem() {
 	}
 
-	public OrderLineItem(Order order, Menu menu, Quantity quantity) {
+	OrderLineItem(Order order, Menu menu, Quantity quantity) {
 		this.order = order;
 		this.menu = menu;
 		this.quantity = quantity;
