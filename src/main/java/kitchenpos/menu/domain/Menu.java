@@ -68,7 +68,7 @@ public class Menu extends BaseIdEntity {
 		return menuGroup;
 	}
 
-	public Iterator<MenuProduct> getMenuProducts() {
-		return menuProducts.iterator();
+	public Iterable<MenuProduct> getMenuProducts() {
+		return menuProducts;
 	}
 }

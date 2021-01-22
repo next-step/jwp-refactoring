@@ -35,7 +35,6 @@ class MenuTest {
 		menu.addMenuProducts(Arrays.asList(짜장면, 짬뽕, 탕수육));
 
 		assertThat(menu.getMenuProducts())
-				.toIterable()
 				.containsExactly(짜장면, 짬뽕, 탕수육);
 	}
 
@@ -47,7 +46,6 @@ class MenuTest {
 		menu.addMenuProducts(Collections.singletonList(콜라));
 
 		assertThat(menu.getMenuProducts())
-				.toIterable()
 				.containsExactly(짜장면, 짬뽕, 탕수육, 콜라);
 	}
 

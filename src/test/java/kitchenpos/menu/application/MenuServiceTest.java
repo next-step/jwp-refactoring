@@ -1,7 +1,8 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.common.NotFoundException;
-import kitchenpos.menu.domain.MenuProductRepository;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,7 +34,7 @@ class MenuServiceTest {
 	private ProductService productService;
 
 	@Autowired
-	private MenuProductRepository menuProductRepository;
+	private MenuRepository menuRepository;
 
 	private static final int 콜라가격 = 1000;
 	private static final int 감튀가격 = 2000;
@@ -73,7 +74,9 @@ class MenuServiceTest {
 		assertThat(menuResponse.getPrice().longValue()).isEqualTo(콜라가격 + 감튀가격 + 버거가격 - 2000L);
 		assertThat(menuResponse.getName()).isEqualTo("콰트로치즈와퍼세트");
 		assertThat(menuResponse.getMenuGroupId()).isEqualTo(메뉴그룹.getId());
-		assertThat(menuProductRepository.findAllByMenuId(menuResponse.getId()))
+		Iterable<MenuProduct> menuProducts = menuRepository.findById(menuResponse.getId())
+				.get().getMenuProducts();
+		assertThat(menuProducts)
 				.hasSize(3)
 				.map(menuProduct -> menuProduct.getProduct().getId())
 				.containsExactly(콜라.getId(), 감튀.getId(), 버거.getId());
