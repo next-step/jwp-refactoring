@@ -54,7 +54,7 @@ public class Order extends BaseIdEntity {
 		}
 
 		return items.stream()
-					.map(item -> new OrderLineItem(this, item.getMenu(), item.getQuantity()))
+					.map(item -> item.toOrderLineItem(this))
 					.collect(Collectors.toList());
 	}
 
