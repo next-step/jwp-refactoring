@@ -1,7 +1,6 @@
 package kitchenpos.utils;
 
 import org.flywaydb.core.Flyway;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 import org.springframework.test.context.ActiveProfiles;
 
