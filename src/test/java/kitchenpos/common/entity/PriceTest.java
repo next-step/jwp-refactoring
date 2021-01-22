@@ -4,10 +4,12 @@ import kitchenpos.common.application.ValidationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class PriceTest {
@@ -34,5 +36,27 @@ class PriceTest {
 	@ValueSource(longs = {1, 1000})
 	void constructor(long value) {
 		new Price(new BigDecimal(value));
+	}
+
+	@DisplayName("더하기 연산")
+	@ParameterizedTest
+	@CsvSource(value = {"1000,5,1005", "2000,5000,7000"})
+	void add(long value1, long value2, long result) {
+		final Price price1 = new Price(new BigDecimal(value1));
+		final Price price2 = new Price(new BigDecimal(value2));
+
+		final Price expected = new Price(new BigDecimal(result));
+		assertThat(price1.add(price2)).isEqualTo(expected);
+	}
+
+	@DisplayName("곱셈 연산")
+	@ParameterizedTest
+	@CsvSource(value = {"1000,5,5000", "350,2,700"})
+	void multiply(long value1, long value2, long result) {
+		final Price price = new Price(new BigDecimal(value1));
+		final Quantity quantity = new Quantity(value2);
+
+		final Price expected = new Price(new BigDecimal(result));
+		assertThat(price.multiply(quantity)).isEqualTo(expected);
 	}
 }

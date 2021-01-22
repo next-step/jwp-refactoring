@@ -5,6 +5,7 @@ import kitchenpos.common.application.ValidationException;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Embeddable
 public class Price implements Comparable<Price> {
@@ -43,17 +44,35 @@ public class Price implements Comparable<Price> {
 	}
 
 	public Price add(Price price) {
-		// TODO: 2021-01-19 add test
 		return new Price(this.price.add(price.price));
 	}
 
 	public Price multiply(Quantity quantity) {
-		// TODO: 2021-01-19 add test
 		final BigDecimal multiplicand = new BigDecimal(quantity.getValue());
 		return new Price(this.price.multiply(multiplicand));
 	}
 
 	public BigDecimal getValue() {
 		return price;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof Price)) return false;
+		Price price1 = (Price) o;
+		return Objects.equals(price, price1.price);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(price);
+	}
+
+	@Override
+	public String toString() {
+		return "Price{" +
+				"price=" + price +
+				'}';
 	}
 }
