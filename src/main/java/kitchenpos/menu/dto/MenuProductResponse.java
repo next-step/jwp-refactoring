@@ -5,7 +5,6 @@ import kitchenpos.menu.domain.MenuProduct;
 
 public class MenuProductResponse {
 
-	private long menuId;
 	private long productId;
 	private long quantity;
 
@@ -13,19 +12,14 @@ public class MenuProductResponse {
 	}
 
 	public static MenuProductResponse of(MenuProduct menuProduct) {
-		return new MenuProductResponse(menuProduct.getMenu().getId(),
+		return new MenuProductResponse(
 				menuProduct.getProduct().getId(),
 				menuProduct.getQuantity().getValue());
 	}
 
-	public MenuProductResponse(long menuId, long productId, long quantity) {
-		this.menuId = menuId;
+	public MenuProductResponse(long productId, long quantity) {
 		this.productId = productId;
 		this.quantity = quantity;
-	}
-
-	public long getMenuId() {
-		return menuId;
 	}
 
 	public long getProductId() {

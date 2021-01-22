@@ -27,8 +27,8 @@ public class TableGroupService {
 
 	@Transactional
 	public TableGroupResponse create(TableGroupRequest_Create request) {
-		List<OrderTable> orderTables = orderTableRepository.findAllByIdIn(request.getTableIds());
-		if (request.getTableIds().size() != orderTables.size()) {
+		List<OrderTable> orderTables = orderTableRepository.findAllByIdIn(request.getOrderTables());
+		if (request.getOrderTables().size() != orderTables.size()) {
 			throw new NotFoundException(CANNOT_FIND_ORDER_TABLE);
 		}
 

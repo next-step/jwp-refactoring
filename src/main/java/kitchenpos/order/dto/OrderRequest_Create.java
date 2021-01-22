@@ -6,7 +6,6 @@ public class OrderRequest_Create {
 	private List<OrderLineItemRequest> orderLineItems;
 	private long orderTableId;
 
-
 	public OrderRequest_Create() {
 	}
 
