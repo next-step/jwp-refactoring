@@ -36,4 +36,8 @@ public class ProductService {
         return productRepository.findById(productId)
             .orElseThrow(IllegalArgumentException::new);
     }
+
+    public List<Product> findAllByIdIn(List<Long> productsId) {
+        return productRepository.findAllById(productsId);
+    }
 }

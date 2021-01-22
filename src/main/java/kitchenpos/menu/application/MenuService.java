@@ -3,11 +3,13 @@ package kitchenpos.menu.application;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.Product;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,15 +31,14 @@ public class MenuService {
     @Transactional
     public MenuResponse create(final MenuRequest request) {
         MenuGroup menuGroup = menuGroupService.findById(request.getMenuGroupId());
+        List<Product> products = productService.findAllByIdIn(request.getProductsId());
+
         List<MenuProduct> menuProducts = request.getMenuProducts().stream()
-            .map(menuProduct -> new MenuProduct(
-                productService.findById(menuProduct.getProductId()),
-                menuProduct.getQuantity()
-            )).collect(Collectors.toList());
+            .map(menuProduct -> new MenuProduct(getMatchProductInProducts(products, menuProduct), menuProduct.getQuantity()))
+            .collect(Collectors.toList());
         Menu menu = new Menu(request.getName(), request.getPrice(), menuGroup, menuProducts);
 
         Menu savedMenu = menuRepository.save(menu);
-
         return MenuResponse.of(savedMenu);
     }
 
@@ -52,5 +53,11 @@ public class MenuService {
     public Menu findById(Long menuId) {
         return menuRepository.findById(menuId)
             .orElseThrow(IllegalArgumentException::new);
+    }
+
+    private Product getMatchProductInProducts(List<Product> products, MenuProductRequest menuProduct) {
+        return products.stream()
+            .filter(product -> product.getId().equals(menuProduct.getProductId()))
+            .findFirst().get();
     }
 }
