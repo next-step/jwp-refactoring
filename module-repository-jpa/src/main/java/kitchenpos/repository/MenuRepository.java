@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface MenuRepository extends JpaRepository<Menu, Long> {
-    @Query("select menu from Menu as menu join fetch menu.menuGroup join fetch menu.menuProducts as menuProduct join fetch menuProduct.product")
+    @Query("select menu from Menu as menu join fetch menu.menuGroup join fetch menu.menuProducts.products as menuProduct join fetch menuProduct.product")
     List<Menu> findFetchJoinAll();
 }

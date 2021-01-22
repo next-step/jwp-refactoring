@@ -1,7 +1,14 @@
 package kitchenpos.domain;
 
-import javax.persistence.*;
-import java.util.ArrayList;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import java.util.List;
 
 @Entity
@@ -21,9 +28,8 @@ public class Menu {
     @ManyToOne(fetch = FetchType.LAZY)
     private MenuGroup menuGroup;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "menuId")
-    private List<MenuProduct> menuProducts = new ArrayList<>();
+    @Embedded
+    private final MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {
     }
@@ -52,13 +58,11 @@ public class Menu {
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
+        return menuProducts.getProducts();
     }
 
     public void checkAllowProductsPrice() {
-        checkGraterThanMenuPrice(menuProducts.stream()
-                .map(MenuProduct::getAmount)
-                .reduce(Money.ZERO_MONEY, Money::sum));
+        checkGraterThanMenuPrice(menuProducts.sumPrice());
     }
 
     private void checkGraterThanMenuPrice(Money sum) {
