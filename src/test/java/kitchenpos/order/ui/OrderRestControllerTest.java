@@ -1,6 +1,7 @@
 package kitchenpos.order.ui;
 
 import kitchenpos.MockMvcTest;
+import kitchenpos.common.ui.ExceptionMessage;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.*;
 import org.junit.jupiter.api.DisplayName;
@@ -21,7 +22,7 @@ class OrderRestControllerTest extends MockMvcTest {
 	@Test
 	void create() throws Exception {
 		long tableId = 2L;
-		setEmpty(tableId);
+		setEmpty(tableId, false);
 		OrderRequest_Create request = createOrderRequest(tableId);
 
 		MvcResult mvcResult = mockMvc.perform(postAsJson("/api/orders", request))
@@ -32,12 +33,44 @@ class OrderRestControllerTest extends MockMvcTest {
 		assertThat(created.getId()).isNotNull();
 	}
 
+	@DisplayName("존재하지 않는 테이블로 주문을 요청한다.")
+	@Test
+	void create_WrongTable() throws Exception {
+		long tableId = -1L;
+		setEmpty(tableId, false);
+		OrderRequest_Create request = createOrderRequest(tableId);
+
+		MvcResult mvcResult = mockMvc.perform(postAsJson("/api/orders", request))
+				.andExpect(status().isBadRequest())
+				.andReturn();
+
+		ExceptionMessage result = toObject(mvcResult, ExceptionMessage.class);
+		assertThat(result.getMessage()).isNotEmpty();
+		assertThat(result.getType()).contains("NotFound");
+	}
+
+	@DisplayName("비어있는 상태의 테이블로 주문을 요청한다.")
+	@Test
+	void create_Empty() throws Exception {
+		long tableId = 2L;
+		setEmpty(tableId, true);
+		OrderRequest_Create request = createOrderRequest(tableId);
+
+		MvcResult mvcResult = mockMvc.perform(postAsJson("/api/orders", request))
+				.andExpect(status().isBadRequest())
+				.andReturn();
+
+		ExceptionMessage result = toObject(mvcResult, ExceptionMessage.class);
+		assertThat(result.getMessage()).isNotEmpty();
+		assertThat(result.getType()).contains("TableValidation");
+	}
+
 	private OrderRequest_Create createOrderRequest(long tableId) {
 		return new OrderRequest_Create(Arrays.asList(getOrderLineItem(1L), getOrderLineItem(2L)), tableId);
 	}
 
-	private void setEmpty(long tableId) throws Exception {
-		OrderTableRequest_ChangeEmpty request = new OrderTableRequest_ChangeEmpty(false);
+	private void setEmpty(long tableId, boolean empty) throws Exception {
+		OrderTableRequest_ChangeEmpty request = new OrderTableRequest_ChangeEmpty(empty);
 		String uri = String.format("/api/tables/%d/empty", tableId);
 
 		mockMvc.perform(putAsJson(uri, request));
@@ -52,7 +85,7 @@ class OrderRestControllerTest extends MockMvcTest {
 	void list() throws Exception {
 		// given
 		final long tableId = 8L;
-		setEmpty(tableId);
+		setEmpty(tableId, false);
 		mockMvc.perform(postAsJson("/api/orders", createOrderRequest(tableId)));
 
 		// when
@@ -71,7 +104,7 @@ class OrderRestControllerTest extends MockMvcTest {
 	void changeOrderStatus() throws Exception {
 		// given
 		final long tableId = 7L;
-		setEmpty(tableId);
+		setEmpty(tableId, false);
 		MvcResult createMvcResult = mockMvc.perform(postAsJson("/api/orders", createOrderRequest(tableId)))
 				.andReturn();
 		OrderResponse created = toObject(createMvcResult, OrderResponse.class);

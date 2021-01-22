@@ -1,6 +1,7 @@
 package kitchenpos.menu.ui;
 
 import kitchenpos.MockMvcTest;
+import kitchenpos.common.ui.ExceptionMessage;
 import kitchenpos.menu.dto.ProductRequest;
 import kitchenpos.menu.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -31,6 +32,20 @@ class ProductRestControllerTest extends MockMvcTest {
 		assertThat(created.getId()).isNotNull();
 		assertThat(created.getName()).isEqualTo("제품");
 		assertThat(created.getPrice().longValue()).isEqualTo(1000L);
+	}
+
+	@DisplayName("잘못된 가격으로 상품을 생성한다.")
+	@Test
+	void create_WringPrice() throws Exception {
+		ProductRequest productRequest = new ProductRequest("제품", new BigDecimal(-1));
+
+		MvcResult mvcResult = mockMvc.perform(postAsJson("/api/products", productRequest))
+				.andExpect(status().isBadRequest())
+				.andReturn();
+
+		ExceptionMessage result = toObject(mvcResult, ExceptionMessage.class);
+		assertThat(result.getMessage()).isNotEmpty();
+		assertThat(result.getType()).contains("Validation");
 	}
 
 	@DisplayName("상품을 조회한다.")
