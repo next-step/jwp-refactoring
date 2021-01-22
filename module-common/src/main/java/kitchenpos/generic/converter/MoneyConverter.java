@@ -1,7 +1,7 @@
 package kitchenpos.generic.converter;
 
 
-import kitchenpos.generic.Money;
+import kitchenpos.domain.Money;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;

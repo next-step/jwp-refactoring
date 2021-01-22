@@ -1,7 +1,7 @@
 package kitchenpos.order.service;
 
 import kitchenpos.IntegrationTest;
-import kitchenpos.order.domain.Order;
+import kitchenpos.domain.Order;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.util.OrderRequestBuilder;
 import kitchenpos.table.service.OrderTableService;

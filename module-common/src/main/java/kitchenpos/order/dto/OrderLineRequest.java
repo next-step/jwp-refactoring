@@ -1,6 +1,6 @@
 package kitchenpos.order.dto;
 
-import kitchenpos.generic.Quantity;
+import kitchenpos.domain.Quantity;
 
 public class OrderLineRequest {
     private long menuId;

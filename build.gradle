@@ -49,6 +49,12 @@ subprojects {
 
 project(':module-common') {
     dependencies {
+        compile project(':module-domain')
+    }
+}
+
+project(':module-domain') {
+    dependencies {
 
     }
 }

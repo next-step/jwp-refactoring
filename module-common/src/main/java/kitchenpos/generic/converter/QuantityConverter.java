@@ -1,7 +1,7 @@
 package kitchenpos.generic.converter;
 
 
-import kitchenpos.generic.Quantity;
+import kitchenpos.domain.Quantity;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;

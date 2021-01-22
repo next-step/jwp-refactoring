@@ -1,6 +1,6 @@
 package kitchenpos.menu.dto;
 
-import kitchenpos.generic.Money;
+import kitchenpos.domain.Money;
 
 import java.util.List;
 

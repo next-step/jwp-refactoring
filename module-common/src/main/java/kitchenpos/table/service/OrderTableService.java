@@ -1,7 +1,7 @@
 package kitchenpos.table.service;
 
 import kitchenpos.order.service.OrderStatusService;
-import kitchenpos.table.domain.OrderTable;
+import kitchenpos.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;

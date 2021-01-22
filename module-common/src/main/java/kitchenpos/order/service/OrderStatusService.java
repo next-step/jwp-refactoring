@@ -1,6 +1,6 @@
 package kitchenpos.order.service;
 
-import kitchenpos.order.domain.Order;
+import kitchenpos.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

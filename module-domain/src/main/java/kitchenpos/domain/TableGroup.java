@@ -1,6 +1,5 @@
-package kitchenpos.table.domain;
+package kitchenpos.domain;
 
-import kitchenpos.common.BaseEntity;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.Entity;

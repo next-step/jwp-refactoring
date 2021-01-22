@@ -1,9 +1,5 @@
-package kitchenpos.order.domain;
+package kitchenpos.domain;
 
-import kitchenpos.common.BaseEntity;
-import kitchenpos.generic.Quantity;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.table.domain.OrderTable;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;

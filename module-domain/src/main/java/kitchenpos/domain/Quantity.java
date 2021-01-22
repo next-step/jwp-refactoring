@@ -1,4 +1,4 @@
-package kitchenpos.generic;
+package kitchenpos.domain;
 
 public class Quantity {
     private final long amount;

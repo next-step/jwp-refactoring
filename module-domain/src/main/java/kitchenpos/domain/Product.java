@@ -1,6 +1,4 @@
-package kitchenpos.product.domain;
-
-import kitchenpos.generic.Money;
+package kitchenpos.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

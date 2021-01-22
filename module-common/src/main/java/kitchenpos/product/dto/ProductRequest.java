@@ -1,7 +1,7 @@
 package kitchenpos.product.dto;
 
-import kitchenpos.generic.Money;
-import kitchenpos.product.domain.Product;
+import kitchenpos.domain.Money;
+import kitchenpos.domain.Product;
 
 public class ProductRequest {
     private final String name;

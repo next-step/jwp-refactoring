@@ -1,7 +1,4 @@
-package kitchenpos.order.domain;
-
-import kitchenpos.generic.Quantity;
-import kitchenpos.menu.domain.Menu;
+package kitchenpos.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

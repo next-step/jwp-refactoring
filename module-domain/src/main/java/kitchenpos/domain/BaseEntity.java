@@ -1,4 +1,4 @@
-package kitchenpos.common;
+package kitchenpos.domain;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 

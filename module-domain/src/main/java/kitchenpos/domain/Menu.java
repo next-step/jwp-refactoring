@@ -1,6 +1,4 @@
-package kitchenpos.menu.domain;
-
-import kitchenpos.generic.Money;
+package kitchenpos.domain;
 
 import javax.persistence.*;
 import java.util.ArrayList;
