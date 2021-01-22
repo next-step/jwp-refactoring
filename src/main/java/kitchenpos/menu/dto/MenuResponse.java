@@ -41,7 +41,10 @@ public class MenuResponse {
         return menuProducts;
     }
 
-    public static MenuResponse ofMenu(Menu menu, List<MenuProductResponse> productResponses) {
-        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice().intValue(), menu.getMenuGroup().getName(), productResponses);
+    public static MenuResponse ofMenu(Menu menu) {
+        List<MenuProductResponse> menuProductResponses = menu.getMenuProducts()
+                .stream()
+                .map(MenuProductResponse::ofProduct).collect(Collectors.toList());
+        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice().intValue(), menu.getMenuGroup().getName(), menuProductResponses);
     }
 }

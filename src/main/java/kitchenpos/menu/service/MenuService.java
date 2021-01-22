@@ -1,12 +1,10 @@
 package kitchenpos.menu.service;
 
-import kitchenpos.generic.Money;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.dto.MenuProductResponse;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menu.domain.MenuGroup;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,9 +28,10 @@ public class MenuService {
     public MenuResponse create(final MenuRequest menuRequest) {
         checkProductsEmpty(menuRequest);
         final MenuGroup menuGroup = menuGroupService.findById(menuRequest.getMenuGroupId());
-        final Menu menu = menuRepository.save(new Menu(menuRequest.getName(), Money.price(menuRequest.getPrice()), menuGroup));
-        List<MenuProductResponse> menuProductResponses = menuProductService.saveProducts(menu, menuRequest.getMenuProducts());
-        return MenuResponse.ofMenu(menu, menuProductResponses);
+        final Menu menu = menuRepository.save(Menu.of(menuRequest.getName(), menuRequest.ofMoney(), menuGroup));
+        menuRequest.getMenuProducts().forEach(menuProductRequest -> menu.add(menuProductService.saveProduct(menu.getId(), menuProductRequest)));
+        menu.checkAllowProductsPrice();
+        return MenuResponse.ofMenu(menu);
     }
 
     private void checkProductsEmpty(final MenuRequest menuRequest) {
@@ -43,9 +42,9 @@ public class MenuService {
 
     @Transactional(readOnly = true)
     public List<MenuResponse> list() {
-        return menuRepository.findAll()
+        return menuRepository.findFetchJoinAll()
                 .stream()
-                .map(menu -> MenuResponse.ofMenu(menu, menuProductService.list(menu)))
+                .map(MenuResponse::ofMenu)
                 .collect(Collectors.toList());
     }
 

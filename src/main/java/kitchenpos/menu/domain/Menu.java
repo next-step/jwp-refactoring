@@ -2,14 +2,9 @@ package kitchenpos.menu.domain;
 
 import kitchenpos.generic.Money;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Menu {
@@ -27,6 +22,10 @@ public class Menu {
     @JoinColumn(name = "menuGroupId")
     @ManyToOne(fetch = FetchType.LAZY)
     private MenuGroup menuGroup;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "menuId")
+    private List<MenuProduct> menuProducts = new ArrayList<>();
 
     protected Menu() {
     }
@@ -52,5 +51,29 @@ public class Menu {
 
     public MenuGroup getMenuGroup() {
         return menuGroup;
+    }
+
+    public List<MenuProduct> getMenuProducts() {
+        return menuProducts;
+    }
+
+    public void checkAllowProductsPrice() {
+        checkGraterThanMenuPrice(menuProducts.stream()
+                .map(MenuProduct::getAmount)
+                .reduce(Money.ZERO_MONEY, Money::sum));
+    }
+
+    private void checkGraterThanMenuPrice(Money sum) {
+        if (this.price.isGraterThan(sum)) {
+            throw new IllegalArgumentException("메뉴의 가격이 상품 가격 보다 큽니다.");
+        }
+    }
+
+    public void add(MenuProduct menuProduct) {
+        this.menuProducts.add(menuProduct);
+    }
+
+    public static Menu of(String name, Money price, MenuGroup menuGroup) {
+        return new Menu(name, price, menuGroup);
     }
 }
