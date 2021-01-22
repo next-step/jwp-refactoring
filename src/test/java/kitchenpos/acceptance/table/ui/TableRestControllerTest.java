@@ -1,4 +1,4 @@
-package kitchenpos.ui;
+package kitchenpos.acceptance.table.ui;
 
 import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -18,8 +18,11 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import kitchenpos.application.TableService;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.table.application.TableService;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.ui.TableRestController;
 
 @DisplayName("테이블 Controller 테스트")
 @WebMvcTest(TableRestController.class)
@@ -35,12 +38,13 @@ class TableRestControllerTest {
 	@Test
 	void createOrderTableTest() throws Exception {
 		// given
-		OrderTable orderTable = OrderTable.of(1L, null, 0, false);
-		given(tableService.create(any())).willReturn(orderTable);
+		OrderTableRequest request = OrderTableRequest.of(0, true);
+		OrderTableResponse response = OrderTableResponse.of(OrderTable.of(1L, 0, true));
+		given(tableService.create(any())).willReturn(response);
 
 		// when
 		final ResultActions resultActions = mvc.perform(post("/api/tables")
-			.content(mapper.writeValueAsString(orderTable))
+			.content(mapper.writeValueAsString(request))
 			.contentType(MediaType.APPLICATION_JSON))
 			.andDo(print());
 
@@ -48,8 +52,8 @@ class TableRestControllerTest {
 		resultActions
 			.andExpect(status().isCreated())
 			.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-			.andExpect(redirectedUrl("/api/tables" + "/" + orderTable.getId()))
-			.andExpect(jsonPath("$.id").value(orderTable.getId()))
+			.andExpect(redirectedUrl("/api/tables" + "/" + response.getId()))
+			.andExpect(jsonPath("$.numberOfGuests").value(response.getNumberOfGuests()))
 			.andDo(log());
 	}
 
@@ -57,9 +61,10 @@ class TableRestControllerTest {
 	@Test
 	void selectOrderTableListTest() throws Exception {
 		// given
-		OrderTable table1 = OrderTable.of(1L, 1L, 3, true);
-		OrderTable table2 = OrderTable.of(2L, null, 0, false);
-		given(tableService.list()).willReturn(Arrays.asList(table1, table2));
+		OrderTableRequest request = OrderTableRequest.of(0, true);
+		OrderTableResponse response1 = OrderTableResponse.of(request.toEntity());
+		OrderTableResponse response2 = OrderTableResponse.of(request.toEntity());
+		given(tableService.list()).willReturn(Arrays.asList(response1, response2));
 
 		// when
 		final ResultActions resultActions = mvc.perform(get("/api/tables")
@@ -70,46 +75,47 @@ class TableRestControllerTest {
 		resultActions
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$").isArray())
-			.andExpect(jsonPath("$.[0].id").value(1L))
-			.andExpect(jsonPath("$.[1].id").value(2L));
+			.andDo(log());
 	}
 
 	@DisplayName("비어있는 테이블로 설정한다.")
 	@Test
 	void setEmptyTableTest() throws Exception {
 		// given
-		OrderTable expectedTable = OrderTable.of(1L, 1L, 3, false);
-		given(tableService.changeEmpty(any(), any())).willReturn(expectedTable);
+		OrderTableRequest request = OrderTableRequest.of(1, false);
+		OrderTableResponse response = OrderTableResponse.of(OrderTable.of(1L, 0, true));
+		given(tableService.changeEmpty(any(), any())).willReturn(response);
 
 		// when
-		final ResultActions resultActions = mvc.perform(put("/api/tables/{orderTableId}/empty", expectedTable.getId())
+		final ResultActions resultActions = mvc.perform(put("/api/tables/{orderTableId}/empty", response.getId())
 			.contentType(MediaType.APPLICATION_JSON)
-			.content(mapper.writeValueAsString(expectedTable)))
+			.content(mapper.writeValueAsString(request)))
 			.andDo(print());
 
 		// then
 		resultActions
 			.andExpect(status().isOk())
 			.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-			.andExpect(jsonPath("$.empty").value(false));
+			.andExpect(jsonPath("$.empty").value(response.isEmpty()));
 	}
 
 	@DisplayName("테이블 손님 수를 변경한다.")
 	@Test
 	void changeNumberOfGuestsTest() throws Exception {
 		// given
-		OrderTable expectedTable = OrderTable.of(1L, 1L, 3, true);
-		given(tableService.changeNumberOfGuests(any(), any())).willReturn(expectedTable);
+		OrderTableRequest request = OrderTableRequest.of(1, false);
+		OrderTableResponse response = OrderTableResponse.of(OrderTable.of(5, false));
+		given(tableService.changeNumberOfGuests(any(), any())).willReturn(response);
 
 		// when
 		final ResultActions resultActions = mvc.perform(put("/api/tables/{orderTableId}/number-of-guests", 1L)
 			.contentType(MediaType.APPLICATION_JSON)
-			.content(mapper.writeValueAsString(expectedTable)))
+			.content(mapper.writeValueAsString(request)))
 			.andDo(print());
 
 		// then
 		resultActions
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.numberOfGuests").value(expectedTable.getNumberOfGuests()));
+			.andExpect(jsonPath("$.numberOfGuests").value(response.getNumberOfGuests()));
 	}
 }
