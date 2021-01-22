@@ -21,6 +21,7 @@ public class OrderTable {
     private final List<Order> orders = new ArrayList<>();
 
     private int numberOfGuests;
+
     private boolean empty;
 
     public Long getId() {

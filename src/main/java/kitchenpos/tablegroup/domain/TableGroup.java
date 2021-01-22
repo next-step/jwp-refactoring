@@ -12,6 +12,7 @@ import java.util.Objects;
 public class TableGroup {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private LocalDateTime createdDate;
 
     @OneToMany(mappedBy = "tableGroup")
@@ -29,15 +30,15 @@ public class TableGroup {
         return orderTables;
     }
 
-    public void addOrderTables(final OrderTable orderTable) {
-        this.orderTables.add(orderTable);
-    }
-
     protected TableGroup() {
     }
 
     public TableGroup(LocalDateTime createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public void addOrderTables(final OrderTable orderTable) {
+        this.orderTables.add(orderTable);
     }
 
     public static TableGroup createTableGroup(LocalDateTime createdDate, List<OrderTable> orderTables) {
