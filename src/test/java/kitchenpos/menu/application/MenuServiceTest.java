@@ -1,7 +1,9 @@
-package kitchenpos.application;
+package kitchenpos.menu.application;
 
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.application.ProductService;
@@ -10,7 +12,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -19,8 +20,8 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.jupiter.api.Assertions.*;
 
-@Transactional
 @SpringBootTest
 class MenuServiceTest {
 
@@ -38,19 +39,16 @@ class MenuServiceTest {
     @Test
     void create() {
         // given
-        MenuGroup menuGroup = menuGroupService.findById(4L);
-        Product product1 = productService.findById(1L);
-        Product product2 = productService.findById(2L);
-        List<MenuProduct> menuProducts = Arrays.asList(
-            new MenuProduct(1L, product1.getId(), 1),
-            new MenuProduct(2L, product2.getId(), 1)
+        List<MenuProductRequest> menuProductRequests = Arrays.asList(
+            new MenuProductRequest(1L, 1),
+            new MenuProductRequest(2L, 1)
         );
-        Menu menu = new Menu(
-            MENU_NAME, product1.getPrice().add(product2.getPrice()), menuGroup.getId(), menuProducts
+        MenuRequest menuRequest = new MenuRequest(
+            MENU_NAME, BigDecimal.valueOf(32_000), 4L, menuProductRequests
         );
 
         // when
-        Menu savedMenu = menuService.create(menu);
+        MenuResponse savedMenu = menuService.create(menuRequest);
 
         // then
         assertThat(savedMenu.getId()).isNotNull();
@@ -61,13 +59,13 @@ class MenuServiceTest {
     @Test
     void create_exception1() {
         // given
-        Menu menu = new Menu(
+        MenuRequest menuRequest = new MenuRequest(
             MENU_NAME, null, 1L, Collections.EMPTY_LIST
         );
 
         // when, then
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> menuService.create(menu))
+            .isThrownBy(() -> menuService.create(menuRequest))
             .withMessage("메뉴 금액은 0보다 커야 한다.");
     }
 
@@ -75,34 +73,30 @@ class MenuServiceTest {
     @Test
     void create_exception2() {
         // given
-        Menu menu = new Menu(
-            MENU_NAME, PRICE, 9999999L, Collections.EMPTY_LIST
+        MenuRequest menuRequest = new MenuRequest(
+            MENU_NAME, PRICE, 999999L, Collections.EMPTY_LIST
         );
 
         // when, then
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> menuService.create(menu))
-            .withMessage("메뉴는 메뉴 그룹에 속해야 한다.");
+            .isThrownBy(() -> menuService.create(menuRequest));
     }
 
     @DisplayName("메뉴 등록 예외 - 메뉴의 금액은 메뉴 상품의 합과 같아야 한다.")
     @Test
     void create_exception3() {
         // given
-        MenuGroup menuGroup = menuGroupService.findById(4L);
-        Product product1 = productService.findById(1L);
-        Product product2 = productService.findById(2L);
-        List<MenuProduct> menuProducts = Arrays.asList(
-            new MenuProduct(1L, product1.getId(), 1),
-            new MenuProduct(2L, product2.getId(), 1)
+        List<MenuProductRequest> menuProductRequests = Arrays.asList(
+            new MenuProductRequest(1L, 1),
+            new MenuProductRequest(2L, 1)
         );
-        Menu menu = new Menu(
-            MENU_NAME, product1.getPrice(), menuGroup.getId(), menuProducts
+        MenuRequest menuRequest = new MenuRequest(
+            MENU_NAME, BigDecimal.valueOf(16_000), 4L, menuProductRequests
         );
 
         // when, then
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> menuService.create(menu))
+            .isThrownBy(() -> menuService.create(menuRequest))
             .withMessage("메뉴의 금액은 메뉴 상품의 합과 같아야 한다.");
     }
 
@@ -110,7 +104,7 @@ class MenuServiceTest {
     @Test
     void list() {
         // when
-        List<Menu> list = menuService.list();
+        List<MenuResponse> list = menuService.list();
 
         // then
         assertThat(list.size()).isGreaterThan(0);

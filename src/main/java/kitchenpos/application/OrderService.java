@@ -1,11 +1,11 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
+import kitchenpos.menu.application.MenuService;
 import kitchenpos.ordertable.application.OrderTableService;
 import kitchenpos.ordertable.domain.OrderTable;
 import org.springframework.stereotype.Service;
@@ -20,18 +20,18 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
-    private final MenuDao menuDao;
+    private final MenuService menuService;
     private final OrderDao orderDao;
     private final OrderLineItemDao orderLineItemDao;
     private final OrderTableService orderTableService;
 
     public OrderService(
-            final MenuDao menuDao,
+            final MenuService menuService,
             final OrderDao orderDao,
             final OrderLineItemDao orderLineItemDao,
             final OrderTableService orderTableService
     ) {
-        this.menuDao = menuDao;
+        this.menuService = menuService;
         this.orderDao = orderDao;
         this.orderLineItemDao = orderLineItemDao;
         this.orderTableService = orderTableService;
@@ -49,7 +49,7 @@ public class OrderService {
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
 
-        if (orderLineItems.size() != menuDao.countByIdIn(menuIds)) {
+        if (orderLineItems.size() != menuService.countByIdIn(menuIds)) {
             throw new IllegalArgumentException("주문하고자 하는 메뉴가 등록되어 있어야 한다.");
         }
 

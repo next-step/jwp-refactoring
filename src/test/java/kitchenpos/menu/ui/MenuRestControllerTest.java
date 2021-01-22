@@ -1,8 +1,9 @@
-package kitchenpos.ui;
+package kitchenpos.menu.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.application.MenuService;
-import kitchenpos.domain.Menu;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.ui.MenuRestController;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
@@ -38,21 +41,22 @@ class MenuRestControllerTest {
     @DisplayName("메뉴를 등록한다")
     @Test
     void create() throws Exception {
-        Menu menu = new Menu(1L, "menu", BigDecimal.valueOf(10_000), 1L);
-        when(menuService.create(any())).thenReturn(menu);
+        MenuResponse menuResponse = new MenuResponse(1L, "menu", BigDecimal.valueOf(10_000), 1L,
+            Arrays.asList());
+        when(menuService.create(any())).thenReturn(menuResponse);
 
         mockMvc.perform(post("/api/menus")
-            .content(objectMapper.writeValueAsString(menu)).contentType(MediaType.APPLICATION_JSON))
+            .content(objectMapper.writeValueAsString(menuResponse)).contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
-            .andExpect(redirectedUrl("/api/menus/" + menu.getId()))
+            .andExpect(redirectedUrl("/api/menus/" + menuResponse.getId()))
             .andExpect(status().isCreated());
     }
 
     @DisplayName("메뉴 목록을 조회한다.")
     @Test
     void list() throws Exception {
-        Menu menu1 = new Menu(1L, "menu1", BigDecimal.valueOf(10_000), 1L);
-        Menu menu2 = new Menu(2L, "menu2", BigDecimal.valueOf(10_000), 1L);
+        MenuResponse menu1 = new MenuResponse(1L, "menu1", BigDecimal.valueOf(10_000), 1L, Collections.EMPTY_LIST);
+        MenuResponse menu2 = new MenuResponse(2L, "menu2", BigDecimal.valueOf(10_000), 1L, Collections.EMPTY_LIST);
 
         when(menuService.list()).thenReturn(Arrays.asList(menu1, menu2));
 

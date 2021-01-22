@@ -5,7 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-@Entity
+@Entity(name = "menu_group")
 public class MenuGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,7 +13,6 @@ public class MenuGroup {
     private String name;
 
     protected MenuGroup() {
-
     }
 
     public MenuGroup(Long id, String name) {
