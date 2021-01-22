@@ -1,6 +1,5 @@
 package kitchenpos.order.dto;
 
-import kitchenpos.domain.OrderLineItem;
 import kitchenpos.order.domain.Order;
 
 import java.time.LocalDateTime;

@@ -26,9 +26,9 @@ public class TableGroupService {
 
     public TableGroupResponse create(final TableGroupRequest tableGroup) {
         final List<OrderTable> savedOrderTables = findOrderTables(tableGroup);
-        TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup());
+        TableGroup savedTableGroup = new TableGroup();
         savedTableGroup.add(savedOrderTables);
-        return TableGroupResponse.of(savedTableGroup);
+        return TableGroupResponse.of(tableGroupRepository.save(savedTableGroup));
     }
 
     private List<OrderTable> findOrderTables(TableGroupRequest tableGroup) {
@@ -51,7 +51,6 @@ public class TableGroupService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
     public void ungroup(final Long tableGroupId) {
         final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
         final List<Long> orderTableIds = orderTables.stream()

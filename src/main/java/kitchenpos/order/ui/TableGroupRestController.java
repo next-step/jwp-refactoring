@@ -1,6 +1,5 @@
 package kitchenpos.order.ui;
 
-import kitchenpos.domain.TableGroup;
 import kitchenpos.order.application.TableGroupService;
 import kitchenpos.order.dto.TableGroupRequest;
 import kitchenpos.order.dto.TableGroupResponse;

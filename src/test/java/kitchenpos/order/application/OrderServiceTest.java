@@ -14,6 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@Transactional
 @SpringBootTest
 class OrderServiceTest {
     private Menu 아메리카노_케익;
@@ -52,15 +54,6 @@ class OrderServiceTest {
         아메리카노_케익 = menuRepository.save(new Menu("아메리카노_케익", BigDecimal.valueOf(10000), 커피류));
         아메리카노_샌드위치 = menuRepository.save(new Menu("아메리카노_샌드위치", BigDecimal.valueOf(10000), 커피류));
         주문테이블 = orderTableRepository.save(new OrderTable(0, false));
-    }
-
-    @AfterEach
-    void cleanup() {
-        orderLineItemRepository.deleteAllInBatch();
-        orderRepository.deleteAllInBatch();
-        orderTableRepository.deleteAllInBatch();
-        menuRepository.deleteAllInBatch();
-        menuGroupRepository.deleteAllInBatch();
     }
 
     @DisplayName("주문 등록")
