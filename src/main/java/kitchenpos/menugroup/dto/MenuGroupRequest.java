@@ -3,7 +3,10 @@ package kitchenpos.menugroup.dto;
 import kitchenpos.menugroup.domain.MenuGroup;
 
 public class MenuGroupRequest {
-	private final String name;
+	private String name;
+
+	public MenuGroupRequest() {
+	}
 
 	public MenuGroupRequest(final String name) {
 		this.name = name;
@@ -13,7 +16,7 @@ public class MenuGroupRequest {
 		return new MenuGroupRequest(name);
 	}
 
-	public MenuGroup toMenuGroup() {
+	public MenuGroup toEntity() {
 		return MenuGroup.of(name);
 	}
 

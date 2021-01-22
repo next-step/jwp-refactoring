@@ -1,12 +1,19 @@
 package kitchenpos.menu.dto;
 
 public class MenuProductRequest {
-	private final Long productId;
-	private final int quantity;
+	private Long productId;
+	private int quantity;
 
-	private MenuProductRequest(Long productId, int quantity) {
+	public MenuProductRequest() {
+	}
+
+	private MenuProductRequest(final Long productId, final int quantity) {
 		this.productId = productId;
 		this.quantity = quantity;
+	}
+
+	public static MenuProductRequest of(final Long productId, final int quantity) {
+		return new MenuProductRequest(productId, quantity);
 	}
 
 	public Long getProductId() {

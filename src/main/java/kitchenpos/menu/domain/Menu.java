@@ -9,11 +9,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import kitchenpos.common.BaseEntity;
+import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.domain.Price;
 
 @Entity
-public class Menu {
+public class Menu extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -26,19 +28,22 @@ public class Menu {
 	@JoinColumn(name = "menu_group_id")
 	private MenuGroup menuGroup;
 
-	@Embedded
-	private MenuProducts menuProducts;
-
 	protected Menu() {
 	}
 
-	public Menu(final Long id, final String name, final Price price, final MenuGroup menuGroup,
-		final MenuProducts menuProducts) {
+	private Menu(final Long id, final String name, final Price price, final MenuGroup menuGroup) {
 		this.id = id;
 		this.name = name;
 		this.price = price;
 		this.menuGroup = menuGroup;
-		this.menuProducts = menuProducts;
+	}
+
+	public static Menu of(final String name, final Price price, final MenuGroup menuGroup) {
+		return new Menu(null, name, price, menuGroup);
+	}
+
+	public static Menu of(MenuRequest request, MenuGroup menuGroup) {
+		return of(request.getName(), Price.of(request.getPrice()), menuGroup);
 	}
 
 	public Long getId() {
@@ -55,9 +60,5 @@ public class Menu {
 
 	public MenuGroup getMenuGroup() {
 		return menuGroup;
-	}
-
-	public MenuProducts getMenuProducts() {
-		return menuProducts;
 	}
 }

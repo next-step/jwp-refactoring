@@ -4,10 +4,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class MenuRequest {
-	private final String name;
-	private final long price;
-	private final Long menuGroupId;
-	private final List<MenuProductRequest> menuProducts;
+	private String name;
+	private long price;
+	private Long menuGroupId;
+	private List<MenuProductRequest> menuProducts;
+
+	public MenuRequest() {
+	}
 
 	private MenuRequest(final String name, final long price, final Long menuGroupId,
 		final List<MenuProductRequest> menuProducts) {
@@ -17,7 +20,7 @@ public class MenuRequest {
 		this.menuProducts = menuProducts;
 	}
 
-	public MenuRequest of(final String name, final long price, final Long menuGroupId,
+	public static MenuRequest of(final String name, final long price, final Long menuGroupId,
 		final List<MenuProductRequest> menuProducts) {
 		return new MenuRequest(name, price, menuGroupId, menuProducts);
 	}
