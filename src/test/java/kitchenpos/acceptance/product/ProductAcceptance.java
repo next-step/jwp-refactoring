@@ -61,8 +61,8 @@ public class ProductAcceptance extends AcceptanceTest {
 			.map(it -> it.as(Product.class).getId())
 			.collect(Collectors.toList());
 
-		List<Long> resultProductIds = response.jsonPath().getList(".", Product.class).stream()
-			.map(Product::getId)
+		List<Long> resultProductIds = response.jsonPath().getList(".", ProductResponse.class).stream()
+			.map(ProductResponse::getId)
 			.collect(Collectors.toList());
 
 		assertThat(resultProductIds).containsAll(expectedProductIds);

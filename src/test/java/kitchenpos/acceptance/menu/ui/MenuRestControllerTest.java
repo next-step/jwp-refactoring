@@ -1,4 +1,4 @@
-package kitchenpos.ui;
+package kitchenpos.acceptance.menu.ui;
 
 import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -21,11 +21,13 @@ import org.springframework.test.web.servlet.ResultActions;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kitchenpos.acceptance.menu.MenuAcceptance;
-import kitchenpos.application.MenuService;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuProductResponse;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.ui.MenuRestController;
+import kitchenpos.product.domain.Price;
 
 @DisplayName("메뉴 Controller 테스트")
 @WebMvcTest(MenuRestController.class)
@@ -37,29 +39,32 @@ class MenuRestControllerTest {
 	@MockBean
 	private MenuService menuService;
 
-	private MenuGroup food;
-	private Product 치킨;
-	private Product 피자;
-	private List<MenuProduct> products;
+	private List<MenuProductRequest> menuProductRequests;
+	private List<MenuProductResponse> menuProductResponses;
 
 	@BeforeEach
 	void setUp() {
-		food = MenuGroup.of(1L, "세트");
-		치킨 = Product.of(1L, "치킨", 16000);
-		피자 = Product.of(2L, "피자", 20000);
-		products = Arrays.asList(MenuProduct.of(치킨, 2), MenuProduct.of(피자, 1));
+		menuProductRequests = Arrays.asList(
+			MenuProductRequest.of(1L, 2),
+			MenuProductRequest.of(2L, 1));
+
+		menuProductResponses = Arrays.asList(
+			MenuProductResponse.of(1L, 1L, 2),
+			MenuProductResponse.of(2L, 2L, 1)
+		);
 	}
 
 	@DisplayName("메뉴를 등록한다.")
 	@Test
 	void createMenuTest() throws Exception {
 		// given
-		Menu menu = Menu.of(1L, "치피세트", 50000, food.getId(), products);
-		given(menuService.create(any())).willReturn(menu);
+		MenuRequest request = MenuRequest.of("치피세트", 50000, 1L, menuProductRequests);
+		MenuResponse response = new MenuResponse(1L, "치피세트", Price.of(50000), 1L, menuProductResponses);
+		given(menuService.create(request)).willReturn(response);
 
 		// when
 		final ResultActions resultActions = mvc.perform(post(MenuAcceptance.MENUS_REQUEST_URL)
-			.content(mapper.writeValueAsString(menu))
+			.content(mapper.writeValueAsString(request))
 			.contentType(MediaType.APPLICATION_JSON))
 			.andDo(print());
 
@@ -67,8 +72,8 @@ class MenuRestControllerTest {
 		resultActions
 			.andExpect(status().isCreated())
 			.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-			.andExpect(redirectedUrl(MenuAcceptance.MENUS_REQUEST_URL + "/" + menu.getId()))
-			.andExpect(jsonPath("$.id").value(menu.getId()))
+			.andExpect(redirectedUrl(MenuAcceptance.MENUS_REQUEST_URL + "/" + response.getId()))
+			.andExpect(jsonPath("$.id").value(response.getId()))
 			.andDo(log());
 	}
 }
