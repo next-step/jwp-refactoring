@@ -1,8 +1,5 @@
 package kitchenpos.ordertable.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
@@ -10,14 +7,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
-@Transactional
 @SpringBootTest
 class OrderTableServiceTest {
 
@@ -27,9 +22,6 @@ class OrderTableServiceTest {
 
     @Autowired
     private OrderTableService orderTableService;
-
-    @Autowired
-    private OrderDao orderDao;
 
     @DisplayName("테이블을 등록한다.")
     @Test
@@ -63,12 +55,7 @@ class OrderTableServiceTest {
     void changeEmpty() {
         // given
         OrderTable orderTable = orderTableService.findById(1L);
-//        orderTable.setTableGroupId(1L);
         OrderTableRequest request = new OrderTableRequest(1L, orderTable.getNumberOfGuests(), orderTable.isEmpty());
-
-        Order order = new Order(orderTable.getId());
-        order.setOrderStatus(OrderStatus.COMPLETION.name());
-        orderDao.save(order);
 
         // when
         OrderTableResponse changedOrderTable = orderTableService.changeEmpty(1L, request);
@@ -81,13 +68,8 @@ class OrderTableServiceTest {
     @Test
     void changeEmpty_exception1() {
         // given
-        OrderTable orderTable = orderTableService.findById(1L);
-//        orderTable.setTableGroupId(1L);
+        OrderTable orderTable = orderTableService.findById(7L);
         OrderTableRequest request = new OrderTableRequest(1L, orderTable.getNumberOfGuests(), orderTable.isEmpty());
-
-        Order order = new Order(orderTable.getId());
-        order.setOrderStatus(OrderStatus.MEAL.name());
-        orderDao.save(order);
 
         // when, then
         assertThatIllegalArgumentException()

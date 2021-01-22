@@ -49,12 +49,8 @@ public class MenuService {
             .collect(Collectors.toList());
     }
 
-    public int countByIdIn(List<Long> menuIds) {
-        return menuRepository.countByIdIn(menuIds);
-    }
-
     public Menu findById(Long menuId) {
         return menuRepository.findById(menuId)
-            .orElseThrow(IllegalAccessError::new);
+            .orElseThrow(IllegalArgumentException::new);
     }
 }

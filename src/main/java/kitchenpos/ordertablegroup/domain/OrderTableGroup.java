@@ -12,7 +12,7 @@ public class OrderTableGroup extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Embedded
-    private OrderTables orderTables = new OrderTables();
+    private OrderTables orderTables;
 
     protected OrderTableGroup() {
     }

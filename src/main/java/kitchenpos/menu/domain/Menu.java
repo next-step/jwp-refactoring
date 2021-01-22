@@ -35,20 +35,6 @@ public class Menu {
         setMenu();
     }
 
-    private void validatePrice(BigDecimal price, List<MenuProduct> menuProducts) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("메뉴 금액은 0보다 커야 한다.");
-        }
-
-        BigDecimal sum = BigDecimal.ZERO;
-        for (final MenuProduct menuProduct : menuProducts) {
-            sum = sum.add(menuProduct.getAmount());
-        }
-        if (!price.equals(sum)) {
-            throw new IllegalArgumentException("메뉴의 금액은 메뉴 상품의 합과 같아야 한다.");
-        }
-    }
-
     public Long getId() {
         return id;
     }
@@ -67,6 +53,20 @@ public class Menu {
 
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
+    }
+
+    private void validatePrice(BigDecimal price, List<MenuProduct> menuProducts) {
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("메뉴 금액은 0보다 커야 한다.");
+        }
+
+        BigDecimal sum = BigDecimal.ZERO;
+        for (final MenuProduct menuProduct : menuProducts) {
+            sum = sum.add(menuProduct.getAmount());
+        }
+        if (!price.equals(sum)) {
+            throw new IllegalArgumentException("메뉴의 금액은 메뉴 상품의 합과 같아야 한다.");
+        }
     }
 
     private void setMenu() {

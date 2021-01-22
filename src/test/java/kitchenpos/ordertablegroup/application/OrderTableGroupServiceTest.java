@@ -1,8 +1,5 @@
 package kitchenpos.ordertablegroup.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.ordertable.application.OrderTableService;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertablegroup.dto.OrderTableGroupRequest;
@@ -25,9 +22,6 @@ class OrderTableGroupServiceTest {
 
     @Autowired
     private OrderTableGroupService orderTableGroupService;
-
-    @Autowired
-    private OrderDao orderDao;
 
     @DisplayName("테이블 그룹을 등록한다.")
     @Test
@@ -82,29 +76,17 @@ class OrderTableGroupServiceTest {
     @DisplayName("테이블 그룹을 해제한다.")
     @Test
     void ungroup() {
-        // given
-        Long orderTableId = 8L;
-        Order order = new Order(orderTableId);
-        order.setOrderStatus(OrderStatus.COMPLETION.name());
-        orderDao.save(order);
-
         // when
         orderTableGroupService.ungroup(2L);
 
         // then
-        OrderTable updatedOrderTable = orderTableService.findById(orderTableId);
+        OrderTable updatedOrderTable = orderTableService.findById(8L);
         assertThat(updatedOrderTable.getTableGroupId()).isNull();
     }
 
     @DisplayName("테이블 그룹 해제 예외 - `조리중`과 `식사중`에는 변경할 수 없다.")
     @Test
     void ungroup_exception1() {
-        // given
-        Long orderTableId = 7L;
-        Order order = new Order(orderTableId);
-        order.setOrderStatus(OrderStatus.MEAL.name());
-        orderDao.save(order);
-
         // when, then
         assertThatIllegalArgumentException()
             .isThrownBy(() -> orderTableGroupService.ungroup(1L))

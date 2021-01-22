@@ -1,9 +1,10 @@
-package kitchenpos.ui;
+package kitchenpos.order.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.application.OrderService;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.application.OrderService;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,7 @@ class OrderRestControllerTest {
     @DisplayName("주문을 등록한다.")
     @Test
     void create() throws Exception {
-        Order order = new Order(1L, 1L, OrderStatus.COOKING.name());
+        OrderResponse order = new OrderResponse(1L, 1L, OrderStatus.COOKING.name(), null, null);
 
         when(orderService.create(any())).thenReturn(order);
 
@@ -51,8 +52,8 @@ class OrderRestControllerTest {
     @DisplayName("주문 목록을 조회한다.")
     @Test
     void list() throws Exception {
-        Order order1 = new Order(1L, 1L, OrderStatus.COOKING.name());
-        Order order2 = new Order(2L, 1L, OrderStatus.COOKING.name());
+        OrderResponse order1 = new OrderResponse(1L, 1L, OrderStatus.COOKING.name(), null, null);
+        OrderResponse order2 = new OrderResponse(2L, 1L, OrderStatus.COOKING.name(), null, null);
 
         when(orderService.list()).thenReturn(Arrays.asList(order1, order2));
         mockMvc.perform(get("/api/orders"))
@@ -64,10 +65,10 @@ class OrderRestControllerTest {
     @DisplayName("주문 상태를 변경한다.")
     @Test
     void changeOrderStatus() throws Exception {
-        Order order1 = new Order(1L, 1L, OrderStatus.COOKING.name());
+        OrderResponse order1 = new OrderResponse(1L, 1L, OrderStatus.COOKING.name(), null, null);
 
-        when(orderService.changeOrderStatus(anyLong(), any(Order.class))).thenReturn(order1);
-        Order order2 = new Order(order1.getId(), 1L, OrderStatus.MEAL.name());
+        when(orderService.changeOrderStatus(anyLong(), any(OrderRequest.class))).thenReturn(order1);
+        OrderResponse order2 = new OrderResponse(1L, 1L, OrderStatus.MEAL.name(), null, null);
 
         mockMvc.perform(put("/api/orders/{orderId}/order-status", order1.getId())
             .content(objectMapper.writeValueAsString(order2))

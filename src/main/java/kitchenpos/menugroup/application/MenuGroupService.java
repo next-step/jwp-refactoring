@@ -36,8 +36,4 @@ public class MenuGroupService {
         return menuGroupRepository.findById(menuGroupId)
             .orElseThrow(IllegalArgumentException::new);
     }
-
-    public boolean existsById(Long menuGroupId) {
-        return menuGroupRepository.existsById(menuGroupId);
-    }
 }
