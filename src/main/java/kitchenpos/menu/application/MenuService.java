@@ -3,7 +3,6 @@ package kitchenpos.menu.application;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.application.MenuGroupService;
@@ -34,7 +33,7 @@ public class MenuService {
         List<Product> products = productService.findAllByIdIn(request.getProductsId());
 
         List<MenuProduct> menuProducts = request.getMenuProducts().stream()
-            .map(menuProduct -> new MenuProduct(getMatchProductInProducts(products, menuProduct), menuProduct.getQuantity()))
+            .map(menuProduct -> new MenuProduct(getMatchProductInProducts(products, menuProduct.getProductId()), menuProduct.getQuantity()))
             .collect(Collectors.toList());
         Menu menu = new Menu(request.getName(), request.getPrice(), menuGroup, menuProducts);
 
@@ -50,14 +49,14 @@ public class MenuService {
             .collect(Collectors.toList());
     }
 
-    public Menu findById(Long menuId) {
-        return menuRepository.findById(menuId)
-            .orElseThrow(IllegalArgumentException::new);
+    public List<Menu> findAllById(List<Long> menuIds) {
+        return menuRepository.findAllById(menuIds);
     }
 
-    private Product getMatchProductInProducts(List<Product> products, MenuProductRequest menuProduct) {
+    private Product getMatchProductInProducts(List<Product> products, Long productId) {
         return products.stream()
-            .filter(product -> product.getId().equals(menuProduct.getProductId()))
-            .findFirst().get();
+            .filter(product -> product.getId().equals(productId))
+            .findFirst()
+            .orElseThrow(IllegalArgumentException::new);
     }
 }

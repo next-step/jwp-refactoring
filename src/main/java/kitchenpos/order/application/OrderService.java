@@ -1,6 +1,7 @@
 package kitchenpos.order.application;
 
 import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
@@ -30,13 +31,13 @@ public class OrderService {
     @Transactional
     public OrderResponse create(final OrderRequest request) {
         OrderTable orderTable = orderTableService.findById(request.getOrderTableId());
+        List<Menu> menus = menuService.findAllById(request.getMenuIds());
+
         List<OrderLineItem> orderLineItems = request.getOrderLineItems().stream()
-            .map(orderLineItemRequest -> new OrderLineItem(
-                menuService.findById(orderLineItemRequest.getMenuId()),
-                orderLineItemRequest.getQuantity()
-            ))
+            .map(orderLineItem -> new OrderLineItem(getMatchMenuInMenus(menus, orderLineItem.getMenuId()), orderLineItem.getQuantity()))
             .collect(Collectors.toList());
         Order order = new Order(orderTable, request.getOrderStatus(), orderLineItems);
+
         Order savedOrder = orderRepository.save(order);
         return OrderResponse.of(savedOrder);
     }
@@ -58,6 +59,13 @@ public class OrderService {
 
     public Order findById(Long orderId) {
         return orderRepository.findById(orderId)
+            .orElseThrow(IllegalArgumentException::new);
+    }
+
+    private Menu getMatchMenuInMenus(List<Menu> menus, Long menuId) {
+        return menus.stream()
+            .filter(menu -> menu.getId().equals(menuId))
+            .findFirst()
             .orElseThrow(IllegalArgumentException::new);
     }
 }
