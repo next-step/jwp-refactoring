@@ -9,6 +9,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Entity
@@ -83,5 +84,22 @@ public class Order extends BaseIdEntity {
 
 	public List<OrderLineItem> getOrderLineItems() {
 		return orderLineItems;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof Order)) return false;
+		if (!super.equals(o)) return false;
+		Order order = (Order) o;
+		return Objects.equals(orderTable, order.orderTable) &&
+				orderStatus == order.orderStatus &&
+				Objects.equals(orderedTime, order.orderedTime) &&
+				Objects.equals(orderLineItems, order.orderLineItems);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(super.hashCode(), orderTable, orderStatus, orderedTime, orderLineItems);
 	}
 }

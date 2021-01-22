@@ -1,14 +1,14 @@
 package kitchenpos.menu.domain;
 
 import kitchenpos.common.BaseIdEntity;
-import kitchenpos.menu.application.MenuValidationException;
 import kitchenpos.common.Price;
+import kitchenpos.menu.application.MenuValidationException;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "menu")
@@ -70,5 +70,22 @@ public class Menu extends BaseIdEntity {
 
 	public Iterable<MenuProduct> getMenuProducts() {
 		return menuProducts;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof Menu)) return false;
+		if (!super.equals(o)) return false;
+		Menu menu = (Menu) o;
+		return Objects.equals(name, menu.name) &&
+				Objects.equals(price, menu.price) &&
+				Objects.equals(menuGroup, menu.menuGroup) &&
+				Objects.equals(menuProducts, menu.menuProducts);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(super.hashCode(), name, price, menuGroup, menuProducts);
 	}
 }

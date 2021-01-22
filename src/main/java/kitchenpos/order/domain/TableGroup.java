@@ -9,6 +9,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "table_group")
@@ -56,5 +57,20 @@ public class TableGroup extends BaseIdEntity {
 
 	public List<OrderTable> getOrderTables() {
 		return orderTables;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof TableGroup)) return false;
+		if (!super.equals(o)) return false;
+		TableGroup that = (TableGroup) o;
+		return Objects.equals(createdDate, that.createdDate) &&
+				Objects.equals(orderTables, that.orderTables);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(super.hashCode(), createdDate, orderTables);
 	}
 }

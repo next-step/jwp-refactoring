@@ -9,6 +9,7 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 @Embeddable
 class TableOrders implements Iterable<Order> {
@@ -35,5 +36,18 @@ class TableOrders implements Iterable<Order> {
 	@Override
 	public Iterator<Order> iterator() {
 		return orders.listIterator();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof TableOrders)) return false;
+		TableOrders orders1 = (TableOrders) o;
+		return Objects.equals(orders, orders1.orders);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(orders);
 	}
 }

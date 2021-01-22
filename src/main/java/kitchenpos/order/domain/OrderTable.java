@@ -6,6 +6,7 @@ import kitchenpos.order.application.TableValidationException;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "order_table")
@@ -107,5 +108,22 @@ public class OrderTable extends BaseIdEntity {
 
 	public boolean isEmpty() {
 		return empty;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof OrderTable)) return false;
+		if (!super.equals(o)) return false;
+		OrderTable that = (OrderTable) o;
+		return empty == that.empty &&
+				Objects.equals(tableGroup, that.tableGroup) &&
+				Objects.equals(numberOfGuests, that.numberOfGuests) &&
+				Objects.equals(orders, that.orders);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(super.hashCode(), tableGroup, numberOfGuests, empty, orders);
 	}
 }

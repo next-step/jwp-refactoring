@@ -5,6 +5,7 @@ import kitchenpos.common.Price;
 import kitchenpos.common.Quantity;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "menu_product")
@@ -44,5 +45,21 @@ public class MenuProduct extends BaseSeqEntity {
 
 	public Quantity getQuantity() {
 		return quantity;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof MenuProduct)) return false;
+		if (!super.equals(o)) return false;
+		MenuProduct that = (MenuProduct) o;
+		return Objects.equals(menu, that.menu) &&
+				Objects.equals(product, that.product) &&
+				Objects.equals(quantity, that.quantity);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(super.hashCode(), menu, product, quantity);
 	}
 }

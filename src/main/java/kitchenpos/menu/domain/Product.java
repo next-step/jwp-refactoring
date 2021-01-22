@@ -8,6 +8,7 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Entity
 @Table(name = "product")
@@ -37,5 +38,20 @@ public class Product extends BaseIdEntity {
 
 	public Price getPrice() {
 		return price;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof Product)) return false;
+		if (!super.equals(o)) return false;
+		Product product = (Product) o;
+		return Objects.equals(name, product.name) &&
+				Objects.equals(price, product.price);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(super.hashCode(), name, price);
 	}
 }

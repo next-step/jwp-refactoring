@@ -11,6 +11,7 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 @Embeddable
 public class MenuProducts implements Iterable<MenuProduct> {
@@ -42,5 +43,18 @@ public class MenuProducts implements Iterable<MenuProduct> {
 
 	void add(List<MenuProduct> menuProducts) {
 		this.menuProducts.addAll(menuProducts);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof MenuProducts)) return false;
+		MenuProducts that = (MenuProducts) o;
+		return Objects.equals(menuProducts, that.menuProducts);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(menuProducts);
 	}
 }
