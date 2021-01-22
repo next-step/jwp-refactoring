@@ -2,9 +2,9 @@ package kitchenpos.order.application;
 
 import kitchenpos.common.NotFoundException;
 import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableDao;
+import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.order.domain.TableGroup;
-import kitchenpos.order.domain.TableGroupDao;
+import kitchenpos.order.domain.TableGroupRepository;
 import kitchenpos.order.dto.TableGroupRequest_Create;
 import kitchenpos.order.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
@@ -17,30 +17,30 @@ import java.util.List;
 public class TableGroupService {
 	static final String CANNOT_FIND_ORDER_TABLE = "Cannot find OrderTable by tableId";
 	static final String MSG_CANNOT_FIND_TABLE_GROUP = "Cannot find TableGroup by tableGroupId";
-	private final OrderTableDao orderTableDao;
-	private final TableGroupDao tableGroupDao;
+	private final OrderTableRepository orderTableRepository;
+	private final TableGroupRepository tableGroupRepository;
 
-	public TableGroupService(final OrderTableDao orderTableDao, final TableGroupDao tableGroupDao) {
-		this.orderTableDao = orderTableDao;
-		this.tableGroupDao = tableGroupDao;
+	public TableGroupService(final OrderTableRepository orderTableRepository, final TableGroupRepository tableGroupRepository) {
+		this.orderTableRepository = orderTableRepository;
+		this.tableGroupRepository = tableGroupRepository;
 	}
 
 	@Transactional
 	public TableGroupResponse create(TableGroupRequest_Create request) {
-		List<OrderTable> orderTables = orderTableDao.findAllByIdIn(request.getTableIds());
+		List<OrderTable> orderTables = orderTableRepository.findAllByIdIn(request.getTableIds());
 		if (request.getTableIds().size() != orderTables.size()) {
 			throw new NotFoundException(CANNOT_FIND_ORDER_TABLE);
 		}
 
-		TableGroup tableGroup = tableGroupDao.save(TableGroup.fromGroupingTables(orderTables));
+		TableGroup tableGroup = tableGroupRepository.save(TableGroup.fromGroupingTables(orderTables));
 		return TableGroupResponse.of(tableGroup);
 	}
 
 	@Transactional
 	public void ungroup(long tableGroupId) {
-		TableGroup tableGroup = tableGroupDao.findById(tableGroupId)
+		TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
 				.orElseThrow(() -> new NotFoundException(MSG_CANNOT_FIND_TABLE_GROUP));
 		tableGroup.ungroupTables();
-		tableGroupDao.delete(tableGroup);
+		tableGroupRepository.delete(tableGroup);
 	}
 }

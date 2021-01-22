@@ -19,23 +19,23 @@ public class MenuService {
 	static final String MSG_CANNOT_FIND_PRODUCT = "Cannot find Product by productId";
 	static final String MSG_CANNOT_FIND_MENUGROUP = "Cannot find MenuGroup by menuGroupId";
 
-	private final MenuDao menuDao;
-	private final MenuGroupDao menuGroupDao;
-	private final ProductDao productDao;
+	private final MenuRepository menuRepository;
+	private final MenuGroupRepository menuGroupRepository;
+	private final ProductRepository productRepository;
 
-	public MenuService(final MenuDao menuDao,
-	                   final MenuGroupDao menuGroupDao,
-	                   final ProductDao productDao) {
-		this.menuDao = menuDao;
-		this.menuGroupDao = menuGroupDao;
-		this.productDao = productDao;
+	public MenuService(final MenuRepository menuRepository,
+	                   final MenuGroupRepository menuGroupRepository,
+	                   final ProductRepository productRepository) {
+		this.menuRepository = menuRepository;
+		this.menuGroupRepository = menuGroupRepository;
+		this.productRepository = productRepository;
 	}
 
 	@Transactional
 	public MenuResponse create(MenuRequest menuRequest) {
-		MenuGroup menuGroup = menuGroupDao.findById(menuRequest.getMenuGroupId())
+		MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
 				.orElseThrow(() -> new NotFoundException(MSG_CANNOT_FIND_MENUGROUP));
-		Menu menu = menuDao.save(createMenu(menuRequest, menuGroup));
+		Menu menu = menuRepository.save(createMenu(menuRequest, menuGroup));
 		List<MenuProduct> menuProducts = createMenuProducts(menu, menuRequest.getMenuProductRequests());
 		menu.addMenuProducts(menuProducts);
 		return MenuResponse.of(menu);
@@ -51,7 +51,7 @@ public class MenuService {
 	private List<Product> getProducts(List<MenuProductRequest> menuProductRequests) {
 		final List<Long> productIds = menuProductRequests.stream()
 				.map(MenuProductRequest::getProductId).collect(Collectors.toList());
-		return productDao.findAllById(productIds);
+		return productRepository.findAllById(productIds);
 	}
 
 	private MenuProduct createMenuProduct(List<Product> products, Menu menu, MenuProductRequest menuProductRequest) {
@@ -71,7 +71,7 @@ public class MenuService {
 	}
 
 	public List<MenuResponse> list() {
-		List<Menu> menus = menuDao.findAllWithMenuGroupFetchJoin();
+		List<Menu> menus = menuRepository.findAllWithMenuGroupFetchJoin();
 		return menus.stream()
 				.map(MenuResponse::of)
 				.collect(Collectors.toList());

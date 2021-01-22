@@ -6,7 +6,7 @@ import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.application.ProductService;
 import kitchenpos.menu.dto.*;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderDao;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,7 +43,7 @@ class OrderServiceTest {
 	private MenuService menuService;
 
 	@Autowired
-	private OrderDao orderDao;
+	private OrderRepository orderRepository;
 
 	private OrderTableResponse orderTable;
 	private OrderLineItemRequest request1;
@@ -123,7 +123,7 @@ class OrderServiceTest {
 
 		orderService.changeOrderStatus(orderResponse.getId(), new OrderRequest_ChangeStatus(OrderStatus.MEAL));
 
-		assertThat(orderDao.findById(orderResponse.getId())).isPresent()
+		assertThat(orderRepository.findById(orderResponse.getId())).isPresent()
 				.get()
 				.extracting(Order::getOrderStatus)
 				.isEqualTo(OrderStatus.MEAL);

@@ -1,8 +1,8 @@
 package kitchenpos.order.application;
 
 import kitchenpos.common.NotFoundException;
-import kitchenpos.order.domain.OrderTableDao;
-import kitchenpos.order.domain.TableGroupDao;
+import kitchenpos.order.domain.OrderTableRepository;
+import kitchenpos.order.domain.TableGroupRepository;
 import kitchenpos.order.dto.OrderTableRequest_Create;
 import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.order.dto.TableGroupRequest_Create;
@@ -31,10 +31,10 @@ class TableGroupServiceTest {
 	private TableService tableService;
 
 	@Autowired
-	private OrderTableDao orderTableDao;
+	private OrderTableRepository orderTableRepository;
 
 	@Autowired
-	private TableGroupDao tableGroupDao;
+	private TableGroupRepository tableGroupRepository;
 
 	private OrderTableResponse orderTable1;
 	private OrderTableResponse orderTable2;
@@ -62,7 +62,7 @@ class TableGroupServiceTest {
 		// OrderTable 에 tableGroupId 변경 됐는지 확인
 		assertThat(response.getOrderTables())
 				.map(OrderTableResponse::getId)
-				.map(id -> orderTableDao.findById(id).orElseThrow(Exception::new))
+				.map(id -> orderTableRepository.findById(id).orElseThrow(Exception::new))
 				.allSatisfy(orderTable -> assertThat(orderTable.getTableGroup().getId()).isEqualTo(response.getId()));
 	}
 
@@ -88,10 +88,10 @@ class TableGroupServiceTest {
 		// 각 테이블별로 그룹 ID 해제된 것 확인
 		assertThat(response.getOrderTables())
 				.map(OrderTableResponse::getId)
-				.map(id -> orderTableDao.findById(id).orElseThrow(Exception::new))
+				.map(id -> orderTableRepository.findById(id).orElseThrow(Exception::new))
 				.allSatisfy(orderTable -> assertThat(orderTable.getTableGroup()).isNull());
 
-		assertThat(tableGroupDao.findById(response.getId())).isNotPresent();
+		assertThat(tableGroupRepository.findById(response.getId())).isNotPresent();
 	}
 
 	@DisplayName("단체지정 해제하려는 테이블의 ID가 실제로 존재하지 않을 경우 예외 발생")

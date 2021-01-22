@@ -7,9 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface MenuDao extends JpaRepository<Menu, Long> {
-    long countByIdIn(List<Long> ids);
-
+public interface MenuRepository extends JpaRepository<Menu, Long> {
     @Query("select distinct m from Menu m " +
             "inner join fetch m.menuGroup ")
     List<Menu> findAllWithMenuGroupFetchJoin();
