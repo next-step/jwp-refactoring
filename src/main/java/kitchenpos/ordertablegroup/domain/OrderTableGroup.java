@@ -5,7 +5,6 @@ import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTables;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity(name = "table_group")
 public class OrderTableGroup extends BaseEntity {
@@ -29,5 +28,9 @@ public class OrderTableGroup extends BaseEntity {
 
     public OrderTables getOrderTables() {
         return orderTables;
+    }
+
+    public void unGroup() {
+        orderTables.getOrderTables().forEach(OrderTable::ungroupTable);
     }
 }

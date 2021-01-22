@@ -13,7 +13,7 @@ public class OrderTable {
     private int numberOfGuests;
     private boolean empty;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "table_group_id")
     private OrderTableGroup orderTableGroup;
 
@@ -68,6 +68,6 @@ public class OrderTable {
     }
 
     public Long getTableGroupId() {
-        return orderTableGroup.getId() == null ? null : orderTableGroup.getId();
+        return orderTableGroup == null ? null : orderTableGroup.getId();
     }
 }

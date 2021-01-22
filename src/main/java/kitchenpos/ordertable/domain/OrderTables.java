@@ -15,7 +15,7 @@ public class OrderTables {
     public OrderTables() {
     }
 
-    @OneToMany(mappedBy = "orderTableGroup", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "orderTableGroup", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderTable> orderTables = new ArrayList<>();
 
     public OrderTables(List<OrderTable> orderTables, int requestSize) {

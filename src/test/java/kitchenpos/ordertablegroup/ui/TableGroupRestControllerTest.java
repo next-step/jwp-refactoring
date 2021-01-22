@@ -1,9 +1,9 @@
-package kitchenpos.ui;
+package kitchenpos.ordertablegroup.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.application.TableGroupService;
-import kitchenpos.domain.TableGroup;
-import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.dto.OrderTableResponse;
+import kitchenpos.ordertablegroup.application.OrderTableGroupService;
+import kitchenpos.ordertablegroup.dto.OrderTableGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,18 +32,18 @@ class TableGroupRestControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private TableGroupService tableGroupService;
+    private OrderTableGroupService orderTableGroupService;
 
     @DisplayName("테이블 그룹을 등록한다.")
     @Test
     void create() throws Exception {
-        List<OrderTable> orderTables = Arrays.asList(
-            new OrderTable(10, false),
-            new OrderTable(5, false)
+        List<OrderTableResponse> orderTables = Arrays.asList(
+            new OrderTableResponse(1L, 1L, 10, false),
+            new OrderTableResponse(2L, 1L, 5, false)
         );
-        TableGroup tableGroup = new TableGroup(orderTables);
+        OrderTableGroupResponse tableGroup = new OrderTableGroupResponse(1L, null, orderTables);
 
-        when(tableGroupService.create(any())).thenReturn(tableGroup);
+        when(orderTableGroupService.create(any())).thenReturn(tableGroup);
 
         mockMvc.perform(post("/api/table-groups")
             .content(objectMapper.writeValueAsString(tableGroup)).contentType(MediaType.APPLICATION_JSON))
