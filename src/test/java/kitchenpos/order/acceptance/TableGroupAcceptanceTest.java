@@ -4,8 +4,6 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.TableGroup;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.order.dto.TableGroupRequest;
