@@ -11,9 +11,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.utils.IntegrationTest;
 
 /**
  * @author : byungkyu
@@ -21,9 +24,12 @@ import kitchenpos.domain.MenuGroup;
  * @description :
  **/
 @DisplayName("메뉴그룹")
-@ExtendWith(MockitoExtension.class)
-class MenuGroupServiceTest {
-	@Mock
+class MenuGroupServiceTest extends IntegrationTest {
+
+	@Autowired
+	private MenuGroupService menuGroupService;
+
+	@Autowired
 	private MenuGroupDao menuGroupDao;
 
 	@DisplayName("메뉴 그룹을 등록할 수 있다.")
@@ -31,13 +37,6 @@ class MenuGroupServiceTest {
 	void create() {
 		// given
 		MenuGroup menuGroup = new MenuGroup("한식");
-
-		MenuGroup expectedMenuGroup = mock(MenuGroup.class);
-		when(expectedMenuGroup.getId()).thenReturn(1L);
-		when(expectedMenuGroup.getName()).thenReturn("한식");
-
-		when(menuGroupDao.save(menuGroup)).thenReturn(expectedMenuGroup);
-		MenuGroupService menuGroupService = new MenuGroupService(menuGroupDao);
 
 		// when
 		MenuGroup savedMenuGroup = menuGroupService.create(menuGroup);
@@ -51,15 +50,12 @@ class MenuGroupServiceTest {
 	@Test
 	void list() {
 		// given
-		MenuGroup expectedMenuGroup = mock(MenuGroup.class);
-
-		when(menuGroupDao.findAll()).thenReturn(Arrays.asList(expectedMenuGroup));
-		MenuGroupService menuGroupService = new MenuGroupService(menuGroupDao);
-
+		List<MenuGroup> findAllByMenuGroupDao = menuGroupDao.findAll();
 		// when
 		List<MenuGroup> menuGroups = menuGroupService.list();
 
 		// then
-		assertThat(menuGroups).containsExactly(expectedMenuGroup);
+		assertThat(menuGroups.size()).isGreaterThan(0);
+		assertThat(menuGroups).containsAll(findAllByMenuGroupDao);
 	}
 }
