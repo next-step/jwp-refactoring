@@ -3,7 +3,6 @@ package kitchenpos.table.service;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.repository.OrderTableRepository;
 import kitchenpos.domain.TableGroup;
-import kitchenpos.table.domain.TableValidator;
 import kitchenpos.table.dto.OrderTableIdRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;

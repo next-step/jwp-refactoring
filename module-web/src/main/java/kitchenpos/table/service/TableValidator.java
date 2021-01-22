@@ -1,4 +1,4 @@
-package kitchenpos.table.domain;
+package kitchenpos.table.service;
 
 import kitchenpos.order.service.OrderStatusService;
 import org.springframework.stereotype.Component;

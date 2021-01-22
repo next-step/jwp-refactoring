@@ -37,7 +37,6 @@ subprojects {
         implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
         implementation 'org.springframework.boot:spring-boot-starter-web'
         implementation 'org.flywaydb:flyway-core'
-        runtimeOnly 'com.h2database:h2'
         testImplementation 'io.rest-assured:rest-assured:3.3.0'
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
     }
@@ -47,17 +46,9 @@ subprojects {
     }
 }
 
-project(':module-api') {
+project(':module-domain') {
     dependencies {
-        compile project(':module-domain')
-        compile project(':module-repository-jpa')
-    }
-}
 
-project(':module-common') {
-    dependencies {
-        compile project(':module-domain')
-        compile project(':module-repository-jpa')
     }
 }
 
@@ -67,8 +58,11 @@ project(':module-repository-jpa') {
     }
 }
 
-project(':module-domain') {
+project(':module-web') {
     dependencies {
-
+        compile project(':module-domain')
+        compile project(':module-repository-jpa')
     }
 }
+
+

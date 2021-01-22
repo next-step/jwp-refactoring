@@ -1,4 +1,4 @@
-package kitchenpos.generic.converter;
+package kitchenpos.converter;
 
 
 import kitchenpos.domain.Quantity;
