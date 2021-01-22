@@ -7,7 +7,8 @@ import org.junit.jupiter.api.Test;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 
 @DisplayName("주문 테이블 테스트")
 public class TableRestAcceptanceTest extends TableRestAcceptance {
@@ -16,10 +17,10 @@ public class TableRestAcceptanceTest extends TableRestAcceptance {
 	@Test
 	void createOrderTableTest() {
 		// given
-		OrderTable orderTable = OrderTable.of(null, null, 0, true);
+		OrderTableRequest request = OrderTableRequest.of(0, true);
 
 		// when
-		ExtractableResponse<Response> response = 주문_테이블_등록_요청(orderTable);
+		ExtractableResponse<Response> response = 주문_테이블_등록_요청(request);
 
 		// then
 		주문_테이블_등록됨(response);
@@ -29,9 +30,9 @@ public class TableRestAcceptanceTest extends TableRestAcceptance {
 	@Test
 	void selectOrderTablesTest() {
 		// given
-		ExtractableResponse<Response> createResponse1 = 주문_테이블_등록_요청(OrderTable.of(null, null, 0, false));
-		ExtractableResponse<Response> createResponse2 = 주문_테이블_등록_요청(OrderTable.of(null, null, 0, false));
-		ExtractableResponse<Response> createResponse3 = 주문_테이블_등록_요청(OrderTable.of(null, 1L, 5, true));
+		ExtractableResponse<Response> createResponse1 = 주문_테이블_등록되어있음(0, true);
+		ExtractableResponse<Response> createResponse2 = 주문_테이블_등록되어있음(0, true);
+		ExtractableResponse<Response> createResponse3 = 주문_테이블_등록되어있음(5, false);
 
 		// when
 		ExtractableResponse<Response> response = 주문_테이블_조회_요청();
@@ -45,25 +46,27 @@ public class TableRestAcceptanceTest extends TableRestAcceptance {
 	@Test
 	void changeEmptyTableTest() {
 		// given
-		OrderTable expected = 주문_테이블_등록_요청(OrderTable.of(null, null, 0, true)).as(OrderTable.class);
+		OrderTableRequest request = OrderTableRequest.of(0, false);
+		OrderTableResponse expected = 주문_테이블_등록되어있음(0, true).as(OrderTableResponse.class);
 
 		// when
-		ExtractableResponse<Response> response = 주문_테이블_상태변경_요청(expected, OrderTable.of(null, null, 2, false));
+		ExtractableResponse<Response> response = 주문_테이블_상태변경_요청(expected.getId(), request);
 
 		// then
-		주문_테이블_상태변경됨(response, false);
+		주문_테이블_상태변경됨(response, request.isEmpty());
 	}
 
 	@DisplayName("주문 테이블 인원수를 변경한다.")
 	@Test
 	void changeNumberOfGuestsTest() {
 		// given
-		OrderTable expected = 주문_테이블_등록_요청(OrderTable.of(null, null, 5, false)).as(OrderTable.class);
-		OrderTable actual = OrderTable.of(null, null, 10, false);
+		OrderTableRequest request = OrderTableRequest.of(10, false);
+		OrderTableResponse expected = 주문_테이블_등록되어있음(5, false).as(OrderTableResponse.class);
+
 		// when
-		ExtractableResponse<Response> response = 주문_테이블_인원변경_요청(expected.getId(), actual);
+		ExtractableResponse<Response> response = 주문_테이블_인원변경_요청(expected.getId(), request);
 
 		// then
-		주문_테이블_인원변경됨(response, actual);
+		주문_테이블_인원변경됨(response, request);
 	}
 }
