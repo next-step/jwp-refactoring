@@ -1,7 +1,7 @@
 package kitchenpos.product.service;
 
 import kitchenpos.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.repository.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import org.springframework.stereotype.Service;

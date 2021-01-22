@@ -2,7 +2,7 @@ package kitchenpos.order.service;
 
 import kitchenpos.menu.service.MenuService;
 import kitchenpos.domain.Order;
-import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.repository.OrderRepository;
 import kitchenpos.order.dto.OrderLineRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;

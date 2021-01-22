@@ -47,7 +47,21 @@ subprojects {
     }
 }
 
+project(':module-api') {
+    dependencies {
+        compile project(':module-domain')
+        compile project(':module-repository-jpa')
+    }
+}
+
 project(':module-common') {
+    dependencies {
+        compile project(':module-domain')
+        compile project(':module-repository-jpa')
+    }
+}
+
+project(':module-repository-jpa') {
     dependencies {
         compile project(':module-domain')
     }

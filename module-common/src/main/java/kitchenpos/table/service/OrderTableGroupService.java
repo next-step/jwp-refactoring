@@ -1,7 +1,7 @@
 package kitchenpos.table.service;
 
 import kitchenpos.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.repository.OrderTableRepository;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.table.domain.TableValidator;
 import kitchenpos.table.dto.OrderTableIdRequest;

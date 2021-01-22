@@ -1,11 +1,11 @@
 package kitchenpos.table.service;
 
 import kitchenpos.IntegrationTest;
-import kitchenpos.order.domain.OrderLineItemRepository;
-import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.repository.OrderLineItemRepository;
+import kitchenpos.repository.OrderRepository;
 import kitchenpos.order.service.OrderService;
 import kitchenpos.order.util.OrderRequestBuilder;
-import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.repository.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.util.OrderTableBuilder;
 import org.junit.jupiter.api.AfterEach;
