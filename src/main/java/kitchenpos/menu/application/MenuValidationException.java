@@ -1,6 +1,6 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.common.ValidationException;
+import kitchenpos.common.application.ValidationException;
 
 public class MenuValidationException extends ValidationException {
 

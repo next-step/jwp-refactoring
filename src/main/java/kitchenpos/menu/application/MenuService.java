@@ -1,7 +1,7 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.common.NotFoundException;
-import kitchenpos.common.Price;
+import kitchenpos.common.application.NotFoundException;
+import kitchenpos.common.entity.Price;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;

@@ -1,6 +1,6 @@
 package kitchenpos.order.application;
 
-import kitchenpos.common.NotFoundException;
+import kitchenpos.common.application.NotFoundException;
 import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.application.ProductService;

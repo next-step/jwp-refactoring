@@ -1,7 +1,7 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.common.BaseIdEntity;
-import kitchenpos.common.Price;
+import kitchenpos.common.entity.BaseIdEntity;
+import kitchenpos.common.entity.Price;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;

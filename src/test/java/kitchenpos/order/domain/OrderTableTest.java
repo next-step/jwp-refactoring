@@ -1,7 +1,7 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.common.NumberOfGuests;
-import kitchenpos.common.Quantity;
+import kitchenpos.common.entity.NumberOfGuests;
+import kitchenpos.common.entity.Quantity;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;

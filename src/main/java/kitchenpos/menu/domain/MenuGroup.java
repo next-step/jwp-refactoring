@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.common.BaseIdEntity;
+import kitchenpos.common.entity.BaseIdEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

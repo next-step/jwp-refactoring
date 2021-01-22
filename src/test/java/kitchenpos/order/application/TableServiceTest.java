@@ -1,6 +1,6 @@
 package kitchenpos.order.application;
 
-import kitchenpos.common.NotFoundException;
+import kitchenpos.common.application.NotFoundException;
 import kitchenpos.order.dto.OrderTableRequest_ChangeEmpty;
 import kitchenpos.order.dto.OrderTableRequest_ChangeGuests;
 import kitchenpos.order.dto.OrderTableRequest_Create;

@@ -1,6 +1,6 @@
 package kitchenpos.order.dto;
 
-import kitchenpos.common.BaseIdEntity;
+import kitchenpos.common.entity.BaseIdEntity;
 import kitchenpos.order.domain.OrderTable;
 
 import java.util.Optional;

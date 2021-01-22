@@ -1,7 +1,7 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.common.BaseIdEntity;
-import kitchenpos.common.NumberOfGuests;
+import kitchenpos.common.entity.BaseIdEntity;
+import kitchenpos.common.entity.NumberOfGuests;
 import kitchenpos.order.application.TableValidationException;
 
 import javax.persistence.*;

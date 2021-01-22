@@ -1,7 +1,7 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.common.BaseSeqEntity;
-import kitchenpos.common.Quantity;
+import kitchenpos.common.entity.BaseSeqEntity;
+import kitchenpos.common.entity.Quantity;
 import kitchenpos.menu.domain.Menu;
 
 import javax.persistence.*;

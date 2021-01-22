@@ -1,7 +1,7 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.common.BaseIdEntity;
-import kitchenpos.common.Price;
+import kitchenpos.common.entity.BaseIdEntity;
+import kitchenpos.common.entity.Price;
 import kitchenpos.menu.application.MenuValidationException;
 
 import javax.persistence.*;

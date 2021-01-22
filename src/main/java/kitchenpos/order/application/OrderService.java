@@ -1,7 +1,7 @@
 package kitchenpos.order.application;
 
-import kitchenpos.common.NotFoundException;
-import kitchenpos.common.Quantity;
+import kitchenpos.common.application.NotFoundException;
+import kitchenpos.common.entity.Quantity;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.*;
