@@ -51,6 +51,7 @@ class MenuGroupServiceTest extends IntegrationTest {
 	void list() {
 		// given
 		List<MenuGroup> findAllByMenuGroupDao = menuGroupDao.findAll();
+
 		// when
 		List<MenuGroup> menuGroups = menuGroupService.list();
 

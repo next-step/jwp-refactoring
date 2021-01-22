@@ -7,12 +7,14 @@ import static org.mockito.Mockito.*;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
@@ -22,6 +24,7 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.utils.IntegrationTest;
 
 /**
  * @author : byungkyu
@@ -29,76 +32,59 @@ import kitchenpos.domain.Product;
  * @description :
  **/
 @DisplayName("메뉴")
-@ExtendWith(MockitoExtension.class)
-class MenuServiceTest {
-	@Mock
+class MenuServiceTest extends IntegrationTest {
+
+	@Autowired
+	private MenuService menuService;
+	@Autowired
 	MenuDao menuDao;
-	@Mock
+	@Autowired
 	MenuGroupDao menuGroupDao;
-	@Mock
+	@Autowired
 	MenuProductDao menuProductDao;
-	@Mock
+	@Autowired
 	ProductDao productDao;
-
-	MenuGroup 두마리메뉴 = mock(MenuGroup.class);
-	MenuGroup 한마리메뉴 = mock(MenuGroup.class);
-
-	Product 후라이드 = mock(Product.class);
 
 	@DisplayName("메뉴를 등록할 수 있다.")
 	@Test
 	void create() {
 		// given
-		Long 두마리메뉴_id = 1L;
-		Long 한마리메뉴_id = 2L;
-		when(두마리메뉴.getId()).thenReturn(두마리메뉴_id);
-		when(한마리메뉴.getId()).thenReturn(한마리메뉴_id);
+		MenuGroup menuGroup = new MenuGroup("마늘메뉴");
+		MenuGroup savedMenuGroup = menuGroupDao.save(menuGroup);
+		Product product = new Product("마늘닭", BigDecimal.valueOf(16000));
+		Product savedProduct = productDao.save(product);
 
-		Long 후라이드_id = 1L;
-		when(후라이드.getId()).thenReturn(후라이드_id);
-		when(후라이드.getName()).thenReturn("후라이드");
-		when(후라이드.getPrice()).thenReturn(BigDecimal.valueOf(16000));
-
-		Menu 후라이드치킨 = new Menu("후라이드치킨", BigDecimal.valueOf(16000), 한마리메뉴.getId());
-		MenuProduct 후라이드치킨_수량 = new MenuProduct(후라이드치킨.getId(), 후라이드_id, 1L);
-		후라이드치킨.addMenuProduct(후라이드치킨_수량);
-
-		when(menuGroupDao.existsById(후라이드치킨.getMenuGroupId())).thenReturn(true);
-		when(productDao.findById(후라이드_id)).thenReturn(ofNullable(후라이드));
-		MenuService menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
-
-		Menu expectedMenu = mock(Menu.class);
-		when(expectedMenu.getId()).thenReturn(1L);
-		when(expectedMenu.getName()).thenReturn("후라이드치킨");
-		when(expectedMenu.getPrice()).thenReturn(BigDecimal.valueOf(16000));
-		when(expectedMenu.getMenuGroupId()).thenReturn(한마리메뉴_id);
-
-		when(menuDao.save(후라이드치킨)).thenReturn(expectedMenu);
+		MenuProduct menuProduct = new MenuProduct(savedProduct.getId(), 1);
+		List<MenuProduct> menuProducts = Arrays.asList(menuProduct);
+		Menu newMenu = new Menu("마늘치킨",  BigDecimal.valueOf(16000), savedMenuGroup.getId(), menuProducts);
 
 		// when
-		Menu created_후라이드치킨 = menuService.create(후라이드치킨);
+		Menu createdMenu = menuService.create(newMenu);
 
 		// then
-		assertThat(created_후라이드치킨.getId()).isNotNull();
-		assertThat(created_후라이드치킨.getName()).isEqualTo(후라이드치킨.getName());
-		assertThat(created_후라이드치킨.getPrice()).isEqualTo(후라이드치킨.getPrice());
-		assertThat(created_후라이드치킨.getMenuGroupId()).isEqualTo(후라이드치킨.getMenuGroupId());
+		assertThat(createdMenu.getId()).isNotNull();
+		assertThat(createdMenu.getName()).isEqualTo(newMenu.getName());
+		assertThat(createdMenu.getPrice()).isEqualByComparingTo(newMenu.getPrice());
+		assertThat(createdMenu.getMenuGroupId()).isEqualTo(newMenu.getMenuGroupId());
 	}
+
 
 	@DisplayName("메뉴의 가격은 0원 이하일 수 없다")
 	@Test
 	void priceMustOverZero() {
 		// given
-		Long 두마리메뉴_id = 1L;
-		Long 한마리메뉴_id = 2L;
-		when(두마리메뉴.getId()).thenReturn(두마리메뉴_id);
-		when(한마리메뉴.getId()).thenReturn(한마리메뉴_id);
-		Menu 돈주고파는후라이드치킨 = new Menu("후라이드치킨", BigDecimal.valueOf(-10000), 한마리메뉴_id);
-		MenuService menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
+		MenuGroup menuGroup = new MenuGroup("마늘메뉴");
+		MenuGroup savedMenuGroup = menuGroupDao.save(menuGroup);
+		Product product = new Product("마늘닭", BigDecimal.valueOf(16000));
+		Product savedProduct = productDao.save(product);
+
+		MenuProduct menuProduct = new MenuProduct(savedProduct.getId(), 1);
+		List<MenuProduct> menuProducts = Arrays.asList(menuProduct);
+		Menu newMenu = new Menu("마늘치킨",  BigDecimal.valueOf(-5000), savedMenuGroup.getId(), menuProducts);
 
 		// when - then
 		assertThatThrownBy(() -> {
-			menuService.create(돈주고파는후라이드치킨);
+			menuService.create(newMenu);
 		}).isInstanceOf(IllegalArgumentException.class);
 
 	}
@@ -107,15 +93,17 @@ class MenuServiceTest {
 	@Test
 	void menuGroupMustExist() {
 		// given
-		Long invalidMenuGroupId = 3L;
-		Menu 후라이드치킨 = new Menu("후라이드치킨", BigDecimal.valueOf(16000), invalidMenuGroupId);
+		Long invalidMenuGroupId = 999999L;
+		Product product = new Product("마늘닭", BigDecimal.valueOf(16000));
+		Product savedProduct = productDao.save(product);
 
-		when(menuGroupDao.existsById(후라이드치킨.getMenuGroupId())).thenReturn(false);
-		MenuService menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
+		MenuProduct menuProduct = new MenuProduct(savedProduct.getId(), 1);
+		List<MenuProduct> menuProducts = Arrays.asList(menuProduct);
+		Menu newMenu = new Menu("마늘치킨",  BigDecimal.valueOf(16000), invalidMenuGroupId, menuProducts);
 
 		// when - then
 		assertThatThrownBy(() -> {
-			menuService.create(후라이드치킨);
+			menuService.create(newMenu);
 		}).isInstanceOf(IllegalArgumentException.class);
 	}
 
@@ -123,24 +111,19 @@ class MenuServiceTest {
 	@Test
 	void menuPriceCannotOverProduct() {
 		// given
-		Long 두마리메뉴_id = 1L;
-		Long 한마리메뉴_id = 2L;
-		when(두마리메뉴.getId()).thenReturn(두마리메뉴_id);
-		when(한마리메뉴.getId()).thenReturn(한마리메뉴_id);
+		// given
+		MenuGroup menuGroup = new MenuGroup("마늘메뉴");
+		MenuGroup savedMenuGroup = menuGroupDao.save(menuGroup);
+		Product product = new Product("마늘닭", BigDecimal.valueOf(16000));
+		Product savedProduct = productDao.save(product);
 
-		Menu 후라이드치킨 = mock(Menu.class);
-		when(후라이드치킨.getPrice()).thenReturn(BigDecimal.valueOf(5000000));
-		when(후라이드치킨.getMenuGroupId()).thenReturn(한마리메뉴_id);
-
-		Product 후라이드 = mock(Product.class);
-		when(후라이드치킨.getPrice()).thenReturn(BigDecimal.valueOf(16000));
-
-		when(menuGroupDao.existsById(후라이드치킨.getMenuGroupId())).thenReturn(true);
-		MenuService menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
+		MenuProduct menuProduct = new MenuProduct(savedProduct.getId(), 1);
+		List<MenuProduct> menuProducts = Arrays.asList(menuProduct);
+		Menu newMenu = new Menu("마늘치킨",  BigDecimal.valueOf(50000000), savedMenuGroup.getId(), menuProducts);
 
 		// when - then
 		assertThatThrownBy(() -> {
-			menuService.create(후라이드치킨);
+			menuService.create(newMenu);
 		}).isInstanceOf(IllegalArgumentException.class);
 	}
 
@@ -148,20 +131,21 @@ class MenuServiceTest {
 	@Test
 	void list() {
 		// given
-		Menu menu = mock(Menu.class);
-		when(menu.getId()).thenReturn(1L);
-
-		MenuProduct menuProduct = mock(MenuProduct.class);
-
-		when(menuDao.findAll()).thenReturn(Arrays.asList(menu));
-		when(menuProductDao.findAllByMenuId(menu.getId())).thenReturn(Arrays.asList(menuProduct));
-		MenuService menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
+		List<Menu> findAll = menuDao.findAll();
 
 		// when
-		List<Menu> menus = menuService.list();
+		List<Menu> actualMenus = menuService.list();
 
 		// then
-		assertThat(menus).contains(menu);
+		List<Long> expectedIds = findAll.stream()
+			.map(menu -> menu.getId())
+			.collect(Collectors.toList());
+
+		List<Long> actualMenuIds = actualMenus.stream()
+			.map(menu -> menu.getId())
+			.collect(Collectors.toList());
+
+		assertThat(actualMenuIds).containsAll(expectedIds);
 	}
 
 }
