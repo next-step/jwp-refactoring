@@ -2,7 +2,6 @@ package kitchenpos.order.domain;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.order.dto.OrderResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,8 +46,8 @@ public class OrderTest {
                 .menuProducts(Arrays.asList(메뉴상품_양념))
                 .build();
 
-        orderLineItem_후라이드 = new OrderLineItem(메뉴_후라이드, 1);
-        orderLineItem_양념 = new OrderLineItem(메뉴_양념, 1);
+        orderLineItem_후라이드 = new OrderLineItem(메뉴_후라이드.getId(), 1);
+        orderLineItem_양념 = new OrderLineItem(메뉴_양념.getId(), 1);
     }
 
     @DisplayName("주문을 생성한다.")
