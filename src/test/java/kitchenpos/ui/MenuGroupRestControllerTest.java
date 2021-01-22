@@ -1,10 +1,11 @@
 package kitchenpos.ui;
 
 import kitchenpos.common.BaseControllerTest;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static kitchenpos.common.Fixtures.menuGroupRequest;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -26,18 +27,16 @@ public class MenuGroupRestControllerTest extends BaseControllerTest {
 
     void 메뉴_그룹_등록() throws Exception {
         // given
-        String name = "추천메뉴";
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setName(name);
+        MenuGroupRequest menuGroupRequest = menuGroupRequest();
 
         // when & then
         mockMvc.perform(post("/api/menu-groups")
                 .contentType(APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(menuGroup)))
+                .content(objectMapper.writeValueAsString(menuGroupRequest)))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").isNotEmpty())
-                .andExpect(jsonPath("$.name").value(name));
+                .andExpect(jsonPath("$.name").value(menuGroupRequest.getName()));
     }
 
     void 메뉴_그룹_추가됨_목록_조회() throws Exception {
