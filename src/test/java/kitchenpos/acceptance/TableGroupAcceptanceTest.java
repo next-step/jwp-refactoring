@@ -6,12 +6,18 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
+import kitchenpos.dto.TableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -20,36 +26,37 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     @DisplayName("테이블 그룹을 관리한다")
     @Test
     void manage() {
-        TableGroup tableGroup = 테이블_그룹_생성();
+        TableGroupResponse tableGroup = 테이블_그룹_생성();
         테이블_그룹_삭제(tableGroup);
     }
 
-    private TableGroup 테이블_그룹_생성() {
-        OrderTable table1 = TableAcceptanceTest.생성_요청(TableAcceptanceTest.createRequest())
-                .as(OrderTable.class);
-        OrderTable table2 = TableAcceptanceTest.생성_요청(TableAcceptanceTest.createRequest())
-                .as(OrderTable.class);
+    private TableGroupResponse 테이블_그룹_생성() {
+        TableResponse table1 = TableAcceptanceTest.생성_요청()
+                .as(TableResponse.class);
+        TableResponse table2 = TableAcceptanceTest.생성_요청()
+                .as(TableResponse.class);
 
-        TableGroup request = createRequest(table1, table2);
+        TableGroupRequest request = createRequest(table1, table2);
         ExtractableResponse<Response> createdResponse = 생성_요청(request);
 
         생성됨(createdResponse);
-        return createdResponse.as(TableGroup.class);
+        return createdResponse.as(TableGroupResponse.class);
     }
 
-    private void 테이블_그룹_삭제(TableGroup tableGroup) {
+    private void 테이블_그룹_삭제(TableGroupResponse tableGroup) {
         ExtractableResponse<Response> deletedResponse = 삭제_요청(tableGroup.getId());
 
         삭제됨(deletedResponse);
     }
 
-    public static TableGroup createRequest(OrderTable ... tables) {
-        TableGroup request = new TableGroup();
-        request.setOrderTables(Arrays.asList(tables));
-        return request;
+    public static TableGroupRequest createRequest(TableResponse... orderTables) {
+        List<Long> tableIds = Stream.of(orderTables)
+                .map(TableResponse::getId)
+                .collect(Collectors.toList());
+        return new TableGroupRequest(tableIds);
     }
 
-    public static ExtractableResponse<Response> 생성_요청(TableGroup request) {
+    public static ExtractableResponse<Response> 생성_요청(TableGroupRequest request) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

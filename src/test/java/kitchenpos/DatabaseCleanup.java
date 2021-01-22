@@ -7,7 +7,7 @@ import org.springframework.test.context.ActiveProfiles;
 @Service
 @ActiveProfiles("test")
 public class DatabaseCleanup {
-    private final String[] tableNames = {"menu", "menu_group", "menu_product", "orders", "order_line_item", "order_table", "product", "table_group"};
+    private final String[] tableNames = {"menu", "menu_group", "menu_product", "orders", "order_menu", "order_table", "product", "table_group"};
 
     private final JdbcTemplate jdbcTemplate;
 

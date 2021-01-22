@@ -1,52 +1,68 @@
 package kitchenpos.domain;
 
+import kitchenpos.exception.AlreadyCompleteException;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "orders")
+@EntityListeners(AuditingEntityListener.class)
 public class Order {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long orderTableId;
-    private String orderStatus;
-    private LocalDateTime orderedTime;
-    private List<OrderLineItem> orderLineItems;
+    @ManyToOne
+    private OrderTable orderTable;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus = OrderStatus.COOKING;
+    @CreatedDate
+    private LocalDateTime createdTime;
+    @OneToMany(mappedBy = "order", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<OrderMenu> orderMenus = new ArrayList<>();
+
+    protected Order(){}
+
+    public Order(OrderTable orderTable) {
+        this.orderTable = orderTable;
+    }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public Long getOrderTableId() {
-        return orderTableId;
-    }
-
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
-    }
-
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(final String orderStatus) {
+    public LocalDateTime getCreatedTime() {
+        return createdTime;
+    }
+
+    public List<OrderMenu> getOrderMenus() {
+        return orderMenus;
+    }
+
+    public void add(Menu menu, Long quantity) {
+        this.orderMenus.add(new OrderMenu(this, menu, quantity));
+    }
+
+    public Long getOrderTableId() {
+        return orderTable.getId();
+    }
+
+    public void changeStatus(OrderStatus orderStatus) {
+        if (isComplete()) {
+            throw new AlreadyCompleteException("이미 완료된 주문입니다.");
+        }
         this.orderStatus = orderStatus;
     }
 
-    public LocalDateTime getOrderedTime() {
-        return orderedTime;
-    }
-
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
-    }
-
-    public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
-    }
-
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
+    private boolean isComplete() {
+        return orderStatus.equals(OrderStatus.COMPLETION);
     }
 }

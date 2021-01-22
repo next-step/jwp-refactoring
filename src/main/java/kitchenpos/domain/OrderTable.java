@@ -1,40 +1,52 @@
 package kitchenpos.domain;
 
+import kitchenpos.exception.BadRequestException;
+
+import javax.persistence.*;
+import java.util.Objects;
+
+@Entity
 public class OrderTable {
+    private static final int EMPTY_NUMBER = 0;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long tableGroupId;
-    private int numberOfGuests;
-    private boolean empty;
+    @ManyToOne
+    private TableGroup tableGroup;
+    private int numberOfGuests = EMPTY_NUMBER;
+
+    public void update(int numberOfGuests) {
+        this.numberOfGuests = numberOfGuests;
+    }
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public Long getTableGroupId() {
-        return tableGroupId;
-    }
-
-    public void setTableGroupId(final Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
     }
 
     public int getNumberOfGuests() {
         return numberOfGuests;
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
-    }
-
     public boolean isEmpty() {
-        return empty;
+        return numberOfGuests == EMPTY_NUMBER;
     }
 
-    public void setEmpty(final boolean empty) {
-        this.empty = empty;
+    public void group(TableGroup tableGroup) {
+        if (tableGroup == null) {
+            throw new BadRequestException("Table group은 null로 세팅할 수 없습니다.");
+        }
+        this.tableGroup = tableGroup;
+    }
+
+    public void ungroup() {
+        this.tableGroup = null;
+    }
+
+    public boolean isGroupped() {
+        return Objects.nonNull(tableGroup);
+    }
+
+    public Long getTableGroupId() {
+        return (tableGroup == null)?null:tableGroup.getId();
     }
 }

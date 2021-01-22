@@ -1,16 +1,20 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.*;
+import kitchenpos.dto.*;
+import kitchenpos.exception.InvalidTableCountException;
+import kitchenpos.exception.TableInUseException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Arrays;
+import javax.persistence.EntityNotFoundException;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @DisplayName("테이블 그룹 서비스")
 public class TableGroupServiceTest extends ServiceTestBase {
@@ -34,76 +38,71 @@ public class TableGroupServiceTest extends ServiceTestBase {
     @DisplayName("테이블 그룹 생성")
     @Test
     void create() {
-        OrderTable savedTable = tableService.create(TableServiceTest.createTable());
-        OrderTable savedTable2 = tableService.create(TableServiceTest.createTable());
+        TableResponse savedTable = tableService.create();
+        TableResponse savedTable2 = tableService.create();
 
-        TableGroup savedTableGroup = tableGroupService.create(createTableGroup(savedTable, savedTable2));
+        TableGroupResponse savedTableGroup = tableGroupService.create(createTableGroup(savedTable, savedTable2));
 
         assertThat(savedTableGroup.getId()).isEqualTo(savedTableGroup.getId());
-    }
-
-    @DisplayName("테이블 리스트가 빈 테이블 그룹 생성")
-    @Test
-    void createWithEmptyList() {
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.create(createTableGroup()));
     }
 
     @DisplayName("테이블 리스트의 크기가 2보다 작은 테이블 그룹 생성")
     @Test
     void createWithUnder2() {
-        OrderTable savedTable = tableService.create(TableServiceTest.createTable());
+        TableResponse savedTable = tableService.create();
 
-        assertThatIllegalArgumentException()
+        assertThatExceptionOfType(InvalidTableCountException.class)
                 .isThrownBy(() -> tableGroupService.create(createTableGroup(savedTable)));
     }
 
     @DisplayName("등록되지 않은 테이블이 포함 된 테이블 그룹 생성")
     @Test
     void createWithNotExistsTable() {
-        OrderTable savedTable = tableService.create(TableServiceTest.createTable());
-        OrderTable newTable = TableServiceTest.createTable();
-        newTable.setId(99L);
+        TableResponse savedTable = tableService.create();
+        TableResponse newTable = new TableResponse(99L, null, 0);
 
-        assertThatIllegalArgumentException()
+        assertThatExceptionOfType(EntityNotFoundException.class)
                 .isThrownBy(() -> tableGroupService.create(createTableGroup(savedTable, newTable)));
     }
 
     @DisplayName("이용중인 테이블이 포함 된 테이블 그룹 생성")
     @Test
     void createWithUsing() {
-        OrderTable savedTable = tableService.create(TableServiceTest.createTable());
-        OrderTable savedTable2 = tableService.create(TableServiceTest.createTable());
-        savedTable.setEmpty(false);
-        tableService.changeEmpty(savedTable.getId(), savedTable);
+        TableResponse savedTable = tableService.create();
+        TableResponse savedTable2 = tableService.create();
 
-        assertThatIllegalArgumentException()
+        tableService.update(savedTable.getId(), TableServiceTest.createRequest(4));
+
+        assertThatExceptionOfType(TableInUseException.class)
                 .isThrownBy(() -> tableGroupService.create(createTableGroup(savedTable, savedTable2)));
     }
 
     @DisplayName("다른 그룹에 속한 테이블이 포함 된 테이블 그룹 생성")
     @Test
     void createWithOtherGroup() {
-        OrderTable savedTable = tableService.create(TableServiceTest.createTable());
-        OrderTable savedTable2 = tableService.create(TableServiceTest.createTable());
-        OrderTable savedTable3 = tableService.create(TableServiceTest.createTable());
-        tableGroupService.create(createTableGroup(savedTable, savedTable2));
+        TableResponse savedTable = tableService.create();
+        TableResponse savedTable2 = tableService.create();
 
-        assertThatIllegalArgumentException()
+        TableGroupResponse savedTableGroup = tableGroupService.create(createTableGroup(savedTable, savedTable2));
+
+        TableResponse savedTable3 = tableService.create();
+
+        assertThatExceptionOfType(TableInUseException.class)
                 .isThrownBy(() -> tableGroupService.create(createTableGroup(savedTable2, savedTable3)));
     }
 
     @DisplayName("테이블 그룹 삭제")
     @Test
     void ungroup() {
-        OrderTable savedTable = tableService.create(TableServiceTest.createTable());
-        OrderTable savedTable2 = tableService.create(TableServiceTest.createTable());
-        TableGroup tableGroup = tableGroupService.create(createTableGroup(savedTable, savedTable2));
+        TableResponse savedTable = tableService.create();
+        TableResponse savedTable2 = tableService.create();
 
-        tableGroupService.ungroup(tableGroup.getId());
+        TableGroupResponse savedTableGroup = tableGroupService.create(createTableGroup(savedTable, savedTable2));
 
-        List<OrderTable> tables =  tableService.list();
-        for (OrderTable table : tables) {
+        tableGroupService.ungroup(savedTableGroup.getId());
+
+        List<TableResponse> tables =  tableService.list();
+        for (TableResponse table : tables) {
             assertThat(table.getTableGroupId()).isNull();
         }
     }
@@ -111,24 +110,25 @@ public class TableGroupServiceTest extends ServiceTestBase {
     @DisplayName("이용중인 테이블이 포함 된 테이블 그룹 삭제")
     @Test
     void ungroupWithUse() {
-        MenuGroup menuGroup = menuGroupService.create(MenuGroupServiceTest.createMenuGroup("추천메뉴"));
-        Product product = productService.create(ProductServiceTest.createProduct("후라이드", 17_000L));
-        List<MenuProduct> menuProducts = Collections.singletonList(MenuServiceTest.createMenuProduct(product.getId(), 2L));
-        Menu menu = menuService.create(MenuServiceTest.createMenu("후라이드+후라이드", 19_000L, menuGroup.getId(), menuProducts));
-        OrderTable savedTable = tableService.create(TableServiceTest.createTable());
-        OrderTable savedTable2 = tableService.create(TableServiceTest.createTable());
-        TableGroup tableGroup = tableGroupService.create(createTableGroup(savedTable, savedTable2));
-        List<OrderLineItem> orderLineItems = Collections.singletonList(OrderServiceTest.createOrderLineItem(menu.getId(), 1L));
-        orderService.create(OrderServiceTest.createOrder(savedTable.getId(), orderLineItems));
+        MenuGroupResponse menuGroup = menuGroupService.create(MenuGroupServiceTest.createRequest("추천메뉴"));
+        ProductResponse product = productService.create(ProductServiceTest.createRequest("후라이드", 17_000L));
+        List<MenuProductRequest> menuProducts = Collections.singletonList(MenuServiceTest.createMenuProduct(product.getId(), 2L));
+        MenuResponse menu = menuService.create(MenuServiceTest.createRequest("후라이드+후라이드", 19_000L, menuGroup.getId(), menuProducts));
+        TableResponse savedTable = tableService.create();
+        TableResponse savedTable2 = tableService.create();
+        TableGroupResponse savedTableGroup = tableGroupService.create(createTableGroup(savedTable, savedTable2));
+        tableService.update(savedTable.getId(), TableServiceTest.createRequest(4));
+        List<OrderMenuRequest> orderMenus = Collections.singletonList(OrderServiceTest.createOrderMenu(menu.getId(), 1L));
+        orderService.create(OrderServiceTest.createOrder(savedTable.getId(), orderMenus));
 
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()));
+        assertThatExceptionOfType(TableInUseException.class)
+                .isThrownBy(() -> tableGroupService.ungroup(savedTableGroup.getId()));
     }
 
-    public static TableGroup createTableGroup(OrderTable ... orderTables) {
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Arrays.asList(orderTables));
-
-        return tableGroup;
+    public static TableGroupRequest createTableGroup(TableResponse ... orderTables) {
+        List<Long> tableIds = Stream.of(orderTables)
+                .map(TableResponse::getId)
+                .collect(Collectors.toList());
+        return new TableGroupRequest(tableIds);
     }
 }

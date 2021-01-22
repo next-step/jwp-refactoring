@@ -1,73 +1,68 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.dao.OrderRepository;
+import kitchenpos.dao.TableRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.TableRequest;
+import kitchenpos.dto.TableResponse;
+import kitchenpos.exception.TableInUseException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
+import java.util.stream.Collectors;
 
+@Transactional
 @Service
 public class TableService {
-    private final OrderDao orderDao;
-    private final OrderTableDao orderTableDao;
+    private static final int EMPTY_COUNT = 0;
 
-    public TableService(final OrderDao orderDao, final OrderTableDao orderTableDao) {
-        this.orderDao = orderDao;
-        this.orderTableDao = orderTableDao;
+    private final OrderRepository orderRepository;
+    private final TableRepository tableRepository;
+
+    public TableService(OrderRepository orderRepository, TableRepository tableRepository) {
+        this.orderRepository = orderRepository;
+        this.tableRepository = tableRepository;
     }
 
-    @Transactional
-    public OrderTable create(final OrderTable orderTable) {
-        orderTable.setTableGroupId(null);
-
-        return orderTableDao.save(orderTable);
+    public TableResponse create() {
+        return fromEntity(tableRepository.save(new OrderTable()));
     }
 
-    public List<OrderTable> list() {
-        return orderTableDao.findAll();
+    @Transactional(readOnly = true)
+    public List<TableResponse> list() {
+        return tableRepository.findAll()
+                .stream()
+                .map(TableService::fromEntity)
+                .collect(Collectors.toList());
     }
 
-    @Transactional
-    public OrderTable changeEmpty(final Long orderTableId, final OrderTable orderTable) {
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+    public TableResponse update(Long tableId, TableRequest request) {
+        OrderTable savedOrderTable = tableRepository.findById(tableId)
+                .orElseThrow(EntityNotFoundException::new);
 
-        if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
-            throw new IllegalArgumentException();
+        if (request.getNumberOfGuests() == EMPTY_COUNT) {
+            validateEmptyTable(savedOrderTable);
         }
 
-        if (orderDao.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
-        }
-
-        savedOrderTable.setEmpty(orderTable.isEmpty());
-
-        return orderTableDao.save(savedOrderTable);
+        savedOrderTable.update(request.getNumberOfGuests());
+        return fromEntity(savedOrderTable);
     }
 
-    @Transactional
-    public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTable orderTable) {
-        final int numberOfGuests = orderTable.getNumberOfGuests();
+    public static TableResponse fromEntity(OrderTable table) {
+        return new TableResponse(table.getId(), table.getTableGroupId(), table.getNumberOfGuests());
+    }
 
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
+    private void validateEmptyTable(OrderTable savedOrderTable) {
+        if (savedOrderTable.isGroupped()) {
+            throw new TableInUseException("그룹이 지어진 테이블은 변경 할 수 없습니다.");
         }
 
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException();
+        if (orderRepository.existsByOrderTableAndOrderStatusIn(savedOrderTable, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+            throw new TableInUseException("이용중인 테이블은 변경 할 수 없습니다.");
         }
-
-        savedOrderTable.setNumberOfGuests(numberOfGuests);
-
-        return orderTableDao.save(savedOrderTable);
     }
 }
