@@ -22,12 +22,21 @@ public class Product extends BaseEntity {
 	}
 
 	protected Product(String name, long price) {
+		this(null, name, Price.of(price));
+	}
+
+	public Product(Long id, String name, Price price) {
+		this.id = id;
 		this.name = name;
-		this.price = Price.of(price);
+		this.price = price;
+	}
+
+	public static Product of(Long id, String name, long price) {
+		return new Product(id, name, Price.of(price));
 	}
 
 	public static Product of(String name, long price) {
-		return new Product(name, price);
+		return of(null, name, price);
 	}
 
 	public Long getId() {
@@ -39,6 +48,6 @@ public class Product extends BaseEntity {
 	}
 
 	public Long price() {
-		return this.price.getPrice();
+		return this.price.priceToLong();
 	}
 }

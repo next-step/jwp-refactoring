@@ -26,13 +26,21 @@ public class Price {
 		return new Price(price);
 	}
 
-	private void validatePrice(long price) {
-		if (price < PRICE_MUST_BIG_ZERO) {
-			throw new IllegalArgumentException(PRICE_CREATE_ERROR);
-		}
+	public Long priceToLong() {
+		return this.price.longValue();
 	}
 
-	public Long getPrice() {
-		return this.price.longValue();
+	public BigDecimal getPrice() {
+		return price;
+	}
+
+	public boolean isBigger(Price totalPrice) {
+		return this.price.compareTo(totalPrice.getPrice()) > PRICE_MUST_BIG_ZERO;
+	}
+
+	private void validatePrice(long price) {
+		if (price <= PRICE_MUST_BIG_ZERO) {
+			throw new IllegalArgumentException(PRICE_CREATE_ERROR);
+		}
 	}
 }
