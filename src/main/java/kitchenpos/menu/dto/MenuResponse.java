@@ -1,21 +1,21 @@
 package kitchenpos.menu.dto;
 
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menugroup.domain.MenuGroup;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class MenuResponse {
     private Long id;
     private String name;
-    private BigDecimal price;
-    private Long menuGroupId;
-    private List<MenuProductResponse> menuProducts;
+    private final BigDecimal price;
+    private final Long menuGroupId;
+    private final List<MenuProductResponse> menuProducts;
 
-    public static MenuResponse of(Menu menu) {
+    public static MenuResponse of(Menu menu, List<MenuProduct> menuProducts) {
         MenuGroup menuGroup = menu.getMenuGroup();
         if (menuGroup == null) {
             throw new IllegalArgumentException();
@@ -23,7 +23,7 @@ public class MenuResponse {
 
         return new MenuResponse(
                 menu.getId(), menu.getName(), menu.getPrice(), menuGroup.getId(),
-                menu.getMenuProducts().stream()
+                menuProducts.stream()
                         .map(MenuProductResponse::of)
                         .collect(Collectors.toList())
         );
@@ -49,32 +49,12 @@ public class MenuResponse {
         return price;
     }
 
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
-    }
-
     public Long getMenuGroupId() {
         return menuGroupId;
     }
 
-    public void setMenuGroupId(final Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
-    }
-
     public List<MenuProductResponse> getMenuProducts() {
         return menuProducts;
-    }
-
-    public void setMenuProducts(final List<MenuProductResponse> menuProducts) {
-        this.menuProducts = menuProducts;
-    }
-
-    public MenuResponse(Long id, String name, BigDecimal price) {
-        this(id, name, price, null, Collections.emptyList());
-    }
-
-    public MenuResponse(Long id, String name, BigDecimal price, Long menuGroupId) {
-        this(id, name, price, menuGroupId, Collections.emptyList());
     }
 
     public MenuResponse(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProductResponse> menuProducts) {
