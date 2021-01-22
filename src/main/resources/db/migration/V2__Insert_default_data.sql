@@ -26,7 +26,7 @@ INSERT INTO menu_product (menu_id, product_id, quantity) VALUES (6, 6, 1);
 
 INSERT INTO table_group (id, created_date) VALUES (1, '2021-01-17');
 
-INSERT INTO order_table (id, number_of_guests, empty) VALUES (1, 0, false);
+INSERT INTO order_table (id, number_of_guests, empty) VALUES (1, 0, true);
 INSERT INTO order_table (id, number_of_guests, empty) VALUES (2, 0, true);
 INSERT INTO order_table (id, number_of_guests, empty) VALUES (3, 0, true);
 INSERT INTO order_table (id, number_of_guests, empty) VALUES (4, 0, true);
@@ -34,8 +34,3 @@ INSERT INTO order_table (id, number_of_guests, empty) VALUES (5, 0, true);
 INSERT INTO order_table (id, number_of_guests, empty) VALUES (6, 0, true);
 INSERT INTO order_table (id, number_of_guests, empty) VALUES (7, 0, true);
 INSERT INTO order_table (id, number_of_guests, empty) VALUES (8, 0, true);
-
-INSERT INTO orders (id, order_table_id, order_status, ordered_time) VALUES (1,1,'COOKING', '2021-01-17');
-
-INSERT INTO order_line_item (order_id, menu_id, quantity) VALUES (1,1,1);
-INSERT INTO order_line_item (order_id, menu_id, quantity) VALUES (1,2,1);
