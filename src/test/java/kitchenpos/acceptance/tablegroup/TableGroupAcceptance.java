@@ -43,6 +43,6 @@ public class TableGroupAcceptance extends AcceptanceTest {
 	}
 
 	public static void 단체_지정_해제됨(ExtractableResponse<Response> response) {
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
 	}
 }

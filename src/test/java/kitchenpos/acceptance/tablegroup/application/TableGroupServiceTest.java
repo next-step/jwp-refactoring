@@ -21,7 +21,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.OrderDao;
+import kitchenpos.order.application.OrderService;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.Orders;
 import kitchenpos.ordertable.application.OrderTableService;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTables;
@@ -35,7 +37,7 @@ import kitchenpos.tablegroup.dto.TableGroupResponse;
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
 	@Mock
-	private OrderDao orderDao;
+	private OrderService orderService;
 	@Mock
 	private OrderTableService orderTableService;
 	@Mock
@@ -156,7 +158,7 @@ class TableGroupServiceTest {
 		// given
 		given(tableGroupRepository.findById(any())).willReturn(Optional.of(tableGroup));
 		given(orderTableService.findAllByTableGroup(tableGroup)).willReturn(hasGroupOrderTables.getOrderTables());
-		//given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(false);
+		given(orderService.findByOrderTable(any())).willReturn(Orders.of(null, null, OrderStatus.COMPLETION));
 
 		// when
 		tableGroupService.ungroup(1L);
@@ -166,17 +168,4 @@ class TableGroupServiceTest {
 			.filter(table -> table.getTableGroup() == null)
 			.collect(Collectors.toList())).containsAll(hasGroupOrderTables.getOrderTables());
 	}
-
-	/*
-	@DisplayName("단체[예외]: 단체 해지 테스트(주문 상태가 조리 또는 식사인 테이블은 해지가 불가능하다.)")
-	@Test
-	void ungroupCookingTable() {
-		given(orderTableService.findAllByTableGroupId(any())).willReturn(orderTables);
-		given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(true);
-
-		//when-then
-		assertThatIllegalArgumentException().isThrownBy(
-			() -> tableGroupService.ungroup(1L)
-		);
-	}*/
 }

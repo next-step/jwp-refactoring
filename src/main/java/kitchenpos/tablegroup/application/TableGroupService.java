@@ -7,7 +7,8 @@ import javax.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.dao.OrderDao;
+import kitchenpos.order.application.OrderService;
+import kitchenpos.order.domain.Orders;
 import kitchenpos.ordertable.application.OrderTableService;
 import kitchenpos.ordertable.domain.OrderTables;
 import kitchenpos.tablegroup.domain.TableGroup;
@@ -20,13 +21,13 @@ import kitchenpos.tablegroup.dto.TableGroupResponse;
 public class TableGroupService {
 	private static final int TABLE_GROUP_MINIMUM_COUNT = 2;
 
-	private final OrderDao orderDao;
+	private final OrderService orderService;
 	private final OrderTableService orderTableService;
 	private final TableGroupRepository tableGroupRepository;
 
-	public TableGroupService(final OrderDao orderDao, final OrderTableService orderTableService,
+	public TableGroupService(final OrderService orderService, final OrderTableService orderTableService,
 		final TableGroupRepository tableGroupRepository) {
-		this.orderDao = orderDao;
+		this.orderService = orderService;
 		this.orderTableService = orderTableService;
 		this.tableGroupRepository = tableGroupRepository;
 	}
@@ -46,12 +47,8 @@ public class TableGroupService {
 	public void ungroup(final Long tableGroupId) {
 		final TableGroup persistTableGroup = findById(tableGroupId);
 		final OrderTables orderTables = OrderTables.of(orderTableService.findAllByTableGroup(persistTableGroup));
-
-		/* 주문 상태 엔티티 생성 필요
-		if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
-			orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-			throw new IllegalArgumentException();
-		}*/
+		final Orders order = orderService.findByOrderTable(orderTables.getOrderTables().get(0));
+		order.validateStatus();
 		orderTables.clearTableGroup();
 		tableGroupRepository.delete(persistTableGroup);
 	}

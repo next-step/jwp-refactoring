@@ -15,7 +15,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.OrderDao;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.Orders;
 import kitchenpos.ordertable.application.OrderTableService;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
@@ -25,7 +27,7 @@ import kitchenpos.ordertable.dto.OrderTableResponse;
 @ExtendWith(MockitoExtension.class)
 class OrderTableServiceTest {
 	@Mock
-	private OrderDao orderDao;
+	private OrderRepository orderService;
 	@Mock
 	private OrderTableRepository orderTableRepository;
 	@InjectMocks
@@ -56,7 +58,7 @@ class OrderTableServiceTest {
 		OrderTable orderTable = OrderTable.of(1L, 0, true);
 		OrderTableRequest request = OrderTableRequest.of(0, true);
 		given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
-		//given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(false);
+		given(orderService.findByOrderTable(any())).willReturn(Orders.of(null, null, OrderStatus.COMPLETION));
 
 		// when
 		final OrderTableResponse actual = orderTableService.changeEmpty(orderTable.getId(), request);

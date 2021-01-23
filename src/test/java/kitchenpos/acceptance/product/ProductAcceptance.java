@@ -13,7 +13,6 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.acceptance.util.AcceptanceTest;
-import kitchenpos.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 
@@ -58,7 +57,7 @@ public class ProductAcceptance extends AcceptanceTest {
 	public static void 상품_목록_포함됨(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> expected) {
 
 		List<Long> expectedProductIds = expected.stream()
-			.map(it -> it.as(Product.class).getId())
+			.map(it -> it.as(ProductResponse.class).getId())
 			.collect(Collectors.toList());
 
 		List<Long> resultProductIds = response.jsonPath().getList(".", ProductResponse.class).stream()

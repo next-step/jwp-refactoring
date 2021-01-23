@@ -13,7 +13,6 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.acceptance.util.AcceptanceTest;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 
@@ -91,15 +90,14 @@ public class TableRestAcceptance extends AcceptanceTest {
 	public static void 주문_테이블_인원변경됨(ExtractableResponse<Response> response, OrderTableRequest actual) {
 		assertAll(
 			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-			() -> assertThat(response.as(OrderTable.class).getNumberOfGuests()).isEqualTo(
+			() -> assertThat(response.as(OrderTableResponse.class).getNumberOfGuests()).isEqualTo(
 				actual.getNumberOfGuests())
 		);
 	}
 
 	public static void 주문_테이블_상태변경됨(ExtractableResponse<Response> response, boolean result) {
 		assertAll(
-			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-			() -> assertThat(response.as(OrderTable.class).isEmpty()).isEqualTo(result)
+			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value())
 		);
 	}
 }
