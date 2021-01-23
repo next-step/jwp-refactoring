@@ -7,27 +7,13 @@ import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
-import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
-@SpringBootTest
-class MenuServiceTest {
-
-    @Autowired
-    private MenuGroupService menuGroupService;
-
-    @Autowired
-    private ProductService productService;
-
-    @Autowired
-    private MenuService menuService;
+class MenuServiceTest extends ServiceTest {
 
     private MenuGroup 후라이드양념반반메뉴;
     private MenuProduct 메뉴상품_후라이드;
@@ -47,26 +33,15 @@ class MenuServiceTest {
     void create() {
         final Menu 후라이드양념반반 = 메뉴를_생성한다(후라이드양념반반메뉴, "후라이드양념반반", 32000, 메뉴상품_후라이드, 메뉴상품_양념치킨);
         assertAll(
-                ()-> assertThat(후라이드양념반반.getId()).isNotNull(),
-                ()-> assertThat(후라이드양념반반.getName()).isEqualTo("후라이드양념반반")
+                () -> assertThat(후라이드양념반반.getId()).isNotNull(),
+                () -> assertThat(후라이드양념반반.getName()).isEqualTo("후라이드양념반반")
         );
     }
 
     @DisplayName("메뉴 목록을 조회한다")
     @Test
     void list() {
-      List<Menu> menus = menuService.list();
-      assertThat(menus.size()).isGreaterThanOrEqualTo(1);
+        List<Menu> menus = menuService.list();
+        assertThat(menus.size()).isGreaterThanOrEqualTo(1);
     }
-
-    private MenuGroup 메뉴그룹을_생성한다(String name) {
-        MenuGroup menuGroup = new MenuGroup(name);
-        return menuGroupService.create(menuGroup);
-    }
-
-    private Menu 메뉴를_생성한다(MenuGroup menuGroup, String name, int price, MenuProduct... products) {
-        Menu 후라이드양념반반 = new Menu(name, BigDecimal.valueOf(price), menuGroup.getId(), Arrays.asList(products));
-        return menuService.create(후라이드양념반반);
-    }
-
 }

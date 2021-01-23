@@ -15,9 +15,7 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
-
 
 class TableGroupServiceTest extends ServiceTest {
 
@@ -46,15 +44,15 @@ class TableGroupServiceTest extends ServiceTest {
         List<OrderTable> orderTables = tableGroup.getOrderTables();
         System.out.println(tableGroup);
         orderTables.forEach(group -> {
-                    assertThat(group.getTableGroupId()).isEqualTo(tableGroup.getId());
-                    assertThat(group.isEmpty()).isEqualTo(비어있지않음);
-                });
+            assertThat(group.getTableGroupId()).isEqualTo(tableGroup.getId());
+            assertThat(group.isEmpty()).isEqualTo(비어있지않음);
+        });
     }
 
     @DisplayName("테이블 그룹을 생성한다 : 테이블 사이즈가 2미만이면 익셉션 발생")
     @Test
     void createException() {
-        assertThatThrownBy(()->테이블_그룹을_생성한다(new TableGroup()))
+        assertThatThrownBy(() -> 테이블_그룹을_생성한다(new TableGroup()))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -69,7 +67,7 @@ class TableGroupServiceTest extends ServiceTest {
 
         테이블_그룹을_비운다(tableGroup.getId());
 
-        orderTableIds.forEach(id->{
+        orderTableIds.forEach(id -> {
             assertThat(tableGroupService.findOrderTableById(id).getTableGroupId()).isNull();
         });
     }
@@ -84,8 +82,6 @@ class TableGroupServiceTest extends ServiceTest {
         assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))
                 .isInstanceOf(IllegalArgumentException.class);
     }
-
-
 
 
 }
