@@ -38,10 +38,6 @@ public class MenuProduct {
         return seq;
     }
 
-    public Long getMenuId() {
-        return menuId;
-    }
-
     public Long getProductId() {
         return productId;
     }

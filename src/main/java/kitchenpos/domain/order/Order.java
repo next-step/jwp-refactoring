@@ -1,5 +1,8 @@
 package kitchenpos.domain.order;
 
+import kitchenpos.domain.common.Quantity;
+import kitchenpos.domain.menu.Menu;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,9 +15,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "orders")
@@ -40,14 +43,12 @@ public class Order {
 
     protected Order() {}
 
-    public Order(Long orderTableId, OrderStatus orderStatus, List<MenuQuantity> menuQuantities) {
-        orderLineItems = menuQuantities.stream()
-                .map(menuQuantity -> new OrderLineItem(this, menuQuantity.getMenu(), menuQuantity.getQuantity()))
-                .collect(Collectors.toList());
-
+    public Order(Long orderTableId, OrderStatus orderStatus) {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = LocalDateTime.now();
+
+        orderLineItems = new ArrayList<>();
     }
 
     public Long getId() {
@@ -74,6 +75,10 @@ public class Order {
         return orderLineItems;
     }
 
+    public void addOrderLineItem(Menu menu, Quantity quantity) {
+        orderLineItems.add(new OrderLineItem(this, menu, quantity));
+    }
+
     public boolean isCompletion() {
         return orderStatus == OrderStatus.COMPLETION;
     }
@@ -98,7 +103,6 @@ public class Order {
     public static final class OrderBuilder {
         private Long orderTableId;
         private OrderStatus orderStatus;
-        private List<MenuQuantity> menuQuantities;
 
         private OrderBuilder() {}
 
@@ -112,13 +116,8 @@ public class Order {
             return this;
         }
 
-        public OrderBuilder menuQuantities(List<MenuQuantity> menuQuantities) {
-            this.menuQuantities = menuQuantities;
-            return this;
-        }
-
         public Order build() {
-            return new Order(orderTableId, orderStatus, menuQuantities);
+            return new Order(orderTableId, orderStatus);
         }
     }
 }
