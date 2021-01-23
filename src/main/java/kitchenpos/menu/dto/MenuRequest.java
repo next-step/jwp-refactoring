@@ -3,8 +3,6 @@ package kitchenpos.menu.dto;
 import java.math.BigDecimal;
 import java.util.List;
 
-import kitchenpos.domain.MenuProduct;
-
 /**
  * @author : byungkyu
  * @date : 2021/01/22

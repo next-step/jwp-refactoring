@@ -9,11 +9,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
-import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.utils.IntegrationTest;
 
 /**

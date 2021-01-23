@@ -12,8 +12,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
-import kitchenpos.domain.MenuProduct;
-
 @Entity
 public class Menu {
 
@@ -39,6 +37,10 @@ public class Menu {
             menuProducts = new ArrayList<>();
         }
         this.menuProducts = menuProducts;
+    }
+
+    public Menu(String name, BigDecimal price, Long menuGroupId) {
+        this(name, price, menuGroupId, null);
     }
 
     private void validatePrice(BigDecimal price) {
@@ -152,5 +154,14 @@ public class Menu {
         return Objects.hash(getId(), getName(), getPrice(), getMenuGroupId(), getMenuProducts());
     }
 
-
+    @Override
+    public String toString() {
+        return "Menu{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", price=" + price +
+            ", menuGroupId=" + menuGroupId +
+            ", menuProducts=" + menuProducts +
+            '}';
+    }
 }

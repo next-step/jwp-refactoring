@@ -1,15 +1,16 @@
-package kitchenpos.application;
-
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+package kitchenpos.table.application;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import kitchenpos.dao.OrderDao;
+import kitchenpos.dao.OrderTableDao;
+import kitchenpos.orders.domain.OrderStatus;
+import kitchenpos.table.domain.OrderTable;
 
 @Service
 public class TableService {
@@ -23,7 +24,7 @@ public class TableService {
 
     @Transactional
     public OrderTable create(final OrderTable orderTable) {
-        orderTable.setTableGroupId(null);
+        orderTable.changeTableGroup(null);
 
         return orderTableDao.save(orderTable);
     }
@@ -34,11 +35,12 @@ public class TableService {
 
     @Transactional
     public OrderTable changeEmpty(final Long orderTableId, final OrderTable orderTable) {
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId).orElseThrow(IllegalArgumentException::new);
 
-        if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
+        if (Objects.nonNull(savedOrderTable.getTableGroup())) {
             throw new IllegalArgumentException();
+        }else{
+            System.out.println("whattt : " + savedOrderTable.getTableGroup());
         }
 
         if (orderDao.existsByOrderTableIdAndOrderStatusIn(
@@ -46,7 +48,7 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-        savedOrderTable.setEmpty(orderTable.isEmpty());
+        savedOrderTable.changeEmpty(orderTable.isEmpty());
 
         return orderTableDao.save(savedOrderTable);
     }
@@ -66,7 +68,7 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-        savedOrderTable.setNumberOfGuests(numberOfGuests);
+        savedOrderTable.changeNumberOfGuests(numberOfGuests);
 
         return orderTableDao.save(savedOrderTable);
     }
