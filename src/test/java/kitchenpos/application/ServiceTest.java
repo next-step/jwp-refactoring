@@ -8,9 +8,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class ServiceTest {
 
-    protected int 게스트수;
-    protected final boolean 비어있음 = true;
-    protected final boolean 비어있지않음 = false;
+    public static int 게스트수;
+    public static final boolean 비어있음 = true;
+    public static final boolean 비어있지않음 = false;
 
     @Autowired
     protected TableService tableService;
