@@ -4,7 +4,10 @@ import kitchenpos.common.entity.BaseIdEntity;
 import kitchenpos.common.entity.NumberOfGuests;
 import kitchenpos.order.application.TableValidationException;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.List;
 import java.util.Objects;
 
@@ -12,7 +15,7 @@ import java.util.Objects;
 @Table(name = "order_table")
 public class OrderTable extends BaseIdEntity {
 
-	static final String MSG_TABLE_GROUP_NOT_NULL = "tableGroup must not be null";
+	static final String MSG_TABLE_GROUP_NOT_NULL = "tableGroupId must not be null";
 	static final String MSG_ORDER_TABLE_ALREADY_GROUP = "OrderTable already has TableGroup";
 	static final String MSG_ORDER_TABLE_ONGOING = "OrderTable's OrderStatus is ongoing";
 	static final String MSG_ORDER_TABLE_EMPTY = "OrderTable must be empty";
@@ -21,9 +24,8 @@ public class OrderTable extends BaseIdEntity {
 	static final String MSG_CANNOT_CHANGE_GUEST_WHILE_EMPTY = "Cannot change guests while OrderTable is empty";
 	static final String MSG_CANNOT_ADD_ORDER_TABLE_EMPTY = "Cannot add order while OrderTable is empty";
 
-	@ManyToOne
-	@JoinColumn(name = "table_group_id", nullable = true)
-	private TableGroup tableGroup;
+	@Column(name = "table_group_id", nullable = true, insertable = false, updatable = false)
+	private Long tableGroupId;
 
 	@Embedded
 	private NumberOfGuests numberOfGuests;
@@ -38,18 +40,13 @@ public class OrderTable extends BaseIdEntity {
 	}
 
 	public OrderTable(int numberOfGuests, boolean empty) {
-		this(numberOfGuests, empty, null);
-	}
-
-	private OrderTable(int numberOfGuests, boolean empty, TableGroup tableGroup) {
-		this.tableGroup = tableGroup;
 		this.numberOfGuests = new NumberOfGuests(numberOfGuests);
 		this.empty = empty;
 		this.orders = new TableOrders();
 	}
 
 	public void changeEmpty(boolean empty) {
-		if (this.tableGroup != null) {
+		if (this.tableGroupId != null) {
 			throw new TableValidationException(MSG_CANNOT_CHANGE_EMPTY_ALREADY_GROUP);
 		}
 
@@ -66,12 +63,12 @@ public class OrderTable extends BaseIdEntity {
 		this.numberOfGuests = new NumberOfGuests(numberOfGuests);
 	}
 
-	void putIntoGroup(TableGroup tableGroup) {
-		if (tableGroup == null) {
+	void putIntoGroup(Long tableGroupId) {
+		if (tableGroupId == null) {
 			throw new TableValidationException(MSG_TABLE_GROUP_NOT_NULL);
 		}
 
-		if (this.tableGroup != null) {
+		if (this.tableGroupId != null) {
 			throw new TableValidationException(MSG_ORDER_TABLE_ALREADY_GROUP);
 		}
 
@@ -79,7 +76,7 @@ public class OrderTable extends BaseIdEntity {
 			throw new TableValidationException(MSG_ORDER_TABLE_EMPTY);
 		}
 
-		this.tableGroup = tableGroup;
+		this.tableGroupId = tableGroupId;
 		this.empty = false;
 	}
 
@@ -87,7 +84,7 @@ public class OrderTable extends BaseIdEntity {
 		if (orders.hasOngoingOrder()) {
 			throw new TableValidationException(MSG_ORDER_TABLE_ONGOING);
 		}
-		this.tableGroup = null;
+		this.tableGroupId = null;
 	}
 
 	public Order order(List<OrderItem> items) {
@@ -98,8 +95,8 @@ public class OrderTable extends BaseIdEntity {
 		return this.orders.createNewOrder(this, items);
 	}
 
-	public TableGroup getTableGroup() {
-		return tableGroup;
+	public Long getTableGroupId() {
+		return tableGroupId;
 	}
 
 	public NumberOfGuests getNumberOfGuests() {
@@ -117,13 +114,13 @@ public class OrderTable extends BaseIdEntity {
 		if (!super.equals(o)) return false;
 		OrderTable that = (OrderTable) o;
 		return empty == that.empty &&
-				Objects.equals(tableGroup, that.tableGroup) &&
+				Objects.equals(tableGroupId, that.tableGroupId) &&
 				Objects.equals(numberOfGuests, that.numberOfGuests) &&
 				Objects.equals(orders, that.orders);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(super.hashCode(), tableGroup, numberOfGuests, empty, orders);
+		return Objects.hash(super.hashCode(), tableGroupId, numberOfGuests, empty, orders);
 	}
 }

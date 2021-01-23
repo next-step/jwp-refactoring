@@ -32,7 +32,8 @@ public class TableGroupService {
 			throw new NotFoundException(CANNOT_FIND_ORDER_TABLE);
 		}
 
-		TableGroup tableGroup = tableGroupRepository.save(TableGroup.fromGroupingTables(orderTables));
+		TableGroup tableGroup = tableGroupRepository.save(new TableGroup());
+		tableGroup.groupTables(orderTables);
 		return TableGroupResponse.of(tableGroup);
 	}
 
