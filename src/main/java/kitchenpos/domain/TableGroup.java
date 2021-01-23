@@ -8,6 +8,13 @@ public class TableGroup {
     private LocalDateTime createdDate;
     private List<OrderTable> orderTables;
 
+    public TableGroup() {
+    }
+
+    public TableGroup(List<OrderTable> orderTables) {
+        this.orderTables = orderTables;
+    }
+
     public Long getId() {
         return id;
     }
@@ -30,5 +37,14 @@ public class TableGroup {
 
     public void setOrderTables(final List<OrderTable> orderTables) {
         this.orderTables = orderTables;
+    }
+
+    @Override
+    public String toString() {
+        return "TableGroup{" +
+                "id=" + id +
+                ", createdDate=" + createdDate +
+                ", orderTables=" + orderTables +
+                '}';
     }
 }

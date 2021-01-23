@@ -17,7 +17,6 @@ import java.util.Arrays;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class MenuRestControllerTest extends ControllerTest {
 
@@ -46,13 +45,13 @@ class MenuRestControllerTest extends ControllerTest {
     void create() throws Exception {
         Menu 후라이드양념반반 = 메뉴를_생성한다(후라이드양념반반메뉴, "후라이드양념반반", 32000, 메뉴상품_후라이드, 메뉴상품_양념치킨);
         String body = objectMapper.writeValueAsString(후라이드양념반반);
-        컨트롤러_생성_요청(MENU_URI, body);
+        컨트롤러_생성_요청_및_검증(MENU_URI, body);
     }
 
     @DisplayName("메뉴 목록을 조회한다")
     @Test
     void search() throws Exception {
-        컨트롤러_조회_요청(MENU_URI);
+        컨트롤러_조회_요청_및_검증(MENU_URI);
     }
 
     private MenuGroup 메뉴그룹을_생성한다(String name) {

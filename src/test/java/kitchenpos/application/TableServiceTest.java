@@ -2,12 +2,9 @@ package kitchenpos.application;
 
 import kitchenpos.dao.OrderDao;
 import kitchenpos.domain.OrderTable;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.List;
@@ -20,15 +17,7 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
-class TableServiceTest {
-
-    private int 게스트수;
-    private final boolean 비어있음 = true;
-    private final boolean 비어있지않음 = false;
-
-    @Autowired
-    private TableService tableService;
+class TableServiceTest extends ServiceTest {
 
     @MockBean
     private OrderDao orderDao;
@@ -111,9 +100,6 @@ class TableServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    private OrderTable 테이블을_생성한다(Long id, int numberOfGuest, boolean empty) {
-        return tableService.create(new OrderTable(id, numberOfGuest, empty));
-    }
 }
 
 

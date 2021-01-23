@@ -20,6 +20,7 @@ public class ControllerTest {
     protected final String MENU_URI = "/api/menus";
     protected final String PRODUCT_URI = "/api/products";
     protected final String TABLE_URI = "/api/tables";
+    protected final String TABLE_GROUP_URI = "/api/table-groups";
 
     @Autowired
     protected MockMvc mockMvc;

@@ -11,13 +11,13 @@ class MenuGroupRestControllerTest extends ControllerTest {
     @Test
     void create() throws Exception {
         String body = objectMapper.writeValueAsString(new MenuGroup("세마리메뉴"));
-        컨트롤러_생성_요청(MENU_GROUP_URI, body);
+        컨트롤러_생성_요청_및_검증(MENU_GROUP_URI, body);
     }
 
     @DisplayName("메뉴 그룹 목록을 조회한다")
     @Test
     void list() throws Exception {
-        컨트롤러_조회_요청(MENU_GROUP_URI);
+        컨트롤러_조회_요청_및_검증(MENU_GROUP_URI);
     }
 
 }
