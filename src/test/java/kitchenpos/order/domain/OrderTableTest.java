@@ -35,11 +35,11 @@ class OrderTableTest {
 		MenuGroup 중식 = new MenuGroup("중식");
 
 		짜장면 = new Menu("짜장면", 7000, 중식);
-		MenuProduct menuProduct1 = new MenuProduct(짜장면, new Product("짜장면", 7000), 1);
+		MenuProduct menuProduct1 = new MenuProduct(new Product("짜장면", 7000), 1);
 		짜장면.addMenuProducts(Collections.singletonList(menuProduct1));
 
 		짬뽕 = new Menu("짬뽕", 6000, 중식);
-		MenuProduct menuProduct2 = new MenuProduct(짬뽕, new Product("짬뽕", 6000), 1);
+		MenuProduct menuProduct2 = new MenuProduct(new Product("짬뽕", 6000), 1);
 		짬뽕.addMenuProducts(Collections.singletonList(menuProduct2));
 
 		orderItem_짜장면 = OrderItem.of(짜장면, new Quantity(77));

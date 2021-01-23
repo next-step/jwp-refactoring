@@ -23,10 +23,10 @@ class MenuTest {
 	@BeforeEach
 	void setUp() {
 		menu = new Menu("짜짬탐", 20000, new MenuGroup("중식"));
-		짜장면 = new MenuProduct(menu, new Product("짜장면", 5000), 1);
-		짬뽕 = new MenuProduct(menu, new Product("짬봉", 6000), 1);
-		탕수육 = new MenuProduct(menu, new Product("탕수육", 10000), 1);
-		콜라 = new MenuProduct(menu, new Product("콜라", 1000), 1);
+		짜장면 = new MenuProduct(new Product("짜장면", 5000), 1);
+		짬뽕 = new MenuProduct(new Product("짬봉", 6000), 1);
+		탕수육 = new MenuProduct(new Product("탕수육", 10000), 1);
+		콜라 = new MenuProduct(new Product("콜라", 1000), 1);
 	}
 
 	@DisplayName("메뉴의 구성 상품을 추가한다.")
