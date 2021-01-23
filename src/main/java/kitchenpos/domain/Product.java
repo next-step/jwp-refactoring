@@ -1,8 +1,17 @@
 package kitchenpos.domain;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.math.BigDecimal;
+import java.util.Objects;
 
+@Entity(name = "product")
 public class Product {
+    public static final int ZERO = 0;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private BigDecimal price;
@@ -31,6 +40,10 @@ public class Product {
 
     public BigDecimal getPrice() {
         return price;
+    }
+
+    public boolean notValidPrice() {
+        return Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < ZERO;
     }
 
     @Override

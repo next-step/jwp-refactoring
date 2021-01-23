@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+@Deprecated
 @Repository
 public class JdbcTemplateProductDao implements ProductDao {
     private static final String TABLE_NAME = "product";

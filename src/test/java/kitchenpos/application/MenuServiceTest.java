@@ -3,11 +3,7 @@ package kitchenpos.application;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,22 +26,22 @@ class MenuServiceTest {
     @Autowired
     MenuProductDao menuProductDao;
     @Autowired
-    ProductDao productDao;
+    ProductRepository productRepository;
 
     MenuService menuService;
 
     @BeforeEach
     void setUp() {
         menuService = new MenuService(menuDao, menuGroupDao,
-                menuProductDao, productDao);
+                menuProductDao, productRepository);
     }
 
     @DisplayName("1 개 이상의 메뉴를 등록할 수 있다.")
     @Test
     void createOneMenu() {
         menuGroupDao.save(new MenuGroup(1L, "그룹1"));
-        Product 상품1 = productDao.save(new Product("상품1", new BigDecimal(10000)));
-        Product 상품2 = productDao.save(new Product("상품2", new BigDecimal(20000)));
+        Product 상품1 = productRepository.save(new Product("상품1", new BigDecimal(10000)));
+        Product 상품2 = productRepository.save(new Product("상품2", new BigDecimal(20000)));
 
         List<MenuProduct> menuProducts = Arrays.asList(
                 new MenuProduct(상품1.getId(), 10L),
@@ -88,8 +84,8 @@ class MenuServiceTest {
     @Test
     void menuPriceTest() {
         MenuGroup group = menuGroupDao.save(new MenuGroup("그룹1"));
-        Product product1 = productDao.save(new Product("상품1", new BigDecimal(1000)));
-        Product product2 = productDao.save(new Product("상품2", new BigDecimal(2000)));
+        Product product1 = productRepository.save(new Product("상품1", new BigDecimal(1000)));
+        Product product2 = productRepository.save(new Product("상품2", new BigDecimal(2000)));
         List<MenuProduct> menuProducts = Arrays.asList(
                 new MenuProduct(1L, product1.getId(), 2L),
                 new MenuProduct(1L, product2.getId(), 1L)
@@ -105,7 +101,7 @@ class MenuServiceTest {
     @DisplayName("메뉴는 특정 메뉴 그룹에 속해야 한다.")
     @Test
     void menuIncludedGroupTest() {
-        Product product = productDao.save(new Product("상품1", new BigDecimal(1000)));
+        Product product = productRepository.save(new Product("상품1", new BigDecimal(1000)));
         List<MenuProduct> menuProducts = Arrays.asList(new MenuProduct(1L, product.getId(), 2L));
         menuProductDao.save(menuProducts.get(0));
 
@@ -118,8 +114,8 @@ class MenuServiceTest {
     @Test
     void listMenus() {
         MenuGroup group = menuGroupDao.save(new MenuGroup("그룹1"));
-        Product product1 = productDao.save(new Product("상품1", new BigDecimal(1000)));
-        Product product2 = productDao.save(new Product("상품2", new BigDecimal(2000)));
+        Product product1 = productRepository.save(new Product("상품1", new BigDecimal(1000)));
+        Product product2 = productRepository.save(new Product("상품2", new BigDecimal(2000)));
         Menu menu = new Menu("메뉴1", new BigDecimal(10000), group.getId(), null);
         Menu save = menuDao.save(menu);
         MenuProduct menuProduct1 = menuProductDao.save(new MenuProduct(save.getId(), product1.getId(), 1));
