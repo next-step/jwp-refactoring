@@ -5,7 +5,6 @@ import kitchenpos.ordertable.domain.OrderTable;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity(name = "orders")
@@ -15,8 +14,8 @@ public class Order extends BaseEntity {
     private OrderTable orderTable;
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
-    @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
-    private final List<OrderLineItem> orderLineItems = new ArrayList<>();
+    @Embedded
+    private final OrderLineItems orderLineItems = new OrderLineItems();
 
     public Order(OrderTable orderTable) {
         this.orderTable = orderTable;
@@ -62,14 +61,14 @@ public class Order extends BaseEntity {
     }
 
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
+        return orderLineItems.getOrderLineItems();
     }
 
     private static void validate(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException("비어있는 주문 테이블입니다.");
         }
-        if(CollectionUtils.isEmpty(orderLineItems)) {
+        if (CollectionUtils.isEmpty(orderLineItems)) {
             throw new IllegalArgumentException("생성할 주문의 항목이 없습니다.");
         }
     }

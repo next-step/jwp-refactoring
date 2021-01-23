@@ -5,7 +5,6 @@ import kitchenpos.menugroup.domain.MenuGroup;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -19,8 +18,8 @@ public class Menu extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_group_id", nullable = false)
     private MenuGroup menuGroup;
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private final List<MenuProduct> menuProducts = new ArrayList<>();
+    @Embedded
+    private final MenuProducts menuProducts = new MenuProducts();
 
     public static Menu create(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         validate(price, menuGroup, menuProducts);
@@ -40,7 +39,7 @@ public class Menu extends BaseEntity {
 
     private void addMenuProduct(MenuProduct menuProduct) {
         menuProduct.updateMenu(this);
-        menuProducts.add(menuProduct);
+        this.menuProducts.add(menuProduct);
     }
 
     public String getName() {
@@ -56,7 +55,7 @@ public class Menu extends BaseEntity {
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
+        return menuProducts.getMenuProducts();
     }
 
     private static void validate(BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
