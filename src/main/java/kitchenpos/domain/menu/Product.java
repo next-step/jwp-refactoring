@@ -41,6 +41,10 @@ public class Product {
         return price;
     }
 
+    public Money calculatePrice(long amount) {
+        return price.multiply(amount);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

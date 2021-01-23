@@ -65,7 +65,7 @@ public class MenuService {
         List<MenuProductRequest> menuProducts = menuRequest.getMenuProducts();
         for (MenuProductRequest menuProductRequest : menuProducts) {
             Product product = productService.findProductById(menuProductRequest.getProductId());
-            sum.add(product.getPrice().multiply(menuProductRequest.getQuantity()));
+            sum.add(product.calculatePrice(menuProductRequest.getQuantity()));
             menu.addMenuProduct(new MenuProduct(menu, product, menuProductRequest.getQuantity()));
         }
 
