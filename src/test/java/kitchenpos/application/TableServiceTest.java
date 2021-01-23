@@ -1,7 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.application.OrderService;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -26,6 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
 @DisplayName("주문 테이블 서비스 테스트")
@@ -34,6 +34,9 @@ class TableServiceTest {
 
     @Mock
     private OrderTableRepository orderTableRepository;
+
+    @Mock
+    private OrderService orderService;
 
     @InjectMocks
     private TableService tableService;
@@ -137,26 +140,19 @@ class TableServiceTest {
         OrderTable orderTable = new OrderTable(0, true);
         ReflectionTestUtils.setField(orderTable, "id", 2L);
 
-        Order order1 = new Order(OrderStatus.COMPLETION, LocalDateTime.now());
-        ReflectionTestUtils.setField(order1, "id", 1L);
-        Order order2 = new Order(OrderStatus.COMPLETION, LocalDateTime.now());
-        ReflectionTestUtils.setField(order2, "id", 2L);
-        Order order3 = new Order(OrderStatus.MEAL, LocalDateTime.now());
-        ReflectionTestUtils.setField(order3, "id", 3L);
-
-        orderTable.addOrder(order1);
-        orderTable.addOrder(order2);
-        orderTable.addOrder(order3);
-
         given(orderTableRepository.findById(2L))
                 .willReturn(Optional.of(orderTable));
+
+        doThrow(new IllegalArgumentException("주문 테이블을 비울 수 없는 상태입니다."))
+                .when(orderService).validateChangeEmpty(orderTable);
 
         OrderTableRequest orderTableRequest = new OrderTableRequest(null, 0, false);
 
         //when
         //then
         assertThatThrownBy(() -> tableService.changeEmpty(2L, orderTableRequest))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("주문 테이블을 비울 수 없는 상태입니다.");
 
     }
 

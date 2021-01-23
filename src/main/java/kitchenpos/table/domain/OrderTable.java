@@ -1,11 +1,8 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.order.domain.Order;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -16,9 +13,6 @@ public class OrderTable {
     @ManyToOne
     @JoinColumn(name = "table_group_id")
     private TableGroup tableGroup;
-
-    @OneToMany(mappedBy = "orderTable")
-    private final List<Order> orders = new ArrayList<>();
 
     private int numberOfGuests;
 
@@ -57,19 +51,7 @@ public class OrderTable {
             throw new IllegalArgumentException();
         }
 
-        validateChangeEmpty();
-
         this.empty = empty;
-    }
-
-    public void addOrder(Order order) {
-        this.orders.add(order);
-    }
-
-    private void validateChangeEmpty() {
-        if (orders.stream().anyMatch(Order::isRestrictedChangeEmpty)) {
-            throw new IllegalArgumentException();
-        }
     }
 
     public void changeTableGroup(TableGroup tableGroup) {

@@ -240,4 +240,26 @@ class OrderServiceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("이미 왼료상태인 주문은 상태 변경이 불가합니다.");
     }
+
+    @DisplayName("주문 테이블을 비울수 있는지 검증 - 주문 테이블이 없거나, 이미 조리중, 식사중인 상태이면 주문 테이블을 비울 수 없다.")
+    @Test
+    void validateChangeEmpty() {
+        //given
+        Order order1 = new Order(OrderStatus.COMPLETION, LocalDateTime.now());
+        ReflectionTestUtils.setField(order1, "id", 1L);
+        Order order2 = new Order(OrderStatus.COMPLETION, LocalDateTime.now());
+        ReflectionTestUtils.setField(order2, "id", 2L);
+        Order order3 = new Order(OrderStatus.MEAL, LocalDateTime.now());
+        ReflectionTestUtils.setField(order3, "id", 3L);
+
+        OrderTable orderTable = new OrderTable(3, false);
+        given(orderRepository.findAllByOrderTable(orderTable))
+                .willReturn(Arrays.asList(order1, order2, order3));
+        //when
+        //then
+        assertThatThrownBy(() -> orderService.validateChangeEmpty(orderTable))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("주문 테이블을 비울 수 없는 상태입니다.");
+
+    }
 }

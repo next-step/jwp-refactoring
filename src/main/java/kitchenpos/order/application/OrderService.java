@@ -60,4 +60,12 @@ public class OrderService {
 
         return OrderResponse.of(savedOrder);
     }
+
+    @Transactional(readOnly = true)
+    public void validateChangeEmpty(OrderTable orderTable) {
+        List<Order> orders = orderRepository.findAllByOrderTable(orderTable);
+        if (orders.stream().anyMatch(Order::isRestrictedChangeEmpty)) {
+            throw new IllegalArgumentException("주문 테이블을 비울 수 없는 상태입니다.");
+        }
+    }
 }
