@@ -44,19 +44,6 @@ public class OrderTableTest {
     }
 
     @Test
-    @DisplayName("테이블 상태를 변경시, 그룹이 지정되어 있다면 변경할 수 없다.")
-    void updateEmptyWithGroupTable() {
-        //when-then
-        assertThatThrownBy(() -> 그룹이_지정된_빈테이블.updateEmpty(false))
-                .isInstanceOf(IllegalArgumentException.class);
-
-        // when & then
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
-            그룹이_지정된_빈테이블.updateEmpty(false);
-        }).withMessageMatching("그룹 지정이 되어 있어 상태를 변경할 수 없습니다.");
-    }
-
-    @Test
     @DisplayName("테이블 손님 수를 변경할 수 있다.")
     void updateNumberOfGuests() {
         //when

@@ -49,14 +49,6 @@ public class OrderTables {
         this.orderTables.forEach(OrderTable::unGroup);
     }
 
-    public void checkOrderTableStatus() {
-        boolean hasNotCompleteOrder = orderTables.stream()
-                .anyMatch(OrderTable::isNotComplete);
-        if (hasNotCompleteOrder) {
-            throw new IllegalArgumentException("주문 상태가 조리중이거나 식사중인 테이블의 그룹 지정은 해지할 수 없습니다.");
-        }
-    }
-
     private void checkOrderTableSize(List<OrderTable> orderTables) {
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < MIN_TABLE_SIZE) {
             throw new IllegalArgumentException("2개 미만의 테이블은 그룹 지정을 할 수 없습니다.");
