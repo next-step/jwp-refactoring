@@ -50,4 +50,8 @@ public class MenuService {
 			.map(menu -> MenuResponse.of(menuProductRepository.findByMenuId(menu.getId())))
 			.collect(Collectors.toList());
 	}
+
+	public List<Menu> findAllByIds(List<Long> menuIds) {
+		return menuRepository.findAllById(menuIds);
+	}
 }
