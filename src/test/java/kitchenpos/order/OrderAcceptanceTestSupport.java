@@ -47,4 +47,8 @@ public class OrderAcceptanceTestSupport extends AcceptanceTest {
     public void 주문_응답_실패(ExtractableResponse<Response> response) {
         HttpStatusAssertion.INTERNAL_SERVER_ERROR(response);
     }
+
+    public void 잘못된_주문_요청(ExtractableResponse<Response> response) {
+        HttpStatusAssertion.BAD_REQUEST(response);
+    }
 }

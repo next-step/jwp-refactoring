@@ -32,11 +32,11 @@ public class OrderService {
     }
 
     public OrderResponse create(OrderRequest request) {
-        request.validateEmptyOrderLineItems();
         List<Menu> menus = menuRepository.findByIdIn(request.getMenuIds());
-        request.validateExistingSizeMenus(menus);
-        Order order = Order.createOrder(findAvailableTableForOrder(request.getOrderTableId()),
-                request.createOrderLineItems(menus));
+        Order order = Order.createOrder(
+                findAvailableTableForOrder(request.getOrderTableId()),
+                request.createOrderLineItems(menus)
+        );
         return OrderResponse.from(orderRepository.save(order));
     }
 

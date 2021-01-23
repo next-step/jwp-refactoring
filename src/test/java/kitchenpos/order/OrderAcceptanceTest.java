@@ -16,9 +16,12 @@ import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 @DisplayName("주문 관련 기능")
 class OrderAcceptanceTest extends OrderAcceptanceTestSupport {
@@ -65,5 +68,19 @@ class OrderAcceptanceTest extends OrderAcceptanceTestSupport {
 
         // Then
         주문_응답_실패(wrongResponse);
+    }
+
+    @DisplayName("주문 생성시, 주문 항목이 없으면 예외를 발생한다.")
+    @ParameterizedTest
+    @NullAndEmptySource
+    void exceptionToCreateOrderWithoutItems(List<OrderLineItemRequest> orderLineItemRequests) {
+        // Given
+        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), orderLineItemRequests);
+
+        // When
+        ExtractableResponse<Response> createResponse = 주문_생성_요청(orderRequest);
+
+        // Then
+        잘못된_주문_요청(createResponse);
     }
 }

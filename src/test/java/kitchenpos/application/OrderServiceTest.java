@@ -20,6 +20,8 @@ import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -74,10 +76,12 @@ class OrderServiceTest {
     }
 
     @DisplayName("`주문`에 필요한 주문 메뉴를 담은 `주문 항목`이 없으면 `주문`을 생성할 수 없다.")
-    @Test
-    void exceptionToCreateOrderWithoutLineItem() {
+    @ParameterizedTest
+    @NullAndEmptySource
+    void exceptionToCreateOrderWithoutLineItem(List<OrderLineItemRequest> orderLineItemRequests) {
         // When & then
-        assertThatThrownBy(() -> orderService.create(new OrderRequest())).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(new OrderRequest(1L, orderLineItemRequests)))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("`주문`할 `주문 테이블`이 없으면, `주문`을 생성할 수 없다.")
