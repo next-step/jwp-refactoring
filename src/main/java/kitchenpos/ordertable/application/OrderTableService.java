@@ -8,7 +8,8 @@ import javax.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.dao.OrderDao;
+import kitchenpos.order.domain.Orders;
+import kitchenpos.order.domain.OrdersRepository;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.dto.OrderTableRequest;
@@ -18,11 +19,11 @@ import kitchenpos.tablegroup.domain.TableGroup;
 @Service
 @Transactional(readOnly = true)
 public class OrderTableService {
-	private final OrderDao orderDao;
+	private final OrdersRepository orderRepository;
 	private final OrderTableRepository orderTableRepository;
 
-	public OrderTableService(final OrderDao orderDao, final OrderTableRepository orderTableRepository) {
-		this.orderDao = orderDao;
+	public OrderTableService(final OrdersRepository orderRepository, final OrderTableRepository orderTableRepository) {
+		this.orderRepository = orderRepository;
 		this.orderTableRepository = orderTableRepository;
 	}
 
@@ -41,12 +42,8 @@ public class OrderTableService {
 	@Transactional
 	public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest request) {
 		final OrderTable savedOrderTable = findById(orderTableId);
-		/*
-		if (orderDao.existsByOrderTableIdAndOrderStatusIn(
-			orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-			throw new IllegalArgumentException();
-		}
-		*/
+		Orders order = orderRepository.findByOrderTable(savedOrderTable);
+		order.validateStatus();
 		savedOrderTable.changeEmptyState(request.isEmpty());
 		return OrderTableResponse.of(savedOrderTable);
 	}
@@ -62,7 +59,7 @@ public class OrderTableService {
 		return orderTableRepository.findAllById(orderTableIds);
 	}
 
-	private OrderTable findById(Long orderTableId) {
+	public OrderTable findById(Long orderTableId) {
 		return orderTableRepository.findById(orderTableId).orElseThrow(EntityNotFoundException::new);
 	}
 
