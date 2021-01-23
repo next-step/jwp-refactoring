@@ -8,7 +8,7 @@ import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import org.junit.jupiter.api.AfterEach;
+import kitchenpos.order.dto.OrderTableRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,6 +32,9 @@ class OrderServiceTest {
 
     @Autowired
     OrderService orderService;
+
+    @Autowired
+    TableService orderTableService;
 
     @Autowired
     OrderRepository orderRepository;
@@ -94,5 +97,21 @@ class OrderServiceTest {
         orderLineItemRequests.add(주문항목2);
         OrderRequest request = new OrderRequest(주문테이블.getId(), orderLineItemRequests);
         return orderService.create(request);
+    }
+
+    @DisplayName("주문 테이블 비어있는지 여부 변경 예외 - 요리중이거나 식사중인 경우")
+    @Test
+    void validOrderStatusCookingOrMeal() {
+        OrderLineItemRequest 주문항목1 = new OrderLineItemRequest(아메리카노_케익.getId(), 1);
+        OrderLineItemRequest 주문항목2 = new OrderLineItemRequest(아메리카노_샌드위치.getId(), 1);
+        List<OrderLineItemRequest> orderLineItemRequests = new ArrayList<>();
+        orderLineItemRequests.add(주문항목1);
+        orderLineItemRequests.add(주문항목2);
+        OrderRequest request = new OrderRequest(주문테이블.getId(), orderLineItemRequests, "COOKING");
+        orderService.create(request);
+
+        assertThatThrownBy(()-> {
+            orderTableService.changeEmpty(주문테이블.getId(), new OrderTableRequest(0, true));
+        }).isInstanceOf(IllegalArgumentException.class);
     }
 }

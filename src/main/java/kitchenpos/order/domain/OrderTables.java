@@ -19,18 +19,26 @@ public class OrderTables {
     private final List<OrderTable> orderTables = new ArrayList<>();
 
     public void add(Long tableGroupId, List<OrderTable> orderTables) {
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException("그룹지정은 주문 테이블 최소 2개 이상이어야 합니다.");
-        }
+        validateMinOrderTablesSize(orderTables);
 
         for (final OrderTable orderTable : orderTables) {
-            if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroupId())) {
-                throw new IllegalArgumentException("이미 그룹 지정이 되었거나 빈 테이블이 아닙니다.");
-            }
+            validateIsAlreadyGroupOrNotEmpty(orderTable);
 
             orderTable.changeEmpty(false);
             orderTable.changeTableGroupId(tableGroupId);
             this.orderTables.add(orderTable);
+        }
+    }
+
+    private void validateMinOrderTablesSize(List<OrderTable> orderTables) {
+        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
+            throw new IllegalArgumentException("그룹지정은 주문 테이블 최소 2개 이상이어야 합니다.");
+        }
+    }
+
+    private void validateIsAlreadyGroupOrNotEmpty(OrderTable orderTable) {
+        if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroupId())) {
+            throw new IllegalArgumentException("이미 그룹 지정이 되었거나 빈 테이블이 아닙니다.");
         }
     }
 

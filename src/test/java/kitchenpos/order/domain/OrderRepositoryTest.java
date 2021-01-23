@@ -35,7 +35,7 @@ public class OrderRepositoryTest {
         assertThat(expected == actual).isTrue();
     }
 
-    @DisplayName("주문 등록 예외 - 주문 테이블이 비어있는 경")
+    @DisplayName("주문 등록 예외 - 주문 테이블이 비어있는 경우")
     @Test
     void validateIsEmpty() {
         OrderTable orderTable = orderTableRepository.save(new OrderTable(0, true));
