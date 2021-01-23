@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import kitchenpos.application.MenuService;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +40,7 @@ class MenuRestControllerTest {
     @DisplayName("메뉴 등록")
     @Test
     public void create() throws Exception {
-        Menu menu = new Menu("쭈꾸미", new BigDecimal(1000), 1L, null);
+        Menu menu = new Menu("쭈꾸미", new BigDecimal(1000), 1L);
         given(menuService.create(any())).willReturn(menu);
         mockMvc.perform(post("/api/menus")
                 .contentType(MediaType.APPLICATION_JSON)

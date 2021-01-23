@@ -61,7 +61,7 @@ public class OrderService {
         }
 
         order.setOrderTableId(orderTable.getId());
-        order.setOrderStatus(OrderStatus.COOKING.name());
+        order.changeOrderStatus(OrderStatus.COOKING.name());
         order.setOrderedTime(LocalDateTime.now());
 
         final Order savedOrder = orderDao.save(order);
@@ -72,7 +72,7 @@ public class OrderService {
             orderLineItem.setOrderId(orderId);
             savedOrderLineItems.add(orderLineItemDao.save(orderLineItem));
         }
-        savedOrder.setOrderLineItems(savedOrderLineItems);
+        savedOrder.addOrderLineItem(savedOrderLineItems);
 
         return savedOrder;
     }
@@ -81,7 +81,7 @@ public class OrderService {
         final List<Order> orders = orderDao.findAll();
 
         for (final Order order : orders) {
-            order.setOrderLineItems(orderLineItemDao.findAllByOrderId(order.getId()));
+            order.addOrderLineItem(orderLineItemDao.findAllByOrderId(order.getId()));
         }
 
         return orders;
@@ -97,11 +97,11 @@ public class OrderService {
         }
 
         final OrderStatus orderStatus = OrderStatus.valueOf(order.getOrderStatus());
-        savedOrder.setOrderStatus(orderStatus.name());
+        savedOrder.changeOrderStatus(orderStatus.name());
 
         orderDao.save(savedOrder);
 
-        savedOrder.setOrderLineItems(orderLineItemDao.findAllByOrderId(orderId));
+        savedOrder.addOrderLineItem(orderLineItemDao.findAllByOrderId(orderId));
 
         return savedOrder;
     }

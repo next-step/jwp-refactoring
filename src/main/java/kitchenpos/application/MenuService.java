@@ -6,6 +6,7 @@ import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.MenuProducts;
 import kitchenpos.domain.Product;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,10 +47,10 @@ public class MenuService {
             throw new IllegalArgumentException();
         }
 
-        final List<MenuProduct> menuProducts = menu.getMenuProducts();
+        final MenuProducts menuProducts = menu.getMenuProducts();
 
         BigDecimal sum = BigDecimal.ZERO;
-        for (final MenuProduct menuProduct : menuProducts) {
+        for (final MenuProduct menuProduct : menuProducts.getMenuProducts()) {
             final Product product = productDao.findById(menuProduct.getProductId())
                     .orElseThrow(IllegalArgumentException::new);
             sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
@@ -63,11 +64,11 @@ public class MenuService {
 
         final Long menuId = savedMenu.getId();
         final List<MenuProduct> savedMenuProducts = new ArrayList<>();
-        for (final MenuProduct menuProduct : menuProducts) {
-            menuProduct.setMenuId(menuId);
-            savedMenuProducts.add(menuProductDao.save(menuProduct));
+        for (final MenuProduct menuProduct : menuProducts.getMenuProducts()) {
+            MenuProduct menuProductWithMenuId = new MenuProduct(menuId, menuProduct.getProductId(), menuProduct.getQuantity());
+            savedMenuProducts.add(menuProductDao.save(menuProductWithMenuId));
         }
-        savedMenu.setMenuProducts(savedMenuProducts);
+        savedMenu.addMenuProducts(savedMenuProducts);
 
         return savedMenu;
     }
@@ -76,7 +77,7 @@ public class MenuService {
         final List<Menu> menus = menuDao.findAll();
 
         for (final Menu menu : menus) {
-            menu.setMenuProducts(menuProductDao.findAllByMenuId(menu.getId()));
+            menu.addMenuProducts(menuProductDao.findAllByMenuId(menu.getId()));
         }
 
         return menus;

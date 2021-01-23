@@ -44,20 +44,18 @@ class MenuServiceTest {
     @Test
     void createOneMenu() {
         menuGroupDao.save(new MenuGroup(1L, "그룹1"));
-        productDao.save(new Product("상품1", new BigDecimal(10000)));
-        productDao.save(new Product("상품2", new BigDecimal(20000)));
+        Product 상품1 = productDao.save(new Product("상품1", new BigDecimal(10000)));
+        Product 상품2 = productDao.save(new Product("상품2", new BigDecimal(20000)));
+
         List<MenuProduct> menuProducts = Arrays.asList(
-                new MenuProduct(1L, 1L, 10L),
-                new MenuProduct(1L, 2L, 10L)
+                new MenuProduct(상품1.getId(), 10L),
+                new MenuProduct(상품2.getId(), 10L)
         );
-        menuProductDao.save(menuProducts.get(0));
-        menuProductDao.save(menuProducts.get(1));
 
         Menu expected = new Menu("메뉴1", new BigDecimal(28000), 1L, menuProducts);
         Menu saved = menuService.create(expected);
-
         assertThat(expected.getName()).isEqualTo(saved.getName());
-        assertThat(expected.getMenuProducts().size()).isSameAs(saved.getMenuProducts().size());
+        assertThat(expected.menuProductSize()).isSameAs(saved.menuProductSize());
         assertThat(expected.getPrice()).isEqualByComparingTo(saved.getPrice());
     }
 
@@ -127,7 +125,7 @@ class MenuServiceTest {
         MenuProduct menuProduct1 = menuProductDao.save(new MenuProduct(save.getId(), product1.getId(), 1));
         MenuProduct menuProduct2 = menuProductDao.save(new MenuProduct(save.getId(), product2.getId(), 2));
         List<MenuProduct> menuProducts = Arrays.asList(menuProduct1, menuProduct2);
-        save.setMenuProducts(menuProducts);
+        save.addMenuProducts(menuProducts);
 
         List<Menu> results = menuService.list();
         assertThat(results.size() > 1).isTrue();

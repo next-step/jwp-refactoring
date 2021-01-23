@@ -9,16 +9,22 @@ public class Menu {
     private String name;
     private BigDecimal price;
     private Long menuGroupId;
-    private List<MenuProduct> menuProducts;
+    private MenuProducts menuProducts;
 
     public Menu() {
+    }
+
+    public Menu(String name, BigDecimal price, Long menuGroupId) {
+        this.name = name;
+        this.price = price;
+        this.menuGroupId = menuGroupId;
     }
 
     public Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
-        this.menuProducts = menuProducts;
+        this.menuProducts = new MenuProducts(menuProducts);
     }
 
     public Long getId() {
@@ -53,12 +59,16 @@ public class Menu {
         this.menuGroupId = menuGroupId;
     }
 
-    public List<MenuProduct> getMenuProducts() {
+    public MenuProducts getMenuProducts() {
         return menuProducts;
     }
 
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
+    public int menuProductSize() {
+        return menuProducts.size();
+    }
+
+    public void addMenuProducts(List<MenuProduct> menuProducts) {
+        this.menuProducts = new MenuProducts(menuProducts);
     }
 
     @Override

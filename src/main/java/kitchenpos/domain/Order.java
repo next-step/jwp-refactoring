@@ -48,7 +48,7 @@ public class Order {
         return orderStatus;
     }
 
-    public void setOrderStatus(final String orderStatus) {
+    public void changeOrderStatus(final String orderStatus) {
         this.orderStatus = orderStatus;
     }
 
@@ -64,7 +64,7 @@ public class Order {
         return orderLineItems;
     }
 
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
+    public void addOrderLineItem(final List<OrderLineItem> orderLineItems) {
         this.orderLineItems = orderLineItems;
     }
 
