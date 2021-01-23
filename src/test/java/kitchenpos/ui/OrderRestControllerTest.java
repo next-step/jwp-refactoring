@@ -7,9 +7,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
 class OrderRestControllerTest extends DomainTestUtils {
@@ -39,20 +44,35 @@ class OrderRestControllerTest extends DomainTestUtils {
 
     @DisplayName("주문을 등록한다")
     @Test
-    void create() {
-
-        //컨트롤러_생성_요청_및_검증(mockMvc, ORDER_URI, body);
+    void create() throws Exception {
+        String body = objectMapper.writeValueAsString(주문);
+        컨트롤러_생성_요청_및_검증(mockMvc, ORDER_URI, body);
     }
 
     @DisplayName("주문 목록을 조회한다")
     @Test
-    void list() {
-
+    void list() throws Exception {
+        컨트롤러_조회_요청_및_검증(mockMvc, ORDER_URI);
     }
 
     @DisplayName("주문 상태를 변경한다")
     @Test
-    void change() {
+    void change() throws Exception {
+        String body = objectMapper.writeValueAsString(주문);
+        컨트롤러_생성_요청_및_검증(mockMvc, ORDER_URI, body);
 
+        주문.setOrderStatus(OrderStatus.MEAL.name());
+        body = objectMapper.writeValueAsString(주문);
+
+        주문_변경_요청_및_검증(body, 1l);
+    }
+
+    private void 주문_변경_요청_및_검증(String body, Long id) throws Exception {
+        mockMvc.perform(put(ORDER_URI + "/{id}" + "/order-status", id)
+                .content(body)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 }
