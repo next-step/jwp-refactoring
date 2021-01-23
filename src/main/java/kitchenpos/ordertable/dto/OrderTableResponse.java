@@ -3,21 +3,22 @@ package kitchenpos.ordertable.dto;
 import kitchenpos.ordertable.domain.OrderTable;
 
 public class OrderTableResponse {
-	private Long id;
-	private int numberOfGuests;
-	private boolean empty;
+	private final Long id;
+	private final int numberOfGuests;
+	private final boolean empty;
 
-	public OrderTableResponse() {
-	}
-
-	public OrderTableResponse(final Long id, final int numberOfGuests, final boolean empty) {
+	private OrderTableResponse(final Long id, final int numberOfGuests, final boolean empty) {
 		this.id = id;
 		this.numberOfGuests = numberOfGuests;
 		this.empty = empty;
 	}
 
+	public static OrderTableResponse of(final Long id, final int numberOfGuests, final boolean empty) {
+		return new OrderTableResponse(id, numberOfGuests, empty);
+	}
+
 	public static OrderTableResponse of(final OrderTable orderTable) {
-		return new OrderTableResponse(orderTable.getId(), orderTable.numberOfGuests(), orderTable.isEmpty());
+		return of(orderTable.getId(), orderTable.numberOfGuests(), orderTable.isEmpty());
 	}
 
 	public Long getId() {

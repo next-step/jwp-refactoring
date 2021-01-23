@@ -14,13 +14,18 @@ public class MenuResponse {
 	private final Long menuGroupId;
 	private final List<MenuProductResponse> menuProducts;
 
-	public MenuResponse(final Long id, final String name, final Price price, final Long menuGroupId,
+	private MenuResponse(final Long id, final String name, final Price price, final Long menuGroupId,
 		final List<MenuProductResponse> menuProducts) {
 		this.id = id;
 		this.name = name;
 		this.price = price;
 		this.menuGroupId = menuGroupId;
 		this.menuProducts = menuProducts;
+	}
+
+	public static MenuResponse of(final Long id, final String name, final Price price, final Long menuGroupId,
+		final List<MenuProductResponse> menuProducts) {
+		return new MenuResponse(id, name, price, menuGroupId, menuProducts);
 	}
 
 	public static MenuResponse of(final List<MenuProduct> menuProducts) {
@@ -30,7 +35,7 @@ public class MenuResponse {
 			.map(MenuProductResponse::of)
 			.collect(Collectors.toList());
 
-		return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(), menu.getMenuGroup().getId(),
+		return of(menu.getId(), menu.getName(), menu.getPrice(), menu.getMenuGroup().getId(),
 			menuProductResponses);
 	}
 
