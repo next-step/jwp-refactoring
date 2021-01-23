@@ -1,7 +1,14 @@
 package kitchenpos.menu.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.Product;
+
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MenuRequest {
 	private String name;
@@ -19,6 +26,26 @@ public class MenuRequest {
 		this.menuProductRequests = menuProductRequests;
 	}
 
+	public Menu createMenu(MenuGroup menuGroup) {
+		return new Menu(name, price, menuGroup);
+	}
+
+	@JsonIgnore
+	public List<Long> getProductIds() {
+		return menuProductRequests.stream()
+				.map(MenuProductRequest::getProductId).collect(Collectors.toList());
+	}
+
+	public List<MenuProductRequest> getMenuProductRequests() {
+		return menuProductRequests;
+	}
+
+	public List<MenuProduct> createMenuProducts(List<Product> products) {
+		return menuProductRequests.stream()
+				.map(iter -> iter.toMenuProduct(products))
+				.collect(Collectors.toList());
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -29,9 +56,5 @@ public class MenuRequest {
 
 	public long getMenuGroupId() {
 		return menuGroupId;
-	}
-
-	public List<MenuProductRequest> getMenuProductRequests() {
-		return menuProductRequests;
 	}
 }
