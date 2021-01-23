@@ -73,7 +73,7 @@ public class MenuService {
     }
 
     private void checkMenuPrice(Menu menu, Money sum) {
-        if (menu.getPrice().isGreaterThan(sum)) {
+        if (menu.priceIsGreaterThan(sum)) {
             throw new InvalidMenuPriceException("상품 가격 합계보다 비싼 메뉴를 등록할 수 없습니다.");
         }
     }
