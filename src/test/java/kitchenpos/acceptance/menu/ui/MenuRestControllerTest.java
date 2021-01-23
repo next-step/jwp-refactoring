@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -31,6 +32,7 @@ import kitchenpos.product.domain.Price;
 
 @DisplayName("메뉴 Controller 테스트")
 @WebMvcTest(MenuRestController.class)
+@MockBean(JpaMetamodelMappingContext.class)
 class MenuRestControllerTest {
 	@Autowired
 	private MockMvc mvc;
@@ -59,8 +61,8 @@ class MenuRestControllerTest {
 	void createMenuTest() throws Exception {
 		// given
 		MenuRequest request = MenuRequest.of("치피세트", 50000, 1L, menuProductRequests);
-		MenuResponse response = new MenuResponse(1L, "치피세트", Price.of(50000), 1L, menuProductResponses);
-		given(menuService.create(request)).willReturn(response);
+		MenuResponse response = MenuResponse.of(1L, "치피세트", Price.of(50000), 1L, menuProductResponses);
+		given(menuService.create(any())).willReturn(response);
 
 		// when
 		final ResultActions resultActions = mvc.perform(post(MenuAcceptance.MENUS_REQUEST_URL)
