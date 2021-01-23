@@ -45,9 +45,6 @@ public class MenuService {
 
         final List<MenuProduct> menuProducts = menu.getMenuProducts();
         BigDecimal sum = getSumOfPrices(menuProducts);
-        System.out.println(price);
-        System.out.println(sum);
-        System.out.println(price.compareTo(sum));
         validatePriceSum(price, sum);
 
         return saveMenu(menu, menuProducts);
