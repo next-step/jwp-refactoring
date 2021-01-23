@@ -70,10 +70,4 @@ public class OrderTableRepositoryTest {
             expected.changeEmpty(true);
         }).isInstanceOf(IllegalArgumentException.class);
     }
-
-    @DisplayName("주문 테이블 비어있는지 여부 변경 예외 - 요리중이거나 식사중인 경우")
-    @Test
-    void validOrderStatusCookingOrMeal() {
-        // TODO
-    }
 }
