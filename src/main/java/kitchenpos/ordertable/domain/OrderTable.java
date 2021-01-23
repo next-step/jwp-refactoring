@@ -1,4 +1,4 @@
-package kitchenpos.table.domain;
+package kitchenpos.ordertable.domain;
 
 import kitchenpos.common.domain.BaseEntity;
 import kitchenpos.order.domain.Order;

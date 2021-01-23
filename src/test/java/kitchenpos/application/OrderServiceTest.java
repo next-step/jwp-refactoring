@@ -15,9 +15,9 @@ import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
-import kitchenpos.table.application.TableService;
-import kitchenpos.table.dto.OrderTableRequest;
-import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.ordertable.application.OrderTableService;
+import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -46,7 +46,7 @@ class OrderServiceTest {
     @Autowired
     private MenuService menuService;
     @Autowired
-    private TableService tableService;
+    private OrderTableService orderTableService;
 
     @DisplayName("`주문`을 생성한다.")
     @Test
@@ -58,7 +58,7 @@ class OrderServiceTest {
         MenuResponse 추천메뉴 = menuService.create(new MenuRequest("추천메뉴", BigDecimal.valueOf(14_000), 신메뉴그룹.getId(),
                 Arrays.asList(new MenuProductRequest(짬뽕.getId(), 1L), new MenuProductRequest(짜장면.getId(), 1L)))
         );
-        OrderTableResponse orderTable = tableService.create(new OrderTableRequest(3, false));
+        OrderTableResponse orderTable = orderTableService.create(new OrderTableRequest(3, false));
         OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(추천메뉴.getId(), 1L);
         OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(orderLineItemRequest));
 
@@ -112,7 +112,7 @@ class OrderServiceTest {
         MenuResponse 추천메뉴 = menuService.create(new MenuRequest("추천메뉴", BigDecimal.valueOf(14_000), 신메뉴그룹.getId(),
                 Arrays.asList(new MenuProductRequest(짬뽕.getId(), 1L), new MenuProductRequest(짜장면.getId(), 1L)))
         );
-        OrderTableResponse orderTable = tableService.create(new OrderTableRequest(3, false));
+        OrderTableResponse orderTable = orderTableService.create(new OrderTableRequest(3, false));
 
         OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(추천메뉴.getId(), 1L);
         OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(orderLineItemRequest));
@@ -135,7 +135,7 @@ class OrderServiceTest {
         MenuResponse 추천메뉴 = menuService.create(new MenuRequest("추천메뉴", BigDecimal.valueOf(14_000), 신메뉴그룹.getId(),
                 Arrays.asList(new MenuProductRequest(짬뽕.getId(), 1L), new MenuProductRequest(짜장면.getId(), 1L)))
         );
-        OrderTableResponse orderTable = tableService.create(new OrderTableRequest(3, false));
+        OrderTableResponse orderTable = orderTableService.create(new OrderTableRequest(3, false));
 
         OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(추천메뉴.getId(), 1L);
         OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(orderLineItemRequest));
@@ -159,7 +159,7 @@ class OrderServiceTest {
         MenuResponse 추천메뉴 = menuService.create(new MenuRequest("추천메뉴", BigDecimal.valueOf(14_000), 신메뉴그룹.getId(),
                 Arrays.asList(new MenuProductRequest(짬뽕.getId(), 1L), new MenuProductRequest(짜장면.getId(), 1L)))
         );
-        OrderTableResponse orderTable = tableService.create(new OrderTableRequest(3, false));
+        OrderTableResponse orderTable = orderTableService.create(new OrderTableRequest(3, false));
 
         OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(추천메뉴.getId(), 1L);
         OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(orderLineItemRequest));

@@ -9,14 +9,14 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
-import kitchenpos.table.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.product.application.ProductService;
-import kitchenpos.table.application.TableService;
-import kitchenpos.table.dto.OrderTableRequest;
-import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.ordertable.application.OrderTableService;
+import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
@@ -42,7 +42,7 @@ class TableGroupServiceTest {
     @Autowired
     private TableGroupService tableGroupService;
     @Autowired
-    private TableService tableService;
+    private OrderTableService orderTableService;
     @Autowired
     private ProductService productService;
     @Autowired
@@ -54,16 +54,16 @@ class TableGroupServiceTest {
     @Test
     void createTableGroup() {
         // Given
-        OrderTableResponse orderTable1 = tableService.create(new OrderTableRequest(0, true));
-        OrderTableResponse orderTable2 = tableService.create(new OrderTableRequest(0, true));
+        OrderTableResponse orderTable1 = orderTableService.create(new OrderTableRequest(0, true));
+        OrderTableResponse orderTable2 = orderTableService.create(new OrderTableRequest(0, true));
         List<OrderTableRequest> orderTableRequests = Arrays.asList(new OrderTableRequest(orderTable1.getId()),
                 new OrderTableRequest(orderTable2.getId()));
         TableGroupRequest request = new TableGroupRequest(orderTableRequests);
 
         // When
         TableGroupResponse response = tableGroupService.create(request);
-        OrderTableResponse foundOrderTable1 = tableService.findResponseById(orderTable1.getId());
-        OrderTableResponse foundOrderTable2 = tableService.findResponseById(orderTable2.getId());
+        OrderTableResponse foundOrderTable1 = orderTableService.findResponseById(orderTable1.getId());
+        OrderTableResponse foundOrderTable2 = orderTableService.findResponseById(orderTable2.getId());
 
         // Then
         assertAll(
@@ -78,7 +78,7 @@ class TableGroupServiceTest {
     @Test
     void exceptionToCreateTableGroupWithZeroOrOneOrderTable() {
         // Given
-        OrderTableResponse orderTable1 = tableService.create(new OrderTableRequest(0, true));
+        OrderTableResponse orderTable1 = orderTableService.create(new OrderTableRequest(0, true));
         List<OrderTableRequest> orderTableRequests = Collections.singletonList(new OrderTableRequest(orderTable1.getId()));
         TableGroupRequest request = new TableGroupRequest(orderTableRequests);
 
@@ -91,8 +91,8 @@ class TableGroupServiceTest {
     @Test
     void exceptionToCreateTableGroupWithNonemptyOrderTable() {
         // Given
-        OrderTableResponse invalidOrderTable1 = tableService.create(new OrderTableRequest(3, false));
-        OrderTableResponse invalidOrderTable2 = tableService.create(new OrderTableRequest(5, false));
+        OrderTableResponse invalidOrderTable1 = orderTableService.create(new OrderTableRequest(3, false));
+        OrderTableResponse invalidOrderTable2 = orderTableService.create(new OrderTableRequest(5, false));
         List<OrderTableRequest> orderTableRequests = Arrays.asList(new OrderTableRequest(invalidOrderTable1.getId()),
                 new OrderTableRequest(invalidOrderTable2.getId()));
         TableGroupRequest request = new TableGroupRequest(orderTableRequests);
@@ -106,8 +106,8 @@ class TableGroupServiceTest {
     @Test
     void exceptionToCreateTableGroupWithRegisteredOrderTable() {
         // Given
-        OrderTableResponse orderTable1 = tableService.create(new OrderTableRequest(0, true));
-        OrderTableResponse orderTable2 = tableService.create(new OrderTableRequest(0, true));
+        OrderTableResponse orderTable1 = orderTableService.create(new OrderTableRequest(0, true));
+        OrderTableResponse orderTable2 = orderTableService.create(new OrderTableRequest(0, true));
         List<OrderTableRequest> orderTableRequests = Arrays.asList(new OrderTableRequest(orderTable1.getId()),
                 new OrderTableRequest(orderTable2.getId()));
         TableGroupRequest request = new TableGroupRequest(orderTableRequests);
@@ -122,8 +122,8 @@ class TableGroupServiceTest {
     @Test
     void ungroupTableGroup() {
         // Given
-        OrderTableResponse orderTable1 = tableService.create(new OrderTableRequest(0, true));
-        OrderTableResponse orderTable2 = tableService.create(new OrderTableRequest(0, true));
+        OrderTableResponse orderTable1 = orderTableService.create(new OrderTableRequest(0, true));
+        OrderTableResponse orderTable2 = orderTableService.create(new OrderTableRequest(0, true));
         List<OrderTableRequest> orderTableRequests = Arrays.asList(new OrderTableRequest(orderTable1.getId()),
                 new OrderTableRequest(orderTable2.getId()));
         TableGroupRequest request = new TableGroupRequest(orderTableRequests);
@@ -131,8 +131,8 @@ class TableGroupServiceTest {
 
         // When
         tableGroupService.ungroup(tableGroup.getId());
-        OrderTable foundOrderTable1 = tableService.findById(orderTable1.getId());
-        OrderTable foundOrderTable2 = tableService.findById(orderTable2.getId());
+        OrderTable foundOrderTable1 = orderTableService.findById(orderTable1.getId());
+        OrderTable foundOrderTable2 = orderTableService.findById(orderTable2.getId());
 
         // Then
         assertAll(
@@ -145,8 +145,8 @@ class TableGroupServiceTest {
     @Test
     void exceptionToUngroupTableGroup() {
         // Given
-        OrderTableResponse orderTable1 = tableService.create(new OrderTableRequest(0, true));
-        OrderTableResponse orderTable2 = tableService.create(new OrderTableRequest(0, true));
+        OrderTableResponse orderTable1 = orderTableService.create(new OrderTableRequest(0, true));
+        OrderTableResponse orderTable2 = orderTableService.create(new OrderTableRequest(0, true));
         List<OrderTableRequest> orderTableRequests = Arrays.asList(new OrderTableRequest(orderTable1.getId()),
                 new OrderTableRequest(orderTable2.getId()));
         TableGroupRequest request = new TableGroupRequest(orderTableRequests);

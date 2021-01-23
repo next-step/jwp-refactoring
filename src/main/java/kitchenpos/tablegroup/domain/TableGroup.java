@@ -1,10 +1,9 @@
 package kitchenpos.tablegroup.domain;
 
 import kitchenpos.common.domain.BaseEntity;
-import kitchenpos.table.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTable;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 

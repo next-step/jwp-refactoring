@@ -12,7 +12,7 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.ordertable.OrderTableAcceptanceTestSupport;
 import kitchenpos.product.ProductAcceptanceTestSupport;
 import kitchenpos.product.dto.ProductResponse;
-import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

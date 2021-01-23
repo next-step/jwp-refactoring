@@ -1,9 +1,9 @@
-package kitchenpos.table.application;
+package kitchenpos.ordertable.application;
 
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.dto.OrderTableRequest;
-import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTableRepository;
+import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,10 +13,10 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class TableService {
+public class OrderTableService {
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(OrderTableRepository orderTableRepository) {
+    public OrderTableService(OrderTableRepository orderTableRepository) {
         this.orderTableRepository = orderTableRepository;
     }
 

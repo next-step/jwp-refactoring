@@ -2,7 +2,7 @@ package kitchenpos.ordertable;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.ordertable.dto.OrderTableRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

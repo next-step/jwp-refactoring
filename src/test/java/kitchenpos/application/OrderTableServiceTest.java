@@ -15,9 +15,9 @@ import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
-import kitchenpos.table.application.TableService;
-import kitchenpos.table.dto.OrderTableRequest;
-import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.ordertable.application.OrderTableService;
+import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,9 +37,9 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("주문 테이블 서비스에 관련한 기능")
 @SpringBootTest
-class TableServiceTest {
+class OrderTableServiceTest {
     @Autowired
-    private TableService tableService;
+    private OrderTableService orderTableService;
     @Autowired
     private TableGroupService tableGroupService;
     @Autowired
@@ -57,7 +57,7 @@ class TableServiceTest {
     @BeforeEach
     void beforeEach() {
         request = new OrderTableRequest(3, false);
-        orderTableResponse = tableService.create(request);
+        orderTableResponse = orderTableService.create(request);
     }
 
     @DisplayName("`주문 테이블`을 생성한다.")
@@ -76,7 +76,7 @@ class TableServiceTest {
     @Test
     void findAllTables() {
         // When
-        List<OrderTableResponse> actual = tableService.list();
+        List<OrderTableResponse> actual = orderTableService.list();
 
         // Then
         assertThat(actual).containsAnyElementsOf(Collections.singletonList(orderTableResponse));
@@ -86,7 +86,7 @@ class TableServiceTest {
     @Test
     void changeEmpty() {
         // When
-        OrderTableResponse actual = tableService.changeEmpty(orderTableResponse.getId(), new OrderTableRequest(true));
+        OrderTableResponse actual = orderTableService.changeEmpty(orderTableResponse.getId(), new OrderTableRequest(true));
 
         // Then
         assertThat(actual.isEmpty()).isTrue();
@@ -96,14 +96,14 @@ class TableServiceTest {
     @Test
     void exceptionToChangeEmptyWithTableGroup() {
         // Given
-        OrderTableResponse orderTableResponse1 = tableService.create(new OrderTableRequest(0, true));
-        OrderTableResponse orderTableResponse2 = tableService.create(new OrderTableRequest(0, true));
+        OrderTableResponse orderTableResponse1 = orderTableService.create(new OrderTableRequest(0, true));
+        OrderTableResponse orderTableResponse2 = orderTableService.create(new OrderTableRequest(0, true));
         List<OrderTableRequest> orderTableRequests = Arrays.asList(new OrderTableRequest(orderTableResponse1.getId()),
                 new OrderTableRequest(orderTableResponse2.getId()));
         tableGroupService.create(new TableGroupRequest(orderTableRequests));
 
         // When & Then
-        assertThatThrownBy(() -> tableService.changeEmpty(orderTableResponse1.getId(), new OrderTableRequest(true)))
+        assertThatThrownBy(() -> orderTableService.changeEmpty(orderTableResponse1.getId(), new OrderTableRequest(true)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -123,7 +123,7 @@ class TableServiceTest {
         orderService.create(orderRequest);
 
         // when & Then
-        assertThatThrownBy(() -> tableService.changeEmpty(orderTableResponse.getId(), new OrderTableRequest(true)))
+        assertThatThrownBy(() -> orderTableService.changeEmpty(orderTableResponse.getId(), new OrderTableRequest(true)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -144,7 +144,7 @@ class TableServiceTest {
 
         // When
         int updateNumberOfGuests = 5;
-        OrderTableResponse actual = tableService.changeNumberOfGuests(orderTableResponse.getId(), new OrderTableRequest(updateNumberOfGuests));
+        OrderTableResponse actual = orderTableService.changeNumberOfGuests(orderTableResponse.getId(), new OrderTableRequest(updateNumberOfGuests));
 
         // Then
         assertThat(actual.getNumberOfGuests()).isEqualTo(updateNumberOfGuests);
@@ -167,7 +167,7 @@ class TableServiceTest {
 
         // When & Then
         int invalidNumberOfGuests = -1;
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableResponse.getId(), new OrderTableRequest(invalidNumberOfGuests)))
+        assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(orderTableResponse.getId(), new OrderTableRequest(invalidNumberOfGuests)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -187,11 +187,11 @@ class TableServiceTest {
         OrderResponse order = orderService.create(orderRequest);
 
         orderService.changeOrderStatus(order.getId(), new OrderRequest(OrderStatus.COMPLETION));
-        tableService.changeEmpty(orderTableResponse.getId(), new OrderTableRequest(true));
+        orderTableService.changeEmpty(orderTableResponse.getId(), new OrderTableRequest(true));
 
         // When & Then
         int updateNumberOfGuests = 5;
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableResponse.getId(), new OrderTableRequest(updateNumberOfGuests)))
+        assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(orderTableResponse.getId(), new OrderTableRequest(updateNumberOfGuests)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

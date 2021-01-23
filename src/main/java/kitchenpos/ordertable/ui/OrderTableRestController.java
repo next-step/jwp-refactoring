@@ -1,8 +1,8 @@
-package kitchenpos.table.ui;
+package kitchenpos.ordertable.ui;
 
-import kitchenpos.table.application.TableService;
-import kitchenpos.table.dto.OrderTableRequest;
-import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.ordertable.application.OrderTableService;
+import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,16 +10,16 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-public class TableRestController {
-    private final TableService tableService;
+public class OrderTableRestController {
+    private final OrderTableService orderTableService;
 
-    public TableRestController(final TableService tableService) {
-        this.tableService = tableService;
+    public OrderTableRestController(final OrderTableService orderTableService) {
+        this.orderTableService = orderTableService;
     }
 
     @PostMapping("/api/tables")
     public ResponseEntity<OrderTableResponse> create(@RequestBody OrderTableRequest request) {
-        final OrderTableResponse created = tableService.create(request);
+        final OrderTableResponse created = orderTableService.create(request);
         final URI uri = URI.create("/api/tables/" + created.getId());
         return ResponseEntity.created(uri)
                 .body(created);
@@ -28,7 +28,7 @@ public class TableRestController {
     @GetMapping("/api/tables")
     public ResponseEntity<List<OrderTableResponse>> list() {
         return ResponseEntity.ok()
-                .body(tableService.list());
+                .body(orderTableService.list());
     }
 
     @PutMapping("/api/tables/{orderTableId}/empty")
@@ -37,7 +37,7 @@ public class TableRestController {
             @RequestBody OrderTableRequest orderTable
     ) {
         return ResponseEntity.ok()
-                .body(tableService.changeEmpty(orderTableId, orderTable));
+                .body(orderTableService.changeEmpty(orderTableId, orderTable));
     }
 
     @PutMapping("/api/tables/{orderTableId}/number-of-guests")
@@ -46,6 +46,6 @@ public class TableRestController {
             @RequestBody OrderTableRequest orderTable
     ) {
         return ResponseEntity.ok()
-                .body(tableService.changeNumberOfGuests(orderTableId, orderTable));
+                .body(orderTableService.changeNumberOfGuests(orderTableId, orderTable));
     }
 }
