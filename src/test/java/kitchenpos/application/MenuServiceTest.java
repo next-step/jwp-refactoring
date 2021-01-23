@@ -35,9 +35,6 @@ class MenuServiceTest {
     @Autowired
     private MenuGroupService menuGroupService;
 
-    @Autowired
-    private ProductDao productDao;
-
     private MenuProduct 메뉴상품_후라이드;
     private MenuProduct 메뉴상품_양념치킨;
     private MenuGroup 후라이드양념반반메뉴;
@@ -75,23 +72,11 @@ class MenuServiceTest {
                 .isInstanceOf(MenuException.class);
     }
 
-    @DisplayName("메뉴를 생성한다 : 메뉴의 각 상품들 가격의 합이 메뉴의 가격과 같다")
+    @DisplayName("메뉴를 생성한다 : 메뉴의 각 상품들 가격의 합이 메뉴의 가격이 같지 않으면 익셉션 ")
     @Test
-    void samePriceMenuProducts() {
-        final Menu menu = 메뉴를_생성한다(후라이드양념반반메뉴, "후라이드양념반반", 32000, 메뉴상품_후라이드, 메뉴상품_양념치킨);
-
-        List<MenuProduct> menuProducts = menu.getMenuProducts();
-
-        List<Long> productIds = menuProducts.stream()
-                .map(MenuProduct::getProductId)
-                .collect(Collectors.toList());
-
-        BigDecimal sum = productIds.stream()
-                .map(productId -> productDao.findById(productId).get())
-                .map(Product::getPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        assertThat(menu.getPrice()).isEqualTo(sum);
+    void comparePriceMenuProductsException() {
+        assertThatThrownBy(() -> 메뉴를_생성한다(후라이드양념반반메뉴, "후라이드양념반반", 34000, 메뉴상품_후라이드, 메뉴상품_양념치킨))
+                .isInstanceOf(MenuException.class);
     }
 
     @DisplayName("메뉴 목록을 조회한다")

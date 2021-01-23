@@ -1,6 +1,7 @@
 package kitchenpos.application;
 
 import kitchenpos.advice.exception.MenuException;
+import kitchenpos.advice.exception.MenuGroupException;
 import kitchenpos.advice.exception.ProductException;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
@@ -44,6 +45,9 @@ public class MenuService {
 
         final List<MenuProduct> menuProducts = menu.getMenuProducts();
         BigDecimal sum = getSumOfPrices(menuProducts);
+        System.out.println(price);
+        System.out.println(sum);
+        System.out.println(price.compareTo(sum));
         validatePriceSum(price, sum);
 
         return saveMenu(menu, menuProducts);
@@ -93,7 +97,7 @@ public class MenuService {
 
     private void validateExistsMenuGroup(Menu menu) {
         if (!menuGroupDao.existsById(menu.getMenuGroupId())) {
-            throw new IllegalArgumentException();
+            throw new MenuGroupException("존재하는 메뉴그룹 id가 없습니다", menu.getMenuGroupId());
         }
     }
 
@@ -105,7 +109,7 @@ public class MenuService {
 
     private void validatePriceSum(BigDecimal price, BigDecimal sum) {
         if (price.compareTo(sum) > 0) {
-            throw new IllegalArgumentException();
+            throw new MenuException("메뉴 가격과 각 가격의 총합보다 큽니다", price.longValue(), sum.longValue());
         }
     }
 
