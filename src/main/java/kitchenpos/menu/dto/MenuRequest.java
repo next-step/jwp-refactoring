@@ -14,17 +14,17 @@ public class MenuRequest {
 	private String name;
 	private BigDecimal price;
 	private Long menuGroupId;
-	private List<MenuProduct> menuProducts;
+	private List<Long> menuProductIds;
 
 	public MenuRequest() {
 	}
 
 	public MenuRequest(String name, BigDecimal price, Long menuGroupId,
-		List<MenuProduct> menuProducts) {
+		List<Long> menuProductIds) {
 		this.name = name;
 		this.price = price;
 		this.menuGroupId = menuGroupId;
-		this.menuProducts = menuProducts;
+		this.menuProductIds = menuProductIds;
 	}
 
 	public String getName() {
@@ -39,7 +39,7 @@ public class MenuRequest {
 		return menuGroupId;
 	}
 
-	public List<MenuProduct> getMenuProducts() {
-		return menuProducts;
+	public List<Long> getMenuProductIds() {
+		return menuProductIds;
 	}
 }

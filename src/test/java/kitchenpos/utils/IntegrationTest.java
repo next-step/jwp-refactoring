@@ -11,12 +11,12 @@ import org.springframework.boot.test.context.SpringBootTest;
  **/
 @SpringBootTest
 public class IntegrationTest {
-
+/*
 	@Autowired
 	private DatabaseCleanup databaseCleanup;
 
 	@BeforeEach
 	public void setUp() {
 		databaseCleanup.execute();
-	}
+	}*/
 }

@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
@@ -47,13 +48,14 @@ class MenuServiceTest extends IntegrationTest {
 	void create() {
 		// given
 		MenuGroup menuGroup = new MenuGroup("마늘메뉴");
-		MenuGroup savedMenuGroup = menuGroupDao.save(menuGroup);
-		Product product = new Product("마늘닭", BigDecimal.valueOf(16000));
-		Product savedProduct = productDao.save(product);
+		ReflectionTestUtils.setField(menuGroup, "id", 1L);
 
-		MenuProduct menuProduct = new MenuProduct(savedProduct.getId(), 1);
-		List<MenuProduct> menuProducts = Arrays.asList(menuProduct);
-		MenuRequest menuRequest = new MenuRequest("마늘치킨",  BigDecimal.valueOf(16000), savedMenuGroup.getId(), menuProducts);
+		Product product = new Product("마늘닭", BigDecimal.valueOf(16000));
+		ReflectionTestUtils.setField(product, "id", 1L);
+
+		MenuProduct menuProduct = new MenuProduct();
+		ReflectionTestUtils.setField(menuProduct, "seq", 1L);
+		MenuRequest menuRequest = new MenuRequest("마늘치킨",  BigDecimal.valueOf(16000), menuGroup.getId(), Arrays.asList(menuProduct.getSeq()));
 
 		// when
 		MenuResponse menuResponse = menuService.create(menuRequest);
@@ -71,13 +73,14 @@ class MenuServiceTest extends IntegrationTest {
 	void priceMustOverZero() {
 		// given
 		MenuGroup menuGroup = new MenuGroup("마늘메뉴");
-		MenuGroup savedMenuGroup = menuGroupDao.save(menuGroup);
-		Product product = new Product("마늘닭", BigDecimal.valueOf(16000));
-		Product savedProduct = productDao.save(product);
+		ReflectionTestUtils.setField(menuGroup, "id", 1L);
 
-		MenuProduct menuProduct = new MenuProduct(savedProduct.getId(), 1);
-		List<MenuProduct> menuProducts = Arrays.asList(menuProduct);
-		MenuRequest menuRequest = new MenuRequest("마늘치킨",  BigDecimal.valueOf(-16000), savedMenuGroup.getId(), menuProducts);
+		Product product = new Product("마늘닭", BigDecimal.valueOf(16000));
+		ReflectionTestUtils.setField(product, "id", 1L);
+
+		MenuProduct menuProduct = new MenuProduct();
+		ReflectionTestUtils.setField(menuProduct, "seq", 1L);
+		MenuRequest menuRequest = new MenuRequest("마늘치킨",  BigDecimal.valueOf(-16000), menuGroup.getId(), Arrays.asList(menuProduct.getSeq()));
 
 		// when - then
 		assertThatThrownBy(() -> {
@@ -92,11 +95,11 @@ class MenuServiceTest extends IntegrationTest {
 		// given
 		Long invalidMenuGroupId = 999999L;
 		Product product = new Product("마늘닭", BigDecimal.valueOf(16000));
-		Product savedProduct = productDao.save(product);
+		ReflectionTestUtils.setField(product, "id", 1L);
 
-		MenuProduct menuProduct = new MenuProduct(savedProduct.getId(), 1);
-		List<MenuProduct> menuProducts = Arrays.asList(menuProduct);
-		MenuRequest menuRequest = new MenuRequest("마늘치킨",  BigDecimal.valueOf(-16000), invalidMenuGroupId, menuProducts);
+		MenuProduct menuProduct = new MenuProduct();
+		ReflectionTestUtils.setField(menuProduct, "seq", 1L);
+		MenuRequest menuRequest = new MenuRequest("마늘치킨",  BigDecimal.valueOf(-16000), invalidMenuGroupId, Arrays.asList(menuProduct.getSeq()));
 
 		// when - then
 		assertThatThrownBy(() -> {
@@ -109,13 +112,14 @@ class MenuServiceTest extends IntegrationTest {
 	void menuPriceCannotOverProduct() {
 		// given
 		MenuGroup menuGroup = new MenuGroup("마늘메뉴");
-		MenuGroup savedMenuGroup = menuGroupDao.save(menuGroup);
-		Product product = new Product("마늘닭", BigDecimal.valueOf(16000));
-		Product savedProduct = productDao.save(product);
+		ReflectionTestUtils.setField(menuGroup, "id", 1L);
 
-		MenuProduct menuProduct = new MenuProduct(savedProduct.getId(), 1);
-		List<MenuProduct> menuProducts = Arrays.asList(menuProduct);
-		MenuRequest menuRequest = new MenuRequest("마늘치킨",  BigDecimal.valueOf(50000000), savedMenuGroup.getId(), menuProducts);
+		Product product = new Product("마늘닭", BigDecimal.valueOf(16000));
+		ReflectionTestUtils.setField(product, "id", 1L);
+
+		MenuProduct menuProduct = new MenuProduct();
+		ReflectionTestUtils.setField(menuProduct, "seq", 1L);
+		MenuRequest menuRequest = new MenuRequest("마늘치킨",  BigDecimal.valueOf(50000000), menuGroup.getId(), Arrays.asList(menuProduct.getSeq()));
 
 		// when - then
 		assertThatThrownBy(() -> {

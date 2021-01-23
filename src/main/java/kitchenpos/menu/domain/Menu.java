@@ -4,13 +4,27 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
 import kitchenpos.domain.MenuProduct;
 
+@Entity
 public class Menu {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private BigDecimal price;
     private Long menuGroupId;
+
+    @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MenuProduct> menuProducts;
 
     public Menu() {
@@ -22,6 +36,16 @@ public class Menu {
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
     }
+
+
+    public void addMenuProduct(MenuProduct menuProduct) {
+        this.menuProducts.add(menuProduct);
+    }
+
+
+
+
+
 
     public static class Builder {
         private String name;
@@ -61,9 +85,6 @@ public class Menu {
 
     }
 
-    public void addMenuProduct(MenuProduct menuProduct) {
-        this.menuProducts.add(menuProduct);
-    }
 
     public Long getId() {
         return id;
@@ -102,6 +123,10 @@ public class Menu {
     }
 
     public void setMenuProducts(final List<MenuProduct> menuProducts) {
+        this.menuProducts = menuProducts;
+    }
+
+    public void changeMenuProducts(final List<MenuProduct> menuProducts) {
         this.menuProducts = menuProducts;
     }
 
