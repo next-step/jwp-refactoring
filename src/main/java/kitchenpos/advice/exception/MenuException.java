@@ -1,5 +1,7 @@
 package kitchenpos.advice.exception;
 
+import java.math.BigDecimal;
+
 public class MenuException extends RuntimeException {
 
     public MenuException(String message, long id) {

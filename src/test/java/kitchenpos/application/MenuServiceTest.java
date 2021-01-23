@@ -1,5 +1,7 @@
 package kitchenpos.application;
 
+import kitchenpos.advice.exception.MenuException;
+import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
@@ -9,12 +11,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest
@@ -28,6 +34,9 @@ class MenuServiceTest {
 
     @Autowired
     private MenuGroupService menuGroupService;
+
+    @Autowired
+    private ProductDao productDao;
 
     private MenuProduct 메뉴상품_후라이드;
     private MenuProduct 메뉴상품_양념치킨;
@@ -45,11 +54,44 @@ class MenuServiceTest {
     @DisplayName("메뉴를 생성한다")
     @Test
     void create() {
-        final Menu 후라이드양념반반 = 메뉴를_생성한다(후라이드양념반반메뉴, "후라이드양념반반", 32000, 메뉴상품_후라이드, 메뉴상품_양념치킨);
+        final Menu menu = 메뉴를_생성한다(후라이드양념반반메뉴, "후라이드양념반반", 32000, 메뉴상품_후라이드, 메뉴상품_양념치킨);
         assertAll(
-                () -> assertThat(후라이드양념반반.getId()).isNotNull(),
-                () -> assertThat(후라이드양념반반.getName()).isEqualTo("후라이드양념반반")
+                () -> assertThat(menu.getId()).isNotNull(),
+                () -> assertThat(menu.getName()).isEqualTo("후라이드양념반반")
         );
+    }
+
+    @DisplayName("메뉴를 생성한다 : 가격이 0미만이면 익셉션 발생")
+    @Test
+    void createPriceException() {
+        assertThatThrownBy(() -> 메뉴를_생성한다(후라이드양념반반메뉴, "후라이드양념반반", -1, 메뉴상품_후라이드, 메뉴상품_양념치킨))
+                .isInstanceOf(MenuException.class);
+    }
+
+    @DisplayName("메뉴를 생성한다 : menuGroupId가 존재하지 않으면 익셉션 발생")
+    @Test
+    void createMenuGroupIdException() {
+        assertThatThrownBy(() -> 메뉴를_생성한다(new MenuGroup(), "후라이드양념반반", -1, 메뉴상품_후라이드, 메뉴상품_양념치킨))
+                .isInstanceOf(MenuException.class);
+    }
+
+    @DisplayName("메뉴를 생성한다 : 메뉴의 각 상품들 가격의 합이 메뉴의 가격과 같다")
+    @Test
+    void samePriceMenuProducts() {
+        final Menu menu = 메뉴를_생성한다(후라이드양념반반메뉴, "후라이드양념반반", 32000, 메뉴상품_후라이드, 메뉴상품_양념치킨);
+
+        List<MenuProduct> menuProducts = menu.getMenuProducts();
+        System.out.println(menuProducts);
+        List<Long> productIds = menuProducts.stream()
+                .map(MenuProduct::getProductId)
+                .collect(Collectors.toList());
+
+        BigDecimal sum = productIds.stream()
+                .map(productId -> productDao.findById(productId).get())
+                .map(Product::getPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        assertThat(menu.getPrice()).isEqualTo(sum);
     }
 
     @DisplayName("메뉴 목록을 조회한다")

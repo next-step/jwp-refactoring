@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.advice.exception.MenuException;
 import kitchenpos.advice.exception.ProductException;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
@@ -98,7 +99,7 @@ public class MenuService {
 
     private void validateEmptyPrice(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
+            throw new MenuException("가격이 0보다 작을 수 없습니다", price.longValue());
         }
     }
 
