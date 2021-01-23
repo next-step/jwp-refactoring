@@ -12,9 +12,6 @@ public class TableGroup {
     private Long id;
 
     private LocalDateTime createdDate;
-//
-//    @OneToMany(mappedBy = "tableGroup")
-//    private final List<OrderTable> orderTables = new ArrayList<>();
 
     public Long getId() {
         return id;
