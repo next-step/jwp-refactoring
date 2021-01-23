@@ -1,4 +1,4 @@
-package kitchenpos.ui;
+package kitchenpos.acceptance.order.ui;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,10 +26,13 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import kitchenpos.application.OrderService;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.application.OrderService;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderLineItemResponse;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.ui.OrderRestController;
 
 @DisplayName("주문 Controller 테스트")
 @WebMvcTest(OrderRestController.class)
@@ -41,23 +45,34 @@ class OrderRestControllerTest {
 	@MockBean
 	private OrderService orderService;
 
-	private OrderLineItem orderLineItem;
+	private List<OrderLineItemRequest> orderLineItemRequests;
+	private List<OrderLineItemResponse> orderLineItemResponses;
 
 	@BeforeEach
 	void setUp() {
-		orderLineItem = OrderLineItem.of(null, null, 1L, 1);
+		orderLineItemRequests = Arrays.asList(
+			OrderLineItemRequest.of(1L, 2),
+			OrderLineItemRequest.of(2L, 3)
+		);
+
+		orderLineItemResponses = Arrays.asList(
+			OrderLineItemResponse.of(1L, 1L, 1L, 2),
+			OrderLineItemResponse.of(2L, 1L, 2L, 3)
+		);
 	}
 
 	@DisplayName("주문을 등록한다.")
 	@Test
 	void createOrderTest() throws Exception {
 		// given
-		Order order = Order.of(1L, 1L, null, LocalDateTime.now(), Collections.singletonList(orderLineItem));
-		given(orderService.create(any())).willReturn(order);
+		OrderRequest request = OrderRequest.of(1L, orderLineItemRequests);
+		OrderResponse response = OrderResponse.of(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(),
+			orderLineItemResponses);
+		given(orderService.create(any())).willReturn(response);
 
 		// when
 		final ResultActions resultActions = mvc.perform(post("/api/orders")
-			.content(mapper.writeValueAsString(order))
+			.content(mapper.writeValueAsString(request))
 			.contentType(MediaType.APPLICATION_JSON))
 			.andDo(print());
 
@@ -65,8 +80,8 @@ class OrderRestControllerTest {
 		resultActions
 			.andExpect(status().isCreated())
 			.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-			.andExpect(redirectedUrl("/api/orders" + "/" + order.getId()))
-			.andExpect(jsonPath("$.id").value(order.getId()))
+			.andExpect(redirectedUrl("/api/orders" + "/" + response.getId()))
+			.andExpect(jsonPath("$.id").value(response.getId()))
 			.andDo(log());
 	}
 
@@ -74,11 +89,9 @@ class OrderRestControllerTest {
 	@Test
 	void selectOrdersTest() throws Exception {
 		// given
-		Order order1 = Order.of(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(),
-			Collections.singletonList(orderLineItem));
-		Order order2 = Order.of(2L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(),
-			Collections.singletonList(orderLineItem));
-		given(orderService.list()).willReturn(Arrays.asList(order1, order2));
+		OrderResponse response = OrderResponse.of(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(),
+			orderLineItemResponses);
+		given(orderService.list()).willReturn(Collections.singletonList(response));
 
 		// when
 		final ResultActions resultActions = mvc.perform(get("/api/orders")
@@ -89,24 +102,21 @@ class OrderRestControllerTest {
 		resultActions
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$").isArray())
-			.andExpect(jsonPath("$", hasSize(2)))
-			.andExpect(jsonPath("$.[0].id").value(1L))
-			.andExpect(jsonPath("$.[1].id").value(2L));
+			.andExpect(jsonPath("$", hasSize(1)))
+			.andExpect(jsonPath("$.[0].id").value(1L));
 	}
 
 	@DisplayName("주문 상태를 변경한다.")
 	@Test
 	void changeOrderStatusTest() throws Exception {
 		// given
-		Order expected = Order.of(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(),
-			Collections.singletonList(orderLineItem));
-		Order actual = Order.of(1L, 1L, OrderStatus.MEAL.name(), LocalDateTime.now(),
-			Collections.singletonList(orderLineItem));
-		when(orderService.changeOrderStatus(anyLong(), any(Order.class))).thenReturn(expected);
+		OrderResponse response = OrderResponse.of(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(),
+			orderLineItemResponses);
+		given(orderService.changeOrderStatus(anyLong(), any())).willReturn(response);
 
 		// when
-		final ResultActions resultActions = mvc.perform(put("/api/orders/{orderId}/order-status", expected.getId())
-			.content(mapper.writeValueAsString(actual))
+		final ResultActions resultActions = mvc.perform(put("/api/orders/{orderId}/order-status", response.getId())
+			.content(mapper.writeValueAsString(OrderStatus.MEAL))
 			.contentType(MediaType.APPLICATION_JSON))
 			.andDo(print());
 

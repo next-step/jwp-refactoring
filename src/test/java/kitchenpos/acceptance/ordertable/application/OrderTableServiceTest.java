@@ -15,9 +15,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.Orders;
+import kitchenpos.order.domain.OrdersRepository;
 import kitchenpos.ordertable.application.OrderTableService;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
@@ -27,7 +27,7 @@ import kitchenpos.ordertable.dto.OrderTableResponse;
 @ExtendWith(MockitoExtension.class)
 class OrderTableServiceTest {
 	@Mock
-	private OrderRepository orderService;
+	private OrdersRepository orderService;
 	@Mock
 	private OrderTableRepository orderTableRepository;
 	@InjectMocks
