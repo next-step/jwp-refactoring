@@ -20,7 +20,7 @@ public class ControllerTest {
     protected ObjectMapper objectMapper;
 
     @Autowired
-    public MockMvc mockMvc;
+    protected MockMvc mockMvc;
 
     protected void 컨트롤러_생성_요청_및_검증(String uri, String body) throws Exception {
         mockMvc.perform(post(uri)
