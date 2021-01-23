@@ -38,15 +38,6 @@ public class Menu {
     }
 
 
-    public void addMenuProduct(MenuProduct menuProduct) {
-        this.menuProducts.add(menuProduct);
-    }
-
-
-
-
-
-
     public static class Builder {
         private String name;
         private BigDecimal price;
@@ -75,12 +66,7 @@ public class Menu {
         }
 
         public Menu build() {
-            Menu menu = new Menu();
-            menu.name = this.name;
-            menu.price = this.price;
-            menu.menuGroupId = this.menuGroupId;
-            menu.menuProducts = this.menuProducts;
-            return menu;
+            return new Menu(name, price, menuGroupId, menuProducts);
         }
 
     }
