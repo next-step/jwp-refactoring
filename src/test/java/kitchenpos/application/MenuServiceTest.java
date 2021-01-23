@@ -54,7 +54,7 @@ class MenuServiceTest extends IntegrationTest {
 		Product product = new Product("마늘닭", BigDecimal.valueOf(16000));
 		ReflectionTestUtils.setField(product, "id", 1L);
 
-		MenuProduct menuProduct = new MenuProduct();
+		MenuProduct menuProduct = new MenuProduct(product, 1L);
 		ReflectionTestUtils.setField(menuProduct, "seq", 1L);
 		MenuRequest menuRequest = new MenuRequest("마늘치킨",  BigDecimal.valueOf(16000), menuGroup.getId(), Arrays.asList(menuProduct.getSeq()));
 
