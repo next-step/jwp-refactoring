@@ -8,14 +8,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-@Transactional
 class ProductServiceTest {
 
 	@Autowired
