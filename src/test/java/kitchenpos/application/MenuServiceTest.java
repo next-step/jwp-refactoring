@@ -171,11 +171,10 @@ class MenuServiceTest {
         ReflectionTestUtils.setField(후라이드치킨_메뉴, "id", 1L);
         Menu 양념치킨_메뉴 = new Menu("양념치킨", new BigDecimal("16000"), menuGroup);
         ReflectionTestUtils.setField(양념치킨_메뉴, "id", 2L);
+        List<Menu> returnMenus = Arrays.asList(후라이드치킨_메뉴, 양념치킨_메뉴);
+        given(menuRepository.findAll()).willReturn(returnMenus);
 
-        given(menuRepository.findAll())
-                .willReturn(Arrays.asList(후라이드치킨_메뉴, 양념치킨_메뉴));
-
-        given(menuProductRepository.findAllById(any()))
+        given(menuProductRepository.findAllByMenuIn(returnMenus))
                 .willReturn(Arrays.asList(
                         new MenuProduct(후라이드치킨_메뉴, 후라이드치킨, 1),
                         new MenuProduct(양념치킨_메뉴, 양념치킨, 1)
