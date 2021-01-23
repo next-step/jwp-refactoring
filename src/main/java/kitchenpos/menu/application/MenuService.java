@@ -35,7 +35,7 @@ public class MenuService {
         MenuGroup menuGroup = menuGroupRepository.findById(request.getMenuGroupId())
                 .orElseThrow(() -> new IllegalArgumentException("등록하려는 메뉴 그룹: " + request.getMenuGroupId() + "이 존재하지 않습니다."));
         List<Product> products = productRepository.findByIdIn(request.getProductIds());
-        request.validateSumForProducts(products);
+        request.validateSizeForProducts(products);
         Menu savedMenu = Menu.create(request.getName(), request.getPrice(), menuGroup, request.createMenuProducts(products));
         return MenuResponse.from(menuRepository.save(savedMenu));
     }

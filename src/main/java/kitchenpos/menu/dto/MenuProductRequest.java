@@ -1,5 +1,8 @@
 package kitchenpos.menu.dto;
 
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.product.domain.Product;
+
 public class MenuProductRequest {
     private Long productId;
     private Long quantity;
@@ -10,6 +13,10 @@ public class MenuProductRequest {
     }
 
     public MenuProductRequest() {
+    }
+
+    public MenuProduct toMenuProduct(Product product) {
+        return new MenuProduct(product, quantity);
     }
 
     public Long getProductId() {

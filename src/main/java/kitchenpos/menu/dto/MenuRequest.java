@@ -2,6 +2,7 @@ package kitchenpos.menu.dto;
 
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
+import org.springframework.util.CollectionUtils;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -48,37 +49,35 @@ public class MenuRequest {
         return menuProducts;
     }
 
-    private BigDecimal sumOfPriceForProducts(List<Product> products) {
-        BigDecimal sum = BigDecimal.ZERO;
-        for (MenuProductRequest menuProductRequest : menuProducts) {
-            Product product = products.stream()
-                    .filter(filterProduct -> menuProductRequest.getProductId().equals(filterProduct.getId()))
-                    .findFirst()
-                    .orElseThrow(IllegalArgumentException::new);
-            sum = sum.add(product.getSumOfProducts(menuProductRequest.getQuantity()));
-        }
-        return sum;
-    }
-
-    public void validateSumForProducts(List<Product> products) {
-        BigDecimal sum = sumOfPriceForProducts(products);
-        if(price == null) {
-            throw new IllegalArgumentException("price 정보는 필수입니다.");
-        }
-        if (price.compareTo(sum) > 0) {
-            throw new IllegalArgumentException("메뉴의 가격은 상품들 가격의 총합보다 클 수 없습니다.");
-        }
-    }
-
     public List<MenuProduct> createMenuProducts(List<Product> products) {
         List<MenuProduct> createMenuProducts = new ArrayList<>();
         for (MenuProductRequest menuProductRequest : menuProducts) {
-            Product product = products.stream()
-                    .filter(p -> menuProductRequest.getProductId().equals(p.getId()))
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalArgumentException("메뉴로 등록하려는 상품이 존재하지 않습니다."));
-            createMenuProducts.add(new MenuProduct(product, menuProductRequest.getQuantity()));
+            Product product = getProduct(products, menuProductRequest.getProductId());
+            createMenuProducts.add(menuProductRequest.toMenuProduct(product));
         }
         return createMenuProducts;
+    }
+
+    public void validateSizeForProducts(List<Product> products) {
+        if (CollectionUtils.isEmpty(products)) {
+            throw new IllegalArgumentException("메뉴 등록에 요청된 상품이 존재하지 않습니다.");
+        }
+        if (products.size() != getSizeOfProducts()) {
+            throw new IllegalArgumentException("메뉴 등록에 요청된 상품 중 등록 안된 상품이 존재합니다.");
+        }
+    }
+
+    public int getSizeOfProducts() {
+        if (menuProducts == null) {
+            return 0;
+        }
+        return menuProducts.size();
+    }
+
+    private Product getProduct(List<Product> products, Long productId) {
+        return products.stream()
+                .filter(p -> p.getId().equals(productId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("메뉴로 등록하려는 상품이 존재하지 않습니다."));
     }
 }

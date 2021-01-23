@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import java.math.BigDecimal;
 
 @Entity
 public class MenuProduct extends BaseEntity {
@@ -25,6 +26,10 @@ public class MenuProduct extends BaseEntity {
     }
 
     protected MenuProduct() {
+    }
+
+    public BigDecimal getSumPriceOfProducts() {
+        return product.getSumOfProducts(quantity);
     }
 
     public void updateMenu(Menu menu) {
