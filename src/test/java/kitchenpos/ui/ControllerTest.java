@@ -1,7 +1,6 @@
 package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,7 +27,7 @@ public class ControllerTest {
     @Autowired
     protected ObjectMapper objectMapper;
 
-    protected void 컨트롤러_생성_요청(String uri, String body) throws Exception {
+    protected void 컨트롤러_생성_요청_및_검증(String uri, String body) throws Exception {
         mockMvc.perform(post(uri)
                 .content(body)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -37,7 +36,7 @@ public class ControllerTest {
                 .andExpect(status().isCreated());
     }
 
-    protected void 컨트롤러_조회_요청(String uri) throws Exception {
+    protected void 컨트롤러_조회_요청_및_검증(String uri) throws Exception {
         mockMvc.perform(get(uri))
                 .andDo(print())
                 .andExpect(status().isOk());
