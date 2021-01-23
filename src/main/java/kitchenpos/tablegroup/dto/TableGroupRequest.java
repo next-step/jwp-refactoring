@@ -1,6 +1,6 @@
 package kitchenpos.tablegroup.dto;
 
-import kitchenpos.table.domain.OrderTable;
+import kitchenpos.order.domain.OrderTable;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
