@@ -20,11 +20,7 @@ public class TableGroup {
     @Embedded
     private OrderTables orderTables;
 
-    protected TableGroup() {
-    }
-
-    public TableGroup(final OrderTables orderTables) {
-        updateOrderTables(orderTables);
+    public TableGroup() {
     }
 
     public TableGroup(Long id, LocalDateTime createdDate) {

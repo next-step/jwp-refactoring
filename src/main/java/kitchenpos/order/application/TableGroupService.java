@@ -24,7 +24,9 @@ public class TableGroupService {
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         final OrderTables orderTables = findOrderTables(tableGroupRequest.getOrderTableIds());
-        return TableGroupResponse.of(tableGroupRepository.save(new TableGroup(orderTables)));
+        TableGroup tableGroup = tableGroupRepository.save(new TableGroup());
+        tableGroup.updateOrderTables(orderTables);
+        return TableGroupResponse.of(tableGroup);
     }
 
     private OrderTables findOrderTables(List<Long> orderTableIds) {

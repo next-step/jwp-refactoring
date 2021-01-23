@@ -9,9 +9,8 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "table_group_id")
-    private TableGroup tableGroup;
+    @Column(name = "table_group_id")
+    private Long tableGroupId;
 
     @Embedded
     private NumberOfGuests numberOfGuests;
@@ -20,7 +19,7 @@ public class OrderTable {
     private boolean empty;
 
     @Embedded
-    private Orders orders = new Orders();;
+    private Orders orders = new Orders();
 
     protected OrderTable() {
     }
@@ -29,15 +28,15 @@ public class OrderTable {
         this(id, null, numberOfGuests, empty);
     }
 
-    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
         this.empty = empty;
     }
 
-    public void updateTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
+    public void updateTableGroup(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
         this.empty = false;
     }
 
@@ -51,11 +50,11 @@ public class OrderTable {
         if (orders.hasNotComplete()) {
             throw new IllegalArgumentException("주문이 완료되지 않은 테이블은 삭제할 수 없습니다.");
         }
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 
     private void checkOrderTableGroup() {
-        if (Objects.nonNull(tableGroup)) {
+        if (Objects.nonNull(tableGroupId)) {
             throw new IllegalArgumentException("그룹 지정이 되어 있어 상태를 변경할 수 없습니다.");
         }
     }
@@ -94,14 +93,14 @@ public class OrderTable {
     }
 
     public Long getTableGroupId() {
-        if(Objects.nonNull(tableGroup)){
-            return tableGroup.getId();
+        if(Objects.nonNull(tableGroupId)){
+            return tableGroupId;
         }
         return null;
     }
 
     public void isOrderTableEmptyOrAssigned() {
-        if (!empty || Objects.nonNull(tableGroup)) {
+        if (!empty || Objects.nonNull(tableGroupId)) {
             throw new IllegalArgumentException("비어있지 않거나 이미 그룹 지정된 테이블은 그룹 지정할 수 없습니다.");
         }
     }

@@ -4,7 +4,9 @@ import org.springframework.util.CollectionUtils;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -12,15 +14,16 @@ import java.util.List;
 public class OrderTables {
     private static final int MIN_TABLE_SIZE = 2;
 
-    @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderTable> orderTables;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "table_group_id")
+    private List<OrderTable> orderTables = new ArrayList<>();
 
     protected OrderTables() {
     }
 
     public OrderTables(List<OrderTable> orderTables) {
         validateOrderTables(orderTables);
-        this.orderTables = orderTables;
+        this.orderTables.addAll(orderTables);
     }
 
     private void validateOrderTables(List<OrderTable> orderTables) {
@@ -39,7 +42,7 @@ public class OrderTables {
     }
 
     public void updateTableGroup(TableGroup tableGroup) {
-        orderTables.forEach(table -> table.updateTableGroup(tableGroup));
+        orderTables.forEach(table -> table.updateTableGroup(tableGroup.getId()));
     }
 
     public void unGroup() {
