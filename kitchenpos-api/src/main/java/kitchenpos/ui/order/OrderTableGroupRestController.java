@@ -19,8 +19,8 @@ public class OrderTableGroupRestController {
     }
 
     @PostMapping("/api/table-groups")
-    public ResponseEntity<TableGroupResponse> create(@RequestBody final TableGroupRequest request) {
-        final TableGroupResponse created = orderTableGroupService.create(request);
+    public ResponseEntity<TableGroupResponse> createOrderTable(@RequestBody final TableGroupRequest request) {
+        final TableGroupResponse created = orderTableGroupService.createOrderTable(request);
         final URI uri = URI.create("/api/table-groups/" + created.getId());
         return ResponseEntity.created(uri).body(created);
     }

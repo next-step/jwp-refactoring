@@ -37,7 +37,7 @@ public class OrderService {
 	}
 
 	@Transactional
-	public OrderResponse create(final OrderRequest orderRequest) {
+	public OrderResponse createOrder(final OrderRequest orderRequest) {
 		OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId()).orElseThrow(() -> new IllegalArgumentException());
 
 		Set<Long> menuIds = orderRequest.menuIds();

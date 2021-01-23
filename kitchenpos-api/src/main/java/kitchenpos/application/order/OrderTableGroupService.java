@@ -27,7 +27,7 @@ public class OrderTableGroupService {
 	}
 
 	@Transactional
-	public TableGroupResponse create(final TableGroupRequest request) {
+	public TableGroupResponse createOrderTable(final TableGroupRequest request) {
 		List<Long> orderTableIds = new ArrayList<>(request.getOrderTableIds());
 		List<OrderTable> orderTableList = orderTableRepository.findAllByIdIn(orderTableIds);
 
