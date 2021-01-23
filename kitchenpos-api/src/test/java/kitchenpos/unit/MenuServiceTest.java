@@ -4,7 +4,6 @@ import kitchenpos.application.menu.MenuService;
 import kitchenpos.dto.menu.MenuProductRequest;
 import kitchenpos.dto.menu.MenuRequest;
 import kitchenpos.dto.menu.MenuResponse;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +23,6 @@ public class MenuServiceTest {
 
 	@Autowired
 	private MenuService menuService;
-
-	@BeforeEach
-	void setUp() {
-
-	}
 
 	@Test
 	@DisplayName("메뉴를 등록한다")
