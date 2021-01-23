@@ -27,27 +27,12 @@ subprojects {
     bootJar.enabled(false)
 }
 
-project(':module-common') {
+project(':kitchenpos-domain') {
 }
 
-project(':module-domain') {
+project(':kitchenpos-app-web') {
     dependencies {
-        compile project(':module-common')
-    }
-}
-
-project(':module-application') {
-    dependencies {
-        compile project(':module-common')
-        compile project(':module-domain')
-    }
-}
-
-project(':module-api') {
-    dependencies {
-        compile project(':module-common')
-        compile project(':module-domain')
-        compile project(':module-application')
+        implementation project(':kitchenpos-domain')
     }
 
     jar.enabled(false)
