@@ -1,4 +1,4 @@
-package kitchenpos.acceptance.table;
+package kitchenpos.acceptance.ordertable;
 
 import java.util.Arrays;
 

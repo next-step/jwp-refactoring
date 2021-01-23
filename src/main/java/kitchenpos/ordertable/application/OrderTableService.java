@@ -13,20 +13,17 @@ import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
-import kitchenpos.tablegroup.application.TableGroupService;
+import kitchenpos.tablegroup.domain.TableGroup;
 
 @Service
 @Transactional(readOnly = true)
 public class OrderTableService {
 	private final OrderDao orderDao;
 	private final OrderTableRepository orderTableRepository;
-	private final TableGroupService tableGroupService;
 
-	public OrderTableService(final OrderDao orderDao, final OrderTableRepository orderTableRepository,
-		final TableGroupService tableGroupService) {
+	public OrderTableService(final OrderDao orderDao, final OrderTableRepository orderTableRepository) {
 		this.orderDao = orderDao;
 		this.orderTableRepository = orderTableRepository;
-		this.tableGroupService = tableGroupService;
 	}
 
 	@Transactional
@@ -49,8 +46,6 @@ public class OrderTableService {
 			orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
 			throw new IllegalArgumentException();
 		}
-
-		savedOrderTable.setEmpty(orderTable.isEmpty());
 		*/
 		savedOrderTable.changeEmptyState(request.isEmpty());
 		return OrderTableResponse.of(savedOrderTable);
@@ -69,5 +64,9 @@ public class OrderTableService {
 
 	private OrderTable findById(Long orderTableId) {
 		return orderTableRepository.findById(orderTableId).orElseThrow(EntityNotFoundException::new);
+	}
+
+	public List<OrderTable> findAllByTableGroup(TableGroup tableGroup) {
+		return orderTableRepository.findAllByTableGroup(tableGroup);
 	}
 }

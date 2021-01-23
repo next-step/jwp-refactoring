@@ -1,4 +1,4 @@
-package kitchenpos.acceptance.table.application;
+package kitchenpos.acceptance.ordertable.application;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
