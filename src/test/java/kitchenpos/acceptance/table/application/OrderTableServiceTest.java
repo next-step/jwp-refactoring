@@ -16,20 +16,20 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.dao.OrderDao;
-import kitchenpos.table.application.TableService;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.dto.OrderTableRequest;
-import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.ordertable.application.OrderTableService;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTableRepository;
+import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 
 @ExtendWith(MockitoExtension.class)
-class TableServiceTest {
+class OrderTableServiceTest {
 	@Mock
 	private OrderDao orderDao;
 	@Mock
 	private OrderTableRepository orderTableRepository;
 	@InjectMocks
-	private TableService tableService;
+	private OrderTableService orderTableService;
 
 	@DisplayName("주문 테이블: 주문 테이블 생성 테스트")
 	@Test
@@ -40,7 +40,7 @@ class TableServiceTest {
 		given(orderTableRepository.save(any())).willReturn(orderTable);
 
 		// when
-		final OrderTableResponse actual = tableService.create(request);
+		final OrderTableResponse actual = orderTableService.create(request);
 
 		// then
 		assertAll(
@@ -59,7 +59,7 @@ class TableServiceTest {
 		//given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(false);
 
 		// when
-		final OrderTableResponse actual = tableService.changeEmpty(orderTable.getId(), request);
+		final OrderTableResponse actual = orderTableService.changeEmpty(orderTable.getId(), request);
 
 		// then
 		assertAll(
@@ -80,7 +80,7 @@ class TableServiceTest {
 
 		// then
 		assertThatThrownBy(
-			() -> tableService.changeEmpty(orderTable.getId(), request)
+			() -> orderTableService.changeEmpty(orderTable.getId(), request)
 		).isInstanceOf(EntityNotFoundException.class);
 	}
 
@@ -128,7 +128,7 @@ class TableServiceTest {
 		given(orderTableRepository.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
 
 		// when
-		final OrderTableResponse actual = tableService.changeNumberOfGuests(orderTable.getId(), request);
+		final OrderTableResponse actual = orderTableService.changeNumberOfGuests(orderTable.getId(), request);
 
 		// then
 		assertAll(
@@ -147,7 +147,7 @@ class TableServiceTest {
 
 		// then
 		assertThatIllegalArgumentException().isThrownBy(
-			() -> tableService.changeNumberOfGuests(orderTable.getId(), request)
+			() -> orderTableService.changeNumberOfGuests(orderTable.getId(), request)
 		);
 	}
 
@@ -161,7 +161,7 @@ class TableServiceTest {
 
 		// then
 		assertThatIllegalArgumentException().isThrownBy(
-			() -> tableService.changeNumberOfGuests(orderTable.getId(), request)
+			() -> orderTableService.changeNumberOfGuests(orderTable.getId(), request)
 		);
 	}
 }

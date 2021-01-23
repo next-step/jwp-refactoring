@@ -1,4 +1,4 @@
-package kitchenpos.table.domain;
+package kitchenpos.ordertable.domain;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;

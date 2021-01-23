@@ -18,21 +18,21 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import kitchenpos.table.application.TableService;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.dto.OrderTableRequest;
-import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.table.ui.TableRestController;
+import kitchenpos.ordertable.application.OrderTableService;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.ordertable.dto.OrderTableResponse;
+import kitchenpos.ordertable.ui.OrderTableController;
 
 @DisplayName("테이블 Controller 테스트")
-@WebMvcTest(TableRestController.class)
-class TableRestControllerTest {
+@WebMvcTest(OrderTableController.class)
+class OrderTableControllerTest {
 	@Autowired
 	private MockMvc mvc;
 	@Autowired
 	private ObjectMapper mapper;
 	@MockBean
-	private TableService tableService;
+	private OrderTableService orderTableService;
 
 	@DisplayName("주문 테이블을 생성한다.")
 	@Test
@@ -40,7 +40,7 @@ class TableRestControllerTest {
 		// given
 		OrderTableRequest request = OrderTableRequest.of(0, true);
 		OrderTableResponse response = OrderTableResponse.of(OrderTable.of(1L, 0, true));
-		given(tableService.create(any())).willReturn(response);
+		given(orderTableService.create(any())).willReturn(response);
 
 		// when
 		final ResultActions resultActions = mvc.perform(post("/api/tables")
@@ -64,7 +64,7 @@ class TableRestControllerTest {
 		OrderTableRequest request = OrderTableRequest.of(0, true);
 		OrderTableResponse response1 = OrderTableResponse.of(request.toEntity());
 		OrderTableResponse response2 = OrderTableResponse.of(request.toEntity());
-		given(tableService.list()).willReturn(Arrays.asList(response1, response2));
+		given(orderTableService.list()).willReturn(Arrays.asList(response1, response2));
 
 		// when
 		final ResultActions resultActions = mvc.perform(get("/api/tables")
@@ -84,7 +84,7 @@ class TableRestControllerTest {
 		// given
 		OrderTableRequest request = OrderTableRequest.of(1, false);
 		OrderTableResponse response = OrderTableResponse.of(OrderTable.of(1L, 0, true));
-		given(tableService.changeEmpty(any(), any())).willReturn(response);
+		given(orderTableService.changeEmpty(any(), any())).willReturn(response);
 
 		// when
 		final ResultActions resultActions = mvc.perform(put("/api/tables/{orderTableId}/empty", response.getId())
@@ -105,7 +105,7 @@ class TableRestControllerTest {
 		// given
 		OrderTableRequest request = OrderTableRequest.of(1, false);
 		OrderTableResponse response = OrderTableResponse.of(OrderTable.of(5, false));
-		given(tableService.changeNumberOfGuests(any(), any())).willReturn(response);
+		given(orderTableService.changeNumberOfGuests(any(), any())).willReturn(response);
 
 		// when
 		final ResultActions resultActions = mvc.perform(put("/api/tables/{orderTableId}/number-of-guests", 1L)
