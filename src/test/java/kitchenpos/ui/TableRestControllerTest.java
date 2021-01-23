@@ -43,10 +43,8 @@ class TableRestControllerTest extends DomainTestUtils {
     @DisplayName("테이블 상태와 게스트수를 변경한다")
     @Test
     void changeStatusAndGuests() throws Exception {
-        final Long orderTableId = 1l;
+        final Long orderTableId = 4l;
         OrderTable orderTable = orderTableDao.findById(orderTableId).get();
-        orderTable.setTableGroupId(null);
-        orderTableDao.save(orderTable);
 
         orderTable.setEmpty(비어있지않음);
         String body = objectMapper.writeValueAsString(orderTable);
