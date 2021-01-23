@@ -1,6 +1,7 @@
 package kitchenpos.order.dto;
 
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import org.springframework.util.CollectionUtils;
@@ -63,10 +64,10 @@ public class OrderRequest {
         }
     }
 
-    public List<OrderLineItem> createOrderLineItems(List<Menu> menus) {
+    public List<OrderLineItem> createOrderLineItems(Order order, List<Menu> menus) {
         return orderLineItems.stream()
-                .map(orderLineItem -> OrderLineItem.createOrderLineItem(null,
-                        menus.stream()
+                .map(orderLineItem -> OrderLineItem.createOrderLineItem(
+                        order, menus.stream()
                                 .filter(menu -> menu.isSameById(orderLineItem.getMenuId()))
                                 .findFirst()
                                 .orElseThrow(IllegalArgumentException::new),

@@ -14,14 +14,6 @@ public class OrderLineItemRequest {
         return quantity;
     }
 
-    public void setMenuId(long menuId) {
-        this.menuId = menuId;
-    }
-
-    public void setQuantity(long quantity) {
-        this.quantity = quantity;
-    }
-
     public OrderLineItemRequest() {
     }
 
