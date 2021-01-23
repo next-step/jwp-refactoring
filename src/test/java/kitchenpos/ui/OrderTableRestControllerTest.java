@@ -15,7 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @DisplayName("주문 테이블 Controller Test")
-class TableRestControllerTest extends RestControllerTest {
+class OrderTableRestControllerTest extends RestControllerTest {
 
     public static final String TABLES_URL = "/api/tables";
 

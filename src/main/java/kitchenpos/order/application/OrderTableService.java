@@ -12,12 +12,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class TableService {
+public class OrderTableService {
     private final OrderTableRepository orderTableRepository;
     private final TableGroupService tableGroupService;
     private final OrderService ordersService;
 
-    public TableService(
+    public OrderTableService(
             OrderTableRepository orderTableRepository,
             TableGroupService tableGroupService,
             OrderService ordersService

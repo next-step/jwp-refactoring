@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
 import kitchenpos.order.application.OrderService;
-import kitchenpos.order.application.TableService;
+import kitchenpos.order.application.OrderTableService;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.order.dto.OrderTableRequest;
@@ -30,7 +30,7 @@ import static org.mockito.Mockito.verify;
 
 @DisplayName("주문 테이블 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
-class TableServiceTest {
+class OrderTableServiceTest {
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -39,7 +39,7 @@ class TableServiceTest {
     private OrderService orderService;
 
     @InjectMocks
-    private TableService tableService;
+    private OrderTableService orderTableService;
 
     @DisplayName("주문 테이블을 등록할 수 있다.")
     @Test
@@ -55,7 +55,7 @@ class TableServiceTest {
                 .willReturn(orderTable);
 
         //when
-        OrderTableResponse createOrderTable = tableService.create(orderTableRequest);
+        OrderTableResponse createOrderTable = orderTableService.create(orderTableRequest);
         verify(orderTableRepository).save(argumentCaptor.capture());
         assertThat(argumentCaptor.getValue().getId()).isNull();
         assertThat(argumentCaptor.getValue().getNumberOfGuests()).isEqualTo(0);
@@ -80,7 +80,7 @@ class TableServiceTest {
                 .willReturn(Arrays.asList(제1번테이블, 제2번테이블));
 
         //when
-        List<OrderTableResponse> orderTables = tableService.list();
+        List<OrderTableResponse> orderTables = orderTableService.list();
 
         //then
         assertThat(orderTables.size()).isEqualTo(2);
@@ -104,7 +104,7 @@ class TableServiceTest {
 
         //when
         OrderTableRequest orderTableRequest = new OrderTableRequest(2L, 0, false);
-        OrderTableResponse changedOrderTable = tableService.changeEmpty(2L, orderTableRequest);
+        OrderTableResponse changedOrderTable = orderTableService.changeEmpty(2L, orderTableRequest);
 
         //then
         assertThat(changedOrderTable.isEmpty()).isFalse();
@@ -129,7 +129,7 @@ class TableServiceTest {
         //when
         //then
         OrderTableRequest orderTableRequest = new OrderTableRequest(1L, 0, false);
-        assertThatThrownBy(() -> tableService.changeEmpty(2L, orderTableRequest))
+        assertThatThrownBy(() -> orderTableService.changeEmpty(2L, orderTableRequest))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -150,7 +150,7 @@ class TableServiceTest {
 
         //when
         //then
-        assertThatThrownBy(() -> tableService.changeEmpty(2L, orderTableRequest))
+        assertThatThrownBy(() -> orderTableService.changeEmpty(2L, orderTableRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("주문 테이블을 비울 수 없는 상태입니다.");
 
@@ -167,7 +167,7 @@ class TableServiceTest {
 
         //when
         OrderTableRequest orderTableRequest = new OrderTableRequest(null, 3, true);
-        OrderTableResponse changedOrderTable = tableService.changeNumberOfGuests(3L, orderTableRequest);
+        OrderTableResponse changedOrderTable = orderTableService.changeNumberOfGuests(3L, orderTableRequest);
 
         //then
         assertThat(changedOrderTable.getNumberOfGuests()).isEqualTo(3);
@@ -181,7 +181,7 @@ class TableServiceTest {
 
         //when
         //then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(3L, orderTableRequest))
+        assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(3L, orderTableRequest))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -199,7 +199,7 @@ class TableServiceTest {
 
         //when
         //then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(3L, orderTableRequest))
+        assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(3L, orderTableRequest))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }
