@@ -1,7 +1,6 @@
 package kitchenpos.application;
 
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,7 +12,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-class MenuServiceTest extends ServiceTest {
+class MenuServiceTest extends DomainTestUtils {
 
     @BeforeEach
     void setUp() {

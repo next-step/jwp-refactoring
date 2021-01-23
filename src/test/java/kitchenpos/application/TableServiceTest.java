@@ -17,7 +17,7 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
-class TableServiceTest extends ServiceTest {
+class TableServiceTest extends DomainTestUtils {
 
     @MockBean
     private OrderDao orderDao;

@@ -4,7 +4,6 @@ import kitchenpos.advice.exception.ProductException;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -12,7 +11,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class ProductServiceTest extends ServiceTest {
+class ProductServiceTest extends DomainTestUtils {
 
     @DisplayName("상품을 등록한다")
     @Test

@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class MenuGroupServiceTest extends ServiceTest {
+class MenuGroupServiceTest extends DomainTestUtils {
     private final String NEW_MENU_GROUP_NAME = "세번째메뉴";
 
     @DisplayName("메뉴그룹을 생성한다")

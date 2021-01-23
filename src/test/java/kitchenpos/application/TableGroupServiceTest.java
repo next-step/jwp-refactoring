@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
-class TableGroupServiceTest extends ServiceTest {
+class TableGroupServiceTest extends DomainTestUtils {
 
     private List<OrderTable> orderTables;
     private OrderTable 테이블_1번;

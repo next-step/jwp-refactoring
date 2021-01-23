@@ -12,7 +12,7 @@ import java.util.Arrays;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class OrderServiceTest extends ServiceTest {
+class OrderServiceTest extends DomainTestUtils {
 
     private Order 주문;
 
