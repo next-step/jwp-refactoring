@@ -1,4 +1,4 @@
-package kitchenpos.table.application;
+package kitchenpos.ordertable.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,20 +9,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.dao.OrderDao;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.dto.OrderTableRequest;
-import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTableRepository;
+import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.ordertable.dto.OrderTableResponse;
+import kitchenpos.tablegroup.application.TableGroupService;
 
 @Service
 @Transactional(readOnly = true)
-public class TableService {
+public class OrderTableService {
 	private final OrderDao orderDao;
 	private final OrderTableRepository orderTableRepository;
+	private final TableGroupService tableGroupService;
 
-	public TableService(final OrderDao orderDao, final OrderTableRepository orderTableRepository) {
+	public OrderTableService(final OrderDao orderDao, final OrderTableRepository orderTableRepository,
+		final TableGroupService tableGroupService) {
 		this.orderDao = orderDao;
 		this.orderTableRepository = orderTableRepository;
+		this.tableGroupService = tableGroupService;
 	}
 
 	@Transactional
@@ -38,13 +42,8 @@ public class TableService {
 	}
 
 	@Transactional
-	public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTable) {
+	public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest request) {
 		final OrderTable savedOrderTable = findById(orderTableId);
-
-		/*
-		if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
-			throw new IllegalArgumentException();
-		}*/
 		/*
 		if (orderDao.existsByOrderTableIdAndOrderStatusIn(
 			orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
@@ -53,6 +52,7 @@ public class TableService {
 
 		savedOrderTable.setEmpty(orderTable.isEmpty());
 		*/
+		savedOrderTable.changeEmptyState(request.isEmpty());
 		return OrderTableResponse.of(savedOrderTable);
 	}
 
@@ -61,6 +61,10 @@ public class TableService {
 		final OrderTable savedOrderTable = findById(orderTableId);
 		savedOrderTable.changeNumberOfGuests(request.getNumberOfGuests());
 		return OrderTableResponse.of(savedOrderTable);
+	}
+
+	public List<OrderTable> findAllById(List<Long> orderTableIds) {
+		return orderTableRepository.findAllById(orderTableIds);
 	}
 
 	private OrderTable findById(Long orderTableId) {
