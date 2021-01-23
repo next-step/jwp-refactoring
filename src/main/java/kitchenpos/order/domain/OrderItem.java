@@ -22,7 +22,7 @@ public interface OrderItem {
 		};
 	}
 
-	default OrderLineItem toOrderLineItem(Order order) {
-		return new OrderLineItem(order, getMenu(), getQuantity());
+	default OrderLineItem toOrderLineItem() {
+		return new OrderLineItem(getMenu(), getQuantity());
 	}
 }

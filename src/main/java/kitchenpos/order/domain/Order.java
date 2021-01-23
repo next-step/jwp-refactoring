@@ -7,17 +7,14 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "orders")
 @EntityListeners(AuditingEntityListener.class)
 public class Order extends BaseIdEntity {
 
-	static final String MSG_CANNOT_CREATE_EMPTY_ITEMS = "Cannot create Order By empty OrderItems";
 	static final String MSG_CANNOT_CHANGE_COMPLETION = "Cannot change orderStatus of already COMPLETION table";
 
 	@ManyToOne
@@ -32,8 +29,8 @@ public class Order extends BaseIdEntity {
 	@Column(name = "ordered_time", nullable = false)
 	private LocalDateTime orderedTime;
 
-	@OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-	private List<OrderLineItem> orderLineItems;
+	@Embedded
+	private OrderLineItems orderLineItems;
 
 	protected Order() {
 	}
@@ -43,31 +40,24 @@ public class Order extends BaseIdEntity {
 	}
 
 	private Order(OrderTable orderTable, OrderStatus orderStatus, List<OrderItem> items) {
-		List<OrderLineItem> orderLineItems = getOrderLineItems(items);
 		this.orderTable = orderTable;
 		this.orderStatus = orderStatus;
-		this.orderLineItems = new ArrayList<>(orderLineItems);
-	}
-
-	private List<OrderLineItem> getOrderLineItems(List<OrderItem> items) {
-		if (items.isEmpty()) {
-			throw new OrderValidationException(MSG_CANNOT_CREATE_EMPTY_ITEMS);
-		}
-
-		return items.stream()
-					.map(item -> item.toOrderLineItem(this))
-					.collect(Collectors.toList());
+		this.orderLineItems = OrderLineItems.of(items);
 	}
 
 	public void changeOrderStatus(OrderStatus orderStatus) {
-		if (this.orderStatus == OrderStatus.COMPLETION) {
+		if (canChangeOrderStatus()) {
 			throw new OrderValidationException(MSG_CANNOT_CHANGE_COMPLETION);
 		}
 		this.orderStatus = orderStatus;
 	}
 
+	private boolean canChangeOrderStatus() {
+		return this.orderStatus == OrderStatus.COMPLETION;
+	}
+
 	boolean isOngoing() {
-		return orderStatus == OrderStatus.COOKING || orderStatus == OrderStatus.MEAL;
+		return orderStatus.isOngoing();
 	}
 
 	public OrderTable getOrderTable() {
@@ -82,7 +72,7 @@ public class Order extends BaseIdEntity {
 		return orderedTime;
 	}
 
-	public List<OrderLineItem> getOrderLineItems() {
+	public Iterable<OrderLineItem> getOrderLineItems() {
 		return orderLineItems;
 	}
 
@@ -93,7 +83,7 @@ public class Order extends BaseIdEntity {
 		if (!super.equals(o)) return false;
 		Order order = (Order) o;
 		return Objects.equals(orderTable, order.orderTable) &&
-				orderStatus == order.orderStatus &&
+				Objects.equals(orderStatus, order.orderStatus) &&
 				Objects.equals(orderedTime, order.orderedTime) &&
 				Objects.equals(orderLineItems, order.orderLineItems);
 	}

@@ -78,7 +78,6 @@ class OrderServiceTest {
 		assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
 		assertThat(orderResponse.getOrderLineItems())
 				.hasSize(2)
-				.allSatisfy(lineItem -> assertThat(lineItem.getOrderId()).isEqualTo(orderResponse.getId()))
 				.map(OrderLineItemResponse::getQuantity)
 				.allSatisfy(quantity -> assertThat(quantity).isEqualTo(2));
 	}

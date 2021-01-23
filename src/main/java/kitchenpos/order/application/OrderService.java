@@ -23,7 +23,6 @@ public class OrderService {
 	static final String MSG_CANNOT_FIND_MENU = "Cannot find Menu by menuId";
 	static final String MSG_CANNOT_FIND_ORDER_TABLE = "Cannot find OrderTable by orderTableId";
 
-
 	private final MenuRepository menuRepository;
 	private final OrderRepository orderRepository;
 	private final OrderTableRepository orderTableRepository;
