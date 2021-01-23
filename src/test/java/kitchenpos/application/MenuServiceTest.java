@@ -15,9 +15,11 @@ import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Menu;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.Product;
 import kitchenpos.utils.IntegrationTest;
 
@@ -51,16 +53,16 @@ class MenuServiceTest extends IntegrationTest {
 
 		MenuProduct menuProduct = new MenuProduct(savedProduct.getId(), 1);
 		List<MenuProduct> menuProducts = Arrays.asList(menuProduct);
-		Menu newMenu = new Menu("마늘치킨",  BigDecimal.valueOf(16000), savedMenuGroup.getId(), menuProducts);
+		MenuRequest menuRequest = new MenuRequest("마늘치킨",  BigDecimal.valueOf(16000), savedMenuGroup.getId(), menuProducts);
 
 		// when
-		Menu createdMenu = menuService.create(newMenu);
+		MenuResponse menuResponse = menuService.create(menuRequest);
 
 		// then
-		assertThat(createdMenu.getId()).isNotNull();
-		assertThat(createdMenu.getName()).isEqualTo(newMenu.getName());
-		assertThat(createdMenu.getPrice()).isEqualByComparingTo(newMenu.getPrice());
-		assertThat(createdMenu.getMenuGroupId()).isEqualTo(newMenu.getMenuGroupId());
+		assertThat(menuResponse.getId()).isNotNull();
+		assertThat(menuResponse.getName()).isEqualTo(menuRequest.getName());
+		assertThat(menuResponse.getPrice()).isEqualByComparingTo(menuRequest.getPrice());
+		assertThat(menuResponse.getMenuGroupId()).isEqualTo(menuRequest.getMenuGroupId());
 	}
 
 
@@ -75,11 +77,11 @@ class MenuServiceTest extends IntegrationTest {
 
 		MenuProduct menuProduct = new MenuProduct(savedProduct.getId(), 1);
 		List<MenuProduct> menuProducts = Arrays.asList(menuProduct);
-		Menu newMenu = new Menu("마늘치킨",  BigDecimal.valueOf(-5000), savedMenuGroup.getId(), menuProducts);
+		MenuRequest menuRequest = new MenuRequest("마늘치킨",  BigDecimal.valueOf(-16000), savedMenuGroup.getId(), menuProducts);
 
 		// when - then
 		assertThatThrownBy(() -> {
-			menuService.create(newMenu);
+			menuService.create(menuRequest);
 		}).isInstanceOf(IllegalArgumentException.class);
 
 	}
@@ -94,18 +96,17 @@ class MenuServiceTest extends IntegrationTest {
 
 		MenuProduct menuProduct = new MenuProduct(savedProduct.getId(), 1);
 		List<MenuProduct> menuProducts = Arrays.asList(menuProduct);
-		Menu newMenu = new Menu("마늘치킨",  BigDecimal.valueOf(16000), invalidMenuGroupId, menuProducts);
+		MenuRequest menuRequest = new MenuRequest("마늘치킨",  BigDecimal.valueOf(-16000), invalidMenuGroupId, menuProducts);
 
 		// when - then
 		assertThatThrownBy(() -> {
-			menuService.create(newMenu);
+			menuService.create(menuRequest);
 		}).isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@DisplayName("메뉴의 가격은 메뉴내 상품들의 가격 합보다 클 수 없다.")
 	@Test
 	void menuPriceCannotOverProduct() {
-		// given
 		// given
 		MenuGroup menuGroup = new MenuGroup("마늘메뉴");
 		MenuGroup savedMenuGroup = menuGroupDao.save(menuGroup);
@@ -114,11 +115,11 @@ class MenuServiceTest extends IntegrationTest {
 
 		MenuProduct menuProduct = new MenuProduct(savedProduct.getId(), 1);
 		List<MenuProduct> menuProducts = Arrays.asList(menuProduct);
-		Menu newMenu = new Menu("마늘치킨",  BigDecimal.valueOf(50000000), savedMenuGroup.getId(), menuProducts);
+		MenuRequest menuRequest = new MenuRequest("마늘치킨",  BigDecimal.valueOf(50000000), savedMenuGroup.getId(), menuProducts);
 
 		// when - then
 		assertThatThrownBy(() -> {
-			menuService.create(newMenu);
+			menuService.create(menuRequest);
 		}).isInstanceOf(IllegalArgumentException.class);
 	}
 
@@ -129,9 +130,8 @@ class MenuServiceTest extends IntegrationTest {
 		List<Menu> findAll = menuDao.findAll();
 
 		// when
-		List<Menu> actualMenus = menuService.list();
+		List<MenuResponse> actualMenus = menuService.list();
 
-		// then
 		List<Long> expectedIds = findAll.stream()
 			.map(menu -> menu.getId())
 			.collect(Collectors.toList());
@@ -140,6 +140,7 @@ class MenuServiceTest extends IntegrationTest {
 			.map(menu -> menu.getId())
 			.collect(Collectors.toList());
 
+		// then
 		assertThat(actualMenuIds).containsAll(expectedIds);
 	}
 
