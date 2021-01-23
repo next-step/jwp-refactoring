@@ -3,6 +3,7 @@ package kitchenpos.menu.dto;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
 
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.stream.Collectors;
 
 public class MenuRequest {
     private String name;
+    @NotNull
     private BigDecimal price;
     private Long menuGroupId;
     private List<MenuProductRequest> menuProducts;
