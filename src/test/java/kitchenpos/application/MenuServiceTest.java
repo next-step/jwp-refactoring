@@ -15,10 +15,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 class MenuServiceTest extends ServiceTest {
 
-    private MenuGroup 후라이드양념반반메뉴;
-    private MenuProduct 메뉴상품_후라이드;
-    private MenuProduct 메뉴상품_양념치킨;
-
     @BeforeEach
     void setUp() {
         Product 후라이드 = productService.findById(1l);

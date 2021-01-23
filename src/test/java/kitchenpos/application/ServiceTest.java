@@ -10,9 +10,13 @@ import java.util.Arrays;
 @SpringBootTest
 public class ServiceTest {
 
-    public static int 게스트수;
     public static final boolean 비어있음 = true;
     public static final boolean 비어있지않음 = false;
+
+    public static int 게스트수;
+    public static MenuGroup 후라이드양념반반메뉴;
+    public static MenuProduct 메뉴상품_후라이드;
+    public static MenuProduct 메뉴상품_양념치킨;
 
     @Autowired
     protected MenuGroupService menuGroupService;
@@ -52,6 +56,10 @@ public class ServiceTest {
 
     protected void 테이블_그룹을_비운다(Long id) {
         tableGroupService.ungroup(id);
+    }
+
+    protected Order 주문을_등록한다(Order order) {
+        return orderService.create(order);
     }
 
 }
