@@ -1,12 +1,10 @@
 package kitchenpos.tablegroup.domain;
 
-import kitchenpos.table.domain.OrderTable;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class TableGroup {
@@ -14,9 +12,9 @@ public class TableGroup {
     private Long id;
 
     private LocalDateTime createdDate;
-
-    @OneToMany(mappedBy = "tableGroup")
-    private final List<OrderTable> orderTables = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "tableGroup")
+//    private final List<OrderTable> orderTables = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -26,10 +24,6 @@ public class TableGroup {
         return createdDate;
     }
 
-    public List<OrderTable> getOrderTables() {
-        return orderTables;
-    }
-
     protected TableGroup() {
     }
 
@@ -37,22 +31,8 @@ public class TableGroup {
         this.createdDate = createdDate;
     }
 
-    public void addOrderTables(final OrderTable orderTable) {
-        this.orderTables.add(orderTable);
+    public static TableGroup createTableGroup(LocalDateTime createdDate) {
+        return new TableGroup(createdDate);
     }
 
-    public static TableGroup createTableGroup(LocalDateTime createdDate, List<OrderTable> orderTables) {
-        TableGroup tableGroup = new TableGroup(createdDate);
-        if(validOrderTables(orderTables)) {
-            throw new IllegalArgumentException();
-        }
-
-        tableGroup.orderTables.addAll(orderTables);
-        return tableGroup;
-    }
-
-    private static boolean validOrderTables(List<OrderTable> orderTables) {
-        return orderTables.stream()
-                .anyMatch(orderTable -> !orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup()));
-    }
 }

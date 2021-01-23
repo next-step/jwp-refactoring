@@ -67,8 +67,6 @@ class TableGroupServiceTest {
 
         TableGroup tableGroup = new TableGroup(LocalDateTime.now());
         ReflectionTestUtils.setField(tableGroup, "id", 1L);
-        tableGroup.addOrderTables(new OrderTable(0, true));
-        tableGroup.addOrderTables(new OrderTable(0, true));
         given(tableGroupRepository.save(any())).willReturn(tableGroup);
 
         //when
@@ -83,7 +81,6 @@ class TableGroupServiceTest {
         //then
         verify(tableGroupRepository).save(argumentCaptor.capture());
         assertThat(argumentCaptor.getValue().getId()).isNull();
-        assertThat(argumentCaptor.getValue().getOrderTables().size()).isEqualTo(2);
 
         assertThat(savedTableGroup.getId()).isEqualTo(1L);
         assertThat(savedTableGroup.getOrderTables().size()).isEqualTo(2);

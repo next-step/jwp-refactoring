@@ -45,10 +45,14 @@ public class TableGroupService {
                 tableGroupRequest.getOrderTableIds()
         );
 
-        tableGroupRequest.validateOrderTableSavedSize(savedOrderTables);
+        tableGroupRequest.validateSavedOrderTable(savedOrderTables);
 
-        TableGroup tableGroup = TableGroup.createTableGroup(LocalDateTime.now(), savedOrderTables);
-        return TableGroupResponse.of(tableGroupRepository.save(tableGroup));
+        TableGroup tableGroup = TableGroup.createTableGroup(LocalDateTime.now());
+        TableGroup savedGroup = tableGroupRepository.save(tableGroup);
+
+        savedOrderTables.forEach(orderTable -> orderTable.changeTableGroup(tableGroup));
+
+        return TableGroupResponse.of(savedGroup, savedOrderTables);
     }
 
     @Transactional
