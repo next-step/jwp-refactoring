@@ -22,7 +22,6 @@ public class TableGroup {
     protected TableGroup(){}
 
     public TableGroup(OrderTables orderTables) {
-        orderTables.group(this);
         this.orderTables = orderTables;
     }
 
@@ -36,6 +35,10 @@ public class TableGroup {
 
     public List<OrderTable> getOrderTables() {
         return orderTables.getOrderTables();
+    }
+
+    public void group() {
+        orderTables.group(this);
     }
 
     public void unGroup() {

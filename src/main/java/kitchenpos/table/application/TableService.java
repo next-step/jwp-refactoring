@@ -57,7 +57,7 @@ public class TableService {
     }
 
     private void validateEmptyTable(OrderTable savedOrderTable) {
-        if (savedOrderTable.isGroupped()) {
+        if (savedOrderTable.isGrouped()) {
             throw new TableInUseException("그룹이 지어진 테이블은 변경 할 수 없습니다.");
         }
 

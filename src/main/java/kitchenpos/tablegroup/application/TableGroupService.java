@@ -43,6 +43,7 @@ public class TableGroupService {
 
         OrderTables tables = new OrderTables(orderTables);
         TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(tables));
+        savedTableGroup.group();
         return fromEntity(savedTableGroup);
     }
 

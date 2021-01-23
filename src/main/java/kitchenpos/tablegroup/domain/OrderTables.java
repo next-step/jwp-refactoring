@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 public class OrderTables {
     private static final int MINIMUM_GROUP_SIZE = 2;
 
-    @OneToMany(mappedBy = "tableGroup", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "tableGroupId", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private List<OrderTable> orderTables;
 
     protected OrderTables(){}
@@ -41,7 +41,7 @@ public class OrderTables {
     }
 
     public void group(TableGroup tableGroup) {
-        orderTables.forEach(it -> it.group(tableGroup));
+        orderTables.forEach(it -> it.group(tableGroup.getId()));
     }
 
     public void ungroup() {
@@ -49,7 +49,7 @@ public class OrderTables {
     }
 
     private void validateTable(OrderTable table) {
-        if (!table.isEmpty() || table.isGroupped()) {
+        if (!table.isEmpty() || table.isGrouped()) {
             throw new TableInUseException("사용중인 테이블은 그룹에 포함시킬 수 없습니다.");
         }
     }

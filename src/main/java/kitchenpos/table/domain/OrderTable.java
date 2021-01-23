@@ -1,9 +1,11 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.exception.BadRequestException;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.Objects;
 
 @Entity
@@ -12,8 +14,7 @@ public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
-    private TableGroup tableGroup;
+    private Long tableGroupId;
     private int numberOfGuests = EMPTY_NUMBER;
 
     public void update(int numberOfGuests) {
@@ -32,22 +33,22 @@ public class OrderTable {
         return numberOfGuests == EMPTY_NUMBER;
     }
 
-    public void group(TableGroup tableGroup) {
-        if (tableGroup == null) {
+    public void group(Long tableGroupId) {
+        if (tableGroupId == null) {
             throw new BadRequestException("Table group은 null로 세팅할 수 없습니다.");
         }
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
     }
 
     public void ungroup() {
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 
-    public boolean isGroupped() {
-        return Objects.nonNull(tableGroup);
+    public boolean isGrouped() {
+        return Objects.nonNull(tableGroupId);
     }
 
     public Long getTableGroupId() {
-        return (tableGroup == null)?null:tableGroup.getId();
+        return tableGroupId;
     }
 }
