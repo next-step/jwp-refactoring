@@ -92,7 +92,7 @@ public class OrderTable extends BaseIdEntity {
 			throw new TableValidationException(MSG_CANNOT_ADD_ORDER_TABLE_EMPTY);
 		}
 
-		return this.orders.createNewOrder(this, items);
+		return this.orders.createNewOrder(getId(), items);
 	}
 
 	public Long getTableGroupId() {

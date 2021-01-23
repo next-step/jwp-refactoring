@@ -5,6 +5,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -16,15 +17,16 @@ class TableOrders implements Iterable<Order> {
 
 	@Fetch(FetchMode.SELECT)
 	@BatchSize(size = 10)
-	@OneToMany(mappedBy = "orderTable")
+	@OneToMany
+	@JoinColumn(name = "order_table_id", nullable = false)
 	private List<Order> orders;
 
 	TableOrders() {
 		this.orders = new ArrayList<>();
 	}
 
-	Order createNewOrder(OrderTable orderTable, List<OrderItem> items) {
-		Order order = Order.createCookingOrder(orderTable, items);
+	Order createNewOrder(long orderTableId, List<OrderItem> items) {
+		Order order = Order.createCookingOrder(orderTableId, items);
 		orders.add(order);
 		return order;
 	}

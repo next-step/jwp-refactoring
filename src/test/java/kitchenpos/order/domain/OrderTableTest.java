@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 
 class OrderTableTest {
 
@@ -32,9 +33,12 @@ class OrderTableTest {
 
 	@BeforeEach
 	void setUp() {
-		orderTable = new OrderTable(20, true);
+		orderTable = spy(new OrderTable(20, true));
+		given(orderTable.getId()).willReturn(5L);
+
 		tableGroup = mock(TableGroup.class);
 		given(tableGroup.getId()).willReturn(50L);
+
 		MenuGroup 중식 = new MenuGroup("중식");
 
 		짜장면 = new Menu("짜장면", 7000, 중식);
@@ -179,7 +183,7 @@ class OrderTableTest {
 
 		// then
 		assertThat(order).isNotNull();
-		assertThat(order.getOrderTable()).isEqualTo(orderTable);
+		assertThat(order.getOrderTableId()).isEqualTo(orderTable.getId());
 	}
 
 	@DisplayName("주문테이블이 공석일때 주문을 할 경우 예외 발생.")

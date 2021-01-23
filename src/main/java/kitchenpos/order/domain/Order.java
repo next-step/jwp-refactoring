@@ -17,9 +17,8 @@ public class Order extends BaseIdEntity {
 
 	static final String MSG_CANNOT_CHANGE_COMPLETION = "Cannot change orderStatus of already COMPLETION table";
 
-	@ManyToOne
-	@JoinColumn(name = "order_table_id", nullable = false)
-	private OrderTable orderTable;
+	@Column(name = "order_table_id", nullable = false, insertable = false, updatable = false)
+	private long orderTableId;
 
 	@Enumerated(value = EnumType.STRING)
 	@Column(name = "order_status", nullable = false)
@@ -35,12 +34,12 @@ public class Order extends BaseIdEntity {
 	protected Order() {
 	}
 
-	static Order createCookingOrder(OrderTable orderTable, List<OrderItem> items) {
-		return new Order(orderTable, OrderStatus.COOKING, items);
+	static Order createCookingOrder(long orderTableId, List<OrderItem> items) {
+		return new Order(orderTableId, OrderStatus.COOKING, items);
 	}
 
-	private Order(OrderTable orderTable, OrderStatus orderStatus, List<OrderItem> items) {
-		this.orderTable = orderTable;
+	private Order(long orderTableId, OrderStatus orderStatus, List<OrderItem> items) {
+		this.orderTableId = orderTableId;
 		this.orderStatus = orderStatus;
 		this.orderLineItems = OrderLineItems.of(items);
 	}
@@ -60,8 +59,8 @@ public class Order extends BaseIdEntity {
 		return orderStatus.isOngoing();
 	}
 
-	public OrderTable getOrderTable() {
-		return orderTable;
+	public Long getOrderTableId() {
+		return orderTableId;
 	}
 
 	public OrderStatus getOrderStatus() {
@@ -82,7 +81,7 @@ public class Order extends BaseIdEntity {
 		if (!(o instanceof Order)) return false;
 		if (!super.equals(o)) return false;
 		Order order = (Order) o;
-		return Objects.equals(orderTable, order.orderTable) &&
+		return Objects.equals(orderTableId, order.orderTableId) &&
 				Objects.equals(orderStatus, order.orderStatus) &&
 				Objects.equals(orderedTime, order.orderedTime) &&
 				Objects.equals(orderLineItems, order.orderLineItems);
@@ -90,6 +89,6 @@ public class Order extends BaseIdEntity {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(super.hashCode(), orderTable, orderStatus, orderedTime, orderLineItems);
+		return Objects.hash(super.hashCode(), orderTableId, orderStatus, orderedTime, orderLineItems);
 	}
 }
