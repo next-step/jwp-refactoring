@@ -1,5 +1,6 @@
 package kitchenpos.dto;
 
+import kitchenpos.product.dto.ProductRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

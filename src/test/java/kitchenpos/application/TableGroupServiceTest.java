@@ -1,8 +1,21 @@
 package kitchenpos.application;
 
-import kitchenpos.dto.*;
 import kitchenpos.exception.InvalidTableCountException;
 import kitchenpos.exception.TableInUseException;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menugroup.application.MenuGroupService;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
+import kitchenpos.order.application.OrderService;
+import kitchenpos.order.dto.OrderMenuRequest;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.table.application.TableService;
+import kitchenpos.table.dto.TableResponse;
+import kitchenpos.tablegroup.application.TableGroupService;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

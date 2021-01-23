@@ -1,10 +1,8 @@
 package kitchenpos.dto;
 
+import kitchenpos.tablegroup.dto.TableGroupRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 @DisplayName("테이블 그룹 요청")
 public class TableGroupRequestTest extends ValidateBase {
