@@ -7,7 +7,6 @@ import java.util.Objects;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,7 +24,7 @@ public class Menu {
     private BigDecimal price;
     private Long menuGroupId;
 
-    @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
     public Menu() {
@@ -153,14 +152,5 @@ public class Menu {
         return Objects.hash(getId(), getName(), getPrice(), getMenuGroupId(), getMenuProducts());
     }
 
-    @Override
-    public String toString() {
-        return "Menu{" +
-            "id=" + id +
-            ", name='" + name + '\'' +
-            ", price=" + price +
-            ", menuGroupId=" + menuGroupId +
-            ", menuProducts=" + menuProducts +
-            '}';
-    }
+
 }
