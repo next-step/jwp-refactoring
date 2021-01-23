@@ -1,17 +1,21 @@
 package kitchenpos.ui;
 
-import kitchenpos.application.MenuService;
-import kitchenpos.domain.Menu;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.MenuResponse;
+import kitchenpos.service.MenuService;
 
 import java.net.URI;
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 @RestController
+@RequestMapping("/api")
 public class MenuRestController {
     private final MenuService menuService;
 
@@ -19,19 +23,15 @@ public class MenuRestController {
         this.menuService = menuService;
     }
 
-    @PostMapping("/api/menus")
-    public ResponseEntity<Menu> create(@RequestBody final Menu menu) {
-        final Menu created = menuService.create(menu);
+    @PostMapping("/menus")
+    public ResponseEntity<MenuResponse> save(@RequestBody final MenuRequest menuRequest) {
+        final MenuResponse created = menuService.save(menuRequest);
         final URI uri = URI.create("/api/menus/" + created.getId());
-        return ResponseEntity.created(uri)
-                .body(created)
-                ;
+        return ResponseEntity.created(uri).body(created);
     }
 
-    @GetMapping("/api/menus")
-    public ResponseEntity<List<Menu>> list() {
-        return ResponseEntity.ok()
-                .body(menuService.list())
-                ;
+    @GetMapping("/menus")
+    public ResponseEntity<List<MenuResponse>> findAll() {
+        return ResponseEntity.ok().body(menuService.findAll());
     }
 }
