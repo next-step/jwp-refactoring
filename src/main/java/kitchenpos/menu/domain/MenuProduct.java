@@ -3,7 +3,10 @@ package kitchenpos.menu.domain;
 import kitchenpos.common.domain.BaseEntity;
 import kitchenpos.product.domain.Product;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class MenuProduct extends BaseEntity {
@@ -15,13 +18,8 @@ public class MenuProduct extends BaseEntity {
     @Column
     private long quantity;
 
-    public MenuProduct(Menu menu, Product product, long quantity) {
-        this.menu = menu;
-        this.product = product;
-        this.quantity = quantity;
-    }
-
     public MenuProduct(Product product, long quantity) {
+        validate(product, quantity);
         this.product = product;
         this.quantity = quantity;
     }
@@ -43,5 +41,14 @@ public class MenuProduct extends BaseEntity {
 
     public long getQuantity() {
         return quantity;
+    }
+
+    private void validate(Product product, long quantity) {
+        if (product == null) {
+            throw new IllegalArgumentException("메뉴의 상품은 지정되어야합니다.");
+        }
+        if (quantity < 0) {
+            throw new IllegalArgumentException("메뉴의 수량은 음수가 될 수 없습니다. 0원 이상이어야합니다.");
+        }
     }
 }
