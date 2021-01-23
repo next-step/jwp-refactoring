@@ -1,21 +1,36 @@
 package kitchenpos.ui;
 
-import kitchenpos.application.DomainTestUtils;
+import kitchenpos.application.MenuGroupService;
+import kitchenpos.application.MenuService;
+import kitchenpos.application.ProductService;
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.test.web.servlet.MockMvc;
 
-@AutoConfigureMockMvc
-class MenuRestControllerTest extends DomainTestUtils {
+import java.math.BigDecimal;
+import java.util.Arrays;
+
+class MenuRestControllerTest extends ControllerTest {
+
+    private final String MENU_URI = "/api/menus";
 
     @Autowired
-    private MockMvc mockMvc;
+    private ProductService productService;
+
+    @Autowired
+    private MenuService menuService;
+
+    @Autowired
+    private MenuGroupService menuGroupService;
+
+    private MenuProduct 메뉴상품_후라이드;
+    private MenuProduct 메뉴상품_양념치킨;
+    private MenuGroup 후라이드양념반반메뉴;
 
     @BeforeEach
     void setUp() {
@@ -31,12 +46,22 @@ class MenuRestControllerTest extends DomainTestUtils {
     void create() throws Exception {
         Menu 후라이드양념반반 = 메뉴를_생성한다(후라이드양념반반메뉴, "후라이드양념반반", 32000, 메뉴상품_후라이드, 메뉴상품_양념치킨);
         String body = objectMapper.writeValueAsString(후라이드양념반반);
-        컨트롤러_생성_요청_및_검증(mockMvc, MENU_URI, body);
+        컨트롤러_생성_요청_및_검증(MENU_URI, body);
     }
 
     @DisplayName("메뉴 목록을 조회한다")
     @Test
     void search() throws Exception {
-        컨트롤러_조회_요청_및_검증(mockMvc, MENU_URI);
+        컨트롤러_조회_요청_및_검증(MENU_URI);
+    }
+
+    private Menu 메뉴를_생성한다(MenuGroup menuGroup, String name, int price, MenuProduct... products) {
+        Menu menu = new Menu(name, BigDecimal.valueOf(price), menuGroup.getId(), Arrays.asList(products));
+        return menuService.create(menu);
+    }
+
+    private MenuGroup 메뉴그룹을_생성한다(String name) {
+        MenuGroup menuGroup = new MenuGroup(name);
+        return menuGroupService.create(menuGroup);
     }
 }

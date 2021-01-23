@@ -3,9 +3,12 @@ package kitchenpos.application;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.ui.ControllerTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.ArrayList;
@@ -17,20 +20,26 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
-class TableGroupServiceTest extends DomainTestUtils {
+@SpringBootTest
+class TableGroupServiceTest {
 
     private List<OrderTable> orderTables;
     private OrderTable 테이블_1번;
     private OrderTable 테이블_2번;
+
+    @Autowired
+    private TableGroupService tableGroupService;
+
+    @Autowired
+    private TableService tableService;
 
     @MockBean
     private OrderDao orderDao;
 
     @BeforeEach
     void setUp() {
-        테이블_1번 = 테이블을_생성한다(1l, 게스트수, 비어있음);
-        테이블_2번 = 테이블을_생성한다(2l, 게스트수, 비어있음);
-
+        테이블_1번 = 테이블을_생성한다(1l, 0, true);
+        테이블_2번 = 테이블을_생성한다(2l, 0, true);
         orderTables = new ArrayList<>();
         orderTables.add(테이블_1번);
         orderTables.add(테이블_2번);
@@ -45,7 +54,7 @@ class TableGroupServiceTest extends DomainTestUtils {
         System.out.println(tableGroup);
         orderTables.forEach(group -> {
             assertThat(group.getTableGroupId()).isEqualTo(tableGroup.getId());
-            assertThat(group.isEmpty()).isEqualTo(비어있지않음);
+            assertThat(group.isEmpty()).isEqualTo(false);
         });
     }
 
@@ -83,5 +92,16 @@ class TableGroupServiceTest extends DomainTestUtils {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
+    private OrderTable 테이블을_생성한다(Long id, int numberOfGuest, boolean empty) {
+        return tableService.create(new OrderTable(id, numberOfGuest, empty));
+    }
+
+    private void 테이블_그룹을_비운다(Long id) {
+        tableGroupService.ungroup(id);
+    }
+
+    private TableGroup 테이블_그룹을_생성한다(TableGroup tableGroup) {
+        return tableGroupService.create(tableGroup);
+    }
 
 }

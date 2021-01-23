@@ -1,18 +1,37 @@
 package kitchenpos.application;
 
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-class MenuServiceTest extends DomainTestUtils {
+@SpringBootTest
+class MenuServiceTest {
+
+    @Autowired
+    private ProductService productService;
+
+    @Autowired
+    private MenuService menuService;
+
+    @Autowired
+    private MenuGroupService menuGroupService;
+
+    private MenuProduct 메뉴상품_후라이드;
+    private MenuProduct 메뉴상품_양념치킨;
+    private MenuGroup 후라이드양념반반메뉴;
 
     @BeforeEach
     void setUp() {
@@ -38,5 +57,15 @@ class MenuServiceTest extends DomainTestUtils {
     void list() {
         List<Menu> menus = menuService.list();
         assertThat(menus.size()).isGreaterThanOrEqualTo(1);
+    }
+
+    private Menu 메뉴를_생성한다(MenuGroup menuGroup, String name, int price, MenuProduct... products) {
+        Menu menu = new Menu(name, BigDecimal.valueOf(price), menuGroup.getId(), Arrays.asList(products));
+        return menuService.create(menu);
+    }
+
+    private MenuGroup 메뉴그룹을_생성한다(String name) {
+        MenuGroup menuGroup = new MenuGroup(name);
+        return menuGroupService.create(menuGroup);
     }
 }

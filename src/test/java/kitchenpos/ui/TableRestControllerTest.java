@@ -1,43 +1,36 @@
 package kitchenpos.ui;
 
-import kitchenpos.application.DomainTestUtils;
+import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderTable;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@AutoConfigureMockMvc
-class TableRestControllerTest extends DomainTestUtils {
+class TableRestControllerTest extends ControllerTest {
+
+    private final String TABLE_URI = "/api/tables";
 
     @Autowired
-    private MockMvc mockMvc;
-
-    @BeforeEach
-    void setUp() {
-        게스트수 = 10;
-    }
+    private OrderTableDao orderTableDao;
 
     @DisplayName("테이블을 생성한다")
     @Test
     void create() throws Exception {
-        OrderTable orderTable = new OrderTable(게스트수, 비어있음);
+        OrderTable orderTable = new OrderTable(10, true);
         String body = objectMapper.writeValueAsString(orderTable);
 
-        컨트롤러_생성_요청_및_검증(mockMvc, TABLE_URI, body);
+        컨트롤러_생성_요청_및_검증(TABLE_URI, body);
     }
 
     @DisplayName("테이블을 조회한다")
     @Test
     void list() throws Exception {
-        컨트롤러_조회_요청_및_검증(mockMvc, TABLE_URI);
+        컨트롤러_조회_요청_및_검증(TABLE_URI);
     }
 
     @DisplayName("테이블 상태와 게스트수를 변경한다")
@@ -46,7 +39,7 @@ class TableRestControllerTest extends DomainTestUtils {
         final Long orderTableId = 4l;
         OrderTable orderTable = orderTableDao.findById(orderTableId).get();
 
-        orderTable.setEmpty(비어있지않음);
+        orderTable.setEmpty(false);
         String body = objectMapper.writeValueAsString(orderTable);
 
         테이블_변경_요청_및_검증(body, orderTableId, "/empty");
