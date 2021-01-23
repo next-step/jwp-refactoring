@@ -61,4 +61,8 @@ public class Menu extends BaseEntity {
 	public MenuGroup getMenuGroup() {
 		return menuGroup;
 	}
+
+	public boolean equalsId(Long menuId) {
+		return this.id.equals(menuId);
+	}
 }

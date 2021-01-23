@@ -13,7 +13,6 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.acceptance.util.AcceptanceTest;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 
@@ -59,11 +58,11 @@ public class MenuGroupAcceptance extends AcceptanceTest {
 	public static void 메뉴_그룹_목록_포함됨(ExtractableResponse<Response> response,
 		List<ExtractableResponse<Response>> expected) {
 		List<Long> expectedMenuGroupIds = expected.stream()
-			.map(it -> it.as(MenuGroup.class).getId())
+			.map(it -> it.as(MenuGroupResponse.class).getId())
 			.collect(Collectors.toList());
 
-		List<Long> resultMenuGroupIds = response.jsonPath().getList(".", MenuGroup.class).stream()
-			.map(MenuGroup::getId)
+		List<Long> resultMenuGroupIds = response.jsonPath().getList(".", MenuGroupResponse.class).stream()
+			.map(MenuGroupResponse::getId)
 			.collect(Collectors.toList());
 
 		assertThat(resultMenuGroupIds).containsAll(expectedMenuGroupIds);
