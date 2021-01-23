@@ -81,7 +81,7 @@ class MenuServiceTest {
         final Menu menu = 메뉴를_생성한다(후라이드양념반반메뉴, "후라이드양념반반", 32000, 메뉴상품_후라이드, 메뉴상품_양념치킨);
 
         List<MenuProduct> menuProducts = menu.getMenuProducts();
-        System.out.println(menuProducts);
+
         List<Long> productIds = menuProducts.stream()
                 .map(MenuProduct::getProductId)
                 .collect(Collectors.toList());
