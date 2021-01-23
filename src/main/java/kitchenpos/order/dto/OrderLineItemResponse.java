@@ -17,17 +17,6 @@ public class OrderLineItemResponse {
         return quantity;
     }
 
-    public void setMenuId(long menuId) {
-        this.menuId = menuId;
-    }
-
-    public void setQuantity(long quantity) {
-        this.quantity = quantity;
-    }
-
-    public OrderLineItemResponse() {
-    }
-
     public OrderLineItemResponse(long menuId, long quantity) {
         this.menuId = menuId;
         this.quantity = quantity;

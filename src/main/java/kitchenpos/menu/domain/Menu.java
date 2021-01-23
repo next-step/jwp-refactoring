@@ -4,8 +4,6 @@ import kitchenpos.menugroup.domain.MenuGroup;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -19,9 +17,6 @@ public class Menu {
     @ManyToOne
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
-
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<MenuProduct> menuProducts = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -39,39 +34,21 @@ public class Menu {
         return menuGroup;
     }
 
-    public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
-    }
+    protected Menu() {}
 
-    public void addMenuProduct(final MenuProduct menuProduct) {
-        menuProducts.add(menuProduct);
-        menuProduct.changeMenu(this);
+    public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
+        this.name = name;
+        this.price = price;
+        this.menuGroup = menuGroup;
     }
 
     public boolean isSameById(Long menuId) {
         return id.equals(menuId);
     }
 
-    protected Menu() {}
-//
-//    public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
-//        this(null, name, price, menuGroup);
-//    }
-
-    public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
-//        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.menuGroup = menuGroup;
-    }
-
-    public static Menu createMenu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts,
-                                  BigDecimal sumPrice) {
+    public static Menu createMenu(String name, BigDecimal price, MenuGroup menuGroup, BigDecimal sumPrice) {
         validatePrice(price, sumPrice);
-
-        Menu menu = new Menu(name, price, menuGroup);
-        menuProducts.forEach(menu::addMenuProduct);
-        return menu;
+        return new Menu(name, price, menuGroup);
     }
 
     public static void validatePrice(BigDecimal price, BigDecimal sum) {

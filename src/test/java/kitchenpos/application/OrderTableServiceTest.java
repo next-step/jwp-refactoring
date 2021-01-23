@@ -1,12 +1,11 @@
 package kitchenpos.application;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.application.TableService;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.dto.OrderTableRequest;
-import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.order.application.OrderService;
+import kitchenpos.order.application.OrderTableService;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.OrderTableRepository;
+import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,17 +25,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
 @DisplayName("주문 테이블 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
-class TableServiceTest {
+class OrderTableServiceTest {
 
     @Mock
     private OrderTableRepository orderTableRepository;
 
+    @Mock
+    private OrderService orderService;
+
     @InjectMocks
-    private TableService tableService;
+    private OrderTableService orderTableService;
 
     @DisplayName("주문 테이블을 등록할 수 있다.")
     @Test
@@ -52,7 +55,7 @@ class TableServiceTest {
                 .willReturn(orderTable);
 
         //when
-        OrderTableResponse createOrderTable = tableService.create(orderTableRequest);
+        OrderTableResponse createOrderTable = orderTableService.create(orderTableRequest);
         verify(orderTableRepository).save(argumentCaptor.capture());
         assertThat(argumentCaptor.getValue().getId()).isNull();
         assertThat(argumentCaptor.getValue().getNumberOfGuests()).isEqualTo(0);
@@ -77,7 +80,7 @@ class TableServiceTest {
                 .willReturn(Arrays.asList(제1번테이블, 제2번테이블));
 
         //when
-        List<OrderTableResponse> orderTables = tableService.list();
+        List<OrderTableResponse> orderTables = orderTableService.list();
 
         //then
         assertThat(orderTables.size()).isEqualTo(2);
@@ -101,7 +104,7 @@ class TableServiceTest {
 
         //when
         OrderTableRequest orderTableRequest = new OrderTableRequest(2L, 0, false);
-        OrderTableResponse changedOrderTable = tableService.changeEmpty(2L, orderTableRequest);
+        OrderTableResponse changedOrderTable = orderTableService.changeEmpty(2L, orderTableRequest);
 
         //then
         assertThat(changedOrderTable.isEmpty()).isFalse();
@@ -126,7 +129,7 @@ class TableServiceTest {
         //when
         //then
         OrderTableRequest orderTableRequest = new OrderTableRequest(1L, 0, false);
-        assertThatThrownBy(() -> tableService.changeEmpty(2L, orderTableRequest))
+        assertThatThrownBy(() -> orderTableService.changeEmpty(2L, orderTableRequest))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -137,26 +140,19 @@ class TableServiceTest {
         OrderTable orderTable = new OrderTable(0, true);
         ReflectionTestUtils.setField(orderTable, "id", 2L);
 
-        Order order1 = new Order(OrderStatus.COMPLETION, LocalDateTime.now());
-        ReflectionTestUtils.setField(order1, "id", 1L);
-        Order order2 = new Order(OrderStatus.COMPLETION, LocalDateTime.now());
-        ReflectionTestUtils.setField(order2, "id", 2L);
-        Order order3 = new Order(OrderStatus.MEAL, LocalDateTime.now());
-        ReflectionTestUtils.setField(order3, "id", 3L);
-
-        orderTable.addOrder(order1);
-        orderTable.addOrder(order2);
-        orderTable.addOrder(order3);
-
         given(orderTableRepository.findById(2L))
                 .willReturn(Optional.of(orderTable));
+
+        doThrow(new IllegalArgumentException("주문 테이블을 비울 수 없는 상태입니다."))
+                .when(orderService).validateChangeEmpty(orderTable);
 
         OrderTableRequest orderTableRequest = new OrderTableRequest(null, 0, false);
 
         //when
         //then
-        assertThatThrownBy(() -> tableService.changeEmpty(2L, orderTableRequest))
-                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderTableService.changeEmpty(2L, orderTableRequest))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("주문 테이블을 비울 수 없는 상태입니다.");
 
     }
 
@@ -171,7 +167,7 @@ class TableServiceTest {
 
         //when
         OrderTableRequest orderTableRequest = new OrderTableRequest(null, 3, true);
-        OrderTableResponse changedOrderTable = tableService.changeNumberOfGuests(3L, orderTableRequest);
+        OrderTableResponse changedOrderTable = orderTableService.changeNumberOfGuests(3L, orderTableRequest);
 
         //then
         assertThat(changedOrderTable.getNumberOfGuests()).isEqualTo(3);
@@ -185,7 +181,7 @@ class TableServiceTest {
 
         //when
         //then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(3L, orderTableRequest))
+        assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(3L, orderTableRequest))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -203,7 +199,7 @@ class TableServiceTest {
 
         //when
         //then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(3L, orderTableRequest))
+        assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(3L, orderTableRequest))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

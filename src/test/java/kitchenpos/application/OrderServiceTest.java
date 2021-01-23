@@ -3,16 +3,10 @@ package kitchenpos.application;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.application.OrderService;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItemRepository;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.product.domain.Product;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,6 +39,9 @@ class OrderServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
 
+    @Mock
+    private OrderLineItemRepository orderLineItemRepository;
+
     @InjectMocks
     private OrderService orderService;
 
@@ -53,9 +50,7 @@ class OrderServiceTest {
     void create1() {
         //given
         ArgumentCaptor<Order> argumentCaptor = ArgumentCaptor.forClass(Order.class);
-
-        given(orderRepository.save(any()))
-                .willReturn(new Order(OrderStatus.COOKING, LocalDateTime.now()));
+        ArgumentCaptor<List<OrderLineItem>> orderLineItemArgumentCaptor = ArgumentCaptor.forClass(List.class);
 
         Menu menu1 = new Menu("메뉴1", new BigDecimal(16000), null);
         Menu menu2 = new Menu("메뉴2", new BigDecimal(16000), null);
@@ -72,11 +67,15 @@ class OrderServiceTest {
         OrderTable orderTable = new OrderTable(3, false);
         ReflectionTestUtils.setField(orderTable, "id", 2L);
 
-        Order order = new Order(OrderStatus.COOKING, LocalDateTime.now());
+        Order order = new Order(orderTable, OrderStatus.COOKING, LocalDateTime.now());
         ReflectionTestUtils.setField(order, "id", 1L);
-        order.setOrderTable(orderTable);
 
         given(orderRepository.save(any())).willReturn(order);
+
+        given(orderLineItemRepository.saveAll(any()))
+                .willReturn(Arrays.asList(
+                        new OrderLineItem(order, menu1, 1), new OrderLineItem(order, menu2, 1)
+                ));
 
         //when
         List<OrderLineItemRequest> orderLineItems = new ArrayList<>();
@@ -85,7 +84,7 @@ class OrderServiceTest {
 
         OrderRequest orderRequest = new OrderRequest(1L, OrderStatus.MEAL);
         orderRequest.setOrderLineItems(orderLineItems);
-        OrderResponse createOrder = orderService.create(orderRequest);
+        OrderResponse orderResponse = orderService.create(orderRequest);
 
         //then
         verify(orderRepository).save(argumentCaptor.capture());
@@ -93,9 +92,15 @@ class OrderServiceTest {
         assertThat(argumentCaptor.getValue().getOrderStatus()).isEqualTo(OrderStatus.COOKING);
         assertThat(argumentCaptor.getValue().getOrderTable().getId()).isEqualTo(1L);
 
-        assertThat(createOrder.getId()).isEqualTo(1L);
-        assertThat(createOrder.getOrderTableId()).isEqualTo(2L);
-        assertThat(createOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
+        verify(orderLineItemRepository).saveAll(orderLineItemArgumentCaptor.capture());
+        assertThat(orderLineItemArgumentCaptor.getValue().size()).isEqualTo(2);
+        assertThat(orderLineItemArgumentCaptor.getValue().get(0).getOrder()).isEqualTo(order);
+        assertThat(orderLineItemArgumentCaptor.getValue().get(1).getOrder()).isEqualTo(order);
+
+        assertThat(orderResponse.getId()).isEqualTo(1L);
+        assertThat(orderResponse.getOrderTableId()).isEqualTo(2L);
+        assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
+        assertThat(orderResponse.getOrderLineItems().size()).isEqualTo(2);
     }
 
 
@@ -168,8 +173,11 @@ class OrderServiceTest {
     @Test
     void list() {
         //given
-        Order order1 = new Order(OrderStatus.COOKING, LocalDateTime.now());
-        Order order2 = new Order(OrderStatus.MEAL, LocalDateTime.now());
+        OrderTable orderTable = new OrderTable(3, false);
+        ReflectionTestUtils.setField(orderTable, "id", 2L);
+
+        Order order1 = new Order(orderTable, OrderStatus.COOKING, LocalDateTime.now());
+        Order order2 = new Order(orderTable, OrderStatus.MEAL, LocalDateTime.now());
         ReflectionTestUtils.setField(order1, "id", 1L);
         ReflectionTestUtils.setField(order2, "id", 2L);
 
@@ -192,7 +200,10 @@ class OrderServiceTest {
     @Test
     void changeOrderStatus1() {
         //given
-        Order order = new Order(OrderStatus.COOKING, LocalDateTime.now());
+        OrderTable orderTable = new OrderTable(3, false);
+        ReflectionTestUtils.setField(orderTable, "id", 2L);
+
+        Order order = new Order(orderTable, OrderStatus.COOKING, LocalDateTime.now());
         ReflectionTestUtils.setField(order, "id", 1L);
         given(orderRepository.findById(any()))
                 .willReturn(Optional.of(order));
@@ -227,7 +238,10 @@ class OrderServiceTest {
     @Test
     void changeOrderStatus3() {
         //given
-        Order order = new Order(OrderStatus.COMPLETION, LocalDateTime.now());
+        OrderTable orderTable = new OrderTable(3, false);
+        ReflectionTestUtils.setField(orderTable, "id", 2L);
+
+        Order order = new Order(orderTable, OrderStatus.COMPLETION, LocalDateTime.now());
         ReflectionTestUtils.setField(order, "id", 1L);
 
         given(orderRepository.findById(any()))
@@ -241,5 +255,28 @@ class OrderServiceTest {
         assertThatThrownBy(() -> orderService.changeOrderStatus(1L, changeOrder))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("이미 왼료상태인 주문은 상태 변경이 불가합니다.");
+    }
+
+    @DisplayName("주문 테이블을 비울수 있는지 검증 - 주문 테이블이 없거나, 이미 조리중, 식사중인 상태이면 주문 테이블을 비울 수 없다.")
+    @Test
+    void validateChangeEmpty() {
+        //given
+        OrderTable orderTable = new OrderTable(3, false);
+
+        Order order1 = new Order(orderTable, OrderStatus.COMPLETION, LocalDateTime.now());
+        ReflectionTestUtils.setField(order1, "id", 1L);
+        Order order2 = new Order(orderTable, OrderStatus.COMPLETION, LocalDateTime.now());
+        ReflectionTestUtils.setField(order2, "id", 2L);
+        Order order3 = new Order(orderTable, OrderStatus.MEAL, LocalDateTime.now());
+        ReflectionTestUtils.setField(order3, "id", 3L);
+
+        given(orderRepository.findAllByOrderTable(orderTable))
+                .willReturn(Arrays.asList(order1, order2, order3));
+        //when
+        //then
+        assertThatThrownBy(() -> orderService.validateChangeEmpty(orderTable))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("주문 테이블을 비울 수 없는 상태입니다.");
+
     }
 }

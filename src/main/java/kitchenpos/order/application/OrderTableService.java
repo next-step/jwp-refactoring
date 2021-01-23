@@ -1,9 +1,9 @@
-package kitchenpos.table.application;
+package kitchenpos.order.application;
 
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.dto.OrderTableRequest;
-import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.OrderTableRepository;
+import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.tablegroup.application.TableGroupService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,16 +12,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class TableService {
+public class OrderTableService {
     private final OrderTableRepository orderTableRepository;
     private final TableGroupService tableGroupService;
+    private final OrderService ordersService;
 
-    public TableService(
+    public OrderTableService(
             OrderTableRepository orderTableRepository,
-            TableGroupService tableGroupService
+            TableGroupService tableGroupService,
+            OrderService ordersService
     ) {
         this.orderTableRepository = orderTableRepository;
         this.tableGroupService = tableGroupService;
+        this.ordersService =  ordersService;
     }
 
     @Transactional
@@ -50,6 +53,8 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
+
+        ordersService.validateChangeEmpty(savedOrderTable);
 
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
 

@@ -1,9 +1,10 @@
 package kitchenpos.tablegroup.dto;
 
-import kitchenpos.table.domain.OrderTable;
+import kitchenpos.order.domain.OrderTable;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class TableGroupRequest {
@@ -36,8 +37,13 @@ public class TableGroupRequest {
         }
     }
 
-    public void validateOrderTableSavedSize(List<OrderTable> savedOrderTables) {
+    public void validateSavedOrderTable(List<OrderTable> savedOrderTables) {
         if (orderTables.size() != savedOrderTables.size()) {
+            throw new IllegalArgumentException();
+        }
+
+        if (savedOrderTables.stream()
+                .anyMatch(orderTable -> !orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup()))) {
             throw new IllegalArgumentException();
         }
     }

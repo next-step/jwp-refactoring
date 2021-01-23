@@ -1,8 +1,8 @@
 package kitchenpos.application;
 
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
@@ -67,8 +67,6 @@ class TableGroupServiceTest {
 
         TableGroup tableGroup = new TableGroup(LocalDateTime.now());
         ReflectionTestUtils.setField(tableGroup, "id", 1L);
-        tableGroup.addOrderTables(new OrderTable(0, true));
-        tableGroup.addOrderTables(new OrderTable(0, true));
         given(tableGroupRepository.save(any())).willReturn(tableGroup);
 
         //when
@@ -83,7 +81,6 @@ class TableGroupServiceTest {
         //then
         verify(tableGroupRepository).save(argumentCaptor.capture());
         assertThat(argumentCaptor.getValue().getId()).isNull();
-        assertThat(argumentCaptor.getValue().getOrderTables().size()).isEqualTo(2);
 
         assertThat(savedTableGroup.getId()).isEqualTo(1L);
         assertThat(savedTableGroup.getOrderTables().size()).isEqualTo(2);

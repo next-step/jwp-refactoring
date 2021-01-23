@@ -2,8 +2,8 @@ package kitchenpos.tablegroup.application;
 
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
@@ -45,10 +45,14 @@ public class TableGroupService {
                 tableGroupRequest.getOrderTableIds()
         );
 
-        tableGroupRequest.validateOrderTableSavedSize(savedOrderTables);
+        tableGroupRequest.validateSavedOrderTable(savedOrderTables);
 
-        TableGroup tableGroup = TableGroup.createTableGroup(LocalDateTime.now(), savedOrderTables);
-        return TableGroupResponse.of(tableGroupRepository.save(tableGroup));
+        TableGroup tableGroup = TableGroup.createTableGroup(LocalDateTime.now());
+        TableGroup savedGroup = tableGroupRepository.save(tableGroup);
+
+        savedOrderTables.forEach(orderTable -> orderTable.changeTableGroup(tableGroup));
+
+        return TableGroupResponse.of(savedGroup, savedOrderTables);
     }
 
     @Transactional

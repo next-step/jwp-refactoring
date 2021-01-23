@@ -1,11 +1,7 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.table.domain.OrderTable;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.LinkedList;
-import java.util.List;
 
 @Entity(name = "orders")
 public class Order {
@@ -20,9 +16,6 @@ public class Order {
     private OrderStatus orderStatus = OrderStatus.COOKING;
 
     private LocalDateTime orderedTime;
-
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<OrderLineItem> orderLineItems = new LinkedList<>();
 
     public Long getId() {
         return id;
@@ -44,19 +37,11 @@ public class Order {
         return orderedTime;
     }
 
-    public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
-    }
-
-    public void addOrderLineItem(final OrderLineItem orderLineItem) {
-        this.orderLineItems.add(orderLineItem);
-        orderLineItem.setOrder(this);
-    }
-
     protected Order() {
     }
 
-    public Order(OrderStatus orderStatus, LocalDateTime orderedTime) {
+    public Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
+        this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
     }
@@ -73,14 +58,11 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
-    public static Order createOrder(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+    public static Order createOrder(OrderTable orderTable) {
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException("비어있는 주문 테이블입니다.");
         }
 
-        Order order = new Order(OrderStatus.COOKING, LocalDateTime.now());
-        order.setOrderTable(orderTable);
-        orderLineItems.forEach(order::addOrderLineItem);
-        return order;
+        return new Order(orderTable, OrderStatus.COOKING, LocalDateTime.now());
     }
 }
