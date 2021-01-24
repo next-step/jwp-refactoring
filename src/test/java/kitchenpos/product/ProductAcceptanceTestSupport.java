@@ -5,13 +5,13 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.HttpStatusAssertion;
+import kitchenpos.product.dto.ProductRequest;
 import org.springframework.http.MediaType;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.math.BigDecimal;
 
 public class ProductAcceptanceTestSupport extends AcceptanceTest {
-    public static ExtractableResponse<Response> 상품_생성_요청(Map<String, Object> params) {
+    public static ExtractableResponse<Response> 상품_생성_요청(ProductRequest params) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -29,11 +29,9 @@ public class ProductAcceptanceTestSupport extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 상품_등록되어_있음(String name, Object price) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", name);
-        params.put("price", price);
-        ExtractableResponse<Response> createResponse = 상품_생성_요청(params);
+    public static ExtractableResponse<Response> 상품_등록되어_있음(String name, int price) {
+        ProductRequest request = new ProductRequest(name, BigDecimal.valueOf(price));
+        ExtractableResponse<Response> createResponse = 상품_생성_요청(request);
         상품_생성_완료(createResponse);
         return createResponse;
     }

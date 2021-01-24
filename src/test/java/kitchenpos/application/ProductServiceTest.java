@@ -1,55 +1,45 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.product.application.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.BDDMockito.given;
 
 @DisplayName("상품 서비스에 관련한 기능")
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class ProductServiceTest {
-    @Mock
-    private ProductDao productDao;
-    @InjectMocks
+    @Autowired
     private ProductService productService;
 
-    private Product 짬뽕;
+    private ProductRequest request;
+    private ProductResponse response;
 
     @BeforeEach
     void beforeEach() {
-        짬뽕 = new Product();
-        짬뽕.setId(1L);
-        짬뽕.setName("짬뽕");
-        짬뽕.setPrice(new BigDecimal(8_000));
+        request = new ProductRequest("짬뽕", BigDecimal.valueOf(8_000));
+        response = productService.create(request);
     }
 
     @DisplayName("`상품`을 생성한다.")
     @Test
     void createProduct() {
-        // Given
-        given(productDao.save(짬뽕)).willReturn(짬뽕);
-        // When
-        Product actual = productService.create(짬뽕);
         // Then
         assertAll(
-                () -> assertEquals(짬뽕.getId(), actual.getId()),
-                () -> assertEquals(짬뽕.getName(), actual.getName()),
-                () -> assertEquals(짬뽕.getPrice(), actual.getPrice())
+                () -> assertThat(response.getId()).isNotNull(),
+                () -> assertThat(response.getName()).isEqualTo(request.getName()),
+                () -> assertThat(response.getPrice().intValue()).isEqualTo(request.getPrice().intValue())
         );
     }
 
@@ -57,35 +47,26 @@ class ProductServiceTest {
     @Test
     void exceptionToCreateProduct() {
         // Given
-        짬뽕.setPrice(null);
+        ProductRequest invalidRequest1 = new ProductRequest("짬뽕", null);
+
         // When & Then
-        assertThatThrownBy(() -> productService.create(짬뽕)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> productService.create(invalidRequest1)).isInstanceOf(IllegalArgumentException.class);
+
         // Given
-        짬뽕.setPrice(new BigDecimal(-1));
+        ProductRequest invalidRequest2 = new ProductRequest("짬뽕", BigDecimal.valueOf(-1));
+
         // When & Then
-        assertThatThrownBy(() -> productService.create(짬뽕)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> productService.create(invalidRequest2)).isInstanceOf(IllegalArgumentException.class);
 
     }
 
     @DisplayName("모든 `상품` 목록을 조회한다.")
     @Test
     void findAllProducts() {
-        // Given
-        Product 짜장면 = new Product();
-        짜장면.setId(2L);
-        짜장면.setName("짜장면");
-        짜장면.setPrice(new BigDecimal(6_000));
-        given(productDao.findAll()).willReturn(Arrays.asList(짬뽕, 짜장면));
         // When
-        List<Product> actual = productService.list();
+        List<ProductResponse> actual = productService.list();
+
         // Then
-        assertAll(
-                () -> assertThat(actual).extracting(Product::getId)
-                        .containsExactly(짬뽕.getId(), 짜장면.getId()),
-                () -> assertThat(actual).extracting(Product::getName)
-                        .containsExactly(짬뽕.getName(), 짜장면.getName()),
-                () -> assertThat(actual).extracting(Product::getPrice)
-                        .containsExactly(짬뽕.getPrice(), 짜장면.getPrice())
-        );
+        assertThat(actual).containsAnyElementsOf(Collections.singletonList(response));
     }
 }

@@ -1,150 +1,174 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import org.junit.jupiter.api.BeforeEach;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menugroup.application.MenuGroupService;
+import kitchenpos.order.application.OrderService;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.ordertable.application.OrderTableService;
+import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.BDDMockito.given;
 
 @DisplayName("주문 서비스에 관련한 기능")
-@ExtendWith(value = MockitoExtension.class)
+@SpringBootTest
 class OrderServiceTest {
-    @Mock
-    private MenuDao menuDao;
-    @Mock
-    private OrderDao orderDao;
-    @Mock
-    private OrderLineItemDao orderLineItemDao;
-    @Mock
-    private OrderTableDao orderTableDao;
-    @InjectMocks
+    @Autowired
     private OrderService orderService;
-
-    private OrderLineItem orderLineItem;
-    private Order order;
-
-    @BeforeEach
-    void beforeEach() {
-        orderLineItem = new OrderLineItem();
-        orderLineItem.setSeq(1L);
-        orderLineItem.setOrderId(1L);
-        orderLineItem.setMenuId(1L);
-        orderLineItem.setQuantity(1);
-
-        order = new Order();
-        order.setId(1L);
-        order.setOrderTableId(1L);
-        order.setOrderLineItems(Collections.singletonList(orderLineItem));
-    }
+    @Autowired
+    private ProductService productService;
+    @Autowired
+    private MenuGroupService menuGroupService;
+    @Autowired
+    private MenuService menuService;
+    @Autowired
+    private OrderTableService orderTableService;
 
     @DisplayName("`주문`을 생성한다.")
     @Test
     void createOrder() {
         // Given
-        given(menuDao.countByIdIn(Collections.singletonList(orderLineItem.getMenuId()))).willReturn(1L);
-        OrderTable orderTable = new OrderTable();
-        orderTable.setId(order.getOrderTableId());
-        given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
-        given(orderDao.save(order)).willReturn(order);
-        given(orderLineItemDao.save(orderLineItem)).willReturn(orderLineItem);
+        ProductResponse 짬뽕 = productService.create(new ProductRequest("짬뽕", BigDecimal.valueOf(8_000)));
+        ProductResponse 짜장면 = productService.create(new ProductRequest("짜장면", BigDecimal.valueOf(6_000)));
+        MenuGroupResponse 신메뉴그룹 = menuGroupService.create(new MenuGroupRequest("신메뉴그룹"));
+        MenuResponse 추천메뉴 = menuService.create(new MenuRequest("추천메뉴", BigDecimal.valueOf(14_000), 신메뉴그룹.getId(),
+                Arrays.asList(new MenuProductRequest(짬뽕.getId(), 1L), new MenuProductRequest(짜장면.getId(), 1L)))
+        );
+        OrderTableResponse orderTable = orderTableService.create(new OrderTableRequest(3, false));
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(추천메뉴.getId(), 1L);
+        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(orderLineItemRequest));
+
         // When
-        Order actual = orderService.create(order);
+        OrderResponse actual = orderService.create(orderRequest);
+
         // Then
         assertAll(
-                () -> assertThat(actual.getId()).isEqualTo(order.getId()),
-                () -> assertThat(actual.getOrderTableId()).isEqualTo(order.getOrderTableId()),
-                () -> assertThat(actual.getOrderLineItems()).isEqualTo(order.getOrderLineItems()),
-                () -> assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name()),
-                () -> assertThat(actual.getOrderedTime()).isNotNull()
+                () -> assertThat(actual.getId()).isNotNull(),
+                () -> assertThat(actual.getOrderTableId()).isEqualTo(orderTable.getId()),
+                () -> assertThat(actual.getOrderLineItems()).isNotNull(),
+                () -> assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.COOKING),
+                () -> assertThat(actual.getCreatedAt()).isNotNull()
         );
     }
 
     @DisplayName("`주문`에 필요한 주문 메뉴를 담은 `주문 항목`이 없으면 `주문`을 생성할 수 없다.")
-    @Test
-    void exceptionToCreateOrderWithoutLineItem() {
-        // Given
-        order.setId(1L);
-        order.setOrderTableId(1L);
+    @ParameterizedTest
+    @NullAndEmptySource
+    void exceptionToCreateOrderWithoutLineItem(List<OrderLineItemRequest> orderLineItemRequests) {
         // When & then
-        assertThatThrownBy(() -> orderService.create(new Order())).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(new OrderRequest(1L, orderLineItemRequests)))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("`주문`할 `주문 테이블`이 없으면, `주문`을 생성할 수 없다.")
     @Test
     void exceptionToCreateOrderWithoutTable() {
         // Given
-        given(menuDao.countByIdIn(Collections.singletonList(orderLineItem.getMenuId()))).willReturn(1L);
-        OrderTable orderTable = new OrderTable();
-        orderTable.setId(order.getOrderTableId());
-        orderTable.setEmpty(true);
-        given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
+        ProductResponse 짬뽕 = productService.create(new ProductRequest("짬뽕", BigDecimal.valueOf(8_000)));
+        ProductResponse 짜장면 = productService.create(new ProductRequest("짜장면", BigDecimal.valueOf(6_000)));
+        MenuGroupResponse 신메뉴그룹 = menuGroupService.create(new MenuGroupRequest("신메뉴그룹"));
+        MenuResponse 추천메뉴 = menuService.create(new MenuRequest("추천메뉴", BigDecimal.valueOf(14_000), 신메뉴그룹.getId(),
+                Arrays.asList(new MenuProductRequest(짬뽕.getId(), 1L), new MenuProductRequest(짜장면.getId(), 1L)))
+        );
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(추천메뉴.getId(), 1L);
+        long invalidMenuProductId = Long.MAX_VALUE;
+        OrderRequest orderRequest = new OrderRequest(invalidMenuProductId, Collections.singletonList(orderLineItemRequest));
+
         // When & Then
-        assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(orderRequest)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("모든 `주문` 목록을 조회한다.")
     @Test
     void findAllOrders() {
         // Given
-        given(orderDao.findAll()).willReturn(Collections.singletonList(order));
-        // When
-        List<Order> actual = orderService.list();
-        // Then
-        assertAll(
-                () -> assertThat(actual).extracting(Order::getId).containsExactly(order.getId()),
-                () -> assertThat(actual).extracting(Order::getOrderTableId).containsExactly(order.getOrderTableId()),
-                () -> assertThat(actual).extracting(Order::getOrderStatus).containsExactly(order.getOrderStatus()),
-                () -> assertThat(actual).extracting(Order::getOrderedTime).containsExactly(order.getOrderedTime()),
-                () -> assertThat(actual.stream().map(Order::getOrderLineItems).collect(Collectors.toList()))
-                        .containsExactly(order.getOrderLineItems())
+        ProductResponse 짬뽕 = productService.create(new ProductRequest("짬뽕", BigDecimal.valueOf(8_000)));
+        ProductResponse 짜장면 = productService.create(new ProductRequest("짜장면", BigDecimal.valueOf(6_000)));
+        MenuGroupResponse 신메뉴그룹 = menuGroupService.create(new MenuGroupRequest("신메뉴그룹"));
+        MenuResponse 추천메뉴 = menuService.create(new MenuRequest("추천메뉴", BigDecimal.valueOf(14_000), 신메뉴그룹.getId(),
+                Arrays.asList(new MenuProductRequest(짬뽕.getId(), 1L), new MenuProductRequest(짜장면.getId(), 1L)))
         );
+        OrderTableResponse orderTable = orderTableService.create(new OrderTableRequest(3, false));
+
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(추천메뉴.getId(), 1L);
+        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(orderLineItemRequest));
+        OrderResponse expected = orderService.create(orderRequest);
+
+        // When
+        List<OrderResponse> actual = orderService.list();
+
+        // Then
+        assertThat(actual).containsAnyElementsOf(Collections.singletonList(expected));
     }
 
     @DisplayName("`주문`의 `주문 상태`를 변경한다.")
     @Test
     void changeOrderStatus() {
         // Given
-        order.setOrderStatus(OrderStatus.COOKING.name());
-        given(orderDao.findById(order.getId())).willReturn(Optional.of(order));
-        Order updateOrder = new Order();
-        updateOrder.setOrderStatus(OrderStatus.MEAL.name());
+        ProductResponse 짬뽕 = productService.create(new ProductRequest("짬뽕", BigDecimal.valueOf(8_000)));
+        ProductResponse 짜장면 = productService.create(new ProductRequest("짜장면", BigDecimal.valueOf(6_000)));
+        MenuGroupResponse 신메뉴그룹 = menuGroupService.create(new MenuGroupRequest("신메뉴그룹"));
+        MenuResponse 추천메뉴 = menuService.create(new MenuRequest("추천메뉴", BigDecimal.valueOf(14_000), 신메뉴그룹.getId(),
+                Arrays.asList(new MenuProductRequest(짬뽕.getId(), 1L), new MenuProductRequest(짜장면.getId(), 1L)))
+        );
+        OrderTableResponse orderTable = orderTableService.create(new OrderTableRequest(3, false));
+
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(추천메뉴.getId(), 1L);
+        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(orderLineItemRequest));
+        OrderResponse savedOrder = orderService.create(orderRequest);
+
         // When
-        Order actual = orderService.changeOrderStatus(order.getId(), updateOrder);
+        OrderRequest updateOrder = new OrderRequest(OrderStatus.COMPLETION);
+        OrderResponse actual = orderService.changeOrderStatus(savedOrder.getId(), updateOrder);
+
         // Then
-        assertEquals(updateOrder.getOrderStatus(), actual.getOrderStatus());
+        assertThat(actual.getOrderStatus()).isEqualTo(updateOrder.getOrderStatus());
     }
 
     @DisplayName("`주문 상태`가 'COMPLETION' 인 경우 상태를 변경할 수 없다.")
     @Test
     void exceptionToChangeOrderStatusWithCompletion() {
         // Given
-        order.setOrderStatus(OrderStatus.COMPLETION.name());
-        given(orderDao.findById(order.getId())).willReturn(Optional.of(order));
-        Order updateOrder = new Order();
-        updateOrder.setOrderStatus(OrderStatus.MEAL.name());
+        ProductResponse 짬뽕 = productService.create(new ProductRequest("짬뽕", BigDecimal.valueOf(8_000)));
+        ProductResponse 짜장면 = productService.create(new ProductRequest("짜장면", BigDecimal.valueOf(6_000)));
+        MenuGroupResponse 신메뉴그룹 = menuGroupService.create(new MenuGroupRequest("신메뉴그룹"));
+        MenuResponse 추천메뉴 = menuService.create(new MenuRequest("추천메뉴", BigDecimal.valueOf(14_000), 신메뉴그룹.getId(),
+                Arrays.asList(new MenuProductRequest(짬뽕.getId(), 1L), new MenuProductRequest(짜장면.getId(), 1L)))
+        );
+        OrderTableResponse orderTable = orderTableService.create(new OrderTableRequest(3, false));
+
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(추천메뉴.getId(), 1L);
+        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(orderLineItemRequest));
+        OrderResponse savedOrder = orderService.create(orderRequest);
+
+        orderService.changeOrderStatus(savedOrder.getId(), new OrderRequest(OrderStatus.COMPLETION));
+
         // When & Then
-        assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), updateOrder))
+        assertThatThrownBy(() -> orderService.changeOrderStatus(savedOrder.getId(), new OrderRequest(OrderStatus.MEAL)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

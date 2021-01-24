@@ -5,12 +5,11 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.HttpStatusAssertion;
+import kitchenpos.order.dto.OrderRequest;
 import org.springframework.http.MediaType;
 
-import java.util.Map;
-
 public class OrderAcceptanceTestSupport extends AcceptanceTest {
-    public static ExtractableResponse<Response> 주문_생성_요청(Map<String, Object> params) {
+    public static ExtractableResponse<Response> 주문_생성_요청(OrderRequest params) {
         return RestAssured
                 .given().log().all().body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -27,10 +26,10 @@ public class OrderAcceptanceTestSupport extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 주문_상태_변경_요청(ExtractableResponse<Response> createResponse, Map<String, String> params) {
+    public static ExtractableResponse<Response> 주문_상태_변경_요청(ExtractableResponse<Response> createResponse, OrderRequest request) {
         String location = createResponse.header("Location");
         return RestAssured
-                .given().log().all().body(params)
+                .given().log().all().body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().put(location + "/order-status")
                 .then().log().all()
@@ -47,5 +46,9 @@ public class OrderAcceptanceTestSupport extends AcceptanceTest {
 
     public void 주문_응답_실패(ExtractableResponse<Response> response) {
         HttpStatusAssertion.INTERNAL_SERVER_ERROR(response);
+    }
+
+    public void 잘못된_주문_요청(ExtractableResponse<Response> response) {
+        HttpStatusAssertion.BAD_REQUEST(response);
     }
 }

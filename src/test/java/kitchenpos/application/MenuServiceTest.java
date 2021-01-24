@@ -1,127 +1,112 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuProductResponse;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.BDDMockito.given;
 
 @DisplayName("메뉴 서비스에 관련한 기능")
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class MenuServiceTest {
-    @Mock
-    private MenuDao menuDao;
-    @Mock
-    private MenuGroupDao menuGroupDao;
-    @Mock
-    private MenuProductDao menuProductDao;
-    @Mock
-    private ProductDao productDao;
-    @InjectMocks
+    @Autowired
+    private ProductService productService;
+    @Autowired
     private MenuService menuService;
-
-    private Menu 짬뽕_짜장면;
-    private MenuProduct menuProduct;
+    private MenuProductRequest menuProductRequest1;
+    private MenuProductRequest menuProductRequest2;
 
     @BeforeEach
     void beforeEach() {
-        menuProduct = new MenuProduct();
-        menuProduct.setSeq(1L);
-        menuProduct.setMenuId(1L);
-        menuProduct.setProductId(1L);
-        menuProduct.setQuantity(2);
-
-        짬뽕_짜장면 = new Menu();
-        짬뽕_짜장면.setId(1L);
-        짬뽕_짜장면.setName("짬뽕_짜장면");
-        짬뽕_짜장면.setMenuGroupId(1L);
-        짬뽕_짜장면.setPrice(new BigDecimal(14_000));
-        짬뽕_짜장면.setMenuProducts(Collections.singletonList(menuProduct));
+        ProductRequest productRequest1 = new ProductRequest("짬뽕", BigDecimal.valueOf(8_000));
+        ProductResponse 짬뽕 = productService.create(productRequest1);
+        ProductRequest productRequest2 = new ProductRequest("짜장면", BigDecimal.valueOf(6_000));
+        ProductResponse 짜장면 = productService.create(productRequest2);
+        menuProductRequest1 = new MenuProductRequest(짬뽕.getId(), 1L);
+        menuProductRequest2 = new MenuProductRequest(짜장면.getId(), 1L);
     }
 
     @DisplayName("`메뉴`를 생성한다.")
     @Test
     void createMenu() {
         // Given
-        Product 짬뽕 = new Product();
-        짬뽕.setId(1L);
-        짬뽕.setName("짬뽕");
-        짬뽕.setPrice(new BigDecimal(8_000));
-        given(menuGroupDao.existsById(1L)).willReturn(true);
-        given(productDao.findById(1L)).willReturn(Optional.of(짬뽕));
-        given(menuDao.save(짬뽕_짜장면)).willReturn(짬뽕_짜장면);
-        given(menuProductDao.save(menuProduct)).willReturn(menuProduct);
+        MenuRequest menuRequest = new MenuRequest("짬뽕_짜장면", BigDecimal.valueOf(14_000), 1L,
+                Arrays.asList(menuProductRequest1, menuProductRequest2));
+
         // When
-        Menu actual = menuService.create(짬뽕_짜장면);
+        MenuResponse 짬뽕_짜장면 = menuService.create(menuRequest);
+
         // Then
-        assertThat(actual.getId()).isEqualTo(짬뽕_짜장면.getId());
-        assertThat(actual.getName()).isEqualTo(짬뽕_짜장면.getName());
-        assertThat(actual.getPrice()).isEqualTo(짬뽕_짜장면.getPrice());
-        assertThat(actual.getMenuGroupId()).isEqualTo(짬뽕_짜장면.getMenuGroupId());
-        assertThat(actual.getMenuProducts()).isEqualTo(짬뽕_짜장면.getMenuProducts());
+        assertAll(
+                () -> assertThat(짬뽕_짜장면.getId()).isNotNull(),
+                () -> assertThat(짬뽕_짜장면.getName()).isEqualTo(menuRequest.getName()),
+                () -> assertThat(짬뽕_짜장면.getPrice().intValue()).isEqualTo(menuRequest.getPrice().intValue()),
+                () -> assertThat(짬뽕_짜장면.getMenuGroupId()).isEqualTo(menuRequest.getMenuGroupId()),
+                () -> assertThat(짬뽕_짜장면.getMenuProducts()).extracting(MenuProductResponse::getProductId)
+                        .containsAnyElementsOf(Arrays.asList(menuProductRequest1.getProductId(), menuProductRequest2.getProductId())),
+                () -> assertThat(짬뽕_짜장면.getMenuProducts()).extracting(MenuProductResponse::getQuantity)
+                        .containsAnyElementsOf(Arrays.asList(menuProductRequest1.getQuantity(), menuProductRequest2.getQuantity()))
+        );
     }
 
     @DisplayName("가격은 필수이고, 0원 이상이 아니면 `메뉴`를 생성할 수 없다.")
     @Test
     void exceptionToCreateMenuWithInvalidPrice() {
         // Given
-        짬뽕_짜장면.setPrice(null);
+        MenuRequest invalidMenuRequest1 = new MenuRequest("짬뽕_짜장면", null, 1L,
+                Arrays.asList(menuProductRequest1, menuProductRequest2));
+
         // When & Then
-        assertThrows(IllegalArgumentException.class, () -> menuService.create(짬뽕_짜장면));
-        짬뽕_짜장면.setPrice(new BigDecimal(-1));
-        assertThrows(IllegalArgumentException.class, () -> menuService.create(짬뽕_짜장면));
+        assertThrows(IllegalArgumentException.class, () -> menuService.create(invalidMenuRequest1));
+
+        // Given
+        MenuRequest invalidMenuRequest2 = new MenuRequest("짬뽕_짜장면", BigDecimal.valueOf(-1), 1L,
+                Arrays.asList(menuProductRequest1, menuProductRequest2));
+
+        // When & Then
+        assertThrows(IllegalArgumentException.class, () -> menuService.create(invalidMenuRequest2));
     }
 
     @DisplayName("`메뉴`의 가격이 `메뉴 상품`의 가격의 합보다 크면 `메뉴`를 생성할 수 없다.")
     @Test
     void exceptionToCreateMenuWithInvalidPriceOverSum() {
         // Given
-        Product 짬뽕 = new Product();
-        짬뽕.setId(1L);
-        짬뽕.setName("짬뽕");
-        짬뽕.setPrice(new BigDecimal(5_000));
-        given(menuGroupDao.existsById(1L)).willReturn(true);
-        given(productDao.findById(1L)).willReturn(Optional.of(짬뽕));
+        MenuRequest menuRequest = new MenuRequest("짬뽕_짜장면", BigDecimal.valueOf(15_000), 1L,
+                Arrays.asList(menuProductRequest1, menuProductRequest2));
+
         // When & Then
-        assertThrows(IllegalArgumentException.class, () -> menuService.create(짬뽕_짜장면));
+        assertThrows(IllegalArgumentException.class, () -> menuService.create(menuRequest));
     }
 
     @DisplayName("모든 `메뉴` 목록을 조회한다.")
     @Test
     void findAllMenus() {
         // Given
-        given(menuDao.findAll()).willReturn(Collections.singletonList(짬뽕_짜장면));
+        MenuRequest menuRequest = new MenuRequest("짬뽕_짜장면", BigDecimal.valueOf(14_000), 1L,
+                Arrays.asList(menuProductRequest1, menuProductRequest2));
+        MenuResponse 짬뽕_짜장면 = menuService.create(menuRequest);
+
         // When
-        List<Menu> actual = menuService.list();
+        List<MenuResponse> actual = menuService.list();
+
         // Then
-        assertAll(
-                () -> assertThat(actual).extracting(Menu::getId).containsExactly(짬뽕_짜장면.getId()),
-                () -> assertThat(actual).extracting(Menu::getName).containsExactly(짬뽕_짜장면.getName()),
-                () -> assertThat(actual).extracting(Menu::getPrice).containsExactly(짬뽕_짜장면.getPrice()),
-                () -> assertThat(actual).extracting(Menu::getMenuGroupId).containsExactly(짬뽕_짜장면.getMenuGroupId()),
-                () -> assertThat(actual.stream().map(Menu::getMenuProducts).collect(Collectors.toList()))
-                        .containsExactly(짬뽕_짜장면.getMenuProducts())
-        );
+        assertThat(actual).containsAnyElementsOf(Collections.singletonList(짬뽕_짜장면));
     }
 }
