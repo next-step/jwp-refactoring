@@ -3,8 +3,14 @@ package kitchenpos.dto;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuGroup;
+import kitchenpos.domain.menu.MenuProduct;
+import kitchenpos.domain.menu.Quantity;
+import kitchenpos.domain.product.Product;
+
+import static java.util.stream.Collectors.*;
 
 import java.util.List;
+import java.util.Map;
 
 public class MenuRequest {
     private String name;
@@ -36,6 +42,14 @@ public class MenuRequest {
 
     public List<MenuProductRequest> getMenuProductRequest() {
         return menuProductRequests;
+    }
+
+    public List<Long> getMenuIds() {
+        return menuProductRequests.stream().map(MenuProductRequest::getProductId).collect(toList());
+    }
+
+    public void putMenuProduct(Menu menu, Map<Long, Product> products) {
+        menuProductRequests.forEach(p -> menu.addMenuProduct(new MenuProduct(menu, products.get(p.getProductId()), new Quantity(p.getQuantity()))));
     }
 
     public Menu toMenu(MenuGroup menuGroup) {

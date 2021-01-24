@@ -16,6 +16,14 @@ public class TableRequest {
         this.empty = empty;
     }
 
+    public TableRequest(int guestNumber) {
+        this.guestNumber = guestNumber;
+    }
+
+    public TableRequest(Boolean empty) {
+        this.empty = empty;
+    }
+
     public TableRequest(Long tableId) {
         this.tableId = tableId;
     }

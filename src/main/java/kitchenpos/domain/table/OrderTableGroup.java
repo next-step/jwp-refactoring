@@ -37,7 +37,7 @@ public class OrderTableGroup extends BaseDateTime {
     public void applyGroup(int size) {
         checkOrderTableSize(size);
         orderTables.forEach(t -> {
-            t.changeEmpty(false);
+            t.changeOrderTableStatus(false);
             t.changeOrderTableGroup(this);
         });
     }
