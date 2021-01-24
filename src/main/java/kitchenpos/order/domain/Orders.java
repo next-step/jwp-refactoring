@@ -1,6 +1,8 @@
 package kitchenpos.order.domain;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -22,7 +24,7 @@ public class Orders extends BaseEntity {
 	@JoinColumn(name = "order_table_id")
 	private OrderTable orderTable;
 
-	//@Enumerated(EnumType.STRING)
+	@Enumerated(EnumType.STRING)
 	private OrderStatus orderStatus;
 
 	protected Orders() {
