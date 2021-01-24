@@ -12,7 +12,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
-@Transactional
 class TableGroupServiceTest {
 
 	@Autowired
@@ -54,7 +52,6 @@ class TableGroupServiceTest {
 	@Test
 	void create() {
 		TableGroupResponse response = tableGroupService.create(new TableGroupRequest_Create(orderTableIds));
-
 		assertThat(response.getId()).isNotNull();
 		assertThat(response.getOrderTables())
 				.map(OrderTableResponse::getId)
@@ -63,7 +60,7 @@ class TableGroupServiceTest {
 		assertThat(response.getOrderTables())
 				.map(OrderTableResponse::getId)
 				.map(id -> orderTableRepository.findById(id).orElseThrow(Exception::new))
-				.allSatisfy(orderTable -> assertThat(orderTable.getTableGroup().getId()).isEqualTo(response.getId()));
+				.allSatisfy(orderTable -> assertThat(orderTable.getTableGroupId()).isEqualTo(response.getId()));
 	}
 
 	@DisplayName("단체 지정하려는 테이블의 ID가 실제로 존재하지 않을 경우 예외 발생.")
@@ -89,7 +86,7 @@ class TableGroupServiceTest {
 		assertThat(response.getOrderTables())
 				.map(OrderTableResponse::getId)
 				.map(id -> orderTableRepository.findById(id).orElseThrow(Exception::new))
-				.allSatisfy(orderTable -> assertThat(orderTable.getTableGroup()).isNull());
+				.allSatisfy(orderTable -> assertThat(orderTable.getTableGroupId()).isNull());
 
 		assertThat(tableGroupRepository.findById(response.getId())).isNotPresent();
 	}

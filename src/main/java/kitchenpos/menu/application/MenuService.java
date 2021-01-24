@@ -1,16 +1,13 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.common.application.NotFoundException;
-import kitchenpos.common.entity.Price;
 import kitchenpos.menu.domain.*;
-import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,39 +32,20 @@ public class MenuService {
 	public MenuResponse create(MenuRequest menuRequest) {
 		MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
 				.orElseThrow(() -> new NotFoundException(MSG_CANNOT_FIND_MENUGROUP));
-		Menu menu = menuRepository.save(createMenu(menuRequest, menuGroup));
-		List<MenuProduct> menuProducts = createMenuProducts(menu, menuRequest.getMenuProductRequests());
-		menu.addMenuProducts(menuProducts);
-		return MenuResponse.of(menu);
+		Menu menu = menuRequest.createMenu(menuGroup);
+
+		List<Product> products = getProducts(menuRequest.getProductIds());
+		menu.addMenuProducts(menuRequest.createMenuProducts(products));
+		return MenuResponse.of(menuRepository.save(menu));
 	}
 
-	private List<MenuProduct> createMenuProducts(Menu menu, List<MenuProductRequest> menuProductRequests) {
-		List<Product> products = getProducts(menuProductRequests);
-		return menuProductRequests.stream()
-				.map(menuProductRequest -> createMenuProduct(products, menu, menuProductRequest))
-				.collect(Collectors.toList());
-	}
+	private List<Product> getProducts(List<Long> productIds) {
+		List<Product> products = productRepository.findAllById(productIds);
+		if (productIds.size() != products.size()) {
+			throw new NotFoundException(MSG_CANNOT_FIND_PRODUCT);
+		}
 
-	private List<Product> getProducts(List<MenuProductRequest> menuProductRequests) {
-		final List<Long> productIds = menuProductRequests.stream()
-				.map(MenuProductRequest::getProductId).collect(Collectors.toList());
-		return productRepository.findAllById(productIds);
-	}
-
-	private MenuProduct createMenuProduct(List<Product> products, Menu menu, MenuProductRequest menuProductRequest) {
-		Product product = findProduct(products, menuProductRequest);
-		return new MenuProduct(menu, product, menuProductRequest.getQuantity());
-	}
-
-	private Product findProduct(List<Product> products, MenuProductRequest menuProductRequest) {
-		return products.stream()
-				.filter(iter -> Objects.equals(menuProductRequest.getProductId(), iter.getId()))
-				.findFirst()
-				.orElseThrow(() -> new NotFoundException(MSG_CANNOT_FIND_PRODUCT));
-	}
-
-	private Menu createMenu(MenuRequest menuRequest, MenuGroup menuGroup) {
-		return new Menu(menuRequest.getName(), new Price(menuRequest.getPrice()), menuGroup);
+		return products;
 	}
 
 	public List<MenuResponse> list() {

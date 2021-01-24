@@ -11,9 +11,8 @@ import java.util.Objects;
 @Table(name = "menu_product")
 public class MenuProduct extends BaseSeqEntity {
 
-	@ManyToOne
-	@JoinColumn(name = "menu_id", nullable = false)
-	private Menu menu;
+	@Column(name = "menu_id", nullable = false, insertable = false, updatable = false)
+	private Long menuId;
 
 	@ManyToOne
 	@JoinColumn(name = "product_id", nullable = false)
@@ -25,18 +24,13 @@ public class MenuProduct extends BaseSeqEntity {
 	protected MenuProduct() {
 	}
 
-	public MenuProduct(Menu menu, Product product, long quantity) {
-		this.menu = menu;
+	public MenuProduct(Product product, long quantity) {
 		this.product = product;
 		this.quantity = new Quantity(quantity);
 	}
 
 	Price getQuantityPrice() {
 		return product.getPrice().multiply(quantity);
-	}
-
-	public Menu getMenu() {
-		return menu;
 	}
 
 	public Product getProduct() {
@@ -53,13 +47,13 @@ public class MenuProduct extends BaseSeqEntity {
 		if (!(o instanceof MenuProduct)) return false;
 		if (!super.equals(o)) return false;
 		MenuProduct that = (MenuProduct) o;
-		return Objects.equals(menu, that.menu) &&
+		return Objects.equals(menuId, that.menuId) &&
 				Objects.equals(product, that.product) &&
 				Objects.equals(quantity, that.quantity);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(super.hashCode(), menu, product, quantity);
+		return Objects.hash(super.hashCode(), menuId, product, quantity);
 	}
 }

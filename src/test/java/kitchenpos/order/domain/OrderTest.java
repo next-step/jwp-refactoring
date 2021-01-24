@@ -15,6 +15,8 @@ import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.spy;
 
 class OrderTest {
 
@@ -27,28 +29,29 @@ class OrderTest {
 
 	@BeforeEach
 	void setUp() {
-		orderTable = new OrderTable(20, false);
+		orderTable = spy(new OrderTable(20, false));
+		given(orderTable.getId()).willReturn(5L);
 
 		MenuGroup 중식 = new MenuGroup("중식");
 		짜장면 = new Menu("짜장면", 7000, 중식);
-		MenuProduct menuProduct1 = new MenuProduct(짜장면, new Product("짜장면", 7000), 1);
+		MenuProduct menuProduct1 = new MenuProduct(new Product("짜장면", 7000), 1);
 		짜장면.addMenuProducts(Collections.singletonList(menuProduct1));
 		짬뽕 = new Menu("짬뽕", 6000, 중식);
-		MenuProduct menuProduct2 = new MenuProduct(짬뽕, new Product("짬뽕", 6000), 1);
+		MenuProduct menuProduct2 = new MenuProduct(new Product("짬뽕", 6000), 1);
 		짬뽕.addMenuProducts(Collections.singletonList(menuProduct2));
 
 		orderItem_짜장면 = OrderItem.of(짜장면, new Quantity(77));
 		orderItem_짬뽕 = OrderItem.of(짬뽕, new Quantity(99));
 
-		order = Order.createCookingOrder(orderTable, Arrays.asList(orderItem_짜장면, orderItem_짬뽕));
+		order = Order.createCookingOrder(orderTable.getId(), Arrays.asList(orderItem_짜장면, orderItem_짬뽕));
 	}
 
 	@DisplayName("새로운 주문을 생성한다.")
 	@Test
 	void createCookingOrder() {
-		Order newOrder = Order.createCookingOrder(orderTable, Arrays.asList(orderItem_짜장면, orderItem_짬뽕));
+		Order newOrder = Order.createCookingOrder(orderTable.getId(), Arrays.asList(orderItem_짜장면, orderItem_짬뽕));
 
-		assertThat(newOrder.getOrderTable()).isEqualTo(orderTable);
+		assertThat(newOrder.getOrderTableId()).isEqualTo(orderTable.getId());
 		assertThat(newOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
 		assertThat(newOrder.getOrderLineItems())
 				.map(OrderLineItem::getMenu)

@@ -14,7 +14,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -24,7 +23,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
-@Transactional
 class OrderServiceTest {
 
 	@Autowired
@@ -78,7 +76,6 @@ class OrderServiceTest {
 		assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
 		assertThat(orderResponse.getOrderLineItems())
 				.hasSize(2)
-				.allSatisfy(lineItem -> assertThat(lineItem.getOrderId()).isEqualTo(orderResponse.getId()))
 				.map(OrderLineItemResponse::getQuantity)
 				.allSatisfy(quantity -> assertThat(quantity).isEqualTo(2));
 	}

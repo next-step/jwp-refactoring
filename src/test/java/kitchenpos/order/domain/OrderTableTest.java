@@ -18,6 +18,9 @@ import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 
 class OrderTableTest {
 
@@ -30,16 +33,20 @@ class OrderTableTest {
 
 	@BeforeEach
 	void setUp() {
-		orderTable = new OrderTable(20, true);
-		tableGroup = new TableGroup();
+		orderTable = spy(new OrderTable(20, true));
+		given(orderTable.getId()).willReturn(5L);
+
+		tableGroup = mock(TableGroup.class);
+		given(tableGroup.getId()).willReturn(50L);
+
 		MenuGroup 중식 = new MenuGroup("중식");
 
 		짜장면 = new Menu("짜장면", 7000, 중식);
-		MenuProduct menuProduct1 = new MenuProduct(짜장면, new Product("짜장면", 7000), 1);
+		MenuProduct menuProduct1 = new MenuProduct(new Product("짜장면", 7000), 1);
 		짜장면.addMenuProducts(Collections.singletonList(menuProduct1));
 
 		짬뽕 = new Menu("짬뽕", 6000, 중식);
-		MenuProduct menuProduct2 = new MenuProduct(짬뽕, new Product("짬뽕", 6000), 1);
+		MenuProduct menuProduct2 = new MenuProduct(new Product("짬뽕", 6000), 1);
 		짬뽕.addMenuProducts(Collections.singletonList(menuProduct2));
 
 		orderItem_짜장면 = OrderItem.of(짜장면, new Quantity(77));
@@ -60,7 +67,7 @@ class OrderTableTest {
 	@DisplayName("단체지정된 주문테이블의 공석상태를 변경하려 할 때 예외 발생.")
 	@Test
 	void changeEmpty_ExceptionAlreadyGroup() {
-		orderTable.putIntoGroup(tableGroup);
+		orderTable.putIntoGroup(tableGroup.getId());
 
 		assertThatThrownBy(() -> orderTable.changeEmpty(true))
 				.isInstanceOf(TableValidationException.class)
@@ -106,11 +113,11 @@ class OrderTableTest {
 	@Test
 	void putIntoGroup() {
 		// when
-		orderTable.putIntoGroup(tableGroup);
+		orderTable.putIntoGroup(tableGroup.getId());
 
 		// then
 		assertThat(orderTable.isEmpty()).isFalse();
-		assertThat(orderTable.getTableGroup()).isEqualTo(tableGroup);
+		assertThat(orderTable.getTableGroupId()).isEqualTo(tableGroup.getId());
 	}
 
 	@DisplayName("주문테이블 단체지정시 null 을 입력하면 예외 발생.")
@@ -124,10 +131,11 @@ class OrderTableTest {
 	@DisplayName("이미 테이블이 단체지정 되있을때 다른 그룹에 속하게 하면 예외 발생.")
 	@Test
 	void putIntoGroup_ExceptionAlreadyGroup() {
-		TableGroup beforeTableGroup = new TableGroup();
-		orderTable.putIntoGroup(beforeTableGroup);
+		TableGroup beforeTableGroup = mock(TableGroup.class);
+		given(beforeTableGroup.getId()).willReturn(55L);
+		orderTable.putIntoGroup(beforeTableGroup.getId());
 
-		assertThatThrownBy(() -> orderTable.putIntoGroup(tableGroup))
+		assertThatThrownBy(() -> orderTable.putIntoGroup(tableGroup.getId()))
 				.isInstanceOf(TableValidationException.class)
 				.hasMessageMatching(OrderTable.MSG_ORDER_TABLE_ALREADY_GROUP);
 	}
@@ -137,7 +145,7 @@ class OrderTableTest {
 	void putIntoGroup_ExceptionNotEmpty() {
 		orderTable.changeEmpty(false);
 
-		assertThatThrownBy(() -> orderTable.putIntoGroup(tableGroup))
+		assertThatThrownBy(() -> orderTable.putIntoGroup(tableGroup.getId()))
 				.isInstanceOf(TableValidationException.class)
 				.hasMessageMatching(OrderTable.MSG_ORDER_TABLE_EMPTY);
 	}
@@ -145,18 +153,18 @@ class OrderTableTest {
 	@DisplayName("테이블의 단체지정을 해제한다.")
 	@Test
 	void ungroup() {
-		orderTable.putIntoGroup(tableGroup);
+		orderTable.putIntoGroup(tableGroup.getId());
 
 		orderTable.ungroup();
 
-		assertThat(orderTable.getTableGroup()).isNull();
+		assertThat(orderTable.getTableGroupId()).isNull();
 	}
 
 	@DisplayName("단체지정을 해제할 때 진행중인 주문이 있을경우 예외 발생.")
 	@Test
 	void ungroup_OngoingOrder() {
 		// given: 그룹화, 테이블에 주문 넣기
-		orderTable.putIntoGroup(tableGroup);
+		orderTable.putIntoGroup(tableGroup.getId());
 		orderTable.order(Arrays.asList(orderItem_짜장면, orderItem_짬뽕));
 
 		assertThatThrownBy(() -> orderTable.ungroup())
@@ -175,7 +183,7 @@ class OrderTableTest {
 
 		// then
 		assertThat(order).isNotNull();
-		assertThat(order.getOrderTable()).isEqualTo(orderTable);
+		assertThat(order.getOrderTableId()).isEqualTo(orderTable.getId());
 	}
 
 	@DisplayName("주문테이블이 공석일때 주문을 할 경우 예외 발생.")

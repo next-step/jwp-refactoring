@@ -10,15 +10,20 @@ import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.spy;
 
 class TableGroupTest {
 
 	private OrderTable orderTable1;
 	private OrderTable orderTable2;
 	private OrderTable orderTable3;
+	private TableGroup tableGroup;
 
 	@BeforeEach
 	void setUp() {
+		tableGroup = spy(new TableGroup());
+		given(tableGroup.getId()).willReturn(5L);
 		orderTable1 = new OrderTable(20, true);
 		orderTable2 = new OrderTable(20, true);
 		orderTable3 = new OrderTable(20, true);
@@ -28,7 +33,7 @@ class TableGroupTest {
 	@Test
 	void fromGroupingTables() {
 		// when
-		TableGroup tableGroup = TableGroup.fromGroupingTables(Arrays.asList(orderTable1, orderTable2, orderTable3));
+		tableGroup.groupTables(Arrays.asList(orderTable1, orderTable2, orderTable3));
 
 		// then
 		assertThat(tableGroup.getOrderTables())
@@ -38,7 +43,7 @@ class TableGroupTest {
 	@DisplayName("단체지정하려는 주문테이블 수가 적으면 예외 발생.")
 	@Test
 	void fromGroupingTables_Exception() {
-		assertThatThrownBy(() -> TableGroup.fromGroupingTables(Collections.singletonList(orderTable1)))
+		assertThatThrownBy(() -> tableGroup.groupTables(Collections.singletonList(orderTable1)))
 				.isInstanceOf(TableGroupValidationException.class)
 				.hasMessageMatching(TableGroup.MSG_TABLE_COUNT_LEAST);
 	}

@@ -33,7 +33,11 @@ public class Menu extends BaseIdEntity {
 	}
 
 	public Menu(String name, int price, MenuGroup menuGroup) {
-		this(name, new Price(new BigDecimal(price)), menuGroup);
+		this(name, new BigDecimal(price), menuGroup);
+	}
+
+	public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
+		this(name, new Price(price), menuGroup);
 	}
 
 	public Menu(String name, Price price, MenuGroup menuGroup) {

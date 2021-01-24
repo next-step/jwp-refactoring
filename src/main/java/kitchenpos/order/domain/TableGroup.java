@@ -2,6 +2,9 @@ package kitchenpos.order.domain;
 
 import kitchenpos.common.entity.BaseIdEntity;
 import kitchenpos.order.application.TableGroupValidationException;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -23,26 +26,21 @@ public class TableGroup extends BaseIdEntity {
 	@Column(name = "created_date")
 	private LocalDateTime createdDate;
 
-	@OneToMany(mappedBy = "tableGroup")
+	@Fetch(FetchMode.SELECT)
+	@BatchSize(size = 20)
+	@OneToMany
+	@JoinColumn(name = "table_group_id", nullable = true)
 	private List<OrderTable> orderTables;
 
-	public static TableGroup fromGroupingTables(List<OrderTable> orderTables) {
-		return new TableGroup(orderTables);
+	public TableGroup() {
 	}
 
-	TableGroup() {
-	}
-
-	TableGroup(List<OrderTable> orderTables) {
-		groupTables(orderTables);
-	}
-
-	private void groupTables(List<OrderTable> orderTables) {
+	public void groupTables(List<OrderTable> orderTables) {
 		if (orderTables.size() < TABLE_GROUP_MIN) {
 			throw new TableGroupValidationException(MSG_TABLE_COUNT_LEAST);
 		}
 
-		orderTables.forEach(orderTable -> orderTable.putIntoGroup(this));
+		orderTables.forEach(orderTable -> orderTable.putIntoGroup(getId()));
 		this.orderTables = orderTables;
 	}
 
