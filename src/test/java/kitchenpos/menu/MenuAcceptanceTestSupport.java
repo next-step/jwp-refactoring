@@ -51,6 +51,10 @@ public class MenuAcceptanceTestSupport extends AcceptanceTest {
         HttpStatusAssertion.OK(response);
     }
 
+    public static void 잘못된_메뉴_가격_응답(ExtractableResponse<Response> response) {
+        HttpStatusAssertion.BAD_REQUEST(response);
+    }
+
     private static int sumOfProductPrice(List<ProductResponse> products) {
         return products.stream()
                 .map(ProductResponse::getPrice)
