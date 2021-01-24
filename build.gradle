@@ -42,12 +42,12 @@ subprojects {
 
 project(':service') {
     dependencies {
-        compile project(':domain')
+        implementation project(':domain')
     }
 }
 
 project(':web') {
     dependencies {
-        compile project(':service')
+        implementation project(':service')
     }
 }
