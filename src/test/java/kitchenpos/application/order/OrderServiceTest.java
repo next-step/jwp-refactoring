@@ -1,14 +1,14 @@
 package kitchenpos.application.order;
 
-import kitchenpos.application.order.OrderService;
+import kitchenpos.order.application.OrderService;
 import kitchenpos.dao.order.OrderDao;
 import kitchenpos.dao.order.OrderLineItemDao;
 import kitchenpos.dao.table.OrderTableDao;
-import kitchenpos.domain.menu.MenuRepository;
-import kitchenpos.domain.order.Order;
-import kitchenpos.domain.order.OrderLineItem;
-import kitchenpos.domain.order.OrderStatus;
-import kitchenpos.domain.table.OrderTable;
+import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

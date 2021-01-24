@@ -1,13 +1,8 @@
 package kitchenpos.menu.dto;
 
-import kitchenpos.domain.menu.Menu;
-import kitchenpos.domain.menu.MenuProduct;
-import kitchenpos.menu.dto.MenuProductRequest;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class MenuRequest {
     public static final int ZERO = 0;

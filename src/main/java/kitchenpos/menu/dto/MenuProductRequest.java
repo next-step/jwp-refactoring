@@ -1,7 +1,5 @@
 package kitchenpos.menu.dto;
 
-import kitchenpos.domain.menu.MenuProduct;
-
 import java.util.Objects;
 
 public class MenuProductRequest {
