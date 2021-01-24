@@ -1,8 +1,10 @@
 package kitchenpos.application;
 
+import static kitchenpos.TestFixtures.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.DisplayName;
@@ -37,12 +39,7 @@ class TableGroupServiceTest {
 	@Test
 	void create_happyPath() {
 		// given
-		OrderTable 주문_테이블1 = new OrderTable();
-		주문_테이블1.setEmpty(true);
-		OrderTable 주문_테이블2 = new OrderTable();
-		주문_테이블2.setEmpty(true);
-		TableGroup 단체_지정 = new TableGroup();
-		단체_지정.setOrderTables(Arrays.asList(주문_테이블1, 주문_테이블2));
+		TableGroup 단체_지정 = newTableGroup(Arrays.asList(주문_테이블1, 주문_테이블2));
 		given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(주문_테이블1, 주문_테이블2));
 		given(tableGroupDao.save(단체_지정)).willAnswer(invocation -> {
 			단체_지정.setId(1L);
@@ -62,16 +59,10 @@ class TableGroupServiceTest {
 	@Test
 	void create_exceptionCase1() {
 		// given
-		OrderTable 주문_테이블1 = new OrderTable();
-		주문_테이블1.setEmpty(true);
-		OrderTable 주문_테이블2 = new OrderTable();
-		주문_테이블2.setEmpty(true);
-		TableGroup 단체_지정 = new TableGroup();
-		단체_지정.setOrderTables(Arrays.asList(주문_테이블1, 주문_테이블2));
-		given(orderTableDao.findAllByIdIn(anyList())).willAnswer(invocation -> {
-			주문_테이블1.setTableGroupId(1L);
-			return Arrays.asList(주문_테이블1, 주문_테이블2);
-		});
+		OrderTable 주문_테이블1 = newOrderTable(1L, 999L, 0, true);
+		OrderTable 주문_테이블2 = newOrderTable(2L, 999L, 0, true);
+		TableGroup 단체_지정 = newTableGroup(Arrays.asList(주문_테이블1, 주문_테이블2));
+		given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(주문_테이블1, 주문_테이블2));
 
 		// when & then
 		assertThatThrownBy(() -> tableGroupService.create(단체_지정)).isInstanceOf(IllegalArgumentException.class);
@@ -81,12 +72,9 @@ class TableGroupServiceTest {
 	@Test
 	void create_exceptionCase2() {
 		// given
-		OrderTable 주문_테이블1 = new OrderTable();
-		주문_테이블1.setEmpty(false);
-		OrderTable 주문_테이블2 = new OrderTable();
-		주문_테이블2.setEmpty(true);
-		TableGroup 단체_지정 = new TableGroup();
-		단체_지정.setOrderTables(Arrays.asList(주문_테이블1, 주문_테이블2));
+		OrderTable 주문_테이블1 = newOrderTable(1L, null, 0, false);
+		OrderTable 주문_테이블2 = newOrderTable(2L, null, 0, true);
+		TableGroup 단체_지정 = newTableGroup(Arrays.asList(주문_테이블1, 주문_테이블2));
 		given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(주문_테이블1, 주문_테이블2));
 
 		// when & then
@@ -97,12 +85,8 @@ class TableGroupServiceTest {
 	@Test
 	void ungroup() {
 		// given
-		TableGroup 단체_지정 = new TableGroup();
-		단체_지정.setId(1L);
-		OrderTable 주문_테이블1 = new OrderTable();
-		주문_테이블1.setTableGroupId(단체_지정.getId());
-		OrderTable 주문_테이블2 = new OrderTable();
-		주문_테이블2.setTableGroupId(단체_지정.getId());
+		TableGroup 단체_지정 = newTableGroup(1L, LocalDateTime.now(), Arrays.asList(주문_테이블1, 주문_테이블2));
+
 		given(orderTableDao.findAllByTableGroupId(단체_지정.getId())).willReturn(Arrays.asList(주문_테이블1, 주문_테이블2));
 		given(orderDao.existsByOrderTableIdInAndOrderStatusIn(
 			anyList(),
@@ -121,12 +105,8 @@ class TableGroupServiceTest {
 	@Test
 	void ungroup_exceptionCase() {
 		// given
-		TableGroup 단체_지정 = new TableGroup();
-		단체_지정.setId(1L);
-		OrderTable 주문_테이블1 = new OrderTable();
-		주문_테이블1.setTableGroupId(단체_지정.getId());
-		OrderTable 주문_테이블2 = new OrderTable();
-		주문_테이블2.setTableGroupId(단체_지정.getId());
+		TableGroup 단체_지정 = newTableGroup(1L, LocalDateTime.now(), Arrays.asList(주문_테이블1, 주문_테이블2));
+		
 		given(orderTableDao.findAllByTableGroupId(단체_지정.getId())).willReturn(Arrays.asList(주문_테이블1, 주문_테이블2));
 		given(orderDao.existsByOrderTableIdInAndOrderStatusIn(
 			anyList(),

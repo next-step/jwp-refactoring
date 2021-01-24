@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import static kitchenpos.TestFixtures.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
@@ -34,39 +35,34 @@ class TableServiceTest {
 	@Test
 	void create() {
 		// given
-		OrderTable 주문_테이블 = new OrderTable();
-		주문_테이블.setEmpty(false);
-		주문_테이블.setNumberOfGuests(4);
-		given(orderTableDao.save(주문_테이블)).willAnswer(invocation -> {
-			주문_테이블.setId(1L);
-			return 주문_테이블;
+		OrderTable 주문_테이블1 = newOrderTable(null, 1L, 4, false);
+		given(orderTableDao.save(주문_테이블1)).willAnswer(invocation -> {
+			주문_테이블1.setId(1L);
+			return 주문_테이블1;
 		});
 
 		// when
-		OrderTable saveOrderTable = tableService.create(주문_테이블);
+		OrderTable saveOrderTable = tableService.create(주문_테이블1);
 
 		// then
-		assertThat(saveOrderTable).isEqualTo(주문_테이블);
+		assertThat(saveOrderTable).isEqualTo(주문_테이블1);
 	}
 
 	@DisplayName("빈 테이블 여부 변경")
 	@Test
 	void changeEmpty_happyPath() {
 		// given
-		OrderTable 주문_테이블 = new OrderTable();
-		주문_테이블.setId(1L);
-		주문_테이블.setEmpty(false);
-		given(orderTableDao.save(주문_테이블)).willReturn(주문_테이블);
-		given(orderTableDao.findById(주문_테이블.getId())).willReturn(Optional.of(주문_테이블));
+		OrderTable 주문_테이블1 = newOrderTable(null, null, 4, false);
+
+		given(orderTableDao.save(주문_테이블1)).willReturn(주문_테이블1);
+		given(orderTableDao.findById(주문_테이블1.getId())).willReturn(Optional.of(주문_테이블1));
 		given(orderDao.existsByOrderTableIdAndOrderStatusIn(
-			주문_테이블.getId(),
+			주문_테이블1.getId(),
 			Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))
 		).willReturn(false);
 
 		// when
-		OrderTable tempOrderTable = new OrderTable();
-		tempOrderTable.setEmpty(true);
-		OrderTable saveOrderTable = tableService.changeEmpty(주문_테이블.getId(), tempOrderTable);
+		OrderTable saveOrderTable = tableService.changeEmpty(주문_테이블1.getId(), newOrderTable(true));
 
 		// then
 		assertThat(saveOrderTable.isEmpty()).isTrue();
@@ -76,15 +72,11 @@ class TableServiceTest {
 	@Test
 	void changeEmpty_exceptionCase1() {
 		// given
-		OrderTable 주문_테이블 = new OrderTable();
-		주문_테이블.setId(1L);
-		주문_테이블.setTableGroupId(1L);
-		given(orderTableDao.findById(주문_테이블.getId())).willReturn(Optional.of(주문_테이블));
+		OrderTable 주문_테이블1 = newOrderTable(null, 1L, 4, false);
+		given(orderTableDao.findById(주문_테이블1.getId())).willReturn(Optional.of(주문_테이블1));
 
 		// when & then
-		OrderTable tempOrderTable = new OrderTable();
-		tempOrderTable.setEmpty(true);
-		assertThatThrownBy(() -> tableService.changeEmpty(주문_테이블.getId(), tempOrderTable))
+		assertThatThrownBy(() -> tableService.changeEmpty(주문_테이블1.getId(), newOrderTable(true)))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
@@ -92,18 +84,17 @@ class TableServiceTest {
 	@Test
 	void changeEmpty_exceptionCase2() {
 		// given
-		OrderTable 주문_테이블 = new OrderTable();
-		주문_테이블.setId(1L);
-		given(orderTableDao.findById(주문_테이블.getId())).willReturn(Optional.of(주문_테이블));
+		OrderTable 주문_테이블1 = newOrderTable(null, null, 4, false);
+		given(orderTableDao.findById(주문_테이블1.getId())).willReturn(Optional.of(주문_테이블1));
 		given(orderDao.existsByOrderTableIdAndOrderStatusIn(
-			주문_테이블.getId(),
+			주문_테이블1.getId(),
 			Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))
 		).willReturn(true);
 
 		// when & then
 		OrderTable tempOrderTable = new OrderTable();
 		tempOrderTable.setEmpty(true);
-		assertThatThrownBy(() -> tableService.changeEmpty(주문_테이블.getId(), tempOrderTable))
+		assertThatThrownBy(() -> tableService.changeEmpty(주문_테이블1.getId(), tempOrderTable))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
@@ -111,16 +102,13 @@ class TableServiceTest {
 	@Test
 	void changeNumberOfGuests() {
 		// given
-		OrderTable 주문_테이블 = new OrderTable();
-		주문_테이블.setId(1L);
-		주문_테이블.setEmpty(false);
-		given(orderTableDao.save(주문_테이블)).willReturn(주문_테이블);
-		given(orderTableDao.findById(주문_테이블.getId())).willReturn(Optional.of(주문_테이블));
+		OrderTable 주문_테이블1 = newOrderTable(null, null, 4, false);
+
+		given(orderTableDao.save(주문_테이블1)).willReturn(주문_테이블1);
+		given(orderTableDao.findById(주문_테이블1.getId())).willReturn(Optional.of(주문_테이블1));
 
 		// when
-		OrderTable tempOrderTable = new OrderTable();
-		tempOrderTable.setNumberOfGuests(0);
-		OrderTable saveOrderTable = tableService.changeNumberOfGuests(주문_테이블.getId(), tempOrderTable);
+		OrderTable saveOrderTable = tableService.changeNumberOfGuests(주문_테이블1.getId(), newOrderTable(0));
 
 		// then
 		assertThat(saveOrderTable.getNumberOfGuests()).isEqualTo(0);
