@@ -31,7 +31,7 @@ class MenuGroupServiceTest {
 	@DisplayName("메뉴 그룹 생성 : 이름을 받아 메뉴 그룹을 생성할 수 있음")
 	@Test
 	void create() {
-		MenuGroup 새_메뉴_그룹1 = newMenuGroup(null, "새_메뉴_그룹1");
+		MenuGroup 새_메뉴_그룹1 = new MenuGroup.Builder().name("새_메뉴_그룹1").build();
 		given(menuGroupDao.save(새_메뉴_그룹1)).willAnswer(invocation -> {
 			새_메뉴_그룹1.setId(1L);
 			return 새_메뉴_그룹1;

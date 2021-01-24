@@ -39,7 +39,7 @@ class TableGroupServiceTest {
 	@Test
 	void create_happyPath() {
 		// given
-		TableGroup 단체_지정 = newTableGroup(Arrays.asList(주문_테이블1, 주문_테이블2));
+		TableGroup 단체_지정 = new TableGroup.Builder().orderTables(주문_테이블1, 주문_테이블2).build();
 		given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(주문_테이블1, 주문_테이블2));
 		given(tableGroupDao.save(단체_지정)).willAnswer(invocation -> {
 			단체_지정.setId(1L);
@@ -59,10 +59,11 @@ class TableGroupServiceTest {
 	@Test
 	void create_exceptionCase1() {
 		// given
-		OrderTable 주문_테이블1 = newOrderTable(1L, 999L, 0, true);
-		OrderTable 주문_테이블2 = newOrderTable(2L, 999L, 0, true);
-		TableGroup 단체_지정 = newTableGroup(Arrays.asList(주문_테이블1, 주문_테이블2));
-		given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(주문_테이블1, 주문_테이블2));
+		TableGroup 이미_단체_지정 = new TableGroup.Builder().id(-1L).build();
+		OrderTable 주문_테이블9 = new OrderTable.Builder().id(9L).tableGroup(이미_단체_지정).empty(true).build();
+		OrderTable 주문_테이블10 = new OrderTable.Builder().id(10L).tableGroup(이미_단체_지정).empty(true).build();
+		TableGroup 단체_지정 = new TableGroup.Builder().orderTables(주문_테이블9, 주문_테이블10).build();
+		given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(주문_테이블9, 주문_테이블10));
 
 		// when & then
 		assertThatThrownBy(() -> tableGroupService.create(단체_지정)).isInstanceOf(IllegalArgumentException.class);
@@ -72,10 +73,10 @@ class TableGroupServiceTest {
 	@Test
 	void create_exceptionCase2() {
 		// given
-		OrderTable 주문_테이블1 = newOrderTable(1L, null, 0, false);
-		OrderTable 주문_테이블2 = newOrderTable(2L, null, 0, true);
-		TableGroup 단체_지정 = newTableGroup(Arrays.asList(주문_테이블1, 주문_테이블2));
-		given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(주문_테이블1, 주문_테이블2));
+		OrderTable 주문_테이블9 = new OrderTable.Builder().id(9L).empty(false).build();
+		OrderTable 주문_테이블10 = new OrderTable.Builder().id(10L).empty(false).build();
+		TableGroup 단체_지정 = new TableGroup.Builder().orderTables(주문_테이블9, 주문_테이블10).build();
+		given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(주문_테이블9, 주문_테이블10));
 
 		// when & then
 		assertThatThrownBy(() -> tableGroupService.create(단체_지정)).isInstanceOf(IllegalArgumentException.class);
@@ -85,32 +86,32 @@ class TableGroupServiceTest {
 	@Test
 	void ungroup() {
 		// given
-		TableGroup 단체_지정 = newTableGroup(1L, LocalDateTime.now(), Arrays.asList(주문_테이블1, 주문_테이블2));
+		TableGroup 단체_지정 = new TableGroup.Builder().orderTables(주문_테이블1, 주문_테이블2).build();
 
 		given(orderTableDao.findAllByTableGroupId(단체_지정.getId())).willReturn(Arrays.asList(주문_테이블1, 주문_테이블2));
 		given(orderDao.existsByOrderTableIdInAndOrderStatusIn(
 			anyList(),
-			eq(Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
+			eq(Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)))
 		).willReturn(false);
 
 		// when
 		tableGroupService.ungroup(단체_지정.getId());
 
 		// then
-		assertThat(주문_테이블1.getTableGroupId()).isNull();
-		assertThat(주문_테이블2.getTableGroupId()).isNull();
+		assertThat(주문_테이블1.getTableGroup()).isNull();
+		assertThat(주문_테이블2.getTableGroup()).isNull();
 	}
 
 	@DisplayName("단체 해제 : 단체 지정되어 있던 주문 테이블의 주문 상태가 계산 완료가 아닌 것이 존재함")
 	@Test
 	void ungroup_exceptionCase() {
 		// given
-		TableGroup 단체_지정 = newTableGroup(1L, LocalDateTime.now(), Arrays.asList(주문_테이블1, 주문_테이블2));
+		TableGroup 단체_지정 = new TableGroup.Builder().orderTables(주문_테이블1, 주문_테이블2).build();
 		
 		given(orderTableDao.findAllByTableGroupId(단체_지정.getId())).willReturn(Arrays.asList(주문_테이블1, 주문_테이블2));
 		given(orderDao.existsByOrderTableIdInAndOrderStatusIn(
 			anyList(),
-			eq(Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
+			eq(Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)))
 		).willReturn(true);
 
 		// when & then

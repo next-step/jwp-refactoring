@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,7 +33,7 @@ class ProductServiceTest {
 	@Test
 	void create_happyPath() {
 		// given
-		Product 새_상품 = newProduct(null, 4000L, "새_상품");
+		Product 새_상품 = new Product.Builder().name("새상품").price(BigDecimal.valueOf(4000L)).build();
 		given(productDao.save(새_상품)).willAnswer(invocation -> {
 			새_상품.setId(1L);
 			return 새_상품;
@@ -53,7 +54,7 @@ class ProductServiceTest {
 	@Test
 	void create_exceptionCase() {
 		// given
-		Product 새_상품 = newProduct(null, -1L, "새_상품");
+		Product 새_상품 = new Product.Builder().name("새상품").price(BigDecimal.valueOf(-1L)).build();
 
 		// when & then
 		assertThatThrownBy(() -> productService.create(새_상품)).isInstanceOf(IllegalArgumentException.class);

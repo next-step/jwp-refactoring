@@ -46,12 +46,15 @@ class MenuServiceTest {
 		BigDecimal 메뉴_상품1_가격 = 상품1.getPrice().multiply(BigDecimal.valueOf(메뉴_상품1.getQuantity()));
 		BigDecimal 메뉴_상품2_가격 = 상품2.getPrice().multiply(BigDecimal.valueOf(메뉴_상품2.getQuantity()));
 
-		Menu 새_메뉴 = newMenu(null, "새_메뉴", 메뉴_상품1_가격.add(메뉴_상품2_가격).longValue(), 메뉴_그룹1.getId(),
-			Arrays.asList(메뉴_상품1, 메뉴_상품2));
+		Menu 새_메뉴 = new Menu.Builder()
+				.name("새_메뉴")
+				.price( 메뉴_상품1_가격.add(메뉴_상품2_가격))
+				.menuGroup(메뉴_그룹1)
+				.menuProducts(메뉴_상품1, 메뉴_상품2)
+			.build();
 
 		given(productDao.findById(상품1.getId())).willReturn(Optional.of(상품1));
 		given(productDao.findById(상품2.getId())).willReturn(Optional.of(상품2));
-		given(menuGroupDao.existsById(메뉴_그룹1.getId())).willReturn(true);
 		given(menuDao.save(새_메뉴)).willAnswer(invocation -> {
 			새_메뉴.setId(1L);
 			return 새_메뉴;
@@ -72,11 +75,11 @@ class MenuServiceTest {
 		// then : 메뉴 가격이 메뉴에 속한 상품들의 금액과 같거나 작음
 		assertThat(saveMenu.getId()).isEqualTo(1L);
 		assertThat(saveMenu.getPrice()).isEqualTo(새_메뉴.getPrice());
-		assertThat(saveMenu.getMenuGroupId()).isEqualTo(새_메뉴.getMenuGroupId());
+		assertThat(saveMenu.getMenuGroup()).isEqualTo(새_메뉴.getMenuGroup());
 		assertThat(saveMenu.getPrice()).isEqualTo(새_메뉴.getPrice());
 		assertThat(saveMenu.getMenuProducts())
-			.map(MenuProduct::getProductId)
-			.contains(상품1.getId(), 상품2.getId());
+			.map(MenuProduct::getProduct)
+			.contains(상품1, 상품2);
 	}
 
 	@DisplayName("메뉴 생성 : 메뉴 가격이 메뉴에 속한 상품들의 금액보다 큼")
@@ -86,13 +89,15 @@ class MenuServiceTest {
 		BigDecimal 메뉴_상품1_가격 = 상품1.getPrice().multiply(BigDecimal.valueOf(메뉴_상품1.getQuantity()));
 		BigDecimal 메뉴_상품2_가격 = 상품2.getPrice().multiply(BigDecimal.valueOf(메뉴_상품2.getQuantity()));
 
-		Menu 새_메뉴 = newMenu(null, "새_메뉴",
-			메뉴_상품1_가격.add(메뉴_상품2_가격).add(BigDecimal.ONE).longValue(),
-			메뉴_그룹1.getId(), Arrays.asList(메뉴_상품1, 메뉴_상품2));
+		Menu 새_메뉴 = new Menu.Builder()
+			.name("새_메뉴")
+			.price( 메뉴_상품1_가격.add(메뉴_상품2_가격).add(BigDecimal.ONE))
+			.menuGroup(메뉴_그룹1)
+			.menuProducts(메뉴_상품1, 메뉴_상품2)
+			.build();
 
 		given(productDao.findById(상품1.getId())).willReturn(Optional.of(상품1));
 		given(productDao.findById(상품2.getId())).willReturn(Optional.of(상품2));
-		given(menuGroupDao.existsById(메뉴_그룹1.getId())).willReturn(true);
 
 		// when : 예외 케이스
 		Menu saveMenu;
@@ -109,11 +114,11 @@ class MenuServiceTest {
 		BigDecimal 메뉴_상품1_가격 = 상품1.getPrice().multiply(BigDecimal.valueOf(메뉴_상품1.getQuantity()));
 		BigDecimal 메뉴_상품2_가격 = 상품2.getPrice().multiply(BigDecimal.valueOf(메뉴_상품2.getQuantity()));
 
-		Menu 새_메뉴 = newMenu(null, "새_메뉴",
-			메뉴_상품1_가격.add(메뉴_상품2_가격).longValue(),
-			null, Arrays.asList(메뉴_상품1, 메뉴_상품2));
-
-		given(menuGroupDao.existsById(any())).willReturn(false);
+		Menu 새_메뉴 = new Menu.Builder()
+			.name("새_메뉴")
+			.price( 메뉴_상품1_가격.add(메뉴_상품2_가격))
+			.menuProducts(메뉴_상품1, 메뉴_상품2)
+			.build();
 
 		// when : 예외 케이스
 		Menu saveMenu;
@@ -137,10 +142,10 @@ class MenuServiceTest {
 		assertThat(saveMenuList).anySatisfy(saveMenu -> {
 			assertThat(saveMenu.getId()).isEqualTo(1L);
 			assertThat(saveMenu.getPrice()).isEqualTo(메뉴1.getPrice());
-			assertThat(saveMenu.getMenuGroupId()).isEqualTo(메뉴1.getMenuGroupId());
+			assertThat(saveMenu.getMenuGroup()).isEqualTo(메뉴1.getMenuGroup());
 			assertThat(saveMenu.getPrice()).isEqualTo(메뉴1.getPrice());
-			assertThat(saveMenu.getMenuProducts()).map(MenuProduct::getProductId)
-				.contains(상품1.getId(), 상품2.getId());
+			assertThat(saveMenu.getMenuProducts()).map(MenuProduct::getProduct)
+				.contains(상품1, 상품2);
 		});
 	}
 }

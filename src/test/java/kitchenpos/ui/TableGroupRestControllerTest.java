@@ -55,6 +55,6 @@ class TableGroupRestControllerTest {
 		tableGroupRestController.ungroup(createdTableGroup.getId());
 
 		// then
-		assertThat(tableRestController.list().getBody()).map(OrderTable::getTableGroupId).allMatch(Objects::isNull);
+		assertThat(tableRestController.list().getBody()).map(OrderTable::getTableGroup).allMatch(Objects::isNull);
 	}
 }

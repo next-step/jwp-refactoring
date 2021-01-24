@@ -1,5 +1,6 @@
 package kitchenpos.ui;
 
+import static kitchenpos.TestFixtures.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
+import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
@@ -36,9 +38,12 @@ class OrderRestControllerTest {
 
 		// then
 		assertAll(
-			() -> assertThat(createdOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name()),
-			() -> assertThat(createdOrder.getOrderTableId()).isEqualTo(1L),
-			() -> assertThat(createdOrder.getOrderLineItems()).map(OrderLineItem::getMenuId).contains(1L, 2L)
+			() -> assertThat(createdOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING),
+			() -> assertThat(createdOrder.getOrderTable().getId()).isEqualTo(주문_테이블1.getId()),
+			() -> assertThat(createdOrder.getOrderLineItems())
+				.map(OrderLineItem::getMenu)
+				.map(Menu::getName)
+				.contains(메뉴1.getName(), 메뉴2.getName())
 		);
 	}
 
@@ -52,9 +57,12 @@ class OrderRestControllerTest {
 
 		// then
 		assertThat(orderList).hasSize(1);
-		assertThat(orderList.get(0).getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
-		assertThat(orderList.get(0).getOrderTableId()).isEqualTo(1L);
-		assertThat(orderList.get(0).getOrderLineItems()).map(OrderLineItem::getMenuId).contains(1L, 2L);
+		assertThat(orderList.get(0).getOrderStatus()).isEqualTo(OrderStatus.COOKING);
+		assertThat(orderList.get(0).getOrderTable().getId()).isEqualTo(주문_테이블1.getId());
+		assertThat(orderList.get(0).getOrderLineItems())
+			.map(OrderLineItem::getMenu)
+			.map(Menu::getName)
+			.contains(메뉴1.getName(), 메뉴2.getName());
 	}
 
 	@Test
@@ -64,31 +72,26 @@ class OrderRestControllerTest {
 
 		// when
 		Order temp = new Order();
-		temp.setOrderStatus(OrderStatus.COMPLETION.name());
+		temp.setOrderStatus(OrderStatus.COMPLETION);
 		Order updatedOrder = orderRestController.changeOrderStatus(주문_ID, temp).getBody();
 
 		// then
 		assertAll(
-			() -> assertThat(updatedOrder.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name()),
-			() -> assertThat(updatedOrder.getOrderTableId()).isEqualTo(1L),
-			() -> assertThat(updatedOrder.getOrderLineItems()).map(OrderLineItem::getMenuId).contains(1L, 2L)
+			() -> assertThat(updatedOrder.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION),
+			() -> assertThat(updatedOrder.getOrderTable().getId()).isEqualTo(주문_테이블1.getId()),
+			() -> assertThat(updatedOrder.getOrderLineItems())
+				.map(OrderLineItem::getMenu)
+				.map(Menu::getName)
+				.contains(메뉴1.getName(), 메뉴2.getName())
 		);
 	}
 
 	private Order 주문_객체_생성() {
-		OrderLineItem 주문_항목1 = new OrderLineItem();
-		주문_항목1.setMenuId(1L);
-		주문_항목1.setQuantity(1);
-		OrderLineItem 주문_항목2 = new OrderLineItem();
-		주문_항목2.setMenuId(2L);
-		주문_항목2.setQuantity(2);
-		Order 주문 = new Order();
-		주문.setOrderLineItems(Arrays.asList(주문_항목1, 주문_항목2));
-		주문.setOrderTableId(1L);
+		OrderLineItem 주문_항목1 = new OrderLineItem.Builder().menu(메뉴1).quantity(1L).build();
+		OrderLineItem 주문_항목2 = new OrderLineItem.Builder().menu(메뉴2).quantity(2L).build();
+		Order 주문 = new Order.Builder().orderTable(주문_테이블1).orderLineItems(주문_항목1, 주문_항목2).build();
 
-		OrderTable temp = new OrderTable();
-		temp.setEmpty(false);
-		tableRestController.changeEmpty(1L, temp);
+		tableRestController.changeEmpty(주문_테이블1.getId(), new OrderTable.Builder().empty(false).build());
 
 		return 주문;
 	}

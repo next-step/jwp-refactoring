@@ -47,16 +47,16 @@ class OrderServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		새_주문_테이블 = newOrderTable(9L, null, 4, false);
+		새_주문_테이블 = new OrderTable.Builder().id(9L).empty(false).build();
 	}
 
 	@DisplayName("주문 생성")
 	@Test
 	void create_happyPath() {
 		// given
-		OrderLineItem 주문_항목1 = newOrderLineItem(메뉴1.getId(), 1L);
-		OrderLineItem 주문_항목2 = newOrderLineItem(메뉴2.getId(), 2L);
-		Order 주문 = newOrder(새_주문_테이블.getId(), Arrays.asList(주문_항목1, 주문_항목2));
+		OrderLineItem 주문_항목1 = new OrderLineItem.Builder().menu(메뉴1).quantity(1L).build();
+		OrderLineItem 주문_항목2 = new OrderLineItem.Builder().menu(메뉴2).quantity(2L).build();
+		Order 주문 = new Order.Builder().orderTable(새_주문_테이블).orderLineItems(주문_항목1, 주문_항목2).build();
 
 		given(menuDao.countByIdIn(Arrays.asList(메뉴1.getId(), 메뉴2.getId()))).willReturn(2L);
 		given(orderTableDao.findById(새_주문_테이블.getId())).willReturn(Optional.of(새_주문_테이블));
@@ -66,7 +66,6 @@ class OrderServiceTest {
 		});
 
 		// when
-		주문_항목2.setMenuId(메뉴2.getId());
 		Order saveOrder = orderService.create(주문);
 
 		// then
@@ -77,9 +76,9 @@ class OrderServiceTest {
 	@Test
 	void create_exceptionCase1() {
 		// given
-		OrderLineItem 주문_항목1 = newOrderLineItem(메뉴1.getId(), 1L);
-		OrderLineItem 주문_항목2 = newOrderLineItem(메뉴1.getId(), 2L);
-		Order 주문 = newOrder(새_주문_테이블.getId(), Arrays.asList(주문_항목1, 주문_항목2));
+		OrderLineItem 주문_항목1 = new OrderLineItem.Builder().menu(메뉴1).quantity(1L).build();
+		OrderLineItem 주문_항목2 = new OrderLineItem.Builder().menu(메뉴1).quantity(2L).build();
+		Order 주문 = new Order.Builder().orderTable(새_주문_테이블).orderLineItems(주문_항목1, 주문_항목2).build();
 
 		given(menuDao.countByIdIn(Arrays.asList(메뉴1.getId(), 메뉴1.getId()))).willReturn(1L);
 
@@ -91,7 +90,7 @@ class OrderServiceTest {
 	@Test
 	void create_exceptionCase2() {
 		// given
-		Order 주문 = newOrder(새_주문_테이블.getId(), Collections.EMPTY_LIST);
+		Order 주문 = new Order.Builder().orderTable(새_주문_테이블).build();
 
 		// when & then
 		assertThatThrownBy(() -> orderService.create(주문)).isInstanceOf(IllegalArgumentException.class);
@@ -101,8 +100,8 @@ class OrderServiceTest {
 	@Test
 	void create_exceptionCase3() {
 		// given
-		OrderLineItem 주문_항목1 = newOrderLineItem(메뉴1.getId(), 1L);
-		Order 주문 = newOrder(null, Arrays.asList(주문_항목1));
+		OrderLineItem 주문_항목1 = new OrderLineItem.Builder().menu(메뉴1).quantity(1L).build();
+		Order 주문 = new Order.Builder().orderLineItems(주문_항목1).build();
 
 		given(menuDao.countByIdIn(Arrays.asList(메뉴1.getId()))).willReturn(1L);
 
@@ -114,11 +113,11 @@ class OrderServiceTest {
 	@Test
 	void list() {
 		// given
-		Order 주문 = newOrder(주문_테이블1.getId(), null);
+		Order 주문 = new Order.Builder().orderTable(주문_테이블1).build();
 		given(orderDao.findAll()).willReturn(Arrays.asList(주문));
 
-		OrderLineItem 주문_항목1 = newOrderLineItem(메뉴1.getId(), 1L);
-		OrderLineItem 주문_항목2 = newOrderLineItem(메뉴2.getId(), 2L);
+		OrderLineItem 주문_항목1 = new OrderLineItem.Builder().menu(메뉴1).quantity(1L).build();
+		OrderLineItem 주문_항목2 = new OrderLineItem.Builder().menu(메뉴2).quantity(2L).build();
 		given(orderLineItemDao.findAllByOrderId(주문.getId())).willReturn(Arrays.asList(주문_항목1, 주문_항목2));
 
 		// when
@@ -127,7 +126,7 @@ class OrderServiceTest {
 		// then
 		assertThat(saveOrderList).hasSize(1);
 		assertThat(saveOrderList.get(0)).isEqualTo(주문);
-		assertThat(saveOrderList.get(0).getOrderTableId()).isEqualTo(주문_테이블1.getId());
+		assertThat(saveOrderList.get(0).getOrderTable()).isEqualTo(주문_테이블1);
 		assertThat(saveOrderList.get(0).getOrderLineItems()).contains(주문_항목1, 주문_항목2);
 	}
 
@@ -137,28 +136,28 @@ class OrderServiceTest {
 		// given
 		OrderLineItem 주문_항목1 = new OrderLineItem();
 		OrderLineItem 주문_항목2 = new OrderLineItem();
-		Order 주문 = newOrder(1L, 주문_테이블1.getId(), OrderStatus.COOKING.name(),
-			LocalDateTime.now(), Arrays.asList(주문_항목1, 주문_항목2));
+		Order 주문 = new Order.Builder().orderTable(주문_테이블1).orderStatus(OrderStatus.COOKING).orderLineItems(주문_항목1, 주문_항목2).build();
+
 		given(orderDao.findById(주문.getId())).willReturn(Optional.of(주문));
 		given(orderLineItemDao.findAllByOrderId(주문.getId())).willReturn(Arrays.asList(주문_항목1, 주문_항목2));
 
 		// when
-		Order 임시 = newOrder(OrderStatus.MEAL.name());
+		Order 임시 = new Order.Builder().orderStatus(OrderStatus.MEAL).build();
 		Order saveOrder = orderService.changeOrderStatus(주문.getId(), 임시);
 
 		// then
-		assertThat(saveOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
+		assertThat(saveOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
 	}
 
 	@DisplayName("주문 변경: 이미 계산 완료 상태인 주문을 변경 시도함")
 	@Test
 	void changeOrderStatus_exceptionCase() {
 		// given
-		Order 주문 = newOrder(1L, 주문_테이블1.getId(), OrderStatus.COMPLETION.name(), null, null);
+		Order 주문 = new Order.Builder().orderTable(주문_테이블1).orderStatus(OrderStatus.COMPLETION).build();
 		given(orderDao.findById(주문.getId())).willReturn(Optional.of(주문));
 
 		// when & then
-		Order 임시 = newOrder(OrderStatus.MEAL.name());
+		Order 임시 = new Order.Builder().orderStatus(OrderStatus.MEAL).build();
 		assertThatThrownBy(() -> orderService.changeOrderStatus(주문.getId(), 임시))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
