@@ -96,7 +96,7 @@ class TableGroupServiceTest {
                 () -> tableGroupService.create(tableGroupRequest)
         );
 
-        assertThat(exception.getMessage()).isEqualTo("테이블이 사용중이거나 이미 그룹핑되어 있습니다.");
+        assertThat(exception.getMessage()).isEqualTo("테이블이 사용중입니다.");
     }
 
     @DisplayName("테이블그룹 생성 예외테스트: 테이블에 그룹아이디가 있는경우")
@@ -109,7 +109,7 @@ class TableGroupServiceTest {
                 () -> tableGroupService.create(tableGroupRequest)
         );
 
-        assertThat(exception.getMessage()).isEqualTo("테이블이 사용중이거나 이미 그룹핑되어 있습니다.");
+        assertThat(exception.getMessage()).isEqualTo("그룹핑된 상태입니다.");
     }
 
     @DisplayName("테이블그룹 해제 예외테스트: 테이블상태가 유효하지 않은 경우")

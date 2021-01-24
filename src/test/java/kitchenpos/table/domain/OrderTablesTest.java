@@ -41,6 +41,6 @@ public class OrderTablesTest {
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> orderTables.checkOrderTables());
-        assertThat(exception.getMessage()).isEqualTo("테이블이 사용중이거나 이미 그룹핑되어 있습니다.");
+        assertThat(exception.getMessage()).isEqualTo("테이블이 사용중입니다.");
     }
 }

@@ -75,16 +75,16 @@ class ProductServiceTest {
     @DisplayName("상품등록 예외테스트: 가격이 음수 또는 null 일경우")
     @Test
     void invalidPrice() {
-        강정치킨 = new Product("강정치킨", null);
+        Throwable minusPriceException = assertThrows(IllegalArgumentException.class,
+                () -> productService.create(new ProductRequest("강정치킨", new BigDecimal(-5000)))
+        );
+        assertThat(minusPriceException.getMessage()).isEqualTo("가격정보가 잘못되었습니다.");
+
         Throwable nullPriceException = assertThrows(IllegalArgumentException.class,
-                () -> productService.create(new ProductRequest(강정치킨.getName(), 강정치킨.getPrice()))
+                () -> productService.create(new ProductRequest("강정치킨", null))
         );
         assertThat(nullPriceException.getMessage()).isEqualTo("가격정보가 잘못되었습니다.");
 
-        강정치킨 = new Product("강정치킨", new BigDecimal(-5000));
-        Throwable minusPriceException = assertThrows(IllegalArgumentException.class,
-                () -> productService.create(new ProductRequest(강정치킨.getName(), 강정치킨.getPrice()))
-        );
-        assertThat(minusPriceException.getMessage()).isEqualTo("가격정보가 잘못되었습니다.");
+
     }
 }

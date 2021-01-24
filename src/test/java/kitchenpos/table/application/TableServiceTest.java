@@ -1,5 +1,6 @@
 package kitchenpos.table.application;
 
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -38,9 +39,6 @@ class TableServiceTest {
     private TableService tableService;
 
     @Mock
-    private OrderRepository orderRepository;
-
-    @Mock
     private OrderTableRepository orderTableRepository;
 
     @BeforeEach
@@ -51,7 +49,7 @@ class TableServiceTest {
         orderTables.add(notEmptyTable);
         orderTables.add(emptyTable);
 
-        tableService = new TableService(orderRepository, orderTableRepository);
+        tableService = new TableService(orderTableRepository);
     }
 
     @DisplayName("주문테이블 등록 테스트")
@@ -133,9 +131,6 @@ class TableServiceTest {
     @Test
     void changeEmptyTest() {
         when(orderTableRepository.findById(any())).thenReturn(java.util.Optional.ofNullable(notEmptyTable));
-        List<OrderStatus> orderStatus = Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL);
-        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), eq(orderStatus)))
-                .thenReturn(false);
 
         OrderTableResponse resultTable = tableService.changeEmpty(1L, true);
 
@@ -158,9 +153,7 @@ class TableServiceTest {
     @Test
     void unCompleteTableStatus() {
         when(orderTableRepository.findById(any())).thenReturn(java.util.Optional.ofNullable(notEmptyTable));
-        List<OrderStatus> orderStatus = Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL);
-        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), eq(orderStatus)))
-                .thenReturn(true);
+        Order order = new Order(notEmptyTable, new ArrayList<>());
 
         Throwable exception = assertThrows(IllegalArgumentException.class,
                 () -> tableService.changeEmpty(1L, true)

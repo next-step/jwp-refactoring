@@ -34,7 +34,7 @@ public class OrderTest {
     public void checkOrderStatus() {
         order.changeOrderStatus(OrderStatus.COMPLETION);
         assertThatThrownBy(() -> {
-            order.validationOrderStatus(OrderStatus.COMPLETION);
+            order.changeOrderStatus(OrderStatus.COMPLETION);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 }
