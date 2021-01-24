@@ -1,11 +1,14 @@
-package kitchenpos.ui.product;
+package kitchenpos.menu.ui;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import kitchenpos.product.application.ProductService;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.ui.ProductRestController;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.dto.MenuProductResponse;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.ui.MenuRestController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +17,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -26,8 +29,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(ProductRestController.class)
-class ProductRestControllerTest {
+
+@WebMvcTest(MenuRestController.class)
+class MenuRestControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -35,34 +39,39 @@ class ProductRestControllerTest {
     ObjectMapper mapper;
 
     @MockBean
-    private ProductService productService;
+    private MenuService menuService;
 
-
-    @DisplayName("상품 등록")
+    @DisplayName("메뉴 등록")
     @Test
     public void create() throws Exception {
-        Product expectedProduct = new Product("치킨", new BigDecimal(10_000));
-        given(productService.create(any())).willReturn(expectedProduct);
-        mockMvc.perform(post("/api/products")
+        MenuRequest menuRequest = new MenuRequest("쭈꾸미", 1000, 1L, Arrays.asList(new MenuProductRequest(1L, 10L)));
+        MenuResponse menuResponse = new MenuResponse(1L, "쭈꾸미", 1000, Arrays.asList(new MenuProductResponse(1L, 10L)));
+        given(menuService.create(any())).willReturn(menuResponse);
+
+        mockMvc.perform(post("/api/menus")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(makeJsonString(expectedProduct)))
+                .content(makeJsonString(menuRequest)))
                 .andDo(print())
                 .andExpect(status().isCreated());
     }
 
-    @DisplayName("상품 리스트")
+    @DisplayName("메뉴 리스트")
     @Test
     public void list() throws Exception {
-        Product product1 = new Product("치킨", new BigDecimal(10_000));
-        Product product2 = new Product("스파게티", new BigDecimal(10_000));
-        List<Product> products = Arrays.asList(product1, product2) ;
-        given(productService.list()).willReturn(products);
-        mockMvc.perform(get("/api/products"))
+        List<MenuResponse> results = Arrays.asList(
+                new MenuResponse(1L, "쭈꾸미", 1000, Arrays.asList(new MenuProductResponse(1L, 10L))),
+                new MenuResponse(2L, "볶음밥", 2000, Arrays.asList(new MenuProductResponse(2L, 10L)))
+        );
+
+        given(menuService.list()).willReturn(results);
+
+        mockMvc.perform(get("/api/menus"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$.[0].name").value("치킨"))
-                .andExpect(jsonPath("$.[1].name").value("스파게티"));
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$.[0].name").value("쭈꾸미"))
+                .andExpect(jsonPath("$.[1].name").value("볶음밥"));
     }
 
     private String makeJsonString(Object request) throws JsonProcessingException {

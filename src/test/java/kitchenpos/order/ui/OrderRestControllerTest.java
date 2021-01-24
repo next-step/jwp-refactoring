@@ -1,4 +1,4 @@
-package kitchenpos.ui.order;
+package kitchenpos.order.ui;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
