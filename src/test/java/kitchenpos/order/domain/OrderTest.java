@@ -23,7 +23,6 @@ public class OrderTest {
     private Menu 메뉴_양념;
     private OrderLineItem orderLineItem_후라이드;
     private OrderLineItem orderLineItem_양념;
-    private static final TableGroup 등록된_그룹 = new TableGroup(1L, LocalDateTime.now());
 
     @BeforeEach
     void setUp() {

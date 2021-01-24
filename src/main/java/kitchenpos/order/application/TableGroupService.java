@@ -32,9 +32,9 @@ public class TableGroupService {
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         final OrderTables orderTables = findOrderTables(tableGroupRequest.getOrderTableIds());
-        TableGroup tableGroup = tableGroupRepository.save(new TableGroup());
-        tableGroup.updateOrderTables(orderTables);
-        return TableGroupResponse.of(tableGroup);
+        TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(orderTables));
+        savedTableGroup.updateOrderTables();
+        return TableGroupResponse.of(savedTableGroup);
     }
 
     private OrderTables findOrderTables(List<Long> orderTableIds) {
@@ -49,15 +49,15 @@ public class TableGroupService {
     public void unGroup(final Long tableGroupId) {
         final TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
                 .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 그룹 입니다."));
-        checkOrderTableStatus(tableGroup.getOrderTables());
+        // checkOrderTableStatus(tableGroup.getOrderTables());
         tableGroup.unGroup();
         tableGroupRepository.save(tableGroup);
     }
 
-    private void checkOrderTableStatus(List<OrderTable> orderTables) {
+    /*private void checkOrderTableStatus(List<OrderTable> orderTables) {
         if (orderRepository.existsByOrderTableInAndOrderStatusIn(
                 orderTables, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException("주문 상태가 조리중이거나 식사중인 테이블의 그룹 지정은 해지할 수 없습니다.");
         }
-    }
+    }*/
 }

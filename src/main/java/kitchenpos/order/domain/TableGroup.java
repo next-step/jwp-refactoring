@@ -20,20 +20,24 @@ public class TableGroup {
     @Embedded
     private OrderTables orderTables;
 
-    public TableGroup() {
+    protected TableGroup() {
     }
 
-    public TableGroup(Long id, LocalDateTime createdDate) {
-        this.id = id;
-        this.createdDate = createdDate;
-    }
-
-    public void updateOrderTables(OrderTables orderTables) {
-        orderTables.updateTableGroup(this);
+    public TableGroup(OrderTables orderTables) {
         this.orderTables = orderTables;
     }
 
+    public TableGroup(Long id, OrderTables orderTables) {
+        this.id = id;
+        this.orderTables = orderTables;
+    }
+
+    public void updateOrderTables() {
+        orderTables.updateTableGroup(this);
+    }
+
     public void unGroup() {
+        orderTables.checkOrderTableStatus();
         orderTables.unGroup();
     }
 

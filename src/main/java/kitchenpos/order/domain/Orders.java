@@ -1,6 +1,8 @@
 package kitchenpos.order.domain;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +10,8 @@ import java.util.List;
 @Embeddable
 public class Orders {
 
-    @OneToMany(mappedBy = "orderTable")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "order_table_id")
     private List<Order> orders = new ArrayList<>();
 
     protected Orders() {

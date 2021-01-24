@@ -71,7 +71,10 @@ public class OrderServiceTest extends BaseServiceTest {
         orderLineItemRequest2 = new OrderLineItemRequest(메뉴_양념.getId(), 1);
         orderLineItemRequests = Arrays.asList(orderLineItemRequest1, orderLineItemRequest2);
 
-        TableGroup 그룹_테이블 = new TableGroup(1L, LocalDateTime.of(2021, 1, 20, 03, 30));
+        OrderTable 빈테이블_1 = new OrderTable(1L, null,0, true);
+        OrderTable 빈테이블_2 = new OrderTable(2L, null,0, true);
+
+        TableGroup 그룹_테이블 = new TableGroup(1L, new OrderTables(Arrays.asList(빈테이블_1, 빈테이블_2)));
         OrderTable 그룹_지정된_테이블_10 = new OrderTable(10L, 그룹_테이블.getId(), 0, false);
         OrderTable 그룹_지정되지_않은_테이블_11 = new OrderTable(11L,5, false);
 

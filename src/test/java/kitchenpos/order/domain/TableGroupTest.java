@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -12,7 +11,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class TableGroupTest {
 
-    private TableGroup tableGroup;
     private OrderTable 빈테이블_1;
     private OrderTable 빈테이블_2;
     private OrderTable 비어있지_않은_테이블_3;
@@ -21,25 +19,22 @@ public class TableGroupTest {
 
     @BeforeEach
     void setUp() {
-        tableGroup = new TableGroup(1L, LocalDateTime.now());
+        // tableGroup = new TableGroup(1L, LocalDateTime.now());
         빈테이블_1 = new OrderTable(1L, null,0, true);
         빈테이블_2 = new OrderTable(2L, null,0, true);
         비어있지_않은_테이블_3 = new OrderTable(2L, null,0, false);
-        그룹_테이블_1 = new TableGroup(1L, LocalDateTime.of(2020, 1, 20, 03, 30));
+        그룹_테이블_1 = new TableGroup(1L, new OrderTables(Arrays.asList(빈테이블_1, 빈테이블_2)));
         그룹_지정된_테이블_1 = new OrderTable(10L, 그룹_테이블_1.getId(), 0, false);
     }
 
     @DisplayName("단체 지정을 생성한다.")
     @Test
     void create() {
-        // given
-        OrderTables orderTables = new OrderTables(Arrays.asList(빈테이블_1, 빈테이블_2));
-
         // when
-        tableGroup.updateOrderTables(orderTables);
+        그룹_테이블_1.updateOrderTables();
 
         // then
-        assertThat(tableGroup).isNotNull();
+        assertThat(그룹_테이블_1).isNotNull();
         assertThat(빈테이블_1.getTableGroupId()).isNotNull();
         assertThat(빈테이블_2.getTableGroupId()).isNotNull();
     }
@@ -50,7 +45,8 @@ public class TableGroupTest {
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
             OrderTables orderTables = new OrderTables(Arrays.asList(빈테이블_1, 비어있지_않은_테이블_3));
-            tableGroup.updateOrderTables(orderTables);
+            TableGroup tableGroup = new TableGroup(orderTables);
+            tableGroup.updateOrderTables();
         }).withMessageMatching("비어있지 않거나 이미 그룹 지정된 테이블은 그룹 지정할 수 없습니다.");
 
     }
@@ -61,7 +57,8 @@ public class TableGroupTest {
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
             OrderTables orderTables = new OrderTables(Arrays.asList(빈테이블_1, 그룹_지정된_테이블_1));
-            tableGroup.updateOrderTables(orderTables);
+            TableGroup tableGroup = new TableGroup(orderTables);
+            tableGroup.updateOrderTables();
         }).withMessageMatching("비어있지 않거나 이미 그룹 지정된 테이블은 그룹 지정할 수 없습니다.");
     }
 
@@ -69,7 +66,9 @@ public class TableGroupTest {
     @Test
     void ungroup() {
         // given
-        tableGroup.updateOrderTables(new OrderTables(Arrays.asList(빈테이블_1, 빈테이블_2)));
+        OrderTables orderTables = new OrderTables(Arrays.asList(빈테이블_1, 빈테이블_2));
+        TableGroup tableGroup = new TableGroup(orderTables);
+        tableGroup.updateOrderTables();
 
         // when
         tableGroup.unGroup();

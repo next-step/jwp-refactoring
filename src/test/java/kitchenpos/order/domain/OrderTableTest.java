@@ -4,13 +4,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
+import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.*;
 
 public class OrderTableTest {
 
-    private static final TableGroup 등록된_그룹 = new TableGroup(1L, LocalDateTime.now());
+    OrderTable 빈테이블_1 = new OrderTable(1L, null,0, true);
+    OrderTable 빈테이블_2 = new OrderTable(2L, null,0, true);
+    private TableGroup 등록된_그룹 = new TableGroup(1L, new OrderTables(Arrays.asList(빈테이블_1, 빈테이블_2)));
+
     private OrderTable 그룹이_지정되지_않은_빈테이블;
     private OrderTable 그룹이_지정된_빈테이블;
     private OrderTable 그룹이_지정되지_않은_비어있지_않은_테이블;

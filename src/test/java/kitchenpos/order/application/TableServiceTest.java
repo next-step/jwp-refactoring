@@ -2,6 +2,7 @@ package kitchenpos.order.application;
 
 import kitchenpos.BaseServiceTest;
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.OrderTables;
 import kitchenpos.order.domain.TableGroup;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
@@ -10,7 +11,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +23,7 @@ public class TableServiceTest extends BaseServiceTest {
     private TableService tableService;
 
     private OrderTable 빈테이블_1;
+    private OrderTable 빈테이블_2;
     private TableGroup 그룹_테이블_1;
     private OrderTable 그룹_지정된_테이블_1;
 
@@ -30,7 +31,8 @@ public class TableServiceTest extends BaseServiceTest {
     public void setUp() {
         super.setUp();
         빈테이블_1 = new OrderTable(1L, null, 0, true);
-        그룹_테이블_1 = new TableGroup(1L, LocalDateTime.of(2020, 1, 20, 03, 30));
+        빈테이블_2 = new OrderTable(2L, null, 0, true);
+        그룹_테이블_1 = new TableGroup(1L, new OrderTables(Arrays.asList(빈테이블_1, 빈테이블_2)));
         그룹_지정된_테이블_1 = new OrderTable(10L, 그룹_테이블_1.getId(), 0, false);
     }
 
