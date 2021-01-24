@@ -88,7 +88,7 @@ public class OrderTable {
         changeEmpty(empty);
     }
 
-    public void checkOrder() {
+    private void checkOrder() {
         if (orders.isEmpty()) {
             throw new IllegalArgumentException("주문을 받지 않은 테이블 입니다");
         }
