@@ -28,6 +28,16 @@ public class TableService {
         return TableResponse.ofList(tableRepository.findAll());
     }
 
+    @Transactional(readOnly = true)
+    public List<OrderTable> findOrderTables(List<Long> ids) {
+        return tableRepository.findByIdIn(ids);
+    }
+
+    @Transactional(readOnly = true)
+    public OrderTable findOrderTable(Long id) {
+        return tableRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+    }
+
     public TableResponse changeEmpty(Long id, TableRequest tableRequest) {
         OrderTable orderTable = tableRepository.findById(id).orElseThrow(IllegalArgumentException::new);
         orderTable.changeOrderTableStatus(tableRequest.isEmpty());

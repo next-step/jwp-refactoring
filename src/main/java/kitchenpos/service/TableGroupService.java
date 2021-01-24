@@ -2,12 +2,8 @@ package kitchenpos.service;
 
 import kitchenpos.domain.table.OrderTableGroup;
 import kitchenpos.domain.table.TableGroupRepository;
-import kitchenpos.domain.table.TableRepository;
 import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.dto.TableGroupResponse;
-import kitchenpos.dto.TableRequest;
-
-import static java.util.stream.Collectors.*;
 
 import java.util.List;
 
@@ -18,16 +14,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class TableGroupService {
     private final TableGroupRepository tableGroupRepository;
-    private final TableRepository tableRepository;
+    private final TableService tableService;
 
-    public TableGroupService(final TableGroupRepository tableGroupRepository, final TableRepository tableRepository) {
+    public TableGroupService(final TableGroupRepository tableGroupRepository, final TableService tableService) {
         this.tableGroupRepository = tableGroupRepository;
-        this.tableRepository = tableRepository;
+        this.tableService = tableService;
     }
 
     public TableGroupResponse applyGroup(TableGroupRequest tableGroupRequest) {
-        List<Long> ids = tableGroupRequest.getOrderTables().stream().map(TableRequest::getTableId).collect(toList());
-        OrderTableGroup orderTableGroup = new OrderTableGroup(tableRepository.findByIdIn(ids));
+        List<Long> ids = tableGroupRequest.getTableIds();
+        OrderTableGroup orderTableGroup = new OrderTableGroup(tableService.findOrderTables(ids));
         orderTableGroup.applyGroup(ids.size());
         return TableGroupResponse.of(tableGroupRepository.save(orderTableGroup));
     }

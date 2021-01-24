@@ -1,5 +1,6 @@
 package kitchenpos.service;
 
+import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menu.MenuGroupRepository;
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
@@ -25,5 +26,10 @@ public class MenuGroupService {
     @Transactional(readOnly = true)
     public List<MenuGroupResponse> findAll() {
         return MenuGroupResponse.ofList(menuGroupRepository.findAll());
+    }
+
+    @Transactional(readOnly = true)
+    public MenuGroup findMenuGroup(Long id) {
+        return menuGroupRepository.findById(id).orElseThrow(IllegalArgumentException::new);
     }
 }
