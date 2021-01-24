@@ -1,8 +1,7 @@
-package kitchenpos.menugroup.domain;
+package kitchenpos.menu.domain;
 
 import kitchenpos.common.domain.Price;
 import kitchenpos.common.exception.InvalidPriceException;
-import kitchenpos.menu.domain.MenuProduct;
 
 import javax.persistence.Embeddable;
 import java.math.BigDecimal;

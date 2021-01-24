@@ -6,6 +6,8 @@ import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
@@ -23,21 +25,22 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class TableServiceTest extends BaseServiceTest {
 //    @Autowired
 //    private OrderTableDao orderTableDao;
-//    @Autowired
-//    private TableService tableService;
+    @Autowired
+    private TableService tableService;
 //    @Autowired
 //    private TableGroupService tableGroupService;
 //    @Autowired
 //    private OrderService orderService;
 //
-//    @DisplayName("주문 테이블을 등록할 수 있다.")
-//    @Test
-//    void createTable() {
-//        OrderTable result = tableService.create(OrderTable.of(등록되어_있지_않은_orderTable_id, 1, false));
-//
-//        assertThat(result.getId()).isEqualTo(등록되어_있지_않은_orderTable_id);
-//        assertThat(result.getTableGroupId()).isNull();
-//    }
+    @DisplayName("주문 테이블을 등록할 수 있다.")
+    @Test
+    void createTable() {
+        OrderTableResponse orderTableResponse = tableService.create(
+                new OrderTableRequest(등록되어_있지_않은_orderTable_id, 1, false));
+
+        assertThat(orderTableResponse.getId()).isEqualTo(등록되어_있지_않은_orderTable_id);
+        assertThat(orderTableResponse.getTableGroupId()).isNull();
+    }
 //
 //    @DisplayName("빈 테이블로 변경할 수 있다.")
 //    @Test

@@ -5,6 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.OrderTableRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -18,9 +19,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 class TableAcceptanceTest extends AcceptanceTest {
     @Test
     void createTable() {
-        OrderTable orderTable = OrderTable.of(등록되어_있지_않은_orderTable_id, 1, false);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(등록되어_있지_않은_orderTable_id, 1, false);
 
-        ExtractableResponse<Response> response = 주문_테이블_생성_요청(orderTable);
+        ExtractableResponse<Response> response = 주문_테이블_생성_요청(orderTableRequest);
 
         주문_테이블_생성됨(response);
     }
@@ -63,11 +64,11 @@ class TableAcceptanceTest extends AcceptanceTest {
         주문_테이블_사람수_변경_실패(response);
     }
 
-    private static ExtractableResponse<Response> 주문_테이블_생성_요청(OrderTable orderTable) {
+    private static ExtractableResponse<Response> 주문_테이블_생성_요청(OrderTableRequest orderTableRequest) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(orderTable)
+                .body(orderTableRequest)
                 .when().post("/api/tables")
                 .then().log().all()
                 .extract();

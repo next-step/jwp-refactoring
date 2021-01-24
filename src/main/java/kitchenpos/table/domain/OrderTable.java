@@ -1,12 +1,25 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.table.exception.InvalidGroupException;
+import kitchenpos.tablegroup.domain.TableGroup;
+
+import javax.persistence.*;
+import java.util.Objects;
+
+@Entity
 public class OrderTable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long tableGroupId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(columnDefinition = "table_group_id")
+    private TableGroup tableGroup;
+
     private int numberOfGuests;
     private boolean empty;
 
-    public OrderTable() {
+    protected OrderTable() {
     }
 
     private OrderTable(Long id, int numberOfGuests, boolean empty) {
@@ -19,35 +32,32 @@ public class OrderTable {
         return new OrderTable(id, numberOfGuests, empty);
     }
 
+    public void group(final TableGroup tableGroup) {
+        checkUnGroup();
+
+        this.tableGroup = tableGroup;
+        this.empty = false;
+    }
+
+    private void checkUnGroup() {
+        if (!empty || Objects.nonNull(tableGroup)) {
+            throw new InvalidGroupException("빈 테이블이거나 이미 단체 지정인 경우 단체 지정할 수 없다.");
+        }
+    }
+
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public Long getTableGroupId() {
-        return tableGroupId;
-    }
-
-    public void setTableGroupId(final Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
+    public TableGroup getTableGroup() {
+        return tableGroup;
     }
 
     public int getNumberOfGuests() {
         return numberOfGuests;
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
-    }
-
     public boolean isEmpty() {
         return empty;
-    }
-
-    public void setEmpty(final boolean empty) {
-        this.empty = empty;
     }
 }
