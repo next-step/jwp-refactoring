@@ -5,7 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.ui.TableRestController;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -51,8 +52,8 @@ class TableRestControllerTest {
     @DisplayName("테이블 목록")
     @Test
     public void list() throws Exception {
-        OrderTable table1 = new OrderTable(1L, 1L, 3, true);
-        OrderTable table2 = new OrderTable(2L, 2L, 3, true);
+        OrderTableResponse table1 = new OrderTableResponse(1L, 3, true);
+        OrderTableResponse table2 = new OrderTableResponse(2L, 4, true);
         given(tableService.list()).willReturn(Arrays.asList(table1, table2));
 
         mockMvc.perform(get("/api/tables"))
@@ -66,29 +67,32 @@ class TableRestControllerTest {
     @DisplayName("빈 테이블 지정")
     @Test
     public void changeEmpty() throws Exception {
-        OrderTable expectedTable = new OrderTable(1L, 1L, 3, false);
-        given(tableService.changeEmpty(any(), any())).willReturn(expectedTable);
+        OrderTableRequest request = new OrderTableRequest(1L, 3, true);
+        OrderTableResponse orderTableResponse = new OrderTableResponse(1L, 3, true);
+        given(tableService.changeEmpty(anyLong(), anyBoolean())).willReturn(orderTableResponse);
 
         mockMvc.perform(put("/api/tables/{orderTableId}/empty", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(makeJsonString(expectedTable)))
+                .content(makeJsonString(request)))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.empty").value(false));
+                .andExpect(jsonPath("$.empty").value(true));
     }
 
     @DisplayName("테이블 손님수 변경")
     @Test
     public void ungroup() throws Exception {
-        OrderTable expectedTable = new OrderTable(1L, 1L, 3, true);
-        given(tableService.changeNumberOfGuests(1L, expectedTable)).willReturn(expectedTable);
+        OrderTableRequest request = new OrderTableRequest(3, true);
+        OrderTableResponse orderTableResponse = new OrderTableResponse(1L, 3, true);
+        given(tableService.changeNumberOfGuests(anyLong(), any())).willReturn(orderTableResponse);
 
         mockMvc.perform(put("/api/tables/{orderTableId}/number-of-guests", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(makeJsonString(expectedTable)))
+                .content(makeJsonString(request)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.numberOfGuests").value(3));
+
 
     }
 

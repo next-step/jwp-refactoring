@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.dto.TableGroupResponse;
 import kitchenpos.table.ui.TableGroupRestController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,10 +41,10 @@ class TableGroupRestControllerTest {
     @DisplayName("테이블그룹 등록")
     @Test
     public void create() throws Exception {
-        OrderTable table1 = new OrderTable(3, true);
-        OrderTable table2 = new OrderTable(4, false);
-        List<OrderTable> orderTables = Arrays.asList(table1, table2);
-        TableGroup expectedTableGroup = new TableGroup(orderTables);
+        OrderTableResponse table1 = new OrderTableResponse(1L, 3, true);
+        OrderTableResponse table2 = new OrderTableResponse(2L, 4, false);
+        List<OrderTableResponse> orderTables = Arrays.asList(table1, table2);
+        TableGroupResponse expectedTableGroup = new TableGroupResponse(1L, orderTables);
         given(tableGroupService.create(any())).willReturn(expectedTableGroup);
 
         mockMvc.perform(post("/api/table-groups")

@@ -1,16 +1,18 @@
 package kitchenpos.table.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long tableGroupId;
+
+    @JoinColumn(name = "tableGroupId")
+    @ManyToOne(fetch = FetchType.LAZY , cascade = CascadeType.ALL)
+    private TableGroup tableGroup = new TableGroup();
+
     private int numberOfGuests;
     private boolean empty;
 
@@ -22,9 +24,15 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+    public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
+        this.tableGroup = tableGroup;
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
+
+    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroupId = tableGroupId;
+        this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
@@ -33,32 +41,38 @@ public class OrderTable {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public Long getTableGroupId() {
-        return tableGroupId;
-    }
-
-    public void setTableGroupId(final Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
+    public TableGroup getTableGroup() {
+        return tableGroup;
     }
 
     public int getNumberOfGuests() {
         return numberOfGuests;
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
-    }
-
     public boolean isEmpty() {
         return empty;
     }
 
-    public void setEmpty(final boolean empty) {
+    public void changeNumberOfGuests(int numberOfGuests) {
+        this.numberOfGuests = numberOfGuests;
+    }
+
+    public void changeEmpty(boolean empty) {
+        if (hasOtherOrderTable()) {
+            throw new IllegalArgumentException("단체 지정된 테이블은 빈 테이블 설정/해지할 수 없습니다.");
+        }
         this.empty = empty;
+    }
+
+    public void ungroup() {
+        this.tableGroup = null;
+    }
+    public boolean hasOtherOrderTable() {
+        return Objects.nonNull(tableGroup);
+    }
+
+    public boolean inGroup() {
+        return this.tableGroup != null;
     }
 
     @Override
@@ -71,13 +85,13 @@ public class OrderTable {
         if (numberOfGuests != that.numberOfGuests) return false;
         if (empty != that.empty) return false;
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        return tableGroupId != null ? tableGroupId.equals(that.tableGroupId) : that.tableGroupId == null;
+        return tableGroup != null ? tableGroup.equals(that.tableGroup) : that.tableGroup == null;
     }
 
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (tableGroupId != null ? tableGroupId.hashCode() : 0);
+        result = 31 * result + (tableGroup != null ? tableGroup.hashCode() : 0);
         result = 31 * result + numberOfGuests;
         result = 31 * result + (empty ? 1 : 0);
         return result;
