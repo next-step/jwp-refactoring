@@ -2,6 +2,7 @@ package kitchenpos.ui;
 
 import kitchenpos.application.OrderService;
 import kitchenpos.domain.Order;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,6 +10,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
+@RequestMapping(value = "/api/orders", produces = MediaType.APPLICATION_JSON_VALUE)
 public class OrderRestController {
     private final OrderService orderService;
 
@@ -16,7 +18,7 @@ public class OrderRestController {
         this.orderService = orderService;
     }
 
-    @PostMapping("/api/orders")
+    @PostMapping
     public ResponseEntity<Order> create(@RequestBody final Order order) {
         final Order created = orderService.create(order);
         final URI uri = URI.create("/api/orders/" + created.getId());
@@ -25,14 +27,14 @@ public class OrderRestController {
                 ;
     }
 
-    @GetMapping("/api/orders")
+    @GetMapping
     public ResponseEntity<List<Order>> list() {
         return ResponseEntity.ok()
                 .body(orderService.list())
                 ;
     }
 
-    @PutMapping("/api/orders/{orderId}/order-status")
+    @PutMapping("/{orderId}/order-status")
     public ResponseEntity<Order> changeOrderStatus(
             @PathVariable final Long orderId,
             @RequestBody final Order order

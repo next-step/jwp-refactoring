@@ -6,6 +6,20 @@ public class OrderTable {
     private int numberOfGuests;
     private boolean empty;
 
+    public OrderTable() {
+    }
+
+    public OrderTable(int numberOfGuests, boolean empty) {
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
+
+    public OrderTable(Long id, int numberOfGuests, boolean empty) {
+        this.id = id;
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
+
     public Long getId() {
         return id;
     }
@@ -36,5 +50,15 @@ public class OrderTable {
 
     public void setEmpty(final boolean empty) {
         this.empty = empty;
+    }
+
+    @Override
+    public String toString() {
+        return "OrderTable{" +
+                "id=" + id +
+                ", tableGroupId=" + tableGroupId +
+                ", numberOfGuests=" + numberOfGuests +
+                ", empty=" + empty +
+                '}';
     }
 }

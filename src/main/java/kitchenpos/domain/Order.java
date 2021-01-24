@@ -10,6 +10,14 @@ public class Order {
     private LocalDateTime orderedTime;
     private List<OrderLineItem> orderLineItems;
 
+    public Order() {
+    }
+
+    public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        this.orderTableId = orderTableId;
+        this.orderLineItems = orderLineItems;
+    }
+
     public Long getId() {
         return id;
     }
@@ -48,5 +56,16 @@ public class Order {
 
     public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
         this.orderLineItems = orderLineItems;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", orderTableId=" + orderTableId +
+                ", orderStatus='" + orderStatus + '\'' +
+                ", orderedTime=" + orderedTime +
+                ", orderLineItems=" + orderLineItems +
+                '}';
     }
 }

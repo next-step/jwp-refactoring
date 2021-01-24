@@ -1,5 +1,8 @@
 package kitchenpos.application;
 
+import kitchenpos.advice.exception.MenuException;
+import kitchenpos.advice.exception.MenuGroupException;
+import kitchenpos.advice.exception.ProductException;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
@@ -37,28 +40,36 @@ public class MenuService {
     @Transactional
     public Menu create(final Menu menu) {
         final BigDecimal price = menu.getPrice();
-
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
-
-        if (!menuGroupDao.existsById(menu.getMenuGroupId())) {
-            throw new IllegalArgumentException();
-        }
+        validateEmptyPrice(price);
+        validateExistsMenuGroup(menu);
 
         final List<MenuProduct> menuProducts = menu.getMenuProducts();
+        BigDecimal sum = getSumOfPrices(menuProducts);
+        validatePriceSum(price, sum);
 
-        BigDecimal sum = BigDecimal.ZERO;
-        for (final MenuProduct menuProduct : menuProducts) {
-            final Product product = productDao.findById(menuProduct.getProductId())
-                    .orElseThrow(IllegalArgumentException::new);
-            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
+        return saveMenu(menu, menuProducts);
+    }
+
+    public List<Menu> list() {
+        final List<Menu> menus = menuDao.findAll();
+
+        for (final Menu menu : menus) {
+            menu.setMenuProducts(findMenuProductsByMenuId(menu.getId()));
         }
 
-        if (price.compareTo(sum) > 0) {
-            throw new IllegalArgumentException();
-        }
+        return menus;
+    }
 
+    private List<MenuProduct> findMenuProductsByMenuId(Long id) {
+        return menuProductDao.findAllByMenuId(id);
+    }
+
+    private Product findProductByProductId(Long id) {
+        return productDao.findById(id)
+                .orElseThrow(()->new ProductException("존재하는 상품 id가 없습니다.", id));
+    }
+
+    private Menu saveMenu(Menu menu, List<MenuProduct> menuProducts) {
         final Menu savedMenu = menuDao.save(menu);
 
         final Long menuId = savedMenu.getId();
@@ -68,17 +79,35 @@ public class MenuService {
             savedMenuProducts.add(menuProductDao.save(menuProduct));
         }
         savedMenu.setMenuProducts(savedMenuProducts);
-
         return savedMenu;
     }
 
-    public List<Menu> list() {
-        final List<Menu> menus = menuDao.findAll();
 
-        for (final Menu menu : menus) {
-            menu.setMenuProducts(menuProductDao.findAllByMenuId(menu.getId()));
+    private BigDecimal getSumOfPrices(List<MenuProduct> menuProducts) {
+        BigDecimal sum = BigDecimal.ZERO;
+        for (final MenuProduct menuProduct : menuProducts) {
+            final Product product = findProductByProductId(menuProduct.getProductId());
+            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
         }
-
-        return menus;
+        return sum;
     }
+
+    private void validateExistsMenuGroup(Menu menu) {
+        if (!menuGroupDao.existsById(menu.getMenuGroupId())) {
+            throw new MenuGroupException("존재하는 메뉴그룹 id가 없습니다", menu.getMenuGroupId());
+        }
+    }
+
+    private void validateEmptyPrice(BigDecimal price) {
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new MenuException("가격이 0보다 작을 수 없습니다", price.longValue());
+        }
+    }
+
+    private void validatePriceSum(BigDecimal price, BigDecimal sum) {
+        if (price.compareTo(sum) > 0) {
+            throw new MenuException("메뉴 가격과 각 가격의 총합보다 큽니다", price.longValue(), sum.longValue());
+        }
+    }
+
 }

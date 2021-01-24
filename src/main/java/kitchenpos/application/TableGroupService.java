@@ -1,5 +1,7 @@
 package kitchenpos.application;
 
+import kitchenpos.advice.exception.OrderTableException;
+import kitchenpos.advice.exception.TableGroupException;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
@@ -84,5 +86,13 @@ public class TableGroupService {
             orderTable.setTableGroupId(null);
             orderTableDao.save(orderTable);
         }
+    }
+
+    public TableGroup findTableGroupById(Long id) {
+        return tableGroupDao.findById(id).orElseThrow(() -> new TableGroupException("테이블 그룹이 존재하지 않습니다", id));
+    }
+
+    public OrderTable findOrderTableById(Long id) {
+        return orderTableDao.findById(id).orElseThrow(() -> new OrderTableException("주문 테이블이 존재하지 않습니다", id));
     }
 }

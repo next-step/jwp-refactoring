@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.advice.exception.MenuGroupException;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
 import org.springframework.stereotype.Service;
@@ -22,5 +23,9 @@ public class MenuGroupService {
 
     public List<MenuGroup> list() {
         return menuGroupDao.findAll();
+    }
+
+    public MenuGroup findMenuGroupById(Long id) {
+        return menuGroupDao.findById(id).orElseThrow(() -> new MenuGroupException("존재하는 메뉴그룹이 없습니다",id));
     }
 }
