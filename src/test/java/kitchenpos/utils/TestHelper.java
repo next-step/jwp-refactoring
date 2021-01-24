@@ -21,6 +21,7 @@ public class TestHelper {
             new MenuGroupRequest(등록된_menuGroup_id, "한마리메뉴");
     public static final MenuGroupRequest 등록되어_있지_않은_menuGroup =
             new MenuGroupRequest(등록되어_있지_않은_menuGroup_id, "핫메뉴");
+
     public static final ProductRequest 등록된_product =
             new ProductRequest(등록된_product_id, "후라이드", BigDecimal.valueOf(16000));
     public static final ProductRequest 등록되어_있지_않은_product =

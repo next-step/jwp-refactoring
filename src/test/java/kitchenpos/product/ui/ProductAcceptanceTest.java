@@ -4,7 +4,8 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -22,9 +23,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ProductAcceptanceTest extends AcceptanceTest {
     @Test
     void createProduct() {
-        Product product = Product.of(등록되어_있지_않은_product_id, "스노윙치킨", BigDecimal.valueOf(18000));
+        ProductRequest productRequest = new ProductRequest(등록되어_있지_않은_product_id, "스노윙치킨", BigDecimal.valueOf(18000));
 
-        ExtractableResponse<Response> response = 상품_생성_요청(product);
+        ExtractableResponse<Response> response = 상품_생성_요청(productRequest);
 
         상품_생성됨(response);
     }
@@ -37,11 +38,11 @@ class ProductAcceptanceTest extends AcceptanceTest {
         상품_목록_포함됨(response, Arrays.asList("후라이드", "양념치킨", "반반치킨", "통구이", "간장치킨", "순살치킨"));
     }
 
-    private static ExtractableResponse<Response> 상품_생성_요청(Product product) {
+    private static ExtractableResponse<Response> 상품_생성_요청(ProductRequest productRequest) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(product)
+                .body(productRequest)
                 .when().post("/api/products")
                 .then().log().all()
                 .extract();
@@ -65,8 +66,8 @@ class ProductAcceptanceTest extends AcceptanceTest {
     }
 
     private static void 상품_목록_포함됨(ExtractableResponse<Response> response, List<String> resultNames) {
-        List<String> menuGroupNames = response.jsonPath().getList(".", Product.class).stream()
-                .map(Product::getName)
+        List<String> menuGroupNames = response.jsonPath().getList(".", ProductResponse.class).stream()
+                .map(ProductResponse::getName)
                 .collect(Collectors.toList());
 
         assertThat(menuGroupNames).containsAll(resultNames);
