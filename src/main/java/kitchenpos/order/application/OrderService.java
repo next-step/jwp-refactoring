@@ -35,7 +35,7 @@ public class OrderService {
         List<Menu> menus = menuRepository.findByIdIn(request.getMenuIds());
         Order order = Order.createOrder(
                 findAvailableTableForOrder(request.getOrderTableId()),
-                request.createOrderLineItems(menus)
+                request.createOrderMenus(menus)
         );
         return OrderResponse.from(orderRepository.save(order));
     }

@@ -5,7 +5,7 @@ import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
-import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderMenuRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
@@ -159,8 +159,8 @@ class TableGroupServiceTest {
                 Arrays.asList(new MenuProductRequest(짬뽕.getId(), 1L), new MenuProductRequest(짜장면.getId(), 1L)))
         );
 
-        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(추천메뉴.getId(), 1L);
-        OrderRequest orderRequest = new OrderRequest(orderTable1.getId(), Collections.singletonList(orderLineItemRequest));
+        OrderMenuRequest orderMenuRequest = new OrderMenuRequest(추천메뉴.getId(), 1L);
+        OrderRequest orderRequest = new OrderRequest(orderTable1.getId(), Collections.singletonList(orderMenuRequest));
         orderService.create(orderRequest);
 
         // When & Then

@@ -1,7 +1,7 @@
 package kitchenpos.order.dto;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.OrderStatus;
 
 import javax.validation.constraints.NotNull;
@@ -15,11 +15,11 @@ public class OrderRequest {
     private OrderStatus orderStatus;
     @Size(min = 1)
     @NotNull
-    private List<OrderLineItemRequest> orderLineItems;
+    private List<OrderMenuRequest> orderMenus;
 
-    public OrderRequest(Long orderTableId, List<OrderLineItemRequest> orderLineItems) {
+    public OrderRequest(Long orderTableId, List<OrderMenuRequest> orderMenus) {
         this.orderTableId = orderTableId;
-        this.orderLineItems = orderLineItems;
+        this.orderMenus = orderMenus;
     }
 
     public OrderRequest(OrderStatus orderStatus) {
@@ -29,24 +29,24 @@ public class OrderRequest {
     public OrderRequest() {
     }
 
-    public List<OrderLineItem> createOrderLineItems(List<Menu> menus) {
-        validateOrderLineItems(menus);
-        return orderLineItems.stream()
-                .map(orderLineItem -> {
+    public List<OrderMenu> createOrderMenus(List<Menu> menus) {
+        validateOrderMenus(menus);
+        return orderMenus.stream()
+                .map(orderMenu -> {
                     Menu menu = menus.stream()
-                            .filter(filterMenu -> filterMenu.getId().equals(orderLineItem.getMenuId()))
+                            .filter(filterMenu -> filterMenu.getId().equals(orderMenu.getMenuId()))
                             .findFirst()
                             .orElseThrow(IllegalArgumentException::new);
-                    return new OrderLineItem(menu, orderLineItem.getQuantity());
+                    return new OrderMenu(menu, orderMenu.getQuantity());
                 }).collect(Collectors.toList());
     }
 
     public List<Long> getMenuIds() {
-        if (orderLineItems == null) {
+        if (orderMenus == null) {
             return Collections.emptyList();
         }
-        return orderLineItems.stream()
-                .map(OrderLineItemRequest::getMenuId)
+        return orderMenus.stream()
+                .map(OrderMenuRequest::getMenuId)
                 .collect(Collectors.toList());
     }
 
@@ -58,15 +58,15 @@ public class OrderRequest {
         return orderStatus;
     }
 
-    public List<OrderLineItemRequest> getOrderLineItems() {
-        return orderLineItems;
+    public List<OrderMenuRequest> getOrderMenus() {
+        return orderMenus;
     }
 
-    private void validateOrderLineItems(List<Menu> menus) {
-        if(orderLineItems == null) {
+    private void validateOrderMenus(List<Menu> menus) {
+        if(orderMenus == null) {
             throw new IllegalArgumentException("주문 요청한 메뉴 항목이 존재하지 않습니다.");
         }
-        if (orderLineItems.size() != menus.size()) {
+        if (orderMenus.size() != menus.size()) {
             throw new IllegalArgumentException("주문 요청한 메뉴 중에 존재하지 않는 메뉴가 있습니다.");
         }
     }

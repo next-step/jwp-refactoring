@@ -1,15 +1,15 @@
 package kitchenpos.order.dto;
 
-public class OrderLineItemRequest {
+public class OrderMenuRequest {
     private Long menuId;
     private Long quantity;
 
-    public OrderLineItemRequest(Long menuId, Long quantity) {
+    public OrderMenuRequest(Long menuId, Long quantity) {
         this.menuId = menuId;
         this.quantity = quantity;
     }
 
-    public OrderLineItemRequest() {
+    public OrderMenuRequest() {
     }
 
     public Long getMenuId() {

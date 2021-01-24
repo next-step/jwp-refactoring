@@ -6,7 +6,7 @@ import kitchenpos.menu.domain.Menu;
 import javax.persistence.*;
 
 @Entity
-public class OrderLineItem extends BaseEntity {
+public class OrderMenu extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
@@ -16,12 +16,12 @@ public class OrderLineItem extends BaseEntity {
     @Column
     private long quantity;
 
-    public OrderLineItem(Menu menu, Long quantity) {
+    public OrderMenu(Menu menu, Long quantity) {
         this.menu = menu;
         this.quantity = quantity;
     }
 
-    protected OrderLineItem() {
+    protected OrderMenu() {
     }
 
     public void changeOrder(Order order) {

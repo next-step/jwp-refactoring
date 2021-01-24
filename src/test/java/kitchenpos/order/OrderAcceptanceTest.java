@@ -7,7 +7,7 @@ import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.MenuGroupAcceptanceTestSupport;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderMenuRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.ordertable.OrderTableAcceptanceTestSupport;
 import kitchenpos.product.ProductAcceptanceTestSupport;
@@ -41,7 +41,7 @@ class OrderAcceptanceTest extends OrderAcceptanceTestSupport {
     @Test
     void manageOrder() {
         // Given
-        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(new OrderLineItemRequest(menu.getId(), 1L)));
+        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(new OrderMenuRequest(menu.getId(), 1L)));
 
         // When
         ExtractableResponse<Response> createResponse = 주문_생성_요청(orderRequest);
@@ -73,9 +73,9 @@ class OrderAcceptanceTest extends OrderAcceptanceTestSupport {
     @DisplayName("주문 생성시, 주문 항목이 없으면 예외를 발생한다.")
     @ParameterizedTest
     @NullAndEmptySource
-    void exceptionToCreateOrderWithoutItems(List<OrderLineItemRequest> orderLineItemRequests) {
+    void exceptionToCreateOrderWithoutItems(List<OrderMenuRequest> orderMenuRequests) {
         // Given
-        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), orderLineItemRequests);
+        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), orderMenuRequests);
 
         // When
         ExtractableResponse<Response> createResponse = 주문_생성_요청(orderRequest);
