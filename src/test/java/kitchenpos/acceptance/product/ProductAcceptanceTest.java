@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
 
 @DisplayName("상품 관련 기능 테스트")
 public class ProductAcceptanceTest extends ProductAcceptance {
@@ -16,10 +16,10 @@ public class ProductAcceptanceTest extends ProductAcceptance {
 	@Test
 	void createProductTest() {
 		// given
-		Product product = Product.of(null, "교촌치킨", 20000);
+		ProductRequest request = ProductRequest.of("교촌치킨", 20000);
 
 		// when
-		ExtractableResponse<Response> response = 상품_등록_요청(product);
+		ExtractableResponse<Response> response = 상품_등록_요청(request);
 
 		// then
 		상품_등록됨(response);
@@ -29,10 +29,10 @@ public class ProductAcceptanceTest extends ProductAcceptance {
 	@Test
 	void createProductErrorTest() {
 		// given
-		Product product = Product.of(null, "교촌치킨", -100);
+		ProductRequest request = ProductRequest.of("교촌치킨", -1000);
 
 		// when
-		ExtractableResponse<Response> response = 상품_등록_요청(product);
+		ExtractableResponse<Response> response = 상품_등록_요청(request);
 
 		// then
 		상품_등록_실패됨(response);
@@ -42,11 +42,11 @@ public class ProductAcceptanceTest extends ProductAcceptance {
 	@Test
 	void createDuplicateProductTest() {
 		// given
-		Product product = Product.of(1L, "교촌치킨", 20000);
+		ProductRequest request = ProductRequest.of("교촌치킨", 20000);
 
 		// when
-		ExtractableResponse<Response> response1 = 상품_등록_요청(product);
-		ExtractableResponse<Response> response2 = 상품_등록_요청(product);
+		ExtractableResponse<Response> response1 = 상품_등록_요청(request);
+		ExtractableResponse<Response> response2 = 상품_등록_요청(request);
 
 		// then
 		상품_등록됨(response1);
