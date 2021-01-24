@@ -81,6 +81,12 @@
 * OrderRestControllerTest
 * OrderServiceTest
 
+# Step2 - 서비스 리팩터링
+## 요구 사항
+단위 테스트하기 어려운 코드와 단위 테스트 가능한 코드를 분리해 단위 테스트 가능한 코드에 대해 단위 테스트를 구현한다
+* JDBC -> JPA
+
+
 ## 용어 사전
 
 | 한글명 | 영문명 | 설명 |
