@@ -67,6 +67,10 @@ public class Menu {
         menuProducts.add(menuProduct);
     }
 
+    public boolean priceIsGreaterThan(Money money) {
+        return price.isGreaterThan(money);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

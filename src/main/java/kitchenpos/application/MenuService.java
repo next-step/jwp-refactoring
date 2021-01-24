@@ -65,7 +65,7 @@ public class MenuService {
         List<MenuProductRequest> menuProducts = menuRequest.getMenuProducts();
         for (MenuProductRequest menuProductRequest : menuProducts) {
             Product product = productService.findProductById(menuProductRequest.getProductId());
-            sum.add(product.getPrice().multiply(menuProductRequest.getQuantity()));
+            sum.add(product.calculatePrice(menuProductRequest.getQuantity()));
             menu.addMenuProduct(new MenuProduct(menu, product, menuProductRequest.getQuantity()));
         }
 
@@ -73,7 +73,7 @@ public class MenuService {
     }
 
     private void checkMenuPrice(Menu menu, Money sum) {
-        if (menu.getPrice().isGreaterThan(sum)) {
+        if (menu.priceIsGreaterThan(sum)) {
             throw new InvalidMenuPriceException("상품 가격 합계보다 비싼 메뉴를 등록할 수 없습니다.");
         }
     }

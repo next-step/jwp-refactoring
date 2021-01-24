@@ -9,20 +9,16 @@ import kitchenpos.dto.ChangeOrderStatusRequest;
 import kitchenpos.dto.NumberOfGuestsRequest;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderTableRequest;
-import kitchenpos.dto.TableGroupRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.Collections;
-import java.util.List;
 
 import static kitchenpos.common.Fixtures.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -245,18 +241,6 @@ public class OrderAcceptanceTest extends BaseControllerTest {
                 .andExpect(jsonPath("$.orderStatus").value(orderStatus.name()))
                 .andExpect(jsonPath("$.orderedTime").isNotEmpty())
                 .andExpect(jsonPath("$.orderLineItems", hasSize(1)));
-    }
-
-    void 식사중_테이블_그룹화_해제_실패(Long tableGroupId, List<Long> tableIds) throws Exception {
-        // given
-        TableGroupRequest tableGroupRequest = tableGroupRequest(tableIds);
-
-        // when & then
-        mockMvc.perform(put("/api/table-groups/{tableGroupId}", tableGroupId)
-                .contentType(APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(tableGroupRequest)))
-                .andDo(print())
-                .andExpect(status().isBadRequest());
     }
 
     void 종료된_주문_상태_업데이트_시도_실패(Long orderId) throws Exception {

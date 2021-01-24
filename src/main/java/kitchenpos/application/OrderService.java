@@ -1,11 +1,11 @@
 package kitchenpos.application;
 
 import kitchenpos.domain.common.Quantity;
-import kitchenpos.domain.order.MenuQuantity;
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.order.OrderTable;
 import kitchenpos.dto.ChangeOrderStatusRequest;
+import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
 import kitchenpos.exception.AlreadyCompletionOrderException;
@@ -41,18 +41,19 @@ public class OrderService {
             throw new NotEmptyTableException(orderRequest.getOrderTableId());
         }
 
-        List<MenuQuantity> menuQuantities = orderRequest.getOrderLineItems()
-                .stream()
-                .map(request -> new MenuQuantity(menuService.findMenuById(request.getMenuId()), Quantity.of(request.getQuantity())))
-                .collect(Collectors.toList());
-
         Order order = Order.builder()
                 .orderTableId(orderTable.getId())
                 .orderStatus(OrderStatus.COOKING)
-                .menuQuantities(menuQuantities)
                 .build();
 
-        return OrderResponse.of(orderRepository.save(order));
+        Order savedOrder = orderRepository.save(order);
+
+        List<OrderLineItemRequest> itemRequests = orderRequest.getOrderLineItems();
+        for (OrderLineItemRequest itemRequest : itemRequests) {
+            savedOrder.addOrderLineItem(menuService.findMenuById(itemRequest.getMenuId()), Quantity.of(itemRequest.getQuantity()));
+        }
+
+        return OrderResponse.of(savedOrder);
     }
 
     public List<OrderResponse> list() {
