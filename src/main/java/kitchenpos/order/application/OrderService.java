@@ -47,14 +47,14 @@ public class OrderService {
 
     private List<OrderLineItem> findOrderLineItems(final List<OrderLineItemRequest> orderLineItemRequests) {
         return orderLineItemRequests.stream()
-                .map(item -> new OrderLineItem(findMenu(item), item.getQuantity()))
+                .map(item -> new OrderLineItem(findMenuId(item), item.getQuantity()))
                 .collect(Collectors.toList());
     }
 
-    private Menu findMenu(OrderLineItemRequest orderLineItem) {
+    private Long findMenuId(OrderLineItemRequest orderLineItem) {
         final Menu menu = menuRepository.findById(orderLineItem.getMenuId())
                 .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 메뉴 입니다."));
-        return menu;
+        return menu.getId();
     }
 
     @Transactional(readOnly = true)

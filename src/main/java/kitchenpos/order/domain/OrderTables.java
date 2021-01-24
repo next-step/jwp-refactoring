@@ -4,22 +4,26 @@ import org.springframework.util.CollectionUtils;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Embeddable
 public class OrderTables {
     private static final int MIN_TABLE_SIZE = 2;
 
-    @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderTable> orderTables;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "table_group_id")
+    private List<OrderTable> orderTables = new ArrayList<>();
 
     protected OrderTables() {
     }
 
     public OrderTables(List<OrderTable> orderTables) {
         validateOrderTables(orderTables);
-        this.orderTables = orderTables;
+        this.orderTables.addAll(orderTables);
     }
 
     private void validateOrderTables(List<OrderTable> orderTables) {
@@ -30,7 +34,7 @@ public class OrderTables {
     }
 
     public List<OrderTable> findAll() {
-        return this.orderTables;
+        return Collections.unmodifiableList(this.orderTables);
     }
 
     public boolean isSameSize(int otherSize) {
@@ -38,19 +42,11 @@ public class OrderTables {
     }
 
     public void updateTableGroup(TableGroup tableGroup) {
-        orderTables.forEach(table -> table.updateTableGroup(tableGroup));
+        orderTables.forEach(table -> table.updateTableGroup(tableGroup.getId()));
     }
 
     public void unGroup() {
         this.orderTables.forEach(OrderTable::unGroup);
-    }
-
-    public void checkOrderTableStatus() {
-        boolean hasNotCompleteOrder = orderTables.stream()
-                .anyMatch(OrderTable::isNotComplete);
-        if (hasNotCompleteOrder) {
-            throw new IllegalArgumentException("주문 상태가 조리중이거나 식사중인 테이블의 그룹 지정은 해지할 수 없습니다.");
-        }
     }
 
     private void checkOrderTableSize(List<OrderTable> orderTables) {

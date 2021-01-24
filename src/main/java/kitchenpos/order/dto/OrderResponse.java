@@ -30,7 +30,7 @@ public class OrderResponse {
                 , order.getOrderTableId()
                 , order.getOrderStatusName()
                 , order.getOrderedTime()
-                , OrderLineItemResponse.ofList(order.getOrderLineItems()));
+                , OrderLineItemResponse.ofList(order.getOrderLineItems(), order.getId()));
     }
 
     public static List<OrderResponse> ofList(List<Order> orders) {
