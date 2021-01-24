@@ -1,7 +1,7 @@
 package kitchenpos.table.application;
 
-import kitchenpos.dao.order.OrderDao;
 import kitchenpos.dao.table.OrderTableDao;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import org.springframework.stereotype.Service;
@@ -13,11 +13,11 @@ import java.util.Objects;
 
 @Service
 public class TableService {
-    private final OrderDao orderDao;
+    private final OrderRepository orderRepository;
     private final OrderTableDao orderTableDao;
 
-    public TableService(final OrderDao orderDao, final OrderTableDao orderTableDao) {
-        this.orderDao = orderDao;
+    public TableService(final OrderRepository orderRepository, final OrderTableDao orderTableDao) {
+        this.orderRepository = orderRepository;
         this.orderTableDao = orderTableDao;
     }
 
@@ -41,7 +41,7 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-        if (orderDao.existsByOrderTableIdAndOrderStatusIn(
+        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
                 orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
             throw new IllegalArgumentException();
         }

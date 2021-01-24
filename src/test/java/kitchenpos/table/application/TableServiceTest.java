@@ -1,7 +1,6 @@
 package kitchenpos.table.application;
 
-import kitchenpos.table.application.TableService;
-import kitchenpos.dao.order.OrderDao;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.dao.table.OrderTableDao;
 import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
@@ -23,7 +22,7 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
     @Mock
-    OrderDao orderDao;
+    OrderRepository orderRepository;
     @Mock
     OrderTableDao orderTableDao;
     @InjectMocks
@@ -60,7 +59,7 @@ class TableServiceTest {
         OrderTable expected = new OrderTable(1L, null, 3, false);
         OrderTable changed = new OrderTable(1L, null, 3, true);
         given(orderTableDao.findById(any())).willReturn(Optional.of(expected));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(false);
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(false);
         given(orderTableDao.save(any())).willReturn(changed);
 
         OrderTable saved = tableService.changeEmpty(1L, expected);
@@ -74,7 +73,7 @@ class TableServiceTest {
     void setTableNotEmptyTest() {
         OrderTable expected = new OrderTable(1L, null, 3, true);
         given(orderTableDao.findById(any())).willReturn(Optional.of(expected));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(false);
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(false);
         expected.setEmpty(false);
         given(orderTableDao.save(any())).willReturn(expected);
 

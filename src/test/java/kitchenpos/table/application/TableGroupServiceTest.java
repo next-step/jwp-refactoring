@@ -1,10 +1,9 @@
 package kitchenpos.table.application;
 
-import kitchenpos.table.application.TableGroupService;
-import kitchenpos.dao.order.OrderDao;
 import kitchenpos.dao.table.OrderTableDao;
 import kitchenpos.dao.table.TableGroupDao;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
@@ -24,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @SpringBootTest
 class TableGroupServiceTest {
     @Autowired
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Autowired
     private OrderTableDao orderTableDao;
     @Autowired
@@ -33,7 +32,7 @@ class TableGroupServiceTest {
     private TableGroupService tableGroupService;
     @BeforeEach
     void setUp() {
-        tableGroupService = new TableGroupService(orderDao, orderTableDao, tableGroupDao);
+        tableGroupService = new TableGroupService(orderRepository, orderTableDao, tableGroupDao);
     }
 
     @DisplayName("2개 이상의 빈 테이블을 단체로 지정할 수 있다.")
@@ -85,7 +84,7 @@ class TableGroupServiceTest {
         OrderTable table1 = orderTableDao.save(new OrderTable(4, true));
         OrderTable table2 = orderTableDao.save(new OrderTable(4, true));
         TableGroup save = tableGroupService.create(new TableGroup(Arrays.asList(table1, table2)));
-        orderDao.save(new Order(table1.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), null));
+        orderRepository.save(new Order(table1.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), null));
 
         assertThatThrownBy(() -> tableGroupService.ungroup(save.getId()))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -98,7 +97,7 @@ class TableGroupServiceTest {
         OrderTable table1 = orderTableDao.save(new OrderTable(4, true));
         OrderTable table2 = orderTableDao.save(new OrderTable(4, true));
         TableGroup save = tableGroupService.create(new TableGroup(Arrays.asList(table1, table2)));
-        orderDao.save(new Order(table1.getId(), OrderStatus.MEAL.name(), LocalDateTime.now(), null));
+        orderRepository.save(new Order(table1.getId(), OrderStatus.MEAL.name(), LocalDateTime.now(), null));
 
         assertThatThrownBy(() -> tableGroupService.ungroup(save.getId()))
                 .isInstanceOf(IllegalArgumentException.class);

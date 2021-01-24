@@ -1,31 +1,51 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
+@Entity
+@Table(name = "orders")
 public class Order {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long orderTableId;
     private String orderStatus;
     private LocalDateTime orderedTime;
-    private List<OrderLineItem> orderLineItems;
+    @Embedded
+    private OrderLineItems orderLineItems;
 
     public Order() {
+    }
+
+    public Order(long id, String orderStatus) {
+        this.id = id;
+        this.orderStatus = orderStatus;
     }
 
     public Order(Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
-        this.orderLineItems = orderLineItems;
+        this.orderLineItems = new OrderLineItems(orderLineItems);
     }
 
-    public Order(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
-        this.id = id;
+    public Order(Long orderTableId) {
         this.orderTableId = orderTableId;
-        this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
-        this.orderLineItems = orderLineItems;
+        this.orderStatus = OrderStatus.COOKING.name();
+        this.orderedTime = LocalDateTime.now();
+    }
+
+    public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        this.orderTableId = orderTableId;
+        this.orderLineItems = new OrderLineItems(orderLineItems);
+        this.orderStatus = OrderStatus.COOKING.name();
+        this.orderedTime = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -61,11 +81,11 @@ public class Order {
     }
 
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
+        return orderLineItems.getOrderLineItems();
     }
 
-    public void addOrderLineItem(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
+    public void addItems(List<OrderLineItem> items) {
+        this.orderLineItems = new OrderLineItems(items);
     }
 
     @Override
@@ -75,11 +95,11 @@ public class Order {
 
         Order order = (Order) o;
 
-        if (id != null ? !id.equals(order.id) : order.id != null) return false;
-        if (orderTableId != null ? !orderTableId.equals(order.orderTableId) : order.orderTableId != null) return false;
-        if (orderStatus != null ? !orderStatus.equals(order.orderStatus) : order.orderStatus != null) return false;
-        if (orderedTime != null ? !orderedTime.equals(order.orderedTime) : order.orderedTime != null) return false;
-        return orderLineItems != null ? orderLineItems.equals(order.orderLineItems) : order.orderLineItems == null;
+        if (!Objects.equals(id, order.id)) return false;
+        if (!Objects.equals(orderTableId, order.orderTableId)) return false;
+        if (!Objects.equals(orderStatus, order.orderStatus)) return false;
+        if (!Objects.equals(orderedTime, order.orderedTime)) return false;
+        return Objects.equals(orderLineItems, order.orderLineItems);
     }
 
     @Override

@@ -1,17 +1,33 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.menu.domain.Menu;
+
+import javax.persistence.*;
+
+@Entity
 public class OrderLineItem {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
-    private Long orderId;
-    private Long menuId;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "order_id")
+    private Order order;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "menu_id")
+    private Menu menu;
     private long quantity;
 
     public OrderLineItem() {
     }
 
-    public OrderLineItem(Long orderId, Long menuId, long quantity) {
-        this.orderId = orderId;
-        this.menuId = menuId;
+    public OrderLineItem(Menu menu, long quantity) {
+        this.menu = menu;
+        this.quantity = quantity;
+    }
+
+    public OrderLineItem(Order order, Menu menu, long quantity) {
+        this.order = order;
+        this.menu = menu;
         this.quantity = quantity;
     }
 
@@ -19,31 +35,37 @@ public class OrderLineItem {
         return seq;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
+    public Order getOrder() {
+        return order;
     }
 
-    public Long getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(final Long orderId) {
-        this.orderId = orderId;
-    }
-
-    public Long getMenuId() {
-        return menuId;
-    }
-
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
+    public Menu getMenu() {
+        return menu;
     }
 
     public long getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        OrderLineItem that = (OrderLineItem) o;
+
+        if (quantity != that.quantity) return false;
+        if (seq != null ? !seq.equals(that.seq) : that.seq != null) return false;
+        if (order != null ? !order.equals(that.order) : that.order != null) return false;
+        return menu != null ? menu.equals(that.menu) : that.menu == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = seq != null ? seq.hashCode() : 0;
+        result = 31 * result + (order != null ? order.hashCode() : 0);
+        result = 31 * result + (menu != null ? menu.hashCode() : 0);
+        result = 31 * result + (int) (quantity ^ (quantity >>> 32));
+        return result;
     }
 }
