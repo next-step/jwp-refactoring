@@ -1,14 +1,21 @@
 package kitchenpos.domain;
 
+import kitchenpos.dto.MenuResponse;
+
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
+@Entity
 public class Menu {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private BigDecimal price;
     private Long menuGroupId;
+    @Embedded
     private MenuProducts menuProducts;
 
     public Menu() {
@@ -59,16 +66,8 @@ public class Menu {
         this.menuGroupId = menuGroupId;
     }
 
-    public MenuProducts getMenuProducts() {
-        return menuProducts;
-    }
-
-    public int menuProductSize() {
-        return menuProducts.size();
-    }
-
-    public void addMenuProducts(List<MenuProduct> menuProducts) {
-        this.menuProducts = new MenuProducts(menuProducts);
+    public List<MenuProduct> getMenuProducts() {
+        return menuProducts.getMenuProducts();
     }
 
     @Override

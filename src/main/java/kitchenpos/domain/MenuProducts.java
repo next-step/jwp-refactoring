@@ -1,9 +1,13 @@
 package kitchenpos.domain;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+@Embeddable
 public class MenuProducts {
+    @OneToMany(mappedBy = "menu", cascade = {CascadeType.MERGE}, orphanRemoval = true)
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
     public MenuProducts() {
@@ -11,10 +15,6 @@ public class MenuProducts {
 
     public MenuProducts (List<MenuProduct> menuProducts) {
         this.menuProducts = menuProducts;
-    }
-
-    public int size() {
-        return menuProducts.size();
     }
 
     public List<MenuProduct> getMenuProducts() {
@@ -28,7 +28,7 @@ public class MenuProducts {
 
         MenuProducts that = (MenuProducts) o;
 
-        return menuProducts != null ? menuProducts.equals(that.menuProducts) : that.menuProducts == null;
+        return Objects.equals(menuProducts, that.menuProducts);
     }
 
     @Override

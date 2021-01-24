@@ -1,13 +1,9 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -28,7 +24,7 @@ import static org.mockito.BDDMockito.given;
 @SpringBootTest
 class OrderServiceTest {
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
     @Mock
     private OrderDao orderDao;
     @Mock
@@ -43,7 +39,7 @@ class OrderServiceTest {
     void createOrder() {
         List<OrderLineItem> orderLineItems = Arrays.asList(new OrderLineItem(null, 1L, 10));
         given(orderTableDao.findById(anyLong())).willReturn(Optional.of(new OrderTable()));
-        given(menuDao.countByIdIn(any())).willReturn(Long.valueOf(orderLineItems.size()));
+        given(menuRepository.countByIdIn(any())).willReturn(Long.valueOf(orderLineItems.size()));
         OrderTable orderTable = new OrderTable(2, false);
         given(orderTableDao.findById(anyLong())).willReturn(Optional.of(orderTable));
         Order order = new Order(1L, null, LocalDateTime.now(), orderLineItems);
@@ -72,7 +68,7 @@ class OrderServiceTest {
     void failOrderEmptyTable() {
         List<OrderLineItem> orderLineItems = Arrays.asList(new OrderLineItem(null, 1L, 10));
         given(orderTableDao.findById(anyLong())).willReturn(Optional.of(new OrderTable()));
-        given(menuDao.countByIdIn(any())).willReturn(Long.valueOf(orderLineItems.size()));
+        given(menuRepository.countByIdIn(any())).willReturn(Long.valueOf(orderLineItems.size()));
         OrderTable orderTable = new OrderTable(2, true);
         given(orderTableDao.findById(anyLong())).willReturn(Optional.of(orderTable));
         Order order = new Order(1L, null, LocalDateTime.now(), orderLineItems);
@@ -87,7 +83,7 @@ class OrderServiceTest {
     void failOrderNotExiststMenu() {
         List<OrderLineItem> orderLineItems = Arrays.asList(new OrderLineItem(null, 1L, 10));
         given(orderTableDao.findById(anyLong())).willReturn(Optional.of(new OrderTable()));
-        given(menuDao.countByIdIn(any())).willReturn(0L);
+        given(menuRepository.countByIdIn(any())).willReturn(0L);
         OrderTable orderTable = new OrderTable(2, false);
         given(orderTableDao.findById(anyLong())).willReturn(Optional.of(orderTable));
         Order order = new Order(1L, null, LocalDateTime.now(), orderLineItems);
