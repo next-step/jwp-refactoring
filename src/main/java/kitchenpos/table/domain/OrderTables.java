@@ -7,7 +7,6 @@ import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Embeddable
@@ -27,12 +26,7 @@ public class OrderTables {
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
             throw new IllegalArgumentException("그룹핑할 테이블이 부족합니다.");
         }
-
-        for (final OrderTable orderTable : orderTables) {
-            if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup())) {
-                throw new IllegalArgumentException("테이블이 사용중이거나 이미 그룹핑되어 있습니다.");
-            }
-        }
+        orderTables.forEach(orderTable -> orderTable.checkOrderTable());
     }
 
     public static OrderTables empty() {

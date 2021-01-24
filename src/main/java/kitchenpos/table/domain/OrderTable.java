@@ -1,5 +1,6 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.order.domain.Order;
 import kitchenpos.tableGroup.domain.TableGroup;
 
 import javax.persistence.*;
@@ -18,11 +19,14 @@ public class OrderTable {
     private int numberOfGuests;
     private boolean empty;
 
+    @OneToOne(mappedBy = "orderTable")
+    private Order order;
+
     protected OrderTable() {
     }
 
     public static OrderTable empty() {
-        return new OrderTable();
+        return new OrderTable(TableGroup.empty());
     }
 
     public OrderTable(TableGroup tableGroup) {
@@ -32,12 +36,14 @@ public class OrderTable {
     public OrderTable(int numberOfGuests, boolean empty) {
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
+        removeTableGroup();
     }
 
     public OrderTable(Long id, int numberOfGuests, boolean empty) {
         this.id = id;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
+        removeTableGroup();
     }
 
     public void removeTableGroup() {
@@ -58,24 +64,20 @@ public class OrderTable {
         return numberOfGuests;
     }
 
+    public Order getOrder() {
+        return order;
+    }
+
     public boolean isEmpty() {
         return empty;
     }
 
-    public void checkGrouping() {
-        if (Objects.nonNull(tableGroup)) {
-            throw new IllegalArgumentException("그룹핑된 상태입니다.");
-        }
-    }
-
     public void changeStatus(boolean empty) {
-        this.empty = empty;
-    }
-
-    public void checkEmpty() {
-        if (empty) {
-            throw new IllegalArgumentException("테이블이 비어있습니다.");
+        checkGrouping();
+        if(Objects.nonNull(this.order)) {
+            order.checkComplete();
         }
+        this.empty = empty;
     }
 
     public void changeNumberOfGuests(int numberOfGuests) {
@@ -87,10 +89,37 @@ public class OrderTable {
     }
 
     public void addTableGroup(TableGroup tableGroup) {
-        if(!tableGroup.getOrderTables().hasContain(this)) {
+        if(!tableGroup.hasContain(this)) {
             tableGroup.addTable(this);
         }
         this.tableGroup = tableGroup;
         this.empty = false;
+    }
+
+    public void checkOrderTable() {
+        checkGrouping();
+        checkNotEmpty();
+    }
+
+    public void checkEmpty() {
+        if (empty) {
+            throw new IllegalArgumentException("테이블이 비어있습니다.");
+        }
+    }
+
+    public void checkNotEmpty() {
+        if (!empty) {
+            throw new IllegalArgumentException("테이블이 사용중입니다.");
+        }
+    }
+
+    public void addOrder(Order order) {
+        this.order = order;
+    }
+
+    private void checkGrouping() {
+        if (Objects.nonNull(tableGroup)) {
+            throw new IllegalArgumentException("그룹핑된 상태입니다.");
+        }
     }
 }

@@ -30,19 +30,19 @@ public class Order {
     }
 
     public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        checkOrderTable(orderTable);
+        orderTable.checkEmpty();
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
-        this.orderTable = orderTable;
         this.orderLineItems = orderLineItems;
+        addOrderTable(orderTable);
     }
 
     public Order(Long id, OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         this.id = id;
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
-        this.orderTable = orderTable;
         this.orderLineItems = orderLineItems;
+        addOrderTable(orderTable);
     }
 
     public Long getId() {
@@ -54,7 +54,7 @@ public class Order {
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
-        validationOrderStatus(orderStatus);
+        checkOrderStatus(orderStatus);
         this.orderStatus = orderStatus;
         this.orderedTime = LocalDateTime.now();
     }
@@ -67,23 +67,29 @@ public class Order {
         return orderedTime;
     }
 
-    public void validationOrderStatus(OrderStatus orderStatus) {
+    public void initialItems() {
+        orderLineItems.forEach(orderLineItem -> orderLineItem.addOrder(this));
+    }
+
+    public void checkComplete() {
+        if (!Objects.equals(OrderStatus.COMPLETION, this.orderStatus)) {
+            throw new IllegalArgumentException("주문이 완료되지 않았습니다.");
+        }
+    }
+
+    public void addOrderTable(OrderTable orderTable) {
+        if(Objects.isNull(orderTable.getOrder())) {
+            orderTable.addOrder(this);
+        }
+        this.orderTable = orderTable;
+    }
+
+    private void checkOrderStatus(OrderStatus orderStatus) {
         if (Objects.equals(OrderStatus.COMPLETION, this.orderStatus)) {
             throw new IllegalArgumentException("주문이 완료된 상태입니다.");
         }
-
         if(Objects.isNull(orderStatus)) {
             throw new IllegalArgumentException("올바른 상태값을 입력해주시기 바랍니다.");
         }
-    }
-
-    private void checkOrderTable(OrderTable orderTable) {
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException("테이블이 비어있습니다.");
-        }
-    }
-
-    public void initialItems() {
-        orderLineItems.forEach(orderLineItem -> orderLineItem.addOrder(this));
     }
 }
