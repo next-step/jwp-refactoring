@@ -119,3 +119,8 @@
 - [x] 패키지 간 구조 파악
 - [x] 패키지 양방향 -> 단방향 구조 변환
 - [x] 리팩토링 
+
+## 4단계 - multi module 적용 To Do List
+
+- [x] Gradle 멀티 모듈 개념 파악
+- [x] 계층 간의 독립된 모듈을 만들기(web, service, domain)
