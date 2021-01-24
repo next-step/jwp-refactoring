@@ -1,31 +1,16 @@
-package kitchenpos.dto.menu;
+package kitchenpos.menu.dto;
 
 import kitchenpos.domain.menu.MenuProduct;
 
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
-public class MenuProductResponse {
+public class MenuProductRequest {
     private Long productId;
     private Long quantity;
 
-    public MenuProductResponse(long productId, long quantity) {
+    public MenuProductRequest(Long productId, Long quantity) {
         this.productId = productId;
         this.quantity = quantity;
-    }
-
-    public static MenuProductResponse of(MenuProduct menuProduct) {
-        return new MenuProductResponse(
-                menuProduct.getProduct().getId(),
-                menuProduct.getQuantity()
-        );
-    }
-
-    public static List<MenuProductResponse> of(List<MenuProduct> menuProducts) {
-        return menuProducts.stream()
-                .map(MenuProductResponse::of)
-                .collect(Collectors.toList());
     }
 
     public Long getProductId() {
@@ -41,7 +26,7 @@ public class MenuProductResponse {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        MenuProductResponse that = (MenuProductResponse) o;
+        MenuProductRequest that = (MenuProductRequest) o;
 
         if (!Objects.equals(productId, that.productId)) return false;
         return Objects.equals(quantity, that.quantity);

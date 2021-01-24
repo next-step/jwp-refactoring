@@ -5,7 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import kitchenpos.application.menu.MenuGroupService;
 import kitchenpos.domain.menu.MenuGroup;
-import kitchenpos.ui.menu.MenuGroupRestController;
+import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,11 +41,13 @@ class MenuGroupRestControllerTest {
     @DisplayName("메뉴그룹 등록")
     @Test
     public void create() throws Exception {
-        MenuGroup expectedMenuGroup = new MenuGroup(1L, "세일");
+        MenuGroupResponse expectedMenuGroup = new MenuGroupResponse(1L, "세일");
+        MenuGroupRequest request = new MenuGroupRequest("세일");
         given(menuGroupService.create(any())).willReturn(expectedMenuGroup);
+
         mockMvc.perform(post("/api/menu-groups")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(makeJsonString(expectedMenuGroup)))
+                .content(makeJsonString(request)))
                 .andDo(print())
                 .andExpect(status().isCreated());
     }
@@ -56,6 +59,7 @@ class MenuGroupRestControllerTest {
         MenuGroup menuGroup2 = new MenuGroup("그룹2");
         List<MenuGroup> menuGroups = Arrays.asList(menuGroup1, menuGroup2) ;
         given(menuGroupService.list()).willReturn(menuGroups);
+
         mockMvc.perform(get("/api/menu-groups"))
                 .andDo(print())
                 .andExpect(status().isOk())

@@ -4,12 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import kitchenpos.application.menu.MenuService;
-import kitchenpos.domain.menu.MenuProduct;
-import kitchenpos.domain.product.Product;
-import kitchenpos.dto.menu.MenuProductResponse;
-import kitchenpos.dto.menu.MenuRequest;
-import kitchenpos.dto.menu.MenuResponse;
-import kitchenpos.ui.menu.MenuRestController;
+import kitchenpos.menu.dto.MenuProductResponse;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.dto.MenuProductRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +43,7 @@ class MenuRestControllerTest {
     @DisplayName("메뉴 등록")
     @Test
     public void create() throws Exception {
-        MenuRequest menuRequest = new MenuRequest("쭈꾸미", 1000, 1L, Arrays.asList(new MenuProduct(new Product(), 10L)));
+        MenuRequest menuRequest = new MenuRequest("쭈꾸미", 1000, 1L, Arrays.asList(new MenuProductRequest(1L, 10L)));
         MenuResponse menuResponse = new MenuResponse(1L, "쭈꾸미", 1000, Arrays.asList(new MenuProductResponse(1L, 10L)));
         given(menuService.create(any())).willReturn(menuResponse);
 

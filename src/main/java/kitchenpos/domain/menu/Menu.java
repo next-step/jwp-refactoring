@@ -32,6 +32,10 @@ public class Menu {
         this.menuProducts = new MenuProducts(menuProducts);
     }
 
+    public void addProducts(List<MenuProduct> menuProducts) {
+        this.menuProducts = new MenuProducts(menuProducts);
+    }
+
     public Long getId() {
         return id;
     }

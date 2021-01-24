@@ -1,4 +1,4 @@
-package kitchenpos.dto.menu;
+package kitchenpos.menu.dto;
 
 import kitchenpos.domain.menu.Menu;
 
@@ -10,6 +10,10 @@ public class MenuResponse {
     private String name;
     private Integer price;
     private List<MenuProductResponse> menuProducts;
+
+    public List<MenuProductResponse> getMenuProducts() {
+        return menuProducts;
+    }
 
     public MenuResponse(long id, String name, int price, List<MenuProductResponse> menuProducts) {
         this.id = id;
@@ -28,10 +32,6 @@ public class MenuResponse {
 
     public int getPrice() {
         return price;
-    }
-
-    public List<MenuProductResponse> getMenuProducts() {
-        return menuProducts;
     }
 
     public static MenuResponse of(Menu menu) {
