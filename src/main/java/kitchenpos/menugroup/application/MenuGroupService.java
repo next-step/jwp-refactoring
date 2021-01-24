@@ -1,5 +1,6 @@
 package kitchenpos.menugroup.application;
 
+import kitchenpos.common.exception.NotFoundEntityException;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
@@ -29,5 +30,11 @@ public class MenuGroupService {
         return menuGroupRepository.findAll().stream()
                 .map(MenuGroupResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    public void checkExistsMenuGroup(MenuGroup menuGroup) {
+        if (!menuGroupRepository.existsById(menuGroup.getId())) {
+            throw new NotFoundEntityException("해당 MenuGroup을 찾을 수가 없습니다.");
+        }
     }
 }

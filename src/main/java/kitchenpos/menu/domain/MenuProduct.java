@@ -1,52 +1,62 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.product.domain.Product;
+
+import javax.persistence.*;
+import java.math.BigDecimal;
+
+@Entity
 public class MenuProduct {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
-    private Long menuId;
-    private Long productId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_id")
+    private Menu menu;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    private Product product;
+
     private long quantity;
 
-    public MenuProduct() {
+    protected MenuProduct() {
     }
 
-    private MenuProduct(Long productId, long quantity) {
-        this.productId = productId;
+    private MenuProduct(Product product, long quantity) {
+        this.product = product;
         this.quantity = quantity;
     }
 
-    public static MenuProduct of(Long productId, long quantity) {
-        return new MenuProduct(productId, quantity);
+    public static MenuProduct of(Product product, long quantity) {
+        return new MenuProduct(product, quantity);
+    }
+
+    public BigDecimal calculatePrice() {
+        return product.multiplyQuantity(BigDecimal.valueOf(quantity));
+    }
+
+    public void addMenu(Menu menu) {
+        this.menu = menu;
     }
 
     public Long getSeq() {
         return seq;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
+    public Menu getMenu() {
+        return menu;
     }
 
-    public Long getMenuId() {
-        return menuId;
-    }
-
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
-    }
-
-    public Long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(final Long productId) {
-        this.productId = productId;
+    public Product getProduct() {
+        return product;
     }
 
     public long getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
+    public void setProduct(final Product product) {
+        this.product = product;
     }
 }

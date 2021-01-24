@@ -25,7 +25,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     private Order first_order;
 
     @BeforeEach
-    void beforeSetUp() {
+    public void setUp() {
+        super.setUp();
         orderLineItems = Collections.singletonList(OrderLineItem.of(1L, 등록된_menu_id, 2));
 
         first_order = 주문_생성_요청(Order.of(비어있지_않은_orderTable_id, orderLineItems)).as(Order.class);
