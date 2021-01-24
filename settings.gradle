@@ -1,1 +1,5 @@
 rootProject.name = 'kitchenpos'
+include 'module-web'
+include 'module-domain'
+include 'module-repository-jpa'
+
