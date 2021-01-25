@@ -1,10 +1,13 @@
 package kitchenpos.application;
 
 import kitchenpos.advice.exception.MenuException;
+import kitchenpos.advice.exception.MenuGroupException;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.request.MenuGroupRequest;
+import kitchenpos.dto.request.MenuRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,8 +43,8 @@ class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        후라이드양념반반메뉴 = new MenuGroup("후라이드양념반반메뉴");
-        menuGroupService.create(후라이드양념반반메뉴);
+        MenuGroupRequest menuGroupRequest = new MenuGroupRequest("후라이드양념반반메뉴");
+        후라이드양념반반메뉴 = menuGroupService.create(menuGroupRequest);
         후라이드상품 = productService.findById(1l);
         양념치킨상품 = productService.findById(2l);
 
@@ -50,8 +53,8 @@ class MenuServiceTest {
     @DisplayName("메뉴를 생성한다")
     @Test
     void create() {
-        Menu menu = 메뉴를_생성한다(32000, 후라이드양념반반메뉴);
-        Menu savedMenu = menuService.create(menu);
+        MenuRequest menuRequest = 메뉴를_생성한다(32000, 후라이드양념반반메뉴);
+        Menu savedMenu = menuService.create(menuRequest);
 
         assertAll(
                 () -> assertThat(savedMenu.getMenuProducts()).contains(후라이드, 양념치킨),
@@ -62,27 +65,27 @@ class MenuServiceTest {
     @DisplayName("메뉴를 생성한다 : 가격이 0미만이면 익셉션 발생")
     @Test
     void createPriceException() {
-        Menu menu = 메뉴를_생성한다(-1, 후라이드양념반반메뉴);
+        MenuRequest menuRequest = 메뉴를_생성한다(-1, 후라이드양념반반메뉴);
 
-        assertThatThrownBy(() -> menuService.create(menu))
+        assertThatThrownBy(() -> menuService.create(menuRequest))
                 .isInstanceOf(MenuException.class);
     }
 
     @DisplayName("메뉴를 생성한다 : menuGroupId가 존재하지 않으면 익셉션 발생")
     @Test
     void createMenuGroupIdException() {
-        Menu menu = 메뉴를_생성한다(-1, new MenuGroup("메뉴그룹없음"));
+        MenuRequest menuRequest = 메뉴를_생성한다(-1, new MenuGroup(100l,"메뉴그룹없음"));
 
-        assertThatThrownBy(() -> menuService.create(menu))
-                .isInstanceOf(MenuException.class);
+        assertThatThrownBy(() -> menuService.create(menuRequest))
+                .isInstanceOf(MenuGroupException.class);
     }
 
     @DisplayName("메뉴를 생성한다 : 메뉴의 각 상품들 가격의 합이 메뉴의 가격보다 크면 익셉션 ")
     @Test
     void comparePriceMenuProductsException() {
-        Menu menu = 메뉴를_생성한다(38000, 후라이드양념반반메뉴);
+        MenuRequest menuRequest = 메뉴를_생성한다(38000, 후라이드양념반반메뉴);
 
-        assertThatThrownBy(() -> menuService.create(menu))
+        assertThatThrownBy(() -> menuService.create(menuRequest))
                 .isInstanceOf(MenuException.class);
     }
 
@@ -94,12 +97,11 @@ class MenuServiceTest {
         assertThat(menus.size()).isGreaterThanOrEqualTo(1);
     }
 
-    private Menu 메뉴를_생성한다(int price, MenuGroup menuGroup) {
+    private MenuRequest 메뉴를_생성한다(int price, MenuGroup menuGroup) {
         Menu menu = new Menu("후라이드양념반반", BigDecimal.valueOf(price), menuGroup);
         후라이드 = new MenuProduct(menu, 후라이드상품, 1);
         양념치킨 = new MenuProduct(menu, 양념치킨상품, 1);
         menu.updateMenuProducts(Arrays.asList(후라이드, 양념치킨));
-        return menu;
+        return MenuRequest.of(menu);
     }
-
 }

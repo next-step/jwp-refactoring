@@ -12,6 +12,10 @@ public class MenuGroupRequest {
         this.name = name;
     }
 
+    public static MenuGroupRequest of(MenuGroup menuGroup) {
+        return new MenuGroupRequest(menuGroup.getName());
+    }
+
     public MenuGroup toMenuGroup() {
         return new MenuGroup(name);
     }
