@@ -1,0 +1,6 @@
+logging.level:
+  org.hibernate.type: trace
+spring:
+  h2:
+    console:
+      enabled: true
