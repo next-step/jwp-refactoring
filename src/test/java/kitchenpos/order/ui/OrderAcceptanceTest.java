@@ -4,7 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
@@ -23,7 +23,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("주문 관련 기능")
 public class OrderAcceptanceTest extends AcceptanceTest {
     private List<OrderLineItemRequest> orderLineItemRequests;
-    private OrderResponse first_order;
 
     @BeforeEach
     public void setUp() {
@@ -31,7 +30,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         orderLineItemRequests = Collections.singletonList(new OrderLineItemRequest(등록된_menu_id, 2));
 
         OrderRequest orderRequest = new OrderRequest(1L, 비어있지_않은_orderTable_id, orderLineItemRequests);
-        first_order = 주문_생성_요청(orderRequest).as(OrderResponse.class);
+        주문_생성_요청(orderRequest).as(OrderResponse.class);
     }
 
     @Test
@@ -47,7 +46,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void createOrderException1() {
         orderLineItemRequests = Collections.singletonList(new OrderLineItemRequest(등록되어_있지_않은_menu_id, 2));
-        OrderRequest orderRequest = new OrderRequest(1L, 비어있지_않은_orderTable_id, orderLineItemRequests);
+        OrderRequest orderRequest = new OrderRequest(2L, 비어있지_않은_orderTable_id, orderLineItemRequests);
 
         ExtractableResponse<Response> response = 주문_생성_요청(orderRequest);
 
@@ -57,7 +56,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @DisplayName("해당 주문 테이블이 등록되어 있지 않으면 생성할 수 없다.")
     @Test
     void createOrderException2() {
-        OrderRequest orderRequest = new OrderRequest(1L, 등록되어_있지_않은_orderTable_id, orderLineItemRequests);
+        OrderRequest orderRequest = new OrderRequest(2L, 등록되어_있지_않은_orderTable_id, orderLineItemRequests);
 
         ExtractableResponse<Response> response = 주문_생성_요청(orderRequest);
 
@@ -72,25 +71,24 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         주문_목록_크기_일치(response, 1);
     }
 
-//    @Test
-//    void changeOrderStatus() {
-//        first_order.setOrderStatus(OrderStatus.MEAL.name());
-//
-//        ExtractableResponse<Response> response = 주문_상태_변경_요청(first_order);
-//
-//        주문_상태_변경됨(response, first_order);
-//    }
-//
-//    @DisplayName("주문이 등록되어 있지 않으면 상태를 변경할 수 없다.")
-//    @Test
-//    void changeOrderStatusException() {
-//        Order changeOrder = Order.of(비어있지_않은_orderTable_id, orderLineItems);
-//        changeOrder.setId(2L);
-//
-//        ExtractableResponse<Response> response = 주문_상태_변경_요청(changeOrder);
-//
-//        주문_상태_변경_실패(response);
-//    }
+    @Test
+    void changeOrderStatus() {
+        OrderRequest changeOrder = new OrderRequest(1L, 비어있지_않은_orderTable_id, OrderStatus.MEAL, orderLineItemRequests);
+
+        ExtractableResponse<Response> response = 주문_상태_변경_요청(changeOrder);
+
+        주문_상태_변경됨(response, changeOrder.getOrderStatus());
+    }
+
+    @DisplayName("주문이 등록되어 있지 않으면 상태를 변경할 수 없다.")
+    @Test
+    void changeOrderStatusException() {
+        OrderRequest changeOrder = new OrderRequest(2L, 비어있지_않은_orderTable_id, OrderStatus.MEAL, orderLineItemRequests);
+
+        ExtractableResponse<Response> response = 주문_상태_변경_요청(changeOrder);
+
+        주문_상태_변경_실패(response);
+    }
 
     public static ExtractableResponse<Response> 주문_생성_요청(OrderRequest orderRequest) {
         return RestAssured
@@ -139,11 +137,11 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         assertThat(orderResponses.size()).isEqualTo(size);
     }
 
-    private static void 주문_상태_변경됨(ExtractableResponse<Response> response, Order order) {
+    private static void 주문_상태_변경됨(ExtractableResponse<Response> response, OrderStatus orderStatus) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
-        Order result = response.as(Order.class);
-        assertThat(result.getOrderStatus()).isEqualTo(order.getOrderStatus());
+        OrderResponse result = response.as(OrderResponse.class);
+        assertThat(result.getOrderStatus()).isEqualTo(orderStatus);
     }
 
     private static void 주문_상태_변경_실패(ExtractableResponse<Response> response) {

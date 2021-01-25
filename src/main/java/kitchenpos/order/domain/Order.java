@@ -1,12 +1,14 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.order.exception.EmptyOrderLineItemsException;
+import kitchenpos.order.exception.InvalidChangeOrderStatusException;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Entity
@@ -20,7 +22,8 @@ public class Order {
     private Long orderTableId;
 
     @Column(nullable = false)
-    private String orderStatus;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
 
     @Column(nullable = false)
     private LocalDateTime orderedTime;
@@ -32,11 +35,11 @@ public class Order {
     public Order() {
     }
 
-    private Order(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
+    private Order(Long id, Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
         this.id = id;
         this.orderTableId = orderTableId;
         this.orderLineItems = orderLineItems;
-        this.orderStatus = OrderStatus.COOKING.name();
+        this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
         validate();
     }
@@ -47,14 +50,24 @@ public class Order {
         }
     }
 
-    public static Order of(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
-        return new Order(id, orderTableId, orderLineItems);
+    public static Order of(Long id, Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        return new Order(id, orderTableId, orderStatus, orderLineItems);
     }
 
     public void addOrderIdToOrderLineItems() {
         orderLineItems = orderLineItems.stream()
                 .map(orderLineItem -> orderLineItem.addOrderId(id))
                 .collect(Collectors.toList());
+    }
+
+    public void checkOrderStatusIsCompletion() {
+        if (Objects.equals(OrderStatus.COMPLETION, orderStatus)) {
+            throw new InvalidChangeOrderStatusException("주문 상태가 계산 완료일 경우 변경할 수 없습니다.");
+        }
+    }
+
+    public void changeOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
     public Long getId() {
@@ -65,7 +78,7 @@ public class Order {
         return orderTableId;
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 

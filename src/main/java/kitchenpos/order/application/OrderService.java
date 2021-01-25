@@ -1,5 +1,6 @@
 package kitchenpos.order.application;
 
+import kitchenpos.common.exception.NotFoundEntityException;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderRequest;
@@ -39,6 +40,7 @@ public class OrderService {
         checkOrderTableIsEmpty(persistOrderTable);
 
         order.addOrderIdToOrderLineItems();
+
         return OrderResponse.of(orderRepository.save(order));
     }
 
@@ -48,28 +50,26 @@ public class OrderService {
         }
     }
 
+    @Transactional(readOnly = true)
     public List<OrderResponse> list() {
         return orderRepository.findAll().stream()
                 .map(OrderResponse::of)
                 .collect(Collectors.toList());
     }
-//
-//    @Transactional
-//    public Order changeOrderStatus(final Long orderId, final Order order) {
-//        final Order savedOrder = orderDao.findById(orderId)
-//                .orElseThrow(IllegalArgumentException::new);
-//
-//        if (Objects.equals(OrderStatus.COMPLETION.name(), savedOrder.getOrderStatus())) {
-//            throw new IllegalArgumentException();
-//        }
-//
-//        final OrderStatus orderStatus = OrderStatus.valueOf(order.getOrderStatus());
-//        savedOrder.setOrderStatus(orderStatus.name());
-//
-//        orderDao.save(savedOrder);
-//
-//        savedOrder.setOrderLineItems(orderLineItemDao.findAllByOrderId(orderId));
-//
-//        return savedOrder;
-//    }
+
+    @Transactional
+    public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
+        final Order persistOrder = findOrderById(orderId);
+
+        persistOrder.checkOrderStatusIsCompletion();
+
+        persistOrder.changeOrderStatus(orderRequest.getOrderStatus());
+
+        return OrderResponse.of(persistOrder);
+    }
+
+    private Order findOrderById(Long id) {
+        return orderRepository.findById(id)
+                .orElseThrow(() -> new NotFoundEntityException("주문이 등록되어 있지 않습니다."));
+    }
 }

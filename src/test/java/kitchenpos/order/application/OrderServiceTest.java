@@ -8,6 +8,7 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.exception.EmptyOrderLineItemsException;
 import kitchenpos.order.exception.EmptyOrderTableException;
+import kitchenpos.order.exception.InvalidChangeOrderStatusException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,7 +42,7 @@ class OrderServiceTest extends BaseServiceTest {
         OrderResponse orderResponse = orderService.create(orderRequest);
 
         assertThat(orderResponse.getOrderTableId()).isEqualTo(비어있지_않은_orderTable_id);
-        assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
         assertThat(orderResponse.getOrderedTime()).isNotNull();
         assertThat(orderResponse.getOrderLineItemResponses().get(0).getOrderId()).isEqualTo(2L);
     }
@@ -49,7 +50,7 @@ class OrderServiceTest extends BaseServiceTest {
     @DisplayName("주문 항목이 하나도 없을 경우 등록할 수 없다.")
     @Test
     void createOrderException1() {
-        OrderRequest orderRequest = new OrderRequest(1L, 비어있지_않은_orderTable_id, null);
+        OrderRequest orderRequest = new OrderRequest(2L, 비어있지_않은_orderTable_id, null);
 
         assertThatThrownBy(() -> orderService.create(orderRequest))
                 .isInstanceOf(EmptyOrderLineItemsException.class)
@@ -60,7 +61,7 @@ class OrderServiceTest extends BaseServiceTest {
     @Test
     void createOrderException2() {
         orderLineItemRequests = Collections.singletonList(new OrderLineItemRequest(등록되어_있지_않은_menu_id, 2));
-        OrderRequest orderRequest = new OrderRequest(1L, 비어있지_않은_orderTable_id, orderLineItemRequests);
+        OrderRequest orderRequest = new OrderRequest(2L, 비어있지_않은_orderTable_id, orderLineItemRequests);
 
         assertThatThrownBy(() -> orderService.create(orderRequest))
                 .isInstanceOf(NotFoundEntityException.class)
@@ -70,7 +71,7 @@ class OrderServiceTest extends BaseServiceTest {
     @DisplayName("해당 주문 테이블이 등록되어 있지 않으면 등록할 수 없다.")
     @Test
     void createOrderException3() {
-        OrderRequest orderRequest = new OrderRequest(1L, 등록되어_있지_않은_orderTable_id, orderLineItemRequests);
+        OrderRequest orderRequest = new OrderRequest(2L, 등록되어_있지_않은_orderTable_id, orderLineItemRequests);
 
         assertThatThrownBy(() -> orderService.create(orderRequest))
                 .isInstanceOf(NotFoundEntityException.class)
@@ -80,45 +81,43 @@ class OrderServiceTest extends BaseServiceTest {
     @DisplayName("빈 테이블일 경우 등록할 수 없다.")
     @Test
     void createOrderException4() {
-        OrderRequest orderRequest = new OrderRequest(1L, 빈_orderTable_id1, orderLineItemRequests);
+        OrderRequest orderRequest = new OrderRequest(2L, 빈_orderTable_id1, orderLineItemRequests);
 
         assertThatThrownBy(() -> orderService.create(orderRequest))
                 .isInstanceOf(EmptyOrderTableException.class)
                 .hasMessage("빈 테이블일 경우 등록할 수 없습니다.");
     }
 
-//    @DisplayName("주문 상태를 변경할 수 있다.")
-//    @Test
-//    void changeOrderStatus() {
-//        Order changeOrder = Order.of(비어있지_않은_orderTable_id, orderLineItems);
-//        changeOrder.setOrderStatus(OrderStatus.MEAL.name());
-//
-//        Order result = orderService.changeOrderStatus(1L, changeOrder);
-//
-//        assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
-//    }
-//
-//    @DisplayName("주문이 등록되어 있지 않으면 변경할 수 없다.")
-//    @Test
-//    void changeOrderStatusException1() {
-//        Order changeOrder = Order.of(비어있지_않은_orderTable_id, orderLineItems);
-//        changeOrder.setOrderStatus(OrderStatus.COOKING.name());
-//
-//        assertThatThrownBy(() -> orderService.changeOrderStatus(2L, changeOrder))
-//                .isInstanceOf(IllegalArgumentException.class);
-//    }
-//
-//    @DisplayName("주문 상태가 계산 완료일 경우 변경할 수 없다.")
-//    @Test
-//    void changeOrderStatusException2() {
-//        Order order = orderService.list().get(0);
-//        order.setOrderStatus(OrderStatus.COMPLETION.name());
-//        orderDao.save(order);
-//
-//        Order changeOrder = Order.of(비어있지_않은_orderTable_id, orderLineItems);
-//        changeOrder.setOrderStatus(OrderStatus.MEAL.name());
-//
-//        assertThatThrownBy(() -> orderService.changeOrderStatus(1L, changeOrder))
-//                .isInstanceOf(IllegalArgumentException.class);
-//    }
+    @DisplayName("주문 상태를 변경할 수 있다.")
+    @Test
+    void changeOrderStatus() {
+        OrderRequest changeOrder = new OrderRequest(1L, 비어있지_않은_orderTable_id, OrderStatus.MEAL, orderLineItemRequests);
+
+        OrderResponse orderResponse = orderService.changeOrderStatus(1L, changeOrder);
+
+        assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
+    }
+
+    @DisplayName("주문이 등록되어 있지 않으면 변경할 수 없다.")
+    @Test
+    void changeOrderStatusException1() {
+        OrderRequest changeOrder = new OrderRequest(2L, 비어있지_않은_orderTable_id, OrderStatus.COOKING, orderLineItemRequests);
+
+        assertThatThrownBy(() -> orderService.changeOrderStatus(2L, changeOrder))
+                .isInstanceOf(NotFoundEntityException.class)
+                .hasMessage("주문이 등록되어 있지 않습니다.");
+    }
+
+    @DisplayName("주문 상태가 계산 완료일 경우 변경할 수 없다.")
+    @Test
+    void changeOrderStatusException2() {
+        OrderRequest order = new OrderRequest(1L, 비어있지_않은_orderTable_id, OrderStatus.COMPLETION, orderLineItemRequests);
+        orderService.changeOrderStatus(1L, order);
+
+        OrderRequest changeOrder = new OrderRequest(1L, 비어있지_않은_orderTable_id, OrderStatus.MEAL, orderLineItemRequests);
+
+        assertThatThrownBy(() -> orderService.changeOrderStatus(1L, changeOrder))
+                .isInstanceOf(InvalidChangeOrderStatusException.class)
+                .hasMessage("주문 상태가 계산 완료일 경우 변경할 수 없습니다.");
+    }
 }

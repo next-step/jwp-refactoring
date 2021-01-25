@@ -32,6 +32,7 @@ public class MenuGroupService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public void checkExistsMenuGroup(Long menuGroupId) {
         if (!menuGroupRepository.existsById(menuGroupId)) {
             throw new NotFoundEntityException("해당 메뉴 그룹을 찾을 수가 없습니다.");

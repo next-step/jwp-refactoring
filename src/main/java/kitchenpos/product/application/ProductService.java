@@ -25,12 +25,14 @@ public class ProductService {
         return ProductResponse.of(persistProduct);
     }
 
+    @Transactional(readOnly = true)
     public List<ProductResponse> list() {
         return productRepository.findAll().stream()
                 .map(ProductResponse::of)
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<Product> findProductsByIds(List<Long> productIds) {
         List<Product> persistProducts = productRepository.findAllById(productIds);
 

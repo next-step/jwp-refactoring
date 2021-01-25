@@ -43,13 +43,14 @@ public class MenuService {
         return MenuResponse.of(menuRepository.save(menu));
     }
 
+    @Transactional(readOnly = true)
     public List<MenuResponse> list() {
-        menuRepository.findAll().forEach(menu -> System.out.println(menu.getId()));
         return menuRepository.findAll().stream()
                 .map(MenuResponse::of)
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public void checkExistsMenus(List<Long> menuIds) {
         if (menuIds.size() != menuRepository.countByIdIn(menuIds)) {
             throw new NotFoundEntityException("등록되지 않은 메뉴가 있습니다.");
