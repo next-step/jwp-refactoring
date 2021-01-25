@@ -14,7 +14,7 @@ import kitchenpos.menu.domain.Menu;
 public class OrderLineItem {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long seq;
+	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "order_id")
@@ -40,9 +40,8 @@ public class OrderLineItem {
 		this.quantity = quantity;
 	}
 
-
-	public Long getSeq() {
-		return seq;
+	public Long getId() {
+		return id;
 	}
 
 	public Orders getOrder() {
@@ -55,15 +54,5 @@ public class OrderLineItem {
 
 	public long getQuantity() {
 		return quantity;
-	}
-
-	@Override
-	public String toString() {
-		return "OrderLineItem{" +
-			"seq=" + seq +
-			", order=" + order +
-			", menu=" + menu +
-			", quantity=" + quantity +
-			'}';
 	}
 }

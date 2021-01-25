@@ -54,8 +54,8 @@ class MenuServiceTest extends IntegrationTest {
 		ReflectionTestUtils.setField(product, "id", 1L);
 
 		MenuProduct menuProduct = new MenuProduct(product, 1L);
-		ReflectionTestUtils.setField(menuProduct, "seq", 1L);
-		MenuRequest menuRequest = new MenuRequest("마늘치킨",  BigDecimal.valueOf(16000), menuGroup.getId(), Arrays.asList(menuProduct.getSeq()));
+		ReflectionTestUtils.setField(menuProduct, "id", 1L);
+		MenuRequest menuRequest = new MenuRequest("마늘치킨",  BigDecimal.valueOf(16000), menuGroup.getId(), Arrays.asList(menuProduct.getId()));
 
 		// when
 		MenuResponse menuResponse = menuService.create(menuRequest);
@@ -79,8 +79,8 @@ class MenuServiceTest extends IntegrationTest {
 		ReflectionTestUtils.setField(product, "id", 1L);
 
 		MenuProduct menuProduct = new MenuProduct();
-		ReflectionTestUtils.setField(menuProduct, "seq", 1L);
-		MenuRequest menuRequest = new MenuRequest("마늘치킨",  BigDecimal.valueOf(-16000), menuGroup.getId(), Arrays.asList(menuProduct.getSeq()));
+		ReflectionTestUtils.setField(menuProduct, "id", 1L);
+		MenuRequest menuRequest = new MenuRequest("마늘치킨",  BigDecimal.valueOf(-16000), menuGroup.getId(), Arrays.asList(menuProduct.getId()));
 
 		// when - then
 		assertThatThrownBy(() -> {
@@ -98,8 +98,8 @@ class MenuServiceTest extends IntegrationTest {
 		ReflectionTestUtils.setField(product, "id", 1L);
 
 		MenuProduct menuProduct = new MenuProduct();
-		ReflectionTestUtils.setField(menuProduct, "seq", 1L);
-		MenuRequest menuRequest = new MenuRequest("마늘치킨",  BigDecimal.valueOf(-16000), invalidMenuGroupId, Arrays.asList(menuProduct.getSeq()));
+		ReflectionTestUtils.setField(menuProduct, "id", 1L);
+		MenuRequest menuRequest = new MenuRequest("마늘치킨",  BigDecimal.valueOf(-16000), invalidMenuGroupId, Arrays.asList(menuProduct.getId()));
 
 		// when - then
 		assertThatThrownBy(() -> {
@@ -118,8 +118,8 @@ class MenuServiceTest extends IntegrationTest {
 		ReflectionTestUtils.setField(product, "id", 1L);
 
 		MenuProduct menuProduct = new MenuProduct();
-		ReflectionTestUtils.setField(menuProduct, "seq", 1L);
-		MenuRequest menuRequest = new MenuRequest("마늘치킨",  BigDecimal.valueOf(50000000), menuGroup.getId(), Arrays.asList(menuProduct.getSeq()));
+		ReflectionTestUtils.setField(menuProduct, "id", 1L);
+		MenuRequest menuRequest = new MenuRequest("마늘치킨",  BigDecimal.valueOf(50000000), menuGroup.getId(), Arrays.asList(menuProduct.getId()));
 
 		// when - then
 		assertThatThrownBy(() -> {
