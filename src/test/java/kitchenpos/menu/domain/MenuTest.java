@@ -41,11 +41,11 @@ public class MenuTest {
     @DisplayName("상품가격 총합 비교 예외처리")
     public void comparePrice() {
         assertThatThrownBy(() -> {
-            new Menu("후라이드치킨", new BigDecimal(17000), 치킨, 후라이드치킨메뉴상품);
+            new Menu("후라이드치킨", new BigDecimal(17000), 치킨, new MenuProducts(후라이드치킨메뉴상품));
         }).isInstanceOf(IllegalArgumentException.class);
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> new Menu("후라이드치킨", new BigDecimal(17000), 치킨, 후라이드치킨메뉴상품));
+                () -> new Menu("후라이드치킨", new BigDecimal(17000), 치킨, new MenuProducts(후라이드치킨메뉴상품)));
         assertThat(exception.getMessage()).isEqualTo("상품가격 총합과 메뉴의 가격이 올바르지 않습니다.");
     }
 }

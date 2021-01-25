@@ -19,18 +19,16 @@ public class Product {
     protected Product() {
     }
 
-    protected Product(Long id) {
+    public Product(Long id) {
+        this.id = id;
+    }
+
+    public Product(Long id, String name, BigDecimal price) {
+        this(name, price);
         this.id = id;
     }
 
     public Product(String name, BigDecimal price) {
-        this.name = name;
-        this.price = price;
-        validationCheck();
-    }
-
-    public Product(Long id, String name, BigDecimal price) {
-        this.id = id;
         this.name = name;
         this.price = price;
         validationCheck();

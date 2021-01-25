@@ -1,6 +1,7 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -61,7 +62,7 @@ class MenuServiceTest {
         상품리스트.add(new MenuProduct(강정치킨, 1L));
         상품리스트.add(new MenuProduct(양념치킨, 1L));
         강정치킨과양념치킨 = new MenuRequest("강정치킨", new BigDecimal(17000), menuGroup.getId(), 상품리스트요청);
-        강정치킨과양념치킨메뉴 = new Menu(강정치킨과양념치킨.getName(), 강정치킨과양념치킨.getPrice(), menuGroup, 상품리스트);
+        강정치킨과양념치킨메뉴 = new Menu(강정치킨과양념치킨.getName(), 강정치킨과양념치킨.getPrice(), menuGroup, new MenuProducts(상품리스트));
         메뉴리스트.add(강정치킨과양념치킨메뉴);
         menuService = new MenuService(menuRepository, menuGroupRepository, productRepository);
     }

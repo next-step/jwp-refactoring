@@ -28,7 +28,7 @@ public class MenuResponse {
     public static MenuResponse of(Menu menu) {
         return new MenuResponse(menu.getId(), menu.getName(),
                 menu.getPrice(), MenuGroupResponse.of(menu.getMenuGroup()),
-                menu.getMenuProducts().stream()
+                menu.getMenuProducts().getMenuProducts().stream()
                 .map(it -> MenuProductResponse.of(it))
                 .collect(Collectors.toList()));
     }

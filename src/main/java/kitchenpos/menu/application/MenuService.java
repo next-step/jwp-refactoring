@@ -36,7 +36,7 @@ public class MenuService {
                                 menuProductRequest.getQuantity()))
                 .collect(Collectors.toList());
 
-        Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup, menuProducts);
+        Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup, new MenuProducts(menuProducts));
 
         final Menu savedMenu = menuRepository.save(menu);
 
