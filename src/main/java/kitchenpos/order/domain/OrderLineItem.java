@@ -1,53 +1,39 @@
 package kitchenpos.order.domain;
 
+import javax.persistence.*;
+
+@Entity
 public class OrderLineItem {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
-    private Long orderId;
+
+    @Column(nullable = false)
     private Long menuId;
+
     private long quantity;
 
-    public OrderLineItem() {
+    protected OrderLineItem() {
     }
 
-    private OrderLineItem(Long seq, Long menuId, long quantity) {
-        this.seq = seq;
+    private OrderLineItem(Long menuId, long quantity) {
         this.menuId = menuId;
         this.quantity = quantity;
     }
 
-    public static OrderLineItem of(Long seq, Long menuId, long quantity) {
-        return new OrderLineItem(seq, menuId, quantity);
+    public static OrderLineItem of(Long menuId, long quantity) {
+        return new OrderLineItem(menuId, quantity);
     }
 
     public Long getSeq() {
         return seq;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
-    }
-
-    public Long getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(final Long orderId) {
-        this.orderId = orderId;
-    }
-
     public Long getMenuId() {
         return menuId;
     }
 
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
-    }
-
     public long getQuantity() {
         return quantity;
-    }
-
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
     }
 }

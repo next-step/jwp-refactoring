@@ -32,8 +32,8 @@ public class MenuGroupService {
                 .collect(Collectors.toList());
     }
 
-    public void checkExistsMenuGroup(MenuGroup menuGroup) {
-        if (!menuGroupRepository.existsById(menuGroup.getId())) {
+    public void checkExistsMenuGroup(Long menuGroupId) {
+        if (!menuGroupRepository.existsById(menuGroupId)) {
             throw new NotFoundEntityException("해당 MenuGroup을 찾을 수가 없습니다.");
         }
     }

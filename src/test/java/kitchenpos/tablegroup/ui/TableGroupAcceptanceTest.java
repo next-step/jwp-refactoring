@@ -18,7 +18,6 @@ import org.springframework.http.MediaType;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static kitchenpos.order.ui.OrderAcceptanceTest.주문_생성_요청;
 import static kitchenpos.utils.TestHelper.*;
 import static org.assertj.core.api.Assertions.assertThat;
 

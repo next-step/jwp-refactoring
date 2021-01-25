@@ -1,15 +1,27 @@
 package kitchenpos.order.application;
 
 import kitchenpos.BaseServiceTest;
-import kitchenpos.order.dao.OrderDao;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.dto.OrderTableRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,32 +30,74 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class OrderServiceTest extends BaseServiceTest {
-//    @Autowired
-//    private OrderDao orderDao;
-//    @Autowired
-//    private OrderService orderService;
-//
-//    private List<OrderLineItem> orderLineItems;
-//
-//    @BeforeEach
-//    public void setUp() {
-//        super.setUp();
-//        orderLineItems = Collections.singletonList(OrderLineItem.of(1L, 등록된_menu_id, 2));
-//
-//        orderService.create(Order.of(비어있지_않은_orderTable_id, orderLineItems));
-//    }
-//
-//    @DisplayName("주문을 등록한다.")
+    @Autowired
+    private OrderService orderService;
+
+    @Autowired
+    private OrderTableRepository orderTableDao;
+
+    @Autowired
+    private MenuService menuService;
+
+    @Autowired
+    private ProductService productService;
+
+    private List<OrderLineItemRequest> orderLineItemRequests;
+
 //    @Test
-//    void createOrder() {
-//        Order order = Order.of(비어있지_않은_orderTable_id, orderLineItems);
-//        Order result = orderService.create(order);
+//    void name() {
+//        Long orderTableId = getSavedOrderTable().getId();
+//        OrderLineItemRequest savedOrderLineItem = getSavedOrderLineItem();
 //
-//        assertThat(result.getOrderTableId()).isEqualTo(비어있지_않은_orderTable_id);
-//        assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
-//        assertThat(result.getOrderedTime()).isNotNull();
-//        assertThat(result.getOrderLineItems().get(0).getOrderId()).isEqualTo(2L);
+//        OrderRequest orderCreateRequest = new OrderRequest(orderTableId, Collections.singletonList(savedOrderLineItem));
+//
+//        O savedOrder = orderService.create(orderCreateRequest);
+//
+//        assertThat(savedOrder.getId()).isNotNull();
+//        assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+//        assertThat(savedOrder.getOrderTableId()).isEqualTo(orderCreateRequest.getOrderTableId());
+//        assertThat(savedOrder.getOrderLineItems().get(0).getSeq()).isNotNull();
 //    }
+//
+//    private OrderTable getSavedOrderTable() {
+//        return orderTableDao.save(new OrderTableRequest(null,  0, false).toOrderTable());
+//    }
+//
+//    private OrderLineItemRequest getSavedOrderLineItem() {
+//        MenuDto menu = menuService.create(getMenu());
+//        return OrderLineItemHelper.createRequest(menu, 1);
+//    }
+
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+
+        // given
+        ProductResponse productResponse = productService.create(등록된_product);
+        ProductRequest p = new ProductRequest(productResponse.getId(), productResponse.getName(), productResponse.getPrice());
+        List<MenuProductRequest> menuProducts = Collections.singletonList(new MenuProductRequest(productResponse.getId(), 1));
+        MenuRequest menuRequest = new MenuRequest(등록되어_있지_않은_menu_id, "후라이드치킨", BigDecimal.valueOf(16000),
+                등록된_menuGroup_id, menuProducts);
+
+        // when
+        MenuResponse menuResponse = menuService.create(menuRequest);
+
+        orderLineItemRequests = Collections.singletonList(new OrderLineItemRequest(menuResponse.getId(), 2));
+
+        orderService.create(new OrderRequest(비어있지_않은_orderTable_id, orderLineItemRequests));
+    }
+
+    @DisplayName("주문을 등록한다.")
+    @Test
+    void createOrder() {
+        OrderRequest orderRequest = new OrderRequest(비어있지_않은_orderTable_id, orderLineItemRequests);
+        OrderResponse orderResponse = orderService.create(orderRequest);
+
+        assertThat(orderResponse.getOrderTableId()).isEqualTo(비어있지_않은_orderTable_id);
+        assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(orderResponse.getOrderedTime()).isNotNull();
+        assertThat(orderResponse.getOrderLineItemResponses().size()).isEqualTo(orderLineItemRequests.size());
+    }
 //
 //    @DisplayName("주문 항목이 하나도 없을 경우 등록할 수 없다.")
 //    @Test

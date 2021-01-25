@@ -1,11 +1,13 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.common.exception.NotFoundEntityException;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.product.domain.Product;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,14 +36,20 @@ public class MenuService {
 
         checkExistsMenuGroupAndProducts(menu);
 
-        menu.addMenuToMenuProducts();
+        comparePriceAndSumOfMenuProducts(menu);
+        //menu.addMenuToMenuProducts();
 
         return MenuResponse.of(menuRepository.save(menu));
     }
 
     private void checkExistsMenuGroupAndProducts(Menu menu) {
-        menuGroupService.checkExistsMenuGroup(menu.getMenuGroup());
-        productService.checkExistsProducts(menu.getProducts());
+        menuGroupService.checkExistsMenuGroup(menu.getMenuGroupId());
+        productService.checkExistsProducts(menu.getProductIds());
+    }
+
+    private void comparePriceAndSumOfMenuProducts(Menu menu) {
+        List<Product> products = productService.findProductsByIds(menu.getProductIds());
+        menu.comparePriceAndSumOfMenuProducts(products);
     }
 
     public List<MenuResponse> list() {
@@ -49,5 +57,11 @@ public class MenuService {
         return menuRepository.findAll().stream()
                 .map(MenuResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    public void checkExistsMenus(List<Long> menuIds) {
+        if (menuIds.size() != menuRepository.countByIdIn(menuIds)) {
+            throw new NotFoundEntityException("등록되지 않은 메뉴가 있습니다.");
+        }
     }
 }

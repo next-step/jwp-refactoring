@@ -8,17 +8,15 @@ import java.util.stream.Collectors;
 
 public class MenuProductResponse {
     private Long seq;
-    private Long menuId;
-    private ProductResponse productResponse;
+    private Long productId;
     private long quantity;
 
     public MenuProductResponse() {
     }
 
-    public MenuProductResponse(Long seq, Long menuId, ProductResponse productResponse, long quantity) {
+    public MenuProductResponse(Long seq, Long productId, long quantity) {
         this.seq = seq;
-        this.menuId = menuId;
-        this.productResponse = productResponse;
+        this.productId = productId;
         this.quantity = quantity;
     }
 
@@ -30,8 +28,7 @@ public class MenuProductResponse {
 
     private static MenuProductResponse of(MenuProduct menuProduct) {
         return new MenuProductResponse(menuProduct.getSeq()
-                , menuProduct.getMenu().getId()
-                , ProductResponse.of(menuProduct.getProduct())
+                , menuProduct.getProductId()
                 , menuProduct.getQuantity());
     }
 
@@ -39,12 +36,8 @@ public class MenuProductResponse {
         return seq;
     }
 
-    public Long getMenuId() {
-        return menuId;
-    }
-
-    public ProductResponse getProductResponse() {
-        return productResponse;
+    public Long getProductId() {
+        return productId;
     }
 
     public long getQuantity() {

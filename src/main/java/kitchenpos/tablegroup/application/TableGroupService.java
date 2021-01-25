@@ -1,6 +1,5 @@
 package kitchenpos.tablegroup.application;
 
-import kitchenpos.order.dao.OrderDao;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.tablegroup.domain.TableGroup;
@@ -12,12 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TableGroupService {
-    private final OrderDao orderDao;
     private final TableService tableService;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final OrderDao orderDao, final TableService tableService, final TableGroupRepository tableGroupRepository) {
-        this.orderDao = orderDao;
+    public TableGroupService(final TableService tableService, final TableGroupRepository tableGroupRepository) {
         this.tableService = tableService;
         this.tableGroupRepository = tableGroupRepository;
     }

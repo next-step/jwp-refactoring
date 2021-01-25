@@ -1,6 +1,8 @@
 package kitchenpos.table.application;
 
+import kitchenpos.common.exception.NotFoundEntityException;
 import kitchenpos.order.dao.OrderDao;
+import kitchenpos.order.exception.EmptyOrderTableException;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTables;
@@ -15,11 +17,11 @@ import java.util.stream.Collectors;
 
 @Service
 public class TableService {
-    private final OrderDao orderDao;
+    //private final OrderDao orderDao;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderDao orderDao, final OrderTableRepository orderTableRepository) {
-        this.orderDao = orderDao;
+    public TableService(final OrderTableRepository orderTableRepository) {
+        //this.orderDao = orderDao;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -77,14 +79,19 @@ public class TableService {
     public OrderTables findOrderTablesById(List<Long> orderTableIds) {
         List<OrderTable> savedOrderTables = orderTableRepository.findAllById(orderTableIds);
 
-        checkExistsOrderTables(orderTableIds, savedOrderTables);
+        checkExistsOrderTables(orderTableIds);
 
         return new OrderTables(savedOrderTables);
     }
 
-    public void checkExistsOrderTables(List<Long> orderTableIds, List<OrderTable> savedOrderTables) {
-        if (orderTableIds.size() != savedOrderTables.size()) {
-            throw new InvalidOrderTablesException("등록되어 있지 않은 주문 테이블이 있습니다.");
+    private void checkExistsOrderTables(List<Long> orderTableIds) {
+        if (orderTableIds.size() != orderTableRepository.countByIdIn(orderTableIds)) {
+            throw new NotFoundEntityException("등록되어 있지 않은 주문 테이블이 있습니다.");
         }
+    }
+
+    public OrderTable findOrderTableById(Long orderTableId) {
+        return orderTableRepository.findById(orderTableId)
+                .orElseThrow(() -> new NotFoundEntityException("해당 주문 테이블이 등록되어 있지 않습니다."));
     }
 }

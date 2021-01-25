@@ -7,56 +7,40 @@ import java.math.BigDecimal;
 
 @Entity
 public class MenuProduct {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id")
-    private Menu menu;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
-    private Product product;
+    @Column(nullable = false)
+    private Long productId;
 
     private long quantity;
 
     protected MenuProduct() {
     }
 
-    private MenuProduct(Product product, long quantity) {
-        this.product = product;
+    private MenuProduct(Long productId, long quantity) {
+        this.productId = productId;
         this.quantity = quantity;
     }
 
-    public static MenuProduct of(Product product, long quantity) {
-        return new MenuProduct(product, quantity);
+    public static MenuProduct of(Long productId, long quantity) {
+        return new MenuProduct(productId, quantity);
     }
 
-    public BigDecimal calculatePrice() {
+    public BigDecimal calculatePrice(Product product) {
         return product.multiplyQuantity(BigDecimal.valueOf(quantity));
-    }
-
-    public void addMenu(Menu menu) {
-        this.menu = menu;
     }
 
     public Long getSeq() {
         return seq;
     }
 
-    public Menu getMenu() {
-        return menu;
-    }
-
-    public Product getProduct() {
-        return product;
+    public Long getProductId() {
+        return productId;
     }
 
     public long getQuantity() {
         return quantity;
-    }
-
-    public void setProduct(final Product product) {
-        this.product = product;
     }
 }

@@ -1,10 +1,10 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,36 +20,30 @@ public class Menu {
     @Embedded
     private MenuPrice price;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_group_id")
-    private MenuGroup menuGroup;
+    @Column(nullable = false)
+    private Long menuGroupId;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "menu")
-    private List<MenuProduct> menuProducts;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "menu_id")
+    private List<MenuProduct> menuProducts = new ArrayList<>();
 
     protected Menu() {
     }
 
-    private Menu(Long id, String name, MenuPrice price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+    private Menu(Long id, String name, MenuPrice price, Long menuGroupId, List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;
-        this.menuGroup = menuGroup;
+        this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
-
-        comparePriceAndSumOfMenuProducts();
     }
 
-    private void comparePriceAndSumOfMenuProducts() {
-        price.compareSumOfMenuProducts(menuProducts);
+    public void comparePriceAndSumOfMenuProducts(List<Product> products) {
+        price.compareSumOfMenuProducts(menuProducts, products);
     }
 
-    public static Menu of(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        return new Menu(id, name, new MenuPrice(price), menuGroup, menuProducts);
-    }
-
-    public void addMenuToMenuProducts() {
-        menuProducts.forEach(menuProduct -> menuProduct.addMenu(this));
+    public static Menu of(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        return new Menu(id, name, new MenuPrice(price), menuGroupId, menuProducts);
     }
 
     public Long getId() {
@@ -64,17 +58,17 @@ public class Menu {
         return price;
     }
 
-    public MenuGroup getMenuGroup() {
-        return menuGroup;
+    public Long getMenuGroupId() {
+        return menuGroupId;
     }
 
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
     }
 
-    public List<Product> getProducts() {
+    public List<Long> getProductIds() {
         return menuProducts.stream()
-                .map(MenuProduct::getProduct)
+                .map(MenuProduct::getProductId)
                 .collect(Collectors.toList());
     }
 }

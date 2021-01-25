@@ -31,13 +31,21 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-    public void checkExistsProducts(List<Product> products) {
-        List<Product> persistProducts = findAll();
-        products.forEach(product -> {
-            if (!persistProducts.contains(product)) {
-                throw new NotFoundEntityException("해당 Product를 찾을 수가 없습니다.");
-            }
-        });
+    public void checkExistsProducts(List<Long> productIds) {
+        //List<Product> persistProducts = findAll();
+        List<Product> persistProducts = productRepository.findAllById(productIds);
+        if (productIds.size() != persistProducts.size()) {
+            throw new NotFoundEntityException("등록되지 않은 상품이 있습니다.");
+        }
+//        products.forEach(product -> {
+//            if (!persistProducts.contains(product)) {
+//                throw new NotFoundEntityException("해당 Product를 찾을 수가 없습니다.");
+//            }
+//        });
+    }
+
+    public List<Product> findProductsByIds(List<Long> productIds) {
+        return productRepository.findAllById(productIds);
     }
 
     private List<Product> findAll() {
