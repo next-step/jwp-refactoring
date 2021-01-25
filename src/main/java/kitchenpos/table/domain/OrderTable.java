@@ -1,8 +1,11 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.table.exception.InvalidChangeException;
+import kitchenpos.table.exception.NegativeNumberOfGuestsException;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class OrderTable {
@@ -25,6 +28,13 @@ public class OrderTable {
         this.id = id;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
+        validate();
+    }
+
+    private void validate() {
+        if (numberOfGuests < 0) {
+            throw new NegativeNumberOfGuestsException("방문한 손님 수는 0명 이상이어야 합니다.");
+        }
     }
 
     public static OrderTable of(Long id, int numberOfGuests, boolean empty) {
@@ -39,9 +49,32 @@ public class OrderTable {
     }
 
     private void checkUnGroup() {
-//        if (!empty || Objects.nonNull(tableGroup)) {
+//        if (!empty || Objects.nonNull(tableGroupId)) {
 //            throw new InvalidGroupException("빈 테이블이거나 이미 단체 지정인 경우 단체 지정할 수 없다.");
 //        }
+        if (Objects.nonNull(tableGroupId)) {
+            throw new InvalidChangeException("빈 테이블이거나 이미 단체 지정인 경우 단체 지정할 수 없다.");
+        }
+    }
+
+    public void checkIsGroup() {
+        if (Objects.nonNull(tableGroupId)) {
+            throw new InvalidChangeException("단체 지정 테이블입니다.");
+        }
+    }
+
+    public void checkIsEmpty() {
+        if (empty) {
+            throw new InvalidChangeException("빈 테이블입니다.");
+        }
+    }
+
+    public void changeEmpty(boolean empty) {
+        this.empty = empty;
+    }
+
+    public void changeNumberOfGuests(int numberOfGuests) {
+        this.numberOfGuests = numberOfGuests;
     }
 
     public Long getId() {

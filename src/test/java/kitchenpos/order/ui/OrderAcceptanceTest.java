@@ -108,7 +108,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private static ExtractableResponse<Response> 주문_상태_변경_요청(OrderRequest orderRequest) {
+    public static ExtractableResponse<Response> 주문_상태_변경_요청(OrderRequest orderRequest) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

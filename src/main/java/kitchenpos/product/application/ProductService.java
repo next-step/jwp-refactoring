@@ -32,8 +32,7 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
-    public List<Product> findProductsByIds(List<Long> productIds) {
+    public List<Product> findProductsByIds(final List<Long> productIds) {
         List<Product> persistProducts = productRepository.findAllById(productIds);
 
         checkExistsProducts(productIds, persistProducts);
@@ -41,7 +40,7 @@ public class ProductService {
         return persistProducts;
     }
 
-    private void checkExistsProducts(List<Long> productIds, List<Product> persistProducts) {
+    private void checkExistsProducts(final List<Long> productIds, final List<Product> persistProducts) {
         if (productIds.size() != persistProducts.size()) {
             throw new NotFoundEntityException("등록되지 않은 상품이 있습니다.");
         }

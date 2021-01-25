@@ -8,6 +8,7 @@ import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.exception.EmptyOrderTableException;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.exception.InvalidChangeException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,7 +45,7 @@ public class OrderService {
         return OrderResponse.of(orderRepository.save(order));
     }
 
-    private void checkOrderTableIsEmpty(OrderTable orderTable) {
+    private void checkOrderTableIsEmpty(final OrderTable orderTable) {
         if (orderTable.isEmpty()) {
             throw new EmptyOrderTableException("빈 테이블일 경우 등록할 수 없습니다.");
         }
@@ -68,7 +69,7 @@ public class OrderService {
         return OrderResponse.of(persistOrder);
     }
 
-    private Order findOrderById(Long id) {
+    private Order findOrderById(final Long id) {
         return orderRepository.findById(id)
                 .orElseThrow(() -> new NotFoundEntityException("주문이 등록되어 있지 않습니다."));
     }

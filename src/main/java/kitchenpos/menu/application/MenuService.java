@@ -50,8 +50,7 @@ public class MenuService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
-    public void checkExistsMenus(List<Long> menuIds) {
+    public void checkExistsMenus(final List<Long> menuIds) {
         if (menuIds.size() != menuRepository.countByIdIn(menuIds)) {
             throw new NotFoundEntityException("등록되지 않은 메뉴가 있습니다.");
         }
