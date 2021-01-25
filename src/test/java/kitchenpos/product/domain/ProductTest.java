@@ -11,15 +11,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class ProductTest {
     private Product 비정상가격제품;
 
-    @BeforeEach
-    void setUp() {
-        비정상가격제품 = new Product("비정상", new BigDecimal(-400));
-    }
-
     @Test
     void validationCheck() {
         assertThatThrownBy(() -> {
-            비정상가격제품.validationCheck();
+            new Product("비정상", new BigDecimal(-400));
         }).isInstanceOf(IllegalArgumentException.class);
     }
 }

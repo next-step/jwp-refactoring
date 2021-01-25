@@ -20,7 +20,6 @@ public class ProductService {
 
     public ProductResponse create(final ProductRequest request) {
         Product product = request.toProduct();
-        product.validationCheck();
         Product resultProcut = productRepository.save(product);
         return ProductResponse.of(resultProcut);
     }

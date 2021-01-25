@@ -26,8 +26,8 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        orderTableIds.add(주문테이블_등록되어_있음(new OrderTableRequest( 4, true)).as(OrderTable.class).getId());
-        orderTableIds.add(주문테이블_등록되어_있음(new OrderTableRequest( 10, true)).as(OrderTable.class).getId());
+        orderTableIds.add(주문테이블_등록되어_있음(new OrderTableRequest(4, true)).as(OrderTable.class).getId());
+        orderTableIds.add(주문테이블_등록되어_있음(new OrderTableRequest(10, true)).as(OrderTable.class).getId());
         tableGroupRequest = new TableGroupRequest(orderTableIds);
 
     }

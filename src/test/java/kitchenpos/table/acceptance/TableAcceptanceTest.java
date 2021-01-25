@@ -4,6 +4,9 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
+import kitchenpos.order.dto.OrderLIneItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,16 +15,21 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TableAcceptanceTest extends AcceptanceTest {
     private OrderTableRequest orderTableRequest;
+    private OrderRequest orderRequest;
+    private List<OrderLIneItemRequest> orderLineItems = new ArrayList<>();
 
     @BeforeEach
     public void setUp() {
         super.setUp();
+        orderLineItems.add(new OrderLIneItemRequest(2L, 2L));
+        orderLineItems.add(new OrderLIneItemRequest(1L, 1L));
         orderTableRequest = new OrderTableRequest(9, true);
     }
     @DisplayName("테이블을 관리한다.")
@@ -34,11 +42,23 @@ public class TableAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> findResponse = 주문테이블목록_조회_요청();
         주문테이블목록_조회됨(findResponse);
 
+        주문_등록됨(createResponse.as(OrderTableResponse.class).getId(), orderLineItems);
+
         ExtractableResponse<Response> changeResponse = 주문테이블상태_변경_요청(createResponse, false);
         주문테이블상태_변경됨(changeResponse);
 
         ExtractableResponse<Response> changeResponse2 = 주문테이블_손님수_변경_요청(2L, 6);
         주문테이블_손님수_변경됨(changeResponse2);
+    }
+
+    private ExtractableResponse<Response> 주문_등록됨(Long tableId, List<OrderLIneItemRequest> orderLineItems) {
+        orderRequest = new OrderRequest(tableId, orderLineItems);
+        return RestAssured.given().log().all().
+                body(orderRequest).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                when().post("/api/orders").
+                then().log().all().
+                extract();
     }
 
     private ExtractableResponse<Response> 주문테이블_등록_요청(OrderTableRequest orderTableRequest) {

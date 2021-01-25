@@ -19,21 +19,19 @@ public class Product {
     protected Product() {
     }
 
-    public Product(String name, BigDecimal price) {
-        this.name = name;
-        this.price = price;
+    public Product(Long id) {
+        this.id = id;
     }
 
     public Product(Long id, String name, BigDecimal price) {
+        this(name, price);
         this.id = id;
-        this.name = name;
-        this.price = price;
     }
 
-    public void validationCheck() {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("가격정보가 잘못되었습니다.");
-        }
+    public Product(String name, BigDecimal price) {
+        this.name = name;
+        this.price = price;
+        validationCheck();
     }
 
     public BigDecimal calculatePrice(long quantity) {
@@ -50,5 +48,11 @@ public class Product {
 
     public BigDecimal getPrice() {
         return price;
+    }
+
+    private void validationCheck() {
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("가격정보가 잘못되었습니다.");
+        }
     }
 }

@@ -18,7 +18,7 @@ public class OrderTest {
     public void setUp() {
         orderLineItems.add(OrderLineItem.empty());
         orderLineItems.add(OrderLineItem.empty());
-        order = new Order(OrderTable.empty(), orderLineItems);
+        order = new Order(new OrderTable(0, false), orderLineItems);
     }
 
     @Test
@@ -34,7 +34,7 @@ public class OrderTest {
     public void checkOrderStatus() {
         order.changeOrderStatus(OrderStatus.COMPLETION);
         assertThatThrownBy(() -> {
-            order.validationOrderStatus(OrderStatus.COMPLETION);
+            order.changeOrderStatus(OrderStatus.COMPLETION);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 }

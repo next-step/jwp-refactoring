@@ -34,8 +34,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
         ExtractableResponse<Response> createResponse = 메뉴그룹_등록되어_있음(menuGroup);
-        menuProductRequests.add(new MenuProductRequest(상품_등록되어_있음(강정치킨).as(Product.class).getId(),1L));
-        menuProductRequests.add(new MenuProductRequest(상품_등록되어_있음(양념치킨).as(Product.class).getId(),1L));
+        menuProductRequests.add(new MenuProductRequest(1L,1L));
+        menuProductRequests.add(new MenuProductRequest(2L,1L));
         menuRequest = new MenuRequest("강정치킨", new BigDecimal(15000), createResponse.as(MenuGroup.class).getId(), menuProductRequests);
     }
 
@@ -49,6 +49,11 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         //menu find
         ExtractableResponse<Response> findResponse = 메뉴목록_조회_요청();
         메뉴목록_조회됨(findResponse);
+    }
+
+    @Test
+    void findBy() {
+
     }
 
     private ExtractableResponse<Response> 상품_등록되어_있음(ProductRequest product) {

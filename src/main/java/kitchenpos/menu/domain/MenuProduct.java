@@ -11,9 +11,8 @@ public class MenuProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "menu_id")
-    private Menu menu;
+    @Column(name = "menu_id")
+    private Long menuId;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id")
@@ -33,19 +32,8 @@ public class MenuProduct {
         return product.calculatePrice(quantity);
     }
 
-    public void addMenu(Menu menu) {
-        this.menu = menu;
-        if(!menu.getMenuProducts().contains(this)) {
-            menu.addMenuProduct(this);
-        }
-    }
-
     public Long getId() {
         return seq;
-    }
-
-    public Menu getMenu() {
-        return menu;
     }
 
     public Product getProduct() {

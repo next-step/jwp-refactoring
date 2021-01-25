@@ -33,6 +33,7 @@ class OrderServiceTest {
     private Menu firstMenu;
     private Menu secondMenu;
     private OrderTable orderTable;
+    private OrderTable emptyOrderTable;
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
     private List<OrderLIneItemRequest> orderLIneItemRequests = new ArrayList<>();
     private OrderService orderService;
@@ -57,6 +58,7 @@ class OrderServiceTest {
         orderLIneItemRequests.add(new OrderLIneItemRequest(secondMenu.getId(), 2L));
         orderRequest = new OrderRequest(1L, orderLIneItemRequests);
         orderTable = new OrderTable(1L, 0, false);
+        emptyOrderTable = new OrderTable(2L, 0, true);
         order = new Order (1L, orderTable, orderLineItems);
         orderService = new OrderService(orderRepository, orderLineItemRepository, orderTableRepository);
     }
@@ -89,9 +91,7 @@ class OrderServiceTest {
     @DisplayName("주문 등록 예외테스트: 주문 테이블이 비어있는경우")
     @Test
     void emptyOrderTable() {
-        when(orderTableRepository.findById(orderRequest.getOrderTableId())).thenReturn(java.util.Optional.ofNullable(orderTable));
-
-        orderTable.changeStatus(true);
+        when(orderTableRepository.findById(orderRequest.getOrderTableId())).thenReturn(java.util.Optional.ofNullable(emptyOrderTable));
 
         Throwable exception = assertThrows(IllegalArgumentException.class,
                 () -> orderService.create(orderRequest)

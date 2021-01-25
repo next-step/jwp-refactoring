@@ -27,22 +27,54 @@ public class Order {
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     protected Order() {
-    }
-
-    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        checkOrderTable(orderTable);
         this.orderStatus = OrderStatus.COOKING;
-        this.orderedTime = LocalDateTime.now();
-        this.orderTable = orderTable;
-        this.orderLineItems = orderLineItems;
     }
 
     public Order(Long id, OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        this(orderTable, orderLineItems);
         this.id = id;
+    }
+
+    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        orderTable.checkEmpty();
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
-        this.orderTable = orderTable;
         this.orderLineItems = orderLineItems;
+        addOrderTable(orderTable);
+    }
+
+    public static Order empty() {
+        return new Order();
+    }
+
+    public void changeOrderStatus(OrderStatus orderStatus) {
+        checkOrderStatus(orderStatus);
+        this.orderStatus = orderStatus;
+        this.orderedTime = LocalDateTime.now();
+    }
+
+    public void initialItems() {
+        orderLineItems.forEach(orderLineItem -> orderLineItem.addOrder(this));
+    }
+
+    public boolean checkComplete() {
+        return Objects.equals(OrderStatus.COMPLETION, this.orderStatus);
+    }
+
+    public void addOrderTable(OrderTable orderTable) {
+        if(Objects.isNull(orderTable.getOrder())) {
+            orderTable.addOrder(this);
+        }
+        this.orderTable = orderTable;
+    }
+
+    private void checkOrderStatus(OrderStatus orderStatus) {
+        if(checkComplete()) {
+            throw new IllegalArgumentException("주문이 완료된 상태입니다.");
+        }
+        if(Objects.isNull(orderStatus)) {
+            throw new IllegalArgumentException("올바른 상태값을 입력해주시기 바랍니다.");
+        }
     }
 
     public Long getId() {
@@ -53,37 +85,11 @@ public class Order {
         return orderTable;
     }
 
-    public void changeOrderStatus(OrderStatus orderStatus) {
-        validationOrderStatus(orderStatus);
-        this.orderStatus = orderStatus;
-        this.orderedTime = LocalDateTime.now();
-    }
-
     public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
     public LocalDateTime getOrderedTime() {
         return orderedTime;
-    }
-
-    public void validationOrderStatus(OrderStatus orderStatus) {
-        if (Objects.equals(OrderStatus.COMPLETION, this.orderStatus)) {
-            throw new IllegalArgumentException("주문이 완료된 상태입니다.");
-        }
-
-        if(Objects.isNull(orderStatus)) {
-            throw new IllegalArgumentException("올바른 상태값을 입력해주시기 바랍니다.");
-        }
-    }
-
-    private void checkOrderTable(OrderTable orderTable) {
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException("테이블이 비어있습니다.");
-        }
-    }
-
-    public void initialItems() {
-        orderLineItems.forEach(orderLineItem -> orderLineItem.addOrder(this));
     }
 }
