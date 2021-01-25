@@ -1,5 +1,8 @@
 package kitchenpos.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -39,7 +42,7 @@ public class Menu {
     }
 
     public void updateMenuProducts(List<MenuProduct> menuProducts) {
-        menuProducts.addAll(menuProducts);
+        this.menuProducts.addAll(menuProducts);
     }
 
     public Long getId() {
