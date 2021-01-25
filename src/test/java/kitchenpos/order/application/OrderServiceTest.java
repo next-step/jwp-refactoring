@@ -1,27 +1,18 @@
 package kitchenpos.order.application;
 
 import kitchenpos.BaseServiceTest;
-import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.dto.MenuProductRequest;
-import kitchenpos.menu.dto.MenuRequest;
-import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.common.exception.NotFoundEntityException;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.product.application.ProductService;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.dto.ProductRequest;
-import kitchenpos.product.dto.ProductResponse;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.order.exception.EmptyOrderLineItemsException;
+import kitchenpos.order.exception.EmptyOrderTableException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
@@ -33,107 +24,69 @@ class OrderServiceTest extends BaseServiceTest {
     @Autowired
     private OrderService orderService;
 
-    @Autowired
-    private OrderTableRepository orderTableDao;
-
-    @Autowired
-    private MenuService menuService;
-
-    @Autowired
-    private ProductService productService;
-
     private List<OrderLineItemRequest> orderLineItemRequests;
-
-//    @Test
-//    void name() {
-//        Long orderTableId = getSavedOrderTable().getId();
-//        OrderLineItemRequest savedOrderLineItem = getSavedOrderLineItem();
-//
-//        OrderRequest orderCreateRequest = new OrderRequest(orderTableId, Collections.singletonList(savedOrderLineItem));
-//
-//        O savedOrder = orderService.create(orderCreateRequest);
-//
-//        assertThat(savedOrder.getId()).isNotNull();
-//        assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
-//        assertThat(savedOrder.getOrderTableId()).isEqualTo(orderCreateRequest.getOrderTableId());
-//        assertThat(savedOrder.getOrderLineItems().get(0).getSeq()).isNotNull();
-//    }
-//
-//    private OrderTable getSavedOrderTable() {
-//        return orderTableDao.save(new OrderTableRequest(null,  0, false).toOrderTable());
-//    }
-//
-//    private OrderLineItemRequest getSavedOrderLineItem() {
-//        MenuDto menu = menuService.create(getMenu());
-//        return OrderLineItemHelper.createRequest(menu, 1);
-//    }
 
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        // given
-        ProductResponse productResponse = productService.create(등록된_product);
-        ProductRequest p = new ProductRequest(productResponse.getId(), productResponse.getName(), productResponse.getPrice());
-        List<MenuProductRequest> menuProducts = Collections.singletonList(new MenuProductRequest(productResponse.getId(), 1));
-        MenuRequest menuRequest = new MenuRequest(등록되어_있지_않은_menu_id, "후라이드치킨", BigDecimal.valueOf(16000),
-                등록된_menuGroup_id, menuProducts);
-
-        // when
-        MenuResponse menuResponse = menuService.create(menuRequest);
-
-        orderLineItemRequests = Collections.singletonList(new OrderLineItemRequest(menuResponse.getId(), 2));
-
-        orderService.create(new OrderRequest(비어있지_않은_orderTable_id, orderLineItemRequests));
+        orderLineItemRequests = Collections.singletonList(new OrderLineItemRequest(등록된_menu_id, 2));
+        orderService.create(new OrderRequest(1L, 비어있지_않은_orderTable_id, orderLineItemRequests));
     }
 
     @DisplayName("주문을 등록한다.")
     @Test
     void createOrder() {
-        OrderRequest orderRequest = new OrderRequest(비어있지_않은_orderTable_id, orderLineItemRequests);
+        OrderRequest orderRequest = new OrderRequest(2L, 비어있지_않은_orderTable_id, orderLineItemRequests);
         OrderResponse orderResponse = orderService.create(orderRequest);
 
         assertThat(orderResponse.getOrderTableId()).isEqualTo(비어있지_않은_orderTable_id);
         assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
         assertThat(orderResponse.getOrderedTime()).isNotNull();
-        assertThat(orderResponse.getOrderLineItemResponses().size()).isEqualTo(orderLineItemRequests.size());
+        assertThat(orderResponse.getOrderLineItemResponses().get(0).getOrderId()).isEqualTo(2L);
     }
-//
-//    @DisplayName("주문 항목이 하나도 없을 경우 등록할 수 없다.")
-//    @Test
-//    void createOrderException1() {
-//        assertThatThrownBy(() -> orderService.create(Order.of(비어있지_않은_orderTable_id, null)))
-//                .isInstanceOf(IllegalArgumentException.class);
-//    }
-//
-//    @DisplayName("선택한 주문 항목의 메뉴가 등록되어 있지 않으면 등록할 수 없다.")
-//    @Test
-//    void createOrderException2() {
-//        OrderLineItem orderLineItem = OrderLineItem.of(1L, 등록되어_있지_않은_menu_id, 2);
-//        Order order = Order.of(비어있지_않은_orderTable_id, Collections.singletonList(orderLineItem));
-//
-//        assertThatThrownBy(() -> orderService.create(order))
-//                .isInstanceOf(IllegalArgumentException.class);
-//    }
-//
-//    @DisplayName("해당 주문 테이블이 등록되어 있지 않으면 등록할 수 없다.")
-//    @Test
-//    void createOrderException3() {
-//        Order order = Order.of(등록되어_있지_않은_orderTable_id, orderLineItems);
-//
-//        assertThatThrownBy(() -> orderService.create(order))
-//                .isInstanceOf(IllegalArgumentException.class);
-//    }
-//
-//    @DisplayName("빈 테이블일 경우 등록할 수 없다.")
-//    @Test
-//    void createOrderException4() {
-//        Order order = Order.of(빈_orderTable_id1, orderLineItems);
-//
-//        assertThatThrownBy(() -> orderService.create(order))
-//                .isInstanceOf(IllegalArgumentException.class);
-//    }
-//
+
+    @DisplayName("주문 항목이 하나도 없을 경우 등록할 수 없다.")
+    @Test
+    void createOrderException1() {
+        OrderRequest orderRequest = new OrderRequest(1L, 비어있지_않은_orderTable_id, null);
+
+        assertThatThrownBy(() -> orderService.create(orderRequest))
+                .isInstanceOf(EmptyOrderLineItemsException.class)
+                .hasMessage("주문 항목이 없어 등록할 수 없습니다.");
+    }
+
+    @DisplayName("선택한 주문 항목의 메뉴가 등록되어 있지 않으면 등록할 수 없다.")
+    @Test
+    void createOrderException2() {
+        orderLineItemRequests = Collections.singletonList(new OrderLineItemRequest(등록되어_있지_않은_menu_id, 2));
+        OrderRequest orderRequest = new OrderRequest(1L, 비어있지_않은_orderTable_id, orderLineItemRequests);
+
+        assertThatThrownBy(() -> orderService.create(orderRequest))
+                .isInstanceOf(NotFoundEntityException.class)
+                .hasMessage("등록되지 않은 메뉴가 있습니다.");
+    }
+
+    @DisplayName("해당 주문 테이블이 등록되어 있지 않으면 등록할 수 없다.")
+    @Test
+    void createOrderException3() {
+        OrderRequest orderRequest = new OrderRequest(1L, 등록되어_있지_않은_orderTable_id, orderLineItemRequests);
+
+        assertThatThrownBy(() -> orderService.create(orderRequest))
+                .isInstanceOf(NotFoundEntityException.class)
+                .hasMessage("해당 주문 테이블이 등록되어 있지 않습니다.");
+    }
+
+    @DisplayName("빈 테이블일 경우 등록할 수 없다.")
+    @Test
+    void createOrderException4() {
+        OrderRequest orderRequest = new OrderRequest(1L, 빈_orderTable_id1, orderLineItemRequests);
+
+        assertThatThrownBy(() -> orderService.create(orderRequest))
+                .isInstanceOf(EmptyOrderTableException.class)
+                .hasMessage("빈 테이블일 경우 등록할 수 없습니다.");
+    }
+
 //    @DisplayName("주문 상태를 변경할 수 있다.")
 //    @Test
 //    void changeOrderStatus() {

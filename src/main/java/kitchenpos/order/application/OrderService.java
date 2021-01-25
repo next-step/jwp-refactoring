@@ -34,13 +34,18 @@ public class OrderService {
         Order order = orderRequest.toOrder();
 
         menuService.checkExistsMenus(order.getMenuIds());
-        OrderTable persistOrderTable = tableService.findOrderTableById(order.getOrderTableId());
 
-        if (persistOrderTable.isEmpty()) {
+        OrderTable persistOrderTable = tableService.findOrderTableById(order.getOrderTableId());
+        checkOrderTableIsEmpty(persistOrderTable);
+
+        order.addOrderIdToOrderLineItems();
+        return OrderResponse.of(orderRepository.save(order));
+    }
+
+    private void checkOrderTableIsEmpty(OrderTable orderTable) {
+        if (orderTable.isEmpty()) {
             throw new EmptyOrderTableException("빈 테이블일 경우 등록할 수 없습니다.");
         }
-
-        return OrderResponse.of(orderRepository.save(order));
     }
 
     public List<OrderResponse> list() {

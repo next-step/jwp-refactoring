@@ -1,10 +1,8 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.table.exception.InvalidGroupException;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 public class OrderTable {

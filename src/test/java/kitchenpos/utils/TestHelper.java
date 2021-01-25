@@ -1,14 +1,5 @@
 package kitchenpos.utils;
 
-import kitchenpos.menu.dto.MenuProductRequest;
-import kitchenpos.menu.dto.MenuRequest;
-import kitchenpos.menugroup.dto.MenuGroupRequest;
-import kitchenpos.product.dto.ProductRequest;
-import kitchenpos.table.dto.OrderTableRequest;
-
-import java.math.BigDecimal;
-import java.util.Collections;
-
 public class TestHelper {
     public static final Long 등록된_menuGroup_id = 2L;
     public static final Long 등록되어_있지_않은_menuGroup_id = 5L;
@@ -20,20 +11,4 @@ public class TestHelper {
     public static final Long 빈_orderTable_id2 = 2L;
     public static final Long 비어있지_않은_orderTable_id = 3L;
     public static final Long 등록되어_있지_않은_orderTable_id = 4L;
-
-    public static final MenuGroupRequest 등록된_menuGroup =
-            new MenuGroupRequest(등록된_menuGroup_id, "한마리메뉴");
-    public static final MenuGroupRequest 등록되어_있지_않은_menuGroup =
-            new MenuGroupRequest(등록되어_있지_않은_menuGroup_id, "핫메뉴");
-
-    public static final ProductRequest 등록된_product =
-            new ProductRequest(등록된_product_id, "후라이드", BigDecimal.valueOf(16000));
-    public static final ProductRequest 등록되어_있지_않은_product =
-            new ProductRequest(등록되어_있지_않은_product_id, "스노윙치킨", BigDecimal.valueOf(18000));
-
-//    public static final MenuRequest 등록된_menu = new MenuRequest(등록된_menu_id, "후라이드치킨", BigDecimal.valueOf(16000),
-//            등록된_menuGroup, Collections.singletonList(new MenuProductRequest(등록된_product, 1)));
-
-    public static final OrderTableRequest 비어있지_않은_orderTable =
-            new OrderTableRequest(비어있지_않은_orderTable_id, 1, false);
 }

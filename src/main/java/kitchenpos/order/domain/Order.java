@@ -1,6 +1,5 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.exception.EmptyOrderLineItemsException;
 import org.springframework.util.CollectionUtils;
 
@@ -17,7 +16,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "order_table_id", nullable = false)
     private Long orderTableId;
 
     @Column(nullable = false)
@@ -33,7 +32,8 @@ public class Order {
     public Order() {
     }
 
-    private Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
+    private Order(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
+        this.id = id;
         this.orderTableId = orderTableId;
         this.orderLineItems = orderLineItems;
         this.orderStatus = OrderStatus.COOKING.name();
@@ -47,13 +47,13 @@ public class Order {
         }
     }
 
-    public static Order of(Long orderTableId, List<OrderLineItem> orderLineItems) {
-        return new Order(orderTableId, orderLineItems);
+    public static Order of(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
+        return new Order(id, orderTableId, orderLineItems);
     }
 
-    public List<Long> getMenuIds() {
-        return orderLineItems.stream()
-                .map(OrderLineItem::getMenuId)
+    public void addOrderIdToOrderLineItems() {
+        orderLineItems = orderLineItems.stream()
+                .map(orderLineItem -> orderLineItem.addOrderId(id))
                 .collect(Collectors.toList());
     }
 
@@ -75,5 +75,11 @@ public class Order {
 
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
+    }
+
+    public List<Long> getMenuIds() {
+        return orderLineItems.stream()
+                .map(OrderLineItem::getMenuId)
+                .collect(Collectors.toList());
     }
 }

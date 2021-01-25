@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 public class OrderRestController {
@@ -24,13 +25,13 @@ public class OrderRestController {
         return ResponseEntity.created(uri)
                 .body(created);
     }
-//
-//    @GetMapping("/api/orders")
-//    public ResponseEntity<List<Order>> list() {
-//        return ResponseEntity.ok()
-//                .body(orderService.list());
-//    }
-//
+
+    @GetMapping("/api/orders")
+    public ResponseEntity<List<OrderResponse>> list() {
+        return ResponseEntity.ok()
+                .body(orderService.list());
+    }
+
 //    @PutMapping("/api/orders/{orderId}/order-status")
 //    public ResponseEntity<Order> changeOrderStatus(
 //            @PathVariable final Long orderId,
