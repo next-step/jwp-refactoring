@@ -4,31 +4,15 @@ import kitchenpos.common.domain.BaseEntity;
 import kitchenpos.ordertable.domain.OrderTable;
 
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 public class TableGroup extends BaseEntity {
-    @OneToMany(mappedBy = "tableGroup")
-    private final List<OrderTable> orderTables = new ArrayList<>();
-
-    public static TableGroup createTableGroup(List<OrderTable> orderTables) {
+    public TableGroup(List<OrderTable> orderTables) {
         validate(orderTables);
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.orderTables.addAll(orderTables);
-        return tableGroup;
     }
 
     protected TableGroup() {
-    }
-
-    public void clearTables() {
-        orderTables.forEach(OrderTable::releaseInGroup);
-    }
-
-    public List<OrderTable> getOrderTables() {
-        return orderTables;
     }
 
     private static void validate(List<OrderTable> orderTables) {

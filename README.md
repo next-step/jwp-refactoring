@@ -208,4 +208,5 @@
 - [ ] 클래스 간 방향 개선
     - 도메인 Menu-MenuProduct 간 도메인 일대다 제거
     - 도메인 OrderTable-Order 간 도메인 일대다 제거
+    - 도메인 TableGroup-OrderTable 간 도메인 일대다 제거
 - [ ] 패키지 간 방향 개선

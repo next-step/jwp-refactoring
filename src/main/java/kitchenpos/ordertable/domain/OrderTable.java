@@ -49,13 +49,8 @@ public class OrderTable extends BaseEntity {
     }
 
     public void occupy(TableGroup tableGroup) {
-        this.updateGroup(tableGroup);
-        this.empty = false;
-    }
-
-    public void updateGroup(TableGroup tableGroup) {
-        tableGroup.getOrderTables().add(this);
         this.tableGroup = tableGroup;
+        this.empty = false;
     }
 
     public void releaseInGroup() {

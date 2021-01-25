@@ -33,11 +33,11 @@ public class TableGroupService {
 
     public TableGroupResponse create(TableGroupRequest request) {
         request.validateRequestedSizeOfOrderTables();
-        final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(request.getOrderTableIds());
+        List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(request.getOrderTableIds());
         request.validateSavedSizeOfOrderTables(savedOrderTables);
-        final TableGroup savedTableGroup = tableGroupRepository.save(TableGroup.createTableGroup(savedOrderTables));
+        TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(savedOrderTables));
         savedOrderTables.forEach(ot -> ot.occupy(savedTableGroup));
-        return TableGroupResponse.from(savedTableGroup);
+        return TableGroupResponse.from(savedTableGroup, savedOrderTables);
     }
 
     public void ungroup(final Long tableGroupId) {
@@ -45,18 +45,23 @@ public class TableGroupService {
         if (isNotPaymentFinished(tableGroup)) {
             throw new IllegalArgumentException("테이블 그룹 중에 아직 결제가 끝나지 않은 주문이 있습니다.");
         }
-        tableGroup.clearTables();
+        clearTables(tableGroup);
     }
 
-    public boolean isNotPaymentFinished(TableGroup tableGroup) {
+    public TableGroup findById(Long id) {
+        return tableGroupRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("TableGroup id:" + id + "가 존재하지 않습니다."));
+    }
+
+    private boolean isNotPaymentFinished(TableGroup tableGroup) {
         List<OrderTable> orderTables = orderTableRepository.findAllByTableGroup(tableGroup);
         return orderRepository.findByOrderTableIn(orderTables)
                 .stream()
                 .anyMatch(Order::isNotCompleted);
     }
 
-    public TableGroup findById(Long id) {
-        return tableGroupRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("TableGroup id:" + id + "가 존재하지 않습니다."));
+    private void clearTables(TableGroup tableGroup) {
+        orderTableRepository.findAllByTableGroup(tableGroup)
+                .forEach(OrderTable::releaseInGroup);
     }
 }

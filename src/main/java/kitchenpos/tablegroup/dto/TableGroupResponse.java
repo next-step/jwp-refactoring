@@ -14,8 +14,8 @@ public class TableGroupResponse {
     private final LocalDateTime createdAt;
     private final List<OrderTableResponse> orderTables;
 
-    public static TableGroupResponse from(TableGroup tableGroup) {
-        return new TableGroupResponse(tableGroup.getId(), tableGroup.getCreatedAt(), convertOrderTableResponse(tableGroup.getOrderTables()));
+    public static TableGroupResponse from(TableGroup tableGroup, List<OrderTable> orderTables) {
+        return new TableGroupResponse(tableGroup.getId(), tableGroup.getCreatedAt(), convertOrderTableResponse(orderTables));
     }
 
     private TableGroupResponse(Long id, LocalDateTime createdAt, List<OrderTableResponse> orderTables) {
