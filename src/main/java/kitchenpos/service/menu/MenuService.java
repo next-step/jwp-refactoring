@@ -6,7 +6,7 @@ import kitchenpos.domain.menu.MenuRepository;
 import kitchenpos.domain.product.Product;
 import kitchenpos.dto.menu.MenuRequest;
 import kitchenpos.dto.menu.MenuResponse;
-import kitchenpos.service.ProductService;
+import kitchenpos.service.product.ProductService;
 
 import java.util.List;
 import java.util.Map;

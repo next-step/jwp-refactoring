@@ -1,8 +1,8 @@
-package kitchenpos.service;
+package kitchenpos.service.product;
 
 import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.ProductRepository;
-import kitchenpos.dto.ProductResponse;
+import kitchenpos.dto.product.ProductResponse;
 
 import static java.util.stream.Collectors.*;
 

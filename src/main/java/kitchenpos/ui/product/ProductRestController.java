@@ -1,8 +1,8 @@
-package kitchenpos.ui;
+package kitchenpos.ui.product;
 
-import kitchenpos.dto.ProductRequest;
-import kitchenpos.dto.ProductResponse;
-import kitchenpos.service.ProductService;
+import kitchenpos.dto.product.ProductRequest;
+import kitchenpos.dto.product.ProductResponse;
+import kitchenpos.service.product.ProductService;
 
 import java.net.URI;
 import java.util.List;
