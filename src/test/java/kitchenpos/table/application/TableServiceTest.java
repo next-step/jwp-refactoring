@@ -1,5 +1,6 @@
 package kitchenpos.table.application;
 
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -59,7 +60,7 @@ class TableServiceTest {
     void setTableEmptyTest() {
         OrderTable expected = new OrderTable(null, 3, false);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(expected));
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(false);
+        given(orderRepository.findByOrderTableId(any())).willReturn(new Order("COMPLTETE"));
 
         OrderTableResponse saved = tableService.changeEmpty(1L, true);
 
@@ -71,7 +72,7 @@ class TableServiceTest {
     void setTableNotEmptyTest() {
         OrderTable expected = new OrderTable(null, 3, true);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(expected));
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(false);
+        given(orderRepository.findByOrderTableId(any())).willReturn(new Order("COMPLTETE"));
 
         OrderTableResponse saved = tableService.changeEmpty(1L, false);
 
@@ -83,6 +84,7 @@ class TableServiceTest {
     void groupTableCantSetEmptyTest() {
         OrderTable expected = new OrderTable(new TableGroup(1L), 3, true);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(expected));
+        given(orderRepository.findByOrderTableId(any())).willReturn(new Order("COMPLTETE"));
 
         assertThatThrownBy(() -> tableService.changeEmpty(1L, true))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -93,6 +95,7 @@ class TableServiceTest {
     void cookingCantSetEmptyTest() {
         OrderTable expected = new OrderTable(new TableGroup(1L), 3, true);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(expected));
+        given(orderRepository.findByOrderTableId(any())).willReturn(new Order("COMPLTETE"));
 
         assertThatThrownBy(() -> tableService.changeEmpty(1L, true))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -105,8 +108,6 @@ class TableServiceTest {
         OrderTable expected = new OrderTable(new TableGroup(1L), 3, false);
 
         given(orderTableRepository.findById(any())).willReturn(Optional.of(expected));
-        given(orderTableRepository.save(any())).willReturn(expected);
-
         OrderTableResponse saved = tableService.changeNumberOfGuests(1L, request);
 
         assertThat(saved.getNumberOfGuests()).isEqualTo(3);
@@ -125,8 +126,9 @@ class TableServiceTest {
     @DisplayName("빈 테이블은 방문한 손님 수를 입력할 수 없다.")
     @Test
     void emptyTableCSetCustomerCountTest() {
-        OrderTable expected = new OrderTable(new TableGroup(1L), 3, true);
+        OrderTable expected = new OrderTable(1L, new TableGroup(1L), 3, true);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(expected));
+
         OrderTableRequest request = new OrderTableRequest(3, true);
 
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, request))

@@ -1,8 +1,5 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProducts;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,18 +20,6 @@ public class Order {
     public Order() {
     }
 
-    public Order(long id, String orderStatus) {
-        this.id = id;
-        this.orderStatus = orderStatus;
-    }
-
-    public Order(Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
-        this.orderTableId = orderTableId;
-        this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
-        this.orderLineItems = new OrderLineItems(orderLineItems);
-    }
-
     public Order(Long orderTableId) {
         this.orderTableId = orderTableId;
         this.orderStatus = OrderStatus.COOKING.name();
@@ -46,6 +31,10 @@ public class Order {
         this.orderLineItems = new OrderLineItems(orderLineItems);
         this.orderStatus = OrderStatus.COOKING.name();
         this.orderedTime = LocalDateTime.now();
+    }
+
+    public Order(String orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
     public Long getId() {
@@ -60,10 +49,6 @@ public class Order {
         return orderTableId;
     }
 
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
-    }
-
     public String getOrderStatus() {
         return orderStatus;
     }
@@ -76,16 +61,20 @@ public class Order {
         return orderedTime;
     }
 
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
-    }
-
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems.getOrderLineItems();
     }
 
     public void addItems(List<OrderLineItem> items) {
         this.orderLineItems = new OrderLineItems(items);
+    }
+
+    public boolean statusIsMeal() {
+        return this.orderStatus.equals(OrderStatus.MEAL.name());
+    }
+
+    public boolean statusIsCooking() {
+        return this.orderStatus.equals(OrderStatus.COOKING.name());
     }
 
     @Override

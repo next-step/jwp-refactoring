@@ -39,7 +39,7 @@ class OrderServiceTest {
     @Test
     void createOrder() {
         Menu menu = menuRepository.save(new Menu("메뉴1", new BigDecimal(1000), 1L));
-        OrderTable orderTable = orderTableRepository.save(new OrderTable(4, false));
+        OrderTable orderTable = orderTableRepository.save(new OrderTable(4, true));
 
         List<OrderLineRequest> orderLinesRequest = Arrays.asList(new OrderLineRequest(menu.getId(), 1L));
         OrderRequest orderRequest = new OrderRequest(orderTable.getId(), orderLinesRequest);

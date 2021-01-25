@@ -54,6 +54,9 @@ public class OrderTable {
     }
 
     public void changeNumberOfGuests(int numberOfGuests) {
+        if(isEmpty()) {
+            throw new IllegalArgumentException("빈 테이블에는 게스트를 입력할 수 없습니다.");
+        }
         this.numberOfGuests = numberOfGuests;
     }
 

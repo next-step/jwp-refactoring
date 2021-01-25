@@ -4,11 +4,11 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +34,24 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest request) {
+        validate(request);
+        Menu save = menuRepository.save(createMenu(request));
+        return MenuResponse.of(save);
+    }
+
+    @Transactional(readOnly = true)
+    public List<MenuResponse> list() {
+        return menuRepository.findAll()
+                .stream()
+                .map(MenuResponse::of)
+                .collect(Collectors.toList());
+    }
+
+    public boolean exists(List<Long> menuIds) {
+        return menuRepository.existsByIdIn(menuIds);
+    }
+
+    private void validate(MenuRequest request) {
         if (request.notValidPrice()) {
             throw new IllegalArgumentException();
         }
@@ -53,21 +71,15 @@ public class MenuService {
         if (request.priceIsGreaterThen(sum)) {
             throw new IllegalArgumentException();
         }
+    }
 
-        final Menu menu = new Menu(request.getName(), new BigDecimal(request.getPrice()), request.getMenuGroupId());
-        List<MenuProduct> menuProducts = menuProductsRequest.stream()
+    private Menu createMenu(MenuRequest request) {
+        Menu menu = new Menu(request.getName(), new BigDecimal(request.getPrice()), request.getMenuGroupId());
+
+        List<MenuProduct> menuProducts = request.getMenuProducts().stream()
                 .map(product -> new MenuProduct(menu, productRepository.findById(product.getProductId()).get(), product.getQuantity()))
                 .collect(Collectors.toList());
         menu.addProducts(menuProducts);
-        Menu save = menuRepository.save(menu);
-        return MenuResponse.of(save);
-    }
-
-    @Transactional(readOnly = true)
-    public List<MenuResponse> list() {
-        return menuRepository.findAll()
-                .stream()
-                .map(MenuResponse::of)
-                .collect(Collectors.toList());
+        return menu;
     }
 }

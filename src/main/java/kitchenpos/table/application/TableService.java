@@ -1,7 +1,7 @@
 package kitchenpos.table.application;
 
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -9,9 +9,7 @@ import kitchenpos.table.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,17 +17,18 @@ public class TableService {
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
+    public TableService(final OrderRepository orderRepository,
+                        final OrderTableRepository orderTableRepository) {
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
     }
 
     @Transactional
     public OrderTable create(final OrderTable orderTable) {
-//        orderTable.setTableGroupId(null);
         return orderTableRepository.save(orderTable);
     }
 
+    @Transactional(readOnly = true)
     public List<OrderTableResponse> list() {
         return orderTableRepository.findAll().stream()
                 .map(OrderTableResponse::of)
@@ -38,16 +37,16 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, boolean empty) {
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
+        final OrderTable orderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
+        Order order = orderRepository.findByOrderTableId(orderTableId);
+        if (order.statusIsMeal() || order.statusIsCooking()) {
+            throw new IllegalArgumentException("요리중이거나 식사중인 테이블은 변경할 수 없습니다.");
         }
 
-        savedOrderTable.changeEmpty(empty);
-        return OrderTableResponse.of(savedOrderTable);
+        orderTable.changeEmpty(empty);
+        return OrderTableResponse.of(orderTable);
     }
 
     @Transactional
@@ -61,13 +60,7 @@ public class TableService {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
         savedOrderTable.changeNumberOfGuests(numberOfGuests);
-
-        OrderTable save = orderTableRepository.save(savedOrderTable);
-        return OrderTableResponse.of(save);
+        return OrderTableResponse.of(savedOrderTable);
     }
 }

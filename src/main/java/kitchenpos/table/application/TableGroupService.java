@@ -1,6 +1,7 @@
 package kitchenpos.table.application;
 
 import kitchenpos.order.application.OrderTableService;
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
@@ -70,10 +71,11 @@ public class TableGroupService {
     }
 
     private void checkOrderStatus(List<Long> orderTableIds) {
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
-        }
+        orderRepository.findByOrderTableIdIn(orderTableIds)
+                .stream()
+                .filter(it -> it.statusIsCooking() || it.statusIsMeal())
+                .findAny()
+                .ifPresent(it -> {throw new IllegalArgumentException("요리중이거나 식사중인 테이블은 변경할 수 없습니다.");});
     }
 
     private List<OrderTable> findOrderTables(final TableGroupRequest request) {

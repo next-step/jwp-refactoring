@@ -1,6 +1,7 @@
 package kitchenpos.table.application;
 
 import kitchenpos.order.application.OrderTableService;
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -115,7 +116,7 @@ class TableGroupServiceTest {
         List<OrderTable> orderTables = Arrays.asList(table1, table2);
         TableGroup tableGroup = new TableGroup(1L, orderTables);
         given(orderTableRepository.findAllByTableGroupId(any())).willReturn(orderTables);
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(true);
+        given(orderRepository.findByOrderTableIdIn(any())).willReturn(Arrays.asList(new Order("COOKING")));
 
         assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -129,7 +130,7 @@ class TableGroupServiceTest {
         List<OrderTable> orderTables = Arrays.asList(table1, table2);
         TableGroup tableGroup = new TableGroup(1L, orderTables);
         given(orderTableRepository.findAllByTableGroupId(any())).willReturn(orderTables);
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(true);
+        given(orderRepository.findByOrderTableIdIn(any())).willReturn(Arrays.asList(new Order("MEAL")));
 
         assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))
                 .isInstanceOf(IllegalArgumentException.class);
