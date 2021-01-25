@@ -1,17 +1,15 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.dao.OrderRepository;
+import kitchenpos.exception.TableInUseException;
+import kitchenpos.support.OrderSupport;
 import kitchenpos.table.dao.TableRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.TableRequest;
 import kitchenpos.table.dto.TableResponse;
-import kitchenpos.exception.TableInUseException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,11 +18,11 @@ import java.util.stream.Collectors;
 public class TableService {
     private static final int EMPTY_COUNT = 0;
 
-    private final OrderRepository orderRepository;
+    private final OrderSupport orderSupport;
     private final TableRepository tableRepository;
 
-    public TableService(OrderRepository orderRepository, TableRepository tableRepository) {
-        this.orderRepository = orderRepository;
+    public TableService(OrderSupport orderSupport, TableRepository tableRepository) {
+        this.orderSupport = orderSupport;
         this.tableRepository = tableRepository;
     }
 
@@ -61,7 +59,7 @@ public class TableService {
             throw new TableInUseException("그룹이 지어진 테이블은 변경 할 수 없습니다.");
         }
 
-        if (orderRepository.existsByOrderTableAndOrderStatusIn(savedOrderTable, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+        if (orderSupport.isUsingTable(savedOrderTable)) {
             throw new TableInUseException("이용중인 테이블은 변경 할 수 없습니다.");
         }
     }

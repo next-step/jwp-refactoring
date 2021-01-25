@@ -1,34 +1,32 @@
 package kitchenpos.tablegroup.application;
 
-import kitchenpos.order.dao.OrderRepository;
+import kitchenpos.exception.TableInUseException;
+import kitchenpos.support.OrderSupport;
 import kitchenpos.table.application.TableService;
-import kitchenpos.tablegroup.dao.TableGroupRepository;
 import kitchenpos.table.dao.TableRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.TableResponse;
+import kitchenpos.tablegroup.dao.TableGroupRepository;
 import kitchenpos.tablegroup.domain.OrderTables;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
-import kitchenpos.table.dto.TableResponse;
-import kitchenpos.exception.TableInUseException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Transactional
 @Service
 public class TableGroupService {
-    private final OrderRepository orderRepository;
+    private final OrderSupport orderSupport;
     private final TableRepository tableRepository;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(OrderRepository orderRepository, TableRepository tableRepository, TableGroupRepository tableGroupRepository) {
-        this.orderRepository = orderRepository;
+    public TableGroupService(OrderSupport orderSupport, TableRepository tableRepository, TableGroupRepository tableGroupRepository) {
+        this.orderSupport = orderSupport;
         this.tableRepository = tableRepository;
         this.tableGroupRepository = tableGroupRepository;
     }
@@ -51,8 +49,7 @@ public class TableGroupService {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
                 .orElseThrow(EntityNotFoundException::new);
 
-        if (orderRepository.existsByOrderTableInAndOrderStatusIn(
-                tableGroup.getOrderTables(), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+        if (orderSupport.isUsingTables(tableGroup.getOrderTables())) {
             throw new TableInUseException("사용중인 테이블의 그룹은 해제할 수 없습니다");
         }
 
