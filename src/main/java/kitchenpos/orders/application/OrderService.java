@@ -8,10 +8,8 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
-import kitchenpos.menu.repository.MenuRepository;
-import kitchenpos.orders.repository.OrderRepository;
-import kitchenpos.orders.repository.OrderTableRepository;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.orders.domain.OrderLineItem;
 import kitchenpos.orders.domain.OrderLineItems;
 import kitchenpos.orders.domain.OrderStatus;
@@ -19,6 +17,8 @@ import kitchenpos.orders.domain.Orders;
 import kitchenpos.orders.dto.OrderLineItemRequest;
 import kitchenpos.orders.dto.OrderRequest;
 import kitchenpos.orders.dto.OrderResponse;
+import kitchenpos.orders.repository.OrderRepository;
+import kitchenpos.orders.repository.OrderTableRepository;
 import kitchenpos.table.domain.OrderTable;
 
 @Service
