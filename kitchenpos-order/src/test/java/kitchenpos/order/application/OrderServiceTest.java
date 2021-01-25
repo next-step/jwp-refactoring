@@ -1,20 +1,20 @@
 package kitchenpos.order.application;
 
 import kitchenpos.ServiceTestBase;
-import kitchenpos.product.application.ProductServiceTest;
-import kitchenpos.menu.application.MenuServiceTest;
-import kitchenpos.menugroup.application.MenuGroupServiceTest;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.exception.AlreadyCompleteException;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.application.MenuGroupService;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderMenuRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.product.application.ProductService;
+import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.dto.TableResponse;
@@ -27,7 +27,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @DisplayName("주문 서비스")
 public class OrderServiceTest extends ServiceTestBase {
@@ -49,10 +50,10 @@ public class OrderServiceTest extends ServiceTestBase {
     @DisplayName("주문 생성")
     @Test
     void create() {
-        MenuGroupResponse menuGroup = menuGroupService.create(MenuGroupServiceTest.createRequest("추천메뉴"));
-        ProductResponse product = productService.create(ProductServiceTest.createRequest("후라이드", 17_000L));
-        List<MenuProductRequest> menuProducts = Collections.singletonList(MenuServiceTest.createMenuProduct(product.getId(), 2L));
-        MenuResponse menu = menuService.create(MenuServiceTest.createRequest("후라이드+후라이드", 19_000L, menuGroup.getId(), menuProducts));
+        MenuGroupResponse menuGroup = menuGroupService.create(createMenuGroupRequest("추천메뉴"));
+        ProductResponse product = productService.create(createProductRequest("후라이드", 17_000L));
+        List<MenuProductRequest> menuProducts = Collections.singletonList(createMenuProductRequest(product.getId(), 2L));
+        MenuResponse menu = menuService.create(createMenuRequest("후라이드+후라이드", 19_000L, menuGroup.getId(), menuProducts));
         TableResponse savedTable = tableService.create();
 
         List<OrderMenuRequest> orderMenus = Collections.singletonList(OrderServiceTest.createOrderMenu(menu.getId(), 1L));
@@ -84,10 +85,10 @@ public class OrderServiceTest extends ServiceTestBase {
     @DisplayName("주문 조회")
     @Test
     void find() {
-        MenuGroupResponse menuGroup = menuGroupService.create(MenuGroupServiceTest.createRequest("추천메뉴"));
-        ProductResponse product = productService.create(ProductServiceTest.createRequest("후라이드", 17_000L));
-        List<MenuProductRequest> menuProducts = Collections.singletonList(MenuServiceTest.createMenuProduct(product.getId(), 2L));
-        MenuResponse menu = menuService.create(MenuServiceTest.createRequest("후라이드+후라이드", 19_000L, menuGroup.getId(), menuProducts));
+        MenuGroupResponse menuGroup = menuGroupService.create(createMenuGroupRequest("추천메뉴"));
+        ProductResponse product = productService.create(createProductRequest("후라이드", 17_000L));
+        List<MenuProductRequest> menuProducts = Collections.singletonList(createMenuProductRequest(product.getId(), 2L));
+        MenuResponse menu = menuService.create(createMenuRequest("후라이드+후라이드", 19_000L, menuGroup.getId(), menuProducts));
         TableResponse savedTable = tableService.create();
 
         List<OrderMenuRequest> orderMenus = Collections.singletonList(OrderServiceTest.createOrderMenu(menu.getId(), 1L));
@@ -104,10 +105,10 @@ public class OrderServiceTest extends ServiceTestBase {
     @DisplayName("주문 상태 변경")
     @Test
     void changeStatus() {
-        MenuGroupResponse menuGroup = menuGroupService.create(MenuGroupServiceTest.createRequest("추천메뉴"));
-        ProductResponse product = productService.create(ProductServiceTest.createRequest("후라이드", 17_000L));
-        List<MenuProductRequest> menuProducts = Collections.singletonList(MenuServiceTest.createMenuProduct(product.getId(), 2L));
-        MenuResponse menu = menuService.create(MenuServiceTest.createRequest("후라이드+후라이드", 19_000L, menuGroup.getId(), menuProducts));
+        MenuGroupResponse menuGroup = menuGroupService.create(createMenuGroupRequest("추천메뉴"));
+        ProductResponse product = productService.create(createProductRequest("후라이드", 17_000L));
+        List<MenuProductRequest> menuProducts = Collections.singletonList(createMenuProductRequest(product.getId(), 2L));
+        MenuResponse menu = menuService.create(createMenuRequest("후라이드+후라이드", 19_000L, menuGroup.getId(), menuProducts));
         TableResponse savedTable = tableService.create();
 
         List<OrderMenuRequest> orderMenus = Collections.singletonList(OrderServiceTest.createOrderMenu(menu.getId(), 1L));
@@ -127,10 +128,10 @@ public class OrderServiceTest extends ServiceTestBase {
     @DisplayName("이미 완료 된 주문 상태 변경")
     @Test
     void changeStatusWithCompletion() {
-        MenuGroupResponse menuGroup = menuGroupService.create(MenuGroupServiceTest.createRequest("추천메뉴"));
-        ProductResponse product = productService.create(ProductServiceTest.createRequest("후라이드", 17_000L));
-        List<MenuProductRequest> menuProducts = Collections.singletonList(MenuServiceTest.createMenuProduct(product.getId(), 2L));
-        MenuResponse menu = menuService.create(MenuServiceTest.createRequest("후라이드+후라이드", 19_000L, menuGroup.getId(), menuProducts));
+        MenuGroupResponse menuGroup = menuGroupService.create(createMenuGroupRequest("추천메뉴"));
+        ProductResponse product = productService.create(createProductRequest("후라이드", 17_000L));
+        List<MenuProductRequest> menuProducts = Collections.singletonList(createMenuProductRequest(product.getId(), 2L));
+        MenuResponse menu = menuService.create(createMenuRequest("후라이드+후라이드", 19_000L, menuGroup.getId(), menuProducts));
         TableResponse savedTable = tableService.create();
 
         List<OrderMenuRequest> orderMenus = Collections.singletonList(OrderServiceTest.createOrderMenu(menu.getId(), 1L));
@@ -147,5 +148,21 @@ public class OrderServiceTest extends ServiceTestBase {
 
     public static OrderMenuRequest createOrderMenu(Long menuId, Long quantity) {
         return new OrderMenuRequest(menuId, quantity);
+    }
+
+    public static MenuRequest createMenuRequest(String name, long price, Long menuGroupId, List<MenuProductRequest> menuProuducts) {
+        return new MenuRequest(name, price, menuGroupId, menuProuducts);
+    }
+
+    public static MenuProductRequest createMenuProductRequest(Long productId, Long quantity) {
+        return new MenuProductRequest(productId, quantity);
+    }
+
+    public static MenuGroupRequest createMenuGroupRequest(String name) {
+        return new MenuGroupRequest(name);
+    }
+
+    public static ProductRequest createProductRequest(String name, long price) {
+        return new ProductRequest(name, price);
     }
 }
