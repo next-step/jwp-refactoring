@@ -1,12 +1,9 @@
 package kitchenpos.ordertable.domain;
 
 import kitchenpos.common.domain.BaseEntity;
-import kitchenpos.order.domain.Order;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 public class OrderTable extends BaseEntity {
@@ -18,9 +15,6 @@ public class OrderTable extends BaseEntity {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "table_group_id")
     private TableGroup tableGroup;
-
-    @OneToMany(mappedBy = "orderTable")
-    private final List<Order> orders = new ArrayList<>();
 
     public OrderTable(Integer numberOfGuests, Boolean empty) {
         this.numberOfGuests = numberOfGuests;
@@ -70,14 +64,5 @@ public class OrderTable extends BaseEntity {
 
     public void changeEmpty(boolean empty) {
         this.empty = empty;
-    }
-
-    public boolean isNotPaymentFinished() {
-        return orders.stream()
-                .anyMatch(Order::isNotCompleted);
-    }
-
-    public List<Order> getOrders() {
-        return orders;
     }
 }

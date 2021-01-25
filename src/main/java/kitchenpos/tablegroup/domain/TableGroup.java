@@ -3,7 +3,8 @@ package kitchenpos.tablegroup.domain;
 import kitchenpos.common.domain.BaseEntity;
 import kitchenpos.ordertable.domain.OrderTable;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,11 +21,6 @@ public class TableGroup extends BaseEntity {
     }
 
     protected TableGroup() {
-    }
-
-    public boolean isNotPaymentFinished() {
-        return orderTables.stream()
-                .anyMatch(OrderTable::isNotPaymentFinished);
     }
 
     public void clearTables() {
