@@ -3,6 +3,7 @@ package kitchenpos.table.domain;
 import kitchenpos.table.exception.InvalidChangeException;
 import kitchenpos.table.exception.NegativeNumberOfGuestsException;
 import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.exception.InvalidGroupException;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -13,6 +14,7 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "table_group_id")
     private Long tableGroupId;
 
     @Column(nullable = false)
@@ -42,19 +44,20 @@ public class OrderTable {
     }
 
     public void group(final TableGroup tableGroup) {
-        checkUnGroup();
+        validateGroup();
 
-//        this.tableGroup = tableGroup;
-//        this.empty = false;
+        this.tableGroupId = tableGroup.getId();
+        this.empty = false;
     }
 
-    private void checkUnGroup() {
-//        if (!empty || Objects.nonNull(tableGroupId)) {
-//            throw new InvalidGroupException("빈 테이블이거나 이미 단체 지정인 경우 단체 지정할 수 없다.");
-//        }
-        if (Objects.nonNull(tableGroupId)) {
-            throw new InvalidChangeException("빈 테이블이거나 이미 단체 지정인 경우 단체 지정할 수 없다.");
+    private void validateGroup() {
+        if (!empty || Objects.nonNull(tableGroupId)) {
+            throw new InvalidGroupException("빈 테이블이 아니거나 단체 지정일 경우 단체 지정을 할 수 없습니다.");
         }
+    }
+
+    public void unGroup() {
+        this.tableGroupId = null;
     }
 
     public void checkIsGroup() {

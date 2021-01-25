@@ -80,7 +80,8 @@ class TableServiceTest extends BaseServiceTest {
         tableGroupService.create(new TableGroupRequest(1L, Arrays.asList(orderTableRequest1, orderTableRequest2)));
 
         assertThatThrownBy(() -> tableService.changeEmpty(orderTableRequest1.getId(), orderTableRequest1))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidChangeException.class)
+                .hasMessage("단체 지정 테이블입니다.");
     }
 
     @DisplayName("주문들 중에서 주문 상태가 조리 또는 식사가 하나라도 있을 경우 변경할 수 없다.")

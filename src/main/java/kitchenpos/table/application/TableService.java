@@ -44,13 +44,13 @@ public class TableService {
         final OrderTable persistOrderTable = findOrderTableById(orderTableId);
         persistOrderTable.checkIsGroup();
 
-        existsByOrderTableIdAndOrderStatusIn(orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
+        checkExistsByOrderTableIdAndOrderStatusIn(orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
 
         persistOrderTable.changeEmpty(orderTableRequest.isEmpty());
         return OrderTableResponse.of(persistOrderTable);
     }
 
-    public void existsByOrderTableIdAndOrderStatusIn(Long orderTableId, List<OrderStatus> orderStatuses) {
+    private void checkExistsByOrderTableIdAndOrderStatusIn(Long orderTableId, List<OrderStatus> orderStatuses) {
         Order persistOrder = findOrderByOrderTableId(orderTableId);
 
         if (orderStatuses.contains(persistOrder.getOrderStatus())) {
@@ -90,5 +90,9 @@ public class TableService {
     public OrderTable findOrderTableById(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
                 .orElseThrow(() -> new NotFoundEntityException("해당 주문 테이블이 등록되어 있지 않습니다."));
+    }
+
+    public List<OrderTable> findAllByTableGroupId(Long tableGroupId) {
+        return orderTableRepository.findAllByTableGroupId(tableGroupId);
     }
 }

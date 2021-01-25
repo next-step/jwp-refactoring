@@ -8,7 +8,6 @@ import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.exception.EmptyOrderTableException;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.exception.InvalidChangeException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
