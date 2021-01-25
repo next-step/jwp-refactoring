@@ -37,10 +37,8 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        TableGroup 테이블그룹_1번 = tableGroupService.findTableGroupById(1l);
-        TableGroup 테이블그룹_2번 = tableGroupService.findTableGroupById(2l);
-        테이블_1번 = 테이블을_생성한다(테이블그룹_1번, 0, true);
-        테이블_2번 = 테이블을_생성한다(테이블그룹_2번, 0, true);
+        테이블_1번 = 테이블을_생성한다(0, true);
+        테이블_2번 = 테이블을_생성한다(0, true);
         orderTables = new ArrayList<>();
         orderTables.add(테이블_1번);
         orderTables.add(테이블_2번);
@@ -52,7 +50,7 @@ class TableGroupServiceTest {
         TableGroup tableGroup = 테이블_그룹을_생성한다(new TableGroup(orderTables));
 
         List<OrderTable> orderTables = tableGroup.getOrderTables();
-        System.out.println(tableGroup);
+
         orderTables.forEach(group -> {
             assertThat(group.getTableGroup().getId()).isEqualTo(tableGroup.getId());
             assertThat(group.isEmpty()).isEqualTo(false);
@@ -93,8 +91,8 @@ class TableGroupServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    private OrderTable 테이블을_생성한다(TableGroup tableGroup, int numberOfGuest, boolean empty) {
-        return tableService.create(new OrderTable(tableGroup, numberOfGuest, empty));
+    private OrderTable 테이블을_생성한다(int numberOfGuest, boolean empty) {
+        return tableService.create(new OrderTable(numberOfGuest, empty));
     }
 
     private void 테이블_그룹을_비운다(Long id) {

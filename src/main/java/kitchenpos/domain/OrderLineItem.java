@@ -64,4 +64,5 @@ public class OrderLineItem {
     public void setQuantity(long quantity) {
         this.quantity = quantity;
     }
+
 }

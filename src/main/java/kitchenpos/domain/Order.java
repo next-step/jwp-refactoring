@@ -26,10 +26,10 @@ public class Order {
     private OrderStatus orderStatus;
 
     @CreatedDate
-    @Column(updatable = false)
+    @Column(name = "ordered_time", updatable = false)
     private LocalDateTime orderedTime;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "order")
     private List<OrderLineItem> orderLineItems;
 
     protected Order() {
@@ -85,5 +85,16 @@ public class Order {
 
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", orderTable=" + orderTable +
+                ", orderStatus=" + orderStatus +
+                ", orderedTime=" + orderedTime +
+                ", orderLineItems=" + orderLineItems +
+                '}';
     }
 }

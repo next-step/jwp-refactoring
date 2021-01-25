@@ -65,26 +65,17 @@ public class OrderService {
         order.setOrderStatus(OrderStatus.COOKING);
         order.setOrderedTime(LocalDateTime.now());
 
-        final Order savedOrder = orderRepository.save(order);
-
         final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
         for (final OrderLineItem orderLineItem : orderLineItems) {
-            orderLineItem.setOrder(savedOrder);
-            savedOrderLineItems.add(orderLineItemRepository.save(orderLineItem));
+            savedOrderLineItems.add(orderLineItem);
         }
-        savedOrder.setOrderLineItems(savedOrderLineItems);
+        order.setOrderLineItems(savedOrderLineItems);
 
-        return savedOrder;
+        return orderRepository.save(order);
     }
 
     public List<Order> list() {
-        final List<Order> orders = orderRepository.findAll();
-
-        for (final Order order : orders) {
-            order.setOrderLineItems(orderLineItemRepository.findAllByOrder(order));
-        }
-
-        return orders;
+        return orderRepository.findAll();
     }
 
     @Transactional
@@ -92,7 +83,7 @@ public class OrderService {
         final Order savedOrder = orderRepository.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        if (Objects.equals(OrderStatus.COMPLETION.name(), savedOrder.getOrderStatus())) {
+        if (Objects.equals(OrderStatus.COMPLETION, savedOrder.getOrderStatus())) {
             throw new IllegalArgumentException();
         }
 
@@ -100,8 +91,6 @@ public class OrderService {
         savedOrder.setOrderStatus(orderStatus);
 
         orderRepository.save(savedOrder);
-
-        savedOrder.setOrderLineItems(orderLineItemRepository.findAllByOrder(savedOrder));
 
         return savedOrder;
     }
