@@ -14,27 +14,18 @@ public class Order extends BaseEntity {
     private OrderTable orderTable;
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
-    @Embedded
-    private final OrderMenus orderMenus = new OrderMenus();
 
-    public Order(OrderTable orderTable) {
+    public Order(OrderTable orderTable, List<OrderMenu> orderMenus) {
+        validate(orderTable, orderMenus);
         this.orderTable = orderTable;
         this.orderStatus = OrderStatus.COOKING;
-    }
-
-    public static Order createOrder(OrderTable orderTable, List<OrderMenu> orderMenus) {
-        validate(orderTable, orderMenus);
-        Order order = new Order(orderTable);
-        orderMenus.forEach(order::addOrderMenu);
-        return order;
     }
 
     protected Order() {
     }
 
-    public void addOrderMenu(OrderMenu orderMenu) {
-        orderMenu.changeOrder(this);
-        orderMenus.add(orderMenu);
+    public boolean isSame(Order order) {
+        return order == this;
     }
 
     public void changeStatus(OrderStatus orderStatus) {
@@ -58,10 +49,6 @@ public class Order extends BaseEntity {
 
     public OrderStatus getOrderStatus() {
         return orderStatus;
-    }
-
-    public List<OrderMenu> getOrderMenus() {
-        return orderMenus.getOrderMenus();
     }
 
     private static void validate(OrderTable orderTable, List<OrderMenu> orderMenus) {

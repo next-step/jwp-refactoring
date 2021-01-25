@@ -16,8 +16,8 @@ public class OrderResponse {
     private final LocalDateTime createdAt;
     private final List<OrderMenuResponse> orderMenus;
 
-    public static OrderResponse from(Order order) {
-        return new OrderResponse(order.getId(), order.getOrderTable().getId(), order.getOrderStatus(), order.getCreatedAt(), convertOrderMenuResponses(order.getOrderMenus()));
+    public static OrderResponse of(Order order, List<OrderMenu> orderMenus) {
+        return new OrderResponse(order.getId(), order.getOrderTable().getId(), order.getOrderStatus(), order.getCreatedAt(), convertOrderMenuResponses(orderMenus));
     }
 
     private OrderResponse(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime createdAt, List<OrderMenuResponse> orderMenus) {

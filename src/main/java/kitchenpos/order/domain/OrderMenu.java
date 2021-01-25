@@ -3,7 +3,10 @@ package kitchenpos.order.domain;
 import kitchenpos.common.domain.BaseEntity;
 import kitchenpos.menu.domain.Menu;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class OrderMenu extends BaseEntity {
@@ -24,8 +27,9 @@ public class OrderMenu extends BaseEntity {
     protected OrderMenu() {
     }
 
-    public void changeOrder(Order order) {
+    public OrderMenu changeOrder(Order order) {
         this.order = order;
+        return this;
     }
 
     public Order getOrder() {
