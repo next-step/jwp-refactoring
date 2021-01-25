@@ -3,7 +3,10 @@ package kitchenpos.table.domain;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -11,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.util.CollectionUtils;
 
 @Entity
 public class TableGroup {
@@ -21,8 +25,8 @@ public class TableGroup {
     @CreatedDate
     private LocalDateTime createdDate;
 
-    @OneToMany(mappedBy = "tableGroup")
-    private List<OrderTable> orderTables = new ArrayList<>();
+    @Embedded
+    private OrderTables orderTables;
 
     public TableGroup() {
     }
@@ -31,31 +35,34 @@ public class TableGroup {
         this.createdDate = createdDate;
     }
 
-    public Long getId() {
-        return id;
+    public TableGroup(List<OrderTable> orderTables) {
+        validateOrderTablesSize(orderTables);
+
+        this.orderTables = new OrderTables(orderTables, this);
+        this.createdDate = LocalDateTime.now();
     }
 
-    public void setId(final Long id) {
-        this.id = id;
+    private void validateOrderTablesSize(List<OrderTable> orderTables) {
+        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
+            throw new IllegalArgumentException();
+        }
+
+        for (final OrderTable savedOrderTable : orderTables) {
+            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup())) {
+                throw new IllegalArgumentException();
+            }
+        }
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public LocalDateTime getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(final LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
     public List<OrderTable> getOrderTables() {
-        return orderTables;
-    }
-
-    public void setOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
-    }
-
-    public void addOrderTable(OrderTable orderTable) {
-        orderTables.add(orderTable);
+        return orderTables.getOrderTables();
     }
 }

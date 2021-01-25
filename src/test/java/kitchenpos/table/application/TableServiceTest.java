@@ -12,6 +12,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.utils.IntegrationTest;
 
 /**
@@ -29,13 +31,9 @@ class TableServiceTest extends IntegrationTest {
 	@Test
 	void create(){
 		// given
-		TableGroup tableGroup = new TableGroup();
-		ReflectionTestUtils.setField(tableGroup, "id", 1L);
-
-		OrderTable orderTable = new OrderTable(tableGroup, 3, true);
-
+		OrderTableRequest orderTableRequest = new OrderTableRequest(3);
 		// when
-		OrderTable createdOrderTable = tableService.create(orderTable);
+		OrderTable createdOrderTable = tableService.create(orderTableRequest);
 
 		// then
 		assertThat(createdOrderTable.getId()).isNotNull();
@@ -45,10 +43,9 @@ class TableServiceTest extends IntegrationTest {
 	@Test
 	void list() {
 		// given
-		TableGroup tableGroup = new TableGroup();
-		ReflectionTestUtils.setField(tableGroup, "id", 1L);
-		OrderTable orderTable = new OrderTable(tableGroup, 3, true);
-		OrderTable createdOrderTable = tableService.create(orderTable);
+
+		OrderTableRequest orderTableRequest = new OrderTableRequest(3);
+		OrderTable createdOrderTable = tableService.create(orderTableRequest);
 
 		// when
 		List<OrderTable> orderTables = tableService.list();
@@ -58,19 +55,19 @@ class TableServiceTest extends IntegrationTest {
 		// then
 		assertThat(actualOrderTableIds).contains(createdOrderTable.getId());
 	}
-
 	@DisplayName("테이블을 비울 수 있다.")
 	@Test
 	void changeEmpty(){
 		// given
 		TableGroup tableGroup = new TableGroup();
 		ReflectionTestUtils.setField(tableGroup, "id", 1L);
-		OrderTable createdOrderTable = tableService.create(new OrderTable(tableGroup, 3, true));
+		OrderTable orderTable = new OrderTable(tableGroup, 3, true);
+		OrderTableRequest orderTableRequest = new OrderTableRequest(3);
+		OrderTable createdOrderTable = tableService.create(orderTableRequest);
 
-		OrderTable orderTableRequest = new OrderTable();
-		ReflectionTestUtils.setField(orderTableRequest, "empty", true);
+		OrderTableRequest orderTableEmptyRequest = new OrderTableRequest(true);
 		// when
-		OrderTable finalSavedOrderTable = tableService.changeEmpty(createdOrderTable.getId(), orderTableRequest);
+		OrderTable finalSavedOrderTable = tableService.changeEmpty(createdOrderTable.getId(), orderTableEmptyRequest);
 
 		// then
 		assertThat(finalSavedOrderTable.isEmpty()).isTrue();
@@ -81,11 +78,10 @@ class TableServiceTest extends IntegrationTest {
 	void notExistOrderTableCannotChangeEmpty(){
 		// given
 		Long invalidOrderTableId = 1000L;
-		OrderTable orderTableRequest = new OrderTable();
-		ReflectionTestUtils.setField(orderTableRequest, "empty", true);
+		OrderTableRequest orderTableEmptyRequest = new OrderTableRequest(true);
 		// when - then
 		assertThatThrownBy(() -> {
-			tableService.changeEmpty(invalidOrderTableId, orderTableRequest);
+			tableService.changeEmpty(invalidOrderTableId, orderTableEmptyRequest);
 		}).isInstanceOf(IllegalArgumentException.class);
 	}
 
@@ -96,16 +92,15 @@ class TableServiceTest extends IntegrationTest {
 		Long cookingOrderId = 6L; //V2_Insert_default_data.sql
 		Long mealOrderId = 7L; //V2_Insert_default_data.sql
 
-		OrderTable orderTableRequest = new OrderTable();
-		ReflectionTestUtils.setField(orderTableRequest, "empty", true);
+		OrderTableRequest orderTableEmptyRequest = new OrderTableRequest(true);
 
 		// when - then
 		assertThatThrownBy(() -> {
-			tableService.changeEmpty(cookingOrderId, orderTableRequest);
+			tableService.changeEmpty(cookingOrderId, orderTableEmptyRequest);
 		}).isInstanceOf(IllegalArgumentException.class);
 
 		assertThatThrownBy(() -> {
-			tableService.changeEmpty(mealOrderId, orderTableRequest);
+			tableService.changeEmpty(mealOrderId, orderTableEmptyRequest);
 		}).isInstanceOf(IllegalArgumentException.class);
 	}
 
@@ -135,7 +130,7 @@ class TableServiceTest extends IntegrationTest {
 
 		// when - then
 		assertThatThrownBy(() -> {
-			tableService.changeEmpty(mealAndThreeNumberOfGuestOrderId, orderTableRequest);
+			tableService.changeNumberOfGuests(mealAndThreeNumberOfGuestOrderId, orderTableRequest);
 		}).isInstanceOf(IllegalArgumentException.class);
 	}
 
@@ -148,7 +143,7 @@ class TableServiceTest extends IntegrationTest {
 
 		// when - then
 		assertThatThrownBy(() -> {
-			tableService.changeEmpty(orderTableId, orderTableRequest);
+			tableService.changeNumberOfGuests(orderTableId, orderTableRequest);
 		}).isInstanceOf(IllegalArgumentException.class);
 
 	}

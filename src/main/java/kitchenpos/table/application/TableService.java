@@ -11,6 +11,8 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.orders.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 
 @Service
 public class TableService {
@@ -23,9 +25,9 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTable create(final OrderTable orderTable) {
-        orderTable.changeTableGroup(null);
-
+    public OrderTable create(final OrderTableRequest orderTableRequest) {
+        OrderTable orderTable = new OrderTable(orderTableRequest.getNumberOfGuests());
+        //orderTable.changeTableGroup(null);
         return orderTableDao.save(orderTable);
     }
 
@@ -34,13 +36,11 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTable changeEmpty(final Long orderTableId, final OrderTable orderTable) {
+    public OrderTable changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = orderTableDao.findById(orderTableId).orElseThrow(IllegalArgumentException::new);
 
         if (Objects.nonNull(savedOrderTable.getTableGroup())) {
             throw new IllegalArgumentException();
-        }else{
-            System.out.println("whattt : " + savedOrderTable.getTableGroup());
         }
 
         if (orderDao.existsByOrderTableIdAndOrderStatusIn(
@@ -48,7 +48,7 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-        savedOrderTable.changeEmpty(orderTable.isEmpty());
+        savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
 
         return orderTableDao.save(savedOrderTable);
     }

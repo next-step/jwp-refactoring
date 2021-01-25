@@ -2,6 +2,8 @@ package kitchenpos.table.application;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,10 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
+import kitchenpos.dao.TableGroupDao;
 import kitchenpos.orders.domain.OrderStatus;
 import kitchenpos.orders.domain.Orders;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupResponse;
 import kitchenpos.utils.IntegrationTest;
 
 /**
@@ -32,28 +38,25 @@ class TableGroupServiceTest extends IntegrationTest {
 	@Autowired
 	private OrderDao orderDao;
 
-
 	@DisplayName("단체를 지정할 수 있다.")
 	@Test
 	void create() {
 		// given
 		OrderTable orderTable1 = new OrderTable(0, true);
-		orderTableDao.save(orderTable1);
+		OrderTable savedOrderTable1 = orderTableDao.save(orderTable1);
 
 		OrderTable orderTable2 = new OrderTable(0, true);
-		orderTableDao.save(orderTable2);
+		OrderTable savedOrderTable2 = orderTableDao.save(orderTable2);
 
 		// when
-		TableGroup tableGroup = new TableGroup();
-		tableGroup.addOrderTable(orderTable1);
-		tableGroup.addOrderTable(orderTable2);
-		TableGroup finalSavedTableGroup = tableGroupService.create(tableGroup);
+		TableGroupRequest request = new TableGroupRequest(Arrays.asList(savedOrderTable1.getId(), savedOrderTable2.getId()));
+		TableGroupResponse finalSavedTableGroup = tableGroupService.create(request);
 
 		// then
 		assertThat(finalSavedTableGroup.getId()).isNotNull();
 
 		List<Long> actualOrderTableIds = finalSavedTableGroup.getOrderTables().stream()
-			.map(OrderTable::getId)
+			.map(OrderTableResponse::getId)
 			.collect(Collectors.toList());
 		assertThat(actualOrderTableIds).containsExactly(orderTable1.getId(), orderTable2.getId());
 	}
@@ -62,31 +65,23 @@ class TableGroupServiceTest extends IntegrationTest {
 	@Test
 	void tableCountMustOverTwice() {
 		// given
-		OrderTable orderTable1 = new OrderTable(0, true);
-		orderTableDao.save(orderTable1);
+		OrderTable orderTable = new OrderTable(0, true);
+		OrderTable savedOrderTable = orderTableDao.save(orderTable);
 
-		TableGroup tableGroup = new TableGroup();
-		tableGroup.addOrderTable(orderTable1);
+		TableGroupRequest request = new TableGroupRequest(Arrays.asList(savedOrderTable.getId()));
 		// when
 		assertThatThrownBy(() -> {
-			tableGroupService.create(tableGroup);
+			tableGroupService.create(request);
 		}).isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@DisplayName("주문한 테이블들이 실제로 존재하지 않는 경우 단체로 지정할 수 없다.")
 	@Test
 	void requestedOrderTableMustExist() {
-		// given
-		OrderTable orderTable1 = new OrderTable(0, true);
-		OrderTable orderTable2 = new OrderTable(0, true);
-
-		// when
-		TableGroup tableGroup = new TableGroup();
-		tableGroup.addOrderTable(orderTable1);
-		tableGroup.addOrderTable(orderTable2);
 		// when - then
+		TableGroupRequest request = new TableGroupRequest(Arrays.asList(22222L, 333333L));
 		assertThatThrownBy(() -> {
-			tableGroupService.create(tableGroup);
+			tableGroupService.create(request);
 		}).isInstanceOf(IllegalArgumentException.class);
 	}
 
@@ -95,19 +90,17 @@ class TableGroupServiceTest extends IntegrationTest {
 	void requestedOrderTableMustEmpty() {
 		// given
 		OrderTable orderTable1 = new OrderTable(0, false);
-		orderTableDao.save(orderTable1);
+		OrderTable savedOrderTable1 = orderTableDao.save(orderTable1);
 
 		OrderTable orderTable2 = new OrderTable(0, false);
-		orderTableDao.save(orderTable2);
+		OrderTable saveOrderTable2 = orderTableDao.save(orderTable2);
 
 		// when
-		TableGroup tableGroup = new TableGroup();
-		tableGroup.addOrderTable(orderTable1);
-		tableGroup.addOrderTable(orderTable2);
 
+		TableGroupRequest request = new TableGroupRequest(Arrays.asList(savedOrderTable1.getId(), saveOrderTable2.getId()));
 		// when - then
 		assertThatThrownBy(() -> {
-			tableGroupService.create(tableGroup);
+			tableGroupService.create(request);
 		}).isInstanceOf(IllegalArgumentException.class);
 	}
 
@@ -116,15 +109,13 @@ class TableGroupServiceTest extends IntegrationTest {
 	void ungroup(){
 		// given
 		OrderTable orderTable1 = new OrderTable(0, true);
-		orderTableDao.save(orderTable1);
+		OrderTable savedOrderTable1 = orderTableDao.save(orderTable1);
 
 		OrderTable orderTable2 = new OrderTable(0, true);
-		orderTableDao.save(orderTable2);
+		OrderTable savedOrderTable2 = orderTableDao.save(orderTable2);
 
-		TableGroup tableGroup = new TableGroup();
-		tableGroup.addOrderTable(orderTable1);
-		tableGroup.addOrderTable(orderTable2);
-		TableGroup finalSavedTableGroup = tableGroupService.create(tableGroup);
+		TableGroupRequest request = new TableGroupRequest(Arrays.asList(savedOrderTable1.getId(), savedOrderTable2.getId()));
+		TableGroupResponse finalSavedTableGroup = tableGroupService.create(request);
 
 		// when
 		tableGroupService.ungroup(finalSavedTableGroup.getId());
@@ -140,7 +131,6 @@ class TableGroupServiceTest extends IntegrationTest {
 
 	}
 
-
 	@DisplayName("테이블중 요리중이거나 식사중인 상태인 경우 단체를 해제할 수 없다.")
 	@Test
 	void cookingOrMealCannotCreateTableGroup() {
@@ -149,12 +139,10 @@ class TableGroupServiceTest extends IntegrationTest {
 		OrderTable savedOrderTable1 = orderTableDao.save(orderTable1);
 
 		OrderTable orderTable2 = new OrderTable(0, true);
-		orderTableDao.save(orderTable2);
+		OrderTable savedOrderTable2 = orderTableDao.save(orderTable2);
 
-		TableGroup tableGroup = new TableGroup();
-		tableGroup.addOrderTable(orderTable1);
-		tableGroup.addOrderTable(orderTable2);
-		TableGroup savedTableGroup = tableGroupService.create(tableGroup);
+		TableGroupRequest request = new TableGroupRequest(Arrays.asList(savedOrderTable1.getId(), savedOrderTable2.getId()));
+		TableGroupResponse savedTableGroup = tableGroupService.create(request);
 
 		orderDao.save(new Orders(savedOrderTable1.getId(), OrderStatus.MEAL.name()));
 

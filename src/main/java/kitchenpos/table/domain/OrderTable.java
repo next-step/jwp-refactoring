@@ -38,6 +38,15 @@ public class OrderTable {
 		this.empty = empty;
 	}
 
+	public OrderTable(int numberOfGuests) {
+		this.numberOfGuests = numberOfGuests;
+		this.empty = true;
+	}
+
+	public OrderTable(boolean empty) {
+		this.empty = empty;
+	}
+
 	public Long getId() {
 		return id;
 	}
