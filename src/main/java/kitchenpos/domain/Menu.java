@@ -21,7 +21,7 @@ public class Menu {
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MenuProduct> menuProducts;
 
-    public Menu() {
+    protected Menu() {
     }
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
@@ -29,6 +29,17 @@ public class Menu {
         this.price = price;
         this.menuGroup = menuGroup;
         this.menuProducts = new ArrayList<>();
+    }
+
+    public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        this.name = name;
+        this.price = price;
+        this.menuGroup = menuGroup;
+        this.menuProducts = menuProducts;
+    }
+
+    public void updateMenuProducts(List<MenuProduct> menuProducts) {
+        menuProducts.addAll(menuProducts);
     }
 
     public Long getId() {

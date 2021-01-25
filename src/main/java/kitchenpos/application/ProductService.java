@@ -1,8 +1,8 @@
 package kitchenpos.application;
 
 import kitchenpos.advice.exception.ProductException;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+import kitchenpos.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,10 +12,10 @@ import java.util.Objects;
 
 @Service
 public class ProductService {
-    private final ProductDao productDao;
+    private final ProductRepository productRepository;
 
-    public ProductService(final ProductDao productDao) {
-        this.productDao = productDao;
+    public ProductService(final ProductRepository productRepository) {
+        this.productRepository = productRepository;
     }
 
     @Transactional
@@ -26,14 +26,14 @@ public class ProductService {
             throw new ProductException("상품 가격이 없거나 0보다 작습니다", price);
         }
 
-        return productDao.save(product);
+        return productRepository.save(product);
     }
 
     public List<Product> list() {
-        return productDao.findAll();
+        return productRepository.findAll();
     }
 
     public Product findById(Long id) {
-        return productDao.findById(id).orElseThrow(()->new ProductException("존재하지 않는 상품 id입니다", id));
+        return productRepository.findById(id).orElseThrow(()->new ProductException("존재하지 않는 상품 id입니다", id));
     }
 }
