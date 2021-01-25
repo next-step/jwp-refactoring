@@ -18,14 +18,10 @@ public class Menu extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_group_id", nullable = false)
     private MenuGroup menuGroup;
-    @Embedded
-    private final MenuProducts menuProducts = new MenuProducts();
 
     public static Menu create(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         validate(price, menuGroup, menuProducts);
-        Menu menu = new Menu(name, price, menuGroup);
-        menuProducts.forEach(menu::addMenuProduct);
-        return menu;
+        return new Menu(name, price, menuGroup);
     }
 
     private Menu(String name, BigDecimal price, MenuGroup menuGroup) {
@@ -35,11 +31,6 @@ public class Menu extends BaseEntity {
     }
 
     protected Menu() {
-    }
-
-    private void addMenuProduct(MenuProduct menuProduct) {
-        menuProduct.updateMenu(this);
-        this.menuProducts.add(menuProduct);
     }
 
     public String getName() {
@@ -52,10 +43,6 @@ public class Menu extends BaseEntity {
 
     public Long getMenuGroupId() {
         return menuGroup.getId();
-    }
-
-    public List<MenuProduct> getMenuProducts() {
-        return menuProducts.getMenuProducts();
     }
 
     private static void validate(BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
