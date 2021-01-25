@@ -6,14 +6,18 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.dto.TableGroupReponse;
+import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.ui.TableGroupRestController;
 import kitchenpos.table.ui.TableRestController;
 
@@ -22,41 +26,48 @@ import kitchenpos.table.ui.TableRestController;
 class TableGroupRestControllerTest {
 
 	@Autowired
-	TableRestController tableRestController;
+	private TableRestController tableRestController;
 
 	@Autowired
-	TableGroupRestController tableGroupRestController;
+	private TableGroupRestController tableGroupRestController;
+
+	private List<OrderTableRequest> 주문_테이블_요청;
+
+	@BeforeEach
+	void setUp() {
+		주문_테이블_요청 = tableRestController.list()
+			.getBody()
+			.stream()
+			.map(response -> new OrderTableRequest.Builder().id(response.getId()).build())
+			.collect(Collectors.toList());
+	}
 
 	@Test
 	void create() {
 		// given
-		List<OrderTable> 주문_테이블_목록 = tableRestController.list().getBody();
-
-		TableGroup 단체_지정 = new TableGroup();
-		단체_지정.setOrderTables(주문_테이블_목록);
+		TableGroupRequest 단체_지정_요청 = new TableGroupRequest(주문_테이블_요청);
 
 		// when
-		TableGroup createdTableGroup = tableGroupRestController.create(단체_지정).getBody();
+		TableGroupReponse reponse = tableGroupRestController.create(단체_지정_요청).getBody();
 
 		// then
 		assertAll(
-			() -> assertThat(createdTableGroup.getId()).isNotZero(),
-			() -> assertThat(createdTableGroup.getOrderTables()).map(OrderTable::isEmpty).allMatch(isEqual(false))
+			() -> assertThat(reponse.getId()).isNotZero(),
+			() -> assertThat(reponse.getOrderTables()).map(OrderTableResponse::isEmpty).allMatch(isEqual(false))
 		);
 	}
 
 	@Test
 	void ungroup() {
 		// given
-		List<OrderTable> 주문_테이블_목록 = tableRestController.list().getBody();
-		TableGroup 단체_지정 = new TableGroup();
-		단체_지정.setOrderTables(주문_테이블_목록);
-		TableGroup createdTableGroup = tableGroupRestController.create(단체_지정).getBody();
+		TableGroupReponse created = tableGroupRestController.create(new TableGroupRequest(주문_테이블_요청)).getBody();
 
 		// when
-		tableGroupRestController.ungroup(createdTableGroup.getId());
+		tableGroupRestController.ungroup(created.getId());
 
 		// then
-		assertThat(tableRestController.list().getBody()).map(OrderTable::getTableGroup).allMatch(Objects::isNull);
+		assertThat(tableRestController.list().getBody())
+			.map(OrderTableResponse::getTableGroupId)
+			.allMatch(Objects::isNull);
 	}
 }

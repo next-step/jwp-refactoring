@@ -16,9 +16,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.product.domain.ProductDao;
-import kitchenpos.product.domain.Product;
 import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductDao;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 
 @DisplayName("상품 BO 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -34,20 +36,22 @@ class ProductServiceTest {
 	@Test
 	void create_happyPath() {
 		// given
-		Product 새_상품 = new Product.Builder().name("새상품").price(BigDecimal.valueOf(4000L)).build();
-		given(productDao.save(새_상품)).willAnswer(invocation -> {
-			새_상품.setId(1L);
-			return 새_상품;
+		ProductRequest 새_상품_요청 = new ProductRequest("새상품", BigDecimal.valueOf(4000L));
+
+		given(productDao.save(any(Product.class))).willAnswer(invocation -> {
+			Product request = invocation.getArgument(0, Product.class);
+			request.setId(1L);
+			return request;
 		});
 
 		// when
-		Product persistProduct = productService.create(새_상품);
+		ProductResponse response = productService.create(새_상품_요청);
 
 		// then
 		assertAll(
-			() -> assertThat(persistProduct.getId()).isEqualTo(1L),
-			() -> assertThat(persistProduct.getName()).isEqualTo(새_상품.getName()),
-			() -> assertThat(persistProduct.getPrice()).isEqualTo(새_상품.getPrice())
+			() -> assertThat(response.getId()).isEqualTo(1L),
+			() -> assertThat(response.getName()).isEqualTo(새_상품_요청.getName()),
+			() -> assertThat(response.getPrice()).isEqualTo(새_상품_요청.getPrice().longValue())
 		);
 	}
 
@@ -55,10 +59,10 @@ class ProductServiceTest {
 	@Test
 	void create_exceptionCase() {
 		// given
-		Product 새_상품 = new Product.Builder().name("새상품").price(BigDecimal.valueOf(-1L)).build();
+		ProductRequest 새_상품_요청 = new ProductRequest("새상품", BigDecimal.valueOf(-1L));
 
 		// when & then
-		assertThatThrownBy(() -> productService.create(새_상품)).isInstanceOf(IllegalArgumentException.class);
+		assertThatThrownBy(() -> productService.create(새_상품_요청)).isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@DisplayName("상품 목록 조회")
@@ -68,20 +72,20 @@ class ProductServiceTest {
 		given(productDao.findAll()).willReturn(Arrays.asList(상품1, 상품2));
 
 		// when
-		List<Product> persistProductList = productService.list();
+		List<ProductResponse> listResponse = productService.list();
 
 		// then
-		assertThat(persistProductList)
+		assertThat(listResponse)
 			.hasSize(2)
-			.anySatisfy(product -> {
-				assertThat(product.getId()).isEqualTo(상품1.getId());
-				assertThat(product.getName()).isEqualTo(상품1.getName());
-				assertThat(product.getPrice()).isEqualTo(상품1.getPrice());
+			.anySatisfy(productResponse -> {
+				assertThat(productResponse.getId()).isEqualTo(상품1.getId());
+				assertThat(productResponse.getName()).isEqualTo(상품1.getName());
+				assertThat(productResponse.getPrice()).isEqualTo(상품1.getPrice().longValue());
 			})
-			.anySatisfy(product -> {
-				assertThat(product.getId()).isEqualTo(상품2.getId());
-				assertThat(product.getName()).isEqualTo(상품2.getName());
-				assertThat(product.getPrice()).isEqualTo(상품2.getPrice());
+			.anySatisfy(productResponse -> {
+				assertThat(productResponse.getId()).isEqualTo(상품2.getId());
+				assertThat(productResponse.getName()).isEqualTo(상품2.getName());
+				assertThat(productResponse.getPrice()).isEqualTo(상품2.getPrice().longValue());
 			});
 	}
 }

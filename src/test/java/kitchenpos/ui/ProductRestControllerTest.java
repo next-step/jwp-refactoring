@@ -11,7 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
-import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.product.ui.ProductRestController;
 
 @SpringBootTest
@@ -24,18 +25,16 @@ class ProductRestControllerTest {
 	@Test
 	void create() {
 		// given
-		Product 새_상품 = new Product();
-		새_상품.setPrice(BigDecimal.valueOf(4000L));
-		새_상품.setName("새_상품");
+		ProductRequest 새_상품_요청 = new ProductRequest("새_상품", BigDecimal.valueOf(4000L));
 
 		// when
-		Product createdProduct = productRestController.create(새_상품).getBody();
+		ProductResponse response = productRestController.create(새_상품_요청).getBody();
 
 		// then
 		assertAll(
-			() -> assertThat(createdProduct.getId()).isNotZero(),
-			() -> assertThat(createdProduct.getName()).isEqualTo("새_상품"),
-			() -> assertThat(createdProduct.getPrice()).isEqualByComparingTo(BigDecimal.valueOf(4000L))
+			() -> assertThat(response.getId()).isNotZero(),
+			() -> assertThat(response.getName()).isEqualTo("새_상품"),
+			() -> assertThat(response.getPrice()).isEqualTo(4000L)
 		);
 	}
 
@@ -45,12 +44,12 @@ class ProductRestControllerTest {
 		// @see V2__Insert_default_data.sql
 
 		// when
-		List<Product> productList = productRestController.list().getBody();
+		List<ProductResponse> listResponse = productRestController.list().getBody();
 
 		// then
-		assertThat(productList)
+		assertThat(listResponse)
 			.hasSize(6)
-			.map(Product::getName)
+			.map(ProductResponse::getName)
 			.contains("후라이드", "양념치킨", "반반치킨", "통구이", "간장치킨", "순살치킨");
 	}
 }

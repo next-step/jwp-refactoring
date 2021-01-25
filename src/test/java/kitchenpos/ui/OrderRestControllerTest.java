@@ -4,6 +4,7 @@ import static kitchenpos.TestFixtures.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -11,12 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTable;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderLineItemResponse;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.ui.OrderRestController;
+import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.ui.TableRestController;
 
 @SpringBootTest
@@ -32,68 +34,62 @@ class OrderRestControllerTest {
 	@Test
 	void create() {
 		// given
-		Order 주문 = 주문_객체_생성();
+		OrderRequest 주문_요청 = 주문_요청_생성();
 
 		// when
-		Order createdOrder = orderRestController.create(주문).getBody();
+		OrderResponse response = orderRestController.create(주문_요청).getBody();
 
 		// then
 		assertAll(
-			() -> assertThat(createdOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING),
-			() -> assertThat(createdOrder.getOrderTable().getId()).isEqualTo(주문_테이블1.getId()),
-			() -> assertThat(createdOrder.getOrderLineItems())
-				.map(OrderLineItem::getMenu)
-				.map(Menu::getName)
-				.contains(메뉴1.getName(), 메뉴2.getName())
+			() -> assertThat(response.getOrderStatus()).isEqualTo(OrderStatus.COOKING),
+			() -> assertThat(response.getOrderTableId()).isEqualTo(주문_테이블1.getId()),
+			() -> assertThat(response.getOrderLineItems())
+				.map(OrderLineItemResponse::getMenuId)
+				.contains(메뉴1.getId(), 메뉴2.getId())
 		);
 	}
 
 	@Test
 	void list() {
 		// given
-		orderRestController.create(주문_객체_생성());
+		orderRestController.create(주문_요청_생성());
 
 		// when
-		List<Order> orderList = orderRestController.list().getBody();
+		List<OrderResponse> responseList = orderRestController.list().getBody();
 
 		// then
-		assertThat(orderList).hasSize(1);
-		assertThat(orderList.get(0).getOrderStatus()).isEqualTo(OrderStatus.COOKING);
-		assertThat(orderList.get(0).getOrderTable().getId()).isEqualTo(주문_테이블1.getId());
-		assertThat(orderList.get(0).getOrderLineItems())
-			.map(OrderLineItem::getMenu)
-			.map(Menu::getName)
-			.contains(메뉴1.getName(), 메뉴2.getName());
+		assertThat(responseList).hasSize(1);
+		assertThat(responseList.get(0).getOrderStatus()).isEqualTo(OrderStatus.COOKING);
+		assertThat(responseList.get(0).getOrderTableId()).isEqualTo(주문_테이블1.getId());
+		assertThat(responseList.get(0).getOrderLineItems())
+			.map(OrderLineItemResponse::getMenuId)
+			.contains(메뉴1.getId(), 메뉴2.getId());
 	}
 
 	@Test
 	void changeOrderStatus() {
 		// given
-		Long 주문_ID = orderRestController.create(주문_객체_생성()).getBody().getId();
+		Long 주문_ID = orderRestController.create(주문_요청_생성()).getBody().getId();
 
 		// when
-		Order temp = new Order();
-		temp.setOrderStatus(OrderStatus.COMPLETION);
-		Order updatedOrder = orderRestController.changeOrderStatus(주문_ID, temp).getBody();
+		OrderResponse response = orderRestController.changeOrderStatus(주문_ID, new OrderRequest(OrderStatus.COMPLETION))
+			.getBody();
 
 		// then
 		assertAll(
-			() -> assertThat(updatedOrder.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION),
-			() -> assertThat(updatedOrder.getOrderTable().getId()).isEqualTo(주문_테이블1.getId()),
-			() -> assertThat(updatedOrder.getOrderLineItems())
-				.map(OrderLineItem::getMenu)
-				.map(Menu::getName)
-				.contains(메뉴1.getName(), 메뉴2.getName())
+			() -> assertThat(response.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION),
+			() -> assertThat(response.getOrderTableId()).isEqualTo(주문_테이블1.getId()),
+			() -> assertThat(response.getOrderLineItems())
+				.map(OrderLineItemResponse::getMenuId)
+				.contains(메뉴1.getId(), 메뉴2.getId())
 		);
 	}
 
-	private Order 주문_객체_생성() {
-		OrderLineItem 주문_항목1 = new OrderLineItem.Builder().menu(메뉴1).quantity(1L).build();
-		OrderLineItem 주문_항목2 = new OrderLineItem.Builder().menu(메뉴2).quantity(2L).build();
-		Order 주문 = new Order.Builder().orderTable(주문_테이블1).orderLineItems(주문_항목1, 주문_항목2).build();
+	private OrderRequest 주문_요청_생성() {
+		tableRestController.changeEmpty(주문_테이블1.getId(), new OrderTableRequest.Builder().empty(false).build());
 
-		tableRestController.changeEmpty(주문_테이블1.getId(), new OrderTable.Builder().empty(false).build());
-
-		return 주문;
+		OrderLineItemRequest 주문_항목1_요청 = new OrderLineItemRequest(null, 메뉴1.getId(), 1L);
+		OrderLineItemRequest 주문_항목2_요청 = new OrderLineItemRequest(null, 메뉴2.getId(), 2L);
+		return new OrderRequest(주문_테이블1.getId(), Arrays.asList(주문_항목1_요청, 주문_항목2_요청));
 	}
 }

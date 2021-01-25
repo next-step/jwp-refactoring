@@ -14,12 +14,16 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.order.domain.OrderDao;
-import kitchenpos.table.domain.OrderTableDao;
-import kitchenpos.table.domain.TableGroupDao;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.application.TableGroupService;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableDao;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.domain.TableGroupDao;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.dto.TableGroupReponse;
+import kitchenpos.table.dto.TableGroupRequest;
 
 @DisplayName("단체 지정 BO 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -39,20 +43,27 @@ class TableGroupServiceTest {
 	@Test
 	void create_happyPath() {
 		// given
-		TableGroup 단체_지정 = new TableGroup.Builder().orderTables(주문_테이블1, 주문_테이블2).build();
 		given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(주문_테이블1, 주문_테이블2));
-		given(tableGroupDao.save(단체_지정)).willAnswer(invocation -> {
-			단체_지정.setId(1L);
-			return 단체_지정;
+		given(tableGroupDao.save(any(TableGroup.class))).willAnswer(invocation -> {
+			TableGroup request = invocation.getArgument(0, TableGroup.class);
+			request.setId(1L);
+			return request;
 		});
 
 		// when
-		TableGroup savetableGroup = tableGroupService.create(단체_지정);
+		OrderTableRequest 주문_테이블1_요청 = new OrderTableRequest.Builder().id(주문_테이블1.getId()).build();
+		OrderTableRequest 주문_테이블2_요청 = new OrderTableRequest.Builder().id(주문_테이블2.getId()).build();
+		TableGroupRequest 단체_지정_요청 = new TableGroupRequest(Arrays.asList(주문_테이블1_요청, 주문_테이블2_요청));
+		TableGroupReponse 단체_지정_요청_응답 = tableGroupService.create(단체_지정_요청);
 
 		// then
-		assertThat(savetableGroup).isEqualTo(단체_지정);
-		assertThat(savetableGroup.getOrderTables()).contains(주문_테이블1, 주문_테이블2);
-		assertThat(savetableGroup.getOrderTables()).map(OrderTable::isEmpty).containsExactly(false, false);
+		assertThat(단체_지정_요청_응답.getId()).isEqualTo(1L);
+		assertThat(단체_지정_요청_응답.getOrderTables())
+			.map(OrderTableResponse::getId)
+			.contains(주문_테이블1.getId(), 주문_테이블2.getId());
+		assertThat(단체_지정_요청_응답.getOrderTables())
+			.map(OrderTableResponse::isEmpty)
+			.containsExactly(false, false);
 	}
 
 	@DisplayName("단체 지정 : 문 테이블들이 이미 단체 지정 되어있음")
@@ -62,11 +73,14 @@ class TableGroupServiceTest {
 		TableGroup 이미_단체_지정 = new TableGroup.Builder().id(-1L).build();
 		OrderTable 주문_테이블9 = new OrderTable.Builder().id(9L).tableGroup(이미_단체_지정).empty(true).build();
 		OrderTable 주문_테이블10 = new OrderTable.Builder().id(10L).tableGroup(이미_단체_지정).empty(true).build();
-		TableGroup 단체_지정 = new TableGroup.Builder().orderTables(주문_테이블9, 주문_테이블10).build();
 		given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(주문_테이블9, 주문_테이블10));
 
 		// when & then
-		assertThatThrownBy(() -> tableGroupService.create(단체_지정)).isInstanceOf(IllegalArgumentException.class);
+		OrderTableRequest 주문_테이블9_요청 = new OrderTableRequest.Builder().id(주문_테이블9.getId()).build();
+		OrderTableRequest 주문_테이블10_요청 = new OrderTableRequest.Builder().id(주문_테이블10.getId()).build();
+		TableGroupRequest 단체_지정_요청 = new TableGroupRequest(Arrays.asList(주문_테이블9_요청, 주문_테이블10_요청));
+
+		assertThatThrownBy(() -> tableGroupService.create(단체_지정_요청)).isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@DisplayName("단체 지정 : 주문 테이블들은 빈 테이블이 아님")
@@ -79,7 +93,10 @@ class TableGroupServiceTest {
 		given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(주문_테이블9, 주문_테이블10));
 
 		// when & then
-		assertThatThrownBy(() -> tableGroupService.create(단체_지정)).isInstanceOf(IllegalArgumentException.class);
+		OrderTableRequest 주문_테이블9_요청 = new OrderTableRequest.Builder().id(주문_테이블9.getId()).build();
+		OrderTableRequest 주문_테이블10_요청 = new OrderTableRequest.Builder().id(주문_테이블10.getId()).build();
+		TableGroupRequest 단체_지정_요청 = new TableGroupRequest(Arrays.asList(주문_테이블9_요청, 주문_테이블10_요청));
+		assertThatThrownBy(() -> tableGroupService.create(단체_지정_요청)).isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@DisplayName("단체 해제")
@@ -87,7 +104,8 @@ class TableGroupServiceTest {
 	void ungroup() {
 		// given
 		TableGroup 단체_지정 = new TableGroup.Builder().orderTables(주문_테이블1, 주문_테이블2).build();
-
+		주문_테이블1.setTableGroup(단체_지정);
+		주문_테이블2.setTableGroup(단체_지정);
 		given(orderTableDao.findAllByTableGroupId(단체_지정.getId())).willReturn(Arrays.asList(주문_테이블1, 주문_테이블2));
 		given(orderDao.existsByOrderTableIdInAndOrderStatusIn(
 			anyList(),
@@ -107,7 +125,8 @@ class TableGroupServiceTest {
 	void ungroup_exceptionCase() {
 		// given
 		TableGroup 단체_지정 = new TableGroup.Builder().orderTables(주문_테이블1, 주문_테이블2).build();
-		
+		주문_테이블1.setTableGroup(단체_지정);
+		주문_테이블2.setTableGroup(단체_지정);
 		given(orderTableDao.findAllByTableGroupId(단체_지정.getId())).willReturn(Arrays.asList(주문_테이블1, 주문_테이블2));
 		given(orderDao.existsByOrderTableIdInAndOrderStatusIn(
 			anyList(),

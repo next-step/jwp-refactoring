@@ -15,9 +15,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.menu.domain.MenuGroupDao;
-import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.application.MenuGroupService;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroupDao;
+import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
 
 @DisplayName("메뉴 그룹 BO 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -33,18 +35,20 @@ class MenuGroupServiceTest {
 	@Test
 	void create() {
 		MenuGroup 새_메뉴_그룹1 = new MenuGroup.Builder().name("새_메뉴_그룹1").build();
-		given(menuGroupDao.save(새_메뉴_그룹1)).willAnswer(invocation -> {
-			새_메뉴_그룹1.setId(1L);
-			return 새_메뉴_그룹1;
+		given(menuGroupDao.save(any(MenuGroup.class))).willAnswer(invocation -> {
+			MenuGroup savedMenuGroup = invocation.getArgument(0, MenuGroup.class);
+			savedMenuGroup.setId(1L);
+			return savedMenuGroup;
 		});
+		MenuGroupRequest 새_메뉴_그룹1_요청 = new MenuGroupRequest("새_메뉴_그룹1");
 
 		// when
-		MenuGroup menuGroup = menuGroupService.create(새_메뉴_그룹1);
+		MenuGroupResponse response = menuGroupService.create(새_메뉴_그룹1_요청);
 
 		// then
 		assertAll(
-			() -> assertThat(menuGroup.getId()).isEqualTo(1L),
-			() -> assertThat(menuGroup.getName()).isEqualTo(새_메뉴_그룹1.getName())
+			() -> assertThat(response.getId()).isEqualTo(1L),
+			() -> assertThat(response.getName()).isEqualTo(새_메뉴_그룹1.getName())
 		);
 	}
 
@@ -55,10 +59,10 @@ class MenuGroupServiceTest {
 		given(menuGroupDao.findAll()).willReturn(Arrays.asList(메뉴_그룹1, 메뉴_그룹2));
 
 		// when
-		List<MenuGroup> menuGroupList = menuGroupService.list();
+		List<MenuGroupResponse> menuGroupList = menuGroupService.list();
 
 		// then
-		assertThat(menuGroupList).map(MenuGroup::getId).contains(메뉴_그룹1.getId(), 메뉴_그룹2.getId());
-		assertThat(menuGroupList).map(MenuGroup::getName).contains("두마리메뉴", "한마리메뉴");
+		assertThat(menuGroupList).map(MenuGroupResponse::getId).contains(메뉴_그룹1.getId(), 메뉴_그룹2.getId());
+		assertThat(menuGroupList).map(MenuGroupResponse::getName).contains("두마리메뉴", "한마리메뉴");
 	}
 }

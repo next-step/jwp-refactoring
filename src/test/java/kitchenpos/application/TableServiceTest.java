@@ -14,11 +14,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.order.domain.OrderDao;
-import kitchenpos.table.domain.OrderTableDao;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.application.TableService;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableDao;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 
 @DisplayName("주문 테이블 BO 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -36,17 +38,18 @@ class TableServiceTest {
 	@Test
 	void create() {
 		// given
-		OrderTable 새_주문_테이블 = new OrderTable.Builder().id(-1L).empty(false).build();
-		given(orderTableDao.save(새_주문_테이블)).willAnswer(invocation -> {
-			새_주문_테이블.setId(-1L);
-			return 새_주문_테이블;
+		OrderTableRequest 새_주문_테이블_요청 = new OrderTableRequest.Builder().empty(false).build();
+		given(orderTableDao.save(any(OrderTable.class))).willAnswer(invocation -> {
+			OrderTable request = invocation.getArgument(0, OrderTable.class);
+			request.setId(1L);
+			return request;
 		});
 
 		// when
-		OrderTable saveOrderTable = tableService.create(새_주문_테이블);
+		OrderTableResponse response = tableService.create(새_주문_테이블_요청);
 
 		// then
-		assertThat(saveOrderTable).isEqualTo(새_주문_테이블);
+		assertThat(response.getId()).isEqualTo(1L);
 	}
 
 	@DisplayName("빈 테이블 여부 변경")
@@ -63,11 +66,11 @@ class TableServiceTest {
 		).willReturn(false);
 
 		// when
-		OrderTable saveOrderTable = tableService.changeEmpty(새_주문_테이블.getId(),
-			new OrderTable.Builder().empty(true).build());
+		OrderTableResponse response = tableService.changeEmpty(새_주문_테이블.getId(),
+			new OrderTableRequest.Builder().empty(true).build());
 
 		// then
-		assertThat(saveOrderTable.isEmpty()).isTrue();
+		assertThat(response.isEmpty()).isTrue();
 	}
 
 	@DisplayName("빈 테이블 여부 변경 : 주문 테이블의 단체가 지정되어 있는 경우")
@@ -80,7 +83,7 @@ class TableServiceTest {
 
 		// when & then
 		assertThatThrownBy(
-			() -> tableService.changeEmpty(새_주문_테이블.getId(), new OrderTable.Builder().empty(true).build()))
+			() -> tableService.changeEmpty(새_주문_테이블.getId(), new OrderTableRequest.Builder().empty(true).build()))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
@@ -98,7 +101,7 @@ class TableServiceTest {
 
 		// when & then
 		assertThatThrownBy(
-			() -> tableService.changeEmpty(새_주문_테이블.getId(), new OrderTable.Builder().empty(true).build()))
+			() -> tableService.changeEmpty(새_주문_테이블.getId(), new OrderTableRequest.Builder().empty(true).build()))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
@@ -112,10 +115,10 @@ class TableServiceTest {
 		given(orderTableDao.findById(새_주문_테이블.getId())).willReturn(Optional.of(새_주문_테이블));
 
 		// when
-		OrderTable saveOrderTable = tableService.changeNumberOfGuests(새_주문_테이블.getId(),
-			new OrderTable.Builder().numberOfGuests(0).build());
+		OrderTableResponse response = tableService.changeNumberOfGuests(새_주문_테이블.getId(),
+			new OrderTableRequest.Builder().numberOfGuests(0).build());
 
 		// then
-		assertThat(saveOrderTable.getNumberOfGuests()).isEqualTo(0);
+		assertThat(response.getNumberOfGuests()).isEqualTo(0);
 	}
 }
