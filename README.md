@@ -205,9 +205,11 @@
 
 ### 개선 목록
 
-- [ ] 클래스 간 방향 개선
+- [x] 클래스 간 방향 개선
     - 도메인 Menu-MenuProduct 간 도메인 일대다 제거
     - 도메인 OrderTable-Order 간 도메인 일대다 제거
     - 도메인 TableGroup-OrderTable 간 도메인 일대다 제거
     - 도메인 Order-OrderMenu 간 도메인 일대다 제거
-- [ ] 패키지 간 방향 개선
+- [x] 패키지 간 방향 개선
+    - Controller -> Service -> Domain Layer 별 방향성 단방향  
+    - OrderTable-Order Service Layer에서 OrderTableAdapter를 통해서 양방향 참조 제거

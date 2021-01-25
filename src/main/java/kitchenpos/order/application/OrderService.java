@@ -2,14 +2,11 @@ package kitchenpos.order.application;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderMenu;
-import kitchenpos.order.domain.OrderMenuRepository;
-import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTableRepository;
+import kitchenpos.ordertable.infra.OrderTableAdapter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,25 +18,24 @@ import java.util.stream.Collectors;
 public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
     private final OrderMenuRepository orderMenuRepository;
+    private final OrderTableAdapter orderTableAdapter;
 
-    public OrderService(
-            MenuRepository menuRepository,
-            OrderRepository orderRepository,
-            OrderTableRepository orderTableRepository,
-            OrderMenuRepository orderMenuRepository
-    ) {
+    public OrderService(MenuRepository menuRepository,
+                        OrderRepository orderRepository,
+                        OrderMenuRepository orderMenuRepository,
+                        OrderTableAdapter orderTableAdapter) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
         this.orderMenuRepository = orderMenuRepository;
+        this.orderTableAdapter = orderTableAdapter;
     }
 
     public OrderResponse create(OrderRequest request) {
         List<Menu> menus = menuRepository.findByIdIn(request.getMenuIds());
         List<OrderMenu> orderMenus = request.createOrderMenus(menus);
-        Order order = orderRepository.save(new Order(findAvailableTableForOrder(request.getOrderTableId()), orderMenus));
+        OrderTable orderTable = orderTableAdapter.findAvailableTableForOrder(request.getOrderTableId());
+        Order order = orderRepository.save(new Order(orderTable, orderMenus));
         orderMenuRepository.saveAll(getChangedOrderMenus(orderMenus, order));
         return OrderResponse.of(order, orderMenus);
     }
@@ -75,11 +71,5 @@ public class OrderService {
         return orderMenus.stream()
                 .filter(orderMenu -> order.isSame(orderMenu.getOrder()))
                 .collect(Collectors.toList());
-    }
-
-    private OrderTable findAvailableTableForOrder(Long id) {
-        return orderTableRepository.findById(id)
-                .filter(OrderTable::isNotEmpty)
-                .orElseThrow(() -> new IllegalArgumentException("주문을 생성할 수 있는 테이블이 존재하지 않습니다."));
     }
 }
