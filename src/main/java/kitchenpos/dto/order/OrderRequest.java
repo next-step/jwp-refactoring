@@ -1,7 +1,7 @@
-package kitchenpos.dto;
+package kitchenpos.dto.order;
 
 import kitchenpos.domain.menu.Menu;
-import kitchenpos.domain.menu.Quantity;
+import kitchenpos.domain.Quantity;
 import kitchenpos.domain.order.OrderLineMenu;
 import kitchenpos.domain.order.Orders;
 

@@ -1,8 +1,8 @@
-package kitchenpos.ui;
+package kitchenpos.ui.order;
 
-import kitchenpos.dto.OrderRequest;
-import kitchenpos.dto.OrderResponse;
-import kitchenpos.service.OrderService;
+import kitchenpos.dto.order.OrderRequest;
+import kitchenpos.dto.order.OrderResponse;
+import kitchenpos.service.order.OrderService;
 
 import java.net.URI;
 import java.util.List;

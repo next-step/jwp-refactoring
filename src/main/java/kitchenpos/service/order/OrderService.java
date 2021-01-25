@@ -1,12 +1,14 @@
-package kitchenpos.service;
+package kitchenpos.service.order;
 
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.order.OrderRepository;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.order.Orders;
 import kitchenpos.domain.table.OrderTable;
-import kitchenpos.dto.OrderRequest;
-import kitchenpos.dto.OrderResponse;
+import kitchenpos.dto.order.OrderRequest;
+import kitchenpos.dto.order.OrderResponse;
+import kitchenpos.service.TableService;
+import kitchenpos.service.menu.MenuService;
 
 import java.util.List;
 import java.util.Map;

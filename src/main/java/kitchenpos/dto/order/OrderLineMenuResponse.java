@@ -1,7 +1,8 @@
-package kitchenpos.dto;
+package kitchenpos.dto.order;
 
-import kitchenpos.domain.menu.Quantity;
+import kitchenpos.domain.Quantity;
 import kitchenpos.domain.order.OrderLineMenu;
+import kitchenpos.dto.menu.MenuResponse;
 
 import static java.util.stream.Collectors.*;
 
