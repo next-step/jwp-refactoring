@@ -2,16 +2,34 @@ package kitchenpos.table.application;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.repository.MenuGroupRepository;
+import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.orders.domain.OrderStatus;
+import kitchenpos.orders.domain.Orders;
+import kitchenpos.orders.repository.OrderRepository;
+import kitchenpos.orders.repository.OrderTableRepository;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.repository.ProductRepository;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.repository.TableGroupRepository;
 import kitchenpos.utils.IntegrationTest;
 
 /**
@@ -24,12 +42,35 @@ class TableServiceTest extends IntegrationTest {
 
 	@Autowired
 	private TableService tableService;
+	@Autowired
+	private TableGroupRepository tableGroupRepository;
+	@Autowired
+	private OrderTableRepository orderTableRepository;
+	@Autowired
+	private MenuRepository menuRepository;
+	@Autowired
+	private MenuGroupRepository menuGroupRepository;
+	@Autowired
+	private ProductRepository productRepository;
+	@Autowired
+	private OrderRepository orderRepository;
+
+	@AfterEach
+	void cleanUp() {
+		menuRepository.deleteAllInBatch();
+		orderRepository.deleteAllInBatch();
+		orderTableRepository.deleteAllInBatch();
+		tableGroupRepository.deleteAllInBatch();
+		menuGroupRepository.deleteAllInBatch();
+		menuRepository.deleteAllInBatch();
+	}
 
 	@DisplayName("테이블을 생성할 수 있다.")
 	@Test
 	void create(){
 		// given
 		OrderTableRequest orderTableRequest = new OrderTableRequest(3, true);
+
 		// when
 		OrderTableResponse createdOrderTable = tableService.create(orderTableRequest);
 
@@ -41,9 +82,11 @@ class TableServiceTest extends IntegrationTest {
 	@Test
 	void list() {
 		// given
+		TableGroup tableGroup = new TableGroup(LocalDateTime.now());
+		TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
 
-		OrderTableRequest orderTableRequest = new OrderTableRequest(3, true);
-		OrderTableResponse createdOrderTable = tableService.create(orderTableRequest);
+		OrderTable orderTable = new OrderTable(savedTableGroup, 3, true);
+		OrderTable savedOrderTable = orderTableRepository.save(orderTable);
 
 		// when
 		List<OrderTableResponse> orderTables = tableService.list();
@@ -51,7 +94,7 @@ class TableServiceTest extends IntegrationTest {
 			.map(OrderTableResponse::getId)
 			.collect(Collectors.toList());
 		// then
-		assertThat(actualOrderTableIds).contains(createdOrderTable.getId());
+		assertThat(actualOrderTableIds).contains(savedOrderTable.getId());
 	}
 
 	@DisplayName("테이블을 비울 수 있다.")
@@ -60,6 +103,9 @@ class TableServiceTest extends IntegrationTest {
 		// given
 		OrderTableRequest orderTableRequest = new OrderTableRequest(3, false);
 		OrderTableResponse createdOrderTable = tableService.create(orderTableRequest);
+
+		OrderTable orderTable = new OrderTable( 3, true);
+		OrderTable savedOrderTable = orderTableRepository.save(orderTable);
 
 		OrderTableRequest orderTableEmptyRequest = new OrderTableRequest(true);
 		// when
@@ -87,18 +133,33 @@ class TableServiceTest extends IntegrationTest {
 	@Test
 	void mealOrCookingOrderTableCannotNotChangeEmpty(){
 		// given
-		Long cookingOrderId = 6L; //V2_Insert_default_data.sql
-		Long mealOrderId = 7L; //V2_Insert_default_data.sql
+		TableGroup tableGroup = new TableGroup(LocalDateTime.now());
+		TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
+
+		OrderTable orderTable = new OrderTable(savedTableGroup, 3, true);
+		OrderTable savedOrderTable = orderTableRepository.save(orderTable);
+
+		MenuGroup menuGroup = new MenuGroup("마늘메뉴");
+		menuGroupRepository.save(menuGroup);
+
+		Product product = new Product("마늘닭", BigDecimal.valueOf(16000));
+		productRepository.save(product);
+
+		Orders cookingOrder = new Orders(savedOrderTable, OrderStatus.MEAL.name(), LocalDateTime.now());
+		Orders savedCookingOrder = orderRepository.save(cookingOrder);
+
+		Orders mealOrder = new Orders(savedOrderTable, OrderStatus.MEAL.name(), LocalDateTime.now());
+		Orders savedMealOrder = orderRepository.save(mealOrder);
 
 		OrderTableRequest orderTableEmptyRequest = new OrderTableRequest(true);
 
 		// when - then
 		assertThatThrownBy(() -> {
-			tableService.changeEmpty(cookingOrderId, orderTableEmptyRequest);
+			tableService.changeEmpty(savedCookingOrder.getId(), orderTableEmptyRequest);
 		}).isInstanceOf(IllegalArgumentException.class);
 
 		assertThatThrownBy(() -> {
-			tableService.changeEmpty(mealOrderId, orderTableEmptyRequest);
+			tableService.changeEmpty(savedMealOrder.getId(), orderTableEmptyRequest);
 		}).isInstanceOf(IllegalArgumentException.class);
 	}
 
@@ -107,11 +168,15 @@ class TableServiceTest extends IntegrationTest {
 	@Test
 	void changeNumberOfGuests(){
 		// given
-		Long mealAndThreeNumberOfGuestOrderId = 3L; //V2_Insert_default_data.sql
+		TableGroup tableGroup = new TableGroup(LocalDateTime.now());
+		TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
+
+		OrderTable orderTable = new OrderTable(savedTableGroup, 3, false);
+		OrderTable savedOrderTable = orderTableRepository.save(orderTable);
 
 		OrderTableRequest orderTableRequest = new OrderTableRequest(5);
 		// when
-		OrderTable finalSavedOrderTable = tableService.changeNumberOfGuests(mealAndThreeNumberOfGuestOrderId, orderTableRequest);
+		OrderTable finalSavedOrderTable = tableService.changeNumberOfGuests(savedOrderTable.getId(), orderTableRequest);
 
 		// then
 		assertThat(finalSavedOrderTable.getNumberOfGuests()).isEqualTo(orderTableRequest.getNumberOfGuests());
@@ -121,12 +186,17 @@ class TableServiceTest extends IntegrationTest {
 	@Test
 	void numberOfGuestMustExist(){
 		// given
-		Long mealAndThreeNumberOfGuestOrderId = 3L; //V2_Insert_default_data.sql
+		TableGroup tableGroup = new TableGroup(LocalDateTime.now());
+		TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
+
+		OrderTable orderTable = new OrderTable(savedTableGroup, 3, false);
+		OrderTable savedOrderTable = orderTableRepository.save(orderTable);
+
 		OrderTableRequest orderTableRequest = new OrderTableRequest(-5);
 
 		// when - then
 		assertThatThrownBy(() -> {
-			tableService.changeNumberOfGuests(mealAndThreeNumberOfGuestOrderId, orderTableRequest);
+			tableService.changeNumberOfGuests(savedOrderTable.getId(), orderTableRequest);
 		}).isInstanceOf(IllegalArgumentException.class);
 	}
 

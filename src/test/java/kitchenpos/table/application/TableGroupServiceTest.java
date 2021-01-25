@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.menu.repository.MenuGroupRepository;
 import kitchenpos.menu.repository.MenuProductRepository;
+import kitchenpos.orders.repository.OrderLineItemRepository;
 import kitchenpos.orders.repository.OrderRepository;
 import kitchenpos.orders.repository.OrderTableRepository;
 import kitchenpos.product.repository.ProductRepository;
-import kitchenpos.table.repository.TableGroupDao;
+import kitchenpos.table.repository.TableGroupRepository;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
@@ -48,8 +50,6 @@ class TableGroupServiceTest extends IntegrationTest {
 	@Autowired
 	private OrderTableRepository orderTableRepository;
 	@Autowired
-	private OrderRepository orderRepository;
-	@Autowired
 	private MenuGroupRepository menuGroupRepository;
 	@Autowired
 	private ProductRepository productRepository;
@@ -60,8 +60,24 @@ class TableGroupServiceTest extends IntegrationTest {
 	@Autowired
 	private OrderService orderService;
 	@Autowired
-	private TableGroupDao tableGroupDao;
+	private TableGroupRepository tableGroupRepository;
+	@Autowired
+	private OrderRepository orderRepository;
+	@Autowired
+	private OrderLineItemRepository orderLineItemRepository;
 
+	@AfterEach
+	void cleanUp() {
+		menuProductRepository.deleteAllInBatch();
+		orderLineItemRepository.deleteAllInBatch();
+		menuRepository.deleteAllInBatch();
+		orderRepository.deleteAllInBatch();
+		orderTableRepository.deleteAllInBatch();
+		tableGroupRepository.deleteAllInBatch();
+		menuGroupRepository.deleteAllInBatch();
+		menuRepository.deleteAllInBatch();
+		menuProductRepository.deleteAllInBatch();
+	}
 
 	@DisplayName("단체를 지정할 수 있다.")
 	@Test
@@ -133,7 +149,7 @@ class TableGroupServiceTest extends IntegrationTest {
 	@Test
 	void ungroup(){
 		// given
-		TableGroup savedTableGroup = tableGroupDao.save(new TableGroup(LocalDateTime.now()));
+		TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(LocalDateTime.now()));
 		OrderTable savedOrderTable = orderTableRepository.save(new OrderTable(savedTableGroup, 3, false));
 
 		MenuGroup savedMenuGroup = menuGroupRepository.save(new MenuGroup("사이드메뉴"));
@@ -168,7 +184,7 @@ class TableGroupServiceTest extends IntegrationTest {
 	@Test
 	void cookingOrMealCannotCreateTableGroup() {
 		// given
-		TableGroup savedTableGroup = tableGroupDao.save(new TableGroup(LocalDateTime.now()));
+		TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(LocalDateTime.now()));
 		OrderTable savedOrderTable = orderTableRepository.save(new OrderTable(savedTableGroup, 3, false));
 
 		MenuGroup savedMenuGroup = menuGroupRepository.save(new MenuGroup("사이드메뉴"));

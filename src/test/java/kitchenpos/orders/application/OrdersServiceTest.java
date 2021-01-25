@@ -21,7 +21,7 @@ import kitchenpos.orders.repository.OrderLineItemRepository;
 import kitchenpos.orders.repository.OrderRepository;
 import kitchenpos.orders.repository.OrderTableRepository;
 import kitchenpos.product.repository.ProductRepository;
-import kitchenpos.table.repository.TableGroupDao;
+import kitchenpos.table.repository.TableGroupRepository;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
@@ -49,7 +49,7 @@ class OrdersServiceTest extends IntegrationTest {
 	@Autowired
 	private MenuGroupRepository menuGroupRepository;
 	@Autowired
-	private TableGroupDao tableGroupDao;
+	private TableGroupRepository tableGroupRepository;
 	@Autowired
 	private OrderTableRepository orderTableRepository;
 	@Autowired
@@ -70,14 +70,14 @@ class OrdersServiceTest extends IntegrationTest {
 		productRepository.deleteAllInBatch();
 		menuGroupRepository.deleteAllInBatch();
 		orderTableRepository.deleteAllInBatch();
-		tableGroupDao.deleteAllInBatch();
+		tableGroupRepository.deleteAllInBatch();
 	}
 
 	@DisplayName("주문을 등록할 수 있다.")
 	@Test
 	void create(){
 		// given
-		TableGroup savedTableGroup = tableGroupDao.save(new TableGroup(LocalDateTime.now()));
+		TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(LocalDateTime.now()));
 		OrderTable savedOrderTable = orderTableRepository.save(new OrderTable(savedTableGroup, 3, false));
 
 		MenuGroup savedMenuGroup = menuGroupRepository.save(new MenuGroup("사이드메뉴"));
@@ -101,7 +101,7 @@ class OrdersServiceTest extends IntegrationTest {
 	@Test
 	void whenOrderLineItemsIsEmpty(){
 		// given
-		TableGroup savedTableGroup = tableGroupDao.save(new TableGroup(LocalDateTime.now()));
+		TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(LocalDateTime.now()));
 		OrderTable savedOrderTable = orderTableRepository.save(new OrderTable(savedTableGroup, 3, false));
 
 
@@ -125,7 +125,7 @@ class OrdersServiceTest extends IntegrationTest {
 	void orderLineItemsSizeMustExistInMenu(){
 		// given
 
-		TableGroup savedTableGroup = tableGroupDao.save(new TableGroup(LocalDateTime.now()));
+		TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(LocalDateTime.now()));
 		OrderTable savedOrderTable = orderTableRepository.save(new OrderTable(savedTableGroup, 3, false));
 
 		MenuGroup savedMenuGroup = menuGroupRepository.save(new MenuGroup("사이드메뉴"));
@@ -151,7 +151,7 @@ class OrdersServiceTest extends IntegrationTest {
 	@Test
 	void empTyOrderTableCannotOrder(){
 		// given
-		TableGroup savedTableGroup = tableGroupDao.save(new TableGroup(LocalDateTime.now()));
+		TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(LocalDateTime.now()));
 		OrderTable savedOrderTable = orderTableRepository.save(new OrderTable(savedTableGroup, 3, true));
 
 		MenuGroup savedMenuGroup = menuGroupRepository.save(new MenuGroup("사이드메뉴"));
@@ -173,7 +173,7 @@ class OrdersServiceTest extends IntegrationTest {
 	@Test
 	void list(){
 		// given
-		TableGroup savedTableGroup = tableGroupDao.save(new TableGroup(LocalDateTime.now()));
+		TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(LocalDateTime.now()));
 		OrderTable savedOrderTable = orderTableRepository.save(new OrderTable(savedTableGroup, 3, false));
 
 		MenuGroup savedMenuGroup = menuGroupRepository.save(new MenuGroup("사이드메뉴"));
@@ -205,7 +205,7 @@ class OrdersServiceTest extends IntegrationTest {
 	@DisplayName("주문의 상태를 변경할 수 있다.")
 	@Test
 	void changeOrderStatus() {
-		TableGroup savedTableGroup = tableGroupDao.save(new TableGroup(LocalDateTime.now()));
+		TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(LocalDateTime.now()));
 		OrderTable savedOrderTable = orderTableRepository.save(new OrderTable(savedTableGroup, 3, false));
 
 
@@ -233,7 +233,7 @@ class OrdersServiceTest extends IntegrationTest {
 	@Test
 	void completedOrderCannotChange(){
 		// given
-		TableGroup savedTableGroup = tableGroupDao.save(new TableGroup(LocalDateTime.now()));
+		TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(LocalDateTime.now()));
 		OrderTable savedOrderTable = orderTableRepository.save(new OrderTable(savedTableGroup, 3, false));
 
 		MenuGroup savedMenuGroup = menuGroupRepository.save(new MenuGroup("사이드메뉴"));
