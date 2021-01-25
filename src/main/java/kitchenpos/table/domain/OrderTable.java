@@ -99,17 +99,6 @@ public class OrderTable {
 		this.numberOfGuests = orderTableRequest.getNumberOfGuests();
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (o == null || getClass() != o.getClass())
-			return false;
-		OrderTable that = (OrderTable)o;
-		return getNumberOfGuests() == that.getNumberOfGuests() && isEmpty() == that.isEmpty() && Objects.equals(
-			getId(), that.getId()) && Objects.equals(getTableGroup(), that.getTableGroup());
-	}
-
 	public void ungroup() {
 		if(!orderCollections.isStatusCompletion()){
 			throw new IllegalArgumentException();
