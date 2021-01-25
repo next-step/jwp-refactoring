@@ -1,6 +1,10 @@
 package kitchenpos.application;
 
 import kitchenpos.domain.*;
+import kitchenpos.dto.request.MenuGroupRequest;
+import kitchenpos.dto.request.MenuRequest;
+import kitchenpos.dto.request.OrderLineItemRequest;
+import kitchenpos.dto.request.OrderRequest;
 import kitchenpos.repository.OrderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -40,35 +44,38 @@ class OrderServiceTest {
     @Autowired
     private OrderRepository orderRepository;
 
-    private Order 주문;
-    private List<OrderTable> orderTables;
+    private OrderRequest 주문;
+    private MenuProduct 후라이드;
+    private MenuProduct 양념치킨;
     private MenuGroup 후라이드양념반반메뉴;
     private Product 후라이드상품;
     private Product 양념치킨상품;
-    private MenuProduct 후라이드;
-    private MenuProduct 양념치킨;
+
+    private List<OrderTable> orderTables;
+    private OrderTable 테이블_1번;
+    private OrderTable 테이블_2번;
 
 
     @BeforeEach
     void setUp() {
-        후라이드양념반반메뉴 = new MenuGroup("후라이드양념반반메뉴");
-        menuGroupService.create(후라이드양념반반메뉴);
+        MenuGroupRequest menuGroupRequest = new MenuGroupRequest("후라이드양념반반메뉴");
+        후라이드양념반반메뉴 = menuGroupService.create(menuGroupRequest);
         후라이드상품 = productService.findById(1l);
         양념치킨상품 = productService.findById(2l);
+        MenuRequest menuRequest = 메뉴를_생성한다(32000, 후라이드양념반반메뉴);
+        Menu menu = menuService.create(menuRequest);
 
-        OrderTable 테이블_1번 = 테이블을_생성한다(0, true);
-        OrderTable 테이블_2번 = 테이블을_생성한다(0, true);
+        테이블_1번 = 테이블을_생성한다(0, true);
+        테이블_2번 = 테이블을_생성한다(0, true);
         orderTables = new ArrayList<>();
         orderTables.add(테이블_1번);
         orderTables.add(테이블_2번);
 
-        TableGroup tableGroup = tableGroupService.create(new TableGroup(orderTables));
+        TableGroup tableGroup = 테이블_그룹을_생성한다(new TableGroup(orderTables));
         OrderTable orderTable = 테이블을_생성한다(tableGroup, 0, false);
-        Menu menu = 메뉴를_생성한다(32000, 후라이드양념반반메뉴);
-        menuService.create(menu);
 
-        OrderLineItem orderLineItem = new OrderLineItem(menu, 2l);
-        주문 = new Order(orderTable, Arrays.asList(orderLineItem));
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menu.getId(), 2l);
+        주문 = new OrderRequest(orderTable.getId(), Arrays.asList(orderLineItemRequest));
     }
 
     @DisplayName("주문을 등록한다")
@@ -90,9 +97,9 @@ class OrderServiceTest {
     @Test
     void changeOrderStatus() {
         Order order = 주문을_등록한다(주문);
-        order.setOrderStatus(OrderStatus.MEAL);
+        주문.setOrderStatus(OrderStatus.MEAL);
 
-        Order newOrder = orderService.changeOrderStatus(order.getId(), order);
+        Order newOrder = orderService.changeOrderStatus(order.getId(), 주문);
 
         assertThat(newOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
     }
@@ -104,7 +111,7 @@ class OrderServiceTest {
         order.setOrderStatus(OrderStatus.COMPLETION);
         orderRepository.save(order);
 
-        assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), order))
+        assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), 주문))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -116,20 +123,20 @@ class OrderServiceTest {
         return tableService.create(new OrderTable(tableGroup, numberOfGuest, empty));
     }
 
-    private Order 주문을_등록한다(Order order) {
-        return orderService.create(order);
+    private Order 주문을_등록한다(OrderRequest orderRequest) {
+        return orderService.create(orderRequest);
     }
 
-    private Menu 메뉴를_생성한다(int price, MenuGroup menuGroup) {
+    private MenuRequest 메뉴를_생성한다(int price, MenuGroup menuGroup) {
         Menu menu = new Menu("후라이드양념반반", BigDecimal.valueOf(price), menuGroup);
         후라이드 = new MenuProduct(menu, 후라이드상품, 1);
         양념치킨 = new MenuProduct(menu, 양념치킨상품, 1);
         menu.updateMenuProducts(Arrays.asList(후라이드, 양념치킨));
-        return menu;
+        return MenuRequest.of(menu);
     }
 
-    private MenuGroup 메뉴그룹을_생성한다(String name) {
-        MenuGroup menuGroup = new MenuGroup(name);
-        return menuGroupService.create(menuGroup);
+    private TableGroup 테이블_그룹을_생성한다(TableGroup tableGroup) {
+        return tableGroupService.create(tableGroup);
     }
+
 }
