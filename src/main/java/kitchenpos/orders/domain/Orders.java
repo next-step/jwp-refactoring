@@ -36,8 +36,7 @@ public class Orders {
     public Orders() {
     }
 
-    public Orders(OrderTable orderTable, String orderStatus, LocalDateTime orderedTime,
-        OrderLineItems orderLineItems) {
+    public Orders(OrderTable orderTable, String orderStatus, LocalDateTime orderedTime) {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
@@ -47,18 +46,6 @@ public class Orders {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = LocalDateTime.now();
-    }
-
-    public Orders(String orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
-    public Orders(OrderTable orderTable, String orderStatus, LocalDateTime orderedTime) {
-        this(orderTable, orderStatus, orderedTime, null);
-    }
-
-    public Orders(OrderTable orderTable, OrderLineItems orderLineItems) {
-        this.orderTable = orderTable;
     }
 
     public Long getId() {
@@ -90,9 +77,11 @@ public class Orders {
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
-        if(this.orderStatus == OrderStatus.COMPLETION.name()){
+        if(this.orderStatus.equals(OrderStatus.COMPLETION.name())){
             throw new IllegalArgumentException();
         }
-        this.orderStatus = orderStatus.name();
+
+        OrderStatus changeOrderStatus = OrderStatus.valueOf(orderStatus.name());
+        this.orderStatus = changeOrderStatus.name();
     }
 }

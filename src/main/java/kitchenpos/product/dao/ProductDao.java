@@ -1,4 +1,4 @@
-package kitchenpos.dao;
+package kitchenpos.product.dao;
 
 import java.util.List;
 import java.util.Optional;

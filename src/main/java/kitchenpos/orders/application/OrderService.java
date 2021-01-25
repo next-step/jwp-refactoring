@@ -2,17 +2,16 @@ package kitchenpos.orders.application;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.menu.dao.MenuDao;
+import kitchenpos.orders.dao.OrderDao;
+import kitchenpos.orders.dao.OrderLineItemDao;
+import kitchenpos.orders.dao.OrderTableDao;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.orders.domain.OrderLineItem;
 import kitchenpos.orders.domain.OrderLineItems;
@@ -27,18 +26,15 @@ import kitchenpos.table.domain.OrderTable;
 public class OrderService {
 	private final MenuDao menuDao;
 	private final OrderDao orderDao;
-	private final OrderLineItemDao orderLineItemDao;
 	private final OrderTableDao orderTableDao;
 
 	public OrderService(
 		final MenuDao menuDao,
 		final OrderDao orderDao,
-		final OrderLineItemDao orderLineItemDao,
 		final OrderTableDao orderTableDao
 	) {
 		this.menuDao = menuDao;
 		this.orderDao = orderDao;
-		this.orderLineItemDao = orderLineItemDao;
 		this.orderTableDao = orderTableDao;
 	}
 
@@ -57,17 +53,6 @@ public class OrderService {
 
     }
 
-	private OrderLineItems orderRequestToOrderItem(List<OrderLineItemRequest> orderLineItemsRequests) {
-		if(orderLineItemsRequests.isEmpty()) throw new IllegalArgumentException();
-		List<OrderLineItem> orderLineItems = new ArrayList<>();
-		for (OrderLineItemRequest orderLineItemRequest : orderLineItemsRequests) {
-			Menu menu = menuDao.findById(orderLineItemRequest.getMenuId()).orElseThrow(IllegalArgumentException::new);
-			orderLineItems.add(new OrderLineItem(menu, orderLineItemRequest.getQuantity()));
-		}
-
-		return new OrderLineItems(orderLineItems);
-	}
-
 	@org.springframework.transaction.annotation.Transactional(readOnly = true)
     public List<OrderResponse> list() {
 		return orderDao.findAll().stream()
@@ -78,15 +63,21 @@ public class OrderService {
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
         final Orders savedOrder = orderDao.findById(orderId).orElseThrow(IllegalArgumentException::new);
-
-        if (Objects.equals(OrderStatus.COMPLETION.name(), savedOrder.getOrderStatus())) {
-            throw new IllegalArgumentException();
-        }
-
         final OrderStatus orderStatus = OrderStatus.valueOf(orderRequest.getOrderStatus());
         savedOrder.changeOrderStatus(orderStatus);
 
 		return OrderResponse.of(savedOrder);
     }
 
+
+	private OrderLineItems orderRequestToOrderItem(List<OrderLineItemRequest> orderLineItemsRequests) {
+		if(orderLineItemsRequests.isEmpty()) throw new IllegalArgumentException();
+		List<OrderLineItem> orderLineItems = new ArrayList<>();
+		for (OrderLineItemRequest orderLineItemRequest : orderLineItemsRequests) {
+			Menu menu = menuDao.findById(orderLineItemRequest.getMenuId()).orElseThrow(IllegalArgumentException::new);
+			orderLineItems.add(new OrderLineItem(menu, orderLineItemRequest.getQuantity()));
+		}
+
+		return new OrderLineItems(orderLineItems);
+	}
 }
