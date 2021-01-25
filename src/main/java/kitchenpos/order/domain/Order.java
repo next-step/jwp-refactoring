@@ -30,10 +30,6 @@ public class Order {
         this.orderStatus = OrderStatus.COOKING;
     }
 
-    public static Order empty() {
-        return new Order();
-    }
-
     public Order(Long id, OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         this(orderTable, orderLineItems);
         this.id = id;
@@ -47,26 +43,14 @@ public class Order {
         addOrderTable(orderTable);
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public static Order empty() {
+        return new Order();
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
         checkOrderStatus(orderStatus);
         this.orderStatus = orderStatus;
         this.orderedTime = LocalDateTime.now();
-    }
-
-    public OrderStatus getOrderStatus() {
-        return orderStatus;
-    }
-
-    public LocalDateTime getOrderedTime() {
-        return orderedTime;
     }
 
     public void initialItems() {
@@ -91,5 +75,21 @@ public class Order {
         if(Objects.isNull(orderStatus)) {
             throw new IllegalArgumentException("올바른 상태값을 입력해주시기 바랍니다.");
         }
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public OrderTable getOrderTable() {
+        return orderTable;
+    }
+
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+
+    public LocalDateTime getOrderedTime() {
+        return orderedTime;
     }
 }

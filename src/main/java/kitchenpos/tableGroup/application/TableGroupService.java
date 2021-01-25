@@ -26,11 +26,7 @@ public class TableGroupService {
                         orderTableRepository.findAllByIdIn(tableGroupRequest.getOrderTableIds())
                 )
         );
-        OrderTables orderTables = tableGroup.getOrderTables();
-
         final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
-        orderTables.initialTableGroup(savedTableGroup.getId());
-
         return TableGroupResponse.of(savedTableGroup);
     }
 

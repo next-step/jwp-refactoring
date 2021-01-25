@@ -42,22 +42,6 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public int getNumberOfGuests() {
-        return numberOfGuests;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public boolean isEmpty() {
-        return empty;
-    }
-
     public void changeStatus(boolean empty) {
         checkGrouping();
         checkOrderStatus();
@@ -108,5 +92,21 @@ public class OrderTable {
         if (Objects.nonNull(tableGroupId)) {
             throw new IllegalArgumentException("그룹핑된 상태입니다.");
         }
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public int getNumberOfGuests() {
+        return numberOfGuests;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public boolean isEmpty() {
+        return empty;
     }
 }

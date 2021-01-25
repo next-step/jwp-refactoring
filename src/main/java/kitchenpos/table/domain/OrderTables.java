@@ -5,7 +5,6 @@ import org.springframework.util.CollectionUtils;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Embeddable
 public class OrderTables {
@@ -32,24 +31,6 @@ public class OrderTables {
         return new OrderTables();
     }
 
-    public void initialTableGroup(Long tableGroupId) {
-        orderTables.forEach(orderTable -> orderTable.addTableGroup(tableGroupId));
-    }
-
-    public List<Long> getOrderTablesIds() {
-        return orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-    }
-
-    public List<OrderTable> getOrderTables() {
-        return orderTables;
-    }
-
-    public boolean hasContain(OrderTable orderTable) {
-        return orderTables.contains(orderTable);
-    }
-
     public void removeTables() {
         orderTables = new ArrayList<>();
     }
@@ -60,5 +41,9 @@ public class OrderTables {
 
     public void addTable(OrderTable orderTable) {
         orderTables.add(orderTable);
+    }
+
+    public List<OrderTable> getOrderTables() {
+        return orderTables;
     }
 }
