@@ -1,16 +1,14 @@
 package kitchenpos.menu.domain;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 
 @Entity
 public class Menu {
@@ -22,20 +20,17 @@ public class Menu {
     private BigDecimal price;
     private Long menuGroupId;
 
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MenuProduct> menuProducts = new ArrayList<>();
+    @Embedded
+    private MenuProducts menuProducts = new MenuProducts();
 
     public Menu() {
     }
 
-    public Menu(String name, BigDecimal price, long menuGroupId, List<MenuProduct> menuProducts) {
+    public Menu(String name, BigDecimal price, long menuGroupId, MenuProducts menuProducts) {
         validatePrice(price);
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
-        if(menuProducts == null){
-            menuProducts = new ArrayList<>();
-        }
         this.menuProducts = menuProducts;
     }
 
@@ -50,20 +45,22 @@ public class Menu {
     }
 
     public void addMenuProduct(MenuProduct menuProduct) {
+        this.menuProducts = new MenuProducts();
         this.menuProducts.add(menuProduct);
     }
 
-    public void validateSumOfPrice(BigDecimal sumOfPrice) {
-        if (price.compareTo(sumOfPrice) > 0) {
-            throw new IllegalArgumentException();
-        }
+    public void addMenuProducts(MenuProducts menuProducts) {
+        menuProducts.validateSumOfPrice(price);
+        menuProducts.getMenuProducts().forEach(menuProduct -> {
+            addMenuProduct(new MenuProduct(this, menuProduct.getProduct(), menuProduct.getQuantity()));
+        });
     }
 
     public static class Builder {
         private String name;
         private BigDecimal price;
         private Long menuGroupId;
-        private List<MenuProduct> menuProducts;
+        private MenuProducts menuProducts;
 
         public Builder() {
         }
@@ -81,7 +78,7 @@ public class Menu {
             this.menuGroupId = menuGroupId;
             return this;
         }
-        public Builder menuProducts(List<MenuProduct> menuProducts){
+        public Builder menuProducts(MenuProducts menuProducts){
             this.menuProducts = menuProducts;
             return this;
         }
@@ -108,7 +105,7 @@ public class Menu {
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
+        return menuProducts.getMenuProducts();
     }
 
     @Override
