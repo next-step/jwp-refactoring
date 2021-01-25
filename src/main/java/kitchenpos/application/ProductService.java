@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.advice.exception.ProductException;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.request.ProductRequest;
 import kitchenpos.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
+@Transactional(readOnly = true)
 public class ProductService {
     private final ProductRepository productRepository;
 
@@ -19,14 +21,14 @@ public class ProductService {
     }
 
     @Transactional
-    public Product create(final Product product) {
-        final BigDecimal price = product.getPrice();
+    public Product create(final ProductRequest productRequest) {
+        final BigDecimal price = productRequest.getPrice();
 
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new ProductException("상품 가격이 없거나 0보다 작습니다", price);
         }
 
-        return productRepository.save(product);
+        return productRepository.save(productRequest.toProduct());
     }
 
     public List<Product> list() {
