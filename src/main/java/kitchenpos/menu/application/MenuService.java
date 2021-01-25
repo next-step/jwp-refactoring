@@ -34,22 +34,13 @@ public class MenuService {
     public MenuResponse create(final MenuRequest menuRequest) {
         Menu menu = menuRequest.toMenu();
 
-        checkExistsMenuGroupAndProducts(menu);
+        menuGroupService.checkExistsMenuGroup(menu.getMenuGroupId());
 
-        comparePriceAndSumOfMenuProducts(menu);
-        //menu.addMenuToMenuProducts();
+        List<Product> persistProducts = productService.findProductsByIds(menu.getProductIds());
+        menu.comparePriceAndSumOfMenuProducts(persistProducts);
+        menu.addMenuIdToMenuProducts();
 
         return MenuResponse.of(menuRepository.save(menu));
-    }
-
-    private void checkExistsMenuGroupAndProducts(Menu menu) {
-        menuGroupService.checkExistsMenuGroup(menu.getMenuGroupId());
-        productService.checkExistsProducts(menu.getProductIds());
-    }
-
-    private void comparePriceAndSumOfMenuProducts(Menu menu) {
-        List<Product> products = productService.findProductsByIds(menu.getProductIds());
-        menu.comparePriceAndSumOfMenuProducts(products);
     }
 
     public List<MenuResponse> list() {

@@ -32,6 +32,10 @@ public class Product {
         return price.multiply(quantity);
     }
 
+    public boolean equalsId(Long id) {
+        return this.id.equals(id);
+    }
+
     public Long getId() {
         return id;
     }

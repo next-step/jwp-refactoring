@@ -20,7 +20,7 @@ public class Menu {
     @Embedded
     private MenuPrice price;
 
-    @Column(nullable = false)
+    @Column(name = "menu_group_id", nullable = false)
     private Long menuGroupId;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -38,12 +38,24 @@ public class Menu {
         this.menuProducts = menuProducts;
     }
 
-    public void comparePriceAndSumOfMenuProducts(List<Product> products) {
-        price.compareSumOfMenuProducts(menuProducts, products);
-    }
-
     public static Menu of(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         return new Menu(id, name, new MenuPrice(price), menuGroupId, menuProducts);
+    }
+
+    public void comparePriceAndSumOfMenuProducts(List<Product> products) {
+        BigDecimal sum = BigDecimal.ZERO;
+
+        for (MenuProduct menuProduct : menuProducts) {
+            Product product = menuProduct.findProduct(products);
+            sum = sum.add(menuProduct.calculatePrice(product));
+        }
+        price.compareToSum(sum);
+    }
+
+    public void addMenuIdToMenuProducts() {
+        this.menuProducts = menuProducts.stream()
+                .map(menuProduct -> menuProduct.addMenuId(id))
+                .collect(Collectors.toList());
     }
 
     public Long getId() {

@@ -23,49 +23,49 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("메뉴 관련 기능")
 class MenuAcceptanceTest extends AcceptanceTest {
-//    @Test
-//    void createMenu() {
-//        List<MenuProductRequest> menuProducts = Collections.singletonList(new MenuProductRequest(등록된_product, 1));
-//        MenuRequest menuRequest = new MenuRequest(등록되어_있지_않은_menu_id, "후라이드치킨", BigDecimal.valueOf(16000),
-//                등록된_menuGroup, menuProducts);
-//
-//        ExtractableResponse<Response> response = 메뉴_생성_요청(menuRequest);
-//
-//        메뉴_생성됨(response);
-//    }
-//
-//    @DisplayName("메뉴 그룹이 등록되어 있지 않을 경우 생성하지 못한다.")
-//    @Test
-//    void createMenuException1() {
-//        List<MenuProductRequest> menuProducts = Collections.singletonList(new MenuProductRequest(등록된_product, 1));
-//        MenuRequest menuRequest = new MenuRequest(등록되어_있지_않은_menu_id, "후라이드치킨", BigDecimal.valueOf(16000),
-//                등록되어_있지_않은_menuGroup, menuProducts);
-//
-//        ExtractableResponse<Response> response = 메뉴_생성_요청(menuRequest);
-//
-//        메뉴_생성_실패(response);
-//    }
-//
-//    @DisplayName("등록되어 있지 않은 상품으로 만들어진 메뉴 상품이 있으면 생성할 수 없다.")
-//    @Test
-//    void createMenuException2() {
-//        List<MenuProductRequest> menuProducts = Collections.singletonList(new MenuProductRequest(등록되어_있지_않은_product, 1));
-//        MenuRequest menuRequest = new MenuRequest(등록되어_있지_않은_menu_id, "후라이드치킨", BigDecimal.valueOf(16000),
-//                등록된_menuGroup, menuProducts);
-//
-//        ExtractableResponse<Response> response = 메뉴_생성_요청(menuRequest);
-//
-//        메뉴_생성_실패(response);
-//    }
-//
-//    @DisplayName("메뉴 목록 조회")
-//    @Test
-//    void getMenuList() {
-//        ExtractableResponse<Response> response = 메뉴_목록_조회_요청();
-//
-//        메뉴_목록_조회됨(response);
-//        메뉴_목록_포함됨(response, Arrays.asList("후라이드치킨", "양념치킨", "반반치킨", "통구이", "간장치킨", "순살치킨"));
-//    }
+    @Test
+    void createMenu() {
+        List<MenuProductRequest> menuProducts = Collections.singletonList(new MenuProductRequest(등록된_product_id, 1));
+        MenuRequest menuRequest = new MenuRequest(등록되어_있지_않은_menu_id, "후라이드치킨", BigDecimal.valueOf(16000),
+                등록된_menuGroup_id, menuProducts);
+
+        ExtractableResponse<Response> response = 메뉴_생성_요청(menuRequest);
+
+        메뉴_생성됨(response);
+    }
+
+    @DisplayName("메뉴 그룹이 등록되어 있지 않을 경우 생성하지 못한다.")
+    @Test
+    void createMenuException1() {
+        List<MenuProductRequest> menuProducts = Collections.singletonList(new MenuProductRequest(등록된_product_id, 1));
+        MenuRequest menuRequest = new MenuRequest(등록되어_있지_않은_menu_id, "후라이드치킨", BigDecimal.valueOf(16000),
+                등록되어_있지_않은_menuGroup_id, menuProducts);
+
+        ExtractableResponse<Response> response = 메뉴_생성_요청(menuRequest);
+
+        메뉴_생성_실패(response);
+    }
+
+    @DisplayName("등록되어 있지 않은 상품으로 만들어진 메뉴 상품이 있으면 생성할 수 없다.")
+    @Test
+    void createMenuException2() {
+        List<MenuProductRequest> menuProducts = Collections.singletonList(new MenuProductRequest(등록되어_있지_않은_product_id, 1));
+        MenuRequest menuRequest = new MenuRequest(등록되어_있지_않은_menu_id, "후라이드치킨", BigDecimal.valueOf(16000),
+                등록된_menuGroup_id, menuProducts);
+
+        ExtractableResponse<Response> response = 메뉴_생성_요청(menuRequest);
+
+        메뉴_생성_실패(response);
+    }
+
+    @DisplayName("메뉴 목록 조회")
+    @Test
+    void getMenuList() {
+        ExtractableResponse<Response> response = 메뉴_목록_조회_요청();
+
+        메뉴_목록_조회됨(response);
+        메뉴_목록_포함됨(response, Arrays.asList("후라이드치킨", "양념치킨", "반반치킨", "통구이", "간장치킨", "순살치킨"));
+    }
 
     private static ExtractableResponse<Response> 메뉴_생성_요청(MenuRequest menuRequest) {
         return RestAssured

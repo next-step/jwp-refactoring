@@ -34,7 +34,7 @@ public class MenuGroupService {
 
     public void checkExistsMenuGroup(Long menuGroupId) {
         if (!menuGroupRepository.existsById(menuGroupId)) {
-            throw new NotFoundEntityException("해당 MenuGroup을 찾을 수가 없습니다.");
+            throw new NotFoundEntityException("해당 메뉴 그룹을 찾을 수가 없습니다.");
         }
     }
 }
