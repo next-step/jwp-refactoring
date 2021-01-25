@@ -1,10 +1,7 @@
 package kitchenpos.application;
 
 import kitchenpos.domain.*;
-import kitchenpos.dto.request.MenuGroupRequest;
-import kitchenpos.dto.request.MenuRequest;
-import kitchenpos.dto.request.OrderLineItemRequest;
-import kitchenpos.dto.request.OrderRequest;
+import kitchenpos.dto.request.*;
 import kitchenpos.repository.OrderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -116,11 +113,11 @@ class OrderServiceTest {
     }
 
     private OrderTable 테이블을_생성한다(int numberOfGuest, boolean empty) {
-        return tableService.create(new OrderTable(numberOfGuest, empty));
+        return tableService.create(new OrderTableRequest(numberOfGuest, empty));
     }
 
     private OrderTable 테이블을_생성한다(TableGroup tableGroup, int numberOfGuest, boolean empty) {
-        return tableService.create(new OrderTable(tableGroup, numberOfGuest, empty));
+        return tableService.create(new OrderTableRequest(tableGroup.getId(), numberOfGuest, empty));
     }
 
     private Order 주문을_등록한다(OrderRequest orderRequest) {
@@ -136,7 +133,7 @@ class OrderServiceTest {
     }
 
     private TableGroup 테이블_그룹을_생성한다(TableGroup tableGroup) {
-        return tableGroupService.create(tableGroup);
+        return tableGroupService.create(TableGroupRequest.of(tableGroup));
     }
 
 }

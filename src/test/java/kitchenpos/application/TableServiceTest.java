@@ -1,6 +1,7 @@
 package kitchenpos.application;
 
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.request.OrderTableRequest;
 import kitchenpos.repository.OrderRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -52,7 +54,7 @@ class TableServiceTest {
         orderTable.setEmpty(false);
 
         when(orderRepository.existsByOrderTableAndOrderStatusIn(any(), anyList())).thenReturn(false);
-        OrderTable changeOrderTable = tableService.changeEmpty(orderTable.getId(), orderTable);
+        OrderTable changeOrderTable = tableService.changeEmpty(orderTable.getId(), OrderTableRequest.of(orderTable));
 
         assertThat(changeOrderTable.isEmpty()).isFalse();
     }
@@ -65,7 +67,7 @@ class TableServiceTest {
 
         when(orderRepository.existsByOrderTableAndOrderStatusIn(any(), anyList())).thenReturn(true);
 
-        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), orderTable))
+        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), OrderTableRequest.of(orderTable)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -74,7 +76,7 @@ class TableServiceTest {
     void changeNumberOfGuests() {
         OrderTable orderTable = 테이블을_생성한다(0, false);
         orderTable.setNumberOfGuests(10);
-        OrderTable changeOrderTable = tableService.changeNumberOfGuests(orderTable.getId(), orderTable);
+        OrderTable changeOrderTable = tableService.changeNumberOfGuests(orderTable.getId(), OrderTableRequest.of(orderTable));
 
         assertThat(changeOrderTable.getNumberOfGuests()).isEqualTo(orderTable.getNumberOfGuests());
     }
@@ -85,7 +87,7 @@ class TableServiceTest {
         OrderTable orderTable = 테이블을_생성한다(0, false);
         orderTable.setNumberOfGuests(-1);
 
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), orderTable))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), OrderTableRequest.of(orderTable)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -95,12 +97,12 @@ class TableServiceTest {
         OrderTable orderTable = 테이블을_생성한다(0, true);
         orderTable.setNumberOfGuests(10);
 
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), orderTable))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), OrderTableRequest.of(orderTable)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     private OrderTable 테이블을_생성한다(int numberOfGuest, boolean empty) {
-        return tableService.create(new OrderTable(numberOfGuest, empty));
+        return tableService.create(new OrderTableRequest(numberOfGuest, empty));
     }
 }
 

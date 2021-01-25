@@ -1,6 +1,7 @@
 package kitchenpos.ui;
 
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.request.OrderTableRequest;
 import kitchenpos.repository.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,8 +22,8 @@ class TableRestControllerTest extends ControllerTest {
     @DisplayName("테이블을 생성한다")
     @Test
     void create() throws Exception {
-        OrderTable orderTable = new OrderTable(10, true);
-        String body = objectMapper.writeValueAsString(orderTable);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(10, true);
+        String body = objectMapper.writeValueAsString(orderTableRequest);
 
         컨트롤러_생성_요청_및_검증(TABLE_URI, body);
     }
@@ -40,12 +41,12 @@ class TableRestControllerTest extends ControllerTest {
         OrderTable orderTable = orderTableRepository.findById(orderTableId).get();
 
         orderTable.setEmpty(false);
-        String body = objectMapper.writeValueAsString(orderTable);
+        String body = objectMapper.writeValueAsString(OrderTableRequest.of(orderTable));
 
         테이블_변경_요청_및_검증(body, orderTableId, "/empty");
 
         orderTable.setNumberOfGuests(10);
-        body = objectMapper.writeValueAsString(orderTable);
+        body = objectMapper.writeValueAsString(OrderTableRequest.of(orderTable));
 
         테이블_변경_요청_및_검증(body, orderTableId, "/number-of-guests");
     }

@@ -5,6 +5,8 @@ import kitchenpos.advice.exception.TableGroupException;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.request.OrderTableRequest;
+import kitchenpos.dto.request.TableGroupRequest;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import kitchenpos.repository.TableGroupRepository;
@@ -19,6 +21,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class TableGroupService {
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
@@ -32,15 +35,17 @@ public class TableGroupService {
     }
 
     @Transactional
-    public TableGroup create(final TableGroup tableGroup) {
-        final List<OrderTable> orderTables = tableGroup.getOrderTables();
+    public TableGroup create(final TableGroupRequest tableGroupRequest) {
+
+        final List<OrderTableRequest> orderTables = tableGroupRequest.getOrderTables();
+
 
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
             throw new IllegalArgumentException();
         }
 
         final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
+                .map(OrderTableRequest::getId)
                 .collect(Collectors.toList());
 
         final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
@@ -55,9 +60,7 @@ public class TableGroupService {
             }
         }
 
-        tableGroup.setCreatedDate(LocalDateTime.now());
-
-        final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
+        final TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(savedOrderTables));
 
         for (final OrderTable savedOrderTable : savedOrderTables) {
             savedOrderTable.setTableGroup(savedTableGroup);

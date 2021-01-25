@@ -52,7 +52,6 @@ public class MenuService {
 
         final BigDecimal price = menu.getPrice();
         validateEmptyPrice(price);
-        System.out.println(menu);
         validateExistsMenuGroup(menu);
 
         final List<MenuProduct> menuProducts = new ArrayList<>();
