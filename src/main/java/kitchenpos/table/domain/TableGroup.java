@@ -13,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.util.CollectionUtils;
 
@@ -22,9 +23,8 @@ public class TableGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @CreatedDate
+    @CreationTimestamp
     private LocalDateTime createdDate;
-
     @Embedded
     private OrderTables orderTables;
 
@@ -64,5 +64,9 @@ public class TableGroup {
 
     public List<OrderTable> getOrderTables() {
         return orderTables.getOrderTables();
+    }
+
+    public void ungroup() {
+        orderTables.ungroup();
     }
 }

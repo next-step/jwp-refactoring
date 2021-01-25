@@ -19,10 +19,6 @@ public class OrderTables {
 	public OrderTables() {
 	}
 
-	public OrderTables(List<OrderTable> orderTables) {
-		this.orderTables.addAll(orderTables);
-	}
-
 	public OrderTables(List<OrderTable> orderTables, TableGroup tableGroup) {
 		this.orderTables.addAll(orderTables);
 		changeOrderTablesTableGroup(tableGroup);
@@ -36,5 +32,11 @@ public class OrderTables {
 
 	public List<OrderTable> getOrderTables() {
 		return orderTables;
+	}
+
+	public void ungroup() {
+		orderTables.forEach(
+			orderTable -> orderTable.ungroup()
+		);
 	}
 }
