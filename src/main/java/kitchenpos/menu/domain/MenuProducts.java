@@ -6,6 +6,9 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 /**
@@ -23,8 +26,12 @@ public class MenuProducts {
 	}
 
 	public MenuProducts(List<MenuProduct> menuProducts) {
+		if(menuProducts == null){
+			menuProducts = new ArrayList<>();
+		}
 		this.menuProducts = menuProducts;
 	}
+
 
 	public List<MenuProduct> getMenuProducts() {
 		return menuProducts;
@@ -32,18 +39,5 @@ public class MenuProducts {
 
 	public void add(MenuProduct menuProduct){
 		this.menuProducts.add(menuProduct);
-	}
-
-	public void validateSumOfPrice(BigDecimal sumOfMenuPrice) {
-
-		BigDecimal menuProductSumOfPrice = menuProducts.stream()
-			.map(menuProduct -> menuProduct.getProduct()
-				.getPrice()
-				.multiply(BigDecimal.valueOf(menuProduct.getQuantity())))
-			.reduce(BigDecimal.ZERO, BigDecimal::add);
-
-		if (sumOfMenuPrice.compareTo(menuProductSumOfPrice) > 0) {
-			throw new IllegalArgumentException();
-		}
 	}
 }

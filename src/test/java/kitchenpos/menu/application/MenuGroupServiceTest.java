@@ -5,12 +5,16 @@ import static org.assertj.core.api.Assertions.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menu.repository.MenuGroupRepository;
+import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.utils.IntegrationTest;
 
 /**
@@ -23,6 +27,14 @@ class MenuGroupServiceTest extends IntegrationTest {
 
 	@Autowired
 	private MenuGroupService menuGroupService;
+
+	@Autowired
+	private MenuGroupRepository menuGroupRepository;
+
+	@AfterEach
+	void cleanUp() {
+		menuGroupRepository.deleteAllInBatch();
+	}
 
 	@DisplayName("메뉴 그룹을 등록할 수 있다.")
 	@Test
@@ -42,8 +54,8 @@ class MenuGroupServiceTest extends IntegrationTest {
 	@Test
 	void list() {
 		// given
-		MenuGroupRequest menuGroupRequest = new MenuGroupRequest("한식");
-		MenuGroupResponse menuGroupResponse = menuGroupService.create(menuGroupRequest);
+		MenuGroup dummyMenuGroup = new MenuGroup("한식");
+		MenuGroup savedMenuGroup = menuGroupRepository.save(dummyMenuGroup);
 
 		// when
 		List<MenuGroupResponse> menuGroups = menuGroupService.list();
@@ -53,6 +65,6 @@ class MenuGroupServiceTest extends IntegrationTest {
 
 		//then
 		assertThat(productNames).isNotEmpty();
-		assertThat(productNames).contains(menuGroupResponse.getId());
+		assertThat(productNames).contains(savedMenuGroup.getId());
 	}
 }

@@ -68,7 +68,7 @@ class OrdersServiceTest extends IntegrationTest {
 		Product savedProduct = productRepository.save(new Product("샐러드", BigDecimal.valueOf(9000)));
 		Menu savedMenu = menuRepository.save(new Menu("닭가슴살샐러드", BigDecimal.valueOf(9000), savedMenuGroup.getId()));
 		MenuProduct savedMenuProduct = menuProductRepository.save(new MenuProduct(savedMenu, savedProduct, 1));
-		savedMenu.addMenuProduct(savedMenuProduct);
+		//savedMenu.addMenuProduct(savedMenuProduct);
 
 		OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(savedMenu.getId(), 1L);
 		OrderRequest orderRequest = new OrderRequest(savedOrderTable.getId(), Arrays.asList(orderLineItemRequest));
@@ -94,7 +94,7 @@ class OrdersServiceTest extends IntegrationTest {
 		Product savedProduct = productRepository.save(new Product("샐러드", BigDecimal.valueOf(9000)));
 		Menu savedMenu = menuRepository.save(new Menu("닭가슴살샐러드", BigDecimal.valueOf(9000), savedMenuGroup.getId()));
 		MenuProduct savedMenuProduct = menuProductRepository.save(new MenuProduct(savedMenu, savedProduct, 1));
-		savedMenu.addMenuProduct(savedMenuProduct);
+		//savedMenu.addMenuProduct(savedMenuProduct);
 
 		OrderRequest orderRequest = new OrderRequest(savedOrderTable.getId(), Collections.EMPTY_LIST);
 
@@ -117,7 +117,7 @@ class OrdersServiceTest extends IntegrationTest {
 		Product savedProduct = productRepository.save(new Product("샐러드", BigDecimal.valueOf(9000)));
 		Menu savedMenu = menuRepository.save(new Menu("닭가슴살샐러드", BigDecimal.valueOf(9000), savedMenuGroup.getId()));
 		MenuProduct savedMenuProduct = menuProductRepository.save(new MenuProduct(savedMenu, savedProduct, 1));
-		savedMenu.addMenuProduct(savedMenuProduct);
+		//savedMenu.addMenuProduct(savedMenuProduct);
 
 		Long invalidMenuId = 22222L;
 
@@ -143,7 +143,7 @@ class OrdersServiceTest extends IntegrationTest {
 		Product savedProduct = productRepository.save(new Product("샐러드", BigDecimal.valueOf(9000)));
 		Menu savedMenu = menuRepository.save(new Menu("닭가슴살샐러드", BigDecimal.valueOf(9000), savedMenuGroup.getId()));
 		MenuProduct savedMenuProduct = menuProductRepository.save(new MenuProduct(savedMenu, savedProduct, 1));
-		savedMenu.addMenuProduct(savedMenuProduct);
+		//savedMenu.addMenuProduct(savedMenuProduct);
 
 		OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(savedMenu.getId(), 1L);
 		OrderRequest orderRequest = new OrderRequest(savedOrderTable.getId(), Arrays.asList(orderLineItemRequest));
@@ -185,7 +185,7 @@ class OrdersServiceTest extends IntegrationTest {
 		Product savedProduct = productRepository.save(new Product("샐러드", BigDecimal.valueOf(9000)));
 		Menu savedMenu = menuRepository.save(new Menu("닭가슴살샐러드", BigDecimal.valueOf(9000), savedMenuGroup.getId()));
 		MenuProduct savedMenuProduct = menuProductRepository.save(new MenuProduct(savedMenu, savedProduct, 1));
-		savedMenu.addMenuProduct(savedMenuProduct);
+		//savedMenu.addMenuProduct(savedMenuProduct);
 
 		OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(savedMenu.getId(), 1L);
 		OrderRequest orderRequest = new OrderRequest(savedOrderTable.getId(), Arrays.asList(orderLineItemRequest));
@@ -212,7 +212,7 @@ class OrdersServiceTest extends IntegrationTest {
 		Product savedProduct = productRepository.save(new Product("샐러드", BigDecimal.valueOf(9000)));
 		Menu savedMenu = menuRepository.save(new Menu("닭가슴살샐러드", BigDecimal.valueOf(9000), savedMenuGroup.getId()));
 		MenuProduct savedMenuProduct = menuProductRepository.save(new MenuProduct(savedMenu, savedProduct, 1));
-		savedMenu.addMenuProduct(savedMenuProduct);
+		//savedMenu.addMenuProduct(savedMenuProduct);
 
 		OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(savedMenu.getId(), 1L);
 		OrderRequest orderRequest = new OrderRequest(savedOrderTable.getId(), Arrays.asList(orderLineItemRequest));

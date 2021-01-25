@@ -9,23 +9,24 @@ import org.springframework.transaction.annotation.Transactional;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.repository.MenuProductRepository;
 import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.product.domain.Product;
 import kitchenpos.product.repository.ProductRepository;
 
 @Service
 public class MenuService {
 	private final MenuRepository menuRepository;
-	private final MenuProductRepository menuProductRepository;
+	private final ProductRepository productRepository;
 
 	public MenuService(
 		final MenuRepository menuRepository,
-		final MenuProductRepository menuProductRepository
-	) {
+		ProductRepository productRepository) {
 		this.menuRepository = menuRepository;
-		this.menuProductRepository = menuProductRepository;
+		this.productRepository = productRepository;
 	}
 
 	@Transactional
@@ -37,7 +38,8 @@ public class MenuService {
 			.build();
 
 		Menu savedMenu = menuRepository.save(saveTargetMenu);
-		Menu finalSavedMenu = addCreateMenuProductTarget(savedMenu, menuRequest.getMenuGroupId());
+
+		Menu finalSavedMenu = addCreateMenuProductTarget(savedMenu, menuRequest.getMenuProducts());
 		return MenuResponse.of(finalSavedMenu);
 	}
 
@@ -49,10 +51,13 @@ public class MenuService {
 			.collect(Collectors.toList());
 	}
 
-	private Menu addCreateMenuProductTarget(Menu savedMenu, Long menuGroupId) {
-		final List<MenuProduct> findMenuProducts = menuProductRepository.findAllByMenuId(menuGroupId);
-		MenuProducts menuProducts = new MenuProducts(findMenuProducts);
-		savedMenu.addMenuProducts(menuProducts);
+	private Menu addCreateMenuProductTarget(Menu savedMenu, List<MenuProductRequest> menuProductRequests) {
+		for (MenuProductRequest menuProductRequest : menuProductRequests) {
+			Product product = productRepository.findById(menuProductRequest.getProductId()).orElseThrow(IllegalArgumentException::new);
+			savedMenu.addMenuProduct(new MenuProduct(savedMenu, product, menuProductRequest.getQuantity()));
+		}
+		savedMenu.validateSumOfPriceToAddMenuProduct();
+		//MenuProducts menuProducts = new MenuProducts(findMenuProducts);
 		return savedMenu;
 	}
 
