@@ -1,11 +1,7 @@
 package kitchenpos.ui;
 
-import kitchenpos.application.TableGroupService;
 import kitchenpos.application.TableService;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.request.OrderTableRequest;
 import kitchenpos.dto.request.TableGroupRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,9 +24,6 @@ class TableGroupRestControllerTest extends ControllerTest {
 
     @Autowired
     private TableService tableService;
-
-    @Autowired
-    private TableGroupService tableGroupService;
 
     private List<OrderTableRequest> orderTableRequests;
     private OrderTable 테이블_1번;
