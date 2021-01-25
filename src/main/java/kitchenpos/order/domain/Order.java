@@ -27,6 +27,11 @@ public class Order {
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     protected Order() {
+        this.orderStatus = OrderStatus.COOKING;
+    }
+
+    public static Order empty() {
+        return new Order();
     }
 
     public Order(Long id, OrderTable orderTable, List<OrderLineItem> orderLineItems) {

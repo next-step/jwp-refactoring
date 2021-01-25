@@ -31,12 +31,10 @@ public class TableGroup {
         return new TableGroup();
     }
 
-    public void removeTable(OrderTable orderTable) {
-        orderTables.removeTable(orderTable);
-    }
-
-    public void addTable(OrderTable orderTable) {
-        orderTables.addTable(orderTable);
+    public void unGroupingTable() {
+        orderTables.checkOrderStatus();
+        orderTables.removeTables();
+        orderTables = OrderTables.empty();
     }
 
     public Long getId() {
@@ -49,9 +47,5 @@ public class TableGroup {
 
     public OrderTables getOrderTables() {
         return orderTables;
-    }
-
-    public boolean hasContain(OrderTable orderTable) {
-        return orderTables.hasContain(orderTable);
     }
 }

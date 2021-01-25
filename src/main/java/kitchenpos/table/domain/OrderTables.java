@@ -1,17 +1,16 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.tableGroup.domain.TableGroup;
 import org.springframework.util.CollectionUtils;
 
-import javax.persistence.Embeddable;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Embeddable
 public class OrderTables {
-    @OneToMany(mappedBy = "tableGroup", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "table_group_id")
     private List<OrderTable> orderTables;
 
     protected OrderTables() {
@@ -33,12 +32,8 @@ public class OrderTables {
         return new OrderTables();
     }
 
-    public void initialTableGroup(TableGroup tableGroup) {
-        orderTables.forEach(orderTable -> orderTable.addTableGroup(tableGroup));
-    }
-
-    public void unGroupingTable() {
-        orderTables.forEach(orderTable -> orderTable.removeTableGroup());
+    public void initialTableGroup(Long tableGroupId) {
+        orderTables.forEach(orderTable -> orderTable.addTableGroup(tableGroupId));
     }
 
     public List<Long> getOrderTablesIds() {
@@ -55,8 +50,12 @@ public class OrderTables {
         return orderTables.contains(orderTable);
     }
 
-    public void removeTable(OrderTable orderTable) {
-        orderTables.remove(orderTable);
+    public void removeTables() {
+        orderTables = new ArrayList<>();
+    }
+
+    public void checkOrderStatus() {
+        orderTables.forEach(orderTable -> orderTable.checkOrderStatus());
     }
 
     public void addTable(OrderTable orderTable) {

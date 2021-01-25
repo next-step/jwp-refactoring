@@ -1,7 +1,7 @@
 package kitchenpos.tableGroup.application;
 
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTables;
@@ -17,13 +17,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,9 +31,6 @@ class TableGroupServiceTest {
     private TableGroup tableGroup;
     private TableGroupRequest tableGroupRequest;
     private TableGroupService tableGroupService;
-
-    @Mock
-    private OrderRepository orderRepository;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -55,7 +50,7 @@ class TableGroupServiceTest {
         orderTableRequests.add(3L);
         tableGroupRequest = new TableGroupRequest(orderTableRequests);
 
-        tableGroupService = new TableGroupService(orderRepository, orderTableRepository, tableGroupRepository);
+        tableGroupService = new TableGroupService(orderTableRepository, tableGroupRepository);
     }
 
     @DisplayName("테이블그룹 생성 테스트")
@@ -102,7 +97,7 @@ class TableGroupServiceTest {
     @DisplayName("테이블그룹 생성 예외테스트: 테이블에 그룹아이디가 있는경우")
     @Test
     void existGroupId() {
-        orderTables.add(new OrderTable(TableGroup.empty()));
+        orderTables.add(new OrderTable(2L));
         when(orderTableRepository.findAllByIdIn(any())).thenReturn(orderTables);
 
         Throwable exception = assertThrows(IllegalArgumentException.class,
@@ -115,10 +110,8 @@ class TableGroupServiceTest {
     @DisplayName("테이블그룹 해제 예외테스트: 테이블상태가 유효하지 않은 경우")
     @Test
     void invalidTableStatus() {
+        tableGroup.getOrderTables().getOrderTables().get(0).addOrder(Order.empty());
         when(tableGroupRepository.findById(any())).thenReturn(java.util.Optional.ofNullable(tableGroup));
-        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                any(), eq(Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))
-        )).thenReturn(true);
 
         Throwable exception = assertThrows(IllegalArgumentException.class,
                 () -> tableGroupService.ungroup(1L)

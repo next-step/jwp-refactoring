@@ -18,7 +18,7 @@ public class OrderTest {
     public void setUp() {
         orderLineItems.add(OrderLineItem.empty());
         orderLineItems.add(OrderLineItem.empty());
-        order = new Order(OrderTable.empty(), orderLineItems);
+        order = new Order(new OrderTable(0, false), orderLineItems);
     }
 
     @Test

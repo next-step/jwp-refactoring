@@ -1,13 +1,10 @@
 package kitchenpos.table.application;
 
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.tableGroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +13,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -141,7 +136,7 @@ class TableServiceTest {
     @Test
     void existTableGroup() {
         when(orderTableRepository.findById(any())).thenReturn(java.util.Optional.ofNullable(notEmptyTable));
-        notEmptyTable.addTableGroup(TableGroup.empty());
+        notEmptyTable.addTableGroup(1L);
 
         Throwable exception = assertThrows(IllegalArgumentException.class,
                 () -> tableService.changeEmpty(1L, true)

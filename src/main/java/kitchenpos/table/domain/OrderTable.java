@@ -1,7 +1,6 @@
 package kitchenpos.table.domain;
 
 import kitchenpos.order.domain.Order;
-import kitchenpos.tableGroup.domain.TableGroup;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -12,52 +11,39 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "table_group_id")
-    private TableGroup tableGroup;
+    @OneToOne(mappedBy = "orderTable")
+    private Order order;
+
+    @Column(name = "table_group_id")
+    private Long tableGroupId;
 
     private int numberOfGuests;
     private boolean empty;
-
-    @OneToOne(mappedBy = "orderTable")
-    private Order order;
 
     protected OrderTable() {
     }
 
     public static OrderTable empty() {
-        return new OrderTable(TableGroup.empty());
+        return new OrderTable(0, true);
     }
 
-    public OrderTable(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
+    public OrderTable(Long tableGroupId) {
+        this(0, true);
+        this.tableGroupId = tableGroupId;
+    }
+
+    public OrderTable(Long id, int numberOfGuests, boolean empty) {
+        this(numberOfGuests, empty);
+        this.id = id;
     }
 
     public OrderTable(int numberOfGuests, boolean empty) {
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
-        removeTableGroup();
-    }
-
-    public OrderTable(Long id, int numberOfGuests, boolean empty) {
-        this.id = id;
-        this.numberOfGuests = numberOfGuests;
-        this.empty = empty;
-        removeTableGroup();
-    }
-
-    public void removeTableGroup() {
-        if(Objects.nonNull(tableGroup) && tableGroup.hasContain(this)) {
-            tableGroup.removeTable(this);
-        }
     }
 
     public Long getId() {
         return id;
-    }
-
-    public TableGroup getTableGroup() {
-        return tableGroup;
     }
 
     public int getNumberOfGuests() {
@@ -74,9 +60,7 @@ public class OrderTable {
 
     public void changeStatus(boolean empty) {
         checkGrouping();
-        if(Objects.nonNull(this.order) && !order.checkComplete()) {
-            throw new IllegalArgumentException("주문이 완료되지 않았습니다.");
-        }
+        checkOrderStatus();
         this.empty = empty;
     }
 
@@ -88,11 +72,8 @@ public class OrderTable {
         this.numberOfGuests = numberOfGuests;
     }
 
-    public void addTableGroup(TableGroup tableGroup) {
-        if(!tableGroup.hasContain(this)) {
-            tableGroup.addTable(this);
-        }
-        this.tableGroup = tableGroup;
+    public void addTableGroup(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
         this.empty = false;
     }
 
@@ -117,8 +98,14 @@ public class OrderTable {
         this.order = order;
     }
 
+    public void checkOrderStatus() {
+        if(Objects.nonNull(this.order) && !order.checkComplete()) {
+            throw new IllegalArgumentException("주문이 완료되지 않았습니다.");
+        }
+    }
+
     private void checkGrouping() {
-        if (Objects.nonNull(tableGroup)) {
+        if (Objects.nonNull(tableGroupId)) {
             throw new IllegalArgumentException("그룹핑된 상태입니다.");
         }
     }
