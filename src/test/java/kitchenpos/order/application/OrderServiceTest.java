@@ -2,6 +2,7 @@ package kitchenpos.order.application;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.common.domain.Price;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
@@ -17,7 +18,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -38,7 +38,7 @@ class OrderServiceTest {
     @DisplayName("1개 이상의 메뉴로 주문 등록")
     @Test
     void createOrder() {
-        Menu menu = menuRepository.save(new Menu("메뉴1", new BigDecimal(1000), 1L));
+        Menu menu = menuRepository.save(new Menu("메뉴1", Price.of(1000), 1L));
         OrderTable orderTable = orderTableRepository.save(new OrderTable(4, true));
 
         List<OrderLineRequest> orderLinesRequest = Arrays.asList(new OrderLineRequest(menu.getId(), 1L));
@@ -79,7 +79,7 @@ class OrderServiceTest {
     @DisplayName("주문 목록을 조회")
     @Test
     void list() {
-        Menu menu = menuRepository.save(new Menu("메뉴1", new BigDecimal(1000), 1L));
+        Menu menu = menuRepository.save(new Menu("메뉴1", Price.of(1000), 1L));
         OrderTable orderTable = orderTableRepository.save(new OrderTable(4, false));
         OrderTable orderTable2 = orderTableRepository.save(new OrderTable(2, false));
 
@@ -97,7 +97,7 @@ class OrderServiceTest {
     @DisplayName("주문 상태 변경")
     @Test
     void changeOrderStatus() {
-        Menu menu = menuRepository.save(new Menu("메뉴1", new BigDecimal(1000), 1L));
+        Menu menu = menuRepository.save(new Menu("메뉴1", Price.of(1000), 1L));
         OrderTable orderTable = orderTableRepository.save(new OrderTable(4, false));
         List<OrderLineItem> orderLines = Arrays.asList(new OrderLineItem(menu, 1L));
         Order order = orderRepository.save(new Order(orderTable.getId(), orderLines));
@@ -110,7 +110,7 @@ class OrderServiceTest {
     @DisplayName("주문 상태가 계산 완료인 경우 변경 불가")
     @Test
     void failChangeOrderStatusWhenStatuIsCOMPLETION() {
-        Menu menu = menuRepository.save(new Menu("메뉴1", new BigDecimal(1000), 1L));
+        Menu menu = menuRepository.save(new Menu("메뉴1", Price.of(1000), 1L));
         OrderTable orderTable = orderTableRepository.save(new OrderTable(4, false));
         List<OrderLineItem> orderLines = Arrays.asList(new OrderLineItem(menu, 1L));
         Order order = orderRepository.save(new Order(orderTable.getId(), orderLines));

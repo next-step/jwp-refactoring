@@ -3,13 +3,13 @@ package kitchenpos.menu.domain;
 import kitchenpos.product.domain.Product;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 public class MenuProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long seq;
+    @Column(name = "seq")
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "menu_id")
@@ -34,8 +34,8 @@ public class MenuProduct {
         this.quantity = quantity;
     }
 
-    public Long getSeq() {
-        return seq;
+    public Long getId() {
+        return id;
     }
 
     public Menu getMenu() {
@@ -57,18 +57,18 @@ public class MenuProduct {
 
         MenuProduct that = (MenuProduct) o;
 
-        if (quantity != that.quantity) return false;
-        if (!Objects.equals(seq, that.seq)) return false;
-        if (!Objects.equals(menu, that.menu)) return false;
-        return Objects.equals(product, that.product);
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (menu != null ? !menu.equals(that.menu) : that.menu != null) return false;
+        if (product != null ? !product.equals(that.product) : that.product != null) return false;
+        return quantity != null ? quantity.equals(that.quantity) : that.quantity == null;
     }
 
     @Override
     public int hashCode() {
-        int result = seq != null ? seq.hashCode() : 0;
+        int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (menu != null ? menu.hashCode() : 0);
         result = 31 * result + (product != null ? product.hashCode() : 0);
-        result = 31 * result + (int) (quantity ^ (quantity >>> 32));
+        result = 31 * result + (quantity != null ? quantity.hashCode() : 0);
         return result;
     }
 }

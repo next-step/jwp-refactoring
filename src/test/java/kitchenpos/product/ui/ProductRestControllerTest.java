@@ -3,9 +3,9 @@ package kitchenpos.product.ui;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import kitchenpos.common.domain.Price;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.ui.ProductRestController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,7 +40,7 @@ class ProductRestControllerTest {
     @DisplayName("상품 등록")
     @Test
     public void create() throws Exception {
-        Product expectedProduct = new Product("치킨", new BigDecimal(10_000));
+        Product expectedProduct = new Product("치킨", Price.of(10_000));
         given(productService.create(any())).willReturn(expectedProduct);
         mockMvc.perform(post("/api/products")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -53,8 +52,8 @@ class ProductRestControllerTest {
     @DisplayName("상품 리스트")
     @Test
     public void list() throws Exception {
-        Product product1 = new Product("치킨", new BigDecimal(10_000));
-        Product product2 = new Product("스파게티", new BigDecimal(10_000));
+        Product product1 = new Product("치킨", Price.of(10_000));
+        Product product2 = new Product("스파게티", Price.of(10_000));
         List<Product> products = Arrays.asList(product1, product2) ;
         given(productService.list()).willReturn(products);
         mockMvc.perform(get("/api/products"))

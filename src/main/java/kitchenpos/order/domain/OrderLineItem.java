@@ -8,7 +8,8 @@ import javax.persistence.*;
 public class OrderLineItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long seq;
+    @Column(name = "seq")
+    private Long id;
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "order_id")
     private Order order;
@@ -31,8 +32,8 @@ public class OrderLineItem {
         this.quantity = quantity;
     }
 
-    public Long getSeq() {
-        return seq;
+    public Long getId() {
+        return id;
     }
 
     public Order getOrder() {
@@ -55,14 +56,14 @@ public class OrderLineItem {
         OrderLineItem that = (OrderLineItem) o;
 
         if (quantity != that.quantity) return false;
-        if (seq != null ? !seq.equals(that.seq) : that.seq != null) return false;
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (order != null ? !order.equals(that.order) : that.order != null) return false;
         return menu != null ? menu.equals(that.menu) : that.menu == null;
     }
 
     @Override
     public int hashCode() {
-        int result = seq != null ? seq.hashCode() : 0;
+        int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (order != null ? order.hashCode() : 0);
         result = 31 * result + (menu != null ? menu.hashCode() : 0);
         result = 31 * result + (int) (quantity ^ (quantity >>> 32));
