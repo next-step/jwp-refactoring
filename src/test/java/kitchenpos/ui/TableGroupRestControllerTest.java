@@ -1,5 +1,6 @@
 package kitchenpos.ui;
 
+import kitchenpos.application.TableGroupService;
 import kitchenpos.application.TableService;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
@@ -25,6 +26,9 @@ class TableGroupRestControllerTest extends ControllerTest {
     @Autowired
     private TableService tableService;
 
+    @Autowired
+    private TableGroupService tableGroupService;
+
     private List<OrderTable> orderTables;
     private OrderTable 테이블_1번;
     private OrderTable 테이블_2번;
@@ -32,8 +36,10 @@ class TableGroupRestControllerTest extends ControllerTest {
 
     @BeforeEach
     void setUp() {
-        테이블_1번 = 테이블을_생성한다(1l, 0, true);
-        테이블_2번 = 테이블을_생성한다(2l, 0, true);
+        TableGroup 테이블그룹_1번 = tableGroupService.findTableGroupById(1l);
+        TableGroup 테이블그룹_2번 = tableGroupService.findTableGroupById(2l);
+        테이블_1번 = 테이블을_생성한다(테이블그룹_1번, 0, true);
+        테이블_2번 = 테이블을_생성한다(테이블그룹_2번, 0, true);
 
         orderTables = new ArrayList<>();
         orderTables.add(테이블_1번);
@@ -63,7 +69,7 @@ class TableGroupRestControllerTest extends ControllerTest {
                 .andExpect(status().isNoContent());
     }
 
-    private OrderTable 테이블을_생성한다(Long id, int numberOfGuest, boolean empty) {
-        return tableService.create(new OrderTable(id, numberOfGuest, empty));
+    private OrderTable 테이블을_생성한다(TableGroup tableGroup, int numberOfGuest, boolean empty) {
+        return tableService.create(new OrderTable(tableGroup, numberOfGuest, empty));
     }
 }

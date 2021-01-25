@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
 import kitchenpos.domain.*;
+import kitchenpos.repository.OrderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,6 +24,9 @@ class OrderServiceTest {
     private TableService tableService;
 
     @Autowired
+    private TableGroupService tableGroupService;
+
+    @Autowired
     private OrderService orderService;
 
     @Autowired
@@ -33,7 +36,7 @@ class OrderServiceTest {
     private MenuGroupService menuGroupService;
 
     @Autowired
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     private Order 주문;
     private MenuProduct 메뉴상품_후라이드;
@@ -42,19 +45,19 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
+        후라이드양념반반메뉴 = 메뉴그룹을_생성한다("후라이드양념반반메뉴");
+        Menu menu = 메뉴를_생성한다(후라이드양념반반메뉴, "후라이드양념반반", 32000);
         Product 후라이드 = productService.findById(1l);
         Product 양념치킨 = productService.findById(2l);
-        메뉴상품_후라이드 = new MenuProduct(후라이드.getId(), 1);
-        메뉴상품_양념치킨 = new MenuProduct(양념치킨.getId(), 1);
-        후라이드양념반반메뉴 = 메뉴그룹을_생성한다("후라이드양념반반메뉴");
+        메뉴상품_후라이드 = new MenuProduct(menu, 후라이드, 1);
+        메뉴상품_양념치킨 = new MenuProduct(menu, 양념치킨, 1);
+        menu.updateMenuProducts(Arrays.asList(메뉴상품_후라이드,메뉴상품_양념치킨));
 
-        Menu menu = 메뉴를_생성한다(후라이드양념반반메뉴, "후라이드양념반반", 32000, 메뉴상품_후라이드, 메뉴상품_양념치킨);
-        OrderLineItem orderLineItem = new OrderLineItem();
-        orderLineItem.setMenuId(menu.getId());
-        orderLineItem.setQuantity(2l);
-        OrderTable orderTable = 테이블을_생성한다(1l, 0, false);
+        TableGroup tableGroup = tableGroupService.findTableGroupById(1l);
+        OrderTable orderTable = 테이블을_생성한다(tableGroup, 0, false);
 
-        주문 = new Order(orderTable.getId(), Arrays.asList(orderLineItem));
+        OrderLineItem orderLineItem = new OrderLineItem(menu, 2l);
+        주문 = new Order(orderTable, Arrays.asList(orderLineItem));
     }
 
     @DisplayName("주문을 등록한다")
@@ -78,7 +81,7 @@ class OrderServiceTest {
     @Test
     void changeOrderStatus() {
         Order order = 주문을_등록한다(주문);
-        order.setOrderStatus(OrderStatus.MEAL.name());
+        order.setOrderStatus(OrderStatus.MEAL);
 
         Order newOrder = orderService.changeOrderStatus(order.getId(), order);
 
@@ -88,17 +91,16 @@ class OrderServiceTest {
     @DisplayName("주문 상태를 변경한다 : OrderStatus.COMPLETION이면 익셉션 발생")
     @Test
     void changeOrderStatusException() {
-
         Order order = 주문을_등록한다(주문);
-        order.setOrderStatus(OrderStatus.COMPLETION.name());
-        orderDao.save(order);
+        order.setOrderStatus(OrderStatus.COMPLETION);
+        orderRepository.save(order);
 
         assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), order))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    private OrderTable 테이블을_생성한다(Long id, int numberOfGuest, boolean empty) {
-        return tableService.create(new OrderTable(id, numberOfGuest, empty));
+    private OrderTable 테이블을_생성한다(TableGroup tableGroup, int numberOfGuest, boolean empty) {
+        return tableService.create(new OrderTable(tableGroup, numberOfGuest, empty));
     }
 
     private Order 주문을_등록한다(Order order) {
@@ -106,7 +108,7 @@ class OrderServiceTest {
     }
 
     private Menu 메뉴를_생성한다(MenuGroup menuGroup, String name, int price, MenuProduct... products) {
-        Menu menu = new Menu(name, BigDecimal.valueOf(price), menuGroup.getId(), Arrays.asList(products));
+        Menu menu = new Menu(name, BigDecimal.valueOf(price), menuGroup, Arrays.asList(products));
         return menuService.create(menu);
     }
 

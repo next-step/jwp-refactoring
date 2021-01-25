@@ -1,7 +1,7 @@
 package kitchenpos.ui;
 
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.repository.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ class TableRestControllerTest extends ControllerTest {
     private final String TABLE_URI = "/api/tables";
 
     @Autowired
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @DisplayName("테이블을 생성한다")
     @Test
@@ -37,7 +37,7 @@ class TableRestControllerTest extends ControllerTest {
     @Test
     void changeStatusAndGuests() throws Exception {
         final Long orderTableId = 4l;
-        OrderTable orderTable = orderTableDao.findById(orderTableId).get();
+        OrderTable orderTable = orderTableRepository.findById(orderTableId).get();
 
         orderTable.setEmpty(false);
         String body = objectMapper.writeValueAsString(orderTable);
