@@ -22,7 +22,7 @@ public class MenuProducts {
 	}
 
 	public static MenuProducts of(final Products products, final MenuGroup menuGroup, final MenuRequest request) {
-		Menu menu = Menu.of(request, menuGroup);
+		Menu menu = request.toEntity(menuGroup);
 
 		List<MenuProduct> menuProducts = request.getMenuProducts().stream()
 			.map(it -> MenuProduct.of(menu, products.findId(it.getProductId()), it.getQuantity()))
