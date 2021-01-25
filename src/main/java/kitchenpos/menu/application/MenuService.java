@@ -7,33 +7,33 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.menu.dao.MenuDao;
-import kitchenpos.menu.dao.MenuGroupDao;
-import kitchenpos.menu.dao.MenuProductDao;
-import kitchenpos.product.dao.ProductDao;
+import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.menu.repository.MenuGroupRepository;
+import kitchenpos.menu.repository.MenuProductRepository;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.repository.ProductRepository;
 
 @Service
 public class MenuService {
-    private final MenuDao menuDao;
-    private final MenuGroupDao menuGroupDao;
-    private final MenuProductDao menuProductDao;
-    private final ProductDao productDao;
+    private final MenuRepository menuRepository;
+    private final MenuGroupRepository menuGroupRepository;
+    private final MenuProductRepository menuProductRepository;
+    private final ProductRepository productRepository;
 
     public MenuService(
-            final MenuDao menuDao,
-            final MenuGroupDao menuGroupDao,
-            final MenuProductDao menuProductDao,
-            final ProductDao productDao
+            final MenuRepository menuRepository,
+            final MenuGroupRepository menuGroupRepository,
+            final MenuProductRepository menuProductRepository,
+            final ProductRepository productRepository
     ) {
-        this.menuDao = menuDao;
-        this.menuGroupDao = menuGroupDao;
-        this.menuProductDao = menuProductDao;
-        this.productDao = productDao;
+        this.menuRepository = menuRepository;
+        this.menuGroupRepository = menuGroupRepository;
+        this.menuProductRepository = menuProductRepository;
+        this.productRepository = productRepository;
     }
 
     @Transactional
@@ -44,24 +44,24 @@ public class MenuService {
                                 .menuGroupId(menuRequest.getMenuGroupId())
                                 .build();
 
-        Menu savedMenu = menuDao.save(saveTargetMenu);
+        Menu savedMenu = menuRepository.save(saveTargetMenu);
         Menu finalSavedMenu = addCreateMenuProductTarget(savedMenu, menuRequest.getMenuGroupId());
         return MenuResponse.of(finalSavedMenu);
     }
 
     public List<MenuResponse> list() {
-        final List<Menu> menus = menuDao.findAll();
+        final List<Menu> menus = menuRepository.findAll();
         return menus.stream()
             .map(MenuResponse::of)
             .collect(Collectors.toList());
     }
 
     private Menu addCreateMenuProductTarget(Menu savedMenu, Long menuGroupId) {
-        final List<MenuProduct> menuProducts = menuProductDao.findAllByMenuId(menuGroupId);
+        final List<MenuProduct> menuProducts = menuProductRepository.findAllByMenuId(menuGroupId);
 
         BigDecimal sum = BigDecimal.ZERO;
         for (MenuProduct menuProduct : menuProducts) {
-            final Product product = productDao.findById(menuProduct.getProductId()).orElseThrow(IllegalArgumentException::new);
+            final Product product = productRepository.findById(menuProduct.getProductId()).orElseThrow(IllegalArgumentException::new);
             sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
             savedMenu.addMenuProduct(new MenuProduct(savedMenu, product, menuProduct.getQuantity()));
         }

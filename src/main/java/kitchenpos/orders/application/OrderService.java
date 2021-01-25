@@ -8,10 +8,9 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
-import kitchenpos.menu.dao.MenuDao;
-import kitchenpos.orders.dao.OrderDao;
-import kitchenpos.orders.dao.OrderLineItemDao;
-import kitchenpos.orders.dao.OrderTableDao;
+import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.orders.repository.OrderRepository;
+import kitchenpos.orders.repository.OrderTableRepository;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.orders.domain.OrderLineItem;
 import kitchenpos.orders.domain.OrderLineItems;
@@ -24,29 +23,29 @@ import kitchenpos.table.domain.OrderTable;
 
 @Service
 public class OrderService {
-	private final MenuDao menuDao;
-	private final OrderDao orderDao;
-	private final OrderTableDao orderTableDao;
+	private final MenuRepository menuRepository;
+	private final OrderRepository orderRepository;
+	private final OrderTableRepository orderTableRepository;
 
 	public OrderService(
-		final MenuDao menuDao,
-		final OrderDao orderDao,
-		final OrderTableDao orderTableDao
+		final MenuRepository menuRepository,
+		final OrderRepository orderRepository,
+		final OrderTableRepository orderTableRepository
 	) {
-		this.menuDao = menuDao;
-		this.orderDao = orderDao;
-		this.orderTableDao = orderTableDao;
+		this.menuRepository = menuRepository;
+		this.orderRepository = orderRepository;
+		this.orderTableRepository = orderTableRepository;
 	}
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-		OrderTable orderTable = orderTableDao.findById(orderRequest.getOrderTableId()).orElseThrow(IllegalArgumentException::new);
+		OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId()).orElseThrow(IllegalArgumentException::new);
 		OrderLineItems orderLineItems = orderRequestToOrderItem(orderRequest.getOrderLineItems());
 
 		if(orderTable.isEmpty()){
 			throw new IllegalArgumentException();
 		}
-		Orders savedOrder = orderDao.save(new Orders(orderTable, OrderStatus.COOKING.name()));
+		Orders savedOrder = orderRepository.save(new Orders(orderTable, OrderStatus.COOKING.name()));
 		savedOrder.add(orderLineItems);
 
         return OrderResponse.of(savedOrder);
@@ -55,14 +54,14 @@ public class OrderService {
 
 	@org.springframework.transaction.annotation.Transactional(readOnly = true)
     public List<OrderResponse> list() {
-		return orderDao.findAll().stream()
+		return orderRepository.findAll().stream()
 			.map(OrderResponse::of)
 			.collect(Collectors.toList());
     }
 
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
-        final Orders savedOrder = orderDao.findById(orderId).orElseThrow(IllegalArgumentException::new);
+        final Orders savedOrder = orderRepository.findById(orderId).orElseThrow(IllegalArgumentException::new);
         final OrderStatus orderStatus = OrderStatus.valueOf(orderRequest.getOrderStatus());
         savedOrder.changeOrderStatus(orderStatus);
 
@@ -74,7 +73,7 @@ public class OrderService {
 		if(orderLineItemsRequests.isEmpty()) throw new IllegalArgumentException();
 		List<OrderLineItem> orderLineItems = new ArrayList<>();
 		for (OrderLineItemRequest orderLineItemRequest : orderLineItemsRequests) {
-			Menu menu = menuDao.findById(orderLineItemRequest.getMenuId()).orElseThrow(IllegalArgumentException::new);
+			Menu menu = menuRepository.findById(orderLineItemRequest.getMenuId()).orElseThrow(IllegalArgumentException::new);
 			orderLineItems.add(new OrderLineItem(menu, orderLineItemRequest.getQuantity()));
 		}
 

@@ -12,16 +12,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import kitchenpos.menu.dao.MenuDao;
-import kitchenpos.menu.dao.MenuGroupDao;
-import kitchenpos.menu.dao.MenuProductDao;
-import kitchenpos.product.dao.ProductDao;
+import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.menu.repository.MenuGroupRepository;
+import kitchenpos.menu.repository.MenuProductRepository;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.repository.ProductRepository;
 import kitchenpos.utils.IntegrationTest;
 
 /**
@@ -35,13 +35,13 @@ class MenuServiceTest extends IntegrationTest {
 	@Autowired
 	private MenuService menuService;
 	@Autowired
-	MenuDao menuDao;
+	MenuRepository menuRepository;
 	@Autowired
-	MenuGroupDao menuGroupDao;
+	MenuGroupRepository menuGroupRepository;
 	@Autowired
-	MenuProductDao menuProductDao;
+	MenuProductRepository menuProductRepository;
 	@Autowired
-	ProductDao productDao;
+	ProductRepository productRepository;
 
 	@DisplayName("메뉴를 등록할 수 있다.")
 	@Test
@@ -131,7 +131,7 @@ class MenuServiceTest extends IntegrationTest {
 	@Test
 	void list() {
 		// given
-		List<Menu> findAll = menuDao.findAll();
+		List<Menu> findAll = menuRepository.findAll();
 
 		// when
 		List<MenuResponse> actualMenus = menuService.list();
