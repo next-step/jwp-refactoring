@@ -1,4 +1,4 @@
-package kitchenpos.domain.menu;
+package kitchenpos.domain;
 
 import java.util.Objects;
 
@@ -6,6 +6,8 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class Quantity {
+    private static final int MIN_QUANTITY = 0;
+
     private int quantity;
 
     protected Quantity() {}
@@ -20,7 +22,7 @@ public class Quantity {
     }
 
     public void checkGreaterThanZero(int quantity) {
-        if (quantity < 0) {
+        if (quantity < MIN_QUANTITY) {
             throw new IllegalArgumentException("마이너스 수량을 가질 수 없습니다");
         }
     }

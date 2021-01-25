@@ -1,10 +1,10 @@
-package kitchenpos.dto;
+package kitchenpos.dto.menu;
 
 import kitchenpos.domain.Price;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menu.MenuProduct;
-import kitchenpos.domain.menu.Quantity;
+import kitchenpos.domain.Quantity;
 import kitchenpos.domain.product.Product;
 
 import static java.util.stream.Collectors.*;

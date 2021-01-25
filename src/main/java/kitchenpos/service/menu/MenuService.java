@@ -1,11 +1,12 @@
-package kitchenpos.service;
+package kitchenpos.service.menu;
 
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menu.MenuRepository;
 import kitchenpos.domain.product.Product;
-import kitchenpos.dto.MenuRequest;
-import kitchenpos.dto.MenuResponse;
+import kitchenpos.dto.menu.MenuRequest;
+import kitchenpos.dto.menu.MenuResponse;
+import kitchenpos.service.ProductService;
 
 import java.util.List;
 import java.util.Map;
