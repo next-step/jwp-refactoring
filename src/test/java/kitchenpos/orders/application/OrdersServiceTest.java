@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.menu.repository.MenuGroupRepository;
 import kitchenpos.menu.repository.MenuProductRepository;
+import kitchenpos.orders.repository.OrderLineItemRepository;
 import kitchenpos.orders.repository.OrderRepository;
 import kitchenpos.orders.repository.OrderTableRepository;
 import kitchenpos.product.repository.ProductRepository;
@@ -56,6 +58,20 @@ class OrdersServiceTest extends IntegrationTest {
 	private ProductRepository productRepository;
 	@Autowired
 	private OrderRepository orderRepository;
+	@Autowired
+	private OrderLineItemRepository orderLineItemRepository;
+
+	@AfterEach
+	void cleanUp() {
+		orderLineItemRepository.deleteAllInBatch();
+		orderRepository.deleteAllInBatch();
+		menuProductRepository.deleteAllInBatch();
+		menuRepository.deleteAllInBatch();
+		productRepository.deleteAllInBatch();
+		menuGroupRepository.deleteAllInBatch();
+		orderTableRepository.deleteAllInBatch();
+		tableGroupDao.deleteAllInBatch();
+	}
 
 	@DisplayName("주문을 등록할 수 있다.")
 	@Test
@@ -67,8 +83,7 @@ class OrdersServiceTest extends IntegrationTest {
 		MenuGroup savedMenuGroup = menuGroupRepository.save(new MenuGroup("사이드메뉴"));
 		Product savedProduct = productRepository.save(new Product("샐러드", BigDecimal.valueOf(9000)));
 		Menu savedMenu = menuRepository.save(new Menu("닭가슴살샐러드", BigDecimal.valueOf(9000), savedMenuGroup.getId()));
-		MenuProduct savedMenuProduct = menuProductRepository.save(new MenuProduct(savedMenu, savedProduct, 1));
-		//savedMenu.addMenuProduct(savedMenuProduct);
+		menuProductRepository.save(new MenuProduct(savedMenu, savedProduct, 1));
 
 		OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(savedMenu.getId(), 1L);
 		OrderRequest orderRequest = new OrderRequest(savedOrderTable.getId(), Arrays.asList(orderLineItemRequest));
@@ -157,6 +172,19 @@ class OrdersServiceTest extends IntegrationTest {
 	@DisplayName("주문의 목록을 조회할 수 있다.")
 	@Test
 	void list(){
+		// given
+		TableGroup savedTableGroup = tableGroupDao.save(new TableGroup(LocalDateTime.now()));
+		OrderTable savedOrderTable = orderTableRepository.save(new OrderTable(savedTableGroup, 3, false));
+
+		MenuGroup savedMenuGroup = menuGroupRepository.save(new MenuGroup("사이드메뉴"));
+		Product savedProduct = productRepository.save(new Product("샐러드", BigDecimal.valueOf(9000)));
+		Menu savedMenu = menuRepository.save(new Menu("닭가슴살샐러드", BigDecimal.valueOf(9000), savedMenuGroup.getId()));
+		menuProductRepository.save(new MenuProduct(savedMenu, savedProduct, 1));
+
+		OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(savedMenu.getId(), 1L);
+		OrderRequest orderRequest = new OrderRequest(savedOrderTable.getId(), Arrays.asList(orderLineItemRequest));
+		orderService.create(orderRequest);
+
 		// when
 		List<OrderResponse> orders = orderService.list();
 
