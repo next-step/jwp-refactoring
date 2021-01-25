@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.advice.exception.MenuGroupException;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.request.MenuGroupRequest;
 import kitchenpos.repository.MenuGroupRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class MenuGroupService {
     private final MenuGroupRepository menuGroupRepository;
 
@@ -17,8 +19,8 @@ public class MenuGroupService {
     }
 
     @Transactional
-    public MenuGroup create(final MenuGroup menuGroup) {
-        return menuGroupRepository.save(menuGroup);
+    public MenuGroup create(final MenuGroupRequest menuGroupRequest) {
+        return menuGroupRepository.save(menuGroupRequest.toMenuGroup());
     }
 
     public List<MenuGroup> list() {
@@ -26,6 +28,6 @@ public class MenuGroupService {
     }
 
     public MenuGroup findMenuGroupById(Long id) {
-        return menuGroupRepository.findById(id).orElseThrow(() -> new MenuGroupException("존재하는 메뉴그룹이 없습니다",id));
+        return menuGroupRepository.findById(id).orElseThrow(() -> new MenuGroupException("존재하는 메뉴그룹이 없습니다", id));
     }
 }
