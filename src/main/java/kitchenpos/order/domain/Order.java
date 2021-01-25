@@ -29,16 +29,13 @@ public class Order {
     protected Order() {
     }
 
-    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        orderTable.checkEmpty();
-        this.orderStatus = OrderStatus.COOKING;
-        this.orderedTime = LocalDateTime.now();
-        this.orderLineItems = orderLineItems;
-        addOrderTable(orderTable);
+    public Order(Long id, OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        this(orderTable, orderLineItems);
+        this.id = id;
     }
 
-    public Order(Long id, OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        this.id = id;
+    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        orderTable.checkEmpty();
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
         this.orderLineItems = orderLineItems;
@@ -71,10 +68,8 @@ public class Order {
         orderLineItems.forEach(orderLineItem -> orderLineItem.addOrder(this));
     }
 
-    public void checkComplete() {
-        if (!Objects.equals(OrderStatus.COMPLETION, this.orderStatus)) {
-            throw new IllegalArgumentException("주문이 완료되지 않았습니다.");
-        }
+    public boolean checkComplete() {
+        return Objects.equals(OrderStatus.COMPLETION, this.orderStatus);
     }
 
     public void addOrderTable(OrderTable orderTable) {
@@ -85,7 +80,7 @@ public class Order {
     }
 
     private void checkOrderStatus(OrderStatus orderStatus) {
-        if (Objects.equals(OrderStatus.COMPLETION, this.orderStatus)) {
+        if(checkComplete()) {
             throw new IllegalArgumentException("주문이 완료된 상태입니다.");
         }
         if(Objects.isNull(orderStatus)) {

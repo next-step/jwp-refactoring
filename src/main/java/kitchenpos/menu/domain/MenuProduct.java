@@ -35,7 +35,7 @@ public class MenuProduct {
 
     public void addMenu(Menu menu) {
         this.menu = menu;
-        if(!menu.isContains(this)) {
+        if(!menu.contains(this)) {
             menu.addMenuProduct(this);
         }
     }

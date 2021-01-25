@@ -29,25 +29,21 @@ public class Menu {
     }
 
     public Menu(Long id) {
-        this(id, BigDecimal.ZERO, MenuGroup.empty(), Collections.emptyList());
+        this(BigDecimal.ZERO, MenuGroup.empty(), Collections.emptyList());
+        this.id = id;
     }
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
-        this(name, price, menuGroup, Collections.emptyList());
+        this(price, menuGroup, Collections.emptyList());
+        this.name = name;
     }
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-
+        this(price, menuGroup, menuProducts);
         this.name = name;
-        this.price = validationCheck(price);
-        this.menuGroup = menuGroup;
-        this.menuProducts = menuProducts;
-        checkPrice();
-        initialMenuProduct();
     }
 
-    public Menu(Long id, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        this.id = id;
+    public Menu(BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.price = validationCheck(price);
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
@@ -68,6 +64,21 @@ public class Menu {
 
     public void addMenuProduct(MenuProduct menuProduct) {
         this.menuProducts.add(menuProduct);
+    }
+
+    public boolean contains(MenuProduct menuProduct) {
+        return menuProducts.contains(menuProduct);
+    }
+
+    private void initialMenuProduct() {
+        menuProducts.forEach(menuProduct -> menuProduct.addMenu(this));
+    }
+
+    private BigDecimal validationCheck(BigDecimal price) {
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("입력된 가격이 올바르지 않습니다.");
+        }
+        return price;
     }
 
     public Long getId() {
@@ -104,20 +115,5 @@ public class Menu {
     @Override
     public int hashCode() {
         return Objects.hash(id, name, price, menuGroup);
-    }
-
-    public boolean isContains(MenuProduct menuProduct) {
-        return menuProducts.contains(menuProduct);
-    }
-
-    private void initialMenuProduct() {
-        menuProducts.forEach(menuProduct -> menuProduct.addMenu(this));
-    }
-
-    private BigDecimal validationCheck(BigDecimal price) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("입력된 가격이 올바르지 않습니다.");
-        }
-        return price;
     }
 }

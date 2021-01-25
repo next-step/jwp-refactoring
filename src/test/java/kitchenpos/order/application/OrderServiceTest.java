@@ -93,8 +93,6 @@ class OrderServiceTest {
     void emptyOrderTable() {
         when(orderTableRepository.findById(orderRequest.getOrderTableId())).thenReturn(java.util.Optional.ofNullable(emptyOrderTable));
 
-        order = new Order (1L, emptyOrderTable, orderLineItems);
-
         Throwable exception = assertThrows(IllegalArgumentException.class,
                 () -> orderService.create(orderRequest)
         );

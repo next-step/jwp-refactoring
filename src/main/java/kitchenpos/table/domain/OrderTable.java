@@ -74,8 +74,8 @@ public class OrderTable {
 
     public void changeStatus(boolean empty) {
         checkGrouping();
-        if(Objects.nonNull(this.order)) {
-            order.checkComplete();
+        if(Objects.nonNull(this.order) && !order.checkComplete()) {
+            throw new IllegalArgumentException("주문이 완료되지 않았습니다.");
         }
         this.empty = empty;
     }
