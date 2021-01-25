@@ -1,20 +1,14 @@
 package kitchenpos.table.application;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
-import kitchenpos.orders.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.TableGroupRequest;

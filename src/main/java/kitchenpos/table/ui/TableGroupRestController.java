@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import kitchenpos.table.application.TableGroupService;
-import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 

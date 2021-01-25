@@ -1,6 +1,5 @@
 package kitchenpos.orders.application;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -9,7 +8,6 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;

@@ -24,7 +24,6 @@ import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.orders.application.OrderService;
 import kitchenpos.orders.domain.OrderStatus;
-import kitchenpos.orders.domain.Orders;
 import kitchenpos.orders.dto.OrderLineItemRequest;
 import kitchenpos.orders.dto.OrderRequest;
 import kitchenpos.orders.dto.OrderResponse;
