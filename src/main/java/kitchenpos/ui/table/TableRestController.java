@@ -1,8 +1,8 @@
-package kitchenpos.ui;
+package kitchenpos.ui.table;
 
-import kitchenpos.dto.TableRequest;
-import kitchenpos.dto.TableResponse;
-import kitchenpos.service.TableService;
+import kitchenpos.dto.table.TableRequest;
+import kitchenpos.dto.table.TableResponse;
+import kitchenpos.service.table.TableService;
 
 import java.net.URI;
 import java.util.List;

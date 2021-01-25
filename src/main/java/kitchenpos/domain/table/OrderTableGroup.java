@@ -13,6 +13,8 @@ import javax.persistence.OneToMany;
 
 @Entity
 public class OrderTableGroup extends BaseDateTime {
+    private static final int MIN_SIZE = 2;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -35,19 +37,23 @@ public class OrderTableGroup extends BaseDateTime {
     }
 
     public void applyGroup(int size) {
-        checkOrderTableSize(size);
+        checkOrderTable(size);
         orderTables.forEach(t -> {
             t.changeOrderTableStatus(false);
             t.changeOrderTableGroup(this);
         });
     }
 
-    private void checkOrderTableSize(int size) {
-        if (orderTables.size() != size
-                || orderTables.size() < 2
-                || orderTables.stream().anyMatch(t -> !t.isEmpty())) {
+    private void checkOrderTable(int size) {
+        if (canApplyGroup(size)) {
             throw new IllegalArgumentException("그룹화를 진행할 수 없습니다");
         }
+    }
+
+    private boolean canApplyGroup(int size) {
+        return orderTables.size() != size
+                || orderTables.size() < MIN_SIZE
+                || orderTables.stream().anyMatch(t -> !t.isEmpty());
     }
 
     public void applyUnGroup() {

@@ -1,7 +1,8 @@
-package kitchenpos.dto;
+package kitchenpos.dto.table;
 
 import kitchenpos.domain.table.GuestNumber;
 import kitchenpos.domain.table.OrderTable;
+import kitchenpos.dto.order.OrderResponse;
 
 import static java.util.stream.Collectors.*;
 

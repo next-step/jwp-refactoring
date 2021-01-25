@@ -1,9 +1,9 @@
-package kitchenpos.service;
+package kitchenpos.service.table;
 
 import kitchenpos.domain.table.OrderTableGroup;
 import kitchenpos.domain.table.TableGroupRepository;
-import kitchenpos.dto.TableGroupRequest;
-import kitchenpos.dto.TableGroupResponse;
+import kitchenpos.dto.table.TableGroupRequest;
+import kitchenpos.dto.table.TableGroupResponse;
 
 import java.util.List;
 
