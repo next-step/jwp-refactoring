@@ -108,22 +108,6 @@ public class Menu {
         return menuProducts.getMenuProducts();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        Menu menu = (Menu)o;
-        return Objects.equals(getId(), menu.getId()) && Objects.equals(getName(), menu.getName())
-            && Objects.equals(getPrice(), menu.getPrice()) && Objects.equals(getMenuGroupId(),
-            menu.getMenuGroupId()) && Objects.equals(getMenuProducts(), menu.getMenuProducts());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getName(), getPrice(), getMenuGroupId(), getMenuProducts());
-    }
 
     @Override
     public String toString() {

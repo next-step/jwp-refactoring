@@ -92,10 +92,6 @@ public class OrderTable {
 		}
 	}
 
-	public void changeNumberOfGuests(int numberOfGuests) {
-		this.numberOfGuests = numberOfGuests;
-	}
-
 	public void changeNumberOfGuests(OrderTableRequest orderTableRequest) {
 		if (orderTableRequest.getNumberOfGuests() < 0) {
 			throw new IllegalArgumentException();
@@ -112,21 +108,6 @@ public class OrderTable {
 		OrderTable that = (OrderTable)o;
 		return getNumberOfGuests() == that.getNumberOfGuests() && isEmpty() == that.isEmpty() && Objects.equals(
 			getId(), that.getId()) && Objects.equals(getTableGroup(), that.getTableGroup());
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(getId(), getTableGroup(), getNumberOfGuests(), isEmpty());
-	}
-
-	@Override
-	public String toString() {
-		return "OrderTable{" +
-			"id=" + id +
-			", tableGroup=" + tableGroup +
-			", numberOfGuests=" + numberOfGuests +
-			", empty=" + empty +
-			'}';
 	}
 
 	public void ungroup() {
