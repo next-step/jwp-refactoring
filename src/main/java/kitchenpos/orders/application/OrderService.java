@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
-
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.repository.MenuRepository;
@@ -52,7 +51,7 @@ public class OrderService {
 
     }
 
-	@org.springframework.transaction.annotation.Transactional(readOnly = true)
+	@Transactional(readOnly = true)
     public List<OrderResponse> list() {
 		return orderRepository.findAll().stream()
 			.map(OrderResponse::of)
