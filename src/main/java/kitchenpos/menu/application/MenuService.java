@@ -1,6 +1,7 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.*;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menuGroup.domain.MenuGroup;
@@ -9,7 +10,9 @@ import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
 
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,10 +33,12 @@ public class MenuService {
 
     public MenuResponse create(final MenuRequest menuRequest) {
         MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId()).orElseThrow(IllegalArgumentException::new);
-        List<MenuProduct> menuProducts = menuRequest.getMenuProducts().stream()
-                .map(menuProductRequest ->
-                        new MenuProduct(productRepository.findById(menuProductRequest.getProductId()).orElseThrow(IllegalArgumentException::new),
-                                menuProductRequest.getQuantity()))
+        Map<Long, Long> menuProductDto = getMenuProductDto(menuRequest);
+        List<Long> productIds = new ArrayList<>(menuProductDto.keySet());
+
+        List<MenuProduct> menuProducts = productRepository.findAllById(productIds)
+                .stream()
+                .map(product -> new MenuProduct(product, menuProductDto.getOrDefault(product.getId(), 0L)))
                 .collect(Collectors.toList());
 
         Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup, new MenuProducts(menuProducts));
@@ -48,5 +53,11 @@ public class MenuService {
 
         return menus.stream().map(menu ->MenuResponse.of(menu))
                 .collect(Collectors.toList());
+    }
+
+    private Map<Long, Long> getMenuProductDto(MenuRequest menuRequest) {
+        return menuRequest.getMenuProducts()
+                .stream()
+                .collect(Collectors.toMap(MenuProductRequest::getProductId, MenuProductRequest::getQuantity));
     }
 }
