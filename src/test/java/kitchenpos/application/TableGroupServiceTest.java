@@ -33,10 +33,10 @@ class TableGroupServiceTest {
     private TableGroupService tableGroupService;
 
     @Autowired
-    private OrderService orderService;
+    private TableService tableService;
 
     @Autowired
-    private TableService tableService;
+    private OrderService orderService;
 
     @MockBean
     private OrderRepository orderRepository;

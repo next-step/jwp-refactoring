@@ -1,6 +1,9 @@
 package kitchenpos.domain;
 
+import kitchenpos.advice.exception.OrderTableException;
+
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class OrderTable {
@@ -34,6 +37,12 @@ public class OrderTable {
         this.tableGroup = null;
     }
 
+    public void validateTableGroupIsNull() {
+        if (Objects.nonNull(tableGroup)) {
+            throw new OrderTableException("테이블 그룹은 비어있어야 합니다");
+        }
+    }
+
     public Long getId() {
         return id;
     }
@@ -61,4 +70,5 @@ public class OrderTable {
     public void updateNumberOfGuests(int numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
     }
+
 }

@@ -18,11 +18,14 @@ import java.util.Objects;
 @Transactional(readOnly = true)
 public class TableGroupService {
     private final OrderService orderService;
+    private final TableService tableService;
     private final TableGroupRepository tableGroupRepository;
 
     public TableGroupService(final OrderService orderService,
+                             final TableService tableService,
                              final TableGroupRepository tableGroupRepository) {
         this.orderService = orderService;
+        this.tableService = tableService;
         this.tableGroupRepository = tableGroupRepository;
     }
 
@@ -30,7 +33,7 @@ public class TableGroupService {
     public TableGroup create(final TableGroupRequest tableGroupRequest) {
         tableGroupRequest.validateOrderTableSize();
 
-        final List<OrderTable> savedOrderTables = orderService.findAllByIdIn(tableGroupRequest.getOrderTableIds());
+        final List<OrderTable> savedOrderTables = tableService.findAllByIdIn(tableGroupRequest.getOrderTableIds());
         tableGroupRequest.validateEqualOrderTableSize(savedOrderTables.size());
 
         validateOrderTableEmpty(savedOrderTables);
@@ -41,7 +44,7 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         final TableGroup tableGroup = findTableGroupById(tableGroupId);
-        final List<OrderTable> orderTables = orderService.findAllByTableGroup(tableGroup);
+        final List<OrderTable> orderTables = tableService.findAllByTableGroup(tableGroup);
 
         orderService.validateOrderStatusNotIn(orderTables, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
 

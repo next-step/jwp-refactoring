@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.advice.exception.OrderTableException;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.request.OrderTableRequest;
 import kitchenpos.repository.OrderRepository;
@@ -68,7 +69,7 @@ class TableServiceTest {
         when(orderRepository.existsByOrderTableAndOrderStatusIn(any(), anyList())).thenReturn(true);
 
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), OrderTableRequest.of(orderTable)))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(OrderTableException.class);
     }
 
     @DisplayName("테이블의 고객수를 변경할 수 있다")
@@ -88,7 +89,7 @@ class TableServiceTest {
         orderTable.updateNumberOfGuests(-1);
 
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), OrderTableRequest.of(orderTable)))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(OrderTableException.class);
     }
 
     @DisplayName("테이블의 고객수를 변경할 수 없다 : 테이블 상태가 비어있는 경우")
@@ -98,7 +99,7 @@ class TableServiceTest {
         orderTable.updateNumberOfGuests(10);
 
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), OrderTableRequest.of(orderTable)))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(OrderTableException.class);
     }
 
     private OrderTable 테이블을_생성한다(int numberOfGuest, boolean empty) {

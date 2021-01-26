@@ -17,17 +17,17 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class OrderService {
     private final MenuService menuService;
-    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
+    private final OrderRepository orderRepository;
 
     public OrderService(
             final MenuService menuService,
-            final OrderRepository orderRepository,
-            final OrderTableRepository orderTableRepository
+            final OrderTableRepository orderTableRepository,
+            final OrderRepository orderRepository
     ) {
         this.menuService = menuService;
-        this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
+        this.orderRepository = orderRepository;
     }
 
     @Transactional
@@ -65,17 +65,10 @@ public class OrderService {
         }
     }
 
-    public List<OrderTable> findAllByIdIn(List<Long> orderTableIds) {
-        return orderTableRepository.findAllByIdIn(orderTableIds);
-    }
-
-    public List<OrderTable> findAllByTableGroup(TableGroup tableGroup) {
-        return orderTableRepository.findAllByTableGroup(tableGroup);
-    }
-
-    public OrderTable findOrderTableById(Long id) {
-        return orderTableRepository.findById(id)
-                .orElseThrow(() -> new OrderTableException("주문하는 주문 테이블 id가 없습니다. ", id));
+    public void validateOrderStatusNotIn(OrderTable orderTable, List<OrderStatus> orderStatuses) {
+        if (orderRepository.existsByOrderTableAndOrderStatusIn(orderTable, orderStatuses)) {
+            throw new OrderTableException("올바르지 않은 주문상태가 포함되어있습니다", orderStatuses);
+        }
     }
 
     private List<OrderLineItemRequest> getOrderLineItemRequests(OrderRequest orderRequest) {
@@ -87,5 +80,10 @@ public class OrderService {
     private Order findOrderById(Long id) {
         return orderRepository.findById(id)
                 .orElseThrow(() -> new OrderException("존재하는 주문 id가 없습니다. ", id));
+    }
+
+    public OrderTable findOrderTableById(Long id) {
+        return orderTableRepository.findById(id)
+                .orElseThrow(() -> new OrderTableException("주문하는 주문 테이블 id가 없습니다. ", id));
     }
 }

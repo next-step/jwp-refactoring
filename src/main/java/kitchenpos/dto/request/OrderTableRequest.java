@@ -1,7 +1,9 @@
 package kitchenpos.dto.request;
 
+import kitchenpos.advice.exception.OrderTableException;
 import kitchenpos.domain.OrderTable;
-import org.springframework.util.CollectionUtils;
+
+import java.util.Objects;
 
 public class OrderTableRequest {
     private Long id;
@@ -36,6 +38,12 @@ public class OrderTableRequest {
 
     public Integer getNumberOfGuests() {
         return numberOfGuests;
+    }
+
+    public void validateNumberOfGuests() {
+        if (Objects.isNull(numberOfGuests) || numberOfGuests < 0) {
+            throw new OrderTableException("게스트수는 0미만일 수 없습니다", numberOfGuests);
+        }
     }
 
     public Boolean getEmpty() {

@@ -32,16 +32,8 @@ public class MenuProduct {
         this.quantity = quantity;
     }
 
-    public void setSeq(Long seq) {
-        this.seq = seq;
-    }
-
-    public void setProduct(Product product) {
+    public void updateProduct(Product product) {
         this.product = product;
-    }
-
-    public void setQuantity(long quantity) {
-        this.quantity = quantity;
     }
 
     public Long getSeq() {
