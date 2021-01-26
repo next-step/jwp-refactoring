@@ -8,6 +8,7 @@ import kitchenpos.dto.menu.MenuProductRequest;
 import kitchenpos.dto.menu.MenuRequest;
 import kitchenpos.dto.menu.MenuResponse;
 import kitchenpos.dto.order.OrderLineMenuRequest;
+import kitchenpos.dto.order.OrderLineMenuResponse;
 import kitchenpos.dto.order.OrderRequest;
 import kitchenpos.dto.order.OrderResponse;
 import kitchenpos.dto.product.ProductResponse;
@@ -23,6 +24,7 @@ import static java.util.Arrays.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -75,6 +77,8 @@ public class OrderServiceTest {
                     .extracting("name")
                     .containsExactly("두마리 치킨", "김밥이 라면");
         }
+        Stream<OrderLineMenuResponse> lineMenus = orders.stream().flatMap(o -> o.getOrderLineMenuResponses().stream());
+        assertThat(lineMenus.mapToInt(OrderLineMenuResponse::getAmount).sum()).isEqualTo(38000 * 3);
     }
 
     @DisplayName("주문 상태 변경 테스트")
@@ -112,7 +116,7 @@ public class OrderServiceTest {
     private MenuResponse create(MenuGroupResponse menuGroup, String productName1, String productName2, String menuName) {
         ProductResponse product1 = productService.save(new Product(productName1, new Price(18000)));
         ProductResponse product2 = productService.save(new Product(productName2, new Price(20000)));
-        MenuRequest menuRequest = new MenuRequest(menuName, 20000, menuGroup.getId(),
+        MenuRequest menuRequest = new MenuRequest(menuName, 38000, menuGroup.getId(),
                 asList(new MenuProductRequest(product1.getId(), 1), new MenuProductRequest(product2.getId(), 1)));
         return menuService.save(menuRequest);
     }
