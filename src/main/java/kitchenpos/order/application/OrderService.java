@@ -4,6 +4,7 @@ import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItemRepository;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
@@ -19,34 +20,33 @@ import java.util.stream.Collectors;
 public class OrderService {
 
     private final MenuService menuService;
-    private final OrderRepository orderRepository;
     private final OrderTableService orderTableService;
+    private final OrderRepository orderRepository;
+    private final OrderLineItemRepository orderLineItemRepository;
 
-    public OrderService(MenuService menuService, OrderRepository orderRepository, OrderTableService orderTableService) {
+    public OrderService(MenuService menuService, OrderRepository orderRepository, OrderTableService orderTableService, OrderLineItemRepository orderLineItemRepository) {
         this.menuService = menuService;
         this.orderRepository = orderRepository;
         this.orderTableService = orderTableService;
+        this.orderLineItemRepository = orderLineItemRepository;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest request) {
         OrderTable orderTable = orderTableService.findById(request.getOrderTableId());
         List<Menu> menus = menuService.findAllById(request.getMenuIds());
-
-        List<OrderLineItem> orderLineItems = request.getOrderLineItems().stream()
-            .map(orderLineItem -> new OrderLineItem(getMatchMenuInMenus(menus, orderLineItem.getMenuId()), orderLineItem.getQuantity()))
-            .collect(Collectors.toList());
-        Order order = new Order(orderTable, request.getOrderStatus(), orderLineItems);
-
+        Order order = new Order(orderTable, request.getOrderStatus());
         Order savedOrder = orderRepository.save(order);
-        return OrderResponse.of(savedOrder);
+
+        List<OrderLineItem> savedOrderLineItems = orderLineItemRepository.saveAll(request.toEntity(savedOrder, menus));
+        return OrderResponse.of(savedOrderLineItems);
     }
 
     @Transactional(readOnly = true)
     public List<OrderResponse> list() {
         List<Order> orders = orderRepository.findAll();
         return orders.stream()
-            .map(OrderResponse::of)
+            .map(order -> OrderResponse.of(orderLineItemRepository.findAllByOrOrderId(order.getId())))
             .collect(Collectors.toList());
     }
 
@@ -59,13 +59,6 @@ public class OrderService {
 
     public Order findById(Long orderId) {
         return orderRepository.findById(orderId)
-            .orElseThrow(IllegalArgumentException::new);
-    }
-
-    private Menu getMatchMenuInMenus(List<Menu> menus, Long menuId) {
-        return menus.stream()
-            .filter(menu -> menu.getId().equals(menuId))
-            .findFirst()
             .orElseThrow(IllegalArgumentException::new);
     }
 }
