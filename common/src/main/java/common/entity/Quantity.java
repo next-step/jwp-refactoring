@@ -1,6 +1,7 @@
-package kitchenpos.common.entity;
+package common.entity;
 
-import kitchenpos.common.application.ValidationException;
+
+import common.application.ValidationException;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

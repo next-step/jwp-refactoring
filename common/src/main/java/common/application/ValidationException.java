@@ -1,4 +1,4 @@
-package kitchenpos.common.application;
+package common.application;
 
 public class ValidationException extends RuntimeException {
 	public ValidationException() {

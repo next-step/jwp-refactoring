@@ -13,6 +13,7 @@ repositories {
 }
 
 dependencies {
+    implementation project(':common')
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -22,6 +23,21 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
-test {
-    useJUnitPlatform()
+
+subprojects {
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'java'
+
+    group = 'camp.nextstep.edu'
+    version = '0.0.1-SNAPSHOT'
+    sourceCompatibility = '1.8'
+
+    repositories {
+        mavenCentral()
+    }
+
+    test {
+        useJUnitPlatform()
+    }
 }

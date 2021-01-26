@@ -1,7 +1,7 @@
 package kitchenpos.common.ui;
 
-import kitchenpos.common.application.NotFoundException;
-import kitchenpos.common.application.ValidationException;
+import common.application.NotFoundException;
+import common.application.ValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

@@ -1,6 +1,7 @@
 package kitchenpos.order.application;
 
-import kitchenpos.common.application.ValidationException;
+
+import common.application.ValidationException;
 
 public class TableValidationException extends ValidationException {
 	public TableValidationException() {

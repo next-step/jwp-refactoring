@@ -1,6 +1,6 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.common.entity.Quantity;
+import common.entity.Quantity;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;

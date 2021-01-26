@@ -1,6 +1,6 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.common.entity.BaseIdEntity;
+import common.entity.BaseIdEntity;
 import kitchenpos.order.application.OrderValidationException;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;

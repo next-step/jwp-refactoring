@@ -1,4 +1,4 @@
-package kitchenpos.common.entity;
+package common.entity;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -7,33 +7,33 @@ import javax.persistence.MappedSuperclass;
 import java.util.Objects;
 
 @MappedSuperclass
-public abstract class BaseIdEntity {
+public abstract class BaseSeqEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private Long seq;
 
-	protected BaseIdEntity() {
+	protected BaseSeqEntity() {
 	}
 
-	protected BaseIdEntity(Long id) {
-		this.id = id;
+	protected BaseSeqEntity(Long seq) {
+		this.seq = seq;
 	}
 
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (!(o instanceof BaseIdEntity)) return false;
-		BaseIdEntity that = (BaseIdEntity) o;
-		return Objects.equals(id, that.id);
+		if (!(o instanceof BaseSeqEntity)) return false;
+		BaseSeqEntity that = (BaseSeqEntity) o;
+		return Objects.equals(seq, that.seq);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id);
+		return Objects.hash(seq);
 	}
 
-	public Long getId() {
-		return id;
+	public Long getSeq() {
+		return seq;
 	}
 }

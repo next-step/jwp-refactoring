@@ -1,6 +1,6 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.common.entity.Price;
+import common.entity.Price;
 import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.domain.ProductRepository;
 import kitchenpos.menu.dto.ProductRequest;

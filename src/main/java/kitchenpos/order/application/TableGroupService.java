@@ -1,6 +1,6 @@
 package kitchenpos.order.application;
 
-import kitchenpos.common.application.NotFoundException;
+import common.application.NotFoundException;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.order.domain.TableGroup;

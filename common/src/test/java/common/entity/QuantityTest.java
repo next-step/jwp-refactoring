@@ -1,6 +1,6 @@
-package kitchenpos.common.entity;
+package common.entity;
 
-import kitchenpos.common.application.ValidationException;
+import common.application.ValidationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
