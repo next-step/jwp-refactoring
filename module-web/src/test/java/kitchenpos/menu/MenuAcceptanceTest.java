@@ -1,12 +1,11 @@
-package kitchenpos.menu.acceptance;
+package kitchenpos.menu;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuProductRequest;
-import kitchenpos.menuGroup.domain.MenuGroup;
-import kitchenpos.product.domain.Product;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.dto.ProductRequest;

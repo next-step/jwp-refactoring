@@ -1,4 +1,4 @@
-package kitchenpos.table.acceptance;
+package kitchenpos.table;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -6,7 +6,6 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.order.dto.OrderLIneItemRequest;
 import kitchenpos.order.dto.OrderRequest;
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
