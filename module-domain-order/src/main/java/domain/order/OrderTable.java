@@ -1,8 +1,7 @@
-package kitchenpos.order.domain;
+package domain.order;
 
 import common.entity.BaseIdEntity;
 import common.entity.NumberOfGuests;
-import kitchenpos.order.application.TableValidationException;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;

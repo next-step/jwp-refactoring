@@ -2,7 +2,7 @@ package kitchenpos.order.dto;
 
 import common.entity.Quantity;
 import domain.menu.Menu;
-import kitchenpos.order.domain.OrderItem;
+import domain.order.OrderItem;
 
 import java.util.List;
 import java.util.Objects;

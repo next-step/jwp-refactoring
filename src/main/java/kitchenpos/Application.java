@@ -11,8 +11,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import javax.sql.DataSource;
 
-@EnableJpaRepositories(basePackages = {"domain.menu", "kitchenpos.order"})
-@EntityScan(basePackages = {"domain.menu", "kitchenpos.order"})
+@EnableJpaRepositories(basePackages = {"domain.menu", "domain.order"})
+@EntityScan(basePackages = {"domain.menu", "domain.order"})
 @EnableJpaAuditing
 @SpringBootApplication
 public class Application implements CommandLineRunner {

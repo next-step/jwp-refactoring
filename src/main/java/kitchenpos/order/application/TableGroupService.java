@@ -1,10 +1,10 @@
 package kitchenpos.order.application;
 
 import common.application.NotFoundException;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableRepository;
-import kitchenpos.order.domain.TableGroup;
-import kitchenpos.order.domain.TableGroupRepository;
+import domain.order.OrderTable;
+import domain.order.OrderTableRepository;
+import domain.order.TableGroup;
+import domain.order.TableGroupRepository;
 import kitchenpos.order.dto.TableGroupRequest_Create;
 import kitchenpos.order.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;

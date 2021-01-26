@@ -1,11 +1,10 @@
-package kitchenpos.order.domain;
+package domain.order;
 
 import common.entity.Quantity;
 import domain.menu.Menu;
 import domain.menu.MenuGroup;
 import domain.menu.MenuProduct;
 import domain.menu.Product;
-import kitchenpos.order.application.OrderValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package kitchenpos.order.application;
+package domain.order;
 
 
 import common.application.ValidationException;

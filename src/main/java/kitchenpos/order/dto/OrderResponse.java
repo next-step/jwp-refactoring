@@ -1,9 +1,9 @@
 package kitchenpos.order.dto;
 
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderStatus;
+import domain.order.Order;
+import domain.order.OrderLineItem;
+import domain.order.OrderStatus;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

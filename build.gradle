@@ -16,6 +16,7 @@ dependencies {
     implementation project(':common')
     implementation project(':module-api-config')
     implementation project(':module-domain-menu')
+    implementation project(':module-domain-order')
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -52,5 +53,12 @@ project(':module-api-config') {
 project(':module-domain-menu') {
     dependencies {
         implementation project(':common')
+    }
+}
+
+project(':module-domain-order') {
+    dependencies {
+        implementation project(':common')
+        implementation project(':module-domain-menu')
     }
 }

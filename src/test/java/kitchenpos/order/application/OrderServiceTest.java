@@ -1,13 +1,13 @@
 package kitchenpos.order.application;
 
 import common.application.NotFoundException;
+import domain.order.Order;
+import domain.order.OrderRepository;
+import domain.order.OrderStatus;
 import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.application.ProductService;
 import kitchenpos.menu.dto.*;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

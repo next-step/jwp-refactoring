@@ -1,7 +1,6 @@
-package kitchenpos.order.domain;
+package domain.order;
 
 import common.entity.BaseIdEntity;
-import kitchenpos.order.application.TableGroupValidationException;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;

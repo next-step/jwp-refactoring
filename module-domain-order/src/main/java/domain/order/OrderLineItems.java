@@ -1,6 +1,4 @@
-package kitchenpos.order.domain;
-
-import kitchenpos.order.application.OrderValidationException;
+package domain.order;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;

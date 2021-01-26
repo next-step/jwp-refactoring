@@ -2,4 +2,5 @@ rootProject.name = 'kitchenpos'
 include 'common'
 include 'module-api-config'
 include 'module-domain-menu'
+include 'module-domain-order'
 

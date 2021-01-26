@@ -1,6 +1,5 @@
-package kitchenpos.order.domain;
+package domain.order;
 
-import kitchenpos.order.application.TableGroupValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

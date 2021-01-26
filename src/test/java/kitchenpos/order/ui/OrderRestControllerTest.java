@@ -1,8 +1,8 @@
 package kitchenpos.order.ui;
 
 import api.config.ExceptionMessage;
+import domain.order.OrderStatus;
 import kitchenpos.MockMvcTest;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

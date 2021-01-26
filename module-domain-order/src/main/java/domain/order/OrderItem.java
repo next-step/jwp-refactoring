@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package domain.order;
 
 import common.entity.Quantity;
 import domain.menu.Menu;
