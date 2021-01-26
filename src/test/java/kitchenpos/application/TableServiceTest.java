@@ -109,5 +109,4 @@ class TableServiceTest {
 		assertThat(resultTable.getId()).isNotNull();
 		assertThat(resultTable.getNumberOfGuests()).isEqualTo(4);
 	}
-
 }
