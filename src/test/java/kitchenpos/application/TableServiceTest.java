@@ -2,8 +2,8 @@ package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
+import static kitchenpos.TestFixtures.*;
 
-import java.util.Arrays;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -13,7 +13,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderDao;
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
@@ -40,9 +42,9 @@ class TableServiceTest {
 		// given
 		OrderTableRequest 새_주문_테이블_요청 = new OrderTableRequest.Builder().empty(false).build();
 		given(orderTableDao.save(any(OrderTable.class))).willAnswer(invocation -> {
-			OrderTable request = invocation.getArgument(0, OrderTable.class);
-			request.setId(1L);
-			return request;
+			OrderTable mock = spy(invocation.getArgument(0, OrderTable.class));
+			when(mock.getId()).thenReturn(1L);
+			return mock;
 		});
 
 		// when
@@ -58,12 +60,7 @@ class TableServiceTest {
 		// given
 		OrderTable 새_주문_테이블 = new OrderTable.Builder().id(-1L).empty(false).build();
 
-		given(orderTableDao.save(새_주문_테이블)).willReturn(새_주문_테이블);
 		given(orderTableDao.findById(새_주문_테이블.getId())).willReturn(Optional.of(새_주문_테이블));
-		given(orderDao.existsByOrderTableIdAndOrderStatusIn(
-			새_주문_테이블.getId(),
-			Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))
-		).willReturn(false);
 
 		// when
 		OrderTableResponse response = tableService.changeEmpty(새_주문_테이블.getId(),
@@ -77,13 +74,15 @@ class TableServiceTest {
 	@Test
 	void changeEmpty_exceptionCase1() {
 		// given
-		TableGroup 이미_단체_지정 = new TableGroup.Builder().id(-1L).build();
-		OrderTable 새_주문_테이블 = new OrderTable.Builder().tableGroup(이미_단체_지정).id(9L).empty(false).build();
-		given(orderTableDao.findById(새_주문_테이블.getId())).willReturn(Optional.of(새_주문_테이블));
+		OrderTable 새_주문_테이블1 = new OrderTable.Builder().id(9L).empty(true).build();
+		OrderTable 새_주문_테이블2 = new OrderTable.Builder().id(10L).empty(true).build();
+		TableGroup 이미_단체_지정 = new TableGroup.Builder().id(-1L).orderTables(새_주문_테이블1, 새_주문_테이블2).build();
+
+		given(orderTableDao.findById(새_주문_테이블1.getId())).willReturn(Optional.of(새_주문_테이블1));
 
 		// when & then
 		assertThatThrownBy(
-			() -> tableService.changeEmpty(새_주문_테이블.getId(), new OrderTableRequest.Builder().empty(true).build()))
+			() -> tableService.changeEmpty(새_주문_테이블1.getId(), new OrderTableRequest.Builder().empty(false).build()))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
@@ -93,11 +92,17 @@ class TableServiceTest {
 
 		// given
 		OrderTable 새_주문_테이블 = new OrderTable.Builder().id(-1L).empty(false).build();
+		new Order.Builder()
+				.orderTable(새_주문_테이블)
+				.orderLineItems(new OrderLineItem.Builder().menu(메뉴1).quantity(1L).build())
+				.orderStatus(OrderStatus.COOKING)
+			.build();
+		new Order.Builder()
+				.orderTable(새_주문_테이블)
+				.orderLineItems(new OrderLineItem.Builder().menu(메뉴2).quantity(1L).build())
+				.orderStatus(OrderStatus.MEAL)
+			.build();
 		given(orderTableDao.findById(새_주문_테이블.getId())).willReturn(Optional.of(새_주문_테이블));
-		given(orderDao.existsByOrderTableIdAndOrderStatusIn(
-			새_주문_테이블.getId(),
-			Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))
-		).willReturn(true);
 
 		// when & then
 		assertThatThrownBy(
@@ -111,7 +116,6 @@ class TableServiceTest {
 		// given
 		OrderTable 새_주문_테이블 = new OrderTable.Builder().id(-1L).empty(false).build();
 
-		given(orderTableDao.save(새_주문_테이블)).willReturn(새_주문_테이블);
 		given(orderTableDao.findById(새_주문_테이블.getId())).willReturn(Optional.of(새_주문_테이블));
 
 		// when

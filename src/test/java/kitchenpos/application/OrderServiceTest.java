@@ -15,32 +15,29 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.menu.domain.MenuDao;
+import kitchenpos.menu.application.MenuService;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderDao;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderLineItemDao;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderLineItemResponse;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableDao;
 
 @DisplayName("주문 BO 테스트")
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
 
 	@Mock
-	private MenuDao menuDao;
+	private MenuService menuService;
 	@Mock
 	private OrderDao orderDao;
 	@Mock
-	private OrderLineItemDao orderLineItemDao;
-	@Mock
-	private OrderTableDao orderTableDao;
+	private TableService tableService;
 
 	@InjectMocks
 	private OrderService orderService;
@@ -54,14 +51,13 @@ class OrderServiceTest {
 		OrderLineItemRequest 주문_항목2_요청 = new OrderLineItemRequest(null, 메뉴2.getId(), 2L);
 		OrderRequest 주문_요청 = new OrderRequest(주문_테이블9.getId(), Arrays.asList(주문_항목1_요청, 주문_항목2_요청));
 
-		given(menuDao.countByIdIn(Arrays.asList(메뉴1.getId(), 메뉴2.getId()))).willReturn(2L);
-		given(menuDao.findById(메뉴1.getId())).willReturn(Optional.of(메뉴1));
-		given(menuDao.findById(메뉴2.getId())).willReturn(Optional.of(메뉴2));
-		given(orderTableDao.findById(주문_테이블9.getId())).willReturn(Optional.of(주문_테이블9));
+		given(menuService.findById(메뉴1.getId())).willReturn(메뉴1);
+		given(menuService.findById(메뉴2.getId())).willReturn(메뉴2);
+		given(tableService.findById(주문_테이블9.getId())).willReturn(주문_테이블9);
 		given(orderDao.save(any(Order.class))).willAnswer(invocation -> {
-			Order request = invocation.getArgument(0, Order.class);
-			request.setId(1L);
-			return request;
+			Order mock = spy(invocation.getArgument(0, Order.class));
+			when(mock.getId()).thenReturn(1L);
+			return mock;
 		});
 
 		// when
@@ -78,8 +74,6 @@ class OrderServiceTest {
 		OrderLineItemRequest 주문_항목1_요청 = new OrderLineItemRequest(null, 메뉴1.getId(), 1L);
 		OrderLineItemRequest 주문_항목2_요청 = new OrderLineItemRequest(null, 메뉴1.getId(), 2L);
 		OrderRequest 주문_요청 = new OrderRequest(주문_테이블1.getId(), Arrays.asList(주문_항목1_요청, 주문_항목2_요청));
-
-		given(menuDao.countByIdIn(Arrays.asList(메뉴1.getId(), 메뉴1.getId()))).willReturn(1L);
 
 		// when & then
 		assertThatThrownBy(() -> orderService.create(주문_요청)).isInstanceOf(IllegalArgumentException.class);
@@ -102,8 +96,6 @@ class OrderServiceTest {
 		OrderLineItemRequest 주문_항목1_요청 = new OrderLineItemRequest(null, 메뉴1.getId(), 1L);
 		OrderRequest 주문_요청 = new OrderRequest(null, Arrays.asList(주문_항목1_요청));
 
-		given(menuDao.countByIdIn(Arrays.asList(메뉴1.getId()))).willReturn(1L);
-
 		// when & then
 		assertThatThrownBy(() -> orderService.create(주문_요청)).isInstanceOf(IllegalArgumentException.class);
 	}
@@ -112,12 +104,12 @@ class OrderServiceTest {
 	@Test
 	void list() {
 		// given
-		Order 주문 = new Order.Builder().id(-1L).orderTable(주문_테이블1).build();
-		given(orderDao.findAll()).willReturn(Arrays.asList(주문));
-
 		OrderLineItem 주문_항목1 = new OrderLineItem.Builder().menu(메뉴1).quantity(1L).build();
 		OrderLineItem 주문_항목2 = new OrderLineItem.Builder().menu(메뉴2).quantity(2L).build();
-		given(orderLineItemDao.findAllByOrderId(주문.getId())).willReturn(Arrays.asList(주문_항목1, 주문_항목2));
+		Order 주문 = new Order.Builder().id(-1L)
+			.orderLineItems(주문_항목1, 주문_항목2)
+			.orderTable(주문_테이블1).build();
+		given(orderDao.findAll()).willReturn(Arrays.asList(주문));
 
 		// when
 		List<OrderResponse> listResponse = orderService.list();
@@ -135,15 +127,14 @@ class OrderServiceTest {
 	@Test
 	void changeOrderStatus_happyPath() {
 		// given
-		OrderLineItem 주문_항목1 = new OrderLineItem();
-		OrderLineItem 주문_항목2 = new OrderLineItem();
+		OrderLineItem 주문_항목1 = new OrderLineItem.Builder().menu(메뉴1).quantity(1L).build();
+		OrderLineItem 주문_항목2 = new OrderLineItem.Builder().menu(메뉴2).quantity(2L).build();
 		Order 주문 = new Order.Builder().orderTable(주문_테이블1)
 			.orderStatus(OrderStatus.COOKING)
 			.orderLineItems(주문_항목1, 주문_항목2)
 			.build();
 
 		given(orderDao.findById(주문.getId())).willReturn(Optional.of(주문));
-		given(orderLineItemDao.findAllByOrderId(주문.getId())).willReturn(Arrays.asList(주문_항목1, 주문_항목2));
 
 		// when
 		OrderResponse response = orderService.changeOrderStatus(주문.getId(), new OrderRequest(OrderStatus.MEAL));
@@ -156,7 +147,13 @@ class OrderServiceTest {
 	@Test
 	void changeOrderStatus_exceptionCase() {
 		// given
-		Order 주문 = new Order.Builder().orderTable(주문_테이블1).orderStatus(OrderStatus.COMPLETION).build();
+		OrderLineItem 주문_항목1 = new OrderLineItem.Builder().menu(메뉴1).quantity(1L).build();
+		OrderLineItem 주문_항목2 = new OrderLineItem.Builder().menu(메뉴2).quantity(2L).build();
+		Order 주문 = new Order.Builder()
+			.orderTable(주문_테이블1)
+			.orderLineItems(주문_항목1, 주문_항목2)
+			.orderStatus(OrderStatus.COMPLETION)
+			.build();
 		given(orderDao.findById(주문.getId())).willReturn(Optional.of(주문));
 
 		// when & then

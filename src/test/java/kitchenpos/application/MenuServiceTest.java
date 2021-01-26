@@ -7,7 +7,6 @@ import static org.mockito.BDDMockito.*;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.DisplayName;
@@ -17,17 +16,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuDao;
-import kitchenpos.menu.domain.MenuGroupDao;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProductDao;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuProductResponse;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.product.domain.ProductDao;
+import kitchenpos.product.application.ProductService;
 
 @DisplayName("메뉴 BO 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -36,16 +34,12 @@ class MenuServiceTest {
 	@Mock
 	private MenuDao menuDao;
 	@Mock
-	private MenuGroupDao menuGroupDao;
+	private ProductService productService;
 	@Mock
-	private MenuProductDao menuProductDao;
-	@Mock
-	private ProductDao productDao;
+	private MenuGroupService menuGroupService;
 
 	@InjectMocks
 	private MenuService menuService;
-
-	private long menuProductSeq = 1L;
 
 	@DisplayName("메뉴 생성 : 메뉴 이름과 가격, 메뉴 그룹 번호, 상품 번호 및 가격 목록을 받는다")
 	@Test
@@ -61,19 +55,14 @@ class MenuServiceTest {
 			.menuProducts(메뉴_상품1, 메뉴_상품2)
 			.build();
 
-		given(productDao.findById(상품1.getId())).willReturn(Optional.of(상품1));
-		given(productDao.findById(상품2.getId())).willReturn(Optional.of(상품2));
+		given(productService.findById(상품1.getId())).willReturn(상품1);
+		given(productService.findById(상품2.getId())).willReturn(상품2);
 		given(menuDao.save(any(Menu.class))).willAnswer(invocation -> {
-			Menu savedMenu = invocation.getArgument(0, Menu.class);
-			savedMenu.setId(1L);
-			return savedMenu;
+			Menu mock = spy(invocation.getArgument(0, Menu.class));
+			when(mock.getId()).thenReturn(1L);
+			return mock;
 		});
-		given(menuProductDao.save(any(MenuProduct.class))).willAnswer(invocation -> {
-			MenuProduct savedMenuProduct = invocation.getArgument(0, MenuProduct.class);
-			savedMenuProduct.setSeq(menuProductSeq++);
-			return savedMenuProduct;
-		});
-		given(menuGroupDao.findById(메뉴_그룹1.getId())).willReturn(Optional.of(메뉴_그룹1));
+		given(menuGroupService.findById(메뉴_그룹1.getId())).willReturn(메뉴_그룹1);
 
 		// when : 정상 케이스
 		MenuResponse response = menuService.create(fromMenuToRequest(새_메뉴));
@@ -93,20 +82,19 @@ class MenuServiceTest {
 		// given
 		BigDecimal 메뉴_상품1_가격 = 상품1.getPrice().multiply(BigDecimal.valueOf(메뉴_상품1.getQuantity()));
 		BigDecimal 메뉴_상품2_가격 = 상품2.getPrice().multiply(BigDecimal.valueOf(메뉴_상품2.getQuantity()));
-
-		Menu 새_메뉴 = new Menu.Builder()
-			.name("새_메뉴")
-			.price(메뉴_상품1_가격.add(메뉴_상품2_가격).add(BigDecimal.ONE))
-			.menuGroup(메뉴_그룹1)
-			.menuProducts(메뉴_상품1, 메뉴_상품2)
-			.build();
+		given(productService.findById(상품1.getId())).willReturn(상품1);
+		given(productService.findById(상품2.getId())).willReturn(상품2);
 
 		// when : 예외 케이스
-		Menu saveMenu;
-		새_메뉴.setPrice(메뉴_상품1_가격.add(메뉴_상품2_가격).add(BigDecimal.ONE));
+		MenuRequest 새_메뉴_요청 = new MenuRequest(
+			"새_메뉴",
+			메뉴_상품1_가격.add(메뉴_상품2_가격).add(BigDecimal.ONE),
+			메뉴_그룹1.getId(),
+			Arrays.asList(fromMenuProductToRequest(메뉴_상품1), fromMenuProductToRequest(메뉴_상품2))
+		);
 
 		// then : 메뉴 가격은 메뉴에 속한 상품들의 금액보다 클 수 없음.
-		assertThatThrownBy(() -> menuService.create(fromMenuToRequest(새_메뉴))).isInstanceOf(
+		assertThatThrownBy(() -> menuService.create(새_메뉴_요청)).isInstanceOf(
 			IllegalArgumentException.class);
 	}
 
@@ -114,21 +102,19 @@ class MenuServiceTest {
 	@Test
 	void create_exceptionCase2() {
 		// given
-		BigDecimal 메뉴_상품1_가격 = 상품1.getPrice().multiply(BigDecimal.valueOf(메뉴_상품1.getQuantity()));
-		BigDecimal 메뉴_상품2_가격 = 상품2.getPrice().multiply(BigDecimal.valueOf(메뉴_상품2.getQuantity()));
-
-		Menu 새_메뉴 = new Menu.Builder()
-			.name("새_메뉴")
-			.price(메뉴_상품1_가격.add(메뉴_상품2_가격))
-			.menuProducts(메뉴_상품1, 메뉴_상품2)
-			.build();
+		given(productService.findById(상품1.getId())).willReturn(상품1);
+		given(productService.findById(상품2.getId())).willReturn(상품2);
 
 		// when : 예외 케이스
-		Menu saveMenu;
-		새_메뉴.setPrice(메뉴_상품1_가격.add(메뉴_상품2_가격).add(BigDecimal.ONE));
+		MenuRequest 새_메뉴_요청 = new MenuRequest(
+			"새_메뉴",
+			BigDecimal.valueOf(10000L),
+			null,
+			Arrays.asList(fromMenuProductToRequest(메뉴_상품1), fromMenuProductToRequest(메뉴_상품2))
+		);
 
 		// then : 메뉴 가격은 메뉴에 속한 상품들의 금액보다 클 수 없음.
-		assertThatThrownBy(() -> menuService.create(fromMenuToRequest(새_메뉴))).isInstanceOf(
+		assertThatThrownBy(() -> menuService.create(새_메뉴_요청)).isInstanceOf(
 			IllegalArgumentException.class);
 	}
 
@@ -136,17 +122,23 @@ class MenuServiceTest {
 	@Test
 	void list() {
 		// given
-		given(menuDao.findAll()).willReturn(Arrays.asList(메뉴1));
-		given(menuProductDao.findAllByMenuId(메뉴1.getId())).willReturn(Arrays.asList(메뉴_상품1, 메뉴_상품2));
+		Menu 새_메뉴 = new Menu.Builder()
+			.id(-1L)
+			.name("새_메뉴")
+			.menuGroup(메뉴_그룹1)
+			.menuProducts(메뉴_상품1, 메뉴_상품2)
+			.price(BigDecimal.valueOf(10000L))
+			.build();
+		given(menuDao.findAll()).willReturn(Arrays.asList(새_메뉴));
 
 		// when
 		List<MenuResponse> listResponse = menuService.list();
 
 		// then
 		assertThat(listResponse).anySatisfy(menuResponse -> {
-			assertThat(menuResponse.getId()).isEqualTo(1L);
-			assertThat(menuResponse.getPrice()).isEqualTo(메뉴1.getPrice().longValue());
-			assertThat(menuResponse.getMenuGroupId()).isEqualTo(메뉴1.getMenuGroup().getId());
+			assertThat(menuResponse.getId()).isEqualTo(-1L);
+			assertThat(menuResponse.getPrice()).isEqualTo(새_메뉴.getPrice().longValue());
+			assertThat(menuResponse.getMenuGroupId()).isEqualTo(새_메뉴.getMenuGroup().getId());
 			assertThat(menuResponse.getMenuProducts())
 				.map(MenuProductResponse::getProductId)
 				.contains(상품1.getId(), 상품2.getId());

@@ -13,11 +13,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.order.domain.OrderDao;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.application.TableGroupService;
+import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableDao;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupDao;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -30,9 +31,7 @@ import kitchenpos.table.dto.TableGroupRequest;
 class TableGroupServiceTest {
 
 	@Mock
-	private OrderDao orderDao;
-	@Mock
-	private OrderTableDao orderTableDao;
+	private TableService tableService;
 	@Mock
 	private TableGroupDao tableGroupDao;
 
@@ -43,16 +42,19 @@ class TableGroupServiceTest {
 	@Test
 	void create_happyPath() {
 		// given
-		given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(주문_테이블1, 주문_테이블2));
+		OrderTable 새_주문_테이블1 = new OrderTable.Builder().id(9L).empty(true).build();
+		OrderTable 새_주문_테이블2 = new OrderTable.Builder().id(10L).empty(true).build();
+		given(tableService.findById(새_주문_테이블1.getId())).willReturn(새_주문_테이블1);
+		given(tableService.findById(새_주문_테이블2.getId())).willReturn(새_주문_테이블2);
 		given(tableGroupDao.save(any(TableGroup.class))).willAnswer(invocation -> {
-			TableGroup request = invocation.getArgument(0, TableGroup.class);
-			request.setId(1L);
-			return request;
+			TableGroup mock = spy(invocation.getArgument(0, TableGroup.class));
+			when(mock.getId()).thenReturn(1L);
+			return mock;
 		});
 
 		// when
-		OrderTableRequest 주문_테이블1_요청 = new OrderTableRequest.Builder().id(주문_테이블1.getId()).build();
-		OrderTableRequest 주문_테이블2_요청 = new OrderTableRequest.Builder().id(주문_테이블2.getId()).build();
+		OrderTableRequest 주문_테이블1_요청 = new OrderTableRequest.Builder().id(새_주문_테이블1.getId()).build();
+		OrderTableRequest 주문_테이블2_요청 = new OrderTableRequest.Builder().id(새_주문_테이블2.getId()).build();
 		TableGroupRequest 단체_지정_요청 = new TableGroupRequest(Arrays.asList(주문_테이블1_요청, 주문_테이블2_요청));
 		TableGroupReponse 단체_지정_요청_응답 = tableGroupService.create(단체_지정_요청);
 
@@ -60,7 +62,7 @@ class TableGroupServiceTest {
 		assertThat(단체_지정_요청_응답.getId()).isEqualTo(1L);
 		assertThat(단체_지정_요청_응답.getOrderTables())
 			.map(OrderTableResponse::getId)
-			.contains(주문_테이블1.getId(), 주문_테이블2.getId());
+			.contains(새_주문_테이블1.getId(), 새_주문_테이블2.getId());
 		assertThat(단체_지정_요청_응답.getOrderTables())
 			.map(OrderTableResponse::isEmpty)
 			.containsExactly(false, false);
@@ -70,10 +72,11 @@ class TableGroupServiceTest {
 	@Test
 	void create_exceptionCase1() {
 		// given
-		TableGroup 이미_단체_지정 = new TableGroup.Builder().id(-1L).build();
-		OrderTable 주문_테이블9 = new OrderTable.Builder().id(9L).tableGroup(이미_단체_지정).empty(true).build();
-		OrderTable 주문_테이블10 = new OrderTable.Builder().id(10L).tableGroup(이미_단체_지정).empty(true).build();
-		given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(주문_테이블9, 주문_테이블10));
+		OrderTable 주문_테이블9 = new OrderTable.Builder().id(9L).empty(true).build();
+		OrderTable 주문_테이블10 = new OrderTable.Builder().id(10L).empty(true).build();
+		TableGroup 이미_단체_지정 = new TableGroup.Builder().id(-1L).orderTables(주문_테이블9, 주문_테이블10).build();
+		given(tableService.findById(주문_테이블9.getId())).willReturn(주문_테이블9);
+		given(tableService.findById(주문_테이블10.getId())).willReturn(주문_테이블10);
 
 		// when & then
 		OrderTableRequest 주문_테이블9_요청 = new OrderTableRequest.Builder().id(주문_테이블9.getId()).build();
@@ -88,9 +91,9 @@ class TableGroupServiceTest {
 	void create_exceptionCase2() {
 		// given
 		OrderTable 주문_테이블9 = new OrderTable.Builder().id(9L).empty(false).build();
-		OrderTable 주문_테이블10 = new OrderTable.Builder().id(10L).empty(false).build();
-		TableGroup 단체_지정 = new TableGroup.Builder().orderTables(주문_테이블9, 주문_테이블10).build();
-		given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(주문_테이블9, 주문_테이블10));
+		OrderTable 주문_테이블10 = new OrderTable.Builder().id(10L).empty(true).build();
+		given(tableService.findById(주문_테이블9.getId())).willReturn(주문_테이블9);
+		given(tableService.findById(주문_테이블10.getId())).willReturn(주문_테이블10);
 
 		// when & then
 		OrderTableRequest 주문_테이블9_요청 = new OrderTableRequest.Builder().id(주문_테이블9.getId()).build();
@@ -103,35 +106,50 @@ class TableGroupServiceTest {
 	@Test
 	void ungroup() {
 		// given
-		TableGroup 단체_지정 = new TableGroup.Builder().orderTables(주문_테이블1, 주문_테이블2).build();
-		주문_테이블1.setTableGroup(단체_지정);
-		주문_테이블2.setTableGroup(단체_지정);
-		given(orderTableDao.findAllByTableGroupId(단체_지정.getId())).willReturn(Arrays.asList(주문_테이블1, 주문_테이블2));
-		given(orderDao.existsByOrderTableIdInAndOrderStatusIn(
-			anyList(),
-			eq(Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)))
-		).willReturn(false);
+		OrderTable 주문_테이블9 = new OrderTable.Builder().id(9L).empty(true).build();
+		OrderTable 주문_테이블10 = new OrderTable.Builder().id(10L).empty(true).build();
+		TableGroup 단체_지정 = new TableGroup.Builder().id(-1L).orderTables(주문_테이블9, 주문_테이블10).build();
+		given(tableService.findAllByTableGroupId(단체_지정.getId())).willReturn(Arrays.asList(주문_테이블9, 주문_테이블10));
 
 		// when
 		tableGroupService.ungroup(단체_지정.getId());
 
 		// then
-		assertThat(주문_테이블1.getTableGroup()).isNull();
-		assertThat(주문_테이블2.getTableGroup()).isNull();
+		assertThat(주문_테이블9.getTableGroup()).isNull();
+		assertThat(주문_테이블10.getTableGroup()).isNull();
 	}
 
 	@DisplayName("단체 해제 : 단체 지정되어 있던 주문 테이블의 주문 상태가 계산 완료가 아닌 것이 존재함")
 	@Test
 	void ungroup_exceptionCase() {
 		// given
+		OrderLineItem 주문_항목1 = new OrderLineItem.Builder().menu(메뉴1).quantity(1L).build();
+		OrderLineItem 주문_항목2 = new OrderLineItem.Builder().menu(메뉴2).quantity(2L).build();
+		OrderTable 새_주문_테이블1 = new OrderTable.Builder().id(-1L).empty(false).build();
+		new Order.Builder()
+			.orderStatus(OrderStatus.COOKING)
+			.orderLineItems(주문_항목1)
+			.orderTable(새_주문_테이블1)
+			.build();
+		new Order.Builder()
+			.orderStatus(OrderStatus.MEAL)
+			.orderLineItems(주문_항목2)
+			.orderTable(새_주문_테이블1)
+			.build();
+
+		OrderTable 새_주문_테이블2 = new OrderTable.Builder().id(-2L).empty(false).build();
+		new Order.Builder()
+			.orderStatus(OrderStatus.COOKING)
+			.orderLineItems(주문_항목1)
+			.orderTable(새_주문_테이블2)
+			.build();
+		new Order.Builder()
+			.orderStatus(OrderStatus.MEAL)
+			.orderLineItems(주문_항목2)
+			.orderTable(새_주문_테이블2)
+			.build();
 		TableGroup 단체_지정 = new TableGroup.Builder().orderTables(주문_테이블1, 주문_테이블2).build();
-		주문_테이블1.setTableGroup(단체_지정);
-		주문_테이블2.setTableGroup(단체_지정);
-		given(orderTableDao.findAllByTableGroupId(단체_지정.getId())).willReturn(Arrays.asList(주문_테이블1, 주문_테이블2));
-		given(orderDao.existsByOrderTableIdInAndOrderStatusIn(
-			anyList(),
-			eq(Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)))
-		).willReturn(true);
+		given(tableService.findAllByTableGroupId(단체_지정.getId())).willReturn(Arrays.asList(새_주문_테이블1, 새_주문_테이블2));
 
 		// when & then
 		assertThatThrownBy(() -> tableGroupService.ungroup(단체_지정.getId())).isInstanceOf(IllegalArgumentException.class);

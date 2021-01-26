@@ -1,16 +1,17 @@
 package kitchenpos.menu.application;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupDao;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
 
 @Service
+@Transactional(readOnly = true)
 public class MenuGroupService {
 	private final MenuGroupDao menuGroupDao;
 
@@ -24,9 +25,11 @@ public class MenuGroupService {
 	}
 
 	public List<MenuGroupResponse> list() {
-		return menuGroupDao.findAll()
-			.stream()
-			.map(MenuGroupResponse::from)
-			.collect(Collectors.toList());
+		return MenuGroupResponse.newList(menuGroupDao.findAll());
+	}
+
+	public MenuGroup findById(final Long id) {
+		return menuGroupDao.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("해당 ID의 MenuGroup이 존재하지 않습니다."));
 	}
 }

@@ -39,9 +39,9 @@ class ProductServiceTest {
 		ProductRequest 새_상품_요청 = new ProductRequest("새상품", BigDecimal.valueOf(4000L));
 
 		given(productDao.save(any(Product.class))).willAnswer(invocation -> {
-			Product request = invocation.getArgument(0, Product.class);
-			request.setId(1L);
-			return request;
+			Product mock = spy(invocation.getArgument(0, Product.class));
+			when(mock.getId()).thenReturn(1L);
+			return mock;
 		});
 
 		// when

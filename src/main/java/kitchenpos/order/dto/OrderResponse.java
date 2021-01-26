@@ -29,6 +29,9 @@ public class OrderResponse {
 	}
 
 	public static OrderResponse from(Order order){
+		if(order == null) {
+			return null;
+		}
 		Long orderTableId = Optional.ofNullable(order.getOrderTable())
 			.map(OrderTable::getId)
 			.orElse(null);

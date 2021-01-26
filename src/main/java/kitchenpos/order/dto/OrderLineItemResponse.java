@@ -1,5 +1,6 @@
 package kitchenpos.order.dto;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,7 +37,9 @@ public class OrderLineItemResponse {
 	}
 
 	public static List<OrderLineItemResponse> newList(List<OrderLineItem> orderLineItems) {
-		return orderLineItems.stream()
+		return Optional.ofNullable(orderLineItems)
+			.orElseGet(Collections::emptyList)
+			.stream()
 			.map(OrderLineItemResponse::from)
 			.collect(Collectors.toList());
 	}
