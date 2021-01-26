@@ -1,6 +1,5 @@
-package kitchenpos.menu.domain;
+package domain.menu;
 
-import kitchenpos.menu.application.MenuValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

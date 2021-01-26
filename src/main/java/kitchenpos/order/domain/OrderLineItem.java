@@ -2,7 +2,7 @@ package kitchenpos.order.domain;
 
 import common.entity.BaseSeqEntity;
 import common.entity.Quantity;
-import kitchenpos.menu.domain.Menu;
+import domain.menu.Menu;
 
 import javax.persistence.*;
 import java.util.Objects;

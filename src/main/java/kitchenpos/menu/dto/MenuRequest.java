@@ -1,10 +1,10 @@
 package kitchenpos.menu.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.Product;
+import domain.menu.Menu;
+import domain.menu.MenuGroup;
+import domain.menu.MenuProduct;
+import domain.menu.Product;
 
 import java.math.BigDecimal;
 import java.util.List;

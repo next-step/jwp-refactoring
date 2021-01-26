@@ -1,8 +1,8 @@
 package kitchenpos.menu.application;
 
 import common.application.NotFoundException;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuRepository;
+import domain.menu.MenuProduct;
+import domain.menu.MenuRepository;
 import kitchenpos.menu.dto.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

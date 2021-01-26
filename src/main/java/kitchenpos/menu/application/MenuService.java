@@ -1,7 +1,7 @@
 package kitchenpos.menu.application;
 
 import common.application.NotFoundException;
-import kitchenpos.menu.domain.*;
+import domain.menu.*;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import org.springframework.stereotype.Service;

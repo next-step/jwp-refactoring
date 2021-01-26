@@ -1,4 +1,4 @@
-package kitchenpos.menu.domain;
+package domain.menu;
 
 import common.entity.BaseSeqEntity;
 import common.entity.Price;

@@ -1,4 +1,4 @@
-package kitchenpos.menu.domain;
+package domain.menu;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

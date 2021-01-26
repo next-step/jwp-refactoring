@@ -1,8 +1,8 @@
 package kitchenpos.menu.application;
 
 import common.entity.Price;
-import kitchenpos.menu.domain.Product;
-import kitchenpos.menu.domain.ProductRepository;
+import domain.menu.Product;
+import domain.menu.ProductRepository;
 import kitchenpos.menu.dto.ProductRequest;
 import kitchenpos.menu.dto.ProductResponse;
 import org.springframework.stereotype.Service;

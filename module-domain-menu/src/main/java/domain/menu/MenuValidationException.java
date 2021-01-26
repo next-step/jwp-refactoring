@@ -1,4 +1,4 @@
-package kitchenpos.menu.application;
+package domain.menu;
 
 
 import common.application.ValidationException;

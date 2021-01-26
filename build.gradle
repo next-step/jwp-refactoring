@@ -15,6 +15,7 @@ repositories {
 dependencies {
     implementation project(':common')
     implementation project(':module-api-config')
+    implementation project(':module-domain-menu')
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -44,6 +45,12 @@ subprojects {
 
 project(':module-api-config') {
     dependencies {
-        compile project(':common')
+        implementation project(':common')
+    }
+}
+
+project(':module-domain-menu') {
+    dependencies {
+        implementation project(':common')
     }
 }

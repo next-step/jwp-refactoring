@@ -1,7 +1,7 @@
 package kitchenpos.order.domain;
 
 import common.entity.Quantity;
-import kitchenpos.menu.domain.Menu;
+import domain.menu.Menu;
 
 public interface OrderItem {
 

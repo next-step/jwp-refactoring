@@ -1,8 +1,7 @@
-package kitchenpos.menu.domain;
+package domain.menu;
 
 import common.entity.BaseIdEntity;
 import common.entity.Price;
-import kitchenpos.menu.application.MenuValidationException;
 
 import javax.persistence.*;
 import java.math.BigDecimal;

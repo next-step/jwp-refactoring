@@ -1,8 +1,8 @@
 package kitchenpos.order.application;
 
 import common.application.NotFoundException;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuRepository;
+import domain.menu.Menu;
+import domain.menu.MenuRepository;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderRequest_ChangeStatus;
 import kitchenpos.order.dto.OrderRequest_Create;
