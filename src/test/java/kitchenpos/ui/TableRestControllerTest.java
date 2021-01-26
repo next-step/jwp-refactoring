@@ -40,12 +40,12 @@ class TableRestControllerTest extends ControllerTest {
         final Long orderTableId = 4l;
         OrderTable orderTable = orderTableRepository.findById(orderTableId).get();
 
-        orderTable.setEmpty(false);
+        orderTable.updateEmpty(false);
         String body = objectMapper.writeValueAsString(OrderTableRequest.of(orderTable));
 
         테이블_변경_요청_및_검증(body, orderTableId, "/empty");
 
-        orderTable.setNumberOfGuests(10);
+        orderTable.updateNumberOfGuests(10);
         body = objectMapper.writeValueAsString(OrderTableRequest.of(orderTable));
 
         테이블_변경_요청_및_검증(body, orderTableId, "/number-of-guests");

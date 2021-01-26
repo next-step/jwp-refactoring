@@ -1,6 +1,7 @@
 package kitchenpos.dto.request;
 
 import kitchenpos.domain.OrderTable;
+import org.springframework.util.CollectionUtils;
 
 public class OrderTableRequest {
     private Long id;
@@ -24,7 +25,6 @@ public class OrderTableRequest {
     public static OrderTableRequest of(OrderTable orderTable) {
         return new OrderTableRequest(orderTable.getId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
     }
-
 
     public Long getId() {
         return id;

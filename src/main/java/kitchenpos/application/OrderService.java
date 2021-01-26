@@ -58,6 +58,26 @@ public class OrderService {
         return orderRepository.save(savedOrder);
     }
 
+
+    public void validateOrderStatusNotIn(List<OrderTable> orderTables, List<OrderStatus> orderStatuses) {
+        if (orderRepository.existsByOrderTableInAndOrderStatusIn(orderTables, orderStatuses)) {
+            throw new OrderTableException("올바르지 않은 주문상태가 포함되어있습니다", orderStatuses);
+        }
+    }
+
+    public List<OrderTable> findAllByIdIn(List<Long> orderTableIds) {
+        return orderTableRepository.findAllByIdIn(orderTableIds);
+    }
+
+    public List<OrderTable> findAllByTableGroup(TableGroup tableGroup) {
+        return orderTableRepository.findAllByTableGroup(tableGroup);
+    }
+
+    public OrderTable findOrderTableById(Long id) {
+        return orderTableRepository.findById(id)
+                .orElseThrow(() -> new OrderTableException("주문하는 주문 테이블 id가 없습니다. ", id));
+    }
+
     private List<OrderLineItemRequest> getOrderLineItemRequests(OrderRequest orderRequest) {
         orderRequest.validateEmptyOrderLineItems();
         orderRequest.validateMenuSize(menuService.countByIdIn(orderRequest.getMenuIds()));
@@ -67,10 +87,5 @@ public class OrderService {
     private Order findOrderById(Long id) {
         return orderRepository.findById(id)
                 .orElseThrow(() -> new OrderException("존재하는 주문 id가 없습니다. ", id));
-    }
-
-    private OrderTable findOrderTableById(Long id) {
-        return orderTableRepository.findById(id)
-                .orElseThrow(() -> new OrderTableException("주문하는 주문 테이블 id가 없습니다. ", id));
     }
 }

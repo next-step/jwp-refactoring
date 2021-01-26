@@ -30,6 +30,10 @@ public class OrderTable {
         this.empty = empty;
     }
 
+    public void ungroup() {
+        this.tableGroup = null;
+    }
+
     public Long getId() {
         return id;
     }
@@ -46,19 +50,15 @@ public class OrderTable {
         return empty;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setTableGroup(TableGroup tableGroup) {
+    public void updateTableGroup(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
     }
 
-    public void setNumberOfGuests(int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
+    public void updateEmpty(boolean empty) {
+        this.empty = empty;
     }
 
-    public void setEmpty(boolean empty) {
-        this.empty = empty;
+    public void updateNumberOfGuests(int numberOfGuests) {
+        this.numberOfGuests = numberOfGuests;
     }
 }

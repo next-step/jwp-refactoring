@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.advice.exception.OrderTableException;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.request.OrderTableRequest;
@@ -30,6 +31,9 @@ class TableGroupServiceTest {
 
     @Autowired
     private TableGroupService tableGroupService;
+
+    @Autowired
+    private OrderService orderService;
 
     @Autowired
     private TableService tableService;
@@ -66,7 +70,7 @@ class TableGroupServiceTest {
     @Test
     void createException() {
         assertThatThrownBy(() -> 테이블_그룹을_생성한다(new TableGroupRequest()))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(OrderTableException.class);
     }
 
 
@@ -81,7 +85,7 @@ class TableGroupServiceTest {
         테이블_그룹을_비운다(tableGroup.getId());
 
         orderTableIds.forEach(id -> {
-            assertThat(tableGroupService.findOrderTableById(id).getTableGroup()).isNull();
+            assertThat(orderService.findOrderTableById(id).getTableGroup()).isNull();
         });
     }
 
@@ -93,7 +97,7 @@ class TableGroupServiceTest {
         when(orderRepository.existsByOrderTableInAndOrderStatusIn(anyList(), anyList())).thenReturn(true);
 
         assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(OrderTableException.class);
     }
 
     private OrderTable 테이블을_생성한다(int numberOfGuest, boolean empty) {

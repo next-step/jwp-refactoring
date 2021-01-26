@@ -1,6 +1,8 @@
 package kitchenpos.dto.request;
 
+import kitchenpos.advice.exception.OrderTableException;
 import kitchenpos.domain.TableGroup;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,6 +29,28 @@ public class TableGroupRequest {
                 .collect(Collectors.toList());
 
         return new TableGroupRequest(tableGroup.getId(), orderTableRequests);
+    }
+
+    public void validateOrderTableSize() {
+        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
+            throw new OrderTableException("주문 테이블이 비어있거나 2개미만입니다");
+        }
+    }
+
+    public void validateEqualOrderTableSize(int size) {
+        if (orderTables.size() != size) {
+            throw new OrderTableException("요청 주문 테이블 사이즈와 저장된 주문 테이블 사이즈가 다릅니다");
+        }
+    }
+
+    public List<Long> getOrderTableIds() {
+        return orderTables.stream()
+                .map(OrderTableRequest::getId)
+                .collect(Collectors.toList());
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public List<OrderTableRequest> getOrderTables() {

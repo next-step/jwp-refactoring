@@ -50,7 +50,7 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-        savedOrderTable.setEmpty(orderTableRequest.getEmpty());
+        savedOrderTable.updateEmpty(orderTableRequest.getEmpty());
 
         return orderTableRepository.save(savedOrderTable);
     }
@@ -70,7 +70,7 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-        savedOrderTable.setNumberOfGuests(numberOfGuests);
+        savedOrderTable.updateNumberOfGuests(numberOfGuests);
 
         return orderTableRepository.save(savedOrderTable);
     }

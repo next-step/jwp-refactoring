@@ -51,7 +51,7 @@ class TableServiceTest {
     @Test
     void changeEmpty() {
         OrderTable orderTable = 테이블을_생성한다(0, true);
-        orderTable.setEmpty(false);
+        orderTable.updateEmpty(false);
 
         when(orderRepository.existsByOrderTableAndOrderStatusIn(any(), anyList())).thenReturn(false);
         OrderTable changeOrderTable = tableService.changeEmpty(orderTable.getId(), OrderTableRequest.of(orderTable));
@@ -63,7 +63,7 @@ class TableServiceTest {
     @Test
     void changeEmptyException() {
         OrderTable orderTable = 테이블을_생성한다(0, true);
-        orderTable.setEmpty(false);
+        orderTable.updateEmpty(false);
 
         when(orderRepository.existsByOrderTableAndOrderStatusIn(any(), anyList())).thenReturn(true);
 
@@ -75,7 +75,7 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuests() {
         OrderTable orderTable = 테이블을_생성한다(0, false);
-        orderTable.setNumberOfGuests(10);
+        orderTable.updateNumberOfGuests(10);
         OrderTable changeOrderTable = tableService.changeNumberOfGuests(orderTable.getId(), OrderTableRequest.of(orderTable));
 
         assertThat(changeOrderTable.getNumberOfGuests()).isEqualTo(orderTable.getNumberOfGuests());
@@ -85,7 +85,7 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuestsNumberException() {
         OrderTable orderTable = 테이블을_생성한다(0, false);
-        orderTable.setNumberOfGuests(-1);
+        orderTable.updateNumberOfGuests(-1);
 
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), OrderTableRequest.of(orderTable)))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -95,7 +95,7 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuestsStatusException() {
         OrderTable orderTable = 테이블을_생성한다(0, true);
-        orderTable.setNumberOfGuests(10);
+        orderTable.updateNumberOfGuests(10);
 
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), OrderTableRequest.of(orderTable)))
                 .isInstanceOf(IllegalArgumentException.class);
