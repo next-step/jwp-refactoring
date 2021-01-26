@@ -49,6 +49,16 @@ public class OrderService {
         return OrderResponse.of(order);
     }
 
+    @Transactional(readOnly = true)
+    public List<Orders> findOrderByTable(OrderTable orderTable) {
+        return orderRepository.findByOrderTable(orderTable);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Orders> findOrderByTableIn(List<OrderTable> orderTables) {
+        return orderRepository.findByOrderTableIn(orderTables);
+    }
+
     public OrderResponse changeOrderStatus(Long orderId, OrderRequest orderRequest) {
         Orders order = orderRepository.findById(orderId).orElseThrow(IllegalArgumentException::new);
         order.changeOrderStatus(orderRequest.getOrderStatus());

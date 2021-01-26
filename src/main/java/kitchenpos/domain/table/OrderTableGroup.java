@@ -57,9 +57,6 @@ public class OrderTableGroup extends BaseDateTime {
     }
 
     public void applyUnGroup() {
-        orderTables.forEach(t -> {
-            t.checkOrderStatus();
-            t.changeOrderTableGroup(null);
-        });
+        orderTables.forEach(t -> t.changeOrderTableGroup(null));
     }
 }
