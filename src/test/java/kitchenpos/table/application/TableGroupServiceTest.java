@@ -8,17 +8,19 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import kitchenpos.menu.dao.MenuDao;
-import kitchenpos.menu.dao.MenuGroupDao;
-import kitchenpos.menu.dao.MenuProductDao;
-import kitchenpos.orders.dao.OrderDao;
-import kitchenpos.orders.dao.OrderTableDao;
-import kitchenpos.product.dao.ProductDao;
-import kitchenpos.table.dao.TableGroupDao;
+import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.menu.repository.MenuGroupRepository;
+import kitchenpos.menu.repository.MenuProductRepository;
+import kitchenpos.orders.repository.OrderLineItemRepository;
+import kitchenpos.orders.repository.OrderRepository;
+import kitchenpos.orders.repository.OrderTableRepository;
+import kitchenpos.product.repository.ProductRepository;
+import kitchenpos.table.repository.TableGroupRepository;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
@@ -46,32 +48,46 @@ class TableGroupServiceTest extends IntegrationTest {
 	@Autowired
 	private TableGroupService tableGroupService;
 	@Autowired
-	private OrderTableDao orderTableDao;
+	private OrderTableRepository orderTableRepository;
 	@Autowired
-	private OrderDao orderDao;
+	private MenuGroupRepository menuGroupRepository;
 	@Autowired
-	private MenuGroupDao menuGroupDao;
+	private ProductRepository productRepository;
 	@Autowired
-	private ProductDao productDao;
+	private MenuRepository menuRepository;
 	@Autowired
-	private MenuDao menuDao;
-	@Autowired
-	private MenuProductDao menuProductDao;
+	private MenuProductRepository menuProductRepository;
 	@Autowired
 	private OrderService orderService;
 	@Autowired
-	private TableGroupDao tableGroupDao;
+	private TableGroupRepository tableGroupRepository;
+	@Autowired
+	private OrderRepository orderRepository;
+	@Autowired
+	private OrderLineItemRepository orderLineItemRepository;
 
+	@AfterEach
+	void cleanUp() {
+		menuProductRepository.deleteAllInBatch();
+		orderLineItemRepository.deleteAllInBatch();
+		menuRepository.deleteAllInBatch();
+		orderRepository.deleteAllInBatch();
+		orderTableRepository.deleteAllInBatch();
+		tableGroupRepository.deleteAllInBatch();
+		menuGroupRepository.deleteAllInBatch();
+		menuRepository.deleteAllInBatch();
+		menuProductRepository.deleteAllInBatch();
+	}
 
 	@DisplayName("단체를 지정할 수 있다.")
 	@Test
 	void create() {
 		// given
 		OrderTable orderTable1 = new OrderTable(2, true);
-		OrderTable savedOrderTable1 = orderTableDao.save(orderTable1);
+		OrderTable savedOrderTable1 = orderTableRepository.save(orderTable1);
 
 		OrderTable orderTable2 = new OrderTable(2, true);
-		OrderTable savedOrderTable2 = orderTableDao.save(orderTable2);
+		OrderTable savedOrderTable2 = orderTableRepository.save(orderTable2);
 
 		// when
 		TableGroupRequest request = new TableGroupRequest(Arrays.asList(savedOrderTable1.getId(), savedOrderTable2.getId()));
@@ -91,7 +107,7 @@ class TableGroupServiceTest extends IntegrationTest {
 	void tableCountMustOverTwice() {
 		// given
 		OrderTable orderTable = new OrderTable(0, true);
-		OrderTable savedOrderTable = orderTableDao.save(orderTable);
+		OrderTable savedOrderTable = orderTableRepository.save(orderTable);
 
 		TableGroupRequest request = new TableGroupRequest(Arrays.asList(savedOrderTable.getId()));
 		// when
@@ -115,10 +131,10 @@ class TableGroupServiceTest extends IntegrationTest {
 	void requestedOrderTableMustEmpty() {
 		// given
 		OrderTable orderTable1 = new OrderTable(0, false);
-		OrderTable savedOrderTable1 = orderTableDao.save(orderTable1);
+		OrderTable savedOrderTable1 = orderTableRepository.save(orderTable1);
 
 		OrderTable orderTable2 = new OrderTable(0, false);
-		OrderTable saveOrderTable2 = orderTableDao.save(orderTable2);
+		OrderTable saveOrderTable2 = orderTableRepository.save(orderTable2);
 
 		// when
 
@@ -133,14 +149,14 @@ class TableGroupServiceTest extends IntegrationTest {
 	@Test
 	void ungroup(){
 		// given
-		TableGroup savedTableGroup = tableGroupDao.save(new TableGroup(LocalDateTime.now()));
-		OrderTable savedOrderTable = orderTableDao.save(new OrderTable(savedTableGroup, 3, false));
+		TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(LocalDateTime.now()));
+		OrderTable savedOrderTable = orderTableRepository.save(new OrderTable(savedTableGroup, 3, false));
 
-		MenuGroup savedMenuGroup = menuGroupDao.save(new MenuGroup("사이드메뉴"));
-		Product savedProduct = productDao.save(new Product("샐러드", BigDecimal.valueOf(9000)));
-		Menu savedMenu = menuDao.save(new Menu("닭가슴살샐러드", BigDecimal.valueOf(9000), savedMenuGroup.getId()));
-		MenuProduct savedMenuProduct = menuProductDao.save(new MenuProduct(savedMenu, savedProduct, 1));
-		savedMenu.addMenuProduct(savedMenuProduct);
+		MenuGroup savedMenuGroup = menuGroupRepository.save(new MenuGroup("사이드메뉴"));
+		Product savedProduct = productRepository.save(new Product("샐러드", BigDecimal.valueOf(9000)));
+		Menu savedMenu = menuRepository.save(new Menu("닭가슴살샐러드", BigDecimal.valueOf(9000), savedMenuGroup.getId()));
+		MenuProduct savedMenuProduct = menuProductRepository.save(new MenuProduct(savedMenu, savedProduct, 1));
+		//savedMenu.addMenuProduct(savedMenuProduct);
 
 		OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(savedMenu.getId(), 1L);
 		OrderRequest orderRequest = new OrderRequest(savedOrderTable.getId(), Arrays.asList(orderLineItemRequest));
@@ -155,7 +171,7 @@ class TableGroupServiceTest extends IntegrationTest {
 		tableGroupService.ungroup(savedTableGroup.getId());
 
 		// then
-		List<OrderTable> actualOrderTables = orderTableDao.findAllByTableGroupId(savedTableGroup.getId());
+		List<OrderTable> actualOrderTables = orderTableRepository.findAllByTableGroupId(savedTableGroup.getId());
 
 		List<Long> actualOrderTableIds = actualOrderTables.stream()
 			.map(OrderTable::getId)
@@ -168,14 +184,14 @@ class TableGroupServiceTest extends IntegrationTest {
 	@Test
 	void cookingOrMealCannotCreateTableGroup() {
 		// given
-		TableGroup savedTableGroup = tableGroupDao.save(new TableGroup(LocalDateTime.now()));
-		OrderTable savedOrderTable = orderTableDao.save(new OrderTable(savedTableGroup, 3, false));
+		TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(LocalDateTime.now()));
+		OrderTable savedOrderTable = orderTableRepository.save(new OrderTable(savedTableGroup, 3, false));
 
-		MenuGroup savedMenuGroup = menuGroupDao.save(new MenuGroup("사이드메뉴"));
-		Product savedProduct = productDao.save(new Product("샐러드", BigDecimal.valueOf(9000)));
-		Menu savedMenu = menuDao.save(new Menu("닭가슴살샐러드", BigDecimal.valueOf(9000), savedMenuGroup.getId()));
-		MenuProduct savedMenuProduct = menuProductDao.save(new MenuProduct(savedMenu, savedProduct, 1));
-		savedMenu.addMenuProduct(savedMenuProduct);
+		MenuGroup savedMenuGroup = menuGroupRepository.save(new MenuGroup("사이드메뉴"));
+		Product savedProduct = productRepository.save(new Product("샐러드", BigDecimal.valueOf(9000)));
+		Menu savedMenu = menuRepository.save(new Menu("닭가슴살샐러드", BigDecimal.valueOf(9000), savedMenuGroup.getId()));
+		MenuProduct savedMenuProduct = menuProductRepository.save(new MenuProduct(savedMenu, savedProduct, 1));
+		//savedMenu.addMenuProduct(savedMenuProduct);
 
 		OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(savedMenu.getId(), 1L);
 		OrderRequest orderRequest = new OrderRequest(savedOrderTable.getId(), Arrays.asList(orderLineItemRequest));

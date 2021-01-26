@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
 
 /**
  * @author : byungkyu
@@ -16,13 +15,13 @@ public class MenuResponse {
 	private String name;
 	private BigDecimal price;
 	private Long menuGroupId;
-	private List<MenuProduct> menuProducts;
+	private List<MenuProductResponse> menuProducts;
 
 	public MenuResponse() {
 	}
 
 	public MenuResponse(Long id, String name, BigDecimal price, Long menuGroupId,
-		List<MenuProduct> menuProducts) {
+		List<MenuProductResponse> menuProducts) {
 		this.id = id;
 		this.name = name;
 		this.price = price;
@@ -31,7 +30,7 @@ public class MenuResponse {
 	}
 
 	public static MenuResponse of(Menu menu) {
-		return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(), menu.getMenuGroupId(), menu.getMenuProducts());
+		return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(), menu.getMenuGroupId(), MenuProductResponse.of(menu.getMenuProducts()));
 	}
 
 	public Long getId() {
@@ -50,7 +49,7 @@ public class MenuResponse {
 		return menuGroupId;
 	}
 
-	public List<MenuProduct> getMenuProducts() {
+	public List<MenuProductResponse> getMenuProducts() {
 		return menuProducts;
 	}
 }

@@ -16,8 +16,7 @@ public class MenuProduct {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "seq")
-	private Long seq;
+	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "menu_id")
@@ -42,8 +41,8 @@ public class MenuProduct {
 		this.quantity = quantity;
 	}
 
-	public Long getSeq() {
-		return seq;
+	public Long getId() {
+		return id;
 	}
 
 	public Menu getMenu() {
