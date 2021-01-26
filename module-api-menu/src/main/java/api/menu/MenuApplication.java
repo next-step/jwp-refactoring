@@ -1,4 +1,4 @@
-package kitchenpos;
+package api.menu;
 
 import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,21 +11,21 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import javax.sql.DataSource;
 
-@EnableJpaRepositories(basePackages = {"domain.menu", "domain.order"})
-@EntityScan(basePackages = {"domain.menu", "domain.order", "api.menu"})
+@EnableJpaRepositories(basePackages = {"domain.menu"})
+@EntityScan(basePackages = {"domain.menu"})
 @EnableJpaAuditing
 @SpringBootApplication
-public class Application implements CommandLineRunner {
+public class MenuApplication implements CommandLineRunner {
 
-    @Autowired
-    private DataSource dataSource;
+	@Autowired
+	private DataSource dataSource;
 
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
+	public static void main(String[] args) {
+		SpringApplication.run(MenuApplication.class, args);
+	}
 
-    @Override
-    public void run(String... args) throws Exception {
-        Flyway.configure().baselineOnMigrate(true).dataSource(dataSource).load().migrate();
-    }
+	@Override
+	public void run(String... args) throws Exception {
+		Flyway.configure().baselineOnMigrate(true).dataSource(dataSource).load().migrate();
+	}
 }
