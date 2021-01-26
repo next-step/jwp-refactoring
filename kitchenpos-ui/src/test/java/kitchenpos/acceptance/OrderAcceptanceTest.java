@@ -11,6 +11,7 @@ import kitchenpos.order.dto.OrderMenuRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.table.dto.TableRequest;
 import kitchenpos.table.dto.TableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,6 +43,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 .as(MenuResponse.class);
         TableResponse orderTable = TableAcceptanceTest.생성_요청()
                 .as(TableResponse.class);
+        TableAcceptanceTest.고객_수_변경_요청(orderTable.getId(), new TableRequest(2));
 
         OrderRequest request = createRequest(orderTable, menu);
         ExtractableResponse<Response> createdResponse = 생성_요청(request);
