@@ -4,4 +4,5 @@ include 'module-api-config'
 include 'module-domain-menu'
 include 'module-domain-order'
 include 'module-api-menu'
+include 'module-api-order'
 

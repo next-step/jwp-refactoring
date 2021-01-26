@@ -71,3 +71,12 @@ project(':module-api-menu') {
         implementation project(':module-domain-menu')
     }
 }
+
+project(':module-api-order') {
+    dependencies {
+        implementation project(':common')
+        implementation project(':module-api-config')
+        implementation project(':module-domain-menu')
+        implementation project(':module-domain-order')
+    }
+}
