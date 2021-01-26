@@ -1,5 +1,6 @@
 package kitchenpos.menu.application;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -8,11 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menu.repository.MenuProductRepository;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.repository.ProductRepository;
@@ -52,12 +51,12 @@ public class MenuService {
 	}
 
 	private Menu addCreateMenuProductTarget(Menu savedMenu, List<MenuProductRequest> menuProductRequests) {
+		List<MenuProduct> menuProducts = new ArrayList<>();
 		for (MenuProductRequest menuProductRequest : menuProductRequests) {
 			Product product = productRepository.findById(menuProductRequest.getProductId()).orElseThrow(IllegalArgumentException::new);
-			savedMenu.addMenuProduct(new MenuProduct(savedMenu, product, menuProductRequest.getQuantity()));
+			menuProducts.add(new MenuProduct(savedMenu, product, menuProductRequest.getQuantity()));
 		}
-		savedMenu.validateSumOfPriceToAddMenuProduct();
-		//MenuProducts menuProducts = new MenuProducts(findMenuProducts);
+		savedMenu.addMenuProducts(menuProducts);
 		return savedMenu;
 	}
 

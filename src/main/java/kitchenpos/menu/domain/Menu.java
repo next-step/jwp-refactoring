@@ -41,15 +41,8 @@ public class Menu {
 		}
 	}
 
-	public void addMenuProduct(MenuProduct menuProduct) {
-		if (this.menuProducts == null) {
-			this.menuProducts = new MenuProducts();
-		}
-		this.menuProducts.add(menuProduct);
-	}
-
-	public void validateSumOfPriceToAddMenuProduct() {
-		BigDecimal menuProductSumOfPrice = menuProducts.getMenuProducts().stream()
+	public void validateSumOfPriceToAddMenuProduct(List<MenuProduct> menuProducts) {
+		BigDecimal menuProductSumOfPrice = menuProducts.stream()
 			.map(menuProduct -> menuProduct.getProduct()
 				.getPrice()
 				.multiply(BigDecimal.valueOf(menuProduct.getQuantity())))
@@ -59,6 +52,15 @@ public class Menu {
 			throw new IllegalArgumentException();
 		}
 	}
+
+	public void addMenuProducts(List<MenuProduct> menuProducts) {
+		if (this.menuProducts == null) {
+			this.menuProducts = new MenuProducts();
+		}
+		validateSumOfPriceToAddMenuProduct(menuProducts);
+		menuProducts.forEach(menuProduct -> this.menuProducts.add(menuProduct));
+	}
+
 
 	public static class Builder {
 		private String name;
