@@ -2,6 +2,7 @@ package kitchenpos.table.application;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
@@ -60,7 +61,7 @@ class TableServiceTest {
     void setTableEmptyTest() {
         OrderTable expected = new OrderTable(null, 3, false);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(expected));
-        given(orderRepository.findByOrderTableId(any())).willReturn(new Order("COMPLTETE"));
+        given(orderRepository.findByOrderTableId(any())).willReturn(new Order(OrderStatus.COMPLETION));
 
         OrderTableResponse saved = tableService.changeEmpty(1L, true);
 
@@ -72,7 +73,7 @@ class TableServiceTest {
     void setTableNotEmptyTest() {
         OrderTable expected = new OrderTable(null, 3, true);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(expected));
-        given(orderRepository.findByOrderTableId(any())).willReturn(new Order("COMPLTETE"));
+        given(orderRepository.findByOrderTableId(any())).willReturn(new Order(OrderStatus.COMPLETION));
 
         OrderTableResponse saved = tableService.changeEmpty(1L, false);
 
@@ -84,7 +85,7 @@ class TableServiceTest {
     void groupTableCantSetEmptyTest() {
         OrderTable expected = new OrderTable(new TableGroup(1L), 3, true);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(expected));
-        given(orderRepository.findByOrderTableId(any())).willReturn(new Order("COMPLTETE"));
+        given(orderRepository.findByOrderTableId(any())).willReturn(new Order(OrderStatus.COMPLETION));
 
         assertThatThrownBy(() -> tableService.changeEmpty(1L, true))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -95,7 +96,7 @@ class TableServiceTest {
     void cookingCantSetEmptyTest() {
         OrderTable expected = new OrderTable(new TableGroup(1L), 3, true);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(expected));
-        given(orderRepository.findByOrderTableId(any())).willReturn(new Order("COMPLTETE"));
+        given(orderRepository.findByOrderTableId(any())).willReturn(new Order(OrderStatus.COMPLETION));
 
         assertThatThrownBy(() -> tableService.changeEmpty(1L, true))
                 .isInstanceOf(IllegalArgumentException.class);

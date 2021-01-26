@@ -7,6 +7,8 @@ import java.util.List;
 
 @Entity
 public class TableGroup {
+    private static final TableGroup EMPTY_TABLE_GROUP = new TableGroup();
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -14,7 +16,7 @@ public class TableGroup {
     @OneToMany(mappedBy = "tableGroup")
     private List<OrderTable> orderTables = new ArrayList<>();
 
-    public TableGroup() {
+    protected TableGroup() {
         this.createdDate = LocalDateTime.now();
     }
 
@@ -28,9 +30,8 @@ public class TableGroup {
     }
 
     public TableGroup(Long id, List<OrderTable> orderTables) {
+        this(orderTables);
         this.id = id;
-        this.createdDate = LocalDateTime.now();
-        this.orderTables = orderTables;
     }
 
     public Long getId() {
@@ -45,4 +46,7 @@ public class TableGroup {
         return orderTables;
     }
 
+    public static TableGroup empty() {
+        return EMPTY_TABLE_GROUP;
+    }
 }

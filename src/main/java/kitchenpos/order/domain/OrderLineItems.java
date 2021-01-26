@@ -11,7 +11,7 @@ public class OrderLineItems {
     @OneToMany(mappedBy = "order", cascade = {CascadeType.MERGE}, orphanRemoval = true)
     List<OrderLineItem> orderLineItems = new ArrayList<>();
 
-    public OrderLineItems() {
+    protected OrderLineItems() {
     }
 
     public OrderLineItems(List<OrderLineItem> orderLineItems) {

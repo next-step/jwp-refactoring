@@ -79,7 +79,7 @@ class OrderRestControllerTest {
     @Test
     public void updateStatus() throws Exception {
         OrderResponse response = new OrderResponse(1L, "COMPLETION", getNow());
-        OrderStatusRequest request = new OrderStatusRequest("COOKING");
+        OrderStatusRequest request = new OrderStatusRequest(OrderStatus.COOKING);
         given(orderService.changeOrderStatus(any(), any())).willReturn(response);
         mockMvc.perform(put("/api/orders/{orderId}/order-status", 1L)
                 .contentType(MediaType.APPLICATION_JSON)

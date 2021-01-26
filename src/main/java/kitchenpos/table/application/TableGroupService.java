@@ -1,9 +1,7 @@
 package kitchenpos.table.application;
 
 import kitchenpos.order.application.OrderTableService;
-import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
@@ -14,7 +12,6 @@ import kitchenpos.table.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,21 +58,7 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
-
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-
-        checkOrderStatus(orderTableIds);
         orderTables.forEach(OrderTable::ungroup);
-    }
-
-    private void checkOrderStatus(List<Long> orderTableIds) {
-        orderRepository.findByOrderTableIdIn(orderTableIds)
-                .stream()
-                .filter(it -> it.statusIsCooking() || it.statusIsMeal())
-                .findAny()
-                .ifPresent(it -> {throw new IllegalArgumentException("요리중이거나 식사중인 테이블은 변경할 수 없습니다.");});
     }
 
     private List<OrderTable> findOrderTables(final TableGroupRequest request) {

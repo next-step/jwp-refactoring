@@ -84,8 +84,8 @@ class OrderServiceTest {
         OrderTable orderTable2 = orderTableRepository.save(new OrderTable(2, false));
 
         List<OrderLineItem> orderLineItems = Arrays.asList(new OrderLineItem(menu, 1L));
-        Order order1 = new Order(orderTable.getId(), orderLineItems);
-        Order order2 = new Order(orderTable2.getId(), orderLineItems);
+        Order order1 = new Order(orderTable, orderLineItems);
+        Order order2 = new Order(orderTable2, orderLineItems);
         Order save1 = orderRepository.save(order1);
         Order save2 = orderRepository.save(order2);
 
@@ -100,9 +100,9 @@ class OrderServiceTest {
         Menu menu = menuRepository.save(new Menu("메뉴1", Price.of(1000), 1L));
         OrderTable orderTable = orderTableRepository.save(new OrderTable(4, false));
         List<OrderLineItem> orderLines = Arrays.asList(new OrderLineItem(menu, 1L));
-        Order order = orderRepository.save(new Order(orderTable.getId(), orderLines));
+        Order order = orderRepository.save(new Order(orderTable, orderLines));
 
-        OrderResponse savedOrder = orderService.changeOrderStatus(order.getId(), new OrderStatusRequest("COMPLETION"));
+        OrderResponse savedOrder = orderService.changeOrderStatus(order.getId(), new OrderStatusRequest(OrderStatus.COMPLETION));
 
         assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
     }
@@ -113,10 +113,9 @@ class OrderServiceTest {
         Menu menu = menuRepository.save(new Menu("메뉴1", Price.of(1000), 1L));
         OrderTable orderTable = orderTableRepository.save(new OrderTable(4, false));
         List<OrderLineItem> orderLines = Arrays.asList(new OrderLineItem(menu, 1L));
-        Order order = orderRepository.save(new Order(orderTable.getId(), orderLines));
-        orderService.changeOrderStatus(order.getId(), new OrderStatusRequest("COMPLETION"));
+        Order order = orderRepository.save(new Order(orderTable, orderLines, OrderStatus.COMPLETION));
 
-        assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), new OrderStatusRequest("COMPLETION")))
+        assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), new OrderStatusRequest(OrderStatus.COMPLETION)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

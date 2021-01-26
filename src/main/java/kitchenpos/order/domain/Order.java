@@ -1,9 +1,10 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.table.domain.OrderTable;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(name = "orders")
@@ -11,29 +12,35 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long orderTableId;
-    private String orderStatus;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_table_id")
+    private OrderTable orderTable;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
     private LocalDateTime orderedTime;
     @Embedded
     private OrderLineItems orderLineItems;
 
-    public Order() {
+    protected Order() {
     }
 
-    public Order(Long orderTableId) {
-        this.orderTableId = orderTableId;
-        this.orderStatus = OrderStatus.COOKING.name();
+    public Order(OrderTable orderTable) {
+        this.orderTable = orderTable;
+        this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
     }
 
-    public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
-        this.orderTableId = orderTableId;
+    public Order(OrderTable orderTable, List<OrderLineItem> orderLines, OrderStatus orderStatus) {
+        this(orderTable, orderLines);
+        this.orderStatus = orderStatus;
+    }
+
+    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        this(orderTable);
         this.orderLineItems = new OrderLineItems(orderLineItems);
-        this.orderStatus = OrderStatus.COOKING.name();
-        this.orderedTime = LocalDateTime.now();
     }
 
-    public Order(String orderStatus) {
+    public Order(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 
@@ -45,15 +52,15 @@ public class Order {
         this.id = id;
     }
 
-    public Long getOrderTableId() {
-        return orderTableId;
+    public OrderTable getOrderTable() {
+        return orderTable;
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public void changeOrderStatus(final String orderStatus) {
+    public void changeOrderStatus(final OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 
@@ -69,12 +76,16 @@ public class Order {
         this.orderLineItems = new OrderLineItems(items);
     }
 
-    public boolean statusIsMeal() {
-        return this.orderStatus.equals(OrderStatus.MEAL.name());
+    public boolean isMeal() {
+        return this.orderStatus.equals(OrderStatus.MEAL);
     }
 
-    public boolean statusIsCooking() {
-        return this.orderStatus.equals(OrderStatus.COOKING.name());
+    public boolean isCooking() {
+        return this.orderStatus.equals(OrderStatus.COOKING);
+    }
+
+    public boolean changeable() {
+        return !isMeal() && !isCooking();
     }
 
     @Override
@@ -84,17 +95,17 @@ public class Order {
 
         Order order = (Order) o;
 
-        if (!Objects.equals(id, order.id)) return false;
-        if (!Objects.equals(orderTableId, order.orderTableId)) return false;
-        if (!Objects.equals(orderStatus, order.orderStatus)) return false;
-        if (!Objects.equals(orderedTime, order.orderedTime)) return false;
-        return Objects.equals(orderLineItems, order.orderLineItems);
+        if (id != null ? !id.equals(order.id) : order.id != null) return false;
+        if (orderTable != null ? !orderTable.equals(order.orderTable) : order.orderTable != null) return false;
+        if (orderStatus != order.orderStatus) return false;
+        if (orderedTime != null ? !orderedTime.equals(order.orderedTime) : order.orderedTime != null) return false;
+        return orderLineItems != null ? orderLineItems.equals(order.orderLineItems) : order.orderLineItems == null;
     }
 
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (orderTableId != null ? orderTableId.hashCode() : 0);
+        result = 31 * result + (orderTable != null ? orderTable.hashCode() : 0);
         result = 31 * result + (orderStatus != null ? orderStatus.hashCode() : 0);
         result = 31 * result + (orderedTime != null ? orderedTime.hashCode() : 0);
         result = 31 * result + (orderLineItems != null ? orderLineItems.hashCode() : 0);

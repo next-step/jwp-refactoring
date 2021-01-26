@@ -3,10 +3,8 @@ package kitchenpos.table.application;
 import kitchenpos.order.application.OrderTableService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.table.domain.*;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
@@ -98,6 +96,8 @@ class TableGroupServiceTest {
     void ungroupTables() {
         OrderTable table1 = new OrderTable(1L, null, 4, true);
         OrderTable table2 = new OrderTable(2L, null, 4, true);
+        table1.addOrder(new Order(OrderStatus.COMPLETION));
+        table2.addOrder(new Order(OrderStatus.COMPLETION));
         List<OrderTable> orderTables = Arrays.asList(table1, table2);
         TableGroup tableGroup = new TableGroup(1L, orderTables);
         given(orderTableRepository.findAllByTableGroupId(any())).willReturn(orderTables);
@@ -113,10 +113,11 @@ class TableGroupServiceTest {
     void cantUnGroupingWhenOrderStatus() {
         OrderTable table1 = new OrderTable(1L, null, 4, true);
         OrderTable table2 = new OrderTable(2L, null, 4, true);
+        table1.addOrder(new Order(OrderStatus.MEAL));
+        table2.addOrder(new Order(OrderStatus.COMPLETION));
         List<OrderTable> orderTables = Arrays.asList(table1, table2);
         TableGroup tableGroup = new TableGroup(1L, orderTables);
         given(orderTableRepository.findAllByTableGroupId(any())).willReturn(orderTables);
-        given(orderRepository.findByOrderTableIdIn(any())).willReturn(Arrays.asList(new Order("COOKING")));
 
         assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -130,7 +131,6 @@ class TableGroupServiceTest {
         List<OrderTable> orderTables = Arrays.asList(table1, table2);
         TableGroup tableGroup = new TableGroup(1L, orderTables);
         given(orderTableRepository.findAllByTableGroupId(any())).willReturn(orderTables);
-        given(orderRepository.findByOrderTableIdIn(any())).willReturn(Arrays.asList(new Order("MEAL")));
 
         assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))
                 .isInstanceOf(IllegalArgumentException.class);

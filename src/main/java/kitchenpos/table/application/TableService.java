@@ -41,7 +41,7 @@ public class TableService {
                 .orElseThrow(IllegalArgumentException::new);
 
         Order order = orderRepository.findByOrderTableId(orderTableId);
-        if (order.statusIsMeal() || order.statusIsCooking()) {
+        if (order.isMeal() || order.isCooking()) {
             throw new IllegalArgumentException("요리중이거나 식사중인 테이블은 변경할 수 없습니다.");
         }
 

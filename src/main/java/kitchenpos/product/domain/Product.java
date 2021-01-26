@@ -1,6 +1,7 @@
 package kitchenpos.product.domain;
 
 import kitchenpos.common.domain.Price;
+import kitchenpos.menu.domain.MenuProduct;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -14,7 +15,7 @@ public class Product {
     @Embedded
     private Price price;
 
-    public Product() {
+    protected Product() {
     }
 
     public Product(String name, Price price) {

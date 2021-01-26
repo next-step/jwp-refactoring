@@ -20,7 +20,7 @@ public class MenuProduct {
     private Product product;
     private Long quantity;
 
-    public MenuProduct() {
+    protected MenuProduct() {
     }
 
     public MenuProduct(Product product, long quantity) {

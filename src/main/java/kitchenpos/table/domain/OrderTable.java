@@ -1,5 +1,7 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.order.domain.Order;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -16,25 +18,26 @@ public class OrderTable {
     private int numberOfGuests;
     private boolean empty;
 
-    public OrderTable() {
+    @Embedded
+    private Orders orders;
+
+    protected OrderTable() {
     }
 
     public OrderTable(int numberOfGuests, boolean empty) {
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
+        this.orders = new Orders();
     }
 
     public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
+        this(numberOfGuests, empty);
         this.tableGroup = tableGroup;
-        this.numberOfGuests = numberOfGuests;
-        this.empty = empty;
     }
 
     public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+        this(tableGroup, numberOfGuests, empty);
         this.id = id;
-        this.tableGroup = tableGroup;
-        this.numberOfGuests = numberOfGuests;
-        this.empty = empty;
     }
 
     public Long getId() {
@@ -67,9 +70,17 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public void ungroup() {
-        this.tableGroup = null;
+    public void addOrder(Order order) {
+        orders.add(order);
     }
+
+    public void ungroup() {
+        if(!orders.checkChangeable()){
+            throw new IllegalArgumentException("요리중이거나 식사중인 테이블은 변경할 수 없습니다.");
+        }
+        this.tableGroup = TableGroup.empty();
+    }
+
     public boolean hasOtherOrderTable() {
         return Objects.nonNull(tableGroup);
     }

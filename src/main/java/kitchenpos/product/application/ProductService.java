@@ -27,10 +27,7 @@ public class ProductService {
     }
 
     public Price getSumPrice(List<Long> productIds) {
-        List<Product> products = productIds.stream()
-                .map(it -> productRepository.findById(it).orElseThrow(IllegalArgumentException::new))
-                .collect(Collectors.toList());
-
+        List<Product> products = productRepository.findAllById(productIds);
         int sum = products.stream()
                 .mapToInt(it -> it.getPrice().intValue())
                 .sum();
@@ -38,6 +35,11 @@ public class ProductService {
     }
 
     public Product findById(Long productId) {
-        return productRepository.findById(productId).get();
+        return productRepository.findById(productId)
+                .orElseThrow(IllegalArgumentException::new);
+    }
+
+    public List<Product> findAllByIdIn(List<Long> productIds) {
+        return productRepository.findAllByIdIn(productIds);
     }
 }

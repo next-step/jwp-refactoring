@@ -61,7 +61,7 @@ public class OrderService {
 
     private Order createOrder(OrderRequest request) {
         final OrderTable orderTable = orderTableService.findById(request.getOrderTableId());
-        final Order order = new Order(orderTable.getId());
+        final Order order = new Order(orderTable);
         List<OrderLineItem> items = request.getOrderLineItems().stream()
                 .map(item -> new OrderLineItem(order, menuRepository.findById(item.getMenuId()).get(), item.getQuantity()))
                 .collect(Collectors.toList());
@@ -88,7 +88,7 @@ public class OrderService {
         final Order savedOrder = orderRepository.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        if (Objects.equals(OrderStatus.COMPLETION.name(), savedOrder.getOrderStatus())) {
+        if (Objects.equals(OrderStatus.COMPLETION, savedOrder.getOrderStatus())) {
             throw new IllegalArgumentException();
         }
 

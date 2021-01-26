@@ -32,7 +32,7 @@ public class OrderResponse {
     }
 
     public static OrderResponse of(Order order) {
-        return new OrderResponse(order.getId(), order.getOrderStatus(), order.getOrderedTime());
+        return new OrderResponse(order.getId(), order.getOrderStatus().name(), order.getOrderedTime());
     }
 
     @Override
