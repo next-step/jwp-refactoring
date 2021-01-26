@@ -32,7 +32,7 @@ public class Price implements Comparable<Price> {
 
     private void validateEmptyPrice(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new PriceException("가격이 0보다 작을 수 없습니다", price.longValue());
+            throw new PriceException("가격이 0보다 작을 수 없습니다");
         }
     }
 

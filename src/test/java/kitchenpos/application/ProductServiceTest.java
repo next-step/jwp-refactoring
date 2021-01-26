@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.advice.exception.PriceException;
 import kitchenpos.advice.exception.ProductException;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.request.ProductRequest;
@@ -36,7 +37,7 @@ class ProductServiceTest {
         ProductRequest 뿌링클 = new ProductRequest("뿌링클", null);
 
         assertThatThrownBy(() -> productService.create(뿌링클))
-                .isInstanceOf(ProductException.class);
+                .isInstanceOf(PriceException.class);
     }
 
     @DisplayName("상품들을 조회한다")

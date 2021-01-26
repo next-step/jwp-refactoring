@@ -22,12 +22,6 @@ public class ProductService {
 
     @Transactional
     public Product create(final ProductRequest productRequest) {
-        final BigDecimal price = productRequest.getPrice();
-
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new ProductException("상품 가격이 없거나 0보다 작습니다", price);
-        }
-
         return productRepository.save(productRequest.toProduct());
     }
 
