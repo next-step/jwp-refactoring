@@ -31,6 +31,7 @@ public class MenuGroupServiceTest {
         MenuGroup mockMenuGroup = mock(MenuGroup.class);
         given(menuGroupDao.save(any()))
                 .willReturn(mockMenuGroup);
+
         MenuGroup result = menuGroupService.create(new MenuGroup());
         assertThat(result).isEqualTo(mockMenuGroup);
         verify(menuGroupDao, atMostOnce())
