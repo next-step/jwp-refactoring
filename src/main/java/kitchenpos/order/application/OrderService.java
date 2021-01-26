@@ -65,12 +65,12 @@ public class OrderService {
 		return OrderResponse.of(orderLineItemRepository.findAllByOrderId(savedOrder.getId()));
 	}
 
-	private Orders findById(final Long orderId) {
-		return orderRepository.findById(orderId).orElseThrow(EntityNotFoundException::new);
-	}
-
 	public Orders findByOrderTable(OrderTable orderTable) {
 		return orderRepository.findByOrderTable(orderTable);
+	}
+
+	private Orders findById(final Long orderId) {
+		return orderRepository.findById(orderId).orElseThrow(EntityNotFoundException::new);
 	}
 }
 

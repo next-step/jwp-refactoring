@@ -10,7 +10,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import kitchenpos.common.BaseEntity;
-import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.domain.Price;
 
@@ -40,10 +39,6 @@ public class Menu extends BaseEntity {
 
 	public static Menu of(final String name, final Price price, final MenuGroup menuGroup) {
 		return new Menu(null, name, price, menuGroup);
-	}
-
-	public static Menu of(MenuRequest request, MenuGroup menuGroup) {
-		return of(request.getName(), Price.of(request.getPrice()), menuGroup);
 	}
 
 	public Long getId() {
