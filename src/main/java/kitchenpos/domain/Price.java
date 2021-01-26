@@ -27,6 +27,10 @@ public class Price {
         }
     }
 
+    public int getAmount(int quantity) {
+        return price * quantity;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

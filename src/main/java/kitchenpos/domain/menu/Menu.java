@@ -71,4 +71,8 @@ public class Menu extends BaseDateTime {
     public void addMenuProduct(MenuProduct menuProduct) {
         menuProducts.add(menuProduct);
     }
+
+    public int getAmount(int quantity) {
+        return price.getAmount(quantity);
+    }
 }

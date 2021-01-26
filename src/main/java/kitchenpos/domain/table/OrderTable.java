@@ -58,10 +58,6 @@ public class OrderTable {
         return empty;
     }
 
-    public void addOrder(Orders order) {
-        orders.add(order);
-    }
-
     public void changeOrderTableGroup(OrderTableGroup orderTableGroup) {
         this.orderTableGroup = orderTableGroup;
     }
