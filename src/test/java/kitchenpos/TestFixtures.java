@@ -20,42 +20,48 @@ public class TestFixtures {
 	public static Product 상품4 = new Product.Builder().id(4L).price(BigDecimal.valueOf(16000L)).name("통구이").build();
 	public static Product 상품5 = new Product.Builder().id(5L).price(BigDecimal.valueOf(17000L)).name("간장치킨").build();
 	public static Product 상품6 = new Product.Builder().id(6L).price(BigDecimal.valueOf(17000L)).name("순살치킨").build();
+	public static MenuProduct 메뉴_상품1 = new MenuProduct.Builder().seq(1L).product(상품1).quantity(1L).build();
+	public static MenuProduct 메뉴_상품2 = new MenuProduct.Builder().seq(2L).product(상품2).quantity(1L).build();
+	public static MenuProduct 메뉴_상품3 = new MenuProduct.Builder().seq(3L).product(상품3).quantity(1L).build();
+	public static MenuProduct 메뉴_상품4 = new MenuProduct.Builder().seq(4L).product(상품4).quantity(1L).build();
+	public static MenuProduct 메뉴_상품5 = new MenuProduct.Builder().seq(5L).product(상품5).quantity(1L).build();
+	public static MenuProduct 메뉴_상품6 = new MenuProduct.Builder().seq(6L).product(상품6).quantity(1L).build();
 	public static Menu 메뉴1 = new Menu.Builder().id(1L)
 		.name("후라이드치킨")
 		.price(BigDecimal.valueOf(16000L))
 		.menuGroup(메뉴_그룹2)
+		.menuProducts(메뉴_상품1)
 		.build();
 	public static Menu 메뉴2 = new Menu.Builder().id(2L)
 		.name("양념치킨")
 		.price(BigDecimal.valueOf(16000L))
 		.menuGroup(메뉴_그룹2)
+		.menuProducts(메뉴_상품2)
 		.build();
 	public static Menu 메뉴3 = new Menu.Builder().id(3L)
 		.name("반반치킨")
 		.price(BigDecimal.valueOf(16000L))
 		.menuGroup(메뉴_그룹2)
+		.menuProducts(메뉴_상품3)
 		.build();
 	public static Menu 메뉴4 = new Menu.Builder().id(4L)
 		.name("통구이")
 		.price(BigDecimal.valueOf(16000L))
 		.menuGroup(메뉴_그룹2)
+		.menuProducts(메뉴_상품4)
 		.build();
 	public static Menu 메뉴5 = new Menu.Builder().id(5L)
 		.name("간장치킨")
 		.price(BigDecimal.valueOf(17000L))
 		.menuGroup(메뉴_그룹2)
+		.menuProducts(메뉴_상품5)
 		.build();
 	public static Menu 메뉴6 = new Menu.Builder().id(6L)
 		.name("순살치킨")
 		.price(BigDecimal.valueOf(17000L))
 		.menuGroup(메뉴_그룹2)
+		.menuProducts(메뉴_상품6)
 		.build();
-	public static MenuProduct 메뉴_상품1 = new MenuProduct.Builder().seq(1L).menu(메뉴1).product(상품1).quantity(1L).build();
-	public static MenuProduct 메뉴_상품2 = new MenuProduct.Builder().seq(2L).menu(메뉴2).product(상품2).quantity(1L).build();
-	public static MenuProduct 메뉴_상품3 = new MenuProduct.Builder().seq(3L).menu(메뉴3).product(상품3).quantity(1L).build();
-	public static MenuProduct 메뉴_상품4 = new MenuProduct.Builder().seq(4L).menu(메뉴4).product(상품4).quantity(1L).build();
-	public static MenuProduct 메뉴_상품5 = new MenuProduct.Builder().seq(5L).menu(메뉴5).product(상품5).quantity(1L).build();
-	public static MenuProduct 메뉴_상품6 = new MenuProduct.Builder().seq(6L).menu(메뉴6).product(상품6).quantity(1L).build();
 	public static OrderTable 주문_테이블1 = new OrderTable.Builder().id(1L).numberOfGuests(0).empty(true).build();
 	public static OrderTable 주문_테이블2 = new OrderTable.Builder().id(2L).numberOfGuests(0).empty(true).build();
 	public static OrderTable 주문_테이블3 = new OrderTable.Builder().id(3L).numberOfGuests(0).empty(true).build();

@@ -41,11 +41,7 @@ public class Menu {
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
 
-        if(menuProducts != null) {
-            for (MenuProduct menuProduct : menuProducts) {
-                menuProduct.changeMenu(this);
-            }
-        }
+        belongToMenu(menuProducts);
     }
 
     private void validate(MenuGroup menuGroup, BigDecimal price, List<MenuProduct> menuProducts) {
@@ -53,16 +49,24 @@ public class Menu {
             throw new IllegalArgumentException("메뉴는 특정 메뉴 그룹에 속해야 합니다");
         }
         if(menuProducts == null || menuProducts.isEmpty()) {
-            return;
+            throw new IllegalArgumentException("메뉴에 속한 상품들은 1개 이상이어야 합니다.");
         }
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("메뉴 가격은 0 이상이어야 합니다.");
         }
-        BigDecimal sum = menuProducts.stream()
-            .map(MenuProduct::getSumPrice)
+        BigDecimal sum = menuProducts.stream().map(MenuProduct::getSumPrice)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
         if (price.compareTo(sum) > 0) {
             throw new IllegalArgumentException("메뉴 가격은 메뉴에 속한 상품들의 금액보다 클 수 없습니다.");
+        }
+    }
+
+    private void belongToMenu(List<MenuProduct> menuProducts) {
+        if(menuProducts == null) {
+            return;
+        }
+        for (MenuProduct menuProduct : menuProducts) {
+            menuProduct.changeMenu(this);
         }
     }
 
