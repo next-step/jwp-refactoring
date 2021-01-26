@@ -20,7 +20,7 @@ public class MenuGroupTest {
     private MenuGroupDao menuGroupDao;
 
     @Test
-    @DisplayName("메뉴를 등록합니다.")
+    @DisplayName("메뉴 그룹을 등록합니다.")
     void save() {
         // given
         String name = "새로운메뉴";
@@ -36,7 +36,7 @@ public class MenuGroupTest {
 
 
     @Test
-    @DisplayName("특정 메뉴를 조회합니다.")
+    @DisplayName("특정 메뉴 그룹을 조회합니다.")
     void findById() {
         // given
         String name = "새로운메뉴";
@@ -53,7 +53,7 @@ public class MenuGroupTest {
 
 
     @Test
-    @DisplayName("전체 메뉴를 조회합니다.")
+    @DisplayName("전체 메뉴 그룹을 조회합니다.")
     void findAll() {
         // when
         List<MenuGroup> foundMenuGroup = this.menuGroupDao.findAll();
