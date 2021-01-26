@@ -21,7 +21,7 @@ public class MenuRequest {
                 .map(MenuProductRequest::of)
                 .collect(Collectors.toList());
 
-        return new MenuRequest(menu.getName(), menu.getPrice(), menu.getMenuGroup().getId(), requests);
+        return new MenuRequest(menu.getName(), menu.getPrice().getMoney(), menu.getMenuGroup().getId(), requests);
     }
 
     public MenuRequest(String name, BigDecimal price, long menuGroupId, List<MenuProductRequest> menuProducts) {

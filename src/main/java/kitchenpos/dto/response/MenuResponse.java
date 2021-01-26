@@ -1,6 +1,7 @@
 package kitchenpos.dto.response;
 
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.Price;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -31,7 +32,7 @@ public class MenuResponse {
                 .map(MenuProductReponse::of)
                 .collect(Collectors.toList());
 
-        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(),
+        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice().getMoney(),
                 MenuGroupResponse.of(menu.getMenuGroup()), menuProductResponses);
     }
 

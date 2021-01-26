@@ -65,16 +65,14 @@ class MenuServiceTest {
     @DisplayName("메뉴를 생성한다 : 가격이 0미만이면 익셉션 발생")
     @Test
     void createPriceException() {
-        MenuRequest menuRequest = 메뉴를_생성한다(-1, 후라이드양념반반메뉴);
-
-        assertThatThrownBy(() -> menuService.create(menuRequest))
+        assertThatThrownBy(() -> 메뉴를_생성한다(-1, 후라이드양념반반메뉴))
                 .isInstanceOf(MenuException.class);
     }
 
     @DisplayName("메뉴를 생성한다 : menuGroupId가 존재하지 않으면 익셉션 발생")
     @Test
     void createMenuGroupIdException() {
-        MenuRequest menuRequest = 메뉴를_생성한다(-1, new MenuGroup(100l,"메뉴그룹없음"));
+        MenuRequest menuRequest = 메뉴를_생성한다(35000, new MenuGroup(100l,"메뉴그룹없음"));
 
         assertThatThrownBy(() -> menuService.create(menuRequest))
                 .isInstanceOf(MenuGroupException.class);

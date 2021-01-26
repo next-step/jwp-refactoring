@@ -23,7 +23,7 @@ class MenuGroupServiceTest {
     @Test
     void create() {
         MenuGroup menuGroup = menuGroupService.create(new MenuGroupRequest(NEW_MENU_GROUP_NAME));
-        MenuGroup newMenuGroup = menuGroupService.findMenuGroupById(menuGroup.getId());
+        MenuGroup newMenuGroup = menuGroupService.findById(menuGroup.getId());
 
         assertThat(newMenuGroup.getName()).isEqualTo(NEW_MENU_GROUP_NAME);
     }

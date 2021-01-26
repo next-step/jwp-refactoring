@@ -48,7 +48,7 @@ public class MenuProduct {
         return seq;
     }
 
-    public void setMenu(Menu menu) {
+    public void updateMenu(Menu menu) {
         this.menu = menu;
     }
 

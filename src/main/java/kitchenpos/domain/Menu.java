@@ -1,8 +1,8 @@
 package kitchenpos.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import kitchenpos.advice.exception.MenuException;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -16,7 +16,9 @@ public class Menu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private BigDecimal price;
+
+    @Embedded
+    private Price price;
 
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
@@ -32,20 +34,37 @@ public class Menu {
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
         this.name = name;
-        this.price = price;
+        this.price = new Price(price);
         this.menuGroup = menuGroup;
         this.menuProducts = new ArrayList<>();
     }
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.name = name;
-        this.price = price;
+        this.price = new Price(price);
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
     }
 
     public void updateMenuProducts(List<MenuProduct> menuProducts) {
         this.menuProducts.addAll(menuProducts);
+    }
+
+    public void validatePriceSum(List<MenuProduct> menuProducts) {
+        BigDecimal sum = getSumOfPrices(menuProducts);
+
+        if (price.compareTo(new Price(sum)) > 0) {
+            throw new MenuException("메뉴 가격과 각 가격의 총합보다 큽니다", price.getMoney().longValue(), sum.longValue());
+        }
+    }
+
+    private BigDecimal getSumOfPrices(List<MenuProduct> menuProducts) {
+        BigDecimal sum = BigDecimal.ZERO;
+        for (final MenuProduct menuProduct : menuProducts) {
+            final Product product = menuProduct.getProduct();
+            sum = sum.add(product.getPrice().multiply(menuProduct.getQuantity()));
+        }
+        return sum;
     }
 
     public Long getId() {
@@ -56,7 +75,7 @@ public class Menu {
         return name;
     }
 
-    public BigDecimal getPrice() {
+    public Price getPrice() {
         return price;
     }
 
@@ -68,32 +87,15 @@ public class Menu {
         return menuProducts;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public void setMenuGroup(MenuGroup menuGroup) {
-        this.menuGroup = menuGroup;
-    }
-
-    public void setMenuProducts(List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
-    }
-
     @Override
     public String toString() {
         return "Menu{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", price=" + price;
+                ", price=" + price +
+                ", menuGroupId=" + menuGroup.getId() +
+                ", menuProductsSize=" + menuProducts.size() +
+                '}';
     }
 
     @Override
