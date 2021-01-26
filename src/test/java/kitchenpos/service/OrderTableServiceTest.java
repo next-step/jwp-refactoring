@@ -95,6 +95,8 @@ public class OrderTableServiceTest {
         TableResponse savedTableResponse = tableService.save(new TableRequest(0, true));
         tableService.changeEmpty(savedTableResponse.getId(), new TableRequest(false));
         doOrder(savedTableResponse);
+        em.flush();
+        em.clear();
         TableResponse changedTableResponse = tableService.changeGuestNumber(savedTableResponse.getId(), new TableRequest(4));
 
         em.flush();

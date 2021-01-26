@@ -1,6 +1,9 @@
 package kitchenpos.domain.table;
 
 import kitchenpos.domain.BaseDateTime;
+import kitchenpos.domain.order.Orders;
+
+import static java.util.stream.Collectors.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,5 +61,9 @@ public class OrderTableGroup extends BaseDateTime {
 
     public void applyUnGroup() {
         orderTables.forEach(t -> t.changeOrderTableGroup(null));
+    }
+
+    public List<Orders> getOrdersOfTables() {
+        return orderTables.stream().flatMap(t -> t.getOrders().stream()).collect(toList());
     }
 }

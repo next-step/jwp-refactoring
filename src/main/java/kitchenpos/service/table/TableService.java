@@ -5,7 +5,6 @@ import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.TableRepository;
 import kitchenpos.dto.table.TableRequest;
 import kitchenpos.dto.table.TableResponse;
-import kitchenpos.service.order.OrderService;
 
 import java.util.List;
 
@@ -16,11 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class TableService {
     private final TableRepository tableRepository;
-    private final OrderService orderService;
 
-    public TableService(final TableRepository tableRepository, final OrderService orderService) {
+    public TableService(final TableRepository tableRepository) {
         this.tableRepository = tableRepository;
-        this.orderService = orderService;
     }
 
     public TableResponse save(TableRequest tableRequest) {
@@ -44,14 +41,14 @@ public class TableService {
 
     public TableResponse changeEmpty(Long id, TableRequest tableRequest) {
         OrderTable orderTable = tableRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-        new OrderCollection(orderService.findOrderByTable(orderTable)).checkOrderStatus();
+        new OrderCollection(orderTable.getOrders()).checkOrderStatus();
         orderTable.changeOrderTableStatus(tableRequest.isEmpty());
         return TableResponse.of(orderTable);
     }
 
     public TableResponse changeGuestNumber(Long id, TableRequest tableRequest) {
         OrderTable orderTable = tableRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-        new OrderCollection(orderService.findOrderByTable(orderTable)).checkOrderRequest();
+        new OrderCollection(orderTable.getOrders()).checkOrderRequest();
         orderTable.changeGuestNumber(tableRequest.getGuestNumber());
         return TableResponse.of(orderTable);
     }

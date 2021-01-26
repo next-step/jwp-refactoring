@@ -5,7 +5,6 @@ import kitchenpos.domain.table.OrderTableGroup;
 import kitchenpos.domain.table.TableGroupRepository;
 import kitchenpos.dto.table.TableGroupRequest;
 import kitchenpos.dto.table.TableGroupResponse;
-import kitchenpos.service.order.OrderService;
 
 import java.util.List;
 
@@ -17,12 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class TableGroupService {
     private final TableGroupRepository tableGroupRepository;
     private final TableService tableService;
-    private final OrderService orderService;
 
-    public TableGroupService(final TableGroupRepository tableGroupRepository, final TableService tableService, final OrderService orderService) {
+    public TableGroupService(final TableGroupRepository tableGroupRepository, final TableService tableService) {
         this.tableGroupRepository = tableGroupRepository;
         this.tableService = tableService;
-        this.orderService = orderService;
     }
 
     public TableGroupResponse applyGroup(TableGroupRequest tableGroupRequest) {
@@ -34,7 +31,7 @@ public class TableGroupService {
 
     public void applyUnGroup(Long id) {
         OrderTableGroup orderTableGroup = tableGroupRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-        new OrderCollection(orderService.findOrderByTableIn(orderTableGroup.getOrderTables())).checkOrderStatus();
+        new OrderCollection(orderTableGroup.getOrdersOfTables()).checkOrderStatus();
         orderTableGroup.applyUnGroup();
     }
 }
