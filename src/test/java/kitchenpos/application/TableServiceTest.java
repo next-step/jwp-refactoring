@@ -142,7 +142,6 @@ public class TableServiceTest {
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
-
     @DisplayName("테이블의 손님 수를 변경할 수 없는 경우 - 테이블의 ID가 잘못된 경우")
     @Test
     public void invalidChangeCase3() {
