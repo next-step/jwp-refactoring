@@ -14,6 +14,7 @@ repositories {
 
 dependencies {
     implementation project(':common')
+    implementation project(':module-api-config')
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -22,7 +23,6 @@ dependencies {
     runtimeOnly 'com.h2database:h2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
-
 
 subprojects {
     apply plugin: 'org.springframework.boot'
@@ -39,5 +39,11 @@ subprojects {
 
     test {
         useJUnitPlatform()
+    }
+}
+
+project(':module-api-config') {
+    dependencies {
+        compile project(':common')
     }
 }

@@ -1,4 +1,4 @@
-package kitchenpos.common.ui;
+package api.config;
 
 import common.application.NotFoundException;
 import common.application.ValidationException;

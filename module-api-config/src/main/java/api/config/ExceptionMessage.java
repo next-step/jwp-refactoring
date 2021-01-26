@@ -1,4 +1,4 @@
-package kitchenpos.common.ui;
+package api.config;
 
 public class ExceptionMessage {
 

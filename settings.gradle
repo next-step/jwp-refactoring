@@ -1,3 +1,3 @@
 rootProject.name = 'kitchenpos'
 include 'common'
-
+include 'module-api-config'

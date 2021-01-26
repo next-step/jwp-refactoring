@@ -1,7 +1,7 @@
 package kitchenpos.menu.ui;
 
+import api.config.ExceptionMessage;
 import kitchenpos.MockMvcTest;
-import kitchenpos.common.ui.ExceptionMessage;
 import kitchenpos.menu.dto.ProductRequest;
 import kitchenpos.menu.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
