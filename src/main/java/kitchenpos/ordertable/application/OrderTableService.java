@@ -1,9 +1,12 @@
 package kitchenpos.ordertable.application;
 
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
+import kitchenpos.ordertablegroup.domain.OrderTableGroup;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,9 +17,11 @@ import java.util.stream.Collectors;
 public class OrderTableService {
 
     private final OrderTableRepository orderTableRepository;
+    private final OrderRepository orderRepository;
 
-    public OrderTableService(OrderTableRepository orderTableRepository) {
+    public OrderTableService(OrderTableRepository orderTableRepository, OrderRepository orderRepository) {
         this.orderTableRepository = orderTableRepository;
+        this.orderRepository = orderRepository;
     }
 
     @Transactional
@@ -34,8 +39,9 @@ public class OrderTableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest request) {
-        final OrderTable savedOrderTable = findById(orderTableId);
-        savedOrderTable.changeEmpty(request.isEmpty());
+        OrderTable savedOrderTable = findById(orderTableId);
+        List<Order> orders = orderRepository.findAllByOrderTable(savedOrderTable);
+        savedOrderTable.changeEmpty(request.isEmpty(), isIncludeNotCompleteStatus(orders));
         return OrderTableResponse.of(savedOrderTable);
     }
 
@@ -53,5 +59,19 @@ public class OrderTableService {
 
     public List<OrderTable> findAllByIdIn(List<Long> orderTableIds) {
         return orderTableRepository.findAllById(orderTableIds);
+    }
+
+    public void unGroup(OrderTableGroup orderTableGroup) {
+        List<OrderTable> orderTableGroups = orderTableRepository.findAllByOrderTableGroup(orderTableGroup);
+
+        for (OrderTable orderTable : orderTableGroups) {
+            List<Order> orders = orderRepository.findAllByOrderTable(orderTable);
+            orderTable.ungroupTable(isIncludeNotCompleteStatus(orders));
+        }
+    }
+
+    private boolean isIncludeNotCompleteStatus(List<Order> orders) {
+        return orders.stream()
+            .anyMatch(Order::isNotCompleteStatus);
     }
 }

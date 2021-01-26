@@ -54,7 +54,6 @@ public class Order extends BaseEntity {
 
     private void setOrder() {
         this.orderLineItems.forEach(orderLineItem -> orderLineItem.setOrder(this));
-        this.orderTable.addOrder(this);
     }
 
     public boolean isNotCompleteStatus() {
