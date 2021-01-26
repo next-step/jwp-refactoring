@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>MODULES</ID>
+  <OriginalElement>mdl-camp.nextstep.edu.module-api-order</OriginalElement>
+  <nodes>
+    <node x="364.0" y="79.0">mdl-camp.nextstep.edu.module-domain-menu</node>
+    <node x="412.57638888888886" y="158.0">mdl-camp.nextstep.edu.common</node>
+    <node x="246.43055555555554" y="0.0">mdl-camp.nextstep.edu.module-api-order</node>
+    <node x="0.0" y="79.0">mdl-camp.nextstep.edu.module-domain-order</node>
+    <node x="687.4305555555555" y="0.0">mdl-camp.nextstep.edu.module-api-menu</node>
+    <node x="729.0" y="79.0">mdl-camp.nextstep.edu.module-api-config</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="mdl-camp.nextstep.edu.module-domain-menu" target="mdl-camp.nextstep.edu.common">
+      <point x="0.0" y="14.5" />
+      <point x="536.5" y="133.0" />
+      <point x="543.5763888888889" y="133.0" />
+      <point x="0.0" y="-14.5" />
+    </edge>
+    <edge source="mdl-camp.nextstep.edu.module-api-menu" target="mdl-camp.nextstep.edu.module-api-config">
+      <point x="79.5" y="14.5" />
+      <point x="925.9305555555555" y="49.0" />
+      <point x="971.25" y="49.0" />
+      <point x="80.75" y="-14.5" />
+    </edge>
+    <edge source="mdl-camp.nextstep.edu.module-api-config" target="mdl-camp.nextstep.edu.common">
+      <point x="0.0" y="14.5" />
+      <point x="890.5" y="133.0" />
+      <point x="630.9097222222222" y="133.0" />
+      <point x="87.33333333333326" y="-14.5" />
+    </edge>
+    <edge source="mdl-camp.nextstep.edu.module-api-order" target="mdl-camp.nextstep.edu.module-domain-menu">
+      <point x="0.0" y="14.5" />
+      <point x="404.93055555555554" y="49.0" />
+      <point x="450.25" y="49.0" />
+      <point x="-86.25" y="-14.5" />
+    </edge>
+    <edge source="mdl-camp.nextstep.edu.module-api-menu" target="mdl-camp.nextstep.edu.module-domain-menu">
+      <point x="-79.5" y="14.5" />
+      <point x="766.9305555555555" y="59.0" />
+      <point x="622.75" y="59.0" />
+      <point x="86.25" y="-14.5" />
+    </edge>
+    <edge source="mdl-camp.nextstep.edu.module-domain-order" target="mdl-camp.nextstep.edu.common">
+      <point x="0.0" y="14.5" />
+      <point x="172.0" y="133.0" />
+      <point x="456.24305555555554" y="133.0" />
+      <point x="-87.33333333333331" y="-14.5" />
+    </edge>
+    <edge source="mdl-camp.nextstep.edu.module-api-order" target="mdl-camp.nextstep.edu.module-api-config">
+      <point x="105.66666666666663" y="14.5" />
+      <point x="510.5972222222222" y="49.0" />
+      <point x="809.75" y="49.0" />
+      <point x="-80.75" y="-14.5" />
+    </edge>
+    <edge source="mdl-camp.nextstep.edu.module-api-order" target="mdl-camp.nextstep.edu.module-domain-order">
+      <point x="-105.66666666666674" y="14.5" />
+      <point x="299.2638888888888" y="49.0" />
+      <point x="172.0" y="49.0" />
+      <point x="0.0" y="-14.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.9402985074626866" x="526.0" y="93.5" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Test dependencies</Category>
+    <Category>Libraries</Category>
+  </Categories>
+</Diagram>
+
