@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,5 +46,10 @@ public class OrderRestController {
 		@RequestBody final OrderRequest request
 	) {
 		return ResponseEntity.ok(orderService.changeOrderStatus(orderId, request));
+	}
+
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ResponseEntity<String> handleIllegalArgsException(IllegalArgumentException e) {
+		return ResponseEntity.badRequest().body(e.getMessage());
 	}
 }
