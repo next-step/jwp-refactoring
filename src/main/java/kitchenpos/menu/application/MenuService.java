@@ -2,6 +2,7 @@ package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProductRepository;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -20,11 +21,13 @@ public class MenuService {
     private final MenuGroupService menuGroupService;
     private final ProductService productService;
     private final MenuRepository menuRepository;
+    private final MenuProductRepository menuProductRepository;
 
-    public MenuService(MenuGroupService menuGroupService, ProductService productService, MenuRepository menuRepository) {
+    public MenuService(MenuGroupService menuGroupService, ProductService productService, MenuRepository menuRepository, MenuProductRepository menuProductRepository) {
         this.menuGroupService = menuGroupService;
         this.productService = productService;
         this.menuRepository = menuRepository;
+        this.menuProductRepository = menuProductRepository;
     }
 
     @Transactional
@@ -32,20 +35,15 @@ public class MenuService {
         MenuGroup menuGroup = menuGroupService.findById(request.getMenuGroupId());
         List<Product> products = productService.findAllByIdIn(request.getProductsId());
 
-        List<MenuProduct> menuProducts = request.getMenuProducts().stream()
-            .map(menuProduct -> new MenuProduct(getMatchProductInProducts(products, menuProduct.getProductId()), menuProduct.getQuantity()))
-            .collect(Collectors.toList());
-        Menu menu = new Menu(request.getName(), request.getPrice(), menuGroup, menuProducts);
-
-        Menu savedMenu = menuRepository.save(menu);
-        return MenuResponse.of(savedMenu);
+        List<MenuProduct> savedMenuProducts = menuProductRepository.saveAll(request.toEntity(menuGroup, products));
+        return MenuResponse.of(savedMenuProducts);
     }
 
     @Transactional(readOnly = true)
     public List<MenuResponse> list() {
         List<Menu> menus = menuRepository.findAll();
         return menus.stream()
-            .map(MenuResponse::of)
+            .map(menu -> MenuResponse.of(menuProductRepository.findAllByMenuId(menu.getId())))
             .collect(Collectors.toList());
     }
 
@@ -53,10 +51,5 @@ public class MenuService {
         return menuRepository.findAllById(menuIds);
     }
 
-    private Product getMatchProductInProducts(List<Product> products, Long productId) {
-        return products.stream()
-            .filter(product -> product.getId().equals(productId))
-            .findFirst()
-            .orElseThrow(IllegalArgumentException::new);
-    }
+
 }

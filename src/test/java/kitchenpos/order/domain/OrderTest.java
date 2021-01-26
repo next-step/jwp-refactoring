@@ -22,8 +22,8 @@ class OrderTest {
             new OrderTable(10, false),
             OrderStatus.COOKING.name(),
             Arrays.asList(
-                new OrderLineItem(new Menu("menu1", BigDecimal.valueOf(0), null, Collections.EMPTY_LIST), 1),
-                new OrderLineItem(new Menu("menu2", BigDecimal.valueOf(0), null, Collections.EMPTY_LIST), 1)
+                new OrderLineItem(new Menu("menu1", BigDecimal.valueOf(0), null), 1),
+                new OrderLineItem(new Menu("menu2", BigDecimal.valueOf(0), null), 1)
             )
         );
 
@@ -53,8 +53,8 @@ class OrderTest {
             new OrderTable(10, false),
             OrderStatus.COOKING.name(),
             Arrays.asList(
-                new OrderLineItem(new Menu("menu1", BigDecimal.valueOf(0), null, Collections.EMPTY_LIST), 1),
-                new OrderLineItem(new Menu("menu2", BigDecimal.valueOf(0), null, Collections.EMPTY_LIST), 1)
+                new OrderLineItem(new Menu("menu1", BigDecimal.valueOf(0), null), 1),
+                new OrderLineItem(new Menu("menu2", BigDecimal.valueOf(0), null), 1)
             )
         );
 
