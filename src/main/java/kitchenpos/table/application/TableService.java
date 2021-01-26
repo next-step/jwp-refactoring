@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class TableService {
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
@@ -27,7 +28,6 @@ public class TableService {
         this.orderTableRepository = orderTableRepository;
     }
 
-    @Transactional
     public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
         OrderTable persistOrderTable = orderTableRepository.save(orderTableRequest.toOrderTable());
         return OrderTableResponse.of(persistOrderTable);
@@ -39,7 +39,6 @@ public class TableService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable persistOrderTable = findOrderTableById(orderTableId);
         persistOrderTable.checkIsGroup();
@@ -63,7 +62,6 @@ public class TableService {
                 .orElseThrow(() -> new NotFoundEntityException("주문 테이블이 등록되어 있지 않습니다."));
     }
 
-    @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable persistOrderTable = findOrderTableById(orderTableId);
         persistOrderTable.checkIsEmpty();
