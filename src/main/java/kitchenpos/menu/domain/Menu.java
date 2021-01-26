@@ -50,9 +50,10 @@ public class Menu {
             sum = sum.add(menuProduct.calculatePrice(product));
         }
         price.compareToSum(sum);
+        addMenuIdToMenuProducts();
     }
 
-    public void addMenuIdToMenuProducts() {
+    private void addMenuIdToMenuProducts() {
         this.menuProducts = menuProducts.stream()
                 .map(menuProduct -> menuProduct.addMenuId(id))
                 .collect(Collectors.toList());

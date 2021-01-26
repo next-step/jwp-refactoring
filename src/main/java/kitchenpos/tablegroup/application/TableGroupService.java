@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class TableGroupService {
     private final TableService tableService;
     private final OrderRepository orderRepository;
@@ -33,7 +34,6 @@ public class TableGroupService {
         this.tableGroupRepository = tableGroupRepository;
     }
 
-    @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         OrderTables orderTables = tableService.findOrderTablesById(tableGroupRequest.getOrderTableIds());
 
@@ -44,7 +44,6 @@ public class TableGroupService {
         return TableGroupResponse.of(savedTableGroup, orderTables);
     }
 
-    @Transactional
     public void ungroup(final Long tableGroupId) {
         final List<OrderTable> persistOrderTables = tableService.findAllByTableGroupId(tableGroupId);
 

@@ -28,11 +28,8 @@ public class OrderResponse {
     }
 
     public static OrderResponse of(Order order) {
-        return new OrderResponse(order.getId()
-                , order.getOrderTableId()
-                , order.getOrderStatus()
-                , order.getOrderedTime()
-                , convertToOrderLineItemResponses(order.getOrderLineItems()));
+        return new OrderResponse(order.getId(), order.getOrderTableId(), order.getOrderStatus(), order.getOrderedTime(),
+                convertToOrderLineItemResponses(order.getOrderLineItems()));
     }
 
     private static List<OrderLineItemResponse> convertToOrderLineItemResponses(List<OrderLineItem> orderLineItems) {

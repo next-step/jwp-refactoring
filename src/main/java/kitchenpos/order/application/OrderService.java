@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class OrderService {
     private final MenuService menuService;
     private final TableService tableService;
@@ -29,8 +30,7 @@ public class OrderService {
         this.tableService = tableService;
         this.orderRepository = orderRepository;
     }
-
-    @Transactional
+  
     public OrderResponse create(final OrderRequest orderRequest) {
         Order order = orderRequest.toOrder();
 
@@ -57,7 +57,6 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
         final Order persistOrder = findOrderById(orderId);
 

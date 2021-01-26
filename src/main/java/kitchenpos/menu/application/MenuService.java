@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class MenuService {
     private final MenuGroupService menuGroupService;
     private final ProductService productService;
@@ -30,7 +31,6 @@ public class MenuService {
         this.menuRepository = menuRepository;
     }
 
-    @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
         Menu menu = menuRequest.toMenu();
 
@@ -38,7 +38,6 @@ public class MenuService {
 
         List<Product> persistProducts = productService.findProductsByIds(menu.getProductIds());
         menu.comparePriceAndSumOfMenuProducts(persistProducts);
-        menu.addMenuIdToMenuProducts();
 
         return MenuResponse.of(menuRepository.save(menu));
     }
