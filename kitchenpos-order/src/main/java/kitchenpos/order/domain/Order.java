@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.exception.BadRequestException;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.exception.AlreadyCompleteException;
 import kitchenpos.menu.domain.Menu;
@@ -30,6 +31,9 @@ public class Order {
     protected Order(){}
 
     public Order(OrderTable orderTable) {
+        if (orderTable.isEmpty()) {
+            throw new BadRequestException("빈 테이블은 주문을 받을 수 없습니다");
+        }
         this.orderTable = orderTable;
     }
 
