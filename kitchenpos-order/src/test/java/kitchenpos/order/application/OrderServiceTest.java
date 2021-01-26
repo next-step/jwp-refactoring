@@ -17,6 +17,7 @@ import kitchenpos.product.application.ProductService;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.table.application.TableService;
+import kitchenpos.table.dto.TableRequest;
 import kitchenpos.table.dto.TableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -55,6 +56,7 @@ public class OrderServiceTest extends ServiceTestBase {
         List<MenuProductRequest> menuProducts = Collections.singletonList(createMenuProductRequest(product.getId(), 2L));
         MenuResponse menu = menuService.create(createMenuRequest("후라이드+후라이드", 19_000L, menuGroup.getId(), menuProducts));
         TableResponse savedTable = tableService.create();
+        tableService.update(savedTable.getId(), new TableRequest(2));
 
         List<OrderMenuRequest> orderMenus = Collections.singletonList(OrderServiceTest.createOrderMenu(menu.getId(), 1L));
         OrderResponse order = orderService.create(OrderServiceTest.createOrder(savedTable.getId(), orderMenus));
@@ -66,6 +68,7 @@ public class OrderServiceTest extends ServiceTestBase {
     @Test
     void createWithoutMenu() {
         TableResponse savedTable = tableService.create();
+        tableService.update(savedTable.getId(), new TableRequest(2));
 
         List<OrderMenuRequest> orderMenus = Collections.singletonList(OrderServiceTest.createOrderMenu(1L, 1L));
 
@@ -90,6 +93,7 @@ public class OrderServiceTest extends ServiceTestBase {
         List<MenuProductRequest> menuProducts = Collections.singletonList(createMenuProductRequest(product.getId(), 2L));
         MenuResponse menu = menuService.create(createMenuRequest("후라이드+후라이드", 19_000L, menuGroup.getId(), menuProducts));
         TableResponse savedTable = tableService.create();
+        tableService.update(savedTable.getId(), new TableRequest(2));
 
         List<OrderMenuRequest> orderMenus = Collections.singletonList(OrderServiceTest.createOrderMenu(menu.getId(), 1L));
         OrderResponse order = orderService.create(OrderServiceTest.createOrder(savedTable.getId(), orderMenus));
@@ -110,6 +114,7 @@ public class OrderServiceTest extends ServiceTestBase {
         List<MenuProductRequest> menuProducts = Collections.singletonList(createMenuProductRequest(product.getId(), 2L));
         MenuResponse menu = menuService.create(createMenuRequest("후라이드+후라이드", 19_000L, menuGroup.getId(), menuProducts));
         TableResponse savedTable = tableService.create();
+        tableService.update(savedTable.getId(), new TableRequest(2));
 
         List<OrderMenuRequest> orderMenus = Collections.singletonList(OrderServiceTest.createOrderMenu(menu.getId(), 1L));
         OrderResponse order = orderService.create(OrderServiceTest.createOrder(savedTable.getId(), orderMenus));
@@ -133,6 +138,7 @@ public class OrderServiceTest extends ServiceTestBase {
         List<MenuProductRequest> menuProducts = Collections.singletonList(createMenuProductRequest(product.getId(), 2L));
         MenuResponse menu = menuService.create(createMenuRequest("후라이드+후라이드", 19_000L, menuGroup.getId(), menuProducts));
         TableResponse savedTable = tableService.create();
+        tableService.update(savedTable.getId(), new TableRequest(2));
 
         List<OrderMenuRequest> orderMenus = Collections.singletonList(OrderServiceTest.createOrderMenu(menu.getId(), 1L));
         OrderResponse order = orderService.create(OrderServiceTest.createOrder(savedTable.getId(), orderMenus));
