@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.advice.exception.MenuException;
 import kitchenpos.advice.exception.MenuGroupException;
+import kitchenpos.advice.exception.PriceException;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
@@ -66,7 +67,7 @@ class MenuServiceTest {
     @Test
     void createPriceException() {
         assertThatThrownBy(() -> 메뉴를_생성한다(-1, 후라이드양념반반메뉴))
-                .isInstanceOf(MenuException.class);
+                .isInstanceOf(PriceException.class);
     }
 
     @DisplayName("메뉴를 생성한다 : menuGroupId가 존재하지 않으면 익셉션 발생")

@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import kitchenpos.advice.exception.OrderException;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -7,6 +8,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -35,16 +37,17 @@ public class Order {
     protected Order() {
     }
 
-    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+    public Order(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
         this.orderTable = orderTable;
+        this.orderStatus = orderStatus;
+        this.orderedTime = LocalDateTime.now();
         this.orderLineItems = orderLineItems;
     }
 
-    public Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
-        this.orderTable = orderTable;
-        this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
-        this.orderLineItems = new ArrayList<>();
+    public void validateOrderStatus(OrderStatus orderStatus) {
+        if(Objects.equals(this.orderStatus, orderStatus)) {
+            throw new OrderException("주문상태가 올바르지 않습니다", orderStatus);
+        }
     }
 
     public void setId(Long id) {
@@ -55,16 +58,8 @@ public class Order {
         this.orderTable = orderTable;
     }
 
-    public void setOrderStatus(OrderStatus orderStatus) {
+    public void updateOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
-    }
-
-    public void setOrderedTime(LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
-    }
-
-    public void setOrderLineItems(List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
     }
 
     public Long getId() {
@@ -79,10 +74,6 @@ public class Order {
         return orderStatus;
     }
 
-    public LocalDateTime getOrderedTime() {
-        return orderedTime;
-    }
-
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
     }
@@ -91,10 +82,10 @@ public class Order {
     public String toString() {
         return "Order{" +
                 "id=" + id +
-                ", orderTable=" + orderTable +
+                ", orderTable id=" + orderTable.getId() +
                 ", orderStatus=" + orderStatus +
                 ", orderedTime=" + orderedTime +
-                ", orderLineItems=" + orderLineItems +
+                ", orderLineItems size =" + orderLineItems.size() +
                 '}';
     }
 }

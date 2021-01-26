@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.advice.exception.MenuException;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
@@ -46,6 +47,13 @@ public class MenuService {
         return menuRepository.findAll();
     }
 
+    public long countByIdIn(List<Long> ids) {
+        return menuRepository.countByIdIn(ids);
+    }
+
+    public Menu findById(long id) {
+        return menuRepository.findById(id).orElseThrow(() -> new MenuException("메뉴가 존재하지 않습니다", id));
+    }
 
     private Menu saveMenu(Menu menu, List<MenuProduct> menuProducts) {
         final Menu savedMenu = menuRepository.save(menu);

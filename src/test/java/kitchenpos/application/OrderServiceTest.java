@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.advice.exception.OrderException;
 import kitchenpos.domain.*;
 import kitchenpos.dto.request.*;
 import kitchenpos.repository.OrderRepository;
@@ -105,11 +106,11 @@ class OrderServiceTest {
     @Test
     void changeOrderStatusException() {
         Order order = 주문을_등록한다(주문);
-        order.setOrderStatus(OrderStatus.COMPLETION);
+        order.updateOrderStatus(OrderStatus.COMPLETION);
         orderRepository.save(order);
 
         assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), 주문))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(OrderException.class);
     }
 
     private OrderTable 테이블을_생성한다(int numberOfGuest, boolean empty) {
