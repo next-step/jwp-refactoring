@@ -38,7 +38,6 @@ public class MenuService {
 
         List<Product> persistProducts = productService.findProductsByIds(menu.getProductIds());
         menu.comparePriceAndSumOfMenuProducts(persistProducts);
-        menu.addMenuIdToMenuProducts();
 
         return MenuResponse.of(menuRepository.save(menu));
     }
