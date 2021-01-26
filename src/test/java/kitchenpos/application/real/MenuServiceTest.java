@@ -1,8 +1,9 @@
-package kitchenpos.application;
+package kitchenpos.application.real;
 
 import static kitchenpos.domain.DomainFactory.*;
 import static org.assertj.core.api.Assertions.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
+import kitchenpos.application.MenuService;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 
@@ -25,7 +27,7 @@ class MenuServiceTest {
 	@Test
 	void create_ThrowIllegalArgumentException1() {
 		MenuProduct menuProduct = createMenuProduct(1L, 2L);
-		Menu menu = createMenu("후라이드+후라이드", -1, 1L, menuProduct);
+		Menu menu = createMenu("후라이드+후라이드", new BigDecimal(-1), 1L, menuProduct);
 
 		assertThatIllegalArgumentException()
 			.isThrownBy(() -> menuService.create(menu));
@@ -35,7 +37,7 @@ class MenuServiceTest {
 	@Test
 	void create_ThrowIllegalArgumentException2() {
 		MenuProduct menuProduct = createMenuProduct(1L, 2L);
-		Menu menu = createMenu("후라이드+후라이드", 19000, 10L, menuProduct);
+		Menu menu = createMenu("후라이드+후라이드", new BigDecimal(19000), 10L, menuProduct);
 
 		assertThatIllegalArgumentException()
 			.isThrownBy(() -> menuService.create(menu));
@@ -45,7 +47,7 @@ class MenuServiceTest {
 	@Test
 	void create_ThrowIllegalArgumentException3() {
 		MenuProduct menuProduct = createMenuProduct(1L, 2L);
-		Menu menu = createMenu("후라이드+후라이드", 34000, 1L, menuProduct);
+		Menu menu = createMenu("후라이드+후라이드", new BigDecimal(34000), 1L, menuProduct);
 
 		assertThatIllegalArgumentException()
 			.isThrownBy(() -> menuService.create(menu));
@@ -55,7 +57,7 @@ class MenuServiceTest {
 	@Test
 	void create() {
 		MenuProduct menuProduct = createMenuProduct(1L, 2L);
-		Menu menu = createMenu("후라이드+후라이드", 19000, 1L, menuProduct);
+		Menu menu = createMenu("후라이드+후라이드", new BigDecimal(19000), 1L, menuProduct);
 
 		Menu resultMenu = menuService.create(menu);
 

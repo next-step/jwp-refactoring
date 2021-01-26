@@ -19,7 +19,12 @@ public class DomainFactory {
 	}
 
 	public static OrderTable createOrderTable(int numberOfGuests, boolean empty, Long tableGroupId) {
+		return createOrderTable(null, numberOfGuests, empty, tableGroupId);
+	}
+
+	public static OrderTable createOrderTable(Long id, int numberOfGuests, boolean empty, Long tableGroupId) {
 		OrderTable orderTable = new OrderTable();
+		orderTable.setId(id);
 		orderTable.setNumberOfGuests(numberOfGuests);
 		orderTable.setEmpty(empty);
 		orderTable.setTableGroupId(tableGroupId);
@@ -47,29 +52,65 @@ public class DomainFactory {
 		return tableGroup;
 	}
 
-	public static Product createProduct(String name, int price) {
+	public static Product createProduct(String name, BigDecimal price) {
+		return createProduct(null, name, price);
+	}
+
+	public static Product createProduct(Long id, String name, BigDecimal price) {
 		Product product = new Product();
+		product.setId(id);
 		product.setName(name);
-		product.setPrice(new BigDecimal(price));
+		product.setPrice(price);
 
 		return product;
 	}
 
+	public static List<Product> createProducts(Long... ids) {
+		List<Product> products = new ArrayList<>();
+
+		for (Long id : ids) {
+			Product product = new Product();
+			product.setId(id);
+
+			products.add(product);
+		}
+
+		return products;
+	}
+
 	public static MenuGroup createMenuGroup(String name) {
+		return createMenuGroup(null, name);
+	}
+
+	public static MenuGroup createMenuGroup(Long id, String name) {
 		MenuGroup menuGroup = new MenuGroup();
+		menuGroup.setId(id);
 		menuGroup.setName(name);
 
 		return menuGroup;
 	}
 
-	public static Menu createMenu(String name, int price, Long menuGroupId, MenuProduct... menuProducts) {
+	public static Menu createMenu(String name, BigDecimal price, Long menuGroupId, MenuProduct... menuProducts) {
 		Menu menu = new Menu();
 		menu.setName(name);
-		menu.setPrice(new BigDecimal(price));
+		menu.setPrice(price);
 		menu.setMenuGroupId(menuGroupId);
 		menu.setMenuProducts(Arrays.asList(menuProducts));
 
 		return menu;
+	}
+
+	public static List<Menu> createMenus(Long... ids) {
+		List<Menu> menus = new ArrayList<>();
+
+		for (Long id : ids) {
+			Menu menu = new Menu();
+			menu.setId(id);
+
+			menus.add(menu);
+		}
+
+		return menus;
 	}
 
 	public static MenuProduct createMenuProduct(Long productId, long quantity) {
@@ -89,16 +130,28 @@ public class DomainFactory {
 	}
 
 	public static Order createOrder(Long orderedTableId, String orderStatus, OrderLineItem... orderLineItems) {
+		return createOrder(null, orderedTableId, orderStatus, Arrays.asList(orderLineItems));
+	}
+
+	public static Order createOrder(Long orderId, Long orderedTableId, String orderStatus,
+		List<OrderLineItem> orderLineItems) {
 		Order order = new Order();
+		order.setId(orderId);
 		order.setOrderTableId(orderedTableId);
 		order.setOrderStatus(orderStatus);
-		order.setOrderLineItems(Arrays.asList(orderLineItems));
+		order.setOrderLineItems(orderLineItems);
 
 		return order;
 	}
 
 	public static OrderLineItem createOrderLineItem(Long menuId, long quantity) {
+		return createOrderLineItem(null, null, menuId, quantity);
+	}
+
+	public static OrderLineItem createOrderLineItem(Long seq, Long orderId, Long menuId, long quantity) {
 		OrderLineItem orderLineItem = new OrderLineItem();
+		orderLineItem.setSeq(seq);
+		orderLineItem.setOrderId(orderId);
 		orderLineItem.setMenuId(menuId);
 		orderLineItem.setQuantity(quantity);
 

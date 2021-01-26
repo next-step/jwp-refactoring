@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.application.real;
 
 import static kitchenpos.domain.DomainFactory.*;
 import static org.assertj.core.api.Assertions.*;
@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
+import kitchenpos.application.MenuGroupService;
 import kitchenpos.domain.MenuGroup;
 
 @SpringBootTest
