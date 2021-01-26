@@ -42,10 +42,6 @@ public class TableGroup {
         return orderTables;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public void updateOrderTables(List<OrderTable> orderTables) {
         this.orderTables = orderTables;
     }

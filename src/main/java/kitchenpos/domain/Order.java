@@ -50,14 +50,6 @@ public class Order {
         }
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setOrderTable(OrderTable orderTable) {
-        this.orderTable = orderTable;
-    }
-
     public void updateOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }

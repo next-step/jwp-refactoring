@@ -32,10 +32,6 @@ public class MenuProduct {
         this.quantity = quantity;
     }
 
-    public void updateProduct(Product product) {
-        this.product = product;
-    }
-
     public Long getSeq() {
         return seq;
     }
