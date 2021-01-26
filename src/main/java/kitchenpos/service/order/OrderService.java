@@ -7,8 +7,8 @@ import kitchenpos.domain.order.Orders;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.dto.order.OrderRequest;
 import kitchenpos.dto.order.OrderResponse;
-import kitchenpos.service.table.TableService;
 import kitchenpos.service.menu.MenuService;
+import kitchenpos.service.table.TableService;
 
 import java.util.List;
 import java.util.Map;
@@ -35,8 +35,7 @@ public class OrderService {
         Map<Long, Menu> menus = menuService.findMenus(ids);
         Orders order = new Orders(orderTable, OrderStatus.COOKING);
         orderRequest.putOrderMenu(order, menus);
-        orderTable.addOrder(order);
-        return OrderResponse.of(order);
+        return OrderResponse.of(orderRepository.save(order));
     }
 
     @Transactional(readOnly = true)

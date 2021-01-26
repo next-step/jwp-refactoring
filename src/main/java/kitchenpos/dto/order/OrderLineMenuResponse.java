@@ -11,16 +11,18 @@ import java.util.List;
 public class OrderLineMenuResponse {
     private Long id;
     private int quantity;
+    private int amount;
     private MenuResponse menuResponse;
 
-    public OrderLineMenuResponse(Long id, Quantity quantity, MenuResponse menuResponse) {
+    public OrderLineMenuResponse(Long id, Quantity quantity, int amount, MenuResponse menuResponse) {
         this.id = id;
         this.quantity = quantity.getQuantity();
+        this.amount = amount;
         this.menuResponse = menuResponse;
     }
 
     public static OrderLineMenuResponse of(OrderLineMenu orderLineMenu) {
-        return new OrderLineMenuResponse(orderLineMenu.getId(), orderLineMenu.getQuantity(), MenuResponse.of(orderLineMenu.getMenu()));
+        return new OrderLineMenuResponse(orderLineMenu.getId(), orderLineMenu.getQuantity(), orderLineMenu.getAmount(), MenuResponse.of(orderLineMenu.getMenu()));
     }
 
     public static List<OrderLineMenuResponse> ofList(List<OrderLineMenu> orderLineMenus) {
@@ -35,6 +37,10 @@ public class OrderLineMenuResponse {
 
     public int getQuantity() {
         return quantity;
+    }
+
+    public int getAmount() {
+        return amount;
     }
 
     public MenuResponse getMenuResponse() {

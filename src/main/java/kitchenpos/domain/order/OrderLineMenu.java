@@ -54,4 +54,8 @@ public class OrderLineMenu {
     public Menu getMenu() {
         return menu;
     }
+
+    public int getAmount() {
+        return menu.getAmount(quantity.getQuantity());
+    }
 }
