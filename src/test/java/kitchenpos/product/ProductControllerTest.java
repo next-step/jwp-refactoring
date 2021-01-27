@@ -1,28 +1,20 @@
 package kitchenpos.product;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.common.BaseContollerTest;
 import kitchenpos.domain.Product;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.filter.CharacterEncodingFilter;
+import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.web.util.NestedServletException;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -34,14 +26,42 @@ public class ProductControllerTest extends BaseContollerTest {
     @Test
     @DisplayName("새로운 상품을 등록합니다.")
     void createProduct() throws Exception {
+        상품_등록_요청(ProductTestSupport.createProduct("맛있는치킨", BigDecimal.valueOf(20000))
+                , status().isCreated());
+    }
+
+    @Test
+    @DisplayName("새로운 상품 등록 시 이름이 없으면 오류 발생")
+    void createProductNoNameOccurredException() {
+        Product product = new Product();
+        product.setName(null);
+        product.setPrice(BigDecimal.valueOf(20000));
+
+        assertThatThrownBy(() -> {
+            상품_등록_요청(product, status().is5xxServerError());
+        }).isInstanceOf(NestedServletException.class).hasMessageContaining("NULL not allowed for column \"NAME\"");
+    }
+
+    @Test
+    @DisplayName("새로운 상품 등록 시 가격이 없으면 오류 발생")
+    void createProductNoPriceOccurredException() {
+        Product product = new Product();
+        product.setName("맛있는치킨");
+        product.setPrice(null);
+
+        assertThatThrownBy(() -> {
+            상품_등록_요청(product, status().is5xxServerError());
+        }).isInstanceOf(NestedServletException.class).hasMessageContaining("IllegalArgumentException");
+    }
+
+    private void 상품_등록_요청(Product product, ResultMatcher status) throws Exception {
         this.mockMvc.perform(post("/api/products")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(this.objectMapper.writeValueAsString(
-                            ProductTestSupport.createProduct("맛있는치킨", BigDecimal.valueOf(20000))))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(this.objectMapper.writeValueAsString(product))
                 )
                 .andDo(print())
-                .andExpect(status().isCreated())
-                ;
+                .andExpect(status)
+        ;
     }
 
     @Test
