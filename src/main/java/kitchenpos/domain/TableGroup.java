@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import kitchenpos.advice.exception.OrderTableException;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -50,6 +51,11 @@ public class TableGroup {
         orderTables.stream()
                 .forEach(OrderTable::ungroup);
         this.orderTables = Collections.EMPTY_LIST;
+    }
+    public void validateEqualOrderTableSize(int size) {
+        if (orderTables.size() != size) {
+            throw new OrderTableException("요청 주문 테이블 사이즈와 저장된 주문 테이블 사이즈가 다릅니다");
+        }
     }
 
     @Override

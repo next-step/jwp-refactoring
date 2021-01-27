@@ -33,13 +33,18 @@ public class TableGroupService {
     public TableGroup create(final TableGroupRequest tableGroupRequest) {
         tableGroupRequest.validateOrderTableSize();
 
-        final List<OrderTable> savedOrderTables = tableService.findAllByIdIn(tableGroupRequest.getOrderTableIds());
-        tableGroupRequest.validateEqualOrderTableSize(savedOrderTables.size());
+        final List<OrderTable> orderTables = tableService.findAllByIdIn(tableGroupRequest.getOrderTableIds());
+        validateOrderTableEmpty(orderTables);
 
-        validateOrderTableEmpty(savedOrderTables);
+        final TableGroup savedTableGroup = new TableGroup(orderTables);
+        savedTableGroup.validateEqualOrderTableSize(orderTables.size());
 
-        return saveTableGroup(savedOrderTables);
+        orderTables.forEach(orderTable -> orderTable.addTableGroup(savedTableGroup));
+        savedTableGroup.updateOrderTables(orderTables);
+
+        return savedTableGroup;
     }
+
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
@@ -54,17 +59,6 @@ public class TableGroupService {
 
     public TableGroup findTableGroupById(Long id) {
         return tableGroupRepository.findById(id).orElseThrow(() -> new TableGroupException("테이블 그룹이 존재하지 않습니다", id));
-    }
-
-    private TableGroup saveTableGroup(List<OrderTable> savedOrderTables) {
-        final TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(savedOrderTables));
-
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.updateTableGroup(savedTableGroup);
-            savedOrderTable.updateEmpty(false);
-        }
-        savedTableGroup.updateOrderTables(savedOrderTables);
-        return savedTableGroup;
     }
 
     private void validateOrderTableEmpty(List<OrderTable> savedOrderTables) {

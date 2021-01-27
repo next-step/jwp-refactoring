@@ -37,11 +37,6 @@ public class TableGroupRequest {
         }
     }
 
-    public void validateEqualOrderTableSize(int size) {
-        if (orderTables.size() != size) {
-            throw new OrderTableException("요청 주문 테이블 사이즈와 저장된 주문 테이블 사이즈가 다릅니다");
-        }
-    }
 
     public List<Long> getOrderTableIds() {
         return orderTables.stream()

@@ -12,7 +12,7 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "table_group_id")
     private TableGroup tableGroup;
 
@@ -59,7 +59,8 @@ public class OrderTable {
         return empty;
     }
 
-    public void updateTableGroup(TableGroup tableGroup) {
+    public void addTableGroup(TableGroup tableGroup) {
+        updateEmpty(false);
         this.tableGroup = tableGroup;
     }
 
