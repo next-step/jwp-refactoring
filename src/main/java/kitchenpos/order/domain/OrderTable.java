@@ -1,10 +1,8 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.advice.exception.OrderTableException;
-import kitchenpos.tablegroup.domain.TableGroup;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 public class OrderTable {
@@ -13,9 +11,8 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "table_group_id")
-    private TableGroup tableGroup;
+    @Column(name = "table_group_id")
+    private Long tableGroupId;
 
     private int numberOfGuests;
     private boolean empty;
@@ -23,8 +20,8 @@ public class OrderTable {
     protected OrderTable() {
     }
 
-    public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
-        this.tableGroup = tableGroup;
+    public OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
@@ -35,11 +32,11 @@ public class OrderTable {
     }
 
     public void ungroup() {
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 
     public void validateTableGroupIsNull() {
-        if (Objects.nonNull(tableGroup)) {
+        if (this.tableGroupId != null) {
             throw new OrderTableException("테이블 그룹은 비어있어야 합니다");
         }
     }
@@ -48,8 +45,8 @@ public class OrderTable {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     public int getNumberOfGuests() {
@@ -60,9 +57,9 @@ public class OrderTable {
         return empty;
     }
 
-    public void addTableGroup(TableGroup tableGroup) {
+    public void addTableGroup(Long tableGroupId) {
         updateEmpty(false);
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
     }
 
     public void updateEmpty(boolean empty) {

@@ -3,7 +3,6 @@ package kitchenpos.order.application;
 import kitchenpos.advice.exception.OrderTableException;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
-import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
@@ -62,8 +61,8 @@ public class TableService {
         return orderTableRepository.findAllByIdIn(orderTableIds);
     }
 
-    public List<OrderTable> findAllByTableGroup(TableGroup tableGroup) {
-        return orderTableRepository.findAllByTableGroup(tableGroup);
+    public List<OrderTable> findAllByTableGroupId(Long tableGroupId) {
+        return orderTableRepository.findAllByTableGroupId(tableGroupId);
     }
 
     private void validateOrderTableIsEmpty(OrderTable savedOrderTable) {

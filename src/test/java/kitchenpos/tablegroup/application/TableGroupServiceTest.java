@@ -1,14 +1,14 @@
 package kitchenpos.tablegroup.application;
 
 import kitchenpos.advice.exception.OrderTableException;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.order.application.OrderService;
-import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.application.TableService;
-import kitchenpos.tablegroup.application.TableGroupService;
-import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,6 +41,9 @@ class TableGroupServiceTest {
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    private TableGroupRepository tableGroupRepository;
+
     @MockBean
     private OrderRepository orderRepository;
 
@@ -64,7 +67,7 @@ class TableGroupServiceTest {
         List<OrderTable> orderTables = tableGroup.getOrderTables();
 
         orderTables.forEach(group -> {
-            assertThat(group.getTableGroup().getId()).isEqualTo(tableGroup.getId());
+            assertThat(group.getTableGroupId()).isEqualTo(tableGroup.getId());
             assertThat(group.isEmpty()).isEqualTo(false);
         });
     }
@@ -85,10 +88,12 @@ class TableGroupServiceTest {
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
 
+        System.out.println(">>>>>>>>>" + tableGroup);
+
         테이블_그룹을_비운다(tableGroup.getId());
 
         orderTableIds.forEach(id -> {
-            assertThat(orderService.findOrderTableById(id).getTableGroup()).isNull();
+            assertThat(orderService.findOrderTableById(id).getTableGroupId()).isNull();
         });
     }
 

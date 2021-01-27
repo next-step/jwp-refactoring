@@ -22,14 +22,16 @@ public class TableGroup {
     @Column(updatable = false)
     private LocalDateTime createdDate;
 
-    @OneToMany(mappedBy = "tableGroup")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "table_group_id")
     private List<OrderTable> orderTables;
 
-    public TableGroup() {
+    protected TableGroup() {
     }
 
     public TableGroup(List<OrderTable> orderTables) {
         this.orderTables = orderTables;
+        this.createdDate = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -45,7 +47,7 @@ public class TableGroup {
     }
 
     public void updateOrderTables(List<OrderTable> orderTables) {
-        orderTables.forEach(orderTable -> orderTable.addTableGroup(this));
+        orderTables.forEach(orderTable -> orderTable.addTableGroup(this.id));
         this.orderTables = orderTables;
     }
 
