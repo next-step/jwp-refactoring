@@ -216,3 +216,25 @@
 - [x] 패키지 간 방향 개선
     - Controller -> Service -> Domain Layer 별 방향성 단방향  
     - OrderTable-Order Service Layer에서 OrderTableAdapter를 통해서 양방향 참조 제거
+
+## 멀티 모듈 프로젝트
+
+### 멀티 모듈 프로젝트 구성 목적
+
+- 이전 단계에서 패키지나 클래스 간 의존 방향을 단방향으로 정리하는 작업을 진행하였습니다. 하지만 여전히 유지보수 과정에서 코드를 변경하여 의존성이 꼬일 수 있는 여지가 존재합니다.
+- 그래서 물리적인 코드 분리를 통해서 개발자가 의존성 방향을 인지할 수 있는 환경 구성이 필요하다고 생각합니다.
+- 즉, 멀티모듈을 도입해서 서로 응집력 있는 코드들끼리 뭉쳐서, 응집도는 높이고, 멀티모듈로 분리해서 결합도를 낮추는게 필요하다고 생각합니다.
+- 그리고 분리된 멀티모듈은 저장소에 버저닝하여 구분되어 관리될 수 있는 장점을 가질 수 있습니다.
+- 또한 모듈을 필요한 곳에서 추가하여, 재사용성도 늘어날 수 있습니다.
+
+### 멀티 모듈 프로젝트 관계
+
+![멀티 모듈 프로젝트 관계](https://user-images.githubusercontent.com/15815583/106000718-7e2a8500-60f2-11eb-99ef-ba15b269bdd1.png)
+
+모듈별 구성 내용
+- web
+    - Controller, AcceptanceTest
+- service
+    - Service, Dto, ServiceTest
+- domain
+    - Entity, Repository
