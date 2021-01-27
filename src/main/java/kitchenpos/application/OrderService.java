@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -32,16 +34,23 @@ public class OrderService {
 
     @Transactional
     public Order create(final OrderRequest orderRequest) {
-        final OrderTable orderTable = findOrderTableById(orderRequest.getOrderTableId());
 
-        final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
-        for (final OrderLineItemRequest request : getOrderLineItemRequests(orderRequest)) {
-            Menu menu = menuService.findById(request.getMenuId());
-            OrderLineItem orderLineItem = new OrderLineItem(menu, request.getQuantity());
-            savedOrderLineItems.add(orderLineItem);
+        final List<OrderLineItem> orderLineItems = new ArrayList<>();
+        List<Menu> menus = menuService.findAllById(orderRequest.getMenuIds());
+
+        Map<Long, Menu> menuMap = menus.stream()
+                .collect(Collectors.toMap(Menu::getId, menu -> menu));
+
+        for (final OrderLineItemRequest request : orderRequest.getOrderLineItems()) {
+            OrderLineItem orderLineItem = new OrderLineItem(menuMap.get(request.getMenuId()), request.getQuantity());
+            orderLineItems.add(orderLineItem);
         }
 
-        return orderRepository.save(new Order(orderTable, OrderStatus.COOKING, savedOrderLineItems));
+        final OrderTable orderTable = findOrderTableById(orderRequest.getOrderTableId());
+
+        Order order = new Order(orderTable, OrderStatus.COOKING, orderLineItems);
+        order.validateMenuSize(menuService.countByIdIn(orderRequest.getMenuIds()));
+        return orderRepository.save(order);
     }
 
     public List<Order> list() {
@@ -71,11 +80,7 @@ public class OrderService {
         }
     }
 
-    private List<OrderLineItemRequest> getOrderLineItemRequests(OrderRequest orderRequest) {
-        orderRequest.validateEmptyOrderLineItems();
-        orderRequest.validateMenuSize(menuService.countByIdIn(orderRequest.getMenuIds()));
-        return orderRequest.getOrderLineItems();
-    }
+
 
     private Order findOrderById(Long id) {
         return orderRepository.findById(id)

@@ -51,6 +51,10 @@ public class MenuService {
         return menuRepository.findById(id).orElseThrow(() -> new MenuException("메뉴가 존재하지 않습니다", id));
     }
 
+    public List<Menu> findAllById(List<Long> ids) {
+        return menuRepository.findAllById(ids);
+    }
+
     private List<MenuProduct> getMenuProducts(MenuRequest menuRequest, MenuGroup menuGroup) {
         final List<MenuProduct> menuProducts = new ArrayList<>();
 

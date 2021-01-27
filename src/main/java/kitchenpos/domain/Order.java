@@ -1,8 +1,10 @@
 package kitchenpos.domain;
 
 import kitchenpos.advice.exception.OrderException;
+import kitchenpos.advice.exception.OrderLineItemException;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -42,6 +44,7 @@ public class Order {
         this.orderStatus = orderStatus;
         this.orderedTime = LocalDateTime.now();
         this.orderLineItems = orderLineItems;
+        validateEmptyOrderLineItems();
     }
 
     public void validateOrderStatus(OrderStatus orderStatus) {
@@ -49,6 +52,12 @@ public class Order {
             throw new OrderException("주문상태가 올바르지 않습니다", orderStatus);
         }
     }
+    public void validateMenuSize(long size) {
+        if (orderLineItems.size() != size) {
+            throw new OrderException("주문 메뉴의 사이즈가 다릅니다", size);
+        }
+    }
+
 
     public void updateOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
@@ -68,6 +77,12 @@ public class Order {
 
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
+    }
+
+    private void validateEmptyOrderLineItems() {
+        if (CollectionUtils.isEmpty(orderLineItems)) {
+            throw new OrderLineItemException("orderLineItems가 존재하지 않습니다");
+        }
     }
 
     @Override
