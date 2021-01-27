@@ -41,7 +41,8 @@
 * 주문상태(order_status)를 수정한다.(*order_line_item 연계*)
 
   **주문이 없으면 수정할 수 없음**
-  **주문상태가 완료(COMPLETION)이면 수정할 수 없음**
+
+  **주문상태(조리(COOKING) ➜ 식사(MEAL) ➜ 계산 완료(COMPLETION))가 계산 완료(COMPLETION)이면 수정할 수 없음**
 
   
 5.단체지정(table_group)
