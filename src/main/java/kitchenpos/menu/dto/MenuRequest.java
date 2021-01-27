@@ -1,5 +1,8 @@
 package kitchenpos.menu.dto;
 
+import kitchenpos.common.domain.Price;
+import kitchenpos.menu.domain.Menu;
+
 import java.util.List;
 
 public class MenuRequest {
@@ -30,6 +33,10 @@ public class MenuRequest {
 
     public List<MenuProductRequest> getMenuProducts() {
         return menuProducts;
+    }
+
+    public Menu toMenuEntity() {
+        return new Menu(this.name, Price.of(this.price), this.menuGroupId);
     }
 
 }

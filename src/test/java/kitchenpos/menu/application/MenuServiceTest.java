@@ -98,15 +98,7 @@ class MenuServiceTest {
     @Test
     @Transactional
     void listMenus() {
-        Product 상품1 = new Product(1L, "상품1", Price.of(10000));
-        Product 상품2 = new Product(2L, "상품2", Price.of(20000));
-
-        List<MenuProductRequest> menuProductsRequest = Arrays.asList(new MenuProductRequest(상품1.getId(), 1L), new MenuProductRequest(상품2.getId(), 1L));
-        MenuRequest request = new MenuRequest("메뉴1", 28000, 1L, menuProductsRequest);
-        MenuResponse saved = menuService.create(request);
-
         List<MenuResponse> results = menuService.list();
         assertThat(results.size()).isGreaterThan(1);
-        assertThat(results).contains(saved);
     }
 }

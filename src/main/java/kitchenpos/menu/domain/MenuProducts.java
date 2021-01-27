@@ -7,7 +7,8 @@ import java.util.Objects;
 
 @Embeddable
 public class MenuProducts {
-    @OneToMany(mappedBy = "menu", cascade = {CascadeType.MERGE}, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "menu_id")
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
     protected MenuProducts() {

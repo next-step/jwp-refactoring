@@ -16,7 +16,7 @@ public class Menu {
     private Price price;
     private Long menuGroupId;
     @Embedded
-    private MenuProducts menuProducts;
+    private MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {
     }
