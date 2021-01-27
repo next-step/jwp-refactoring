@@ -14,27 +14,18 @@ public class Order extends BaseEntity {
     private OrderTable orderTable;
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
-    @Embedded
-    private final OrderLineItems orderLineItems = new OrderLineItems();
 
-    public Order(OrderTable orderTable) {
+    public Order(OrderTable orderTable, List<OrderMenu> orderMenus) {
+        validate(orderTable, orderMenus);
         this.orderTable = orderTable;
         this.orderStatus = OrderStatus.COOKING;
-    }
-
-    public static Order createOrder(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        validate(orderTable, orderLineItems);
-        Order order = new Order(orderTable);
-        orderLineItems.forEach(order::addOrderLineItem);
-        return order;
     }
 
     protected Order() {
     }
 
-    public void addOrderLineItem(OrderLineItem orderLineItem) {
-        orderLineItem.changeOrder(this);
-        orderLineItems.add(orderLineItem);
+    public boolean isSame(Order order) {
+        return order == this;
     }
 
     public void changeStatus(OrderStatus orderStatus) {
@@ -60,15 +51,11 @@ public class Order extends BaseEntity {
         return orderStatus;
     }
 
-    public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems.getOrderLineItems();
-    }
-
-    private static void validate(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+    private static void validate(OrderTable orderTable, List<OrderMenu> orderMenus) {
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException("비어있는 주문 테이블입니다.");
         }
-        if (CollectionUtils.isEmpty(orderLineItems)) {
+        if (CollectionUtils.isEmpty(orderMenus)) {
             throw new IllegalArgumentException("생성할 주문의 항목이 없습니다.");
         }
     }

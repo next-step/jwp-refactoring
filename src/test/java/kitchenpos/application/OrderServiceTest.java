@@ -9,7 +9,7 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.order.application.OrderService;
-import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderMenuRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.product.application.ProductService;
@@ -59,8 +59,8 @@ class OrderServiceTest {
                 Arrays.asList(new MenuProductRequest(짬뽕.getId(), 1L), new MenuProductRequest(짜장면.getId(), 1L)))
         );
         OrderTableResponse orderTable = orderTableService.create(new OrderTableRequest(3, false));
-        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(추천메뉴.getId(), 1L);
-        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(orderLineItemRequest));
+        OrderMenuRequest orderMenuRequest = new OrderMenuRequest(추천메뉴.getId(), 1L);
+        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(orderMenuRequest));
 
         // When
         OrderResponse actual = orderService.create(orderRequest);
@@ -69,7 +69,7 @@ class OrderServiceTest {
         assertAll(
                 () -> assertThat(actual.getId()).isNotNull(),
                 () -> assertThat(actual.getOrderTableId()).isEqualTo(orderTable.getId()),
-                () -> assertThat(actual.getOrderLineItems()).isNotNull(),
+                () -> assertThat(actual.getOrderMenus()).isNotNull(),
                 () -> assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.COOKING),
                 () -> assertThat(actual.getCreatedAt()).isNotNull()
         );
@@ -78,9 +78,9 @@ class OrderServiceTest {
     @DisplayName("`주문`에 필요한 주문 메뉴를 담은 `주문 항목`이 없으면 `주문`을 생성할 수 없다.")
     @ParameterizedTest
     @NullAndEmptySource
-    void exceptionToCreateOrderWithoutLineItem(List<OrderLineItemRequest> orderLineItemRequests) {
+    void exceptionToCreateOrderWithoutLineItem(List<OrderMenuRequest> orderMenuRequests) {
         // When & then
-        assertThatThrownBy(() -> orderService.create(new OrderRequest(1L, orderLineItemRequests)))
+        assertThatThrownBy(() -> orderService.create(new OrderRequest(1L, orderMenuRequests)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -94,9 +94,9 @@ class OrderServiceTest {
         MenuResponse 추천메뉴 = menuService.create(new MenuRequest("추천메뉴", BigDecimal.valueOf(14_000), 신메뉴그룹.getId(),
                 Arrays.asList(new MenuProductRequest(짬뽕.getId(), 1L), new MenuProductRequest(짜장면.getId(), 1L)))
         );
-        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(추천메뉴.getId(), 1L);
+        OrderMenuRequest orderMenuRequest = new OrderMenuRequest(추천메뉴.getId(), 1L);
         long invalidMenuProductId = Long.MAX_VALUE;
-        OrderRequest orderRequest = new OrderRequest(invalidMenuProductId, Collections.singletonList(orderLineItemRequest));
+        OrderRequest orderRequest = new OrderRequest(invalidMenuProductId, Collections.singletonList(orderMenuRequest));
 
         // When & Then
         assertThatThrownBy(() -> orderService.create(orderRequest)).isInstanceOf(IllegalArgumentException.class);
@@ -114,8 +114,8 @@ class OrderServiceTest {
         );
         OrderTableResponse orderTable = orderTableService.create(new OrderTableRequest(3, false));
 
-        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(추천메뉴.getId(), 1L);
-        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(orderLineItemRequest));
+        OrderMenuRequest orderMenuRequest = new OrderMenuRequest(추천메뉴.getId(), 1L);
+        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(orderMenuRequest));
         OrderResponse expected = orderService.create(orderRequest);
 
         // When
@@ -137,8 +137,8 @@ class OrderServiceTest {
         );
         OrderTableResponse orderTable = orderTableService.create(new OrderTableRequest(3, false));
 
-        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(추천메뉴.getId(), 1L);
-        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(orderLineItemRequest));
+        OrderMenuRequest orderMenuRequest = new OrderMenuRequest(추천메뉴.getId(), 1L);
+        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(orderMenuRequest));
         OrderResponse savedOrder = orderService.create(orderRequest);
 
         // When
@@ -161,8 +161,8 @@ class OrderServiceTest {
         );
         OrderTableResponse orderTable = orderTableService.create(new OrderTableRequest(3, false));
 
-        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(추천메뉴.getId(), 1L);
-        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(orderLineItemRequest));
+        OrderMenuRequest orderMenuRequest = new OrderMenuRequest(추천메뉴.getId(), 1L);
+        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Collections.singletonList(orderMenuRequest));
         OrderResponse savedOrder = orderService.create(orderRequest);
 
         orderService.changeOrderStatus(savedOrder.getId(), new OrderRequest(OrderStatus.COMPLETION));

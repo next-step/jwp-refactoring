@@ -32,8 +32,9 @@ public class MenuProduct extends BaseEntity {
         return product.getSumOfProducts(quantity);
     }
 
-    public void updateMenu(Menu menu) {
+    public MenuProduct updateMenu(Menu menu) {
         this.menu = menu;
+        return this;
     }
 
     public Menu getMenu() {

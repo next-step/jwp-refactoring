@@ -1,5 +1,6 @@
 package kitchenpos.menu.dto;
 
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
 import org.springframework.util.CollectionUtils;
@@ -53,7 +54,7 @@ public class MenuRequest {
         List<MenuProduct> createMenuProducts = new ArrayList<>();
         for (MenuProductRequest menuProductRequest : menuProducts) {
             Product product = getProduct(products, menuProductRequest.getProductId());
-            createMenuProducts.add(menuProductRequest.toMenuProduct(product));
+            createMenuProducts.add(new MenuProduct(product, menuProductRequest.getQuantity()));
         }
         return createMenuProducts;
     }

@@ -1,19 +1,19 @@
 package kitchenpos.order.dto;
 
-import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderMenu;
 
 import java.util.Objects;
 
-public class OrderLineItemResponse {
+public class OrderMenuResponse {
     private final Long id;
     private final Long menuId;
     private final Long quantity;
 
-    public static OrderLineItemResponse from(OrderLineItem orderLineItem) {
-        return new OrderLineItemResponse(orderLineItem.getId(), orderLineItem.getMenu().getId(), orderLineItem.getQuantity());
+    public static OrderMenuResponse from(OrderMenu orderMenu) {
+        return new OrderMenuResponse(orderMenu.getId(), orderMenu.getMenu().getId(), orderMenu.getQuantity());
     }
 
-    private OrderLineItemResponse(Long id, Long menuId, Long quantity) {
+    private OrderMenuResponse(Long id, Long menuId, Long quantity) {
         this.id = id;
         this.menuId = menuId;
         this.quantity = quantity;
@@ -35,7 +35,7 @@ public class OrderLineItemResponse {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        OrderLineItemResponse that = (OrderLineItemResponse) o;
+        OrderMenuResponse that = (OrderMenuResponse) o;
         return Objects.equals(id, that.id) && Objects.equals(menuId, that.menuId) && Objects.equals(quantity, that.quantity);
     }
 
@@ -46,7 +46,7 @@ public class OrderLineItemResponse {
 
     @Override
     public String toString() {
-        return "OrderLineItemResponse{" +
+        return "OrderMenuResponse{" +
                 "seq=" + id +
                 ", menuId=" + menuId +
                 ", quantity=" + quantity +

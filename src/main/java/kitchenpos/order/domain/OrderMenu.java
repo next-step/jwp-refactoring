@@ -3,10 +3,13 @@ package kitchenpos.order.domain;
 import kitchenpos.common.domain.BaseEntity;
 import kitchenpos.menu.domain.Menu;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
-public class OrderLineItem extends BaseEntity {
+public class OrderMenu extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
@@ -16,16 +19,17 @@ public class OrderLineItem extends BaseEntity {
     @Column
     private long quantity;
 
-    public OrderLineItem(Menu menu, Long quantity) {
+    public OrderMenu(Menu menu, Long quantity) {
         this.menu = menu;
         this.quantity = quantity;
     }
 
-    protected OrderLineItem() {
+    protected OrderMenu() {
     }
 
-    public void changeOrder(Order order) {
+    public OrderMenu changeOrder(Order order) {
         this.order = order;
+        return this;
     }
 
     public Order getOrder() {

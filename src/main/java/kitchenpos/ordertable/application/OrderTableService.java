@@ -1,5 +1,7 @@
 package kitchenpos.ordertable.application;
 
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.dto.OrderTableRequest;
@@ -15,9 +17,11 @@ import java.util.stream.Collectors;
 @Transactional
 public class OrderTableService {
     private final OrderTableRepository orderTableRepository;
+    private final OrderRepository orderRepository;
 
-    public OrderTableService(OrderTableRepository orderTableRepository) {
+    public OrderTableService(OrderTableRepository orderTableRepository, OrderRepository orderRepository) {
         this.orderTableRepository = orderTableRepository;
+        this.orderRepository = orderRepository;
     }
 
     public OrderTableResponse create(OrderTableRequest request) {
@@ -63,8 +67,14 @@ public class OrderTableService {
         if (orderTable.hasTableGroup()) {
             throw new IllegalArgumentException("테이블이 속한 테이블 그룹이 있으면 테이블을 비울 수 없습니다.");
         }
-        if (orderTable.isNotPaymentFinished()) {
+        if (isNotPaymentFinished(orderTable)) {
             throw new IllegalArgumentException("아직 계산을 마치지 않은 테이블은 비울 수 없습니다.");
         }
+    }
+
+    private boolean isNotPaymentFinished(OrderTable orderTable) {
+        return orderRepository.findByOrderTable(orderTable)
+                .stream()
+                .anyMatch(Order::isNotCompleted);
     }
 }

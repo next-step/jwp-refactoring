@@ -1,7 +1,7 @@
 package kitchenpos.order.dto;
 
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.OrderStatus;
 
 import java.time.LocalDateTime;
@@ -14,18 +14,18 @@ public class OrderResponse {
     private final Long orderTableId;
     private final OrderStatus orderStatus;
     private final LocalDateTime createdAt;
-    private final List<OrderLineItemResponse> orderLineItems;
+    private final List<OrderMenuResponse> orderMenus;
 
-    public static OrderResponse from(Order order) {
-        return new OrderResponse(order.getId(), order.getOrderTable().getId(), order.getOrderStatus(), order.getCreatedAt(), convertOrderLineItemResponses(order.getOrderLineItems()));
+    public static OrderResponse of(Order order, List<OrderMenu> orderMenus) {
+        return new OrderResponse(order.getId(), order.getOrderTable().getId(), order.getOrderStatus(), order.getCreatedAt(), convertOrderMenuResponses(orderMenus));
     }
 
-    private OrderResponse(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime createdAt, List<OrderLineItemResponse> orderLineItems) {
+    private OrderResponse(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime createdAt, List<OrderMenuResponse> orderMenus) {
         this.id = id;
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.createdAt = createdAt;
-        this.orderLineItems = orderLineItems;
+        this.orderMenus = orderMenus;
     }
 
     public Long getId() {
@@ -44,13 +44,13 @@ public class OrderResponse {
         return createdAt;
     }
 
-    public List<OrderLineItemResponse> getOrderLineItems() {
-        return orderLineItems;
+    public List<OrderMenuResponse> getOrderMenus() {
+        return orderMenus;
     }
 
-    private static List<OrderLineItemResponse> convertOrderLineItemResponses(List<OrderLineItem> orderLineItems) {
-        return orderLineItems.stream()
-                .map(OrderLineItemResponse::from)
+    private static List<OrderMenuResponse> convertOrderMenuResponses(List<OrderMenu> orderMenus) {
+        return orderMenus.stream()
+                .map(OrderMenuResponse::from)
                 .collect(Collectors.toList());
     }
 
@@ -74,7 +74,7 @@ public class OrderResponse {
                 ", orderTableId=" + orderTableId +
                 ", orderStatus='" + orderStatus + '\'' +
                 ", orderedTime=" + createdAt +
-                ", orderLineItems=" + orderLineItems +
+                ", orderMenus=" + orderMenus +
                 '}';
     }
 }

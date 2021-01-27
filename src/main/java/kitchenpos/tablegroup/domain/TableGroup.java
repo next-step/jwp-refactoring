@@ -3,36 +3,16 @@ package kitchenpos.tablegroup.domain;
 import kitchenpos.common.domain.BaseEntity;
 import kitchenpos.ordertable.domain.OrderTable;
 
-import javax.persistence.*;
-import java.util.ArrayList;
+import javax.persistence.Entity;
 import java.util.List;
 
 @Entity
 public class TableGroup extends BaseEntity {
-    @OneToMany(mappedBy = "tableGroup")
-    private final List<OrderTable> orderTables = new ArrayList<>();
-
-    public static TableGroup createTableGroup(List<OrderTable> orderTables) {
+    public TableGroup(List<OrderTable> orderTables) {
         validate(orderTables);
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.orderTables.addAll(orderTables);
-        return tableGroup;
     }
 
     protected TableGroup() {
-    }
-
-    public boolean isNotPaymentFinished() {
-        return orderTables.stream()
-                .anyMatch(OrderTable::isNotPaymentFinished);
-    }
-
-    public void clearTables() {
-        orderTables.forEach(OrderTable::releaseInGroup);
-    }
-
-    public List<OrderTable> getOrderTables() {
-        return orderTables;
     }
 
     private static void validate(List<OrderTable> orderTables) {
