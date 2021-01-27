@@ -1,16 +1,16 @@
-package kitchenpos.order;
+package kitchenpos.order.ui;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.menu.MenuAcceptanceTestSupport;
+import kitchenpos.menu.ui.MenuAcceptanceTestSupport;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menugroup.MenuGroupAcceptanceTestSupport;
+import kitchenpos.menugroup.ui.MenuGroupAcceptanceTestSupport;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderMenuRequest;
 import kitchenpos.order.dto.OrderRequest;
-import kitchenpos.ordertable.OrderTableAcceptanceTestSupport;
-import kitchenpos.product.ProductAcceptanceTestSupport;
+import kitchenpos.ordertable.ui.OrderTableAcceptanceTestSupport;
+import kitchenpos.product.ui.ProductAcceptanceTestSupport;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;

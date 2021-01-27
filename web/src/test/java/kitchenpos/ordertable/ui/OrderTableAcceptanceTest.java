@@ -1,4 +1,4 @@
-package kitchenpos.ordertable;
+package kitchenpos.ordertable.ui;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;

@@ -1,4 +1,4 @@
-package kitchenpos.menu;
+package kitchenpos.menu.ui;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;

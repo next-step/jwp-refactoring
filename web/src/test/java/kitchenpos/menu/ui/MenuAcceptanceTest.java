@@ -1,4 +1,4 @@
-package kitchenpos.menu;
+package kitchenpos.menu.ui;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -6,13 +6,12 @@ import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.product.dto.ProductResponse;
-import kitchenpos.menugroup.MenuGroupAcceptanceTestSupport;
-import kitchenpos.product.ProductAcceptanceTestSupport;
+import kitchenpos.menugroup.ui.MenuGroupAcceptanceTestSupport;
+import kitchenpos.product.ui.ProductAcceptanceTestSupport;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 
 import java.math.BigDecimal;

@@ -1,11 +1,11 @@
-package kitchenpos.tablegroup;
+package kitchenpos.tablegroup.ui;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
-import kitchenpos.ordertable.OrderTableAcceptanceTestSupport;
+import kitchenpos.ordertable.ui.OrderTableAcceptanceTestSupport;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
