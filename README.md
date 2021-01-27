@@ -5,28 +5,58 @@
 * 상품을 생성한다.
 
   상품은이름과 가격으로 구성(**가격이 없거나 0이하이면 등록할 수 없음**)  
+  
+
 * 생성된 모든 상품을 조회한다.
 
 2.메뉴
-* 메뉴를 생성한다.(가격확인)
-* 생성된 모든 메뉴를 조회한다.(*menu_product 연계*)
 * 메뉴그룹 생성한다.(menu_group)
 * 생성된 모든 메뉴그룹 조회한다.
+* 메뉴를 생성한다.
+  
+  가격확인(**가격이 없거나 0이하이면 등록할 수 없음**)
+  
+  메뉴그룹확인(**메뉴그룹이 존재하지 않으면 등록할 수 없음**)
+  
+
+* 생성된 모든 메뉴를 조회한다.(*menu_product 연계*)
 
 3.주문테이블(order_table)
 * 주문테이블을 생성한다.(**단체지정(table_group_id null처리)**)
 * 모든 주문테이블을 조회한다.
-* 주문여부를 수정한다.(empty 주문등록여부)
-* 방문한 손님수를 수정한다.(**number_of_guests(empty true 수정가능)**)
+* 주문여부를 수정한다.(empty 주문등록여부 **table_group_id(null), OrderStatus(!COOKING, !MEAL) 수정가능**)
+* 방문한 손님수를 수정한다.(**number_of_guests(empty(false)) 수정가능**)
 
-4.주문
-* 주문을 생성한다.(*order_table, order_line_item 연계, menueCount 비교, empty false*)
+4.주문(orders)
+* 주문을 생성한다.(*order_line_item, order_table 연계, menueCount 비교, empty false*)
+  
+  **주문 항목이 없으면 등록할 수 없음**
+  
+  **주문 항목과 메뉴의 개수가 같지 않으면 등록할 수 없음**
+  
+  **주문 테이블이 없으면 등록할 수 없음**
+  
+
 * 생성된 모든 주문을 조회한다.(*order_line_item 연계*)
 * 주문상태(order_status)를 수정한다.(*order_line_item 연계*)
 
+  **주문이 없으면 수정할 수 없음**
+  **주문상태가 완료(COMPLETION)이면 수정할 수 없음**
+
+  
 5.단체지정(table_group)
-* 단체지정을 생성한다.(**order_table(tableGroupId null) 2개 이상시 생성, 빈테이블(empty) false**)
-* 단제지정을 삭제한다.(**order_status COOKING, MEAL일 경우 삭제할 수 없음, OrderTable tableGroupId null처리**)
+* 단체지정을 생성한다.
+
+  **주문테이블(*tableGroupId null*)이 2개 미만이면 등록할 수 없음**
+  
+  **등록된 주문테이블과 단체지정 주문테이블의 개수가 같지 않으면 등록할 수 없음**
+
+  **주문테이블이 비워있지 않거나 단체지정이 되어 있으면 등록할 수 없음**
+
+
+* 단제지정을 삭제한다.(*OrderTable tableGroupId null처리*)
+
+  **주문상태가 조리, 식사일 경우 삭제할 수 없음**
 
 ## 용어 사전
 
