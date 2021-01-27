@@ -1,11 +1,16 @@
 package kitchenpos.dao;
 
 import kitchenpos.domain.MenuGroup;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
+import javax.persistence.Entity;
 import java.util.List;
 import java.util.Optional;
 
-public interface MenuGroupDao {
+@Repository
+public interface MenuGroupDao extends JpaRepository<MenuGroup, Long> {
+
     MenuGroup save(MenuGroup entity);
 
     Optional<MenuGroup> findById(Long id);
@@ -13,4 +18,5 @@ public interface MenuGroupDao {
     List<MenuGroup> findAll();
 
     boolean existsById(Long id);
+
 }

@@ -23,4 +23,5 @@ public class MenuGroupService {
     public List<MenuGroup> list() {
         return menuGroupDao.findAll();
     }
+
 }
