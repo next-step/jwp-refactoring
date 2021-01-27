@@ -12,10 +12,8 @@ public class MenuProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
 
-    @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id")
-    private Menu menu;
+    @Column(name = "menu_id")
+    private Long menuId;
 
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
@@ -27,8 +25,13 @@ public class MenuProduct {
     protected MenuProduct() {
     }
 
-    public MenuProduct(Menu menu, Product product, long quantity) {
-        this.menu = menu;
+    public MenuProduct(Product product, long quantity) {
+        this.product = product;
+        this.quantity = quantity;
+    }
+
+    public MenuProduct(Long menuId, Product product, long quantity) {
+        this.menuId = menuId;
         this.product = product;
         this.quantity = quantity;
     }
@@ -37,12 +40,12 @@ public class MenuProduct {
         return seq;
     }
 
-    public void updateMenu(Menu menu) {
-        this.menu = menu;
+    public void updateMenuId(Long menuId) {
+        this.menuId = menuId;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public Long getMenuId() {
+        return menuId;
     }
 
     public Product getProduct() {
@@ -57,27 +60,10 @@ public class MenuProduct {
     public String toString() {
         return "MenuProduct{" +
                 "seq=" + seq +
-                ", menu=" + menu +
+                ", menuId=" + menuId +
                 ", product=" + product +
                 ", quantity=" + quantity +
                 '}';
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        MenuProduct that = (MenuProduct) o;
-
-        if (menu != null ? !menu.equals(that.menu) : that.menu != null) return false;
-        return product != null ? product.equals(that.product) : that.product == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = menu != null ? menu.hashCode() : 0;
-        result = 31 * result + (product != null ? product.hashCode() : 0);
-        return result;
-    }
 }

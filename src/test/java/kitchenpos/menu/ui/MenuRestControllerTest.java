@@ -58,8 +58,8 @@ class MenuRestControllerTest extends ControllerTest {
 
     private MenuRequest 메뉴를_생성한다(int price, MenuGroup menuGroup) {
         Menu menu = new Menu("후라이드양념반반", BigDecimal.valueOf(price), menuGroup);
-        후라이드 = new MenuProduct(menu, 후라이드상품, 1);
-        양념치킨 = new MenuProduct(menu, 양념치킨상품, 1);
+        후라이드 = new MenuProduct(menu.getId(), 후라이드상품, 1);
+        양념치킨 = new MenuProduct(menu.getId(), 양념치킨상품, 1);
         menu.updateMenuProducts(Arrays.asList(후라이드, 양념치킨));
         return MenuRequest.of(menu);
     }

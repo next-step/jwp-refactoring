@@ -29,8 +29,8 @@ public class Menu {
     @JoinColumn(name = "menu_group_id", nullable = false)
     private MenuGroup menuGroup;
 
-    @JsonManagedReference
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "menu_id")
     private List<MenuProduct> menuProducts;
 
     public Menu() {
@@ -51,10 +51,15 @@ public class Menu {
         updateMenuProducts(menuProducts);
     }
 
+    public void addMenuProduct(MenuProduct menuProduct) {
+        menuProduct.updateMenuId(this.id);
+        this.menuProducts.add(menuProduct);
+    }
+
     public void updateMenuProducts(List<MenuProduct> menuProducts) {
         validatePriceSum(menuProducts);
         menuProducts.stream()
-                .forEach(menuProduct -> menuProduct.updateMenu(this));
+                .forEach(menuProduct -> menuProduct.updateMenuId(this.id));
         this.menuProducts.addAll(menuProducts);
     }
 
@@ -120,4 +125,5 @@ public class Menu {
     public int hashCode() {
         return name != null ? name.hashCode() : 0;
     }
+
 }

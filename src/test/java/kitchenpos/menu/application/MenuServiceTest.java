@@ -4,14 +4,13 @@ import kitchenpos.advice.exception.MenuException;
 import kitchenpos.advice.exception.MenuGroupException;
 import kitchenpos.advice.exception.PriceException;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.product.domain.Product;
-import kitchenpos.menu.application.MenuService;
-import kitchenpos.menugroup.application.MenuGroupService;
-import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menugroup.application.MenuGroupService;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -59,11 +58,7 @@ class MenuServiceTest {
     void create() {
         MenuRequest menuRequest = 메뉴를_생성한다(32000, 후라이드양념반반메뉴);
         Menu savedMenu = menuService.create(menuRequest);
-
-        assertAll(
-                () -> assertThat(savedMenu.getMenuProducts()).contains(후라이드, 양념치킨),
-                () -> assertThat(savedMenu.getName()).isEqualTo("후라이드양념반반")
-        );
+        assertThat(savedMenu.getName()).isEqualTo("후라이드양념반반");
     }
 
     @DisplayName("메뉴를 생성한다 : 가격이 0미만이면 익셉션 발생")
@@ -99,8 +94,8 @@ class MenuServiceTest {
 
     private MenuRequest 메뉴를_생성한다(int price, MenuGroup menuGroup) {
         Menu menu = new Menu("후라이드양념반반", BigDecimal.valueOf(price), menuGroup);
-        후라이드 = new MenuProduct(menu, 후라이드상품, 1);
-        양념치킨 = new MenuProduct(menu, 양념치킨상품, 1);
+        후라이드 = new MenuProduct(menu.getId(), 후라이드상품, 1);
+        양념치킨 = new MenuProduct(menu.getId(), 양념치킨상품, 1);
         menu.updateMenuProducts(Arrays.asList(후라이드, 양념치킨));
         return MenuRequest.of(menu);
     }
