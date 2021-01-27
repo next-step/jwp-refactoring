@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menu.ui.MenuGroupRestController;
 
 @SpringBootTest
 @Sql({"/cleanup.sql", "/db/migration/V1__Initialize_project_tables.sql", "/db/migration/V2__Insert_default_data.sql"})
@@ -22,32 +24,23 @@ class MenuGroupRestControllerTest {
 	@Test
 	void create() {
 		// given
-		MenuGroup menuGroup = new MenuGroup();
-		menuGroup.setName("메뉴_그룹");
+		MenuGroupRequest request = new MenuGroupRequest("메뉴_그룹");
 
 		// when
-		MenuGroup createdMenuGroup = menuGroupRestController.create(menuGroup).getBody();
+		MenuGroupResponse response = menuGroupRestController.create(request).getBody();
 
 		// then
 		assertAll(
-			() -> assertThat(createdMenuGroup.getName()).isEqualTo("메뉴_그룹")
+			() -> assertThat(response.getName()).isEqualTo("메뉴_그룹")
 		);
 	}
 
 	@Test
 	void list() {
-		// given
-		MenuGroup menuGroup1 = new MenuGroup();
-		menuGroup1.setName("메뉴_그룹1");
-		menuGroupRestController.create(menuGroup1);
-		MenuGroup menuGroup2 = new MenuGroup();
-		menuGroup2.setName("메뉴_그룹2");
-		menuGroupRestController.create(menuGroup2);
-
 		// when
-		List<MenuGroup> menuGroupList = menuGroupRestController.list().getBody();
+		List<MenuGroupResponse> menuGroupList = menuGroupRestController.list().getBody();
 
 		// then
-		assertThat(menuGroupList).map(MenuGroup::getName).contains("메뉴_그룹1", "메뉴_그룹2");
+		assertThat(menuGroupList).map(MenuGroupResponse::getName).contains("두마리메뉴", "한마리메뉴", "순살파닭두마리메뉴", "신메뉴");
 	}
 }
