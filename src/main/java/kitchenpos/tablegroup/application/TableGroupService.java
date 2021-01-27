@@ -41,7 +41,7 @@ public class TableGroupService {
         final TableGroup tableGroup = new TableGroup(orderTables);
         tableGroup.validateEqualOrderTableSize(orderTables.size());
         tableGroup.updateOrderTables(orderTables);
-        return tableGroup;
+        return tableGroupRepository.save(tableGroup);
     }
 
 
