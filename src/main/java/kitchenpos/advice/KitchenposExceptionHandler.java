@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 public class KitchenposExceptionHandler {
 
-    @ExceptionHandler({MenuGroupException.class, ProductException.class,
+    @ExceptionHandler({MenuGroupException.class, ProductException.class, PriceException.class, OrderException.class,
             MenuException.class, TableGroupException.class, OrderTableException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     ResponseEntity check(Exception e) {

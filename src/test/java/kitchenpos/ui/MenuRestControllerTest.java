@@ -1,12 +1,13 @@
 package kitchenpos.ui;
 
 import kitchenpos.application.MenuGroupService;
-import kitchenpos.application.MenuService;
 import kitchenpos.application.ProductService;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.request.MenuGroupRequest;
+import kitchenpos.dto.request.MenuRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,29 +24,28 @@ class MenuRestControllerTest extends ControllerTest {
     private ProductService productService;
 
     @Autowired
-    private MenuService menuService;
-
-    @Autowired
     private MenuGroupService menuGroupService;
 
-    private MenuProduct 메뉴상품_후라이드;
-    private MenuProduct 메뉴상품_양념치킨;
     private MenuGroup 후라이드양념반반메뉴;
+    private Product 후라이드상품;
+    private Product 양념치킨상품;
+    private MenuProduct 후라이드;
+    private MenuProduct 양념치킨;
 
     @BeforeEach
     void setUp() {
-        Product 후라이드 = productService.findById(1l);
-        Product 양념치킨 = productService.findById(2l);
-        메뉴상품_후라이드 = new MenuProduct(후라이드.getId(), 1);
-        메뉴상품_양념치킨 = new MenuProduct(양념치킨.getId(), 1);
-        후라이드양념반반메뉴 = 메뉴그룹을_생성한다("후라이드양념반반메뉴");
+        MenuGroupRequest menuGroupRequest = new MenuGroupRequest("후라이드양념반반메뉴");
+        후라이드양념반반메뉴 = menuGroupService.create(menuGroupRequest);
+        후라이드상품 = productService.findById(1l);
+        양념치킨상품 = productService.findById(2l);
     }
 
     @DisplayName("메뉴를 등록한다")
     @Test
     void create() throws Exception {
-        Menu 후라이드양념반반 = 메뉴를_생성한다(후라이드양념반반메뉴, "후라이드양념반반", 32000, 메뉴상품_후라이드, 메뉴상품_양념치킨);
-        String body = objectMapper.writeValueAsString(후라이드양념반반);
+        MenuRequest menuRequest = 메뉴를_생성한다(32000, 후라이드양념반반메뉴);
+        String body = objectMapper.writeValueAsString(menuRequest);
+
         컨트롤러_생성_요청_및_검증(MENU_URI, body);
     }
 
@@ -55,13 +55,11 @@ class MenuRestControllerTest extends ControllerTest {
         컨트롤러_조회_요청_및_검증(MENU_URI);
     }
 
-    private Menu 메뉴를_생성한다(MenuGroup menuGroup, String name, int price, MenuProduct... products) {
-        Menu menu = new Menu(name, BigDecimal.valueOf(price), menuGroup.getId(), Arrays.asList(products));
-        return menuService.create(menu);
-    }
-
-    private MenuGroup 메뉴그룹을_생성한다(String name) {
-        MenuGroup menuGroup = new MenuGroup(name);
-        return menuGroupService.create(menuGroup);
+    private MenuRequest 메뉴를_생성한다(int price, MenuGroup menuGroup) {
+        Menu menu = new Menu("후라이드양념반반", BigDecimal.valueOf(price), menuGroup);
+        후라이드 = new MenuProduct(menu, 후라이드상품, 1);
+        양념치킨 = new MenuProduct(menu, 양념치킨상품, 1);
+        menu.updateMenuProducts(Arrays.asList(후라이드, 양념치킨));
+        return MenuRequest.of(menu);
     }
 }

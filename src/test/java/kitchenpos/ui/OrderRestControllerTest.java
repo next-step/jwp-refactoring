@@ -2,6 +2,7 @@ package kitchenpos.ui;
 
 import kitchenpos.application.*;
 import kitchenpos.domain.*;
+import kitchenpos.dto.request.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -31,23 +34,40 @@ class OrderRestControllerTest extends ControllerTest {
     @Autowired
     private MenuGroupService menuGroupService;
 
-    private Order 주문;
+    @Autowired
+    private TableGroupService tableGroupService;
+
+    private OrderRequest 주문;
+    private MenuProduct 후라이드;
+    private MenuProduct 양념치킨;
+    private MenuGroup 후라이드양념반반메뉴;
+    private Product 후라이드상품;
+    private Product 양념치킨상품;
+
+    private List<OrderTable> orderTables;
+    private OrderTable 테이블_1번;
+    private OrderTable 테이블_2번;
 
     @BeforeEach
     void setUp() {
-        Product 후라이드 = productService.findById(1l);
-        Product 양념치킨 = productService.findById(2l);
-        MenuProduct 메뉴상품_후라이드 = new MenuProduct(후라이드.getId(), 1);
-        MenuProduct 메뉴상품_양념치킨 = new MenuProduct(양념치킨.getId(), 1);
-        MenuGroup 후라이드양념반반메뉴 = 메뉴그룹을_생성한다("후라이드양념반반메뉴");
+        MenuGroupRequest menuGroupRequest = new MenuGroupRequest("후라이드양념반반메뉴");
+        후라이드양념반반메뉴 = menuGroupService.create(menuGroupRequest);
+        후라이드상품 = productService.findById(1l);
+        양념치킨상품 = productService.findById(2l);
+        MenuRequest menuRequest = 메뉴를_생성한다(32000, 후라이드양념반반메뉴);
+        Menu menu = menuService.create(menuRequest);
 
-        Menu menu = 메뉴를_생성한다(후라이드양념반반메뉴, "후라이드양념반반", 32000, 메뉴상품_후라이드, 메뉴상품_양념치킨);
-        OrderLineItem orderLineItem = new OrderLineItem();
-        orderLineItem.setMenuId(menu.getId());
-        orderLineItem.setQuantity(2l);
-        OrderTable orderTable = 테이블을_생성한다(1l, 0, false);
+        테이블_1번 = 테이블을_생성한다(0, true);
+        테이블_2번 = 테이블을_생성한다(0, true);
+        orderTables = new ArrayList<>();
+        orderTables.add(테이블_1번);
+        orderTables.add(테이블_2번);
 
-        주문 = new Order(orderTable.getId(), Arrays.asList(orderLineItem));
+        TableGroup tableGroup = 테이블_그룹을_생성한다(new TableGroup(orderTables));
+        OrderTable orderTable = 테이블을_생성한다(tableGroup, 0, false);
+
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menu.getId(), 2l);
+        주문 = new OrderRequest(orderTable.getId(), Arrays.asList(orderLineItemRequest));
     }
 
 
@@ -70,14 +90,18 @@ class OrderRestControllerTest extends ControllerTest {
         String body = objectMapper.writeValueAsString(주문);
         컨트롤러_생성_요청_및_검증(ORDER_URI, body);
 
-        주문.setOrderStatus(OrderStatus.MEAL.name());
+        주문.setOrderStatus(OrderStatus.MEAL);
         body = objectMapper.writeValueAsString(주문);
 
         주문_변경_요청_및_검증(body, 1l);
     }
 
-    private OrderTable 테이블을_생성한다(Long id, int numberOfGuest, boolean empty) {
-        return tableService.create(new OrderTable(id, numberOfGuest, empty));
+    private OrderTable 테이블을_생성한다(TableGroup tableGroup, int numberOfGuest, boolean empty) {
+        return tableService.create(new OrderTableRequest(tableGroup.getId(), numberOfGuest, empty));
+    }
+
+    private OrderTable 테이블을_생성한다(int numberOfGuest, boolean empty) {
+        return tableService.create(new OrderTableRequest(numberOfGuest, empty));
     }
 
     private void 주문_변경_요청_및_검증(String body, Long id) throws Exception {
@@ -89,13 +113,15 @@ class OrderRestControllerTest extends ControllerTest {
                 .andExpect(status().isOk());
     }
 
-    private Menu 메뉴를_생성한다(MenuGroup menuGroup, String name, int price, MenuProduct... products) {
-        Menu menu = new Menu(name, BigDecimal.valueOf(price), menuGroup.getId(), Arrays.asList(products));
-        return menuService.create(menu);
+    private MenuRequest 메뉴를_생성한다(int price, MenuGroup menuGroup) {
+        Menu menu = new Menu("후라이드양념반반", BigDecimal.valueOf(price), menuGroup);
+        후라이드 = new MenuProduct(menu, 후라이드상품, 1);
+        양념치킨 = new MenuProduct(menu, 양념치킨상품, 1);
+        menu.updateMenuProducts(Arrays.asList(후라이드, 양념치킨));
+        return MenuRequest.of(menu);
     }
 
-    private MenuGroup 메뉴그룹을_생성한다(String name) {
-        MenuGroup menuGroup = new MenuGroup(name);
-        return menuGroupService.create(menuGroup);
+    private TableGroup 테이블_그룹을_생성한다(TableGroup tableGroup) {
+        return tableGroupService.create(TableGroupRequest.of(tableGroup));
     }
 }

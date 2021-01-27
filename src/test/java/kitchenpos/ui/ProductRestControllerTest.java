@@ -1,6 +1,6 @@
 package kitchenpos.ui;
 
-import kitchenpos.domain.Product;
+import kitchenpos.dto.request.ProductRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +13,7 @@ class ProductRestControllerTest extends ControllerTest {
     @DisplayName("상품을 생성한다")
     @Test
     void create() throws Exception {
-        Product 뿌링클 = new Product("뿌링클", BigDecimal.valueOf(18000));
+        ProductRequest 뿌링클 = new ProductRequest("뿌링클", BigDecimal.valueOf(18000));
         String body = objectMapper.writeValueAsString(뿌링클);
 
         컨트롤러_생성_요청_및_검증(PRODUCT_URI, body);

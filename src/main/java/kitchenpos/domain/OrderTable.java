@@ -1,12 +1,31 @@
 package kitchenpos.domain;
 
+import kitchenpos.advice.exception.OrderTableException;
+
+import javax.persistence.*;
+import java.util.Objects;
+
+@Entity
 public class OrderTable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long tableGroupId;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "table_group_id")
+    private TableGroup tableGroup;
+
     private int numberOfGuests;
     private boolean empty;
 
-    public OrderTable() {
+    protected OrderTable() {
+    }
+
+    public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
+        this.tableGroup = tableGroup;
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
     }
 
     public OrderTable(int numberOfGuests, boolean empty) {
@@ -14,51 +33,43 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public OrderTable(Long id, int numberOfGuests, boolean empty) {
-        this.id = id;
-        this.numberOfGuests = numberOfGuests;
-        this.empty = empty;
+    public void ungroup() {
+        this.tableGroup = null;
+    }
+
+    public void validateTableGroupIsNull() {
+        if (Objects.nonNull(tableGroup)) {
+            throw new OrderTableException("테이블 그룹은 비어있어야 합니다");
+        }
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public Long getTableGroupId() {
-        return tableGroupId;
-    }
-
-    public void setTableGroupId(final Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
+    public TableGroup getTableGroup() {
+        return tableGroup;
     }
 
     public int getNumberOfGuests() {
         return numberOfGuests;
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
-    }
-
     public boolean isEmpty() {
         return empty;
     }
 
-    public void setEmpty(final boolean empty) {
+    public void addTableGroup(TableGroup tableGroup) {
+        updateEmpty(false);
+        this.tableGroup = tableGroup;
+    }
+
+    public void updateEmpty(boolean empty) {
         this.empty = empty;
     }
 
-    @Override
-    public String toString() {
-        return "OrderTable{" +
-                "id=" + id +
-                ", tableGroupId=" + tableGroupId +
-                ", numberOfGuests=" + numberOfGuests +
-                ", empty=" + empty +
-                '}';
+    public void updateNumberOfGuests(int numberOfGuests) {
+        this.numberOfGuests = numberOfGuests;
     }
+
 }
