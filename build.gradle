@@ -4,26 +4,80 @@ plugins {
     id 'java'
 }
 
-group = 'camp.nextstep.edu'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
+subprojects {
+    apply plugin : 'org.springframework.boot'
+    apply plugin : 'io.spring.dependency-management'
+    apply plugin : 'java'
 
-repositories {
-    mavenCentral()
+    group = 'camp.nextstep.edu'
+    version = '0.0.1-SNAPSHOT'
+    sourceCompatibility = '1.8'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-starter-validation'
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+        implementation 'org.flywaydb:flyway-core'
+        runtimeOnly 'com.h2database:h2'
+        testImplementation 'io.rest-assured:rest-assured:3.3.0'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+    jar {
+        enabled = true
+    }
 }
 
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+project(':kitchenpos-table') {
+    dependencies {
+        implementation project(':kitchenpos-common')
 
-    implementation 'org.flywaydb:flyway-core'
-    runtimeOnly 'com.h2database:h2'
-    testImplementation 'io.rest-assured:rest-assured:3.3.0'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testImplementation project(':kitchenpos-common')
+    }
 }
 
-test {
-    useJUnitPlatform()
+project(':kitchenpos-menu') {
+    dependencies {
+        implementation project(':kitchenpos-common')
+
+        testImplementation project(':kitchenpos-common')
+    }
 }
+
+project(':kitchenpos-order') {
+    dependencies {
+        implementation project(':kitchenpos-common')
+        implementation project(':kitchenpos-table')
+        implementation project(':kitchenpos-menu')
+
+        testImplementation project(':kitchenpos-common')
+        testImplementation project(':kitchenpos-table')
+        testImplementation project(':kitchenpos-menu')
+    }
+}
+
+project(':kitchenpos-ui') {
+    dependencies {
+        implementation project(':kitchenpos-common')
+        implementation project(':kitchenpos-table')
+        implementation project(':kitchenpos-menu')
+        implementation project(':kitchenpos-order')
+
+        testImplementation project(':kitchenpos-common')
+        testImplementation project(':kitchenpos-table')
+        testImplementation project(':kitchenpos-menu')
+        testImplementation project(':kitchenpos-order')
+    }
+}
+
+
