@@ -1,10 +1,10 @@
 package kitchenpos.old.application;
 
 import kitchenpos.old.dao.OrderDao;
-import kitchenpos.old.dao.OrderTableDao;
+import kitchenpos.table.OrderTableDao;
 import kitchenpos.old.dao.TableGroupDao;
 import kitchenpos.old.domain.OrderStatus;
-import kitchenpos.old.domain.OrderTable;
+import kitchenpos.table.dto.OrderTable;
 import kitchenpos.old.domain.TableGroup;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,13 +56,13 @@ public class TableGroupService {
 
         final TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
 
-        final Long tableGroupId = savedTableGroup.getId();
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.setTableGroupId(tableGroupId);
-            savedOrderTable.setEmpty(false);
-            orderTableDao.save(savedOrderTable);
-        }
-        savedTableGroup.setOrderTables(savedOrderTables);
+//        final Long tableGroupId = savedTableGroup.getId();
+//        for (final OrderTable savedOrderTable : savedOrderTables) {
+//            savedOrderTable.setTableGroupId(tableGroupId);
+//            savedOrderTable.setEmpty(false);
+//            orderTableDao.save(savedOrderTable);
+//        }
+//        savedTableGroup.setOrderTables(savedOrderTables);
 
         return savedTableGroup;
     }
@@ -80,9 +80,9 @@ public class TableGroupService {
             throw new IllegalArgumentException();
         }
 
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.setTableGroupId(null);
-            orderTableDao.save(orderTable);
-        }
+//        for (final OrderTable orderTable : orderTables) {
+//            orderTable.setTableGroupId(null);
+//            orderTableDao.save(orderTable);
+//        }
     }
 }
