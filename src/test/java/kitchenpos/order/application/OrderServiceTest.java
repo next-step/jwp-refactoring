@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -82,25 +83,23 @@ class OrderServiceTest {
         Menu menu = menuRepository.save(new Menu("메뉴1", Price.of(1000), 1L));
         OrderTable orderTable = orderTableRepository.save(new OrderTable(4, false));
         OrderTable orderTable2 = orderTableRepository.save(new OrderTable(2, false));
-
+        Order order1 = orderRepository.save(new Order(orderTable, Collections.emptyList(), OrderStatus.COOKING));
+        Order order2 = orderRepository.save(new Order(orderTable2, Collections.emptyList(), OrderStatus.MEAL));
         List<OrderLineItem> orderLineItems = Arrays.asList(new OrderLineItem(menu, 1L));
-        Order order1 = new Order(orderTable, orderLineItems);
-        Order order2 = new Order(orderTable2, orderLineItems);
-        Order save1 = orderRepository.save(order1);
-        Order save2 = orderRepository.save(order2);
+        order1.addItems(orderLineItems);
+        order2.addItems(orderLineItems);
 
         List<OrderResponse> results = orderService.list();
 
-        assertThat(results).contains(OrderResponse.of(save1), OrderResponse.of(save2));
+        assertThat(results.size()).isGreaterThan(1);
+        assertThat(results).contains(OrderResponse.of(order1), OrderResponse.of(order2));
     }
 
     @DisplayName("주문 상태 변경")
     @Test
     void changeOrderStatus() {
-        Menu menu = menuRepository.save(new Menu("메뉴1", Price.of(1000), 1L));
         OrderTable orderTable = orderTableRepository.save(new OrderTable(4, false));
-        List<OrderLineItem> orderLines = Arrays.asList(new OrderLineItem(menu, 1L));
-        Order order = orderRepository.save(new Order(orderTable, orderLines));
+        Order order = orderRepository.save(new Order(orderTable, Collections.emptyList(), OrderStatus.MEAL));
 
         OrderResponse savedOrder = orderService.changeOrderStatus(order.getId(), new OrderStatusRequest(OrderStatus.COMPLETION));
 
@@ -110,12 +109,11 @@ class OrderServiceTest {
     @DisplayName("주문 상태가 계산 완료인 경우 변경 불가")
     @Test
     void failChangeOrderStatusWhenStatuIsCOMPLETION() {
-        Menu menu = menuRepository.save(new Menu("메뉴1", Price.of(1000), 1L));
         OrderTable orderTable = orderTableRepository.save(new OrderTable(4, false));
-        List<OrderLineItem> orderLines = Arrays.asList(new OrderLineItem(menu, 1L));
-        Order order = orderRepository.save(new Order(orderTable, orderLines, OrderStatus.COMPLETION));
 
-        assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), new OrderStatusRequest(OrderStatus.COMPLETION)))
+        Order order = orderRepository.save(new Order(orderTable, Collections.emptyList(), OrderStatus.COMPLETION));
+
+        assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), new OrderStatusRequest(OrderStatus.COOKING)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

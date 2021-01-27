@@ -73,4 +73,9 @@ public class MenuService {
                 .map(product -> new MenuProduct(productService.findById(product.getProductId()), product.getQuantity()))
                 .collect(Collectors.toList());
     }
+
+    public Menu findById(long menuId) {
+        return menuRepository.findById(menuId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 메뉴 입니다."));
+    }
 }
