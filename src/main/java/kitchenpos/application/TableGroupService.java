@@ -36,13 +36,10 @@ public class TableGroupService {
         final List<OrderTable> orderTables = tableService.findAllByIdIn(tableGroupRequest.getOrderTableIds());
         validateOrderTableEmpty(orderTables);
 
-        final TableGroup savedTableGroup = new TableGroup(orderTables);
-        savedTableGroup.validateEqualOrderTableSize(orderTables.size());
-
-        orderTables.forEach(orderTable -> orderTable.addTableGroup(savedTableGroup));
-        savedTableGroup.updateOrderTables(orderTables);
-
-        return savedTableGroup;
+        final TableGroup tableGroup = new TableGroup(orderTables);
+        tableGroup.validateEqualOrderTableSize(orderTables.size());
+        tableGroup.updateOrderTables(orderTables);
+        return tableGroup;
     }
 
 

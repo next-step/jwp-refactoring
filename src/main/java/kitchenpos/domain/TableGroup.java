@@ -44,6 +44,7 @@ public class TableGroup {
     }
 
     public void updateOrderTables(List<OrderTable> orderTables) {
+        orderTables.forEach(orderTable -> orderTable.addTableGroup(this));
         this.orderTables = orderTables;
     }
 
