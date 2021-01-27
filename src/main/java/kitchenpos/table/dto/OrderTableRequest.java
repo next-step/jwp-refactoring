@@ -5,13 +5,7 @@ public class OrderTableRequest {
     private Integer numberOfGuests;
     private boolean empty;
 
-    public OrderTableRequest() {
-    }
-
-    public OrderTableRequest(Long id, Integer numberOfGuests, boolean empty) {
-        this.id = id;
-        this.numberOfGuests = numberOfGuests;
-        this.empty = empty;
+    protected OrderTableRequest() {
     }
 
     public OrderTableRequest(int numberOfGuests, boolean empty) {
@@ -19,7 +13,8 @@ public class OrderTableRequest {
         this.empty = empty;
     }
 
-    public OrderTableRequest(long id) {
+    public OrderTableRequest(Long id, Integer numberOfGuests, boolean empty) {
+        this(numberOfGuests, empty);
         this.id = id;
     }
 

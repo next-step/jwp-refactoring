@@ -46,15 +46,16 @@ class TableGroupServiceTest {
     @Test
     void groupingTables() {
         //given
-        OrderTable table1 = new OrderTable(1L, null, 4, true);
-        OrderTable table2 = new OrderTable(2L, null, 4, true);
+        OrderTable table1 = new OrderTable(1L, 4, true);
+        OrderTable table2 = new OrderTable(2L, 4, true);
         List<OrderTable> orderTables = Arrays.asList(table1, table2);
         TableGroup tableGroup = new TableGroup(1L, orderTables);
         given(tableGroupRepository.save(any())).willReturn(tableGroup);
         given(orderTableService.findById(any())).willReturn(table1);
 
         //when
-        List<OrderTableRequest> orderTableRequest = Arrays.asList(new OrderTableRequest(table1.getId()), new OrderTableRequest(table2.getId()));
+        List<OrderTableRequest> orderTableRequest = Arrays.asList(
+                new OrderTableRequest(4, true), new OrderTableRequest(4, true));
         TableGroupRequest request = new TableGroupRequest(orderTableRequest);
         TableGroupResponse save = tableGroupService.create(request);
 
@@ -66,11 +67,7 @@ class TableGroupServiceTest {
     @DisplayName("1개 이하 빈 테이블의 단체션 지정시 익셉션")
     @Test
     void groupingOneTable() {
-        //given
-        OrderTable table1 = new OrderTable(1L, null, 4, true);
-
-        //when
-        List<OrderTableRequest> orderTableRequest = Arrays.asList(new OrderTableRequest(table1.getId()));
+        List<OrderTableRequest> orderTableRequest = Arrays.asList(new OrderTableRequest(4, true));
         TableGroupRequest request = new TableGroupRequest(orderTableRequest);
         assertThatThrownBy(() -> tableGroupService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -80,11 +77,11 @@ class TableGroupServiceTest {
     @Test
     void groupingTablesDuplicated() {
         //given
-        OrderTable table1 = new OrderTable(1L, null, 4, true);
+        OrderTable table1 = new OrderTable(1L, 4, true);
         List<OrderTable> orderTables = Arrays.asList(table1);
 
         //when
-        List<OrderTableRequest> orderTableRequest = Arrays.asList(new OrderTableRequest(table1.getId()));
+        List<OrderTableRequest> orderTableRequest = Arrays.asList(new OrderTableRequest(4, true));
         TableGroupRequest request = new TableGroupRequest(orderTableRequest);
 
         assertThatThrownBy(() -> tableGroupService.create(request))
@@ -94,8 +91,8 @@ class TableGroupServiceTest {
     @DisplayName("단체 지정을 해지할 수 있다.")
     @Test
     void ungroupTables() {
-        OrderTable table1 = new OrderTable(1L, null, 4, true);
-        OrderTable table2 = new OrderTable(2L, null, 4, true);
+        OrderTable table1 = new OrderTable(1L, 4, true);
+        OrderTable table2 = new OrderTable(2L, 4, true);
         table1.addOrder(new Order(OrderStatus.COMPLETION));
         table2.addOrder(new Order(OrderStatus.COMPLETION));
         List<OrderTable> orderTables = Arrays.asList(table1, table2);
@@ -111,8 +108,8 @@ class TableGroupServiceTest {
     @DisplayName("단체 지정된 주문 테이블의 주문 상태가 조리인 경우 단체 지정을 해지할 수 없다.")
     @Test
     void cantUnGroupingWhenOrderStatus() {
-        OrderTable table1 = new OrderTable(1L, null, 4, true);
-        OrderTable table2 = new OrderTable(2L, null, 4, true);
+        OrderTable table1 = new OrderTable(1L, 4, true);
+        OrderTable table2 = new OrderTable(2L, 4, true);
         table1.addOrder(new Order(OrderStatus.MEAL));
         table2.addOrder(new Order(OrderStatus.COMPLETION));
         List<OrderTable> orderTables = Arrays.asList(table1, table2);
@@ -126,8 +123,8 @@ class TableGroupServiceTest {
     @DisplayName("단체 지정된 주문 테이블 상태가 식사인 경우 단체 지정을 해지할 수 없다.")
     @Test
     void cantUnGroupingWhenMealStatus() {
-        OrderTable table1 = new OrderTable(1L, null, 4, true);
-        OrderTable table2 = new OrderTable(2L, null, 4, true);
+        OrderTable table1 = new OrderTable(1L, 4, true);
+        OrderTable table2 = new OrderTable(2L, 4, true);
         List<OrderTable> orderTables = Arrays.asList(table1, table2);
         TableGroup tableGroup = new TableGroup(1L, orderTables);
         given(orderTableRepository.findAllByTableGroupId(any())).willReturn(orderTables);
