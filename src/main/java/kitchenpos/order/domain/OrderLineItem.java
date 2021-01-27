@@ -15,9 +15,8 @@ public class OrderLineItem {
     @JoinColumn(name = "menu_id")
     private Menu menu;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
-    private Order order;
+    @Column(name = "order_id")
+    private Long orderId;
 
     private long quantity;
 
@@ -29,10 +28,14 @@ public class OrderLineItem {
         this.quantity = quantity;
     }
 
-    public OrderLineItem(Menu menu, Order order, long quantity) {
+    public OrderLineItem(Menu menu, Long orderId, long quantity) {
         this.menu = menu;
-        this.order = order;
+        this.orderId = orderId;
         this.quantity = quantity;
+    }
+
+    public void updateOrderId(Long orderId) {
+        this.orderId = orderId;
     }
 
     public Long getSeq() {
@@ -43,8 +46,8 @@ public class OrderLineItem {
         return menu;
     }
 
-    public Order getOrder() {
-        return order;
+    public Long getOrderId() {
+        return orderId;
     }
 
     public long getQuantity() {

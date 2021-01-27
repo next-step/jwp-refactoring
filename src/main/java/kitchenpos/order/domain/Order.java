@@ -8,6 +8,7 @@ import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,23 +33,24 @@ public class Order {
     @Column(name = "ordered_time", updatable = false)
     private LocalDateTime orderedTime;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "order_id")
     private List<OrderLineItem> orderLineItems;
 
     protected Order() {
     }
 
-    public static Order ofCooking(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        return new Order(orderTable, OrderStatus.COOKING, orderLineItems);
+    public static Order ofCooking(OrderTable orderTable) {
+        return new Order(orderTable, OrderStatus.COOKING);
     }
 
-    private Order(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+    public Order(OrderTable orderTable, OrderStatus orderStatus) {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = LocalDateTime.now();
-        this.orderLineItems = orderLineItems;
-        validateEmptyOrderLineItems();
+        this.orderLineItems = new ArrayList<>();
     }
+
 
     public void validateOrderStatus(OrderStatus orderStatus) {
         if (Objects.equals(this.orderStatus, orderStatus)) {
@@ -62,6 +64,10 @@ public class Order {
         }
     }
 
+    public void addOrderLineItem(OrderLineItem orderLineItem) {
+        orderLineItem.updateOrderId(this.id);
+        orderLineItems.add(orderLineItem);
+    }
 
     public void updateOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
@@ -83,7 +89,11 @@ public class Order {
         return orderLineItems;
     }
 
-    private void validateEmptyOrderLineItems() {
+    public LocalDateTime getOrderedTime() {
+        return orderedTime;
+    }
+
+    public void validateEmptyOrderLineItems() {
         if (CollectionUtils.isEmpty(orderLineItems)) {
             throw new OrderLineItemException("orderLineItems가 존재하지 않습니다");
         }

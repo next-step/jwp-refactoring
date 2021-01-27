@@ -4,14 +4,9 @@ import kitchenpos.advice.exception.OrderException;
 import kitchenpos.advice.exception.OrderTableException;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +34,9 @@ public class OrderService {
 
     @Transactional
     public Order create(final OrderRequest orderRequest) {
-        final List<OrderLineItem> orderLineItems = new ArrayList<>();
+        final OrderTable orderTable = findOrderTableById(orderRequest.getOrderTableId());
+        Order order = orderRepository.save(Order.ofCooking(orderTable));
+
         List<Menu> menus = menuService.findAllById(orderRequest.getMenuIds());
 
         Map<Long, Menu> menuMap = menus.stream()
@@ -47,14 +44,12 @@ public class OrderService {
 
         for (final OrderLineItemRequest request : orderRequest.getOrderLineItems()) {
             OrderLineItem orderLineItem = new OrderLineItem(menuMap.get(request.getMenuId()), request.getQuantity());
-            orderLineItems.add(orderLineItem);
+            order.addOrderLineItem(orderLineItem);
         }
 
-        final OrderTable orderTable = findOrderTableById(orderRequest.getOrderTableId());
-
-        Order order = Order.ofCooking(orderTable, orderLineItems);
+        order.validateEmptyOrderLineItems();
         order.validateMenuSize(menuService.countByIdIn(orderRequest.getMenuIds()));
-        return orderRepository.save(order);
+        return order;
     }
 
     public List<Order> list() {
@@ -83,7 +78,6 @@ public class OrderService {
             throw new OrderTableException("올바르지 않은 주문상태가 포함되어있습니다", orderStatuses);
         }
     }
-
 
 
     private Order findOrderById(Long id) {
