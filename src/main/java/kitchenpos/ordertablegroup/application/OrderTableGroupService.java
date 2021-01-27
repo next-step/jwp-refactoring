@@ -28,14 +28,16 @@ public class OrderTableGroupService {
         List<OrderTable> savedOrderTables = orderTableService.findAllByIdIn(request.getOrderTableIds());
         OrderTables orderTables = new OrderTables(savedOrderTables, request.getOrderTableIds().size());
 
-        OrderTableGroup orderTableGroup = orderTableGroupRepository.save(new OrderTableGroup(orderTables));
-        return OrderTableGroupResponse.of(orderTableGroup);
+        OrderTableGroup orderTableGroup = orderTableGroupRepository.save(new OrderTableGroup());
+        orderTables.setGroup(orderTableGroup);
+
+        return OrderTableGroupResponse.of(orderTables);
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
         OrderTableGroup orderTableGroup = findById(tableGroupId);
-        orderTableGroup.unGroup();
+        orderTableService.unGroup(orderTableGroup);
     }
 
     private OrderTableGroup findById(Long tableGroupId) {

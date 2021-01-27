@@ -21,14 +21,10 @@ class MenuTest {
     @Test
     void constructor() {
         // given
-        List<MenuProduct> menuProducts = Arrays.asList(
-            new MenuProduct(new Product("상품1", PRICE), 1),
-            new MenuProduct(new Product("상품2", PRICE), 1)
-        );
         MenuGroup menuGroup = new MenuGroup("group");
 
         // when
-        Menu menu = new Menu(NAME, PRICE.add(PRICE), menuGroup, menuProducts);
+        Menu menu = new Menu(NAME, PRICE.add(PRICE), menuGroup);
 
         // then
         assertThat(menu).isNotNull();
@@ -39,19 +35,11 @@ class MenuTest {
     @Test
     void validatePrice() {
         // given
-        List<MenuProduct> menuProducts = Arrays.asList(
-            new MenuProduct(new Product("상품1", PRICE), 1),
-            new MenuProduct(new Product("상품2", PRICE), 1)
-        );
         MenuGroup menuGroup = new MenuGroup("group");
 
         // when, then
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> new Menu(NAME, null, menuGroup, menuProducts))
+            .isThrownBy(() -> new Menu(NAME, null, menuGroup))
             .withMessage("메뉴 금액은 0보다 커야 한다.");
-
-        assertThatIllegalArgumentException()
-            .isThrownBy(() -> new Menu(NAME, PRICE, menuGroup, menuProducts))
-            .withMessage("메뉴의 금액은 메뉴 상품의 합과 같아야 한다.");
     }
 }

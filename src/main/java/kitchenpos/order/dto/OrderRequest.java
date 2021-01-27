@@ -1,5 +1,9 @@
 package kitchenpos.order.dto;
 
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,5 +37,18 @@ public class OrderRequest {
         return this.orderLineItems.stream()
             .map(OrderLineItemRequest::getMenuId)
             .collect(Collectors.toList());
+    }
+
+    public List<OrderLineItem> toEntity(Order order, List<Menu> menus) {
+        return orderLineItems.stream()
+            .map(orderLineItem -> new OrderLineItem(order, getMatchMenuInMenus(menus, orderLineItem.getMenuId()), orderLineItem.getQuantity()))
+            .collect(Collectors.toList());
+    }
+
+    private Menu getMatchMenuInMenus(List<Menu> menus, Long menuId) {
+        return menus.stream()
+            .filter(menu -> menu.getId().equals(menuId))
+            .findFirst()
+            .orElseThrow(IllegalArgumentException::new);
     }
 }

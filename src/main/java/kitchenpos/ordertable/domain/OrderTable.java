@@ -1,13 +1,9 @@
 package kitchenpos.ordertable.domain;
 
-import kitchenpos.order.domain.Order;
 import kitchenpos.ordertablegroup.domain.OrderTableGroup;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Entity(name = "order_table")
 public class OrderTable {
@@ -17,12 +13,9 @@ public class OrderTable {
     private int numberOfGuests;
     private boolean empty;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "table_group_id")
     private OrderTableGroup orderTableGroup;
-
-    @OneToMany(mappedBy = "orderTable")
-    private List<Order> orders = new ArrayList<>();
 
     public OrderTable() {
     }
@@ -62,8 +55,8 @@ public class OrderTable {
         return empty;
     }
 
-    public void changeEmpty(final boolean empty) {
-        validateOrdersStatus();
+    public void changeEmpty(final boolean empty, boolean isIncludeNotCompleteStatus) {
+        validateOrdersStatus(isIncludeNotCompleteStatus);
         this.empty = empty;
     }
 
@@ -72,17 +65,13 @@ public class OrderTable {
         this.numberOfGuests = numberOfGuests;
     }
 
-    public void ungroupTable() {
-        validateOrdersStatus();
+    public void ungroupTable(boolean isIncludeNotCompleteStatus) {
+        validateOrdersStatus(isIncludeNotCompleteStatus);
         this.orderTableGroup = null;
     }
 
     public boolean isNotAvailableOrderTable() {
         return Objects.nonNull(this.getOrderTableGroup());
-    }
-
-    public void addOrder(Order order) {
-        this.orders.add(order);
     }
 
     private void validateNumberOfGuests(int numberOfGuests) {
@@ -91,12 +80,11 @@ public class OrderTable {
         }
     }
 
-    private void validateOrdersStatus() {
-        Optional<Order> order = this.orders.stream()
-            .filter(Order::isNotCompleteStatus)
-            .findFirst();
-        if (order.isPresent()) {
+
+    private void validateOrdersStatus(boolean isIncludeNotCompleteStatus) {
+        if (isIncludeNotCompleteStatus) {
             throw new IllegalArgumentException("`조리중`과 `식사중`에는 변경할 수 없다.");
         }
     }
+
 }

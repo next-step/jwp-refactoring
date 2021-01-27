@@ -11,7 +11,7 @@ public class MenuProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "menu_id")
     private Menu menu;
 
@@ -25,6 +25,12 @@ public class MenuProduct {
     }
 
     public MenuProduct(Product product, long quantity) {
+        this.menu = menu;
+        this.product = product;
+        this.quantity = quantity;
+    }
+
+    public MenuProduct(Menu menu, Product product, long quantity) {
         this.menu = menu;
         this.product = product;
         this.quantity = quantity;

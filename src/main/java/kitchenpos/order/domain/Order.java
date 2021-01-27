@@ -5,7 +5,6 @@ import kitchenpos.ordertable.domain.OrderTable;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,18 +21,12 @@ public class Order extends BaseEntity {
 
     private String orderStatus;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderLineItem> orderLineItems = new ArrayList<>();
-
     protected Order() {
     }
 
-    public Order(OrderTable orderTable, String orderStatus, List<OrderLineItem> orderLineItems) {
-        validate(orderLineItems);
+    public Order(OrderTable orderTable, String orderStatus) {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
-        this.orderLineItems = orderLineItems;
-        setOrder();
     }
 
     public Long getId() {
@@ -46,15 +39,6 @@ public class Order extends BaseEntity {
 
     public String getOrderStatus() {
         return orderStatus;
-    }
-
-    public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
-    }
-
-    private void setOrder() {
-        this.orderLineItems.forEach(orderLineItem -> orderLineItem.setOrder(this));
-        this.orderTable.addOrder(this);
     }
 
     public boolean isNotCompleteStatus() {
