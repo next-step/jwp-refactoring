@@ -1,30 +1,31 @@
 # 키친포스
 
 ## 요구 사항
-1.주문
-* 주문을 생성한다.
-* 모든 주문을 조회한다.
-* 주문상태(order_status)를 수정한다.
+1.상품
+* 상품을 생성한다.
+(이름과 가격으로 구성, **가격이 없거나 0이하이면 등록할 수 없음**)  
+* 생성된 모든 상품을 조회한다.
 
 2.메뉴
 * 메뉴를 생성한다.(가격확인)
-* 모든 메뉴를 조회한다.(menu_product 연계)
-* 메뉴그룹 생성한다.
-* 모든 메뉴그룹 조회한다.
+* 생성된 모든 메뉴를 조회한다.(*menu_product 연계*)
+* 메뉴그룹 생성한다.(menu_group)
+* 생성된 모든 메뉴그룹 조회한다.
 
-3.상품
-* 상품을 생성한다.
-* 모든 상품을 조회한다.
-
-4.주문테이블(order_table)
-* 주문테이블을 생성한다.(단체지정 null)
+3.주문테이블(order_table)
+* 주문테이블을 생성한다.(**단체지정(table_group_id null처리)**)
 * 모든 주문테이블을 조회한다.
-* 주문여부를 수정한다.(empty BIT타입)
-* 방문한 손님수를 수정한다.(number_of_guests)
+* 주문여부를 수정한다.(empty 주문등록여부)
+* 방문한 손님수를 수정한다.(**number_of_guests(empty true 수정가능)**)
+
+4.주문
+* 주문을 생성한다.(*order_table, order_line_item 연계, menueCount 비교, empty false*)
+* 생성된 모든 주문을 조회한다.(*order_line_item 연계*)
+* 주문상태(order_status)를 수정한다.(*order_line_item 연계*)
 
 5.단체지정(table_group)
-* 단체지정을 생성한다.(order_table 정보수정)
-* 단제지정을 삭제한다.
+* 단체지정을 생성한다.(**order_table(tableGroupId null) 2개 이상시 생성, 빈테이블(empty) false**)
+* 단제지정을 삭제한다.(**order_status COOKING, MEAL일 경우 삭제할 수 없음, OrderTable tableGroupId null처리**)
 
 ## 용어 사전
 
