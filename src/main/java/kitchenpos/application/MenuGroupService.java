@@ -30,10 +30,4 @@ public class MenuGroupService {
     public MenuGroup findById(Long id) {
         return menuGroupRepository.findById(id).orElseThrow(() -> new MenuGroupException("존재하는 메뉴그룹이 없습니다", id));
     }
-
-    public void validateExistsMenuGroup(MenuGroup menuGroup) {
-        if (!menuGroupRepository.existsById(menuGroup.getId())) {
-            throw new MenuGroupException("존재하는 메뉴그룹 id가 없습니다", menuGroup.getId());
-        }
-    }
 }

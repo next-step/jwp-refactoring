@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -33,14 +35,8 @@ public class MenuService {
     @Transactional
     public Menu create(final MenuRequest menuRequest) {
         MenuGroup menuGroup = menuGroupService.findById(menuRequest.getMenuGroupId());
-        Menu menu = menuRequest.toMenu(menuGroup);
-
-        validateExistsMenuGroup(menu);
-
-        final List<MenuProduct> menuProducts = getMenuProducts(menuRequest, menu);
-        menu.validatePriceSum(menuProducts);
-
-        return saveMenu(menu, menuProducts);
+        final List<MenuProduct> menuProducts = getMenuProducts(menuRequest, menuGroup);
+        return menuRepository.save(menuRequest.toMenu(menuGroup, menuProducts));
     }
 
     public List<Menu> list() {
@@ -55,27 +51,15 @@ public class MenuService {
         return menuRepository.findById(id).orElseThrow(() -> new MenuException("메뉴가 존재하지 않습니다", id));
     }
 
-    private Menu saveMenu(Menu menu, List<MenuProduct> menuProducts) {
-        final Menu savedMenu = menuRepository.save(menu);
-        final List<MenuProduct> savedMenuProducts = new ArrayList<>();
-        for (final MenuProduct menuProduct : menuProducts) {
-            menuProduct.updateMenu(savedMenu);
-            savedMenuProducts.add(menuProduct);
-        }
-        savedMenu.updateMenuProducts(savedMenuProducts);
-        return savedMenu;
-    }
-
-    private void validateExistsMenuGroup(Menu menu) {
-        menuGroupService.validateExistsMenuGroup(menu.getMenuGroup());
-    }
-
-    private List<MenuProduct> getMenuProducts(MenuRequest menuRequest, Menu menu) {
+    private List<MenuProduct> getMenuProducts(MenuRequest menuRequest, MenuGroup menuGroup) {
         final List<MenuProduct> menuProducts = new ArrayList<>();
 
+        List<Product> products = productService.findAllById(menuRequest.getProductIds());
+        Map<Long, Product> productMap = products.stream()
+                .collect(Collectors.toMap(Product::getId, product -> product));
+
         for (MenuProductRequest request : menuRequest.getMenuProducts()) {
-            Product product = productService.findById(request.getProductId());
-            MenuProduct menuProduct = new MenuProduct(menu, product, request.getQuantity());
+            MenuProduct menuProduct = new MenuProduct(menuRequest.toMenu(menuGroup), productMap.get(request.getProductId()), request.getQuantity());
             menuProducts.add(menuProduct);
         }
 

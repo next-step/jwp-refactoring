@@ -33,4 +33,9 @@ public class ProductService {
         return productRepository.findById(id).orElseThrow(()->new ProductException("존재하지 않는 상품 id입니다", id));
     }
 
+    public List<Product> findAllById(List<Long> ids) {
+        return productRepository.findAllById(ids);
+    }
+
+
 }

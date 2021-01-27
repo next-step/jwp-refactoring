@@ -15,6 +15,8 @@ public class Menu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String name;
 
     @Embedded
@@ -22,7 +24,7 @@ public class Menu {
 
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_group_id")
+    @JoinColumn(name = "menu_group_id", nullable = false)
     private MenuGroup menuGroup;
 
     @JsonManagedReference
@@ -43,10 +45,14 @@ public class Menu {
         this.name = name;
         this.price = new Price(price);
         this.menuGroup = menuGroup;
-        this.menuProducts = menuProducts;
+        this.menuProducts = new ArrayList<>();
+        updateMenuProducts(menuProducts);
     }
 
     public void updateMenuProducts(List<MenuProduct> menuProducts) {
+        validatePriceSum(menuProducts);
+        menuProducts.stream()
+                .forEach(menuProduct -> menuProduct.updateMenu(this));
         this.menuProducts.addAll(menuProducts);
     }
 
