@@ -38,7 +38,7 @@ public class MenuControllerTest extends BaseContollerTest {
 
     @Test
     @DisplayName("메뉴의 가격이 없는 경우 등록 시 오류가 발생합니다.")
-    void createMenuNoPriceOccurredError() throws Exception {
+    void createMenuNoPriceOccurredError() {
         Menu menu = MenuTestSupport.createMenu("더 맛있는 후라이드 치킨", 20000, 2L);
         menu.setPrice(null);
         MenuTestSupport.addMenuGroup(menu, 1L, 3);
@@ -51,7 +51,7 @@ public class MenuControllerTest extends BaseContollerTest {
 
     @Test
     @DisplayName("메뉴의 그룹이 없는 경우 등록 시 오류가 발생합니다.")
-    void createMenuNoMenuGroupOccurredError() throws Exception {
+    void createMenuNoMenuGroupOccurredError() {
         Menu menu = MenuTestSupport.createMenu("더 맛있는 후라이드 치킨", 20000, 2L);
         menu.setMenuGroupId(null);
         MenuTestSupport.addMenuGroup(menu, 1L, 3);
@@ -63,7 +63,7 @@ public class MenuControllerTest extends BaseContollerTest {
 
     @Test
     @DisplayName("메뉴에 등록되지 않은 상품이 있는 경우 등록 시 오류가 발생합니다.")
-    void createMenuNoRegistProductOccurredError() throws Exception {
+    void createMenuNoRegistProductOccurredError() {
         Menu menu = MenuTestSupport.createMenu("더 맛있는 후라이드 치킨", 20000, 2L);
         List<MenuProduct> menuProducts = new ArrayList<>();
         menuProducts.add(new MenuProduct());
