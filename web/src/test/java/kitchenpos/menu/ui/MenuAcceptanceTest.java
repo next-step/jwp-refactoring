@@ -2,11 +2,11 @@ package kitchenpos.menu.ui;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
-import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.menugroup.ui.MenuGroupAcceptanceTestSupport;
+import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.product.ui.ProductAcceptanceTestSupport;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

@@ -2,7 +2,9 @@ package kitchenpos.product.domain;
 
 import kitchenpos.common.domain.BaseEntity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
 import java.math.BigDecimal;
 
 @Entity
