@@ -237,4 +237,4 @@
 - service
     - Service, Dto, ServiceTest
 - domain
-    - Entity, Repository
+    - Entity, Repository, Infra
