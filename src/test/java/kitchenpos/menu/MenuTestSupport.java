@@ -16,10 +16,10 @@ public class MenuTestSupport {
      */
     public static Menu createMenu(String name, long price, Long menuGroupId) {
         Menu menu = new Menu();
-        menu.setName(name);
-        menu.setPrice(BigDecimal.valueOf(price));
-        menu.setMenuGroupId(menuGroupId);
-        menu.setMenuProducts(new ArrayList<>());
+        menu.changeName(name);
+        menu.changePrice(BigDecimal.valueOf(price));
+        menu.changeMenuGroupId(menuGroupId);
+        menu.changeMenuProducts(new ArrayList<>());
 
         return menu;
     }

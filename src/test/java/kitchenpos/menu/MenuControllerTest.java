@@ -32,28 +32,26 @@ public class MenuControllerTest extends BaseContollerTest {
         Menu menu = MenuTestSupport.createMenu("더 맛있는 후라이드 치킨", 20000, 2L);
         MenuTestSupport.addMenuGroup(menu, 1L, 3);
 
-        메뉴_생성_요청(menu, status().isCreated())
-        ;
+        메뉴_생성_요청(menu, status().isCreated());
     }
 
     @Test
     @DisplayName("메뉴의 가격이 없는 경우 등록 시 오류가 발생합니다.")
     void createMenuNoPriceOccurredError() {
         Menu menu = MenuTestSupport.createMenu("더 맛있는 후라이드 치킨", 20000, 2L);
-        menu.setPrice(null);
+        menu.changePrice(null);
         MenuTestSupport.addMenuGroup(menu, 1L, 3);
 
         assertThatThrownBy(() -> {
             메뉴_생성_요청(menu, status().is5xxServerError());
         }).isInstanceOf(NestedServletException.class).hasMessageContaining("IllegalArgumentException");
-
     }
 
     @Test
     @DisplayName("메뉴의 그룹이 없는 경우 등록 시 오류가 발생합니다.")
     void createMenuNoMenuGroupOccurredError() {
         Menu menu = MenuTestSupport.createMenu("더 맛있는 후라이드 치킨", 20000, 2L);
-        menu.setMenuGroupId(null);
+        menu.changeMenuGroupId(null);
         MenuTestSupport.addMenuGroup(menu, 1L, 3);
 
         assertThatThrownBy(() -> {
@@ -67,7 +65,7 @@ public class MenuControllerTest extends BaseContollerTest {
         Menu menu = MenuTestSupport.createMenu("더 맛있는 후라이드 치킨", 20000, 2L);
         List<MenuProduct> menuProducts = new ArrayList<>();
         menuProducts.add(new MenuProduct());
-        menu.setMenuProducts(menuProducts);
+        menu.changeMenuProducts(menuProducts);
         MenuTestSupport.addMenuGroup(menu, 1L, 3);
 
         assertThatThrownBy(() -> {
