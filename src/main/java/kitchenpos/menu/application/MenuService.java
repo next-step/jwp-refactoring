@@ -34,7 +34,7 @@ public class MenuService {
     public MenuResponse create(final MenuRequest request) {
         validate(request);
         Menu save = menuRepository.save(request.toMenuEntity());
-        save.addProducts(getMenuProducts(save.getId(), request.getMenuProducts()));
+        save.addProducts(getMenuProducts(request.getMenuProducts()));
         return MenuResponse.of(save);
     }
 
@@ -68,43 +68,9 @@ public class MenuService {
                 .collect(Collectors.toList());
     }
 
-    private Menu createMenu(MenuRequest request) {
-        Menu menu = new Menu(request.getName(), Price.of(request.getPrice()), request.getMenuGroupId());
-        List<MenuProduct> menuProducts = request.getMenuProducts().stream()
-                .map(product -> new MenuProduct(productService.findById(product.getProductId()), product.getQuantity()))
-                .collect(Collectors.toList());
-        menu.addProducts(menuProducts);
-        return menu;
-
-//        Menu menu = new Menu(request.getName(), Price.of(request.getPrice()), request.getMenuGroupId());
-//        List<MenuProduct> menuProducts = findMenuProducts(request.getMenuProducts());
-//        menu.addProducts(menuProducts);
-//
-//        return menu;
-    }
-
-    private List<MenuProduct> getMenuProducts(Long menuId, List<MenuProductRequest> menuProducts) {
+    private List<MenuProduct> getMenuProducts(List<MenuProductRequest> menuProducts) {
         return menuProducts.stream()
                 .map(product -> new MenuProduct(productService.findById(product.getProductId()), product.getQuantity()))
                 .collect(Collectors.toList());
     }
-
-//    private List<MenuProduct> findMenuProducts(List<MenuProductRequest> menuProductRequests) {
-//        List<Long> ids = menuProductRequests.stream()
-//                .map(MenuProductRequest::getProductId)
-//                .collect(Collectors.toList());
-//
-//        List<Product> products = productService.findAllByIdIn(ids);
-//        return products.stream()
-//                .map(it -> new MenuProduct(it, findRequestQuntity(menuProductRequests, it.getId())))
-//                .collect(Collectors.toList());
-//    }
-//
-//    private long findRequestQuntity(List<MenuProductRequest> menuProductRequests, Long id) {
-//        return menuProductRequests.stream()
-//                .filter(it -> it.getProductId().equals(id))
-//                .findFirst()
-//                .orElseThrow(IllegalArgumentException::new)
-//                .getQuantity();
-//    }
 }

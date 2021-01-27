@@ -12,8 +12,7 @@ public class OrderTableService {
     }
 
     public OrderTable findById(Long id) {
-        final OrderTable orderTable = orderTableRepository.findById(id)
+        return orderTableRepository.findById(id)
                 .orElseThrow(IllegalArgumentException::new);
-        return orderTable;
     }
 }
