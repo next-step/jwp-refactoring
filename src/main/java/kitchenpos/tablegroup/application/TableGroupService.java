@@ -38,10 +38,12 @@ public class TableGroupService {
         final List<OrderTable> orderTables = tableService.findAllByIdIn(tableGroupRequest.getOrderTableIds());
         validateOrderTableEmpty(orderTables);
 
-        final TableGroup tableGroup = new TableGroup(orderTables);
+        TableGroup tableGroup = new TableGroup(orderTables);
         tableGroup.validateEqualOrderTableSize(orderTables.size());
-        tableGroup.updateOrderTables(orderTables);
-        return tableGroupRepository.save(tableGroup);
+
+        TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
+        savedTableGroup.updateOrderTables(orderTables);
+        return savedTableGroup;
     }
 
 

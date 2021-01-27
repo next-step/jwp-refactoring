@@ -70,4 +70,13 @@ public class OrderTable {
         this.numberOfGuests = numberOfGuests;
     }
 
+    @Override
+    public String toString() {
+        return "OrderTable{" +
+                "id=" + id +
+                ", tableGroupId=" + tableGroupId +
+                ", numberOfGuests=" + numberOfGuests +
+                ", empty=" + empty +
+                '}';
+    }
 }

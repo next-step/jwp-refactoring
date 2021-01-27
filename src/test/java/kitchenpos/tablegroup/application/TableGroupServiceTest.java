@@ -64,6 +64,7 @@ class TableGroupServiceTest {
     void create() {
         TableGroup tableGroup = 테이블_그룹을_생성한다(new TableGroupRequest(orderTableRequests));
 
+        System.out.println(tableGroup);
         List<OrderTable> orderTables = tableGroup.getOrderTables();
 
         orderTables.forEach(group -> {
@@ -87,8 +88,6 @@ class TableGroupServiceTest {
         List<Long> orderTableIds = tableGroup.getOrderTables().stream()
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
-
-        System.out.println(">>>>>>>>>" + tableGroup);
 
         테이블_그룹을_비운다(tableGroup.getId());
 
