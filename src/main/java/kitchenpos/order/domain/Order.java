@@ -21,7 +21,7 @@ public class Order {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_table_id")
+    @JoinColumn(name = "order_table_id", nullable = false)
     private OrderTable orderTable;
 
     @Enumerated(value = EnumType.STRING)
