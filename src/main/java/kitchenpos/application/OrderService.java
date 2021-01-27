@@ -34,7 +34,6 @@ public class OrderService {
 
     @Transactional
     public Order create(final OrderRequest orderRequest) {
-
         final List<OrderLineItem> orderLineItems = new ArrayList<>();
         List<Menu> menus = menuService.findAllById(orderRequest.getMenuIds());
 
@@ -48,7 +47,7 @@ public class OrderService {
 
         final OrderTable orderTable = findOrderTableById(orderRequest.getOrderTableId());
 
-        Order order = new Order(orderTable, OrderStatus.COOKING, orderLineItems);
+        Order order = Order.ofCooking(orderTable, orderLineItems);
         order.validateMenuSize(menuService.countByIdIn(orderRequest.getMenuIds()));
         return orderRepository.save(order);
     }

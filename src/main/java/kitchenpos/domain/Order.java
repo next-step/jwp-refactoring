@@ -8,7 +8,6 @@ import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -39,7 +38,11 @@ public class Order {
     protected Order() {
     }
 
-    public Order(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+    public static Order ofCooking(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        return new Order(orderTable, OrderStatus.COOKING, orderLineItems);
+    }
+
+    private Order(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = LocalDateTime.now();
@@ -48,10 +51,11 @@ public class Order {
     }
 
     public void validateOrderStatus(OrderStatus orderStatus) {
-        if(Objects.equals(this.orderStatus, orderStatus)) {
+        if (Objects.equals(this.orderStatus, orderStatus)) {
             throw new OrderException("주문상태가 올바르지 않습니다", orderStatus);
         }
     }
+
     public void validateMenuSize(long size) {
         if (orderLineItems.size() != size) {
             throw new OrderException("주문 메뉴의 사이즈가 다릅니다", size);
