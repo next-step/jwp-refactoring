@@ -2,7 +2,8 @@ package kitchenpos.service;
 
 import kitchenpos.domain.Price;
 import kitchenpos.domain.product.Product;
-import kitchenpos.dto.ProductResponse;
+import kitchenpos.dto.product.ProductResponse;
+import kitchenpos.service.product.ProductService;
 
 import static org.assertj.core.api.Assertions.*;
 

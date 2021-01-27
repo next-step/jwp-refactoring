@@ -2,18 +2,24 @@ package kitchenpos.service;
 
 import kitchenpos.domain.Price;
 import kitchenpos.domain.product.Product;
-import kitchenpos.dto.MenuGroupRequest;
-import kitchenpos.dto.MenuGroupResponse;
-import kitchenpos.dto.MenuProductRequest;
-import kitchenpos.dto.MenuRequest;
-import kitchenpos.dto.MenuResponse;
-import kitchenpos.dto.OrderLineMenuRequest;
-import kitchenpos.dto.OrderRequest;
-import kitchenpos.dto.ProductResponse;
-import kitchenpos.dto.TableGroupRequest;
-import kitchenpos.dto.TableGroupResponse;
-import kitchenpos.dto.TableRequest;
-import kitchenpos.dto.TableResponse;
+import kitchenpos.dto.menu.MenuGroupRequest;
+import kitchenpos.dto.menu.MenuGroupResponse;
+import kitchenpos.dto.menu.MenuProductRequest;
+import kitchenpos.dto.menu.MenuRequest;
+import kitchenpos.dto.menu.MenuResponse;
+import kitchenpos.dto.order.OrderLineMenuRequest;
+import kitchenpos.dto.order.OrderRequest;
+import kitchenpos.dto.product.ProductResponse;
+import kitchenpos.dto.table.TableGroupRequest;
+import kitchenpos.dto.table.TableGroupResponse;
+import kitchenpos.dto.table.TableRequest;
+import kitchenpos.dto.table.TableResponse;
+import kitchenpos.service.menu.MenuGroupService;
+import kitchenpos.service.menu.MenuService;
+import kitchenpos.service.order.OrderService;
+import kitchenpos.service.product.ProductService;
+import kitchenpos.service.table.TableGroupService;
+import kitchenpos.service.table.TableService;
 
 import static java.util.Arrays.*;
 import static org.assertj.core.api.Assertions.*;
@@ -89,6 +95,8 @@ public class OrderTableServiceTest {
         TableResponse savedTableResponse = tableService.save(new TableRequest(0, true));
         tableService.changeEmpty(savedTableResponse.getId(), new TableRequest(false));
         doOrder(savedTableResponse);
+        em.flush();
+        em.clear();
         TableResponse changedTableResponse = tableService.changeGuestNumber(savedTableResponse.getId(), new TableRequest(4));
 
         em.flush();

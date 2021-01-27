@@ -6,6 +6,8 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class GuestNumber {
+    private static final int MIN_NUMBER = 0;
+
     private int guestNumber;
 
     protected GuestNumber() {}
@@ -20,7 +22,7 @@ public class GuestNumber {
     }
 
     public void checkGreaterThanZero(int guestNumber) {
-        if (guestNumber < 0) {
+        if (guestNumber < MIN_NUMBER) {
             throw new IllegalArgumentException("고객이 0명 미만 입니다");
         }
     }

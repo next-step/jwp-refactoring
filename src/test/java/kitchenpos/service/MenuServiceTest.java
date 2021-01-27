@@ -2,12 +2,15 @@ package kitchenpos.service;
 
 import kitchenpos.domain.Price;
 import kitchenpos.domain.product.Product;
-import kitchenpos.dto.MenuGroupRequest;
-import kitchenpos.dto.MenuGroupResponse;
-import kitchenpos.dto.MenuProductRequest;
-import kitchenpos.dto.MenuRequest;
-import kitchenpos.dto.MenuResponse;
-import kitchenpos.dto.ProductResponse;
+import kitchenpos.dto.menu.MenuGroupRequest;
+import kitchenpos.dto.menu.MenuGroupResponse;
+import kitchenpos.dto.menu.MenuProductRequest;
+import kitchenpos.dto.menu.MenuRequest;
+import kitchenpos.dto.menu.MenuResponse;
+import kitchenpos.dto.product.ProductResponse;
+import kitchenpos.service.menu.MenuGroupService;
+import kitchenpos.service.menu.MenuService;
+import kitchenpos.service.product.ProductService;
 
 import static java.util.Arrays.*;
 import static java.util.stream.Collectors.*;

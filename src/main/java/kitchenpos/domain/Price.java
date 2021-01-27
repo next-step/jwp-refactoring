@@ -6,6 +6,8 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class Price {
+    private static final int MIN_PRICE = 0;
+
     private int price;
 
     protected Price() {}
@@ -20,9 +22,13 @@ public class Price {
     }
 
     public void checkGreaterThanZero(int price) {
-        if (price < 0) {
+        if (price < MIN_PRICE) {
             throw new IllegalArgumentException("마이너스 금액을 가질 수 없습니다");
         }
+    }
+
+    public int getAmount(int quantity) {
+        return price * quantity;
     }
 
     @Override

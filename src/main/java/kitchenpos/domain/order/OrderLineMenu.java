@@ -1,7 +1,7 @@
 package kitchenpos.domain.order;
 
 import kitchenpos.domain.menu.Menu;
-import kitchenpos.domain.menu.Quantity;
+import kitchenpos.domain.Quantity;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -53,5 +53,9 @@ public class OrderLineMenu {
 
     public Menu getMenu() {
         return menu;
+    }
+
+    public int getAmount() {
+        return menu.getAmount(quantity.getQuantity());
     }
 }

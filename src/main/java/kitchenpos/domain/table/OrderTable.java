@@ -58,18 +58,8 @@ public class OrderTable {
         return empty;
     }
 
-    public void addOrder(Orders order) {
-        orders.add(order);
-    }
-
     public void changeOrderTableGroup(OrderTableGroup orderTableGroup) {
         this.orderTableGroup = orderTableGroup;
-    }
-
-    public void checkOrderStatus() {
-        if (!orders.stream().allMatch(Orders::isCompletion)) {
-            throw new IllegalArgumentException("식사완료 상태가 아닌 주문이 존재합니다");
-        }
     }
 
     public void checkOrderTableGroup() {
@@ -83,15 +73,8 @@ public class OrderTable {
     }
 
     public void changeOrderTableStatus(boolean empty) {
-        checkOrderStatus();
         checkOrderTableGroup();
         changeEmpty(empty);
-    }
-
-    private void checkOrder() {
-        if (orders.isEmpty()) {
-            throw new IllegalArgumentException("주문을 받지 않은 테이블 입니다");
-        }
     }
 
     public void checkEmpty() {
@@ -101,7 +84,6 @@ public class OrderTable {
     }
 
     public void changeGuestNumber(GuestNumber guestNumber) {
-        checkOrder();
         checkEmpty();
         this.guestNumber = guestNumber;
     }
