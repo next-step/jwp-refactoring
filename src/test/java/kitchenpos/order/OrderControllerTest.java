@@ -3,12 +3,17 @@ package kitchenpos.order;
 import com.fasterxml.jackson.core.type.TypeReference;
 import kitchenpos.common.BaseContollerTest;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.*;
+import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderStatus;
+import kitchenpos.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.web.util.NestedServletException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -28,23 +34,37 @@ public class OrderControllerTest extends BaseContollerTest {
     private OrderTableDao orderTableDao;
 
     @Test
-    @DisplayName("새로운 메뉴를 등록합니다.")
+    @DisplayName("새로운 주문을 등록합니다.")
     void create() throws Exception {
         Order order = this.createOrder(OrderStatus.COOKING);
 
-        this.mockMvc.perform(post("/api/orders")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(this.objectMapper.writeValueAsString(order)
-                ))
-                .andDo(print())
-                .andExpect(jsonPath(".id").exists())
-                .andExpect(status().isCreated())
-        ;
+        주문_등록_요청(order, status().isCreated());
     }
 
+    @Test
+    @DisplayName("새로운 주문 등록 요청 시 주문항목이 비어 있는 경우 오류 발생")
+    void createNoOrderLineOccurredException() {
+        Order order = this.createOrder(OrderStatus.COOKING);
+        order.setOrderLineItems(null);
+
+        assertThatThrownBy(() -> {
+            주문_등록_요청(order, status().is5xxServerError());
+        }).isInstanceOf(NestedServletException.class).hasMessageContaining("IllegalArgumentException");
+    }
 
     @Test
-    @DisplayName("모든 메뉴 목록을 조회합니다.")
+    @DisplayName("새로운 주문 등록 요청 시 찾을 수 없는 테이블이 있는 경우 오류 발생")
+    void createWrongOrderTableOccurredException() {
+        Order order = this.createOrder(OrderStatus.COOKING);
+        order.setOrderTableId(100L);
+
+        assertThatThrownBy(() -> {
+            주문_등록_요청(order, status().is5xxServerError());
+        }).isInstanceOf(NestedServletException.class).hasMessageContaining("IllegalArgumentException");
+    }
+
+    @Test
+    @DisplayName("모든 주문을 조회합니다.")
     void findAll() throws Exception {
         MvcResult mvcResult = this.mockMvc.perform(get("/api/orders")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -84,5 +104,16 @@ public class OrderControllerTest extends BaseContollerTest {
         orderLineItem.setMenuId(1L);
         orderLineItem.setQuantity(4);
         return Arrays.asList(new OrderLineItem[]{orderLineItem});
+    }
+
+    private void 주문_등록_요청(Order order, ResultMatcher xxServerError) throws Exception {
+        this.mockMvc.perform(post("/api/orders")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(this.objectMapper.writeValueAsString(order)
+                ))
+                .andDo(print())
+                .andExpect(jsonPath(".id").exists())
+                .andExpect(xxServerError)
+        ;
     }
 }
