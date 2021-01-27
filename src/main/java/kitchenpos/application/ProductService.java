@@ -11,6 +11,7 @@ import java.util.Objects;
 
 @Service
 public class ProductService {
+
     private final ProductDao productDao;
 
     public ProductService(final ProductDao productDao) {
@@ -19,16 +20,12 @@ public class ProductService {
 
     @Transactional
     public Product create(final Product product) {
-        final BigDecimal price = product.getPrice();
-
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
-
+        product.checkValidation();
         return productDao.save(product);
     }
 
     public List<Product> list() {
         return productDao.findAll();
     }
+
 }

@@ -177,16 +177,14 @@ public class MenuServiceTest {
     }
 
     private Product 치킨_등록됨() {
-        Product chicken = new Product();
-        chicken.setPrice(new BigDecimal(1000));
+        Product chicken = new Product("치킨", new BigDecimal(1000));
         given(productDao.findById(PRODUC_CHICKEN_ID))
                 .willReturn(Optional.of(chicken));
         return chicken;
     }
 
     private Product 커피_등록됨() {
-        Product coffee = new Product();
-        coffee.setPrice(new BigDecimal(2000));
+        Product coffee = new Product("커피", new BigDecimal(2000));
         given(productDao.findById(PRODUCT_COFFE_ID))
                 .willReturn(Optional.of(coffee));
         return coffee;
