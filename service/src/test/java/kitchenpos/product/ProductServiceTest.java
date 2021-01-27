@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.product;
 
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;

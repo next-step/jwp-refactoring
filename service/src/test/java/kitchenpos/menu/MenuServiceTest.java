@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.menu;
 
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.dto.MenuProductRequest;
