@@ -238,3 +238,14 @@
     - Service, Dto, ServiceTest
 - domain
     - Entity, Repository, Infra
+
+### 추가 의존성 제거
+- 모듈 간 의존 관계를 설정할 때, 'api' 대신 'implementation'을 사용하여, 이후에 상속될 수 있는 의존성 제거
+
+ex)  
+service에서 domain 의존설정  
+-> implementation project(':domain')
+
+web에서 domain 의존설정  
+-> implementation project(':service')  
+-> implementation project(':domain')
