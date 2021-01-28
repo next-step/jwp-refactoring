@@ -116,4 +116,13 @@ public class MenuServiceTest {
                 .isThrownBy(() -> menuService.create(후라이드한마리양념치킨한마리));
     }
 
+    @DisplayName("메뉴 생성 예외: 메뉴 그룹이 없음")
+    @Test
+    void createThrowExceptionWhenNoMenuGroup() {
+        given(menuGroupDao.existsById(치킨세트.getId())).willReturn(false);
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> menuService.create(후라이드한마리양념치킨한마리));
+    }
+
 }
