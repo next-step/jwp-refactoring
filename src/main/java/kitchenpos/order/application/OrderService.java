@@ -17,8 +17,8 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 
-@Transactional
 @Service
+@Transactional
 public class OrderService {
 	private final MenuService menuService;
 	private final OrderDao orderDao;

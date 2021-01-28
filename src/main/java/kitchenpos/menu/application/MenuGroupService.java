@@ -11,7 +11,7 @@ import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 public class MenuGroupService {
 	private final MenuGroupDao menuGroupDao;
 
@@ -19,11 +19,11 @@ public class MenuGroupService {
 		this.menuGroupDao = menuGroupDao;
 	}
 
-	@Transactional
 	public MenuGroupResponse create(final MenuGroupRequest request) {
 		return MenuGroupResponse.from(menuGroupDao.save(request.toMenuGroup()));
 	}
 
+	@Transactional(readOnly = true)
 	public List<MenuGroupResponse> list() {
 		return MenuGroupResponse.newList(menuGroupDao.findAll());
 	}
