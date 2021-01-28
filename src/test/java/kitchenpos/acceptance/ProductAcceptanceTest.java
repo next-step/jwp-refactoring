@@ -30,8 +30,8 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> selectResponse = 상품_목록_조회_요청();
 
         // then
-        상품_목록_응답됨(selectResponse);
-        상품_목록_포함됨(selectResponse, Collections.singletonList(product));
+        상품_응답_확인(selectResponse);
+        상품_목록_포함(selectResponse, Collections.singletonList(product));
     }
 
     public static ExtractableResponse<Response> 상품_생성_요청(Product product) {
@@ -44,10 +44,6 @@ public class ProductAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static void 상품_생성됨(ExtractableResponse<Response> createResponse) {
-        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-    }
-
     public static ExtractableResponse<Response> 상품_목록_조회_요청() {
         return RestAssured
                 .given().log().all()
@@ -57,11 +53,11 @@ public class ProductAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static void 상품_목록_응답됨(ExtractableResponse<Response> findResponse) {
+    public static void 상품_응답_확인(ExtractableResponse<Response> findResponse) {
         assertThat(findResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static void 상품_목록_포함됨(ExtractableResponse<Response> findResponse, List<Product> products) {
+    public static void 상품_목록_포함(ExtractableResponse<Response> findResponse, List<Product> products) {
         List<Long> createProductIds = products.stream().map(Product::getId).collect(toList());
 
         List<Long> findProductIds = findResponse.jsonPath().getList("id", Long.class);
