@@ -1,6 +1,6 @@
 ###
-POST {{host}}/api/kitchenpos.menu-groups
-Content-Type: kitchenpos.menu/json
+POST {{host}}/api/menu-groups
+Content-Type: application/json
 
 {
   "name": "추천메뉴"
