@@ -103,7 +103,7 @@ public class OrderServiceTest {
         주문.setOrderTableId(주문테이블.getId());
         주문.setOrderedTime(now);
 
-        List<OrderLineItem> orderLineItems = new ArrayList<>();
+        orderLineItems = new ArrayList<>();
         orderLineItems.add(주문_항목);
         주문.setOrderLineItems(orderLineItems);
 
@@ -156,6 +156,18 @@ public class OrderServiceTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> orderService.create(주문));
+    }
+
+    @DisplayName("주문 목록 조회")
+    @Test
+    void list() {
+        given(orderDao.findAll()).willReturn(Collections.singletonList(주문));
+        given(orderLineItemDao.findAllByOrderId(주문.getId())).willReturn(orderLineItems);
+
+        List<Order> orders = orderService.list();
+
+        assertThat(orders).containsExactly(주문);
+        assertThat(orders.get(0).getOrderLineItems()).containsAll(orderLineItems);
     }
 
 }
