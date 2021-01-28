@@ -157,4 +157,18 @@ public class TableGroupServiceTest {
 
     }
 
+    @DisplayName("주문 테이블의 단체 지정 삭제 예외: 주문 상태가 조리 또는 식사임")
+    @Test
+    void ungroupThrowExceptionOrderStatusIsCookingOrMeal() {
+        주문테이블1.setTableGroupId(단체.getId());
+        주문테이블2.setTableGroupId(단체.getId());
+
+        given(orderTableDao.findAllByTableGroupId(단체.getId())).willReturn(단체.getOrderTables());
+        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(
+                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(true);
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> tableGroupService.ungroup(단체.getId()));
+    }
+
 }
