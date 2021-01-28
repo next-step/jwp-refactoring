@@ -21,6 +21,8 @@ import kitchenpos.order.domain.OrderStatus;
 
 @Entity
 public class OrderTable {
+	private static int MIN_NUMBER_OF_GUESTS = 0;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -73,8 +75,8 @@ public class OrderTable {
 	}
 
 	public void changeNumberOfGuests(int numberOfGuests) {
-		if (numberOfGuests < 0) {
-			throw new IllegalArgumentException("방문한 손님 수는 음수가 될 수 없습니다.");
+		if (numberOfGuests < MIN_NUMBER_OF_GUESTS) {
+			throw new IllegalArgumentException("방문한 손님 수는 " + MIN_NUMBER_OF_GUESTS + " 보다 작을 수 없습니다.");
 		}
 		if (empty) {
 			throw new IllegalArgumentException("빈 테이블은 방문한 손님 수를 수정할 수 없습니다.");

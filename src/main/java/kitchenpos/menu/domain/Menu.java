@@ -18,6 +18,8 @@ import javax.persistence.OneToMany;
 
 @Entity
 public class Menu {
+    private static long MIN_MENU_PRICE = 0;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -51,12 +53,12 @@ public class Menu {
         if(menuProducts == null || menuProducts.isEmpty()) {
             throw new IllegalArgumentException("메뉴에 속한 상품들은 1개 이상이어야 합니다.");
         }
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("메뉴 가격은 0 이상이어야 합니다.");
+        if (Objects.isNull(price) || price.longValue() < MIN_MENU_PRICE) {
+            throw new IllegalArgumentException("메뉴 가격은 " + MIN_MENU_PRICE + " 이상이어야 합니다.");
         }
         BigDecimal sum = menuProducts.stream().map(MenuProduct::getSumPrice)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
-        if (price.compareTo(sum) > 0) {
+        if (price.longValue() > sum.longValue()) {
             throw new IllegalArgumentException("메뉴 가격은 메뉴에 속한 상품들의 금액보다 클 수 없습니다.");
         }
     }

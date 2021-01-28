@@ -10,6 +10,8 @@ import javax.persistence.Id;
 
 @Entity
 public class Product {
+    private static long MIN_PRODUCT_PRICE = 0;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,8 +22,8 @@ public class Product {
     }
 
     public Product(Long id, String name, BigDecimal price) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
+        if (Objects.isNull(price) || price.longValue() < MIN_PRODUCT_PRICE) {
+            throw new IllegalArgumentException("상품 가격은 " + MIN_PRODUCT_PRICE + " 이상이어야 합니다.");
         }
         this.id = id;
         this.name = name;
