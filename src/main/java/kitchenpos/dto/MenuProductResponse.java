@@ -32,10 +32,10 @@ public class MenuProductResponse {
         this.quantity = quantity;
     }
 
-    public static MenuProductResponse of(MenuProduct menuProduct) {
+    public static MenuProductResponse of(MenuProduct menuProduct, Long menuId, Long productId) {
         return new MenuProductResponse(menuProduct.getSeq(),
-            menuProduct.getMenuId(),
-            menuProduct.getProductId(),
+            menuId,
+            productId,
             menuProduct.getQuantity());
     }
 }

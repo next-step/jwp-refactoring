@@ -4,9 +4,9 @@ import java.util.List;
 
 public class TableGroupRequest {
 
-    private List<OrderTableRequest> orderTableRequests;
+    private List<OrderTableRequest> orderTables;
 
-    public List<OrderTableRequest> getOrderTableRequests() {
-        return orderTableRequests;
+    public List<OrderTableRequest> getOrderTables() {
+        return orderTables;
     }
 }

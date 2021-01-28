@@ -21,8 +21,8 @@ public class MenuResponse {
         this.menuProducts = menuProducts;
     }
 
-    public static MenuResponse of(Menu menu, List<MenuProductResponse> menuProducts) {
-        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(), menu.getMenuGroupId(), menuProducts);
+    public static MenuResponse of(Menu menu, List<MenuProductResponse> menuProducts, Long menuGroupId) {
+        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(), menuGroupId, menuProducts);
     }
 
     public Long getId() {

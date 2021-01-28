@@ -8,7 +8,7 @@ public class MenuRequest {
     private String name;
     private BigDecimal price;
     private Long menuGroupId;
-    private List<MenuProductRequest> menuProductRequests;
+    private List<MenuProductRequest> menuProducts;
 
     public String getName() {
         return name;
@@ -22,7 +22,7 @@ public class MenuRequest {
         return menuGroupId;
     }
 
-    public List<MenuProductRequest> getMenuProductRequests() {
-        return menuProductRequests;
+    public List<MenuProductRequest> getMenuProducts() {
+        return menuProducts;
     }
 }

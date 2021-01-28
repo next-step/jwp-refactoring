@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.MenuProductRepository;
@@ -50,36 +51,41 @@ public class MenuService {
         if (validateMenuGroupId(menuRequest)) {
             throw new IllegalArgumentException();
         }
-        List<Long> collect1 = menuRequest.getMenuProductRequests().stream()
-            .map(MenuProductRequest::getId)
-            .collect(Collectors.toList());
-
-        List<MenuProduct> menuProducts = menuProductRepository.findAllById(collect1);
 
         BigDecimal sum = BigDecimal.ZERO;
-        for (final MenuProduct menuProduct : menuProducts) {
-            final Product product = productRepository.findById(menuProduct.getProductId())
+        List<MenuProductRequest> menuProducts = menuRequest.getMenuProducts();
+        for (final MenuProductRequest productId : menuProducts) {
+            final Product product = productRepository.findById(productId.getProductId())
                 .orElseThrow(IllegalArgumentException::new);
-            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
+            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(productId.getQuantity())));
         }
 
         if (price.compareTo(sum) > 0) {
             throw new IllegalArgumentException();
         }
 
-        Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuRequest.getMenuGroupId(), menuProducts);
+        MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
+            .orElseThrow(IllegalArgumentException::new);
+        Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup);
         final Menu savedMenu = menuRepository.save(menu);
 
-        final Long menuId = savedMenu.getId();
         final List<MenuProduct> savedMenuProducts = new ArrayList<>();
-        for (final MenuProduct menuProduct : menuProducts) {
-            menuProduct.setMenuId(menuId);
-            savedMenuProducts.add(menuProductRepository.save(menuProduct));
+        for (final MenuProductRequest menuProductRequest : menuProducts) {
+            Product product = productRepository.findById(menuProductRequest.getProductId())
+                .orElseThrow(IllegalArgumentException::new);
+
+            MenuProduct menuProduct1 = new MenuProduct(menu, product, menuProductRequest.getQuantity());
+            savedMenuProducts.add(menuProduct1);
         }
-        savedMenu.setMenuProducts(savedMenuProducts);
-        List<MenuProductResponse> collect = savedMenu.getMenuProducts().stream().map(MenuProductResponse::of)
+
+        savedMenu.updateMenuProduct(savedMenuProducts);
+
+        List<MenuProductResponse> collect = savedMenu.getMenuProducts().stream().map(
+            menuProduct -> MenuProductResponse.of(menuProduct, menuProduct.getMenu().getId(),
+                menuProduct.getProduct().getId()))
             .collect(Collectors.toList());
-        return MenuResponse.of(savedMenu, collect);
+
+        return MenuResponse.of(savedMenu, collect, savedMenu.getMenuGroup().getId());
     }
 
     private boolean validateMenuGroupId(MenuRequest menuRequest) {
@@ -98,9 +104,11 @@ public class MenuService {
         }
 
         return menus.stream().map(menu -> {
-            List<MenuProductResponse> collect = menu.getMenuProducts().stream().map(MenuProductResponse::of)
+            List<MenuProductResponse> collect = menu.getMenuProducts().stream().map(
+                menuProduct -> MenuProductResponse.of(menuProduct, menuProduct.getMenu().getId(),
+                    menuProduct.getProduct().getId()))
                 .collect(Collectors.toList());
-            return MenuResponse.of(menu, collect);
+            return MenuResponse.of(menu, collect, menu.getMenuGroup().getId());
         }).collect(Collectors.toList());
     }
 }

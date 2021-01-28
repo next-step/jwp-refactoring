@@ -35,7 +35,7 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-        final List<OrderTableRequest> orderTables = tableGroupRequest.getOrderTableRequests();
+        final List<OrderTableRequest> orderTables = tableGroupRequest.getOrderTables();
 
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
             throw new IllegalArgumentException();

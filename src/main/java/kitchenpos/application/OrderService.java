@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
@@ -64,14 +65,16 @@ public class OrderService {
             throw new IllegalArgumentException();
         }
 
-        Order order = new Order(orderTable.getId(), OrderStatus.COOKING.name(), LocalDateTime.now());
+        Order order = new Order(orderTable, OrderStatus.COOKING.name(), LocalDateTime.now());
 
         final Order savedOrder = orderRepository.save(order);
 
         final Long orderId = savedOrder.getId();
         final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
         for (final OrderLineItemRequest orderLineItemRequest : orderLineItemsRequests) {
-            OrderLineItem orderLineItem = new OrderLineItem(orderId, orderLineItemRequest.getMenuId(),
+            Menu menu = menuRepository.findById(orderLineItemRequest.getMenuId())
+                .orElseThrow(IllegalArgumentException::new);
+            OrderLineItem orderLineItem = new OrderLineItem(orderId, menu,
                 orderLineItemRequest.getQuantity());
             savedOrderLineItems.add(orderLineItemRepository.save(orderLineItem));
         }
