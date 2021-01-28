@@ -121,4 +121,15 @@ public class TableGroupServiceTest {
                 .isThrownBy(() -> tableGroupService.create(단체));
     }
 
+    @DisplayName("단체 지정 생성 예외: 주문 테이블 중에 빈 테이블이 아닌 것이 있음")
+    @Test
+    void createThrowExceptionWhenHasNotEmptyOrderTable() {
+        주문테이블1.setEmpty(false);
+        given(orderTableDao.findAllByIdIn(orderTableIds)).willReturn(단체.getOrderTables());
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> tableGroupService.create(단체));
+    }
+
+
 }
