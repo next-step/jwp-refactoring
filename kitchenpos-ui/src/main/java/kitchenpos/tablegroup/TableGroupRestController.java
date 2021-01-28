@@ -1,6 +1,5 @@
-package kitchenpos.tablegroup.ui;
+package kitchenpos.tablegroup;
 
-import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.springframework.http.ResponseEntity;

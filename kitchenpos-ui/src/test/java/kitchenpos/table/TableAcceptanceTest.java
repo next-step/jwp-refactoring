@@ -1,10 +1,10 @@
-package kitchenpos.table.ui;
+package kitchenpos.table;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -17,8 +17,8 @@ import org.springframework.http.MediaType;
 import java.util.Collections;
 import java.util.List;
 
-import static kitchenpos.order.ui.OrderAcceptanceTest.주문_상태_변경_요청;
-import static kitchenpos.order.ui.OrderAcceptanceTest.주문_생성_요청;
+import static kitchenpos.order.OrderAcceptanceTest.주문_상태_변경_요청;
+import static kitchenpos.order.OrderAcceptanceTest.주문_생성_요청;
 import static kitchenpos.utils.TestHelper.*;
 import static org.assertj.core.api.Assertions.assertThat;
 

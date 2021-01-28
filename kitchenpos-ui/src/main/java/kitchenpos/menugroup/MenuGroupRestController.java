@@ -1,6 +1,5 @@
-package kitchenpos.menugroup.ui;
+package kitchenpos.menugroup;
 
-import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.springframework.http.ResponseEntity;
