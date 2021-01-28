@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.BDDMockito.given;
 
 @DisplayName("애플리케이션 테스트 보호 - 메뉴 서비스")
@@ -97,5 +98,13 @@ public class MenuServiceTest {
         assertThat(savedMenu).isEqualTo(후라이드한마리양념치킨한마리);
     }
 
+    @DisplayName("메뉴 생성 예외: 메뉴 가격이 없음")
+    @Test
+    void createThrowExceptionWhenNoMenuPrice() {
+        후라이드한마리양념치킨한마리.setPrice(null);
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> menuService.create(후라이드한마리양념치킨한마리));
+    }
 
 }
