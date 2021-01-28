@@ -91,7 +91,18 @@ public class TableServiceTest {
     @Test
     void changeEmptyThrowExceptionWhenTableGroupIdExists() {
         orderTable.setTableGroupId(1L);
-        given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.empty());
+        given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> tableService.changeEmpty(orderTable.getId(), orderTable));
+    }
+
+    @DisplayName("주문테이블의 빈 테이블 여부를 변경 예외: 주문테이블의 주문 상태가 조리 또는 식사임")
+    @Test
+    void changeEmptyThrowExceptionWhenTableOrderStatusCookingOrMeal() {
+        given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
+        given(orderDao.existsByOrderTableIdAndOrderStatusIn(orderTable.getId(),
+                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(true);
+
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableService.changeEmpty(orderTable.getId(), orderTable));
     }
