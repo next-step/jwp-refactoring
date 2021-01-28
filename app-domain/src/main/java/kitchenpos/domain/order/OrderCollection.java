@@ -1,5 +1,9 @@
 package kitchenpos.domain.order;
 
+import kitchenpos.domain.table.OrderTable;
+
+import static java.util.stream.Collectors.*;
+
 import java.util.List;
 
 public class OrderCollection {
@@ -19,5 +23,9 @@ public class OrderCollection {
         if (!orders.stream().allMatch(Orders::isCompletion)) {
             throw new IllegalArgumentException("식사완료 상태가 아닌 주문이 존재합니다");
         }
+    }
+
+    public static List<Orders> toOrders(List<OrderTable> orderTables) {
+        return orderTables.stream().flatMap(t -> t.getOrders().stream()).collect(toList());
     }
 }
