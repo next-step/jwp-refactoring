@@ -107,4 +107,13 @@ public class MenuServiceTest {
                 .isThrownBy(() -> menuService.create(후라이드한마리양념치킨한마리));
     }
 
+    @DisplayName("메뉴 생성 예외: 메뉴 가격이 0보다 작음")
+    @Test
+    void createThrowExceptionWhenMenuPriceLessThanZero() {
+        후라이드한마리양념치킨한마리.setPrice(BigDecimal.valueOf(-1));
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> menuService.create(후라이드한마리양념치킨한마리));
+    }
+
 }
