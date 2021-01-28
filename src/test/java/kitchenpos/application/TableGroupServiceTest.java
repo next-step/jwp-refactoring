@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.BDDMockito.given;
 
 @DisplayName("애플리케이션 테스트 보호 - 단체 지정 서비스")
@@ -94,6 +95,14 @@ public class TableGroupServiceTest {
 
         assertThat(savedTableGroup).isEqualTo(단체);
 
+    }
+
+    @DisplayName("단체 지정 생성 예외: 주문 테이블 목록이 비어있음")
+    @Test
+    void createThrowExceptionWhenOrderTablesIsEmpty() {
+        단체.setOrderTables(null);
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> tableGroupService.create(단체));
     }
 
 
