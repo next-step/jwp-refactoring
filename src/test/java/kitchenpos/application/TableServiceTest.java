@@ -87,4 +87,13 @@ public class TableServiceTest {
                 .isThrownBy(() -> tableService.changeEmpty(orderTable.getId(), orderTable));
     }
 
+    @DisplayName("주문테이블의 빈 테이블 여부를 변경 예외: 테이블그룹이 있음")
+    @Test
+    void changeEmptyThrowExceptionWhenTableGroupIdExists() {
+        orderTable.setTableGroupId(1L);
+        given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.empty());
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> tableService.changeEmpty(orderTable.getId(), orderTable));
+    }
+
 }
