@@ -131,5 +131,15 @@ public class TableGroupServiceTest {
                 .isThrownBy(() -> tableGroupService.create(단체));
     }
 
+    @DisplayName("단체 지정 생성 예외: 주문 테이블 중에 이미 단체지정된 것이 있음")
+    @Test
+    void createThrowExceptionWhenHasAlreadyTableGroupOrderTable() {
+        주문테이블1.setTableGroupId(2L);
+        given(orderTableDao.findAllByIdIn(orderTableIds)).willReturn(단체.getOrderTables());
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> tableGroupService.create(단체));
+    }
+
 
 }
