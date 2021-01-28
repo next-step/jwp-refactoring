@@ -113,5 +113,12 @@ public class TableGroupServiceTest {
                 .isThrownBy(() -> tableGroupService.create(단체));
     }
 
+    @DisplayName("단체 지정 생성 예외: 주문 테이블이 저장된 데이터가 아님")
+    @Test
+    void createThrowExceptionWhenOrderTablesNotExistsInStorage() {
+        given(orderTableDao.findAllByIdIn(orderTableIds)).willReturn(new ArrayList<>());
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> tableGroupService.create(단체));
+    }
 
 }
