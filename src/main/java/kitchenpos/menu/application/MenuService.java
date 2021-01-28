@@ -61,7 +61,6 @@ public class MenuService {
     private void addPersistMenuProducts(Menu menu, Menu savedMenu) {
         final List<MenuProduct> menuProducts
                 = menuProductRepository.findAllByMenuId(menu.getMenuGroup().getId());
-        final Long menuId = savedMenu.getId();
 
         for (final MenuProduct menuProduct : menuProducts) {
             menuProduct.setMenu(savedMenu);
