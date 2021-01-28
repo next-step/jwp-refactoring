@@ -31,7 +31,7 @@ public class TableGroupService {
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         TableGroup tableGroup = this.toTableGroup(tableGroupRequest);
-        tableGroup.setCreatedDate(LocalDateTime.now());
+        tableGroup.changeCreatedDate(LocalDateTime.now());
 
         final TableGroup savedTableGroup = this.tableGroupRepository.save(tableGroup);
 
@@ -57,8 +57,8 @@ public class TableGroupService {
      */
     private void addSavedOrderTables(TableGroup tableGroup, TableGroup savedTableGroup) {
         for (final OrderTable savedOrderTable : this.findOrderTablesByTableGroup(tableGroup)) {
-            savedOrderTable.setTableGroup(savedTableGroup);
-            savedOrderTable.setEmpty(false);
+            savedOrderTable.changeTableGroup(savedTableGroup);
+            savedOrderTable.changeEmpty(false);
             savedTableGroup.addOrderTables(this.orderTableRepository.save(savedOrderTable));
         }
     }
@@ -112,7 +112,7 @@ public class TableGroupService {
         this.validateOrderTablesByIdAndStatus(orderTables);
 
         for (final OrderTable orderTable : orderTables) {
-            orderTable.setTableGroup(null);
+            orderTable.changeTableGroup(null);
             this.orderTableRepository.save(orderTable);
         }
     }

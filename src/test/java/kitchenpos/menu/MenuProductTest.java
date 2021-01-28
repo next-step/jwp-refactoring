@@ -8,7 +8,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -50,11 +49,11 @@ public class MenuProductTest {
         MenuProduct menuProduct = new MenuProduct();
         Menu persistMenu = MenuTestSupport.createMenu("신메뉴", 20000
                 , this.menuGroupRepository.save(new MenuGroup("그룹1")));
-        menuProduct.setMenu(persistMenu);
+        menuProduct.changeMenu(persistMenu);
         Product product = ProductTestSupport.createProduct("치킨", BigDecimal.valueOf(15000));
         Product savedProduct = this.productRepository.save(product);
-        menuProduct.setProduct(savedProduct);
-        menuProduct.setQuantity(quantity);
+        menuProduct.changeProduct(savedProduct);
+        menuProduct.changeQuantity(quantity);
         return menuProduct;
     }
 

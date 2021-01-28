@@ -18,15 +18,11 @@ public class Product {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
     }
 
-    public void setName(final String name) {
+    public void changeName(final String name) {
         this.name = name;
     }
 
@@ -34,7 +30,7 @@ public class Product {
         return price;
     }
 
-    public void setPrice(final BigDecimal price) {
+    public void changePrice(final BigDecimal price) {
         this.price = price;
     }
 

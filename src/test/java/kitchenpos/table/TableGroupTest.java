@@ -24,7 +24,7 @@ public class TableGroupTest {
     void save() {
         // given
         TableGroup tableGroup = new TableGroup();
-        tableGroup.setCreatedDate(LocalDateTime.now());
+        tableGroup.changeCreatedDate(LocalDateTime.now());
 
         // when
         TableGroup persistTableGroup = this.tableGroupRepository.save(tableGroup);
@@ -38,7 +38,7 @@ public class TableGroupTest {
     void findById() {
         // given
         TableGroup tableGroup = new TableGroup();
-        tableGroup.setCreatedDate(LocalDateTime.now());
+        tableGroup.changeCreatedDate(LocalDateTime.now());
         TableGroup persistTableGroup = this.tableGroupRepository.save(tableGroup);
 
         // when
@@ -55,9 +55,9 @@ public class TableGroupTest {
         TableGroup tableGroup1 = new TableGroup();
         TableGroup tableGroup2 = new TableGroup();
         TableGroup tableGroup3 = new TableGroup();
-        tableGroup1.setCreatedDate(LocalDateTime.now());
-        tableGroup2.setCreatedDate(LocalDateTime.now());
-        tableGroup3.setCreatedDate(LocalDateTime.now());
+        tableGroup1.changeCreatedDate(LocalDateTime.now());
+        tableGroup2.changeCreatedDate(LocalDateTime.now());
+        tableGroup3.changeCreatedDate(LocalDateTime.now());
         this.tableGroupRepository.save(tableGroup1);
         this.tableGroupRepository.save(tableGroup2);
         this.tableGroupRepository.save(tableGroup3);

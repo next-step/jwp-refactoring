@@ -39,9 +39,9 @@ public class OrderService {
         Order order = this.toOrder(orderRequest);
         this.validateOrderLineItems(order.getOrderLineItems());
 
-        order.setOrderTable(findOrderTable(order));
-        order.setOrderStatus(OrderStatus.COOKING.name());
-        order.setOrderedTime(LocalDateTime.now());
+        order.changeOrderTable(findOrderTable(order));
+        order.changeOrderStatus(OrderStatus.COOKING.name());
+        order.changeOrderedTime(LocalDateTime.now());
 
         final Order savedOrder = this.orderRepository.save(order);
         this.addPersistOrderLineItems(order, savedOrder);
@@ -56,14 +56,14 @@ public class OrderService {
      */
     private Order toOrder(OrderRequest orderRequest) {
         Order order = orderRequest.toOrder();
-        order.setOrderTable(this.orderTableRepository.findById(orderRequest.getOrderTableId())
+        order.changeOrderTable(this.orderTableRepository.findById(orderRequest.getOrderTableId())
                 .orElseThrow(() -> new IllegalArgumentException("주문 시 테이블이 반드시 존재해야합니다.")));
 
         List<OrderLineItemRequest> orderLineItems = orderRequest.getOrderLineItems();
 
         for (OrderLineItemRequest orderLineItemRequest : orderLineItems) {
             OrderLineItem orderLineItem = orderLineItemRequest.toOrderLineItem();
-            orderLineItem.setMenu(this.menuRepository.findById(orderLineItemRequest.getMenuId())
+            orderLineItem.changeMenu(this.menuRepository.findById(orderLineItemRequest.getMenuId())
                     .orElseThrow(() -> new IllegalArgumentException("주문에 포함된 메뉴가 없습니다.")));
             order.addOrderLineItem(orderLineItem);
         }
@@ -80,10 +80,10 @@ public class OrderService {
         final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
 
         for (final OrderLineItem orderLineItem : order.getOrderLineItems()) {
-            orderLineItem.setOrder(savedOrder);
+            orderLineItem.changeOrder(savedOrder);
             savedOrderLineItems.add(this.orderLineItemRepository.save(orderLineItem));
         }
-        savedOrder.setOrderLineItems(new OrderLineItems(savedOrderLineItems));
+        savedOrder.changeOrderLineItems(new OrderLineItems(savedOrderLineItems));
     }
 
     /**
@@ -138,7 +138,7 @@ public class OrderService {
         final List<Order> orders = this.orderRepository.findAll();
 
         for (final Order order : orders) {
-            order.setOrderLineItems(new OrderLineItems(this.orderLineItemRepository.findAllByOrderId(order.getId())));
+            order.changeOrderLineItems(new OrderLineItems(this.orderLineItemRepository.findAllByOrderId(order.getId())));
         }
 
         return orders.stream().map(OrderResponse::of).collect(Collectors.toList());
@@ -150,10 +150,10 @@ public class OrderService {
                 .orElseThrow(IllegalArgumentException::new);
 
         this.checkCompletionOrder(savedOrder);
-        savedOrder.setOrderStatus(OrderStatus.valueOf(orderRequest.getOrderStatus()).name());
+        savedOrder.changeOrderStatus(OrderStatus.valueOf(orderRequest.getOrderStatus()).name());
         this.orderRepository.save(savedOrder);
 
-        savedOrder.setOrderLineItems(new OrderLineItems(this.orderLineItemRepository.findAllByOrderId(orderId)));
+        savedOrder.changeOrderLineItems(new OrderLineItems(this.orderLineItemRepository.findAllByOrderId(orderId)));
 
         return OrderResponse.of(savedOrder);
     }

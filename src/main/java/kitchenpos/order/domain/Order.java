@@ -36,15 +36,11 @@ public class Order {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public OrderTable getOrderTable() {
         return orderTable;
     }
 
-    public void setOrderTable(OrderTable orderTable) {
+    public void changeOrderTable(OrderTable orderTable) {
         this.orderTable = orderTable;
     }
 
@@ -52,7 +48,7 @@ public class Order {
         return orderStatus;
     }
 
-    public void setOrderStatus(final String orderStatus) {
+    public void changeOrderStatus(final String orderStatus) {
         this.orderStatus = orderStatus;
     }
 
@@ -60,7 +56,7 @@ public class Order {
         return orderedTime;
     }
 
-    public void setOrderedTime(final LocalDateTime orderedTime) {
+    public void changeOrderedTime(final LocalDateTime orderedTime) {
         this.orderedTime = orderedTime;
     }
 
@@ -68,7 +64,7 @@ public class Order {
         return orderLineItems.getOrderLineItems();
     }
 
-    public void setOrderLineItems(OrderLineItems orderLineItems) {
+    public void changeOrderLineItems(OrderLineItems orderLineItems) {
         this.orderLineItems = orderLineItems;
     }
 

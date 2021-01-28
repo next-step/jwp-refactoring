@@ -1,6 +1,5 @@
 package kitchenpos.order;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import kitchenpos.common.BaseContollerTest;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
@@ -18,14 +17,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
-import org.springframework.web.util.NestedServletException;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -71,7 +67,7 @@ public class OrderControllerTest extends BaseContollerTest {
 
     private OrderLineItemRequest createOrderLineItem() {
         Menu menu = new Menu("테스트메뉴", BigDecimal.valueOf(10000));
-        menu.setMenuGroup(this.menuGroupRepository.save(new MenuGroup("테스트메뉴그룹")));
+        menu.changeMenuGroup(this.menuGroupRepository.save(new MenuGroup("테스트메뉴그룹")));
 
         return new OrderLineItemRequest(this.menuRepository.save(menu).getId(), 3);
     }

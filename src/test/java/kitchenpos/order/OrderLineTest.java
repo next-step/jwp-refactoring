@@ -10,11 +10,8 @@ import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -50,11 +47,11 @@ public class OrderLineTest {
 
     private OrderLineItem createOrderLineItem(Order persistOrder) {
         OrderLineItem orderLineItem = new OrderLineItem();
-        orderLineItem.setOrder(persistOrder);
+        orderLineItem.changeOrder(persistOrder);
         Menu menu = new Menu("테스트메뉴", BigDecimal.valueOf(10000));
-        menu.setMenuGroup(this.menuGroupRepository.save(new MenuGroup("테스트메뉴그룹")));
-        orderLineItem.setMenu(this.menuRepository.save(menu));
-        orderLineItem.setQuantity(4);
+        menu.changeMenuGroup(this.menuGroupRepository.save(new MenuGroup("테스트메뉴그룹")));
+        orderLineItem.changeMenu(this.menuRepository.save(menu));
+        orderLineItem.changeQuantity(4);
 
         // when
         return this.orderLineItemRepository.save(orderLineItem);
@@ -62,9 +59,9 @@ public class OrderLineTest {
 
     public Order createOrder(OrderStatus orderStatus) {
         Order order = new Order();
-        order.setOrderStatus(orderStatus.name());
-        order.setOrderedTime(LocalDateTime.now());
-        order.setOrderTable(this.orderTableRepository.save(new OrderTable(3, false)));
+        order.changeOrderStatus(orderStatus.name());
+        order.changeOrderedTime(LocalDateTime.now());
+        order.changeOrderTable(this.orderTableRepository.save(new OrderTable(3, false)));
 
         return this.orderRepository.save(order);
     }

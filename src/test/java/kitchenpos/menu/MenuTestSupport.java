@@ -4,7 +4,6 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
 
@@ -20,12 +19,12 @@ public class MenuTestSupport {
         Menu menu = new Menu();
         menu.changeName(name);
         menu.changePrice(BigDecimal.valueOf(price));
-        menu.setMenuGroup(menuGroup);
+        menu.changeMenuGroup(menuGroup);
 
         MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setMenu(new Menu());
-        menuProduct.setProduct(new Product());
-        menuProduct.setQuantity(3);
+        menuProduct.changeMenu(new Menu());
+        menuProduct.changeProduct(new Product());
+        menuProduct.changeQuantity(3);
         menu.addMenuProducts(menuProduct);
 
         return menu;

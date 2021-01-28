@@ -22,10 +22,6 @@ public class OrderLineItems {
         return orderLineItems;
     }
 
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
-    }
-
     public void addOrderLineItem(final OrderLineItem orderLineItem) {
         this.orderLineItems.add(orderLineItem);
     }

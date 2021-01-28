@@ -39,9 +39,9 @@ public class OrderTest {
 
     private Order 주문_등록_요청(OrderStatus orderStatus) {
         Order order = new Order();
-        order.setOrderStatus(orderStatus.name());
-        order.setOrderedTime(LocalDateTime.now());
-        order.setOrderTable(this.orderTableRepository.save(new OrderTable(4, false)));
+        order.changeOrderStatus(orderStatus.name());
+        order.changeOrderedTime(LocalDateTime.now());
+        order.changeOrderTable(this.orderTableRepository.save(new OrderTable(4, false)));
 
         return this.orderRepository.save(order);
     }

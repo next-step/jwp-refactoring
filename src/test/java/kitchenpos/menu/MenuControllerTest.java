@@ -1,6 +1,5 @@
 package kitchenpos.menu;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import kitchenpos.common.BaseContollerTest;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuRequest;
@@ -18,9 +17,7 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.web.util.NestedServletException;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -109,15 +106,15 @@ public class MenuControllerTest extends BaseContollerTest {
      * @param menu
      */
     private void addMenuProduct(Menu menu) {
-        menu.setMenuGroup(this.menuGroupRepository.save(new MenuGroup("테스트그룹")));
+        menu.changeMenuGroup(this.menuGroupRepository.save(new MenuGroup("테스트그룹")));
         MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setMenu(menu);
+        menuProduct.changeMenu(menu);
 
         Product product = ProductTestSupport.createProduct("치킨", BigDecimal.valueOf(20000));
         Product savedProduct = this.productRepository.save(product);
-        menuProduct.setProduct(savedProduct);
+        menuProduct.changeProduct(savedProduct);
 
-        menuProduct.setQuantity(1);
+        menuProduct.changeQuantity(1);
 
         menu.addMenuProducts(this.menuProductRepository.save(menuProduct));
     }

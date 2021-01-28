@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,7 +47,7 @@ public class MenuService {
 
     private Menu menuRequestToMenu(MenuRequest menuRequest) {
         Menu menu = menuRequest.toMenu();
-        menu.setMenuGroup(this.menuGroupRepository.findById(menuRequest.getMenuGroupId())
+        menu.changeMenuGroup(this.menuGroupRepository.findById(menuRequest.getMenuGroupId())
                 .orElseThrow(() -> new IllegalArgumentException("메뉴그룹이 없으면 메뉴를 생성 할 수 없습니다.")));
         menu.changeMenuProducts(new MenuProducts(this.menuProductRepository.findAllById(menuRequest.getMenuProductIds())));
         return menu;
@@ -63,7 +62,7 @@ public class MenuService {
                 = menuProductRepository.findAllByMenuId(menu.getMenuGroup().getId());
 
         for (final MenuProduct menuProduct : menuProducts) {
-            menuProduct.setMenu(savedMenu);
+            menuProduct.changeMenu(savedMenu);
             savedMenu.addMenuProducts(this.menuProductRepository.save(menuProduct));
         }
     }

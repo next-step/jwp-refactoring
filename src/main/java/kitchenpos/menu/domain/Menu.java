@@ -67,7 +67,7 @@ public class Menu {
         return menuGroup;
     }
 
-    public void setMenuGroup(MenuGroup menuGroup) {
+    public void changeMenuGroup(MenuGroup menuGroup) {
         this.menuGroup = menuGroup;
     }
 

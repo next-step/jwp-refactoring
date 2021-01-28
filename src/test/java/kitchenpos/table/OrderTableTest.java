@@ -83,11 +83,11 @@ public class OrderTableTest {
     void findAllByTableGroupId() {
         // given
         TableGroup tableGroup = new TableGroup();
-        tableGroup.setCreatedDate(LocalDateTime.now());
+        tableGroup.changeCreatedDate(LocalDateTime.now());
         TableGroup persistTableGroup = this.tableGroupRepository.save(tableGroup);
         List<OrderTable> orderTableOrigins = this.orderTableRepository.findAll();
         orderTableOrigins.stream().forEach(orderTable -> {
-            orderTable.setTableGroup(persistTableGroup);
+            orderTable.changeTableGroup(persistTableGroup);
             this.orderTableRepository.save(orderTable);
         });
 

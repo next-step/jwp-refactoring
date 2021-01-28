@@ -27,7 +27,7 @@ public class TableService {
     @Transactional
     public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
         OrderTable orderTable = orderTableRequest.toOrderTable();
-        orderTable.setTableGroup(null);
+        orderTable.changeTableGroup(null);
 
         return OrderTableResponse.of(this.orderTableRepository.save(orderTable));
     }
@@ -42,7 +42,7 @@ public class TableService {
                 .orElseThrow(IllegalArgumentException::new);
         this.canEmptySavedOrderTable(orderTableId, savedOrderTable);
 
-        savedOrderTable.setEmpty(orderTable.isEmpty());
+        savedOrderTable.changeEmpty(orderTable.isEmpty());
 
         return OrderTableResponse.of(this.orderTableRepository.save(savedOrderTable));
     }
@@ -88,7 +88,7 @@ public class TableService {
 
         this.checkEmptySavedOrderTable(savedOrderTable);
 
-        savedOrderTable.setNumberOfGuests(numberOfGuests);
+        savedOrderTable.changeNumberOfGuests(numberOfGuests);
 
         return OrderTableResponse.of(this.orderTableRepository.save(savedOrderTable));
     }
