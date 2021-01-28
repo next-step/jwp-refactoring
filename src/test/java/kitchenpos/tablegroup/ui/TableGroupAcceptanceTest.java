@@ -74,7 +74,7 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(tableGroupRequest)
-                .when().post("/api/table-groups")
+                .when().post("/api/kitchenpos.table-groups")
                 .then().log().all()
                 .extract();
     }
@@ -82,7 +82,7 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     private static ExtractableResponse<Response> 단체_지정_해제_요청(Long tableGroupId) {
         return RestAssured
                 .given().log().all()
-                .when().delete("/api/table-groups/{tableGroupId}", tableGroupId)
+                .when().delete("/api/kitchenpos.table-groups/{tableGroupId}", tableGroupId)
                 .then().log().all()
                 .extract();
     }

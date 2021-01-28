@@ -113,7 +113,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(orderRequest)
-                .when().put("/api/orders/{orderId}/order-status", orderRequest.getId())
+                .when().put("/api/orders/{orderId}/kitchenpos.order-status", orderRequest.getId())
                 .then().log().all()
                 .extract();
     }

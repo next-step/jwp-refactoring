@@ -43,7 +43,7 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(menuGroupRequest)
-                .when().post("/api/menu-groups")
+                .when().post("/api/kitchenpos.menu-groups")
                 .then().log().all()
                 .extract();
     }
@@ -51,7 +51,7 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
     private static ExtractableResponse<Response> 메뉴_그룹_목록_조회_요청() {
         return RestAssured
                 .given().log().all()
-                .when().get("/api/menu-groups")
+                .when().get("/api/kitchenpos.menu-groups")
                 .then().log().all()
                 .extract();
     }

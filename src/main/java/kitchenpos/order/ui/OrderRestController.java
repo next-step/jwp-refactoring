@@ -31,7 +31,7 @@ public class OrderRestController {
                 .body(orderService.list());
     }
 
-    @PutMapping("/api/orders/{orderId}/order-status")
+    @PutMapping("/api/orders/{orderId}/kitchenpos.order-status")
     public ResponseEntity<OrderResponse> changeOrderStatus(
             @PathVariable final Long orderId,
             @RequestBody final OrderRequest orderRequest

@@ -1,14 +1,6 @@
-plugins {
-    id 'java'
+bootJar {
+    enabled = false
 }
-
-group 'camp.nextstep.edu'
-version '0.0.1-SNAPSHOT'
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+jar {
+    enabled = true
 }

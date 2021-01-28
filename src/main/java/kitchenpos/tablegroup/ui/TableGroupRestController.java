@@ -16,15 +16,15 @@ public class TableGroupRestController {
         this.tableGroupService = tableGroupService;
     }
 
-    @PostMapping("/api/table-groups")
+    @PostMapping("/api/kitchenpos.table-groups")
     public ResponseEntity<TableGroupResponse> create(@RequestBody final TableGroupRequest tableGroupRequest) {
         final TableGroupResponse created = tableGroupService.create(tableGroupRequest);
-        final URI uri = URI.create("/api/table-groups/" + created.getId());
+        final URI uri = URI.create("/api/kitchenpos.table-groups/" + created.getId());
         return ResponseEntity.created(uri)
                 .body(created);
     }
 
-    @DeleteMapping("/api/table-groups/{tableGroupId}")
+    @DeleteMapping("/api/kitchenpos.table-groups/{tableGroupId}")
     public ResponseEntity<Void> ungroup(@PathVariable final Long tableGroupId) {
         tableGroupService.ungroup(tableGroupId);
         return ResponseEntity.noContent()
