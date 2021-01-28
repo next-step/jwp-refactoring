@@ -24,7 +24,7 @@
 ### Product
 -[x]  product 생성
    * product의 price는 0 원 이상이어야 한다.
--[ ]  product 리스트 조회
+-[x]  product 리스트 조회
 
 ### TableGroup
 -[ ]  table group 생성
