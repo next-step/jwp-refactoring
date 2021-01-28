@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.BDDMockito.given;
 
 @DisplayName("애플리케이션 테스트 보호 - 주문테이블 서비스")
@@ -77,4 +78,13 @@ public class TableServiceTest {
 
         assertThat(updatedOrderTable).isEqualTo(orderTable);
     }
+
+    @DisplayName("주문테이블의 빈 테이블 여부를 변경 예외: 주문테이블이 없음")
+    @Test
+    void changeEmptyThrowExceptionWhenNoOrderTable() {
+        given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.empty());
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> tableService.changeEmpty(orderTable.getId(), orderTable));
+    }
+
 }
