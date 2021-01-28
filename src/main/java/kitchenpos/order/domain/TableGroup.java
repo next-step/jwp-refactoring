@@ -12,6 +12,8 @@ public class TableGroup {
     private LocalDateTime createdDate;
     private List<OrderTable> orderTables;
 
+    public TableGroup() {
+    }
     public TableGroup(Long id, List<OrderTable> orderTables) {
         this.id = id;
         this.orderTables = orderTables;
@@ -38,6 +40,7 @@ public class TableGroup {
             }
         }
     }
+
 
     public void changeCreatedDate(LocalDateTime createdDate) {
         this.createdDate = createdDate;
