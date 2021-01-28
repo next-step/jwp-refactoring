@@ -11,6 +11,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collections;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
@@ -46,6 +49,16 @@ public class TableServiceTest {
         OrderTable savedOrderTable = tableService.create(orderTable);
 
         assertThat(savedOrderTable).isEqualTo(orderTable);
+    }
+
+    @DisplayName("주문테이블 목록 조회")
+    @Test
+    void list() {
+        given(orderTableDao.findAll()).willReturn(Collections.singletonList(orderTable));
+
+        List<OrderTable> tables = tableService.list();
+
+        assertThat(tables).containsExactly(orderTable);
     }
 
 }
