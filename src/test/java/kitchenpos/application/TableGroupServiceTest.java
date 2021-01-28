@@ -105,5 +105,13 @@ public class TableGroupServiceTest {
                 .isThrownBy(() -> tableGroupService.create(단체));
     }
 
+    @DisplayName("단체 지정 생성 예외: 주문 테이블 목록 갯수가 2보다 적음")
+    @Test
+    void createThrowExceptionWhenOrderTablesSizeLessThen2() {
+        단체.getOrderTables().remove(단체.getOrderTables().size()-1);
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> tableGroupService.create(단체));
+    }
+
 
 }
