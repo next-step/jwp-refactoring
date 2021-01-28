@@ -4,7 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
@@ -37,6 +40,7 @@ class OrderServiceTest {
 
     private Menu createdMenu;
     private OrderTable createdOrderTable;
+    private OrderTable createdOrderTable2;
 
     @BeforeEach
     void setUp() {
@@ -64,16 +68,18 @@ class OrderServiceTest {
         OrderTable orderTable = new OrderTable();
         createdOrderTable = tableService.create(orderTable);
 
+        OrderTable orderTable2 = new OrderTable();
+        createdOrderTable2 = tableService.create(orderTable);
+
     }
 
     @Test
     @DisplayName("order 생성")
     void order_create_test() {
         //given
-        Order orderRequest = ORDER_REQUEST_생성();
         OrderLineItem orderLineItem = ORDER_LINE_ITEM_생성(createdMenu.getId());
-        orderRequest.setOrderLineItems(Collections.singletonList(orderLineItem));
-        orderRequest.setOrderTableId(createdOrderTable.getId());
+        Order orderRequest = ORDER_REQUEST_생성(createdOrderTable, orderLineItem);
+
         //when
         Order createdOrder = ORDER_생성_테스트(orderRequest);
 
@@ -87,10 +93,9 @@ class OrderServiceTest {
     @DisplayName("order에는 order line item이 1개 이상 존재해야한다.")
     void order_create_order_item_null_test() {
         //given
-        Order orderRequest = ORDER_REQUEST_생성();
-        OrderLineItem orderLineItem = ORDER_LINE_ITEM_생성(createdMenu.getId());
+        Order orderRequest = ORDER_REQUEST_생성(createdOrderTable, ORDER_LINE_ITEM_생성(createdMenu.getId()));
         orderRequest.setOrderLineItems(Collections.emptyList());
-        orderRequest.setOrderTableId(createdOrderTable.getId());
+
         //when
         //then
         assertThatThrownBy(() -> {
@@ -102,9 +107,8 @@ class OrderServiceTest {
     @DisplayName("order에는 order table이 1개 이상 존재해야한다.")
     void order_create_order_table_null_test() {
         //given
-        Order orderRequest = ORDER_REQUEST_생성();
-        OrderLineItem orderLineItem = ORDER_LINE_ITEM_생성(createdMenu.getId());
-        orderRequest.setOrderLineItems(Collections.singletonList(orderLineItem));
+        Order orderRequest = ORDER_REQUEST_생성(createdOrderTable, ORDER_LINE_ITEM_생성(createdMenu.getId()));
+        orderRequest.setOrderLineItems(Collections.emptyList());
 
         //when
         //then
@@ -112,6 +116,44 @@ class OrderServiceTest {
             Order createdOrder = ORDER_생성_테스트(orderRequest);
         }).isInstanceOf(IllegalArgumentException.class);
     }
+
+    @Test
+    @DisplayName("order 리스트 조회")
+    void order_show_test() {
+        //given
+        OrderLineItem orderLineItem1 = ORDER_LINE_ITEM_생성(createdMenu.getId());
+        Order order1 = ORDER_생성_테스트(ORDER_REQUEST_생성(createdOrderTable, orderLineItem1));
+        OrderLineItem orderLineItem2 = ORDER_LINE_ITEM_생성(createdMenu.getId());
+        Order order2 = ORDER_생성_테스트(ORDER_REQUEST_생성(createdOrderTable2, orderLineItem2));
+
+        //when
+        List<Order> list = orderService.list();
+
+        //then
+        Assertions.assertAll(() -> {
+            List<Long> collect = list.stream().map(Order::getId).collect(Collectors.toList());
+            List<Long> orders = Arrays.asList(order1.getId(), order2.getId());
+            assertThat(collect).containsAll(orders);
+
+            List<OrderLineItem> collect1 = list.stream()
+                .flatMap(order -> order.getOrderLineItems().stream())
+                .collect(Collectors.toList());
+
+            long count = collect1.stream()
+                .filter(orderLineItem -> orderLineItem.getOrderId().equals(orderLineItem1.getOrderId()) &&
+                    orderLineItem.getMenuId().equals(orderLineItem1.getMenuId()))
+                .count();
+            assertThat(count).isGreaterThan(0L);
+
+            long count2 = collect1.stream()
+                .filter(orderLineItem -> orderLineItem.getOrderId().equals(orderLineItem2.getOrderId()) &&
+                    orderLineItem.getMenuId().equals(orderLineItem2.getMenuId()))
+                .count();
+            assertThat(count2).isGreaterThan(0L);
+        });
+
+    }
+
 
     private OrderLineItem ORDER_LINE_ITEM_생성(long menuId) {
         OrderLineItem orderLineItem = new OrderLineItem();
@@ -124,8 +166,10 @@ class OrderServiceTest {
         return orderService.create(orderRequest);
     }
 
-    private Order ORDER_REQUEST_생성() {
-        Order order = new Order();
-        return order;
+    private Order ORDER_REQUEST_생성(OrderTable createdOrderTable, OrderLineItem orderLineItem) {
+        Order orderRequest = new Order();
+        orderRequest.setOrderLineItems(Collections.singletonList(orderLineItem));
+        orderRequest.setOrderTableId(createdOrderTable.getId());
+        return orderRequest;
     }
 }

@@ -56,8 +56,8 @@ class MenuGroupServiceTest {
 
     }
 
-    private MenuGroup MENU_GROUP_생성_테스트(MenuGroup menuGroupReqeust) {
-        return menuGroupService.create(menuGroupReqeust);
+    private MenuGroup MENU_GROUP_생성_테스트(MenuGroup menuGroupRequest) {
+        return menuGroupService.create(menuGroupRequest);
     }
 
     private MenuGroup MENU_GROUP_REQUEST_생성(String name) {

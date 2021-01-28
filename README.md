@@ -13,10 +13,10 @@
    * menu에는 menu product 정보를 포함해야한다.
 
 ### Order
--[ ]  order 생성
+-[x]  order 생성
    * order에는 order line item이 1개 이상 존재해야한다.
    * order에는 order table이 1개 이상 존재해야한다.
--[ ]  order 리스트 조회
+-[x]  order 리스트 조회
    * order에는 LineItem 정보를 포함해야한다.
 -[ ]  특정 order의 status 변경하기
    * order의 status가 Completeion일 경우 변경할 수 없다.
