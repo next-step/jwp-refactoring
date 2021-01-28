@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -34,16 +35,10 @@ public class TableGroupService {
     @Transactional
     public TableGroup create(final TableGroupRequest tableGroupRequest) {
         tableGroupRequest.validateOrderTableSize();
-
-        final List<OrderTable> orderTables = tableService.findAllByIdIn(tableGroupRequest.getOrderTableIds());
-        validateOrderTableEmpty(orderTables);
-
-        TableGroup tableGroup = new TableGroup(orderTables);
-        tableGroup.validateEqualOrderTableSize(orderTables.size());
-
-        TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
-        savedTableGroup.updateOrderTables(orderTables);
-        return savedTableGroup;
+        List<OrderTable> orderTables = tableService.findAllByIdIn(tableGroupRequest.getOrderTableIds());
+        TableGroup tableGroup = tableGroupRepository.save(new TableGroup(orderTables));
+        tableGroup.updateOrderTables(orderTables);
+        return tableGroup;
     }
 
 
@@ -60,13 +55,5 @@ public class TableGroupService {
 
     public TableGroup findTableGroupById(Long id) {
         return tableGroupRepository.findById(id).orElseThrow(() -> new TableGroupException("테이블 그룹이 존재하지 않습니다", id));
-    }
-
-    private void validateOrderTableEmpty(List<OrderTable> savedOrderTables) {
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
-                throw new OrderTableException("주문 테이블이 비어있지 않습니다");
-            }
-        }
     }
 }

@@ -64,7 +64,6 @@ class TableGroupServiceTest {
     void create() {
         TableGroup tableGroup = 테이블_그룹을_생성한다(new TableGroupRequest(orderTableRequests));
 
-        System.out.println(tableGroup);
         List<OrderTable> orderTables = tableGroup.getOrderTables();
 
         orderTables.forEach(group -> {

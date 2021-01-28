@@ -32,6 +32,7 @@ public class TableGroup {
     public TableGroup(List<OrderTable> orderTables) {
         this.orderTables = orderTables;
         this.createdDate = LocalDateTime.now();
+        validateEqualOrderTableSize(orderTables.size());
     }
 
     public Long getId() {
