@@ -15,10 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -103,7 +100,9 @@ public class OrderServiceTest {
         주문.setId(1L);
         주문.setOrderTableId(주문테이블.getId());
         주문.setOrderedTime(now);
-        주문.setOrderLineItems(Collections.singletonList(주문_항목));
+        List<OrderLineItem> orderLineItems = new ArrayList<>();
+        orderLineItems.add(주문_항목);
+        주문.setOrderLineItems(orderLineItems);
     }
 
     @DisplayName("주문을 생성한다")
@@ -128,6 +127,18 @@ public class OrderServiceTest {
     @Test
     void createThrowExceptionWhenOrderLineItemsEmpty() {
         주문.setOrderLineItems(null);
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> orderService.create(주문));
+    }
+
+    @DisplayName("주문 생성 예외: 주문 항목의 메뉴 갯수와 저장된 메뉴 갯수가 다름")
+    @Test
+    void createThrowExceptionWhenMenuCountDifferenceWithSavedMenuCount() {
+        OrderLineItem orderLineItem = new OrderLineItem();
+        orderLineItem.setSeq(2L);
+        orderLineItem.setMenuId(2L);
+        주문.getOrderLineItems().add(orderLineItem);
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> orderService.create(주문));
