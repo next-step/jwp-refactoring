@@ -19,22 +19,11 @@ public class ProductService {
 
     @Transactional
     public Product create(final Product product) {
-        this.validateProductByPrice(product);
+        product.validateProductByPrice();
 
         return this.productRepository.save(product);
     }
 
-    /**
-     * 해당 상품의 가격이 적합한지 검사합니다.
-     * @param product
-     */
-    private void validateProductByPrice(Product product) {
-        final BigDecimal price = product.getPrice();
-
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
-    }
 
     public List<Product> list() {
         return this.productRepository.findAll();

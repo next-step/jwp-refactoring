@@ -73,7 +73,7 @@ public class MenuService {
      * @param menu
      */
     private void validateMenu(Menu menu) {
-        this.validatePrice(menu);
+        menu.validatePrice();
         this.existMenuGroup(menu);
         this.compareMenuProductsSum(menu);
     }
@@ -115,17 +115,6 @@ public class MenuService {
         }
     }
 
-    /**
-     * 요청 받은 메뉴의 가격을 검증합니다.
-     * @param menu
-     * @throws IllegalArgumentException
-     */
-    private void validatePrice(Menu menu) {
-        BigDecimal price = menu.getPrice();
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
-    }
 
     public List<MenuResponse> list() {
         final List<Menu> menus = menuRepository.findAll();

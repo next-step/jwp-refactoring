@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Menu {
@@ -80,5 +81,17 @@ public class Menu {
 
     public void addMenuProducts(MenuProduct menuProduct) {
         this.menuProducts.add(menuProduct);
+    }
+
+
+    /**
+     * 요청 받은 메뉴의 가격을 검증합니다.
+     * @throws IllegalArgumentException
+     */
+    public void validatePrice() {
+        BigDecimal price = this.getPrice();
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException();
+        }
     }
 }
