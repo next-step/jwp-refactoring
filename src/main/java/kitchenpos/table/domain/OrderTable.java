@@ -18,7 +18,7 @@ import kitchenpos.order.domain.OrderStatus;
 
 @Entity
 public class OrderTable {
-	private static int MIN_NUMBER_OF_GUESTS = 0;
+	private static final int MIN_NUMBER_OF_GUESTS = 0;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

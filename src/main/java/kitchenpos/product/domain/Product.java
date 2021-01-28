@@ -10,7 +10,7 @@ import javax.persistence.Id;
 
 @Entity
 public class Product {
-    private static long MIN_PRODUCT_PRICE = 0;
+    private static final long MIN_PRODUCT_PRICE = 0;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

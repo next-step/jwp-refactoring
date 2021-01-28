@@ -18,7 +18,7 @@ import javax.persistence.OneToMany;
 
 @Entity
 public class Menu {
-    private static long MIN_MENU_PRICE = 0;
+    private static final long MIN_MENU_PRICE = 0;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
