@@ -30,7 +30,7 @@
 -[x]  table group 생성
    * order table의 개수는 2개 이상이어야 한다.
    * order table의 table group은 null이 아니어야 한다.
--[ ]  table group 삭제
+-[x]  table group 삭제
 
 ### Table
 -[ ]  table 생성
