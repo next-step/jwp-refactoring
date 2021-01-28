@@ -36,38 +36,81 @@ public class TableService {
     public OrderTable changeEmpty(final Long orderTableId, final OrderTable orderTable) {
         final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
-
-        if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
-            throw new IllegalArgumentException();
-        }
-
-        if (orderDao.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
-        }
+        this.canEmptySavedOrderTable(orderTableId, savedOrderTable);
 
         savedOrderTable.setEmpty(orderTable.isEmpty());
 
         return orderTableDao.save(savedOrderTable);
     }
 
+    /**
+     * 비울 수 있는 테이블인지 확인합니다.
+     * @param orderTableId
+     * @param savedOrderTable
+     */
+    private void canEmptySavedOrderTable(Long orderTableId, OrderTable savedOrderTable) {
+        this.notExistTabeGroup(savedOrderTable);
+        this.validateOrderTablesByIdsAndStatus(orderTableId);
+    }
+
+    /**
+     * 테이블그룹화 된 테이블인지 확인합니다.
+     * @param savedOrderTable
+     */
+    private void notExistTabeGroup(OrderTable savedOrderTable) {
+        if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    /**
+     * 주문 테이블들의 ID들과 상태가 적합한지 검사합니다.
+     * @param orderTableId
+     */
+    private void validateOrderTablesByIdsAndStatus(Long orderTableId) {
+        if (orderDao.existsByOrderTableIdAndOrderStatusIn(
+                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+            throw new IllegalArgumentException();
+        }
+    }
+
     @Transactional
     public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTable orderTable) {
+        final int numberOfGuests = this.validateNumberOfGuests(orderTable);
+
+        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
+                .orElseThrow(IllegalArgumentException::new);
+
+        this.checkEmptySavedOrderTable(savedOrderTable);
+
+        savedOrderTable.setNumberOfGuests(numberOfGuests);
+
+        return orderTableDao.save(savedOrderTable);
+    }
+
+    /**
+     * 주문 테이블이 비었는지 확인합니다.
+     * @param savedOrderTable
+     * @throws IllegalArgumentException
+     */
+    private void checkEmptySavedOrderTable(OrderTable savedOrderTable) {
+        if (savedOrderTable.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    /**
+     * 수정하려는 손님의 수가 적합한지 체크하고, 그 값을 반환합니다.
+     * @param orderTable
+     * @return
+     * @throws IllegalArgumentException
+     */
+    private int validateNumberOfGuests(OrderTable orderTable) {
         final int numberOfGuests = orderTable.getNumberOfGuests();
 
         if (numberOfGuests < 0) {
             throw new IllegalArgumentException();
         }
-
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        savedOrderTable.setNumberOfGuests(numberOfGuests);
-
-        return orderTableDao.save(savedOrderTable);
+        return numberOfGuests;
     }
 }
