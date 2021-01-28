@@ -2,7 +2,7 @@ package kitchenpos.product;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import kitchenpos.common.BaseContollerTest;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -39,7 +39,7 @@ public class ProductControllerTest extends BaseContollerTest {
 
         assertThatThrownBy(() -> {
             상품_등록_요청(product, status().is5xxServerError());
-        }).isInstanceOf(NestedServletException.class).hasMessageContaining("NULL not allowed for column \"NAME\"");
+        }).isInstanceOf(NestedServletException.class).hasMessageContaining("could not execute statement");
     }
 
     @Test
