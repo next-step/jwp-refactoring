@@ -7,6 +7,6 @@ Content-Type: application/json
 }
 
 ###
-GET {{host}}/api/kitchenpos.menu-groups
+GET {{host}}/api/menu-groups
 
 ###
