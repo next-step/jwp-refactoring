@@ -2,6 +2,7 @@ package kitchenpos.service.table;
 
 import kitchenpos.domain.order.OrderCollection;
 import kitchenpos.domain.table.OrderTable;
+import kitchenpos.domain.table.OrderTableGroup;
 import kitchenpos.domain.table.TableRepository;
 import kitchenpos.dto.table.TableRequest;
 import kitchenpos.dto.table.TableResponse;
@@ -27,6 +28,11 @@ public class TableService {
     @Transactional(readOnly = true)
     public List<TableResponse> findAll() {
         return TableResponse.ofList(tableRepository.findAll());
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrderTable> findOrderTablesByOrderTableGroup(OrderTableGroup orderTableGroup) {
+        return tableRepository.findByOrderTableGroup(orderTableGroup);
     }
 
     @Transactional(readOnly = true)
