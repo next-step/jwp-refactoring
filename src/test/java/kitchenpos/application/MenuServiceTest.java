@@ -18,6 +18,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -145,6 +147,19 @@ public class MenuServiceTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> menuService.create(후라이드한마리양념치킨한마리));
+    }
+
+    @DisplayName("메뉴 목록 조회")
+    @Test
+    void list() {
+        given(menuDao.findAll()).willReturn(Collections.singletonList(후라이드한마리양념치킨한마리));
+        given(menuProductDao.findAllByMenuId(후라이드한마리양념치킨한마리.getId()))
+                .willReturn(후라이드한마리양념치킨한마리.getMenuProducts());
+
+        List<Menu> menus = menuService.list();
+
+        assertThat(menus).containsExactly(후라이드한마리양념치킨한마리);
+        assertThat(menus.get(0).getMenuProducts()).containsAll(후라이드한마리양념치킨한마리.getMenuProducts());
     }
 
 }
