@@ -41,23 +41,9 @@ project(':module-domain') {
     }
 }
 
-project(':module-application') {
-    dependencies {
-        compile project(':module-domain')
-        compile project(':module-repo')
-    }
-}
-
 project(':module-web') {
     dependencies {
-        compile project(':module-application')
-        compile project(':module-domain')
-    }
-}
-
-project(':module-repo') {
-    dependencies {
-        compile project(':module-domain')
+        implementation project(':module-domain')
     }
 }
 
