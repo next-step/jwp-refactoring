@@ -107,4 +107,16 @@ public class TableServiceTest {
                 .isThrownBy(() -> tableService.changeEmpty(orderTable.getId(), orderTable));
     }
 
+    @DisplayName("주문테이블의 방문한 손님 수를 변경한다.")
+    @Test
+    void changeNumberOfGuests() {
+        orderTable.setNumberOfGuests(10);
+        given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
+        given(orderTableDao.save(orderTable)).willReturn(orderTable);
+
+        OrderTable updatedOrderTable = tableService.changeEmpty(orderTable.getId(), orderTable);
+
+        assertThat(updatedOrderTable).isEqualTo(orderTable);
+    }
+
 }
