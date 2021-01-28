@@ -91,16 +91,19 @@ class TableServiceTest {
 	void changeEmpty_exceptionCase2() {
 
 		// given
-		OrderTable 새_주문_테이블 = new OrderTable.Builder().id(-1L).empty(false).build();
-		new Order.Builder()
-				.orderTable(새_주문_테이블)
-				.orderLineItems(new OrderLineItem.Builder().menu(메뉴1).quantity(1L).build())
-				.orderStatus(OrderStatus.COOKING)
-			.build();
-		new Order.Builder()
-				.orderTable(새_주문_테이블)
-				.orderLineItems(new OrderLineItem.Builder().menu(메뉴2).quantity(1L).build())
-				.orderStatus(OrderStatus.MEAL)
+		OrderTable 새_주문_테이블 = new OrderTable.Builder().id(-1L).empty(false)
+			.orders(
+				new Order.Builder()
+					.orderTableId(-1L)
+					.orderLineItems(new OrderLineItem.Builder().menu(메뉴1).quantity(1L).build())
+					.orderStatus(OrderStatus.COOKING)
+					.build(),
+				new Order.Builder()
+					.orderTableId(-1L)
+					.orderLineItems(new OrderLineItem.Builder().menu(메뉴2).quantity(1L).build())
+					.orderStatus(OrderStatus.MEAL)
+					.build()
+			)
 			.build();
 		given(orderTableDao.findById(새_주문_테이블.getId())).willReturn(Optional.of(새_주문_테이블));
 

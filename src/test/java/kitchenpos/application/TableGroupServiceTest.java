@@ -125,28 +125,33 @@ class TableGroupServiceTest {
 		// given
 		OrderLineItem 주문_항목1 = new OrderLineItem.Builder().menu(메뉴1).quantity(1L).build();
 		OrderLineItem 주문_항목2 = new OrderLineItem.Builder().menu(메뉴2).quantity(2L).build();
-		OrderTable 새_주문_테이블1 = new OrderTable.Builder().id(-1L).empty(false).build();
-		new Order.Builder()
-			.orderStatus(OrderStatus.COOKING)
-			.orderLineItems(주문_항목1)
-			.orderTable(새_주문_테이블1)
+		OrderTable 새_주문_테이블1 = new OrderTable.Builder().id(-1L).empty(false)
+			.orders(
+				new Order.Builder()
+					.orderStatus(OrderStatus.COOKING)
+					.orderLineItems(주문_항목1)
+					.orderTableId(-1L)
+					.build(),
+				new Order.Builder()
+					.orderStatus(OrderStatus.MEAL)
+					.orderLineItems(주문_항목2)
+					.orderTableId(-1L)
+					.build()
+			)
 			.build();
-		new Order.Builder()
-			.orderStatus(OrderStatus.MEAL)
-			.orderLineItems(주문_항목2)
-			.orderTable(새_주문_테이블1)
-			.build();
-
-		OrderTable 새_주문_테이블2 = new OrderTable.Builder().id(-2L).empty(false).build();
-		new Order.Builder()
-			.orderStatus(OrderStatus.COOKING)
-			.orderLineItems(주문_항목1)
-			.orderTable(새_주문_테이블2)
-			.build();
-		new Order.Builder()
-			.orderStatus(OrderStatus.MEAL)
-			.orderLineItems(주문_항목2)
-			.orderTable(새_주문_테이블2)
+		OrderTable 새_주문_테이블2 = new OrderTable.Builder().id(-2L).empty(false)
+			.orders(
+				new Order.Builder()
+					.orderStatus(OrderStatus.COOKING)
+					.orderLineItems(주문_항목1)
+					.orderTableId(-2L)
+					.build(),
+				new Order.Builder()
+					.orderStatus(OrderStatus.MEAL)
+					.orderLineItems(주문_항목2)
+					.orderTableId(-2L)
+					.build()
+			)
 			.build();
 		TableGroup 단체_지정 = new TableGroup.Builder().orderTables(주문_테이블1, 주문_테이블2).build();
 		given(tableService.findAllByTableGroupId(단체_지정.getId())).willReturn(Arrays.asList(새_주문_테이블1, 새_주문_테이블2));

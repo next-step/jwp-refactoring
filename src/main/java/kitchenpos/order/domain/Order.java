@@ -12,17 +12,13 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.table.domain.OrderTable;
 
 @Entity
 @Table(name = "orders")
@@ -30,9 +26,7 @@ public class Order {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "order_table_id")
-	private OrderTable orderTable;
+	private Long orderTableId;
 	@Enumerated(EnumType.STRING)
 	private OrderStatus orderStatus;
 	private LocalDateTime orderedTime;
@@ -42,22 +36,21 @@ public class Order {
 	public Order() {
 	}
 
-	public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
+	public Order(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime,
 		List<OrderLineItem> orderLineItems) {
-		validate(orderTable, orderLineItems);
+		validate(orderTableId, orderLineItems);
 
 		this.id = id;
-		this.orderTable = orderTable;
+		this.orderTableId = orderTableId;
 		this.orderStatus = orderStatus;
 		this.orderedTime = orderedTime;
 		this.orderLineItems = orderLineItems;
 
 		belongToOrder(orderLineItems);
-		addOrderToOrderTable();
 	}
 
-	private void validate(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-		if (orderTable == null) {
+	private void validate(Long orderTableId, List<OrderLineItem> orderLineItems) {
+		if (orderTableId == null || orderTableId == 0) {
 			throw new IllegalArgumentException("주문은 주문테이블을 반드시 포함해야 합니다.");
 		}
 		if (orderLineItems == null) {
@@ -76,8 +69,8 @@ public class Order {
 		return id;
 	}
 
-	public OrderTable getOrderTable() {
-		return orderTable;
+	public Long getOrderTableId() {
+		return orderTableId;
 	}
 
 	public OrderStatus getOrderStatus() {
@@ -108,15 +101,9 @@ public class Order {
 		this.orderStatus = orderStatus;
 	}
 
-	private void addOrderToOrderTable() {
-		if (orderTable != null) {
-			orderTable.addOrder(this);
-		}
-	}
-
 	public static final class Builder {
 		private Long id;
-		private OrderTable orderTable;
+		private Long orderTableId;
 		private OrderStatus orderStatus;
 		private LocalDateTime orderedTime;
 		private List<OrderLineItem> orderLineItems = new ArrayList<>();
@@ -129,8 +116,8 @@ public class Order {
 			return this;
 		}
 
-		public Builder orderTable(OrderTable orderTable) {
-			this.orderTable = orderTable;
+		public Builder orderTableId(Long orderTableId) {
+			this.orderTableId = orderTableId;
 			return this;
 		}
 
@@ -155,7 +142,7 @@ public class Order {
 		}
 
 		public Order build() {
-			return new Order(id, orderTable, orderStatus, orderedTime, orderLineItems);
+			return new Order(id, orderTableId, orderStatus, orderedTime, orderLineItems);
 		}
 	}
 }

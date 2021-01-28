@@ -16,23 +16,19 @@ import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.table.application.TableService;
 
 @Transactional
 @Service
 public class OrderService {
 	private final MenuService menuService;
 	private final OrderDao orderDao;
-	private final TableService tableService;
 
 	public OrderService(
 		final MenuService menuService,
-		final OrderDao orderDao,
-		final TableService tableService
+		final OrderDao orderDao
 	) {
 		this.menuService = menuService;
 		this.orderDao = orderDao;
-		this.tableService = tableService;
 	}
 
 	public OrderResponse create(final OrderRequest request) {
@@ -46,7 +42,7 @@ public class OrderService {
 			).collect(Collectors.toList());
 
 		return OrderResponse.from(orderDao.save(new Order.Builder()
-			.orderTable(tableService.findById(request.getOrderTableId()))
+			.orderTableId(request.getOrderTableId())
 			.orderLineItems(orderLineItems)
 			.orderStatus(OrderStatus.COOKING)
 			.orderedTime(LocalDateTime.now())

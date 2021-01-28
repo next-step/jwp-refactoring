@@ -29,7 +29,8 @@ public class OrderTable {
 	private TableGroup tableGroup;
 	private int numberOfGuests;
 	private boolean empty;
-	@OneToMany(mappedBy = "orderTable")
+	@OneToMany
+	@JoinColumn(name = "orderTableId")
 	private List<Order> orders = new ArrayList<>();
 
 	public OrderTable() {
