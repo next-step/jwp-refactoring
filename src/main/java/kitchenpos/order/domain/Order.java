@@ -15,6 +15,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -30,7 +31,8 @@ public class Order {
 	@Enumerated(EnumType.STRING)
 	private OrderStatus orderStatus;
 	private LocalDateTime orderedTime;
-	@OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "order_id")
 	private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
 	public Order() {
@@ -45,16 +47,11 @@ public class Order {
 		this.orderStatus = orderStatus;
 		this.orderedTime = orderedTime;
 		this.orderLineItems = orderLineItems;
-
-		belongToOrder(orderLineItems);
 	}
 
 	private void validate(Long orderTableId, List<OrderLineItem> orderLineItems) {
 		if (orderTableId == null || orderTableId == 0) {
 			throw new IllegalArgumentException("주문은 주문테이블을 반드시 포함해야 합니다.");
-		}
-		if (orderLineItems == null) {
-			throw new IllegalArgumentException("주문 항목은 비어있을 수 없습니다.");
 		}
 		Set<Menu> menuSet = orderLineItems.stream()
 			.map(OrderLineItem::getMenu)
@@ -83,15 +80,6 @@ public class Order {
 
 	public List<OrderLineItem> getOrderLineItems() {
 		return orderLineItems;
-	}
-
-	private void belongToOrder(List<OrderLineItem> orderLineItems) {
-		if (orderLineItems == null) {
-			return;
-		}
-		for (OrderLineItem orderLineItem : orderLineItems) {
-			orderLineItem.belongToOrder(this);
-		}
 	}
 
 	public void changeOrderStatus(OrderStatus orderStatus) {

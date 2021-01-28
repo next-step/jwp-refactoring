@@ -23,24 +23,21 @@ public class OrderLineItemResponse {
 		this.quantity = quantity;
 	}
 
-	public static OrderLineItemResponse from(OrderLineItem orderLineItem) {
+	public static OrderLineItemResponse of(Long orderId, OrderLineItem orderLineItem) {
 		if(orderLineItem == null) {
 			return null;
 		}
-		Long orderId = Optional.ofNullable(orderLineItem.getOrder())
-			.map(Order::getId)
-			.orElse(null);
 		Long menuId = Optional.ofNullable(orderLineItem.getMenu())
 			.map(Menu::getId)
 			.orElse(null);
 		return new OrderLineItemResponse(orderId, menuId, orderLineItem.getQuantity());
 	}
 
-	public static List<OrderLineItemResponse> newList(List<OrderLineItem> orderLineItems) {
+	public static List<OrderLineItemResponse> newList(Long orderId, List<OrderLineItem> orderLineItems) {
 		return Optional.ofNullable(orderLineItems)
 			.orElseGet(Collections::emptyList)
 			.stream()
-			.map(OrderLineItemResponse::from)
+			.map(it -> OrderLineItemResponse.of(orderId, it))
 			.collect(Collectors.toList());
 	}
 
