@@ -111,12 +111,22 @@ public class TableServiceTest {
     @Test
     void changeNumberOfGuests() {
         orderTable.setNumberOfGuests(10);
+        orderTable.setEmpty(false);
         given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
         given(orderTableDao.save(orderTable)).willReturn(orderTable);
 
-        OrderTable updatedOrderTable = tableService.changeEmpty(orderTable.getId(), orderTable);
+        OrderTable updatedOrderTable = tableService.changeNumberOfGuests(orderTable.getId(), orderTable);
 
         assertThat(updatedOrderTable).isEqualTo(orderTable);
+    }
+
+    @DisplayName("주문테이블의 방문한 손님 수를 변경 예외: 방문한 손님 수가 0보다 작음")
+    @Test
+    void changeNumberOfGuestsThrowExceptionWhenNumberOfGuestsLessThanZero() {
+        orderTable.setNumberOfGuests(-1);
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), orderTable));
     }
 
 }
