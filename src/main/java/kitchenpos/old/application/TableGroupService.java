@@ -1,9 +1,9 @@
 package kitchenpos.old.application;
 
-import kitchenpos.old.dao.OrderDao;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.OrderTableDao;
 import kitchenpos.old.dao.TableGroupDao;
-import kitchenpos.old.domain.OrderStatus;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.dto.OrderTable;
 import kitchenpos.old.domain.TableGroup;
 import org.springframework.stereotype.Service;
@@ -18,11 +18,11 @@ import java.util.stream.Collectors;
 
 @Service
 public class TableGroupService {
-    private final OrderDao orderDao;
+    private final OrderRepository orderDao;
     private final OrderTableDao orderTableDao;
     private final TableGroupDao tableGroupDao;
 
-    public TableGroupService(final OrderDao orderDao, final OrderTableDao orderTableDao, final TableGroupDao tableGroupDao) {
+    public TableGroupService(final OrderRepository orderDao, final OrderTableDao orderTableDao, final TableGroupDao tableGroupDao) {
         this.orderDao = orderDao;
         this.orderTableDao = orderTableDao;
         this.tableGroupDao = tableGroupDao;
@@ -74,11 +74,11 @@ public class TableGroupService {
         final List<Long> orderTableIds = orderTables.stream()
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
-
-        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
-        }
+//
+//        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
+//                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+//            throw new IllegalArgumentException();
+//        }
 
 //        for (final OrderTable orderTable : orderTables) {
 //            orderTable.setTableGroupId(null);

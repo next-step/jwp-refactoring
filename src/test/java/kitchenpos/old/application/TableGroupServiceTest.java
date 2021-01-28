@@ -1,6 +1,6 @@
 //package kitchenpos.old.application;
 //
-//import kitchenpos.old.dao.OrderDao;
+//import kitchenpos.order.OrderDao;
 //import kitchenpos.table.OrderTableDao;
 //import kitchenpos.old.dao.TableGroupDao;
 //import kitchenpos.table.dto.OrderTable;

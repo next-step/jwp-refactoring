@@ -1,12 +1,9 @@
 package kitchenpos.table.dto;
 
-import kitchenpos.old.domain.OrderStatus;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.util.Arrays;
 import java.util.Objects;
 
 @Entity
@@ -40,6 +37,12 @@ public class OrderTable {
 
     public boolean isEmpty() {
         return empty;
+    }
+
+    public void checkOrder() {
+        if (this.empty) {
+            throw new IllegalArgumentException();
+        }
     }
 
     public void changeEmpty(boolean empty) {
