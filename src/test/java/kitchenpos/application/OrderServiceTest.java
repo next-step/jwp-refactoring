@@ -36,6 +36,8 @@ public class OrderServiceTest {
     private Order 주문;
     private OrderLineItem 주문_항목;
     private OrderTable 주문테이블;
+    private List<OrderLineItem> orderLineItems;
+    private List<Long> menuIds;
 
     @Mock
     private MenuDao menuDao;
@@ -100,18 +102,19 @@ public class OrderServiceTest {
         주문.setId(1L);
         주문.setOrderTableId(주문테이블.getId());
         주문.setOrderedTime(now);
+
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         orderLineItems.add(주문_항목);
         주문.setOrderLineItems(orderLineItems);
+
+        menuIds = 주문.getOrderLineItems().stream()
+                .map(OrderLineItem::getMenuId)
+                .collect(Collectors.toList());
     }
 
     @DisplayName("주문을 생성한다")
     @Test
     void create() {
-        List<Long> menuIds = 주문.getOrderLineItems().stream()
-                .map(OrderLineItem::getMenuId)
-                .collect(Collectors.toList());
-
         given(menuDao.countByIdIn(menuIds)).willReturn(Long.valueOf(주문.getOrderLineItems().size()));
         given(orderTableDao.findById(주문테이블.getId())).willReturn(Optional.of(주문테이블));
         given(orderDao.save(주문)).willReturn(주문);
@@ -139,6 +142,17 @@ public class OrderServiceTest {
         orderLineItem.setSeq(2L);
         orderLineItem.setMenuId(2L);
         주문.getOrderLineItems().add(orderLineItem);
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> orderService.create(주문));
+    }
+
+    @DisplayName("주문 생성 예외: 주문테이블이 빈 테이블임")
+    @Test
+    void createThrowExceptionWhenOrderTableIsEmpty() {
+        주문테이블.setEmpty(true);
+        given(menuDao.countByIdIn(menuIds)).willReturn(Long.valueOf(주문.getOrderLineItems().size()));
+        given(orderTableDao.findById(주문테이블.getId())).willReturn(Optional.of(주문테이블));
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> orderService.create(주문));
