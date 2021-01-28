@@ -4,16 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import kitchenpos.order.domain.Order;
@@ -26,9 +23,7 @@ public class OrderTable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "table_group_id")
-	private TableGroup tableGroup;
+	private Long tableGroupId;
 	private int numberOfGuests;
 	private boolean empty;
 	@OneToMany
@@ -38,10 +33,9 @@ public class OrderTable {
 	public OrderTable() {
 	}
 
-	public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty,
+	public OrderTable(Long id, int numberOfGuests, boolean empty,
 		List<Order> orders) {
 		this.id = id;
-		this.tableGroup = tableGroup;
 		this.numberOfGuests = numberOfGuests;
 		this.empty = empty;
 		this.orders = orders;
@@ -51,8 +45,12 @@ public class OrderTable {
 		return id;
 	}
 
-	public TableGroup getTableGroup() {
-		return tableGroup;
+	public Long getTableGroupId() {
+		return tableGroupId;
+	}
+
+	public boolean isInGroup() {
+		return tableGroupId != null && tableGroupId != 0;
 	}
 
 	public int getNumberOfGuests() {
@@ -64,7 +62,7 @@ public class OrderTable {
 	}
 
 	public void changeEmpty(boolean empty) {
-		if (Objects.nonNull(tableGroup)) {
+		if (getTableGroupId() != null && getTableGroupId() != 0) {
 			throw new IllegalArgumentException("빈 테이블 여부를 수정하기 위해서는 단체가 지정되어 있지 않아야 합니다.");
 		}
 
@@ -84,16 +82,11 @@ public class OrderTable {
 		this.numberOfGuests = numberOfGuests;
 	}
 
-	public void belongToGroup(TableGroup tableGroup) {
-		this.tableGroup = tableGroup;
-		this.empty = false;
-	}
-
 	public void ungroup() {
 		if (isExistNoCompletionOrder()) {
 			throw new IllegalArgumentException("단체 지정을 해제하기 위해서는 주문 테이블의 주문 상태가 모두 계산 완료여야 합니다.");
 		}
-		this.tableGroup = null;
+		this.tableGroupId = null;
 	}
 
 	private boolean isExistNoCompletionOrder() {
@@ -104,16 +97,8 @@ public class OrderTable {
 			.anyMatch(it -> OrderStatus.COOKING.equals(it) || OrderStatus.MEAL.equals(it));
 	}
 
-	public void addOrder(Order order) {
-		if(orders.contains(order)) {
-			return;
-		}
-		orders.add(order);
-	}
-
 	public static final class Builder {
 		private Long id;
-		private TableGroup tableGroup;
 		private int numberOfGuests;
 		private boolean empty;
 		private List<Order> orders = new ArrayList<>();
@@ -123,11 +108,6 @@ public class OrderTable {
 
 		public Builder id(Long id) {
 			this.id = id;
-			return this;
-		}
-
-		public Builder tableGroup(TableGroup tableGroup) {
-			this.tableGroup = tableGroup;
 			return this;
 		}
 
@@ -152,7 +132,7 @@ public class OrderTable {
 		}
 
 		public OrderTable build() {
-			return new OrderTable(id, tableGroup, numberOfGuests, empty, orders);
+			return new OrderTable(id, numberOfGuests, empty, orders);
 		}
 	}
 }

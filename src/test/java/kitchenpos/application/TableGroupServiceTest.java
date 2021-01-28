@@ -122,8 +122,8 @@ class TableGroupServiceTest {
 		tableGroupService.ungroup(단체_지정.getId());
 
 		// then
-		assertThat(주문_테이블9.getTableGroup()).isNull();
-		assertThat(주문_테이블10.getTableGroup()).isNull();
+		assertThat(주문_테이블9.getTableGroupId()).isNull();
+		assertThat(주문_테이블10.getTableGroupId()).isNull();
 	}
 
 	@DisplayName("단체 해제 : 단체 지정되어 있던 주문 테이블의 주문 상태가 계산 완료가 아닌 것이 존재함")

@@ -74,11 +74,13 @@ class TableServiceTest {
 	@Test
 	void changeEmpty_exceptionCase1() {
 		// given
-		OrderTable 새_주문_테이블1 = new OrderTable.Builder().id(9L).empty(true).build();
-		OrderTable 새_주문_테이블2 = new OrderTable.Builder().id(10L).empty(true).build();
+		OrderTable 새_주문_테이블1 = new OrderTable.Builder().empty(true).build();
+		OrderTable 새_주문_테이블2 = new OrderTable.Builder().empty(true).build();
 		TableGroup 이미_단체_지정 = new TableGroup.Builder().id(-1L).orderTables(새_주문_테이블1, 새_주문_테이블2).build();
 
-		given(orderTableDao.findById(새_주문_테이블1.getId())).willReturn(Optional.of(새_주문_테이블1));
+		OrderTable 새_주문_테이블1_mock = spy(새_주문_테이블1);
+		when(새_주문_테이블1_mock.getTableGroupId()).thenReturn(-1L);
+		given(orderTableDao.findById(새_주문_테이블1.getId())).willReturn(Optional.of(새_주문_테이블1_mock));
 
 		// when & then
 		assertThatThrownBy(
