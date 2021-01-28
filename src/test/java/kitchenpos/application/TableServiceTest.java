@@ -139,4 +139,15 @@ public class TableServiceTest {
                 .isThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), orderTable));
     }
 
+    @DisplayName("주문테이블의 방문한 손님 수를 변경 예외: 빈 테이블임")
+    @Test
+    void changeNumberOfGuestsThrowExceptionWhenOrderTableIsEmpty() {
+        orderTable.setNumberOfGuests(10);
+        orderTable.setEmpty(true);
+        given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.empty());
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), orderTable));
+    }
+
 }
