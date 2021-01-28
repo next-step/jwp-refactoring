@@ -28,7 +28,8 @@ public class Menu {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "menu_id")
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
     public Menu() {
@@ -42,8 +43,6 @@ public class Menu {
         this.price = price;
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
-
-        belongToMenu(menuProducts);
     }
 
     private void validate(MenuGroup menuGroup, BigDecimal price, List<MenuProduct> menuProducts) {
@@ -60,15 +59,6 @@ public class Menu {
             .reduce(BigDecimal.ZERO, BigDecimal::add);
         if (price.longValue() > sum.longValue()) {
             throw new IllegalArgumentException("메뉴 가격은 메뉴에 속한 상품들의 금액보다 클 수 없습니다.");
-        }
-    }
-
-    private void belongToMenu(List<MenuProduct> menuProducts) {
-        if(menuProducts == null) {
-            return;
-        }
-        for (MenuProduct menuProduct : menuProducts) {
-            menuProduct.changeMenu(this);
         }
     }
 

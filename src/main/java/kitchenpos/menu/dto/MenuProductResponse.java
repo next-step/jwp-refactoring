@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
 
@@ -22,22 +21,19 @@ public class MenuProductResponse {
 		this.quantity = quantity;
 	}
 
-	public static MenuProductResponse from(MenuProduct menuProduct) {
+	public static MenuProductResponse of(Long menuId, MenuProduct menuProduct) {
 		if(menuProduct == null) {
 			return null;
 		}
-		Long menuId = Optional.ofNullable(menuProduct.getMenu())
-			.map(Menu::getId)
-			.orElse(null);
 		Long productId = Optional.ofNullable(menuProduct.getProduct())
 			.map(Product::getId)
 			.orElse(null);
 		return new MenuProductResponse(menuId, productId, menuProduct.getQuantity());
 	}
 
-	public static List<MenuProductResponse> newList(List<MenuProduct> menuProducts) {
+	public static List<MenuProductResponse> newList(Long menuId, List<MenuProduct> menuProducts) {
 		return menuProducts.stream()
-			.map(MenuProductResponse::from)
+			.map(it -> MenuProductResponse.of(menuId, it))
 			.collect(Collectors.toList());
 	}
 

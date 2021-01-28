@@ -21,12 +21,12 @@ public class TestFixtures {
 	public static Product 상품5 = newProduct(5L, 17000L, "간장치킨");
 	public static Product 상품6 = newProduct(6L, 17000L, "순살치킨");
 
-	public static MenuProduct 메뉴_상품1 = newMenuProduct(1L, 상품1, 1L);
-	public static MenuProduct 메뉴_상품2 = newMenuProduct(2L, 상품2, 1L);
-	public static MenuProduct 메뉴_상품3 = newMenuProduct(3L, 상품3, 1L);
-	public static MenuProduct 메뉴_상품4 = newMenuProduct(4L, 상품4, 1L);
-	public static MenuProduct 메뉴_상품5 = newMenuProduct(5L, 상품5, 1L);
-	public static MenuProduct 메뉴_상품6 = newMenuProduct(6L, 상품6, 1L);
+	public static MenuProduct 메뉴_상품1 = newMenuProduct(상품1, 1L);
+	public static MenuProduct 메뉴_상품2 = newMenuProduct(상품2, 1L);
+	public static MenuProduct 메뉴_상품3 = newMenuProduct(상품3, 1L);
+	public static MenuProduct 메뉴_상품4 = newMenuProduct(상품4, 1L);
+	public static MenuProduct 메뉴_상품5 = newMenuProduct(상품5, 1L);
+	public static MenuProduct 메뉴_상품6 = newMenuProduct(상품6, 1L);
 
 	public static Menu 메뉴1 = newMenu(1L, "후라이드치킨", 16000L, 메뉴_그룹2, 메뉴_상품1);
 	public static Menu 메뉴2 = newMenu(2L, "양념치킨", 16000L, 메뉴_그룹2, 메뉴_상품2);
@@ -50,8 +50,8 @@ public class TestFixtures {
 	private static Product newProduct(Long id, Long price, String name){
 		return new Product.Builder().id(id).price(BigDecimal.valueOf(price)).name(name).build();
 	}
-	private static MenuProduct newMenuProduct(Long id, Product product, Long quantity){
-		return new MenuProduct.Builder().seq(id).product(product).quantity(quantity).build();
+	private static MenuProduct newMenuProduct(Product product, Long quantity){
+		return new MenuProduct.Builder().product(product).quantity(quantity).build();
 	}
 	private static Menu newMenu(Long id, String name, Long price, MenuGroup menuGroup, MenuProduct menuProduct){
 		return new Menu.Builder().id(id).name(name).price(BigDecimal.valueOf(price)).menuGroup(menuGroup).menuProducts(menuProduct).build();

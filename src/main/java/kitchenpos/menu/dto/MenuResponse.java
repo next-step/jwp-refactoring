@@ -33,13 +33,12 @@ public class MenuResponse {
 		Long menuGroupId = Optional.ofNullable(menu.getMenuGroup())
 			.map(MenuGroup::getId)
 			.orElse(null);
-		List<MenuProductResponse> menuProducts = MenuProductResponse.newList(menu.getMenuProducts());
 		return new MenuResponse(
 			menu.getId(),
 			menu.getName(),
 			menu.getPrice().longValue(),
 			menuGroupId,
-			menuProducts
+			MenuProductResponse.newList(menu.getId(), menu.getMenuProducts())
 		);
 	}
 

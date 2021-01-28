@@ -158,7 +158,6 @@ class MenuServiceTest {
 
 	public MenuProductRequest fromMenuProductToRequest(MenuProduct menuProduct) {
 		return new MenuProductRequest(
-			menuProduct.getMenu().getId(),
 			menuProduct.getProduct().getId(),
 			menuProduct.getQuantity()
 		);

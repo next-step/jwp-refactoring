@@ -35,8 +35,8 @@ class MenuRestControllerTest {
 			BigDecimal.valueOf(20000L),
 			메뉴_그룹1.getId(),
 			Arrays.asList(
-				new MenuProductRequest(메뉴1.getId(), 상품1.getId(), 1L),
-				new MenuProductRequest(메뉴2.getId(), 상품2.getId(), 2L)
+				new MenuProductRequest(상품1.getId(), 1L),
+				new MenuProductRequest(상품2.getId(), 2L)
 			)
 		);
 
