@@ -1,4 +1,4 @@
-package kitchenpos.common.exception;
+package exception;
 
 public class InvalidPriceException extends RuntimeException {
     public InvalidPriceException(String message) {

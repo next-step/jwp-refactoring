@@ -1,4 +1,4 @@
-package kitchenpos.common.exception;
+package exception;
 
 public class NotFoundEntityException extends RuntimeException {
     public NotFoundEntityException(String message) {
