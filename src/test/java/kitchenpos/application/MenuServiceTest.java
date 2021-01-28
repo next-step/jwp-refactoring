@@ -45,7 +45,7 @@ public class MenuServiceTest {
         양념치킨 = new Product();
         양념치킨.setId(2L);
         양념치킨.setName("양념");
-        양념치킨.setPrice(BigDecimal.valueOf(110000));
+        양념치킨.setPrice(BigDecimal.valueOf(11000));
 
         치킨세트 = new MenuGroup();
         치킨세트.setId(1L);
@@ -130,6 +130,18 @@ public class MenuServiceTest {
     void createThrowExceptionWhenNoMenuProducts() {
         given(menuGroupDao.existsById(치킨세트.getId())).willReturn(true);
         given(productDao.findById(후라이드치킨.getId())).willReturn(Optional.empty());
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> menuService.create(후라이드한마리양념치킨한마리));
+    }
+
+    @DisplayName("메뉴 생성 예외: 조회한 상품의 가격과 메뉴 상품의 수량을 곱한 금액의 합이 메뉴의 가격보다 작음")
+    @Test
+    void createThrowExceptionWhenMenuPriceNotEqualsSumOfProductPriceAndMenuProductQuantity() {
+        given(menuGroupDao.existsById(치킨세트.getId())).willReturn(true);
+        given(productDao.findById(후라이드치킨.getId())).willReturn(Optional.of(후라이드치킨));
+        given(productDao.findById(양념치킨.getId())).willReturn(Optional.of(양념치킨));
+        후라이드한마리양념치킨한마리.setPrice(BigDecimal.valueOf(99999));
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> menuService.create(후라이드한마리양념치킨한마리));
