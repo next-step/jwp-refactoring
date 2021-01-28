@@ -15,7 +15,8 @@ import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.ui.TableRestController;
 
 @SpringBootTest
-@Sql({"/cleanup.sql", "/db/migration/V1__Initialize_project_tables.sql", "/db/migration/V2__Insert_default_data.sql"})
+@Sql({"/cleanup.sql", "/db/migration/V1__Initialize_project_tables.sql", "/db/migration/V2__Insert_default_data.sql",
+	"/db/migration/V3__remove_two_way.sql"})
 class TableRestControllerTest {
 
 	@Autowired
