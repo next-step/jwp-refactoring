@@ -10,6 +10,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -40,6 +42,21 @@ public class ProductServiceTest {
         Product savedProduct = productService.create(request);
 
         assertThat(savedProduct).isEqualTo(expected);
+    }
+
+    @DisplayName("상품 목록 조회")
+    @Test
+    void findAll() {
+        Product expected = new Product();
+        expected.setId(1L);
+        expected.setName("강정치킨");
+        expected.setPrice(BigDecimal.valueOf(17000));
+
+        when(productDao.findAll()).thenReturn(Collections.singletonList(expected));
+
+        List<Product> products = productService.list();
+
+        assertThat(products).containsExactly(expected);
     }
 
 }
