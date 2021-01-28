@@ -1,22 +1,34 @@
 package kitchenpos.menu;
 
-import kitchenpos.dao.MenuProductDao;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.menu.domain.*;
+import kitchenpos.product.ProductTestSupport;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
+@DataJpaTest
 public class MenuProductTest {
     
     @Autowired
-    private MenuProductDao menuProductDao;
+    private MenuProductRepository menuProductRepository;
+
+    @Autowired
+    private MenuGroupRepository menuGroupRepository;
+
+    @Autowired
+    private MenuRepository menuRepository;
+    
+    @Autowired
+    private ProductRepository productRepository;
 
 
     @Test
@@ -24,17 +36,26 @@ public class MenuProductTest {
     void save() {
         // given
         int quantity = 3;
-        MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setMenuId(1L);
-        menuProduct.setProductId(2L);
-        menuProduct.setQuantity(quantity);
+        MenuProduct menuProduct = createMenuProduct(quantity);
 
         // when
-        MenuProduct persistMenuProduct = this.menuProductDao.save(menuProduct);
+        MenuProduct persistMenuProduct = this.menuProductRepository.save(menuProduct);
 
         // then
         assertThat(persistMenuProduct.getSeq()).isNotNull();
         assertThat(persistMenuProduct.getQuantity()).isEqualTo(quantity);
+    }
+
+    private MenuProduct createMenuProduct(int quantity) {
+        MenuProduct menuProduct = new MenuProduct();
+        Menu persistMenu = MenuTestSupport.createMenu("신메뉴", 20000
+                , this.menuGroupRepository.save(new MenuGroup("그룹1")));
+        menuProduct.setMenu(persistMenu);
+        Product product = ProductTestSupport.createProduct("치킨", BigDecimal.valueOf(15000));
+        Product savedProduct = this.productRepository.save(product);
+        menuProduct.setProduct(savedProduct);
+        menuProduct.setQuantity(quantity);
+        return menuProduct;
     }
 
 
@@ -43,14 +64,11 @@ public class MenuProductTest {
     void findById() {
         // given
         int quantity = 3;
-        MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setMenuId(1L);
-        menuProduct.setProductId(2L);
-        menuProduct.setQuantity(quantity);
-        MenuProduct persistMenuProduct = this.menuProductDao.save(menuProduct);
+        MenuProduct menuProduct = createMenuProduct(quantity);
+        MenuProduct persistMenuProduct = this.menuProductRepository.save(menuProduct);
 
         // when
-        MenuProduct foundMenuProduct = this.menuProductDao.findById(persistMenuProduct.getSeq()).get();
+        MenuProduct foundMenuProduct = this.menuProductRepository.findById(persistMenuProduct.getSeq()).get();
 
         // then
         assertThat(foundMenuProduct.getSeq()).isEqualTo(persistMenuProduct.getSeq());
@@ -62,7 +80,7 @@ public class MenuProductTest {
     @DisplayName("전체 메뉴 상품을 조회합니다.")
     void findAll() {
         // when
-        List<MenuProduct> foundMenuProducts = this.menuProductDao.findAll();
+        List<MenuProduct> foundMenuProducts = this.menuProductRepository.findAll();
 
         // then
         assertThat(foundMenuProducts).hasSize(6);
@@ -73,7 +91,7 @@ public class MenuProductTest {
     @DisplayName("메뉴의 ID로 메뉴 상품을 조회합니다.")
     void findAllByMenuId() {
         // when
-        List<MenuProduct> foundMenuProducts = this.menuProductDao.findAllByMenuId(1L);
+        List<MenuProduct> foundMenuProducts = this.menuProductRepository.findAllByMenuId(1L);
 
         // then
         assertThat(foundMenuProducts).hasSize(1);
