@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.BDDMockito.given;
 
 @DisplayName("애플리케이션 테스트 보호 - 주문 서비스")
@@ -121,6 +122,15 @@ public class OrderServiceTest {
 
         assertThat(savedOrder).isEqualTo(주문);
 
+    }
+
+    @DisplayName("주문 생성 예외: 주문 항목 목록이 비어있음")
+    @Test
+    void createThrowExceptionWhenOrderLineItemsEmpty() {
+        주문.setOrderLineItems(null);
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> orderService.create(주문));
     }
 
 }
