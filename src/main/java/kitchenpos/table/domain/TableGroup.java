@@ -11,8 +11,17 @@ public class TableGroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDateTime createdDate;
-    @OneToMany(mappedBy = "tableGroup")
-    private List<OrderTable> orderTables = new ArrayList<>();
+
+    @Embedded
+    private OrderTables orderTables = new OrderTables();
+
+    public TableGroup() {
+    }
+
+    public TableGroup(LocalDateTime createdDate, OrderTables orderTables) {
+        this.createdDate = createdDate;
+        this.orderTables = orderTables;
+    }
 
     public Long getId() {
         return id;
@@ -31,10 +40,10 @@ public class TableGroup {
     }
 
     public List<OrderTable> getOrderTables() {
-        return orderTables;
+        return orderTables.getOrderTables();
     }
 
-    public void setOrderTables(final List<OrderTable> orderTables) {
+    public void setOrderTables(final OrderTables orderTables) {
         this.orderTables = orderTables;
     }
 

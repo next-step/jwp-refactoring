@@ -16,13 +16,13 @@ public class Menu {
     private Long id;
     private String name;
     private BigDecimal price;
-//    private Long menuGroupId;
+
     @OneToOne
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
 
-    @OneToMany(mappedBy = "menu")
-    private List<MenuProduct> menuProducts = new ArrayList<>();
+    @Embedded
+    private MenuProducts menuProducts = new MenuProducts();
 
     public Menu() {
     }
@@ -33,10 +33,10 @@ public class Menu {
     }
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
-        this(name, price, menuGroup, new ArrayList<>());
+        this(name, price, menuGroup, new MenuProducts());
     }
 
-    public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+    public Menu(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
@@ -72,15 +72,15 @@ public class Menu {
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
+        return menuProducts.getMenuProducts();
     }
 
-    public void changeMenuProducts(final List<MenuProduct> menuProducts) {
+    public void changeMenuProducts(final MenuProducts menuProducts) {
         this.menuProducts = menuProducts;
     }
 
     public void addMenuProducts(MenuProduct menuProduct) {
-        this.menuProducts.add(menuProduct);
+        this.menuProducts.addMenuProducts(menuProduct);
     }
 
 

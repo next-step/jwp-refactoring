@@ -21,8 +21,8 @@ public class Order {
     private String orderStatus;
     private LocalDateTime orderedTime;
 
-    @OneToMany(mappedBy = "order")
-    private List<OrderLineItem> orderLineItems = new ArrayList<>();
+    @Embedded
+    private OrderLineItems orderLineItems = new OrderLineItems();
 
     public Order() {
     }
@@ -65,14 +65,14 @@ public class Order {
     }
 
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
+        return orderLineItems.getOrderLineItems();
     }
 
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
+    public void setOrderLineItems(OrderLineItems orderLineItems) {
         this.orderLineItems = orderLineItems;
     }
 
-    public void addOrderLineItem(final OrderLineItem orderLineItem) {
-        this.orderLineItems.add(orderLineItem);
+    public void addOrderLineItem(OrderLineItem orderLineItem) {
+        this.orderLineItems.addOrderLineItem(orderLineItem);
     }
 }

@@ -2,10 +2,7 @@ package kitchenpos.table.application;
 
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.table.domain.*;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
@@ -49,9 +46,9 @@ public class TableGroupService {
      * @return
      */
     private TableGroup toTableGroup(TableGroupRequest tableGroupRequest) {
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(this.orderTableRepository.findAllByIdIn(tableGroupRequest.getOrderTableIds()));
-        return tableGroup;
+        return new TableGroup(LocalDateTime.now()
+                , new OrderTables(this.orderTableRepository.findAllByIdIn(tableGroupRequest.getOrderTableIds()))
+                );
     }
 
     /**

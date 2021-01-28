@@ -83,7 +83,7 @@ public class OrderService {
             orderLineItem.setOrder(savedOrder);
             savedOrderLineItems.add(this.orderLineItemRepository.save(orderLineItem));
         }
-        savedOrder.setOrderLineItems(savedOrderLineItems);
+        savedOrder.setOrderLineItems(new OrderLineItems(savedOrderLineItems));
     }
 
     /**
@@ -138,7 +138,7 @@ public class OrderService {
         final List<Order> orders = this.orderRepository.findAll();
 
         for (final Order order : orders) {
-            order.setOrderLineItems(this.orderLineItemRepository.findAllByOrderId(order.getId()));
+            order.setOrderLineItems(new OrderLineItems(this.orderLineItemRepository.findAllByOrderId(order.getId())));
         }
 
         return orders.stream().map(OrderResponse::of).collect(Collectors.toList());
@@ -153,7 +153,7 @@ public class OrderService {
         savedOrder.setOrderStatus(OrderStatus.valueOf(orderRequest.getOrderStatus()).name());
         this.orderRepository.save(savedOrder);
 
-        savedOrder.setOrderLineItems(this.orderLineItemRepository.findAllByOrderId(orderId));
+        savedOrder.setOrderLineItems(new OrderLineItems(this.orderLineItemRepository.findAllByOrderId(orderId)));
 
         return OrderResponse.of(savedOrder);
     }

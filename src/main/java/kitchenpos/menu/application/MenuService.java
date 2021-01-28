@@ -50,7 +50,7 @@ public class MenuService {
         Menu menu = menuRequest.toMenu();
         menu.setMenuGroup(this.menuGroupRepository.findById(menuRequest.getMenuGroupId())
                 .orElseThrow(() -> new IllegalArgumentException("메뉴그룹이 없으면 메뉴를 생성 할 수 없습니다.")));
-        menu.changeMenuProducts(this.menuProductRepository.findAllById(menuRequest.getMenuProductIds()));
+        menu.changeMenuProducts(new MenuProducts(this.menuProductRepository.findAllById(menuRequest.getMenuProductIds())));
         return menu;
     }
 
@@ -120,7 +120,7 @@ public class MenuService {
         final List<Menu> menus = menuRepository.findAll();
 
         for (final Menu menu : menus) {
-            menu.changeMenuProducts(menuProductRepository.findAllByMenuId(menu.getId()));
+            menu.changeMenuProducts(new MenuProducts(menuProductRepository.findAllByMenuId(menu.getId())));
         }
 
         return menus.stream().map(MenuResponse::of).collect(Collectors.toList());
