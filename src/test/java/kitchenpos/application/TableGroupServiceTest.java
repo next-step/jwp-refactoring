@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -109,7 +111,12 @@ class TableGroupServiceTest {
 		OrderTable 주문_테이블9 = new OrderTable.Builder().id(9L).empty(true).build();
 		OrderTable 주문_테이블10 = new OrderTable.Builder().id(10L).empty(true).build();
 		TableGroup 단체_지정 = new TableGroup.Builder().id(-1L).orderTables(주문_테이블9, 주문_테이블10).build();
-		given(tableService.findAllByTableGroupId(단체_지정.getId())).willReturn(Arrays.asList(주문_테이블9, 주문_테이블10));
+		given(tableService.findAllByTableGroupId(단체_지정.getId())).willAnswer(invocation -> {
+			Set<OrderTable> orderTableSet = new HashSet<>();
+			orderTableSet.add(주문_테이블9);
+			orderTableSet.add(주문_테이블10);
+			return orderTableSet;
+		});
 
 		// when
 		tableGroupService.ungroup(단체_지정.getId());
@@ -154,7 +161,12 @@ class TableGroupServiceTest {
 			)
 			.build();
 		TableGroup 단체_지정 = new TableGroup.Builder().orderTables(주문_테이블1, 주문_테이블2).build();
-		given(tableService.findAllByTableGroupId(단체_지정.getId())).willReturn(Arrays.asList(새_주문_테이블1, 새_주문_테이블2));
+		given(tableService.findAllByTableGroupId(단체_지정.getId())).willAnswer(invocation -> {
+			Set<OrderTable> orderTableSet = new HashSet<>();
+			orderTableSet.add(새_주문_테이블1);
+			orderTableSet.add(새_주문_테이블2);
+			return orderTableSet;
+		});
 
 		// when & then
 		assertThatThrownBy(() -> tableGroupService.ungroup(단체_지정.getId())).isInstanceOf(IllegalArgumentException.class);

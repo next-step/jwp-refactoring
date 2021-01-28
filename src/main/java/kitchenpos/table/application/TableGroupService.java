@@ -2,8 +2,8 @@ package kitchenpos.table.application;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -28,11 +28,11 @@ public class TableGroupService {
 	}
 
 	public TableGroupReponse create(final TableGroupRequest request) {
-		List<OrderTable> orderTables = Optional.ofNullable(request.getOrderTables())
+		Set<OrderTable> orderTables = Optional.ofNullable(request.getOrderTables())
 			.orElseGet(Collections::emptyList)
 			.stream().map(it -> tableService.findById(it.getId())
 			)
-			.collect(Collectors.toList());
+			.collect(Collectors.toSet());
 
 		return TableGroupReponse.from(tableGroupDao.save(new TableGroup.Builder()
 			.createdDate(LocalDateTime.now())
@@ -41,7 +41,7 @@ public class TableGroupService {
 	}
 
 	public void ungroup(final Long tableGroupId) {
-		final List<OrderTable> orderTables = tableService.findAllByTableGroupId(tableGroupId);
+		final Set<OrderTable> orderTables = tableService.findAllByTableGroupId(tableGroupId);
 
 		for (OrderTable orderTable : orderTables) {
 			orderTable.ungroup();

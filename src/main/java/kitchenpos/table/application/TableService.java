@@ -1,6 +1,7 @@
 package kitchenpos.table.application;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +26,7 @@ public class TableService {
 
 	@Transactional(readOnly = true)
 	public List<OrderTableResponse> list() {
-		return OrderTableResponse.newList(orderTableDao.findAll());
+		return OrderTableResponse.newList(orderTableDao.findAllBy());
 	}
 
 	public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest request) {
@@ -49,7 +50,7 @@ public class TableService {
 			.orElseThrow(() -> new IllegalArgumentException("해당 ID의 OrderTable이 존재하지 않습니다."));
 	}
 
-	public List<OrderTable> findAllByTableGroupId(final Long tableGroupId) {
+	public Set<OrderTable> findAllByTableGroupId(final Long tableGroupId) {
 		return orderTableDao.findAllByTableGroupId(tableGroupId);
 	}
 }
