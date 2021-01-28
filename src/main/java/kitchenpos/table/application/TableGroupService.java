@@ -1,11 +1,13 @@
-package kitchenpos.application;
+package kitchenpos.table.application;
 
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -19,24 +21,37 @@ import java.util.stream.Collectors;
 @Service
 public class TableGroupService {
     private final OrderDao orderDao;
-    private final OrderTableDao orderTableDao;
-    private final TableGroupDao tableGroupDao;
+    private final OrderTableRepository orderTableRepository;
+    private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final OrderDao orderDao, final OrderTableDao orderTableDao, final TableGroupDao tableGroupDao) {
+    public TableGroupService(final OrderDao orderDao, OrderTableRepository orderTableRepository
+            , TableGroupRepository tableGroupRepository) {
         this.orderDao = orderDao;
-        this.orderTableDao = orderTableDao;
-        this.tableGroupDao = tableGroupDao;
+        this.orderTableRepository = orderTableRepository;
+        this.tableGroupRepository = tableGroupRepository;
     }
 
     @Transactional
-    public TableGroup create(final TableGroup tableGroup) {
+    public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
+        TableGroup tableGroup = this.toTableGroup(tableGroupRequest);
         tableGroup.setCreatedDate(LocalDateTime.now());
 
-        final TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
+        final TableGroup savedTableGroup = this.tableGroupRepository.save(tableGroup);
 
         this.addSavedOrderTables(tableGroup, savedTableGroup);
 
-        return savedTableGroup;
+        return TableGroupResponse.of(savedTableGroup);
+    }
+
+    /**
+     * 테이블 그룹 요청을 테이블 그룹으로 변환합니다.
+     * @param tableGroupRequest
+     * @return
+     */
+    private TableGroup toTableGroup(TableGroupRequest tableGroupRequest) {
+        TableGroup tableGroup = new TableGroup();
+        tableGroup.setOrderTables(this.orderTableRepository.findAllByIdIn(tableGroupRequest.getOrderTableIds()));
+        return tableGroup;
     }
 
     /**
@@ -44,12 +59,10 @@ public class TableGroupService {
      * @param savedTableGroup
      */
     private void addSavedOrderTables(TableGroup tableGroup, TableGroup savedTableGroup) {
-        final Long tableGroupId = savedTableGroup.getId();
-
         for (final OrderTable savedOrderTable : this.findOrderTablesByTableGroup(tableGroup)) {
-            savedOrderTable.setTableGroupId(tableGroupId);
+            savedOrderTable.setTableGroup(savedTableGroup);
             savedOrderTable.setEmpty(false);
-            savedTableGroup.addOrderTables(orderTableDao.save(savedOrderTable));
+            savedTableGroup.addOrderTables(this.orderTableRepository.save(savedOrderTable));
         }
     }
 
@@ -62,7 +75,7 @@ public class TableGroupService {
         final List<OrderTable> orderTables = tableGroup.getOrderTables();
         this.validateOrderTablesSize(orderTables);
 
-        final List<OrderTable> savedOrderTables = orderTableDao.findAllByIdIn(orderTables.stream()
+        final List<OrderTable> savedOrderTables = this.orderTableRepository.findAllByIdIn(orderTables.stream()
                                               .map(OrderTable::getId).collect(Collectors.toList()));
         this.validateSavedOrderTables(orderTables, savedOrderTables);
 
@@ -80,7 +93,7 @@ public class TableGroupService {
         }
 
         for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
+            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup())) {
                 throw new IllegalArgumentException();
             }
         }
@@ -98,12 +111,12 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableDao.findAllByTableGroupId(tableGroupId);
+        final List<OrderTable> orderTables = this.orderTableRepository.findAllByTableGroupId(tableGroupId);
         this.validateOrderTablesByIdAndStatus(orderTables);
 
         for (final OrderTable orderTable : orderTables) {
-            orderTable.setTableGroupId(null);
-            orderTableDao.save(orderTable);
+            orderTable.setTableGroup(null);
+            this.orderTableRepository.save(orderTable);
         }
     }
 

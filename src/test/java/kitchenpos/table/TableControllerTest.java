@@ -2,8 +2,10 @@ package kitchenpos.table;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import kitchenpos.common.BaseContollerTest;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dao.OrderTableDao;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,10 +42,10 @@ public class TableControllerTest extends BaseContollerTest {
                 .andReturn();
 
         String responseOrderTables = mvcResult.getResponse().getContentAsString();
-        ArrayList<OrderTable> orderTables
-                = this.objectMapper.readValue(responseOrderTables, new TypeReference<ArrayList<OrderTable>>() {});
+        ArrayList<OrderTableResponse> orderTables
+                = this.objectMapper.readValue(responseOrderTables, new TypeReference<ArrayList<OrderTableResponse>>() {});
 
-        assertThat(orderTables).hasSize(9);
+        assertThat(orderTables).hasSize(10);
     }
 
 
@@ -52,11 +54,12 @@ public class TableControllerTest extends BaseContollerTest {
     void changeEmpty() throws Exception {
         OrderTable orderTable = this.orderTableDao.findAll().stream().findFirst().get();
         String uri = "/api/tables/" + orderTable.getId() + "/empty";
-        orderTable.setEmpty(true);
+        OrderTableRequest orderTableRequest
+                = new OrderTableRequest(orderTable.getNumberOfGuests(), true);
 
         this.mockMvc.perform(put(uri)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(this.objectMapper.writeValueAsString(orderTable))
+                .content(this.objectMapper.writeValueAsString(orderTableRequest))
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -73,11 +76,12 @@ public class TableControllerTest extends BaseContollerTest {
         OrderTable orderTable = this.orderTableDao.findAll().stream()
                 .filter(orderTable1 -> !orderTable1.isEmpty()).findFirst().get();
         String uri = "/api/tables/" + orderTable.getId() + "/number-of-guests";
-        orderTable.setNumberOfGuests(4);
+        OrderTableRequest orderTableRequest
+                = new OrderTableRequest(3, orderTable.isEmpty());
 
-        MvcResult mvcResult = this.mockMvc.perform(put(uri)
+        this.mockMvc.perform(put(uri)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(this.objectMapper.writeValueAsString(orderTable))
+                .content(this.objectMapper.writeValueAsString(orderTableRequest))
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -85,14 +89,12 @@ public class TableControllerTest extends BaseContollerTest {
     }
 
     private Long 테이블_신규_등록_요청() throws Exception {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(0);
-        orderTable.setEmpty(false);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(5, false);
 
         MvcResult mvcResult = this.mockMvc.perform(post("/api/tables")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(this.objectMapper.writeValueAsString(orderTable))
-        )
+                .content(this.objectMapper.writeValueAsString(orderTableRequest))
+                )
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andReturn()

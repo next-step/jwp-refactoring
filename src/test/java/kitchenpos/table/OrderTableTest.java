@@ -1,9 +1,11 @@
 package kitchenpos.table;
 
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dao.OrderTableDao;
+import kitchenpos.table.dao.TableGroupDao;
+import kitchenpos.table.domain.TableGroupRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,10 +24,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class OrderTableTest {
 
     @Autowired
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @Autowired
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
 
     @Test
     @DisplayName("테이블을 등록합니다.")
@@ -34,7 +36,7 @@ public class OrderTableTest {
         OrderTable orderTable = new OrderTable();
 
         // when
-        OrderTable persistOrderTable = this.orderTableDao.save(orderTable);
+        OrderTable persistOrderTable = this.orderTableRepository.save(orderTable);
 
         // then
         assertThat(persistOrderTable.getId()).isNotNull();
@@ -45,10 +47,10 @@ public class OrderTableTest {
     void findById() {
         // given
         OrderTable orderTable = new OrderTable();
-        OrderTable persistOrderTable = this.orderTableDao.save(orderTable);
+        OrderTable persistOrderTable = this.orderTableRepository.save(orderTable);
 
         // when
-        OrderTable foundOrderTable = this.orderTableDao.findById(persistOrderTable.getId()).get();
+        OrderTable foundOrderTable = this.orderTableRepository.findById(persistOrderTable.getId()).get();
 
         // then
         assertThat(foundOrderTable.getId()).isEqualTo(persistOrderTable.getId());
@@ -58,7 +60,7 @@ public class OrderTableTest {
     @DisplayName("전체 테이블을 조회합니다.")
     void findAll() {
         // when
-        List<OrderTable> orderTables = this.orderTableDao.findAll();
+        List<OrderTable> orderTables = this.orderTableRepository.findAll();
 
         // then
         assertThat(orderTables).hasSize(8);
@@ -71,7 +73,7 @@ public class OrderTableTest {
         List<Long> ids = Arrays.asList(new Long[]{1L, 2L, 3L});
 
         // when
-        List<OrderTable> orderTables = this.orderTableDao.findAllByIdIn(ids);
+        List<OrderTable> orderTables = this.orderTableRepository.findAllByIdIn(ids);
 
         // then
         assertThat(orderTables).hasSize(3);
@@ -84,18 +86,18 @@ public class OrderTableTest {
         // given
         TableGroup tableGroup = new TableGroup();
         tableGroup.setCreatedDate(LocalDateTime.now());
-        long tableGroupId = this.tableGroupDao.save(tableGroup).getId();
-        List<OrderTable> orderTableOrigins = this.orderTableDao.findAll();
+        TableGroup persistTableGroup = this.tableGroupRepository.save(tableGroup);
+        List<OrderTable> orderTableOrigins = this.orderTableRepository.findAll();
         orderTableOrigins.stream().forEach(orderTable -> {
-            orderTable.setTableGroupId(tableGroupId);
-            this.orderTableDao.save(orderTable);
+            orderTable.setTableGroup(persistTableGroup);
+            this.orderTableRepository.save(orderTable);
         });
 
         // when
-        List<OrderTable> orderTables = this.orderTableDao.findAllByTableGroupId(tableGroupId);
+        List<OrderTable> orderTables = this.orderTableRepository.findAllByTableGroupId(persistTableGroup.getId());
 
         // then
-        assertThat(orderTables).hasSize(8);
+        assertThat(orderTables).hasSize(10);
         assertThat(orderTables.stream().mapToLong(OrderTable::getId)).contains(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L);
     }
 }
