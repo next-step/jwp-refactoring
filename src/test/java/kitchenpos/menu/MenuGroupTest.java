@@ -1,23 +1,22 @@
 package kitchenpos.menu;
 
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroupRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest
+@DataJpaTest
 public class MenuGroupTest {
 
     @Autowired
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @Test
     @DisplayName("메뉴 그룹을 등록합니다.")
@@ -27,7 +26,7 @@ public class MenuGroupTest {
         MenuGroup menuGroup = MenuGroupTestSupport.createMenuGroup(name);
 
         // when
-        MenuGroup persistMenuGroup = this.menuGroupDao.save(menuGroup);
+        MenuGroup persistMenuGroup = this.menuGroupRepository.save(menuGroup);
 
         // then
         assertThat(persistMenuGroup.getId()).isNotNull();
@@ -41,10 +40,10 @@ public class MenuGroupTest {
         // given
         String name = "새로운메뉴";
         MenuGroup menuGroup = MenuGroupTestSupport.createMenuGroup(name);
-        MenuGroup persistMenuGroup = this.menuGroupDao.save(menuGroup);
+        MenuGroup persistMenuGroup = this.menuGroupRepository.save(menuGroup);
 
         // when
-        MenuGroup foundMenuGroup = this.menuGroupDao.findById(persistMenuGroup.getId()).get();
+        MenuGroup foundMenuGroup = this.menuGroupRepository.findById(persistMenuGroup.getId()).get();
 
         // then
         assertThat(foundMenuGroup.getId()).isEqualTo(persistMenuGroup.getId());
@@ -56,7 +55,7 @@ public class MenuGroupTest {
     @DisplayName("전체 메뉴 그룹을 조회합니다.")
     void findAll() {
         // when
-        List<MenuGroup> foundMenuGroup = this.menuGroupDao.findAll();
+        List<MenuGroup> foundMenuGroup = this.menuGroupRepository.findAll();
 
         // then
         assertThat(foundMenuGroup).hasSize(4);
@@ -68,10 +67,10 @@ public class MenuGroupTest {
         // given
         String name = "새로운메뉴";
         MenuGroup menuGroup = MenuGroupTestSupport.createMenuGroup(name);
-        MenuGroup persistMenuGroup = this.menuGroupDao.save(menuGroup);
+        MenuGroup persistMenuGroup = this.menuGroupRepository.save(menuGroup);
 
         // when
-        boolean existsById = this.menuGroupDao.existsById(persistMenuGroup.getId());
+        boolean existsById = this.menuGroupRepository.existsById(persistMenuGroup.getId());
 
         // then
         assertTrue(existsById);

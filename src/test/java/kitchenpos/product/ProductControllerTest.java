@@ -2,7 +2,7 @@ package kitchenpos.product;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import kitchenpos.common.BaseContollerTest;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -34,20 +34,20 @@ public class ProductControllerTest extends BaseContollerTest {
     @DisplayName("새로운 상품 등록 시 이름이 없으면 오류 발생")
     void createProductNoNameOccurredException() {
         Product product = new Product();
-        product.setName(null);
-        product.setPrice(BigDecimal.valueOf(20000));
+        product.changeName(null);
+        product.changePrice(BigDecimal.valueOf(20000));
 
         assertThatThrownBy(() -> {
             상품_등록_요청(product, status().is5xxServerError());
-        }).isInstanceOf(NestedServletException.class).hasMessageContaining("NULL not allowed for column \"NAME\"");
+        }).isInstanceOf(NestedServletException.class).hasMessageContaining("could not execute statement");
     }
 
     @Test
     @DisplayName("새로운 상품 등록 시 가격이 없으면 오류 발생")
     void createProductNoPriceOccurredException() {
         Product product = new Product();
-        product.setName("맛있는치킨");
-        product.setPrice(null);
+        product.changeName("맛있는치킨");
+        product.changePrice(null);
 
         assertThatThrownBy(() -> {
             상품_등록_요청(product, status().is5xxServerError());

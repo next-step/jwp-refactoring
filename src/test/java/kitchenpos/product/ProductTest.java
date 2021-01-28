@@ -1,23 +1,22 @@
 package kitchenpos.product;
 
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
+@DataJpaTest
 public class ProductTest {
 
     @Autowired
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @Test
     @DisplayName("상품을 등록합니다.")
@@ -25,7 +24,7 @@ public class ProductTest {
         String name = "치킨";
         Product product = ProductTestSupport.createProduct(name, BigDecimal.valueOf(15000));
 
-        Product savedProduct = this.productDao.save(product);
+        Product savedProduct = this.productRepository.save(product);
 
         assertThat(savedProduct.getId()).isNotNull();
         assertThat(savedProduct.getName()).isEqualTo(name);
@@ -37,9 +36,9 @@ public class ProductTest {
         String name = "치킨";
         Product product = ProductTestSupport.createProduct(name, BigDecimal.valueOf(15000));
 
-        Product savedProduct = this.productDao.save(product);
+        Product savedProduct = this.productRepository.save(product);
 
-        Product foundProduct = productDao.findById(savedProduct.getId()).get();
+        Product foundProduct = this.productRepository.findById(savedProduct.getId()).get();
 
         assertThat(foundProduct.getId()).isEqualTo(savedProduct.getId());
         assertThat(foundProduct.getName()).isEqualTo(name);
@@ -48,7 +47,7 @@ public class ProductTest {
     @Test
     @DisplayName("전체 상품을 조회합니다.")
     void findAll() {
-        List<Product> products = this.productDao.findAll();
+        List<Product> products = this.productRepository.findAll();
 
         assertThat(products).hasSize(6);
     }

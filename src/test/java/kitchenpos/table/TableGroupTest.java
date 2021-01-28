@@ -1,7 +1,7 @@
 package kitchenpos.table;
 
-import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.domain.TableGroupRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class TableGroupTest {
 
     @Autowired
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
 
 
     @Test
@@ -24,10 +24,10 @@ public class TableGroupTest {
     void save() {
         // given
         TableGroup tableGroup = new TableGroup();
-        tableGroup.setCreatedDate(LocalDateTime.now());
+        tableGroup.changeCreatedDate(LocalDateTime.now());
 
         // when
-        TableGroup persistTableGroup = this.tableGroupDao.save(tableGroup);
+        TableGroup persistTableGroup = this.tableGroupRepository.save(tableGroup);
 
         // then
         assertThat(persistTableGroup.getId()).isNotNull();
@@ -38,11 +38,11 @@ public class TableGroupTest {
     void findById() {
         // given
         TableGroup tableGroup = new TableGroup();
-        tableGroup.setCreatedDate(LocalDateTime.now());
-        TableGroup persistTableGroup = this.tableGroupDao.save(tableGroup);
+        tableGroup.changeCreatedDate(LocalDateTime.now());
+        TableGroup persistTableGroup = this.tableGroupRepository.save(tableGroup);
 
         // when
-        TableGroup foundTableGroup = this.tableGroupDao.findById(persistTableGroup.getId()).get();
+        TableGroup foundTableGroup = this.tableGroupRepository.findById(persistTableGroup.getId()).get();
 
         // then
         assertThat(foundTableGroup.getId()).isEqualTo(persistTableGroup.getId());
@@ -55,15 +55,15 @@ public class TableGroupTest {
         TableGroup tableGroup1 = new TableGroup();
         TableGroup tableGroup2 = new TableGroup();
         TableGroup tableGroup3 = new TableGroup();
-        tableGroup1.setCreatedDate(LocalDateTime.now());
-        tableGroup2.setCreatedDate(LocalDateTime.now());
-        tableGroup3.setCreatedDate(LocalDateTime.now());
-        this.tableGroupDao.save(tableGroup1);
-        this.tableGroupDao.save(tableGroup2);
-        this.tableGroupDao.save(tableGroup3);
+        tableGroup1.changeCreatedDate(LocalDateTime.now());
+        tableGroup2.changeCreatedDate(LocalDateTime.now());
+        tableGroup3.changeCreatedDate(LocalDateTime.now());
+        this.tableGroupRepository.save(tableGroup1);
+        this.tableGroupRepository.save(tableGroup2);
+        this.tableGroupRepository.save(tableGroup3);
 
         // when
-        List<TableGroup> tableGroups = this.tableGroupDao.findAll();
+        List<TableGroup> tableGroups = this.tableGroupRepository.findAll();
 
         // then
         assertThat(tableGroups).hasSize(3);

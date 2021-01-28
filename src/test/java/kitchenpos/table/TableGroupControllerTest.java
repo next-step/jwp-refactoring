@@ -1,8 +1,10 @@
 package kitchenpos.table;
 
 import kitchenpos.common.BaseContollerTest;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 
-import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -22,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class TableGroupControllerTest extends BaseContollerTest {
 
     @Autowired
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @Test
     @DisplayName("테이블을 그룹화/비그룹화 합니다.")
@@ -35,21 +37,20 @@ public class TableGroupControllerTest extends BaseContollerTest {
     }
 
     private Long 테이블_그룹화_요청() throws Exception {
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setCreatedDate(LocalDateTime.now());
-        tableGroup.setOrderTables(this.orderTableDao.findAll());
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(
+                this.orderTableRepository.findAll().stream().map(OrderTable::getId).collect(Collectors.toList()));
 
         MvcResult mvcResult = this.mockMvc.perform(post("/api/table-groups")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(this.objectMapper.writeValueAsString(tableGroup))
+                .content(this.objectMapper.writeValueAsString(tableGroupRequest))
                 )
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andReturn()
         ;
 
-        String responseOrderTables = mvcResult.getResponse().getContentAsString();
-        return this.objectMapper.readValue(responseOrderTables, TableGroup.class).getId();
+        String responseTableGroup = mvcResult.getResponse().getContentAsString();
+        return this.objectMapper.readValue(responseTableGroup, TableGroupResponse.class).getId();
     }
 
     private void 테이블_그룹화_삭제_요청(Long tableGroupId) throws Exception {
