@@ -55,6 +55,13 @@ public class ProductServiceTest {
         assertThatIllegalArgumentException().isThrownBy(() -> productService.create(product));
     }
 
+    @DisplayName("상품 등록 예외: 가격이 0보다 작을 경우")
+    @Test
+    void createThrowExceptionWhenPriceLessThanZero() {
+        product.setPrice(BigDecimal.valueOf(-1));
+        assertThatIllegalArgumentException().isThrownBy(() -> productService.create(product));
+    }
+
     @DisplayName("상품 목록 조회")
     @Test
     void findAll() {
