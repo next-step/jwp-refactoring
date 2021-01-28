@@ -3,10 +3,7 @@ package kitchenpos.application;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -141,5 +138,23 @@ public class TableGroupServiceTest {
                 .isThrownBy(() -> tableGroupService.create(단체));
     }
 
+    @DisplayName("주문 테이블의 단체 지정 삭제")
+    @Test
+    void ungroup() {
+        주문테이블1.setTableGroupId(단체.getId());
+        주문테이블2.setTableGroupId(단체.getId());
+
+        given(orderTableDao.findAllByTableGroupId(단체.getId())).willReturn(단체.getOrderTables());
+        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(
+                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(false);
+        given(orderTableDao.save(주문테이블1)).willReturn(주문테이블1);
+        given(orderTableDao.save(주문테이블2)).willReturn(주문테이블2);
+
+        tableGroupService.ungroup(단체.getId());
+
+        assertThat(주문테이블1.getTableGroupId()).isNull();
+        assertThat(주문테이블2.getTableGroupId()).isNull();
+
+    }
 
 }
