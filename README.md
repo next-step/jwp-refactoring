@@ -6,10 +6,10 @@
 -[x]  menu group 리스트 조회
 
 ### Menu
--[ ]  menu 생성
+-[x]  menu 생성
    * menu의 price는 0 원 이상이어야 한다.
    * menu의 price는 해당 menu에 속한 product price의 sum보다 크면 안된다.
--[ ]  menu 리스트 조회
+-[x]  menu 리스트 조회
    * menu에는 menu product 정보를 포함해야한다.
 
 ### Order
