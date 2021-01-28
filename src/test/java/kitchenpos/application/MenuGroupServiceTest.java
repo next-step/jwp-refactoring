@@ -9,6 +9,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -37,6 +40,21 @@ public class MenuGroupServiceTest {
         MenuGroup savedMenuGroup = menuGroupService.create(request);
 
         assertThat(savedMenuGroup).isEqualTo(expected);
+
+    }
+
+    @DisplayName("메뉴 그룹 목록 조회")
+    @Test
+    void list() {
+        MenuGroup expected = new MenuGroup();
+        expected.setId(1L);
+        expected.setName("메뉴 그룹");
+
+        when(menuGroupDao.findAll()).thenReturn(Arrays.asList(expected));
+
+        List<MenuGroup> menuGroups = menuGroupService.list();
+
+        assertThat(menuGroups).containsExactly(expected);
 
     }
 
