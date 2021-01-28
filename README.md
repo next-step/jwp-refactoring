@@ -3,7 +3,7 @@
 ## 요구 사항
 ### MeneGroup
 -[x]  menu group 생성
--[ ]  menu group 리스트 조회
+-[x]  menu group 리스트 조회
 
 ### Menu
 -[ ]  menu 생성
@@ -22,7 +22,7 @@
    * order의 status가 Completeion일 경우 변경할 수 없다.
 
 ### Product
--[ ]  product 생성
+-[x]  product 생성
    * product의 price는 0 원 이상이어야 한다.
 -[ ]  product 리스트 조회
 
