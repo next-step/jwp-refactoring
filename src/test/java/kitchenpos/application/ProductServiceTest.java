@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.BDDMockito.given;
 
 @DisplayName("애플리케이션 테스트 보호 - 상품 서비스")
@@ -45,6 +46,13 @@ public class ProductServiceTest {
         Product savedProduct = productService.create(product);
 
         assertThat(savedProduct).isEqualTo(product);
+    }
+
+    @DisplayName("상품 등록 예외: 가격이 없을 경우")
+    @Test
+    void createThrowExceptionWhenNoPrice() {
+        product.setPrice(null);
+        assertThatIllegalArgumentException().isThrownBy(() -> productService.create(product));
     }
 
     @DisplayName("상품 목록 조회")
