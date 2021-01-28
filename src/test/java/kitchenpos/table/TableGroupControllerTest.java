@@ -2,8 +2,7 @@ package kitchenpos.table;
 
 import kitchenpos.common.BaseContollerTest;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.dao.OrderTableDao;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 
-import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -26,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class TableGroupControllerTest extends BaseContollerTest {
 
     @Autowired
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @Test
     @DisplayName("테이블을 그룹화/비그룹화 합니다.")
@@ -40,7 +38,7 @@ public class TableGroupControllerTest extends BaseContollerTest {
 
     private Long 테이블_그룹화_요청() throws Exception {
         TableGroupRequest tableGroupRequest = new TableGroupRequest(
-                this.orderTableDao.findAll().stream().map(OrderTable::getId).collect(Collectors.toList()));
+                this.orderTableRepository.findAll().stream().map(OrderTable::getId).collect(Collectors.toList()));
 
         MvcResult mvcResult = this.mockMvc.perform(post("/api/table-groups")
                 .contentType(MediaType.APPLICATION_JSON)

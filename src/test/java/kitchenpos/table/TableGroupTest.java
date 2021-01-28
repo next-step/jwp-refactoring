@@ -1,7 +1,6 @@
 package kitchenpos.table;
 
 import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.dao.TableGroupDao;
 import kitchenpos.table.domain.TableGroupRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

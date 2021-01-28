@@ -3,7 +3,7 @@ package kitchenpos.table;
 import com.fasterxml.jackson.core.type.TypeReference;
 import kitchenpos.common.BaseContollerTest;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.dao.OrderTableDao;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class TableControllerTest extends BaseContollerTest {
 
     @Autowired
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @Test
     @DisplayName("새로운 테이블을 등록합니다.")
@@ -52,7 +52,7 @@ public class TableControllerTest extends BaseContollerTest {
     @Test
     @DisplayName("테이블을 비웁니다.")
     void changeEmpty() throws Exception {
-        OrderTable orderTable = this.orderTableDao.findAll().stream().findFirst().get();
+        OrderTable orderTable = this.orderTableRepository.findAll().stream().findFirst().get();
         String uri = "/api/tables/" + orderTable.getId() + "/empty";
         OrderTableRequest orderTableRequest
                 = new OrderTableRequest(orderTable.getNumberOfGuests(), true);
@@ -73,7 +73,7 @@ public class TableControllerTest extends BaseContollerTest {
     void changeNumberOfGuests() throws Exception {
         테이블_신규_등록_요청();
 
-        OrderTable orderTable = this.orderTableDao.findAll().stream()
+        OrderTable orderTable = this.orderTableRepository.findAll().stream()
                 .filter(orderTable1 -> !orderTable1.isEmpty()).findFirst().get();
         String uri = "/api/tables/" + orderTable.getId() + "/number-of-guests";
         OrderTableRequest orderTableRequest

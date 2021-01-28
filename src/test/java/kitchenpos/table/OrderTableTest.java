@@ -3,8 +3,6 @@ package kitchenpos.table;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.dao.OrderTableDao;
-import kitchenpos.table.dao.TableGroupDao;
 import kitchenpos.table.domain.TableGroupRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

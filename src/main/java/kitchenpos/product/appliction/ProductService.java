@@ -1,6 +1,5 @@
 package kitchenpos.product.appliction;
 
-import kitchenpos.product.dao.ProductDao;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
