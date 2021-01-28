@@ -38,9 +38,9 @@
 -[x]  table의 order 비우기
    * tableGroup인 경우가 테이블 비우기가 가능하다.
    * table에 OrderStatus가 Cooking이거나 Meal인 경우가 존재하지 아니어야 한다.
--[ ]  table의 Guest 숫자 변경하기
+-[x]  table의 Guest 숫자 변경하기
    * guest의 숫자가 음수이면 안된다.
-   * 비우려는 table이 비어있으면 안된다.
+   * guest의 숫자를 바꾸려는 table이 비어있으면 안된다.
 
 
 

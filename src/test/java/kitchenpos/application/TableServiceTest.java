@@ -30,6 +30,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 class TableServiceTest {
 
+    public static final int THREE_GUEST_NUMBER = 3;
+    public static final int NEGATIVE_GUEST_NUMBER = -3;
     @Autowired
     private OrderService orderService;
     @Autowired
@@ -126,7 +128,7 @@ class TableServiceTest {
         OrderTable createdTable = TABLE_생성_테스트(TABLE_REQUEST_생성(true));
         OrderTable createdTable2 = TABLE_생성_테스트(TABLE_REQUEST_생성(true));
         TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Arrays.asList(createdTable,createdTable2));
+        tableGroup.setOrderTables(Arrays.asList(createdTable, createdTable2));
         TableGroup tableGroup1 = tableGroupService.create(tableGroup);
 
         //When
@@ -136,7 +138,6 @@ class TableServiceTest {
             OrderTable orderTable = tableService.changeEmpty(createdTable.getId(), createdTable);
         }).isInstanceOf(IllegalArgumentException.class);
     }
-
 
 
     @ParameterizedTest
@@ -159,6 +160,49 @@ class TableServiceTest {
             OrderTable orderTable = tableService.changeEmpty(createdTable.getId(), createdTable);
         }).isInstanceOf(IllegalArgumentException.class);
 
+    }
+
+    @Test
+    @DisplayName("table의 Guest 숫자 변경하기")
+    public void change_guest_number() throws Exception {
+        //Given
+        OrderTable createdTable = TABLE_생성_테스트(TABLE_REQUEST_생성(false));
+        createdTable.setNumberOfGuests(THREE_GUEST_NUMBER);
+        createdTable.setEmpty(false);
+
+        //When
+        OrderTable orderTable = tableService.changeNumberOfGuests(createdTable.getId(), createdTable);
+
+        //Then
+        assertThat(orderTable.getNumberOfGuests()).isEqualTo(THREE_GUEST_NUMBER);
+    }
+
+    @Test
+    @DisplayName("guest의 숫자가 음수이면 안된다.")
+    public void change_guest_number_negative() throws Exception {
+        //Given
+        OrderTable createdTable = TABLE_생성_테스트(TABLE_REQUEST_생성(false));
+        createdTable.setNumberOfGuests(NEGATIVE_GUEST_NUMBER);
+        createdTable.setEmpty(false);
+
+        //When
+        assertThatThrownBy(() -> {
+            OrderTable orderTable = tableService.changeNumberOfGuests(createdTable.getId(), createdTable);
+        }).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("guest의 숫자를 바꾸려는 table이 비어있으면 안된다.")
+    public void change_guest_number_empty_table() throws Exception {
+        //Given
+        OrderTable createdTable = TABLE_생성_테스트(TABLE_REQUEST_생성(true));
+        createdTable.setNumberOfGuests(THREE_GUEST_NUMBER);
+        createdTable.setEmpty(false);
+
+        //When
+        assertThatThrownBy(() -> {
+            OrderTable orderTable = tableService.changeNumberOfGuests(createdTable.getId(), createdTable);
+        }).isInstanceOf(IllegalArgumentException.class);
     }
 
     private List<OrderTable> TABLE_조회_테스트() {
