@@ -27,6 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 class OrderServiceTest {
 
+    public static final String COOKING = "COOKING";
+    public static final String COMPLETION = "COMPLETION";
     @Autowired
     private OrderService orderService;
     @Autowired
@@ -151,6 +153,38 @@ class OrderServiceTest {
                 .count();
             assertThat(count2).isGreaterThan(0L);
         });
+
+    }
+
+    @Test
+    @DisplayName("특정 order의 status 변경하기")
+    public void change_order_status() throws Exception {
+        //Given
+        OrderLineItem orderLineItem1 = ORDER_LINE_ITEM_생성(createdMenu.getId());
+        Order order1 = ORDER_생성_테스트(ORDER_REQUEST_생성(createdOrderTable, orderLineItem1));
+        order1.setOrderStatus(COOKING);
+        //When
+        Order order = orderService.changeOrderStatus(order1.getId(), order1);
+
+        //Then
+        assertThat(order.getOrderStatus()).isEqualTo(COOKING);
+    }
+
+    @Test
+    @DisplayName("order의 status가 Completeion일 경우 변경할 수 없다.")
+    void change_order_fail_status() throws Exception {
+        //Given
+        OrderLineItem orderLineItem1 = ORDER_LINE_ITEM_생성(createdMenu.getId());
+        Order order1 = ORDER_생성_테스트(ORDER_REQUEST_생성(createdOrderTable, orderLineItem1));
+        order1.setOrderStatus(COMPLETION);
+        Order completeOrder = orderService.changeOrderStatus(order1.getId(), order1);
+
+        //When
+        //Then
+        completeOrder.setOrderStatus(COOKING);
+
+        assertThatThrownBy(() -> orderService.changeOrderStatus(completeOrder.getId(), completeOrder))
+            .isInstanceOf(IllegalArgumentException.class);
 
     }
 
