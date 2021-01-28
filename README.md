@@ -18,7 +18,7 @@
    * order에는 order table이 1개 이상 존재해야한다.
 -[x]  order 리스트 조회
    * order에는 LineItem 정보를 포함해야한다.
--[ ]  특정 order의 status 변경하기
+-[x]  특정 order의 status 변경하기
    * order의 status가 Completeion일 경우 변경할 수 없다.
 
 ### Product
@@ -27,7 +27,7 @@
 -[x]  product 리스트 조회
 
 ### TableGroup
--[ ]  table group 생성
+-[x]  table group 생성
    * order table의 개수는 2개 이상이어야 한다.
    * order table의 table group은 null이 아니어야 한다.
 -[ ]  table group 삭제
