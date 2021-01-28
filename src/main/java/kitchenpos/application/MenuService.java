@@ -38,7 +38,7 @@ public class MenuService {
         this.validateMenu(menu);
 
         final Menu savedMenu = menuDao.save(menu);
-        this.addPersistMenuProducts(savedMenu);
+        this.addPersistMenuProducts(menu, savedMenu);
 
         return savedMenu;
     }
@@ -47,10 +47,10 @@ public class MenuService {
      * 저장된 메뉴에 포함 된 메뉴상품들을 저장하고, 해당 메뉴에 추가합니다.
      * @param savedMenu
      */
-    private void addPersistMenuProducts(Menu savedMenu) {
+    private void addPersistMenuProducts(Menu menu, Menu savedMenu) {
         final Long menuId = savedMenu.getId();
 
-        for (final MenuProduct menuProduct : savedMenu.getMenuProducts()) {
+        for (final MenuProduct menuProduct : menu.getMenuProducts()) {
             menuProduct.setMenuId(menuId);
             savedMenu.addMenuProducts(menuProductDao.save(menuProduct));
         }

@@ -45,7 +45,7 @@ public class OrderService {
         order.setOrderedTime(LocalDateTime.now());
 
         final Order savedOrder = orderDao.save(order);
-        this.addPersistOrderLineItems(savedOrder);
+        this.addPersistOrderLineItems(order, savedOrder);
 
         return savedOrder;
     }
@@ -54,9 +54,9 @@ public class OrderService {
      * 주문 항목을 저장하고, 주문에 추가합니다.
      * @param savedOrder
      */
-    private void addPersistOrderLineItems(Order savedOrder) {
+    private void addPersistOrderLineItems(Order order, Order savedOrder) {
         final Long orderId = savedOrder.getId();
-        for (final OrderLineItem orderLineItem : savedOrder.getOrderLineItems()) {
+        for (final OrderLineItem orderLineItem : order.getOrderLineItems()) {
             orderLineItem.setOrderId(orderId);
             savedOrder.addOrderLineItems(orderLineItemDao.save(orderLineItem));
         }
