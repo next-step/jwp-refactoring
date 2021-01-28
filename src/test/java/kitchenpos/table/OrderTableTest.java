@@ -1,6 +1,7 @@
 package kitchenpos.table;
 
 import kitchenpos.table.dto.OrderTable;
+import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -20,7 +21,8 @@ public class OrderTableTest {
     @DisplayName("상태 변경 불가능한 경우 - 테이블이 단체 지정되있는 경우")
     @Test
     public void invalidCase() {
-        OrderTable orderTable = new OrderTable(1l);
+        OrderTable orderTable = new OrderTable();
+        orderTable.group(new TableGroup());
         assertThatThrownBy(() -> {
             orderTable.changeEmpty(true);
         }).isInstanceOf(IllegalArgumentException.class);

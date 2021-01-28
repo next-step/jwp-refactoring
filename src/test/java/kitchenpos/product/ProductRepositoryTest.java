@@ -15,13 +15,13 @@ import static org.mockito.ArgumentMatchers.any;
 public class ProductRepositoryTest {
 
     @Autowired
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @DisplayName("상품을 생성한다.")
     @Test
     public void createProduct() {
         Product expected = new Product("케이크", new BigDecimal(1000));
-        Product actual = productDao.save(expected);
+        Product actual = productRepository.save(expected);
         assertThat(expected.getName()).isEqualTo(actual.getName());
         assertThat(expected.getPrice()).isEqualTo(actual.getPrice());
         assertThat(actual.getId()).isNotNull();

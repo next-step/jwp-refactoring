@@ -1,9 +1,8 @@
 package kitchenpos.table.dto;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import kitchenpos.tablegroup.domain.TableGroup;
+
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
@@ -12,23 +11,17 @@ public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long tableGroupId;
+    @ManyToOne
+    @JoinColumn(name = "tableGroupId")
+    private TableGroup tableGroup;
     private int numberOfGuests;
     private boolean empty;
 
     public OrderTable() {
     }
 
-    public OrderTable(Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
-    }
-
     public Long getId() {
         return id;
-    }
-
-    public Long getTableGroupId() {
-        return tableGroupId;
     }
 
     public int getNumberOfGuests() {
@@ -46,7 +39,7 @@ public class OrderTable {
     }
 
     public void changeEmpty(boolean empty) {
-        if (Objects.nonNull(getTableGroupId())) {
+        if (Objects.nonNull(tableGroup)) {
             throw new IllegalArgumentException();
         }
         this.empty = empty;
@@ -60,5 +53,23 @@ public class OrderTable {
             throw new IllegalArgumentException();
         }
         this.numberOfGuests = numberOfGuests;
+    }
+
+    public void checkGroupable() {
+        if (!isEmpty() || Objects.nonNull(tableGroup)) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public void group(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
+    }
+
+    public void ungroup() {
+        this.tableGroup = null;
+    }
+
+    public boolean isGrouped() {
+        return this.tableGroup != null;
     }
 }

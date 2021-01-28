@@ -1,61 +1,56 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuDao;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProductDao;
+import kitchenpos.menu.domain.MenuProductRepository;
 import kitchenpos.menu.dto.MenuCreateRequest;
-import kitchenpos.menu.dto.MenuProductDto;
-import kitchenpos.menugroup.MenuGroupDao;
-import kitchenpos.product.ProductDao;
-import kitchenpos.product.Product;
+import kitchenpos.menugroup.MenuGroupRepository;
+import kitchenpos.product.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
 public class MenuService {
-    private final MenuDao menuDao;
-    private final MenuGroupDao menuGroupDao;
-    private final MenuProductDao menuProductDao;
-    private final ProductDao productDao;
+    private final MenuRepository menuRepository;
+    private final MenuGroupRepository menuGroupRepository;
+    private final MenuProductRepository menuProductRepository;
+    private final ProductRepository productRepository;
 
     public MenuService(
-            final MenuDao menuDao,
-            final MenuGroupDao menuGroupDao,
-            final MenuProductDao menuProductDao,
-            final ProductDao productDao
+            final MenuRepository menuRepository,
+            final MenuGroupRepository menuGroupRepository,
+            final MenuProductRepository menuProductRepository,
+            final ProductRepository productRepository
     ) {
-        this.menuDao = menuDao;
-        this.menuGroupDao = menuGroupDao;
-        this.menuProductDao = menuProductDao;
-        this.productDao = productDao;
+        this.menuRepository = menuRepository;
+        this.menuGroupRepository = menuGroupRepository;
+        this.menuProductRepository = menuProductRepository;
+        this.productRepository = productRepository;
     }
 
     @Transactional
     public Menu create(final MenuCreateRequest menuCreateRequest) {
         menuCreateRequest.checkPriceValidation();
         checkGroupExist(menuCreateRequest);
-        final Menu menu = menuDao.save(menuCreateRequest.toMenu(menuGroupDao.getOne(menuCreateRequest.getMenuGroupId())));
+        final Menu menu = menuRepository.save(menuCreateRequest.toMenu(menuGroupRepository.getOne(menuCreateRequest.getMenuGroupId())));
         List<MenuProduct> products = menuCreateRequest.getMenuProducts()
                 .stream()
-                .map(it -> menuProductDao.save(new MenuProduct(menu, productDao.getOne(it.getProductId()), it.getQuantity())))
+                .map(it -> menuProductRepository.save(new MenuProduct(menu, productRepository.getOne(it.getProductId()), it.getQuantity())))
                 .collect(Collectors.toList());
         menu.addMenuProducts(products);
         return menu;
     }
 
     public List<Menu> list() {
-        return menuDao.findAll();
+        return menuRepository.findAll();
     }
 
     private void checkGroupExist(MenuCreateRequest menuCreateRequest) {
-        if (!menuGroupDao.existsById(menuCreateRequest.getMenuGroupId())) {
+        if (!menuGroupRepository.existsById(menuCreateRequest.getMenuGroupId())) {
             throw new IllegalArgumentException();
         }
     }

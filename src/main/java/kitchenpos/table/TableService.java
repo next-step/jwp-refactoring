@@ -1,6 +1,5 @@
 package kitchenpos.table;
 
-import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.dto.OrderTable;
@@ -16,39 +15,39 @@ import java.util.List;
 @Service
 public class TableService {
     private final OrderRepository orderRepository;
-    private final OrderTableDao orderTableDao;
+    private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderRepository orderRepository, final OrderTableDao orderTableDao) {
+    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
         this.orderRepository = orderRepository;
-        this.orderTableDao = orderTableDao;
+        this.orderTableRepository = orderTableRepository;
     }
 
     @Transactional
     public OrderTable create(final TableAddRequest orderTable) {
-        return orderTableDao.save(orderTable.toOrderTable());
+        return orderTableRepository.save(orderTable.toOrderTable());
     }
 
     public List<OrderTable> list() {
-        return orderTableDao.findAll();
+        return orderTableRepository.findAll();
     }
 
     @Transactional
     public OrderTable changeEmpty(final Long orderTableId, final TableEmptyChangeRequest request) {
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
+        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
         if (orderRepository.existsByOrderTable_IdAndOrderStatusIn(orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException();
         }
         savedOrderTable.changeEmpty(request.isEmpty());
-        return orderTableDao.save(savedOrderTable);
+        return orderTableRepository.save(savedOrderTable);
     }
 
     @Transactional
     public OrderTable changeNumberOfGuests(final Long orderTableId, final TableNumberChangeRequest request) {
         final int numberOfGuests = request.getNumberOfGuests();
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
+        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
         savedOrderTable.changeNumberOfGuests(numberOfGuests);
-        return orderTableDao.save(savedOrderTable);
+        return orderTableRepository.save(savedOrderTable);
     }
 }

@@ -12,13 +12,13 @@ import static org.mockito.ArgumentMatchers.any;
 public class MenuGroupRepositoryTest {
 
     @Autowired
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @DisplayName("메뉴 그룹 생성 테스트")
     @Test
     public void create() {
         MenuGroup expected = new MenuGroup("테스트");
-        MenuGroup actual = menuGroupDao.save(expected);
+        MenuGroup actual = menuGroupRepository.save(expected);
         assertThat(actual.getId()).isNotNull();
         assertThat(actual.getName()).isEqualTo(expected.getName());
     }

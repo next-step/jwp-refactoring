@@ -1,13 +1,13 @@
 package kitchenpos.order.application;
 
-import kitchenpos.menu.domain.MenuDao;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItemRepository;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.dto.OrderAddRequest;
 import kitchenpos.order.dto.OrderStatusChangeRequest;
-import kitchenpos.table.OrderTableDao;
+import kitchenpos.table.OrderTableRepository;
 import kitchenpos.table.dto.OrderTable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,21 +17,21 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
-    private final MenuDao menuDao;
+    private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
     private final OrderLineItemRepository orderLineItemRepository;
-    private final OrderTableDao orderTableDao;
+    private final OrderTableRepository orderTableRepository;
 
     public OrderService(
-            final MenuDao menuDao,
+            final MenuRepository menuRepository,
             final OrderRepository orderRepository,
             final OrderLineItemRepository orderLineItemRepository,
-            final OrderTableDao orderTableDao
+            final OrderTableRepository orderTableRepository
     ) {
-        this.menuDao = menuDao;
+        this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
         this.orderLineItemRepository = orderLineItemRepository;
-        this.orderTableDao = orderTableDao;
+        this.orderTableRepository = orderTableRepository;
     }
 
     @Transactional
@@ -39,10 +39,10 @@ public class OrderService {
         request.checkValidation();
         List<OrderLineItem> orderLineItems = request.getOrderLineItems()
                 .stream()
-                .map(it -> new OrderLineItem(menuDao.getOne(it.getMenuId()), it.getQuantity()))
+                .map(it -> new OrderLineItem(menuRepository.getOne(it.getMenuId()), it.getQuantity()))
                 .collect(Collectors.toList());
         request.checkSameOrderLineSize(orderLineItems.size());
-        final OrderTable orderTable = orderTableDao.findById(request.getOrderTableId())
+        final OrderTable orderTable = orderTableRepository.findById(request.getOrderTableId())
                 .orElseThrow(IllegalArgumentException::new);
         orderTable.checkOrder();
         Order order = new Order(orderTable);
