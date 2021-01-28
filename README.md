@@ -2,7 +2,7 @@
 
 ## 요구 사항
 ### MeneGroup
--[ ]  menu group 생성
+-[x]  menu group 생성
 -[ ]  menu group 리스트 조회
 
 ### Menu
