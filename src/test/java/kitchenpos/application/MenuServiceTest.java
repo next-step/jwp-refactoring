@@ -125,4 +125,14 @@ public class MenuServiceTest {
                 .isThrownBy(() -> menuService.create(후라이드한마리양념치킨한마리));
     }
 
+    @DisplayName("메뉴 생성 예외: 메뉴에 속한 메뉴상품 목록 중 데이터베이스에 없는 상품이 있음")
+    @Test
+    void createThrowExceptionWhenNoMenuProducts() {
+        given(menuGroupDao.existsById(치킨세트.getId())).willReturn(true);
+        given(productDao.findById(후라이드치킨.getId())).willReturn(Optional.empty());
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> menuService.create(후라이드한마리양념치킨한마리));
+    }
+
 }
