@@ -129,4 +129,14 @@ public class TableServiceTest {
                 .isThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), orderTable));
     }
 
+    @DisplayName("주문테이블의 방문한 손님 수를 변경 예외: 주문 테이블 정보가 없음")
+    @Test
+    void changeNumberOfGuestsThrowExceptionWhenNoOrderTable() {
+        orderTable.setNumberOfGuests(10);
+        given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.empty());
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), orderTable));
+    }
+
 }
