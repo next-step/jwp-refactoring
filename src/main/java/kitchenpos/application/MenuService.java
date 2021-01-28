@@ -12,7 +12,9 @@ import kitchenpos.domain.MenuProductRepository;
 import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductRepository;
+import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuProductResponse;
+import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.MenuResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,18 +40,21 @@ public class MenuService {
     }
 
     @Transactional
-    public MenuResponse create(final Menu menu) {
-        final BigDecimal price = menu.getPrice();
+    public MenuResponse create(final MenuRequest menuRequest) {
+        final BigDecimal price = menuRequest.getPrice();
 
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+        if (validatePrice(price)) {
             throw new IllegalArgumentException();
         }
 
-        if (!menuGroupRepository.existsById(menu.getMenuGroupId())) {
+        if (validateMenuGroupId(menuRequest)) {
             throw new IllegalArgumentException();
         }
+        List<Long> collect1 = menuRequest.getMenuProductRequests().stream()
+            .map(MenuProductRequest::getId)
+            .collect(Collectors.toList());
 
-        final List<MenuProduct> menuProducts = menu.getMenuProducts();
+        List<MenuProduct> menuProducts = menuProductRepository.findAllById(collect1);
 
         BigDecimal sum = BigDecimal.ZERO;
         for (final MenuProduct menuProduct : menuProducts) {
@@ -62,6 +67,7 @@ public class MenuService {
             throw new IllegalArgumentException();
         }
 
+        Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuRequest.getMenuGroupId(), menuProducts);
         final Menu savedMenu = menuRepository.save(menu);
 
         final Long menuId = savedMenu.getId();
@@ -74,6 +80,14 @@ public class MenuService {
         List<MenuProductResponse> collect = savedMenu.getMenuProducts().stream().map(MenuProductResponse::of)
             .collect(Collectors.toList());
         return MenuResponse.of(savedMenu, collect);
+    }
+
+    private boolean validateMenuGroupId(MenuRequest menuRequest) {
+        return !menuGroupRepository.existsById(menuRequest.getMenuGroupId());
+    }
+
+    private boolean validatePrice(BigDecimal price) {
+        return Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0;
     }
 
     public List<MenuResponse> list() {
