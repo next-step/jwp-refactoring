@@ -12,6 +12,7 @@ public class TableGroup {
     private LocalDateTime createdDate;
 
     @Embedded
+    @Transient
     private OrderTables orderTables = new OrderTables();
 
     public TableGroup() {

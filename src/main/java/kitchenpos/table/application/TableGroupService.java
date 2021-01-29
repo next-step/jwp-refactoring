@@ -54,7 +54,7 @@ public class TableGroupService {
      */
     private void addSavedOrderTables(TableGroup tableGroup, TableGroup savedTableGroup) {
         for (final OrderTable savedOrderTable : this.findOrderTablesByTableGroup(tableGroup)) {
-            savedOrderTable.changeTableGroup(savedTableGroup);
+            savedOrderTable.changeTableGroupId(savedTableGroup.getId());
             savedOrderTable.changeEmpty(false);
             savedTableGroup.addOrderTables(this.orderTableRepository.save(savedOrderTable));
         }
@@ -81,7 +81,7 @@ public class TableGroupService {
         this.validateOrderTablesByIdAndStatus(orderTables);
 
         for (final OrderTable orderTable : orderTables) {
-            orderTable.changeTableGroup(null);
+            orderTable.deleteTableGroupId();
             this.orderTableRepository.save(orderTable);
         }
     }

@@ -86,7 +86,7 @@ public class OrderTableTest {
         TableGroup persistTableGroup = this.tableGroupRepository.save(tableGroup);
         List<OrderTable> orderTableOrigins = this.orderTableRepository.findAll();
         orderTableOrigins.stream().forEach(orderTable -> {
-            orderTable.changeTableGroup(persistTableGroup);
+            orderTable.changeTableGroupId(persistTableGroup.getId());
             this.orderTableRepository.save(orderTable);
         });
 
