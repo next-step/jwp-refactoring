@@ -40,6 +40,7 @@ public class OrderRestControllerTest {
     void setUp() {
         orderLineItem = new OrderLineItem(1L,1L);
         order = new Order(Arrays.asList(orderLineItem));
+        order.setId(1L);
     }
 
     @Test

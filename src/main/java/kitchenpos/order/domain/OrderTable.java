@@ -1,6 +1,8 @@
 package kitchenpos.order.domain;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -12,6 +14,8 @@ public class OrderTable {
     private Long tableGroupId;
     private int numberOfGuests;
     private boolean empty;
+    @OneToMany
+    List<Order> orders = new ArrayList<>();
 
     protected OrderTable() {
     }

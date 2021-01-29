@@ -14,7 +14,7 @@ public class Menu {
     private BigDecimal price;
     @ManyToOne(fetch = FetchType.LAZY )
     private Long menuGroupId;
-    @OneToMany(mappedBy = "menuId")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MenuProduct> menuProducts;
 
     protected Menu() {

@@ -20,7 +20,7 @@ public class Order {
     private String orderStatus;
     @CreatedDate
     private LocalDateTime orderedTime;
-    @OneToMany(mappedBy = "orderId", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "orderId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderLineItem> orderLineItems;
 
     protected Order() {
@@ -69,6 +69,9 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
     public Long getId() {
         return id;
     }
@@ -88,5 +91,4 @@ public class Order {
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
     }
-
 }
