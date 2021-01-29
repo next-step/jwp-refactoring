@@ -7,12 +7,10 @@ import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -69,41 +67,14 @@ public class TableGroupService {
      */
     private List<OrderTable> findOrderTablesByTableGroup(TableGroup tableGroup) {
         final List<OrderTable> orderTables = tableGroup.getOrderTables();
-        this.validateOrderTablesSize(orderTables);
 
         final List<OrderTable> savedOrderTables = this.orderTableRepository.findAllByIdIn(orderTables.stream()
                                               .map(OrderTable::getId).collect(Collectors.toList()));
-        this.validateSavedOrderTables(orderTables, savedOrderTables);
+        tableGroup.comparedSavedOrderTables(savedOrderTables);
 
         return savedOrderTables;
     }
 
-    /**
-     * 저장 된 테이블들이 유효한지(비어있지 않은지) 확인합니다.
-     * @param orderTables
-     * @param savedOrderTables
-     */
-    private void validateSavedOrderTables(List<OrderTable> orderTables, List<OrderTable> savedOrderTables) {
-        if (orderTables.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
-        }
-
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup())) {
-                throw new IllegalArgumentException();
-            }
-        }
-    }
-
-    /**
-     * 그룹화 하려는 테이블이 없거나, 2개 이상인지 확인합니다.
-     * @param orderTables
-     */
-    private void validateOrderTablesSize(List<OrderTable> orderTables) {
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException();
-        }
-    }
 
     public void ungroup(final Long tableGroupId) {
         final List<OrderTable> orderTables = this.orderTableRepository.findAllByTableGroupId(tableGroupId);

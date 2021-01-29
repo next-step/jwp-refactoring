@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -52,19 +51,10 @@ public class TableService {
      * @param savedOrderTable
      */
     private void canEmptySavedOrderTable(Long orderTableId, OrderTable savedOrderTable) {
-        this.notExistTabeGroup(savedOrderTable);
+        savedOrderTable.notExistTabeGroup();
         this.validateOrderTablesByIdsAndStatus(orderTableId);
     }
 
-    /**
-     * 테이블그룹화 된 테이블인지 확인합니다.
-     * @param savedOrderTable
-     */
-    private void notExistTabeGroup(OrderTable savedOrderTable) {
-        if (Objects.nonNull(savedOrderTable.getTableGroup())) {
-            throw new IllegalArgumentException();
-        }
-    }
 
     /**
      * 주문 테이블들의 ID들과 상태가 적합한지 검사합니다.
@@ -79,7 +69,7 @@ public class TableService {
 
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId
                                                 , final OrderTableRequest orderTableRequest) {
-        final int numberOfGuests = this.validateNumberOfGuests(orderTableRequest.toOrderTable());
+        final int numberOfGuests = orderTableRequest.toOrderTable().getNumberOfGuests();
 
         final OrderTable savedOrderTable = this.orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
@@ -102,18 +92,4 @@ public class TableService {
         }
     }
 
-    /**
-     * 수정하려는 손님의 수가 적합한지 체크하고, 그 값을 반환합니다.
-     * @param orderTable
-     * @return
-     * @throws IllegalArgumentException
-     */
-    private int validateNumberOfGuests(OrderTable orderTable) {
-        final int numberOfGuests = orderTable.getNumberOfGuests();
-
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
-        }
-        return numberOfGuests;
-    }
 }

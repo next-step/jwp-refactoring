@@ -91,4 +91,14 @@ public class Menu {
             throw new IllegalArgumentException();
         }
     }
+
+    /**
+     * 메뉴 상품의 총 가격과 메뉴의 가격을 비교합니다.
+     * @throws IllegalArgumentException
+     */
+    public void compareMenuProductsSum(BigDecimal menuProductsSum) {
+        if (this.getPrice().compareTo(menuProductsSum) > 0) {
+            throw new IllegalArgumentException();
+        }
+    }
 }

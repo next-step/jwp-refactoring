@@ -36,10 +36,26 @@ public class TableGroup {
     }
 
     public List<OrderTable> getOrderTables() {
+        this.validateOrderTablesSize();
         return orderTables.getOrderTables();
     }
 
     public void addOrderTables(final OrderTable orderTable) {
         this.orderTables.add(orderTable);
+    }
+
+    /**
+     * 그룹화 하려는 테이블이 없거나, 2개 이상인지 확인합니다.
+     */
+    public void validateOrderTablesSize() {
+        this.orderTables.validateOrderTablesSize();
+    }
+
+    /**
+     * 저장 된 테이블들이 유효한지(비어있지 않은지) 확인합니다.
+     * @param savedOrderTables
+     */
+    public void comparedSavedOrderTables(List<OrderTable> savedOrderTables) {
+        this.orderTables.comparedSavedOrderTables(savedOrderTables);
     }
 }

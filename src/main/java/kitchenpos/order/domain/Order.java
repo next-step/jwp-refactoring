@@ -5,6 +5,7 @@ import kitchenpos.table.domain.OrderTable;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "orders")
@@ -48,6 +49,7 @@ public class Order {
     }
 
     public void changeOrderStatus(final String orderStatus) {
+        this.checkCompletionOrder();
         this.orderStatus = orderStatus;
     }
 
@@ -69,5 +71,22 @@ public class Order {
 
     public void addOrderLineItem(OrderLineItem orderLineItem) {
         this.orderLineItems.addOrderLineItem(orderLineItem);
+    }
+
+    /**
+     * 주문이 완료된 상태인지 확인합니다.
+     */
+    private void checkCompletionOrder() {
+        if (Objects.equals(OrderStatus.COMPLETION.name(), this.getOrderStatus())) {
+            throw new IllegalArgumentException("주문이 종료 된 상태입니다.");
+        }
+    }
+
+    /**
+     * 주문항목을 검증합니다.
+     * @param menuIdsCount
+     */
+    public void validateOrderLineItems(long menuIdsCount) {
+        this.orderLineItems.validate(menuIdsCount);
     }
 }
