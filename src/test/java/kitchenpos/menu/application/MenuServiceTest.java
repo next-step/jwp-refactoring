@@ -46,8 +46,11 @@ class MenuServiceTest {
     @Test
     void createOneMenu() {
         MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup("메뉴그룹"));
-        Product product = productRepository.save(new Product("상품", Price.of(1000)));
-        MenuRequest request = new MenuRequest("메뉴", 200, menuGroup.getId(), Arrays.asList(new MenuProductRequest(product.getId(), 2L)));
+        Product product1 = productRepository.save(new Product("상품", Price.of(1000)));
+        Product product2 = productRepository.save(new Product("상품2", Price.of(2000)));
+        MenuProductRequest productRequest1 = new MenuProductRequest(product1.getId(), 2L);
+        MenuProductRequest productRequest2 = new MenuProductRequest(product2.getId(), 3L);
+        MenuRequest request = new MenuRequest("메뉴", 1000, menuGroup.getId(), Arrays.asList(productRequest1, productRequest2));
         MenuResponse saved = menuService.create(request);
         
         assertThat(request.getName()).isEqualTo(saved.getName());

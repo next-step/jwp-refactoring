@@ -1,10 +1,7 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.common.domain.Price;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroupRepository;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -33,9 +30,12 @@ public class MenuService {
     @Transactional
     public MenuResponse create(final MenuRequest request) {
         validate(request);
-        Menu save = menuRepository.save(request.toMenuEntity());
-        save.addProducts(getMenuProducts(request.getMenuProducts()));
-        return MenuResponse.of(save);
+        Menu menu = new Menu(
+                request.getName(),
+                Price.of(request.getPrice()),
+                request.getMenuGroupId(),
+                createMenuProducts(request.getMenuProducts()));
+        return MenuResponse.of(menuRepository.save(menu));
     }
 
     @Transactional(readOnly = true)
@@ -68,7 +68,7 @@ public class MenuService {
                 .collect(Collectors.toList());
     }
 
-    private List<MenuProduct> getMenuProducts(List<MenuProductRequest> menuProducts) {
+    private List<MenuProduct> createMenuProducts(List<MenuProductRequest> menuProducts) {
         return menuProducts.stream()
                 .map(product -> new MenuProduct(productService.findById(product.getProductId()), product.getQuantity()))
                 .collect(Collectors.toList());

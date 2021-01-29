@@ -17,7 +17,8 @@ public class MenuProduct {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "product_id")
     private Product product;
-    private Long quantity;
+
+    private long quantity;
 
     protected MenuProduct() {
     }
@@ -29,10 +30,6 @@ public class MenuProduct {
 
     public Long getId() {
         return id;
-    }
-
-    public Long getMenuId() {
-        return menuId;
     }
 
     public Product getProduct() {
@@ -50,10 +47,10 @@ public class MenuProduct {
 
         MenuProduct that = (MenuProduct) o;
 
+        if (quantity != that.quantity) return false;
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (menuId != null ? !menuId.equals(that.menuId) : that.menuId != null) return false;
-        if (product != null ? !product.equals(that.product) : that.product != null) return false;
-        return quantity != null ? quantity.equals(that.quantity) : that.quantity == null;
+        return product != null ? product.equals(that.product) : that.product == null;
     }
 
     @Override
@@ -61,7 +58,7 @@ public class MenuProduct {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (menuId != null ? menuId.hashCode() : 0);
         result = 31 * result + (product != null ? product.hashCode() : 0);
-        result = 31 * result + (quantity != null ? quantity.hashCode() : 0);
+        result = 31 * result + (int) (quantity ^ (quantity >>> 32));
         return result;
     }
 }

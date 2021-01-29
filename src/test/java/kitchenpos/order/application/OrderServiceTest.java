@@ -2,6 +2,7 @@ package kitchenpos.order.application;
 
 import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -39,7 +40,7 @@ class OrderServiceTest {
     @DisplayName("1개 이상의 메뉴로 주문 등록")
     @Test
     void createOrder() {
-        Menu menu = menuRepository.save(new Menu("메뉴1", Price.of(1000), 1L));
+        Menu menu = menuRepository.save(new Menu("메뉴1", Price.of(1000), 1L, null));
         OrderTable orderTable = orderTableRepository.save(new OrderTable(4, true));
 
         List<OrderLineRequest> orderLinesRequest = Arrays.asList(new OrderLineRequest(menu.getId(), 1L));
@@ -80,7 +81,7 @@ class OrderServiceTest {
     @DisplayName("주문 목록을 조회")
     @Test
     void list() {
-        Menu menu = menuRepository.save(new Menu("메뉴1", Price.of(1000), 1L));
+        Menu menu = menuRepository.save(new Menu("메뉴1", Price.of(1000), 1L, null));
         OrderTable orderTable = orderTableRepository.save(new OrderTable(4, false));
         OrderTable orderTable2 = orderTableRepository.save(new OrderTable(2, false));
         Order order1 = orderRepository.save(new Order(orderTable, Collections.emptyList(), OrderStatus.COOKING));
