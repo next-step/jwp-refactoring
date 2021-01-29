@@ -63,9 +63,7 @@ public class OrderServiceTest {
         후라이드치킨 = new Product(1L, "후라이드치킨", new BigDecimal(16000));
         양념치킨 = new Product(2L, "양념치킨", new BigDecimal(16000));
 
-        치킨세트 = new MenuGroup();
-        치킨세트.setId(1L);
-        치킨세트.setName("후라이드앙념치킨");
+        치킨세트 = new MenuGroup("후라이드앙념치킨");
 
         후라이드한마리양념치킨한마리 = new Menu();
         후라이드한마리양념치킨한마리.setId(1L);

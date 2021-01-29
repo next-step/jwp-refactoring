@@ -1,11 +1,11 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 
@@ -44,9 +44,7 @@ public class MenuServiceTest {
 
         양념치킨 = new Product(2L, "양념치킨", BigDecimal.valueOf(16000));
 
-        치킨세트 = new MenuGroup();
-        치킨세트.setId(1L);
-        치킨세트.setName("후라이드앙념치킨");
+        치킨세트 = new MenuGroup("후라이드앙념치킨");
 
         후라이드한마리양념치킨한마리 = new Menu();
         후라이드한마리양념치킨한마리.setId(1L);
@@ -72,7 +70,7 @@ public class MenuServiceTest {
     private MenuProductDao menuProductDao;
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @Mock
     private MenuDao menuDao;
@@ -83,7 +81,7 @@ public class MenuServiceTest {
     @DisplayName("메뉴 생성")
     @Test
     void create() {
-        given(menuGroupDao.existsById(치킨세트.getId())).willReturn(true);
+        given(menuGroupRepository.existsById(치킨세트.getId())).willReturn(true);
         given(productRepository.findById(후라이드치킨.getId())).willReturn(Optional.of(후라이드치킨));
         given(productRepository.findById(양념치킨.getId())).willReturn(Optional.of(양념치킨));
         given(menuDao.save(후라이드한마리양념치킨한마리)).willReturn(후라이드한마리양념치킨한마리);
@@ -116,7 +114,7 @@ public class MenuServiceTest {
     @DisplayName("메뉴 생성 예외: 메뉴 그룹이 없음")
     @Test
     void createThrowExceptionWhenNoMenuGroup() {
-        given(menuGroupDao.existsById(치킨세트.getId())).willReturn(false);
+        given(menuGroupRepository.existsById(치킨세트.getId())).willReturn(false);
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> menuService.create(후라이드한마리양념치킨한마리));
@@ -125,7 +123,7 @@ public class MenuServiceTest {
     @DisplayName("메뉴 생성 예외: 메뉴에 속한 메뉴상품 목록 중 데이터베이스에 없는 상품이 있음")
     @Test
     void createThrowExceptionWhenNoMenuProducts() {
-        given(menuGroupDao.existsById(치킨세트.getId())).willReturn(true);
+        given(menuGroupRepository.existsById(치킨세트.getId())).willReturn(true);
         given(productRepository.findById(후라이드치킨.getId())).willReturn(Optional.empty());
 
         assertThatIllegalArgumentException()
@@ -135,7 +133,7 @@ public class MenuServiceTest {
     @DisplayName("메뉴 생성 예외: 조회한 상품의 가격과 메뉴 상품의 수량을 곱한 금액의 합이 메뉴의 가격보다 작음")
     @Test
     void createThrowExceptionWhenMenuPriceNotEqualsSumOfProductPriceAndMenuProductQuantity() {
-        given(menuGroupDao.existsById(치킨세트.getId())).willReturn(true);
+        given(menuGroupRepository.existsById(치킨세트.getId())).willReturn(true);
         given(productRepository.findById(후라이드치킨.getId())).willReturn(Optional.of(후라이드치킨));
         given(productRepository.findById(양념치킨.getId())).willReturn(Optional.of(양념치킨));
         후라이드한마리양념치킨한마리.setPrice(BigDecimal.valueOf(99999));
