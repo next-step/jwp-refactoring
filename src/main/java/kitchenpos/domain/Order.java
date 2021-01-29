@@ -2,14 +2,14 @@ package kitchenpos.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -22,15 +22,16 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "order_table_id")
     private OrderTable orderTable;
-    private String orderStatus;
+    @Enumerated(value = EnumType.STRING)
+    private OrderStatus orderStatus;
     private LocalDateTime orderedTime;
-    @OneToMany(mappedBy = "orderId", cascade = CascadeType.ALL)
-    private List<OrderLineItem> orderLineItems;
+    private OrderLineItems orderLineItems;
+
 
     protected Order() {
     }
 
-    public Order(OrderTable orderTable, String orderStatus, LocalDateTime orderedTime) {
+    public Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
@@ -45,11 +46,11 @@ public class Order {
         return orderTable;
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(final String orderStatus) {
+    public void changeOrderStstus(final OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 
@@ -58,10 +59,10 @@ public class Order {
     }
 
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
+        return orderLineItems.getOrderLineItems();
     }
 
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
+    public void updateOrderLineItems(final List<OrderLineItem> orderLineItems) {
+        this.orderLineItems = new OrderLineItems(orderLineItems);
     }
 }

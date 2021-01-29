@@ -65,7 +65,7 @@ public class OrderService {
             throw new IllegalArgumentException();
         }
 
-        Order order = new Order(orderTable, OrderStatus.COOKING.name(), LocalDateTime.now());
+        Order order = new Order(orderTable, OrderStatus.COOKING, LocalDateTime.now());
 
         final Order savedOrder = orderRepository.save(order);
 
@@ -78,7 +78,7 @@ public class OrderService {
                 orderLineItemRequest.getQuantity());
             savedOrderLineItems.add(orderLineItemRepository.save(orderLineItem));
         }
-        savedOrder.setOrderLineItems(savedOrderLineItems);
+        savedOrder.updateOrderLineItems(savedOrderLineItems);
 
         return getOrderResponse(savedOrder);
     }
@@ -88,7 +88,7 @@ public class OrderService {
         final List<Order> orders = orderRepository.findAll();
 
         for (final Order order : orders) {
-            order.setOrderLineItems(orderLineItemRepository.findAllByOrderId(order.getId()));
+            order.updateOrderLineItems(orderLineItemRepository.findAllByOrderId(order.getId()));
         }
 
         return orders.stream().map(this::getOrderResponse).collect(Collectors.toList());
@@ -99,16 +99,16 @@ public class OrderService {
         final Order savedOrder = orderRepository.findById(orderId)
             .orElseThrow(IllegalArgumentException::new);
 
-        if (Objects.equals(OrderStatus.COMPLETION.name(), savedOrder.getOrderStatus())) {
+        if (Objects.equals(OrderStatus.COMPLETION, savedOrder.getOrderStatus())) {
             throw new IllegalArgumentException();
         }
 
         final OrderStatus orderStatus = OrderStatus.valueOf(order.getOrderStatus());
-        savedOrder.setOrderStatus(orderStatus.name());
+        savedOrder.changeOrderStstus(orderStatus);
 
         orderRepository.save(savedOrder);
 
-        savedOrder.setOrderLineItems(orderLineItemRepository.findAllByOrderId(orderId));
+        savedOrder.updateOrderLineItems(orderLineItemRepository.findAllByOrderId(orderId));
 
         return getOrderResponse(savedOrder);
     }

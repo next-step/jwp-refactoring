@@ -20,7 +20,7 @@ public class MenuProduct {
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "product_id")
     private Product product;
-    private long quantity;
+    private Quantity quantity;
 
     protected MenuProduct() {
     }
@@ -28,7 +28,7 @@ public class MenuProduct {
     public MenuProduct(Menu menu, Product product, long quantity) {
         this.menu = menu;
         this.product = product;
-        this.quantity = quantity;
+        this.quantity = new Quantity(quantity);
     }
 
     public Long getSeq() {
@@ -44,7 +44,7 @@ public class MenuProduct {
     }
 
     public long getQuantity() {
-        return quantity;
+        return quantity.getValue();
     }
 
 }

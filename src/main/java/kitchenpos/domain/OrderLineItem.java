@@ -19,7 +19,7 @@ public class OrderLineItem {
     @ManyToOne
     @JoinColumn(name = "menu_id")
     private Menu menu;
-    private long quantity;
+    private Quantity quantity;
 
     protected OrderLineItem() {
     }
@@ -27,7 +27,7 @@ public class OrderLineItem {
     public OrderLineItem(Long orderId, Menu menu, long quantity) {
         this.orderId = orderId;
         this.menu = menu;
-        this.quantity = quantity;
+        this.quantity = new Quantity(quantity);
     }
 
     public Long getSeq() {
@@ -43,6 +43,6 @@ public class OrderLineItem {
     }
 
     public long getQuantity() {
-        return quantity;
+        return quantity.getValue();
     }
 }

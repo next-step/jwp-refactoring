@@ -20,20 +20,19 @@ public class Menu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private BigDecimal price;
+    private Name name;
+    private Price price;
     @ManyToOne
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
-    @OneToMany(mappedBy = "menu", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<MenuProduct> menuProducts = new ArrayList<>();
+    private MenuProducts menuProducts;
 
     protected Menu() {
     }
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
-        this.name = name;
-        this.price = price;
+        this.name = new Name(name);
+        this.price = new Price(price);
         this.menuGroup = menuGroup;
     }
 
@@ -42,11 +41,11 @@ public class Menu {
     }
 
     public String getName() {
-        return name;
+        return name.getValue();
     }
 
     public BigDecimal getPrice() {
-        return price;
+        return price.getValue();
     }
 
     public MenuGroup getMenuGroup() {
@@ -54,14 +53,10 @@ public class Menu {
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
-    }
-
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
+        return menuProducts.getMenuProducts();
     }
 
     public void updateMenuProduct(List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
+        this.menuProducts = new MenuProducts(menuProducts);
     }
 }

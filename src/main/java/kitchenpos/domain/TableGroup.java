@@ -11,13 +11,14 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="table_group")
+@Table(name = "table_group")
 public class TableGroup {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDateTime createdDate;
+    private OrderTables orderTables;
 
     protected TableGroup() {
     }
@@ -25,9 +26,6 @@ public class TableGroup {
     public TableGroup(LocalDateTime createdDate) {
         this.createdDate = createdDate;
     }
-
-    @OneToMany(mappedBy = "tableGroupId", cascade = CascadeType.ALL)
-    private List<OrderTable> orderTables;
 
     public Long getId() {
         return id;
@@ -38,10 +36,10 @@ public class TableGroup {
     }
 
     public List<OrderTable> getOrderTables() {
-        return orderTables;
+        return orderTables.getOrderTables();
     }
 
-    public void setOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
+    public void updateOrderTables(final List<OrderTable> orderTables) {
+        this.orderTables = new OrderTables(orderTables);
     }
 }

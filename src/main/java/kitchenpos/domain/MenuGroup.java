@@ -11,13 +11,13 @@ public class MenuGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+    private Name name;
 
     protected MenuGroup() {
     }
 
     public MenuGroup(String name) {
-        this.name = name;
+        this.name = new Name(name);
     }
 
     public Long getId() {
@@ -25,7 +25,7 @@ public class MenuGroup {
     }
 
     public String getName() {
-        return name;
+        return name.getValue();
     }
 
 }

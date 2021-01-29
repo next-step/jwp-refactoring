@@ -1,11 +1,10 @@
 package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.dto.TableGroupRequest;
@@ -26,8 +25,6 @@ class TableGroupServiceTest {
     private TableGroupService tableGroupService;
     @Autowired
     private TableService tableService;
-    @Autowired
-    private OrderTableRepository orderTableRepository;
 
     OrderTableResponse createdOrderTable;
     OrderTableResponse createdOrderTable2;
@@ -75,9 +72,8 @@ class TableGroupServiceTest {
         TABLE_GROUP_삭제(createdTableGroup.getId());
 
         //then
-        OrderTable orderTable = orderTableRepository.findById(createdTableGroup.getId()).get();
-        assertThat(orderTable.getTableGroupId()).isNull();
-
+        OrderTableResponse orderTableResponse = tableService.getOrderTableById(orderTableRequest1.getId());
+        assertThat(orderTableResponse.getTableGroupId()).isNull();
     }
 
     private void TABLE_GROUP_삭제(Long tableGroupId) {
@@ -90,6 +86,7 @@ class TableGroupServiceTest {
     }
 
     private TableGroupRequest TABLE_GROUP_REQUEST_생성(OrderTableRequest... createdOrderTable) {
-        return new TableGroupRequest(Arrays.stream(createdOrderTable).collect(Collectors.toList()));
+        return new TableGroupRequest(Arrays.stream(createdOrderTable)
+            .collect(Collectors.toList()));
     }
 }

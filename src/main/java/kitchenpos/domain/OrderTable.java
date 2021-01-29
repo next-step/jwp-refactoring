@@ -34,7 +34,7 @@ public class OrderTable {
         return tableGroupId;
     }
 
-    public void setTableGroupId(final Long tableGroupId) {
+    public void updateTableGroupId(final Long tableGroupId) {
         this.tableGroupId = tableGroupId;
     }
 
@@ -42,7 +42,7 @@ public class OrderTable {
         return numberOfGuests;
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
+    public void changeNumberOfGuests(final int numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
     }
 

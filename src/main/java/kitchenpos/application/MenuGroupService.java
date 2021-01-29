@@ -24,6 +24,9 @@ public class MenuGroupService {
     }
 
     public List<MenuGroupResponse> list() {
-        return menuGroupRepository.findAll().stream().map(MenuGroupResponse::of).collect(Collectors.toList());
+        return menuGroupRepository.findAll()
+            .stream()
+            .map(MenuGroupResponse::of)
+            .collect(Collectors.toList());
     }
 }
