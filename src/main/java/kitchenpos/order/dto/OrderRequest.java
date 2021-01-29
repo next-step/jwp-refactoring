@@ -29,6 +29,6 @@ public class OrderRequest {
     }
 
     public Order toOrder() {
-        return new Order(id, orderTableId, orderStatus);
+        return new Order(orderTableId, orderStatus);
     }
 }

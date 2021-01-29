@@ -28,7 +28,7 @@ class MenuGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        menuGroup = new MenuGroup(1L, "추천메뉴");
+        menuGroup = new MenuGroup("추천메뉴");
     }
 
     @Test

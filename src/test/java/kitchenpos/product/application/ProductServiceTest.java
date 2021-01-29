@@ -29,7 +29,7 @@ class ProductServiceTest {
     @DisplayName("상품등록")
     void create() {
         //given
-        Product newProduct = new Product(1L,"강정치킨", new BigDecimal(17000));
+        Product newProduct = new Product("강정치킨", new BigDecimal(17000));
 
         //when
         when(productRepository.save(any())).thenReturn(newProduct);
@@ -42,7 +42,7 @@ class ProductServiceTest {
     @DisplayName("상품가격 없거나 0이하이면 등록할 수 없음")
     void callIllegalArgumentException() {
         //given
-        Product newProduct = new Product(1L,"강정치킨", new BigDecimal(-1));
+        Product newProduct = new Product("강정치킨", new BigDecimal(-1));
 
         assertThatThrownBy(() -> {
             productService.create(newProduct);
@@ -52,7 +52,7 @@ class ProductServiceTest {
     @Test
     @DisplayName("상품조회")
     void list() {
-        Product newProduct = new Product(1L,"강정치킨", new BigDecimal(17000));
+        Product newProduct = new Product("강정치킨", new BigDecimal(17000));
 
         when(productRepository.findAll()).thenReturn(Arrays.asList(newProduct));
 

@@ -35,8 +35,8 @@ class TableGroupServiceTest {
     @BeforeEach
     void setUp() {
         orderTable1 = new OrderTable(1l, 1,true);
-        orderTable2 = new OrderTable(2L,2, true);
-        tableGroup = new TableGroup(1L, Arrays.asList(orderTable1, orderTable2));
+        orderTable2 = new OrderTable(2L, 2, true);
+        tableGroup = new TableGroup(Arrays.asList(orderTable1, orderTable2));
     }
 
     @Test

@@ -34,7 +34,7 @@ public class OrderService {
         final List<Long> menuIds = order.getMenuIds(orderLineItems);
 
         if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문항목이 메뉴의 개수와 같지 않습니다.");
         }
 
         final OrderTable orderTable = orderTableRepository.findById(order.getOrderTableId())
@@ -43,7 +43,6 @@ public class OrderService {
         order.isOrderTableEmpty(orderTable.getId());
         order.changeOrderTableId(orderTable.getId());
         order.changeOrderStatus(OrderStatus.COOKING.name());
-        order.changeOrderedTime(LocalDateTime.now());
 
         final Order savedOrder = orderRepository.save(order);
 
@@ -66,9 +65,7 @@ public class OrderService {
         }
 
         return orders.stream()
-                .map(order -> {
-                    return OrderResponse.of(order);
-                })
+                .map(OrderResponse::of)
                 .collect(Collectors.toList());
     }
 

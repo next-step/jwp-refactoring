@@ -35,7 +35,7 @@ class MenuGroupRestControllerTest {
     @Test
     @DisplayName("메뉴그룹 생성 확인")
     public void whenPostMenuGroup_thenReturnStatus() throws Exception {
-        MenuGroup menuGroup = new MenuGroup(1L, "추천메뉴");
+        MenuGroup menuGroup = new MenuGroup("추천메뉴");
 
         when(menuGroupService.create(any())).thenReturn(menuGroupResponse.of(menuGroup));
 
@@ -49,7 +49,7 @@ class MenuGroupRestControllerTest {
     @Test
     @DisplayName("메뉴그룹 조회")
     public void givenMenuGroup_whenGetMenuGroup_thenReturnStatus() throws Exception{
-        MenuGroup menuGroup = new MenuGroup(1L, "추천메뉴");
+        MenuGroup menuGroup = new MenuGroup("추천메뉴");
 
         given(menuGroupService.list()).willReturn(Arrays.asList(menuGroup));
 

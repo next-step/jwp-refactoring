@@ -38,8 +38,8 @@ public class OrderRestControllerTest {
     private OrderResponse orderResponse;
     @BeforeEach
     void setUp() {
-        orderLineItem = new OrderLineItem(1L, 1L,1L);
-        order = new Order(1L, Arrays.asList(orderLineItem));
+        orderLineItem = new OrderLineItem(1L,1L);
+        order = new Order(Arrays.asList(orderLineItem));
     }
 
     @Test

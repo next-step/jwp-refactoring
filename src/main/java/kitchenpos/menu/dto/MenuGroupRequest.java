@@ -9,8 +9,7 @@ public class MenuGroupRequest {
     public MenuGroupRequest() {
     }
 
-    public MenuGroupRequest(Long id, String name) {
-        this.id = id;
+    public MenuGroupRequest(String name) {
         this.name = name;
     }
 
@@ -23,6 +22,6 @@ public class MenuGroupRequest {
     }
 
     public MenuGroup toMenuGroup() {
-        return new MenuGroup(id, name);
+        return new MenuGroup(name);
     }
 }

@@ -37,7 +37,7 @@ class ProductRestControllerTest {
     @Test
     @DisplayName("상품 생성 확인")
     public void whenPostProduct_thenReturnStatus() throws Exception {
-        Product product = new Product(1L,"강정치킨", new BigDecimal(17000));
+        Product product = new Product("강정치킨", new BigDecimal(17000));
 
         when(productService.create(any())).thenReturn(response.of(product));
 
@@ -51,7 +51,7 @@ class ProductRestControllerTest {
     @Test
     @DisplayName("상품 가격이 조건에 맞지 않을 겨우")
     public void whenPostProduct_thenReturnThrow() throws Exception {
-        Product product = new Product(1L,"강정치킨", new BigDecimal(-1));
+        Product product = new Product("강정치킨", new BigDecimal(-1));
 
         when(productService.create(any())).thenThrow(IllegalArgumentException.class);
         try {
@@ -67,7 +67,7 @@ class ProductRestControllerTest {
     @Test
     @DisplayName("상품 조회")
     public void givenProduct_whenGetProduct_thenReturnStatus() throws Exception {
-        Product product = new Product(1L,"강정치킨", new BigDecimal(-1));
+        Product product = new Product("강정치킨", new BigDecimal(-1));
 
         List<Product> allProducts = Arrays.asList(product);
 

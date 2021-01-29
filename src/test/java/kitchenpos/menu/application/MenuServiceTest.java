@@ -40,10 +40,10 @@ class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        newProduct = new Product(1L,"강정치킨", new BigDecimal(17000));
-        menuProduct = new MenuProduct(1L, 1L, 1L, 2);
+        newProduct = new Product("강정치킨", new BigDecimal(17000));
+        menuProduct = new MenuProduct(1L, 1L, 2);
 
-        menu = new Menu(1L, "후라이드+후라이드", new BigDecimal(34000), 1L);
+        menu = new Menu("후라이드+후라이드", new BigDecimal(34000), 1L);
         menu.changeMenuProducts(Arrays.asList(menuProduct));
     }
 

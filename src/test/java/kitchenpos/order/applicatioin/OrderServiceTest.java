@@ -39,9 +39,10 @@ class OrderServiceTest {
     @BeforeEach
     void setUp() {
         orderTable = new OrderTable(1L, 4, false);
-        orderLineItem = new OrderLineItem(1L, 1L, 1L);
+        orderTable.setId(1L);
+        orderLineItem = new OrderLineItem(1L, 1L);
 
-        order = new Order(1L, 1L, OrderStatus.COOKING.name());
+        order = new Order(1L, OrderStatus.COOKING.name());
         order.changeOrderLineItems(Arrays.asList(orderLineItem));
     }
 

@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 class TableGroupTest {
@@ -42,8 +41,8 @@ class TableGroupTest {
     void compareOrderTables2() {
         List<OrderTable> orderTables = new ArrayList<>();
         List<OrderTable> savedTables = new ArrayList<>();
-        orderTables.add(new OrderTable(1L, null, 4, false));
-        savedTables.add(new OrderTable(1L, null, 4, false));
+        orderTables.add(new OrderTable(null, 4, false));
+        savedTables.add(new OrderTable(null, 4, false));
 
         TableGroup tableGroup = new TableGroup();
 

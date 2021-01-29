@@ -12,8 +12,7 @@ public class ProductRequest {
     public ProductRequest() {
     }
 
-    public ProductRequest(Long id, String name, BigDecimal price) {
-        this.id = id;
+    public ProductRequest(String name, BigDecimal price) {
         this.name = name;
         this.price = price;
     }
@@ -31,6 +30,6 @@ public class ProductRequest {
     }
 
     public Product toProduct() {
-        return new Product(id, name, price);
+        return new Product(name, price);
     }
 }

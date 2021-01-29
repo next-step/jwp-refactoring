@@ -13,11 +13,10 @@ public class OrderLineItem {
     private Long menuId;
     private Long quantity;
 
-    public OrderLineItem() {
+    protected OrderLineItem() {
     }
 
-    public OrderLineItem(Long seq, Long orderId, Long quantity) {
-        this.seq = seq;
+    public OrderLineItem(Long orderId, Long quantity) {
         this.orderId = orderId;
         this.quantity = quantity;
     }

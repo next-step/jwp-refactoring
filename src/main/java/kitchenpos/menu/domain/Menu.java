@@ -12,16 +12,15 @@ public class Menu {
     private Long id;
     private String name;
     private BigDecimal price;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY )
     private Long menuGroupId;
     @OneToMany(mappedBy = "menuId")
     private List<MenuProduct> menuProducts;
 
-    public Menu() {
+    protected Menu() {
     }
 
-    public Menu(Long id, String name, BigDecimal price, Long menuGroupId) {
-        this.id = id;
+    public Menu(String name, BigDecimal price, Long menuGroupId) {
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
@@ -29,17 +28,17 @@ public class Menu {
 
     public void validationCheck(boolean exitMenuGroupId) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("잘못된 가격을 입력하셨습니다.");
         }
 
         if (!exitMenuGroupId) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("메뉴그룹이 지정되지 않았습니다.");
         }
     }
 
     public void compare(BigDecimal sum) {
         if (price.compareTo(sum) > 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("메뉴의 가격이 틀렸습니다.");
         }
     }
 

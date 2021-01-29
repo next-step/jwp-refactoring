@@ -36,9 +36,9 @@ class TableGroupRestControllerTest {
 
     @BeforeEach
     void setUp() {
-        orderTable1 = new OrderTable(1L, 1);
-        orderTable1 = new OrderTable(2L, 1);
-        tableGroup = new TableGroup(1L, Arrays.asList(orderTable1, orderTable2));
+        orderTable1 = new OrderTable(1);
+        orderTable1 = new OrderTable(1);
+        tableGroup = new TableGroup(Arrays.asList(orderTable1, orderTable2));
     }
 
     @Test

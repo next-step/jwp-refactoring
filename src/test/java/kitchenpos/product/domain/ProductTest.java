@@ -12,7 +12,7 @@ class ProductTest {
     @Test
     @DisplayName("상품 등록")
     void register() {
-        Product product = new Product(1L,"강정치킨", new BigDecimal(-1));
+        Product product = new Product("강정치킨", new BigDecimal(-1));
 
         assertThatThrownBy(() -> {
             product.validationCheck();

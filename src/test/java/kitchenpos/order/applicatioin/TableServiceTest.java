@@ -33,7 +33,8 @@ class TableServiceTest {
 
     @BeforeEach
     void setUp() {
-        orderTable = new OrderTable(1L, 4);
+        orderTable = new OrderTable(4);
+        orderTable.changeTableGroupId(null);
     }
 
     @Test
@@ -95,7 +96,7 @@ class TableServiceTest {
     @Test
     @DisplayName("방문한 손님수 수정시 주문테이블이 없으면 등록 안됨")
     void callExceptionChangeNumberOfGuests2(){
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(new OrderTable()));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(new OrderTable(4)));
 
         try {
             tableService.changeNumberOfGuests(orderTable.getId(), orderTable);

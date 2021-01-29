@@ -35,6 +35,6 @@ public class OrderTableRequest {
     }
 
     public OrderTable toOrderTable() {
-        return new OrderTable(id, tableGroupId, numberOfGuests, empty);
+        return new OrderTable(tableGroupId, numberOfGuests, empty);
     }
 }

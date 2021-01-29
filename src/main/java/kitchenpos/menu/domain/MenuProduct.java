@@ -7,17 +7,16 @@ public class MenuProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Long menuId;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Long productId;
-    private long quantity;
+    private int quantity;
 
-    public MenuProduct() {
+    protected MenuProduct() {
     }
 
-    public MenuProduct(long seq, long menuId, long productId, long quantity) {
-        this.seq = seq;
+    public MenuProduct(Long menuId, Long productId, int quantity) {
         this.menuId = menuId;
         this.productId = productId;
         this.quantity = quantity;
@@ -39,7 +38,7 @@ public class MenuProduct {
         return productId;
     }
 
-    public long getQuantity() {
+    public int getQuantity() {
         return quantity;
     }
 }

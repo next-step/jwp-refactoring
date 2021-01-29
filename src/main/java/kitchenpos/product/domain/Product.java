@@ -16,10 +16,10 @@ public class Product {
     private String name;
     private BigDecimal price;
 
-    public Product() {
+    protected Product() {
     }
 
-    public Product(long id, String name, BigDecimal price) {
+    public Product(String name, BigDecimal price) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -27,7 +27,7 @@ public class Product {
 
     public void validationCheck() {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("잘못된 값을 입력하셨습니다.");
         }
     }
 

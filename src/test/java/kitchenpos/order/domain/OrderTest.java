@@ -32,7 +32,7 @@ class OrderTest {
     @Test
     @DisplayName("주문항목 메뉴 ID 가져오기")
     void getMenuIds1() {
-        Order order = new Order(1L, OrderItemList);
+        Order order = new Order(OrderItemList);
 
         assertThat(order.getMenuIds(OrderItemList)).isNotNull();
         assertThat(order.getMenuIds(OrderItemList).size()).isEqualTo(3);

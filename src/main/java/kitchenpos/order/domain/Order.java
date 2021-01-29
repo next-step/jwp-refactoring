@@ -1,5 +1,7 @@
 package kitchenpos.order.domain;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
@@ -8,6 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,26 +18,24 @@ public class Order {
     @ManyToOne
     private Long orderTableId;
     private String orderStatus;
+    @CreatedDate
     private LocalDateTime orderedTime;
     @OneToMany(mappedBy = "orderId")
     private List<OrderLineItem> orderLineItems;
 
-    public Order() {
+    protected Order() {
     }
 
-    public Order(Long id, List<OrderLineItem> orderLineItem) {
-        this.id = id;
+    public Order(List<OrderLineItem> orderLineItem) {
         this.orderLineItems = orderLineItem;
     }
 
-    public Order(Long id, Long orderTableId, String orderStatus) {
-        this.id = id;
+    public Order(Long orderTableId, String orderStatus) {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
     }
 
-    public Order(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime) {
-        this.id = id;
+    public Order(Long orderTableId, String orderStatus, LocalDateTime orderedTime) {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
@@ -42,7 +43,7 @@ public class Order {
 
     public List<Long> getMenuIds(List<OrderLineItem> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문항목이 비어있습니다.");
         }
 
         return orderLineItems.stream()
@@ -52,7 +53,7 @@ public class Order {
 
     public void isOrderTableEmpty(Long id) {
         if (id == null) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문테이블이 없습니다.");
         }
     }
 
@@ -66,10 +67,6 @@ public class Order {
 
     public void changeOrderStatus(String orderStatus) {
         this.orderStatus = orderStatus;
-    }
-
-    public void changeOrderedTime(LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
     }
 
     public Long getId() {
