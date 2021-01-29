@@ -1,9 +1,10 @@
 package kitchenpos.table;
 
-import kitchenpos.table.dto.OrderTable;
 import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -22,7 +23,11 @@ public class OrderTableTest {
     @Test
     public void invalidCase() {
         OrderTable orderTable = new OrderTable();
-        orderTable.group(new TableGroup());
+        orderTable.changeEmpty(true);
+        orderTable.group( new TableGroup(new ArrayList<OrderTable>() {{
+            add(orderTable);
+            add(orderTable);
+        }}));
         assertThatThrownBy(() -> {
             orderTable.changeEmpty(true);
         }).isInstanceOf(IllegalArgumentException.class);

@@ -1,6 +1,6 @@
 package kitchenpos.table;
 
-import kitchenpos.table.dto.OrderTable;
+import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableAddRequest;
 import kitchenpos.table.dto.TableEmptyChangeRequest;
 import kitchenpos.table.dto.TableNumberChangeRequest;
@@ -19,8 +19,8 @@ public class TableRestController {
     }
 
     @PostMapping("/api/tables")
-    public ResponseEntity<OrderTable> create(@RequestBody final TableAddRequest orderTable) {
-        final OrderTable created = tableService.create(orderTable);
+    public ResponseEntity<OrderTableResponse> create(@RequestBody final TableAddRequest orderTable) {
+        final OrderTableResponse created = tableService.create(orderTable);
         final URI uri = URI.create("/api/tables/" + created.getId());
         return ResponseEntity.created(uri)
                 .body(created)
@@ -28,14 +28,14 @@ public class TableRestController {
     }
 
     @GetMapping("/api/tables")
-    public ResponseEntity<List<OrderTable>> list() {
+    public ResponseEntity<List<OrderTableResponse>> list() {
         return ResponseEntity.ok()
                 .body(tableService.list())
                 ;
     }
 
     @PutMapping("/api/tables/{orderTableId}/empty")
-    public ResponseEntity<OrderTable> changeEmpty(
+    public ResponseEntity<OrderTableResponse> changeEmpty(
             @PathVariable final Long orderTableId,
             @RequestBody final TableEmptyChangeRequest request
     ) {
@@ -45,7 +45,7 @@ public class TableRestController {
     }
 
     @PutMapping("/api/tables/{orderTableId}/number-of-guests")
-    public ResponseEntity<OrderTable> changeNumberOfGuests(
+    public ResponseEntity<OrderTableResponse> changeNumberOfGuests(
             @PathVariable final Long orderTableId,
             @RequestBody final TableNumberChangeRequest request
     ) {

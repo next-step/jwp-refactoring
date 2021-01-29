@@ -33,7 +33,7 @@ public class OrderAddRequest {
     }
 
     public void checkSameOrderLineSize(int size) {
-        if (this.orderLineItems.size() != size) {
+        if (this.orderLineItems.isEmpty()) {
             throw new IllegalArgumentException();
         }
     }

@@ -16,12 +16,6 @@ public class TableGroupAddRequest {
         this.orderTables = orderTables;
     }
 
-    public void checkValidation() {
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException();
-        }
-    }
-
     public void checkSameSize(int size) {
         if (orderTables.size() != size) {
             throw new IllegalArgumentException();

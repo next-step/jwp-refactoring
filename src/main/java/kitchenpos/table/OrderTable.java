@@ -1,4 +1,4 @@
-package kitchenpos.table.dto;
+package kitchenpos.table;
 
 import kitchenpos.tablegroup.domain.TableGroup;
 
@@ -49,19 +49,16 @@ public class OrderTable {
         if (numberOfGuests < 0) {
             throw new IllegalArgumentException();
         }
-        if (isEmpty()) {
+        if (this.empty) {
             throw new IllegalArgumentException();
         }
         this.numberOfGuests = numberOfGuests;
     }
 
-    public void checkGroupable() {
-        if (!isEmpty() || Objects.nonNull(tableGroup)) {
+    public void group(TableGroup tableGroup) {
+        if (!this.empty) {
             throw new IllegalArgumentException();
         }
-    }
-
-    public void group(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
     }
 

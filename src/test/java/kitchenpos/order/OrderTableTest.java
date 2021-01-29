@@ -1,10 +1,11 @@
 package kitchenpos.order;
 
-import kitchenpos.table.dto.OrderTable;
+import kitchenpos.table.OrderTable;
 import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -15,14 +16,22 @@ public class OrderTableTest {
     @Test
     public void checkGroupable() {
         OrderTable orderTable = new OrderTable();
-        assertThatThrownBy(orderTable::checkGroupable).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> {
+            new TableGroup(new ArrayList<OrderTable>() {{
+                add(orderTable);
+            }});
+        }).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("단체 지정")
     @Test
     public void group() {
         OrderTable orderTable = new OrderTable();
-        orderTable.group(new TableGroup());
+        orderTable.changeEmpty(true);
+        orderTable.group(new TableGroup(new ArrayList<OrderTable>() {{
+            add(orderTable);
+            add(orderTable);
+        }}));
         assertThat(orderTable.isGrouped()).isTrue();
     }
 
@@ -30,7 +39,11 @@ public class OrderTableTest {
     @Test
     public void ungroup() {
         OrderTable orderTable = new OrderTable();
-        orderTable.group(new TableGroup());
+        orderTable.changeEmpty(true);
+        orderTable.group(new TableGroup(new ArrayList<OrderTable>() {{
+            add(orderTable);
+            add(orderTable);
+        }}));
         orderTable.ungroup();
         assertThat(orderTable.isGrouped()).isFalse();
     }

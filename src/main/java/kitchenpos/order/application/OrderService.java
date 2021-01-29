@@ -6,9 +6,12 @@ import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItemRepository;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.dto.OrderAddRequest;
+import kitchenpos.order.dto.OrderMapper;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusChangeRequest;
 import kitchenpos.table.OrderTableRepository;
-import kitchenpos.table.dto.OrderTable;
+import kitchenpos.table.OrderTable;
+import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +24,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderLineItemRepository orderLineItemRepository;
     private final OrderTableRepository orderTableRepository;
+    private final OrderMapper mapper = Mappers.getMapper(OrderMapper.class);
 
     public OrderService(
             final MenuRepository menuRepository,
@@ -35,7 +39,7 @@ public class OrderService {
     }
 
     @Transactional
-    public Order create(final OrderAddRequest request) {
+    public OrderResponse create(final OrderAddRequest request) {
         request.checkValidation();
         List<OrderLineItem> orderLineItems = request.getOrderLineItems()
                 .stream()
@@ -49,18 +53,21 @@ public class OrderService {
         order.addOrderLineItems(orderLineItems);
         orderRepository.save(order);
         orderLineItemRepository.saveAll(orderLineItems);
-        return order;
+        return mapper.toResponse(order);
     }
 
-    public List<Order> list() {
-        return orderRepository.findAll();
+    public List<OrderResponse> list() {
+        return orderRepository.findAll()
+                .stream()
+                .map(mapper::toResponse)
+                .collect(Collectors.toList());
     }
 
     @Transactional
-    public Order changeOrderStatus(final Long orderId, final OrderStatusChangeRequest request) {
+    public OrderResponse changeOrderStatus(final Long orderId, final OrderStatusChangeRequest request) {
         final Order savedOrder = orderRepository.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);
         savedOrder.changeStatus(request.getStatus());
-        return savedOrder;
+        return mapper.toResponse(savedOrder);
     }
 }

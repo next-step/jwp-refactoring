@@ -3,10 +3,13 @@ package kitchenpos.tablegroup.application;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.OrderTableRepository;
-import kitchenpos.table.dto.OrderTable;
+import kitchenpos.table.OrderTable;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupAddRequest;
+import kitchenpos.tablegroup.dto.TableGroupMapper;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
+import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +23,7 @@ public class TableGroupService {
     private final OrderRepository orderDao;
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
+    private final TableGroupMapper mapper = Mappers.getMapper(TableGroupMapper.class);
 
     public TableGroupService(final OrderRepository orderDao, final OrderTableRepository orderTableRepository, final TableGroupRepository tableGroupRepository) {
         this.orderDao = orderDao;
@@ -28,14 +32,12 @@ public class TableGroupService {
     }
 
     @Transactional
-    public TableGroup create(final TableGroupAddRequest request) {
-        request.checkValidation();
+    public TableGroupResponse create(final TableGroupAddRequest request) {
         final List<OrderTable> orderTables = request.getOrderTables().stream()
                 .map(it -> orderTableRepository.getOne(it.getId()))
                 .collect(Collectors.toList());
         request.checkSameSize(orderTables.size());
-        orderTables.forEach(OrderTable::checkGroupable);
-        return tableGroupRepository.save(new TableGroup(orderTables));
+        return mapper.toResponse(tableGroupRepository.save(new TableGroup(orderTables)));
     }
 
     @Transactional

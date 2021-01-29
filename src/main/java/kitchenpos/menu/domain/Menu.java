@@ -24,7 +24,7 @@ public class Menu {
     @OneToMany(mappedBy = "menu", cascade = CascadeType.PERSIST)
     private List<MenuProduct> menuProducts;
 
-    public Menu() {
+    Menu() {
     }
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup) {

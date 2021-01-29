@@ -1,6 +1,7 @@
 package kitchenpos.tablegroup.domain;
 
-import kitchenpos.table.dto.OrderTable;
+import kitchenpos.table.OrderTable;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -19,6 +20,9 @@ public class TableGroup {
     }
 
     public TableGroup(List<OrderTable> orderTables) {
+        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
+            throw new IllegalArgumentException();
+        }
         this.orderTables = orderTables;
         orderTables.forEach(it -> it.group(this));
         this.createdDate = LocalDateTime.now();

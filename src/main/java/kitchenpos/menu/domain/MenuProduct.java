@@ -14,7 +14,7 @@ public class MenuProduct {
     @ManyToOne
     @JoinColumn(name = "menuId")
     private Menu menu;
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     @JoinColumn(name = "productId")
     private Product product;
     private long quantity;
