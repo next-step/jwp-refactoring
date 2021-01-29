@@ -10,7 +10,6 @@ import kitchenpos.order.dto.OrderRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -34,9 +33,7 @@ public class OrderService {
 
     @Transactional
     public Order create(final OrderRequest orderRequest) {
-        final OrderTable orderTable = findOrderTableById(orderRequest.getOrderTableId());
-        Order order = orderRepository.save(Order.ofCooking(orderTable));
-
+        Order order = orderRepository.save(Order.ofCooking(orderRequest.getOrderTableId()));
         List<Menu> menus = menuService.findAllById(orderRequest.getMenuIds());
 
         Map<Long, Menu> menuMap = menus.stream()
@@ -49,6 +46,9 @@ public class OrderService {
 
         order.validateEmptyOrderLineItems();
         order.validateMenuSize(menuService.countByIdIn(orderRequest.getMenuIds()));
+
+        OrderTable orderTable = findOrderTableById(orderRequest.getOrderTableId());
+        orderTable.addOrder(order);
         return order;
     }
 
@@ -65,20 +65,6 @@ public class OrderService {
 
         return orderRepository.save(savedOrder);
     }
-
-
-    public void validateOrderStatusNotIn(List<OrderTable> orderTables, List<OrderStatus> orderStatuses) {
-        if (orderRepository.existsByOrderTableInAndOrderStatusIn(orderTables, orderStatuses)) {
-            throw new OrderTableException("올바르지 않은 주문상태가 포함되어있습니다", orderStatuses);
-        }
-    }
-
-    public void validateOrderStatusNotIn(OrderTable orderTable, List<OrderStatus> orderStatuses) {
-        if (orderRepository.existsByOrderTableAndOrderStatusIn(orderTable, orderStatuses)) {
-            throw new OrderTableException("올바르지 않은 주문상태가 포함되어있습니다", orderStatuses);
-        }
-    }
-
 
     private Order findOrderById(Long id) {
         return orderRepository.findById(id)

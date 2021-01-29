@@ -1,7 +1,9 @@
 package kitchenpos.order.application;
 
 import kitchenpos.advice.exception.OrderTableException;
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.application.TableService;
@@ -27,8 +29,8 @@ class TableServiceTest {
     @Autowired
     private TableService tableService;
 
-    @MockBean
-    private OrderRepository orderRepository;
+    @Autowired
+    private OrderTableRepository orderTableRepository;
 
     @DisplayName("테이블을 생성한다")
     @Test
@@ -54,8 +56,6 @@ class TableServiceTest {
     void changeEmpty() {
         OrderTable orderTable = 테이블을_생성한다(0, true);
         orderTable.updateEmpty(false);
-
-        when(orderRepository.existsByOrderTableAndOrderStatusIn(any(), anyList())).thenReturn(false);
         OrderTable changeOrderTable = tableService.changeEmpty(orderTable.getId(), OrderTableRequest.of(orderTable));
 
         assertThat(changeOrderTable.isEmpty()).isFalse();
@@ -66,9 +66,8 @@ class TableServiceTest {
     void changeEmptyException() {
         OrderTable orderTable = 테이블을_생성한다(0, true);
         orderTable.updateEmpty(false);
-
-        when(orderRepository.existsByOrderTableAndOrderStatusIn(any(), anyList())).thenReturn(true);
-
+        orderTable.addOrder(Order.ofCooking(orderTable.getId()));
+        orderTableRepository.save(orderTable);
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), OrderTableRequest.of(orderTable)))
                 .isInstanceOf(OrderTableException.class);
     }

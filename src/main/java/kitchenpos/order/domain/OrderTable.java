@@ -3,6 +3,9 @@ package kitchenpos.order.domain;
 import kitchenpos.advice.exception.OrderTableException;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 public class OrderTable {
@@ -14,6 +17,10 @@ public class OrderTable {
     @Column(name = "table_group_id")
     private Long tableGroupId;
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "order_table_id")
+    private List<Order> orders;
+
     private int numberOfGuests;
     private boolean empty;
 
@@ -24,11 +31,34 @@ public class OrderTable {
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
+        this.orders = new ArrayList<>();
     }
 
     public OrderTable(int numberOfGuests, boolean empty) {
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
+        this.orders = new ArrayList<>();
+    }
+
+    public void addOrder(Order order) {
+        this.orders.add(order);
+    }
+
+
+    public void validateOrderStatusNotInCookingAndMeal() {
+        List<OrderStatus> orderStatuses = getOrderStatuses();
+
+        if (orderStatuses.contains(OrderStatus.COOKING) || orderStatuses.contains(OrderStatus.MEAL)) {
+            throw new OrderTableException("올바르지 않은 주문상태가 포함되어있습니다", orderStatuses);
+        }
+    }
+
+
+    private List<OrderStatus> getOrderStatuses() {
+        List<OrderStatus> orderStatuses = orders.stream()
+                .map(Order::getOrderStatus)
+                .collect(Collectors.toList());
+        return orderStatuses;
     }
 
     public void ungroup() {
@@ -70,13 +100,20 @@ public class OrderTable {
         this.numberOfGuests = numberOfGuests;
     }
 
+    public List<Order> getOrders() {
+        return orders;
+    }
+
     @Override
     public String toString() {
         return "OrderTable{" +
                 "id=" + id +
                 ", tableGroupId=" + tableGroupId +
+                ", orders=" + orders +
                 ", numberOfGuests=" + numberOfGuests +
                 ", empty=" + empty +
                 '}';
     }
+
+
 }

@@ -21,9 +21,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_table_id", nullable = false)
-    private OrderTable orderTable;
+    @Column(name = "order_table_id")
+    private Long orderTableId;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "order_status")
@@ -40,12 +39,12 @@ public class Order {
     protected Order() {
     }
 
-    public static Order ofCooking(OrderTable orderTable) {
-        return new Order(orderTable, OrderStatus.COOKING);
+    public static Order ofCooking(Long orderTableId) {
+        return new Order(orderTableId, OrderStatus.COOKING);
     }
 
-    public Order(OrderTable orderTable, OrderStatus orderStatus) {
-        this.orderTable = orderTable;
+    public Order(Long orderTableId, OrderStatus orderStatus) {
+        this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = LocalDateTime.now();
         this.orderLineItems = new ArrayList<>();
@@ -77,8 +76,8 @@ public class Order {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {
@@ -103,7 +102,7 @@ public class Order {
     public String toString() {
         return "Order{" +
                 "id=" + id +
-                ", orderTable id=" + orderTable.getId() +
+                ", orderTable id=" + orderTableId +
                 ", orderStatus=" + orderStatus +
                 ", orderedTime=" + orderedTime +
                 ", orderLineItems size =" + orderLineItems.size() +

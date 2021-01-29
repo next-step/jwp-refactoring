@@ -46,8 +46,7 @@ public class TableGroupService {
     public void ungroup(final Long tableGroupId) {
         final TableGroup tableGroup = findTableGroupById(tableGroupId);
         final List<OrderTable> orderTables = tableService.findAllByTableGroupId(tableGroupId);
-
-        orderService.validateOrderStatusNotIn(orderTables, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
+        orderTables.forEach(OrderTable::validateOrderStatusNotInCookingAndMeal);
 
         tableGroup.ungroup();
         tableGroupRepository.delete(tableGroup);
