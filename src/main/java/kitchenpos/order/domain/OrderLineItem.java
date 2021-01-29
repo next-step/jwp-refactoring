@@ -7,9 +7,9 @@ public class OrderLineItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Long orderId;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Long menuId;
     private Long quantity;
 

@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.CollectionUtils;
 
@@ -15,6 +16,7 @@ public class TableGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @CreatedDate
     private LocalDateTime createdDate;
     @OneToMany(mappedBy = "tableGroupId")
     private List<OrderTable> orderTables;

@@ -43,7 +43,7 @@ class OrderServiceTest {
         orderLineItem = new OrderLineItem(1L, 1L);
 
         order = new Order(1L, OrderStatus.COOKING.name());
-        order.changeOrderLineItems(Arrays.asList(orderLineItem));
+        order.setOrderLineItems(Arrays.asList(orderLineItem));
     }
 
     @Test
@@ -52,7 +52,6 @@ class OrderServiceTest {
         when(menuRepository.countByIdIn(any())).thenReturn(1);
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
         when(orderRepository.save(any())).thenReturn(order);
-        when(orderLineItemRepository.save(any())).thenReturn(orderLineItem);
 
         assertThat(orderService.create(order)).isNotNull();
     }
@@ -71,7 +70,6 @@ class OrderServiceTest {
     @DisplayName("주문 조회")
     void list() {
         when(orderRepository.findAll()).thenReturn(Arrays.asList(order));
-        when(orderLineItemRepository.findAllByOrderId(any())).thenReturn(Arrays.asList(orderLineItem));
 
         assertThat(orderService.list()).isNotNull();
     }
@@ -82,7 +80,6 @@ class OrderServiceTest {
         order.changeOrderTableId(2L);
         when(orderRepository.findById(any())).thenReturn(Optional.of(order));
         when(orderRepository.save(any())).thenReturn(order);
-        when(orderLineItemRepository.findAllByOrderId(any())).thenReturn(Arrays.asList(orderLineItem));
 
         assertThat(orderService.changeOrderStatus(order.getId(), order));
     }

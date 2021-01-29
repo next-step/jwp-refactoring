@@ -20,7 +20,7 @@ public class Order {
     private String orderStatus;
     @CreatedDate
     private LocalDateTime orderedTime;
-    @OneToMany(mappedBy = "orderId")
+    @OneToMany(mappedBy = "orderId", cascade = CascadeType.PERSIST)
     private List<OrderLineItem> orderLineItems;
 
     protected Order() {
@@ -57,7 +57,7 @@ public class Order {
         }
     }
 
-    public void changeOrderLineItems(List<OrderLineItem> orderLineItems) {
+    public void setOrderLineItems(List<OrderLineItem> orderLineItems) {
         this.orderLineItems = orderLineItems;
     }
 
