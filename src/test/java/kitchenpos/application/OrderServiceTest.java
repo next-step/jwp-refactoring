@@ -1,12 +1,16 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.*;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.product.domain.Product;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.BDDMockito.*;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,14 +20,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.mockito.BDDMockito.given;
+import kitchenpos.dao.OrderDao;
+import kitchenpos.dao.OrderLineItemDao;
+import kitchenpos.dao.OrderTableDao;
+import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderTable;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.product.domain.Product;
 
 @DisplayName("애플리케이션 테스트 보호 - 주문 서비스")
 @ExtendWith(MockitoExtension.class)
@@ -32,7 +39,7 @@ public class OrderServiceTest {
     private Product 후라이드치킨;
     private Product 양념치킨;
     private MenuGroup 치킨세트;
-    private Menu 후라이드한마리양념치킨한마리;
+    private Menu 후라이드한마리_양념치킨한마리;
     private MenuProduct 후라이드치킨한마리;
     private MenuProduct 양념치킨한마리;
 
@@ -43,7 +50,7 @@ public class OrderServiceTest {
     private List<Long> menuIds;
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
     private OrderDao orderDao;
@@ -66,21 +73,12 @@ public class OrderServiceTest {
 
         치킨세트 = new MenuGroup("후라이드앙념치킨");
 
-        후라이드한마리양념치킨한마리 = new Menu();
-        후라이드한마리양념치킨한마리.setId(1L);
-        후라이드한마리양념치킨한마리.setName("후라이드+양념");
-        후라이드한마리양념치킨한마리.setMenuGroupId(치킨세트.getId());
-        후라이드한마리양념치킨한마리.setPrice(BigDecimal.valueOf(32000));
+        후라이드한마리_양념치킨한마리 = new Menu("후라이드+양념", BigDecimal.valueOf(32000), 치킨세트);
 
-        후라이드치킨한마리 = new MenuProduct();
-        후라이드치킨한마리.setProductId(후라이드치킨.getId());
-        후라이드치킨한마리.setQuantity(1);
+        후라이드치킨한마리 = new MenuProduct(후라이드한마리_양념치킨한마리, 후라이드치킨, 1L);
+        양념치킨한마리 = new MenuProduct(후라이드한마리_양념치킨한마리, 양념치킨, 1L);
 
-        양념치킨한마리 = new MenuProduct();
-        양념치킨한마리.setProductId(양념치킨.getId());
-        양념치킨한마리.setQuantity(1);
-
-        후라이드한마리양념치킨한마리.setMenuProducts(Arrays.asList(후라이드치킨한마리, 양념치킨한마리));
+        후라이드한마리_양념치킨한마리.addAllMenuProduct(Arrays.asList(후라이드치킨한마리, 양념치킨한마리));
 
         주문테이블 = new OrderTable();
         주문테이블.setId(1L);
@@ -89,7 +87,7 @@ public class OrderServiceTest {
 
         주문_항목 = new OrderLineItem();
         주문_항목.setSeq(1L);
-        주문_항목.setMenuId(후라이드한마리양념치킨한마리.getId());
+        주문_항목.setMenuId(후라이드한마리_양념치킨한마리.getId());
         주문_항목.setQuantity(1);
 
         주문 = new Order();
@@ -109,7 +107,7 @@ public class OrderServiceTest {
     @DisplayName("주문을 생성한다")
     @Test
     void create() {
-        given(menuDao.countByIdIn(menuIds)).willReturn(Long.valueOf(주문.getOrderLineItems().size()));
+        given(menuRepository.countByIdIn(menuIds)).willReturn(Long.valueOf(주문.getOrderLineItems().size()));
         given(orderTableDao.findById(주문테이블.getId())).willReturn(Optional.of(주문테이블));
         given(orderDao.save(주문)).willReturn(주문);
         given(orderLineItemDao.save(주문_항목)).willReturn(주문_항목);
@@ -145,7 +143,7 @@ public class OrderServiceTest {
     @Test
     void createThrowExceptionWhenOrderTableIsEmpty() {
         주문테이블.setEmpty(true);
-        given(menuDao.countByIdIn(menuIds)).willReturn(Long.valueOf(주문.getOrderLineItems().size()));
+        given(menuRepository.countByIdIn(menuIds)).willReturn(Long.valueOf(주문.getOrderLineItems().size()));
         given(orderTableDao.findById(주문테이블.getId())).willReturn(Optional.of(주문테이블));
 
         assertThatIllegalArgumentException()

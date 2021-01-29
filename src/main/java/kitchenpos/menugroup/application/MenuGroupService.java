@@ -26,4 +26,5 @@ public class MenuGroupService {
     public List<MenuGroupResponse> findAll() {
         return MenuGroupResponse.ofList(menuGroupRepository.findAll());
     }
+
 }
