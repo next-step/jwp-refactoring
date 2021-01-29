@@ -3,6 +3,7 @@ package kitchenpos.table.domain;
 import kitchenpos.order.domain.Order;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class OrderTable {
@@ -17,7 +18,7 @@ public class OrderTable {
     private boolean empty;
 
     @Embedded
-    private Orders orders;
+    private Orders orders = new Orders();
 
     protected OrderTable() {
         this.empty = true;
@@ -26,12 +27,16 @@ public class OrderTable {
     public OrderTable(int numberOfGuests, boolean empty) {
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
-        this.orders = new Orders();
     }
 
     public OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
         this(numberOfGuests, empty);
         this.tableGroupId = tableGroupId;
+    }
+
+    public OrderTable(Long tableGroupId, int numberOfGuests, boolean empty, List<Order> orders) {
+        this(tableGroupId, numberOfGuests, empty);
+        this.orders = new Orders(orders);
     }
 
     public Long getId() {

@@ -33,12 +33,12 @@ public class TableGroup {
         return id;
     }
 
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
-
     public OrderTables getOrderTables() {
         return orderTables;
     }
 
+    public void unGroup() {
+        orderTables.empty();
+        orderTables = new OrderTables();
+    }
 }

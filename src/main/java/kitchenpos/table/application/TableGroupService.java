@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,8 +42,13 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
-        orderTables.forEach(OrderTable::ungroup);
+        TableGroup tableGroup = findTableGroup(tableGroupId);
+        tableGroup.unGroup();
+    }
+
+    private TableGroup findTableGroup(Long tableGroupId) {
+        return tableGroupRepository.findById(tableGroupId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 테이블 그룹입니다."));
     }
 
     private List<OrderTable> findOrderTables(final TableGroupRequest request) {
