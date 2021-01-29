@@ -5,6 +5,8 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.*;
+import kitchenpos.product.domain.Product;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -58,15 +60,8 @@ public class OrderServiceTest {
     public void setup() {
         LocalDateTime now = LocalDateTime.now();
 
-        후라이드치킨 = new Product();
-        후라이드치킨.setId(1L);
-        후라이드치킨.setName("후라이드");
-        후라이드치킨.setPrice(BigDecimal.valueOf(10000));
-
-        양념치킨 = new Product();
-        양념치킨.setId(2L);
-        양념치킨.setName("양념");
-        양념치킨.setPrice(BigDecimal.valueOf(11000));
+        후라이드치킨 = new Product(1L, "후라이드치킨", new BigDecimal(16000));
+        양념치킨 = new Product(2L, "양념치킨", new BigDecimal(16000));
 
         치킨세트 = new MenuGroup();
         치킨세트.setId(1L);
@@ -76,7 +71,7 @@ public class OrderServiceTest {
         후라이드한마리양념치킨한마리.setId(1L);
         후라이드한마리양념치킨한마리.setName("후라이드+양념");
         후라이드한마리양념치킨한마리.setMenuGroupId(치킨세트.getId());
-        후라이드한마리양념치킨한마리.setPrice(BigDecimal.valueOf(21000));
+        후라이드한마리양념치킨한마리.setPrice(BigDecimal.valueOf(32000));
 
         후라이드치킨한마리 = new MenuProduct();
         후라이드치킨한마리.setProductId(후라이드치킨.getId());
