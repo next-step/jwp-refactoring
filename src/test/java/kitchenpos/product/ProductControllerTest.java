@@ -2,7 +2,8 @@ package kitchenpos.product;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import kitchenpos.common.BaseContollerTest;
-import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -26,34 +27,33 @@ public class ProductControllerTest extends BaseContollerTest {
     @Test
     @DisplayName("새로운 상품을 등록합니다.")
     void createProduct() throws Exception {
-        상품_등록_요청(ProductTestSupport.createProduct("맛있는치킨", BigDecimal.valueOf(20000))
+
+        상품_등록_요청(new ProductRequest("맛있는치킨", BigDecimal.valueOf(20000))
                 , status().isCreated());
     }
 
     @Test
     @DisplayName("새로운 상품 등록 시 이름이 없으면 오류 발생")
     void createProductNoNameOccurredException() {
-        Product product = new Product(null, BigDecimal.valueOf(20000));
-
         assertThatThrownBy(() -> {
-            상품_등록_요청(product, status().is5xxServerError());
+            상품_등록_요청(new ProductRequest(null, BigDecimal.valueOf(20000))
+                    , status().is5xxServerError());
         }).isInstanceOf(NestedServletException.class).hasMessageContaining("could not execute statement");
     }
 
     @Test
     @DisplayName("새로운 상품 등록 시 가격이 없으면 오류 발생")
     void createProductNoPriceOccurredException() {
-        Product product = new Product("맛있는치킨", null);
-
         assertThatThrownBy(() -> {
-            상품_등록_요청(product, status().is5xxServerError());
+            상품_등록_요청(new ProductRequest("맛있는치킨", null)
+                    , status().is5xxServerError());
         }).isInstanceOf(NestedServletException.class).hasMessageContaining("IllegalArgumentException");
     }
 
-    private void 상품_등록_요청(Product product, ResultMatcher status) throws Exception {
+    private void 상품_등록_요청(ProductRequest productRequest, ResultMatcher status) throws Exception {
         this.mockMvc.perform(post("/api/products")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(this.objectMapper.writeValueAsString(product))
+                .content(this.objectMapper.writeValueAsString(productRequest))
                 )
                 .andDo(print())
                 .andExpect(status)
@@ -71,9 +71,9 @@ public class ProductControllerTest extends BaseContollerTest {
                 .andReturn();
 
         String responseProducts = mvcResult.getResponse().getContentAsString();
-        ArrayList<Product> products
-                = this.objectMapper.readValue(responseProducts, new TypeReference<ArrayList<Product>>() {});
+        ArrayList<ProductResponse> productResponses
+                = this.objectMapper.readValue(responseProducts, new TypeReference<ArrayList<ProductResponse>>() {});
 
-        assertThat(products).hasSize(6);
+        assertThat(productResponses).hasSize(6);
     }
 }
