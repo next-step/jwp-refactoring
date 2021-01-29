@@ -12,10 +12,8 @@ public class MenuProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
 
-    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id")
     @JsonBackReference
-    private Menu menu;
+    private Long menuId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
@@ -28,13 +26,21 @@ public class MenuProduct {
         return seq;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public Long getMenuId() {
+        return menuId;
     }
 
-    public void changeMenu(Menu menu) {
-        this.menu = menu;
+    public void setMenuId(Long menuId) {
+        this.menuId = menuId;
     }
+
+    //    public Menu getMenu() {
+//        return menu;
+//    }
+//
+//    public void changeMenu(Menu menu) {
+//        this.menu = menu;
+//    }
 
     public Product getProduct() {
         return product;

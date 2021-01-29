@@ -19,6 +19,7 @@ public class Menu {
     private MenuGroup menuGroup;
 
     @Embedded
+    @Transient
     private MenuProducts menuProducts = new MenuProducts();
 
     public Menu() {

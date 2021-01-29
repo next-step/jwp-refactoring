@@ -106,7 +106,7 @@ public class MenuControllerTest extends BaseContollerTest {
     private void addMenuProduct(Menu menu) {
         menu.changeMenuGroup(this.menuGroupRepository.save(new MenuGroup("테스트그룹")));
         MenuProduct menuProduct = new MenuProduct();
-        menuProduct.changeMenu(menu);
+        menuProduct.setMenuId(menu.getId());
 
         Product product = new Product("치킨", BigDecimal.valueOf(20000));
         Product savedProduct = this.productRepository.save(product);

@@ -62,7 +62,7 @@ public class MenuService {
                 = menuProductRepository.findAllByMenuId(menu.getMenuGroup().getId());
 
         for (final MenuProduct menuProduct : menuProducts) {
-            menuProduct.changeMenu(savedMenu);
+            menuProduct.setMenuId(savedMenu.getId());
             savedMenu.addMenuProducts(this.menuProductRepository.save(menuProduct));
         }
     }
