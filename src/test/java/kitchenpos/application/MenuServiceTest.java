@@ -133,11 +133,9 @@ class MenuServiceTest {
         List<Menu> list = menuService.list();
 
         //then
-        Assertions.assertAll(() -> {
-            List<String> collect = list.stream().map(Menu::getName).collect(Collectors.toList());
-            List<String> products = Arrays.asList(createdMenu1.getName(), createdMenu2.getName());
-            assertThat(collect).containsAll(products);
-        });
+        assertThat(list)
+            .extracting(Menu::getName)
+            .containsExactly(createdMenu1.getName(),createdMenu2.getName());
     }
 
     private Menu MENU_생성_테스트(Menu menuRequest) {

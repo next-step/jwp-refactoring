@@ -64,11 +64,9 @@ class ProductServiceTest {
         List<Product> list = productService.list();
 
         //then
-        Assertions.assertAll(() -> {
-            List<String> collect = list.stream().map(Product::getName).collect(Collectors.toList());
-            List<String> products = Arrays.asList(product1.getName(), product2.getName());
-            assertThat(collect).containsAll(products);
-        });
+        assertThat(list)
+            .extracting(Product::getName)
+            .containsExactly(product1.getName(),product2.getName());
 
     }
 

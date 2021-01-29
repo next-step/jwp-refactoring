@@ -48,11 +48,9 @@ class MenuGroupServiceTest {
         List<MenuGroup> list = menuGroupService.list();
 
         //then
-        Assertions.assertAll(() -> {
-            List<String> collect = list.stream().map(MenuGroup::getName).collect(Collectors.toList());
-            List<String> menuGroups = Arrays.asList(menuGroup1.getName(), menuGroup2.getName());
-            assertThat(collect).containsAll(menuGroups);
-        });
+        assertThat(list)
+            .extracting(MenuGroup::getName)
+            .containsExactly(menuGroup1.getName(), menuGroup2.getName());
 
     }
 
