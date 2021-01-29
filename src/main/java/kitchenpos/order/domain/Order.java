@@ -18,7 +18,8 @@ public class Order {
     @JoinColumn(name = "order_table_id")
     private OrderTable orderTable;
 
-    private String orderStatus;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
     private LocalDateTime orderedTime;
 
     @Embedded
@@ -27,7 +28,7 @@ public class Order {
     public Order() {
     }
 
-    public Order(String orderStatus, LocalDateTime orderedTime) {
+    public Order(OrderStatus orderStatus, LocalDateTime orderedTime) {
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
     }
@@ -44,11 +45,11 @@ public class Order {
         this.orderTable = orderTable;
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public void changeOrderStatus(final String orderStatus) {
+    public void changeOrderStatus(final OrderStatus orderStatus) {
         this.checkCompletionOrder();
         this.orderStatus = orderStatus;
     }

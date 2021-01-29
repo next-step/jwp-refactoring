@@ -58,7 +58,7 @@ public class OrderLineTest {
 
     public Order createOrder(OrderStatus orderStatus) {
         Order order = new Order();
-        order.changeOrderStatus(orderStatus.name());
+        order.changeOrderStatus(orderStatus);
         order.changeOrderedTime(LocalDateTime.now());
         order.changeOrderTable(this.orderTableRepository.save(new OrderTable(3, false)));
 
