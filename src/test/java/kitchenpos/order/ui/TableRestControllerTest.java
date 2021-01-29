@@ -50,7 +50,7 @@ class TableRestControllerTest {
     @DisplayName("생성된 주문테이블 조회")
     public void givenOrderTable_whenGetOrderTable_thenReturnStauts() throws Exception {
         OrderTable orderTable = new OrderTable(1L, 0, true);
-
+        orderTable.setId(1L);
         given(tableService.list()).willReturn(Arrays.asList(orderTableResponse.of(orderTable)));
 
         mockMvc.perform(get("/api/tables"))
@@ -62,7 +62,7 @@ class TableRestControllerTest {
     @DisplayName("생성된 주문테이블 빈테이블 여부 수정")
     void givenOrderTable_whenPutOrderTable_thenReturnStatus() throws Exception {
         OrderTable orderTable = new OrderTable(1L, 0, true);
-
+        orderTable.setId(1L);
         given(tableService.list()).willReturn(Arrays.asList(orderTableResponse.of(orderTable)));
 
         mockMvc.perform(get("/api/tables"))
@@ -81,7 +81,7 @@ class TableRestControllerTest {
     @DisplayName("생성된 주문테이블 방문한 손님 수 수정")
     void givenOrderTable_whenPutOrderTableNumberOfGuest_thenReturnStatus() throws Exception {
         OrderTable orderTable = new OrderTable(1L, 0, true);
-
+        orderTable.setId(1L);
         given(tableService.list()).willReturn(Arrays.asList(orderTableResponse.of(orderTable)));
 
         mockMvc.perform(get("/api/tables"))
