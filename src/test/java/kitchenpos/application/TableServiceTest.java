@@ -74,11 +74,13 @@ class TableServiceTest {
 	@Test
 	void changeEmpty_exceptionCase1() {
 		// given
-		OrderTable 새_주문_테이블1 = new OrderTable.Builder().id(9L).empty(true).build();
-		OrderTable 새_주문_테이블2 = new OrderTable.Builder().id(10L).empty(true).build();
+		OrderTable 새_주문_테이블1 = new OrderTable.Builder().empty(true).build();
+		OrderTable 새_주문_테이블2 = new OrderTable.Builder().empty(true).build();
 		TableGroup 이미_단체_지정 = new TableGroup.Builder().id(-1L).orderTables(새_주문_테이블1, 새_주문_테이블2).build();
 
-		given(orderTableDao.findById(새_주문_테이블1.getId())).willReturn(Optional.of(새_주문_테이블1));
+		OrderTable 새_주문_테이블1_mock = spy(새_주문_테이블1);
+		when(새_주문_테이블1_mock.getTableGroupId()).thenReturn(-1L);
+		given(orderTableDao.findById(새_주문_테이블1.getId())).willReturn(Optional.of(새_주문_테이블1_mock));
 
 		// when & then
 		assertThatThrownBy(
@@ -91,16 +93,19 @@ class TableServiceTest {
 	void changeEmpty_exceptionCase2() {
 
 		// given
-		OrderTable 새_주문_테이블 = new OrderTable.Builder().id(-1L).empty(false).build();
-		new Order.Builder()
-				.orderTable(새_주문_테이블)
-				.orderLineItems(new OrderLineItem.Builder().menu(메뉴1).quantity(1L).build())
-				.orderStatus(OrderStatus.COOKING)
-			.build();
-		new Order.Builder()
-				.orderTable(새_주문_테이블)
-				.orderLineItems(new OrderLineItem.Builder().menu(메뉴2).quantity(1L).build())
-				.orderStatus(OrderStatus.MEAL)
+		OrderTable 새_주문_테이블 = new OrderTable.Builder().id(-1L).empty(false)
+			.orders(
+				new Order.Builder()
+					.orderTableId(-1L)
+					.orderLineItems(new OrderLineItem.Builder().menu(메뉴1).quantity(1L).build())
+					.orderStatus(OrderStatus.COOKING)
+					.build(),
+				new Order.Builder()
+					.orderTableId(-1L)
+					.orderLineItems(new OrderLineItem.Builder().menu(메뉴2).quantity(1L).build())
+					.orderStatus(OrderStatus.MEAL)
+					.build()
+			)
 			.build();
 		given(orderTableDao.findById(새_주문_테이블.getId())).willReturn(Optional.of(새_주문_테이블));
 

@@ -15,7 +15,7 @@ import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.application.ProductService;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 public class MenuService {
 	private final MenuDao menuDao;
 	private final MenuGroupService menuGroupService;
@@ -31,7 +31,6 @@ public class MenuService {
 		this.productService = productService;
 	}
 
-	@Transactional
 	public MenuResponse create(final MenuRequest request) {
 		MenuGroup menuGroup = menuGroupService.findById(request.getMenuGroupId());
 
@@ -46,6 +45,7 @@ public class MenuService {
 		return MenuResponse.from(menuDao.save(request.toMenu(menuGroup, menuProducts)));
 	}
 
+	@Transactional(readOnly = true)
 	public List<MenuResponse> list() {
 		return MenuResponse.newList(menuDao.findAll());
 	}

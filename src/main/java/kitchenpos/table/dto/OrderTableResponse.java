@@ -1,11 +1,10 @@
 package kitchenpos.table.dto;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.TableGroup;
 
 public class OrderTableResponse {
 	private Long id;
@@ -24,18 +23,15 @@ public class OrderTableResponse {
 	}
 
 	public static OrderTableResponse from(OrderTable orderTable) {
-		Long tableGroupId = Optional.ofNullable(orderTable.getTableGroup())
-			.map(TableGroup::getId)
-			.orElse(null);
 		return new OrderTableResponse(
 			orderTable.getId(),
-			tableGroupId,
+			orderTable.getTableGroupId(),
 			orderTable.getNumberOfGuests(),
 			orderTable.isEmpty()
 		);
 	}
 
-	public static List<OrderTableResponse> newList(List<OrderTable> orderTables) {
+	public static List<OrderTableResponse> newList(Set<OrderTable> orderTables) {
 		return orderTables.stream()
 			.map(OrderTableResponse::from)
 			.collect(Collectors.toList());

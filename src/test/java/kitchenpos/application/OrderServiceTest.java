@@ -53,7 +53,6 @@ class OrderServiceTest {
 
 		given(menuService.findById(메뉴1.getId())).willReturn(메뉴1);
 		given(menuService.findById(메뉴2.getId())).willReturn(메뉴2);
-		given(tableService.findById(주문_테이블9.getId())).willReturn(주문_테이블9);
 		given(orderDao.save(any(Order.class))).willAnswer(invocation -> {
 			Order mock = spy(invocation.getArgument(0, Order.class));
 			when(mock.getId()).thenReturn(1L);
@@ -108,7 +107,7 @@ class OrderServiceTest {
 		OrderLineItem 주문_항목2 = new OrderLineItem.Builder().menu(메뉴2).quantity(2L).build();
 		Order 주문 = new Order.Builder().id(-1L)
 			.orderLineItems(주문_항목1, 주문_항목2)
-			.orderTable(주문_테이블1).build();
+			.orderTableId(주문_테이블1.getId()).build();
 		given(orderDao.findAll()).willReturn(Arrays.asList(주문));
 
 		// when
@@ -129,7 +128,7 @@ class OrderServiceTest {
 		// given
 		OrderLineItem 주문_항목1 = new OrderLineItem.Builder().menu(메뉴1).quantity(1L).build();
 		OrderLineItem 주문_항목2 = new OrderLineItem.Builder().menu(메뉴2).quantity(2L).build();
-		Order 주문 = new Order.Builder().orderTable(주문_테이블1)
+		Order 주문 = new Order.Builder().orderTableId(주문_테이블1.getId())
 			.orderStatus(OrderStatus.COOKING)
 			.orderLineItems(주문_항목1, 주문_항목2)
 			.build();
@@ -150,7 +149,7 @@ class OrderServiceTest {
 		OrderLineItem 주문_항목1 = new OrderLineItem.Builder().menu(메뉴1).quantity(1L).build();
 		OrderLineItem 주문_항목2 = new OrderLineItem.Builder().menu(메뉴2).quantity(2L).build();
 		Order 주문 = new Order.Builder()
-			.orderTable(주문_테이블1)
+			.orderTableId(주문_테이블1.getId())
 			.orderLineItems(주문_항목1, 주문_항목2)
 			.orderStatus(OrderStatus.COMPLETION)
 			.build();

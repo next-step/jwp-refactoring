@@ -11,7 +11,7 @@ import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 public class ProductService {
 	private final ProductDao productDao;
 
@@ -19,11 +19,11 @@ public class ProductService {
 		this.productDao = productDao;
 	}
 
-	@Transactional
 	public ProductResponse create(final ProductRequest request) {
 		return ProductResponse.from(productDao.save(request.toProduct()));
 	}
 
+	@Transactional(readOnly = true)
 	public List<ProductResponse> list() {
 		return ProductResponse.newList(productDao.findAll());
 	}

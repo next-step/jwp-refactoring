@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -109,14 +111,19 @@ class TableGroupServiceTest {
 		OrderTable 주문_테이블9 = new OrderTable.Builder().id(9L).empty(true).build();
 		OrderTable 주문_테이블10 = new OrderTable.Builder().id(10L).empty(true).build();
 		TableGroup 단체_지정 = new TableGroup.Builder().id(-1L).orderTables(주문_테이블9, 주문_테이블10).build();
-		given(tableService.findAllByTableGroupId(단체_지정.getId())).willReturn(Arrays.asList(주문_테이블9, 주문_테이블10));
+		given(tableService.findAllByTableGroupId(단체_지정.getId())).willAnswer(invocation -> {
+			Set<OrderTable> orderTableSet = new HashSet<>();
+			orderTableSet.add(주문_테이블9);
+			orderTableSet.add(주문_테이블10);
+			return orderTableSet;
+		});
 
 		// when
 		tableGroupService.ungroup(단체_지정.getId());
 
 		// then
-		assertThat(주문_테이블9.getTableGroup()).isNull();
-		assertThat(주문_테이블10.getTableGroup()).isNull();
+		assertThat(주문_테이블9.getTableGroupId()).isNull();
+		assertThat(주문_테이블10.getTableGroupId()).isNull();
 	}
 
 	@DisplayName("단체 해제 : 단체 지정되어 있던 주문 테이블의 주문 상태가 계산 완료가 아닌 것이 존재함")
@@ -125,31 +132,41 @@ class TableGroupServiceTest {
 		// given
 		OrderLineItem 주문_항목1 = new OrderLineItem.Builder().menu(메뉴1).quantity(1L).build();
 		OrderLineItem 주문_항목2 = new OrderLineItem.Builder().menu(메뉴2).quantity(2L).build();
-		OrderTable 새_주문_테이블1 = new OrderTable.Builder().id(-1L).empty(false).build();
-		new Order.Builder()
-			.orderStatus(OrderStatus.COOKING)
-			.orderLineItems(주문_항목1)
-			.orderTable(새_주문_테이블1)
+		OrderTable 새_주문_테이블1 = new OrderTable.Builder().id(-1L).empty(false)
+			.orders(
+				new Order.Builder()
+					.orderStatus(OrderStatus.COOKING)
+					.orderLineItems(주문_항목1)
+					.orderTableId(-1L)
+					.build(),
+				new Order.Builder()
+					.orderStatus(OrderStatus.MEAL)
+					.orderLineItems(주문_항목2)
+					.orderTableId(-1L)
+					.build()
+			)
 			.build();
-		new Order.Builder()
-			.orderStatus(OrderStatus.MEAL)
-			.orderLineItems(주문_항목2)
-			.orderTable(새_주문_테이블1)
-			.build();
-
-		OrderTable 새_주문_테이블2 = new OrderTable.Builder().id(-2L).empty(false).build();
-		new Order.Builder()
-			.orderStatus(OrderStatus.COOKING)
-			.orderLineItems(주문_항목1)
-			.orderTable(새_주문_테이블2)
-			.build();
-		new Order.Builder()
-			.orderStatus(OrderStatus.MEAL)
-			.orderLineItems(주문_항목2)
-			.orderTable(새_주문_테이블2)
+		OrderTable 새_주문_테이블2 = new OrderTable.Builder().id(-2L).empty(false)
+			.orders(
+				new Order.Builder()
+					.orderStatus(OrderStatus.COOKING)
+					.orderLineItems(주문_항목1)
+					.orderTableId(-2L)
+					.build(),
+				new Order.Builder()
+					.orderStatus(OrderStatus.MEAL)
+					.orderLineItems(주문_항목2)
+					.orderTableId(-2L)
+					.build()
+			)
 			.build();
 		TableGroup 단체_지정 = new TableGroup.Builder().orderTables(주문_테이블1, 주문_테이블2).build();
-		given(tableService.findAllByTableGroupId(단체_지정.getId())).willReturn(Arrays.asList(새_주문_테이블1, 새_주문_테이블2));
+		given(tableService.findAllByTableGroupId(단체_지정.getId())).willAnswer(invocation -> {
+			Set<OrderTable> orderTableSet = new HashSet<>();
+			orderTableSet.add(새_주문_테이블1);
+			orderTableSet.add(새_주문_테이블2);
+			return orderTableSet;
+		});
 
 		// when & then
 		assertThatThrownBy(() -> tableGroupService.ungroup(단체_지정.getId())).isInstanceOf(IllegalArgumentException.class);

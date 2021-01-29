@@ -1,18 +1,16 @@
 package kitchenpos.table.domain;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
-
-import org.springframework.util.CollectionUtils;
 
 @Entity
 public class TableGroup {
@@ -20,32 +18,37 @@ public class TableGroup {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private LocalDateTime createdDate;
-	@OneToMany(mappedBy = "tableGroup")
-	private List<OrderTable> orderTables = new ArrayList<>();
+	@OneToMany
+	@JoinColumn(name = "tableGroupId")
+	private Set<OrderTable> orderTables = new HashSet<>();
 
 	public TableGroup() {
 	}
 
-	public TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
+	public TableGroup(Long id, LocalDateTime createdDate, Set<OrderTable> orderTables) {
 		validate(orderTables);
+		changeNotEmpty(orderTables);
 
 		this.id = id;
 		this.createdDate = createdDate;
 		this.orderTables = orderTables;
-
-		belongToGroup(orderTables);
 	}
 
-	private void validate(List<OrderTable> orderTables) {
-		if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
+	private void validate(Set<OrderTable> orderTables) {
+		if (orderTables == null || orderTables.size() < 2) {
 			throw new IllegalArgumentException("주문 테이블이 2개 이상이어야 단체로 지정될 수 있습니다.");
 		}
-		boolean isInGroupOrNotEmpty = orderTables.stream().anyMatch(it -> !it.isEmpty() || it.getTableGroup() != null);
-		if (isInGroupOrNotEmpty) {
-			throw new IllegalArgumentException("주문 테이블이 비어있지 않거나 이미 단체 지정이 되어있습니다.");
+		if (!orderTables.stream().allMatch(OrderTable::isEmpty)) {
+			throw new IllegalArgumentException("주문 테이블이 모두 비어있지 않습니다.");
 		}
-		if (new HashSet<>(orderTables).size() != orderTables.size()) {
-			throw new IllegalArgumentException("주문 테이블이 중복됩니다.");
+		if (orderTables.stream().anyMatch(OrderTable::isInGroup)) {
+			throw new IllegalArgumentException("이미 단체 지정이 되어있는 주문 테이블이 포함되어 있습니다.");
+		}
+	}
+
+	private void changeNotEmpty(Set<OrderTable> orderTables) {
+		for (OrderTable orderTable : orderTables) {
+			orderTable.changeEmpty(false);
 		}
 	}
 
@@ -57,23 +60,14 @@ public class TableGroup {
 		return createdDate;
 	}
 
-	public List<OrderTable> getOrderTables() {
+	public Set<OrderTable> getOrderTables() {
 		return orderTables;
-	}
-
-	private void belongToGroup(List<OrderTable> orderTables) {
-		if (orderTables == null) {
-			return;
-		}
-		for (OrderTable orderTable : orderTables) {
-			orderTable.belongToGroup(this);
-		}
 	}
 
 	public static final class Builder {
 		private Long id;
 		private LocalDateTime createdDate;
-		private List<OrderTable> orderTables = new ArrayList<>();
+		private Set<OrderTable> orderTables = new HashSet<>();
 
 		public Builder() {
 		}
@@ -88,13 +82,13 @@ public class TableGroup {
 			return this;
 		}
 
-		public Builder orderTables(List<OrderTable> orderTables) {
+		public Builder orderTables(Set<OrderTable> orderTables) {
 			this.orderTables = orderTables;
 			return this;
 		}
 
 		public Builder orderTables(OrderTable... orderTables) {
-			this.orderTables = Arrays.asList(orderTables);
+			Collections.addAll(this.orderTables, orderTables);
 			return this;
 		}
 

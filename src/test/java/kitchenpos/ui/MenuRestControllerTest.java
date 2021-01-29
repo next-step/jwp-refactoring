@@ -20,7 +20,8 @@ import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.ui.MenuRestController;
 
 @SpringBootTest
-@Sql({"/cleanup.sql", "/db/migration/V1__Initialize_project_tables.sql", "/db/migration/V2__Insert_default_data.sql"})
+@Sql({"/cleanup.sql", "/db/migration/V1__Initialize_project_tables.sql", "/db/migration/V2__Insert_default_data.sql",
+	"/db/migration/V3__remove_two_way.sql"})
 class MenuRestControllerTest {
 
 	@Autowired
@@ -34,8 +35,8 @@ class MenuRestControllerTest {
 			BigDecimal.valueOf(20000L),
 			메뉴_그룹1.getId(),
 			Arrays.asList(
-				new MenuProductRequest(메뉴1.getId(), 상품1.getId(), 1L),
-				new MenuProductRequest(메뉴2.getId(), 상품2.getId(), 2L)
+				new MenuProductRequest(상품1.getId(), 1L),
+				new MenuProductRequest(상품2.getId(), 2L)
 			)
 		);
 

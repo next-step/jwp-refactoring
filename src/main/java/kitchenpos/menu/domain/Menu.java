@@ -18,6 +18,8 @@ import javax.persistence.OneToMany;
 
 @Entity
 public class Menu {
+    private static final long MIN_MENU_PRICE = 0;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,7 +28,8 @@ public class Menu {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "menu_id")
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
     public Menu() {
@@ -40,8 +43,6 @@ public class Menu {
         this.price = price;
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
-
-        belongToMenu(menuProducts);
     }
 
     private void validate(MenuGroup menuGroup, BigDecimal price, List<MenuProduct> menuProducts) {
@@ -51,22 +52,13 @@ public class Menu {
         if(menuProducts == null || menuProducts.isEmpty()) {
             throw new IllegalArgumentException("메뉴에 속한 상품들은 1개 이상이어야 합니다.");
         }
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("메뉴 가격은 0 이상이어야 합니다.");
+        if (Objects.isNull(price) || price.longValue() < MIN_MENU_PRICE) {
+            throw new IllegalArgumentException("메뉴 가격은 " + MIN_MENU_PRICE + " 이상이어야 합니다.");
         }
         BigDecimal sum = menuProducts.stream().map(MenuProduct::getSumPrice)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
-        if (price.compareTo(sum) > 0) {
+        if (price.longValue() > sum.longValue()) {
             throw new IllegalArgumentException("메뉴 가격은 메뉴에 속한 상품들의 금액보다 클 수 없습니다.");
-        }
-    }
-
-    private void belongToMenu(List<MenuProduct> menuProducts) {
-        if(menuProducts == null) {
-            return;
-        }
-        for (MenuProduct menuProduct : menuProducts) {
-            menuProduct.changeMenu(this);
         }
     }
 
