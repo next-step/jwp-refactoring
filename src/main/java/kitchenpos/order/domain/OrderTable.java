@@ -1,9 +1,14 @@
 package kitchenpos.order.domain;
 
+import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
 public class OrderTable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @ManyToOne
     private Long tableGroupId;
     private int numberOfGuests;
     private boolean empty;
@@ -14,11 +19,6 @@ public class OrderTable {
     public OrderTable(Long id, int numberOfGuests) {
         this.id = id;
         this.numberOfGuests = numberOfGuests;
-    }
-
-    public OrderTable(Long id, Long tableGroupId) {
-        this.id = id;
-        this.tableGroupId = tableGroupId;
     }
 
     public OrderTable(Long id, int numberOfGuests, boolean empty) {

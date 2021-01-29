@@ -2,15 +2,21 @@ package kitchenpos.order.domain;
 
 import org.springframework.util.CollectionUtils;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Entity
 public class Order {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @ManyToOne
     private Long orderTableId;
     private String orderStatus;
     private LocalDateTime orderedTime;
+    @OneToMany(mappedBy = "orderId")
     private List<OrderLineItem> orderLineItems;
 
     public Order() {
