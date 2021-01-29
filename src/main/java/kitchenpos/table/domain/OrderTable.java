@@ -32,6 +32,9 @@ public class OrderTable {
 
     public void changeTableGroup(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
+        if(tableGroup != null) {
+            tableGroup.addOrderTables(this);
+        }
     }
 
     public int getNumberOfGuests() {

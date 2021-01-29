@@ -11,16 +11,17 @@ public class MenuProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
-//    private Long menuId;
-    @ManyToOne(cascade = CascadeType.PERSIST)
+
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id")
     @JsonBackReference
     private Menu menu;
-//    private Long productId;
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     @JsonBackReference
     private Product product;
+
     private long quantity;
 
     public Long getSeq() {

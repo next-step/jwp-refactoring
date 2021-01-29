@@ -15,6 +15,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class TableService {
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
@@ -24,19 +25,17 @@ public class TableService {
         this.orderTableRepository = orderTableRepository;
     }
 
-    @Transactional
     public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
         OrderTable orderTable = orderTableRequest.toOrderTable();
-        orderTable.changeTableGroup(null);
 
         return OrderTableResponse.of(this.orderTableRepository.save(orderTable));
     }
 
+    @Transactional(readOnly = true)
     public List<OrderTableResponse> list() {
         return this.orderTableRepository.findAll().stream().map(OrderTableResponse::of).collect(Collectors.toList());
     }
 
-    @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTable) {
         final OrderTable savedOrderTable = this.orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
@@ -78,7 +77,6 @@ public class TableService {
         }
     }
 
-    @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId
                                                 , final OrderTableRequest orderTableRequest) {
         final int numberOfGuests = this.validateNumberOfGuests(orderTableRequest.toOrderTable());

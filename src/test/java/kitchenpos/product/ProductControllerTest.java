@@ -33,9 +33,7 @@ public class ProductControllerTest extends BaseContollerTest {
     @Test
     @DisplayName("새로운 상품 등록 시 이름이 없으면 오류 발생")
     void createProductNoNameOccurredException() {
-        Product product = new Product();
-        product.changeName(null);
-        product.changePrice(BigDecimal.valueOf(20000));
+        Product product = new Product(null, BigDecimal.valueOf(20000));
 
         assertThatThrownBy(() -> {
             상품_등록_요청(product, status().is5xxServerError());
@@ -45,9 +43,7 @@ public class ProductControllerTest extends BaseContollerTest {
     @Test
     @DisplayName("새로운 상품 등록 시 가격이 없으면 오류 발생")
     void createProductNoPriceOccurredException() {
-        Product product = new Product();
-        product.changeName("맛있는치킨");
-        product.changePrice(null);
+        Product product = new Product("맛있는치킨", null);
 
         assertThatThrownBy(() -> {
             상품_등록_요청(product, status().is5xxServerError());

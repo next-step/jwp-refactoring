@@ -46,12 +46,11 @@ public class OrderLineTest {
 
 
     private OrderLineItem createOrderLineItem(Order persistOrder) {
-        OrderLineItem orderLineItem = new OrderLineItem();
+        OrderLineItem orderLineItem = new OrderLineItem(4);
         orderLineItem.changeOrder(persistOrder);
         Menu menu = new Menu("테스트메뉴", BigDecimal.valueOf(10000));
         menu.changeMenuGroup(this.menuGroupRepository.save(new MenuGroup("테스트메뉴그룹")));
         orderLineItem.changeMenu(this.menuRepository.save(menu));
-        orderLineItem.changeQuantity(4);
 
         // when
         return this.orderLineItemRepository.save(orderLineItem);

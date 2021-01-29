@@ -82,8 +82,7 @@ public class OrderTableTest {
     @DisplayName("테이블 그룹 ID로 해당 그룹에 포함된 테이블들을 조회합니다.")
     void findAllByTableGroupId() {
         // given
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.changeCreatedDate(LocalDateTime.now());
+        TableGroup tableGroup = new TableGroup(LocalDateTime.now());
         TableGroup persistTableGroup = this.tableGroupRepository.save(tableGroup);
         List<OrderTable> orderTableOrigins = this.orderTableRepository.findAll();
         orderTableOrigins.stream().forEach(orderTable -> {

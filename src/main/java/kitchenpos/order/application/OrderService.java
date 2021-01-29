@@ -18,6 +18,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
@@ -34,7 +35,6 @@ public class OrderService {
         this.orderTableRepository = orderTableRepository;
     }
 
-    @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
         Order order = this.toOrder(orderRequest);
         this.validateOrderLineItems(order.getOrderLineItems());
@@ -134,6 +134,7 @@ public class OrderService {
         }
     }
 
+    @Transactional(readOnly = true)
     public List<OrderResponse> list() {
         final List<Order> orders = this.orderRepository.findAll();
 

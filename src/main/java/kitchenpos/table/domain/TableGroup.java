@@ -2,7 +2,6 @@ package kitchenpos.table.domain;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -16,6 +15,11 @@ public class TableGroup {
     private OrderTables orderTables = new OrderTables();
 
     public TableGroup() {
+        this.createdDate = LocalDateTime.now();
+    }
+
+    public TableGroup(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
     }
 
     public TableGroup(LocalDateTime createdDate, OrderTables orderTables) {
@@ -29,10 +33,6 @@ public class TableGroup {
 
     public LocalDateTime getCreatedDate() {
         return createdDate;
-    }
-
-    public void changeCreatedDate(final LocalDateTime createdDate) {
-        this.createdDate = createdDate;
     }
 
     public List<OrderTable> getOrderTables() {

@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
@@ -32,7 +33,6 @@ public class MenuService {
         this.productRepository = productDao;
     }
 
-    @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
 
         Menu menu = this.menuRequestToMenu(menuRequest);
@@ -115,6 +115,7 @@ public class MenuService {
     }
 
 
+    @Transactional(readOnly = true)
     public List<MenuResponse> list() {
         final List<Menu> menus = menuRepository.findAll();
 
