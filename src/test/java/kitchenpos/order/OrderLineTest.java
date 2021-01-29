@@ -47,7 +47,7 @@ public class OrderLineTest {
 
     private OrderLineItem createOrderLineItem(Order persistOrder) {
         OrderLineItem orderLineItem = new OrderLineItem(4);
-        orderLineItem.changeOrder(persistOrder);
+        orderLineItem.changeOrderId(persistOrder.getId());
         Menu menu = new Menu("테스트메뉴", BigDecimal.valueOf(10000));
         menu.changeMenuGroup(this.menuGroupRepository.save(new MenuGroup("테스트메뉴그룹")));
         orderLineItem.changeMenu(this.menuRepository.save(menu));
@@ -74,7 +74,7 @@ public class OrderLineTest {
 
         // then
         assertThat(persistOrderLineItem.getSeq()).isNotNull();
-        assertThat(persistOrderLineItem.getOrder().getId()).isEqualTo(this.order.getId());
+        assertThat(persistOrderLineItem.getOrderId()).isEqualTo(this.order.getId());
     }
 
     @Test
@@ -88,7 +88,7 @@ public class OrderLineTest {
 
         // then
         assertThat(foundOrderLineItem.getSeq()).isEqualTo(persistOrderLineItem.getSeq());
-        assertThat(foundOrderLineItem.getOrder().getId()).isEqualTo(persistOrderLineItem.getOrder().getId());
+        assertThat(foundOrderLineItem.getOrderId()).isEqualTo(persistOrderLineItem.getOrderId());
     }
 
 

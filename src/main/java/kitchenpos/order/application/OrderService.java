@@ -100,7 +100,7 @@ public class OrderService {
         final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
 
         for (final OrderLineItem orderLineItem : order.getOrderLineItems()) {
-            orderLineItem.changeOrder(savedOrder);
+            orderLineItem.changeOrderId(savedOrder.getId());
             savedOrderLineItems.add(this.orderLineItemRepository.save(orderLineItem));
         }
         savedOrder.changeOrderLineItems(new OrderLineItems(savedOrderLineItems));
