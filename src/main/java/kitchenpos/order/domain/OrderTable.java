@@ -55,14 +55,6 @@ public class OrderTable {
         }
     }
 
-
-    private List<OrderStatus> getOrderStatuses() {
-        List<OrderStatus> orderStatuses = orders.stream()
-                .map(Order::getOrderStatus)
-                .collect(Collectors.toList());
-        return orderStatuses;
-    }
-
     public void ungroup() {
         this.tableGroup = null;
     }
@@ -110,5 +102,9 @@ public class OrderTable {
         return orders;
     }
 
-
+    private List<OrderStatus> getOrderStatuses() {
+        return orders.stream()
+                .map(Order::getOrderStatus)
+                .collect(Collectors.toList());
+    }
 }
