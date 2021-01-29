@@ -1,5 +1,6 @@
 package kitchenpos.order.applicatioin;
 
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderResponse;
@@ -31,25 +32,25 @@ public class OrderService {
     public OrderResponse create(final Order order) {
         final List<OrderLineItem> orderLineItems = order.getOrderLineItems();
 
-        final List<Long> menuIds = order.getMenuIds(orderLineItems);
+        final List<Menu> menu = order.getMenuIds(orderLineItems);
 
-        if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
+        if (orderLineItems.size() != menuRepository.countByIdIn(menu)) {
             throw new IllegalArgumentException("주문항목이 메뉴의 개수와 같지 않습니다.");
         }
 
-        final OrderTable orderTable = orderTableRepository.findById(order.getOrderTableId())
+        final OrderTable orderTable = orderTableRepository.findById(order.getOrderTable().getId())
                 .orElseThrow(IllegalArgumentException::new);
 
         order.isOrderTableEmpty(orderTable.getId());
-        order.changeOrderTableId(orderTable.getId());
+        order.changeOrderTable(orderTable);
         order.changeOrderStatus(OrderStatus.COOKING.name());
 
         final Order savedOrder = orderRepository.save(order);
 
-        final Long orderId = savedOrder.getId();
+        //final Long orderId = savedOrder.getId();
         final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
         for (final OrderLineItem orderLineItem : orderLineItems) {
-            orderLineItem.changeOrderId(orderId);
+            orderLineItem.changeOrder(savedOrder);
             savedOrderLineItems.add(orderLineItem);
         }
         savedOrder.setOrderLineItems(savedOrderLineItems);

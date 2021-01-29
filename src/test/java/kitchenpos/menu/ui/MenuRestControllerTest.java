@@ -3,8 +3,10 @@ package kitchenpos.menu.ui;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,9 +38,10 @@ class MenuRestControllerTest {
     @Test
     @DisplayName("메뉴 생성 확인")
     public void whenPostMenu_thenReturnStatus() throws Exception {
-        MenuProduct menuProduct = new MenuProduct(1L, 1L, 2);
-        Menu menu = new Menu("후라이드+후라이드", new BigDecimal(34000), 1L);
-        menu.changeMenuProducts(Arrays.asList(menuProduct));
+        MenuGroup menuGroup = new MenuGroup("추천메뉴");
+        Product product = new Product("닭강정", new BigDecimal(17000));
+        Menu menu = new Menu("후라이드+후라이드", new BigDecimal(34000), menuGroup);
+        MenuProduct menuProduct = new MenuProduct(menu, product, 2);
 
         when(menuService.create(any())).thenReturn(menuResponse.of(menu));
 
@@ -53,9 +56,10 @@ class MenuRestControllerTest {
     @Test
     @DisplayName("메뉴 생성 조회")
     public void givenMenu_whenGetMenu_thenReturnStatus() throws Exception {
-        MenuProduct menuProduct = new MenuProduct(1L, 1L, 2);
-        Menu menu = new Menu("후라이드+후라이드", new BigDecimal(34000), 1L);
-        menu.changeMenuProducts(Arrays.asList(menuProduct));
+        MenuGroup menuGroup = new MenuGroup("추천메뉴");
+        Product product = new Product("닭강정", new BigDecimal(17000));
+        Menu menu = new Menu("후라이드+후라이드", new BigDecimal(34000), menuGroup);
+        MenuProduct menuProduct = new MenuProduct(menu, product, 2);
 
         given(menuService.list()).willReturn(Arrays.asList(menu));
 

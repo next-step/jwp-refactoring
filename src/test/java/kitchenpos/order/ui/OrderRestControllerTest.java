@@ -1,6 +1,7 @@
 package kitchenpos.order.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.applicatioin.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -15,6 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -38,7 +40,7 @@ public class OrderRestControllerTest {
     private OrderResponse orderResponse;
     @BeforeEach
     void setUp() {
-        orderLineItem = new OrderLineItem(1L,1L);
+        orderLineItem = new OrderLineItem(new Menu("후라이드+후라이드", new BigDecimal(19000)),1);
         order = new Order(Arrays.asList(orderLineItem));
         order.setId(1L);
     }

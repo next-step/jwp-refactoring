@@ -3,6 +3,7 @@ package kitchenpos.order.applicatioin;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTableRepository;
+import kitchenpos.order.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,7 +35,7 @@ class TableServiceTest {
     @BeforeEach
     void setUp() {
         orderTable = new OrderTable(4);
-        orderTable.changeTableGroupId(null);
+        orderTable.changeTableGroup(null);
     }
 
     @Test
@@ -65,7 +66,7 @@ class TableServiceTest {
     @Test
     @DisplayName("빈테이블 수정시 단체지정 되어 있으면 수정 안됨")
     void callExceptionWhenChangeEmpty() {
-        orderTable.changeTableGroupId(1l);
+        orderTable.changeTableGroup(new TableGroup());
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
 
         assertThatThrownBy(() -> {

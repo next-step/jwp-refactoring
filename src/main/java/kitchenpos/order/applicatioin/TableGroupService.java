@@ -36,9 +36,8 @@ public class TableGroupService {
 
         final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
 
-        final Long tableGroupId = savedTableGroup.getId();
         for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.changeTableGroupId(tableGroupId);
+            savedOrderTable.changeTableGroup(savedTableGroup);
             savedOrderTable.changeEmpty(false);
             orderTableRepository.save(savedOrderTable);
         }
@@ -61,7 +60,7 @@ public class TableGroupService {
         }
 
         for (final OrderTable orderTable : orderTables) {
-            orderTable.changeTableGroupId(null);
+            orderTable.changeTableGroup(null);
             orderTableRepository.save(orderTable);
         }
     }

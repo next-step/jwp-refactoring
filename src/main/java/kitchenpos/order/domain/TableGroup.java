@@ -18,10 +18,10 @@ public class TableGroup {
     private Long id;
     @CreatedDate
     private LocalDateTime createdDate;
-    @OneToMany(mappedBy = "tableGroupId")
+    @OneToMany(mappedBy = "tableGroupId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderTable> orderTables;
 
-    protected TableGroup() {
+    public TableGroup() {
     }
     public TableGroup(List<OrderTable> orderTables) {
         this.orderTables = orderTables;
@@ -43,7 +43,7 @@ public class TableGroup {
         }
 
         for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
+            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup())) {
                 throw new IllegalArgumentException("저장된 주문테이블이 비워있지 않거나 단체지정이 있으면 주문등록할 수 없습니다.");
             }
         }

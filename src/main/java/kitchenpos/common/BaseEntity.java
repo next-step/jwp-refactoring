@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 public class BaseEntity {
     @CreatedDate
     private LocalDateTime createdDate;
-
     public LocalDateTime getCreatedDate() {
         return createdDate;
     }
