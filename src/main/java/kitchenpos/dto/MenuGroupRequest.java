@@ -6,6 +6,10 @@ public class MenuGroupRequest {
 
     private String name;
 
+    public MenuGroupRequest(String name) {
+        this.name = name;
+    }
+
     public MenuGroup toEntity() {
         return new MenuGroup(name);
     }

@@ -74,7 +74,7 @@ public class MenuService {
             Product product = productRepository.findById(menuProductRequest.getProductId())
                 .orElseThrow(IllegalArgumentException::new);
 
-            MenuProduct menuProduct1 = new MenuProduct(menu, product, menuProductRequest.getQuantity());
+            MenuProduct menuProduct1 = new MenuProduct(savedMenu, product, menuProductRequest.getQuantity());
             savedMenuProducts.add(menuProduct1);
         }
 
@@ -98,10 +98,6 @@ public class MenuService {
 
     public List<MenuResponse> list() {
         final List<Menu> menus = menuRepository.findAll();
-
-        for (final Menu menu : menus) {
-            menu.setMenuProducts(menuProductRepository.findAllByMenuId(menu.getId()));
-        }
 
         return menus.stream().map(menu -> {
             List<MenuProductResponse> collect = menu.getMenuProducts().stream().map(

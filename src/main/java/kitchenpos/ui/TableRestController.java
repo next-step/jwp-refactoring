@@ -23,34 +23,34 @@ public class TableRestController {
         final OrderTableResponse created = tableService.create(orderTable);
         final URI uri = URI.create("/api/tables/" + created.getId());
         return ResponseEntity.created(uri)
-                .body(created)
-                ;
+            .body(created)
+            ;
     }
 
     @GetMapping("/api/tables")
     public ResponseEntity<List<OrderTableResponse>> list() {
         return ResponseEntity.ok()
-                .body(tableService.list())
-                ;
+            .body(tableService.list())
+            ;
     }
 
     @PutMapping("/api/tables/{orderTableId}/empty")
     public ResponseEntity<OrderTableResponse> changeEmpty(
-            @PathVariable final Long orderTableId,
-            @RequestBody final OrderTableRequest orderTable
+        @PathVariable final Long orderTableId,
+        @RequestBody final OrderTableRequest orderTable
     ) {
         return ResponseEntity.ok()
-                .body(tableService.changeEmpty(orderTableId, orderTable))
-                ;
+            .body(tableService.changeEmpty(orderTableId, orderTable))
+            ;
     }
 
     @PutMapping("/api/tables/{orderTableId}/number-of-guests")
     public ResponseEntity<OrderTableResponse> changeNumberOfGuests(
-            @PathVariable final Long orderTableId,
-            @RequestBody final OrderTableRequest orderTable
+        @PathVariable final Long orderTableId,
+        @RequestBody final OrderTableRequest orderTable
     ) {
         return ResponseEntity.ok()
-                .body(tableService.changeNumberOfGuests(orderTableId, orderTable))
-                ;
+            .body(tableService.changeNumberOfGuests(orderTableId, orderTable))
+            ;
     }
 }

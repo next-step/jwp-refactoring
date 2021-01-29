@@ -4,10 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.ProductResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 class ProductServiceTest {
 
+    public static final BigDecimal DEFAULT_VALUE = BigDecimal.valueOf(12_000);
     @Autowired
     private ProductService productService;
 
@@ -26,10 +27,10 @@ class ProductServiceTest {
     @DisplayName("product 생성")
     void product_create_test() {
         //given
-        Product productRequest = PRODUCT_REQUEST_생성("파스타", 12_000);
+        ProductRequest productRequest = PRODUCT_REQUEST_생성("파스타", DEFAULT_VALUE);
 
         //when
-        Product createdProduct = PRODUCT_생성_테스트(productRequest);
+        ProductResponse createdProduct = PRODUCT_생성_테스트(productRequest);
 
         //then
         Assertions.assertAll(() -> {
@@ -42,12 +43,12 @@ class ProductServiceTest {
     @DisplayName("product의 price는 0 원 이상이어야 한다.")
     void product_create_price_null_test() {
         //given
-        Product productRequest = PRODUCT_REQUEST_생성("파스타", null);
+        ProductRequest productRequest = PRODUCT_REQUEST_생성("파스타", null);
 
         //when
         //then
         assertThatThrownBy(() -> {
-            Product createdProduct = PRODUCT_생성_테스트(productRequest);
+            ProductResponse createdProduct = PRODUCT_생성_테스트(productRequest);
         }).isInstanceOf(IllegalArgumentException.class);
 
 
@@ -57,30 +58,26 @@ class ProductServiceTest {
     @DisplayName("product group 리스트 조회")
     void product_show_test() {
         //given
-        Product product1 = PRODUCT_생성_테스트(PRODUCT_REQUEST_생성("까르보나라", 12_000));
-        Product product2 = PRODUCT_생성_테스트(PRODUCT_REQUEST_생성("알리오올리오", 12_000));
+        ProductResponse product1 = PRODUCT_생성_테스트(PRODUCT_REQUEST_생성("까르보나라", DEFAULT_VALUE));
+
+        ProductResponse product2 = PRODUCT_생성_테스트(PRODUCT_REQUEST_생성("알리오올리오", DEFAULT_VALUE));
 
         //when
-        List<Product> list = productService.list();
+        List<ProductResponse> list = productService.list();
 
         //then
         assertThat(list)
-            .extracting(Product::getName)
-            .containsExactly(product1.getName(),product2.getName());
+            .extracting(ProductResponse::getName)
+            .containsExactly(product1.getName(), product2.getName());
 
     }
 
-    private Product PRODUCT_생성_테스트(Product productRequest) {
+    private ProductResponse PRODUCT_생성_테스트(ProductRequest productRequest) {
         return productService.create(productRequest);
     }
 
-    private Product PRODUCT_REQUEST_생성(String name, Integer price) {
-        Product product = new Product();
-        product.setName(name);
-        if (price != null) {
-            product.setPrice(BigDecimal.valueOf(price));
-        }
-        return product;
+    private ProductRequest PRODUCT_REQUEST_생성(String name, BigDecimal price) {
+        return new ProductRequest(name, price);
     }
 
 }

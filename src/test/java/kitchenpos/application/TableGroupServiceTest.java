@@ -4,9 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.OrderTableRepository;
+import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,19 +27,17 @@ class TableGroupServiceTest {
     @Autowired
     private TableService tableService;
     @Autowired
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
-    OrderTable createdOrderTable;
-    OrderTable createdOrderTable2;
+    OrderTableResponse createdOrderTable;
+    OrderTableResponse createdOrderTable2;
 
     @BeforeEach
     void setUp() {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setEmpty(true);
+        OrderTableRequest orderTable = new OrderTableRequest(true);
         createdOrderTable = tableService.create(orderTable);
 
-        OrderTable orderTable2 = new OrderTable();
-        orderTable2.setEmpty(true);
+        OrderTableRequest orderTable2 = new OrderTableRequest(true);
         createdOrderTable2 = tableService.create(orderTable2);
     }
 
@@ -44,10 +45,14 @@ class TableGroupServiceTest {
     @DisplayName("table group 생성")
     void table_group_create_test() {
         //given
-        TableGroup tableGroupRequest = TABLE_GROUP_REQUEST_생성(createdOrderTable, createdOrderTable2);
+        OrderTableRequest orderTableRequest1 = new OrderTableRequest(createdOrderTable.getId(),
+            createdOrderTable.getTableGroupId(), 3, false);
+        OrderTableRequest orderTableRequest2 = new OrderTableRequest(createdOrderTable2.getId(),
+            createdOrderTable2.getTableGroupId(), 3, false);
+        TableGroupRequest tableGroupRequest = TABLE_GROUP_REQUEST_생성(orderTableRequest1, orderTableRequest2);
 
         //when
-        TableGroup createdTableGroup = TABLE_GROUP_생성_테스트(tableGroupRequest);
+        TableGroupResponse createdTableGroup = TABLE_GROUP_생성_테스트(tableGroupRequest);
 
         //then
         Assertions.assertAll(() -> {
@@ -59,29 +64,32 @@ class TableGroupServiceTest {
     @DisplayName("table group 삭제")
     void table_group_delete_test() {
         //given
-        TableGroup tableGroupRequest = TABLE_GROUP_REQUEST_생성(createdOrderTable, createdOrderTable2);
-        TableGroup createdTableGroup = TABLE_GROUP_생성_테스트(tableGroupRequest);
+        OrderTableRequest orderTableRequest1 = new OrderTableRequest(createdOrderTable.getId(),
+            createdOrderTable.getTableGroupId(), 3, false);
+        OrderTableRequest orderTableRequest2 = new OrderTableRequest(createdOrderTable2.getId(),
+            createdOrderTable2.getTableGroupId(), 3, false);
+        TableGroupRequest tableGroupRequest = TABLE_GROUP_REQUEST_생성(orderTableRequest1, orderTableRequest2);
+
+        TableGroupResponse createdTableGroup = TABLE_GROUP_생성_테스트(tableGroupRequest);
         //when
-        TABLE_GROUP_삭제(createdTableGroup);
+        TABLE_GROUP_삭제(createdTableGroup.getId());
 
         //then
-        OrderTable orderTable = orderTableDao.findById(createdTableGroup.getId()).get();
+        OrderTable orderTable = orderTableRepository.findById(createdTableGroup.getId()).get();
         assertThat(orderTable.getTableGroupId()).isNull();
 
     }
 
-    private void TABLE_GROUP_삭제(TableGroup createdTableGroup) {
-        tableGroupService.ungroup(createdTableGroup.getId());
+    private void TABLE_GROUP_삭제(Long tableGroupId) {
+        tableGroupService.ungroup(tableGroupId);
     }
 
 
-    private TableGroup TABLE_GROUP_생성_테스트(TableGroup tableGroupRequest) {
+    private TableGroupResponse TABLE_GROUP_생성_테스트(TableGroupRequest tableGroupRequest) {
         return tableGroupService.create(tableGroupRequest);
     }
 
-    private TableGroup TABLE_GROUP_REQUEST_생성(OrderTable... createdOrderTable) {
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Arrays.stream(createdOrderTable).collect(Collectors.toList()));
-        return tableGroup;
+    private TableGroupRequest TABLE_GROUP_REQUEST_생성(OrderTableRequest... createdOrderTable) {
+        return new TableGroupRequest(Arrays.stream(createdOrderTable).collect(Collectors.toList()));
     }
 }

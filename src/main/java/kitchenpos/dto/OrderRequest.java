@@ -8,6 +8,17 @@ public class OrderRequest {
     private String orderStatus;
     private List<OrderLineItemRequest> orderLineItemRequests;
 
+    public OrderRequest(Long orderTableId, List<OrderLineItemRequest> orderLineItemRequests) {
+        this(orderTableId, null, orderLineItemRequests);
+    }
+
+    public OrderRequest(Long orderTableId, String orderStatus,
+        List<OrderLineItemRequest> orderLineItemRequests) {
+        this.orderTableId = orderTableId;
+        this.orderStatus = orderStatus;
+        this.orderLineItemRequests = orderLineItemRequests;
+    }
+
     public Long getOrderTableId() {
         return orderTableId;
     }

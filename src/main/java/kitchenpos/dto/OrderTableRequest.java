@@ -7,6 +7,17 @@ public class OrderTableRequest {
     private int numberOfGuests;
     private boolean empty;
 
+    public OrderTableRequest(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+        this.id = id;
+        this.tableGroupId = tableGroupId;
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
+
+    public OrderTableRequest(boolean isEmpty) {
+        this(null, null, 0, isEmpty);
+    }
+
     public Long getId() {
         return id;
     }

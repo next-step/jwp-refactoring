@@ -8,14 +8,21 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
+import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.MenuResponse;
+import kitchenpos.dto.OrderLineItemRequest;
+import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderResponse;
+import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.ProductResponse;
+import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -45,34 +52,26 @@ class TableServiceTest {
     @Autowired
     private MenuService menuService;
 
-    private Menu createdMenu;
-    private OrderLineItem orderLineItem;
+    private MenuResponse createdMenu;
+    private OrderLineItemRequest orderLineItem;
 
     @BeforeEach
     void setUp() {
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setName("양식");
-        MenuGroup createMenuGroup = menuGroupService.create(menuGroup);
+        MenuGroupRequest menuGroup = new MenuGroupRequest("양식");
+        MenuGroupResponse createMenuGroup = menuGroupService.create(menuGroup);
 
-        Product product = new Product();
-        product.setName("알리오올리오");
-        product.setPrice(BigDecimal.valueOf(12_000));
-        Product createdProduct = productService.create(product);
+        ProductRequest product = new ProductRequest("알리오올리오", BigDecimal.valueOf(12_000));
+        ProductResponse createdProduct = productService.create(product);
 
-        MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setProductId(createdProduct.getId());
-        menuProduct.setQuantity(1L);
+        MenuProductRequest menuProduct = new MenuProductRequest(createdProduct.getId(), 1L);
 
-        Menu menu = new Menu();
-        menu.setName("알리오올리오");
-        menu.setPrice(BigDecimal.valueOf(12_000));
-        menu.setMenuGroupId(createMenuGroup.getId());
-        menu.setMenuProducts(Collections.singletonList(menuProduct));
-
+        MenuRequest menu = new MenuRequest("알리오올리오",
+            BigDecimal.valueOf(12_000),
+            createMenuGroup.getId(),
+            Collections.singletonList(menuProduct));
         createdMenu = menuService.create(menu);
 
-        orderLineItem = new OrderLineItem();
-        orderLineItem.setMenuId(createdMenu.getId());
+        orderLineItem = new OrderLineItemRequest(createdMenu.getId(), 1L);
 
 
     }
@@ -81,9 +80,9 @@ class TableServiceTest {
     @DisplayName("table 생성")
     void table_create_test() {
         //given
-        OrderTable tableRequest = TABLE_REQUEST_생성(true);
+        OrderTableRequest tableRequest = TABLE_REQUEST_생성(true);
         //when
-        OrderTable createdTable = TABLE_생성_테스트(tableRequest);
+        OrderTableResponse createdTable = TABLE_생성_테스트(tableRequest);
 
         //then
         Assertions.assertAll(() -> {
@@ -95,27 +94,28 @@ class TableServiceTest {
     @DisplayName("table 리스트 조회")
     void table_show_test() {
         //given
-        OrderTable createdTable = TABLE_생성_테스트(TABLE_REQUEST_생성(true));
-        OrderTable createdTable2 = TABLE_생성_테스트(TABLE_REQUEST_생성(true));
+        OrderTableResponse createdTable = TABLE_생성_테스트(TABLE_REQUEST_생성(true));
+        OrderTableResponse createdTable2 = TABLE_생성_테스트(TABLE_REQUEST_생성(true));
         //when
-        List<OrderTable> list = TABLE_조회_테스트();
+        List<OrderTableResponse> list = TABLE_조회_테스트();
         //then
         Assertions.assertAll(() -> {
-            List<Long> createdIds = list.stream().map(OrderTable::getId).collect(Collectors.toList());
+            List<Long> createdIds = list.stream().map(OrderTableResponse::getId).collect(Collectors.toList());
             List<Long> requestIds = Arrays.asList(createdTable.getId(), createdTable2.getId());
             assertThat(createdIds).containsAll(requestIds);
         });
     }
 
     @Test
-    @DisplayName("table의 order 비우기")
+    @DisplayName("table의 order 변경하기")
     public void change_empty_test() throws Exception {
         //Given
-        OrderTable createdTable = TABLE_생성_테스트(TABLE_REQUEST_생성(false));
+        OrderTableResponse createdTable = TABLE_생성_테스트(TABLE_REQUEST_생성(false));
 
         //When
-        createdTable.setEmpty(true);
-        OrderTable orderTable = tableService.changeEmpty(createdTable.getId(), createdTable);
+        OrderTableRequest orderTableRequest = TABLE_REQUEST_생성(createdTable.getId(), createdTable.getTableGroupId(),
+            createdTable.getNumberOfGuests(), true);
+        OrderTableResponse orderTable = tableService.changeEmpty(createdTable.getId(), orderTableRequest);
 
         //Then
         assertThat(orderTable.isEmpty()).isTrue();
@@ -125,17 +125,23 @@ class TableServiceTest {
     @DisplayName("tableGroup인 경우가 테이블 비우기가 가능하다.")
     public void change_empty_table_group_test() throws Exception {
         //Given
-        OrderTable createdTable = TABLE_생성_테스트(TABLE_REQUEST_생성(true));
-        OrderTable createdTable2 = TABLE_생성_테스트(TABLE_REQUEST_생성(true));
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Arrays.asList(createdTable, createdTable2));
-        TableGroup tableGroup1 = tableGroupService.create(tableGroup);
+        OrderTableResponse createdTable = TABLE_생성_테스트(TABLE_REQUEST_생성(true));
+        OrderTableResponse createdTable2 = TABLE_생성_테스트(TABLE_REQUEST_생성(true));
+        OrderTableRequest orderTableRequest = TABLE_REQUEST_생성(createdTable.getId(), createdTable.getTableGroupId(),
+            createdTable.getNumberOfGuests(), false);
+        OrderTableRequest orderTableRequest1 = TABLE_REQUEST_생성(createdTable2.getId(), createdTable2.getTableGroupId(),
+            createdTable2.getNumberOfGuests(), false);
+        TableGroupRequest tableGroup = new TableGroupRequest(Arrays.asList(orderTableRequest, orderTableRequest1));
+
+        TableGroupResponse tableGroup1 = tableGroupService.create(tableGroup);
 
         //When
         //then
+        OrderTableRequest orderTableRequest2 = TABLE_REQUEST_생성(createdTable.getId(),
+            createdTable.getTableGroupId(),
+            createdTable.getNumberOfGuests(), false);
         assertThatThrownBy(() -> {
-            createdTable.setEmpty(true);
-            OrderTable orderTable = tableService.changeEmpty(createdTable.getId(), createdTable);
+            OrderTableResponse orderTable = tableService.changeEmpty(createdTable.getId(), orderTableRequest2);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -145,19 +151,18 @@ class TableServiceTest {
     @DisplayName("table에 OrderStatus가 Cooking이거나 Meal인 경우가 존재하지 아니어야 한다.")
     public void change_empty_order_status_not_complete_test(String status) throws Exception {
         //Given
-        OrderTable createdTable = TABLE_생성_테스트(TABLE_REQUEST_생성(false));
-
-        Order orderRequest = new Order();
-        orderRequest.setOrderLineItems(Collections.singletonList(orderLineItem));
-        orderRequest.setOrderTableId(createdTable.getId());
-        orderRequest.setOrderStatus(status);
-        Order order = orderService.create(orderRequest);
+        OrderTableResponse createdTable = TABLE_생성_테스트(TABLE_REQUEST_생성(false));
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(orderLineItem.getMenuId(), 1L);
+        OrderRequest orderRequest = new OrderRequest(createdTable.getId(), status,
+            Collections.singletonList(orderLineItem));
+        OrderResponse orderResponse = orderService.create(orderRequest);
 
         //When
         //then
         assertThatThrownBy(() -> {
-            createdTable.setEmpty(true);
-            OrderTable orderTable = tableService.changeEmpty(createdTable.getId(), createdTable);
+            OrderTableRequest orderTableRequest = TABLE_REQUEST_생성(createdTable.getId(), createdTable.getTableGroupId(),
+                0, true);
+            OrderTableResponse orderTable = tableService.changeEmpty(orderTableRequest.getId(), orderTableRequest);
         }).isInstanceOf(IllegalArgumentException.class);
 
     }
@@ -166,12 +171,12 @@ class TableServiceTest {
     @DisplayName("table의 Guest 숫자 변경하기")
     public void change_guest_number() throws Exception {
         //Given
-        OrderTable createdTable = TABLE_생성_테스트(TABLE_REQUEST_생성(false));
-        createdTable.setNumberOfGuests(THREE_GUEST_NUMBER);
-        createdTable.setEmpty(false);
-
+        OrderTableResponse createdTable = TABLE_생성_테스트(TABLE_REQUEST_생성(false));
+        OrderTableRequest orderTableRequest = TABLE_REQUEST_생성(createdTable.getId(), createdTable.getTableGroupId(),
+            THREE_GUEST_NUMBER, false);
         //When
-        OrderTable orderTable = tableService.changeNumberOfGuests(createdTable.getId(), createdTable);
+        OrderTableResponse orderTable = tableService.changeNumberOfGuests(orderTableRequest.getId(),
+            orderTableRequest);
 
         //Then
         assertThat(orderTable.getNumberOfGuests()).isEqualTo(THREE_GUEST_NUMBER);
@@ -181,13 +186,14 @@ class TableServiceTest {
     @DisplayName("guest의 숫자가 음수이면 안된다.")
     public void change_guest_number_negative() throws Exception {
         //Given
-        OrderTable createdTable = TABLE_생성_테스트(TABLE_REQUEST_생성(false));
-        createdTable.setNumberOfGuests(NEGATIVE_GUEST_NUMBER);
-        createdTable.setEmpty(false);
+        OrderTableResponse createdTable = TABLE_생성_테스트(TABLE_REQUEST_생성(true));
+        OrderTableRequest orderTableRequest = TABLE_REQUEST_생성(createdTable.getId(), createdTable.getTableGroupId(),
+            NEGATIVE_GUEST_NUMBER, false);
 
         //When
         assertThatThrownBy(() -> {
-            OrderTable orderTable = tableService.changeNumberOfGuests(createdTable.getId(), createdTable);
+            OrderTableResponse orderTable = tableService.changeNumberOfGuests(orderTableRequest.getId(),
+                orderTableRequest);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -195,28 +201,30 @@ class TableServiceTest {
     @DisplayName("guest의 숫자를 바꾸려는 table이 비어있으면 안된다.")
     public void change_guest_number_empty_table() throws Exception {
         //Given
-        OrderTable createdTable = TABLE_생성_테스트(TABLE_REQUEST_생성(true));
-        createdTable.setNumberOfGuests(THREE_GUEST_NUMBER);
-        createdTable.setEmpty(false);
-
+        OrderTableResponse createdTable = TABLE_생성_테스트(TABLE_REQUEST_생성(true));
+        OrderTableRequest orderTableRequest = TABLE_REQUEST_생성(createdTable.getId(), createdTable.getTableGroupId(),
+            THREE_GUEST_NUMBER, true);
         //When
         assertThatThrownBy(() -> {
-            OrderTable orderTable = tableService.changeNumberOfGuests(createdTable.getId(), createdTable);
+            OrderTableResponse orderTable = tableService.changeNumberOfGuests(createdTable.getId(),
+                orderTableRequest);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
-    private List<OrderTable> TABLE_조회_테스트() {
+    private List<OrderTableResponse> TABLE_조회_테스트() {
         return tableService.list();
     }
 
 
-    private OrderTable TABLE_생성_테스트(OrderTable tableRequest) {
+    private OrderTableResponse TABLE_생성_테스트(OrderTableRequest tableRequest) {
         return tableService.create(tableRequest);
     }
 
-    private OrderTable TABLE_REQUEST_생성(boolean empty) {
-        OrderTable table = new OrderTable();
-        table.setEmpty(empty);
-        return table;
+    private OrderTableRequest TABLE_REQUEST_생성(Long id, Long tableGroupID, int numberOfGuests, boolean empty) {
+        return new OrderTableRequest(id, tableGroupID, numberOfGuests, empty);
+    }
+
+    private OrderTableRequest TABLE_REQUEST_생성(boolean empty) {
+        return new OrderTableRequest(empty);
     }
 }

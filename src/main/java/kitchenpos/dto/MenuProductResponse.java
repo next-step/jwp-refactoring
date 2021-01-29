@@ -38,4 +38,14 @@ public class MenuProductResponse {
             productId,
             menuProduct.getQuantity());
     }
+
+    @Override
+    public String toString() {
+        return "MenuProductResponse{" +
+            "seq=" + seq +
+            ", menuId=" + menuId +
+            ", productId=" + productId +
+            ", quantity=" + quantity +
+            '}';
+    }
 }

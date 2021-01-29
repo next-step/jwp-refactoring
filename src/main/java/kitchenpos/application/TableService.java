@@ -26,7 +26,7 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
-        OrderTable orderTable = new OrderTable(null,
+        OrderTable orderTable = new OrderTable(orderTableRequest.getTableGroupId(),
             orderTableRequest.getNumberOfGuests(),
             orderTableRequest.isEmpty());
         return OrderTableResponse.of(orderTableRepository.save(orderTable));
@@ -52,7 +52,7 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-        savedOrderTable.setEmpty(orderTableRequest.isEmpty());
+        savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
 
         return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
     }
