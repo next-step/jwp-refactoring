@@ -30,8 +30,8 @@ public class Order {
         this.orderedTime = LocalDateTime.now();
     }
 
-    public Order(OrderTable orderTable, List<OrderLineItem> orderLines, OrderStatus orderStatus) {
-        this(orderTable, orderLines);
+    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems, OrderStatus orderStatus) {
+        this(orderTable, orderLineItems);
         this.orderStatus = orderStatus;
     }
 
@@ -66,14 +66,6 @@ public class Order {
 
     public LocalDateTime getOrderedTime() {
         return orderedTime;
-    }
-
-    public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems.getOrderLineItems();
-    }
-
-    public void addItems(List<OrderLineItem> items) {
-        this.orderLineItems = new OrderLineItems(items);
     }
 
     public boolean isMeal() {

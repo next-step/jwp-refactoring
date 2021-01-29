@@ -38,10 +38,6 @@ public class OrderTable {
         return id;
     }
 
-    public Long getTableGroupId() {
-        return tableGroupId;
-    }
-
     public Orders getOrders() {
         return orders;
     }

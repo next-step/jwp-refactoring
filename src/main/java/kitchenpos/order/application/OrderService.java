@@ -1,7 +1,6 @@
 package kitchenpos.order.application;
 
 import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
@@ -36,33 +35,11 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest request) {
-        List<OrderLineRequest> orderLineItems = request.getOrderLineItems();
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException("메뉴가 1개 이상 입력되어야 합니다.");
-        }
-
-        final List<Long> menuIds = getMenuIds(orderLineItems);
-        if(!menuService.exists(menuIds)) {
-            throw new IllegalArgumentException("등록되지 않은 메뉴가 포함되어 있습니다.");
-        }
-
+        final List<OrderLineRequest> orderLineItems = request.getOrderLineItems();
         final OrderTable orderTable = orderTableService.findById(request.getOrderTableId());
-        if (!orderTable.isEmpty()) {
-            throw new IllegalArgumentException("빈 테이블에만 주문이 가능합니다.");
-        }
-
-        Order savedOrder = orderRepository.save(new Order(orderTable));
-        List<OrderLineItem> items = request.getOrderLineItems().stream()
-                .map(item -> new OrderLineItem(savedOrder.getId(), menuService.findById(item.getMenuId()), item.getQuantity()))
-                .collect(Collectors.toList());
-        savedOrder.addItems(items);
-        return OrderResponse.of(savedOrder);
-    }
-
-    private List<Long> getMenuIds(List<OrderLineRequest> orderLineItems) {
-        return orderLineItems.stream()
-                .map(OrderLineRequest::getMenuId)
-                .collect(Collectors.toList());
+        validate(orderLineItems, orderTable);
+        Order order = new Order(orderTable, createOrderLineItems(request));
+        return OrderResponse.of(orderRepository.save(order));
     }
 
     @Transactional(readOnly = true)
@@ -84,5 +61,32 @@ public class OrderService {
 
         savedOrder.changeOrderStatus(request.getOrderStatus());
         return OrderResponse.of(savedOrder);
+    }
+
+    private List<OrderLineItem> createOrderLineItems(OrderRequest request) {
+        return request.getOrderLineItems().stream()
+                .map(item -> new OrderLineItem(menuService.findById(item.getMenuId()), item.getQuantity()))
+                .collect(Collectors.toList());
+    }
+
+    private void validate(List<OrderLineRequest> orderLineItems, OrderTable orderTable) {
+        if (CollectionUtils.isEmpty(orderLineItems)) {
+            throw new IllegalArgumentException("메뉴가 1개 이상 입력되어야 합니다.");
+        }
+
+        final List<Long> menuIds = getMenuIds(orderLineItems);
+        if(!menuService.exists(menuIds)) {
+            throw new IllegalArgumentException("등록되지 않은 메뉴가 포함되어 있습니다.");
+        }
+
+        if (!orderTable.isEmpty()) {
+            throw new IllegalArgumentException("빈 테이블에만 주문이 가능합니다.");
+        }
+    }
+
+    private List<Long> getMenuIds(List<OrderLineRequest> orderLineItems) {
+        return orderLineItems.stream()
+                .map(OrderLineRequest::getMenuId)
+                .collect(Collectors.toList());
     }
 }

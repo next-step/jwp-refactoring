@@ -2,7 +2,6 @@ package kitchenpos.order.application;
 
 import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -18,6 +17,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,7 +40,7 @@ class OrderServiceTest {
     @DisplayName("1개 이상의 메뉴로 주문 등록")
     @Test
     void createOrder() {
-        Menu menu = menuRepository.save(new Menu("메뉴1", Price.of(1000), 1L, null));
+        Menu menu = menuRepository.save(new Menu("메뉴1", Price.of(1000), 1L, Collections.emptyList()));
         OrderTable orderTable = orderTableRepository.save(new OrderTable(4, true));
 
         List<OrderLineRequest> orderLinesRequest = Arrays.asList(new OrderLineRequest(menu.getId(), 1L));
@@ -61,7 +61,7 @@ class OrderServiceTest {
     @DisplayName("빈 테이블 주문 실패")
     @Test
     void failOrderEmptyTable() {
-        OrderRequest orderRequest = new OrderRequest(1L, null);
+        OrderRequest orderRequest = new OrderRequest(1L, Collections.emptyList());
         assertThatThrownBy(() -> orderService.create(orderRequest))
                 .isInstanceOf(IllegalArgumentException.class);
     }
@@ -80,15 +80,14 @@ class OrderServiceTest {
 
     @DisplayName("주문 목록을 조회")
     @Test
+    @Transactional
     void list() {
-        Menu menu = menuRepository.save(new Menu("메뉴1", Price.of(1000), 1L, null));
+        Menu menu = menuRepository.save(new Menu("메뉴1", Price.of(1000), 1L, Collections.emptyList()));
         OrderTable orderTable = orderTableRepository.save(new OrderTable(4, false));
         OrderTable orderTable2 = orderTableRepository.save(new OrderTable(2, false));
-        Order order1 = orderRepository.save(new Order(orderTable, Collections.emptyList(), OrderStatus.COOKING));
-        Order order2 = orderRepository.save(new Order(orderTable2, Collections.emptyList(), OrderStatus.MEAL));
         List<OrderLineItem> orderLineItems = Arrays.asList(new OrderLineItem(menu, 1L));
-        order1.addItems(orderLineItems);
-        order2.addItems(orderLineItems);
+        Order order1 = orderRepository.save(new Order(orderTable, orderLineItems, OrderStatus.COOKING));
+        Order order2 = orderRepository.save(new Order(orderTable2, orderLineItems, OrderStatus.MEAL));
 
         List<OrderResponse> results = orderService.list();
 
