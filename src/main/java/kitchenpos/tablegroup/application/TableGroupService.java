@@ -33,8 +33,7 @@ public class TableGroupService {
     public TableGroup create(final TableGroupRequest tableGroupRequest) {
         tableGroupRequest.validateOrderTableSize();
         List<OrderTable> orderTables = tableService.findAllByIdIn(tableGroupRequest.getOrderTableIds());
-        TableGroup tableGroup = tableGroupRepository.save(new TableGroup(orderTables));
-        return tableGroup;
+        return tableGroupRepository.save(new TableGroup(orderTables));
     }
 
 
