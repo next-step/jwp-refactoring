@@ -36,7 +36,7 @@ public class MenuResponse {
 		return new MenuResponse(
 			menu.getId(),
 			menu.getName(),
-			menu.getPrice().longValue(),
+			menu.getMenuPrice().longValue(),
 			menuGroupId,
 			MenuProductResponse.newList(menu.getId(), menu.getMenuProducts())
 		);

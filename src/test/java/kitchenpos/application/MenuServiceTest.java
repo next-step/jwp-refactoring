@@ -69,7 +69,7 @@ class MenuServiceTest {
 
 		// then : 메뉴 가격이 메뉴에 속한 상품들의 금액과 같거나 작음
 		assertThat(response.getId()).isEqualTo(1L);
-		assertThat(response.getPrice()).isEqualTo(새_메뉴.getPrice().longValue());
+		assertThat(response.getPrice()).isEqualTo(새_메뉴.getMenuPrice().longValue());
 		assertThat(response.getMenuGroupId()).isEqualTo(새_메뉴.getMenuGroup().getId());
 		assertThat(response.getMenuProducts())
 			.map(MenuProductResponse::getProductId)
@@ -137,7 +137,7 @@ class MenuServiceTest {
 		// then
 		assertThat(listResponse).anySatisfy(menuResponse -> {
 			assertThat(menuResponse.getId()).isEqualTo(-1L);
-			assertThat(menuResponse.getPrice()).isEqualTo(새_메뉴.getPrice().longValue());
+			assertThat(menuResponse.getPrice()).isEqualTo(새_메뉴.getMenuPrice().longValue());
 			assertThat(menuResponse.getMenuGroupId()).isEqualTo(새_메뉴.getMenuGroup().getId());
 			assertThat(menuResponse.getMenuProducts())
 				.map(MenuProductResponse::getProductId)
@@ -148,7 +148,7 @@ class MenuServiceTest {
 	public MenuRequest fromMenuToRequest(Menu menu) {
 		return new MenuRequest(
 			menu.getName(),
-			menu.getPrice(),
+			menu.getMenuPrice(),
 			menu.getMenuGroup() == null ? 0 : menu.getMenuGroup().getId(),
 			menu.getMenuProducts().stream()
 				.map(this::fromMenuProductToRequest)

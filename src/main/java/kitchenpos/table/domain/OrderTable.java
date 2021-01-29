@@ -18,13 +18,11 @@ import kitchenpos.order.domain.OrderStatus;
 
 @Entity
 public class OrderTable {
-	private static final int MIN_NUMBER_OF_GUESTS = 0;
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private Long tableGroupId;
-	private int numberOfGuests;
+	private NumberOfGuests numberOfGuests;
 	private boolean empty;
 	@OneToMany
 	@JoinColumn(name = "orderTableId")
@@ -36,9 +34,9 @@ public class OrderTable {
 	public OrderTable(Long id, int numberOfGuests, boolean empty,
 		List<Order> orders) {
 		this.id = id;
-		this.numberOfGuests = numberOfGuests;
-		this.empty = empty;
+		this.numberOfGuests = new NumberOfGuests(numberOfGuests);
 		this.orders = orders;
+		this.empty = empty;
 	}
 
 	public Long getId() {
@@ -54,7 +52,7 @@ public class OrderTable {
 	}
 
 	public int getNumberOfGuests() {
-		return numberOfGuests;
+		return numberOfGuests.getValue();
 	}
 
 	public boolean isEmpty() {
@@ -73,13 +71,7 @@ public class OrderTable {
 	}
 
 	public void changeNumberOfGuests(int numberOfGuests) {
-		if (numberOfGuests < MIN_NUMBER_OF_GUESTS) {
-			throw new IllegalArgumentException("방문한 손님 수는 " + MIN_NUMBER_OF_GUESTS + " 보다 작을 수 없습니다.");
-		}
-		if (empty) {
-			throw new IllegalArgumentException("빈 테이블은 방문한 손님 수를 수정할 수 없습니다.");
-		}
-		this.numberOfGuests = numberOfGuests;
+		this.numberOfGuests.changeValue(numberOfGuests, empty);
 	}
 
 	public void ungroup() {
