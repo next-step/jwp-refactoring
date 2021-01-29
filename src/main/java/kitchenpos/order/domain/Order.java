@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -31,35 +32,23 @@ public class Order {
 	@Enumerated(EnumType.STRING)
 	private OrderStatus orderStatus;
 	private LocalDateTime orderedTime;
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name = "order_id")
-	private List<OrderLineItem> orderLineItems = new ArrayList<>();
+	@Embedded
+	private OrderLineItems orderLineItems;
 
 	public Order() {
 	}
 
 	public Order(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime,
 		List<OrderLineItem> orderLineItems) {
-		validate(orderTableId, orderLineItems);
+		if (orderTableId == null || orderTableId == 0) {
+			throw new IllegalArgumentException("주문은 주문테이블을 반드시 포함해야 합니다.");
+		}
 
 		this.id = id;
 		this.orderTableId = orderTableId;
 		this.orderStatus = orderStatus;
 		this.orderedTime = orderedTime;
-		this.orderLineItems = orderLineItems;
-	}
-
-	private void validate(Long orderTableId, List<OrderLineItem> orderLineItems) {
-		if (orderTableId == null || orderTableId == 0) {
-			throw new IllegalArgumentException("주문은 주문테이블을 반드시 포함해야 합니다.");
-		}
-		Set<Menu> menuSet = orderLineItems.stream()
-			.map(OrderLineItem::getMenu)
-			.filter(Objects::nonNull)
-			.collect(Collectors.toSet());
-		if (menuSet.isEmpty() || menuSet.size() != orderLineItems.size()) {
-			throw new IllegalArgumentException("메뉴는 누락되거나 중복될 수 없습니다.");
-		}
+		this.orderLineItems = new OrderLineItems(orderLineItems);
 	}
 
 	public Long getId() {
@@ -79,7 +68,7 @@ public class Order {
 	}
 
 	public List<OrderLineItem> getOrderLineItems() {
-		return orderLineItems;
+		return orderLineItems.getList();
 	}
 
 	public void changeOrderStatus(OrderStatus orderStatus) {

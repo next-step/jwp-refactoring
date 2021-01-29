@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,9 +25,8 @@ public class OrderTable {
 	private Long tableGroupId;
 	private NumberOfGuests numberOfGuests;
 	private boolean empty;
-	@OneToMany
-	@JoinColumn(name = "orderTableId")
-	private List<Order> orders = new ArrayList<>();
+	@Embedded
+	private TableOrders tableOrders;
 
 	public OrderTable() {
 	}
@@ -35,7 +35,7 @@ public class OrderTable {
 		List<Order> orders) {
 		this.id = id;
 		this.numberOfGuests = new NumberOfGuests(numberOfGuests);
-		this.orders = orders;
+		this.tableOrders = new TableOrders(orders);
 		this.empty = empty;
 	}
 
@@ -64,7 +64,7 @@ public class OrderTable {
 			throw new IllegalArgumentException("빈 테이블 여부를 수정하기 위해서는 단체가 지정되어 있지 않아야 합니다.");
 		}
 
-		if (isExistNoCompletionOrder()) {
+		if (tableOrders.isExistNoCompletion()) {
 			throw new IllegalArgumentException("빈 테이블 여부를 수정하기 위해서는 모든 주문 상태가 계산 완료여야 합니다.");
 		}
 		this.empty = empty;
@@ -75,18 +75,10 @@ public class OrderTable {
 	}
 
 	public void ungroup() {
-		if (isExistNoCompletionOrder()) {
+		if (tableOrders.isExistNoCompletion()) {
 			throw new IllegalArgumentException("단체 지정을 해제하기 위해서는 주문 테이블의 주문 상태가 모두 계산 완료여야 합니다.");
 		}
 		this.tableGroupId = null;
-	}
-
-	private boolean isExistNoCompletionOrder() {
-		return Optional.ofNullable(orders)
-			.orElseGet(Collections::emptyList)
-			.stream()
-			.map(Order::getOrderStatus)
-			.anyMatch(it -> OrderStatus.COOKING.equals(it) || OrderStatus.MEAL.equals(it));
 	}
 
 	public static final class Builder {

@@ -28,30 +28,21 @@ public class Menu {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "menu_id")
-    private List<MenuProduct> menuProducts = new ArrayList<>();
+    private MenuProducts menuProducts;
 
     public Menu() {
     }
 
     private Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        validate(menuGroup, price, menuProducts);
+        if(menuGroup == null) {
+            throw new IllegalArgumentException("메뉴는 특정 메뉴 그룹에 속해야 합니다");
+        }
 
         this.id = id;
         this.name = name;
         this.menuPrice = new MenuPrice(price, menuProducts);
         this.menuGroup = menuGroup;
-        this.menuProducts = menuProducts;
-    }
-
-    private void validate(MenuGroup menuGroup, BigDecimal price, List<MenuProduct> menuProducts) {
-        if(menuGroup == null) {
-            throw new IllegalArgumentException("메뉴는 특정 메뉴 그룹에 속해야 합니다");
-        }
-        if(menuProducts == null || menuProducts.isEmpty()) {
-            throw new IllegalArgumentException("메뉴에 속한 상품들은 1개 이상이어야 합니다.");
-        }
+        this.menuProducts = new MenuProducts(menuProducts);
     }
 
     public Long getId() {
@@ -71,7 +62,7 @@ public class Menu {
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
+        return menuProducts.getList();
     }
 
     public static final class Builder {
