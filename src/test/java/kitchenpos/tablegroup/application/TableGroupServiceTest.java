@@ -69,7 +69,7 @@ class TableGroupServiceTest {
         List<OrderTable> orderTables = tableGroup.getOrderTables();
 
         orderTables.forEach(group -> {
-            assertThat(group.getTableGroupId()).isEqualTo(tableGroup.getId());
+            assertThat(group.getTableGroup().getId()).isEqualTo(tableGroup.getId());
             assertThat(group.isEmpty()).isEqualTo(false);
         });
     }
@@ -93,7 +93,7 @@ class TableGroupServiceTest {
         테이블_그룹을_비운다(tableGroup.getId());
 
         orderTableIds.forEach(id -> {
-            assertThat(orderService.findOrderTableById(id).getTableGroupId()).isNull();
+            assertThat(orderService.findOrderTableById(id).getTableGroup()).isNull();
         });
     }
 

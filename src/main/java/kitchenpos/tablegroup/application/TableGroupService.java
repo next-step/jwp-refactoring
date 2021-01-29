@@ -20,14 +20,11 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 public class TableGroupService {
-    private final OrderService orderService;
     private final TableService tableService;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final OrderService orderService,
-                             final TableService tableService,
+    public TableGroupService(final TableService tableService,
                              final TableGroupRepository tableGroupRepository) {
-        this.orderService = orderService;
         this.tableService = tableService;
         this.tableGroupRepository = tableGroupRepository;
     }
@@ -37,7 +34,6 @@ public class TableGroupService {
         tableGroupRequest.validateOrderTableSize();
         List<OrderTable> orderTables = tableService.findAllByIdIn(tableGroupRequest.getOrderTableIds());
         TableGroup tableGroup = tableGroupRepository.save(new TableGroup(orderTables));
-        tableGroup.updateOrderTables(orderTables);
         return tableGroup;
     }
 

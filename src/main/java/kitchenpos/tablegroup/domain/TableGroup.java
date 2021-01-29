@@ -26,13 +26,14 @@ public class TableGroup {
     @JoinColumn(name = "table_group_id")
     private List<OrderTable> orderTables;
 
-    protected TableGroup() {
+    public TableGroup() {
     }
 
     public TableGroup(List<OrderTable> orderTables) {
         this.orderTables = orderTables;
         this.createdDate = LocalDateTime.now();
         validateEqualOrderTableSize(orderTables.size());
+        updateOrderTables(orderTables);
     }
 
     public Long getId() {
@@ -48,7 +49,7 @@ public class TableGroup {
     }
 
     public void updateOrderTables(List<OrderTable> orderTables) {
-        orderTables.forEach(orderTable -> orderTable.addTableGroup(this.id));
+        orderTables.forEach(orderTable -> orderTable.addTableGroup(this));
         this.orderTables = orderTables;
     }
 
