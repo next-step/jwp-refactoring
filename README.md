@@ -118,7 +118,7 @@ TableGroup
 
 ### TO BE
 ```$xslt
-TableGroup -> Table -> Order -> Menu -> Product
+TableGroup -> Table <- Order -> Menu -> Product
                    MenuGroup ->  
 ```
 

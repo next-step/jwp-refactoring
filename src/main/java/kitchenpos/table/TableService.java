@@ -17,11 +17,11 @@ public class TableService {
 
     private final OrderTableMapper mapper = Mappers.getMapper(OrderTableMapper.class);
 
-    private final OrderService orderService;
+    private final TableOrderRepository tableOrderRepository;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(OrderService orderService, OrderTableRepository orderTableRepository) {
-        this.orderService = orderService;
+    public TableService(TableOrderRepository tableOrderRepository, OrderTableRepository orderTableRepository) {
+        this.tableOrderRepository = tableOrderRepository;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -41,7 +41,7 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final TableEmptyChangeRequest request) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
-        if (orderService.existsByOrderTable_IdAndOrderStatusIn(orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+        if (tableOrderRepository.existsByOrderTable_IdAndOrderStatusIn(orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException();
         }
         savedOrderTable.changeEmpty(request.isEmpty());
@@ -61,6 +61,6 @@ public class TableService {
     }
 
     public boolean existsByOrderTable_IdInAndOrderStatusIn(List<Long> orderTableIds, List<OrderStatus> asList) {
-        return orderService.existsByOrderTable_IdInAndOrderStatusIn(orderTableIds, asList);
+        return tableOrderRepository.existsByOrderTable_IdInAndOrderStatusIn(orderTableIds, asList);
     }
 }

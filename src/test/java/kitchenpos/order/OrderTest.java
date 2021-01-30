@@ -62,7 +62,7 @@ public class OrderTest {
     @DisplayName("주문 상태 변경")
     @Test
     public void test6() {
-        Order order = new Order(null);
+        Order order = new Order(new OrderTable(1, false));
         order.changeStatus(OrderStatus.MEAL);
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
     }
@@ -70,7 +70,7 @@ public class OrderTest {
     @DisplayName("주문 상태 변경 불가능한 케이스 - 이미 계산이 완료된 경우")
     @Test
     public void test8() {
-        Order order = new Order(null);
+        Order order = new Order(new OrderTable(1, false));
         order.changeStatus(OrderStatus.COMPLETION);
         assertThatThrownBy(() -> {
             order.changeStatus(OrderStatus.COOKING);

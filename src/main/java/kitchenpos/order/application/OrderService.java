@@ -68,12 +68,4 @@ public class OrderService {
         return mapper.toResponse(savedOrder);
     }
 
-    public boolean existsByOrderTable_IdInAndOrderStatusIn(List<Long> orderTableIds, List<OrderStatus> asList) {
-        return orderRepository.existsByOrderTable_IdInAndOrderStatusIn(orderTableIds, asList);
-    }
-
-    public boolean existsByOrderTable_IdAndOrderStatusIn(Long orderTableId, List<OrderStatus> asList) {
-        return orderRepository.existsByOrderTable_IdAndOrderStatusIn(orderTableId, asList);
-    }
-
 }
