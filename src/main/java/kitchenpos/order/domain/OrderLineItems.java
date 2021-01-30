@@ -16,9 +16,9 @@ public class OrderLineItems {
 	protected OrderLineItems() {
 	}
 
-	public OrderLineItems(Order order, List<OrderLineItem> orderLineItems) {
+	public OrderLineItems(Long orderId, List<OrderLineItem> orderLineItems) {
 		validate(orderLineItems);
-		orderLineItems.forEach(orderLineItem -> orderLineItem.setOrder(order));
+		orderLineItems.forEach(orderLineItem -> orderLineItem.setOrderId(orderId));
 		this.orderLineItems = orderLineItems;
 	}
 

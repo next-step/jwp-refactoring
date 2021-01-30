@@ -16,8 +16,8 @@ public class MenuProducts {
 	protected MenuProducts() {
 	}
 
-	public MenuProducts(Menu menu, List<MenuProduct> menuProducts) {
-		menuProducts.forEach(menuProduct -> menuProduct.setMenu(menu));
+	public MenuProducts(Long menuId, List<MenuProduct> menuProducts) {
+		menuProducts.forEach(menuProduct -> menuProduct.setMenuId(menuId));
 		this.menuProducts = menuProducts;
 	}
 

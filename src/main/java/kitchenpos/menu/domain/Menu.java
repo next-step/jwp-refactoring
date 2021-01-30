@@ -31,7 +31,7 @@ public class Menu {
 		this.name = name;
 		this.price = new Price(price);
 		this.menuGroup = menuGroup;
-		this.menuProducts = new MenuProducts(this, menuProducts);
+		this.menuProducts = new MenuProducts(id, menuProducts);
 		validatePrice();
 	}
 

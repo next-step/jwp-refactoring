@@ -11,7 +11,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import kitchenpos.BaseEntity;
@@ -36,7 +35,7 @@ public class Order extends BaseEntity {
 		validate(orderTable);
 		this.orderTable = orderTable;
 		this.orderStatus = orderStatus;
-		this.orderLineItems = new OrderLineItems(this, orderLineItems);
+		this.orderLineItems = new OrderLineItems(id, orderLineItems);
 
 	}
 
