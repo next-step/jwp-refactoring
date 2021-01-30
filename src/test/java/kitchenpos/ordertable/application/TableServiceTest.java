@@ -159,13 +159,13 @@ public class TableServiceTest {
     @Test
     void changeNumberOfGuests() {
         final Long orderTableId = 1L;
-        주문테이블_요청.setNumberOfGuests(10);
-        주문테이블_요청.setEmpty(false);
+        final int expected = 10;
+        주문테이블_요청.setNumberOfGuests(expected);
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(주문테이블1));
 
         OrderTableResponse orderTableResponse = tableService.changeNumberOfGuests(orderTableId, 주문테이블_요청);
 
-        assertThat(orderTableResponse.getNumberOfGuests()).isEqualTo(주문테이블1.getNumberOfGuests());
+        assertThat(orderTableResponse.getNumberOfGuests()).isEqualTo(expected);
     }
 
     @DisplayName("주문테이블의 방문한 손님 수를 변경 예외: 방문한 손님 수가 0보다 작음")
@@ -192,7 +192,7 @@ public class TableServiceTest {
     void changeNumberOfGuestsThrowExceptionWhenOrderTableIsEmpty() {
         주문테이블_요청.setNumberOfGuests(10);
         주문테이블_요청.setEmpty(true);
-        given(orderTableRepository.findById(주문테이블1.getId())).willReturn(Optional.empty());
+        given(orderTableRepository.findById(주문테이블1.getId())).willReturn(Optional.of(주문테이블1));
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableService.changeNumberOfGuests(주문테이블1.getId(), 주문테이블_요청));

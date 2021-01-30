@@ -74,6 +74,12 @@ public class OrderTable {
         if (numberOfGuests < 0) {
             throw new IllegalArgumentException("손님 수는 0 이하를 입력할 수 없습니다.");
         }
+
+        if (isEmpty()) {
+            throw new IllegalArgumentException("빈 테이블의 손님 수는 변경할 수 없습니다.");
+        }
+
+        this.numberOfGuests = numberOfGuests;
     }
 
     protected boolean hasCookingOrMealOrder() {
