@@ -3,8 +3,8 @@ package kitchenpos.acceptance;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.TableGroupService;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.dto.TableGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -40,10 +41,10 @@ public class TableGroupAcceptanceTest {
     @DisplayName("테이블그룹 등록")
     @Test
     public void createTableGroup() throws Exception {
-        OrderTable table1 = new OrderTable(3, true);
-        OrderTable table2 = new OrderTable(4, false);
-        List<OrderTable> orderTables = Arrays.asList(table1, table2);
-        TableGroup expectedTableGroup = new TableGroup(orderTables);
+        OrderTableResponse table1 = new OrderTableResponse(1L, 1L,3, true);
+        OrderTableResponse table2 = new OrderTableResponse(2L, 1L,4, false);
+        List<OrderTableResponse> orderTables = Arrays.asList(table1, table2);
+        TableGroupResponse expectedTableGroup = new TableGroupResponse(1L, LocalDateTime.now(), orderTables);
         given(tableGroupService.create(any())).willReturn(expectedTableGroup);
 
         mockMvc.perform(post("/api/table-groups")

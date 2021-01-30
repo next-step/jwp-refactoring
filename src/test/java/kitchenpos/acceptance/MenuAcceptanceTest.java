@@ -3,7 +3,7 @@ package kitchenpos.acceptance;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.MenuService;
-import kitchenpos.domain.Menu;
+import kitchenpos.dto.MenuResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +41,7 @@ class MenuAcceptanceTest {
     @DisplayName("메뉴 등록")
     @Test
     public void createMenu() throws Exception {
-        Menu menu = new Menu("치킨", new BigDecimal(100), 1L, null);
+        MenuResponse menu = new MenuResponse(1L, "치킨", new BigDecimal(100), 1L, null);
         given(menuService.create(any())).willReturn(menu);
         mockMvc.perform(post("/api/menus")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -53,9 +53,9 @@ class MenuAcceptanceTest {
     @DisplayName("메뉴 리스트")
     @Test
     public void listMenu() throws Exception {
-        Menu menu1 = new Menu("치킨", new BigDecimal(200), 1L, null);
-        Menu menu2 = new Menu("피자", new BigDecimal(100), 1L, null);
-        List<Menu> menus = Arrays.asList(menu1, menu2) ;
+        MenuResponse menu1 = new MenuResponse(1L,"치킨", new BigDecimal(200), 1L, null);
+        MenuResponse menu2 = new MenuResponse(2L,"피자", new BigDecimal(100), 1L, null);
+        List<MenuResponse> menus = Arrays.asList(menu1, menu2);
         given(menuService.list()).willReturn(menus);
         mockMvc.perform(get("/api/menus"))
                 .andDo(print())
