@@ -1,6 +1,5 @@
 package kitchenpos.menu.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import kitchenpos.product.domain.Product;
 
 import javax.persistence.*;
@@ -15,7 +14,6 @@ public class MenuProduct {
     @Column(name = "menu_id")
     private Long menuId;
 
-    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;

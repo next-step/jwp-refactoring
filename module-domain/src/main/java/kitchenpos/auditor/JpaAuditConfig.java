@@ -1,6 +1,6 @@
-package kitchenpos.config;
+package kitchenpos.auditor;
 
-import kitchenpos.config.auditor.CommonAuditorAware;
+import kitchenpos.auditor.CommonAuditorAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;

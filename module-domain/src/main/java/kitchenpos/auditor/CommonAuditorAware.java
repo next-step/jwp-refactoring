@@ -1,4 +1,4 @@
-package kitchenpos.config.auditor;
+package kitchenpos.auditor;
 
 import org.springframework.data.domain.AuditorAware;
 

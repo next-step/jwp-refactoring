@@ -1,6 +1,5 @@
 package kitchenpos.menu.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import kitchenpos.advice.exception.MenuException;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
@@ -23,7 +22,6 @@ public class Menu {
     @Embedded
     private Price price;
 
-    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_group_id", nullable = false)
     private MenuGroup menuGroup;
