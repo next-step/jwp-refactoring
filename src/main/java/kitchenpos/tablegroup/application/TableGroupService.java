@@ -4,6 +4,7 @@ import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.OrderTableRepository;
 import kitchenpos.table.OrderTable;
+import kitchenpos.table.TableService;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupAddRequest;
@@ -20,21 +21,21 @@ import java.util.stream.Collectors;
 
 @Service
 public class TableGroupService {
-    private final OrderRepository orderDao;
-    private final OrderTableRepository orderTableRepository;
-    private final TableGroupRepository tableGroupRepository;
+
     private final TableGroupMapper mapper = Mappers.getMapper(TableGroupMapper.class);
 
-    public TableGroupService(final OrderRepository orderDao, final OrderTableRepository orderTableRepository, final TableGroupRepository tableGroupRepository) {
-        this.orderDao = orderDao;
-        this.orderTableRepository = orderTableRepository;
+    private final TableService tableService;
+    private final TableGroupRepository tableGroupRepository;
+
+    public TableGroupService(TableService tableService, TableGroupRepository tableGroupRepository) {
+        this.tableService = tableService;
         this.tableGroupRepository = tableGroupRepository;
     }
 
     @Transactional
     public TableGroupResponse create(final TableGroupAddRequest request) {
         final List<OrderTable> orderTables = request.getOrderTables().stream()
-                .map(it -> orderTableRepository.getOne(it.getId()))
+                .map(it -> tableService.getOne(it.getId()))
                 .collect(Collectors.toList());
         request.checkSameSize(orderTables.size());
         return mapper.toResponse(tableGroupRepository.save(new TableGroup(orderTables)));
@@ -46,9 +47,10 @@ public class TableGroupService {
         final List<Long> orderTableIds = tableGroup.getOrderTables().stream()
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
-        if (orderDao.existsByOrderTable_IdInAndOrderStatusIn(orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+        if (tableService.existsByOrderTable_IdInAndOrderStatusIn(orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException();
         }
-        tableGroup.getOrderTables().forEach(OrderTable::ungroup);
+        tableGroup.ungroup();
     }
+
 }

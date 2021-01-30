@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -19,7 +21,7 @@ public class MenuTest {
     @Test
     public void createTest() {
         MenuGroup menuGroup = new MenuGroup();
-        Menu menu = new Menu("이름", BigDecimal.ONE, menuGroup);
+        Menu menu = new Menu("이름", BigDecimal.ONE, menuGroup, Collections.emptyList());
         assertThat(menu.getName()).isEqualTo("이름");
         assertThat(menu.getPrice()).isEqualTo(BigDecimal.ONE);
         assertThat(menu.getMenuGroup()).isEqualTo(menuGroup);
@@ -28,10 +30,9 @@ public class MenuTest {
     @DisplayName("메뉴 생성 불가능 케이스 - 메뉴의 가격이 상품의 가격의 합보다 큰 경우")
     @Test
     public void invalidCase1() {
-        Menu menu = new Menu("name", BigDecimal.valueOf(1201), new ArrayList<MenuProduct>() {{
-            add(new MenuProduct(new Product("상품1", BigDecimal.valueOf(600)), 1));
-            add(new MenuProduct(new Product("상품2", BigDecimal.valueOf(200)), 2));
-        }});
+        Menu menu = new Menu("name", BigDecimal.valueOf(1201), null, Arrays.asList(
+                new MenuProduct(new Product("상품1", BigDecimal.valueOf(600)), 1),
+                new MenuProduct(new Product("상품2", BigDecimal.valueOf(200)), 2)));
         assertThatThrownBy(menu::checkValidation).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -40,7 +41,7 @@ public class MenuTest {
     public void invalidCase2() {
         MenuGroup menuGroup = new MenuGroup();
         assertThatThrownBy(() -> {
-            new Menu("name", BigDecimal.valueOf(-1), menuGroup);
+            new Menu("name", BigDecimal.valueOf(-1), menuGroup, Collections.emptyList());
         }).isInstanceOf(IllegalArgumentException.class);
     }
 

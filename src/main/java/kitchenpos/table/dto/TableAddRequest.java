@@ -24,4 +24,7 @@ public class TableAddRequest {
         this.empty = empty;
     }
 
+    public OrderTable toOrderTable() {
+        return new OrderTable(this.numberOfGuests, this.empty);
+    }
 }

@@ -22,7 +22,7 @@ public class Order {
     @OneToMany(mappedBy = "order")
     private List<OrderLineItem> orderLineItems;
 
-    public Order() {
+    Order() {
     }
 
     public Order(OrderTable orderTable) {

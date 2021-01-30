@@ -1,5 +1,6 @@
 package kitchenpos.table;
 
+import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.dto.*;
@@ -13,18 +14,20 @@ import java.util.stream.Collectors;
 
 @Service
 public class TableService {
-    private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
+
     private final OrderTableMapper mapper = Mappers.getMapper(OrderTableMapper.class);
 
-    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
-        this.orderRepository = orderRepository;
+    private final TableOrderRepository tableOrderRepository;
+    private final OrderTableRepository orderTableRepository;
+
+    public TableService(TableOrderRepository tableOrderRepository, OrderTableRepository orderTableRepository) {
+        this.tableOrderRepository = tableOrderRepository;
         this.orderTableRepository = orderTableRepository;
     }
 
     @Transactional
     public OrderTableResponse create(final TableAddRequest orderTable) {
-        return mapper.toResponse(orderTableRepository.save(new OrderTable()));
+        return mapper.toResponse(orderTableRepository.save(orderTable.toOrderTable()));
     }
 
     public List<OrderTableResponse> list() {
@@ -38,7 +41,7 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final TableEmptyChangeRequest request) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
-        if (orderRepository.existsByOrderTable_IdAndOrderStatusIn(orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+        if (tableOrderRepository.existsByOrderTable_IdAndOrderStatusIn(orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException();
         }
         savedOrderTable.changeEmpty(request.isEmpty());
@@ -47,10 +50,17 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final TableNumberChangeRequest request) {
-        final int numberOfGuests = request.getNumberOfGuests();
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
-        savedOrderTable.changeNumberOfGuests(numberOfGuests);
+        savedOrderTable.changeNumberOfGuests(request.getNumberOfGuests());
         return mapper.toResponse(orderTableRepository.save(savedOrderTable));
+    }
+
+    public OrderTable getOne(Long id) {
+        return orderTableRepository.getOne(id);
+    }
+
+    public boolean existsByOrderTable_IdInAndOrderStatusIn(List<Long> orderTableIds, List<OrderStatus> asList) {
+        return tableOrderRepository.existsByOrderTable_IdInAndOrderStatusIn(orderTableIds, asList);
     }
 }

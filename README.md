@@ -86,6 +86,41 @@
         * 테이블이 아래와 같은 상태일때
             * 조리
             * 식사
+            
+            
+## Step 3. 양방향을 단방향으로
+### AS-IS
+```$xslt
+Menu
+    -> MenuProduct -> Product 
+    -> MenuGroup
+    -> Product
+
+MenuGroup
+ -> X
+
+Product
+ -> X
+
+Order
+    -> Menu
+    -> OrderLineItem -> Menu
+    -> OrderTable
+
+Table
+    -> Order
+
+TableGroup
+    -> Order
+    -> OrderTable
+
+```          
+
+### TO BE
+```$xslt
+TableGroup -> Table <- Order -> Menu -> Product
+                   MenuGroup ->  
+```
 
 
 ## 용어 사전
