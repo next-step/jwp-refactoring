@@ -32,7 +32,7 @@ public class OrderService {
     public OrderResponse create(final Order order) {
         final List<OrderLineItem> orderLineItems = order.getOrderLineItems();
 
-        final List<Menu> menu = order.getMenuIds(orderLineItems);
+        final List<Menu> menu = order.getMenu(orderLineItems);
 
         if (orderLineItems.size() != menuRepository.countByIdIn(menu)) {
             throw new IllegalArgumentException("주문항목이 메뉴의 개수와 같지 않습니다.");

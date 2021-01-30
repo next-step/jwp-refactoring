@@ -42,8 +42,8 @@ class OrderTest {
     void getMenuIds1() {
         Order order = new Order(OrderItemList);
 
-        assertThat(order.getMenuIds(OrderItemList)).isNotNull();
-        assertThat(order.getMenuIds(OrderItemList).size()).isEqualTo(3);
+        assertThat(order.getMenu(OrderItemList)).isNotNull();
+        assertThat(order.getMenu(OrderItemList).size()).isEqualTo(3);
 
     }
 
@@ -53,7 +53,7 @@ class OrderTest {
         Order order = new Order();
 
         assertThatThrownBy(() -> {
-            order.getMenuIds(order.getOrderLineItems());
+            order.getMenu(order.getOrderLineItems());
         }).isInstanceOf(IllegalArgumentException.class);
     }
 }

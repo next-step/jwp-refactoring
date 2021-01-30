@@ -50,10 +50,10 @@ class OrderServiceTest {
         OrderLineItem orderLineItem3 = new OrderLineItem(3L, menu3, 1);
 
         orderTable = new OrderTable(new TableGroup(), 4, true);
+        orderTable.setId(1L);
 
         order = new Order(orderTable, OrderStatus.COOKING.name());
-        order.set
-    Id(1L);
+        order.setId(1L);
         order.setOrderLineItems(Arrays.asList(orderLineItem1, orderLineItem2, orderLineItem3));
 
         orderLineItem = new OrderLineItem(order, 1);
