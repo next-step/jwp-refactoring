@@ -23,7 +23,6 @@ public class Order {
     private LocalDateTime orderedTime;
 
     @Embedded
-    @Transient
     private OrderLineItems orderLineItems = new OrderLineItems();
 
     public Order() {

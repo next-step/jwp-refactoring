@@ -3,8 +3,6 @@ package kitchenpos.table.domain;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.Embeddable;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +11,7 @@ import java.util.Objects;
 @Embeddable
 public class OrderTables {
 
-    @OneToMany
-    @JoinTable(name = "order_table", joinColumns = @JoinColumn(name = "table_group_id"))
+    @OneToMany(mappedBy = "id")
     private List<OrderTable> orderTables = new ArrayList<>();
 
     public OrderTables() {
