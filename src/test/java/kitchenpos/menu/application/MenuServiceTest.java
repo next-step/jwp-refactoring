@@ -18,7 +18,7 @@ import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.dto.ProductRequest;
 import kitchenpos.menu.dto.ProductResponse;
 
-public class MenuAcceptanceTest extends AcceptanceTest {
+public class MenuServiceTest extends AcceptanceTest {
 	@Autowired
 	private MenuService menuService;
 	@Autowired

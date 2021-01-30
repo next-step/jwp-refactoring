@@ -14,8 +14,15 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import kitchenpos.AcceptanceTest;
+import kitchenpos.menu.acceptance.MenuAcceptanceTest;
+import kitchenpos.menu.acceptance.MenuGroupAcceptanceTest;
+import kitchenpos.menu.acceptance.ProductAcceptanceTest;
+import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.dto.ProductResponse;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderLineItemResponse;
@@ -57,13 +64,18 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 		주문_조회_성공(response);
 	}
 
-	@Ignore
 	@DisplayName("주문 상태 변경 요청")
 	@Test
 	void changeOrderStatus() {
 
-		//TODO 메뉴생성 요청
-		OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(후라이드치킨메뉴.getId(), 2);
+		ProductResponse productResponse = ProductAcceptanceTest.상품_생성_요청("후라이드", 16000).as(ProductResponse.class);
+		MenuGroupResponse menuGroupResponse = MenuGroupAcceptanceTest.메뉴_그룹_생성_요청("한마리메뉴").as(MenuGroupResponse.class);
+		MenuRequest menuRequest = new MenuRequest("후라이드", 12000, menuGroupResponse.getId(),
+			Arrays.asList(new MenuProductRequest(productResponse.getId(), 1)));
+
+		MenuResponse menuResponse = MenuAcceptanceTest.메뉴_생성_요청(menuRequest).as(MenuResponse.class);
+
+		OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menuResponse.getId(), 2);
 		OrderTableResponse orderTableResponse = TableAcceptanceTest.테이블_생성_요청(2, false).as(OrderTableResponse.class);
 		OrderResponse orderResponse = 주문_생성_요청(orderTableResponse.getId(),
 			Arrays.asList(orderLineItemRequest)).as(OrderResponse.class);
