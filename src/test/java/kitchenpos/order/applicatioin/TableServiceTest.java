@@ -24,6 +24,8 @@ import static org.mockito.Mockito.when;
 class TableServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
+    @Mock
+    private OrderRepository orderRepository;
 
     @InjectMocks
     private TableService tableService;
@@ -33,6 +35,7 @@ class TableServiceTest {
     @BeforeEach
     void setUp() {
         orderTable = new OrderTable(4);
+        orderTable.setId(1L);
         orderTable.changeTableGroup(null);
     }
 
@@ -56,6 +59,7 @@ class TableServiceTest {
     @DisplayName("빈테이블 수정")
     void changeEmpty() {
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
+        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(),any())).thenReturn(false);
         when(orderTableRepository.save(any())).thenReturn(orderTable);
 
         assertThat(tableService.changeEmpty(orderTable.getId(), orderTable)).isNotNull();
