@@ -14,6 +14,14 @@ public class Product {
     private String name;
     private BigDecimal price;
 
+    public Product() {
+    }
+
+    public Product(String name, BigDecimal price) {
+        this.name = name;
+        this.price = price;
+    }
+
     public Long getId() {
         return id;
     }
@@ -22,16 +30,8 @@ public class Product {
         return name;
     }
 
-    public void changeName(final String name) {
-        this.name = name;
-    }
-
     public BigDecimal getPrice() {
         return price;
-    }
-
-    public void changePrice(final BigDecimal price) {
-        this.price = price;
     }
 
     /**

@@ -3,6 +3,7 @@ package kitchenpos.menu;
 import com.fasterxml.jackson.core.type.TypeReference;
 import kitchenpos.common.BaseContollerTest;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuGroupRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -25,7 +26,7 @@ public class MenuGroupControllerTest extends BaseContollerTest {
         this.mockMvc.perform(post("/api/menu-groups")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(this.objectMapper.writeValueAsString(
-                        MenuGroupTestSupport.createMenuGroup("새로운메뉴")))
+                        new MenuGroupRequest("새로운메뉴")))
                 )
                 .andDo(print())
                 .andExpect(status().isCreated())

@@ -1,6 +1,10 @@
 package kitchenpos.order.domain;
 
+import org.springframework.util.CollectionUtils;
+
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +12,8 @@ import java.util.List;
 @Embeddable
 public class OrderLineItems {
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany
+    @JoinTable(name = "order_line_item", joinColumns = @JoinColumn(name = "order_id"))
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     public OrderLineItems() {
@@ -24,5 +29,28 @@ public class OrderLineItems {
 
     public void addOrderLineItem(final OrderLineItem orderLineItem) {
         this.orderLineItems.add(orderLineItem);
+    }
+
+    public void validate(long menuIdsCount) {
+        this.checkEmptyOrderLineItems();
+        this.checkOrderLineItemsCount(menuIdsCount);
+    }
+
+    /**
+     * 주문항목의 개수가 메뉴의 수와 같은지 확인합니다.
+     */
+    private void checkOrderLineItemsCount(long menuIdsCount) {
+        if (this.orderLineItems.size() != menuIdsCount) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    /**
+     * 주문항목이 비었는지 확인합니다.
+     */
+    private void checkEmptyOrderLineItems() {
+        if (CollectionUtils.isEmpty(this.orderLineItems)) {
+            throw new IllegalArgumentException();
+        }
     }
 }

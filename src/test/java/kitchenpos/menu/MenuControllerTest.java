@@ -3,7 +3,6 @@ package kitchenpos.menu;
 import kitchenpos.common.BaseContollerTest;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuRequest;
-import kitchenpos.product.ProductTestSupport;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +19,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -108,9 +106,9 @@ public class MenuControllerTest extends BaseContollerTest {
     private void addMenuProduct(Menu menu) {
         menu.changeMenuGroup(this.menuGroupRepository.save(new MenuGroup("테스트그룹")));
         MenuProduct menuProduct = new MenuProduct();
-        menuProduct.changeMenu(menu);
+        menuProduct.setMenuId(menu.getId());
 
-        Product product = ProductTestSupport.createProduct("치킨", BigDecimal.valueOf(20000));
+        Product product = new Product("치킨", BigDecimal.valueOf(20000));
         Product savedProduct = this.productRepository.save(product);
         menuProduct.changeProduct(savedProduct);
 

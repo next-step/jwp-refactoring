@@ -9,15 +9,14 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
@@ -34,13 +33,10 @@ public class OrderService {
         this.orderTableRepository = orderTableRepository;
     }
 
-    @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
         Order order = this.toOrder(orderRequest);
-        this.validateOrderLineItems(order.getOrderLineItems());
-
         order.changeOrderTable(findOrderTable(order));
-        order.changeOrderStatus(OrderStatus.COOKING.name());
+        order.changeOrderStatus(OrderStatus.COOKING);
         order.changeOrderedTime(LocalDateTime.now());
 
         final Order savedOrder = this.orderRepository.save(order);
@@ -48,6 +44,7 @@ public class OrderService {
 
         return OrderResponse.of(savedOrder);
     }
+
 
     /**
      * 주문 요청을 Order로 변환합니다.
@@ -58,7 +55,17 @@ public class OrderService {
         Order order = orderRequest.toOrder();
         order.changeOrderTable(this.orderTableRepository.findById(orderRequest.getOrderTableId())
                 .orElseThrow(() -> new IllegalArgumentException("주문 시 테이블이 반드시 존재해야합니다.")));
+        this.addOrderLineItems(orderRequest, order);
 
+        return order;
+    }
+
+    /**
+     * 주문항목을 주문에 추가합니다.
+     * @param orderRequest
+     * @param order
+     */
+    private void addOrderLineItems(OrderRequest orderRequest, Order order) {
         List<OrderLineItemRequest> orderLineItems = orderRequest.getOrderLineItems();
 
         for (OrderLineItemRequest orderLineItemRequest : orderLineItems) {
@@ -68,7 +75,20 @@ public class OrderService {
             order.addOrderLineItem(orderLineItem);
         }
 
-        return order;
+        order.validateOrderLineItems(this.findMenuIdCount(order.getOrderLineItems()));
+    }
+
+    /**
+     * 주문항목에 있는 메뉴의 ID 값들을 가져옵니다.
+     * @param orderLineItems
+     * @return
+     */
+    private long findMenuIdCount(List<OrderLineItem> orderLineItems) {
+        final List<Long> menuIds = orderLineItems.stream()
+                .map(orderLineItem -> orderLineItem.getMenu().getId())
+                .collect(Collectors.toList());
+
+        return this.menuRepository.countByIdIn(menuIds);
     }
 
     /**
@@ -80,7 +100,7 @@ public class OrderService {
         final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
 
         for (final OrderLineItem orderLineItem : order.getOrderLineItems()) {
-            orderLineItem.changeOrder(savedOrder);
+            orderLineItem.changeOrderId(savedOrder.getId());
             savedOrderLineItems.add(this.orderLineItemRepository.save(orderLineItem));
         }
         savedOrder.changeOrderLineItems(new OrderLineItems(savedOrderLineItems));
@@ -101,39 +121,7 @@ public class OrderService {
         return orderTable;
     }
 
-    /**
-     * 주문항목이 적합한지 체크합니다.
-     * @param orderLineItems
-     */
-    private void validateOrderLineItems(List<OrderLineItem> orderLineItems) {
-        this.checkEmptyOrderLineItems(orderLineItems);
-        this.checkOrderLineItemsCount(orderLineItems);
-    }
-
-    /**
-     * 주문항목의 개수가 메뉴의 수와 같은지 확인합니다.
-     * @param orderLineItems
-     */
-    private void checkOrderLineItemsCount(List<OrderLineItem> orderLineItems) {
-        final List<Long> menuIds = orderLineItems.stream()
-                .map(orderLineItem -> orderLineItem.getMenu().getId())
-                .collect(Collectors.toList());
-
-        if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    /**
-     * 주문항목이 비었는지 확인합니다.
-     * @param orderLineItems
-     */
-    private void checkEmptyOrderLineItems(List<OrderLineItem> orderLineItems) {
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
-        }
-    }
-
+    @Transactional(readOnly = true)
     public List<OrderResponse> list() {
         final List<Order> orders = this.orderRepository.findAll();
 
@@ -149,8 +137,7 @@ public class OrderService {
         final Order savedOrder = this.orderRepository.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        this.checkCompletionOrder(savedOrder);
-        savedOrder.changeOrderStatus(OrderStatus.valueOf(orderRequest.getOrderStatus()).name());
+        savedOrder.changeOrderStatus(OrderStatus.valueOf(orderRequest.getOrderStatus()));
         this.orderRepository.save(savedOrder);
 
         savedOrder.changeOrderLineItems(new OrderLineItems(this.orderLineItemRepository.findAllByOrderId(orderId)));
@@ -158,13 +145,4 @@ public class OrderService {
         return OrderResponse.of(savedOrder);
     }
 
-    /**
-     * 주문이 완료된 상태인지 확인합니다.
-     * @param savedOrder
-     */
-    private void checkCompletionOrder(Order savedOrder) {
-        if (Objects.equals(OrderStatus.COMPLETION.name(), savedOrder.getOrderStatus())) {
-            throw new IllegalArgumentException();
-        }
-    }
 }

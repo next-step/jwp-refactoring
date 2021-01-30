@@ -1,7 +1,6 @@
 package kitchenpos.menu;
 
 import kitchenpos.menu.domain.*;
-import kitchenpos.product.ProductTestSupport;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -49,8 +48,8 @@ public class MenuProductTest {
         MenuProduct menuProduct = new MenuProduct();
         Menu persistMenu = MenuTestSupport.createMenu("신메뉴", 20000
                 , this.menuGroupRepository.save(new MenuGroup("그룹1")));
-        menuProduct.changeMenu(persistMenu);
-        Product product = ProductTestSupport.createProduct("치킨", BigDecimal.valueOf(15000));
+        menuProduct.setMenuId(persistMenu.getId());
+        Product product = new Product("치킨", BigDecimal.valueOf(15000));
         Product savedProduct = this.productRepository.save(product);
         menuProduct.changeProduct(savedProduct);
         menuProduct.changeQuantity(quantity);

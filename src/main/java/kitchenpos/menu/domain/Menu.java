@@ -1,10 +1,7 @@
 package kitchenpos.menu.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -17,11 +14,12 @@ public class Menu {
     private String name;
     private BigDecimal price;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
 
     @Embedded
+    @Transient
     private MenuProducts menuProducts = new MenuProducts();
 
     public Menu() {
@@ -91,6 +89,16 @@ public class Menu {
     public void validatePrice() {
         BigDecimal price = this.getPrice();
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    /**
+     * 메뉴 상품의 총 가격과 메뉴의 가격을 비교합니다.
+     * @throws IllegalArgumentException
+     */
+    public void compareMenuProductsSum(BigDecimal menuProductsSum) {
+        if (this.getPrice().compareTo(menuProductsSum) > 0) {
             throw new IllegalArgumentException();
         }
     }

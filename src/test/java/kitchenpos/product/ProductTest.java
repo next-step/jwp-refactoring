@@ -22,7 +22,7 @@ public class ProductTest {
     @DisplayName("상품을 등록합니다.")
     void save() {
         String name = "치킨";
-        Product product = ProductTestSupport.createProduct(name, BigDecimal.valueOf(15000));
+        Product product = new Product(name, BigDecimal.valueOf(15000));
 
         Product savedProduct = this.productRepository.save(product);
 
@@ -34,7 +34,7 @@ public class ProductTest {
     @DisplayName("상품을 조회합니다")
     void findById() {
         String name = "치킨";
-        Product product = ProductTestSupport.createProduct(name, BigDecimal.valueOf(15000));
+        Product product = new Product(name, BigDecimal.valueOf(15000));
 
         Product savedProduct = this.productRepository.save(product);
 

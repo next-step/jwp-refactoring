@@ -1,6 +1,7 @@
 package kitchenpos.table.domain;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class OrderTable {
@@ -8,10 +9,10 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "table_group_id")
-    private TableGroup tableGroup;
+    private Long tableGroupId;
+
     private int numberOfGuests;
+
     private boolean empty;
 
     public OrderTable() {
@@ -26,19 +27,32 @@ public class OrderTable {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
-    public void changeTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
+    public void changeTableGroupId(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
     }
+
+    public void deleteTableGroupId() {
+        this.tableGroupId = null;
+    }
+
+/*    public void changeTableGroupId(TableGroup tableGroup) {
+        if(tableGroup != null) {
+            this.tableGroupId = tableGroup.getId();
+            tableGroup.addOrderTables(this);
+        }
+    }*/
 
     public int getNumberOfGuests() {
+        this.validateNumberOfGuests();
         return numberOfGuests;
     }
 
     public void changeNumberOfGuests(final int numberOfGuests) {
+        this.validateNumberOfGuests();
         this.numberOfGuests = numberOfGuests;
     }
 
@@ -48,5 +62,23 @@ public class OrderTable {
 
     public void changeEmpty(final boolean empty) {
         this.empty = empty;
+    }
+
+    /**
+     * 테이블의 손님 수가 적합한지 확인합니다.
+     */
+    private void validateNumberOfGuests() {
+        if (this.numberOfGuests < 0) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    /**
+     * 테이블그룹화 되어 있는 테이블인지 확인합니다.
+     */
+    public void notExistTabeGroup() {
+        if (Objects.nonNull(this.getTableGroupId())) {
+            throw new IllegalArgumentException();
+        }
     }
 }

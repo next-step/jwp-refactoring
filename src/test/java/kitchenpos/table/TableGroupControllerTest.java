@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -37,8 +38,14 @@ public class TableGroupControllerTest extends BaseContollerTest {
     }
 
     private Long 테이블_그룹화_요청() throws Exception {
-        TableGroupRequest tableGroupRequest = new TableGroupRequest(
-                this.orderTableRepository.findAll().stream().map(OrderTable::getId).collect(Collectors.toList()));
+        List<OrderTable> orderTables = this.orderTableRepository.findAll();
+        for (OrderTable orderTable : orderTables) {
+            orderTable.changeEmpty(true);
+            this.orderTableRepository.save(orderTable);
+        }
+
+        TableGroupRequest tableGroupRequest
+                = new TableGroupRequest(orderTables.stream().map(OrderTable::getId).collect(Collectors.toList()));
 
         MvcResult mvcResult = this.mockMvc.perform(post("/api/table-groups")
                 .contentType(MediaType.APPLICATION_JSON)

@@ -23,7 +23,7 @@ public class MenuGroupTest {
     void save() {
         // given
         String name = "새로운메뉴";
-        MenuGroup menuGroup = MenuGroupTestSupport.createMenuGroup(name);
+        MenuGroup menuGroup = new MenuGroup(name);
 
         // when
         MenuGroup persistMenuGroup = this.menuGroupRepository.save(menuGroup);
@@ -39,7 +39,7 @@ public class MenuGroupTest {
     void findById() {
         // given
         String name = "새로운메뉴";
-        MenuGroup menuGroup = MenuGroupTestSupport.createMenuGroup(name);
+        MenuGroup menuGroup = new MenuGroup(name);
         MenuGroup persistMenuGroup = this.menuGroupRepository.save(menuGroup);
 
         // when
@@ -66,7 +66,7 @@ public class MenuGroupTest {
     void existsById() {
         // given
         String name = "새로운메뉴";
-        MenuGroup menuGroup = MenuGroupTestSupport.createMenuGroup(name);
+        MenuGroup menuGroup = new MenuGroup(name);
         MenuGroup persistMenuGroup = this.menuGroupRepository.save(menuGroup);
 
         // when

@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
@@ -32,12 +33,9 @@ public class MenuService {
         this.productRepository = productDao;
     }
 
-    @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
 
         Menu menu = this.menuRequestToMenu(menuRequest);
-
-        this.validateMenu(menu);
 
         final Menu savedMenu = menuRepository.save(menu);
         this.addPersistMenuProducts(menu, savedMenu);
@@ -50,6 +48,8 @@ public class MenuService {
         menu.changeMenuGroup(this.menuGroupRepository.findById(menuRequest.getMenuGroupId())
                 .orElseThrow(() -> new IllegalArgumentException("메뉴그룹이 없으면 메뉴를 생성 할 수 없습니다.")));
         menu.changeMenuProducts(new MenuProducts(this.menuProductRepository.findAllById(menuRequest.getMenuProductIds())));
+
+        this.validateMenu(menu);
         return menu;
     }
 
@@ -62,7 +62,7 @@ public class MenuService {
                 = menuProductRepository.findAllByMenuId(menu.getMenuGroup().getId());
 
         for (final MenuProduct menuProduct : menuProducts) {
-            menuProduct.changeMenu(savedMenu);
+            menuProduct.setMenuId(savedMenu.getId());
             savedMenu.addMenuProducts(this.menuProductRepository.save(menuProduct));
         }
     }
@@ -74,28 +74,18 @@ public class MenuService {
     private void validateMenu(Menu menu) {
         menu.validatePrice();
         this.existMenuGroup(menu);
-        this.compareMenuProductsSum(menu);
+        menu.compareMenuProductsSum(this.calculateMenuProductsSum(menu.getMenuProducts()));
     }
 
-    /**
-     * 메뉴 상품의 총 가격과 메뉴의 가격을 비교합니다.
-     * @param menu
-     * @throws IllegalArgumentException
-     */
-    private void compareMenuProductsSum(Menu menu) {
-        if (menu.getPrice().compareTo(this.calculateMenuProductsSum(menu)) > 0) {
-            throw new IllegalArgumentException();
-        }
-    }
 
     /**
      * 메뉴상품의 전체 가격을 구합니다
      * @param menu 
      * @return
      */
-    private BigDecimal calculateMenuProductsSum(Menu menu) {
+    private BigDecimal calculateMenuProductsSum(List<MenuProduct> menuProducts) {
         BigDecimal sum = BigDecimal.ZERO;
-        for (final MenuProduct menuProduct : menu.getMenuProducts()) {
+        for (final MenuProduct menuProduct : menuProducts) {
             final Product product = productRepository.findById(menuProduct.getProduct().getId())
                     .orElseThrow(IllegalArgumentException::new);
             sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
@@ -115,6 +105,7 @@ public class MenuService {
     }
 
 
+    @Transactional(readOnly = true)
     public List<MenuResponse> list() {
         final List<Menu> menus = menuRepository.findAll();
 

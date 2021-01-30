@@ -22,7 +22,6 @@ public class MenuTestSupport {
         menu.changeMenuGroup(menuGroup);
 
         MenuProduct menuProduct = new MenuProduct();
-        menuProduct.changeMenu(new Menu());
         menuProduct.changeProduct(new Product());
         menuProduct.changeQuantity(3);
         menu.addMenuProducts(menuProduct);

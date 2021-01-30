@@ -7,15 +7,14 @@ import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class TableGroupService {
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
@@ -28,10 +27,8 @@ public class TableGroupService {
         this.tableGroupRepository = tableGroupRepository;
     }
 
-    @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         TableGroup tableGroup = this.toTableGroup(tableGroupRequest);
-        tableGroup.changeCreatedDate(LocalDateTime.now());
 
         final TableGroup savedTableGroup = this.tableGroupRepository.save(tableGroup);
 
@@ -57,7 +54,7 @@ public class TableGroupService {
      */
     private void addSavedOrderTables(TableGroup tableGroup, TableGroup savedTableGroup) {
         for (final OrderTable savedOrderTable : this.findOrderTablesByTableGroup(tableGroup)) {
-            savedOrderTable.changeTableGroup(savedTableGroup);
+            savedOrderTable.changeTableGroupId(savedTableGroup.getId());
             savedOrderTable.changeEmpty(false);
             savedTableGroup.addOrderTables(this.orderTableRepository.save(savedOrderTable));
         }
@@ -70,49 +67,21 @@ public class TableGroupService {
      */
     private List<OrderTable> findOrderTablesByTableGroup(TableGroup tableGroup) {
         final List<OrderTable> orderTables = tableGroup.getOrderTables();
-        this.validateOrderTablesSize(orderTables);
 
         final List<OrderTable> savedOrderTables = this.orderTableRepository.findAllByIdIn(orderTables.stream()
                                               .map(OrderTable::getId).collect(Collectors.toList()));
-        this.validateSavedOrderTables(orderTables, savedOrderTables);
+        tableGroup.comparedSavedOrderTables(savedOrderTables);
 
         return savedOrderTables;
     }
 
-    /**
-     * 저장 된 테이블들이 유효한지(비어있지 않은지) 확인합니다.
-     * @param orderTables
-     * @param savedOrderTables
-     */
-    private void validateSavedOrderTables(List<OrderTable> orderTables, List<OrderTable> savedOrderTables) {
-        if (orderTables.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
-        }
 
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup())) {
-                throw new IllegalArgumentException();
-            }
-        }
-    }
-
-    /**
-     * 그룹화 하려는 테이블이 없거나, 2개 이상인지 확인합니다.
-     * @param orderTables
-     */
-    private void validateOrderTablesSize(List<OrderTable> orderTables) {
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    @Transactional
     public void ungroup(final Long tableGroupId) {
         final List<OrderTable> orderTables = this.orderTableRepository.findAllByTableGroupId(tableGroupId);
         this.validateOrderTablesByIdAndStatus(orderTables);
 
         for (final OrderTable orderTable : orderTables) {
-            orderTable.changeTableGroup(null);
+            orderTable.deleteTableGroupId();
             this.orderTableRepository.save(orderTable);
         }
     }
@@ -127,7 +96,7 @@ public class TableGroupService {
                 .collect(Collectors.toList());
 
         if (this.orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException();
         }
     }

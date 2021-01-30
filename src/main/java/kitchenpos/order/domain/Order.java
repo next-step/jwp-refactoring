@@ -4,8 +4,8 @@ import kitchenpos.table.domain.OrderTable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "orders")
@@ -14,20 +14,22 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_table_id")
     private OrderTable orderTable;
 
-    private String orderStatus;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
     private LocalDateTime orderedTime;
 
     @Embedded
+    @Transient
     private OrderLineItems orderLineItems = new OrderLineItems();
 
     public Order() {
     }
 
-    public Order(String orderStatus, LocalDateTime orderedTime) {
+    public Order(OrderStatus orderStatus, LocalDateTime orderedTime) {
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
     }
@@ -44,11 +46,12 @@ public class Order {
         this.orderTable = orderTable;
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public void changeOrderStatus(final String orderStatus) {
+    public void changeOrderStatus(final OrderStatus orderStatus) {
+        this.checkCompletionOrder();
         this.orderStatus = orderStatus;
     }
 
@@ -70,5 +73,22 @@ public class Order {
 
     public void addOrderLineItem(OrderLineItem orderLineItem) {
         this.orderLineItems.addOrderLineItem(orderLineItem);
+    }
+
+    /**
+     * 주문이 완료된 상태인지 확인합니다.
+     */
+    private void checkCompletionOrder() {
+        if (Objects.equals(OrderStatus.COMPLETION.name(), this.getOrderStatus())) {
+            throw new IllegalArgumentException("주문이 종료 된 상태입니다.");
+        }
+    }
+
+    /**
+     * 주문항목을 검증합니다.
+     * @param menuIdsCount
+     */
+    public void validateOrderLineItems(long menuIdsCount) {
+        this.orderLineItems.validate(menuIdsCount);
     }
 }

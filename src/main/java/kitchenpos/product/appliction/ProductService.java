@@ -2,14 +2,16 @@ package kitchenpos.product.appliction;
 
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class ProductService {
     private final ProductRepository productRepository;
 
@@ -17,15 +19,17 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    @Transactional
-    public Product create(final Product product) {
+    public ProductResponse create(final ProductRequest productRequest) {
+        Product product = productRequest.toProduct();
         product.validateProductByPrice();
 
-        return this.productRepository.save(product);
+        return ProductResponse.of(this.productRepository.save(product));
     }
 
 
-    public List<Product> list() {
-        return this.productRepository.findAll();
+    @Transactional(readOnly = true)
+    public List<ProductResponse> list() {
+        return this.productRepository.findAll().stream()
+                .map(ProductResponse::of).collect(Collectors.toList());
     }
 }

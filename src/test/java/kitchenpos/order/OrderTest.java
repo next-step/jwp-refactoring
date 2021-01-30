@@ -34,12 +34,12 @@ public class OrderTest {
 
         // then
         assertThat(persistOrder.getId()).isNotNull();
-        assertThat(persistOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(persistOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
     }
 
     private Order 주문_등록_요청(OrderStatus orderStatus) {
         Order order = new Order();
-        order.changeOrderStatus(orderStatus.name());
+        order.changeOrderStatus(orderStatus);
         order.changeOrderedTime(LocalDateTime.now());
         order.changeOrderTable(this.orderTableRepository.save(new OrderTable(4, false)));
 
@@ -87,7 +87,7 @@ public class OrderTest {
         // when
         boolean existsByOrderTableIdAndOrderStatusIn
                 = this.orderRepository.existsByOrderTableIdAndOrderStatusIn(order.getOrderTable().getId()
-                        , Arrays.asList(new String[]{OrderStatus.COOKING.name(), OrderStatus.MEAL.name()}));
+                        , Arrays.asList(new OrderStatus[]{OrderStatus.COOKING, OrderStatus.MEAL}));
 
         // then
         assertTrue(existsByOrderTableIdAndOrderStatusIn);
@@ -105,7 +105,7 @@ public class OrderTest {
         boolean existsByOrderTableIdAndOrderStatusIn
                 = this.orderRepository.existsByOrderTableIdInAndOrderStatusIn(
                         Arrays.asList(new Long[]{order1.getOrderTable().getId(), order2.getOrderTable().getId()})
-                        , Arrays.asList(new String[]{OrderStatus.COOKING.name(), OrderStatus.MEAL.name()}));
+                        , Arrays.asList(new OrderStatus[]{OrderStatus.COOKING, OrderStatus.MEAL}));
 
         // then
         assertTrue(existsByOrderTableIdAndOrderStatusIn);
