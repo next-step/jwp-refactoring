@@ -11,3 +11,9 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
+
+project(':kitchenpos-api') {
+    dependencies {
+        compile project(':kitchenpos-domain')
+    }
+}
