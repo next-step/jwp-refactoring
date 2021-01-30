@@ -20,7 +20,7 @@ public class Order extends BaseEntity {
     private OrderTable orderTable;
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
-    @OneToMany(mappedBy = "order", cascade = {CascadeType.REMOVE, CascadeType.PERSIST}, orphanRemoval = true)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderLineItem> orderLineItems;
 
     protected Order() {
