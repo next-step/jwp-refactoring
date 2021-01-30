@@ -24,18 +24,13 @@ subprojects {
         mavenCentral()
     }
 
-    dependencies {
-        implementation 'org.springframework.boot:spring-boot-starter-actuator'
-        implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-        implementation 'org.springframework.boot:spring-boot-starter-web'
-        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-        implementation 'org.flywaydb:flyway-core'
-        runtimeOnly 'com.h2database:h2'
-        testImplementation 'org.springframework.boot:spring-boot-starter-test'
-        testCompile group: 'junit', name: 'junit', version: '4.12'
-    }
-
     test {
         useJUnitPlatform()
+    }
+}
+
+project(':kitchenpos-api') {
+    dependencies {
+        compile project(':kitchenpos-domain')
     }
 }
