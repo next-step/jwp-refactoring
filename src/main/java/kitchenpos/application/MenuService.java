@@ -34,12 +34,9 @@ public class MenuService {
     }
 
     public MenuResponse create(final MenuRequest menuRequest) {
-        Menu menu = new Menu.Builder()
-                .name(menuRequest.getName())
-                .price(menuRequest.getPrice())
-                .menuGroup(findMenuGroup(menuRequest.getMenuGroupId()))
-                .menuProducts(findMenuProducts(menuRequest.getMenuProducts()))
-                .build();
+        MenuGroup menuGroup = findMenuGroup(menuRequest.getMenuGroupId());
+        List<MenuProduct> menuProducts = findMenuProducts(menuRequest.getMenuProducts());
+        Menu menu = menuRequest.toEntity(menuGroup, menuProducts);
         return MenuResponse.of(menuRepository.save(menu));
     }
 
