@@ -41,8 +41,6 @@ public class TableServiceTest {
     private MenuProduct 후라이드치킨한마리;
     private MenuProduct 양념치킨한마리;
 
-    private TableGroup 단체;
-    private Order 주문;
     private OrderLineItem 주문_항목;
     private List<OrderLineItem> 주문_항목_목록;
     private OrderTable 주문테이블1;
@@ -58,7 +56,6 @@ public class TableServiceTest {
 
     @BeforeEach
     public void setup() {
-        단체 = new TableGroup();
         후라이드치킨 = new Product(1L, "후라이드치킨", new BigDecimal(16000));
         양념치킨 = new Product(2L, "양념치킨", new BigDecimal(16000));
 
@@ -83,7 +80,6 @@ public class TableServiceTest {
         주문_항목_목록 = new ArrayList<>();
         주문_항목_목록.add(주문_항목);
 
-        주문 = 주문테이블_비어있지_않음.order(주문_항목_목록);
     }
 
     @DisplayName("주문테이블 생성")
@@ -134,7 +130,7 @@ public class TableServiceTest {
     void changeEmptyThrowExceptionWhenTableGroupIdExists() {
         final Long orderTableId = 1L;
 
-        단체.grouping(Arrays.asList(주문테이블1, 주문테이블2));
+        final TableGroup 단체 = TableGroup.createTableGroup(Arrays.asList(주문테이블1, 주문테이블2));
 
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(주문테이블1));
 
@@ -161,6 +157,7 @@ public class TableServiceTest {
         final Long orderTableId = 1L;
         final int expected = 10;
         주문테이블_요청.setNumberOfGuests(expected);
+        주문테이블1.changeEmpty(false);
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(주문테이블1));
 
         OrderTableResponse orderTableResponse = tableService.changeNumberOfGuests(orderTableId, 주문테이블_요청);

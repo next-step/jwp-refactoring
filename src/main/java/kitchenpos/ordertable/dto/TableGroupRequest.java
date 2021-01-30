@@ -27,9 +27,7 @@ public class TableGroupRequest {
 
 	public TableGroup toTableGroup(final List<OrderTable> orderTables) {
 		validate(orderTables);
-		TableGroup tableGroup = new TableGroup();
-		tableGroup.grouping(orderTables);
-		return tableGroup;
+		return TableGroup.createTableGroup(orderTables);
 	}
 
 	private void validate(final List<OrderTable> orderTables) {

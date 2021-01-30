@@ -31,7 +31,13 @@ public class TableGroup {
     @JoinColumn(name = "table_group_id")
     private List<OrderTable> orderTables = new ArrayList<>();
 
-    public TableGroup() {
+    protected TableGroup() {
+    }
+
+    public static TableGroup createTableGroup(final List<OrderTable> orderTables) {
+        TableGroup tableGroup = new TableGroup();
+        tableGroup.grouping(orderTables);
+        return tableGroup;
     }
 
     public Long getId() {
@@ -46,7 +52,7 @@ public class TableGroup {
         return orderTables;
     }
 
-    public void grouping(final List<OrderTable> orderTables) {
+    private void grouping(final List<OrderTable> orderTables) {
         validate(orderTables);
         this.orderTables = orderTables;
         this.orderTables.forEach(orderTable -> orderTable.putToTableGroup(this));

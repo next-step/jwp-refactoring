@@ -63,13 +63,12 @@ public class TableGroupServiceTest {
 
     @BeforeEach
     public void setup() {
-        단체 = new TableGroup();
         주문테이블1 = new OrderTable(0, true);
         주문테이블2 = new OrderTable(0, true);
         주문테이블_비어있지_않음 = new OrderTable(2, false);
         주문테이블_단체지정됨1 = new OrderTable(0, true);
         주문테이블_단체지정됨2 = new OrderTable(0, true);
-        단체.grouping(Arrays.asList(주문테이블_단체지정됨1, 주문테이블_단체지정됨2));
+        단체 = TableGroup.createTableGroup(Arrays.asList(주문테이블_단체지정됨1, 주문테이블_단체지정됨2));
 
         후라이드치킨 = new Product(1L, "후라이드", BigDecimal.valueOf(16000));
         양념치킨 = new Product(2L, "양념치킨", BigDecimal.valueOf(16000));
@@ -168,7 +167,7 @@ public class TableGroupServiceTest {
     @Test
     void ungroupThrowExceptionOrderStatusIsCookingOrMeal() {
         final Long tableGroupId = 1L;
-        단체.grouping(빈_주문테이블_목록);
+        단체 = TableGroup.createTableGroup(빈_주문테이블_목록);
         주문테이블1.order(주문_항목_목록);
         주문테이블2.order(주문_항목_목록);
         given(tableGroupRepository.findById(tableGroupId)).willReturn(Optional.of(단체));

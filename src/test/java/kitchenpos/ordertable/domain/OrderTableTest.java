@@ -3,7 +3,6 @@ package kitchenpos.ordertable.domain;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,10 +44,9 @@ public class OrderTableTest {
 		final int numberOfGuests = 1;
 		final boolean empty = true;
 		final boolean expected = false;
-		TableGroup tableGroup = new TableGroup();
 		OrderTable orderTable1 = new OrderTable(numberOfGuests, empty);
 		OrderTable orderTable2 = new OrderTable(numberOfGuests, empty);
-		tableGroup.grouping(Arrays.asList(orderTable1, orderTable2));
+		TableGroup.createTableGroup(Arrays.asList(orderTable1, orderTable2));
 
 		assertThatIllegalArgumentException()
 			.isThrownBy(() -> orderTable1.changeEmpty(expected));
@@ -59,7 +57,7 @@ public class OrderTableTest {
 	@Test
 	void changeNumberOfGuests() {
 		final int numberOfGuests = 1;
-		final boolean empty = true;
+		final boolean empty = false;
 		final int expected = 5;
 		OrderTable orderTable = new OrderTable(numberOfGuests, empty);
 
@@ -91,4 +89,5 @@ public class OrderTableTest {
 		assertThatIllegalArgumentException()
 			.isThrownBy(() -> orderTable.changeNumberOfGuests(expected));
 	}
+
 }
