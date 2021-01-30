@@ -38,8 +38,7 @@ public class Order {
         this.orderTable = checkValidTable(builder.orderTable);
         this.orderStatus = builder.orderStatus;
         this.orderedTime = builder.orderedTime;
-        this.orderLineItems = checkValidOrderLineItems(builder.orderLineItems);
-        updateOrderLineItems(this.orderLineItems);
+        this.orderLineItems = new OrderLineItems(builder.orderLineItems);
     }
 
     private OrderTable checkValidTable(OrderTable orderTable) {
@@ -47,18 +46,6 @@ public class Order {
             throw new IllegalArgumentException("빈 테이블은 주문할 수 없습니다.");
         }
         return orderTable;
-    }
-
-    private OrderLineItems checkValidOrderLineItems(List<OrderLineItem> orderLineItems) {
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException("주문은 1개 이상의 메뉴가 포함되어 있어야 합니다.");
-        }
-        return new OrderLineItems(orderLineItems);
-    }
-
-    public void updateOrderLineItems(OrderLineItems orderLineItems) {
-        orderLineItems.updateOrder(this);
-        this.orderLineItems = orderLineItems;
     }
 
     public void updateOrderStatus(String orderStatus) {

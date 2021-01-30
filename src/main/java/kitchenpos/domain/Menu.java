@@ -32,10 +32,16 @@ public class Menu {
     private Menu(Builder builder) {
         this.id = builder.id;
         this.name = builder.name;
-        this.price = builder.price;
         this.menuGroup = builder.menuGroup;
         this.menuProducts = checkValidMenuProducts(builder.menuProducts);
-        updateMenuProducts(this.menuProducts);
+        this.price = checkMenuPrice(new Price(builder.price));
+    }
+
+    private Price checkMenuPrice(Price menuPrice) {
+        if (menuPrice.isExpensive(this.menuProducts.findPriceSum())) {
+            throw new IllegalArgumentException("메뉴 가격이 속한 상품 가격들의 합보다 비쌉니다.");
+        }
+        return menuPrice;
     }
 
     private MenuProducts checkValidMenuProducts(List<MenuProduct> menuProducts) {
@@ -43,11 +49,6 @@ public class Menu {
             throw new IllegalArgumentException("메뉴에는 1개 이상의 상품이 포함되어야 합니다.");
         }
         return new MenuProducts(menuProducts);
-    }
-
-    public void updateMenuProducts(MenuProducts menuProducts) {
-        this.menuProducts = menuProducts;
-        menuProducts.updateMenu(this);
     }
 
     public Long getId() {
@@ -73,7 +74,7 @@ public class Menu {
     public static class Builder {
         private Long id;
         private String name;
-        private Price price;
+        private BigDecimal price;
         private MenuGroup menuGroup;
         private List<MenuProduct> menuProducts;
 
@@ -88,7 +89,7 @@ public class Menu {
         }
 
         public Builder price(BigDecimal price) {
-            this.price = new Price(price);
+            this.price = price;
             return this;
         }
 

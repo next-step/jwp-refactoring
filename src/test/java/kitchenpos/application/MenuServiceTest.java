@@ -81,7 +81,7 @@ class MenuServiceTest extends AcceptanceTest {
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
             MenuResponse response = menuService.create(menuRequest);
-        }).withMessageMatching("등록되지 않은 메뉴 그룹 입니다.");
+        });
     }
 
     @Test

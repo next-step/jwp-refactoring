@@ -73,11 +73,11 @@ class OrderServiceTest extends AcceptanceTest {
         orderLineItemRequests = Arrays.asList(orderLineItemRequest1, orderLineItemRequest2);
 
         TableGroup 그룹_테이블 = new TableGroup(1L, LocalDateTime.of(2021, 1, 20, 03, 30));
-        OrderTable 그룹_지정된_테이블_10 = new OrderTable(10L, 그룹_테이블, 0, false);
+        OrderTable 그룹_지정된_테이블_10 = new OrderTable(10L, 그룹_테이블.getId(), 0, false);
         OrderTable 그룹_지정되지_않은_테이블_11 = new OrderTable(11L,5, false);
 
-        OrderLineItem 주문_아이템_후라이드_1개 = new OrderLineItem(1L, 메뉴_후라이드, 1);
-        OrderLineItem 주문_아이템_양념_1개 = new OrderLineItem(2L, 메뉴_양념, 1);
+        OrderLineItem 주문_아이템_후라이드_1개 = new OrderLineItem(1L, 메뉴_후라이드.getId(), 1);
+        OrderLineItem 주문_아이템_양념_1개 = new OrderLineItem(2L, 메뉴_양념.getId(), 1);
 
         주문_테이블_조리중 = new Order.Builder()
                 .id(1L)
