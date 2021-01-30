@@ -1,4 +1,4 @@
-package kitchenpos.menu.domain;
+package kitchenpos.menu.domain.menu;
 
 import java.math.BigDecimal;
 
@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import kitchenpos.product.domain.Product;
+import kitchenpos.menu.domain.product.Product;
 
 @Entity
 public class MenuProduct {
@@ -46,7 +46,6 @@ public class MenuProduct {
 	public Menu getMenu() {
 		return menu;
 	}
-
 	public Product getProduct() {
 		return product;
 	}

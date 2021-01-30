@@ -1,4 +1,4 @@
-package kitchenpos.menu.application;
+package kitchenpos.menu.application.menu;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
@@ -19,16 +19,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.dto.MenuProductRequest;
-import kitchenpos.menu.dto.MenuRequest;
-import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.domain.MenuGroupRepository;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.menu.domain.menu.Menu;
+import kitchenpos.menu.domain.menu.MenuGroup;
+import kitchenpos.menu.domain.menu.MenuGroupRepository;
+import kitchenpos.menu.domain.menu.MenuProduct;
+import kitchenpos.menu.domain.menu.MenuRepository;
+import kitchenpos.menu.domain.product.Product;
+import kitchenpos.menu.domain.product.ProductRepository;
+import kitchenpos.menu.dto.menu.MenuProductRequest;
+import kitchenpos.menu.dto.menu.MenuRequest;
+import kitchenpos.menu.dto.menu.MenuResponse;
 
 @DisplayName("애플리케이션 테스트 보호 - 메뉴 서비스")
 @ExtendWith(MockitoExtension.class)
@@ -56,7 +56,7 @@ public class MenuServiceTest {
         후라이드치킨한마리 = new MenuProduct(후라이드한마리_양념치킨한마리, 후라이드치킨, 1L);
         양념치킨한마리 = new MenuProduct(후라이드한마리_양념치킨한마리, 양념치킨, 1L);
 
-        후라이드한마리_양념치킨한마리.addAllMenuProduct(Arrays.asList(후라이드치킨한마리, 양념치킨한마리));
+        후라이드한마리_양념치킨한마리.addMenuProducts(Arrays.asList(후라이드치킨한마리, 양념치킨한마리));
 
         productIds = 후라이드한마리_양념치킨한마리.getMenuProducts().stream()
             .map(MenuProduct::getProductId)
@@ -146,6 +146,9 @@ public class MenuServiceTest {
         given(menuGroupRepository.findById(치킨세트.getId())).willReturn(Optional.of(치킨세트));
         given(productRepository.findAllById(productIds)).willReturn(Arrays.asList(후라이드치킨, 양념치킨));
         후라이드한마리_양념치킨한마리_요청.setPrice(BigDecimal.valueOf(99999));
+        Menu 가격이다른_메뉴 = new Menu(후라이드한마리_양념치킨한마리_요청.getName(),
+            후라이드한마리_양념치킨한마리_요청.getPrice(), 치킨세트);
+        given(menuRepository.save(가격이다른_메뉴)).willReturn(가격이다른_메뉴);
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> menuService.create(후라이드한마리_양념치킨한마리_요청))
