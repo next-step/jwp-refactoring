@@ -1,8 +1,6 @@
 package kitchenpos.menu.domain;
 
 import javax.persistence.Embeddable;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,8 +8,7 @@ import java.util.List;
 @Embeddable
 public class MenuProducts {
 
-    @OneToMany
-    @JoinTable(name = "menu_product", joinColumns = @JoinColumn(name = "menu_id"))
+    @OneToMany(mappedBy = "menuId")
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
     public MenuProducts() {
