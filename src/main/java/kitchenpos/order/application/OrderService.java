@@ -1,10 +1,7 @@
 package kitchenpos.order.application;
 
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderLineItemRepository;
-import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderAddRequest;
 import kitchenpos.order.dto.OrderMapper;
 import kitchenpos.order.dto.OrderResponse;
@@ -70,4 +67,13 @@ public class OrderService {
         savedOrder.changeStatus(request.getStatus());
         return mapper.toResponse(savedOrder);
     }
+
+    public boolean existsByOrderTable_IdInAndOrderStatusIn(List<Long> orderTableIds, List<OrderStatus> asList) {
+        return orderRepository.existsByOrderTable_IdInAndOrderStatusIn(orderTableIds, asList);
+    }
+
+    public boolean existsByOrderTable_IdAndOrderStatusIn(Long orderTableId, List<OrderStatus> asList) {
+        return orderRepository.existsByOrderTable_IdAndOrderStatusIn(orderTableId, asList);
+    }
+
 }
