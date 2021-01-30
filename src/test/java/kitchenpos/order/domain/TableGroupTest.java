@@ -17,7 +17,7 @@ class TableGroupTest {
 		);
 
 		assertThatIllegalArgumentException()
-			.isThrownBy(() -> TableGroup.builder().orderTables(orderTables).build());
+			.isThrownBy(() -> new TableGroup().group(orderTables));
 	}
 
 	@DisplayName("주문 테이블일 경우 IllegalArgumentException 발생")
@@ -29,7 +29,19 @@ class TableGroupTest {
 		);
 
 		assertThatIllegalArgumentException()
-			.isThrownBy(() -> TableGroup.builder().orderTables(orderTables).build());
+			.isThrownBy(() -> new TableGroup().group(orderTables));
+	}
+
+	@DisplayName("주문 테이블일 경우 IllegalArgumentException 발생")
+	@Test
+	void createWhenAlreadyGroup() {
+		List<OrderTable> orderTables = Arrays.asList(
+			OrderTable.builder().empty(true).build(),
+			OrderTable.builder().empty(true).tableGroupId(1L).build()
+		);
+
+		assertThatIllegalArgumentException()
+			.isThrownBy(() -> new TableGroup().group(orderTables));
 	}
 
 	@DisplayName("단체 지정")
@@ -40,22 +52,9 @@ class TableGroupTest {
 			OrderTable.builder().empty(true).build()
 		);
 
-		TableGroup tableGroup = TableGroup.builder().orderTables(orderTables).build();
+		TableGroup tableGroup = new TableGroup();
+		tableGroup.group(orderTables);
 
 		assertThat(tableGroup.getOrderTables()).hasSize(2);
-	}
-
-	@DisplayName("주문 테이블일 경우 IllegalArgumentException 발생")
-	@Test
-	void createWhenAlreadyGroup() {
-		OrderTable orderTable1 = OrderTable.builder().empty(true).build();
-		OrderTable orderTable2 = OrderTable.builder().empty(true).build();
-		OrderTable orderTable3 = OrderTable.builder()
-			.empty(true)
-			.tableGroup(TableGroup.builder().orderTables(Arrays.asList(orderTable1, orderTable2)).build())
-			.build();
-
-		assertThatIllegalArgumentException()
-			.isThrownBy(() -> TableGroup.builder().orderTables(Arrays.asList(orderTable2, orderTable3)).build());
 	}
 }

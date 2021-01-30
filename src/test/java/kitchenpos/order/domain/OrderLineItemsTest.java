@@ -12,6 +12,6 @@ class OrderLineItemsTest {
 	@Test
 	void createWhenNoOrderLineItems() {
 		assertThatIllegalArgumentException()
-			.isThrownBy(() -> new OrderLineItems(Order.builder().build(), new ArrayList<>()));
+			.isThrownBy(() -> new OrderLineItems(1L, new ArrayList<>()));
 	}
 }

@@ -1,12 +1,15 @@
 package kitchenpos.order.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import kitchenpos.order.domain.OrderStatus;
+
 public class OrderRequest {
 	private Long orderTableId;
-	private String orderStatus;
-	private List<OrderLineItemRequest> orderLineItems;
+	private OrderStatus orderStatus;
+	private List<OrderLineItemRequest> orderLineItems = new ArrayList<>();
 
 	protected OrderRequest() {
 	}
@@ -16,7 +19,7 @@ public class OrderRequest {
 		this.orderLineItems = orderLineItems;
 	}
 
-	public OrderRequest(String orderStatus) {
+	public OrderRequest(OrderStatus orderStatus) {
 		this.orderStatus = orderStatus;
 	}
 
@@ -24,7 +27,7 @@ public class OrderRequest {
 		return orderTableId;
 	}
 
-	public String getOrderStatus() {
+	public OrderStatus getOrderStatus() {
 		return orderStatus;
 	}
 

@@ -6,7 +6,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 import kitchenpos.menu.domain.Menu;
@@ -16,8 +15,7 @@ public class OrderLineItem {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long seq;
-	@ManyToOne
-	private Order order;
+	private Long orderId;
 	@OneToOne
 	private Menu menu;
 	private long quantity;
@@ -26,15 +24,14 @@ public class OrderLineItem {
 
 	}
 
-	private OrderLineItem(Order order, Menu menu, long quantity) {
-		this.order = order;
+	private OrderLineItem(Long orderId, Menu menu, long quantity) {
+		validate(menu);
+		this.orderId = orderId;
 		this.menu = menu;
 		this.quantity = quantity;
-
-		validate();
 	}
 
-	private void validate() {
+	private void validate(Menu menu) {
 		if (Objects.isNull(menu)) {
 			throw new IllegalArgumentException("메뉴가 없습니다.");
 		}
@@ -48,12 +45,12 @@ public class OrderLineItem {
 		return seq;
 	}
 
-	public Order getOrder() {
-		return order;
+	public Long getOrderId() {
+		return orderId;
 	}
 
-	public void setOrder(Order order) {
-		this.order = order;
+	public void setOrderId(Long order) {
+		this.orderId = order;
 	}
 
 	public Menu getMenu() {
@@ -65,15 +62,15 @@ public class OrderLineItem {
 	}
 
 	public static final class OrderLineItemBuilder {
-		private Order order;
+		private Long orderId;
 		private Menu menu;
 		private long quantity;
 
 		private OrderLineItemBuilder() {
 		}
 
-		public OrderLineItemBuilder order(Order order) {
-			this.order = order;
+		public OrderLineItemBuilder order(Long order) {
+			this.orderId = order;
 			return this;
 		}
 
@@ -88,7 +85,7 @@ public class OrderLineItem {
 		}
 
 		public OrderLineItem build() {
-			return new OrderLineItem(order, menu, quantity);
+			return new OrderLineItem(orderId, menu, quantity);
 		}
 	}
 }

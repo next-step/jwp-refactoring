@@ -26,26 +26,20 @@ public class Menu {
 	protected Menu() {
 	}
 
-	private Menu(String name, Integer price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-		validateNull(price, menuGroup, menuProducts);
+	private Menu(String name, Integer price, MenuGroup menuGroup) {
+		validateNull(price, menuGroup);
 		this.name = name;
 		this.price = new Price(price);
 		this.menuGroup = menuGroup;
-		this.menuProducts = new MenuProducts(this, menuProducts);
-		validatePrice();
 	}
 
-	private void validateNull(Integer price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+	private void validateNull(Integer price, MenuGroup menuGroup) {
 		if (Objects.isNull(price)) {
 			throw new IllegalArgumentException("가격 정보가 없습니다.");
 		}
 
 		if (Objects.isNull(menuGroup)) {
 			throw new IllegalArgumentException("메뉴 그룹 정보가 없습니다.");
-		}
-
-		if (Objects.isNull(menuProducts)) {
-			throw new IllegalArgumentException("메뉴 상품 정보가 없습니다.");
 		}
 	}
 
@@ -79,11 +73,15 @@ public class Menu {
 		return menuProducts.getList();
 	}
 
+	public void setMenuProducts(List<MenuProduct> menuProducts) {
+		this.menuProducts = new MenuProducts(id, menuProducts);
+		validatePrice();
+	}
+
 	public static final class MenuBuilder {
 		private String name;
 		private Integer price;
 		private MenuGroup menuGroup;
-		private List<MenuProduct> menuProducts;
 
 		private MenuBuilder() {
 		}
@@ -103,13 +101,8 @@ public class Menu {
 			return this;
 		}
 
-		public MenuBuilder menuProducts(List<MenuProduct> menuProducts) {
-			this.menuProducts = menuProducts;
-			return this;
-		}
-
 		public Menu build() {
-			return new Menu(name, price, menuGroup, menuProducts);
+			return new Menu(name, price, menuGroup);
 		}
 	}
 }

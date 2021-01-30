@@ -36,15 +36,14 @@ public class MenuService {
 	public MenuResponse create(final MenuRequest menuRequest) {
 		MenuGroup menuGroup = menuGroupService.findMenuGroupById(menuRequest.getMenuGroupId());
 
-
-		Menu menu = Menu.builder()
+		Menu menu = menuRepository.save(Menu.builder()
 			.name(menuRequest.getName())
 			.price(menuRequest.getPrice())
 			.menuGroup(menuGroup)
-			.menuProducts(createMenuProducts(menuRequest))
-			.build();
+			.build());
+		menu.setMenuProducts(createMenuProducts(menuRequest));
 
-		return MenuResponse.of(menuRepository.save(menu));
+		return MenuResponse.of(menu);
 	}
 
 	@Transactional(readOnly = true)
@@ -57,7 +56,7 @@ public class MenuService {
 	public Map<Long, Menu> findAllMenuByIds(List<Long> ids) {
 		List<Menu> menus = menuRepository.findAllById(ids);
 
-		ValidationUtils.validateListSize(menus, ids, "존재하지 않는 상품이 있습니다.");
+		ValidationUtils.validateListSize(menus, ids, "존재하지 않는 메뉴가 있습니다.");
 
 		return menus.stream()
 			.collect(Collectors.toMap(Menu::getId, Function.identity()));

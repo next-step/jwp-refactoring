@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -10,15 +11,15 @@ import org.springframework.util.CollectionUtils;
 
 @Embeddable
 public class OrderLineItems {
-	@OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-	private List<OrderLineItem> orderLineItems;
+	@OneToMany(mappedBy = "orderId", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+	private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
 	protected OrderLineItems() {
 	}
 
-	public OrderLineItems(Order order, List<OrderLineItem> orderLineItems) {
+	public OrderLineItems(Long orderId, List<OrderLineItem> orderLineItems) {
 		validate(orderLineItems);
-		orderLineItems.forEach(orderLineItem -> orderLineItem.setOrder(order));
+		orderLineItems.forEach(orderLineItem -> orderLineItem.setOrderId(orderId));
 		this.orderLineItems = orderLineItems;
 	}
 

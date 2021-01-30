@@ -4,7 +4,7 @@ import kitchenpos.order.domain.OrderTable;
 
 public class OrderTableRequest {
 	private Long id;
-	private int GuestsNumber;
+	private int numberOfGuests;
 	private boolean empty;
 
 	protected OrderTableRequest() {
@@ -14,13 +14,13 @@ public class OrderTableRequest {
 		this.id = id;
 	}
 
-	public OrderTableRequest(int GuestsNumber, boolean empty) {
-		this.GuestsNumber = GuestsNumber;
+	public OrderTableRequest(int numberOfGuests, boolean empty) {
+		this.numberOfGuests = numberOfGuests;
 		this.empty = empty;
 	}
 
-	public OrderTableRequest(int GuestsNumber) {
-		this.GuestsNumber = GuestsNumber;
+	public OrderTableRequest(int numberOfGuests) {
+		this.numberOfGuests = numberOfGuests;
 	}
 
 	public OrderTableRequest(boolean empty) {
@@ -31,8 +31,8 @@ public class OrderTableRequest {
 		return id;
 	}
 
-	public int getGuestsNumber() {
-		return GuestsNumber;
+	public int getNumberOfGuests() {
+		return numberOfGuests;
 	}
 
 	public boolean isEmpty() {
@@ -41,7 +41,7 @@ public class OrderTableRequest {
 
 	public OrderTable toOrderTable() {
 		return OrderTable.builder()
-			.numberOfGuests(GuestsNumber)
+			.numberOfGuests(numberOfGuests)
 			.empty(empty)
 			.build();
 	}

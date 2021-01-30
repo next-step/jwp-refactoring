@@ -1,30 +1,26 @@
 package kitchenpos.order.domain;
 
-import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 
 @Entity
 public class OrderTable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@ManyToOne
-	private TableGroup tableGroup;
+	private Long tableGroupId;
 	private NumberOfGuests numberOfGuests;
 	private boolean empty;
 
 	protected OrderTable() {
 	}
 
-	private OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
-		this.tableGroup = tableGroup;
+	private OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
+		this.tableGroupId = tableGroupId;
 		this.numberOfGuests = new NumberOfGuests(numberOfGuests);
 		this.empty = empty;
 	}
@@ -37,12 +33,16 @@ public class OrderTable {
 		return id;
 	}
 
-	public TableGroup getTableGroup() {
-		return tableGroup;
+	public Long getTableGroupId() {
+		return tableGroupId;
+	}
+
+	public void setTableGroupId(Long tableGroupId) {
+		this.tableGroupId = tableGroupId;
 	}
 
 	public boolean isGroupTable() {
-		return Objects.nonNull(tableGroup);
+		return Objects.nonNull(tableGroupId);
 	}
 
 	public int getNumberOfGuests() {
@@ -62,15 +62,15 @@ public class OrderTable {
 	}
 
 	public static final class OrderTableBuilder {
-		private TableGroup tableGroup;
+		private Long tableGroupId;
 		private int numberOfGuests;
 		private boolean empty;
 
 		private OrderTableBuilder() {
 		}
 
-		public OrderTableBuilder tableGroup(TableGroup tableGroup) {
-			this.tableGroup = tableGroup;
+		public OrderTableBuilder tableGroupId(Long tableGroupId) {
+			this.tableGroupId = tableGroupId;
 			return this;
 		}
 
@@ -85,7 +85,7 @@ public class OrderTable {
 		}
 
 		public OrderTable build() {
-			return new OrderTable(tableGroup, numberOfGuests, empty);
+			return new OrderTable(tableGroupId, numberOfGuests, empty);
 		}
 	}
 }

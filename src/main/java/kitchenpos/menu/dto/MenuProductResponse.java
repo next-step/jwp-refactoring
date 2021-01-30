@@ -22,7 +22,8 @@ public class MenuProductResponse {
 	}
 
 	public static MenuProductResponse of(MenuProduct menuProduct) {
-		return new MenuProductResponse(menuProduct.getSeq(), menuProduct.getMenu().getId(), ProductResponse.of(menuProduct.getProduct()),
+		return new MenuProductResponse(menuProduct.getSeq(), menuProduct.getMenuId(),
+			ProductResponse.of(menuProduct.getProduct()),
 			menuProduct.getQuantity());
 	}
 
