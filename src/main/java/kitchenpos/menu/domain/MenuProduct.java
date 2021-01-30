@@ -1,12 +1,10 @@
 package kitchenpos.menu.domain;
 
 import kitchenpos.product.domain.Product;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 
 @Entity
-@EntityListeners(AuditingEntityListener.class)
 public class MenuProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

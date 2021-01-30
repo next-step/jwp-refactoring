@@ -41,7 +41,7 @@ class MenuRestControllerTest {
         MenuGroup menuGroup = new MenuGroup("추천메뉴");
         Product product = new Product("닭강정", new BigDecimal(17000));
         Menu menu = new Menu("후라이드+후라이드", new BigDecimal(34000), menuGroup);
-        MenuProduct menuProduct = new MenuProduct(menu, product, 2);
+        MenuProduct menuProduct = new MenuProduct(menu, product, 2L);
 
         when(menuService.create(any())).thenReturn(menuResponse.of(menu));
 
@@ -59,7 +59,7 @@ class MenuRestControllerTest {
         MenuGroup menuGroup = new MenuGroup("추천메뉴");
         Product product = new Product("닭강정", new BigDecimal(17000));
         Menu menu = new Menu("후라이드+후라이드", new BigDecimal(34000), menuGroup);
-        MenuProduct menuProduct = new MenuProduct(menu, product, 2);
+        MenuProduct menuProduct = new MenuProduct(menu, product, 2L);
 
         given(menuService.list()).willReturn(Arrays.asList(menu));
 

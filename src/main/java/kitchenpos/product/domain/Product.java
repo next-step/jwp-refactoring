@@ -7,7 +7,6 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
-@EntityListeners(AuditingEntityListener.class)
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

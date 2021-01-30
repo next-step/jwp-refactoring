@@ -81,7 +81,7 @@ public class OrderRestControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print());
 
-        order.changeOrderStatus(OrderStatus.MEAL.name());
+        order.changeOrderStatus(OrderStatus.MEAL);
         mockMvc.perform(put("/api/orders/{orderId}/order-status", order.getId())
                 .content(asJsonString(order))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -89,7 +89,7 @@ public class OrderRestControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print());
 
-        order.changeOrderStatus(OrderStatus.COMPLETION.name());
+        order.changeOrderStatus(OrderStatus.COMPLETION);
         mockMvc.perform(put("/api/orders/{orderId}/order-status", order.getId())
                 .content(asJsonString(order))
                 .contentType(MediaType.APPLICATION_JSON)

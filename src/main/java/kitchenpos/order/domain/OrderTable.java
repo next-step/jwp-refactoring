@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@EntityListeners(AuditingEntityListener.class)
 public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

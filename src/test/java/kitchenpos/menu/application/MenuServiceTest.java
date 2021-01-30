@@ -43,7 +43,7 @@ class MenuServiceTest {
         MenuGroup menuGroup = new MenuGroup("추천메뉴");
         newProduct = new Product("강정치킨", new BigDecimal(17000));
         menu = new Menu("후라이드+후라이드", new BigDecimal(34000), menuGroup);
-        menuProduct = new MenuProduct(menu, newProduct, 2);
+        menuProduct = new MenuProduct(menu, newProduct, 2L);
         menu.changeMenuProducts(Arrays.asList(menuProduct));
 
     }

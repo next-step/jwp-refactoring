@@ -52,7 +52,7 @@ class OrderServiceTest {
         orderTable = new OrderTable(new TableGroup(), 4, true);
         orderTable.setId(1L);
 
-        order = new Order(orderTable, OrderStatus.COOKING.name());
+        order = new Order(orderTable, OrderStatus.COOKING);
         order.setId(1L);
         order.setOrderLineItems(Arrays.asList(orderLineItem1, orderLineItem2, orderLineItem3));
 
@@ -100,7 +100,7 @@ class OrderServiceTest {
     @Test
     @DisplayName("주문 수정시 주문상태가 완료이면 수정할 수 없음")
     void callExceptionChangeOrderStatus() {
-        order.changeOrderStatus(OrderStatus.COMPLETION.name());
+        order.changeOrderStatus(OrderStatus.COMPLETION);
         when(orderRepository.findById(any())).thenReturn(Optional.of(order));
 
         assertThatThrownBy(() -> {
