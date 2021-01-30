@@ -20,12 +20,11 @@ public class OrderTables {
 	}
 
 	public OrderTables(List<OrderTable> orderTables) {
+		validate(orderTables);
 		this.orderTables = orderTables;
-
-		validate();
 	}
 
-	private void validate() {
+	private void validate(List<OrderTable> orderTables) {
 		if (CollectionUtils.isEmpty(orderTables)) {
 			throw new IllegalArgumentException("테이블 정보가 없습니다.");
 		}

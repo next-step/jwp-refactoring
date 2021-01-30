@@ -1,4 +1,4 @@
-package kitchenpos.order.acceptace;
+package kitchenpos.order.acceptance;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -23,6 +23,8 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
 	@DisplayName("단체 지정 요청")
 	@Test
 	void create() {
+		TableAcceptanceTest.테이블_생성_요청(0, true);
+		TableAcceptanceTest.테이블_생성_요청(0, true);
 		ExtractableResponse<Response> createResponse = 단체_지정_요청(new OrderTableRequest(1L), new OrderTableRequest(2L));
 
 		단체_지정_성공(createResponse);
@@ -39,6 +41,8 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
 	@DisplayName("이미 단체 지정이 된 테이블 지정시 실패")
 	@Test
 	void createWhenAlreadyGrouping() {
+		TableAcceptanceTest.테이블_생성_요청(0, true);
+		TableAcceptanceTest.테이블_생성_요청(0, true);
 		단체_지정됨(new OrderTableRequest(1L), new OrderTableRequest(2L));
 
 		ExtractableResponse<Response> createResponse = 단체_지정_요청(new OrderTableRequest(1L), new OrderTableRequest(2L));
@@ -55,6 +59,10 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
 	@DisplayName("단체 지정 해제")
 	@Test
 	void ungroup() {
+		TableAcceptanceTest.테이블_생성_요청(0, true);
+		TableAcceptanceTest.테이블_생성_요청(0, true);
+		단체_지정_요청(new OrderTableRequest(1L), new OrderTableRequest(1L));
+
 		ExtractableResponse<Response> deleteResponse = 단체_지정_해제_요청(
 			단체_지정_요청(new OrderTableRequest(1L), new OrderTableRequest(2L)));
 

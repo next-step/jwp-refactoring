@@ -57,7 +57,7 @@ public class MenuService {
 	public Map<Long, Menu> findAllMenuByIds(List<Long> ids) {
 		List<Menu> menus = menuRepository.findAllById(ids);
 
-		ValidationUtils.validateListSize(menus, ids, "존재하지 않는 상품이 있습니다.");
+		ValidationUtils.validateListSize(menus, ids, "존재하지 않는 메뉴가 있습니다.");
 
 		return menus.stream()
 			.collect(Collectors.toMap(Menu::getId, Function.identity()));

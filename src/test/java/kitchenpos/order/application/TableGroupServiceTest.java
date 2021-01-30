@@ -152,7 +152,7 @@ public class TableGroupServiceTest {
 			Arrays.asList(Order.builder()
 				.orderTable(테이블1)
 				.orderLineItems(Arrays.asList(OrderLineItem.builder().menu(후라이드치킨메뉴).build()))
-				.orderStatus(OrderStatus.MEAL.name())
+				.orderStatus(OrderStatus.MEAL)
 				.build()));
 
 		assertThatIllegalArgumentException()

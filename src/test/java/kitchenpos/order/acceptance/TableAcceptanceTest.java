@@ -1,4 +1,4 @@
-package kitchenpos.order.acceptace;
+package kitchenpos.order.acceptance;
 
 import static org.assertj.core.api.Assertions.*;
 

@@ -5,13 +5,14 @@ import java.util.Objects;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import org.springframework.util.CollectionUtils;
 
 import kitchenpos.BaseEntity;
 
@@ -21,16 +22,17 @@ public class Order extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@OneToOne
+	@ManyToOne
 	private OrderTable orderTable;
-	private String orderStatus = OrderStatus.COOKING.name();
+	@Enumerated(EnumType.STRING)
+	private OrderStatus orderStatus = OrderStatus.COOKING;
 	@Embedded
 	private OrderLineItems orderLineItems;
 
 	protected Order() {
 	}
 
-	private Order(OrderTable orderTable, String orderStatus, List<OrderLineItem> orderLineItems) {
+	private Order(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
 		validate(orderTable);
 		this.orderTable = orderTable;
 		this.orderStatus = orderStatus;
@@ -57,18 +59,18 @@ public class Order extends BaseEntity {
 	}
 
 	public String getOrderStatus() {
-		return orderStatus;
+		return orderStatus.name();
 	}
 
-	public void changeOrderStatus(String orderStatus) {
+	public void changeOrderStatus(OrderStatus orderStatus) {
 		this.orderStatus = orderStatus;
 	}
 
-	public boolean isOrderStatus(String orderStatus) {
+	public boolean isOrderStatus(OrderStatus orderStatus) {
 		return this.orderStatus.equals(orderStatus);
 	}
 
-	public boolean containsOrderStatus(List<String> orderStatuses) {
+	public boolean containsOrderStatus(List<OrderStatus> orderStatuses) {
 		return orderStatuses.contains(orderStatus);
 	}
 
@@ -78,7 +80,7 @@ public class Order extends BaseEntity {
 
 	public static final class OrderBuilder {
 		private OrderTable orderTable;
-		private String orderStatus = OrderStatus.COOKING.name();
+		private OrderStatus orderStatus = OrderStatus.COOKING;
 		private List<OrderLineItem> orderLineItems;
 
 		private OrderBuilder() {
@@ -89,7 +91,7 @@ public class Order extends BaseEntity {
 			return this;
 		}
 
-		public OrderBuilder orderStatus(String orderStatus) {
+		public OrderBuilder orderStatus(OrderStatus orderStatus) {
 			this.orderStatus = orderStatus;
 			return this;
 		}

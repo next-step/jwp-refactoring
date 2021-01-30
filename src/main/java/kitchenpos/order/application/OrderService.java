@@ -70,7 +70,7 @@ public class OrderService {
 	public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
 		final Order order = findOrderById(orderId);
 
-		if (order.isOrderStatus(OrderStatus.COMPLETION.name())) {
+		if (order.isOrderStatus(OrderStatus.COMPLETION)) {
 			throw new IllegalArgumentException("완료된 주문 입니다.");
 		}
 
@@ -85,9 +85,5 @@ public class OrderService {
 
 	public List<Order> findAllOrderByOrderTableIds(List<Long> ids) {
 		return orderRepository.findAllByOrderTableIdIn(ids);
-	}
-
-	public Order findOrderByOrderTableId(Long id) {
-		return orderRepository.findByOrderTableId(id).orElseThrow(IllegalArgumentException::new);
 	}
 }

@@ -27,14 +27,13 @@ public class OrderLineItem {
 	}
 
 	private OrderLineItem(Order order, Menu menu, long quantity) {
+		validate(menu);
 		this.order = order;
 		this.menu = menu;
 		this.quantity = quantity;
-
-		validate();
 	}
 
-	private void validate() {
+	private void validate(Menu menu) {
 		if (Objects.isNull(menu)) {
 			throw new IllegalArgumentException("메뉴가 없습니다.");
 		}
