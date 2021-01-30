@@ -21,7 +21,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
@@ -46,7 +45,8 @@ public class TableGroupServiceTest {
     private OrderTable 주문테이블1;
     private OrderTable 주문테이블2;
     private OrderTable 주문테이블_비어있지_않음;
-    private OrderTable 주문테이블_단체지정됨;
+    private OrderTable 주문테이블_단체지정됨1;
+    private OrderTable 주문테이블_단체지정됨2;
     private List<OrderLineItem> 주문_항목_목록;
     private TableGroup 단체;
     private TableGroupRequest 단체_지정_요청;
@@ -63,11 +63,13 @@ public class TableGroupServiceTest {
 
     @BeforeEach
     public void setup() {
+        단체 = new TableGroup();
         주문테이블1 = new OrderTable(0, true);
         주문테이블2 = new OrderTable(0, true);
         주문테이블_비어있지_않음 = new OrderTable(2, false);
-        주문테이블_단체지정됨 = new OrderTable(0, true);
-        주문테이블_단체지정됨.putToTableGroup(new TableGroup());
+        주문테이블_단체지정됨1 = new OrderTable(0, true);
+        주문테이블_단체지정됨2 = new OrderTable(0, true);
+        단체.grouping(Arrays.asList(주문테이블_단체지정됨1, 주문테이블_단체지정됨2));
 
         후라이드치킨 = new Product(1L, "후라이드", BigDecimal.valueOf(16000));
         양념치킨 = new Product(2L, "양념치킨", BigDecimal.valueOf(16000));
@@ -87,8 +89,6 @@ public class TableGroupServiceTest {
         orderTableRequests.add(new OrderTableRequest(2L));
         단체_지정_요청 = new TableGroupRequest(orderTableRequests);
 
-        단체 = new TableGroup();
-
         빈_주문테이블_목록 = Arrays.asList(주문테이블1, 주문테이블2);
     }
 
@@ -98,7 +98,6 @@ public class TableGroupServiceTest {
 
         given(orderTableRepository.findAllByIdIn(단체_지정_요청.getOrderTableIds())).willReturn(빈_주문테이블_목록);
         given(tableGroupRepository.save(단체)).willReturn(단체);
-        단체.addAllOrderTables(빈_주문테이블_목록);
         TableGroupResponse tableGroupResponse = tableGroupService.create(단체_지정_요청);
 
         assertThat(tableGroupResponse).isNotNull();
@@ -146,7 +145,7 @@ public class TableGroupServiceTest {
     @Test
     void createThrowExceptionWhenHasAlreadyTableGroupOrderTable() {
         given(orderTableRepository.findAllByIdIn(단체_지정_요청.getOrderTableIds()))
-            .willReturn(Collections.singletonList(주문테이블_단체지정됨));
+            .willReturn(Collections.singletonList(주문테이블_단체지정됨1));
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableGroupService.create(단체_지정_요청));
@@ -169,7 +168,7 @@ public class TableGroupServiceTest {
     @Test
     void ungroupThrowExceptionOrderStatusIsCookingOrMeal() {
         final Long tableGroupId = 1L;
-        단체.grouping(Arrays.asList(주문테이블1, 주문테이블2));
+        단체.grouping(빈_주문테이블_목록);
         주문테이블1.order(주문_항목_목록);
         주문테이블2.order(주문_항목_목록);
         given(tableGroupRepository.findById(tableGroupId)).willReturn(Optional.of(단체));

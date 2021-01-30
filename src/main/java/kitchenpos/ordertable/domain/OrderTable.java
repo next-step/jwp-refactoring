@@ -80,7 +80,7 @@ public class OrderTable {
         return orders.stream().anyMatch(Order::isCookingOrMeal);
     }
 
-    public void putToTableGroup(final TableGroup tableGroup) {
+    protected void putToTableGroup(final TableGroup tableGroup) {
         this.changeEmpty(false);
         this.tableGroup = tableGroup;
     }
@@ -101,7 +101,6 @@ public class OrderTable {
     }
 
     public void ungroup() {
-        this.tableGroup.removeOrderTable(this);
         this.tableGroup = null;
     }
 

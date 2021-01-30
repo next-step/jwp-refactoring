@@ -48,7 +48,7 @@ public class TableGroup {
 
     public void grouping(final List<OrderTable> orderTables) {
         validate(orderTables);
-        this.orderTables.addAll(orderTables);
+        this.orderTables = orderTables;
         this.orderTables.forEach(orderTable -> orderTable.putToTableGroup(this));
     }
 
@@ -77,15 +77,12 @@ public class TableGroup {
             throw new IllegalArgumentException("조리 또는 식사 중인 주문 테이블이 존재합니다.");
         }
         orderTables.forEach(OrderTable::ungroup);
+        orderTables = new ArrayList<>();
     }
 
     private boolean hasCookingOrMealOrderTable() {
         return this.orderTables.stream()
             .anyMatch(OrderTable::hasCookingOrMealOrder);
-    }
-
-    public void addAllOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables.addAll(orderTables);
     }
 
     @Override
@@ -103,7 +100,4 @@ public class TableGroup {
         return Objects.hash(id);
     }
 
-    public void removeOrderTable(final OrderTable orderTable) {
-        this.orderTables.remove(orderTable);
-    }
 }
