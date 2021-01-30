@@ -3,7 +3,7 @@ package kitchenpos.acceptance;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.MenuGroupService;
-import kitchenpos.dto.MenuGroupResponse;
+import kitchenpos.domain.MenuGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +40,7 @@ public class MenuGroupAcceptanceTest {
     @DisplayName("메뉴그룹 등록")
     @Test
     public void createMenuGroup() throws Exception {
-        MenuGroupResponse menuGroup = new MenuGroupResponse(1L, "그룹");
+        MenuGroup menuGroup = new MenuGroup(1L, "그룹");
         given(menuGroupService.create(any())).willReturn(menuGroup);
         mockMvc.perform(post("/api/menu-groups")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -52,9 +52,9 @@ public class MenuGroupAcceptanceTest {
     @DisplayName("메뉴그룹 리스트")
     @Test
     public void selectMenuGroup() throws Exception {
-        MenuGroupResponse menuGroup1 = new MenuGroupResponse(1L, "그룹1");
-        MenuGroupResponse menuGroup2 = new MenuGroupResponse(2L, "그룹2");
-        List<MenuGroupResponse> menuGroups = Arrays.asList(menuGroup1, menuGroup2) ;
+        MenuGroup menuGroup1 = new MenuGroup(1L, "그룹1");
+        MenuGroup menuGroup2 = new MenuGroup(2L, "그룹2");
+        List<MenuGroup> menuGroups = Arrays.asList(menuGroup1, menuGroup2) ;
         given(menuGroupService.list()).willReturn(menuGroups);
         mockMvc.perform(get("/api/menu-groups"))
                 .andDo(print())

@@ -1,8 +1,7 @@
 package kitchenpos.ui;
 
 import kitchenpos.application.TableGroupService;
-import kitchenpos.dto.TableGroupRequest;
-import kitchenpos.dto.TableGroupResponse;
+import kitchenpos.domain.TableGroup;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,17 +16,19 @@ public class TableGroupRestController {
     }
 
     @PostMapping("/api/table-groups")
-    public ResponseEntity<TableGroupResponse> create(@RequestBody final TableGroupRequest tableGroupRequest) {
-        final TableGroupResponse created = tableGroupService.create(tableGroupRequest);
+    public ResponseEntity<TableGroup> create(@RequestBody final TableGroup tableGroup) {
+        final TableGroup created = tableGroupService.create(tableGroup);
         final URI uri = URI.create("/api/table-groups/" + created.getId());
         return ResponseEntity.created(uri)
-                .body(created);
+                .body(created)
+                ;
     }
 
     @DeleteMapping("/api/table-groups/{tableGroupId}")
     public ResponseEntity<Void> ungroup(@PathVariable final Long tableGroupId) {
-        tableGroupService.unGroup(tableGroupId);
+        tableGroupService.ungroup(tableGroupId);
         return ResponseEntity.noContent()
-                .build();
+                .build()
+                ;
     }
 }

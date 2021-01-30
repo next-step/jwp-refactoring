@@ -1,148 +1,172 @@
 package kitchenpos.application;
 
-import kitchenpos.AcceptanceTest;
+import kitchenpos.dao.OrderDao;
+import kitchenpos.dao.OrderTableDao;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
-import kitchenpos.dto.OrderTableRequest;
-import kitchenpos.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
 
-public class TableServiceTest extends AcceptanceTest {
+@ExtendWith(MockitoExtension.class)
+public class TableServiceTest {
 
-    @Autowired
+    @Mock
+    private OrderDao orderDao;
+    @Mock
+    private OrderTableDao orderTableDao;
+
+    @InjectMocks
     private TableService tableService;
 
-    private OrderTable 빈테이블_1;
-    private TableGroup 그룹_테이블_1;
-    private OrderTable 그룹_지정된_테이블_1;
+    private OrderTable orderTable;
 
     @BeforeEach
-    public void setUp() {
-        super.setUp();
-        빈테이블_1 = new OrderTable(1L, null, 0, true);
-        그룹_테이블_1 = new TableGroup(1L, LocalDateTime.of(2020, 1, 20, 03, 30));
-        그룹_지정된_테이블_1 = new OrderTable(10L, 그룹_테이블_1, 0, false);
+    void setUp() {
+        orderTable = new OrderTable(10, true);
     }
 
+    @DisplayName("주문 테이블를 생성")
     @Test
-    @DisplayName("메뉴를 등록할 수 있다.")
     void createOrderTable() {
-        //given
-        OrderTableRequest orderTableRequest = new OrderTableRequest(0, false);
-
-        //when
-        OrderTableResponse result = tableService.create(orderTableRequest);
-
-        //then
-        assertThat(result.getId()).isNotNull();
-        assertThat(result.getTableGroupId()).isNull();
-        assertThat(result.getNumberOfGuests()).isEqualTo(0);
-        assertThat(result.isEmpty()).isEqualTo(false);
-    }
-
-    @DisplayName("주문 테이블 목록을 조회할 수 있다.")
-    @Test
-    void findAllOrderTable() {
-        // when
-        List<OrderTableResponse> responses = tableService.list();
-
-        // then
-        assertThat(responses.size()).isEqualTo(12);
-        assertThat(responses.stream()
-                .map(OrderTableResponse::getId)
-                .collect(Collectors.toList())).containsAll(Arrays.asList(1L, 2L, 3L, 4L, 5L, 12L));
-    }
-
-    @Test
-    @DisplayName("빈 테이블로 설정 또는 해지할 수 있다.")
-    void changeTableStatusEmpty() {
         // given
-        Long orderTableId = 빈테이블_1.getId();
-        boolean changeEmpty = !빈테이블_1.isEmpty();
-        OrderTableRequest changeEmptyRequest = new OrderTableRequest(changeEmpty);
+        when(orderTableDao.save(orderTable)).thenReturn(orderTable);
 
         // when
-        OrderTableResponse result = tableService.changeEmpty(orderTableId, changeEmptyRequest);
+        OrderTable createdOrderTable = tableService.create(this.orderTable);
 
         // then
-        assertThat(result.getId()).isEqualTo(orderTableId);
-        assertThat(result.isEmpty()).isEqualTo(changeEmpty);
+        assertThat(createdOrderTable.getId()).isEqualTo(orderTable.getId());
+        assertThat(createdOrderTable.getNumberOfGuests()).isEqualTo(orderTable.getNumberOfGuests());
+        assertThat(createdOrderTable.isEmpty()).isEqualTo(orderTable.isEmpty());
+        assertThat(createdOrderTable.getTableGroupId()).isNull();
+    }
+
+    @DisplayName("주문 테이블 목록을 조회")
+    @Test
+    void selectOrderTable() {
+        // given
+        when(orderTableDao.findAll()).thenReturn(Collections.singletonList(orderTable));
+
+        // when
+        List<OrderTable> list = tableService.list();
+
+        // then
+        assertThat(list.get(0).getId()).isEqualTo(orderTable.getId());
+        assertThat(list.get(0).getNumberOfGuests()).isEqualTo(orderTable.getNumberOfGuests());
+        assertThat(list.get(0).isEmpty()).isEqualTo(orderTable.isEmpty());
+        assertThat(list.get(0).getTableGroupId()).isNull();
+    }
+
+    @DisplayName("주문 테이블의 등록 가능 상태를 변경")
+    @Test
+    void changeOrderTable() {
+        // given
+        when(orderTableDao.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
+        when(orderDao.existsByOrderTableIdAndOrderStatusIn(orderTable.getId(),
+                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(false);
+        when(orderTableDao.save(orderTable)).thenReturn(orderTable);
+
+        OrderTable orderTable = new OrderTable();
+        orderTable.setEmpty(false);
+
+        // when
+        OrderTable updatedOrderTable = tableService.changeEmpty(this.orderTable.getId(), orderTable);
+
+        // then
+        assertThat(updatedOrderTable.isEmpty()).isEqualTo(orderTable.isEmpty());
     }
 
     @DisplayName("단체 지정이 되어 있다면 상태를 변경할 수 없다.")
     @Test
     void alreadyExistTableGroup() {
         // given
-        Long orderTableId = 그룹_지정된_테이블_1.getId();
-        OrderTableRequest changeEmptyRequest = new OrderTableRequest(true);
+        orderTable.setTableGroupId(1L);
+        when(orderTableDao.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
+
+        OrderTable orderTable = new OrderTable();
+        orderTable.setEmpty(false);
 
         // when & then
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
-            OrderTableResponse orderTableResponse = tableService.changeEmpty(orderTableId, changeEmptyRequest);
-        }).withMessageMatching("그룹 지정이 되어 있어 상태를 변경할 수 없습니다.");
+        assertThrows(IllegalArgumentException.class, () -> {
+            tableService.changeEmpty(this.orderTable.getId(), orderTable);
+        });
     }
 
-    @DisplayName("주문이 조리 중이거나 식사 중일때는 상태를 변경할 수 없다.")
+    @DisplayName("주문이 조리 중이거나 식사 중일때는 상태 변경 안됨")
     @Test
-    void notChangeStatusWhenCookingOrMeal() {
-        //given
-        Long orderTableId = 그룹_지정된_테이블_1.getId();
-        OrderTableRequest changeEmptyRequest = new OrderTableRequest(true);
+    void notChangeTable() {
+        // given
+        when(orderTableDao.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
+        when(orderDao.existsByOrderTableIdAndOrderStatusIn(orderTable.getId()
+                , Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(true);
+
+        OrderTable orderTable = new OrderTable();
+        orderTable.setEmpty(false);
 
         // when & then
-        assertThatThrownBy(() -> tableService.changeEmpty(orderTableId, changeEmptyRequest))
-                .isInstanceOf(IllegalArgumentException.class);
+        assertThrows(IllegalArgumentException.class, () -> {
+            tableService.changeEmpty(this.orderTable.getId(), orderTable);
+        });
     }
 
+    @DisplayName("주문 테이블에 방문한 손님 수를 등록")
     @Test
-    @DisplayName("방문한 손님 수를 입력할 수 있다.")
-    void changeNumberOfGuests() {
-        //given
-        Long orderTableId = 그룹_지정된_테이블_1.getId();
-        int changeNumberOfGuests = 5;
-        OrderTableRequest changeNumberOfGuestsRequest = new OrderTableRequest(changeNumberOfGuests);
+    void updateNumberOfGuests() {
+        // given
+        orderTable.setEmpty(false);
+        when(orderTableDao.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
+        when(orderTableDao.save(orderTable)).thenReturn(orderTable);
 
-        //when
-        OrderTableResponse result = tableService.changeNumberOfGuests(orderTableId, changeNumberOfGuestsRequest);
+        OrderTable updateOrderTable = new OrderTable();
+        updateOrderTable.setNumberOfGuests(20);
 
-        //then
-        assertThat(result.getId()).isEqualTo(orderTableId);
-        assertThat(result.getNumberOfGuests()).isEqualTo(changeNumberOfGuests);
+        // when
+        OrderTable updatedOrderTable = tableService.changeNumberOfGuests(this.orderTable.getId(), updateOrderTable);
+
+        // then
+        assertThat(updatedOrderTable.getNumberOfGuests()).isEqualTo(updateOrderTable.getNumberOfGuests());
     }
 
-    @DisplayName("방문한 손님 수는 0 명 미만으로 입력할 수 없다.")
+    @DisplayName("방문한 손님 수는 0 명 미만으로 입력 안됨")
     @Test
     void requireNumberOfGuests() {
         // given
-        Long orderTableId = 그룹_지정된_테이블_1.getId();
-        OrderTableRequest orderTableRequest = new OrderTableRequest(-100);
+        OrderTable updatedOrderTable = new OrderTable();
+        updatedOrderTable.setNumberOfGuests(-10);
 
         // when & then
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
-            tableService.changeNumberOfGuests(orderTableId, orderTableRequest);
-        }).withMessageMatching("손님 수는 0 보다 작을 수 없습니다.");
+        assertThrows(IllegalArgumentException.class, () -> {
+            tableService.changeNumberOfGuests(this.orderTable.getId(), updatedOrderTable);
+        });
     }
 
-    @DisplayName("주문 테이블 상태가 비어있음인 경우 등록할 등록할 수 없다.")
+    @DisplayName("주문 테이블 상태가 비어있음인 경우 등록 안됨")
     @Test
-    void emptyOrderTableStatus() {
+    void notEmptyOrderTable() {
         // given
-        Long orderTableId = 빈테이블_1.getId();
-        OrderTableRequest orderTableRequest = new OrderTableRequest(2);
+        orderTable.setEmpty(true);
+        when(orderTableDao.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
+
+        OrderTable updatedOrderTable = new OrderTable();
+        updatedOrderTable.setNumberOfGuests(20);
 
         // when & then
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
-            tableService.changeNumberOfGuests(orderTableId, orderTableRequest);
-        }).withMessageMatching("빈 테이블의 손님 수는 변경할 수 없습니다.");
+        assertThrows(IllegalArgumentException.class, () -> {
+            tableService.changeNumberOfGuests(this.orderTable.getId(), updatedOrderTable);
+        });
     }
 }

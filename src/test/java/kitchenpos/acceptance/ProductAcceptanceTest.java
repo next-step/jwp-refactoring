@@ -4,7 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.dto.ProductRequest;
+import kitchenpos.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     @Test
     void selectProduct() {
         // given
-        ProductRequest product = new ProductRequest("상품", new BigDecimal(100));
+        Product product = new Product(1L, "상품", new BigDecimal(100));
         상품_생성_요청(product);
 
         // when
@@ -34,7 +34,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         상품_목록_포함(selectResponse, Collections.singletonList(product));
     }
 
-    public static ExtractableResponse<Response> 상품_생성_요청(ProductRequest product) {
+    public static ExtractableResponse<Response> 상품_생성_요청(Product product) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -57,10 +57,10 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         assertThat(findResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static void 상품_목록_포함(ExtractableResponse<Response> findResponse, List<ProductRequest> products) {
-        List<String> createProductIds = products.stream().map(ProductRequest::getName).collect(toList());
+    public static void 상품_목록_포함(ExtractableResponse<Response> findResponse, List<Product> products) {
+        List<Long> createProductIds = products.stream().map(Product::getId).collect(toList());
 
-        List<String> findProductIds = findResponse.jsonPath().getList("name", String.class);
+        List<Long> findProductIds = findResponse.jsonPath().getList("id", Long.class);
         assertThat(findProductIds).containsAll(createProductIds);
     }
 }

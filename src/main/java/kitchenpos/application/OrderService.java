@@ -1,75 +1,108 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.Menu;
+import kitchenpos.dao.MenuDao;
+import kitchenpos.dao.OrderDao;
+import kitchenpos.dao.OrderLineItemDao;
+import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.dto.OrderLineItemRequest;
-import kitchenpos.dto.OrderRequest;
-import kitchenpos.dto.OrderResponse;
-import kitchenpos.repository.MenuRepository;
-import kitchenpos.repository.OrderRepository;
-import kitchenpos.repository.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
+    private final MenuDao menuDao;
+    private final OrderDao orderDao;
+    private final OrderLineItemDao orderLineItemDao;
+    private final OrderTableDao orderTableDao;
 
-    private final MenuRepository menuRepository;
-    private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
-
-    public OrderService(final MenuRepository menuRepository,
-                        final OrderRepository orderRepository,
-                        final OrderTableRepository orderTableRepository) {
-        this.menuRepository = menuRepository;
-        this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
+    public OrderService(
+            final MenuDao menuDao,
+            final OrderDao orderDao,
+            final OrderLineItemDao orderLineItemDao,
+            final OrderTableDao orderTableDao
+    ) {
+        this.menuDao = menuDao;
+        this.orderDao = orderDao;
+        this.orderLineItemDao = orderLineItemDao;
+        this.orderTableDao = orderTableDao;
     }
 
     @Transactional
-    public OrderResponse create(final OrderRequest orderRequest) {
-        Order order = new Order.Builder()
-                .orderTable(findOrderTable(orderRequest.getOrderTableId()))
-                .orderedTime(LocalDateTime.now())
-                .orderLineItems(findOrderLineItems(orderRequest.getOrderLineItems()))
-                .build();
-        return OrderResponse.of(orderRepository.save(order));
-    }
+    public Order create(final Order order) {
+        final List<OrderLineItem> orderLineItems = order.getOrderLineItems();
 
-    private OrderTable findOrderTable(final Long orderTableId) {
-        return orderTableRepository.findById(orderTableId)
-                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 테이블 입니다."));
-    }
+        if (CollectionUtils.isEmpty(orderLineItems)) {
+            throw new IllegalArgumentException();
+        }
 
-    private List<OrderLineItem> findOrderLineItems(final List<OrderLineItemRequest> orderLineItemRequests) {
-        return orderLineItemRequests.stream()
-                .map(item -> new OrderLineItem(findMenu(item), item.getQuantity()))
+        final List<Long> menuIds = orderLineItems.stream()
+                .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
+
+        if (orderLineItems.size() != menuDao.countByIdIn(menuIds)) {
+            throw new IllegalArgumentException();
+        }
+
+        final OrderTable orderTable = orderTableDao.findById(order.getOrderTableId())
+                .orElseThrow(IllegalArgumentException::new);
+
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+
+        order.setOrderTableId(orderTable.getId());
+        order.setOrderStatus(OrderStatus.COOKING.name());
+        order.setOrderedTime(LocalDateTime.now());
+
+        final Order savedOrder = orderDao.save(order);
+
+        final Long orderId = savedOrder.getId();
+        final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
+        for (final OrderLineItem orderLineItem : orderLineItems) {
+            orderLineItem.setOrderId(orderId);
+            savedOrderLineItems.add(orderLineItemDao.save(orderLineItem));
+        }
+        savedOrder.setOrderLineItems(savedOrderLineItems);
+
+        return savedOrder;
     }
 
-    private Menu findMenu(OrderLineItemRequest orderLineItem) {
-        final Menu menu = menuRepository.findById(orderLineItem.getMenuId())
-                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 메뉴 입니다."));
-        return menu;
-    }
+    public List<Order> list() {
+        final List<Order> orders = orderDao.findAll();
 
-    @Transactional(readOnly = true)
-    public List<OrderResponse> list() {
-        return OrderResponse.ofList(orderRepository.findAll());
+        for (final Order order : orders) {
+            order.setOrderLineItems(orderLineItemDao.findAllByOrderId(order.getId()));
+        }
+
+        return orders;
     }
 
     @Transactional
-    public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
-        final Order savedOrder = orderRepository.findById(orderId)
-                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 주문 입니다."));
+    public Order changeOrderStatus(final Long orderId, final Order order) {
+        final Order savedOrder = orderDao.findById(orderId)
+                .orElseThrow(IllegalArgumentException::new);
 
-        savedOrder.updateOrderStatus(orderRequest.getOrderStatus());
-        return OrderResponse.of(savedOrder);
+        if (Objects.equals(OrderStatus.COMPLETION.name(), savedOrder.getOrderStatus())) {
+            throw new IllegalArgumentException();
+        }
+
+        final OrderStatus orderStatus = OrderStatus.valueOf(order.getOrderStatus());
+        savedOrder.setOrderStatus(orderStatus.name());
+
+        orderDao.save(savedOrder);
+
+        savedOrder.setOrderLineItems(orderLineItemDao.findAllByOrderId(orderId));
+
+        return savedOrder;
     }
 }

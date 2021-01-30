@@ -1,109 +1,70 @@
 package kitchenpos.domain;
 
-import org.springframework.util.CollectionUtils;
-
-import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 
-@Entity
 public class Menu {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name = "name")
     private String name;
+    private BigDecimal price;
+    private Long menuGroupId;
+    private List<MenuProduct> menuProducts;
 
-    @Embedded
-    private Price price;
-
-    @ManyToOne
-    @JoinColumn(name = "menu_group_id")
-    private MenuGroup menuGroup;
-
-    @Embedded
-    private MenuProducts menuProducts;
-
-    protected Menu() {
+    public Menu() {
     }
 
-    private Menu(Builder builder) {
-        this.id = builder.id;
-        this.name = builder.name;
-        this.price = builder.price;
-        this.menuGroup = builder.menuGroup;
-        this.menuProducts = checkValidMenuProducts(builder.menuProducts);
-        updateMenuProducts(this.menuProducts);
-    }
-
-    private MenuProducts checkValidMenuProducts(List<MenuProduct> menuProducts) {
-        if (CollectionUtils.isEmpty(menuProducts)) {
-            throw new IllegalArgumentException("메뉴에는 1개 이상의 상품이 포함되어야 합니다.");
-        }
-        return new MenuProducts(menuProducts);
-    }
-
-    public void updateMenuProducts(MenuProducts menuProducts) {
+    public Menu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
-        menuProducts.updateMenu(this);
+    }
+
+    public Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        this.name = name;
+        this.price = price;
+        this.menuGroupId = menuGroupId;
+        this.menuProducts = menuProducts;
     }
 
     public Long getId() {
         return id;
     }
 
+    public void setId(final Long id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }
 
+    public void setName(final String name) {
+        this.name = name;
+    }
+
     public BigDecimal getPrice() {
-        return price.value();
+        return price;
+    }
+
+    public void setPrice(final BigDecimal price) {
+        this.price = price;
     }
 
     public Long getMenuGroupId() {
-        return menuGroup.getId();
+        return menuGroupId;
+    }
+
+    public void setMenuGroupId(final Long menuGroupId) {
+        this.menuGroupId = menuGroupId;
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts.findAll();
+        return menuProducts;
     }
 
-    public static class Builder {
-        private Long id;
-        private String name;
-        private Price price;
-        private MenuGroup menuGroup;
-        private List<MenuProduct> menuProducts;
-
-        public Builder id(Long id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder name(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public Builder price(BigDecimal price) {
-            this.price = new Price(price);
-            return this;
-        }
-
-        public Builder menuGroup(MenuGroup menuGroup) {
-            this.menuGroup = menuGroup;
-            return this;
-        }
-
-        public Builder menuProducts(List<MenuProduct> menuProducts) {
-            this.menuProducts = menuProducts;
-            return this;
-        }
-
-        public Menu build() {
-            return new Menu(this);
-        }
+    public void setMenuProducts(final List<MenuProduct> menuProducts) {
+        this.menuProducts = menuProducts;
     }
 }
