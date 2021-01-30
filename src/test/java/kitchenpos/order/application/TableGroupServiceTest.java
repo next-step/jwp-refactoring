@@ -151,7 +151,6 @@ public class TableGroupServiceTest {
 		when(orderService.findAllOrderByOrderTableIds(anyList())).thenReturn(
 			Arrays.asList(Order.builder()
 				.orderTable(테이블1)
-				.orderLineItems(Arrays.asList(OrderLineItem.builder().menu(후라이드치킨메뉴).build()))
 				.orderStatus(OrderStatus.MEAL)
 				.build()));
 

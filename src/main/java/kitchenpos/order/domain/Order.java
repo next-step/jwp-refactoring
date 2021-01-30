@@ -26,17 +26,15 @@ public class Order extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	private OrderStatus orderStatus = OrderStatus.COOKING;
 	@Embedded
-	private OrderLineItems orderLineItems;
+	private OrderLineItems orderLineItems = new OrderLineItems();
 
 	protected Order() {
 	}
 
-	private Order(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+	private Order(OrderTable orderTable, OrderStatus orderStatus) {
 		validate(orderTable);
 		this.orderTable = orderTable;
 		this.orderStatus = orderStatus;
-		this.orderLineItems = new OrderLineItems(id, orderLineItems);
-
 	}
 
 	private void validate(OrderTable orderTable) {
@@ -77,10 +75,13 @@ public class Order extends BaseEntity {
 		return orderLineItems.getList();
 	}
 
+	public void setOrderLineItems(List<OrderLineItem> orderLineItems) {
+		this.orderLineItems = new OrderLineItems(id, orderLineItems);
+	}
+
 	public static final class OrderBuilder {
 		private OrderTable orderTable;
 		private OrderStatus orderStatus = OrderStatus.COOKING;
-		private List<OrderLineItem> orderLineItems;
 
 		private OrderBuilder() {
 		}
@@ -95,13 +96,8 @@ public class Order extends BaseEntity {
 			return this;
 		}
 
-		public OrderBuilder orderLineItems(List<OrderLineItem> orderLineItems) {
-			this.orderLineItems = orderLineItems;
-			return this;
-		}
-
 		public Order build() {
-			return new Order(orderTable, orderStatus, orderLineItems);
+			return new Order(orderTable, orderStatus);
 		}
 	}
 }

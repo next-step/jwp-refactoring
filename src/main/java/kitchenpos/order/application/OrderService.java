@@ -41,12 +41,10 @@ public class OrderService {
 			throw new IllegalArgumentException();
 		}
 
-		Order order = Order.builder()
-			.orderTable(orderTable)
-			.orderLineItems(orderLineItems)
-			.build();
+		Order order = orderRepository.save(Order.builder().orderTable(orderTable).build());
+		order.setOrderLineItems(orderLineItems);
 
-		return OrderResponse.of(orderRepository.save(order));
+		return OrderResponse.of(order);
 	}
 
 	private List<OrderLineItem> createOrderLineItems(OrderRequest orderRequest) {

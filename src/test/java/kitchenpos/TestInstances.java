@@ -54,8 +54,8 @@ public class TestInstances {
 			.name(name)
 			.price(price)
 			.menuGroup(menuGroup)
-			.menuProducts(Arrays.asList(menuProduct))
 			.build();
+		menu.setMenuProducts(Arrays.asList(menuProduct));
 		ReflectionTestUtils.setField(menu, "id", id);
 		return menu;
 	}

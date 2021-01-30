@@ -22,13 +22,14 @@ class MenuTest {
 		MenuProduct menuProduct = MenuProduct.builder().product(product).quantity(2).build();
 		MenuGroup menuGroup = MenuGroup.builder().name("추천메뉴").build();
 
+		Menu menu = Menu.builder()
+			.name("후라이드2")
+			.menuGroup(menuGroup)
+			.price(40000)
+			.build();
+
 		assertThatIllegalArgumentException()
-			.isThrownBy(() -> Menu.builder()
-				.name("후라이드2")
-				.menuGroup(menuGroup)
-				.menuProducts(Arrays.asList(menuProduct))
-				.price(40000)
-				.build());
+			.isThrownBy(() -> menu.setMenuProducts(Arrays.asList(menuProduct)));
 	}
 
 	@DisplayName("메뉴 생성")
@@ -41,9 +42,9 @@ class MenuTest {
 		Menu menu = Menu.builder()
 			.name("후라이드2")
 			.menuGroup(menuGroup)
-			.menuProducts(Arrays.asList(menuProduct))
 			.price(20000)
 			.build();
+		menu.setMenuProducts(Arrays.asList(menuProduct));
 
 		assertThat(menu).isNotNull();
 	}

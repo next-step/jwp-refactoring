@@ -100,8 +100,7 @@ public class OrderServiceTest {
 		when(menuService.findAllMenuByIds(anyList())).thenReturn(menus);
 		when(tableService.findOrderTableById(anyLong())).thenReturn(테이블1);
 		when(orderRepository.findById(anyLong())).thenReturn(Optional.of(
-			Order.builder().orderTable(테이블1).orderLineItems(Arrays.asList(
-				OrderLineItem.builder().menu(후라이드치킨메뉴).quantity(2).build())).build()));
+			Order.builder().orderTable(테이블1).build()));
 		when(orderRepository.save(any(Order.class))).thenAnswer(invocation -> {
 			Order order = invocation.getArgument(0, Order.class);
 			ReflectionTestUtils.setField(order, "id", 1L);
@@ -128,8 +127,7 @@ public class OrderServiceTest {
 		when(menuService.findAllMenuByIds(anyList())).thenReturn(menus);
 		when(tableService.findOrderTableById(anyLong())).thenReturn(테이블1);
 		when(orderRepository.findById(anyLong())).thenReturn(Optional.of(
-			Order.builder().orderTable(테이블1).orderStatus(OrderStatus.COMPLETION).orderLineItems(Arrays.asList(
-				OrderLineItem.builder().menu(후라이드치킨메뉴).quantity(2).build())).build()));
+			Order.builder().orderTable(테이블1).orderStatus(OrderStatus.COMPLETION).build()));
 		when(orderRepository.save(any(Order.class))).thenAnswer(invocation -> {
 			Order order = invocation.getArgument(0, Order.class);
 			ReflectionTestUtils.setField(order, "id", 1L);
