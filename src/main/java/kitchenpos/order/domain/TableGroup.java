@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.common.BaseEntity;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.CollectionUtils;
@@ -11,14 +12,11 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Entity
-@EntityListeners(AuditingEntityListener.class)
-public class TableGroup {
+public class TableGroup extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @CreatedDate
-    private LocalDateTime createdDate;
-    @OneToMany(mappedBy = "tableGroupId", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderTable> orderTables;
 
     public TableGroup() {
@@ -49,11 +47,6 @@ public class TableGroup {
         }
     }
 
-
-    public void changeCreatedDate(LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
     public void changeOrderTables(List<OrderTable> savedOrderTables) {
         orderTables = savedOrderTables;
     }
@@ -64,10 +57,6 @@ public class TableGroup {
 
     public void setId(final Long id) {
         this.id = id;
-    }
-
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
     }
 
     public List<OrderTable> getOrderTables() {

@@ -30,9 +30,6 @@ class OrderServiceTest {
     private OrderLineItemRepository orderLineItemRepository;
     @Mock
     private OrderTableRepository orderTableRepository;
-    @Mock
-    private TableGroupRepository tableGroupRepository;
-
 
     @InjectMocks
     private OrderService orderService;
@@ -44,24 +41,22 @@ class OrderServiceTest {
     @BeforeEach
     void setUp() {
 
-        Menu menu1 = menuRepository.save(new Menu("후라이드+후라이드", new BigDecimal(19000)));
-        Menu menu2 = menuRepository.save(new Menu("양념반+후라이드반", new BigDecimal(19000)));
-        Menu menu3 = menuRepository.save((new Menu("양념반+마늘반", new BigDecimal(19000))));
+        Menu menu1 = new Menu("후라이드+후라이드", new BigDecimal(19000));
+        Menu menu2 = new Menu("양념반+후라이드반", new BigDecimal(19000));
+        Menu menu3 = new Menu("양념반+마늘반", new BigDecimal(19000));
 
-        OrderLineItem orderLineItem1 = orderLineItemRepository.save(new OrderLineItem(1L, menu1, 3));
-        OrderLineItem orderLineItem2 = orderLineItemRepository.save(new OrderLineItem(2L, menu2, 2));
-        OrderLineItem orderLineItem3 = orderLineItemRepository.save(new OrderLineItem(3L, menu3, 1));
+        OrderLineItem orderLineItem1 = new OrderLineItem(1L, menu1, 3);
+        OrderLineItem orderLineItem2 = new OrderLineItem(2L, menu2, 2);
+        OrderLineItem orderLineItem3 = new OrderLineItem(3L, menu3, 1);
 
-        TableGroup tableGroup = tableGroupRepository.save(new TableGroup());
+        orderTable = new OrderTable(new TableGroup(), 4, true);
+        orderTable.setId(1L);
 
-        orderTable = orderTableRepository.save(new OrderTable(tableGroup, 4, true));
-        //orderTable.setId(1L);
-
-        order = orderRepository.save(new Order(orderTable, OrderStatus.COOKING.name()));
-        //order.setId(1L);
+        order = new Order(orderTable, OrderStatus.COOKING.name());
+        order.setId(1L);
         order.setOrderLineItems(Arrays.asList(orderLineItem1, orderLineItem2, orderLineItem3));
 
-        //orderLineItem = new OrderLineItem(order, 1);
+        orderLineItem = new OrderLineItem(order, 1);
     }
 
     @Test

@@ -12,16 +12,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Entity
+@Table(name ="order")
 public class Order extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "ordertable_id")
+    @JoinColumn(name = "order_table_id")
     private OrderTable orderTable;
-    private String orderStatus;
-
-    @OneToMany(mappedBy = "orderId", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
+    //private String orderStatus;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderLineItem> orderLineItems;
 
     protected Order() {
@@ -31,7 +33,7 @@ public class Order extends BaseEntity {
         this.orderLineItems = orderLineItem;
     }
 
-    public Order(OrderTable orderTable, String orderStatus) {
+    public Order(OrderTable orderTable, OrderStatus orderStatus) {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
     }
@@ -60,7 +62,7 @@ public class Order extends BaseEntity {
         this.orderTable = orderTable;
     }
 
-    public void changeOrderStatus(String orderStatus) {
+    public void changeOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 
@@ -76,7 +78,7 @@ public class Order extends BaseEntity {
         return orderTable;
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 

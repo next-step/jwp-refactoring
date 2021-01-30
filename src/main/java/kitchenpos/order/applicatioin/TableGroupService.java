@@ -32,8 +32,6 @@ public class TableGroupService {
 
         tableGroup.compareOrderTables(orderTables, savedOrderTables);
 
-        tableGroup.changeCreatedDate(LocalDateTime.now());
-
         final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
 
         for (final OrderTable savedOrderTable : savedOrderTables) {

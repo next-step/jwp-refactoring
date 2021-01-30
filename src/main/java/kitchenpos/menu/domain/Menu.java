@@ -16,7 +16,6 @@ public class Menu {
     private String name;
     private BigDecimal price;
     @ManyToOne(fetch = FetchType.LAZY )
-    @JoinColumn(name = "menugroup_id")
     private MenuGroup menuGroup;
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MenuProduct> menuProducts;

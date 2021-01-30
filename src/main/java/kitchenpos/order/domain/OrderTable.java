@@ -13,7 +13,8 @@ public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
+    @JoinColumn(name = "table_group_id")
     private TableGroup tableGroup;
     private int numberOfGuests;
     private boolean empty;

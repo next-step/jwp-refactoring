@@ -3,6 +3,8 @@ package kitchenpos.menu.domain;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -11,6 +13,8 @@ public class MenuGroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    @OneToMany(mappedBy = "menuGroup")
+    List<Menu> menu = new ArrayList<>();
 
     protected MenuGroup() {
     }

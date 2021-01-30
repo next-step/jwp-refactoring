@@ -1,17 +1,18 @@
 package kitchenpos.order.dto;
 
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 
 public class OrderRequest {
     private Long id;
     private OrderTable orderTable;
-    private String orderStatus;
+    private OrderStatus orderStatus;
 
     public OrderRequest() {
     }
 
-    public OrderRequest(Long id, OrderTable orderTable, String orderStatus) {
+    public OrderRequest(Long id, OrderTable orderTable, OrderStatus orderStatus) {
         this.id = id;
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
@@ -25,7 +26,7 @@ public class OrderRequest {
         return orderTable;
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 

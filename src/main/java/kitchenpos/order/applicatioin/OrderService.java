@@ -43,11 +43,10 @@ public class OrderService {
 
         order.isOrderTableEmpty(orderTable.getId());
         order.changeOrderTable(orderTable);
-        order.changeOrderStatus(OrderStatus.COOKING.name());
+        order.changeOrderStatus(OrderStatus.COOKING);
 
         final Order savedOrder = orderRepository.save(order);
 
-        //final Long orderId = savedOrder.getId();
         final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
         for (final OrderLineItem orderLineItem : orderLineItems) {
             orderLineItem.changeOrder(savedOrder);
@@ -75,8 +74,8 @@ public class OrderService {
             throw new IllegalArgumentException();
         }
 
-        final OrderStatus orderStatus = OrderStatus.valueOf(order.getOrderStatus());
-        savedOrder.changeOrderStatus(orderStatus.name());
+        final OrderStatus orderStatus = order.getOrderStatus();
+        savedOrder.changeOrderStatus(orderStatus);
 
         orderRepository.save(savedOrder);
 
