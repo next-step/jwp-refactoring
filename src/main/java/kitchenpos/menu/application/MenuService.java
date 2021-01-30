@@ -28,13 +28,13 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final Menu menu) {
-        menu.validationCheck(menuGroupRepository.existsById(menu.getMenuGroupId()));
+        menu.validationCheck(menuGroupRepository.existsById(menu.getMenuGroup().getId()));
 
         final List<MenuProduct> menuProducts = menu.getMenuProducts();
 
         BigDecimal sum = BigDecimal.ZERO;
         for (final MenuProduct menuProduct : menuProducts) {
-            final Product product = productRepository.findById(menuProduct.getProductId())
+            final Product product = productRepository.findById(menuProduct.getProduct().getId())
                     .orElseThrow(IllegalArgumentException::new);
             sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
         }
@@ -46,7 +46,7 @@ public class MenuService {
         final Long menuId = savedMenu.getId();
         final List<MenuProduct> savedMenuProducts = new ArrayList<>();
         for (final MenuProduct menuProduct : menuProducts) {
-            menuProduct.changeMenuId(menuId);
+            menuProduct.changeMenu(savedMenu);
             savedMenuProducts.add(menuProductRepository.save(menuProduct));
         }
         savedMenu.changeMenuProducts(savedMenuProducts);

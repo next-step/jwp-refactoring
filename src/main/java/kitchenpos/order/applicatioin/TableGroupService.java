@@ -4,7 +4,7 @@ import kitchenpos.order.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,25 +24,26 @@ public class TableGroupService {
 
     @Transactional
     public TableGroup create(final TableGroup tableGroup) {
+        List<Long> orderTableIds = tableGroup.getOrderTableIds();
+        /*
         final List<OrderTable> orderTables = tableGroup.getOrderTables();
 
         final List<Long> orderTableIds = tableGroup.getOrderTableIds(orderTables);
-
+        */
         final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
 
-        tableGroup.compareOrderTables(orderTables, savedOrderTables);
-
-        tableGroup.changeCreatedDate(LocalDateTime.now());
+        tableGroup.compareOrderTables(orderTableIds, savedOrderTables);
 
         final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
 
-        final Long tableGroupId = savedTableGroup.getId();
+        List<Long> saveOrderTableIds = new ArrayList<>();
         for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.changeTableGroupId(tableGroupId);
+            saveOrderTableIds.add(savedOrderTable.getId());
+            savedOrderTable.changeTableGroup(savedTableGroup);
             savedOrderTable.changeEmpty(false);
             orderTableRepository.save(savedOrderTable);
         }
-        savedTableGroup.changeOrderTables(savedOrderTables);
+        savedTableGroup.changeOrderTablesIds(saveOrderTableIds);
 
         return savedTableGroup;
     }
@@ -61,7 +62,7 @@ public class TableGroupService {
         }
 
         for (final OrderTable orderTable : orderTables) {
-            orderTable.changeTableGroupId(null);
+            orderTable.changeTableGroup(null);
             orderTableRepository.save(orderTable);
         }
     }

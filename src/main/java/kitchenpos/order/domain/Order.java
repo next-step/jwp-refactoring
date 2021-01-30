@@ -1,5 +1,7 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.common.BaseEntity;
+import kitchenpos.menu.domain.Menu;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.CollectionUtils;
@@ -10,17 +12,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Entity
-@EntityListeners(AuditingEntityListener.class)
-public class Order {
+@Table(name = "orders")
+public class Order extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    private Long orderTableId;
-    private String orderStatus;
-    @CreatedDate
-    private LocalDateTime orderedTime;
-    @OneToMany(mappedBy = "orderId", cascade = CascadeType.ALL, orphanRemoval = true)
+    private OrderTable orderTable;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderLineItem> orderLineItems;
 
     protected Order() {
@@ -30,24 +31,18 @@ public class Order {
         this.orderLineItems = orderLineItem;
     }
 
-    public Order(Long orderTableId, String orderStatus) {
-        this.orderTableId = orderTableId;
+    public Order(OrderTable orderTable, OrderStatus orderStatus) {
+        this.orderTable = orderTable;
         this.orderStatus = orderStatus;
     }
 
-    public Order(Long orderTableId, String orderStatus, LocalDateTime orderedTime) {
-        this.orderTableId = orderTableId;
-        this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
-    }
-
-    public List<Long> getMenuIds(List<OrderLineItem> orderLineItems) {
+    public List<Menu> getMenu(List<OrderLineItem> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
             throw new IllegalArgumentException("주문항목이 비어있습니다.");
         }
 
         return orderLineItems.stream()
-                .map(OrderLineItem::getMenuId)
+                .map(OrderLineItem::getMenu)
                 .collect(Collectors.toList());
     }
 
@@ -61,31 +56,28 @@ public class Order {
         this.orderLineItems = orderLineItems;
     }
 
-    public void changeOrderTableId(long orderTableId) {
-        this.orderTableId = orderTableId;
+    public void changeOrderTable(OrderTable orderTable) {
+        this.orderTable = orderTable;
     }
 
-    public void changeOrderStatus(String orderStatus) {
+    public void changeOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
+
     public Long getId() {
         return id;
     }
 
-    public Long getOrderTableId() {
-        return orderTableId;
+    public OrderTable getOrderTable() {
+        return orderTable;
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
-    }
-
-    public LocalDateTime getOrderedTime() {
-        return orderedTime;
     }
 
     public List<OrderLineItem> getOrderLineItems() {

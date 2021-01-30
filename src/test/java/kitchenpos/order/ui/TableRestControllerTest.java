@@ -3,6 +3,7 @@ package kitchenpos.order.ui;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.order.applicatioin.TableService;
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.TableGroup;
 import kitchenpos.order.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,7 +35,7 @@ class TableRestControllerTest {
     @Test
     @DisplayName("주문 테이블 생성 확인")
     public void whenPostOrderTable_thenReturnStatus() throws Exception {
-        OrderTable orderTable = new OrderTable(1L, 0, true);
+        OrderTable orderTable = new OrderTable(new TableGroup(), 0, true);
 
         when(tableService.create(any())).thenReturn(orderTableResponse.of(orderTable));
 
@@ -49,8 +50,7 @@ class TableRestControllerTest {
     @Test
     @DisplayName("생성된 주문테이블 조회")
     public void givenOrderTable_whenGetOrderTable_thenReturnStauts() throws Exception {
-        OrderTable orderTable = new OrderTable(1L, 0, true);
-        orderTable.setId(1L);
+        OrderTable orderTable = new OrderTable(new TableGroup(), 0, true);
         given(tableService.list()).willReturn(Arrays.asList(orderTableResponse.of(orderTable)));
 
         mockMvc.perform(get("/api/tables"))
@@ -61,7 +61,7 @@ class TableRestControllerTest {
     @Test
     @DisplayName("생성된 주문테이블 빈테이블 여부 수정")
     void givenOrderTable_whenPutOrderTable_thenReturnStatus() throws Exception {
-        OrderTable orderTable = new OrderTable(1L, 0, true);
+        OrderTable orderTable = new OrderTable(new TableGroup(), 0, true);
         orderTable.setId(1L);
         given(tableService.list()).willReturn(Arrays.asList(orderTableResponse.of(orderTable)));
 
@@ -80,7 +80,7 @@ class TableRestControllerTest {
     @Test
     @DisplayName("생성된 주문테이블 방문한 손님 수 수정")
     void givenOrderTable_whenPutOrderTableNumberOfGuest_thenReturnStatus() throws Exception {
-        OrderTable orderTable = new OrderTable(1L, 0, true);
+        OrderTable orderTable = new OrderTable(new TableGroup(), 0, true);
         orderTable.setId(1L);
         given(tableService.list()).willReturn(Arrays.asList(orderTableResponse.of(orderTable)));
 

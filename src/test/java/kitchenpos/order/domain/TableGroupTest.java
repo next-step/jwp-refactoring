@@ -23,10 +23,10 @@ class TableGroupTest {
     @Test
     @DisplayName("저장된 주문테이블 비교시 예외사항(개수 안 맞음)")
     void compareOrderTables1() {
-        List<OrderTable> orderTables = new ArrayList<>();
+        List<Long> orderTables = new ArrayList<>();
         List<OrderTable> savedTables = new ArrayList<>();
-        orderTables.add(new OrderTable());
-        orderTables.add(new OrderTable());
+        orderTables.add(1L);
+        orderTables.add(2L);
         savedTables.add(new OrderTable());
 
         TableGroup tableGroup = new TableGroup();
@@ -39,9 +39,9 @@ class TableGroupTest {
     @Test
     @DisplayName("저장된 주문테이블 비교시 예외사항(빈테이블 아닐경우")
     void compareOrderTables2() {
-        List<OrderTable> orderTables = new ArrayList<>();
+        List<Long> orderTables = new ArrayList<>();
         List<OrderTable> savedTables = new ArrayList<>();
-        orderTables.add(new OrderTable(null, 4, false));
+        orderTables.add(1L);
         savedTables.add(new OrderTable(null, 4, false));
 
         TableGroup tableGroup = new TableGroup();

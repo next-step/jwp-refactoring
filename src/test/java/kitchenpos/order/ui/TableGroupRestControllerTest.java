@@ -38,7 +38,7 @@ class TableGroupRestControllerTest {
     void setUp() {
         orderTable1 = new OrderTable(1);
         orderTable1 = new OrderTable(1);
-        tableGroup = new TableGroup(Arrays.asList(orderTable1, orderTable2));
+        tableGroup = new TableGroup(Arrays.asList(orderTable1.getId(), orderTable2.getId()));
     }
 
     @Test
@@ -57,7 +57,7 @@ class TableGroupRestControllerTest {
     @Test
     @DisplayName("생성된 단체지정 삭제")
     public void givenTableGroup_whenDeleteTableGroup_ReturnStatus() throws Exception{
-        tableGroup.changeOrderTables(Arrays.asList(orderTable1, orderTable2));
+        tableGroup.changeOrderTablesIds(Arrays.asList(orderTable1.getId(), orderTable2.getId()));
 
         mockMvc.perform(delete("/api/table-groups/{tableGroupId}",1L)
                 .contentType(MediaType.APPLICATION_JSON)
