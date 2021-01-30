@@ -20,13 +20,13 @@ import java.util.stream.Collectors;
 
 @Service
 public class TableGroupService {
-    private final OrderRepository orderDao;
+    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
     private final TableGroupMapper mapper = Mappers.getMapper(TableGroupMapper.class);
 
     public TableGroupService(final OrderRepository orderDao, final OrderTableRepository orderTableRepository, final TableGroupRepository tableGroupRepository) {
-        this.orderDao = orderDao;
+        this.orderRepository = orderDao;
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
     }
@@ -46,9 +46,9 @@ public class TableGroupService {
         final List<Long> orderTableIds = tableGroup.getOrderTables().stream()
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
-        if (orderDao.existsByOrderTable_IdInAndOrderStatusIn(orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+        if (orderRepository.existsByOrderTable_IdInAndOrderStatusIn(orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException();
         }
-        tableGroup.getOrderTables().forEach(OrderTable::ungroup);
+        tableGroup.ungroup();
     }
 }

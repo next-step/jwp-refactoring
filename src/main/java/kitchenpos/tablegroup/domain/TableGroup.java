@@ -39,4 +39,8 @@ public class TableGroup {
     public List<OrderTable> getOrderTables() {
         return orderTables;
     }
+
+    public void ungroup() {
+        this.orderTables.forEach(OrderTable::ungroup);
+    }
 }

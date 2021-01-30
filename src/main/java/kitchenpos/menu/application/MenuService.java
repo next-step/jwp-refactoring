@@ -42,11 +42,9 @@ public class MenuService {
     @Transactional
     public MenuResponse create(final MenuCreateRequest menuCreateRequest) {
         menuCreateRequest.checkPriceValidation();
-        Optional<MenuGroup> menuGroup = menuGroupRepository.findById(menuCreateRequest.getMenuGroupId());
-        if (!menuGroup.isPresent()) {
-            throw new IllegalArgumentException("invalid menugroup id");
-        }
-        final Menu menu = menuRepository.save(menuCreateRequest.toMenu(menuGroup.get()));
+        MenuGroup menuGroup = menuGroupRepository.findById(menuCreateRequest.getMenuGroupId())
+                .orElseThrow(() -> new IllegalArgumentException("invalid menugroup id"));
+        final Menu menu = menuRepository.save(menuCreateRequest.toMenu(menuGroup));
         List<MenuProduct> products = menuCreateRequest.getMenuProducts()
                 .stream()
                 .map(it -> menuProductRepository.save(new MenuProduct(menu, productRepository.getOne(it.getProductId()), it.getQuantity())))

@@ -10,7 +10,7 @@ import java.util.Objects;
 @Entity
 public class Product {
 
-    private static final int MINPPRICE = 0;
+    private static final int MINPRICE = 0;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,7 +39,7 @@ public class Product {
     }
 
     public void checkValidation() {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < MINPPRICE) {
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < MINPRICE) {
             throw new IllegalArgumentException();
         }
     }

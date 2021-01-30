@@ -24,7 +24,7 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse create(final TableAddRequest orderTable) {
-        return mapper.toResponse(orderTableRepository.save(new OrderTable()));
+        return mapper.toResponse(orderTableRepository.save(orderTable.toOrderTable()));
     }
 
     public List<OrderTableResponse> list() {
@@ -47,10 +47,9 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final TableNumberChangeRequest request) {
-        final int numberOfGuests = request.getNumberOfGuests();
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
-        savedOrderTable.changeNumberOfGuests(numberOfGuests);
+        savedOrderTable.changeNumberOfGuests(request.getNumberOfGuests());
         return mapper.toResponse(orderTableRepository.save(savedOrderTable));
     }
 }

@@ -27,16 +27,7 @@ public class Menu {
     Menu() {
     }
 
-    public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
-        if (BigDecimal.ZERO.compareTo(price) > 0) {
-            throw new IllegalArgumentException();
-        }
-        this.name = name;
-        this.price = price;
-        this.menuGroup = menuGroup;
-    }
-
-    public Menu(String name, BigDecimal price, List<MenuProduct> menuProducts) {
+    public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.name = name;
         this.price = price;
         this.menuProducts = menuProducts;

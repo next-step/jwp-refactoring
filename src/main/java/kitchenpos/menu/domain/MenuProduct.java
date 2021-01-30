@@ -19,7 +19,7 @@ public class MenuProduct {
     private Product product;
     private long quantity;
 
-    public MenuProduct() {
+    MenuProduct() {
     }
 
     public MenuProduct(Menu menu, Product product, long quantity) {

@@ -5,6 +5,7 @@ import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menugroup.MenuGroup;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -48,6 +49,6 @@ public class MenuCreateRequest {
     }
 
     public Menu toMenu(MenuGroup menuGroup) {
-        return new Menu(name, price, menuGroup);
+        return new Menu(name, price, menuGroup, Collections.emptyList());
     }
 }
