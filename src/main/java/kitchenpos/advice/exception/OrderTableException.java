@@ -1,6 +1,6 @@
 package kitchenpos.advice.exception;
 
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.OrderStatus;
 
 import java.util.List;
 
