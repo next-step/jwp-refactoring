@@ -42,7 +42,7 @@ public class MenuService {
 
     private MenuGroup findMenuGroup(Long menuGroupId) {
         return menuGroupRepository.findById(menuGroupId)
-                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 메뉴 그룹 입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 메뉴 그룹 입니다. menuGroupId : " + menuGroupId));
     }
 
     private List<MenuProduct> findMenuProducts(List<MenuProductRequest> menuProductRequests) {
