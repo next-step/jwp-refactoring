@@ -1,5 +1,9 @@
 package kitchenpos.dto;
 
+import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuProduct;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,5 +42,14 @@ public class MenuRequest {
 
     public List<MenuProductRequest> getMenuProducts() {
         return menuProducts;
+    }
+
+    public Menu toEntity(MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        return new Menu.Builder()
+                .name(this.name)
+                .price(this.price)
+                .menuGroup(menuGroup)
+                .menuProducts(menuProducts)
+                .build();
     }
 }

@@ -46,7 +46,7 @@ class TableGroupServiceTest extends AcceptanceTest {
         그룹_테이블_1 = new TableGroup(1L, LocalDateTime.of(2020, 1, 20, 03, 30));
         그룹_테이블_2 = new TableGroup(2L, LocalDateTime.of(2020, 1, 20, 03, 30));
 
-        그룹_지정된_테이블_1 = new OrderTable(10L, 그룹_테이블_1, 0, false);
+        그룹_지정된_테이블_1 = new OrderTable(10L, 그룹_테이블_1.getId(), 0, false);
     }
 
     @DisplayName("단체 지정을 생성할 수 있다.")
@@ -123,14 +123,14 @@ class TableGroupServiceTest extends AcceptanceTest {
     void unGroup() {
         // given
         Long tableGroupId = 그룹_테이블_2.getId();
-        List<OrderTable> orderTablesWithGroup = orderTableRepository.findAllByTableGroup(그룹_테이블_2);
+        List<OrderTable> orderTablesWithGroup = orderTableRepository.findAllByTableGroupId(그룹_테이블_2.getId());
         assertThat(orderTablesWithGroup.size()).isEqualTo(1);
 
         // when
         tableGroupService.unGroup(tableGroupId);
 
         // then
-        List<OrderTable> orderTablesAfterUngroup = orderTableRepository.findAllByTableGroup(그룹_테이블_2);
+        List<OrderTable> orderTablesAfterUngroup = orderTableRepository.findAllByTableGroupId(그룹_테이블_2.getId());
         assertThat(orderTablesAfterUngroup.size()).isEqualTo(0);
     }
 

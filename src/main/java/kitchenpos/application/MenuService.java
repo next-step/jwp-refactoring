@@ -34,18 +34,15 @@ public class MenuService {
     }
 
     public MenuResponse create(final MenuRequest menuRequest) {
-        Menu menu = new Menu.Builder()
-                .name(menuRequest.getName())
-                .price(menuRequest.getPrice())
-                .menuGroup(findMenuGroup(menuRequest.getMenuGroupId()))
-                .menuProducts(findMenuProducts(menuRequest.getMenuProducts()))
-                .build();
+        MenuGroup menuGroup = findMenuGroup(menuRequest.getMenuGroupId());
+        List<MenuProduct> menuProducts = findMenuProducts(menuRequest.getMenuProducts());
+        Menu menu = menuRequest.toEntity(menuGroup, menuProducts);
         return MenuResponse.of(menuRepository.save(menu));
     }
 
     private MenuGroup findMenuGroup(Long menuGroupId) {
         return menuGroupRepository.findById(menuGroupId)
-                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 메뉴 그룹 입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 메뉴 그룹 입니다. menuGroupId : " + menuGroupId));
     }
 
     private List<MenuProduct> findMenuProducts(List<MenuProductRequest> menuProductRequests) {

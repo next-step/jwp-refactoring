@@ -21,17 +21,17 @@ public class OrderLineItemResponse {
         this.quantity = quantity;
     }
 
-    public static OrderLineItemResponse of(OrderLineItem orderLineItem) {
+    public static OrderLineItemResponse of(OrderLineItem orderLineItem, Long orderId) {
         return new OrderLineItemResponse(orderLineItem.getSeq(),
-                orderLineItem.getOrderId(),
+                orderId,
                 orderLineItem.getMenuId(),
                 orderLineItem.getQuantity()
         );
     }
 
-    public static List<OrderLineItemResponse> ofList(List<OrderLineItem> orderLineItems) {
+    public static List<OrderLineItemResponse> ofList(List<OrderLineItem> orderLineItems, Long orderId) {
         return orderLineItems.stream()
-                .map(OrderLineItemResponse::of)
+                .map(orderLineItem -> of(orderLineItem, orderId))
                 .collect(Collectors.toList());
     }
 

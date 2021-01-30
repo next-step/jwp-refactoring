@@ -30,7 +30,7 @@ public class MenuResponse {
                 menu.getName(),
                 menu.getPrice(),
                 menu.getMenuGroupId(),
-                MenuProductResponse.ofList(menu.getMenuProducts())
+                MenuProductResponse.ofList(menu.getMenuProducts(), menu.getId())
         );
     }
 
