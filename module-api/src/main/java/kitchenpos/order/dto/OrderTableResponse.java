@@ -1,5 +1,8 @@
 package kitchenpos.order.dto;
 
+import kitchenpos.order.OrderTable;
+import kitchenpos.order.TableGroup;
+
 public class OrderTableResponse {
     private Long id;
     private Long tableGroupId;

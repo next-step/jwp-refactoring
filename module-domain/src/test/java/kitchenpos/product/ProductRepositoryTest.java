@@ -21,5 +21,4 @@ class ProductRepositoryTest {
         Optional<Product> product = productRepository.findById(1L);
         assertThat(product.get().getName()).isEqualTo("닭강정");
     }
-
 }

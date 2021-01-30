@@ -1,6 +1,7 @@
 package kitchenpos.order.applicatioin;
 
 import kitchenpos.order.OrderRepository;
+import kitchenpos.order.OrderStatus;
 import kitchenpos.order.OrderTable;
 import kitchenpos.order.OrderTableRepository;
 import kitchenpos.order.dto.OrderTableResponse;

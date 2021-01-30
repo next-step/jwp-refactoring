@@ -1,5 +1,6 @@
 package kitchenpos.order.ui;
 
+import kitchenpos.order.TableGroup;
 import kitchenpos.order.applicatioin.TableGroupService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

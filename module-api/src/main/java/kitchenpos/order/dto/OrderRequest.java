@@ -1,5 +1,9 @@
 package kitchenpos.order.dto;
 
+import kitchenpos.order.Order;
+import kitchenpos.order.OrderStatus;
+import kitchenpos.order.OrderTable;
+
 public class OrderRequest {
     private Long id;
     private OrderTable orderTable;

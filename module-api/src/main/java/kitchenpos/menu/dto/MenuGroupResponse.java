@@ -1,5 +1,7 @@
 package kitchenpos.menu.dto;
 
+import kitchenpos.menu.MenuGroup;
+
 public class MenuGroupResponse {
     private Long id;
     private String name;

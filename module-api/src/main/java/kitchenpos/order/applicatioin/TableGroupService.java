@@ -1,7 +1,6 @@
 package kitchenpos.order.applicatioin;
 
 import kitchenpos.order.*;
-import kitchenpos.order.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,11 +25,7 @@ public class TableGroupService {
     @Transactional
     public TableGroup create(final TableGroup tableGroup) {
         List<Long> orderTableIds = tableGroup.getOrderTableIds();
-        /*
-        final List<OrderTable> orderTables = tableGroup.getOrderTables();
 
-        final List<Long> orderTableIds = tableGroup.getOrderTableIds(orderTables);
-        */
         final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
 
         tableGroup.compareOrderTables(orderTableIds, savedOrderTables);

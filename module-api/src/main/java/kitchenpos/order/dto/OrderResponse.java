@@ -1,5 +1,10 @@
 package kitchenpos.order.dto;
 
+import kitchenpos.order.Order;
+import kitchenpos.order.OrderLineItem;
+import kitchenpos.order.OrderStatus;
+import kitchenpos.order.OrderTable;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
