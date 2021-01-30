@@ -9,7 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import kitchenpos.ServiceTest;
+import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuProductRequest;
@@ -18,7 +18,7 @@ import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.dto.ProductRequest;
 import kitchenpos.menu.dto.ProductResponse;
 
-public class MenuServiceTest extends ServiceTest {
+public class MenuAcceptanceTest extends AcceptanceTest {
 	@Autowired
 	private MenuService menuService;
 	@Autowired
@@ -58,7 +58,7 @@ public class MenuServiceTest extends ServiceTest {
 
 	@DisplayName("상품이 없을 경우 오류 발생")
 	@Test
-	void findAllMenuByIds(){
+	void findAllMenuByIds() {
 		assertThatIllegalArgumentException()
 			.isThrownBy(() -> menuService.findAllMenuByIds(Arrays.asList(10L)));
 	}

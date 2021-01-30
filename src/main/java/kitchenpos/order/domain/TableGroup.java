@@ -1,6 +1,5 @@
 package kitchenpos.order.domain;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,34 +23,7 @@ public class TableGroup extends BaseEntity {
 	@Embedded
 	private OrderTables orderTables;
 
-	protected TableGroup() {
-	}
-
-	private TableGroup(List<OrderTable> orderTables) {
-		this.orderTables = new OrderTables(orderTables);
-
-		validate();
-		orderTables.forEach(orderTable -> orderTable.changeEmpty(true));
-	}
-
-	private void validate() {
-		if (orderTables.isEmpty() || orderTables.isLessThan(2)) {
-			throw new IllegalArgumentException("단체 지정은 2개 이상의 테이블 부터 가능합니다.");
-		}
-
-		for (final OrderTable orderTable : orderTables.getList()) {
-			if (!orderTable.isEmpty()) {
-				throw new IllegalArgumentException("단체 지정은 비어있는 테이블에서 가능합니다.");
-			}
-
-			if (Objects.nonNull(orderTable.getTableGroup())) {
-				throw new IllegalArgumentException("이미 단체 지정이 된 테이블 입니다.");
-			}
-		}
-	}
-
-	public static TableGroupBuilder builder() {
-		return new TableGroupBuilder();
+	public TableGroup() {
 	}
 
 	public Long getId() {
@@ -66,19 +38,29 @@ public class TableGroup extends BaseEntity {
 		return orderTables.getIds();
 	}
 
-	public static final class TableGroupBuilder {
-		private List<OrderTable> orderTables = new ArrayList<>();
+	public void group(List<OrderTable> orderTables) {
+		this.orderTables = new OrderTables(orderTables);
+		validateGroup(this.orderTables);
+		this.orderTables.group(this);
+	}
 
-		private TableGroupBuilder() {
+	public void ungroup() {
+		this.orderTables.ungroup();
+	}
+
+	private void validateGroup(OrderTables orderTables) {
+		if (orderTables.isEmpty() || orderTables.isLessThan(2)) {
+			throw new IllegalArgumentException("단체 지정은 2개 이상의 테이블 부터 가능합니다.");
 		}
 
-		public TableGroupBuilder orderTables(List<OrderTable> orderTables) {
-			this.orderTables = orderTables;
-			return this;
-		}
+		for (final OrderTable orderTable : orderTables.getList()) {
+			if (!orderTable.isEmpty()) {
+				throw new IllegalArgumentException("단체 지정은 비어있는 테이블에서 가능합니다.");
+			}
 
-		public TableGroup build() {
-			return new TableGroup(orderTables);
+			if (Objects.nonNull(orderTable.getTableGroupId())) {
+				throw new IllegalArgumentException("이미 단체 지정이 된 테이블 입니다.");
+			}
 		}
 	}
 }

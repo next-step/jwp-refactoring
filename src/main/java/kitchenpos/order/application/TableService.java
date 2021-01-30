@@ -50,7 +50,7 @@ public class TableService {
 			throw new IllegalArgumentException("테이블이 비어 있습니다.");
 		}
 
-		orderTable.changeGuestsNumber(orderTableRequest.getGuestsNumber());
+		orderTable.changeGuestsNumber(orderTableRequest.getNumberOfGuests());
 
 		return OrderTableResponse.of(orderTable);
 	}
