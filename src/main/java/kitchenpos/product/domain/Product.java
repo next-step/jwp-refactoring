@@ -1,7 +1,6 @@
 package kitchenpos.product.domain;
 
 import kitchenpos.common.domain.Price;
-import kitchenpos.menu.domain.MenuProduct;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -19,12 +18,6 @@ public class Product {
     }
 
     public Product(String name, Price price) {
-        this.name = name;
-        this.price = price;
-    }
-
-    public Product(Long id, String name, Price price) {
-        this.id = id;
         this.name = name;
         this.price = price;
     }

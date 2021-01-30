@@ -16,18 +16,15 @@ public class Menu {
     private Price price;
     private Long menuGroupId;
     @Embedded
-    private MenuProducts menuProducts;
+    private MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {
     }
 
-    public Menu(String name, Price price, Long menuGroupId) {
+    public Menu(String name, Price price, Long menuGroupId, List<MenuProduct> menuProducts) {
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
-    }
-
-    public void addProducts(List<MenuProduct> menuProducts) {
         this.menuProducts = new MenuProducts(menuProducts);
     }
 

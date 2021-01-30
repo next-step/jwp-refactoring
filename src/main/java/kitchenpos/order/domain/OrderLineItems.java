@@ -1,15 +1,14 @@
 package kitchenpos.order.domain;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Embeddable;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Embeddable
 public class OrderLineItems {
-    @OneToMany(mappedBy = "order", cascade = {CascadeType.MERGE}, orphanRemoval = true)
-    List<OrderLineItem> orderLineItems = new ArrayList<>();
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "order_id")
+    private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     protected OrderLineItems() {
     }
@@ -20,13 +19,5 @@ public class OrderLineItems {
 
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
-    }
-
-    public void add(OrderLineItem orderLineItem) {
-        orderLineItems.add(orderLineItem);
-    }
-
-    public void add(List<OrderLineItem> orderLineItems) {
-        orderLineItems.addAll(orderLineItems);
     }
 }

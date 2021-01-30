@@ -3,7 +3,6 @@ package kitchenpos.menu.dto;
 import java.util.List;
 
 public class MenuRequest {
-    public static final int ZERO = 0;
     private String name;
     private Integer price;
     private Long menuGroupId;

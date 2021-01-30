@@ -1,8 +1,8 @@
 package kitchenpos.order.application;
 
+import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.common.domain.Price;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
@@ -17,8 +17,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,7 +40,7 @@ class OrderServiceTest {
     @DisplayName("1개 이상의 메뉴로 주문 등록")
     @Test
     void createOrder() {
-        Menu menu = menuRepository.save(new Menu("메뉴1", Price.of(1000), 1L));
+        Menu menu = menuRepository.save(new Menu("메뉴1", Price.of(1000), 1L, Collections.emptyList()));
         OrderTable orderTable = orderTableRepository.save(new OrderTable(4, true));
 
         List<OrderLineRequest> orderLinesRequest = Arrays.asList(new OrderLineRequest(menu.getId(), 1L));
@@ -59,7 +61,7 @@ class OrderServiceTest {
     @DisplayName("빈 테이블 주문 실패")
     @Test
     void failOrderEmptyTable() {
-        OrderRequest orderRequest = new OrderRequest(1L, null);
+        OrderRequest orderRequest = new OrderRequest(1L, Collections.emptyList());
         assertThatThrownBy(() -> orderService.create(orderRequest))
                 .isInstanceOf(IllegalArgumentException.class);
     }
@@ -78,29 +80,26 @@ class OrderServiceTest {
 
     @DisplayName("주문 목록을 조회")
     @Test
+    @Transactional
     void list() {
-        Menu menu = menuRepository.save(new Menu("메뉴1", Price.of(1000), 1L));
+        Menu menu = menuRepository.save(new Menu("메뉴1", Price.of(1000), 1L, Collections.emptyList()));
         OrderTable orderTable = orderTableRepository.save(new OrderTable(4, false));
         OrderTable orderTable2 = orderTableRepository.save(new OrderTable(2, false));
-
         List<OrderLineItem> orderLineItems = Arrays.asList(new OrderLineItem(menu, 1L));
-        Order order1 = new Order(orderTable, orderLineItems);
-        Order order2 = new Order(orderTable2, orderLineItems);
-        Order save1 = orderRepository.save(order1);
-        Order save2 = orderRepository.save(order2);
+        Order order1 = orderRepository.save(new Order(orderTable, orderLineItems, OrderStatus.COOKING));
+        Order order2 = orderRepository.save(new Order(orderTable2, orderLineItems, OrderStatus.MEAL));
 
         List<OrderResponse> results = orderService.list();
 
-        assertThat(results).contains(OrderResponse.of(save1), OrderResponse.of(save2));
+        assertThat(results.size()).isGreaterThan(1);
+        assertThat(results).contains(OrderResponse.of(order1), OrderResponse.of(order2));
     }
 
     @DisplayName("주문 상태 변경")
     @Test
     void changeOrderStatus() {
-        Menu menu = menuRepository.save(new Menu("메뉴1", Price.of(1000), 1L));
         OrderTable orderTable = orderTableRepository.save(new OrderTable(4, false));
-        List<OrderLineItem> orderLines = Arrays.asList(new OrderLineItem(menu, 1L));
-        Order order = orderRepository.save(new Order(orderTable, orderLines));
+        Order order = orderRepository.save(new Order(orderTable, Collections.emptyList(), OrderStatus.MEAL));
 
         OrderResponse savedOrder = orderService.changeOrderStatus(order.getId(), new OrderStatusRequest(OrderStatus.COMPLETION));
 
@@ -110,12 +109,11 @@ class OrderServiceTest {
     @DisplayName("주문 상태가 계산 완료인 경우 변경 불가")
     @Test
     void failChangeOrderStatusWhenStatuIsCOMPLETION() {
-        Menu menu = menuRepository.save(new Menu("메뉴1", Price.of(1000), 1L));
         OrderTable orderTable = orderTableRepository.save(new OrderTable(4, false));
-        List<OrderLineItem> orderLines = Arrays.asList(new OrderLineItem(menu, 1L));
-        Order order = orderRepository.save(new Order(orderTable, orderLines, OrderStatus.COMPLETION));
 
-        assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), new OrderStatusRequest(OrderStatus.COMPLETION)))
+        Order order = orderRepository.save(new Order(orderTable, Collections.emptyList(), OrderStatus.COMPLETION));
+
+        assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), new OrderStatusRequest(OrderStatus.COOKING)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

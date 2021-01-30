@@ -23,7 +23,7 @@ public class TableGroupResponse {
     }
 
     public static TableGroupResponse of(TableGroup save) {
-        List<OrderTableResponse> orderTableResponses = save.getOrderTables()
+        List<OrderTableResponse> orderTableResponses = save.getOrderTables().getOrderTables()
                 .stream()
                 .map(OrderTableResponse::of)
                 .collect(Collectors.toList());

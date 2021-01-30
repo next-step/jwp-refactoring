@@ -11,14 +11,14 @@ public class MenuProduct {
     @Column(name = "seq")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-    @JoinColumn(name = "menu_id")
-    private Menu menu;
+    @Column(name = "menu_id")
+    private Long menuId;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "product_id")
     private Product product;
-    private Long quantity;
+
+    private long quantity;
 
     protected MenuProduct() {
     }
@@ -28,18 +28,8 @@ public class MenuProduct {
         this.quantity = quantity;
     }
 
-    public MenuProduct(Menu menu, Product product, long quantity) {
-        this.menu = menu;
-        this.product = product;
-        this.quantity = quantity;
-    }
-
     public Long getId() {
         return id;
-    }
-
-    public Menu getMenu() {
-        return menu;
     }
 
     public Product getProduct() {
@@ -57,18 +47,18 @@ public class MenuProduct {
 
         MenuProduct that = (MenuProduct) o;
 
+        if (quantity != that.quantity) return false;
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (menu != null ? !menu.equals(that.menu) : that.menu != null) return false;
-        if (product != null ? !product.equals(that.product) : that.product != null) return false;
-        return quantity != null ? quantity.equals(that.quantity) : that.quantity == null;
+        if (menuId != null ? !menuId.equals(that.menuId) : that.menuId != null) return false;
+        return product != null ? product.equals(that.product) : that.product == null;
     }
 
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (menu != null ? menu.hashCode() : 0);
+        result = 31 * result + (menuId != null ? menuId.hashCode() : 0);
         result = 31 * result + (product != null ? product.hashCode() : 0);
-        result = 31 * result + (quantity != null ? quantity.hashCode() : 0);
+        result = 31 * result + (int) (quantity ^ (quantity >>> 32));
         return result;
     }
 }

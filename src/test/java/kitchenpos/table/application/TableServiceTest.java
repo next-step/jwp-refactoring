@@ -5,7 +5,6 @@ import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -36,7 +35,7 @@ class TableServiceTest {
     @DisplayName("주문 테이블을 등록할 수 있다.")
     @Test
     void createTableTest() {
-        OrderTable expected = new OrderTable(null, 3, false);
+        OrderTable expected = new OrderTable(3, false);
         given(orderTableRepository.save(any())).willReturn(expected);
 
         OrderTable saved = tableService.create(expected);
@@ -47,8 +46,8 @@ class TableServiceTest {
     @DisplayName("주문 테이블의 목록을 조회할 수 있다.")
     @Test
     void tableListTest() {
-        OrderTable table1 = new OrderTable(null, 3, false);
-        OrderTable table2 = new OrderTable(null, 4, false);
+        OrderTable table1 = new OrderTable(3, false);
+        OrderTable table2 = new OrderTable(4, false);
         given(orderTableRepository.findAll()).willReturn(Arrays.asList(table1, table2));
 
         List<OrderTableResponse> results = tableService.list();
@@ -59,7 +58,7 @@ class TableServiceTest {
     @DisplayName("빈 테이블 설정")
     @Test
     void setTableEmptyTest() {
-        OrderTable expected = new OrderTable(null, 3, false);
+        OrderTable expected = new OrderTable(3, false);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(expected));
         given(orderRepository.findByOrderTableId(any())).willReturn(new Order(OrderStatus.COMPLETION));
 
@@ -71,7 +70,7 @@ class TableServiceTest {
     @DisplayName("빈 테이블 해지")
     @Test
     void setTableNotEmptyTest() {
-        OrderTable expected = new OrderTable(null, 3, true);
+        OrderTable expected = new OrderTable(3, true);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(expected));
         given(orderRepository.findByOrderTableId(any())).willReturn(new Order(OrderStatus.COMPLETION));
 
@@ -83,7 +82,7 @@ class TableServiceTest {
     @DisplayName("단체 지정된 주문 테이블은 빈 테이블 설정/해지할 수 없다.")
     @Test
     void groupTableCantSetEmptyTest() {
-        OrderTable expected = new OrderTable(new TableGroup(1L), 3, true);
+        OrderTable expected = new OrderTable(1L, 3, true);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(expected));
         given(orderRepository.findByOrderTableId(any())).willReturn(new Order(OrderStatus.COMPLETION));
 
@@ -94,7 +93,7 @@ class TableServiceTest {
     @DisplayName("주문 상태가 조리/식사인 테이블은 빈 테이블 설정/해지할 수 없다.")
     @Test
     void cookingCantSetEmptyTest() {
-        OrderTable expected = new OrderTable(new TableGroup(1L), 3, true);
+        OrderTable expected = new OrderTable(1L, 3, true);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(expected));
         given(orderRepository.findByOrderTableId(any())).willReturn(new Order(OrderStatus.COMPLETION));
 
@@ -106,7 +105,7 @@ class TableServiceTest {
     @Test
     void setCustomerCountTest() {
         OrderTableRequest request = new OrderTableRequest(3, false);
-        OrderTable expected = new OrderTable(new TableGroup(1L), 3, false);
+        OrderTable expected = new OrderTable(1L, 3, false);
 
         given(orderTableRepository.findById(any())).willReturn(Optional.of(expected));
         OrderTableResponse saved = tableService.changeNumberOfGuests(1L, request);
@@ -127,7 +126,7 @@ class TableServiceTest {
     @DisplayName("빈 테이블은 방문한 손님 수를 입력할 수 없다.")
     @Test
     void emptyTableCSetCustomerCountTest() {
-        OrderTable expected = new OrderTable(1L, new TableGroup(1L), 3, true);
+        OrderTable expected = new OrderTable(0, true);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(expected));
 
         OrderTableRequest request = new OrderTableRequest(3, true);

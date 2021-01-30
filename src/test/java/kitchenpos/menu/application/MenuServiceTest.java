@@ -1,7 +1,10 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.common.domain.Price;
-import kitchenpos.menu.domain.*;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroupRepository;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -43,8 +46,11 @@ class MenuServiceTest {
     @Test
     void createOneMenu() {
         MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup("메뉴그룹"));
-        Product product = productRepository.save(new Product("상품", Price.of(1000)));
-        MenuRequest request = new MenuRequest("메뉴", 200, menuGroup.getId(), Arrays.asList(new MenuProductRequest(product.getId(), 2L)));
+        Product product1 = productRepository.save(new Product("상품", Price.of(1000)));
+        Product product2 = productRepository.save(new Product("상품2", Price.of(2000)));
+        MenuProductRequest productRequest1 = new MenuProductRequest(product1.getId(), 2L);
+        MenuProductRequest productRequest2 = new MenuProductRequest(product2.getId(), 3L);
+        MenuRequest request = new MenuRequest("메뉴", 1000, menuGroup.getId(), Arrays.asList(productRequest1, productRequest2));
         MenuResponse saved = menuService.create(request);
         
         assertThat(request.getName()).isEqualTo(saved.getName());
@@ -98,15 +104,7 @@ class MenuServiceTest {
     @Test
     @Transactional
     void listMenus() {
-        Product 상품1 = new Product(1L, "상품1", Price.of(10000));
-        Product 상품2 = new Product(2L, "상품2", Price.of(20000));
-
-        List<MenuProductRequest> menuProductsRequest = Arrays.asList(new MenuProductRequest(상품1.getId(), 1L), new MenuProductRequest(상품2.getId(), 1L));
-        MenuRequest request = new MenuRequest("메뉴1", 28000, 1L, menuProductsRequest);
-        MenuResponse saved = menuService.create(request);
-
         List<MenuResponse> results = menuService.list();
         assertThat(results.size()).isGreaterThan(1);
-        assertThat(results).contains(saved);
     }
 }
