@@ -79,7 +79,7 @@ public class OrderServiceTest {
 
         주문테이블_비어있음 = new OrderTable(0, true);
         주문테이블_비어있지_않음 = new OrderTable(2, false);
-        주문_항목 = new OrderLineItem(후라이드한마리_양념치킨한마리.getId(), 1L);
+        주문_항목 = new OrderLineItem(후라이드한마리_양념치킨한마리, 1L);
 
         주문_항목_목록 = new ArrayList<>();
         주문_항목_목록.add(주문_항목);
@@ -96,8 +96,9 @@ public class OrderServiceTest {
         final Long orderTableId = 1L;
         given(orderTableRepository.findById(orderTableId))
             .willReturn(Optional.of(주문테이블_비어있지_않음));
-        given(menuRepository.findAllByIdIn(Collections.singletonList(주문_항목.getMenuId())))
+        given(menuRepository.findAllByIdIn(Collections.singletonList(주문_항목.getMenu().getId())))
             .willReturn(Collections.singletonList(후라이드한마리_양념치킨한마리));
+        given(orderRepository.save(주문)).willReturn(주문);
         given(orderRepository.save(주문)).willReturn(주문);
 
         OrderResponse orderResponse = orderService.create(주문_요청);
@@ -125,7 +126,7 @@ public class OrderServiceTest {
         final Long orderTableId = 1L;
         given(orderTableRepository.findById(orderTableId))
             .willReturn(Optional.of(주문테이블_비어있지_않음));
-        given(menuRepository.findAllByIdIn(Collections.singletonList(주문_항목.getMenuId())))
+        given(menuRepository.findAllByIdIn(Collections.singletonList(주문_항목.getMenu().getId())))
             .willReturn(new ArrayList<>());
 
         assertThatIllegalArgumentException()
@@ -138,7 +139,7 @@ public class OrderServiceTest {
         final Long orderTableId = 1L;
         given(orderTableRepository.findById(orderTableId))
             .willReturn(Optional.of(주문테이블_비어있음));
-        given(menuRepository.findAllByIdIn(Collections.singletonList(주문_항목.getMenuId())))
+        given(menuRepository.findAllByIdIn(Collections.singletonList(주문_항목.getMenu().getId())))
             .willReturn(Collections.singletonList(후라이드한마리_양념치킨한마리));
 
         assertThatIllegalArgumentException()

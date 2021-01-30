@@ -5,6 +5,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import kitchenpos.menu.domain.menu.Menu;
 
 @Entity
 public class OrderLineItem {
@@ -16,16 +20,17 @@ public class OrderLineItem {
     @Column(name = "order_id", nullable = false, insertable = false, updatable = false)
     private Long orderId;
 
-    @Column(name = "menu_id", nullable = false, insertable = false, updatable = false)
-    private Long menuId;
+    @ManyToOne
+    @JoinColumn(name = "menu_id")
+    private Menu menu;
 
     private long quantity;
 
     protected OrderLineItem() {
     }
 
-    public OrderLineItem(final Long menuId, final long quantity) {
-        this.menuId = menuId;
+    public OrderLineItem(final Menu menu, final long quantity) {
+        this.menu = menu;
         this.quantity = quantity;
     }
 
@@ -41,8 +46,8 @@ public class OrderLineItem {
         return quantity;
     }
 
-    public Long getMenuId() {
-        return this.menuId;
+    public Menu getMenu() {
+        return this.menu;
     }
 
     protected void updateOrder(final Long orderId) {

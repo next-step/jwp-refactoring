@@ -76,7 +76,7 @@ public class TableServiceTest {
         주문테이블_비어있지_않음.changeEmpty(false);
         주문테이블_비어있지_않음.changeNumberOfGuests(2);
         
-        주문_항목 = new OrderLineItem(후라이드한마리_양념치킨한마리.getId(), 1L);
+        주문_항목 = new OrderLineItem(후라이드한마리_양념치킨한마리, 1L);
         주문_항목_목록 = new ArrayList<>();
         주문_항목_목록.add(주문_항목);
 

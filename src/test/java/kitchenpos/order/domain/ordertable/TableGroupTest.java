@@ -108,7 +108,7 @@ public class TableGroupTest {
 		MenuProduct 양념치킨한마리 = new MenuProduct(후라이드한마리_양념치킨한마리, 양념치킨, 1);
 		후라이드한마리_양념치킨한마리.addMenuProducts(Arrays.asList(후라이드치킨한마리, 양념치킨한마리));
 
-		주문_항목 = new OrderLineItem(후라이드한마리_양념치킨한마리.getId(), 1L);
+		주문_항목 = new OrderLineItem(후라이드한마리_양념치킨한마리, 1L);
 		List<OrderLineItem> 주문_항목_목록 = new ArrayList<>();
 		주문_항목_목록.add(주문_항목);
 

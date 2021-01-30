@@ -42,6 +42,6 @@ public class OrderLineItemRequest {
 	}
 
 	public OrderLineItem toOrderLineItem(final Menu menu) {
-		return new OrderLineItem(menu.getId(), this.quantity);
+		return new OrderLineItem(menu, this.quantity);
 	}
 }

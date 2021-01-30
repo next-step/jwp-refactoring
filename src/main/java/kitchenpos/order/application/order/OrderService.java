@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import kitchenpos.menu.domain.menu.Menu;
 import kitchenpos.menu.domain.menu.MenuRepository;
 import kitchenpos.order.domain.order.Order;
+import kitchenpos.order.domain.order.OrderLineItemRepository;
 import kitchenpos.order.domain.order.OrderRepository;
 import kitchenpos.order.domain.ordertable.OrderTable;
 import kitchenpos.order.domain.ordertable.OrderTableRepository;
@@ -20,12 +21,15 @@ public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
+    private final OrderLineItemRepository orderLineItemRepository;
 
     public OrderService(final MenuRepository menuRepository, final OrderRepository orderRepository,
-        final OrderTableRepository orderTableRepository) {
+        final OrderTableRepository orderTableRepository,
+        final OrderLineItemRepository orderLineItemRepository) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
+        this.orderLineItemRepository = orderLineItemRepository;
     }
 
     public OrderResponse create(final OrderRequest orderRequest) {
@@ -34,7 +38,9 @@ public class OrderService {
         final List<Menu> menus = menuRepository.findAllByIdIn(orderRequest.getMenuIds());
         final Order order = Order.createToCook(orderTable, orderRequest.toOrderLineItems(menus));
 
-        return OrderResponse.of(orderRepository.save(order));
+        orderRepository.save(order);
+
+        return OrderResponse.of(order);
     }
 
     @Transactional(readOnly = true)
