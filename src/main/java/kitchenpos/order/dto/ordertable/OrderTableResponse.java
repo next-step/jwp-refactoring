@@ -38,7 +38,7 @@ public class OrderTableResponse {
 		if (tableGroup == null) {
 			return null;
 		}
-		tableGroup.getId();
+		return tableGroup.getId();
 	}
 
 	public static List<OrderTableResponse> ofList(final List<OrderTable> orderTables) {

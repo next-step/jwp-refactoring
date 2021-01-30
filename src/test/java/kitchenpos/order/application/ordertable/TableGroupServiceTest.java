@@ -159,8 +159,8 @@ public class TableGroupServiceTest {
 
         tableGroupService.ungroup(tableGroupId);
 
-        assertThat(주문테이블1.getTableGroupId()).isNull();
-        assertThat(주문테이블2.getTableGroupId()).isNull();
+        assertThat(주문테이블1.getTableGroup()).isNull();
+        assertThat(주문테이블2.getTableGroup()).isNull();
 
     }
 

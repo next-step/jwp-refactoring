@@ -37,11 +37,11 @@ public class MenuService {
             .orElseThrow(IllegalArgumentException::new);
         final List<Product> products = productRepository.findAllById(menuRequest.getProductIds());
 
-        final Menu menu = new Menu(menuGroup.getName(), menuRequest.getPrice(), menuGroup);
-        final Menu savedMenu = menuRepository.save(menu);
-        savedMenu.addMenuProducts(MenuProducts.create(savedMenu, products, menuRequest.getMenuProductRequests()));
+        final Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup);
+        menuRepository.save(menu);
+        menu.addMenuProducts(MenuProducts.create(menu, products, menuRequest.getMenuProductRequests()));
 
-        return MenuResponse.of(savedMenu);
+        return MenuResponse.of(menu);
     }
 
     public List<MenuResponse> findAll() {
