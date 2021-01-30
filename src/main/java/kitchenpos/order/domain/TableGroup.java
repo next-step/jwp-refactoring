@@ -7,6 +7,7 @@ import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -16,13 +17,16 @@ public class TableGroup extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    /*
     @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderTable> orderTables;
+    private List<OrderTable> orderTables = new ArrayList<>();
+    */
+    private List<Long> orderTableIds = new ArrayList();
 
     public TableGroup() {
     }
-    public TableGroup(List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
+    public TableGroup(List<Long> orderTableIds) {
+        this.orderTableIds = orderTableIds;
     }
 
     public List<Long> getOrderTableIds(List<OrderTable> orderTables) {
@@ -35,7 +39,7 @@ public class TableGroup extends BaseEntity {
                 .collect(Collectors.toList());
     }
 
-    public void compareOrderTables(List<OrderTable> orderTables, List<OrderTable> savedOrderTables) {
+    public void compareOrderTables(List<Long> orderTables, List<OrderTable> savedOrderTables) {
         if (orderTables.size() != savedOrderTables.size()) {
             throw new IllegalArgumentException("주문테이블과 저장된 테이블의 크기가 같지 않으면 주문등록할 수 없습니다.");
         }
@@ -47,8 +51,8 @@ public class TableGroup extends BaseEntity {
         }
     }
 
-    public void changeOrderTables(List<OrderTable> savedOrderTables) {
-        orderTables = savedOrderTables;
+    public void changeOrderTablesIds(List<Long> savedOrderTables) {
+        orderTableIds = savedOrderTables;
     }
 
     public Long getId() {
@@ -59,7 +63,7 @@ public class TableGroup extends BaseEntity {
         this.id = id;
     }
 
-    public List<OrderTable> getOrderTables() {
-        return orderTables;
+    public List<Long> getOrderTableIds() {
+        return orderTableIds;
     }
 }

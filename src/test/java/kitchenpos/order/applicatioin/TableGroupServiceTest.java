@@ -36,7 +36,7 @@ class TableGroupServiceTest {
     void setUp() {
         orderTable1 = new OrderTable(null, 1,true);
         orderTable2 = new OrderTable(null, 2, true);
-        tableGroup = new TableGroup(Arrays.asList(orderTable1, orderTable2));
+        tableGroup = new TableGroup(Arrays.asList(orderTable1.getId(), orderTable2.getId()));
     }
 
     @Test
