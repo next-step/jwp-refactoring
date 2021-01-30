@@ -1,5 +1,7 @@
 package kitchenpos.menu.dto;
 
+import kitchenpos.menu.MenuGroup;
+
 import java.math.BigDecimal;
 
 public class MenuRequest {

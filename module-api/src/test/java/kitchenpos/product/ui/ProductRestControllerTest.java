@@ -1,8 +1,8 @@
-package kitchenpos.ui;
+package kitchenpos.product.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.dto.ProductResponse;
-import kitchenpos.application.ProductService;
+import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.product.application.ProductService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
