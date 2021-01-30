@@ -1,41 +1,57 @@
 package kitchenpos.domain;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Entity
+@EntityListeners(AuditingEntityListener.class)
 public class TableGroup {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDateTime createdDate;
-    private List<OrderTable> orderTables;
 
-    public TableGroup() {
+    @CreatedDate
+    private LocalDateTime createdDate = LocalDateTime.now();
+
+    @Embedded
+    private OrderTables orderTables;
+
+    protected TableGroup() {
     }
 
-    public TableGroup(List<OrderTable> orderTables) {
+    public TableGroup(final OrderTables orderTables) {
+        updateOrderTables(orderTables);
+    }
+
+    public TableGroup(Long id, LocalDateTime createdDate) {
+        this.id = id;
+        this.createdDate = createdDate;
+    }
+
+    public void updateOrderTables(OrderTables orderTables) {
+        orderTables.updateTableGroup(this);
         this.orderTables = orderTables;
+    }
+
+    public void unGroup() {
+        orderTables.checkOrderTableStatus();
+        orderTables.unGroup();
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public LocalDateTime getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(final LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
     public List<OrderTable> getOrderTables() {
-        return orderTables;
+        return orderTables.findAll();
     }
 
-    public void setOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
-    }
 }
