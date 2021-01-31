@@ -1,0 +1,16 @@
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.flywaydb:flyway-core'
+    testImplementation 'io.rest-assured:rest-assured:3.3.0'
+}
+
+
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}
