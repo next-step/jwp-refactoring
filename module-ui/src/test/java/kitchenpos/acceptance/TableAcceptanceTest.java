@@ -1,0 +1,99 @@
+package kitchenpos.acceptance;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import kitchenpos.application.TableService;
+import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.Arrays;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@SpringBootTest
+@AutoConfigureMockMvc
+public class TableAcceptanceTest {
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    ObjectMapper mapper;
+
+    @MockBean
+    private TableService tableService;
+
+
+    @DisplayName("테이블 등록")
+    @Test
+    public void create() throws Exception {
+        OrderTableResponse expectedTable = new OrderTableResponse(1L, 1L, 1, true);
+        given(tableService.create(any())).willReturn(expectedTable);
+
+        mockMvc.perform(post("/api/tables")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(serialize(expectedTable)))
+                .andDo(print())
+                .andExpect(status().isCreated());
+    }
+
+    @DisplayName("테이블 목록")
+    @Test
+    public void list() throws Exception {
+        OrderTableResponse table1 = new OrderTableResponse(1L, 1L, 3, true);
+        OrderTableResponse table2 = new OrderTableResponse(2L, 2L, 3, true);
+        given(tableService.list()).willReturn(Arrays.asList(table1, table2));
+
+        mockMvc.perform(get("/api/tables"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.[0].id").value(1L))
+                .andExpect(jsonPath("$.[1].id").value(2L));
+    }
+
+    @DisplayName("테이블 손님수 변경")
+    @Test
+    public void ungroup() throws Exception {
+        OrderTableRequest expectedTableRequest = new OrderTableRequest(1L, 3, true);
+        OrderTableResponse expectedTableResponse = new OrderTableResponse(1L, 1L, 3, true);
+        given(tableService.changeNumberOfGuests(1L, expectedTableRequest)).willReturn(expectedTableResponse);
+
+        mockMvc.perform(put("/api/tables/{orderTableId}/number-of-guests", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(serialize(expectedTableRequest)))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @DisplayName("빈 테이블 지정")
+    @Test
+    public void changeEmpty() throws Exception {
+        OrderTableResponse expectedTable = new OrderTableResponse(1L, 1L, 3, false);
+        given(tableService.changeEmpty(any(), any())).willReturn(expectedTable);
+
+        mockMvc.perform(put("/api/tables/{orderTableId}/empty", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(serialize(expectedTable)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.empty").value(false));
+    }
+
+    private String serialize(Object request) throws JsonProcessingException {
+        mapper = new ObjectMapper();
+        return mapper.writeValueAsString(request);
+    }
+}
