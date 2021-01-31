@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.guestordertable.GuestOrderTable;
 import kitchenpos.table.OrderTable;
 
 import javax.persistence.*;
@@ -13,11 +14,9 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
-    @JoinColumn(name = "orderTableId")
-    private OrderTable orderTable;
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
+    private Long orderTableId;
     private LocalDateTime orderedTime;
     @OneToMany(mappedBy = "order")
     private List<OrderLineItem> orderLineItems;
@@ -25,11 +24,8 @@ public class Order {
     Order() {
     }
 
-    public Order(OrderTable orderTable) {
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-        this.orderTable = orderTable;
+    public Order(GuestOrderTable orderTable) {
+        this.orderTableId = orderTable.getId();
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
     }
@@ -46,10 +42,6 @@ public class Order {
 
     public Long getId() {
         return id;
-    }
-
-    public OrderTable getOrderTable() {
-        return orderTable;
     }
 
     public OrderStatus getOrderStatus() {

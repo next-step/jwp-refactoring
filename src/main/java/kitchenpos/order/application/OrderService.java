@@ -1,5 +1,7 @@
 package kitchenpos.order.application;
 
+import kitchenpos.guestordertable.GuestOrderTable;
+import kitchenpos.guestordertable.GuestOrderTableService;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderAddRequest;
@@ -20,19 +22,19 @@ public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
     private final OrderLineItemRepository orderLineItemRepository;
-    private final OrderTableRepository orderTableRepository;
     private final OrderMapper mapper = Mappers.getMapper(OrderMapper.class);
+    private final GuestOrderTableService guestOrderTableService;
 
     public OrderService(
             final MenuRepository menuRepository,
             final OrderRepository orderRepository,
             final OrderLineItemRepository orderLineItemRepository,
-            final OrderTableRepository orderTableRepository
+            final GuestOrderTableService guestOrderTableService
     ) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
         this.orderLineItemRepository = orderLineItemRepository;
-        this.orderTableRepository = orderTableRepository;
+        this.guestOrderTableService = guestOrderTableService;
     }
 
     @Transactional
@@ -43,9 +45,7 @@ public class OrderService {
                 .map(it -> new OrderLineItem(menuRepository.getOne(it.getMenuId()), it.getQuantity()))
                 .collect(Collectors.toList());
         request.checkSameOrderLineSize(orderLineItems.size());
-        final OrderTable orderTable = orderTableRepository.findById(request.getOrderTableId())
-                .orElseThrow(IllegalArgumentException::new);
-        orderTable.checkOrder();
+        final GuestOrderTable orderTable = guestOrderTableService.getGuestOrderTable(request.getOrderTableId());
         Order order = new Order(orderTable);
         order.addOrderLineItems(orderLineItems);
         orderRepository.save(order);
