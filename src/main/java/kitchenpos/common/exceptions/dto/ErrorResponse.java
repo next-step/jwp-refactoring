@@ -6,7 +6,7 @@ public class ErrorResponse {
 	private String debugMessage;
 	private String path;
 
-	public ErrorResponse() {
+	protected ErrorResponse() {
 	}
 
 	public ErrorResponse(final String message, final String debugMessage, final String path) {
@@ -16,8 +16,7 @@ public class ErrorResponse {
 	}
 
 	public ErrorResponse(final String message, final String path) {
-		this.message = message;
-		this.path = path;
+		this(message, null, path);
 	}
 
 	public String getMessage() {
