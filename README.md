@@ -19,3 +19,24 @@
 | 단체 지정 | table group | 통합 계산을 위해 개별 주문 테이블을 그룹화하는 기능 |
 | 주문 항목 | order line item | 주문에 속하는 수량이 있는 메뉴 |
 | 매장 식사 | eat in | 포장하지 않고 매장에서 식사하는 것 |
+
+---
+
+# 1단계 - 테스트를 통한 코드 보호
+
+## 요구사항 1 - 키친포스 요구사항 정리
+
+1. 상품
+
+- API table
+
+| Method | URI | Description | Request | Response |
+| --- | --- | --- | --- | --- |
+| POST | "/api/products" | 상품 생성 | Number id, String name, Number price | 생성된 상품의 URI와 상품 데이터 |
+| GET | "/api/products" | 상품 목록 조회 |  | 모든 상품 목록 |
+
+- Business 요구사항 
+    - POST "/api/products"
+        - price는 0보다 큰 정수여야 상품을 생성할 수 있다.
+    
+## 요구사항 2 - 모든 Business Object의 테스트코드 작성
