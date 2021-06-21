@@ -135,4 +135,27 @@
         - 최초 주문 등록 시 주문 상태는 `COOKING`로 등록된다.
         - 모든 주문 항목을 주문에 속하게 해야 한다.
     
+### 단체 지정
+
+1. API table
+
+| Method | URI | Request | Response | Description |
+|:---:|:---:|:---:|:---:|---|
+| POST | `/api/table-groups` | (Body) TableGroup | 생성된 단체 지정 데이터와 URI | 단체 지정 생성 |
+| DELETE | `/api/table-groups/{tableGroupId}` | | | 단체 지정 삭제 |
+
+2. Business 상세 요구사항
+    - 단체 지정 (TableGroup)
+        - Long id
+        - LocalDateTime createdDate
+        - List<OrderTable> orderTables
+    - POST `/api/table-groups`
+        - 주문 테이블이 2개 이상이어야만 생성 가능
+        - 입력한 주문 테이블의 개수와 실제 저장되어 있는 주문 테이블의 개수가 같아야 한다.
+        - 모든 주문 테이블 상태는 `empty` 가 아니어야 한다.
+        - 모든 주문 테이블을 `empty` 가 아닌 상태로 만들고 같은 단체로 소속을 변경한다.
+    - DELETE `/api/table-groups/{tableGroupId}'
+        - 주문 상태가 `COOKING`, `MEAL`이면 삭제할 수 없다.
+        - 주문 테이블의 단체를 해제한다.
+
 ## 요구사항 2 - 모든 Business Object의 테스트코드 작성
