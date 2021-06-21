@@ -60,7 +60,7 @@
 
 | Method | URI | Description | Request | Response |
 |:---:|:---:|:---:|:---:|---|
-| POST | `/api/menus` | 메뉴 생성 | String name, Decimal price, Integer menuGroupId, List menuProducts | 생성된 메뉴 URI와 메뉴 데이터 |
+| POST | `/api/menus` | 메뉴 생성 | String name, Decimal price, Long menuGroupId, List menuProducts | 생성된 메뉴 URI와 메뉴 데이터 |
 | GET | `/api/menus` | 메뉴 목록 조회 |  | 모든 메뉴 목록 |
 
 - Business 요구사항
@@ -70,6 +70,7 @@
         - price는 0보다 큰 *실수*만 사용 가능
         - menu가 속할 menuGroup이 생성된 상태에서만 menu 생성 가능
         - price는 (각 메뉴 상품의 가격 * 각 메뉴 상품의 재고 합계) 와 같거나 그보다 더 작다.
-
+        - menuProducts는 menuProduct의 모음
+            - menuProduct는 Long menuId, Long productId, long quantity 으로 구성
 
 ## 요구사항 2 - 모든 Business Object의 테스트코드 작성
