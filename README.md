@@ -26,51 +26,113 @@
 
 ## 요구사항 1 - 키친포스 요구사항 정리
 
-1. 상품
+### 상품
 
-- API table
+1. API table
 
-| Method | URI | Description | Request | Response |
+| Method | URI | Request | Response | Description |
 |:---:|:---:|:---:|:---:|---|
-| POST | `/api/products` | 상품 생성 | String name, Decimal price | 생성된 상품의 URI와 상품 데이터 |
-| GET | `/api/products` | 상품 목록 조회 |  | 모든 상품 목록 |
+| POST | `/api/products` | (Body) Product | 생성된 상품의 데이터와 URI | 상품 생성 | 
+| GET | `/api/products`  |         | List<Product> | 상품 목록 조회 |
 
-- Business 요구사항 
-    - 상품
-        - 상품명은 255자까지 입력 가능
+2. Business 상세 요구사항
+    - 상품 (Product)
+        - Long id
+        - String name (상품명은 255자까지 입력 가능)
+        - Decimal price
     - POST `/api/products`
-        - price는 0보다 큰 *실수*만 사용 가능
+        - price는 **0보다 큰 실수**만 사용 가능
 
-2. 메뉴 그룹
+### 메뉴 그룹
 
-- API table
+1. API table
 
-| Method | URI | Description | Request | Response |
+| Method | URI | Request | Response | Description |
 |:---:|:---:|:---:|:---:|---|
-| POST | `/api/menu-groups` | 메뉴 그룹 생성 | String name | 생성된 메뉴 그룹의 URI와 메뉴 그룹 데이터 |
-| GET | `/api/menu-groups` | 메뉴 그룹 목록 조회 |  | 모든 메뉴 그 목록 |
+| POST | `/api/menu-groups` | (Body) MenuGroup | 생성된 메뉴 그룹의 데이터와 URI | 메뉴 그룹 생성 |
+| GET | `/api/menu-groups`  |           | List<MenuGroup> | 메뉴 그룹 목록 조회 |
 
-- Business 요구사항
-    - 메뉴 그룹
-        - 메뉴 그룹명은 255자까지 입력 가능
+2. Business 상세 요구사항
+    - 메뉴 그룹 (MenuGroup)
+        - Long id
+        - String name (메뉴 그룹명은 255자까지 입력 가능)
 
-3. 메뉴
+### 메뉴
 
-- API table
+1. API table
 
-| Method | URI | Description | Request | Response |
+| Method | URI | Request | Response | Description |
 |:---:|:---:|:---:|:---:|---|
-| POST | `/api/menus` | 메뉴 생성 | String name, Decimal price, Long menuGroupId, List menuProducts | 생성된 메뉴 URI와 메뉴 데이터 |
-| GET | `/api/menus` | 메뉴 목록 조회 |  | 모든 메뉴 목록 |
+| POST | `/api/menus` | (Body) Menu | 생성된 메뉴 데이터와 URI | 메뉴 생성 |
+| GET | `/api/menus` |  | List<Menu> | 메뉴 목록 조회 |
 
-- Business 요구사항
-    - 메뉴
-        - 메뉴명은 255자까지 입력 가능
+2. Business 상세 요구사항
+    - 메뉴 (Menu)
+        - Long id
+        - String name (메뉴명은 255자까지 입력 가능) 
+        - Decimal price
+        - Long menuGroupId
+        - List<MenuProduct> menuProducts
+    - 메뉴 상품 (MenuProduct)
+        - Long menuId
+        - Long productId
+        - long quantity
     - POST `/api/menus`
-        - price는 0보다 큰 *실수*만 사용 가능
-        - menu가 속할 menuGroup이 생성된 상태에서만 menu 생성 가능
-        - price는 (각 메뉴 상품의 가격 * 각 메뉴 상품의 재고 합계) 와 같거나 그보다 더 작다.
-        - menuProducts는 menuProduct의 모음
-            - menuProduct는 Long menuId, Long productId, long quantity 으로 구성
+        - price는 **0보다 큰 실수**만 사용 가능
+        - menu가 속할 **menuGroup이 생성된 상태**에서만 menu 생성 가능
+        - price는 (각 메뉴 상품의 가격 * 각 메뉴 상품의 재고 합계) 와 같거나 그보다 작다.
+    
+### 주문 테이블
 
+1. API table
+
+| Method | URI | Request | Response | Description |
+|:---:|:---:|:---:|:---:|---|
+| POST | `/api/tables` | (Body) OrderTable | 생성된 주문 데이터와 URI | 주문 테이블 생성 |
+| GET | `/api/tables` |  | List<OrderTable> | 주문 테이블 조회 |
+| PUT | `/api/tables/{orderTableId}/empty` | (Body) OrderTable | 변경에 성공한 주문 테이블 데이터 | 주문 테이블 상태를 empty로 변경 |
+| PUT | `/api/tables/{orderTableId}/number-of-guests` |  | 변경에 성공한 주문 테이블 데이터 | 주문 테이블의 방문 손님 수 변경 |
+
+2. Business 상세 요구사항
+    - 주문 테이블 (OrderTable)
+        - Long id
+        - Long tableGroupId
+        - int numberOfGuests
+        - boolean empty
+    - PUT `/api/tables/{orderTableId}/empty`
+        - 주문 테이블 그룹에 **속하지 않은** 상태여야 한다.
+        - 주문 상태가 `COOKING`, `MEAL` 이 아니어야 한다.
+   - PUT `/api/tables/{orderTableId}/number-of-guests`
+        - 주문 테이블의 상태가 'empty' 가 아니어야 한다.
+
+### 주문
+
+1. API table
+
+| Method | URI | Request | Response | Description |
+|:---:|:---:|:---:|:---:|---|
+| POST | `/api/orders` | (Body) Order | 생성된 주문 데이터와 URI | 주문 생성 |
+| GET | `/api/orders` | | List<Order> | 주문 목록 조회 |
+| PUT | `/api/orders/{orderId}/order-status` |  | 변경에 성공한 주문 데이터와 URI | 주문 상태 변경 |
+
+2. Business 상세 요구사항
+    - 주문 (Order)
+        - Long id
+        - Long orderTableId
+        - String orderStatus
+        - LocalDateTime orderedTime
+        - List<OrderLineItem> orderLineItems
+    - 주문 항목 (OrderLineItem)
+        - Long seq
+        - Long orderId
+        - Long menuId
+        - long quantity
+    - POST `/api/orders`
+        - 주문 항목이 1개 이상 존재해야 한다.
+        - 각 주문 항목은 메뉴 당 1개씩 존재한다. 
+            - 같은 메뉴를 여러 개 시켰다면 주문 항목의 quantity를 증가시킨다.
+        - 주문 테이블 상태는 `empty`가 아니어야 한다.
+        - 최초 주문 등록 시 주문 상태는 `COOKING`로 등록된다.
+        - 모든 주문 항목을 주문에 속하게 해야 한다.
+    
 ## 요구사항 2 - 모든 Business Object의 테스트코드 작성
