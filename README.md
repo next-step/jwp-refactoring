@@ -36,9 +36,10 @@
 | GET | `/api/products` | 상품 목록 조회 |  | 모든 상품 목록 |
 
 - Business 요구사항 
+    - 상품
+        - 상품명은 255자까지 입력 가능
     - POST `/api/products`
-        - price는 *정수*만 사용 가능
-        - price가 *0 이하의 정수*인 경우 오류 발생
+        - price는 0보다 큰 *실수*만 사용 가능
 
 2. 메뉴 그룹
 
@@ -47,10 +48,28 @@
 | Method | URI | Description | Request | Response |
 |:---:|:---:|:---:|:---:|---|
 | POST | `/api/menu-groups` | 메뉴 그룹 생성 | String name | 생성된 메뉴 그룹의 URI와 메뉴 그룹 데이터 |
-| GET | `/api/menu-groups` | 메뉴 그룹 목록 조회 |  | 모든 메뉴 그룹 목록 |
+| GET | `/api/menu-groups` | 메뉴 그룹 목록 조회 |  | 모든 메뉴 그 목록 |
 
 - Business 요구사항
     - 메뉴 그룹
-        - 메뉴 그룹명은 255자까지 입력할 수 있다.
+        - 메뉴 그룹명은 255자까지 입력 가능
+
+3. 메뉴
+
+- API table
+
+| Method | URI | Description | Request | Response |
+|:---:|:---:|:---:|:---:|---|
+| POST | `/api/menus` | 메뉴 생성 | String name, Decimal price, Integer menuGroupId, List menuProducts | 생성된 메뉴 URI와 메뉴 데이터 |
+| GET | `/api/menus` | 메뉴 목록 조회 |  | 모든 메뉴 목록 |
+
+- Business 요구사항
+    - 메뉴
+        - 메뉴명은 255자까지 입력 가능
+    - POST `/api/menus`
+        - price는 0보다 큰 *실수*만 사용 가능
+        - menu가 속할 menuGroup이 생성된 상태에서만 menu 생성 가능
+        - price는 (각 메뉴 상품의 가격 * 각 메뉴 상품의 재고 합계) 와 같거나 그보다 더 작다.
+
 
 ## 요구사항 2 - 모든 Business Object의 테스트코드 작성
