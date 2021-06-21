@@ -41,8 +41,8 @@
         - String name (상품명은 255자까지 입력 가능)
         - Decimal price
     - POST `/api/products`
-        - price는 **0보다 큰 실수**만 사용 가능
-
+        - 상품 가격(price)은 **0 보다 큰 실수**여야 한다.
+    
 ### 메뉴 그룹
 
 1. API table
@@ -56,7 +56,7 @@
     - 메뉴 그룹 (MenuGroup)
         - Long id
         - String name (메뉴 그룹명은 255자까지 입력 가능)
-
+    
 ### 메뉴
 
 1. API table
@@ -78,9 +78,10 @@
         - Long productId
         - long quantity
     - POST `/api/menus`
-        - price는 **0보다 큰 실수**만 사용 가능
-        - menu가 속할 **menuGroup이 생성된 상태**에서만 menu 생성 가능
-        - price는 (각 메뉴 상품의 가격 * 각 메뉴 상품의 재고 합계) 와 같거나 그보다 작다.
+        - 메뉴를 등록한다.
+        - 메뉴의 가격(price)은 **0 보다 큰 실수**여야 한다.
+        - 메뉴가 속할 **메뉴 그룹이 미리 등록**되어 있어야 한다.
+        - 메뉴의 가격(price)은 (각 메뉴 상품의 가격 * 각 메뉴 상품의 재고 합계) 와 같거나 그보다 작아야 한다.
     
 ### 주문 테이블
 
@@ -98,12 +99,15 @@
         - Long id
         - Long tableGroupId
         - int numberOfGuests
-        - boolean empty
+        - boolean empty 
+    - POST `/api/tables`
+        - 주문 테이블을 등록한다.
+        - 최초 등록 시 단체 지정이 되어 있지 않은 상태이다.
     - PUT `/api/tables/{orderTableId}/empty`
         - 주문 테이블 그룹에 **속하지 않은** 상태여야 한다.
         - 주문 상태가 `COOKING`, `MEAL` 이 아니어야 한다.
-   - PUT `/api/tables/{orderTableId}/number-of-guests`
-        - 주문 테이블의 상태가 'empty' 가 아니어야 한다.
+    - PUT `/api/tables/{orderTableId}/number-of-guests`
+        - 주문 테이블의 상태가 `empty` 가 아니어야 한다.
 
 ### 주문
 
@@ -113,7 +117,7 @@
 |:---:|:---:|:---:|:---:|---|
 | POST | `/api/orders` | (Body) Order | 생성된 주문 데이터와 URI | 주문 생성 |
 | GET | `/api/orders` | | List<Order> | 주문 목록 조회 |
-| PUT | `/api/orders/{orderId}/order-status` |  | 변경에 성공한 주문 데이터와 URI | 주문 상태 변경 |
+| PUT | `/api/orders/{orderId}/order-status` | (Body) Order | 변경에 성공한 주문 데이터와 URI | 주문 상태 변경 |
 
 2. Business 상세 요구사항
     - 주문 (Order)
@@ -134,7 +138,10 @@
         - 주문 테이블 상태는 `empty`가 아니어야 한다.
         - 최초 주문 등록 시 주문 상태는 `COOKING`로 등록된다.
         - 모든 주문 항목을 주문에 속하게 해야 한다.
-    
+    - PUT `/api/orders/{orderId}/order-status`
+        - 주문 상태가 `COMPLETION` 이면 상태 변경이 불가능하다.
+        - 변경 가능한 상태는 `COOKING`, `MEAL` 이다.
+
 ### 단체 지정
 
 1. API table
@@ -150,13 +157,13 @@
         - LocalDateTime createdDate
         - List<OrderTable> orderTables
     - POST `/api/table-groups`
-        - 주문 테이블이 2개 이상이어야만 생성 가능
+        - 주문 테이블이 2개 이상이어야만 생성 가능하다.
         - 입력한 주문 테이블의 개수와 실제 저장되어 있는 주문 테이블의 개수가 같아야 한다.
         - 모든 주문 테이블 상태는 `empty` 가 아니어야 한다.
-        - 모든 주문 테이블을 `empty` 가 아닌 상태로 만들고 같은 단체로 소속을 변경한다.
+        - 모든 주문 테이블을 `empty` 가 아닌 상태로 만들고 같은 단체로 지정한다.
     - DELETE `/api/table-groups/{tableGroupId}'
         - 주문 상태가 `COOKING`, `MEAL`이면 삭제할 수 없다.
-        - 주문 테이블의 단체를 해제한다.
+        - 주문 테이블의 단체 지정을 해제한다.
 
 ## 요구사항 2 - 모든 Business Object의 테스트코드 작성
 
