@@ -31,12 +31,26 @@
 - API table
 
 | Method | URI | Description | Request | Response |
-| --- | --- | --- | --- | --- |
-| POST | "/api/products" | 상품 생성 | Number id, String name, Number price | 생성된 상품의 URI와 상품 데이터 |
-| GET | "/api/products" | 상품 목록 조회 |  | 모든 상품 목록 |
+|:---:|:---:|:---:|:---:|---|
+| POST | `/api/products` | 상품 생성 | String name, Decimal price | 생성된 상품의 URI와 상품 데이터 |
+| GET | `/api/products` | 상품 목록 조회 |  | 모든 상품 목록 |
 
 - Business 요구사항 
-    - POST "/api/products"
-        - price는 0보다 큰 정수여야 상품을 생성할 수 있다.
-    
+    - POST `/api/products`
+        - price는 *정수*만 사용 가능
+        - price가 *0 이하의 정수*인 경우 오류 발생
+
+2. 메뉴 그룹
+
+- API table
+
+| Method | URI | Description | Request | Response |
+|:---:|:---:|:---:|:---:|---|
+| POST | `/api/menu-groups` | 메뉴 그룹 생성 | String name | 생성된 메뉴 그룹의 URI와 메뉴 그룹 데이터 |
+| GET | `/api/menu-groups` | 메뉴 그룹 목록 조회 |  | 모든 메뉴 그룹 목록 |
+
+- Business 요구사항
+    - 메뉴 그룹
+        - 메뉴 그룹명은 255자까지 입력할 수 있다.
+
 ## 요구사항 2 - 모든 Business Object의 테스트코드 작성
