@@ -159,3 +159,12 @@
         - 주문 테이블의 단체를 해제한다.
 
 ## 요구사항 2 - 모든 Business Object의 테스트코드 작성
+
+> Presentation layer 부터 하위 layer로 내려가며 단계적으로 테스트코드 작성
+
+- [ ] MenuGroupRestController
+- [ ] MenuRestController
+- [ ] OrderRestController
+- [ ] ProductRestController
+- [ ] TableGroupRestController
+- [ ] TableRestController
