@@ -170,7 +170,7 @@
 > Presentation layer 부터 하위 layer로 내려가며 단계적으로 테스트코드 작성
 
 - [x] MenuGroupRestController
-- [ ] MenuRestController
+- [x] MenuRestController
 - [ ] OrderRestController
 - [x] ProductRestController
 - [ ] TableGroupRestController
