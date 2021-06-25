@@ -172,7 +172,7 @@
 
 - [x] MenuGroupRestController
 - [x] MenuRestController
-- [ ] OrderRestController
+- [x] OrderRestController
 - [x] ProductRestController
 - [ ] TableGroupRestController
 - [x] TableRestController
