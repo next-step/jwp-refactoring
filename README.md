@@ -92,7 +92,7 @@
 | POST | `/api/tables` | (Body) OrderTable | 생성된 주문 데이터와 URI | 주문 테이블 생성 |
 | GET | `/api/tables` |  | List<OrderTable> | 주문 테이블 조회 |
 | PUT | `/api/tables/{orderTableId}/empty` | (Body) OrderTable | 변경에 성공한 주문 테이블 데이터 | 주문 테이블 상태를 empty로 변경 |
-| PUT | `/api/tables/{orderTableId}/number-of-guests` |  | 변경에 성공한 주문 테이블 데이터 | 주문 테이블의 방문 손님 수 변경 |
+| PUT | `/api/tables/{orderTableId}/number-of-guests` | (Body) OrderTable | 변경에 성공한 주문 테이블 데이터 | 주문 테이블의 방문 손님 수 변경 |
 
 2. Business 상세 요구사항
     - 주문 테이블 (OrderTable)
@@ -107,6 +107,7 @@
         - 주문 테이블 그룹에 **속하지 않은** 상태여야 한다.
         - 주문 상태가 `COOKING`, `MEAL` 이 아니어야 한다.
     - PUT `/api/tables/{orderTableId}/number-of-guests`
+        - 요청 body의 손님 수는 양의 정수여야 한다.
         - 주문 테이블의 상태가 `empty` 가 아니어야 한다.
 
 ### 주문
@@ -174,4 +175,4 @@
 - [ ] OrderRestController
 - [x] ProductRestController
 - [ ] TableGroupRestController
-- [ ] TableRestController
+- [x] TableRestController
