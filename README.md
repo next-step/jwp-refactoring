@@ -150,7 +150,7 @@
 | Method | URI | Request | Response | Description |
 |:---:|:---:|:---:|:---:|---|
 | POST | `/api/table-groups` | (Body) TableGroup | 생성된 단체 지정 데이터와 URI | 단체 지정 생성 |
-| DELETE | `/api/table-groups/{tableGroupId}` | | | 단체 지정 삭제 |
+| DELETE | `/api/table-groups/{tableGroupId}` | | | 단체 지정 해제 |
 
 2. Business 상세 요구사항
     - 단체 지정 (TableGroup)
