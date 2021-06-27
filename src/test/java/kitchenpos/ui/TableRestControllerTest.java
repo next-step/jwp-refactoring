@@ -121,17 +121,17 @@ class TableRestControllerTest {
         assertEquals(request.getNumberOfGuests(), response.getNumberOfGuests());
     }
 
-    @DisplayName("주문 테이블의 손님 수 변경 요청 실패 - 손님 수가 0 또는 음수")
-    @ValueSource(ints = {0, -5})
+    @DisplayName("주문 테이블의 손님 수 변경 요청 실패 - 손님 수가 음수")
+    @ValueSource(ints = {-1, -5})
     @ParameterizedTest
     void updateOrderTableNumberOfGuestsFail01(int numberOfGuests) {
-        putNumberOfGuestsFail(0, numberOfGuests);
+        putNumberOfGuestsFail(1, numberOfGuests);
     }
 
     @DisplayName("주문 테이블의 손님 수 변경 요청 실패 - empty인 주문 테이블")
     @Test
     void updateOrderTableNumberOfGuestsFail02() {
-        putNumberOfGuestsFail(1, 3);
+        putNumberOfGuestsFail(4, 3);
     }
 
     private void putEmptyFail(int id) {

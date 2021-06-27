@@ -107,7 +107,7 @@
         - 주문 테이블 그룹에 **속하지 않은** 상태여야 한다.
         - 주문 상태가 `COOKING`, `MEAL` 이 아니어야 한다.
     - PUT `/api/tables/{orderTableId}/number-of-guests`
-        - 요청 body의 손님 수는 양의 정수여야 한다.
+        - 요청 body의 손님 수는 0 이상의 정수여야 한다.
         - 주문 테이블의 상태가 `empty` 가 아니어야 한다.
 
 ### 주문
@@ -174,5 +174,5 @@
 - [x] MenuRestController
 - [x] OrderRestController
 - [x] ProductRestController
-- [ ] TableGroupRestController
+- [x] TableGroupRestController
 - [x] TableRestController

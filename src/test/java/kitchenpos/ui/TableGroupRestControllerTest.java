@@ -55,7 +55,7 @@ class TableGroupRestControllerTest {
 
     @DisplayName("단체 지정 생성 요청 실패 - orderTable size가 2 미만")
     @Test
-    void createTableGroupRequestFail01() throws Exception {
+    void createTableGroupRequestFail01() {
         TableGroup tableGroup = new TableGroup();
         tableGroup.setOrderTables(Collections.singletonList(orderTableWithId(1L)));
         postFail(tableGroup);
@@ -63,7 +63,7 @@ class TableGroupRestControllerTest {
 
     @DisplayName("단체 지정 생성 요청 실패 - orderTable id가 중복")
     @Test
-    void createTableGroupRequestFail02() throws Exception {
+    void createTableGroupRequestFail02() {
         TableGroup tableGroup = new TableGroup();
         tableGroup.setOrderTables(Lists.newArrayList(orderTableWithId(1L), orderTableWithId(1L)));
         postFail(tableGroup);
@@ -71,7 +71,7 @@ class TableGroupRestControllerTest {
 
     @DisplayName("단체 지정 생성 요청 실패 - empty 상태가 아닌 orderTable 인입")
     @Test
-    void createTableGroupRequestFail03() throws Exception {
+    void createTableGroupRequestFail03() {
         TableGroup tableGroup = new TableGroup();
         tableGroup.setOrderTables(Lists.newArrayList(orderTableWithId(1L), orderTableWithId(12L)));
         postFail(tableGroup);
@@ -79,7 +79,7 @@ class TableGroupRestControllerTest {
 
     @DisplayName("단체 지정 생성 요청 실패 - orderTable 의 tableGroupId는 null이 아니어야 함")
     @Test
-    void createTableGroupRequestFail04() throws Exception {
+    void createTableGroupRequestFail04() {
         TableGroup tableGroup = new TableGroup();
         tableGroup.setOrderTables(Lists.newArrayList(orderTableWithId(1L), orderTableWithId(12L)));
         postFail(tableGroup);
@@ -88,7 +88,7 @@ class TableGroupRestControllerTest {
     @DisplayName("단체 지정 해제 요청 성공")
     @Test
     void ungroupRequestSuccess() throws Exception {
-        mockMvc.perform(delete(BASE_URL + "/" + 1))
+        mockMvc.perform(delete(BASE_URL + "/" + 3))
                .andDo(print())
                .andExpect(status().isNoContent());
     }
