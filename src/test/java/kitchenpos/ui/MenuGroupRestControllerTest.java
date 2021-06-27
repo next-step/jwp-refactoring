@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import kitchenpos.config.MockMvcTestConfig;
 import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

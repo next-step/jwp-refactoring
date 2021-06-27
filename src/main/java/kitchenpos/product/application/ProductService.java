@@ -1,10 +1,10 @@
-package kitchenpos.application;
+package kitchenpos.product.application;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
-import kitchenpos.domain.Product;
-import kitchenpos.domain.ProductRepository;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
