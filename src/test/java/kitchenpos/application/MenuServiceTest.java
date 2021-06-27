@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Optional;
 import kitchenpos.dao.MenuDao;
@@ -55,15 +54,8 @@ class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        후라이드 = new Product();
-        후라이드.setId(1L);
-        후라이드.setName("후라이드");
-        후라이드.setPrice(new BigDecimal(16000));
-
-        양념치킨 = new Product();
-        양념치킨.setId(1L);
-        양념치킨.setName("양념치킨");
-        양념치킨.setPrice(new BigDecimal(16000));
+        후라이드 = new Product("후라이드", 16000L);
+        양념치킨 = new Product("양념치킨", 16000L);
 
         mp후라이드 = new MenuProduct();
         mp후라이드.setSeq(1L);

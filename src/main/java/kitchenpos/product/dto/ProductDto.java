@@ -5,18 +5,23 @@ import kitchenpos.product.domain.Product;
 public class ProductDto {
     private Long id;
     private String name;
-    private Integer price;
+    private Long price;
 
-    public ProductDto() { }
+    @SuppressWarnings("unused")
+    protected ProductDto() { }
 
-    public ProductDto(Long id, String name, Integer price) {
+    public ProductDto(String name, Long price) {
+        this(null, name, price);
+    }
+
+    public ProductDto(Long id, String name, Long price) {
         this.id = id;
         this.name = name;
         this.price = price;
     }
 
     public static ProductDto of(Product product) {
-        return new ProductDto(product.getId(), product.getName(), product.getPrice().intValue());
+        return new ProductDto(product.getId(), product.getName(), product.getPrice().getValue());
     }
 
     public Long getId() {
@@ -27,7 +32,7 @@ public class ProductDto {
         return name;
     }
 
-    public Integer getPrice() {
+    public Long getPrice() {
         return price;
     }
 }

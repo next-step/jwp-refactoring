@@ -1,19 +1,18 @@
 package kitchenpos.product.application;
 
-import java.math.BigDecimal;
-import kitchenpos.product.application.ProductService;
-import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
@@ -29,52 +28,20 @@ class ProductServiceTest {
     @DisplayName("상품 생성 성공")
     @Test
     void createProductSuccess() {
-
-        // given
-        Product entity = new Product();
-        entity.setName("entity");
-        entity.setPrice(new BigDecimal(1000));
-
-        Product expect = new Product();
-        expect.setId(1L);
-        expect.setName("entity");
-        expect.setPrice(new BigDecimal(1000));
-
-        given(productRepository.save(entity)).willReturn(expect);
-
         // when
-        productService.create(entity);
+        productService.create("name", 1000L);
 
         // then
-        verify(productRepository).save(entity);
+        verify(productRepository).save(any());
     }
 
     @DisplayName("상품 생성 실패 - 상품 가격이 음수")
-    @Test
-    void createProductFail01() {
-
-        // given
-        Product entity = new Product();
-        entity.setName("entity");
-        entity.setPrice(new BigDecimal(-1000));
-
+    @NullSource
+    @ValueSource(longs = { -1000, -5000 })
+    @ParameterizedTest
+    void createProductFail(Long price) {
         // when
-        assertThatIllegalArgumentException().isThrownBy(() -> productService.create(entity));
-
-        // then
-        verify(productRepository, never()).save(any());
-    }
-
-    @DisplayName("상품 생성 실패 - 상품 가격 설정 안됨")
-    @Test
-    void createProductFail02() {
-
-        // given
-        Product entity = new Product();
-        entity.setName("entity");
-
-        // when
-        assertThatIllegalArgumentException().isThrownBy(() -> productService.create(entity));
+        assertThatIllegalArgumentException().isThrownBy(() -> productService.create("name", price));
 
         // then
         verify(productRepository, never()).save(any());

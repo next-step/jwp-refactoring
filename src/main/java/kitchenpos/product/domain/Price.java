@@ -7,20 +7,24 @@ import javax.persistence.Embeddable;
 public class Price {
 
     @Column(name = "price", nullable = false)
-    private final int value;
+    private final long value;
 
     protected Price() {
         this.value = 0;
     }
 
-    public Price(int value) {
+    public Price(Long value) {
         validateValue(value);
         this.value = value;
     }
 
-    private void validateValue(int value) {
-        if (value < 0) {
+    private void validateValue(Long value) {
+        if (value == null || value < 0) {
             throw new IllegalArgumentException();
         }
+    }
+
+    public long getValue() {
+        return value;
     }
 }

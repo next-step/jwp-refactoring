@@ -2,14 +2,15 @@ package kitchenpos.product.ui;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.config.MockMvcTestConfig;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -39,15 +40,12 @@ class ProductRestControllerTest {
     private ObjectMapper objectMapper;
 
     @DisplayName("상품 생성 성공")
-    @ValueSource(ints = { 0, 1000, 10000 })
+    @ValueSource(longs = { 0, 1000, 10000 })
     @ParameterizedTest
-    void createProductSuccess(int price) throws Exception {
+    void createProductSuccess(Long price) throws Exception {
 
-        Product product = new Product();
-        product.setName("product");
-        product.setPrice(new BigDecimal(price));
-
-        String content = objectMapper.writeValueAsString(product);
+        ProductDto productDto = new ProductDto("product", price);
+        String content = objectMapper.writeValueAsString(productDto);
 
         mockMvc.perform(post(BASE_URL).content(content)
                                       .contentType(MediaType.APPLICATION_JSON))
@@ -57,26 +55,12 @@ class ProductRestControllerTest {
     }
 
     @DisplayName("상품 가격이 음수면 상품 생성 실패")
-    @ValueSource(ints = { -1, -1000, -10000 })
+    @NullSource
+    @ValueSource(longs = { -1, -1000, -10000 })
     @ParameterizedTest
-    void createProductFail01(int price) throws JsonProcessingException {
-
-        Product product = new Product();
-        product.setName("product");
-        product.setPrice(new BigDecimal(price));
-
-        String content = objectMapper.writeValueAsString(product);
-        createRequestFail(content);
-    }
-
-    @DisplayName("상품 가격이 입력되지 않으면 상품 생성 실패")
-    @Test
-    void createProductFail02() throws Exception {
-
-        Product product = new Product();
-        product.setName("product");
-
-        String content = objectMapper.writeValueAsString(product);
+    void createProductFail(Long price) throws JsonProcessingException {
+        ProductDto productDto = new ProductDto("product", price);
+        String content = objectMapper.writeValueAsString(productDto);
         createRequestFail(content);
     }
 
@@ -99,9 +83,7 @@ class ProductRestControllerTest {
                                           .contentType(
                                               MediaType.APPLICATION_JSON))
                    .andDo(print())
-                   .andExpect(result -> assertTrue(
-                       result.getResolvedException() instanceof IllegalArgumentException))
-                   .andReturn();
+                   .andExpect(status().isBadRequest());
         } catch (Exception e) {
             assertTrue(e.getCause() instanceof IllegalArgumentException);
         }

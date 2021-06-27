@@ -7,7 +7,6 @@ import java.util.List;
 import kitchenpos.config.MockMvcTestConfig;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
-import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -22,7 +21,8 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -95,7 +95,7 @@ public class MenuRestControllerTest {
                                   .andReturn();
 
         String response = result.getResponse().getContentAsString();
-        List<Product> list = Arrays.asList(objectMapper.readValue(response, Product[].class));
+        List<Menu> list = Arrays.asList(objectMapper.readValue(response, Menu[].class));
         assertThat(list).hasSizeGreaterThanOrEqualTo(6); // default data size is 6
     }
 
