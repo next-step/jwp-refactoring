@@ -1,8 +1,8 @@
 package kitchenpos.application;
 
 import java.math.BigDecimal;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,7 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -21,7 +20,7 @@ import static org.mockito.Mockito.verify;
 class ProductServiceTest {
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private ProductService productService;
@@ -40,13 +39,13 @@ class ProductServiceTest {
         expect.setName("entity");
         expect.setPrice(new BigDecimal(1000));
 
-        given(productDao.save(entity)).willReturn(expect);
+        given(productRepository.save(entity)).willReturn(expect);
 
         // when
         productService.create(entity);
 
         // then
-        verify(productDao).save(entity);
+        verify(productRepository).save(entity);
     }
 
     @DisplayName("상품 생성 실패 - 상품 가격이 음수")
@@ -62,7 +61,7 @@ class ProductServiceTest {
         assertThatIllegalArgumentException().isThrownBy(() -> productService.create(entity));
 
         // then
-        verify(productDao, never()).save(any());
+        verify(productRepository, never()).save(any());
     }
 
     @DisplayName("상품 생성 실패 - 상품 가격 설정 안됨")
@@ -77,6 +76,6 @@ class ProductServiceTest {
         assertThatIllegalArgumentException().isThrownBy(() -> productService.create(entity));
 
         // then
-        verify(productDao, never()).save(any());
+        verify(productRepository, never()).save(any());
     }
 }

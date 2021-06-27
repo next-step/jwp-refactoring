@@ -6,10 +6,10 @@ import java.util.Optional;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.ProductRepository;
 import kitchenpos.ui.MenuRestControllerTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -42,7 +42,7 @@ class MenuServiceTest {
     private MenuProductDao menuProductDao;
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private MenuService menuService;
@@ -144,8 +144,8 @@ class MenuServiceTest {
    }
 
     private void givenProducts() {
-        given(productDao.findById(1L)).willReturn(Optional.of(후라이드));
-        given(productDao.findById(2L)).willReturn(Optional.of(양념치킨));
+        given(productRepository.findById(1L)).willReturn(Optional.of(후라이드));
+        given(productRepository.findById(2L)).willReturn(Optional.of(양념치킨));
     }
 
     private void givenMenuProducts() {
