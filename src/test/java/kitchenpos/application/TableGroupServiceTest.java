@@ -125,6 +125,7 @@ class TableGroupServiceTest {
     void 정상적인_단체지정_등록() {
         // given
         Long tableGroupId = 1L;
+
         OrderTable orderTable1 = new OrderTable(1L, null, 1, true);
         OrderTable orderTable2 = new OrderTable(2L, null, 2, true);
         given(orderTableDao.findAllByIdIn(Arrays.asList(1L, 2L)))
@@ -161,13 +162,16 @@ class TableGroupServiceTest {
     void 주문_테이블들의_고유_아이디를_조회했을_때_주문_상태가_조리_이거나_식사_일경우_IllegalArgumentException이_발생한다() {
         // given
         Long tableGroupId = 1L;
+
         List<String> bannedStatus = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
+
         List<OrderTable> orderTables = Arrays.asList(
                 new OrderTable(1L, tableGroupId, 1, true),
                 new OrderTable(2L, tableGroupId, 1, true),
                 new OrderTable(3L, tableGroupId, 1, true)
         );
         List<Long> orderTableIds = Arrays.asList(1L, 2L, 3L);
+
         given(orderTableDao.findAllByTableGroupId(tableGroupId))
                 .willReturn(orderTables);
 
@@ -189,6 +193,41 @@ class TableGroupServiceTest {
     @Test
     @DisplayName("unGroup - 정상적인 단체지정 해제")
     void 정상적인_단체지정_해제() {
+        // given
+        Long tableGroupId = 1L;
+        List<String> bannedStatus = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
+
+        OrderTable orderTable1 = new OrderTable(1L, tableGroupId, 1, true);
+        OrderTable orderTable2 = new OrderTable(2L, tableGroupId, 1, true);
+        OrderTable orderTable3 = new OrderTable(3L, tableGroupId, 1, true);
+        List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2, orderTable3);
+        List<Long> orderTableIds = Arrays.asList(1L, 2L, 3L);
+
+        given(orderTableDao.findAllByTableGroupId(tableGroupId))
+                .willReturn(orderTables);
+        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, bannedStatus))
+                .willReturn(false);
+
+        // when
+        tableGroupService.ungroup(tableGroupId);
+
+        // then
+        assertThat(orderTable1.getTableGroupId()).isNull();
+        assertThat(orderTable2.getTableGroupId()).isNull();
+        assertThat(orderTable3.getTableGroupId()).isNull();
+
+        verify(orderTableDao, VerificationModeFactory.times(1))
+                .findAllByTableGroupId(tableGroupId);
+
+        verify(orderDao, VerificationModeFactory.times(1))
+                .existsByOrderTableIdInAndOrderStatusIn(orderTableIds, bannedStatus);
+
+        verify(orderTableDao, VerificationModeFactory.times(1))
+                .save(orderTable1);
+        verify(orderTableDao, VerificationModeFactory.times(1))
+                .save(orderTable2);
+        verify(orderTableDao, VerificationModeFactory.times(1))
+                .save(orderTable3);
 
     }
 }
