@@ -125,9 +125,11 @@ class MenuServiceTest {
         Menu menu = new Menu(1L, "Menu", BigDecimal.valueOf(1000), menuGroupId, Arrays.asList(simpleMenuProduct));
 
         given(menuGroupDao.existsById(menuGroupId)).willReturn(true);
-        given(productDao.findById(product.getId())).willReturn(Optional.of(product));
 
-        // when & then
+        // when
+        when(productDao.findById(product.getId())).thenReturn(Optional.of(product));
+
+        // then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
 
         verify(menuGroupDao, VerificationModeFactory.times(1)).existsById(menuGroupId);
@@ -153,7 +155,7 @@ class MenuServiceTest {
 
         // when
         when(menuDao.save(menu)).thenReturn(menu);
-        when(menuProductDao.save(any())).thenAnswer(i -> i.getArguments()[0]);
+        when(menuProductDao.save(simpleMenuProduct)).thenReturn(simpleMenuProduct);
 
         Menu savedMenu = menuService.create(menu);
 
@@ -166,7 +168,7 @@ class MenuServiceTest {
         verify(productDao, VerificationModeFactory.times(1))
                 .findById(simpleProductId);
         verify(menuDao, VerificationModeFactory.times(1)).save(menu);
-        verify(menuProductDao, VerificationModeFactory.times(menu.getMenuProducts().size())).save(any());
+        verify(menuProductDao, VerificationModeFactory.times(1)).save(simpleMenuProduct);
     }
 
     @Test
@@ -176,9 +178,9 @@ class MenuServiceTest {
         Long menuId = 1L;
 
         List<MenuProduct> menuProducts = Arrays.asList(
-                new MenuProduct(1L, menuId, 1L, 1L ),
-                new MenuProduct(2L, menuId, 2L, 2L ),
-                new MenuProduct(3L, menuId, 3L, 3L )
+                new MenuProduct(1L, menuId, 1L, 1L),
+                new MenuProduct(2L, menuId, 2L, 2L),
+                new MenuProduct(3L, menuId, 3L, 3L)
         );
 
         Menu menu = new Menu(menuId, "Menu", BigDecimal.valueOf(1), 1L, menuProducts);
