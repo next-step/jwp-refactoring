@@ -101,6 +101,21 @@ class TableGroupServiceTest {
     @Test
     @DisplayName("create - 이미 단체 지정이 되어있을 경우 IllegalArgumentException이 발생한다.")
     void 이미_단체_지정이_되어있을_경우_IllegalArgumentException이_발생한다() {
+        // given
+        Long tableGroupId = 1L;
+        OrderTable orderTable1 = new OrderTable(1L, tableGroupId, 1, false);
+        OrderTable orderTable2 = new OrderTable(2L, tableGroupId, 2, false);
+        given(orderTableDao.findAllByIdIn(Arrays.asList(1L, 2L)))
+                .willReturn(Arrays.asList(orderTable1));
+
+        TableGroup tableGroup = new TableGroup(tableGroupId, null, Arrays.asList(orderTable1, orderTable2));
+
+        // when & then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> tableGroupService.create(tableGroup));
+
+        verify(orderTableDao, VerificationModeFactory.times(1))
+                .findAllByIdIn(Arrays.asList(1L, 2L));
 
     }
 
