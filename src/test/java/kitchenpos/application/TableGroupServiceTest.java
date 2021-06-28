@@ -3,6 +3,7 @@ package kitchenpos.application;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
@@ -158,6 +159,30 @@ class TableGroupServiceTest {
     @Test
     @DisplayName("unGroup - 주문 테이블들의 고유 아이디를를 조회했을 때 주문 상태가 조리 이거나, 식사 일경우 IllegalArgumentException이 발생한다.")
     void 주문_테이블들의_고유_아이디를_조회했을_때_주문_상태가_조리_이거나_식사_일경우_IllegalArgumentException이_발생한다() {
+        // given
+        Long tableGroupId = 1L;
+        List<String> bannedStatus = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
+        List<OrderTable> orderTables = Arrays.asList(
+                new OrderTable(1L, tableGroupId, 1, true),
+                new OrderTable(2L, tableGroupId, 1, true),
+                new OrderTable(3L, tableGroupId, 1, true)
+        );
+        List<Long> orderTableIds = Arrays.asList(1L, 2L, 3L);
+        given(orderTableDao.findAllByTableGroupId(tableGroupId))
+                .willReturn(orderTables);
+
+        // when
+        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, bannedStatus))
+                .thenReturn(true);
+
+        // then
+        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.ungroup(tableGroupId));
+
+        verify(orderTableDao, VerificationModeFactory.times(1))
+                .findAllByTableGroupId(tableGroupId);
+
+        verify(orderDao, VerificationModeFactory.times(1))
+                .existsByOrderTableIdInAndOrderStatusIn(orderTableIds, bannedStatus);
 
     }
 
