@@ -79,6 +79,35 @@ class OrderServiceTest {
     @Test
     @DisplayName("create - 주문 테이블이 존재하는지 확인하고, 없으면 IllegalArgumentException이 발생한다.")
     void 주문_테이블이_존재하는지_확인하고_없으면_IllegalArgumentException이_발생한다() {
+        // given
+        Long orderTableId = 1L;
+
+        OrderLineItem orderLineItem1 = new OrderLineItem(1L, 1L, 1L, 1);
+        OrderLineItem orderLineItem2 = new OrderLineItem(2L, 2L, 2L, 2);
+
+        List<Long> menuIds = Arrays.asList(orderLineItem1.getMenuId(), orderLineItem2.getMenuId());
+
+        Order order = new Order(null, orderTableId, null, null,
+                Arrays.asList(orderLineItem1, orderLineItem2));
+
+        when(menuDao.countByIdIn(menuIds))
+                .thenReturn(Long.valueOf(menuIds.size()));
+
+        // when
+        when(orderTableDao.findById(orderTableId))
+                .thenReturn(Optional.empty());
+
+        // then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> orderService.create(order));
+
+        verify(menuDao, VerificationModeFactory.times(1))
+                .countByIdIn(menuIds);
+
+        verify(orderTableDao, VerificationModeFactory.times(1))
+                .findById(orderTableId);
+
+
     }
 
     @Test
