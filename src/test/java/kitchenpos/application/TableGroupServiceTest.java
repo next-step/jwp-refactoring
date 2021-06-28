@@ -18,6 +18,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -45,7 +46,7 @@ class TableGroupServiceTest {
         TableGroup nullTableGroup = new TableGroup(null, null, null);
         TableGroup emptyTableGroup = new TableGroup(null, null, Arrays.asList());
         TableGroup onlyOneTableGroup = new TableGroup(null, null,
-                Arrays.asList(new OrderTable(null, null, 0, false)));
+                Arrays.asList(new OrderTable(null, null, 0, true)));
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableGroupService.create(nullTableGroup));
@@ -60,8 +61,8 @@ class TableGroupServiceTest {
     void 등록을_원하는_주문_테이블과_등록된_주문_테이블의_개수가_틀릴경우_IllegalArgumentException이_발생한다() {
         // given
         Long tableGroupId = 1L;
-        OrderTable orderTable1 = new OrderTable(1L, tableGroupId, 1, false);
-        OrderTable orderTable2 = new OrderTable(2L, tableGroupId, 2, false);
+        OrderTable orderTable1 = new OrderTable(1L, tableGroupId, 1, true);
+        OrderTable orderTable2 = new OrderTable(2L, tableGroupId, 2, true);
 
         TableGroup tableGroup = new TableGroup(tableGroupId, null, Arrays.asList(orderTable1, orderTable2));
 
@@ -78,8 +79,28 @@ class TableGroupServiceTest {
     }
 
     @Test
-    @DisplayName("create - 등록된 주문 테이블의 상태가 비어있지 않거나, 이미 단체 지정이 되어있을 경우 IllegalArgumentException이 발생한다.")
-    void 등록된_주문_테이블의_상태가_비어있지_않거나_이미_단체_지정이_되어있을_경우_IllegalArgumentException이_발생한다() {
+    @DisplayName("create - 등록된 주문 테이블이 빈테이블이 아닐경우 IllegalArgumentException이 발생한다.")
+    void 등록된_주문_테이블이_빈테이블이_아닐경우_IllegalArgumentException이_발생한다() {
+        // given
+        Long tableGroupId = 1L;
+        OrderTable orderTable1 = new OrderTable(1L, null, 1, false);
+        OrderTable orderTable2 = new OrderTable(2L, null, 2, true);
+        given(orderTableDao.findAllByIdIn(Arrays.asList(1L, 2L)))
+                .willReturn(Arrays.asList(orderTable1));
+
+        TableGroup tableGroup = new TableGroup(tableGroupId, null, Arrays.asList(orderTable1, orderTable2));
+
+        // when & then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> tableGroupService.create(tableGroup));
+
+        verify(orderTableDao, VerificationModeFactory.times(1))
+                .findAllByIdIn(Arrays.asList(1L, 2L));
+    }
+
+    @Test
+    @DisplayName("create - 이미 단체 지정이 되어있을 경우 IllegalArgumentException이 발생한다.")
+    void 이미_단체_지정이_되어있을_경우_IllegalArgumentException이_발생한다() {
 
     }
 
