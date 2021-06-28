@@ -17,6 +17,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -82,7 +83,7 @@ class TableServiceTest {
     void DB에서_주문_테이블을_고유_아이디로_가져온다_없으면_IllegalArgumentException이_발생한다() {
         // given
         Long orderTableId = 1L;
-        OrderTable orderTable = new OrderTable(orderTableId, 1L, 1, true);
+        OrderTable orderTable = new OrderTable(orderTableId, null, 1, true);
 
         // when
         when(orderTableDao.findById(orderTableId))
@@ -99,7 +100,19 @@ class TableServiceTest {
     @Test
     @DisplayName("changeEmpty - 주문 테이블이 단체지정이 되어있을경우 IllegalArgumentException이 발생한다.")
     void 주문_테이블이_단체지정이_되어있을경우_IllegalArgumentException이_발생한다() {
+        // given
+        Long orderTableId = 1L;
+        OrderTable orderTable = new OrderTable(orderTableId, 1L, 1, true);
 
+        given(orderTableDao.findById(orderTableId))
+                .willReturn(Optional.of(orderTable));
+
+        // when & then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> tableService.changeEmpty(orderTableId, orderTable));
+
+        verify(orderTableDao, VerificationModeFactory.only())
+                .findById(orderTableId);
     }
 
     @Test
