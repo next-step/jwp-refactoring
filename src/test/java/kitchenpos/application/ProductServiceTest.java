@@ -31,14 +31,16 @@ class ProductServiceTest {
   void createTest() {
     //given
     Product product = new Product("상품", BigDecimal.valueOf(1_000));
-    when(productDao.save(any())).thenReturn(product);
+    when(productDao.save(any())).thenReturn(new Product(1L, "상품", BigDecimal.valueOf(1_000)));
     ProductService productService = new ProductService(productDao);
 
     //when
     Product savedProduct = productService.create(product);
 
     //then
-    assertThat(savedProduct).isEqualTo(product);
+    assertAll(() -> assertThat(savedProduct.getId()).isNotNull(),
+              () -> assertThat(savedProduct.getName()).isEqualTo(product.getName()),
+              () -> assertThat(savedProduct.getPrice()).isEqualTo(product.getPrice()));
     verify(productDao, VerificationModeFactory.times(1)).save(product);
   }
 
