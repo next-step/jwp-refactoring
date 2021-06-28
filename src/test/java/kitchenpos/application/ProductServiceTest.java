@@ -1,12 +1,18 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.ProductDao;
+import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.math.BigDecimal;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
@@ -23,7 +29,10 @@ class ProductServiceTest {
     @Test
     @DisplayName("create - 가격이 비어있거나, 0보다 적을경우 IllegalArgumentException이 발생한다.")
     void 가격이_비어있거나_0보다_적을경우_IllegalArgumentException이_발생한다() {
-
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> productService.create(new Product(null, null, null)));
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> productService.create(new Product(null, null, BigDecimal.valueOf(-1))));
     }
 
     @Test
