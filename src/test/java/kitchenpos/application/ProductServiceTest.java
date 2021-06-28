@@ -55,7 +55,7 @@ class ProductServiceTest {
         assertThat(savedProduct)
                 .isEqualTo(product);
 
-        verify(productDao, VerificationModeFactory.only())
+        verify(productDao, VerificationModeFactory.times(1))
                 .save(product);
     }
 
@@ -76,7 +76,7 @@ class ProductServiceTest {
         assertThat(list)
                 .containsExactly(product1, product2);
 
-        verify(productDao, VerificationModeFactory.only())
+        verify(productDao, VerificationModeFactory.times(1))
                 .findAll();
     }
 }

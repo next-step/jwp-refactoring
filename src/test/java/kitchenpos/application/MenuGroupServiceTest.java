@@ -46,7 +46,7 @@ class MenuGroupServiceTest {
         assertThat(result)
                 .isEqualTo(result);
 
-        verify(menuGroupDao, VerificationModeFactory.only())
+        verify(menuGroupDao, VerificationModeFactory.times(1))
                 .save(menuGroup);
     }
 
@@ -70,7 +70,7 @@ class MenuGroupServiceTest {
         assertThat(list)
                 .containsExactlyElementsOf(menuGroups);
 
-        verify(menuGroupDao, VerificationModeFactory.only())
+        verify(menuGroupDao, VerificationModeFactory.times(1))
                 .findAll();
     }
 }

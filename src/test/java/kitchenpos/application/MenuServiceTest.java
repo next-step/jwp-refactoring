@@ -72,7 +72,7 @@ class MenuServiceTest {
         // then
 
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
-        verify(menuGroupDao, VerificationModeFactory.only())
+        verify(menuGroupDao, VerificationModeFactory.times(1))
                 .existsById(menuGroupId);
     }
 
@@ -95,9 +95,9 @@ class MenuServiceTest {
         // then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
 
-        verify(menuGroupDao, VerificationModeFactory.only())
+        verify(menuGroupDao, VerificationModeFactory.times(1))
                 .existsById(menuGroupId);
-        verify(productDao, VerificationModeFactory.only())
+        verify(productDao, VerificationModeFactory.times(1))
                 .findById(productId);
     }
 
@@ -120,9 +120,9 @@ class MenuServiceTest {
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
 
-        verify(menuGroupDao, VerificationModeFactory.only())
+        verify(menuGroupDao, VerificationModeFactory.times(1))
                 .existsById(menuGroupId);
-        verify(productDao, VerificationModeFactory.only())
+        verify(productDao, VerificationModeFactory.times(1))
                 .findById(productId);
     }
 
@@ -156,11 +156,11 @@ class MenuServiceTest {
                 .map(item -> item.getMenuId())
                 .containsExactly(menuId);
 
-        verify(menuGroupDao, VerificationModeFactory.only())
+        verify(menuGroupDao, VerificationModeFactory.times(1))
                 .existsById(menuGroupId);
-        verify(productDao, VerificationModeFactory.only())
+        verify(productDao, VerificationModeFactory.times(1))
                 .findById(productId);
-        verify(menuDao, VerificationModeFactory.only())
+        verify(menuDao, VerificationModeFactory.times(1))
                 .save(menu);
         verify(menuProductDao, VerificationModeFactory.times(menu.getMenuProducts().size()))
                 .save(any());
