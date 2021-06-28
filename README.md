@@ -91,7 +91,7 @@
 4. 방문한 손님 수를 통해 주문 테이블 상태로 바꿀 수 있다.
     - 방문한 손님 수가 0보다 적으면 IllegalArgumentException이 발생한다
     - DB에서 변경을 원하는 주문 테이블을 가져오고, 주문 테이블이 없을경우 IllegalArgumentException이 발생한다.
-    - 주문 테이블이 비어있는 상태이면 IllegalArgumentException이 발생한다.
+    - 주문 테이블이 빈 테이블이면 IllegalArgumentException이 발생한다.
     - 주문 테이블의 방문한 손님 수를 수정한다.
     - 주문 테이블을 저장하고, 반환한다.
 #### 관계
