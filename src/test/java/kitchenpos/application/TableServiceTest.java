@@ -2,12 +2,18 @@ package kitchenpos.application;
 
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
+import kitchenpos.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.internal.verification.VerificationModeFactory;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -28,6 +34,20 @@ class TableServiceTest {
     @Test
     @DisplayName("create - 정상적인 주문 테이블 등록")
     void 정상적인_주문_테이블_등록() {
+        // given
+        OrderTable orderTable = new OrderTable(1L, 1L, 1, true);
+
+        // when
+        when(orderTableDao.save(orderTable))
+                .thenReturn(orderTable);
+
+        OrderTable savedOrderTable = tableService.create(orderTable);
+
+        // then
+        assertThat(savedOrderTable.getTableGroupId()).isNull();
+
+        verify(orderTableDao, VerificationModeFactory.only())
+                .save(orderTable);
 
     }
 
