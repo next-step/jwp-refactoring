@@ -101,8 +101,8 @@ class MenuServiceTest {
     }
 
     @Test
-    @DisplayName("create - 메뉴 상품의 금액 합계가 메뉴 가격보다 크면 IllegalArgumentException 이 발생한다.")
-    void 메뉴_상품의_금액_합계가_메뉴_가격보다_크면_IllegalArgumentException이_발생한다() {
+    @DisplayName("create - 메뉴의 가격이 메뉴 상품의 금액 합계보다 크면 IllegalArgumentException 이 발생한다.")
+    void 메뉴의_가격이_메뉴_상품의_금액_합계보다_크면_IllegalArgumentException이_발생한다() {
         // given
         Long menuGroupId = 1L;
         Long productId = 1L;

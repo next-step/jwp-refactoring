@@ -11,7 +11,7 @@
     - 등록을 원하는 메뉴의 가격이 비어 있거나, 0원보다 적을경우 IllegalArgumentException 이 발생한다.
     - 등록을 원하는 메뉴의 메뉴 그룹이 DB에 없을경우 IllegalArgumetException 이 발생한다.
     - 등록을 원하는 메뉴 상품의 상품이 DB에 있는지 확인하고, 없으면 IllegalArgumentException 이 발생한다.
-    - 메뉴 상품의 금액 합계가 등록을 원하는 메뉴 가격보다 크면 IllegalArgumentException 이 발생한다.
+    - 메뉴의 가격이 메뉴 상품의 금액 합계보다 크면 IllegalArgumentException 이 발생한다.
     - 등록을 원하는 메뉴를 등록한다.
     - 메뉴 상품의 메뉴 고유 아이디를 등록된 메뉴의 고유 아이디로 변경하고 저장한다.
     - 저장된 메뉴 상품들을 저장된 메뉴에 설정하고 반환한다.
