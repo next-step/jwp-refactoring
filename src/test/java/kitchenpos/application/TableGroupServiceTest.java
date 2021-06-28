@@ -10,12 +10,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.internal.verification.VerificationModeFactory;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
@@ -54,7 +58,23 @@ class TableGroupServiceTest {
     @Test
     @DisplayName("create - 등록을 원하는 주문 테이블과 등록된 주문 테이블의 개수가 틀릴경우 IllegalArgumentException이 발생한다.")
     void 등록을_원하는_주문_테이블과_등록된_주문_테이블의_개수가_틀릴경우_IllegalArgumentException이_발생한다() {
+        // given
+        Long tableGroupId = 1L;
+        OrderTable orderTable1 = new OrderTable(1L, tableGroupId, 1, false);
+        OrderTable orderTable2 = new OrderTable(2L, tableGroupId, 2, false);
 
+        TableGroup tableGroup = new TableGroup(tableGroupId, null, Arrays.asList(orderTable1, orderTable2));
+
+        // when
+        when(orderTableDao.findAllByIdIn(Arrays.asList(1L, 2L)))
+                .thenReturn(Arrays.asList(orderTable1));
+
+        // then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> tableGroupService.create(tableGroup));
+
+        verify(orderTableDao, VerificationModeFactory.times(1))
+                .findAllByIdIn(Arrays.asList(1L, 2L));
     }
 
     @Test
