@@ -241,6 +241,18 @@ class OrderServiceTest {
     @Test
     @DisplayName("changeOrderStatus - 변경을 원하는 주문을 DB에서 가져오고, 없으면 IllegalArgumentException이 발생한다.")
     void 변경을_원하는_주문을_DB에서_가져오고_없으면_IllegalArgumentException이_발생한다(){
+        // given
+        Long orderId = 1L;
+
+        // when
+        when(orderDao.findById(orderId))
+                .thenReturn(Optional.empty());
+
+        // then
+        assertThatIllegalArgumentException().isThrownBy(() -> orderService.changeOrderStatus(orderId, null));
+
+        verify(orderDao, VerificationModeFactory.times(1))
+                .findById(orderId);
     }
 
     @Test
