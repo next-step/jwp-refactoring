@@ -181,6 +181,13 @@ class TableServiceTest {
     @Test
     @DisplayName("changeNumberOfGuests - 방문한 손님 수가 0보다 적으면 IllegalArgumentException이 발생한다")
     void 방문한_손님_수가_0보다_작으면_IllegalArgumentException이_발생한다() {
+        // given
+        Long orderTableId = 1L;
+        OrderTable orderTable = new OrderTable(orderTableId, null, -1, true);
+
+        // when & then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, orderTable));
 
     }
 
