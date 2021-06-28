@@ -86,7 +86,7 @@ class TableGroupServiceTest {
         OrderTable orderTable1 = new OrderTable(1L, null, 1, false);
         OrderTable orderTable2 = new OrderTable(2L, null, 2, true);
         given(orderTableDao.findAllByIdIn(Arrays.asList(1L, 2L)))
-                .willReturn(Arrays.asList(orderTable1));
+                .willReturn(Arrays.asList(orderTable1, orderTable2));
 
         TableGroup tableGroup = new TableGroup(tableGroupId, null, Arrays.asList(orderTable1, orderTable2));
 
@@ -106,7 +106,7 @@ class TableGroupServiceTest {
         OrderTable orderTable1 = new OrderTable(1L, tableGroupId, 1, false);
         OrderTable orderTable2 = new OrderTable(2L, tableGroupId, 2, false);
         given(orderTableDao.findAllByIdIn(Arrays.asList(1L, 2L)))
-                .willReturn(Arrays.asList(orderTable1));
+                .willReturn(Arrays.asList(orderTable1, orderTable2));
 
         TableGroup tableGroup = new TableGroup(tableGroupId, null, Arrays.asList(orderTable1, orderTable2));
 
