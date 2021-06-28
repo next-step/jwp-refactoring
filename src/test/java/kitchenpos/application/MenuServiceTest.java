@@ -55,6 +55,18 @@ class MenuServiceTest {
     @Test
     @DisplayName("create - 메뉴의 메뉴 그룹이 DB에 없을경우 IllegalArgumetException 이 발생한다.")
     void 메뉴의_메뉴_그룹이_DB에_없을경우_IllegalArgumentException이_발생한다() {
+        // given
+        Long menuGroupId = 1L;
+        Menu menu = new Menu(null, null, BigDecimal.valueOf(0), menuGroupId, null);
+
+        given(menuGroupDao.existsById(menuGroupId))
+                .willReturn(false);
+
+        // when & then
+
+        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
+        verify(menuGroupDao, VerificationModeFactory.only())
+                .existsById(menuGroupId);
     }
 
     @Test
