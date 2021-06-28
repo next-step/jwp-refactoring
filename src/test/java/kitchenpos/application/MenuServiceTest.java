@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -128,6 +129,41 @@ class MenuServiceTest {
     @Test
     @DisplayName("create - 정상정인 메뉴 등록")
     void 정상적인_메뉴_등록() {
+        // given
+        Long menuGroupId = 1L;
+        Long productId = 1L;
+        Long menuId = 1L;
+
+        MenuProduct menuProduct = new MenuProduct(1L, menuId, productId, 1L);
+        Product product = new Product(productId, "PRODUCT", BigDecimal.valueOf(100));
+
+        given(menuGroupDao.existsById(menuGroupId)).willReturn(true);
+        given(productDao.findById(productId)).willReturn(Optional.of(product));
+
+        Menu menu = new Menu(menuId, null, BigDecimal.valueOf(10), menuGroupId, Arrays.asList(menuProduct));
+
+
+        // when
+        when(menuDao.save(menu))
+                .thenReturn(menu);
+        when(menuProductDao.save(any()))
+                .thenAnswer(i -> i.getArguments()[0]);
+
+        Menu savedMenu = menuService.create(menu);
+
+        // then
+        assertThat(savedMenu.getMenuProducts())
+                .map(item -> item.getMenuId())
+                .containsExactly(menuId);
+
+        verify(menuGroupDao, VerificationModeFactory.only())
+                .existsById(menuGroupId);
+        verify(productDao, VerificationModeFactory.only())
+                .findById(productId);
+        verify(menuDao, VerificationModeFactory.only())
+                .save(menu);
+        verify(menuProductDao, VerificationModeFactory.times(menu.getMenuProducts().size()))
+                .save(any());
     }
 
     @Test
