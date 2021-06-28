@@ -7,12 +7,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.internal.verification.VerificationModeFactory;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
@@ -38,7 +41,20 @@ class ProductServiceTest {
     @Test
     @DisplayName("create - 정상적인 상품 등록")
     void 정상적인_상품_등록() {
+        // given
+        Product product = new Product(null, null, BigDecimal.valueOf(0));
 
+        // when
+        when(productDao.save(product))
+                .thenReturn(product);
+        Product savedProduct = productService.create(product);
+
+        // then
+        assertThat(savedProduct)
+                .isEqualTo(product);
+
+        verify(productDao, VerificationModeFactory.only())
+                .save(product);
     }
 
     @Test
