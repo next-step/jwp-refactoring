@@ -6,6 +6,7 @@ import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -93,6 +94,8 @@ class MenuServiceTest {
         // then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
 
+        verify(menuGroupDao, VerificationModeFactory.only())
+                .existsById(menuGroupId);
         verify(productDao, VerificationModeFactory.only())
                 .findById(productId);
     }
@@ -100,6 +103,26 @@ class MenuServiceTest {
     @Test
     @DisplayName("create - 메뉴 상품의 금액 합계가 메뉴 가격보다 크면 IllegalArgumentException 이 발생한다.")
     void 메뉴_상품의_금액_합계가_메뉴_가격보다_크면_IllegalArgumentException이_발생한다() {
+        // given
+        Long menuGroupId = 1L;
+        Long productId = 1L;
+
+        MenuProduct menuProduct = new MenuProduct(1L, 1L, productId, 1L);
+        Product product = new Product(productId, "PRODUCT", BigDecimal.valueOf(100));
+
+        given(menuGroupDao.existsById(menuGroupId)).willReturn(true);
+        given(productDao.findById(productId)).willReturn(Optional.of(product));
+
+        Menu menu = new Menu(null, null, BigDecimal.valueOf(1000), menuGroupId, Arrays.asList(menuProduct));
+
+
+        // when & then
+        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
+
+        verify(menuGroupDao, VerificationModeFactory.only())
+                .existsById(menuGroupId);
+        verify(productDao, VerificationModeFactory.only())
+                .findById(productId);
     }
 
     @Test
