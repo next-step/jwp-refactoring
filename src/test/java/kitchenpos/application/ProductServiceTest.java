@@ -34,10 +34,13 @@ class ProductServiceTest {
     @Test
     @DisplayName("create - 가격이 비어있거나, 0보다 적을경우 IllegalArgumentException이 발생한다.")
     void 가격이_비어있거나_0보다_적을경우_IllegalArgumentException이_발생한다() {
+        Product nullProduct = new Product(null, null, null);
+        Product negativeProduct = new Product(null, null, BigDecimal.valueOf(-1));
+
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> productService.create(new Product(null, null, null)));
+                .isThrownBy(() -> productService.create(nullProduct));
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> productService.create(new Product(null, null, BigDecimal.valueOf(-1))));
+                .isThrownBy(() -> productService.create(negativeProduct));
     }
 
     @Test
@@ -47,36 +50,33 @@ class ProductServiceTest {
         Product product = new Product(null, null, BigDecimal.valueOf(0));
 
         // when
-        when(productDao.save(product))
-                .thenReturn(product);
+        when(productDao.save(product)).thenReturn(product);
+
         Product savedProduct = productService.create(product);
 
         // then
-        assertThat(savedProduct)
-                .isEqualTo(product);
+        assertThat(savedProduct).isEqualTo(product);
 
-        verify(productDao, VerificationModeFactory.times(1))
-                .save(product);
+        verify(productDao, VerificationModeFactory.times(1)).save(product);
     }
 
     @Test
     @DisplayName("list - 정상적인 상품 전체 조회")
     void 정상적인_상품_전체_조회() {
         // given
-        Product product1 = new Product(1L, "A", BigDecimal.valueOf(0));
-        Product product2 = new Product(2L, "B", BigDecimal.valueOf(1));
+        List<Product> products = Arrays.asList(
+                new Product(1L, "A", BigDecimal.valueOf(0)),
+                new Product(2L, "B", BigDecimal.valueOf(1))
+        );
 
         // when
-        when(productDao.findAll())
-                .thenReturn(Arrays.asList(product1, product2));
+        when(productDao.findAll()).thenReturn(products);
 
         List<Product> list = productService.list();
 
         // then
-        assertThat(list)
-                .containsExactly(product1, product2);
+        assertThat(list).containsExactlyElementsOf(products);
 
-        verify(productDao, VerificationModeFactory.times(1))
-                .findAll();
+        verify(productDao, VerificationModeFactory.times(1)).findAll();
     }
 }
