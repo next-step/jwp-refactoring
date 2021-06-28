@@ -7,7 +7,7 @@ import java.util.Objects;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.domain.Menu;
-import kitchenpos.menugroup.domain.MenuGroupRepository;
+import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
