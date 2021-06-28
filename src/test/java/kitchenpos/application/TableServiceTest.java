@@ -228,6 +228,27 @@ class TableServiceTest {
     @Test
     @DisplayName("changeNumberOfGuest - 정상적인 방문한 손님 변경")
     void 정상적인_방문한_손님_변경() {
+        // given
+        Long orderTableId = 1L;
+        OrderTable orderTable = new OrderTable(orderTableId, null, 1, false);
+        given(orderTableDao.findById(orderTableId))
+                .willReturn(Optional.of(orderTable));
+
+        // when
+        when(orderTableDao.save(orderTable))
+                .thenReturn(orderTable);
+        OrderTable changedOrderTable = tableService.changeNumberOfGuests(orderTableId, orderTable);
+
+        // when & then
+        assertThat(changedOrderTable.getId()).isEqualTo(orderTable.getId());
+        assertThat(changedOrderTable.getTableGroupId()).isEqualTo(orderTable.getTableGroupId());
+        assertThat(changedOrderTable.getNumberOfGuests()).isEqualTo(orderTable.getNumberOfGuests());
+        assertThat(changedOrderTable.isEmpty()).isEqualTo(orderTable.isEmpty());
+
+        verify(orderTableDao, VerificationModeFactory.times(1))
+                .findById(orderTableId);
+        verify(orderTableDao, VerificationModeFactory.times(1))
+                .save(orderTable);
 
     }
 }
