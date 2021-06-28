@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import kitchenpos.config.MockMvcTestConfig;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.OrderTableDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -39,9 +40,9 @@ class TableRestControllerTest {
     @DisplayName("주문 테이블 생성 요청 성공")
     @Test
     void createOrderTableRequestSuccess() throws Exception {
-        OrderTable orderTable = new OrderTable(1L, null, 3, false);
+        OrderTableDto orderTableDto = new OrderTableDto(3, false);
 
-        String content = objectMapper.writeValueAsString(orderTable);
+        String content = objectMapper.writeValueAsString(orderTableDto);
 
         mockMvc.perform(post(BASE_URL).content(content)
                                       .contentType(MediaType.APPLICATION_JSON))
@@ -59,7 +60,7 @@ class TableRestControllerTest {
                                   .andReturn();
 
         String content = result.getResponse().getContentAsString();
-        List<OrderTable> list = Arrays.asList(objectMapper.readValue(content, OrderTable[].class));
+        List<OrderTableDto> list = Arrays.asList(objectMapper.readValue(content, OrderTableDto[].class));
         assertThat(list).hasSizeGreaterThanOrEqualTo(8); // default data size
     }
 
@@ -67,11 +68,8 @@ class TableRestControllerTest {
     @Test
     void updateOrderTableEmptyStatusSuccess() throws Exception {
 
-        OrderTable request = new OrderTable();
-        request.empty();
-
         MvcResult result = mockMvc.perform(put(BASE_URL + "/1/empty")
-                                               .content(objectMapper.writeValueAsString(request))
+                                               .content(objectMapper.writeValueAsString(true))
                                                .contentType(MediaType.APPLICATION_JSON))
                                   .andDo(print())
                                   .andExpect(status().isOk())
@@ -97,13 +95,11 @@ class TableRestControllerTest {
         putEmptyFail(id);
     }
 
-
     @DisplayName("주문 테이블의 손님 수 변경 요청 성공")
     @Test
     void updateOrderTableNumberOfGuestsSuccess() throws Exception {
 
-        OrderTable request = new OrderTable();
-        request.changeNumberOfGuests(3);
+        Integer request = 3;
 
         MvcResult result = mockMvc.perform(put(BASE_URL + "/9/number-of-guests")
                                                .content(objectMapper.writeValueAsString(request))
@@ -114,7 +110,7 @@ class TableRestControllerTest {
 
         String content = result.getResponse().getContentAsString();
         OrderTable response = objectMapper.readValue(content, OrderTable.class);
-        assertEquals(request.getNumberOfGuests(), response.getNumberOfGuests());
+        assertEquals(request, response.getNumberOfGuests());
     }
 
     @DisplayName("주문 테이블의 손님 수 변경 요청 실패 - 손님 수가 음수")
@@ -131,35 +127,28 @@ class TableRestControllerTest {
     }
 
     private void putEmptyFail(int id) {
-
-        OrderTable request = new OrderTable();
-        request.empty();
-
         try {
-            putRequest(id, request, "/empty");
+            mockMvc.perform(put(BASE_URL + "/" + id + "/empty")
+                                .content(objectMapper.writeValueAsString(true))
+                                .contentType(MediaType.APPLICATION_JSON))
+                   .andDo(print())
+                   .andExpect(status().isBadRequest())
+                   .andReturn();
         } catch (Exception e) {
             assertTrue(e.getCause() instanceof IllegalArgumentException);
         }
     }
 
     private void putNumberOfGuestsFail(int id, int numberOfGuests) {
-
-        OrderTable request = new OrderTable();
-        request.changeNumberOfGuests(numberOfGuests);
-
         try {
-            putRequest(id, request, "/number-of-guests");
+            mockMvc.perform(put(BASE_URL + "/" + id + "/number-of-guests")
+                                .content(objectMapper.writeValueAsString(numberOfGuests))
+                                .contentType(MediaType.APPLICATION_JSON))
+                   .andDo(print())
+                   .andExpect(status().isBadRequest())
+                   .andReturn();
         } catch (Exception e) {
             assertTrue(e.getCause() instanceof IllegalArgumentException);
         }
-    }
-
-    private void putRequest(int id, OrderTable request, String postfix) throws Exception {
-        mockMvc.perform(put(BASE_URL + "/" + id + postfix)
-                            .content(objectMapper.writeValueAsString(request))
-                            .contentType(MediaType.APPLICATION_JSON))
-               .andDo(print())
-               .andExpect(status().isBadRequest())
-               .andReturn();
     }
 }

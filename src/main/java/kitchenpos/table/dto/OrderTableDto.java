@@ -1,6 +1,8 @@
 package kitchenpos.table.dto;
 
+import java.util.Optional;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableGroup;
 
 public class OrderTableDto {
 
@@ -18,9 +20,23 @@ public class OrderTableDto {
         this.empty = empty;
     }
 
+    public OrderTableDto(int numberOfGuests, boolean empty) {
+        this(null, null, numberOfGuests, empty);
+    }
+
+    public OrderTableDto(int numberOfGuests) {
+        this(null, null, numberOfGuests, false);
+    }
+
+    public OrderTableDto(boolean empty) {
+        this(null, null, 0, empty);
+    }
+
     public static OrderTableDto of(OrderTable orderTable) {
         return new OrderTableDto(orderTable.getId(),
-                                 orderTable.getTableGroup().getId(),
+                                 Optional.ofNullable(orderTable.getTableGroup())
+                                         .map(TableGroup::getId)
+                                         .orElse(null),
                                  orderTable.getNumberOfGuests(),
                                  orderTable.isEmpty());
     }

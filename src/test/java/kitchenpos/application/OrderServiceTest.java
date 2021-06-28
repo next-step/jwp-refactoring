@@ -120,7 +120,7 @@ class OrderServiceTest {
         order.setOrderLineItems(Lists.newArrayList(item, item2));
         order.setOrderTableId(1L);
 
-        OrderTable orderTable = new OrderTable();
+        OrderTable orderTable = new OrderTable(1L, null, 0, false);
 
         given(menuDao.countByIdIn(any())).willReturn(2L);
         given(orderTableRepository.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));

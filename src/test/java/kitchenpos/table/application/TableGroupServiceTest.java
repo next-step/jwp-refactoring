@@ -133,7 +133,7 @@ class TableGroupServiceTest {
         given(tableGroupRepository.findById(1L)).willReturn(Optional.of(tableGroup));
 
         List<OrderTable> savedOrderTables = tableGroup.getOrderTables();
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(Lists.newArrayList(1L, 2L),
+        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(Lists.newArrayList(2L, 1L),
                                                               Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
             .willReturn(false);
 

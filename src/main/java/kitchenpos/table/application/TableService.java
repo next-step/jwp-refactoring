@@ -33,7 +33,7 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTable changeEmpty(Long orderTableId, OrderTableDto orderTableDto) {
+    public OrderTable changeEmpty(Long orderTableId, Boolean empty) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
@@ -46,14 +46,13 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-        savedOrderTable.changeEmpty(orderTableDto.isEmpty());
+        savedOrderTable.changeEmpty(empty);
 
         return orderTableRepository.save(savedOrderTable);
     }
 
     @Transactional
-    public OrderTable changeNumberOfGuests(Long orderTableId, OrderTableDto orderTableDto) {
-        final int numberOfGuests = orderTableDto.getNumberOfGuests();
+    public OrderTable changeNumberOfGuests(Long orderTableId, Integer numberOfGuests) {
 
         if (numberOfGuests < 0) {
             throw new IllegalArgumentException();
