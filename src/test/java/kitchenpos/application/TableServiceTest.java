@@ -195,7 +195,7 @@ class TableServiceTest {
     void DB에서_변경을_원하는_주문_테이블을_가져오고_주문_테이블이_없을경우_IllegalArgumentException이_발생한다() {
         // given
         Long orderTableId = 1L;
-        OrderTable orderTable = new OrderTable(orderTableId, null, 1, true);
+        OrderTable orderTable = new OrderTable(orderTableId, null, 1, false);
 
         // when
         when(orderTableDao.findById(orderTableId))
@@ -212,7 +212,17 @@ class TableServiceTest {
     @Test
     @DisplayName("changeNumberOfGuests - 주문 테이블이 빈 테이블이면 IllegalArgumentException이 발생한다.")
     void 주문_테이블이_빈_테이블이면_IllegalArgumentException이_발생한다() {
+        // given
+        Long orderTableId = 1L;
+        OrderTable orderTable = new OrderTable(orderTableId, null, 1, true);
+        given(orderTableDao.findById(orderTableId))
+                .willReturn(Optional.of(orderTable));
 
+        // when & then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, orderTable));
+        verify(orderTableDao, VerificationModeFactory.times(1))
+                .findById(orderTableId);
     }
 
     @Test
