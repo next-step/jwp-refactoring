@@ -4,12 +4,18 @@ import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
+import kitchenpos.domain.Order;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Arrays;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -36,7 +42,10 @@ class OrderServiceTest {
     @Test
     @DisplayName("create - 등록을 원하는 주문에 주문 항목이 비어있으면 IllegalArgumentException 이 발생한다.")
     void 등록을_원하는_주문에_주문_항목이_비어있으면_IllegalArgumentException_이_발생한다() {
-
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> orderService.create(new Order(null, null, null, null, Arrays.asList())));
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> orderService.create(new Order(null, null, null, null, null)));
     }
 
     @Test
