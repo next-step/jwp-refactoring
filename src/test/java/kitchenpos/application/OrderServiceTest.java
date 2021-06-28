@@ -277,6 +277,33 @@ class OrderServiceTest {
     @Test
     @DisplayName("changeOrderStatus - 정상적인 주문 상태 변경")
     void 정상적인_주문_상태_변경() {
+        // given
+        Long orderId = 1L;
+
+        Order order = new Order(orderId, null, OrderStatus.COOKING.name(), null, null);
+
+        OrderLineItem orderLineItem1 = new OrderLineItem(1L, orderId, 1L, 1);
+        OrderLineItem orderLineItem2 = new OrderLineItem(2L, orderId, 2L, 2);
+
+        given(orderDao.findById(orderId))
+                .willReturn(Optional.of(order));
+        // when
+        when(orderLineItemDao.findAllByOrderId(orderId))
+                .thenReturn(Arrays.asList(orderLineItem1, orderLineItem2));
+
+        Order savedOrder = orderService.changeOrderStatus(orderId, order);
+
+        // then
+        assertThat(savedOrder.getOrderStatus())
+                .isEqualTo(OrderStatus.COOKING.name());
+        assertThat(savedOrder.getOrderLineItems())
+                .containsSequence(orderLineItem1, orderLineItem2);
+
+        verify(orderDao, VerificationModeFactory.times(1))
+                .findById(orderId);
+
+        verify(orderLineItemDao, VerificationModeFactory.times(1))
+                .findAllByOrderId(orderId);
 
     }
 }
