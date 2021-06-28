@@ -5,6 +5,7 @@ import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuProduct;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,8 @@ import org.mockito.internal.verification.VerificationModeFactory;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -72,8 +75,26 @@ class MenuServiceTest {
     }
 
     @Test
-    @DisplayName("create - 메뉴 상품이 DB에 있는지 확인하고, 없으면 IllegalArgumentException 이 발생한다.")
-    void 메뉴_상품이_DB에_있는지_확인하고_없으면_IllegalArgumentException이_발생한다() {
+    @DisplayName("create - 메뉴 상품의 상품이 DB에 있는지 확인하고, 없으면 IllegalArgumentException 이 발생한다.")
+    void 메뉴_상품의_상품이_DB에_있는지_확인하고_없으면_IllegalArgumentException이_발생한다() {
+        // given
+        Long menuGroupId = 1L;
+        Long productId = 1L;
+
+        given(menuGroupDao.existsById(menuGroupId)).willReturn(true);
+
+        Menu menu = new Menu(null, null, BigDecimal.valueOf(0), menuGroupId,
+                Arrays.asList(new MenuProduct(1L, 1L, productId, 1L)));
+
+        // when
+        when(productDao.findById(productId))
+                .thenReturn(Optional.empty());
+
+        // then
+        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
+
+        verify(productDao, VerificationModeFactory.only())
+                .findById(productId);
     }
 
     @Test
