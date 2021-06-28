@@ -43,20 +43,23 @@ class MenuServiceTest {
 
     private MenuService menuService;
 
+    private final Long simpleMenuId = 1L;
+    private final Long simpleProductId = 1L;
+    
     private MenuProduct simpleMenuProduct;
-
+    
     @BeforeEach
     void setUp() {
         this.menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
 
-        this.simpleMenuProduct = new MenuProduct(1L, 1L, 1L, 1L);
+        this.simpleMenuProduct = new MenuProduct(1L, simpleMenuId, simpleProductId, 1L);
     }
 
     @Test
     @DisplayName("create - 메뉴의 가격이 비어 있거나, 0원보다 적을경우 IllegalArgumentException 이 발생한다.")
     void 메뉴의_가격이_비어_있거나_0원보다_적을경우_IllegalArgumentException이_발생한다() {
         // given
-        Menu menu = new Menu(simpleMenuProduct.getMenuId(),
+        Menu menu = new Menu(simpleMenuId,
                 "Menu",
                 BigDecimal.valueOf(-1),
                 1L,
@@ -71,7 +74,7 @@ class MenuServiceTest {
     void 메뉴의_메뉴_그룹이_DB에_없을경우_IllegalArgumentException이_발생한다() {
         // given
         Long menuGroupId = 1L;
-        Menu menu = new Menu(simpleMenuProduct.getMenuId(),
+        Menu menu = new Menu(simpleMenuId,
                 "Menu",
                 BigDecimal.valueOf(0),
                 menuGroupId,
@@ -101,14 +104,14 @@ class MenuServiceTest {
         given(menuGroupDao.existsById(menuGroupId)).willReturn(true);
 
         // when
-        when(productDao.findById(simpleMenuProduct.getProductId())).thenReturn(Optional.empty());
+        when(productDao.findById(simpleProductId)).thenReturn(Optional.empty());
 
         // then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
 
         verify(menuGroupDao, VerificationModeFactory.times(1)).existsById(menuGroupId);
         verify(productDao, VerificationModeFactory.times(1))
-                .findById(simpleMenuProduct.getProductId());
+                .findById(simpleProductId);
     }
 
     @Test
@@ -117,7 +120,7 @@ class MenuServiceTest {
         // given
         Long menuGroupId = 1L;
 
-        Product product = new Product(simpleMenuProduct.getProductId(), "PRODUCT", BigDecimal.valueOf(100));
+        Product product = new Product(simpleProductId, "PRODUCT", BigDecimal.valueOf(100));
 
         Menu menu = new Menu(1L, "Menu", BigDecimal.valueOf(1000), menuGroupId, Arrays.asList(simpleMenuProduct));
 
@@ -137,16 +140,16 @@ class MenuServiceTest {
         // given
         Long menuGroupId = 1L;
 
-        Product product = new Product(simpleMenuProduct.getProductId(), "PRODUCT", BigDecimal.valueOf(100));
+        Product product = new Product(simpleProductId, "PRODUCT", BigDecimal.valueOf(100));
 
-        Menu menu = new Menu(simpleMenuProduct.getMenuId(),
+        Menu menu = new Menu(simpleMenuId,
                 "Menu",
                 BigDecimal.valueOf(10),
                 menuGroupId,
                 Arrays.asList(simpleMenuProduct));
 
         given(menuGroupDao.existsById(menuGroupId)).willReturn(true);
-        given(productDao.findById(simpleMenuProduct.getProductId())).willReturn(Optional.of(product));
+        given(productDao.findById(simpleProductId)).willReturn(Optional.of(product));
 
         // when
         when(menuDao.save(menu)).thenReturn(menu);
@@ -157,11 +160,11 @@ class MenuServiceTest {
         // then
         assertThat(savedMenu.getMenuProducts())
                 .map(item -> item.getMenuId())
-                .containsExactly(simpleMenuProduct.getMenuId());
+                .containsExactly(simpleMenuId);
 
         verify(menuGroupDao, VerificationModeFactory.times(1)).existsById(menuGroupId);
         verify(productDao, VerificationModeFactory.times(1))
-                .findById(simpleMenuProduct.getProductId());
+                .findById(simpleProductId);
         verify(menuDao, VerificationModeFactory.times(1)).save(menu);
         verify(menuProductDao, VerificationModeFactory.times(menu.getMenuProducts().size())).save(any());
     }
