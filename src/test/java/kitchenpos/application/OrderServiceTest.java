@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.internal.verification.VerificationModeFactory;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -42,41 +43,50 @@ class OrderServiceTest {
 
     private OrderService orderService;
 
+
+    private OrderLineItem orderLineItem1;
+    private OrderLineItem orderLineItem2;
+
+    private List<OrderLineItem> orderLineItems;
+
     @BeforeEach
     void setUp() {
         this.orderService = new OrderService(menuDao, orderDao, orderLineItemDao, orderTableDao);
+
+        orderLineItem1 = new OrderLineItem(1L, 1L, 1L, 1);
+        orderLineItem2 = new OrderLineItem(2L, 1L, 2L, 2);
+
+        this.orderLineItems = Arrays.asList(orderLineItem1, orderLineItem2);
     }
 
 
     @Test
     @DisplayName("create - 등록을 원하는 주문에 주문 항목이 비어있으면 IllegalArgumentException 이 발생한다.")
     void 등록을_원하는_주문에_주문_항목이_비어있으면_IllegalArgumentException_이_발생한다() {
+        Order nullOrder = new Order(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), null);
+        Order emptyOrder = new Order(2L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), Arrays.asList());
+
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderService.create(new Order(null, null, null, null, Arrays.asList())));
+                .isThrownBy(() -> orderService.create(nullOrder));
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderService.create(new Order(null, null, null, null, null)));
+                .isThrownBy(() -> orderService.create(emptyOrder));
     }
 
     @Test
     @DisplayName("create - 등록을 원하는 주문항목이 DB에 전부 존재하는지 확인하여 전부 존재하지 않으면 IllegalArgumentException이 발생한다.")
     void 등록을_원하는_주문항목이_DB에_전부_존재하는지_확인하여_전부_존재하지_않으면_IllegalArgumentException이_발생한다() {
         // given
-        OrderLineItem orderLineItem1 = new OrderLineItem(1L, 1L, 1L, 1);
-        OrderLineItem orderLineItem2 = new OrderLineItem(2L, 2L, 2L, 2);
-
         List<Long> menuIds = Arrays.asList(orderLineItem1.getMenuId(), orderLineItem2.getMenuId());
 
-        Order order = new Order(null, null, null, null,
-                Arrays.asList(orderLineItem1, orderLineItem2));
+        Order order = new Order(1L, 1L, OrderStatus.MEAL.name(), LocalDateTime.now(), orderLineItems);
+
         // when
-        when(menuDao.countByIdIn(menuIds))
-                .thenReturn(1L);
+        when(menuDao.countByIdIn(menuIds)).thenReturn(1L);
 
         // then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(order));
 
-        verify(menuDao, VerificationModeFactory.times(1))
-                .countByIdIn(menuIds);
+        verify(menuDao, VerificationModeFactory.times(1)).countByIdIn(menuIds);
     }
 
     @Test
@@ -85,30 +95,21 @@ class OrderServiceTest {
         // given
         Long orderTableId = 1L;
 
-        OrderLineItem orderLineItem1 = new OrderLineItem(1L, 1L, 1L, 1);
-        OrderLineItem orderLineItem2 = new OrderLineItem(2L, 2L, 2L, 2);
-
         List<Long> menuIds = Arrays.asList(orderLineItem1.getMenuId(), orderLineItem2.getMenuId());
 
-        Order order = new Order(null, orderTableId, null, null,
-                Arrays.asList(orderLineItem1, orderLineItem2));
+        Order order = new Order(1L, orderTableId, OrderStatus.MEAL.name(), LocalDateTime.now(), orderLineItems);
 
-        given(menuDao.countByIdIn(menuIds))
-                .willReturn(Long.valueOf(menuIds.size()));
+        given(menuDao.countByIdIn(menuIds)).willReturn(Long.valueOf(menuIds.size()));
 
         // when
-        when(orderTableDao.findById(orderTableId))
-                .thenReturn(Optional.empty());
+        when(orderTableDao.findById(orderTableId)).thenReturn(Optional.empty());
 
         // then
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderService.create(order));
+        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(order));
 
-        verify(menuDao, VerificationModeFactory.times(1))
-                .countByIdIn(menuIds);
+        verify(menuDao, VerificationModeFactory.times(1)).countByIdIn(menuIds);
 
-        verify(orderTableDao, VerificationModeFactory.times(1))
-                .findById(orderTableId);
+        verify(orderTableDao, VerificationModeFactory.times(1)).findById(orderTableId);
     }
 
     @Test
@@ -117,32 +118,23 @@ class OrderServiceTest {
         // given
         Long orderTableId = 1L;
 
-        OrderLineItem orderLineItem1 = new OrderLineItem(1L, 1L, 1L, 1);
-        OrderLineItem orderLineItem2 = new OrderLineItem(2L, 2L, 2L, 2);
-
-        OrderTable orderTable = new OrderTable(orderTableId, null, 1, true);
+        OrderTable orderTable = new OrderTable(orderTableId, 1L, 1, true);
 
         List<Long> menuIds = Arrays.asList(orderLineItem1.getMenuId(), orderLineItem2.getMenuId());
 
-        Order order = new Order(null, orderTableId, null, null,
-                Arrays.asList(orderLineItem1, orderLineItem2));
+        Order order = new Order(1L, orderTableId, OrderStatus.MEAL.name(), LocalDateTime.now(), orderLineItems);
 
-        given(menuDao.countByIdIn(menuIds))
-                .willReturn(Long.valueOf(menuIds.size()));
+        given(menuDao.countByIdIn(menuIds)).willReturn(Long.valueOf(menuIds.size()));
 
         // when
-        when(orderTableDao.findById(orderTableId))
-                .thenReturn(Optional.of(orderTable));
+        when(orderTableDao.findById(orderTableId)).thenReturn(Optional.of(orderTable));
 
         // then
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderService.create(order));
+        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(order));
 
-        verify(menuDao, VerificationModeFactory.times(1))
-                .countByIdIn(menuIds);
+        verify(menuDao, VerificationModeFactory.times(1)).countByIdIn(menuIds);
 
-        verify(orderTableDao, VerificationModeFactory.times(1))
-                .findById(orderTableId);
+        verify(orderTableDao, VerificationModeFactory.times(1)).findById(orderTableId);
 
     }
 
@@ -153,29 +145,20 @@ class OrderServiceTest {
         Long orderTableId = 1L;
         Long orderId = 1L;
 
-        OrderLineItem orderLineItem1 = new OrderLineItem(1L, 1L, 1L, 1);
-        OrderLineItem orderLineItem2 = new OrderLineItem(2L, 2L, 2L, 2);
-
-        OrderTable orderTable = new OrderTable(orderTableId, null, 1, false);
+        OrderTable orderTable = new OrderTable(orderTableId, 1L, 1, false);
 
         List<Long> menuIds = Arrays.asList(orderLineItem1.getMenuId(), orderLineItem2.getMenuId());
 
-        Order order = new Order(orderId, orderTableId, null, null,
-                Arrays.asList(orderLineItem1, orderLineItem2));
+        Order order = new Order(orderId, orderTableId, OrderStatus.MEAL.name(), LocalDateTime.now(), orderLineItems);
 
-        given(menuDao.countByIdIn(menuIds))
-                .willReturn(Long.valueOf(menuIds.size()));
+        given(menuDao.countByIdIn(menuIds)).willReturn(Long.valueOf(menuIds.size()));
 
-        given(orderTableDao.findById(orderTableId))
-                .willReturn(Optional.of(orderTable));
+        given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(orderTable));
 
         // when
-        when(orderDao.save(order))
-                .thenReturn(order);
-        when(orderLineItemDao.save(orderLineItem1))
-                .thenReturn(orderLineItem1);
-        when(orderLineItemDao.save(orderLineItem2))
-                .thenReturn(orderLineItem2);
+        when(orderDao.save(order)).thenReturn(order);
+        when(orderLineItemDao.save(orderLineItem1)).thenReturn(orderLineItem1);
+        when(orderLineItemDao.save(orderLineItem2)).thenReturn(orderLineItem2);
 
         Order savedOrder = orderService.create(order);
 
@@ -184,6 +167,7 @@ class OrderServiceTest {
         assertThat(savedOrder.getOrderTableId()).isEqualTo(orderTableId);
         assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
         assertThat(savedOrder.getOrderedTime()).isNotNull();
+
         assertThat(savedOrder.getOrderLineItems())
                 .map(item -> item.getOrderId())
                 .containsOnly(orderId);
@@ -191,17 +175,12 @@ class OrderServiceTest {
                 .containsExactly(orderLineItem1, orderLineItem2);
 
 
-        verify(menuDao, VerificationModeFactory.times(1))
-                .countByIdIn(menuIds);
+        verify(menuDao, VerificationModeFactory.times(1)).countByIdIn(menuIds);
 
-        verify(orderTableDao, VerificationModeFactory.times(1))
-                .findById(orderTableId);
+        verify(orderTableDao, VerificationModeFactory.times(1)).findById(orderTableId);
 
-        verify(orderLineItemDao, VerificationModeFactory.times(1))
-                .save(orderLineItem1);
-
-        verify(orderLineItemDao, VerificationModeFactory.times(1))
-                .save(orderLineItem2);
+        verify(orderLineItemDao, VerificationModeFactory.times(1)).save(orderLineItem1);
+        verify(orderLineItemDao, VerificationModeFactory.times(1)).save(orderLineItem2);
     }
 
     @Test
@@ -211,28 +190,19 @@ class OrderServiceTest {
         Long orderTableId = 1L;
         Long orderId = 1L;
 
-        OrderLineItem orderLineItem1 = new OrderLineItem(1L, 1L, 1L, 1);
-        OrderLineItem orderLineItem2 = new OrderLineItem(2L, 2L, 2L, 2);
-
-        Order order = new Order(orderId, orderTableId, null, null,
-                Arrays.asList(orderLineItem1, orderLineItem2));
+        Order order = new Order(orderId, orderTableId, OrderStatus.MEAL.name(), LocalDateTime.now(), orderLineItems);
 
         // when
-        when(orderDao.findAll())
-                .thenReturn(Arrays.asList(order));
-        when(orderLineItemDao.findAllByOrderId(orderId))
-                .thenReturn(Arrays.asList(orderLineItem1, orderLineItem2));
+        when(orderDao.findAll()).thenReturn(Arrays.asList(order));
+        when(orderLineItemDao.findAllByOrderId(orderId)).thenReturn(orderLineItems);
 
         Order savedOrder = orderService.list().get(0);
 
         // then
-        assertThat(savedOrder)
-                .isEqualTo(order);
-        assertThat(savedOrder.getOrderLineItems())
-                .containsExactly(orderLineItem1, orderLineItem2);
+        assertThat(savedOrder).isEqualTo(order);
+        assertThat(savedOrder.getOrderLineItems()).containsExactly(orderLineItem1, orderLineItem2);
 
-        verify(orderDao, VerificationModeFactory.times(1))
-                .findAll();
+        verify(orderDao, VerificationModeFactory.times(1)).findAll();
 
         verify(orderLineItemDao, VerificationModeFactory.times(1))
                 .findAllByOrderId(orderId);
@@ -244,15 +214,16 @@ class OrderServiceTest {
         // given
         Long orderId = 1L;
 
+        Order order = new Order(orderId, 1L, OrderStatus.MEAL.name(), LocalDateTime.now(), orderLineItems);
+
         // when
-        when(orderDao.findById(orderId))
-                .thenReturn(Optional.empty());
+        when(orderDao.findById(orderId)).thenReturn(Optional.empty());
 
         // then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.changeOrderStatus(orderId, null));
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> orderService.changeOrderStatus(orderId, order));
 
-        verify(orderDao, VerificationModeFactory.times(1))
-                .findById(orderId);
+        verify(orderDao, VerificationModeFactory.times(1)).findById(orderId);
     }
 
     @Test
@@ -261,17 +232,17 @@ class OrderServiceTest {
         // given
         Long orderId = 1L;
 
-        Order order = new Order(orderId, null, OrderStatus.COMPLETION.name(), null, null);
+        Order order = new Order(orderId, 1L,
+                OrderStatus.COMPLETION.name(), LocalDateTime.now(),
+                orderLineItems);
 
         // when
-        when(orderDao.findById(orderId))
-                .thenReturn(Optional.of(order));
+        when(orderDao.findById(orderId)).thenReturn(Optional.of(order));
 
         // then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.changeOrderStatus(orderId, order));
 
-        verify(orderDao, VerificationModeFactory.times(1))
-                .findById(orderId);
+        verify(orderDao, VerificationModeFactory.times(1)).findById(orderId);
     }
 
     @Test
@@ -280,30 +251,22 @@ class OrderServiceTest {
         // given
         Long orderId = 1L;
 
-        Order order = new Order(orderId, null, OrderStatus.COOKING.name(), null, null);
+        Order order = new Order(orderId, 1L,
+                OrderStatus.COOKING.name(), LocalDateTime.now(),
+                Arrays.asList());
 
-        OrderLineItem orderLineItem1 = new OrderLineItem(1L, orderId, 1L, 1);
-        OrderLineItem orderLineItem2 = new OrderLineItem(2L, orderId, 2L, 2);
-
-        given(orderDao.findById(orderId))
-                .willReturn(Optional.of(order));
+        given(orderDao.findById(orderId)).willReturn(Optional.of(order));
         // when
-        when(orderLineItemDao.findAllByOrderId(orderId))
-                .thenReturn(Arrays.asList(orderLineItem1, orderLineItem2));
+        when(orderLineItemDao.findAllByOrderId(orderId)).thenReturn(orderLineItems);
 
         Order savedOrder = orderService.changeOrderStatus(orderId, order);
 
         // then
-        assertThat(savedOrder.getOrderStatus())
-                .isEqualTo(OrderStatus.COOKING.name());
-        assertThat(savedOrder.getOrderLineItems())
-                .containsSequence(orderLineItem1, orderLineItem2);
+        assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(savedOrder.getOrderLineItems()).containsExactlyElementsOf(orderLineItems);
 
-        verify(orderDao, VerificationModeFactory.times(1))
-                .findById(orderId);
+        verify(orderDao, VerificationModeFactory.times(1)).findById(orderId);
 
-        verify(orderLineItemDao, VerificationModeFactory.times(1))
-                .findAllByOrderId(orderId);
-
+        verify(orderLineItemDao, VerificationModeFactory.times(1)).findAllByOrderId(orderId);
     }
 }
