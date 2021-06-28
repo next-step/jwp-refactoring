@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.internal.verification.VerificationModeFactory;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,25 +37,39 @@ class TableGroupServiceTest {
 
     private TableGroupService tableGroupService;
 
+    private Long tableGroupId = 1L;
+
+    private OrderTable orderTable1;
+    private OrderTable orderTable2;
+
+    private List<Long> orderTableIds;
+
+    private List<OrderTable> orderTables;
+
     @BeforeEach
     void setUp() {
         this.tableGroupService = new TableGroupService(orderDao, orderTableDao, tableGroupDao);
+
+        tableGroupId = 1L;
+
+        orderTable1 = new OrderTable(1L, tableGroupId, 1, true);
+        orderTable2 = new OrderTable(2L, tableGroupId, 2, true);
+
+        orderTableIds = Arrays.asList(orderTable1.getId(), orderTable2.getId());
+        orderTables = Arrays.asList(orderTable1, orderTable2);
     }
 
     @Test
     @DisplayName("create - 등록을 원하는 주문 테이블이 비어있거나, 1개밖에 없을경우 IllegalArugmentException이 발생한다.")
     void 등록을_원하는_주문_테이블이_비어있거나_1개밖에_없을경우_IllegalArgumentException이_발생한다() {
-        TableGroup nullTableGroup = new TableGroup(null, null, null);
-        TableGroup emptyTableGroup = new TableGroup(null, null, Arrays.asList());
-        TableGroup onlyOneTableGroup = new TableGroup(null, null,
-                Arrays.asList(new OrderTable(null, null, 0, true)));
+        TableGroup nullTableGroup = new TableGroup(1L, LocalDateTime.now(), null);
+        TableGroup emptyTableGroup = new TableGroup(2L, LocalDateTime.now(), Arrays.asList());
+        TableGroup onlyOneTableGroup = new TableGroup(3L, LocalDateTime.now(),
+                Arrays.asList(new OrderTable(1L, 3L, 0, true)));
 
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.create(nullTableGroup));
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.create(emptyTableGroup));
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.create(onlyOneTableGroup));
+        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(nullTableGroup));
+        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(emptyTableGroup));
+        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(onlyOneTableGroup));
     }
 
     @Test
@@ -62,61 +77,49 @@ class TableGroupServiceTest {
     void 등록을_원하는_주문_테이블과_등록된_주문_테이블의_개수가_틀릴경우_IllegalArgumentException이_발생한다() {
         // given
         Long tableGroupId = 1L;
-        OrderTable orderTable1 = new OrderTable(1L, tableGroupId, 1, true);
-        OrderTable orderTable2 = new OrderTable(2L, tableGroupId, 2, true);
 
-        TableGroup tableGroup = new TableGroup(tableGroupId, null, Arrays.asList(orderTable1, orderTable2));
+
+        TableGroup tableGroup = new TableGroup(tableGroupId, LocalDateTime.now(), orderTables);
 
         // when
-        when(orderTableDao.findAllByIdIn(Arrays.asList(1L, 2L)))
-                .thenReturn(Arrays.asList(orderTable1));
+        when(orderTableDao.findAllByIdIn(orderTableIds)).thenReturn(Arrays.asList(orderTable1));
 
         // then
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.create(tableGroup));
+        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroup));
 
         verify(orderTableDao, VerificationModeFactory.times(1))
-                .findAllByIdIn(Arrays.asList(1L, 2L));
+                .findAllByIdIn(orderTableIds);
     }
 
     @Test
     @DisplayName("create - 등록된 주문 테이블이 빈테이블이 아닐경우 IllegalArgumentException이 발생한다.")
     void 등록된_주문_테이블이_빈테이블이_아닐경우_IllegalArgumentException이_발생한다() {
         // given
-        Long tableGroupId = 1L;
-        OrderTable orderTable1 = new OrderTable(1L, null, 1, false);
-        OrderTable orderTable2 = new OrderTable(2L, null, 2, true);
-        given(orderTableDao.findAllByIdIn(Arrays.asList(1L, 2L)))
-                .willReturn(Arrays.asList(orderTable1, orderTable2));
+        given(orderTableDao.findAllByIdIn(orderTableIds)).willReturn(orderTables);
 
-        TableGroup tableGroup = new TableGroup(tableGroupId, null, Arrays.asList(orderTable1, orderTable2));
+        TableGroup tableGroup = new TableGroup(tableGroupId, LocalDateTime.now(), orderTables);
 
         // when & then
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.create(tableGroup));
+        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroup));
 
         verify(orderTableDao, VerificationModeFactory.times(1))
-                .findAllByIdIn(Arrays.asList(1L, 2L));
+                .findAllByIdIn(orderTableIds);
     }
 
     @Test
     @DisplayName("create - 이미 단체 지정이 되어있을 경우 IllegalArgumentException이 발생한다.")
     void 이미_단체_지정이_되어있을_경우_IllegalArgumentException이_발생한다() {
         // given
-        Long tableGroupId = 1L;
-        OrderTable orderTable1 = new OrderTable(1L, tableGroupId, 1, true);
-        OrderTable orderTable2 = new OrderTable(2L, tableGroupId, 2, true);
-        given(orderTableDao.findAllByIdIn(Arrays.asList(1L, 2L)))
-                .willReturn(Arrays.asList(orderTable1, orderTable2));
+        given(orderTableDao.findAllByIdIn(orderTableIds))
+                .willReturn(orderTables);
 
-        TableGroup tableGroup = new TableGroup(tableGroupId, null, Arrays.asList(orderTable1, orderTable2));
+        TableGroup tableGroup = new TableGroup(tableGroupId, LocalDateTime.now(), orderTables);
 
         // when & then
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.create(tableGroup));
+        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroup));
 
         verify(orderTableDao, VerificationModeFactory.times(1))
-                .findAllByIdIn(Arrays.asList(1L, 2L));
+                .findAllByIdIn(orderTableIds);
 
     }
 
@@ -124,18 +127,18 @@ class TableGroupServiceTest {
     @DisplayName("create - 정상적인 단체지정 등록")
     void 정상적인_단체지정_등록() {
         // given
-        Long tableGroupId = 1L;
 
         OrderTable orderTable1 = new OrderTable(1L, null, 1, true);
         OrderTable orderTable2 = new OrderTable(2L, null, 2, true);
-        given(orderTableDao.findAllByIdIn(Arrays.asList(1L, 2L)))
-                .willReturn(Arrays.asList(orderTable1, orderTable2));
 
-        TableGroup tableGroup = new TableGroup(tableGroupId, null, Arrays.asList(orderTable1, orderTable2));
+        List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
+
+        given(orderTableDao.findAllByIdIn(orderTableIds)).willReturn(orderTables);
+
+        TableGroup tableGroup = new TableGroup(tableGroupId, LocalDateTime.now(), orderTables);
 
         // when
-        when(tableGroupDao.save(tableGroup))
-                .thenReturn(tableGroup);
+        when(tableGroupDao.save(tableGroup)).thenReturn(tableGroup);
 
         TableGroup savedTableGroup = tableGroupService.create(tableGroup);
 
@@ -149,7 +152,7 @@ class TableGroupServiceTest {
                 .containsOnly(tableGroupId);
 
         verify(orderTableDao, VerificationModeFactory.times(1))
-                .findAllByIdIn(Arrays.asList(1L, 2L));
+                .findAllByIdIn(orderTableIds);
 
         verify(orderTableDao, VerificationModeFactory.times(1))
                 .save(orderTable1);
@@ -165,15 +168,7 @@ class TableGroupServiceTest {
 
         List<String> bannedStatus = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
 
-        List<OrderTable> orderTables = Arrays.asList(
-                new OrderTable(1L, tableGroupId, 1, true),
-                new OrderTable(2L, tableGroupId, 1, true),
-                new OrderTable(3L, tableGroupId, 1, true)
-        );
-        List<Long> orderTableIds = Arrays.asList(1L, 2L, 3L);
-
-        given(orderTableDao.findAllByTableGroupId(tableGroupId))
-                .willReturn(orderTables);
+        given(orderTableDao.findAllByTableGroupId(tableGroupId)).willReturn(orderTables);
 
         // when
         when(orderDao.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, bannedStatus))
@@ -187,7 +182,6 @@ class TableGroupServiceTest {
 
         verify(orderDao, VerificationModeFactory.times(1))
                 .existsByOrderTableIdInAndOrderStatusIn(orderTableIds, bannedStatus);
-
     }
 
     @Test
@@ -196,12 +190,6 @@ class TableGroupServiceTest {
         // given
         Long tableGroupId = 1L;
         List<String> bannedStatus = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
-
-        OrderTable orderTable1 = new OrderTable(1L, tableGroupId, 1, true);
-        OrderTable orderTable2 = new OrderTable(2L, tableGroupId, 1, true);
-        OrderTable orderTable3 = new OrderTable(3L, tableGroupId, 1, true);
-        List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2, orderTable3);
-        List<Long> orderTableIds = Arrays.asList(1L, 2L, 3L);
 
         given(orderTableDao.findAllByTableGroupId(tableGroupId))
                 .willReturn(orderTables);
@@ -214,7 +202,6 @@ class TableGroupServiceTest {
         // then
         assertThat(orderTable1.getTableGroupId()).isNull();
         assertThat(orderTable2.getTableGroupId()).isNull();
-        assertThat(orderTable3.getTableGroupId()).isNull();
 
         verify(orderTableDao, VerificationModeFactory.times(1))
                 .findAllByTableGroupId(tableGroupId);
@@ -226,8 +213,5 @@ class TableGroupServiceTest {
                 .save(orderTable1);
         verify(orderTableDao, VerificationModeFactory.times(1))
                 .save(orderTable2);
-        verify(orderTableDao, VerificationModeFactory.times(1))
-                .save(orderTable3);
-
     }
 }
