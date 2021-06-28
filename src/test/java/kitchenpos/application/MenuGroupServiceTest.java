@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -28,14 +29,15 @@ class MenuGroupServiceTest {
   void createTest() {
     //given
     MenuGroup menuGroup = new MenuGroup("그룹1");
-    when(menuGroupDao.save(any())).thenReturn(menuGroup);
+    when(menuGroupDao.save(any())).thenReturn(new MenuGroup(1L, "그룹1"));
     MenuGroupService menuGroupService = new MenuGroupService(menuGroupDao);
 
     //when
     MenuGroup savedMenuGroup = menuGroupService.create(menuGroup);
 
     //then
-    assertThat(savedMenuGroup).isEqualTo(menuGroup);
+    assertAll(() -> assertThat(savedMenuGroup.getId()).isNotNull(),
+        () -> assertThat(savedMenuGroup.getName()).isEqualTo(menuGroup.getName()));
     verify(menuGroupDao, VerificationModeFactory.times(1)).save(menuGroup);
   }
 
