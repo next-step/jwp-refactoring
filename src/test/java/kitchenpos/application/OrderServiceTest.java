@@ -11,12 +11,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.internal.verification.VerificationModeFactory;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -57,20 +61,24 @@ class OrderServiceTest {
         OrderLineItem orderLineItem1 = new OrderLineItem(1L, 1L, 1L, 1);
         OrderLineItem orderLineItem2 = new OrderLineItem(2L, 2L, 2L, 2);
 
+        List<Long> menuIds = Arrays.asList(orderLineItem1.getMenuId(), orderLineItem2.getMenuId());
 
         Order order = new Order(null, null, null, null,
                 Arrays.asList(orderLineItem1, orderLineItem2));
         // when
-        when(menuDao.countByIdIn(Arrays.asList(orderLineItem1.getMenuId(), orderLineItem2.getMenuId())))
+        when(menuDao.countByIdIn(menuIds))
                 .thenReturn(1L);
+
         // then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(order));
+
+        verify(menuDao, VerificationModeFactory.times(1))
+                .countByIdIn(menuIds);
     }
 
     @Test
     @DisplayName("create - 주문 테이블이 존재하는지 확인하고, 없으면 IllegalArgumentException이 발생한다.")
     void 주문_테이블이_존재하는지_확인하고_없으면_IllegalArgumentException이_발생한다() {
-
     }
 
     @Test
