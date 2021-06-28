@@ -169,6 +169,29 @@ class MenuServiceTest {
     @Test
     @DisplayName("list - 정상적인 메뉴 전체 조회")
     void 정상적인_메뉴_전체_조회() {
+        // given
+        Long menuId = 1L;
+
+        Menu menu = new Menu(menuId, null, null, null, null);
+        List<MenuProduct> menuProducts = Arrays.asList(
+                new MenuProduct(1L, menuId, 1L, 1L ),
+                new MenuProduct(2L, menuId, 2L, 2L ),
+                new MenuProduct(3L, menuId, 3L, 3L )
+        );
+
+        // when
+
+        when(menuDao.findAll())
+                .thenReturn(Arrays.asList(menu));
+        when(menuProductDao.findAllByMenuId(menuId))
+                .thenReturn(menuProducts);
+
+        Menu resultMenu = menuService.list().get(0);
+        // then
+        assertThat(resultMenu)
+                .isEqualTo(menu);
+        assertThat(resultMenu.getMenuProducts())
+                .isEqualTo(menuProducts);
     }
 
 }
