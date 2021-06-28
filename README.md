@@ -10,7 +10,7 @@
 1. 이름, 가격, 메뉴 그룹, 메뉴 상품으로 메뉴를 생성이 가능하다.
     - 등록을 원하는 메뉴의 가격이 비어 있거나, 0원보다 적을경우 IllegalArgumentException 이 발생한다.
     - 등록을 원하는 메뉴의 메뉴 그룹이 DB에 없을경우 IllegalArgumetException 이 발생한다.
-    - 등록을 원하는 메뉴 상품이 DB에 있는지 확인하고, 없으면 IllegalArgumentException 이 발생한다.
+    - 등록을 원하는 메뉴 상품의 상품이 DB에 있는지 확인하고, 없으면 IllegalArgumentException 이 발생한다.
     - 메뉴 상품의 금액 합계가 등록을 원하는 메뉴 가격보다 크면 IllegalArgumentException 이 발생한다.
     - 등록을 원하는 메뉴를 등록한다.
     - 메뉴 상품의 메뉴 고유 아이디를 등록된 메뉴의 고유 아이디로 변경하고 저장한다.
