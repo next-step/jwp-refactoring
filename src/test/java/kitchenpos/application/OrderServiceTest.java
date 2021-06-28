@@ -207,7 +207,35 @@ class OrderServiceTest {
     @Test
     @DisplayName("create - 정상적인 주문 테이블 전체 조회")
     void 정상적인_주문_테이블_전체_조회() {
+        // given
+        Long orderTableId = 1L;
+        Long orderId = 1L;
 
+        OrderLineItem orderLineItem1 = new OrderLineItem(1L, 1L, 1L, 1);
+        OrderLineItem orderLineItem2 = new OrderLineItem(2L, 2L, 2L, 2);
+
+        Order order = new Order(orderId, orderTableId, null, null,
+                Arrays.asList(orderLineItem1, orderLineItem2));
+
+        // when
+        when(orderDao.findAll())
+                .thenReturn(Arrays.asList(order));
+        when(orderLineItemDao.findAllByOrderId(orderId))
+                .thenReturn(Arrays.asList(orderLineItem1, orderLineItem2));
+
+        Order savedOrder = orderService.list().get(0);
+
+        // then
+        assertThat(savedOrder)
+                .isEqualTo(order);
+        assertThat(savedOrder.getOrderLineItems())
+                .containsExactly(orderLineItem1, orderLineItem2);
+
+        verify(orderDao, VerificationModeFactory.times(1))
+                .findAll();
+
+        verify(orderLineItemDao, VerificationModeFactory.times(1))
+                .findAllByOrderId(orderId);
     }
 
     @Test
