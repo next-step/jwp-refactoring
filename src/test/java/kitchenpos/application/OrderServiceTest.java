@@ -6,6 +6,7 @@ import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -148,7 +149,59 @@ class OrderServiceTest {
     @Test
     @DisplayName("create - 정상적인 주문 테이블 등록")
     void 정상적인_주문_테이블_등록() {
+        // given
+        Long orderTableId = 1L;
+        Long orderId = 1L;
 
+        OrderLineItem orderLineItem1 = new OrderLineItem(1L, 1L, 1L, 1);
+        OrderLineItem orderLineItem2 = new OrderLineItem(2L, 2L, 2L, 2);
+
+        OrderTable orderTable = new OrderTable(orderTableId, null, 1, false);
+
+        List<Long> menuIds = Arrays.asList(orderLineItem1.getMenuId(), orderLineItem2.getMenuId());
+
+        Order order = new Order(orderId, orderTableId, null, null,
+                Arrays.asList(orderLineItem1, orderLineItem2));
+
+        given(menuDao.countByIdIn(menuIds))
+                .willReturn(Long.valueOf(menuIds.size()));
+
+        given(orderTableDao.findById(orderTableId))
+                .willReturn(Optional.of(orderTable));
+
+        // when
+        when(orderDao.save(order))
+                .thenReturn(order);
+        when(orderLineItemDao.save(orderLineItem1))
+                .thenReturn(orderLineItem1);
+        when(orderLineItemDao.save(orderLineItem2))
+                .thenReturn(orderLineItem2);
+
+        Order savedOrder = orderService.create(order);
+
+        // then
+
+        assertThat(savedOrder.getOrderTableId()).isEqualTo(orderTableId);
+        assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(savedOrder.getOrderedTime()).isNotNull();
+        assertThat(savedOrder.getOrderLineItems())
+                .map(item -> item.getOrderId())
+                .containsOnly(orderId);
+        assertThat(savedOrder.getOrderLineItems())
+                .containsExactly(orderLineItem1, orderLineItem2);
+
+
+        verify(menuDao, VerificationModeFactory.times(1))
+                .countByIdIn(menuIds);
+
+        verify(orderTableDao, VerificationModeFactory.times(1))
+                .findById(orderTableId);
+
+        verify(orderLineItemDao, VerificationModeFactory.times(1))
+                .save(orderLineItem1);
+
+        verify(orderLineItemDao, VerificationModeFactory.times(1))
+                .save(orderLineItem2);
     }
 
     @Test
