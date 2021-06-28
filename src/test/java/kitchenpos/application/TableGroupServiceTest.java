@@ -3,12 +3,19 @@ package kitchenpos.application;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
+import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Arrays;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
@@ -31,7 +38,17 @@ class TableGroupServiceTest {
     @Test
     @DisplayName("create - 등록을 원하는 주문 테이블이 비어있거나, 1개밖에 없을경우 IllegalArugmentException이 발생한다.")
     void 등록을_원하는_주문_테이블이_비어있거나_1개밖에_없을경우_IllegalArgumentException이_발생한다() {
+        TableGroup nullTableGroup = new TableGroup(null, null, null);
+        TableGroup emptyTableGroup = new TableGroup(null, null, Arrays.asList());
+        TableGroup onlyOneTableGroup = new TableGroup(null, null,
+                Arrays.asList(new OrderTable(null, null, 0, false)));
 
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> tableGroupService.create(nullTableGroup));
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> tableGroupService.create(emptyTableGroup));
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> tableGroupService.create(onlyOneTableGroup));
     }
 
     @Test
