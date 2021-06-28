@@ -6,6 +6,7 @@ import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,6 +21,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -90,8 +92,8 @@ class OrderServiceTest {
         Order order = new Order(null, orderTableId, null, null,
                 Arrays.asList(orderLineItem1, orderLineItem2));
 
-        when(menuDao.countByIdIn(menuIds))
-                .thenReturn(Long.valueOf(menuIds.size()));
+        given(menuDao.countByIdIn(menuIds))
+                .willReturn(Long.valueOf(menuIds.size()));
 
         // when
         when(orderTableDao.findById(orderTableId))
@@ -106,13 +108,40 @@ class OrderServiceTest {
 
         verify(orderTableDao, VerificationModeFactory.times(1))
                 .findById(orderTableId);
-
-
     }
 
     @Test
     @DisplayName("create - 주문 테이블이 빈 테이블일 경우 IllegalArgumentException이 발생한다.")
     void 주문_테이블이_빈_테이블일_경우_IllegalArgumentException이_발생한다() {
+        // given
+        Long orderTableId = 1L;
+
+        OrderLineItem orderLineItem1 = new OrderLineItem(1L, 1L, 1L, 1);
+        OrderLineItem orderLineItem2 = new OrderLineItem(2L, 2L, 2L, 2);
+
+        OrderTable orderTable = new OrderTable(orderTableId, null, 1, true);
+
+        List<Long> menuIds = Arrays.asList(orderLineItem1.getMenuId(), orderLineItem2.getMenuId());
+
+        Order order = new Order(null, orderTableId, null, null,
+                Arrays.asList(orderLineItem1, orderLineItem2));
+
+        given(menuDao.countByIdIn(menuIds))
+                .willReturn(Long.valueOf(menuIds.size()));
+
+        // when
+        when(orderTableDao.findById(orderTableId))
+                .thenReturn(Optional.of(orderTable));
+
+        // then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> orderService.create(order));
+
+        verify(menuDao, VerificationModeFactory.times(1))
+                .countByIdIn(menuIds);
+
+        verify(orderTableDao, VerificationModeFactory.times(1))
+                .findById(orderTableId);
 
     }
 
