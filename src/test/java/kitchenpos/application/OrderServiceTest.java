@@ -258,7 +258,20 @@ class OrderServiceTest {
     @Test
     @DisplayName("changeOrderStatus - 주문의 상태가 계산 완료이고, 변경하려는 상태도 계산완료일 경우 IllegalArgumentException 이 발생한다.")
     void 주문의_상태가_계산_완료이고_변경하려는_상태도_계산완료일_경우_IllegalArgumentException이_발생한다() {
+        // given
+        Long orderId = 1L;
 
+        Order order = new Order(orderId, null, OrderStatus.COMPLETION.name(), null, null);
+
+        // when
+        when(orderDao.findById(orderId))
+                .thenReturn(Optional.of(order));
+
+        // then
+        assertThatIllegalArgumentException().isThrownBy(() -> orderService.changeOrderStatus(orderId, order));
+
+        verify(orderDao, VerificationModeFactory.times(1))
+                .findById(orderId);
     }
 
     @Test
