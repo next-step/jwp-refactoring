@@ -47,16 +47,14 @@ class TableServiceTest {
         OrderTable orderTable = new OrderTable(1L, 1L, 1, true);
 
         // when
-        when(orderTableDao.save(orderTable))
-                .thenReturn(orderTable);
+        when(orderTableDao.save(orderTable)).thenReturn(orderTable);
 
         OrderTable savedOrderTable = tableService.create(orderTable);
 
         // then
         assertThat(savedOrderTable.getTableGroupId()).isNull();
 
-        verify(orderTableDao, VerificationModeFactory.times(1))
-                .save(orderTable);
+        verify(orderTableDao, VerificationModeFactory.times(1)).save(orderTable);
 
     }
 
@@ -68,14 +66,12 @@ class TableServiceTest {
         OrderTable orderTable2 = new OrderTable(2L, 2L, 2, false);
 
         // when
-        when(orderTableDao.findAll())
-                .thenReturn(Arrays.asList(orderTable1, orderTable2));
+        when(orderTableDao.findAll()).thenReturn(Arrays.asList(orderTable1, orderTable2));
 
         List<OrderTable> list = tableService.list();
 
         // then
-        assertThat(list)
-                .containsExactly(orderTable1, orderTable2);
+        assertThat(list).containsExactly(orderTable1, orderTable2);
 
         verify(orderTableDao, VerificationModeFactory.times(1))
                 .findAll();
@@ -86,11 +82,10 @@ class TableServiceTest {
     void DB에서_주문_테이블을_고유_아이디로_가져온다_없으면_IllegalArgumentException이_발생한다() {
         // given
         Long orderTableId = 1L;
-        OrderTable orderTable = new OrderTable(orderTableId, null, 1, true);
+        OrderTable orderTable = new OrderTable(orderTableId, 1L, 1, true);
 
         // when
-        when(orderTableDao.findById(orderTableId))
-                .thenReturn(Optional.empty());
+        when(orderTableDao.findById(orderTableId)).thenReturn(Optional.empty());
 
         // then
         assertThatIllegalArgumentException()
@@ -107,8 +102,7 @@ class TableServiceTest {
         Long orderTableId = 1L;
         OrderTable orderTable = new OrderTable(orderTableId, 1L, 1, true);
 
-        given(orderTableDao.findById(orderTableId))
-                .willReturn(Optional.of(orderTable));
+        given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(orderTable));
 
         // when & then
         assertThatIllegalArgumentException()
@@ -151,10 +145,8 @@ class TableServiceTest {
         OrderTable orderTable = new OrderTable(orderTableId, null, 1, true);
         List<String> bannedStatus = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
 
-        given(orderTableDao.findById(orderTableId))
-                .willReturn(Optional.of(orderTable));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(orderTableId, bannedStatus))
-                .willReturn(false);
+        given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(orderTable));
+        given(orderDao.existsByOrderTableIdAndOrderStatusIn(orderTableId, bannedStatus)).willReturn(false);
 
         // when
         when(orderTableDao.save(orderTable))
@@ -183,7 +175,7 @@ class TableServiceTest {
     void 방문한_손님_수가_0보다_작으면_IllegalArgumentException이_발생한다() {
         // given
         Long orderTableId = 1L;
-        OrderTable orderTable = new OrderTable(orderTableId, null, -1, true);
+        OrderTable orderTable = new OrderTable(orderTableId, 1L, -1, true);
 
         // when & then
         assertThatIllegalArgumentException()
@@ -195,11 +187,10 @@ class TableServiceTest {
     void DB에서_변경을_원하는_주문_테이블을_가져오고_주문_테이블이_없을경우_IllegalArgumentException이_발생한다() {
         // given
         Long orderTableId = 1L;
-        OrderTable orderTable = new OrderTable(orderTableId, null, 1, false);
+        OrderTable orderTable = new OrderTable(orderTableId, 1L, 1, false);
 
         // when
-        when(orderTableDao.findById(orderTableId))
-                .thenReturn(Optional.empty());
+        when(orderTableDao.findById(orderTableId)).thenReturn(Optional.empty());
 
         // then
         assertThatIllegalArgumentException()
@@ -214,9 +205,8 @@ class TableServiceTest {
     void 주문_테이블이_빈_테이블이면_IllegalArgumentException이_발생한다() {
         // given
         Long orderTableId = 1L;
-        OrderTable orderTable = new OrderTable(orderTableId, null, 1, true);
-        given(orderTableDao.findById(orderTableId))
-                .willReturn(Optional.of(orderTable));
+        OrderTable orderTable = new OrderTable(orderTableId, 1L, 1, true);
+        given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(orderTable));
 
         // when & then
         assertThatIllegalArgumentException()
@@ -230,13 +220,11 @@ class TableServiceTest {
     void 정상적인_방문한_손님_변경() {
         // given
         Long orderTableId = 1L;
-        OrderTable orderTable = new OrderTable(orderTableId, null, 1, false);
-        given(orderTableDao.findById(orderTableId))
-                .willReturn(Optional.of(orderTable));
+        OrderTable orderTable = new OrderTable(orderTableId, 1L, 1, false);
+        given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(orderTable));
 
         // when
-        when(orderTableDao.save(orderTable))
-                .thenReturn(orderTable);
+        when(orderTableDao.save(orderTable)).thenReturn(orderTable);
         OrderTable changedOrderTable = tableService.changeNumberOfGuests(orderTableId, orderTable);
 
         // when & then
