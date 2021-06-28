@@ -103,8 +103,8 @@ class TableGroupServiceTest {
     void 이미_단체_지정이_되어있을_경우_IllegalArgumentException이_발생한다() {
         // given
         Long tableGroupId = 1L;
-        OrderTable orderTable1 = new OrderTable(1L, tableGroupId, 1, false);
-        OrderTable orderTable2 = new OrderTable(2L, tableGroupId, 2, false);
+        OrderTable orderTable1 = new OrderTable(1L, tableGroupId, 1, true);
+        OrderTable orderTable2 = new OrderTable(2L, tableGroupId, 2, true);
         given(orderTableDao.findAllByIdIn(Arrays.asList(1L, 2L)))
                 .willReturn(Arrays.asList(orderTable1, orderTable2));
 
@@ -122,7 +122,37 @@ class TableGroupServiceTest {
     @Test
     @DisplayName("create - 정상적인 단체지정 등록")
     void 정상적인_단체지정_등록() {
+        // given
+        Long tableGroupId = 1L;
+        OrderTable orderTable1 = new OrderTable(1L, null, 1, true);
+        OrderTable orderTable2 = new OrderTable(2L, null, 2, true);
+        given(orderTableDao.findAllByIdIn(Arrays.asList(1L, 2L)))
+                .willReturn(Arrays.asList(orderTable1, orderTable2));
 
+        TableGroup tableGroup = new TableGroup(tableGroupId, null, Arrays.asList(orderTable1, orderTable2));
+
+        // when
+        when(tableGroupDao.save(tableGroup))
+                .thenReturn(tableGroup);
+
+        TableGroup savedTableGroup = tableGroupService.create(tableGroup);
+
+        // then
+        assertThat(savedTableGroup.getOrderTables())
+                .map(item -> item.isEmpty())
+                .containsOnly(false);
+
+        assertThat(savedTableGroup.getOrderTables())
+                .map(item -> item.getTableGroupId())
+                .containsOnly(tableGroupId);
+
+        verify(orderTableDao, VerificationModeFactory.times(1))
+                .findAllByIdIn(Arrays.asList(1L, 2L));
+
+        verify(orderTableDao, VerificationModeFactory.times(1))
+                .save(orderTable1);
+        verify(orderTableDao, VerificationModeFactory.times(1))
+                .save(orderTable2);
     }
 
     @Test
