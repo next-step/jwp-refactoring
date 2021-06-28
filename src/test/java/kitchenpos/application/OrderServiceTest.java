@@ -6,11 +6,11 @@ import java.util.stream.Stream;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -40,7 +40,7 @@ class OrderServiceTest {
     private OrderLineItemDao orderLineItemDao;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private OrderService orderService;
@@ -84,7 +84,7 @@ class OrderServiceTest {
         order.setOrderTableId(1L);
 
         given(menuDao.countByIdIn(any())).willReturn(1L);
-        given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.empty());
+        given(orderTableRepository.findById(order.getOrderTableId())).willReturn(Optional.empty());
 
         // when
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(order));
@@ -99,10 +99,10 @@ class OrderServiceTest {
         order.setOrderTableId(1L);
 
         OrderTable orderTable = new OrderTable();
-        orderTable.setEmpty(true);
+        orderTable.empty();
 
         given(menuDao.countByIdIn(any())).willReturn(1L);
-        given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
+        given(orderTableRepository.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
 
         // when
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(order));
@@ -123,7 +123,7 @@ class OrderServiceTest {
         OrderTable orderTable = new OrderTable();
 
         given(menuDao.countByIdIn(any())).willReturn(2L);
-        given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
+        given(orderTableRepository.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
         given(orderDao.save(order)).willReturn(order);
 
         // when
