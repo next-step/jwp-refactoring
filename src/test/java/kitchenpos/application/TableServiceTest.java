@@ -13,8 +13,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -73,6 +75,25 @@ class TableServiceTest {
 
         verify(orderTableDao, VerificationModeFactory.only())
                 .findAll();
+    }
+
+    @Test
+    @DisplayName("changeEmpty - DB에서 주문 테이블을 고유 아이디로 가져온다. 없으면 IllegalArgumentException이 발생한다.")
+    void DB에서_주문_테이블을_고유_아이디로_가져온다_없으면_IllegalArgumentException이_발생한다() {
+        // given
+        Long orderTableId = 1L;
+        OrderTable orderTable = new OrderTable(orderTableId, 1L, 1, true);
+
+        // when
+        when(orderTableDao.findById(orderTableId))
+                .thenReturn(Optional.empty());
+
+        // then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> tableService.changeEmpty(orderTableId, orderTable));
+
+        verify(orderTableDao, VerificationModeFactory.only())
+                .findById(orderTableId);
     }
 
     @Test
