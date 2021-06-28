@@ -35,16 +35,17 @@ class MenuGroupServiceTest {
     @DisplayName("create - 정상적인 메뉴 그룹 저장")
     void 정상적인_메뉴_그룹_저장() {
         // given
-        MenuGroup menuGroup = new MenuGroup();
-        given(menuGroupDao.save(menuGroup))
-                .willReturn(menuGroup);
+        MenuGroup menuGroup = new MenuGroup(1L, "Hello");
 
         // when
+        when(menuGroupDao.save(menuGroup))
+                .thenReturn(menuGroup);
+
         MenuGroup result = menuGroupService.create(menuGroup);
 
         // then
-        assertThat(result)
-                .isEqualTo(result);
+        assertThat(result.getId()).isEqualTo(menuGroup.getId());
+        assertThat(result.getName()).isEqualTo(menuGroup.getName());
 
         verify(menuGroupDao, VerificationModeFactory.times(1))
                 .save(menuGroup);
@@ -60,10 +61,10 @@ class MenuGroupServiceTest {
                 new MenuGroup(3L, "C")
         );
 
-        given(menuGroupDao.findAll())
-                .willReturn(menuGroups);
-
         // when
+        when(menuGroupDao.findAll())
+                .thenReturn(menuGroups);
+
         List<MenuGroup> list = menuGroupService.list();
 
         // then
