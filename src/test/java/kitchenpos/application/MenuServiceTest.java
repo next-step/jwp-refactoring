@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
@@ -59,10 +60,11 @@ class MenuServiceTest {
         Long menuGroupId = 1L;
         Menu menu = new Menu(null, null, BigDecimal.valueOf(0), menuGroupId, null);
 
-        given(menuGroupDao.existsById(menuGroupId))
-                .willReturn(false);
+        // when
+        when(menuGroupDao.existsById(menuGroupId))
+                .thenReturn(false);
 
-        // when & then
+        // then
 
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
         verify(menuGroupDao, VerificationModeFactory.only())
