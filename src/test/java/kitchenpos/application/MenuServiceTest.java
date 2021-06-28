@@ -3,9 +3,9 @@ package kitchenpos.application;
 import java.util.Arrays;
 import java.util.Optional;
 import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.domain.Menu;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
@@ -35,7 +35,7 @@ class MenuServiceTest {
     private MenuDao menuDao;
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @Mock
     private MenuProductDao menuProductDao;
@@ -77,7 +77,7 @@ class MenuServiceTest {
         // given
         Menu menu = createMenu(30000);
 
-        given(menuGroupDao.existsById(menu.getMenuGroupId())).willReturn(true);
+        given(menuGroupRepository.existsById(menu.getMenuGroupId())).willReturn(true);
         givenProducts();
         given(menuDao.save(menu)).willReturn(menu);
         givenMenuProducts();
@@ -107,7 +107,7 @@ class MenuServiceTest {
         // given
         Menu menu = createMenu(30000);
         menu.setMenuGroupId(NOT_SAVED_ID);
-        given(menuGroupDao.existsById(menu.getMenuGroupId())).willReturn(false);
+        given(menuGroupRepository.existsById(menu.getMenuGroupId())).willReturn(false);
 
         // when
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
@@ -121,7 +121,7 @@ class MenuServiceTest {
         Menu menu = createMenu(price);
         menu.setMenuGroupId(NOT_SAVED_ID);
 
-        given(menuGroupDao.existsById(menu.getMenuGroupId())).willReturn(true);
+        given(menuGroupRepository.existsById(menu.getMenuGroupId())).willReturn(true);
         givenProducts();
 
         // when

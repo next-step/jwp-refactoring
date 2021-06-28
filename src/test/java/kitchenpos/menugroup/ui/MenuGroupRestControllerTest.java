@@ -1,10 +1,10 @@
-package kitchenpos.ui;
+package kitchenpos.menugroup.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.config.MockMvcTestConfig;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menugroup.dto.MenuGroupDto;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,10 +37,9 @@ class MenuGroupRestControllerTest {
     @DisplayName("메뉴 그룹 생성 요청 성공")
     @Test
     void createMenuGroupRequest() throws Exception {
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setName("menu group");
+        MenuGroupDto menuGroupDto = new MenuGroupDto("menu group");
 
-        String content = objectMapper.writeValueAsString(menuGroup);
+        String content = objectMapper.writeValueAsString(menuGroupDto);
 
         mockMvc.perform(post(BASE_URL).content(content)
                                       .contentType(MediaType.APPLICATION_JSON))
