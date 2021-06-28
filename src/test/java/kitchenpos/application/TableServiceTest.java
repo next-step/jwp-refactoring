@@ -2,11 +2,14 @@ package kitchenpos.application;
 
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.internal.verification.VerificationModeFactory;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -118,7 +121,26 @@ class TableServiceTest {
     @Test
     @DisplayName("changeEmpty - 주문 테이블에 등록된 주문들의 상태가 조리 또는 식사 일 경우 IllegalArgumentException이 발생한다.")
     void 주문_테이블에_등록된_주문들의_상탱가_조리_또는_식사_일_경우_IllegalArgumentException이_발생한다() {
+        // given
+        Long orderTableId = 1L;
+        OrderTable orderTable = new OrderTable(orderTableId, null, 1, true);
+        List<String> bannedStatus = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
 
+        given(orderTableDao.findById(orderTableId))
+                .willReturn(Optional.of(orderTable));
+
+        // when
+        when(orderDao.existsByOrderTableIdAndOrderStatusIn(orderTableId, bannedStatus))
+                .thenReturn(true);
+
+        // then
+        assertThatIllegalArgumentException().isThrownBy(() -> tableService.changeEmpty(orderTableId, orderTable));
+
+        verify(orderTableDao, VerificationModeFactory.only())
+                .findById(orderTableId);
+
+        verify(orderDao, VerificationModeFactory.only())
+                .existsByOrderTableIdAndOrderStatusIn(orderTableId, bannedStatus);
     }
 
     @Test
