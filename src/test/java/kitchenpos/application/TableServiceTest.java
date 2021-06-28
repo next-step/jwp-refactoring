@@ -188,12 +188,24 @@ class TableServiceTest {
         // when & then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, orderTable));
-
     }
 
     @Test
     @DisplayName("changeNumberOfGuests - DB에서 변경을 원하는 주문 테이블을 가져오고, 주문 테이블이 없을경우 IllegalArgumentException이 발생한다.")
     void DB에서_변경을_원하는_주문_테이블을_가져오고_주문_테이블이_없을경우_IllegalArgumentException이_발생한다() {
+        // given
+        Long orderTableId = 1L;
+        OrderTable orderTable = new OrderTable(orderTableId, null, 1, true);
+
+        // when
+        when(orderTableDao.findById(orderTableId))
+                .thenReturn(Optional.empty());
+
+        // then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, orderTable));
+        verify(orderTableDao, VerificationModeFactory.times(1))
+                .findById(orderTableId);
 
     }
 
