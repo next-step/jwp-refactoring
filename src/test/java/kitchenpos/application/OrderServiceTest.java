@@ -5,6 +5,7 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderLineItem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -49,9 +51,20 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("create - 등록을 원하는 주뭉항목이 DB에 전부 존재하는지 확인하여 전부 존재하지 않으면 IllegalArgumentException이 발생한다.")
-    void 등록을_원하는_주뭉항목이_DB에_전부_존재하는지_확인하여_전부_존재하지_않으면_IllegalArgumentException이_발생한다() {
+    @DisplayName("create - 등록을 원하는 주문항목이 DB에 전부 존재하는지 확인하여 전부 존재하지 않으면 IllegalArgumentException이 발생한다.")
+    void 등록을_원하는_주문항목이_DB에_전부_존재하는지_확인하여_전부_존재하지_않으면_IllegalArgumentException이_발생한다() {
+        // given
+        OrderLineItem orderLineItem1 = new OrderLineItem(1L, 1L, 1L, 1);
+        OrderLineItem orderLineItem2 = new OrderLineItem(2L, 2L, 2L, 2);
 
+
+        Order order = new Order(null, null, null, null,
+                Arrays.asList(orderLineItem1, orderLineItem2));
+        // when
+        when(menuDao.countByIdIn(Arrays.asList(orderLineItem1.getMenuId(), orderLineItem2.getMenuId())))
+                .thenReturn(1L);
+        // then
+        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(order));
     }
 
     @Test
