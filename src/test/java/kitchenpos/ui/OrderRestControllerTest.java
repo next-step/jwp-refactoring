@@ -76,6 +76,7 @@ class OrderRestControllerTest {
         .andExpect(content().string(containsString("\"id\":1")))
         .andExpect(content().string(containsString("\"id\":2")));
   }
+
   @DisplayName("주문의 현재 상태를 변경할 수 있다.")
   @Test
   void changeOrderStatusTest() throws Exception {
