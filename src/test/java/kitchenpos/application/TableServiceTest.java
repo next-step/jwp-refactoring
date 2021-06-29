@@ -78,7 +78,6 @@ class TableServiceTest {
 		// given
 		OrderTable groupedOrderTable = mock(OrderTable.class);
 		when(groupedOrderTable.getTableGroupId()).thenReturn(1L);
-
 		when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(groupedOrderTable));
 
 		// when
@@ -94,7 +93,6 @@ class TableServiceTest {
 		// given
 		OrderTable orderTable = mock(OrderTable.class);
 		when(orderTable.getTableGroupId()).thenReturn(null);
-
 		when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(orderTable));
 
 		when(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList()))
@@ -113,7 +111,6 @@ class TableServiceTest {
 		// given
 		OrderTable savedOrderTable = mock(OrderTable.class);
 		when(savedOrderTable.getTableGroupId()).thenReturn(null);
-
 		when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(savedOrderTable));
 
 		OrderTable orderTable = mock(OrderTable.class);
@@ -159,7 +156,6 @@ class TableServiceTest {
 		// given
 		OrderTable emptyOrderTable = mock(OrderTable.class);
 		when(emptyOrderTable.isEmpty()).thenReturn(true);
-
 		when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(emptyOrderTable));
 
 		// when
@@ -174,7 +170,6 @@ class TableServiceTest {
 	void changeNumberOfGuests() {
 		// given
 		OrderTable savedOrderTable = mock(OrderTable.class);
-
 		when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(savedOrderTable));
 
 		OrderTable orderTable = mock(OrderTable.class);

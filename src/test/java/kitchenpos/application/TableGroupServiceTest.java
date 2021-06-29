@@ -55,6 +55,7 @@ class TableGroupServiceTest {
 		// given
 		OrderTable orderTable1 = mock(OrderTable.class);
 		OrderTable orderTable2 = mock(OrderTable.class);
+
 		TableGroup tableGroup = mock(TableGroup.class);
 		when(tableGroup.getOrderTables()).thenReturn(asList(orderTable1, orderTable2));
 
@@ -72,7 +73,9 @@ class TableGroupServiceTest {
 		// given
 		OrderTable emptyOrderTable = mock(OrderTable.class);
 		when(emptyOrderTable.isEmpty()).thenReturn(true);
+
 		OrderTable notEmptyOrderTable = mock(OrderTable.class);
+
 		TableGroup tableGroup = mock(TableGroup.class);
 		when(tableGroup.getOrderTables()).thenReturn(asList(emptyOrderTable, notEmptyOrderTable));
 
@@ -89,6 +92,7 @@ class TableGroupServiceTest {
 	void createTableGroupTest() {
 		// given
 		when(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).thenReturn(true);
+
 		// when
 		assertThatThrownBy(() -> tableGroupService.ungroup(1L))
 			.isInstanceOf(IllegalArgumentException.class)
