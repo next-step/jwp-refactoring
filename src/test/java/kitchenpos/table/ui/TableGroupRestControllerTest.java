@@ -1,9 +1,14 @@
 package kitchenpos.table.ui;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.Stream;
 import kitchenpos.config.MockMvcTestConfig;
+import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderLineItem;
 import kitchenpos.table.dto.OrderTableDto;
 import kitchenpos.table.dto.TableGroupDto;
 import org.assertj.core.util.Lists;
@@ -14,11 +19,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -39,17 +46,13 @@ class TableGroupRestControllerTest {
     @Test
     void createTableGroupRequestSuccess() throws Exception {
 
-        // V2__Insert_default_data.sql 에서 ID가 1 ~ 3인 OrderTable 사용
+        // V2__Insert_default_data.sql에서 ID가 1, 2, 3인 order_table 데이터 활용
         TableGroupDto tableGroupDto = new TableGroupDto(Stream.iterate(1, i -> i + 1)
                                                               .limit(3)
                                                               .map(i -> orderTableWithId(Long.valueOf(i)))
                                                               .collect(toList()));
 
-        mockMvc.perform(post(BASE_URL).content(objectMapper.writeValueAsString(tableGroupDto))
-                                      .contentType(MediaType.APPLICATION_JSON))
-               .andDo(print())
-               .andExpect(status().isCreated())
-               .andExpect(header().exists("Location"));
+        createTableGroup(tableGroupDto);
     }
 
     @DisplayName("단체 지정 생성 요청 실패 - orderTable size가 2 미만")
@@ -83,21 +86,27 @@ class TableGroupRestControllerTest {
     @DisplayName("단체 지정 해제 요청 성공")
     @Test
     void ungroupRequestSuccess() throws Exception {
-        mockMvc.perform(delete(BASE_URL + "/" + 3))
+
+        // V2__Insert_default_data.sql에서 ID가 4, 5, 6 order_table 데이터 활용
+        MvcResult result = createTableGroup(new TableGroupDto(Stream.iterate(4, i -> i + 1)
+                                                                    .limit(3)
+                                                                    .map(i -> orderTableWithId(Long.valueOf(i)))
+                                                                    .collect(toList())));
+
+        String location = (String) result.getResponse().getHeaderValue("Location");
+
+        mockMvc.perform(delete(location))
                .andDo(print())
                .andExpect(status().isNoContent());
     }
 
-    @DisplayName("단체 지정 해제 요청 실패 - 단체 지정된 주문 중 주문 상태가 COOKING, MEAL인 것이 있음")
-    @Test
-    void ungroupRequestFail() {
-        try {
-            mockMvc.perform(delete(BASE_URL + "/" + 2))
-                   .andDo(print())
-                   .andExpect(status().isBadRequest());
-        } catch (Exception e) {
-            assertTrue(e.getCause() instanceof IllegalArgumentException);
-        }
+    private MvcResult createTableGroup(TableGroupDto tableGroupDto) throws Exception {
+        return mockMvc.perform(post(BASE_URL).content(objectMapper.writeValueAsString(tableGroupDto))
+                                             .contentType(MediaType.APPLICATION_JSON))
+                      .andDo(print())
+                      .andExpect(status().isCreated())
+                      .andExpect(header().exists("Location"))
+                      .andReturn();
     }
 
     private OrderTableDto orderTableWithId(Long id) {

@@ -41,14 +41,7 @@ class TableRestControllerTest {
     @Test
     void createOrderTableRequestSuccess() throws Exception {
         OrderTableDto orderTableDto = new OrderTableDto(3, false);
-
-        String content = objectMapper.writeValueAsString(orderTableDto);
-
-        mockMvc.perform(post(BASE_URL).content(content)
-                                      .contentType(MediaType.APPLICATION_JSON))
-               .andDo(print())
-               .andExpect(status().isCreated())
-               .andExpect(header().exists("Location"));
+        createOrderTableRequest(orderTableDto);
     }
 
     @DisplayName("주문 테이블 목록 요청 성공")
@@ -124,6 +117,15 @@ class TableRestControllerTest {
     @Test
     void updateOrderTableNumberOfGuestsFail02() {
         putNumberOfGuestsFail(4, 3);
+    }
+
+    private MvcResult createOrderTableRequest(OrderTableDto orderTableDto) throws Exception {
+        return mockMvc.perform(post(BASE_URL).content(objectMapper.writeValueAsString(orderTableDto))
+                                             .contentType(MediaType.APPLICATION_JSON))
+                      .andDo(print())
+                      .andExpect(status().isCreated())
+                      .andExpect(header().exists("Location"))
+                      .andReturn();
     }
 
     private void putEmptyFail(int id) {

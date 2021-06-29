@@ -20,6 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
@@ -132,8 +133,12 @@ class TableGroupServiceTest {
         TableGroup tableGroup = new TableGroup(Lists.newArrayList(entity(1L, true), entity(2L, true)));
         given(tableGroupRepository.findById(1L)).willReturn(Optional.of(tableGroup));
 
+        List<Long> orderTableIds = tableGroup.getOrderTables().stream()
+                                             .map(OrderTable::getId)
+                                             .collect(toList());
+
         List<OrderTable> savedOrderTables = tableGroup.getOrderTables();
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(Lists.newArrayList(2L, 1L),
+        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(orderTableIds,
                                                               Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
             .willReturn(false);
 
