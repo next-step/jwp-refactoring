@@ -1,14 +1,9 @@
 package kitchenpos.table.ui;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.stream.Stream;
 import kitchenpos.config.MockMvcTestConfig;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
 import kitchenpos.table.dto.OrderTableDto;
 import kitchenpos.table.dto.TableGroupDto;
 import org.assertj.core.util.Lists;

@@ -4,8 +4,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
@@ -32,7 +32,7 @@ import static org.mockito.Mockito.verify;
 class TableGroupServiceTest {
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -116,8 +116,8 @@ class TableGroupServiceTest {
         TableGroup tableGroup = new TableGroup(Lists.newArrayList(entity(1L, true)));
         given(tableGroupRepository.findById(1L)).willReturn(Optional.of(tableGroup));
 
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(Collections.singletonList(1L),
-                                                              Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
+        given(orderRepository.existsByOrderTableInAndOrderStatusIn(Collections.singletonList(1L),
+                                                                   Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
             .willReturn(true);
 
         // when
@@ -138,8 +138,8 @@ class TableGroupServiceTest {
                                              .collect(toList());
 
         List<OrderTable> savedOrderTables = tableGroup.getOrderTables();
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(orderTableIds,
-                                                              Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
+        given(orderRepository.existsByOrderTableInAndOrderStatusIn(orderTableIds,
+                                                                   Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
             .willReturn(false);
 
         // when

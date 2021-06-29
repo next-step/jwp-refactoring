@@ -2,8 +2,8 @@ package kitchenpos.table.application;
 
 import java.util.Arrays;
 import java.util.Optional;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
@@ -28,7 +28,7 @@ import static org.mockito.BDDMockito.given;
 class TableServiceTest {
 
     @Mock 
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     
     @Mock 
     private OrderTableRepository orderTableRepository;
@@ -89,8 +89,8 @@ class TableServiceTest {
         OrderTable orderTable = new OrderTable();
 
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(orderTableId,
-                                                            Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
+        given(orderRepository.existsByOrderTableAndOrderStatusIn(orderTableId,
+                                                                   Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
             .willReturn(true);
 
         // when
@@ -104,8 +104,8 @@ class TableServiceTest {
         OrderTable orderTable = new OrderTable(1L, null, 0, true);
 
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(orderTable.getId(),
-                                                            Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
+        given(orderRepository.existsByOrderTableAndOrderStatusIn(orderTable.getId(),
+                                                                   Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
             .willReturn(false);
 
         given(orderTableRepository.save(orderTable)).willReturn(orderTable);
