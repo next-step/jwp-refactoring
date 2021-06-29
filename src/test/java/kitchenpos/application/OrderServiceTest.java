@@ -119,9 +119,9 @@ class OrderServiceTest {
 			.hasMessageContaining("빈테이블에서 주문할 수 없습니다.");
 	}
 
-	@DisplayName("주문 생성시 주문과, 주문목록이 저장된다.")
+	@DisplayName("주문을 등록을 할 수 있다.")
 	@Test
-	void createOrderVerifiedMethodCallTest() {
+	void createOrderTest() {
 		// given
 		OrderLineItem orderLineItem = mock(OrderLineItem.class);
 		when(orderLineItem.getMenuId()).thenReturn(1L);
@@ -143,6 +143,7 @@ class OrderServiceTest {
 		orderService.create(order);
 
 		// then
+		verify(orderLineItem).setOrderId(savedOrder.getId());
 		verify(orderDao).save(order);
 		verify(orderLineItemDao).save(orderLineItem);
 	}
