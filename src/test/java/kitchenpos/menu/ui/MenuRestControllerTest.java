@@ -1,12 +1,12 @@
-package kitchenpos.ui;
+package kitchenpos.menu.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.config.MockMvcTestConfig;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.dto.MenuDto;
+import kitchenpos.menu.dto.MenuProductDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -44,9 +44,9 @@ public class MenuRestControllerTest {
     @DisplayName("메뉴 생성 요청 성공")
     @Test
     void createMenuRequestSuccess() throws Exception {
-        Menu menu = createMenu(30000);
+        MenuDto menuDto = createMenuDto(30000L);
 
-        String content = objectMapper.writeValueAsString(menu);
+        String content = objectMapper.writeValueAsString(menuDto);
 
         mockMvc.perform(post(BASE_URL).content(content)
                                       .contentType(MediaType.APPLICATION_JSON))
@@ -57,33 +57,32 @@ public class MenuRestControllerTest {
 
     @DisplayName("메뉴 생성 요청 실패 - 메뉴 가격이 음수이거나 설정되지 않음")
     @NullSource
-    @ValueSource(ints = { -1000, -10000 })
+    @ValueSource(longs = { -1000, -10000 })
     @ParameterizedTest
-    void createMenuRequestFail01(Integer price) {
-        Menu menu = createMenu(price);
-        createMenuFail(menu);
+    void createMenuRequestFail01(Long price) {
+        MenuDto menuDto = createMenuDto(price);
+        createMenuFail(menuDto);
     }
 
     @DisplayName("메뉴 생성 요청 실패 - 등록되지 않은 메뉴 그룹의 ID를 사용")
     @Test
     void createMenuRequestFail02() {
-        Menu menu = createMenu(30000);
-        menu.setMenuGroupId(NOT_SAVED_ID);
-        createMenuFail(menu);
+        MenuDto menuDto = createMenuDto(30000L, NOT_SAVED_ID);
+        createMenuFail(menuDto);
     }
 
     @DisplayName("메뉴 생성 요청 실패 - 메뉴 가격은 메뉴 상품 가격의 합보다 같거나 작아야 함")
-    @ValueSource(ints = { 33000, 35000 })
+    @ValueSource(longs = { 33000, 35000 })
     @ParameterizedTest
-    void createMenuRequestFail03(int price) {
+    void createMenuRequestFail03(Long price) {
 
         // 테스트 케이스에서 사용된 메뉴 상품 가격
         // 후라이드: 16000원 * 1개
         // 양념: 16000원 * 1개
         // 총 32000원
 
-        Menu menu = createMenu(price);
-        createMenuFail(menu);
+        MenuDto menuDto = createMenuDto(price);
+        createMenuFail(menuDto);
     }
 
     @DisplayName("메뉴 목록 조회 요청")
@@ -99,36 +98,29 @@ public class MenuRestControllerTest {
         assertThat(list).hasSizeGreaterThanOrEqualTo(6); // default data size is 6
     }
 
-    private void createMenuFail(Menu menu) {
+    private void createMenuFail(MenuDto menuDto) {
         try {
-            String content = objectMapper.writeValueAsString(menu);
+            String content = objectMapper.writeValueAsString(menuDto);
             mockMvc.perform(post(BASE_URL).content(content)
                                           .contentType(MediaType.APPLICATION_JSON))
                    .andDo(print())
-                   .andExpect(status().is5xxServerError());
+                   .andExpect(status().isBadRequest());
         } catch (Exception e) {
             assertTrue(e.getCause() instanceof IllegalArgumentException);
         }
     }
 
-    public static Menu createMenu(Integer price) {
-        // Product id 1: 후라이드, 2: 양념
-        MenuProduct 후라이드 = new MenuProduct();
-        후라이드.setProductId(1L);
-        후라이드.setQuantity(1L);
-        MenuProduct 양념 = new MenuProduct();
-        양념.setProductId(2L);
-        양념.setQuantity(1L);
+    public MenuDto createMenuDto(Long price) {
+        return createMenuDto(price, 1L);
+    }
 
-        List<MenuProduct> menuProducts = Arrays.asList(후라이드, 양념);
+    public MenuDto createMenuDto(Long price, Long menuGroupId) {
+        // Product id 1: 후라이드, 2: 양념, 둘 다 16000원
+        MenuProductDto 후라이드 = new MenuProductDto(null, 1L, 1L);
+        MenuProductDto 양념 = new MenuProductDto(null, 2L, 1L);
 
-        Menu 후라이드양념두마리세트 = new Menu();
-        후라이드양념두마리세트.setName("후라이드양념두마리세트");
-        if (price != null) {
-            후라이드양념두마리세트.setPrice(new BigDecimal(price));
-        }
-        후라이드양념두마리세트.setMenuGroupId(1L); // 두마리세트 ID
-        후라이드양념두마리세트.setMenuProducts(menuProducts);
-        return 후라이드양념두마리세트;
+        List<MenuProductDto> menuProductDtos = Arrays.asList(후라이드, 양념);
+
+        return new MenuDto("후라이드양념두마리세트", price, menuGroupId, menuProductDtos);
     }
 }

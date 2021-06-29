@@ -13,6 +13,10 @@ public class Price {
         this.value = 0;
     }
 
+    public Price(int value) {
+        this(Long.valueOf(value));
+    }
+
     public Price(Long value) {
         validateValue(value);
         this.value = value;
@@ -26,5 +30,9 @@ public class Price {
 
     public long getValue() {
         return value;
+    }
+
+    public Price add(long value) {
+        return new Price(this.value + value);
     }
 }

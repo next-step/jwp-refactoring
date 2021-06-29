@@ -3,12 +3,12 @@ package kitchenpos.application;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Stream;
-import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.assertj.core.util.Lists;
@@ -31,7 +31,7 @@ import static org.mockito.Mockito.verify;
 class OrderServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
     private OrderDao orderDao;
@@ -69,7 +69,7 @@ class OrderServiceTest {
                                       .limit(5)
                                       .collect(toList()));
 
-        given(menuDao.countByIdIn(any())).willReturn(0L);
+        given(menuRepository.countByIdIn(any())).willReturn(0);
 
         // when
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(order));
@@ -83,7 +83,7 @@ class OrderServiceTest {
         order.setOrderLineItems(Collections.singletonList(item));
         order.setOrderTableId(1L);
 
-        given(menuDao.countByIdIn(any())).willReturn(1L);
+        given(menuRepository.countByIdIn(any())).willReturn(1);
         given(orderTableRepository.findById(order.getOrderTableId())).willReturn(Optional.empty());
 
         // when
@@ -101,7 +101,7 @@ class OrderServiceTest {
         OrderTable orderTable = new OrderTable();
         orderTable.empty();
 
-        given(menuDao.countByIdIn(any())).willReturn(1L);
+        given(menuRepository.countByIdIn(any())).willReturn(1);
         given(orderTableRepository.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
 
         // when
@@ -122,7 +122,7 @@ class OrderServiceTest {
 
         OrderTable orderTable = new OrderTable(1L, null, 0, false);
 
-        given(menuDao.countByIdIn(any())).willReturn(2L);
+        given(menuRepository.countByIdIn(any())).willReturn(2);
         given(orderTableRepository.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
         given(orderDao.save(order)).willReturn(order);
 
