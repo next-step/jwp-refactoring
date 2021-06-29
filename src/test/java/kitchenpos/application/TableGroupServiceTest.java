@@ -19,7 +19,7 @@ import kitchenpos.dao.TableGroupDao;;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 
-@DisplayName("주문테이블 그룹 요구사항 테스트")
+@DisplayName("주문테이블그룹 요구사항 테스트")
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
 
@@ -46,7 +46,7 @@ class TableGroupServiceTest {
 		// then
 		assertThatThrownBy(() -> tableGroupService.create(tableGroup))
 			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("주문테이블이 2개 이하입니다.");
+			.hasMessageContaining("2개 미만의 주문테이블은 그룹화 할 수 없습니다.");
 	}
 
 	@DisplayName("등록된 주문테이블만 그룹화 할 수 있다.")
@@ -63,7 +63,7 @@ class TableGroupServiceTest {
 		// when
 		assertThatThrownBy(() -> tableGroupService.create(tableGroup))
 			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("등록된 주문테이블로만 그룹화 할 수 있습니다.");
+			.hasMessageContaining("등록이 되지 않은 주문테이블은 그룹화 할 수 없습니다.");
 	}
 
 	@DisplayName("그룹화할 주문테이블들 모두 빈 테이블이어야 한다.")
@@ -81,7 +81,7 @@ class TableGroupServiceTest {
 		// when
 		assertThatThrownBy(() -> tableGroupService.create(tableGroup))
 			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("그룹화할 주문테이블들 모두 빈 테이블이어야 합니다.");
+			.hasMessageContaining("빈테이블은 그룹화 할 수 없습니다.");
 	}
 
 	@DisplayName("그룹화된 주문테이블들 중 조리상태이거나 식사상태이면 그룹해제를 할 수 없다.")
@@ -92,7 +92,7 @@ class TableGroupServiceTest {
 		// when
 		assertThatThrownBy(() -> tableGroupService.ungroup(1L))
 			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("그룹화된 주문테이블 중 조리상태이거나 식사상태가 있습니다.");
+			.hasMessageContaining("조리상태이거나 식사상태인 주문이 있는 주문테이블은 그룹해제를 할 수 없습니다.");
 	}
 
 }

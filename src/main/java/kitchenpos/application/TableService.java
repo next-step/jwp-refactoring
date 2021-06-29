@@ -35,7 +35,7 @@ public class TableService {
     @Transactional
     public OrderTable changeEmpty(final Long orderTableId, final OrderTable orderTable) {
         final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
-                .orElseThrow(() -> new IllegalArgumentException("등록된 주문 테이블만 주문 등록 상태로 바꿀 수 있습니다"));
+                .orElseThrow(() -> new IllegalArgumentException("등록이 되지 않은 주문테이블은 상태를 변경할 수 없습니다."));
 
         if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
             throw new IllegalArgumentException("그룹 설정이 되어 있는 테이블은 주문 등록 불가 상태로 바꿀 수 없습니다.");
@@ -43,7 +43,7 @@ public class TableService {
 
         if (orderDao.existsByOrderTableIdAndOrderStatusIn(
                 orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException("주문테이블의 주문이 아직 조리 상태 또는 식사 상태 입니다.");
+            throw new IllegalArgumentException("조리상태이거나 식사상태주문의 주문테이블은 상태를 변경할 수 없습니다.");
         }
 
         savedOrderTable.setEmpty(orderTable.isEmpty());
@@ -60,7 +60,7 @@ public class TableService {
         }
 
         final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
-                .orElseThrow(() -> new IllegalArgumentException("등록된 주문 테이블만 방문 손님 수를 바꿀 수 있습니다"));
+                .orElseThrow(() -> new IllegalArgumentException("등록이 안된 주문테이블은 방문 손님 수를 수정할 수 없습니다."));
 
         if (savedOrderTable.isEmpty()) {
             throw new IllegalArgumentException("빈 테이블은 방문 손님 수를 수정할 수 없습니다.");

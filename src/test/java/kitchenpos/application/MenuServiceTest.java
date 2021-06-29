@@ -23,7 +23,7 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 
-@DisplayName("메뉴 로직 테스트")
+@DisplayName("메뉴 요구사항 테스트")
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
 

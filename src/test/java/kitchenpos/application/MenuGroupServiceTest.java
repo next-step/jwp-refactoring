@@ -2,7 +2,6 @@ package kitchenpos.application;
 
 import static java.util.Arrays.*;
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.List;
@@ -17,7 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
 
-@DisplayName("메뉴 그룹 로직 테스트")
+@DisplayName("메뉴그룹 요구사항 테스트")
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
 

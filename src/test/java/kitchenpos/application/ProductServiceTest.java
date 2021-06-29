@@ -17,7 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
 
-@DisplayName("상품 로직 테스트")
+@DisplayName("상품 요구사항 테스트")
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
 
