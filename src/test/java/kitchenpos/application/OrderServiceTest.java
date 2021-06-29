@@ -21,6 +21,7 @@ import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 
 @DisplayName("주문 요구사항 테스트")
@@ -72,7 +73,7 @@ class OrderServiceTest {
 		// then
 		assertThatThrownBy(() -> orderService.create(order))
 			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("등록이 안된 메뉴가 있습니다.");
+			.hasMessageContaining("등록이 안된 메뉴는 주문할 수 없습니다.");
 	}
 
 	@DisplayName("등록이 안된 주문테이블에서 주문할 수 없다.")
@@ -92,7 +93,7 @@ class OrderServiceTest {
 		// then
 		assertThatThrownBy(() -> orderService.create(order))
 			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("등록이 안된 주문 테이블 입니다.");
+			.hasMessageContaining("등록이 안된 주문 테이블에서는 주문할 수 없습니다.");
 	}
 
 	@DisplayName("빈 주문테이블에서 주문할 수 없다.")
@@ -115,7 +116,7 @@ class OrderServiceTest {
 		// then
 		assertThatThrownBy(() -> orderService.create(order))
 			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("테이블이 비어있습니다.");
+			.hasMessageContaining("빈테이블에서 주문할 수 없습니다.");
 	}
 
 	@DisplayName("주문 생성시 주문과, 주문목록이 저장된다.")
@@ -156,7 +157,7 @@ class OrderServiceTest {
 		// then
 		assertThatThrownBy(() -> orderService.changeOrderStatus(1L, new Order()))
 			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("등록된 주문의 상태만 변경 가능합니다.");
+			.hasMessageContaining("등록이 안된 주문은 상태를 변경할 수 없습니다.");
 	}
 
 	@DisplayName("계산완료상태의 주문은 상태변경이 불가능하다.")
@@ -164,7 +165,7 @@ class OrderServiceTest {
 	void changeCompletedOrderTest() {
 		// given
 		Order completed = mock(Order.class);
-		when(completed.getOrderStatus()).thenReturn("COMPLETION");
+		when(completed.getOrderStatus()).thenReturn(OrderStatus.COMPLETION.name());
 
 		when(orderDao.findById(anyLong())).thenReturn(Optional.of(completed));
 
@@ -172,7 +173,7 @@ class OrderServiceTest {
 		// then
 		assertThatThrownBy(() -> orderService.changeOrderStatus(1L, new Order()))
 			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("이미 주문이 완료됐습니다.");
+			.hasMessageContaining("계산 완료 주문은 상태를 변경할 수 없습니다.");
 	}
 
 	@DisplayName("주문의 상태를 변경 가능하다.")
@@ -184,7 +185,7 @@ class OrderServiceTest {
 		OrderLineItem orderLineItem = mock(OrderLineItem.class);
 
 		Order mealOrder = mock(Order.class);
-		when(mealOrder.getOrderStatus()).thenReturn("MEAL");
+		when(mealOrder.getOrderStatus()).thenReturn(OrderStatus.MEAL.name());
 
 		when(orderDao.findById(anyLong())).thenReturn(Optional.of(cookingOrder));
 		when(orderLineItemDao.findAllByOrderId(anyLong())).thenReturn(asList(orderLineItem));
@@ -193,7 +194,7 @@ class OrderServiceTest {
 		orderService.changeOrderStatus(1L, mealOrder);
 
 		// then
-		assertThat(cookingOrder.getOrderStatus()).isEqualTo("MEAL");
+		assertThat(cookingOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
 		assertThat(cookingOrder.getOrderLineItems()).isNotEmpty();
 	}
 

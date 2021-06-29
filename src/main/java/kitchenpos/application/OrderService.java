@@ -50,14 +50,14 @@ public class OrderService {
                 .collect(Collectors.toList());
 
         if (orderLineItems.size() != menuDao.countByIdIn(menuIds)) {
-            throw new IllegalArgumentException("등록이 안된 메뉴가 있습니다.");
+            throw new IllegalArgumentException("등록이 안된 메뉴는 주문할 수 없습니다.");
         }
 
         final OrderTable orderTable = orderTableDao.findById(order.getOrderTableId())
-                .orElseThrow(() -> new IllegalArgumentException("등록이 안된 주문 테이블 입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("등록이 안된 주문 테이블에서는 주문할 수 없습니다."));
 
         if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException("테이블이 비어있습니다.");
+            throw new IllegalArgumentException("빈테이블에서 주문할 수 없습니다.");
         }
 
         order.setOrderTableId(orderTable.getId());
@@ -90,10 +90,10 @@ public class OrderService {
     @Transactional
     public Order changeOrderStatus(final Long orderId, final Order order) {
         final Order savedOrder = orderDao.findById(orderId)
-                .orElseThrow(() -> new IllegalArgumentException("등록된 주문의 상태만 변경 가능합니다."));
+                .orElseThrow(() -> new IllegalArgumentException("등록이 안된 주문은 상태를 변경할 수 없습니다."));
 
         if (Objects.equals(OrderStatus.COMPLETION.name(), savedOrder.getOrderStatus())) {
-            throw new IllegalArgumentException("이미 주문이 완료됐습니다.");
+            throw new IllegalArgumentException("계산 완료 주문은 상태를 변경할 수 없습니다.");
         }
 
         final OrderStatus orderStatus = OrderStatus.valueOf(order.getOrderStatus());
