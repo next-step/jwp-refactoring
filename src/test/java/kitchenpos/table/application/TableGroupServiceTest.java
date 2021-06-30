@@ -116,8 +116,8 @@ class TableGroupServiceTest {
         TableGroup tableGroup = new TableGroup(Lists.newArrayList(entity(1L, true)));
         given(tableGroupRepository.findById(1L)).willReturn(Optional.of(tableGroup));
 
-        given(orderRepository.existsByOrderTableInAndOrderStatusIn(Collections.singletonList(1L),
-                                                                   Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(Collections.singletonList(1L),
+                                                                     Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)))
             .willReturn(true);
 
         // when
@@ -138,8 +138,8 @@ class TableGroupServiceTest {
                                              .collect(toList());
 
         List<OrderTable> savedOrderTables = tableGroup.getOrderTables();
-        given(orderRepository.existsByOrderTableInAndOrderStatusIn(orderTableIds,
-                                                                   Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds,
+                                                                     Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)))
             .willReturn(false);
 
         // when

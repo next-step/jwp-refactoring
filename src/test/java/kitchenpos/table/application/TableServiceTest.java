@@ -89,8 +89,8 @@ class TableServiceTest {
         OrderTable orderTable = new OrderTable();
 
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
-        given(orderRepository.existsByOrderTableAndOrderStatusIn(orderTableId,
-                                                                   Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId,
+                                                                   Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)))
             .willReturn(true);
 
         // when
@@ -104,8 +104,8 @@ class TableServiceTest {
         OrderTable orderTable = new OrderTable(1L, null, 0, true);
 
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
-        given(orderRepository.existsByOrderTableAndOrderStatusIn(orderTable.getId(),
-                                                                   Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTable.getId(),
+                                                                   Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)))
             .willReturn(false);
 
         given(orderTableRepository.save(orderTable)).willReturn(orderTable);

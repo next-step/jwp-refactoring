@@ -3,6 +3,7 @@ package kitchenpos.menu.domain;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -27,7 +28,7 @@ public class Menu {
     @ManyToOne
     private MenuGroup menuGroup;
 
-    @OneToMany(mappedBy = "seq")
+    @OneToMany(mappedBy = "seq", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<MenuProduct> menuProducts;
 
     public Menu() {

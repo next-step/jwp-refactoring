@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
@@ -26,7 +27,7 @@ public class TableGroup {
     @CreatedDate
     private LocalDateTime createdDate;
 
-    @OneToMany(mappedBy = "id", orphanRemoval = true)
+    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL, orphanRemoval = true)
     private final Set<OrderTable> orderTables;
 
     public TableGroup() {
@@ -41,6 +42,7 @@ public class TableGroup {
         this.id = id;
         this.createdDate = createdDate;
         this.orderTables = new HashSet<>(orderTables);
+        orderTables.forEach(orderTable -> orderTable.group(this));
     }
 
     public void add(OrderTable orderTable) {
