@@ -1,6 +1,5 @@
 package kitchenpos.order.application;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
@@ -8,7 +7,6 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItemRepository;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.ChangeOrderStatusDto;
 import kitchenpos.order.dto.CreateOrderDto;
 import kitchenpos.order.dto.OrderDto;
@@ -55,6 +53,7 @@ public class OrderService {
 
         final List<Long> menuIds = orderLineItems.stream()
                                                  .map(orderLineItem -> orderLineItem.getMenu().getId())
+                                                 .distinct()
                                                  .collect(toList());
 
         if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
@@ -64,18 +63,8 @@ public class OrderService {
         final OrderTable orderTable = orderTableRepository.findById(createOrderDto.getOrderTableId())
                                                           .orElseThrow(IllegalArgumentException::new);
 
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        Order order = new Order(orderTable, OrderStatus.COOKING, LocalDateTime.now());
-
-        Order savedOrder = orderRepository.save(order);
-
-        for (OrderLineItem orderLineItem : orderLineItems) {
-            savedOrder.addOrderLineItem(orderLineItem);
-            orderLineItemRepository.save(orderLineItem);
-        }
+        Order savedOrder = orderRepository.save(new Order(orderTable, orderLineItems));
+        orderLineItems.forEach(orderLineItemRepository::save);
 
         return OrderDto.of(savedOrder);
     }
@@ -90,17 +79,9 @@ public class OrderService {
     @Transactional
     public OrderDto changeOrderStatus(Long orderId, ChangeOrderStatusDto changeOrderStatusDto) {
         final Order savedOrder = orderRepository.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
+                                                .orElseThrow(IllegalArgumentException::new);
 
-        if (OrderStatus.COMPLETION == savedOrder.getOrderStatus()) {
-            throw new IllegalArgumentException();
-        }
-
-        OrderStatus orderStatus = OrderStatus.valueOf(changeOrderStatusDto.getOrderStatus());
-        savedOrder.changeOrderStatus(orderStatus);
-
-        orderRepository.save(savedOrder);
-
+        savedOrder.changeOrderStatus(changeOrderStatusDto.getOrderStatus());
         return OrderDto.of(savedOrder);
     }
 }

@@ -26,6 +26,11 @@ public class OrderTable {
         empty = true;
     }
 
+    public OrderTable(boolean empty) {
+        numberOfGuests = 0;
+        this.empty = empty;
+    }
+
     public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
         this.id = id;
         this.tableGroup = tableGroup;

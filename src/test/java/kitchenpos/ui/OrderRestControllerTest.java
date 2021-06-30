@@ -5,10 +5,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 import kitchenpos.config.MockMvcTestConfig;
-import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.ChangeOrderStatusDto;
 import kitchenpos.order.dto.CreateOrderDto;
+import kitchenpos.order.dto.OrderDto;
 import kitchenpos.order.dto.OrderLineItemDto;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -63,7 +63,8 @@ class OrderRestControllerTest {
                                       .contentType(MediaType.APPLICATION_JSON))
                .andDo(print())
                .andExpect(status().isCreated())
-               .andExpect(header().exists("Location"));
+               .andExpect(header().exists("Location"))
+               .andReturn();
     }
 
     @DisplayName("주문 생성 요청 실패 - 주문 항목 포함되지 않음")
@@ -105,7 +106,7 @@ class OrderRestControllerTest {
                                   .andReturn();
 
         String response = result.getResponse().getContentAsString();
-        List<Order> orders = Arrays.asList(objectMapper.readValue(response, Order[].class));
+        List<OrderDto> orders = Arrays.asList(objectMapper.readValue(response, OrderDto[].class));
         assertThat(orders.size()).isGreaterThanOrEqualTo(2);
     }
 
@@ -123,21 +124,21 @@ class OrderRestControllerTest {
                                   .andReturn();
 
         String response = result.getResponse().getContentAsString();
-        Order actual = objectMapper.readValue(response, Order.class);
-        assertThat(actual.getOrderStatus().name()).isEqualTo(dto.getOrderStatus());
+        OrderDto actual = objectMapper.readValue(response, OrderDto.class);
+        assertThat(actual.getOrderStatus()).isEqualTo(dto.getOrderStatus());
     }
 
     @DisplayName("주문 상태 변경 요청 실패 - order id를 찾을 수 없음")
     @Test
     void updateOrderStatusRequestFail01() {
-        putFail(NOT_FOUND_ID, new Order());
+        putFail(NOT_FOUND_ID, new ChangeOrderStatusDto("COOKING"));
     }
 
     @DisplayName("주문 상태 변경 요청 실패 - 이미 완료(COMPLETION 상태)된 주문")
     @Test
     void updateOrderStatusRequestFail02() {
         // V2__insert_default_data.sql 에 id = 3인 데이터 추가
-        putFail(3, new Order());
+        putFail(3, new ChangeOrderStatusDto("COOKING"));
     }
 
     private void postFail(CreateOrderDto dto) {
@@ -151,17 +152,17 @@ class OrderRestControllerTest {
         }
     }
 
-    private void putFail(long orderId, Order order) {
+    private void putFail(long orderId, ChangeOrderStatusDto changeOrderStatusDto) {
         try {
-            putRequestFail(orderId, order);
+            putRequestFail(orderId, changeOrderStatusDto);
         } catch (Exception e) {
             assertTrue(e.getCause() instanceof IllegalArgumentException);
         }
     }
 
-    private void putRequestFail(long orderId, Order order) throws Exception {
+    private void putRequestFail(long orderId, ChangeOrderStatusDto changeOrderStatusDto) throws Exception {
         mockMvc.perform(put(BASE_URL + "/" + orderId + "/order-status")
-                            .content(objectMapper.writeValueAsString(order))
+                            .content(objectMapper.writeValueAsString(changeOrderStatusDto))
                             .contentType(MediaType.APPLICATION_JSON))
                .andDo(print())
                .andExpect(status().isBadRequest());

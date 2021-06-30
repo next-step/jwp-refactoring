@@ -116,7 +116,7 @@ class OrderServiceTest {
         CreateOrderDto orderDto = new CreateOrderDto(1L, Lists.newArrayList(item));
 
         OrderTable orderTable = new OrderTable(1L, null, 0, false);
-        Order order = new Order(orderTable, OrderStatus.COOKING, LocalDateTime.now());
+        Order order = new Order(orderTable, OrderStatus.COOKING);
 
         given(menuRepository.findById(any())).willReturn(Optional.of(new Menu()));
         given(menuRepository.countByIdIn(any())).willReturn(1);
@@ -145,7 +145,7 @@ class OrderServiceTest {
     @Test
     void changeOrderStatusFail02() {
         // given
-        Order savedOrder = new Order(new OrderTable(), OrderStatus.COMPLETION, LocalDateTime.now());
+        Order savedOrder = new Order(new OrderTable(false), OrderStatus.COMPLETION);
         given(orderRepository.findById(any())).willReturn(Optional.of(savedOrder));
 
         // when
@@ -157,13 +157,10 @@ class OrderServiceTest {
     @Test
     void changeOrderStatusSuccess() {
         // given
-        Order savedOrder = new Order(new OrderTable(), OrderStatus.COOKING, LocalDateTime.now());
+        Order savedOrder = new Order(new OrderTable(false), OrderStatus.COOKING);
         given(orderRepository.findById(any())).willReturn(Optional.of(savedOrder));
 
         // when
         orderService.changeOrderStatus(1L, new ChangeOrderStatusDto(OrderStatus.MEAL.name()));
-
-        // then
-        verify(orderRepository).save(any());
     }
 }

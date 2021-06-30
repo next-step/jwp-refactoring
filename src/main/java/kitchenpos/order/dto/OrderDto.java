@@ -31,6 +31,7 @@ public class OrderDto {
     public static OrderDto of(Order order) {
 
         List<OrderLineItemDto> orderLineItemDtos = order.getOrderLineItems()
+                                                        .getData()
                                                         .stream()
                                                         .map(OrderLineItemDto::of)
                                                         .collect(toList());
