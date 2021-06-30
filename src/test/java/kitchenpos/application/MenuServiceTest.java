@@ -2,7 +2,6 @@ package kitchenpos.application;
 
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,9 +33,6 @@ class MenuServiceTest {
     private MenuGroupDao menuGroupDao;
 
     @Mock
-    private MenuProductDao menuProductDao;
-
-    @Mock
     private ProductDao productDao;
 
     private MenuService menuService;
@@ -48,7 +44,7 @@ class MenuServiceTest {
     
     @BeforeEach
     void setUp() {
-        this.menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
+        this.menuService = new MenuService(menuDao, menuGroupDao, productDao);
 
         this.simpleMenuProduct = new MenuProduct(1L, simpleMenuId, simpleProductId, 1L);
     }
