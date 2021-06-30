@@ -1,10 +1,9 @@
 package kitchenpos.ui;
 
 import kitchenpos.application.MenuService;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Price;
+import kitchenpos.domain.*;
 import kitchenpos.dto.request.MenuCreateRequest;
+import kitchenpos.dto.request.MenuProductCreateRequest;
 import kitchenpos.exception.InvalidPriceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -54,7 +53,7 @@ class MenuRestControllerTest {
                 1L,
                 Arrays.asList());
 
-        given(menuService.create(any())).willAnswer(i -> i.getArgument(0));
+        given(menuService.create(any(MenuCreate.class))).willAnswer(i -> i.getArgument(0));
 
         // when
         MvcResult mvcResult = mockMvc.perform(
@@ -73,21 +72,31 @@ class MenuRestControllerTest {
     void 정상적인_메뉴_등록() throws Exception {
         // given
         MenuCreateRequest menuCreateRequest = new MenuCreateRequest("Menu",
-                BigDecimal.valueOf(10),
+                BigDecimal.valueOf(1),
                 1L,
                 Arrays.asList(
-                        new MenuProduct(1L, 1L, 1L, 1L),
-                        new MenuProduct(2L, 2L, 2L, 2L)
+                        new MenuProductCreateRequest(1L, 1L, 1L),
+                        new MenuProductCreateRequest(2L, 2L, 2L)
                 )
         );
-        Menu menu = new Menu(
-                1L,
-                menuCreateRequest.getName(),
-                menuCreateRequest.getPrice(),
-                menuCreateRequest.getMenuGroupId(),
-                menuCreateRequest.getMenuProducts()
+        Menu menu = Menu.create(
+                new MenuCreate("Hello",
+                        new Price(1),
+                        1L,
+                        Arrays.asList(
+                                new MenuProductCreate(1L, 1L, 1L),
+                                new MenuProductCreate(2L, 2L, 2L)
+                        )
+                ),
+                new MenuGroup(1L, "Hello"),
+                new Products(
+                        Arrays.asList(
+                            new Product(1L, "Bello", new Price(1)),
+                            new Product(2L, "Bello", new Price(1))
+                        )
+                )
         );
-        given(menuService.create(any())).willReturn(menu);
+        given(menuService.create(any(MenuCreate.class))).willReturn(menu);
 
         // when & then
         mockMvc.perform(
@@ -105,16 +114,38 @@ class MenuRestControllerTest {
     @DisplayName("[get]/api/menus - 정상적인 리스트 조회")
     void 정상적인_리스트_조회() throws Exception {
         List<Menu> menus = Arrays.asList(
-                new Menu(1L, "Menu", BigDecimal.valueOf(10), 1L,
-                        Arrays.asList(
-                                new MenuProduct(1L, 1L, 1L, 1L),
-                                new MenuProduct(2L, 2L, 2L, 2L)
+                Menu.create(
+                        new MenuCreate("Hello",
+                                new Price(1),
+                                1L,
+                                Arrays.asList(
+                                        new MenuProductCreate(1L, 1L, 1L),
+                                        new MenuProductCreate(2L, 2L, 2L)
+                                )
+                        ),
+                        new MenuGroup(1L, "Hello"),
+                        new Products(
+                                Arrays.asList(
+                                        new Product(1L, "Bello", new Price(1)),
+                                        new Product(2L, "Bello", new Price(1))
+                                )
                         )
                 ),
-                new Menu(2L, "Menu2", BigDecimal.valueOf(20), 2L,
-                        Arrays.asList(
-                                new MenuProduct(3L, 3L, 3L, 3L),
-                                new MenuProduct(4L, 4L, 4L, 4L)
+                Menu.create(
+                        new MenuCreate("Bello",
+                                new Price(2),
+                                2L,
+                                Arrays.asList(
+                                        new MenuProductCreate(3L, 3L, 3L),
+                                        new MenuProductCreate(4L, 4L, 4L)
+                                )
+                        ),
+                        new MenuGroup(2L, "Bello"),
+                        new Products(
+                                Arrays.asList(
+                                        new Product(3L, "Kello", new Price(2)),
+                                        new Product(4L, "Kello", new Price(2))
+                                )
                         )
                 )
         );
@@ -140,7 +171,7 @@ class MenuRestControllerTest {
                     jsonPath(expressionPrefix + ".id").value(menu.getId()),
                     jsonPath(expressionPrefix + ".name").value(menu.getName()),
                     jsonPath(expressionPrefix + ".price").value(menu.getPrice().getPrice()),
-                    jsonPath(expressionPrefix + ".menuGroupId").value(menu.getMenuGroupId())
+                    jsonPath(expressionPrefix + ".menuGroupId").value(menu.getMenuGroup().getId())
             ).match(result);
         };
     }
@@ -149,8 +180,8 @@ class MenuRestControllerTest {
         return result -> {
             ResultMatcher.matchAll(
                     jsonPath(expressionPrefix + ".seq").value(menuProduct.getSeq()),
-                    jsonPath(expressionPrefix + ".menuId").value(menuProduct.getMenuId()),
-                    jsonPath(expressionPrefix + ".productId").value(menuProduct.getProductId()),
+                    jsonPath(expressionPrefix + ".menuId").value(menuProduct.getMenu().getId()),
+                    jsonPath(expressionPrefix + ".productId").value(menuProduct.getProduct().getId()),
                     jsonPath(expressionPrefix + ".quantity").value(menuProduct.getQuantity())
             ).match(result);
         };

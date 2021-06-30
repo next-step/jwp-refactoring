@@ -1,6 +1,6 @@
 package kitchenpos.domain;
 
-import kitchenpos.application.EntityNotExistsException;
+import kitchenpos.exception.EntityNotExistsException;
 
 import java.util.List;
 

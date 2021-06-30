@@ -1,14 +1,48 @@
 package kitchenpos.domain;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 
+@Entity
 public class Menu {
+    @Id
+    @GeneratedValue
     private Long id;
     private String name;
     private Price price;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private MenuGroup menuGroup;
+
+    @Transient
     private Long menuGroupId;
-    private List<MenuProduct> menuProducts;
+
+    private MenuProducts menuProducts = new MenuProducts();
+
+
+    public static Menu create(MenuCreate create, MenuGroup menuGroup, Products products) {
+        Menu menu = new Menu();
+        menu.name = create.getName();
+        menu.price = create.getPrice();
+        menu.menuGroup = menuGroup;
+
+        if (create.getMenuProducts().size() != products.size()) {
+            throw new IllegalArgumentException();
+        }
+
+        create.getMenuProducts()
+                .stream()
+                .map(item -> new MenuProduct(menu, products.findById(item.getProductId()), item.getQuantity()))
+                .forEach(item -> menu.menuProducts.add(item));
+
+        Price amount = menu.menuProducts.sumAmount();
+        if (create.getPrice().getPrice().compareTo(amount.getPrice()) > 0) {
+            throw new IllegalArgumentException();
+        }
+
+        return menu;
+    }
 
     public Menu() {
     }
@@ -22,7 +56,7 @@ public class Menu {
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
-        this.menuProducts = menuProducts;
+        this.menuProducts = new MenuProducts(menuProducts);
     }
 
     public Long getId() {
@@ -57,11 +91,11 @@ public class Menu {
         this.menuGroupId = menuGroupId;
     }
 
-    public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
+    public MenuGroup getMenuGroup() {
+        return menuGroup;
     }
 
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
+    public List<MenuProduct> getMenuProducts() {
+        return menuProducts.toCollection();
     }
 }

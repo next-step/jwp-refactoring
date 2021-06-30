@@ -4,9 +4,7 @@ import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,6 +20,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -86,8 +85,6 @@ class MenuServiceTest {
                 menuGroupId,
                 Arrays.asList(simpleMenuProduct));
 
-        given(menuGroupDao.existsById(menuGroupId)).willReturn(true);
-
         // when
         when(productDao.findById(simpleProductId)).thenReturn(Optional.empty());
 
@@ -127,6 +124,8 @@ class MenuServiceTest {
         // given
         Long menuGroupId = 1L;
 
+        MenuGroup menuGroup = new MenuGroup(menuGroupId, "Hello");
+
         Product product = new Product(simpleProductId, "PRODUCT", BigDecimal.valueOf(100));
 
         Menu menu = new Menu(simpleMenuId,
@@ -135,25 +134,34 @@ class MenuServiceTest {
                 menuGroupId,
                 Arrays.asList(simpleMenuProduct));
 
-        given(menuGroupDao.existsById(menuGroupId)).willReturn(true);
-        given(productDao.findById(simpleProductId)).willReturn(Optional.of(product));
+        given(menuGroupDao.findById(menuGroupId)).willReturn(Optional.of(menuGroup));
+        given(productDao.findAllById(any())).willReturn(Arrays.asList(product));
 
         // when
-        when(menuDao.save(menu)).thenReturn(menu);
-        when(menuProductDao.save(simpleMenuProduct)).thenReturn(simpleMenuProduct);
+        when(menuDao.save(any())).thenAnswer(i -> i.getArgument(0));
 
         Menu savedMenu = menuService.create(menu);
 
         // then
         assertThat(savedMenu.getMenuProducts())
-                .map(item -> item.getMenuId())
-                .containsExactly(simpleMenuId);
+                .map(item -> item.getMenu())
+                .containsOnly(savedMenu);
 
-        verify(menuGroupDao, VerificationModeFactory.times(1)).existsById(menuGroupId);
+        assertThat(savedMenu.getMenuProducts())
+                .map(item -> item.getProduct())
+                .containsOnly(product);
+
+        assertThat(savedMenu.getMenuProducts())
+                .map(item -> item.getQuantity())
+                .containsOnly(simpleMenuProduct.getQuantity());
+
+        assertThat(savedMenu.getMenuProducts())
+                .map(item -> item.getAmount())
+                .containsOnly(new Price(product.getPrice().getPrice().multiply(BigDecimal.valueOf(simpleMenuProduct.getQuantity()))));
+
         verify(productDao, VerificationModeFactory.times(1))
-                .findById(simpleProductId);
-        verify(menuDao, VerificationModeFactory.times(1)).save(menu);
-        verify(menuProductDao, VerificationModeFactory.times(1)).save(simpleMenuProduct);
+                .findAllById(any());
+        verify(menuDao, VerificationModeFactory.times(1)).save(savedMenu);
     }
 
     @Test
@@ -172,7 +180,6 @@ class MenuServiceTest {
 
         // when
         when(menuDao.findAll()).thenReturn(Arrays.asList(menu));
-        when(menuProductDao.findAllByMenuId(menuId)).thenReturn(menuProducts);
 
         Menu resultMenu = menuService.list().get(0);
         // then
