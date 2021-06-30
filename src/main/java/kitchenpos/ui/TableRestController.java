@@ -3,8 +3,10 @@ package kitchenpos.ui;
 import kitchenpos.application.TableService;
 import kitchenpos.domain.NumberOfGuest;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTableCreate;
 import kitchenpos.dto.request.ChangeEmptyRequest;
 import kitchenpos.dto.request.ChangeNumberOfGuestsRequest;
+import kitchenpos.dto.request.OrderTableCreateRequest;
 import kitchenpos.dto.response.OrderTableViewResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,11 +24,16 @@ public class TableRestController {
     }
 
     @PostMapping("/api/tables")
-    public ResponseEntity<OrderTable> create(@RequestBody final OrderTable orderTable) {
+    public ResponseEntity<OrderTableViewResponse> create(@RequestBody final OrderTableCreateRequest orderTableCreateRequest) {
+        OrderTableCreate orderTable = new OrderTableCreate(
+                new NumberOfGuest(orderTableCreateRequest.getNumberOfGuests()),
+                orderTableCreateRequest.isEmpty()
+        );
+
         final OrderTable created = tableService.create(orderTable);
         final URI uri = URI.create("/api/tables/" + created.getId());
         return ResponseEntity.created(uri)
-                .body(created)
+                .body(OrderTableViewResponse.of(created))
                 ;
     }
 

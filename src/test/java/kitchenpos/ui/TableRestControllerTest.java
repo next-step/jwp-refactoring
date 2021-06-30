@@ -3,9 +3,11 @@ package kitchenpos.ui;
 import kitchenpos.application.TableService;
 import kitchenpos.domain.NumberOfGuest;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTableCreate;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.request.ChangeEmptyRequest;
 import kitchenpos.dto.request.ChangeNumberOfGuestsRequest;
+import kitchenpos.dto.request.OrderTableCreateRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -135,6 +137,32 @@ class TableRestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(validateOrderTable("$.[0]", orderTable))
                 .andExpect(validateOrderTable("$.[1]", orderTable2));
+    }
+
+    @Test
+    @DisplayName("정상적으로 생성을 성공할경우")
+    void 정상적으로_생성을_성공할경우() throws Exception {
+        // given
+        OrderTableCreateRequest orderTableCreateRequest = new OrderTableCreateRequest(1, false);
+
+        OrderTable orderTable = new OrderTable(1L,
+                new TableGroup(1L, LocalDateTime.now(), Arrays.asList()),
+                null,
+                null,
+                1,
+                false);
+
+        given(tableService.create(any(OrderTableCreate.class)))
+                .willReturn(orderTable);
+
+        // when & then
+        mockMvc.perform(
+                post("/api/tables")
+                        .content(toJson(orderTableCreateRequest))
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
+                .andExpect(status().isCreated())
+                .andExpect(validateOrderTable("$", orderTable));
     }
 
     private ResultMatcher validateOrderTable(String prefix, OrderTable orderTable) {
