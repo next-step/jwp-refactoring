@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import kitchenpos.config.MockMvcTestConfig;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.CreateOrderTableDto;
 import kitchenpos.table.dto.OrderTableDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,8 +41,8 @@ class TableRestControllerTest {
     @DisplayName("주문 테이블 생성 요청 성공")
     @Test
     void createOrderTableRequestSuccess() throws Exception {
-        OrderTableDto orderTableDto = new OrderTableDto(3, false);
-        createOrderTableRequest(orderTableDto);
+        CreateOrderTableDto createOrderTableDto = new CreateOrderTableDto(3, false);
+        createOrderTableRequest(createOrderTableDto);
     }
 
     @DisplayName("주문 테이블 목록 요청 성공")
@@ -119,13 +120,12 @@ class TableRestControllerTest {
         putNumberOfGuestsFail(4, 3);
     }
 
-    private MvcResult createOrderTableRequest(OrderTableDto orderTableDto) throws Exception {
-        return mockMvc.perform(post(BASE_URL).content(objectMapper.writeValueAsString(orderTableDto))
-                                             .contentType(MediaType.APPLICATION_JSON))
-                      .andDo(print())
-                      .andExpect(status().isCreated())
-                      .andExpect(header().exists("Location"))
-                      .andReturn();
+    private void createOrderTableRequest(CreateOrderTableDto createOrderTableDto) throws Exception {
+        mockMvc.perform(post(BASE_URL).content(objectMapper.writeValueAsString(createOrderTableDto))
+                                      .contentType(MediaType.APPLICATION_JSON))
+               .andDo(print())
+               .andExpect(status().isCreated())
+               .andExpect(header().exists("Location"));
     }
 
     private void putEmptyFail(int id) {

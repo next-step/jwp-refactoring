@@ -7,7 +7,7 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.dto.OrderTableDto;
+import kitchenpos.table.dto.CreateOrderTableDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,7 +49,7 @@ class TableServiceTest {
     @Test
     void createSuccess() {
         // given
-        OrderTableDto orderTableDto = new OrderTableDto();
+        CreateOrderTableDto orderTableDto = new CreateOrderTableDto();
 
         OrderTable orderTable = new OrderTable(orderTableDto.getNumberOfGuests(), orderTableDto.isEmpty());
         given(orderTableRepository.save(any())).willReturn(orderTable);

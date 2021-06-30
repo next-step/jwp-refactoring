@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.List;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.CreateOrderTableDto;
 import kitchenpos.table.dto.OrderTableDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,8 +25,8 @@ public class TableRestController {
     }
 
     @PostMapping("/api/tables")
-    public ResponseEntity<OrderTableDto> create(@RequestBody OrderTableDto orderTableDto) {
-        final OrderTable created = tableService.create(orderTableDto);
+    public ResponseEntity<OrderTableDto> create(@RequestBody CreateOrderTableDto createOrderTableDto) {
+        final OrderTable created = tableService.create(createOrderTableDto);
         final URI uri = URI.create("/api/tables/" + created.getId());
         return ResponseEntity.created(uri).body(OrderTableDto.of(created));
     }

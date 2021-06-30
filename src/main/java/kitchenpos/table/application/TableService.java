@@ -4,7 +4,7 @@ import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.dto.OrderTableDto;
+import kitchenpos.table.dto.CreateOrderTableDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,8 +24,9 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTable create(final OrderTableDto orderTableDto) {
-        return orderTableRepository.save(new OrderTable(orderTableDto.getNumberOfGuests(), orderTableDto.isEmpty()));
+    public OrderTable create(final CreateOrderTableDto createOrderTableDto) {
+        return orderTableRepository.save(new OrderTable(createOrderTableDto.getNumberOfGuests(),
+                                                        createOrderTableDto.isEmpty()));
     }
 
     public List<OrderTable> list() {
