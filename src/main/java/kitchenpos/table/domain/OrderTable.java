@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.Orders;
 
 @Entity
 public class OrderTable {
