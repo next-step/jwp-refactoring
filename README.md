@@ -44,6 +44,75 @@
         - 테이블에 착석가능한 손님은 0명이상이다.
         - 빈테이블은 인원수 변경이 불가능하다.
     
+## DB 테이블 정의서
+1. orders
+
+|컬렴명|타입|크기|Null허용|KEY|
+|---|---|---|---|---|
+|id|BIGINT| | |PK|
+|order_table_id|BIGINT|20| |FK|
+|order_status|VARCHAR|255| | |
+|ordered_time|DATETIME| | |
+
+2. order_line_item
+
+|컬렴명|타입|크기|Null허용|KEY|
+|---|---|---|---|---|
+|seq|BIGINT|20| |PK|
+|order_id|BIGINT|20| |FK|
+|menu_id|BIGINT|20| |FK|
+|quantity|BIGINT|20| | |
+
+3. menu
+
+|컬렴명|타입|크기|Null허용|KEY|
+|---|---|---|---|---|
+|id BIGINT|BIGINT|20| |PK|
+|name|VARCHAR|255| | |
+|price|DECIMAL|19, 2| | |
+|menu_group_id|BIGINT|20| |FK|
+
+4. menu_group
+
+|컬렴명|타입|크기|Null허용|KEY|
+|---|---|---|---|---|
+|id BIGINT|BIGINT|20| |PK|
+|name|VARCHAR|255| | |
+
+5. menu_product
+
+|컬렴명|타입|크기|Null허용|KEY|
+|---|---|---|---|---|
+|seq|BIGINT|20| |PK|
+|menu_id|BIGINT|20| |FK|
+|product_id|BIGINT|20| |FK|
+|quantity|BIGINT|20| | |
+
+6. order_table
+
+|컬렴명|타입|크기|Null허용|KEY|
+|---|---|---|---|---|
+|id|BIGINT|20| |PK|
+|table_group_id|BIGINT|20| |FK|
+|number_of_guests|INT|11| | |
+|empty|BIT|1| | |
+
+7. table_group
+
+|컬렴명|타입|크기|Null허용|KEY|
+|---|---|---|---|---|
+|id|BIGINT|20| |PK|
+|created_date|DATETIME| | | |
+
+8. product
+
+|컬렴명|타입|크기|Null허용|KEY|
+|---|---|---|---|---|
+|id|BIGINT|20| |PK|
+|name|BIGINT|255| | |
+|price|DECIMAL|19, 2| | |
+
+
 ## 용어 사전
 
 | 한글명 | 영문명 | 설명 |
