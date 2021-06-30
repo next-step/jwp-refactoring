@@ -55,20 +55,6 @@ class MenuServiceTest {
     }
 
     @Test
-    @DisplayName("create - 메뉴의 가격이 비어 있거나, 0원보다 적을경우 IllegalArgumentException 이 발생한다.")
-    void 메뉴의_가격이_비어_있거나_0원보다_적을경우_IllegalArgumentException이_발생한다() {
-        // given
-        Menu menu = new Menu(simpleMenuId,
-                "Menu",
-                BigDecimal.valueOf(-1),
-                1L,
-                Arrays.asList(simpleMenuProduct));
-
-        // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
-    }
-
-    @Test
     @DisplayName("create - 메뉴의 메뉴 그룹이 DB에 없을경우 IllegalArgumetException 이 발생한다.")
     void 메뉴의_메뉴_그룹이_DB에_없을경우_IllegalArgumentException이_발생한다() {
         // given

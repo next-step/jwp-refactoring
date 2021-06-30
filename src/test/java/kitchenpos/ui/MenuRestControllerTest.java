@@ -2,7 +2,9 @@ package kitchenpos.ui;
 
 import kitchenpos.application.MenuService;
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.Price;
 import kitchenpos.dto.request.MenuCreateRequest;
+import kitchenpos.exception.InvalidPriceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,6 +14,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.math.BigDecimal;
@@ -41,22 +45,24 @@ class MenuRestControllerTest {
     @DisplayName("[post]/api/menus - 메뉴의 가격이 비어 있거나, 0원보다 적을경우 BadRequest이다.")
     void 메뉴의_가격이_비어_있거나_0원보다_적을경우_IllegalArgumentException이_발생한다() throws Exception {
         // given
-        MenuCreateRequest menuCreateRequest = new MenuCreateRequest(1L,
+        MenuCreateRequest menuCreateRequest = new MenuCreateRequest(
                 "Menu",
                 BigDecimal.valueOf(-1),
                 1L,
                 Arrays.asList());
 
-        Menu menu = new Menu(1L, null, null, null, null);
+        given(menuService.create(any())).willAnswer(i -> i.getArgument(0));
 
-        given(menuService.create(any())).willReturn(menu);
-
-        // when & then
-        mockMvc.perform(
+        // when
+        MvcResult mvcResult = mockMvc.perform(
                 post("/api/menus")
                         .content(toJson(menuCreateRequest))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        // then
+        assertThat(mvcResult.getResolvedException()).isInstanceOf(InvalidPriceException.class);
     }
 
 //    @Test
