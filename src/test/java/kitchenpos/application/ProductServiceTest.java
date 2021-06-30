@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.dao.ProductDao;
+import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
 
 @DisplayName("상품 요구사항 테스트")
@@ -27,26 +28,11 @@ class ProductServiceTest {
 	@InjectMocks
 	private ProductService productService;
 
-	@DisplayName("가격이 음수인 상품은 등록할 수 없다.")
-	@Test
-	void createProductNegativePriceTest() {
-		// given
-		Product negativePriceProduct = mock(Product.class);
-		when(negativePriceProduct.getPrice()).thenReturn(BigDecimal.valueOf(-1));
-
-		// when
-		// than
-		assertThatThrownBy(() -> productService.create(negativePriceProduct))
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("가격이 음수인 상품은 등록할 수 없습니다.");
-	}
-
 	@DisplayName("상품을 등록할 수 있다.")
 	@Test
 	void createProductTest() {
 		// given
-		Product product = mock(Product.class);
-		when(product.getPrice()).thenReturn(BigDecimal.ZERO);
+		Product product = new Product("치킨", Price.wonOf(1000));
 
 		// when
 		productService.create(product);
