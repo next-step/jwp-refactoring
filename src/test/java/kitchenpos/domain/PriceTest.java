@@ -16,4 +16,10 @@ class PriceTest {
         assertThatIllegalArgumentException().isThrownBy(() -> new Price(null));
         assertThatIllegalArgumentException().isThrownBy(() -> new Price(new BigDecimal(-1)));
     }
+
+    @Test
+    @DisplayName("가격이 0보다 크면 정상이다")
+    void 가격이_0보다_크면_정상이다() {
+        assertDoesNotThrow(() -> new Price(new BigDecimal(100)));
+    }
 }
