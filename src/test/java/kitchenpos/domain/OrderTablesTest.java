@@ -2,8 +2,12 @@ package kitchenpos.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -46,5 +50,17 @@ class OrderTablesTest {
         );
 
         assertThat(orderTables.isBookedAny()).isFalse();
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {1,2,3,4,5})
+    @DisplayName("개수에 맞게 size를 리턴한다")
+    void size(int len) {
+        List<OrderTable> orderTableList = new ArrayList<>();
+        for (int i = 0; i<len; i++) {
+            orderTableList.add(new OrderTable(null, null, 0, false));
+        }
+
+        assertThat(new OrderTables(orderTableList).size()).isEqualTo(len);
     }
 }

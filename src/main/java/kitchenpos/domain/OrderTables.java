@@ -19,4 +19,8 @@ public class OrderTables {
 
         return false;
     }
+
+    public int size() {
+        return orderTables.size();
+    }
 }
