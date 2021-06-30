@@ -2,7 +2,6 @@ package kitchenpos.dto.response;
 
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.ui.OrderLineItemViewResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;
