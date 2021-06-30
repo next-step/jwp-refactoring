@@ -26,8 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -81,8 +80,6 @@ class TableRestControllerTest {
                 .andExpect(validateOrderTable("$", orderTable));
     }
 
-
-
     @Test
     @DisplayName("정상적으로 테이블의 빈상태를 바꿀경우")
     void 정상적으로_테이블의_빈상태를_바꿀경우() throws Exception {
@@ -107,6 +104,37 @@ class TableRestControllerTest {
         )
                 .andExpect(status().isOk())
                 .andExpect(validateOrderTable("$", orderTable));
+    }
+
+    @Test
+    @DisplayName("정상적으로 테이블의 리스트를 가져올경우")
+    void 정상적으로_테이블의_리스트를_가져올경우() throws Exception {
+        // given
+        OrderTable orderTable = new OrderTable(1L,
+                new TableGroup(1L, LocalDateTime.now(), Arrays.asList()),
+                null,
+                null,
+                1,
+                false);
+
+        OrderTable orderTable2 = new OrderTable(2L,
+                new TableGroup(2L, LocalDateTime.now(), Arrays.asList()),
+                null,
+                null,
+                2,
+                true);
+
+        given(tableService.list())
+                .willReturn(Arrays.asList(orderTable, orderTable2));
+
+        // when & then
+        mockMvc.perform(
+                get("/api/tables")
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
+                .andExpect(status().isOk())
+                .andExpect(validateOrderTable("$.[0]", orderTable))
+                .andExpect(validateOrderTable("$.[1]", orderTable2));
     }
 
     private ResultMatcher validateOrderTable(String prefix, OrderTable orderTable) {

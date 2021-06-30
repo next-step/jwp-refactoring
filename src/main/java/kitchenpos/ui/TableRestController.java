@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class TableRestController {
@@ -30,10 +31,14 @@ public class TableRestController {
     }
 
     @GetMapping("/api/tables")
-    public ResponseEntity<List<OrderTable>> list() {
+    public ResponseEntity<List<OrderTableViewResponse>> list() {
+        List<OrderTableViewResponse> results = tableService.list()
+                .stream()
+                .map(OrderTableViewResponse::of)
+                .collect(Collectors.toList());
+
         return ResponseEntity.ok()
-                .body(tableService.list())
-                ;
+                .body(results);
     }
 
     @PutMapping("/api/tables/{orderTableId}/empty")
