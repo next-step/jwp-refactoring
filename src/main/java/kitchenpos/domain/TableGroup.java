@@ -65,7 +65,7 @@ public class TableGroup {
 
     public void ungroup() {
         if (!orderTables.isUnGroupable()) {
-            throw new IllegalArgumentException();
+            throw new IllegalStateException();
         }
 
         orderTables.ungroup();

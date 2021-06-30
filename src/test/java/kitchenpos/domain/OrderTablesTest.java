@@ -73,7 +73,6 @@ class OrderTablesTest {
         assertThatIllegalStateException().isThrownBy(() -> notEmptyOrderTables.bookedBy(null));
     }
 
-
     @Test
     @DisplayName("모든 테이블의 모든 주문이 끝났으면 단체지정이 해제가 가능하다 ")
     void 모든_테이블의_모든_주문이_끝났으면_단체지정이_해제가_가능하다() {

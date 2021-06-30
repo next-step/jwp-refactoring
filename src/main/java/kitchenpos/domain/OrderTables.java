@@ -52,6 +52,8 @@ public class OrderTables {
         if (!isUnGroupable()) {
             throw new IllegalStateException();
         }
+
+        orderTables.forEach(OrderTable::ungroup);
     }
 
     public boolean isUnGroupable() {

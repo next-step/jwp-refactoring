@@ -3,10 +3,7 @@ package kitchenpos.application;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
-import kitchenpos.domain.TableGroupCreate;
+import kitchenpos.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -45,25 +42,14 @@ public class TableGroupService {
     public TableGroup create(final TableGroupCreate tableGroupCreate) {
         final List<OrderTable> savedOrderTables = orderTableDao.findAllById(tableGroupCreate.getOrderTableIds());
 
-        return tableGroupDao.save(TableGroup.create(tableGroupCreate, savedOrderTables));
+        return tableGroupDao.save(TableGroup.create(tableGroupCreate, new OrderTables(savedOrderTables)));
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableDao.findAllByTableGroupId(tableGroupId);
+        final TableGroup tableGroup = tableGroupDao.findById(tableGroupId)
+                .orElseThrow(IllegalArgumentException::new);
 
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-
-        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
-        }
-
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.setTableGroupId(null);
-            orderTableDao.save(orderTable);
-        }
+        tableGroup.ungroup();
     }
 }

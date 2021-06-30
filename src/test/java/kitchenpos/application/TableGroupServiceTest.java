@@ -3,9 +3,7 @@ package kitchenpos.application;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,9 +15,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -155,57 +153,69 @@ class TableGroupServiceTest {
     }
 
     @Test
-    @DisplayName("unGroup - 주문 테이블들의 고유 아이디를를 조회했을 때 주문 상태가 조리 이거나, 식사 일경우 IllegalArgumentException이 발생한다.")
-    void 주문_테이블들의_고유_아이디를_조회했을_때_주문_상태가_조리_이거나_식사_일경우_IllegalArgumentException이_발생한다() {
+    @DisplayName("unGroup - 주문 테이블들의 고유 아이디를를 조회했을 때 주문 상태가 조리 이거나, 식사 일경우 IllegalStateException이 발생한다.")
+    void 주문_테이블들의_고유_아이디를_조회했을_때_주문_상태가_조리_이거나_식사_일경우_IllegalStateException이_발생한다() {
         // given
-        Long tableGroupId = 1L;
+        List<Order> orders1 = Arrays.asList(
+                new Order(null, null, null, OrderStatus.COMPLETION.name(), null, null),
+                new Order(null, null, null, OrderStatus.COMPLETION.name(), null, null)
+        );
+        List<Order> orders2 = Arrays.asList(
+                new Order(null, null, null, OrderStatus.COMPLETION.name(), null, null),
+                new Order(null, null, null, OrderStatus.MEAL.name(), null, null)
+        );
 
-        List<String> bannedStatus = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
+        OrderTables orderTables = new OrderTables(
+                Arrays.asList(
+                        new OrderTable(null, null, orders1, null, 1, false),
+                        new OrderTable(null, null, orders2, null, 1, false)
+                )
+        );
 
-        given(orderTableDao.findAllByTableGroupId(tableGroupId)).willReturn(orderTables);
+        TableGroup tableGroup = new TableGroup(1L, null, orderTables);
 
-        // when
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, bannedStatus))
-                .thenReturn(true);
+        given(tableGroupDao.findById(1L)).willReturn(Optional.of(tableGroup));
 
-        // then
-        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.ungroup(tableGroupId));
+        // when & then
+        assertThatIllegalStateException().isThrownBy(() -> tableGroupService.ungroup(1L));
 
-        verify(orderTableDao, VerificationModeFactory.times(1))
-                .findAllByTableGroupId(tableGroupId);
-
-        verify(orderDao, VerificationModeFactory.times(1))
-                .existsByOrderTableIdInAndOrderStatusIn(orderTableIds, bannedStatus);
+        verify(tableGroupDao, VerificationModeFactory.times(1))
+                .findById(1L);
     }
 
     @Test
     @DisplayName("unGroup - 정상적인 단체지정 해제")
     void 정상적인_단체지정_해제() {
         // given
-        Long tableGroupId = 1L;
-        List<String> bannedStatus = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
+        List<Order> orders1 = Arrays.asList(
+                new Order(null, null, null, OrderStatus.COMPLETION.name(), null, null),
+                new Order(null, null, null, OrderStatus.COMPLETION.name(), null, null)
+        );
+        List<Order> orders2 = Arrays.asList(
+                new Order(null, null, null, OrderStatus.COMPLETION.name(), null, null),
+                new Order(null, null, null, OrderStatus.COMPLETION.name(), null, null)
+        );
 
-        given(orderTableDao.findAllByTableGroupId(tableGroupId))
-                .willReturn(orderTables);
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, bannedStatus))
-                .willReturn(false);
+        OrderTables orderTables = new OrderTables(
+                Arrays.asList(
+                        new OrderTable(null, null, orders1, null, 1, false),
+                        new OrderTable(null, null, orders2, null, 1, false)
+                )
+        );
+
+        TableGroup tableGroup = new TableGroup(1L, null, orderTables);
+
+        given(tableGroupDao.findById(1L)).willReturn(Optional.of(tableGroup));
 
         // when
-        tableGroupService.ungroup(tableGroupId);
+        tableGroupService.ungroup(1L);
 
         // then
-        assertThat(orderTable1.getTableGroupId()).isNull();
-        assertThat(orderTable2.getTableGroupId()).isNull();
+        for (OrderTable orderTable : tableGroup.getOrderTables()) {
+            assertThat(orderTable.getTableGroupId()).isNull();
+        }
 
-        verify(orderTableDao, VerificationModeFactory.times(1))
-                .findAllByTableGroupId(tableGroupId);
-
-        verify(orderDao, VerificationModeFactory.times(1))
-                .existsByOrderTableIdInAndOrderStatusIn(orderTableIds, bannedStatus);
-
-        verify(orderTableDao, VerificationModeFactory.times(1))
-                .save(orderTable1);
-        verify(orderTableDao, VerificationModeFactory.times(1))
-                .save(orderTable2);
+        verify(tableGroupDao, VerificationModeFactory.times(1))
+                .findById(1L);
     }
 }
