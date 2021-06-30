@@ -233,7 +233,7 @@ class OrderServiceTest {
         Long orderId = 1L;
 
         Order order = new Order(orderId, 1L,
-                OrderStatus.COMPLETION.name(), LocalDateTime.now(),
+                null, OrderStatus.COMPLETION, LocalDateTime.now(),
                 orderLineItems);
 
         // when
@@ -251,13 +251,18 @@ class OrderServiceTest {
         // given
         Long orderId = 1L;
 
+        List<OrderLineItem> orderLineItems = Arrays.asList(
+                new OrderLineItem(1L, 1L, 1L, 1L),
+                new OrderLineItem(2L, 2L, 2L, 2L)
+        );
+
         Order order = new Order(orderId, 1L,
                 OrderStatus.COOKING.name(), LocalDateTime.now(),
-                Arrays.asList());
+                orderLineItems);
 
         given(orderDao.findById(orderId)).willReturn(Optional.of(order));
+
         // when
-        when(orderLineItemDao.findAllByOrderId(orderId)).thenReturn(orderLineItems);
 
         Order savedOrder = orderService.changeOrderStatus(orderId, order);
 
@@ -266,7 +271,5 @@ class OrderServiceTest {
         assertThat(savedOrder.getOrderLineItems()).containsExactlyElementsOf(orderLineItems);
 
         verify(orderDao, VerificationModeFactory.times(1)).findById(orderId);
-
-        verify(orderLineItemDao, VerificationModeFactory.times(1)).findAllByOrderId(orderId);
     }
 }
