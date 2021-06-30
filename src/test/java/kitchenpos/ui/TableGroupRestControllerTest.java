@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -71,6 +72,7 @@ class TableGroupRestControllerTest {
                 .andExpect(validateOrderTable("$.orderTables[0]", orderTables.get(0)))
                 .andExpect(validateOrderTable("$.orderTables[1]", orderTables.get(1)))
                 .andExpect(validateOrderTable("$.orderTables[2]", orderTables.get(2)))
+        .andDo(print())
         ;
     }
 

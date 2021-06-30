@@ -23,6 +23,7 @@ import static kitchenpos.ui.JsonUtil.toJson;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -36,10 +37,44 @@ class OrderRestControllerTest {
     @MockBean
     private OrderService orderService;
 
-//    private Long seq;
-//    private Long orderId;
-//    private Long menuId;
-//    private long quantity;
+    @Test
+    void list() throws Exception {
+        // given
+        Order fakeOrder = new Order(1L, null, OrderStatus.COMPLETION, null, null);
+        Order fakeOrder2 = new Order(2L, null, OrderStatus.MEAL, null, null);
+
+        Menu fakeMenu = new Menu(1L, null, BigDecimal.valueOf(1), null, null);
+        Menu fakeMenu2 = new Menu(2L, null, BigDecimal.valueOf(2), null, null);
+
+        OrderTable orderTable = new OrderTable(1L, null, null, null, false);
+        OrderTable orderTable2 = new OrderTable(2L, null, null, null, false);
+
+        List<OrderLineItem> orderLineItems = Arrays.asList(
+                new OrderLineItem(1L, fakeOrder, fakeMenu, 1),
+                new OrderLineItem(2L, fakeOrder, fakeMenu, 2)
+        );
+        List<OrderLineItem> orderLineItems2 = Arrays.asList(
+                new OrderLineItem(3L, fakeOrder2, fakeMenu2, 3),
+                new OrderLineItem(4L, fakeOrder2, fakeMenu2, 4),
+                new OrderLineItem(5L, fakeOrder2, fakeMenu2, 5)
+        );
+        Order order = new Order(null, orderTable, OrderStatus.COMPLETION, LocalDateTime.now(), orderLineItems);
+        Order order2 = new Order(null, orderTable2, OrderStatus.MEAL, LocalDateTime.now(), orderLineItems2);
+
+        given(orderService.list()).willReturn(Arrays.asList(order, order2));
+
+        // when & then
+        mockMvc.perform(get("/api/orders"))
+                .andExpect(status().isOk())
+                .andExpect(validateOrder("$.[0]", order))
+                .andExpect(validateOrderLineItem("$.[0].orderLineItems[0]", orderLineItems.get(0)))
+                .andExpect(validateOrderLineItem("$.[0].orderLineItems[1]", orderLineItems.get(1)))
+                .andExpect(validateOrder("$.[1]", order2))
+                .andExpect(validateOrderLineItem("$.[1].orderLineItems[0]", orderLineItems2.get(0)))
+                .andExpect(validateOrderLineItem("$.[1].orderLineItems[1]", orderLineItems2.get(1)))
+                .andExpect(validateOrderLineItem("$.[1].orderLineItems[2]", orderLineItems2.get(2)));
+    }
+
     @Test
     void changeOrderStatus() throws Exception {
         // given

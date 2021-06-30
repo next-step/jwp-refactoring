@@ -194,7 +194,6 @@ class OrderServiceTest {
 
         // when
         when(orderDao.findAll()).thenReturn(Arrays.asList(order));
-        when(orderLineItemDao.findAllByOrderId(orderId)).thenReturn(orderLineItems);
 
         Order savedOrder = orderService.list().get(0);
 
@@ -203,9 +202,6 @@ class OrderServiceTest {
         assertThat(savedOrder.getOrderLineItems()).containsExactly(orderLineItem1, orderLineItem2);
 
         verify(orderDao, VerificationModeFactory.times(1)).findAll();
-
-        verify(orderLineItemDao, VerificationModeFactory.times(1))
-                .findAllByOrderId(orderId);
     }
 
     @Test
