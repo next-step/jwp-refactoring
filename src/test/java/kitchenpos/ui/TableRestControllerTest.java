@@ -117,7 +117,7 @@ class TableRestControllerTest {
 
         when(tableService.changeEmpty(any(), any())).thenReturn(responseOrderTable);
 
-        mockMvc.perform(put("/api/tables/"+orderTableId + "/empty")
+        mockMvc.perform(put("/api/tables/" + orderTableId + "/empty")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody)
         )
@@ -147,7 +147,7 @@ class TableRestControllerTest {
 
         when(tableService.changeNumberOfGuests(any(), any())).thenReturn(responseOrderTable);
 
-        mockMvc.perform(put("/api/tables/"+orderTableId + "/number-of-guests")
+        mockMvc.perform(put("/api/tables/" + orderTableId + "/number-of-guests")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody)
         )

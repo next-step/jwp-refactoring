@@ -26,7 +26,7 @@ class MenuServiceTest {
 
     @Autowired
     MenuService menuService;
-    
+
     @Autowired
     MenuDao menuDao;
 
@@ -61,6 +61,7 @@ class MenuServiceTest {
         menuProduct.setQuantity(1);
 
     }
+
     @DisplayName("메뉴를 만들어보자")
     @Test
     public void createMenu() throws Exception {
@@ -74,7 +75,7 @@ class MenuServiceTest {
         menu.setPrice(price);
 
         menu.setMenuProducts(Arrays.asList(menuProduct));
-        
+
         //when
         Menu savedMenu = menuService.create(menu);
 

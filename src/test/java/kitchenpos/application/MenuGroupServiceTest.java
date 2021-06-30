@@ -17,10 +17,10 @@ class MenuGroupServiceTest {
 
     @Autowired
     MenuGroupDao menuGroupDao;
-    
+
     @Autowired
     MenuGroupService menuGroupService;
-    
+
     @DisplayName("메뉴그룹을 생성해보자")
     @Test
     public void createMenuGroup() throws Exception {

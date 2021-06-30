@@ -92,7 +92,7 @@ class TableGroupRestControllerTest {
     @Test
     void ungroup() throws Exception {
         Long tableGroupId = 1L;
-        mockMvc.perform(delete("/api/table-groups/"+tableGroupId)
+        mockMvc.perform(delete("/api/table-groups/" + tableGroupId)
         )
                 .andDo(print())
                 .andExpect(status().isNoContent())
