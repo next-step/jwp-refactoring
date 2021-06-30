@@ -48,6 +48,12 @@ public class OrderTables {
         return Collections.unmodifiableList(orderTables);
     }
 
+    public void ungroup() {
+        if (!isUnGroupable()) {
+            throw new IllegalStateException();
+        }
+    }
+
     public boolean isUnGroupable() {
         boolean isUnGroupable = orderTables.stream()
                 .allMatch(OrderTable::isUnGroupable);

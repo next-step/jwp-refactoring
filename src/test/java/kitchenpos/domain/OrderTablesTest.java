@@ -118,4 +118,26 @@ class OrderTablesTest {
 
         assertThat(orderTables.isUnGroupable()).isFalse();
     }
+
+    @Test
+    @DisplayName("모든 테이블의 모든 주문이 안끝났으면 단체지정이 해제가 불가능하므로 IllegalStateException이 발생한다 ")
+    void 모든_테이블의_모든_주문이_안끝났으면_단체지정이_해제가_불가능하므로_IllegalStateException이_발생한다() {
+        List<Order> orders1 = Arrays.asList(
+                new Order(null, null, null, OrderStatus.COOKING.name(), null, null),
+                new Order(null, null, null, OrderStatus.COMPLETION.name(), null, null)
+        );
+        List<Order> orders2 = Arrays.asList(
+                new Order(null, null, null, OrderStatus.COMPLETION.name(), null, null),
+                new Order(null, null, null, OrderStatus.COMPLETION.name(), null, null)
+        );
+
+        OrderTables orderTables = new OrderTables(
+                Arrays.asList(
+                        new OrderTable(null, null, orders1, null, 1, false),
+                        new OrderTable(null, null, orders2, null, 1, false)
+                )
+        );
+
+        assertThatIllegalStateException().isThrownBy(() -> orderTables.ungroup());
+    }
 }
