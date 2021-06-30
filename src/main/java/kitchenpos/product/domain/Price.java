@@ -6,6 +6,8 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class Price {
 
+    public static final Price ZERO = new Price(0);
+
     @Column(name = "price", nullable = false)
     private final long value;
 
@@ -34,5 +36,9 @@ public class Price {
 
     public Price add(long value) {
         return new Price(this.value + value);
+    }
+
+    public Price add(Price price, long quantity) {
+        return add(price.getValue() * quantity);
     }
 }

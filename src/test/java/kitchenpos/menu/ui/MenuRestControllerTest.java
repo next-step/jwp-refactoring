@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import kitchenpos.config.MockMvcTestConfig;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.dto.CreateMenuDto;
+import kitchenpos.menu.dto.CreateMenuProductDto;
 import kitchenpos.menu.dto.MenuDto;
 import kitchenpos.menu.dto.MenuProductDto;
 import org.junit.jupiter.api.DisplayName;
@@ -44,7 +46,7 @@ public class MenuRestControllerTest {
     @DisplayName("메뉴 생성 요청 성공")
     @Test
     void createMenuRequestSuccess() throws Exception {
-        MenuDto menuDto = createMenuDto(30000L);
+        CreateMenuDto menuDto = createMenuDto(30000L);
 
         String content = objectMapper.writeValueAsString(menuDto);
 
@@ -60,14 +62,14 @@ public class MenuRestControllerTest {
     @ValueSource(longs = { -1000, -10000 })
     @ParameterizedTest
     void createMenuRequestFail01(Long price) {
-        MenuDto menuDto = createMenuDto(price);
+        CreateMenuDto menuDto = createMenuDto(price);
         createMenuFail(menuDto);
     }
 
     @DisplayName("메뉴 생성 요청 실패 - 등록되지 않은 메뉴 그룹의 ID를 사용")
     @Test
     void createMenuRequestFail02() {
-        MenuDto menuDto = createMenuDto(30000L, NOT_SAVED_ID);
+        CreateMenuDto menuDto = createMenuDto(30000L, NOT_SAVED_ID);
         createMenuFail(menuDto);
     }
 
@@ -81,7 +83,7 @@ public class MenuRestControllerTest {
         // 양념: 16000원 * 1개
         // 총 32000원
 
-        MenuDto menuDto = createMenuDto(price);
+        CreateMenuDto menuDto = createMenuDto(price);
         createMenuFail(menuDto);
     }
 
@@ -94,11 +96,11 @@ public class MenuRestControllerTest {
                                   .andReturn();
 
         String response = result.getResponse().getContentAsString();
-        List<Menu> list = Arrays.asList(objectMapper.readValue(response, Menu[].class));
+        List<MenuDto> list = Arrays.asList(objectMapper.readValue(response, MenuDto[].class));
         assertThat(list).hasSizeGreaterThanOrEqualTo(6); // default data size is 6
     }
 
-    private void createMenuFail(MenuDto menuDto) {
+    private void createMenuFail(CreateMenuDto menuDto) {
         try {
             String content = objectMapper.writeValueAsString(menuDto);
             mockMvc.perform(post(BASE_URL).content(content)
@@ -110,17 +112,17 @@ public class MenuRestControllerTest {
         }
     }
 
-    public MenuDto createMenuDto(Long price) {
+    public CreateMenuDto createMenuDto(Long price) {
         return createMenuDto(price, 1L);
     }
 
-    public MenuDto createMenuDto(Long price, Long menuGroupId) {
+    public CreateMenuDto createMenuDto(Long price, Long menuGroupId) {
         // Product id 1: 후라이드, 2: 양념, 둘 다 16000원
-        MenuProductDto 후라이드 = new MenuProductDto(null, 1L, 1L);
-        MenuProductDto 양념 = new MenuProductDto(null, 2L, 1L);
+        CreateMenuProductDto 후라이드 = new CreateMenuProductDto(1L, 1L);
+        CreateMenuProductDto 양념 = new CreateMenuProductDto(2L, 1L);
 
-        List<MenuProductDto> menuProductDtos = Arrays.asList(후라이드, 양념);
+        List<CreateMenuProductDto> menuProductDtos = Arrays.asList(후라이드, 양념);
 
-        return new MenuDto("후라이드양념두마리세트", price, menuGroupId, menuProductDtos);
+        return new CreateMenuDto("후라이드양념두마리세트", price, menuGroupId, menuProductDtos);
     }
 }

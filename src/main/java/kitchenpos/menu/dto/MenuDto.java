@@ -29,6 +29,7 @@ public class MenuDto {
 
     public static MenuDto of(Menu menu) {
         List<MenuProductDto> menuProductDtos = menu.getMenuProducts()
+                                                   .getData()
                                                    .stream()
                                                    .map(MenuProductDto::of)
                                                    .collect(toList());

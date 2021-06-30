@@ -7,10 +7,7 @@ import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProductRepository;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.CreateMenuDto;
-import kitchenpos.menu.dto.CreateMenuProductDto;
 import kitchenpos.menu.dto.MenuDto;
-import kitchenpos.product.domain.Price;
-import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,33 +34,23 @@ public class MenuService {
     @Transactional
     public MenuDto create(CreateMenuDto menuDto) {
 
-        Menu menu = new Menu(menuDto.getName(),
-                             menuDto.getPrice(),
+        List<MenuProduct> menuProducts =
+            menuDto.getMenuProducts()
+                   .stream()
+                   .map(dto -> new MenuProduct(productRepository.findById(dto.getProductId())
+                                                                .orElseThrow(IllegalArgumentException::new),
+                                               dto.getQuantity()))
+                   .collect(toList());
+
+        Menu menu = new Menu(menuDto.getName(), menuDto.getPrice(),
                              menuGroupRepository.findById(menuDto.getMenuGroupId())
-                                                .orElseThrow(IllegalArgumentException::new));
+                                                .orElseThrow(IllegalArgumentException::new),
+                             menuProducts);
 
-        final Menu savedMenu = menuRepository.save(menu);
+        Menu persistMenu = menuRepository.save(menu);
+        menuProducts.forEach(menuProductRepository::save);
 
-        List<CreateMenuProductDto> menuProductDtos = menuDto.getMenuProducts();
-
-        Price sum = new Price(0);
-
-        for (CreateMenuProductDto menuProductDto : menuProductDtos) {
-            Product product = productRepository.findById(menuProductDto.getProductId())
-                                               .orElseThrow(IllegalArgumentException::new);
-
-            sum = sum.add(product.getPrice().getValue() * menuProductDto.getQuantity());
-
-            MenuProduct menuProduct = new MenuProduct(product, menuProductDto.getQuantity());
-            savedMenu.addMenuProduct(menuProduct);
-            menuProductRepository.save(menuProduct);
-        }
-
-        if (menu.getPrice().getValue() > sum.getValue()) {
-            throw new IllegalArgumentException();
-        }
-
-        return MenuDto.of(savedMenu);
+        return MenuDto.of(persistMenu);
     }
 
     public List<MenuDto> list() {

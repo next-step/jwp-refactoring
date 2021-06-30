@@ -1,16 +1,13 @@
 package kitchenpos.menu.domain;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import kitchenpos.product.domain.Price;
 
 @Entity
@@ -28,27 +25,35 @@ public class Menu {
     @ManyToOne
     private MenuGroup menuGroup;
 
-    @OneToMany(mappedBy = "seq", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<MenuProduct> menuProducts;
+    @Embedded
+    private final MenuProducts menuProducts = new MenuProducts();
 
-    public Menu() {
-        menuProducts = new ArrayList<>();
-    }
+    public Menu() { }
 
     public Menu(String name, Long price, MenuGroup menuGroup) {
-        this(name, price, menuGroup, new ArrayList<>());
+        this.name = name;
+        this.price = new Price(price);
+        this.menuGroup = menuGroup;
     }
 
     public Menu(String name, Long price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.name = name;
         this.price = new Price(price);
         this.menuGroup = menuGroup;
-        this.menuProducts = menuProducts;
+
+        menuProducts.forEach(this::addMenuProduct);
+        verifyTotalPrice();
     }
 
     public void addMenuProduct(MenuProduct menuProduct) {
         menuProducts.add(menuProduct);
         menuProduct.addedBy(this);
+    }
+
+    private void verifyTotalPrice() {
+        if (price.getValue() > menuProducts.getSum().getValue()) {
+            throw new IllegalArgumentException();
+        }
     }
 
     public Long getId() {
@@ -67,7 +72,7 @@ public class Menu {
         return menuGroup;
     }
 
-    public List<MenuProduct> getMenuProducts() {
+    public MenuProducts getMenuProducts() {
         return menuProducts;
     }
 

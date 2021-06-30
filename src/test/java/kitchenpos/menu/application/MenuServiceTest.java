@@ -12,7 +12,6 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.CreateMenuDto;
 import kitchenpos.menu.dto.CreateMenuProductDto;
 import kitchenpos.menu.dto.MenuDto;
-import kitchenpos.menu.dto.MenuProductDto;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,6 +56,7 @@ class MenuServiceTest {
 
     private MenuProduct mp후라이드;
     private MenuProduct mp양념치킨;
+    private List<MenuProduct> menuProducts;
 
     private MenuGroup menuGroup;
 
@@ -67,6 +67,7 @@ class MenuServiceTest {
 
         mp후라이드 = new MenuProduct(후라이드, 1L);
         mp양념치킨 = new MenuProduct(양념치킨, 1L);
+        menuProducts = Arrays.asList(mp후라이드, mp양념치킨);
 
         menuGroup = new MenuGroup(1L, "후라이드양념두마리메뉴");
     }
@@ -82,10 +83,9 @@ class MenuServiceTest {
             .willReturn(Optional.of(menuGroup));
         givenProducts();
 
-        Menu menu = new Menu(menuDto.getName(), menuDto.getPrice(), menuGroup);
+        Menu menu = new Menu(menuDto.getName(), menuDto.getPrice(), menuGroup, menuProducts);
 
         given(menuRepository.save(any())).willReturn(menu);
-        givenMenuProducts();
 
         // when
         MenuDto actual = menuService.create(menuDto);
@@ -114,6 +114,7 @@ class MenuServiceTest {
         // given
         CreateMenuDto menuDto = createMenuDto(30000L, NOT_SAVED_ID);
 
+        givenProducts();
         given(menuGroupRepository.findById(NOT_SAVED_ID)).willReturn(Optional.empty());
 
         // when
@@ -126,13 +127,9 @@ class MenuServiceTest {
     void createMenuFail03(Long price) {
         // given
         CreateMenuDto menuDto = createMenuDto(price);
-        given(menuGroupRepository.findById(menuDto.getMenuGroupId())).willReturn(Optional.of(menuGroup));
-
-        Menu menu = new Menu(menuDto.getName(), menuDto.getPrice(), menuGroup);
-        given(menuRepository.save(any())).willReturn(menu);
 
         givenProducts();
-        givenMenuProducts();
+        given(menuGroupRepository.findById(menuDto.getMenuGroupId())).willReturn(Optional.of(menuGroup));
 
         // when
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuDto));
@@ -155,9 +152,5 @@ class MenuServiceTest {
     private void givenProducts() {
         given(productRepository.findById(1L)).willReturn(Optional.of(후라이드));
         given(productRepository.findById(2L)).willReturn(Optional.of(양념치킨));
-    }
-
-    private void givenMenuProducts() {
-        given(menuProductRepository.save(any())).willReturn(mp후라이드, mp양념치킨);
     }
 }
