@@ -10,8 +10,8 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.table.dto.CreateTableGroupDto;
 import kitchenpos.table.dto.OrderTableDto;
-import kitchenpos.table.dto.TableGroupDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -29,8 +29,8 @@ public class TableGroupService {
     }
 
     @Transactional
-    public TableGroup create(TableGroupDto tableGroupDto) {
-        final List<OrderTableDto> orderTables = tableGroupDto.getOrderTables();
+    public TableGroup create(CreateTableGroupDto createTableGroupDto) {
+        final List<OrderTableDto> orderTables = createTableGroupDto.getOrderTables();
 
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
             throw new IllegalArgumentException();

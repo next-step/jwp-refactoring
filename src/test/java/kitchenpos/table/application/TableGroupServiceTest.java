@@ -10,6 +10,7 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.table.dto.CreateTableGroupDto;
 import kitchenpos.table.dto.OrderTableDto;
 import kitchenpos.table.dto.TableGroupDto;
 import org.assertj.core.util.Lists;
@@ -48,7 +49,7 @@ class TableGroupServiceTest {
     @Test
     void createFail01() {
         // given
-        TableGroupDto tableGroupDto = new TableGroupDto();
+        CreateTableGroupDto tableGroupDto = new CreateTableGroupDto();
 
         // when
         assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroupDto));
@@ -58,7 +59,7 @@ class TableGroupServiceTest {
     @Test
     void createFail02() {
         // given
-        TableGroupDto tableGroupDto = new TableGroupDto(Collections.singletonList(new OrderTableDto()));
+        CreateTableGroupDto tableGroupDto = new CreateTableGroupDto(Collections.singletonList(new OrderTableDto()));
 
         // when
         assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroupDto));
@@ -68,7 +69,7 @@ class TableGroupServiceTest {
     @Test
     void createFail03() {
         // given
-        TableGroupDto tableGroupDto = new TableGroupDto(Lists.newArrayList(dto(1L, true), dto(1L, true)));
+        CreateTableGroupDto tableGroupDto = new CreateTableGroupDto(Lists.newArrayList(dto(1L, true), dto(1L, true)));
         given(orderTableRepository.findAllByIdIn(any())).willReturn(Collections.singletonList(entity(1L, true)));
 
         // when
@@ -79,7 +80,7 @@ class TableGroupServiceTest {
     @Test
     void createFail04() {
         // given
-        TableGroupDto tableGroupDto = new TableGroupDto(Lists.newArrayList(dto(1L, true), dto(2L, false)));
+        CreateTableGroupDto tableGroupDto = new CreateTableGroupDto(Lists.newArrayList(dto(1L, true), dto(2L, false)));
         given(orderTableRepository.findAllByIdIn(any()))
             .willReturn(Lists.newArrayList(entity(1L, true), entity(2L, false)));
 
@@ -91,7 +92,7 @@ class TableGroupServiceTest {
     @Test
     void createSuccess() {
         // given
-        TableGroupDto tableGroupDto = new TableGroupDto(Lists.newArrayList(dto(1L, true), dto(2L, true)));
+        CreateTableGroupDto tableGroupDto = new CreateTableGroupDto(Lists.newArrayList(dto(1L, true), dto(2L, true)));
         given(orderTableRepository.findAllByIdIn(any())).willReturn(
             Lists.newArrayList(entity(1L, true), entity(2L, true)));
 
