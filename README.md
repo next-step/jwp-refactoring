@@ -24,49 +24,49 @@
 
 ## 테이블(용어) 설명
 
-* orders (주문)
+### orders (주문)
 
-|id|order_table_id|order_status|order_time|
+|id|order_table_id(FK)|order_status|order_time|
 |------|---|---|---|
 |식별자|주문테이블id|주문상태|주문시간|
 
-* order_line_item (주문 라인)
+### order_line_item (주문 항목)
 
-|seq|order_id|menu_id|quantity|
+|seq|order_id(FK)|menu_id(FK)|quantity|
 |------|---|---|---|
 |순번|주문id|메뉴id|주문수량|
 
-* menu (메뉴)
+### menu (메뉴)
 
-|seq|name|price|menu_group_id|
+|seq|name|price|menu_group_id(FK)|
 |------|---|---|---|
 |순번|이름|가격|메뉴그룹id|
 
-* menu_group (메뉴 그룹)
+### menu_group (메뉴 그룹)
 
 |id|name|
 |------|---|
 |식별자|이름|
 
-* menu_product (메뉴_상품)
+### menu_product (메뉴_상품)
 
-|seq|menu_id|product_id|quantity|
+|seq|menu_id(FK)|product_id(FK)|quantity|
 |------|---|---|---|
 |순번|메뉴id|상품id|메뉴상품수량|
 
-* order_table (주문 테이블)
+### order_table (주문 테이블)
 
-|id|menu_id|product_id|quantity|
+|id|menu_id(FK)|product_id(FK)|quantity|
 |------|---|---|---|
 |식별자|메뉴id|상품id|메뉴상품수량|
 
-* table_group (테이블 그룹)
+### table_group (테이블 그룹)
 
 |id|created_date|
 |------|---|
 |식별자|생성날짜시간|
 
-* product (상품)
+### product (상품)
 
 |id|name|price|
 |------|---|---|
@@ -85,13 +85,13 @@
     
 
 * 사용자는 주문을 생성 할 수 있다.
-    1. 요청으로 받은 주문 라인은 주문id와 메뉴id를 가지고 있어야 한다.
-    2. 주문 라인의 메뉴id를 통하여 메뉴를 불러온다. (하나의 주문 라인은 1개의 메뉴를 모두 가지고 있어야 한다. 사이즈 체크 필요)
+    1. 요청으로 받은 주문 항목은 주문id와 메뉴id를 가지고 있어야 한다.
+    2. 주문 항목의 메뉴id를 통하여 메뉴를 불러온다. (하나의 주문 항목은 1개의 메뉴를 모두 가지고 있어야 한다. 사이즈 체크 필요)
     3. 주문 테이블id를 통해 주문테이블 데이터를 가져온다.
     4. 주문 테이블이 비어 있는지 체크한다.
     5. 주문의 주문 테이블 번호를 셋팅한다.
     6. 주문 상태를 Cooking으로 바꾼다.
-    7. 주문 라인에 주문 데이터를 저장한다.
+    7. 주문 항목에 주문 데이터를 저장한다.
     
 
 * 사용자는 상품을 생성할 수 있다.
@@ -125,3 +125,5 @@
     1. 게스트의 숫가자 음수인지 체크한다.
     2. 주문테이블id를 통하여 데이터가 있는지 체크한다.
     3. 게스트의 숫자를 변경하고 저장한다.
+  
+
