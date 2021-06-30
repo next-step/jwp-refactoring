@@ -1,5 +1,8 @@
 package kitchenpos.domain;
 
+import kitchenpos.exception.MenuCheapException;
+import kitchenpos.exception.ProductNotExistException;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
@@ -22,14 +25,14 @@ public class Menu {
 
 
     public static Menu create(MenuCreate create, MenuGroup menuGroup, Products products) {
+        if (create.getMenuProducts().size() != products.size()) {
+            throw new ProductNotExistException();
+        }
+
         Menu menu = new Menu();
         menu.name = create.getName();
         menu.price = create.getPrice();
         menu.menuGroup = menuGroup;
-
-        if (create.getMenuProducts().size() != products.size()) {
-            throw new IllegalArgumentException();
-        }
 
         create.getMenuProducts()
                 .stream()
@@ -38,7 +41,7 @@ public class Menu {
 
         Price amount = menu.menuProducts.sumAmount();
         if (create.getPrice().getPrice().compareTo(amount.getPrice()) > 0) {
-            throw new IllegalArgumentException();
+            throw new MenuCheapException();
         }
 
         return menu;

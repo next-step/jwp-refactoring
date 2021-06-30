@@ -65,12 +65,12 @@ class MenuServiceTest {
                 Arrays.asList(simpleMenuProduct));
 
         // when
-        when(menuGroupDao.existsById(menuGroupId)).thenReturn(false);
+        when(menuGroupDao.findById(menuGroupId)).thenReturn(Optional.empty());
 
         // then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
 
-        verify(menuGroupDao, VerificationModeFactory.times(1)).existsById(menuGroupId);
+        verify(menuGroupDao, VerificationModeFactory.times(1)).findById(menuGroupId);
     }
 
     @Test
@@ -79,21 +79,27 @@ class MenuServiceTest {
         // given
         Long menuGroupId = 1L;
 
+        MenuGroup menuGroup = new MenuGroup(menuGroupId, "MenuGroup");
+
         Menu menu = new Menu(1L,
                 "Menu",
                 BigDecimal.valueOf(0),
                 menuGroupId,
                 Arrays.asList(simpleMenuProduct));
 
+        given(menuGroupDao.findById(menuGroupId))
+                .willReturn(Optional.of(menuGroup));
+
         // when
-        when(productDao.findById(simpleProductId)).thenReturn(Optional.empty());
+        when(productDao.findAllById(Arrays.asList(1L))).thenReturn(Arrays.asList());
 
         // then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
 
-        verify(menuGroupDao, VerificationModeFactory.times(1)).existsById(menuGroupId);
+        verify(menuGroupDao, VerificationModeFactory.times(1))
+                .findById(menuGroupId);
         verify(productDao, VerificationModeFactory.times(1))
-                .findById(simpleProductId);
+                .findAllById(Arrays.asList(1L));
     }
 
     @Test
@@ -102,20 +108,22 @@ class MenuServiceTest {
         // given
         Long menuGroupId = 1L;
 
+        MenuGroup menuGroup = new MenuGroup(menuGroupId, "Hello");
+
         Product product = new Product(simpleProductId, "PRODUCT", BigDecimal.valueOf(100));
 
         Menu menu = new Menu(1L, "Menu", BigDecimal.valueOf(1000), menuGroupId, Arrays.asList(simpleMenuProduct));
 
-        given(menuGroupDao.existsById(menuGroupId)).willReturn(true);
 
-        // when
-        when(productDao.findById(product.getId())).thenReturn(Optional.of(product));
+        given(menuGroupDao.findById(menuGroupId)).willReturn(Optional.of(menuGroup));
+        when(productDao.findAllById(Arrays.asList(product.getId()))).thenReturn(Arrays.asList(product));
 
-        // then
+        // when & then
+
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
 
-        verify(menuGroupDao, VerificationModeFactory.times(1)).existsById(menuGroupId);
-        verify(productDao, VerificationModeFactory.times(1)).findById(product.getId());
+        verify(menuGroupDao, VerificationModeFactory.times(1)).findById(menuGroupId);
+        verify(productDao, VerificationModeFactory.times(1)).findAllById(Arrays.asList(product.getId()));
     }
 
     @Test
