@@ -22,6 +22,11 @@ public class OrderTables {
         if (isBookedAny()) {
             throw new IllegalStateException();
         }
+
+        for (OrderTable orderTable : orderTables) {
+            orderTable.setTableGroup(tableGroup);
+            orderTable.setEmpty(false);
+        }
     }
 
     public boolean isBookedAny() {
@@ -30,6 +35,7 @@ public class OrderTables {
                 return true;
             }
         }
+
 
         return false;
     }
@@ -40,5 +46,12 @@ public class OrderTables {
 
     public List<OrderTable> toCollection() {
         return Collections.unmodifiableList(orderTables);
+    }
+
+    public boolean isUnGroupable() {
+        boolean isUnGroupable = orderTables.stream()
+                .allMatch(OrderTable::isUnGroupable);
+
+        return isUnGroupable;
     }
 }
