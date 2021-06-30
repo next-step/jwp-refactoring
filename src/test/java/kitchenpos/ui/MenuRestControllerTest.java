@@ -45,8 +45,6 @@ class MenuRestControllerTest {
     @MockBean
     private MenuService menuService;
 
-
-
     @Test
     @DisplayName("[post]/api/menus - 메뉴의 가격이 비어 있거나, 0원보다 적을경우 BadRequest이다.")
     void 메뉴의_가격이_비어_있거나_0원보다_적을경우_BadRequest이다() throws Exception {

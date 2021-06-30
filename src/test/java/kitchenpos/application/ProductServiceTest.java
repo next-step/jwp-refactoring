@@ -1,7 +1,9 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.ProductDao;
+import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.ProductCreate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +18,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -32,32 +35,22 @@ class ProductServiceTest {
     }
 
     @Test
-    @DisplayName("create - 가격이 비어있거나, 0보다 적을경우 IllegalArgumentException이 발생한다.")
-    void 가격이_비어있거나_0보다_적을경우_IllegalArgumentException이_발생한다() {
-        Product nullProduct = new Product(null, null, null);
-        Product negativeProduct = new Product(null, null, BigDecimal.valueOf(-1));
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> productService.create(nullProduct));
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> productService.create(negativeProduct));
-    }
-
-    @Test
     @DisplayName("create - 정상적인 상품 등록")
     void 정상적인_상품_등록() {
         // given
-        Product product = new Product(null, null, BigDecimal.valueOf(0));
+        ProductCreate product = new ProductCreate("name", new Price(1000));
 
         // when
-        when(productDao.save(product)).thenReturn(product);
+        when(productDao.save(any())).thenAnswer(i -> i.getArgument(0));
 
         Product savedProduct = productService.create(product);
 
         // then
-        assertThat(savedProduct).isEqualTo(product);
+        assertThat(savedProduct.getPrice()).isEqualTo(product.getPrice());
+        assertThat(savedProduct.getName()).isEqualTo(product.getName());
 
-        verify(productDao, VerificationModeFactory.times(1)).save(product);
+        verify(productDao, VerificationModeFactory.times(1))
+                .save(savedProduct);
     }
 
     @Test
