@@ -55,4 +55,8 @@ public class Product {
     public void setPrice(Price price) {
         this.price = price;
     }
+
+    public Price multiplyPrice(long quantity) {
+        return new Price(getPrice().getPrice().multiply(BigDecimal.valueOf(quantity)));
+    }
 }
