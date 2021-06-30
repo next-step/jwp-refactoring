@@ -6,8 +6,9 @@ import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProductRepository;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.dto.CreateMenuDto;
+import kitchenpos.menu.dto.CreateMenuProductDto;
 import kitchenpos.menu.dto.MenuDto;
-import kitchenpos.menu.dto.MenuProductDto;
 import kitchenpos.product.domain.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
@@ -34,7 +35,7 @@ public class MenuService {
     }
 
     @Transactional
-    public MenuDto create(MenuDto menuDto) {
+    public MenuDto create(CreateMenuDto menuDto) {
 
         Menu menu = new Menu(menuDto.getName(),
                              menuDto.getPrice(),
@@ -43,10 +44,11 @@ public class MenuService {
 
         final Menu savedMenu = menuRepository.save(menu);
 
-        List<MenuProductDto> menuProductDtos = menuDto.getMenuProducts();
+        List<CreateMenuProductDto> menuProductDtos = menuDto.getMenuProducts();
+
         Price sum = new Price(0);
 
-        for (MenuProductDto menuProductDto : menuProductDtos) {
+        for (CreateMenuProductDto menuProductDto : menuProductDtos) {
             Product product = productRepository.findById(menuProductDto.getProductId())
                                                .orElseThrow(IllegalArgumentException::new);
 

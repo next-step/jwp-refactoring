@@ -9,6 +9,8 @@ import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProductRepository;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.dto.CreateMenuDto;
+import kitchenpos.menu.dto.CreateMenuProductDto;
 import kitchenpos.menu.dto.MenuDto;
 import kitchenpos.menu.dto.MenuProductDto;
 import kitchenpos.product.domain.Product;
@@ -74,7 +76,7 @@ class MenuServiceTest {
     void createMenuSuccess() {
 
         // given
-        MenuDto menuDto = createMenuDto(30000L);
+        CreateMenuDto menuDto = createMenuDto(30000L);
 
         given(menuGroupRepository.findById(menuDto.getMenuGroupId()))
             .willReturn(Optional.of(menuGroup));
@@ -100,7 +102,7 @@ class MenuServiceTest {
     @ParameterizedTest
     void createMenuFail01(Long price) {
         // given
-        MenuDto menuDto = createMenuDto(price);
+        CreateMenuDto menuDto = createMenuDto(price);
 
         // when
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuDto));
@@ -110,7 +112,7 @@ class MenuServiceTest {
     @Test
     void createMenuFail02() {
         // given
-        MenuDto menuDto = createMenuDto(30000L, NOT_SAVED_ID);
+        CreateMenuDto menuDto = createMenuDto(30000L, NOT_SAVED_ID);
 
         given(menuGroupRepository.findById(NOT_SAVED_ID)).willReturn(Optional.empty());
 
@@ -123,7 +125,7 @@ class MenuServiceTest {
     @ParameterizedTest
     void createMenuFail03(Long price) {
         // given
-        MenuDto menuDto = createMenuDto(price);
+        CreateMenuDto menuDto = createMenuDto(price);
         given(menuGroupRepository.findById(menuDto.getMenuGroupId())).willReturn(Optional.of(menuGroup));
 
         Menu menu = new Menu(menuDto.getName(), menuDto.getPrice(), menuGroup);
@@ -136,18 +138,18 @@ class MenuServiceTest {
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuDto));
     }
 
-    public MenuDto createMenuDto(Long price) {
+    public CreateMenuDto createMenuDto(Long price) {
         return createMenuDto(price, 1L);
     }
 
-    public MenuDto createMenuDto(Long price, Long menuGroupId) {
+    public CreateMenuDto createMenuDto(Long price, Long menuGroupId) {
         // Product id 1: 후라이드, 2: 양념, 둘 다 16000원
-        MenuProductDto 후라이드 = new MenuProductDto(null, 1L, 1L);
-        MenuProductDto 양념 = new MenuProductDto(null, 2L, 1L);
+        CreateMenuProductDto 후라이드 = new CreateMenuProductDto(1L, 1L);
+        CreateMenuProductDto 양념 = new CreateMenuProductDto(2L, 1L);
 
-        List<MenuProductDto> menuProductDtos = Arrays.asList(후라이드, 양념);
+        List<CreateMenuProductDto> menuProductDtos = Arrays.asList(후라이드, 양념);
 
-        return new MenuDto("후라이드양념두마리세트", price, menuGroupId, menuProductDtos);
+        return new CreateMenuDto("후라이드양념두마리세트", price, menuGroupId, menuProductDtos);
     }
 
     private void givenProducts() {
