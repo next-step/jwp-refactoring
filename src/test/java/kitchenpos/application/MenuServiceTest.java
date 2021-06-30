@@ -16,6 +16,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -85,6 +87,31 @@ class MenuServiceTest {
         assertThat(savedMenu.getMenuProducts()).hasSize(1);
         assertThat(savedMenu.getPrice()).isEqualByComparingTo(price);
         assertThat(savedMenu.getName()).isEqualTo(menuName);
+    }
+
+    @DisplayName("메뉴리스트를 출력해보자")
+    @Test
+    public void listMenu() throws Exception {
+        //given
+        BigDecimal price = BigDecimal.valueOf(10000);
+        String menuName = "맥도날드햄버거";
+
+        Menu menu = new Menu();
+        menu.setMenuGroupId(savedMenuGroup.getId());
+        menu.setName(menuName);
+        menu.setPrice(price);
+
+        Menu savedMenu = menuDao.save(menu);
+
+        //when
+        List<Menu> menus = menuService.list();
+        List<Long> findMenuIds = menus.stream()
+                .map(findMenu -> findMenu.getId())
+                .collect(Collectors.toList());
+
+        //then
+        assertNotNull(menus);
+        assertTrue(findMenuIds.contains(savedMenu.getId()));
     }
 
     @DisplayName("0보다 작은 가격의 메뉴는 생성할수 없다")

@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -69,11 +70,21 @@ class TableServiceTest {
 
     @Test
     public void tableLists() throws Exception {
+        // given
+        OrderTable orderTable = new OrderTable();
+        orderTable.setNumberOfGuests(4);
+        orderTable.setEmpty(false);
+        OrderTable savedOrderTable = orderTableDao.save(orderTable);
+
         //when
         List<OrderTable> orderTables = tableService.list();
-
+        List<Long> findOrderTableIds = orderTables.stream()
+                .map(findOrderTable -> findOrderTable.getId())
+                .collect(Collectors.toList());
         //then
         assertNotNull(orderTables);
+        assertTrue(findOrderTableIds.contains(savedOrderTable.getId()));
+
     }
 
     @DisplayName("테이블의 상태를 변경하자")

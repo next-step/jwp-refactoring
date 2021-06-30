@@ -11,6 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -95,6 +97,29 @@ class OrderServiceTest {
         assertThat(savedOrder.getOrderLineItems()).hasSize(1);
     }
 
+    @DisplayName("주문 목록을 출력해보자자")
+    @Test
+    public void listMenuGroup() throws Exception {
+        //given
+        LocalDateTime orderedTime = LocalDateTime.of(2021, 7, 1, 01, 10, 00);
+
+        Order order = new Order();
+        order.setOrderTableId(savedOrderTable.getId());
+        order.setOrderStatus(OrderStatus.COOKING.name());
+        order.setOrderLineItems(Arrays.asList(orderLineItem));
+        order.setOrderedTime(orderedTime);
+        Order savedOrder = orderDao.save(order);
+
+        //when
+        List<Order> orders = orderService.list();
+        List<Long> findOrderIds = orders.stream()
+                .map(findOrder -> findOrder.getId())
+                .collect(Collectors.toList());
+        //then
+        assertNotNull(orders);
+        assertTrue(findOrderIds.contains(savedOrder.getId()));
+    }
+
     @DisplayName("메뉴가 없을때는 주문생성에 실패한다.")
     @Test
     public void failCreateOrderEmptyOrderLineItems() throws Exception {
@@ -146,12 +171,12 @@ class OrderServiceTest {
     @Test
     public void changeOrderStatus() throws Exception {
         //given
-        LocalDateTime localDateTime = LocalDateTime.of(2021, 7, 1, 01, 10, 00);
+        LocalDateTime orderedTime = LocalDateTime.of(2021, 7, 1, 01, 10, 00);
 
         Order order = new Order();
         order.setOrderTableId(savedOrderTable.getId());
         order.setOrderStatus(OrderStatus.COOKING.name());
-        order.setOrderedTime(localDateTime);
+        order.setOrderedTime(orderedTime);
 
         Order savedOrder = orderDao.save(order);
 
@@ -163,7 +188,7 @@ class OrderServiceTest {
 
         //then
         assertThat(changedOrder.getOrderStatus()).isEqualTo(orderStatusMeal);
-        assertThat(changedOrder.getOrderedTime()).isEqualTo(localDateTime);
+        assertThat(changedOrder.getOrderedTime()).isEqualTo(orderedTime);
     }
 
     @DisplayName("존재하지 않는 주문을 변경할수는 없다.")

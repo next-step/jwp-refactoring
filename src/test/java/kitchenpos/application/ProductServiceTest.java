@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -86,12 +87,16 @@ class ProductServiceTest {
         product.setName(productName);
         product.setPrice(price);
 
-        productDao.save(product);
+        Product savedProduct = productDao.save(product);
 
         //when
         List<Product> products = productService.list();
+        List<Long> findProductIds = products.stream()
+                .map(findProduct -> findProduct.getId())
+                .collect(Collectors.toList());
 
         //then
         assertNotNull(products);
+        assertTrue(findProductIds.contains(savedProduct.getId()));
     }
 }
