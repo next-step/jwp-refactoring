@@ -5,6 +5,7 @@ import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductCreate;
 import kitchenpos.dto.request.ProductCreateRequest;
+import kitchenpos.dto.response.ProductViewResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class ProductRestController {
@@ -23,7 +25,7 @@ public class ProductRestController {
     }
 
     @PostMapping("/api/products")
-    public ResponseEntity<Product> create(@RequestBody final ProductCreateRequest productCreateRequest) {
+    public ResponseEntity<ProductViewResponse> create(@RequestBody final ProductCreateRequest productCreateRequest) {
         final Product created = productService.create(
                 new ProductCreate(
                         productCreateRequest.getName(),
@@ -32,13 +34,16 @@ public class ProductRestController {
         );
         final URI uri = URI.create("/api/products/" + created.getId());
         return ResponseEntity.created(uri)
-                .body(created);
+                .body(ProductViewResponse.of(created));
     }
 
     @GetMapping("/api/products")
-    public ResponseEntity<List<Product>> list() {
+    public ResponseEntity<List<ProductViewResponse>> list() {
+        List<ProductViewResponse> results = productService.list()
+                .stream()
+                .map(ProductViewResponse::of)
+                .collect(Collectors.toList());
         return ResponseEntity.ok()
-                .body(productService.list())
-                ;
+                .body(results);
     }
 }
