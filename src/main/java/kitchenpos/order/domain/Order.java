@@ -1,7 +1,6 @@
 package kitchenpos.order.domain;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Embedded;
@@ -39,36 +38,18 @@ public class Order {
     @Embedded
     private final OrderLineItems orderLineItems = new OrderLineItems();
 
-    protected Order() { }
-
-    public Order(OrderTable orderTable) {
-        this(orderTable, OrderStatus.COOKING);
+    public Order() {
+        this.orderStatus = OrderStatus.COOKING;
     }
 
-    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        this(orderTable, OrderStatus.COOKING, orderLineItems);
-    }
-
-    public Order(OrderTable orderTable, OrderStatus orderStatus) {
-        this(orderTable, orderStatus, Collections.emptyList());
-    }
-
-    public Order(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
-        this.orderTable = orderTable;
-        this.orderStatus = orderStatus;
+    public Order(List<OrderLineItem> orderLineItems) {
+        this.orderStatus = OrderStatus.COOKING;
         orderLineItems.forEach(this::addOrderLineItem);
-        verifyOrderTableIsEmpty();
     }
 
     public void addOrderLineItem(OrderLineItem item) {
         orderLineItems.add(item);
         item.relatedTo(this);
-    }
-
-    private void verifyOrderTableIsEmpty() {
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
     }
 
     public void changeOrderStatus(String orderStatus) {
@@ -81,6 +62,14 @@ public class Order {
         }
 
         this.orderStatus = orderStatus;
+    }
+
+    public void group(OrderTable orderTable) {
+        this.orderTable = orderTable;
+    }
+
+    public boolean isCompletedOrder() {
+        return orderStatus.isCompletedOrder();
     }
 
     public Long getId() {

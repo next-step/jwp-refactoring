@@ -36,7 +36,7 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderDto create(CreateOrderDto createOrderDto) {
+    public Order create(CreateOrderDto createOrderDto) {
 
         if (CollectionUtils.isEmpty(createOrderDto.getOrderLineItems())) {
             throw new IllegalArgumentException();
@@ -63,10 +63,13 @@ public class OrderService {
         final OrderTable orderTable = orderTableRepository.findById(createOrderDto.getOrderTableId())
                                                           .orElseThrow(IllegalArgumentException::new);
 
-        Order savedOrder = orderRepository.save(new Order(orderTable, orderLineItems));
+        Order order = new Order(orderLineItems);
+        orderTable.addOrder(order);
+
+        Order savedOrder = orderRepository.save(order);
         orderLineItems.forEach(orderLineItemRepository::save);
 
-        return OrderDto.of(savedOrder);
+        return savedOrder;
     }
 
     public List<OrderDto> list() {

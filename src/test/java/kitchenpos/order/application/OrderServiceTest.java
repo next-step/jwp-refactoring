@@ -1,6 +1,5 @@
 package kitchenpos.order.application;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
@@ -116,7 +115,7 @@ class OrderServiceTest {
         CreateOrderDto orderDto = new CreateOrderDto(1L, Lists.newArrayList(item));
 
         OrderTable orderTable = new OrderTable(1L, null, 0, false);
-        Order order = new Order(orderTable, OrderStatus.COOKING);
+        Order order = new Order();
 
         given(menuRepository.findById(any())).willReturn(Optional.of(new Menu()));
         given(menuRepository.countByIdIn(any())).willReturn(1);
@@ -145,8 +144,13 @@ class OrderServiceTest {
     @Test
     void changeOrderStatusFail02() {
         // given
-        Order savedOrder = new Order(new OrderTable(false), OrderStatus.COMPLETION);
-        given(orderRepository.findById(any())).willReturn(Optional.of(savedOrder));
+        Order order = new Order();
+        order.changeOrderStatus(OrderStatus.COMPLETION);
+
+        OrderTable orderTable = new OrderTable(false);
+        orderTable.addOrder(order);
+
+        given(orderRepository.findById(any())).willReturn(Optional.of(order));
 
         // when
         assertThatIllegalArgumentException().isThrownBy(
@@ -157,7 +161,10 @@ class OrderServiceTest {
     @Test
     void changeOrderStatusSuccess() {
         // given
-        Order savedOrder = new Order(new OrderTable(false), OrderStatus.COOKING);
+        Order savedOrder = new Order();
+        OrderTable orderTable = new OrderTable(false);
+        orderTable.addOrder(savedOrder);
+
         given(orderRepository.findById(any())).willReturn(Optional.of(savedOrder));
 
         // when

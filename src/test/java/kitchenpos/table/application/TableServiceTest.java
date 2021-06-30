@@ -1,9 +1,6 @@
 package kitchenpos.table.application;
 
-import java.util.Arrays;
 import java.util.Optional;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
@@ -27,9 +24,6 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
 
-    @Mock 
-    private OrderRepository orderRepository;
-    
     @Mock 
     private OrderTableRepository orderTableRepository;
 
@@ -89,9 +83,6 @@ class TableServiceTest {
         OrderTable orderTable = new OrderTable();
 
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId,
-                                                                   Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)))
-            .willReturn(true);
 
         // when
         assertThatIllegalArgumentException().isThrownBy(() -> tableService.changeEmpty(orderTableId, true));
@@ -102,17 +93,10 @@ class TableServiceTest {
     void changeEmptySuccess() {
         // given
         OrderTable orderTable = new OrderTable(1L, null, 0, true);
-
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTable.getId(),
-                                                                   Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)))
-            .willReturn(false);
-
-        given(orderTableRepository.save(orderTable)).willReturn(orderTable);
 
         // when
-        OrderTable actual = tableService.changeEmpty(orderTable.getId(), true);
-        assertEquals(orderTable.isEmpty(), actual.isEmpty());
+        assertThatIllegalArgumentException().isThrownBy(() -> tableService.changeEmpty(orderTable.getId(), true));
     }
 
     @DisplayName("주문 테이블의 손님 수 변경 실패 - 손님 수가 0 이하")
@@ -150,7 +134,6 @@ class TableServiceTest {
         OrderTable orderTable = new OrderTable(orderTableId, null, 3, false);
 
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
-        given(orderTableRepository.save(orderTable)).willReturn(orderTable);
 
         // when
         OrderTable actual = tableService.changeNumberOfGuests(orderTable.getId(), 3);

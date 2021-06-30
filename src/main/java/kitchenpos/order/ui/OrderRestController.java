@@ -3,6 +3,7 @@ package kitchenpos.order.ui;
 import java.net.URI;
 import java.util.List;
 import kitchenpos.order.application.OrderService;
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.dto.ChangeOrderStatusDto;
 import kitchenpos.order.dto.CreateOrderDto;
 import kitchenpos.order.dto.OrderDto;
@@ -24,9 +25,9 @@ public class OrderRestController {
 
     @PostMapping("/api/orders")
     public ResponseEntity<OrderDto> create(@RequestBody CreateOrderDto createOrderDto) {
-        final OrderDto created = orderService.create(createOrderDto);
+        final Order created = orderService.create(createOrderDto);
         final URI uri = URI.create("/api/orders/" + created.getId());
-        return ResponseEntity.created(uri).body(created);
+        return ResponseEntity.created(uri).body(OrderDto.of(created));
     }
 
     @GetMapping("/api/orders")

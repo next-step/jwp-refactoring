@@ -1,11 +1,13 @@
 package kitchenpos.table.domain;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import kitchenpos.order.domain.Order;
 
 @Entity
 public class OrderTable {
@@ -20,6 +22,9 @@ public class OrderTable {
 
     private int numberOfGuests;
     private boolean empty;
+
+    @Embedded
+    private final Orders orders = new Orders();
 
     public OrderTable() {
         numberOfGuests = 0;
@@ -55,6 +60,15 @@ public class OrderTable {
     }
 
     public void changeEmpty(boolean empty) {
+
+        if (tableGroup != null) {
+            throw new IllegalArgumentException();
+        }
+
+        if (hasNotCompletedOrder()) {
+            throw new IllegalArgumentException();
+        }
+
         this.empty = empty;
     }
 
@@ -67,7 +81,25 @@ public class OrderTable {
     }
 
     public void changeNumberOfGuests(int numberOfGuests) {
+        if (isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+
         this.numberOfGuests = numberOfGuests;
+    }
+
+    public void addOrder(Order order) {
+
+        if (isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+
+        this.orders.add(order);
+        order.group(this);
+    }
+
+    private boolean hasNotCompletedOrder() {
+        return orders.hasNotCompletedOrder();
     }
 
     public Long getId() {
@@ -84,5 +116,9 @@ public class OrderTable {
 
     public boolean isEmpty() {
         return empty;
+    }
+
+    public Orders getOrders() {
+        return orders;
     }
 }
