@@ -87,6 +87,12 @@ public class OrderTable {
         this.empty = empty;
     }
 
+    public void ungroup() {
+        if (!isUnGroupable()) {
+            throw new IllegalStateException();
+        }
+    }
+
     public boolean isUnGroupable() {
         boolean isAllFinished = orders.stream()
                 .allMatch(Order::isFinished);
