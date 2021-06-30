@@ -65,10 +65,13 @@ class MenuServiceTest {
     @Test
     public void createMenu() throws Exception {
         //given
+        BigDecimal price = BigDecimal.valueOf(10000);
+        String menuName = "맥도날드햄버거";
+
         Menu menu = new Menu();
         menu.setMenuGroupId(savedMenuGroup.getId());
-        menu.setName("맥도날드햄버거");
-        menu.setPrice(BigDecimal.valueOf(10000));
+        menu.setName(menuName);
+        menu.setPrice(price);
 
         menu.setMenuProducts(Arrays.asList(menuProduct));
         
@@ -79,6 +82,8 @@ class MenuServiceTest {
         assertNotNull(savedMenu.getId());
         assertThat(savedMenu.getMenuGroupId()).isEqualTo(savedMenuGroup.getId());
         assertThat(savedMenu.getMenuProducts()).hasSize(1);
+        assertThat(savedMenu.getPrice()).isEqualByComparingTo(price);
+        assertThat(savedMenu.getName()).isEqualTo(menuName);
     }
 
     @DisplayName("0보다 작은 가격의 메뉴는 생성할수 없다")
@@ -104,7 +109,7 @@ class MenuServiceTest {
         //given
         Menu menu = new Menu();
         menu.setName("맥도날드햄버거");
-        menu.setPrice(BigDecimal.valueOf(-1));
+        menu.setPrice(BigDecimal.valueOf(10000));
 
         menu.setMenuProducts(Arrays.asList(menuProduct));
 

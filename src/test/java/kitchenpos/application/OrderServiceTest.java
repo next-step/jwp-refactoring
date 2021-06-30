@@ -78,10 +78,11 @@ class OrderServiceTest {
     @Test
     public void createOrder() throws Exception {
         //given
+        String orderStatus = OrderStatus.COOKING.name();
+
         Order order = new Order();
         order.setOrderTableId(savedOrderTable.getId());
-        order.setOrderStatus(OrderStatus.COOKING.name());
-        order.setOrderedTime(LocalDateTime.now());
+        order.setOrderStatus(orderStatus);
         order.setOrderLineItems(Arrays.asList(orderLineItem));
 
         //when
@@ -89,7 +90,7 @@ class OrderServiceTest {
 
         //then
         assertNotNull(savedOrder.getId());
-        assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(savedOrder.getOrderStatus()).isEqualTo(orderStatus);
         assertThat(savedOrder.getOrderTableId()).isEqualTo(savedOrderTable.getId());
         assertThat(savedOrder.getOrderLineItems()).hasSize(1);
     }
@@ -145,20 +146,24 @@ class OrderServiceTest {
     @Test
     public void changeOrderStatus() throws Exception {
         //given
+        LocalDateTime localDateTime = LocalDateTime.of(2021, 7, 1, 01, 10, 00);
+
         Order order = new Order();
         order.setOrderTableId(savedOrderTable.getId());
         order.setOrderStatus(OrderStatus.COOKING.name());
-        order.setOrderedTime(LocalDateTime.now());
+        order.setOrderedTime(localDateTime);
 
         Order savedOrder = orderDao.save(order);
 
-        order.setOrderStatus(OrderStatus.MEAL.name());
+        String orderStatusMeal = OrderStatus.MEAL.name();
+        order.setOrderStatus(orderStatusMeal);
 
         //when
         Order changedOrder = orderService.changeOrderStatus(savedOrder.getId(), order);
 
         //then
-        assertThat(changedOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
+        assertThat(changedOrder.getOrderStatus()).isEqualTo(orderStatusMeal);
+        assertThat(changedOrder.getOrderedTime()).isEqualTo(localDateTime);
     }
 
     @DisplayName("존재하지 않는 주문을 변경할수는 없다.")

@@ -111,7 +111,6 @@ class TableServiceTest {
     @Test
     public void failChangeEmptyBecauseStatusForCookingAndMeal() throws Exception {
         //given
-
         Order order = new Order();
         order.setOrderStatus(OrderStatus.COOKING.name());
         order.setOrderTableId(savedOrderTable.getId());

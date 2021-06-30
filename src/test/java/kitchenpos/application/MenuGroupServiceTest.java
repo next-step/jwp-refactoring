@@ -25,8 +25,9 @@ class MenuGroupServiceTest {
     @Test
     public void createMenuGroup() throws Exception {
         //given
-        MenuGroup menuGroup = new MenuGroup();
         String menuGroupName = "테스트메뉴그룹";
+
+        MenuGroup menuGroup = new MenuGroup();
         menuGroup.setName(menuGroupName);
 
         //when
@@ -41,8 +42,9 @@ class MenuGroupServiceTest {
     @Test
     public void listMenuGroup() throws Exception {
         //given
-        MenuGroup menuGroup = new MenuGroup();
         String menuGroupName = "테스트메뉴그룹";
+
+        MenuGroup menuGroup = new MenuGroup();
         menuGroup.setName(menuGroupName);
         MenuGroup savedMenuGroup = menuGroupDao.save(menuGroup);
 

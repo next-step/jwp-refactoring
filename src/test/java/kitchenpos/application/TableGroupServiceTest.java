@@ -44,7 +44,6 @@ class TableGroupServiceTest {
 
 
         TableGroup tableGroup = new TableGroup();
-        tableGroup.setCreatedDate(LocalDateTime.now());
         tableGroup.setOrderTables(Arrays.asList(savedOrderTable1, savedOrderTable2));
 
         //when
@@ -64,7 +63,6 @@ class TableGroupServiceTest {
 
 
         TableGroup tableGroup = new TableGroup();
-        tableGroup.setCreatedDate(LocalDateTime.now());
         tableGroup.setOrderTables(Arrays.asList(savedOrderTable1, savedOrderTable2));
 
         //then
@@ -91,7 +89,6 @@ class TableGroupServiceTest {
 
 
         TableGroup tableGroup = new TableGroup();
-        tableGroup.setCreatedDate(LocalDateTime.now());
         tableGroup.setOrderTables(Arrays.asList(savedOrderTable1, savedOrderTable2));
 
         //then
