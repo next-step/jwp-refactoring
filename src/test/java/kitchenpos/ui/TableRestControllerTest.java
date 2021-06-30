@@ -4,6 +4,7 @@ import kitchenpos.application.TableService;
 import kitchenpos.domain.NumberOfGuest;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.request.ChangeEmptyRequest;
 import kitchenpos.dto.request.ChangeNumberOfGuestsRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -74,6 +75,34 @@ class TableRestControllerTest {
         mockMvc.perform(
                 put("/api/tables/1/number-of-guests")
                         .content(toJson(changeNumberOfGuestsRequest))
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
+                .andExpect(status().isOk())
+                .andExpect(validateOrderTable("$", orderTable));
+    }
+
+
+
+    @Test
+    @DisplayName("정상적으로 테이블의 빈상태를 바꿀경우")
+    void 정상적으로_테이블의_빈상태를_바꿀경우() throws Exception {
+        // given
+        ChangeEmptyRequest changeEmptyRequest = new ChangeEmptyRequest(true);
+
+        OrderTable orderTable = new OrderTable(1L,
+                new TableGroup(1L, LocalDateTime.now(), Arrays.asList()),
+                null,
+                null,
+                1,
+                changeEmptyRequest.isEmpty());
+
+        given(tableService.changeEmpty(1L, changeEmptyRequest.isEmpty()))
+                .willReturn(orderTable);
+
+        // when & then
+        mockMvc.perform(
+                put("/api/tables/1/empty")
+                        .content(toJson(changeEmptyRequest))
                         .contentType(MediaType.APPLICATION_JSON)
         )
                 .andExpect(status().isOk())

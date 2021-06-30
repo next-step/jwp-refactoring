@@ -3,6 +3,7 @@ package kitchenpos.application;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.NumberOfGuest;
+import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
@@ -116,24 +117,20 @@ class TableServiceTest {
     void 주문_테이블에_등록된_주문들의_상탱가_조리_또는_식사_일_경우_IllegalArgumentException이_발생한다() {
         // given
         Long orderTableId = 1L;
-        OrderTable orderTable = new OrderTable(orderTableId, null, 1, true);
-        List<String> bannedStatus = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
+        List<Order> orders = Arrays.asList(
+                new Order(null, null, OrderStatus.MEAL.name(), null, null),
+                new Order(null, null, OrderStatus.COOKING.name(), null, null)
+        );
+        OrderTable orderTable = new OrderTable(orderTableId, null, orders, 1L, 0, true);
 
         given(orderTableDao.findById(orderTableId))
                 .willReturn(Optional.of(orderTable));
 
-        // when
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(orderTableId, bannedStatus))
-                .thenReturn(true);
-
-        // then
+        // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> tableService.changeEmpty(orderTableId, orderTable));
 
         verify(orderTableDao, VerificationModeFactory.times(1))
                 .findById(orderTableId);
-
-        verify(orderDao, VerificationModeFactory.times(1))
-                .existsByOrderTableIdAndOrderStatusIn(orderTableId, bannedStatus);
     }
 
     @Test
@@ -145,28 +142,18 @@ class TableServiceTest {
         List<String> bannedStatus = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
 
         given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(orderTable));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(orderTableId, bannedStatus)).willReturn(false);
 
         // when
-        when(orderTableDao.save(orderTable))
-                .thenReturn(orderTable);
-
-        OrderTable savedOrderTable = tableService.changeEmpty(orderTableId, orderTable);
+        OrderTable savedOrderTable = tableService.changeEmpty(orderTableId, false);
 
         // then
         assertThat(savedOrderTable.getTableGroupId()).isNull();
         assertThat(savedOrderTable.getId()).isEqualTo(orderTable.getId());
         assertThat(savedOrderTable.getNumberOfGuests()).isEqualTo(orderTable.getNumberOfGuests());
-        assertThat(savedOrderTable.isEmpty()).isEqualTo(orderTable.isEmpty());
+        assertThat(savedOrderTable.isEmpty()).isFalse();
 
         verify(orderTableDao, VerificationModeFactory.times(1))
                 .findById(orderTableId);
-
-        verify(orderDao, VerificationModeFactory.times(1))
-                .existsByOrderTableIdAndOrderStatusIn(orderTableId, bannedStatus);
-
-        verify(orderTableDao, VerificationModeFactory.times(1))
-                .save(orderTable);
     }
 
     @Test

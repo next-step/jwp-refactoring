@@ -1,7 +1,10 @@
 package kitchenpos.domain;
 
+import org.aspectj.weaver.ast.Or;
+
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class OrderTable {
@@ -12,8 +15,7 @@ public class OrderTable {
     @ManyToOne(fetch = FetchType.LAZY)
     private TableGroup tableGroup;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<Order> orders;
+    private Orders orders = new Orders();
 
     @Column(name = "old_table_group_id")
     private Long tableGroupId;
@@ -43,7 +45,7 @@ public class OrderTable {
     public OrderTable(Long id, TableGroup tableGroup, List<Order> orders, Long tableGroupId, int numberOfGuests, boolean empty) {
         this.id = id;
         this.tableGroup = tableGroup;
-        this.orders = orders;
+        this.orders = new Orders(orders);
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = new NumberOfGuest(numberOfGuests);
         this.empty = empty;
@@ -52,7 +54,7 @@ public class OrderTable {
     public OrderTable(Long id, TableGroup tableGroup, List<Order> orders, Long tableGroupId, NumberOfGuest numberOfGuests, boolean empty) {
         this.id = id;
         this.tableGroup = tableGroup;
-        this.orders = orders;
+        this.orders = new Orders(orders);
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
@@ -75,11 +77,7 @@ public class OrderTable {
     }
 
     public List<Order> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(List<Order> orders) {
-        this.orders = orders;
+        return orders.toCollection();
     }
 
     public NumberOfGuest getNumberOfGuests() {
@@ -113,10 +111,7 @@ public class OrderTable {
     }
 
     public boolean isUnGroupable() {
-        boolean isAllFinished = orders.stream()
-                .allMatch(Order::isFinished);
-
-        return isAllFinished;
+        return orders.isAllFinished();
     }
 
     public void changeNumberOfGuest(NumberOfGuest numberOfGuest) {
@@ -125,5 +120,17 @@ public class OrderTable {
         }
 
         this.numberOfGuests = numberOfGuest;
+    }
+
+    public void changeEmpty(boolean empty) {
+        if (Objects.nonNull(getTableGroupId())) {
+            throw new IllegalArgumentException();
+        }
+
+        if (!orders.isAllFinished()) {
+            throw new IllegalStateException();
+        }
+
+        this.empty = empty;
     }
 }
