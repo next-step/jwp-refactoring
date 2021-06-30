@@ -8,6 +8,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class ProductTest {
+
+	public static Product 후라이드치킨 = new Product("후라이드치킨", Price.wonOf(1000));
+	public static Product 피자 = new Product("피자", Price.wonOf(2000));
+
 	@DisplayName("가격이 음수인 상품은 생성 될 수 없다.")
 	@Test
 	void negativePriceTest() {
