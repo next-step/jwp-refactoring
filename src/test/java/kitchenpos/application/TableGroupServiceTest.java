@@ -20,6 +20,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -62,12 +63,10 @@ class TableGroupServiceTest {
     @Test
     @DisplayName("create - 등록을 원하는 주문 테이블이 비어있거나, 1개밖에 없을경우 IllegalArugmentException이 발생한다.")
     void 등록을_원하는_주문_테이블이_비어있거나_1개밖에_없을경우_IllegalArgumentException이_발생한다() {
-        TableGroup nullTableGroup = new TableGroup(1L, LocalDateTime.now(), null);
         TableGroup emptyTableGroup = new TableGroup(2L, LocalDateTime.now(), Arrays.asList());
         TableGroup onlyOneTableGroup = new TableGroup(3L, LocalDateTime.now(),
                 Arrays.asList(new OrderTable(1L, 3L, 0, true)));
 
-        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(nullTableGroup));
         assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(emptyTableGroup));
         assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(onlyOneTableGroup));
     }
@@ -138,7 +137,7 @@ class TableGroupServiceTest {
         TableGroup tableGroup = new TableGroup(tableGroupId, LocalDateTime.now(), orderTables);
 
         // when
-        when(tableGroupDao.save(tableGroup)).thenReturn(tableGroup);
+        when(tableGroupDao.save(any())).thenAnswer(i -> i.getArgument(0));
 
         TableGroup savedTableGroup = tableGroupService.create(tableGroup);
 
@@ -148,16 +147,11 @@ class TableGroupServiceTest {
                 .containsOnly(false);
 
         assertThat(savedTableGroup.getOrderTables())
-                .map(item -> item.getTableGroupId())
-                .containsOnly(tableGroupId);
+                .map(item -> item.getTableGroup())
+                .containsOnly(savedTableGroup);
 
         verify(orderTableDao, VerificationModeFactory.times(1))
                 .findAllById(orderTableIds);
-
-        verify(orderTableDao, VerificationModeFactory.times(1))
-                .save(orderTable1);
-        verify(orderTableDao, VerificationModeFactory.times(1))
-                .save(orderTable2);
     }
 
     @Test

@@ -3,6 +3,7 @@ package kitchenpos.domain;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class TableGroup {
@@ -22,6 +23,26 @@ public class TableGroup {
         this.id = id;
         this.createdDate = createdDate;
         this.orderTables = orderTables;
+    }
+
+    public static TableGroup create(TableGroupCreate tableGroupCreate, List<OrderTable> savedOrderTables) {
+        if (!tableGroupCreate.orderTableHasSize(savedOrderTables.size())) {
+            throw new IllegalArgumentException();
+        }
+
+        for (final OrderTable savedOrderTable : savedOrderTables) {
+            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
+                throw new IllegalArgumentException();
+            }
+        }
+        TableGroup tableGroup = new TableGroup(null, LocalDateTime.now(), savedOrderTables);
+
+        for (final OrderTable savedOrderTable : savedOrderTables) {
+            savedOrderTable.setEmpty(false);
+            savedOrderTable.setTableGroup(tableGroup);
+        }
+
+        return tableGroup;
     }
 
     public Long getId() {

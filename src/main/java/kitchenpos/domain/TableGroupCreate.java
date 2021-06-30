@@ -21,4 +21,8 @@ public class TableGroupCreate {
             throw new IllegalArgumentException();
         }
     }
+
+    public boolean orderTableHasSize(int size) {
+        return orderTableIds.size() == size;
+    }
 }

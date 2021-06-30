@@ -6,6 +6,7 @@ import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.TableGroupCreate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -30,41 +31,21 @@ public class TableGroupService {
 
     @Transactional
     public TableGroup create(final TableGroup tableGroup) {
-        final List<OrderTable> orderTables = tableGroup.getOrderTables();
+        return create(
+                new TableGroupCreate(
+                        tableGroup
+                                .getOrderTables()
+                        .stream().map(item -> item.getId())
+                        .collect(Collectors.toList())
+                )
+        );
+    }
 
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException();
-        }
+    @Transactional
+    public TableGroup create(final TableGroupCreate tableGroupCreate) {
+        final List<OrderTable> savedOrderTables = orderTableDao.findAllById(tableGroupCreate.getOrderTableIds());
 
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-
-        final List<OrderTable> savedOrderTables = orderTableDao.findAllById(orderTableIds);
-
-        if (orderTables.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
-        }
-
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        tableGroup.setCreatedDate(LocalDateTime.now());
-
-        final TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
-
-        final Long tableGroupId = savedTableGroup.getId();
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.setTableGroupId(tableGroupId);
-            savedOrderTable.setEmpty(false);
-            orderTableDao.save(savedOrderTable);
-        }
-        savedTableGroup.setOrderTables(savedOrderTables);
-
-        return savedTableGroup;
+        return tableGroupDao.save(TableGroup.create(tableGroupCreate, savedOrderTables));
     }
 
     @Transactional
