@@ -1,0 +1,21 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class Menu
+class MenuGroup
+class MenuProduct
+class Order
+class OrderLineItem
+class OrderTable
+class Product
+class TableGroup
+
+Menu }-- MenuGroup
+Product }-- MenuProduct
+MenuProduct --{ Menu
+Menu -- OrderLineItem
+OrderLineItem }-- Order
+OrderTable -- Order
+OrderTable }-- TableGroup
+
+@enduml
