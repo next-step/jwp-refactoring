@@ -17,7 +17,9 @@ public class OrderTable {
 
     @Column(name = "old_table_group_id")
     private Long tableGroupId;
-    private int numberOfGuests;
+
+    private NumberOfGuest numberOfGuests;
+
     private boolean empty;
 
     public OrderTable() {
@@ -26,7 +28,7 @@ public class OrderTable {
     public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         this.id = id;
         this.tableGroupId = tableGroupId;
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = new NumberOfGuest(numberOfGuests);
         this.empty = empty;
     }
 
@@ -34,11 +36,20 @@ public class OrderTable {
         this.id = id;
         this.tableGroup = tableGroup;
         this.tableGroupId = tableGroupId;
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = new NumberOfGuest(numberOfGuests);
         this.empty = empty;
     }
 
     public OrderTable(Long id, TableGroup tableGroup, List<Order> orders, Long tableGroupId, int numberOfGuests, boolean empty) {
+        this.id = id;
+        this.tableGroup = tableGroup;
+        this.orders = orders;
+        this.tableGroupId = tableGroupId;
+        this.numberOfGuests = new NumberOfGuest(numberOfGuests);
+        this.empty = empty;
+    }
+
+    public OrderTable(Long id, TableGroup tableGroup, List<Order> orders, Long tableGroupId, NumberOfGuest numberOfGuests, boolean empty) {
         this.id = id;
         this.tableGroup = tableGroup;
         this.orders = orders;
@@ -63,11 +74,19 @@ public class OrderTable {
         this.tableGroupId = tableGroupId;
     }
 
-    public int getNumberOfGuests() {
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
+    }
+
+    public NumberOfGuest getNumberOfGuests() {
         return numberOfGuests;
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
+    public void setNumberOfGuests(NumberOfGuest numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
     }
 
@@ -98,5 +117,13 @@ public class OrderTable {
                 .allMatch(Order::isFinished);
 
         return isAllFinished;
+    }
+
+    public void changeNumberOfGuest(NumberOfGuest numberOfGuest) {
+        if (empty) {
+            throw new IllegalStateException();
+        }
+
+        this.numberOfGuests = numberOfGuest;
     }
 }

@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
+import kitchenpos.domain.NumberOfGuest;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,8 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -170,18 +170,6 @@ class TableServiceTest {
     }
 
     @Test
-    @DisplayName("changeNumberOfGuests - 방문한 손님 수가 0보다 적으면 IllegalArgumentException이 발생한다")
-    void 방문한_손님_수가_0보다_작으면_IllegalArgumentException이_발생한다() {
-        // given
-        Long orderTableId = 1L;
-        OrderTable orderTable = new OrderTable(orderTableId, 1L, -1, true);
-
-        // when & then
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, orderTable));
-    }
-
-    @Test
     @DisplayName("changeNumberOfGuests - DB에서 변경을 원하는 주문 테이블을 가져오고, 주문 테이블이 없을경우 IllegalArgumentException이 발생한다.")
     void DB에서_변경을_원하는_주문_테이블을_가져오고_주문_테이블이_없을경우_IllegalArgumentException이_발생한다() {
         // given
@@ -208,7 +196,7 @@ class TableServiceTest {
         given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(orderTable));
 
         // when & then
-        assertThatIllegalArgumentException()
+        assertThatIllegalStateException()
                 .isThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, orderTable));
         verify(orderTableDao, VerificationModeFactory.times(1))
                 .findById(orderTableId);
@@ -219,23 +207,17 @@ class TableServiceTest {
     void 정상적인_방문한_손님_변경() {
         // given
         Long orderTableId = 1L;
+        NumberOfGuest toBe = new NumberOfGuest(2);
         OrderTable orderTable = new OrderTable(orderTableId, 1L, 1, false);
         given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(orderTable));
 
         // when
-        when(orderTableDao.save(orderTable)).thenReturn(orderTable);
-        OrderTable changedOrderTable = tableService.changeNumberOfGuests(orderTableId, orderTable);
+        OrderTable changedOrderTable = tableService.changeNumberOfGuests(orderTableId, toBe);
 
         // when & then
         assertThat(changedOrderTable.getId()).isEqualTo(orderTable.getId());
         assertThat(changedOrderTable.getTableGroupId()).isEqualTo(orderTable.getTableGroupId());
-        assertThat(changedOrderTable.getNumberOfGuests()).isEqualTo(orderTable.getNumberOfGuests());
+        assertThat(changedOrderTable.getNumberOfGuests()).isEqualTo(toBe);
         assertThat(changedOrderTable.isEmpty()).isEqualTo(orderTable.isEmpty());
-
-        verify(orderTableDao, VerificationModeFactory.times(1))
-                .findById(orderTableId);
-        verify(orderTableDao, VerificationModeFactory.times(1))
-                .save(orderTable);
-
     }
 }

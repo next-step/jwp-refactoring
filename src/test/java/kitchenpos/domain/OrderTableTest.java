@@ -48,4 +48,22 @@ class OrderTableTest {
 
         assertThatIllegalStateException().isThrownBy(() -> orderTable.ungroup());
     }
+
+    @Test
+    @DisplayName("빈 테이블일 경우 인원수를 바꾸려 하면 IllegalStateException이 발생한다")
+    void 빈_테이블을_경우_인원수를_바꾸려_하면_IllegalStateException이_발생한다() {
+        OrderTable orderTable = new OrderTable(null, null, 0, true);
+
+        assertThatIllegalStateException().isThrownBy(() -> orderTable.changeNumberOfGuest(new NumberOfGuest(1)));
+    }
+
+
+    @Test
+    @DisplayName("빈 테이블이 아닐경우 인원수를 바꾸려 하면 성공한다")
+    void 빈_테이블이_아닐경우_인원수를_바꾸려_하면_성공한다() {
+        OrderTable orderTable = new OrderTable(null, null, 0, false);
+
+        assertDoesNotThrow(() -> orderTable.changeNumberOfGuest(new NumberOfGuest(1)));
+    }
+
 }
