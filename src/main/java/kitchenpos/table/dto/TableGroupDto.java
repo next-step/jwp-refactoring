@@ -28,6 +28,7 @@ public class TableGroupDto {
         return new TableGroupDto(tableGroup.getId(),
                                  tableGroup.getCreatedDate(),
                                  tableGroup.getOrderTables()
+                                           .getData()
                                            .stream()
                                            .map(OrderTableDto::of)
                                            .collect(toList()));

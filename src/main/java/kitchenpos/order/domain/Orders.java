@@ -2,6 +2,7 @@ package kitchenpos.order.domain;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -23,11 +24,11 @@ public class Orders {
         data.add(order);
     }
 
-    public boolean hasNotCompletedOrder() {
+    public boolean isAllOrderCompleted() {
         return data.stream().allMatch(Order::isCompletedOrder);
     }
 
     public List<Order> getData() {
-        return data;
+        return Collections.unmodifiableList(data);
     }
 }

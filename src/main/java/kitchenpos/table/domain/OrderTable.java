@@ -37,19 +37,19 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
-        this.id = id;
-        this.tableGroup = tableGroup;
-        this.numberOfGuests = numberOfGuests;
-        this.empty = empty;
-    }
-
     public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
         this(null, tableGroup, numberOfGuests, empty);
     }
 
     public OrderTable(int numberOfGuests, boolean empty) {
         this(null, null, numberOfGuests, empty);
+    }
+
+    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+        this.id = id;
+        this.tableGroup = tableGroup;
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
     }
 
     void group(TableGroup tableGroup) {
@@ -66,7 +66,7 @@ public class OrderTable {
             throw new IllegalArgumentException();
         }
 
-        if (hasNotCompletedOrder()) {
+        if (isAllOrderCompleted()) {
             throw new IllegalArgumentException();
         }
 
@@ -99,8 +99,8 @@ public class OrderTable {
         order.group(this);
     }
 
-    private boolean hasNotCompletedOrder() {
-        return orders.hasNotCompletedOrder();
+    public boolean isAllOrderCompleted() {
+        return orders.isAllOrderCompleted();
     }
 
     public Long getId() {

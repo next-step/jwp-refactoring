@@ -1,18 +1,13 @@
 package kitchenpos.table.domain;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -27,32 +22,35 @@ public class TableGroup {
     @CreatedDate
     private LocalDateTime createdDate;
 
-    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final Set<OrderTable> orderTables;
+    @Embedded
+    private final OrderTables orderTables = new OrderTables();
 
-    public TableGroup() {
-        orderTables = new HashSet<>();
-    }
+    public TableGroup() { }
 
     public TableGroup(Collection<OrderTable> orderTables) {
-        this.orderTables = new HashSet<>(orderTables);
+        orderTables.forEach(this::addOrderTable);
+        verifyOrderTablesSize();
     }
 
-    public TableGroup(Long id, LocalDateTime createdDate, Collection<OrderTable> orderTables) {
-        this.id = id;
-        this.createdDate = createdDate;
-        this.orderTables = new HashSet<>(orderTables);
-        orderTables.forEach(orderTable -> orderTable.group(this));
+    private void verifyOrderTablesSize() {
+        if (orderTables.size() < 2) {
+            throw new IllegalArgumentException();
+        }
     }
 
-    public void add(OrderTable orderTable) {
-        this.orderTables.add(orderTable);
+    public void addOrderTable(OrderTable orderTable) {
+
+         if (!orderTable.isEmpty() || orderTable.getTableGroup() != null) {
+            throw new IllegalArgumentException();
+        }
+
+        orderTable.notEmpty();
         orderTable.group(this);
+        orderTables.add(orderTable);
     }
 
     public void ungroup() {
-        orderTables.forEach(OrderTable::ungroup);
-        orderTables.clear();
+        orderTables.ungroup();
     }
 
     public Long getId() {
@@ -63,7 +61,7 @@ public class TableGroup {
         return createdDate;
     }
 
-    public List<OrderTable> getOrderTables() {
-        return new ArrayList<>(orderTables);
+    public OrderTables getOrderTables() {
+        return orderTables;
     }
 }

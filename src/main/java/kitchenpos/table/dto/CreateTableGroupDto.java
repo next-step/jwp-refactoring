@@ -4,15 +4,15 @@ import java.util.List;
 
 public class CreateTableGroupDto {
 
-    private List<OrderTableDto> orderTables;
+    private List<OrderTableIdDto> orderTables;
 
     public CreateTableGroupDto() { }
 
-    public CreateTableGroupDto(List<OrderTableDto> orderTables) {
+    public CreateTableGroupDto(List<OrderTableIdDto> orderTables) {
         this.orderTables = orderTables;
     }
 
-    public List<OrderTableDto> getOrderTables() {
+    public List<OrderTableIdDto> getOrderTables() {
         return orderTables;
     }
 }

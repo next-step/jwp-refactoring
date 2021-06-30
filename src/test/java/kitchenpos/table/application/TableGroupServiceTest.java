@@ -1,18 +1,14 @@
 package kitchenpos.table.application;
 
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.Order;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
 import kitchenpos.table.dto.CreateTableGroupDto;
-import kitchenpos.table.dto.OrderTableDto;
-import kitchenpos.table.dto.TableGroupDto;
+import kitchenpos.table.dto.OrderTableIdDto;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,26 +17,20 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
 
     @Mock
-    private OrderRepository orderRepository;
-
-    @Mock
     private OrderTableRepository orderTableRepository;
 
     @Mock
     private TableGroupRepository tableGroupRepository;
-
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -59,7 +49,7 @@ class TableGroupServiceTest {
     @Test
     void createFail02() {
         // given
-        CreateTableGroupDto tableGroupDto = new CreateTableGroupDto(Collections.singletonList(new OrderTableDto()));
+        CreateTableGroupDto tableGroupDto = new CreateTableGroupDto(Collections.singletonList(new OrderTableIdDto()));
 
         // when
         assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroupDto));
@@ -69,7 +59,7 @@ class TableGroupServiceTest {
     @Test
     void createFail03() {
         // given
-        CreateTableGroupDto tableGroupDto = new CreateTableGroupDto(Lists.newArrayList(dto(1L, true), dto(1L, true)));
+        CreateTableGroupDto tableGroupDto = new CreateTableGroupDto(Lists.newArrayList(dto(1L), dto(1L)));
         given(orderTableRepository.findAllByIdIn(any())).willReturn(Collections.singletonList(entity(1L, true)));
 
         // when
@@ -80,7 +70,7 @@ class TableGroupServiceTest {
     @Test
     void createFail04() {
         // given
-        CreateTableGroupDto tableGroupDto = new CreateTableGroupDto(Lists.newArrayList(dto(1L, true), dto(2L, false)));
+        CreateTableGroupDto tableGroupDto = new CreateTableGroupDto(Lists.newArrayList(dto(1L), dto(2L)));
         given(orderTableRepository.findAllByIdIn(any()))
             .willReturn(Lists.newArrayList(entity(1L, true), entity(2L, false)));
 
@@ -92,7 +82,7 @@ class TableGroupServiceTest {
     @Test
     void createSuccess() {
         // given
-        CreateTableGroupDto tableGroupDto = new CreateTableGroupDto(Lists.newArrayList(dto(1L, true), dto(2L, true)));
+        CreateTableGroupDto tableGroupDto = new CreateTableGroupDto(Lists.newArrayList(dto(1L), dto(2L)));
         given(orderTableRepository.findAllByIdIn(any())).willReturn(
             Lists.newArrayList(entity(1L, true), entity(2L, true)));
 
@@ -105,7 +95,6 @@ class TableGroupServiceTest {
 
         // then
         verify(tableGroupRepository).save(any());
-        verify(orderTableRepository, times(tableGroupDto.getOrderTables().size())).save(any());
     }
 
     @DisplayName("ungroup 실패 - COOKING, MEAL 상태인 order 존재")
@@ -114,12 +103,17 @@ class TableGroupServiceTest {
         // given
         Long targetId = 1L;
 
-        TableGroup tableGroup = new TableGroup(Lists.newArrayList(entity(1L, true)));
-        given(tableGroupRepository.findById(1L)).willReturn(Optional.of(tableGroup));
+        OrderTable orderTable1 = entity(1L, false);
+        orderTable1.addOrder(new Order()); // add COOKING order
+        orderTable1.empty();
 
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(Collections.singletonList(1L),
-                                                                     Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)))
-            .willReturn(true);
+        OrderTable orderTable2 = entity(2L, false);
+        orderTable2.addOrder(new Order()); // add COOKING order
+        orderTable2.empty();
+
+        TableGroup tableGroup = new TableGroup(Lists.newArrayList(orderTable1, orderTable2));
+
+        given(tableGroupRepository.findById(1L)).willReturn(Optional.of(tableGroup));
 
         // when
         assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.ungroup(targetId));
@@ -134,28 +128,18 @@ class TableGroupServiceTest {
         TableGroup tableGroup = new TableGroup(Lists.newArrayList(entity(1L, true), entity(2L, true)));
         given(tableGroupRepository.findById(1L)).willReturn(Optional.of(tableGroup));
 
-        List<Long> orderTableIds = tableGroup.getOrderTables().stream()
-                                             .map(OrderTable::getId)
-                                             .collect(toList());
-
-        List<OrderTable> savedOrderTables = tableGroup.getOrderTables();
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds,
-                                                                     Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)))
-            .willReturn(false);
-
         // when
         tableGroupService.ungroup(targetId);
 
         // then
-        assertThat(savedOrderTables).hasSize(2)
-                                    .allMatch(orderTable -> orderTable.getTableGroup() == null);
+        assertThat(tableGroup.getOrderTables().getData()).isEmpty();
     }
 
     private OrderTable entity(Long id, boolean empty) {
         return new OrderTable(id, null, 0, empty);
     }
 
-    private OrderTableDto dto(Long id, boolean empty) {
-        return new OrderTableDto(id, null, 0, empty);
+    private OrderTableIdDto dto(Long id) {
+        return new OrderTableIdDto(id);
     }
 }
