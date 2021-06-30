@@ -1,5 +1,7 @@
 package kitchenpos.domain;
 
+import kitchenpos.exception.InvalidChangeNumberOfGuestsException;
+
 import javax.persistence.Embeddable;
 import java.util.Objects;
 
@@ -18,7 +20,7 @@ public class NumberOfGuest {
 
     private void validate(int numberOfGuests) {
         if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
+            throw new InvalidChangeNumberOfGuestsException();
         }
     }
 

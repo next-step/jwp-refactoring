@@ -1,7 +1,10 @@
 package kitchenpos.ui;
 
 import kitchenpos.application.TableService;
+import kitchenpos.domain.NumberOfGuest;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.request.ChangeNumberOfGuestsRequest;
+import kitchenpos.dto.response.OrderTableViewResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,12 +46,19 @@ public class TableRestController {
     }
 
     @PutMapping("/api/tables/{orderTableId}/number-of-guests")
-    public ResponseEntity<OrderTable> changeNumberOfGuests(
+    public ResponseEntity<OrderTableViewResponse> changeNumberOfGuests(
             @PathVariable final Long orderTableId,
-            @RequestBody final OrderTable orderTable
+            @RequestBody final ChangeNumberOfGuestsRequest changeNumberOfGuestsRequest
     ) {
+        NumberOfGuest numberOfGuest = new NumberOfGuest(changeNumberOfGuestsRequest.getNumberOfGuests());
+
         return ResponseEntity.ok()
-                .body(tableService.changeNumberOfGuests(orderTableId, orderTable))
-                ;
+                .body(
+                        OrderTableViewResponse.of(
+                                tableService.changeNumberOfGuests(
+                                        orderTableId,
+                                        numberOfGuest
+                                ))
+                );
     }
 }
