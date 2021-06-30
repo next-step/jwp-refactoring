@@ -1,19 +1,48 @@
 package kitchenpos.domain;
 
+import javax.persistence.*;
+
+@Entity
 public class OrderLineItem {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
-    private Long orderId;
-    private Long menuId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Order order;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Menu menu;
+
+    @Transient
+    private Long oldOrderId;
+    @Transient
+    private Long oldMenuId;
     private long quantity;
 
     public OrderLineItem() {
     }
 
-    public OrderLineItem(Long seq, Long orderId, Long menuId, long quantity) {
+    public OrderLineItem(Long seq, Long oldOrderId, Long oldMenuId, long quantity) {
         this.seq = seq;
-        this.orderId = orderId;
-        this.menuId = menuId;
+        this.oldOrderId = oldOrderId;
+        this.oldMenuId = oldMenuId;
         this.quantity = quantity;
+    }
+
+    public OrderLineItem(Long seq, Order order, Menu menu, long quantity) {
+        this.seq = seq;
+        this.order = order;
+        this.menu = menu;
+        this.quantity = quantity;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public Menu getMenu() {
+        return menu;
     }
 
     public Long getSeq() {
@@ -24,20 +53,20 @@ public class OrderLineItem {
         this.seq = seq;
     }
 
-    public Long getOrderId() {
-        return orderId;
+    public Long getOldOrderId() {
+        return oldOrderId;
     }
 
-    public void setOrderId(final Long orderId) {
-        this.orderId = orderId;
+    public void setOldOrderId(final Long oldOrderId) {
+        this.oldOrderId = oldOrderId;
     }
 
-    public Long getMenuId() {
-        return menuId;
+    public Long getOldMenuId() {
+        return oldMenuId;
     }
 
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
+    public void setOldMenuId(final Long oldMenuId) {
+        this.oldMenuId = oldMenuId;
     }
 
     public long getQuantity() {
@@ -47,4 +76,6 @@ public class OrderLineItem {
     public void setQuantity(final long quantity) {
         this.quantity = quantity;
     }
+
+
 }

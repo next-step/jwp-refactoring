@@ -76,7 +76,7 @@ class OrderServiceTest {
     @DisplayName("create - 등록을 원하는 주문항목이 DB에 전부 존재하는지 확인하여 전부 존재하지 않으면 IllegalArgumentException이 발생한다.")
     void 등록을_원하는_주문항목이_DB에_전부_존재하는지_확인하여_전부_존재하지_않으면_IllegalArgumentException이_발생한다() {
         // given
-        List<Long> menuIds = Arrays.asList(orderLineItem1.getMenuId(), orderLineItem2.getMenuId());
+        List<Long> menuIds = Arrays.asList(orderLineItem1.getOldMenuId(), orderLineItem2.getOldMenuId());
 
         Order order = new Order(1L, 1L, OrderStatus.MEAL.name(), LocalDateTime.now(), orderLineItems);
 
@@ -95,7 +95,7 @@ class OrderServiceTest {
         // given
         Long orderTableId = 1L;
 
-        List<Long> menuIds = Arrays.asList(orderLineItem1.getMenuId(), orderLineItem2.getMenuId());
+        List<Long> menuIds = Arrays.asList(orderLineItem1.getOldMenuId(), orderLineItem2.getOldMenuId());
 
         Order order = new Order(1L, orderTableId, OrderStatus.MEAL.name(), LocalDateTime.now(), orderLineItems);
 
@@ -120,7 +120,7 @@ class OrderServiceTest {
 
         OrderTable orderTable = new OrderTable(orderTableId, 1L, 1, true);
 
-        List<Long> menuIds = Arrays.asList(orderLineItem1.getMenuId(), orderLineItem2.getMenuId());
+        List<Long> menuIds = Arrays.asList(orderLineItem1.getOldMenuId(), orderLineItem2.getOldMenuId());
 
         Order order = new Order(1L, orderTableId, OrderStatus.MEAL.name(), LocalDateTime.now(), orderLineItems);
 
@@ -147,7 +147,7 @@ class OrderServiceTest {
 
         OrderTable orderTable = new OrderTable(orderTableId, 1L, 1, false);
 
-        List<Long> menuIds = Arrays.asList(orderLineItem1.getMenuId(), orderLineItem2.getMenuId());
+        List<Long> menuIds = Arrays.asList(orderLineItem1.getOldMenuId(), orderLineItem2.getOldMenuId());
 
         Order order = new Order(orderId, orderTableId, OrderStatus.MEAL.name(), LocalDateTime.now(), orderLineItems);
 
@@ -165,11 +165,11 @@ class OrderServiceTest {
         // then
 
         assertThat(savedOrder.getOrderTableId()).isEqualTo(orderTableId);
-        assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(savedOrder.getOldOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
         assertThat(savedOrder.getOrderedTime()).isNotNull();
 
         assertThat(savedOrder.getOrderLineItems())
-                .map(item -> item.getOrderId())
+                .map(item -> item.getOldOrderId())
                 .containsOnly(orderId);
         assertThat(savedOrder.getOrderLineItems())
                 .containsExactly(orderLineItem1, orderLineItem2);
@@ -262,7 +262,7 @@ class OrderServiceTest {
         Order savedOrder = orderService.changeOrderStatus(orderId, order);
 
         // then
-        assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(savedOrder.getOldOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
         assertThat(savedOrder.getOrderLineItems()).containsExactlyElementsOf(orderLineItems);
 
         verify(orderDao, VerificationModeFactory.times(1)).findById(orderId);

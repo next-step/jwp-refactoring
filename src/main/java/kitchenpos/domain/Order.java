@@ -16,7 +16,11 @@ public class Order {
     @ManyToOne(fetch = FetchType.LAZY)
     private OrderTable orderTable;
 
-    private String orderStatus;
+    @Enumerated(value = EnumType.STRING)
+    private OrderStatus orderStatus;
+
+    @Transient
+    private String oldOrderStatus;
     private LocalDateTime orderedTime;
 
     @Transient
@@ -28,12 +32,21 @@ public class Order {
     public Order(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
         this.id = id;
         this.orderTableId = orderTableId;
-        this.orderStatus = orderStatus;
+        this.oldOrderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
     }
 
     public Order(Long id, Long orderTableId, OrderTable orderTable, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+        this.id = id;
+        this.orderTableId = orderTableId;
+        this.orderTable = orderTable;
+        this.oldOrderStatus = orderStatus;
+        this.orderedTime = orderedTime;
+        this.orderLineItems = orderLineItems;
+    }
+
+    public Order(Long id, Long orderTableId, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
         this.id = id;
         this.orderTableId = orderTableId;
         this.orderTable = orderTable;
@@ -58,12 +71,12 @@ public class Order {
         this.orderTableId = orderTableId;
     }
 
-    public String getOrderStatus() {
-        return orderStatus;
+    public String getOldOrderStatus() {
+        return oldOrderStatus;
     }
 
-    public void setOrderStatus(final String orderStatus) {
-        this.orderStatus = orderStatus;
+    public void setOldOrderStatus(final String oldOrderStatus) {
+        this.oldOrderStatus = oldOrderStatus;
     }
 
     public LocalDateTime getOrderedTime() {
@@ -83,6 +96,22 @@ public class Order {
     }
 
     public boolean isFinished() {
-        return this.orderStatus == OrderStatus.COMPLETION.name();
+        return this.oldOrderStatus == OrderStatus.COMPLETION.name();
+    }
+
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+
+    public OrderTable getOrderTable() {
+        return orderTable;
+    }
+
+    public void changeOrderStatus(OrderStatus orderStatus) {
+        if (this.orderStatus == OrderStatus.COMPLETION) {
+            throw new IllegalArgumentException();
+        }
+
+        this.orderStatus = orderStatus;
     }
 }
