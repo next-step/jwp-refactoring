@@ -10,33 +10,35 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.junit.jupiter.api.Assertions.*;
 
 class OrderTablesTest {
+    private final OrderTables hasTableGroupIdOrderTables = new OrderTables(
+            Arrays.asList(
+                    new OrderTable(1L, 1L, 1, true),
+                    new OrderTable(1L, null, 1, true)
+            )
+    );
+
+    private final OrderTables notEmptyOrderTables = new OrderTables(
+            Arrays.asList(
+                    new OrderTable(1L, null, 1, false),
+                    new OrderTable(1L, null, 1, true)
+            )
+    );
+
+
     @Test
     @DisplayName("하나라도 Empty가 true이면 예약이 되어있다")
     void 하나라도_Empty가_True_이면_예약이_되어있다() {
-        OrderTables orderTables = new OrderTables(
-                Arrays.asList(
-                        new OrderTable(1L, null, 1, false),
-                        new OrderTable(1L, null, 1, true)
-                )
-        );
-
-        assertThat(orderTables.isBookedAny()).isTrue();
+        assertThat(notEmptyOrderTables.isBookedAny()).isTrue();
     }
 
     @Test
     @DisplayName("하나라도 TableGroup이 지정되있으면 예약이 되어있다")
     void 하나라도_TableGroup이_지정되어있으면_예약이_되어있다() {
-        OrderTables orderTables = new OrderTables(
-                Arrays.asList(
-                        new OrderTable(1L, 1L, 1, true),
-                        new OrderTable(1L, null, 1, true)
-                )
-        );
-
-        assertThat(orderTables.isBookedAny()).isTrue();
+        assertThat(hasTableGroupIdOrderTables.isBookedAny()).isTrue();
     }
 
     @Test
@@ -62,5 +64,12 @@ class OrderTablesTest {
         }
 
         assertThat(new OrderTables(orderTableList).size()).isEqualTo(len);
+    }
+
+    @Test
+    @DisplayName("예약이 되어있는 상태에서 예약시 IllegalStateException이 발생한다")
+    void 예약이_되어있는_상태에서_예약시_IllegalStateException이_발생한다() {
+        assertThatIllegalStateException().isThrownBy(() -> hasTableGroupIdOrderTables.bookedBy(null));
+        assertThatIllegalStateException().isThrownBy(() -> notEmptyOrderTables.bookedBy(null));
     }
 }
