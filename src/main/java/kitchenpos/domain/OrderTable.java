@@ -1,6 +1,7 @@
 package kitchenpos.domain;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class OrderTable {
@@ -10,6 +11,9 @@ public class OrderTable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private TableGroup tableGroup;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<Order> orders;
 
     @Column(name = "old_table_group_id")
     private Long tableGroupId;
@@ -29,6 +33,15 @@ public class OrderTable {
     public OrderTable(Long id, TableGroup tableGroup, Long tableGroupId, int numberOfGuests, boolean empty) {
         this.id = id;
         this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
+
+    public OrderTable(Long id, TableGroup tableGroup, List<Order> orders, Long tableGroupId, int numberOfGuests, boolean empty) {
+        this.id = id;
+        this.tableGroup = tableGroup;
+        this.orders = orders;
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
@@ -72,5 +85,12 @@ public class OrderTable {
 
     public void setEmpty(final boolean empty) {
         this.empty = empty;
+    }
+
+    public boolean isUnGroupable() {
+        boolean isAllFinished = orders.stream()
+                .allMatch(Order::isFinished);
+
+        return isAllFinished;
     }
 }
