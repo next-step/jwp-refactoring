@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -47,14 +48,14 @@ class TableServiceTest {
         OrderTable orderTable = new OrderTable(1L, 1L, 1, true);
 
         // when
-        when(orderTableDao.save(orderTable)).thenReturn(orderTable);
+        when(orderTableDao.save(any())).thenAnswer(i -> i.getArgument(0));
 
         OrderTable savedOrderTable = tableService.create(orderTable);
 
         // then
         assertThat(savedOrderTable.getTableGroupId()).isNull();
 
-        verify(orderTableDao, VerificationModeFactory.times(1)).save(orderTable);
+        verify(orderTableDao, VerificationModeFactory.times(1)).save(savedOrderTable);
 
     }
 

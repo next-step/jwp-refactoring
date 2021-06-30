@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -36,17 +37,15 @@ class MenuGroupServiceTest {
         MenuGroup menuGroup = new MenuGroup(1L, "Hello");
 
         // when
-        when(menuGroupDao.save(menuGroup))
-                .thenReturn(menuGroup);
+        when(menuGroupDao.save(any())).thenAnswer(i -> i.getArgument(0));
 
         MenuGroup result = menuGroupService.create(menuGroup);
 
         // then
-        assertThat(result.getId()).isEqualTo(menuGroup.getId());
         assertThat(result.getName()).isEqualTo(menuGroup.getName());
 
         verify(menuGroupDao, VerificationModeFactory.times(1))
-                .save(menuGroup);
+                .save(result);
     }
 
     @Test
