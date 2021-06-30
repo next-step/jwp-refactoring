@@ -43,7 +43,7 @@ public class TableService {
 
         if (orderDao.existsByOrderTableIdAndOrderStatusIn(
                 orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("no exist order");
         }
 
         savedOrderTable.setEmpty(orderTable.isEmpty());
@@ -56,14 +56,14 @@ public class TableService {
         final int numberOfGuests = orderTable.getNumberOfGuests();
 
         if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("numberOfGuests is under zero");
         }
 
         final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
         if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("emptyTable");
         }
 
         savedOrderTable.setNumberOfGuests(numberOfGuests);

@@ -42,7 +42,7 @@ public class OrderService {
         final List<OrderLineItem> orderLineItems = order.getOrderLineItems();
 
         if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("should have orderLineItems");
         }
 
         final List<Long> menuIds = orderLineItems.stream()
@@ -50,14 +50,14 @@ public class OrderService {
                 .collect(Collectors.toList());
 
         if (orderLineItems.size() != menuDao.countByIdIn(menuIds)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Not Same as orderLineItems");
         }
 
         final OrderTable orderTable = orderTableDao.findById(order.getOrderTableId())
                 .orElseThrow(IllegalArgumentException::new);
 
         if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Should have not orderTable empty");
         }
 
         order.setOrderTableId(orderTable.getId());
@@ -93,7 +93,7 @@ public class OrderService {
                 .orElseThrow(IllegalArgumentException::new);
 
         if (Objects.equals(OrderStatus.COMPLETION.name(), savedOrder.getOrderStatus())) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Invalid OrderStatus > " + savedOrder.getOrderStatus());
         }
 
         final OrderStatus orderStatus = OrderStatus.valueOf(order.getOrderStatus());
