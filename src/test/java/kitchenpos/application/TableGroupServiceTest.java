@@ -82,20 +82,20 @@ class TableGroupServiceTest {
         TableGroup tableGroup = new TableGroup(tableGroupId, LocalDateTime.now(), orderTables);
 
         // when
-        when(orderTableDao.findAllByIdIn(orderTableIds)).thenReturn(Arrays.asList(orderTable1));
+        when(orderTableDao.findAllById(orderTableIds)).thenReturn(Arrays.asList(orderTable1));
 
         // then
         assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroup));
 
         verify(orderTableDao, VerificationModeFactory.times(1))
-                .findAllByIdIn(orderTableIds);
+                .findAllById(orderTableIds);
     }
 
     @Test
     @DisplayName("create - 등록된 주문 테이블이 빈테이블이 아닐경우 IllegalArgumentException이 발생한다.")
     void 등록된_주문_테이블이_빈테이블이_아닐경우_IllegalArgumentException이_발생한다() {
         // given
-        given(orderTableDao.findAllByIdIn(orderTableIds)).willReturn(orderTables);
+        given(orderTableDao.findAllById(orderTableIds)).willReturn(orderTables);
 
         TableGroup tableGroup = new TableGroup(tableGroupId, LocalDateTime.now(), orderTables);
 
@@ -103,14 +103,14 @@ class TableGroupServiceTest {
         assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroup));
 
         verify(orderTableDao, VerificationModeFactory.times(1))
-                .findAllByIdIn(orderTableIds);
+                .findAllById(orderTableIds);
     }
 
     @Test
     @DisplayName("create - 이미 단체 지정이 되어있을 경우 IllegalArgumentException이 발생한다.")
     void 이미_단체_지정이_되어있을_경우_IllegalArgumentException이_발생한다() {
         // given
-        given(orderTableDao.findAllByIdIn(orderTableIds))
+        given(orderTableDao.findAllById(orderTableIds))
                 .willReturn(orderTables);
 
         TableGroup tableGroup = new TableGroup(tableGroupId, LocalDateTime.now(), orderTables);
@@ -119,7 +119,7 @@ class TableGroupServiceTest {
         assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroup));
 
         verify(orderTableDao, VerificationModeFactory.times(1))
-                .findAllByIdIn(orderTableIds);
+                .findAllById(orderTableIds);
 
     }
 
@@ -133,7 +133,7 @@ class TableGroupServiceTest {
 
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
 
-        given(orderTableDao.findAllByIdIn(orderTableIds)).willReturn(orderTables);
+        given(orderTableDao.findAllById(orderTableIds)).willReturn(orderTables);
 
         TableGroup tableGroup = new TableGroup(tableGroupId, LocalDateTime.now(), orderTables);
 
@@ -152,7 +152,7 @@ class TableGroupServiceTest {
                 .containsOnly(tableGroupId);
 
         verify(orderTableDao, VerificationModeFactory.times(1))
-                .findAllByIdIn(orderTableIds);
+                .findAllById(orderTableIds);
 
         verify(orderTableDao, VerificationModeFactory.times(1))
                 .save(orderTable1);
