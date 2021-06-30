@@ -1,13 +1,24 @@
 package kitchenpos.domain;
 
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Entity
 public class Order {
     private Long id;
     private Long orderTableId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private OrderTable orderTable;
+
     private String orderStatus;
     private LocalDateTime orderedTime;
+
+    @Transient
     private List<OrderLineItem> orderLineItems;
 
     public Order() {
@@ -16,6 +27,15 @@ public class Order {
     public Order(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
         this.id = id;
         this.orderTableId = orderTableId;
+        this.orderStatus = orderStatus;
+        this.orderedTime = orderedTime;
+        this.orderLineItems = orderLineItems;
+    }
+
+    public Order(Long id, Long orderTableId, OrderTable orderTable, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+        this.id = id;
+        this.orderTableId = orderTableId;
+        this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
@@ -59,5 +79,9 @@ public class Order {
 
     public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
         this.orderLineItems = orderLineItems;
+    }
+
+    public boolean isFinished() {
+        return this.orderStatus == OrderStatus.COMPLETION.name();
     }
 }
