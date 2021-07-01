@@ -17,7 +17,7 @@ public class TableGroup {
 
     private OrderTables orderTables;
 
-    public TableGroup() {
+    protected TableGroup() {
     }
 
     public TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {

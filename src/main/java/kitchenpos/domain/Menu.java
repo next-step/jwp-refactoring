@@ -26,11 +26,10 @@ public class Menu {
         }
 
         return new Menu(create.getName(), create.getPrice(),
-                menuGroup, MenuProducts.create(create.getMenuProducts(),
-                products));
+                menuGroup, MenuProducts.create(create.getMenuProducts(), products));
     }
 
-    public Menu() {
+    protected Menu() {
     }
 
     public Menu(String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {

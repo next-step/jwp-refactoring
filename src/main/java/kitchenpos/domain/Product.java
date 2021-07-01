@@ -15,7 +15,7 @@ public class Product {
     private String name;
     private Price price;
 
-    public Product() {
+    protected Product() {
     }
 
     public Product(String name, Price price) {

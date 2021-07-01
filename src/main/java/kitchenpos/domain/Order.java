@@ -23,7 +23,7 @@ public class Order {
 
     private OrderLineItems orderLineItems;
 
-    public Order() {
+    protected Order() {
     }
 
     public Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {

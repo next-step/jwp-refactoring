@@ -20,9 +20,8 @@ public class OrderTable {
 
     private boolean empty;
 
-    public OrderTable() {
+    protected OrderTable() {
     }
-
 
     public OrderTable(TableGroup tableGroup, Orders orders, NumberOfGuest numberOfGuest, boolean empty) {
         this(null, tableGroup, orders, numberOfGuest, empty);
