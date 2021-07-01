@@ -8,6 +8,7 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.exception.EntityNotExistsException;
 import kitchenpos.exception.TableEmptyException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -90,24 +91,19 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("create - 주문 테이블이 존재하는지 확인하고, 없으면 IllegalArgumentException이 발생한다.")
-    void 주문_테이블이_존재하는지_확인하고_없으면_IllegalArgumentException이_발생한다() {
+    @DisplayName("create - 주문 테이블이 존재하는지 확인하고, 없으면 EntityNotExistsException이 발생한다.")
+    void 주문_테이블이_존재하는지_확인하고_없으면_EntityNotExistsException이_발생한다() {
         // given
         Long orderTableId = 1L;
 
-        List<Long> menuIds = Arrays.asList(orderLineItem1.getOldMenuId(), orderLineItem2.getOldMenuId());
-
         Order order = new Order(1L, orderTableId, OrderStatus.MEAL.name(), LocalDateTime.now(), orderLineItems);
-
-        given(menuDao.countByIdIn(menuIds)).willReturn(Long.valueOf(menuIds.size()));
 
         // when
         when(orderTableDao.findById(orderTableId)).thenReturn(Optional.empty());
 
         // then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(order));
-
-        verify(menuDao, VerificationModeFactory.times(1)).countByIdIn(menuIds);
+        assertThatExceptionOfType(EntityNotExistsException.class)
+                .isThrownBy(() -> orderService.create(order));
 
         verify(orderTableDao, VerificationModeFactory.times(1)).findById(orderTableId);
     }
