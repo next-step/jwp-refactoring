@@ -1,7 +1,9 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.MenuGroupDao;
+import kitchenpos.domain.MenuCreate;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuGroupCreate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,15 +36,15 @@ class MenuGroupServiceTest {
     @DisplayName("create - 정상적인 메뉴 그룹 저장")
     void 정상적인_메뉴_그룹_저장() {
         // given
-        MenuGroup menuGroup = new MenuGroup(1L, "Hello");
+        MenuGroupCreate menuGroupCreate = new MenuGroupCreate("Hello");
 
         // when
         when(menuGroupDao.save(any())).thenAnswer(i -> i.getArgument(0));
 
-        MenuGroup result = menuGroupService.create(menuGroup);
+        MenuGroup result = menuGroupService.create(menuGroupCreate);
 
         // then
-        assertThat(result.getName()).isEqualTo(menuGroup.getName());
+        assertThat(result.getName()).isEqualTo(menuGroupCreate.getName());
 
         verify(menuGroupDao, VerificationModeFactory.times(1))
                 .save(result);

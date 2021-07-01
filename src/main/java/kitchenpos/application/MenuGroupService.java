@@ -18,11 +18,6 @@ public class MenuGroupService {
     }
 
     @Transactional
-    public MenuGroup create(final MenuGroup menuGroup) {
-        return create(new MenuGroupCreate(menuGroup.getName()));
-    }
-
-    @Transactional
     public MenuGroup create(final MenuGroupCreate create) {
         return menuGroupDao.save(new MenuGroup(create.getName()));
     }
