@@ -34,13 +34,9 @@ public class MenuProducts {
     public Price sumAmount() {
         Price amount = menuProducts.stream()
                 .map(item -> item.getAmount())
-                .reduce(new Price(0), (b, a) -> new Price(b.toBigDecimal().add(a.toBigDecimal())));
+                .reduce(new Price(0), (b, a) -> b.plus(a));
 
         return amount;
-    }
-
-    public void addAll(List<MenuProduct> menuProducts) {
-        this.menuProducts.addAll(menuProducts);
     }
 
     public void addAll(List<MenuProduct> menuProducts, Menu menu) {
