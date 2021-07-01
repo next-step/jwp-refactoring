@@ -61,6 +61,13 @@ class OrderTest {
     @DisplayName("정상적인 생성")
     void 정상적인_생성() {
         // given
+
+        Product product = new Product("SIMPLE", new Price(100));
+
+        MenuProduct menuProduct1 = new MenuProduct(null, product, 1);
+        MenuProduct menuProduct2 = new MenuProduct(null, product, 1);
+        MenuProduct menuProduct3 = new MenuProduct(null, product, 1);
+        
         OrderCreate orderCreate = new OrderCreate(
                 null,
                 null,
@@ -71,9 +78,9 @@ class OrderTest {
                 )
         );
         List<Menu> menuList = Arrays.asList(
-                new Menu(1L, "1", new Price(1),  null),
-                new Menu(2L, "2", new Price(2), null),
-                new Menu(3L, "3", new Price(3), null)
+                new Menu(1L, "1", new Price(1),  null, Arrays.asList(menuProduct1)),
+                new Menu(2L, "2", new Price(2), null, Arrays.asList(menuProduct2)),
+                new Menu(3L, "3", new Price(3), null, Arrays.asList(menuProduct3))
         );
         Menus menus = new Menus(menuList);
         OrderTable orderTable = new OrderTable(1L, null, null, null, false);

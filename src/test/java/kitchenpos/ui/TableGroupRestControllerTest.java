@@ -6,7 +6,6 @@ import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.domain.TableGroupCreate;
 import kitchenpos.dto.request.TableGroupCreateRequest;
-import kitchenpos.dto.response.OrderTableViewResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -16,7 +15,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,7 +22,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static kitchenpos.ui.JsonUtil.toJson;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -80,7 +77,7 @@ class TableGroupRestControllerTest {
         return result -> {
             ResultMatcher.matchAll(
                     jsonPath(prefix + ".id").value(tableGroup.getId()),
-                    jsonPath(prefix + ".createdDate").value(tableGroup.getCreatedDate().toString())
+                    jsonPath(prefix + ".createdDate").isNotEmpty()
             ).match(result);
         };
     }

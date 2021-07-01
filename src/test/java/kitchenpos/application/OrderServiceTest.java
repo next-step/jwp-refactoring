@@ -60,8 +60,13 @@ class OrderServiceTest {
 
         this.order = new Order(1L, null, null, null, null);
 
-        this.firstMenu = new Menu(1L, "first", new Price(1), null);
-        this.secondMenu = new Menu(2L, "second", new Price(2), null);
+        Product product = new Product("SIMPLE", new Price(100));
+
+        MenuProduct menuProduct1 = new MenuProduct(null, product, 1);
+        MenuProduct menuProduct2 = new MenuProduct(null, product, 1);
+
+        this.firstMenu = new Menu(1L, "first", new Price(1), null, Arrays.asList(menuProduct1));
+        this.secondMenu = new Menu(2L, "second", new Price(2), null, Arrays.asList(menuProduct2));
         this.menus = Arrays.asList(firstMenu, secondMenu);
 
         orderLineItem1 = new OrderLineItem(1L, order, firstMenu, 1);

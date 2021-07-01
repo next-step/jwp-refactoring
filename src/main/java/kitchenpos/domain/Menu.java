@@ -17,7 +17,7 @@ public class Menu {
     @ManyToOne(fetch = FetchType.LAZY)
     private MenuGroup menuGroup;
 
-    private MenuProducts menuProducts = new MenuProducts();
+    private final MenuProducts menuProducts = new MenuProducts();
 
 
     public static Menu create(MenuCreate create, MenuGroup menuGroup, Products products) {
@@ -25,32 +25,33 @@ public class Menu {
             throw new ProductNotExistException();
         }
 
-        Menu menu = new Menu();
-        menu.name = create.getName();
-        menu.price = create.getPrice();
-        menu.menuGroup = menuGroup;
-
-        create.getMenuProducts()
-                .stream()
-                .map(item -> new MenuProduct(menu, products.findById(item.getProductId()), item.getQuantity()))
-                .forEach(item -> menu.menuProducts.add(item));
-
-        Price amount = menu.menuProducts.sumAmount();
-        if (create.getPrice().getPrice().compareTo(amount.getPrice()) > 0) {
-            throw new MenuCheapException();
-        }
-
-        return menu;
+        return new Menu(create.getName(), create.getPrice(),
+                menuGroup, MenuProducts.create(create.getMenuProducts(),
+                products));
     }
 
     public Menu() {
     }
 
-    public Menu(Long id, String name, Price price, List<MenuProduct> menuProducts) {
+    public Menu(String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        this(null, name, price, menuGroup, menuProducts);
+    }
+
+    public Menu(Long id, String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;
-        this.menuProducts = new MenuProducts(menuProducts);
+        this.menuGroup = menuGroup;
+        this.menuProducts.addAll(menuProducts, this);
+
+        validateAmount();
+    }
+
+    private void validateAmount() {
+        Price amount = this.menuProducts.sumAmount();
+        if (getPrice().getPrice().compareTo(amount.getPrice()) > 0) {
+            throw new MenuCheapException();
+        }
     }
 
     public Long getId() {

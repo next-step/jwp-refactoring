@@ -5,6 +5,7 @@ import kitchenpos.domain.*;
 import kitchenpos.dto.request.OrderCreateRequest;
 import kitchenpos.dto.request.OrderLineItemCreateRequest;
 import kitchenpos.dto.request.OrderStatusChangeRequest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -35,13 +36,28 @@ class OrderRestControllerTest {
     @MockBean
     private OrderService orderService;
 
+    private Product product;
+
+    private MenuProduct menuProduct1;
+    private MenuProduct menuProduct2;
+
+    @BeforeEach
+    void setUp() {
+        this.product = new Product("SIMPLE", new Price(100));
+        this.menuProduct1 = new MenuProduct(null, product, 1);
+        this.menuProduct2 = new MenuProduct(null, product, 1);
+    }
+
+
     @Test
     void create() throws Exception {
         // given
+
+
         OrderCreateRequest orderCreateRequest = new OrderCreateRequest(1L, OrderStatus.MEAL, Arrays.asList(new OrderLineItemCreateRequest(1L, 1L)));
         OrderTable orderTable = new OrderTable(1L, null, null, null, false);
         Order fakeOrder = new Order(1L, orderTable, OrderStatus.MEAL, LocalDateTime.now(), null);
-        Menu fakeMenu = new Menu(1L, "Hello", new Price(1), null);
+        Menu fakeMenu = new Menu(1L, "Hello", new Price(1), null, Arrays.asList(menuProduct1));
         List<OrderLineItem> orderLineItems = Arrays.asList(
                 new OrderLineItem(1L, fakeOrder, fakeMenu, 1),
                 new OrderLineItem(2L, fakeOrder, fakeMenu, 2),
@@ -71,8 +87,8 @@ class OrderRestControllerTest {
         Order fakeOrder = new Order(1L, null, OrderStatus.COMPLETION, null, null);
         Order fakeOrder2 = new Order(2L, null, OrderStatus.MEAL, null, null);
 
-        Menu fakeMenu = new Menu(1L, null, new Price(1), null);
-        Menu fakeMenu2 = new Menu(2L, null, new Price(2), null);
+        Menu fakeMenu = new Menu(1L, null, new Price(1), null, Arrays.asList(menuProduct1));
+        Menu fakeMenu2 = new Menu(2L, null, new Price(2), null, Arrays.asList(menuProduct2));
 
         OrderTable orderTable = new OrderTable(1L, null, null, null, false);
         OrderTable orderTable2 = new OrderTable(2L, null, null, null, false);
@@ -107,7 +123,7 @@ class OrderRestControllerTest {
     void changeOrderStatus() throws Exception {
         // given
         Order fakeOrder = new Order(1L, null, OrderStatus.COMPLETION, null, null);
-        Menu fakeMenu = new Menu(1L, null, new Price(1), null);
+        Menu fakeMenu = new Menu(1L, null, new Price(1), null, Arrays.asList(menuProduct1));
 
         OrderStatusChangeRequest orderStatusChangeRequest = new OrderStatusChangeRequest(OrderStatus.COOKING);
         OrderTable orderTable = new OrderTable(1L, null, null, null, false);

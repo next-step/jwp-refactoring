@@ -42,16 +42,17 @@ class MenuServiceTest {
 
     private Menu simpleMenu;
     private Product simpleProduct;
-    
+
     private MenuProduct simpleMenuProduct;
     
     @BeforeEach
     void setUp() {
         this.menuService = new MenuService(menuDao, menuGroupDao, productDao);
 
-        this.simpleMenu = new Menu(simpleMenuId, "Menu", new Price(1), null);
         this.simpleProduct = new Product(simpleProductId, "Product", new Price(1));
-        this.simpleMenuProduct = new MenuProduct(simpleMenu, simpleProduct, 1L);
+        this.simpleMenuProduct = new MenuProduct(null, simpleProduct, 1L);
+
+        this.simpleMenu = new Menu(simpleMenuId, "Menu", new Price(1), null, Arrays.asList(simpleMenuProduct));
     }
 
     @Test
@@ -212,12 +213,12 @@ class MenuServiceTest {
         Long menuId = 1L;
 
         List<MenuProduct> menuProducts = Arrays.asList(
-                new MenuProduct(simpleMenu, simpleProduct, 1L),
-                new MenuProduct(simpleMenu, simpleProduct, 2L),
-                new MenuProduct(simpleMenu, simpleProduct, 3L)
+                new MenuProduct(null, simpleProduct, 1L),
+                new MenuProduct(null, simpleProduct, 2L),
+                new MenuProduct(null, simpleProduct, 3L)
         );
 
-        Menu menu = new Menu(menuId, "Menu", new Price(1), menuProducts);
+        Menu menu = new Menu(menuId, "Menu", new Price(1),null, menuProducts);
 
         // when
         when(menuDao.findAll()).thenReturn(Arrays.asList(menu));

@@ -44,4 +44,12 @@ public class MenuProduct {
     public Price getAmount() {
         return product.multiplyPrice(quantity);
     }
+
+    void changeMenu(Menu menu) {
+        if (this.menu != null) {
+            throw new IllegalStateException("이미 메뉴가 등록되어 있으면, 불가능합니다.");
+        }
+
+        this.menu = menu;
+    }
 }
