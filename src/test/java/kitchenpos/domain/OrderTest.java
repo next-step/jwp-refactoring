@@ -26,19 +26,4 @@ class OrderTest {
         Order order = new Order(null, null, OrderStatus.COMPLETION.name(), null, null);
         assertThat(order.isFinished()).isTrue();
     }
-
-    @Test
-    @DisplayName("create - OrderCreate의 itemSize와 실제 Item의 Size가 틀리면 IllegalArgumentException이 발생한다")
-    void OrderCreate의_ItemSize와_실제_Item의_Size가_틀리면_IllegalArgumentException이_발생한다() {
-        // given
-        OrderCreate orderCreate = new OrderCreate(null, null, Arrays.asList(1L, 2L, 3L));
-        OrderLineItems orderLineItems = new OrderLineItems(
-                Arrays.asList(
-                        new OrderLineItem(),
-                        new OrderLineItem()
-                )
-        );
-        // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> Order.create(orderCreate, orderLineItems, null));
-    }
 }
