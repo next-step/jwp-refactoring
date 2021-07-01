@@ -4,6 +4,7 @@ import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductCreate;
+import kitchenpos.fixture.ProductFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,12 +13,12 @@ import org.mockito.Mock;
 import org.mockito.internal.verification.VerificationModeFactory;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
+import static kitchenpos.fixture.ProductFixture.양념치킨_1000원;
+import static kitchenpos.fixture.ProductFixture.콜라_100원;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -31,6 +32,8 @@ class ProductServiceTest {
 
     @BeforeEach
     void setUp() {
+        ProductFixture.cleanUp();
+
         this.productService = new ProductService(productDao);
     }
 
@@ -57,10 +60,7 @@ class ProductServiceTest {
     @DisplayName("list - 정상적인 상품 전체 조회")
     void 정상적인_상품_전체_조회() {
         // given
-        List<Product> products = Arrays.asList(
-                new Product(1L, "A", BigDecimal.valueOf(0)),
-                new Product(2L, "B", BigDecimal.valueOf(1))
-        );
+        List<Product> products = Arrays.asList(양념치킨_1000원, 콜라_100원);
 
         // when
         when(productDao.findAll()).thenReturn(products);
