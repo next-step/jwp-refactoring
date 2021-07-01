@@ -4,6 +4,8 @@ import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.*;
+import kitchenpos.fixture.MenuFixture;
+import kitchenpos.fixture.ProductFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +19,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static kitchenpos.fixture.MenuFixture.양념치킨_콜라_1000원_1개;
+import static kitchenpos.fixture.ProductFixture.양념치킨_1000원;
+import static kitchenpos.fixture.ProductFixture.콜라_100원;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
@@ -37,147 +42,93 @@ class MenuServiceTest {
 
     private MenuService menuService;
 
-    private final Long simpleMenuId = 1L;
-    private final Long simpleProductId = 1L;
+    private MenuGroup menuGroup;
 
-    private Menu simpleMenu;
-    private Product simpleProduct;
+    private MenuProductCreate 양념치킨;
+    private MenuProductCreate 콜라;
 
-    private MenuProduct simpleMenuProduct;
-    
+
     @BeforeEach
     void setUp() {
         this.menuService = new MenuService(menuDao, menuGroupDao, productDao);
 
-        this.simpleProduct = new Product(simpleProductId, "Product", new Price(1));
-        this.simpleMenuProduct = new MenuProduct(null, simpleProduct, 1L);
+        MenuFixture.cleanUp();
+        ProductFixture.cleanUp();
 
-        this.simpleMenu = new Menu(simpleMenuId, "Menu", new Price(1), null, Arrays.asList(simpleMenuProduct));
+        menuGroup = new MenuGroup(1L, "Hello");;
+
+        양념치킨 = new MenuProductCreate(양념치킨_콜라_1000원_1개.getId(), 양념치킨_1000원.getId(), 1);
+        콜라 = new MenuProductCreate(양념치킨_콜라_1000원_1개.getId(), 콜라_100원.getId(), 1);
     }
 
     @Test
     @DisplayName("create - 메뉴의 메뉴 그룹이 DB에 없을경우 IllegalArgumetException 이 발생한다.")
     void 메뉴의_메뉴_그룹이_DB에_없을경우_IllegalArgumentException이_발생한다() {
         // given
-        Long menuGroupId = 1L;
-        MenuCreate menuCreate = new MenuCreate(
-                "menu",
-                new Price(0),
-                menuGroupId,
-                Arrays.asList(
-                        new MenuProductCreate(
-                                simpleMenuProduct.getMenu().getId(),
-                                simpleMenuProduct.getProduct().getId(),
-                                simpleMenuProduct.getQuantity()
-                        )
-                )
-        );
+        List<MenuProductCreate> menuProductCreates = Arrays.asList(양념치킨, 콜라);
+
+        MenuCreate menuCreate = new MenuCreate("menu", new Price(0), menuGroup.getId(), menuProductCreates);
 
         // when
-        when(menuGroupDao.findById(menuGroupId)).thenReturn(Optional.empty());
+        when(menuGroupDao.findById(menuGroup.getId())).thenReturn(Optional.empty());
 
         // then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuCreate));
 
-        verify(menuGroupDao, VerificationModeFactory.times(1)).findById(menuGroupId);
+        verify(menuGroupDao, VerificationModeFactory.times(1)).findById(menuGroup.getId());
     }
 
     @Test
     @DisplayName("create - 메뉴 상품의 상품이 DB에 있는지 확인하고, 없으면 IllegalArgumentException 이 발생한다.")
     void 메뉴_상품의_상품이_DB에_있는지_확인하고_없으면_IllegalArgumentException이_발생한다() {
         // given
-        Long menuGroupId = 1L;
+        MenuCreate menuCreate = new MenuCreate("menu", new Price(0),
+                menuGroup.getId(), Arrays.asList(양념치킨));
 
-        MenuGroup menuGroup = new MenuGroup(menuGroupId, "MenuGroup");
-
-        MenuCreate menuCreate = new MenuCreate(
-                "menu",
-                new Price(0),
-                menuGroupId,
-                Arrays.asList(
-                        new MenuProductCreate(
-                                simpleMenuProduct.getMenu().getId(),
-                                simpleMenuProduct.getProduct().getId(),
-                                simpleMenuProduct.getQuantity()
-                        )
-                )
-        );
-
-        given(menuGroupDao.findById(menuGroupId))
-                .willReturn(Optional.of(menuGroup));
+        given(menuGroupDao.findById(menuGroup.getId())).willReturn(Optional.of(menuGroup));
 
         // when
-        when(productDao.findAllById(Arrays.asList(1L))).thenReturn(Arrays.asList());
+        when(productDao.findAllById(Arrays.asList(양념치킨.getProductId()))).thenReturn(Arrays.asList());
 
         // then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuCreate));
 
         verify(menuGroupDao, VerificationModeFactory.times(1))
-                .findById(menuGroupId);
+                .findById(menuGroup.getId());
         verify(productDao, VerificationModeFactory.times(1))
-                .findAllById(Arrays.asList(1L));
+                .findAllById(Arrays.asList(양념치킨_1000원.getId()));
     }
 
     @Test
     @DisplayName("create - 메뉴의 가격이 메뉴 상품의 금액 합계보다 크면 IllegalArgumentException 이 발생한다.")
     void 메뉴의_가격이_메뉴_상품의_금액_합계보다_크면_IllegalArgumentException이_발생한다() {
         // given
-        Long menuGroupId = 1L;
-
-        MenuGroup menuGroup = new MenuGroup(menuGroupId, "Hello");
-
-        Product product = new Product(simpleProductId, "PRODUCT", BigDecimal.valueOf(100));
-
-        MenuCreate menuCreate = new MenuCreate(
-                "menu",
-                new Price(1000),
-                menuGroupId,
-                Arrays.asList(
-                        new MenuProductCreate(
-                                simpleMenuProduct.getMenu().getId(),
-                                simpleMenuProduct.getProduct().getId(),
-                                simpleMenuProduct.getQuantity()
-                        )
-                )
-        );
+        MenuCreate menuCreate = new MenuCreate("menu", new Price(2000),
+                menuGroup.getId(), Arrays.asList(양념치킨));
 
 
-        given(menuGroupDao.findById(menuGroupId)).willReturn(Optional.of(menuGroup));
-        when(productDao.findAllById(Arrays.asList(product.getId()))).thenReturn(Arrays.asList(product));
+        given(menuGroupDao.findById(menuGroup.getId())).willReturn(Optional.of(menuGroup));
+        when(productDao.findAllById(Arrays.asList(양념치킨_1000원.getId())))
+                .thenReturn(Arrays.asList(양념치킨_1000원));
 
         // when & then
 
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuCreate));
 
-        verify(menuGroupDao, VerificationModeFactory.times(1)).findById(menuGroupId);
-        verify(productDao, VerificationModeFactory.times(1)).findAllById(Arrays.asList(product.getId()));
+        verify(menuGroupDao, VerificationModeFactory.times(1)).findById(menuGroup.getId());
+        verify(productDao, VerificationModeFactory.times(1))
+                .findAllById(Arrays.asList(양념치킨_1000원.getId()));
     }
 
     @Test
     @DisplayName("create - 정상정인 메뉴 등록")
     void 정상적인_메뉴_등록() {
         // given
-        Long menuGroupId = 1L;
+        MenuCreate menuCreate = new MenuCreate("menu", new Price(10),
+                menuGroup.getId(), Arrays.asList(양념치킨));
 
-        MenuGroup menuGroup = new MenuGroup(menuGroupId, "Hello");
-
-        Product product = new Product(simpleProductId, "PRODUCT", BigDecimal.valueOf(100));
-
-        MenuCreate menuCreate = new MenuCreate(
-                "menu",
-                new Price(10),
-                menuGroupId,
-                Arrays.asList(
-                        new MenuProductCreate(
-                                simpleMenuProduct.getMenu().getId(),
-                                simpleMenuProduct.getProduct().getId(),
-                                simpleMenuProduct.getQuantity()
-                        )
-                )
-        );
-
-        given(menuGroupDao.findById(menuGroupId)).willReturn(Optional.of(menuGroup));
-        given(productDao.findAllById(any())).willReturn(Arrays.asList(product));
+        given(menuGroupDao.findById(menuGroup.getId())).willReturn(Optional.of(menuGroup));
+        given(productDao.findAllById(any())).willReturn(Arrays.asList(양념치킨_1000원));
 
         // when
         when(menuDao.save(any())).thenAnswer(i -> i.getArgument(0));
@@ -191,15 +142,15 @@ class MenuServiceTest {
 
         assertThat(savedMenu.getMenuProducts())
                 .map(item -> item.getProduct())
-                .containsOnly(product);
+                .containsOnly(양념치킨_1000원);
 
         assertThat(savedMenu.getMenuProducts())
                 .map(item -> item.getQuantity())
-                .containsOnly(simpleMenuProduct.getQuantity());
+                .containsOnly(양념치킨.getQuantity());
 
         assertThat(savedMenu.getMenuProducts())
                 .map(item -> item.getAmount())
-                .containsOnly(new Price(product.getPrice().getPrice().multiply(BigDecimal.valueOf(simpleMenuProduct.getQuantity()))));
+                .containsOnly(new Price(양념치킨_1000원.getPrice().getPrice().multiply(BigDecimal.valueOf(1))));
 
         verify(productDao, VerificationModeFactory.times(1))
                 .findAllById(any());
@@ -210,15 +161,12 @@ class MenuServiceTest {
     @DisplayName("list - 정상적인 메뉴 전체 조회")
     void 정상적인_메뉴_전체_조회() {
         // given
-        Long menuId = 1L;
-
         List<MenuProduct> menuProducts = Arrays.asList(
-                new MenuProduct(null, simpleProduct, 1L),
-                new MenuProduct(null, simpleProduct, 2L),
-                new MenuProduct(null, simpleProduct, 3L)
+                new MenuProduct(양념치킨_1000원, 1L),
+                new MenuProduct(콜라_100원, 1L)
         );
 
-        Menu menu = new Menu(menuId, "Menu", new Price(1),null, menuProducts);
+        Menu menu = new Menu(1L, "Menu", new Price(1),null, menuProducts);
 
         // when
         when(menuDao.findAll()).thenReturn(Arrays.asList(menu));
