@@ -2,9 +2,13 @@ package kitchenpos.domain;
 
 public class OrderLineItemCreate {
     private long menuId;
-    private long quantity;
+    private Quantity quantity;
 
     public OrderLineItemCreate(long menuId, long quantity) {
+        this(menuId, new Quantity(quantity));
+    }
+
+    public OrderLineItemCreate(long menuId, Quantity quantity) {
         this.menuId = menuId;
         this.quantity = quantity;
     }
@@ -13,7 +17,7 @@ public class OrderLineItemCreate {
         return menuId;
     }
 
-    public long getQuantity() {
+    public Quantity getQuantity() {
         return quantity;
     }
 }

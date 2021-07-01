@@ -156,7 +156,7 @@ class OrderRestControllerTest {
                     jsonPath(prefix + ".seq").value(orderLineItem.getSeq()),
                     jsonPath(prefix + ".orderId").value(orderLineItem.getOrder().getId()),
                     jsonPath(prefix + ".menuId").value(orderLineItem.getMenu().getId()),
-                    jsonPath(prefix + ".quantity").value(orderLineItem.getQuantity())
+                    jsonPath(prefix + ".quantity").value(orderLineItem.getQuantity().toLong())
             ).match(result);
         };
     }

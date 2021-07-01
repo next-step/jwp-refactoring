@@ -13,7 +13,7 @@ public class OrderLineItemViewResponse {
                 orderLineItem.getSeq(),
                 orderLineItem.getOrder().getId(),
                 orderLineItem.getMenu().getId(),
-                orderLineItem.getQuantity()
+                orderLineItem.getQuantity().toLong()
         );
     }
 

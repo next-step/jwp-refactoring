@@ -25,7 +25,7 @@ class MenuProductTest {
     @Test
     @DisplayName("이미 메뉴가 등록되어있으면 변경이 불가능하다.")
     void 이미_메뉴가_등록되어있으면_변경이_불가능하다() {
-        MenuProduct menuProduct = new MenuProduct(new Menu(), null, 0);
+        MenuProduct menuProduct = new MenuProduct(new Menu(), null, 1);
 
         assertThatIllegalStateException().isThrownBy(() -> menuProduct.changeMenu(new Menu()));
     }

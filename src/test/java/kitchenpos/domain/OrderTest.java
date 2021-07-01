@@ -47,9 +47,9 @@ class OrderTest {
                 null,
                 null,
                 Arrays.asList(
-                        new OrderLineItemCreate(0, 0),
-                        new OrderLineItemCreate(0, 0),
-                        new OrderLineItemCreate(0, 0)
+                        new OrderLineItemCreate(1, 1),
+                        new OrderLineItemCreate(2, 2),
+                        new OrderLineItemCreate(3, 3)
                 )
         );
         Menus menus = new Menus(Arrays.asList(new Menu(), new Menu()));
@@ -99,7 +99,7 @@ class OrderTest {
                 .containsExactlyElementsOf(menuList);
         assertThat(order.getOrderLineItems())
                 .map(item -> item.getQuantity())
-                .containsExactly(1L, 2L);
+                .containsExactly(new Quantity(1L), new Quantity(2L));
         assertThat(order.getOrderLineItems())
                 .map(item -> item.getOrder())
                 .containsOnly(order);
