@@ -14,7 +14,7 @@ public class MenuProductViewResponse {
                 menuProduct.getSeq(),
                 menuProduct.getMenu().getId(),
                 menuProduct.getProduct().getId(),
-                menuProduct.getQuantity()
+                menuProduct.getQuantity().toLong()
         );
     }
 

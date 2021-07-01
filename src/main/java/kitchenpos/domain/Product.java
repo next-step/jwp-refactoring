@@ -32,8 +32,8 @@ public class Product {
         this.price = price;
     }
 
-    public Price multiplyPrice(long quantity) {
-        return price.multiply(quantity);
+    public Price multiplyPrice(Quantity quantity) {
+        return price.multiply(quantity.toLong());
     }
 
     public Long getId() {

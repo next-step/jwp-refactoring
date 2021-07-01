@@ -133,7 +133,7 @@ class MenuRestControllerTest {
                     jsonPath(expressionPrefix + ".seq").value(menuProduct.getSeq()),
                     jsonPath(expressionPrefix + ".menuId").value(menuProduct.getMenu().getId()),
                     jsonPath(expressionPrefix + ".productId").value(menuProduct.getProduct().getId()),
-                    jsonPath(expressionPrefix + ".quantity").value(menuProduct.getQuantity())
+                    jsonPath(expressionPrefix + ".quantity").value(menuProduct.getQuantity().toLong())
             ).match(result);
         };
     }

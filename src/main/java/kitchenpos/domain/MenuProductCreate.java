@@ -3,9 +3,13 @@ package kitchenpos.domain;
 public class MenuProductCreate {
     private Long menuId;
     private Long productId;
-    private long quantity;
+    private Quantity quantity;
 
     public MenuProductCreate(Long menuId, Long productId, long quantity) {
+        this(menuId, productId, new Quantity(quantity));
+    }
+
+    public MenuProductCreate(Long menuId, Long productId, Quantity quantity) {
         this.menuId = menuId;
         this.productId = productId;
         this.quantity = quantity;
@@ -19,7 +23,7 @@ public class MenuProductCreate {
         return productId;
     }
 
-    public long getQuantity() {
+    public Quantity getQuantity() {
         return quantity;
     }
 }
