@@ -3,15 +3,12 @@ package kitchenpos.application;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.NumberOfGuest;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableCreate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class TableService {
@@ -36,8 +33,7 @@ public class TableService {
 
     @Transactional
     public OrderTable changeEmpty(final Long orderTableId, boolean empty) {
-        final OrderTable orderTable = orderTableDao.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+        final OrderTable orderTable = findById(orderTableId);
 
         orderTable.changeEmpty(empty);
         return orderTable;
@@ -45,11 +41,15 @@ public class TableService {
 
     @Transactional
     public OrderTable changeNumberOfGuests(final Long orderTableId, final NumberOfGuest numberOfGuest) {
-        OrderTable orderTable = orderTableDao.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+        OrderTable orderTable = findById(orderTableId);
 
         orderTable.changeNumberOfGuest(numberOfGuest);
 
         return orderTable;
+    }
+
+    private OrderTable findById(Long orderTableId) {
+        return orderTableDao.findById(orderTableId)
+                .orElseThrow(IllegalArgumentException::new);
     }
 }
