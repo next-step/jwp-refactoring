@@ -2,6 +2,7 @@ package kitchenpos.ui;
 
 import kitchenpos.application.OrderService;
 import kitchenpos.domain.*;
+import kitchenpos.dto.request.OrderCreateRequest;
 import kitchenpos.dto.request.OrderStatusChangeRequest;
 import kitchenpos.dto.response.OrderLineItemViewResponse;
 import org.junit.jupiter.api.Test;
@@ -23,8 +24,7 @@ import static kitchenpos.ui.JsonUtil.toJson;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -36,6 +36,33 @@ class OrderRestControllerTest {
 
     @MockBean
     private OrderService orderService;
+
+    @Test
+    void create() throws Exception {
+        // given
+        OrderCreateRequest orderCreateRequest = new OrderCreateRequest(1L, OrderStatus.MEAL, Arrays.asList());
+        OrderTable orderTable = new OrderTable(1L, null, null, null, false);
+        Order fakeOrder = new Order(1L, orderTable, OrderStatus.MEAL, LocalDateTime.now(), null);
+        Menu fakeMenu = new Menu(1L, "Hello", new Price(1), 1L, null);
+        List<OrderLineItem> orderLineItems = Arrays.asList(
+                new OrderLineItem(1L, fakeOrder, fakeMenu, 1),
+                new OrderLineItem(2L, fakeOrder, fakeMenu, 2),
+                new OrderLineItem(3L, fakeOrder, fakeMenu, 3)
+        );
+        Order order = new Order(1L, orderTable, OrderStatus.MEAL, LocalDateTime.now(), orderLineItems);
+
+        // when
+        mockMvc.perform(
+                post("/api/orders")
+                        .content(toJson(order))
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
+                .andExpect(status().isCreated())
+                .andExpect(validateOrder("$", order))
+                .andExpect(validateOrderLineItem("$.orderLineItems[0]", orderLineItems.get(0)))
+                .andExpect(validateOrderLineItem("$.orderLineItems[1]", orderLineItems.get(1)))
+                .andExpect(validateOrderLineItem("$.orderLineItems[2]", orderLineItems.get(2)));
+    }
 
     @Test
     void list() throws Exception {
