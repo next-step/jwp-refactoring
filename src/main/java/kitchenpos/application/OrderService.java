@@ -2,7 +2,6 @@ package kitchenpos.application;
 
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.*;
 import kitchenpos.exception.EntityNotExistsException;
@@ -15,18 +14,15 @@ import java.util.List;
 public class OrderService {
     private final MenuDao menuDao;
     private final OrderDao orderDao;
-    private final OrderLineItemDao orderLineItemDao;
     private final OrderTableDao orderTableDao;
 
     public OrderService(
             final MenuDao menuDao,
             final OrderDao orderDao,
-            final OrderLineItemDao orderLineItemDao,
             final OrderTableDao orderTableDao
     ) {
         this.menuDao = menuDao;
         this.orderDao = orderDao;
-        this.orderLineItemDao = orderLineItemDao;
         this.orderTableDao = orderTableDao;
     }
 

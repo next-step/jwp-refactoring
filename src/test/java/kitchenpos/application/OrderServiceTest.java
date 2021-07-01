@@ -2,7 +2,6 @@ package kitchenpos.application;
 
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.*;
 import kitchenpos.exception.EntityNotExistsException;
@@ -36,9 +35,6 @@ class OrderServiceTest {
     private OrderDao orderDao;
 
     @Mock
-    private OrderLineItemDao orderLineItemDao;
-
-    @Mock
     private OrderTableDao orderTableDao;
 
     private OrderService orderService;
@@ -60,7 +56,7 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        this.orderService = new OrderService(menuDao, orderDao, orderLineItemDao, orderTableDao);
+        this.orderService = new OrderService(menuDao, orderDao,  orderTableDao);
 
         this.order = new Order(1L, null, null, null, null);
 
