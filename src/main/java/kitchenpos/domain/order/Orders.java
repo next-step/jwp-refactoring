@@ -9,7 +9,7 @@ import java.util.List;
 
 @Embeddable
 public class Orders {
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "orderTable")
     private List<Order> orders = new ArrayList<>();
 
     public Orders() {

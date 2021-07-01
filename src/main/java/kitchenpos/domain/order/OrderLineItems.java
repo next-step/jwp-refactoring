@@ -8,7 +8,7 @@ import java.util.List;
 
 @Embeddable
 public class OrderLineItems {
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
     private List<OrderLineItem> orderLineItems;
 
     protected OrderLineItems() {

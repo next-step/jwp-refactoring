@@ -9,6 +9,7 @@ import javax.persistence.*;
 public class OrderLineItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "seq")
     private Long seq;
 
     @ManyToOne(fetch = FetchType.LAZY)
