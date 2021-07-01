@@ -5,13 +5,14 @@
 ### 1단계 요구사항
 -[ ] ```kichenpos``` package를 참고하여 요구사항 정리
     * [마크다운](https://dooray.com/htmls/guides/markdown_ko_KR.html) 을 활용
-    -[ ] ```TableRestController.java```
-    -[ ] ```TableGroupRestController.java```
-    -[ ] ```ProductRestController.java```
-    -[ ] ```OrderRestController.java```
-    -[ ] ```MenuRestController.java```
-    -[ ] ```MenuGroupRestController.java```
--[ ] 정리한 키친포스의 요구 사항을 토대로 테스트 코드를 작성한다. 모든 Business Object에 대한 테스트 코드를 작성. 
+        -[ ] ```TableRestController.java```
+        -[ ] ```TableGroupRestController.java```
+        -[ ] ```ProductRestController.java```
+        -[ ] ```OrderRestController.java```
+        -[ ] ```MenuRestController.java```
+        -[ ] ```MenuGroupRestController.java```
+        -[ ] 정리한 키친포스의 요구 사항을 토대로 테스트 코드를 작성한다. 모든 Business Object에 대한 테스트 코드를 작성. 
+
  ```@SpringBootTest```를 이용한 통합 테스트 코드 또는 ```@ExtendWith(MockitoExtension.class)```를 이용한 단위 테스트 코드를 작성
 ---
 ## 요구 사항
@@ -28,7 +29,6 @@
       * 올바른 가격을 입력해야 하고 0원 이상이어야 한다.
       * 메뉴에 포함된 모든 상품들의 가격과 동일해야 한다.
   * 메뉴에 포함된 상품들을 모두 포함한 메뉴 리스트를 조회할 수 있다.
-      
 ### 상품
   * 상품을 등록할 수 있다.
     * 상품 : ```상품ID``` 와 ```상품명```, ```상품 가격```을 가지고 있다.
@@ -65,6 +65,10 @@
   * 손님 수를 수정할 수 있다.
     * 0명 이상이어야 한다.
     * 주문 테이블에 등록이 되어 있어야 한다.
+
+
+
+### Entity Relation Diagram
 
 
 @startuml
