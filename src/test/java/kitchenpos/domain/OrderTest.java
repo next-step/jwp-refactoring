@@ -1,6 +1,8 @@
 package kitchenpos.domain;
 
 import kitchenpos.exception.TableEmptyException;
+import kitchenpos.fixture.CleanUp;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -9,11 +11,19 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.util.Arrays;
 import java.util.List;
 
+import static kitchenpos.fixture.OrderFixture.결제완료1;
 import static kitchenpos.fixture.OrderTableFixture.미사용중인_테이블;
 import static kitchenpos.fixture.OrderTableFixture.사용중인_1명_테이블;
+import static kitchenpos.fixture.ProductFixture.콜라_100원;
+import static kitchenpos.fixture.ProductFixture.후라이드치킨_2000원;
 import static org.assertj.core.api.Assertions.*;
 
 class OrderTest {
+
+    @BeforeEach
+    void setUp() {
+        CleanUp.cleanUpOrderFirst();
+    }
 
     @ParameterizedTest
     @ValueSource(strings = {"COOKING", "MEAL"})
@@ -26,8 +36,7 @@ class OrderTest {
     @Test
     @DisplayName("결제완료일 땐 주문이 끝난것이다")
     void 결제완료일_땐_주문이_끝난것이다() {
-        Order order = new Order(null, null, OrderStatus.COMPLETION, null, null);
-        assertThat(order.isFinished()).isTrue();
+        assertThat(결제완료1.isFinished()).isTrue();
     }
 
     @Test
@@ -60,35 +69,29 @@ class OrderTest {
     @DisplayName("정상적인 생성")
     void 정상적인_생성() {
         // given
-
-        Product product = new Product("SIMPLE", new Price(100));
-
-        MenuProduct menuProduct1 = new MenuProduct(null, product, 1);
-        MenuProduct menuProduct2 = new MenuProduct(null, product, 1);
-        MenuProduct menuProduct3 = new MenuProduct(null, product, 1);
+        MenuProduct menuProduct1 = new MenuProduct(후라이드치킨_2000원, 1);
+        MenuProduct menuProduct2 = new MenuProduct(콜라_100원, 1);
 
         OrderCreate orderCreate = new OrderCreate(
                 null,
                 null,
                 Arrays.asList(
                         new OrderLineItemCreate(1L, 1),
-                        new OrderLineItemCreate(2L, 2),
-                        new OrderLineItemCreate(3L, 3)
+                        new OrderLineItemCreate(2L, 2)
                 )
         );
         List<Menu> menuList = Arrays.asList(
                 new Menu(1L, "1", new Price(1),  null, Arrays.asList(menuProduct1)),
-                new Menu(2L, "2", new Price(2), null, Arrays.asList(menuProduct2)),
-                new Menu(3L, "3", new Price(3), null, Arrays.asList(menuProduct3))
+                new Menu(2L, "2", new Price(2), null, Arrays.asList(menuProduct2))
         );
         Menus menus = new Menus(menuList);
 
         // when
-        Order order = Order.create(orderCreate, menus, 미사용중인_테이블);
+        Order order = Order.create(orderCreate, menus, 사용중인_1명_테이블);
 
         // then
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
-        assertThat(order.getOrderTable()).isEqualTo(미사용중인_테이블);
+        assertThat(order.getOrderTable()).isEqualTo(사용중인_1명_테이블);
         assertThat(order.getOrderedTime()).isNotNull();
 
         assertThat(order.getOrderLineItems())
@@ -96,7 +99,7 @@ class OrderTest {
                 .containsExactlyElementsOf(menuList);
         assertThat(order.getOrderLineItems())
                 .map(item -> item.getQuantity())
-                .containsExactly(1L, 2L, 3L);
+                .containsExactly(1L, 2L);
         assertThat(order.getOrderLineItems())
                 .map(item -> item.getOrder())
                 .containsOnly(order);
