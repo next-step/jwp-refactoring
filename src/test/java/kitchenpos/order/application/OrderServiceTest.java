@@ -50,9 +50,12 @@ class OrderServiceTest {
 
     private OrderLineItemDto item;
 
+    private Menu menu;
+
     @BeforeEach
     void setUp() {
         item = new OrderLineItemDto(null, null, 1L, 1);
+        menu = new Menu("name", 0L, null);
     }
 
     @DisplayName("create order 실패 - orderLineItems 가 비어 있음")
@@ -70,7 +73,7 @@ class OrderServiceTest {
                                                                  .limit(5)
                                                                  .collect(toList()));
 
-        given(menuRepository.findById(any())).willReturn(Optional.of(new Menu()));
+        given(menuRepository.findById(any())).willReturn(Optional.of(menu));
         given(menuRepository.countByIdIn(any())).willReturn(0);
 
         // when
@@ -83,7 +86,7 @@ class OrderServiceTest {
         // given
         CreateOrderDto orderDto = new CreateOrderDto(1L, Collections.singletonList(item));
 
-        given(menuRepository.findById(any())).willReturn(Optional.of(new Menu()));
+        given(menuRepository.findById(any())).willReturn(Optional.of(menu));
         given(menuRepository.countByIdIn(any())).willReturn(1);
         given(orderTableRepository.findById(orderDto.getOrderTableId())).willReturn(Optional.empty());
 
@@ -100,7 +103,7 @@ class OrderServiceTest {
 
         CreateOrderDto orderDto = new CreateOrderDto(1L, Collections.singletonList(item));
 
-        given(menuRepository.findById(any())).willReturn(Optional.of(new Menu()));
+        given(menuRepository.findById(any())).willReturn(Optional.of(menu));
         given(menuRepository.countByIdIn(any())).willReturn(1);
         given(orderTableRepository.findById(orderDto.getOrderTableId())).willReturn(Optional.of(orderTable));
 
@@ -117,7 +120,7 @@ class OrderServiceTest {
         OrderTable orderTable = new OrderTable(1L, null, 0, false);
         Order order = new Order();
 
-        given(menuRepository.findById(any())).willReturn(Optional.of(new Menu()));
+        given(menuRepository.findById(any())).willReturn(Optional.of(menu));
         given(menuRepository.countByIdIn(any())).willReturn(1);
         given(orderTableRepository.findById(orderDto.getOrderTableId())).willReturn(Optional.of(orderTable));
         given(orderRepository.save(any())).willReturn(order);
