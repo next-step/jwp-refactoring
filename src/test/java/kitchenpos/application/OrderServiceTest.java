@@ -60,19 +60,6 @@ class OrderServiceTest {
         this.orderLineItems = Arrays.asList(orderLineItem1, orderLineItem2);
     }
 
-
-    @Test
-    @DisplayName("create - 등록을 원하는 주문에 주문 항목이 비어있으면 IllegalArgumentException 이 발생한다.")
-    void 등록을_원하는_주문에_주문_항목이_비어있으면_IllegalArgumentException_이_발생한다() {
-        Order nullOrder = new Order(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), null);
-        Order emptyOrder = new Order(2L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), Arrays.asList());
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderService.create(nullOrder));
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderService.create(emptyOrder));
-    }
-
     @Test
     @DisplayName("create - 등록을 원하는 주문항목이 DB에 전부 존재하는지 확인하여 전부 존재하지 않으면 IllegalArgumentException이 발생한다.")
     void 등록을_원하는_주문항목이_DB에_전부_존재하는지_확인하여_전부_존재하지_않으면_IllegalArgumentException이_발생한다() {
