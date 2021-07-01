@@ -19,13 +19,6 @@ public class ProductService {
     }
 
     @Transactional
-    public Product create(final Product product) {
-        return create(
-                new ProductCreate(product.getName(), product.getPrice())
-        );
-    }
-
-    @Transactional
     public Product create(final ProductCreate productCreate) {
         return productDao.save(new Product(productCreate.getName(), productCreate.getPrice()));
     }
