@@ -81,7 +81,7 @@ class MenuGroupRestControllerTest {
         return result -> {
             ResultMatcher.matchAll(
                     jsonPath(prefix + ".id").value(menuGroup.getId()),
-                    jsonPath(prefix + ".name").value(menuGroup.getName())
+                    jsonPath(prefix + ".name").value(menuGroup.getName().toString())
             ).match(result);
         };
     }

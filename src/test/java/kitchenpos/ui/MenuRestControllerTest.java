@@ -120,7 +120,7 @@ class MenuRestControllerTest {
         return result -> {
             ResultMatcher.matchAll(
                     jsonPath(expressionPrefix + ".id").value(menu.getId()),
-                    jsonPath(expressionPrefix + ".name").value(menu.getName()),
+                    jsonPath(expressionPrefix + ".name").value(menu.getName().toString()),
                     jsonPath(expressionPrefix + ".price").value(menu.getPrice().toBigDecimal()),
                     jsonPath(expressionPrefix + ".menuGroupId").value(menu.getMenuGroup().getId())
             ).match(result);
