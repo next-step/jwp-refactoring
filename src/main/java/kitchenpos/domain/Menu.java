@@ -10,6 +10,45 @@ public class Menu {
     private Long menuGroupId;
     private List<MenuProduct> menuProducts;
 
+    public Menu() {
+    }
+
+    public Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        this.name = name;
+        this.price = price;
+        this.menuGroupId = menuGroupId;
+        this.menuProducts = menuProducts;
+    }
+
+    public Menu(String name, BigDecimal price, Long menuGroupId) {
+        this.name = name;
+        this.price = price;
+        this.menuGroupId = menuGroupId;
+    }
+
+    public Menu(Long id, Menu menu) {
+        this(menu.name, menu.price, menu.menuGroupId);
+        this.id = id;
+
+    }
+
+    public Menu(Long id, String name, BigDecimal price, Long menuGroupId) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.menuGroupId = menuGroupId;
+    }
+
+
+
+    public Menu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.menuGroupId = menuGroupId;
+        this.menuProducts = menuProducts;
+    }
+
     public Long getId() {
         return id;
     }
@@ -49,4 +88,6 @@ public class Menu {
     public void setMenuProducts(final List<MenuProduct> menuProducts) {
         this.menuProducts = menuProducts;
     }
+
+
 }
