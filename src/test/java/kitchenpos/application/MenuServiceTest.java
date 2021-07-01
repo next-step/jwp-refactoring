@@ -39,6 +39,9 @@ class MenuServiceTest {
 
     private final Long simpleMenuId = 1L;
     private final Long simpleProductId = 1L;
+
+    private Menu simpleMenu;
+    private Product simpleProduct;
     
     private MenuProduct simpleMenuProduct;
     
@@ -46,7 +49,9 @@ class MenuServiceTest {
     void setUp() {
         this.menuService = new MenuService(menuDao, menuGroupDao, productDao);
 
-        this.simpleMenuProduct = new MenuProduct(1L, simpleMenuId, simpleProductId, 1L);
+        this.simpleMenu = new Menu(simpleMenuId, "Menu", new Price(1), null);
+        this.simpleProduct = new Product(simpleProductId, "Product", new Price(1));
+        this.simpleMenuProduct = new MenuProduct(simpleMenu, simpleProduct, 1L);
     }
 
     @Test
@@ -60,8 +65,8 @@ class MenuServiceTest {
                 menuGroupId,
                 Arrays.asList(
                         new MenuProductCreate(
-                                simpleMenuProduct.getMenuId(),
-                                simpleMenuProduct.getProductId(),
+                                simpleMenuProduct.getMenu().getId(),
+                                simpleMenuProduct.getProduct().getId(),
                                 simpleMenuProduct.getQuantity()
                         )
                 )
@@ -90,8 +95,8 @@ class MenuServiceTest {
                 menuGroupId,
                 Arrays.asList(
                         new MenuProductCreate(
-                                simpleMenuProduct.getMenuId(),
-                                simpleMenuProduct.getProductId(),
+                                simpleMenuProduct.getMenu().getId(),
+                                simpleMenuProduct.getProduct().getId(),
                                 simpleMenuProduct.getQuantity()
                         )
                 )
@@ -128,8 +133,8 @@ class MenuServiceTest {
                 menuGroupId,
                 Arrays.asList(
                         new MenuProductCreate(
-                                simpleMenuProduct.getMenuId(),
-                                simpleMenuProduct.getProductId(),
+                                simpleMenuProduct.getMenu().getId(),
+                                simpleMenuProduct.getProduct().getId(),
                                 simpleMenuProduct.getQuantity()
                         )
                 )
@@ -163,8 +168,8 @@ class MenuServiceTest {
                 menuGroupId,
                 Arrays.asList(
                         new MenuProductCreate(
-                                simpleMenuProduct.getMenuId(),
-                                simpleMenuProduct.getProductId(),
+                                simpleMenuProduct.getMenu().getId(),
+                                simpleMenuProduct.getProduct().getId(),
                                 simpleMenuProduct.getQuantity()
                         )
                 )
@@ -207,9 +212,9 @@ class MenuServiceTest {
         Long menuId = 1L;
 
         List<MenuProduct> menuProducts = Arrays.asList(
-                new MenuProduct(1L, menuId, 1L, 1L),
-                new MenuProduct(2L, menuId, 2L, 2L),
-                new MenuProduct(3L, menuId, 3L, 3L)
+                new MenuProduct(simpleMenu, simpleProduct, 1L),
+                new MenuProduct(simpleMenu, simpleProduct, 2L),
+                new MenuProduct(simpleMenu, simpleProduct, 3L)
         );
 
         Menu menu = new Menu(menuId, "Menu", new Price(1), menuProducts);
@@ -220,7 +225,8 @@ class MenuServiceTest {
         Menu resultMenu = menuService.list().get(0);
         // then
         assertThat(resultMenu).isEqualTo(menu);
-        assertThat(resultMenu.getMenuProducts()).isEqualTo(menuProducts);
+        assertThat(resultMenu.getMenuProducts())
+                .containsExactlyElementsOf(menuProducts);
     }
 
 }
