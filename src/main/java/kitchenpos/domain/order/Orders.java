@@ -16,7 +16,8 @@ public class Orders {
     }
 
     public Orders(List<Order> orders) {
-        this.orders = orders;
+        orders.stream()
+                .forEach(item -> this.orders.add(item));
     }
 
     public boolean isAllFinished() {

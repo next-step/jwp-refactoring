@@ -2,13 +2,14 @@ package kitchenpos.domain.product;
 
 import kitchenpos.exception.EntityNotExistsException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Products {
     private List<Product> products;
 
     public Products(List<Product> products) {
-        this.products = products;
+        this.products = new ArrayList<>(products);
     }
 
     public int size() {

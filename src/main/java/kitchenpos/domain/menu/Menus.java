@@ -2,13 +2,14 @@ package kitchenpos.domain.menu;
 
 import kitchenpos.exception.EntityNotExistsException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Menus {
     private List<Menu> menus;
 
     public Menus(List<Menu> menus) {
-        this.menus = menus;
+        this.menus = new ArrayList<>(menus);
     }
 
     public int size() {
