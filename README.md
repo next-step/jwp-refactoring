@@ -3,17 +3,17 @@
 ---
 ## 1단계 - 테스트를 통한 코드 보호
 ### 1단계 요구사항
--[ ] ```kichenpos``` package를 참고하여 요구사항 정리
-    * [마크다운](https://dooray.com/htmls/guides/markdown_ko_KR.html) 을 활용
-        -[ ] ```TableRestController.java```
-        -[ ] ```TableGroupRestController.java```
-        -[ ] ```ProductRestController.java```
-        -[ ] ```OrderRestController.java```
-        -[ ] ```MenuRestController.java```
-        -[ ] ```MenuGroupRestController.java```
-        -[ ] 정리한 키친포스의 요구 사항을 토대로 테스트 코드를 작성한다. 모든 Business Object에 대한 테스트 코드를 작성. 
 
- ```@SpringBootTest```를 이용한 통합 테스트 코드 또는 ```@ExtendWith(MockitoExtension.class)```를 이용한 단위 테스트 코드를 작성
+-[ ] ```kichenpos``` package를 참고하여 요구사항 정리  
+    * [마크다운](https://dooray.com/htmls/guides/markdown_ko_KR.html) 을 활용  
+        -[ ] ```TableRestController.java```  
+        -[ ] ```TableGroupRestController.java```  
+        -[ ] ```ProductRestController.java```  
+        -[ ] ```OrderRestController.java```  
+        -[ ] ```MenuRestController.java```  
+        -[ ] ```MenuGroupRestController.java```  
+* 정리한 키친포스의 요구 사항을 토대로 테스트 코드를 작성한다. 모든 Business Object에 대한 테스트 코드를 작성.  
+* ```@SpringBootTest```를 이용한 통합 테스트 코드 또는 ```@ExtendWith(MockitoExtension.class)```를 이용한 단위 테스트 코드를 작성
 ---
 ## 요구 사항
 
@@ -70,17 +70,8 @@
 
 ### Entity Relation Diagram
 
+![class-diagram](http://www.plantuml.com/plantuml/proxy?src=https://github.com/Lee-Chungsun/jwp-refactoring/blob/step1/class-diagram.puml)
 
-@startuml
-'https://plantuml.com/class-diagram
-
-interface MemberService
-interface MemberRepository
-class MemoryMemberRepository
-
-MemberRepository -- MemberService
-MemberRepository <|-- MemoryMemberRepository
-@enduml
 
 ## 용어 사전
 
