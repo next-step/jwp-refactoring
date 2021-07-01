@@ -14,10 +14,6 @@ public class OrderLineItem {
     @ManyToOne(fetch = FetchType.LAZY)
     private Menu menu;
 
-    @Transient
-    private Long oldOrderId;
-    @Transient
-    private Long oldMenuId;
     private long quantity;
 
     public OrderLineItem() {
@@ -26,13 +22,6 @@ public class OrderLineItem {
     public OrderLineItem(Order order, Menu menu, long quantity) {
         this.order = order;
         this.menu = menu;
-        this.quantity = quantity;
-    }
-
-    public OrderLineItem(Long seq, Long oldOrderId, Long oldMenuId, long quantity) {
-        this.seq = seq;
-        this.oldOrderId = oldOrderId;
-        this.oldMenuId = oldMenuId;
         this.quantity = quantity;
     }
 
@@ -57,22 +46,6 @@ public class OrderLineItem {
 
     public void setSeq(final Long seq) {
         this.seq = seq;
-    }
-
-    public Long getOldOrderId() {
-        return oldOrderId;
-    }
-
-    public void setOldOrderId(final Long oldOrderId) {
-        this.oldOrderId = oldOrderId;
-    }
-
-    public Long getOldMenuId() {
-        return oldMenuId;
-    }
-
-    public void setOldMenuId(final Long oldMenuId) {
-        this.oldMenuId = oldMenuId;
     }
 
     public long getQuantity() {

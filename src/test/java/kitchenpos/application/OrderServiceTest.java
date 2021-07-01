@@ -43,6 +43,13 @@ class OrderServiceTest {
 
     private OrderService orderService;
 
+    private Order order;
+
+    private Menu firstMenu;
+    private Menu secondMenu;
+
+    private List<Menu> menus;
+
 
     private OrderLineItem orderLineItem1;
     private OrderLineItem orderLineItem2;
@@ -55,13 +62,19 @@ class OrderServiceTest {
     void setUp() {
         this.orderService = new OrderService(menuDao, orderDao, orderLineItemDao, orderTableDao);
 
-        orderLineItem1 = new OrderLineItem(1L, 1L, 1L, 1);
-        orderLineItem2 = new OrderLineItem(2L, 1L, 2L, 2);
+        this.order = new Order(1L, null, null, null, null);
+
+        this.firstMenu = new Menu(1L, "first", new Price(1), null);
+        this.secondMenu = new Menu(2L, "second", new Price(2), null);
+        this.menus = Arrays.asList(firstMenu, secondMenu);
+
+        orderLineItem1 = new OrderLineItem(1L, order, firstMenu, 1);
+        orderLineItem2 = new OrderLineItem(2L, order, secondMenu, 2);
 
         this.orderLineItems = Arrays.asList(orderLineItem1, orderLineItem2);
 
         this.orderLineItemCreates = this.orderLineItems.stream()
-                .map(item -> new OrderLineItemCreate(item.getOldMenuId(), item.getQuantity()))
+                .map(item -> new OrderLineItemCreate(item.getMenu().getId(), item.getQuantity()))
                 .collect(Collectors.toList());
     }
 
@@ -124,12 +137,6 @@ class OrderServiceTest {
         Long orderId = 1L;
 
         OrderTable orderTable = new OrderTable(orderTableId, 1L, 1, false);
-
-
-        List<Menu> menus = Arrays.asList(
-                new Menu(1L, "A", new Price(1), null),
-                new Menu(2L, "A", new Price(2), null)
-        );
 
         OrderCreate orderCreate = new OrderCreate(orderTableId, OrderStatus.MEAL, orderLineItemCreates);
 
@@ -223,8 +230,8 @@ class OrderServiceTest {
         Long orderId = 1L;
 
         List<OrderLineItem> orderLineItems = Arrays.asList(
-                new OrderLineItem(1L, 1L, 1L, 1L),
-                new OrderLineItem(2L, 2L, 2L, 2L)
+                new OrderLineItem(1L, order, firstMenu, 1L),
+                new OrderLineItem(2L, order, secondMenu, 2L)
         );
 
         OrderTable orderTable = new OrderTable(new NumberOfGuest(1), false);
