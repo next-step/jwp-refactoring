@@ -27,25 +27,6 @@ public class OrderTables {
         }
     }
 
-    public boolean isBookedAny() {
-        for (OrderTable orderTable : orderTables) {
-            if (!orderTable.isEmpty() || orderTable.isBooked()) {
-                return true;
-            }
-        }
-
-
-        return false;
-    }
-
-    public int size() {
-        return orderTables.size();
-    }
-
-    public List<OrderTable> toCollection() {
-        return Collections.unmodifiableList(orderTables);
-    }
-
     public void ungroup() {
         if (!isUnGroupable()) {
             throw new IllegalStateException();
@@ -59,5 +40,23 @@ public class OrderTables {
                 .allMatch(OrderTable::isUnGroupable);
 
         return isUnGroupable;
+    }
+
+    public boolean isBookedAny() {
+        for (OrderTable orderTable : orderTables) {
+            if (!orderTable.isEmpty() || orderTable.isBooked()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public int size() {
+        return orderTables.size();
+    }
+
+    public List<OrderTable> toCollection() {
+        return Collections.unmodifiableList(orderTables);
     }
 }

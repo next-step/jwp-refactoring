@@ -27,10 +27,6 @@ public class MenuProducts {
                 .collect(Collectors.toList());
     }
 
-    public List<MenuProduct> toCollection() {
-        return Collections.unmodifiableList(menuProducts);
-    }
-
     public Price sumAmount() {
         Price amount = menuProducts.stream()
                 .map(item -> item.getAmount())
@@ -42,5 +38,9 @@ public class MenuProducts {
     public void addAll(List<MenuProduct> menuProducts, Menu menu) {
         menuProducts.forEach(item -> item.changeMenu(menu));
         this.menuProducts.addAll(menuProducts);
+    }
+
+    public List<MenuProduct> toCollection() {
+        return Collections.unmodifiableList(menuProducts);
     }
 }

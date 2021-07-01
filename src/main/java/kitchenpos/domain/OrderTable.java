@@ -63,36 +63,12 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public List<Order> getOrders() {
-        return orders.toCollection();
-    }
-
-    public NumberOfGuest getNumberOfGuests() {
-        return numberOfGuests;
-    }
-
-    public TableGroup getTableGroup() {
-        return tableGroup;
-    }
-
-    public boolean isEmpty() {
-        return empty;
-    }
-
     public void ungroup() {
         if (!isUnGroupable()) {
             throw new IllegalStateException();
         }
 
         this.tableGroup = null;
-    }
-
-    public boolean isUnGroupable() {
-        return orders.isAllFinished();
     }
 
     public void changeNumberOfGuest(NumberOfGuest numberOfGuest) {
@@ -115,10 +91,6 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public boolean isBooked() {
-        return Objects.nonNull(getTableGroup()) || !isEmpty();
-    }
-
     public void bookedBy(TableGroup tableGroup) {
         if (isBooked()) {
             throw new IllegalStateException();
@@ -126,5 +98,33 @@ public class OrderTable {
 
         this.tableGroup = tableGroup;
         this.empty = false;
+    }
+
+    public boolean isBooked() {
+        return Objects.nonNull(getTableGroup()) || !isEmpty();
+    }
+
+    public boolean isUnGroupable() {
+        return orders.isAllFinished();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public List<Order> getOrders() {
+        return orders.toCollection();
+    }
+
+    public NumberOfGuest getNumberOfGuests() {
+        return numberOfGuests;
+    }
+
+    public TableGroup getTableGroup() {
+        return tableGroup;
+    }
+
+    public boolean isEmpty() {
+        return empty;
     }
 }

@@ -46,6 +46,14 @@ public class TableGroup {
         return  tableGroup;
     }
 
+    public void ungroup() {
+        if (!orderTables.isUnGroupable()) {
+            throw new IllegalStateException();
+        }
+
+        orderTables.ungroup();
+    }
+
     public Long getId() {
         return id;
     }
@@ -53,15 +61,8 @@ public class TableGroup {
     public LocalDateTime getCreatedDate() {
         return createdDate;
     }
+
     public List<OrderTable> getOrderTables() {
         return orderTables.toCollection();
-    }
-
-    public void ungroup() {
-        if (!orderTables.isUnGroupable()) {
-            throw new IllegalStateException();
-        }
-
-        orderTables.ungroup();
     }
 }

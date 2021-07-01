@@ -62,6 +62,18 @@ public class Order {
         return order;
     }
 
+    public void changeOrderStatus(OrderStatus orderStatus) {
+        if (this.orderStatus == OrderStatus.COMPLETION) {
+            throw new IllegalArgumentException();
+        }
+
+        this.orderStatus = orderStatus;
+    }
+
+    public boolean isFinished() {
+        return this.orderStatus == OrderStatus.COMPLETION;
+    }
+
     public Long getId() {
         return id;
     }
@@ -74,23 +86,11 @@ public class Order {
         return orderLineItems.toCollection();
     }
 
-    public boolean isFinished() {
-        return this.orderStatus == OrderStatus.COMPLETION;
-    }
-
     public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
     public OrderTable getOrderTable() {
         return orderTable;
-    }
-
-    public void changeOrderStatus(OrderStatus orderStatus) {
-        if (this.orderStatus == OrderStatus.COMPLETION) {
-            throw new IllegalArgumentException();
-        }
-
-        this.orderStatus = orderStatus;
     }
 }

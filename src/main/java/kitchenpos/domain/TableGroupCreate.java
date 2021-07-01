@@ -12,10 +12,6 @@ public class TableGroupCreate {
         this.orderTableIds = orderTableIds;
     }
 
-    public List<Long> getOrderTableIds() {
-        return orderTableIds;
-    }
-
     private void validate(List<Long> orderTableIds) {
         if (CollectionUtils.isEmpty(orderTableIds) || orderTableIds.size() < 2) {
             throw new IllegalArgumentException();
@@ -24,5 +20,9 @@ public class TableGroupCreate {
 
     public boolean orderTableHasSize(int size) {
         return orderTableIds.size() == size;
+    }
+
+    public List<Long> getOrderTableIds() {
+        return orderTableIds;
     }
 }
