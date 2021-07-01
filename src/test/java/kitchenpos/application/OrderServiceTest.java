@@ -7,6 +7,7 @@ import kitchenpos.domain.*;
 import kitchenpos.exception.EntityNotExistsException;
 import kitchenpos.exception.TableEmptyException;
 import kitchenpos.fixture.CleanUp;
+import kitchenpos.fixture.OrderFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,6 @@ import org.mockito.Mock;
 import org.mockito.internal.verification.VerificationModeFactory;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +23,10 @@ import java.util.stream.Collectors;
 
 import static kitchenpos.fixture.MenuFixture.양념치킨_콜라_1000원_1개;
 import static kitchenpos.fixture.MenuFixture.후라이드치킨_콜라_2000원_1개;
+import static kitchenpos.fixture.OrderFixture.결제완료_음식_2;
+import static kitchenpos.fixture.OrderFixture.식사_음식_1;
+import static kitchenpos.fixture.OrderLineItemFixture.주문_연결_안된_양념치킨_콜라_1000원_1개;
+import static kitchenpos.fixture.OrderLineItemFixture.주문_연결_안된_후라이드치킨_콜라_2000원_1개;
 import static kitchenpos.fixture.OrderTableFixture.미사용중인_테이블;
 import static kitchenpos.fixture.OrderTableFixture.사용중인_1명_테이블;
 import static org.assertj.core.api.Assertions.*;
@@ -43,13 +47,7 @@ class OrderServiceTest {
     private OrderTableDao orderTableDao;
 
     private OrderService orderService;
-
-    private Order order;
-
     private List<Menu> menus;
-
-    private OrderLineItem orderLineItem1;
-    private OrderLineItem orderLineItem2;
 
     private List<OrderLineItem> orderLineItems;
 
@@ -63,12 +61,7 @@ class OrderServiceTest {
 
         menus = Arrays.asList(양념치킨_콜라_1000원_1개, 후라이드치킨_콜라_2000원_1개);
 
-
-        order = new Order(1L, null, null, null, null);
-        orderLineItem1 = new OrderLineItem(1L, order, 양념치킨_콜라_1000원_1개, 1);
-        orderLineItem2 = new OrderLineItem(2L, order, 후라이드치킨_콜라_2000원_1개, 2);
-
-        orderLineItems = Arrays.asList(orderLineItem1, orderLineItem2);
+        orderLineItems = Arrays.asList(주문_연결_안된_양념치킨_콜라_1000원_1개, 주문_연결_안된_후라이드치킨_콜라_2000원_1개);
 
         orderLineItemCreates = this.orderLineItems.stream()
                 .map(item -> new OrderLineItemCreate(item.getMenu().getId(), item.getQuantity()))
@@ -158,17 +151,14 @@ class OrderServiceTest {
     @Test
     @DisplayName("create - 정상적인 주문 테이블 전체 조회")
     void 정상적인_주문_테이블_전체_조회() {
-        // given
-        Order order = new Order(사용중인_1명_테이블, OrderStatus.MEAL, LocalDateTime.now(), orderLineItems);
-
         // when
-        when(orderDao.findAll()).thenReturn(Arrays.asList(order));
+        when(orderDao.findAll()).thenReturn(Arrays.asList(결제완료_음식_2));
 
         Order savedOrder = orderService.list().get(0);
 
         // then
-        assertThat(savedOrder).isEqualTo(order);
-        assertThat(savedOrder.getOrderLineItems()).containsExactly(orderLineItem1, orderLineItem2);
+        assertThat(savedOrder).isEqualTo(결제완료_음식_2);
+        assertThat(savedOrder.getOrderLineItems()).containsExactlyElementsOf(결제완료_음식_2.getOrderLineItems());
 
         verify(orderDao, VerificationModeFactory.times(1)).findAll();
     }
@@ -194,10 +184,9 @@ class OrderServiceTest {
     void 주문의_상태가_계산_완료이고_변경하려는_상태도_계산완료일_경우_IllegalArgumentException이_발생한다() {
         // given
         Long orderId = 1L;
-        Order order = new Order(orderId, 사용중인_1명_테이블, OrderStatus.COMPLETION, LocalDateTime.now(), orderLineItems);
 
         // when
-        when(orderDao.findById(orderId)).thenReturn(Optional.of(order));
+        when(orderDao.findById(orderId)).thenReturn(Optional.of(OrderFixture.결제완료_음식_1));
 
         // then
         assertThatIllegalArgumentException()
@@ -210,24 +199,15 @@ class OrderServiceTest {
     @DisplayName("changeOrderStatus - 정상적인 주문 상태 변경")
     void 정상적인_주문_상태_변경() {
         // given
-        Long orderId = 1L;
-
-        List<OrderLineItem> orderLineItems = Arrays.asList(
-                new OrderLineItem(1L, order, 양념치킨_콜라_1000원_1개, 1L),
-                new OrderLineItem(2L, order, 후라이드치킨_콜라_2000원_1개, 2L)
-        );
-
-        Order order = new Order(orderId, 사용중인_1명_테이블, OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
-
-        given(orderDao.findById(orderId)).willReturn(Optional.of(order));
+        given(orderDao.findById(식사_음식_1.getId())).willReturn(Optional.of(식사_음식_1));
 
         // when
-        Order savedOrder = orderService.changeOrderStatus(orderId, OrderStatus.MEAL);
+        Order savedOrder = orderService.changeOrderStatus(식사_음식_1.getId(), OrderStatus.MEAL);
 
         // then
         assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
-        assertThat(savedOrder.getOrderLineItems()).containsExactlyElementsOf(orderLineItems);
+        assertThat(savedOrder.getOrderLineItems()).containsExactlyElementsOf(식사_음식_1.getOrderLineItems());
 
-        verify(orderDao, VerificationModeFactory.times(1)).findById(orderId);
+        verify(orderDao, VerificationModeFactory.times(1)).findById(식사_음식_1.getId());
     }
 }

@@ -14,6 +14,12 @@ public class OrderLineItems {
     protected OrderLineItems() {
     }
 
+
+    public OrderLineItems(Order order, List<OrderLineItem> orderLineItems) {
+        this(orderLineItems);
+        orderLineItems.forEach(item -> item.changeOrder(order));
+    }
+
     public OrderLineItems(List<OrderLineItem> orderLineItems) {
         this.orderLineItems = orderLineItems;
     }

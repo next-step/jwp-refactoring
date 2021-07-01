@@ -2,6 +2,7 @@ package kitchenpos.domain;
 
 import kitchenpos.exception.TableEmptyException;
 import kitchenpos.fixture.CleanUp;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,7 +30,7 @@ class OrderTest {
     @ValueSource(strings = {"COOKING", "MEAL"})
     @DisplayName("식사 또는 조리일땐 주문이 진행중이다")
     void 식사_또는_조리일땐_주문이_진행중이다(OrderStatus status) {
-        Order order = new Order(null, null, status, null, null);
+        Order order = new Order(null, null, status, null, Lists.emptyList());
         assertThat(order.isFinished()).isFalse();
     }
 

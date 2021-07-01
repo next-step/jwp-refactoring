@@ -7,7 +7,8 @@ public class MenuGroupViewResponse {
     private String name;
 
     public static MenuGroupViewResponse of(MenuGroup menuGroup) {
-        return new MenuGroupViewResponse(menuGroup.getId(), menuGroup.getName());
+        return new MenuGroupViewResponse(menuGroup.getId(),
+                menuGroup.getName().toString());
     }
 
     protected MenuGroupViewResponse() {

@@ -19,6 +19,10 @@ public class OrderLineItem {
     protected OrderLineItem() {
     }
 
+    public OrderLineItem(Menu menu, Quantity quantity) {
+        this(null, menu, quantity);
+    }
+
     public OrderLineItem(Order order, Menu menu, long quantity) {
         this(null, order, menu, quantity);
     }
@@ -52,5 +56,13 @@ public class OrderLineItem {
 
     public Quantity getQuantity() {
         return quantity;
+    }
+
+    void changeOrder(Order order) {
+        if (this.order != null) {
+            throw new IllegalArgumentException();
+        }
+
+        this.order = order;
     }
 }

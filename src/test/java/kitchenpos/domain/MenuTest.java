@@ -49,7 +49,7 @@ class MenuTest {
     @DisplayName("메뉴의 가격보다 금액이 더 싸면 MenuCheapException이 발생한다")
     void 메뉴의_가격보다_금액이_더_싸면_MenuCheapException이_발생한다() {
         // given
-        MenuCreate menuCreate = new MenuCreate(null, new Price(10000), null, menuProductCreates);
+        MenuCreate menuCreate = new MenuCreate(new Name("Hello"), new Price(10000), null, menuProductCreates);
 
         Products products = new Products(productList);
 
@@ -64,7 +64,7 @@ class MenuTest {
         // given
         MenuGroup menuGroup = new MenuGroup(1L, "MENU_GROUP");
 
-        MenuCreate menuCreate = new MenuCreate(null, new Price(100), null, menuProductCreates);
+        MenuCreate menuCreate = new MenuCreate(new Name("Hello"), new Price(100), null, menuProductCreates);
 
         Products products = new Products(productList);
 

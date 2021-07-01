@@ -21,7 +21,7 @@ public class MenuViewResponse {
 
         return new MenuViewResponse(
                 menu.getId(),
-                menu.getName(),
+                menu.getName().toString(),
                 menu.getPrice().toBigDecimal(),
                 menu.getMenuGroup().getId(),
                 productViewResponses

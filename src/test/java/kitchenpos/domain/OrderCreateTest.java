@@ -20,7 +20,7 @@ class OrderCreateTest {
 
     @Test
     void getMenuIdsInOrderLineItems() {
-        MenuCreate menuCreate = new MenuCreate(null, null, null, Arrays.asList(
+        MenuCreate menuCreate = new MenuCreate(new Name("Hello"), null, null, Arrays.asList(
                 new MenuProductCreate(1L, 1L, 1L),
                 new MenuProductCreate(2L, 2L, 2L)
         ));

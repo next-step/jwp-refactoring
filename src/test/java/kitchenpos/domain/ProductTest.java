@@ -8,7 +8,7 @@ class ProductTest {
 
     @Test
     void multiplyPrice() {
-        Product product = new Product(null, new Price(3));
+        Product product = new Product(new Name("Hello"), new Price(3));
         Quantity quantity = new Quantity(10L);
 
         assertThat(product.multiplyPrice(quantity)).isEqualTo(new Price(30));

@@ -1,13 +1,17 @@
 package kitchenpos.domain;
 
 public class MenuGroupCreate {
-    private String name;
+    private Name name;
 
     public MenuGroupCreate(String name) {
+        this(new Name(name));
+    }
+
+    public MenuGroupCreate(Name name) {
         this.name = name;
     }
 
-    public String getName() {
+    public Name getName() {
         return name;
     }
 }

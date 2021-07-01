@@ -1,23 +1,26 @@
 package kitchenpos.domain;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class MenuCreate {
-    private String name;
+    private Name name;
     private Price price;
     private Long menuGroupId;
     private List<MenuProductCreate> menuProducts;
 
     public MenuCreate(String name, Price price, Long menuGroupId, List<MenuProductCreate> menuProducts) {
+        this(new Name(name), price, menuGroupId, menuProducts);
+    }
+
+    public MenuCreate(Name name, Price price, Long menuGroupId, List<MenuProductCreate> menuProducts) {
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
     }
 
-    public String getName() {
+    public Name getName() {
         return name;
     }
 

@@ -35,7 +35,7 @@ public class Order {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
-        this.orderLineItems = new OrderLineItems(orderLineItems);
+        this.orderLineItems = new OrderLineItems(this, orderLineItems);
     }
 
     public static Order create(OrderCreate orderCreate, Menus menus, OrderTable orderTable) {

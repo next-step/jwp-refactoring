@@ -11,7 +11,7 @@ public class Menu {
     @Id
     @GeneratedValue
     private Long id;
-    private String name;
+    private Name name;
     private Price price;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -36,7 +36,15 @@ public class Menu {
         this(null, name, price, menuGroup, menuProducts);
     }
 
+    public Menu(Name name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        this(null, name, price, menuGroup, menuProducts);
+    }
+
     public Menu(Long id, String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        this(id, new Name(name), price, menuGroup, menuProducts);
+    }
+
+    public Menu(Long id, Name name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -57,7 +65,7 @@ public class Menu {
         return id;
     }
 
-    public String getName() {
+    public Name getName() {
         return name;
     }
 

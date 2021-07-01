@@ -11,16 +11,24 @@ public class MenuGroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    private Name name;
 
     protected MenuGroup() {
     }
 
     public MenuGroup(String name) {
-        this.name = name;
+        this(null, name);
+    }
+
+    public MenuGroup(Name name) {
+        this(null, name);
     }
 
     public MenuGroup(Long id, String name) {
+        this(id, new Name(name));
+    }
+
+    public MenuGroup(Long id, Name name) {
         this.id = id;
         this.name = name;
     }
@@ -29,7 +37,5 @@ public class MenuGroup {
         return id;
     }
 
-    public String getName() {
-        return name;
-    }
+    public Name getName() { return name; }
 }
