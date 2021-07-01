@@ -27,17 +27,6 @@ public class MenuService {
     }
 
     @Transactional
-    public Menu create(final Menu menu) {
-        List<MenuProductCreate> collect = menu.getMenuProducts()
-                .stream()
-                .map(item -> new MenuProductCreate(item.getMenuId(), item.getProductId(), item.getQuantity()))
-                .collect(Collectors.toList());
-
-        MenuCreate menuCreate = new MenuCreate(menu.getName(), menu.getPrice(), menu.getMenuGroupId(), collect);
-        return create(menuCreate);
-    }
-
-    @Transactional
     public Menu create(final MenuCreate create) {
         MenuGroup menuGroup = menuGroupDao.findById(create.getMenuGroupId())
                 .orElseThrow(IllegalArgumentException::new);
