@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import kitchenpos.exception.TableEmptyException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -7,8 +8,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Arrays;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.*;
 
 class OrderTest {
 
@@ -42,5 +42,16 @@ class OrderTest {
         Menus menus = new Menus(Arrays.asList(new Menu(), new Menu()));
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> Order.create(orderCreate, menus, null));
+    }
+
+    @Test
+    @DisplayName("빈 테이블이면 TableEmptyException이 발생한다")
+    void 빈_테이블이면_TableEmptyException이_발생한다() {
+        // given
+        OrderTable orderTable = new OrderTable(null, null, null, null, true);
+
+        // when & then
+        assertThatExceptionOfType(TableEmptyException.class)
+                .isThrownBy(() -> Order.create(null, null, orderTable));
     }
 }

@@ -1,5 +1,7 @@
 package kitchenpos.domain;
 
+import kitchenpos.exception.EntityNotExistsException;
+
 import java.util.List;
 
 public class Menus {
@@ -11,5 +13,12 @@ public class Menus {
 
     public int size() {
         return menus.size();
+    }
+
+    public Menu findById(long menuId) {
+        return menus.stream()
+                .filter(item -> item.getId().equals(menuId))
+                .findFirst()
+                .orElseThrow(EntityNotExistsException::new);
     }
 }

@@ -1,8 +1,11 @@
 package kitchenpos.domain;
 
+import kitchenpos.exception.TableEmptyException;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 public class Order {
@@ -63,15 +66,25 @@ public class Order {
     }
 
     public static Order create(OrderCreate orderCreate, Menus menus, OrderTable orderTable) {
+        if (orderTable.isEmpty()) {
+            throw new TableEmptyException();
+        }
+
         if (orderCreate.getOrderLineItems().size() != menus.size()) {
             throw new IllegalArgumentException();
         }
 
         Order order = new Order();
+
+        List<OrderLineItem> orderLineItems = orderCreate.getOrderLineItems()
+                .stream()
+                .map(item -> new OrderLineItem(order, menus.findById(item.getMenuId()), item.getQuantity()))
+                .collect(Collectors.toList());
+
         order.orderTable = orderTable;
         order.orderStatus = OrderStatus.COOKING;
         order.orderedTime = LocalDateTime.now();
-//        order.orderLineItems = orderLineItems;
+        order.orderLineItems = new OrderLineItems(orderLineItems);
 
         return order;
     }

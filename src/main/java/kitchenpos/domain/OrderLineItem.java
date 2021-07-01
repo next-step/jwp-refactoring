@@ -23,6 +23,12 @@ public class OrderLineItem {
     public OrderLineItem() {
     }
 
+    public OrderLineItem(Order order, Menu menu, long quantity) {
+        this.order = order;
+        this.menu = menu;
+        this.quantity = quantity;
+    }
+
     public OrderLineItem(Long seq, Long oldOrderId, Long oldMenuId, long quantity) {
         this.seq = seq;
         this.oldOrderId = oldOrderId;
