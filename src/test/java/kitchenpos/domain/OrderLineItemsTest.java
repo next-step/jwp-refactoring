@@ -3,28 +3,22 @@ package kitchenpos.domain;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class OrderLineItemsTest {
 
     @Test
     void size() {
         // given
-        OrderLineItems orderLineItems = new OrderLineItems(
-                Arrays.asList(
-                        new OrderLineItem(),
-                        new OrderLineItem(),
-                        new OrderLineItem()
-                )
-        );
+        List<OrderLineItem> orderLineItemList = Arrays.asList(new OrderLineItem(), new OrderLineItem(), new OrderLineItem());
+        OrderLineItems orderLineItems = new OrderLineItems(orderLineItemList);
 
         // when
         int size = orderLineItems.size();
 
         // then
-        assertThat(size)
-                .isEqualTo(3);
+        assertThat(size).isEqualTo(orderLineItemList.size());
     }
 }
