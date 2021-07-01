@@ -4,8 +4,7 @@ import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.*;
-import kitchenpos.fixture.MenuFixture;
-import kitchenpos.fixture.ProductFixture;
+import kitchenpos.fixture.CleanUp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -50,10 +49,8 @@ class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
+        CleanUp.cleanUpOrderFirst();
         this.menuService = new MenuService(menuDao, menuGroupDao, productDao);
-
-        MenuFixture.cleanUp();
-        ProductFixture.cleanUp();
 
         menuGroup = new MenuGroup(1L, "Hello");;
 

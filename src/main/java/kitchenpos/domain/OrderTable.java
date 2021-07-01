@@ -88,6 +88,8 @@ public class OrderTable {
         if (!isUnGroupable()) {
             throw new IllegalStateException();
         }
+
+        this.tableGroup = null;
     }
 
     public boolean isUnGroupable() {

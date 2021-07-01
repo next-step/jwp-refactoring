@@ -6,10 +6,7 @@ import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.*;
 import kitchenpos.exception.EntityNotExistsException;
 import kitchenpos.exception.TableEmptyException;
-import kitchenpos.fixture.MenuFixture;
-import kitchenpos.fixture.OrderTableFixture;
-import kitchenpos.fixture.ProductFixture;
-import kitchenpos.fixture.TableGroupFixture;
+import kitchenpos.fixture.CleanUp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -60,10 +57,7 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        ProductFixture.cleanUp();
-        MenuFixture.cleanUp();
-        OrderTableFixture.cleanUp();
-        TableGroupFixture.cleanUp();
+        CleanUp.cleanUpTableFirst();
 
         orderService = new OrderService(menuDao, orderDao,  orderTableDao);
 

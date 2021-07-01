@@ -17,8 +17,6 @@ public class MenuFixture {
     public static Menu 후라이드치킨_콜라_2000원_2개;
 
     public static void cleanUp() {
-        ProductFixture.cleanUp();
-
         양념치킨_콜라_1000원_1개 = new Menu(1L,"양념치킨_콜라_1000원_1개", new Price(1000), 치킨,
                 Arrays.asList(
                         new MenuProduct(productFixture.양념치킨_1000원, 1),
