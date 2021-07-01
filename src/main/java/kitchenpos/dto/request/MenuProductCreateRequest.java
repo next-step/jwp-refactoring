@@ -1,7 +1,5 @@
 package kitchenpos.dto.request;
 
-import javax.persistence.Transient;
-
 public class MenuProductCreateRequest {
     private Long menuId;
     private Long productId;
