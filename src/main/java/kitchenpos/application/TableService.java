@@ -23,25 +23,6 @@ public class TableService {
         this.orderTableDao = orderTableDao;
     }
 
-    @Transactional
-    public OrderTable create(final OrderTable orderTable) {
-        return create(
-                new OrderTableCreate(
-                        orderTable.getNumberOfGuests(),
-                        orderTable.isEmpty()
-                )
-        );
-    }
-
-    @Transactional
-    public OrderTable changeEmpty(final Long orderTableId, final OrderTable orderTable) {
-        return changeEmpty(orderTableId, orderTable.isEmpty());
-    }
-
-    @Transactional
-    public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTable orderTable) {
-        return changeNumberOfGuests(orderTableId, orderTable.getNumberOfGuests());
-    }
 
     @Transactional
     public OrderTable create(final OrderTableCreate create) {

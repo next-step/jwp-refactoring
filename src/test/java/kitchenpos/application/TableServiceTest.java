@@ -2,10 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.NumberOfGuest;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,7 +42,7 @@ class TableServiceTest {
     @DisplayName("create - 정상적인 주문 테이블 등록")
     void 정상적인_주문_테이블_등록() {
         // given
-        OrderTable orderTable = new OrderTable(1L, 1L, 1, true);
+        OrderTableCreate orderTable = new OrderTableCreate(new NumberOfGuest(1), true);
 
         // when
         when(orderTableDao.save(any())).thenAnswer(i -> i.getArgument(0));
@@ -90,7 +87,7 @@ class TableServiceTest {
 
         // then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableService.changeEmpty(orderTableId, orderTable));
+                .isThrownBy(() -> tableService.changeEmpty(orderTableId, true));
 
         verify(orderTableDao, VerificationModeFactory.times(1))
                 .findById(orderTableId);
@@ -107,7 +104,7 @@ class TableServiceTest {
 
         // when & then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableService.changeEmpty(orderTableId, orderTable));
+                .isThrownBy(() -> tableService.changeEmpty(orderTableId, true));
 
         verify(orderTableDao, VerificationModeFactory.times(1))
                 .findById(orderTableId);
@@ -128,7 +125,7 @@ class TableServiceTest {
                 .willReturn(Optional.of(orderTable));
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> tableService.changeEmpty(orderTableId, orderTable));
+        assertThatIllegalArgumentException().isThrownBy(() -> tableService.changeEmpty(orderTableId, true));
 
         verify(orderTableDao, VerificationModeFactory.times(1))
                 .findById(orderTableId);
@@ -162,14 +159,13 @@ class TableServiceTest {
     void DB에서_변경을_원하는_주문_테이블을_가져오고_주문_테이블이_없을경우_IllegalArgumentException이_발생한다() {
         // given
         Long orderTableId = 1L;
-        OrderTable orderTable = new OrderTable(orderTableId, 1L, 1, false);
 
         // when
         when(orderTableDao.findById(orderTableId)).thenReturn(Optional.empty());
 
         // then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, orderTable));
+                .isThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, new NumberOfGuest(1)));
         verify(orderTableDao, VerificationModeFactory.times(1))
                 .findById(orderTableId);
 
@@ -185,7 +181,7 @@ class TableServiceTest {
 
         // when & then
         assertThatIllegalStateException()
-                .isThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, orderTable));
+                .isThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, new NumberOfGuest(1)));
         verify(orderTableDao, VerificationModeFactory.times(1))
                 .findById(orderTableId);
     }
