@@ -1,7 +1,7 @@
 package kitchenpos.fixture;
 
-import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.Quantity;
+import kitchenpos.domain.order.OrderLineItem;
 
 public class OrderLineItemFixture {
     public static OrderLineItem 주문_연결_안된_양념치킨_콜라_1000원_1개;

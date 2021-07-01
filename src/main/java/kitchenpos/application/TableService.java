@@ -3,8 +3,8 @@ package kitchenpos.application;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.NumberOfGuest;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.OrderTableCreate;
+import kitchenpos.domain.table.OrderTable;
+import kitchenpos.domain.table.OrderTableCreate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

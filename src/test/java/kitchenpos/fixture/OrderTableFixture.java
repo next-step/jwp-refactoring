@@ -1,9 +1,9 @@
 package kitchenpos.fixture;
 
 import kitchenpos.domain.NumberOfGuest;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Orders;
+import kitchenpos.domain.order.Order;
+import kitchenpos.domain.order.Orders;
+import kitchenpos.domain.table.OrderTable;
 
 import java.util.Arrays;
 import java.util.Collections;

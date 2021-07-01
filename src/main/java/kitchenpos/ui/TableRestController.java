@@ -2,8 +2,8 @@ package kitchenpos.ui;
 
 import kitchenpos.application.TableService;
 import kitchenpos.domain.NumberOfGuest;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.OrderTableCreate;
+import kitchenpos.domain.table.OrderTable;
+import kitchenpos.domain.table.OrderTableCreate;
 import kitchenpos.dto.request.ChangeEmptyRequest;
 import kitchenpos.dto.request.ChangeNumberOfGuestsRequest;
 import kitchenpos.dto.request.OrderTableCreateRequest;

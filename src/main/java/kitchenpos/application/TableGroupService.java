@@ -3,9 +3,9 @@ package kitchenpos.application;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.OrderTables;
-import kitchenpos.domain.TableGroup;
-import kitchenpos.domain.TableGroupCreate;
+import kitchenpos.domain.table.OrderTables;
+import kitchenpos.domain.table.TableGroup;
+import kitchenpos.domain.table.TableGroupCreate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

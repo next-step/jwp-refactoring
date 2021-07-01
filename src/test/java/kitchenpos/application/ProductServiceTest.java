@@ -2,8 +2,8 @@ package kitchenpos.application;
 
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Price;
-import kitchenpos.domain.Product;
-import kitchenpos.domain.ProductCreate;
+import kitchenpos.domain.product.Product;
+import kitchenpos.domain.product.ProductCreate;
 import kitchenpos.fixture.ProductFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

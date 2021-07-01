@@ -1,8 +1,8 @@
 package kitchenpos.ui;
 
 import kitchenpos.application.MenuGroupService;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuGroupCreate;
+import kitchenpos.domain.menu.group.MenuGroup;
+import kitchenpos.domain.menu.group.MenuGroupCreate;
 import kitchenpos.dto.request.MenuGroupCreateRequest;
 import kitchenpos.fixture.CleanUp;
 import org.junit.jupiter.api.BeforeEach;

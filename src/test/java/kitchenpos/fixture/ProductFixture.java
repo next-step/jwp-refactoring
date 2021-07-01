@@ -1,7 +1,7 @@
 package kitchenpos.fixture;
 
 import kitchenpos.domain.Price;
-import kitchenpos.domain.Product;
+import kitchenpos.domain.product.Product;
 
 public class ProductFixture {
     public static Product 양념치킨_1000원;

@@ -1,9 +1,9 @@
 package kitchenpos.ui;
 
 import kitchenpos.application.OrderService;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderCreate;
-import kitchenpos.domain.OrderLineItemCreate;
+import kitchenpos.domain.order.Order;
+import kitchenpos.domain.order.OrderCreate;
+import kitchenpos.domain.order.OrderLineItemCreate;
 import kitchenpos.dto.request.OrderCreateRequest;
 import kitchenpos.dto.request.OrderStatusChangeRequest;
 import kitchenpos.dto.response.OrderViewResponse;

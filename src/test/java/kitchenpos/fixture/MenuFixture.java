@@ -1,9 +1,9 @@
 package kitchenpos.fixture;
 
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Price;
+import kitchenpos.domain.menu.Menu;
+import kitchenpos.domain.menu.group.MenuGroup;
+import kitchenpos.domain.menuproduct.MenuProduct;
 
 import java.util.Arrays;
 
