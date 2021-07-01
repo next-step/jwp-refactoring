@@ -26,4 +26,21 @@ class OrderTest {
         Order order = new Order(null, null, OrderStatus.COMPLETION.name(), null, null);
         assertThat(order.isFinished()).isTrue();
     }
+
+    @Test
+    @DisplayName("OrderCreate의 OrderLineItem size와 Menus의 size가 틀리면 IllegalArgumentException이 발생한다")
+    void OrderCreate의_OrderLineItem_Size와_Menus의_size가_틀리면_IllegalArugmentException이_발생한다() {
+        // given
+        OrderCreate orderCreate = new OrderCreate(
+                null, null,
+                Arrays.asList(
+                        new OrderLineItemCreate(0, 0),
+                        new OrderLineItemCreate(0, 0),
+                        new OrderLineItemCreate(0, 0)
+                )
+        );
+        Menus menus = new Menus(Arrays.asList(new Menu(), new Menu()));
+        // when & then
+        assertThatIllegalArgumentException().isThrownBy(() -> Order.create(orderCreate, menus, null));
+    }
 }
