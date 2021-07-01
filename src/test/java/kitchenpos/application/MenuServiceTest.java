@@ -212,7 +212,7 @@ class MenuServiceTest {
                 new MenuProduct(3L, menuId, 3L, 3L)
         );
 
-        Menu menu = new Menu(menuId, "Menu", BigDecimal.valueOf(1), 1L, menuProducts);
+        Menu menu = new Menu(menuId, "Menu", new Price(1), menuProducts);
 
         // when
         when(menuDao.findAll()).thenReturn(Arrays.asList(menu));

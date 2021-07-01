@@ -18,9 +18,6 @@ public class Menu {
     @ManyToOne(fetch = FetchType.LAZY)
     private MenuGroup menuGroup;
 
-    @Transient
-    private Long menuGroupId;
-
     private MenuProducts menuProducts = new MenuProducts();
 
 
@@ -50,15 +47,10 @@ public class Menu {
     public Menu() {
     }
 
-    public Menu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        this(id, name, new Price(price), menuGroupId, menuProducts);
-    }
-
-    public Menu(Long id, String name, Price price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    public Menu(Long id, String name, Price price, List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;
-        this.menuGroupId = menuGroupId;
         this.menuProducts = new MenuProducts(menuProducts);
     }
 
@@ -84,14 +76,6 @@ public class Menu {
 
     public void setPrice(Price price) {
         this.price = price;
-    }
-
-    public Long getMenuGroupId() {
-        return menuGroupId;
-    }
-
-    public void setMenuGroupId(final Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
     }
 
     public MenuGroup getMenuGroup() {

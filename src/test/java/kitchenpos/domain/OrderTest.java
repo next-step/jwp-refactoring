@@ -71,9 +71,9 @@ class OrderTest {
                 )
         );
         List<Menu> menuList = Arrays.asList(
-                new Menu(1L, "1", new Price(1), null, null),
-                new Menu(2L, "2", new Price(2), null, null),
-                new Menu(3L, "3", new Price(3), null, null)
+                new Menu(1L, "1", new Price(1),  null),
+                new Menu(2L, "2", new Price(2), null),
+                new Menu(3L, "3", new Price(3), null)
         );
         Menus menus = new Menus(menuList);
         OrderTable orderTable = new OrderTable(1L, null, null, null, false);

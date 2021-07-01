@@ -44,7 +44,7 @@ class OrderRestControllerTest {
         OrderCreateRequest orderCreateRequest = new OrderCreateRequest(1L, OrderStatus.MEAL, Arrays.asList(new OrderLineItemCreateRequest(1L, 1L)));
         OrderTable orderTable = new OrderTable(1L, null, null, null, false);
         Order fakeOrder = new Order(1L, orderTable, OrderStatus.MEAL, LocalDateTime.now(), null);
-        Menu fakeMenu = new Menu(1L, "Hello", new Price(1), 1L, null);
+        Menu fakeMenu = new Menu(1L, "Hello", new Price(1), null);
         List<OrderLineItem> orderLineItems = Arrays.asList(
                 new OrderLineItem(1L, fakeOrder, fakeMenu, 1),
                 new OrderLineItem(2L, fakeOrder, fakeMenu, 2),
@@ -74,8 +74,8 @@ class OrderRestControllerTest {
         Order fakeOrder = new Order(1L, null, OrderStatus.COMPLETION, null, null);
         Order fakeOrder2 = new Order(2L, null, OrderStatus.MEAL, null, null);
 
-        Menu fakeMenu = new Menu(1L, null, BigDecimal.valueOf(1), null, null);
-        Menu fakeMenu2 = new Menu(2L, null, BigDecimal.valueOf(2), null, null);
+        Menu fakeMenu = new Menu(1L, null, new Price(1), null);
+        Menu fakeMenu2 = new Menu(2L, null, new Price(2), null);
 
         OrderTable orderTable = new OrderTable(1L, null, null, null, false);
         OrderTable orderTable2 = new OrderTable(2L, null, null, null, false);
@@ -110,7 +110,7 @@ class OrderRestControllerTest {
     void changeOrderStatus() throws Exception {
         // given
         Order fakeOrder = new Order(1L, null, OrderStatus.COMPLETION, null, null);
-        Menu fakeMenu = new Menu(1L, null, BigDecimal.valueOf(1), null, null);
+        Menu fakeMenu = new Menu(1L, null, new Price(1), null);
 
         OrderStatusChangeRequest orderStatusChangeRequest = new OrderStatusChangeRequest(OrderStatus.COOKING);
         OrderTable orderTable = new OrderTable(1L, null, null, null, false);

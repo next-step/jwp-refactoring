@@ -127,8 +127,8 @@ class OrderServiceTest {
 
 
         List<Menu> menus = Arrays.asList(
-                new Menu(1L, "A", new Price(1), null, null),
-                new Menu(2L, "A", new Price(2), null, null)
+                new Menu(1L, "A", new Price(1), null),
+                new Menu(2L, "A", new Price(2), null)
         );
 
         OrderCreate orderCreate = new OrderCreate(orderTableId, OrderStatus.MEAL, orderLineItemCreates);
