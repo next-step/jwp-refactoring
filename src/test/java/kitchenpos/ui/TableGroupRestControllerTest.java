@@ -18,9 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import static kitchenpos.fixture.OrderTableFixture.*;
 import static kitchenpos.ui.JsonUtil.toJson;
@@ -50,10 +48,7 @@ class TableGroupRestControllerTest {
         // given
         TableGroupCreateRequest createRequest = new TableGroupCreateRequest(Arrays.asList(1L, 2L, 3L));
 
-        List<OrderTable> orderTables = new ArrayList<>();
-        orderTables.addAll(Arrays.asList(사용중인_1명_2건_결제완료1, 사용중인_1명_테이블, 사용중인_1명_2건_결제완료2));
-
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
+        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(사용중인_1명_2건_결제완료1, 사용중인_1명_테이블, 사용중인_1명_2건_결제완료2));
 
         given(tableGroupService.create(any(TableGroupCreate.class)))
                 .willReturn(tableGroup);
@@ -66,9 +61,9 @@ class TableGroupRestControllerTest {
         )
                 .andExpect(status().isCreated())
                 .andExpect(validateTableGroup("$", tableGroup))
-                .andExpect(validateOrderTable("$.orderTables[0]", orderTables.get(0)))
-                .andExpect(validateOrderTable("$.orderTables[1]", orderTables.get(1)))
-                .andExpect(validateOrderTable("$.orderTables[2]", orderTables.get(2)))
+                .andExpect(validateOrderTable("$.orderTables[0]", 사용중인_1명_2건_결제완료1))
+                .andExpect(validateOrderTable("$.orderTables[1]", 사용중인_1명_테이블))
+                .andExpect(validateOrderTable("$.orderTables[2]", 사용중인_1명_2건_결제완료2))
         .andDo(print())
         ;
     }
