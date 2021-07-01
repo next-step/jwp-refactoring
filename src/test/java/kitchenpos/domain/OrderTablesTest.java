@@ -1,5 +1,7 @@
 package kitchenpos.domain;
 
+import kitchenpos.fixture.CleanUp;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -9,25 +11,32 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static kitchenpos.fixture.OrderTableFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-import static org.junit.jupiter.api.Assertions.*;
 
 class OrderTablesTest {
-    private final OrderTables hasTableGroupIdOrderTables = new OrderTables(
-            Arrays.asList(
-                    new OrderTable(new TableGroup(), Arrays.asList(), 1, true),
-                    new OrderTable(new TableGroup(), Arrays.asList(),  1, true)
-            )
-    );
+    private OrderTables hasTableGroupIdOrderTables;
 
-    private final OrderTables notEmptyOrderTables = new OrderTables(
-            Arrays.asList(
-                    new OrderTable(new TableGroup(), Arrays.asList(), 1, false),
-                    new OrderTable(new TableGroup(), Arrays.asList(), 1, true)
-            )
-    );
+    private OrderTables notEmptyOrderTables;
 
+    @BeforeEach
+    void setUp() {
+        CleanUp.cleanUpTableFirst();
+
+        hasTableGroupIdOrderTables = new OrderTables(
+                Arrays.asList(
+                        사용중인_1명_테이블, 사용중인_2명_테이블
+                )
+        );
+
+        notEmptyOrderTables = new OrderTables(
+                Arrays.asList(
+                        사용중인_1명_테이블, 빈_테이블
+                )
+        );
+
+    }
 
     @Test
     @DisplayName("하나라도 Empty가 true이면 예약이 되어있다")
@@ -44,12 +53,7 @@ class OrderTablesTest {
     @Test
     @DisplayName("TableGroup이 지정이 안되어있고, 빈 테이블이면 예약이 안되어있다.")
     void TableGroup이_지정이_안되어있고_빈_테이블이면_예약이_안되어있다() {
-        OrderTables orderTables = new OrderTables(
-                Arrays.asList(
-                        new OrderTable(null, Arrays.asList(), 1, true),
-                        new OrderTable(null, Arrays.asList(), 1, true)
-                )
-        );
+        OrderTables orderTables = new OrderTables(Arrays.asList(빈_테이블));
 
         assertThat(orderTables.isBookedAny()).isFalse();
     }
@@ -76,21 +80,7 @@ class OrderTablesTest {
     @Test
     @DisplayName("모든 테이블의 모든 주문이 끝났으면 단체지정이 해제가 가능하다 ")
     void 모든_테이블의_모든_주문이_끝났으면_단체지정이_해제가_가능하다() {
-        List<Order> orders1 = Arrays.asList(
-                new Order(null, null, OrderStatus.COMPLETION, null, null),
-                new Order(null, null, OrderStatus.COMPLETION, null, null)
-        );
-        List<Order> orders2 = Arrays.asList(
-                new Order(null, null, OrderStatus.COMPLETION, null, null),
-                new Order(null, null, OrderStatus.COMPLETION, null, null)
-        );
-
-        OrderTables orderTables = new OrderTables(
-                Arrays.asList(
-                    new OrderTable(null,  orders1,  1, false),
-                    new OrderTable(null,  orders2, 1, false)
-                )
-        );
+        OrderTables orderTables = new OrderTables(Arrays.asList(사용중인_1명_2건_결제완료1, 사용중인_1명_2건_결제완료2));
 
         assertThat(orderTables.isUnGroupable()).isTrue();
     }
@@ -99,21 +89,7 @@ class OrderTablesTest {
     @Test
     @DisplayName("모든 테이블의 모든 주문이 안끝났으면 단체지정이 해제가 불가능하다 ")
     void 모든_테이블의_모든_주문이_안끝났으면_단체지정이_해제가_불가능하다() {
-        List<Order> orders1 = Arrays.asList(
-                new Order(null, null, OrderStatus.COOKING, null, null),
-                new Order(null, null, OrderStatus.COMPLETION, null, null)
-        );
-        List<Order> orders2 = Arrays.asList(
-                new Order(null, null, OrderStatus.COMPLETION, null, null),
-                new Order(null, null, OrderStatus.COMPLETION, null, null)
-        );
-
-        OrderTables orderTables = new OrderTables(
-                Arrays.asList(
-                        new OrderTable(null, orders1,  1, false),
-                        new OrderTable(null, orders2,  1, false)
-                )
-        );
+        OrderTables orderTables = new OrderTables(Arrays.asList(사용중인_1명_1건_결제완료_1건_식사, 사용중인_1명_2건_결제완료2));
 
         assertThat(orderTables.isUnGroupable()).isFalse();
     }
@@ -121,21 +97,7 @@ class OrderTablesTest {
     @Test
     @DisplayName("모든 테이블의 모든 주문이 안끝났으면 단체지정이 해제가 불가능하므로 IllegalStateException이 발생한다 ")
     void 모든_테이블의_모든_주문이_안끝났으면_단체지정이_해제가_불가능하므로_IllegalStateException이_발생한다() {
-        List<Order> orders1 = Arrays.asList(
-                new Order(null, null, OrderStatus.COOKING, null, null),
-                new Order(null, null, OrderStatus.COMPLETION, null, null)
-        );
-        List<Order> orders2 = Arrays.asList(
-                new Order(null, null, OrderStatus.COMPLETION, null, null),
-                new Order(null, null, OrderStatus.COMPLETION, null, null)
-        );
-
-        OrderTables orderTables = new OrderTables(
-                Arrays.asList(
-                        new OrderTable(null, orders1, 1, false),
-                        new OrderTable(null, orders2, 1, false)
-                )
-        );
+        OrderTables orderTables = new OrderTables(Arrays.asList(사용중인_1명_1건_결제완료_1건_식사, 사용중인_1명_2건_결제완료2));
 
         assertThatIllegalStateException().isThrownBy(() -> orderTables.ungroup());
     }
