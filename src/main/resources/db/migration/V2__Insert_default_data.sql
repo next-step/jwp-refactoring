@@ -49,3 +49,7 @@ INSERT INTO order_table (id, table_group_id, number_of_guests, empty) VALUES (12
 INSERT INTO table_group (id, created_date) VALUES (2, PARSEDATETIME('2021-06-25 00:00', 'yyyy-MM-dd HH:mm'));
 INSERT INTO order_table (id, table_group_id, number_of_guests, empty) VALUES (13, 2, 3, false);
 INSERT INTO orders (id, order_table_id, order_status, ordered_time) VALUES (4, 13, 'MEAL', PARSEDATETIME('2021-06-25 00:00', 'yyyy-MM-dd HH:mm'));
+
+INSERT INTO table_group (id, created_date) VALUES (3, PARSEDATETIME('2021-06-25 00:00', 'yyyy-MM-dd HH:mm'));
+INSERT INTO order_table (id, table_group_id, number_of_guests, empty) VALUES (14, 3, 0, true);
+INSERT INTO orders (id, order_table_id, order_status, ordered_time) VALUES (5, 14, 'COMPLETION', PARSEDATETIME('2021-06-25 00:00', 'yyyy-MM-dd HH:mm'));
