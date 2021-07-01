@@ -10,21 +10,22 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "old_order_table_id")
-    private Long orderTableId;
-
     @ManyToOne(fetch = FetchType.LAZY)
     private OrderTable orderTable;
 
     @Enumerated(value = EnumType.STRING)
     private OrderStatus orderStatus;
 
-    @Transient
-    private String oldOrderStatus;
     private LocalDateTime orderedTime;
 
-    @Transient
+    @OneToMany(fetch = FetchType.LAZY)
     private List<OrderLineItem> orderLineItems;
+
+
+    @Column(name = "old_order_table_id")
+    private Long orderTableId;
+    @Transient
+    private String oldOrderStatus;
 
     public Order() {
     }
@@ -61,6 +62,12 @@ public class Order {
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
+    }
+
+    public static void create(OrderCreate orderCreate, OrderLineItems orderLineItems, OrderTable orderTable) {
+        if (orderCreate.getOrderLineItems().size() != orderLineItems.size()) {
+            throw new IllegalArgumentException();
+        }
     }
 
     public Long getId() {
