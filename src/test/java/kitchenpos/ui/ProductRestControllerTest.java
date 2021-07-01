@@ -1,12 +1,12 @@
 package kitchenpos.ui;
 
 import kitchenpos.application.ProductService;
-import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductCreate;
-import kitchenpos.dto.request.MenuCreateRequest;
 import kitchenpos.dto.request.ProductCreateRequest;
 import kitchenpos.exception.InvalidPriceException;
+import kitchenpos.fixture.CleanUp;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,10 +21,11 @@ import org.springframework.test.web.servlet.ResultMatcher;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.List;
 
+import static kitchenpos.fixture.ProductFixture.*;
 import static kitchenpos.ui.JsonUtil.toJson;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -40,6 +41,11 @@ class ProductRestControllerTest {
 
     @MockBean
     private ProductService productService;
+
+    @BeforeEach
+    void setUp() {
+        CleanUp.cleanUpOrderFirst();
+    }
 
     @Test
     @DisplayName("[post]/api/products - 상품의 가격이 비어 있거나, 0원보다 적을경우 BadRequest이다.")
@@ -66,9 +72,8 @@ class ProductRestControllerTest {
     void 정상등록() throws Exception {
         // given
         ProductCreateRequest productCreateRequest = new ProductCreateRequest("name", BigDecimal.valueOf(100));
-        Product product = new Product(1L, productCreateRequest.getName(), productCreateRequest.getPrice());
 
-        given(productService.create(any(ProductCreate.class))).willReturn(product);
+        given(productService.create(any(ProductCreate.class))).willReturn(양념치킨_1000원);
 
         // when & then
         mockMvc.perform(
@@ -76,7 +81,7 @@ class ProductRestControllerTest {
                         .content(toJson(productCreateRequest))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
-                .andExpect(validateProduct("$", product))
+                .andExpect(validateProduct("$", 양념치킨_1000원))
                 .andReturn();
     }
 
@@ -84,20 +89,17 @@ class ProductRestControllerTest {
     @DisplayName("[get]/api/products - 정상목록조회")
     void 정상목록조회() throws Exception {
         // given
-        Product product1 = new Product(1L, "A", new Price(1));
-        Product product2 = new Product(2L, "B", new Price(2));
-        Product product3 = new Product(3L, "C", new Price(3));
-
-        given(productService.list()).willReturn(Arrays.asList(product1, product2, product3));
+        List<Product> products = Arrays.asList(양념치킨_1000원, 후라이드치킨_2000원, 콜라_100원);
+        given(productService.list()).willReturn(products);
 
         // when & then
-        MvcResult mvcResult = mockMvc.perform(
+        mockMvc.perform(
                 get("/api/products")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(validateProduct("$[0]", product1))
-                .andExpect(validateProduct("$[1]", product2))
-                .andExpect(validateProduct("$[2]", product3))
+                .andExpect(validateProduct("$[0]", 양념치킨_1000원))
+                .andExpect(validateProduct("$[1]", 후라이드치킨_2000원))
+                .andExpect(validateProduct("$[2]", 콜라_100원))
                 .andReturn();
     }
 
