@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -48,6 +49,8 @@ class OrderServiceTest {
 
     private List<OrderLineItem> orderLineItems;
 
+    private List<OrderLineItemCreate> orderLineItemCreates;
+
     @BeforeEach
     void setUp() {
         this.orderService = new OrderService(menuDao, orderDao, orderLineItemDao, orderTableDao);
@@ -56,18 +59,22 @@ class OrderServiceTest {
         orderLineItem2 = new OrderLineItem(2L, 1L, 2L, 2);
 
         this.orderLineItems = Arrays.asList(orderLineItem1, orderLineItem2);
+
+        this.orderLineItemCreates = this.orderLineItems.stream()
+                .map(item -> new OrderLineItemCreate(item.getOldMenuId(), item.getQuantity()))
+                .collect(Collectors.toList());
     }
 
     @Test
     @DisplayName("create - 등록을 원하는 주문항목이 DB에 전부 존재하는지 확인하여 전부 존재하지 않으면 IllegalArgumentException이 발생한다.")
     void 등록을_원하는_주문항목이_DB에_전부_존재하는지_확인하여_전부_존재하지_않으면_IllegalArgumentException이_발생한다() {
         // given
-        Order order = new Order(1L, 1L, OrderStatus.MEAL.name(), LocalDateTime.now(), orderLineItems);
+        OrderCreate orderCreate = new OrderCreate(1L, OrderStatus.MEAL, orderLineItemCreates);
         given(orderTableDao.findById(any()))
                 .willReturn(Optional.of(new OrderTable(1L, null, null,null, null, false)));
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(order));
+        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(orderCreate));
     }
 
     @Test
@@ -76,14 +83,14 @@ class OrderServiceTest {
         // given
         Long orderTableId = 1L;
 
-        Order order = new Order(1L, orderTableId, OrderStatus.MEAL.name(), LocalDateTime.now(), orderLineItems);
+        OrderCreate orderCreate = new OrderCreate(1L, OrderStatus.MEAL, orderLineItemCreates);
 
         // when
         when(orderTableDao.findById(orderTableId)).thenReturn(Optional.empty());
 
         // then
         assertThatExceptionOfType(EntityNotExistsException.class)
-                .isThrownBy(() -> orderService.create(order));
+                .isThrownBy(() -> orderService.create(orderCreate));
 
         verify(orderTableDao, VerificationModeFactory.times(1)).findById(orderTableId);
     }
@@ -96,14 +103,14 @@ class OrderServiceTest {
 
         OrderTable orderTable = new OrderTable(orderTableId, 1L, 1, true);
 
-        Order order = new Order(1L, orderTableId, OrderStatus.MEAL.name(), LocalDateTime.now(), orderLineItems);
+        OrderCreate orderCreate = new OrderCreate(1L, OrderStatus.MEAL, orderLineItemCreates);
 
         // when
         when(orderTableDao.findById(orderTableId)).thenReturn(Optional.of(orderTable));
 
         // then
         assertThatExceptionOfType(TableEmptyException.class)
-                .isThrownBy(() -> orderService.create(order));
+                .isThrownBy(() -> orderService.create(orderCreate));
 
         verify(orderTableDao, VerificationModeFactory.times(1)).findById(orderTableId);
 
@@ -124,7 +131,7 @@ class OrderServiceTest {
                 new Menu(2L, "A", new Price(2), null, null)
         );
 
-        Order order = new Order(orderId, orderTableId, OrderStatus.MEAL.name(), LocalDateTime.now(), orderLineItems);
+        OrderCreate orderCreate = new OrderCreate(orderTableId, OrderStatus.MEAL, orderLineItemCreates);
 
         given(menuDao.findAllById(any())).willReturn(menus);
 
@@ -133,7 +140,7 @@ class OrderServiceTest {
         // when
         when(orderDao.save(any())).thenAnswer(i -> i.getArgument(0));
 
-        Order savedOrder = orderService.create(order);
+        Order savedOrder = orderService.create(orderCreate);
 
         // then
 
@@ -179,15 +186,12 @@ class OrderServiceTest {
     void 변경을_원하는_주문을_DB에서_가져오고_없으면_IllegalArgumentException이_발생한다(){
         // given
         Long orderId = 1L;
-
-        Order order = new Order(orderId, 1L, OrderStatus.MEAL.name(), LocalDateTime.now(), orderLineItems);
-
         // when
         when(orderDao.findById(orderId)).thenReturn(Optional.empty());
 
         // then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderService.changeOrderStatus(orderId, order));
+                .isThrownBy(() -> orderService.changeOrderStatus(orderId, OrderStatus.MEAL));
 
         verify(orderDao, VerificationModeFactory.times(1)).findById(orderId);
     }
@@ -206,7 +210,7 @@ class OrderServiceTest {
         when(orderDao.findById(orderId)).thenReturn(Optional.of(order));
 
         // then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.changeOrderStatus(orderId, order));
+        assertThatIllegalArgumentException().isThrownBy(() -> orderService.changeOrderStatus(orderId, OrderStatus.COMPLETION));
 
         verify(orderDao, VerificationModeFactory.times(1)).findById(orderId);
     }
@@ -230,7 +234,7 @@ class OrderServiceTest {
 
         // when
 
-        Order savedOrder = orderService.changeOrderStatus(orderId, order);
+        Order savedOrder = orderService.changeOrderStatus(orderId, OrderStatus.COOKING);
 
         // then
         assertThat(savedOrder.getOldOrderStatus()).isEqualTo(OrderStatus.COOKING.name());

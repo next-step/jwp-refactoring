@@ -35,24 +35,6 @@ public class OrderService {
     }
 
     @Transactional
-    public Order create(final Order order) {
-        OrderCreate orderCreate = new OrderCreate(
-                order.getOrderTableId(),
-                OrderStatus.valueOf(order.getOldOrderStatus()),
-                order.getOrderLineItems()
-                        .stream()
-                        .map(item -> new OrderLineItemCreate(item.getOldMenuId(), item.getQuantity()))
-                        .collect(Collectors.toList())
-                );
-
-        return create(orderCreate);
-    }
-
-    @Transactional
-    public Order changeOrderStatus(final Long orderId, final Order order) {
-        return changeOrderStatus(orderId, order.getOrderStatus());
-    }
-
     public Order create(OrderCreate orderCreate) {
         List<Long> menuIds = orderCreate.getOrderLineItems()
                 .stream()
