@@ -2,8 +2,10 @@ package kitchenpos.application;
 
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.*;
-import kitchenpos.fixture.OrderTableFixture;
+import kitchenpos.domain.NumberOfGuest;
+import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTableCreate;
+import kitchenpos.fixture.CleanUp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,8 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.fixture.OrderTableFixture.미사용중인_테이블;
-import static kitchenpos.fixture.OrderTableFixture.사용중인_2명_테이블;
+import static kitchenpos.fixture.OrderTableFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -37,7 +38,7 @@ class TableServiceTest {
 
     @BeforeEach
     void setUp() {
-        OrderTableFixture.cleanUp();
+        CleanUp.cleanUpTableFirst();
 
         this.tableService = new TableService(orderDao, orderTableDao);
     }
@@ -57,7 +58,6 @@ class TableServiceTest {
         assertThat(savedOrderTable.getTableGroup()).isNull();
 
         verify(orderTableDao, VerificationModeFactory.times(1)).save(savedOrderTable);
-
     }
 
     @Test
@@ -97,9 +97,8 @@ class TableServiceTest {
     void 주문_테이블이_단체지정이_되어있을경우_IllegalArgumentException이_발생한다() {
         // given
         Long orderTableId = 1L;
-        OrderTable orderTable = new OrderTable(orderTableId, new TableGroup(), Arrays.asList(), 1, true);
 
-        given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(orderTable));
+        given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(사용중인_1명_테이블));
 
         // when & then
         assertThatIllegalArgumentException()
@@ -113,43 +112,33 @@ class TableServiceTest {
     @DisplayName("changeEmpty - 주문 테이블에 등록된 주문들의 상태가 조리 또는 식사 일 경우 IllegalArgumentException이 발생한다.")
     void 주문_테이블에_등록된_주문들의_상탱가_조리_또는_식사_일_경우_IllegalArgumentException이_발생한다() {
         // given
-        Long orderTableId = 1L;
-        List<Order> orders = Arrays.asList(
-                new Order(null, new OrderTable(), OrderStatus.MEAL, null, null),
-                new Order(null, new OrderTable(), OrderStatus.COOKING, null, null)
-        );
-        OrderTable orderTable = new OrderTable(orderTableId, null, orders, 1, true);
-
-        given(orderTableDao.findById(orderTableId))
-                .willReturn(Optional.of(orderTable));
+        given(orderTableDao.findById(사용중인_1명_1건_조리_1건_식사.getId()))
+                .willReturn(Optional.of(사용중인_1명_1건_조리_1건_식사));
 
         // when & then
-        assertThatIllegalStateException().isThrownBy(() -> tableService.changeEmpty(orderTableId, true));
+        assertThatIllegalStateException().isThrownBy(() -> tableService.changeEmpty(사용중인_1명_1건_조리_1건_식사.getId(), true));
 
         verify(orderTableDao, VerificationModeFactory.times(1))
-                .findById(orderTableId);
+                .findById(사용중인_1명_1건_조리_1건_식사.getId());
     }
 
     @Test
     @DisplayName("changeEmpty - 정상적인 빈 테이블 변경")
     void 정상적인_빈_테이블_변경() {
         // given
-        Long orderTableId = 1L;
-        OrderTable orderTable = new OrderTable(orderTableId, null, Arrays.asList(), 1, true);
-
-        given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(orderTable));
+        given(orderTableDao.findById(빈_테이블.getId())).willReturn(Optional.of(빈_테이블));
 
         // when
-        OrderTable savedOrderTable = tableService.changeEmpty(orderTableId, false);
+        OrderTable savedOrderTable = tableService.changeEmpty(빈_테이블.getId(), false);
 
         // then
         assertThat(savedOrderTable.getTableGroup()).isNull();
-        assertThat(savedOrderTable.getId()).isEqualTo(orderTable.getId());
-        assertThat(savedOrderTable.getNumberOfGuests()).isEqualTo(orderTable.getNumberOfGuests());
+        assertThat(savedOrderTable.getId()).isEqualTo(빈_테이블.getId());
+        assertThat(savedOrderTable.getNumberOfGuests()).isEqualTo(빈_테이블.getNumberOfGuests());
         assertThat(savedOrderTable.isEmpty()).isFalse();
 
         verify(orderTableDao, VerificationModeFactory.times(1))
-                .findById(orderTableId);
+                .findById(빈_테이블.getId());
     }
 
     @Test
@@ -173,34 +162,30 @@ class TableServiceTest {
     @DisplayName("changeNumberOfGuests - 주문 테이블이 빈 테이블이면 IllegalArgumentException이 발생한다.")
     void 주문_테이블이_빈_테이블이면_IllegalArgumentException이_발생한다() {
         // given
-        Long orderTableId = 1L;
-        OrderTable orderTable = new OrderTable(orderTableId, null, Arrays.asList(), 1, true);
-        given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(orderTable));
+        given(orderTableDao.findById(빈_테이블.getId())).willReturn(Optional.of(빈_테이블));
 
         // when & then
         assertThatIllegalStateException()
-                .isThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, new NumberOfGuest(1)));
+                .isThrownBy(() -> tableService.changeNumberOfGuests(빈_테이블.getId(), new NumberOfGuest(1)));
         verify(orderTableDao, VerificationModeFactory.times(1))
-                .findById(orderTableId);
+                .findById(빈_테이블.getId());
     }
 
     @Test
     @DisplayName("changeNumberOfGuest - 정상적인 방문한 손님 변경")
     void 정상적인_방문한_손님_변경() {
         // given
-        Long orderTableId = 1L;
-        TableGroup tableGroup = new TableGroup(null, null, Arrays.asList());
-        NumberOfGuest toBe = new NumberOfGuest(2);
-        OrderTable orderTable = new OrderTable(orderTableId, tableGroup, Arrays.asList(), 1, false);
-        given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(orderTable));
+        NumberOfGuest toBe = new NumberOfGuest(200);
+
+        given(orderTableDao.findById(사용중인_1명_1건_조리_1건_식사.getId())).willReturn(Optional.of(사용중인_1명_1건_조리_1건_식사));
 
         // when
-        OrderTable changedOrderTable = tableService.changeNumberOfGuests(orderTableId, toBe);
+        OrderTable changedOrderTable = tableService.changeNumberOfGuests(사용중인_1명_1건_조리_1건_식사.getId(), toBe);
 
         // when & then
-        assertThat(changedOrderTable.getId()).isEqualTo(orderTable.getId());
-        assertThat(changedOrderTable.getTableGroup()).isEqualTo(tableGroup);
+        assertThat(changedOrderTable.getId()).isEqualTo(사용중인_1명_1건_조리_1건_식사.getId());
+        assertThat(changedOrderTable.getTableGroup()).isEqualTo(사용중인_1명_1건_조리_1건_식사.getTableGroup());
         assertThat(changedOrderTable.getNumberOfGuests()).isEqualTo(toBe);
-        assertThat(changedOrderTable.isEmpty()).isEqualTo(orderTable.isEmpty());
+        assertThat(changedOrderTable.isEmpty()).isEqualTo(사용중인_1명_1건_조리_1건_식사.isEmpty());
     }
 }

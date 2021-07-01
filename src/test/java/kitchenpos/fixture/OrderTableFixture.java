@@ -25,6 +25,10 @@ public class OrderTableFixture {
     public static OrderTable 사용중인_1명_2건_결제완료2;
 
     public static OrderTable 단체만_지정이_되어있고_빈_테이블;
+    public static OrderTable 빈_테이블;
+
+    public static OrderTable 사용중인_1명_1건_조리_1건_식사;
+
 
     public static void cleanUp() {
         미사용중인_테이블 = new OrderTable(1L, new NumberOfGuest(0), true);
@@ -45,6 +49,9 @@ public class OrderTableFixture {
         사용중인_1명_2건_결제완료2 = new OrderTable(6L, 주문이_없는_테이블_그룹, new Orders(결제완료2_2), new NumberOfGuest(1), false);
 
         단체만_지정이_되어있고_빈_테이블 = new OrderTable(7L, 주문이_없는_테이블_그룹, Arrays.asList(), new NumberOfGuest(1), true);
+        빈_테이블 = new OrderTable(8L, null, Arrays.asList(), new NumberOfGuest(0), true);
+
+        사용중인_1명_1건_조리_1건_식사 =  new OrderTable(9L, 주문이_없는_테이블_그룹, Arrays.asList(식사1, 조리1), new NumberOfGuest(1), false);
     }
 }
 

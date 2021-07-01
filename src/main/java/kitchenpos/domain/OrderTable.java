@@ -105,12 +105,12 @@ public class OrderTable {
     }
 
     public void changeEmpty(boolean empty) {
-        if (isBooked()) {
-            throw new IllegalArgumentException();
-        }
-
         if (!orders.isAllFinished()) {
             throw new IllegalStateException();
+        }
+
+        if (isBooked()) {
+            throw new IllegalArgumentException();
         }
 
         this.empty = empty;
