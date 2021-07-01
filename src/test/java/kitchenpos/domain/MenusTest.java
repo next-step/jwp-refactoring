@@ -3,21 +3,22 @@ package kitchenpos.domain;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class MenusTest {
 
     @Test
     void size() {
         // given
-        Menus menus = new Menus(Arrays.asList(new Menu(),new Menu(),new Menu()));
+        List<Menu> menuList = Arrays.asList(new Menu(), new Menu(), new Menu());
+        Menus menus = new Menus(menuList);
 
         // when
         int size = menus.size();
 
         // then
-        assertThat(size).isEqualTo(3);
+        assertThat(size).isEqualTo(menuList.size());
     }
 }
