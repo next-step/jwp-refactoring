@@ -26,6 +26,10 @@ public class Order {
     public Order() {
     }
 
+    public Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+        this(null, orderTable, orderStatus, orderedTime, orderLineItems);
+    }
+
     public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
         this.id = id;
         this.orderTable = orderTable;

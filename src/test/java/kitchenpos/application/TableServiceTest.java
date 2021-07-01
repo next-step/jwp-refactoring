@@ -3,11 +3,11 @@ package kitchenpos.application;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.*;
+import kitchenpos.fixture.OrderTableFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.Mock;
 import org.mockito.internal.verification.VerificationModeFactory;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -16,6 +16,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static kitchenpos.fixture.OrderTableFixture.미사용중인_테이블;
+import static kitchenpos.fixture.OrderTableFixture.사용중인_2명_테이블;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -35,6 +37,8 @@ class TableServiceTest {
 
     @BeforeEach
     void setUp() {
+        OrderTableFixture.cleanUp();
+
         this.tableService = new TableService(orderDao, orderTableDao);
     }
 
@@ -59,17 +63,13 @@ class TableServiceTest {
     @Test
     @DisplayName("list - 정상적인 주문 테이블 전체 조회")
     void 정상적인_주문_테이블_전체_조회() {
-        // given
-        OrderTable orderTable1 = new OrderTable(1L, null, null, new NumberOfGuest(1), true);
-        OrderTable orderTable2 = new OrderTable(2L, null, null, new NumberOfGuest(2), false);
-
         // when
-        when(orderTableDao.findAll()).thenReturn(Arrays.asList(orderTable1, orderTable2));
+        when(orderTableDao.findAll()).thenReturn(Arrays.asList(미사용중인_테이블, 사용중인_2명_테이블));
 
         List<OrderTable> list = tableService.list();
 
         // then
-        assertThat(list).containsExactly(orderTable1, orderTable2);
+        assertThat(list).containsExactly(미사용중인_테이블, 사용중인_2명_테이블);
 
         verify(orderTableDao, VerificationModeFactory.times(1))
                 .findAll();

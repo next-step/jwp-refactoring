@@ -18,13 +18,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 
 import static kitchenpos.ui.JsonUtil.toJson;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -64,7 +63,7 @@ class TableRestControllerTest {
 
         OrderTable orderTable = new OrderTable(1L,
                 new TableGroup(1L, LocalDateTime.now(), Arrays.asList()),
-                null,
+                Collections.emptyList(),
                 new NumberOfGuest(changeNumberOfGuestsRequest.getNumberOfGuests()),
                 false);
 
@@ -89,7 +88,7 @@ class TableRestControllerTest {
 
         OrderTable orderTable = new OrderTable(1L,
                 new TableGroup(1L, LocalDateTime.now(), Arrays.asList()),
-                null,
+                Collections.emptyList(),
                 new NumberOfGuest(1),
                 changeEmptyRequest.isEmpty());
 
@@ -112,13 +111,13 @@ class TableRestControllerTest {
         // given
         OrderTable orderTable = new OrderTable(1L,
                 new TableGroup(1L, LocalDateTime.now(), Arrays.asList()),
-                null,
+                Collections.emptyList(),
                 new NumberOfGuest(1),
                 false);
 
         OrderTable orderTable2 = new OrderTable(2L,
                 new TableGroup(2L, LocalDateTime.now(), Arrays.asList()),
-                null,
+                Collections.emptyList(),
                 new NumberOfGuest(2),
                 true);
 
@@ -143,7 +142,7 @@ class TableRestControllerTest {
 
         OrderTable orderTable = new OrderTable(1L,
                 new TableGroup(1L, LocalDateTime.now(), Arrays.asList()),
-                null,
+                Collections.emptyList(),
                 new NumberOfGuest(1),
                 false);
 

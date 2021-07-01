@@ -5,6 +5,7 @@ import kitchenpos.domain.*;
 import kitchenpos.dto.request.OrderCreateRequest;
 import kitchenpos.dto.request.OrderLineItemCreateRequest;
 import kitchenpos.dto.request.OrderStatusChangeRequest;
+import kitchenpos.fixture.OrderTableFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+import static kitchenpos.fixture.OrderTableFixture.미사용중인_테이블;
 import static kitchenpos.ui.JsonUtil.toJson;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -43,6 +45,8 @@ class OrderRestControllerTest {
 
     @BeforeEach
     void setUp() {
+        OrderTableFixture.cleanUp();
+
         this.product = new Product("SIMPLE", new Price(100));
         this.menuProduct1 = new MenuProduct(null, product, 1);
         this.menuProduct2 = new MenuProduct(null, product, 1);
@@ -52,18 +56,15 @@ class OrderRestControllerTest {
     @Test
     void create() throws Exception {
         // given
-
-
         OrderCreateRequest orderCreateRequest = new OrderCreateRequest(1L, OrderStatus.MEAL, Arrays.asList(new OrderLineItemCreateRequest(1L, 1L)));
-        OrderTable orderTable = new OrderTable(1L, null, null, null, false);
-        Order fakeOrder = new Order(1L, orderTable, OrderStatus.MEAL, LocalDateTime.now(), null);
+        Order fakeOrder = new Order(1L, 미사용중인_테이블, OrderStatus.MEAL, LocalDateTime.now(), null);
         Menu fakeMenu = new Menu(1L, "Hello", new Price(1), null, Arrays.asList(menuProduct1));
         List<OrderLineItem> orderLineItems = Arrays.asList(
                 new OrderLineItem(1L, fakeOrder, fakeMenu, 1),
                 new OrderLineItem(2L, fakeOrder, fakeMenu, 2),
                 new OrderLineItem(3L, fakeOrder, fakeMenu, 3)
         );
-        Order order = new Order(1L, orderTable, OrderStatus.MEAL, LocalDateTime.now(), orderLineItems);
+        Order order = new Order(1L, 미사용중인_테이블, OrderStatus.MEAL, LocalDateTime.now(), orderLineItems);
 
         given(orderService.create(any(OrderCreate.class)))
                 .willReturn(order);
@@ -90,9 +91,6 @@ class OrderRestControllerTest {
         Menu fakeMenu = new Menu(1L, null, new Price(1), null, Arrays.asList(menuProduct1));
         Menu fakeMenu2 = new Menu(2L, null, new Price(2), null, Arrays.asList(menuProduct2));
 
-        OrderTable orderTable = new OrderTable(1L, null, null, null, false);
-        OrderTable orderTable2 = new OrderTable(2L, null, null, null, false);
-
         List<OrderLineItem> orderLineItems = Arrays.asList(
                 new OrderLineItem(1L, fakeOrder, fakeMenu, 1),
                 new OrderLineItem(2L, fakeOrder, fakeMenu, 2)
@@ -102,8 +100,8 @@ class OrderRestControllerTest {
                 new OrderLineItem(4L, fakeOrder2, fakeMenu2, 4),
                 new OrderLineItem(5L, fakeOrder2, fakeMenu2, 5)
         );
-        Order order = new Order(null, orderTable, OrderStatus.COMPLETION, LocalDateTime.now(), orderLineItems);
-        Order order2 = new Order(null, orderTable2, OrderStatus.MEAL, LocalDateTime.now(), orderLineItems2);
+        Order order = new Order(null, 미사용중인_테이블, OrderStatus.COMPLETION, LocalDateTime.now(), orderLineItems);
+        Order order2 = new Order(null, 미사용중인_테이블, OrderStatus.MEAL, LocalDateTime.now(), orderLineItems2);
 
         given(orderService.list()).willReturn(Arrays.asList(order, order2));
 
@@ -126,13 +124,13 @@ class OrderRestControllerTest {
         Menu fakeMenu = new Menu(1L, null, new Price(1), null, Arrays.asList(menuProduct1));
 
         OrderStatusChangeRequest orderStatusChangeRequest = new OrderStatusChangeRequest(OrderStatus.COOKING);
-        OrderTable orderTable = new OrderTable(1L, null, null, null, false);
+
         List<OrderLineItem> orderLineItems = Arrays.asList(
                 new OrderLineItem(1L, fakeOrder, fakeMenu, 1),
                 new OrderLineItem(2L, fakeOrder, fakeMenu, 2),
                 new OrderLineItem(3L, fakeOrder, fakeMenu, 3)
         );
-        Order order = new Order(null, orderTable, OrderStatus.COMPLETION, LocalDateTime.now(), orderLineItems);
+        Order order = new Order(null, 미사용중인_테이블, OrderStatus.COMPLETION, LocalDateTime.now(), orderLineItems);
 
         given(orderService.changeOrderStatus(any(), any(OrderStatus.class)))
                 .willReturn(order);

@@ -9,6 +9,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.util.Arrays;
 import java.util.List;
 
+import static kitchenpos.fixture.OrderTableFixture.미사용중인_테이블;
+import static kitchenpos.fixture.OrderTableFixture.사용중인_1명_테이블;
 import static org.assertj.core.api.Assertions.*;
 
 class OrderTest {
@@ -43,18 +45,15 @@ class OrderTest {
         );
         Menus menus = new Menus(Arrays.asList(new Menu(), new Menu()));
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> Order.create(orderCreate, menus, new OrderTable(null, null, null, null, false)));
+        assertThatIllegalArgumentException().isThrownBy(() -> Order.create(orderCreate, menus, 사용중인_1명_테이블));
     }
 
     @Test
     @DisplayName("빈 테이블이면 TableEmptyException이 발생한다")
     void 빈_테이블이면_TableEmptyException이_발생한다() {
-        // given
-        OrderTable orderTable = new OrderTable(null, null, null, null, true);
-
         // when & then
         assertThatExceptionOfType(TableEmptyException.class)
-                .isThrownBy(() -> Order.create(null, null, orderTable));
+                .isThrownBy(() -> Order.create(null, null, 미사용중인_테이블));
     }
 
     @Test
@@ -67,7 +66,7 @@ class OrderTest {
         MenuProduct menuProduct1 = new MenuProduct(null, product, 1);
         MenuProduct menuProduct2 = new MenuProduct(null, product, 1);
         MenuProduct menuProduct3 = new MenuProduct(null, product, 1);
-        
+
         OrderCreate orderCreate = new OrderCreate(
                 null,
                 null,
@@ -83,14 +82,13 @@ class OrderTest {
                 new Menu(3L, "3", new Price(3), null, Arrays.asList(menuProduct3))
         );
         Menus menus = new Menus(menuList);
-        OrderTable orderTable = new OrderTable(1L, null, null, null, false);
 
         // when
-        Order order = Order.create(orderCreate, menus, orderTable);
+        Order order = Order.create(orderCreate, menus, 미사용중인_테이블);
 
         // then
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
-        assertThat(order.getOrderTable()).isEqualTo(orderTable);
+        assertThat(order.getOrderTable()).isEqualTo(미사용중인_테이블);
         assertThat(order.getOrderedTime()).isNotNull();
 
         assertThat(order.getOrderLineItems())

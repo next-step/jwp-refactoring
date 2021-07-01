@@ -1,7 +1,6 @@
 package kitchenpos.ui;
 
 import kitchenpos.application.TableGroupService;
-import kitchenpos.domain.NumberOfGuest;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.domain.TableGroupCreate;
@@ -21,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static kitchenpos.fixture.OrderTableFixture.미사용중인_테이블;
+import static kitchenpos.fixture.OrderTableFixture.사용중인_1명_테이블;
 import static kitchenpos.ui.JsonUtil.toJson;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -49,9 +50,9 @@ class TableGroupRestControllerTest {
         TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
         orderTables.addAll(
             Arrays.asList(
-                    new OrderTable(null, tableGroup, null, new NumberOfGuest(1), false),
-                    new OrderTable(null, tableGroup, null, new NumberOfGuest(2), true),
-                    new OrderTable(null, tableGroup, null, new NumberOfGuest(3), false)
+                    미사용중인_테이블,
+                    사용중인_1명_테이블,
+                    미사용중인_테이블
             )
         );
 

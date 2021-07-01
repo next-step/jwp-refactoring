@@ -1,6 +1,7 @@
 package kitchenpos.domain;
 
 import javax.persistence.*;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,6 +23,11 @@ public class OrderTable {
     public OrderTable() {
     }
 
+
+    public OrderTable(TableGroup tableGroup, Orders orders, NumberOfGuest numberOfGuest, boolean empty) {
+        this(null, tableGroup, orders, numberOfGuest, empty);
+    }
+
     public OrderTable(TableGroup tableGroup, Orders orders, int numberOfGuests, boolean empty) {
         this(null, tableGroup, orders, new NumberOfGuest(numberOfGuests), empty);
     }
@@ -38,16 +44,23 @@ public class OrderTable {
         this(id, tableGroup, new Orders(orders), new NumberOfGuest(numberOfGuests), empty);
     }
 
+    public OrderTable(Long id, NumberOfGuest numberOfGuests, boolean empty) {
+        this(id, null, Collections.emptyList(), numberOfGuests, empty);
+    }
+
+    public OrderTable(NumberOfGuest numberOfGuest, boolean empty) {
+        this(null, null, Collections.emptyList(), numberOfGuest, empty);
+    }
+
+    public OrderTable(Long id, TableGroup tableGroup, List<Order> orders, NumberOfGuest numberOfGuests, boolean empty) {
+        this(id, tableGroup, new Orders(orders), numberOfGuests, empty);
+    }
+
     public OrderTable(Long id, TableGroup tableGroup, Orders orders, NumberOfGuest numberOfGuests, boolean empty) {
         this.id = id;
         this.tableGroup = tableGroup;
         this.orders = orders;
         this.numberOfGuests = numberOfGuests;
-        this.empty = empty;
-    }
-
-    public OrderTable(NumberOfGuest numberOfGuest, boolean empty) {
-        this.numberOfGuests = numberOfGuest;
         this.empty = empty;
     }
 

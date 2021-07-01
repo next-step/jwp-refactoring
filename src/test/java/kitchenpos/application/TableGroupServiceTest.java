@@ -4,7 +4,7 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.*;
-import kitchenpos.dto.request.TableGroupCreateRequest;
+import kitchenpos.fixture.OrderTableFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +18,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static kitchenpos.fixture.OrderTableFixture.미사용중인_테이블;
+import static kitchenpos.fixture.OrderTableFixture.미사용중인_테이블2;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -41,26 +43,22 @@ class TableGroupServiceTest {
 
     private TableGroup tableGroup;
 
-    private OrderTable orderTable1;
-    private OrderTable orderTable2;
-
     private List<Long> orderTableIds;
 
     private List<OrderTable> orderTables;
 
     @BeforeEach
     void setUp() {
+        OrderTableFixture.cleanUp();
+
         this.tableGroupService = new TableGroupService(orderDao, orderTableDao, tableGroupDao);
 
         tableGroupId = 1L;
 
         tableGroup = new TableGroup(tableGroupId, LocalDateTime.now(), new OrderTables(Arrays.asList()));
 
-        orderTable1 = new OrderTable(1L, tableGroup, null, new NumberOfGuest(1), true);
-        orderTable2 = new OrderTable(2L, tableGroup, null, new NumberOfGuest(2), true);
-
-        orderTableIds = Arrays.asList(orderTable1.getId(), orderTable2.getId());
-        orderTables = Arrays.asList(orderTable1, orderTable2);
+        orderTableIds = Arrays.asList(미사용중인_테이블.getId(), 미사용중인_테이블2.getId());
+        orderTables = Arrays.asList(미사용중인_테이블, 미사용중인_테이블2);
     }
 
     @Test
@@ -72,7 +70,7 @@ class TableGroupServiceTest {
         TableGroupCreate tableGroup = new TableGroupCreate(orderTableIds);
 
         // when
-        when(orderTableDao.findAllById(orderTableIds)).thenReturn(Arrays.asList(orderTable1));
+        when(orderTableDao.findAllById(orderTableIds)).thenReturn(Arrays.asList(미사용중인_테이블));
 
         // then
         assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroup));
@@ -118,11 +116,7 @@ class TableGroupServiceTest {
     @DisplayName("create - 정상적인 단체지정 등록")
     void 정상적인_단체지정_등록() {
         // given
-
-        OrderTable orderTable1 = new OrderTable(1L, null, null, new NumberOfGuest(1), true);
-        OrderTable orderTable2 = new OrderTable(2L, null, null, new NumberOfGuest(2), true);
-
-        List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
+        List<OrderTable> orderTables = Arrays.asList(미사용중인_테이블, 미사용중인_테이블2);
 
         given(orderTableDao.findAllById(orderTableIds)).willReturn(orderTables);
 
