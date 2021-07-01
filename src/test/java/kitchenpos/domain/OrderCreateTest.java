@@ -3,11 +3,10 @@ package kitchenpos.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.jupiter.api.Assertions.*;
 
 class OrderCreateTest {
     @Test
@@ -19,4 +18,14 @@ class OrderCreateTest {
                 .isThrownBy(() -> new OrderCreate(null, null, Arrays.asList()));
     }
 
+    @Test
+    void getMenuIdsInOrderLineItems() {
+        MenuCreate menuCreate = new MenuCreate(null, null, null, Arrays.asList(
+                new MenuProductCreate(1L, 1L, 1L),
+                new MenuProductCreate(2L, 2L, 2L)
+        ));
+
+        assertThat(menuCreate.getProductsIdInMenuProducts())
+                .containsExactly(1L, 2L);
+    }
 }

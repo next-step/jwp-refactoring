@@ -3,6 +3,7 @@ package kitchenpos.domain;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class OrderCreate {
     private Long orderTableId;
@@ -33,5 +34,13 @@ public class OrderCreate {
 
     public List<OrderLineItemCreate> getOrderLineItems() {
         return orderLineItems;
+    }
+
+    public List<Long> getMenuIdsInOrderLineItems() {
+        List<Long> menuIds = orderLineItems.stream()
+                .map(item -> item.getMenuId())
+                .collect(Collectors.toList());
+
+        return menuIds;
     }
 }

@@ -8,12 +8,8 @@ import kitchenpos.domain.*;
 import kitchenpos.exception.EntityNotExistsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -36,12 +32,7 @@ public class OrderService {
 
     @Transactional
     public Order create(OrderCreate orderCreate) {
-        List<Long> menuIds = orderCreate.getOrderLineItems()
-                .stream()
-                .map(item -> item.getMenuId())
-                .collect(Collectors.toList());
-
-        Menus menus = new Menus(menuDao.findAllById(menuIds));
+        Menus menus = new Menus(menuDao.findAllById(orderCreate.getMenuIdsInOrderLineItems()));
         OrderTable orderTable = orderTableDao.findById(orderCreate.getOrderTableId())
                 .orElseThrow(EntityNotExistsException::new);
 
