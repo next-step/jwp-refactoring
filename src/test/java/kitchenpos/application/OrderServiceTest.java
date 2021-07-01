@@ -8,6 +8,7 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.exception.TableEmptyException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,8 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -113,26 +113,21 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("create - 주문 테이블이 빈 테이블일 경우 IllegalArgumentException이 발생한다.")
-    void 주문_테이블이_빈_테이블일_경우_IllegalArgumentException이_발생한다() {
+    @DisplayName("create - 주문 테이블이 빈 테이블일 경우 TableEmptyException이 발생한다.")
+    void 주문_테이블이_빈_테이블일_경우_TableEmptyException이_발생한다() {
         // given
         Long orderTableId = 1L;
 
         OrderTable orderTable = new OrderTable(orderTableId, 1L, 1, true);
 
-        List<Long> menuIds = Arrays.asList(orderLineItem1.getOldMenuId(), orderLineItem2.getOldMenuId());
-
         Order order = new Order(1L, orderTableId, OrderStatus.MEAL.name(), LocalDateTime.now(), orderLineItems);
-
-        given(menuDao.countByIdIn(menuIds)).willReturn(Long.valueOf(menuIds.size()));
 
         // when
         when(orderTableDao.findById(orderTableId)).thenReturn(Optional.of(orderTable));
 
         // then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(order));
-
-        verify(menuDao, VerificationModeFactory.times(1)).countByIdIn(menuIds);
+        assertThatExceptionOfType(TableEmptyException.class)
+                .isThrownBy(() -> orderService.create(order));
 
         verify(orderTableDao, VerificationModeFactory.times(1)).findById(orderTableId);
 
