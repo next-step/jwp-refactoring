@@ -15,12 +15,12 @@ class TableGroupTest {
     @DisplayName("모든 테이블의 모든 주문이 안끝났으면 단체지정이 해제가 불가능하므로 IllegalStateException이 발생한다 ")
     void 모든_테이블의_모든_주문이_안끝났으면_단체지정이_해제가_불가능하므로_IllegalStateException이_발생한다() {
         List<Order> orders1 = Arrays.asList(
-                new Order(null, null, null, OrderStatus.COOKING.name(), null, null),
-                new Order(null, null, null, OrderStatus.COMPLETION.name(), null, null)
+                new Order(null, null, OrderStatus.COOKING, null, null),
+                new Order(null, null, OrderStatus.COMPLETION, null, null)
         );
         List<Order> orders2 = Arrays.asList(
-                new Order(null, null, null, OrderStatus.COMPLETION.name(), null, null),
-                new Order(null, null, null, OrderStatus.COMPLETION.name(), null, null)
+                new Order(null, null, OrderStatus.COMPLETION, null, null),
+                new Order(null, null, OrderStatus.COMPLETION, null, null)
         );
 
         OrderTables orderTables = new OrderTables(
@@ -41,12 +41,12 @@ class TableGroupTest {
     void 모든_테이블의_모든_주문이_끝났으면_단체지정이_해제가_가능하다() {
         // given
         List<Order> orders1 = Arrays.asList(
-                new Order(null, null, null, OrderStatus.COMPLETION.name(), null, null),
-                new Order(null, null, null, OrderStatus.COMPLETION.name(), null, null)
+                new Order(null, null, OrderStatus.COMPLETION, null, null),
+                new Order(null, null, OrderStatus.COMPLETION, null, null)
         );
         List<Order> orders2 = Arrays.asList(
-                new Order(null, null, null, OrderStatus.COMPLETION.name(), null, null),
-                new Order(null, null, null, OrderStatus.COMPLETION.name(), null, null)
+                new Order(null, null, OrderStatus.COMPLETION, null, null),
+                new Order(null, null, OrderStatus.COMPLETION, null, null)
         );
 
         OrderTables orderTables = new OrderTables(

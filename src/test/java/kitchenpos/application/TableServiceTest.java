@@ -116,8 +116,8 @@ class TableServiceTest {
         // given
         Long orderTableId = 1L;
         List<Order> orders = Arrays.asList(
-                new Order(null, null, OrderStatus.MEAL.name(), null, null),
-                new Order(null, null, OrderStatus.COOKING.name(), null, null)
+                new Order(null, null, OrderStatus.MEAL, null, null),
+                new Order(null, null, OrderStatus.COOKING, null, null)
         );
         OrderTable orderTable = new OrderTable(orderTableId, null, orders, 1L, 0, true);
 

@@ -16,7 +16,7 @@ class OrderTest {
     @ParameterizedTest
     @ValueSource(strings = {"COOKING", "MEAL"})
     @DisplayName("식사 또는 조리일땐 주문이 진행중이다")
-    void 식사_또는_조리일땐_주문이_진행중이다(String status) {
+    void 식사_또는_조리일땐_주문이_진행중이다(OrderStatus status) {
         Order order = new Order(null, null, status, null, null);
         assertThat(order.isFinished()).isFalse();
     }
@@ -24,7 +24,7 @@ class OrderTest {
     @Test
     @DisplayName("결제완료일 땐 주문이 끝난것이다")
     void 결제완료일_땐_주문이_끝난것이다() {
-        Order order = new Order(null, null, OrderStatus.COMPLETION.name(), null, null);
+        Order order = new Order(null, null, OrderStatus.COMPLETION, null, null);
         assertThat(order.isFinished()).isTrue();
     }
 

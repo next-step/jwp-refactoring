@@ -148,12 +148,13 @@ class TableGroupServiceTest {
     void 주문_테이블들의_고유_아이디를_조회했을_때_주문_상태가_조리_이거나_식사_일경우_IllegalStateException이_발생한다() {
         // given
         List<Order> orders1 = Arrays.asList(
-                new Order(null, null, null, OrderStatus.COMPLETION.name(), null, null),
-                new Order(null, null, null, OrderStatus.COMPLETION.name(), null, null)
+                new Order(null, null, OrderStatus.COMPLETION, null, null),
+                new Order(null, null, OrderStatus.COMPLETION, null, null),
+                new Order(null, null, OrderStatus.COMPLETION, null, null)
         );
         List<Order> orders2 = Arrays.asList(
-                new Order(null, null, null, OrderStatus.COMPLETION.name(), null, null),
-                new Order(null, null, null, OrderStatus.MEAL.name(), null, null)
+                new Order(null, null, OrderStatus.COMPLETION, null, null),
+                new Order(null, null, OrderStatus.MEAL, null, null)
         );
 
         OrderTables orderTables = new OrderTables(
@@ -179,12 +180,12 @@ class TableGroupServiceTest {
     void 정상적인_단체지정_해제() {
         // given
         List<Order> orders1 = Arrays.asList(
-                new Order(null, null, null, OrderStatus.COMPLETION.name(), null, null),
-                new Order(null, null, null, OrderStatus.COMPLETION.name(), null, null)
+                new Order(null, null, OrderStatus.COMPLETION, null, null),
+                new Order(null, null, OrderStatus.COMPLETION, null, null)
         );
         List<Order> orders2 = Arrays.asList(
-                new Order(null, null, null, OrderStatus.COMPLETION.name(), null, null),
-                new Order(null, null, null, OrderStatus.COMPLETION.name(), null, null)
+                new Order(null, null, OrderStatus.COMPLETION, null, null),
+                new Order(null, null, OrderStatus.COMPLETION, null, null)
         );
 
         OrderTables orderTables = new OrderTables(

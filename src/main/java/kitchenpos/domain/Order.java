@@ -23,42 +23,11 @@ public class Order {
 
     private OrderLineItems orderLineItems;
 
-    @Column(name = "old_order_table_id")
-    private Long orderTableId;
-    @Transient
-    private String oldOrderStatus;
-
     public Order() {
     }
 
     public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
         this.id = id;
-        this.orderTable = orderTable;
-        this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
-        this.orderLineItems = new OrderLineItems(orderLineItems);
-    }
-
-    public Order(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
-        this.id = id;
-        this.orderTableId = orderTableId;
-        this.oldOrderStatus = orderStatus;
-        this.orderedTime = orderedTime;
-        this.orderLineItems = new OrderLineItems(orderLineItems);
-    }
-
-    public Order(Long id, Long orderTableId, OrderTable orderTable, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
-        this.id = id;
-        this.orderTableId = orderTableId;
-        this.orderTable = orderTable;
-        this.oldOrderStatus = orderStatus;
-        this.orderedTime = orderedTime;
-        this.orderLineItems = new OrderLineItems(orderLineItems);
-    }
-
-    public Order(Long id, Long orderTableId, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
-        this.id = id;
-        this.orderTableId = orderTableId;
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
@@ -97,22 +66,6 @@ public class Order {
         this.id = id;
     }
 
-    public Long getOrderTableId() {
-        return orderTableId;
-    }
-
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
-    }
-
-    public String getOldOrderStatus() {
-        return oldOrderStatus;
-    }
-
-    public void setOldOrderStatus(final String oldOrderStatus) {
-        this.oldOrderStatus = oldOrderStatus;
-    }
-
     public LocalDateTime getOrderedTime() {
         return orderedTime;
     }
@@ -126,7 +79,7 @@ public class Order {
     }
 
     public boolean isFinished() {
-        return this.oldOrderStatus == OrderStatus.COMPLETION.name();
+        return this.orderStatus == OrderStatus.COMPLETION;
     }
 
     public OrderStatus getOrderStatus() {

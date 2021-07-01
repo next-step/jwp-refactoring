@@ -167,7 +167,8 @@ class OrderServiceTest {
         Long orderTableId = 1L;
         Long orderId = 1L;
 
-        Order order = new Order(orderId, orderTableId, OrderStatus.MEAL.name(), LocalDateTime.now(), orderLineItems);
+        OrderTable orderTable = new OrderTable(new NumberOfGuest(1), false);
+        Order order = new Order(orderId, orderTable, OrderStatus.MEAL, LocalDateTime.now(), orderLineItems);
 
         // when
         when(orderDao.findAll()).thenReturn(Arrays.asList(order));
@@ -202,15 +203,15 @@ class OrderServiceTest {
         // given
         Long orderId = 1L;
 
-        Order order = new Order(orderId, 1L,
-                null, OrderStatus.COMPLETION, LocalDateTime.now(),
-                orderLineItems);
+        OrderTable orderTable = new OrderTable(new NumberOfGuest(1), false);
+        Order order = new Order(orderId, orderTable,OrderStatus.COMPLETION, LocalDateTime.now(), orderLineItems);
 
         // when
         when(orderDao.findById(orderId)).thenReturn(Optional.of(order));
 
         // then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.changeOrderStatus(orderId, OrderStatus.COMPLETION));
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> orderService.changeOrderStatus(orderId, OrderStatus.COMPLETION));
 
         verify(orderDao, VerificationModeFactory.times(1)).findById(orderId);
     }
@@ -226,18 +227,17 @@ class OrderServiceTest {
                 new OrderLineItem(2L, 2L, 2L, 2L)
         );
 
-        Order order = new Order(orderId, 1L,
-                OrderStatus.COOKING.name(), LocalDateTime.now(),
-                orderLineItems);
+        OrderTable orderTable = new OrderTable(new NumberOfGuest(1), false);
+        Order order = new Order(orderId, orderTable,OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
 
         given(orderDao.findById(orderId)).willReturn(Optional.of(order));
 
         // when
 
-        Order savedOrder = orderService.changeOrderStatus(orderId, OrderStatus.COOKING);
+        Order savedOrder = orderService.changeOrderStatus(orderId, OrderStatus.MEAL);
 
         // then
-        assertThat(savedOrder.getOldOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
         assertThat(savedOrder.getOrderLineItems()).containsExactlyElementsOf(orderLineItems);
 
         verify(orderDao, VerificationModeFactory.times(1)).findById(orderId);
