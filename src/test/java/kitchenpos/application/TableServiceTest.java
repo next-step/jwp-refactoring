@@ -50,7 +50,7 @@ class TableServiceTest {
         OrderTable savedOrderTable = tableService.create(orderTable);
 
         // then
-        assertThat(savedOrderTable.getTableGroupId()).isNull();
+        assertThat(savedOrderTable.getTableGroup()).isNull();
 
         verify(orderTableDao, VerificationModeFactory.times(1)).save(savedOrderTable);
 
@@ -60,8 +60,8 @@ class TableServiceTest {
     @DisplayName("list - 정상적인 주문 테이블 전체 조회")
     void 정상적인_주문_테이블_전체_조회() {
         // given
-        OrderTable orderTable1 = new OrderTable(1L, 1L, 1, true);
-        OrderTable orderTable2 = new OrderTable(2L, 2L, 2, false);
+        OrderTable orderTable1 = new OrderTable(1L, null, null, new NumberOfGuest(1), true);
+        OrderTable orderTable2 = new OrderTable(2L, null, null, new NumberOfGuest(2), false);
 
         // when
         when(orderTableDao.findAll()).thenReturn(Arrays.asList(orderTable1, orderTable2));
@@ -80,7 +80,6 @@ class TableServiceTest {
     void DB에서_주문_테이블을_고유_아이디로_가져온다_없으면_IllegalArgumentException이_발생한다() {
         // given
         Long orderTableId = 1L;
-        OrderTable orderTable = new OrderTable(orderTableId, 1L, 1, true);
 
         // when
         when(orderTableDao.findById(orderTableId)).thenReturn(Optional.empty());
@@ -98,7 +97,7 @@ class TableServiceTest {
     void 주문_테이블이_단체지정이_되어있을경우_IllegalArgumentException이_발생한다() {
         // given
         Long orderTableId = 1L;
-        OrderTable orderTable = new OrderTable(orderTableId, 1L, 1, true);
+        OrderTable orderTable = new OrderTable(orderTableId, new TableGroup(), Arrays.asList(), 1, true);
 
         given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(orderTable));
 
@@ -116,16 +115,16 @@ class TableServiceTest {
         // given
         Long orderTableId = 1L;
         List<Order> orders = Arrays.asList(
-                new Order(null, null, OrderStatus.MEAL, null, null),
-                new Order(null, null, OrderStatus.COOKING, null, null)
+                new Order(null, new OrderTable(), OrderStatus.MEAL, null, null),
+                new Order(null, new OrderTable(), OrderStatus.COOKING, null, null)
         );
-        OrderTable orderTable = new OrderTable(orderTableId, null, orders, 1L, 0, true);
+        OrderTable orderTable = new OrderTable(orderTableId, null, orders, 1, true);
 
         given(orderTableDao.findById(orderTableId))
                 .willReturn(Optional.of(orderTable));
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> tableService.changeEmpty(orderTableId, true));
+        assertThatIllegalStateException().isThrownBy(() -> tableService.changeEmpty(orderTableId, true));
 
         verify(orderTableDao, VerificationModeFactory.times(1))
                 .findById(orderTableId);
@@ -136,8 +135,7 @@ class TableServiceTest {
     void 정상적인_빈_테이블_변경() {
         // given
         Long orderTableId = 1L;
-        OrderTable orderTable = new OrderTable(orderTableId, null, 1, true);
-        List<String> bannedStatus = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
+        OrderTable orderTable = new OrderTable(orderTableId, null, Arrays.asList(), 1, true);
 
         given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(orderTable));
 
@@ -145,7 +143,7 @@ class TableServiceTest {
         OrderTable savedOrderTable = tableService.changeEmpty(orderTableId, false);
 
         // then
-        assertThat(savedOrderTable.getTableGroupId()).isNull();
+        assertThat(savedOrderTable.getTableGroup()).isNull();
         assertThat(savedOrderTable.getId()).isEqualTo(orderTable.getId());
         assertThat(savedOrderTable.getNumberOfGuests()).isEqualTo(orderTable.getNumberOfGuests());
         assertThat(savedOrderTable.isEmpty()).isFalse();
@@ -176,7 +174,7 @@ class TableServiceTest {
     void 주문_테이블이_빈_테이블이면_IllegalArgumentException이_발생한다() {
         // given
         Long orderTableId = 1L;
-        OrderTable orderTable = new OrderTable(orderTableId, 1L, 1, true);
+        OrderTable orderTable = new OrderTable(orderTableId, null, Arrays.asList(), 1, true);
         given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(orderTable));
 
         // when & then
@@ -191,8 +189,9 @@ class TableServiceTest {
     void 정상적인_방문한_손님_변경() {
         // given
         Long orderTableId = 1L;
+        TableGroup tableGroup = new TableGroup(null, null, Arrays.asList());
         NumberOfGuest toBe = new NumberOfGuest(2);
-        OrderTable orderTable = new OrderTable(orderTableId, 1L, 1, false);
+        OrderTable orderTable = new OrderTable(orderTableId, tableGroup, Arrays.asList(), 1, false);
         given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(orderTable));
 
         // when
@@ -200,7 +199,7 @@ class TableServiceTest {
 
         // when & then
         assertThat(changedOrderTable.getId()).isEqualTo(orderTable.getId());
-        assertThat(changedOrderTable.getTableGroupId()).isEqualTo(orderTable.getTableGroupId());
+        assertThat(changedOrderTable.getTableGroup()).isEqualTo(tableGroup);
         assertThat(changedOrderTable.getNumberOfGuests()).isEqualTo(toBe);
         assertThat(changedOrderTable.isEmpty()).isEqualTo(orderTable.isEmpty());
     }

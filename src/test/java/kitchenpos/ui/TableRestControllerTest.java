@@ -65,8 +65,7 @@ class TableRestControllerTest {
         OrderTable orderTable = new OrderTable(1L,
                 new TableGroup(1L, LocalDateTime.now(), Arrays.asList()),
                 null,
-                null,
-                changeNumberOfGuestsRequest.getNumberOfGuests(),
+                new NumberOfGuest(changeNumberOfGuestsRequest.getNumberOfGuests()),
                 false);
 
         given(tableService.changeNumberOfGuests(anyLong(), any(NumberOfGuest.class)))
@@ -91,8 +90,7 @@ class TableRestControllerTest {
         OrderTable orderTable = new OrderTable(1L,
                 new TableGroup(1L, LocalDateTime.now(), Arrays.asList()),
                 null,
-                null,
-                1,
+                new NumberOfGuest(1),
                 changeEmptyRequest.isEmpty());
 
         given(tableService.changeEmpty(1L, changeEmptyRequest.isEmpty()))
@@ -115,15 +113,13 @@ class TableRestControllerTest {
         OrderTable orderTable = new OrderTable(1L,
                 new TableGroup(1L, LocalDateTime.now(), Arrays.asList()),
                 null,
-                null,
-                1,
+                new NumberOfGuest(1),
                 false);
 
         OrderTable orderTable2 = new OrderTable(2L,
                 new TableGroup(2L, LocalDateTime.now(), Arrays.asList()),
                 null,
-                null,
-                2,
+                new NumberOfGuest(2),
                 true);
 
         given(tableService.list())
@@ -148,8 +144,7 @@ class TableRestControllerTest {
         OrderTable orderTable = new OrderTable(1L,
                 new TableGroup(1L, LocalDateTime.now(), Arrays.asList()),
                 null,
-                null,
-                1,
+                new NumberOfGuest(1),
                 false);
 
         given(tableService.create(any(OrderTableCreate.class)))

@@ -16,15 +16,15 @@ import static org.junit.jupiter.api.Assertions.*;
 class OrderTablesTest {
     private final OrderTables hasTableGroupIdOrderTables = new OrderTables(
             Arrays.asList(
-                    new OrderTable(1L, 1L, 1, true),
-                    new OrderTable(1L, null, 1, true)
+                    new OrderTable(new TableGroup(), Arrays.asList(), 1, true),
+                    new OrderTable(new TableGroup(), Arrays.asList(),  1, true)
             )
     );
 
     private final OrderTables notEmptyOrderTables = new OrderTables(
             Arrays.asList(
-                    new OrderTable(1L, null, 1, false),
-                    new OrderTable(1L, null, 1, true)
+                    new OrderTable(new TableGroup(), Arrays.asList(), 1, false),
+                    new OrderTable(new TableGroup(), Arrays.asList(), 1, true)
             )
     );
 
@@ -46,8 +46,8 @@ class OrderTablesTest {
     void TableGroup이_지정이_안되어있고_빈_테이블이면_예약이_안되어있다() {
         OrderTables orderTables = new OrderTables(
                 Arrays.asList(
-                        new OrderTable(1L, null, 1, true),
-                        new OrderTable(1L, null, 1, true)
+                        new OrderTable(null, Arrays.asList(), 1, true),
+                        new OrderTable(null, Arrays.asList(), 1, true)
                 )
         );
 
@@ -60,7 +60,7 @@ class OrderTablesTest {
     void size(int len) {
         List<OrderTable> orderTableList = new ArrayList<>();
         for (int i = 0; i<len; i++) {
-            orderTableList.add(new OrderTable(null, null, 0, false));
+            orderTableList.add(new OrderTable(null, Arrays.asList(), 0, false));
         }
 
         assertThat(new OrderTables(orderTableList).size()).isEqualTo(len);
@@ -87,8 +87,8 @@ class OrderTablesTest {
 
         OrderTables orderTables = new OrderTables(
                 Arrays.asList(
-                    new OrderTable(null, null, orders1, null, 1, false),
-                    new OrderTable(null, null, orders2, null, 1, false)
+                    new OrderTable(null,  orders1,  1, false),
+                    new OrderTable(null,  orders2, 1, false)
                 )
         );
 
@@ -110,8 +110,8 @@ class OrderTablesTest {
 
         OrderTables orderTables = new OrderTables(
                 Arrays.asList(
-                        new OrderTable(null, null, orders1, null, 1, false),
-                        new OrderTable(null, null, orders2, null, 1, false)
+                        new OrderTable(null, orders1,  1, false),
+                        new OrderTable(null, orders2,  1, false)
                 )
         );
 
@@ -132,8 +132,8 @@ class OrderTablesTest {
 
         OrderTables orderTables = new OrderTables(
                 Arrays.asList(
-                        new OrderTable(null, null, orders1, null, 1, false),
-                        new OrderTable(null, null, orders2, null, 1, false)
+                        new OrderTable(null, orders1, 1, false),
+                        new OrderTable(null, orders2, 1, false)
                 )
         );
 

@@ -25,8 +25,8 @@ class TableGroupTest {
 
         OrderTables orderTables = new OrderTables(
                 Arrays.asList(
-                        new OrderTable(null, null, orders1, null, 1, false),
-                        new OrderTable(null, null, orders2, null, 1, false)
+                        new OrderTable(null, orders1, 1, false),
+                        new OrderTable(null,  orders2, 1, false)
                 )
         );
 
@@ -51,8 +51,8 @@ class TableGroupTest {
 
         OrderTables orderTables = new OrderTables(
                 Arrays.asList(
-                        new OrderTable(null, null, orders1, null, 1, false),
-                        new OrderTable(null, null, orders2, null, 1, false)
+                        new OrderTable(null, orders1, 1, false),
+                        new OrderTable(null, orders2, 1, false)
                 )
         );
 
@@ -63,7 +63,7 @@ class TableGroupTest {
 
         // then
         for (OrderTable orderTable : tableGroup.getOrderTables()) {
-            assertThat(orderTable.getTableGroupId()).isNull();
+            assertThat(orderTable.getTableGroup()).isNull();
         }
 
     }

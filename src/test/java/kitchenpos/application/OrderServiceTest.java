@@ -84,7 +84,7 @@ class OrderServiceTest {
         // given
         OrderCreate orderCreate = new OrderCreate(1L, OrderStatus.MEAL, orderLineItemCreates);
         given(orderTableDao.findById(any()))
-                .willReturn(Optional.of(new OrderTable(1L, null, null,null, null, false)));
+                .willReturn(Optional.of(new OrderTable(1L, null, null,null, false)));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(orderCreate));
@@ -114,7 +114,8 @@ class OrderServiceTest {
         // given
         Long orderTableId = 1L;
 
-        OrderTable orderTable = new OrderTable(orderTableId, 1L, 1, true);
+        TableGroup tableGroup = new TableGroup(orderTableId, LocalDateTime.now(), Arrays.asList());
+        OrderTable orderTable = new OrderTable(orderTableId, tableGroup, null, new NumberOfGuest(1), true);
 
         OrderCreate orderCreate = new OrderCreate(1L, OrderStatus.MEAL, orderLineItemCreates);
 
@@ -134,9 +135,9 @@ class OrderServiceTest {
     void 정상적인_주문_테이블_등록() {
         // given
         Long orderTableId = 1L;
-        Long orderId = 1L;
 
-        OrderTable orderTable = new OrderTable(orderTableId, 1L, 1, false);
+        TableGroup tableGroup = new TableGroup(orderTableId, LocalDateTime.now(), Arrays.asList());
+        OrderTable orderTable = new OrderTable(orderTableId, tableGroup, null, new NumberOfGuest(1), false);
 
         OrderCreate orderCreate = new OrderCreate(orderTableId, OrderStatus.MEAL, orderLineItemCreates);
 

@@ -1,7 +1,5 @@
 package kitchenpos.domain;
 
-import org.aspectj.weaver.ast.Or;
-
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
@@ -17,14 +15,27 @@ public class OrderTable {
 
     private Orders orders = new Orders();
 
-    @Column(name = "old_table_group_id")
-    private Long tableGroupId;
-
     private NumberOfGuest numberOfGuests;
 
     private boolean empty;
 
     public OrderTable() {
+    }
+
+    public OrderTable(TableGroup tableGroup, Orders orders, int numberOfGuests, boolean empty) {
+        this(null, tableGroup, orders, new NumberOfGuest(numberOfGuests), empty);
+    }
+
+    public OrderTable(TableGroup tableGroup, List<Order> orders, int numberOfGuests, boolean empty) {
+        this(null, tableGroup, new Orders(orders), new NumberOfGuest(numberOfGuests), empty);
+    }
+
+    public OrderTable(Long id, TableGroup tableGroup, Orders orders, int numberOfGuests, boolean empty) {
+        this(id, tableGroup, orders, new NumberOfGuest(numberOfGuests), empty);
+    }
+
+    public OrderTable(Long id, TableGroup tableGroup, List<Order> orders, int numberOfGuests, boolean empty) {
+        this(id, tableGroup, new Orders(orders), new NumberOfGuest(numberOfGuests), empty);
     }
 
     public OrderTable(Long id, TableGroup tableGroup, Orders orders, NumberOfGuest numberOfGuests, boolean empty) {
@@ -40,53 +51,12 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
-        this.id = id;
-        this.tableGroupId = tableGroupId;
-        this.numberOfGuests = new NumberOfGuest(numberOfGuests);
-        this.empty = empty;
-    }
-
-    public OrderTable(Long id, TableGroup tableGroup, Long tableGroupId, int numberOfGuests, boolean empty) {
-        this.id = id;
-        this.tableGroup = tableGroup;
-        this.tableGroupId = tableGroupId;
-        this.numberOfGuests = new NumberOfGuest(numberOfGuests);
-        this.empty = empty;
-    }
-
-    public OrderTable(Long id, TableGroup tableGroup, List<Order> orders, Long tableGroupId, int numberOfGuests, boolean empty) {
-        this.id = id;
-        this.tableGroup = tableGroup;
-        this.orders = new Orders(orders);
-        this.tableGroupId = tableGroupId;
-        this.numberOfGuests = new NumberOfGuest(numberOfGuests);
-        this.empty = empty;
-    }
-
-    public OrderTable(Long id, TableGroup tableGroup, List<Order> orders, Long tableGroupId, NumberOfGuest numberOfGuests, boolean empty) {
-        this.id = id;
-        this.tableGroup = tableGroup;
-        this.orders = new Orders(orders);
-        this.tableGroupId = tableGroupId;
-        this.numberOfGuests = numberOfGuests;
-        this.empty = empty;
-    }
-
     public Long getId() {
         return id;
     }
 
     public void setId(final Long id) {
         this.id = id;
-    }
-
-    public Long getTableGroupId() {
-        return tableGroupId;
-    }
-
-    public void setTableGroupId(final Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
     }
 
     public List<Order> getOrders() {
@@ -136,7 +106,7 @@ public class OrderTable {
     }
 
     public void changeEmpty(boolean empty) {
-        if (Objects.nonNull(getTableGroupId())) {
+        if (isBooked()) {
             throw new IllegalArgumentException();
         }
 
@@ -145,5 +115,9 @@ public class OrderTable {
         }
 
         this.empty = empty;
+    }
+
+    public boolean isBooked() {
+        return Objects.nonNull(getTableGroup());
     }
 }

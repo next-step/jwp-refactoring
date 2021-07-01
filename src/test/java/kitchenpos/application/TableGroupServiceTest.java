@@ -39,6 +39,8 @@ class TableGroupServiceTest {
 
     private Long tableGroupId = 1L;
 
+    private TableGroup tableGroup;
+
     private OrderTable orderTable1;
     private OrderTable orderTable2;
 
@@ -52,8 +54,10 @@ class TableGroupServiceTest {
 
         tableGroupId = 1L;
 
-        orderTable1 = new OrderTable(1L, tableGroupId, 1, true);
-        orderTable2 = new OrderTable(2L, tableGroupId, 2, true);
+        tableGroup = new TableGroup(tableGroupId, LocalDateTime.now(), new OrderTables(Arrays.asList()));
+
+        orderTable1 = new OrderTable(1L, tableGroup, null, new NumberOfGuest(1), true);
+        orderTable2 = new OrderTable(2L, tableGroup, null, new NumberOfGuest(2), true);
 
         orderTableIds = Arrays.asList(orderTable1.getId(), orderTable2.getId());
         orderTables = Arrays.asList(orderTable1, orderTable2);
@@ -115,8 +119,8 @@ class TableGroupServiceTest {
     void 정상적인_단체지정_등록() {
         // given
 
-        OrderTable orderTable1 = new OrderTable(1L, null, 1, true);
-        OrderTable orderTable2 = new OrderTable(2L, null, 2, true);
+        OrderTable orderTable1 = new OrderTable(1L, null, null, new NumberOfGuest(1), true);
+        OrderTable orderTable2 = new OrderTable(2L, null, null, new NumberOfGuest(2), true);
 
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
 
@@ -159,8 +163,8 @@ class TableGroupServiceTest {
 
         OrderTables orderTables = new OrderTables(
                 Arrays.asList(
-                        new OrderTable(null, null, orders1, null, 1, false),
-                        new OrderTable(null, null, orders2, null, 1, false)
+                        new OrderTable(null, null, new Orders(orders1), new NumberOfGuest(1), false),
+                        new OrderTable(null, null, new Orders(orders2), new NumberOfGuest(1), false)
                 )
         );
 
@@ -190,8 +194,8 @@ class TableGroupServiceTest {
 
         OrderTables orderTables = new OrderTables(
                 Arrays.asList(
-                        new OrderTable(null, null, orders1, null, 1, false),
-                        new OrderTable(null, null, orders2, null, 1, false)
+                        new OrderTable(null, null, new Orders(orders1), new NumberOfGuest(1), false),
+                        new OrderTable(null, null, new Orders(orders2), new NumberOfGuest(1), false)
                 )
         );
 
@@ -204,7 +208,7 @@ class TableGroupServiceTest {
 
         // then
         for (OrderTable orderTable : tableGroup.getOrderTables()) {
-            assertThat(orderTable.getTableGroupId()).isNull();
+            assertThat(orderTable.getTableGroup()).isNull();
         }
 
         verify(tableGroupDao, VerificationModeFactory.times(1))

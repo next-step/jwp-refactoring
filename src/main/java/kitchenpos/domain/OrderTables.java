@@ -31,7 +31,7 @@ public class OrderTables {
 
     public boolean isBookedAny() {
         for (OrderTable orderTable : orderTables) {
-            if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroupId())) {
+            if (!orderTable.isEmpty() || orderTable.isBooked()) {
                 return true;
             }
         }
