@@ -2,7 +2,7 @@ package kitchenpos.fixture;
 
 import kitchenpos.domain.Price;
 import kitchenpos.domain.menu.Menu;
-import kitchenpos.domain.menu.group.MenuGroup;
+import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menuproduct.MenuProduct;
 
 import java.util.Arrays;

@@ -6,7 +6,7 @@ import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuCreate;
-import kitchenpos.domain.menu.group.MenuGroup;
+import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menuproduct.MenuProduct;
 import kitchenpos.domain.menuproduct.MenuProductCreate;
 import kitchenpos.fixture.CleanUp;
