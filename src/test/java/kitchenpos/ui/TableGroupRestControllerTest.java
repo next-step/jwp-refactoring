@@ -5,6 +5,8 @@ import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.domain.TableGroupCreate;
 import kitchenpos.dto.request.TableGroupCreateRequest;
+import kitchenpos.fixture.CleanUp;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -20,8 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.fixture.OrderTableFixture.미사용중인_테이블;
-import static kitchenpos.fixture.OrderTableFixture.사용중인_1명_테이블;
+import static kitchenpos.fixture.OrderTableFixture.*;
 import static kitchenpos.ui.JsonUtil.toJson;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -39,6 +40,10 @@ class TableGroupRestControllerTest {
     @MockBean
     private TableGroupService tableGroupService;
 
+    @BeforeEach
+    void setUp() {
+        CleanUp.cleanUpOrderFirst();
+    }
 
     @Test
     void create() throws Exception {
@@ -46,15 +51,9 @@ class TableGroupRestControllerTest {
         TableGroupCreateRequest createRequest = new TableGroupCreateRequest(Arrays.asList(1L, 2L, 3L));
 
         List<OrderTable> orderTables = new ArrayList<>();
+        orderTables.addAll(Arrays.asList(사용중인_1명_2건_결제완료1, 사용중인_1명_테이블, 사용중인_1명_2건_결제완료2));
 
         TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
-        orderTables.addAll(
-            Arrays.asList(
-                    미사용중인_테이블,
-                    사용중인_1명_테이블,
-                    미사용중인_테이블
-            )
-        );
 
         given(tableGroupService.create(any(TableGroupCreate.class)))
                 .willReturn(tableGroup);
