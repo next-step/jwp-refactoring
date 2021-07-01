@@ -7,6 +7,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -54,5 +55,45 @@ class OrderTest {
         // when & then
         assertThatExceptionOfType(TableEmptyException.class)
                 .isThrownBy(() -> Order.create(null, null, orderTable));
+    }
+
+    @Test
+    @DisplayName("정상적인 생성")
+    void 정상적인_생성() {
+        // given
+        OrderCreate orderCreate = new OrderCreate(
+                null,
+                null,
+                Arrays.asList(
+                        new OrderLineItemCreate(1L, 1),
+                        new OrderLineItemCreate(2L, 2),
+                        new OrderLineItemCreate(3L, 3)
+                )
+        );
+        List<Menu> menuList = Arrays.asList(
+                new Menu(1L, "1", new Price(1), null, null),
+                new Menu(2L, "2", new Price(2), null, null),
+                new Menu(3L, "3", new Price(3), null, null)
+        );
+        Menus menus = new Menus(menuList);
+        OrderTable orderTable = new OrderTable(1L, null, null, null, false);
+
+        // when
+        Order order = Order.create(orderCreate, menus, orderTable);
+
+        // then
+        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
+        assertThat(order.getOrderTable()).isEqualTo(orderTable);
+        assertThat(order.getOrderedTime()).isNotNull();
+
+        assertThat(order.getOrderLineItems())
+                .map(item -> item.getMenu())
+                .containsExactlyElementsOf(menuList);
+        assertThat(order.getOrderLineItems())
+                .map(item -> item.getQuantity())
+                .containsExactly(1L, 2L, 3L);
+        assertThat(order.getOrderLineItems())
+                .map(item -> item.getOrder())
+                .containsOnly(order);
     }
 }
