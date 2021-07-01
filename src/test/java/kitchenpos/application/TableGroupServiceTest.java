@@ -4,6 +4,7 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.*;
+import kitchenpos.dto.request.TableGroupCreateRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -59,24 +60,12 @@ class TableGroupServiceTest {
     }
 
     @Test
-    @DisplayName("create - 등록을 원하는 주문 테이블이 비어있거나, 1개밖에 없을경우 IllegalArugmentException이 발생한다.")
-    void 등록을_원하는_주문_테이블이_비어있거나_1개밖에_없을경우_IllegalArgumentException이_발생한다() {
-        TableGroup emptyTableGroup = new TableGroup(2L, LocalDateTime.now(), Arrays.asList());
-        TableGroup onlyOneTableGroup = new TableGroup(3L, LocalDateTime.now(),
-                Arrays.asList(new OrderTable(1L, 3L, 0, true)));
-
-        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(emptyTableGroup));
-        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(onlyOneTableGroup));
-    }
-
-    @Test
     @DisplayName("create - 등록을 원하는 주문 테이블과 등록된 주문 테이블의 개수가 틀릴경우 IllegalArgumentException이 발생한다.")
     void 등록을_원하는_주문_테이블과_등록된_주문_테이블의_개수가_틀릴경우_IllegalArgumentException이_발생한다() {
         // given
         Long tableGroupId = 1L;
 
-
-        TableGroup tableGroup = new TableGroup(tableGroupId, LocalDateTime.now(), orderTables);
+        TableGroupCreate tableGroup = new TableGroupCreate(orderTableIds);
 
         // when
         when(orderTableDao.findAllById(orderTableIds)).thenReturn(Arrays.asList(orderTable1));
@@ -94,7 +83,7 @@ class TableGroupServiceTest {
         // given
         given(orderTableDao.findAllById(orderTableIds)).willReturn(orderTables);
 
-        TableGroup tableGroup = new TableGroup(tableGroupId, LocalDateTime.now(), orderTables);
+        TableGroupCreate tableGroup = new TableGroupCreate(orderTableIds);
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroup));
@@ -110,7 +99,8 @@ class TableGroupServiceTest {
         given(orderTableDao.findAllById(orderTableIds))
                 .willReturn(orderTables);
 
-        TableGroup tableGroup = new TableGroup(tableGroupId, LocalDateTime.now(), orderTables);
+        TableGroupCreate tableGroup = new TableGroupCreate(orderTableIds);
+
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroup));
@@ -132,7 +122,8 @@ class TableGroupServiceTest {
 
         given(orderTableDao.findAllById(orderTableIds)).willReturn(orderTables);
 
-        TableGroup tableGroup = new TableGroup(tableGroupId, LocalDateTime.now(), orderTables);
+        TableGroupCreate tableGroup = new TableGroupCreate(orderTableIds);
+
 
         // when
         when(tableGroupDao.save(any())).thenAnswer(i -> i.getArgument(0));

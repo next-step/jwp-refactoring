@@ -27,18 +27,6 @@ public class TableGroupService {
     }
 
     @Transactional
-    public TableGroup create(final TableGroup tableGroup) {
-        return create(
-                new TableGroupCreate(
-                        tableGroup
-                                .getOrderTables()
-                        .stream().map(item -> item.getId())
-                        .collect(Collectors.toList())
-                )
-        );
-    }
-
-    @Transactional
     public TableGroup create(final TableGroupCreate tableGroupCreate) {
         final List<OrderTable> savedOrderTables = orderTableDao.findAllById(tableGroupCreate.getOrderTableIds());
 
