@@ -5,9 +5,9 @@ import java.util.List;
 public class OrderCreate {
     private Long orderTableId;
     private OrderStatus orderStatus;
-    private List<Long> orderLineItems;
+    private List<OrderLineItemCreate> orderLineItems;
 
-    public OrderCreate(Long orderTableId, OrderStatus orderStatus, List<Long> orderLineItems) {
+    public OrderCreate(Long orderTableId, OrderStatus orderStatus, List<OrderLineItemCreate> orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderLineItems = orderLineItems;
@@ -21,7 +21,7 @@ public class OrderCreate {
         return orderStatus;
     }
 
-    public List<Long> getOrderLineItems() {
+    public List<OrderLineItemCreate> getOrderLineItems() {
         return orderLineItems;
     }
 }

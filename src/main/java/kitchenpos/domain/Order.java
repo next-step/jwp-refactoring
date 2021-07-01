@@ -18,9 +18,7 @@ public class Order {
 
     private LocalDateTime orderedTime;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<OrderLineItem> orderLineItems;
-
+    private OrderLineItems orderLineItems;
 
     @Column(name = "old_order_table_id")
     private Long orderTableId;
@@ -35,7 +33,7 @@ public class Order {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
-        this.orderLineItems = orderLineItems;
+        this.orderLineItems = new OrderLineItems(orderLineItems);
     }
 
     public Order(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
@@ -43,7 +41,7 @@ public class Order {
         this.orderTableId = orderTableId;
         this.oldOrderStatus = orderStatus;
         this.orderedTime = orderedTime;
-        this.orderLineItems = orderLineItems;
+        this.orderLineItems = new OrderLineItems(orderLineItems);
     }
 
     public Order(Long id, Long orderTableId, OrderTable orderTable, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
@@ -52,7 +50,7 @@ public class Order {
         this.orderTable = orderTable;
         this.oldOrderStatus = orderStatus;
         this.orderedTime = orderedTime;
-        this.orderLineItems = orderLineItems;
+        this.orderLineItems = new OrderLineItems(orderLineItems);
     }
 
     public Order(Long id, Long orderTableId, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
@@ -61,13 +59,21 @@ public class Order {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
-        this.orderLineItems = orderLineItems;
+        this.orderLineItems = new OrderLineItems(orderLineItems);
     }
 
-    public static void create(OrderCreate orderCreate, OrderLineItems orderLineItems, OrderTable orderTable) {
-        if (orderCreate.getOrderLineItems().size() != orderLineItems.size()) {
+    public static Order create(OrderCreate orderCreate, Menus menus, OrderTable orderTable) {
+        if (orderCreate.getOrderLineItems().size() != menus.size()) {
             throw new IllegalArgumentException();
         }
+
+        Order order = new Order();
+        order.orderTable = orderTable;
+        order.orderStatus = OrderStatus.COOKING;
+        order.orderedTime = LocalDateTime.now();
+//        order.orderLineItems = orderLineItems;
+
+        return order;
     }
 
     public Long getId() {
@@ -103,11 +109,7 @@ public class Order {
     }
 
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
-    }
-
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
+        return orderLineItems.toCollection();
     }
 
     public boolean isFinished() {
