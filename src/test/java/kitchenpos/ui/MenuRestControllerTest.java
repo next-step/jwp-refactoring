@@ -121,7 +121,7 @@ class MenuRestControllerTest {
             ResultMatcher.matchAll(
                     jsonPath(expressionPrefix + ".id").value(menu.getId()),
                     jsonPath(expressionPrefix + ".name").value(menu.getName()),
-                    jsonPath(expressionPrefix + ".price").value(menu.getPrice().getPrice()),
+                    jsonPath(expressionPrefix + ".price").value(menu.getPrice().toBigDecimal()),
                     jsonPath(expressionPrefix + ".menuGroupId").value(menu.getMenuGroup().getId())
             ).match(result);
         };

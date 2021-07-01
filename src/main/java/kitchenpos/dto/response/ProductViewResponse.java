@@ -10,7 +10,7 @@ public class ProductViewResponse {
     private BigDecimal price;
 
     public static ProductViewResponse of(Product product) {
-        return new ProductViewResponse(product.getId(), product.getName(), product.getPrice().getPrice());
+        return new ProductViewResponse(product.getId(), product.getName(), product.getPrice().toBigDecimal());
     }
 
     public ProductViewResponse(Long id, String name, BigDecimal price) {

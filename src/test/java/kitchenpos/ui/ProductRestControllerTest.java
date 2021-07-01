@@ -108,7 +108,7 @@ class ProductRestControllerTest {
             ResultMatcher.matchAll(
                     jsonPath(prefix + ".id").value(product.getId()),
                     jsonPath(prefix + ".name").value(product.getName()),
-                    jsonPath(prefix + ".price").value(product.getPrice().getPrice())
+                    jsonPath(prefix + ".price").value(product.getPrice().toBigDecimal())
             ).match(result);
         };
     }

@@ -147,7 +147,7 @@ class MenuServiceTest {
 
         assertThat(savedMenu.getMenuProducts())
                 .map(item -> item.getAmount())
-                .containsOnly(new Price(양념치킨_1000원.getPrice().getPrice().multiply(BigDecimal.valueOf(1))));
+                .containsOnly(new Price(양념치킨_1000원.getPrice().toBigDecimal().multiply(BigDecimal.valueOf(1))));
 
         verify(productDao, VerificationModeFactory.times(1))
                 .findAllById(any());

@@ -1,7 +1,6 @@
 package kitchenpos.dto.response;
 
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -23,7 +22,7 @@ public class MenuViewResponse {
         return new MenuViewResponse(
                 menu.getId(),
                 menu.getName(),
-                menu.getPrice().getPrice(),
+                menu.getPrice().toBigDecimal(),
                 menu.getMenuGroup().getId(),
                 productViewResponses
         );

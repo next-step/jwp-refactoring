@@ -27,7 +27,11 @@ public class Price {
         this.price = price;
     }
 
-    public BigDecimal getPrice() {
+    public Price multiply(Price price) {
+        return new Price(this.price.multiply(price.price));
+    }
+
+    public BigDecimal toBigDecimal() {
         return price;
     }
 

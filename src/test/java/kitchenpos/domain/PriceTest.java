@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class PriceTest {
     @Test
@@ -21,5 +21,18 @@ class PriceTest {
     @DisplayName("가격이 0보다 크면 정상이다")
     void 가격이_0보다_크면_정상이다() {
         assertDoesNotThrow(() -> new Price(new BigDecimal(100)));
+    }
+
+    @Test
+    void multiply() {
+        // given
+        Price price1 = new Price(2);
+        Price price2 = new Price(5);
+
+        // when
+        Price result = price1.multiply(price2);
+
+        // then
+        assertThat(result).isEqualTo(new Price(10));
     }
 }

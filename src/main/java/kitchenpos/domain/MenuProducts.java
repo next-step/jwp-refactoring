@@ -34,7 +34,7 @@ public class MenuProducts {
     public Price sumAmount() {
         Price amount = menuProducts.stream()
                 .map(item -> item.getAmount())
-                .reduce(new Price(0), (b, a) -> new Price(b.getPrice().add(a.getPrice())));
+                .reduce(new Price(0), (b, a) -> new Price(b.toBigDecimal().add(a.toBigDecimal())));
 
         return amount;
     }
