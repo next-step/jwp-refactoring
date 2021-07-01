@@ -4,7 +4,6 @@ import kitchenpos.exception.MenuCheapException;
 import kitchenpos.exception.ProductNotExistException;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -58,24 +57,12 @@ public class Menu {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
     }
 
-    public void setName(final String name) {
-        this.name = name;
-    }
-
     public Price getPrice() {
         return price;
-    }
-
-    public void setPrice(Price price) {
-        this.price = price;
     }
 
     public MenuGroup getMenuGroup() {

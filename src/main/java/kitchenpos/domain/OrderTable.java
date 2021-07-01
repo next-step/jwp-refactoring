@@ -55,10 +55,6 @@ public class OrderTable {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public List<Order> getOrders() {
         return orders.toCollection();
     }
@@ -67,24 +63,12 @@ public class OrderTable {
         return numberOfGuests;
     }
 
-    public void setNumberOfGuests(NumberOfGuest numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
-    }
-
     public TableGroup getTableGroup() {
         return tableGroup;
     }
 
-    public void setTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
-    }
-
     public boolean isEmpty() {
         return empty;
-    }
-
-    public void setEmpty(final boolean empty) {
-        this.empty = empty;
     }
 
     public void ungroup() {
@@ -118,6 +102,15 @@ public class OrderTable {
     }
 
     public boolean isBooked() {
-        return Objects.nonNull(getTableGroup());
+        return Objects.nonNull(getTableGroup()) || !isEmpty();
+    }
+
+    public void bookedBy(TableGroup tableGroup) {
+        if (isBooked()) {
+            throw new IllegalStateException();
+        }
+
+        this.tableGroup = tableGroup;
+        this.empty = false;
     }
 }

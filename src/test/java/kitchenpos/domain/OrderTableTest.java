@@ -8,7 +8,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class OrderTableTest {
 
@@ -66,4 +66,23 @@ class OrderTableTest {
         assertDoesNotThrow(() -> orderTable.changeNumberOfGuest(new NumberOfGuest(1)));
     }
 
+    @Test
+    @DisplayName("이미 예약이 되어있으면 예약이 불가능하다")
+    void 이미_예약이_되어있으면_예약이_불가능하다() {
+        OrderTable orderTable = new OrderTable(null, Arrays.asList(), 1, false);
+
+        assertThatIllegalStateException().isThrownBy(() -> orderTable.bookedBy(null));
+    }
+
+    @Test
+    @DisplayName("정상적인 예약")
+    void 정상적인_예약() {
+        OrderTable orderTable = new OrderTable(null, Arrays.asList(), 1, true);
+        TableGroup tableGroup = new TableGroup();
+
+        orderTable.bookedBy(tableGroup);
+
+        assertThat(orderTable.isEmpty()).isFalse();
+        assertThat(orderTable.getTableGroup()).isEqualTo(tableGroup);
+    }
 }

@@ -4,7 +4,6 @@ import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 @Embeddable
 public class OrderTables {
@@ -24,8 +23,7 @@ public class OrderTables {
         }
 
         for (OrderTable orderTable : orderTables) {
-            orderTable.setTableGroup(tableGroup);
-            orderTable.setEmpty(false);
+            orderTable.bookedBy(tableGroup);
         }
     }
 
