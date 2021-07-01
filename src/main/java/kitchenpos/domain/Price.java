@@ -35,6 +35,11 @@ public class Price implements Comparable<Price> {
         return new Price(this.price.multiply(price.price));
     }
 
+
+    public Price multiply(long quantity) {
+        return new Price(this.price.multiply(BigDecimal.valueOf(quantity)));
+    }
+
     public BigDecimal toBigDecimal() {
         return price;
     }

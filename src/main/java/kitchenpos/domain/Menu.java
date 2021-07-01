@@ -48,7 +48,7 @@ public class Menu {
 
     private void validateAmount() {
         Price amount = this.menuProducts.sumAmount();
-        if (getPrice().toBigDecimal().compareTo(amount.toBigDecimal()) > 0) {
+        if (getPrice().compareTo(amount) > 0) {
             throw new MenuCheapException();
         }
     }
