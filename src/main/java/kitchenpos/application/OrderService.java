@@ -48,6 +48,11 @@ public class OrderService {
         return create(orderCreate);
     }
 
+    @Transactional
+    public Order changeOrderStatus(final Long orderId, final Order order) {
+        return changeOrderStatus(orderId, order.getOrderStatus());
+    }
+
     public Order create(OrderCreate orderCreate) {
         List<Long> menuIds = orderCreate.getOrderLineItems()
                 .stream()
@@ -63,11 +68,6 @@ public class OrderService {
 
     public List<Order> list() {
         return orderDao.findAll();
-    }
-
-    @Transactional
-    public Order changeOrderStatus(final Long orderId, final Order order) {
-        return changeOrderStatus(orderId, order.getOrderStatus());
     }
 
     @Transactional

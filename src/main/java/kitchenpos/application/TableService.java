@@ -34,6 +34,16 @@ public class TableService {
     }
 
     @Transactional
+    public OrderTable changeEmpty(final Long orderTableId, final OrderTable orderTable) {
+        return changeEmpty(orderTableId, orderTable.isEmpty());
+    }
+
+    @Transactional
+    public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTable orderTable) {
+        return changeNumberOfGuests(orderTableId, orderTable.getNumberOfGuests());
+    }
+
+    @Transactional
     public OrderTable create(final OrderTableCreate create) {
         return orderTableDao.save(new OrderTable( create.getNumberOfGuests(), create.isEmpty()));
     }
@@ -42,10 +52,6 @@ public class TableService {
         return orderTableDao.findAll();
     }
 
-    @Transactional
-    public OrderTable changeEmpty(final Long orderTableId, final OrderTable orderTable) {
-        return changeEmpty(orderTableId, orderTable.isEmpty());
-    }
 
     @Transactional
     public OrderTable changeEmpty(final Long orderTableId, boolean empty) {
@@ -54,11 +60,6 @@ public class TableService {
 
         orderTable.changeEmpty(empty);
         return orderTable;
-    }
-
-    @Transactional
-    public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTable orderTable) {
-        return changeNumberOfGuests(orderTableId, orderTable.getNumberOfGuests());
     }
 
     @Transactional
