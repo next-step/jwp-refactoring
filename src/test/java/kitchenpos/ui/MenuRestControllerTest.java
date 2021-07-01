@@ -1,10 +1,14 @@
 package kitchenpos.ui;
 
 import kitchenpos.application.MenuService;
-import kitchenpos.domain.*;
+import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuCreate;
+import kitchenpos.domain.MenuProduct;
 import kitchenpos.dto.request.MenuCreateRequest;
 import kitchenpos.dto.request.MenuProductCreateRequest;
 import kitchenpos.exception.InvalidPriceException;
+import kitchenpos.fixture.CleanUp;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,23 +19,20 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import static java.lang.String.format;
+import static kitchenpos.fixture.MenuFixture.양념치킨_콜라_1000원_1개;
+import static kitchenpos.fixture.MenuFixture.양념치킨_콜라_1000원_2개;
 import static kitchenpos.ui.JsonUtil.toJson;
-import static kitchenpos.ui.JsonUtil.toObject;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -43,6 +44,11 @@ class MenuRestControllerTest {
 
     @MockBean
     private MenuService menuService;
+
+    @BeforeEach
+    void setUp() {
+        CleanUp.cleanUpOrderFirst();
+    }
 
     @Test
     @DisplayName("[post]/api/menus - 메뉴의 가격이 비어 있거나, 0원보다 적을경우 BadRequest이다.")
@@ -71,32 +77,13 @@ class MenuRestControllerTest {
     @DisplayName("[post]/api/menus - 정상정인 메뉴 등록")
     void 정상적인_메뉴_등록() throws Exception {
         // given
-        MenuCreateRequest menuCreateRequest = new MenuCreateRequest("Menu",
-                BigDecimal.valueOf(1),
-                1L,
+        MenuCreateRequest menuCreateRequest = new MenuCreateRequest("Menu", BigDecimal.valueOf(1), 1L,
                 Arrays.asList(
                         new MenuProductCreateRequest(1L, 1L, 1L),
                         new MenuProductCreateRequest(2L, 2L, 2L)
                 )
         );
-        Menu menu = Menu.create(
-                new MenuCreate("Hello",
-                        new Price(1),
-                        1L,
-                        Arrays.asList(
-                                new MenuProductCreate(1L, 1L, 1L),
-                                new MenuProductCreate(2L, 2L, 2L)
-                        )
-                ),
-                new MenuGroup(1L, "Hello"),
-                new Products(
-                        Arrays.asList(
-                            new Product(1L, "Bello", new Price(1)),
-                            new Product(2L, "Bello", new Price(1))
-                        )
-                )
-        );
-        given(menuService.create(any(MenuCreate.class))).willReturn(menu);
+        given(menuService.create(any(MenuCreate.class))).willReturn(양념치킨_콜라_1000원_1개);
 
         // when & then
         mockMvc.perform(
@@ -104,52 +91,16 @@ class MenuRestControllerTest {
                         .content(toJson(menuCreateRequest))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
-                .andExpect(validateMenu("$", menu))
-                .andExpect(validateMenuProducts("$.menuProducts[0]", menu.getMenuProducts().get(0)))
-                .andExpect(validateMenuProducts("$.menuProducts[1]", menu.getMenuProducts().get(1)))
+                .andExpect(validateMenu("$", 양념치킨_콜라_1000원_1개))
+                .andExpect(validateMenuProducts("$.menuProducts[0]", 양념치킨_콜라_1000원_1개.getMenuProducts().get(0)))
+                .andExpect(validateMenuProducts("$.menuProducts[1]", 양념치킨_콜라_1000원_1개.getMenuProducts().get(1)))
                 .andReturn();
     }
 
     @Test
     @DisplayName("[get]/api/menus - 정상적인 리스트 조회")
     void 정상적인_리스트_조회() throws Exception {
-        List<Menu> menus = Arrays.asList(
-                Menu.create(
-                        new MenuCreate("Hello",
-                                new Price(1),
-                                1L,
-                                Arrays.asList(
-                                        new MenuProductCreate(1L, 1L, 1L),
-                                        new MenuProductCreate(2L, 2L, 2L)
-                                )
-                        ),
-                        new MenuGroup(1L, "Hello"),
-                        new Products(
-                                Arrays.asList(
-                                        new Product(1L, "Bello", new Price(1)),
-                                        new Product(2L, "Bello", new Price(1))
-                                )
-                        )
-                ),
-                Menu.create(
-                        new MenuCreate("Bello",
-                                new Price(2),
-                                2L,
-                                Arrays.asList(
-                                        new MenuProductCreate(3L, 3L, 3L),
-                                        new MenuProductCreate(4L, 4L, 4L)
-                                )
-                        ),
-                        new MenuGroup(2L, "Bello"),
-                        new Products(
-                                Arrays.asList(
-                                        new Product(3L, "Kello", new Price(2)),
-                                        new Product(4L, "Kello", new Price(2))
-                                )
-                        )
-                )
-        );
-
+        List<Menu> menus = Arrays.asList(양념치킨_콜라_1000원_1개, 양념치킨_콜라_1000원_2개);
         given(menuService.list()).willReturn(menus);
 
         // when & then

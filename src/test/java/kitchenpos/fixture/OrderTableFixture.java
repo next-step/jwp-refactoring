@@ -31,19 +31,19 @@ public class OrderTableFixture {
 
 
     public static void cleanUp() {
+
+        List<Order> 결제완료 = Arrays.asList(결제완료1, 결제완료2, 결제완료3);
+        List<Order> 결제완료_식사 = Arrays.asList(결제완료4, 식사1);
+        List<Order> 결제완료2_1 = Arrays.asList(결제완료1, 결제완료2);
+        List<Order> 결제완료2_2 = Arrays.asList(결제완료3, 결제완료4);
+
         미사용중인_테이블 = new OrderTable(1L, new NumberOfGuest(0), true);
         미사용중인_테이블2 = new OrderTable(2L, new NumberOfGuest(0), true);
         사용중인_1명_테이블 = new OrderTable(3L, 주문이_없는_테이블_그룹, Collections.emptyList(), new NumberOfGuest(1), false);
         사용중인_2명_테이블 = new OrderTable(4L, 주문이_없는_테이블_그룹, Collections.emptyList(), new NumberOfGuest(2), false);
 
-        List<Order> 결제완료 = Arrays.asList(결제완료1, 결제완료2, 결제완료3);
-        List<Order> 결제완료_식사 = Arrays.asList(결제완료4, 식사1);
-
         사용중인_1명_3건_결제완로 = new OrderTable(5L, 주문이_없는_테이블_그룹, new Orders(결제완료), new NumberOfGuest(1), false);
         사용중인_1명_1건_결제완료_1건_식사 = new OrderTable(6L, 주문이_없는_테이블_그룹, new Orders(결제완료_식사), new NumberOfGuest(1), false);
-
-        List<Order> 결제완료2_1 = Arrays.asList(결제완료1, 결제완료2);
-        List<Order> 결제완료2_2 = Arrays.asList(결제완료3, 결제완료4);
 
         사용중인_1명_2건_결제완료1 = new OrderTable(5L, 주문이_없는_테이블_그룹, new Orders(결제완료2_1), new NumberOfGuest(1), false);
         사용중인_1명_2건_결제완료2 = new OrderTable(6L, 주문이_없는_테이블_그룹, new Orders(결제완료2_2), new NumberOfGuest(1), false);

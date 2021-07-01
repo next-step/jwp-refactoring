@@ -2,6 +2,7 @@ package kitchenpos.fixture;
 
 public class CleanUp {
     public static void cleanUpOrderFirst() {
+        MenuGroupFixture.cleanUp();
         TableGroupFixture.cleanUp();
         ProductFixture.cleanUp();
         MenuFixture.cleanUp();
@@ -10,6 +11,7 @@ public class CleanUp {
     }
 
     public static void cleanUpTableFirst() {
+        MenuGroupFixture.cleanUp();
         TableGroupFixture.cleanUp();
         ProductFixture.cleanUp();
         MenuFixture.cleanUp();
