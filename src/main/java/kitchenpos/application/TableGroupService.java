@@ -3,16 +3,11 @@ package kitchenpos.application;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.*;
+import kitchenpos.domain.OrderTables;
+import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.TableGroupCreate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
-
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 public class TableGroupService {
@@ -28,9 +23,9 @@ public class TableGroupService {
 
     @Transactional
     public TableGroup create(final TableGroupCreate tableGroupCreate) {
-        final List<OrderTable> savedOrderTables = orderTableDao.findAllById(tableGroupCreate.getOrderTableIds());
+        OrderTables orderTables = new OrderTables(orderTableDao.findAllById(tableGroupCreate.getOrderTableIds()));
 
-        return tableGroupDao.save(TableGroup.create(tableGroupCreate, new OrderTables(savedOrderTables)));
+        return tableGroupDao.save(TableGroup.create(tableGroupCreate, orderTables));
     }
 
     @Transactional
