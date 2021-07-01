@@ -32,7 +32,8 @@ class OrderTest {
     void OrderCreate의_OrderLineItem_Size와_Menus의_size가_틀리면_IllegalArugmentException이_발생한다() {
         // given
         OrderCreate orderCreate = new OrderCreate(
-                null, null,
+                null,
+                null,
                 Arrays.asList(
                         new OrderLineItemCreate(0, 0),
                         new OrderLineItemCreate(0, 0),
@@ -41,7 +42,7 @@ class OrderTest {
         );
         Menus menus = new Menus(Arrays.asList(new Menu(), new Menu()));
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> Order.create(orderCreate, menus, null));
+        assertThatIllegalArgumentException().isThrownBy(() -> Order.create(orderCreate, menus, new OrderTable(null, null, null, null, false)));
     }
 
     @Test

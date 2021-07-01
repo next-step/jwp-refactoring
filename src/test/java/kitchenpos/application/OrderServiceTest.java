@@ -118,40 +118,39 @@ class OrderServiceTest {
 
         OrderTable orderTable = new OrderTable(orderTableId, 1L, 1, false);
 
-        List<Long> menuIds = Arrays.asList(orderLineItem1.getOldMenuId(), orderLineItem2.getOldMenuId());
+
+        List<Menu> menus = Arrays.asList(
+                new Menu(1L, "A", new Price(1), null, null),
+                new Menu(2L, "A", new Price(2), null, null)
+        );
 
         Order order = new Order(orderId, orderTableId, OrderStatus.MEAL.name(), LocalDateTime.now(), orderLineItems);
 
-        given(menuDao.countByIdIn(menuIds)).willReturn(Long.valueOf(menuIds.size()));
+        given(menuDao.findAllById(any())).willReturn(menus);
 
         given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(orderTable));
 
         // when
-        when(orderDao.save(order)).thenReturn(order);
-        when(orderLineItemDao.save(orderLineItem1)).thenReturn(orderLineItem1);
-        when(orderLineItemDao.save(orderLineItem2)).thenReturn(orderLineItem2);
+        when(orderDao.save(any())).thenAnswer(i -> i.getArgument(0));
 
         Order savedOrder = orderService.create(order);
 
         // then
 
-        assertThat(savedOrder.getOrderTableId()).isEqualTo(orderTableId);
-        assertThat(savedOrder.getOldOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(savedOrder.getOrderTable()).isEqualTo(orderTable);
+        assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
         assertThat(savedOrder.getOrderedTime()).isNotNull();
 
         assertThat(savedOrder.getOrderLineItems())
-                .map(item -> item.getOldOrderId())
-                .containsOnly(orderId);
+                .map(item -> item.getOrder())
+                .containsOnly(savedOrder);
         assertThat(savedOrder.getOrderLineItems())
-                .containsExactly(orderLineItem1, orderLineItem2);
+                .map(item -> item.getMenu())
+                .containsExactlyElementsOf(menus);
 
-
-        verify(menuDao, VerificationModeFactory.times(1)).countByIdIn(menuIds);
-
+        verify(menuDao, VerificationModeFactory.times(1)).findAllById(any());
         verify(orderTableDao, VerificationModeFactory.times(1)).findById(orderTableId);
-
-        verify(orderLineItemDao, VerificationModeFactory.times(1)).save(orderLineItem1);
-        verify(orderLineItemDao, VerificationModeFactory.times(1)).save(orderLineItem2);
+        verify(orderDao, VerificationModeFactory.times(1)).save(any());
     }
 
     @Test

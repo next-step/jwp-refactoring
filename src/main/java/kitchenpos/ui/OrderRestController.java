@@ -2,6 +2,9 @@ package kitchenpos.ui;
 
 import kitchenpos.application.OrderService;
 import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderCreate;
+import kitchenpos.domain.OrderLineItemCreate;
+import kitchenpos.dto.request.OrderCreateRequest;
 import kitchenpos.dto.request.OrderStatusChangeRequest;
 import kitchenpos.dto.response.OrderViewResponse;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +23,22 @@ public class OrderRestController {
     }
 
     @PostMapping("/api/orders")
-    public ResponseEntity<Order> create(@RequestBody final Order order) {
-        final Order created = orderService.create(order);
+    public ResponseEntity<OrderViewResponse> create(@RequestBody final OrderCreateRequest orderCreateRequest) {
+        List<OrderLineItemCreate> itemCreates = orderCreateRequest.getOrderLineItems()
+                .stream()
+                .map(item -> new OrderLineItemCreate(item.getMenuId(), item.getQuantity()))
+                .collect(Collectors.toList());
+
+        final Order created = orderService.create(
+                new OrderCreate(
+                        orderCreateRequest.getOrderTableId(),
+                        orderCreateRequest.getOrderStatus(),
+                        itemCreates
+                )
+        );
         final URI uri = URI.create("/api/orders/" + created.getId());
         return ResponseEntity.created(uri)
-                .body(created)
-                ;
+                .body(OrderViewResponse.of(created));
     }
 
     @GetMapping("/api/orders")

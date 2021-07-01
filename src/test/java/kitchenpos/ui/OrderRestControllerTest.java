@@ -3,6 +3,7 @@ package kitchenpos.ui;
 import kitchenpos.application.OrderService;
 import kitchenpos.domain.*;
 import kitchenpos.dto.request.OrderCreateRequest;
+import kitchenpos.dto.request.OrderLineItemCreateRequest;
 import kitchenpos.dto.request.OrderStatusChangeRequest;
 import kitchenpos.dto.response.OrderLineItemViewResponse;
 import org.junit.jupiter.api.Test;
@@ -40,7 +41,7 @@ class OrderRestControllerTest {
     @Test
     void create() throws Exception {
         // given
-        OrderCreateRequest orderCreateRequest = new OrderCreateRequest(1L, OrderStatus.MEAL, Arrays.asList());
+        OrderCreateRequest orderCreateRequest = new OrderCreateRequest(1L, OrderStatus.MEAL, Arrays.asList(new OrderLineItemCreateRequest(1L, 1L)));
         OrderTable orderTable = new OrderTable(1L, null, null, null, false);
         Order fakeOrder = new Order(1L, orderTable, OrderStatus.MEAL, LocalDateTime.now(), null);
         Menu fakeMenu = new Menu(1L, "Hello", new Price(1), 1L, null);
@@ -51,10 +52,13 @@ class OrderRestControllerTest {
         );
         Order order = new Order(1L, orderTable, OrderStatus.MEAL, LocalDateTime.now(), orderLineItems);
 
+        given(orderService.create(any(OrderCreate.class)))
+                .willReturn(order);
+
         // when
         mockMvc.perform(
                 post("/api/orders")
-                        .content(toJson(order))
+                        .content(toJson(orderCreateRequest))
                         .contentType(MediaType.APPLICATION_JSON)
         )
                 .andExpect(status().isCreated())

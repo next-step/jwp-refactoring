@@ -5,6 +5,7 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.*;
+import kitchenpos.exception.EntityNotExistsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -55,10 +56,9 @@ public class OrderService {
 
         Menus menus = new Menus(menuDao.findAllById(menuIds));
         OrderTable orderTable = orderTableDao.findById(orderCreate.getOrderTableId())
-                .orElseThrow(IllegalArgumentException::new);
-        Order.create(orderCreate, menus, orderTable);
+                .orElseThrow(EntityNotExistsException::new);
 
-        return null;
+        return orderDao.save(Order.create(orderCreate, menus, orderTable));
     }
 
     public List<Order> list() {
