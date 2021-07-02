@@ -35,6 +35,7 @@ public class MenuGroupServiceTest {
         menuGroupService = new MenuGroupService(menuGroupDao);
     }
 
+    @DisplayName("메뉴 그룹을 만들 수 있다")
     @Test
     void create() {
         MenuGroup menuGroup1 = MenuGroup.of(menuGroupId1, menuGroupName1);
@@ -46,6 +47,7 @@ public class MenuGroupServiceTest {
         assertThat(menuGroupResponse.getName()).isEqualTo(menuGroupName1);
     }
 
+    @DisplayName("메뉴 그룹 전체를 조회할 수 있다")
     @Test
     void findAll() {
         MenuGroup menuGroup1 = MenuGroup.of(menuGroupId1, menuGroupName1);
