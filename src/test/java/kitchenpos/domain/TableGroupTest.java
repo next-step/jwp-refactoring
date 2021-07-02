@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import static java.util.Arrays.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -90,5 +91,22 @@ class TableGroupTest {
 
 		assertThat(orderTable1.isGrouped()).isFalse();
 		assertThat(orderTable2.isGrouped()).isFalse();
+	}
+
+
+	@DisplayName("그룹화된 주문테이블들 중 조리상태이거나 식사상태이면 그룹해제를 할 수 없다.")
+	@Test
+	void ungroupWithNotCompleteOrderTest() {
+		// given
+		Order order = mock(Order.class);
+		when(order.isComplete()).thenReturn(false);
+
+		OrderTable notCompletedOrderTable = new OrderTable(1, true, asList(order));
+		OrderTable orderTable =  new OrderTable(1, true);
+		TableGroup tableGroup = new TableGroup(OrderTables.of(notCompletedOrderTable, orderTable), LocalDateTime.now());
+
+		assertThatThrownBy(() -> tableGroup.ungroup())
+			.isInstanceOf(IllegalArgumentException.class)
+			.hasMessageContaining("조리상태이거나 식사상태인 주문이 있는 주문테이블은 그룹해제를 할 수 없습니다.");
 	}
 }

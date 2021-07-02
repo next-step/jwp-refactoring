@@ -1,5 +1,7 @@
 package kitchenpos.domain;
 
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -28,5 +30,20 @@ public class NumberOfGuests {
 
 	public int getNumberOfGuests() {
 		return numberOfGuests;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		NumberOfGuests that = (NumberOfGuests)o;
+		return getNumberOfGuests() == that.getNumberOfGuests();
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(getNumberOfGuests());
 	}
 }

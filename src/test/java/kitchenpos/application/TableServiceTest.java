@@ -14,8 +14,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableRepository;
+import kitchenpos.domain.NumberOfGuests;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.OrderTableResponse;
@@ -23,10 +23,6 @@ import kitchenpos.dto.OrderTableResponse;
 @DisplayName("주문테이블 요구사항 테스트")
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
-
-	@Mock
-	private OrderDao orderDao;
-
 	@Mock
 	private OrderTableRepository orderTableRepository;
 
@@ -39,8 +35,9 @@ class TableServiceTest {
 		// given
 		OrderTableRequest orderTableRequest = mock(OrderTableRequest.class);
 		OrderTable orderTable = mock(OrderTable.class);
+		when(orderTable.getNumberOfGuests()).thenReturn(NumberOfGuests.valueOf(1));
 		when(orderTableRequest.toEntity()).thenReturn(orderTable);
-		when(orderTableRepository.save(any(OrderTable.class))).thenReturn(mock(OrderTable.class));
+		when(orderTableRepository.save(any(OrderTable.class))).thenReturn(orderTable);
 
 		// when
 		tableService.create(orderTableRequest);
@@ -55,6 +52,7 @@ class TableServiceTest {
 		// given
 		OrderTable orderTable = mock(OrderTable.class);
 		when(orderTable.getId()).thenReturn(1L);
+		when(orderTable.getNumberOfGuests()).thenReturn(NumberOfGuests.valueOf(1));
 		when(orderTableRepository.findAll()).thenReturn(asList(orderTable));
 
 		// when
@@ -76,23 +74,6 @@ class TableServiceTest {
 		assertThatThrownBy(() -> tableService.changeEmpty(1L, mock(OrderTableRequest.class)))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("등록이 되지 않은 주문테이블은 상태를 변경할 수 없습니다.");
-	}
-
-	@DisplayName("주문테이블의 주문이 조리 상태이거나 식사 상태이면 주문테이블 상태를 바꿀 수 없다.")
-	@Test
-	void changeEmptyWithCookingOrderTest() {
-		// given
-		OrderTable orderTable = mock(OrderTable.class);
-		when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(orderTable));
-
-		when(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList()))
-			.thenReturn(true);
-
-		// when
-		// then
-		assertThatThrownBy(() -> tableService.changeEmpty(1L, mock(OrderTableRequest.class)))
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("조리상태이거나 식사상태주문의 주문테이블은 상태를 변경할 수 없습니다.");
 	}
 
 	@DisplayName("등록된 주문 테이블만 방문 손님 수를 수정할 수 없다.")

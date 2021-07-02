@@ -1,13 +1,15 @@
 package kitchenpos.application;
 
+import static java.util.Arrays.*;
 import static kitchenpos.domain.OrderStatus.*;
 
-import kitchenpos.dao.OrderDao;
+import kitchenpos.dao.OrderRepository;
 import kitchenpos.dao.OrderTableRepository;
 import kitchenpos.dao.TableGroupRepository;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTables;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.dto.TableGroupResponse;
 
@@ -20,14 +22,14 @@ import java.util.List;
 
 @Service
 public class TableGroupService {
-    private final OrderDao orderDao;
+    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final OrderDao orderDao,
+    public TableGroupService(final OrderRepository orderRepository,
                             final OrderTableRepository orderTableRepository,
                             final TableGroupRepository tableGroupRepository) {
-        this.orderDao = orderDao;
+        this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
     }
@@ -49,9 +51,9 @@ public class TableGroupService {
 
     private void validateNotExistsCookingAndMeal(TableGroup tableGroup) {
         final List<Long> orderTableIds = tableGroup.getOrderTableIds();
-        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, Arrays.asList(COOKING.name(), MEAL.name()))) {
-            throw new IllegalArgumentException("조리상태이거나 식사상태인 주문이 있는 주문테이블은 그룹해제를 할 수 없습니다.");
-        }
+        // if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, asList(COOKING, MEAL))) {
+        //     throw new IllegalArgumentException("조리상태이거나 식사상태인 주문이 있는 주문테이블은 그룹해제를 할 수 없습니다.");
+        // }
     }
 
     private OrderTables findOrderTables(final TableGroupRequest tableGroupRequest) {

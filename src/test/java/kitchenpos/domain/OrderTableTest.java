@@ -2,6 +2,7 @@ package kitchenpos.domain;
 
 import static java.util.Arrays.*;
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import java.time.LocalDateTime;
 
@@ -32,6 +33,22 @@ class OrderTableTest {
 		assertThatThrownBy(() -> orderTable1.emptyOff())
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("그룹 설정이 되어 있는 테이블은 주문 등록 불가 상태로 바꿀 수 없습니다.");
+	}
+
+	@DisplayName("주문테이블의 주문이 조리 상태이거나 식사 상태이면 주문테이블 상태를 바꿀 수 없다.")
+	@Test
+	void changeEmptyWithCookingOrderTest() {
+		Order order = mock(Order.class);
+		when(order.isComplete()).thenReturn(false);
+		OrderTable orderTable = new OrderTable(1, true, asList(order));
+
+		assertThatThrownBy(() -> orderTable.emptyOn())
+			.isInstanceOf(IllegalArgumentException.class)
+			.hasMessageContaining("조리상태이거나 식사상태주문의 주문테이블은 상태를 변경할 수 없습니다.");
+
+		assertThatThrownBy(() -> orderTable.emptyOff())
+			.isInstanceOf(IllegalArgumentException.class)
+			.hasMessageContaining("조리상태이거나 식사상태주문의 주문테이블은 상태를 변경할 수 없습니다.");
 	}
 
 	@DisplayName("주문테이블은 비우기 설정을 할 수 있다.")
@@ -75,7 +92,7 @@ class OrderTableTest {
 
 		orderTable.changeNumberOfGuests(NumberOfGuests.valueOf(2));
 
-		assertThat(orderTable.getNumberOfGuests()).isEqualTo(2);
+		assertThat(orderTable.getNumberOfGuests()).isEqualTo(NumberOfGuests.valueOf(2));
 	}
 
 }
