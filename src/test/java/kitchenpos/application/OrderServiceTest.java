@@ -11,7 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.extension.Extensions;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -23,7 +22,7 @@ import java.util.Optional;
 import static kitchenpos.domain.OrderStatus.COOKING;
 import static kitchenpos.domain.OrderStatus.MEAL;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -100,5 +99,48 @@ class OrderServiceTest {
         Order changedOrder = orderService.changeOrderStatus(1L, targetOrder);
         // then
         assertThat(changedOrder.getOrderStatus()).isEqualTo(MEAL.name());
+    }
+
+    @DisplayName("생성 실패 - 주문 항목이 비어있음")
+    @Test
+    void createFailedByOrderLineItems() {
+        // given
+        // when
+        // then
+        assertThatThrownBy(() -> orderService.create(new Order())).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("생성 실패 - 주문 항목의 개수와 메뉴 개수가 일치하지 않음")
+    @Test
+    void createFailedByMenus() {
+        // given
+        List<OrderLineItem> orderLineItems = new ArrayList<>();
+        orderLineItems.add(new OrderLineItem());
+        orderLineItems.add(new OrderLineItem());
+        order.setOrderLineItems(orderLineItems);
+
+        // when
+        when(menuDao.countByIdIn(any())).thenReturn(1L);
+
+        // then
+        assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("생성 실패 - 주문테이블이 비어있음")
+    @Test
+    void createFailedByOrderTable() {
+        // given
+        OrderLineItem orderLineItem = new OrderLineItem();
+        orderLineItem.setMenuId(1L);
+        order.setOrderLineItems(new ArrayList<>(Arrays.asList(orderLineItem)));
+        OrderTable orderTable = new OrderTable();
+        orderTable.setEmpty(true);
+
+        // when
+        when(menuDao.countByIdIn(any())).thenReturn(1L);
+        when(orderTableDao.findById(any())).thenReturn(Optional.of(orderTable));
+
+        // then
+        assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
     }
 }
