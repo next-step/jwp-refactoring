@@ -4,7 +4,9 @@ import static java.util.Arrays.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
@@ -28,27 +30,39 @@ public class OrderTables {
 		return new OrderTables(orderTables);
 	}
 
-	public void groupBy(TableGroup tableGroup) {
+	void groupBy(TableGroup tableGroup) {
 		for (OrderTable orderTable : orderTables) {
 			orderTable.setTableGroup(tableGroup);
 		}
 	}
 
-	public int size() {
+	int size() {
 		return orderTables.size();
 	}
 
-	public boolean containsNotEmptyTable() {
+	boolean containsNotEmptyTable() {
 		return orderTables.stream()
 			.anyMatch(OrderTable::isNotEmpty);
 	}
 
-	public boolean containsGroupedOrderTables() {
+	boolean containsGroupedOrderTables() {
 		return orderTables.stream()
 			.anyMatch(OrderTable::isGrouped);
 	}
 
 	List<OrderTable> getOrderTables() {
 		return Collections.unmodifiableList(orderTables);
+	}
+
+	List<Long> getOrderTableIds() {
+		return orderTables.stream()
+			.map(OrderTable::getId)
+			.collect(Collectors.toList());
+	}
+
+	void ungrouped() {
+		for (OrderTable orderTable : orderTables) {
+			orderTable.ungrouped();
+		}
 	}
 }

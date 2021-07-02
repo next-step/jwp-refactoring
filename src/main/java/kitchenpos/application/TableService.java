@@ -23,7 +23,7 @@ public class TableService {
 
     @Transactional
     public OrderTable create(final OrderTable orderTable) {
-        orderTable.ungroup();
+        orderTable.ungrouped();
 
         return orderTableRepository.save(orderTable);
     }

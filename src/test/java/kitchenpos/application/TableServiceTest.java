@@ -15,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.OrderTableRepository;
 import kitchenpos.domain.OrderTable;
 
@@ -42,7 +41,7 @@ class TableServiceTest {
 		tableService.create(orderTable);
 
 		// then
-		verify(orderTable).ungroup();
+		verify(orderTable).ungrouped();
 		verify(orderTableRepository).save(orderTable);
 	}
 

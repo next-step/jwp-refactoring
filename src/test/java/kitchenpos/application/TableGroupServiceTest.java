@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,10 +15,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.OrderTableRepository;
-import kitchenpos.dao.TableGroupDao;;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.dao.TableGroupRepository;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.TableGroupRequest;
 
@@ -30,6 +29,9 @@ class TableGroupServiceTest {
 
 	@Mock
 	private OrderTableRepository orderTableRepository;
+
+	@Mock
+	private TableGroupRepository tableGroupRepository;
 
 	@InjectMocks
 	private TableGroupService tableGroupService;
@@ -52,6 +54,7 @@ class TableGroupServiceTest {
 	@Test
 	void createTableGroupTest() {
 		// given
+		when(tableGroupRepository.findById(anyLong())).thenReturn(Optional.of(mock(TableGroup.class)));
 		when(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).thenReturn(true);
 
 		// when

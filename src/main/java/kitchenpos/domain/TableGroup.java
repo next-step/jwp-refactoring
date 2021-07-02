@@ -66,4 +66,12 @@ public class TableGroup {
             throw new IllegalArgumentException("2개 미만의 주문테이블은 그룹화 할 수 없습니다.");
         }
     }
+
+    public List<Long> getOrderTableIds() {
+        return this.orderTables.getOrderTableIds();
+    }
+
+    public void ungroup() {
+        orderTables.ungrouped();
+    }
 }
