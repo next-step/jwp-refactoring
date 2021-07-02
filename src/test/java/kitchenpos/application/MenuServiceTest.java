@@ -140,8 +140,10 @@ public class MenuServiceTest {
         Menu menu1 = new Menu(menu1Id, menu1Name, menu1Price, menu1MenuGroupId, menu1MenuProducts);
 
         when(menuDao.findAll()).thenReturn(Arrays.asList(menu1));
-        when(menuProductDao.findAllByMenuId(any())).thenReturn(Arrays.asList(menuProduct));
+        when(menuProductDao.findAllByMenuId(any())).thenReturn(menu1MenuProducts);
 
         assertThat(menuService.list()).contains(menu1);
+        assertThat(menu1.getMenuProducts()).contains(menuProduct);
     }
+
 }
