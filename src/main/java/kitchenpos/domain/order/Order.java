@@ -46,7 +46,7 @@ public class Order {
             throw new TableEmptyException();
         }
 
-        if (orderCreate.getOrderLineItems().size() != menus.size()) {
+        if (orderCreate.sizeOfOrderLineItems() != menus.size()) {
             throw new IllegalArgumentException();
         }
 

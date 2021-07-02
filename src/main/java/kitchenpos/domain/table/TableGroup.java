@@ -31,7 +31,7 @@ public class TableGroup {
     }
 
     public static TableGroup create(TableGroupCreate tableGroupCreate, OrderTables orderTables) {
-        if (!tableGroupCreate.orderTableHasSize(orderTables.size())) {
+        if (tableGroupCreate.sizeOfOrderTableIds() != orderTables.size()) {
             throw new IllegalArgumentException();
         }
 

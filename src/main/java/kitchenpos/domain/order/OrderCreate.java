@@ -36,6 +36,10 @@ public class OrderCreate {
         return orderLineItems;
     }
 
+    public int sizeOfOrderLineItems() {
+        return orderLineItems.size();
+    }
+
     public List<Long> getMenuIdsInOrderLineItems() {
         List<Long> menuIds = orderLineItems.stream()
                 .map(item -> item.getMenuId())

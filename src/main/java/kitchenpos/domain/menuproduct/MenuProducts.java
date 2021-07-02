@@ -16,14 +16,6 @@ public class MenuProducts {
     @OneToMany(mappedBy = "menu")
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
-    public MenuProducts() {
-    }
-
-    public MenuProducts(List<MenuProduct> menuProducts, Menu menu) {
-        menuProducts.forEach(item -> item.changeMenu(menu));
-        this.menuProducts = menuProducts;
-    }
-
     public static List<MenuProduct> create(List<MenuProductCreate> menuProducts, Menu menu, Products products) {
         return menuProducts.stream()
                 .map(item -> new MenuProduct(menu, products.findById(item.getProductId()), item.getQuantity()))
@@ -36,10 +28,18 @@ public class MenuProducts {
                 .collect(Collectors.toList());
     }
 
+    public MenuProducts() {
+    }
+
+    public MenuProducts(List<MenuProduct> menuProducts, Menu menu) {
+        this.menuProducts = new ArrayList<>(menuProducts);
+        this.menuProducts.forEach(item -> item.changeMenu(menu));
+    }
+
     public Price sumAmount() {
         Price amount = menuProducts.stream()
                 .map(item -> item.getAmount())
-                .reduce(new Price(0), (b, a) -> b.plus(a));
+                .reduce(new Price(0), (before, appender) -> before.plus(appender));
 
         return amount;
     }
