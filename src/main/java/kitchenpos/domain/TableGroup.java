@@ -10,12 +10,14 @@ public class TableGroup {
     private List<OrderTable> orderTables;
 
     public TableGroup(Long id, LocalDateTime createdDate) {
-        this(id, createdDate, new ArrayList<>());
-    }
-
-    public TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
         this.id = id;
         this.createdDate = createdDate;
+        this.orderTables = new ArrayList<>();
+    }
+
+    public TableGroup(Long id, List<OrderTable> orderTables) {
+        this.id = id;
+        this.createdDate = LocalDateTime.now();
         this.orderTables = orderTables;
     }
 
@@ -23,23 +25,15 @@ public class TableGroup {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public LocalDateTime getCreatedDate() {
         return createdDate;
-    }
-
-    public void setCreatedDate(final LocalDateTime createdDate) {
-        this.createdDate = createdDate;
     }
 
     public List<OrderTable> getOrderTables() {
         return orderTables;
     }
 
-    public void setOrderTables(final List<OrderTable> orderTables) {
+    public void changeOrderTables(final List<OrderTable> orderTables) {
         this.orderTables = orderTables;
     }
 }

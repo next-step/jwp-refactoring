@@ -13,7 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -54,7 +53,7 @@ class TableGroupServiceTest {
         OrderTable orderTable1 = new OrderTable(1L, null, 3, true);
         OrderTable orderTable2 = new OrderTable(2L, null, 2, true);
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
-        TableGroup givenTableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
+        TableGroup givenTableGroup = new TableGroup(1L, orderTables);
         when(orderTableDao.findAllByIdIn(anyList()))
                 .thenReturn(orderTables);
         when(tableGroupDao.save(any(TableGroup.class)))
@@ -68,7 +67,7 @@ class TableGroupServiceTest {
     @Test
     @DisplayName("주문 테이블 없이 테이블 그룹을 지정하면 예외를 던진다.")
     void create_table_group_with_no_order_table() {
-        TableGroup givenTableGroup = new TableGroup(1L, LocalDateTime.now(), new ArrayList<>());
+        TableGroup givenTableGroup = new TableGroup(1L, new ArrayList<>());
 
         assertThatThrownBy(() -> tableGroupService.create(givenTableGroup))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -79,7 +78,7 @@ class TableGroupServiceTest {
     void create_table_group_with_one_order_table() {
         OrderTable orderTable1 = new OrderTable(1L, null, 3, true);
         List<OrderTable> orderTables = Collections.singletonList(orderTable1);
-        TableGroup givenTableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
+        TableGroup givenTableGroup = new TableGroup(1L, orderTables);
 
         assertThatThrownBy(() -> tableGroupService.create(givenTableGroup))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -91,7 +90,7 @@ class TableGroupServiceTest {
         OrderTable orderTable1 = new OrderTable(1L, null, 3, true);
         OrderTable orderTable2 = new OrderTable(2L, null, 2, true);
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
-        TableGroup givenTableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
+        TableGroup givenTableGroup = new TableGroup(1L, orderTables);
         when(orderTableDao.findAllByIdIn(anyList()))
                 .thenReturn(Collections.singletonList(orderTable1));
 
@@ -105,7 +104,7 @@ class TableGroupServiceTest {
         OrderTable orderTable1 = new OrderTable(1L, null, 3, false);
         OrderTable orderTable2 = new OrderTable(2L, null, 2, false);
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
-        TableGroup givenTableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
+        TableGroup givenTableGroup = new TableGroup(1L, orderTables);
         when(orderTableDao.findAllByIdIn(anyList()))
                 .thenReturn(orderTables);
 
@@ -119,7 +118,7 @@ class TableGroupServiceTest {
         OrderTable orderTable1 = new OrderTable(1L, 1L, 3, true);
         OrderTable orderTable2 = new OrderTable(2L, 2L, 2, true);
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
-        TableGroup givenTableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
+        TableGroup givenTableGroup = new TableGroup(1L, orderTables);
         when(orderTableDao.findAllByIdIn(anyList()))
                 .thenReturn(orderTables);
 
