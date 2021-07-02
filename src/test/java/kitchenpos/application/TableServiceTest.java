@@ -51,7 +51,7 @@ class TableServiceTest {
 
 	@DisplayName("주문테이블 목록을 조회할 수 있다.")
 	@Test
-	void listTest2() {
+	void listTest() {
 		// given
 		OrderTable orderTable = mock(OrderTable.class);
 		when(orderTable.getId()).thenReturn(1L);
@@ -73,7 +73,7 @@ class TableServiceTest {
 
 		// when
 		// then
-		assertThatThrownBy(() -> tableService.changeEmpty(1L, mock(OrderTable.class)))
+		assertThatThrownBy(() -> tableService.changeEmpty(1L, mock(OrderTableRequest.class)))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("등록이 되지 않은 주문테이블은 상태를 변경할 수 없습니다.");
 	}
@@ -83,7 +83,6 @@ class TableServiceTest {
 	void changeEmptyWithCookingOrderTest() {
 		// given
 		OrderTable orderTable = mock(OrderTable.class);
-		when(orderTable.isGrouped()).thenReturn(false);
 		when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(orderTable));
 
 		when(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList()))
@@ -91,23 +90,9 @@ class TableServiceTest {
 
 		// when
 		// then
-		assertThatThrownBy(() -> tableService.changeEmpty(1L, mock(OrderTable.class)))
+		assertThatThrownBy(() -> tableService.changeEmpty(1L, mock(OrderTableRequest.class)))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("조리상태이거나 식사상태주문의 주문테이블은 상태를 변경할 수 없습니다.");
-	}
-
-	@DisplayName("방문 손님 수를 음수로 수정할 수 없다.")
-	@Test
-	void changeNumberOfGuestsNegativeNumberTest() {
-		// given
-		OrderTable orderTable = mock(OrderTable.class);
-		when(orderTable.getNumberOfGuests()).thenReturn(-1);
-
-		// when
-		// then
-		assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, orderTable))
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("방문 손님을 음수로 수정할 수 없습니다.");
 	}
 
 	@DisplayName("등록된 주문 테이블만 방문 손님 수를 수정할 수 없다.")
@@ -118,40 +103,8 @@ class TableServiceTest {
 
 		// when
 		// then
-		assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, mock(OrderTable.class)))
+		assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, mock(OrderTableRequest.class)))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("등록이 안된 주문테이블은 방문 손님 수를 수정할 수 없습니다.");
-	}
-
-	@DisplayName("빈 테이블의 방문 손님 수는 수정할 수 없습니다.")
-	@Test
-	void changeNumberOfGuestsEmptyOrderTableTest() {
-		// given
-		OrderTable emptyOrderTable = mock(OrderTable.class);
-		when(emptyOrderTable.isEmpty()).thenReturn(true);
-		when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(emptyOrderTable));
-
-		// when
-		// then
-		assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, mock(OrderTable.class)))
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("빈 테이블은 방문 손님 수를 수정할 수 없습니다.");
-	}
-
-	@DisplayName("주문테이블의 방문 손님 수를 수정할 수 있다.")
-	@Test
-	void changeNumberOfGuests() {
-		// given
-		OrderTable savedOrderTable = mock(OrderTable.class);
-		when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(savedOrderTable));
-
-		OrderTable orderTable = mock(OrderTable.class);
-
-		// when
-		tableService.changeNumberOfGuests(1L, orderTable);
-
-		// then
-		verify(savedOrderTable).setNumberOfGuests(orderTable.getNumberOfGuests());
-		verify(orderTableRepository).save(savedOrderTable);
 	}
 }

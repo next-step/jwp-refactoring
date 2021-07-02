@@ -48,4 +48,34 @@ class OrderTableTest {
 		assertThat(orderTable.isEmpty()).isFalse();
 	}
 
+	@DisplayName("방문 손님 수를 음수로 수정할 수 없다.")
+	@Test
+	void changeNumberOfGuestsNegativeNumberTest() {
+		OrderTable orderTable = new OrderTable(1, false);
+
+		assertThatThrownBy(() -> orderTable.changeNumberOfGuests(NumberOfGuests.valueOf(-1)))
+			.isInstanceOf(IllegalArgumentException.class)
+			.hasMessageContaining("방문 손님 수는 음수일 수 없습니다.");
+	}
+
+	@DisplayName("빈 테이블의 방문 손님 수는 수정할 수 없다.")
+	@Test
+	void changeNumberOfGuestsEmptyOrderTableTest() {
+		OrderTable orderTable = new OrderTable(1, true);
+
+		assertThatThrownBy(() -> orderTable.changeNumberOfGuests(NumberOfGuests.valueOf(2)))
+			.isInstanceOf(IllegalArgumentException.class)
+			.hasMessageContaining("빈 테이블은 방문 손님 수를 수정할 수 없습니다.");
+	}
+
+	@DisplayName("주문테이블의 방문 손님 수를 수정할 수 있다.")
+	@Test
+	void changeNumberOfGuests() {
+		OrderTable orderTable = new OrderTable(1, false);
+
+		orderTable.changeNumberOfGuests(NumberOfGuests.valueOf(2));
+
+		assertThat(orderTable.getNumberOfGuests()).isEqualTo(2);
+	}
+
 }

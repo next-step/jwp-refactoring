@@ -2,6 +2,7 @@ package kitchenpos.domain;
 
 import static java.util.Objects.*;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,14 +20,15 @@ public class OrderTable {
     @JoinColumn(name = "table_group_id")
     private TableGroup tableGroup;
 
-    private int numberOfGuests;
+    @Embedded
+    private NumberOfGuests numberOfGuests;
 
     private boolean empty;
 
     protected OrderTable() {}
 
     public OrderTable(int numberOfGuests, boolean empty) {
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = NumberOfGuests.valueOf(numberOfGuests);
         this.empty = empty;
     }
 
@@ -38,11 +40,14 @@ public class OrderTable {
         this.tableGroup = null;
     }
 
-    public int getNumberOfGuests() {
+    public NumberOfGuests getNumberOfGuests() {
         return numberOfGuests;
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
+    public void changeNumberOfGuests(final NumberOfGuests numberOfGuests) {
+        if (isEmpty()) {
+            throw new IllegalArgumentException("빈 테이블은 방문 손님 수를 수정할 수 없습니다.");
+        }
         this.numberOfGuests = numberOfGuests;
     }
 
