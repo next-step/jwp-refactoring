@@ -73,7 +73,7 @@
   - Business Object 에 대한 테스트 코드를 작성
   - `@ExtendWith(MockitoExtension.class)`를 이용
 
-  - [ ] MenuGroupServiceTest 구현
+  - [x] MenuGroupServiceTest 구현
   - [ ] MenuServiceTest 구현
   - [ ] OrderServiceTest 구현
   - [ ] ProductServiceTest 구현
