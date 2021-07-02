@@ -74,7 +74,7 @@
   - `@ExtendWith(MockitoExtension.class)`를 이용
 
   - [x] MenuGroupServiceTest 구현
-  - [ ] MenuServiceTest 구현
+  - [x] MenuServiceTest 구현
   - [ ] OrderServiceTest 구현
   - [ ] ProductServiceTest 구현
   - [ ] TableGroupServiceTest 구현
