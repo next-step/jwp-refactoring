@@ -2,45 +2,28 @@ package kitchenpos.application;
 
 import static java.util.Arrays.*;
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 
 @DisplayName("주문테이블그룹 요구사항 테스트")
-@ExtendWith(MockitoExtension.class)
-class TableGroupServiceTest {
-
-	@Mock
-	private OrderDao orderDao;
-
-	@Mock
-	private OrderTableDao orderTableDao;
-
-	@Mock
-	private TableGroupDao tableGroupDao;
-
-	@InjectMocks
+@SpringBootTest
+class TableGroupServiceIntegrationTest {
+	@Autowired
 	private TableGroupService tableGroupService;
 
 	@DisplayName("2개 이상의 주문테이블만 그룹화 할 수 있다.")
 	@Test
 	void createTableGroupWithLessTwoOrderTablesTest() {
 		// given
-		TableGroup tableGroup = mock(TableGroup.class);
-		when(tableGroup.getOrderTables()).thenReturn(new ArrayList<>());
+		TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());
 
 		// when
 		// then
@@ -53,13 +36,11 @@ class TableGroupServiceTest {
 	@Test
 	void createTableGroupWithUnknownOrderTableTest() {
 		// given
-		OrderTable orderTable1 = mock(OrderTable.class);
-		OrderTable orderTable2 = mock(OrderTable.class);
+		OrderTable orderTable1 = new OrderTable(99L, null, 1, true);
+		OrderTable orderTable2 = new OrderTable(100L, null, 1, true);
 
-		TableGroup tableGroup = mock(TableGroup.class);
-		when(tableGroup.getOrderTables()).thenReturn(asList(orderTable1, orderTable2));
-
-		when(orderTableDao.findAllByIdIn(anyList())).thenReturn(new ArrayList<>());
+		TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), asList(orderTable1, orderTable2));
+		tableGroup.setOrderTables(asList(orderTable1, orderTable2));
 
 		// when
 		assertThatThrownBy(() -> tableGroupService.create(tableGroup))
@@ -71,15 +52,11 @@ class TableGroupServiceTest {
 	@Test
 	void createTableGroupWithNotEmptyOrderTableTest() {
 		// given
-		OrderTable emptyOrderTable = mock(OrderTable.class);
-		when(emptyOrderTable.isEmpty()).thenReturn(true);
+		OrderTable notEmptyTable = new OrderTable(9L, null, 1, false);
+		OrderTable orderTable2 = new OrderTable(1L, null, 0, true);
 
-		OrderTable notEmptyOrderTable = mock(OrderTable.class);
-
-		TableGroup tableGroup = mock(TableGroup.class);
-		when(tableGroup.getOrderTables()).thenReturn(asList(emptyOrderTable, notEmptyOrderTable));
-
-		when(orderTableDao.findAllByIdIn(anyList())).thenReturn(asList(emptyOrderTable, notEmptyOrderTable));
+		TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), asList(notEmptyTable, orderTable2));
+		tableGroup.setOrderTables(asList(notEmptyTable, orderTable2));
 
 		// when
 		assertThatThrownBy(() -> tableGroupService.create(tableGroup))
@@ -90,9 +67,6 @@ class TableGroupServiceTest {
 	@DisplayName("그룹화된 주문테이블들 중 조리상태이거나 식사상태이면 그룹해제를 할 수 없다.")
 	@Test
 	void createTableGroupTest() {
-		// given
-		when(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).thenReturn(true);
-
 		// when
 		assertThatThrownBy(() -> tableGroupService.ungroup(1L))
 			.isInstanceOf(IllegalArgumentException.class)

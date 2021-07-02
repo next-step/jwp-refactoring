@@ -5,7 +5,11 @@ import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTables;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -48,7 +52,7 @@ public class TableGroupService {
 
         for (final OrderTable savedOrderTable : savedOrderTables) {
             if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
-                throw new IllegalArgumentException("빈테이블은 그룹화 할 수 없습니다.");
+                throw new IllegalArgumentException("비어있지 않거나, 이미 그룹화되어 있는 테이블은 그룹화 할 수 없습니다.");
             }
         }
 
@@ -65,6 +69,22 @@ public class TableGroupService {
         savedTableGroup.setOrderTables(savedOrderTables);
 
         return savedTableGroup;
+    }
+
+    @Transactional
+    public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
+        OrderTables orderTables = findOrderTables(tableGroupRequest);
+        TableGroup persistTableGroup = tableGroupDao.save(new TableGroup(orderTables, LocalDateTime.now()));
+        return TableGroupResponse.of(persistTableGroup);
+    }
+
+    private OrderTables findOrderTables(final TableGroupRequest tableGroupRequest) {
+        List<Long> orderTableIds = tableGroupRequest.getOrderTableIds();
+        List<OrderTable> orderTables = orderTableDao.findAllByIdIn(orderTableIds);
+        if (orderTables.size() != orderTableIds.size()) {
+            throw new IllegalArgumentException("등록이 되지 않은 주문테이블은 그룹화 할 수 없습니다.");
+        }
+        return OrderTables.of(orderTables);
     }
 
     @Transactional
