@@ -5,9 +5,16 @@ import static java.util.Arrays.*;
 import java.util.Collections;
 import java.util.List;
 
+import javax.persistence.Embeddable;
+import javax.persistence.OneToMany;
+
+@Embeddable
 public class OrderTables {
 
+	@OneToMany(mappedBy = "tableGroup")
 	private List<OrderTable> orderTables;
+
+	protected OrderTables() {}
 
 	private OrderTables(List<OrderTable> orderTables) {
 		this.orderTables = orderTables;

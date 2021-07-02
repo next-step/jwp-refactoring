@@ -19,6 +19,7 @@ import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
+import kitchenpos.dao.OrderTableRepository;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
@@ -38,7 +39,7 @@ class OrderServiceTest {
 	private OrderLineItemDao orderLineItemDao;
 
 	@Mock
-	private OrderTableDao orderTableDao;
+	private OrderTableRepository orderTableRepository;
 
 	@InjectMocks
 	private OrderService orderService;
@@ -87,7 +88,7 @@ class OrderServiceTest {
 		when(order.getOrderLineItems()).thenReturn(asList(orderLineItem));
 
 		when(menuDao.countByIdIn(asList(1L))).thenReturn(1L);
-		when(orderTableDao.findById(anyLong())).thenReturn(Optional.empty());
+		when(orderTableRepository.findById(anyLong())).thenReturn(Optional.empty());
 
 		// when
 		// then
@@ -110,7 +111,7 @@ class OrderServiceTest {
 		when(emptyTable.isEmpty()).thenReturn(true);
 
 		when(menuDao.countByIdIn(asList(1L))).thenReturn(1L);
-		when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(emptyTable));
+		when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(emptyTable));
 
 		// when
 		// then
@@ -136,7 +137,7 @@ class OrderServiceTest {
 		when(savedOrder.getId()).thenReturn(1L);
 
 		when(menuDao.countByIdIn(asList(1L))).thenReturn(1L);
-		when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(orderTable));
+		when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(orderTable));
 		when(orderDao.save(order)).thenReturn(savedOrder);
 
 		// when

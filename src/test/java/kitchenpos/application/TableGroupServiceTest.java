@@ -15,9 +15,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
+import kitchenpos.dao.OrderTableRepository;
 import kitchenpos.dao.TableGroupDao;;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.TableGroupRequest;
 
 @DisplayName("주문테이블그룹 요구사항 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -27,64 +29,23 @@ class TableGroupServiceTest {
 	private OrderDao orderDao;
 
 	@Mock
-	private OrderTableDao orderTableDao;
-
-	@Mock
-	private TableGroupDao tableGroupDao;
+	private OrderTableRepository orderTableRepository;
 
 	@InjectMocks
 	private TableGroupService tableGroupService;
-
-	@DisplayName("2개 이상의 주문테이블만 그룹화 할 수 있다.")
-	@Test
-	void createTableGroupWithLessTwoOrderTablesTest() {
-		// given
-		TableGroup tableGroup = mock(TableGroup.class);
-		when(tableGroup.getOrderTables()).thenReturn(new ArrayList<>());
-
-		// when
-		// then
-		assertThatThrownBy(() -> tableGroupService.create(tableGroup))
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("2개 미만의 주문테이블은 그룹화 할 수 없습니다.");
-	}
 
 	@DisplayName("등록된 주문테이블만 그룹화 할 수 있다.")
 	@Test
 	void createTableGroupWithUnknownOrderTableTest() {
 		// given
-		OrderTable orderTable1 = mock(OrderTable.class);
-		OrderTable orderTable2 = mock(OrderTable.class);
-
-		TableGroup tableGroup = mock(TableGroup.class);
-		when(tableGroup.getOrderTables()).thenReturn(asList(orderTable1, orderTable2));
-
-		when(orderTableDao.findAllByIdIn(anyList())).thenReturn(new ArrayList<>());
+		TableGroupRequest mockRequest = mock(TableGroupRequest.class);
+		when(mockRequest.getOrderTableIds()).thenReturn(asList(1L, 2L));
+		when(orderTableRepository.findAllById(anyList())).thenReturn(new ArrayList<>());
 
 		// when
-		assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+		assertThatThrownBy(() -> tableGroupService.create(mockRequest))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("등록이 되지 않은 주문테이블은 그룹화 할 수 없습니다.");
-	}
-
-	@DisplayName("그룹화할 주문테이블들 모두 빈 테이블이어야 한다.")
-	@Test
-	void createTableGroupWithNotEmptyOrderTableTest() {
-		// given
-		OrderTable emptyOrderTable = mock(OrderTable.class);
-		when(emptyOrderTable.isEmpty()).thenReturn(true);
-
-		OrderTable notEmptyOrderTable = mock(OrderTable.class);
-
-		TableGroup tableGroup = mock(TableGroup.class);
-		when(tableGroup.getOrderTables()).thenReturn(asList(emptyOrderTable, notEmptyOrderTable));
-
-		when(orderTableDao.findAllByIdIn(anyList())).thenReturn(asList(emptyOrderTable, notEmptyOrderTable));
-
-		// when
-		assertThatThrownBy(() -> tableGroupService.create(tableGroup))
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("비어있지 않거나, 이미 그룹화되어 있는 테이블은 그룹화 할 수 없습니다.");
 	}
 
 	@DisplayName("그룹화된 주문테이블들 중 조리상태이거나 식사상태이면 그룹해제를 할 수 없다.")

@@ -12,7 +12,7 @@ class TableGroupTest {
 	@DisplayName("2개 이상의 주문테이블만 그룹화 할 수 있다.")
 	@Test
 	void createTableGroupWithLessTwoOrderTables() {
-		OrderTable orderTable = new OrderTable(1L, 1, true);
+		OrderTable orderTable = new OrderTable(1, true);
 		OrderTables orderTables = OrderTables.of(orderTable);
 
 		assertThatThrownBy(() -> new TableGroup(orderTables, LocalDateTime.now()))
@@ -23,8 +23,8 @@ class TableGroupTest {
 	@DisplayName("그룹화할 주문테이블들은 모두 빈 테이블이어야 한다.")
 	@Test
 	void createTableGroupWithNotEmptyOrderTableTest() {
-		OrderTable notEmptyTable = new OrderTable(1L, 1, false);
-		OrderTable orderTable = new OrderTable(2L, 1, true);
+		OrderTable notEmptyTable = new OrderTable(1, false);
+		OrderTable orderTable = new OrderTable(1, true);
 		OrderTables orderTables = OrderTables.of(orderTable, notEmptyTable);
 
 		assertThatThrownBy(() -> new TableGroup(orderTables, LocalDateTime.now()))
@@ -35,11 +35,11 @@ class TableGroupTest {
 	@DisplayName("그룹화할 주문테이블들은 모두 그룹화되지 않은 테이블이어야 한다.")
 	@Test
 	void createTableGroupWithGroupedOrderTableTest() {
-		OrderTable groupedTable1 = new OrderTable(1L, 1, true);
-		OrderTable groupedTable2 = new OrderTable(2L, 1, true);
+		OrderTable groupedTable1 = new OrderTable(1, true);
+		OrderTable groupedTable2 = new OrderTable(1, true);
 		OrderTables orderTables = OrderTables.of(groupedTable1, groupedTable2);
 		TableGroup tableGroup = new TableGroup(orderTables, LocalDateTime.now());
-		OrderTable orderTable = new OrderTable(3L, 1, true);
+		OrderTable orderTable = new OrderTable(1, true);
 		OrderTables orderTables1 = OrderTables.of(groupedTable1, orderTable);
 
 		assertThatThrownBy(() -> new TableGroup(orderTables1, LocalDateTime.now()))
@@ -50,8 +50,8 @@ class TableGroupTest {
 	@DisplayName("테이블그룹은 주문테이블들과 생성시각으로 생성된다.")
 	@Test
 	void createTest() {
-		OrderTable orderTable1 = new OrderTable(1L, 1, true);
-		OrderTable orderTable2 = new OrderTable(2L, 1, true);
+		OrderTable orderTable1 = new OrderTable(1, true);
+		OrderTable orderTable2 = new OrderTable(1, true);
 		OrderTables orderTables = OrderTables.of(orderTable1, orderTable2);
 		LocalDateTime createdDate = LocalDateTime.now();
 

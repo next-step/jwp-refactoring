@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
+import kitchenpos.dao.OrderTableRepository;
 import kitchenpos.domain.OrderTable;
 
 @DisplayName("주문테이블 요구사항 테스트")
@@ -26,7 +27,7 @@ class TableServiceTest {
 	private OrderDao orderDao;
 
 	@Mock
-	private OrderTableDao orderTableDao;
+	private OrderTableRepository orderTableRepository;
 
 	@InjectMocks
 	private TableService tableService;
@@ -41,8 +42,8 @@ class TableServiceTest {
 		tableService.create(orderTable);
 
 		// then
-		verify(orderTable).setTableGroupId(null);
-		verify(orderTableDao).save(orderTable);
+		verify(orderTable).ungroup();
+		verify(orderTableRepository).save(orderTable);
 	}
 
 	@DisplayName("주문테이블 목록을 조회할 수 있다.")
@@ -63,7 +64,7 @@ class TableServiceTest {
 	@Test
 	void changeEmptyWithUnknownOrderTableTest() {
 		// given
-		when(orderTableDao.findById(anyLong())).thenReturn(Optional.empty());
+		when(orderTableRepository.findById(anyLong())).thenReturn(Optional.empty());
 
 		// when
 		// then
@@ -77,8 +78,8 @@ class TableServiceTest {
 	void changeEmptyWithGroupedOrderTableTest() {
 		// given
 		OrderTable groupedOrderTable = mock(OrderTable.class);
-		when(groupedOrderTable.getTableGroupId()).thenReturn(1L);
-		when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(groupedOrderTable));
+		when(groupedOrderTable.isGrouped()).thenReturn(true);
+		when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(groupedOrderTable));
 
 		// when
 		// then
@@ -92,8 +93,8 @@ class TableServiceTest {
 	void changeEmptyWithCookingOrderTest() {
 		// given
 		OrderTable orderTable = mock(OrderTable.class);
-		when(orderTable.getTableGroupId()).thenReturn(null);
-		when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(orderTable));
+		when(orderTable.isGrouped()).thenReturn(false);
+		when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(orderTable));
 
 		when(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList()))
 			.thenReturn(true);
@@ -110,8 +111,8 @@ class TableServiceTest {
 	void changeEmptyTest() {
 		// given
 		OrderTable savedOrderTable = mock(OrderTable.class);
-		when(savedOrderTable.getTableGroupId()).thenReturn(null);
-		when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(savedOrderTable));
+		when(savedOrderTable.isGrouped()).thenReturn(false);
+		when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(savedOrderTable));
 
 		OrderTable orderTable = mock(OrderTable.class);
 
@@ -120,7 +121,7 @@ class TableServiceTest {
 
 		// then
 		verify(savedOrderTable).setEmpty(orderTable.isEmpty());
-		verify(orderTableDao).save(savedOrderTable);
+		verify(orderTableRepository).save(savedOrderTable);
 	}
 
 	@DisplayName("방문 손님 수를 음수로 수정할 수 없다.")
@@ -141,7 +142,7 @@ class TableServiceTest {
 	@Test
 	void changeNumberOfGuestsUnknownOrderTableTest() {
 		// given
-		when(orderTableDao.findById(anyLong())).thenReturn(Optional.empty());
+		when(orderTableRepository.findById(anyLong())).thenReturn(Optional.empty());
 
 		// when
 		// then
@@ -156,7 +157,7 @@ class TableServiceTest {
 		// given
 		OrderTable emptyOrderTable = mock(OrderTable.class);
 		when(emptyOrderTable.isEmpty()).thenReturn(true);
-		when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(emptyOrderTable));
+		when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(emptyOrderTable));
 
 		// when
 		// then
@@ -170,7 +171,7 @@ class TableServiceTest {
 	void changeNumberOfGuests() {
 		// given
 		OrderTable savedOrderTable = mock(OrderTable.class);
-		when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(savedOrderTable));
+		when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(savedOrderTable));
 
 		OrderTable orderTable = mock(OrderTable.class);
 
@@ -179,6 +180,6 @@ class TableServiceTest {
 
 		// then
 		verify(savedOrderTable).setNumberOfGuests(orderTable.getNumberOfGuests());
-		verify(orderTableDao).save(savedOrderTable);
+		verify(orderTableRepository).save(savedOrderTable);
 	}
 }

@@ -2,24 +2,30 @@ package kitchenpos.domain;
 
 import static java.util.Objects.*;
 
-import java.util.Objects;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
+@Entity
 public class OrderTable {
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     private Long id;
-    private Long tableGroupId;
+
+    @ManyToOne
+    @JoinColumn(name = "table_group_id")
     private TableGroup tableGroup;
+
     private int numberOfGuests;
+
     private boolean empty;
 
-    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
-        this.id = id;
-        this.tableGroupId = tableGroupId;
-        this.numberOfGuests = numberOfGuests;
-        this.empty = empty;
-    }
+    protected OrderTable() {}
 
-    public OrderTable(Long id, int numberOfGuests, boolean empty) {
-        this.id = id;
+    public OrderTable(int numberOfGuests, boolean empty) {
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
@@ -28,16 +34,8 @@ public class OrderTable {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public Long getTableGroupId() {
-        return tableGroupId;
-    }
-
-    public void setTableGroupId(final Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
+    public void ungroup() {
+        this.tableGroup = null;
     }
 
     public int getNumberOfGuests() {
@@ -60,15 +58,19 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public TableGroup getTableGroup() {
+    TableGroup getTableGroup() {
         return tableGroup;
     }
 
-    public void setTableGroup(TableGroup tableGroup) {
+    void setTableGroup(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
     }
 
     public boolean isGrouped() {
         return nonNull(tableGroup);
+    }
+
+    public Long getTableId() {
+        return requireNonNull(tableGroup).getId();
     }
 }
