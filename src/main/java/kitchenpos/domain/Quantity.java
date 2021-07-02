@@ -1,10 +1,13 @@
 package kitchenpos.domain;
 
+import kitchenpos.exception.InvalidQuantityException;
+
 import javax.persistence.Embeddable;
 import java.util.Objects;
 
 @Embeddable
 public class Quantity {
+    private static final int MINIMUM = 0;
     private Long quantity;
 
     protected Quantity() {
@@ -21,8 +24,8 @@ public class Quantity {
     }
 
     private void validate(Long quantity) {
-        if (quantity <= 0){
-            throw new IllegalArgumentException();
+        if (quantity <= MINIMUM){
+            throw new InvalidQuantityException();
         }
     }
 

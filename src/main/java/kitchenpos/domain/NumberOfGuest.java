@@ -7,6 +7,7 @@ import java.util.Objects;
 
 @Embeddable
 public class NumberOfGuest {
+    private static final int MINIMUM = 0;
     private int numberOfGuests;
 
     protected NumberOfGuest() {
@@ -19,7 +20,7 @@ public class NumberOfGuest {
     }
 
     private void validate(int numberOfGuests) {
-        if (numberOfGuests < 0) {
+        if (numberOfGuests < MINIMUM) {
             throw new InvalidChangeNumberOfGuestsException();
         }
     }

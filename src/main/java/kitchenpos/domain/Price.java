@@ -8,6 +8,8 @@ import java.util.Objects;
 
 @Embeddable
 public class Price implements Comparable<Price> {
+    private static final int MINIMUM = 0;
+
     private BigDecimal price;
 
     protected Price() {
@@ -45,7 +47,7 @@ public class Price implements Comparable<Price> {
     }
 
     private void validate(BigDecimal price) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < MINIMUM) {
             throw new InvalidPriceException();
         }
     }
