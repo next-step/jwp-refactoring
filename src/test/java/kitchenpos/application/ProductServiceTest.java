@@ -62,7 +62,7 @@ class ProductServiceTest {
     }
 
     @Test
-    @DisplayName("모든 메뉴 그룹을 조회한다")
+    @DisplayName("모든 상품을 조회한다")
     void list() {
         Product givenProduct1 = new Product("후라이드", BigDecimal.valueOf(16000));
         Product givenProduct2 = new Product("양념치킨", BigDecimal.valueOf(16000));
