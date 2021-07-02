@@ -1,5 +1,7 @@
 package kitchenpos.domain;
 
+import kitchenpos.exception.InvalidNameException;
+
 import javax.persistence.Embeddable;
 import java.util.Objects;
 
@@ -18,7 +20,7 @@ public class Name {
 
     private void validate(String name) {
         if (Objects.isNull(name)) {
-            throw new IllegalArgumentException();
+            throw new InvalidNameException();
         }
     }
 
