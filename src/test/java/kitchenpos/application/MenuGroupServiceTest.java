@@ -40,10 +40,10 @@ class MenuGroupServiceTest {
 
         // when
         when(menuGroupDao.save(menuGroup)).thenReturn(menuGroup);
-        menuGroupDao.save(menuGroup);
+        MenuGroup savedMenuGroup = menuGroupDao.save(menuGroup);
         // then
-        assertThat(menuGroup).isNotNull();
-        assertThat(menuGroup.getId()).isEqualTo(1L);
+        assertThat(savedMenuGroup).isNotNull();
+        assertThat(savedMenuGroup.getId()).isEqualTo(1L);
     }
 
     @DisplayName("조회")
