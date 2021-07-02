@@ -14,7 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.JdbcTemplateMenuGroupDao;
+import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
 
 @ExtendWith(MockitoExtension.class)
@@ -22,15 +22,18 @@ import kitchenpos.domain.MenuGroup;
 class MenuGroupServiceTest {
 
     @Mock
-    private JdbcTemplateMenuGroupDao menuGroupDao;
+    private MenuGroupDao menuGroupDao;
 
     private MenuGroup menuGroup;
+    private MenuGroupService menuGroupService;
 
     @BeforeEach
     void setup() {
         menuGroup = new MenuGroup();
         menuGroup.setId(1L);
         menuGroup.setName("국밥");
+
+        menuGroupService = new MenuGroupService(menuGroupDao);
     }
 
     @DisplayName("생성")
@@ -40,10 +43,10 @@ class MenuGroupServiceTest {
 
         // when
         when(menuGroupDao.save(menuGroup)).thenReturn(menuGroup);
-        MenuGroup savedMenuGroup = menuGroupDao.save(menuGroup);
+        MenuGroup cratedMenuGroup = menuGroupService.create(this.menuGroup);
         // then
-        assertThat(savedMenuGroup).isNotNull();
-        assertThat(savedMenuGroup.getId()).isEqualTo(1L);
+        assertThat(cratedMenuGroup).isNotNull();
+        assertThat(cratedMenuGroup.getId()).isEqualTo(1L);
     }
 
     @DisplayName("조회")
@@ -53,8 +56,7 @@ class MenuGroupServiceTest {
 
         // when
         when(menuGroupDao.findAll()).thenReturn(new ArrayList<>(Arrays.asList(menuGroup)));
-        List<MenuGroup> menuGroups = menuGroupDao.findAll();
-
+        List<MenuGroup> menuGroups = menuGroupService.list();
         // then
         assertThat(menuGroups.size()).isEqualTo(1);
         assertThat(menuGroups.get(0).getId()).isEqualTo(1L);
