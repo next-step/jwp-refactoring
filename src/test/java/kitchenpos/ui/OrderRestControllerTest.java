@@ -1,7 +1,8 @@
 package kitchenpos.ui;
 
-import static kitchenpos.ui.TableRestControllerTest.테이블_1번_빈테이블;
-import static kitchenpos.ui.TableRestControllerTest.테이블_2번_빈테이블;
+import static kitchenpos.util.TestDataSet.주문_1번;
+import static kitchenpos.util.TestDataSet.주문_2번;
+import static kitchenpos.util.TestDataSet.테이블_2번;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -33,11 +34,7 @@ import kitchenpos.domain.OrderLineItem;
 public class OrderRestControllerTest {
 
     private static final String BASE_URL = "/api/orders";
-    private static final Order 주문_1번 = new Order(1L, 테이블_1번_빈테이블.getId(),
-        Arrays.asList(new OrderLineItem(1L, 10), new OrderLineItem(2L, 10)));
 
-    private static final Order 주문_2번 = new Order(1L, 테이블_2번_빈테이블.getId(),
-        Arrays.asList(new OrderLineItem(1L, 10), new OrderLineItem(2L, 10)));
     @Autowired
     private MockMvc mockMvc;
 
@@ -83,7 +80,7 @@ public class OrderRestControllerTest {
     @DisplayName("현재 주문의 상태를 업데이트 할 수 있다.")
     void changeOrderStatus() throws Exception {
         // given
-        Order 상태_업데이트된_주문 = new Order(1L, 테이블_2번_빈테이블.getId(),
+        Order 상태_업데이트된_주문 = new Order(1L, 테이블_2번.getId(),
             Arrays.asList(new OrderLineItem(1L, 10), new OrderLineItem(2L, 10)));
         상태_업데이트된_주문.setOrderStatus("MEAL");
 

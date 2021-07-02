@@ -1,5 +1,7 @@
 package kitchenpos.ui;
 
+import static kitchenpos.util.TestDataSet.테이블_1번;
+import static kitchenpos.util.TestDataSet.테이블_2번;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -30,8 +32,6 @@ import kitchenpos.domain.OrderTable;
 public class TableRestControllerTest {
 
     public static final String BASE_URL = "/api/tables";
-    public static final OrderTable 테이블_1번_빈테이블 = new OrderTable(1L, 0, true);
-    public static final OrderTable 테이블_2번_빈테이블 = new OrderTable(2L, 0, true);
 
     @Autowired
     private MockMvc mockMvc;
@@ -46,8 +46,8 @@ public class TableRestControllerTest {
     @DisplayName("테이블의 앉은 손님의 수와, 현재 테이블이 비었는지 입력 받아 주문_테이블을 만들 수 있다.")
     void create() throws Exception {
         // given
-        String content = objectMapper.writeValueAsString(테이블_1번_빈테이블);
-        given(tableService.create(any(OrderTable.class))).willReturn(테이블_1번_빈테이블);
+        String content = objectMapper.writeValueAsString(테이블_1번);
+        given(tableService.create(any(OrderTable.class))).willReturn(테이블_1번);
 
         // when
         mockMvc.perform(
@@ -55,8 +55,8 @@ public class TableRestControllerTest {
                 .content(content)
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.numberOfGuests").value(테이블_1번_빈테이블.getNumberOfGuests()))
-            .andExpect(jsonPath("$.empty").value(테이블_1번_빈테이블.isEmpty()));
+            .andExpect(jsonPath("$.numberOfGuests").value(테이블_1번.getNumberOfGuests()))
+            .andExpect(jsonPath("$.empty").value(테이블_1번.isEmpty()));
     }
 
     @Test
@@ -64,13 +64,13 @@ public class TableRestControllerTest {
     void list() throws Exception {
         // given
         given(tableService.list())
-            .willReturn(Arrays.asList(테이블_1번_빈테이블, 테이블_2번_빈테이블));
+            .willReturn(Arrays.asList(테이블_1번, 테이블_2번));
 
         // when
         mockMvc.perform(get(BASE_URL))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$[0].numberOfGuests").value(테이블_1번_빈테이블.getNumberOfGuests()))
-            .andExpect(jsonPath("$[1].numberOfGuests").value(테이블_2번_빈테이블.getNumberOfGuests()));
+            .andExpect(jsonPath("$[0].numberOfGuests").value(테이블_1번.getNumberOfGuests()))
+            .andExpect(jsonPath("$[1].numberOfGuests").value(테이블_2번.getNumberOfGuests()));
     }
 
     @Test
@@ -85,7 +85,7 @@ public class TableRestControllerTest {
 
         // when
         mockMvc.perform(
-            put(BASE_URL + "/{orderTableId}/number-of-guests", 테이블_1번_빈테이블.getId())
+            put(BASE_URL + "/{orderTableId}/number-of-guests", 테이블_1번.getId())
                 .content(content)
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
@@ -105,7 +105,7 @@ public class TableRestControllerTest {
 
         // when
         mockMvc.perform(
-            put(BASE_URL + "/{orderTableId}/empty", 테이블_1번_빈테이블.getId())
+            put(BASE_URL + "/{orderTableId}/empty", 테이블_1번.getId())
                 .content(content)
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())

@@ -1,15 +1,14 @@
 package kitchenpos.ui;
 
-import static kitchenpos.ui.TableRestControllerTest.테이블_1번_빈테이블;
-import static kitchenpos.ui.TableRestControllerTest.테이블_2번_빈테이블;
+import static kitchenpos.util.TestDataSet.산악회;
+import static kitchenpos.util.TestDataSet.테이블_1번;
+import static kitchenpos.util.TestDataSet.테이블_2번;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.Arrays;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,14 +23,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kitchenpos.application.TableGroupService;
-import kitchenpos.domain.TableGroup;
 
 @WebMvcTest(controllers = TableGroupRestController.class)
 @ExtendWith(MockitoExtension.class)
 public class TableGroupRestControllerTest {
 
     public static final String BASE_URL = "/api/table-groups";
-    public static final TableGroup 산악회 = new TableGroup(1L, Arrays.asList(테이블_1번_빈테이블, 테이블_2번_빈테이블));
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -55,8 +53,8 @@ public class TableGroupRestControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.id").value(산악회.getId()))
-            .andExpect(jsonPath("$.orderTables[0].id").value(테이블_1번_빈테이블.getId()))
-            .andExpect(jsonPath("$.orderTables[1].id").value(테이블_2번_빈테이블.getId()));
+            .andExpect(jsonPath("$.orderTables[0].id").value(테이블_1번.getId()))
+            .andExpect(jsonPath("$.orderTables[1].id").value(테이블_2번.getId()));
     }
 
     @Test

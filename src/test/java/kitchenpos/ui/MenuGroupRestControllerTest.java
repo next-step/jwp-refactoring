@@ -1,5 +1,7 @@
 package kitchenpos.ui;
 
+import static kitchenpos.util.TestDataSet.계절_메뉴_그룹;
+import static kitchenpos.util.TestDataSet.추천_메뉴_그륩;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -26,8 +28,6 @@ import kitchenpos.domain.MenuGroup;
 public class MenuGroupRestControllerTest {
 
     public static final String BASE_URL = "/api/menu-groups";
-    public static final MenuGroup 추천메뉴 = new MenuGroup("추천메뉴");
-    public static final MenuGroup 계절메뉴 = new MenuGroup("계절메뉴");
 
     @Autowired
     private MockMvc mockMvc;
@@ -42,9 +42,9 @@ public class MenuGroupRestControllerTest {
     @DisplayName("이름을 받아 이름 기반의 메뉴 그룹을 만들 수 있다.")
     void create() throws Exception {
         // given
-        String content = objectMapper.writeValueAsString(추천메뉴);
+        String content = objectMapper.writeValueAsString(추천_메뉴_그륩);
         given(menuGroupService.create(any(MenuGroup.class)))
-            .willReturn(추천메뉴);
+            .willReturn(추천_메뉴_그륩);
 
         // when
         mockMvc.perform(
@@ -52,7 +52,7 @@ public class MenuGroupRestControllerTest {
                 .content(content)
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.name").value(추천메뉴.getName()));
+            .andExpect(jsonPath("$.name").value(추천_메뉴_그륩.getName()));
     }
 
     @Test
@@ -60,13 +60,13 @@ public class MenuGroupRestControllerTest {
     void list() throws Exception {
         // given
         given(menuGroupService.list())
-            .willReturn(Arrays.asList(추천메뉴, 계절메뉴));
+            .willReturn(Arrays.asList(추천_메뉴_그륩, 계절_메뉴_그룹));
 
         // when
         mockMvc.perform(get(BASE_URL))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$[0].name").value(추천메뉴.getName()))
-            .andExpect(jsonPath("$[1].name").value(계절메뉴.getName()));
+            .andExpect(jsonPath("$[0].name").value(추천_메뉴_그륩.getName()))
+            .andExpect(jsonPath("$[1].name").value(계절_메뉴_그룹.getName()));
     }
 
 }

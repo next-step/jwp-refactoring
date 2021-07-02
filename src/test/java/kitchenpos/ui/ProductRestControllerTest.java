@@ -1,5 +1,7 @@
 package kitchenpos.ui;
 
+import static kitchenpos.util.TestDataSet.강정치킨;
+import static kitchenpos.util.TestDataSet.양념치킨;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -7,7 +9,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.DisplayName;
@@ -30,9 +31,6 @@ import kitchenpos.domain.Product;
 public class ProductRestControllerTest {
 
     private static final String BASE_URL = "/api/products";
-    public static final Product 강정치킨 = new Product("강정치킨", BigDecimal.valueOf(17000));
-    public static final Product 양념치킨 = new Product("양념치킨", BigDecimal.valueOf(15000));
-    public static final Product 후라이드 = new Product("후라이드", BigDecimal.valueOf(10000));
 
     @Autowired
     private MockMvc mockMvc;
