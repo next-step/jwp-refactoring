@@ -24,7 +24,7 @@ public class Order {
 
     private LocalDateTime orderedTime;
 
-    private OrderLineItems orderLineItems;
+    private OrderLineItems orderLineItems = new OrderLineItems();
 
     protected Order() {
     }

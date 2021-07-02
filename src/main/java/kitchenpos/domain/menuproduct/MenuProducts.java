@@ -19,6 +19,11 @@ public class MenuProducts {
     public MenuProducts() {
     }
 
+    public MenuProducts(List<MenuProduct> menuProducts, Menu menu) {
+        menuProducts.forEach(item -> item.changeMenu(menu));
+        this.menuProducts = menuProducts;
+    }
+
     public static List<MenuProduct> create(List<MenuProductCreate> menuProducts, Menu menu, Products products) {
         return menuProducts.stream()
                 .map(item -> new MenuProduct(menu, products.findById(item.getProductId()), item.getQuantity()))
@@ -37,11 +42,6 @@ public class MenuProducts {
                 .reduce(new Price(0), (b, a) -> b.plus(a));
 
         return amount;
-    }
-
-    public void addAll(List<MenuProduct> menuProducts, Menu menu) {
-        menuProducts.forEach(item -> item.changeMenu(menu));
-        this.menuProducts.addAll(menuProducts);
     }
 
     public List<MenuProduct> toCollection() {

@@ -22,7 +22,7 @@ public class Menu {
     @ManyToOne(fetch = FetchType.LAZY)
     private MenuGroup menuGroup;
 
-    private final MenuProducts menuProducts = new MenuProducts();
+    private MenuProducts menuProducts = new MenuProducts();
 
 
     public static Menu create(MenuCreate create, MenuGroup menuGroup, Products products) {
@@ -54,7 +54,7 @@ public class Menu {
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
-        this.menuProducts.addAll(menuProducts, this);
+        this.menuProducts = new MenuProducts(menuProducts, this);
 
         validateAmount();
     }
