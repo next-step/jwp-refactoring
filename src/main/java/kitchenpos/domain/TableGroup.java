@@ -31,6 +31,12 @@ public class TableGroup {
         this.createdDate = createdDate;
     }
 
+    public TableGroup(List<OrderTable> orderTables, LocalDateTime createdDate) {
+        this.orderTables = requireValidOrderTables(orderTables);
+        this.orderTables.groupBy(this);
+        this.createdDate = createdDate;
+    }
+
     public Long getId() {
         return id;
     }
@@ -47,6 +53,12 @@ public class TableGroup {
         validateMinTableCount(orderTables);
         validateNotEmptyTables(orderTables);
         validateNoGroupedTables(orderTables);
+    }
+
+    private OrderTables requireValidOrderTables(List<OrderTable> tables) {
+        OrderTables orderTables = OrderTables.of(tables);
+        validate(orderTables);
+        return orderTables;
     }
 
     private void validateNoGroupedTables(OrderTables orderTables) {

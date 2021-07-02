@@ -17,6 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableRepository;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
 
 @DisplayName("주문테이블 요구사항 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -31,32 +33,36 @@ class TableServiceTest {
 	@InjectMocks
 	private TableService tableService;
 
-	@DisplayName("주문테이블을 등록할 수 있다. 등록 시 그룹 설정은 안되어 있어야 한다.")
+	@DisplayName("주문테이블을 등록할 수 있다. ")
 	@Test
 	void createTest() {
 		// given
+		OrderTableRequest orderTableRequest = mock(OrderTableRequest.class);
 		OrderTable orderTable = mock(OrderTable.class);
+		when(orderTableRequest.toEntity()).thenReturn(orderTable);
+		when(orderTableRepository.save(any(OrderTable.class))).thenReturn(mock(OrderTable.class));
 
 		// when
-		tableService.create(orderTable);
+		tableService.create(orderTableRequest);
 
 		// then
-		verify(orderTable).ungrouped();
 		verify(orderTableRepository).save(orderTable);
 	}
 
 	@DisplayName("주문테이블 목록을 조회할 수 있다.")
 	@Test
-	void listTest() {
+	void listTest2() {
 		// given
 		OrderTable orderTable = mock(OrderTable.class);
-		when(tableService.list()).thenReturn(asList(orderTable));
+		when(orderTable.getId()).thenReturn(1L);
+		when(orderTableRepository.findAll()).thenReturn(asList(orderTable));
 
 		// when
-		List<OrderTable> orderTables = tableService.list();
+		List<OrderTableResponse> orderTableResponses = tableService.list();
 
 		// then
-		assertThat(orderTables).containsExactly(orderTable);
+		assertThat(orderTableResponses.size()).isEqualTo(1);
+		assertThat(orderTableResponses.get(0).getId()).isEqualTo(1L);
 	}
 
 	@DisplayName("등록된 주문테이블만 상태를 바꿀 수 있다.")
@@ -70,21 +76,6 @@ class TableServiceTest {
 		assertThatThrownBy(() -> tableService.changeEmpty(1L, mock(OrderTable.class)))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("등록이 되지 않은 주문테이블은 상태를 변경할 수 없습니다.");
-	}
-
-	@DisplayName("그룹 설정이 되어 있는 주문테이블은 상태를 바꿀 수 없다.")
-	@Test
-	void changeEmptyWithGroupedOrderTableTest() {
-		// given
-		OrderTable groupedOrderTable = mock(OrderTable.class);
-		when(groupedOrderTable.isGrouped()).thenReturn(true);
-		when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(groupedOrderTable));
-
-		// when
-		// then
-		assertThatThrownBy(() -> tableService.changeEmpty(1L, mock(OrderTable.class)))
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("그룹 설정이 되어 있는 테이블은 주문 등록 불가 상태로 바꿀 수 없습니다.");
 	}
 
 	@DisplayName("주문테이블의 주문이 조리 상태이거나 식사 상태이면 주문테이블 상태를 바꿀 수 없다.")
@@ -103,24 +94,6 @@ class TableServiceTest {
 		assertThatThrownBy(() -> tableService.changeEmpty(1L, mock(OrderTable.class)))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("조리상태이거나 식사상태주문의 주문테이블은 상태를 변경할 수 없습니다.");
-	}
-
-	@DisplayName("주문 테이블을 주문 등록 가능상태 or 주문 등록 불가 상태로 바꿀 수 있다.")
-	@Test
-	void changeEmptyTest() {
-		// given
-		OrderTable savedOrderTable = mock(OrderTable.class);
-		when(savedOrderTable.isGrouped()).thenReturn(false);
-		when(orderTableRepository.findById(anyLong())).thenReturn(Optional.of(savedOrderTable));
-
-		OrderTable orderTable = mock(OrderTable.class);
-
-		// when
-		tableService.changeEmpty(1L, orderTable);
-
-		// then
-		verify(savedOrderTable).setEmpty(orderTable.isEmpty());
-		verify(orderTableRepository).save(savedOrderTable);
 	}
 
 	@DisplayName("방문 손님 수를 음수로 수정할 수 없다.")

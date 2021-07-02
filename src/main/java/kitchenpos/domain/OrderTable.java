@@ -58,11 +58,11 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    TableGroup getTableGroup() {
+    public TableGroup getTableGroup() {
         return tableGroup;
     }
 
-    void setTableGroup(TableGroup tableGroup) {
+    void groupBy(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
     }
 
@@ -70,7 +70,19 @@ public class OrderTable {
         return nonNull(tableGroup);
     }
 
-    public Long getTableId() {
-        return requireNonNull(tableGroup).getId();
+    public void emptyOn() {
+        validateNotGrouped();
+        this.empty = true;
+    }
+
+    public void emptyOff() {
+        validateNotGrouped();
+        this.empty = false;
+    }
+
+    private void validateNotGrouped() {
+        if (isGrouped()) {
+            throw new IllegalArgumentException("그룹 설정이 되어 있는 테이블은 주문 등록 불가 상태로 바꿀 수 없습니다.");
+        }
     }
 }

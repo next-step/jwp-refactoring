@@ -1,9 +1,14 @@
 package kitchenpos.application;
 
+import static kitchenpos.domain.OrderStatus.*;
+
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,14 +27,13 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTable create(final OrderTable orderTable) {
-        orderTable.ungrouped();
-
-        return orderTableRepository.save(orderTable);
+    public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
+        OrderTable persistOrderTable = orderTableRepository.save(orderTableRequest.toEntity());
+        return OrderTableResponse.of(persistOrderTable);
     }
 
-    public List<OrderTable> list() {
-        return orderTableRepository.findAll();
+    public List<OrderTableResponse> list() {
+        return OrderTableResponse.listOf(orderTableRepository.findAll());
     }
 
     @Transactional
@@ -41,14 +45,32 @@ public class TableService {
             throw new IllegalArgumentException("그룹 설정이 되어 있는 테이블은 주문 등록 불가 상태로 바꿀 수 없습니다.");
         }
 
-        if (orderDao.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+        if (orderDao.existsByOrderTableIdAndOrderStatusIn(orderTableId, Arrays.asList(COOKING.name(), MEAL.name()))) {
             throw new IllegalArgumentException("조리상태이거나 식사상태주문의 주문테이블은 상태를 변경할 수 없습니다.");
         }
 
         savedOrderTable.setEmpty(orderTable.isEmpty());
 
         return orderTableRepository.save(savedOrderTable);
+    }
+
+    @Transactional
+    public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
+        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
+            .orElseThrow(() -> new IllegalArgumentException("등록이 되지 않은 주문테이블은 상태를 변경할 수 없습니다."));
+
+        if (orderDao.existsByOrderTableIdAndOrderStatusIn(
+            orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+            throw new IllegalArgumentException("조리상태이거나 식사상태주문의 주문테이블은 상태를 변경할 수 없습니다.");
+        }
+
+        if (orderTableRequest.isEmpty()) {
+            savedOrderTable.emptyOn();
+            return OrderTableResponse.of(savedOrderTable);
+        }
+
+        savedOrderTable.emptyOff();
+        return OrderTableResponse.of(savedOrderTable);
     }
 
     @Transactional
