@@ -20,10 +20,11 @@ import kitchenpos.domain.MenuGroup;
 @ExtendWith(MockitoExtension.class)
 @DisplayName("메뉴 그룹 테스트")
 class MenuGroupServiceTest {
-    @Mock
-    JdbcTemplateMenuGroupDao jdbcTemplateMenuGroupDao;
 
-    MenuGroup menuGroup;
+    @Mock
+    private JdbcTemplateMenuGroupDao menuGroupDao;
+
+    private MenuGroup menuGroup;
 
     @BeforeEach
     void setup() {
@@ -38,8 +39,8 @@ class MenuGroupServiceTest {
         // given
 
         // when
-        when(jdbcTemplateMenuGroupDao.save(menuGroup)).thenReturn(menuGroup);
-        jdbcTemplateMenuGroupDao.save(menuGroup);
+        when(menuGroupDao.save(menuGroup)).thenReturn(menuGroup);
+        menuGroupDao.save(menuGroup);
         // then
         assertThat(menuGroup).isNotNull();
         assertThat(menuGroup.getId()).isEqualTo(1L);
@@ -51,8 +52,8 @@ class MenuGroupServiceTest {
         // given
 
         // when
-        when(jdbcTemplateMenuGroupDao.findAll()).thenReturn(new ArrayList<>(Arrays.asList(menuGroup)));
-        List<MenuGroup> menuGroups = jdbcTemplateMenuGroupDao.findAll();
+        when(menuGroupDao.findAll()).thenReturn(new ArrayList<>(Arrays.asList(menuGroup)));
+        List<MenuGroup> menuGroups = menuGroupDao.findAll();
 
         // then
         assertThat(menuGroups.size()).isEqualTo(1);
