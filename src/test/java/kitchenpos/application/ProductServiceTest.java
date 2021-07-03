@@ -4,7 +4,6 @@ import static java.util.Arrays.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +15,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.domain.ProductRepository;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.ProductResponse;
 
 @DisplayName("상품 요구사항 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -31,13 +32,16 @@ class ProductServiceTest {
 	@Test
 	void createProductTest() {
 		// given
-		Product product = new Product("치킨", BigDecimal.valueOf(1000));
+		ProductRequest productRequest = mock(ProductRequest.class);
+		Product product = mock(Product.class);
+		when(productRequest.toEntity()).thenReturn(product);
+		when(productRepository.save(any(Product.class))).thenReturn(product);
 
 		// when
-		productService.create(product);
+		productService.create(productRequest);
 
 		// than
-		verify(productRepository).save(product);
+		verify(productRepository).save(any(Product.class));
 	}
 
 	@DisplayName("상품 목록을 조회할 수 있다.")
@@ -45,12 +49,14 @@ class ProductServiceTest {
 	void listTest() {
 		// given
 		Product product = mock(Product.class);
+		when(product.getId()).thenReturn(1L);
 		when(productRepository.findAll()).thenReturn(asList(product));
 
 		// when
-		List<Product> products = productService.list();
+		List<ProductResponse> productResponses = productService.list();
 
 		// then
-		assertThat(products).containsExactly(product);
+		assertThat(productResponses).isNotEmpty();
+		assertThat(productResponses.get(0).getId()).isEqualTo(1L);
 	}
 }
