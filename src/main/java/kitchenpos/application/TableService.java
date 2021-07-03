@@ -23,8 +23,6 @@ public class TableService {
 
     @Transactional
     public OrderTable create(final OrderTable orderTable) {
-        orderTable.setTableGroup(null);
-
         return orderTableDao.save(orderTable);
     }
 
@@ -33,7 +31,7 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTable changeEmpty(final Long orderTableId, final OrderTable orderTable) {
+    public OrderTable changeEmpty(final Long orderTableId) {
         final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
@@ -46,7 +44,7 @@ public class TableService {
             throw new IllegalArgumentException("no exist order");
         }
 
-        savedOrderTable.setEmpty(orderTable.isEmpty());
+        savedOrderTable.changeEmptyTable();
 
         return orderTableDao.save(savedOrderTable);
     }
@@ -66,7 +64,7 @@ public class TableService {
             throw new IllegalArgumentException("emptyTable");
         }
 
-        savedOrderTable.setNumberOfGuests(numberOfGuests);
+        savedOrderTable.changeNumberOfGuest(numberOfGuests);
 
         return orderTableDao.save(savedOrderTable);
     }

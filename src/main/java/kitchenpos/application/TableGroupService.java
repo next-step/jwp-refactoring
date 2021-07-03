@@ -52,17 +52,14 @@ public class TableGroupService {
             }
         }
 
-        tableGroup.setCreatedDate(LocalDateTime.now());
-
         final TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
 
         for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.setTableGroup(savedTableGroup);
-            savedOrderTable.setEmpty(false);
+            savedOrderTable.changeTableGroup(savedTableGroup);
+            savedOrderTable.changeNonEmptyTable();
             orderTableDao.save(savedOrderTable);
         }
-        savedTableGroup.setOrderTables(savedOrderTables);
-
+        savedTableGroup.changeOrderTables(savedOrderTables);
         return savedTableGroup;
     }
 
@@ -75,12 +72,13 @@ public class TableGroupService {
                 .collect(Collectors.toList());
 
         if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)
+        )) {
             throw new IllegalArgumentException("Invalid OrderStatus");
         }
 
         for (final OrderTable orderTable : orderTables) {
-            orderTable.setTableGroup(null);
+            orderTable.changeTableGroup(null);
             orderTableDao.save(orderTable);
         }
     }

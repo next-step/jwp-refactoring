@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
@@ -37,25 +38,26 @@ class TableGroupServiceTest {
     private TableGroupService tableGroupService;
 
     private TableGroup tableGroup;
-    private OrderTable orderTable;
+    private OrderTable orderTable1;
     private OrderTable orderTable2;
-    private List<OrderTable> dummyOrderTableList;
 
+    public final long FIRST_ORDER_TABLE_ID = 1L;
+    public final long SECOND_ORDER_TABLE_ID = 2L;
+    private final long ANY_TABLE_GROUP_ID = 1L;
 
     @BeforeEach
     void setUp() {
-        tableGroup = new TableGroup();
-        orderTable = new OrderTable();
-        orderTable2 = new OrderTable();
-        orderTable.setId(1L);
-        orderTable2.setId(2L);
-        dummyOrderTableList = Lists.list(orderTable, orderTable2);
+
+        orderTable1 = OrderTable.of(10, false);
+        ReflectionTestUtils.setField(orderTable1, "id", FIRST_ORDER_TABLE_ID);
+        orderTable2 = OrderTable.of(10, false);
+        ReflectionTestUtils.setField(orderTable2, "id", SECOND_ORDER_TABLE_ID);
     }
 
     @Test
     @DisplayName("단체 지정된 테이블 일 경우에는 적어도 2개 이상의 주문 테이블을 가져야 한다.")
     void exception_create_test() {
-        tableGroup.setOrderTables(Lists.list(orderTable));
+        TableGroup tableGroup = TableGroup.of(Lists.list(orderTable1));
 
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -65,9 +67,10 @@ class TableGroupServiceTest {
     @Test
     @DisplayName("단체 지정 시점에, 주문 테이블이 단체 지정시 주문받은 주문 테이블과 숫자가 맞지 않으면 생성될 수 없다.")
     void exception_orderTable() {
-        tableGroup.setOrderTables(Lists.list(orderTable, orderTable2));
 
-        given(orderTableDao.findAllByIdIn(Lists.list(1L, 2L)))
+        TableGroup tableGroup = TableGroup.of(Lists.list(orderTable1, orderTable2));
+
+        given(orderTableDao.findAllByIdIn(Lists.list(FIRST_ORDER_TABLE_ID, SECOND_ORDER_TABLE_ID)))
                 .willReturn(new ArrayList<>());
 
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
@@ -78,13 +81,9 @@ class TableGroupServiceTest {
     @Test
     @DisplayName("단체 지정 시점에, 시점에 주문 테이블이 빈 테이블이 아니라면 단체 지정을 할 수 없다.")
     void exception2_orderTable() {
-        orderTable.setEmpty(false);
-
-        tableGroup.setOrderTables(Lists.list(orderTable, orderTable2));
-
-        List<OrderTable> list = Lists.list(orderTable, orderTable2);
-        given(orderTableDao.findAllByIdIn(Lists.list(1L, 2L)))
-                .willReturn(list);
+        tableGroup = TableGroup.of(Lists.list(orderTable1, orderTable2));
+        given(orderTableDao.findAllByIdIn(Lists.list(FIRST_ORDER_TABLE_ID, SECOND_ORDER_TABLE_ID)))
+                .willReturn(Lists.list(orderTable1, orderTable2));
 
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -94,19 +93,19 @@ class TableGroupServiceTest {
     @Test
     @DisplayName("단체 지정을 취소할 수 있다.")
     void ungroup() {
-        List<OrderTable> list = Lists.list(orderTable, orderTable2);
+        List<OrderTable> orderTables = Lists.list(orderTable1, orderTable2);
 
-        given(orderTableDao.findAllByTableGroupId(1L))
-                .willReturn(list);
-
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(Lists.list(1L, 2L),
+        given(orderTableDao.findAllByTableGroupId(ANY_TABLE_GROUP_ID))
+                .willReturn(orderTables);
+        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(
+                Lists.list(FIRST_ORDER_TABLE_ID, SECOND_ORDER_TABLE_ID),
                 Lists.list(OrderStatus.COOKING, OrderStatus.MEAL)))
                 .willReturn(false);
 
-        tableGroupService.ungroup(1L);
+        tableGroupService.ungroup(ANY_TABLE_GROUP_ID);
 
-        assertThat(orderTable.getTableGroup()).isNull();
-        verify(orderTableDao).save(orderTable);
+        assertThat(orderTable1.getTableGroup()).isNull();
+        verify(orderTableDao).save(orderTable1);
 
         assertThat(orderTable2.getTableGroup()).isNull();
         verify(orderTableDao).save(orderTable2);
@@ -115,14 +114,16 @@ class TableGroupServiceTest {
     @Test
     @DisplayName("주문이 식사 또는 조리의 경우 단체 지정을 취소할 수 없다.")
     void exception_upgroup() {
-        given(orderTableDao.findAllByTableGroupId(1L))
-                .willReturn(dummyOrderTableList);
+        List<OrderTable> orderTables = Lists.list(orderTable1, orderTable2);
+        given(orderTableDao.findAllByTableGroupId(ANY_TABLE_GROUP_ID))
+                .willReturn(orderTables);
 
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(Lists.list(1L, 2L),
+        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(
+                Lists.list(FIRST_ORDER_TABLE_ID, SECOND_ORDER_TABLE_ID),
                 Lists.list(OrderStatus.COOKING, OrderStatus.MEAL)))
                 .willReturn(true);
 
-        assertThatThrownBy(() -> tableGroupService.ungroup(1L))
+        assertThatThrownBy(() -> tableGroupService.ungroup(ANY_TABLE_GROUP_ID))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Invalid OrderStatus");
     }

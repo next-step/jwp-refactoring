@@ -15,27 +15,33 @@ public class Product {
     private String name;
     private BigDecimal price;
 
-    public Long getId() {
-        return id;
+    public static Product of(String name, BigDecimal price) {
+        return new Product(null, name, price);
+    }
+    // for jpa
+    public Product() {
     }
 
-    public void setId(final Long id) {
+    private Product(Long id, String name, BigDecimal price) {
         this.id = id;
+        this.name = name;
+        this.price = price;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(final String name) {
-        this.name = name;
-    }
-
     public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(final BigDecimal price) {
+
+    public void changePrice(BigDecimal price) {
         this.price = price;
     }
 }

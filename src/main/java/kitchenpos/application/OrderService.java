@@ -59,20 +59,9 @@ public class OrderService {
             throw new IllegalArgumentException("Should have not orderTable empty");
         }
 
-        order.setOrderTable(orderTable);
-        order.setOrderStatus(OrderStatus.COOKING);
-        order.setOrderedTime(LocalDateTime.now());
+        order.changeOrderTable(orderTable);
 
-        final Order savedOrder = orderDao.save(order);
-
-        final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
-        for (final OrderLineItem orderLineItem : orderLineItems) {
-            orderLineItem.setOrder(savedOrder);
-            savedOrderLineItems.add(orderLineItemDao.save(orderLineItem));
-        }
-        savedOrder.setOrderLineItems(savedOrderLineItems);
-
-        return savedOrder;
+        return orderDao.save(order);
     }
 
     public List<Order> list() {
@@ -88,11 +77,12 @@ public class OrderService {
             throw new IllegalArgumentException("Invalid OrderStatus > " + savedOrder.getOrderStatus());
         }
 
-        savedOrder.setOrderStatus(order.getOrderStatus());
+        savedOrder.changeStatus(order.getOrderStatus());
 
         orderDao.save(savedOrder);
 
-        savedOrder.setOrderLineItems(orderLineItemDao.findAllByOrderId(orderId));
+        List<OrderLineItem> allByOrderId = orderLineItemDao.findAllByOrderId(orderId);
+        allByOrderId.forEach(savedOrder::addOrderLineItem);
 
         return savedOrder;
     }

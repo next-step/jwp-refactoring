@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
 
@@ -28,10 +29,8 @@ class ProductServiceTest {
     private final static long ANY_PRODUCT_ID = 1L;
     @BeforeEach
     void setUp() {
-        product = new Product();
-        product.setId(ANY_PRODUCT_ID);
-        product.setName("물건");
-        product.setPrice(BigDecimal.valueOf(1000L));
+        product = Product.of("product", BigDecimal.valueOf(1000L));
+        ReflectionTestUtils.setField(product, "id", ANY_PRODUCT_ID);
     }
 
     @Test
@@ -46,7 +45,7 @@ class ProductServiceTest {
     @Test
     void exception_when_price_is_under_zero() {
         BigDecimal UNDER_ZERO = BigDecimal.valueOf(-1L);
-        product.setPrice(UNDER_ZERO);
+        product.changePrice(UNDER_ZERO);
 
         assertThatThrownBy(() -> productService.create(product))
                 .isInstanceOf(IllegalArgumentException.class);

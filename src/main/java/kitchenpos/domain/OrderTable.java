@@ -16,35 +16,50 @@ public class OrderTable {
 
     private boolean empty;
 
-    public Long getId() {
-        return id;
+    public static OrderTable of(int numberOfGuests, boolean empty) {
+        return new OrderTable(null, null, numberOfGuests, empty);
     }
 
-    public void setId(final Long id) {
+    // for jpa
+    public OrderTable() {
+    }
+
+    private OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
         this.id = id;
+        this.tableGroup = tableGroup;
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public TableGroup getTableGroup() {
         return tableGroup;
     }
 
-    public void setTableGroup(final TableGroup tableGroupId) {
-        this.tableGroup = tableGroupId;
-    }
-
     public int getNumberOfGuests() {
         return numberOfGuests;
-    }
-
-    public void setNumberOfGuests(final int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
     }
 
     public boolean isEmpty() {
         return empty;
     }
 
-    public void setEmpty(final boolean empty) {
-        this.empty = empty;
+    public void changeEmptyTable() {
+        this.empty = true;
+    }
+
+    public void changeNonEmptyTable() {
+        this.empty = false;
+    }
+
+    public void changeNumberOfGuest(int numberOfGuests) {
+        this.numberOfGuests = numberOfGuests;
+    }
+
+    public void changeTableGroup(TableGroup tableGroup){
+        this.tableGroup = tableGroup;
     }
 }

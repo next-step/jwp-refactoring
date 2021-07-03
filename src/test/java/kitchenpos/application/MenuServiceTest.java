@@ -56,10 +56,8 @@ class MenuServiceTest {
         menu = Menu.of("tomato pasta", BigDecimal.ZERO, menuGroup, new ArrayList<>());
         ReflectionTestUtils.setField(menu, "id", ANY_MENU_ID);
 
-        dummyProduct = new Product();
-        dummyProduct.setId(ANY_PRODUCT_ID);
-        dummyProduct.setName("rice");
-        dummyProduct.setPrice(BigDecimal.valueOf(10L));
+        dummyProduct = Product.of("rice", BigDecimal.valueOf(10L));
+        ReflectionTestUtils.setField(dummyProduct, "id", ANY_PRODUCT_ID);
 
         dummyMenuProduct = MenuProduct.of(menu, dummyProduct, 1L);
     }
@@ -112,7 +110,6 @@ class MenuServiceTest {
         given(menuGroupDao.existsById(ANY_MENU_GROUP_ID)).willReturn(true);
         given(productDao.findById(ANY_PRODUCT_ID)).willReturn(Optional.of(dummyProduct));
 
-        dummyProduct.setPrice(BigDecimal.valueOf(10L));
         menu.changePrice(BigDecimal.valueOf(100L));
         menu.addMenuProducts(dummyMenuProduct);
 
