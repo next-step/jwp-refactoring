@@ -23,4 +23,8 @@ public class MenuGroupService {
     public List<MenuGroup> list() {
         return menuGroupDao.findAll();
     }
+
+    public boolean isExists(MenuGroup menuGroup){
+        return menuGroupDao.existsById(menuGroup.getId());
+    }
 }

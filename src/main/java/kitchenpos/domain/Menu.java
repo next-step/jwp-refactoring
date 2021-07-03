@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -32,12 +33,24 @@ public class Menu {
         return new Menu(null, name, price, menuGroup, menuProducts);
     }
 
+    private void setMenuProducts(List<MenuProduct> menuProducts) {
+        this.menuProducts = menuProducts;
+    }
+
     private Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = name;
-        this.price = price;
+        setPrice(price);
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
+
+    }
+
+    private void setPrice(BigDecimal price) {
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Should expect price is over zero");
+        }
+        this.price = price;
     }
 
     public Long getId() {
@@ -53,7 +66,7 @@ public class Menu {
     }
 
     public void changePrice(BigDecimal price) {
-        this.price = price;
+        setPrice(price);
     }
 
     public MenuGroup getMenuGroup() {
@@ -62,6 +75,15 @@ public class Menu {
 
     public List<MenuProduct> getMenuProducts() {
         return Collections.unmodifiableList(menuProducts);
+    }
+
+    public boolean isReasonablePrice() {
+        BigDecimal sum = BigDecimal.ZERO;
+        for (final MenuProduct menuProduct : this.menuProducts) {
+            final Product product = menuProduct.getProduct();
+            sum = sum.add(product.multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
+        }
+        return this.price.compareTo(sum) <= 0;
     }
 
     public void addMenuProducts(MenuProduct menuProduct) {

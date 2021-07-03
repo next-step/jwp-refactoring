@@ -40,8 +40,11 @@ public class Product {
         return price;
     }
 
-
     public void changePrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public BigDecimal multiply(BigDecimal factor){
+        return this.price.multiply(factor);
     }
 }

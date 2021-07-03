@@ -1,70 +1,40 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.domain.MenuGroup;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class MenuService {
     private final MenuDao menuDao;
-    private final MenuGroupDao menuGroupDao;
-    private final MenuProductDao menuProductDao;
-    private final ProductDao productDao;
+    private final MenuGroupService menuGroupService;
 
     public MenuService(
             final MenuDao menuDao,
-            final MenuGroupDao menuGroupDao,
-            final MenuProductDao menuProductDao,
-            final ProductDao productDao
+            final MenuGroupService menuGroupService
     ) {
         this.menuDao = menuDao;
-        this.menuGroupDao = menuGroupDao;
-        this.menuProductDao = menuProductDao;
-        this.productDao = productDao;
+        this.menuGroupService = menuGroupService;
     }
 
     @Transactional
     public Menu create(final Menu menu) {
-        final BigDecimal price = menu.getPrice();
 
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("Should expect price is over zero");
+        MenuGroup menuGroup = menu.getMenuGroup();
+
+        if (menuGroupService.isExists(menuGroup)) {
+            throw new IllegalArgumentException("existed menuGroup");
         }
 
-        if (!menuGroupDao.existsById(menu.getMenuGroup().getId())) {
-            throw new IllegalArgumentException("Not existed menuGroup");
-        }
-
-        final List<MenuProduct> menuProducts = menu.getMenuProducts();
-
-        BigDecimal sum = BigDecimal.ZERO;
-        for (final MenuProduct menuProduct : menuProducts) {
-            final Product product = productDao.findById(menuProduct.getProduct().getId())
-                    .orElseThrow(IllegalArgumentException::new);
-            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
-        }
-
-        if (price.compareTo(sum) > 0) {
+        if (menu.isReasonablePrice() == false) {
             throw new IllegalArgumentException("Total Price is higher then expected MenuProduct Price");
         }
 
-        final Menu savedMenu = menuDao.save(menu);
-        savedMenu.clearMenuProducts();
-
-        for (final MenuProduct menuProduct : menuProducts) {
-            savedMenu.addMenuProducts(menuProductDao.save(menuProduct));
-        }
-        return savedMenu;
+        return menuDao.save(menu);
     }
 
     public List<Menu> list() {
