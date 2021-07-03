@@ -6,10 +6,6 @@ public class OrderLineItemCreate {
     private long menuId;
     private Quantity quantity;
 
-    public OrderLineItemCreate(long menuId, long quantity) {
-        this(menuId, new Quantity(quantity));
-    }
-
     public OrderLineItemCreate(long menuId, Quantity quantity) {
         this.menuId = menuId;
         this.quantity = quantity;

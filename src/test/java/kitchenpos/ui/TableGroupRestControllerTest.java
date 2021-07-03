@@ -2,6 +2,7 @@ package kitchenpos.ui;
 
 import kitchenpos.application.TableGroupService;
 import kitchenpos.domain.table.OrderTable;
+import kitchenpos.domain.table.OrderTables;
 import kitchenpos.domain.table.TableGroup;
 import kitchenpos.domain.table.TableGroupCreate;
 import kitchenpos.dto.request.TableGroupCreateRequest;
@@ -48,7 +49,7 @@ class TableGroupRestControllerTest {
         // given
         TableGroupCreateRequest createRequest = new TableGroupCreateRequest(Arrays.asList(1L, 2L, 3L));
 
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(사용중인_1명_2건_결제완료1, 사용중인_1명_테이블, 사용중인_1명_2건_결제완료2));
+        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), new OrderTables(사용중인_1명_2건_결제완료1, 사용중인_1명_테이블, 사용중인_1명_2건_결제완료2));
 
         given(tableGroupService.create(any(TableGroupCreate.class)))
                 .willReturn(tableGroup);

@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.domain.Name;
 import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menu.MenuGroupCreate;
 import kitchenpos.repository.MenuGroupRepository;
@@ -54,9 +55,9 @@ class MenuGroupServiceTest {
     void 정상적인_메뉴_그룹_조회() {
         // given
         List<MenuGroup> menuGroups = Arrays.asList(
-                new MenuGroup(1L, "A"),
-                new MenuGroup(2L, "B"),
-                new MenuGroup(3L, "C")
+                new MenuGroup(1L, new Name("A")),
+                new MenuGroup(2L, new Name("B")),
+                new MenuGroup(3L, new Name("C"))
         );
 
         // when

@@ -37,16 +37,8 @@ public class Menu {
     protected Menu() {
     }
 
-    public Menu(String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        this(null, name, price, menuGroup, menuProducts);
-    }
-
     public Menu(Name name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this(null, name, price, menuGroup, menuProducts);
-    }
-
-    public Menu(Long id, String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        this(id, new Name(name), price, menuGroup, menuProducts);
     }
 
     public Menu(Long id, Name name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {

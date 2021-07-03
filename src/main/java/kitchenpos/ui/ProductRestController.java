@@ -1,6 +1,7 @@
 package kitchenpos.ui;
 
 import kitchenpos.application.ProductService;
+import kitchenpos.domain.Name;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.ProductCreate;
@@ -28,7 +29,7 @@ public class ProductRestController {
     public ResponseEntity<ProductViewResponse> create(@RequestBody final ProductCreateRequest productCreateRequest) {
         final Product created = productService.create(
                 new ProductCreate(
-                        productCreateRequest.getName(),
+                        new Name(productCreateRequest.getName()),
                         new Price(productCreateRequest.getPrice())
                 )
         );

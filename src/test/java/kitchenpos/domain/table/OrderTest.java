@@ -1,5 +1,6 @@
 package kitchenpos.domain.table;
 
+import kitchenpos.domain.Name;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.Quantity;
 import kitchenpos.domain.menu.Menu;
@@ -58,9 +59,9 @@ class OrderTest {
                 null,
                 null,
                 Arrays.asList(
-                        new OrderLineItemCreate(1, 1),
-                        new OrderLineItemCreate(2, 2),
-                        new OrderLineItemCreate(3, 3)
+                        new OrderLineItemCreate(1, new Quantity(1)),
+                        new OrderLineItemCreate(2, new Quantity(2)),
+                        new OrderLineItemCreate(3, new Quantity(3))
                 )
         );
         Menus menus = new Menus(Arrays.asList(MenuFixture.후라이드치킨_콜라_2000원_1개, MenuFixture.양념치킨_콜라_1000원_1개));
@@ -80,20 +81,20 @@ class OrderTest {
     @DisplayName("정상적인 생성")
     void 정상적인_생성() {
         // given
-        MenuProduct menuProduct1 = new MenuProduct(후라이드치킨_2000원, 1);
-        MenuProduct menuProduct2 = new MenuProduct(콜라_100원, 1);
+        MenuProduct menuProduct1 = new MenuProduct(후라이드치킨_2000원, new Quantity(1));
+        MenuProduct menuProduct2 = new MenuProduct(콜라_100원, new Quantity(1));
 
         OrderCreate orderCreate = new OrderCreate(
                 null,
                 null,
                 Arrays.asList(
-                        new OrderLineItemCreate(1L, 1),
-                        new OrderLineItemCreate(2L, 2)
+                        new OrderLineItemCreate(1L, new Quantity(1)),
+                        new OrderLineItemCreate(2L, new Quantity(2))
                 )
         );
         List<Menu> menuList = Arrays.asList(
-                new Menu(1L, "1", new Price(1),  null, Arrays.asList(menuProduct1)),
-                new Menu(2L, "2", new Price(2), null, Arrays.asList(menuProduct2))
+                new Menu(1L, new Name("1"), new Price(1),  null, Arrays.asList(menuProduct1)),
+                new Menu(2L, new Name("2"), new Price(2), null, Arrays.asList(menuProduct2))
         );
         Menus menus = new Menus(menuList);
 

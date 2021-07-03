@@ -67,7 +67,7 @@ class MenuTest {
     @DisplayName("정상적인 등록")
     void 정상적인_등록() {
         // given
-        MenuGroup menuGroup = new MenuGroup(1L, "MENU_GROUP");
+        MenuGroup menuGroup = new MenuGroup(1L, new Name("MENU_GROUP"));
 
         MenuCreate menuCreate = new MenuCreate(new Name("Hello"), new Price(100), null, menuProductCreates);
 

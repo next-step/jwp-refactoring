@@ -13,6 +13,10 @@ public class Quantity {
     protected Quantity() {
     }
 
+    public Quantity(int quantity) {
+        this((long) quantity);
+    }
+
     public Quantity(Long quantity) {
         validate(quantity);
 

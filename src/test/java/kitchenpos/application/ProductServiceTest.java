@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.domain.Name;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.ProductCreate;
@@ -41,7 +42,7 @@ class ProductServiceTest {
     @DisplayName("create - 정상적인 상품 등록")
     void 정상적인_상품_등록() {
         // given
-        ProductCreate product = new ProductCreate("name", new Price(1000));
+        ProductCreate product = new ProductCreate(new Name("name"), new Price(1000));
 
         // when
         when(productRepository.save(any())).thenAnswer(i -> i.getArgument(0));

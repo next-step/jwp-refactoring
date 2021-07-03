@@ -27,32 +27,16 @@ public class OrderTable {
     protected OrderTable() {
     }
 
+    public OrderTable(NumberOfGuest numberOfGuest, boolean empty) {
+        this(null, null, Collections.emptyList(), numberOfGuest, empty);
+    }
+
     public OrderTable(TableGroup tableGroup, Orders orders, NumberOfGuest numberOfGuest, boolean empty) {
         this(null, tableGroup, orders, numberOfGuest, empty);
     }
 
-    public OrderTable(TableGroup tableGroup, Orders orders, int numberOfGuests, boolean empty) {
-        this(null, tableGroup, orders, new NumberOfGuest(numberOfGuests), empty);
-    }
-
-    public OrderTable(TableGroup tableGroup, List<Order> orders, int numberOfGuests, boolean empty) {
-        this(null, tableGroup, new Orders(orders), new NumberOfGuest(numberOfGuests), empty);
-    }
-
-    public OrderTable(Long id, TableGroup tableGroup, Orders orders, int numberOfGuests, boolean empty) {
-        this(id, tableGroup, orders, new NumberOfGuest(numberOfGuests), empty);
-    }
-
-    public OrderTable(Long id, TableGroup tableGroup, List<Order> orders, int numberOfGuests, boolean empty) {
-        this(id, tableGroup, new Orders(orders), new NumberOfGuest(numberOfGuests), empty);
-    }
-
     public OrderTable(Long id, NumberOfGuest numberOfGuests, boolean empty) {
         this(id, null, Collections.emptyList(), numberOfGuests, empty);
-    }
-
-    public OrderTable(NumberOfGuest numberOfGuest, boolean empty) {
-        this(null, null, Collections.emptyList(), numberOfGuest, empty);
     }
 
     public OrderTable(Long id, TableGroup tableGroup, List<Order> orders, NumberOfGuest numberOfGuests, boolean empty) {

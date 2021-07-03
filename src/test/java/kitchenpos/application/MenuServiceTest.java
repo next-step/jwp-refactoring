@@ -1,6 +1,8 @@
 package kitchenpos.application;
 
+import kitchenpos.domain.Name;
 import kitchenpos.domain.Price;
+import kitchenpos.domain.Quantity;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuCreate;
 import kitchenpos.domain.menu.MenuGroup;
@@ -57,7 +59,7 @@ class MenuServiceTest {
         CleanUp.cleanUpOrderFirst();
         this.menuService = new MenuService(menuRepository, menuGroupRepository, productRepository);
 
-        menuGroup = new MenuGroup(1L, "Hello");;
+        menuGroup = new MenuGroup(1L, new Name("Hello"));
 
         양념치킨 = new MenuProductCreate(양념치킨_콜라_1000원_1개.getId(), 양념치킨_1000원.getId(), 1);
         콜라 = new MenuProductCreate(양념치킨_콜라_1000원_1개.getId(), 콜라_100원.getId(), 1);
@@ -164,11 +166,11 @@ class MenuServiceTest {
     void 정상적인_메뉴_전체_조회() {
         // given
         List<MenuProduct> menuProducts = Arrays.asList(
-                new MenuProduct(양념치킨_1000원, 1L),
-                new MenuProduct(콜라_100원, 1L)
+                new MenuProduct(양념치킨_1000원, new Quantity(1)),
+                new MenuProduct(콜라_100원, new Quantity(1))
         );
 
-        Menu menu = new Menu(1L, "Menu", new Price(1),null, menuProducts);
+        Menu menu = new Menu(1L, new Name("Menu"), new Price(1),null, menuProducts);
 
         // when
         when(menuRepository.findAll()).thenReturn(Arrays.asList(menu));

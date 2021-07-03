@@ -1,6 +1,7 @@
 package kitchenpos.ui;
 
 import kitchenpos.application.OrderService;
+import kitchenpos.domain.Quantity;
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderCreate;
 import kitchenpos.domain.order.OrderLineItemCreate;
@@ -26,7 +27,7 @@ public class OrderRestController {
     public ResponseEntity<OrderViewResponse> create(@RequestBody final OrderCreateRequest orderCreateRequest) {
         List<OrderLineItemCreate> itemCreates = orderCreateRequest.getOrderLineItems()
                 .stream()
-                .map(item -> new OrderLineItemCreate(item.getMenuId(), item.getQuantity()))
+                .map(item -> new OrderLineItemCreate(item.getMenuId(), new Quantity(item.getQuantity())))
                 .collect(Collectors.toList());
 
         final Order created = orderService.create(

@@ -27,16 +27,8 @@ public class OrderLineItem {
         this(null, menu, quantity);
     }
 
-    public OrderLineItem(Order order, Menu menu, long quantity) {
-        this(null, order, menu, quantity);
-    }
-
     public OrderLineItem(Order order, Menu menu, Quantity quantity) {
         this(null, order, menu, quantity);
-    }
-
-    public OrderLineItem(Long id, Order order, Menu menu, long quantity) {
-        this(id, order, menu, new Quantity(quantity));
     }
 
     public OrderLineItem(Long id, Order order, Menu menu, Quantity quantity) {

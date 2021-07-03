@@ -8,7 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.math.BigDecimal;
 
 @Entity
 public class Product {
@@ -22,20 +21,8 @@ public class Product {
     protected Product() {
     }
 
-    public Product(String name, Price price) {
-        this(null, name, price);
-    }
-
     public Product(Name name, Price price) {
         this(null, name, price);
-    }
-
-    public Product(Long id, String name, BigDecimal price) {
-        this(id, name, new Price(price));
-    }
-
-    public Product(Long id, String name, Price price) {
-        this(id, new Name(name), price);
     }
 
     public Product(Long id, Name name, Price price) {

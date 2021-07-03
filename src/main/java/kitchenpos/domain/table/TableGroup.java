@@ -20,10 +20,6 @@ public class TableGroup {
     protected TableGroup() {
     }
 
-    public TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
-        this(id, createdDate, new OrderTables(orderTables));
-    }
-
     public TableGroup(Long id, LocalDateTime createdDate, OrderTables orderTables) {
         this.id = id;
         this.createdDate = createdDate;

@@ -24,12 +24,8 @@ public class MenuProduct {
     protected MenuProduct() {
     }
 
-    public MenuProduct(Product product, long quantity) {
+    public MenuProduct(Product product, Quantity quantity) {
         this(null, product, quantity);
-    }
-
-    public MenuProduct(Menu menu, Product product, long quantity) {
-        this(menu, product, new Quantity(quantity));
     }
 
     public MenuProduct(Menu menu, Product product, Quantity quantity) {

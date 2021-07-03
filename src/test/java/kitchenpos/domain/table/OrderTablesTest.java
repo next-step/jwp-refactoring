@@ -1,5 +1,7 @@
 package kitchenpos.domain.table;
 
+import kitchenpos.domain.NumberOfGuest;
+import kitchenpos.domain.order.Orders;
 import kitchenpos.fixture.CleanUp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -64,7 +66,7 @@ class OrderTablesTest {
     void size(int len) {
         List<OrderTable> orderTableList = new ArrayList<>();
         for (int i = 0; i<len; i++) {
-            orderTableList.add(new OrderTable(null, Arrays.asList(), 0, false));
+            orderTableList.add(new OrderTable(null, new Orders(), new NumberOfGuest(0), false));
         }
 
         assertThat(new OrderTables(orderTableList).size()).isEqualTo(len);

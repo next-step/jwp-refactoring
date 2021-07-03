@@ -2,15 +2,21 @@ package kitchenpos.domain.table;
 
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 @Embeddable
 public class OrderTables {
     @OneToMany(mappedBy = "tableGroup")
-    private List<OrderTable> orderTables;
+    private List<OrderTable> orderTables = new ArrayList<>();
 
-    protected OrderTables() {
+    public OrderTables() {
+    }
+
+    public OrderTables(OrderTable ...orderTables) {
+        this(Arrays.asList(orderTables));
     }
 
     public OrderTables(List<OrderTable> orderTables) {
