@@ -27,8 +27,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.ui.OrderRestController;
-import kitchenpos.product.domain.OrderLineItem;
 
 @WebMvcTest(controllers = OrderRestController.class)
 @ExtendWith(MockitoExtension.class)

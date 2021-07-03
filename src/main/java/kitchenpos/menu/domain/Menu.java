@@ -3,12 +3,31 @@ package kitchenpos.menu.domain;
 import java.math.BigDecimal;
 import java.util.List;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
 public class Menu {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
+
+    @Embedded
+    @AttributeOverride(name = "value", column = @Column(name = "price"))
     private Price price;
+
     private Long menuGroupId;
-    private MenuProducts menuProducts;
+
+    @Embedded
+    private MenuProducts menuProducts = new MenuProducts();
 
     public Menu() {}
 

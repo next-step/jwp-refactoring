@@ -9,7 +9,7 @@ import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.Price;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
-import kitchenpos.product.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.tablegroup.domain.TableGroup;

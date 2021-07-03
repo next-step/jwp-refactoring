@@ -8,7 +8,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import kitchenpos.product.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItem;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
