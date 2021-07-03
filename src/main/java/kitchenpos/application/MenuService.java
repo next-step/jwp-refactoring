@@ -1,8 +1,10 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.MenuDao;
+import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuGroup;
+import kitchenpos.dto.menu.MenuRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +17,7 @@ public class MenuService {
 
     public MenuService(
             final MenuDao menuDao,
+
             final MenuGroupService menuGroupService
     ) {
         this.menuDao = menuDao;
@@ -22,13 +25,14 @@ public class MenuService {
     }
 
     @Transactional
-    public Menu create(final Menu menu) {
+    public Menu create(final MenuRequest menuRequest) {
+        MenuGroup findMenuGroup = menuGroupService.findById(menuRequest.getMenuGroupId());
 
-        MenuGroup menuGroup = menu.getMenuGroup();
-
-        if (menuGroupService.isExists(menuGroup)) {
+        if (menuGroupService.isExists(findMenuGroup)) {
             throw new IllegalArgumentException("existed menuGroup");
         }
+
+        Menu menu = Menu.of(menuRequest.getName(), menuRequest.getPrice(), findMenuGroup, menuRequest.getMenuProducts());
 
         if (menu.isReasonablePrice() == false) {
             throw new IllegalArgumentException("Total Price is higher then expected MenuProduct Price");
