@@ -86,6 +86,20 @@ public class TableGroupServiceTest {
     }
 
     @Test
+    @DisplayName("중복된 주문이 존재할 시 실패한다.")
+    void overlapTable() {
+        //when
+        given(orderTableDao.findAllByIdIn(any())).willReturn(Arrays.asList(테이블_1번));
+
+        // then
+        assertThrows(IllegalArgumentException.class, () -> {
+            tableGroupService.create(산악회);
+        });
+
+        verify(orderTableDao, times(1)).findAllByIdIn(any());
+    }
+
+    @Test
     @DisplayName("주문_테이블이 다른 그룹에 속해있을 경우 실패한다.")
     void aleadyTable() {
         //when
