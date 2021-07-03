@@ -56,7 +56,7 @@ public class MenuProduct {
         return product.getPrice().times(quantity);
     }
 
-    void changeMenu(Menu menu) {
+    void toMenu(Menu menu) {
         this.menu = menu;
     }
 }

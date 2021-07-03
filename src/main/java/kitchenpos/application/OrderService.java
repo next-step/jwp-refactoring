@@ -36,17 +36,9 @@ public class OrderService {
     public OrderResponse create(final OrderRequest orderRequest) {
         validateExistsMenus(orderRequest);
         final List<OrderLineItem> orderLineItems = orderRequest.toOrderLineItems();
-        final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
-            .orElseThrow(() -> new IllegalArgumentException("등록이 안된 주문 테이블에서는 주문할 수 없습니다."));
-        Order persistOrder = orderRepository.save(Order.create(orderLineItems, orderTable, LocalDateTime.now()));
+        final OrderTable orderTable = findOrderTable(orderRequest);
+        final Order persistOrder = orderRepository.save(Order.create(orderLineItems, orderTable, LocalDateTime.now()));
         return OrderResponse.of(persistOrder);
-    }
-
-    private void validateExistsMenus(OrderRequest orderRequest) {
-        List<Long> menuIds = orderRequest.getMenuIds();
-        if (orderRequest.getOrderLineItemSize() != menuRepository.countByIdIn(menuIds)) {
-            throw new IllegalArgumentException("등록이 안된 메뉴는 주문할 수 없습니다.");
-        }
     }
 
     public List<OrderResponse> list() {
@@ -65,5 +57,17 @@ public class OrderService {
 
         savedOrder.complete();
         return OrderResponse.of(savedOrder);
+    }
+
+    private OrderTable findOrderTable(OrderRequest orderRequest) {
+        return orderTableRepository.findById(orderRequest.getOrderTableId())
+            .orElseThrow(() -> new IllegalArgumentException("등록이 안된 주문 테이블에서는 주문할 수 없습니다."));
+    }
+
+    private void validateExistsMenus(OrderRequest orderRequest) {
+        List<Long> menuIds = orderRequest.getMenuIds();
+        if (orderRequest.getOrderLineItemSize() != menuRepository.countByIdIn(menuIds)) {
+            throw new IllegalArgumentException("등록이 안된 메뉴는 주문할 수 없습니다.");
+        }
     }
 }

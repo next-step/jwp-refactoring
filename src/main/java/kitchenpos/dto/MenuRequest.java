@@ -4,10 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
 
 public class MenuRequest {
@@ -41,19 +38,19 @@ public class MenuRequest {
 		return menuGroupId;
 	}
 
-	public List<MenuProductRequest> getMenuProducts() {
-		return menuProducts;
-	}
-
-	public Menu toEntityWith(MenuGroup menuGroup, List<Product> products) {
-		List<MenuProduct> menuProductEntities = products.stream()
-			.map(this::findMenuProductOf)
+	public List<Long> getProductIds() {
+		return menuProducts.stream()
+			.map(MenuProductRequest::getProductId)
 			.collect(Collectors.toList());
-
-		return new Menu(name, Price.wonOf(price), menuGroup, menuProductEntities);
 	}
 
-	private MenuProduct findMenuProductOf(Product product) {
+	public List<MenuProduct> toMenuProducts(List<Product> products) {
+		return products.stream()
+			.map(this::toMenuProduct)
+			.collect(Collectors.toList());
+	}
+
+	private MenuProduct toMenuProduct(Product product) {
 		return menuProducts.stream()
 			.filter(menuProductRequest -> menuProductRequest.isEqualProductId(product))
 			.map(menuProductRequest -> menuProductRequest.toEntity(product))

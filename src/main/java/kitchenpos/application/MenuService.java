@@ -1,12 +1,13 @@
 package kitchenpos.application;
 
 import kitchenpos.domain.MenuGroupRepository;
+import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.MenuRepository;
+import kitchenpos.domain.Price;
 import kitchenpos.domain.ProductRepository;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.Product;
-import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.MenuResponse;
 
@@ -14,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class MenuService {
@@ -36,7 +36,10 @@ public class MenuService {
     public MenuResponse create(final MenuRequest menuRequest) {
         final MenuGroup menuGroup = findMenuGroup(menuRequest);
         final List<Product> products = findProducts(menuRequest);
-        final Menu persistMenu = menuRepository.save(menuRequest.toEntityWith(menuGroup, products));
+        final List<MenuProduct> menuProducts = menuRequest.toMenuProducts(products);
+        final Price menuPrice = Price.wonOf(menuRequest.getPrice());
+        final String menuName = menuRequest.getName();
+        final Menu persistMenu = menuRepository.save(Menu.create(menuName, menuPrice, menuGroup, menuProducts));
         return MenuResponse.of(persistMenu);
     }
 
@@ -51,18 +54,11 @@ public class MenuService {
     }
 
     private List<Product> findProducts(final MenuRequest menuRequest) {
-        final List<MenuProductRequest> menuProductRequests = menuRequest.getMenuProducts();
-
-        final List<Long> productIds = menuProductRequests.stream()
-            .map(MenuProductRequest::getProductId)
-            .collect(Collectors.toList());
-
+        final List<Long> productIds = menuRequest.getProductIds();
         final List<Product> products = productRepository.findAllById(productIds);
-
         if (products.size() != productIds.size()) {
             throw new IllegalArgumentException("상품으로 등록되지 않은 메뉴는 등록할 수 없습니다.");
         }
-
         return products;
     }
 }

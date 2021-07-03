@@ -37,13 +37,23 @@ public class Menu {
 
     protected Menu() {}
 
-    public Menu(String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        this.menuProducts = new MenuProducts(menuProducts);
-        validateCheaperThanTotalPrice(this.menuProducts, price);
-        menuProducts.forEach(menuProduct -> menuProduct.changeMenu(this));
+    private Menu(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
+        this.menuProducts = menuProducts;
+        menuProducts.toMenu(this);
+    }
+
+    public static Menu create(String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        return create(name, price, menuGroup, new MenuProducts(menuProducts));
+    }
+
+    public static Menu create(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        if (menuProducts.isMoreExpensiveThan(price)) {
+            throw new IllegalArgumentException("메뉴의 가격이 메뉴와 연결된 상품의 수량 * 가격 보다 비쌀 수 없습니다.");
+        }
+        return new Menu(name, price, menuGroup, menuProducts);
     }
 
     public Long getId() {
@@ -68,11 +78,5 @@ public class Menu {
 
     MenuGroup getMenu() {
         return this.menuGroup;
-    }
-
-    private void validateCheaperThanTotalPrice(MenuProducts menuProducts, Price price) {
-        if (menuProducts.isMoreExpensiveThan(price)) {
-            throw new IllegalArgumentException("메뉴의 가격이 메뉴와 연결된 상품의 수량 * 가격 보다 비쌀 수 없습니다.");
-        }
     }
 }

@@ -49,7 +49,7 @@ public class OrderLineItem {
         return order;
     }
 
-    void setOrder(Order order) {
+    void toOrder(Order order) {
         this.order = order;
     }
 }

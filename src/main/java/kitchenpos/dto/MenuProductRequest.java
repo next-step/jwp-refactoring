@@ -19,15 +19,15 @@ public class MenuProductRequest {
 		return this.productId.equals(product.getId());
 	}
 
-	MenuProduct toEntity(Product product) {
-		return new MenuProduct(product, quantity);
-	}
-
 	public Long getProductId() {
 		return productId;
 	}
 
 	public Long getQuantity() {
 		return quantity;
+	}
+
+	MenuProduct toEntity(Product product) {
+		return new MenuProduct(product, quantity);
 	}
 }
