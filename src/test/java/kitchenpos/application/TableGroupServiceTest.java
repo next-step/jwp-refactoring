@@ -116,7 +116,7 @@ class TableGroupServiceTest {
 		Assertions.assertThatThrownBy(() -> {
 			tableGroupService.create(tableGroup);
 		}).isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("주문테이블의 테이블 그룹이 없거나, 빈 테이블입니다.");
+			.hasMessageContaining("주문테이블이 단체지정이 되어있거나, 비어있지 않은 테이블입니다.");
 	}
 
 	@DisplayName("저장 되어있는 주문 테이블이 테이블 그룹이 없으면 오류 발생")
@@ -136,7 +136,7 @@ class TableGroupServiceTest {
 		Assertions.assertThatThrownBy(() -> {
 			tableGroupService.create(tableGroup);
 		}).isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("주문테이블의 테이블 그룹이 없거나, 빈 테이블입니다.");
+			.hasMessageContaining("주문테이블이 단체지정이 되어있거나, 비어있지 않은 테이블입니다.");
 	}
 
 	@DisplayName("단체 지정 테스트")

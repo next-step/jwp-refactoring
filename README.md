@@ -78,7 +78,7 @@
   - [x] OrderServiceTest 구현
   - [x] ProductServiceTest 구현
   - [x] TableGroupServiceTest 구현
-  - [ ] TableServiceTest 구현
+  - [x] TableServiceTest 구현
 
 ## 용어 사전
 
