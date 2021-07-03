@@ -36,7 +36,7 @@ class MenuProducts {
 
 	private Price sumPriceOfMenuProducts() {
 		return this.menuProducts.stream()
-			.map(MenuProduct::getPrice)
+			.map(MenuProduct::calculatePrice)
 			.reduce(Price::plus)
 			.orElseThrow(() -> new IllegalArgumentException("메뉴에 대한 상품 가격을 구할 수 없습니다."));
 	}

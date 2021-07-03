@@ -52,7 +52,7 @@ public class MenuProduct {
         return product;
     }
 
-    Price getPrice() {
+    Price calculatePrice() {
         return product.getPrice().times(quantity);
     }
 
