@@ -79,8 +79,8 @@ TODO
  - [x] kitchenpos 패키지의 코드를 보고 키친포스의 요구 사항을 README.md 에 작성
 
 -- 2단계
-- [ ] Menu JPA 적용
-- [ ] Order JPA 적용
+- [x] Menu JPA 적용
+- [x] Order JPA 적용
 
 - [ ] Menu Service 리팩토링
   - Menu 도메인 테스트 코드 추가
