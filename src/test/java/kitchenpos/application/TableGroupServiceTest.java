@@ -13,7 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.OrderTableRepository;
+import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.dto.TableGroupRequest;
 
 @DisplayName("주문테이블그룹 요구사항 테스트")

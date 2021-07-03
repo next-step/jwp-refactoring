@@ -13,7 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.MenuGroupRepository;
+import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.domain.MenuGroup;
 
 @DisplayName("메뉴그룹 요구사항 테스트")

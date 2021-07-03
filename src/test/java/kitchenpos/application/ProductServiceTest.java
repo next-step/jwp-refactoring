@@ -13,7 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.ProductRepository;
+import kitchenpos.domain.ProductRepository;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
 
