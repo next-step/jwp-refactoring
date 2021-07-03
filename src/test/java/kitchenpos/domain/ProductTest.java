@@ -15,6 +15,9 @@ class ProductTest {
 	@DisplayName("가격이 음수인 상품은 생성 될 수 없다.")
 	@Test
 	void negativePriceTest() {
+		// given
+		// when
+		// than
 		assertThatThrownBy(() -> new Product("상품", Price.wonOf(BigDecimal.valueOf(-1))))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("가격은 음수가 될 수 없습니다.");

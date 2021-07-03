@@ -15,8 +15,11 @@ class TableGroupTest {
 	@DisplayName("2개 이상의 주문테이블만 그룹화 할 수 있다.")
 	@Test
 	void createTableGroupWithLessTwoOrderTables() {
+		// given
 		OrderTable orderTable = new OrderTable(1, true);
 
+		// when
+		// than
 		assertThatThrownBy(() -> TableGroup.create(asList(orderTable), LocalDateTime.now()))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("2개 미만의 주문테이블은 그룹화 할 수 없습니다.");
@@ -25,9 +28,12 @@ class TableGroupTest {
 	@DisplayName("그룹화할 주문테이블들은 모두 빈 테이블이어야 한다.")
 	@Test
 	void createTableGroupWithNotEmptyOrderTableTest() {
+		// given
 		OrderTable notEmptyTable = new OrderTable(1, false);
 		OrderTable orderTable = new OrderTable(1, true);
 
+		// when
+		// than
 		assertThatThrownBy(() -> TableGroup.create(asList(notEmptyTable, orderTable), LocalDateTime.now()))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("비어있지 않거나, 이미 그룹화되어 있는 테이블은 그룹화 할 수 없습니다.");
@@ -36,11 +42,14 @@ class TableGroupTest {
 	@DisplayName("그룹화할 주문테이블들은 모두 그룹화되지 않은 테이블이어야 한다.")
 	@Test
 	void createTableGroupWithGroupedOrderTableTest() {
+		// given
 		OrderTable groupedTable1 = new OrderTable(1, true);
 		OrderTable groupedTable2 = new OrderTable(1, true);
 		TableGroup.create(asList(groupedTable1, groupedTable2), LocalDateTime.now());
 		OrderTable orderTable = new OrderTable(1, true);
 
+		// when
+		// than
 		assertThatThrownBy(() -> TableGroup.create(asList(groupedTable1, orderTable), LocalDateTime.now()))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("비어있지 않거나, 이미 그룹화되어 있는 테이블은 그룹화 할 수 없습니다.");
@@ -49,12 +58,15 @@ class TableGroupTest {
 	@DisplayName("테이블그룹은 주문테이블들과 생성시각으로 생성된다.")
 	@Test
 	void createTest() {
+		// given
 		OrderTable orderTable1 = new OrderTable(1, true);
 		OrderTable orderTable2 = new OrderTable(1, true);
 		LocalDateTime createdDate = LocalDateTime.now();
 
+		// when
 		TableGroup tableGroup = TableGroup.create(asList(orderTable1, orderTable2), createdDate);
 
+		// than
 		assertThat(orderTable1.getTableGroup()).isEqualTo(tableGroup);
 		assertThat(orderTable2.getTableGroup()).isEqualTo(tableGroup);
 		assertThat(tableGroup.getOrderTables()).containsExactly(orderTable1, orderTable2);
@@ -64,26 +76,32 @@ class TableGroupTest {
 	@DisplayName("테이블그룹을 통해 주문테이블의 식별자들을 알 수 있다.")
 	@Test
 	void getOrderTableIdsTest() {
+		// given
 		OrderTable orderTable1 = mock(OrderTable.class);
 		when(orderTable1.getId()).thenReturn(1L);
 		OrderTable orderTable2 = mock(OrderTable.class);
 		when(orderTable2.getId()).thenReturn(2L);
 		TableGroup tableGroup = TableGroup.create(asList(orderTable1, orderTable2), LocalDateTime.now());
 
+		// when
 		List<Long> orderTableIds = tableGroup.getOrderTableIds();
 
+		// than
 		assertThat(orderTableIds).containsExactly(1L, 2L);
 	}
 
 	@DisplayName("테이블그룹은 그룹에 소속된 테이블들을 그룹해제 시킬 수 있다.")
 	@Test
 	void ungroupTest() {
+		// given
 		OrderTable orderTable1 = new OrderTable(1, true);
 		OrderTable orderTable2 =  new OrderTable(1, true);
 		TableGroup tableGroup = TableGroup.create(asList(orderTable1, orderTable2), LocalDateTime.now());
 
+		// when
 		tableGroup.ungroup();
 
+		// than
 		assertThat(orderTable1.isGrouped()).isFalse();
 		assertThat(orderTable2.isGrouped()).isFalse();
 	}
@@ -96,10 +114,12 @@ class TableGroupTest {
 		Order order = mock(Order.class);
 		when(order.isComplete()).thenReturn(false);
 
+		// when
 		OrderTable notCompletedOrderTable = new OrderTable(1, true, asList(order));
 		OrderTable orderTable =  new OrderTable(1, true);
 		TableGroup tableGroup = TableGroup.create(asList(notCompletedOrderTable, orderTable), LocalDateTime.now());
 
+		// than
 		assertThatThrownBy(() -> tableGroup.ungroup())
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("조리상태이거나 식사상태인 주문이 있는 주문테이블은 그룹해제를 할 수 없습니다.");

@@ -14,14 +14,19 @@ class MenuProductsTest {
 	@DisplayName("메뉴상품의 가격은 상품의 가격 * 개수로 계산된다")
 	@Test
 	void calculatePrice() {
+		// given
 		Product 치킨 = new Product("치킨", Price.wonOf(1000));
 
+		// when
 		MenuProduct 치킨2개 = new MenuProduct(치킨, 2);
 
+		// then
 		assertThat(치킨2개.calculatePrice()).isEqualTo(Price.wonOf(2000));
 
+		// when
 		MenuProduct 치킨0개 = new MenuProduct(치킨, 0);
 
+		// than
 		assertThat(치킨0개.calculatePrice()).isEqualTo(Price.wonOf(0));
 	}
 }
