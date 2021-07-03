@@ -81,7 +81,7 @@ public class TableControllerTest extends ControllerTest {
     }
 
     private ResultActions 테이블_빈_테이블로_변경_요청(OrderTable orderTable) throws Exception {
-        return mockMvc.perform(put("/api/tables/{orderTableId}/empty", 1L)
+        return mockMvc.perform(put("/api/tables/{orderTableId}/empty", 4L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(orderTable)))
                 .andDo(print());

@@ -30,7 +30,7 @@ public class OrderControllerTest extends ControllerTest {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         OrderLineItem orderLineItem = new OrderLineItem(1L, 1L, 1L);
         orderLineItems.add(orderLineItem);
-        order = new Order(2L, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItems);
+        order = new Order(3L, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItems);
     }
 
     @Test
@@ -40,7 +40,7 @@ public class OrderControllerTest extends ControllerTest {
         주문_생성_요청(order)
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").exists())
-                .andExpect(jsonPath("orderTableId").value(2))
+                .andExpect(jsonPath("orderTableId").value(3))
                 .andExpect(jsonPath("orderStatus").value("COOKING"))
                 .andExpect(jsonPath("$.orderLineItems.[0].orderId").isNumber())
                 .andExpect(jsonPath("$.orderLineItems.[0].quantity").value(1))
@@ -97,7 +97,7 @@ public class OrderControllerTest extends ControllerTest {
     }
 
     private ResultActions 주문_상태_변경_요청(Order order) throws Exception {
-        return mockMvc.perform(put("/api/orders/{orderId}/order-status", 2L)
+        return mockMvc.perform(put("/api/orders/{orderId}/order-status", 3L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(order)))
                 .andDo(print());
