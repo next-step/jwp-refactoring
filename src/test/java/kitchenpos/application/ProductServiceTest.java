@@ -4,6 +4,7 @@ import static java.util.Arrays.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
@@ -14,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.domain.ProductRepository;
-import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
 
 @DisplayName("상품 요구사항 테스트")
@@ -31,7 +31,7 @@ class ProductServiceTest {
 	@Test
 	void createProductTest() {
 		// given
-		Product product = new Product("치킨", Price.wonOf(1000));
+		Product product = new Product("치킨", BigDecimal.valueOf(1000));
 
 		// when
 		productService.create(product);

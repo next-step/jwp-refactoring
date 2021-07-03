@@ -3,7 +3,6 @@ package kitchenpos.application;
 import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.MenuRepository;
-import kitchenpos.domain.Price;
 import kitchenpos.domain.ProductRepository;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
@@ -37,9 +36,8 @@ public class MenuService {
         final MenuGroup menuGroup = findMenuGroup(menuRequest);
         final List<Product> products = findProducts(menuRequest);
         final List<MenuProduct> menuProducts = menuRequest.toMenuProducts(products);
-        final Price menuPrice = Price.wonOf(menuRequest.getPrice());
-        final String menuName = menuRequest.getName();
-        final Menu persistMenu = menuRepository.save(Menu.create(menuName, menuPrice, menuGroup, menuProducts));
+        final Menu persistMenu = menuRepository.save(
+            Menu.create(menuRequest.getName(), menuRequest.getPrice(), menuGroup, menuProducts));
         return MenuResponse.of(persistMenu);
     }
 

@@ -53,15 +53,15 @@ public class OrderTable {
         this.tableGroup = null;
     }
 
-    public NumberOfGuests getNumberOfGuests() {
-        return numberOfGuests;
+    public int getNumberOfGuests() {
+        return numberOfGuests.getNumberOfGuests();
     }
 
-    public void changeNumberOfGuests(final NumberOfGuests numberOfGuests) {
+    public void changeNumberOfGuests(final int numberOfGuests) {
         if (isEmpty()) {
             throw new IllegalArgumentException("빈 테이블은 방문 손님 수를 수정할 수 없습니다.");
         }
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = NumberOfGuests.valueOf(numberOfGuests);
     }
 
     public boolean isEmpty() {
@@ -76,14 +76,6 @@ public class OrderTable {
         return tableGroup;
     }
 
-    void groupBy(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
-    }
-
-    public boolean isGrouped() {
-        return nonNull(tableGroup);
-    }
-
     public void emptyOn() {
         validate();
         this.empty = true;
@@ -92,6 +84,14 @@ public class OrderTable {
     public void emptyOff() {
         validate();
         this.empty = false;
+    }
+
+    boolean isGrouped() {
+        return nonNull(tableGroup);
+    }
+
+    void groupBy(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
     }
 
     private void validate() {

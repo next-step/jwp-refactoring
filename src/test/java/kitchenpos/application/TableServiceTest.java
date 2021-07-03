@@ -15,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.domain.OrderTableRepository;
-import kitchenpos.domain.NumberOfGuests;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.OrderTableResponse;
@@ -35,7 +34,7 @@ class TableServiceTest {
 		// given
 		OrderTableRequest orderTableRequest = mock(OrderTableRequest.class);
 		OrderTable orderTable = mock(OrderTable.class);
-		when(orderTable.getNumberOfGuests()).thenReturn(NumberOfGuests.valueOf(1));
+		when(orderTable.getNumberOfGuests()).thenReturn(1);
 		when(orderTableRequest.toEntity()).thenReturn(orderTable);
 		when(orderTableRepository.save(any(OrderTable.class))).thenReturn(orderTable);
 
@@ -52,7 +51,7 @@ class TableServiceTest {
 		// given
 		OrderTable orderTable = mock(OrderTable.class);
 		when(orderTable.getId()).thenReturn(1L);
-		when(orderTable.getNumberOfGuests()).thenReturn(NumberOfGuests.valueOf(1));
+		when(orderTable.getNumberOfGuests()).thenReturn(1);
 		when(orderTableRepository.findAll()).thenReturn(asList(orderTable));
 
 		// when

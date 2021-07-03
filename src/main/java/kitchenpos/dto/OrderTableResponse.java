@@ -5,7 +5,6 @@ import static java.util.Objects.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import kitchenpos.domain.NumberOfGuests;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 
@@ -32,11 +31,10 @@ public class OrderTableResponse {
 
 	public static OrderTableResponse of(OrderTable orderTable) {
 		TableGroup tableGroup = orderTable.getTableGroup();
-		NumberOfGuests numberOfGuests = orderTable.getNumberOfGuests();
 		if (isNull(tableGroup)) {
-			return new OrderTableResponse(orderTable.getId(), numberOfGuests.getNumberOfGuests(), orderTable.isEmpty());
+			return new OrderTableResponse(orderTable.getId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
 		}
-		return new OrderTableResponse(orderTable.getId(), numberOfGuests.getNumberOfGuests(), orderTable.isEmpty());
+		return new OrderTableResponse(orderTable.getId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
 	}
 
 	public static List<OrderTableResponse> listOf(List<OrderTable> orderTables) {

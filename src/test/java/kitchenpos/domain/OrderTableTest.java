@@ -70,7 +70,7 @@ class OrderTableTest {
 	void changeNumberOfGuestsNegativeNumberTest() {
 		OrderTable orderTable = new OrderTable(1, false);
 
-		assertThatThrownBy(() -> orderTable.changeNumberOfGuests(NumberOfGuests.valueOf(-1)))
+		assertThatThrownBy(() -> orderTable.changeNumberOfGuests(-1))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("방문 손님 수는 음수일 수 없습니다.");
 	}
@@ -80,7 +80,7 @@ class OrderTableTest {
 	void changeNumberOfGuestsEmptyOrderTableTest() {
 		OrderTable orderTable = new OrderTable(1, true);
 
-		assertThatThrownBy(() -> orderTable.changeNumberOfGuests(NumberOfGuests.valueOf(2)))
+		assertThatThrownBy(() -> orderTable.changeNumberOfGuests(2))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("빈 테이블은 방문 손님 수를 수정할 수 없습니다.");
 	}
@@ -90,9 +90,9 @@ class OrderTableTest {
 	void changeNumberOfGuests() {
 		OrderTable orderTable = new OrderTable(1, false);
 
-		orderTable.changeNumberOfGuests(NumberOfGuests.valueOf(2));
+		orderTable.changeNumberOfGuests(2);
 
-		assertThat(orderTable.getNumberOfGuests()).isEqualTo(NumberOfGuests.valueOf(2));
+		assertThat(orderTable.getNumberOfGuests()).isEqualTo(2);
 	}
 
 }

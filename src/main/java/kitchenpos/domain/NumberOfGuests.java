@@ -6,7 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class NumberOfGuests {
+class NumberOfGuests {
 
 	@Column
 	private int numberOfGuests;
