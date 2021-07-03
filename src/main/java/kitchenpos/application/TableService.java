@@ -1,10 +1,10 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.NumberOfGuest;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableCreate;
+import kitchenpos.repository.OrderRepository;
+import kitchenpos.repository.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,22 +12,22 @@ import java.util.List;
 
 @Service
 public class TableService {
-    private final OrderDao orderDao;
-    private final OrderTableDao orderTableDao;
+    private final OrderRepository orderRepository;
+    private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderDao orderDao, final OrderTableDao orderTableDao) {
-        this.orderDao = orderDao;
-        this.orderTableDao = orderTableDao;
+    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
+        this.orderRepository = orderRepository;
+        this.orderTableRepository = orderTableRepository;
     }
 
 
     @Transactional
     public OrderTable create(final OrderTableCreate create) {
-        return orderTableDao.save(new OrderTable( create.getNumberOfGuests(), create.isEmpty()));
+        return orderTableRepository.save(new OrderTable( create.getNumberOfGuests(), create.isEmpty()));
     }
 
     public List<OrderTable> list() {
-        return orderTableDao.findAll();
+        return orderTableRepository.findAll();
     }
 
 
@@ -49,7 +49,7 @@ public class TableService {
     }
 
     private OrderTable findById(Long orderTableId) {
-        return orderTableDao.findById(orderTableId)
+        return orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
     }
 }

@@ -1,10 +1,10 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.ProductCreate;
 import kitchenpos.fixture.ProductFixture;
+import kitchenpos.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     private ProductService productService;
 
@@ -34,7 +34,7 @@ class ProductServiceTest {
     void setUp() {
         ProductFixture.cleanUp();
 
-        this.productService = new ProductService(productDao);
+        this.productService = new ProductService(productRepository);
     }
 
     @Test
@@ -44,7 +44,7 @@ class ProductServiceTest {
         ProductCreate product = new ProductCreate("name", new Price(1000));
 
         // when
-        when(productDao.save(any())).thenAnswer(i -> i.getArgument(0));
+        when(productRepository.save(any())).thenAnswer(i -> i.getArgument(0));
 
         Product savedProduct = productService.create(product);
 
@@ -52,7 +52,7 @@ class ProductServiceTest {
         assertThat(savedProduct.getPrice()).isEqualTo(product.getPrice());
         assertThat(savedProduct.getName()).isEqualTo(product.getName());
 
-        verify(productDao, VerificationModeFactory.times(1))
+        verify(productRepository, VerificationModeFactory.times(1))
                 .save(savedProduct);
     }
 
@@ -63,13 +63,13 @@ class ProductServiceTest {
         List<Product> products = Arrays.asList(양념치킨_1000원, 콜라_100원);
 
         // when
-        when(productDao.findAll()).thenReturn(products);
+        when(productRepository.findAll()).thenReturn(products);
 
         List<Product> list = productService.list();
 
         // then
         assertThat(list).containsExactlyElementsOf(products);
 
-        verify(productDao, VerificationModeFactory.times(1)).findAll();
+        verify(productRepository, VerificationModeFactory.times(1)).findAll();
     }
 }

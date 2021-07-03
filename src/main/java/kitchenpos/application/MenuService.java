@@ -1,12 +1,12 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuCreate;
 import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.product.Products;
+import kitchenpos.repository.MenuGroupRepository;
+import kitchenpos.repository.MenuRepository;
+import kitchenpos.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,30 +14,30 @@ import java.util.List;
 
 @Service
 public class MenuService {
-    private final MenuDao menuDao;
-    private final MenuGroupDao menuGroupDao;
-    private final ProductDao productDao;
+    private final MenuRepository menuRepository;
+    private final MenuGroupRepository menuGroupRepository;
+    private final ProductRepository productRepository;
 
     public MenuService(
-            final MenuDao menuDao,
-            final MenuGroupDao menuGroupDao,
-            final ProductDao productDao
+            final MenuRepository menuRepository,
+            final MenuGroupRepository menuGroupRepository,
+            final ProductRepository productRepository
     ) {
-        this.menuDao = menuDao;
-        this.menuGroupDao = menuGroupDao;
-        this.productDao = productDao;
+        this.menuRepository = menuRepository;
+        this.menuGroupRepository = menuGroupRepository;
+        this.productRepository = productRepository;
     }
 
     @Transactional
     public Menu create(final MenuCreate create) {
-        MenuGroup menuGroup = menuGroupDao.findById(create.getMenuGroupId())
+        MenuGroup menuGroup = menuGroupRepository.findById(create.getMenuGroupId())
                 .orElseThrow(IllegalArgumentException::new);
-        Products products = new Products(productDao.findAllById(create.getProductsIdInMenuProducts()));
+        Products products = new Products(productRepository.findAllById(create.getProductsIdInMenuProducts()));
 
-        return menuDao.save(Menu.create(create, menuGroup, products));
+        return menuRepository.save(Menu.create(create, menuGroup, products));
     }
 
     public List<Menu> list() {
-        return menuDao.findAll();
+        return menuRepository.findAll();
     }
 }

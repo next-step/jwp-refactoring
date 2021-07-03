@@ -1,11 +1,11 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.NumberOfGuest;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableCreate;
 import kitchenpos.fixture.CleanUp;
+import kitchenpos.repository.OrderRepository;
+import kitchenpos.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,10 +29,10 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     private TableService tableService;
 
@@ -40,7 +40,7 @@ class TableServiceTest {
     void setUp() {
         CleanUp.cleanUpTableFirst();
 
-        this.tableService = new TableService(orderDao, orderTableDao);
+        this.tableService = new TableService(orderRepository, orderTableRepository);
     }
 
     @Test
@@ -50,28 +50,28 @@ class TableServiceTest {
         OrderTableCreate orderTable = new OrderTableCreate(new NumberOfGuest(1), true);
 
         // when
-        when(orderTableDao.save(any())).thenAnswer(i -> i.getArgument(0));
+        when(orderTableRepository.save(any())).thenAnswer(i -> i.getArgument(0));
 
         OrderTable savedOrderTable = tableService.create(orderTable);
 
         // then
         assertThat(savedOrderTable.getTableGroup()).isNull();
 
-        verify(orderTableDao, VerificationModeFactory.times(1)).save(savedOrderTable);
+        verify(orderTableRepository, VerificationModeFactory.times(1)).save(savedOrderTable);
     }
 
     @Test
     @DisplayName("list - 정상적인 주문 테이블 전체 조회")
     void 정상적인_주문_테이블_전체_조회() {
         // when
-        when(orderTableDao.findAll()).thenReturn(Arrays.asList(미사용중인_테이블, 사용중인_2명_테이블));
+        when(orderTableRepository.findAll()).thenReturn(Arrays.asList(미사용중인_테이블, 사용중인_2명_테이블));
 
         List<OrderTable> list = tableService.list();
 
         // then
         assertThat(list).containsExactly(미사용중인_테이블, 사용중인_2명_테이블);
 
-        verify(orderTableDao, VerificationModeFactory.times(1))
+        verify(orderTableRepository, VerificationModeFactory.times(1))
                 .findAll();
     }
 
@@ -82,13 +82,13 @@ class TableServiceTest {
         Long orderTableId = 1L;
 
         // when
-        when(orderTableDao.findById(orderTableId)).thenReturn(Optional.empty());
+        when(orderTableRepository.findById(orderTableId)).thenReturn(Optional.empty());
 
         // then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableService.changeEmpty(orderTableId, true));
 
-        verify(orderTableDao, VerificationModeFactory.times(1))
+        verify(orderTableRepository, VerificationModeFactory.times(1))
                 .findById(orderTableId);
     }
 
@@ -98,13 +98,13 @@ class TableServiceTest {
         // given
         Long orderTableId = 1L;
 
-        given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(사용중인_1명_테이블));
+        given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(사용중인_1명_테이블));
 
         // when & then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableService.changeEmpty(orderTableId, true));
 
-        verify(orderTableDao, VerificationModeFactory.times(1))
+        verify(orderTableRepository, VerificationModeFactory.times(1))
                 .findById(orderTableId);
     }
 
@@ -112,13 +112,13 @@ class TableServiceTest {
     @DisplayName("changeEmpty - 주문 테이블에 등록된 주문들의 상태가 조리 또는 식사 일 경우 IllegalArgumentException이 발생한다.")
     void 주문_테이블에_등록된_주문들의_상탱가_조리_또는_식사_일_경우_IllegalArgumentException이_발생한다() {
         // given
-        given(orderTableDao.findById(사용중인_1명_1건_조리_1건_식사.getId()))
+        given(orderTableRepository.findById(사용중인_1명_1건_조리_1건_식사.getId()))
                 .willReturn(Optional.of(사용중인_1명_1건_조리_1건_식사));
 
         // when & then
         assertThatIllegalStateException().isThrownBy(() -> tableService.changeEmpty(사용중인_1명_1건_조리_1건_식사.getId(), true));
 
-        verify(orderTableDao, VerificationModeFactory.times(1))
+        verify(orderTableRepository, VerificationModeFactory.times(1))
                 .findById(사용중인_1명_1건_조리_1건_식사.getId());
     }
 
@@ -126,7 +126,7 @@ class TableServiceTest {
     @DisplayName("changeEmpty - 정상적인 빈 테이블 변경")
     void 정상적인_빈_테이블_변경() {
         // given
-        given(orderTableDao.findById(빈_테이블.getId())).willReturn(Optional.of(빈_테이블));
+        given(orderTableRepository.findById(빈_테이블.getId())).willReturn(Optional.of(빈_테이블));
 
         // when
         OrderTable savedOrderTable = tableService.changeEmpty(빈_테이블.getId(), false);
@@ -137,7 +137,7 @@ class TableServiceTest {
         assertThat(savedOrderTable.getNumberOfGuests()).isEqualTo(빈_테이블.getNumberOfGuests());
         assertThat(savedOrderTable.isEmpty()).isFalse();
 
-        verify(orderTableDao, VerificationModeFactory.times(1))
+        verify(orderTableRepository, VerificationModeFactory.times(1))
                 .findById(빈_테이블.getId());
     }
 
@@ -148,12 +148,12 @@ class TableServiceTest {
         Long orderTableId = 1L;
 
         // when
-        when(orderTableDao.findById(orderTableId)).thenReturn(Optional.empty());
+        when(orderTableRepository.findById(orderTableId)).thenReturn(Optional.empty());
 
         // then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, new NumberOfGuest(1)));
-        verify(orderTableDao, VerificationModeFactory.times(1))
+        verify(orderTableRepository, VerificationModeFactory.times(1))
                 .findById(orderTableId);
 
     }
@@ -162,12 +162,12 @@ class TableServiceTest {
     @DisplayName("changeNumberOfGuests - 주문 테이블이 빈 테이블이면 IllegalArgumentException이 발생한다.")
     void 주문_테이블이_빈_테이블이면_IllegalArgumentException이_발생한다() {
         // given
-        given(orderTableDao.findById(빈_테이블.getId())).willReturn(Optional.of(빈_테이블));
+        given(orderTableRepository.findById(빈_테이블.getId())).willReturn(Optional.of(빈_테이블));
 
         // when & then
         assertThatIllegalStateException()
                 .isThrownBy(() -> tableService.changeNumberOfGuests(빈_테이블.getId(), new NumberOfGuest(1)));
-        verify(orderTableDao, VerificationModeFactory.times(1))
+        verify(orderTableRepository, VerificationModeFactory.times(1))
                 .findById(빈_테이블.getId());
     }
 
@@ -177,7 +177,7 @@ class TableServiceTest {
         // given
         NumberOfGuest toBe = new NumberOfGuest(200);
 
-        given(orderTableDao.findById(사용중인_1명_1건_조리_1건_식사.getId())).willReturn(Optional.of(사용중인_1명_1건_조리_1건_식사));
+        given(orderTableRepository.findById(사용중인_1명_1건_조리_1건_식사.getId())).willReturn(Optional.of(사용중인_1명_1건_조리_1건_식사));
 
         // when
         OrderTable changedOrderTable = tableService.changeNumberOfGuests(사용중인_1명_1건_조리_1건_식사.getId(), toBe);

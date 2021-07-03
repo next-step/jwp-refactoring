@@ -1,8 +1,5 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuCreate;
@@ -10,6 +7,9 @@ import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menuproduct.MenuProduct;
 import kitchenpos.domain.menuproduct.MenuProductCreate;
 import kitchenpos.fixture.CleanUp;
+import kitchenpos.repository.MenuGroupRepository;
+import kitchenpos.repository.MenuRepository;
+import kitchenpos.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,13 +36,13 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     private MenuService menuService;
 
@@ -55,7 +55,7 @@ class MenuServiceTest {
     @BeforeEach
     void setUp() {
         CleanUp.cleanUpOrderFirst();
-        this.menuService = new MenuService(menuDao, menuGroupDao, productDao);
+        this.menuService = new MenuService(menuRepository, menuGroupRepository, productRepository);
 
         menuGroup = new MenuGroup(1L, "Hello");;
 
@@ -72,12 +72,12 @@ class MenuServiceTest {
         MenuCreate menuCreate = new MenuCreate("menu", new Price(0), menuGroup.getId(), menuProductCreates);
 
         // when
-        when(menuGroupDao.findById(menuGroup.getId())).thenReturn(Optional.empty());
+        when(menuGroupRepository.findById(menuGroup.getId())).thenReturn(Optional.empty());
 
         // then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuCreate));
 
-        verify(menuGroupDao, VerificationModeFactory.times(1)).findById(menuGroup.getId());
+        verify(menuGroupRepository, VerificationModeFactory.times(1)).findById(menuGroup.getId());
     }
 
     @Test
@@ -87,17 +87,17 @@ class MenuServiceTest {
         MenuCreate menuCreate = new MenuCreate("menu", new Price(0),
                 menuGroup.getId(), Arrays.asList(양념치킨));
 
-        given(menuGroupDao.findById(menuGroup.getId())).willReturn(Optional.of(menuGroup));
+        given(menuGroupRepository.findById(menuGroup.getId())).willReturn(Optional.of(menuGroup));
 
         // when
-        when(productDao.findAllById(Arrays.asList(양념치킨.getProductId()))).thenReturn(Arrays.asList());
+        when(productRepository.findAllById(Arrays.asList(양념치킨.getProductId()))).thenReturn(Arrays.asList());
 
         // then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuCreate));
 
-        verify(menuGroupDao, VerificationModeFactory.times(1))
+        verify(menuGroupRepository, VerificationModeFactory.times(1))
                 .findById(menuGroup.getId());
-        verify(productDao, VerificationModeFactory.times(1))
+        verify(productRepository, VerificationModeFactory.times(1))
                 .findAllById(Arrays.asList(양념치킨_1000원.getId()));
     }
 
@@ -109,16 +109,16 @@ class MenuServiceTest {
                 menuGroup.getId(), Arrays.asList(양념치킨));
 
 
-        given(menuGroupDao.findById(menuGroup.getId())).willReturn(Optional.of(menuGroup));
-        when(productDao.findAllById(Arrays.asList(양념치킨_1000원.getId())))
+        given(menuGroupRepository.findById(menuGroup.getId())).willReturn(Optional.of(menuGroup));
+        when(productRepository.findAllById(Arrays.asList(양념치킨_1000원.getId())))
                 .thenReturn(Arrays.asList(양념치킨_1000원));
 
         // when & then
 
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuCreate));
 
-        verify(menuGroupDao, VerificationModeFactory.times(1)).findById(menuGroup.getId());
-        verify(productDao, VerificationModeFactory.times(1))
+        verify(menuGroupRepository, VerificationModeFactory.times(1)).findById(menuGroup.getId());
+        verify(productRepository, VerificationModeFactory.times(1))
                 .findAllById(Arrays.asList(양념치킨_1000원.getId()));
     }
 
@@ -129,11 +129,11 @@ class MenuServiceTest {
         MenuCreate menuCreate = new MenuCreate("menu", new Price(10),
                 menuGroup.getId(), Arrays.asList(양념치킨));
 
-        given(menuGroupDao.findById(menuGroup.getId())).willReturn(Optional.of(menuGroup));
-        given(productDao.findAllById(any())).willReturn(Arrays.asList(양념치킨_1000원));
+        given(menuGroupRepository.findById(menuGroup.getId())).willReturn(Optional.of(menuGroup));
+        given(productRepository.findAllById(any())).willReturn(Arrays.asList(양념치킨_1000원));
 
         // when
-        when(menuDao.save(any())).thenAnswer(i -> i.getArgument(0));
+        when(menuRepository.save(any())).thenAnswer(i -> i.getArgument(0));
 
         Menu savedMenu = menuService.create(menuCreate);
 
@@ -154,9 +154,9 @@ class MenuServiceTest {
                 .map(item -> item.getAmount())
                 .containsOnly(new Price(양념치킨_1000원.getPrice().toBigDecimal().multiply(BigDecimal.valueOf(1))));
 
-        verify(productDao, VerificationModeFactory.times(1))
+        verify(productRepository, VerificationModeFactory.times(1))
                 .findAllById(any());
-        verify(menuDao, VerificationModeFactory.times(1)).save(savedMenu);
+        verify(menuRepository, VerificationModeFactory.times(1)).save(savedMenu);
     }
 
     @Test
@@ -171,7 +171,7 @@ class MenuServiceTest {
         Menu menu = new Menu(1L, "Menu", new Price(1),null, menuProducts);
 
         // when
-        when(menuDao.findAll()).thenReturn(Arrays.asList(menu));
+        when(menuRepository.findAll()).thenReturn(Arrays.asList(menu));
 
         Menu resultMenu = menuService.list().get(0);
         // then

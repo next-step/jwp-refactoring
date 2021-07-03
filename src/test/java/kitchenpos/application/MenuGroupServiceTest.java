@@ -1,8 +1,8 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menu.MenuGroupCreate;
+import kitchenpos.repository.MenuGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,13 +22,13 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     private MenuGroupService menuGroupService;
 
     @BeforeEach
     void setUp() {
-        this.menuGroupService = new MenuGroupService(menuGroupDao);
+        this.menuGroupService = new MenuGroupService(menuGroupRepository);
     }
 
     @Test
@@ -38,14 +38,14 @@ class MenuGroupServiceTest {
         MenuGroupCreate menuGroupCreate = new MenuGroupCreate("Hello");
 
         // when
-        when(menuGroupDao.save(any())).thenAnswer(i -> i.getArgument(0));
+        when(menuGroupRepository.save(any())).thenAnswer(i -> i.getArgument(0));
 
         MenuGroup result = menuGroupService.create(menuGroupCreate);
 
         // then
         assertThat(result.getName()).isEqualTo(menuGroupCreate.getName());
 
-        verify(menuGroupDao, VerificationModeFactory.times(1))
+        verify(menuGroupRepository, VerificationModeFactory.times(1))
                 .save(result);
     }
 
@@ -60,7 +60,7 @@ class MenuGroupServiceTest {
         );
 
         // when
-        when(menuGroupDao.findAll())
+        when(menuGroupRepository.findAll())
                 .thenReturn(menuGroups);
 
         List<MenuGroup> list = menuGroupService.list();
@@ -69,7 +69,7 @@ class MenuGroupServiceTest {
         assertThat(list)
                 .containsExactlyElementsOf(menuGroups);
 
-        verify(menuGroupDao, VerificationModeFactory.times(1))
+        verify(menuGroupRepository, VerificationModeFactory.times(1))
                 .findAll();
     }
 }

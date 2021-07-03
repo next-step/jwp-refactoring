@@ -1,13 +1,13 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTables;
 import kitchenpos.domain.table.TableGroup;
 import kitchenpos.domain.table.TableGroupCreate;
 import kitchenpos.fixture.CleanUp;
+import kitchenpos.repository.OrderRepository;
+import kitchenpos.repository.OrderTableRepository;
+import kitchenpos.repository.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,13 +31,13 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
 
     private TableGroupService tableGroupService;
 
@@ -53,7 +53,7 @@ class TableGroupServiceTest {
     void setUp() {
         CleanUp.cleanUpOrderFirst();
 
-        this.tableGroupService = new TableGroupService(orderDao, orderTableDao, tableGroupDao);
+        this.tableGroupService = new TableGroupService(orderRepository, orderTableRepository, tableGroupRepository);
 
         tableGroupId = 1L;
 
@@ -70,12 +70,12 @@ class TableGroupServiceTest {
         TableGroupCreate tableGroup = new TableGroupCreate(orderTableIds);
 
         // when
-        when(orderTableDao.findAllById(orderTableIds)).thenReturn(Arrays.asList(미사용중인_테이블));
+        when(orderTableRepository.findAllById(orderTableIds)).thenReturn(Arrays.asList(미사용중인_테이블));
 
         // then
         assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroup));
 
-        verify(orderTableDao, VerificationModeFactory.times(1))
+        verify(orderTableRepository, VerificationModeFactory.times(1))
                 .findAllById(orderTableIds);
     }
 
@@ -88,12 +88,12 @@ class TableGroupServiceTest {
 
         TableGroupCreate tableGroup = new TableGroupCreate(orderTableIds);
 
-        given(orderTableDao.findAllById(orderTableIds)).willReturn(orderTables);
+        given(orderTableRepository.findAllById(orderTableIds)).willReturn(orderTables);
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroup));
 
-        verify(orderTableDao, VerificationModeFactory.times(1))
+        verify(orderTableRepository, VerificationModeFactory.times(1))
                 .findAllById(orderTableIds);
     }
 
@@ -106,13 +106,13 @@ class TableGroupServiceTest {
 
         TableGroupCreate tableGroup = new TableGroupCreate(orderTableIds);
 
-        given(orderTableDao.findAllById(orderTableIds))
+        given(orderTableRepository.findAllById(orderTableIds))
                 .willReturn(orderTables);
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroup));
 
-        verify(orderTableDao, VerificationModeFactory.times(1))
+        verify(orderTableRepository, VerificationModeFactory.times(1))
                 .findAllById(orderTableIds);
 
     }
@@ -123,10 +123,10 @@ class TableGroupServiceTest {
         // given
         TableGroupCreate tableGroup = new TableGroupCreate(orderTableIds);
 
-        given(orderTableDao.findAllById(orderTableIds)).willReturn(orderTables);
+        given(orderTableRepository.findAllById(orderTableIds)).willReturn(orderTables);
 
         // when
-        when(tableGroupDao.save(any())).thenAnswer(i -> i.getArgument(0));
+        when(tableGroupRepository.save(any())).thenAnswer(i -> i.getArgument(0));
 
         TableGroup savedTableGroup = tableGroupService.create(tableGroup);
 
@@ -139,7 +139,7 @@ class TableGroupServiceTest {
                 .map(item -> item.getTableGroup())
                 .containsOnly(savedTableGroup);
 
-        verify(orderTableDao, VerificationModeFactory.times(1))
+        verify(orderTableRepository, VerificationModeFactory.times(1))
                 .findAllById(orderTableIds);
     }
 
@@ -151,12 +151,12 @@ class TableGroupServiceTest {
 
         TableGroup tableGroup = new TableGroup(1L, null, orderTables);
 
-        given(tableGroupDao.findById(1L)).willReturn(Optional.of(tableGroup));
+        given(tableGroupRepository.findById(1L)).willReturn(Optional.of(tableGroup));
 
         // when & then
         assertThatIllegalStateException().isThrownBy(() -> tableGroupService.ungroup(1L));
 
-        verify(tableGroupDao, VerificationModeFactory.times(1))
+        verify(tableGroupRepository, VerificationModeFactory.times(1))
                 .findById(1L);
     }
 
@@ -168,7 +168,7 @@ class TableGroupServiceTest {
 
         TableGroup tableGroup = new TableGroup(1L, null, orderTables);
 
-        given(tableGroupDao.findById(1L)).willReturn(Optional.of(tableGroup));
+        given(tableGroupRepository.findById(1L)).willReturn(Optional.of(tableGroup));
 
         // when
         tableGroupService.ungroup(1L);
@@ -178,7 +178,7 @@ class TableGroupServiceTest {
             assertThat(orderTable.getTableGroup()).isNull();
         }
 
-        verify(tableGroupDao, VerificationModeFactory.times(1))
+        verify(tableGroupRepository, VerificationModeFactory.times(1))
                 .findById(1L);
     }
 }

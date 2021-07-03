@@ -1,14 +1,14 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.order.*;
 import kitchenpos.exception.EntityNotExistsException;
 import kitchenpos.exception.TableEmptyException;
 import kitchenpos.fixture.CleanUp;
 import kitchenpos.fixture.OrderFixture;
+import kitchenpos.repository.MenuRepository;
+import kitchenpos.repository.OrderRepository;
+import kitchenpos.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,13 +39,13 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     private OrderService orderService;
     private List<Menu> menus;
@@ -58,7 +58,7 @@ class OrderServiceTest {
     void setUp() {
         CleanUp.cleanUpTableFirst();
 
-        orderService = new OrderService(menuDao, orderDao,  orderTableDao);
+        orderService = new OrderService(menuRepository, orderRepository, orderTableRepository);
 
         menus = Arrays.asList(양념치킨_콜라_1000원_1개, 후라이드치킨_콜라_2000원_1개);
 
@@ -75,7 +75,7 @@ class OrderServiceTest {
         // given
         OrderCreate orderCreate = new OrderCreate(미사용중인_테이블.getId(), OrderStatus.MEAL, orderLineItemCreates);
 
-        given(orderTableDao.findById(any()))
+        given(orderTableRepository.findById(any()))
                 .willReturn(Optional.of(미사용중인_테이블));
 
         // when & then
@@ -89,13 +89,13 @@ class OrderServiceTest {
         OrderCreate orderCreate = new OrderCreate(미사용중인_테이블.getId(), OrderStatus.MEAL, orderLineItemCreates);
 
         // when
-        when(orderTableDao.findById(미사용중인_테이블.getId())).thenReturn(Optional.empty());
+        when(orderTableRepository.findById(미사용중인_테이블.getId())).thenReturn(Optional.empty());
 
         // then
         assertThatExceptionOfType(EntityNotExistsException.class)
                 .isThrownBy(() -> orderService.create(orderCreate));
 
-        verify(orderTableDao, VerificationModeFactory.times(1))
+        verify(orderTableRepository, VerificationModeFactory.times(1))
                 .findById(미사용중인_테이블.getId());
     }
 
@@ -106,13 +106,13 @@ class OrderServiceTest {
         OrderCreate orderCreate = new OrderCreate(1L, OrderStatus.MEAL, orderLineItemCreates);
 
         // when
-        when(orderTableDao.findById(미사용중인_테이블.getId())).thenReturn(Optional.of(미사용중인_테이블));
+        when(orderTableRepository.findById(미사용중인_테이블.getId())).thenReturn(Optional.of(미사용중인_테이블));
 
         // then
         assertThatExceptionOfType(TableEmptyException.class)
                 .isThrownBy(() -> orderService.create(orderCreate));
 
-        verify(orderTableDao, VerificationModeFactory.times(1))
+        verify(orderTableRepository, VerificationModeFactory.times(1))
                 .findById(미사용중인_테이블.getId());
     }
 
@@ -122,12 +122,12 @@ class OrderServiceTest {
         // given
         OrderCreate orderCreate = new OrderCreate(사용중인_1명_테이블.getId(), OrderStatus.MEAL, orderLineItemCreates);
 
-        given(menuDao.findAllById(any())).willReturn(menus);
+        given(menuRepository.findAllById(any())).willReturn(menus);
 
-        given(orderTableDao.findById(사용중인_1명_테이블.getId())).willReturn(Optional.of(사용중인_1명_테이블));
+        given(orderTableRepository.findById(사용중인_1명_테이블.getId())).willReturn(Optional.of(사용중인_1명_테이블));
 
         // when
-        when(orderDao.save(any())).thenAnswer(i -> i.getArgument(0));
+        when(orderRepository.save(any())).thenAnswer(i -> i.getArgument(0));
 
         Order savedOrder = orderService.create(orderCreate);
 
@@ -144,16 +144,16 @@ class OrderServiceTest {
                 .map(item -> item.getMenu())
                 .containsExactlyElementsOf(menus);
 
-        verify(menuDao, VerificationModeFactory.times(1)).findAllById(any());
-        verify(orderTableDao, VerificationModeFactory.times(1)).findById(사용중인_1명_테이블.getId());
-        verify(orderDao, VerificationModeFactory.times(1)).save(any());
+        verify(menuRepository, VerificationModeFactory.times(1)).findAllById(any());
+        verify(orderTableRepository, VerificationModeFactory.times(1)).findById(사용중인_1명_테이블.getId());
+        verify(orderRepository, VerificationModeFactory.times(1)).save(any());
     }
 
     @Test
     @DisplayName("create - 정상적인 주문 테이블 전체 조회")
     void 정상적인_주문_테이블_전체_조회() {
         // when
-        when(orderDao.findAll()).thenReturn(Arrays.asList(결제완료_음식_2));
+        when(orderRepository.findAll()).thenReturn(Arrays.asList(결제완료_음식_2));
 
         Order savedOrder = orderService.list().get(0);
 
@@ -161,7 +161,7 @@ class OrderServiceTest {
         assertThat(savedOrder).isEqualTo(결제완료_음식_2);
         assertThat(savedOrder.getOrderLineItems()).containsExactlyElementsOf(결제완료_음식_2.getOrderLineItems());
 
-        verify(orderDao, VerificationModeFactory.times(1)).findAll();
+        verify(orderRepository, VerificationModeFactory.times(1)).findAll();
     }
 
     @Test
@@ -171,13 +171,13 @@ class OrderServiceTest {
         Long orderId = 1L;
 
         // when
-        when(orderDao.findById(orderId)).thenReturn(Optional.empty());
+        when(orderRepository.findById(orderId)).thenReturn(Optional.empty());
 
         // then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> orderService.changeOrderStatus(orderId, OrderStatus.MEAL));
 
-        verify(orderDao, VerificationModeFactory.times(1)).findById(orderId);
+        verify(orderRepository, VerificationModeFactory.times(1)).findById(orderId);
     }
 
     @Test
@@ -187,20 +187,20 @@ class OrderServiceTest {
         Long orderId = 1L;
 
         // when
-        when(orderDao.findById(orderId)).thenReturn(Optional.of(OrderFixture.결제완료_음식_1));
+        when(orderRepository.findById(orderId)).thenReturn(Optional.of(OrderFixture.결제완료_음식_1));
 
         // then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> orderService.changeOrderStatus(orderId, OrderStatus.COMPLETION));
 
-        verify(orderDao, VerificationModeFactory.times(1)).findById(orderId);
+        verify(orderRepository, VerificationModeFactory.times(1)).findById(orderId);
     }
 
     @Test
     @DisplayName("changeOrderStatus - 정상적인 주문 상태 변경")
     void 정상적인_주문_상태_변경() {
         // given
-        given(orderDao.findById(식사_음식_1.getId())).willReturn(Optional.of(식사_음식_1));
+        given(orderRepository.findById(식사_음식_1.getId())).willReturn(Optional.of(식사_음식_1));
 
         // when
         Order savedOrder = orderService.changeOrderStatus(식사_음식_1.getId(), OrderStatus.MEAL);
@@ -209,6 +209,6 @@ class OrderServiceTest {
         assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
         assertThat(savedOrder.getOrderLineItems()).containsExactlyElementsOf(식사_음식_1.getOrderLineItems());
 
-        verify(orderDao, VerificationModeFactory.times(1)).findById(식사_음식_1.getId());
+        verify(orderRepository, VerificationModeFactory.times(1)).findById(식사_음식_1.getId());
     }
 }
