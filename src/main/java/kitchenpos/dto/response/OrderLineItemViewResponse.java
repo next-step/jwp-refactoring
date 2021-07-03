@@ -10,7 +10,7 @@ public class OrderLineItemViewResponse {
 
     public static OrderLineItemViewResponse of(OrderLineItem orderLineItem) {
         return new OrderLineItemViewResponse(
-                orderLineItem.getSeq(),
+                orderLineItem.getId(),
                 orderLineItem.getOrder().getId(),
                 orderLineItem.getMenu().getId(),
                 orderLineItem.getQuantity().toLong()

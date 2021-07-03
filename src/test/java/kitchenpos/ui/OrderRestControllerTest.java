@@ -105,7 +105,7 @@ class OrderRestControllerTest {
     private ResultMatcher validateOrderLineItem(String prefix, OrderLineItem orderLineItem) {
         return result -> {
             ResultMatcher.matchAll(
-                    jsonPath(prefix + ".seq").value(orderLineItem.getSeq()),
+                    jsonPath(prefix + ".seq").value(orderLineItem.getId()),
                     jsonPath(prefix + ".orderId").value(orderLineItem.getOrder().getId()),
                     jsonPath(prefix + ".menuId").value(orderLineItem.getMenu().getId()),
                     jsonPath(prefix + ".quantity").value(orderLineItem.getQuantity().toLong())
