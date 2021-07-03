@@ -18,6 +18,10 @@ public class Product {
     private Name name;
     private Price price;
 
+    public static Product from(ProductCreate create) {
+        return new Product(create.getName(), create.getPrice());
+    }
+
     protected Product() {
     }
 

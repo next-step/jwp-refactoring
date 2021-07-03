@@ -24,6 +24,10 @@ public class OrderTable {
 
     private boolean empty;
 
+    public static OrderTable from(OrderTableCreate create) {
+        return new OrderTable(create.getNumberOfGuests(), create.isEmpty());
+    }
+
     protected OrderTable() {
     }
 

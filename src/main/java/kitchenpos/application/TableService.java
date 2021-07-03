@@ -23,7 +23,7 @@ public class TableService {
 
     @Transactional
     public OrderTable create(final OrderTableCreate create) {
-        return orderTableRepository.save(new OrderTable( create.getNumberOfGuests(), create.isEmpty()));
+        return orderTableRepository.save(OrderTable.from(create));
     }
 
     public List<OrderTable> list() {
