@@ -13,6 +13,7 @@ import static org.mockito.Mockito.verify;
 import java.util.Arrays;
 import java.util.Collections;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,9 +24,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.order.dao.OrderDao;
 import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.tablegroup.dao.TableGroupDao;
 import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
 
 @ExtendWith(MockitoExtension.class)
 public class TableGroupServiceTest {
@@ -42,29 +43,36 @@ public class TableGroupServiceTest {
     @InjectMocks
     private TableGroupService tableGroupService;
 
+    private TableGroupRequest request;
+
+    @BeforeEach
+    void setUp() {
+        request = new TableGroupRequest(Arrays.asList(테이블_1번.getId(), 테이블_2번.getId()));
+    }
+
     @Test
     @DisplayName("테이블 그룹 정상 생성 케이스")
     void create() {
         //given
         given(orderTableDao.findAllByIdIn(any())).willReturn(산악회.getOrderTables());
-        given(tableGroupDao.save(산악회)).willReturn(산악회);
+        given(tableGroupDao.save(any())).willReturn(산악회);
 
         //when
-        TableGroup result = tableGroupService.create(산악회);
+        TableGroup result = tableGroupService.create(request);
 
         // then
         assertThat(result.getId()).isEqualTo(산악회.getId());
         assertThat(result.getOrderTables()).containsExactly(테이블_1번, 테이블_2번);
 
         verify(orderTableDao, times(1)).findAllByIdIn(any());
-        verify(tableGroupDao, times(1)).save(산악회);
+        verify(tableGroupDao, times(1)).save(any());
     }
 
     @Test
     @DisplayName("주문_테이블이 2개 미만일 경우 실패한다.")
     void underTwo() {
         //when
-        TableGroup 테이블이_1개 = new TableGroup(1L, Arrays.asList(테이블_1번));
+        TableGroupRequest 테이블이_1개 = new TableGroupRequest(Arrays.asList(테이블_1번.getId()));
 
         // then
         assertThrows(IllegalArgumentException.class, () -> {
@@ -80,7 +88,7 @@ public class TableGroupServiceTest {
 
         // then
         assertThrows(IllegalArgumentException.class, () -> {
-            tableGroupService.create(산악회);
+            tableGroupService.create(request);
         });
 
         verify(orderTableDao, times(1)).findAllByIdIn(any());
@@ -94,7 +102,7 @@ public class TableGroupServiceTest {
 
         // then
         assertThrows(IllegalArgumentException.class, () -> {
-            tableGroupService.create(산악회);
+            tableGroupService.create(request);
         });
 
         verify(orderTableDao, times(1)).findAllByIdIn(any());
@@ -110,7 +118,7 @@ public class TableGroupServiceTest {
             .willReturn(Arrays.asList(already, new OrderTable(2L, 10, true)));
         // then
         assertThrows(IllegalArgumentException.class, () -> {
-            tableGroupService.create(산악회);
+            tableGroupService.create(request);
         });
     }
 
@@ -122,7 +130,7 @@ public class TableGroupServiceTest {
             .willReturn(Arrays.asList(new OrderTable(1L, 10, false), new OrderTable(2L, 10, false)));
         // then
         assertThrows(IllegalArgumentException.class, () -> {
-            tableGroupService.create(산악회);
+            tableGroupService.create(request);
         });
 
         verify(orderTableDao, times(1)).findAllByIdIn(any());

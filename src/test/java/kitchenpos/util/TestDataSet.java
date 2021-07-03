@@ -1,6 +1,7 @@
 package kitchenpos.util;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import kitchenpos.menu.domain.Menu;
@@ -12,6 +13,7 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTables;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 public class TestDataSet {
@@ -26,7 +28,8 @@ public class TestDataSet {
     public static final OrderTable 테이블_2번 = new OrderTable(2L, 2, true);
     public static final OrderTable 테이블_3번_존재 = new OrderTable(3L, 2, false);
     public static final OrderTable 테이블_4번_존재 = new OrderTable(4L, 4, false);
-    public static final TableGroup 산악회 = new TableGroup(1L, Arrays.asList(테이블_1번, 테이블_2번));
+    public static final TableGroup 산악회 = new TableGroup(1L, LocalDateTime.now(),
+        new OrderTables(Arrays.asList(테이블_1번, 테이블_2번)));
 
     public static final Menu 원플원_후라이드 = new Menu(1L, "후라이드+후라이드", Price.of(BigDecimal.valueOf(19000)), 추천_메뉴_그륩.getId(),
         MenuProducts.of(Arrays.asList(후라이드_2개)));

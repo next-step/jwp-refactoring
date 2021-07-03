@@ -2,6 +2,7 @@ package kitchenpos.table.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import kitchenpos.order.domain.Order;
+import kitchenpos.tablegroup.domain.TableGroup;
 
 @Entity
 public class OrderTable {
@@ -29,10 +31,15 @@ public class OrderTable {
 
     public OrderTable() {}
 
-    public OrderTable(Long id, int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         this.id = id;
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
+    }
+
+    public OrderTable(Long id, int numberOfGuests, boolean empty) {
+        this(id, null, numberOfGuests, empty);
     }
 
     public Long getId() {
@@ -65,5 +72,14 @@ public class OrderTable {
 
     public void setEmpty(final boolean empty) {
         this.empty = empty;
+    }
+
+    public boolean hasTableGroup() {
+        return Objects.nonNull(tableGroupId);
+    }
+
+    public void chargedBy(TableGroup tableGroup) {
+        this.empty = true;
+        this.tableGroupId = tableGroup.getId();
     }
 }
