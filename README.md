@@ -78,3 +78,27 @@
 TODO
  - [x] kitchenpos 패키지의 코드를 보고 키친포스의 요구 사항을 README.md 에 작성
 
+-- 2단계
+- [ ] Menu JPA 적용
+- [ ] Order JPA 적용
+
+- [ ] Menu Service 리팩토링
+  - Menu 도메인 테스트 코드 추가
+    - [ ] Menu
+    - [ ] MenuGroup
+    - [ ] MenuProduct
+    - [ ] Product
+  
+- [ ] Order Service 리팩토링
+  - Order 도메인 테스트 코드 추가
+    - [ ] Order
+    - [ ] OrderLine
+    - [ ] OrderTable
+    - [ ] TableGroup
+
+- [ ] 이벤트 기반 상태 변경
+
+해볼 수 있는 기능들
+- JPA 적용
+- 이벤트 주도 개발
+- 쿼리 커멘드 분리
