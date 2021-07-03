@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -69,7 +70,7 @@ public class OrderServiceTest {
     @DisplayName("주문 항목이 없을 경우")
     @Test
     void 주문_항목이_없을_경우() {
-        Order order = new Order(1L, Arrays.asList());
+        Order order = new Order(1L, Collections.emptyList());
 
         assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
     }
@@ -114,4 +115,64 @@ public class OrderServiceTest {
 
         assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
     }
+
+    @DisplayName("주문테이블 리스트 가져오기")
+    @Test
+    void 주문테이블_리스트_가져오기() {
+
+        given(orderDao.findAll()).willReturn(Arrays.asList(
+                new Order(1L, 1L, OrderStatus.COOKING.name()),
+                new Order(2L, 2L, OrderStatus.COOKING.name())
+        ));
+
+        given(orderLineItemDao.findAllByOrderId(1L)).willReturn(
+                Arrays.asList(
+                        new OrderLineItem(1L, 1L, 1L, 1L),
+                        new OrderLineItem(2L, 1L, 2L, 1L)
+                )
+        );
+
+        given(orderLineItemDao.findAllByOrderId(2L)).willReturn(
+                Arrays.asList(
+                        new OrderLineItem(3L, 2L, 1L, 1L),
+                        new OrderLineItem(4L, 2L, 2L, 1L)
+                )
+        );
+
+        assertThat(orderService.list()).hasSize(2);
+    }
+
+    @DisplayName("주문상태 변경")
+    @Test
+    void 주문상태_변경() {
+
+        given(orderDao.findById(1L)).willReturn(Optional.of(new Order(1L, 1L, OrderStatus.COOKING.name())));
+        given(orderLineItemDao.findAllByOrderId(1L)).willReturn(Arrays.asList(
+                new OrderLineItem(1L, 1L, 1L, 1L),
+                new OrderLineItem(2L, 1L, 2L, 1L)
+        ));
+
+        Order order = orderService.changeOrderStatus(1L, new Order(null, null, OrderStatus.MEAL.name()));
+        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
+    }
+
+    @DisplayName("주문상태 변경시 이미 계산 완료된 주문")
+    @Test
+    void 주문상태_변경시_이미_계산_완료된_주문() {
+
+        given(orderDao.findById(1L)).willReturn(Optional.of(new Order(1L, 1L, OrderStatus.COMPLETION.name())));
+        assertThatThrownBy(() -> orderService.changeOrderStatus(1L, new Order(null, null, OrderStatus.MEAL.name())))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("주문상태 변경시 주문번호가 없는 경우")
+    @Test
+    void 주문상태_변경시_주문번호가_없는_경우() {
+        assertThatThrownBy(() -> orderService.changeOrderStatus(1L, new Order(null, null, OrderStatus.MEAL.name())))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+
+
+
 }
