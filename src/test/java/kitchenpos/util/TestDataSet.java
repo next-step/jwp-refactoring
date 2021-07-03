@@ -9,6 +9,7 @@ import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.TableGroup;
 
@@ -26,10 +27,10 @@ public class TestDataSet {
     public static final OrderTable 테이블_4번_존재 = new OrderTable(4L, 4, false);
     public static final TableGroup 산악회 = new TableGroup(1L, Arrays.asList(테이블_1번, 테이블_2번));
 
-    public static final Menu 원플원_후라이드 = new Menu(1L, "후라이드+후라이드", BigDecimal.valueOf(19000), 추천_메뉴_그륩.getId(),
+    public static final Menu 원플원_후라이드 = new Menu(1L, "후라이드+후라이드", Price.of(BigDecimal.valueOf(19000)), 추천_메뉴_그륩.getId(),
         Arrays.asList(후라이드_2개));
 
-    public static final Menu 원플원_양념 = new Menu(2L, "양념+양념", BigDecimal.valueOf(19000), 추천_메뉴_그륩.getId(),
+    public static final Menu 원플원_양념 = new Menu(2L, "양념+양념", Price.of(19000), 추천_메뉴_그륩.getId(),
         Arrays.asList(양념_2개));
 
     public static final Order 주문_1번 = new Order(1L, 테이블_3번_존재.getId(),

@@ -6,13 +6,13 @@ import java.util.List;
 public class Menu {
     private Long id;
     private String name;
-    private BigDecimal price;
+    private Price price;
     private Long menuGroupId;
     private List<MenuProduct> menuProducts;
 
     public Menu() {}
 
-    public Menu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    public Menu(Long id, String name, Price price, Long menuGroupId, List<MenuProduct> menuProducts) {
         this.id = id;
         this.menuGroupId = menuGroupId;
         this.name = name;
@@ -36,12 +36,12 @@ public class Menu {
         this.name = name;
     }
 
-    public BigDecimal getPrice() {
-        return price;
+    public void setPrice(BigDecimal price) {
+        this.price = Price.of(price);
     }
 
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
+    public BigDecimal getPrice() {
+        return price.getValue();
     }
 
     public Long getMenuGroupId() {
@@ -59,4 +59,5 @@ public class Menu {
     public void setMenuProducts(final List<MenuProduct> menuProducts) {
         this.menuProducts = menuProducts;
     }
+
 }

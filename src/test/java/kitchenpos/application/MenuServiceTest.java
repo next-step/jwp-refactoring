@@ -11,7 +11,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -27,6 +26,7 @@ import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.Price;
 
 @SpringBootTest
 public class MenuServiceTest {
@@ -75,23 +75,6 @@ public class MenuServiceTest {
     }
 
     @Test
-    @DisplayName("메뉴의 가격이 없거나 0보다 작을 경우 실패한다.")
-    void noMony() {
-        //when
-        Menu 음수 = new Menu(1L, "후라이드+후라이드", BigDecimal.valueOf(-1), 추천_메뉴_그륩.getId(),
-            Arrays.asList(후라이드_2개));
-
-        Menu 제로 = new Menu(1L, "후라이드+후라이드", BigDecimal.valueOf(-1), 추천_메뉴_그륩.getId(),
-            Arrays.asList(후라이드_2개));
-
-        // then
-        assertThrows(IllegalArgumentException.class, () -> {
-            menuService.create(음수);
-            menuService.create(제로);
-        });
-    }
-
-    @Test
     @DisplayName("존재하지 않는 메뉴 그룹에 등록할 경우 실패한다.")
     void already() {
         //given
@@ -110,7 +93,7 @@ public class MenuServiceTest {
     void sumOver() {
 
         //given
-        Menu 가격이_큰경우 = new Menu(1L, "후라이드+후라이드", BigDecimal.valueOf(100000), 추천_메뉴_그륩.getId(),
+        Menu 가격이_큰경우 = new Menu(1L, "후라이드+후라이드", Price.of(100000), 추천_메뉴_그륩.getId(),
             Arrays.asList(후라이드_2개));
         // then
         assertThrows(IllegalArgumentException.class, () -> {
