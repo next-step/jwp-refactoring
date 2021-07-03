@@ -3,16 +3,16 @@ package kitchenpos.util;
 import java.math.BigDecimal;
 import java.util.Arrays;
 
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Price;
-import kitchenpos.domain.Product;
-import kitchenpos.domain.TableGroup;
-import kitchenpos.domain.menu.Menu;
-import kitchenpos.domain.menu.MenuGroup;
-import kitchenpos.domain.menu.MenuProducts;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.menu.domain.Price;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.order.domain.Order;
+import kitchenpos.product.domain.OrderLineItem;
+import kitchenpos.product.domain.Product;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.tablegroup.domain.TableGroup;
 
 public class TestDataSet {
     public static final MenuGroup 추천_메뉴_그륩 = new MenuGroup(1L, "추천메뉴");
