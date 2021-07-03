@@ -2,7 +2,10 @@ package kitchenpos.ui;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kitchenpos.application.MenuGroupService;
+import kitchenpos.application.MenuService;
 import kitchenpos.application.ProductService;
+import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,69 +31,70 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@DisplayName("상품 관련 기능 테스트")
-@WebMvcTest(ProductRestController.class)
-class ProductRestControllerTest {
-    public static final String PRODUCT_URI = "/api/products";
+@DisplayName("메뉴 그룹 관련 기능 테스트")
+@WebMvcTest(MenuGroupRestController.class)
+class MenuGroupRestControllerTest {
+    public static final String MENU_GROUP_URI = "/api/menu-groups";
     private MockMvc mockMvc;
-    private Product 상품1;
-    private Product 상품2;
+    private MenuGroup menuGroup1;
+    private MenuGroup menuGroup2;
 
     @MockBean
-    private ProductService productService;
+    private MenuGroupService menuGroupService;
 
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private MenuGroupRestController menuGroupRestController;
+
     @BeforeEach
-    void setUp(@Autowired ProductRestController productRestController) {
-        // MockMvc
-        mockMvc = MockMvcBuilders.standaloneSetup(productRestController)
+    void setUp() {
+        mockMvc = MockMvcBuilders.standaloneSetup(menuGroupRestController)
                 .addFilter(new CharacterEncodingFilter(StandardCharsets.UTF_8.name(), true))
                 .alwaysDo(print())
                 .build();
 
-        상품1 = new Product();
-        상품1.setId(1L);
-        상품1.setName("반반콤보");
-        상품1.setPrice(new BigDecimal(18000));
+        menuGroup1 = new MenuGroup();
+        menuGroup1.setId(1L);
+        menuGroup1.setName("반반시리즈");
 
-        상품2 = new Product();
-        상품2.setId(2L);
-        상품2.setName("허니콤보");
-        상품2.setPrice(new BigDecimal(18000));
+        menuGroup2 = new MenuGroup();
+        menuGroup2.setId(2L);
+        menuGroup2.setName("허니시리즈");
     }
 
-    @DisplayName("상품을 등록한다.")
+    @DisplayName("메뉴 그룹 등록한다.")
     @Test
-    void createProduct() throws Exception {
-        given(productService.create(any())).willReturn(상품1);
+    void create() throws Exception {
+        given(menuGroupService.create(any())).willReturn(menuGroup1);
 
-        final ResultActions actions = mockMvc.perform(post(PRODUCT_URI)
+        final ResultActions actions = mockMvc.perform(post(MENU_GROUP_URI)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(toJson(상품1)));
+                .content(toJson(menuGroup1)));
 
         actions
                 .andExpect(status().isCreated())
-                .andExpect(header().string("location", "/api/products/1"))
-                .andExpect(content().string(containsString("반반콤보")));
+                .andExpect(header().string("location", "/api/menu-groups/1"))
+                .andExpect(content().string(containsString("반반시리즈")));
     }
 
-    @DisplayName("상품 목록을 조회한다.")
+    @DisplayName("메뉴 그룹 목록을 조회한다.")
     @Test
-    void searchProductList() throws Exception {
-        given(productService.list()).willReturn(Arrays.asList(상품1, 상품2));
+    void list() throws Exception {
+        given(menuGroupService.list()).willReturn(Arrays.asList(menuGroup1, menuGroup2));
 
-        final ResultActions actions = mockMvc.perform(get(PRODUCT_URI)
+        final ResultActions actions = mockMvc.perform(get(MENU_GROUP_URI)
                 .contentType(MediaType.APPLICATION_JSON));
 
         actions
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("반반콤보")))
-                .andExpect(content().string(containsString("허니콤보")));
+                .andExpect(content().string(containsString("반반시리즈")))
+                .andExpect(content().string(containsString("허니시리즈")));
+
     }
 
-    public String toJson(Product product) throws JsonProcessingException {
+    public String toJson(MenuGroup product) throws JsonProcessingException {
         return objectMapper.writeValueAsString(product);
     }
 }
