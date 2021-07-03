@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
+import kitchenpos.domain.menu.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,9 +45,8 @@ class ProductServiceTest {
     @Test
     void exception_when_price_is_under_zero() {
         BigDecimal UNDER_ZERO = BigDecimal.valueOf(-1L);
-        product.changePrice(UNDER_ZERO);
 
-        assertThatThrownBy(() -> productService.create(product))
+        assertThatThrownBy(() -> product.changePrice(UNDER_ZERO))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }
