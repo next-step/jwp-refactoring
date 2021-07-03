@@ -56,11 +56,11 @@ class OrderServiceTest {
 
         orderLineItem1 = new OrderLineItem();
 
-        orderLineItem1.setOrderId(ANY_ORDER_ID);
+        orderLineItem1.setOrder(order);
         orderLineItem1.setMenuId(1L);
 
         orderLineItem2 = new OrderLineItem();
-        orderLineItem2.setOrderId(ANY_ORDER_ID);
+        orderLineItem2.setOrder(order);
         orderLineItem2.setMenuId(2L);
 
         orderTable = new OrderTable();
@@ -102,8 +102,7 @@ class OrderServiceTest {
 
         orderTable.setEmpty(true);
         given(menuDao.countByIdIn(Lists.list(1L, 2L))).willReturn(2L);
-        order.setOrderTableId(ANY_ORDER_TABLE_ID);
-        given(orderTableDao.findById(ANY_ORDER_TABLE_ID)).willReturn(Optional.of(orderTable));
+        order.setOrderTable(orderTable);
 
         assertThatThrownBy(() -> orderService.create(order))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -119,14 +118,14 @@ class OrderServiceTest {
 
         given(menuDao.countByIdIn(Lists.list(1L, 2L))).willReturn(2L);
         orderTable.setEmpty(false);
-        given(orderTableDao.findById(ANY_ORDER_TABLE_ID)).willReturn(Optional.of(orderTable));
-        order.setOrderTableId(ANY_ORDER_TABLE_ID);
+
+        order.setOrderTable(orderTable);
 
         given(orderDao.save(order)).willReturn(order);
 
         Order order = orderService.create(this.order);
 
-        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
     }
 
     @Test
@@ -136,9 +135,9 @@ class OrderServiceTest {
         given(orderDao.save(order)).willReturn(order);
         given(orderLineItemDao.findAllByOrderId(ANY_ORDER_ID)).willReturn(new ArrayList<>());
 
-        order.setOrderStatus(OrderStatus.MEAL.name());
+        order.setOrderStatus(OrderStatus.MEAL);
         Order changedOrder = orderService.changeOrderStatus(ANY_ORDER_ID, this.order);
-        assertThat(changedOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
+        assertThat(changedOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
         verify(orderDao).save(order);
     }
 
@@ -147,7 +146,7 @@ class OrderServiceTest {
     void exception_changeOrderStatusTest() {
         given(orderDao.findById(ANY_ORDER_ID)).willReturn(Optional.of(order));
 
-        order.setOrderStatus(OrderStatus.COMPLETION.name());
+        order.setOrderStatus(OrderStatus.COMPLETION);
         assertThatThrownBy(() -> orderService.changeOrderStatus(ANY_ORDER_ID, order))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Invalid OrderStatus");

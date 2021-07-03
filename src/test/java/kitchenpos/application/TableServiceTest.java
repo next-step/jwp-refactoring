@@ -46,12 +46,12 @@ class TableServiceTest {
     @DisplayName("주문 테이블 등록시, 단체 지정(table group)은 빈 값으로 초기화되어진다.")
     void create() {
         OrderTable mock = new OrderTable();
-        mock.setTableGroupId(null);
+        mock.setTableGroup(null);
 
         given(orderTableDao.save(mock)).willReturn(mock);
 
         OrderTable savedOrderTable = tableService.create(mock);
-        assertThat(savedOrderTable.getTableGroupId()).isNull();
+        assertThat(savedOrderTable.getTableGroup()).isNull();
     }
 
     @Test
@@ -81,7 +81,7 @@ class TableServiceTest {
         given(orderTableDao.findById(1L))
                 .willReturn(Optional.of(existedOrderTable));
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(1L,
-                Lists.list(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
+                Lists.list(OrderStatus.COOKING, OrderStatus.MEAL)))
                 .willReturn(true);
 
         assertThatThrownBy(() -> tableService.changeEmpty(1L, orderTable))

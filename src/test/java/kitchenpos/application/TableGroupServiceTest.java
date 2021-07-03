@@ -3,7 +3,6 @@ package kitchenpos.application;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
@@ -14,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
@@ -102,15 +100,15 @@ class TableGroupServiceTest {
                 .willReturn(list);
 
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(Lists.list(1L, 2L),
-                Lists.list(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
+                Lists.list(OrderStatus.COOKING, OrderStatus.MEAL)))
                 .willReturn(false);
 
         tableGroupService.ungroup(1L);
 
-        assertThat(orderTable.getTableGroupId()).isNull();
+        assertThat(orderTable.getTableGroup()).isNull();
         verify(orderTableDao).save(orderTable);
 
-        assertThat(orderTable2.getTableGroupId()).isNull();
+        assertThat(orderTable2.getTableGroup()).isNull();
         verify(orderTableDao).save(orderTable2);
     }
 
@@ -121,7 +119,7 @@ class TableGroupServiceTest {
                 .willReturn(dummyOrderTableList);
 
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(Lists.list(1L, 2L),
-                Lists.list(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
+                Lists.list(OrderStatus.COOKING, OrderStatus.MEAL)))
                 .willReturn(true);
 
         assertThatThrownBy(() -> tableGroupService.ungroup(1L))
