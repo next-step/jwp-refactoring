@@ -25,8 +25,9 @@ import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Menu;
 import kitchenpos.domain.Price;
+import kitchenpos.domain.menu.Menu;
+import kitchenpos.domain.menu.MenuProducts;
 
 @SpringBootTest
 public class MenuServiceTest {
@@ -67,7 +68,7 @@ public class MenuServiceTest {
         assertThat(result.getName()).isEqualTo(원플원_후라이드.getName());
         assertThat(result.getPrice()).isEqualTo(원플원_후라이드.getPrice());
         assertThat(result.getMenuGroupId()).isEqualTo(원플원_후라이드.getMenuGroupId());
-        assertThat(result.getMenuProducts()).containsExactly(후라이드_2개);
+        assertThat(result.getMenuProducts().contain(후라이드_2개)).isEqualTo(true);
 
         verify(productDao, times(1)).findById(any());
         verify(menuDao, times(1)).save(result);
@@ -94,7 +95,7 @@ public class MenuServiceTest {
 
         //given
         Menu 가격이_큰경우 = new Menu(1L, "후라이드+후라이드", Price.of(100000), 추천_메뉴_그륩.getId(),
-            Arrays.asList(후라이드_2개));
+            MenuProducts.of(Arrays.asList(후라이드_2개)));
         // then
         assertThrows(IllegalArgumentException.class, () -> {
             menuService.create(가격이_큰경우);

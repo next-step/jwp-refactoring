@@ -26,7 +26,7 @@ public class Price {
         return new Price(value);
     }
 
-    public BigDecimal getValue() {
+    public BigDecimal toBigDecimal() {
         return value;
     }
 

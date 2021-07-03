@@ -22,7 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kitchenpos.application.MenuGroupService;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.menu.MenuGroup;
 
 @WebMvcTest(controllers = MenuGroupRestController.class)
 public class MenuGroupRestControllerTest {

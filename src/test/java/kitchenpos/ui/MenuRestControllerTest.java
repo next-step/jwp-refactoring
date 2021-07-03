@@ -24,7 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kitchenpos.application.MenuService;
-import kitchenpos.domain.Menu;
+import kitchenpos.domain.menu.Menu;
 
 @WebMvcTest(controllers = MenuRestController.class)
 @ExtendWith(MockitoExtension.class)

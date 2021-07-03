@@ -14,7 +14,7 @@ public class PriceTest {
     @DisplayName("Price 생성테스트")
     void create() {
         Price price = Price.of(BigDecimal.valueOf(100));
-        assertThat(price.getValue()).isEqualTo(BigDecimal.valueOf(100));
+        assertThat(price.toBigDecimal()).isEqualTo(BigDecimal.valueOf(100));
     }
 
     @Test
