@@ -90,7 +90,7 @@ public class OrderTable {
         return nonNull(tableGroup);
     }
 
-    void groupBy(TableGroup tableGroup) {
+    void toGroup(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
     }
 

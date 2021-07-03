@@ -11,8 +11,6 @@ import javax.persistence.Id;
 
 @Entity
 public class TableGroup {
-    private static final int MIN_TABLE_COUNT = 2;
-
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
@@ -24,17 +22,18 @@ public class TableGroup {
 
     protected TableGroup() {}
 
-    public TableGroup(OrderTables orderTables, LocalDateTime createdDate) {
-        validate(orderTables);
-        this.orderTables = orderTables;
-        this.orderTables.groupBy(this);
+    private TableGroup(OrderTables orderTables, LocalDateTime createdDate) {
         this.createdDate = createdDate;
+        this.orderTables = orderTables;
+        this.orderTables.toGroup(this);
     }
 
-    public TableGroup(List<OrderTable> orderTables, LocalDateTime createdDate) {
-        this.orderTables = requireValidOrderTables(orderTables);
-        this.orderTables.groupBy(this);
-        this.createdDate = createdDate;
+    public static TableGroup create(List<OrderTable> orderTables, LocalDateTime createdDate) {
+        return create(OrderTables.of(orderTables), createdDate);
+    }
+
+    public static TableGroup create(OrderTables orderTables, LocalDateTime createdDate) {
+        return new TableGroup(orderTables, createdDate);
     }
 
     public Long getId() {
@@ -47,36 +46,6 @@ public class TableGroup {
 
     public List<OrderTable> getOrderTables() {
         return orderTables.getOrderTables();
-    }
-
-    private void validate(OrderTables orderTables) {
-        validateMinTableCount(orderTables);
-        validateNotEmptyTables(orderTables);
-        validateNoGroupedTables(orderTables);
-    }
-
-    private OrderTables requireValidOrderTables(List<OrderTable> tables) {
-        OrderTables orderTables = OrderTables.of(tables);
-        validate(orderTables);
-        return orderTables;
-    }
-
-    private void validateNoGroupedTables(OrderTables orderTables) {
-        if (orderTables.containsGroupedOrderTables()) {
-            throw new IllegalArgumentException("비어있지 않거나, 이미 그룹화되어 있는 테이블은 그룹화 할 수 없습니다.");
-        }
-    }
-
-    private void validateNotEmptyTables(OrderTables orderTables) {
-        if (orderTables.containsNotEmptyTable()) {
-            throw new IllegalArgumentException("비어있지 않거나, 이미 그룹화되어 있는 테이블은 그룹화 할 수 없습니다.");
-        }
-    }
-
-    private void validateMinTableCount(OrderTables orderTables) {
-        if (orderTables.size() < MIN_TABLE_COUNT) {
-            throw new IllegalArgumentException("2개 미만의 주문테이블은 그룹화 할 수 없습니다.");
-        }
     }
 
     public List<Long> getOrderTableIds() {

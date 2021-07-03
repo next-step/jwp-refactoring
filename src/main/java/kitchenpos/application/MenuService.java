@@ -13,6 +13,7 @@ import kitchenpos.dto.MenuResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -36,8 +37,10 @@ public class MenuService {
         final MenuGroup menuGroup = findMenuGroup(menuRequest);
         final List<Product> products = findProducts(menuRequest);
         final List<MenuProduct> menuProducts = menuRequest.toMenuProducts(products);
+        final String menuName = menuRequest.getName();
+        final BigDecimal menuPrice = menuRequest.getPrice();
         final Menu persistMenu = menuRepository.save(
-            Menu.create(menuRequest.getName(), menuRequest.getPrice(), menuGroup, menuProducts));
+            Menu.create(menuName, menuPrice, menuGroup, menuProducts));
         return MenuResponse.of(persistMenu);
     }
 

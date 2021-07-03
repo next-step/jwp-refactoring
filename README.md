@@ -11,14 +11,12 @@
     - [x] 메뉴그룹 로직 테스트 코드 작성
   
 ## 서비스 리팩터링 TODO List
-- [ ] ui 패키지에서 domain 패키지의 직접적인 참조를 제거하기
-- [ ] MenuGroup, Menu, MenuProduct, Product 서비스 리팩터링
+- [x] ui 패키지에서 domain 패키지의 직접적인 참조를 제거하기
+- [x] MenuGroup, Menu, MenuProduct, Product 서비스 리팩터링
   - [x] 도메인으로 로직을 옮기면서 Service 에서 했던 테스트를 도메인 테스트로 옮기기
-- [ ] TableGroup, OrderTable, Orders, OrderLineItems 서비스 리팩터링
-  - [ ] @SpringBootTest 어노테이션을 이용해 통합테스트 경험
-      * 테스트를 위한 사전 데이터를 준비해야 한다는 단점이 있었음
-    __
-  - [ ] 도메인으로 로직을 옮기면서 Service 에서 했던 테스트를 도메인 테스트로 옮기기
+- [x] TableGroup, OrderTable, Orders, OrderLineItems 서비스 리팩터링
+  - [x] @SpringBootTest 어노테이션을 이용해 통합테스트 경험
+  - [x] 도메인으로 로직을 옮기면서 Service 에서 했던 테스트를 도메인 테스트로 옮기기
   
 ## 요구 사항
 

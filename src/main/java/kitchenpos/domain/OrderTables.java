@@ -10,7 +10,8 @@ import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
 @Embeddable
-public class OrderTables {
+class OrderTables {
+	private static final int MIN_TABLE_COUNT = 2;
 
 	@OneToMany(mappedBy = "tableGroup")
 	private List<OrderTable> orderTables;
@@ -21,32 +22,17 @@ public class OrderTables {
 		this.orderTables = orderTables;
 	}
 
-	public static OrderTables of(OrderTable... orderTables) {
-		return new OrderTables(asList(orderTables));
-	}
-
 	public static OrderTables of(List<OrderTable> orderTables) {
+		validateMinTableSize(orderTables);
+		validateNoEmptyTables(orderTables);
+		validateNoGroupedTables(orderTables);
 		return new OrderTables(orderTables);
 	}
 
-	void groupBy(TableGroup tableGroup) {
+	void toGroup(TableGroup tableGroup) {
 		for (OrderTable orderTable : orderTables) {
-			orderTable.groupBy(tableGroup);
+			orderTable.toGroup(tableGroup);
 		}
-	}
-
-	int size() {
-		return orderTables.size();
-	}
-
-	boolean containsNotEmptyTable() {
-		return orderTables.stream()
-			.anyMatch(OrderTable::isNotEmpty);
-	}
-
-	boolean containsGroupedOrderTables() {
-		return orderTables.stream()
-			.anyMatch(OrderTable::isGrouped);
 	}
 
 	List<OrderTable> getOrderTables() {
@@ -62,6 +48,26 @@ public class OrderTables {
 	void ungrouped() {
 		for (OrderTable orderTable : orderTables) {
 			orderTable.ungrouped();
+		}
+	}
+
+	private static void validateNoGroupedTables(List<OrderTable> orderTables) {
+		boolean containsGroupedOrderTables = orderTables.stream().anyMatch(OrderTable::isGrouped);
+		if (containsGroupedOrderTables) {
+			throw new IllegalArgumentException("비어있지 않거나, 이미 그룹화되어 있는 테이블은 그룹화 할 수 없습니다.");
+		}
+	}
+
+	private static void validateNoEmptyTables(List<OrderTable> orderTables) {
+		boolean containsNotEmptyTable = orderTables.stream().anyMatch(OrderTable::isNotEmpty);
+		if (containsNotEmptyTable) {
+			throw new IllegalArgumentException("비어있지 않거나, 이미 그룹화되어 있는 테이블은 그룹화 할 수 없습니다.");
+		}
+	}
+
+	private static void validateMinTableSize(List<OrderTable> orderTables) {
+		if (orderTables.size() < MIN_TABLE_COUNT) {
+			throw new IllegalArgumentException("2개 미만의 주문테이블은 그룹화 할 수 없습니다.");
 		}
 	}
 }

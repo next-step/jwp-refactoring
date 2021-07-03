@@ -16,9 +16,8 @@ class TableGroupTest {
 	@Test
 	void createTableGroupWithLessTwoOrderTables() {
 		OrderTable orderTable = new OrderTable(1, true);
-		OrderTables orderTables = OrderTables.of(orderTable);
 
-		assertThatThrownBy(() -> new TableGroup(orderTables, LocalDateTime.now()))
+		assertThatThrownBy(() -> TableGroup.create(asList(orderTable), LocalDateTime.now()))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("2개 미만의 주문테이블은 그룹화 할 수 없습니다.");
 	}
@@ -28,9 +27,8 @@ class TableGroupTest {
 	void createTableGroupWithNotEmptyOrderTableTest() {
 		OrderTable notEmptyTable = new OrderTable(1, false);
 		OrderTable orderTable = new OrderTable(1, true);
-		OrderTables orderTables = OrderTables.of(orderTable, notEmptyTable);
 
-		assertThatThrownBy(() -> new TableGroup(orderTables, LocalDateTime.now()))
+		assertThatThrownBy(() -> TableGroup.create(asList(notEmptyTable, orderTable), LocalDateTime.now()))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("비어있지 않거나, 이미 그룹화되어 있는 테이블은 그룹화 할 수 없습니다.");
 	}
@@ -40,12 +38,10 @@ class TableGroupTest {
 	void createTableGroupWithGroupedOrderTableTest() {
 		OrderTable groupedTable1 = new OrderTable(1, true);
 		OrderTable groupedTable2 = new OrderTable(1, true);
-		OrderTables orderTables = OrderTables.of(groupedTable1, groupedTable2);
-		TableGroup tableGroup = new TableGroup(orderTables, LocalDateTime.now());
+		TableGroup.create(asList(groupedTable1, groupedTable2), LocalDateTime.now());
 		OrderTable orderTable = new OrderTable(1, true);
-		OrderTables orderTables1 = OrderTables.of(groupedTable1, orderTable);
 
-		assertThatThrownBy(() -> new TableGroup(orderTables1, LocalDateTime.now()))
+		assertThatThrownBy(() -> TableGroup.create(asList(groupedTable1, orderTable), LocalDateTime.now()))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("비어있지 않거나, 이미 그룹화되어 있는 테이블은 그룹화 할 수 없습니다.");
 	}
@@ -55,10 +51,9 @@ class TableGroupTest {
 	void createTest() {
 		OrderTable orderTable1 = new OrderTable(1, true);
 		OrderTable orderTable2 = new OrderTable(1, true);
-		OrderTables orderTables = OrderTables.of(orderTable1, orderTable2);
 		LocalDateTime createdDate = LocalDateTime.now();
 
-		TableGroup tableGroup = new TableGroup(orderTables, createdDate);
+		TableGroup tableGroup = TableGroup.create(asList(orderTable1, orderTable2), createdDate);
 
 		assertThat(orderTable1.getTableGroup()).isEqualTo(tableGroup);
 		assertThat(orderTable2.getTableGroup()).isEqualTo(tableGroup);
@@ -73,7 +68,7 @@ class TableGroupTest {
 		when(orderTable1.getId()).thenReturn(1L);
 		OrderTable orderTable2 = mock(OrderTable.class);
 		when(orderTable2.getId()).thenReturn(2L);
-		TableGroup tableGroup = new TableGroup(OrderTables.of(orderTable1, orderTable2), LocalDateTime.now());
+		TableGroup tableGroup = TableGroup.create(asList(orderTable1, orderTable2), LocalDateTime.now());
 
 		List<Long> orderTableIds = tableGroup.getOrderTableIds();
 
@@ -85,7 +80,7 @@ class TableGroupTest {
 	void ungroupTest() {
 		OrderTable orderTable1 = new OrderTable(1, true);
 		OrderTable orderTable2 =  new OrderTable(1, true);
-		TableGroup tableGroup = new TableGroup(OrderTables.of(orderTable1, orderTable2), LocalDateTime.now());
+		TableGroup tableGroup = TableGroup.create(asList(orderTable1, orderTable2), LocalDateTime.now());
 
 		tableGroup.ungroup();
 
@@ -103,7 +98,7 @@ class TableGroupTest {
 
 		OrderTable notCompletedOrderTable = new OrderTable(1, true, asList(order));
 		OrderTable orderTable =  new OrderTable(1, true);
-		TableGroup tableGroup = new TableGroup(OrderTables.of(notCompletedOrderTable, orderTable), LocalDateTime.now());
+		TableGroup tableGroup = TableGroup.create(asList(notCompletedOrderTable, orderTable), LocalDateTime.now());
 
 		assertThatThrownBy(() -> tableGroup.ungroup())
 			.isInstanceOf(IllegalArgumentException.class)

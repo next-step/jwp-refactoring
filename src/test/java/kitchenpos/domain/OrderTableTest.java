@@ -24,7 +24,7 @@ class OrderTableTest {
 	void emptyGroupedTableTest() {
 		OrderTable orderTable1 = new OrderTable(1, true);
 		OrderTable orderTable2 = new OrderTable(2, true);
-		TableGroup tableGroup = new TableGroup(asList(orderTable1, orderTable2), LocalDateTime.now());
+		TableGroup.create(asList(orderTable1, orderTable2), LocalDateTime.now());
 
 		assertThatThrownBy(() -> orderTable1.emptyOn())
 			.isInstanceOf(IllegalArgumentException.class)
