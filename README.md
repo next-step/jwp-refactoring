@@ -76,7 +76,7 @@
   - [x] MenuGroupServiceTest 구현
   - [x] MenuServiceTest 구현
   - [x] OrderServiceTest 구현
-  - [ ] ProductServiceTest 구현
+  - [x] ProductServiceTest 구현
   - [ ] TableGroupServiceTest 구현
   - [ ] TableServiceTest 구현
 
