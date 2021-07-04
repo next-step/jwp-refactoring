@@ -1,13 +1,10 @@
 package kitchenpos.menu.ui;
 
-import static kitchenpos.util.TestDataSet.원플원_양념;
-import static kitchenpos.util.TestDataSet.원플원_후라이드;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static kitchenpos.util.TestDataSet.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.Arrays;
 
@@ -24,8 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.ui.MenuRestController;
+import kitchenpos.menu.dto.MenuResponse;
 
 @WebMvcTest(controllers = MenuRestController.class)
 @ExtendWith(MockitoExtension.class)
@@ -46,8 +42,8 @@ public class MenuRestControllerTest {
     @DisplayName("메뉴 이름, 메뉴의 가격, 메뉴 그룹, 메뉴에 속하는 상품들과 상품들의 수량을 입력받아 신규 메뉴를 만들 수 있다.")
     void create() throws Exception {
         // given
-        String content = objectMapper.writeValueAsString(원플원_후라이드);
-        given(menuService.create(any(Menu.class))).willReturn(원플원_후라이드);
+        String content = objectMapper.writeValueAsString(원플원_후라이드_리퀘스트);
+        given(menuService.create(any())).willReturn(MenuResponse.of(원플원_후라이드));
 
         // when
         mockMvc.perform(

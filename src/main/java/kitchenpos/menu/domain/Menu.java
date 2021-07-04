@@ -11,7 +11,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import org.springframework.util.CollectionUtils;
+
 import kitchenpos.common.domain.Price;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menugroup.domain.MenuGroup;
 
 @Entity
 public class Menu {
@@ -33,12 +37,17 @@ public class Menu {
 
     public Menu() {}
 
+    public Menu(String name, Price price, Long menuGroupId, MenuProducts menuProducts) {
+        this(null, name, price, menuGroupId, menuProducts);
+    }
+
     public Menu(Long id, String name, Price price, Long menuGroupId, MenuProducts menuProducts) {
         this.id = id;
         this.menuGroupId = menuGroupId;
         this.name = name;
         this.price = price;
         this.menuProducts = menuProducts;
+        menuProducts.assginMenu(this);
     }
 
     public Long getId() {
@@ -73,12 +82,27 @@ public class Menu {
         this.menuGroupId = menuGroupId;
     }
 
-    public MenuProducts getMenuProducts() {
-        return menuProducts;
+    public List<MenuProduct> getMenuProducts() {
+        return menuProducts.toCollection();
     }
 
     public void setMenuProducts(final List<MenuProduct> menuProducts) {
         this.menuProducts = MenuProducts.of(menuProducts);
+    }
+
+    public static Menu create(MenuRequest menuRequest, MenuGroup menuGroup, MenuProducts menuProducts) {
+        validationCreate(menuRequest, menuProducts);
+        return new Menu(menuRequest.getName(), Price.of(menuRequest.getPrice()), menuGroup.getId(), menuProducts);
+    }
+
+    private static void validationCreate(MenuRequest menuRequest, MenuProducts menuProducts) {
+        if (CollectionUtils.isEmpty(menuProducts.toCollection())) {
+            throw new IllegalArgumentException();
+        }
+
+        if (menuProducts.isSumUnder(menuRequest.getPrice())) {
+            throw new IllegalArgumentException();
+        }
     }
 
 }

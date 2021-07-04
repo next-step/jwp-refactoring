@@ -1,13 +1,10 @@
 package kitchenpos.menugroup.ui;
 
-import static kitchenpos.util.TestDataSet.계절_메뉴_그룹;
-import static kitchenpos.util.TestDataSet.추천_메뉴_그륩;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static kitchenpos.util.TestDataSet.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.Arrays;
 
@@ -22,8 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kitchenpos.menugroup.application.MenuGroupService;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.ui.MenuGroupRestController;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 
 @WebMvcTest(controllers = MenuGroupRestController.class)
 public class MenuGroupRestControllerTest {
@@ -44,8 +40,8 @@ public class MenuGroupRestControllerTest {
     void create() throws Exception {
         // given
         String content = objectMapper.writeValueAsString(추천_메뉴_그륩);
-        given(menuGroupService.create(any(MenuGroup.class)))
-            .willReturn(추천_메뉴_그륩);
+        given(menuGroupService.create(any()))
+            .willReturn(MenuGroupResponse.of(추천_메뉴_그륩));
 
         // when
         mockMvc.perform(
@@ -61,7 +57,7 @@ public class MenuGroupRestControllerTest {
     void list() throws Exception {
         // given
         given(menuGroupService.list())
-            .willReturn(Arrays.asList(추천_메뉴_그륩, 계절_메뉴_그룹));
+            .willReturn(Arrays.asList(MenuGroupResponse.of(추천_메뉴_그륩), MenuGroupResponse.of(계절_메뉴_그룹)));
 
         // when
         mockMvc.perform(get(BASE_URL))
