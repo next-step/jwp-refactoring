@@ -2,10 +2,16 @@ package kitchenpos.product.domain;
 
 import java.math.BigDecimal;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import kitchenpos.common.domain.Price;
+import kitchenpos.product.dto.ProductRequest;
 
 @Entity
 public class Product {
@@ -16,14 +22,20 @@ public class Product {
 
     private String name;
 
-    private BigDecimal price;
+    @Embedded
+    @AttributeOverride(name = "value", column = @Column(name = "price"))
+    private Price price;
 
     public Product() {}
+
+    public Product(String name, BigDecimal price) {
+        this(null, name, price);
+    }
 
     public Product(Long id, String name, BigDecimal price) {
         this.id = id;
         this.name = name;
-        this.price = price;
+        this.price = Price.of(price);
     }
 
     public Long getId() {
@@ -43,10 +55,14 @@ public class Product {
     }
 
     public BigDecimal getPrice() {
-        return price;
+        return price.toBigDecimal();
     }
 
     public void setPrice(final BigDecimal price) {
-        this.price = price;
+        this.price = Price.of(price);
+    }
+
+    public static Product create(ProductRequest product) {
+        return new Product(product.getName(), product.getPrice());
     }
 }

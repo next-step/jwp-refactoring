@@ -1,13 +1,10 @@
 package kitchenpos.product.ui;
 
-import static kitchenpos.util.TestDataSet.강정치킨;
-import static kitchenpos.util.TestDataSet.양념치킨;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static kitchenpos.util.TestDataSet.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.Arrays;
 
@@ -24,8 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kitchenpos.product.application.ProductService;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.ui.ProductRestController;
+import kitchenpos.product.dto.ProductResponse;
 
 @WebMvcTest(controllers = ProductRestController.class)
 @ExtendWith(MockitoExtension.class)
@@ -47,7 +43,7 @@ public class ProductRestControllerTest {
     void create() throws Exception {
         // given
         String content = objectMapper.writeValueAsString(강정치킨);
-        given(productService.create(any(Product.class))).willReturn(강정치킨);
+        given(productService.create(any())).willReturn(ProductResponse.of(강정치킨));
 
         // when
         mockMvc.perform(
@@ -63,7 +59,7 @@ public class ProductRestControllerTest {
     void list() throws Exception {
         // given
         given(productService.list())
-            .willReturn(Arrays.asList(강정치킨, 양념치킨));
+            .willReturn(Arrays.asList(ProductResponse.of(강정치킨), ProductResponse.of(양념치킨)));
 
         // when
         mockMvc.perform(get(BASE_URL))

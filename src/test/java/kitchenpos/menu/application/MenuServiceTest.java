@@ -21,11 +21,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.common.domain.Price;
 import kitchenpos.menu.dao.MenuDao;
 import kitchenpos.menu.dao.MenuProductDao;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.menu.domain.Price;
 import kitchenpos.menugroup.dao.MenuGroupDao;
 import kitchenpos.product.dao.ProductDao;
 
