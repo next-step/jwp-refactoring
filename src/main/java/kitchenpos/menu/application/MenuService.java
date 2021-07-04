@@ -3,9 +3,8 @@ package kitchenpos.menu.application;
 import kitchenpos.common.domian.Price;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menuproduct.domain.MenuProduct;
-import kitchenpos.error.ErrorInfo;
-import kitchenpos.error.CustomException;
+import kitchenpos.common.error.ErrorInfo;
+import kitchenpos.common.error.CustomException;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.repository.MenuDao;
 import kitchenpos.menugroup.domain.MenuGroup;
@@ -18,7 +17,6 @@ import kitchenpos.menu.domain.Menu;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
