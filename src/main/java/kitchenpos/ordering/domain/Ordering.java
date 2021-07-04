@@ -1,7 +1,7 @@
 package kitchenpos.ordering.domain;
 
 import kitchenpos.BaseEntity;
-import kitchenpos.tablegroup.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
