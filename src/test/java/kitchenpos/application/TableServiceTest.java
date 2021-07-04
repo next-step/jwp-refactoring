@@ -4,6 +4,7 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.order.OrderTable;
+import kitchenpos.dto.order.OrderTableRequest;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -44,9 +45,11 @@ class TableServiceTest {
     @Test
     @DisplayName("주문 테이블 등록시, 단체 지정(table group)은 빈 값으로 초기화되어진다.")
     void create() {
+        OrderTableRequest orderTableRequest = new OrderTableRequest(10, false);
+
         given(orderTableDao.save(orderTable)).willReturn(orderTable);
 
-        OrderTable savedOrderTable = tableService.create(orderTable);
+        OrderTable savedOrderTable = tableService.create(orderTableRequest);
         assertThat(savedOrderTable.getTableGroup()).isNull();
     }
 
@@ -90,7 +93,7 @@ class TableServiceTest {
         given(orderTableDao.save(orderTable))
                 .willReturn(orderTable);
 
-        OrderTable savedOrderTable = tableService.changeNumberOfGuests(1L, orderTable);
+        OrderTable savedOrderTable = tableService.changeNumberOfGuests(1L, 10);
 
         assertThat(savedOrderTable.getNumberOfGuests()).isEqualTo(10);
     }
@@ -104,7 +107,7 @@ class TableServiceTest {
         given(orderTableDao.findById(1L))
                 .willReturn(Optional.of(orderTable));
 
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, orderTable))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, 10))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("emptyTable");
     }

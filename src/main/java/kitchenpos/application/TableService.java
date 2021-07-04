@@ -4,6 +4,7 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.order.OrderTable;
+import kitchenpos.dto.order.OrderTableRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +23,8 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTable create(final OrderTable orderTable) {
+    public OrderTable create(final OrderTableRequest orderTableRequest) {
+        OrderTable orderTable = orderTableRequest.toEntity();
         return orderTableDao.save(orderTable);
     }
 
@@ -50,8 +52,7 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTable orderTable) {
-        final int numberOfGuests = orderTable.getNumberOfGuests();
+    public OrderTable changeNumberOfGuests(final Long orderTableId, final Integer numberOfGuests) {
 
         if (numberOfGuests < 0) {
             throw new IllegalArgumentException("numberOfGuests is under zero");

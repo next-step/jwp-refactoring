@@ -6,7 +6,7 @@ import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.order.OrderTable;
 import kitchenpos.domain.order.TableGroup;
-import kitchenpos.dto.order.OrderTableRequest;
+import kitchenpos.dto.order.OrderTableId;
 import kitchenpos.dto.order.TableGroupRequest;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -73,7 +73,7 @@ class TableGroupServiceTest {
     @Test
     @DisplayName("단체 지정 시점에, 주문 테이블이 단체 지정시 주문받은 주문 테이블과 숫자가 맞지 않으면 생성될 수 없다.")
     void exception_orderTable() {
-        tableGroupRequest = new TableGroupRequest(Lists.list(new OrderTableRequest(1L), new OrderTableRequest(2L)));
+        tableGroupRequest = new TableGroupRequest(Lists.list(new OrderTableId(1L), new OrderTableId(2L)));
         given(orderTableDao.findById(FIRST_ORDER_TABLE_ID)).willReturn(Optional.of(orderTable1));
         given(orderTableDao.findById(SECOND_ORDER_TABLE_ID)).willReturn(Optional.of(orderTable2));
 
@@ -85,7 +85,7 @@ class TableGroupServiceTest {
     @Test
     @DisplayName("단체 지정 시점에, 시점에 주문 테이블이 빈 테이블이 아니라면 단체 지정을 할 수 없다.")
     void exception2_orderTable() {
-        tableGroupRequest = new TableGroupRequest(Lists.list(new OrderTableRequest(1L), new OrderTableRequest(2L)));
+        tableGroupRequest = new TableGroupRequest(Lists.list(new OrderTableId(1L), new OrderTableId(2L)));
         tableGroup = TableGroup.of(Lists.list(orderTable1, orderTable2));
         given(orderTableDao.findAllByIdIn(Lists.list(FIRST_ORDER_TABLE_ID, SECOND_ORDER_TABLE_ID)))
                 .willReturn(Lists.list(orderTable1, orderTable2));

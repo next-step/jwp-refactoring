@@ -2,6 +2,8 @@ package kitchenpos.ui;
 
 import kitchenpos.application.TableService;
 import kitchenpos.domain.order.OrderTable;
+import kitchenpos.dto.order.OrderTableRequest;
+import kitchenpos.dto.order.OrderTableResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,19 +19,17 @@ public class TableRestController {
     }
 
     @PostMapping("/api/tables")
-    public ResponseEntity<OrderTable> create(@RequestBody final OrderTable orderTable) {
-        final OrderTable created = tableService.create(orderTable);
+    public ResponseEntity<OrderTableResponse> create(@RequestBody final OrderTableRequest orderTableRequest) {
+        final OrderTable created = tableService.create(orderTableRequest);
         final URI uri = URI.create("/api/tables/" + created.getId());
         return ResponseEntity.created(uri)
-                .body(created)
-                ;
+                .body(OrderTableResponse.of(created));
     }
 
     @GetMapping("/api/tables")
     public ResponseEntity<List<OrderTable>> list() {
         return ResponseEntity.ok()
-                .body(tableService.list())
-                ;
+                .body(tableService.list());
     }
 
     @PutMapping("/api/tables/{orderTableId}/empty")
@@ -37,17 +37,15 @@ public class TableRestController {
             @PathVariable final Long orderTableId
     ) {
         return ResponseEntity.ok()
-                .body(tableService.changeEmpty(orderTableId))
-                ;
+                .body(tableService.changeEmpty(orderTableId));
     }
 
     @PutMapping("/api/tables/{orderTableId}/number-of-guests")
     public ResponseEntity<OrderTable> changeNumberOfGuests(
             @PathVariable final Long orderTableId,
-            @RequestBody final OrderTable orderTable
+            @RequestBody final Integer orderTable
     ) {
         return ResponseEntity.ok()
-                .body(tableService.changeNumberOfGuests(orderTableId, orderTable))
-                ;
+                .body(tableService.changeNumberOfGuests(orderTableId, orderTable));
     }
 }

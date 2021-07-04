@@ -5,13 +5,13 @@ import java.util.Objects;
 
 public class TableGroupRequest {
 
-    private final List<OrderTableRequest> orderTables;
+    private final List<OrderTableId> orderTables;
 
-    public TableGroupRequest(List<OrderTableRequest> orderTables) {
+    public TableGroupRequest(List<OrderTableId> orderTables) {
         this.orderTables = orderTables;
     }
 
-    public List<OrderTableRequest> getOrderTableRequests() {
+    public List<OrderTableId> getOrderTableRequests() {
         return orderTables;
     }
 

@@ -1,17 +1,25 @@
 package kitchenpos.dto.order;
 
+import kitchenpos.domain.order.OrderTable;
+
 import java.util.Objects;
 
 public class OrderTableRequest {
 
-    private final Long id;
+    private final int numberOfGuests;
+    private final boolean empty;
 
-    public OrderTableRequest(Long id) {
-        this.id = id;
+    public OrderTableRequest(int numberOfGuests, boolean empty) {
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
     }
 
-    public Long getId() {
-        return id;
+    public int getNumberOfGuests() {
+        return numberOfGuests;
+    }
+
+    public boolean isEmpty() {
+        return empty;
     }
 
     @Override
@@ -19,18 +27,23 @@ public class OrderTableRequest {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OrderTableRequest that = (OrderTableRequest) o;
-        return Objects.equals(id, that.id);
+        return numberOfGuests == that.numberOfGuests && empty == that.empty;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(numberOfGuests, empty);
     }
 
     @Override
     public String toString() {
-        return "OrderTableRequest{" +
-                "id=" + id +
+        return "OrderTableRequest2{" +
+                "numberOfGuests=" + numberOfGuests +
+                ", empty=" + empty +
                 '}';
+    }
+
+    public OrderTable toEntity() {
+        return OrderTable.of(numberOfGuests, empty);
     }
 }

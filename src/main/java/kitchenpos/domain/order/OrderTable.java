@@ -1,6 +1,7 @@
 package kitchenpos.domain.order;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class OrderTable {
@@ -61,5 +62,28 @@ public class OrderTable {
 
     public void changeTableGroup(TableGroup tableGroup){
         this.tableGroup = tableGroup;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderTable that = (OrderTable) o;
+        return numberOfGuests == that.numberOfGuests && empty == that.empty && Objects.equals(id, that.id) && Objects.equals(tableGroup, that.tableGroup);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, tableGroup, numberOfGuests, empty);
+    }
+
+    @Override
+    public String toString() {
+        return "OrderTable{" +
+                "id=" + id +
+                ", tableGroup=" + tableGroup +
+                ", numberOfGuests=" + numberOfGuests +
+                ", empty=" + empty +
+                '}';
     }
 }
