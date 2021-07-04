@@ -129,7 +129,7 @@ class OrderServiceTest {
         assertThat(changedOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
     }
 
-    @DisplayName("주문의 상태가 올바르지 않으면 변경할 수 없다 : 주문의 상태가 '완료' 이면 변경할 수 없다.")
+    @DisplayName("주문의 상태가 올바르지 않으면 변경할 수 없다 : 주문의 상태가 ('요리중', '식사중') 이어야 한다.")
     @Test
     void changeOrderStatusTest_orderStatusCompletion() {
         // given
