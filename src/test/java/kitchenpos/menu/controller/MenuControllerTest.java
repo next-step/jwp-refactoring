@@ -3,6 +3,7 @@ package kitchenpos.menu.controller;
 import kitchenpos.common.ControllerTest;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -23,15 +24,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class MenuControllerTest extends ControllerTest {
 
+    private List<MenuProduct> menuProducts;
+
+    @BeforeEach
+    public void setup() {
+        menuProducts = new ArrayList<>();
+        menuProducts.add(new MenuProduct(1L, 1L, 1L));
+    }
+
     @Test
     @DisplayName("메뉴를 생성 한다")
     public void createMenu() throws Exception {
+        // given
         String name = "후라이드치킨";
         BigDecimal price = new BigDecimal(16000);
-        List<MenuProduct> menuProducts = new ArrayList<>();
-        menuProducts.add(new MenuProduct(1L, 1L, 1L));
         Menu menu = new Menu(name, price, 1L, menuProducts);
 
+        // when
+        // then
         메뉴_생성_요청(menu)
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").exists())
@@ -44,18 +54,21 @@ public class MenuControllerTest extends ControllerTest {
     @Test
     @DisplayName("메뉴 생성 실패 - 가격이 음수")
     public void createMenuFailByPriceMinus() {
+        // given
         String name = "불고기피자";
         BigDecimal price = new BigDecimal(-10000);
-        List<MenuProduct> menuProducts = new ArrayList<>();
-        menuProducts.add(new MenuProduct(1L, 1L, 1L));
         Menu menu = new Menu(name, price, 1L, menuProducts);
 
+        // when
+        // then
         assertThrows(NestedServletException.class, () -> 메뉴_생성_요청(menu));
     }
 
     @Test
     @DisplayName("메뉴 리스트를 가져온다")
     public void selectMenuList() throws Exception {
+        // when
+        // then
         메뉴_리스트_요청()
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(6)))

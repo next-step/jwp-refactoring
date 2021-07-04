@@ -3,12 +3,11 @@ package kitchenpos.menu.service;
 import kitchenpos.application.MenuService;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.web.util.NestedServletException;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -23,14 +22,21 @@ public class MenuServiceTest {
     @Autowired
     private MenuService menuService;
 
+
+    private List<MenuProduct> menuProducts;
+
+    @BeforeEach
+    public void setup() {
+        menuProducts = new ArrayList<>();
+        menuProducts.add(new MenuProduct(1L, 1L, 1L));
+    }
+
     @Test
     @DisplayName("메뉴를 생성 한다")
     public void createMenu() {
         //given
         String name = "후라이드치킨";
         BigDecimal price = new BigDecimal(16000);
-        List<MenuProduct> menuProducts = new ArrayList<>();
-        menuProducts.add(new MenuProduct(1L, 1L, 1L));
         Menu menu = new Menu(name, price, 1L, menuProducts);
 
         //when
@@ -49,8 +55,6 @@ public class MenuServiceTest {
         //given
         String name = "불고기피자";
         BigDecimal price = new BigDecimal(-10000);
-        List<MenuProduct> menuProducts = new ArrayList<>();
-        menuProducts.add(new MenuProduct(1L, 1L, 1L));
         Menu menu = new Menu(name, price, 1L, menuProducts);
 
         //when
