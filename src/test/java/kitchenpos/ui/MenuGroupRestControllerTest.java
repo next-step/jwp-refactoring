@@ -1,8 +1,8 @@
 package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.application.ProductService;
-import kitchenpos.domain.Product;
+import kitchenpos.application.MenuGroupService;
+import kitchenpos.domain.MenuGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +15,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
@@ -27,64 +26,64 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(controllers = {ProductRestController.class})
-class ProductRestControllerTest {
-    private static final String PRODUCT_API_URI = "/api/products";
+@WebMvcTest(controllers = MenuGroupRestController.class)
+class MenuGroupRestControllerTest {
+    private static final String MENU_GROUP_API_URI = "/api/menu-groups";
 
     @Autowired
-    private ProductRestController productRestController;
+    private MenuGroupRestController menuGroupRestController;
 
     @Autowired
     private ObjectMapper objectMapper;
 
     @MockBean
-    private ProductService productService;
+    private MenuGroupService menuGroupService;
 
     private MockMvc mockMvc;
-    private Product 강정치킨;
-    private Product 후라이드;
+    private MenuGroup 추천메뉴;
+    private MenuGroup 인기메뉴;
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(productRestController)
+        mockMvc = MockMvcBuilders.standaloneSetup(menuGroupRestController)
                 .addFilter(new CharacterEncodingFilter(StandardCharsets.UTF_8.name(), true))
                 .alwaysDo(print())
                 .build();
 
-        강정치킨 = new Product(1L, "강정치킨", BigDecimal.valueOf(17000));
-        후라이드 = new Product(2L, "후라이드", BigDecimal.valueOf(16000));
+        추천메뉴 = new MenuGroup(1L, "추천메뉴");
+        인기메뉴 = new MenuGroup(2L, "인기메뉴");
     }
 
-    @DisplayName("상품을 등록할 수 있다.")
+    @DisplayName("메뉴 그룹을 등록할 수 있다.")
     @Test
     void createTest() throws Exception {
         // given
-        given(productService.create(any())).willReturn(강정치킨);
+        given(menuGroupService.create(any())).willReturn(추천메뉴);
 
         // when
-        ResultActions actions = mockMvc.perform(post(PRODUCT_API_URI)
+        ResultActions actions = mockMvc.perform(post(MENU_GROUP_API_URI)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(강정치킨)));
+                .content(objectMapper.writeValueAsString(추천메뉴)));
 
         // then
         actions.andExpect(status().isCreated())
-                .andExpect(header().string("location", PRODUCT_API_URI + "/1"))
-                .andExpect(content().string(containsString("강정치킨")));
+                .andExpect(header().string("location", MENU_GROUP_API_URI + "/1"))
+                .andExpect(content().string(containsString("추천메뉴")));
     }
 
-    @DisplayName("상품의 목록을 조회할 수 있다.")
+    @DisplayName("메뉴 그룹의 목록을 조회할 수 있다.")
     @Test
     void listTest() throws Exception {
         // given
-        given(productService.list()).willReturn(Arrays.asList(강정치킨, 후라이드));
+        given(menuGroupService.list()).willReturn(Arrays.asList(추천메뉴, 인기메뉴));
 
         // when
-        ResultActions actions = mockMvc.perform(get(PRODUCT_API_URI)
+        ResultActions actions = mockMvc.perform(get(MENU_GROUP_API_URI)
                 .contentType(MediaType.APPLICATION_JSON));
 
         // then
         actions.andExpect(status().isOk())
-                .andExpect(content().string(containsString("강정치킨")))
-                .andExpect(content().string(containsString("후라이드")));
+                .andExpect(content().string(containsString("추천메뉴")))
+                .andExpect(content().string(containsString("인기메뉴")));
     }
 }
