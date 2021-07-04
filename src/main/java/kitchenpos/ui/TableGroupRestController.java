@@ -16,7 +16,7 @@ public class TableGroupRestController {
         this.tableGroupService = tableGroupService;
     }
 
-    @ApiOperation("테이블 그룹 생성")
+    @ApiOperation("테이블 그룹(단체) 생성")
     @PostMapping("/api/table-groups")
     public ResponseEntity<TableGroup> create(@RequestBody final TableGroup tableGroup) {
         final TableGroup created = tableGroupService.create(tableGroup);
@@ -24,7 +24,7 @@ public class TableGroupRestController {
         return ResponseEntity.created(uri).body(created);
     }
 
-    @ApiOperation("테이블 그룹 삭제")
+    @ApiOperation("테이블 그룹(단체) 삭제")
     @DeleteMapping("/api/table-groups/{tableGroupId}")
     public ResponseEntity<Void> ungroup(@PathVariable final Long tableGroupId) {
         tableGroupService.ungroup(tableGroupId);

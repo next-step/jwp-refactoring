@@ -20,7 +20,7 @@ public class ProductRestController {
         this.productService = productService;
     }
 
-    @ApiOperation("제품 생성")
+    @ApiOperation("상품 생성")
     @PostMapping("/api/products")
     public ResponseEntity<Product> create(@RequestBody final Product product) {
         final Product created = productService.create(product);
@@ -28,7 +28,7 @@ public class ProductRestController {
         return ResponseEntity.created(uri).body(created);
     }
 
-    @ApiOperation("모든 제품 조회")
+    @ApiOperation("모든 상품 조회")
     @GetMapping("/api/products")
     public ResponseEntity<List<Product>> list() {
         return ResponseEntity.ok().body(productService.list());
