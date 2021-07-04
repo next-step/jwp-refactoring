@@ -85,4 +85,8 @@ public class TableGroup {
         return Collections.unmodifiableList(orderTables.getOrderTables());
     }
 
+    public void ungroup() {
+        orderTables.ungroup();
+    }
+
 }

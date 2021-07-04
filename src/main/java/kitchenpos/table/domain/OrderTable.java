@@ -31,6 +31,14 @@ public class OrderTable {
 
     public OrderTable() {}
 
+    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty, List<Order> orders) {
+        this.id = id;
+        this.tableGroupId = tableGroupId;
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+        this.orders = orders;
+    }
+
     public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         this.id = id;
         this.tableGroupId = tableGroupId;
@@ -81,5 +89,21 @@ public class OrderTable {
     public void chargedBy(TableGroup tableGroup) {
         this.empty = true;
         this.tableGroupId = tableGroup.getId();
+    }
+
+    public boolean isCooking() {
+        return false;
+    }
+
+    public boolean isCompletedOrders() {
+        return orders.stream().allMatch(Order::isFinished);
+    }
+
+    public boolean isAvaliableTable() {
+        return !isEmpty() || hasTableGroup();
+    }
+
+    public void ungroup() {
+        tableGroupId = null;
     }
 }

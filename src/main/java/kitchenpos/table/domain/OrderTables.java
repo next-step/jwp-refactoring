@@ -23,14 +23,28 @@ public class OrderTables {
     }
 
     public boolean avaliableTable() {
-        return !orderTables.stream()
-            .anyMatch(table -> !table.isEmpty() || table.hasTableGroup());
+        return !orderTables.stream().anyMatch(OrderTable::isAvaliableTable);
     }
 
     public void chargedBy(TableGroup tableGroup) {
         for (OrderTable orderTable : orderTables) {
             orderTable.chargedBy(tableGroup);
         }
+    }
+
+    public void ungroup() {
+        validation();
+        orderTables.forEach(OrderTable::ungroup);
+    }
+
+    private void validation() {
+        if (!isCompletedOrders()) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private boolean isCompletedOrders() {
+        return orderTables.stream().allMatch(OrderTable::isCompletedOrders);
     }
 
 }

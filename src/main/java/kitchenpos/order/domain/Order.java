@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import kitchenpos.product.constant.OrderStatus;
+
 @Entity
 @Table(name = "orders")
 public class Order {
@@ -30,10 +32,15 @@ public class Order {
 
     public Order() {}
 
-    public Order(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
+    public Order(Long id, String orderStatus, Long orderTableId, List<OrderLineItem> orderLineItems) {
         this.id = id;
+        this.orderStatus = orderStatus;
         this.orderTableId = orderTableId;
         this.orderLineItems = orderLineItems;
+    }
+
+    public Order(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
+        this(id, null, orderTableId, orderLineItems);
     }
 
     public Long getId() {
@@ -74,5 +81,9 @@ public class Order {
 
     public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
         this.orderLineItems = orderLineItems;
+    }
+
+    public boolean isFinished() {
+        return OrderStatus.COMPLETION.name().equals(orderStatus);
     }
 }
