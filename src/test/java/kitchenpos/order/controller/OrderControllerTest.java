@@ -36,7 +36,8 @@ public class OrderControllerTest extends ControllerTest {
     @Test
     @DisplayName("주문을 생성 한다")
     public void createOrder() throws Exception {
-
+        // when
+        // then
         주문_생성_요청(order)
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").exists())
@@ -50,15 +51,22 @@ public class OrderControllerTest extends ControllerTest {
     @Test
     @DisplayName("주문을 생성 실패 - orderLineItems 가 없을 경우")
     public void createOrderFailByOrderLineItemsIsNull() {
+        // given
         Order order = new Order(1L, OrderStatus.COOKING.name(), LocalDateTime.now(), null);
+
+        // when
+        // then
         assertThrows(NestedServletException.class, () -> 주문_생성_요청(order));
     }
 
     @Test
     @DisplayName("주문 리스트를 가져온다")
     public void selectOrderList() throws Exception {
+        // given
         주문_생성_요청(order);
 
+        // when
+        // then
         주문_리스트_요청()
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.[0].orderTableId").isNumber())
@@ -71,9 +79,12 @@ public class OrderControllerTest extends ControllerTest {
     @Test
     @DisplayName("주문 상태를 변경한다")
     public void modifyOrder() throws Exception {
+        // given
         주문_생성_요청(order);
         order.setOrderStatus(OrderStatus.MEAL.name());
 
+        // when
+        // then
         주문_상태_변경_요청(order)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("orderTableId").isNumber())
