@@ -57,6 +57,9 @@ public class OrderTable {
     }
 
     public void changeNumberOfGuest(int numberOfGuests) {
+        if (numberOfGuests < 0) {
+            throw new IllegalArgumentException("numberOfGuests is under zero");
+        }
         this.numberOfGuests = numberOfGuests;
     }
 

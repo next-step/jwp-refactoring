@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.exception.InvalidEntityException;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import kitchenpos.domain.order.OrderStatus;
@@ -35,7 +36,7 @@ public class TableService {
     @Transactional
     public OrderTable changeEmpty(final Long orderTableId) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new InvalidEntityException("Not Found OrderTable " + orderTableId));
 
         if (Objects.nonNull(savedOrderTable.getTableGroup())) {
             throw new IllegalArgumentException();
@@ -54,12 +55,8 @@ public class TableService {
     @Transactional
     public OrderTable changeNumberOfGuests(final Long orderTableId, final Integer numberOfGuests) {
 
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException("numberOfGuests is under zero");
-        }
-
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new InvalidEntityException("Not found OrderTableId " + orderTableId));
 
         if (savedOrderTable.isEmpty()) {
             throw new IllegalArgumentException("emptyTable");

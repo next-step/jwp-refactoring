@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.exception.InvalidEntityException;
 import kitchenpos.repository.MenuGroupRepository;
 import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.dto.menu.MenuGroupRequest;
@@ -31,6 +32,7 @@ public class MenuGroupService {
     }
 
     public MenuGroup findById(Long id) {
-        return menuGroupRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Not found menuGroup"));
+        return menuGroupRepository.findById(id)
+                .orElseThrow(() -> new InvalidEntityException("Not found MenuGroup " + id));
     }
 }

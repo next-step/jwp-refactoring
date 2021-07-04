@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.exception.InvalidEntityException;
 import kitchenpos.repository.ProductRepository;
 import kitchenpos.domain.menu.Product;
 import kitchenpos.dto.menu.ProductRequest;
@@ -27,6 +28,7 @@ public class ProductService {
     }
 
     public Product getProduct(Long id) {
-        return productRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Not found product Id" + id));
+        return productRepository.findById(id)
+                .orElseThrow(() -> new InvalidEntityException("Not found Product Id" + id));
     }
 }

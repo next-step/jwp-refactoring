@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.exception.InvalidEntityException;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import kitchenpos.repository.TableGroupRepository;
@@ -31,8 +32,9 @@ public class TableGroupService {
 
         List<OrderTable> orderTables = tableGroupRequest
                 .getOrderTableRequests().stream()
-                .map(orderTableRequest -> orderTableRepository.findById(orderTableRequest.getId())
-                        .orElseThrow(IllegalArgumentException::new))
+                .map(orderTableRequest -> orderTableRepository
+                        .findById(orderTableRequest.getId())
+                        .orElseThrow(() -> new InvalidEntityException("Not found orderTableId " +  orderTableRequest.getId())))
                 .collect(Collectors.toList());
 
         final List<Long> orderTableIds = orderTables.stream()

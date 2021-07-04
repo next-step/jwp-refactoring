@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.exception.InvalidEntityException;
 import kitchenpos.repository.MenuRepository;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
@@ -33,8 +34,9 @@ public class OrderService {
     @Transactional
     public Order create(final OrderRequest orderRequest) {
 
-        OrderTable findOrderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
-                .orElseThrow(() -> new IllegalArgumentException("Not found orderTable"));
+        OrderTable findOrderTable = orderTableRepository
+                .findById(orderRequest.getOrderTableId())
+                .orElseThrow(() -> new InvalidEntityException("Not found OrderTable " + orderRequest.getOrderTableId()));
 
         List<OrderLineItem> findOrderLineItems = orderRequest.getOrderLineItemRequests()
                 .stream()
