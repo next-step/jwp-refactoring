@@ -35,11 +35,6 @@ class ProductServiceTest {
         givenProduct.setName("샘플상품");
     }
 
-/** 상품을 등록할 수 있다
-  * 가격이 없는 상품은 등록할 수 없다
-* 상품 목록을 조회할 수 있다*/
-
-
     @DisplayName("가격이 없거나 마이너스인 상품은 등록할 수 없다")
     @Test
     void createFailBecauseWrongPriceTest() {
@@ -49,7 +44,7 @@ class ProductServiceTest {
         //when && then
         assertThatThrownBy(() -> productService.create(givenProduct))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("가격이 없는 상품은 등록할 수 없습니다");
+                .hasMessageContaining("가격이 없는 상품은 등록할 수 없습니다.");
 
         //given
         givenProduct.setPrice(BigDecimal.valueOf(-1));
@@ -57,8 +52,7 @@ class ProductServiceTest {
         //when && then
         assertThatThrownBy(() -> productService.create(givenProduct))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("가격이 없는 상품은 등록할 수 없습니다");
-
+                .hasMessageContaining("가격이 없는 상품은 등록할 수 없습니다.");
     }
 
     @DisplayName("주문 생성")
