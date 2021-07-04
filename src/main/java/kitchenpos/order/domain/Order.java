@@ -1,12 +1,16 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.BaseEntity;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.tablegroup.domain.OrderTable;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Entity
 public class Order extends BaseEntity {
@@ -23,7 +27,7 @@ public class Order extends BaseEntity {
     @Column
     private LocalDateTime orderedTime;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "order", orphanRemoval = true)
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     public Order() { }
@@ -34,6 +38,7 @@ public class Order extends BaseEntity {
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
+        setOrderIdOnOrderLineItems();
     }
 
     public Order(Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
@@ -41,22 +46,24 @@ public class Order extends BaseEntity {
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
+        setOrderIdOnOrderLineItems();
+    }
+
+    private void setOrderIdOnOrderLineItems() {
+        if (Objects.isNull(orderLineItems)) {
+            throw new IllegalArgumentException();
+        }
+
+        this.orderLineItems.stream()
+                .forEach(orderLineItem -> orderLineItem.isIn(this));
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public Long getOrderTableId() {
         return orderTableId;
-    }
-
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
     }
 
     public String getOrderStatus() {
@@ -69,10 +76,6 @@ public class Order extends BaseEntity {
 
     public LocalDateTime getOrderedTime() {
         return orderedTime;
-    }
-
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
     }
 
     public List<OrderLineItem> getOrderLineItems() {
@@ -94,5 +97,22 @@ public class Order extends BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id, orderTableId, orderStatus, orderedTime, orderLineItems);
+    }
+
+    public void isFrom(OrderTable orderTable) {
+        this.orderTableId = orderTable.getId();
+    }
+
+    public void validateOrderLineItemsSize(long savedMenuIdsSize) {
+        if (CollectionUtils.isEmpty(orderLineItems) ||
+                orderLineItems.size() != savedMenuIdsSize) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public List<Long> menuIds() {
+        return orderLineItems.stream()
+                .map(OrderLineItem::getMenuId)
+                .collect(Collectors.toList());
     }
 }

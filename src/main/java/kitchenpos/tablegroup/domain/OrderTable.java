@@ -12,7 +12,7 @@ public class OrderTable {
     @Column
     private Long tableGroupId;
 
-    @Column(nullable = false)
+    @Column
     private int numberOfGuests;
 
     @Column

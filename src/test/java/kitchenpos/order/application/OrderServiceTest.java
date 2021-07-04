@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.order.application;
 
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.application.OrderService;
@@ -43,7 +43,7 @@ public class OrderServiceTest {
     private Long order1OrderTableId = 1L;
     private String order1OrderStatus = OrderStatus.COOKING.toString();
     private LocalDateTime order1OrderTime = LocalDateTime.now();
-    private OrderLineItem orderLineItem = new OrderLineItem(1L, 1L, 1L, 1);
+    private OrderLineItem orderLineItem = new OrderLineItem(1L, null, 1L, 1);
     private List<OrderLineItem> order1OrderLineItems = Arrays.asList(orderLineItem);
     private OrderTable orderTable = new OrderTable(1L, 5, false);
 
@@ -61,7 +61,7 @@ public class OrderServiceTest {
         when(menuRepository.countByIdIn(any())).thenReturn(1L);
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
         when(orderRepository.save(any())).thenReturn(order1);
-        when(orderLineItemRepository.save(any())).thenReturn(orderLineItem);
+//        when(orderLineItemRepository.save(any())).thenReturn(orderLineItem);
 
         OrderResponse orderResponse = orderService.create(orderRequest1);
 
@@ -133,7 +133,7 @@ public class OrderServiceTest {
         Order order1 = new Order(order1Id, order1OrderTableId, order1OrderStatus, order1OrderTime, order1OrderLineItems);
 
         when(orderRepository.findAll()).thenReturn(Arrays.asList(order1));
-        when(orderLineItemRepository.findAllByOrderId(any())).thenReturn(order1OrderLineItems);
+//        when(orderLineItemRepository.findAllByOrderId(any())).thenReturn(order1OrderLineItems);
 
         assertThat(orderService.list()).contains(order1);
         assertThat(order1.getOrderLineItems()).contains(orderLineItem);

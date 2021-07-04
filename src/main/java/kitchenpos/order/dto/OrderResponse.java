@@ -11,7 +11,7 @@ public class OrderResponse {
         this.orderTableId = orderTableId;
     }
 
-    public static OrderResponse from(Order order) {
+    public static OrderResponse of(Order order) {
         return new OrderResponse(order.getId(), order.getOrderTableId());
     }
 

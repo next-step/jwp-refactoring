@@ -1,5 +1,6 @@
 package kitchenpos.order.dao;
 
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -69,11 +70,12 @@ public class JdbcTemplateOrderLineItemDao implements OrderLineItemDao {
     }
 
     private OrderLineItem toEntity(final ResultSet resultSet) throws SQLException {
-        final OrderLineItem entity = new OrderLineItem();
-        entity.setSeq(resultSet.getLong(KEY_COLUMN_NAME));
-        entity.setOrderId(resultSet.getLong("order_id"));
-        entity.setMenuId(resultSet.getLong("menu_id"));
-        entity.setQuantity(resultSet.getLong("quantity"));
+        final OrderLineItem entity = new OrderLineItem(
+                resultSet.getLong(KEY_COLUMN_NAME),
+                resultSet.getObject("order_id", Order.class),
+                resultSet.getLong("menu_id"),
+                resultSet.getLong("quantity")
+        );
         return entity;
     }
 }

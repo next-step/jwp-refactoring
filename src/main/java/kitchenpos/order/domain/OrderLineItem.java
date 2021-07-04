@@ -1,32 +1,39 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.BaseEntity;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-public class OrderLineItem extends BaseEntity {
+public class OrderLineItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
     private Long seq;
-    private Long orderId;
+
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
+    private Order order;
+
+    @Column
     private Long menuId;
+
+    @Column
     private long quantity;
 
     public OrderLineItem() { }
 
     public OrderLineItem(Long menuId, long quantity) {
-        this(null, null, menuId, quantity);
+        this(null, menuId, quantity);
     }
 
-    public OrderLineItem(Long seq, Long orderId, Long menuId, long quantity) {
-        this.seq = seq;
-        this.orderId = orderId;
+    public OrderLineItem(Order order, Long menuId, long quantity) {
+        this.order = order;
+        this.menuId = menuId;
+        this.quantity = quantity;
+    }
+
+    public OrderLineItem(Long id, Order order, Long menuId, long quantity) {
+        this.seq = id;
+        this.order = order;
         this.menuId = menuId;
         this.quantity = quantity;
     }
@@ -35,32 +42,12 @@ public class OrderLineItem extends BaseEntity {
         return seq;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
-    }
-
-    public Long getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(final Long orderId) {
-        this.orderId = orderId;
-    }
-
     public Long getMenuId() {
         return menuId;
     }
 
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
-    }
-
     public long getQuantity() {
         return quantity;
-    }
-
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
     }
 
     @Override
@@ -68,11 +55,15 @@ public class OrderLineItem extends BaseEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OrderLineItem that = (OrderLineItem) o;
-        return quantity == that.quantity && Objects.equals(seq, that.seq) && Objects.equals(orderId, that.orderId) && Objects.equals(menuId, that.menuId);
+        return quantity == that.quantity && Objects.equals(seq, that.seq) && Objects.equals(order, that.order) && Objects.equals(menuId, that.menuId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(seq, orderId, menuId, quantity);
+        return Objects.hash(seq, order, menuId, quantity);
+    }
+
+    public void isIn(Order order) {
+        this.order = order;
     }
 }

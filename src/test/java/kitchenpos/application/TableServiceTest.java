@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.order.dao.OrderDao;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.tablegroup.dao.OrderTableDao;
 import kitchenpos.tablegroup.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +25,7 @@ public class TableServiceTest {
     private TableService tableService;
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
     private OrderTableDao orderTableDao;
 
@@ -36,7 +36,7 @@ public class TableServiceTest {
 
     @BeforeEach
     void setUp() {
-        tableService = new TableService(orderDao, orderTableDao);
+        tableService = new TableService(orderRepository, orderTableDao);
     }
 
     @DisplayName("테이블을 등록할 수 있다.")
@@ -77,7 +77,7 @@ public class TableServiceTest {
         OrderTable orderTableRequest = new OrderTable(orderTable1Id, null, orderTable1NumberOfGuests, true);
 
         when(orderTableDao.findById(any())).thenReturn(Optional.of(orderTableSaved));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(false);
+        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(false);
         when(orderTableDao.save(any())).thenReturn(orderTableRequest);
 
         OrderTable response = tableService.changeEmpty(orderTableSaved.getId(), orderTableRequest);
@@ -121,7 +121,7 @@ public class TableServiceTest {
         OrderTable orderTableRequest = new OrderTable(orderTable1Id, null, orderTable1NumberOfGuests, true);
 
         when(orderTableDao.findById(any())).thenReturn(Optional.of(orderTableSaved));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(true);
+        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(true);
 
         assertThatThrownBy(() -> {
             tableService.changeEmpty(orderTableSaved.getId(), orderTableRequest);

@@ -34,8 +34,6 @@ public class TableGroupRepositoryTest {
         OrderTable persistOrderTable1 = orderTableRepository.save(orderTable1);
         OrderTable persistOrderTable2 = orderTableRepository.save(orderTable2);
 
-//        tableGroupRequest = TableGroupRequest.of(Arrays.asList(persistOrderTable1.getId(), persistOrderTable2.getId()));
-
         TableGroup tableGroup = new TableGroup(Arrays.asList(persistOrderTable1, persistOrderTable2));
 
         TableGroup persistTableGroup = tableGroupRepository.save(tableGroup);
