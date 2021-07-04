@@ -12,7 +12,8 @@ import kitchenpos.table.dto.UpdateEmptyDto;
 import kitchenpos.table.dto.CreateOrderTableDto;
 import kitchenpos.table.dto.OrderTableDto;
 import kitchenpos.table.dto.UpdateNumberOfGuestsDto;
-import kitchenpos.table.exception.ChangeEmptyException;
+import kitchenpos.table.exception.NotChangeEmptyException;
+import kitchenpos.table.exception.NotChangeNumberOfGuestsException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -157,10 +158,9 @@ class TableRestControllerTest {
                                 .content(objectMapper.writeValueAsString(new UpdateEmptyDto(true)))
                                 .contentType(MediaType.APPLICATION_JSON))
                    .andDo(print())
-                   .andExpect(status().isBadRequest())
-                   .andReturn();
+                   .andExpect(status().isBadRequest());
         } catch (Exception e) {
-            assertThat(e).hasCauseExactlyInstanceOf(ChangeEmptyException.class);
+            fail();
         }
     }
 
@@ -170,10 +170,9 @@ class TableRestControllerTest {
                                 .content(objectMapper.writeValueAsString(new UpdateNumberOfGuestsDto(numberOfGuests)))
                                 .contentType(MediaType.APPLICATION_JSON))
                    .andDo(print())
-                   .andExpect(status().isBadRequest())
-                   .andReturn();
+                   .andExpect(status().isBadRequest());
         } catch (Exception e) {
-            assertTrue(e.getCause() instanceof IllegalArgumentException);
+            fail();
         }
     }
 

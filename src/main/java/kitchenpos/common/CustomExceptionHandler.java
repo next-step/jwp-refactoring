@@ -1,6 +1,7 @@
 package kitchenpos.common;
 
-import kitchenpos.table.exception.ChangeEmptyException;
+import kitchenpos.table.exception.NotChangeEmptyException;
+import kitchenpos.table.exception.NotChangeNumberOfGuestsException;
 import kitchenpos.table.exception.NotFoundOrderTableException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,15 +17,21 @@ public class CustomExceptionHandler {
         return e.getMessage();
     }
 
-    @ExceptionHandler(ChangeEmptyException.class)
+    @ExceptionHandler(NotChangeEmptyException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handleChangeEmptyException(ChangeEmptyException e) {
+    public String handleChangeEmptyException(NotChangeEmptyException e) {
         return e.getMessage();
     }
 
     @ExceptionHandler(NotFoundOrderTableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handleNotFoundOrderTableException(NotFoundOrderTableException e) {
+        return e.getMessage();
+    }
+
+    @ExceptionHandler(NotChangeNumberOfGuestsException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleNotChangeNumberOfGuestsException(NotChangeNumberOfGuestsException e) {
         return e.getMessage();
     }
 }
