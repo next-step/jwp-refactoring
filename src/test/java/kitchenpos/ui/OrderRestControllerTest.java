@@ -1,6 +1,7 @@
 package kitchenpos.ui;
 
-import kitchenpos.application.OrderService;
+import kitchenpos.application.command.OrderService;
+import kitchenpos.application.query.OrderQueryService;
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderCreate;
 import kitchenpos.domain.order.OrderLineItem;
@@ -40,6 +41,9 @@ class OrderRestControllerTest {
     @MockBean
     private OrderService orderService;
 
+    @MockBean
+    private OrderQueryService orderQueryService;
+
     @BeforeEach
     void setUp() {
         CleanUp.cleanUpTableFirst();
@@ -68,7 +72,7 @@ class OrderRestControllerTest {
     @Test
     void list() throws Exception {
         // given
-        given(orderService.list()).willReturn(Arrays.asList(결제완료_음식_1, 결제완료_음식_2));
+        given(orderQueryService.list()).willReturn(Arrays.asList(결제완료_음식_1, 결제완료_음식_2));
 
         // when & then
         mockMvc.perform(get("/api/orders"))

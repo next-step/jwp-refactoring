@@ -1,6 +1,7 @@
 package kitchenpos.ui;
 
-import kitchenpos.application.MenuService;
+import kitchenpos.application.command.MenuService;
+import kitchenpos.application.query.MenuQueryService;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuCreate;
 import kitchenpos.domain.menuproduct.MenuProduct;
@@ -44,6 +45,9 @@ class MenuRestControllerTest {
 
     @MockBean
     private MenuService menuService;
+
+    @MockBean
+    private MenuQueryService menuQueryService;
 
     @BeforeEach
     void setUp() {
@@ -101,7 +105,7 @@ class MenuRestControllerTest {
     @DisplayName("[get]/api/menus - 정상적인 리스트 조회")
     void 정상적인_리스트_조회() throws Exception {
         List<Menu> menus = Arrays.asList(양념치킨_콜라_1000원_1개, 양념치킨_콜라_1000원_2개);
-        given(menuService.list()).willReturn(menus);
+        given(menuQueryService.list()).willReturn(menus);
 
         // when & then
         mockMvc.perform(

@@ -1,5 +1,6 @@
-package kitchenpos.application;
+package kitchenpos.application.command;
 
+import kitchenpos.application.query.OrderQueryService;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.order.*;
 import kitchenpos.exception.EntityNotExistsException;
@@ -48,6 +49,8 @@ class OrderServiceTest {
     private OrderTableRepository orderTableRepository;
 
     private OrderService orderService;
+    private OrderQueryService orderQueryService;
+
     private List<Menu> menus;
 
     private List<OrderLineItem> orderLineItems;
@@ -59,6 +62,7 @@ class OrderServiceTest {
         CleanUp.cleanUpTableFirst();
 
         orderService = new OrderService(menuRepository, orderRepository, orderTableRepository);
+        orderQueryService = new OrderQueryService(menuRepository, orderRepository, orderTableRepository);
 
         menus = Arrays.asList(양념치킨_콜라_1000원_1개, 후라이드치킨_콜라_2000원_1개);
 
@@ -155,7 +159,7 @@ class OrderServiceTest {
         // when
         when(orderRepository.findAll()).thenReturn(Arrays.asList(결제완료_음식_2));
 
-        Order savedOrder = orderService.list().get(0);
+        Order savedOrder = orderQueryService.list().get(0);
 
         // then
         assertThat(savedOrder).isEqualTo(결제완료_음식_2);

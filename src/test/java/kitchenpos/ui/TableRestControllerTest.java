@@ -1,6 +1,7 @@
 package kitchenpos.ui;
 
-import kitchenpos.application.TableService;
+import kitchenpos.application.command.TableService;
+import kitchenpos.application.query.TableQueryService;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableCreate;
 import kitchenpos.dto.request.ChangeEmptyRequest;
@@ -38,6 +39,9 @@ class TableRestControllerTest {
 
     @MockBean
     private TableService tableService;
+
+    @MockBean
+    private TableQueryService tableQueryService;
 
     @BeforeEach
     void setUp() {
@@ -82,7 +86,7 @@ class TableRestControllerTest {
     @DisplayName("정상적으로 테이블의 리스트를 가져올경우")
     void 정상적으로_테이블의_리스트를_가져올경우() throws Exception {
         // given
-        given(tableService.list())
+        given(tableQueryService.list())
                 .willReturn(Arrays.asList(사용중인_1명_1건_결제완료_1건_식사, 사용중인_1명_테이블));
 
         // when & then

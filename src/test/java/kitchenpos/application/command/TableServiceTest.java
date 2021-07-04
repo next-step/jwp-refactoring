@@ -1,5 +1,6 @@
-package kitchenpos.application;
+package kitchenpos.application.command;
 
+import kitchenpos.application.query.TableQueryService;
 import kitchenpos.domain.NumberOfGuest;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableCreate;
@@ -35,12 +36,14 @@ class TableServiceTest {
     private OrderTableRepository orderTableRepository;
 
     private TableService tableService;
+    private TableQueryService tableQueryService;
 
     @BeforeEach
     void setUp() {
         CleanUp.cleanUpTableFirst();
 
-        this.tableService = new TableService(orderRepository, orderTableRepository);
+        tableService = new TableService(orderRepository, orderTableRepository);
+        tableQueryService = new TableQueryService(orderRepository, orderTableRepository);
     }
 
     @Test
@@ -66,7 +69,7 @@ class TableServiceTest {
         // when
         when(orderTableRepository.findAll()).thenReturn(Arrays.asList(미사용중인_테이블, 사용중인_2명_테이블));
 
-        List<OrderTable> list = tableService.list();
+        List<OrderTable> list = tableQueryService.list();
 
         // then
         assertThat(list).containsExactly(미사용중인_테이블, 사용중인_2명_테이블);

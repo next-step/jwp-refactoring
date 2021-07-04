@@ -1,6 +1,7 @@
 package kitchenpos.ui;
 
-import kitchenpos.application.OrderService;
+import kitchenpos.application.command.OrderService;
+import kitchenpos.application.query.OrderQueryService;
 import kitchenpos.domain.Quantity;
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderCreate;
@@ -18,9 +19,11 @@ import java.util.stream.Collectors;
 @RestController
 public class OrderRestController {
     private final OrderService orderService;
+    private final OrderQueryService orderQueryService;
 
-    public OrderRestController(final OrderService orderService) {
+    public OrderRestController(OrderService orderService, OrderQueryService orderQueryService) {
         this.orderService = orderService;
+        this.orderQueryService = orderQueryService;
     }
 
     @PostMapping("/api/orders")
@@ -44,7 +47,7 @@ public class OrderRestController {
 
     @GetMapping("/api/orders")
     public ResponseEntity<List<OrderViewResponse>> list() {
-        List<OrderViewResponse> results = orderService.list()
+        List<OrderViewResponse> results = orderQueryService.list()
                 .stream()
                 .map(OrderViewResponse::of)
                 .collect(Collectors.toList());

@@ -1,6 +1,7 @@
 package kitchenpos.ui;
 
-import kitchenpos.application.TableService;
+import kitchenpos.application.command.TableService;
+import kitchenpos.application.query.TableQueryService;
 import kitchenpos.domain.NumberOfGuest;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableCreate;
@@ -18,9 +19,11 @@ import java.util.stream.Collectors;
 @RestController
 public class TableRestController {
     private final TableService tableService;
+    private final TableQueryService tableQueryService;
 
-    public TableRestController(final TableService tableService) {
+    public TableRestController(TableService tableService, TableQueryService tableQueryService) {
         this.tableService = tableService;
+        this.tableQueryService = tableQueryService;
     }
 
     @PostMapping("/api/tables")
@@ -39,7 +42,7 @@ public class TableRestController {
 
     @GetMapping("/api/tables")
     public ResponseEntity<List<OrderTableViewResponse>> list() {
-        List<OrderTableViewResponse> results = tableService.list()
+        List<OrderTableViewResponse> results = tableQueryService.list()
                 .stream()
                 .map(OrderTableViewResponse::of)
                 .collect(Collectors.toList());

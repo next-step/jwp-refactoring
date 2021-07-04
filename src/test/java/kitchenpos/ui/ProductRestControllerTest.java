@@ -1,6 +1,7 @@
 package kitchenpos.ui;
 
-import kitchenpos.application.ProductService;
+import kitchenpos.application.command.ProductService;
+import kitchenpos.application.query.ProductQueryService;
 import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.ProductCreate;
 import kitchenpos.dto.request.ProductCreateRequest;
@@ -41,6 +42,9 @@ class ProductRestControllerTest {
 
     @MockBean
     private ProductService productService;
+
+    @MockBean
+    private ProductQueryService productQueryService;
 
     @BeforeEach
     void setUp() {
@@ -90,7 +94,7 @@ class ProductRestControllerTest {
     void 정상목록조회() throws Exception {
         // given
         List<Product> products = Arrays.asList(양념치킨_1000원, 후라이드치킨_2000원, 콜라_100원);
-        given(productService.list()).willReturn(products);
+        given(productQueryService.list()).willReturn(products);
 
         // when & then
         mockMvc.perform(

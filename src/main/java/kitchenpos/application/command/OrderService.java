@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.application.command;
 
 import kitchenpos.domain.menu.Menus;
 import kitchenpos.domain.order.Order;
@@ -12,9 +12,8 @@ import kitchenpos.repository.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
+@Transactional
 public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
@@ -30,7 +29,6 @@ public class OrderService {
         this.orderTableRepository = orderTableRepository;
     }
 
-    @Transactional
     public Order create(OrderCreate orderCreate) {
         Menus menus = new Menus(menuRepository.findAllById(orderCreate.getMenuIdsInOrderLineItems()));
         OrderTable orderTable = orderTableRepository.findById(orderCreate.getOrderTableId())
@@ -39,11 +37,6 @@ public class OrderService {
         return orderRepository.save(Order.create(orderCreate, menus, orderTable));
     }
 
-    public List<Order> list() {
-        return orderRepository.findAll();
-    }
-
-    @Transactional
     public Order changeOrderStatus(final Long orderId, final OrderStatus orderStatus) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);

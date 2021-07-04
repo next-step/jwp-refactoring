@@ -1,6 +1,7 @@
 package kitchenpos.ui;
 
-import kitchenpos.application.MenuGroupService;
+import kitchenpos.application.command.MenuGroupService;
+import kitchenpos.application.query.MenuGroupQueryService;
 import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menu.MenuGroupCreate;
 import kitchenpos.dto.request.MenuGroupCreateRequest;
@@ -37,6 +38,9 @@ class MenuGroupRestControllerTest {
     @MockBean
     private MenuGroupService menuGroupService;
 
+    @MockBean
+    private MenuGroupQueryService menuGroupQueryService;
+
     @BeforeEach
     void setUp() {
         CleanUp.cleanUpOrderFirst();
@@ -63,7 +67,7 @@ class MenuGroupRestControllerTest {
     @Test
     void list() throws Exception {
         // given
-        given(menuGroupService.list())
+        given(menuGroupQueryService.list())
                 .willReturn(Arrays.asList(그룹1, 그룹2));
 
         // when & then

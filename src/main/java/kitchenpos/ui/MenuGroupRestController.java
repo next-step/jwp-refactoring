@@ -1,6 +1,7 @@
 package kitchenpos.ui;
 
-import kitchenpos.application.MenuGroupService;
+import kitchenpos.application.command.MenuGroupService;
+import kitchenpos.application.query.MenuGroupQueryService;
 import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menu.MenuGroupCreate;
 import kitchenpos.dto.response.MenuGroupViewResponse;
@@ -17,9 +18,11 @@ import java.util.stream.Collectors;
 @RestController
 public class MenuGroupRestController {
     private final MenuGroupService menuGroupService;
+    private final MenuGroupQueryService menuGroupQueryService;
 
-    public MenuGroupRestController(final MenuGroupService menuGroupService) {
+    public MenuGroupRestController(MenuGroupService menuGroupService, MenuGroupQueryService menuGroupQueryService) {
         this.menuGroupService = menuGroupService;
+        this.menuGroupQueryService = menuGroupQueryService;
     }
 
     @PostMapping("/api/menu-groups")
@@ -33,7 +36,7 @@ public class MenuGroupRestController {
 
     @GetMapping("/api/menu-groups")
     public ResponseEntity<List<MenuGroupViewResponse>> list() {
-        List<MenuGroupViewResponse> results = menuGroupService.list()
+        List<MenuGroupViewResponse> results = menuGroupQueryService.list()
                 .stream()
                 .map(MenuGroupViewResponse::of)
                 .collect(Collectors.toList());

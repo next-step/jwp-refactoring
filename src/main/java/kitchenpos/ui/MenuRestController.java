@@ -1,6 +1,7 @@
 package kitchenpos.ui;
 
-import kitchenpos.application.MenuService;
+import kitchenpos.application.command.MenuService;
+import kitchenpos.application.query.MenuQueryService;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuCreate;
@@ -20,9 +21,11 @@ import java.util.stream.Collectors;
 @RestController
 public class MenuRestController {
     private final MenuService menuService;
+    private final MenuQueryService menuQueryService;
 
-    public MenuRestController(final MenuService menuService) {
+    public MenuRestController(MenuService menuService, MenuQueryService menuQueryService) {
         this.menuService = menuService;
+        this.menuQueryService = menuQueryService;
     }
 
     @PostMapping("/api/menus")
@@ -36,6 +39,7 @@ public class MenuRestController {
                 new Price(menuCreateRequest.getPrice()),
                 menuCreateRequest.getMenuGroupId(),
                 menuProductCreates);
+
         final Menu created = menuService.create(menuCreate);
         final URI uri = URI.create("/api/menus/" + created.getId());
         return ResponseEntity.created(uri)
@@ -44,7 +48,7 @@ public class MenuRestController {
 
     @GetMapping("/api/menus")
     public ResponseEntity<List<MenuViewResponse>> list() {
-        List<MenuViewResponse> results = menuService.list()
+        List<MenuViewResponse> results = menuQueryService.list()
                 .stream()
                 .map(MenuViewResponse::of)
                 .collect(Collectors.toList());

@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.application.command;
 
 import kitchenpos.domain.table.OrderTables;
 import kitchenpos.domain.table.TableGroup;
@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class TableGroupService {
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
@@ -21,14 +22,12 @@ public class TableGroupService {
         this.tableGroupRepository = tableGroupRepository;
     }
 
-    @Transactional
     public TableGroup create(final TableGroupCreate tableGroupCreate) {
         OrderTables orderTables = new OrderTables(orderTableRepository.findAllById(tableGroupCreate.getOrderTableIds()));
 
         return tableGroupRepository.save(TableGroup.create(tableGroupCreate, orderTables));
     }
 
-    @Transactional
     public void ungroup(final Long tableGroupId) {
         final TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
                 .orElseThrow(IllegalArgumentException::new);

@@ -1,5 +1,6 @@
-package kitchenpos.application;
+package kitchenpos.application.command;
 
+import kitchenpos.application.query.ProductQueryService;
 import kitchenpos.domain.Name;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.product.Product;
@@ -30,12 +31,14 @@ class ProductServiceTest {
     private ProductRepository productRepository;
 
     private ProductService productService;
+    private ProductQueryService productQueryService;
 
     @BeforeEach
     void setUp() {
         ProductFixture.cleanUp();
 
-        this.productService = new ProductService(productRepository);
+        productService = new ProductService(productRepository);
+        productQueryService = new ProductQueryService(productRepository);
     }
 
     @Test
@@ -66,7 +69,7 @@ class ProductServiceTest {
         // when
         when(productRepository.findAll()).thenReturn(products);
 
-        List<Product> list = productService.list();
+        List<Product> list = productQueryService.list();
 
         // then
         assertThat(list).containsExactlyElementsOf(products);

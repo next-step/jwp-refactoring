@@ -1,5 +1,6 @@
-package kitchenpos.application;
+package kitchenpos.application.command;
 
+import kitchenpos.application.query.MenuGroupQueryService;
 import kitchenpos.domain.Name;
 import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menu.MenuGroupCreate;
@@ -26,10 +27,12 @@ class MenuGroupServiceTest {
     private MenuGroupRepository menuGroupRepository;
 
     private MenuGroupService menuGroupService;
+    private MenuGroupQueryService menuGroupQueryService;
 
     @BeforeEach
     void setUp() {
-        this.menuGroupService = new MenuGroupService(menuGroupRepository);
+        menuGroupService = new MenuGroupService(menuGroupRepository);
+        menuGroupQueryService = new MenuGroupQueryService(menuGroupRepository);
     }
 
     @Test
@@ -64,7 +67,7 @@ class MenuGroupServiceTest {
         when(menuGroupRepository.findAll())
                 .thenReturn(menuGroups);
 
-        List<MenuGroup> list = menuGroupService.list();
+        List<MenuGroup> list = menuGroupQueryService.list();
 
         // then
         assertThat(list)

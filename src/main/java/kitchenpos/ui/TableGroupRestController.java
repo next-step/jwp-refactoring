@@ -1,6 +1,6 @@
 package kitchenpos.ui;
 
-import kitchenpos.application.TableGroupService;
+import kitchenpos.application.command.TableGroupService;
 import kitchenpos.domain.table.TableGroup;
 import kitchenpos.domain.table.TableGroupCreate;
 import kitchenpos.dto.request.TableGroupCreateRequest;

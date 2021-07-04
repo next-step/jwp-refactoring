@@ -1,5 +1,6 @@
-package kitchenpos.application;
+package kitchenpos.application.command;
 
+import kitchenpos.application.query.MenuQueryService;
 import kitchenpos.domain.Name;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.Quantity;
@@ -47,6 +48,7 @@ class MenuServiceTest {
     private ProductRepository productRepository;
 
     private MenuService menuService;
+    private MenuQueryService menuQueryService;
 
     private MenuGroup menuGroup;
 
@@ -57,7 +59,9 @@ class MenuServiceTest {
     @BeforeEach
     void setUp() {
         CleanUp.cleanUpOrderFirst();
-        this.menuService = new MenuService(menuRepository, menuGroupRepository, productRepository);
+
+        menuService = new MenuService(menuRepository, menuGroupRepository, productRepository);
+        menuQueryService = new MenuQueryService(menuRepository, menuGroupRepository, productRepository);
 
         menuGroup = new MenuGroup(1L, new Name("Hello"));
 
@@ -175,7 +179,7 @@ class MenuServiceTest {
         // when
         when(menuRepository.findAll()).thenReturn(Arrays.asList(menu));
 
-        Menu resultMenu = menuService.list().get(0);
+        Menu resultMenu = menuQueryService.list().get(0);
         // then
         assertThat(resultMenu).isEqualTo(menu);
         assertThat(resultMenu.getMenuProducts())

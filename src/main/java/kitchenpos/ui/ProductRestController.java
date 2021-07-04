@@ -1,6 +1,7 @@
 package kitchenpos.ui;
 
-import kitchenpos.application.ProductService;
+import kitchenpos.application.command.ProductService;
+import kitchenpos.application.query.ProductQueryService;
 import kitchenpos.domain.Name;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.product.Product;
@@ -20,9 +21,11 @@ import java.util.stream.Collectors;
 @RestController
 public class ProductRestController {
     private final ProductService productService;
+    private final ProductQueryService productQueryService;
 
-    public ProductRestController(final ProductService productService) {
+    public ProductRestController(ProductService productService, ProductQueryService productQueryService) {
         this.productService = productService;
+        this.productQueryService = productQueryService;
     }
 
     @PostMapping("/api/products")
@@ -40,7 +43,7 @@ public class ProductRestController {
 
     @GetMapping("/api/products")
     public ResponseEntity<List<ProductViewResponse>> list() {
-        List<ProductViewResponse> results = productService.list()
+        List<ProductViewResponse> results = productQueryService.list()
                 .stream()
                 .map(ProductViewResponse::of)
                 .collect(Collectors.toList());
