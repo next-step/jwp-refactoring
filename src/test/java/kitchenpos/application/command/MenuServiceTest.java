@@ -62,7 +62,7 @@ class MenuServiceTest {
         CleanUp.cleanUpOrderFirst();
 
         menuService = new MenuService(menuRepository, menuGroupRepository, productRepository);
-        menuQueryService = new MenuQueryService(menuRepository, menuGroupRepository, productRepository);
+        menuQueryService = new MenuQueryService(menuRepository);
 
         menuGroup = new MenuGroup(1L, new Name("Hello"));
 

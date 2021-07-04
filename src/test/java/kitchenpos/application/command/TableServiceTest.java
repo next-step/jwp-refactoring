@@ -43,7 +43,7 @@ class TableServiceTest {
         CleanUp.cleanUpTableFirst();
 
         tableService = new TableService(orderRepository, orderTableRepository);
-        tableQueryService = new TableQueryService(orderRepository, orderTableRepository);
+        tableQueryService = new TableQueryService(orderTableRepository);
     }
 
     @Test
