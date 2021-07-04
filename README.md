@@ -2,9 +2,9 @@
 
 ## 할일
 - [X] 패키지 코드를 보고 요구사항 README.md 에 작성
-- [ ] 요구사항을 토대로 테스트 코드를 작성
-    - [ ] BusinessObject에 대한 테스트 코드 작성
-    - [ ] @SpringBootTest를 이용한 통합 테스트 또는 @ExtendWith(MockitoExtension.class)를 이용한 단위 테스트 코드를 작성
+- [X] 요구사항을 토대로 테스트 코드를 작성
+    - [X] BusinessObject에 대한 테스트 코드 작성
+    - [X] @SpringBootTest를 이용한 통합 테스트 또는 @ExtendWith(MockitoExtension.class)를 이용한 단위 테스트 코드를 작성
     - [ ] Controller에 대한 테스트 코드 작성을 권장하지만 필수는 아니다(필요시 작성)
     
 ## 요구 사항
