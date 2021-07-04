@@ -31,6 +31,6 @@ public class MenuGroupService {
     }
 
     public MenuGroup findById(Long id) {
-        return menuGroupRepository.findById(id).orElseThrow(RuntimeException::new);
+        return menuGroupRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Not found menuGroup"));
     }
 }
