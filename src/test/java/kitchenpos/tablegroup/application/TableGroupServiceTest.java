@@ -1,11 +1,14 @@
 package kitchenpos.tablegroup.application;
 
-import static kitchenpos.util.TestDataSet.*;
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.*;
+import static kitchenpos.util.TestDataSet.산악회;
+import static kitchenpos.util.TestDataSet.테이블_1번;
+import static kitchenpos.util.TestDataSet.테이블_2번;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -155,12 +158,12 @@ public class TableGroupServiceTest {
     }
 
     private static Stream<Arguments> cookingSet() {
-        Order isCooking = new Order(1L, OrderStatus.COOKING.name(), 1L, null);
+        Order isCooking = new Order(1L, OrderStatus.COOKING, null, null);
         OrderTables orderTablesCooking = new OrderTables(
             Arrays.asList(new OrderTable(1L, 1L, 10, false, Arrays.asList(isCooking))));
         TableGroup isCookingGroup = new TableGroup(1L, LocalDateTime.now(), orderTablesCooking);
 
-        Order isMeal = new Order(1L, OrderStatus.MEAL.name(), 1L, null);
+        Order isMeal = new Order(1L, OrderStatus.MEAL, null, null);
         OrderTables orderTablesMeal = new OrderTables(
             Arrays.asList(new OrderTable(1L, 1L, 10, false, Arrays.asList(isMeal))));
         TableGroup isMealGroup = new TableGroup(1L, LocalDateTime.now(), orderTablesMeal);

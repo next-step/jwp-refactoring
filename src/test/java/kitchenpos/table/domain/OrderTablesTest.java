@@ -1,7 +1,7 @@
 package kitchenpos.table.domain;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,13 +52,13 @@ public class OrderTablesTest {
     }
 
     private static Stream<Arguments> cookingSet() {
-        Order isCooking = new Order(1L, OrderStatus.COOKING.name(), 1L, null);
+        Order isCooking = new Order(1L, OrderStatus.COOKING, null, null);
         OrderTables orderTablesCooking = new OrderTables(
-                Arrays.asList(new OrderTable(1L, 1L, 10, false, Arrays.asList(isCooking))));
+            Arrays.asList(new OrderTable(1L, 1L, 10, false, Arrays.asList(isCooking))));
 
-        Order isMeal = new Order(1L, OrderStatus.MEAL.name(), 1L, null);
+        Order isMeal = new Order(1L, OrderStatus.MEAL, null, null);
         OrderTables orderTablesMeal = new OrderTables(
-                Arrays.asList(new OrderTable(1L, 1L, 10, false, Arrays.asList(isMeal))));
+            Arrays.asList(new OrderTable(1L, 1L, 10, false, Arrays.asList(isMeal))));
 
         return Stream.of(Arguments.of(orderTablesCooking), Arguments.of(orderTablesMeal));
     }

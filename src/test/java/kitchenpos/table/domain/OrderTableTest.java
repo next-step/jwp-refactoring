@@ -1,7 +1,7 @@
 package kitchenpos.table.domain;
 
-import static kitchenpos.util.TestDataSet.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static kitchenpos.util.TestDataSet.산악회;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
 
@@ -51,8 +51,8 @@ public class OrderTableTest {
     @DisplayName("주문_테이블에 속한 주문들이 현재 조리중이거나, 식사 중일 시 에러를 출력한다.")
     void isEating() {
         //given
-        Order 쿠킹_주문 = new Order(1L, OrderStatus.COOKING.name(), 1L, null);
-        Order 먹는상태_주문 = new Order(1L, OrderStatus.MEAL.name(), 1L, null);
+        Order 쿠킹_주문 = new Order(1L, OrderStatus.COOKING, null, null);
+        Order 먹는상태_주문 = new Order(1L, OrderStatus.MEAL, null, null);
         OrderTable 쿠킹_테이블 = new OrderTable(1L, null, 10, false, Arrays.asList(쿠킹_주문));
         OrderTable 먹는상태_테이블 = new OrderTable(1L, null, 10, false, Arrays.asList(먹는상태_주문));
         OrderTableRequest chagneRequest = new OrderTableRequest(10, true);

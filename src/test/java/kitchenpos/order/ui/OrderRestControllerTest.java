@@ -1,8 +1,11 @@
 package kitchenpos.order.ui;
 
+import static kitchenpos.util.TestDataSet.원플원_양념;
+import static kitchenpos.util.TestDataSet.원플원_후라이드;
 import static kitchenpos.util.TestDataSet.주문_1번;
 import static kitchenpos.util.TestDataSet.주문_2번;
 import static kitchenpos.util.TestDataSet.테이블_2번;
+import static kitchenpos.util.TestDataSet.테이블_3번_존재;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -28,7 +31,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.ui.OrderRestController;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.product.constant.OrderStatus;
 
 @WebMvcTest(controllers = OrderRestController.class)
 @ExtendWith(MockitoExtension.class)
@@ -49,8 +55,10 @@ public class OrderRestControllerTest {
     @DisplayName("손님이 메뉴를 선택하면 신규 주문을 할 수 있다.")
     void create() throws Exception {
         // given
-        String content = objectMapper.writeValueAsString(주문_1번);
-        given(orderService.create(any())).willReturn(주문_1번);
+        OrderRequest 주문_요청 = new OrderRequest(테이블_3번_존재.getId(), OrderStatus.COOKING,
+            Arrays.asList(new OrderLineItemRequest(1L, 3L)));
+        String content = objectMapper.writeValueAsString(주문_요청);
+        given(orderService.create(any())).willReturn(OrderResponse.of(주문_1번));
 
         // when
         mockMvc.perform(
@@ -81,9 +89,9 @@ public class OrderRestControllerTest {
     @DisplayName("현재 주문의 상태를 업데이트 할 수 있다.")
     void changeOrderStatus() throws Exception {
         // given
-        Order 상태_업데이트된_주문 = new Order(1L, 테이블_2번.getId(),
-            Arrays.asList(new OrderLineItem(1L, 10), new OrderLineItem(2L, 10)));
-        상태_업데이트된_주문.setOrderStatus("MEAL");
+        Order 상태_업데이트된_주문 = new Order(1L, 테이블_2번,
+            Arrays.asList(new OrderLineItem(원플원_후라이드, 10), new OrderLineItem(원플원_양념, 10)));
+        상태_업데이트된_주문.setOrderStatus(OrderStatus.MEAL);
 
         String content = objectMapper.writeValueAsString(상태_업데이트된_주문);
 

@@ -1,9 +1,16 @@
 package kitchenpos.order.domain;
 
+import java.util.Objects;
+
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import kitchenpos.menu.domain.Menu;
 
 @Entity
 public class OrderLineItem {
@@ -12,17 +19,27 @@ public class OrderLineItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
 
-    private Long orderId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
+    private Order order;
 
-    private Long menuId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_id")
+    private Menu menu;
 
     private long quantity;
 
     public OrderLineItem() {}
 
-    public OrderLineItem(Long menuId, long quantity) {
-        this.menuId = menuId;
+    public OrderLineItem(Long seq, Order order, Menu menu, long quantity) {
+        this.seq = seq;
+        this.order = order;
+        this.menu = menu;
         this.quantity = quantity;
+    }
+
+    public OrderLineItem(Menu menu, long quantity) {
+        this(null, null, menu, quantity);
     }
 
     public Long getSeq() {
@@ -34,19 +51,14 @@ public class OrderLineItem {
     }
 
     public Long getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(final Long orderId) {
-        this.orderId = orderId;
+        if (Objects.isNull(order)) {
+            return Long.MIN_VALUE;
+        }
+        return order.getId();
     }
 
     public Long getMenuId() {
-        return menuId;
-    }
-
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
+        return menu.getId();
     }
 
     public long getQuantity() {
@@ -55,5 +67,9 @@ public class OrderLineItem {
 
     public void setQuantity(final long quantity) {
         this.quantity = quantity;
+    }
+
+    public void assignOrder(Order order) {
+        this.order = order;
     }
 }

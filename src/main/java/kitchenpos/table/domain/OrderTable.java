@@ -27,7 +27,7 @@ public class OrderTable {
 
     private boolean empty;
 
-    @OneToMany(mappedBy = "orderTableId")
+    @OneToMany(mappedBy = "orderTable")
     private List<Order> orders = new ArrayList<>();
 
     public OrderTable() {}
