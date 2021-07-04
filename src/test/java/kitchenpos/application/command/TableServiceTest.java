@@ -2,8 +2,8 @@ package kitchenpos.application.command;
 
 import kitchenpos.application.query.TableQueryService;
 import kitchenpos.domain.NumberOfGuest;
-import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableCreate;
+import kitchenpos.dto.response.OrderTableViewResponse;
 import kitchenpos.fixture.CleanUp;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
@@ -55,12 +55,10 @@ class TableServiceTest {
         // when
         when(orderTableRepository.save(any())).thenAnswer(i -> i.getArgument(0));
 
-        OrderTable savedOrderTable = tableService.create(orderTable);
+        tableService.create(orderTable);
 
         // then
-        assertThat(savedOrderTable.getTableGroup()).isNull();
-
-        verify(orderTableRepository, VerificationModeFactory.times(1)).save(savedOrderTable);
+        verify(orderTableRepository, VerificationModeFactory.times(1)).save(any());
     }
 
     @Test
@@ -69,10 +67,10 @@ class TableServiceTest {
         // when
         when(orderTableRepository.findAll()).thenReturn(Arrays.asList(미사용중인_테이블, 사용중인_2명_테이블));
 
-        List<OrderTable> list = tableQueryService.list();
+        List<OrderTableViewResponse> list = tableQueryService.list();
 
         // then
-        assertThat(list).containsExactly(미사용중인_테이블, 사용중인_2명_테이블);
+        assertThat(list).containsExactly(OrderTableViewResponse.of(미사용중인_테이블), OrderTableViewResponse.of(사용중인_2명_테이블));
 
         verify(orderTableRepository, VerificationModeFactory.times(1))
                 .findAll();
@@ -132,13 +130,10 @@ class TableServiceTest {
         given(orderTableRepository.findById(빈_테이블.getId())).willReturn(Optional.of(빈_테이블));
 
         // when
-        OrderTable savedOrderTable = tableService.changeEmpty(빈_테이블.getId(), false);
+        tableService.changeEmpty(빈_테이블.getId(), false);
 
         // then
-        assertThat(savedOrderTable.getTableGroup()).isNull();
-        assertThat(savedOrderTable.getId()).isEqualTo(빈_테이블.getId());
-        assertThat(savedOrderTable.getNumberOfGuests()).isEqualTo(빈_테이블.getNumberOfGuests());
-        assertThat(savedOrderTable.isEmpty()).isFalse();
+        assertThat(빈_테이블.isEmpty()).isFalse();
 
         verify(orderTableRepository, VerificationModeFactory.times(1))
                 .findById(빈_테이블.getId());
@@ -183,12 +178,12 @@ class TableServiceTest {
         given(orderTableRepository.findById(사용중인_1명_1건_조리_1건_식사.getId())).willReturn(Optional.of(사용중인_1명_1건_조리_1건_식사));
 
         // when
-        OrderTable changedOrderTable = tableService.changeNumberOfGuests(사용중인_1명_1건_조리_1건_식사.getId(), toBe);
+        tableService.changeNumberOfGuests(사용중인_1명_1건_조리_1건_식사.getId(), toBe);
 
         // when & then
-        assertThat(changedOrderTable.getId()).isEqualTo(사용중인_1명_1건_조리_1건_식사.getId());
-        assertThat(changedOrderTable.getTableGroup()).isEqualTo(사용중인_1명_1건_조리_1건_식사.getTableGroup());
-        assertThat(changedOrderTable.getNumberOfGuests()).isEqualTo(toBe);
-        assertThat(changedOrderTable.isEmpty()).isEqualTo(사용중인_1명_1건_조리_1건_식사.isEmpty());
+        assertThat(사용중인_1명_1건_조리_1건_식사.getNumberOfGuests()).isEqualTo(toBe);
+
+        verify(orderTableRepository, VerificationModeFactory.times(1))
+                .findById(사용중인_1명_1건_조리_1건_식사.getId());
     }
 }

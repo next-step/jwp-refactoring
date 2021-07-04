@@ -2,7 +2,11 @@ package kitchenpos.application.command;
 
 import kitchenpos.application.query.OrderQueryService;
 import kitchenpos.domain.menu.Menu;
-import kitchenpos.domain.order.*;
+import kitchenpos.domain.order.OrderCreate;
+import kitchenpos.domain.order.OrderLineItem;
+import kitchenpos.domain.order.OrderLineItemCreate;
+import kitchenpos.domain.order.OrderStatus;
+import kitchenpos.dto.response.OrderViewResponse;
 import kitchenpos.exception.EntityNotExistsException;
 import kitchenpos.exception.TableEmptyException;
 import kitchenpos.fixture.CleanUp;
@@ -133,21 +137,9 @@ class OrderServiceTest {
         // when
         when(orderRepository.save(any())).thenAnswer(i -> i.getArgument(0));
 
-        Order savedOrder = orderService.create(orderCreate);
+        orderService.create(orderCreate);
 
         // then
-        assertThat(savedOrder.getOrderTable()).isEqualTo(사용중인_1명_테이블);
-        assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
-        assertThat(savedOrder.getOrderedTime()).isNotNull();
-
-        assertThat(savedOrder.getOrderLineItems())
-                .map(item -> item.getOrder())
-                .containsOnly(savedOrder);
-
-        assertThat(savedOrder.getOrderLineItems())
-                .map(item -> item.getMenu())
-                .containsExactlyElementsOf(menus);
-
         verify(menuRepository, VerificationModeFactory.times(1)).findAllById(any());
         verify(orderTableRepository, VerificationModeFactory.times(1)).findById(사용중인_1명_테이블.getId());
         verify(orderRepository, VerificationModeFactory.times(1)).save(any());
@@ -159,11 +151,10 @@ class OrderServiceTest {
         // when
         when(orderRepository.findAll()).thenReturn(Arrays.asList(결제완료_음식_2));
 
-        Order savedOrder = orderQueryService.list().get(0);
+        OrderViewResponse savedOrder = orderQueryService.list().get(0);
 
         // then
-        assertThat(savedOrder).isEqualTo(결제완료_음식_2);
-        assertThat(savedOrder.getOrderLineItems()).containsExactlyElementsOf(결제완료_음식_2.getOrderLineItems());
+        assertThat(savedOrder).isEqualTo(OrderViewResponse.of(결제완료_음식_2));
 
         verify(orderRepository, VerificationModeFactory.times(1)).findAll();
     }
@@ -207,11 +198,11 @@ class OrderServiceTest {
         given(orderRepository.findById(식사_음식_1.getId())).willReturn(Optional.of(식사_음식_1));
 
         // when
-        Order savedOrder = orderService.changeOrderStatus(식사_음식_1.getId(), OrderStatus.MEAL);
+        orderService.changeOrderStatus(식사_음식_1.getId(), OrderStatus.MEAL);
 
         // then
-        assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
-        assertThat(savedOrder.getOrderLineItems()).containsExactlyElementsOf(식사_음식_1.getOrderLineItems());
+        assertThat(식사_음식_1.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
+        assertThat(식사_음식_1.getOrderLineItems()).containsExactlyElementsOf(식사_음식_1.getOrderLineItems());
 
         verify(orderRepository, VerificationModeFactory.times(1)).findById(식사_음식_1.getId());
     }

@@ -1,7 +1,13 @@
 package kitchenpos.dto.request;
 
+import kitchenpos.domain.Name;
+import kitchenpos.domain.Price;
+import kitchenpos.domain.menu.MenuCreate;
+import kitchenpos.domain.menuproduct.MenuProductCreate;
+
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MenuCreateRequest {
     private String name;
@@ -17,6 +23,20 @@ public class MenuCreateRequest {
         this.price = price;
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
+    }
+
+
+    public MenuCreate toCreate() {
+        List<MenuProductCreate> menuProductCreates = menuProducts.stream()
+                .map(MenuProductCreateRequest::toCreate)
+                .collect(Collectors.toList());
+
+        return new MenuCreate(
+                new Name(name),
+                new Price(price),
+                menuGroupId,
+                menuProductCreates
+        );
     }
 
     public void setName(String name) {

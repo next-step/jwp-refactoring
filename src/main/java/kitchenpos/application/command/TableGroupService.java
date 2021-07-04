@@ -22,10 +22,11 @@ public class TableGroupService {
         this.tableGroupRepository = tableGroupRepository;
     }
 
-    public TableGroup create(final TableGroupCreate tableGroupCreate) {
+    public Long create(final TableGroupCreate tableGroupCreate) {
         OrderTables orderTables = new OrderTables(orderTableRepository.findAllById(tableGroupCreate.getOrderTableIds()));
 
-        return tableGroupRepository.save(TableGroup.create(tableGroupCreate, orderTables));
+        return tableGroupRepository.save(TableGroup.create(tableGroupCreate, orderTables))
+                .getId();
     }
 
     public void ungroup(final Long tableGroupId) {

@@ -15,7 +15,8 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public Product create(final ProductCreate productCreate) {
-        return productRepository.save(Product.from(productCreate));
+    public Long create(final ProductCreate productCreate) {
+        return productRepository.save(Product.from(productCreate))
+                .getId();
     }
 }

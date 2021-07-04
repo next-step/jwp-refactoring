@@ -1,5 +1,8 @@
 package kitchenpos.dto.request;
 
+import kitchenpos.domain.Quantity;
+import kitchenpos.domain.menuproduct.MenuProductCreate;
+
 public class MenuProductCreateRequest {
     private Long menuId;
     private Long productId;
@@ -12,6 +15,10 @@ public class MenuProductCreateRequest {
         this.menuId = menuId;
         this.productId = productId;
         this.quantity = quantity;
+    }
+
+    public MenuProductCreate toCreate() {
+        return new MenuProductCreate(menuId, productId, new Quantity(quantity));
     }
 
     public Long getMenuId() {

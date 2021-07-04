@@ -121,26 +121,22 @@ class TableGroupServiceTest {
     @DisplayName("create - 정상적인 단체지정 등록")
     void 정상적인_단체지정_등록() {
         // given
-        TableGroupCreate tableGroup = new TableGroupCreate(orderTableIds);
+        TableGroupCreate tableGroupCreate = new TableGroupCreate(orderTableIds);
+        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), new OrderTables(orderTables));
 
         given(orderTableRepository.findAllById(orderTableIds)).willReturn(orderTables);
 
         // when
-        when(tableGroupRepository.save(any())).thenAnswer(i -> i.getArgument(0));
+        when(tableGroupRepository.save(any())).thenReturn(tableGroup);
 
-        TableGroup savedTableGroup = tableGroupService.create(tableGroup);
+        tableGroupService.create(tableGroupCreate);
 
         // then
-        assertThat(savedTableGroup.getOrderTables())
-                .map(item -> item.isEmpty())
-                .containsOnly(false);
-
-        assertThat(savedTableGroup.getOrderTables())
-                .map(item -> item.getTableGroup())
-                .containsOnly(savedTableGroup);
-
         verify(orderTableRepository, VerificationModeFactory.times(1))
                 .findAllById(orderTableIds);
+
+        verify(tableGroupRepository, VerificationModeFactory.times(1))
+                .save(any());
     }
 
     @Test

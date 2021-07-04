@@ -3,8 +3,6 @@ package kitchenpos.ui;
 import kitchenpos.application.command.TableService;
 import kitchenpos.application.query.TableQueryService;
 import kitchenpos.domain.NumberOfGuest;
-import kitchenpos.domain.table.OrderTable;
-import kitchenpos.domain.table.OrderTableCreate;
 import kitchenpos.dto.request.ChangeEmptyRequest;
 import kitchenpos.dto.request.ChangeNumberOfGuestsRequest;
 import kitchenpos.dto.request.OrderTableCreateRequest;
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 public class TableRestController {
@@ -28,27 +25,16 @@ public class TableRestController {
 
     @PostMapping("/api/tables")
     public ResponseEntity<OrderTableViewResponse> create(@RequestBody final OrderTableCreateRequest orderTableCreateRequest) {
-        OrderTableCreate orderTable = new OrderTableCreate(
-                new NumberOfGuest(orderTableCreateRequest.getNumberOfGuests()),
-                orderTableCreateRequest.isEmpty()
-        );
+        final Long id = tableService.create(orderTableCreateRequest.toCreate());
 
-        final OrderTable created = tableService.create(orderTable);
-        final URI uri = URI.create("/api/tables/" + created.getId());
-        return ResponseEntity.created(uri)
-                .body(OrderTableViewResponse.of(created))
-                ;
+        return ResponseEntity.created(URI.create("/api/tables/" + id))
+                .body(tableQueryService.findById(id));
     }
 
     @GetMapping("/api/tables")
     public ResponseEntity<List<OrderTableViewResponse>> list() {
-        List<OrderTableViewResponse> results = tableQueryService.list()
-                .stream()
-                .map(OrderTableViewResponse::of)
-                .collect(Collectors.toList());
-
         return ResponseEntity.ok()
-                .body(results);
+                .body(tableQueryService.list());
     }
 
     @PutMapping("/api/tables/{orderTableId}/empty")
@@ -56,8 +42,10 @@ public class TableRestController {
             @PathVariable final Long orderTableId,
             @RequestBody final ChangeEmptyRequest changeEmptyRequest
     ) {
+        tableService.changeEmpty(orderTableId, changeEmptyRequest.isEmpty());
+
         return ResponseEntity.ok()
-                .body(OrderTableViewResponse.of(tableService.changeEmpty(orderTableId, changeEmptyRequest.isEmpty())));
+                .body(tableQueryService.findById(orderTableId));
     }
 
     @PutMapping("/api/tables/{orderTableId}/number-of-guests")
@@ -67,13 +55,9 @@ public class TableRestController {
     ) {
         NumberOfGuest numberOfGuest = new NumberOfGuest(changeNumberOfGuestsRequest.getNumberOfGuests());
 
+        tableService.changeNumberOfGuests(orderTableId, numberOfGuest);
+
         return ResponseEntity.ok()
-                .body(
-                        OrderTableViewResponse.of(
-                                tableService.changeNumberOfGuests(
-                                        orderTableId,
-                                        numberOfGuest
-                                ))
-                );
+                .body(tableQueryService.findById(orderTableId));
     }
 }

@@ -11,9 +11,15 @@ public class OrderTableViewResponse {
     private boolean empty;
 
     public static OrderTableViewResponse of(OrderTable orderTable) {
+        Long tableGroupId = null;
+
+        if(orderTable.getTableGroup() != null) {
+            tableGroupId = orderTable.getTableGroup().getId();
+        }
+
         return new OrderTableViewResponse(
                 orderTable.getId(),
-                orderTable.getTableGroup().getId(),
+                tableGroupId,
                 orderTable.getNumberOfGuests().toInt(),
                 orderTable.isEmpty()
         );

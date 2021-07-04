@@ -7,6 +7,7 @@ import kitchenpos.domain.menu.MenuCreate;
 import kitchenpos.domain.menuproduct.MenuProduct;
 import kitchenpos.dto.request.MenuCreateRequest;
 import kitchenpos.dto.request.MenuProductCreateRequest;
+import kitchenpos.dto.response.MenuViewResponse;
 import kitchenpos.exception.InvalidPriceException;
 import kitchenpos.fixture.CleanUp;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,6 +26,7 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static kitchenpos.fixture.MenuFixture.양념치킨_콜라_1000원_1개;
 import static kitchenpos.fixture.MenuFixture.양념치킨_콜라_1000원_2개;
@@ -87,7 +89,9 @@ class MenuRestControllerTest {
                         new MenuProductCreateRequest(2L, 2L, 2L)
                 )
         );
-        given(menuService.create(any(MenuCreate.class))).willReturn(양념치킨_콜라_1000원_1개);
+        given(menuService.create(any(MenuCreate.class))).willReturn(양념치킨_콜라_1000원_1개.getId());
+        given(menuQueryService.findById(양념치킨_콜라_1000원_1개.getId()))
+                .willReturn(MenuViewResponse.of(양념치킨_콜라_1000원_1개));
 
         // when & then
         mockMvc.perform(
@@ -105,7 +109,10 @@ class MenuRestControllerTest {
     @DisplayName("[get]/api/menus - 정상적인 리스트 조회")
     void 정상적인_리스트_조회() throws Exception {
         List<Menu> menus = Arrays.asList(양념치킨_콜라_1000원_1개, 양념치킨_콜라_1000원_2개);
-        given(menuQueryService.list()).willReturn(menus);
+        List<MenuViewResponse> menuResponses = menus.stream()
+                .map(MenuViewResponse::of)
+                .collect(Collectors.toList());
+        given(menuQueryService.list()).willReturn(menuResponses);
 
         // when & then
         mockMvc.perform(

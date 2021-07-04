@@ -1,11 +1,13 @@
 package kitchenpos.application.query;
 
-import kitchenpos.domain.menu.MenuGroup;
+import kitchenpos.dto.response.MenuGroupViewResponse;
+import kitchenpos.exception.EntityNotExistsException;
 import kitchenpos.repository.MenuGroupRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -16,7 +18,15 @@ public class MenuGroupQueryService {
         this.menuGroupRepository = menuGroupRepository;
     }
 
-    public List<MenuGroup> list() {
-        return menuGroupRepository.findAll();
+    public List<MenuGroupViewResponse> list() {
+        return menuGroupRepository.findAll()
+                .stream()
+                .map(MenuGroupViewResponse::of)
+                .collect(Collectors.toList());
+    }
+
+    public MenuGroupViewResponse findById(Long id) {
+        return MenuGroupViewResponse.of(menuGroupRepository.findById(id)
+                .orElseThrow(EntityNotExistsException::new));
     }
 }

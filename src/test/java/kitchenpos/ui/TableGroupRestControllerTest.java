@@ -1,6 +1,7 @@
 package kitchenpos.ui;
 
 import kitchenpos.application.command.TableGroupService;
+import kitchenpos.application.query.TableGroupQueryService;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTables;
 import kitchenpos.domain.table.TableGroup;
@@ -21,6 +22,7 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
+import static kitchenpos.dto.response.TableGroupViewResponse.of;
 import static kitchenpos.fixture.OrderTableFixture.*;
 import static kitchenpos.ui.JsonUtil.toJson;
 import static org.mockito.ArgumentMatchers.any;
@@ -39,6 +41,9 @@ class TableGroupRestControllerTest {
     @MockBean
     private TableGroupService tableGroupService;
 
+    @MockBean
+    private TableGroupQueryService tableGroupQueryService;
+
     @BeforeEach
     void setUp() {
         CleanUp.cleanUpOrderFirst();
@@ -52,7 +57,9 @@ class TableGroupRestControllerTest {
         TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), new OrderTables(사용중인_1명_2건_결제완료1, 사용중인_1명_테이블, 사용중인_1명_2건_결제완료2));
 
         given(tableGroupService.create(any(TableGroupCreate.class)))
-                .willReturn(tableGroup);
+                .willReturn(tableGroup.getId());
+        given(tableGroupQueryService.findById(tableGroup.getId()))
+                .willReturn(of(tableGroup));
 
         // when & then
         mockMvc.perform(

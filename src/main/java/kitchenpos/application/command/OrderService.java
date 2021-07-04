@@ -29,20 +29,19 @@ public class OrderService {
         this.orderTableRepository = orderTableRepository;
     }
 
-    public Order create(OrderCreate orderCreate) {
+    public Long create(OrderCreate orderCreate) {
         Menus menus = new Menus(menuRepository.findAllById(orderCreate.getMenuIdsInOrderLineItems()));
         OrderTable orderTable = orderTableRepository.findById(orderCreate.getOrderTableId())
                 .orElseThrow(EntityNotExistsException::new);
 
-        return orderRepository.save(Order.create(orderCreate, menus, orderTable));
+        return orderRepository.save(Order.create(orderCreate, menus, orderTable))
+                .getId();
     }
 
-    public Order changeOrderStatus(final Long orderId, final OrderStatus orderStatus) {
+    public void changeOrderStatus(final Long orderId, final OrderStatus orderStatus) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);
 
         order.changeOrderStatus(orderStatus);
-
-        return order;
     }
 }

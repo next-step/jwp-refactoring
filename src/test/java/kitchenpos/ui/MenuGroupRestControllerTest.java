@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.ResultMatcher;
 
 import java.util.Arrays;
 
+import static kitchenpos.dto.response.MenuGroupViewResponse.of;
 import static kitchenpos.fixture.MenuGroupFixture.그룹1;
 import static kitchenpos.fixture.MenuGroupFixture.그룹2;
 import static kitchenpos.ui.JsonUtil.toJson;
@@ -52,7 +53,9 @@ class MenuGroupRestControllerTest {
         MenuGroupCreateRequest menuGroupCreateRequest = new MenuGroupCreateRequest("Hello");
 
         given(menuGroupService.create(any(MenuGroupCreate.class)))
-                .willReturn(그룹1);
+                .willReturn(그룹1.getId());
+        given(menuGroupQueryService.findById(그룹1.getId()))
+                .willReturn(of(그룹1));
 
         // when
         mockMvc.perform(
@@ -66,9 +69,9 @@ class MenuGroupRestControllerTest {
 
     @Test
     void list() throws Exception {
-        // given
+        // given)
         given(menuGroupQueryService.list())
-                .willReturn(Arrays.asList(그룹1, 그룹2));
+                .willReturn(Arrays.asList(of(그룹1), of(그룹2)));
 
         // when & then
         mockMvc.perform(

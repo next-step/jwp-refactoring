@@ -1,12 +1,14 @@
 package kitchenpos.application.query;
 
-import kitchenpos.domain.table.OrderTable;
+import kitchenpos.dto.response.OrderTableViewResponse;
+import kitchenpos.exception.EntityNotExistsException;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -19,7 +21,16 @@ public class TableQueryService {
         this.orderTableRepository = orderTableRepository;
     }
 
-    public List<OrderTable> list() {
-        return orderTableRepository.findAll();
+    public List<OrderTableViewResponse> list() {
+        return orderTableRepository.findAll()
+                .stream()
+                .map(OrderTableViewResponse::of)
+                .collect(Collectors.toList());
+    }
+
+    public OrderTableViewResponse findById(Long id) {
+        return OrderTableViewResponse.of(orderTableRepository.findById(id)
+                .orElseThrow(EntityNotExistsException::new)
+        );
     }
 }

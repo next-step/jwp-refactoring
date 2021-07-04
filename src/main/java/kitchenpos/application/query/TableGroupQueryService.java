@@ -1,5 +1,7 @@
 package kitchenpos.application.query;
 
+import kitchenpos.dto.response.TableGroupViewResponse;
+import kitchenpos.exception.EntityNotExistsException;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import kitchenpos.repository.TableGroupRepository;
@@ -17,5 +19,10 @@ public class TableGroupQueryService {
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
+    }
+
+    public TableGroupViewResponse findById(Long id) {
+        return TableGroupViewResponse.of(tableGroupRepository.findById(id)
+                .orElseThrow(EntityNotExistsException::new));
     }
 }

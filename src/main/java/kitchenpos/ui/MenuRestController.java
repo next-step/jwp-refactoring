@@ -2,10 +2,6 @@ package kitchenpos.ui;
 
 import kitchenpos.application.command.MenuService;
 import kitchenpos.application.query.MenuQueryService;
-import kitchenpos.domain.Price;
-import kitchenpos.domain.menu.Menu;
-import kitchenpos.domain.menu.MenuCreate;
-import kitchenpos.domain.menuproduct.MenuProductCreate;
 import kitchenpos.dto.request.MenuCreateRequest;
 import kitchenpos.dto.response.MenuViewResponse;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 public class MenuRestController {
@@ -30,30 +25,15 @@ public class MenuRestController {
 
     @PostMapping("/api/menus")
     public ResponseEntity<MenuViewResponse> create(@RequestBody final MenuCreateRequest menuCreateRequest) {
-        List<MenuProductCreate> menuProductCreates = menuCreateRequest.getMenuProducts()
-                .stream()
-                .map(item -> new MenuProductCreate(item.getMenuId(), item.getProductId(), item.getQuantity()))
-                .collect(Collectors.toList());
+        final Long id = menuService.create(menuCreateRequest.toCreate());
 
-        MenuCreate menuCreate = new MenuCreate(menuCreateRequest.getName(),
-                new Price(menuCreateRequest.getPrice()),
-                menuCreateRequest.getMenuGroupId(),
-                menuProductCreates);
-
-        final Menu created = menuService.create(menuCreate);
-        final URI uri = URI.create("/api/menus/" + created.getId());
-        return ResponseEntity.created(uri)
-                .body(MenuViewResponse.of(created));
+        return ResponseEntity.created(URI.create("/api/menus/" + id))
+                .body(menuQueryService.findById(id));
     }
 
     @GetMapping("/api/menus")
     public ResponseEntity<List<MenuViewResponse>> list() {
-        List<MenuViewResponse> results = menuQueryService.list()
-                .stream()
-                .map(MenuViewResponse::of)
-                .collect(Collectors.toList());
-
         return ResponseEntity.ok()
-                .body(results);
+                .body(menuQueryService.list());
     }
 }

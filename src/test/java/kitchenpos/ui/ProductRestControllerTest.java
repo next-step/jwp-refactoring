@@ -22,8 +22,8 @@ import org.springframework.test.web.servlet.ResultMatcher;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.List;
 
+import static kitchenpos.dto.response.ProductViewResponse.of;
 import static kitchenpos.fixture.ProductFixture.*;
 import static kitchenpos.ui.JsonUtil.toJson;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -77,7 +77,8 @@ class ProductRestControllerTest {
         // given
         ProductCreateRequest productCreateRequest = new ProductCreateRequest("name", BigDecimal.valueOf(100));
 
-        given(productService.create(any(ProductCreate.class))).willReturn(양념치킨_1000원);
+        given(productService.create(any(ProductCreate.class))).willReturn(양념치킨_1000원.getId());
+        given(productQueryService.findById(양념치킨_1000원.getId())).willReturn(of(양념치킨_1000원));
 
         // when & then
         mockMvc.perform(
@@ -93,8 +94,13 @@ class ProductRestControllerTest {
     @DisplayName("[get]/api/products - 정상목록조회")
     void 정상목록조회() throws Exception {
         // given
-        List<Product> products = Arrays.asList(양념치킨_1000원, 후라이드치킨_2000원, 콜라_100원);
-        given(productQueryService.list()).willReturn(products);
+        given(productQueryService.list()).willReturn(
+                Arrays.asList(
+                    of(양념치킨_1000원),
+                    of(후라이드치킨_2000원),
+                    of(콜라_100원)
+                )
+        );
 
         // when & then
         mockMvc.perform(

@@ -9,6 +9,7 @@ import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.dto.request.OrderCreateRequest;
 import kitchenpos.dto.request.OrderLineItemCreateRequest;
 import kitchenpos.dto.request.OrderStatusChangeRequest;
+import kitchenpos.dto.response.OrderViewResponse;
 import kitchenpos.fixture.CleanUp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,12 +24,14 @@ import org.springframework.test.web.servlet.ResultMatcher;
 
 import java.util.Arrays;
 
+import static kitchenpos.dto.response.OrderViewResponse.of;
 import static kitchenpos.fixture.OrderFixture.결제완료_음식_1;
 import static kitchenpos.fixture.OrderFixture.결제완료_음식_2;
 import static kitchenpos.ui.JsonUtil.toJson;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -55,7 +58,9 @@ class OrderRestControllerTest {
         OrderCreateRequest orderCreateRequest = new OrderCreateRequest(1L, OrderStatus.MEAL, Arrays.asList(new OrderLineItemCreateRequest(1L, 1L)));
 
         given(orderService.create(any(OrderCreate.class)))
-                .willReturn(결제완료_음식_2);
+                .willReturn(결제완료_음식_2.getId());
+        given(orderQueryService.findById(결제완료_음식_2.getId()))
+                .willReturn(of(결제완료_음식_2));
 
         // when
         mockMvc.perform(
@@ -72,7 +77,7 @@ class OrderRestControllerTest {
     @Test
     void list() throws Exception {
         // given
-        given(orderQueryService.list()).willReturn(Arrays.asList(결제완료_음식_1, 결제완료_음식_2));
+        given(orderQueryService.list()).willReturn(Arrays.asList(of(결제완료_음식_1), of(결제완료_음식_2)));
 
         // when & then
         mockMvc.perform(get("/api/orders"))
@@ -89,15 +94,16 @@ class OrderRestControllerTest {
         // given
         OrderStatusChangeRequest orderStatusChangeRequest = new OrderStatusChangeRequest(OrderStatus.COOKING);
 
-        given(orderService.changeOrderStatus(any(), any(OrderStatus.class)))
-                .willReturn(결제완료_음식_2);
+        given(orderQueryService.findById(결제완료_음식_2.getId()))
+                .willReturn(OrderViewResponse.of(결제완료_음식_2));
 
         // when & then
         mockMvc.perform(
-                put("/api/orders/1/order-status")
+                put("/api/orders/"+ 결제완료_음식_2.getId() +"/order-status")
                         .content(toJson(orderStatusChangeRequest))
                         .contentType(MediaType.APPLICATION_JSON)
         )
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(validateOrder("$", 결제완료_음식_2))
                 .andExpect(validateOrderLineItem("$.orderLineItems[0]", 결제완료_음식_2.getOrderLineItems().get(0)))

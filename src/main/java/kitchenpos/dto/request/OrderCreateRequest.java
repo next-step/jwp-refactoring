@@ -1,8 +1,11 @@
 package kitchenpos.dto.request;
 
+import kitchenpos.domain.order.OrderCreate;
+import kitchenpos.domain.order.OrderLineItemCreate;
 import kitchenpos.domain.order.OrderStatus;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class OrderCreateRequest {
     private Long orderTableId;
@@ -16,6 +19,18 @@ public class OrderCreateRequest {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderLineItems = orderLineItems;
+    }
+
+    public OrderCreate toCreate() {
+        List<OrderLineItemCreate> orderLineItemCreates = orderLineItems.stream()
+                .map(OrderLineItemCreateRequest::toCreate)
+                .collect(Collectors.toList());
+
+        return new OrderCreate(
+                orderTableId,
+                orderStatus,
+                orderLineItemCreates
+        );
     }
 
     public Long getOrderTableId() {

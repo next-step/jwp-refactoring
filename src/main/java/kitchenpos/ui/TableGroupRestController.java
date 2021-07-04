@@ -1,8 +1,7 @@
 package kitchenpos.ui;
 
 import kitchenpos.application.command.TableGroupService;
-import kitchenpos.domain.table.TableGroup;
-import kitchenpos.domain.table.TableGroupCreate;
+import kitchenpos.application.query.TableGroupQueryService;
 import kitchenpos.dto.request.TableGroupCreateRequest;
 import kitchenpos.dto.response.TableGroupViewResponse;
 import org.springframework.http.ResponseEntity;
@@ -13,24 +12,25 @@ import java.net.URI;
 @RestController
 public class TableGroupRestController {
     private final TableGroupService tableGroupService;
+    private final TableGroupQueryService tableGroupQueryService;
 
-    public TableGroupRestController(final TableGroupService tableGroupService) {
+    public TableGroupRestController(TableGroupService tableGroupService, TableGroupQueryService tableGroupQueryService) {
         this.tableGroupService = tableGroupService;
+        this.tableGroupQueryService = tableGroupQueryService;
     }
 
     @PostMapping("/api/table-groups")
     public ResponseEntity<TableGroupViewResponse> create(@RequestBody final TableGroupCreateRequest createRequest) {
-        final TableGroup created = tableGroupService.create(new TableGroupCreate(createRequest.getOrderTableIds()));
-        final URI uri = URI.create("/api/table-groups/" + created.getId());
-        return ResponseEntity.created(uri)
-                .body(TableGroupViewResponse.of(created));
+        final Long id = tableGroupService.create(createRequest.toCreate());
+
+        return ResponseEntity.created(URI.create("/api/table-groups/" + id))
+                .body(tableGroupQueryService.findById(id));
     }
 
     @DeleteMapping("/api/table-groups/{tableGroupId}")
     public ResponseEntity<Void> ungroup(@PathVariable final Long tableGroupId) {
         tableGroupService.ungroup(tableGroupId);
         return ResponseEntity.noContent()
-                .build()
-                ;
+                .build();
     }
 }

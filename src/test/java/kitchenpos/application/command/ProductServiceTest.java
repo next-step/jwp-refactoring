@@ -5,6 +5,7 @@ import kitchenpos.domain.Name;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.ProductCreate;
+import kitchenpos.dto.response.ProductViewResponse;
 import kitchenpos.fixture.ProductFixture;
 import kitchenpos.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static kitchenpos.fixture.ProductFixture.양념치킨_1000원;
 import static kitchenpos.fixture.ProductFixture.콜라_100원;
@@ -50,14 +52,11 @@ class ProductServiceTest {
         // when
         when(productRepository.save(any())).thenAnswer(i -> i.getArgument(0));
 
-        Product savedProduct = productService.create(product);
+        productService.create(product);
 
         // then
-        assertThat(savedProduct.getPrice()).isEqualTo(product.getPrice());
-        assertThat(savedProduct.getName()).isEqualTo(product.getName());
-
         verify(productRepository, VerificationModeFactory.times(1))
-                .save(savedProduct);
+                .save(any());
     }
 
     @Test
@@ -69,10 +68,13 @@ class ProductServiceTest {
         // when
         when(productRepository.findAll()).thenReturn(products);
 
-        List<Product> list = productQueryService.list();
+        List<ProductViewResponse> list = productQueryService.list();
 
         // then
-        assertThat(list).containsExactlyElementsOf(products);
+        List<ProductViewResponse> responses = products.stream()
+                .map(ProductViewResponse::of)
+                .collect(Collectors.toList());
+        assertThat(list).containsExactlyElementsOf(responses);
 
         verify(productRepository, VerificationModeFactory.times(1)).findAll();
     }

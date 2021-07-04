@@ -15,7 +15,8 @@ public class MenuGroupService {
         this.menuGroupRepository = menuGroupRepository;
     }
 
-    public MenuGroup create(final MenuGroupCreate create) {
-        return menuGroupRepository.save(MenuGroup.from(create));
+    public Long create(final MenuGroupCreate create) {
+        return menuGroupRepository.save(MenuGroup.from(create))
+                .getId();
     }
 }

@@ -4,6 +4,7 @@ import kitchenpos.application.query.MenuGroupQueryService;
 import kitchenpos.domain.Name;
 import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menu.MenuGroupCreate;
+import kitchenpos.dto.response.MenuGroupViewResponse;
 import kitchenpos.repository.MenuGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -44,13 +46,12 @@ class MenuGroupServiceTest {
         // when
         when(menuGroupRepository.save(any())).thenAnswer(i -> i.getArgument(0));
 
-        MenuGroup result = menuGroupService.create(menuGroupCreate);
+        menuGroupService.create(menuGroupCreate);
 
         // then
-        assertThat(result.getName()).isEqualTo(menuGroupCreate.getName());
 
         verify(menuGroupRepository, VerificationModeFactory.times(1))
-                .save(result);
+                .save(any());
     }
 
     @Test
@@ -67,11 +68,15 @@ class MenuGroupServiceTest {
         when(menuGroupRepository.findAll())
                 .thenReturn(menuGroups);
 
-        List<MenuGroup> list = menuGroupQueryService.list();
+        List<MenuGroupViewResponse> list = menuGroupQueryService.list();
 
         // then
+        List<MenuGroupViewResponse> responses = menuGroups.stream()
+                .map(MenuGroupViewResponse::of)
+                .collect(Collectors.toList());
+
         assertThat(list)
-                .containsExactlyElementsOf(menuGroups);
+                .containsExactlyElementsOf(responses);
 
         verify(menuGroupRepository, VerificationModeFactory.times(1))
                 .findAll();

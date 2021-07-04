@@ -28,4 +28,5 @@ public class MenuProductCreate {
     public Quantity getQuantity() {
         return quantity;
     }
+
 }

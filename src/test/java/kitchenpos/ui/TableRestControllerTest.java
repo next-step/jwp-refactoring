@@ -7,6 +7,7 @@ import kitchenpos.domain.table.OrderTableCreate;
 import kitchenpos.dto.request.ChangeEmptyRequest;
 import kitchenpos.dto.request.ChangeNumberOfGuestsRequest;
 import kitchenpos.dto.request.OrderTableCreateRequest;
+import kitchenpos.dto.response.OrderTableViewResponse;
 import kitchenpos.fixture.CleanUp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,6 +23,7 @@ import org.springframework.test.web.servlet.ResultMatcher;
 
 import java.util.Arrays;
 
+import static kitchenpos.dto.response.OrderTableViewResponse.of;
 import static kitchenpos.fixture.OrderTableFixture.사용중인_1명_1건_결제완료_1건_식사;
 import static kitchenpos.fixture.OrderTableFixture.사용중인_1명_테이블;
 import static kitchenpos.ui.JsonUtil.toJson;
@@ -69,8 +71,8 @@ class TableRestControllerTest {
         // given
         ChangeEmptyRequest changeEmptyRequest = new ChangeEmptyRequest(true);
 
-        given(tableService.changeEmpty(1L, changeEmptyRequest.isEmpty()))
-                .willReturn(사용중인_1명_테이블);
+        given(tableQueryService.findById(1L))
+                .willReturn(of(사용중인_1명_테이블));
 
         // when & then
         mockMvc.perform(
@@ -87,7 +89,7 @@ class TableRestControllerTest {
     void 정상적으로_테이블의_리스트를_가져올경우() throws Exception {
         // given
         given(tableQueryService.list())
-                .willReturn(Arrays.asList(사용중인_1명_1건_결제완료_1건_식사, 사용중인_1명_테이블));
+                .willReturn(Arrays.asList(of(사용중인_1명_1건_결제완료_1건_식사), of(사용중인_1명_테이블)));
 
         // when & then
         mockMvc.perform(
@@ -105,9 +107,10 @@ class TableRestControllerTest {
         // given
         OrderTableCreateRequest orderTableCreateRequest = new OrderTableCreateRequest(1, false);
 
-
         given(tableService.create(any(OrderTableCreate.class)))
-                .willReturn(사용중인_1명_1건_결제완료_1건_식사);
+                .willReturn(사용중인_1명_1건_결제완료_1건_식사.getId());
+        given(tableQueryService.findById(사용중인_1명_1건_결제완료_1건_식사.getId()))
+                .willReturn(OrderTableViewResponse.of(사용중인_1명_1건_결제완료_1건_식사));
 
         // when & then
         mockMvc.perform(

@@ -2,10 +2,6 @@ package kitchenpos.ui;
 
 import kitchenpos.application.command.ProductService;
 import kitchenpos.application.query.ProductQueryService;
-import kitchenpos.domain.Name;
-import kitchenpos.domain.Price;
-import kitchenpos.domain.product.Product;
-import kitchenpos.domain.product.ProductCreate;
 import kitchenpos.dto.request.ProductCreateRequest;
 import kitchenpos.dto.response.ProductViewResponse;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 public class ProductRestController {
@@ -30,24 +25,15 @@ public class ProductRestController {
 
     @PostMapping("/api/products")
     public ResponseEntity<ProductViewResponse> create(@RequestBody final ProductCreateRequest productCreateRequest) {
-        final Product created = productService.create(
-                new ProductCreate(
-                        new Name(productCreateRequest.getName()),
-                        new Price(productCreateRequest.getPrice())
-                )
-        );
-        final URI uri = URI.create("/api/products/" + created.getId());
-        return ResponseEntity.created(uri)
-                .body(ProductViewResponse.of(created));
+        final Long id = productService.create(productCreateRequest.toCreate());
+
+        return ResponseEntity.created(URI.create("/api/products/" + id))
+                .body(productQueryService.findById(id));
     }
 
     @GetMapping("/api/products")
     public ResponseEntity<List<ProductViewResponse>> list() {
-        List<ProductViewResponse> results = productQueryService.list()
-                .stream()
-                .map(ProductViewResponse::of)
-                .collect(Collectors.toList());
         return ResponseEntity.ok()
-                .body(results);
+                .body(productQueryService.list());
     }
 }

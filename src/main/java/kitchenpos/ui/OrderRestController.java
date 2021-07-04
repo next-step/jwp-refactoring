@@ -2,10 +2,6 @@ package kitchenpos.ui;
 
 import kitchenpos.application.command.OrderService;
 import kitchenpos.application.query.OrderQueryService;
-import kitchenpos.domain.Quantity;
-import kitchenpos.domain.order.Order;
-import kitchenpos.domain.order.OrderCreate;
-import kitchenpos.domain.order.OrderLineItemCreate;
 import kitchenpos.dto.request.OrderCreateRequest;
 import kitchenpos.dto.request.OrderStatusChangeRequest;
 import kitchenpos.dto.response.OrderViewResponse;
@@ -14,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 public class OrderRestController {
@@ -28,33 +23,17 @@ public class OrderRestController {
 
     @PostMapping("/api/orders")
     public ResponseEntity<OrderViewResponse> create(@RequestBody final OrderCreateRequest orderCreateRequest) {
-        List<OrderLineItemCreate> itemCreates = orderCreateRequest.getOrderLineItems()
-                .stream()
-                .map(item -> new OrderLineItemCreate(item.getMenuId(), new Quantity(item.getQuantity())))
-                .collect(Collectors.toList());
 
-        final Order created = orderService.create(
-                new OrderCreate(
-                        orderCreateRequest.getOrderTableId(),
-                        orderCreateRequest.getOrderStatus(),
-                        itemCreates
-                )
-        );
-        final URI uri = URI.create("/api/orders/" + created.getId());
-        return ResponseEntity.created(uri)
-                .body(OrderViewResponse.of(created));
+        final Long id = orderService.create(orderCreateRequest.toCreate());
+
+        return ResponseEntity.created(URI.create("/api/orders/" + id))
+                .body(orderQueryService.findById(id));
     }
 
     @GetMapping("/api/orders")
     public ResponseEntity<List<OrderViewResponse>> list() {
-        List<OrderViewResponse> results = orderQueryService.list()
-                .stream()
-                .map(OrderViewResponse::of)
-                .collect(Collectors.toList());
-
-
         return ResponseEntity.ok()
-                .body(results);
+                .body(orderQueryService.list());
     }
 
     @PutMapping("/api/orders/{orderId}/order-status")
@@ -62,10 +41,8 @@ public class OrderRestController {
             @PathVariable final Long orderId,
             @RequestBody final OrderStatusChangeRequest orderStatusChangeRequest
             ) {
-        return ResponseEntity.ok(
-                OrderViewResponse.of(
-                        orderService.changeOrderStatus(orderId, orderStatusChangeRequest.getOrderStatus())
-                )
-        );
+        orderService.changeOrderStatus(orderId, orderStatusChangeRequest.getOrderStatus());
+
+        return ResponseEntity.ok(orderQueryService.findById(orderId));
     }
 }

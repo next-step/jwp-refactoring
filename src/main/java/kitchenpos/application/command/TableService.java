@@ -18,24 +18,22 @@ public class TableService {
     }
 
 
-    public OrderTable create(final OrderTableCreate create) {
-        return orderTableRepository.save(OrderTable.from(create));
+    public Long create(final OrderTableCreate create) {
+        return orderTableRepository.save(OrderTable.from(create))
+                .getId();
     }
 
 
-    public OrderTable changeEmpty(final Long orderTableId, boolean empty) {
+    public void changeEmpty(final Long orderTableId, boolean empty) {
         final OrderTable orderTable = findById(orderTableId);
 
         orderTable.changeEmpty(empty);
-        return orderTable;
     }
 
-    public OrderTable changeNumberOfGuests(final Long orderTableId, final NumberOfGuest numberOfGuest) {
+    public void changeNumberOfGuests(final Long orderTableId, final NumberOfGuest numberOfGuest) {
         OrderTable orderTable = findById(orderTableId);
 
         orderTable.changeNumberOfGuest(numberOfGuest);
-
-        return orderTable;
     }
 
     private OrderTable findById(Long orderTableId) {

@@ -9,6 +9,7 @@ import kitchenpos.domain.menu.MenuCreate;
 import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menuproduct.MenuProduct;
 import kitchenpos.domain.menuproduct.MenuProductCreate;
+import kitchenpos.dto.response.MenuViewResponse;
 import kitchenpos.fixture.CleanUp;
 import kitchenpos.repository.MenuGroupRepository;
 import kitchenpos.repository.MenuRepository;
@@ -21,12 +22,12 @@ import org.mockito.Mock;
 import org.mockito.internal.verification.VerificationModeFactory;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static kitchenpos.fixture.MenuFixture.양념치킨_콜라_1000원_1개;
+import static kitchenpos.fixture.MenuGroupFixture.그룹1;
 import static kitchenpos.fixture.ProductFixture.양념치킨_1000원;
 import static kitchenpos.fixture.ProductFixture.콜라_100원;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -141,28 +142,12 @@ class MenuServiceTest {
         // when
         when(menuRepository.save(any())).thenAnswer(i -> i.getArgument(0));
 
-        Menu savedMenu = menuService.create(menuCreate);
+        menuService.create(menuCreate);
 
         // then
-        assertThat(savedMenu.getMenuProducts())
-                .map(item -> item.getMenu())
-                .containsOnly(savedMenu);
-
-        assertThat(savedMenu.getMenuProducts())
-                .map(item -> item.getProduct())
-                .containsOnly(양념치킨_1000원);
-
-        assertThat(savedMenu.getMenuProducts())
-                .map(item -> item.getQuantity())
-                .containsOnly(양념치킨.getQuantity());
-
-        assertThat(savedMenu.getMenuProducts())
-                .map(item -> item.getAmount())
-                .containsOnly(new Price(양념치킨_1000원.getPrice().toBigDecimal().multiply(BigDecimal.valueOf(1))));
-
         verify(productRepository, VerificationModeFactory.times(1))
                 .findAllById(any());
-        verify(menuRepository, VerificationModeFactory.times(1)).save(savedMenu);
+        verify(menuRepository, VerificationModeFactory.times(1)).save(any());
     }
 
     @Test
@@ -174,16 +159,14 @@ class MenuServiceTest {
                 new MenuProduct(콜라_100원, new Quantity(1))
         );
 
-        Menu menu = new Menu(1L, new Name("Menu"), new Price(1),null, menuProducts);
+        Menu menu = new Menu(1L, new Name("Menu"), new Price(1), 그룹1, menuProducts);
 
         // when
         when(menuRepository.findAll()).thenReturn(Arrays.asList(menu));
 
-        Menu resultMenu = menuQueryService.list().get(0);
+        MenuViewResponse resultMenu = menuQueryService.list().get(0);
         // then
-        assertThat(resultMenu).isEqualTo(menu);
-        assertThat(resultMenu.getMenuProducts())
-                .containsExactlyElementsOf(menuProducts);
+        assertThat(resultMenu).isEqualTo(MenuViewResponse.of(menu));
     }
 
 }

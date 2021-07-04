@@ -26,12 +26,13 @@ public class MenuService {
         this.menuGroupRepository = menuGroupRepository;
         this.productRepository = productRepository;
     }
-    public Menu create(final MenuCreate create) {
+    public Long create(final MenuCreate create) {
         MenuGroup menuGroup = menuGroupRepository.findById(create.getMenuGroupId())
                 .orElseThrow(IllegalArgumentException::new);
         Products products = new Products(productRepository.findAllById(create.getProductsIdInMenuProducts()));
 
-        return menuRepository.save(Menu.create(create, menuGroup, products));
+        return menuRepository.save(Menu.create(create, menuGroup, products))
+                .getId();
     }
 
 }
