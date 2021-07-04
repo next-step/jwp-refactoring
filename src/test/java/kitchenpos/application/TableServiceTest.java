@@ -1,8 +1,8 @@
 package kitchenpos.application;
 
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.tablegroup.dao.OrderTableDao;
 import kitchenpos.tablegroup.domain.OrderTable;
+import kitchenpos.tablegroup.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,7 +27,7 @@ public class TableServiceTest {
     @Mock
     private OrderRepository orderRepository;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     private Long orderTable1Id = 1L;
     private Long orderTable1TableGroupId = 1L;
@@ -36,7 +36,7 @@ public class TableServiceTest {
 
     @BeforeEach
     void setUp() {
-        tableService = new TableService(orderRepository, orderTableDao);
+        tableService = new TableService(orderRepository, orderTableRepository);
     }
 
     @DisplayName("테이블을 등록할 수 있다.")
@@ -45,7 +45,7 @@ public class TableServiceTest {
         OrderTable orderTable1 = new OrderTable(orderTable1Id, orderTable1TableGroupId, orderTable1NumberOfGuests, orderTable1Empty);
         OrderTable orderTableResponse = new OrderTable(orderTable1Id, orderTable1TableGroupId, orderTable1NumberOfGuests, orderTable1Empty);
 
-        when(orderTableDao.save(any())).thenReturn(orderTableResponse);
+        when(orderTableRepository.save(any())).thenReturn(orderTableResponse);
 
         OrderTable response = tableService.create(orderTable1);
         assertThat(response.getId()).isEqualTo(orderTableResponse.getId());
@@ -60,7 +60,7 @@ public class TableServiceTest {
         OrderTable orderTable1 = new OrderTable(orderTable1Id, orderTable1TableGroupId, orderTable1NumberOfGuests, orderTable1Empty);
         OrderTable orderTable2 = new OrderTable(2L, 2L, 0, true);
 
-        when(orderTableDao.findAll()).thenReturn(
+        when(orderTableRepository.findAll()).thenReturn(
                 Arrays.asList(
                         orderTable1,
                         orderTable2
@@ -76,9 +76,9 @@ public class TableServiceTest {
         OrderTable orderTableSaved = new OrderTable(orderTable1Id, null, orderTable1NumberOfGuests, orderTable1Empty);
         OrderTable orderTableRequest = new OrderTable(orderTable1Id, null, orderTable1NumberOfGuests, true);
 
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(orderTableSaved));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTableSaved));
         when(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(false);
-        when(orderTableDao.save(any())).thenReturn(orderTableRequest);
+        when(orderTableRepository.save(any())).thenReturn(orderTableRequest);
 
         OrderTable response = tableService.changeEmpty(orderTableSaved.getId(), orderTableRequest);
 
@@ -94,7 +94,7 @@ public class TableServiceTest {
         OrderTable orderTableSaved = new OrderTable(orderTable1Id, null, orderTable1NumberOfGuests, orderTable1Empty);
         OrderTable orderTableRequest = new OrderTable(orderTable1Id, null, orderTable1NumberOfGuests, true);
 
-        when(orderTableDao.findById(any())).thenReturn(Optional.empty());
+        when(orderTableRepository.findById(any())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> {
             tableService.changeEmpty(orderTableSaved.getId(), orderTableRequest);
@@ -107,7 +107,7 @@ public class TableServiceTest {
         OrderTable orderTableSaved = new OrderTable(orderTable1Id, 2L, orderTable1NumberOfGuests, orderTable1Empty);
         OrderTable orderTableRequest = new OrderTable(orderTable1Id, 2L, orderTable1NumberOfGuests, true);
 
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(orderTableSaved));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTableSaved));
 
         assertThatThrownBy(() -> {
             tableService.changeEmpty(orderTableSaved.getId(), orderTableRequest);
@@ -120,7 +120,7 @@ public class TableServiceTest {
         OrderTable orderTableSaved = new OrderTable(orderTable1Id, null, orderTable1NumberOfGuests, orderTable1Empty);
         OrderTable orderTableRequest = new OrderTable(orderTable1Id, null, orderTable1NumberOfGuests, true);
 
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(orderTableSaved));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTableSaved));
         when(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(true);
 
         assertThatThrownBy(() -> {
@@ -135,8 +135,8 @@ public class TableServiceTest {
         OrderTable orderTableSaved = new OrderTable(orderTable1Id, null, orderTable1NumberOfGuests, orderTable1Empty);
         OrderTable orderTableRequest = new OrderTable(orderTable1Id, null, changeNumberOfGuests, false);
 
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(orderTableSaved));
-        when(orderTableDao.save(any())).thenReturn(orderTableRequest);
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTableSaved));
+        when(orderTableRepository.save(any())).thenReturn(orderTableRequest);
 
         OrderTable response = tableService.changeNumberOfGuests(orderTableSaved.getId(), orderTableRequest);
 
@@ -162,7 +162,7 @@ public class TableServiceTest {
         OrderTable orderTableSaved = new OrderTable(orderTable1Id, null, orderTable1NumberOfGuests, orderTable1Empty);
         OrderTable orderTableRequest = new OrderTable(orderTable1Id, null, changeNumberOfGuests, false);
 
-        when(orderTableDao.findById(any())).thenReturn(Optional.empty());
+        when(orderTableRepository.findById(any())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> {
             tableService.changeNumberOfGuests(orderTableSaved.getId(), orderTableRequest);
@@ -176,7 +176,7 @@ public class TableServiceTest {
         OrderTable orderTableSaved = new OrderTable(orderTable1Id, null, orderTable1NumberOfGuests, true);
         OrderTable orderTableRequest = new OrderTable(orderTable1Id, null, changeNumberOfGuests, false);
 
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(orderTableSaved));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTableSaved));
 
         assertThatThrownBy(() -> {
             tableService.changeNumberOfGuests(orderTableSaved.getId(), orderTableRequest);

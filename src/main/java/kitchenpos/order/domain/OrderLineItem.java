@@ -7,11 +7,14 @@ import java.util.Objects;
 public class OrderLineItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long seq;
+    private Long id;
 
-    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
-    private Order order;
+//    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)
+//    @JoinColumn(name = "order_id")
+//    private Order order;
+
+    @Column
+    private Long orderId;
 
     @Column
     private Long menuId;
@@ -22,24 +25,42 @@ public class OrderLineItem {
     public OrderLineItem() { }
 
     public OrderLineItem(Long menuId, long quantity) {
-        this(null, menuId, quantity);
-    }
-
-    public OrderLineItem(Order order, Long menuId, long quantity) {
-        this.order = order;
         this.menuId = menuId;
         this.quantity = quantity;
     }
 
-    public OrderLineItem(Long id, Order order, Long menuId, long quantity) {
-        this.seq = id;
-        this.order = order;
+    public OrderLineItem(Long orderId, Long menuId, long quantity) {
+        this.orderId = orderId;
         this.menuId = menuId;
         this.quantity = quantity;
     }
 
-    public Long getSeq() {
-        return seq;
+    public OrderLineItem(Long id, Long orderId, Long menuId, long quantity) {
+        this.id = id;
+        this.orderId = orderId;
+        this.menuId = menuId;
+        this.quantity = quantity;
+    }
+
+//    public OrderLineItem(Order order, Long menuId, long quantity) {
+//        this.orderId = order.getId();
+//        this.menuId = menuId;
+//        this.quantity = quantity;
+//    }
+//
+//    public OrderLineItem(Long id, Order order, Long menuId, long quantity) {
+//        this.id = id;
+//        this.orderId = order.getId();
+//        this.menuId = menuId;
+//        this.quantity = quantity;
+//    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Long getOrderId() {
+        return orderId;
     }
 
     public Long getMenuId() {
@@ -55,15 +76,20 @@ public class OrderLineItem {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OrderLineItem that = (OrderLineItem) o;
-        return quantity == that.quantity && Objects.equals(seq, that.seq) && Objects.equals(order, that.order) && Objects.equals(menuId, that.menuId);
+        return quantity == that.quantity && Objects.equals(id, that.id) && Objects.equals(orderId, that.orderId) && Objects.equals(menuId, that.menuId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(seq, order, menuId, quantity);
+        return Objects.hash(id, orderId, menuId, quantity);
     }
 
+    //    public void isIn(Order order) {
+//        this.order = order;
+//    }
+
     public void isIn(Order order) {
-        this.order = order;
+        this.orderId = order.getId();
     }
+
 }

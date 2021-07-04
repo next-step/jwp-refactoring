@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ public class ProductServiceTest {
     private ProductService productService;
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     private Long product1Id = 1L;
     private String product1Name = "상품1";
@@ -31,7 +31,7 @@ public class ProductServiceTest {
 
     @BeforeEach
     void setUp() {
-        productService = new ProductService(productDao);
+        productService = new ProductService(productRepository);
     }
 
     @DisplayName("상품을 등록할 수 있다.")
@@ -40,7 +40,7 @@ public class ProductServiceTest {
         Product product1 = new Product(product1Id, product1Name, product1Price);
         Product productResponse = new Product(product1Id, product1Name, product1Price);
 
-        when(productDao.save(product1)).thenReturn(productResponse);
+        when(productRepository.save(product1)).thenReturn(productResponse);
 
         assertThat(productService.create(product1)).isEqualTo(productResponse);
     }
@@ -72,7 +72,7 @@ public class ProductServiceTest {
     void list() {
         Product productResponse = new Product(product1Id, product1Name, product1Price);
 
-        when(productDao.findAll()).thenReturn(Arrays.asList(productResponse));
+        when(productRepository.findAll()).thenReturn(Arrays.asList(productResponse));
 
         assertThat(productService.list()).contains(productResponse);
     }

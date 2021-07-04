@@ -1,7 +1,6 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.BaseEntity;
-import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.tablegroup.domain.OrderTable;
 import org.springframework.util.CollectionUtils;
 
@@ -27,7 +26,7 @@ public class Order extends BaseEntity {
     @Column
     private LocalDateTime orderedTime;
 
-    @OneToMany(mappedBy = "order", orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE }, orphanRemoval = true)
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     public Order() { }

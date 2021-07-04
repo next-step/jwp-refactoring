@@ -1,13 +1,13 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
+import kitchenpos.domain.ProductRepository;
 import kitchenpos.menu.application.MenuService;
-import kitchenpos.menugroup.dao.MenuGroupDao;
-import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
+import kitchenpos.menu.domain.MenuProductRepository;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,13 +32,13 @@ public class MenuServiceTest {
     private MenuService menuService;
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
     @Mock
-    private MenuProductDao menuProductDao;
+    private MenuProductRepository menuProductRepository;
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     private Long menu1Id = 1L;
     private String menu1Name = "메뉴이름1";
@@ -51,7 +51,7 @@ public class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
+        menuService = new MenuService(menuRepository, menuGroupRepository, menuProductRepository, productRepository);
     }
 
     @DisplayName("메뉴를 등록할 수 있다")
@@ -59,10 +59,10 @@ public class MenuServiceTest {
     void create() {
         Menu menu1 = new Menu(menu1Id, menu1Name, menu1Price, menu1MenuGroupId, menu1MenuProducts);
 
-        when(menuGroupDao.existsById(any())).thenReturn(true);
-        when(productDao.findById(any())).thenReturn(Optional.of(product));
-        when(menuDao.save(any())).thenReturn(menu1);
-        when(menuProductDao.save(any())).thenReturn(menuProduct);
+        when(menuGroupRepository.existsById(any())).thenReturn(true);
+        when(productRepository.findById(any())).thenReturn(Optional.of(product));
+        when(menuRepository.save(any())).thenReturn(menu1);
+        when(menuProductRepository.save(any())).thenReturn(menuProduct);
 
         Menu menuResponse = menuService.create(menu1);
 
@@ -102,8 +102,8 @@ public class MenuServiceTest {
 
         Product diffPriceProduct = new Product(2L, "상품2", BigDecimal.valueOf(500));
 
-        when(menuGroupDao.existsById(any())).thenReturn(true);
-        when(productDao.findById(any())).thenReturn(Optional.of(diffPriceProduct));
+        when(menuGroupRepository.existsById(any())).thenReturn(true);
+        when(productRepository.findById(any())).thenReturn(Optional.of(diffPriceProduct));
 
         assertThatThrownBy(() -> {
             menuService.create(menu1);
@@ -115,7 +115,7 @@ public class MenuServiceTest {
     void 메뉴의_메뉴그룹이_올바르지_않으면_등록할_수_없다() {
         Menu menu1 = new Menu(menu1Id, menu1Name, menu1Price, menu1MenuGroupId, menu1MenuProducts);
 
-        when(menuGroupDao.existsById(any())).thenReturn(false);
+        when(menuGroupRepository.existsById(any())).thenReturn(false);
 
         assertThatThrownBy(() -> {
             menuService.create(menu1);
@@ -127,8 +127,8 @@ public class MenuServiceTest {
     void 메뉴의_메뉴상품들이_올바르지_않으면_등록할_수_없다() {
         Menu menu1 = new Menu(menu1Id, menu1Name, menu1Price, menu1MenuGroupId, menu1MenuProducts);
 
-        when(menuGroupDao.existsById(any())).thenReturn(true);
-        when(productDao.findById(any())).thenReturn(Optional.empty());
+        when(menuGroupRepository.existsById(any())).thenReturn(true);
+        when(productRepository.findById(any())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> {
             menuService.create(menu1);
@@ -140,8 +140,8 @@ public class MenuServiceTest {
     void listTest() {
         Menu menu1 = new Menu(menu1Id, menu1Name, menu1Price, menu1MenuGroupId, menu1MenuProducts);
 
-        when(menuDao.findAll()).thenReturn(Arrays.asList(menu1));
-        when(menuProductDao.findAllByMenuId(any())).thenReturn(menu1MenuProducts);
+        when(menuRepository.findAll()).thenReturn(Arrays.asList(menu1));
+        when(menuProductRepository.findAllByMenuId(any())).thenReturn(menu1MenuProducts);
 
         assertThat(menuService.list()).contains(menu1);
         assertThat(menu1.getMenuProducts()).contains(menuProduct);

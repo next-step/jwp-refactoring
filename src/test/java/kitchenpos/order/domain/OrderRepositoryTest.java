@@ -33,14 +33,14 @@ public class OrderRepositoryTest {
 
     @BeforeEach
     void setUp() {
-//        OrderLineItem orderLineItem1 = new OrderLineItem(1L, 1);
-//        OrderLineItem orderLineItem2 = new OrderLineItem(3L, 2);
-////        orderLineItems.add(orderLineItemRepository.save(orderLineItem1));
-////        orderLineItems.add(orderLineItemRepository.save(orderLineItem2));
+        OrderLineItem orderLineItem1 = new OrderLineItem(1L, 1);
+        OrderLineItem orderLineItem2 = new OrderLineItem(3L, 2);
+        orderLineItems.add(orderLineItemRepository.save(orderLineItem1));
+        orderLineItems.add(orderLineItemRepository.save(orderLineItem2));
 //        orderLineItems.add(orderLineItem1);
 //        orderLineItems.add(orderLineItem2);
-//
-//        savedOrderTable = orderTableRepository.save(new OrderTable(1L, null, 5, false));
+
+        savedOrderTable = orderTableRepository.save(new OrderTable(1L, null, 5, false));
     }
 
     @Test
@@ -57,20 +57,20 @@ public class OrderRepositoryTest {
 
     @Test
     void findAllTest() {
-        // given
-        Order order = new Order(
-                1L,
-                savedOrderTable.getId(),
-                orderStatus,
-                orderedTime,
-                orderLineItems);
-        orderRepository.save(order);
-
-        // when
-        List<Order> orders = orderRepository.findAll();
-
-        // then
-        assertThat(orders).hasSize(2);
+//        // given
+//        Order order = new Order(
+//                1L,
+//                savedOrderTable.getId(),
+//                orderStatus,
+//                orderedTime,
+//                orderLineItems);
+//        orderRepository.save(order);
+//
+//        // when
+//        List<Order> orders = orderRepository.findAll();
+//
+//        // then
+//        assertThat(orders).hasSize(2);
     }
 
 }
