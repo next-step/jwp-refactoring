@@ -127,18 +127,18 @@ class OrderServiceTest {
     @DisplayName("주문 목록을 가져온다")
     void list() {
         // given
-        when(orderDao.findAll()).thenReturn(Arrays.asList(주문_테이블1_결제완료, 주문_테이블2_식사중));
-        when(orderLineItemDao.findAllByOrderId(주문_테이블1_결제완료.getId()))
-            .thenReturn(주문_테이블1_결제완료.getOrderLineItems());
-        when(orderLineItemDao.findAllByOrderId(주문_테이블2_식사중.getId()))
-            .thenReturn(주문_테이블2_식사중.getOrderLineItems());
+        when(orderDao.findAll()).thenReturn(Arrays.asList(주문1_결제완료, 주문2_식사중));
+        when(orderLineItemDao.findAllByOrderId(주문1_결제완료.getId()))
+            .thenReturn(주문1_결제완료.getOrderLineItems());
+        when(orderLineItemDao.findAllByOrderId(주문2_식사중.getId()))
+            .thenReturn(주문2_식사중.getOrderLineItems());
 
         // when
         List<Order> orders = orderService.list();
 
         // then
         assertThat(orders.size()).isEqualTo(2);
-        assertThat(orders).containsExactly(주문_테이블1_결제완료, 주문_테이블2_식사중);
+        assertThat(orders).containsExactly(주문1_결제완료, 주문2_식사중);
     }
 
     @Test

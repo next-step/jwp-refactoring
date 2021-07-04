@@ -104,15 +104,15 @@ class TableGroupServiceTest {
     @DisplayName("특정 테이블 그룹을 삭제한다")
     void ungroup() {
         // given
-        when(orderTableDao.findAllByTableGroupId(테이블_그룹_삭제_가능.getId())).thenReturn(테이블_그룹_삭제_가능.getOrderTables());
+        when(orderTableDao.findAllByTableGroupId(테이블_그룹.getId())).thenReturn(테이블_그룹.getOrderTables());
         when(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any()))
             .thenReturn(false);
 
         // when
-        tableGroupService.ungroup(테이블_그룹_삭제_가능.getId());
+        tableGroupService.ungroup(테이블_그룹.getId());
 
         // then
-        테이블_그룹_삭제_가능.getOrderTables().forEach(orderTable -> {
+        테이블_그룹.getOrderTables().forEach(orderTable -> {
             assertThat(orderTable.getTableGroupId()).isNull();
         });
     }

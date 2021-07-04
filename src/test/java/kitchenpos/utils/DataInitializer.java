@@ -46,8 +46,8 @@ public class DataInitializer {
     public static OrderTable 테이블5번_EMPTY;
     public static OrderTable 테이블6번_EMPTY;
 
-    public static Order 주문_테이블1_결제완료;
-    public static Order 주문_테이블2_식사중;
+    public static Order 주문1_결제완료;
+    public static Order 주문2_식사중;
 
     public static Product 치킨;
     public static Product 피자;
@@ -55,7 +55,7 @@ public class DataInitializer {
     public static Product 소주;
     public static Product 맥주;
 
-    public static TableGroup 테이블_그룹_삭제_가능;
+    public static TableGroup 테이블_그룹;
     public static TableGroup 테이블_그룹_삭제_불가;
 
     public static void reset() {
@@ -97,10 +97,10 @@ public class DataInitializer {
         테이블5번_EMPTY = new OrderTable(5L, 1L, 2, true);
         테이블6번_EMPTY = new OrderTable(6L, 1L, 2, true);
 
-        테이블_그룹_삭제_가능 = new TableGroup(1L, Arrays.asList(테이블5번_EMPTY, 테이블6번_EMPTY));
+        테이블_그룹 = new TableGroup(1L, Arrays.asList(테이블5번_EMPTY, 테이블6번_EMPTY));
         테이블_그룹_삭제_불가 = new TableGroup(1L, Arrays.asList(테이블1번_USING, 테이블6번_EMPTY));
 
-        주문_테이블1_결제완료 = new Order(1L, 테이블1번_USING.getId(), OrderStatus.COMPLETION.name(), Arrays.asList(테이블1_행복세트, 테이블1_치쏘세트));
-        주문_테이블2_식사중 = new Order(2L, 테이블2번_USING.getId(), OrderStatus.MEAL.name(), Arrays.asList(테이블2_행복세트, 테이블2_피맥세트));
+        주문1_결제완료 = new Order(1L, 테이블1번_USING.getId(), OrderStatus.COMPLETION.name(), Arrays.asList(테이블1_행복세트, 테이블1_치쏘세트));
+        주문2_식사중 = new Order(2L, 테이블2번_USING.getId(), OrderStatus.MEAL.name(), Arrays.asList(테이블2_행복세트, 테이블2_피맥세트));
     }
 }
