@@ -41,7 +41,7 @@ class MenuGroupServiceTest {
     verify(menuGroupDao, VerificationModeFactory.times(1)).save(menuGroup);
   }
 
-  @DisplayName("상품 목록을 반환한다.")
+  @DisplayName("전체 메뉴그룹의 목록을 조회할 수 있다.")
   @Test
   void findAllTest() {
     //given
