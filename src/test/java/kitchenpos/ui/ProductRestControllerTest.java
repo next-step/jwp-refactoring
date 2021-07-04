@@ -79,8 +79,7 @@ class ProductRestControllerTest {
         given(productService.list()).willReturn(Arrays.asList(강정치킨, 후라이드));
 
         // when
-        ResultActions actions = mockMvc.perform(get(PRODUCT_API_URI)
-                .contentType(MediaType.APPLICATION_JSON));
+        ResultActions actions = mockMvc.perform(get(PRODUCT_API_URI));
 
         // then
         actions.andExpect(status().isOk())

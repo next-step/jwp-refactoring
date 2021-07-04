@@ -82,9 +82,7 @@ class MenuRestControllerTest {
         given(menuService.list()).willReturn(Arrays.asList(강정치킨plus강정치킨, 후라이드plus후라이드));
 
         // when
-        ResultActions actions = mockMvc.perform(get(MENU_API_URI)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(강정치킨plus강정치킨)));
+        ResultActions actions = mockMvc.perform(get(MENU_API_URI));
 
         // then
         actions.andExpect(status().isOk())

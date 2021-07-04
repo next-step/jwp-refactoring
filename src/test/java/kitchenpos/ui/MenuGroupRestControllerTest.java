@@ -78,8 +78,7 @@ class MenuGroupRestControllerTest {
         given(menuGroupService.list()).willReturn(Arrays.asList(추천메뉴, 인기메뉴));
 
         // when
-        ResultActions actions = mockMvc.perform(get(MENU_GROUP_API_URI)
-                .contentType(MediaType.APPLICATION_JSON));
+        ResultActions actions = mockMvc.perform(get(MENU_GROUP_API_URI));
 
         // then
         actions.andExpect(status().isOk())
