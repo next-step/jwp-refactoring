@@ -24,11 +24,21 @@ public class TableGroup extends BaseEntity {
         this.id = id;
     }
 
+    public TableGroup(List<OrderTable> orderTables) {
+        validate(orderTables);
+
+        this.orderTables = orderTables;
+    }
+
     public TableGroup(Long id, List<OrderTable> orderTables) {
         validate(orderTables);
 
         this.id = id;
         this.orderTables = orderTables;
+    }
+
+    public static TableGroup of(List<OrderTable> savedOrderTables) {
+        return new TableGroup(savedOrderTables);
     }
 
     private void validate(List<OrderTable> orderTables) {
@@ -64,30 +74,31 @@ public class TableGroup extends BaseEntity {
         return Objects.hash(id, orderTables);
     }
 
-    public void setOrderTables(List<OrderTable> savedOrderTables) {
-        this.orderTables = orderTables;
+    public void grouping() {
+        validateGroupingSizeWith(orderTables);
+        validateOrderTablesForGrouping(orderTables);
+        orderTablesSetting(orderTables);
     }
 
-    public void hasSameOrderTableSizeWith(List<OrderTable> savedOrderTables) {
+    private void validateGroupingSizeWith(List<OrderTable> savedOrderTables) {
         if (orderTables.size() != savedOrderTables.size()) {
             throw new IllegalArgumentException("그룹지으려는 주문테이블 개수가 올바르지 않음.");
         }
     }
 
-    public void grouping(List<OrderTable> savedOrderTables) {
-        hasSameOrderTableSizeWith(savedOrderTables);
-
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        final Long tableGroupId = this.id;
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.setTableGroupId(tableGroupId);
-            savedOrderTable.setEmpty(false);
-//            orderTableRepository.save(savedOrderTable);
-        }
+    private void validateOrderTablesForGrouping(List<OrderTable> orderTables) {
+        orderTables.stream()
+                .forEach(OrderTable::validateForGrouping);
     }
+
+    private void orderTablesSetting(List<OrderTable> orderTables) {
+        orderTables.stream()
+                .forEach(orderTable -> orderTable.groupingIn(this.id));
+    }
+
+    public void ungrouping() {
+        orderTables.stream()
+                .forEach(OrderTable::ungrouping);
+    }
+
 }

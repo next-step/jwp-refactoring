@@ -34,9 +34,11 @@ public class TableGroupRepositoryTest {
         OrderTable persistOrderTable1 = orderTableRepository.save(orderTable1);
         OrderTable persistOrderTable2 = orderTableRepository.save(orderTable2);
 
-        tableGroupRequest = TableGroupRequest.of(tableGroup1Id, Arrays.asList(persistOrderTable1, persistOrderTable2));
+//        tableGroupRequest = TableGroupRequest.of(Arrays.asList(persistOrderTable1.getId(), persistOrderTable2.getId()));
 
-        TableGroup persistTableGroup = tableGroupRepository.save(tableGroupRequest.toEntity());
+        TableGroup tableGroup = new TableGroup(Arrays.asList(persistOrderTable1, persistOrderTable2));
+
+        TableGroup persistTableGroup = tableGroupRepository.save(tableGroup);
 
         assertThat(persistTableGroup.getId()).isEqualTo(tableGroup1Id);
         assertThat(persistTableGroup.getOrderTables()).contains(persistOrderTable1, persistOrderTable2);

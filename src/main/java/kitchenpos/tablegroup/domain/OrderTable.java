@@ -77,4 +77,20 @@ public class OrderTable {
     public int hashCode() {
         return Objects.hash(id, tableGroupId, numberOfGuests, empty);
     }
+
+    public void groupingIn(Long tableGroupId) {
+        setTableGroupId(tableGroupId);
+        setEmpty(false);
+    }
+
+    public void ungrouping() {
+        setTableGroupId(null);
+        setEmpty(true);
+    }
+
+    public void validateForGrouping() {
+        if (!isEmpty() || Objects.nonNull(getTableGroupId())) {
+            throw new IllegalArgumentException();
+        }
+    }
 }

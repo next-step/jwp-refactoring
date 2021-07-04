@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,31 +31,29 @@ public class TableGroupService {
 
     @Transactional
     public TableGroup create(final TableGroupRequest tableGroupRequest) {
-        TableGroup tableGroup = tableGroupRequest.toEntity();
 
-        final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(tableGroup.getOrderTableIds());
+        final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(tableGroupRequest.getOrderTableIds());
 
-        tableGroup.grouping(savedOrderTables);
+        TableGroup tableGroup = TableGroup.of(savedOrderTables);
+        tableGroup.grouping();
 
         return tableGroupRepository.save(tableGroup);
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
+        TableGroup persistTableGroup = tableGroupRepository.findById(tableGroupId)
+                .orElseThrow(IllegalArgumentException::new);
 
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
+        checkOrderStatusInOrderTablesIfAllComplete(persistTableGroup.getOrderTableIds());
 
+        persistTableGroup.ungrouping();
+    }
+
+    private void checkOrderStatusInOrderTablesIfAllComplete(List<Long> orderTableIds) {
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
                 orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
             throw new IllegalArgumentException();
-        }
-
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.setTableGroupId(null);
-            orderTableRepository.save(orderTable);
         }
     }
 }
