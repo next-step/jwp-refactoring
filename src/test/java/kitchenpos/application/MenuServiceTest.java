@@ -5,6 +5,7 @@ import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,8 +18,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import static org.mockito.BDDMockito.given;
@@ -143,6 +146,25 @@ class MenuServiceTest {
         verify(menuDao).save(givenMenu);
         verify(menuProductDao).save(givenMenuProduct);
     }
+
+    @DisplayName("메뉴 목록을 조회할 수 있다 ")
+    @Test
+    void list() {
+
+        //given
+        List<Menu> expect = Arrays.asList(givenMenu);
+        given(menuDao.findAll())
+                .willReturn(expect);
+
+        //when
+        List<Menu> result = menuService.list();
+
+        //then
+        verify(menuDao).findAll();
+        assertThat(result.size()).isEqualTo(expect.size());
+        assertThat(result).containsExactly(givenMenu);
+    }
+
 
 
 }
