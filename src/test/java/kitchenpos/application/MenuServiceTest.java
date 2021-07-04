@@ -183,28 +183,6 @@ class MenuServiceTest {
 				.isInstanceOf(IllegalArgumentException.class);
 	}
 
-	private Menu 메뉴생성() {
-		final List<MenuProduct> menuProducts = new ArrayList<>();
-
-		MenuProduct menuProduct = new MenuProduct();
-		Product product = 상품생성();
-
-		menuProduct.setProductId(product.getId());
-		menuProduct.setQuantity(3);
-
-		menuProducts.add(menuProduct);
-
-		Menu menu = new Menu();
-		MenuGroup menuGroup = 메뉴그룹생성();
-
-		menu.setMenuGroupId(menuGroup.getId());
-		menu.setMenuProducts(menuProducts);
-		menu.setPrice(product.getPrice().multiply(new BigDecimal(menuProduct.getQuantity())));
-		menu.setName("신상치킨");
-
-		return menuService.create(menu);
-	}
-
 	private MenuGroup 메뉴그룹생성() {
 		MenuGroup menuGroup = new MenuGroup();
 		String menuGroupname = "추천메뉴";
