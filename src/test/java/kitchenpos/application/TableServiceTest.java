@@ -13,7 +13,6 @@ import java.util.Optional;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderTable;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,6 +25,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class TableServiceTest {
 
     public static final int 두명 = 2;
+    public static final boolean 비어있지않음 = false;
     public static final boolean 비어있음 = true;
     public static final boolean 진행중이_아님 = false;
     public static final boolean 진행중임 = true;
@@ -37,18 +37,11 @@ public class TableServiceTest {
     @InjectMocks
     private TableService tableService;
 
-    private Long 주문테이블번호 = 1L;
-    private OrderTable 주문테이블;
-
-    @BeforeEach
-    void setup() {
-        주문테이블 = new OrderTable(주문테이블번호, 두명);
-    }
-
     @DisplayName("주문 테이블을 등록한다.")
     @Test
     void create() {
         // Given
+        OrderTable 주문테이블 = new OrderTable(1L, 두명);
         given(tableService.create(주문테이블)).willReturn(주문테이블);
 
         // When
@@ -76,7 +69,7 @@ public class TableServiceTest {
     @Test
     void changeEmpty() {
         // Given
-        주문테이블.setTableGroupId(null);
+        OrderTable 주문테이블 = new OrderTable(1L, null, 두명);
         given(orderTableDao.findById(any())).willReturn(Optional.of(주문테이블));
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(진행중이_아님);
         given(orderTableDao.save(any())).willReturn(주문테이블);
@@ -92,11 +85,11 @@ public class TableServiceTest {
     @Test
     void changeEmpty_Fail_01() {
         // Given
-        주문테이블.setTableGroupId(1L);
+        OrderTable 주문테이블 = new OrderTable(1L, 1L, 두명);
         given(orderTableDao.findById(any())).willReturn(Optional.of(주문테이블));
 
         // When
-        assertThatThrownBy(() -> tableService.changeEmpty(주문테이블번호, 주문테이블))
+        assertThatThrownBy(() -> tableService.changeEmpty(주문테이블.getId(), 주문테이블))
             .isInstanceOf(IllegalArgumentException.class);
 
         // Then
@@ -107,11 +100,12 @@ public class TableServiceTest {
     @Test
     void changeEmpty_Fail_02() {
         // Given
+        OrderTable 주문테이블 = new OrderTable(1L, 두명, 진행중임);
         given(orderTableDao.findById(any())).willReturn(Optional.of(주문테이블));
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(진행중임);
 
         // When
-        assertThatThrownBy(() -> tableService.changeEmpty(주문테이블번호, 주문테이블))
+        assertThatThrownBy(() -> tableService.changeEmpty(주문테이블.getId(), 주문테이블))
             .isInstanceOf(IllegalArgumentException.class);
 
         // Then
@@ -123,7 +117,7 @@ public class TableServiceTest {
     @Test
     void changeNumberOfGuests() {
         // Given
-        주문테이블.setEmpty(false);
+        OrderTable 주문테이블 = new OrderTable(1L, 1L, 두명, 비어있지않음);
         given(orderTableDao.findById(any())).willReturn(Optional.of(주문테이블));
         given(orderTableDao.save(any())).willReturn(주문테이블);
 
@@ -138,10 +132,10 @@ public class TableServiceTest {
     @Test
     void changeNumberOfGuests_Fail_01() {
         // Given
-        주문테이블.setNumberOfGuests(-1);
+        OrderTable 주문테이블 = new OrderTable(1L, 1L, -1);
 
         // When & then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(주문테이블번호, 주문테이블))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(주문테이블.getId(), 주문테이블))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -149,11 +143,11 @@ public class TableServiceTest {
     @Test
     void changeNumberOfGuests_Fail_02() {
         // Given
-        주문테이블.setEmpty(true);
+        OrderTable 주문테이블 = new OrderTable(1L, 1L, 두명, 비어있음);
         given(orderTableDao.findById(any())).willReturn(Optional.of(주문테이블));
 
         // When
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(주문테이블번호, 주문테이블))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(주문테이블.getId(), 주문테이블))
             .isInstanceOf(IllegalArgumentException.class);
 
         // Then

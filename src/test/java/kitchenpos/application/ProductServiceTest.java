@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,17 +29,11 @@ public class ProductServiceTest {
     @InjectMocks
     private ProductService productService;
 
-    private Product 피자;
-
-    @BeforeEach
-    void setup() {
-        피자 = new Product(1L, "피자", new BigDecimal(20000));
-    }
-
     @DisplayName("상품을 등록한다.")
     @Test
     void create() {
         // Given
+        Product 피자 = new Product(1L, "피자", new BigDecimal(20000));
         given(productDao.save(any())).willReturn(피자);
 
         // When
@@ -54,10 +47,10 @@ public class ProductServiceTest {
     @Test
     void create_Fail_01() {
         // Given
-        피자.setPrice(null);
+        Product 햄버거 = new Product(1L, "햄버거", null);
 
         // When & Then
-        assertThatThrownBy(() -> productService.create(피자))
+        assertThatThrownBy(() -> productService.create(햄버거))
             .isInstanceOf(IllegalArgumentException.class);
         verify(productDao, never()).save(any());
     }
@@ -66,10 +59,10 @@ public class ProductServiceTest {
     @Test
     void create_Fail_02() {
         // Given
-        피자.setPrice(new BigDecimal(-1));
+        Product 햄버거 = new Product(1L, "햄버거", new BigDecimal(-1));
 
         // When & Then
-        assertThatThrownBy(() -> productService.create(피자))
+        assertThatThrownBy(() -> productService.create(햄버거))
             .isInstanceOf(IllegalArgumentException.class);
         verify(productDao, never()).save(any());
     }
