@@ -5,8 +5,8 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import kitchenpos.error.CustomException;
-import kitchenpos.error.ErrorInfo;
+import kitchenpos.common.error.CustomException;
+import kitchenpos.common.error.ErrorInfo;
 
 @Embeddable
 public class Quantity {

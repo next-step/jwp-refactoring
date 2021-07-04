@@ -6,8 +6,8 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import kitchenpos.error.ErrorInfo;
-import kitchenpos.error.CustomException;
+import kitchenpos.common.error.ErrorInfo;
+import kitchenpos.common.error.CustomException;
 
 @Embeddable
 public class Price {
