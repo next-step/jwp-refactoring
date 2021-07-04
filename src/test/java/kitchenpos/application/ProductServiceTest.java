@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.menu.Product;
+import kitchenpos.dto.menu.ProductRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,28 +26,22 @@ class ProductServiceTest {
     @InjectMocks
     private ProductService productService;
 
+    private ProductRequest productRequest;
     private Product product;
     private final static long ANY_PRODUCT_ID = 1L;
     @BeforeEach
     void setUp() {
+        productRequest = new ProductRequest("product", BigDecimal.valueOf(1000L));
         product = Product.of("product", BigDecimal.valueOf(1000L));
-        ReflectionTestUtils.setField(product, "id", ANY_PRODUCT_ID);
     }
 
     @Test
     void create() {
+
         given(productDao.save(product))
                 .willReturn(product);
 
-        productService.create(product);
+        productService.create(productRequest);
         verify(productDao).save(product);
-    }
-
-    @Test
-    void exception_when_price_is_under_zero() {
-        BigDecimal UNDER_ZERO = BigDecimal.valueOf(-1L);
-
-        assertThatThrownBy(() -> product.changePrice(UNDER_ZERO))
-                .isInstanceOf(IllegalArgumentException.class);
     }
 }
