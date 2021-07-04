@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
 import static java.util.stream.Collectors.*;
-import static kitchenpos.domain.MenuGroupTest.*;
+import static kitchenpos.utils.DataInitializer.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.utils.DataInitializer;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("메뉴 그룹 서비스")
@@ -29,6 +30,7 @@ class MenuGroupServiceTest {
 
     @BeforeEach
     void setUp() {
+        DataInitializer.reset();
         menuGroupService = new MenuGroupService(menuGroupDao);
     }
 
@@ -36,11 +38,10 @@ class MenuGroupServiceTest {
     @DisplayName("메뉴 그룹을 생성한다")
     void create() {
         // given
-        MenuGroup menuGroup = new MenuGroup("추천메뉴");
-        when(menuGroupDao.save(menuGroup)).thenReturn(추천메뉴);
+        when(menuGroupDao.save(추천메뉴)).thenReturn(추천메뉴);
 
         // when
-        MenuGroup savedGroup = menuGroupService.create(menuGroup);
+        MenuGroup savedGroup = menuGroupService.create(추천메뉴);
 
         // then
         assertEquals(추천메뉴, savedGroup);

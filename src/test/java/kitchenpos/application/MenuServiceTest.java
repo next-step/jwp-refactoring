@@ -1,9 +1,7 @@
 package kitchenpos.application;
 
 import static java.util.stream.Collectors.*;
-import static kitchenpos.domain.MenuGroupTest.*;
-import static kitchenpos.domain.MenuTest.*;
-import static kitchenpos.domain.ProductTest.*;
+import static kitchenpos.utils.DataInitializer.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -19,8 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
@@ -28,9 +24,9 @@ import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.utils.DataInitializer;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 @DisplayName("메뉴 서비스")
 class MenuServiceTest {
 
@@ -52,25 +48,27 @@ class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        menuService
-            = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
+        DataInitializer.reset();
+        menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
 
         특가세트_소주 = new MenuProduct(소주.getId(), 1);
         특가세트_맥주 = new MenuProduct(맥주.getId(), 1);
-        when(productDao.findById(특가세트_소주.getProductId())).thenReturn(Optional.of(소주));
-        when(productDao.findById(특가세트_맥주.getProductId())).thenReturn(Optional.of(맥주));
-        when(menuProductDao.save(특가세트_소주)).thenReturn(특가세트_소주);
-        when(menuProductDao.save(특가세트_맥주)).thenReturn(특가세트_맥주);
 
         특가세트 = new Menu(1L, "특가세트", BigDecimal.valueOf(1000), 추천메뉴.getId(),
             Stream.of(특가세트_소주, 특가세트_맥주).collect(toList()));
-        when(menuGroupDao.existsById(특가세트.getMenuGroupId())).thenReturn(true);
-        when(menuDao.save(특가세트)).thenReturn(특가세트);
     }
 
     @Test
     @DisplayName("메뉴를 생성한다")
     void create() {
+        // given
+        when(menuGroupDao.existsById(특가세트.getMenuGroupId())).thenReturn(true);
+        when(productDao.findById(특가세트_소주.getProductId())).thenReturn(Optional.of(소주));
+        when(productDao.findById(특가세트_맥주.getProductId())).thenReturn(Optional.of(맥주));
+        when(menuProductDao.save(특가세트_소주)).thenReturn(특가세트_소주);
+        when(menuProductDao.save(특가세트_맥주)).thenReturn(특가세트_맥주);
+        when(menuDao.save(특가세트)).thenReturn(특가세트);
+
         // when
         Menu savedMenu = menuService.create(특가세트);
 
@@ -83,7 +81,7 @@ class MenuServiceTest {
     }
 
     @Test
-    @DisplayName("메뉴 생성이 실패한다(가격없음)")
+    @DisplayName("메뉴 생성 실패(가격없음)")
     void create_fail1() {
         // given
         특가세트 = new Menu(null, "특가세트", null, 추천메뉴.getId(),
@@ -95,7 +93,7 @@ class MenuServiceTest {
     }
 
     @Test
-    @DisplayName("메뉴 생성이 실패한다(메뉴 그룹이 존재하지 않음)")
+    @DisplayName("메뉴 생성 실패(메뉴 그룹이 존재하지 않음)")
     void create_fail2() {
         // given
         when(menuGroupDao.existsById(특가세트.getMenuGroupId())).thenReturn(false);
@@ -106,9 +104,10 @@ class MenuServiceTest {
     }
 
     @Test
-    @DisplayName("메뉴 생성이 실패한다(제품이 존재하지 않음)")
+    @DisplayName("메뉴 생성 실패(제품이 존재하지 않음)")
     void create_fail3() {
         // given
+        when(menuGroupDao.existsById(특가세트.getMenuGroupId())).thenReturn(true);
         when(productDao.findById(특가세트_소주.getProductId())).thenReturn(Optional.empty());
 
         // then
@@ -117,11 +116,14 @@ class MenuServiceTest {
     }
 
     @Test
-    @DisplayName("메뉴 생성이 실패한다(단품 가격의 합을 초과)")
+    @DisplayName("메뉴 생성 실패(단품 가격의 합을 초과)")
     void create_fail4() {
         // given
         특가세트 = new Menu(null, "특가세트", BigDecimal.valueOf(3001), 추천메뉴.getId(),
             Arrays.asList(특가세트_소주, 특가세트_맥주));
+        when(productDao.findById(특가세트_소주.getProductId())).thenReturn(Optional.of(소주));
+        when(productDao.findById(특가세트_맥주.getProductId())).thenReturn(Optional.of(맥주));
+        when(menuGroupDao.existsById(특가세트.getMenuGroupId())).thenReturn(true);
 
         // then
         assertThatThrownBy(() -> menuService.create(특가세트))
@@ -141,6 +143,7 @@ class MenuServiceTest {
         // when
         List<Menu> menuList = menuService.list();
 
+        // then
         assertThat(menuList.size()).isEqualTo(3);
         assertThat(menuList).containsExactly(행복세트, 치쏘세트, 피맥세트);
     }
