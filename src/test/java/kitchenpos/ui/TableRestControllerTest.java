@@ -20,6 +20,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
+import static kitchenpos.application.TableServiceTest.주문테이블_생성;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -50,31 +51,65 @@ class TableRestControllerTest {
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(tableRestController)
-                .addFilter(new CharacterEncodingFilter(StandardCharsets.UTF_8.name(), true))
-                .alwaysDo(print())
-                .build();
+        setUpMockMvc();
 
-        orderTable1 = new OrderTable();
-        orderTable1.setId(1L);
-        orderTable1.setNumberOfGuests(0);
-        orderTable1.setEmpty(true);
+        orderTable1 = 주문테이블_생성(1L, 0, false);
 
-        orderTable2 = new OrderTable();
-        orderTable2.setId(2L);
-        orderTable2.setNumberOfGuests(0);
-        orderTable2.setEmpty(true);
+        orderTable2 = 주문테이블_생성(2L, 0, false);
     }
 
     @DisplayName("주문 테이블을 등록한다.")
     @Test
     void create() throws Exception{
-        given(tableService.create(any())).willReturn(orderTable1);
+        final ResultActions resultActions = 주문테이블_등록_요청();
 
-        final ResultActions resultActions = mockMvc.perform(post(ORDER_TABLE_URI)
+        주문테이블_등록됨(resultActions);
+    }
+
+    @DisplayName("주문 테이블 목록을 조회한다.")
+    @Test
+    void list() throws Exception{
+        final ResultActions resultActions = 주문테이블_목록_조회_요청();
+
+        주문테이블_목록_조회됨(resultActions);
+    }
+
+    @DisplayName("주문 테이블을 비운다.")
+    @Test
+    void changeEmpty() throws Exception{
+        final ResultActions resultActions = 주문테이블_비움_요청();
+
+        주문테이블_비워짐(resultActions);
+    }
+
+    @DisplayName("주문 테이블의 손님 수를 입력한다.")
+    @Test
+    void changeNumberOfGuests() throws Exception {
+        final ResultActions resultActions = 주문테이블_손님수_변경_요청();
+
+        주문테이블_손님_수_변경됨(resultActions);
+    }
+
+    public String toString(OrderTable orderTable) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(orderTable);
+    }
+
+    private void setUpMockMvc() {
+        mockMvc = MockMvcBuilders.standaloneSetup(tableRestController)
+                .addFilter(new CharacterEncodingFilter(StandardCharsets.UTF_8.name(), true))
+                .alwaysDo(print())
+                .build();
+
+    }
+
+    private ResultActions 주문테이블_등록_요청() throws Exception {
+        given(tableService.create(any())).willReturn(orderTable1);
+        return mockMvc.perform(post(ORDER_TABLE_URI)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(toString(orderTable1)));
+    }
 
+    private void 주문테이블_등록됨(ResultActions resultActions) throws Exception{
         resultActions
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").isNotEmpty())
@@ -83,14 +118,13 @@ class TableRestControllerTest {
                 .andExpect(jsonPath("$.empty").value(orderTable1.isEmpty()));
     }
 
-    @DisplayName("주문 테이블 목록을 조회한다.")
-    @Test
-    void list() throws Exception{
+    private ResultActions 주문테이블_목록_조회_요청() throws Exception{
         given(tableService.list()).willReturn(Arrays.asList(orderTable1, orderTable2));
-
-        final ResultActions resultActions = mockMvc.perform(get(ORDER_TABLE_URI)
+        return mockMvc.perform(get(ORDER_TABLE_URI)
                 .contentType(MediaType.APPLICATION_JSON));
+    }
 
+    private void 주문테이블_목록_조회됨(ResultActions resultActions) throws Exception{
         resultActions
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isNotEmpty())
@@ -100,31 +134,27 @@ class TableRestControllerTest {
                 .andExpect(jsonPath("$[0].empty").value(orderTable1.isEmpty()));
     }
 
-    @DisplayName("주문 테이블을 비운다.")
-    @Test
-    void changeEmpty() throws Exception{
+    private ResultActions 주문테이블_비움_요청() throws Exception {
+        orderTable1.updateEmpty(true);
         given(tableService.changeEmpty(orderTable1.getId(), orderTable1)).willReturn(orderTable1);
-
-        final ResultActions resultActions = mockMvc.perform(put(ORDER_TABLE_URI +ORDER_TABLE_EMPTY_URL, orderTable1.getId())
+        return mockMvc.perform(put(ORDER_TABLE_URI +ORDER_TABLE_EMPTY_URL, orderTable1.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(toString(orderTable1)));
+    }
 
+    private void 주문테이블_비워짐(ResultActions resultActions) throws Exception {
         resultActions.andExpect(status().isOk());
     }
 
-    @DisplayName("주문 테이블의 손님 수를 입력한다.")
-    @Test
-    void changeNumberOfGuests() throws Exception {
+    private ResultActions 주문테이블_손님수_변경_요청() throws Exception {
+        orderTable1.updateNumberOfGuests(10);
         given(tableService.changeNumberOfGuests(orderTable1.getId(), orderTable1)).willReturn(orderTable1);
-
-        final ResultActions resultActions = mockMvc.perform(put(ORDER_TABLE_URI +ORDER_TABLE_CHANGE_GUEST_NUMBER_URL, orderTable1.getId())
+        return mockMvc.perform(put(ORDER_TABLE_URI +ORDER_TABLE_CHANGE_GUEST_NUMBER_URL, orderTable1.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(toString(orderTable1)));
-
-        resultActions.andExpect(status().isOk());
     }
 
-    public String toString(OrderTable orderTable) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(orderTable);
+    private void 주문테이블_손님_수_변경됨(ResultActions resultActions) throws Exception {
+        resultActions.andExpect(status().isOk());
     }
 }

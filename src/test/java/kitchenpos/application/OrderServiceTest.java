@@ -127,7 +127,7 @@ public class OrderServiceTest {
         return new OrderLineItem(1L, 1L, 1L, 1L);
     }
 
-    private OrderTable 주문테이블_생성(long id, long tableGroupId, int numberOfGuests, boolean isEmpty) {
+    public static OrderTable 주문테이블_생성(long id, long tableGroupId, int numberOfGuests, boolean isEmpty) {
         return new OrderTable(id, tableGroupId, numberOfGuests, isEmpty);
     }
 
