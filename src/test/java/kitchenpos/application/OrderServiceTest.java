@@ -59,7 +59,7 @@ class OrderServiceTest {
                 Lists.list(new OrderLineItemRequest(1L, 10L),
                         new OrderLineItemRequest(2L, 20L)));
 
-        // Order 를 만들기 위한 Dummy
+        // Order 를 만들기 위한 Dummy Data
         OrderLineItem orderLineItem1 = OrderLineItem.of(order, MENU_ID_1L, 10);
         ReflectionTestUtils.setField(orderLineItem1, "seq", ORDER_LINE_ITEM_ID_1L);
         OrderLineItem orderLineItem2 = OrderLineItem.of(order, MENU_ID_2L, 20);
