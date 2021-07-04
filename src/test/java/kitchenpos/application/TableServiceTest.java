@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -31,13 +32,13 @@ class TableServiceTest {
     @Mock
     private OrderTableDao orderTableDao;
 
+    @InjectMocks
     private TableService tableService;
 
     private OrderTable orderTable;
 
     @BeforeEach
     void setup() {
-        tableService = new TableService(orderDao, orderTableDao);
         orderTable = new OrderTable();
     }
 

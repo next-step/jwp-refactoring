@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -24,16 +25,16 @@ class MenuGroupServiceTest {
     @Mock
     private MenuGroupDao menuGroupDao;
 
-    private MenuGroup menuGroup;
+    @InjectMocks
     private MenuGroupService menuGroupService;
+
+    private MenuGroup menuGroup;
 
     @BeforeEach
     void setup() {
         menuGroup = new MenuGroup();
         menuGroup.setId(1L);
         menuGroup.setName("국밥");
-
-        menuGroupService = new MenuGroupService(menuGroupDao);
     }
 
     @DisplayName("사용자는 메뉴 그룹을 생성 할 수 있다.")

@@ -14,6 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -26,6 +27,7 @@ class ProductServiceTest {
     @Mock
     private ProductDao productDao;
 
+    @InjectMocks
     private ProductService productService;
 
     private Product product;
@@ -34,7 +36,6 @@ class ProductServiceTest {
     void setup() {
         product = new Product();
         product.setPrice(BigDecimal.valueOf(1000));
-        productService = new ProductService(productDao);
     }
 
     @DisplayName("사용자는 상품을 생성할 수 있다.")

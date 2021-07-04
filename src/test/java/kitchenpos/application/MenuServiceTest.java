@@ -16,6 +16,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -45,6 +46,7 @@ class MenuServiceTest {
 
     private Menu menu;
 
+    @InjectMocks
     private MenuService menuService;
 
     @BeforeEach
@@ -56,8 +58,6 @@ class MenuServiceTest {
         menu.setName("순대국");
         menu.setPrice(BigDecimal.valueOf(8000));
         menu.setMenuProducts(Arrays.asList(new MenuProduct()));
-
-        menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
     }
 
     @DisplayName("사용자는 메뉴를 만들 수 있다.")

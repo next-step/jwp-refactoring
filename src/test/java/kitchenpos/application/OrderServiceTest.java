@@ -14,6 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -41,6 +42,7 @@ class OrderServiceTest {
     @Mock
     private OrderTableDao orderTableDao;
 
+    @InjectMocks
     private OrderService orderService;
 
     private Order order;
@@ -49,7 +51,6 @@ class OrderServiceTest {
     void setup() {
         order = new Order();
         order.setId(1L);
-        orderService = new OrderService(menuDao, orderDao, orderLineItemDao, orderTableDao);
     }
 
     @DisplayName("사용자는 주문을 생성 할 수 있다.")
