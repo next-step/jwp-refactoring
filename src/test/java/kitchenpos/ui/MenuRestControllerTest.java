@@ -1,6 +1,6 @@
 package kitchenpos.ui;
 
-import static kitchenpos.utils.DataInitializer.*;
+import static kitchenpos.utils.UnitTestData.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -8,7 +8,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.math.BigInteger;
 import java.util.Arrays;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +20,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
-import kitchenpos.utils.DataInitializer;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -33,11 +31,6 @@ class MenuRestControllerTest {
 
     @Autowired
     ObjectMapper objectMapper;
-
-    @BeforeEach
-    void setUp() {
-        DataInitializer.reset();
-    }
 
     @Test
     @DisplayName("메뉴를 생성한다")

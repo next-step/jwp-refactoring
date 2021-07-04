@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kitchenpos.dto.MenuGroupRequest;
-import kitchenpos.utils.DataInitializer;
+import kitchenpos.utils.UnitTestData;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -31,7 +31,7 @@ class MenuGroupRestControllerTest {
 
     @BeforeEach
     void setUp() {
-        DataInitializer.reset();
+        UnitTestData.reset();
     }
 
     @Test

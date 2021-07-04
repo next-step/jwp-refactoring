@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
 import static java.util.stream.Collectors.*;
-import static kitchenpos.utils.DataInitializer.*;
+import static kitchenpos.utils.UnitTestData.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -25,7 +25,7 @@ import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
-import kitchenpos.utils.DataInitializer;
+import kitchenpos.utils.UnitTestData;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("메뉴 서비스")
@@ -50,7 +50,7 @@ class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        DataInitializer.reset();
+        UnitTestData.reset();
 
         특가세트_소주 = new MenuProduct(소주.getId(), 1);
         특가세트_맥주 = new MenuProduct(맥주.getId(), 1);

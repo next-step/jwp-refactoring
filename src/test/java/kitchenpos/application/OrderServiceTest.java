@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import static kitchenpos.utils.DataInitializer.*;
+import static kitchenpos.utils.UnitTestData.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -24,7 +24,7 @@ import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.utils.DataInitializer;
+import kitchenpos.utils.UnitTestData;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("주문 서비스")
@@ -49,7 +49,7 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        DataInitializer.reset();
+        UnitTestData.reset();
 
         신규_주문_치쏘세트 = new OrderLineItem(치쏘세트.getId(), 2);
         신규_주문_피맥세트 = new OrderLineItem(피맥세트.getId(), 1);

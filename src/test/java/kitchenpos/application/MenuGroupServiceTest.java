@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
 import static java.util.stream.Collectors.*;
-import static kitchenpos.utils.DataInitializer.*;
+import static kitchenpos.utils.UnitTestData.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -18,7 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
-import kitchenpos.utils.DataInitializer;
+import kitchenpos.utils.UnitTestData;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("메뉴 그룹 서비스")
@@ -32,7 +32,7 @@ class MenuGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        DataInitializer.reset();
+        UnitTestData.reset();
     }
 
     @Test

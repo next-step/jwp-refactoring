@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import static kitchenpos.utils.DataInitializer.*;
+import static kitchenpos.utils.UnitTestData.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -19,7 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.utils.DataInitializer;
+import kitchenpos.utils.UnitTestData;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("테이블 서비스")
@@ -35,7 +35,7 @@ class TableServiceTest {
 
     @BeforeEach
     void setUp() {
-        DataInitializer.reset();
+        UnitTestData.reset();
     }
 
     @Test

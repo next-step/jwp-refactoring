@@ -13,7 +13,7 @@ import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.TableGroup;
 
-public class DataInitializer {
+public class UnitTestData {
     public static MenuGroup 추천메뉴;
     public static MenuGroup 베스트메뉴;
     public static MenuGroup 세트메뉴;

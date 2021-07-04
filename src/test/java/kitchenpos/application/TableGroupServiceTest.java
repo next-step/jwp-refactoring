@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
 import static java.util.Collections.*;
-import static kitchenpos.utils.DataInitializer.*;
+import static kitchenpos.utils.UnitTestData.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -21,7 +21,7 @@ import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
-import kitchenpos.utils.DataInitializer;
+import kitchenpos.utils.UnitTestData;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("테이블 그룹 서비스")
@@ -42,7 +42,7 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        DataInitializer.reset();
+        UnitTestData.reset();
 
         테이블_리스트 = Arrays.asList(테이블3번_EMPTY, 테이블4번_EMPTY);
         신규_테이블_그룹 = new TableGroup(1L, 테이블_리스트);
