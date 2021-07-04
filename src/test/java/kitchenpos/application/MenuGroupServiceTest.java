@@ -1,6 +1,7 @@
 package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -15,12 +16,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menugroup.application.MenuGroupService;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
+import kitchenpos.menugroup.repository.MenuGroupDao;
+import kitchenpos.menugroup.domain.MenuGroup;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("메뉴 그룹 테스트")
 class MenuGroupServiceTest {
+    public static final String menuName = "국밥";
 
     @Mock
     private MenuGroupDao menuGroupDao;
@@ -32,22 +37,20 @@ class MenuGroupServiceTest {
 
     @BeforeEach
     void setup() {
-        menuGroup = new MenuGroup();
-        menuGroup.setId(1L);
-        menuGroup.setName("국밥");
+        menuGroup = new MenuGroup(menuName);
     }
 
     @DisplayName("사용자는 메뉴 그룹을 생성 할 수 있다.")
     @Test
     void create() {
         // given
-
+        MenuGroupRequest menuGroupRequest = new MenuGroupRequest(menuName);
         // when
-        when(menuGroupDao.save(menuGroup)).thenReturn(menuGroup);
-        MenuGroup cratedMenuGroup = menuGroupService.create(this.menuGroup);
+        when(menuGroupDao.save(any())).thenReturn(menuGroup);
+        MenuGroupResponse createdMenuGroup = menuGroupService.create(menuGroupRequest);
         // then
-        assertThat(cratedMenuGroup).isNotNull();
-        assertThat(cratedMenuGroup.getId()).isEqualTo(1L);
+        assertThat(createdMenuGroup).isNotNull();
+        assertThat(createdMenuGroup.getName()).isEqualTo(menuName);
     }
 
     @DisplayName("사용자는 메뉴 그룹 전체를 조회 할 수 있다.")
@@ -57,9 +60,10 @@ class MenuGroupServiceTest {
 
         // when
         when(menuGroupDao.findAll()).thenReturn(new ArrayList<>(Arrays.asList(menuGroup)));
-        List<MenuGroup> menuGroups = menuGroupService.list();
+        List<MenuGroupResponse> menuGroups = menuGroupService.list();
         // then
+        System.out.println(menuGroups.size());
         assertThat(menuGroups.size()).isEqualTo(1);
-        assertThat(menuGroups.get(0).getId()).isEqualTo(1L);
+        assertThat(menuGroups.get(0).getName()).isEqualTo(menuName);
     }
 }
