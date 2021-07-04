@@ -5,8 +5,8 @@ import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.error.CustomException;
-import kitchenpos.error.ErrorInfo;
+import kitchenpos.common.error.CustomException;
+import kitchenpos.common.error.ErrorInfo;
 
 @DisplayName("가격 테스트")
 class PriceTest {

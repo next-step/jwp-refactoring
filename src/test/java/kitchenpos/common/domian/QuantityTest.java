@@ -3,8 +3,8 @@ package kitchenpos.common.domian;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import kitchenpos.error.CustomException;
-import kitchenpos.error.ErrorInfo;
+import kitchenpos.common.error.CustomException;
+import kitchenpos.common.error.ErrorInfo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
