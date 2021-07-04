@@ -27,7 +27,6 @@ class MenuGroupServiceTest {
     @DisplayName("메뉴 그룹을 생성할수 있다")
     @Test
     void createTest() {
-
         //given
         MenuGroup expect = new MenuGroup(1L, "groupName");
         given(menuGroupDao.save(expect))

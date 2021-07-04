@@ -5,7 +5,6 @@ import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
@@ -79,7 +78,6 @@ class MenuServiceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("메뉴 가격은 0원 이상이어야 합니다");
 
-
         //given
         givenMenu.setPrice(BigDecimal.valueOf(-1));
 
@@ -150,7 +148,6 @@ class MenuServiceTest {
     @DisplayName("메뉴 목록을 조회할 수 있다 ")
     @Test
     void list() {
-
         //given
         List<Menu> expect = Arrays.asList(givenMenu);
         given(menuDao.findAll())

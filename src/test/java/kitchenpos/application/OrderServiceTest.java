@@ -24,7 +24,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -65,16 +64,6 @@ class OrderServiceTest {
         givenOrderLineItem.setMenuId(1L);
         givenOrderLineItem.setQuantity(1L);
     }
-
-    /*    * 주문을 등록할 수 있다
-  * 주문 상품이 1개 이상이어야 한다
-  * 주문 상품이 메뉴에 존재해야 한다
-  * 주문 테이블이 존재해야 한다
-  * 주문 테이블은 비어있지 않아야 한다
-* 주문을 조회할 수 있다
-* 주문 상태를 변경할 수 있다
-  * 존재하는 주문이여야 한다
-  * 완료된 주문은 변경할 수 없다*/
 
     @DisplayName("주문 항목이 없으면 주문할 수 없다")
     @Test
