@@ -6,9 +6,9 @@ import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.order.OrderTable;
 import kitchenpos.domain.order.TableGroup;
+import kitchenpos.dto.order.TableGroupRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,13 +27,16 @@ public class TableGroupService {
         this.tableGroupDao = tableGroupDao;
     }
 
+    // 그룹을 지정하기 위한 코드
     @Transactional
-    public TableGroup create(final TableGroup tableGroup) {
-        final List<OrderTable> orderTables = tableGroup.getOrderTables();
+    public TableGroup create(final TableGroupRequest tableGroupRequest) {
 
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException("should have over 2 orderTables");
-        }
+        // 주문 테이블 1,2,3,4,...
+        List<OrderTable> orderTables = tableGroupRequest
+                .getOrderTableRequests().stream()
+                .map(orderTableRequest -> orderTableDao.findById(orderTableRequest.getId())
+                        .orElseThrow(IllegalArgumentException::new))
+                .collect(Collectors.toList());
 
         final List<Long> orderTableIds = orderTables.stream()
                 .map(OrderTable::getId)
@@ -45,21 +48,10 @@ public class TableGroupService {
             throw new IllegalArgumentException("not same as orderTable size");
         }
 
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup())) {
-                throw new IllegalArgumentException("should have not empty savedOrderTable");
-            }
-        }
+        TableGroup tableGroup = TableGroup.of(orderTables);
+        tableGroup.changeOrderTables(savedOrderTables);
 
-        final TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
-
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.changeTableGroup(savedTableGroup);
-            savedOrderTable.changeNonEmptyTable();
-            orderTableDao.save(savedOrderTable);
-        }
-        savedTableGroup.changeOrderTables(savedOrderTables);
-        return savedTableGroup;
+        return tableGroupDao.save(tableGroup);
     }
 
     @Transactional
@@ -70,9 +62,7 @@ public class TableGroupService {
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
 
-        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)
-        )) {
+        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException("Invalid OrderStatus");
         }
 

@@ -6,6 +6,8 @@ import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.order.OrderTable;
 import kitchenpos.domain.order.TableGroup;
+import kitchenpos.dto.order.OrderTableRequest;
+import kitchenpos.dto.order.TableGroupRequest;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,6 +20,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -38,6 +41,8 @@ class TableGroupServiceTest {
     private TableGroupService tableGroupService;
 
     private TableGroup tableGroup;
+    private TableGroupRequest tableGroupRequest;
+
     private OrderTable orderTable1;
     private OrderTable orderTable2;
 
@@ -52,14 +57,15 @@ class TableGroupServiceTest {
         ReflectionTestUtils.setField(orderTable1, "id", FIRST_ORDER_TABLE_ID);
         orderTable2 = OrderTable.of(10, false);
         ReflectionTestUtils.setField(orderTable2, "id", SECOND_ORDER_TABLE_ID);
+
+        tableGroupRequest = new TableGroupRequest(new ArrayList<>());
     }
 
     @Test
     @DisplayName("단체 지정된 테이블 일 경우에는 적어도 2개 이상의 주문 테이블을 가져야 한다.")
     void exception_create_test() {
-        TableGroup tableGroup = TableGroup.of(Lists.list(orderTable1));
 
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+        assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("should have over 2 orderTables");
     }
@@ -67,13 +73,11 @@ class TableGroupServiceTest {
     @Test
     @DisplayName("단체 지정 시점에, 주문 테이블이 단체 지정시 주문받은 주문 테이블과 숫자가 맞지 않으면 생성될 수 없다.")
     void exception_orderTable() {
+        tableGroupRequest = new TableGroupRequest(Lists.list(new OrderTableRequest(1L), new OrderTableRequest(2L)));
+        given(orderTableDao.findById(FIRST_ORDER_TABLE_ID)).willReturn(Optional.of(orderTable1));
+        given(orderTableDao.findById(SECOND_ORDER_TABLE_ID)).willReturn(Optional.of(orderTable2));
 
-        TableGroup tableGroup = TableGroup.of(Lists.list(orderTable1, orderTable2));
-
-        given(orderTableDao.findAllByIdIn(Lists.list(FIRST_ORDER_TABLE_ID, SECOND_ORDER_TABLE_ID)))
-                .willReturn(new ArrayList<>());
-
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+        assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("not same as orderTable size");
     }
@@ -81,11 +85,14 @@ class TableGroupServiceTest {
     @Test
     @DisplayName("단체 지정 시점에, 시점에 주문 테이블이 빈 테이블이 아니라면 단체 지정을 할 수 없다.")
     void exception2_orderTable() {
+        tableGroupRequest = new TableGroupRequest(Lists.list(new OrderTableRequest(1L), new OrderTableRequest(2L)));
         tableGroup = TableGroup.of(Lists.list(orderTable1, orderTable2));
         given(orderTableDao.findAllByIdIn(Lists.list(FIRST_ORDER_TABLE_ID, SECOND_ORDER_TABLE_ID)))
                 .willReturn(Lists.list(orderTable1, orderTable2));
+        given(orderTableDao.findById(FIRST_ORDER_TABLE_ID)).willReturn(Optional.of(orderTable1));
+        given(orderTableDao.findById(SECOND_ORDER_TABLE_ID)).willReturn(Optional.of(orderTable2));
 
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+        assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("savedOrderTable");
     }
