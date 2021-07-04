@@ -91,7 +91,7 @@ public class MenuRestControllerTest {
                 .alwaysDo(print())
                 .build();
     }
-    
+
     private void 메뉴_등록됨(ResultActions actions) throws Exception {
         actions.andExpect(status().isCreated())
                 .andExpect(header().string("location", MENUS_URI + "/1"))

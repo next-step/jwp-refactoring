@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
+import static kitchenpos.application.MenuGroupServiceTest.메뉴_그룹_생성;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -50,18 +51,11 @@ class MenuGroupRestControllerTest {
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(menuGroupRestController)
-                .addFilter(new CharacterEncodingFilter(StandardCharsets.UTF_8.name(), true))
-                .alwaysDo(print())
-                .build();
+        setUpMockMvc();
 
-        menuGroup1 = new MenuGroup();
-        menuGroup1.setId(1L);
-        menuGroup1.setName("반반시리즈");
+        menuGroup1 = 메뉴_그룹_생성(1L, "반반시리즈");
 
-        menuGroup2 = new MenuGroup();
-        menuGroup2.setId(2L);
-        menuGroup2.setName("허니시리즈");
+        menuGroup2 = 메뉴_그룹_생성(2L, "허니시리즈");
     }
 
     @DisplayName("메뉴 그룹 등록한다.")
@@ -69,14 +63,9 @@ class MenuGroupRestControllerTest {
     void create() throws Exception {
         given(menuGroupService.create(any())).willReturn(menuGroup1);
 
-        final ResultActions actions = mockMvc.perform(post(MENU_GROUP_URI)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(toJson(menuGroup1)));
+        final ResultActions actions = 메뉴_그룹_등록_요청();
 
-        actions
-                .andExpect(status().isCreated())
-                .andExpect(header().string("location", "/api/menu-groups/1"))
-                .andExpect(content().string(containsString("반반시리즈")));
+        메뉴_그룹_등록됨(actions);
     }
 
     @DisplayName("메뉴 그룹 목록을 조회한다.")
@@ -84,17 +73,42 @@ class MenuGroupRestControllerTest {
     void list() throws Exception {
         given(menuGroupService.list()).willReturn(Arrays.asList(menuGroup1, menuGroup2));
 
-        final ResultActions actions = mockMvc.perform(get(MENU_GROUP_URI)
-                .contentType(MediaType.APPLICATION_JSON));
+        final ResultActions actions =  메뉴_그룹_목록_조회();
 
-        actions
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString("반반시리즈")))
-                .andExpect(content().string(containsString("허니시리즈")));
-
+        메뉴_그룹_목록_조회됨(actions);
     }
 
     public String toJson(MenuGroup product) throws JsonProcessingException {
         return objectMapper.writeValueAsString(product);
+    }
+
+    private void setUpMockMvc() {
+        mockMvc = MockMvcBuilders.standaloneSetup(menuGroupRestController)
+                .addFilter(new CharacterEncodingFilter(StandardCharsets.UTF_8.name(), true))
+                .alwaysDo(print())
+                .build();
+    }
+
+    private void 메뉴_그룹_등록됨(ResultActions actions) throws Exception {
+        actions.andExpect(status().isCreated())
+                .andExpect(header().string("location", "/api/menu-groups/1"))
+                .andExpect(content().string(containsString("반반시리즈")));
+    }
+
+    private ResultActions 메뉴_그룹_등록_요청() throws Exception {
+        return mockMvc.perform(post(MENU_GROUP_URI)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJson(menuGroup1)));
+    }
+
+    private void 메뉴_그룹_목록_조회됨(ResultActions actions) throws Exception{
+        actions.andExpect(status().isOk())
+                .andExpect(content().string(containsString("반반시리즈")))
+                .andExpect(content().string(containsString("허니시리즈")));
+    }
+
+    private ResultActions 메뉴_그룹_목록_조회() throws Exception{
+        return  mockMvc.perform(get(MENU_GROUP_URI)
+                .contentType(MediaType.APPLICATION_JSON));
     }
 }

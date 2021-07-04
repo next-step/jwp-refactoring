@@ -119,7 +119,7 @@ public class MenuServiceTest {
         menuProducts.add(menuProduct);
     }
 
-    private Menu 메뉴_생성(Long id, String name, BigDecimal price, Long menuGroupId) {
+    public static Menu 메뉴_생성(Long id, String name, BigDecimal price, Long menuGroupId) {
         return new Menu(id, name, price, menuGroupId);
     }
 

@@ -21,6 +21,7 @@ import static org.mockito.BDDMockito.given;
 
 @DisplayName("메뉴 그룹 관련 기능 테스트")
 @ExtendWith(MockitoExtension.class)
+public
 class MenuGroupServiceTest {
     private MenuGroup menuGroup1;
     private MenuGroup menuGroup2;
@@ -33,13 +34,8 @@ class MenuGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        menuGroup1 = new MenuGroup();
-        menuGroup1.setId(1L);
-        menuGroup1.setName("반반시리즈");
-
-        menuGroup2 = new MenuGroup();
-        menuGroup2.setId(2L);
-        menuGroup2.setName("허니시리즈");
+        menuGroup1 = 메뉴_그룹_생성(1L, "반반시리즈");
+        menuGroup2 = 메뉴_그룹_생성(2L, "허니시리즈");
     }
 
     @DisplayName("메뉴 그룹을 등록한다.")
@@ -47,20 +43,40 @@ class MenuGroupServiceTest {
     void create() {
         given(menuGroupDao.save(menuGroup1)).willReturn(menuGroup1);
 
-        MenuGroup createdMenuGroup = menuGroupService.create(this.menuGroup1);
+        MenuGroup createdMenuGroup = 메뉴_그룹_생성_요청(this.menuGroup1);
 
-        assertThat(createdMenuGroup.getId()).isEqualTo(this.menuGroup1.getId());
-        assertThat(createdMenuGroup.getName()).isEqualTo(this.menuGroup1.getName());
+        메뉴_그룹_생성됨(createdMenuGroup, this.menuGroup1);
     }
 
     @Test
     void list() {
         given(menuGroupDao.findAll()).willReturn(Arrays.asList(menuGroup1, menuGroup2));
 
-        List<MenuGroup> menuGroups = menuGroupService.list();
+        List<MenuGroup> createdMenuGroups = 메뉴_그룹_리스트_요청();
 
-        assertThat(menuGroups).containsExactly(menuGroup1, menuGroup2);
-        assertThat(menuGroups.get(0).getName()).isEqualTo(menuGroup1.getName());
-        assertThat(menuGroups.get(1).getName()).isEqualTo(menuGroup2.getName());
+        메뉴_그룹_리스트_요청됨(createdMenuGroups, Arrays.asList(menuGroup1, menuGroup2));
+    }
+
+    public static MenuGroup 메뉴_그룹_생성(Long id, String name) {
+        return new MenuGroup(id, name);
+    }
+
+    private void 메뉴_그룹_생성됨(MenuGroup createdMenuGroup, MenuGroup menuGroup1) {
+        assertThat(createdMenuGroup.getId()).isEqualTo(menuGroup1.getId());
+        assertThat(createdMenuGroup.getName()).isEqualTo(menuGroup1.getName());
+    }
+
+    private MenuGroup 메뉴_그룹_생성_요청(MenuGroup menuGroup) {
+        return menuGroupService.create(menuGroup);
+    }
+
+    private List<MenuGroup> 메뉴_그룹_리스트_요청() {
+        return menuGroupService.list();
+    }
+
+    private void 메뉴_그룹_리스트_요청됨(List<MenuGroup> createdMenuGroups, List<MenuGroup> menuGroups) {
+        assertThat(createdMenuGroups).containsExactly(menuGroups.get(0), menuGroups.get(1));
+        assertThat(createdMenuGroups.get(0).getName()).isEqualTo(menuGroups.get(0).getName());
+        assertThat(createdMenuGroups.get(1).getName()).isEqualTo(menuGroups.get(1).getName());
     }
 }
