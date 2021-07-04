@@ -7,10 +7,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.web.servlet.HttpEncodingAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -28,7 +26,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(MenuGroupRestController.class)
-@Import(HttpEncodingAutoConfiguration.class)
 class MenuGroupRestControllerTest {
 
     @Autowired
@@ -39,6 +36,8 @@ class MenuGroupRestControllerTest {
 
     @MockBean
     private MenuGroupService menuGroupService;
+
+    private ObjectMapper mapper = new ObjectMapper();
 
     @BeforeEach
     public void setUp() {
@@ -51,7 +50,6 @@ class MenuGroupRestControllerTest {
     @Test
     void create() throws Exception {
         MenuGroup menuGroup = new MenuGroup(5L, "기타안주메뉴");
-        ObjectMapper mapper = new ObjectMapper();
         String params = mapper.writeValueAsString(menuGroup);
         given(menuGroupService.create(any())).willReturn(menuGroup);
 
