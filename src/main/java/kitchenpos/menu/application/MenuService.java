@@ -47,7 +47,6 @@ public class MenuService {
         List<MenuProductRequest> menuProductsRequest = menuRequest.getMenuProducts();
 
         Price totalPrice = new Price();
-        List<Product> products = new ArrayList<>();
         for (MenuProductRequest menuProduct : menuProductsRequest) {
             final Product product = productDao.findById(menuProduct.getProductId())
                     .orElseThrow(() -> new CustomException(ErrorInfo.NOT_FOUND_PRODUCT));
@@ -58,7 +57,7 @@ public class MenuService {
             throw new CustomException(ErrorInfo.TOTAL_PRICE_NOT_EQUAL_REQUEST);
         }
 
-        MenuProducts menuProducts = new MenuProducts(menuProductDao.findByProducts(products));
+        MenuProducts menuProducts = new MenuProducts();
         return menuDao.save(Menu.of(menuGroup, menuRequest.getName(), menuRequest.getPrice(), menuProducts)).toResponse();
     }
 

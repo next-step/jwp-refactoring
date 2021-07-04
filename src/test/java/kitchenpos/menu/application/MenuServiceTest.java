@@ -60,7 +60,7 @@ class MenuServiceTest {
     @BeforeEach
     void setup() {
         menuGroup = new MenuGroup("국밥");
-        menu = Menu.of(menuGroup, "순대국", new Price(8000), new MenuProducts(new ArrayList<>()));
+        menu = Menu.of(menuGroup, "순대국", new Price(8000), new MenuProducts());
         product = Product.of("순대", 1000);
         menuRequest = new MenuRequest("순대국", 8000, 1L, Arrays.asList(new MenuProductRequest(1L, 8L)));
     }
