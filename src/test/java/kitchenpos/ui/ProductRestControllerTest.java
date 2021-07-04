@@ -18,9 +18,11 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import java.math.BigDecimal;
 import java.util.Arrays;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ProductRestController.class)
@@ -66,6 +68,7 @@ class ProductRestControllerTest {
         given(productService.list()).willReturn(Arrays.asList(product, product2));
 
         mockMvc.perform(get("/api/products"))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("새상품")));
     }
 }
