@@ -78,7 +78,7 @@ public class TableRestControllerTest {
         String content = objectMapper.writeValueAsString(인원수_업데이트된_테이블);
 
         given(tableService.changeNumberOfGuests(any(), any()))
-            .willReturn(인원수_업데이트된_테이블);
+            .willReturn(OrderTableResponse.of(인원수_업데이트된_테이블));
 
         // when
         mockMvc.perform(

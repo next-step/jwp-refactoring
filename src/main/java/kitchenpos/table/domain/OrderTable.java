@@ -113,11 +113,11 @@ public class OrderTable {
     }
 
     public void updateEmpty(OrderTableRequest orderTableRequest) {
-        validation();
+        validationEmpty();
         this.empty = orderTableRequest.isEmpty();
     }
 
-    private void validation() {
+    private void validationEmpty() {
         if (hasTableGroup()) {
             throw new IllegalArgumentException();
         }
@@ -126,5 +126,20 @@ public class OrderTable {
             throw new IllegalArgumentException();
         }
 
+    }
+
+    public void updateGuests(OrderTableRequest orderTableRequest) {
+        validationGuests(orderTableRequest);
+        this.numberOfGuests = orderTableRequest.getNumberOfGuests();
+    }
+
+    private void validationGuests(OrderTableRequest orderTableRequest) {
+        if (orderTableRequest.getNumberOfGuests() < 0) {
+            throw new IllegalArgumentException();
+        }
+
+        if (isEmpty()) {
+            throw new IllegalArgumentException();
+        }
     }
 }
