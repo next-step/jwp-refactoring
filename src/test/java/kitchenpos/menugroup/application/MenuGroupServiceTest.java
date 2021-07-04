@@ -1,11 +1,10 @@
 package kitchenpos.menugroup.application;
 
-import static kitchenpos.util.TestDataSet.추천_메뉴_그륩;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static kitchenpos.util.TestDataSet.*;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.*;
+import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,15 +13,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.menugroup.application.MenuGroupService;
-import kitchenpos.menugroup.dao.MenuGroupDao;
-import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 
 @ExtendWith(MockitoExtension.class)
 public class MenuGroupServiceTest {
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @InjectMocks
     private MenuGroupService menuGroupService;
@@ -31,14 +30,14 @@ public class MenuGroupServiceTest {
     @DisplayName("그룹을 생성 정상 성공 케이스")
     void create() {
         //given
-        given(menuGroupDao.save(any())).willReturn(추천_메뉴_그륩);
-
+        given(menuGroupRepository.save(any())).willReturn(추천_메뉴_그륩);
+        MenuGroupRequest request = new MenuGroupRequest("추천 메뉴");
         //when
-        MenuGroup result = menuGroupService.create(추천_메뉴_그륩);
-        // then
+        MenuGroupResponse result = menuGroupService.create(request);
 
+        // then
         assertThat(result.getName()).isEqualTo(추천_메뉴_그륩.getName());
-        verify(menuGroupDao, times(1)).save(result);
+        verify(menuGroupRepository, times(1)).save(any());
     }
 
 }
