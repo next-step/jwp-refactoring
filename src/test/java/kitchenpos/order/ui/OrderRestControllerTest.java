@@ -76,7 +76,7 @@ public class OrderRestControllerTest {
     void list() throws Exception {
         // given
         given(orderService.list())
-            .willReturn(Arrays.asList(주문_1번, 주문_2번));
+            .willReturn(Arrays.asList(OrderResponse.of(주문_1번), OrderResponse.of((주문_2번))));
 
         // when
         mockMvc.perform(get(BASE_URL))

@@ -2,6 +2,7 @@ package kitchenpos.order.application;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,14 +61,11 @@ public class OrderService {
         return OrderResponse.of(orderRepository.save(order));
     }
 
-    public List<Order> list() {
-        final List<Order> orders = orderDao.findAll();
-
-        for (final Order order : orders) {
-            order.setOrderLineItems(orderLineItemDao.findAllByOrderId(order.getId()));
-        }
-
-        return orders;
+    public List<OrderResponse> list() {
+        final List<Order> orders = orderRepository.findAll();
+        return orders.stream()
+            .map(OrderResponse::of)
+            .collect(Collectors.toList());
     }
 
     @Transactional
