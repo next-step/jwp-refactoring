@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
+import kitchenpos.repository.MenuRepository;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menu.Product;
@@ -28,7 +28,7 @@ import static org.mockito.Mockito.verify;
 class MenuServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
     private ProductService productService;
@@ -65,11 +65,11 @@ class MenuServiceTest {
     void create_test() {
         given(menuGroupService.isExists(menuGroup)).willReturn(false);
         given(menuGroupService.findById(ANY_MENU_GROUP_ID)).willReturn(menuGroup);
-        given(menuDao.save(menu)).willReturn(menu);
+        given(menuRepository.save(menu)).willReturn(menu);
 
         menuService.create(menuRequest);
 
-        verify(menuDao).save(menu);
+        verify(menuRepository).save(menu);
     }
 
     @Test

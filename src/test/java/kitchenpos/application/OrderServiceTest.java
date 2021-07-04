@@ -1,9 +1,9 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.repository.MenuRepository;
+import kitchenpos.repository.OrderRepository;
+import kitchenpos.repository.OrderLineItemRepository;
+import kitchenpos.repository.OrderTableRepository;
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderLineItem;
 import kitchenpos.domain.order.OrderStatus;
@@ -20,7 +20,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -33,13 +32,13 @@ import static org.mockito.BDDMockito.given;
 class OrderServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
-    private OrderLineItemDao orderLineItemDao;
+    private OrderLineItemRepository orderLineItemRepository;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     OrderService orderService;
@@ -74,7 +73,7 @@ class OrderServiceTest {
     @Test
     @DisplayName("주문 항목이 비어있다면 주문을 등록할 수 없다.")
     void exception_create() {
-        given(orderTableDao.findById(1L)).willReturn(Optional.of(orderTable));
+        given(orderTableRepository.findById(1L)).willReturn(Optional.of(orderTable));
         orderRequest = new OrderRequest(ANY_ORDER_TABLE_ID, new ArrayList<>());
 
         assertThatThrownBy(() -> orderService.create(orderRequest))
@@ -85,8 +84,8 @@ class OrderServiceTest {
     @Test
     @DisplayName("주문 항목의 갯수가 주문 항목의 메뉴의 갯수와 일치 하지 않으면 등록할 수 없다.")
     void exception2_create() {
-        given(orderTableDao.findById(1L)).willReturn(Optional.of(orderTable));
-        given(menuDao.countByIdIn(Lists.list(ORDER_LINE_ITEM_ID_1L, ORDER_LINE_ITEM_ID_2L)))
+        given(orderTableRepository.findById(1L)).willReturn(Optional.of(orderTable));
+        given(menuRepository.countByIdIn(Lists.list(ORDER_LINE_ITEM_ID_1L, ORDER_LINE_ITEM_ID_2L)))
                 .willReturn(100L);
 
         assertThatThrownBy(() -> orderService.create(orderRequest))
@@ -99,7 +98,7 @@ class OrderServiceTest {
     void exception3_create() {
         orderTable.changeEmptyTable();
 
-        given(orderTableDao.findById(ANY_ORDER_TABLE_ID)).willReturn(Optional.of(orderTable));
+        given(orderTableRepository.findById(ANY_ORDER_TABLE_ID)).willReturn(Optional.of(orderTable));
 
         assertThatThrownBy(() -> orderService.create(orderRequest))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -110,9 +109,9 @@ class OrderServiceTest {
     @DisplayName("처음 주문 상태(order status)는 조리(COOKING) 상태가 된다.")
     void after_create_orderStatus_is_COOKING() {
         orderTable.changeNonEmptyTable();
-        given(orderTableDao.findById(ANY_ORDER_TABLE_ID)).willReturn(Optional.of(orderTable));
-        given(menuDao.countByIdIn(Lists.list(1L, 2L))).willReturn(2L);
-        given(orderDao.save(any())).willReturn(order);
+        given(orderTableRepository.findById(ANY_ORDER_TABLE_ID)).willReturn(Optional.of(orderTable));
+        given(menuRepository.countByIdIn(Lists.list(1L, 2L))).willReturn(2L);
+        given(orderRepository.save(any())).willReturn(order);
 
         Order saveOrder = orderService.create(orderRequest);
 
@@ -122,7 +121,7 @@ class OrderServiceTest {
     @Test
     @DisplayName("주문의 주문 상태(order status)를 식사 상태로 변경할 수 있다.")
     void changeOrderStatusTest() {
-        given(orderDao.findById(ANY_ORDER_ID)).willReturn(Optional.of(order));
+        given(orderRepository.findById(ANY_ORDER_ID)).willReturn(Optional.of(order));
 
         ReflectionTestUtils.setField(order, "orderStatus", OrderStatus.COOKING);
 
@@ -133,7 +132,7 @@ class OrderServiceTest {
     @Test
     @DisplayName("이미 계산이 완료된 주문은 주문 상태(order status)를 바꿀 수 없다.")
     void exception_changeOrderStatusTest() {
-        given(orderDao.findById(ANY_ORDER_ID)).willReturn(Optional.of(order));
+        given(orderRepository.findById(ANY_ORDER_ID)).willReturn(Optional.of(order));
 
         ReflectionTestUtils.setField(order, "orderStatus", OrderStatus.COMPLETION);
 

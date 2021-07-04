@@ -1,4 +1,4 @@
-package kitchenpos.dao;
+package kitchenpos.repository;
 
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderStatus;
@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-public interface OrderDao extends JpaRepository<Order, Long> {
+public interface OrderRepository extends JpaRepository<Order, Long> {
     Order save(Order entity);
 
     Optional<Order> findById(Long id);

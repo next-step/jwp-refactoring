@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.repository.OrderRepository;
+import kitchenpos.repository.OrderTableRepository;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.order.OrderTable;
 import kitchenpos.dto.order.OrderTableRequest;
@@ -30,10 +30,10 @@ class TableServiceTest {
     private TableService tableService;
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
     private OrderTable orderTable;
     private long orderTableId;
 
@@ -47,7 +47,7 @@ class TableServiceTest {
     void create() {
         OrderTableRequest orderTableRequest = new OrderTableRequest(10, false);
 
-        given(orderTableDao.save(orderTable)).willReturn(orderTable);
+        given(orderTableRepository.save(orderTable)).willReturn(orderTable);
 
         OrderTable savedOrderTable = tableService.create(orderTableRequest);
         assertThat(savedOrderTable.getTableGroup()).isNull();
@@ -56,10 +56,10 @@ class TableServiceTest {
     @Test
     @DisplayName("주문 테이블을 빈 테이블로 만들 수 있다.")
     void changeEmptyTable() {
-        given(orderTableDao.findById(anyLong()))
+        given(orderTableRepository.findById(anyLong()))
                 .willReturn(Optional.of(orderTable));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(false);
-        given(orderTableDao.save(orderTable)).willReturn(orderTable);
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(false);
+        given(orderTableRepository.save(orderTable)).willReturn(orderTable);
 
         OrderTable changedOrderTable = tableService.changeEmpty(1L);
 
@@ -70,12 +70,12 @@ class TableServiceTest {
     @DisplayName("주문의 상태가 조리이거나, 식사의 경우에는 빈 테이블로 만들 수 없다.")
     void exception_when_orderStatus_is_meal_or_cook() {
 
-        given(orderTableDao.findById(anyLong()))
+        given(orderTableRepository.findById(anyLong()))
                 .willReturn(Optional.of(orderTable));
 
         orderTableId = 1L;
 
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(orderTableId,
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId,
                 Lists.list(OrderStatus.COOKING, OrderStatus.MEAL)))
                 .willReturn(true);
 
@@ -88,9 +88,9 @@ class TableServiceTest {
     @DisplayName("주문 테이블에는 방문한 손님 수를 변경할 수 있다.")
     void changeNumberOfGuestTest() {
 
-        given(orderTableDao.findById(anyLong()))
+        given(orderTableRepository.findById(anyLong()))
                 .willReturn(Optional.of(orderTable));
-        given(orderTableDao.save(orderTable))
+        given(orderTableRepository.save(orderTable))
                 .willReturn(orderTable);
 
         OrderTable savedOrderTable = tableService.changeNumberOfGuests(1L, 10);
@@ -104,7 +104,7 @@ class TableServiceTest {
 
         orderTable.changeEmptyTable();
 
-        given(orderTableDao.findById(1L))
+        given(orderTableRepository.findById(1L))
                 .willReturn(Optional.of(orderTable));
 
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, 10))
@@ -115,7 +115,7 @@ class TableServiceTest {
     @Test
     @DisplayName("주문 테이블의 전체 목록을 조회할 수 있다.")
     void getAllOrderTable() {
-        given(orderTableDao.findAll())
+        given(orderTableRepository.findAll())
                 .willReturn(new ArrayList<>());
 
         assertThat(tableService.list()).isNotNull();

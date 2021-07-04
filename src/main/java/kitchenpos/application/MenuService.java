@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
+import kitchenpos.repository.MenuRepository;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menu.MenuProduct;
@@ -14,16 +14,16 @@ import java.util.List;
 
 @Service
 public class MenuService {
-    private final MenuDao menuDao;
+    private final MenuRepository menuRepository;
     private final ProductService productService;
     private final MenuGroupService menuGroupService;
 
     public MenuService(
-            final MenuDao menuDao,
+            final MenuRepository menuRepository,
             final ProductService productService,
             final MenuGroupService menuGroupService
     ) {
-        this.menuDao = menuDao;
+        this.menuRepository = menuRepository;
         this.productService = productService;
         this.menuGroupService = menuGroupService;
     }
@@ -45,14 +45,14 @@ public class MenuService {
                 MenuProduct.of(null, productService.getProduct(menuProduct.getProductId()), menuProduct.getQuantity()
                 )).forEach(menu::addMenuProducts);
 
-        if (menu.isReasonablePrice() == false) {
+        if (!menu.isReasonablePrice()) {
             throw new IllegalArgumentException("Total Price is higher then expected MenuProduct Price");
         }
 
-        return menuDao.save(menu);
+        return menuRepository.save(menu);
     }
 
     public List<Menu> list() {
-        return menuDao.findAll();
+        return menuRepository.findAll();
     }
 }
