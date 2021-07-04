@@ -3,6 +3,7 @@ package kitchenpos.dto.response;
 import kitchenpos.domain.product.Product;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 public class ProductViewResponse {
     private Long id;
@@ -29,5 +30,18 @@ public class ProductViewResponse {
 
     public BigDecimal getPrice() {
         return price;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ProductViewResponse that = (ProductViewResponse) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(price, that.price);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, price);
     }
 }
