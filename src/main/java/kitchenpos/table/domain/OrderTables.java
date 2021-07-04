@@ -38,13 +38,13 @@ public class OrderTables {
     }
 
     private void validation() {
-        if (!isCompletedOrders()) {
+        if (isImmutableOrder()) {
             throw new IllegalArgumentException();
         }
     }
 
-    private boolean isCompletedOrders() {
-        return orderTables.stream().allMatch(OrderTable::isCompletedOrders);
+    private boolean isImmutableOrder() {
+        return orderTables.stream().anyMatch(OrderTable::isImmutableOrder);
     }
 
 }

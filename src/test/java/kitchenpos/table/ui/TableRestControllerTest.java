@@ -98,7 +98,7 @@ public class TableRestControllerTest {
         String content = objectMapper.writeValueAsString(사용유부_업데이트된_테이블);
 
         given(tableService.changeEmpty(any(), any()))
-            .willReturn(사용유부_업데이트된_테이블);
+            .willReturn(OrderTableResponse.of(사용유부_업데이트된_테이블));
 
         // when
         mockMvc.perform(

@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import kitchenpos.order.domain.Order;
+import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 @Entity
@@ -99,8 +100,8 @@ public class OrderTable {
         return false;
     }
 
-    public boolean isCompletedOrders() {
-        return orders.stream().allMatch(Order::isFinished);
+    public boolean isImmutableOrder() {
+        return orders.stream().anyMatch(Order::isImmutableOrder);
     }
 
     public boolean isAvaliableTable() {
@@ -109,5 +110,21 @@ public class OrderTable {
 
     public void ungroup() {
         tableGroupId = null;
+    }
+
+    public void updateEmpty(OrderTableRequest orderTableRequest) {
+        validation();
+        this.empty = orderTableRequest.isEmpty();
+    }
+
+    private void validation() {
+        if (hasTableGroup()) {
+            throw new IllegalArgumentException();
+        }
+
+        if (isImmutableOrder()) {
+            throw new IllegalArgumentException();
+        }
+
     }
 }

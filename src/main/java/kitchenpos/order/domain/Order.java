@@ -83,7 +83,7 @@ public class Order {
         this.orderLineItems = orderLineItems;
     }
 
-    public boolean isFinished() {
-        return OrderStatus.COMPLETION.name().equals(orderStatus);
+    public boolean isImmutableOrder() {
+        return OrderStatus.COOKING.name().equals(orderStatus) || OrderStatus.MEAL.name().equals(orderStatus);
     }
 }
