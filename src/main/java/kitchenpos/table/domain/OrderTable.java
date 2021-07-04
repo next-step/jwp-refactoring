@@ -94,7 +94,7 @@ public class OrderTable {
     public void addOrder(Order order) {
 
         if (isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("빈 상태의 주문 테이블에는 주문을 추가할 수 없습니다.");
         }
 
         this.orders.add(order);
