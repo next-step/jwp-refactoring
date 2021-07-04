@@ -1,11 +1,11 @@
 package kitchenpos.application;
 
-import kitchenpos.repository.MenuRepository;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menu.MenuProduct;
 import kitchenpos.dto.menu.MenuProductRequest;
 import kitchenpos.dto.menu.MenuRequest;
+import kitchenpos.repository.MenuRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,9 +41,10 @@ public class MenuService {
 
         List<MenuProductRequest> menuProducts = menuRequest.getMenuProducts();
 
-        menuProducts.stream().map(menuProduct ->
-                MenuProduct.of(null, productService.getProduct(menuProduct.getProductId()), menuProduct.getQuantity()
-                )).forEach(menu::addMenuProducts);
+        menuProducts.stream()
+                .map(menuProduct ->
+                        MenuProduct.of(null, productService.getProduct(menuProduct.getProductId()), menuProduct.getQuantity()))
+                .forEach(menu::addMenuProducts);
 
         if (!menu.isReasonablePrice()) {
             throw new IllegalArgumentException("Total Price is higher then expected MenuProduct Price");

@@ -36,44 +36,44 @@ class OrderServiceTest {
     @Mock
     private OrderRepository orderRepository;
     @Mock
-    private OrderLineItemRepository orderLineItemRepository;
-    @Mock
     private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     OrderService orderService;
+
     private Order order;
-    private OrderLineItem orderLineItem1;
-    private OrderLineItem orderLineItem2;
+
     private OrderTable orderTable;
     private final static long ANY_ORDER_ID = 1L;
     private final static long ANY_ORDER_TABLE_ID = 1L;
+
     private final static long ORDER_LINE_ITEM_ID_1L = 1L;
     private final static long ORDER_LINE_ITEM_ID_2L = 2L;
+    private final static long MENU_ID_1L = 1L;
+    private final static long MENU_ID_2L = 2L;
     private OrderRequest orderRequest;
 
     @BeforeEach
     void setUp() {
-        orderRequest = new OrderRequest(ANY_ORDER_TABLE_ID, Lists.list(new OrderLineItemRequest(1L, 10L), new OrderLineItemRequest(2L, 20L)));
+        orderRequest = new OrderRequest(ANY_ORDER_TABLE_ID,
+                Lists.list(new OrderLineItemRequest(1L, 10L),
+                        new OrderLineItemRequest(2L, 20L)));
 
-
-        orderLineItem1 = OrderLineItem.of(order, 1L, 10);
+        // Order 를 만들기 위한 Dummy
+        OrderLineItem orderLineItem1 = OrderLineItem.of(order, MENU_ID_1L, 10);
         ReflectionTestUtils.setField(orderLineItem1, "seq", ORDER_LINE_ITEM_ID_1L);
-        orderLineItem2 = OrderLineItem.of(order, 2L, 20);
+        OrderLineItem orderLineItem2 = OrderLineItem.of(order, MENU_ID_2L, 20);
         ReflectionTestUtils.setField(orderLineItem2, "seq", ORDER_LINE_ITEM_ID_2L);
 
         orderTable = OrderTable.of(10, false);
 
         order = Order.of(orderTable, OrderStatus.COOKING, Lists.list(orderLineItem1, orderLineItem2));
-        order.addOrderLineItem(orderLineItem1);
-        order.addOrderLineItem(orderLineItem2);
-
     }
 
     @Test
     @DisplayName("주문 항목이 비어있다면 주문을 등록할 수 없다.")
     void exception_create() {
-        given(orderTableRepository.findById(1L)).willReturn(Optional.of(orderTable));
+        given(orderTableRepository.findById(ANY_ORDER_ID)).willReturn(Optional.of(orderTable));
         orderRequest = new OrderRequest(ANY_ORDER_TABLE_ID, new ArrayList<>());
 
         assertThatThrownBy(() -> orderService.create(orderRequest))
@@ -84,9 +84,15 @@ class OrderServiceTest {
     @Test
     @DisplayName("주문 항목의 갯수가 주문 항목의 메뉴의 갯수와 일치 하지 않으면 등록할 수 없다.")
     void exception2_create() {
-        given(orderTableRepository.findById(1L)).willReturn(Optional.of(orderTable));
-        given(menuRepository.countByIdIn(Lists.list(ORDER_LINE_ITEM_ID_1L, ORDER_LINE_ITEM_ID_2L)))
+        given(orderTableRepository.findById(ANY_ORDER_TABLE_ID)).willReturn(Optional.of(orderTable));
+
+        given(menuRepository.countByIdIn(Lists.list(ORDER_LINE_ITEM_ID_1L)))
                 .willReturn(100L);
+
+        OrderLineItem orderLineItem1 = OrderLineItem.of(order, MENU_ID_1L, 10);
+        ReflectionTestUtils.setField(orderLineItem1, "seq", ORDER_LINE_ITEM_ID_1L);
+
+        orderRequest = new OrderRequest(ANY_ORDER_TABLE_ID, Lists.list(new OrderLineItemRequest(MENU_ID_1L, 10L)));
 
         assertThatThrownBy(() -> orderService.create(orderRequest))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -94,7 +100,7 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("주문의 주문 테이블이 빈 테이블일 경우 주문을 등록할 수 없다.")
+    @DisplayName("주문한 테이블이 빈 테이블일 경우 주문을 등록할 수 없다.")
     void exception3_create() {
         orderTable.changeEmptyTable();
 
@@ -110,7 +116,7 @@ class OrderServiceTest {
     void after_create_orderStatus_is_COOKING() {
         orderTable.changeNonEmptyTable();
         given(orderTableRepository.findById(ANY_ORDER_TABLE_ID)).willReturn(Optional.of(orderTable));
-        given(menuRepository.countByIdIn(Lists.list(1L, 2L))).willReturn(2L);
+        given(menuRepository.countByIdIn(Lists.list(MENU_ID_1L, MENU_ID_2L))).willReturn(2L);
         given(orderRepository.save(any())).willReturn(order);
 
         Order saveOrder = orderService.create(orderRequest);

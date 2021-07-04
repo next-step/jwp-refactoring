@@ -27,20 +27,18 @@ class ProductServiceTest {
 
     private ProductRequest productRequest;
     private Product product;
-    private final static long ANY_PRODUCT_ID = 1L;
     @BeforeEach
     void setUp() {
-        productRequest = new ProductRequest("product", BigDecimal.valueOf(1000L));
         product = Product.of("product", BigDecimal.valueOf(1000L));
     }
 
     @Test
     void create() {
+        given(productRepository.save(product)).willReturn(product);
 
-        given(productRepository.save(product))
-                .willReturn(product);
-
+        productRequest = new ProductRequest("product", BigDecimal.valueOf(1000L));
         productService.create(productRequest);
+
         verify(productRepository).save(product);
     }
 }

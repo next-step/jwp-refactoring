@@ -82,19 +82,21 @@ TODO
 - [x] Menu JPA 적용
 - [x] Order JPA 적용
 
-- [ ] Menu Service 리팩토링
-  - Menu 도메인 테스트 코드 추가
-    - [ ] Menu
-    - [ ] MenuGroup
-    - [ ] MenuProduct
-    - [ ] Product
+- [x] Menu Service 리팩토링
+- [x] Order Service 리팩토링
   
-- [ ] Order Service 리팩토링
-  - Order 도메인 테스트 코드 추가
-    - [ ] Order
-    - [ ] OrderLine
-    - [ ] OrderTable
-    - [ ] TableGroup
+- Menu 도메인 테스트 코드 추가
+  - [ ] Menu
+  - [ ] MenuGroup
+  - [ ] MenuProduct
+  - [ ] Product
+
+
+- Order 도메인 테스트 코드 추가
+  - [ ] Order
+  - [ ] OrderLine
+  - [ ] OrderTable
+  - [ ] TableGroup
 
 - [ ] 이벤트 기반 상태 변경
 

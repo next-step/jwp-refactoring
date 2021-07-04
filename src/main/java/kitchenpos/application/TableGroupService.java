@@ -26,11 +26,9 @@ public class TableGroupService {
         this.tableGroupRepository = tableGroupRepository;
     }
 
-    // 그룹을 지정하기 위한 코드
     @Transactional
     public TableGroup create(final TableGroupRequest tableGroupRequest) {
 
-        // 주문 테이블 1,2,3,4,...
         List<OrderTable> orderTables = tableGroupRequest
                 .getOrderTableRequests().stream()
                 .map(orderTableRequest -> orderTableRepository.findById(orderTableRequest.getId())

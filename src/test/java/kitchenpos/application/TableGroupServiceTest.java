@@ -24,6 +24,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
@@ -34,13 +35,10 @@ class TableGroupServiceTest {
     private OrderRepository orderRepository;
     @Mock
     private OrderTableRepository orderTableRepository;
-    @Mock
-    private TableGroupRepository tableGroupRepository;
 
     @InjectMocks
     private TableGroupService tableGroupService;
 
-    private TableGroup tableGroup;
     private TableGroupRequest tableGroupRequest;
 
     private OrderTable orderTable1;
@@ -65,6 +63,7 @@ class TableGroupServiceTest {
     @DisplayName("단체 지정된 테이블 일 경우에는 적어도 2개 이상의 주문 테이블을 가져야 한다.")
     void exception_create_test() {
 
+        tableGroupRequest = new TableGroupRequest(new ArrayList<>());
         assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("should have over 2 orderTables");
@@ -73,9 +72,12 @@ class TableGroupServiceTest {
     @Test
     @DisplayName("단체 지정 시점에, 주문 테이블이 단체 지정시 주문받은 주문 테이블과 숫자가 맞지 않으면 생성될 수 없다.")
     void exception_orderTable() {
-        tableGroupRequest = new TableGroupRequest(Lists.list(new OrderTableId(1L), new OrderTableId(2L)));
         given(orderTableRepository.findById(FIRST_ORDER_TABLE_ID)).willReturn(Optional.of(orderTable1));
         given(orderTableRepository.findById(SECOND_ORDER_TABLE_ID)).willReturn(Optional.of(orderTable2));
+        given(orderTableRepository.findAllByIdIn(any())).willReturn(Lists.list(orderTable1));
+
+        tableGroupRequest = new TableGroupRequest(Lists.list(new OrderTableId(FIRST_ORDER_TABLE_ID),
+                new OrderTableId(SECOND_ORDER_TABLE_ID)));
 
         assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -86,9 +88,11 @@ class TableGroupServiceTest {
     @DisplayName("단체 지정 시점에, 시점에 주문 테이블이 빈 테이블이 아니라면 단체 지정을 할 수 없다.")
     void exception2_orderTable() {
         tableGroupRequest = new TableGroupRequest(Lists.list(new OrderTableId(1L), new OrderTableId(2L)));
-        tableGroup = TableGroup.of(Lists.list(orderTable1, orderTable2));
         given(orderTableRepository.findAllByIdIn(Lists.list(FIRST_ORDER_TABLE_ID, SECOND_ORDER_TABLE_ID)))
                 .willReturn(Lists.list(orderTable1, orderTable2));
+
+        orderTable1 = OrderTable.of(10, false);
+        orderTable2 = OrderTable.of(10, false);
         given(orderTableRepository.findById(FIRST_ORDER_TABLE_ID)).willReturn(Optional.of(orderTable1));
         given(orderTableRepository.findById(SECOND_ORDER_TABLE_ID)).willReturn(Optional.of(orderTable2));
 
@@ -112,9 +116,8 @@ class TableGroupServiceTest {
         tableGroupService.ungroup(ANY_TABLE_GROUP_ID);
 
         assertThat(orderTable1.getTableGroup()).isNull();
-        verify(orderTableRepository).save(orderTable1);
-
         assertThat(orderTable2.getTableGroup()).isNull();
+        verify(orderTableRepository).save(orderTable1);
         verify(orderTableRepository).save(orderTable2);
     }
 
