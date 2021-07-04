@@ -1,6 +1,6 @@
-package kitchenpos.order.dto;
+package kitchenpos.ordering.dto;
 
-import kitchenpos.order.domain.Order;
+import kitchenpos.ordering.domain.Ordering;
 
 public class OrderResponse {
     private Long id;
@@ -11,7 +11,7 @@ public class OrderResponse {
         this.orderTableId = orderTableId;
     }
 
-    public static OrderResponse of(Order order) {
+    public static OrderResponse of(Ordering order) {
         return new OrderResponse(order.getId(), order.getOrderTableId());
     }
 

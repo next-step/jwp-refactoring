@@ -1,10 +1,9 @@
-package kitchenpos.order.application;
+package kitchenpos.ordering.application;
 
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.order.application.OrderService;
-import kitchenpos.order.domain.*;
-import kitchenpos.order.dto.OrderRequest;
-import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.ordering.domain.*;
+import kitchenpos.ordering.dto.OrderRequest;
+import kitchenpos.ordering.dto.OrderResponse;
 import kitchenpos.tablegroup.domain.OrderTable;
 import kitchenpos.tablegroup.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,7 +55,7 @@ public class OrderServiceTest {
     @Test
     void create() {
         OrderRequest orderRequest1 = new OrderRequest(order1OrderTableId, order1OrderLineItems);
-        Order order1 = orderRequest1.toEntity();
+        Ordering order1 = orderRequest1.toEntity();
 
         when(menuRepository.countByIdIn(any())).thenReturn(1L);
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
@@ -76,7 +75,7 @@ public class OrderServiceTest {
     @Test
     void 주문의_주문항목이_올바르지_않으면_등록할_수_없다_1() {
         List<OrderLineItem> emptyOrderLineItems = Arrays.asList();
-//        Order order1 = new Order(order1Id, order1OrderTableId, order1OrderStatus, order1OrderTime, emptyOrderLineItems);
+//        Ordering order1 = new Ordering(order1Id, order1OrderTableId, order1OrderStatus, order1OrderTime, emptyOrderLineItems);
         OrderRequest orderRequest1 = new OrderRequest(order1OrderTableId, emptyOrderLineItems);
 
         assertThatThrownBy(() -> {
@@ -88,7 +87,7 @@ public class OrderServiceTest {
     @Test
     void 주문의_주문항목이_올바르지_않으면_등록할_수_없다_2() {
         long falseCount = 2;
-//        Order order1 = new Order(order1Id, order1OrderTableId, order1OrderStatus, order1OrderTime, order1OrderLineItems);
+//        Ordering order1 = new Ordering(order1Id, order1OrderTableId, order1OrderStatus, order1OrderTime, order1OrderLineItems);
         OrderRequest orderRequest1 = new OrderRequest(order1OrderTableId, order1OrderLineItems);
 
         when(menuRepository.countByIdIn(any())).thenReturn(falseCount);
@@ -101,7 +100,7 @@ public class OrderServiceTest {
     @DisplayName("주문의 주문테이블이 주문테이블로 등록 안되어 있으면 등록할 수 없다.")
     @Test
     void 주문의_주문테이블이_올바르지_않으면_등록할_수_없다_1() {
-//        Order order1 = new Order(order1Id, order1OrderTableId, order1OrderStatus, order1OrderTime, order1OrderLineItems);
+//        Ordering order1 = new Ordering(order1Id, order1OrderTableId, order1OrderStatus, order1OrderTime, order1OrderLineItems);
         OrderRequest orderRequest1 = new OrderRequest(order1OrderTableId, order1OrderLineItems);
 
         when(menuRepository.countByIdIn(any())).thenReturn(1L);
@@ -116,7 +115,7 @@ public class OrderServiceTest {
     @Test
     void 주문의_주문테이블이_올바르지_않으면_등록할_수_없다_2() {
         OrderTable falseOrderTable = new OrderTable(1L, 0, true);
-//        Order order1 = new Order(order1Id, order1OrderTableId, order1OrderStatus, order1OrderTime, order1OrderLineItems);
+//        Ordering order1 = new Ordering(order1Id, order1OrderTableId, order1OrderStatus, order1OrderTime, order1OrderLineItems);
         OrderRequest orderRequest1 = new OrderRequest(order1OrderTableId, order1OrderLineItems);
 
         when(menuRepository.countByIdIn(any())).thenReturn(1L);
@@ -130,7 +129,7 @@ public class OrderServiceTest {
     @DisplayName("주문 전체를 조회할 수 있다")
     @Test
     void 주문_전체_조회한다() {
-        Order order1 = new Order(order1Id, order1OrderTableId, order1OrderStatus, order1OrderTime, order1OrderLineItems);
+        Ordering order1 = new Ordering(order1Id, order1OrderTableId, order1OrderStatus, order1OrderTime, order1OrderLineItems);
 
         when(orderRepository.findAll()).thenReturn(Arrays.asList(order1));
 //        when(orderLineItemRepository.findAllByOrderId(any())).thenReturn(order1OrderLineItems);
@@ -142,14 +141,14 @@ public class OrderServiceTest {
     @DisplayName("주문 상태를 변경할 수 있다")
     @Test
     void 주문_상태_변경한다() {
-        Order order1 = new Order(order1Id, order1OrderTableId, OrderStatus.MEAL.name(), order1OrderTime, order1OrderLineItems);
-        Order orderRequest = new Order(order1Id, order1OrderTableId, OrderStatus.COMPLETION.name(), order1OrderTime, order1OrderLineItems);
+        Ordering order1 = new Ordering(order1Id, order1OrderTableId, OrderStatus.MEAL.name(), order1OrderTime, order1OrderLineItems);
+        Ordering orderRequest = new Ordering(order1Id, order1OrderTableId, OrderStatus.COMPLETION.name(), order1OrderTime, order1OrderLineItems);
 
         when(orderRepository.findById(any())).thenReturn(Optional.of(order1));
         when(orderRepository.save(any())).thenReturn(orderRequest);
         when(orderLineItemRepository.findAllByOrderId(any())).thenReturn(order1OrderLineItems);
 
-        Order orderResponse = orderService.changeOrderStatus(order1.getId(), orderRequest);
+        Ordering orderResponse = orderService.changeOrderStatus(order1.getId(), orderRequest);
         assertThat(orderResponse.getId()).isEqualTo(order1.getId());
         assertThat(orderResponse.getOrderStatus()).isEqualTo(order1.getOrderStatus());
     }
@@ -157,8 +156,8 @@ public class OrderServiceTest {
     @DisplayName("상태 변경하려는 주문이 없으면 변경할 수 없다.")
     @Test
     void 주문상태가_올바르지_않으면_상태를_변경할_수_없다_1() {
-        Order order1 = new Order(order1Id, order1OrderTableId, OrderStatus.MEAL.name(), order1OrderTime, order1OrderLineItems);
-        Order orderRequest = new Order(order1Id, order1OrderTableId, OrderStatus.COMPLETION.name(), order1OrderTime, order1OrderLineItems);
+        Ordering order1 = new Ordering(order1Id, order1OrderTableId, OrderStatus.MEAL.name(), order1OrderTime, order1OrderLineItems);
+        Ordering orderRequest = new Ordering(order1Id, order1OrderTableId, OrderStatus.COMPLETION.name(), order1OrderTime, order1OrderLineItems);
 
         when(orderRepository.findById(any())).thenReturn(Optional.empty());
 
@@ -170,8 +169,8 @@ public class OrderServiceTest {
     @DisplayName("상태 변경하려는 주문이 이미 완료된 상태이면 변경할 수 없다.")
     @Test
     void 주문상태가_올바르지_않으면_상태를_변경할_수_없다_2() {
-        Order order1 = new Order(order1Id, order1OrderTableId, OrderStatus.COMPLETION.name(), order1OrderTime, order1OrderLineItems);
-        Order orderRequest = new Order(order1Id, order1OrderTableId, OrderStatus.MEAL.name(), order1OrderTime, order1OrderLineItems);
+        Ordering order1 = new Ordering(order1Id, order1OrderTableId, OrderStatus.COMPLETION.name(), order1OrderTime, order1OrderLineItems);
+        Ordering orderRequest = new Ordering(order1Id, order1OrderTableId, OrderStatus.MEAL.name(), order1OrderTime, order1OrderLineItems);
 
         when(orderRepository.findById(any())).thenReturn(Optional.of(order1));
 

@@ -1,22 +1,19 @@
-package kitchenpos.order.application;
+package kitchenpos.ordering.application;
 
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.order.domain.OrderLineItemRepository;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.dto.OrderLineItemRequest;
-import kitchenpos.order.dto.OrderRequest;
-import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.ordering.domain.OrderLineItemRepository;
+import kitchenpos.ordering.domain.OrderRepository;
+import kitchenpos.ordering.domain.Ordering;
+import kitchenpos.ordering.dto.OrderRequest;
+import kitchenpos.ordering.dto.OrderResponse;
+import kitchenpos.ordering.domain.OrderStatus;
 import kitchenpos.tablegroup.domain.OrderTable;
 import kitchenpos.tablegroup.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -39,7 +36,7 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        Order order = orderRequest.toEntity();
+        Ordering order = orderRequest.toEntity();
         order.validateOrderLineItemsSize(menuRepository.countByIdIn(order.menuIds()));
 
         final OrderTable persistOrderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
@@ -47,18 +44,18 @@ public class OrderService {
         persistOrderTable.isValidForOrdering();
         order.isFrom(persistOrderTable);
 
-        final Order persistOrder = orderRepository.save(order);
+        final Ordering persistOrder = orderRepository.save(order);
 
         return OrderResponse.of(persistOrder);
     }
 
-    public List<Order> list() {
+    public List<Ordering> list() {
         return orderRepository.findAll();
     }
 
     @Transactional
-    public Order changeOrderStatus(final Long orderId, final Order order) {
-        final Order savedOrder = orderRepository.findById(orderId)
+    public Ordering changeOrderStatus(final Long orderId, final Ordering order) {
+        final Ordering savedOrder = orderRepository.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);
 
         if (Objects.equals(OrderStatus.COMPLETION.name(), savedOrder.getOrderStatus())) {

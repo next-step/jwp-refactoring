@@ -1,9 +1,9 @@
-package kitchenpos.order.ui;
+package kitchenpos.ordering.ui;
 
-import kitchenpos.order.application.OrderService;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.dto.OrderRequest;
-import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.ordering.application.OrderService;
+import kitchenpos.ordering.domain.Ordering;
+import kitchenpos.ordering.dto.OrderRequest;
+import kitchenpos.ordering.dto.OrderResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,14 +26,14 @@ public class OrderRestController {
     }
 
     @GetMapping("/api/orders")
-    public ResponseEntity<List<Order>> list() {
+    public ResponseEntity<List<Ordering>> list() {
         return ResponseEntity.ok().body(orderService.list());
     }
 
     @PutMapping("/api/orders/{orderId}/order-status")
-    public ResponseEntity<Order> changeOrderStatus(
+    public ResponseEntity<Ordering> changeOrderStatus(
             @PathVariable final Long orderId,
-            @RequestBody final Order order
+            @RequestBody final Ordering order
     ) {
         return ResponseEntity.ok(orderService.changeOrderStatus(orderId, order));
     }

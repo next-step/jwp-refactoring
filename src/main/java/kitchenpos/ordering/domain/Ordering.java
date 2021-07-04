@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package kitchenpos.ordering.domain;
 
 import kitchenpos.BaseEntity;
 import kitchenpos.tablegroup.domain.OrderTable;
@@ -12,7 +12,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Entity
-public class Order extends BaseEntity {
+public class Ordering extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,9 +29,9 @@ public class Order extends BaseEntity {
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE }, orphanRemoval = true)
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
-    public Order() { }
+    public Ordering() { }
 
-    public Order(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+    public Ordering(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
         this.id = id;
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
@@ -40,7 +40,7 @@ public class Order extends BaseEntity {
         setOrderIdOnOrderLineItems();
     }
 
-    public Order(Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+    public Ordering(Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
@@ -89,7 +89,7 @@ public class Order extends BaseEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Order order = (Order) o;
+        Ordering order = (Ordering) o;
         return Objects.equals(id, order.id) && Objects.equals(orderTableId, order.orderTableId) && Objects.equals(orderStatus, order.orderStatus) && Objects.equals(orderedTime, order.orderedTime) && Objects.equals(orderLineItems, order.orderLineItems);
     }
 

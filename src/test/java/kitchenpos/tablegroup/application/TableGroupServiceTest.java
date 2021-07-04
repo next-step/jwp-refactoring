@@ -1,6 +1,6 @@
 package kitchenpos.tablegroup.application;
 
-import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.ordering.domain.OrderRepository;
 import kitchenpos.tablegroup.domain.OrderTable;
 import kitchenpos.tablegroup.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
@@ -16,7 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;

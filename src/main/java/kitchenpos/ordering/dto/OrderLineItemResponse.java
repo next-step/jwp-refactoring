@@ -1,4 +1,4 @@
-package kitchenpos.order.dto;
+package kitchenpos.ordering.dto;
 
 public class OrderLineItemResponse {
 

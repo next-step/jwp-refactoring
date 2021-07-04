@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package kitchenpos.ordering.domain;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -11,7 +11,7 @@ public class OrderLineItem {
 
 //    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)
 //    @JoinColumn(name = "order_id")
-//    private Order order;
+//    private Ordering order;
 
     @Column
     private Long orderId;
@@ -42,13 +42,13 @@ public class OrderLineItem {
         this.quantity = quantity;
     }
 
-//    public OrderLineItem(Order order, Long menuId, long quantity) {
+//    public OrderLineItem(Ordering order, Long menuId, long quantity) {
 //        this.orderId = order.getId();
 //        this.menuId = menuId;
 //        this.quantity = quantity;
 //    }
 //
-//    public OrderLineItem(Long id, Order order, Long menuId, long quantity) {
+//    public OrderLineItem(Long id, Ordering order, Long menuId, long quantity) {
 //        this.id = id;
 //        this.orderId = order.getId();
 //        this.menuId = menuId;
@@ -84,11 +84,11 @@ public class OrderLineItem {
         return Objects.hash(id, orderId, menuId, quantity);
     }
 
-    //    public void isIn(Order order) {
+    //    public void isIn(Ordering order) {
 //        this.order = order;
 //    }
 
-    public void isIn(Order order) {
+    public void isIn(Ordering order) {
         this.orderId = order.getId();
     }
 

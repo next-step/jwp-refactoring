@@ -1,8 +1,8 @@
-package kitchenpos.order.dto;
+package kitchenpos.ordering.dto;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.ordering.domain.Ordering;
+import kitchenpos.ordering.domain.OrderLineItem;
+import kitchenpos.ordering.domain.OrderStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,8 +19,8 @@ public class OrderRequest {
                 .collect(Collectors.toList());
     }
 
-    public Order toEntity() {
-        return new Order(orderTableId,
+    public Ordering toEntity() {
+        return new Ordering(orderTableId,
                 OrderStatus.COOKING.name(),
                 LocalDateTime.now(),
                 orderLineItems.stream()
