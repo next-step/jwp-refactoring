@@ -8,6 +8,7 @@ import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.CreateOrderTableDto;
 import kitchenpos.table.exception.ChangeEmptyException;
+import kitchenpos.table.exception.NotFoundOrderTableException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -60,14 +61,14 @@ class TableServiceTest {
         assertNull(actual.getTableGroup());
     }
 
-    @DisplayName("empty 상태 변경 실패 - 찾을 수 없는 orderTable.getId()")
+    @DisplayName("empty 상태 변경 실패 - 찾을 수 없는 주문 테이블")
     @Test
     void changeEmptyFail01() {
         // given
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.empty());
 
         // when
-        assertThatIllegalArgumentException().isThrownBy(() -> tableService.changeEmpty(orderTableId, true));
+        assertThatExceptionOfType(NotFoundOrderTableException.class).isThrownBy(() -> tableService.changeEmpty(orderTableId, true));
     }
 
     @DisplayName("empty 상태 변경 실패 - table group에 속한 order table")
@@ -110,21 +111,21 @@ class TableServiceTest {
         tableService.changeEmpty(orderTable.getId(), true);
     }
 
-    @DisplayName("주문 테이블의 손님 수 변경 실패 - 손님 수가 0 이하")
-    @ValueSource(ints = { 0, -1, -500, -999999 })
+    @DisplayName("주문 테이블의 손님 수 변경 실패 - 손님 수가 0 미만")
+    @ValueSource(ints = { -1, -500, -999999 })
     @ParameterizedTest
     void changeNumberOfGuestsFail01(int numberOfGuests) {
         assertThatIllegalArgumentException().isThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, numberOfGuests));
     }
 
-    @DisplayName("주문 테이블의 손님 수 변경 실패 - 찾을 수 없는 orderTable.getId()")
+    @DisplayName("주문 테이블의 손님 수 변경 실패 - 찾을 수 없는 주문 테이블")
     @Test
     void changeNumberOfGuestsFail02() {
         // given
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.empty());
 
         // when
-        assertThatIllegalArgumentException().isThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, 3));
+        assertThatExceptionOfType(NotFoundOrderTableException.class).isThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, 3));
     }
 
     @DisplayName("주문 테이블의 손님 수 변경 실패 - empty 상태인 주문 테이블은 손님 수 변경 불가")

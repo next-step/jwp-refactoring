@@ -4,6 +4,7 @@ import java.util.List;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.CreateOrderTableDto;
+import kitchenpos.table.exception.NotFoundOrderTableException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,8 +28,9 @@ public class TableService {
 
     @Transactional
     public OrderTable changeEmpty(Long orderTableId, Boolean empty) {
-        OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                                                         .orElseThrow(IllegalArgumentException::new);
+        OrderTable savedOrderTable =
+            orderTableRepository.findById(orderTableId)
+                                .orElseThrow(() -> new NotFoundOrderTableException(orderTableId));
 
         savedOrderTable.changeEmpty(empty);
         return savedOrderTable;
@@ -42,7 +44,7 @@ public class TableService {
         }
 
         OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                                                         .orElseThrow(IllegalArgumentException::new);
+                                                         .orElseThrow(() -> new NotFoundOrderTableException(orderTableId));
 
         savedOrderTable.changeNumberOfGuests(numberOfGuests);
         return savedOrderTable;
