@@ -58,7 +58,7 @@ class TableGroupServiceTest {
     }
 
     @Test
-    @DisplayName("단체 지정된 테이블 일 경우에는 적어도 2개 이상의 주문 테이블을 가져야 한다.")
+    @DisplayName("단체 지정을 할 경우, 적어도 2개 이상의 주문된 테이블이 존재해야 한다.")
     void exception_create_test() {
 
         tableGroupRequest = new TableGroupRequest(new ArrayList<>());
@@ -68,7 +68,7 @@ class TableGroupServiceTest {
     }
 
     @Test
-    @DisplayName("단체 지정 시점에, 주문 테이블이 단체 지정시 주문받은 주문 테이블과 숫자가 맞지 않으면 생성될 수 없다.")
+    @DisplayName("단체 지정 시점에, 주문 테이블이 단체 지정시 주문받은 주문 테이블과 숫자가 맞지 않으면 지정할 수 없다.")
     void exception_orderTable() {
         given(orderTableRepository.findById(ORDER_TABLE_ID_1L)).willReturn(Optional.of(orderTable1));
         given(orderTableRepository.findById(ORDER_TABLE_ID_2L)).willReturn(Optional.of(orderTable2));
@@ -83,7 +83,7 @@ class TableGroupServiceTest {
     }
 
     @Test
-    @DisplayName("단체 지정 시점에, 시점에 주문 테이블이 빈 테이블이 아니라면 단체 지정을 할 수 없다.")
+    @DisplayName("단체 지정 시점에, 주문 테이블이 빈 테이블이 아니라면 단체 지정을 할 수 없다.")
     void exception2_orderTable() {
         given(orderTableRepository.findById(ORDER_TABLE_ID_1L)).willReturn(Optional.of(orderTable1));
         given(orderTableRepository.findById(ORDER_TABLE_ID_2L)).willReturn(Optional.of(orderTable2));

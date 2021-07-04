@@ -38,13 +38,13 @@ public class TableService {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(() -> new InvalidEntityException("Not Found OrderTable " + orderTableId));
 
-        if (Objects.nonNull(savedOrderTable.getTableGroup())) {
-            throw new IllegalArgumentException();
+        if (savedOrderTable.isTableGroupEmpty()) {
+            throw new IllegalArgumentException("Already setting another TableGroup");
         }
 
         if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
                 orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException("no exist order");
+            throw new IllegalArgumentException("Invalid orderTable Status");
         }
 
         savedOrderTable.changeEmptyTable();
@@ -59,7 +59,7 @@ public class TableService {
                 .orElseThrow(() -> new InvalidEntityException("Not found OrderTableId " + orderTableId));
 
         if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException("emptyTable");
+            throw new IllegalArgumentException("orderTable is empty " + savedOrderTable.getId());
         }
 
         savedOrderTable.changeNumberOfGuest(numberOfGuests);

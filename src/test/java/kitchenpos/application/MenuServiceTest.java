@@ -72,7 +72,7 @@ class MenuServiceTest {
     }
 
     @Test
-    @DisplayName("메뉴를 등록하는 시점에 메뉴 그룹이 미리 등록되어 있어야 한다.")
+    @DisplayName("메뉴를 등록하는 시점에 메뉴 그룹(MENU_GROUP)이 미리 등록되어 있어야 한다.")
     void menuGroup() {
         given(menuGroupService.isExists(menuGroup)).willReturn(true);
         given(menuGroupService.findById(ANY_MENU_GROUP_ID)).willReturn(menuGroup);
@@ -83,7 +83,7 @@ class MenuServiceTest {
     }
 
     @Test
-    @DisplayName("메뉴의 가격이 메뉴그룹의 가격보다 높을 경우 등록될 수 없다.")
+    @DisplayName("메뉴의 전체 가격이 메뉴그룹의 가격 전체 합보다 높을 경우 등록될 수 없다.")
     void price() {
         given(menuGroupService.isExists(menuGroup)).willReturn(false);
         given(menuGroupService.findById(ANY_MENU_GROUP_ID)).willReturn(menuGroup);

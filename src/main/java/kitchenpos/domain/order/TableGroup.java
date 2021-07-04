@@ -11,6 +11,8 @@ import java.util.Objects;
 @Entity
 public class TableGroup {
 
+    public static final TableGroup EMPTY = new TableGroup();
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

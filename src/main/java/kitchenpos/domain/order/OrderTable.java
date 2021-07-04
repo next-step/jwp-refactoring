@@ -3,6 +3,8 @@ package kitchenpos.domain.order;
 import javax.persistence.*;
 import java.util.Objects;
 
+import static kitchenpos.domain.order.TableGroup.EMPTY;
+
 @Entity
 public class OrderTable {
     @Id
@@ -29,7 +31,7 @@ public class OrderTable {
     }
 
     public static OrderTable of(int numberOfGuests, boolean empty) {
-        return new OrderTable(null, null, numberOfGuests, empty);
+        return new OrderTable(null, EMPTY, numberOfGuests, empty);
     }
 
     public Long getId() {
@@ -88,5 +90,9 @@ public class OrderTable {
                 ", numberOfGuests=" + numberOfGuests +
                 ", empty=" + empty +
                 '}';
+    }
+
+    public boolean isTableGroupEmpty() {
+        return this.tableGroup == EMPTY;
     }
 }

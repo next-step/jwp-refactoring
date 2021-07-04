@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.domain.order.TableGroup;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import kitchenpos.domain.order.OrderStatus;
@@ -17,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import static kitchenpos.domain.order.TableGroup.EMPTY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -52,12 +54,15 @@ class TableServiceTest {
         given(orderTableRepository.save(orderTableDummy)).willReturn(orderTableDummy);
 
         OrderTable savedOrderTable = tableService.create(orderTableRequest);
-        assertThat(savedOrderTable.getTableGroup()).isNull();
+        assertThat(savedOrderTable.getTableGroup()).isEqualTo(EMPTY);
     }
 
     @Test
-    @DisplayName("주문 테이블을 빈 테이블로 만들 수 있다.")
+    @DisplayName("식사가 끝난 테이블을 빈 테이블로 만들 수 있다.")
     void changeEmptyTable() {
+        orderTableDummy.changeTableGroup(TableGroup.of(
+                Lists.list(OrderTable.of(10, false), OrderTable.of(10, false)
+                )));
         given(orderTableRepository.findById(anyLong()))
                 .willReturn(Optional.of(orderTableDummy));
         given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(false);
@@ -71,19 +76,22 @@ class TableServiceTest {
     @Test
     @DisplayName("주문의 상태가 조리이거나, 식사의 경우에는 빈 테이블로 만들 수 없다.")
     void exception_when_orderStatus_is_meal_or_cook() {
-
+        orderTableDummy.changeTableGroup(TableGroup.of(
+                Lists.list(OrderTable.of(10, false), OrderTable.of(10, false)
+        )));
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(orderTableDummy));
         given(orderRepository.existsByOrderTableIdAndOrderStatusIn(ANY_ORDER_TABLE_ID,
                 Lists.list(OrderStatus.COOKING, OrderStatus.MEAL)))
                 .willReturn(true);
 
+
         assertThatThrownBy(() -> tableService.changeEmpty(ANY_ORDER_TABLE_ID))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("no exist order");
+                .hasMessageContaining("Invalid orderTable Status");
     }
 
     @Test
-    @DisplayName("주문 테이블에는 방문한 손님 수를 변경할 수 있다.")
+    @DisplayName("주문 테이블의 손님 수를 변경할 수 있다.")
     void changeNumberOfGuestTest() {
 
         given(orderTableRepository.findById(ANY_ORDER_TABLE_ID)).willReturn(Optional.of(orderTableDummy));
@@ -103,7 +111,7 @@ class TableServiceTest {
 
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(ANY_ORDER_TABLE_ID, 10))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("emptyTable");
+                .hasMessageContaining("orderTable is empty");
     }
 
     @Test

@@ -70,7 +70,7 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("주문 항목이 비어있다면 주문을 등록할 수 없다.")
+    @DisplayName("주문 항목(OrderLineItem)이 없다면 주문을 등록할 수 없다.")
     void exception_create() {
         given(orderTableRepository.findById(ANY_ORDER_ID)).willReturn(Optional.of(orderTable));
         orderRequest = new OrderRequest(ANY_ORDER_TABLE_ID, new ArrayList<>());
@@ -99,7 +99,7 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("주문한 테이블이 빈 테이블일 경우 주문을 등록할 수 없다.")
+    @DisplayName("주문된 테이블이 빈 테이블일 경우 주문이 수행되지 않는다.")
     void exception3_create() {
         orderTable.changeEmptyTable();
 
@@ -111,7 +111,7 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("처음 주문 상태(order status)는 조리(COOKING) 상태가 된다.")
+    @DisplayName("주문이 들어가면 처음 상태(order status)는 조리(COOKING) 상태가 된다.")
     void after_create_orderStatus_is_COOKING() {
         orderTable.changeNonEmptyTable();
         given(orderTableRepository.findById(ANY_ORDER_TABLE_ID)).willReturn(Optional.of(orderTable));
@@ -124,7 +124,7 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("주문의 주문 상태(order status)를 식사 상태로 변경할 수 있다.")
+    @DisplayName("주문의 상태(order status)를 식사 상태로 변경할 수 있다.")
     void changeOrderStatusTest() {
         given(orderRepository.findById(ANY_ORDER_ID)).willReturn(Optional.of(order));
 
