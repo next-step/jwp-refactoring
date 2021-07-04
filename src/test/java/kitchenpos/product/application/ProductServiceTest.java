@@ -1,7 +1,8 @@
-package kitchenpos.application;
+package kitchenpos.product.application;
 
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
+import kitchenpos.product.dao.ProductDao;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.application.ProductService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
