@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import kitchenpos.menu.exception.NotCreateMenuException;
 import kitchenpos.product.domain.Price;
 
 @Entity
@@ -52,7 +53,7 @@ public class Menu {
 
     private void verifyTotalPrice() {
         if (price.getValue() > menuProducts.getSum().getValue()) {
-            throw new IllegalArgumentException();
+            throw new NotCreateMenuException();
         }
     }
 

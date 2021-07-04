@@ -13,6 +13,7 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.CreateMenuDto;
 import kitchenpos.menu.dto.CreateMenuProductDto;
 import kitchenpos.menu.dto.MenuDto;
+import kitchenpos.menu.exception.NotCreateMenuException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -134,7 +135,7 @@ class MenuServiceTest {
         given(menuGroupRepository.findById(menuDto.getMenuGroupId())).willReturn(Optional.of(menuGroup));
 
         // when
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuDto));
+        assertThatExceptionOfType(NotCreateMenuException.class).isThrownBy(() -> menuService.create(menuDto));
     }
 
     public CreateMenuDto createMenuDto(Long price) {
