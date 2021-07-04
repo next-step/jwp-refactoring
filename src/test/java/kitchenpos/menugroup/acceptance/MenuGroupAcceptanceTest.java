@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
 
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
-import kitchenpos.menugroup.dto.MenuGroupResponse;
+import kitchenpos.menugroup.dto.MenuGroupListResponse;
 
 @DisplayName("메뉴 그룹 인수 테스트")
 public class MenuGroupAcceptanceTest extends AcceptanceTest {
@@ -48,8 +48,8 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     }
 
     private void 메뉴_그룹_조회_요청_응답_확인(ExtractableResponse<Response> 메뉴_그룹_조회_요청_응답) {
-        MenuGroupResponse menuGroupResponse = 메뉴_그룹_조회_요청_응답.as(MenuGroupResponse.class);
-        assertThat(menuGroupResponse.getMenuGroupResponses().get(0).getName()).isEqualTo("국밥");
+        MenuGroupListResponse menuGroupListResponse = 메뉴_그룹_조회_요청_응답.as(MenuGroupListResponse.class);
+        assertThat(menuGroupListResponse.getMenuGroupResponses().get(0).getName()).isEqualTo("국밥");
     }
 
     private ExtractableResponse<Response> 메뉴_그룹_조회_요청() {

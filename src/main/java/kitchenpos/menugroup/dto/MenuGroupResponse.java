@@ -1,21 +1,25 @@
 package kitchenpos.menugroup.dto;
 
-import java.util.List;
-
 public class MenuGroupResponse {
-    List<MenuGroupResponseDto> menuGroupResponses;
+    private Long id;
+    private String name;
 
     public MenuGroupResponse() {}
 
-    public MenuGroupResponse(List<MenuGroupResponseDto> menuGroupResponses) {
-        this.menuGroupResponses = menuGroupResponses;
+    public MenuGroupResponse(Long id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
-    public static MenuGroupResponse of(List<MenuGroupResponseDto> menuGroupResponse) {
-        return new MenuGroupResponse(menuGroupResponse);
+    public static MenuGroupResponse of(Long id, String name) {
+        return new MenuGroupResponse(id, name);
     }
 
-    public List<MenuGroupResponseDto> getMenuGroupResponses() {
-        return menuGroupResponses;
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
     }
 }
