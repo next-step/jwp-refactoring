@@ -37,6 +37,7 @@ class MenuGroupServiceTest {
         assertThat(created.getName()).isEqualTo(menuGroup.getName());
     }
 
+    @DisplayName("메뉴 그룹 리스트를 조회한다.")
     @Test
     void list() {
         MenuGroup menuGroup1 = new MenuGroup(5L, "기타안주메뉴");

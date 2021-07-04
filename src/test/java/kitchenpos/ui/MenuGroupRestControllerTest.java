@@ -59,7 +59,7 @@ class MenuGroupRestControllerTest {
                 .andExpect(status().isCreated());
     }
 
-    @DisplayName("메뉴 그룹을 조회한다.")
+    @DisplayName("메뉴 그룹 리스트를 조회한다.")
     @Test
     void list() throws Exception {
         List<MenuGroup> menuGroups = new ArrayList<>();

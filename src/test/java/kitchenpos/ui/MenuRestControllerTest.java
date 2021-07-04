@@ -62,6 +62,7 @@ class MenuRestControllerTest {
                 .andExpect(status().isCreated());
     }
 
+    @DisplayName("메뉴 리스트를 조회한다.")
     @Test
     void list() throws Exception {
         List<MenuProduct> menuProducts = Arrays.asList(new MenuProduct(7L, 7L, 7L, 1));
