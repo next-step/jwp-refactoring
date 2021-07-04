@@ -34,10 +34,12 @@ class MenuGroupRestControllerTest {
     @Autowired
     private WebApplicationContext context;
 
+    @Autowired
+    private ObjectMapper mapper;
+
     @MockBean
     private MenuGroupService menuGroupService;
 
-    private ObjectMapper mapper = new ObjectMapper();
 
     @BeforeEach
     public void setUp() {

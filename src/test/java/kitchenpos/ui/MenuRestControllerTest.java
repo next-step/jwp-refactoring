@@ -35,10 +35,12 @@ class MenuRestControllerTest {
     @Autowired
     private WebApplicationContext context;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @MockBean
     private MenuService menuService;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
     public void setUp() {
