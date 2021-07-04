@@ -1,5 +1,6 @@
 package kitchenpos.table.domain;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -11,8 +12,12 @@ import kitchenpos.tablegroup.domain.TableGroup;
 @Embeddable
 public class OrderTables {
 
-    @OneToMany(mappedBy = "tableGroupId")
+    @OneToMany(mappedBy = "tableGroup")
     private final List<OrderTable> orderTables;
+
+    public OrderTables() {
+        orderTables = new ArrayList<>();
+    }
 
     public OrderTables(List<OrderTable> orderTables) {
         this.orderTables = orderTables;

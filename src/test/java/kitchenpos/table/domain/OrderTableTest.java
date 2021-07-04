@@ -19,7 +19,7 @@ public class OrderTableTest {
 
     @BeforeEach
     void setUp() {
-        orderTable = new OrderTable(1L, 산악회.getId(), 10, false);
+        orderTable = new OrderTable(1L, 산악회, 10, false);
     }
 
     @Test
@@ -38,7 +38,7 @@ public class OrderTableTest {
     @DisplayName("테이블이 비었는데 테이블 인원 수 수정시 에러를 출력한다.")
     void emptyTable() {
         //given
-        OrderTable 빈_테이블 = new OrderTable(1L, 산악회.getId(), 10, false);
+        OrderTable 빈_테이블 = new OrderTable(1L, 산악회, 10, false);
         OrderTableRequest request = new OrderTableRequest(-1, true);
 
         // then

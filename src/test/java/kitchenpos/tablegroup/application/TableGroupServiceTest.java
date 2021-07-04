@@ -1,6 +1,5 @@
 package kitchenpos.tablegroup.application;
 
-import static kitchenpos.util.TestDataSet.산악회;
 import static kitchenpos.util.TestDataSet.테이블_1번;
 import static kitchenpos.util.TestDataSet.테이블_2번;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,6 +31,7 @@ import kitchenpos.product.constant.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTables;
+import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
@@ -53,13 +53,16 @@ public class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        request = new TableGroupRequest(Arrays.asList(테이블_1번.getId(), 테이블_2번.getId()));
+        request = new TableGroupRequest(
+            Arrays.asList(new OrderTableRequest(테이블_1번.getId()), new OrderTableRequest(테이블_2번.getId())));
     }
 
     @Test
     @DisplayName("테이블 그룹 정상 생성 케이스")
     void create() {
         // given
+        TableGroup 산악회 = new TableGroup(1L, LocalDateTime.now(),
+            new OrderTables(Arrays.asList(new OrderTable(1L, 4, true), new OrderTable(2L, 3, true))));
         given(orderTableRepository.findAllById(any())).willReturn(산악회.getOrderTables());
         given(tableGroupRepository.save(any())).willReturn(산악회);
 
@@ -79,7 +82,8 @@ public class TableGroupServiceTest {
     @DisplayName("주문_테이블이 2개 미만일 경우 실패한다.")
     void underTwo() {
         // when
-        TableGroupRequest 테이블이_1개 = new TableGroupRequest(Arrays.asList(테이블_1번.getId()));
+        TableGroupRequest 테이블이_1개 = new TableGroupRequest(
+            Arrays.asList(new OrderTableRequest(테이블_1번.getId())));
 
         // then
         assertThrows(IllegalArgumentException.class, () -> {
@@ -120,7 +124,7 @@ public class TableGroupServiceTest {
     void aleadyTable() {
         // when
         OrderTable already = new OrderTable(1L, 10, true);
-        already.setTableGroupId(1L);
+        already.setTableGroup(new TableGroup());
         given(orderTableRepository.findAllById(any())).willReturn(Arrays.asList(already, new OrderTable(2L, 10, true)));
         // then
         assertThrows(IllegalArgumentException.class, () -> {
@@ -160,12 +164,14 @@ public class TableGroupServiceTest {
     private static Stream<Arguments> cookingSet() {
         Order isCooking = new Order(1L, OrderStatus.COOKING, null, null);
         OrderTables orderTablesCooking = new OrderTables(
-            Arrays.asList(new OrderTable(1L, 1L, 10, false, Arrays.asList(isCooking))));
+            Arrays.asList(
+                new OrderTable(1L, new TableGroup(1L, LocalDateTime.now()), 10, false, Arrays.asList(isCooking))));
         TableGroup isCookingGroup = new TableGroup(1L, LocalDateTime.now(), orderTablesCooking);
 
         Order isMeal = new Order(1L, OrderStatus.MEAL, null, null);
         OrderTables orderTablesMeal = new OrderTables(
-            Arrays.asList(new OrderTable(1L, 1L, 10, false, Arrays.asList(isMeal))));
+            Arrays
+                .asList(new OrderTable(1L, new TableGroup(1L, LocalDateTime.now()), 10, false, Arrays.asList(isMeal))));
         TableGroup isMealGroup = new TableGroup(1L, LocalDateTime.now(), orderTablesMeal);
 
         return Stream.of(Arguments.of(isCookingGroup), Arguments.of(isMealGroup));

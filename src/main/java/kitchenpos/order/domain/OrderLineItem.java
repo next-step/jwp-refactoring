@@ -52,7 +52,7 @@ public class OrderLineItem {
 
     public Long getOrderId() {
         if (Objects.isNull(order)) {
-            return Long.MIN_VALUE;
+            return null;
         }
         return order.getId();
     }

@@ -12,6 +12,8 @@ public class Price {
     @Column
     private BigDecimal value;
 
+    public Price() {}
+
     private Price(BigDecimal value) {
         validation(value);
         this.value = value;
