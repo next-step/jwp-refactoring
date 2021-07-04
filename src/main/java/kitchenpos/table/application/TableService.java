@@ -3,6 +3,7 @@ package kitchenpos.table.application;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,8 +35,13 @@ public class TableService {
         return OrderTableResponse.of(savedOrderTable);
     }
 
-    public List<OrderTable> list() {
-        return orderTableDao.findAll();
+    public List<OrderTableResponse> list() {
+        List<OrderTable> list = orderTableRepository.findAll();
+        List<OrderTableResponse> listResponse = list.stream()
+            .map(OrderTableResponse::of)
+            .collect(Collectors.toList());
+
+        return listResponse;
     }
 
     @Transactional

@@ -61,7 +61,7 @@ public class TableRestControllerTest {
     void list() throws Exception {
         // given
         given(tableService.list())
-            .willReturn(Arrays.asList(테이블_1번, 테이블_2번));
+            .willReturn(Arrays.asList(OrderTableResponse.of(테이블_1번), OrderTableResponse.of(테이블_2번)));
 
         // when
         mockMvc.perform(get(BASE_URL))
