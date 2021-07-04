@@ -19,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.util.*;
 
+import static kitchenpos.application.ProductServiceTest.상품_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
@@ -26,11 +27,10 @@ import static org.mockito.BDDMockito.given;
 @DisplayName("메뉴 관련 기능 테스트")
 @ExtendWith(MockitoExtension.class)
 public class MenuServiceTest {
-    private Menu menu;
     private Product product;
     private MenuGroup menuGroup;
     private MenuProduct menuProduct;
-    private List<MenuProduct> menuProducts;
+    private List<MenuProduct> menuProducts = new ArrayList<>();
 
     @Mock
     private MenuDao menuDao;
@@ -49,97 +49,156 @@ public class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        menuGroup = new MenuGroup();
-        menuGroup.setId(1L);
-        menuGroup.setName("반반시리즈");
+        menuGroup = 메뉴_그룹_생성(1L, "간장시리즈");
 
-        menu = new Menu();
-        menu.setId(1L);
-        menu.setName("간장레드반반치킨");
-        menu.setPrice(new BigDecimal(18000));
-        menu.setMenuGroupId(menuGroup.getId());
-
-        product = new Product();
-        product.setId(1L);
-        product.setName("반반콤보");
-        product.setPrice(new BigDecimal(18000));
-
-        menuProduct = new MenuProduct();
-        menuProduct.setMenuId(menu.getId());
-        menuProduct.setProductId(product.getId());
-        menuProduct.setSeq(1L);
-        menuProduct.setQuantity(10L);
-
-        menuProducts = new ArrayList<>();
-        menuProducts.add(menuProduct);
-
-        menu.setMenuProducts(menuProducts);
+        product = 상품_생성(1L, "한마리치킨", new BigDecimal(15000));
     }
 
     @DisplayName("메뉴의 가격이 0원 이상일때 등록이 가능하다.")
     @Test
     void create_0원_이하_예외() {
-        menu.setPrice(new BigDecimal(-1));
+        Menu menu = 가격_0원_이하인_메뉴_생성();
 
-        assertThatThrownBy(() -> menuService.create(this.menu))
-                .isInstanceOf(IllegalArgumentException.class);
+        가격_0원_이하인_메뉴_생성시_예외_발생함(menu);
     }
 
-    @DisplayName("메뉴그룹 목록 중 하나에 속해있어야 등록이 가능하다.")
+    @DisplayName("존재하는 메뉴 그룹을 입력해야 등록이 가능하다.")
     @Test
     void create_메뉴그룹_아닐경우_예외() {
-        menu.setMenuGroupId(3L);
+        Menu menu = 존재하지_않는_메뉴그룹으로_메뉴_생성();
 
-        assertThatThrownBy(() -> menuService.create(menu))
-                .isInstanceOf(IllegalArgumentException.class);
+        존재하지_않는_메뉴그룹으로_메뉴_생성시_예외_발생함(menu);
     }
 
     @DisplayName("메뉴에 속한 상품 금액의 합은 메뉴의 가격보다 크거나 같아야 한다.")
     @Test
     void create_메뉴_가격_예외() {
-        Menu 비싼가격메뉴 = new Menu();
-        비싼가격메뉴.setId(1L);
-        비싼가격메뉴.setPrice(new BigDecimal("500000000"));
-        비싼가격메뉴.setMenuGroupId(menuGroup.getId());
-        비싼가격메뉴.setMenuProducts(menuProducts);
+        Menu menu = 메뉴에_속한_상품보다_비싼_메뉴_가격_생성();
 
-        given(menuGroupDao.existsById(this.menu.getMenuGroupId())).willReturn(true);
-        given(productDao.findById(menuProduct.getProductId())).willReturn(Optional.of(product));
+        메뉴_그룹_존재함();
 
-        // when then
-        assertThatThrownBy(() -> menuService.create(비싼가격메뉴))
-                .isInstanceOf(IllegalArgumentException.class);
+        메뉴에_속한_상품보다_비싼_메뉴_가격_생성시_예외_발생(menu);
     }
 
     @DisplayName("1개 이상 등록된 상품으로 메뉴를 등록한다.")
     @Test
     void create() {
+        Menu menu = 메뉴_상품이_존재하는_메뉴_생성();
+
+//        메뉴_생성에_필요한_값_설정(menu);
         given(productDao.findById(menuProduct.getProductId())).willReturn(Optional.of(product));
         given(menuProductDao.save(menuProduct)).willReturn(menuProduct);
         given(menuGroupDao.existsById(menu.getMenuGroupId())).willReturn(true);
         given(menuDao.save(menu)).willReturn(menu);
+        Menu createdMenu = 메뉴_생성_요청(menu);
 
-        Menu createdMenu = menuService.create(this.menu);
-
-        assertThat(createdMenu.getId()).isEqualTo(this.menu.getId());
-        assertThat(createdMenu.getName()).isEqualTo(this.menu.getName());
-        assertThat(createdMenu.getPrice()).isEqualTo(this.menu.getPrice());
-        assertThat(createdMenu.getMenuGroupId()).isEqualTo(this.menu.getMenuGroupId());
-        assertThat(createdMenu.getMenuProducts()).isEqualTo(this.menu.getMenuProducts());
+        메뉴_생성됨(createdMenu, menu);
     }
 
     @DisplayName("메뉴의 목록을 조회한다.")
     @Test
     void searchList() {
+        Menu menu = 메뉴_상품이_존재하는_메뉴_생성();
+
+        메뉴_목록_조회에_필요한_값_설정(menu);
+
+        List<Menu> menus = 메뉴_목록_조회_요청();
+
+        메뉴_목록_조회됨(menus, menu);
+    }
+
+    private MenuGroup 메뉴_그룹_생성(Long id, String name) {
+        return new MenuGroup(id, name);
+    }
+
+    private MenuProduct 메뉴_상품_생성(Long seq, Long menuId, Long productId, Long quantity) {
+        return new MenuProduct(seq, menuId, productId, quantity);
+    }
+
+    private void 메뉴_상품_목록_추가(MenuProduct menuProduct) {
+        menuProducts.add(menuProduct);
+    }
+
+    private Menu 메뉴_생성(Long id, String name, BigDecimal price, Long menuGroupId) {
+        return new Menu(id, name, price, menuGroupId);
+    }
+
+    private Menu 가격_0원_이하인_메뉴_생성() {
+        return 메뉴_생성(1L, "간장소스치킨", new BigDecimal(-10), menuGroup.getId());
+    }
+
+    private void 가격_0원_이하인_메뉴_생성시_예외_발생함(Menu menu) {
+        assertThatThrownBy(() -> menuService.create(menu))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    private void 존재하지_않는_메뉴그룹으로_메뉴_생성시_예외_발생함(Menu menu) {
+        assertThatThrownBy(() -> menuService.create(menu))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    private Menu 존재하지_않는_메뉴그룹으로_메뉴_생성() {
+        return 메뉴_생성(1L, "메뉴생성", new BigDecimal(18000), 3L);
+    }
+
+    private void 메뉴에_속한_상품보다_비싼_메뉴_가격_생성시_예외_발생(Menu menu) {
+        assertThatThrownBy(() -> menuService.create(menu))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    private void 메뉴_그룹_존재함() {
+        given(menuGroupDao.existsById(menuGroup.getId())).willReturn(true);
+    }
+
+    private Menu 메뉴에_속한_상품보다_비싼_메뉴_가격_생성() {
+        Menu menu = new Menu(3L, "레드허콤보", new BigDecimal("200000"), menuGroup.getId());
+        menuProduct = 메뉴_상품_생성(1L, menu.getId(), product.getId(), 10L);
+        menuProducts.add(menuProduct);
+        menu.updateMenuProducts(menuProducts);
+        return menu;
+    }
+
+    private void 메뉴_생성됨(Menu createdMenu, Menu menu) {
+        assertThat(createdMenu.getId()).isEqualTo(menu.getId());
+        assertThat(createdMenu.getName()).isEqualTo(menu.getName());
+        assertThat(createdMenu.getPrice()).isEqualTo(menu.getPrice());
+        assertThat(createdMenu.getMenuGroupId()).isEqualTo(menu.getMenuGroupId());
+        assertThat(createdMenu.getMenuProducts()).isEqualTo(menu.getMenuProducts());
+    }
+
+    private Menu 메뉴_생성_요청(Menu menu) {
+        return menuService.create(menu);
+    }
+
+    private void 메뉴_생성에_필요한_값_설정(Menu menu) {
+        given(productDao.findById(menuProduct.getProductId())).willReturn(Optional.of(product));
+        given(menuProductDao.save(menuProduct)).willReturn(menuProduct);
+        given(menuGroupDao.existsById(menu.getMenuGroupId())).willReturn(true);
+        given(menuDao.save(menu)).willReturn(menu);
+    }
+
+    private void 메뉴_목록_조회에_필요한_값_설정(Menu menu) {
         given(menuDao.findAll()).willReturn(Arrays.asList(menu));
+    }
 
-        List<Menu> menus = menuService.list();
-
+    private void 메뉴_목록_조회됨(List<Menu> menus, Menu menu) {
         assertThat(menus).containsExactly(menu);
         assertThat(menus.get(0).getId()).isEqualTo(menu.getId());
         assertThat(menus.get(0).getMenuProducts()).isEqualTo(menu.getMenuProducts());
         assertThat(menus.get(0).getMenuGroupId()).isEqualTo(menu.getMenuGroupId());
         assertThat(menus.get(0).getName()).isEqualTo(menu.getName());
         assertThat(menus.get(0).getPrice()).isEqualTo(menu.getPrice());
+    }
+
+    private List<Menu>  메뉴_목록_조회_요청() {
+        return menuService.list();
+    }
+
+    private Menu 메뉴_상품이_존재하는_메뉴_생성() {
+        Menu menu = 메뉴_생성(1L, "간장소스치킨", new BigDecimal(15000), menuGroup.getId());
+        menuProduct = 메뉴_상품_생성(1L, menu.getId(), product.getId(), 1L);
+        메뉴_상품_목록_추가(menuProduct);
+        menu.updateMenuProducts(menuProducts);
+        return menu;
     }
 }

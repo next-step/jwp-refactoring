@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.MenuService;
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,8 +20,11 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
+import static kitchenpos.application.MenuServiceTest.메뉴_생성;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -49,22 +54,11 @@ public class MenuRestControllerTest {
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(menuRestController)
-                .addFilter(new CharacterEncodingFilter(StandardCharsets.UTF_8.name(), true))
-                .alwaysDo(print())
-                .build();
+        setUpMockMvc(menuRestController);
 
-        menu1 = new Menu();
-        menu1.setId(1L);
-        menu1.setName("간장레드반반치킨");
-        menu1.setPrice(new BigDecimal(18000));
-        menu1.setMenuGroupId(1L);
+        menu1 = 메뉴_생성(1L, "간장레드반반치킨", new BigDecimal(18000), 1L);
 
-        menu2 = new Menu();
-        menu2.setId(2L);
-        menu2.setName("허니치킨");
-        menu2.setPrice(new BigDecimal(18000));
-        menu2.setMenuGroupId(1L);
+        menu2 = 메뉴_생성(2L, "허니치킨", new BigDecimal(18000), 1L);
     }
 
     @Test
@@ -72,17 +66,9 @@ public class MenuRestControllerTest {
     public void create() throws Exception {
         given(menuService.create(any())).willReturn(menu1);
 
-        final ResultActions actions = mockMvc.perform(post(MENUS_URI)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(toString(menu1)));
+        final ResultActions actions =  메뉴_등록_요청();
 
-        actions
-                .andExpect(status().isCreated())
-                .andExpect(header().string("location", MENUS_URI + "/1"))
-                .andExpect(content().string(containsString("1")))
-                .andExpect(content().string(containsString("간장레드반반치킨")))
-                .andExpect(content().string(containsString("18000")))
-                .andExpect(content().string(containsString("1")));
+        메뉴_등록됨(actions);
     }
 
     @Test
@@ -90,11 +76,39 @@ public class MenuRestControllerTest {
     public void list() throws Exception {
         given(menuService.list()).willReturn(Arrays.asList(menu1, menu2));
 
-        final ResultActions actions = mockMvc.perform(get(MENUS_URI)
-                .contentType(MediaType.APPLICATION_JSON));
+        final ResultActions actions = 메뉴_목록_조회_요청();
 
-        actions
-                .andExpect(status().isOk())
+        메뉴_목록_조회됨(actions);
+    }
+
+    public String toString(Menu menu) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(menu);
+    }
+
+    private void setUpMockMvc(MenuRestController menuRestController) {
+        mockMvc = MockMvcBuilders.standaloneSetup(menuRestController)
+                .addFilter(new CharacterEncodingFilter(StandardCharsets.UTF_8.name(), true))
+                .alwaysDo(print())
+                .build();
+    }
+    
+    private void 메뉴_등록됨(ResultActions actions) throws Exception {
+        actions.andExpect(status().isCreated())
+                .andExpect(header().string("location", MENUS_URI + "/1"))
+                .andExpect(content().string(containsString("1")))
+                .andExpect(content().string(containsString("간장레드반반치킨")))
+                .andExpect(content().string(containsString("18000")))
+                .andExpect(content().string(containsString("1")));
+    }
+
+    private ResultActions 메뉴_등록_요청() throws Exception {
+        return mockMvc.perform(post(MENUS_URI)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toString(menu1)));
+    }
+
+    private void 메뉴_목록_조회됨(ResultActions actions) throws Exception {
+        actions.andExpect(status().isOk())
                 .andExpect(content().string(containsString("1")))
                 .andExpect(content().string(containsString("간장레드반반치킨")))
                 .andExpect(content().string(containsString("18000")))
@@ -102,7 +116,8 @@ public class MenuRestControllerTest {
                 .andExpect(content().string(containsString("허니치킨")));
     }
 
-    public String toString(Menu menu) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(menu);
+    private ResultActions 메뉴_목록_조회_요청() throws Exception {
+        return mockMvc.perform(get(MENUS_URI)
+                .contentType(MediaType.APPLICATION_JSON));
     }
 }
