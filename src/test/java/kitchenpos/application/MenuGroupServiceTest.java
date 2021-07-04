@@ -6,8 +6,8 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
-import kitchenpos.menugroup.dto.MenuGroupResponse;
+import kitchenpos.menugroup.dto.MenuGroupResponseDto;
 import kitchenpos.menugroup.repository.MenuGroupDao;
 import kitchenpos.menugroup.domain.MenuGroup;
 
@@ -47,7 +47,7 @@ class MenuGroupServiceTest {
         MenuGroupRequest menuGroupRequest = new MenuGroupRequest(menuName);
         // when
         when(menuGroupDao.save(any())).thenReturn(menuGroup);
-        MenuGroupResponse createdMenuGroup = menuGroupService.create(menuGroupRequest);
+        MenuGroupResponseDto createdMenuGroup = menuGroupService.create(menuGroupRequest);
         // then
         assertThat(createdMenuGroup).isNotNull();
         assertThat(createdMenuGroup.getName()).isEqualTo(menuName);
@@ -60,10 +60,10 @@ class MenuGroupServiceTest {
 
         // when
         when(menuGroupDao.findAll()).thenReturn(new ArrayList<>(Arrays.asList(menuGroup)));
-        List<MenuGroupResponse> menuGroups = menuGroupService.list();
+        MenuGroupResponse menuGroups = menuGroupService.list();
         // then
-        System.out.println(menuGroups.size());
-        assertThat(menuGroups.size()).isEqualTo(1);
-        assertThat(menuGroups.get(0).getName()).isEqualTo(menuName);
+        System.out.println(menuGroups.getMenuGroupResponses().size());
+        assertThat(menuGroups.getMenuGroupResponses().size()).isEqualTo(1);
+        assertThat(menuGroups.getMenuGroupResponses().get(0).getName()).isEqualTo(menuName);
     }
 }
