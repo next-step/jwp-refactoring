@@ -1,14 +1,12 @@
 package kitchenpos.table.controller;
 
 import kitchenpos.common.ControllerTest;
-import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
-import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -19,8 +17,11 @@ public class TableControllerTest extends ControllerTest {
     @Test
     @DisplayName("주문 테이블을 생성 한다")
     public void createOrderTable() throws Exception {
+        // given
         OrderTable orderTable = new OrderTable(0, false);
 
+        // when
+        // then
         테이블_생성_요청(orderTable)
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").exists())
@@ -32,6 +33,8 @@ public class TableControllerTest extends ControllerTest {
     @Test
     @DisplayName("주문 테이블 리스트를 가져온다")
     public void selectOrderTableList() throws Exception {
+        // when
+        // then
         테이블_리스트_요청()
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
@@ -43,8 +46,11 @@ public class TableControllerTest extends ControllerTest {
     @Test
     @DisplayName("주문 테이블 상태를 빈 테이블로 변경 한다")
     public void modifyOrderTableEmpty() throws Exception {
+        // given
         OrderTable orderTable = new OrderTable(0, true);
 
+        // when
+        // then
         테이블_빈_테이블로_변경_요청(orderTable)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("id").exists())
@@ -56,8 +62,11 @@ public class TableControllerTest extends ControllerTest {
     @Test
     @DisplayName("주문 테이블 손님 수를 변경 한다")
     public void modifyOrderTableGuests() throws Exception {
+        // given
         OrderTable orderTable = new OrderTable(3, false);
 
+        // when
+        // then
         테이블_손님_수_변경_요청(orderTable)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("id").exists())

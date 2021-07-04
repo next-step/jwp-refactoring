@@ -14,7 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -36,6 +37,8 @@ public class TableGroupControllerTest extends ControllerTest {
     @Test
     @DisplayName("단체를 지정 한다")
     public void createOrderTableGroup() throws Exception {
+        // when
+        // then
         단체_지정_요청(tableGroup)
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").exists())
@@ -45,10 +48,13 @@ public class TableGroupControllerTest extends ControllerTest {
     @Test
     @DisplayName("단체 지정을 해제 한다")
     public void deleteOrderTableGroup() throws Exception {
+        // given
         단체_지정_요청(tableGroup);
 
+        // when
+        // then
         단체_지정_해제_요청()
-            .andExpect(status().isNoContent());
+                .andExpect(status().isNoContent());
     }
 
     private ResultActions 단체_지정_요청(TableGroup tableGroup) throws Exception {
