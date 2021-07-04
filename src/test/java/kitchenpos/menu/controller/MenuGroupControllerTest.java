@@ -19,9 +19,12 @@ public class MenuGroupControllerTest extends ControllerTest {
     @Test
     @DisplayName("메뉴 그룹을 생성 한다")
     public void createMenuGroup() throws Exception {
+        // given
         String name = "피자";
         MenuGroup menuGroup = new MenuGroup(name);
 
+        // when
+        // then
         메뉴_그룹_생성_요청(menuGroup)
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").exists())
@@ -32,6 +35,8 @@ public class MenuGroupControllerTest extends ControllerTest {
     @Test
     @DisplayName("메뉴 그룹 리스트를 가져온다")
     public void selectMenuGroupList() throws Exception {
+        // when
+        // then
         메뉴_그룹_리스트_요청()
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(4)))
