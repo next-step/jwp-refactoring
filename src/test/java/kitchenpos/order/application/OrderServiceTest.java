@@ -1,5 +1,6 @@
 package kitchenpos.order.application;
 
+import static kitchenpos.util.TestDataSet.원플원_양념;
 import static kitchenpos.util.TestDataSet.원플원_후라이드;
 import static kitchenpos.util.TestDataSet.주문_1번;
 import static kitchenpos.util.TestDataSet.테이블_1번;
@@ -22,32 +23,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.menu.dao.MenuDao;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.order.dao.OrderDao;
-import kitchenpos.order.dao.OrderLineItemDao;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.product.constant.OrderStatus;
-import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.table.domain.OrderTableRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
-
-    @Mock
-    private MenuDao menuDao;
-
-    @Mock
-    private OrderDao orderDao;
-
-    @Mock
-    private OrderLineItemDao orderLineItemDao;
-
-    @Mock
-    private OrderTableDao orderTableDao;
 
     @Mock
     private OrderRepository orderRepository;
@@ -133,61 +120,37 @@ public class OrderServiceTest {
     @DisplayName("주문 업데이트 성공 케이스 ")
     void changeOrderStatus() {
         //given
-        Order createOrder = new Order(주문_1번.getId(), 테이블_3번_존재, 주문_1번.getOrderLineItems());
-        createOrder.setOrderStatus(OrderStatus.COMPLETION);
+        OrderRequest request = new OrderRequest(1L, OrderStatus.MEAL, null);
+        Order 주문_1번 = new Order(1L, 테이블_3번_존재,
+            Arrays.asList(new OrderLineItem(1L, null, 원플원_후라이드, 1), new OrderLineItem(1L, null, 원플원_양념, 1)));
 
-        given(orderDao.findById(any())).willReturn(Optional.of(주문_1번));
-        given(orderDao.save(any())).willReturn(createOrder);
-        given(orderLineItemDao.findAllByOrderId(any())).willReturn(주문_1번.getOrderLineItems());
+        given(orderRepository.findById(any())).willReturn(Optional.of(주문_1번));
 
         //when
-        Order result = orderService.changeOrderStatus(주문_1번.getId(), createOrder);
+        OrderResponse result = orderService.changeOrderStatus(주문_1번.getId(), request);
 
         // then
         assertThat(result.getId()).isEqualTo(주문_1번.getId());
-        assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
+        assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
 
-        verify(orderDao, times(1)).findById(any());
-        verify(orderDao, times(1)).save(any());
-        verify(orderLineItemDao, times(1)).findAllByOrderId(any());
+        verify(orderRepository, times(1)).findById(any());
     }
 
     @Test
     @DisplayName("유효하지 않은 주문은 실패한다.")
     void noOder() {
         //given
-        Order createOrder = new Order(주문_1번.getId(), 테이블_3번_존재, 주문_1번.getOrderLineItems());
-        createOrder.setOrderStatus(OrderStatus.COMPLETION);
+        OrderRequest request = new OrderRequest(1L, OrderStatus.MEAL, null);
+        Order 주문_1번 = new Order(1L, 테이블_3번_존재,
+            Arrays.asList(new OrderLineItem(1L, null, 원플원_후라이드, 1), new OrderLineItem(1L, null, 원플원_양념, 1)));
 
-        given(orderDao.findById(any())).willReturn(Optional.empty());
-
-        // then
-        assertThrows(IllegalArgumentException.class, () -> {
-            orderService.changeOrderStatus(주문_1번.getId(), createOrder);
-        });
-
-        verify(orderDao, times(1)).findById(any());
-        verify(orderDao, times(0)).save(any());
-        verify(orderLineItemDao, times(0)).findAllByOrderId(any());
-    }
-
-    @Test
-    @DisplayName("정산된 주문일 경우 실패한다.")
-    void alreadyEnd() {
-        //given
-        Order createOrder = new Order(주문_1번.getId(), 테이블_3번_존재, 주문_1번.getOrderLineItems());
-        createOrder.setOrderStatus(OrderStatus.COMPLETION);
-
-        given(orderDao.findById(any())).willReturn(Optional.of(createOrder));
+        given(orderRepository.findById(any())).willReturn(Optional.empty());
 
         // then
         assertThrows(IllegalArgumentException.class, () -> {
-            orderService.changeOrderStatus(주문_1번.getId(), createOrder);
+            orderService.changeOrderStatus(주문_1번.getId(), request);
         });
 
-        verify(orderDao, times(1)).findById(any());
-        verify(orderDao, times(0)).save(any());
-        verify(orderLineItemDao, times(0)).findAllByOrderId(any());
+        verify(orderRepository, times(1)).findById(any());
     }
-
 }

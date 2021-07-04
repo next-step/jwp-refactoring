@@ -96,7 +96,7 @@ public class OrderRestControllerTest {
         String content = objectMapper.writeValueAsString(상태_업데이트된_주문);
 
         given(orderService.changeOrderStatus(any(), any()))
-            .willReturn(상태_업데이트된_주문);
+            .willReturn(OrderResponse.of(상태_업데이트된_주문));
 
         // when
         mockMvc.perform(
@@ -104,7 +104,7 @@ public class OrderRestControllerTest {
                 .content(content)
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.orderStatus").value(상태_업데이트된_주문.getOrderStatus()));
+            .andExpect(jsonPath("$.orderStatus").value(상태_업데이트된_주문.getOrderStatus().name()));
     }
 
 }

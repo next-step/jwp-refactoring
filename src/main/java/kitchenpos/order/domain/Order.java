@@ -144,4 +144,15 @@ public class Order {
             .findFirst()
             .orElse(new Menu());
     }
+
+    public void updateStatus(OrderRequest orderRequest) {
+        validationUpdate();
+        orderStatus = orderRequest.getOrderStatus();
+    }
+
+    private void validationUpdate() {
+        if (Objects.equals(OrderStatus.COMPLETION, orderStatus)) {
+            throw new IllegalArgumentException();
+        }
+    }
 }
