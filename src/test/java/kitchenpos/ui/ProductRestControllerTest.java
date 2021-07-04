@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
+import static kitchenpos.application.ProductServiceTest.상품_생성;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -42,23 +43,16 @@ class ProductRestControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    ProductRestController productRestController;
+
     @BeforeEach
-    void setUp(@Autowired ProductRestController productRestController) {
-        // MockMvc
-        mockMvc = MockMvcBuilders.standaloneSetup(productRestController)
-                .addFilter(new CharacterEncodingFilter(StandardCharsets.UTF_8.name(), true))
-                .alwaysDo(print())
-                .build();
+    void setUp() {
+        setUpMockMvc();
 
-        상품1 = new Product();
-        상품1.setId(1L);
-        상품1.setName("반반콤보");
-        상품1.setPrice(new BigDecimal(18000));
+        상품1 = 상품_생성(1L, "반반콤보", new BigDecimal(18000));
 
-        상품2 = new Product();
-        상품2.setId(2L);
-        상품2.setName("허니콤보");
-        상품2.setPrice(new BigDecimal(18000));
+        상품2 = 상품_생성(2L, "허니콤보", new BigDecimal(18000));
     }
 
     @DisplayName("상품을 등록한다.")
@@ -66,14 +60,9 @@ class ProductRestControllerTest {
     void createProduct() throws Exception {
         given(productService.create(any())).willReturn(상품1);
 
-        final ResultActions actions = mockMvc.perform(post(PRODUCT_URI)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(toJson(상품1)));
+        final ResultActions actions =상품_등록_요청();
 
-        actions
-                .andExpect(status().isCreated())
-                .andExpect(header().string("location", "/api/products/1"))
-                .andExpect(content().string(containsString("반반콤보")));
+        상품_등록됨(actions);
     }
 
     @DisplayName("상품 목록을 조회한다.")
@@ -81,16 +70,42 @@ class ProductRestControllerTest {
     void searchProductList() throws Exception {
         given(productService.list()).willReturn(Arrays.asList(상품1, 상품2));
 
-        final ResultActions actions = mockMvc.perform(get(PRODUCT_URI)
-                .contentType(MediaType.APPLICATION_JSON));
+        final ResultActions actions = 상품_목록_조회_요청();
 
-        actions
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString("반반콤보")))
-                .andExpect(content().string(containsString("허니콤보")));
+        상품_목록_조회됨(actions);
     }
 
     public String toJson(Product product) throws JsonProcessingException {
         return objectMapper.writeValueAsString(product);
+    }
+
+    private void setUpMockMvc() {
+        mockMvc = MockMvcBuilders.standaloneSetup(productRestController)
+                .addFilter(new CharacterEncodingFilter(StandardCharsets.UTF_8.name(), true))
+                .alwaysDo(print())
+                .build();
+    }
+
+    private void 상품_등록됨(ResultActions actions) throws Exception {
+        actions.andExpect(status().isCreated())
+                .andExpect(header().string("location", "/api/products/1"))
+                .andExpect(content().string(containsString("반반콤보")));
+    }
+
+    private ResultActions 상품_등록_요청() throws Exception {
+        return mockMvc.perform(post(PRODUCT_URI)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJson(상품1)));
+    }
+
+    private void 상품_목록_조회됨(ResultActions actions) throws Exception {
+        actions.andExpect(status().isOk())
+                .andExpect(content().string(containsString("반반콤보")))
+                .andExpect(content().string(containsString("허니콤보")));
+    }
+
+    private ResultActions 상품_목록_조회_요청() throws Exception {
+        return mockMvc.perform(get(PRODUCT_URI)
+                .contentType(MediaType.APPLICATION_JSON));
     }
 }
