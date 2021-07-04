@@ -47,27 +47,31 @@ class MenuServiceTest {
 
     private MenuProduct menuProduct;
     private List<MenuProduct> menuProducts;
+    private Product product;
+    private Menu menu1;
+    private Menu menu2;
 
     @BeforeEach
     void setUp() {
         menuProduct = new MenuProduct(1L, 1L, 1L, 1);
         menuProducts = Arrays.asList(menuProduct);
+        product = new Product(1L, "신메뉴", BigDecimal.valueOf(20000));
+        menu1 = new Menu(1L, "신메뉴", BigDecimal.valueOf(20000), 1L, menuProducts);
+        menu2 = new Menu(2L, "신메뉴", null, 1L, menuProducts);
     }
 
     @DisplayName("메뉴를 등록한다. (메뉴 상품(MenuProduct) 리스트에도 메뉴를 등록한다.)")
     @Test
     void create() {
-        Menu menu = new Menu(1L, "신메뉴", BigDecimal.valueOf(20000), 1L, menuProducts);
-        Product product = new Product(1L, "신메뉴", BigDecimal.valueOf(20000));
         given(menuGroupDao.existsById(1L)).willReturn(true);
         given(productDao.findById(anyLong())).willReturn(Optional.of(product));
-        given(menuDao.save(any())).willReturn(menu);
+        given(menuDao.save(any())).willReturn(menu1);
         given(menuProductDao.save(any())).willReturn(menuProduct);
 
-        Menu savedMenu = menuService.create(menu);
+        Menu savedMenu = menuService.create(menu1);
 
         assertAll(
-                () -> assertThat(savedMenu).isEqualTo(menu),
+                () -> assertThat(savedMenu).isEqualTo(menu1),
                 () -> assertThat(savedMenu.getMenuProducts()).contains(menuProduct));
     }
 
@@ -95,13 +99,11 @@ class MenuServiceTest {
     @DisplayName("메뉴를 등록에 실패한다 - 메뉴 등록시 메뉴 상품들의 총 가격(상품 * 수량의 총합) 보다 클 수 없다.")
     @Test
     void fail_create3() {
-        MenuProduct menuProduct = new MenuProduct(1L, 1L, 1L, 1L);
-        Menu menu = new Menu(1L, "신메뉴", BigDecimal.valueOf(20000), 1L, menuProducts);
         Product product = new Product(1L, "신메뉴", BigDecimal.valueOf(2000));
         given(menuGroupDao.existsById(1L)).willReturn(true);
         given(productDao.findById(anyLong())).willReturn(Optional.of(product));
 
-        assertThatThrownBy(() -> menuService.create(menu))
+        assertThatThrownBy(() -> menuService.create(menu1))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
