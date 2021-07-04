@@ -15,6 +15,10 @@ import java.util.stream.Collectors;
 @Service
 @ActiveProfiles("test")
 public class DatabaseCleanup implements InitializingBean {
+    public static final String MENU_PRODUCT_TABLE_NAME = "menu_product";
+    public static final String SEQ = "seq";
+    public static final String ID = "id";
+
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -34,10 +38,18 @@ public class DatabaseCleanup implements InitializingBean {
         entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
 
         for (String tableName : tableNames) {
+            String id = getPkColumnName(tableName);
             entityManager.createNativeQuery("TRUNCATE TABLE " + tableName).executeUpdate();
-            entityManager.createNativeQuery("ALTER TABLE " + tableName + " ALTER COLUMN ID RESTART WITH 1").executeUpdate();
+            entityManager.createNativeQuery("ALTER TABLE " + tableName + " ALTER COLUMN "+ id + " RESTART WITH 1").executeUpdate();
         }
 
         entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
+    }
+
+    private String getPkColumnName(String tableName) {
+        if (tableName.equals(MENU_PRODUCT_TABLE_NAME)) {
+            return SEQ;
+        }
+        return ID;
     }
 }
