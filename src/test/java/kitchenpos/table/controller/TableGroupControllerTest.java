@@ -22,21 +22,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class TableGroupControllerTest extends ControllerTest {
 
-    private TableGroup tableGroup;
+    private List<OrderTable> orderTables;
 
     @BeforeEach
     public void setup() {
-        List<OrderTable> orderTables = new ArrayList<>();
-        OrderTable orderTable = new OrderTable(1L, 0, false);
-        OrderTable orderTable2 = new OrderTable(2L, 0, false);
-        orderTables.add(orderTable);
-        orderTables.add(orderTable2);
-        tableGroup = new TableGroup(LocalDateTime.now(), orderTables);
+        orderTables = new ArrayList<>();
     }
 
     @Test
     @DisplayName("단체를 지정 한다")
     public void createOrderTableGroup() throws Exception {
+        // given
+        orderTables.add(new OrderTable(5L, 0, false));
+        orderTables.add(new OrderTable(6L, 0, false));
+        TableGroup tableGroup = new TableGroup(LocalDateTime.now(), orderTables);
+
         // when
         // then
         단체_지정_요청(tableGroup)
@@ -49,7 +49,9 @@ public class TableGroupControllerTest extends ControllerTest {
     @DisplayName("단체 지정을 해제 한다")
     public void deleteOrderTableGroup() throws Exception {
         // given
-        단체_지정_요청(tableGroup);
+        orderTables.add(new OrderTable(7L, 0, false));
+        orderTables.add(new OrderTable(8L, 0, false));
+        단체_지정_요청(new TableGroup(LocalDateTime.now(), orderTables));
 
         // when
         // then

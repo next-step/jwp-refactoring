@@ -21,24 +21,23 @@ public class TableGroupServiceTest {
     @Autowired
     private TableGroupService tableGroupService;
 
-    private TableGroup tableGroup;
-    private OrderTable orderTable;
+    List<OrderTable> orderTables;
 
     @BeforeEach
     public void setup() {
-        List<OrderTable> orderTables = new ArrayList<>();
-        orderTable = new OrderTable(1L, 0, false);
-        OrderTable orderTable2 = new OrderTable(2L, 0, false);
-        orderTables.add(orderTable);
-        orderTables.add(orderTable2);
-        tableGroup = new TableGroup(LocalDateTime.now(), orderTables);
+        orderTables = new ArrayList<>();
     }
+
 
     @Test
     @DisplayName("단체를 지정 한다")
     public void createOrderTableGroup() {
+       // given
+        orderTables.add(new OrderTable(5L, 0, true));
+        orderTables.add(new OrderTable(6L, 0, true));
+
         // when
-        TableGroup createTableGroup = tableGroupService.create(this.tableGroup);
+        TableGroup createTableGroup = tableGroupService.create(new TableGroup(LocalDateTime.now(), orderTables));
 
         // then
         assertThat(createTableGroup.getId()).isNotNull();
@@ -49,7 +48,10 @@ public class TableGroupServiceTest {
     @DisplayName("단체 지정을 해제 한다")
     public void deleteOrderTableGroup() {
         // given
-        TableGroup createTableGroup = tableGroupService.create(this.tableGroup);
+        OrderTable orderTable = new OrderTable(7L, 0, true);
+        orderTables.add(orderTable);
+        orderTables.add(new OrderTable(8L, 0, true));
+        TableGroup createTableGroup = tableGroupService.create(new TableGroup(LocalDateTime.now(), orderTables));
 
         // when
         tableGroupService.ungroup(createTableGroup.getId());
