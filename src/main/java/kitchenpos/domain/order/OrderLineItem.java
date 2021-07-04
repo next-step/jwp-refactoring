@@ -16,16 +16,8 @@ public class OrderLineItem {
     private Long menuId;
     private long quantity;
 
-    public Long getSeq() {
-        return seq;
-    }
-
     // for jpa
     public OrderLineItem() {
-    }
-
-    public static OrderLineItem of(Order order, Long menuId, long quantity){
-        return new OrderLineItem(null, order, menuId, quantity);
     }
 
     private OrderLineItem(Long seq, Order order, Long menuId, long quantity) {
@@ -35,8 +27,20 @@ public class OrderLineItem {
         this.quantity = quantity;
     }
 
+    public static OrderLineItem of(Order order, Long menuId, long quantity) {
+        return new OrderLineItem(null, order, menuId, quantity);
+    }
+
+    public Long getSeq() {
+        return seq;
+    }
+
     public Order getOrder() {
         return order;
+    }
+
+    protected void setOrder(Order order) {
+        this.order = order;
     }
 
     public Long getMenuId() {
@@ -45,9 +49,5 @@ public class OrderLineItem {
 
     public long getQuantity() {
         return quantity;
-    }
-
-    protected void setOrder(Order order) {
-        this.order = order;
     }
 }

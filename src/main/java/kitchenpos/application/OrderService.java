@@ -39,9 +39,9 @@ public class OrderService {
         List<OrderLineItem> findOrderLineItems = orderRequest.getOrderLineItemRequests()
                 .stream()
                 .map(orderLineItemRequest -> {
-                            Long quantity = orderLineItemRequest.getQuantity();
-                            return OrderLineItem.of(null, orderLineItemRequest.getMenuId(), quantity);
-                        })
+                    Long quantity = orderLineItemRequest.getQuantity();
+                    return OrderLineItem.of(null, orderLineItemRequest.getMenuId(), quantity);
+                })
                 .collect(Collectors.toList());
 
         Order order = Order.of(findOrderTable, OrderStatus.COOKING, findOrderLineItems);

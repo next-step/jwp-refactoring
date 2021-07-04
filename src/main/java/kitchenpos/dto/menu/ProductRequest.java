@@ -22,7 +22,7 @@ public class ProductRequest {
         return price;
     }
 
-    public Product toEntity(){
-        return Product.of(name,price);
+    public Product toEntity() {
+        return Product.of(name, price);
     }
 }

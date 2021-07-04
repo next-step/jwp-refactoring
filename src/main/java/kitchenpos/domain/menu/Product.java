@@ -16,9 +16,6 @@ public class Product {
     private String name;
     private BigDecimal price;
 
-    public static Product of(String name, BigDecimal price) {
-        return new Product(null, name, price);
-    }
     // for jpa
     public Product() {
     }
@@ -29,11 +26,8 @@ public class Product {
         setPrice(price);
     }
 
-    private void setPrice(BigDecimal price) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("Invalid price");
-        }
-        this.price = price;
+    public static Product of(String name, BigDecimal price) {
+        return new Product(null, name, price);
     }
 
     public Long getId() {
@@ -48,11 +42,18 @@ public class Product {
         return price;
     }
 
+    private void setPrice(BigDecimal price) {
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Invalid price");
+        }
+        this.price = price;
+    }
+
     public void changePrice(BigDecimal price) {
         setPrice(price);
     }
 
-    public BigDecimal multiply(BigDecimal factor){
+    public BigDecimal multiply(BigDecimal factor) {
         return this.price.multiply(factor);
     }
 

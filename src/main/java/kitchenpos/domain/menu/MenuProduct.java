@@ -19,10 +19,6 @@ public class MenuProduct {
 
     private long quantity;
 
-    public static MenuProduct of(Menu menu, Product product, long quantity) {
-        return new MenuProduct(null, menu, product, quantity);
-    }
-
     // for JPA
     public MenuProduct() {
     }
@@ -34,6 +30,10 @@ public class MenuProduct {
         this.quantity = quantity;
     }
 
+    public static MenuProduct of(Menu menu, Product product, long quantity) {
+        return new MenuProduct(null, menu, product, quantity);
+    }
+
     public Long getSeq() {
         return seq;
     }
@@ -42,15 +42,15 @@ public class MenuProduct {
         return menu;
     }
 
+    protected void setMenu(Menu menu) {
+        this.menu = menu;
+    }
+
     public Product getProduct() {
         return product;
     }
 
     public long getQuantity() {
         return quantity;
-    }
-
-    protected void setMenu(Menu menu){
-        this.menu = menu;
     }
 }

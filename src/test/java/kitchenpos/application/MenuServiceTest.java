@@ -1,7 +1,6 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menu.Product;
@@ -19,7 +18,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
@@ -33,7 +31,7 @@ class MenuServiceTest {
     private MenuDao menuDao;
 
     @Mock
-    private ProductDao productDao;
+    private ProductService productService;
 
     @Mock
     private MenuGroupService menuGroupService;
@@ -48,6 +46,7 @@ class MenuServiceTest {
     private MenuRequest menuRequest;
     private MenuGroup menuGroup;
     private Menu menu;
+    private Product dummyProduct;
 
     @BeforeEach
     void setUp() {
@@ -57,13 +56,14 @@ class MenuServiceTest {
         menuRequest = new MenuRequest("tomato pasta", BigDecimal.ZERO, ANY_MENU_GROUP_ID, new ArrayList<>());
         menu = Menu.of("tomato pasta", BigDecimal.ZERO, menuGroup, new ArrayList<>());
 
+        dummyProduct = Product.of("rice", BigDecimal.valueOf(10L));
+        ReflectionTestUtils.setField(dummyProduct, "id", ANY_PRODUCT_ID);
     }
 
     @Test
     @DisplayName("메뉴를 등록할 수 잇다.")
     void create_test() {
-        given(menuGroupService.isExists(menuGroup))
-                .willReturn(false);
+        given(menuGroupService.isExists(menuGroup)).willReturn(false);
         given(menuGroupService.findById(ANY_MENU_GROUP_ID)).willReturn(menuGroup);
         given(menuDao.save(menu)).willReturn(menu);
 
@@ -88,10 +88,7 @@ class MenuServiceTest {
     void price() {
         given(menuGroupService.isExists(menuGroup)).willReturn(false);
         given(menuGroupService.findById(ANY_MENU_GROUP_ID)).willReturn(menuGroup);
-
-        Product dummyProduct = Product.of("rice", BigDecimal.valueOf(10L));
-        ReflectionTestUtils.setField(dummyProduct, "id", ANY_PRODUCT_ID);
-        given(productDao.findById(1L)).willReturn(Optional.of(dummyProduct));
+        given(productService.getProduct(1L)).willReturn(dummyProduct);
 
         MenuProductRequest menuProductRequest = new MenuProductRequest(1L, 1);
         menuRequest = new MenuRequest("tomato pasta", BigDecimal.valueOf(100L), ANY_MENU_GROUP_ID, Lists.list(menuProductRequest));

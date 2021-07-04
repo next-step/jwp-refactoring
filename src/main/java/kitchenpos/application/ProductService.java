@@ -25,4 +25,8 @@ public class ProductService {
     public List<Product> list() {
         return productDao.findAll();
     }
+
+    public Product getProduct(Long id) {
+        return productDao.findById(id).orElseThrow(() -> new IllegalArgumentException("Not found product Id" + id));
+    }
 }

@@ -14,15 +14,15 @@ public class MenuResponse {
     private final MenuGroup menuGroup;
     private final List<MenuProduct> menuProducts;
 
-    public static MenuResponse of(Menu menu) {
-        return new MenuResponse(menu.getId(), menu.getPrice(), menu.getMenuGroup(), menu.getMenuProducts());
-    }
-
     public MenuResponse(Long id, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.id = id;
         this.price = price;
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
+    }
+
+    public static MenuResponse of(Menu menu) {
+        return new MenuResponse(menu.getId(), menu.getPrice(), menu.getMenuGroup(), menu.getMenuProducts());
     }
 
     public Long getId() {

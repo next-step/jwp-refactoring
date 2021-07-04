@@ -17,10 +17,6 @@ public class OrderTable {
 
     private boolean empty;
 
-    public static OrderTable of(int numberOfGuests, boolean empty) {
-        return new OrderTable(null, null, numberOfGuests, empty);
-    }
-
     // for jpa
     public OrderTable() {
     }
@@ -30,6 +26,10 @@ public class OrderTable {
         this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
+    }
+
+    public static OrderTable of(int numberOfGuests, boolean empty) {
+        return new OrderTable(null, null, numberOfGuests, empty);
     }
 
     public Long getId() {
@@ -60,7 +60,7 @@ public class OrderTable {
         this.numberOfGuests = numberOfGuests;
     }
 
-    public void changeTableGroup(TableGroup tableGroup){
+    public void changeTableGroup(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
     }
 

@@ -29,14 +29,6 @@ public class Menu {
     public Menu() {
     }
 
-    public static Menu of(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        return new Menu(null, name, price, menuGroup, menuProducts);
-    }
-
-    private void setMenuProducts(List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
-    }
-
     private Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = name;
@@ -46,11 +38,8 @@ public class Menu {
 
     }
 
-    private void setPrice(BigDecimal price) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("Should expect price is over zero");
-        }
-        this.price = price;
+    public static Menu of(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        return new Menu(null, name, price, menuGroup, menuProducts);
     }
 
     public Long getId() {
@@ -63,6 +52,13 @@ public class Menu {
 
     public BigDecimal getPrice() {
         return price;
+    }
+
+    private void setPrice(BigDecimal price) {
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Should expect price is over zero");
+        }
+        this.price = price;
     }
 
     public void changePrice(BigDecimal price) {
@@ -89,10 +85,6 @@ public class Menu {
     public void addMenuProducts(MenuProduct menuProduct) {
         this.menuProducts.add(menuProduct);
         menuProduct.setMenu(this);
-    }
-
-    public void clearMenuProducts() {
-        this.menuProducts.clear();
     }
 
     @Override

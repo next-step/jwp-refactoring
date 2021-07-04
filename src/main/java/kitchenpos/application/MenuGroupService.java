@@ -26,11 +26,11 @@ public class MenuGroupService {
         return menuGroupDao.findAll();
     }
 
-    public boolean isExists(MenuGroup menuGroup){
+    public boolean isExists(MenuGroup menuGroup) {
         return menuGroupDao.existsById(menuGroup.getId());
     }
 
-    public MenuGroup findById(Long id){
+    public MenuGroup findById(Long id) {
         return menuGroupDao.findById(id).orElseThrow(RuntimeException::new);
     }
 }

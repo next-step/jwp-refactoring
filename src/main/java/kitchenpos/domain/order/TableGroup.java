@@ -20,9 +20,6 @@ public class TableGroup {
 
     private LocalDateTime createdDate;
 
-    public static TableGroup of(List<OrderTable> orderTables) {
-        return new TableGroup(null, orderTables, LocalDateTime.now());
-    }
     // for jpa
     public TableGroup() {
     }
@@ -33,13 +30,8 @@ public class TableGroup {
         this.createdDate = createdDate;
     }
 
-    private void setOrderTables(List<OrderTable> orderTables) {
-
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException("should have over 2 orderTables");
-        }
-
-        this.orderTables = orderTables;
+    public static TableGroup of(List<OrderTable> orderTables) {
+        return new TableGroup(null, orderTables, LocalDateTime.now());
     }
 
     public Long getId() {
@@ -54,9 +46,18 @@ public class TableGroup {
         return orderTables;
     }
 
+    private void setOrderTables(List<OrderTable> orderTables) {
+
+        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
+            throw new IllegalArgumentException("should have over 2 orderTables");
+        }
+
+        this.orderTables = orderTables;
+    }
+
     public void changeOrderTables(List<OrderTable> orderTables) {
         this.orderTables = orderTables;
-        orderTables.forEach(orderTable ->  {
+        orderTables.forEach(orderTable -> {
 
             if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup())) {
                 throw new IllegalArgumentException("should have not empty savedOrderTable");

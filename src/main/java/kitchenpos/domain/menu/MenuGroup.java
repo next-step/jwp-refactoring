@@ -23,7 +23,7 @@ public class MenuGroup {
         this.name = name;
     }
 
-    public static MenuGroup of(String name){
+    public static MenuGroup of(String name) {
         return new MenuGroup(null, name);
     }
 

@@ -30,10 +30,6 @@ public class Order {
     public Order() {
     }
 
-    public static Order of(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
-        return new Order(null, orderTable, orderStatus,LocalDateTime.now(), orderLineItems);
-    }
-
     private Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
         this.id = id;
         setOrderTable(orderTable);
@@ -42,19 +38,8 @@ public class Order {
         setOrderLineItems(orderLineItems);
     }
 
-    private void setOrderLineItems(List<OrderLineItem> orderLineItems) {
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException("should have orderLineItems");
-        }
-        orderLineItems.forEach(orderLineItem -> orderLineItem.setOrder(this));
-        this.orderLineItems = orderLineItems;
-    }
-
-    private void setOrderTable(OrderTable orderTable) {
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException("Should have not orderTable empty");
-        }
-        this.orderTable = orderTable;
+    public static Order of(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        return new Order(null, orderTable, orderStatus, LocalDateTime.now(), orderLineItems);
     }
 
     public Long getId() {
@@ -63,6 +48,13 @@ public class Order {
 
     public OrderTable getOrderTable() {
         return orderTable;
+    }
+
+    private void setOrderTable(OrderTable orderTable) {
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException("Should have not orderTable empty");
+        }
+        this.orderTable = orderTable;
     }
 
     public OrderStatus getOrderStatus() {
@@ -75,6 +67,14 @@ public class Order {
 
     public List<OrderLineItem> getOrderLineItems() {
         return Collections.unmodifiableList(orderLineItems);
+    }
+
+    private void setOrderLineItems(List<OrderLineItem> orderLineItems) {
+        if (CollectionUtils.isEmpty(orderLineItems)) {
+            throw new IllegalArgumentException("should have orderLineItems");
+        }
+        orderLineItems.forEach(orderLineItem -> orderLineItem.setOrder(this));
+        this.orderLineItems = orderLineItems;
     }
 
     public void addOrderLineItem(OrderLineItem orderLineItem) {
