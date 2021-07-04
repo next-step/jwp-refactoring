@@ -1,22 +1,30 @@
 package kitchenpos.common.domian;
 
+import java.math.BigDecimal;
+import java.util.Objects;
+
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import kitchenpos.error.ErrorInfo;
 import kitchenpos.error.CustomException;
 
-import java.util.Objects;
-
 @Embeddable
 public class Price {
-    private final int amount;
+    @Column(name = "price")
+    private final BigDecimal amount;
 
     public Price() {
-        amount = 0;
+        amount = BigDecimal.valueOf(0);
     }
 
     public Price(int amount) {
         checkNegative(amount);
+        this.amount = BigDecimal.valueOf(amount);
+    }
+
+    public Price(BigDecimal amount) {
+        checkNegative(amount.intValue());
         this.amount = amount;
     }
 
@@ -26,12 +34,20 @@ public class Price {
         }
     }
 
+    public Price sum(Price price, Quantity quantity) {
+        return new Price(price.amount.multiply(BigDecimal.valueOf(quantity.amount())));
+    }
+
+    public int amountToInt() {
+        return amount.intValue();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Price price = (Price) o;
-        return amount == price.amount;
+        return Objects.equals(amount, price.amount);
     }
 
     @Override
