@@ -1,15 +1,30 @@
 package kitchenpos.domain;
 
+import kitchenpos.BaseEntity;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Order {
+@Entity
+public class Order extends BaseEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column
     private Long orderTableId;
+
+    @Column
     private String orderStatus;
+
+    @Column
     private LocalDateTime orderedTime;
-    private List<OrderLineItem> orderLineItems;
+
+    @OneToMany
+    private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     public Order() { }
 

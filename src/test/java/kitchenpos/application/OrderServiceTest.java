@@ -3,7 +3,7 @@ package kitchenpos.application;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.tablegroup.dao.OrderTableDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
@@ -46,7 +46,7 @@ public class OrderServiceTest {
     private LocalDateTime order1OrderTime = LocalDateTime.now();
     private OrderLineItem orderLineItem = new OrderLineItem(1L, 1L, 1L, 1);
     private List<OrderLineItem> order1OrderLineItems = Arrays.asList(orderLineItem);
-    private OrderTable orderTable = new OrderTable(1L, 1L, 5, false);
+    private OrderTable orderTable = new OrderTable(1L, 5, false);
 
     @BeforeEach
     void setUp() {
@@ -112,7 +112,7 @@ public class OrderServiceTest {
     @DisplayName("주문의 주문테이블이 비어있으면 주문할 수 없다.")
     @Test
     void 주문의_주문테이블이_올바르지_않으면_등록할_수_없다_2() {
-        OrderTable falseOrderTable = new OrderTable(1L, 1L, 0, true);
+        OrderTable falseOrderTable = new OrderTable(1L, 0, true);
         Order order1 = new Order(order1Id, order1OrderTableId, order1OrderStatus, order1OrderTime, order1OrderLineItems);
 
         when(menuDao.countByIdIn(any())).thenReturn(1L);

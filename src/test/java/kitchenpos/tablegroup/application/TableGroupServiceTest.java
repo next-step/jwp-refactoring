@@ -1,10 +1,11 @@
 package kitchenpos.tablegroup.application;
 
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.tablegroup.dao.TableGroupDao;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.tablegroup.domain.OrderTable;
+import kitchenpos.tablegroup.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,11 +32,11 @@ public class TableGroupServiceTest {
     private TableGroupService tableGroupService;
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
 
     private Long tableGroup1Id = 1L;
     private OrderTable orderTable1 = new OrderTable(1L, null, 0, true);
@@ -44,7 +45,7 @@ public class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        tableGroupService = new TableGroupService(orderDao, orderTableDao, tableGroupDao);
+        tableGroupService = new TableGroupService(orderRepository, orderTableRepository, tableGroupRepository);
     }
 
     @DisplayName("단체지정을 등록할 수 있다")
@@ -53,9 +54,8 @@ public class TableGroupServiceTest {
         TableGroupRequest tableGroup = TableGroupRequest.of(tableGroup1Id, tableGroup1OrderTables);
         TableGroup tableGroupResponse = new TableGroup(tableGroup1Id, tableGroup1OrderTables);
 
-        when(orderTableDao.findAllByIdIn(any())).thenReturn(Arrays.asList(orderTable1, orderTable2));
-        when(tableGroupDao.save(any())).thenReturn(tableGroupResponse);
-        when(orderTableDao.save(any())).thenReturn(orderTable1);
+        when(orderTableRepository.findAllByIdIn(any())).thenReturn(Arrays.asList(orderTable1, orderTable2));
+        when(tableGroupRepository.save(any())).thenReturn(tableGroupResponse);
 
         TableGroup response = tableGroupService.create(tableGroup);
 
@@ -90,7 +90,7 @@ public class TableGroupServiceTest {
     void 단체지정의_주문테이블이_올바르지_않으면_등록할_수_없다_3() {
         TableGroupRequest tableGroupRequest = TableGroupRequest.of(tableGroup1Id, tableGroup1OrderTables);
 
-        when(orderTableDao.findAllByIdIn(any())).thenReturn(Arrays.asList(orderTable1));
+        when(orderTableRepository.findAllByIdIn(any())).thenReturn(Arrays.asList(orderTable1));
 
         assertThatThrownBy(() -> {
             tableGroupService.create(tableGroupRequest);
@@ -130,8 +130,8 @@ public class TableGroupServiceTest {
     void ungroup() {
         TableGroup tableGroup = new TableGroup(tableGroup1Id, tableGroup1OrderTables);
 
-        when(orderTableDao.findAllByTableGroupId(any())).thenReturn(Arrays.asList(orderTable1, orderTable2));
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(false);
+        when(orderTableRepository.findAllByTableGroupId(any())).thenReturn(Arrays.asList(orderTable1, orderTable2));
+        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(false);
 
         tableGroupService.ungroup(tableGroup.getId());
 
@@ -146,8 +146,8 @@ public class TableGroupServiceTest {
     void 단체지정의_주문테이블_주문상태가_올바르지_않으면_해제할_수_없다() {
         TableGroup tableGroup = new TableGroup(tableGroup1Id, tableGroup1OrderTables);
 
-        when(orderTableDao.findAllByTableGroupId(any())).thenReturn(Arrays.asList(orderTable1, orderTable2));
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(true);
+        when(orderTableRepository.findAllByTableGroupId(any())).thenReturn(Arrays.asList(orderTable1, orderTable2));
+        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(true);
 
         assertThatThrownBy(() -> {
             tableGroupService.ungroup(tableGroup.getId());

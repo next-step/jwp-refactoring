@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.tablegroup.dao.OrderTableDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.tablegroup.domain.OrderTable;
 import org.springframework.stereotype.Service;
