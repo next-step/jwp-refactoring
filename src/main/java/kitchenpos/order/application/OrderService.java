@@ -1,6 +1,7 @@
 package kitchenpos.order.application;
 
 import java.util.List;
+import kitchenpos.common.NotFoundEntityException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
@@ -46,7 +47,7 @@ public class OrderService {
             createOrderDto.getOrderLineItems()
                     .stream()
                     .map(dto -> {
-                        Menu menu = menuRepository.findById(dto.getMenuId()).orElseThrow(IllegalArgumentException::new);
+                        Menu menu = menuRepository.findById(dto.getMenuId()).orElseThrow(NotFoundEntityException::new);
                         return new OrderLineItem(menu, dto.getQuantity());
                     })
                     .collect(toList());
@@ -61,7 +62,7 @@ public class OrderService {
         }
 
         OrderTable orderTable = orderTableRepository.findById(createOrderDto.getOrderTableId())
-                                                          .orElseThrow(IllegalArgumentException::new);
+                                                          .orElseThrow(NotFoundEntityException::new);
 
         Order order = new Order(orderLineItems);
         orderTable.addOrder(order);
@@ -82,7 +83,7 @@ public class OrderService {
     @Transactional
     public OrderDto changeOrderStatus(Long orderId, ChangeOrderStatusDto changeOrderStatusDto) {
         Order savedOrder = orderRepository.findById(orderId)
-                                          .orElseThrow(IllegalArgumentException::new);
+                                          .orElseThrow(NotFoundEntityException::new);
 
         savedOrder.changeOrderStatus(changeOrderStatusDto.getOrderStatus());
         return OrderDto.of(savedOrder);

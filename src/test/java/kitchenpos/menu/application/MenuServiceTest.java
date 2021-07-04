@@ -3,6 +3,7 @@ package kitchenpos.menu.application;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import kitchenpos.common.NotFoundEntityException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
@@ -26,6 +27,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -105,7 +107,7 @@ class MenuServiceTest {
         CreateMenuDto menuDto = createMenuDto(price);
 
         // when
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuDto));
+        assertThatExceptionOfType(NotFoundEntityException.class).isThrownBy(() -> menuService.create(menuDto));
     }
 
     @DisplayName("메뉴 생성 요청 실패 - 등록되지 않은 메뉴 그룹의 ID를 사용")
@@ -118,7 +120,7 @@ class MenuServiceTest {
         given(menuGroupRepository.findById(NOT_SAVED_ID)).willReturn(Optional.empty());
 
         // when
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuDto));
+        assertThatExceptionOfType(NotFoundEntityException.class).isThrownBy(() -> menuService.create(menuDto));
     }
 
     @DisplayName("메뉴 생성 요청 실패 - 메뉴 가격은 메뉴 상품 가격의 합보다 작아야 함")

@@ -2,6 +2,7 @@ package kitchenpos.table.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import kitchenpos.common.NotFoundEntityException;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
@@ -47,7 +48,7 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
-                                                    .orElseThrow(IllegalArgumentException::new);
+                                                    .orElseThrow(NotFoundEntityException::new);
 
         tableGroup.ungroup();
     }

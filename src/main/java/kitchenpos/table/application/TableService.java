@@ -1,11 +1,11 @@
 package kitchenpos.table.application;
 
 import java.util.List;
+import kitchenpos.common.NotFoundEntityException;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.CreateOrderTableDto;
 import kitchenpos.table.exception.NotChangeNumberOfGuestsException;
-import kitchenpos.table.exception.NotFoundOrderTableException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +31,7 @@ public class TableService {
     public OrderTable changeEmpty(Long orderTableId, Boolean empty) {
         OrderTable savedOrderTable =
             orderTableRepository.findById(orderTableId)
-                                .orElseThrow(() -> new NotFoundOrderTableException(orderTableId));
+                                .orElseThrow(NotFoundEntityException::new);
 
         savedOrderTable.changeEmpty(empty);
         return savedOrderTable;
@@ -45,7 +45,7 @@ public class TableService {
         }
 
         OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                                                         .orElseThrow(() -> new NotFoundOrderTableException(orderTableId));
+                                                         .orElseThrow(NotFoundEntityException::new);
 
         savedOrderTable.changeNumberOfGuests(numberOfGuests);
         return savedOrderTable;

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Stream;
+import kitchenpos.common.NotFoundEntityException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
@@ -25,6 +26,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static java.util.stream.Collectors.toList;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -91,7 +93,7 @@ class OrderServiceTest {
         given(orderTableRepository.findById(orderDto.getOrderTableId())).willReturn(Optional.empty());
 
         // when
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(orderDto));
+        assertThatExceptionOfType(NotFoundEntityException.class).isThrownBy(() -> orderService.create(orderDto));
     }
 
     @DisplayName("create order 실패 - order table의 상태가 empty")
@@ -139,7 +141,7 @@ class OrderServiceTest {
         given(orderRepository.findById(any())).willReturn(Optional.empty());
 
         // when
-        assertThatIllegalArgumentException().isThrownBy(
+        assertThatExceptionOfType(NotFoundEntityException.class).isThrownBy(
             () -> orderService.changeOrderStatus(1L, new ChangeOrderStatusDto(OrderStatus.COMPLETION.name())));
     }
 

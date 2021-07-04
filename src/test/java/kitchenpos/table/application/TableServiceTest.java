@@ -1,6 +1,7 @@
 package kitchenpos.table.application;
 
 import java.util.Optional;
+import kitchenpos.common.NotFoundEntityException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
@@ -9,7 +10,6 @@ import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.CreateOrderTableDto;
 import kitchenpos.table.exception.NotChangeEmptyException;
 import kitchenpos.table.exception.NotChangeNumberOfGuestsException;
-import kitchenpos.table.exception.NotFoundOrderTableException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -68,7 +68,7 @@ class TableServiceTest {
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.empty());
 
         // when
-        assertThatExceptionOfType(NotFoundOrderTableException.class).isThrownBy(() -> tableService.changeEmpty(orderTableId, true));
+        assertThatExceptionOfType(NotFoundEntityException.class).isThrownBy(() -> tableService.changeEmpty(orderTableId, true));
     }
 
     @DisplayName("empty 상태 변경 실패 - table group에 속한 order table")
@@ -128,7 +128,7 @@ class TableServiceTest {
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.empty());
 
         // when
-        assertThatExceptionOfType(NotFoundOrderTableException.class).isThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, 3));
+        assertThatExceptionOfType(NotFoundEntityException.class).isThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, 3));
     }
 
     @DisplayName("주문 테이블의 손님 수 변경 실패 - empty 상태인 주문 테이블은 손님 수 변경 불가")

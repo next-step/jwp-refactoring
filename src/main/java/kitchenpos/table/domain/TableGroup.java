@@ -34,14 +34,14 @@ public class TableGroup {
 
     private void verifyOrderTablesSize() {
         if (orderTables.size() < 2) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문 테이블이 2개 이상인 경우에만 단체 지정이 가능합니다.");
         }
     }
 
     public void addOrderTable(OrderTable orderTable) {
 
          if (!orderTable.isEmpty() || orderTable.getTableGroup() != null) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문 테이블이 빈 상태이거나 주문 테이블이 이미 단체 지정되어 있습니다.");
         }
 
         orderTable.notEmpty();
