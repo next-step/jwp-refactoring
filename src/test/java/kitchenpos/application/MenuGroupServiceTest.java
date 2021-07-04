@@ -3,6 +3,7 @@ package kitchenpos.application;
 import kitchenpos.menugroup.dao.MenuGroupDao;
 import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,11 +30,11 @@ public class MenuGroupServiceTest {
     private String menuGroupName2 = "메뉴그룹2";
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @BeforeEach
     void setUp() {
-        menuGroupService = new MenuGroupService(menuGroupDao);
+        menuGroupService = new MenuGroupService(menuGroupRepository);
     }
 
     @DisplayName("메뉴 그룹을 만들 수 있다")
@@ -41,7 +42,7 @@ public class MenuGroupServiceTest {
     void create() {
         MenuGroup menuGroup1 = MenuGroup.of(menuGroupId1, menuGroupName1);
 
-        when(menuGroupDao.save(any())).thenReturn(menuGroup1);
+        when(menuGroupRepository.save(any())).thenReturn(menuGroup1);
         MenuGroup menuGroupResponse = menuGroupService.create(menuGroup1);
 
         assertThat(menuGroupResponse.getId()).isEqualTo(menuGroupId1);
@@ -54,7 +55,7 @@ public class MenuGroupServiceTest {
         MenuGroup menuGroup1 = MenuGroup.of(menuGroupId1, menuGroupName1);
         MenuGroup menuGroup2 = MenuGroup.of(menuGroupId2, menuGroupName2);
 
-        when(menuGroupDao.findAll()).thenReturn(Arrays.asList(menuGroup1, menuGroup2));
+        when(menuGroupRepository.findAll()).thenReturn(Arrays.asList(menuGroup1, menuGroup2));
 
         List<MenuGroup> menuGroupResponses = menuGroupService.list();
 

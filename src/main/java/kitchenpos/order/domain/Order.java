@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.order.domain;
 
 import kitchenpos.BaseEntity;
 
@@ -23,13 +23,20 @@ public class Order extends BaseEntity {
     @Column
     private LocalDateTime orderedTime;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     public Order() { }
 
     public Order(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
         this.id = id;
+        this.orderTableId = orderTableId;
+        this.orderStatus = orderStatus;
+        this.orderedTime = orderedTime;
+        this.orderLineItems = orderLineItems;
+    }
+
+    public Order(Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;

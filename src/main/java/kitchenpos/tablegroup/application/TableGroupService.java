@@ -1,7 +1,6 @@
 package kitchenpos.tablegroup.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.tablegroup.domain.OrderTable;
 import kitchenpos.tablegroup.domain.OrderTableRepository;
@@ -13,9 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class TableGroupService {
@@ -31,7 +27,6 @@ public class TableGroupService {
 
     @Transactional
     public TableGroup create(final TableGroupRequest tableGroupRequest) {
-
         final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(tableGroupRequest.getOrderTableIds());
 
         TableGroup tableGroup = TableGroup.of(savedOrderTables);

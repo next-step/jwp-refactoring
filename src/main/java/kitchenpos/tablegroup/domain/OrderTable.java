@@ -93,4 +93,10 @@ public class OrderTable {
             throw new IllegalArgumentException();
         }
     }
+
+    public void isValidForOrdering() {
+        if (isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+    }
 }

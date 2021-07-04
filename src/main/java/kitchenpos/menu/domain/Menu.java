@@ -1,15 +1,30 @@
-package kitchenpos.domain;
+package kitchenpos.menu.domain;
 
+import kitchenpos.domain.MenuProduct;
+
+import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Entity
 public class Menu {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column
     private String name;
+
+    @Column
     private BigDecimal price;
+
+    @Column
     private Long menuGroupId;
-    private List<MenuProduct> menuProducts;
+
+    @OneToMany
+    private List<MenuProduct> menuProducts = new ArrayList<>();
 
     public Menu() {
 

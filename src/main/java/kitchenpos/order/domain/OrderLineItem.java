@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.order.domain;
 
 import kitchenpos.BaseEntity;
 
@@ -19,6 +19,10 @@ public class OrderLineItem extends BaseEntity {
     private long quantity;
 
     public OrderLineItem() { }
+
+    public OrderLineItem(Long menuId, long quantity) {
+        this(null, null, menuId, quantity);
+    }
 
     public OrderLineItem(Long seq, Long orderId, Long menuId, long quantity) {
         this.seq = seq;
