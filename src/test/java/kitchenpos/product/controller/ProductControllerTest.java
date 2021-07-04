@@ -1,4 +1,4 @@
-package kitchenpos.product;
+package kitchenpos.product.controller;
 
 import kitchenpos.common.ControllerTest;
 import kitchenpos.domain.Product;

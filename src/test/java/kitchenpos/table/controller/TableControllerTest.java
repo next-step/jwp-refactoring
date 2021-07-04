@@ -1,4 +1,4 @@
-package kitchenpos.table;
+package kitchenpos.table.controller;
 
 import kitchenpos.common.ControllerTest;
 import kitchenpos.domain.Order;

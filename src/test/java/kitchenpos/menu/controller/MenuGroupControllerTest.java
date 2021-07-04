@@ -1,4 +1,4 @@
-package kitchenpos.menu;
+package kitchenpos.menu.controller;
 
 import kitchenpos.common.ControllerTest;
 import kitchenpos.domain.MenuGroup;
