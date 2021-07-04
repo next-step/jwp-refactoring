@@ -2,6 +2,69 @@
 
 ## 요구 사항
 
+### 메뉴 그룹(menu groups)
+
+POST `/api/menu-groups`
+메뉴 그룹을 생성한다
+
+GET `/api/menu-groups`
+메뉴 그룹 목록을 가져온다
+
+
+### 메뉴(menus)
+
+POST `/api/menus`
+메뉴를 생성한다
+
+GET `/api/menus`
+메뉴 목록을 가져온다
+
+
+### 주문(orders)
+
+POST `/api/orders`
+주문을 생성한다
+
+GET `/api/orders`
+주문 목록을 가져온다
+
+PUT `/api/orders/1/order-status`
+특정 주문의 상태를 변경한다
+
+
+### 제품(products)
+
+POST `/api/products`
+제품을 생성한다
+
+GET `/api/products`
+제품 목록을 가져온다
+
+
+### 단체 지정(table groups)
+
+POST `/api/table-groups`
+테이블 그룹을 생성한다
+
+DELETE `/api/table-groups/1`
+특정 테이블 그룹을 삭제한다
+
+
+### 테이블(tables)
+
+POST `/api/tables`
+테이블을 생성한다
+
+GET `/api/tables`
+테이블 목록을 가져온다
+
+PUT `/api/tables/1/empty`
+특정 테이블의 주문가능 상태를 변경한다
+
+PUT `/api/tables/1/number-of-guests`
+특정 테이블의 손님 수를 변경한다
+
+
 ## 용어 사전
 
 | 한글명 | 영문명 | 설명 |
