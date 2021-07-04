@@ -32,6 +32,7 @@ import kitchenpos.table.domain.OrderTables;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 
 @ExtendWith(MockitoExtension.class)
 public class TableGroupServiceTest {
@@ -60,11 +61,12 @@ public class TableGroupServiceTest {
         given(tableGroupRepository.save(any())).willReturn(산악회);
 
         // when
-        TableGroup result = tableGroupService.create(request);
+        TableGroupResponse result = tableGroupService.create(request);
 
         // then
         assertThat(result.getId()).isEqualTo(산악회.getId());
-        assertThat(result.getOrderTables()).containsExactly(테이블_1번, 테이블_2번);
+        assertThat(result.getOrderTables().get(0).getId()).isEqualTo(테이블_1번.getId());
+        assertThat(result.getOrderTables().get(1).getId()).isEqualTo(테이블_2번.getId());
 
         verify(orderTableRepository, times(1)).findAllById(any());
         verify(tableGroupRepository, times(1)).save(any());
@@ -128,7 +130,7 @@ public class TableGroupServiceTest {
     void noEmptyTable() {
         // when
         given(orderTableRepository.findAllById(any()))
-                .willReturn(Arrays.asList(new OrderTable(1L, 10, false), new OrderTable(2L, 10, false)));
+            .willReturn(Arrays.asList(new OrderTable(1L, 10, false), new OrderTable(2L, 10, false)));
         // then
         assertThrows(IllegalArgumentException.class, () -> {
             tableGroupService.create(request);
@@ -155,12 +157,12 @@ public class TableGroupServiceTest {
     private static Stream<Arguments> cookingSet() {
         Order isCooking = new Order(1L, OrderStatus.COOKING.name(), 1L, null);
         OrderTables orderTablesCooking = new OrderTables(
-                Arrays.asList(new OrderTable(1L, 1L, 10, false, Arrays.asList(isCooking))));
+            Arrays.asList(new OrderTable(1L, 1L, 10, false, Arrays.asList(isCooking))));
         TableGroup isCookingGroup = new TableGroup(1L, LocalDateTime.now(), orderTablesCooking);
 
         Order isMeal = new Order(1L, OrderStatus.MEAL.name(), 1L, null);
         OrderTables orderTablesMeal = new OrderTables(
-                Arrays.asList(new OrderTable(1L, 1L, 10, false, Arrays.asList(isMeal))));
+            Arrays.asList(new OrderTable(1L, 1L, 10, false, Arrays.asList(isMeal))));
         TableGroup isMealGroup = new TableGroup(1L, LocalDateTime.now(), orderTablesMeal);
 
         return Stream.of(Arguments.of(isCookingGroup), Arguments.of(isMealGroup));

@@ -1,8 +1,10 @@
 package kitchenpos.table.domain;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -10,6 +12,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import kitchenpos.order.domain.Order;
+import kitchenpos.product.constant.OrderStatus;
 
 public class OrderTablesTest {
 
@@ -19,6 +24,15 @@ public class OrderTablesTest {
     void avaliableTable(List<OrderTable> list, boolean result) {
         OrderTables orderTables = new OrderTables(list);
         assertThat(orderTables.avaliableTable()).isEqualTo(result);
+    }
+
+    @ParameterizedTest
+    @DisplayName("개별 테이블의 주문상태가 조리중이거나 식사중이면  exception을 반환한다.")
+    @MethodSource("cookingSet")
+    void ungroup(OrderTables orderTables) {
+        assertThrows(IllegalArgumentException.class, () -> {
+            orderTables.ungroup();
+        });
     }
 
     private static Stream<Arguments> resultSet() {
@@ -34,9 +48,18 @@ public class OrderTablesTest {
         list3.add(new OrderTable(1L, 10, true));
         list3.add(new OrderTable(1L, 10, true));
 
-        return Stream.of(
-            Arguments.of(list, false),
-            Arguments.of(list2, false),
-            Arguments.of(list3, true));
+        return Stream.of(Arguments.of(list, false), Arguments.of(list2, false), Arguments.of(list3, true));
+    }
+
+    private static Stream<Arguments> cookingSet() {
+        Order isCooking = new Order(1L, OrderStatus.COOKING.name(), 1L, null);
+        OrderTables orderTablesCooking = new OrderTables(
+                Arrays.asList(new OrderTable(1L, 1L, 10, false, Arrays.asList(isCooking))));
+
+        Order isMeal = new Order(1L, OrderStatus.MEAL.name(), 1L, null);
+        OrderTables orderTablesMeal = new OrderTables(
+                Arrays.asList(new OrderTable(1L, 1L, 10, false, Arrays.asList(isMeal))));
+
+        return Stream.of(Arguments.of(orderTablesCooking), Arguments.of(orderTablesMeal));
     }
 }

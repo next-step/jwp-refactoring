@@ -10,6 +10,7 @@ import kitchenpos.table.domain.OrderTables;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 
 @Service
 public class TableGroupService {
@@ -23,16 +24,17 @@ public class TableGroupService {
     }
 
     @Transactional
-    public TableGroup create(final TableGroupRequest tableGroup) {
+    public TableGroupResponse create(final TableGroupRequest tableGroup) {
         final List<Long> orderTableIds = tableGroup.getOrderTableIds();
         final OrderTables savedOrderTables = new OrderTables(orderTableRepository.findAllById(orderTableIds));
-        return tableGroupRepository.save(TableGroup.make(orderTableIds, savedOrderTables));
+        TableGroup result = tableGroupRepository.save(TableGroup.make(orderTableIds, savedOrderTables));
+        return TableGroupResponse.of(result);
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
         final TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
-                .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(IllegalArgumentException::new);
         tableGroup.ungroup();
     }
 }

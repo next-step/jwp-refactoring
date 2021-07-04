@@ -89,4 +89,8 @@ public class TableGroup {
         orderTables.ungroup();
     }
 
+    public LocalDateTime getCreatedDate() {
+        return this.createdDate;
+    }
+
 }

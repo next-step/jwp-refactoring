@@ -1,14 +1,10 @@
 package kitchenpos.tablegroup.ui;
 
-import static kitchenpos.util.TestDataSet.산악회;
-import static kitchenpos.util.TestDataSet.테이블_1번;
-import static kitchenpos.util.TestDataSet.테이블_2번;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static kitchenpos.util.TestDataSet.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,7 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kitchenpos.tablegroup.application.TableGroupService;
-import kitchenpos.tablegroup.ui.TableGroupRestController;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 
 @WebMvcTest(controllers = TableGroupRestController.class)
 @ExtendWith(MockitoExtension.class)
@@ -45,7 +41,7 @@ public class TableGroupRestControllerTest {
     void create() throws Exception {
         // given
         String content = objectMapper.writeValueAsString(산악회);
-        given(tableGroupService.create(any())).willReturn(산악회);
+        given(tableGroupService.create(any())).willReturn(TableGroupResponse.of(산악회));
 
         // when
         mockMvc.perform(

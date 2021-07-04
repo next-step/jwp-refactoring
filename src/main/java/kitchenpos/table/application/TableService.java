@@ -1,31 +1,34 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.dao.OrderDao;
-import kitchenpos.product.constant.OrderStatus;
-import kitchenpos.table.dao.OrderTableDao;
-import kitchenpos.table.domain.OrderTable;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import kitchenpos.order.dao.OrderDao;
+import kitchenpos.product.constant.OrderStatus;
+import kitchenpos.table.dao.OrderTableDao;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 
 @Service
 public class TableService {
     private final OrderDao orderDao;
     private final OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderDao orderDao, final OrderTableDao orderTableDao) {
+    public TableService(final OrderDao orderDao, final OrderTableDao orderTableDao,
+            final OrderTableRepository orderTableRepository) {
         this.orderDao = orderDao;
         this.orderTableDao = orderTableDao;
+        this.orderTableRepository = orderTableRepository;
     }
 
     @Transactional
     public OrderTable create(final OrderTable orderTable) {
         orderTable.setTableGroupId(null);
-
         return orderTableDao.save(orderTable);
     }
 
@@ -42,8 +45,8 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-        if (orderDao.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+        if (orderDao.existsByOrderTableIdAndOrderStatusIn(orderTableId,
+                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
             throw new IllegalArgumentException();
         }
 
