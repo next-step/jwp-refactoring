@@ -70,7 +70,7 @@ class MenuServiceTest {
     MenuProduct savedMenuProduct2 = new MenuProduct(savedMenuId, product2.getId(), 1);
     when(menuProductDao.save(menuProduct1)).thenReturn(savedMenuProduct1);
     when(menuProductDao.save(menuProduct2)).thenReturn(savedMenuProduct2);
-    when(menuDao.save(menu)).thenReturn(new Menu(savedMenuId, "메뉴이름", BigDecimal.valueOf(1_000), menuGroup.getId(), Arrays.asList(savedMenuProduct1, savedMenuProduct2)));
+    when(menuDao.save(menu)).thenReturn(new Menu(savedMenuId, "메뉴이름", BigDecimal.valueOf(4_000), menuGroup.getId(), Arrays.asList(savedMenuProduct1, savedMenuProduct2)));
     MenuService menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
 
     //when
