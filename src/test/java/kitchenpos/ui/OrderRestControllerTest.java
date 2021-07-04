@@ -1,5 +1,6 @@
 package kitchenpos.ui;
 
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,6 +28,7 @@ import kitchenpos.dto.OrderTableRequest;
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestMethodOrder(OrderAnnotation.class)
+@DirtiesContext(classMode = BEFORE_CLASS)
 @DisplayName("주문 통합 테스트")
 class OrderRestControllerTest {
 
@@ -73,7 +76,7 @@ class OrderRestControllerTest {
     @DisplayName("특정 주문의 상태를 변경한다")
     void changeOrderStatus() throws Exception {
         OrderRequest request = new OrderRequest("MEAL");
-        mockMvc.perform(put("/api/orders/1/order-status")
+        mockMvc.perform(put("/api/orders/{id}/order-status", 1L)
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(request)))
             .andDo(print())

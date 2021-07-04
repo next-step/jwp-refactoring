@@ -1,6 +1,6 @@
 package kitchenpos.ui;
 
-import static kitchenpos.utils.UnitTestData.*;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,6 +24,7 @@ import kitchenpos.dto.MenuRequest;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@DirtiesContext(classMode = BEFORE_CLASS)
 @DisplayName("메뉴 통합 테스트")
 class MenuRestControllerTest {
 
@@ -38,7 +40,6 @@ class MenuRestControllerTest {
         MenuProductRequest menuProduct = new MenuProductRequest(1L, 2);
         MenuRequest request = new MenuRequest("후라이드+후라이드",
             BigInteger.valueOf(19000), 1L, Arrays.asList(menuProduct));
-        String payload = objectMapper.writeValueAsString(행복세트);
         mockMvc.perform(post("/api/menus")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(request)))
