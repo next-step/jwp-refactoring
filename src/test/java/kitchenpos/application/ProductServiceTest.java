@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -22,6 +23,7 @@ import kitchenpos.utils.DataInitializer;
 @DisplayName("제품 서비스")
 class ProductServiceTest {
 
+    @InjectMocks
     ProductService productService;
 
     @Mock
@@ -30,7 +32,6 @@ class ProductServiceTest {
     @BeforeEach
     void setUp() {
         DataInitializer.reset();
-        productService = new ProductService(productDao);
     }
 
     @Test

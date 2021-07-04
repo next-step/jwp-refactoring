@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -30,6 +31,7 @@ import kitchenpos.utils.DataInitializer;
 @DisplayName("메뉴 서비스")
 class MenuServiceTest {
 
+    @InjectMocks
     MenuService menuService;
 
     @Mock
@@ -49,7 +51,6 @@ class MenuServiceTest {
     @BeforeEach
     void setUp() {
         DataInitializer.reset();
-        menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
 
         특가세트_소주 = new MenuProduct(소주.getId(), 1);
         특가세트_맥주 = new MenuProduct(맥주.getId(), 1);

@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -29,6 +30,7 @@ import kitchenpos.utils.DataInitializer;
 @DisplayName("주문 서비스")
 class OrderServiceTest {
 
+    @InjectMocks
     OrderService orderService;
 
     @Mock
@@ -48,7 +50,6 @@ class OrderServiceTest {
     @BeforeEach
     void setUp() {
         DataInitializer.reset();
-        orderService = new OrderService(menuDao, orderDao, orderLineItemDao, orderTableDao);
 
         신규_주문_치쏘세트 = new OrderLineItem(치쏘세트.getId(), 2);
         신규_주문_피맥세트 = new OrderLineItem(피맥세트.getId(), 1);

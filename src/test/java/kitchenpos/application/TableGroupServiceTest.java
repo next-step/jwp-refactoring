@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -26,6 +27,7 @@ import kitchenpos.utils.DataInitializer;
 @DisplayName("테이블 그룹 서비스")
 class TableGroupServiceTest {
 
+    @InjectMocks
     TableGroupService tableGroupService;
 
     @Mock
@@ -41,7 +43,6 @@ class TableGroupServiceTest {
     @BeforeEach
     void setUp() {
         DataInitializer.reset();
-        tableGroupService = new TableGroupService(orderDao, orderTableDao, tableGroupDao);
 
         테이블_리스트 = Arrays.asList(테이블3번_EMPTY, 테이블4번_EMPTY);
         신규_테이블_그룹 = new TableGroup(1L, 테이블_리스트);

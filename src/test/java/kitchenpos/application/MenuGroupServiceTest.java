@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -23,6 +24,7 @@ import kitchenpos.utils.DataInitializer;
 @DisplayName("메뉴 그룹 서비스")
 class MenuGroupServiceTest {
 
+    @InjectMocks
     MenuGroupService menuGroupService;
 
     @Mock
@@ -31,7 +33,6 @@ class MenuGroupServiceTest {
     @BeforeEach
     void setUp() {
         DataInitializer.reset();
-        menuGroupService = new MenuGroupService(menuGroupDao);
     }
 
     @Test
