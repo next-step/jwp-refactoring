@@ -1,9 +1,9 @@
-package kitchenpos.ui;
+package kitchenpos.table.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.UTF8MockMvcTest;
-import kitchenpos.application.TableService;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.table.application.TableService;
+import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
