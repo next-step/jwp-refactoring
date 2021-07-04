@@ -11,7 +11,7 @@ import org.springframework.util.CollectionUtils;
 @Embeddable
 public class OrderTables {
 
-    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<OrderTable> data = new ArrayList<>();
 
     protected OrderTables() { }
@@ -35,7 +35,7 @@ public class OrderTables {
     }
 
     private boolean hasNotCompletedOrder() {
-        return data.stream().anyMatch(orderTable -> !orderTable.isAllOrderCompleted());
+        return data.stream().anyMatch(OrderTable::hasCookingOrMealOrder);
     }
 
     public int size() {

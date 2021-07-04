@@ -60,7 +60,7 @@ public class OrderService {
             throw new IllegalArgumentException();
         }
 
-        final OrderTable orderTable = orderTableRepository.findById(createOrderDto.getOrderTableId())
+        OrderTable orderTable = orderTableRepository.findById(createOrderDto.getOrderTableId())
                                                           .orElseThrow(IllegalArgumentException::new);
 
         Order order = new Order(orderLineItems);
@@ -81,8 +81,8 @@ public class OrderService {
 
     @Transactional
     public OrderDto changeOrderStatus(Long orderId, ChangeOrderStatusDto changeOrderStatusDto) {
-        final Order savedOrder = orderRepository.findById(orderId)
-                                                .orElseThrow(IllegalArgumentException::new);
+        Order savedOrder = orderRepository.findById(orderId)
+                                          .orElseThrow(IllegalArgumentException::new);
 
         savedOrder.changeOrderStatus(changeOrderStatusDto.getOrderStatus());
         return OrderDto.of(savedOrder);

@@ -37,7 +37,7 @@ INSERT INTO order_table (id, number_of_guests, empty) VALUES (8, 0, true);
 INSERT INTO table_group (id, created_date) VALUES (1, PARSEDATETIME('2021-06-25 00:00', 'yyyy-MM-dd HH:mm'));
 INSERT INTO order_table (id, table_group_id, number_of_guests, empty) VALUES (9, 1, 3, false);
 
-INSERT INTO order_table (id, number_of_guests, empty) VALUES (10, 0, true);
+INSERT INTO order_table (id, number_of_guests, empty) VALUES (10, 0, false);
 INSERT INTO orders (id, order_table_id, order_status, ordered_time) VALUES (1, 10, 'MEAL', PARSEDATETIME('2021-06-25 00:00', 'yyyy-MM-dd HH:mm'));
 
 INSERT INTO order_table (id, number_of_guests, empty) VALUES (11, 0, true);

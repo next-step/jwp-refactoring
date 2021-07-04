@@ -11,7 +11,7 @@ import javax.persistence.OneToMany;
 @Embeddable
 public class Orders {
 
-    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "orderTable", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Order> data = new ArrayList<>();
 
     public Orders() { }
@@ -24,8 +24,8 @@ public class Orders {
         data.add(order);
     }
 
-    public boolean isAllOrderCompleted() {
-        return data.stream().allMatch(Order::isCompletedOrder);
+    public boolean hasCookingOrMealOrder() {
+        return data.stream().anyMatch(Order::hasNotCompletedOrder);
     }
 
     public List<Order> getData() {

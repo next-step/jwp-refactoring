@@ -9,6 +9,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.Orders;
+import kitchenpos.table.exception.ChangeEmptyException;
 
 @Entity
 public class OrderTable {
@@ -63,11 +64,11 @@ public class OrderTable {
     public void changeEmpty(boolean empty) {
 
         if (tableGroup != null) {
-            throw new IllegalArgumentException();
+            throw new ChangeEmptyException("단체 지정된 주문 테이블은 빈 테이블 상태 변경이 불가능합니다.");
         }
 
-        if (isAllOrderCompleted()) {
-            throw new IllegalArgumentException();
+        if (hasCookingOrMealOrder()) {
+            throw new ChangeEmptyException("요리 중이거나 식사 중인 주문이 있으면 빈 테이블 변경이 불가능합니다.");
         }
 
         this.empty = empty;
@@ -99,8 +100,8 @@ public class OrderTable {
         order.group(this);
     }
 
-    public boolean isAllOrderCompleted() {
-        return orders.isAllOrderCompleted();
+    public boolean hasCookingOrMealOrder() {
+        return orders.hasCookingOrMealOrder();
     }
 
     public Long getId() {

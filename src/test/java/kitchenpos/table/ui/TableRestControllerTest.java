@@ -2,11 +2,17 @@ package kitchenpos.table.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import kitchenpos.config.MockMvcTestConfig;
+import kitchenpos.order.dto.CreateOrderDto;
+import kitchenpos.order.dto.OrderLineItemDto;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.UpdateEmptyDto;
 import kitchenpos.table.dto.CreateOrderTableDto;
 import kitchenpos.table.dto.OrderTableDto;
+import kitchenpos.table.dto.UpdateNumberOfGuestsDto;
+import kitchenpos.table.exception.ChangeEmptyException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -21,6 +27,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -31,6 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class TableRestControllerTest {
 
     private static final String BASE_URL = "/api/tables";
+    private static final String ORDER_API_URL = "/api/orders";
 
     @Autowired
     private MockMvc mockMvc;
@@ -40,7 +48,7 @@ class TableRestControllerTest {
 
     @DisplayName("주문 테이블 생성 요청 성공")
     @Test
-    void createOrderTableRequestSuccess() throws Exception {
+    void createOrderTableRequestSuccess() {
         CreateOrderTableDto createOrderTableDto = new CreateOrderTableDto(3, false);
         createOrderTableRequest(createOrderTableDto);
     }
@@ -78,14 +86,17 @@ class TableRestControllerTest {
     @Test
     void updateOrderTableEmptyStatusFail01() {
         // V2__Insert_default_data.sql에서 9번 데이터 삽입
-        putEmptyFail(9);
+        putEmptyFail(9L);
     }
 
     @DisplayName("주문 테이블을 빈 상태로 변경 요청 실패 - 주문 상태가 COOKING 또는 MEAL")
-    @ValueSource(ints = {10, 11})
-    @ParameterizedTest
-    void updateOrderTableEmptyStatusFail02(int id) {
-        // V2__Insert_default_data.sql에서 10, 11번 데이터 삽입
+    @Test
+    void updateOrderTableEmptyStatusFail02() {
+
+        Long id = createOrderTableRequest(new CreateOrderTableDto(0, false));
+        createOrder(id);
+
+        // V2__Insert_default_data.sql에서 10번 데이터 삽입
         putEmptyFail(id);
     }
 
@@ -120,18 +131,43 @@ class TableRestControllerTest {
         putNumberOfGuestsFail(4, 3);
     }
 
-    private void createOrderTableRequest(CreateOrderTableDto createOrderTableDto) throws Exception {
-        mockMvc.perform(post(BASE_URL).content(objectMapper.writeValueAsString(createOrderTableDto))
-                                      .contentType(MediaType.APPLICATION_JSON))
-               .andDo(print())
-               .andExpect(status().isCreated())
-               .andExpect(header().exists("Location"));
+    private Long createOrderTableRequest(CreateOrderTableDto createOrderTableDto) {
+        try {
+            MvcResult result = mockMvc.perform(post(BASE_URL).content(objectMapper.writeValueAsString(createOrderTableDto))
+                                                             .contentType(MediaType.APPLICATION_JSON))
+                                      .andDo(print())
+                                      .andExpect(status().isCreated())
+                                      .andExpect(header().exists("Location"))
+                                      .andReturn();
+
+            String uri = result.getResponse().getHeaderValues("Location")
+                               .stream().findAny().orElse("/0").toString();
+
+            return Long.parseLong(uri.substring(uri.lastIndexOf("/") + 1));
+        } catch (Exception e) {
+            fail();
+            e.printStackTrace();
+            throw new RuntimeException();
+        }
     }
 
-    private void putEmptyFail(int id) {
+    private void putEmptyFail(Long id) {
         try {
             mockMvc.perform(put(BASE_URL + "/" + id + "/empty")
-                                .content(objectMapper.writeValueAsString(true))
+                                .content(objectMapper.writeValueAsString(new UpdateEmptyDto(true)))
+                                .contentType(MediaType.APPLICATION_JSON))
+                   .andDo(print())
+                   .andExpect(status().isBadRequest())
+                   .andReturn();
+        } catch (Exception e) {
+            assertThat(e).hasCauseExactlyInstanceOf(ChangeEmptyException.class);
+        }
+    }
+
+    private void putNumberOfGuestsFail(int id, int numberOfGuests) {
+        try {
+            mockMvc.perform(put(BASE_URL + "/" + id + "/number-of-guests")
+                                .content(objectMapper.writeValueAsString(new UpdateNumberOfGuestsDto(numberOfGuests)))
                                 .contentType(MediaType.APPLICATION_JSON))
                    .andDo(print())
                    .andExpect(status().isBadRequest())
@@ -141,16 +177,19 @@ class TableRestControllerTest {
         }
     }
 
-    private void putNumberOfGuestsFail(int id, int numberOfGuests) {
+    private void createOrder(Long orderTableId) {
         try {
-            mockMvc.perform(put(BASE_URL + "/" + id + "/number-of-guests")
-                                .content(objectMapper.writeValueAsString(numberOfGuests))
-                                .contentType(MediaType.APPLICATION_JSON))
-                   .andDo(print())
-                   .andExpect(status().isBadRequest())
-                   .andReturn();
+            CreateOrderDto createOrderDto =
+                new CreateOrderDto(orderTableId, Collections.singletonList(new OrderLineItemDto(1L, 1L)));
+
+            mockMvc.perform(post(ORDER_API_URL).content(objectMapper.writeValueAsString(createOrderDto))
+                                                             .contentType(MediaType.APPLICATION_JSON))
+                                      .andDo(print())
+                                      .andExpect(status().isCreated())
+                                      .andExpect(header().exists("Location"));
         } catch (Exception e) {
-            assertTrue(e.getCause() instanceof IllegalArgumentException);
+            fail();
+            e.printStackTrace();
         }
     }
 }

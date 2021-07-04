@@ -12,7 +12,7 @@ import kitchenpos.product.domain.Price;
 @Embeddable
 public class MenuProducts {
 
-    @OneToMany(mappedBy = "seq", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<MenuProduct> data;
 
     @Transient

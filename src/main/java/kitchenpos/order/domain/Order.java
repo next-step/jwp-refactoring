@@ -68,8 +68,8 @@ public class Order {
         this.orderTable = orderTable;
     }
 
-    public boolean isCompletedOrder() {
-        return orderStatus.isCompletedOrder();
+    public boolean hasNotCompletedOrder() {
+        return orderStatus.isNotCompletedOrder();
     }
 
     public Long getId() {
