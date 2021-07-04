@@ -1,10 +1,14 @@
 package kitchenpos.menu.ui;
 
-import static kitchenpos.util.TestDataSet.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static kitchenpos.util.TestDataSet.원플원_양념;
+import static kitchenpos.util.TestDataSet.원플원_후라이드;
+import static kitchenpos.util.TestDataSet.원플원_후라이드_리퀘스트;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Arrays;
 
@@ -60,7 +64,7 @@ public class MenuRestControllerTest {
     void list() throws Exception {
         // given
         given(menuService.list())
-            .willReturn(Arrays.asList(원플원_후라이드, 원플원_양념));
+            .willReturn(Arrays.asList(MenuResponse.of(원플원_후라이드), MenuResponse.of(원플원_양념)));
 
         // when
         mockMvc.perform(get(BASE_URL))

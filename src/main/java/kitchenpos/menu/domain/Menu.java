@@ -7,9 +7,12 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import org.springframework.util.CollectionUtils;
 
@@ -30,20 +33,22 @@ public class Menu {
     @AttributeOverride(name = "value", column = @Column(name = "price"))
     private Price price;
 
-    private Long menuGroupId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_group_id")
+    private MenuGroup menuGroup;
 
     @Embedded
     private MenuProducts menuProducts = new MenuProducts();
 
     public Menu() {}
 
-    public Menu(String name, Price price, Long menuGroupId, MenuProducts menuProducts) {
-        this(null, name, price, menuGroupId, menuProducts);
+    public Menu(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        this(null, name, price, menuGroup, menuProducts);
     }
 
-    public Menu(Long id, String name, Price price, Long menuGroupId, MenuProducts menuProducts) {
+    public Menu(Long id, String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
         this.id = id;
-        this.menuGroupId = menuGroupId;
+        this.menuGroup = menuGroup;
         this.name = name;
         this.price = price;
         this.menuProducts = menuProducts;
@@ -74,12 +79,12 @@ public class Menu {
         return price.toBigDecimal();
     }
 
-    public Long getMenuGroupId() {
-        return menuGroupId;
+    public MenuGroup getMenuGroup() {
+        return menuGroup;
     }
 
-    public void setMenuGroupId(final Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
+    public void setMenuGroup(MenuGroup menuGroup) {
+        this.menuGroup = menuGroup;
     }
 
     public List<MenuProduct> getMenuProducts() {
@@ -92,7 +97,7 @@ public class Menu {
 
     public static Menu create(MenuRequest menuRequest, MenuGroup menuGroup, MenuProducts menuProducts) {
         validationCreate(menuRequest, menuProducts);
-        return new Menu(menuRequest.getName(), Price.of(menuRequest.getPrice()), menuGroup.getId(), menuProducts);
+        return new Menu(menuRequest.getName(), Price.of(menuRequest.getPrice()), menuGroup, menuProducts);
     }
 
     private static void validationCreate(MenuRequest menuRequest, MenuProducts menuProducts) {
@@ -103,6 +108,10 @@ public class Menu {
         if (menuProducts.isSumUnder(menuRequest.getPrice())) {
             throw new IllegalArgumentException();
         }
+    }
+
+    public Long getMenuGroupId() {
+        return menuGroup.getId();
     }
 
 }
