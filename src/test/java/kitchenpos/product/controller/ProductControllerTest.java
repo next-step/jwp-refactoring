@@ -23,36 +23,44 @@ public class ProductControllerTest extends ControllerTest {
     @Test
     @DisplayName("상품을 생성 한다")
     public void createProduct() throws Exception {
+        // given
         String name = "치킨";
         BigDecimal price = new BigDecimal(20000);
-        Product product = new Product( name, price);
+        Product product = new Product(name, price);
 
+        // when
+        // then
         상품_생성_요청(product)
-            .andExpect(status().isCreated())
-            .andExpect(jsonPath("id").exists())
-            .andExpect(jsonPath("name").value(name))
-            .andExpect(jsonPath("price").isNumber())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("id").exists())
+                .andExpect(jsonPath("name").value(name))
+                .andExpect(jsonPath("price").isNumber())
         ;
     }
 
     @Test
     @DisplayName("상품을 생성 실패 - 가격이 음수")
     public void createProductFailByPriceMinus() {
+        // given
         String name = "피자";
         BigDecimal price = new BigDecimal(-10000);
+        Product product = new Product(name, price);
 
-        Product product = new Product( name, price);
+        // when
+        // then
         assertThrows(NestedServletException.class, () -> 상품_생성_요청(product));
     }
 
     @Test
     @DisplayName("상품 리스트를 가져온다")
     public void selectProductList() throws Exception {
+        // when
+        // then
         상품_리스트_요청()
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(6)))
-            .andExpect(jsonPath("$.[0].id").value(1L))
-            .andExpect(jsonPath("$.[0].name").value("후라이드"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(6)))
+                .andExpect(jsonPath("$.[0].id").value(1L))
+                .andExpect(jsonPath("$.[0].name").value("후라이드"))
         ;
     }
 

@@ -31,7 +31,7 @@ public class ProductServiceTest {
         Product createProduct = productService.create(product);
 
         //then
-        assertThat(createProduct.getName().equals(name)).isTrue();
+        assertThat(createProduct.getName()).isEqualTo(name);
         assertThat(createProduct.getPrice().compareTo(price)).isSameAs(0);
     }
 
