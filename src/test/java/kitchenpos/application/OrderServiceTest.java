@@ -4,7 +4,12 @@ import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.order.*;
+import kitchenpos.domain.order.Order;
+import kitchenpos.domain.order.OrderLineItem;
+import kitchenpos.domain.order.OrderStatus;
+import kitchenpos.domain.order.OrderTable;
+import kitchenpos.dto.order.OrderLineItemRequest;
+import kitchenpos.dto.order.OrderRequest;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,8 +26,8 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -46,20 +51,21 @@ class OrderServiceTest {
     private final static long ANY_ORDER_TABLE_ID = 1L;
     private final static long ORDER_LINE_ITEM_ID_1L = 1L;
     private final static long ORDER_LINE_ITEM_ID_2L = 2L;
+    private OrderRequest orderRequest;
 
     @BeforeEach
     void setUp() {
-        TableGroup tableGroup = TableGroup.of(new ArrayList<>());
-        orderTable = OrderTable.of(0, false);
-        orderTable.changeTableGroup(tableGroup);
-        ReflectionTestUtils.setField(orderTable, "id", ANY_ORDER_TABLE_ID);
+        orderRequest = new OrderRequest(ANY_ORDER_TABLE_ID, Lists.list(new OrderLineItemRequest(1L, 10L), new OrderLineItemRequest(2L, 20L)));
+
 
         orderLineItem1 = OrderLineItem.of(order, 1L, 10);
         ReflectionTestUtils.setField(orderLineItem1, "seq", ORDER_LINE_ITEM_ID_1L);
         orderLineItem2 = OrderLineItem.of(order, 2L, 20);
         ReflectionTestUtils.setField(orderLineItem2, "seq", ORDER_LINE_ITEM_ID_2L);
 
-        order = Order.of(orderTable, OrderStatus.COOKING, LocalDateTime.now(), new ArrayList<>());
+        orderTable = OrderTable.of(10, false);
+
+        order = Order.of(orderTable, OrderStatus.COOKING, Lists.list(orderLineItem1, orderLineItem2));
         order.addOrderLineItem(orderLineItem1);
         order.addOrderLineItem(orderLineItem2);
 
@@ -68,10 +74,10 @@ class OrderServiceTest {
     @Test
     @DisplayName("주문 항목이 비어있다면 주문을 등록할 수 없다.")
     void exception_create() {
+        given(orderTableDao.findById(1L)).willReturn(Optional.of(orderTable));
+        orderRequest = new OrderRequest(ANY_ORDER_TABLE_ID, new ArrayList<>());
 
-        order.clearOrderLineItem();
-
-        assertThatThrownBy(() -> orderService.create(order))
+        assertThatThrownBy(() -> orderService.create(orderRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("should have orderLineItems");
     }
@@ -79,11 +85,11 @@ class OrderServiceTest {
     @Test
     @DisplayName("주문 항목의 갯수가 주문 항목의 메뉴의 갯수와 일치 하지 않으면 등록할 수 없다.")
     void exception2_create() {
-
+        given(orderTableDao.findById(1L)).willReturn(Optional.of(orderTable));
         given(menuDao.countByIdIn(Lists.list(ORDER_LINE_ITEM_ID_1L, ORDER_LINE_ITEM_ID_2L)))
                 .willReturn(100L);
 
-        assertThatThrownBy(() -> orderService.create(order))
+        assertThatThrownBy(() -> orderService.create(orderRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Not Same as orderLineItems");
     }
@@ -91,12 +97,11 @@ class OrderServiceTest {
     @Test
     @DisplayName("주문의 주문 테이블이 빈 테이블일 경우 주문을 등록할 수 없다.")
     void exception3_create() {
-
         orderTable.changeEmptyTable();
-        given(menuDao.countByIdIn(Lists.list(ORDER_LINE_ITEM_ID_1L, ORDER_LINE_ITEM_ID_2L))).willReturn(2L);
-        order.changeOrderTable(orderTable);
-        // order 테이블 변경
-        assertThatThrownBy(() -> orderService.create(order))
+
+        given(orderTableDao.findById(ANY_ORDER_TABLE_ID)).willReturn(Optional.of(orderTable));
+
+        assertThatThrownBy(() -> orderService.create(orderRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Should have not orderTable empty");
     }
@@ -104,13 +109,12 @@ class OrderServiceTest {
     @Test
     @DisplayName("처음 주문 상태(order status)는 조리(COOKING) 상태가 된다.")
     void after_create_orderStatus_is_COOKING() {
-        given(menuDao.countByIdIn(Lists.list(1L, 2L))).willReturn(2L);
         orderTable.changeNonEmptyTable();
-        order.changeOrderTable(orderTable);
+        given(orderTableDao.findById(ANY_ORDER_TABLE_ID)).willReturn(Optional.of(orderTable));
+        given(menuDao.countByIdIn(Lists.list(1L, 2L))).willReturn(2L);
+        given(orderDao.save(any())).willReturn(order);
 
-        given(orderDao.save(order)).willReturn(order);
-
-        Order saveOrder = orderService.create(order);
+        Order saveOrder = orderService.create(orderRequest);
 
         assertThat(saveOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
     }
@@ -119,13 +123,11 @@ class OrderServiceTest {
     @DisplayName("주문의 주문 상태(order status)를 식사 상태로 변경할 수 있다.")
     void changeOrderStatusTest() {
         given(orderDao.findById(ANY_ORDER_ID)).willReturn(Optional.of(order));
-        given(orderDao.save(order)).willReturn(order);
-        given(orderLineItemDao.findAllByOrderId(ANY_ORDER_ID)).willReturn(new ArrayList<>());
-        ReflectionTestUtils.setField(order, "orderStatus", OrderStatus.MEAL);
 
-        Order changedOrder = orderService.changeOrderStatus(ANY_ORDER_ID, this.order);
+        ReflectionTestUtils.setField(order, "orderStatus", OrderStatus.COOKING);
+
+        Order changedOrder = orderService.changeOrderStatus(ANY_ORDER_ID, OrderStatus.MEAL);
         assertThat(changedOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
-        verify(orderDao).save(order);
     }
 
     @Test
@@ -135,9 +137,8 @@ class OrderServiceTest {
 
         ReflectionTestUtils.setField(order, "orderStatus", OrderStatus.COMPLETION);
 
-        assertThatThrownBy(() -> orderService.changeOrderStatus(ANY_ORDER_ID, order))
+        assertThatThrownBy(() -> orderService.changeOrderStatus(ANY_ORDER_ID, OrderStatus.COMPLETION))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Invalid OrderStatus");
-
     }
 }

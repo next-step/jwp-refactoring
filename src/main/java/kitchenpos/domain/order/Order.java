@@ -1,5 +1,7 @@
 package kitchenpos.domain.order;
 
+import org.springframework.util.CollectionUtils;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -28,16 +30,31 @@ public class Order {
     public Order() {
     }
 
-    public static Order of(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems){
-        return new Order(null, orderTable, orderStatus, orderedTime, orderLineItems);
+    public static Order of(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        return new Order(null, orderTable, orderStatus,LocalDateTime.now(), orderLineItems);
     }
 
     private Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
         this.id = id;
-        this.orderTable = orderTable;
+        setOrderTable(orderTable);
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
+        setOrderLineItems(orderLineItems);
+    }
+
+    private void setOrderLineItems(List<OrderLineItem> orderLineItems) {
+        if (CollectionUtils.isEmpty(orderLineItems)) {
+            throw new IllegalArgumentException("should have orderLineItems");
+        }
+        orderLineItems.forEach(orderLineItem -> orderLineItem.setOrder(this));
         this.orderLineItems = orderLineItems;
+    }
+
+    private void setOrderTable(OrderTable orderTable) {
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException("Should have not orderTable empty");
+        }
+        this.orderTable = orderTable;
     }
 
     public Long getId() {
@@ -60,20 +77,15 @@ public class Order {
         return Collections.unmodifiableList(orderLineItems);
     }
 
-    public void addOrderLineItem(OrderLineItem orderLineItem){
+    public void addOrderLineItem(OrderLineItem orderLineItem) {
         orderLineItems.add(orderLineItem);
         orderLineItem.setOrder(this);
     }
 
-    public void clearOrderLineItem(){
-        orderLineItems.clear();
-    }
-
-    public void changeOrderTable(OrderTable orderTable) {
-        this.orderTable = orderTable;
-    }
-
-    public void changeStatus(OrderStatus status){
+    public void changeStatus(OrderStatus status) {
+        if (this.orderStatus == status) {
+            throw new IllegalArgumentException("Invalid OrderStatus > " + this.orderStatus + " to " + status);
+        }
         this.orderStatus = status;
     }
 }
