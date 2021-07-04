@@ -1,18 +1,18 @@
 package kitchenpos.table.application;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import kitchenpos.order.dao.OrderDao;
-import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.table.domain.OrderTable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-
 @Service
 public class OrderTableService {
+
     private final OrderDao orderDao;
     private final OrderTableDao orderTableDao;
 
@@ -35,14 +35,14 @@ public class OrderTableService {
     @Transactional
     public OrderTable changeEmpty(final Long orderTableId, final OrderTable orderTable) {
         final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(IllegalArgumentException::new);
 
         if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
             throw new IllegalArgumentException();
         }
 
         if (orderDao.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+            orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
             throw new IllegalArgumentException();
         }
 
@@ -60,7 +60,7 @@ public class OrderTableService {
         }
 
         final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(IllegalArgumentException::new);
 
         if (savedOrderTable.isEmpty()) {
             throw new IllegalArgumentException();
