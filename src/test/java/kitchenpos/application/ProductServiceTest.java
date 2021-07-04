@@ -17,6 +17,9 @@ class ProductServiceTest {
 	@Autowired
 	private ProductDao productDao;
 
+	@Autowired
+	private ProductService productService;
+
 	@Test
 	public void 상품_등록_성공() {
 		Product product = new Product();
@@ -27,14 +30,14 @@ class ProductServiceTest {
 		product.setName(productName);
 		product.setPrice(productPrice);
 
-		Product savedProduct = productDao.save(product);
+		Product savedProduct = productService.create(product);
 
 		assertThat(savedProduct.getName()).isEqualTo(productName);
 		assertThat(savedProduct.getPrice()).isEqualByComparingTo(productPrice);
 	}
 
 	@Test
-	public void 상품_등록_실패_상품금액_0원_불가(){
+	public void 상품_등록_실패_상품금액_0원_불가() {
 		Product product = new Product();
 
 		String productName = "공짜치킨";
@@ -43,12 +46,12 @@ class ProductServiceTest {
 		product.setName(productName);
 		product.setPrice(productPrice);
 
-		assertThatThrownBy(() -> productDao.save(product))
-		.isInstanceOf(IllegalArgumentException.class);
+		assertThatThrownBy(() -> productService.create(product))
+				.isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@Test
-	public void 상품_등록_실패_상품금액_null원_불가(){
+	public void 상품_등록_실패_상품금액_null원_불가() {
 		Product product = new Product();
 
 		String productName = "널널한치킨";
@@ -57,12 +60,12 @@ class ProductServiceTest {
 		product.setName(productName);
 		product.setPrice(productPrice);
 
-		assertThatThrownBy(() -> productDao.save(product))
+		assertThatThrownBy(() -> productService.create(product))
 				.isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@Test
-	public void 상품_목록_조회(){
+	public void 상품_목록_조회() {
 		Product product = new Product();
 
 		String productName = "강정치킨";
@@ -71,9 +74,9 @@ class ProductServiceTest {
 		product.setName(productName);
 		product.setPrice(productPrice);
 
-		productDao.save(product);
+		productService.create(product);
 
-		List<Product> products = productDao.findAll();
+		List<Product> products = productService.list();
 
 		assertThat(products)
 				.extracting("name", "price")
