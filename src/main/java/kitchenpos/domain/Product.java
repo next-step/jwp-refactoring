@@ -7,19 +7,23 @@ public class Product {
     private String name;
     private BigDecimal price;
 
-    public Long getId() {
-        return id;
+    public Product() {}
+
+    public Product(Long id, String name, BigDecimal price) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
+    public Long getId() {
+        return id;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(final String name) {
+    public void updateName(final String name) {
         this.name = name;
     }
 
@@ -27,7 +31,7 @@ public class Product {
         return price;
     }
 
-    public void setPrice(final BigDecimal price) {
+    public void updatePrice(final BigDecimal price) {
         this.price = price;
     }
 }
