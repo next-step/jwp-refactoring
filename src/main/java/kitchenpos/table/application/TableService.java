@@ -12,6 +12,8 @@ import kitchenpos.product.constant.OrderStatus;
 import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 
 @Service
 public class TableService {
@@ -27,9 +29,9 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTable create(final OrderTable orderTable) {
-        orderTable.setTableGroupId(null);
-        return orderTableDao.save(orderTable);
+    public OrderTableResponse create(final OrderTableRequest orderTable) {
+        OrderTable savedOrderTable = orderTableRepository.save(OrderTableRequest.of(orderTable));
+        return OrderTableResponse.of(savedOrderTable);
     }
 
     public List<OrderTable> list() {
@@ -39,14 +41,14 @@ public class TableService {
     @Transactional
     public OrderTable changeEmpty(final Long orderTableId, final OrderTable orderTable) {
         final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(IllegalArgumentException::new);
 
         if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
             throw new IllegalArgumentException();
         }
 
         if (orderDao.existsByOrderTableIdAndOrderStatusIn(orderTableId,
-                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+            Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
             throw new IllegalArgumentException();
         }
 
@@ -64,7 +66,7 @@ public class TableService {
         }
 
         final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(IllegalArgumentException::new);
 
         if (savedOrderTable.isEmpty()) {
             throw new IllegalArgumentException();

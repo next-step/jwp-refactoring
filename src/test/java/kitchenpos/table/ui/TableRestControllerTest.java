@@ -1,14 +1,10 @@
 package kitchenpos.table.ui;
 
-import static kitchenpos.util.TestDataSet.테이블_1번;
-import static kitchenpos.util.TestDataSet.테이블_2번;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static kitchenpos.util.TestDataSet.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.Arrays;
 
@@ -26,7 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.ui.TableRestController;
+import kitchenpos.table.dto.OrderTableResponse;
 
 @WebMvcTest(controllers = TableRestController.class)
 @ExtendWith(MockitoExtension.class)
@@ -48,7 +44,7 @@ public class TableRestControllerTest {
     void create() throws Exception {
         // given
         String content = objectMapper.writeValueAsString(테이블_1번);
-        given(tableService.create(any(OrderTable.class))).willReturn(테이블_1번);
+        given(tableService.create(any())).willReturn(OrderTableResponse.of(테이블_1번));
 
         // when
         mockMvc.perform(
