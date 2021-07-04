@@ -8,12 +8,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.web.util.NestedServletException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -43,6 +45,59 @@ public class TableGroupControllerTest extends ControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").exists())
                 .andExpect(jsonPath("$.orderTables", hasSize(2)));
+    }
+
+
+    @Test
+    @DisplayName("단체 지정 실패 - 주문 테이블이 하나 일 경우")
+    public void createOrderTableGroupFailByOneOrderTable() {
+        // given
+        orderTables.add(new OrderTable(5L, 0, true));
+        TableGroup tableGroup = new TableGroup(LocalDateTime.now(), orderTables);
+
+        // when
+        // then
+        assertThrows(NestedServletException.class, () -> 단체_지정_요청(tableGroup));
+    }
+
+    @Test
+    @DisplayName("단체 지정 실패 - 주문 테이블이 empty가 아닐 경우")
+    public void createOrderTableGroupFailByOnderTableIsNotEmpty() {
+        // given
+        orderTables.add(new OrderTable(3L, 0, false));
+        orderTables.add(new OrderTable(6L, 0, false));
+        TableGroup tableGroup = new TableGroup(LocalDateTime.now(), orderTables);
+
+        // when
+        // then
+        assertThrows(NestedServletException.class, () -> 단체_지정_요청(tableGroup));
+    }
+
+    @Test
+    @DisplayName("단체 지정 실패 - 이미 단체 지정이 된 테이블")
+    public void createOrderTableGroupFailByAlreadyExistsTableGroup() throws Exception {
+        // given
+        orderTables.add(new OrderTable(9L, 0, false));
+        orderTables.add(new OrderTable(10L, 0, false));
+        TableGroup tableGroup = new TableGroup(LocalDateTime.now(), orderTables);
+        단체_지정_요청(tableGroup);
+
+        // when
+        // then
+        assertThrows(NestedServletException.class, () -> 단체_지정_요청(tableGroup));
+    }
+
+    @Test
+    @DisplayName("단체 지정 실패 - 기존 데이터베이스에 존재하지 테이블을 포함하여 단체 지정 할 경우")
+    public void createOrderTableGroupFailByNotExistsTable() {
+        // given
+        orderTables.add(new OrderTable(10L, 0, false));
+        orderTables.add(new OrderTable(11L, 0, false));
+        TableGroup tableGroup = new TableGroup(LocalDateTime.now(), orderTables);
+
+        // when
+        // then
+        assertThrows(NestedServletException.class, () -> 단체_지정_요청(tableGroup));
     }
 
     @Test
