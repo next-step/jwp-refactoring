@@ -92,4 +92,15 @@ public class OrderServiceTest {
         assertThat(changeOrder.getOrderStatus()).isEqualTo(changeStatus);
     }
 
+    @Test
+    @DisplayName("주문 상태를 변경 실패 - 이미 계산 완료 된 주문")
+    public void modifyOrderFailByCompletionOrder() {
+        // given
+        order.setOrderStatus(OrderStatus.MEAL.name());
+
+        // when
+        // then
+        assertThrows(IllegalArgumentException.class, () -> orderService.changeOrderStatus(1L, order));
+    }
+
 }

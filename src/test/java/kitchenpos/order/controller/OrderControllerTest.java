@@ -85,7 +85,7 @@ public class OrderControllerTest extends ControllerTest {
 
         // when
         // then
-        주문_상태_변경_요청(order)
+        주문_상태_변경_요청(order, 3L)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("orderTableId").isNumber())
                 .andExpect(jsonPath("orderStatus").value("MEAL"))
@@ -93,6 +93,18 @@ public class OrderControllerTest extends ControllerTest {
                 .andExpect(jsonPath("$.orderLineItems.[0].quantity").value(1))
         ;
     }
+
+    @Test
+    @DisplayName("주문 상태를 변경 실패 - 이미 계산 완료 된 주문")
+    public void modifyOrderFailByCompletionOrder() {
+        // given
+        order.setOrderStatus(OrderStatus.MEAL.name());
+
+        // when
+        // then
+        assertThrows(NestedServletException.class, () -> 주문_상태_변경_요청(order, 1L));
+    }
+
 
     private ResultActions 주문_생성_요청(Order order) throws Exception {
         return mockMvc.perform(post("/api/orders")
@@ -107,8 +119,8 @@ public class OrderControllerTest extends ControllerTest {
                 .andDo(print());
     }
 
-    private ResultActions 주문_상태_변경_요청(Order order) throws Exception {
-        return mockMvc.perform(put("/api/orders/{orderId}/order-status", 3L)
+    private ResultActions 주문_상태_변경_요청(Order order, Long orderId) throws Exception {
+        return mockMvc.perform(put("/api/orders/{orderId}/order-status", orderId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(order)))
                 .andDo(print());
