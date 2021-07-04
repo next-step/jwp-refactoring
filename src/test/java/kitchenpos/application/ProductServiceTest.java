@@ -54,7 +54,7 @@ class ProductServiceTest {
     @Test
     void createTest_wrongPrice() {
         // given
-        강정치킨.setPrice(new BigDecimal(-1000));
+        강정치킨.setPrice(BigDecimal.valueOf(-1000));
 
         // when & then
         assertThatThrownBy(() -> productService.create(강정치킨))
