@@ -56,8 +56,7 @@ class OrderServiceTest {
     @BeforeEach
     void setUp() {
         orderRequest = new OrderRequest(ANY_ORDER_TABLE_ID,
-                Lists.list(new OrderLineItemRequest(1L, 10L),
-                        new OrderLineItemRequest(2L, 20L)));
+                Lists.list(new OrderLineItemRequest(MENU_ID_1L, 10L), new OrderLineItemRequest(MENU_ID_2L, 20L)));
 
         // Order 를 만들기 위한 Dummy Data
         OrderLineItem orderLineItem1 = OrderLineItem.of(order, MENU_ID_1L, 10);

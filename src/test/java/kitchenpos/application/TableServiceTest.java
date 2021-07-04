@@ -34,12 +34,14 @@ class TableServiceTest {
 
     @Mock
     private OrderTableRepository orderTableRepository;
-    private OrderTable orderTable;
-    private long orderTableId;
+
+    private static final long ANY_ORDER_TABLE_ID = 1L;
+
+    private OrderTable orderTableDummy;
 
     @BeforeEach
     void setUp() {
-        orderTable = OrderTable.of(10, false);
+        orderTableDummy = OrderTable.of(10, false);
     }
 
     @Test
@@ -47,7 +49,7 @@ class TableServiceTest {
     void create() {
         OrderTableRequest orderTableRequest = new OrderTableRequest(10, false);
 
-        given(orderTableRepository.save(orderTable)).willReturn(orderTable);
+        given(orderTableRepository.save(orderTableDummy)).willReturn(orderTableDummy);
 
         OrderTable savedOrderTable = tableService.create(orderTableRequest);
         assertThat(savedOrderTable.getTableGroup()).isNull();
@@ -57,11 +59,11 @@ class TableServiceTest {
     @DisplayName("주문 테이블을 빈 테이블로 만들 수 있다.")
     void changeEmptyTable() {
         given(orderTableRepository.findById(anyLong()))
-                .willReturn(Optional.of(orderTable));
+                .willReturn(Optional.of(orderTableDummy));
         given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(false);
-        given(orderTableRepository.save(orderTable)).willReturn(orderTable);
+        given(orderTableRepository.save(orderTableDummy)).willReturn(orderTableDummy);
 
-        OrderTable changedOrderTable = tableService.changeEmpty(1L);
+        OrderTable changedOrderTable = tableService.changeEmpty(ANY_ORDER_TABLE_ID);
 
         assertThat(changedOrderTable.isEmpty()).isTrue();
     }
@@ -70,16 +72,12 @@ class TableServiceTest {
     @DisplayName("주문의 상태가 조리이거나, 식사의 경우에는 빈 테이블로 만들 수 없다.")
     void exception_when_orderStatus_is_meal_or_cook() {
 
-        given(orderTableRepository.findById(anyLong()))
-                .willReturn(Optional.of(orderTable));
-
-        orderTableId = 1L;
-
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId,
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(orderTableDummy));
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(ANY_ORDER_TABLE_ID,
                 Lists.list(OrderStatus.COOKING, OrderStatus.MEAL)))
                 .willReturn(true);
 
-        assertThatThrownBy(() -> tableService.changeEmpty(orderTableId))
+        assertThatThrownBy(() -> tableService.changeEmpty(ANY_ORDER_TABLE_ID))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("no exist order");
     }
@@ -88,12 +86,10 @@ class TableServiceTest {
     @DisplayName("주문 테이블에는 방문한 손님 수를 변경할 수 있다.")
     void changeNumberOfGuestTest() {
 
-        given(orderTableRepository.findById(anyLong()))
-                .willReturn(Optional.of(orderTable));
-        given(orderTableRepository.save(orderTable))
-                .willReturn(orderTable);
+        given(orderTableRepository.findById(ANY_ORDER_TABLE_ID)).willReturn(Optional.of(orderTableDummy));
+        given(orderTableRepository.save(orderTableDummy)).willReturn(orderTableDummy);
 
-        OrderTable savedOrderTable = tableService.changeNumberOfGuests(1L, 10);
+        OrderTable savedOrderTable = tableService.changeNumberOfGuests(ANY_ORDER_TABLE_ID, 10);
 
         assertThat(savedOrderTable.getNumberOfGuests()).isEqualTo(10);
     }
@@ -102,12 +98,10 @@ class TableServiceTest {
     @DisplayName("빈 주문 테이블의 경우에는 손님의 수를 변경할 수 없다.")
     void exception2_changeNumberOfGuestTest() {
 
-        orderTable.changeEmptyTable();
+        orderTableDummy.changeEmptyTable();
+        given(orderTableRepository.findById(ANY_ORDER_TABLE_ID)).willReturn(Optional.of(orderTableDummy));
 
-        given(orderTableRepository.findById(1L))
-                .willReturn(Optional.of(orderTable));
-
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, 10))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(ANY_ORDER_TABLE_ID, 10))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("emptyTable");
     }
@@ -115,9 +109,8 @@ class TableServiceTest {
     @Test
     @DisplayName("주문 테이블의 전체 목록을 조회할 수 있다.")
     void getAllOrderTable() {
-        given(orderTableRepository.findAll())
-                .willReturn(new ArrayList<>());
+        given(orderTableRepository.findAll()).willReturn(Lists.list(orderTableDummy));
 
-        assertThat(tableService.list()).isNotNull();
+        assertThat(tableService.list()).containsExactly(orderTableDummy);
     }
 }
