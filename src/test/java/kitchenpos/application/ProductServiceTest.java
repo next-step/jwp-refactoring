@@ -37,11 +37,11 @@ class ProductServiceTest {
 	}
 
 	@Test
-	public void 상품_등록_실패_상품금액_0원_불가() {
+	public void 상품_등록_실패_상품금액_0미만원_불가() {
 		Product product = new Product();
 
 		String productName = "공짜치킨";
-		BigDecimal productPrice = new BigDecimal("0");
+		BigDecimal productPrice = new BigDecimal("-1");
 
 		product.setName(productName);
 		product.setPrice(productPrice);

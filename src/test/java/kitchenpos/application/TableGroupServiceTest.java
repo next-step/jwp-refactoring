@@ -1,8 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import org.junit.jupiter.api.Test;
@@ -11,7 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,9 +21,6 @@ class TableGroupServiceTest {
 	private TableService tableService;
 
 	@Autowired
-	private OrderDao orderDao;
-
-	@Autowired
 	private OrderTableDao orderTableDao;
 
 	@Autowired
@@ -35,8 +29,8 @@ class TableGroupServiceTest {
 	@Test
 	public void 주문테이블그룹_생성_성공() {
 		List<OrderTable> orderTables = new ArrayList<>();
-		OrderTable orderTable1 = 주문테이블생성(2);
-		OrderTable orderTable2 = 주문테이블생성(2);
+		OrderTable orderTable1 = 주문테이블생성(2, true);
+		OrderTable orderTable2 = 주문테이블생성(2, true);
 		orderTables.add(orderTable1);
 		orderTables.add(orderTable2);
 
@@ -56,7 +50,7 @@ class TableGroupServiceTest {
 	@Test
 	public void 주문테이블그룹_생성_실패_주문테이블이_두개이상이여야한다_주문테이블한개() {
 		List<OrderTable> orderTables = new ArrayList<>();
-		OrderTable orderTable1 = 주문테이블생성(2);
+		OrderTable orderTable1 = 주문테이블생성(2, false);
 		orderTables.add(orderTable1);
 
 		TableGroup tableGroup = new TableGroup();
@@ -80,10 +74,9 @@ class TableGroupServiceTest {
 	@Test
 	public void 주문테이블그룹_생성_실패_주문테이블이_주문등록할_수_없는_상태여야한다() {
 		List<OrderTable> orderTables = new ArrayList<>();
-		OrderTable orderTable1 = 주문테이블생성(2);
-		orderTable1.setEmpty(false);
+		OrderTable orderTable1 = 주문테이블생성(2, false);
 
-		OrderTable orderTable2 = 주문테이블생성(2);
+		OrderTable orderTable2 = 주문테이블생성(2, false);
 
 		orderTables.add(orderTable1);
 		orderTables.add(orderTable2);
@@ -98,8 +91,8 @@ class TableGroupServiceTest {
 	@Test
 	public void 주문테이블그룹_해제_성공() {
 		List<OrderTable> orderTables = new ArrayList<>();
-		OrderTable orderTable1 = 주문테이블생성(2);
-		OrderTable orderTable2 = 주문테이블생성(2);
+		OrderTable orderTable1 = 주문테이블생성(2, true);
+		OrderTable orderTable2 = 주문테이블생성(2, true);
 		orderTables.add(orderTable1);
 		orderTables.add(orderTable2);
 
@@ -124,28 +117,11 @@ class TableGroupServiceTest {
 				);
 	}
 
-	//	@Test TODO with Order Test
+	//	@Test TODO 테스트가 집중되도록 리팩터링
 	public void 주문테이블그룹_해제_실패_주문상태가_COOKING_이면_변경안됨() {
 		List<OrderTable> orderTables = new ArrayList<>();
-		OrderTable orderTable1 = 주문테이블생성(2);
-		OrderTable orderTable2 = 주문테이블생성(2);
-		orderTables.add(orderTable1);
-		orderTables.add(orderTable2);
-
-		TableGroup tableGroup = new TableGroup();
-		tableGroup.setOrderTables(orderTables);
-
-		TableGroup savedTableGroup = tableGroupService.create(tableGroup);
-
-		assertThatThrownBy(() -> tableGroupService.ungroup(savedTableGroup.getId()))
-		.isInstanceOf(IllegalArgumentException.class);
-	}
-
-//	@Test TODO with Order Test
-	public void 주문테이블그룹_해제_실패_주문상태가_MEAL_이면_변경안됨() {
-		List<OrderTable> orderTables = new ArrayList<>();
-		OrderTable orderTable1 = 주문테이블생성(2);
-		OrderTable orderTable2 = 주문테이블생성(2);
+		OrderTable orderTable1 = 주문테이블생성(2, false);
+		OrderTable orderTable2 = 주문테이블생성(2, false);
 		orderTables.add(orderTable1);
 		orderTables.add(orderTable2);
 
@@ -158,10 +134,27 @@ class TableGroupServiceTest {
 				.isInstanceOf(IllegalArgumentException.class);
 	}
 
-	private OrderTable 주문테이블생성(Integer numberOfGuest) {
+	//	@Test TODO 테스트가 집중되도록 리팩터링
+	public void 주문테이블그룹_해제_실패_주문상태가_MEAL_이면_변경안됨() {
+		List<OrderTable> orderTables = new ArrayList<>();
+		OrderTable orderTable1 = 주문테이블생성(2, false);
+		OrderTable orderTable2 = 주문테이블생성(2, false);
+		orderTables.add(orderTable1);
+		orderTables.add(orderTable2);
+
+		TableGroup tableGroup = new TableGroup();
+		tableGroup.setOrderTables(orderTables);
+
+		TableGroup savedTableGroup = tableGroupService.create(tableGroup);
+
+		assertThatThrownBy(() -> tableGroupService.ungroup(savedTableGroup.getId()))
+				.isInstanceOf(IllegalArgumentException.class);
+	}
+
+	private OrderTable 주문테이블생성(Integer numberOfGuest, Boolean bool) {
 		OrderTable orderTable = new OrderTable();
 		orderTable.setNumberOfGuests(numberOfGuest);
-		orderTable.setEmpty(true);
+		orderTable.setEmpty(bool);
 
 		return tableService.create(orderTable);
 	}

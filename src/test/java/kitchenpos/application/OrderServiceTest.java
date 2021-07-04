@@ -1,6 +1,7 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.*;
+import kitchenpos.dao.MenuGroupDao;
+import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 @SpringBootTest
 class OrderServiceTest {
@@ -18,7 +21,7 @@ class OrderServiceTest {
 	private TableService tableService;
 
 	@Autowired
-	private MenuDao menuDao;
+	private TableGroupService tableGroupService;
 
 	@Autowired
 	private MenuService menuService;
@@ -30,19 +33,10 @@ class OrderServiceTest {
 	private ProductDao productDao;
 
 	@Autowired
-	private OrderDao orderDao;
-
-	@Autowired
-	private OrderLineItemDao orderLineItemDao;
-
-	@Autowired
-	private OrderTableDao orderTableDao;
-
-	@Autowired
 	private OrderService orderService;
-	
+
 	@Test
-	public void 주문_생성_성공(){
+	public void 주문_생성_성공() {
 		List<OrderLineItem> orderLineItems = new ArrayList<>();
 		OrderLineItem orderLineItem = new OrderLineItem();
 		Menu menu = 메뉴생성();
@@ -53,7 +47,7 @@ class OrderServiceTest {
 		Order order = new Order();
 		order.setOrderLineItems(orderLineItems);
 
-		OrderTable orderTable = 주문테이블생성(2);
+		OrderTable orderTable = 주문테이블생성(2, false);
 		order.setOrderTableId(orderTable.getId());
 
 		Order savedOrder = orderService.create(order);
@@ -66,21 +60,21 @@ class OrderServiceTest {
 	}
 
 	@Test
-	public void 주문_생성_실패_주문아이템없음(){
+	public void 주문_생성_실패_주문아이템없음() {
 		List<OrderLineItem> orderLineItems = new ArrayList<>();
 
 		Order order = new Order();
 		order.setOrderLineItems(orderLineItems);
 
-		OrderTable orderTable = 주문테이블생성(2);
+		OrderTable orderTable = 주문테이블생성(2, true);
 		order.setOrderTableId(orderTable.getId());
 
 		assertThatThrownBy(() -> orderService.create(order))
-		.isInstanceOf(IllegalArgumentException.class);
+				.isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@Test
-	public void 주문_생성_실패_메뉴정보없음(){
+	public void 주문_생성_실패_메뉴정보없음() {
 		List<OrderLineItem> orderLineItems = new ArrayList<>();
 		OrderLineItem orderLineItem = new OrderLineItem();
 		orderLineItem.setQuantity(1);
@@ -89,7 +83,7 @@ class OrderServiceTest {
 		Order order = new Order();
 		order.setOrderLineItems(orderLineItems);
 
-		OrderTable orderTable = 주문테이블생성(2);
+		OrderTable orderTable = 주문테이블생성(2, true);
 		order.setOrderTableId(orderTable.getId());
 
 		assertThatThrownBy(() -> orderService.create(order))
@@ -97,7 +91,7 @@ class OrderServiceTest {
 	}
 
 	@Test
-	public void 주문_생성_실패_주문테이블정보없음(){
+	public void 주문_생성_실패_주문테이블정보없음() {
 		List<OrderLineItem> orderLineItems = new ArrayList<>();
 		OrderLineItem orderLineItem = new OrderLineItem();
 		Menu menu = 메뉴생성();
@@ -113,7 +107,7 @@ class OrderServiceTest {
 	}
 
 	@Test
-	public void 주문목록_조회(){
+	public void 주문목록_조회() {
 		List<OrderLineItem> orderLineItems = new ArrayList<>();
 		OrderLineItem orderLineItem = new OrderLineItem();
 		Menu menu = 메뉴생성();
@@ -124,7 +118,7 @@ class OrderServiceTest {
 		Order order = new Order();
 		order.setOrderLineItems(orderLineItems);
 
-		OrderTable orderTable = 주문테이블생성(2);
+		OrderTable orderTable = 주문테이블생성(2, false);
 		order.setOrderTableId(orderTable.getId());
 
 		orderService.create(order);
@@ -136,10 +130,57 @@ class OrderServiceTest {
 				.contains(tuple(orderTable.getId(), OrderStatus.COOKING.name()));
 	}
 
-	private OrderTable 주문테이블생성(Integer numberOfGuest) {
+	@Test
+	public void 주문테이블_주문없음_처리_실패_주문상태가_COOKING_이면_변경안됨() {
+		List<OrderLineItem> orderLineItems = new ArrayList<>();
+		OrderLineItem orderLineItem = new OrderLineItem();
+		Menu menu = 메뉴생성();
+		orderLineItem.setMenuId(menu.getId());
+		orderLineItem.setQuantity(1);
+		orderLineItems.add(orderLineItem);
+
+		Order order = new Order();
+		order.setOrderLineItems(orderLineItems);
+
+		OrderTable orderTable = 주문테이블생성(2, false);
+		order.setOrderTableId(orderTable.getId());
+
+		Order savedOrder = orderService.create(order);
+
+		assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+
+		assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), orderTable))
+				.isInstanceOf(IllegalArgumentException.class);
+	}
+
+	@Test
+	public void 주문테이블_주문없음_처리_실패_주문상태가_MEAL_이면_변경안됨() {
+		List<OrderLineItem> orderLineItems = new ArrayList<>();
+		OrderLineItem orderLineItem = new OrderLineItem();
+		Menu menu = 메뉴생성();
+		orderLineItem.setMenuId(menu.getId());
+		orderLineItem.setQuantity(1);
+		orderLineItems.add(orderLineItem);
+
+		Order order = new Order();
+		order.setOrderLineItems(orderLineItems);
+
+		OrderTable orderTable = 주문테이블생성(2, false);
+		order.setOrderTableId(orderTable.getId());
+
+		Order savedOrder = orderService.create(order);
+
+		savedOrder.setOrderStatus(OrderStatus.MEAL.name());
+
+		assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
+		assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), orderTable))
+				.isInstanceOf(IllegalArgumentException.class);
+	}
+
+	private OrderTable 주문테이블생성(Integer numberOfGuest, Boolean bool) {
 		OrderTable orderTable = new OrderTable();
 		orderTable.setNumberOfGuests(numberOfGuest);
-		orderTable.setEmpty(false);
+		orderTable.setEmpty(bool);
 
 		return tableService.create(orderTable);
 	}

@@ -1,7 +1,5 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderTable;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,16 +12,10 @@ import static org.assertj.core.api.Assertions.*;
 @SpringBootTest
 class TableServiceTest {
 	@Autowired
-	private OrderDao orderDao;
-
-	@Autowired
-	private OrderTableDao orderTableDao;
-
-	@Autowired
 	private TableService tableService;
-	
+
 	@Test
-	public void 주문테이블_생성_성공_테이블그룹없음_혼밥러(){
+	public void 주문테이블_생성_성공_테이블그룹없음_혼밥러() {
 		OrderTable orderTable = new OrderTable();
 		orderTable.setNumberOfGuests(1);
 		orderTable.setEmpty(false);
@@ -36,7 +28,7 @@ class TableServiceTest {
 	}
 
 	@Test
-	public void 주문테이블_리스트조회(){
+	public void 주문테이블_리스트조회() {
 		OrderTable orderTable = new OrderTable();
 		orderTable.setNumberOfGuests(1);
 		orderTable.setEmpty(false);
@@ -51,13 +43,13 @@ class TableServiceTest {
 	}
 
 	@Test
-	public void 주문테이블_주문없음_처리_실패_주문테이블정보없음(){
+	public void 주문테이블_주문없음_처리_실패_주문테이블정보없음() {
 		assertThatThrownBy(() -> tableService.changeEmpty(9999L, new OrderTable()))
 				.isInstanceOf(IllegalArgumentException.class);
 	}
 
-//	@Test TODO with Order Test
-	public void 주문테이블_주문없음_처리_실패_주문테이블그룹정보있음(){
+	//	@Test TODO with Order Test
+	public void 주문테이블_주문없음_처리_실패_주문테이블그룹정보있음() {
 		OrderTable orderTable = new OrderTable();
 		orderTable.setNumberOfGuests(1);
 		orderTable.setEmpty(false);
@@ -66,11 +58,11 @@ class TableServiceTest {
 
 		savedOrderTable.setTableGroupId(1L);
 		assertThatThrownBy(() -> tableService.changeEmpty(savedOrderTable.getId(), savedOrderTable))
-		.isInstanceOf(IllegalArgumentException.class);
+				.isInstanceOf(IllegalArgumentException.class);
 	}
 
-//	@Test TODO with Order Test
-	public void 주문테이블_주문없음_처리_실패_주문상태가_COOKING_이면_변경안됨(){
+	//	@Test TODO 테스트가 집중되도록 리팩터링
+	public void 주문테이블_주문없음_처리_실패_주문상태가_COOKING_이면_변경안됨() {
 		OrderTable orderTable = new OrderTable();
 		orderTable.setNumberOfGuests(1);
 		orderTable.setEmpty(false);
@@ -81,8 +73,8 @@ class TableServiceTest {
 				.isInstanceOf(IllegalArgumentException.class);
 	}
 
-//	@Test TODO with Order Test
-	public void 주문테이블_주문없음_처리_실패_주문상태가_MEAL_이면_변경안됨(){
+	//	@Test TODO 테스트가 집중되도록 리팩터링
+	public void 주문테이블_주문없음_처리_실패_주문상태가_MEAL_이면_변경안됨() {
 		OrderTable orderTable = new OrderTable();
 		orderTable.setNumberOfGuests(1);
 		orderTable.setEmpty(false);
@@ -94,7 +86,7 @@ class TableServiceTest {
 	}
 
 	@Test
-	public void 주문테이블_방문한_손님수_변경_성공(){
+	public void 주문테이블_방문한_손님수_변경_성공() {
 		OrderTable orderTable = new OrderTable();
 		orderTable.setNumberOfGuests(1);
 		orderTable.setTableGroupId(1L);
@@ -111,7 +103,7 @@ class TableServiceTest {
 	}
 
 	@Test
-	public void 주문테이블_방문한_손님수_변경_실패_손님수는_0_이상자연수(){
+	public void 주문테이블_방문한_손님수_변경_실패_손님수는_0_이상자연수() {
 		OrderTable orderTable = new OrderTable();
 		orderTable.setNumberOfGuests(0);
 		orderTable.setTableGroupId(1L);
@@ -121,11 +113,11 @@ class TableServiceTest {
 
 		savedOrderTable.setNumberOfGuests(-1); // Change Number Of Guest
 		assertThatThrownBy(() -> tableService.changeNumberOfGuests(savedOrderTable.getId(), savedOrderTable))
-		.isInstanceOf(IllegalArgumentException.class);
+				.isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@Test
-	public void 주문테이블_방문한_손님수_변경_실패_빈테이블은_변경이아니고_생성하자(){
+	public void 주문테이블_방문한_손님수_변경_실패_빈테이블은_변경이아니고_생성하자() {
 		OrderTable orderTable = new OrderTable();
 		orderTable.setNumberOfGuests(0);
 		orderTable.setTableGroupId(1L);
@@ -139,7 +131,7 @@ class TableServiceTest {
 	}
 
 	@Test
-	public void 주문테이블_주문없음_처리_성공(){
+	public void 주문테이블_주문없음_처리_성공() {
 		OrderTable orderTable = new OrderTable();
 		orderTable.setNumberOfGuests(1);
 		orderTable.setTableGroupId(1L);
