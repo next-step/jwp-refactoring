@@ -60,23 +60,18 @@ public class OrderServiceTest {
         when(menuRepository.countByIdIn(any())).thenReturn(1L);
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
         when(orderRepository.save(any())).thenReturn(order1);
-//        when(orderLineItemRepository.save(any())).thenReturn(orderLineItem);
 
         OrderResponse orderResponse = orderService.create(orderRequest1);
 
         assertThat(orderResponse.getId()).isEqualTo(order1.getId());
         assertThat(orderResponse.getOrderTableId()).isEqualTo(order1.getOrderTableId());
-//        assertThat(orderResponse.getOrderStatus()).isEqualTo(orderRequest1.getOrderStatus());
-//        assertThat(orderResponse.getOrderedTime()).isEqualTo(orderRequest1.getOrderedTime());
-//        assertThat(orderResponse.getOrderLineItems()).isEqualTo(orderRequest1.getOrderLineItems());
     }
 
     @DisplayName("주문에 주문항목이 없으면 등록할 수 없다.")
     @Test
     void 주문의_주문항목이_올바르지_않으면_등록할_수_없다_1() {
         List<OrderLineItem> emptyOrderLineItems = Arrays.asList();
-//        Ordering order1 = new Ordering(order1Id, order1OrderTableId, order1OrderStatus, order1OrderTime, emptyOrderLineItems);
-        OrderRequest orderRequest1 = new OrderRequest(order1OrderTableId, emptyOrderLineItems);
+        OrderRequest orderRequest1 = new OrderRequest(order1OrderTableId, OrderStatus.MEAL.name(), emptyOrderLineItems);
 
         assertThatThrownBy(() -> {
             orderService.create(orderRequest1);
@@ -87,8 +82,7 @@ public class OrderServiceTest {
     @Test
     void 주문의_주문항목이_올바르지_않으면_등록할_수_없다_2() {
         long falseCount = 2;
-//        Ordering order1 = new Ordering(order1Id, order1OrderTableId, order1OrderStatus, order1OrderTime, order1OrderLineItems);
-        OrderRequest orderRequest1 = new OrderRequest(order1OrderTableId, order1OrderLineItems);
+        OrderRequest orderRequest1 = new OrderRequest(order1OrderTableId, OrderStatus.MEAL.name(), order1OrderLineItems);
 
         when(menuRepository.countByIdIn(any())).thenReturn(falseCount);
 
@@ -100,7 +94,6 @@ public class OrderServiceTest {
     @DisplayName("주문의 주문테이블이 주문테이블로 등록 안되어 있으면 등록할 수 없다.")
     @Test
     void 주문의_주문테이블이_올바르지_않으면_등록할_수_없다_1() {
-//        Ordering order1 = new Ordering(order1Id, order1OrderTableId, order1OrderStatus, order1OrderTime, order1OrderLineItems);
         OrderRequest orderRequest1 = new OrderRequest(order1OrderTableId, order1OrderLineItems);
 
         when(menuRepository.countByIdIn(any())).thenReturn(1L);
@@ -115,8 +108,7 @@ public class OrderServiceTest {
     @Test
     void 주문의_주문테이블이_올바르지_않으면_등록할_수_없다_2() {
         OrderTable falseOrderTable = new OrderTable(1L, 0, true);
-//        Ordering order1 = new Ordering(order1Id, order1OrderTableId, order1OrderStatus, order1OrderTime, order1OrderLineItems);
-        OrderRequest orderRequest1 = new OrderRequest(order1OrderTableId, order1OrderLineItems);
+        OrderRequest orderRequest1 = new OrderRequest(order1OrderTableId, OrderStatus.MEAL.name(), order1OrderLineItems);
 
         when(menuRepository.countByIdIn(any())).thenReturn(1L);
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(falseOrderTable));
@@ -132,7 +124,6 @@ public class OrderServiceTest {
         Ordering order1 = new Ordering(order1Id, order1OrderTableId, order1OrderStatus, order1OrderTime, order1OrderLineItems);
 
         when(orderRepository.findAll()).thenReturn(Arrays.asList(order1));
-//        when(orderLineItemRepository.findAllByOrderId(any())).thenReturn(order1OrderLineItems);
 
         assertThat(orderService.list()).contains(order1);
         assertThat(order1.getOrderLineItems()).contains(orderLineItem);
@@ -142,13 +133,11 @@ public class OrderServiceTest {
     @Test
     void 주문_상태_변경한다() {
         Ordering order1 = new Ordering(order1Id, order1OrderTableId, OrderStatus.MEAL.name(), order1OrderTime, order1OrderLineItems);
-        Ordering orderRequest = new Ordering(order1Id, order1OrderTableId, OrderStatus.COMPLETION.name(), order1OrderTime, order1OrderLineItems);
+        OrderRequest orderRequest = new OrderRequest(order1OrderTableId, OrderStatus.MEAL.name(), order1OrderLineItems);
 
         when(orderRepository.findById(any())).thenReturn(Optional.of(order1));
-        when(orderRepository.save(any())).thenReturn(orderRequest);
-        when(orderLineItemRepository.findAllByOrderId(any())).thenReturn(order1OrderLineItems);
 
-        Ordering orderResponse = orderService.changeOrderStatus(order1.getId(), orderRequest);
+        Ordering orderResponse = orderService.changeOrderStatus(order1.getId(), orderRequest.getOrderStatus());
         assertThat(orderResponse.getId()).isEqualTo(order1.getId());
         assertThat(orderResponse.getOrderStatus()).isEqualTo(order1.getOrderStatus());
     }
@@ -157,12 +146,12 @@ public class OrderServiceTest {
     @Test
     void 주문상태가_올바르지_않으면_상태를_변경할_수_없다_1() {
         Ordering order1 = new Ordering(order1Id, order1OrderTableId, OrderStatus.MEAL.name(), order1OrderTime, order1OrderLineItems);
-        Ordering orderRequest = new Ordering(order1Id, order1OrderTableId, OrderStatus.COMPLETION.name(), order1OrderTime, order1OrderLineItems);
+        OrderRequest orderRequest = new OrderRequest(order1OrderTableId, OrderStatus.COMPLETION.name(), order1OrderLineItems);
 
         when(orderRepository.findById(any())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> {
-            orderService.changeOrderStatus(order1.getId(), orderRequest);
+            orderService.changeOrderStatus(order1.getId(), orderRequest.getOrderStatus());
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -170,12 +159,12 @@ public class OrderServiceTest {
     @Test
     void 주문상태가_올바르지_않으면_상태를_변경할_수_없다_2() {
         Ordering order1 = new Ordering(order1Id, order1OrderTableId, OrderStatus.COMPLETION.name(), order1OrderTime, order1OrderLineItems);
-        Ordering orderRequest = new Ordering(order1Id, order1OrderTableId, OrderStatus.MEAL.name(), order1OrderTime, order1OrderLineItems);
+        OrderRequest orderRequest = new OrderRequest(order1OrderTableId, OrderStatus.MEAL.name(), order1OrderLineItems);
 
         when(orderRepository.findById(any())).thenReturn(Optional.of(order1));
 
         assertThatThrownBy(() -> {
-            orderService.changeOrderStatus(order1.getId(), orderRequest);
+            orderService.changeOrderStatus(order1.getId(), orderRequest.getOrderStatus());
         }).isInstanceOf(IllegalArgumentException.class);
     }
 

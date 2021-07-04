@@ -114,4 +114,16 @@ public class Ordering extends BaseEntity {
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
     }
+
+    private void checkIfAlreadyCompleted() {
+        if (Objects.equals(OrderStatus.COMPLETION.name(), orderStatus)) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public void changeOrderStatusTo(String orderStatus) {
+        checkIfAlreadyCompleted();
+
+        this.orderStatus = OrderStatus.valueOf(orderStatus).name();
+    }
 }
