@@ -18,8 +18,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.Collections;
 
+import static kitchenpos.application.OrderServiceTest.주문_생성;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -47,14 +49,15 @@ class OrderRestControllerTest {
 
     @BeforeEach
     void setUp() {
+        setUpMockMvc();
+        order = 주문_생성(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now());
+    }
+
+    private void setUpMockMvc() {
         mockMvc = MockMvcBuilders.standaloneSetup(orderRestController)
                 .addFilter(new CharacterEncodingFilter(StandardCharsets.UTF_8.name(), true))
                 .alwaysDo(print())
                 .build();
-
-        order = new Order();
-        order.setId(1L);
-        order.setOrderStatus(OrderStatus.COOKING.name());
     }
 
     @DisplayName("주문을 등록한다.")
@@ -62,14 +65,9 @@ class OrderRestControllerTest {
     void create() throws Exception {
         given(orderService.create(any())).willReturn(order);
 
-        final ResultActions actions = mockMvc.perform(post(ORDER_URI)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(toString(order)));
+        final ResultActions actions = 주문_생성_요청();
 
-        actions
-                .andExpect(status().isCreated())
-                .andExpect(header().string("location", "/api/orders/1"))
-                .andExpect(jsonPath("$.id").isNotEmpty());
+        주문_생성됨(actions);
     }
 
     @DisplayName("주문 목록을 조회한다.")
@@ -77,8 +75,48 @@ class OrderRestControllerTest {
     void list() throws Exception {
         given(orderService.list()).willReturn(Collections.singletonList(order));
 
-        final ResultActions actions = mockMvc.perform(get(ORDER_URI));
+        final ResultActions actions = 주문_목록_조회_요청();
 
+        주문_목록_조회됨(actions);
+    }
+
+    @DisplayName("주문 상태를 변경한다.")
+    @Test
+    void changeOrderStatus() throws Exception {
+        order.updateOrderStatus(OrderStatus.MEAL.name());
+        given(orderService.changeOrderStatus(order.getId(), order)).willReturn(order);
+
+        final ResultActions actions = 주문_상태_변경_요청();
+
+        주문_상태_변경됨(actions);
+    }
+
+    private void 주문_상태_변경됨(ResultActions actions) throws Exception{
+        actions.andExpect(status().isOk());
+    }
+
+    public String toString(Order order) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(order);
+    }
+
+    private ResultActions 주문_생성_요청() throws Exception {
+        return  mockMvc.perform(post(ORDER_URI)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toString(order)));
+    }
+
+
+    private void 주문_생성됨(ResultActions actions) throws Exception{
+        actions.andExpect(status().isCreated())
+                .andExpect(header().string("location", "/api/orders/1"))
+                .andExpect(jsonPath("$.id").isNotEmpty());
+    }
+
+    private ResultActions 주문_목록_조회_요청() throws Exception{
+        return mockMvc.perform(get(ORDER_URI));
+    }
+
+    private void 주문_목록_조회됨(ResultActions actions) throws Exception{
         actions
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isNotEmpty())
@@ -86,19 +124,9 @@ class OrderRestControllerTest {
                 .andExpect(jsonPath("$[0].orderStatus").value(OrderStatus.COOKING.name()));
     }
 
-    @DisplayName("주문 상태를 변경한다.")
-    @Test
-    void changeOrderStatus() throws Exception {
-        given(orderService.changeOrderStatus(order.getId(), order)).willReturn(order);
-
-        final ResultActions actions = mockMvc.perform(put(ORDER_URI + ORDER_STATUS_CHANGE_URI , order.getId())
+    private ResultActions 주문_상태_변경_요청() throws Exception{
+        return mockMvc.perform(put(ORDER_URI + ORDER_STATUS_CHANGE_URI , order.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(toString(order)));
-
-        actions.andExpect(status().isOk());
-    }
-
-    public String toString(Order order) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(order);
     }
 }
