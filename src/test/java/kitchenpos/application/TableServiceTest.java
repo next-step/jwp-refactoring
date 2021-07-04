@@ -59,7 +59,7 @@ class TableServiceTest {
         // given
 
         // when
-        when(orderTableDao.findAll()).thenReturn(new ArrayList<>(Arrays.asList(orderTable)));
+        when(orderTableDao.findAll()).thenReturn(Arrays.asList(orderTable));
         List<OrderTable> list = tableService.list();
         // then
         assertThat(list).isNotNull();

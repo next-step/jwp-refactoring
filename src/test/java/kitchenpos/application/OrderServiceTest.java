@@ -58,7 +58,7 @@ class OrderServiceTest {
         // given
         OrderLineItem orderLineItem = new OrderLineItem();
         orderLineItem.setMenuId(1L);
-        order.setOrderLineItems(new ArrayList<>(Arrays.asList(orderLineItem)));
+        order.setOrderLineItems(Arrays.asList(orderLineItem));
 
         // when
         when(orderDao.save(any())).thenReturn(order);
@@ -76,8 +76,8 @@ class OrderServiceTest {
         // given
 
         // when
-        when(orderDao.findAll()).thenReturn(new ArrayList<>(Arrays.asList(order)));
-        when(orderLineItemDao.findAllByOrderId(order.getId())).thenReturn(new ArrayList<>(Arrays.asList(new OrderLineItem())));
+        when(orderDao.findAll()).thenReturn(Arrays.asList(order));
+        when(orderLineItemDao.findAllByOrderId(order.getId())).thenReturn(Arrays.asList(new OrderLineItem()));
         List<Order> orders = orderService.list();
         // then
         assertThat(orders.size()).isEqualTo(1);
@@ -131,7 +131,7 @@ class OrderServiceTest {
         // given
         OrderLineItem orderLineItem = new OrderLineItem();
         orderLineItem.setMenuId(1L);
-        order.setOrderLineItems(new ArrayList<>(Arrays.asList(orderLineItem)));
+        order.setOrderLineItems(Arrays.asList(orderLineItem));
         OrderTable orderTable = new OrderTable();
         orderTable.setEmpty(true);
 

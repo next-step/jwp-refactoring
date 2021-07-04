@@ -55,7 +55,7 @@ class ProductServiceTest {
         // given
 
         // when
-        when(productDao.findAll()).thenReturn(new ArrayList<>(Arrays.asList(product)));
+        when(productDao.findAll()).thenReturn(Arrays.asList(product));
         List<Product> products = productService.list();
         // then
         assertThat(products.size()).isEqualTo(1);

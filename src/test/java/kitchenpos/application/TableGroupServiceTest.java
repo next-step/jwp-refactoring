@@ -53,7 +53,7 @@ class TableGroupServiceTest {
         addOrderTable.setEmpty(true);
 
         tableGroup = new TableGroup();
-        tableGroup.setOrderTables(new ArrayList<>(Arrays.asList(orderTable, addOrderTable)));
+        tableGroup.setOrderTables(Arrays.asList(orderTable, addOrderTable));
     }
 
     @DisplayName("사용자는 단체 지정을 할 수 있다.")
@@ -62,7 +62,7 @@ class TableGroupServiceTest {
         // given
 
         // when
-        when(orderTableDao.findAllByIdIn(any())).thenReturn(new ArrayList<>(Arrays.asList(orderTable, addOrderTable)));
+        when(orderTableDao.findAllByIdIn(any())).thenReturn(Arrays.asList(orderTable, addOrderTable));
         when(orderTableDao.save(any())).thenReturn(new OrderTable());
         when(tableGroupDao.save(tableGroup)).thenReturn(tableGroup);
 
@@ -75,7 +75,7 @@ class TableGroupServiceTest {
     @Test
     void ungroup() {
         // given
-        List<OrderTable> orderTables = new ArrayList<>(Arrays.asList(orderTable, addOrderTable));
+        List<OrderTable> orderTables = Arrays.asList(orderTable, addOrderTable);
         // when
         when(orderTableDao.findAllByTableGroupId(1L)).thenReturn(orderTables);
         when(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(false);
@@ -100,7 +100,7 @@ class TableGroupServiceTest {
         // given
 
         // when
-        when(orderTableDao.findAllByIdIn(any())).thenReturn(new ArrayList<>(Arrays.asList(orderTable)));
+        when(orderTableDao.findAllByIdIn(any())).thenReturn(Arrays.asList(orderTable));
         // then
         assertThatThrownBy(() -> tableGroupService.create(tableGroup)).isInstanceOf(IllegalArgumentException.class);
     }
@@ -109,7 +109,7 @@ class TableGroupServiceTest {
     @Test
     void ungroupFailedByCookingStatus() {
         // given
-        List<OrderTable> orderTables = new ArrayList<>(Arrays.asList(orderTable, addOrderTable));
+        List<OrderTable> orderTables = Arrays.asList(orderTable, addOrderTable);
 
         // when
         when(orderTableDao.findAllByTableGroupId(1L)).thenReturn(orderTables);

@@ -55,7 +55,7 @@ class MenuServiceTest {
         menu.setMenuGroupId(1L);
         menu.setName("순대국");
         menu.setPrice(BigDecimal.valueOf(8000));
-        menu.setMenuProducts(new ArrayList<>(Arrays.asList(new MenuProduct())));
+        menu.setMenuProducts(Arrays.asList(new MenuProduct()));
 
         menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
     }
@@ -70,7 +70,7 @@ class MenuServiceTest {
         Product product = new Product();
         product.setPrice(BigDecimal.valueOf(1000));
 
-        menu.setMenuProducts(new ArrayList<>(Collections.singletonList(menuProduct)));
+        menu.setMenuProducts(Arrays.asList(menuProduct));
         // when
         when(menuGroupDao.existsById(any())).thenReturn(true);
         when(productDao.findById(any())).thenReturn(Optional.of(product));
@@ -87,7 +87,7 @@ class MenuServiceTest {
         // given
 
         // when
-        when(menuDao.findAll()).thenReturn(new ArrayList<>(Collections.singletonList(menu)));
+        when(menuDao.findAll()).thenReturn(Arrays.asList(menu));
         List<Menu> menus = menuService.list();
         // then
         assertThat(menus.size()).isEqualTo(1);
@@ -122,7 +122,7 @@ class MenuServiceTest {
         Product product = new Product();
         product.setPrice(BigDecimal.valueOf(100));
 
-        menu.setMenuProducts(new ArrayList<>(Collections.singletonList(menuProduct)));
+        menu.setMenuProducts(Arrays.asList(menuProduct));
         // when
         when(menuGroupDao.existsById(any())).thenReturn(true);
         when(productDao.findById(any())).thenReturn(Optional.of(product));
