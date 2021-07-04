@@ -40,11 +40,10 @@ class MenuGroupRestControllerTest {
     @MockBean
     private MenuGroupService menuGroupService;
 
-
     @BeforeEach
     public void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .addFilters(new CharacterEncodingFilter("UTF-8", true)) //한글 깨짐 처리
+                .addFilters(new CharacterEncodingFilter("UTF-8", true))
                 .build();
     }
 
