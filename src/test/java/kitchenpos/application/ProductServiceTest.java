@@ -37,7 +37,7 @@ class ProductServiceTest {
         productService = new ProductService(productDao);
     }
 
-    @DisplayName("생성")
+    @DisplayName("사용자는 상품을 생성할 수 있다.")
     @Test
     void crate() {
         // given
@@ -49,7 +49,7 @@ class ProductServiceTest {
         assertThat(createdProduct).isNotNull();
     }
 
-    @DisplayName("조회")
+    @DisplayName("사용자는 상품 리스트를 조회 할 수 있다.")
     @Test
     void findAll() {
         // given
@@ -62,7 +62,7 @@ class ProductServiceTest {
         assertThat(products.get(0).getPrice()).isEqualTo(BigDecimal.valueOf(1000));
     }
 
-    @DisplayName("생성 실패 - 가격이 음수")
+    @DisplayName("요청의 상품 가격이 비어있지 않은지 0보다 낮은 가격인지 체크")
     @Test
     void createFailedByPrice() {
         // given

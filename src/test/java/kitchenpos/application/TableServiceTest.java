@@ -41,7 +41,7 @@ class TableServiceTest {
         orderTable = new OrderTable();
     }
 
-    @DisplayName("생성")
+    @DisplayName("사용자는 테이블을 생성(예약) 할 수 있다.")
     @Test
     void create() {
         // given
@@ -53,7 +53,7 @@ class TableServiceTest {
         assertThat(orderTable).isNotNull();
     }
 
-    @DisplayName("조회")
+    @DisplayName("사용자는 테이블 리스트를 조회 할 수 있다.")
     @Test
     void list() {
         // given
@@ -66,7 +66,7 @@ class TableServiceTest {
         assertThat(list.size()).isEqualTo(1);
     }
 
-    @DisplayName("상태 변경")
+    @DisplayName("사용자는 테이블을 빈 테이블(empty)로 셋팅 할 수 있다.")
     @Test
     void changeEmpty() {
         // given
@@ -80,7 +80,7 @@ class TableServiceTest {
         assertThat(changedOrderTable.isEmpty()).isFalse();
     }
 
-    @DisplayName("고객수 변경")
+    @DisplayName("사용자는 게스트의 숫자를 변경 할 수 있다.")
     @Test
     void changeNumberOfGuests() {
         // given
@@ -94,7 +94,7 @@ class TableServiceTest {
         assertThat(changedOrderTable.getNumberOfGuests()).isEqualTo(2);
     }
 
-    @DisplayName("상태 변경 실패 - 테이블 그룹이 없음")
+    @DisplayName("테이블을 조회하여 데이터가 있는지 체크한다.")
     @Test
     void changeEmptyFailedByTableGroup() {
         // given
@@ -104,7 +104,7 @@ class TableServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("상태 변경 실패 - 테이블 그룹id가 null이 아님")
+    @DisplayName("테이블을 조회하여 데이터가 있는지 체크한다.")
     @Test
     void changeEmptyFailedByTableGroupId() {
         // given
@@ -116,7 +116,7 @@ class TableServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("상태 변경 실패 - 주문이 요리중")
+    @DisplayName("테이블의 주문 상태가 Cooking, Meal 상태가 아닌지 체크한다.")
     @Test
     void changeEmptyFailedByOrderStatus() {
         // given
@@ -130,7 +130,7 @@ class TableServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("고객 수 변경 실패 - 고객이 음수")
+    @DisplayName("게스트의 숫가자 음수인지 체크한다.")
     @Test
     void changeNumberOfGuestFailedByNumberOfGuests() {
         // given
@@ -141,7 +141,7 @@ class TableServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("고객 수 변경 실패 - 주문 테이블이 없음")
+    @DisplayName("주문테이블id를 통하여 데이터가 있는지 체크한다.")
     @Test
     void changeNumberOfGuestFailedByOrderTable() {
         // given
@@ -152,7 +152,7 @@ class TableServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("고객 수 변경 실패 - 주문 테이블이 비어있음")
+    @DisplayName("주문테이블id를 통하여 데이터가 있는지 체크한다.")
     @Test
     void changeNumberOfGuestFailedByOrderTableEmpty() {
         // given

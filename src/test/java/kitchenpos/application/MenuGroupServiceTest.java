@@ -36,7 +36,7 @@ class MenuGroupServiceTest {
         menuGroupService = new MenuGroupService(menuGroupDao);
     }
 
-    @DisplayName("생성")
+    @DisplayName("사용자는 메뉴 그룹을 생성 할 수 있다.")
     @Test
     void create() {
         // given
@@ -49,7 +49,7 @@ class MenuGroupServiceTest {
         assertThat(cratedMenuGroup.getId()).isEqualTo(1L);
     }
 
-    @DisplayName("조회")
+    @DisplayName("사용자는 메뉴 그룹 전체를 조회 할 수 있다.")
     @Test
     void find() {
         // given

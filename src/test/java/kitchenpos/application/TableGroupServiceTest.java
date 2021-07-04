@@ -56,7 +56,7 @@ class TableGroupServiceTest {
         tableGroup.setOrderTables(new ArrayList<>(Arrays.asList(orderTable, addOrderTable)));
     }
 
-    @DisplayName("생성")
+    @DisplayName("사용자는 단체 지정을 할 수 있다.")
     @Test
     void create() {
         // given
@@ -71,7 +71,7 @@ class TableGroupServiceTest {
         assertThat(createdTableGroup).isNotNull();
     }
 
-    @DisplayName("단체 취소")
+    @DisplayName("사용자는 단체를 취소 할 수 있다.")
     @Test
     void ungroup() {
         // given
@@ -84,7 +84,7 @@ class TableGroupServiceTest {
         assertTrue(true);
     }
 
-    @DisplayName("생성 실패 - 주문테이블 부족")
+    @DisplayName("주문테이블의 요청 id의 개수가 2보다 작은지 체크한다.")
     @Test
     void createFailedByOrderTables() {
         // given
@@ -94,7 +94,7 @@ class TableGroupServiceTest {
         assertThatThrownBy(() -> tableGroupService.create(tableGroup)).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("생성 실패 - 주문테이블 개수가 다름")
+    @DisplayName("주문테이블의 데이터를 체크한다. 이 때 요청 받은 주문테이블의 데이터가 모두 있는지 체크한다.")
     @Test
     void createFailedByOrderTablesCount() {
         // given
@@ -105,7 +105,7 @@ class TableGroupServiceTest {
         assertThatThrownBy(() -> tableGroupService.create(tableGroup)).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("단체 취소 실패 - 주문이 요리중임")
+    @DisplayName("조회 시 주문 상태가 요리중, 식사중 상태가아닌지 체크한다.")
     @Test
     void ungroupFailedByCookingStatus() {
         // given

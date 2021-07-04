@@ -60,7 +60,7 @@ class MenuServiceTest {
         menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
     }
 
-    @DisplayName("생성")
+    @DisplayName("사용자는 메뉴를 만들 수 있다.")
     @Test
     void create() {
         // given
@@ -81,7 +81,7 @@ class MenuServiceTest {
         assertThat(createdMenu.getId()).isEqualTo(1L);
     }
 
-    @DisplayName("조회")
+    @DisplayName("사용자는 메뉴 리스트를 조회 할 수 있다.")
     @Test
     void findAll() {
         // given
@@ -94,7 +94,7 @@ class MenuServiceTest {
         assertThat(menus.get(0).getId()).isEqualTo(1L);
     }
 
-    @DisplayName("생성 실패 - 가격이 0")
+    @DisplayName("메뉴 가격이 음수 일 수 없다.")
     @Test
     void createFailedByPriceZero() {
         // given
@@ -104,7 +104,7 @@ class MenuServiceTest {
         assertThatThrownBy(() -> menuService.create(menu)).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("생성 실패 - 메뉴그룹이 존재하지 않음")
+    @DisplayName("메뉴는 메뉴 그룹에 반드시 포함 되어야 한다.")
     @Test
     void createFailedByMenuGroup() {
         // given
@@ -113,7 +113,7 @@ class MenuServiceTest {
         assertThatThrownBy(() -> menuService.create(menu)).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("생성 실패 - 메뉴 가격과 일치하지 않음")
+    @DisplayName("메뉴의 상품은 반드시 존재해야 한다.")
     @Test
     void createFailedByPrice() {
         MenuProduct menuProduct = new MenuProduct();

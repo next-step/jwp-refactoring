@@ -52,7 +52,7 @@ class OrderServiceTest {
         orderService = new OrderService(menuDao, orderDao, orderLineItemDao, orderTableDao);
     }
 
-    @DisplayName("생성")
+    @DisplayName("사용자는 주문을 생성 할 수 있다.")
     @Test
     void create() {
         // given
@@ -70,7 +70,7 @@ class OrderServiceTest {
         assertThat(createdOrder.getOrderStatus()).isEqualTo(COOKING.name());
     }
 
-    @DisplayName("주문 조회")
+    @DisplayName("사용자는 주문 리스트를 조회 할 수 있다.")
     @Test
     void findAll() {
         // given
@@ -85,7 +85,7 @@ class OrderServiceTest {
         assertThat(order.getOrderLineItems().size()).isEqualTo(1L);
     }
 
-    @DisplayName("주문 상태 변경")
+    @DisplayName("주문 생성 시 주문 상태를 요리중으로 한다.")
     @Test
     void changeOrderStatus() {
         // given
@@ -100,7 +100,7 @@ class OrderServiceTest {
         assertThat(changedOrder.getOrderStatus()).isEqualTo(MEAL.name());
     }
 
-    @DisplayName("생성 실패 - 주문 항목이 비어있음")
+    @DisplayName("사용자는 주문시 주문테이블id, 그리고 메뉴id와 수량을 요청으로 한다.")
     @Test
     void createFailedByOrderLineItems() {
         // given
@@ -109,7 +109,7 @@ class OrderServiceTest {
         assertThatThrownBy(() -> orderService.create(new Order())).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("생성 실패 - 주문 항목의 개수와 메뉴 개수가 일치하지 않음")
+    @DisplayName("사용자는 주문시 주문테이블id, 그리고 메뉴id와 수량을 요청으로 한다.")
     @Test
     void createFailedByMenus() {
         // given
@@ -125,7 +125,7 @@ class OrderServiceTest {
         assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("생성 실패 - 주문테이블이 비어있음")
+    @DisplayName("요청시 기입한 주문테이블이 존재해야한다.")
     @Test
     void createFailedByOrderTable() {
         // given
