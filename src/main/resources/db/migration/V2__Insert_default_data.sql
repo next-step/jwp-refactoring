@@ -37,3 +37,4 @@ INSERT INTO orders (id, order_table_id, order_status, ordered_time) VALUES (1, 1
 INSERT INTO orders (id, order_table_id, order_status, ordered_time) VALUES (2, 2, 'COMPLETION', CURRENT_TIMESTAMP);
 
 INSERT INTO order_line_item (seq, order_id, menu_id, quantity) VALUES (1, 1, 1, 1);
+INSERT INTO order_line_item (seq, order_id, menu_id, quantity) VALUES (2, 2, 2, 1);
