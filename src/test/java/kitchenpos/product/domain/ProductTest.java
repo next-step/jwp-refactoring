@@ -5,8 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.error.CustomException;
-import kitchenpos.error.ErrorInfo;
+import kitchenpos.common.error.CustomException;
+import kitchenpos.common.error.ErrorInfo;
 
 @DisplayName("상품 도메인 테스트")
 class ProductTest {

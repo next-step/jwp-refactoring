@@ -18,7 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.MenuDao;
+import kitchenpos.menu.repository.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
@@ -63,7 +63,6 @@ class OrderServiceTest {
 
         // when
         when(orderDao.save(any())).thenReturn(order);
-        when(menuDao.countByIdIn(any())).thenReturn(1L);
         when(orderTableDao.findById(any())).thenReturn(Optional.of(new OrderTable()));
         Order createdOrder = orderService.create(order);
 
@@ -120,8 +119,6 @@ class OrderServiceTest {
         order.setOrderLineItems(orderLineItems);
 
         // when
-        when(menuDao.countByIdIn(any())).thenReturn(1L);
-
         // then
         assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
     }
@@ -137,7 +134,6 @@ class OrderServiceTest {
         orderTable.setEmpty(true);
 
         // when
-        when(menuDao.countByIdIn(any())).thenReturn(1L);
         when(orderTableDao.findById(any())).thenReturn(Optional.of(orderTable));
 
         // then
