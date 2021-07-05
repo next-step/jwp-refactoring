@@ -60,8 +60,7 @@ class TableServiceTest {
     void createTable() {
         // given
         int countOfPeople = 4;
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(countOfPeople);
+        OrderTableRequest orderTable = new OrderTableRequest(countOfPeople, false);
 
         // when
         OrderTableResponse savedOrderTable = tableService.create(orderTable);
@@ -94,7 +93,7 @@ class TableServiceTest {
     @Test
     public void changeEmpty() {
         //given
-        OrderTableRequest orderTableRequest = new OrderTableRequest();
+        OrderTableRequest orderTableRequest = new OrderTableRequest(0, true);
         orderTableRequest.setEmpty(true);
 
         //when
@@ -109,8 +108,7 @@ class TableServiceTest {
     @Test
     public void failChangeEmptyExistTableGroup() throws Exception {
         //given
-        OrderTableRequest orderTableRequest = new OrderTableRequest();
-        orderTableRequest.setEmpty(true);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(0, true);
 
         // 테이블그룹 추가
         TableGroup tableGroup = new TableGroup();
@@ -130,8 +128,7 @@ class TableServiceTest {
     @Test
     public void failChangeEmptyBecauseStatusForCookingAndMeal() throws Exception {
         //given
-        OrderTableRequest orderTableRequest = new OrderTableRequest();
-        orderTableRequest.setEmpty(true);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(0, true);
 
         Order order = new Order();
         order.setOrderStatus(OrderStatus.COOKING.name());
@@ -150,8 +147,7 @@ class TableServiceTest {
     public void changeNumberOfGuests() throws Exception {
         //given
         int changedPeopleCount = 2;
-        OrderTableRequest orderTableRequest = new OrderTableRequest();
-        orderTableRequest.setNumberOfGuests(changedPeopleCount);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(changedPeopleCount, false);
 
         //when
         OrderTableResponse changedOrderTable = tableService.changeNumberOfGuests(savedOrderTable.getId(), orderTableRequest);
@@ -166,8 +162,7 @@ class TableServiceTest {
     public void failChangeNumberOfGuestsInvalidPeopleCount() throws Exception {
         //given
         int changedPeopleCount = -1;
-        OrderTableRequest orderTableRequest = new OrderTableRequest();
-        orderTableRequest.setNumberOfGuests(changedPeopleCount);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(changedPeopleCount, false);
 
         //when
         assertThatThrownBy(
@@ -185,8 +180,7 @@ class TableServiceTest {
 
         //when
         int emptyPeopleCount = 2;
-        OrderTableRequest orderTableRequest = new OrderTableRequest();
-        orderTableRequest.setNumberOfGuests(emptyPeopleCount);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(emptyPeopleCount, false);
 
         //then
         assertThatThrownBy(
