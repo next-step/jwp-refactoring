@@ -9,10 +9,6 @@ public class OrderLineItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)
-//    @JoinColumn(name = "order_id")
-//    private Ordering order;
-
     @Column
     private Long orderId;
 
@@ -42,19 +38,6 @@ public class OrderLineItem {
         this.quantity = quantity;
     }
 
-//    public OrderLineItem(Ordering order, Long menuId, long quantity) {
-//        this.orderId = order.getId();
-//        this.menuId = menuId;
-//        this.quantity = quantity;
-//    }
-//
-//    public OrderLineItem(Long id, Ordering order, Long menuId, long quantity) {
-//        this.id = id;
-//        this.orderId = order.getId();
-//        this.menuId = menuId;
-//        this.quantity = quantity;
-//    }
-
     public Long getId() {
         return id;
     }
@@ -83,10 +66,6 @@ public class OrderLineItem {
     public int hashCode() {
         return Objects.hash(id, orderId, menuId, quantity);
     }
-
-    //    public void isIn(Ordering order) {
-//        this.order = order;
-//    }
 
     public void isIn(Ordering order) {
         this.orderId = order.getId();
