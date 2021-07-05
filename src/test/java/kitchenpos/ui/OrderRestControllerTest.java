@@ -118,11 +118,13 @@ class OrderRestControllerTest {
     @DisplayName("주문 상태 변경 Api 테스트")
     @Test
     void changeOrderStatus() throws Exception {
+        LocalDateTime orderedTime = LocalDateTime.now();
+
         Order order = new Order();
         order.setOrderLineItems(Arrays.asList(orderLineItem));
         order.setOrderTableId(1L);
         order.setOrderStatus(OrderStatus.COOKING.name());
-        order.setOrderedTime(LocalDateTime.now());
+        order.setOrderedTime(orderedTime);
 
         String requestBody = objectMapper.writeValueAsString(order);
 
@@ -130,7 +132,7 @@ class OrderRestControllerTest {
         orderResponse.setOrderLineItems(Arrays.asList(OrderLineItemResponse.of(orderLineItem)));
         orderResponse.setOrderTableId(1L);
         orderResponse.setOrderStatus(OrderStatus.COOKING.name());
-        orderResponse.setOrderedTime(LocalDateTime.now());
+        orderResponse.setOrderedTime(orderedTime);
 
         when(orderService.changeOrderStatus(any(), any())).thenReturn(orderResponse);
         mockMvc.perform(put("/api/orders/1/order-status")
