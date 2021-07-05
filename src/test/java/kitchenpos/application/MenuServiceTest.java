@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.dao.MenuDao;
@@ -40,57 +41,61 @@ class MenuServiceTest {
 	@InjectMocks
 	private MenuService menuService;
 
-	private Menu menu;
-	private MenuProduct menuProduct1;
-	private MenuProduct menuProduct2;
-	private Product product1;
-	private Product product2;
-	private MenuGroup menuGroup;
+	private Menu A세트;
+	private Menu B세트;
+	private MenuProduct 탕수육중;
+	private MenuProduct 깐풍기중;
+	private Product 탕수육;
+	private Product 깐풍기;
+	private MenuGroup 중식;
 	private List<MenuProduct> menuProducts;
 
 	@BeforeEach
 	void setUp() {
-		menuGroup = new MenuGroup(1L, "중식");
-		product1 = new Product(1L, "탕수육", BigDecimal.valueOf(10000));
-		product2 = new Product(2L, "깐풍기", BigDecimal.valueOf(12000));
+		중식 = new MenuGroup(1L, "중식");
+		탕수육 = new Product(1L, "탕수육", BigDecimal.valueOf(10000));
+		깐풍기 = new Product(2L, "깐풍기", BigDecimal.valueOf(12000));
 
-		menuProduct1 = new MenuProduct(1L, 1L, product1.getId(), 1);
-		menuProduct2 = new MenuProduct(2L, 1L, product2.getId(), 1);
+		탕수육중 = new MenuProduct(1L, 1L, 탕수육.getId(), 1);
+		깐풍기중 = new MenuProduct(2L, 1L, 깐풍기.getId(), 1);
 
 		menuProducts = new ArrayList<>();
-		menuProducts.add(menuProduct1);
-		menuProducts.add(menuProduct2);
+		menuProducts.add(탕수육중);
+		menuProducts.add(깐풍기중);
 
-		menu = new Menu(1L, "A세트", BigDecimal.valueOf(20000), menuGroup.getId(), menuProducts);
+		A세트 = new Menu(1L, "A세트", BigDecimal.valueOf(20000), 중식.getId(), menuProducts);
+		B세트 = new Menu(1L, "B세트", BigDecimal.valueOf(23000), 중식.getId(), menuProducts);
 	}
 
 	@DisplayName("Menu 생성을 테스트 - happy path")
 	@Test
 	void testCreateMenu() {
-		when(menuGroupDao.existsById(eq(menu.getMenuGroupId()))).thenReturn(true);
-		when(productDao.findById(anyLong()))
-			.thenReturn(Optional.of(product1))
-			.thenReturn(Optional.of(product2));
-		when(menuDao.save(eq(menu))).thenReturn(menu);
-		when(menuProductDao.save(any())).thenReturn(menuProduct1).thenReturn(menuProduct2);
-		Menu actual = menuService.create(menu);
+		when(menuGroupDao.existsById(eq(A세트.getMenuGroupId()))).thenReturn(true);
+		when(productDao.findById(탕수육중.getProductId())).thenReturn(Optional.of(탕수육));
+		when(productDao.findById(깐풍기중.getProductId())).thenReturn(Optional.of(깐풍기));
+		when(menuDao.save(eq(A세트))).thenReturn(A세트);
+		when(menuProductDao.save(any())).thenReturn(탕수육중).thenReturn(깐풍기중);
 
-		verify(menuGroupDao, times(1)).existsById(eq(menu.getMenuGroupId()));
-		verify(productDao, times(2)).findById(anyLong());
-		verify(menuDao, times(1)).save(any());
+		Menu actual = menuService.create(A세트);
+
 		verify(menuProductDao, times(2)).save(any());
-		assertThat(actual.getName()).isEqualTo(menu.getName());
-		assertThat(
-			actual.getMenuProducts().stream().map(MenuProduct::getProductId).collect(Collectors.toList()))
-			.containsExactlyElementsOf(
-				menu.getMenuProducts().stream().map(MenuProduct::getProductId).collect(Collectors.toList()));
+
+		List<Long> actualMenuProductsId = actual.getMenuProducts()
+			.stream()
+			.map(MenuProduct::getProductId)
+			.collect(Collectors.toList());
+		List<Long> expectedMenuProductIds = A세트.getMenuProducts()
+			.stream()
+			.map(MenuProduct::getProductId)
+			.collect(Collectors.toList());
+		assertThat(actualMenuProductsId).containsExactlyElementsOf(expectedMenuProductIds);
+		assertThat(actual.getName()).isEqualTo(A세트.getName());
 	}
 
 	@DisplayName("메뉴 가격이 0보다 작은경우 오류발생")
 	@Test
 	void testCreateErrorPriceZero() {
-		Menu menu = mock(Menu.class);
-		when(menu.getPrice()).thenReturn(BigDecimal.valueOf(-1));
+		Menu menu = new Menu(1L, "menu", BigDecimal.valueOf(-1), 1L, null);
 
 		assertThatThrownBy(() -> {
 			menuService.create(menu);
@@ -101,9 +106,10 @@ class MenuServiceTest {
 	@DisplayName("메뉴가 메뉴 그룹에 포함되어있지 않은경우 오류 발생")
 	@Test
 	void testMenuNotContainsInMenuGroup() {
-		Menu menu = mock(Menu.class);
-		when(menu.getPrice()).thenReturn(BigDecimal.valueOf(20000));
-		when(menuGroupDao.existsById(anyLong())).thenReturn(false);
+		Menu menu = new Menu(1L, "menu", BigDecimal.valueOf(20000), 1L, null);
+		Long menuGroupId = menu.getMenuGroupId();
+
+		when(menuGroupDao.existsById(Mockito.eq(menuGroupId))).thenReturn(false);
 
 		assertThatThrownBy(() -> {
 			menuService.create(menu);
@@ -114,18 +120,11 @@ class MenuServiceTest {
 	@DisplayName("메뉴의 메뉴상품이 상품에 등록되어 있지 않은경우 오류 발생")
 	@Test
 	void testMenuProductNotSavedProduct() {
-		Menu menu = mock(Menu.class);
-		when(menu.getPrice()).thenReturn(BigDecimal.valueOf(20000));
-		when(menuGroupDao.existsById(anyLong())).thenReturn(true);
-
-		List<MenuProduct> menuProducts = new ArrayList<>();
-		menuProducts.add(new MenuProduct(1L, 1L, 1L, 3));
-
-		when(menu.getMenuProducts()).thenReturn(menuProducts);
-		when(productDao.findById(anyLong())).thenReturn(Optional.empty());
+		when(menuGroupDao.existsById(eq(A세트.getMenuGroupId()))).thenReturn(true);
+		when(productDao.findById(eq(탕수육중.getProductId()))).thenReturn(Optional.empty());
 
 		assertThatThrownBy(() -> {
-			menuService.create(menu);
+			menuService.create(A세트);
 		}).isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("상품에 없는 메뉴상품입니다.");
 	}
@@ -133,20 +132,13 @@ class MenuServiceTest {
 	@DisplayName("메뉴 가격이 메뉴 상품의 가격의 합보다 크면 오류 발생")
 	@Test
 	void testMenuPriceBiggerThanTotalMenuProductPrice() {
-		Menu menu = mock(Menu.class);
-		when(menu.getPrice()).thenReturn(BigDecimal.valueOf(20000));
-		when(menuGroupDao.existsById(anyLong())).thenReturn(true);
-
-		List<MenuProduct> menuProducts = new ArrayList<>();
-		menuProducts.add(new MenuProduct(1L, 1L, 1L, 2));
-
-		Product product = new Product(1L, "product", BigDecimal.valueOf(9000));
-
-		when(menu.getMenuProducts()).thenReturn(menuProducts);
-		when(productDao.findById(anyLong())).thenReturn(Optional.of(product));
+		when(menuGroupDao.existsById(eq(B세트.getMenuGroupId()))).thenReturn(true);
+		when(productDao.findById(eq(탕수육중.getProductId()))).thenReturn(Optional.empty());
+		when(productDao.findById(탕수육중.getProductId())).thenReturn(Optional.of(탕수육));
+		when(productDao.findById(깐풍기중.getProductId())).thenReturn(Optional.of(깐풍기));
 
 		assertThatThrownBy(() -> {
-			menuService.create(menu);
+			menuService.create(B세트);
 		}).isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("메뉴 가격은 메뉴 상품 가격의 합보다 작아야합니다.");
 	}

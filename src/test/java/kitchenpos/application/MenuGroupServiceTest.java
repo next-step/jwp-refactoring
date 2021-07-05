@@ -29,9 +29,10 @@ class MenuGroupServiceTest {
 	@DisplayName("메뉴 그룹 생성 테스트")
 	@Test
 	void testCreateMenuGroup() {
-		MenuGroup menuGroup = mock(MenuGroup.class);
+		// MenuGroup menuGroup = mock(MenuGroup.class);
+		MenuGroup menuGroup = new MenuGroup(1L, "중식");
+		MenuGroup expected = new MenuGroup(1L, "중식");
 
-		MenuGroup expected = new MenuGroup(1L, "menuGroup");
 		when(menuGroupDao.save(eq(menuGroup))).thenReturn(expected);
 
 		MenuGroup actual = menuGroupService.create(menuGroup);
@@ -55,7 +56,8 @@ class MenuGroupServiceTest {
 		List<MenuGroup> actual = menuGroupService.list();
 
 		verify(menuGroupDao, times(1)).findAll();
-		assertThat(actual.stream().map(MenuGroup::getId).collect(Collectors.toList()))
+		List<Long> actualMenuGroupIds = actual.stream().map(MenuGroup::getId).collect(Collectors.toList());
+		assertThat(actualMenuGroupIds)
 			.containsExactlyElementsOf(savedMenuGroupIds);
 	}
 }

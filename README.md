@@ -68,7 +68,7 @@
 
 - [x] `kitchenpos` 코드를 통해 요구사항을 정리한다.
 
-- [ ] 정리한 요구사항을 토대로 테스트 코드를 작성한다.
+- [x] 정리한 요구사항을 토대로 테스트 코드를 작성한다.
 
   - Business Object 에 대한 테스트 코드를 작성
   - `@ExtendWith(MockitoExtension.class)`를 이용

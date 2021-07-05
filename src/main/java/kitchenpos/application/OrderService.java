@@ -55,7 +55,7 @@ public class OrderService {
 		}
 
 		final OrderTable orderTable = orderTableDao.findById(order.getOrderTableId())
-			.orElseThrow(IllegalArgumentException::new);
+			.orElseThrow(() -> new IllegalArgumentException("id에 해당하는 주문 테이블을 찾을 수 없습니다."));
 
 		if (orderTable.isEmpty()) {
 			throw new IllegalArgumentException("비어있는 테이블은 주문할 수 없습니다.");

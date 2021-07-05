@@ -51,35 +51,38 @@ class TableServiceTest {
 		when(orderTableDao.findAll()).thenReturn(orderTables);
 		List<OrderTable> actual = tableSevrice.list();
 
-		assertThat(actual.stream().map(OrderTable::getId).collect(Collectors.toList()))
-			.containsExactlyElementsOf(orderTables.stream().map(OrderTable::getId).collect(
-				Collectors.toList()));
+		List<Long> actualOrderTableIds = actual.stream().map(OrderTable::getId).collect(Collectors.toList());
+		List<Long> expectedOrderTableIds = orderTables.stream().map(OrderTable::getId).collect(
+			Collectors.toList());
+		assertThat(actualOrderTableIds).containsExactlyElementsOf(expectedOrderTableIds);
 	}
 
 	@DisplayName("주문 테이블을 비어있는 상태 변경 테스트")
 	@Test
 	void testChangeEmpty() {
-		OrderTable orderTableParam = mock(OrderTable.class);
+		OrderTable orderTable = new OrderTable(1L, null, 3, true);
 		OrderTable savedOrderTable = new OrderTable(1L, null, 3, false);
+		Long orderTableId = 1L;
 
-		when(orderTableParam.isEmpty()).thenReturn(false);
-		when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(savedOrderTable));
-		when(orderDao.existsByOrderTableIdAndOrderStatusIn(Mockito.eq(1L), Mockito.anyList())).thenReturn(false);
+		when(orderTableDao.findById(eq(orderTableId))).thenReturn(Optional.of(savedOrderTable));
+		when(orderDao.existsByOrderTableIdAndOrderStatusIn(Mockito.eq(orderTableId), Mockito.anyList())).thenReturn(
+			false);
 		when(orderTableDao.save(Mockito.any())).thenReturn(savedOrderTable);
-		OrderTable actual = tableSevrice.changeEmpty(1L, orderTableParam);
 
-		Assertions.assertThat(actual.isEmpty()).isFalse();
+		OrderTable actual = tableSevrice.changeEmpty(orderTableId, orderTable);
+
+		Assertions.assertThat(actual.isEmpty()).isTrue();
 	}
 
 	@DisplayName("주문 테이블이 없는경우 오류 발생")
 	@Test
 	void testChangeEmptyErrorNotFoundOrderTable() {
-		OrderTable orderTableParam = mock(OrderTable.class);
-
-		when(orderTableDao.findById(anyLong())).thenReturn(Optional.empty());
+		OrderTable orderTable = new OrderTable(1L, null, 3, true);
+		Long orderTableId = 1L;
+		when(orderTableDao.findById(eq(orderTableId))).thenReturn(Optional.empty());
 
 		Assertions.assertThatThrownBy(() -> {
-			tableSevrice.changeEmpty(1L, orderTableParam);
+			tableSevrice.changeEmpty(orderTableId, orderTable);
 		}).isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("id에 해당하는 주문 테이블을 찾을 수 없습니다.");
 	}
@@ -87,12 +90,13 @@ class TableServiceTest {
 	@DisplayName("주문 테이블이 단체 지정 되어있는 경우 오류 발생")
 	@Test
 	void testAlreadyTableGroup() {
-		OrderTable orderTableParam = mock(OrderTable.class);
+		OrderTable orderTable = new OrderTable(1L, null, 3, true);
+		Long orderTableId = 1L;
 		OrderTable savedOrderTable = new OrderTable(1L, 1L, 3, false);
 
-		when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(savedOrderTable));
+		when(orderTableDao.findById(eq(orderTableId))).thenReturn(Optional.of(savedOrderTable));
 		Assertions.assertThatThrownBy(() -> {
-			tableSevrice.changeEmpty(1L, orderTableParam);
+			tableSevrice.changeEmpty(orderTableId, orderTable);
 		}).isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("단체 지정되어있는 테이블은 변경할 수 없습니다.");
 	}
@@ -100,13 +104,14 @@ class TableServiceTest {
 	@DisplayName("주문 테이블의 상태가 COOKING, MEAL 인경우 오류 발생")
 	@Test
 	void testOrderTableStatusNotCompletion() {
-		OrderTable orderTableParam = mock(OrderTable.class);
+		OrderTable orderTable = new OrderTable(1L, null, 3, true);
+		Long orderTableId = 1L;
 		OrderTable savedOrderTable = new OrderTable(1L, null, 3, false);
 
-		when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(savedOrderTable));
+		when(orderTableDao.findById(eq(orderTableId))).thenReturn(Optional.of(savedOrderTable));
 		when(orderDao.existsByOrderTableIdAndOrderStatusIn(Mockito.eq(1L), Mockito.anyList())).thenReturn(true);
 		Assertions.assertThatThrownBy(() -> {
-			tableSevrice.changeEmpty(1L, orderTableParam);
+			tableSevrice.changeEmpty(orderTableId, orderTable);
 		}).isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("주문 테이블의 주문상태가 완료되지 않아 변경할 수 없습니다");
 	}
@@ -114,26 +119,25 @@ class TableServiceTest {
 	@DisplayName("주문 테이블의 방문 손님 수를 변경한다.")
 	@Test
 	void testChangeNumberOfGuests() {
-		OrderTable orderTableParam = mock(OrderTable.class);
+		OrderTable orderTable = new OrderTable(1L, null, 2, true);
 		OrderTable savedOrderTable = new OrderTable(1L, 1L, 3, false);
 		int numberOfGuests = 2;
 
-		when(orderTableParam.getNumberOfGuests()).thenReturn(numberOfGuests);
 		when(orderTableDao.findById(Mockito.eq(1L))).thenReturn(Optional.of(savedOrderTable));
 		when(orderTableDao.save(Mockito.any())).thenReturn(savedOrderTable);
 
-		OrderTable actual = tableSevrice.changeNumberOfGuests(1L, orderTableParam);
+		OrderTable actual = tableSevrice.changeNumberOfGuests(1L, orderTable);
 		Assertions.assertThat(actual.getNumberOfGuests()).isEqualTo(numberOfGuests);
 	}
 
 	@DisplayName("변경할 방문 손님 수가 0보다 작으면 오류 발생")
 	@Test
 	void testNumberOfGuestsUnderZero() {
-		OrderTable orderTableParam = mock(OrderTable.class);
-		when(orderTableParam.getNumberOfGuests()).thenReturn(-1);
+		OrderTable orderTable = new OrderTable(1L, null, -1, true);
+		Long orderTableId = 1L;
 
 		Assertions.assertThatThrownBy(() -> {
-			tableSevrice.changeNumberOfGuests(1L, orderTableParam);
+			tableSevrice.changeNumberOfGuests(orderTableId, orderTable);
 		}).isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("방문 손님 수는 0보다 작을 수 없습니다.");
 	}
@@ -141,11 +145,11 @@ class TableServiceTest {
 	@DisplayName("변경할 주문 테이블이 없는 경우 오류 발생")
 	@Test
 	void testNotFoundChangeTargetTable() {
-		OrderTable orderTableParam = mock(OrderTable.class);
-		when(orderTableParam.getNumberOfGuests()).thenReturn(2);
-		when(orderTableDao.findById(Mockito.eq(1L))).thenReturn(Optional.empty());
+		OrderTable orderTable = new OrderTable(1L, null, 2, true);
+		Long orderTableId = 1L;
+		when(orderTableDao.findById(Mockito.eq(orderTableId))).thenReturn(Optional.empty());
 		Assertions.assertThatThrownBy(() -> {
-			tableSevrice.changeNumberOfGuests(1L, orderTableParam);
+			tableSevrice.changeNumberOfGuests(orderTableId, orderTable);
 		}).isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("id에 해당하는 주문 테이블을 찾을 수 없습니다.");
 	}
@@ -153,15 +157,14 @@ class TableServiceTest {
 	@DisplayName("변경할 주문 테이블이 비어있는 경우")
 	@Test
 	void testChangeTargetOrderTableIsEmpty() {
-		OrderTable orderTableParam = mock(OrderTable.class);
-		OrderTable savedOrderTable = Mockito.mock(OrderTable.class);
+		OrderTable orderTable = new OrderTable(1L, null, 2, true);
+		OrderTable savedOrderTable = new OrderTable(1L, 1L, 3, true);
+		Long orderTableId = 1L;
 
-		when(orderTableParam.getNumberOfGuests()).thenReturn(2);
-		when(orderTableDao.findById(Mockito.eq(1L))).thenReturn(Optional.of(savedOrderTable));
-		when(savedOrderTable.isEmpty()).thenReturn(true);
+		when(orderTableDao.findById(Mockito.eq(orderTableId))).thenReturn(Optional.of(savedOrderTable));
 
 		Assertions.assertThatThrownBy(() -> {
-			tableSevrice.changeNumberOfGuests(1L, orderTableParam);
+			tableSevrice.changeNumberOfGuests(orderTableId, orderTable);
 		}).isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("비어있는 테이블입니다.");
 	}

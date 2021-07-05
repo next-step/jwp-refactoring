@@ -30,23 +30,18 @@ class ProductServiceTest {
 	@DisplayName("상품 생성 테스트")
 	@Test
 	void testCreateProduct() {
-		//given
-		Product product = mock(Product.class);
-		Product savedProduct = new Product(1L, "상품1", BigDecimal.valueOf(2000));
-		//when
-		when(product.getPrice()).thenReturn(BigDecimal.valueOf(2000));
-		when(productDao.save(eq(product))).thenReturn(savedProduct);
+		Product product = new Product(1L, "상품1", BigDecimal.valueOf(2000));
+
+		when(productDao.save(eq(product))).thenReturn(product);
 		Product actual = productService.create(product);
-		//then
-		assertThat(actual.getPrice()).isEqualTo(savedProduct.getPrice());
+
+		assertThat(actual.getPrice()).isEqualTo(product.getPrice());
 	}
 
 	@DisplayName("상품 가격이 0보다 작으면 생성 오류")
 	@Test
 	void testPriceUnderZero() {
-		Product product = mock(Product.class);
-		//when
-		when(product.getPrice()).thenReturn(BigDecimal.valueOf(-1));
+		Product product = new Product(1L, "상품1", BigDecimal.valueOf(-1));
 
 		verify(productDao, never()).save(eq(product));
 		assertThatThrownBy(() -> {
@@ -67,7 +62,8 @@ class ProductServiceTest {
 
 		List<Product> actual = productService.list();
 
-		assertThat(actual.stream().map(Product::getId).collect(Collectors.toList()))
-			.containsExactlyElementsOf(products.stream().map(Product::getId).collect(Collectors.toList()));
+		List<Long> actualProductIds = actual.stream().map(Product::getId).collect(Collectors.toList());
+		List<Long> expectedProductIds = products.stream().map(Product::getId).collect(Collectors.toList());
+		assertThat(actualProductIds).containsExactlyElementsOf(expectedProductIds);
 	}
 }

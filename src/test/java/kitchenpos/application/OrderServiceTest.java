@@ -6,7 +6,6 @@ import static org.mockito.Mockito.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,25 +40,24 @@ class OrderServiceTest {
 	@InjectMocks
 	private OrderService orderService;
 
-	private OrderLineItem orderLineItem1;
-	private Order savedOrder;
+	private OrderLineItem A세트3개;
+	private Order 주문;
+	private List<OrderLineItem> 주문항목;
 
 	@BeforeEach
 	void setUp() {
-		List<OrderLineItem> orderLineItems = new ArrayList<>();
-		orderLineItem1 = new OrderLineItem(1L, 1L, 1L, 3);
-		orderLineItems.add(orderLineItem1);
-		savedOrder = new Order(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItems);
+		주문항목 = new ArrayList<>();
+		A세트3개 = new OrderLineItem(1L, 1L, 1L, 3);
+		주문항목.add(A세트3개);
+		주문 = new Order(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), 주문항목);
 	}
 
 	@DisplayName("빈 테이블에서 주문이 생성된경우 오류 발생")
 	@Test
 	void testOrderTableEmpty() {
-		Order order = mock(Order.class);
-		OrderLineItem orderLineItem = mock(OrderLineItem.class);
+		Order order = new Order(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), 주문항목);
 		OrderTable orderTable = new OrderTable(1L, 1L, 0, true);
 
-		when(order.getOrderLineItems()).thenReturn(Arrays.asList(orderLineItem));
 		when(menuDao.countByIdIn(any())).thenReturn(1L);
 		when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(orderTable));
 
@@ -69,14 +67,26 @@ class OrderServiceTest {
 			.hasMessageContaining("비어있는 테이블은 주문할 수 없습니다.");
 	}
 
+	@DisplayName("주문하려는 테이블을 찾을 수 없는 경우 오류 발생")
+	@Test
+	void testNotFoundOrderTable() {
+		Order order = new Order(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), 주문항목);
+		when(menuDao.countByIdIn(any())).thenReturn(1L);
+		when(orderTableDao.findById(anyLong())).thenReturn(Optional.empty());
+
+		assertThatThrownBy(() -> {
+			orderService.create(order);
+		}).isInstanceOf(IllegalArgumentException.class)
+			.hasMessageContaining("id에 해당하는 주문 테이블을 찾을 수 없습니다.");
+	}
+
 	@DisplayName("주문 항목 수와 메뉴에 등록된 주문항목의 수가 다르면 오류 발생")
 	@Test
 	void testNotContainsOrderLineItemInMenu() {
-		Order order = mock(Order.class);
-		OrderLineItem orderLineItem = mock(OrderLineItem.class);
+		Order order = new Order(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), 주문항목);
 
-		when(order.getOrderLineItems()).thenReturn(Arrays.asList(orderLineItem));
-		when(menuDao.countByIdIn(any())).thenReturn(2L);
+		List<Long> menuIds = Arrays.asList(1L);
+		when(menuDao.countByIdIn(eq(menuIds))).thenReturn(2L);
 		assertThatThrownBy(() -> {
 			orderService.create(order);
 		}).isInstanceOf(IllegalArgumentException.class)
@@ -86,9 +96,8 @@ class OrderServiceTest {
 	@DisplayName("주문에 주문 항목이 비어있는 경우 오류 발생")
 	@Test
 	void testEmptyOrderLineItem() {
-		Order order = mock(Order.class);
+		Order order = new Order(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), new ArrayList<>());
 
-		when(order.getOrderLineItems()).thenReturn(Collections.emptyList());
 		assertThatThrownBy(() -> {
 			orderService.create(order);
 		}).isInstanceOf(IllegalArgumentException.class)
@@ -98,33 +107,30 @@ class OrderServiceTest {
 	@DisplayName("주문 생성 - happy path")
 	@Test
 	void testCreateOrder() {
-		Order order = mock(Order.class);
-		OrderLineItem orderLineItem = mock(OrderLineItem.class);
-		OrderTable orderTable = mock(OrderTable.class);
+		Order order = new Order(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), 주문항목);
+		OrderTable orderTable = new OrderTable(1L, 1L, 0, false);
+		Long orderTableId = order.getOrderTableId();
 
-		when(order.getOrderLineItems()).thenReturn(Arrays.asList(orderLineItem));
 		when(menuDao.countByIdIn(any())).thenReturn(1L);
-		when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(orderTable));
-		when(orderTable.isEmpty()).thenReturn(false);
-		when(orderDao.save(eq(order))).thenReturn(savedOrder);
+		when(orderTableDao.findById(eq(orderTableId))).thenReturn(Optional.of(orderTable));
+		when(orderDao.save(eq(order))).thenReturn(order);
+		when(orderLineItemDao.save(A세트3개)).thenReturn(A세트3개);
 
 		Order actual = orderService.create(order);
 		//then
-		verify(orderLineItemDao, times(1)).save(orderLineItem);
-		assertThat(actual.getId()).isEqualTo(savedOrder.getId());
+		verify(orderLineItemDao, times(1)).save(A세트3개);
+		assertThat(actual.getId()).isEqualTo(this.주문.getId());
 	}
 
 	@DisplayName("주문 상태 변경 오류 - 주문이 이미 완료상태인 경우")
 	@Test
 	void testAlreadyOrderStatusCompletion() {
-		Order paramOrder = mock(Order.class);
-		Order findOrder = mock(Order.class);
+		Order completionOrder = new Order(1L, 1L, OrderStatus.COMPLETION.name(), LocalDateTime.now(), 주문항목);
 
-		when(orderDao.findById(eq(1L))).thenReturn(Optional.of(findOrder));
-		when(findOrder.getOrderStatus()).thenReturn(OrderStatus.COMPLETION.name());
+		when(orderDao.findById(eq(completionOrder.getId()))).thenReturn(Optional.of(completionOrder));
 
 		assertThatThrownBy(() -> {
-			orderService.changeOrderStatus(1L, paramOrder);
+			orderService.changeOrderStatus(1L, completionOrder);
 		}).isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("이미 완료된 주문입니다.");
 
@@ -133,23 +139,25 @@ class OrderServiceTest {
 	@DisplayName("주문 상태 변경 테스트")
 	@Test
 	void testChangeOrderStatus() {
-		Order paramOrder = mock(Order.class);
+		Order order = new Order(1L, 1L, OrderStatus.MEAL.name(), LocalDateTime.now(), 주문항목);
+		Long orderId = 1L;
 
-		when(orderDao.findById(eq(1L))).thenReturn(Optional.of(savedOrder));
-		when(paramOrder.getOrderStatus()).thenReturn(OrderStatus.MEAL.name());
+		when(orderDao.findById(eq(orderId))).thenReturn(Optional.of(주문));
 
-		Order order = orderService.changeOrderStatus(1L, paramOrder);
-		assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
+		Order actual = orderService.changeOrderStatus(orderId, order);
+		assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
 	}
 
 	@DisplayName("주문 상태 변경 오류 - 변경하려는 주문을 찾을 수 없음")
 	@Test
 	void testOrderNotFound() {
-		Order paramOrder = mock(Order.class);
-		when(orderDao.findById(eq(1L))).thenReturn(Optional.empty());
+		Order order = new Order(1L, 1L, OrderStatus.MEAL.name(), LocalDateTime.now(), 주문항목);
+		Long orderId = 1L;
+
+		when(orderDao.findById(eq(orderId))).thenReturn(Optional.empty());
 
 		assertThatThrownBy(() -> {
-			orderService.changeOrderStatus(1L, paramOrder);
+			orderService.changeOrderStatus(orderId, order);
 		}).isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("orderId에 해당하는 주문정보를 찾을 수 없습니다.");
 	}
