@@ -36,7 +36,7 @@ class TableGroupTest {
 		// than
 		assertThatThrownBy(() -> TableGroup.create(asList(notEmptyTable, orderTable), LocalDateTime.now()))
 			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("비어있는 테이블은 그룹화 할 수 없습니다.");
+			.hasMessageContaining("비어있지 않은 테이블은 그룹화 할 수 없습니다.");
 	}
 
 	@DisplayName("그룹화할 주문테이블들은 모두 그룹화되지 않은 테이블이어야 한다.")
@@ -53,6 +53,21 @@ class TableGroupTest {
 		assertThatThrownBy(() -> TableGroup.create(asList(groupedTable1, orderTable), LocalDateTime.now()))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("이미 그룹화되어 있는 테이블은 그룹화 할 수 없습니다.");
+	}
+
+	@DisplayName("그룹화된 주문테이블들은 모두 비어있지 않는 상태로 변한다.")
+	@Test
+	void createTableGroupTest() {
+		// given
+		OrderTable groupedTable1 = new OrderTable(1, true);
+		OrderTable groupedTable2 = new OrderTable(1, true);
+
+		// when
+		TableGroup.create(asList(groupedTable1, groupedTable2), LocalDateTime.now());
+
+		// than
+		assertThat(groupedTable1.isEmpty()).isFalse();
+		assertThat(groupedTable2.isEmpty()).isFalse();
 	}
 
 	@DisplayName("테이블그룹은 주문테이블들과 생성시각으로 생성된다.")

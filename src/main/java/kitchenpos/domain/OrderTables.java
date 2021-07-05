@@ -24,8 +24,8 @@ class OrderTables {
 
 	public static OrderTables of(List<OrderTable> orderTables) {
 		validateMinTableSize(orderTables);
-		validateNoEmptyTables(orderTables);
 		validateNoGroupedTables(orderTables);
+		validateNoEmptyTables(orderTables);
 		return new OrderTables(orderTables);
 	}
 
@@ -61,7 +61,7 @@ class OrderTables {
 	private static void validateNoEmptyTables(List<OrderTable> orderTables) {
 		boolean containsNotEmptyTable = orderTables.stream().anyMatch(OrderTable::isNotEmpty);
 		if (containsNotEmptyTable) {
-			throw new IllegalArgumentException("비어있는 테이블은 그룹화 할 수 없습니다.");
+			throw new IllegalArgumentException("비어있지 않은 테이블은 그룹화 할 수 없습니다.");
 		}
 	}
 

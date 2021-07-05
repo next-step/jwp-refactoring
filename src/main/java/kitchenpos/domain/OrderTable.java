@@ -87,6 +87,11 @@ public class OrderTable {
 
     void toGroup(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
+        emptyOff();
+    }
+
+    private void emptyOff() {
+        this.empty = false;
     }
 
     private void validate() {
