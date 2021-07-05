@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -86,23 +85,6 @@ class TableGroupTest {
 		assertThat(orderTable2.getTableGroup()).isEqualTo(tableGroup);
 		assertThat(tableGroup.getOrderTables()).containsExactly(orderTable1, orderTable2);
 		assertThat(tableGroup.getCreatedDate()).isEqualTo(createdDate);
-	}
-
-	@DisplayName("테이블그룹을 통해 주문테이블의 식별자들을 알 수 있다.")
-	@Test
-	void getOrderTableIdsTest() {
-		// given
-		OrderTable orderTable1 = mock(OrderTable.class);
-		when(orderTable1.getId()).thenReturn(1L);
-		OrderTable orderTable2 = mock(OrderTable.class);
-		when(orderTable2.getId()).thenReturn(2L);
-		TableGroup tableGroup = TableGroup.create(asList(orderTable1, orderTable2), LocalDateTime.now());
-
-		// when
-		List<Long> orderTableIds = tableGroup.getOrderTableIds();
-
-		// than
-		assertThat(orderTableIds).containsExactly(1L, 2L);
 	}
 
 	@DisplayName("테이블그룹은 그룹에 소속된 테이블들을 그룹해제 시킬 수 있다.")

@@ -3,7 +3,6 @@ package kitchenpos.domain;
 import static java.time.LocalDateTime.*;
 import static java.util.Arrays.*;
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -18,8 +17,7 @@ class OrderTest {
 	void createTest() {
 		//given
 		OrderLineItem orderLineItem = new OrderLineItem(1L, 1L);
-		OrderTable orderTable = mock(OrderTable.class);
-		when(orderTable.getId()).thenReturn(1L);
+		OrderTable orderTable = new OrderTable(1, false);
 		LocalDateTime orderedTime = now();
 
 		// when
@@ -80,7 +78,7 @@ class OrderTest {
 	void changeOrderTest() {
 		// given
 		OrderLineItem orderLineItem = new OrderLineItem(1L, 1L);
-		OrderTable orderTable = mock(OrderTable.class);
+		OrderTable orderTable = new OrderTable(1, false);
 		Order order = Order.create(asList(orderLineItem), orderTable, now());
 
 		// when
