@@ -1,7 +1,6 @@
 package kitchenpos.ui;
 
 import kitchenpos.application.MenuGroupService;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
 
@@ -27,14 +26,12 @@ public class MenuGroupRestController {
         final MenuGroupResponse response = menuGroupService.create(menuGroupRequest);
         final URI uri = URI.create("/api/menu-groups/" + response.getId());
         return ResponseEntity.created(uri)
-                .body(response)
-                ;
+                .body(response);
     }
 
     @GetMapping("/api/menu-groups")
     public ResponseEntity<List<MenuGroupResponse>> list() {
         return ResponseEntity.ok()
-                .body(menuGroupService.findMenuGroups())
-                ;
+                .body(menuGroupService.findMenuGroups());
     }
 }
