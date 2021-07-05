@@ -54,14 +54,14 @@ class OrderTables {
 	private static void validateNoGroupedTables(List<OrderTable> orderTables) {
 		boolean containsGroupedOrderTables = orderTables.stream().anyMatch(OrderTable::isGrouped);
 		if (containsGroupedOrderTables) {
-			throw new IllegalArgumentException("비어있지 않거나, 이미 그룹화되어 있는 테이블은 그룹화 할 수 없습니다.");
+			throw new IllegalArgumentException("이미 그룹화되어 있는 테이블은 그룹화 할 수 없습니다.");
 		}
 	}
 
 	private static void validateNoEmptyTables(List<OrderTable> orderTables) {
 		boolean containsNotEmptyTable = orderTables.stream().anyMatch(OrderTable::isNotEmpty);
 		if (containsNotEmptyTable) {
-			throw new IllegalArgumentException("비어있지 않거나, 이미 그룹화되어 있는 테이블은 그룹화 할 수 없습니다.");
+			throw new IllegalArgumentException("비어있는 테이블은 그룹화 할 수 없습니다.");
 		}
 	}
 
