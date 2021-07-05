@@ -123,8 +123,8 @@ public class TableGroupServiceTest {
     @DisplayName("주문_테이블이 다른 그룹에 속해있을 경우 실패한다.")
     void aleadyTable() {
         // when
-        OrderTable already = new OrderTable(1L, 10, true);
-        already.setTableGroup(new TableGroup());
+        //OrderTable already = new OrderTable(1L, 10, true);
+        OrderTable already = new OrderTable(1L, new TableGroup(), 10, true, Collections.emptyList());
         given(orderTableRepository.findAllById(any())).willReturn(Arrays.asList(already, new OrderTable(2L, 10, true)));
         // then
         assertThrows(IllegalArgumentException.class, () -> {

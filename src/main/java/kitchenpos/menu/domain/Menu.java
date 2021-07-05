@@ -1,6 +1,7 @@
 package kitchenpos.menu.domain;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.AttributeOverride;
@@ -55,46 +56,6 @@ public class Menu {
         menuProducts.assginMenu(this);
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = Price.of(price);
-    }
-
-    public BigDecimal getPrice() {
-        return price.toBigDecimal();
-    }
-
-    public MenuGroup getMenuGroup() {
-        return menuGroup;
-    }
-
-    public void setMenuGroup(MenuGroup menuGroup) {
-        this.menuGroup = menuGroup;
-    }
-
-    public List<MenuProduct> getMenuProducts() {
-        return menuProducts.toCollection();
-    }
-
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
-        this.menuProducts = MenuProducts.of(menuProducts);
-    }
-
     public static Menu create(MenuRequest menuRequest, MenuGroup menuGroup, MenuProducts menuProducts) {
         validationCreate(menuRequest, menuProducts);
         return new Menu(menuRequest.getName(), Price.of(menuRequest.getPrice()), menuGroup, menuProducts);
@@ -109,9 +70,25 @@ public class Menu {
             throw new IllegalArgumentException();
         }
     }
-
+    
+    public BigDecimal getPrice() {
+        return price.toBigDecimal();
+    }
+    
+    public Long getId() {
+        return id;
+    }
+    
     public Long getMenuGroupId() {
         return menuGroup.getId();
     }
-
+    
+    public String getName() {
+        return name;
+    }
+    
+    public List<MenuProduct> getMenuProducts() {
+        return Collections.unmodifiableList( menuProducts.toCollection() );
+    }
+    
 }

@@ -25,19 +25,19 @@ public class MenuProduct {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    private long quantity;
+    private Long quantity;
 
     public MenuProduct() {}
 
-    public MenuProduct(Product product, long quantity) {
+    public MenuProduct(Product product, Long quantity) {
         this(null, null, product, quantity);
     }
 
-    public MenuProduct(Long seq, Product product, long quantity) {
+    public MenuProduct(Long seq, Product product, Long quantity) {
         this(null, null, product, quantity);
     }
 
-    public MenuProduct(Long seq, Menu menu, Product product, long quantity) {
+    public MenuProduct(Long seq, Menu menu, Product product, Long quantity) {
         this.seq = seq;
         this.menu = menu;
         this.product = product;
@@ -52,32 +52,8 @@ public class MenuProduct {
         return seq;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
-    }
-
     public long getQuantity() {
         return quantity;
-    }
-
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
-    }
-
-    public Menu getMenu() {
-        return menu;
-    }
-
-    public void setMenu(Menu menu) {
-        this.menu = menu;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
     }
 
     public BigDecimal totalPrice() {

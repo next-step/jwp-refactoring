@@ -24,8 +24,8 @@ public class TestDataSet {
     public static final Product 강정치킨 = new Product(1L, "강정치킨", BigDecimal.valueOf(17000));
     public static final Product 양념치킨 = new Product(2L, "양념치킨", BigDecimal.valueOf(15000));
     public static final Product 후라이드 = new Product(3L, "후라이드", BigDecimal.valueOf(10000));
-    public static final MenuProduct 후라이드_2개 = new MenuProduct(1L, 후라이드, 2);
-    public static final MenuProduct 양념_2개 = new MenuProduct(2L, 양념치킨, 2);
+    public static final MenuProduct 후라이드_2개 = new MenuProduct(1L, 후라이드, 2L);
+    public static final MenuProduct 양념_2개 = new MenuProduct(2L, 양념치킨, 2L);
     public static final OrderTable 테이블_1번 = new OrderTable(1L, 4, true);
     public static final OrderTable 테이블_2번 = new OrderTable(2L, 2, true);
     public static final OrderTable 테이블_3번_존재 = new OrderTable(3L, 2, false);

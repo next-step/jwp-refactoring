@@ -1,7 +1,7 @@
 package kitchenpos.menu.domain;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -64,8 +64,8 @@ public class MenuTest {
     @DisplayName("request 가격이 제품 가격의 합보다 크면 에러를 뱉는다. ")
     void overPrice() {
         List<MenuProduct> menuProductList = Arrays
-            .asList(new MenuProduct(new Product("양념", BigDecimal.valueOf(100)), 1),
-                new MenuProduct(new Product("후라이드", BigDecimal.valueOf(100)), 1));
+            .asList(new MenuProduct(new Product("양념", BigDecimal.valueOf(100)), 1L),
+                new MenuProduct(new Product("후라이드", BigDecimal.valueOf(100)), 1L));
         assertThrows(IllegalArgumentException.class, () -> {
             Menu.create(request, menuGroup, MenuProducts.of(menuProductList));
         });

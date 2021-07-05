@@ -43,10 +43,6 @@ public class TableGroup {
         this(null, localDateTime, orderTables);
     }
 
-    public Long getId() {
-        return id;
-    }
-
     public static TableGroup make(List<Long> orderTableIds, OrderTables savedOrderTables) {
         validataion(orderTableIds, savedOrderTables);
 
@@ -83,6 +79,10 @@ public class TableGroup {
 
     public List<OrderTable> getOrderTables() {
         return Collections.unmodifiableList(orderTables.getOrderTables());
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public void ungroup() {
