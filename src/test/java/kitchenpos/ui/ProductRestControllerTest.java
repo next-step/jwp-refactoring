@@ -62,10 +62,8 @@ class ProductRestControllerTest {
 
         String requestBody = objectMapper.writeValueAsString(product);
 
-        Product responseProduct = new Product();
-        responseProduct.setId(1L);
-        responseProduct.setName("패스트푸드");
-        responseProduct.setPrice(new Price(BigDecimal.valueOf(5000)));
+        Product responseProduct = new Product(1L, "패스트푸드", BigDecimal.valueOf(5000));
+
         String responseBody = objectMapper.writeValueAsString(responseProduct);
 
         when(productService.create(any())).thenReturn(responseProduct);
@@ -82,10 +80,7 @@ class ProductRestControllerTest {
     @DisplayName("상품 목록 Api 테스트")
     @Test
     void list() throws Exception {
-        Product product = new Product();
-        product.setId(1L);
-        product.setName("패스트푸드");
-        product.setPrice(new Price(BigDecimal.valueOf(5000)));
+        Product product = new Product(1L, "패스트푸드", BigDecimal.valueOf(5000));
 
         List<Product> products = Arrays.asList(product);
 

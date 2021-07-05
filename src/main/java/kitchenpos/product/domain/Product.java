@@ -22,27 +22,22 @@ public class Product {
         this.price = new Price(price);
     }
 
-    public Long getId() {
-        return id;
+    public Product(Long id, String name, BigDecimal price) {
+        this.id = id;
+        this.name = name;
+        this.price = new Price(price);;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
+    public Long getId() {
+        return id;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(final String name) {
-        this.name = name;
-    }
-
     public Price getPrice() {
         return price;
     }
 
-    public void setPrice(final Price price) {
-        this.price = price;
-    }
 }

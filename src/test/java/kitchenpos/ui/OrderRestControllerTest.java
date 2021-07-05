@@ -51,11 +51,7 @@ class OrderRestControllerTest {
 
     @BeforeEach
     void setUp() {
-        orderLineItem = new OrderLineItem();
-        orderLineItem.setMenuId(1L);
-        orderLineItem.setOrderId(1L);
-        orderLineItem.setQuantity(10);
-        orderLineItem.setSeq(5L);
+        orderLineItem = new OrderLineItem(5L, 1L, 1L, 10);
 
         this.mockMvc = MockMvcBuilders.webAppContextSetup(ctx)
                 .addFilters(new CharacterEncodingFilter("UTF-8", true))
@@ -68,12 +64,7 @@ class OrderRestControllerTest {
     public void create() throws Exception {
         OrderTable orderTable = new OrderTable(4, false);
 
-        Order order = new Order();
-        order.setOrderLineItems(Arrays.asList(orderLineItem));
-        order.setOrderTableId(orderTable.getId());
-        order.setOrderStatus(OrderStatus.COOKING);
-        order.setOrderedTime(LocalDateTime.now());
-
+        Order order = new Order(orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(orderLineItem));
 
         String requestBody = objectMapper.writeValueAsString(order);
 
@@ -125,11 +116,7 @@ class OrderRestControllerTest {
 
         OrderTable orderTable = new OrderTable(4, false);
 
-        Order order = new Order();
-        order.setOrderLineItems(Arrays.asList(orderLineItem));
-        order.setOrderTableId(orderTable.getId());
-        order.setOrderStatus(OrderStatus.COOKING);
-        order.setOrderedTime(orderedTime);
+        Order order = new Order(orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(orderLineItem));
 
         String requestBody = objectMapper.writeValueAsString(order);
 

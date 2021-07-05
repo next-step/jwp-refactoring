@@ -86,9 +86,7 @@ class ProductServiceTest {
         String productName = "테스트상품";
         BigDecimal price = BigDecimal.valueOf(1000);
 
-        Product product = new Product();
-        product.setName(productName);
-        product.setPrice(new Price(price));
+        Product product = new Product(productName, price);
 
         Product savedProduct = productRepository.save(product);
 

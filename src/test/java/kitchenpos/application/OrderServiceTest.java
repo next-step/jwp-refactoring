@@ -72,14 +72,11 @@ class OrderServiceTest {
 
         savedOrderTable = orderTableRepository.save(orderTable);
 
-        OrderTable emptyOrderTable = new OrderTable(0, false);
+        OrderTable emptyOrderTable = new OrderTable(0, true);
 
-        emptyOrderTable.setEmpty(true);
         savedEmptyOrderTable = orderTableRepository.save(emptyOrderTable);
 
-        orderLineItem = new OrderLineItem();
-        orderLineItem.setMenuId(savedMenu.getId());
-        orderLineItem.setQuantity(1);
+        orderLineItem = new OrderLineItem(savedMenu.getId(), 1);
     }
 
     @DisplayName("주문을 생성하자")
@@ -109,11 +106,8 @@ class OrderServiceTest {
         //given
         LocalDateTime orderedTime = LocalDateTime.of(2021, 7, 1, 01, 10, 00);
 
-        Order order = new Order();
-        order.setOrderTableId(savedOrderTable.getId());
-        order.setOrderStatus(OrderStatus.COOKING);
-        order.setOrderLineItems(Arrays.asList(orderLineItem));
-        order.setOrderedTime(orderedTime);
+        Order order = new Order(savedOrderTable.getId(), OrderStatus.COOKING, orderedTime, Arrays.asList(orderLineItem));
+
         Order savedOrder = orderRepository.save(order);
 
         //when
@@ -180,10 +174,7 @@ class OrderServiceTest {
         //given
         LocalDateTime orderedTime = LocalDateTime.of(2021, 7, 1, 01, 10, 00);
 
-        Order order = new Order();
-        order.setOrderTableId(savedOrderTable.getId());
-        order.setOrderStatus(OrderStatus.COOKING);
-        order.setOrderedTime(orderedTime);
+        Order order = new Order(savedOrderTable.getId(), OrderStatus.COOKING, orderedTime, Arrays.asList(orderLineItem));
 
         Order savedOrder = orderRepository.save(order);
 
@@ -216,10 +207,7 @@ class OrderServiceTest {
     @Test
     public void couldNotChangeOrderStatus() throws Exception {
         // given
-        Order order = new Order();
-        order.setOrderTableId(savedOrderTable.getId());
-        order.setOrderStatus(OrderStatus.COMPLETION);
-        order.setOrderedTime(LocalDateTime.now());
+        Order order = new Order(savedOrderTable.getId(), OrderStatus.COMPLETION, LocalDateTime.now(), Arrays.asList(orderLineItem));
 
         Order savedOrder = orderRepository.save(order);
 

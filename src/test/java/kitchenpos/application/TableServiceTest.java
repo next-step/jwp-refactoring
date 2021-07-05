@@ -107,17 +107,14 @@ class TableServiceTest {
         OrderTableRequest orderTableRequest = new OrderTableRequest(0, true);
 
         // 테이블그룹 추가
-        TableGroup tableGroup = new TableGroup();
-        List<OrderTable> orderTables = new ArrayList<>(Arrays.asList(savedOrderTable));
-        tableGroup.setOrderTables(orderTables);
-        tableGroup.setCreatedDate(LocalDateTime.now());
+        TableGroup tableGroup = new TableGroup(LocalDateTime.now());
 
         TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
 
         // 테이블 정보 추가
         int countOfPeople = 4;
         OrderTable orderTable = new OrderTable(countOfPeople, false);
-        orderTable.setTableGroupId(savedTableGroup.getId());
+        orderTable.groupBy(savedTableGroup.getId());
 
         OrderTable savedOrderTable = orderTableRepository.save(orderTable);
 
@@ -133,10 +130,8 @@ class TableServiceTest {
         //given
         OrderTableRequest orderTableRequest = new OrderTableRequest(0, true);
 
-        Order order = new Order();
-        order.setOrderStatus(OrderStatus.COOKING);
-        order.setOrderTableId(savedOrderTable.getId());
-        order.setOrderedTime(LocalDateTime.now());
+        Order order = new Order(savedOrderTable.getId(), OrderStatus.COOKING, LocalDateTime.now());
+
         orderRepository.save(order);
 
         //when
@@ -177,8 +172,7 @@ class TableServiceTest {
     @Test
     public void failChangeNumberOfGuestsNotEmptyOrderTable() throws Exception {
         //given
-        OrderTable orderTable = new OrderTable();
-        orderTable.setEmpty(true);
+        OrderTable orderTable = new OrderTable(0, true);
         OrderTable savedOrderTable = orderTableRepository.save(orderTable);
 
         //when

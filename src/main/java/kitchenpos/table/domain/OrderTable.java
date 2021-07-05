@@ -29,19 +29,21 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public Long getId() {
-        return id;
+    public OrderTable(Long id, int numberOfGuests, boolean empty) {
+        this.id = id;
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
+    public Long getId() {
+        return id;
     }
 
     public Long getTableGroupId() {
         return tableGroupId;
     }
 
-    public void setTableGroupId(final Long tableGroupId) {
+    public void groupBy(final Long tableGroupId) {
         this.tableGroupId = tableGroupId;
     }
 
@@ -57,7 +59,7 @@ public class OrderTable {
         return empty;
     }
 
-    public void setEmpty(final boolean empty) {
+    private void setEmpty(final boolean empty) {
         this.empty = empty;
     }
 
@@ -91,6 +93,6 @@ public class OrderTable {
     public void ungroup() {
         orders.stream()
                 .forEach(Order::ungroupValidation);
-        setTableGroupId(null);
+        groupBy(null);
     }
 }

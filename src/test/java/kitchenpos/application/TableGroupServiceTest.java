@@ -86,11 +86,10 @@ class TableGroupServiceTest {
         OrderTable savedOrderTable1 = createOrderTable(countOfPeople, true);
         OrderTable savedOrderTable2 = createOrderTable(countOfPeople, true);
 
-        TableGroup anotherTableGroup = new TableGroup();
-        anotherTableGroup.setCreatedDate(LocalDateTime.now());
+        TableGroup anotherTableGroup = new TableGroup(LocalDateTime.now());
 
         TableGroup savedAnotherTableGroup = tableGroupRepository.save(anotherTableGroup);
-        savedOrderTable2.setTableGroupId(savedAnotherTableGroup.getId());
+        savedOrderTable2.groupBy(savedAnotherTableGroup.getId());
 
         orderTableRepository.save(savedOrderTable2);
 
@@ -117,9 +116,7 @@ class TableGroupServiceTest {
     public void ungroup() throws Exception {
         //given
         // 테이블 추가
-
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setCreatedDate(LocalDateTime.now());
+        TableGroup tableGroup = new TableGroup(LocalDateTime.now());
 
         TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
 
@@ -139,18 +136,15 @@ class TableGroupServiceTest {
     @Test
     public void failUnGroupBecauseStatus() throws Exception {
         //given
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setCreatedDate(LocalDateTime.now());
+        TableGroup tableGroup = new TableGroup(LocalDateTime.now());
         TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
 
         OrderTable savedOrderTable1 = createOrderTable(4, savedTableGroup.getId());
         OrderTable savedOrderTable2 = createOrderTable(4, savedTableGroup.getId());
 
         // 주문 상태 추가
-        Order order = new Order();
-        order.setOrderStatus(OrderStatus.COOKING);
-        order.setOrderTableId(savedOrderTable1.getId());
-        order.setOrderedTime(LocalDateTime.now());
+        Order order = new Order(savedOrderTable1.getId(), OrderStatus.COOKING, LocalDateTime.now());
+
         orderRepository.save(order);
 
         //then
@@ -161,7 +155,7 @@ class TableGroupServiceTest {
 
     private OrderTable createOrderTable(int countOfPeople, Long id) {
         OrderTable orderTable = new OrderTable(countOfPeople, false);
-        orderTable.setTableGroupId(id);
+        orderTable.groupBy(id);
         OrderTable savedOrderTable = orderTableRepository.save(orderTable);
         return savedOrderTable;
     }

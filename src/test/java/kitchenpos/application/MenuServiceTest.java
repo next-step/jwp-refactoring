@@ -51,15 +51,10 @@ class MenuServiceTest {
         MenuGroup menuGroup = new MenuGroup("패스트푸드");
         savedMenuGroup = menuGroupRepository.save(menuGroup);
 
-        Product product = new Product();
-        product.setPrice(new Price(price));
-        product.setName("빅맥");
+        Product product = new Product("빅맥", price);
         savedProduct = productRepository.save(product);
 
-        menuProduct = new MenuProduct();
-        menuProduct.setProduct(savedProduct);
-        menuProduct.setQuantity(1);
-
+        menuProduct = new MenuProduct(savedProduct, 1);
     }
 
     @DisplayName("메뉴를 만들어보자")

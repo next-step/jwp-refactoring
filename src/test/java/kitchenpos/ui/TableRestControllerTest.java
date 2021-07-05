@@ -78,8 +78,7 @@ class TableRestControllerTest {
     @DisplayName("테이블 목록 Api 테스트")
     @Test
     void list() throws Exception {
-        OrderTable orderTable = new OrderTable(4, false);
-        orderTable.setId(1L);
+        OrderTable orderTable = new OrderTable(1L, 4, false);
 
         List<OrderTableResponse> orders = Arrays.asList(OrderTableResponse.of(orderTable));
 
@@ -99,8 +98,7 @@ class TableRestControllerTest {
     void changeEmpty() throws Exception {
         Long orderTableId = 1L;
 
-        OrderTable orderTable = new OrderTable(4, false);
-        orderTable.setId(1L);
+        OrderTable orderTable = new OrderTable(1L, 4, false);
 
         String requestBody = objectMapper.writeValueAsString(orderTable);
 
@@ -127,8 +125,7 @@ class TableRestControllerTest {
     void changeNumberOfGuests() throws Exception {
         Long orderTableId = 1L;
 
-        OrderTable orderTable = new OrderTable(4, false);
-        orderTable.setId(1L);
+        OrderTable orderTable = new OrderTable(1L, 4, false);
 
         String requestBody = objectMapper.writeValueAsString(orderTable);
 

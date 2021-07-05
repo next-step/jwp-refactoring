@@ -18,12 +18,16 @@ public class TableGroup {
     public TableGroup() {
     }
 
+    public TableGroup(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
+    }
+
     public TableGroup(LocalDateTime createdDate, List<OrderTable> orderTables) {
         this.createdDate = createdDate;
         this.orderTables = orderTables;
 
         if (isValidation(orderTables)) {
-            throw new IllegalArgumentException("빈테이블 또는 이미 단체테이블인 테이블이 존재하는 경우는 단체테이블을 없습니다.");
+            throw new IllegalArgumentException("빈테이블 또는 이미 단체테이블인 테이블이 존재하는 경우는 단체테이블을 구성할수 없습니다.");
         }
     }
 
@@ -37,23 +41,11 @@ public class TableGroup {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public LocalDateTime getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(final LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
     public List<OrderTable> getOrderTables() {
         return orderTables;
-    }
-
-    public void setOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
     }
 }
