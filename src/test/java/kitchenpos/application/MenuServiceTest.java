@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuProductDao;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -34,9 +33,6 @@ class MenuServiceTest {
 
     @Autowired
     MenuGroupRepository menuGroupRepository;
-
-    @Autowired
-    MenuProductDao menuProductDao;
 
     @Autowired
     ProductRepository productRepository;

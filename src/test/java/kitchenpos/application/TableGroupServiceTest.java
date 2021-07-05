@@ -5,10 +5,12 @@ import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
+import kitchenpos.domain.TableGroupRepository;
 import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.dto.TableGroupResponse;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,10 +34,10 @@ class TableGroupServiceTest {
     OrderDao orderDao;
 
     @Autowired
-    OrderTableDao orderTableDao;
+    OrderTableRepository orderTableRepository;
 
     @Autowired
-    TableGroupDao tableGroupDao;
+    TableGroupRepository tableGroupRepository;
 
 
     @DisplayName("테이블 그룹을 만들어보자")
@@ -88,10 +90,10 @@ class TableGroupServiceTest {
         TableGroup anotherTableGroup = new TableGroup();
         anotherTableGroup.setCreatedDate(LocalDateTime.now());
 
-        TableGroup savedAnotherTableGroup = tableGroupDao.save(anotherTableGroup);
+        TableGroup savedAnotherTableGroup = tableGroupRepository.save(anotherTableGroup);
         savedOrderTable2.setTableGroupId(savedAnotherTableGroup.getId());
 
-        orderTableDao.save(savedOrderTable2);
+        orderTableRepository.save(savedOrderTable2);
 
 
         OrderTableRequest orderTableRequest1 = new OrderTableRequest(savedOrderTable1.getId(), savedOrderTable1.getTableGroupId(), savedOrderTable1.getNumberOfGuests(), savedOrderTable1.isEmpty());
@@ -108,7 +110,7 @@ class TableGroupServiceTest {
     private OrderTable createOrderTable(int countOfPeople, boolean emptyFlag) {
         OrderTable orderTable = new OrderTable(countOfPeople, emptyFlag);
 
-        return orderTableDao.save(orderTable);
+        return orderTableRepository.save(orderTable);
     }
 
     @DisplayName("테이블 그룹을 해지하자")
@@ -120,7 +122,7 @@ class TableGroupServiceTest {
         TableGroup tableGroup = new TableGroup();
         tableGroup.setCreatedDate(LocalDateTime.now());
 
-        TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
+        TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
 
         OrderTable savedOrderTable1 = createOrderTable(4, savedTableGroup.getId());
         OrderTable savedOrderTable2 = createOrderTable(4, savedTableGroup.getId());
@@ -128,9 +130,9 @@ class TableGroupServiceTest {
         tableGroupService.ungroup(savedTableGroup.getId());
 
         //then
-        OrderTable orderTable1 = orderTableDao.findById(savedOrderTable1.getId()).get();
+        OrderTable orderTable1 = orderTableRepository.findById(savedOrderTable1.getId()).get();
         assertNull(orderTable1.getTableGroupId());
-        OrderTable orderTable2 = orderTableDao.findById(savedOrderTable2.getId()).get();
+        OrderTable orderTable2 = orderTableRepository.findById(savedOrderTable2.getId()).get();
         assertNull(orderTable2.getTableGroupId());
     }
 
@@ -140,7 +142,7 @@ class TableGroupServiceTest {
         //given
         TableGroup tableGroup = new TableGroup();
         tableGroup.setCreatedDate(LocalDateTime.now());
-        TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
+        TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
 
         OrderTable savedOrderTable1 = createOrderTable(4, savedTableGroup.getId());
         OrderTable savedOrderTable2 = createOrderTable(4, savedTableGroup.getId());
@@ -161,7 +163,7 @@ class TableGroupServiceTest {
     private OrderTable createOrderTable(int countOfPeople, Long id) {
         OrderTable orderTable = new OrderTable(countOfPeople, false);
         orderTable.setTableGroupId(id);
-        OrderTable savedOrderTable = orderTableDao.save(orderTable);
+        OrderTable savedOrderTable = orderTableRepository.save(orderTable);
         return savedOrderTable;
     }
 }

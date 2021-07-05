@@ -4,6 +4,7 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
+import kitchenpos.domain.TableGroupRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -36,7 +37,7 @@ class TableServiceTest {
     OrderTableRepository orderTableRepository;
 
     @Autowired
-    TableGroupDao tableGroupDao;
+    TableGroupRepository tableGroupRepository;
 
     @Autowired
     OrderDao orderDao;
@@ -112,7 +113,7 @@ class TableServiceTest {
         tableGroup.setOrderTables(orderTables);
         tableGroup.setCreatedDate(LocalDateTime.now());
 
-        TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
+        TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
 
         // 테이블 정보 추가
         int countOfPeople = 4;
