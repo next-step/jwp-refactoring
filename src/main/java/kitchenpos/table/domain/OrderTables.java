@@ -7,6 +7,7 @@ import java.util.List;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
+import kitchenpos.table.exception.OrderUsingException;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 @Embeddable
@@ -44,7 +45,7 @@ public class OrderTables {
 
     private void validation() {
         if (isImmutableOrder()) {
-            throw new IllegalArgumentException();
+            throw new OrderUsingException();
         }
     }
 

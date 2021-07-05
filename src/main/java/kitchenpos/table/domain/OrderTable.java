@@ -15,6 +15,10 @@ import javax.persistence.OneToMany;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.exception.AlreadyExsistGroupException;
+import kitchenpos.table.exception.EmptyTableException;
+import kitchenpos.table.exception.NoGuestsException;
+import kitchenpos.table.exception.OrderUsingException;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 @Entity
@@ -100,11 +104,11 @@ public class OrderTable {
 
     private void validationEmpty() {
         if (hasTableGroup()) {
-            throw new IllegalArgumentException();
+            throw new AlreadyExsistGroupException();
         }
 
         if (isImmutableOrder()) {
-            throw new IllegalArgumentException();
+            throw new OrderUsingException();
         }
 
     }
@@ -116,11 +120,11 @@ public class OrderTable {
 
     private void validationGuests(OrderTableRequest orderTableRequest) {
         if (orderTableRequest.getNumberOfGuests() < 0) {
-            throw new IllegalArgumentException();
+            throw new NoGuestsException();
         }
 
         if (isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new EmptyTableException();
         }
     }
 

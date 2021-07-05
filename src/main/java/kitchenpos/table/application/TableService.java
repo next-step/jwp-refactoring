@@ -10,6 +10,7 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.exception.NoOrderTableException;
 
 @Service
 public class TableService {
@@ -37,7 +38,7 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(NoOrderTableException::new);
 
         savedOrderTable.updateEmpty(orderTableRequest);
 
@@ -47,7 +48,7 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(NoOrderTableException::new);
 
         savedOrderTable.updateGuests(orderTableRequest);
 
