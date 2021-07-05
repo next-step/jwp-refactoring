@@ -76,14 +76,9 @@ public class OrderTable {
         return tableGroup;
     }
 
-    public void emptyOn() {
+    public void updateEmpty(boolean isEmpty) {
         validate();
-        this.empty = true;
-    }
-
-    public void emptyOff() {
-        validate();
-        this.empty = false;
+        this.empty = isEmpty;
     }
 
     boolean isGrouped() {

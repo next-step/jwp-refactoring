@@ -32,11 +32,11 @@ class OrderTableTest {
 
 		// when
 		// than
-		assertThatThrownBy(() -> orderTable1.emptyOn())
+		assertThatThrownBy(() -> orderTable1.updateEmpty(true))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("그룹 설정이 되어 있는 테이블은 주문 등록 불가 상태로 바꿀 수 없습니다.");
 
-		assertThatThrownBy(() -> orderTable1.emptyOff())
+		assertThatThrownBy(() -> orderTable1.updateEmpty(false))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("그룹 설정이 되어 있는 테이블은 주문 등록 불가 상태로 바꿀 수 없습니다.");
 	}
@@ -51,11 +51,11 @@ class OrderTableTest {
 
 		// when
 		// than
-		assertThatThrownBy(() -> orderTable.emptyOn())
+		assertThatThrownBy(() -> orderTable.updateEmpty(true))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("조리상태이거나 식사상태주문의 주문테이블은 상태를 변경할 수 없습니다.");
 
-		assertThatThrownBy(() -> orderTable.emptyOff())
+		assertThatThrownBy(() -> orderTable.updateEmpty(false))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("조리상태이거나 식사상태주문의 주문테이블은 상태를 변경할 수 없습니다.");
 	}
@@ -67,13 +67,13 @@ class OrderTableTest {
 		OrderTable orderTable = new OrderTable(1, false);
 
 		// when
-		orderTable.emptyOn();
+		orderTable.updateEmpty(true);
 
 		// than
 		assertThat(orderTable.isEmpty()).isTrue();
 
 		// when
-		orderTable.emptyOff();
+		orderTable.updateEmpty(false);
 
 		// than
 		assertThat(orderTable.isEmpty()).isFalse();

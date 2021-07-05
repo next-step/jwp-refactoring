@@ -33,13 +33,7 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
             .orElseThrow(() -> new IllegalArgumentException("등록이 되지 않은 주문테이블은 상태를 변경할 수 없습니다."));
-
-        if (orderTableRequest.isEmpty()) {
-            savedOrderTable.emptyOn();
-            return OrderTableResponse.of(savedOrderTable);
-        }
-
-        savedOrderTable.emptyOff();
+        savedOrderTable.updateEmpty(orderTableRequest.isEmpty());
         return OrderTableResponse.of(savedOrderTable);
     }
 
