@@ -55,7 +55,7 @@ class MenuGroupServiceTest {
         given(menuGroupDao.findAll()).willReturn(Arrays.asList(추천메뉴, 인기메뉴));
 
         // when
-        List<MenuGroup> menuGroups = menuGroupDao.findAll();
+        List<MenuGroup> menuGroups = menuGroupService.list();
 
         // then
         assertThat(menuGroups).containsExactly(추천메뉴, 인기메뉴);
