@@ -33,7 +33,7 @@ public class TableGroupService {
         final List<OrderTable> orderTables = tableGroup.getOrderTables();
 
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문 테이블이 2개 이상이어야 합니다.");
         }
 
         final List<Long> orderTableIds = orderTables.stream()
@@ -43,13 +43,12 @@ public class TableGroupService {
         final List<OrderTable> savedOrderTables = orderTableDao.findAllByIdIn(orderTableIds);
 
         if (orderTables.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("등록되지 않은 주문 테이블이 있습니다.");
         }
 
         for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
-                throw new IllegalArgumentException();
-            }
+            isEmptyCheck(savedOrderTable);
+            hasTableGroupIdCheck(savedOrderTable);
         }
 
         tableGroup.setCreatedDate(LocalDateTime.now());
@@ -67,6 +66,18 @@ public class TableGroupService {
         return savedTableGroup;
     }
 
+    private void isEmptyCheck(OrderTable savedOrderTable) {
+        if (!savedOrderTable.isEmpty()) {
+            throw new IllegalArgumentException("빈 주문 테이블이 아닙니다.");
+        }
+    }
+
+    private void hasTableGroupIdCheck(OrderTable savedOrderTable) {
+        if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
+            throw new IllegalArgumentException("이미 단체 지정된 테이블이 있습니다.");
+        }
+    }
+
     @Transactional
     public void ungroup(final Long tableGroupId) {
         final List<OrderTable> orderTables = orderTableDao.findAllByTableGroupId(tableGroupId);
@@ -77,7 +88,7 @@ public class TableGroupService {
 
         if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
                 orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문이 조리나 식사 상태입니다.");
         }
 
         for (final OrderTable orderTable : orderTables) {
