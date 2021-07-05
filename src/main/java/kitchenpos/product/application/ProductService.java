@@ -2,6 +2,7 @@ package kitchenpos.product.application;
 
 import java.util.List;
 
+import kitchenpos.product.dto.ProductResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,8 +18,8 @@ public class ProductService {
     }
 
     @Transactional
-    public Product create(final Product product) {
-        return productDao.save(product);
+    public ProductResponse create(final Product product) {
+        return productDao.save(product).toResponse();
     }
 
     public List<Product> list() {

@@ -13,8 +13,12 @@ public class ProductResponse {
         this.price = price;
     }
 
-    public static ProductResponse of(Long id, String name, int amount) {
-        return new ProductResponse(id, name, amount);
+    public static ProductResponse of(Long id, String name, int price) {
+        return new ProductResponse(id, name, price);
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getName() {
