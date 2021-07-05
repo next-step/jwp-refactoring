@@ -12,8 +12,14 @@ import kitchenpos.menuproduct.dto.MenuProductResponse;
 
 @Embeddable
 public class MenuProducts {
+    public MenuProducts() {}
+
     @OneToMany(mappedBy = "menu")
     private final List<MenuProduct> menuProducts = new ArrayList<>();
+
+    public MenuProducts(Menu menu, ProductsQuantities productsQuantities) {
+        menuProducts.addAll(productsQuantities.toMenuProduct(menu));
+    }
 
     public List<MenuProductResponse> toResponse() {
         return menuProducts.stream().map(MenuProduct::toResponse).collect(Collectors.toList());
