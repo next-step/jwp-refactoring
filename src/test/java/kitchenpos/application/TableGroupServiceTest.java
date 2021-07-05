@@ -106,9 +106,7 @@ class TableGroupServiceTest {
     }
 
     private OrderTable createOrderTable(int countOfPeople, boolean emptyFlag) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(countOfPeople);
-        orderTable.setEmpty(emptyFlag);
+        OrderTable orderTable = new OrderTable(countOfPeople, emptyFlag);
 
         return orderTableDao.save(orderTable);
     }
@@ -161,9 +159,7 @@ class TableGroupServiceTest {
     }
 
     private OrderTable createOrderTable(int countOfPeople, Long id) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(countOfPeople);
-        orderTable.setEmpty(false);
+        OrderTable orderTable = new OrderTable(countOfPeople, false);
         orderTable.setTableGroupId(id);
         OrderTable savedOrderTable = orderTableDao.save(orderTable);
         return savedOrderTable;

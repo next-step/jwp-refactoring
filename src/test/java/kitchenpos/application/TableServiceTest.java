@@ -48,9 +48,7 @@ class TableServiceTest {
     @BeforeEach
     void setUp() {
         int countOfPeople = 4;
-        orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(countOfPeople);
-        orderTable.setEmpty(false);
+        orderTable = new OrderTable(countOfPeople, false);
 
         savedOrderTable = orderTableRepository.save(orderTable);
     }
@@ -73,9 +71,7 @@ class TableServiceTest {
     @Test
     public void tableLists() throws Exception {
         // given
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(4);
-        orderTable.setEmpty(false);
+        OrderTable orderTable = new OrderTable(4, false);
         OrderTable savedOrderTable = orderTableRepository.save(orderTable);
 
         //when
@@ -120,10 +116,8 @@ class TableServiceTest {
 
         // 테이블 정보 추가
         int countOfPeople = 4;
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(countOfPeople);
+        OrderTable orderTable = new OrderTable(countOfPeople, false);
         orderTable.setTableGroupId(savedTableGroup.getId());
-        orderTable.setEmpty(false);
 
         OrderTable savedOrderTable = orderTableRepository.save(orderTable);
 

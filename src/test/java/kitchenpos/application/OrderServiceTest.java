@@ -65,12 +65,12 @@ class OrderServiceTest {
 
         savedMenu = menuDao.save(menu);
 
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(2);
+        OrderTable orderTable = new OrderTable(2, false);
+
         savedOrderTable = orderTableRepository.save(orderTable);
 
-        OrderTable emptyOrderTable = new OrderTable();
-        emptyOrderTable.setNumberOfGuests(0);
+        OrderTable emptyOrderTable = new OrderTable(0, false);
+
         emptyOrderTable.setEmpty(true);
         savedEmptyOrderTable = orderTableRepository.save(emptyOrderTable);
 
