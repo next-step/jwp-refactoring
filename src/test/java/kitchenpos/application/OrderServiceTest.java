@@ -6,6 +6,7 @@ import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.internal.matchers.Or;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
@@ -23,6 +25,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.InstanceOfAssertFactories.COMPLETION_STAGE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -64,7 +67,7 @@ class OrderServiceTest {
         givenOrderLineItem.setQuantity(1L);
     }
 
-    @DisplayName("주문 항목이 없으면 주문할 수 없다")
+    @DisplayName("주문 항목이 없으면 주문할 수 없다.")
     @Test
     void createFailBecauseOfWrongProductTest() {
         //given
@@ -77,7 +80,7 @@ class OrderServiceTest {
 
     }
 
-    @DisplayName("등록된 메뉴만 주문 할 수 있다")
+    @DisplayName("등록된 메뉴만 주문 할 수 있다.")
     @Test
     void createFailBecauseOfNotExistMenuTest() {
         //given
@@ -90,7 +93,7 @@ class OrderServiceTest {
 
     }
 
-    @DisplayName("주문 테이블이 존재해야 한다")
+    @DisplayName("주문 테이블이 존재해야 한다.")
     @Test
     void createFailBecauseOfNotExistTableTest() {
         //given
@@ -104,7 +107,7 @@ class OrderServiceTest {
 
     }
 
-    @DisplayName("주문 테이블은 비어있지 않아야 한다")
+    @DisplayName("주문 테이블은 비어있지 않아야 한다.")
     @Test
     void createFailBecauseOfEmptyTableTest() {
         //given
@@ -120,7 +123,7 @@ class OrderServiceTest {
 
     }
 
-    @DisplayName("주문 생성")
+    @DisplayName("주문을 생성할 수 있다.")
     @Test
     void createTest() {
         //given
@@ -138,7 +141,7 @@ class OrderServiceTest {
         verify(orderLineItemDao).save(givenOrderLineItem);
     }
 
-    @DisplayName("주문 목록을 조회할 수 있다 ")
+    @DisplayName("주문 목록을 조회할 수 있다.")
     @Test
     void list() {
         //given
@@ -155,6 +158,58 @@ class OrderServiceTest {
         assertThat(result).containsExactly(givenOrder);
     }
 
+    @DisplayName("등록되지 않은 주문은 변경할 수 없다.")
+    @Test
+    void changeOrderStatusFailBecauseOfNotExistOrderTest() {
+        //given
+        given(orderDao.findById(givenOrder.getId())).willReturn(Optional.empty());
+
+        //when && then
+        assertThatThrownBy(() -> orderService.changeOrderStatus(givenOrder.getId(), givenOrder))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("등록되지 않은 주문입니다.");
+
+    }
+
+    @DisplayName("완료된 주문은 변경할 수 없다")
+    @Test
+    void changeOrderStatusFailBecauseOfOrderStatusTest() {
+        //given
+        givenOrder.setOrderStatus(OrderStatus.COMPLETION.name());
+        given(orderDao.findById(givenOrder.getId())).willReturn(Optional.ofNullable(givenOrder));
+
+        //when && then
+        assertThatThrownBy(() -> orderService.changeOrderStatus(givenOrder.getId(), givenOrder))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("이미 완료된 주문입니다.");
+
+    }
+
+    @DisplayName("주문 상태를 변경할 수 있다")
+    @Test
+    void changeOrderStatusTest() {
+        //given
+        given(orderDao.findById(givenOrder.getId())).willReturn(Optional.ofNullable(givenOrder));
+        Order modifiedOrder = createModifiedOrder();
+
+        //when
+        Order result = orderService.changeOrderStatus(givenOrder.getId(), modifiedOrder);
+
+        //
+        verify(orderDao).save(givenOrder);
+        assertThat(result.getOrderStatus()).isEqualTo(modifiedOrder.getOrderStatus());
+
+    }
+
+    private Order createModifiedOrder() {
+        Order modifiedOrder = new Order();
+        modifiedOrder.setId(givenOrder.getId());
+        modifiedOrder.setOrderStatus("MEAL");
+        modifiedOrder.setOrderTableId(givenOrder.getOrderTableId());
+        modifiedOrder.setOrderedTime(givenOrder.getOrderedTime());
+        modifiedOrder.setOrderLineItems(givenOrder.getOrderLineItems());
+        return modifiedOrder;
+    }
 
 
 }

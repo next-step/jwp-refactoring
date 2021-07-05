@@ -39,7 +39,7 @@ class TableServiceTest {
         givenOrderTable.setNumberOfGuests(2);
     }
 
-    @DisplayName("주문 테이블 생성")
+    @DisplayName("주문 테이블을 생성할 수 있다.")
     @Test
     void createTest() {
         //when
@@ -49,7 +49,7 @@ class TableServiceTest {
         verify(orderTableDao).save(givenOrderTable);
     }
 
-    @DisplayName("주문 테이블 목록 조회")
+    @DisplayName("주문 테이블 목록을 조회할 수 있다.")
     @Test
     void list() {
         //given
@@ -62,7 +62,7 @@ class TableServiceTest {
         assertThat(result).containsExactly(givenOrderTable);
     }
 
-    @DisplayName("등록되어있지 않은 주문 테이블은 빈 테이블 설정할 수 없다")
+    @DisplayName("등록되어있지 않은 주문 테이블은 빈 테이블 설정할 수 없다.")
     @Test
     void changeEmptyFailBecauseOfNotExistOrderTableTest() {
         //given
@@ -74,7 +74,7 @@ class TableServiceTest {
                 .hasMessageContaining("등록되지 않은 주문 테이블입니다.");
     }
 
-    @DisplayName("단체 지정된 테이블은 빈 테이블 설정 할 수 없다")
+    @DisplayName("단체 지정된 테이블은 빈 테이블 설정 할 수 없다.")
     @Test
     void changeEmptyFailBecauseOfHasTableGroupIdTest() {
         //given
@@ -87,7 +87,7 @@ class TableServiceTest {
                 .hasMessageContaining("단체 지정된 테이블입니다.");
     }
 
-    @DisplayName("주문 상태가 `조리`, `식사` 이면 빈 테이블 설정 할 수 없다")
+    @DisplayName("주문 상태가 `조리`, `식사` 이면 빈 테이블 설정 할 수 없다.")
     @Test
     void changeEmptyFailBecauseOfOrderStatusTest() {
         //given
@@ -100,7 +100,7 @@ class TableServiceTest {
                 .hasMessageContaining("주문이 조리나 식사 상태입니다.");
     }
 
-    @DisplayName("빈 테이블 설정")
+    @DisplayName("빈 테이블 설정을 할 수 있다.")
     @Test
     void changeEmptyTest() {
         //given
@@ -114,7 +114,7 @@ class TableServiceTest {
         verify(orderTableDao).save(givenOrderTable);
     }
 
-    @DisplayName("방문한 고객 수를 마이너스로 변경 할 수 없다")
+    @DisplayName("방문한 고객 수를 마이너스로 변경 할 수 없다.")
     @Test
     void changeNumberOfGuestsFailBecauseOfMinusGuestNumberTest() {
         //given
@@ -127,7 +127,7 @@ class TableServiceTest {
     }
 
 
-    @DisplayName("주문 테이블이 존재해야 합니다")
+    @DisplayName("주문 테이블이 존재해야 한다.")
     @Test
     void changeNumberOfGuestsFailBecauseOfNotExistOrderTableTest() {
         //given
@@ -152,7 +152,7 @@ class TableServiceTest {
                 .hasMessageContaining("빈 주문 테이블입니다.");
     }
 
-    @DisplayName("방문 고객 수 변경")
+    @DisplayName("방문 고객 수를 변경할 수 있다.")
     @Test
     void changeNumberOfGuestsTest() {
         //given

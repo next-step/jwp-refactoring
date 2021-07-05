@@ -67,7 +67,7 @@ class MenuServiceTest {
         givenMenuProduct.setProductId(1L);
     }
 
-    @DisplayName("가격이 0원 이상이어야 한다")
+    @DisplayName("가격이 0원 이상이어야 한다.")
     @Test
     void createFailBecauseOfWrongPriceTest() {
         //given
@@ -87,7 +87,7 @@ class MenuServiceTest {
                 .hasMessageContaining("메뉴 가격은 0원 이상이어야 합니다");
     }
 
-    @DisplayName("메뉴 그룹이 지정되어있지 않으면 실패")
+    @DisplayName("메뉴 그룹이 지정되어있어야 한다.")
     @Test
     void createFailBecauseOfEmptyGroupMenuTest() {
         //given
@@ -100,7 +100,7 @@ class MenuServiceTest {
 
     }
 
-    @DisplayName("상품이 있는 메뉴만 등록 가능하다")
+    @DisplayName("상품이 있는 메뉴만 등록 가능하다.")
     @Test
     void createFailBecauseOfNotExistProductMenuTest() {
         //given
@@ -113,7 +113,7 @@ class MenuServiceTest {
 
     }
 
-    @DisplayName("메뉴 가격이 상품 가격의 총 합보다 클 수 없다")
+    @DisplayName("메뉴 가격이 상품 가격의 총 합보다 클 수 없다.")
     @Test
     void createFailBecauseOfMissMatchProductPriceMenuTest() {
         //given
@@ -128,7 +128,7 @@ class MenuServiceTest {
 
     }
 
-    @DisplayName("메뉴를 등록한다")
+    @DisplayName("메뉴를 등록할 수 있다.")
     @Test
     void createTest() {
         //given
@@ -145,7 +145,7 @@ class MenuServiceTest {
         verify(menuProductDao).save(givenMenuProduct);
     }
 
-    @DisplayName("메뉴 목록을 조회할 수 있다 ")
+    @DisplayName("메뉴 목록을 조회할 수 있다.")
     @Test
     void list() {
         //given

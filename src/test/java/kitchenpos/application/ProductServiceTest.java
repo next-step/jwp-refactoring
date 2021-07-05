@@ -35,7 +35,7 @@ class ProductServiceTest {
         givenProduct.setName("샘플상품");
     }
 
-    @DisplayName("가격이 없거나 마이너스인 상품은 등록할 수 없다")
+    @DisplayName("가격이 없거나 마이너스인 상품은 등록할 수 없다.")
     @Test
     void createFailBecauseWrongPriceTest() {
         //given
@@ -55,7 +55,7 @@ class ProductServiceTest {
                 .hasMessageContaining("가격이 없는 상품은 등록할 수 없습니다.");
     }
 
-    @DisplayName("주문 생성")
+    @DisplayName("상품을 생성할 수 있다.")
     @Test
     void createTest() {
         //when
@@ -65,7 +65,7 @@ class ProductServiceTest {
         verify(productDao).save(givenProduct);
     }
 
-    @DisplayName("주문 목록을 조회할 수 있다 ")
+    @DisplayName("상품 목록을 조회할 수 있다.")
     @Test
     void list() {
         //given
