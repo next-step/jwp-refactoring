@@ -28,34 +28,41 @@ public class MenuGroupServiceTest {
 	@InjectMocks
 	private MenuGroupService menuGroupService;
 
-	MenuGroup 와퍼세트;
-	MenuGroup 치즈와퍼세트;
+	MenuGroup 피자;
+	MenuGroup 치킨;
 
 	@BeforeEach
 	void setUp() {
-		와퍼세트 = new MenuGroup();
-		와퍼세트.setId(1L);
-		와퍼세트.setName("와퍼세트");
-		치즈와퍼세트 = new MenuGroup();
-		치즈와퍼세트.setId(2L);
-		치즈와퍼세트.setName("치즈와퍼세트");
+		피자 = 메뉴그룹_생성(1L, "피자");
+		치킨 = 메뉴그룹_생성(2L, "치킨");
 	}
 
 	@DisplayName("메뉴 그룹을 생성한다.")
 	@Test
 	void 메뉴_그룹을_등록한다() {
-		given(menuGroupDao.save(와퍼세트)).willReturn(와퍼세트);
-		MenuGroup createdMenuGroup = menuGroupService.create(와퍼세트);
-		assertThat(createdMenuGroup.getId()).isEqualTo(와퍼세트.getId());
-		assertThat(createdMenuGroup.getName()).isEqualTo(와퍼세트.getName());
+		given(menuGroupDao.save(피자)).willReturn(피자);
+
+		MenuGroup createdMenuGroup = menuGroupService.create(피자);
+
+		assertThat(createdMenuGroup.getId()).isEqualTo(피자.getId());
+		assertThat(createdMenuGroup.getName()).isEqualTo(피자.getName());
 	}
 
 	@DisplayName("메뉴 그룹 리스트를 조회한다.")
 	@Test
 	void 메뉴_그룹_리스트를_조회한다() {
-		given(menuGroupDao.findAll()).willReturn(Arrays.asList(와퍼세트, 치즈와퍼세트));
-		List<MenuGroup> 버거킹메뉴그룹 = menuGroupService.list();
-		assertThat(버거킹메뉴그룹).containsAll(Arrays.asList(와퍼세트, 치즈와퍼세트));
+		given(menuGroupDao.findAll()).willReturn(Arrays.asList(피자, 치킨));
+
+		List<MenuGroup> 메뉴그룹들 = menuGroupService.list();
+
+		assertThat(메뉴그룹들).containsAll(Arrays.asList(피자, 치킨));
+	}
+
+	public static MenuGroup 메뉴그룹_생성(Long id, String name) {
+		MenuGroup 메뉴그룹 = new MenuGroup();
+		메뉴그룹.setId(id);
+		메뉴그룹.setName(name);
+		return 메뉴그룹;
 	}
 
 }
