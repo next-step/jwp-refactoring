@@ -34,7 +34,7 @@ class OrderServiceTest {
     MenuRepository menuRepository;
 
     @Autowired
-    OrderDao orderDao;
+    OrderRepository orderRepository;
 
     @Autowired
     OrderLineItemDao orderLineItemDao;
@@ -113,7 +113,7 @@ class OrderServiceTest {
         order.setOrderStatus(OrderStatus.COOKING.name());
         order.setOrderLineItems(Arrays.asList(orderLineItem));
         order.setOrderedTime(orderedTime);
-        Order savedOrder = orderDao.save(order);
+        Order savedOrder = orderRepository.save(order);
 
         //when
         List<Order> orders = orderService.list();
@@ -185,13 +185,18 @@ class OrderServiceTest {
         order.setOrderStatus(OrderStatus.COOKING.name());
         order.setOrderedTime(orderedTime);
 
-        Order savedOrder = orderDao.save(order);
+        Order savedOrder = orderRepository.save(order);
+
 
         String orderStatusMeal = OrderStatus.MEAL.name();
-        order.setOrderStatus(orderStatusMeal);
+
+        OrderRequest changeOrder = new OrderRequest();
+        changeOrder.setOrderTableId(savedOrderTable.getId());
+        changeOrder.setOrderedTime(orderedTime);
+        changeOrder.setOrderStatus(orderStatusMeal);
 
         //when
-        Order changedOrder = orderService.changeOrderStatus(savedOrder.getId(), order);
+        Order changedOrder = orderService.changeOrderStatus(savedOrder.getId(), changeOrder);
 
         //then
         assertThat(changedOrder.getOrderStatus()).isEqualTo(orderStatusMeal);
@@ -203,7 +208,7 @@ class OrderServiceTest {
     public void failChangeOrderStatusNotExistOrderId() throws Exception {
         //then
         assertThatThrownBy(
-                () -> orderService.changeOrderStatus(0L, new Order())
+                () -> orderService.changeOrderStatus(0L, new OrderRequest())
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -216,12 +221,14 @@ class OrderServiceTest {
         order.setOrderStatus(OrderStatus.COMPLETION.name());
         order.setOrderedTime(LocalDateTime.now());
 
-        Order savedOrder = orderDao.save(order);
+        Order savedOrder = orderRepository.save(order);
 
-        order.setOrderStatus(OrderStatus.MEAL.name());
+        OrderRequest changeOrder = new OrderRequest();
+        changeOrder.setOrderTableId(savedOrderTable.getId());
+        changeOrder.setOrderStatus(OrderStatus.MEAL.name());
         //then
         assertThatThrownBy(
-                () -> orderService.changeOrderStatus(savedOrder.getId(), order)
+                () -> orderService.changeOrderStatus(savedOrder.getId(), changeOrder)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 

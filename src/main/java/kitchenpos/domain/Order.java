@@ -5,6 +5,7 @@ import kitchenpos.table.domain.OrderTable;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Table(name = "orders")
 @Entity
@@ -77,5 +78,13 @@ public class Order {
 
     public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
         this.orderLineItems = orderLineItems;
+    }
+
+    public void changeOrderStatus(String orderStatus) {
+        if (Objects.equals(OrderStatus.COMPLETION.name(), getOrderStatus())) {
+            throw new IllegalArgumentException("완료상태인 준문은 상태변경이 불가능합니다.");
+        }
+
+        setOrderStatus(orderStatus);
     }
 }
