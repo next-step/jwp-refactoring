@@ -30,4 +30,15 @@ class PriceTest {
                 .isInstanceOf(CustomException.class)
                 .hasMessage(ErrorInfo.PRICE_CAN_NOT_NEGATIVE.message());
     }
+
+    @DisplayName("가격 계산")
+    @Test
+    void multiplyQuantity() {
+        // given
+        Price price = new Price(100);
+        // when
+        Price result = price.multiplyQuantity(new Quantity(10L));
+        // then
+        assertThat(result).isEqualTo(new Price(1000));
+    }
 }
