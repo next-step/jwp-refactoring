@@ -36,10 +36,10 @@ public class Products {
         return totalPrice;
     }
 
-    public List<MenuProduct> toMenuProducts(Quantities quantities) {
+    public List<MenuProduct> toMenuProducts(Menu menu, Quantities quantities) {
         List<MenuProduct> menuProducts = new ArrayList<>();
         for (Product product : products) {
-            menuProducts.add(MenuProduct.of(product, quantities.getByProductId(product.getId())));
+            menuProducts.add(MenuProduct.of(menu, product, quantities.getByProductId(product.getId())));
         }
         return menuProducts;
     }

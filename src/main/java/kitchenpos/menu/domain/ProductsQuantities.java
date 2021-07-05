@@ -3,22 +3,33 @@ package kitchenpos.menu.domain;
 import java.util.List;
 
 import kitchenpos.common.domian.Price;
+import kitchenpos.common.error.CustomException;
+import kitchenpos.common.error.ErrorInfo;
 import kitchenpos.menuproduct.domain.MenuProduct;
 
 public class ProductsQuantities {
     private final Products products;
     private final Quantities quantities;
+    private final Price totalPrice;
 
-    public ProductsQuantities(Products products, Quantities quantities) {
+    public ProductsQuantities(Products products, Quantities quantities, Price requestPrice) {
         this.products = products;
         this.quantities = quantities;
+        this.totalPrice = products.totalPrice(quantities);
+        checkTotalPrice(requestPrice);
     }
 
     public Price totalPrice() {
         return products.totalPrice(quantities);
     }
 
-    public List<MenuProduct> toMenuProduct() {
-        return products.toMenuProducts(quantities);
+    public List<MenuProduct> toMenuProduct(Menu menu) {
+        return products.toMenuProducts(menu, quantities);
+    }
+
+    private void checkTotalPrice(Price price) {
+        if (!this.totalPrice.equals(price)) {
+            throw new CustomException(ErrorInfo.TOTAL_PRICE_NOT_EQUAL_REQUEST);
+        }
     }
 }
