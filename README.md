@@ -83,5 +83,7 @@
 - [x] 상품 - 메뉴 - 주문 - 테이블 패키지 분리
 - [x] jpa dependency 추가
 - [x] Product 패키지 리팩토링
+- [x] 메뉴그룹 aggregate 패키지로 분리
+- [ ] 테이블그룹 aggregate 패키지로 분리
 
 

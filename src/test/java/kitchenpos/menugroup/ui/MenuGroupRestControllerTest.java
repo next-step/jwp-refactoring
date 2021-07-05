@@ -1,10 +1,9 @@
-package kitchenpos.menu.ui;
+package kitchenpos.menugroup.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.UTF8MockMvcTest;
-import kitchenpos.menu.application.MenuGroupService;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.ui.MenuGroupRestController;
+import kitchenpos.menugroup.application.MenuGroupService;
+import kitchenpos.menugroup.domain.MenuGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
