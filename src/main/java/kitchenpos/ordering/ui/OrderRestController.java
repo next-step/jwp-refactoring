@@ -26,12 +26,12 @@ public class OrderRestController {
     }
 
     @GetMapping("/api/orders")
-    public ResponseEntity<List<Ordering>> list() {
+    public ResponseEntity<List<OrderResponse>> list() {
         return ResponseEntity.ok().body(orderService.list());
     }
 
     @PutMapping("/api/orders/{orderId}/order-status")
-    public ResponseEntity<Ordering> changeOrderStatus(
+    public ResponseEntity<OrderResponse> changeOrderStatus(
             @PathVariable final Long orderId,
             @RequestBody final OrderRequest orderRequest
     ) {

@@ -21,7 +21,8 @@ public class Ordering extends BaseEntity {
     private Long orderTableId;
 
     @Column
-    private String orderStatus;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
 
     @Column
     private LocalDateTime orderedTime;
@@ -34,13 +35,13 @@ public class Ordering extends BaseEntity {
     public Ordering(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
         this.id = id;
         this.orderTableId = orderTableId;
-        this.orderStatus = OrderStatus.COOKING.name();
+        this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
         this.orderLineItems = orderLineItems;
         setOrderIdOnOrderLineItems();
     }
 
-    public Ordering(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+    public Ordering(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
         this.id = id;
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
@@ -49,7 +50,7 @@ public class Ordering extends BaseEntity {
         setOrderIdOnOrderLineItems();
     }
 
-    public Ordering(Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+    public Ordering(Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
@@ -59,7 +60,7 @@ public class Ordering extends BaseEntity {
 
     private void setOrderIdOnOrderLineItems() {
         if (Objects.isNull(orderLineItems)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("테이블이 비어있으면 주문 할 수 없습니다.");
         }
 
         this.orderLineItems.stream()
@@ -83,14 +84,14 @@ public class Ordering extends BaseEntity {
                 .collect(Collectors.toList());
     }
 
-    public void changeOrderStatusTo(String orderStatus) {
+    public void changeOrderStatusTo(OrderStatus orderStatus) {
         checkIfAlreadyCompleted();
 
-        this.orderStatus = OrderStatus.valueOf(orderStatus).name();
+        this.orderStatus = orderStatus;
     }
 
     private void checkIfAlreadyCompleted() {
-        if (Objects.equals(OrderStatus.COMPLETION.name(), orderStatus)) {
+        if (Objects.equals(OrderStatus.COMPLETION, orderStatus)) {
             throw new IllegalArgumentException();
         }
     }
@@ -103,7 +104,7 @@ public class Ordering extends BaseEntity {
         return orderTableId;
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 

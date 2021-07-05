@@ -15,24 +15,24 @@ public class OrderingTest {
     @DisplayName("주문상태를 변경할 수 있다.")
     @Test
     void changeOrderStatusTest() {
-        Ordering ordering = new Ordering(null, OrderStatus.COOKING.name(), null, Arrays.asList());
+        Ordering ordering = new Ordering(null, OrderStatus.COOKING, null, Arrays.asList());
 
-        assertThat(ordering.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(ordering.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
 
-        ordering.changeOrderStatusTo(OrderStatus.COMPLETION.name());
+        ordering.changeOrderStatusTo(OrderStatus.COMPLETION);
 
-        assertThat(ordering.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
+        assertThat(ordering.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
     }
 
     @DisplayName("이미 완료된 주문은 상태를 변경할 수 없다.")
     @Test
     void 주문상태_변경_실패() {
-        Ordering ordering = new Ordering(null, OrderStatus.COMPLETION.name(), null, Arrays.asList());
+        Ordering ordering = new Ordering(null, OrderStatus.COMPLETION, null, Arrays.asList());
 
-        assertThat(ordering.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
+        assertThat(ordering.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
 
         assertThatThrownBy(() -> {
-            ordering.changeOrderStatusTo(OrderStatus.COMPLETION.name());
+            ordering.changeOrderStatusTo(OrderStatus.COMPLETION);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 

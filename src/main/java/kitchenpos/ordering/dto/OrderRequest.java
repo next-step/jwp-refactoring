@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class OrderRequest {
     private Long orderTableId;
-    private String orderStatus;
+    private OrderStatus orderStatus;
     private List<OrderLineItemRequest> orderLineItems;
 
     public OrderRequest(Long orderTableId, List<OrderLineItem> orderLineItems) {
@@ -20,7 +20,7 @@ public class OrderRequest {
                 .collect(Collectors.toList());
     }
 
-    public OrderRequest(Long orderTableId, String orderStatus, List<OrderLineItem> orderLineItems) {
+    public OrderRequest(Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderLineItems = orderLineItems.stream()
@@ -30,7 +30,7 @@ public class OrderRequest {
 
     public Ordering toEntity() {
         return new Ordering(orderTableId,
-                OrderStatus.COOKING.name(),
+                OrderStatus.COOKING,
                 LocalDateTime.now(),
                 orderLineItems.stream()
                     .map(orderLineItemRequest -> orderLineItemRequest.toEntity())
@@ -41,23 +41,12 @@ public class OrderRequest {
         return orderTableId;
     }
 
-    public void setOrderTableId(Long orderTableId) {
-        this.orderTableId = orderTableId;
-    }
-
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
-    }
-
-    public void setOrderStatus(String orderStatus) {
-        this.orderStatus = orderStatus;
     }
 
     public List<OrderLineItemRequest> getOrderLineItems() {
         return orderLineItems;
     }
 
-    public void setOrderLineItems(List<OrderLineItemRequest> orderLineItems) {
-        this.orderLineItems = orderLineItems;
-    }
 }

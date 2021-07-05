@@ -3,6 +3,7 @@ package kitchenpos.ordering.application;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.ordering.domain.OrderLineItemRepository;
 import kitchenpos.ordering.domain.OrderRepository;
+import kitchenpos.ordering.domain.OrderStatus;
 import kitchenpos.ordering.domain.Ordering;
 import kitchenpos.ordering.dto.OrderRequest;
 import kitchenpos.ordering.dto.OrderResponse;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -47,17 +49,19 @@ public class OrderService {
         return OrderResponse.of(persistOrder);
     }
 
-    public List<Ordering> list() {
-        return orderRepository.findAll();
+    public List<OrderResponse> list() {
+        return orderRepository.findAll().stream()
+                .map(ordering -> OrderResponse.of(ordering))
+                .collect(Collectors.toList());
     }
 
     @Transactional
-    public Ordering changeOrderStatus(final Long orderId, final String orderStatus) {
+    public OrderResponse changeOrderStatus(final Long orderId, final OrderStatus orderStatus) {
         final Ordering savedOrder = orderRepository.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);
 
         savedOrder.changeOrderStatusTo(orderStatus);
 
-        return savedOrder;
+        return OrderResponse.of(savedOrder);
     }
 }

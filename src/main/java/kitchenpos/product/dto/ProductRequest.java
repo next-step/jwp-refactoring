@@ -18,6 +18,10 @@ public class ProductRequest {
         return new ProductRequest(name, price);
     }
 
+    public Product toEntity() {
+        return new Product(name, price);
+    }
+
     public String getName() {
         return name;
     }
@@ -39,8 +43,5 @@ public class ProductRequest {
         return Objects.hash(name, price);
     }
 
-    public Product toEntity() {
-        return new Product(name, price);
-    }
 }
 

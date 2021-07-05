@@ -79,7 +79,6 @@ public class MenuServiceTest {
         MenuRequest menuRequest1 = new MenuRequest(menu1Name, invalidPrice, menu1MenuGroupId, menu1MenuProducts);
 
         when(menuGroupRepository.existsById(any())).thenReturn(true);
-//        when(productRepository.findById(any())).thenReturn(Optional.of(product));
 
         assertThatThrownBy(() -> {
             menuService.create(menuRequest1);
@@ -93,7 +92,6 @@ public class MenuServiceTest {
         MenuRequest menuRequest1 = new MenuRequest(menu1Name, invalidPrice, menu1MenuGroupId, menu1MenuProducts);
 
         when(menuGroupRepository.existsById(any())).thenReturn(true);
-//        when(productRepository.findById(any())).thenReturn(Optional.of(product));
 
         assertThatThrownBy(() -> {
             menuService.create(menuRequest1);

@@ -25,7 +25,7 @@ public class OrderRepositoryTest {
     private OrderTableRepository orderTableRepository;
 
     private Long orderTableId = 1L;
-    private String orderStatus = OrderStatus.COOKING.name();
+    private OrderStatus orderStatus = OrderStatus.COOKING;
     private LocalDateTime orderedTime = LocalDateTime.now();
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 

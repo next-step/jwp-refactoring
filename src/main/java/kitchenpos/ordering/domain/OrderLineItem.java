@@ -38,6 +38,10 @@ public class OrderLineItem {
         this.quantity = quantity;
     }
 
+    public void isIn(Ordering order) {
+        this.orderId = order.getId();
+    }
+
     public Long getId() {
         return id;
     }
@@ -65,10 +69,6 @@ public class OrderLineItem {
     @Override
     public int hashCode() {
         return Objects.hash(id, orderId, menuId, quantity);
-    }
-
-    public void isIn(Ordering order) {
-        this.orderId = order.getId();
     }
 
 }

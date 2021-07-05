@@ -6,6 +6,7 @@ import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
 import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -57,10 +59,13 @@ public class TableGroupServiceTest {
         when(orderTableRepository.findAllByIdIn(any())).thenReturn(tableGroupResponse.getOrderTables());
         when(tableGroupRepository.save(any())).thenReturn(tableGroupResponse);
 
-        TableGroup response = tableGroupService.create(tableGroup);
+        TableGroupResponse response = tableGroupService.create(tableGroup);
 
         assertThat(response.getId()).isEqualTo(tableGroupResponse.getId());
-        assertThat(response.getOrderTables()).containsAll(Arrays.asList(orderTable1, orderTable2));
+        assertThat(response.getOrderTableResponses().stream()
+                .map(orderTableResponse -> orderTableResponse.getId())
+                .collect(Collectors.toList()))
+                .containsAll(Arrays.asList(orderTable1.getId(), orderTable2.getId()));
     }
 
     @DisplayName("단체지정에서 주문테이블은 2개 이상이어야 한다.")

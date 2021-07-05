@@ -7,6 +7,7 @@ import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
 import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,13 +27,13 @@ public class TableGroupService {
     }
 
     @Transactional
-    public TableGroup create(final TableGroupRequest tableGroupRequest) {
+    public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(tableGroupRequest.getOrderTableIds());
 
         TableGroup tableGroup = TableGroup.of(savedOrderTables);
         tableGroup.grouping();
 
-        return tableGroupRepository.save(tableGroup);
+        return TableGroupResponse.of(tableGroupRepository.save(tableGroup));
     }
 
     @Transactional
@@ -51,4 +52,5 @@ public class TableGroupService {
             throw new IllegalArgumentException("주문테이블들의 주문들 중 아직 완료되지 않은 주문이 있습니다.");
         }
     }
+
 }

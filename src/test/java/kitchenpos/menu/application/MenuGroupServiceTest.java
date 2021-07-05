@@ -2,6 +2,8 @@ package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
+import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -39,9 +42,11 @@ public class MenuGroupServiceTest {
     @Test
     void create() {
         MenuGroup menuGroup1 = MenuGroup.of(menuGroupId1, menuGroupName1);
+        MenuGroupRequest menuGroupRequest = MenuGroupRequest.of(menuGroupName1);
 
         when(menuGroupRepository.save(any())).thenReturn(menuGroup1);
-        MenuGroup menuGroupResponse = menuGroupService.create(menuGroup1);
+
+        MenuGroupResponse menuGroupResponse = menuGroupService.create(menuGroupRequest);
 
         assertThat(menuGroupResponse.getId()).isEqualTo(menuGroupId1);
         assertThat(menuGroupResponse.getName()).isEqualTo(menuGroupName1);
@@ -55,9 +60,12 @@ public class MenuGroupServiceTest {
 
         when(menuGroupRepository.findAll()).thenReturn(Arrays.asList(menuGroup1, menuGroup2));
 
-        List<MenuGroup> menuGroupResponses = menuGroupService.list();
+        List<MenuGroupResponse> menuGroupResponses = menuGroupService.list();
 
-        assertThat(menuGroupResponses).contains(menuGroup1, menuGroup2);
+        assertThat(menuGroupResponses.stream()
+                .map(menuGroupResponse -> menuGroupResponse.getName())
+                .collect(Collectors.toList()))
+                .contains(menuGroup1.getName(), menuGroup2.getName());
     }
 
 }
