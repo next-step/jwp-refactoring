@@ -39,12 +39,6 @@ class OrderTables {
 		return Collections.unmodifiableList(orderTables);
 	}
 
-	List<Long> getOrderTableIds() {
-		return orderTables.stream()
-			.map(OrderTable::getId)
-			.collect(Collectors.toList());
-	}
-
 	void ungrouped() {
 		for (OrderTable orderTable : orderTables) {
 			orderTable.ungrouped();

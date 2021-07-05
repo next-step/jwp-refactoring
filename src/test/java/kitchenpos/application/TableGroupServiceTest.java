@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.domain.OrderTableRepository;
+import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.TableGroupRepository;
 import kitchenpos.dto.TableGroupRequest;
 
 @DisplayName("주문테이블그룹 요구사항 테스트")
@@ -22,6 +25,9 @@ class TableGroupServiceTest {
 
 	@Mock
 	private OrderTableRepository orderTableRepository;
+
+	@Mock
+	private TableGroupRepository tableGroupRepository;
 
 	@InjectMocks
 	private TableGroupService tableGroupService;
@@ -40,4 +46,24 @@ class TableGroupServiceTest {
 			.hasMessageContaining("등록이 되지 않은 주문테이블은 그룹화 할 수 없습니다.");
 	}
 
+	@DisplayName("등록된 테이블그룹만 그룹해제를 할 수 있다.")
+	@Test
+	void ungroupUnknownTableGroupTest() {
+		when(tableGroupRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+		assertThatThrownBy(() -> tableGroupService.ungroup(1L))
+			.isInstanceOf(IllegalArgumentException.class)
+			.hasMessageContaining("등록된 테이블 그룹만 그룹해제 가능합니다.");
+	}
+
+	@DisplayName("테이블그룹을 그룹해제할 수 있다.")
+	@Test
+	void ungroupTableGroupTest() {
+		TableGroup tableGroup = mock(TableGroup.class);
+		when(tableGroupRepository.findById(anyLong())).thenReturn(Optional.of(tableGroup));
+
+		tableGroupService.ungroup(1L);
+
+		verify(tableGroup).ungroup();
+	}
 }
