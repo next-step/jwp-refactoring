@@ -48,7 +48,7 @@ public class TableGroupService {
     private void checkOrderStatusInOrderTablesIfAllComplete(List<Long> orderTableIds) {
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
                 orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문테이블들의 주문들 중 아직 완료되지 않은 주문이 있습니다.");
         }
     }
 }

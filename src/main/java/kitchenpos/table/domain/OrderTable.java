@@ -33,36 +33,68 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public Long getId() {
-        return id;
+    public void groupingIn(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
+        empty = false;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
+    public void ungrouping() {
+        this.tableGroupId = null;
+        empty = true;
+    }
+
+    public void validateForGrouping() {
+        if (!isEmpty() || Objects.nonNull(getTableGroupId())) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public void isValidForOrdering() {
+        if (isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public void checkIfAlreadyGrouped() {
+        if (Objects.nonNull(tableGroupId)) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public void changeEmpty(boolean empty) {
+        this.empty = empty;
+    }
+
+    public void finishTable() {
+        this.empty = true;
+    }
+
+    public void changeNumberOfGuests(int numberOfGuests) {
+        if (isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+
+        if (numberOfGuests < 0) {
+            throw new IllegalArgumentException();
+        }
+
+        this.numberOfGuests = numberOfGuests;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public Long getTableGroupId() {
         return tableGroupId;
     }
 
-    public void setTableGroupId(final Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
-    }
-
     public int getNumberOfGuests() {
         return numberOfGuests;
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
-    }
-
     public boolean isEmpty() {
         return empty;
-    }
-
-    public void setEmpty(final boolean empty) {
-        this.empty = empty;
     }
 
     @Override
@@ -76,27 +108,5 @@ public class OrderTable {
     @Override
     public int hashCode() {
         return Objects.hash(id, tableGroupId, numberOfGuests, empty);
-    }
-
-    public void groupingIn(Long tableGroupId) {
-        setTableGroupId(tableGroupId);
-        setEmpty(false);
-    }
-
-    public void ungrouping() {
-        setTableGroupId(null);
-        setEmpty(true);
-    }
-
-    public void validateForGrouping() {
-        if (!isEmpty() || Objects.nonNull(getTableGroupId())) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    public void isValidForOrdering() {
-        if (isEmpty()) {
-            throw new IllegalArgumentException();
-        }
     }
 }
