@@ -95,6 +95,7 @@ public class OrderTable {
 
     public void ungroup() {
         tableGroup = null;
+        this.empty = true;
     }
 
     public void updateEmpty(OrderTableRequest orderTableRequest) {
