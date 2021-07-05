@@ -86,11 +86,11 @@ class OrderServiceTest {
     @Test
     public void createOrder() throws Exception {
         //given
-        String orderStatus = OrderStatus.COOKING.name();
+        OrderStatus orderStatus = OrderStatus.COOKING;
 
         OrderRequest order = new OrderRequest();
         order.setOrderTableId(savedOrderTable.getId());
-        order.setOrderStatus(orderStatus);
+        order.setOrderStatus(orderStatus.name());
         order.setOrderLineItems(Arrays.asList(new OrderLineItemRequest(orderLineItem.getSeq(), orderLineItem.getOrderId(), orderLineItem.getMenuId(), orderLineItem.getQuantity())));
 
         //when
@@ -111,7 +111,7 @@ class OrderServiceTest {
 
         Order order = new Order();
         order.setOrderTableId(savedOrderTable.getId());
-        order.setOrderStatus(OrderStatus.COOKING.name());
+        order.setOrderStatus(OrderStatus.COOKING);
         order.setOrderLineItems(Arrays.asList(orderLineItem));
         order.setOrderedTime(orderedTime);
         Order savedOrder = orderRepository.save(order);
@@ -182,7 +182,7 @@ class OrderServiceTest {
 
         Order order = new Order();
         order.setOrderTableId(savedOrderTable.getId());
-        order.setOrderStatus(OrderStatus.COOKING.name());
+        order.setOrderStatus(OrderStatus.COOKING);
         order.setOrderedTime(orderedTime);
 
         Order savedOrder = orderRepository.save(order);
@@ -218,7 +218,7 @@ class OrderServiceTest {
         // given
         Order order = new Order();
         order.setOrderTableId(savedOrderTable.getId());
-        order.setOrderStatus(OrderStatus.COMPLETION.name());
+        order.setOrderStatus(OrderStatus.COMPLETION);
         order.setOrderedTime(LocalDateTime.now());
 
         Order savedOrder = orderRepository.save(order);

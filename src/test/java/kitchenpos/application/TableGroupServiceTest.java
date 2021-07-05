@@ -147,7 +147,7 @@ class TableGroupServiceTest {
 
         // 주문 상태 추가
         Order order = new Order();
-        order.setOrderStatus(OrderStatus.COOKING.name());
+        order.setOrderStatus(OrderStatus.COOKING);
         order.setOrderTableId(savedOrderTable1.getId());
         order.setOrderedTime(LocalDateTime.now());
         orderDao.save(order);

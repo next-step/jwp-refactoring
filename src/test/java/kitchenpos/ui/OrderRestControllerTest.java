@@ -68,7 +68,7 @@ class OrderRestControllerTest {
         Order order = new Order();
         order.setOrderLineItems(Arrays.asList(orderLineItem));
         order.setOrderTableId(1L);
-        order.setOrderStatus(OrderStatus.COOKING.name());
+        order.setOrderStatus(OrderStatus.COOKING);
         order.setOrderedTime(LocalDateTime.now());
 
 
@@ -77,7 +77,7 @@ class OrderRestControllerTest {
         Order responseOrder = new Order();
         responseOrder.setOrderLineItems(Arrays.asList(orderLineItem));
         responseOrder.setOrderTableId(1L);
-        responseOrder.setOrderStatus(OrderStatus.COOKING.name());
+        responseOrder.setOrderStatus(OrderStatus.COOKING);
         responseOrder.setOrderedTime(LocalDateTime.now());
         String responseBody = objectMapper.writeValueAsString(responseOrder);
 
@@ -99,7 +99,7 @@ class OrderRestControllerTest {
         OrderResponse order = new OrderResponse();
         order.setOrderLineItems(Arrays.asList(OrderLineItemResponse.of(orderLineItem)));
         order.setOrderTableId(1L);
-        order.setOrderStatus(OrderStatus.COOKING.name());
+        order.setOrderStatus(OrderStatus.COOKING);
         order.setOrderedTime(LocalDateTime.now());
 
         List<OrderResponse> orders = Arrays.asList(order);
@@ -123,7 +123,7 @@ class OrderRestControllerTest {
         Order order = new Order();
         order.setOrderLineItems(Arrays.asList(orderLineItem));
         order.setOrderTableId(1L);
-        order.setOrderStatus(OrderStatus.COOKING.name());
+        order.setOrderStatus(OrderStatus.COOKING);
         order.setOrderedTime(orderedTime);
 
         String requestBody = objectMapper.writeValueAsString(order);
@@ -131,7 +131,7 @@ class OrderRestControllerTest {
         OrderResponse orderResponse = new OrderResponse();
         orderResponse.setOrderLineItems(Arrays.asList(OrderLineItemResponse.of(orderLineItem)));
         orderResponse.setOrderTableId(1L);
-        orderResponse.setOrderStatus(OrderStatus.COOKING.name());
+        orderResponse.setOrderStatus(OrderStatus.COOKING);
         orderResponse.setOrderedTime(orderedTime);
 
         when(orderService.changeOrderStatus(any(), any())).thenReturn(orderResponse);

@@ -15,7 +15,9 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long orderTableId;
-    private String orderStatus;
+
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
     private LocalDateTime orderedTime;
 
     @OneToMany(mappedBy = "orderId")
@@ -24,7 +26,7 @@ public class Order {
     public Order() {
     }
 
-    public Order(Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+    public Order(Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
@@ -37,7 +39,7 @@ public class Order {
             throw new IllegalArgumentException("빈테이블은 주문을 할수 없습니다.");
         }
 
-        return new Order(orderTable.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), newOrderLineItems);
+        return new Order(orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now(), newOrderLineItems);
     }
 
     public Long getId() {
@@ -56,11 +58,11 @@ public class Order {
         this.orderTableId = orderTableId;
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(final String orderStatus) {
+    public void setOrderStatus(final OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 
@@ -80,8 +82,8 @@ public class Order {
         this.orderLineItems = orderLineItems;
     }
 
-    public void changeOrderStatus(String orderStatus) {
-        if (Objects.equals(OrderStatus.COMPLETION.name(), getOrderStatus())) {
+    public void changeOrderStatus(OrderStatus orderStatus) {
+        if (Objects.equals(OrderStatus.COMPLETION, getOrderStatus())) {
             throw new IllegalArgumentException("완료상태인 준문은 상태변경이 불가능합니다.");
         }
 
