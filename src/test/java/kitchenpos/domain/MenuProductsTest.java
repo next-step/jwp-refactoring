@@ -15,7 +15,7 @@ class MenuProductsTest {
 	@Test
 	void calculatePrice() {
 		// given
-		Product 치킨 = new Product("치킨", Price.wonOf(1000));
+		Product 치킨 = new Product(Name.valueOf("치킨"), Price.wonOf(1000));
 
 		// when
 		MenuProduct 치킨2개 = new MenuProduct(치킨, 2);

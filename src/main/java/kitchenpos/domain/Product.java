@@ -1,6 +1,9 @@
 package kitchenpos.domain;
 
+import static java.util.Objects.*;
+
 import java.math.BigDecimal;
+import java.util.Objects;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
@@ -18,8 +21,8 @@ public class Product {
     @Id
     private Long id;
 
-    @Column(nullable = false)
-    private String name;
+    @AttributeOverride(name = "value", column = @Column(name = "name", nullable = false))
+    private Name name;
 
     @Embedded
     @AttributeOverride(name = "amount", column = @Column(name = "price", nullable = false))
@@ -28,19 +31,26 @@ public class Product {
     protected Product() {}
 
     public Product(String name, BigDecimal price) {
-        this(name, Price.wonOf(price));
+        this(Name.valueOf(name), Price.wonOf(price));
     }
 
-    Product(String name, Price price) {
+    Product(Name name, Price price) {
+        validateNonNull(name, price);
         this.name = name;
         this.price = price;
+    }
+
+    private void validateNonNull(Name name, Price price) {
+        if (isNull(name) || isNull(price)) {
+            throw new IllegalArgumentException("상품의 이름과 가격은 필수 정보입니다.");
+        }
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getName() {
+    public Name getName() {
         return name;
     }
 

@@ -13,6 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.domain.Name;
 import kitchenpos.domain.ProductRepository;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.ProductRequest;
@@ -34,6 +35,7 @@ class ProductServiceTest {
 		// given
 		ProductRequest productRequest = mock(ProductRequest.class);
 		Product product = mock(Product.class);
+		when(product.getName()).thenReturn(Name.valueOf("mock product"));
 		when(productRequest.toEntity()).thenReturn(product);
 		when(productRepository.save(any(Product.class))).thenReturn(product);
 
@@ -50,6 +52,7 @@ class ProductServiceTest {
 		// given
 		Product product = mock(Product.class);
 		when(product.getId()).thenReturn(1L);
+		when(product.getName()).thenReturn(Name.valueOf("mock product"));
 		when(productRepository.findAll()).thenReturn(asList(product));
 
 		// when
