@@ -36,7 +36,7 @@ class ProductRestControllerTest extends IntegrationTestHelper {
         return productRestController;
     }
 
-    @DisplayName("상품 생성")
+    @DisplayName("상품 생성 요청")
     @Test
     void createTest() throws Exception {
         // given
@@ -57,7 +57,7 @@ class ProductRestControllerTest extends IntegrationTestHelper {
 
     }
 
-    @DisplayName("전체 상품 조회")
+    @DisplayName("전체 상품 조회 요청")
     @Test
     void listTest() throws Exception {
         // then
