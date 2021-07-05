@@ -1,14 +1,10 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
+import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.product.domain.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
@@ -37,7 +33,7 @@ class MenuServiceTest {
     MenuRepository menuRepository;
 
     @Autowired
-    MenuGroupDao menuGroupDao;
+    MenuGroupRepository menuGroupRepository;
 
     @Autowired
     MenuProductDao menuProductDao;
@@ -55,9 +51,8 @@ class MenuServiceTest {
     void setUp() {
         BigDecimal price = BigDecimal.valueOf(10000);
 
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setName("패스트푸드");
-        savedMenuGroup = menuGroupDao.save(menuGroup);
+        MenuGroup menuGroup = new MenuGroup("패스트푸드");
+        savedMenuGroup = menuGroupRepository.save(menuGroup);
 
         Product product = new Product();
         product.setPrice(new Price(price));
@@ -97,10 +92,7 @@ class MenuServiceTest {
         BigDecimal price = BigDecimal.valueOf(10000);
         String menuName = "맥도날드햄버거";
 
-        Menu menu = new Menu();
-        menu.setMenuGroupId(savedMenuGroup.getId());
-        menu.setName(menuName);
-        menu.setPrice(new Price(price));
+        Menu menu = new Menu(menuName, new Price(price), savedMenuGroup.getId());
 
         Menu savedMenu = menuRepository.save(menu);
 

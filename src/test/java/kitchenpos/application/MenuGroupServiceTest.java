@@ -1,8 +1,8 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.application.MenuGroupService;
+import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class MenuGroupServiceTest {
 
     @Autowired
-    MenuGroupDao menuGroupDao;
+    MenuGroupRepository menuGroupRepository;
 
     @Autowired
     MenuGroupService menuGroupService;
@@ -48,9 +48,8 @@ class MenuGroupServiceTest {
         //given
         String menuGroupName = "테스트메뉴그룹";
 
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setName(menuGroupName);
-        MenuGroup savedMenuGroup = menuGroupDao.save(menuGroup);
+        MenuGroup menuGroup = new MenuGroup(menuGroupName);
+        MenuGroup savedMenuGroup = menuGroupRepository.save(menuGroup);
 
         //when
         List<MenuGroupResponse> menuGroups = menuGroupService.list();

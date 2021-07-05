@@ -4,6 +4,7 @@ import kitchenpos.dao.*;
 import kitchenpos.domain.*;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.product.domain.Price;
 import kitchenpos.table.domain.OrderTable;
@@ -43,7 +44,7 @@ class OrderServiceTest {
     OrderService orderService;
 
     @Autowired
-    MenuGroupDao menuGroupDao;
+    MenuGroupRepository menuGroupRepository;
 
     MenuGroup savedMenuGroup;
 
@@ -57,14 +58,10 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setName("패스트푸드");
-        savedMenuGroup = menuGroupDao.save(menuGroup);
+        MenuGroup menuGroup = new MenuGroup("패스트푸드");
+        savedMenuGroup = menuGroupRepository.save(menuGroup);
 
-        Menu menu = new Menu();
-        menu.setMenuGroupId(savedMenuGroup.getId());
-        menu.setName("맥도날드햄버거");
-        menu.setPrice(new Price(BigDecimal.valueOf(10000)));
+        Menu menu = new Menu("맥도날드햄버거", new Price(BigDecimal.valueOf(10000)), savedMenuGroup.getId());
 
         savedMenu = menuRepository.save(menu);
 

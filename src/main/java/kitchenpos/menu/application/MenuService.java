@@ -72,7 +72,9 @@ public class MenuService {
             menuProduct.setMenuId(menuId);
             savedMenuProducts.add(menuProductRepository.save(menuProduct));
         }
-        savedMenu.setMenuProducts(savedMenuProducts);
+        
+        // 이후 추가해야함
+//        savedMenu.setMenuProducts(savedMenuProducts);
 
         return MenuResponse.of(savedMenu);
     }
