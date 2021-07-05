@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import kitchenpos.common.domian.Price;
+import kitchenpos.common.domian.Quantity;
 import kitchenpos.product.dto.ProductResponse;
 
 @Entity
@@ -21,6 +22,12 @@ public class Product {
         this.price = price;
     }
 
+    public Product(Long id, String name, Price price) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,6 +36,14 @@ public class Product {
 
     @Embedded
     private Price price;
+
+    public ProductResponse toResponse() {
+        return ProductResponse.of(id, name, price.amountToInt());
+    }
+
+    public Price priceMultiplyQuantity(Quantity quantity) {
+        return price.multiplyQuantity(quantity);
+    }
 
     public Long getId() {
         return id;
@@ -44,9 +59,5 @@ public class Product {
 
     public Price getPrice() {
         return price;
-    }
-
-    public ProductResponse toResponse() {
-        return ProductResponse.of(id, name, price.amountToInt());
     }
 }
