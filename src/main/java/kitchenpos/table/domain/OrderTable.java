@@ -1,9 +1,12 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.table.dto.OrderTableRequest;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.Objects;
 
 @Entity
 public class OrderTable {
@@ -17,10 +20,6 @@ public class OrderTable {
 
     public OrderTable() {
     }
-
-//    public OrderTable(int numberOfGuests) {
-//        this(numberOfGuests, false);
-//    }
 
     public OrderTable(int numberOfGuests, boolean empty) {
         this.numberOfGuests = numberOfGuests;
@@ -69,5 +68,13 @@ public class OrderTable {
         }
 
         setNumberOfGuests(numberOfGuests);
+    }
+
+    public void changeEmpty(OrderTableRequest orderTableRequest) {
+        if (Objects.nonNull(getTableGroupId())) {
+            throw new IllegalArgumentException("단체테이블인 경우 테이블을 비울수 없습니다.");
+        }
+
+        setEmpty(orderTableRequest.isEmpty());
     }
 }
