@@ -94,11 +94,11 @@ class OrderServiceTest {
         order.setOrderLineItems(Arrays.asList(new OrderLineItemRequest(orderLineItem.getSeq(), orderLineItem.getOrderId(), orderLineItem.getMenuId(), orderLineItem.getQuantity())));
 
         //when
-        Order savedOrder = orderService.create(order);
+        OrderResponse savedOrder = orderService.create(order);
 
         //then
         assertNotNull(savedOrder.getId());
-        assertThat(savedOrder.getOrderStatus()).isEqualTo(orderStatus);
+        assertThat(savedOrder.getOrderStatus()).isEqualTo(orderStatus.name());
         assertThat(savedOrder.getOrderTableId()).isEqualTo(savedOrderTable.getId());
         assertThat(savedOrder.getOrderLineItems()).hasSize(1);
     }
@@ -110,7 +110,7 @@ class OrderServiceTest {
         LocalDateTime orderedTime = LocalDateTime.of(2021, 7, 1, 01, 10, 00);
 
         Order order = new Order();
-        order.setOrderTableId(savedOrderTable.getId());
+        order.setOrderTable(savedOrderTable);
         order.setOrderStatus(OrderStatus.COOKING);
         order.setOrderLineItems(Arrays.asList(orderLineItem));
         order.setOrderedTime(orderedTime);
@@ -181,7 +181,7 @@ class OrderServiceTest {
         LocalDateTime orderedTime = LocalDateTime.of(2021, 7, 1, 01, 10, 00);
 
         Order order = new Order();
-        order.setOrderTableId(savedOrderTable.getId());
+        order.setOrderTable(savedOrderTable);
         order.setOrderStatus(OrderStatus.COOKING);
         order.setOrderedTime(orderedTime);
 
@@ -217,7 +217,7 @@ class OrderServiceTest {
     public void couldNotChangeOrderStatus() throws Exception {
         // given
         Order order = new Order();
-        order.setOrderTableId(savedOrderTable.getId());
+        order.setOrderTable(savedOrderTable);
         order.setOrderStatus(OrderStatus.COMPLETION);
         order.setOrderedTime(LocalDateTime.now());
 

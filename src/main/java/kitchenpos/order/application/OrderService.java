@@ -34,7 +34,7 @@ public class OrderService {
     }
 
     @Transactional
-    public Order create(final OrderRequest orderRequest) {
+    public OrderResponse create(final OrderRequest orderRequest) {
         List<OrderLineItem> newOrderLineItems = getOrderLineItems(orderRequest);
 
         final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
@@ -42,7 +42,7 @@ public class OrderService {
         Order newOrder = Order.newOrder(orderTable, newOrderLineItems);
         final Order savedOrder = orderRepository.save(newOrder);
 
-        return savedOrder;
+        return OrderResponse.of(savedOrder);
     }
 
     private List<OrderLineItem> getOrderLineItems(OrderRequest orderRequest) {
