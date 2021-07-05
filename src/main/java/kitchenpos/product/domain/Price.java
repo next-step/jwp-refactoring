@@ -24,6 +24,10 @@ public class Price {
         return price.multiply(quantity);
     }
 
+    public BigDecimal getPrice() {
+        return price;
+    }
+
     @Override
     public boolean equals(Object o) {
 
