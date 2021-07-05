@@ -22,8 +22,8 @@ public class MenuResponse {
         this.menuProductResponses = menuProductResponses;
     }
 
-    public static MenuResponse of(Long id, String name, int amount, MenuGroupResponse menuGroupResponse, List<MenuProductResponse> menuProductResponses) {
-        return new MenuResponse(id, name, amount, menuGroupResponse, menuProductResponses);
+    public static MenuResponse of(Long id, String name, int price, MenuGroupResponse menuGroupResponse, List<MenuProductResponse> menuProductResponses) {
+        return new MenuResponse(id, name, price, menuGroupResponse, menuProductResponses);
     }
 
     public Long getId() {
