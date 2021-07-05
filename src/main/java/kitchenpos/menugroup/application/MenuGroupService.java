@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.menugroup.dto.MenuGroupListResponse;
+import kitchenpos.menugroup.dto.MenuGroupsResponse;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.menugroup.repository.MenuGroupDao;
@@ -25,8 +25,8 @@ public class MenuGroupService {
         return menuGroup.toResponse();
     }
 
-    public MenuGroupListResponse list() {
-        return MenuGroupListResponse.of(menuGroupDao.findAll().stream()
+    public MenuGroupsResponse list() {
+        return MenuGroupsResponse.of(menuGroupDao.findAll().stream()
                 .map(MenuGroup::toResponse)
                 .collect(Collectors.toList()));
     }
