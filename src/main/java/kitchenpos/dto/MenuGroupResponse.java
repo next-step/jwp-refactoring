@@ -1,6 +1,6 @@
-package kitchenpos.domain;
+package kitchenpos.dto;
 
-public class MenuGroupRequest {
+public class MenuGroupResponse {
     private Long id;
     private String name;
 

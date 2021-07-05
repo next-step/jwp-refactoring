@@ -1,6 +1,6 @@
-package kitchenpos.domain;
+package kitchenpos.dto;
 
-public class OrderTableResponse {
+public class OrderTableRequest {
     private Long id;
     private Long tableGroupId;
     private int numberOfGuests;

@@ -1,11 +1,8 @@
-package kitchenpos.domain;
+package kitchenpos.dto;
 
-import java.math.BigDecimal;
-
-public class ProductRequest {
+public class MenuGroupRequest {
     private Long id;
     private String name;
-    private BigDecimal price;
 
     public Long getId() {
         return id;
@@ -21,13 +18,5 @@ public class ProductRequest {
 
     public void setName(final String name) {
         this.name = name;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
     }
 }

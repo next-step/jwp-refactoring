@@ -1,9 +1,11 @@
-package kitchenpos.domain;
+package kitchenpos.dto;
+
+import kitchenpos.domain.OrderLineItem;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class OrderRequest {
+public class OrderResponse {
     private Long id;
     private Long orderTableId;
     private String orderStatus;
