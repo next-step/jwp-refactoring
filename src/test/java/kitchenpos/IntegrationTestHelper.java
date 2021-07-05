@@ -17,6 +17,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @Disabled
 public abstract class IntegrationTestHelper {
 
+    private static final String ENCODING = "UTF-8";
+
     @Autowired
     protected MockMvc mockMvc;
 
@@ -28,7 +30,7 @@ public abstract class IntegrationTestHelper {
     @BeforeEach
     public void setup() {
         this.mockMvc = MockMvcBuilders.standaloneSetup(controller())
-                                      .addFilters(new CharacterEncodingFilter("UTF-8", true))
+                                      .addFilters(new CharacterEncodingFilter(ENCODING, true))
                                       .alwaysDo(print())
                                       .build();
     }
