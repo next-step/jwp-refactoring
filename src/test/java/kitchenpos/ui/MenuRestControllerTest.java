@@ -3,10 +3,12 @@ package kitchenpos.ui;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuProductResponse;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.ui.MenuRestController;
+import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -53,7 +55,7 @@ class MenuRestControllerTest {
         menuProduct = new MenuProduct();
         menuProduct.setSeq(1L);
         menuProduct.setMenuId(1L);
-        menuProduct.setProductId(1L);
+        menuProduct.setProduct(new Product());
         menuProduct.setQuantity(1);
 
         this.mockMvc = MockMvcBuilders.webAppContextSetup(ctx)
@@ -65,11 +67,13 @@ class MenuRestControllerTest {
     @DisplayName("메뉴등록 api 테스트")
     @Test
     public void create() throws Exception {
+        MenuProductRequest menuProductRequest = new MenuProductRequest(menuProduct.getSeq(), menuProduct.getMenuId(), menuProduct.getProduct().getId(), menuProduct.getQuantity());
+
         MenuRequest menu = new MenuRequest();
         menu.setName("패스트푸드");
         menu.setMenuGroupId(1L);
         menu.setPrice(BigDecimal.valueOf(10000));
-        menu.setMenuProducts(Arrays.asList(menuProduct));
+        menu.setMenuProducts(Arrays.asList(menuProductRequest));
 
         String requestBody = objectMapper.writeValueAsString(menu);
 

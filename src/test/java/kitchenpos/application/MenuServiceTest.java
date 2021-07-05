@@ -1,6 +1,7 @@
 package kitchenpos.application;
 
 import kitchenpos.menu.domain.*;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.application.MenuService;
@@ -56,7 +57,7 @@ class MenuServiceTest {
         savedProduct = productRepository.save(product);
 
         menuProduct = new MenuProduct();
-        menuProduct.setProductId(savedProduct.getId());
+        menuProduct.setProduct(savedProduct);
         menuProduct.setQuantity(1);
 
     }
@@ -68,7 +69,8 @@ class MenuServiceTest {
         BigDecimal price = BigDecimal.valueOf(10000);
         String menuName = "맥도날드햄버거";
 
-        MenuRequest menu = new MenuRequest(menuName, price, savedMenuGroup.getId(), Arrays.asList(menuProduct));
+        MenuProductRequest menuProductRequest = new MenuProductRequest(menuProduct.getSeq(), menuProduct.getMenuId(), menuProduct.getProduct().getId(), menuProduct.getQuantity());
+        MenuRequest menu = new MenuRequest(menuName, price, savedMenuGroup.getId(), Arrays.asList(menuProductRequest));
 
         //when
         MenuResponse savedMenu = menuService.create(menu);
@@ -107,7 +109,8 @@ class MenuServiceTest {
     @Test
     public void invalidCreateMenu() throws Exception {
         //given
-        MenuRequest menu = new MenuRequest("맥도날드햄버거", BigDecimal.valueOf(-1), savedMenuGroup.getId(), Arrays.asList(menuProduct));
+        MenuProductRequest menuProductRequest = new MenuProductRequest(menuProduct.getSeq(), menuProduct.getMenuId(), menuProduct.getProduct().getId(), menuProduct.getQuantity());
+        MenuRequest menu = new MenuRequest("맥도날드햄버거", BigDecimal.valueOf(-1), savedMenuGroup.getId(), Arrays.asList(menuProductRequest));
 
         //when
         assertThatThrownBy(
@@ -119,7 +122,8 @@ class MenuServiceTest {
     @Test
     public void failCreateMenuNotExistGroupMenu() throws Exception {
         //given
-        MenuRequest menu = new MenuRequest("맥도날드햄버거", BigDecimal.valueOf(10000), 0L, Arrays.asList(menuProduct));
+        MenuProductRequest menuProductRequest = new MenuProductRequest(menuProduct.getSeq(), menuProduct.getMenuId(), menuProduct.getProduct().getId(), menuProduct.getQuantity());
+        MenuRequest menu = new MenuRequest("맥도날드햄버거", BigDecimal.valueOf(10000), 0L, Arrays.asList(menuProductRequest));
 
         //when
         assertThatThrownBy(
@@ -131,7 +135,8 @@ class MenuServiceTest {
     @Test
     public void failCreateMenuInvalidPrice() throws Exception {
         //given
-        MenuRequest menu = new MenuRequest("맥도날드햄버거", BigDecimal.valueOf(20000), savedMenuGroup.getId(), Arrays.asList(menuProduct));
+        MenuProductRequest menuProductRequest = new MenuProductRequest(menuProduct.getSeq(), menuProduct.getMenuId(), menuProduct.getProduct().getId(), menuProduct.getQuantity());
+        MenuRequest menu = new MenuRequest("맥도날드햄버거", BigDecimal.valueOf(20000), savedMenuGroup.getId(), Arrays.asList(menuProductRequest));
 
         //when
         assertThatThrownBy(
