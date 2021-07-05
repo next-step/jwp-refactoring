@@ -37,15 +37,15 @@ public class Menu {
     @Embedded
     private MenuProducts menuProducts;
 
-    private Menu(MenuGroup menuGroup, String name, Price price, MenuProducts menuProducts) {
-        this.price = price;
-        this.name = name;
+    private Menu(MenuGroup menuGroup, String name, ProductsQuantities productsQuantities) {
         this.menuGroup = menuGroup;
-        this.menuProducts = menuProducts;
+        this.name = name;
+        this.price = productsQuantities.totalPrice();
+        this.menuProducts = new MenuProducts(this, productsQuantities);
     }
 
-    public static Menu of(MenuGroup menuGroup, String name, Price price, MenuProducts menuProducts) {
-        return new Menu(menuGroup, name, price, menuProducts);
+    public static Menu of(MenuGroup menuGroup, String name, ProductsQuantities productsQuantities) {
+        return new Menu(menuGroup, name, productsQuantities);
     }
 
     public Long getId() {
