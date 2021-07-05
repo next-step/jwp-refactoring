@@ -85,5 +85,10 @@
 - [x] Product 패키지 리팩토링
 - [x] 메뉴그룹 aggregate 패키지로 분리
 - [x] 테이블그룹 aggregate 패키지로 분리
-
+- [ ] menugroup 패키지 리팩토링
+- [ ] menu 패키지 리팩토링
+- [ ] order 패키지 리팩토링
+- [ ] tablegroup 패키지 리팩토링
+- [ ] table 패키지 리팩토링
+- [ ] 리팩토링 전 코드들 삭제
 
