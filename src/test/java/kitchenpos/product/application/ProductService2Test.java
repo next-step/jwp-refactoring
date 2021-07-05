@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.internal.verification.VerificationModeFactory;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,7 +42,7 @@ class ProductService2Test {
     //then
     assertAll(() -> assertThat(savedProduct.getId()).isNotNull(),
         () -> assertThat(savedProduct.getName()).isEqualTo(newRequest.getName()),
-        () -> assertThat(savedProduct.getPrice()).isEqualTo(newRequest.getPrice()));
+        () -> assertThat(savedProduct.getPrice()).isEqualTo(BigDecimal.valueOf(newRequest.getPrice())));
     verify(productRepository, VerificationModeFactory.times(1)).save(any());
   }
 
