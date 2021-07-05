@@ -14,6 +14,7 @@ import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
+import kitchenpos.menugroup.exception.NoSuchMenuGroupException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 
@@ -35,7 +36,7 @@ public class MenuService {
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
         MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(NoSuchMenuGroupException::new);
         List<Product> productList = productRepository.findAllById(menuRequest.getProductIds());
         List<MenuProduct> menuProductList = menuRequest.toMenuProducts(productList);
         Menu menu = Menu.create(menuRequest, menuGroup, MenuProducts.of(menuProductList));

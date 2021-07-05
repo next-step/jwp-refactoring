@@ -19,6 +19,8 @@ import org.springframework.util.CollectionUtils;
 
 import kitchenpos.common.domain.Price;
 import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.exception.NoMenuProductListException;
+import kitchenpos.menu.exception.OverSumPriceException;
 import kitchenpos.menugroup.domain.MenuGroup;
 
 @Entity
@@ -63,32 +65,32 @@ public class Menu {
 
     private static void validationCreate(MenuRequest menuRequest, MenuProducts menuProducts) {
         if (CollectionUtils.isEmpty(menuProducts.toCollection())) {
-            throw new IllegalArgumentException();
+            throw new NoMenuProductListException();
         }
 
         if (menuProducts.isSumUnder(menuRequest.getPrice())) {
-            throw new IllegalArgumentException();
+            throw new OverSumPriceException();
         }
     }
-    
+
     public BigDecimal getPrice() {
         return price.toBigDecimal();
     }
-    
+
     public Long getId() {
         return id;
     }
-    
+
     public Long getMenuGroupId() {
         return menuGroup.getId();
     }
-    
+
     public String getName() {
         return name;
     }
-    
+
     public List<MenuProduct> getMenuProducts() {
-        return Collections.unmodifiableList( menuProducts.toCollection() );
+        return Collections.unmodifiableList(menuProducts.toCollection());
     }
-    
+
 }

@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.exception.NoProductException;
 
 public class MenuRequest {
 
@@ -77,6 +78,6 @@ public class MenuRequest {
             .filter(menuProductRequest -> menuProductRequest.isEqualProductId(product.getId()))
             .map(menuProductRequest -> new MenuProduct(product, menuProductRequest.getQuantity()))
             .findAny()
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(NoProductException::new);
     }
 }
