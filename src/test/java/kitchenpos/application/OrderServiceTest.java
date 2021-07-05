@@ -3,6 +3,7 @@ package kitchenpos.application;
 import kitchenpos.dao.*;
 import kitchenpos.domain.*;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.product.domain.Price;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class OrderServiceTest {
 
     @Autowired
-    MenuDao menuDao;
+    MenuRepository menuRepository;
 
     @Autowired
     OrderDao orderDao;
@@ -61,9 +62,9 @@ class OrderServiceTest {
         Menu menu = new Menu();
         menu.setMenuGroupId(savedMenuGroup.getId());
         menu.setName("맥도날드햄버거");
-        menu.setPrice(BigDecimal.valueOf(10000));
+        menu.setPrice(new Price(BigDecimal.valueOf(10000)));
 
-        savedMenu = menuDao.save(menu);
+        savedMenu = menuRepository.save(menu);
 
         OrderTable orderTable = new OrderTable(2, false);
 
