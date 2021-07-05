@@ -2,6 +2,8 @@ package kitchenpos.product.application;
 
 import kitchenpos.product.domain.ProductEntity;
 import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,7 +42,7 @@ class ProductService2Test {
     assertAll(() -> assertThat(savedProduct.getId()).isNotNull(),
         () -> assertThat(savedProduct.getName()).isEqualTo(newRequest.getName()),
         () -> assertThat(savedProduct.getPrice()).isEqualTo(newRequest.getPrice()));
-    verify(productRepository, VerificationModeFactory.times(1)).save(newRequest);
+    verify(productRepository, VerificationModeFactory.times(1)).save(any());
   }
 
   @DisplayName("상품의 가격은 0 이상이어야 한다.")
