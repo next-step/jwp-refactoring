@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import kitchenpos.common.exception.ErrorResponse;
 import kitchenpos.table.exception.NoOrderTableException;
+import kitchenpos.tablegroup.exception.AlreadyUseTableException;
 import kitchenpos.tablegroup.exception.NoTableGroupException;
 import kitchenpos.tablegroup.exception.NoTableSizeException;
 import kitchenpos.tablegroup.exception.NotAbaliableOrderTableException;
@@ -31,6 +32,11 @@ public class TableGroupRestControllerAdvice {
 
     @ExceptionHandler(NoTableSizeException.class)
     public ResponseEntity<ErrorResponse> noTableSizeException(NoTableSizeException e) {
+        return getBadResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(AlreadyUseTableException.class)
+    public ResponseEntity<ErrorResponse> alreadyUseTableException(AlreadyUseTableException e) {
         return getBadResponse(e.getMessage());
     }
 

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import kitchenpos.common.exception.ErrorResponse;
 import kitchenpos.order.exception.CompletedOrderException;
-import kitchenpos.order.exception.FullTableException;
+import kitchenpos.order.exception.NotAvaliableTableException;
 import kitchenpos.order.exception.NoOrderException;
 import kitchenpos.order.exception.NoSuchMemuListException;
 import kitchenpos.order.exception.NoSuchOrderLinesException;
@@ -31,8 +31,8 @@ public class OrderRestControllerAdvice {
         return getBadResponse(e.getMessage());
     }
 
-    @ExceptionHandler(FullTableException.class)
-    public ResponseEntity<ErrorResponse> fullTableException(FullTableException e) {
+    @ExceptionHandler(NotAvaliableTableException.class)
+    public ResponseEntity<ErrorResponse> fullTableException(NotAvaliableTableException e) {
         return getBadResponse(e.getMessage());
     }
 

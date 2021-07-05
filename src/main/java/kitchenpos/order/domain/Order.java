@@ -23,7 +23,7 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.exception.CompletedOrderException;
-import kitchenpos.order.exception.FullTableException;
+import kitchenpos.order.exception.NotAvaliableTableException;
 import kitchenpos.order.exception.NoSuchMemuListException;
 import kitchenpos.product.constant.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
@@ -118,7 +118,7 @@ public class Order {
         }
 
         if (orderTable.isEmpty()) {
-            throw new FullTableException();
+            throw new NotAvaliableTableException();
         }
     }
 

@@ -14,7 +14,7 @@ import org.springframework.util.CollectionUtils;
 
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
-import kitchenpos.table.exception.NoOrderTableException;
+import kitchenpos.tablegroup.exception.AlreadyUseTableException;
 import kitchenpos.tablegroup.exception.NoTableSizeException;
 import kitchenpos.tablegroup.exception.NotAbaliableOrderTableException;
 
@@ -63,7 +63,7 @@ public class TableGroup {
 
     private static void avaliableTableCheck(OrderTables savedOrderTables) {
         if (!savedOrderTables.avaliableTable()) {
-            throw new NoOrderTableException();
+            throw new AlreadyUseTableException();
         }
     }
 
