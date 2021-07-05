@@ -52,4 +52,8 @@ public abstract class IntegrationTestHelper {
                                    .contentType(MediaType.APPLICATION_JSON)
                                    .content(objectMapper.writeValueAsString(body)));
     }
+
+    protected ResultActions deleteRequest(final String uri) throws Exception {
+        return mockMvc.perform(delete(uri));
+    }
 }
