@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.util.CollectionUtils;
 
+import kitchenpos.order.exception.NoSuchOrderLinesException;
 import kitchenpos.product.constant.OrderStatus;
 
 public class OrderRequest {
@@ -35,7 +36,7 @@ public class OrderRequest {
 
     public List<Long> getOrderLineItemsMenuIds() {
         if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
+            throw new NoSuchOrderLinesException();
         }
 
         return orderLineItems.stream()

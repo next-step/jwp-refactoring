@@ -22,6 +22,9 @@ import javax.persistence.Table;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.exception.CompletedOrderException;
+import kitchenpos.order.exception.FullTableException;
+import kitchenpos.order.exception.NoSuchMemuListException;
 import kitchenpos.product.constant.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 
@@ -111,11 +114,11 @@ public class Order {
 
     private static void validattion(OrderTable orderTable, OrderRequest orderRequest, List<Menu> menuList) {
         if (orderRequest.getOrderLineItemsMenuIds().size() != menuList.size()) {
-            throw new IllegalArgumentException();
+            throw new NoSuchMemuListException();
         }
 
         if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new FullTableException();
         }
     }
 
@@ -133,7 +136,7 @@ public class Order {
 
     private void validationUpdate() {
         if (Objects.equals(OrderStatus.COMPLETION, orderStatus)) {
-            throw new IllegalArgumentException();
+            throw new CompletedOrderException();
         }
     }
 }

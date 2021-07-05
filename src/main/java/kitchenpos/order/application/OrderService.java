@@ -12,8 +12,10 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.exception.NoOrderException;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.exception.NoOrderTableException;
 
 @Service
 public class OrderService {
@@ -36,7 +38,7 @@ public class OrderService {
         final List<Long> menuIds = orderRequest.getOrderLineItemsMenuIds();
         final List<Menu> menuList = menuRepository.findAllById(menuIds);
         final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(NoOrderTableException::new);
 
         Order order = Order.create(orderRequest, orderTable, menuList);
 
@@ -53,7 +55,7 @@ public class OrderService {
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
         final Order savedOrder = orderRepository.findById(orderId)
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(NoOrderException::new);
 
         savedOrder.updateStatus(orderRequest);
         return OrderResponse.of(savedOrder);
