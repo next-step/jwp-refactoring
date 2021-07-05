@@ -35,8 +35,7 @@ class OrderTest {
 	@Test
 	void createOrderWithoutOrderLineItems() {
 		// given
-		OrderTable orderTable = mock(OrderTable.class);
-		when(orderTable.getId()).thenReturn(1L);
+		OrderTable orderTable = new OrderTable(1, true);
 		LocalDateTime orderedTime = now();
 
 		// when
@@ -51,8 +50,7 @@ class OrderTest {
 	void createOrderWithEmptyOrderTableTest() {
 		// given
 		OrderLineItem orderLineItem = new OrderLineItem(1L, 1L);
-		OrderTable orderTable = mock(OrderTable.class);
-		when(orderTable.isEmpty()).thenReturn(true);
+		OrderTable orderTable = new OrderTable(1, true);
 
 		// when
 		// than
@@ -61,18 +59,18 @@ class OrderTest {
 			.hasMessageContaining("빈테이블에서 주문할 수 없습니다.");
 	}
 
-	@DisplayName("계산료상태의 주문은 상태변경이 불가능하다.")
+	@DisplayName("계산완료상태의 주문은 상태변경이 불가능하다.")
 	@Test
 	void changeCompletedOrderTest() {
 		// given
 		OrderLineItem orderLineItem = new OrderLineItem(1L, 1L);
-		OrderTable orderTable = mock(OrderTable.class);
-		Order order = Order.create(asList(orderLineItem), orderTable, now());
-		order.complete();
+		OrderTable orderTable = new OrderTable(1, false);
+		Order completedOrder = Order.create(asList(orderLineItem), orderTable, now());
+		completedOrder.complete();
 
 		// when
 		// than
-		assertThatThrownBy(() -> order.startMeal())
+		assertThatThrownBy(() -> completedOrder.startMeal())
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("계산 완료 주문은 상태를 변경할 수 없습니다.");
 	}

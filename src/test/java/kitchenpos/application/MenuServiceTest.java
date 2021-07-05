@@ -67,7 +67,7 @@ class MenuServiceTest {
 	@Test
 	void listTest() {
 		// when
-		menuService.list();
+		menuService.findAll();
 
 		// then
 		verify(menuRepository).findAll();

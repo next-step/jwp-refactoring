@@ -1,7 +1,6 @@
 package kitchenpos.ui;
 
 import kitchenpos.application.ProductService;
-import kitchenpos.domain.Product;
 import kitchenpos.dto.ProductRequest;
 import kitchenpos.dto.ProductResponse;
 
@@ -34,7 +33,7 @@ public class ProductRestController {
     @GetMapping("/api/products")
     public ResponseEntity<List<ProductResponse>> list() {
         return ResponseEntity.ok()
-                .body(productService.list())
+                .body(productService.findAll())
                 ;
     }
 }

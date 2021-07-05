@@ -53,7 +53,7 @@ class ProductServiceTest {
 		when(productRepository.findAll()).thenReturn(asList(product));
 
 		// when
-		List<ProductResponse> productResponses = productService.list();
+		List<ProductResponse> productResponses = productService.findAll();
 
 		// then
 		assertThat(productResponses).isNotEmpty();

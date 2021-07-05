@@ -1,7 +1,6 @@
 package kitchenpos.ui;
 
 import kitchenpos.application.OrderService;
-import kitchenpos.domain.Order;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
 
@@ -31,7 +30,7 @@ public class OrderRestController {
     @GetMapping("/api/orders")
     public ResponseEntity<List<OrderResponse>> list() {
         return ResponseEntity.ok()
-                .body(orderService.list())
+                .body(orderService.findAll())
                 ;
     }
 

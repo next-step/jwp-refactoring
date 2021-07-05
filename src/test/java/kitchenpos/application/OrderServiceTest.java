@@ -79,11 +79,16 @@ class OrderServiceTest {
 		when(orderRepository.findAll()).thenReturn(asList(order));
 
 		// when
-		List<OrderResponse> findOrders = orderService.list();
+		List<OrderResponse> findOrders = orderService.findAll();
 
 		// then
 		assertThat(findOrders.size()).isEqualTo(1);
 		assertThat(findOrders.get(0).getId()).isEqualTo(1L);
+	}
+
+	@DisplayName("주문 상태가 완료인 경우 변경할 수 없다.")
+	void changeOrderStatusTest() {
+
 	}
 
 }

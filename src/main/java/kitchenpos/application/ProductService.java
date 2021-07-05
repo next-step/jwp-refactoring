@@ -24,7 +24,8 @@ public class ProductService {
         return ProductResponse.of(persistProduct);
     }
 
-    public List<ProductResponse> list() {
+    @Transactional(readOnly = true)
+    public List<ProductResponse> findAll() {
         return ProductResponse.listOf(productRepository.findAll());
     }
 }

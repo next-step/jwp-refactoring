@@ -55,7 +55,7 @@ class TableServiceTest {
 		when(orderTableRepository.findAll()).thenReturn(asList(orderTable));
 
 		// when
-		List<OrderTableResponse> orderTableResponses = tableService.list();
+		List<OrderTableResponse> orderTableResponses = tableService.findAll();
 
 		// then
 		assertThat(orderTableResponses.size()).isEqualTo(1);

@@ -44,7 +44,8 @@ public class MenuService {
         return MenuResponse.of(persistMenu);
     }
 
-    public List<MenuResponse> list() {
+    @Transactional(readOnly = true)
+    public List<MenuResponse> findAll() {
         final List<Menu> menus = menuRepository.findAll();
         return MenuResponse.listOf(menus);
     }

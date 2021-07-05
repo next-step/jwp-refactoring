@@ -15,6 +15,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
 
 @DisplayName("메뉴그룹 요구사항 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -32,12 +34,14 @@ class MenuGroupServiceTest {
 	void createTest() {
 		// given
 		MenuGroup menuGroup = mock(MenuGroup.class);
+		when(menuGroup.getId()).thenReturn(1L);
+		when(menuGroupRepository.save(any(MenuGroup.class))).thenReturn(menuGroup);
 
 		// when
-		menuGroupService.create(menuGroup);
+		MenuGroupResponse response = menuGroupService.create(new MenuGroupRequest("치킨"));
 
 		// than
-		verify(menuGroupRepository).save(menuGroup);
+		assertThat(response.getId()).isEqualTo(1L);
 	}
 
 	@DisplayName("메뉴 그룹 목록을 조회할 수 있다.")
@@ -45,13 +49,15 @@ class MenuGroupServiceTest {
 	void listTest() {
 		// given
 		MenuGroup menuGroup = mock(MenuGroup.class);
+		when(menuGroup.getId()).thenReturn(1L);
 		when(menuGroupRepository.findAll()).thenReturn(asList(menuGroup));
 
 		// when
-		List<MenuGroup> menuGroups = menuGroupService.list();
+		List<MenuGroupResponse> menuGroups = menuGroupService.findMenuGroups();
 
 		// then
-		assertThat(menuGroups).containsExactly(menuGroup);
+		assertThat(menuGroups).isNotEmpty();
+		assertThat(menuGroups.get(0).getId()).isEqualTo(1L);
 	}
 
 }
