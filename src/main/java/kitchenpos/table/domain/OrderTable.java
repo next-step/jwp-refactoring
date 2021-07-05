@@ -18,9 +18,9 @@ public class OrderTable {
     public OrderTable() {
     }
 
-    public OrderTable(int numberOfGuests) {
-        this(numberOfGuests, false);
-    }
+//    public OrderTable(int numberOfGuests) {
+//        this(numberOfGuests, false);
+//    }
 
     public OrderTable(int numberOfGuests, boolean empty) {
         this.numberOfGuests = numberOfGuests;
@@ -47,7 +47,7 @@ public class OrderTable {
         return numberOfGuests;
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
+    private void setNumberOfGuests(final int numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
     }
 
@@ -57,5 +57,17 @@ public class OrderTable {
 
     public void setEmpty(final boolean empty) {
         this.empty = empty;
+    }
+
+    public void changeNumberOfGuests(int numberOfGuests) {
+        if(numberOfGuests < 0) {
+            throw new IllegalArgumentException("손님의 수는 0보다 작을수 없습니다.");
+        }
+
+        if(isEmpty()) {
+            throw new IllegalArgumentException("빈테이블은 손님의 수를 변경할수 없습니다.");
+        }
+
+        setNumberOfGuests(numberOfGuests);
     }
 }
