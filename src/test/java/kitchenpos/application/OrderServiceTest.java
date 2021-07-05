@@ -2,6 +2,8 @@ package kitchenpos.application;
 
 import kitchenpos.dao.*;
 import kitchenpos.domain.*;
+import kitchenpos.dto.OrderLineItemRequest;
+import kitchenpos.dto.OrderRequest;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
@@ -85,10 +87,10 @@ class OrderServiceTest {
         //given
         String orderStatus = OrderStatus.COOKING.name();
 
-        Order order = new Order();
+        OrderRequest order = new OrderRequest();
         order.setOrderTableId(savedOrderTable.getId());
         order.setOrderStatus(orderStatus);
-        order.setOrderLineItems(Arrays.asList(orderLineItem));
+        order.setOrderLineItems(Arrays.asList(new OrderLineItemRequest(orderLineItem.getSeq(), orderLineItem.getOrderId(), orderLineItem.getMenuId(), orderLineItem.getQuantity())));
 
         //when
         Order savedOrder = orderService.create(order);
@@ -127,14 +129,14 @@ class OrderServiceTest {
     @Test
     public void failCreateOrderEmptyOrderLineItems() throws Exception {
         //given
-        Order order = new Order();
-        order.setOrderTableId(savedOrderTable.getId());
-        order.setOrderStatus(OrderStatus.COOKING.name());
-        order.setOrderedTime(LocalDateTime.now());
+        OrderRequest orderRequest = new OrderRequest();
+        orderRequest.setOrderTableId(savedOrderTable.getId());
+        orderRequest.setOrderStatus(OrderStatus.COOKING.name());
+        orderRequest.setOrderedTime(LocalDateTime.now());
 
         //when
         assertThatThrownBy(
-                () -> orderService.create(order)
+                () -> orderService.create(orderRequest)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -142,15 +144,16 @@ class OrderServiceTest {
     @Test
     public void failCreateOrderInvalidOrderTableId() throws Exception {
         //given
-        Order order = new Order();
-        order.setOrderTableId(0L);
-        order.setOrderStatus(OrderStatus.COOKING.name());
-        order.setOrderedTime(LocalDateTime.now());
-        order.setOrderLineItems(Arrays.asList(orderLineItem));
+        OrderRequest orderRequest = new OrderRequest();
+        orderRequest.setOrderTableId(0L);
+        orderRequest.setOrderStatus(OrderStatus.COOKING.name());
+        orderRequest.setOrderedTime(LocalDateTime.now());
+//        order.setOrderLineItems(Arrays.asList(orderLineItem));
+        orderRequest.setOrderLineItems(Arrays.asList(new OrderLineItemRequest(orderLineItem.getSeq(), orderLineItem.getOrderId(), orderLineItem.getMenuId(), orderLineItem.getQuantity())));
 
         //when
         assertThatThrownBy(
-                () -> orderService.create(order)
+                () -> orderService.create(orderRequest)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -158,15 +161,16 @@ class OrderServiceTest {
     @Test
     public void failCreateOrderEmptyOrderTableId() throws Exception {
         //given
-        Order order = new Order();
-        order.setOrderTableId(savedEmptyOrderTable.getId());
-        order.setOrderStatus(OrderStatus.COOKING.name());
-        order.setOrderedTime(LocalDateTime.now());
-        order.setOrderLineItems(Arrays.asList(orderLineItem));
+        OrderRequest orderRequest = new OrderRequest();
+        orderRequest.setOrderTableId(savedEmptyOrderTable.getId());
+        orderRequest.setOrderStatus(OrderStatus.COOKING.name());
+        orderRequest.setOrderedTime(LocalDateTime.now());
+//        order.setOrderLineItems(Arrays.asList(orderLineItem));
+        orderRequest.setOrderLineItems(Arrays.asList(new OrderLineItemRequest(orderLineItem.getSeq(), orderLineItem.getOrderId(), orderLineItem.getMenuId(), orderLineItem.getQuantity())));
 
         //when
         assertThatThrownBy(
-                () -> orderService.create(order)
+                () -> orderService.create(orderRequest)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
