@@ -48,6 +48,7 @@ public class MenuService {
         return MenuResponse.of(savedMenu);
     }
 
+    @Transactional(readOnly = true)
     public List<MenuResponse> list() {
         return menuRepository.findAll().stream()
                 .map(menu -> MenuResponse.of(menu))
@@ -70,6 +71,6 @@ public class MenuService {
             sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
         }
 
-        menu.isPriceOver(sum);
+        menu.checkOverPriceComparedWith(sum);
     }
 }

@@ -2,14 +2,11 @@ package kitchenpos.ordering.domain;
 
 import kitchenpos.BaseEntity;
 import kitchenpos.table.domain.OrderTable;
-import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Entity
 public class Ordering extends BaseEntity {
@@ -27,8 +24,8 @@ public class Ordering extends BaseEntity {
     @Column
     private LocalDateTime orderedTime;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE }, orphanRemoval = true)
-    private List<OrderLineItem> orderLineItems = new ArrayList<>();
+    @Embedded
+    private OrderLineItems orderLineItems;
 
     public Ordering() { }
 
@@ -37,7 +34,7 @@ public class Ordering extends BaseEntity {
         this.orderTableId = orderTableId;
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
-        this.orderLineItems = orderLineItems;
+        this.orderLineItems = new OrderLineItems(orderLineItems);
         setOrderIdOnOrderLineItems();
     }
 
@@ -46,7 +43,7 @@ public class Ordering extends BaseEntity {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
-        this.orderLineItems = orderLineItems;
+        this.orderLineItems = new OrderLineItems(orderLineItems);
         setOrderIdOnOrderLineItems();
     }
 
@@ -54,17 +51,15 @@ public class Ordering extends BaseEntity {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
-        this.orderLineItems = orderLineItems;
+        this.orderLineItems = new OrderLineItems(orderLineItems);
         setOrderIdOnOrderLineItems();
     }
 
     private void setOrderIdOnOrderLineItems() {
-        if (Objects.isNull(orderLineItems)) {
+        if (Objects.isNull(orderLineItems) || orderLineItems.isNull()) {
             throw new IllegalArgumentException("테이블이 비어있으면 주문 할 수 없습니다.");
         }
-
-        this.orderLineItems.stream()
-                .forEach(orderLineItem -> orderLineItem.isIn(this));
+        orderLineItems.setOrderIdOnOrderLineItems(this);
     }
 
     public void isFrom(OrderTable orderTable) {
@@ -72,16 +67,14 @@ public class Ordering extends BaseEntity {
     }
 
     public void validateOrderLineItemsSize(long savedMenuIdsSize) {
-        if (CollectionUtils.isEmpty(orderLineItems) ||
+        if (orderLineItems.isEmpty() ||
                 orderLineItems.size() != savedMenuIdsSize) {
             throw new IllegalArgumentException();
         }
     }
 
     public List<Long> menuIds() {
-        return orderLineItems.stream()
-                .map(OrderLineItem::getMenuId)
-                .collect(Collectors.toList());
+        return orderLineItems.menuIds();
     }
 
     public void changeOrderStatusTo(OrderStatus orderStatus) {
@@ -113,7 +106,7 @@ public class Ordering extends BaseEntity {
     }
 
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
+        return orderLineItems.get();
     }
 
     @Override

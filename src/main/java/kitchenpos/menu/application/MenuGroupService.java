@@ -22,6 +22,7 @@ public class MenuGroupService {
         return MenuGroupResponse.of(menuGroupRepository.save(menuGroupRequest.toEntity()));
     }
 
+    @Transactional(readOnly = true)
     public List<MenuGroupResponse> list() {
         return menuGroupRepository.findAll().stream()
                 .map(menuGroup -> MenuGroupResponse.of(menuGroup))

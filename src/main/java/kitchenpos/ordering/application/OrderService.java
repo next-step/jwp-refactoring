@@ -49,6 +49,7 @@ public class OrderService {
         return OrderResponse.of(persistOrder);
     }
 
+    @Transactional(readOnly = true)
     public List<OrderResponse> list() {
         return orderRepository.findAll().stream()
                 .map(ordering -> OrderResponse.of(ordering))

@@ -42,6 +42,7 @@ public class TableGroupServiceTest {
     private Long tableGroup1Id = 1L;
     private OrderTable orderTable1 = new OrderTable(1L, null, 0, true);
     private OrderTable orderTable2 = new OrderTable(2L, null, 0, true);
+    private OrderTable orderTable3 = new OrderTable(3L, null, 0, true);
     private List<OrderTable> tableGroup1OrderTables = Arrays.asList(orderTable1, orderTable2);
     private List<Long> tableGroup1OrderTableIds = Arrays.asList(orderTable1.getId(), orderTable2.getId());
 
@@ -120,7 +121,7 @@ public class TableGroupServiceTest {
     @Test
     void 등록되어있는_주문테이블들이_올바르지_않으면_단체지정을_등록할_수_없다_2() {
         OrderTable falseOrderTable1 = new OrderTable(1L, 1L, 0, true);
-        OrderTable falseOrderTable2 = new OrderTable(2L, 1L, 0, true);
+        OrderTable falseOrderTable2 = new OrderTable(2L, 2L, 0, true);
         List<Long> falseOrderTableIds = Arrays.asList(falseOrderTable1.getId(), falseOrderTable2.getId());
 
         TableGroupRequest tableGroupRequest = TableGroupRequest.of(falseOrderTableIds);

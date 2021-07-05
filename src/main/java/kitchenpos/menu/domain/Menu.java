@@ -1,8 +1,9 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.common.Price;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -15,14 +16,14 @@ public class Menu {
     @Column
     private String name;
 
-    @Column
-    private BigDecimal price;
+    @Embedded
+    private Price price;
 
     @Column
     private Long menuGroupId;
 
-    @OneToMany
-    private List<MenuProduct> menuProducts = new ArrayList<>();
+    @Embedded
+    private MenuProducts menuProducts;
 
     public Menu() {
 
@@ -30,29 +31,13 @@ public class Menu {
 
     public Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         this.name = name;
-        this.price = price;
+        this.price = new Price(price);
         this.menuGroupId = menuGroupId;
-        this.menuProducts = menuProducts;
-
-        validatePrice();
-        setMenuIdOnMenuProducts();
+        this.menuProducts = new MenuProducts(menuProducts, id);
     }
 
-    private void setMenuIdOnMenuProducts() {
-        this.menuProducts.stream()
-                .forEach(menuProduct -> menuProduct.setProductId(id));
-    }
-
-    private void validatePrice() {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    public void isPriceOver(BigDecimal sum) {
-        if (price.compareTo(sum) > 0) {
-            throw new IllegalArgumentException();
-        }
+    public void checkOverPriceComparedWith(BigDecimal sum) {
+        price.isOverThan(sum);
     }
 
     public Long getId() {
@@ -64,7 +49,7 @@ public class Menu {
     }
 
     public BigDecimal getPrice() {
-        return price;
+        return price.get();
     }
 
     public Long getMenuGroupId() {
@@ -72,7 +57,7 @@ public class Menu {
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
+        return menuProducts.get();
     }
 
     @Override

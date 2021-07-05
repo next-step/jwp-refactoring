@@ -29,6 +29,7 @@ public class TableGroupService {
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(tableGroupRequest.getOrderTableIds());
+        checkOrderTablesAreAllSaved(savedOrderTables, tableGroupRequest);
 
         TableGroup tableGroup = TableGroup.of(savedOrderTables);
         tableGroup.grouping();
@@ -44,6 +45,13 @@ public class TableGroupService {
         checkOrderStatusInOrderTablesIfAllComplete(persistTableGroup.getOrderTableIds());
 
         persistTableGroup.ungrouping();
+    }
+
+    private void checkOrderTablesAreAllSaved(final List<OrderTable> orderTables, final TableGroupRequest tableGroupRequest) {
+        if (orderTables.size()
+            != tableGroupRequest.getOrderTableIds().size()) {
+            throw new IllegalArgumentException("등록되지 않은 주문테이블이 있으면 그룹을 만들 수 없습니다.");
+        }
     }
 
     private void checkOrderStatusInOrderTablesIfAllComplete(List<Long> orderTableIds) {
