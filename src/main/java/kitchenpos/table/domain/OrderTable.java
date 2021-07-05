@@ -77,4 +77,15 @@ public class OrderTable {
 
         setEmpty(orderTableRequest.isEmpty());
     }
+
+    public boolean isUnableTableGroup() {
+        if (!isEmpty() || Objects.nonNull(getTableGroupId())) {
+            return true;
+        }
+        return false;
+    }
+
+    public void ungroup() {
+        setTableGroupId(null);
+    }
 }

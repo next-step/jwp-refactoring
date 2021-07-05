@@ -1,22 +1,19 @@
 package kitchenpos.application;
 
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.domain.TableGroupRepository;
 import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.dto.TableGroupResponse;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.dto.OrderTableRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,62 +30,41 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
+        final List<OrderTable> orderTables = getOrderTables(tableGroupRequest);
 
-        final List<OrderTableRequest> orderTables = tableGroupRequest.getOrderTables();
+        TableGroup tableGroup = new TableGroup(LocalDateTime.now(), orderTables);
+
+        return TableGroupResponse.of(tableGroupRepository.save(tableGroup));
+    }
+
+    private List<OrderTable> getOrderTables(TableGroupRequest tableGroupRequest) {
+        List<OrderTable> orderTables = tableGroupRequest.getOrderTables()
+                .stream()
+                .map(orderTableRequest -> findByOrderTable(orderTableRequest.getId()))
+                .collect(Collectors.toList());
 
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
             throw new IllegalArgumentException();
         }
 
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTableRequest::getId)
-                .collect(Collectors.toList());
+        return orderTables;
+    }
 
-        final List<OrderTable> savedOrderTables = orderTableRepository.findByIdIn(orderTableIds);
-
-        if (orderTables.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
-        }
-
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        TableGroup tableGroup = new TableGroup();
-
-        tableGroup.setCreatedDate(LocalDateTime.now());
-
-        final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
-
-        final Long tableGroupId = savedTableGroup.getId();
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.setTableGroupId(tableGroupId);
-            savedOrderTable.setEmpty(false);
-            orderTableRepository.save(savedOrderTable);
-        }
-        savedTableGroup.setOrderTables(savedOrderTables);
-
-        return TableGroupResponse.of(savedTableGroup);
+    private OrderTable findByOrderTable(Long id) {
+        return orderTableRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 테이블입니다."));
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
+
         final List<OrderTable> orderTables = orderTableRepository.findByTableGroupId(tableGroupId);
 
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
+        List<Order> orders = orderRepository.findByOrderTableIn(orderTables);
 
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
-        }
-
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.setTableGroupId(null);
-            orderTableRepository.save(orderTable);
-        }
+        orders.stream()
+                .forEach(Order::ungroupValidation);
+        orderTables.stream()
+                .forEach(OrderTable::ungroup);
     }
 }
