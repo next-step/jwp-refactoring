@@ -4,6 +4,7 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.MenuProductRepository;
 import kitchenpos.domain.MenuRepository;
+import kitchenpos.dto.MenuResponse;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
@@ -14,7 +15,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
+@Transactional(readOnly = true)
 @Service
 public class MenuService {
     private final MenuRepository menuRepository;
@@ -72,17 +75,11 @@ public class MenuService {
         return savedMenu;
     }
 
-    public List<Menu> list() {
-        final List<Menu> menus = menuRepository.findAll();
-
-//        menuDao.findAll()
-//                .stream()
-//                .map(MenuResponse::of)
-//                .collect(Collectors.toList());
-        for (final Menu menu : menus) {
-            menu.setMenuProducts(menuProductRepository.findByMenuId(menu.getId()));
-        }
-
-        return menus;
+    public List<MenuResponse> list() {
+        List<MenuResponse> menuResponses = menuRepository.findAll()
+                .stream()
+                .map(MenuResponse::of)
+                .collect(Collectors.toList());
+        return menuResponses;
     }
 }
