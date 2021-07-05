@@ -9,6 +9,9 @@ public class ProductRequest {
   private String name;
   private Double price;
 
+  public ProductRequest() {
+  }
+
   public ProductRequest(String name, Double price) {
     this.name = name;
     this.price = price;
