@@ -14,7 +14,10 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long orderTableId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    private OrderTable orderTable;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
@@ -26,8 +29,8 @@ public class Order {
     public Order() {
     }
 
-    public Order(Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
-        this.orderTableId = orderTableId;
+    public Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+        this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
@@ -39,7 +42,7 @@ public class Order {
             throw new IllegalArgumentException("빈테이블은 주문을 할수 없습니다.");
         }
 
-        return new Order(orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now(), newOrderLineItems);
+        return new Order(orderTable, OrderStatus.COOKING, LocalDateTime.now(), newOrderLineItems);
     }
 
     public Long getId() {
@@ -50,12 +53,12 @@ public class Order {
         this.id = id;
     }
 
-    public Long getOrderTableId() {
-        return orderTableId;
+    public OrderTable getOrderTable() {
+        return orderTable;
     }
 
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
+    public void setOrderTable(final OrderTable orderTable) {
+        this.orderTable = orderTable;
     }
 
     public OrderStatus getOrderStatus() {
@@ -88,5 +91,24 @@ public class Order {
         }
 
         setOrderStatus(orderStatus);
+    }
+
+    public void ungroupValidation() {
+        if (getOrderStatus() == OrderStatus.COOKING || getOrderStatus() == OrderStatus.MEAL) {
+            throw new IllegalArgumentException("요리중이거나 식사중인 상태는 단체테이블을 해지할수 없습니다.");
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Order order = (Order) o;
+        return Objects.equals(id, order.id) && Objects.equals(orderTable, order.orderTable) && orderStatus == order.orderStatus && Objects.equals(orderedTime, order.orderedTime) && Objects.equals(orderLineItems, order.orderLineItems);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, orderTable, orderStatus, orderedTime, orderLineItems);
     }
 }

@@ -8,6 +8,7 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemResponse;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.ui.OrderRestController;
+import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -65,18 +66,20 @@ class OrderRestControllerTest {
     @DisplayName("주문등록 api 테스트")
     @Test
     public void create() throws Exception {
+        OrderTable orderTable = new OrderTable(4, false);
+
         Order order = new Order();
         order.setOrderLineItems(Arrays.asList(orderLineItem));
-        order.setOrderTableId(1L);
+        order.setOrderTable(orderTable);
         order.setOrderStatus(OrderStatus.COOKING);
         order.setOrderedTime(LocalDateTime.now());
 
 
         String requestBody = objectMapper.writeValueAsString(order);
 
-        Order responseOrder = new Order();
-        responseOrder.setOrderLineItems(Arrays.asList(orderLineItem));
-        responseOrder.setOrderTableId(1L);
+        OrderResponse responseOrder = new OrderResponse();
+        responseOrder.setOrderLineItems(Arrays.asList(OrderLineItemResponse.of(orderLineItem)));
+        responseOrder.setOrderTableId(orderTable.getId());
         responseOrder.setOrderStatus(OrderStatus.COOKING);
         responseOrder.setOrderedTime(LocalDateTime.now());
         String responseBody = objectMapper.writeValueAsString(responseOrder);
@@ -120,9 +123,11 @@ class OrderRestControllerTest {
     void changeOrderStatus() throws Exception {
         LocalDateTime orderedTime = LocalDateTime.now();
 
+        OrderTable orderTable = new OrderTable(4, false);
+
         Order order = new Order();
         order.setOrderLineItems(Arrays.asList(orderLineItem));
-        order.setOrderTableId(1L);
+        order.setOrderTable(orderTable);
         order.setOrderStatus(OrderStatus.COOKING);
         order.setOrderedTime(orderedTime);
 
@@ -133,6 +138,7 @@ class OrderRestControllerTest {
         orderResponse.setOrderTableId(1L);
         orderResponse.setOrderStatus(OrderStatus.COOKING);
         orderResponse.setOrderedTime(orderedTime);
+        String responseBody = objectMapper.writeValueAsString(orderResponse);
 
         when(orderService.changeOrderStatus(any(), any())).thenReturn(orderResponse);
         mockMvc.perform(put("/api/orders/1/order-status")
@@ -141,7 +147,7 @@ class OrderRestControllerTest {
         )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(requestBody))
+                .andExpect(content().string(responseBody))
         ;
     }
 }

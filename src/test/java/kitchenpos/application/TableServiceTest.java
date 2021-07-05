@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.domain.TableGroupRepository;
 import kitchenpos.table.domain.OrderTable;
@@ -39,7 +39,7 @@ class TableServiceTest {
     TableGroupRepository tableGroupRepository;
 
     @Autowired
-    OrderDao orderDao;
+    OrderRepository orderRepository;
 
     OrderTable orderTable;
 
@@ -135,9 +135,9 @@ class TableServiceTest {
 
         Order order = new Order();
         order.setOrderStatus(OrderStatus.COOKING);
-        order.setOrderTableId(savedOrderTable.getId());
+        order.setOrderTable(savedOrderTable);
         order.setOrderedTime(LocalDateTime.now());
-        orderDao.save(order);
+        orderRepository.save(order);
 
         //when
         assertThatThrownBy(
