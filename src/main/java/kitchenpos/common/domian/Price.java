@@ -34,8 +34,8 @@ public class Price {
         }
     }
 
-    public Price sum(Price price, Quantity quantity) {
-        return new Price(price.amount.multiply(BigDecimal.valueOf(quantity.amount())));
+    public Price multiplyQuantity(Quantity quantity) {
+        return new Price(amount.multiply(BigDecimal.valueOf(quantity.amount())));
     }
 
     public int amountToInt() {
