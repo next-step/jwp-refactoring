@@ -3,6 +3,7 @@ package kitchenpos.application;
 import kitchenpos.domain.*;
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderResponse;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.table.domain.OrderTable;
@@ -13,9 +14,9 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
+@Transactional(readOnly = true)
 @Service
 public class OrderService {
     private final MenuRepository menuRepository;
@@ -62,27 +63,27 @@ public class OrderService {
 
     private OrderLineItem findByOrderLineItem(OrderLineItemRequest orderLineItemRequest) {
         Menu menu = menuRepository.findById(orderLineItemRequest.getMenuId())
-                .orElseThrow(() -> new NoSuchElementException(""));
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 메뉴입니다."));
         return new OrderLineItem(menu.getId(), orderLineItemRequest.getQuantity());
     }
 
-    public List<Order> list() {
+    public List<OrderResponse> list() {
         final List<Order> orders = orderRepository.findAll();
 
-        for (final Order order : orders) {
-            order.setOrderLineItems(orderLineItemRepository.findByOrderId(order.getId()));
-        }
+        List<OrderResponse> orderResponses = orders.stream()
+                .map(OrderResponse::of)
+                .collect(Collectors.toList());
 
-        return orders;
+        return orderResponses;
     }
 
     @Transactional
-    public Order changeOrderStatus(final Long orderId, final OrderRequest order) {
+    public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest order) {
         final Order savedOrder = orderRepository.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);
 
         savedOrder.changeOrderStatus(order.getOrderStatus());
 
-        return savedOrder;
+        return OrderResponse.of(savedOrder);
     }
 }
