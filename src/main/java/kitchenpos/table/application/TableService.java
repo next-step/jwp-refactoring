@@ -1,6 +1,6 @@
 package kitchenpos.table.application;
 
-import kitchenpos.dao.OrderDao;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -14,11 +14,11 @@ import java.util.List;
 
 @Service
 public class TableService {
-    private final OrderDao orderDao;
+    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(OrderDao orderDao, OrderTableRepository orderTableRepository) {
-        this.orderDao = orderDao;
+    public TableService(OrderRepository orderRepository, OrderTableRepository orderTableRepository) {
+        this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -38,9 +38,9 @@ public class TableService {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        if (orderDao.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
+        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
+                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+            throw new IllegalArgumentException("요리중이거나 식사중인 테이블은 빈테이블로 변경이 불가능합니다.");
         }
 
         savedOrderTable.changeEmpty(orderTableRequest);
