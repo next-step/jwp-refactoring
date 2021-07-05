@@ -7,7 +7,6 @@ import static org.mockito.Mockito.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +18,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.ProductRepository;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
 
@@ -42,7 +40,10 @@ class MenuServiceTest {
 	@DisplayName("메뉴 그룹이 존재하지 않는 메뉴는 등록할 수 없다.")
 	@Test
 	void createMenuNoGroupMenuTest() {
-		assertThatThrownBy(() -> menuService.create(new MenuRequest()))
+		MenuRequest menuRequest = new MenuRequest("치킨", BigDecimal.valueOf(1000), 1L, new ArrayList<>());
+		when(productRepository.findAllById(anyList())).thenReturn(new ArrayList<>());
+
+		assertThatThrownBy(() -> menuService.create(menuRequest))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("메뉴 그룹이 존재하지 않는 메뉴는 등록할 수 없습니다.");
 	}
@@ -53,7 +54,6 @@ class MenuServiceTest {
 		// given
 		List<MenuProductRequest> menuProductRequests = asList(new MenuProductRequest(1L, 1L));
 		MenuRequest menuRequest = new MenuRequest("치킨", BigDecimal.ZERO, 1L, menuProductRequests);
-		when(menuGroupRepository.findById(anyLong())).thenReturn(Optional.of(mock(MenuGroup.class)));
 		when(productRepository.findAllById(anyList())).thenReturn(new ArrayList<>());
 
 		// when

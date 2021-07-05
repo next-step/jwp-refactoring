@@ -1,10 +1,11 @@
 package kitchenpos.application;
 
+import static kitchenpos.domain.MenuProducts.*;
+import static kitchenpos.domain.Name.*;
+import static kitchenpos.domain.Price.*;
+
 import kitchenpos.domain.MenuGroupRepository;
-import kitchenpos.domain.MenuProducts;
 import kitchenpos.domain.MenuRepository;
-import kitchenpos.domain.Name;
-import kitchenpos.domain.Price;
 import kitchenpos.domain.ProductRepository;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
@@ -35,13 +36,15 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        final MenuGroup menuGroup = findMenuGroup(menuRequest);
         final List<Product> products = findProducts(menuRequest);
-        final MenuProducts menuProducts = MenuProducts.of(menuRequest.toMenuProducts(products));
-        final Name menuName = Name.valueOf(menuRequest.getName());
-        final Price menuPrice = Price.wonOf(menuRequest.getPrice());
-        final Menu persistMenu = menuRepository.save(
-            Menu.create(menuName, menuPrice, menuGroup, menuProducts));
+        Menu.Builder menuBuilder = new Menu.Builder();
+        Menu persistMenu = menuRepository.save(
+            menuBuilder
+                .name(valueOf(menuRequest.getName()))
+                .price(wonOf(menuRequest.getPrice()))
+                .menuGroup(findMenuGroup(menuRequest))
+                .menuProducts(of(menuRequest.toMenuProducts(products)))
+                .build());
         return MenuResponse.of(persistMenu);
     }
 

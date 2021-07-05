@@ -38,6 +38,10 @@ public class MenuRequest {
 		return menuGroupId;
 	}
 
+	public List<MenuProductRequest> getMenuProducts() {
+		return menuProducts;
+	}
+
 	public List<Long> getProductIds() {
 		return menuProducts.stream()
 			.map(MenuProductRequest::getProductId)

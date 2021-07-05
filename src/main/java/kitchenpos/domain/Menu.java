@@ -1,7 +1,10 @@
 package kitchenpos.domain;
 
+import static java.util.Objects.*;
+
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
@@ -37,9 +40,42 @@ public class Menu {
     @Embedded
     private MenuProducts menuProducts = new MenuProducts();
 
+    public static class Builder {
+        private Name name;
+        private Price price;
+        private MenuGroup menuGroup;
+        private MenuProducts menuProducts;
+
+        public Builder name(Name name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder price(Price price) {
+            this.price = price;
+            return this;
+        }
+
+        public Builder menuGroup(MenuGroup menuGroup) {
+            this.menuGroup = menuGroup;
+            return this;
+        }
+
+        public Builder menuProducts(MenuProducts menuProducts) {
+            this.menuProducts = menuProducts;
+            return this;
+        }
+
+        public Menu build() {
+            return new Menu(name, price, menuGroup, menuProducts);
+        }
+    }
+
     protected Menu() {}
 
     private Menu(Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        validateNonNull(name, price, menuGroup, menuProducts);
+        validatePriceCheaperThanMenuProducts(price, menuProducts);
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
@@ -48,9 +84,6 @@ public class Menu {
     }
 
     public static Menu create(Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        if (menuProducts.isMoreExpensiveThan(price)) {
-            throw new IllegalArgumentException("메뉴의 가격이 메뉴와 연결된 상품의 수량 * 가격 보다 비쌀 수 없습니다.");
-        }
         return new Menu(name, price, menuGroup, menuProducts);
     }
 
@@ -76,5 +109,17 @@ public class Menu {
 
     MenuGroup getMenu() {
         return this.menuGroup;
+    }
+
+    private void validatePriceCheaperThanMenuProducts(Price price, MenuProducts menuProducts) {
+        if (menuProducts.isMoreExpensiveThan(price)) {
+            throw new IllegalArgumentException("메뉴의 가격이 메뉴와 연결된 상품의 수량 * 가격 보다 비쌀 수 없습니다.");
+        }
+    }
+
+    private void validateNonNull(Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        if (isNull(name) || isNull(price) || isNull(menuGroup) || isNull(menuProducts)) {
+            throw new IllegalArgumentException("메뉴의 이름, 가격, 메뉴그룹, 메뉴상품리스트 는 필수정보입니다.");
+        }
     }
 }
