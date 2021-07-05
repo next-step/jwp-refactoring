@@ -9,3 +9,13 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: validate
+  output:
+    ansi:
+      enabled: always
+  h2:
+    console:
+      enabled: true
+
+logging:
+  level:
+    org.hibernate.type: trace
