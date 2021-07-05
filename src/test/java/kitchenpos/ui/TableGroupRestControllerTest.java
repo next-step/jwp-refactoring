@@ -2,8 +2,10 @@ package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.TableGroupService;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,20 +43,33 @@ class TableGroupRestControllerTest {
     @MockBean
     TableGroupService tableGroupService;
 
-    OrderTable orderTable1;
-    OrderTable orderTable2;
+    OrderTableRequest orderTableRequest1;
+    OrderTableRequest orderTableRequest2;
+    OrderTableResponse orderTableResponse1;
+    OrderTableResponse orderTableResponse2;
+
 
     @BeforeEach
     void setUp() {
-        orderTable1 = new OrderTable();
-        orderTable1.setTableGroupId(1L);
-        orderTable1.setEmpty(true);
-        orderTable1.setNumberOfGuests(0);
+        orderTableRequest1 = new OrderTableRequest();
+        orderTableRequest1.setTableGroupId(1L);
+        orderTableRequest1.setEmpty(true);
+        orderTableRequest1.setNumberOfGuests(0);
 
-        orderTable2 = new OrderTable();
-        orderTable2.setTableGroupId(1L);
-        orderTable2.setEmpty(true);
-        orderTable2.setNumberOfGuests(0);
+        orderTableRequest2 = new OrderTableRequest();
+        orderTableRequest2.setTableGroupId(1L);
+        orderTableRequest2.setEmpty(true);
+        orderTableRequest2.setNumberOfGuests(0);
+
+        orderTableResponse1 = new OrderTableResponse();
+        orderTableResponse1.setTableGroupId(1L);
+        orderTableResponse1.setEmpty(true);
+        orderTableResponse1.setNumberOfGuests(0);
+
+        orderTableResponse2 = new OrderTableResponse();
+        orderTableResponse2.setTableGroupId(1L);
+        orderTableResponse2.setEmpty(true);
+        orderTableResponse2.setNumberOfGuests(0);
 
         this.mockMvc = MockMvcBuilders.webAppContextSetup(ctx)
                 .addFilters(new CharacterEncodingFilter("UTF-8", true))
@@ -65,14 +80,14 @@ class TableGroupRestControllerTest {
     @DisplayName("테이블 그룹 생성 Api 테스트")
     @Test
     void create() throws Exception {
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
+        TableGroupRequest tableGroup = new TableGroupRequest();
+        tableGroup.setOrderTables(Arrays.asList(orderTableRequest1, orderTableRequest2));
         tableGroup.setCreatedDate(LocalDateTime.now());
 
         String requestBody = objectMapper.writeValueAsString(tableGroup);
 
-        TableGroup responseTableGroup = new TableGroup();
-        responseTableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
+        TableGroupResponse responseTableGroup = new TableGroupResponse();
+        responseTableGroup.setOrderTables(Arrays.asList(orderTableResponse1, orderTableResponse2));
         responseTableGroup.setCreatedDate(LocalDateTime.now());
         String responseBody = objectMapper.writeValueAsString(responseTableGroup);
 

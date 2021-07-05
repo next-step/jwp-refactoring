@@ -4,6 +4,7 @@ import kitchenpos.dao.*;
 import kitchenpos.domain.*;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,7 +34,7 @@ class OrderServiceTest {
     OrderLineItemDao orderLineItemDao;
 
     @Autowired
-    OrderTableDao orderTableDao;
+    OrderTableRepository orderTableRepository;
 
     @Autowired
     OrderService orderService;
@@ -66,12 +67,12 @@ class OrderServiceTest {
 
         OrderTable orderTable = new OrderTable();
         orderTable.setNumberOfGuests(2);
-        savedOrderTable = orderTableDao.save(orderTable);
+        savedOrderTable = orderTableRepository.save(orderTable);
 
         OrderTable emptyOrderTable = new OrderTable();
         emptyOrderTable.setNumberOfGuests(0);
         emptyOrderTable.setEmpty(true);
-        savedEmptyOrderTable = orderTableDao.save(emptyOrderTable);
+        savedEmptyOrderTable = orderTableRepository.save(emptyOrderTable);
 
         orderLineItem = new OrderLineItem();
         orderLineItem.setMenuId(savedMenu.getId());

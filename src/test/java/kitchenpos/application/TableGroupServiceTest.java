@@ -5,8 +5,11 @@ import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
+import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.table.dto.OrderTableRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,12 +45,13 @@ class TableGroupServiceTest {
         OrderTable savedOrderTable1 = createOrderTable(4, true);
         OrderTable savedOrderTable2 = createOrderTable(4, true);
 
-
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Arrays.asList(savedOrderTable1, savedOrderTable2));
+        OrderTableRequest orderTableRequest1 = new OrderTableRequest(savedOrderTable1.getId(), savedOrderTable1.getTableGroupId(), savedOrderTable1.getNumberOfGuests(), savedOrderTable1.isEmpty());
+        OrderTableRequest orderTableRequest2 = new OrderTableRequest(savedOrderTable2.getId(), savedOrderTable2.getTableGroupId(), savedOrderTable2.getNumberOfGuests(), savedOrderTable2.isEmpty());
+        TableGroupRequest tableGroup = new TableGroupRequest();
+        tableGroup.setOrderTables(Arrays.asList(orderTableRequest1, orderTableRequest2));
 
         //when
-        TableGroup savedTableGroup = tableGroupService.create(tableGroup);
+        TableGroupResponse savedTableGroup = tableGroupService.create(tableGroup);
 
         //then
         assertNotNull(savedTableGroup.getId());
@@ -62,8 +66,10 @@ class TableGroupServiceTest {
         OrderTable savedOrderTable2 = createOrderTable(4, false);
 
 
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Arrays.asList(savedOrderTable1, savedOrderTable2));
+        OrderTableRequest orderTableRequest1 = new OrderTableRequest(savedOrderTable1.getId(), savedOrderTable1.getTableGroupId(), savedOrderTable1.getNumberOfGuests(), savedOrderTable1.isEmpty());
+        OrderTableRequest orderTableRequest2 = new OrderTableRequest(savedOrderTable2.getId(), savedOrderTable2.getTableGroupId(), savedOrderTable2.getNumberOfGuests(), savedOrderTable2.isEmpty());
+        TableGroupRequest tableGroup = new TableGroupRequest();
+        tableGroup.setOrderTables(Arrays.asList(orderTableRequest1, orderTableRequest2));
 
         //then
         assertThatThrownBy(
@@ -88,8 +94,10 @@ class TableGroupServiceTest {
         orderTableDao.save(savedOrderTable2);
 
 
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Arrays.asList(savedOrderTable1, savedOrderTable2));
+        OrderTableRequest orderTableRequest1 = new OrderTableRequest(savedOrderTable1.getId(), savedOrderTable1.getTableGroupId(), savedOrderTable1.getNumberOfGuests(), savedOrderTable1.isEmpty());
+        OrderTableRequest orderTableRequest2 = new OrderTableRequest(savedOrderTable2.getId(), savedOrderTable2.getTableGroupId(), savedOrderTable2.getNumberOfGuests(), savedOrderTable2.isEmpty());
+        TableGroupRequest tableGroup = new TableGroupRequest();
+        tableGroup.setOrderTables(Arrays.asList(orderTableRequest1, orderTableRequest2));
 
         //then
         assertThatThrownBy(

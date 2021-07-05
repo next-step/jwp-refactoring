@@ -2,7 +2,9 @@ package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.ProductService;
+import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -53,7 +55,7 @@ class ProductRestControllerTest {
     @DisplayName("상품 생성 Api 테스트")
     @Test
     void create() throws Exception {
-        Product product = new Product();
+        ProductRequest product = new ProductRequest();
         product.setName("맥도날드햄버거");
         product.setPrice(BigDecimal.valueOf(5000));
 
@@ -62,7 +64,7 @@ class ProductRestControllerTest {
         Product responseProduct = new Product();
         responseProduct.setId(1L);
         responseProduct.setName("패스트푸드");
-        responseProduct.setPrice(BigDecimal.valueOf(5000));
+        responseProduct.setPrice(new Price(BigDecimal.valueOf(5000)));
         String responseBody = objectMapper.writeValueAsString(responseProduct);
 
         when(productService.create(any())).thenReturn(responseProduct);
@@ -82,7 +84,7 @@ class ProductRestControllerTest {
         Product product = new Product();
         product.setId(1L);
         product.setName("패스트푸드");
-        product.setPrice(BigDecimal.valueOf(5000));
+        product.setPrice(new Price(BigDecimal.valueOf(5000)));
 
         List<Product> products = Arrays.asList(product);
 

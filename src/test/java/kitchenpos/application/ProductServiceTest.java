@@ -1,7 +1,9 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.ProductDao;
+import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.ProductRepository;
+import kitchenpos.dto.ProductRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ProductServiceTest {
 
     @Autowired
-    ProductDao productDao;
+    ProductRepository productRepository;
 
     @Autowired
     ProductService productService;
@@ -31,7 +33,7 @@ class ProductServiceTest {
         String productName = "테스트상품";
         BigDecimal price = BigDecimal.valueOf(1000);
 
-        Product product = new Product();
+        ProductRequest product = new ProductRequest();
         product.setName(productName);
         product.setPrice(price);
 
@@ -41,7 +43,7 @@ class ProductServiceTest {
         //then
         assertNotNull(savedProduct.getId());
         assertThat(savedProduct.getName()).isEqualTo(productName);
-        assertThat(savedProduct.getPrice()).isEqualByComparingTo(price);
+        assertThat(savedProduct.getPrice()).isEqualTo(new Price(price));
     }
 
     @DisplayName("가격이 없는 상품은 등록할수 없다")
@@ -50,7 +52,7 @@ class ProductServiceTest {
         //given
         String productName = "테스트상품";
 
-        Product product = new Product();
+        ProductRequest product = new ProductRequest();
         product.setName(productName);
 
         //when
@@ -66,13 +68,13 @@ class ProductServiceTest {
         String productName = "테스트상품";
         BigDecimal price = BigDecimal.valueOf(-1000);
 
-        Product product = new Product();
-        product.setName(productName);
-        product.setPrice(price);
+        ProductRequest productRequest = new ProductRequest();
+        productRequest.setName(productName);
+        productRequest.setPrice(price);
 
         //when
         assertThatThrownBy(
-                () -> productService.create(product)
+                () -> productService.create(productRequest)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -85,9 +87,9 @@ class ProductServiceTest {
 
         Product product = new Product();
         product.setName(productName);
-        product.setPrice(price);
+        product.setPrice(new Price(price));
 
-        Product savedProduct = productDao.save(product);
+        Product savedProduct = productRepository.save(product);
 
         //when
         List<Product> products = productService.list();
