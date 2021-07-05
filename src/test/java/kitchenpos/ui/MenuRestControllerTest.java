@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.MenuService;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.dto.MenuProductResponse;
+import kitchenpos.dto.MenuResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -93,15 +95,8 @@ class MenuRestControllerTest {
     @DisplayName("메뉴 목록 Api 테스트")
     @Test
     void list() throws Exception {
-        Menu menu = new Menu();
-        menu.setId(1L);
-        menu.setName("패스트푸드");
-        menu.setMenuGroupId(1L);
-        menu.setPrice(BigDecimal.valueOf(10000));
-
-        menu.setMenuProducts(Arrays.asList(menuProduct));
-
-        List<Menu> menus = Arrays.asList(menu);
+        MenuResponse menu = new MenuResponse(1L, "패스트푸드", BigDecimal.valueOf(10000), 1L, Arrays.asList(MenuProductResponse.of(menuProduct)));
+        List<MenuResponse> menus = Arrays.asList(menu);
 
         String responseBody = objectMapper.writeValueAsString(menus);
 

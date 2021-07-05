@@ -4,6 +4,7 @@ import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.domain.*;
+import kitchenpos.dto.MenuResponse;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.product.domain.Price;
 import kitchenpos.product.domain.Product;
@@ -106,7 +107,7 @@ class MenuServiceTest {
         Menu savedMenu = menuDao.save(menu);
 
         //when
-        List<Menu> menus = menuService.list();
+        List<MenuResponse> menus = menuService.list();
         List<Long> findMenuIds = menus.stream()
                 .map(findMenu -> findMenu.getId())
                 .collect(Collectors.toList());
