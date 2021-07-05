@@ -11,6 +11,7 @@ import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
+import kitchenpos.tablegroup.exception.NoTableGroupException;
 
 @Service
 public class TableGroupService {
@@ -34,7 +35,7 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         final TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(NoTableGroupException::new);
         tableGroup.ungroup();
     }
 }

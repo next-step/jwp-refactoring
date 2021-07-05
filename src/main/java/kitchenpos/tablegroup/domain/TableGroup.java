@@ -14,6 +14,9 @@ import org.springframework.util.CollectionUtils;
 
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
+import kitchenpos.table.exception.NoOrderTableException;
+import kitchenpos.tablegroup.exception.NoTableSizeException;
+import kitchenpos.tablegroup.exception.NotAbaliableOrderTableException;
 
 @Entity
 public class TableGroup {
@@ -60,20 +63,20 @@ public class TableGroup {
 
     private static void avaliableTableCheck(OrderTables savedOrderTables) {
         if (!savedOrderTables.avaliableTable()) {
-            throw new IllegalArgumentException();
+            throw new NoOrderTableException();
         }
     }
 
     private static void duplicateorderCheck(List<Long> orderTableIds, OrderTables savedOrderTables) {
         List<OrderTable> orderTables = savedOrderTables.getOrderTables();
         if (orderTables.size() != orderTableIds.size()) {
-            throw new IllegalArgumentException();
+            throw new NotAbaliableOrderTableException();
         }
     }
 
     private static void underTwoRequestCheck(List<Long> orderTableIds) {
         if (CollectionUtils.isEmpty(orderTableIds) || orderTableIds.size() < 2) {
-            throw new IllegalArgumentException();
+            throw new NoTableSizeException();
         }
     }
 
