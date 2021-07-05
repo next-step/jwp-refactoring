@@ -1,16 +1,13 @@
 package kitchenpos.domain;
 
-import static java.util.Arrays.*;
-
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
 @Embeddable
-class OrderTables {
+public class OrderTables {
 	private static final int MIN_TABLE_COUNT = 2;
 
 	@OneToMany(mappedBy = "tableGroup")

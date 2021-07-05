@@ -10,18 +10,18 @@ import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
 @Embeddable
-class OrderLineItems {
+public class OrderLineItems {
 
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
 	private List<OrderLineItem> orderLineItems;
 
 	protected OrderLineItems() {}
 
-	OrderLineItems(List<OrderLineItem> orderLineItems) {
+	private OrderLineItems(List<OrderLineItem> orderLineItems) {
 		this.orderLineItems = orderLineItems;
 	}
 
-	static OrderLineItems of(List<OrderLineItem> orderLineItems) {
+	public static OrderLineItems of(List<OrderLineItem> orderLineItems) {
 		if (isNull(orderLineItems) || orderLineItems.isEmpty()) {
 			throw new IllegalArgumentException("주문 항목이 없습니다.");
 		}

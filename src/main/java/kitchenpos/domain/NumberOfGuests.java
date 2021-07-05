@@ -6,7 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
-class NumberOfGuests {
+public class NumberOfGuests {
 
 	public static final int MIN_NUMBER_OF_GUESTS = 0;
 

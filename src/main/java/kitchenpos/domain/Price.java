@@ -7,7 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
-class Price implements Comparable<Price> {
+public class Price implements Comparable<Price> {
 	private static final int MIN_PRICE = 0;
 
 	@Column
@@ -20,24 +20,24 @@ class Price implements Comparable<Price> {
 		this.amount = amount;
 	}
 
-	static Price wonOf(int amount) {
+	public static Price wonOf(int amount) {
 		return new Price(BigDecimal.valueOf(amount));
 	}
 
-	static Price wonOf(BigDecimal amount) {
+	public static Price wonOf(BigDecimal amount) {
 		return new Price(amount);
 	}
 
-	BigDecimal getAmount() {
+	public BigDecimal getAmount() {
 		return amount;
 	}
 
-	Price times(long n) {
+	public Price times(long n) {
 		BigDecimal otherAmount = BigDecimal.valueOf(n);
 		return Price.wonOf(amount.multiply(otherAmount));
 	}
 
-	Price plus(Price otherPrice) {
+	public Price plus(Price otherPrice) {
 		BigDecimal add = this.amount.add(otherPrice.getAmount());
 		return Price.wonOf(add);
 	}
