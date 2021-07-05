@@ -16,7 +16,11 @@ class MenuTest {
 	@DisplayName("가격이 음수인 메뉴는 생성 될 수 없다.")
 	@Test
 	void negativePriceTest() {
-		assertThatThrownBy(() -> Menu.create("치킨", -1, 치킨그룹, asList(후라이드치킨2개, 피자3개)))
+		assertThatThrownBy(() -> Menu.create(
+			Name.valueOf("치킨"),
+			Price.wonOf(-1),
+			치킨그룹,
+			MenuProducts.of(asList(후라이드치킨2개, 피자3개))))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("가격은 음수가 될 수 없습니다.");
 	}
@@ -24,7 +28,11 @@ class MenuTest {
 	@DisplayName("메뉴의 가격이 메뉴와 연결된 상품의 수량 * 가격 보다 비쌀 수 없습니다.")
 	@Test
 	void moreExpensiveThanMenuProductsTest() {
-		assertThatThrownBy(() -> Menu.create("치킨_피자_세트", 8001, 치킨그룹, asList(후라이드치킨2개, 피자3개)))
+		assertThatThrownBy(() -> Menu.create(
+			Name.valueOf("치킨_피자_세트"),
+			Price.wonOf(8001),
+			치킨그룹,
+			MenuProducts.of(asList(후라이드치킨2개, 피자3개))))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("메뉴의 가격이 메뉴와 연결된 상품의 수량 * 가격 보다 비쌀 수 없습니다.");
 	}
@@ -36,10 +44,14 @@ class MenuTest {
 		MenuProduct 후라이드치킨1개 = new MenuProduct(후라이드치킨, 1);
 
 		// when
-		Menu menu = Menu.create("치킨_피자_세트", 1000, 치킨그룹, asList(후라이드치킨1개));
+		Menu menu = Menu.create(
+			Name.valueOf("치킨_피자_세트"),
+			Price.wonOf(1000),
+			치킨그룹,
+			MenuProducts.of(asList(후라이드치킨1개)));
 
 		// than
-		assertThat(menu.getName()).isEqualTo("치킨_피자_세트");
+		assertThat(menu.getName()).isEqualTo(Name.valueOf("치킨_피자_세트"));
 		assertThat(menu.getPrice()).isEqualTo(BigDecimal.valueOf(1000));
 		assertThat(menu.getMenu()).isEqualTo(치킨그룹);
 		assertThat(menu.getMenuProducts()).containsExactly(후라이드치킨1개);

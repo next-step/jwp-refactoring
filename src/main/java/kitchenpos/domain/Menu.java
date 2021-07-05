@@ -22,8 +22,9 @@ public class Menu {
     @Id
     private Long id;
 
-    @Column(nullable = false)
-    private String name;
+    @Embedded
+    @AttributeOverride(name = "value", column = @Column(name = "name", nullable = false))
+    private Name name;
 
     @Embedded
     @AttributeOverride(name = "amount", column = @Column(name = "price", nullable = false))
@@ -38,7 +39,7 @@ public class Menu {
 
     protected Menu() {}
 
-    private Menu(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+    private Menu(Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
@@ -46,15 +47,7 @@ public class Menu {
         menuProducts.toMenu(this);
     }
 
-    public static Menu create(String name, int price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        return create(name, Price.wonOf(price), menuGroup, new MenuProducts(menuProducts));
-    }
-
-    public static Menu create(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        return create(name, Price.wonOf(price), menuGroup, new MenuProducts(menuProducts));
-    }
-
-    static Menu create(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+    public static Menu create(Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
         if (menuProducts.isMoreExpensiveThan(price)) {
             throw new IllegalArgumentException("메뉴의 가격이 메뉴와 연결된 상품의 수량 * 가격 보다 비쌀 수 없습니다.");
         }
@@ -65,7 +58,7 @@ public class Menu {
         return id;
     }
 
-    public String getName() {
+    public Name getName() {
         return name;
     }
 

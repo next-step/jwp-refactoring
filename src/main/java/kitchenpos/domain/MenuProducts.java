@@ -16,8 +16,15 @@ public class MenuProducts {
 
 	protected MenuProducts() {}
 
-	MenuProducts(List<MenuProduct> menuProducts) {
+	private MenuProducts(List<MenuProduct> menuProducts) {
 		this.menuProducts = menuProducts;
+	}
+
+	public static MenuProducts of(List<MenuProduct> menuProducts) {
+		if (menuProducts == null) {
+			return new MenuProducts(new ArrayList<>());
+		}
+		return new MenuProducts(menuProducts);
 	}
 
 	List<MenuProduct> getMenuProducts() {

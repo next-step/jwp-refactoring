@@ -11,7 +11,7 @@ class MenuProductsTest {
 	public static MenuProduct 후라이드치킨2개 = new MenuProduct(후라이드치킨, 2);
 	public static MenuProduct 피자3개 = new MenuProduct(피자, 3);
 
-	@DisplayName("메뉴상품의 가격은 상품의 가격 * 개수로 계산된다")
+	@DisplayName("메뉴 상품의 가격은 상품의 가격 * 개수로 계산된다")
 	@Test
 	void calculatePrice() {
 		// given
@@ -28,5 +28,14 @@ class MenuProductsTest {
 
 		// than
 		assertThat(치킨0개.calculatePrice()).isEqualTo(Price.wonOf(0));
+	}
+
+	@DisplayName("메뉴상품 리스트의 없다면, 비어있는 리스트가 저장된다.")
+	@Test
+	void createWithNullTest() {
+		MenuProducts menuProducts = MenuProducts.of(null);
+
+		assertThat(menuProducts.getMenuProducts()).isNotNull();
+		assertThat(menuProducts.getMenuProducts()).hasSize(0);
 	}
 }
