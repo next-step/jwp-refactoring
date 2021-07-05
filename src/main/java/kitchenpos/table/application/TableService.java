@@ -24,8 +24,8 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTableResponse create(final OrderTable orderTable) {
-        orderTable.setTableGroupId(null);
+    public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
+        OrderTable orderTable = new OrderTable(orderTableRequest.getNumberOfGuests());
 
         return OrderTableResponse.of(orderTableDao.save(orderTable));
     }
