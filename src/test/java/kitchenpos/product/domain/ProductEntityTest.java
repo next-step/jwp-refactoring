@@ -6,6 +6,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.math.BigDecimal;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -25,7 +27,7 @@ class ProductEntityTest {
     //then
     assertAll(
         () -> assertThat(productEntity.getName()).isEqualTo(productName),
-        () -> assertThat(productEntity.getPrice()).isEqualTo(Price.from(productPrice))
+        () -> assertThat(productEntity.getPrice()).isEqualTo(BigDecimal.valueOf(productPrice))
     );
   }
 
