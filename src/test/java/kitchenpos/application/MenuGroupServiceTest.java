@@ -2,6 +2,8 @@ package kitchenpos.application;
 
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +30,11 @@ class MenuGroupServiceTest {
         //given
         String menuGroupName = "테스트메뉴그룹";
 
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setName(menuGroupName);
+        MenuGroupRequest menuGroupRequest = new MenuGroupRequest();
+        menuGroupRequest.setName(menuGroupName);
 
         //when
-        MenuGroup savedMenuGroup = menuGroupService.create(menuGroup);
+        MenuGroupResponse savedMenuGroup = menuGroupService.create(menuGroupRequest);
 
         //then
         assertNotNull(savedMenuGroup.getId());
@@ -50,7 +52,7 @@ class MenuGroupServiceTest {
         MenuGroup savedMenuGroup = menuGroupDao.save(menuGroup);
 
         //when
-        List<MenuGroup> menuGroups = menuGroupService.list();
+        List<MenuGroupResponse> menuGroups = menuGroupService.list();
         List<Long> findMenuGroupIds = menuGroups.stream()
                 .map(findMenuGroup -> findMenuGroup.getId())
                 .collect(Collectors.toList());

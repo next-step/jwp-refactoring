@@ -2,7 +2,8 @@ package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.MenuGroupService;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -52,13 +53,12 @@ class MenuGroupRestControllerTest {
     @DisplayName("메뉴그룹 생성 Api 테스트")
     @Test
     void create() throws Exception {
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setName("패스트푸드");
+        MenuGroupRequest menuGroup = new MenuGroupRequest("패스트푸드");
+
         String requestBody = objectMapper.writeValueAsString(menuGroup);
 
-        MenuGroup responseMenuGroup = new MenuGroup();
-        responseMenuGroup.setId(1L);
-        responseMenuGroup.setName("패스트푸드");
+        MenuGroupResponse responseMenuGroup = new MenuGroupResponse(1L, "패스트푸드");
+
         String responseBody = objectMapper.writeValueAsString(responseMenuGroup);
 
         when(menuGroupService.create(any())).thenReturn(responseMenuGroup);
@@ -75,11 +75,9 @@ class MenuGroupRestControllerTest {
     @DisplayName("메뉴그룹 목록 Api 테스트")
     @Test
     void list() throws Exception {
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setId(1L);
-        menuGroup.setName("패스트푸드");
+        MenuGroupResponse responseMenuGroup = new MenuGroupResponse(1L, "패스트푸드");
 
-        List<MenuGroup> menuGroups = Arrays.asList(menuGroup);
+        List<MenuGroupResponse> menuGroups = Arrays.asList(responseMenuGroup);
 
         String responseBody = objectMapper.writeValueAsString(menuGroups);
 
