@@ -3,6 +3,7 @@ package kitchenpos.application;
 import kitchenpos.dao.*;
 import kitchenpos.domain.*;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
