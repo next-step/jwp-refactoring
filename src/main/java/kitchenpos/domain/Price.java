@@ -8,6 +8,7 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 class Price implements Comparable<Price> {
+	private static final int MIN_PRICE = 0;
 
 	@Column
 	private BigDecimal amount;
@@ -42,7 +43,7 @@ class Price implements Comparable<Price> {
 	}
 
 	private void validateNonNegative(BigDecimal amount) {
-		if (amount.compareTo(BigDecimal.ZERO) < 0) {
+		if (amount.compareTo(BigDecimal.ZERO) < MIN_PRICE) {
 			throw new IllegalArgumentException("가격은 음수가 될 수 없습니다.");
 		}
 	}

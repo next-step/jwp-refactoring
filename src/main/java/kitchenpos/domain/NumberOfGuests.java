@@ -8,6 +8,7 @@ import javax.persistence.Embeddable;
 @Embeddable
 class NumberOfGuests {
 
+	public static final int MIN_NUMBER_OF_GUESTS = 0;
 	@Column
 	private int numberOfGuests;
 
@@ -19,7 +20,7 @@ class NumberOfGuests {
 	}
 
 	private void validateNonNegative(int number) {
-		if (number < 0) {
+		if (number < MIN_NUMBER_OF_GUESTS) {
 			throw new IllegalArgumentException("방문 손님 수는 음수일 수 없습니다.");
 		}
 	}
