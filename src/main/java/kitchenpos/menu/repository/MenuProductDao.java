@@ -1,4 +1,4 @@
-package kitchenpos.menuproduct.repository;
+package kitchenpos.menu.repository;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import kitchenpos.menuproduct.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
 
 public interface MenuProductDao extends JpaRepository<MenuProduct, Long> {

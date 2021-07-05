@@ -7,8 +7,7 @@ import java.util.stream.Collectors;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
-import kitchenpos.menuproduct.domain.MenuProduct;
-import kitchenpos.menuproduct.dto.MenuProductResponse;
+import kitchenpos.menu.dto.MenuProductResponse;
 
 @Embeddable
 public class MenuProducts {

@@ -16,7 +16,6 @@ import javax.persistence.Table;
 import kitchenpos.common.domian.Price;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menuproduct.domain.MenuProduct;
 
 @Entity
 @Table(name = "menu")

@@ -2,9 +2,6 @@ package kitchenpos.menu.dto;
 
 import java.util.List;
 
-import kitchenpos.common.domian.Price;
-import kitchenpos.menuproduct.dto.MenuProductRequest;
-
 public class MenuRequest {
     private String name;
     private int price;

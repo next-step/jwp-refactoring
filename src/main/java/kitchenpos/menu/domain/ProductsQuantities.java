@@ -5,7 +5,6 @@ import java.util.List;
 import kitchenpos.common.domian.Price;
 import kitchenpos.common.error.CustomException;
 import kitchenpos.common.error.ErrorInfo;
-import kitchenpos.menuproduct.domain.MenuProduct;
 
 public class ProductsQuantities {
     private final Products products;

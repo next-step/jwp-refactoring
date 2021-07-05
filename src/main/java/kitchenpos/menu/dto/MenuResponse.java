@@ -3,7 +3,6 @@ package kitchenpos.menu.dto;
 import java.util.List;
 
 import kitchenpos.menugroup.dto.MenuGroupResponse;
-import kitchenpos.menuproduct.dto.MenuProductResponse;
 
 public class MenuResponse {
     private Long id;

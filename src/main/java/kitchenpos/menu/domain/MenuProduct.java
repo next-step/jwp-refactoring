@@ -1,4 +1,4 @@
-package kitchenpos.menuproduct.domain;
+package kitchenpos.menu.domain;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
@@ -11,8 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import kitchenpos.common.domian.Quantity;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menuproduct.dto.MenuProductResponse;
+import kitchenpos.menu.dto.MenuProductResponse;
 import kitchenpos.product.domain.Product;
 
 @Entity
