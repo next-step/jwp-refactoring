@@ -1,4 +1,4 @@
-package kitchenpos.menu.application.domain;
+package kitchenpos.menu.domain;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -28,52 +28,51 @@ public class Menu {
 
     }
 
-    public Menu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        this.id = id;
+    public Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
+
+        validatePrice();
+        setMenuIdOnMenuProducts();
+    }
+
+    private void setMenuIdOnMenuProducts() {
+        this.menuProducts.stream()
+                .forEach(menuProduct -> menuProduct.setProductId(id));
+    }
+
+    private void validatePrice() {
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public void isPriceOver(BigDecimal sum) {
+        if (price.compareTo(sum) > 0) {
+            throw new IllegalArgumentException();
+        }
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
     }
 
     public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
-    }
-
     public Long getMenuGroupId() {
         return menuGroupId;
     }
 
-    public void setMenuGroupId(final Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
-    }
-
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
-    }
-
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
     }
 
     @Override
@@ -88,4 +87,5 @@ public class Menu {
     public int hashCode() {
         return Objects.hash(id, name, price, menuGroupId, menuProducts);
     }
+
 }

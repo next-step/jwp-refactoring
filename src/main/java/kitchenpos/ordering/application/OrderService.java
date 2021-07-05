@@ -1,6 +1,6 @@
 package kitchenpos.ordering.application;
 
-import kitchenpos.menu.application.domain.MenuRepository;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.ordering.domain.OrderLineItemRepository;
 import kitchenpos.ordering.domain.OrderRepository;
 import kitchenpos.ordering.domain.Ordering;
