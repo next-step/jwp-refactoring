@@ -10,7 +10,8 @@ import kitchenpos.common.error.CustomException;
 @RestControllerAdvice
 public class CustomExceptionHandler {
     @ExceptionHandler(CustomException.class)
-    public ResponseEntity customException() {
+    public ResponseEntity customException(CustomException e) {
+        e.printStackTrace();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 }
