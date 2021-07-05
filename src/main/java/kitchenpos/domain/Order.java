@@ -35,7 +35,7 @@ public class Order {
     @Embedded
     private OrderLineItems orderLineItems;
 
-    public Order() {}
+    protected Order() {}
 
     private Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, OrderLineItems orderLineItems) {
         this.orderTable = orderTable;
@@ -84,6 +84,11 @@ public class Order {
     public void startMeal() {
         validateNotCompleted();
         this.orderStatus = MEAL;
+    }
+
+    public void startCooking() {
+        validateNotCompleted();
+        this.orderStatus = COOKING;
     }
 
     boolean isComplete() {

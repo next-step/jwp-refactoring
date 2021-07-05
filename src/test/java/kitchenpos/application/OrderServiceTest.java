@@ -4,6 +4,7 @@ import static java.util.Arrays.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,7 +16,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.domain.MenuRepository;
+import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderRepository;
+import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
@@ -87,8 +90,62 @@ class OrderServiceTest {
 	}
 
 	@DisplayName("주문 상태가 완료인 경우 변경할 수 없다.")
-	void changeOrderStatusTest() {
+	@Test
+	void changeStatusOfCompletedOrderTest() {
+		Order completedOrder = Order.create(asList(new OrderLineItem(1L, 2)),
+			new OrderTable(1, false), LocalDateTime.now());
+		completedOrder.complete();
 
+		when(orderRepository.findById(anyLong())).thenReturn(Optional.of(completedOrder));
+
+		assertThatThrownBy(() -> orderService.changeOrderStatus(1L, OrderStatus.MEAL))
+			.isInstanceOf(IllegalArgumentException.class)
+			.hasMessageContaining("계산 완료 주문은 상태를 변경할 수 없습니다.");
 	}
 
+	@DisplayName("등록이 안된 주문은 상태를 변경할 수 없다.")
+	@Test
+	void changeStatusOfUnknownOrderTest() {
+		when(orderRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+		assertThatThrownBy(() -> orderService.changeOrderStatus(1L, OrderStatus.MEAL))
+			.isInstanceOf(IllegalArgumentException.class)
+			.hasMessageContaining("등록이 안된 주문은 상태를 변경할 수 없습니다.");
+	}
+
+	@DisplayName("주문의 상태를 변경할 수 있다.")
+	@Test
+	void changeOrderStatusTest() {
+		Order order = mock(Order.class);
+
+		when(orderRepository.findById(anyLong())).thenReturn(Optional.of(order));
+
+		verifyToUpdateMealStatus(order);
+		verifyToUpdateCompletionStatus(order);
+		verifyToUpdateCookingStatus(order);
+	}
+
+	private void verifyToUpdateCompletionStatus(Order order) {
+		when(order.getOrderStatus()).thenReturn(OrderStatus.COMPLETION);
+
+		orderService.changeOrderStatus(1L, OrderStatus.COMPLETION);
+
+		verify(order).complete();
+	}
+
+	private void verifyToUpdateMealStatus(Order order) {
+		when(order.getOrderStatus()).thenReturn(OrderStatus.MEAL);
+
+		orderService.changeOrderStatus(1L, OrderStatus.MEAL);
+
+		verify(order).startMeal();
+	}
+
+	private void verifyToUpdateCookingStatus(Order order) {
+		when(order.getOrderStatus()).thenReturn(OrderStatus.COOKING);
+
+		orderService.changeOrderStatus(1L, OrderStatus.COOKING);
+
+		verify(order).startCooking();
+	}
 }
