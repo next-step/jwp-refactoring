@@ -3,6 +3,7 @@ package kitchenpos.ui;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.TableService;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -58,7 +59,7 @@ class TableRestControllerTest {
 
         String requestBody = objectMapper.writeValueAsString(orderTable);
 
-        OrderTable responseOrderTable = new OrderTable();
+        OrderTableResponse responseOrderTable = new OrderTableResponse();
         responseOrderTable.setId(1L);
         responseOrderTable.setEmpty(false);
         responseOrderTable.setNumberOfGuests(4);
@@ -84,7 +85,7 @@ class TableRestControllerTest {
         orderTable.setEmpty(false);
         orderTable.setNumberOfGuests(4);
 
-        List<OrderTable> orders = Arrays.asList(orderTable);
+        List<OrderTableResponse> orders = Arrays.asList(OrderTableResponse.of(orderTable));
 
         String responseBody = objectMapper.writeValueAsString(orders);
 
@@ -109,7 +110,7 @@ class TableRestControllerTest {
 
         String requestBody = objectMapper.writeValueAsString(orderTable);
 
-        OrderTable responseOrderTable = new OrderTable();
+        OrderTableResponse responseOrderTable = new OrderTableResponse();
         responseOrderTable.setId(1L);
         responseOrderTable.setEmpty(true);
         responseOrderTable.setNumberOfGuests(0);
@@ -139,7 +140,7 @@ class TableRestControllerTest {
 
         String requestBody = objectMapper.writeValueAsString(orderTable);
 
-        OrderTable responseOrderTable = new OrderTable();
+        OrderTableResponse responseOrderTable = new OrderTableResponse();
         responseOrderTable.setId(1L);
         responseOrderTable.setEmpty(false);
         responseOrderTable.setNumberOfGuests(2);
