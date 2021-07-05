@@ -1,7 +1,5 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.table.domain.OrderTable;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,7 +22,7 @@ public class TableGroup {
         this.createdDate = createdDate;
         this.orderTables = orderTables;
 
-        if(isValidation(orderTables)) {
+        if (isValidation(orderTables)) {
             throw new IllegalArgumentException("빈테이블 또는 이미 단체테이블인 테이블이 존재하는 경우는 단체테이블을 없습니다.");
         }
     }

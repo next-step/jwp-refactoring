@@ -62,11 +62,11 @@ public class OrderTable {
     }
 
     public void changeNumberOfGuests(int numberOfGuests) {
-        if(numberOfGuests < 0) {
+        if (numberOfGuests < 0) {
             throw new IllegalArgumentException("손님의 수는 0보다 작을수 없습니다.");
         }
 
-        if(isEmpty()) {
+        if (isEmpty()) {
             throw new IllegalArgumentException("빈테이블은 손님의 수를 변경할수 없습니다.");
         }
 

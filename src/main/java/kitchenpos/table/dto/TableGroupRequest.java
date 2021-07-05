@@ -1,7 +1,5 @@
 package kitchenpos.table.dto;
 
-import kitchenpos.table.dto.OrderTableRequest;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
