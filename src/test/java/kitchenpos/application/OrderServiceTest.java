@@ -68,7 +68,7 @@ class OrderServiceTest {
     @Test
     void create() {
         given(menuDao.countByIdIn(anyList())).willReturn((long) orderLineItems.size());
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(new OrderTable()));
+        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(new OrderTable(1L, null, 0, false)));
         given(orderDao.save(any())).willReturn(order);
         given(orderLineItemDao.save(orderLineItem1)).willReturn(orderLineItem1);
         given(orderLineItemDao.save(orderLineItem2)).willReturn(orderLineItem2);
