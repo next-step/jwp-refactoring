@@ -5,7 +5,6 @@ import kitchenpos.common.domian.Quantity;
 import kitchenpos.common.error.CustomException;
 import kitchenpos.common.error.ErrorInfo;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menuproduct.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,7 +14,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

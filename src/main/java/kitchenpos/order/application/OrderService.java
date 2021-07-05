@@ -1,11 +1,14 @@
-package kitchenpos.application;
+package kitchenpos.order.application;
 
-import kitchenpos.menu.repository.MenuDao;
 import kitchenpos.dao.OrderDao;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.repository.MenuDao;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
+import kitchenpos.order.domain.Order;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import org.springframework.stereotype.Service;
@@ -38,27 +41,32 @@ public class OrderService {
     }
 
     @Transactional
-    public Order create(final Order order) {
-        final List<OrderLineItem> orderLineItems = order.getOrderLineItems();
+    public Order create(final OrderRequest orderRequest) {
+        final List<OrderLineItemRequest> orderLineItemRequests = orderRequest.getOrderLineItemRequests();
 
-        if (CollectionUtils.isEmpty(orderLineItems)) {
+        if (CollectionUtils.isEmpty(orderLineItemRequests)) {
             throw new IllegalArgumentException();
         }
 
-        final List<Long> menuIds = orderLineItems.stream()
-                .map(OrderLineItem::getMenuId)
+        final List<Long> menuIds = orderLineItemRequests.stream()
+                .map(OrderLineItemRequest::getMenuId)
                 .collect(Collectors.toList());
 
-//        if (orderLineItems.size() != menuDao.countByIdIn(menuIds)) {
-//            throw new IllegalArgumentException();
-//        }
+        List<Menu> menus = menuDao.findAllById(menuIds);
 
-        final OrderTable orderTable = orderTableDao.findById(order.getOrderTableId())
+        if (orderLineItemRequests.size() != menus.size()) {
+            throw new IllegalArgumentException();
+        }
+
+        final OrderTable orderTable = orderTableDao.findById(orderRequest.getOrderTableId())
                 .orElseThrow(IllegalArgumentException::new);
 
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException();
         }
+
+        Order order = new Order();
+
 
         order.setOrderTableId(orderTable.getId());
         order.setOrderStatus(OrderStatus.COOKING.name());
@@ -68,8 +76,8 @@ public class OrderService {
 
         final Long orderId = savedOrder.getId();
         final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
-        for (final OrderLineItem orderLineItem : orderLineItems) {
-            orderLineItem.setOrderId(orderId);
+        for (final OrderLineItemRequest orderLineItemRequest : orderLineItemRequests) {
+            OrderLineItem orderLineItem = new OrderLineItem(orderId, orderLineItemRequest.getMenuId(), orderLineItemRequest.getQuantity());
             savedOrderLineItems.add(orderLineItemDao.save(orderLineItem));
         }
         savedOrder.setOrderLineItems(savedOrderLineItems);

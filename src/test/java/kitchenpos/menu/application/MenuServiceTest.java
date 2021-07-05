@@ -27,14 +27,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.common.domian.Price;
 import kitchenpos.common.error.CustomException;
-import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menuproduct.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.repository.MenuDao;
 import kitchenpos.menugroup.repository.MenuGroupDao;
-import kitchenpos.menuproduct.repository.MenuProductDao;
+import kitchenpos.menu.repository.MenuProductDao;
 import kitchenpos.product.repository.ProductDao;
 import kitchenpos.product.domain.Product;
 import kitchenpos.menu.domain.Menu;

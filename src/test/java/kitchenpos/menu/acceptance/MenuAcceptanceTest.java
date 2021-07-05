@@ -10,7 +10,7 @@ import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
-import kitchenpos.menuproduct.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.product.dto.ProductRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

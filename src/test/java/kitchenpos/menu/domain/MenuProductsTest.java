@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import kitchenpos.common.domian.Price;
 import kitchenpos.common.domian.Quantity;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menuproduct.dto.MenuProductResponse;
+import kitchenpos.menu.dto.MenuProductResponse;
 import kitchenpos.product.domain.Product;
 
 @DisplayName("메뉴 상품 테스트케이스")

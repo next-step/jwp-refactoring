@@ -10,6 +10,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import kitchenpos.dao.OrderDao;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.order.application.OrderService;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,11 +25,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.menu.repository.MenuDao;
-import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
+import kitchenpos.order.domain.Order;
 import kitchenpos.domain.OrderTable;
 
 @DisplayName("주문 테스트")
@@ -46,11 +50,20 @@ class OrderServiceTest {
     private OrderService orderService;
 
     private Order order;
+    private OrderRequest orderRequest;
 
     @BeforeEach
     void setup() {
         order = new Order();
         order.setId(1L);
+        order.setOrderStatus(COOKING.name());
+
+        Long orderTableId = 1L;
+        Long menuId = 1L;
+        Long quantity = 1L;
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menuId, quantity);
+
+        orderRequest = new OrderRequest(orderTableId, Arrays.asList(orderLineItemRequest));
     }
 
     @DisplayName("사용자는 주문을 생성 할 수 있다.")
@@ -63,8 +76,9 @@ class OrderServiceTest {
 
         // when
         when(orderDao.save(any())).thenReturn(order);
+        when(menuDao.findAllById(any())).thenReturn(Arrays.asList(new Menu()));
         when(orderTableDao.findById(any())).thenReturn(Optional.of(new OrderTable()));
-        Order createdOrder = orderService.create(order);
+        Order createdOrder = orderService.create(orderRequest);
 
         // then
         assertThat(createdOrder.getOrderStatus()).isEqualTo(COOKING.name());
@@ -105,22 +119,24 @@ class OrderServiceTest {
     void createFailedByOrderLineItems() {
         // given
         // when
+        orderRequest = new OrderRequest();
         // then
-        assertThatThrownBy(() -> orderService.create(new Order())).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(orderRequest)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("사용자는 주문시 주문테이블id, 그리고 메뉴id와 수량을 요청으로 한다.")
     @Test
     void createFailedByMenus() {
         // given
-        List<OrderLineItem> orderLineItems = new ArrayList<>();
-        orderLineItems.add(new OrderLineItem());
-        orderLineItems.add(new OrderLineItem());
-        order.setOrderLineItems(orderLineItems);
+        List<OrderLineItemRequest> orderLineItems = new ArrayList<>();
+        orderLineItems.add(new OrderLineItemRequest());
+        orderLineItems.add(new OrderLineItemRequest());
+
+        orderRequest = new OrderRequest(1L, orderLineItems);
 
         // when
         // then
-        assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(orderRequest)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("요청시 기입한 주문테이블이 존재해야한다.")
@@ -134,9 +150,7 @@ class OrderServiceTest {
         orderTable.setEmpty(true);
 
         // when
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(orderTable));
-
         // then
-        assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(orderRequest)).isInstanceOf(IllegalArgumentException.class);
     }
 }
