@@ -1,5 +1,7 @@
 package kitchenpos.menu.domain;
 
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -14,6 +16,7 @@ import javax.persistence.Table;
 import kitchenpos.common.domian.Price;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menuproduct.domain.MenuProduct;
 
 @Entity
 @Table(name = "menu")
@@ -64,8 +67,8 @@ public class Menu {
         return menuGroup;
     }
 
-    public MenuProducts getMenuProducts() {
-        return menuProducts;
+    public List<MenuProduct> getMenuProducts() {
+        return menuProducts.getMenuProducts();
     }
 
     public MenuResponse toResponse() {

@@ -5,6 +5,8 @@ import java.util.stream.Collectors;
 
 import kitchenpos.common.domian.Price;
 import kitchenpos.common.domian.Quantity;
+import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.menu.dto.MenuListResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,11 +63,14 @@ public class MenuService {
                 ,
                 new Price(menuRequest.getPrice())
         );
-
-        return menuDao.save(Menu.of(menuGroup, menuRequest.getName(), productsQuantities)).toResponse();
+        Menu menu = Menu.of(menuGroup, menuRequest.getName(), productsQuantities);
+        menuProductDao.saveAll(menu.getMenuProducts());
+        return menuDao.save(menu).toResponse();
     }
 
-    public List<MenuResponse> list() {
-        return menuDao.findAll().stream().map(Menu::toResponse).collect(Collectors.toList());
+    public MenuListResponse list() {
+        return MenuListResponse.of(menuDao.findAll().stream()
+                .map(Menu::toResponse)
+                .collect(Collectors.toList()));
     }
 }

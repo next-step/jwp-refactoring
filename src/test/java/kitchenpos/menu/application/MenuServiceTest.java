@@ -16,6 +16,7 @@ import kitchenpos.common.domian.Quantity;
 import kitchenpos.menu.domain.ProductsQuantities;
 import kitchenpos.menu.domain.Quantities;
 import kitchenpos.menu.domain.Products;
+import kitchenpos.menu.dto.MenuListResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -105,10 +106,10 @@ class MenuServiceTest {
 
         // when
         when(menuDao.findAll()).thenReturn(Arrays.asList(menu));
-        List<MenuResponse> menus = menuService.list();
+        MenuListResponse menus = menuService.list();
         // then
-        assertThat(menus.size()).isEqualTo(1);
-        assertThat(menus.get(0).getName()).isEqualTo(순대국);
+        assertThat(menus.getMenuResponses().size()).isEqualTo(1);
+        assertThat(menus.getMenuResponses().get(0).getName()).isEqualTo(순대국);
     }
 
     @DisplayName("메뉴 가격이 음수 일 수 없다.")

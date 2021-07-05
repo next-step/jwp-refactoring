@@ -21,6 +21,10 @@ public class MenuProducts {
         menuProducts.addAll(productsQuantities.toMenuProduct(menu));
     }
 
+    public List<MenuProduct> getMenuProducts() {
+        return menuProducts;
+    }
+
     public List<MenuProductResponse> toResponse() {
         return menuProducts.stream().map(MenuProduct::toResponse).collect(Collectors.toList());
     }
