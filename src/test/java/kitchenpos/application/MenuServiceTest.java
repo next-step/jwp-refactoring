@@ -140,7 +140,7 @@ class MenuServiceTest {
         Menu menu = new Menu();
         menu.setName("맥도날드햄버거");
         menu.setPrice(BigDecimal.valueOf(10000));
-
+        menu.setMenuGroupId(0L);
         menu.setMenuProducts(Arrays.asList(menuProduct));
 
         //when
