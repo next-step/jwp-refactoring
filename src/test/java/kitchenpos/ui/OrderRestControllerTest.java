@@ -5,6 +5,8 @@ import kitchenpos.application.OrderService;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
+import kitchenpos.dto.OrderLineItemResponse;
+import kitchenpos.dto.OrderResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -94,14 +96,13 @@ class OrderRestControllerTest {
     @DisplayName("주문 목록 Api 테스트")
     @Test
     void list() throws Exception {
-        Order order = new Order();
-        order.setOrderLineItems(Arrays.asList(orderLineItem));
+        OrderResponse order = new OrderResponse();
+        order.setOrderLineItems(Arrays.asList(OrderLineItemResponse.of(orderLineItem)));
         order.setOrderTableId(1L);
         order.setOrderStatus(OrderStatus.COOKING.name());
         order.setOrderedTime(LocalDateTime.now());
-        order.setOrderLineItems(Arrays.asList(orderLineItem));
 
-        List<Order> orders = Arrays.asList(order);
+        List<OrderResponse> orders = Arrays.asList(order);
 
         String responseBody = objectMapper.writeValueAsString(orders);
 
@@ -122,11 +123,16 @@ class OrderRestControllerTest {
         order.setOrderTableId(1L);
         order.setOrderStatus(OrderStatus.COOKING.name());
         order.setOrderedTime(LocalDateTime.now());
-        order.setOrderLineItems(Arrays.asList(orderLineItem));
 
         String requestBody = objectMapper.writeValueAsString(order);
 
-        when(orderService.changeOrderStatus(any(), any())).thenReturn(order);
+        OrderResponse orderResponse = new OrderResponse();
+        orderResponse.setOrderLineItems(Arrays.asList(OrderLineItemResponse.of(orderLineItem)));
+        orderResponse.setOrderTableId(1L);
+        orderResponse.setOrderStatus(OrderStatus.COOKING.name());
+        orderResponse.setOrderedTime(LocalDateTime.now());
+
+        when(orderService.changeOrderStatus(any(), any())).thenReturn(orderResponse);
         mockMvc.perform(put("/api/orders/1/order-status")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody)

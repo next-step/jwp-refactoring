@@ -1,9 +1,9 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.*;
 import kitchenpos.domain.*;
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderResponse;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
@@ -35,9 +35,6 @@ class OrderServiceTest {
 
     @Autowired
     OrderRepository orderRepository;
-
-    @Autowired
-    OrderLineItemDao orderLineItemDao;
 
     @Autowired
     OrderTableRepository orderTableRepository;
@@ -116,10 +113,11 @@ class OrderServiceTest {
         Order savedOrder = orderRepository.save(order);
 
         //when
-        List<Order> orders = orderService.list();
+        List<OrderResponse> orders = orderService.list();
         List<Long> findOrderIds = orders.stream()
                 .map(findOrder -> findOrder.getId())
                 .collect(Collectors.toList());
+
         //then
         assertNotNull(orders);
         assertTrue(findOrderIds.contains(savedOrder.getId()));
@@ -148,7 +146,6 @@ class OrderServiceTest {
         orderRequest.setOrderTableId(0L);
         orderRequest.setOrderStatus(OrderStatus.COOKING.name());
         orderRequest.setOrderedTime(LocalDateTime.now());
-//        order.setOrderLineItems(Arrays.asList(orderLineItem));
         orderRequest.setOrderLineItems(Arrays.asList(new OrderLineItemRequest(orderLineItem.getSeq(), orderLineItem.getOrderId(), orderLineItem.getMenuId(), orderLineItem.getQuantity())));
 
         //when
@@ -165,7 +162,6 @@ class OrderServiceTest {
         orderRequest.setOrderTableId(savedEmptyOrderTable.getId());
         orderRequest.setOrderStatus(OrderStatus.COOKING.name());
         orderRequest.setOrderedTime(LocalDateTime.now());
-//        order.setOrderLineItems(Arrays.asList(orderLineItem));
         orderRequest.setOrderLineItems(Arrays.asList(new OrderLineItemRequest(orderLineItem.getSeq(), orderLineItem.getOrderId(), orderLineItem.getMenuId(), orderLineItem.getQuantity())));
 
         //when
@@ -196,7 +192,7 @@ class OrderServiceTest {
         changeOrder.setOrderStatus(orderStatusMeal);
 
         //when
-        Order changedOrder = orderService.changeOrderStatus(savedOrder.getId(), changeOrder);
+        OrderResponse changedOrder = orderService.changeOrderStatus(savedOrder.getId(), changeOrder);
 
         //then
         assertThat(changedOrder.getOrderStatus()).isEqualTo(orderStatusMeal);
