@@ -26,7 +26,7 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
-        OrderTable orderTable = new OrderTable(orderTableRequest.getNumberOfGuests());
+        OrderTable orderTable = new OrderTable(orderTableRequest.getNumberOfGuests(), false);
 
         return OrderTableResponse.of(orderTableRepository.save(orderTable));
     }
@@ -56,20 +56,10 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
-        final int numberOfGuests = orderTableRequest.getNumberOfGuests();
-
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
-        }
-
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        savedOrderTable.setNumberOfGuests(numberOfGuests);
+        savedOrderTable.changeNumberOfGuests(orderTableRequest.getNumberOfGuests());
 
         return OrderTableResponse.of(savedOrderTable);
     }
