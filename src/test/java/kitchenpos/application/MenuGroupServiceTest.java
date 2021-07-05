@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.Name;
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
 
@@ -33,8 +34,7 @@ class MenuGroupServiceTest {
 	@Test
 	void createTest() {
 		// given
-		MenuGroup menuGroup = mock(MenuGroup.class);
-		when(menuGroup.getId()).thenReturn(1L);
+		MenuGroup menuGroup = createMockMenuGroup();
 		when(menuGroupRepository.save(any(MenuGroup.class))).thenReturn(menuGroup);
 
 		// when
@@ -48,8 +48,7 @@ class MenuGroupServiceTest {
 	@Test
 	void listTest() {
 		// given
-		MenuGroup menuGroup = mock(MenuGroup.class);
-		when(menuGroup.getId()).thenReturn(1L);
+		MenuGroup menuGroup = createMockMenuGroup();
 		when(menuGroupRepository.findAll()).thenReturn(asList(menuGroup));
 
 		// when
@@ -58,6 +57,13 @@ class MenuGroupServiceTest {
 		// then
 		assertThat(menuGroups).isNotEmpty();
 		assertThat(menuGroups.get(0).getId()).isEqualTo(1L);
+	}
+
+	private MenuGroup createMockMenuGroup() {
+		MenuGroup menuGroup = mock(MenuGroup.class);
+		when(menuGroup.getId()).thenReturn(1L);
+		when(menuGroup.getName()).thenReturn(Name.valueOf("MockMenuGroup"));
+		return menuGroup;
 	}
 
 }

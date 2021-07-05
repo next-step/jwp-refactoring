@@ -1,6 +1,7 @@
 package kitchenpos.dto;
 
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.Name;
 
 public class MenuGroupRequest {
 	private String name;
@@ -16,6 +17,6 @@ public class MenuGroupRequest {
 	}
 
 	public MenuGroup toEntity() {
-		return new MenuGroup(name);
+		return new MenuGroup(Name.valueOf(name));
 	}
 }

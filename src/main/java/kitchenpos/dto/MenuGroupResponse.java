@@ -15,7 +15,7 @@ public class MenuGroupResponse {
 	}
 
 	public static MenuGroupResponse of(MenuGroup menuGroup) {
-		return new MenuGroupResponse(menuGroup.getId(), menuGroup.getName());
+		return new MenuGroupResponse(menuGroup.getId(), menuGroup.getName().getValue());
 	}
 
 	public static List<MenuGroupResponse> listOf(List<MenuGroup> menuGroups) {

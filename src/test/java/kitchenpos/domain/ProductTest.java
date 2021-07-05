@@ -1,6 +1,7 @@
 package kitchenpos.domain;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
 
@@ -25,9 +26,15 @@ class ProductTest {
 
 	@DisplayName("상품의 이름과 가격은 필수 정보이다.")
 	@Test
-	void createProductionTest() {
-		assertThatThrownBy(() -> new Product(Name.valueOf("상품"), null))
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("상품의 이름과 가격은 필수 정보입니다.");
+	void createProductWithNullTest() {
+		assertAll(
+			() -> assertThatThrownBy(() -> new Product(Name.valueOf("상품"), null), "가격이 null 일 경우 상품이 생성될 수 없다.")
+				.isInstanceOf(IllegalArgumentException.class)
+				.hasMessageContaining("상품의 이름과 가격은 필수 정보입니다."),
+
+			() -> assertThatThrownBy(() -> new Product(null,  Price.wonOf(1000)), "이름이 null 일 경우 상품이 생성될 수 없다.")
+				.isInstanceOf(IllegalArgumentException.class)
+				.hasMessageContaining("상품의 이름과 가격은 필수 정보입니다.")
+		);
 	}
 }

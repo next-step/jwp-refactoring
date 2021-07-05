@@ -1,5 +1,10 @@
 package kitchenpos.domain;
 
+import static java.util.Objects.*;
+
+import java.util.Objects;
+
+import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,20 +19,27 @@ public class MenuGroup {
     @Id
     private Long id;
 
-    @Column(nullable = false)
-    private String name;
+    @AttributeOverride(name = "value", column = @Column(name = "name", nullable = false))
+    private Name name;
 
     protected MenuGroup() {}
 
-    public MenuGroup(String name) {
+    public MenuGroup(Name name) {
+        validateNonNull(name);
         this.name = name;
+    }
+
+    private void validateNonNull(Name name) {
+        if (isNull(name)) {
+            throw new IllegalArgumentException("메뉴 그룹의 이름은 필수 정보 입니다.");
+        }
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getName() {
+    public Name getName() {
         return name;
     }
 }
