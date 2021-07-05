@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.common.domian.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.repository.ProductDao;
@@ -42,7 +43,7 @@ class ProductServiceTest {
 
         // when
         when(productDao.save(any())).thenReturn(product);
-        Product createdProduct = productService.create(this.product);
+        ProductResponse createdProduct = productService.create(this.product);
         // then
         assertThat(createdProduct).isNotNull();
     }
