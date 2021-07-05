@@ -1,12 +1,12 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.application.TableService;
@@ -33,7 +33,7 @@ class TableServiceTest {
     TableService tableService;
 
     @Autowired
-    OrderTableDao orderTableDao;
+    OrderTableRepository orderTableRepository;
 
     @Autowired
     TableGroupDao tableGroupDao;
@@ -52,7 +52,7 @@ class TableServiceTest {
         orderTable.setNumberOfGuests(countOfPeople);
         orderTable.setEmpty(false);
 
-        savedOrderTable = orderTableDao.save(orderTable);
+        savedOrderTable = orderTableRepository.save(orderTable);
     }
 
     @DisplayName("테이블을 생성해보자")
@@ -76,7 +76,7 @@ class TableServiceTest {
         OrderTable orderTable = new OrderTable();
         orderTable.setNumberOfGuests(4);
         orderTable.setEmpty(false);
-        OrderTable savedOrderTable = orderTableDao.save(orderTable);
+        OrderTable savedOrderTable = orderTableRepository.save(orderTable);
 
         //when
         List<OrderTableResponse> orderTables = tableService.list();
@@ -116,11 +116,20 @@ class TableServiceTest {
         tableGroup.setOrderTables(orderTables);
         tableGroup.setCreatedDate(LocalDateTime.now());
 
-        tableGroupDao.save(tableGroup);
+        TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
+
+        // 테이블 정보 추가
+        int countOfPeople = 4;
+        OrderTable orderTable = new OrderTable();
+        orderTable.setNumberOfGuests(countOfPeople);
+        orderTable.setTableGroupId(savedTableGroup.getId());
+        orderTable.setEmpty(false);
+
+        OrderTable savedOrderTable = orderTableRepository.save(orderTable);
 
         //when
         assertThatThrownBy(
-                () -> tableService.changeEmpty(savedOrderTable.getTableGroupId(), orderTableRequest)
+                () -> tableService.changeEmpty(savedOrderTable.getId(), orderTableRequest)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -138,7 +147,7 @@ class TableServiceTest {
 
         //when
         assertThatThrownBy(
-                () -> tableService.changeEmpty(savedOrderTable.getTableGroupId(), orderTableRequest)
+                () -> tableService.changeEmpty(savedOrderTable.getId(), orderTableRequest)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -176,7 +185,7 @@ class TableServiceTest {
         //given
         OrderTable orderTable = new OrderTable();
         orderTable.setEmpty(true);
-        OrderTable savedOrderTable = orderTableDao.save(orderTable);
+        OrderTable savedOrderTable = orderTableRepository.save(orderTable);
 
         //when
         int emptyPeopleCount = 2;
