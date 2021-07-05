@@ -29,7 +29,7 @@ class ProductServiceTest {
     @Test
     void createTest() {
         // given
-        Product 불고기 = new Product(1l, "불고기", new BigDecimal(1000));
+        Product 불고기 = new Product("불고기", new BigDecimal(1000));
         Mockito.when(productDao.save(any())).thenReturn(불고기);
 
         // when
@@ -45,7 +45,7 @@ class ProductServiceTest {
     @Test
     void createTestWithWrongPrice() {
         // given
-        Product 불고기 = new Product(1l, "불고기", new BigDecimal(-1));
+        Product 불고기 = new Product("불고기", new BigDecimal(-1));
 
         // when
         assertThatThrownBy(() -> productService.create(불고기))

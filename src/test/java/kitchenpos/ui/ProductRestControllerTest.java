@@ -40,7 +40,7 @@ class ProductRestControllerTest extends IntegrationTestHelper {
     @Test
     void createTest() throws Exception {
         // given
-        Product product = new Product(1l, "불고기", new BigDecimal(1000));
+        Product product = new Product("불고기", new BigDecimal(1000));
         Mockito.when(productService.create(any())).thenReturn(product);
 
         // when
@@ -50,7 +50,6 @@ class ProductRestControllerTest extends IntegrationTestHelper {
         MvcResult mvcResult = 상품_생성_성공(resultActions);
         Product responseBody = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Product.class);
         assertAll(() -> {
-            assertThat(responseBody.getId()).isEqualTo(product.getId());
             assertThat(responseBody.getName()).isEqualTo(product.getName());
             assertThat(responseBody.getPrice()).isEqualTo(product.getPrice());
         });
@@ -62,8 +61,8 @@ class ProductRestControllerTest extends IntegrationTestHelper {
     @Test
     void listTest() throws Exception {
         // then
-        Product 불고기 = new Product(1l, "불고기", new BigDecimal(1000));
-        Product 삼겹살 = new Product(1l, "삼겹살", new BigDecimal(1500));
+        Product 불고기 = new Product("불고기", new BigDecimal(1000));
+        Product 삼겹살 = new Product("삼겹살", new BigDecimal(1500));
         Mockito.when(productService.list()).thenReturn(Arrays.asList(불고기, 삼겹살));
 
         // when

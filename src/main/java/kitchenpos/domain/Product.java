@@ -11,8 +11,7 @@ public class Product {
         // empty
     }
 
-    public Product(final Long id, final String name, final BigDecimal price) {
-        this.id = id;
+    public Product(final String name, final BigDecimal price) {
         this.name = name;
         this.price = price;
     }
