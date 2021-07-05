@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.domain.TableGroupRepository;
 import kitchenpos.dto.TableGroupRequest;
@@ -57,13 +56,8 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-
         final List<OrderTable> orderTables = orderTableRepository.findByTableGroupId(tableGroupId);
 
-        List<Order> orders = orderRepository.findByOrderTableIn(orderTables);
-
-        orders.stream()
-                .forEach(Order::ungroupValidation);
         orderTables.stream()
                 .forEach(OrderTable::ungroup);
     }

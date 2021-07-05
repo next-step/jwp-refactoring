@@ -1,11 +1,11 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.order.domain.Order;
 import kitchenpos.table.dto.OrderTableRequest;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -17,6 +17,9 @@ public class OrderTable {
     private Long tableGroupId;
     private int numberOfGuests;
     private boolean empty;
+
+    @OneToMany(mappedBy = "orderTableId")
+    private List<Order> orders = new ArrayList<>();
 
     public OrderTable() {
     }
@@ -86,6 +89,8 @@ public class OrderTable {
     }
 
     public void ungroup() {
+        orders.stream()
+                .forEach(Order::ungroupValidation);
         setTableGroupId(null);
     }
 }

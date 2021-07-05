@@ -110,7 +110,7 @@ class OrderServiceTest {
         LocalDateTime orderedTime = LocalDateTime.of(2021, 7, 1, 01, 10, 00);
 
         Order order = new Order();
-        order.setOrderTable(savedOrderTable);
+        order.setOrderTableId(savedOrderTable.getId());
         order.setOrderStatus(OrderStatus.COOKING);
         order.setOrderLineItems(Arrays.asList(orderLineItem));
         order.setOrderedTime(orderedTime);
@@ -181,7 +181,7 @@ class OrderServiceTest {
         LocalDateTime orderedTime = LocalDateTime.of(2021, 7, 1, 01, 10, 00);
 
         Order order = new Order();
-        order.setOrderTable(savedOrderTable);
+        order.setOrderTableId(savedOrderTable.getId());
         order.setOrderStatus(OrderStatus.COOKING);
         order.setOrderedTime(orderedTime);
 
@@ -217,7 +217,7 @@ class OrderServiceTest {
     public void couldNotChangeOrderStatus() throws Exception {
         // given
         Order order = new Order();
-        order.setOrderTable(savedOrderTable);
+        order.setOrderTableId(savedOrderTable.getId());
         order.setOrderStatus(OrderStatus.COMPLETION);
         order.setOrderedTime(LocalDateTime.now());
 

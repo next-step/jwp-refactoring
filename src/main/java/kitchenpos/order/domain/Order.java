@@ -15,9 +15,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
-    private OrderTable orderTable;
+    private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
@@ -29,8 +27,8 @@ public class Order {
     public Order() {
     }
 
-    public Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
-        this.orderTable = orderTable;
+    public Order(Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+        this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
@@ -42,7 +40,7 @@ public class Order {
             throw new IllegalArgumentException("빈테이블은 주문을 할수 없습니다.");
         }
 
-        return new Order(orderTable, OrderStatus.COOKING, LocalDateTime.now(), newOrderLineItems);
+        return new Order(orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now(), newOrderLineItems);
     }
 
     public Long getId() {
@@ -53,12 +51,12 @@ public class Order {
         this.id = id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
-    public void setOrderTable(final OrderTable orderTable) {
-        this.orderTable = orderTable;
+    public void setOrderTableId(final Long orderTableId) {
+        this.orderTableId = orderTableId;
     }
 
     public OrderStatus getOrderStatus() {
@@ -104,11 +102,11 @@ public class Order {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Order order = (Order) o;
-        return Objects.equals(id, order.id) && Objects.equals(orderTable, order.orderTable) && orderStatus == order.orderStatus && Objects.equals(orderedTime, order.orderedTime) && Objects.equals(orderLineItems, order.orderLineItems);
+        return Objects.equals(id, order.id) && Objects.equals(orderTableId, order.orderTableId) && orderStatus == order.orderStatus && Objects.equals(orderedTime, order.orderedTime) && Objects.equals(orderLineItems, order.orderLineItems);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, orderTable, orderStatus, orderedTime, orderLineItems);
+        return Objects.hash(id, orderTableId, orderStatus, orderedTime, orderLineItems);
     }
 }

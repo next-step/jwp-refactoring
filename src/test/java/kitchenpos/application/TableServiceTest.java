@@ -135,7 +135,7 @@ class TableServiceTest {
 
         Order order = new Order();
         order.setOrderStatus(OrderStatus.COOKING);
-        order.setOrderTable(savedOrderTable);
+        order.setOrderTableId(savedOrderTable.getId());
         order.setOrderedTime(LocalDateTime.now());
         orderRepository.save(order);
 

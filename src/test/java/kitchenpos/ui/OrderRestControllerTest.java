@@ -70,7 +70,7 @@ class OrderRestControllerTest {
 
         Order order = new Order();
         order.setOrderLineItems(Arrays.asList(orderLineItem));
-        order.setOrderTable(orderTable);
+        order.setOrderTableId(orderTable.getId());
         order.setOrderStatus(OrderStatus.COOKING);
         order.setOrderedTime(LocalDateTime.now());
 
@@ -127,7 +127,7 @@ class OrderRestControllerTest {
 
         Order order = new Order();
         order.setOrderLineItems(Arrays.asList(orderLineItem));
-        order.setOrderTable(orderTable);
+        order.setOrderTableId(orderTable.getId());
         order.setOrderStatus(OrderStatus.COOKING);
         order.setOrderedTime(orderedTime);
 
