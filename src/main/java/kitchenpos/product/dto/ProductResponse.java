@@ -2,6 +2,7 @@ package kitchenpos.product.dto;
 
 import kitchenpos.product.domain.ProductEntity;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -10,16 +11,16 @@ public class ProductResponse {
 
   private final Long id;
   private final String name;
-  private final double price;
+  private final BigDecimal price;
 
-  public ProductResponse(Long id, String name, double price) {
+  public ProductResponse(Long id, String name, BigDecimal price) {
     this.id = id;
     this.name = name;
     this.price = price;
   }
 
   public static ProductResponse from(ProductEntity product) {
-    return new ProductResponse(product.getId(), product.getName(), product.getPrice().doubleValue());
+    return new ProductResponse(product.getId(), product.getName(), product.getPrice());
   }
 
   public static List<ProductResponse> ofList(List<ProductEntity> products) {
@@ -36,7 +37,7 @@ public class ProductResponse {
     return name;
   }
 
-  public double getPrice() {
+  public BigDecimal getPrice() {
     return price;
   }
 
@@ -45,7 +46,7 @@ public class ProductResponse {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     ProductResponse that = (ProductResponse) o;
-    return Double.compare(that.price, price) == 0 && Objects.equals(id, that.id) && Objects.equals(name, that.name);
+    return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(price, that.price);
   }
 
   @Override

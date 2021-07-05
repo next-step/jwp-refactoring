@@ -41,7 +41,7 @@ class ProductRestController2Test {
   @Test
   void createTest() throws Exception {
     //given
-    ProductResponse createdProduct = new ProductResponse(1L, "강정치킨", 17_000D);
+    ProductResponse createdProduct = new ProductResponse(1L, "강정치킨", BigDecimal.valueOf(17_000D));
     when(productService.create(any())).thenReturn(createdProduct);
     ProductRequest createRequestBody = new ProductRequest("강정치킨", 17_000D);
     String requestBody = objectMapper.writeValueAsString(createRequestBody);
@@ -57,8 +57,8 @@ class ProductRestController2Test {
   @DisplayName("상품 목록을 조회한다.")
   @Test
   void findAllProductsTest() throws Exception {
-    ProductResponse createdProduct1 = new ProductResponse(1L, "강정치킨", 17_000D);
-    ProductResponse createdProduct2 = new ProductResponse(2L, "후라이드치킨", 15_000D);
+    ProductResponse createdProduct1 = new ProductResponse(1L, "강정치킨", BigDecimal.valueOf(17_000D));
+    ProductResponse createdProduct2 = new ProductResponse(2L, "후라이드치킨", BigDecimal.valueOf(15_000D));
     when(productService.findAllProducts()).thenReturn(Arrays.asList(createdProduct1, createdProduct2));
     mockMvc
         .perform(get("/api/v2/products"))
