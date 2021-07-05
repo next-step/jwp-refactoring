@@ -19,17 +19,17 @@ public class Price {
     }
 
     public Price(int amount) {
-        checkNegative(amount);
+        checkNegative(BigDecimal.valueOf(amount));
         this.amount = BigDecimal.valueOf(amount);
     }
 
     public Price(BigDecimal amount) {
-        checkNegative(amount.intValue());
+        checkNegative(amount);
         this.amount = amount;
     }
 
-    private void checkNegative(int amount) {
-        if (amount < 0) {
+    private void checkNegative(BigDecimal amount) {
+        if (amount.compareTo(BigDecimal.ZERO) < 0) {
             throw new CustomException(ErrorInfo.PRICE_CAN_NOT_NEGATIVE);
         }
     }
@@ -47,7 +47,7 @@ public class Price {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Price price = (Price) o;
-        return Objects.equals(amount, price.amount);
+        return amount.compareTo(price.amount) == 0;
     }
 
     @Override
