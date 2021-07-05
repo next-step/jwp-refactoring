@@ -1,19 +1,19 @@
-package kitchenpos.dto;
+package kitchenpos.menu.domain;
 
-import kitchenpos.domain.MenuProduct;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
-public class MenuProductResponse {
+@Entity
+public class MenuProduct {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
     private Long menuId;
     private Long productId;
     private long quantity;
-
-    public MenuProductResponse(Long seq, Long menuId, Long productId, long quantity) {
-        this.seq = seq;
-        this.menuId = menuId;
-        this.productId = productId;
-        this.quantity = quantity;
-    }
 
     public Long getSeq() {
         return seq;
@@ -45,9 +45,5 @@ public class MenuProductResponse {
 
     public void setQuantity(final long quantity) {
         this.quantity = quantity;
-    }
-
-    public static MenuProductResponse of(MenuProduct menuProduct) {
-        return new MenuProductResponse(menuProduct.getSeq(), menuProduct.getMenuId(), menuProduct.getProductId(), menuProduct.getQuantity());
     }
 }
