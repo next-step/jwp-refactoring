@@ -1,7 +1,14 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.common.domian.Price;
-import kitchenpos.menu.domain.MenuProducts;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import kitchenpos.menu.domain.ProductsQuantities;
+import kitchenpos.menu.domain.Quantities;
+import kitchenpos.menu.domain.Products;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.common.error.ErrorInfo;
 import kitchenpos.common.error.CustomException;
@@ -11,14 +18,8 @@ import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.repository.MenuGroupDao;
 import kitchenpos.menuproduct.dto.MenuProductRequest;
 import kitchenpos.menuproduct.repository.MenuProductDao;
-import kitchenpos.product.domain.Product;
 import kitchenpos.product.repository.ProductDao;
 import kitchenpos.menu.domain.Menu;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class MenuService {
@@ -41,22 +42,25 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        MenuGroup menuGroup = menuGroupDao.findById(menuRequest.getMenuGroupId()).orElseThrow(() -> new CustomException(ErrorInfo.NOT_FOUND_MENU_GROUP));
+        MenuGroup menuGroup = menuGroupDao.findById(menuRequest.getMenuGroupId())
+                .orElseThrow(() -> new CustomException(ErrorInfo.NOT_FOUND_MENU_GROUP));
+
         List<MenuProductRequest> menuProductsRequest = menuRequest.getMenuProducts();
 
-        Price totalPrice = new Price();
-        for (MenuProductRequest menuProduct : menuProductsRequest) {
-            final Product product = productDao.findById(menuProduct.getProductId())
-                    .orElseThrow(() -> new CustomException(ErrorInfo.NOT_FOUND_PRODUCT));
-            totalPrice = totalPrice.sum(product.getPrice(), menuProduct.getQuantity());
-        }
+        ProductsQuantities productsQuantities = new ProductsQuantities(
+                new Products(productDao.findByIds(menuProductsRequest.stream()
+                        .map(MenuProductRequest::getProductId)
+                        .collect(Collectors.toList()))
+                        , menuProductsRequest.size())
+                ,
+                new Quantities(menuProductsRequest.stream()
+                        .collect(Collectors.toMap(MenuProductRequest::getProductId, MenuProductRequest::getQuantity))
+                        , menuProductsRequest.size())
+                ,
+                menuRequest.getPrice()
+        );
 
-        if (!menuRequest.getPrice().equals(totalPrice)) {
-            throw new CustomException(ErrorInfo.TOTAL_PRICE_NOT_EQUAL_REQUEST);
-        }
-
-        MenuProducts menuProducts = new MenuProducts();
-        return menuDao.save(Menu.of(menuGroup, menuRequest.getName(), menuRequest.getPrice(), menuProducts)).toResponse();
+        return menuDao.save(Menu.of(menuGroup, menuRequest.getName(), productsQuantities)).toResponse();
     }
 
     public List<MenuResponse> list() {
