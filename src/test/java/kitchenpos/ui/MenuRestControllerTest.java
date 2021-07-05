@@ -36,7 +36,7 @@ class MenuRestControllerTest extends IntegrationTestHelper {
     }
 
 
-    @DisplayName("메뉴 생성 테스트")
+    @DisplayName("메뉴 생성 요청")
     @Test
     void createTest() throws Exception {
         // given
@@ -50,7 +50,7 @@ class MenuRestControllerTest extends IntegrationTestHelper {
         메뉴_생성_성공(resultActions);
     }
 
-    @DisplayName("전체 메뉴 조회 테스트")
+    @DisplayName("전체 메뉴 조회 요청")
     @Test
     void listTest() throws Exception {
         // given
