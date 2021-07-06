@@ -61,4 +61,8 @@ public class MenuProduct {
     public Quantity getQuantity() {
         return quantity;
     }
+
+    public boolean isSameMenu(Menu menu) {
+        return this.menu == menu;
+    }
 }
