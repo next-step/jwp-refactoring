@@ -17,6 +17,7 @@ import kitchenpos.menu.domain.ProductsQuantities;
 import kitchenpos.menu.domain.Quantities;
 import kitchenpos.menu.domain.Products;
 import kitchenpos.menu.dto.MenuListResponse;
+import kitchenpos.utils.MenuCreator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -62,31 +63,19 @@ class MenuServiceTest {
     private MenuService menuService;
 
     private Menu menu;
-    private MenuRequest menuRequest;
-    private MenuGroup menuGroup;
-    private Product product;
 
     @BeforeEach
     void setup() {
-        int requestAmount = 1000;
-
-        menuGroup = new MenuGroup("국밥");
-        product = new Product(PRODUCT_ID, "순대", new Price(1000));
-
-        List<Product> products = Arrays.asList(new Product(PRODUCT_ID, "순대", new Price(requestAmount)));
-        Map<Long, Quantity> quantities = new HashMap<Long, Quantity>() {{ put(PRODUCT_ID, new Quantity(QUANTITY)); }};
-
-        Price requestPrice = new Price(BigDecimal.valueOf(requestAmount * QUANTITY));
-        ProductsQuantities productsQuantities = new ProductsQuantities(new Products(products, products.size()), new Quantities(quantities, quantities.size()), requestPrice);
-
-        menu = Menu.of(menuGroup, "순대국", productsQuantities);
+        menu = MenuCreator.of("국밥", "순대", 1000, QUANTITY, 순대국, 1000);
     }
 
     @DisplayName("사용자는 메뉴를 만들 수 있다.")
     @Test
     void create() {
         // given
-        menuRequest = new MenuRequest("순대국", 8000, 1L, Arrays.asList(new MenuProductRequest(PRODUCT_ID, QUANTITY)));
+        MenuGroup menuGroup = new MenuGroup("국밥");
+        Product product = new Product(PRODUCT_ID, "순대", new Price(1000));
+        MenuRequest menuRequest = new MenuRequest("순대국", 8000, 1L, Arrays.asList(new MenuProductRequest(PRODUCT_ID, QUANTITY)));
         // when
         when(menuGroupDao.findById(any())).thenReturn(Optional.of(menuGroup));
         when(productDao.findByIds(any())).thenReturn(Arrays.asList(product));
@@ -115,7 +104,7 @@ class MenuServiceTest {
     @Test
     void createFailedByPriceNegative() {
         // given
-        menuRequest = new MenuRequest(순대국, -100, 1L, Arrays.asList(new MenuProductRequest(PRODUCT_ID, QUANTITY)));
+        MenuRequest menuRequest = new MenuRequest(순대국, -100, 1L, Arrays.asList(new MenuProductRequest(PRODUCT_ID, QUANTITY)));
         // when
         // then
         assertThatThrownBy(() -> menuService.create(menuRequest)).isInstanceOf(CustomException.class);
@@ -125,7 +114,7 @@ class MenuServiceTest {
     @Test
     void createFailedByMenuGroup() {
         // given
-        menuRequest = new MenuRequest(순대국, 0, 0L, Arrays.asList(new MenuProductRequest(PRODUCT_ID, QUANTITY)));
+        MenuRequest menuRequest = new MenuRequest(순대국, 0, 0L, Arrays.asList(new MenuProductRequest(PRODUCT_ID, QUANTITY)));
         // when
         // then
         assertThatThrownBy(() -> menuService.create(menuRequest)).isInstanceOf(CustomException.class);
@@ -135,7 +124,8 @@ class MenuServiceTest {
     @Test
     void createFailedByPrice() {
         // given
-        menuRequest = new MenuRequest(순대국, 0, 1L, Arrays.asList(new MenuProductRequest(PRODUCT_ID, QUANTITY)));
+        MenuGroup menuGroup = new MenuGroup("국밥");
+        MenuRequest menuRequest = new MenuRequest(순대국, 0, 1L, Arrays.asList(new MenuProductRequest(PRODUCT_ID, QUANTITY)));
         // when
         when(menuGroupDao.findById(any())).thenReturn(Optional.of(menuGroup));
         // then
