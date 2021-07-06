@@ -35,8 +35,8 @@ class MenuEntityTest {
     menuGroup = new MenuGroupEntity(1L, "그룹1");
     productEntity1 = new ProductEntity("상품1", 1_000D);
     productEntity2 = new ProductEntity("상품2", 2_000D);
-    menuProductEntity1 = new MenuProductEntity(productEntity1, Quantity.from(2L));
-    menuProductEntity2 = new MenuProductEntity(productEntity2, Quantity.from(1L));
+    menuProductEntity1 = new MenuProductEntity(productEntity1, 2L);
+    menuProductEntity2 = new MenuProductEntity(productEntity2, 1L);
     menuProductEntities = Arrays.asList(menuProductEntity1, menuProductEntity2);
   }
 
