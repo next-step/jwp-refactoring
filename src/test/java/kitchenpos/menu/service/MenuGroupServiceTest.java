@@ -1,16 +1,14 @@
 package kitchenpos.menu.service;
 
-import kitchenpos.application.MenuGroupService;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.menu.application.MenuGroupService;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,25 +25,25 @@ public class MenuGroupServiceTest {
     public void createMenuGroup() {
         //given
         String name = "피자";
-        MenuGroup menuGroup = new MenuGroup(name);
+        MenuGroupRequest menuGroupRequest = new MenuGroupRequest(name);
 
         //when
-        MenuGroup createMenuGroup = menuGroupService.create(menuGroup);
+        MenuGroupResponse menuGroupResponse = menuGroupService.create(menuGroupRequest);
 
         //then
-        assertThat(createMenuGroup.getName()).isEqualTo(name);
+        assertThat(menuGroupResponse.getName()).isEqualTo(name);
     }
 
     @Test
     @DisplayName("메뉴 그룹 리스트를 가져온다")
     public void selectMenuGroupList() {
         //when
-        List<MenuGroup> menuGroups = menuGroupService.list();
+        List<MenuGroupResponse> menuGroupResponses = menuGroupService.list();
 
         //then
-        for (MenuGroup menuGroup : menuGroups) {
-            assertThat(menuGroup.getId()).isNotNull();
-            assertThat(menuGroup.getName()).isNotNull();
+        for (MenuGroupResponse menuGroupResponse : menuGroupResponses) {
+            assertThat(menuGroupResponse.getId()).isNotNull();
+            assertThat(menuGroupResponse.getName()).isNotNull();
         }
     }
 }

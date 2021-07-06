@@ -1,8 +1,10 @@
 package kitchenpos.menu.controller;
 
 import kitchenpos.common.ControllerTest;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,12 +26,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class MenuControllerTest extends ControllerTest {
 
-    private List<MenuProduct> menuProducts;
+    private List<MenuProductRequest> menuProducts;
 
     @BeforeEach
     public void setup() {
         menuProducts = new ArrayList<>();
-        menuProducts.add(new MenuProduct(1L, 1L, 1L));
+        menuProducts.add(new MenuProductRequest(1L, 1L));
     }
 
     @Test
@@ -38,11 +40,11 @@ public class MenuControllerTest extends ControllerTest {
         // given
         String name = "후라이드치킨";
         BigDecimal price = new BigDecimal(16000);
-        Menu menu = new Menu(name, price, 1L, menuProducts);
+        MenuRequest menuRequest = new MenuRequest(name, price, 1L, menuProducts);
 
         // when
         // then
-        메뉴_생성_요청(menu)
+        메뉴_생성_요청(menuRequest)
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").exists())
                 .andExpect(jsonPath("name").value(name))
@@ -57,7 +59,7 @@ public class MenuControllerTest extends ControllerTest {
         // given
         String name = "불고기피자";
         BigDecimal price = new BigDecimal(-10000);
-        Menu menu = new Menu(name, price, 1L, menuProducts);
+        MenuRequest menu = new MenuRequest(name, price, 1L, menuProducts);
 
         // when
         // then
@@ -77,7 +79,7 @@ public class MenuControllerTest extends ControllerTest {
         ;
     }
 
-    private ResultActions 메뉴_생성_요청(Menu menu) throws Exception {
+    private ResultActions 메뉴_생성_요청(MenuRequest menu) throws Exception {
         return mockMvc.perform(post("/api/menus")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(menu)))

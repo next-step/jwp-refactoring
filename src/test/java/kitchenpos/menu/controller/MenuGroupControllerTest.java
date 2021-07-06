@@ -1,7 +1,8 @@
 package kitchenpos.menu.controller;
 
 import kitchenpos.common.ControllerTest;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuGroupRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -21,11 +22,11 @@ public class MenuGroupControllerTest extends ControllerTest {
     public void createMenuGroup() throws Exception {
         // given
         String name = "피자";
-        MenuGroup menuGroup = new MenuGroup(name);
+        MenuGroupRequest menuGroupRequest = new MenuGroupRequest(name);
 
         // when
         // then
-        메뉴_그룹_생성_요청(menuGroup)
+        메뉴_그룹_생성_요청(menuGroupRequest)
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").exists())
                 .andExpect(jsonPath("name").value(name))
@@ -45,10 +46,10 @@ public class MenuGroupControllerTest extends ControllerTest {
         ;
     }
 
-    private ResultActions 메뉴_그룹_생성_요청(MenuGroup menuGroup) throws Exception {
+    private ResultActions 메뉴_그룹_생성_요청(MenuGroupRequest menuGroupRequest) throws Exception {
         return mockMvc.perform(post("/api/menu-groups")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(menuGroup)))
+                .content(objectMapper.writeValueAsString(menuGroupRequest)))
                 .andDo(print());
     }
 
