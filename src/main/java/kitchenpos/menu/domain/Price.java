@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 @Embeddable
-class Price implements Comparable<Price> {
+class Price {
 
   static final Price REDUCE_IDENTITY = new Price(BigDecimal.ZERO);
 
@@ -50,11 +50,6 @@ class Price implements Comparable<Price> {
   }
   public Price sum(Price price2) {
     return Price.from(this.value.add(price2.value));
-  }
-
-  @Override
-  public int compareTo(Price other) {
-    return this.value.compareTo(other.value);
   }
 
   @Override

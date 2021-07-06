@@ -28,9 +28,31 @@ public class MenuProductEntity {
   protected MenuProductEntity() {
   }
 
-  public MenuProductEntity(ProductEntity product, Quantity quantity) {
+  public MenuProductEntity(ProductEntity product, long quantity) {
     this.product = product;
-    this.quantity = quantity;
+    this.quantity = Quantity.from(quantity);
+  }
+
+  public MenuProductEntity(Long seq, ProductEntity product, long quantity) {
+    this.seq = seq;
+    this.product = product;
+    this.quantity = Quantity.from(quantity);
+  }
+
+  public Long getSeq() {
+    return seq;
+  }
+
+  public MenuEntity getMenu() {
+    return menu;
+  }
+
+  public ProductEntity getProduct() {
+    return product;
+  }
+
+  public long getQuantity() {
+    return quantity.getValue();
   }
 
   public void defineParentMenu(MenuEntity menuEntity) {

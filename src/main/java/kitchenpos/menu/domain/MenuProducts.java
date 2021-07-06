@@ -3,6 +3,7 @@ package kitchenpos.menu.domain;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import java.math.BigDecimal;
 import java.util.*;
 
 import static kitchenpos.menu.domain.Price.REDUCE_IDENTITY;
@@ -28,8 +29,8 @@ public class MenuProducts {
   }
 
   private void validateMenuProductsAmount(MenuEntity menuEntity, Price menuProductsAmount) {
-    Price menuPrice = menuEntity.getPrice();
-    if (menuPrice.compareTo(menuProductsAmount) > 0) {
+    BigDecimal menuPrice = menuEntity.getPrice();
+    if (menuPrice.compareTo(menuProductsAmount.getValue()) > 0) {
       throw new IllegalArgumentException();
     }
   }

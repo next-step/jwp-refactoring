@@ -3,6 +3,7 @@ package kitchenpos.menu.domain;
 import kitchenpos.menugroup.domain.MenuGroupEntity;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
@@ -37,12 +38,24 @@ public class MenuEntity {
     menuProducts.addMenuProducts(this, products);
   }
 
+  public MenuEntity(Long id, String name, Double menuPrice, MenuGroupEntity menuGroup, List<MenuProductEntity> products) {
+    this.id = id;
+    this.name = name;
+    this.price = Price.from(menuPrice);
+    this.menuGroup = menuGroup;
+    menuProducts.addMenuProducts(this, products);
+  }
+
+  public Long getId() {
+    return id;
+  }
+
   public String getName() {
     return name;
   }
 
-  public Price getPrice() {
-    return price;
+  public BigDecimal getPrice() {
+    return price.getValue();
   }
 
   public MenuGroupEntity getMenuGroup() {

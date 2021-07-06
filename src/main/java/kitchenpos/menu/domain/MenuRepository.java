@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
-//TODO : JPA ENTITY 설계 후 JpaRepository 상속
-public interface MenuRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface MenuRepository extends JpaRepository<MenuEntity, Long> {
 }
