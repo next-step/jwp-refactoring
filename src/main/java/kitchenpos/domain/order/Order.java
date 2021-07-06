@@ -77,9 +77,9 @@ public class Order {
     }
 
     public void changeStatus(OrderStatus status) {
-        if (this.orderStatus == status) {
+        if (orderStatus == status) {
             throw new IllegalArgumentException("Invalid OrderStatus > " + this.orderStatus + " to " + status);
         }
-        this.orderStatus = status;
+        orderStatus = status;
     }
 }
