@@ -30,6 +30,6 @@ public class MenuCreator {
         Price requestPrice = new Price(BigDecimal.valueOf(requestAmount * quantity));
         ProductsQuantities productsQuantities = new ProductsQuantities(new Products(products, products.size()), new Quantities(quantities, quantities.size()), requestPrice);
 
-        return Menu.of(menuGroup, menuName, productsQuantities);
+        return Menu.of(1L, menuGroup, menuName, productsQuantities);
     }
 }

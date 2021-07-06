@@ -22,6 +22,7 @@ import kitchenpos.order.repository.OrderDao;
 import kitchenpos.order.repository.OrderLineItemDao;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.repository.OrderTableDao;
+import kitchenpos.utils.MenuCreator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -71,10 +72,10 @@ class OrderServiceTest {
     @Test
     void create() {
         // given
+        Menu menu = MenuCreator.of("국밥", "순대", 1000, 1L, "순대국", 1000);
         // when
         when(orderDao.save(any())).thenReturn(order);
-        when(menuDao.findAllById(any())).thenReturn(Arrays.asList(new Menu()));
-        when(menuDao.findById(any())).thenReturn(Optional.of(new Menu()));
+        when(menuDao.findAllById(any())).thenReturn(Arrays.asList(menu));
         when(orderTableDao.findById(any())).thenReturn(Optional.of(new OrderTable()));
         OrderResponse createdOrder = orderService.create(orderRequest);
 
