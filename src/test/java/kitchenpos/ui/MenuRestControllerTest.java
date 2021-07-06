@@ -53,7 +53,7 @@ class MenuRestControllerTest {
 
     @BeforeEach
     void setUp() {
-        CleanUp.cleanUpOrderFirst();
+        CleanUp.cleanUp();
     }
 
     @Test

@@ -59,7 +59,7 @@ class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        CleanUp.cleanUpOrderFirst();
+        CleanUp.cleanUp();
 
         menuService = new MenuService(menuRepository, menuGroupRepository, productRepository);
         menuQueryService = new MenuQueryService(menuRepository);

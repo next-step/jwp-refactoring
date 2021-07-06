@@ -12,6 +12,7 @@ import kitchenpos.exception.TableEmptyException;
 import kitchenpos.fixture.CleanUp;
 import kitchenpos.fixture.OrderFixture;
 import kitchenpos.repository.MenuRepository;
+import kitchenpos.repository.OrderLineItemRepository;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,6 +53,9 @@ class OrderServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
 
+    @Mock
+    private OrderLineItemRepository orderLineItemRepository;
+
     private OrderService orderService;
     private OrderQueryService orderQueryService;
 
@@ -63,9 +67,9 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        CleanUp.cleanUpTableFirst();
+        CleanUp.cleanUp();
 
-        orderService = new OrderService(menuRepository, orderRepository, orderTableRepository);
+        orderService = new OrderService(menuRepository, orderRepository, orderTableRepository, orderLineItemRepository);
         orderQueryService = new OrderQueryService(orderRepository);
 
         menus = Arrays.asList(양념치킨_콜라_1000원_1개, 후라이드치킨_콜라_2000원_1개);

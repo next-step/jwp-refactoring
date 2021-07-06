@@ -49,7 +49,7 @@ class OrderRestControllerTest {
 
     @BeforeEach
     void setUp() {
-        CleanUp.cleanUpTableFirst();
+        CleanUp.cleanUp();
     }
 
     @Test
@@ -116,7 +116,7 @@ class OrderRestControllerTest {
         return result -> {
             ResultMatcher.matchAll(
                     jsonPath(prefix + ".seq").value(orderLineItem.getId()),
-                    jsonPath(prefix + ".orderId").value(orderLineItem.getOrder().getId()),
+                    jsonPath(prefix + ".orderId").value(orderLineItem.getOrderId()),
                     jsonPath(prefix + ".menuId").value(orderLineItem.getMenuId()),
                     jsonPath(prefix + ".quantity").value(orderLineItem.getQuantity().toLong())
             ).match(result);
@@ -127,7 +127,7 @@ class OrderRestControllerTest {
         return result -> {
             ResultMatcher.matchAll(
                     jsonPath(prefix + ".id").value(order.getId()),
-                    jsonPath(prefix + ".orderTableId").value(order.getOrderTable().getId()),
+                    jsonPath(prefix + ".orderTableId").value(order.getOrderTableId()),
                     jsonPath(prefix + ".orderStatus").value(order.getOrderStatus().toString()),
                     jsonPath(prefix + ".orderedTime").isNotEmpty()
             ).match(result);

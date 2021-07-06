@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 class MenuProductTest {
     @BeforeEach
     void setUp() {
-        CleanUp.cleanUpTableFirst();
+        CleanUp.cleanUp();
     }
 
     @Test

@@ -51,7 +51,7 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        CleanUp.cleanUpOrderFirst();
+        CleanUp.cleanUp();
 
         this.tableGroupService = new TableGroupService(orderRepository, orderTableRepository, tableGroupRepository);
 

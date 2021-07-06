@@ -27,7 +27,7 @@ class MenuTest {
 
     @BeforeEach
     void setUp() {
-        CleanUp.cleanUpTableFirst();
+        CleanUp.cleanUp();
 
         this.menuProductCreates = Arrays.asList(
                 new MenuProductCreate(1L, 콜라_100원.getId(), 1L),

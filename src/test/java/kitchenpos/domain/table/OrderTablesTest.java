@@ -24,7 +24,7 @@ class OrderTablesTest {
 
     @BeforeEach
     void setUp() {
-        CleanUp.cleanUpTableFirst();
+        CleanUp.cleanUp();
 
         hasTableGroupIdOrderTables = new OrderTables(
                 Arrays.asList(

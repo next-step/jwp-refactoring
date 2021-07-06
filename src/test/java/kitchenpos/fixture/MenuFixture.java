@@ -5,11 +5,14 @@ import kitchenpos.domain.Price;
 import kitchenpos.domain.Quantity;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuGroup;
+import kitchenpos.domain.menu.Menus;
 import kitchenpos.domain.menuproduct.MenuProduct;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 public class MenuFixture {
+    public static final Menus EMPTY_MENUS = new Menus(Collections.emptyList());
     private static ProductFixture productFixture;
     private static MenuGroup 치킨 = new MenuGroup(new Name("치킨"));
 
