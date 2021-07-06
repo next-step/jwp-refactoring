@@ -1,35 +1,34 @@
 package kitchenpos.application;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.ProductResponse;
+import kitchenpos.repository.ProductRepository;
 
 @Service
+@Transactional(readOnly = true)
 public class ProductService {
-	private final ProductDao productDao;
+	private final ProductRepository productRepository;
 
-	public ProductService(final ProductDao productDao) {
-		this.productDao = productDao;
+	public ProductService(ProductRepository productRepository) {
+		this.productRepository = productRepository;
 	}
 
 	@Transactional
-	public Product create(final Product product) {
-		final BigDecimal price = product.getPrice();
-
-		if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-			throw new IllegalArgumentException("상품 가격은 0보다 작을 수 없습니다.");
-		}
-
-		return productDao.save(product);
+	public ProductResponse create(final ProductRequest productRequest) {
+		Product product = new Product(productRequest.getName(), productRequest.getPrice());
+		return ProductResponse.of(productRepository.save(product));
 	}
 
-	public List<Product> list() {
-		return productDao.findAll();
+	public List<ProductResponse> list() {
+		return productRepository.findAll().stream()
+			.map(ProductResponse::of)
+			.collect(Collectors.toList());
 	}
 }

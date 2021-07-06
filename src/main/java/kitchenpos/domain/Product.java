@@ -1,19 +1,39 @@
 package kitchenpos.domain;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
 public class Product {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+
+	@Column(name = "name")
 	private String name;
-	private BigDecimal price;
+
+	@Embedded
+	private Price price = new Price();
 
 	protected Product() {
+	}
+
+	public Product(String name, BigDecimal price) {
+		this.name = name;
+		this.price = new Price(price);
 	}
 
 	public Product(Long id, String name, BigDecimal price) {
 		this.id = id;
 		this.name = name;
-		this.price = price;
+		this.price = new Price(price);
 	}
 
 	public Long getId() {
@@ -33,10 +53,22 @@ public class Product {
 	}
 
 	public BigDecimal getPrice() {
-		return price;
+		return price.getPrice();
 	}
 
-	public void setPrice(final BigDecimal price) {
-		this.price = price;
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		Product product = (Product)o;
+		return Objects.equals(id, product.id) && Objects.equals(name, product.name) && Objects
+			.equals(price, product.price);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, name, price);
 	}
 }

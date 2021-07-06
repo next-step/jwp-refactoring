@@ -15,14 +15,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.ProductResponse;
+import kitchenpos.repository.ProductRepository;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
 
 	@Mock
-	private ProductDao productDao;
+	private ProductRepository productRepository;
 
 	@InjectMocks
 	private ProductService productService;
@@ -30,22 +32,23 @@ class ProductServiceTest {
 	@DisplayName("상품 생성 테스트")
 	@Test
 	void testCreateProduct() {
-		Product product = new Product(1L, "상품1", BigDecimal.valueOf(2000));
+		ProductRequest productRequest = new ProductRequest("상품1", BigDecimal.valueOf(2000));
+		Product product = new Product(productRequest.getName(), productRequest.getPrice());
+		Product psavedProduct = new Product(1L, "상품1", BigDecimal.valueOf(2000));
 
-		when(productDao.save(product)).thenReturn(product);
-		Product actual = productService.create(product);
+		when(productRepository.save(product)).thenReturn(psavedProduct);
+		ProductResponse actual = productService.create(productRequest);
 
-		assertThat(actual.getPrice()).isEqualTo(product.getPrice());
+		assertThat(actual.getPrice()).isEqualTo(psavedProduct.getPrice());
 	}
 
 	@DisplayName("상품 가격이 0보다 작으면 생성 오류")
 	@Test
 	void testPriceUnderZero() {
-		Product product = new Product(1L, "상품1", BigDecimal.valueOf(-1));
+		ProductRequest productRequest = new ProductRequest("상품1", BigDecimal.valueOf(-1));
 
-		verify(productDao, never()).save(product);
 		assertThatThrownBy(() -> {
-			productService.create(product);
+			productService.create(productRequest);
 		}).isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("상품 가격은 0보다 작을 수 없습니다.");
 	}
@@ -54,15 +57,16 @@ class ProductServiceTest {
 	@Test
 	void testList() {
 		List<Product> products = new ArrayList<>();
-		products.add(new Product(1L, "상품1", BigDecimal.valueOf(2000)));
-		products.add(new Product(2L, "상품2", BigDecimal.valueOf(2000)));
-		products.add(new Product(3L, "상품3", BigDecimal.valueOf(2000)));
+		BigDecimal price = BigDecimal.valueOf(2000);
+		products.add(new Product(1L, "상품1", price));
+		products.add(new Product(2L, "상품2", price));
+		products.add(new Product(3L, "상품3", price));
 
-		when(productDao.findAll()).thenReturn(products);
+		when(productRepository.findAll()).thenReturn(products);
 
-		List<Product> actual = productService.list();
+		List<ProductResponse> actual = productService.list();
 
-		List<Long> actualProductIds = actual.stream().map(Product::getId).collect(Collectors.toList());
+		List<Long> actualProductIds = actual.stream().map(ProductResponse::getId).collect(Collectors.toList());
 		List<Long> expectedProductIds = products.stream().map(Product::getId).collect(Collectors.toList());
 		assertThat(actualProductIds).containsExactlyElementsOf(expectedProductIds);
 	}
