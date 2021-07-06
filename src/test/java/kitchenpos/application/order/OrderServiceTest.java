@@ -1,4 +1,4 @@
-package kitchenpos.order;
+package kitchenpos.application.order;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;

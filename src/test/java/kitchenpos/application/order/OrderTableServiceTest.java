@@ -1,4 +1,4 @@
-package kitchenpos.order;
+package kitchenpos.application.order;
 
 import static org.mockito.BDDMockito.*;
 

@@ -1,4 +1,4 @@
-package kitchenpos.product;
+package kitchenpos.application.product;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;

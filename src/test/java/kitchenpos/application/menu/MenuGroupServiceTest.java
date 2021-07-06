@@ -1,4 +1,4 @@
-package kitchenpos.menu;
+package kitchenpos.application.menu;
 
 import static org.mockito.BDDMockito.*;
 
