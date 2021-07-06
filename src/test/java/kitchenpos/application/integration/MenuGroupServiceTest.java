@@ -3,7 +3,6 @@ package kitchenpos.application.integration;
 import kitchenpos.application.MenuGroupService;
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
-import kitchenpos.repository.MenuGroupRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +17,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional
 @SpringBootTest
 public class MenuGroupServiceTest {
-    @Autowired
-    private MenuGroupRepository menuGroupRepository;
     @Autowired
     private MenuGroupService menuGroupService;
 

@@ -3,7 +3,6 @@ package kitchenpos.application.integration;
 import kitchenpos.application.ProductService;
 import kitchenpos.dto.ProductRequest;
 import kitchenpos.dto.ProductResponse;
-import kitchenpos.repository.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +19,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @Transactional
 @SpringBootTest
 public class ProductServiceTest {
-    @Autowired
-    private ProductRepository productRepository;
     @Autowired
     private ProductService productService;
 
