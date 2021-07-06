@@ -28,7 +28,7 @@ public class OrderTables {
         return Collections.unmodifiableList(orderTables);
     }
 
-    public boolean avaliableTable() {
+    public Boolean avaliableTable() {
         return !orderTables.stream().anyMatch(OrderTable::isAvaliableTable);
     }
 
@@ -49,7 +49,7 @@ public class OrderTables {
         }
     }
 
-    private boolean isImmutableOrder() {
+    private Boolean isImmutableOrder() {
         return orderTables.stream().anyMatch(OrderTable::isImmutableOrder);
     }
 

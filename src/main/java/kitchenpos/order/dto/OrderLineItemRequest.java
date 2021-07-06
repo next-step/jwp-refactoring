@@ -16,7 +16,7 @@ public class OrderLineItemRequest {
         return menuId;
     }
 
-    public long getQuantity() {
+    public Long getQuantity() {
         return quantity;
     }
 }

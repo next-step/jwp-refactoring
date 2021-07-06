@@ -96,7 +96,7 @@ public class Order {
         return Collections.unmodifiableList(orderLineItems);
     }
 
-    public boolean isImmutableOrder() {
+    public Boolean isImmutableOrder() {
         return OrderStatus.COOKING.equals(orderStatus) || OrderStatus.MEAL.equals(orderStatus);
     }
 

@@ -52,7 +52,7 @@ public class MenuProduct {
         return seq;
     }
 
-    public long getQuantity() {
+    public Long getQuantity() {
         return quantity;
     }
 

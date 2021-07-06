@@ -27,7 +27,7 @@ public class MenuProducts {
         return new MenuProducts(menuProductList);
     }
 
-    public boolean contain(MenuProduct menuProduct) {
+    public Boolean contain(MenuProduct menuProduct) {
         return menuProductList.contains(menuProduct);
     }
 
@@ -35,7 +35,7 @@ public class MenuProducts {
         return Collections.unmodifiableList(menuProductList);
     }
 
-    public boolean isSumUnder(BigDecimal price) {
+    public Boolean isSumUnder(BigDecimal price) {
         BigDecimal sum = menuProductList.stream()
             .map(menuProduct -> menuProduct.totalPrice())
             .reduce(BigDecimal.ZERO, (a, b) -> a.add(b));

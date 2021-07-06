@@ -3,7 +3,7 @@ package kitchenpos.table.dto;
 public class OrderTableRequest {
     private Long id;
     private int numberOfGuests;
-    private boolean empty;
+    private Boolean empty;
 
     protected OrderTableRequest() {}
 
@@ -11,13 +11,13 @@ public class OrderTableRequest {
         this.id = id;
     }
 
-    public OrderTableRequest(Long id, int numberOfGuests, boolean empty) {
+    public OrderTableRequest(Long id, int numberOfGuests, Boolean empty) {
         this.id = id;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
 
-    public OrderTableRequest(int numberOfGuests, boolean empty) {
+    public OrderTableRequest(int numberOfGuests, Boolean empty) {
         this(null, numberOfGuests, empty);
     }
 
@@ -29,7 +29,7 @@ public class OrderTableRequest {
         return numberOfGuests;
     }
 
-    public boolean isEmpty() {
+    public Boolean isEmpty() {
         return empty;
     }
 

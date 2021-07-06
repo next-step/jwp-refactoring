@@ -34,14 +34,14 @@ public class OrderTable {
 
     private int numberOfGuests;
 
-    private boolean empty;
+    private Boolean empty;
 
     @OneToMany(mappedBy = "orderTable")
     private List<Order> orders = new ArrayList<>();
 
     protected OrderTable() {}
 
-    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty, List<Order> orders) {
+    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, Boolean empty, List<Order> orders) {
         this.id = id;
         this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
@@ -49,18 +49,18 @@ public class OrderTable {
         this.orders = orders;
     }
 
-    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, Boolean empty) {
         this.id = id;
         this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
 
-    public OrderTable(int numberOfGuests, boolean empty) {
+    public OrderTable(int numberOfGuests, Boolean empty) {
         this(null, null, numberOfGuests, empty);
     }
 
-    public OrderTable(Long id, int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, int numberOfGuests, Boolean empty) {
         this(id, null, numberOfGuests, empty);
     }
 
@@ -72,11 +72,11 @@ public class OrderTable {
         return numberOfGuests;
     }
 
-    public boolean isEmpty() {
+    public Boolean isEmpty() {
         return empty;
     }
 
-    public boolean hasTableGroup() {
+    public Boolean hasTableGroup() {
         return Objects.nonNull(tableGroup);
     }
 
@@ -85,11 +85,11 @@ public class OrderTable {
         this.tableGroup = tableGroup;
     }
 
-    public boolean isImmutableOrder() {
+    public Boolean isImmutableOrder() {
         return orders.stream().anyMatch(Order::isImmutableOrder);
     }
 
-    public boolean isAvaliableTable() {
+    public Boolean isAvaliableTable() {
         return !isEmpty() || hasTableGroup();
     }
 

@@ -23,7 +23,7 @@ public class OrderTablesTest {
     @ParameterizedTest
     @DisplayName("OrderTabe 중 비지 않았거나, tableGroup이 존재한다면 false를 반환한다.")
     @MethodSource("resultSet")
-    void avaliableTable(List<OrderTable> list, boolean result) {
+    void avaliableTable(List<OrderTable> list, Boolean result) {
         OrderTables orderTables = new OrderTables(list);
         assertThat(orderTables.avaliableTable()).isEqualTo(result);
     }

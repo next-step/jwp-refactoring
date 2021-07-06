@@ -91,7 +91,7 @@ public class OrderRestControllerTest {
     void changeOrderStatus() throws Exception {
         // given
         Order 상태_업데이트된_주문 = new Order(1L, 테이블_2번, OrderStatus.MEAL, LocalDateTime.now(),
-            Arrays.asList(new OrderLineItem(원플원_후라이드, 10), new OrderLineItem(원플원_양념, 10)));
+            Arrays.asList(new OrderLineItem(원플원_후라이드, 10L), new OrderLineItem(원플원_양념, 10L)));
 
         OrderRequest 상태_업데이트된_주문_리퀘스트 = new OrderRequest(테이블_2번.getId(), OrderStatus.MEAL, Arrays
             .asList(new OrderLineItemRequest(원플원_후라이드.getId(), 10L), new OrderLineItemRequest(원플원_양념.getId(), 10L)));
