@@ -94,7 +94,7 @@ TODO
 - [x] Custom Exception 만들기
 - [x] setter 제거하기
 - [x] Price 컬럼 원시값 포장 객체 생성
-- [ ] 일급 컬렉션 생성
+- [x] 일급 컬렉션 생성 (MenuProducts)
 
 
 - Menu 도메인 테스트 코드 추가
