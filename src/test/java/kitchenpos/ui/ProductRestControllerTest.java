@@ -5,7 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.math.BigInteger;
+import java.math.BigDecimal;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,7 +35,7 @@ class ProductRestControllerTest {
     @Test
     @DisplayName("제품을 생성한다")
     void create() throws Exception {
-        ProductRequest request = new ProductRequest("강정치킨", BigInteger.valueOf(17000));
+        ProductRequest request = new ProductRequest("강정치킨", BigDecimal.valueOf(17000));
         mockMvc.perform(post("/api/products")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(request)))

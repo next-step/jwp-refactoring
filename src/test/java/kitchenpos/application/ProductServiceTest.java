@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.ProductRepository;
 import kitchenpos.utils.UnitTestData;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,6 +30,9 @@ class ProductServiceTest {
     @Mock
     ProductDao productDao;
 
+    @Mock
+    ProductRepository productRepository;
+
     @BeforeEach
     void setUp() {
         UnitTestData.reset();
@@ -38,7 +42,7 @@ class ProductServiceTest {
     @DisplayName("제품을 생성한다")
     void create() {
         // given
-        when(productDao.save(치킨)).thenReturn(치킨);
+        when(productRepository.save(치킨)).thenReturn(치킨);
 
         // when
         Product savedProduct = productService.create(치킨);
@@ -48,22 +52,11 @@ class ProductServiceTest {
     }
 
     @Test
-    @DisplayName("제품 생성 실패(가격이 음수이거나 null)")
-    void create_failed() {
-        // given
-        Product noPriceProduct = new Product(1L, "엽기떡볶이", null);
-
-        // then
-        assertThatThrownBy(() -> productService.create(noPriceProduct))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
     @DisplayName("제품 목록을 가져온다")
     void list() {
         // given
         List<Product> products = Arrays.asList(치킨, 피자, 소주, 맥주);
-        when(productDao.findAll()).thenReturn(products);
+        when(productRepository.findAll()).thenReturn(products);
 
         // when
         List<Product> allProducts = productService.list();
