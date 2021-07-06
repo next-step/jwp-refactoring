@@ -4,7 +4,6 @@ import static java.util.Arrays.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
@@ -14,45 +13,37 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.ProductDao;
+import kitchenpos.domain.Name;
+import kitchenpos.domain.ProductRepository;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.ProductResponse;
 
 @DisplayName("상품 요구사항 테스트")
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
 
 	@Mock
-	private ProductDao productDao;
+	private ProductRepository productRepository;
 
 	@InjectMocks
 	private ProductService productService;
-
-	@DisplayName("가격이 음수인 상품은 등록할 수 없다.")
-	@Test
-	void createProductNegativePriceTest() {
-		// given
-		Product negativePriceProduct = mock(Product.class);
-		when(negativePriceProduct.getPrice()).thenReturn(BigDecimal.valueOf(-1));
-
-		// when
-		// than
-		assertThatThrownBy(() -> productService.create(negativePriceProduct))
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("가격이 음수인 상품은 등록할 수 없습니다.");
-	}
 
 	@DisplayName("상품을 등록할 수 있다.")
 	@Test
 	void createProductTest() {
 		// given
+		ProductRequest productRequest = mock(ProductRequest.class);
 		Product product = mock(Product.class);
-		when(product.getPrice()).thenReturn(BigDecimal.ZERO);
+		when(product.getName()).thenReturn(Name.valueOf("mock product"));
+		when(productRequest.toEntity()).thenReturn(product);
+		when(productRepository.save(any(Product.class))).thenReturn(product);
 
 		// when
-		productService.create(product);
+		productService.create(productRequest);
 
 		// than
-		verify(productDao).save(product);
+		verify(productRepository).save(any(Product.class));
 	}
 
 	@DisplayName("상품 목록을 조회할 수 있다.")
@@ -60,12 +51,15 @@ class ProductServiceTest {
 	void listTest() {
 		// given
 		Product product = mock(Product.class);
-		when(productDao.findAll()).thenReturn(asList(product));
+		when(product.getId()).thenReturn(1L);
+		when(product.getName()).thenReturn(Name.valueOf("mock product"));
+		when(productRepository.findAll()).thenReturn(asList(product));
 
 		// when
-		List<Product> products = productService.list();
+		List<ProductResponse> productResponses = productService.findAll();
 
 		// then
-		assertThat(products).containsExactly(product);
+		assertThat(productResponses).isNotEmpty();
+		assertThat(productResponses.get(0).getId()).isEqualTo(1L);
 	}
 }

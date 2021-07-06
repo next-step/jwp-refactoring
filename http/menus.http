@@ -3,13 +3,13 @@ POST {{host}}/api/menus
 Content-Type: application/json
 
 {
-  "name": "후라이드+후라이드",
+  "name": "후라이드 * 2",
   "price": 19000,
-  "menuGroupId": 1,
+  "menuGroupId": 5,
   "menuProducts": [
     {
-      "productId": 1,
-      "quantity": 2
+      "productId": 6,
+      "quantity": 3
     }
   ]
 }

@@ -1,22 +1,45 @@
 package kitchenpos.domain;
 
+import static java.util.Objects.*;
+
+import java.util.Objects;
+
+import javax.persistence.AttributeOverride;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table
 public class MenuGroup {
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     private Long id;
-    private String name;
+
+    @AttributeOverride(name = "value", column = @Column(name = "name", nullable = false))
+    private Name name;
+
+    protected MenuGroup() {}
+
+    public MenuGroup(Name name) {
+        validateNonNull(name);
+        this.name = name;
+    }
+
+    private void validateNonNull(Name name) {
+        if (isNull(name)) {
+            throw new IllegalArgumentException("메뉴 그룹의 이름은 필수 정보 입니다.");
+        }
+    }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
+    public Name getName() {
         return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
     }
 }

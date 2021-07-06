@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,90 +14,56 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.TableGroupRepository;
+import kitchenpos.dto.TableGroupRequest;
 
 @DisplayName("주문테이블그룹 요구사항 테스트")
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
 
 	@Mock
-	private OrderDao orderDao;
+	private OrderTableRepository orderTableRepository;
 
 	@Mock
-	private OrderTableDao orderTableDao;
-
-	@Mock
-	private TableGroupDao tableGroupDao;
+	private TableGroupRepository tableGroupRepository;
 
 	@InjectMocks
 	private TableGroupService tableGroupService;
-
-	@DisplayName("2개 이상의 주문테이블만 그룹화 할 수 있다.")
-	@Test
-	void createTableGroupWithLessTwoOrderTablesTest() {
-		// given
-		TableGroup tableGroup = mock(TableGroup.class);
-		when(tableGroup.getOrderTables()).thenReturn(new ArrayList<>());
-
-		// when
-		// then
-		assertThatThrownBy(() -> tableGroupService.create(tableGroup))
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("2개 미만의 주문테이블은 그룹화 할 수 없습니다.");
-	}
 
 	@DisplayName("등록된 주문테이블만 그룹화 할 수 있다.")
 	@Test
 	void createTableGroupWithUnknownOrderTableTest() {
 		// given
-		OrderTable orderTable1 = mock(OrderTable.class);
-		OrderTable orderTable2 = mock(OrderTable.class);
-
-		TableGroup tableGroup = mock(TableGroup.class);
-		when(tableGroup.getOrderTables()).thenReturn(asList(orderTable1, orderTable2));
-
-		when(orderTableDao.findAllByIdIn(anyList())).thenReturn(new ArrayList<>());
+		TableGroupRequest mockRequest = mock(TableGroupRequest.class);
+		when(mockRequest.getOrderTableIds()).thenReturn(asList(1L, 2L));
+		when(orderTableRepository.findAllById(anyList())).thenReturn(new ArrayList<>());
 
 		// when
-		assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+		assertThatThrownBy(() -> tableGroupService.create(mockRequest))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("등록이 되지 않은 주문테이블은 그룹화 할 수 없습니다.");
 	}
 
-	@DisplayName("그룹화할 주문테이블들 모두 빈 테이블이어야 한다.")
+	@DisplayName("등록된 테이블그룹만 그룹해제를 할 수 있다.")
 	@Test
-	void createTableGroupWithNotEmptyOrderTableTest() {
-		// given
-		OrderTable emptyOrderTable = mock(OrderTable.class);
-		when(emptyOrderTable.isEmpty()).thenReturn(true);
+	void ungroupUnknownTableGroupTest() {
+		when(tableGroupRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-		OrderTable notEmptyOrderTable = mock(OrderTable.class);
-
-		TableGroup tableGroup = mock(TableGroup.class);
-		when(tableGroup.getOrderTables()).thenReturn(asList(emptyOrderTable, notEmptyOrderTable));
-
-		when(orderTableDao.findAllByIdIn(anyList())).thenReturn(asList(emptyOrderTable, notEmptyOrderTable));
-
-		// when
-		assertThatThrownBy(() -> tableGroupService.create(tableGroup))
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("빈테이블은 그룹화 할 수 없습니다.");
-	}
-
-	@DisplayName("그룹화된 주문테이블들 중 조리상태이거나 식사상태이면 그룹해제를 할 수 없다.")
-	@Test
-	void createTableGroupTest() {
-		// given
-		when(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).thenReturn(true);
-
-		// when
 		assertThatThrownBy(() -> tableGroupService.ungroup(1L))
 			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("조리상태이거나 식사상태인 주문이 있는 주문테이블은 그룹해제를 할 수 없습니다.");
+			.hasMessageContaining("등록된 테이블 그룹만 그룹해제 가능합니다.");
 	}
 
+	@DisplayName("테이블그룹을 그룹해제할 수 있다.")
+	@Test
+	void ungroupTableGroupTest() {
+		TableGroup tableGroup = mock(TableGroup.class);
+		when(tableGroupRepository.findById(anyLong())).thenReturn(Optional.of(tableGroup));
+
+		tableGroupService.ungroup(1L);
+
+		verify(tableGroup).ungroup();
+	}
 }

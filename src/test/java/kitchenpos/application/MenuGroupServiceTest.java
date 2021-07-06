@@ -13,15 +13,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.MenuGroupDao;
+import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.Name;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
 
 @DisplayName("메뉴그룹 요구사항 테스트")
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
 
 	@Mock
-	private MenuGroupDao menuGroupDao;
+	private MenuGroupRepository menuGroupRepository;
 
 	@InjectMocks
 	private MenuGroupService menuGroupService;
@@ -31,27 +34,36 @@ class MenuGroupServiceTest {
 	@Test
 	void createTest() {
 		// given
-		MenuGroup menuGroup = mock(MenuGroup.class);
+		MenuGroup menuGroup = createMockMenuGroup();
+		when(menuGroupRepository.save(any(MenuGroup.class))).thenReturn(menuGroup);
 
 		// when
-		menuGroupService.create(menuGroup);
+		MenuGroupResponse response = menuGroupService.create(new MenuGroupRequest("치킨"));
 
 		// than
-		verify(menuGroupDao).save(menuGroup);
+		assertThat(response.getId()).isEqualTo(1L);
 	}
 
 	@DisplayName("메뉴 그룹 목록을 조회할 수 있다.")
 	@Test
 	void listTest() {
 		// given
-		MenuGroup menuGroup = mock(MenuGroup.class);
-		when(menuGroupDao.findAll()).thenReturn(asList(menuGroup));
+		MenuGroup menuGroup = createMockMenuGroup();
+		when(menuGroupRepository.findAll()).thenReturn(asList(menuGroup));
 
 		// when
-		List<MenuGroup> menuGroups = menuGroupService.list();
+		List<MenuGroupResponse> menuGroups = menuGroupService.findMenuGroups();
 
 		// then
-		assertThat(menuGroups).containsExactly(menuGroup);
+		assertThat(menuGroups).isNotEmpty();
+		assertThat(menuGroups.get(0).getId()).isEqualTo(1L);
+	}
+
+	private MenuGroup createMockMenuGroup() {
+		MenuGroup menuGroup = mock(MenuGroup.class);
+		when(menuGroup.getId()).thenReturn(1L);
+		when(menuGroup.getName()).thenReturn(Name.valueOf("MockMenuGroup"));
+		return menuGroup;
 	}
 
 }
