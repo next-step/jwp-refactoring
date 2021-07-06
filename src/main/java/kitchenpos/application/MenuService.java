@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Transactional
 @Service
 public class MenuService {
     private final MenuDao menuDao;
@@ -34,7 +35,6 @@ public class MenuService {
         this.productDao = productDao;
     }
 
-    @Transactional
     public Menu create(final Menu menu) {
         final BigDecimal price = menu.getPrice();
 
@@ -72,6 +72,7 @@ public class MenuService {
         return savedMenu;
     }
 
+    @Transactional(readOnly = true)
     public List<Menu> list() {
         final List<Menu> menus = menuDao.findAll();
 

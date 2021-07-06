@@ -1,5 +1,6 @@
 package kitchenpos.ui;
 
+import io.swagger.annotations.ApiOperation;
 import kitchenpos.application.MenuGroupService;
 import kitchenpos.domain.MenuGroup;
 import org.springframework.http.ResponseEntity;
@@ -19,19 +20,17 @@ public class MenuGroupRestController {
         this.menuGroupService = menuGroupService;
     }
 
+    @ApiOperation("메뉴 그룹 생성")
     @PostMapping("/api/menu-groups")
     public ResponseEntity<MenuGroup> create(@RequestBody final MenuGroup menuGroup) {
         final MenuGroup created = menuGroupService.create(menuGroup);
         final URI uri = URI.create("/api/menu-groups/" + created.getId());
-        return ResponseEntity.created(uri)
-                .body(created)
-                ;
+        return ResponseEntity.created(uri).body(created);
     }
 
+    @ApiOperation("메뉴 그룹 조회")
     @GetMapping("/api/menu-groups")
     public ResponseEntity<List<MenuGroup>> list() {
-        return ResponseEntity.ok()
-                .body(menuGroupService.list())
-                ;
+        return ResponseEntity.ok().body(menuGroupService.list());
     }
 }

@@ -1,5 +1,6 @@
 package kitchenpos.ui;
 
+import io.swagger.annotations.ApiOperation;
 import kitchenpos.application.MenuService;
 import kitchenpos.domain.Menu;
 import org.springframework.http.ResponseEntity;
@@ -19,19 +20,17 @@ public class MenuRestController {
         this.menuService = menuService;
     }
 
+    @ApiOperation("메뉴 생성")
     @PostMapping("/api/menus")
     public ResponseEntity<Menu> create(@RequestBody final Menu menu) {
         final Menu created = menuService.create(menu);
         final URI uri = URI.create("/api/menus/" + created.getId());
-        return ResponseEntity.created(uri)
-                .body(created)
-                ;
+        return ResponseEntity.created(uri).body(created);
     }
 
+    @ApiOperation("전체 메뉴 조회")
     @GetMapping("/api/menus")
     public ResponseEntity<List<Menu>> list() {
-        return ResponseEntity.ok()
-                .body(menuService.list())
-                ;
+        return ResponseEntity.ok().body(menuService.list());
     }
 }

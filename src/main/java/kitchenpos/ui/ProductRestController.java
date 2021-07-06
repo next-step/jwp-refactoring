@@ -1,5 +1,6 @@
 package kitchenpos.ui;
 
+import io.swagger.annotations.ApiOperation;
 import kitchenpos.application.ProductService;
 import kitchenpos.domain.Product;
 import org.springframework.http.ResponseEntity;
@@ -19,19 +20,17 @@ public class ProductRestController {
         this.productService = productService;
     }
 
+    @ApiOperation("상품 생성")
     @PostMapping("/api/products")
     public ResponseEntity<Product> create(@RequestBody final Product product) {
         final Product created = productService.create(product);
         final URI uri = URI.create("/api/products/" + created.getId());
-        return ResponseEntity.created(uri)
-                .body(created)
-                ;
+        return ResponseEntity.created(uri).body(created);
     }
 
+    @ApiOperation("모든 상품 조회")
     @GetMapping("/api/products")
     public ResponseEntity<List<Product>> list() {
-        return ResponseEntity.ok()
-                .body(productService.list())
-                ;
+        return ResponseEntity.ok().body(productService.list());
     }
 }
