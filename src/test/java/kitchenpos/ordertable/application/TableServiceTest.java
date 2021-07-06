@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.ordertable.application;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -8,7 +8,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import kitchenpos.dao.OrderDao;
+import kitchenpos.order.repository.OrderDao;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.repository.OrderTableDao;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,10 +18,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.OrderTable;
-
 
 @DisplayName("테이블 테스트")
 @ExtendWith(MockitoExtension.class)

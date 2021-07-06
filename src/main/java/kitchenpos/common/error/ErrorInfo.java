@@ -7,6 +7,8 @@ public enum ErrorInfo {
     NOT_FOUND_PRODUCT("상품을 찾을 수 없습니다."),
     QUANTITY_CAN_NOT_NEGATIVE("수량은 음수가 될 수 없습니다."),
     NOT_EQUAL_REQUEST_SIZE("요청한 상품 개수가 일치하지 않습니다."),
+    NOT_FOUND_MENU("메뉴를 찾을 수 없습니다."),
+    NOT_FOUND_ORDER_TABLE("주문 테이블을 찾을 수 없습니다."),
     ;
 
     private String message;

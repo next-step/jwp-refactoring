@@ -1,13 +1,11 @@
-package kitchenpos.application;
+package kitchenpos.ordertable.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.order.repository.OrderDao;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.repository.OrderTableDao;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -41,10 +39,11 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-        if (orderDao.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
-        }
+//        OrderTable findOrderTable = orderTableDao.findById(orderTableId).orElseThrow(() -> new CustomException(ErrorInfo.NOT_FOUND_ORDER_TABLE));
+//        if (orderDao.existsByOrderTableIdAndOrderStatusIn(
+//                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+//            throw new IllegalArgumentException();
+//        }
 
         savedOrderTable.setEmpty(orderTable.isEmpty());
 
