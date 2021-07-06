@@ -16,8 +16,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.utils.UnitTestData;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,7 +28,7 @@ class MenuGroupServiceTest {
     MenuGroupService menuGroupService;
 
     @Mock
-    MenuGroupDao menuGroupDao;
+    MenuGroupRepository menuGroupRepository;
 
     @BeforeEach
     void setUp() {
@@ -39,7 +39,7 @@ class MenuGroupServiceTest {
     @DisplayName("메뉴 그룹을 생성한다")
     void create() {
         // given
-        when(menuGroupDao.save(추천메뉴)).thenReturn(추천메뉴);
+        when(menuGroupRepository.save(추천메뉴)).thenReturn(추천메뉴);
 
         // when
         MenuGroup savedGroup = menuGroupService.create(추천메뉴);
@@ -54,7 +54,7 @@ class MenuGroupServiceTest {
         // given
         List<MenuGroup> groups = Stream.of(추천메뉴, 베스트메뉴, 세트메뉴)
             .collect(toList());
-        when(menuGroupDao.findAll()).thenReturn(groups);
+        when(menuGroupRepository.findAll()).thenReturn(groups);
 
         // when
         List<MenuGroup> allGroups = menuGroupService.list();

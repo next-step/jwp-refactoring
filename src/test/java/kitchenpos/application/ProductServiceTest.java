@@ -15,7 +15,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductRepository;
 import kitchenpos.utils.UnitTestData;
@@ -26,9 +25,6 @@ class ProductServiceTest {
 
     @InjectMocks
     ProductService productService;
-
-    @Mock
-    ProductDao productDao;
 
     @Mock
     ProductRepository productRepository;
