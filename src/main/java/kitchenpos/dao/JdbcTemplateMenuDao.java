@@ -2,7 +2,6 @@ package kitchenpos.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -72,8 +71,7 @@ public class JdbcTemplateMenuDao implements MenuDao {
 	}
 
 	private Menu toEntity(final ResultSet resultSet) throws SQLException {
-		return new Menu(resultSet.getLong("id"), resultSet.getString("name"),
-			resultSet.getBigDecimal("price"), resultSet.getLong("menu_group_id"), new ArrayList<>());
+		return null;
 
 	}
 }

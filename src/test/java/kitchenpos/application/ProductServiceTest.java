@@ -41,7 +41,7 @@ class ProductServiceTest {
 		when(productRepository.save(product)).thenReturn(psavedProduct);
 		ProductResponse actual = productService.create(productRequest);
 
-		assertThat(actual.getPrice()).isEqualTo(psavedProduct.getPrice());
+		assertThat(actual.getPrice()).isEqualTo(psavedProduct.getPrice().getPrice());
 	}
 
 	@DisplayName("상품 가격이 0보다 작으면 생성 오류")

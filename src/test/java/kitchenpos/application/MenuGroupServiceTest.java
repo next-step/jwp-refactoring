@@ -34,7 +34,7 @@ class MenuGroupServiceTest {
 		MenuGroupRequest menuGroupRequest = new MenuGroupRequest("중식");
 
 		MenuGroup menuGroup = new MenuGroup(menuGroupRequest.getName());
-		MenuGroup expected = new MenuGroup(1L, "중식");
+		MenuGroup expected = new MenuGroup("중식");
 
 		when(menuGroupRepository.save(menuGroup)).thenReturn(expected);
 		MenuGroupResponse actual = menuGroupService.create(menuGroupRequest);
@@ -48,9 +48,9 @@ class MenuGroupServiceTest {
 	@Test
 	void testList() {
 		List<MenuGroup> expected = new ArrayList<>();
-		expected.add(new MenuGroup(1L, "menuGroup1"));
-		expected.add(new MenuGroup(2L, "menuGroup2"));
-		expected.add(new MenuGroup(3L, "menuGroup3"));
+		expected.add(new MenuGroup("menuGroup1"));
+		expected.add(new MenuGroup("menuGroup2"));
+		expected.add(new MenuGroup("menuGroup3"));
 		List<Long> savedMenuGroupIds = expected.stream().map(MenuGroup::getId).collect(Collectors.toList());
 
 		when(menuGroupRepository.findAll()).thenReturn(expected);
@@ -58,8 +58,10 @@ class MenuGroupServiceTest {
 		List<MenuGroupResponse> actual = menuGroupService.list();
 
 		verify(menuGroupRepository, times(1)).findAll();
-		List<Long> actualMenuGroupIds = actual.stream().map(MenuGroupResponse::getId).collect(Collectors.toList());
-		assertThat(actualMenuGroupIds)
-			.containsExactlyElementsOf(savedMenuGroupIds);
+		List<MenuGroupResponse> expectedMenuGroupResponses = expected.stream()
+			.map(MenuGroupResponse::of)
+			.collect(Collectors.toList());
+		assertThat(actual)
+			.containsExactlyElementsOf(expectedMenuGroupResponses);
 	}
 }
