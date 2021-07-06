@@ -69,17 +69,7 @@ public class OrderService {
         final OrderTable orderTable = orderTableDao.findById(orderRequest.getOrderTableId())
                 .orElseThrow(() -> new CustomException(ErrorInfo.NOT_FOUND_ORDER_TABLE));
 
-        Order order = Order.of(orderTable.getId());
-
-        for (final OrderLineItemRequest orderLineItemRequest : orderLineItemRequests) {
-            Menu findMenu = menus.stream()
-                    .filter(menu -> menu.id().equals(orderLineItemRequest.getMenuId()))
-                    .findFirst()
-                    .orElseThrow(() -> new CustomException(ErrorInfo.NOT_FOUND_MENU));
-            OrderLineItem orderLineItem = OrderLineItem.of(order, findMenu, new Quantity(orderLineItemRequest.getQuantity()));
-            orderLineItemDao.save(orderLineItem);
-        }
-
+        Order order = Order.of(orderTable.getId(), orderLineItemRequests, menus);
         return OrderResponse.of(orderDao.save(order));
     }
 
@@ -89,15 +79,11 @@ public class OrderService {
     }
 
     public OrderResponse changeOrderStatus(final Long orderId, final OrderStatusRequest orderStatusRequest) {
-        final Order savedOrder = orderDao.findById(orderId)
+        final Order order = orderDao.findById(orderId)
                 .orElseThrow(() -> new CustomException(ErrorInfo.NOT_FOUND_ORDER));
 
-        if (Objects.equals(OrderStatus.COMPLETION, savedOrder.getOrderStatus())) {
-            throw new IllegalArgumentException();
-        }
-
-        savedOrder.changeOrderStatus(OrderStatus.get(orderStatusRequest.getOrderStatus()));
-        return OrderResponse.of(savedOrder);
+        order.checkAlreadyComplete();
+        order.changeOrderStatus(OrderStatus.get(orderStatusRequest.getOrderStatus()));
+        return OrderResponse.of(order);
     }
-
 }

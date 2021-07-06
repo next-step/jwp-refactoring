@@ -17,7 +17,7 @@ public enum ErrorInfo {
     ORDER_TABLE_IS_EMPTY("주문 테이블이 비어있습니다."),
     INVALID_REQUEST_ORDER_TABLE_SIZE("주문 테이블 개수가 유효하지 않습니다."),
     ORDER_TABLE_IS_NOT_EMPTY("주문 테이블이 비어있지 않습니다."),
-    ;
+    ALREADY_COMPLETE("이미 주문 상태가 완료입니다.");
 
     private String message;
 

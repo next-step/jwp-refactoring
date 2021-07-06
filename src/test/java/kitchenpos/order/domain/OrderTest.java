@@ -44,4 +44,16 @@ class OrderTest {
                 .isInstanceOf(CustomException.class)
                 .hasMessage(ErrorInfo.INVALID_ORDER_STATUS.message());
     }
+
+    @DisplayName("주문 상태 체크 - COMPLETE 인지")
+    @Test
+    void checkAlreadyComplete() {
+        // given
+        Order order = Order.of(1L, OrderStatus.COMPLETION);
+        // when
+        // then
+        assertThatThrownBy(order::checkAlreadyComplete)
+                .isInstanceOf(CustomException.class)
+                .hasMessage(ErrorInfo.ALREADY_COMPLETE.message());
+    }
 }

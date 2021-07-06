@@ -42,9 +42,7 @@ public class OrderLineItem {
     }
 
     public static OrderLineItem of(Order order, Menu menu, Quantity quantity) {
-        OrderLineItem orderLineItem = new OrderLineItem(order, menu, quantity);
-        order.addOrderLineItem(orderLineItem);
-        return orderLineItem;
+        return new OrderLineItem(order, menu, quantity);
     }
 
     public Long seq() {

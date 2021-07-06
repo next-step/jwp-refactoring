@@ -12,8 +12,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import kitchenpos.common.domian.Quantity;
 import kitchenpos.common.error.CustomException;
 import kitchenpos.common.error.ErrorInfo;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.order.dto.OrderLineItemRequest;
 
 @Entity
 @Table(name = "orders")
@@ -42,12 +45,20 @@ public class Order {
         this.orderedTime = LocalDateTime.now();
     }
 
-    public static Order of(Long orderTableId) {
-        return new Order(orderTableId, OrderStatus.COOKING);
-    }
-
     public static Order of(long orderTableId, OrderStatus orderStatus) {
         return new Order(orderTableId, orderStatus);
+    }
+
+    public static Order of(Long orderTableId, List<OrderLineItemRequest> orderLineItemRequests, List<Menu> menus) {
+        Order order = new Order(orderTableId, OrderStatus.COOKING);
+        for (final OrderLineItemRequest orderLineItemRequest : orderLineItemRequests) {
+            Menu findMenu = menus.stream()
+                    .filter(menu -> menu.id().equals(orderLineItemRequest.getMenuId()))
+                    .findFirst()
+                    .orElseThrow(() -> new CustomException(ErrorInfo.NOT_FOUND_MENU));
+            order.addOrderLineItem(OrderLineItem.of(order, findMenu, new Quantity(orderLineItemRequest.getQuantity())));
+        }
+        return order;
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
@@ -57,6 +68,16 @@ public class Order {
     public void checkChangeableStatus() {
         if (orderStatus.equals(OrderStatus.COOKING) || orderStatus.equals(OrderStatus.MEAL)) {
             throw new CustomException(ErrorInfo.INVALID_ORDER_STATUS);
+        }
+    }
+
+    public void addOrderLineItem(OrderLineItem orderLineItem) {
+        this.orderLineItems.add(orderLineItem);
+    }
+
+    public void checkAlreadyComplete() {
+        if (orderStatus.equals(OrderStatus.COMPLETION)) {
+            throw new CustomException(ErrorInfo.ALREADY_COMPLETE);
         }
     }
 
@@ -78,9 +99,5 @@ public class Order {
 
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems.get();
-    }
-
-    public void addOrderLineItem(OrderLineItem orderLineItem) {
-        this.orderLineItems.add(orderLineItem);
     }
 }

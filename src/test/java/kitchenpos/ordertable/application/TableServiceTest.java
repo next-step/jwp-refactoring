@@ -81,7 +81,7 @@ class TableServiceTest {
         // given
         OrderTableEmptyRequest orderTableEmptyRequest = new OrderTableEmptyRequest(false);
         // when
-        Order order = Order.of(1L);
+        Order order = Order.of(1L, OrderStatus.COOKING);
         order.changeOrderStatus(OrderStatus.COMPLETION);
 
         when(orderTableDao.findById(1L)).thenReturn(Optional.of(orderTable));
