@@ -8,10 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import kitchenpos.order.repository.OrderDao;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.repository.OrderTableDao;
-import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +15,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import kitchenpos.common.error.CustomException;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.repository.OrderDao;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.repository.OrderTableDao;
+import kitchenpos.tablegroup.domain.TableGroup;
 
 @DisplayName("테이블 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -70,8 +74,11 @@ class TableServiceTest {
     void changeEmpty() {
         // given
         orderTable.setTableGroup(null);
-
         // when
+        Order order = Order.of(1L);
+        order.changeOrderStatus(OrderStatus.COMPLETION);
+
+        when(orderDao.findById(any())).thenReturn(Optional.of(order));
         when(orderTableDao.findById(1L)).thenReturn(Optional.of(orderTable));
         when(orderTableDao.save(any())).thenReturn(orderTable);
         OrderTable changedOrderTable = tableService.changeEmpty(1L, orderTable);
@@ -123,10 +130,10 @@ class TableServiceTest {
 
         // when
         when(orderTableDao.findById(1L)).thenReturn(Optional.of(orderTable));
-//        doReturn(true).when(orderDao).existsByOrderTableIdAndOrderStatusIn(any(), any());
+        when(orderDao.findById(any())).thenReturn(Optional.of(Order.of(1L)));
         //then
         assertThatThrownBy(() -> tableService.changeEmpty(1L, new OrderTable()))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(CustomException.class);
     }
 
     @DisplayName("게스트의 숫가자 음수인지 체크한다.")

@@ -76,4 +76,8 @@ public class Order {
     public void addOrderLineItem(OrderLineItem orderLineItem) {
         this.orderLineItems.add(orderLineItem);
     }
+
+    public boolean checkOrderStatus() {
+        return orderStatus.equals(OrderStatus.COOKING) || orderStatus.equals(OrderStatus.MEAL);
+    }
 }

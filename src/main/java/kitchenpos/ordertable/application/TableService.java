@@ -1,5 +1,8 @@
 package kitchenpos.ordertable.application;
 
+import kitchenpos.common.error.CustomException;
+import kitchenpos.common.error.ErrorInfo;
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.repository.OrderDao;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.repository.OrderTableDao;
@@ -39,11 +42,10 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-//        OrderTable findOrderTable = orderTableDao.findById(orderTableId).orElseThrow(() -> new CustomException(ErrorInfo.NOT_FOUND_ORDER_TABLE));
-//        if (orderDao.existsByOrderTableIdAndOrderStatusIn(
-//                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-//            throw new IllegalArgumentException();
-//        }
+        Order order = orderDao.findById(orderTableId).orElseThrow(() -> new CustomException(ErrorInfo.NOT_FOUND_ORDER_TABLE));
+        if(order.checkOrderStatus()) {
+            throw new CustomException(ErrorInfo.INVALID_ORDER_STATUS);
+        }
 
         savedOrderTable.setEmpty(orderTable.isEmpty());
 

@@ -10,7 +10,8 @@ public enum ErrorInfo {
     NOT_FOUND_MENU("메뉴를 찾을 수 없습니다."),
     NOT_FOUND_ORDER_TABLE("주문 테이블을 찾을 수 없습니다."),
     NOT_FOUND_ORDER("주문을 찾을 수 없습니다."),
-    NOT_FOUND_ORDER_LINE_REQUEST("주문 라인 요청이 없습니다.");
+    NOT_FOUND_ORDER_LINE_REQUEST("주문 라인 요청이 없습니다."),
+    INVALID_ORDER_STATUS("주문 상태가 COOKING 혹은 MEAL 상태입니다.");
 
     private String message;
 
