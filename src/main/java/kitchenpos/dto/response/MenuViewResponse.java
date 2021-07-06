@@ -1,6 +1,7 @@
 package kitchenpos.dto.response;
 
 import kitchenpos.domain.menu.Menu;
+import kitchenpos.domain.menuproduct.MenuProduct;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -14,8 +15,8 @@ public class MenuViewResponse {
     private Long menuGroupId;
     private List<MenuProductViewResponse> menuProducts;
 
-    public static MenuViewResponse of(Menu menu) {
-        List<MenuProductViewResponse> productViewResponses = menu.getMenuProducts()
+    public static MenuViewResponse of(Menu menu, List<MenuProduct> menuProducts) {
+        List<MenuProductViewResponse> productViewResponses = filterMenuProductBy(menu, menuProducts)
                 .stream()
                 .map(MenuProductViewResponse::of)
                 .collect(Collectors.toList());
@@ -27,6 +28,14 @@ public class MenuViewResponse {
                 menu.getMenuGroup().getId(),
                 productViewResponses
         );
+    }
+
+    private static List<MenuProduct> filterMenuProductBy(Menu menu, List<MenuProduct> menuProducts) {
+        List<MenuProduct> filteredMenuProducts = menuProducts.stream()
+                .filter(item -> item.isSameMenu(menu))
+                .collect(Collectors.toList());
+
+        return filteredMenuProducts;
     }
 
     public MenuViewResponse(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProductViewResponse> menuProducts) {
