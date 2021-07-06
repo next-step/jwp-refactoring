@@ -15,9 +15,12 @@ import java.util.stream.Collectors;
 @Service
 @ActiveProfiles("test")
 public class DatabaseCleanup implements InitializingBean {
-    public static final String MENU_PRODUCT_TABLE_NAME = "menu_product";
     public static final String SEQ = "seq";
     public static final String ID = "id";
+    public static final String MENU_PRODUCT_TABLE_NAME = "menu_product";
+    public static final String ORDER_TABLE_NAME = "order";
+    public static final String ORDERS_TABLE_NAME = "orders";
+    public static final String ORDER_LINE_ITEM_TABLE_NAME = "order_line_item";
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -28,7 +31,7 @@ public class DatabaseCleanup implements InitializingBean {
     public void afterPropertiesSet() {
         tableNames = entityManager.getMetamodel().getEntities().stream()
                 .filter(e -> e.getJavaType().getAnnotation(Entity.class) != null)
-                .map(e -> CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, e.getName()))
+                .map(e -> CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, e.getName()))
                 .collect(Collectors.toList());
     }
 
@@ -38,16 +41,24 @@ public class DatabaseCleanup implements InitializingBean {
         entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
 
         for (String tableName : tableNames) {
-            String id = getPkColumnName(tableName);
-            entityManager.createNativeQuery("TRUNCATE TABLE " + tableName).executeUpdate();
-            entityManager.createNativeQuery("ALTER TABLE " + tableName + " ALTER COLUMN "+ id + " RESTART WITH 1").executeUpdate();
+            String modifiedTableName = getTableName(tableName);
+            String id = getPkColumnName(modifiedTableName);
+            entityManager.createNativeQuery("TRUNCATE TABLE " + modifiedTableName).executeUpdate();
+            entityManager.createNativeQuery("ALTER TABLE " + modifiedTableName + " ALTER COLUMN "+ id + " RESTART WITH 1").executeUpdate();
         }
 
         entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
     }
 
+    private String getTableName(String tableName) {
+        if (tableName.equals(ORDER_TABLE_NAME)) {
+            return ORDERS_TABLE_NAME;
+        }
+        return tableName;
+    }
+
     private String getPkColumnName(String tableName) {
-        if (tableName.equals(MENU_PRODUCT_TABLE_NAME)) {
+        if (tableName.equals(MENU_PRODUCT_TABLE_NAME) || tableName.equals(ORDER_LINE_ITEM_TABLE_NAME)) {
             return SEQ;
         }
         return ID;
