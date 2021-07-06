@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -66,7 +65,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     void create() {
         // given
         // when
-        ExtractableResponse<Response> 주문_생성_요청_응답 = 주문_셍성_요청(주문_테이블_번호, 메뉴_번호, 1);
+        ExtractableResponse<Response> 주문_생성_요청_응답 = 주문_생성_요청(주문_테이블_번호, 메뉴_번호, 1);
         // then
         주문_생성_요청_응답_확인(주문_생성_요청_응답);
     }
@@ -75,7 +74,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void list() {
         // given
-        주문_셍성_요청(주문_테이블_번호, 메뉴_번호, 1);
+        주문_생성_요청(주문_테이블_번호, 메뉴_번호, 1);
         // when
         ExtractableResponse<Response> 주문_조회_요청_응답 = 주문_조회_요청();
         // then
@@ -88,7 +87,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         // given
 
         // when
-        ExtractableResponse<Response> 주문_생성_요청_응답 = 주문_셍성_요청(주문_테이블_번호, 메뉴_번호, 1);
+        ExtractableResponse<Response> 주문_생성_요청_응답 = 주문_생성_요청(주문_테이블_번호, 메뉴_번호, 1);
         // then
         주문_생성_요청_응답_확인(주문_생성_요청_응답);
         Long 주문_번호 = 공통_번호_추출(주문_생성_요청_응답);
@@ -103,7 +102,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     void createFailedByOrderTable() {
         // given
         // when
-        ExtractableResponse<Response> 주문_생성_요청_응답 = 주문_셍성_요청(0L, 메뉴_번호, 1);
+        ExtractableResponse<Response> 주문_생성_요청_응답 = 주문_생성_요청(0L, 메뉴_번호, 1);
         // then
         주문_생성_요청_실패_확인(주문_생성_요청_응답);
     }
@@ -113,7 +112,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     void createFailedByMenu() {
         // given
         // when
-        ExtractableResponse<Response> 주문_생성_요청_응답 = 주문_셍성_요청(주문_테이블_번호, 0L, 1);
+        ExtractableResponse<Response> 주문_생성_요청_응답 = 주문_생성_요청(주문_테이블_번호, 0L, 1);
         // then
         주문_생성_요청_실패_확인(주문_생성_요청_응답);
     }
@@ -123,7 +122,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     void creatFailedByAmount() {
         // given
         // when
-        ExtractableResponse<Response> 주문_생성_요청_응답 = 주문_셍성_요청(주문_테이블_번호, 메뉴_번호, -1);
+        ExtractableResponse<Response> 주문_생성_요청_응답 = 주문_생성_요청(주문_테이블_번호, 메뉴_번호, -1);
         // then
         주문_생성_요청_실패_확인(주문_생성_요청_응답);
     }
@@ -188,7 +187,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> 주문_셍성_요청(Long 주문_테이블_번호, Long 메뉴_번호, int 메뉴_수량) {
+    private ExtractableResponse<Response> 주문_생성_요청(Long 주문_테이블_번호, Long 메뉴_번호, int 메뉴_수량) {
         OrderRequest orderRequest = new OrderRequest(주문_테이블_번호, Arrays.asList(new OrderLineItemRequest(메뉴_번호, 메뉴_수량)));
         return RestAssured.given().log().all()
                 .body(orderRequest)

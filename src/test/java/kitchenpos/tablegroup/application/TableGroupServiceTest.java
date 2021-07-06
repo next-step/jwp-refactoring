@@ -9,11 +9,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import kitchenpos.order.repository.OrderDao;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.repository.OrderTableDao;
-import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.repository.TableGroupDao;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,6 +16,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import kitchenpos.order.repository.OrderDao;
+import kitchenpos.ordertable.domain.NumberOfGuests;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.repository.OrderTableDao;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.repository.TableGroupDao;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("단체 지정 테스트")
@@ -44,12 +46,8 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setup() {
-        orderTable = new OrderTable();
-        orderTable.setId(1L);
-        orderTable.setEmpty(true);
-        addOrderTable = new OrderTable();
-        addOrderTable.setId(2L);
-        addOrderTable.setEmpty(true);
+        orderTable = new OrderTable(1L, new NumberOfGuests(2), true);
+        addOrderTable = new OrderTable(2L, new NumberOfGuests(2), true);
 
         tableGroup = new TableGroup();
         tableGroup.setOrderTables(Arrays.asList(orderTable, addOrderTable));

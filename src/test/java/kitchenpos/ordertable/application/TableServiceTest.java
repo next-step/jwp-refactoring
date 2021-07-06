@@ -16,13 +16,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.ordertable.dto.OrderTableEmptyRequest;
+import kitchenpos.ordertable.dto.OrderTableNumberOfGuestsRequest;
+import kitchenpos.ordertable.domain.NumberOfGuests;
+import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.common.error.CustomException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.repository.OrderDao;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.repository.OrderTableDao;
-import kitchenpos.tablegroup.domain.TableGroup;
 
 @DisplayName("테이블 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -38,10 +42,12 @@ class TableServiceTest {
     private TableService tableService;
 
     private OrderTable orderTable;
+    private OrderTableRequest OrderTableNumberOfGuestsRequest;
 
     @BeforeEach
     void setup() {
-        orderTable = new OrderTable();
+        orderTable = new OrderTable(1L, new NumberOfGuests(2), true);
+        OrderTableNumberOfGuestsRequest = new OrderTableRequest(2, true);
     }
 
     @DisplayName("사용자는 테이블을 생성(예약) 할 수 있다.")
@@ -50,8 +56,8 @@ class TableServiceTest {
         // given
 
         // when
-        when(orderTableDao.save(orderTable)).thenReturn(orderTable);
-        OrderTable orderTable = tableService.create(this.orderTable);
+        when(orderTableDao.save(any())).thenReturn(orderTable);
+        OrderTableResponse orderTable = tableService.create(OrderTableNumberOfGuestsRequest);
         // then
         assertThat(orderTable).isNotNull();
     }
@@ -63,7 +69,7 @@ class TableServiceTest {
 
         // when
         when(orderTableDao.findAll()).thenReturn(Arrays.asList(orderTable));
-        List<OrderTable> list = tableService.list();
+        List<OrderTableResponse> list = tableService.list();
         // then
         assertThat(list).isNotNull();
         assertThat(list.size()).isEqualTo(1);
@@ -73,15 +79,14 @@ class TableServiceTest {
     @Test
     void changeEmpty() {
         // given
-        orderTable.setTableGroup(null);
+        OrderTableEmptyRequest orderTableEmptyRequest = new OrderTableEmptyRequest(false);
         // when
         Order order = Order.of(1L);
         order.changeOrderStatus(OrderStatus.COMPLETION);
 
-        when(orderDao.findById(any())).thenReturn(Optional.of(order));
         when(orderTableDao.findById(1L)).thenReturn(Optional.of(orderTable));
-        when(orderTableDao.save(any())).thenReturn(orderTable);
-        OrderTable changedOrderTable = tableService.changeEmpty(1L, orderTable);
+        when(orderDao.findByOrderTableId(any())).thenReturn(Arrays.asList(order));
+        OrderTableResponse changedOrderTable = tableService.changeEmpty(1L, orderTableEmptyRequest);
         // then
         assertThat(changedOrderTable.isEmpty()).isFalse();
     }
@@ -90,14 +95,14 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuests() {
         // given
-        orderTable.setNumberOfGuests(2);
+        OrderTableNumberOfGuestsRequest orderTableNumberOfGuestsRequest = new OrderTableNumberOfGuestsRequest(10);
+        orderTable = new OrderTable(1L, new NumberOfGuests(2), false);
         // when
         when(orderTableDao.findById(1L)).thenReturn(Optional.of(orderTable));
-        when(orderTableDao.save(orderTable)).thenReturn(orderTable);
-        OrderTable changedOrderTable = tableService.changeNumberOfGuests(1L, this.orderTable);
+        OrderTableResponse changedOrderTable = tableService.changeNumberOfGuests(1L, orderTableNumberOfGuestsRequest);
         // then
         assertThat(changedOrderTable).isNotNull();
-        assertThat(changedOrderTable.getNumberOfGuests()).isEqualTo(2);
+        assertThat(changedOrderTable.getNumberOfGuests()).isEqualTo(10);
     }
 
     @DisplayName("테이블을 조회하여 데이터가 있는지 체크한다.")
@@ -106,33 +111,29 @@ class TableServiceTest {
         // given
         // when
         // then
-        assertThatThrownBy(() -> tableService.changeEmpty(1L, new OrderTable()))
-                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableService.changeEmpty(1L, new OrderTableEmptyRequest(false)))
+                .isInstanceOf(CustomException.class);
     }
 
     @DisplayName("테이블을 조회하여 데이터가 있는지 체크한다.")
     @Test
     void changeEmptyFailedByTableGroupId() {
         // given
-        orderTable.setTableGroup(new TableGroup());
         // when
         when(orderTableDao.findById(1L)).thenReturn(Optional.of(orderTable));
         // then
-        assertThatThrownBy(() -> tableService.changeEmpty(1L, new OrderTable()))
-                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableService.changeEmpty(1L, new OrderTableEmptyRequest(false)))
+                .isInstanceOf(CustomException.class);
     }
 
     @DisplayName("테이블의 주문 상태가 Cooking, Meal 상태가 아닌지 체크한다.")
     @Test
     void changeEmptyFailedByOrderStatus() {
         // given
-        orderTable.setTableGroup(null);
 
         // when
-        when(orderTableDao.findById(1L)).thenReturn(Optional.of(orderTable));
-        when(orderDao.findById(any())).thenReturn(Optional.of(Order.of(1L)));
         //then
-        assertThatThrownBy(() -> tableService.changeEmpty(1L, new OrderTable()))
+        assertThatThrownBy(() -> tableService.changeEmpty(1L, new OrderTableEmptyRequest(false)))
                 .isInstanceOf(CustomException.class);
     }
 
@@ -140,34 +141,30 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuestFailedByNumberOfGuests() {
         // given
-        orderTable.setNumberOfGuests(-2);
         // when
         // then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, orderTable))
-                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, new OrderTableNumberOfGuestsRequest(-2)))
+                .isInstanceOf(CustomException.class);
     }
 
     @DisplayName("주문테이블id를 통하여 데이터가 있는지 체크한다.")
     @Test
     void changeNumberOfGuestFailedByOrderTable() {
         // given
-        orderTable.setNumberOfGuests(2);
         // when
         // then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, orderTable))
-                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, new OrderTableNumberOfGuestsRequest(10)))
+                .isInstanceOf(CustomException.class);
     }
 
     @DisplayName("주문테이블id를 통하여 데이터가 있는지 체크한다.")
     @Test
     void changeNumberOfGuestFailedByOrderTableEmpty() {
         // given
-        orderTable.setNumberOfGuests(2);
-        orderTable.setEmpty(true);
         // when
         when(orderTableDao.findById(1L)).thenReturn(Optional.of(orderTable));
         // then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, orderTable))
-                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, new OrderTableNumberOfGuestsRequest(10)))
+                .isInstanceOf(CustomException.class);
     }
 }
