@@ -1,5 +1,6 @@
 package kitchenpos.domain.order;
 
+import kitchenpos.exception.InvalidOrderTableException;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
@@ -28,7 +29,11 @@ public class TableGroup {
 
     private TableGroup(Long id, List<OrderTable> orderTables, LocalDateTime createdDate) {
         this.id = id;
-        setOrderTables(orderTables);
+        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
+            throw new InvalidOrderTableException("should have over 2 orderTables");
+        }
+
+        this.orderTables = orderTables;
         this.createdDate = createdDate;
     }
 
@@ -48,21 +53,12 @@ public class TableGroup {
         return orderTables;
     }
 
-    private void setOrderTables(List<OrderTable> orderTables) {
-
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException("should have over 2 orderTables");
-        }
-
-        this.orderTables = orderTables;
-    }
-
     public void changeOrderTables(List<OrderTable> orderTables) {
         this.orderTables = orderTables;
         orderTables.forEach(orderTable -> {
 
             if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup())) {
-                throw new IllegalArgumentException("should have not empty savedOrderTable");
+                throw new InvalidOrderTableException("should have not empty savedOrderTable");
             }
 
             orderTable.changeTableGroup(this);

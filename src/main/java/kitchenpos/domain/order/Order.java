@@ -1,5 +1,7 @@
 package kitchenpos.domain.order;
 
+import kitchenpos.exception.InvalidOrderLineItemsException;
+import kitchenpos.exception.InvalidOrderTableException;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
@@ -32,10 +34,17 @@ public class Order {
 
     private Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
         this.id = id;
-        setOrderTable(orderTable);
+        if (orderTable.isEmpty()) {
+            throw new InvalidOrderTableException("Should have not orderTable empty");
+        }
+        this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
-        setOrderLineItems(orderLineItems);
+        if (CollectionUtils.isEmpty(orderLineItems)) {
+            throw new InvalidOrderLineItemsException("should have orderLineItems");
+        }
+        orderLineItems.forEach(orderLineItem -> orderLineItem.setOrder(this));
+        this.orderLineItems = orderLineItems;
     }
 
     public static Order of(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
@@ -50,13 +59,6 @@ public class Order {
         return orderTable;
     }
 
-    private void setOrderTable(OrderTable orderTable) {
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException("Should have not orderTable empty");
-        }
-        this.orderTable = orderTable;
-    }
-
     public OrderStatus getOrderStatus() {
         return orderStatus;
     }
@@ -67,14 +69,6 @@ public class Order {
 
     public List<OrderLineItem> getOrderLineItems() {
         return Collections.unmodifiableList(orderLineItems);
-    }
-
-    private void setOrderLineItems(List<OrderLineItem> orderLineItems) {
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException("should have orderLineItems");
-        }
-        orderLineItems.forEach(orderLineItem -> orderLineItem.setOrder(this));
-        this.orderLineItems = orderLineItems;
     }
 
     public void addOrderLineItem(OrderLineItem orderLineItem) {
