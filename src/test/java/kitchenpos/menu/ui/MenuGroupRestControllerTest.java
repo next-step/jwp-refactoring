@@ -1,15 +1,19 @@
 package kitchenpos.menu.ui;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import kitchenpos.RestControllerTest;
 import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.ui.MenuGroupRestController;
+import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -17,10 +21,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 @DisplayName("메뉴 그룹 API")
 @WebMvcTest(MenuGroupRestController.class)
-public class MenuGroupRestControllerTest extends RestControllerTest<MenuGroup> {
+public class MenuGroupRestControllerTest extends RestControllerTest<MenuGroupRequest> {
 
     private static final String BASE_URL = "/api/menu-groups";
-    private static final MenuGroup 한식 = new MenuGroup(1L, "한식");
+    private static final MenuGroup 한식 = new MenuGroup("한식");
 
     @MockBean
     private MenuGroupService menuGroupService;
@@ -29,24 +33,22 @@ public class MenuGroupRestControllerTest extends RestControllerTest<MenuGroup> {
     @Test
     void create() throws Exception {
         // Given
-        given(menuGroupService.create(any())).willReturn(한식);
+        given(menuGroupService.create(any())).willReturn(MenuGroupResponse.of(한식));
 
         // When & Then
-        String responseBody = objectMapper.writeValueAsString(한식);
-        post(BASE_URL, 한식)
-            .andExpect(content().string(responseBody));
+        post(BASE_URL, MenuGroupRequest.of(한식))
+            .andExpect(jsonPath("$.name").value(한식.getName()));
     }
 
     @DisplayName("메뉴 그룹 목록을 조회한다.")
     @Test
     void list() throws Exception {
         // Given
-        List<MenuGroup> menuGroups = Collections.singletonList(한식);
+        List<MenuGroupResponse> menuGroups = new ArrayList<>(Arrays.asList(MenuGroupResponse.of(한식)));
         given(menuGroupService.list()).willReturn(menuGroups);
 
         // When & Then
-        String responseBody = objectMapper.writeValueAsString(menuGroups);
         get(BASE_URL)
-            .andExpect(content().string(responseBody));
+            .andExpect(jsonPath("$.*", hasSize(menuGroups.size())));
     }
 }

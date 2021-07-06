@@ -18,16 +18,24 @@ public abstract class RestControllerTest<T> {
     protected ObjectMapper objectMapper;
 
     protected ResultActions post(String path, T request) throws Exception {
+        return post(path, new String(objectMapper.writeValueAsBytes(request)));
+    }
+
+    protected ResultActions post(String path, String content) throws Exception {
         return mockMvc.perform(MockMvcRequestBuilders.post(path)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsBytes(request)))
+            .content(content))
             .andExpect(status().isCreated());
     }
 
     protected ResultActions put(String path, T request) throws Exception {
+        return put(path, new String(objectMapper.writeValueAsBytes(request)));
+    }
+
+    protected ResultActions put(String path, String content) throws Exception {
         return mockMvc.perform(MockMvcRequestBuilders.put(path)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsBytes(request)))
+            .content(content))
             .andExpect(status().isOk());
     }
 

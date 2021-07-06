@@ -1,19 +1,48 @@
 package kitchenpos.table.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+@Entity
 public class OrderTable {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long tableGroupId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
+    private TableGroup tableGroup;
+
+    @Column(nullable = false)
     private int numberOfGuests;
+
+    @Column(nullable = false)
     private boolean empty;
 
     public OrderTable() {
+    }
+
+    public OrderTable(Long id) {
+        this.id = id;
     }
 
     public OrderTable(Long id, int numberOfGuests) {
         this.id = id;
         this.numberOfGuests = numberOfGuests;
         this.empty = true;
+    }
+
+    public OrderTable(int numberOfGuests, boolean empty) {
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
     }
 
     public OrderTable(Long id, int numberOfGuests, boolean empty) {
@@ -24,14 +53,29 @@ public class OrderTable {
 
     public OrderTable(Long id, Long tableGroupId, int numberOfGuests) {
         this.id = id;
-        this.tableGroupId = tableGroupId;
+        if (tableGroupId != null) {
+            this.tableGroup = new TableGroup(tableGroupId);
+        }
         this.numberOfGuests = numberOfGuests;
         this.empty = true;
     }
 
-    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, Long tableGroupId, Integer numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroupId = tableGroupId;
+        this.tableGroup = new TableGroup(tableGroupId);
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
+
+    public OrderTable(TableGroup tableGroup, Integer numberOfGuests, boolean empty) {
+        this.tableGroup = tableGroup;
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
+
+    public OrderTable(Long id, TableGroup tableGroup, Integer numberOfGuests, boolean empty) {
+        this.id = id;
+        this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
@@ -40,31 +84,31 @@ public class OrderTable {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public Long getTableGroupId() {
-        return tableGroupId;
-    }
-
-    public void setTableGroupId(final Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
+    public TableGroup getTableGroup() {
+        return tableGroup;
     }
 
     public int getNumberOfGuests() {
         return numberOfGuests;
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
-    }
-
     public boolean isEmpty() {
         return empty;
     }
 
-    public void setEmpty(final boolean empty) {
+    public void ungroup() {
+        this.tableGroup = null;
+    }
+
+    public void changeEmpty(boolean empty) {
         this.empty = empty;
+    }
+
+    public void changeNumberOfGuests(int numberOfGuests) {
+        this.numberOfGuests = numberOfGuests;
+    }
+
+    public void toTableGroup(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
     }
 }

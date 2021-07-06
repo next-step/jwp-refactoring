@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import kitchenpos.menu.dao.MenuGroupDao;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.application.MenuGroupService;
+import kitchenpos.menu.dto.MenuGroupRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,7 +35,7 @@ public class MenuGroupServiceTest {
         given(menuGroupDao.save(any())).willReturn(한식);
 
         // When
-        menuGroupService.create(한식);
+        menuGroupService.create(MenuGroupRequest.of(한식));
 
         // Then
         verify(menuGroupDao, times(1)).save(any());

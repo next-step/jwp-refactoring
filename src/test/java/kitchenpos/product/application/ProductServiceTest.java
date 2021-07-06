@@ -13,7 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import kitchenpos.product.dao.ProductDao;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.application.ProductService;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,7 +39,7 @@ public class ProductServiceTest {
         given(productDao.save(any())).willReturn(피자);
 
         // When
-        productService.create(피자);
+        productService.create(ProductRequest.of(피자));
 
         // Then
         verify(productDao, times(1)).save(any());
@@ -48,7 +49,7 @@ public class ProductServiceTest {
     @Test
     void create_Fail_01() {
         // Given
-        Product 햄버거 = new Product(1L, "햄버거", null);
+        ProductRequest 햄버거 = new ProductRequest("햄버거", null);
 
         // When & Then
         assertThatThrownBy(() -> productService.create(햄버거))
@@ -60,7 +61,7 @@ public class ProductServiceTest {
     @Test
     void create_Fail_02() {
         // Given
-        Product 햄버거 = new Product(1L, "햄버거", new BigDecimal(-1));
+        ProductRequest 햄버거 = new ProductRequest("햄버거", new BigDecimal(-1));
 
         // When & Then
         assertThatThrownBy(() -> productService.create(햄버거))
@@ -74,10 +75,11 @@ public class ProductServiceTest {
         // Given
         List<Product> products = new ArrayList<>();
         products.add(new Product(1L, "피자", new BigDecimal(20000)));
+        products.add(new Product(2L, "햄버거", new BigDecimal(10000)));
         given(productDao.findAll()).willReturn(products);
 
         // When & Then
-        assertThat(productService.list()).hasSize(1);
+        assertThat(productService.list()).hasSize(2);
         verify(productDao, times(1)).findAll();
     }
 

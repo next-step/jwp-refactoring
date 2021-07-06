@@ -15,12 +15,13 @@ import java.util.Optional;
 import kitchenpos.menu.dao.MenuDao;
 import kitchenpos.menu.dao.MenuGroupDao;
 import kitchenpos.menu.dao.MenuProductDao;
-import kitchenpos.product.dao.ProductDao;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.product.dao.ProductDao;
 import kitchenpos.product.domain.Product;
-import kitchenpos.menu.application.MenuService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,9 +41,9 @@ public class MenuServiceTest {
     public static final Product 감자튀김 = new Product(2L, "감자튀김", 감자튀김_가격);
     public static final Product 콜라 = new Product(3L, "콜라", 콜라_가격);
     public static final Long 치즈버거세트_메뉴ID = 1L;
-    public static final MenuProduct 치즈버거세트_치즈버거 = new MenuProduct(1L, 치즈버거세트_메뉴ID, 치즈버거.getId(), 1);
-    public static final MenuProduct 치즈버거세트_감자튀김 = new MenuProduct(2L, 치즈버거세트_메뉴ID, 감자튀김.getId(), 1);
-    public static final MenuProduct 치즈버거세트_콜라 = new MenuProduct(3L, 치즈버거세트_메뉴ID, 콜라.getId(), 1);
+    public static final MenuProduct 치즈버거세트_치즈버거 = new MenuProduct(치즈버거세트_메뉴ID, 치즈버거.getId(), 1L);
+    public static final MenuProduct 치즈버거세트_감자튀김 = new MenuProduct(치즈버거세트_메뉴ID, 감자튀김.getId(), 1L);
+    public static final MenuProduct 치즈버거세트_콜라 = new MenuProduct(치즈버거세트_메뉴ID, 콜라.getId(), 1L);
     public static final MenuGroup 패스트푸드 = new MenuGroup(1L, "패스트푸드");
 
     @Mock
@@ -60,35 +61,33 @@ public class MenuServiceTest {
     @Test
     void createSuccess() {
         // Given
-        Menu 치즈버거세트 = new Menu(치즈버거세트_메뉴ID, "치즈버거세트", 치즈버거세트_가격, 패스트푸드.getId(), Arrays.asList(치즈버거세트_치즈버거, 치즈버거세트_감자튀김, 치즈버거세트_콜라));
-        given(menuDao.save(any())).willReturn(치즈버거세트);
+        Menu 치즈버거세트 = new Menu("치즈버거세트", 치즈버거세트_가격, 패스트푸드.getId(), Arrays.asList(치즈버거세트_치즈버거, 치즈버거세트_감자튀김, 치즈버거세트_콜라));
+        MenuRequest 메뉴 = MenuRequest.of(치즈버거세트);
         given(menuGroupDao.existsById(any())).willReturn(true);
         given(productDao.findById(치즈버거.getId())).willReturn(Optional.of(치즈버거));
         given(productDao.findById(감자튀김.getId())).willReturn(Optional.of(감자튀김));
         given(productDao.findById(콜라.getId())).willReturn(Optional.of(콜라));
-        given(menuProductDao.save(치즈버거세트_치즈버거)).willReturn(치즈버거세트_치즈버거);
-        given(menuProductDao.save(치즈버거세트_감자튀김)).willReturn(치즈버거세트_감자튀김);
-        given(menuProductDao.save(치즈버거세트_콜라)).willReturn(치즈버거세트_콜라);
+        given(menuDao.save(any())).willReturn(치즈버거세트);
 
         // When
-        menuService.create(치즈버거세트);
+        menuService.create(메뉴);
 
         // Then
-        verify(menuDao, times(1)).save(any());
         verify(menuGroupDao, times(1)).existsById(any());
         verify(productDao, times(3)).findById(any());
-        verify(menuProductDao, times(3)).save(any());
+        verify(menuDao, times(1)).save(any());
     }
 
     @DisplayName("메뉴는 존재하는 메뉴그룹에 포함되어야 한다.")
     @Test
     void create_Fail_01() {
         // Given
-        Menu 치즈버거세트 = new Menu(치즈버거세트_메뉴ID, "치즈버거세트", 치즈버거세트_가격, 패스트푸드.getId(), Arrays.asList(치즈버거세트_치즈버거, 치즈버거세트_감자튀김, 치즈버거세트_콜라));
+        Menu 치즈버거세트 = new Menu(1L, "치즈버거세트", 치즈버거세트_가격, 패스트푸드, Arrays.asList(치즈버거세트_치즈버거, 치즈버거세트_감자튀김, 치즈버거세트_콜라));
+        MenuRequest 메뉴 = MenuRequest.of(치즈버거세트);
         given(menuGroupDao.existsById(any())).willReturn(false);
 
         // When & Then
-        assertThatThrownBy(() -> menuService.create(치즈버거세트))
+        assertThatThrownBy(() -> menuService.create(메뉴))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -96,8 +95,8 @@ public class MenuServiceTest {
     @Test
     void create_Fail_02() {
         // Given
-        List<MenuProduct> 빈_메뉴_상품_목록 = new ArrayList<>();
-        Menu 메뉴상품이_없는_치즈버거세트 = new Menu(치즈버거세트_메뉴ID, "치즈버거세트", 치즈버거세트_가격, 패스트푸드.getId(), 빈_메뉴_상품_목록);
+        List<MenuProductRequest> 빈_메뉴_상품_목록 = new ArrayList<>();
+        MenuRequest 메뉴상품이_없는_치즈버거세트 = new MenuRequest("치즈버거세트", 치즈버거세트_가격, 패스트푸드.getId(), 빈_메뉴_상품_목록);
 
         // When & Then
         assertThatThrownBy(() -> menuService.create(메뉴상품이_없는_치즈버거세트))
@@ -108,10 +107,11 @@ public class MenuServiceTest {
     @Test
     void create_Fail_03() {
         // Given
-        Menu 가격이없는_치즈버거세트 = new Menu(치즈버거세트_메뉴ID, "치즈버거세트", null, 패스트푸드.getId(), Arrays.asList(치즈버거세트_치즈버거, 치즈버거세트_감자튀김, 치즈버거세트_콜라));
+        Menu 가격이없는_치즈버거세트 = new Menu(1L, "치즈버거세트", null, 패스트푸드, Arrays.asList(치즈버거세트_치즈버거, 치즈버거세트_감자튀김, 치즈버거세트_콜라));
+        MenuRequest 메뉴 = MenuRequest.of(가격이없는_치즈버거세트);
 
         // When & Then
-        assertThatThrownBy(() -> menuService.create(가격이없는_치즈버거세트))
+        assertThatThrownBy(() -> menuService.create(메뉴))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -119,10 +119,11 @@ public class MenuServiceTest {
     @Test
     void create_Fail_04() {
         // Given
-        Menu 가격이_음수인_치즈버거세트 = new Menu(치즈버거세트_메뉴ID, "치즈버거세트", new BigDecimal(-1), 패스트푸드.getId(), Arrays.asList(치즈버거세트_치즈버거, 치즈버거세트_감자튀김, 치즈버거세트_콜라));
+        Menu 가격이_음수인_치즈버거세트 = new Menu(1L, "치즈버거세트", new BigDecimal(-1), 패스트푸드, Arrays.asList(치즈버거세트_치즈버거, 치즈버거세트_감자튀김, 치즈버거세트_콜라));
+        MenuRequest 메뉴 = MenuRequest.of(가격이_음수인_치즈버거세트);
 
         // When & Then
-        assertThatThrownBy(() -> menuService.create(가격이_음수인_치즈버거세트))
+        assertThatThrownBy(() -> menuService.create(메뉴))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -132,10 +133,11 @@ public class MenuServiceTest {
         // Given
         BigDecimal 치즈버거상품들의_가격합 = 치즈버거_가격.add(감자튀김_가격).add(콜라_가격);
         BigDecimal 치즈버거상품들의_가격합을_초과한_가격 = 치즈버거상품들의_가격합.add(new BigDecimal(1));
-        Menu 가격을_초과한_치즈버거세트 = new Menu(치즈버거세트_메뉴ID, "치즈버거세트", 치즈버거상품들의_가격합을_초과한_가격, 패스트푸드.getId(), Arrays.asList(치즈버거세트_치즈버거, 치즈버거세트_감자튀김, 치즈버거세트_콜라));
+        Menu 가격을_초과한_치즈버거세트 = new Menu("치즈버거세트", 치즈버거상품들의_가격합을_초과한_가격, 패스트푸드.getId(), Arrays.asList(치즈버거세트_치즈버거, 치즈버거세트_감자튀김, 치즈버거세트_콜라));
+        MenuRequest 메뉴 = MenuRequest.of(가격을_초과한_치즈버거세트);
 
         // When & Then
-        assertThatThrownBy(() -> menuService.create(가격을_초과한_치즈버거세트))
+        assertThatThrownBy(() -> menuService.create(메뉴))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -143,15 +145,13 @@ public class MenuServiceTest {
     @Test
     void list() {
         // Given
-        Menu 치즈버거세트 = new Menu(치즈버거세트_메뉴ID, "치즈버거세트", 치즈버거세트_가격, 패스트푸드.getId(), Arrays.asList(치즈버거세트_치즈버거, 치즈버거세트_감자튀김, 치즈버거세트_콜라));
-        List<Menu> menus = new ArrayList<>();
-        menus.add(치즈버거세트);
+        Menu 치즈버거세트 = new Menu(1L, "치즈버거세트", 치즈버거세트_가격, 패스트푸드, Arrays.asList(치즈버거세트_치즈버거, 치즈버거세트_감자튀김, 치즈버거세트_콜라));
+        List<Menu> menus = new ArrayList<>(Arrays.asList(치즈버거세트));
         given(menuDao.findAll()).willReturn(menus);
-        given(menuProductDao.findAllByMenuId(any())).willReturn(new ArrayList<>(Arrays.asList(치즈버거세트_치즈버거, 치즈버거세트_감자튀김)));
 
         // When & Then
         assertThat(menuService.list()).hasSize(1);
-        verify(menuProductDao, times(1)).findAllByMenuId(any());
+        verify(menuDao, times(1)).findAll();
     }
 
 }

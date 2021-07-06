@@ -3,13 +3,20 @@ package kitchenpos.table.ui;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import kitchenpos.RestControllerTest;
 import kitchenpos.table.application.TableGroupService;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupResponse;
 import kitchenpos.table.ui.TableGroupRestController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,32 +25,35 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 @DisplayName("단체 지정 API")
 @WebMvcTest(TableGroupRestController.class)
-public class TableGroupRestControllerTest extends RestControllerTest<TableGroup> {
+public class TableGroupRestControllerTest extends RestControllerTest<TableGroupRequest> {
 
     private static final String BASE_URL = "/api/table-groups";
 
     @MockBean
     private TableGroupService tableGroupService;
 
-    private TableGroup 단체지정 = new TableGroup(1L, LocalDateTime.now(), new ArrayList<>());
-
     @DisplayName("단체 지정을 등록한다.")
     @Test
     void create() throws Exception {
         // Given
-        given(tableGroupService.create(any())).willReturn(단체지정);
+        OrderTable 주문테이블1 = new OrderTable(1L, 2, false);
+        OrderTable 주문테이블2 = new OrderTable(1L, 2, false);
+        TableGroup 단체지정 = new TableGroup(1L, new ArrayList<>(Arrays.asList(주문테이블1, 주문테이블2)));
+        given(tableGroupService.create(any())).willReturn(TableGroupResponse.of(단체지정));
 
         // When & Then
-        String responseBody = objectMapper.writeValueAsString(단체지정);
-        post(BASE_URL, 단체지정)
-            .andExpect(content().string(responseBody));
+        post(BASE_URL, TableGroupRequest.of(단체지정))
+            .andExpect(jsonPath("$.orderTables[0].id").value(단체지정.getId()));
     }
 
     @DisplayName("단체 지정을 해제한다.")
     @Test
     void ungroup() throws Exception {
+        // Given
+        TableGroupRequest 단체지정_요청 = new TableGroupRequest(1L);
+
         // When & Then
-        delete(BASE_URL + "/" + 단체지정.getId())
+        delete(BASE_URL + "/" + 단체지정_요청.getId())
             .andExpect(status().isNoContent());
     }
 
