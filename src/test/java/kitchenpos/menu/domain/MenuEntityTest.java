@@ -9,6 +9,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -50,7 +51,7 @@ class MenuEntityTest {
     //then
     assertAll(
         () -> assertThat(menuEntity.getName()).isEqualTo(menuName),
-        () -> assertThat(menuEntity.getPrice()).isEqualTo(Price.from(menuPrice)),
+        () -> assertThat(menuEntity.getPrice()).isEqualTo(BigDecimal.valueOf(menuPrice)),
         () -> assertThat(menuEntity.getMenuGroup()).isEqualTo(menuGroup),
         () -> assertThat(menuEntity.getMenuProducts()).contains(menuProductEntity1, menuProductEntity2)
     );
