@@ -1,7 +1,9 @@
 package kitchenpos.product.service;
 
-import kitchenpos.application.ProductService;
-import kitchenpos.domain.Product;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +27,10 @@ public class ProductServiceTest {
         //given
         String name = "치킨";
         BigDecimal price = new BigDecimal(20000);
-        Product product = new Product(name, price);
+        ProductRequest product = new ProductRequest(name, price);
 
         //when
-        Product createProduct = productService.create(product);
+        ProductResponse createProduct = productService.create(product);
 
         //then
         assertThat(createProduct.getName()).isEqualTo(name);
@@ -42,7 +44,7 @@ public class ProductServiceTest {
         //given
         String name = "피자";
         BigDecimal price = new BigDecimal(-10000);
-        Product product = new Product( name, price);
+        ProductRequest product = new ProductRequest( name, price);
 
         //when
         //then
@@ -53,10 +55,10 @@ public class ProductServiceTest {
     @DisplayName("상품 리스트를 가져온다")
     public void selectProductList() {
         //when
-        List<Product> products = productService.list();
+        List<ProductResponse> products = productService.list();
 
         //then
-        for (Product product : products) {
+        for (ProductResponse product : products) {
             assertThat(product.getId()).isNotNull();
             assertThat(product.getName()).isNotNull();
             assertThat(product.getPrice()).isNotNull();
