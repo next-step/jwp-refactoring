@@ -1,6 +1,8 @@
 package kitchenpos.menu.dto;
 
+import kitchenpos.common.Price;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 
 import java.math.BigDecimal;
@@ -11,26 +13,26 @@ public class MenuResponse {
 
     private Long id;
     private String name;
-    private BigDecimal price;
-    private Long menuGroupId;
+    private Price price;
+    private MenuGroup menuGroup;
     private List<MenuProductResponse> menuProducts;
 
     private MenuResponse(Long id) {
         this.id = id;
     }
 
-    public MenuResponse(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    public MenuResponse(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = name;
-        this.price = price;
-        this.menuGroupId = menuGroupId;
+        this.price = new Price(price);
+        this.menuGroup = menuGroup;
         this.menuProducts = menuProducts.stream()
                 .map(MenuProductResponse::of)
                 .collect(Collectors.toList());
     }
 
     public static MenuResponse of(Menu menu) {
-        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(), menu.getMenuGroupId(), menu.getMenuProducts());
+        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(), menu.getMenuGroup(), menu.getMenuProducts());
     }
 
     public Long getId() {
@@ -50,19 +52,19 @@ public class MenuResponse {
     }
 
     public BigDecimal getPrice() {
-        return price;
+        return price.get();
     }
 
     public void setPrice(BigDecimal price) {
-        this.price = price;
+        this.price = new Price(price);
     }
 
-    public Long getMenuGroupId() {
-        return menuGroupId;
+    public MenuGroup getMenuGroup() {
+        return menuGroup;
     }
 
-    public void setMenuGroupId(Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
+    public void setMenuGroup(MenuGroup menuGroup) {
+        this.menuGroup = menuGroup;
     }
 
     public List<MenuProductResponse> getMenuProducts() {

@@ -1,14 +1,11 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.ProductRepository;
-import kitchenpos.menu.domain.MenuProductRepository;
-import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.product.domain.Product;
-import kitchenpos.menu.domain.MenuGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,7 +45,9 @@ public class MenuServiceTest {
 
     private MenuProductRequest menuProductRequest = new MenuProductRequest(1L, 1);
     private Product product = new Product(1L, "상품1", BigDecimal.valueOf(5000));
-    private List<MenuProductRequest> menu1MenuProducts = Arrays.asList(menuProductRequest);
+    private final List<MenuProductRequest> menu1MenuProductRequests = Arrays.asList(menuProductRequest);
+    private final MenuProduct menuProduct1 = new MenuProduct(1L, new Menu(), product, 1);
+    private final List<MenuProduct> menu1MenuProduct = Arrays.asList(menuProduct1);
 
     @BeforeEach
     void setUp() {
@@ -58,27 +57,28 @@ public class MenuServiceTest {
     @DisplayName("메뉴를 등록할 수 있다")
     @Test
     void create() {
-        MenuRequest menuRequest1 = new MenuRequest(menu1Name, menu1Price, menu1MenuGroupId, menu1MenuProducts);
+        MenuRequest menuRequest1 = new MenuRequest(menu1Name, menu1Price, menu1MenuGroupId, menu1MenuProductRequests);
+        Menu menu1 = menuRequest1.toEntityWith(MenuGroup.of(menu1MenuGroupId, "메뉴그룹1"), menu1MenuProduct);
 
-        when(menuGroupRepository.existsById(any())).thenReturn(true);
+        when(menuGroupRepository.findById(any())).thenReturn(Optional.of(MenuGroup.of(menu1MenuGroupId, "메뉴그룹1")));
         when(productRepository.findById(any())).thenReturn(Optional.of(product));
-        when(menuRepository.save(any())).thenReturn(menuRequest1.toEntity());
+        when(menuRepository.save(any())).thenReturn(menu1);
 
         MenuResponse menuResponse = menuService.create(menuRequest1);
 
         assertThat(menuResponse.getName()).isEqualTo(menuRequest1.getName());
         assertThat(menuResponse.getPrice()).isEqualTo(menuRequest1.getPrice());
-        assertThat(menuResponse.getMenuGroupId()).isEqualTo(menuRequest1.getMenuGroupId());
-//        assertThat(menuResponse.getMenuProducts()).isEqualTo(menuRequest1.getMenuProducts());
+        assertThat(menuResponse.getMenuGroup().getId()).isEqualTo(menuRequest1.getMenuGroupId());
+//        assertThat(menuResponse.getMenuProductRequests()).isEqualTo(menuRequest1.getMenuProductRequests());
     }
 
     @DisplayName("메뉴 가격은 0 이상이다.")
     @Test
     void 메뉴_가격이_올바르지_않으면_등록할_수_없다_1() {
         BigDecimal invalidPrice = BigDecimal.valueOf(-1);
-        MenuRequest menuRequest1 = new MenuRequest(menu1Name, invalidPrice, menu1MenuGroupId, menu1MenuProducts);
+        MenuRequest menuRequest1 = new MenuRequest(menu1Name, invalidPrice, menu1MenuGroupId, menu1MenuProductRequests);
 
-        when(menuGroupRepository.existsById(any())).thenReturn(true);
+        when(menuGroupRepository.findById(any())).thenReturn(Optional.of(MenuGroup.of(menu1MenuGroupId, "메뉴그룹1")));
 
         assertThatThrownBy(() -> {
             menuService.create(menuRequest1);
@@ -89,9 +89,9 @@ public class MenuServiceTest {
     @Test
     void 메뉴_가격이_올바르지_않으면_등록할_수_없다_2() {
         BigDecimal invalidPrice = null;
-        MenuRequest menuRequest1 = new MenuRequest(menu1Name, invalidPrice, menu1MenuGroupId, menu1MenuProducts);
+        MenuRequest menuRequest1 = new MenuRequest(menu1Name, invalidPrice, menu1MenuGroupId, menu1MenuProductRequests);
 
-        when(menuGroupRepository.existsById(any())).thenReturn(true);
+        when(menuGroupRepository.findById(any())).thenReturn(Optional.of(MenuGroup.of(menu1MenuGroupId, "메뉴그룹1")));
 
         assertThatThrownBy(() -> {
             menuService.create(menuRequest1);
@@ -101,11 +101,11 @@ public class MenuServiceTest {
     @DisplayName("메뉴의 가격이 메뉴 내의 메뉴상품들 총합보다 크면 등록할 수 없다.")
     @Test
     void 메뉴_가격이_올바르지_않으면_등록할_수_없다_3() {
-        MenuRequest menuRequest1 = new MenuRequest(menu1Name, menu1Price, menu1MenuGroupId, menu1MenuProducts);
+        MenuRequest menuRequest1 = new MenuRequest(menu1Name, menu1Price, menu1MenuGroupId, menu1MenuProductRequests);
 
         Product diffPriceProduct = new Product(2L, "상품2", BigDecimal.valueOf(500));
 
-        when(menuGroupRepository.existsById(any())).thenReturn(true);
+        when(menuGroupRepository.findById(any())).thenReturn(Optional.of(new MenuGroup()));
         when(productRepository.findById(any())).thenReturn(Optional.of(diffPriceProduct));
 
         assertThatThrownBy(() -> {
@@ -116,9 +116,9 @@ public class MenuServiceTest {
     @DisplayName("등록되지 않은 메뉴그릅의 메뉴는 등록할 수 없다.")
     @Test
     void 메뉴의_메뉴그룹이_올바르지_않으면_등록할_수_없다() {
-        MenuRequest menuRequest1 = new MenuRequest(menu1Name, menu1Price, menu1MenuGroupId, menu1MenuProducts);
+        MenuRequest menuRequest1 = new MenuRequest(menu1Name, menu1Price, menu1MenuGroupId, menu1MenuProductRequests);
 
-        when(menuGroupRepository.existsById(any())).thenReturn(false);
+        when(menuGroupRepository.findById(any())).thenReturn(Optional.of(MenuGroup.of(menu1MenuGroupId, "메뉴그룹1")));
 
         assertThatThrownBy(() -> {
             menuService.create(menuRequest1);
@@ -128,9 +128,9 @@ public class MenuServiceTest {
     @DisplayName("메뉴 내의 메뉴상품들 중 등록이 안된 메뉴상품이 있으면 등록할 수 없다.")
     @Test
     void 메뉴의_메뉴상품들이_올바르지_않으면_등록할_수_없다() {
-        MenuRequest menuRequest1 = new MenuRequest(menu1Name, menu1Price, menu1MenuGroupId, menu1MenuProducts);
+        MenuRequest menuRequest1 = new MenuRequest(menu1Name, menu1Price, menu1MenuGroupId, menu1MenuProductRequests);
 
-        when(menuGroupRepository.existsById(any())).thenReturn(true);
+        when(menuGroupRepository.findById(any())).thenReturn(Optional.of(MenuGroup.of(menu1MenuGroupId, "메뉴그룹1")));
 
         assertThatThrownBy(() -> {
             menuService.create(menuRequest1);
@@ -140,8 +140,8 @@ public class MenuServiceTest {
     @DisplayName("메뉴 전체를 조회할 수 있다.")
     @Test
     void listTest() {
-        MenuRequest menuRequest1 = new MenuRequest(menu1Name, menu1Price, menu1MenuGroupId, menu1MenuProducts);
-        Menu menu1 = menuRequest1.toEntity();
+        MenuRequest menuRequest1 = new MenuRequest(menu1Name, menu1Price, menu1MenuGroupId, menu1MenuProductRequests);
+        Menu menu1 = menuRequest1.toEntityWith(MenuGroup.of(menu1MenuGroupId, "메뉴그룹1"), menu1MenuProduct);
 
         when(menuRepository.findAll()).thenReturn(Arrays.asList(menu1));
 

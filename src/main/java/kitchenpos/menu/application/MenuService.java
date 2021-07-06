@@ -1,14 +1,12 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProductRepository;
+import kitchenpos.menu.domain.*;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuProductResponse;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.domain.Product;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.domain.MenuGroupRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,15 +35,20 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        validateMenuGroupId(menuRequest.getMenuGroupId());
+        MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
+                .orElseThrow(IllegalAccessError::new);
 
-        Menu menu = menuRequest.toEntity();
+        List<MenuProduct> menuProducts = menuRequest.getMenuProductRequests()
+                .stream()
+                .map(menuProductRequest -> new MenuProduct(
+                        productRepository.findById(menuProductRequest.getProductId())
+                                .orElseThrow(IllegalArgumentException::new),
+                        menuProductRequest.getQuantity()))
+                .collect(Collectors.toList());
 
-        validateMenuProductsPrice(menu);
+        Menu menu = menuRequest.toEntityWith(menuGroup, menuProducts);
 
-        final Menu savedMenu = menuRepository.save(menu);
-
-        return MenuResponse.of(savedMenu);
+        return MenuResponse.of(menuRepository.save(menu));
     }
 
     @Transactional(readOnly = true)
@@ -55,22 +58,4 @@ public class MenuService {
                 .collect(Collectors.toList());
     }
 
-    private void validateMenuGroupId(Long menuGroupId) {
-        if (!menuGroupRepository.existsById(menuGroupId)) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    private void validateMenuProductsPrice(Menu menu) {
-        final List<MenuProduct> menuProducts = menu.getMenuProducts();
-
-        BigDecimal sum = BigDecimal.ZERO;
-        for (final MenuProduct menuProduct : menuProducts) {
-            final Product product = productRepository.findById(menuProduct.getProductId())
-                    .orElseThrow(IllegalArgumentException::new);
-            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
-        }
-
-        menu.checkOverPriceComparedWith(sum);
-    }
 }

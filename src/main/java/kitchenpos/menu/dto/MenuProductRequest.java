@@ -1,6 +1,7 @@
 package kitchenpos.menu.dto;
 
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.product.domain.Product;
 
 public class MenuProductRequest {
     private Long productId;
@@ -19,7 +20,7 @@ public class MenuProductRequest {
         return quantity;
     }
 
-    public MenuProduct toEntity() {
-        return new MenuProduct(productId, quantity);
+    public MenuProduct toEntityWith(Product product) {
+        return new MenuProduct(product, quantity);
     }
 }
