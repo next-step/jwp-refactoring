@@ -25,7 +25,7 @@ public class MenuGroupService {
     @Transactional(readOnly = true)
     public List<MenuGroupResponse> list() {
         return menuGroupRepository.findAll().stream()
-                .map(menuGroup -> MenuGroupResponse.of(menuGroup))
+                .map(MenuGroupResponse::of)
                 .collect(Collectors.toList());
     }
 }
