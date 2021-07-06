@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.ProductRequest;
 import kitchenpos.dto.ProductResponse;
@@ -32,9 +33,10 @@ class ProductServiceTest {
 	@DisplayName("상품 생성 테스트")
 	@Test
 	void testCreateProduct() {
+		Price price = new Price(BigDecimal.valueOf(2000));
 		ProductRequest productRequest = new ProductRequest("상품1", BigDecimal.valueOf(2000));
-		Product product = new Product(productRequest.getName(), productRequest.getPrice());
-		Product psavedProduct = new Product(1L, "상품1", BigDecimal.valueOf(2000));
+		Product product = new Product(productRequest.getName(), new Price(productRequest.getPrice()));
+		Product psavedProduct = new Product(1L, "상품1", price);
 
 		when(productRepository.save(product)).thenReturn(psavedProduct);
 		ProductResponse actual = productService.create(productRequest);
@@ -57,7 +59,7 @@ class ProductServiceTest {
 	@Test
 	void testList() {
 		List<Product> products = new ArrayList<>();
-		BigDecimal price = BigDecimal.valueOf(2000);
+		Price price = new Price(BigDecimal.valueOf(2000));
 		products.add(new Product(1L, "상품1", price));
 		products.add(new Product(2L, "상품2", price));
 		products.add(new Product(3L, "상품3", price));

@@ -15,6 +15,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
+import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
 
 @Repository
@@ -64,6 +65,6 @@ public class JdbcTemplateProductDao implements ProductDao {
 
 	private Product toEntity(final ResultSet resultSet) throws SQLException {
 		return new Product(resultSet.getLong(KEY_COLUMN_NAME), resultSet.getString("name"),
-			resultSet.getBigDecimal("price"));
+			new Price(resultSet.getBigDecimal("price")));
 	}
 }

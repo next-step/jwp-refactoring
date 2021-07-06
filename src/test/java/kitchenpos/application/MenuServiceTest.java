@@ -24,6 +24,7 @@ import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
 
 @ExtendWith(MockitoExtension.class)
@@ -52,8 +53,8 @@ class MenuServiceTest {
 	@BeforeEach
 	void setUp() {
 		중식 = new MenuGroup(1L, "중식");
-		BigDecimal 탕수육가격 = BigDecimal.valueOf(10000);
-		BigDecimal 깐풍기가격 = BigDecimal.valueOf(12000);
+		Price 탕수육가격 = new Price(BigDecimal.valueOf(10000));
+		Price 깐풍기가격 = new Price(BigDecimal.valueOf(12000));
 		탕수육 = new Product(1L, "탕수육", 탕수육가격);
 		깐풍기 = new Product(2L, "깐풍기", 깐풍기가격);
 

@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.ProductRequest;
 import kitchenpos.dto.ProductResponse;
@@ -22,7 +23,8 @@ public class ProductService {
 
 	@Transactional
 	public ProductResponse create(final ProductRequest productRequest) {
-		Product product = new Product(productRequest.getName(), productRequest.getPrice());
+		Price price = new Price(productRequest.getPrice());
+		Product product = new Product(productRequest.getName(), price);
 		return ProductResponse.of(productRepository.save(product));
 	}
 
