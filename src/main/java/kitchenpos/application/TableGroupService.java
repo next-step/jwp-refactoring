@@ -1,6 +1,8 @@
 package kitchenpos.application;
 
 import kitchenpos.exception.InvalidEntityException;
+import kitchenpos.exception.InvalidOrderStatusException;
+import kitchenpos.exception.NotMatchOrderTableException;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import kitchenpos.repository.TableGroupRepository;
@@ -8,6 +10,7 @@ import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.order.OrderTable;
 import kitchenpos.domain.order.TableGroup;
 import kitchenpos.dto.order.TableGroupRequest;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,7 +47,8 @@ public class TableGroupService {
         final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
 
         if (orderTables.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException("not same as orderTable size");
+            throw new NotMatchOrderTableException("orderTable size: " + orderTables.size() +
+                    "savedOrderTables size: " + savedOrderTables.size());
         }
 
         TableGroup tableGroup = TableGroup.of(orderTables);
@@ -62,7 +66,7 @@ public class TableGroupService {
                 .collect(Collectors.toList());
 
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException("Invalid OrderStatus");
+            throw new InvalidOrderStatusException("orderTableIds: "+ Strings.join(orderTableIds, ','));
         }
 
         for (final OrderTable orderTable : orderTables) {

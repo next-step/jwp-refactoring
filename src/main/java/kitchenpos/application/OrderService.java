@@ -1,14 +1,15 @@
 package kitchenpos.application;
 
-import kitchenpos.exception.InvalidEntityException;
-import kitchenpos.repository.MenuRepository;
-import kitchenpos.repository.OrderRepository;
-import kitchenpos.repository.OrderTableRepository;
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderLineItem;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.order.OrderTable;
 import kitchenpos.dto.order.OrderRequest;
+import kitchenpos.exception.InvalidEntityException;
+import kitchenpos.exception.InvalidOrderLineItemsException;
+import kitchenpos.repository.MenuRepository;
+import kitchenpos.repository.OrderRepository;
+import kitchenpos.repository.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,8 +55,11 @@ public class OrderService {
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
 
-        if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
-            throw new IllegalArgumentException("Not Same as orderLineItems");
+        int size = orderLineItems.size();
+        long savedOrderLineItemsCount = menuRepository.countByIdIn(menuIds);
+        if (size != savedOrderLineItemsCount) {
+            throw new InvalidOrderLineItemsException("orderLineItems size: " + size +
+                    "saved orderLineItems size: " + savedOrderLineItemsCount);
         }
 
         return orderRepository.save(order);
@@ -68,7 +72,7 @@ public class OrderService {
     @Transactional
     public Order changeOrderStatus(final Long orderId, final OrderStatus orderStatus) {
         final Order savedOrder = orderRepository.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new InvalidEntityException("Not found orderId - " + orderId));
 
         savedOrder.changeStatus(orderStatus);
 

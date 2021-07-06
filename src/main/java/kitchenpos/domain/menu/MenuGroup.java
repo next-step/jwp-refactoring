@@ -34,4 +34,12 @@ public class MenuGroup {
     public String getName() {
         return name;
     }
+
+    @Override
+    public String toString() {
+        return "MenuGroup{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

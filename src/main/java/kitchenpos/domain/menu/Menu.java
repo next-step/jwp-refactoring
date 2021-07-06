@@ -61,10 +61,6 @@ public class Menu {
         this.price = price;
     }
 
-    public void changePrice(BigDecimal price) {
-        setPrice(price);
-    }
-
     public MenuGroup getMenuGroup() {
         return menuGroup;
     }

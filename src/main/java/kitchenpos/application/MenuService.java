@@ -5,6 +5,8 @@ import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menu.MenuProduct;
 import kitchenpos.dto.menu.MenuProductRequest;
 import kitchenpos.dto.menu.MenuRequest;
+import kitchenpos.exception.InvalidPriceException;
+import kitchenpos.exception.MenuGroupAlreadyExistsException;
 import kitchenpos.repository.MenuRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +36,7 @@ public class MenuService {
         MenuGroup findMenuGroup = menuGroupService.findById(menuRequest.getMenuGroupId());
 
         if (menuGroupService.isExists(findMenuGroup)) {
-            throw new IllegalArgumentException("existed menuGroup");
+            throw new MenuGroupAlreadyExistsException("findMenuGroup: " + findMenuGroup);
         }
 
         Menu menu = Menu.of(menuRequest.getName(), menuRequest.getPrice(), findMenuGroup, new ArrayList<>());
@@ -47,7 +49,7 @@ public class MenuService {
                 .forEach(menu::addMenuProducts);
 
         if (!menu.isReasonablePrice()) {
-            throw new IllegalArgumentException("Total Price is higher then expected MenuProduct Price");
+            throw new InvalidPriceException("Total Price is higher then expected MenuProduct Price");
         }
 
         return menuRepository.save(menu);

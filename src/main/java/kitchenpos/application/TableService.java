@@ -1,6 +1,8 @@
 package kitchenpos.application;
 
 import kitchenpos.exception.InvalidEntityException;
+import kitchenpos.exception.InvalidOrderStatusException;
+import kitchenpos.exception.InvalidOrderTableException;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import kitchenpos.domain.order.OrderStatus;
@@ -44,7 +46,7 @@ public class TableService {
 
         if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
                 orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException("Invalid orderTable Status");
+            throw new InvalidOrderStatusException("Invalid orderTable Status");
         }
 
         savedOrderTable.changeEmptyTable();
@@ -59,7 +61,7 @@ public class TableService {
                 .orElseThrow(() -> new InvalidEntityException("Not found OrderTableId " + orderTableId));
 
         if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException("orderTable is empty " + savedOrderTable.getId());
+            throw new InvalidOrderTableException("orderTable id " + savedOrderTable.getId());
         }
 
         savedOrderTable.changeNumberOfGuest(numberOfGuests);

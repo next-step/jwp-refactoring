@@ -91,7 +91,7 @@ TODO
 
 ---
 피드백 리뷰 결과
-- [ ] Custom Exception 만들기
+- [x] Custom Exception 만들기
 - [ ] setter 제거하기
 - [ ] base Entity
 - [ ] Price 컬럼 원시값 포장 객체 생성
