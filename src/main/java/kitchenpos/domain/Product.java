@@ -10,6 +10,11 @@ public class Product {
     public Product() {
     }
 
+    public Product(final String name, final BigDecimal price) {
+        this.name = name;
+        this.price = price;
+    }
+
     public Long getId() {
         return id;
     }
