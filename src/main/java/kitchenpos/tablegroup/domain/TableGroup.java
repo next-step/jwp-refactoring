@@ -20,6 +20,7 @@ import kitchenpos.tablegroup.exception.NotAbaliableOrderTableException;
 
 @Entity
 public class TableGroup {
+    public static final TableGroup EMPTY = new TableGroup();
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +31,7 @@ public class TableGroup {
     @Embedded
     private OrderTables orderTables;
 
-    public TableGroup() {}
+    protected TableGroup() {}
 
     public TableGroup(Long id, LocalDateTime localDateTime, OrderTables orderTables) {
         this.id = id;

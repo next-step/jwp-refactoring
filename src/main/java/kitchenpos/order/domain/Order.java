@@ -23,8 +23,8 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.exception.CompletedOrderException;
-import kitchenpos.order.exception.NotAvaliableTableException;
 import kitchenpos.order.exception.NoSuchMemuListException;
+import kitchenpos.order.exception.NotAvaliableTableException;
 import kitchenpos.product.constant.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 
@@ -48,7 +48,7 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderLineItem> orderLineItems;
 
-    public Order() {}
+    protected Order() {}
 
     public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
             List<OrderLineItem> orderLineItems) {
@@ -126,7 +126,7 @@ public class Order {
         return menuList.stream()
             .filter(menu -> menu.getId().equals(orderLineItemRequest.getMenuId()))
             .findFirst()
-            .orElse(new Menu());
+            .orElse(Menu.EMPTY);
     }
 
     public void updateStatus(OrderRequest orderRequest) {

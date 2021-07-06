@@ -27,7 +27,7 @@ public class MenuProduct {
 
     private Long quantity;
 
-    public MenuProduct() {}
+    protected MenuProduct() {}
 
     public MenuProduct(Product product, Long quantity) {
         this(null, null, product, quantity);

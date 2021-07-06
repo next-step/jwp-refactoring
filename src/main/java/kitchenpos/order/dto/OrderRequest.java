@@ -14,7 +14,7 @@ public class OrderRequest {
     private OrderStatus orderStatus;
     private List<OrderLineItemRequest> orderLineItems;
 
-    public OrderRequest() {}
+    protected OrderRequest() {}
 
     public OrderRequest(Long orderTableId, OrderStatus orderStatus, List<OrderLineItemRequest> orderLineItems) {
         this.orderTableId = orderTableId;

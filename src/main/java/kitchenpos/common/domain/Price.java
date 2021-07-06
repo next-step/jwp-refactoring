@@ -12,7 +12,7 @@ public class Price {
     @Column
     private BigDecimal value;
 
-    public Price() {}
+    protected Price() {}
 
     private Price(BigDecimal value) {
         validation(value);

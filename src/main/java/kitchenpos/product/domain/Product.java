@@ -26,7 +26,7 @@ public class Product {
     @AttributeOverride(name = "value", column = @Column(name = "price"))
     private Price price;
 
-    public Product() {}
+    protected Product() {}
 
     public Product(String name, BigDecimal price) {
         this(null, name, price);

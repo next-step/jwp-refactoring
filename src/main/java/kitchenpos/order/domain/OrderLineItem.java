@@ -29,7 +29,7 @@ public class OrderLineItem {
 
     private long quantity;
 
-    public OrderLineItem() {}
+    protected OrderLineItem() {}
 
     public OrderLineItem(Long seq, Order order, Menu menu, long quantity) {
         this.seq = seq;

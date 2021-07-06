@@ -15,7 +15,7 @@ public class MenuProducts {
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<MenuProduct> menuProductList;
 
-    public MenuProducts() {
+    protected MenuProducts() {
         this.menuProductList = new ArrayList<>();
     }
 
