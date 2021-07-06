@@ -1,7 +1,8 @@
 package kitchenpos.table.controller;
 
 import kitchenpos.common.ControllerTest;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.OrderTableRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -18,11 +19,11 @@ public class TableControllerTest extends ControllerTest {
     @DisplayName("주문 테이블을 생성 한다")
     public void createOrderTable() throws Exception {
         // given
-        OrderTable orderTable = new OrderTable(0, false);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(0, false);
 
         // when
         // then
-        테이블_생성_요청(orderTable)
+        테이블_생성_요청(orderTableRequest)
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").exists())
                 .andExpect(jsonPath("numberOfGuests").value(0))
@@ -47,11 +48,11 @@ public class TableControllerTest extends ControllerTest {
     @DisplayName("주문 테이블 상태를 빈 테이블로 변경 한다")
     public void modifyOrderTableEmpty() throws Exception {
         // given
-        OrderTable orderTable = new OrderTable(0, true);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(0, true);
 
         // when
         // then
-        테이블_빈_테이블로_변경_요청(orderTable)
+        테이블_빈_테이블로_변경_요청(orderTableRequest)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("id").exists())
                 .andExpect(jsonPath("numberOfGuests").value(0))
@@ -63,11 +64,11 @@ public class TableControllerTest extends ControllerTest {
     @DisplayName("주문 테이블 손님 수를 변경 한다")
     public void modifyOrderTableGuests() throws Exception {
         // given
-        OrderTable orderTable = new OrderTable(3, false);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(3, false);
 
         // when
         // then
-        테이블_손님_수_변경_요청(orderTable)
+        테이블_손님_수_변경_요청(orderTableRequest)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("id").exists())
                 .andExpect(jsonPath("numberOfGuests").value(3))
@@ -76,10 +77,10 @@ public class TableControllerTest extends ControllerTest {
     }
 
 
-    private ResultActions 테이블_생성_요청(OrderTable orderTable) throws Exception {
+    private ResultActions 테이블_생성_요청(OrderTableRequest orderTableRequest) throws Exception {
         return mockMvc.perform(post("/api/tables")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(orderTable)))
+                .content(objectMapper.writeValueAsString(orderTableRequest)))
                 .andDo(print());
     }
 
@@ -89,17 +90,17 @@ public class TableControllerTest extends ControllerTest {
                 .andDo(print());
     }
 
-    private ResultActions 테이블_빈_테이블로_변경_요청(OrderTable orderTable) throws Exception {
+    private ResultActions 테이블_빈_테이블로_변경_요청(OrderTableRequest orderTableRequest) throws Exception {
         return mockMvc.perform(put("/api/tables/{orderTableId}/empty", 4L)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(orderTable)))
+                .content(objectMapper.writeValueAsString(orderTableRequest)))
                 .andDo(print());
     }
 
-    private ResultActions 테이블_손님_수_변경_요청(OrderTable orderTable) throws Exception {
+    private ResultActions 테이블_손님_수_변경_요청(OrderTableRequest orderTableRequest) throws Exception {
         return mockMvc.perform(put("/api/tables/{orderTableId}/number-of-guests", 2L)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(orderTable)))
+                .content(objectMapper.writeValueAsString(orderTableRequest)))
                 .andDo(print());
     }
 

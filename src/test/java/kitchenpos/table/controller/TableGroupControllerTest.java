@@ -1,8 +1,10 @@
 package kitchenpos.table.controller;
 
 import kitchenpos.common.ControllerTest;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.TableGroupRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class TableGroupControllerTest extends ControllerTest {
 
-    private List<OrderTable> orderTables;
+    private List<OrderTableRequest> orderTables;
 
     @BeforeEach
     public void setup() {
@@ -35,13 +37,13 @@ public class TableGroupControllerTest extends ControllerTest {
     @DisplayName("단체를 지정 한다")
     public void createOrderTableGroup() throws Exception {
         // given
-        orderTables.add(new OrderTable(5L, 0, false));
-        orderTables.add(new OrderTable(6L, 0, false));
-        TableGroup tableGroup = new TableGroup(LocalDateTime.now(), orderTables);
+        orderTables.add(new OrderTableRequest(5L, 0, false));
+        orderTables.add(new OrderTableRequest(6L, 0, false));
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(LocalDateTime.now(), orderTables);
 
         // when
         // then
-        단체_지정_요청(tableGroup)
+        단체_지정_요청(tableGroupRequest)
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").exists())
                 .andExpect(jsonPath("$.orderTables", hasSize(2)));
@@ -52,8 +54,8 @@ public class TableGroupControllerTest extends ControllerTest {
     @DisplayName("단체 지정 실패 - 주문 테이블이 하나 일 경우")
     public void createOrderTableGroupFailByOneOrderTable() {
         // given
-        orderTables.add(new OrderTable(5L, 0, true));
-        TableGroup tableGroup = new TableGroup(LocalDateTime.now(), orderTables);
+        orderTables.add(new OrderTableRequest(5L, 0, true));
+        TableGroupRequest tableGroup = new TableGroupRequest(LocalDateTime.now(), orderTables);
 
         // when
         // then
@@ -64,22 +66,22 @@ public class TableGroupControllerTest extends ControllerTest {
     @DisplayName("단체 지정 실패 - 주문 테이블이 empty가 아닐 경우")
     public void createOrderTableGroupFailByOnderTableIsNotEmpty() {
         // given
-        orderTables.add(new OrderTable(3L, 0, false));
-        orderTables.add(new OrderTable(6L, 0, false));
-        TableGroup tableGroup = new TableGroup(LocalDateTime.now(), orderTables);
+        orderTables.add(new OrderTableRequest(3L, 0, false));
+        orderTables.add(new OrderTableRequest(6L, 0, false));
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(LocalDateTime.now(), orderTables);
 
         // when
         // then
-        assertThrows(NestedServletException.class, () -> 단체_지정_요청(tableGroup));
+        assertThrows(NestedServletException.class, () -> 단체_지정_요청(tableGroupRequest));
     }
 
     @Test
     @DisplayName("단체 지정 실패 - 이미 단체 지정이 된 테이블")
     public void createOrderTableGroupFailByAlreadyExistsTableGroup() throws Exception {
         // given
-        orderTables.add(new OrderTable(9L, 0, false));
-        orderTables.add(new OrderTable(10L, 0, false));
-        TableGroup tableGroup = new TableGroup(LocalDateTime.now(), orderTables);
+        orderTables.add(new OrderTableRequest(9L, 0, false));
+        orderTables.add(new OrderTableRequest(10L, 0, false));
+        TableGroupRequest tableGroup = new TableGroupRequest(LocalDateTime.now(), orderTables);
         단체_지정_요청(tableGroup);
 
         // when
@@ -91,9 +93,9 @@ public class TableGroupControllerTest extends ControllerTest {
     @DisplayName("단체 지정 실패 - 기존 데이터베이스에 존재하지 테이블을 포함하여 단체 지정 할 경우")
     public void createOrderTableGroupFailByNotExistsTable() {
         // given
-        orderTables.add(new OrderTable(10L, 0, false));
-        orderTables.add(new OrderTable(11L, 0, false));
-        TableGroup tableGroup = new TableGroup(LocalDateTime.now(), orderTables);
+        orderTables.add(new OrderTableRequest(10L, 0, false));
+        orderTables.add(new OrderTableRequest(11L, 0, false));
+        TableGroupRequest tableGroup = new TableGroupRequest(LocalDateTime.now(), orderTables);
 
         // when
         // then
@@ -104,9 +106,9 @@ public class TableGroupControllerTest extends ControllerTest {
     @DisplayName("단체 지정을 해제 한다")
     public void deleteOrderTableGroup() throws Exception {
         // given
-        orderTables.add(new OrderTable(7L, 0, false));
-        orderTables.add(new OrderTable(8L, 0, false));
-        단체_지정_요청(new TableGroup(LocalDateTime.now(), orderTables));
+        orderTables.add(new OrderTableRequest(7L, 0, false));
+        orderTables.add(new OrderTableRequest(8L, 0, false));
+        단체_지정_요청(new TableGroupRequest(LocalDateTime.now(), orderTables));
 
         // when
         // then
@@ -114,10 +116,10 @@ public class TableGroupControllerTest extends ControllerTest {
                 .andExpect(status().isNoContent());
     }
 
-    private ResultActions 단체_지정_요청(TableGroup tableGroup) throws Exception {
+    private ResultActions 단체_지정_요청(TableGroupRequest tableGroupRequest) throws Exception {
         return mockMvc.perform(post("/api/table-groups")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(tableGroup)))
+                .content(objectMapper.writeValueAsString(tableGroupRequest)))
                 .andDo(print());
     }
 
