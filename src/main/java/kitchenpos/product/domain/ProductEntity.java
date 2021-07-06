@@ -2,6 +2,7 @@ package kitchenpos.product.domain;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Table(name = "product")
 @Entity
@@ -40,5 +41,18 @@ public class ProductEntity {
 
   public BigDecimal getPrice() {
     return price.getValue();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    ProductEntity that = (ProductEntity) o;
+    return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(price, that.price);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, name, price);
   }
 }
