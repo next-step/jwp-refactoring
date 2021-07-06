@@ -83,9 +83,7 @@ public class ProductServiceTest {
     }
 
     public static Product 상품_생성(String name, BigDecimal price) {
-        Product product = new Product();
-        product.setName(name);
-        product.setPrice(price);
+        Product product = new Product(name, price);
         return product;
     }
 

@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class ProductTest {
@@ -14,7 +13,7 @@ public class ProductTest {
     public void 가격입력되지않은경우_상품등록_예외() throws Exception {
         //when
         //then
-        assertThatThrownBy(() -> new Product("상품이름", null))
+        assertThatThrownBy(() -> new Product(1L, "상품이름", null))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -23,7 +22,7 @@ public class ProductTest {
     public void 가격이음수인경우_상품등록_예외() throws Exception {
         //when
         //then
-        assertThatThrownBy(() -> new Product("상품이름", BigDecimal.valueOf(-1)))
+        assertThatThrownBy(() -> new Product(1L, "상품이름", BigDecimal.valueOf(-1)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }
