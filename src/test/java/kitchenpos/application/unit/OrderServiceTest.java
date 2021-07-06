@@ -1,5 +1,6 @@
-package kitchenpos.application;
+package kitchenpos.application.unit;
 
+import kitchenpos.application.OrderService;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
@@ -20,7 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.application.TableServiceTest.주문테이블_등록됨;
+import static kitchenpos.application.unit.TableServiceTest.주문테이블_등록됨;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;

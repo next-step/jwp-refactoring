@@ -1,5 +1,6 @@
-package kitchenpos.application;
+package kitchenpos.application.unit;
 
+import kitchenpos.application.MenuService;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
@@ -19,7 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.application.ProductServiceTest.상품_등록됨;
+import static kitchenpos.application.unit.ProductServiceTest.상품_등록됨;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
