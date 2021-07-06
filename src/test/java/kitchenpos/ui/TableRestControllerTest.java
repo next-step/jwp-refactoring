@@ -126,7 +126,7 @@ class TableRestControllerTest {
         return result -> {
             ResultMatcher.matchAll(
                     jsonPath(prefix + ".id").value(orderTable.getId()),
-                    jsonPath(prefix + ".tableGroupId").value(orderTable.getTableGroup().getId()),
+                    jsonPath(prefix + ".tableGroupId").value(orderTable.getTableGroupId()),
                     jsonPath(prefix + ".numberOfGuests").value(orderTable.getNumberOfGuests().toInt()),
                     jsonPath(prefix + ".empty").value(orderTable.isEmpty())
             ).match(result);

@@ -43,7 +43,7 @@ class TableGroupTest {
 
         // then
         for (OrderTable orderTable : tableGroup.getOrderTables()) {
-            assertThat(orderTable.getTableGroup()).isNull();
+            assertThat(orderTable.getTableGroupId()).isNull();
         }
 
     }

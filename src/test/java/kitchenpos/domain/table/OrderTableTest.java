@@ -58,12 +58,12 @@ class OrderTableTest {
     @Test
     @DisplayName("정상적인 예약")
     void 정상적인_예약() {
-        TableGroup tableGroup = new TableGroup();
+        TableGroup tableGroup = new TableGroup(1L, null, null);
 
-        빈_테이블.bookedBy(tableGroup);
+        빈_테이블.bookedBy(tableGroup.getId());
 
         assertThat(빈_테이블.isEmpty()).isFalse();
-        assertThat(빈_테이블.getTableGroup()).isEqualTo(tableGroup);
+        assertThat(빈_테이블.getTableGroupId()).isEqualTo(tableGroup.getId());
     }
 
 

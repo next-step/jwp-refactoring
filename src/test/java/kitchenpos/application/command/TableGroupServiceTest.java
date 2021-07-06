@@ -171,7 +171,7 @@ class TableGroupServiceTest {
 
         // then
         for (OrderTable orderTable : tableGroup.getOrderTables()) {
-            assertThat(orderTable.getTableGroup()).isNull();
+            assertThat(orderTable.getTableGroupId()).isNull();
         }
 
         verify(tableGroupRepository, VerificationModeFactory.times(1))
