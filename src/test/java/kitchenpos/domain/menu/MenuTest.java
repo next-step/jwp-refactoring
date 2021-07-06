@@ -2,6 +2,7 @@ package kitchenpos.domain.menu;
 
 import kitchenpos.domain.Name;
 import kitchenpos.domain.Price;
+import kitchenpos.domain.menuproduct.MenuAmountCreateValidator;
 import kitchenpos.domain.menuproduct.MenuProductCreate;
 import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.Products;
@@ -47,7 +48,7 @@ class MenuTest {
 
         // when & then
         assertThatExceptionOfType(ProductNotExistException.class)
-                .isThrownBy(() -> Menu.create(menuCreate, null, products));
+                .isThrownBy(() -> Menu.create(menuCreate, null, products, new MenuAmountCreateValidator()));
     }
 
     @Test
@@ -60,12 +61,12 @@ class MenuTest {
 
         // when & then
         assertThatExceptionOfType(MenuCheapException.class)
-                .isThrownBy(() -> Menu.create(menuCreate, null, products));
+                .isThrownBy(() -> Menu.create(menuCreate, null, products, new MenuAmountCreateValidator()));
     }
 
     @Test
     @DisplayName("정상적인 등록")
-    void 정상적인_등록() {
+    void 정상적인_등록() throws Exception {
         // given
         MenuGroup menuGroup = new MenuGroup(1L, new Name("MENU_GROUP"));
 
@@ -74,18 +75,11 @@ class MenuTest {
         Products products = new Products(productList);
 
         // when
-        Menu menu = Menu.create(menuCreate, menuGroup, products);
+        Menu menu = Menu.create(menuCreate, menuGroup, products, new MenuAmountCreateValidator());
 
         // when & then
         assertThat(menu.getMenuGroup()).isEqualTo(menuGroup);
         assertThat(menu.getName()).isEqualTo(menuCreate.getName());
         assertThat(menu.getPrice()).isEqualTo(menuCreate.getPrice());
-
-        assertThat(menu.getMenuProducts())
-                .map(item -> item.getProduct())
-                .containsExactlyElementsOf(productList);
-        assertThat(menu.getMenuProducts())
-                .map(item -> item.getMenu())
-                .containsOnly(menu);
     }
 }

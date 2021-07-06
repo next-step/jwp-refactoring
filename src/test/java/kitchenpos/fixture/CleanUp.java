@@ -5,7 +5,11 @@ public class CleanUp {
         MenuGroupFixture.cleanUp();
         TableGroupFixture.cleanUp();
         ProductFixture.cleanUp();
-        MenuFixture.cleanUp();
+        try {
+            MenuFixture.cleanUp();
+        } catch(Exception ex) {
+            throw new RuntimeException(ex);
+        }
         OrderLineItemFixture.cleanUp();
         OrderTableFixture.cleanUp();
         OrderFixture.cleanUp();

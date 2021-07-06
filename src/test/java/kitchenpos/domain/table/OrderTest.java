@@ -1,17 +1,13 @@
 package kitchenpos.domain.table;
 
-import kitchenpos.domain.Name;
-import kitchenpos.domain.Price;
 import kitchenpos.domain.Quantity;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.Menus;
-import kitchenpos.domain.menuproduct.MenuProduct;
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderCreate;
 import kitchenpos.domain.order.OrderLineItemCreate;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.fixture.CleanUp;
-import kitchenpos.fixture.MenuFixture;
 import kitchenpos.fixture.OrderFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,10 +19,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static kitchenpos.fixture.MenuFixture.양념치킨_콜라_1000원_1개;
+import static kitchenpos.fixture.MenuFixture.후라이드치킨_콜라_2000원_1개;
 import static kitchenpos.fixture.OrderFixture.결제완료1;
 import static kitchenpos.fixture.OrderTableFixture.사용중인_1명_테이블;
-import static kitchenpos.fixture.ProductFixture.콜라_100원;
-import static kitchenpos.fixture.ProductFixture.후라이드치킨_2000원;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
@@ -66,7 +62,7 @@ class OrderTest {
                         new OrderLineItemCreate(3, new Quantity(3))
                 )
         );
-        Menus menus = new Menus(Arrays.asList(MenuFixture.후라이드치킨_콜라_2000원_1개, MenuFixture.양념치킨_콜라_1000원_1개));
+        Menus menus = new Menus(Arrays.asList(후라이드치킨_콜라_2000원_1개, 양념치킨_콜라_1000원_1개));
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> Order.createOrder(사용중인_1명_테이블.getId(), orderCreate, menus));
     }
@@ -75,21 +71,15 @@ class OrderTest {
     @DisplayName("정상적인 생성")
     void 정상적인_생성() {
         // given
-        MenuProduct menuProduct1 = new MenuProduct(후라이드치킨_2000원, new Quantity(1));
-        MenuProduct menuProduct2 = new MenuProduct(콜라_100원, new Quantity(1));
-
         OrderCreate orderCreate = new OrderCreate(
                 사용중인_1명_테이블.getId(),
                 OrderStatus.COOKING,
                 Arrays.asList(
-                        new OrderLineItemCreate(1L, new Quantity(1)),
-                        new OrderLineItemCreate(2L, new Quantity(2))
+                        new OrderLineItemCreate(후라이드치킨_콜라_2000원_1개.getId(), new Quantity(1)),
+                        new OrderLineItemCreate(양념치킨_콜라_1000원_1개.getId(), new Quantity(2))
                 )
         );
-        List<Menu> menuList = Arrays.asList(
-                new Menu(1L, new Name("1"), new Price(1),  null, Arrays.asList(menuProduct1)),
-                new Menu(2L, new Name("2"), new Price(2), null, Arrays.asList(menuProduct2))
-        );
+        List<Menu> menuList = Arrays.asList(후라이드치킨_콜라_2000원_1개, 양념치킨_콜라_1000원_1개);
         Menus menus = new Menus(menuList);
         List<Long> menuIds = menuList.stream()
                 .map(Menu::getId)
