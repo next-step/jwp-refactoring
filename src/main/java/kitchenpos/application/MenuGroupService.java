@@ -1,7 +1,9 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.exception.InvalidEntityException;
+import kitchenpos.repository.MenuGroupRepository;
+import kitchenpos.domain.menu.MenuGroup;
+import kitchenpos.dto.menu.MenuGroupRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -9,18 +11,28 @@ import java.util.List;
 
 @Service
 public class MenuGroupService {
-    private final MenuGroupDao menuGroupDao;
+    private final MenuGroupRepository menuGroupRepository;
 
-    public MenuGroupService(final MenuGroupDao menuGroupDao) {
-        this.menuGroupDao = menuGroupDao;
+    public MenuGroupService(final MenuGroupRepository menuGroupRepository) {
+        this.menuGroupRepository = menuGroupRepository;
     }
 
     @Transactional
-    public MenuGroup create(final MenuGroup menuGroup) {
-        return menuGroupDao.save(menuGroup);
+    public MenuGroup create(final MenuGroupRequest menuGroupRequest) {
+        MenuGroup menuGroup = menuGroupRequest.toEntity();
+        return menuGroupRepository.save(menuGroup);
     }
 
     public List<MenuGroup> list() {
-        return menuGroupDao.findAll();
+        return menuGroupRepository.findAll();
+    }
+
+    public boolean isExists(MenuGroup menuGroup) {
+        return menuGroupRepository.existsById(menuGroup.getId());
+    }
+
+    public MenuGroup findById(Long id) {
+        return menuGroupRepository.findById(id)
+                .orElseThrow(() -> new InvalidEntityException("Not found MenuGroup " + id));
     }
 }

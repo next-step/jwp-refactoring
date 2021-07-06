@@ -1,8 +1,11 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
+import kitchenpos.domain.menu.Price;
+import kitchenpos.domain.menu.Product;
+import kitchenpos.dto.menu.ProductRequest;
+import kitchenpos.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -11,7 +14,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
@@ -19,36 +21,26 @@ import static org.mockito.Mockito.verify;
 class ProductServiceTest {
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private ProductService productService;
 
     private Product product;
-    private final static long ANY_PRODUCT_ID = 1L;
+
     @BeforeEach
     void setUp() {
-        product = new Product();
-        product.setId(ANY_PRODUCT_ID);
-        product.setName("물건");
-        product.setPrice(BigDecimal.valueOf(1000L));
+        product = Product.of("product", Price.of(1000L));
     }
 
     @Test
+    @DisplayName("상품을 등록할 수 있다")
     void create() {
-        given(productDao.save(product))
-                .willReturn(product);
+        given(productRepository.save(product)).willReturn(product);
 
-        productService.create(product);
-        verify(productDao).save(product);
-    }
+        ProductRequest productRequest = new ProductRequest("product", Price.of(1000L));
+        productService.create(productRequest);
 
-    @Test
-    void exception_when_price_is_under_zero() {
-        BigDecimal UNDER_ZERO = BigDecimal.valueOf(-1L);
-        product.setPrice(UNDER_ZERO);
-
-        assertThatThrownBy(() -> productService.create(product))
-                .isInstanceOf(IllegalArgumentException.class);
+        verify(productRepository).save(product);
     }
 }

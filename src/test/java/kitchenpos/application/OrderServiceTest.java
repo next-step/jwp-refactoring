@@ -1,13 +1,16 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.exception.InvalidOrderLineItemsException;
+import kitchenpos.repository.MenuRepository;
+import kitchenpos.repository.OrderRepository;
+import kitchenpos.repository.OrderLineItemRepository;
+import kitchenpos.repository.OrderTableRepository;
+import kitchenpos.domain.order.Order;
+import kitchenpos.domain.order.OrderLineItem;
+import kitchenpos.domain.order.OrderStatus;
+import kitchenpos.domain.order.OrderTable;
+import kitchenpos.dto.order.OrderLineItemRequest;
+import kitchenpos.dto.order.OrderRequest;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,65 +19,64 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
-    private OrderLineItemDao orderLineItemDao;
-    @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     OrderService orderService;
+
     private Order order;
-    private List<OrderLineItem> orderLineItems;
-    private OrderLineItem orderLineItem1;
-    private OrderLineItem orderLineItem2;
+
     private OrderTable orderTable;
     private final static long ANY_ORDER_ID = 1L;
     private final static long ANY_ORDER_TABLE_ID = 1L;
 
+    private final static long ORDER_LINE_ITEM_ID_1L = 1L;
+    private final static long ORDER_LINE_ITEM_ID_2L = 2L;
+    private final static long MENU_ID_1L = 1L;
+    private final static long MENU_ID_2L = 2L;
+    private OrderRequest orderRequest;
+
     @BeforeEach
     void setUp() {
-        order = new Order();
-        order.setId(ANY_ORDER_ID);
-        orderLineItems = new ArrayList<>();
+        orderRequest = new OrderRequest(ANY_ORDER_TABLE_ID,
+                Lists.list(new OrderLineItemRequest(MENU_ID_1L, 10L), new OrderLineItemRequest(MENU_ID_2L, 20L)));
 
-        orderLineItem1 = new OrderLineItem();
+        // Order 를 만들기 위한 Dummy Data
+        OrderLineItem orderLineItem1 = OrderLineItem.of(order, MENU_ID_1L, 10);
+        ReflectionTestUtils.setField(orderLineItem1, "seq", ORDER_LINE_ITEM_ID_1L);
+        OrderLineItem orderLineItem2 = OrderLineItem.of(order, MENU_ID_2L, 20);
+        ReflectionTestUtils.setField(orderLineItem2, "seq", ORDER_LINE_ITEM_ID_2L);
 
-        orderLineItem1.setOrderId(ANY_ORDER_ID);
-        orderLineItem1.setMenuId(1L);
+        orderTable = OrderTable.of(10, false);
 
-        orderLineItem2 = new OrderLineItem();
-        orderLineItem2.setOrderId(ANY_ORDER_ID);
-        orderLineItem2.setMenuId(2L);
-
-        orderTable = new OrderTable();
-        orderTable.setId(ANY_ORDER_ID);
-        orderTable.setEmpty(true);
+        order = Order.of(orderTable, OrderStatus.COOKING, Lists.list(orderLineItem1, orderLineItem2));
     }
 
     @Test
-    @DisplayName("주문 항목이 비어있다면 주문을 등록할 수 없다.")
+    @DisplayName("주문 항목(OrderLineItem)이 없다면 주문을 등록할 수 없다.")
     void exception_create() {
+        given(orderTableRepository.findById(ANY_ORDER_ID)).willReturn(Optional.of(orderTable));
+        orderRequest = new OrderRequest(ANY_ORDER_TABLE_ID, new ArrayList<>());
 
-        order.setOrderLineItems(orderLineItems);
-
-        assertThatThrownBy(() -> orderService.create(order))
+        assertThatThrownBy(() -> orderService.create(orderRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("should have orderLineItems");
     }
@@ -82,75 +84,65 @@ class OrderServiceTest {
     @Test
     @DisplayName("주문 항목의 갯수가 주문 항목의 메뉴의 갯수와 일치 하지 않으면 등록할 수 없다.")
     void exception2_create() {
-        orderLineItems.add(orderLineItem1);
-        orderLineItems.add(orderLineItem2);
-        order.setOrderLineItems(orderLineItems);
+        given(orderTableRepository.findById(ANY_ORDER_TABLE_ID)).willReturn(Optional.of(orderTable));
 
-        given(menuDao.countByIdIn(Lists.list(1L, 2L))).willReturn(100L);
+        given(menuRepository.countByIdIn(Lists.list(ORDER_LINE_ITEM_ID_1L)))
+                .willReturn(100L);
 
-        assertThatThrownBy(() -> orderService.create(order))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Not Same as orderLineItems");
+        OrderLineItem orderLineItem1 = OrderLineItem.of(order, MENU_ID_1L, 10);
+        ReflectionTestUtils.setField(orderLineItem1, "seq", ORDER_LINE_ITEM_ID_1L);
+
+        orderRequest = new OrderRequest(ANY_ORDER_TABLE_ID, Lists.list(new OrderLineItemRequest(MENU_ID_1L, 10L)));
+
+        assertThatThrownBy(() -> orderService.create(orderRequest))
+                .isInstanceOf(InvalidOrderLineItemsException.class);
     }
 
     @Test
-    @DisplayName("주문의 주문 테이블이 빈 테이블일 경우 주문을 등록할 수 없다.")
+    @DisplayName("주문된 테이블이 빈 테이블일 경우 주문이 수행되지 않는다.")
     void exception3_create() {
-        orderLineItems.add(orderLineItem1);
-        orderLineItems.add(orderLineItem2);
-        order.setOrderLineItems(orderLineItems);
+        orderTable.changeEmptyTable();
 
-        orderTable.setEmpty(true);
-        given(menuDao.countByIdIn(Lists.list(1L, 2L))).willReturn(2L);
-        order.setOrderTableId(ANY_ORDER_TABLE_ID);
-        given(orderTableDao.findById(ANY_ORDER_TABLE_ID)).willReturn(Optional.of(orderTable));
+        given(orderTableRepository.findById(ANY_ORDER_TABLE_ID)).willReturn(Optional.of(orderTable));
 
-        assertThatThrownBy(() -> orderService.create(order))
+        assertThatThrownBy(() -> orderService.create(orderRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Should have not orderTable empty");
     }
 
     @Test
-    @DisplayName("처음 주문 상태(order status)는 조리(COOKING) 상태가 된다.")
+    @DisplayName("주문이 들어가면 처음 상태(order status)는 조리(COOKING) 상태가 된다.")
     void after_create_orderStatus_is_COOKING() {
-        orderLineItems.add(orderLineItem1);
-        orderLineItems.add(orderLineItem2);
-        order.setOrderLineItems(orderLineItems);
+        orderTable.changeNonEmptyTable();
+        given(orderTableRepository.findById(ANY_ORDER_TABLE_ID)).willReturn(Optional.of(orderTable));
+        given(menuRepository.countByIdIn(Lists.list(MENU_ID_1L, MENU_ID_2L))).willReturn(2L);
+        given(orderRepository.save(any())).willReturn(order);
 
-        given(menuDao.countByIdIn(Lists.list(1L, 2L))).willReturn(2L);
-        orderTable.setEmpty(false);
-        given(orderTableDao.findById(ANY_ORDER_TABLE_ID)).willReturn(Optional.of(orderTable));
-        order.setOrderTableId(ANY_ORDER_TABLE_ID);
+        Order saveOrder = orderService.create(orderRequest);
 
-        given(orderDao.save(order)).willReturn(order);
-
-        Order order = orderService.create(this.order);
-
-        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(saveOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
     }
 
     @Test
-    @DisplayName("주문의 주문 상태(order status)를 식사 상태로 변경할 수 있다.")
+    @DisplayName("주문의 상태(order status)를 식사 상태로 변경할 수 있다.")
     void changeOrderStatusTest() {
-        given(orderDao.findById(ANY_ORDER_ID)).willReturn(Optional.of(order));
-        given(orderDao.save(order)).willReturn(order);
-        given(orderLineItemDao.findAllByOrderId(ANY_ORDER_ID)).willReturn(new ArrayList<>());
+        given(orderRepository.findById(ANY_ORDER_ID)).willReturn(Optional.of(order));
 
-        order.setOrderStatus(OrderStatus.MEAL.name());
-        Order changedOrder = orderService.changeOrderStatus(ANY_ORDER_ID, this.order);
-        assertThat(changedOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
-        verify(orderDao).save(order);
+        ReflectionTestUtils.setField(order, "orderStatus", OrderStatus.COOKING);
+
+        Order changedOrder = orderService.changeOrderStatus(ANY_ORDER_ID, OrderStatus.MEAL);
+        assertThat(changedOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
     }
 
     @Test
     @DisplayName("이미 계산이 완료된 주문은 주문 상태(order status)를 바꿀 수 없다.")
     void exception_changeOrderStatusTest() {
-        given(orderDao.findById(ANY_ORDER_ID)).willReturn(Optional.of(order));
+        given(orderRepository.findById(ANY_ORDER_ID)).willReturn(Optional.of(order));
 
-        order.setOrderStatus(OrderStatus.COMPLETION.name());
-        assertThatThrownBy(() -> orderService.changeOrderStatus(ANY_ORDER_ID, order))
+        ReflectionTestUtils.setField(order, "orderStatus", OrderStatus.COMPLETION);
+
+        assertThatThrownBy(() -> orderService.changeOrderStatus(ANY_ORDER_ID, OrderStatus.COMPLETION))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Invalid OrderStatus");
-
     }
 }
