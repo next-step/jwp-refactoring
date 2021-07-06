@@ -14,8 +14,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import kitchenpos.common.domian.Price;
+import kitchenpos.menu.dto.MenuProductResponse;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 
 @Entity
 @Table(name = "menu")
@@ -62,7 +64,7 @@ public class Menu {
         return new Menu(id, menuGroup, name, productsQuantities);
     }
 
-    public Long getId() {
+    public Long id() {
         return id;
     }
 
@@ -74,8 +76,16 @@ public class Menu {
         return price;
     }
 
+    public int priceToInt() {
+        return price.amountToInt();
+    }
+
     public MenuGroup getMenuGroup() {
         return menuGroup;
+    }
+
+    public MenuGroupResponse menuGroupResponse() {
+        return menuGroup.toResponse();
     }
 
     public List<MenuProduct> getMenuProducts() {
@@ -83,6 +93,10 @@ public class Menu {
     }
 
     public MenuResponse toResponse() {
-        return MenuResponse.of(id, name, price.amountToInt(), menuGroup.toResponse(), menuProducts.toResponse());
+        return MenuResponse.of(this);
+    }
+
+    public List<MenuProductResponse> toMenuProductResponse() {
+        return menuProducts.toResponse();
     }
 }

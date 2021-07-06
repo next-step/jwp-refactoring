@@ -123,8 +123,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         MenuResponse menuResponse = menuListResponse.getMenuResponses().get(0);
         assertThat(menuResponse.getName()).isEqualTo(메뉴_이름_순대국);
         assertThat(menuResponse.getMenuProductResponses().get(0).getQuantity()).isEqualTo(상품_수량);
-        assertThat(menuResponse.getMenuProductResponses().get(0).getProduct().getPrice()).isEqualTo(상품_가격);
-        assertThat(menuResponse.getMenuProductResponses().get(0).getProduct().getName()).isEqualTo(상품_이름_순대);
+        assertThat(menuResponse.getMenuProductResponses().get(0).getProductResponse().getPrice()).isEqualTo(상품_가격);
+        assertThat(menuResponse.getMenuProductResponses().get(0).getProductResponse().getName()).isEqualTo(상품_이름_순대);
         assertThat(menuResponse.getMenuGroupResponse().getName()).isEqualTo(메뉴_그룹_이름_국밥);
     }
 }

@@ -25,6 +25,7 @@ import kitchenpos.product.repository.ProductDao;
 import kitchenpos.menu.domain.Menu;
 
 @Service
+@Transactional
 public class MenuService {
     private final MenuDao menuDao;
     private final MenuGroupDao menuGroupDao;
@@ -43,7 +44,6 @@ public class MenuService {
         this.productDao = productDao;
     }
 
-    @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
         MenuGroup menuGroup = menuGroupDao.findById(menuRequest.getMenuGroupId())
                 .orElseThrow(() -> new CustomException(ErrorInfo.NOT_FOUND_MENU_GROUP));
@@ -67,6 +67,7 @@ public class MenuService {
         return menuDao.save(menu).toResponse();
     }
 
+    @Transactional(readOnly = true)
     public MenuListResponse list() {
         return MenuListResponse.of(menuDao.findAll().stream()
                 .map(Menu::toResponse)

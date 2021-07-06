@@ -33,6 +33,6 @@ public class MenuGroup {
     }
 
     public MenuGroupResponse toResponse() {
-        return MenuGroupResponse.of(id, name);
+        return MenuGroupResponse.of(this);
     }
 }

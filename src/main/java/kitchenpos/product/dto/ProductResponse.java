@@ -1,5 +1,7 @@
 package kitchenpos.product.dto;
 
+import kitchenpos.product.domain.Product;
+
 public class ProductResponse {
     private Long id;
     private String name;
@@ -15,6 +17,11 @@ public class ProductResponse {
 
     public static ProductResponse of(Long id, String name, int price) {
         return new ProductResponse(id, name, price);
+    }
+
+    public static ProductResponse of(Product product) {
+        String name = product.getName();
+        return new ProductResponse(product.getId(), name, product.getPrice().amountToInt());
     }
 
     public Long getId() {

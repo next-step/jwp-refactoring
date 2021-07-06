@@ -9,7 +9,8 @@ public enum ErrorInfo {
     NOT_EQUAL_REQUEST_SIZE("요청한 상품 개수가 일치하지 않습니다."),
     NOT_FOUND_MENU("메뉴를 찾을 수 없습니다."),
     NOT_FOUND_ORDER_TABLE("주문 테이블을 찾을 수 없습니다."),
-    ;
+    NOT_FOUND_ORDER("주문을 찾을 수 없습니다."),
+    NOT_FOUND_ORDER_LINE_REQUEST("주문 라인 요청이 없습니다.");
 
     private String message;
 

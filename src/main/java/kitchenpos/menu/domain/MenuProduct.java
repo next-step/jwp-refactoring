@@ -43,10 +43,6 @@ public class MenuProduct {
         return new MenuProduct(menu, product, quantity);
     }
 
-    public MenuProductResponse toResponse() {
-        return MenuProductResponse.of(seq, product.toResponse(), quantity.amount());
-    }
-
     public Long getSeq() {
         return seq;
     }
@@ -55,11 +51,15 @@ public class MenuProduct {
         return menu;
     }
 
-    public Product getProductId() {
+    public Product getProduct() {
         return product;
     }
 
     public Quantity getQuantity() {
         return quantity;
+    }
+
+    public MenuProductResponse toResponse(MenuProduct menuProduct) {
+        return MenuProductResponse.of(menuProduct);
     }
 }

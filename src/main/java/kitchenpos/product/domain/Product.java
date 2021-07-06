@@ -38,7 +38,7 @@ public class Product {
     private Price price;
 
     public ProductResponse toResponse() {
-        return ProductResponse.of(id, name, price.amountToInt());
+        return ProductResponse.of(this);
     }
 
     public Price priceMultiplyQuantity(Quantity quantity) {

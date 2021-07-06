@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import kitchenpos.order.dto.OrderListResponse;
+import kitchenpos.menugroup.repository.MenuGroupDao;
+import kitchenpos.order.dto.OrderStatusRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -26,30 +27,33 @@ import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.repository.OrderTableDao;
 
 @Service
+@Transactional
 public class OrderService {
     private final MenuDao menuDao;
     private final OrderDao orderDao;
     private final OrderLineItemDao orderLineItemDao;
     private final OrderTableDao orderTableDao;
+    private final MenuGroupDao menuGroupDao;
 
     public OrderService(
             final MenuDao menuDao,
             final OrderDao orderDao,
             final OrderLineItemDao orderLineItemDao,
-            final OrderTableDao orderTableDao
+            final OrderTableDao orderTableDao,
+            final MenuGroupDao menuGroupDao
     ) {
         this.menuDao = menuDao;
         this.orderDao = orderDao;
         this.orderLineItemDao = orderLineItemDao;
         this.orderTableDao = orderTableDao;
+        this.menuGroupDao = menuGroupDao;
     }
 
-    @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
         final List<OrderLineItemRequest> orderLineItemRequests = orderRequest.getOrderLineItemRequests();
 
         if (CollectionUtils.isEmpty(orderLineItemRequests)) {
-            throw new IllegalArgumentException();
+            throw new CustomException(ErrorInfo.NOT_FOUND_ORDER_LINE_REQUEST);
         }
 
         final List<Long> menuIds = orderLineItemRequests.stream()
@@ -69,37 +73,31 @@ public class OrderService {
 
         for (final OrderLineItemRequest orderLineItemRequest : orderLineItemRequests) {
             Menu findMenu = menus.stream()
-                    .filter(menu -> menu.getId().equals(orderLineItemRequest.getMenuId()))
+                    .filter(menu -> menu.id().equals(orderLineItemRequest.getMenuId()))
                     .findFirst()
                     .orElseThrow(() -> new CustomException(ErrorInfo.NOT_FOUND_MENU));
-
             OrderLineItem orderLineItem = OrderLineItem.of(order, findMenu, new Quantity(orderLineItemRequest.getQuantity()));
             orderLineItemDao.save(orderLineItem);
         }
 
-        return orderDao.save(order).toResponse();
+        return OrderResponse.of(orderDao.save(order));
     }
 
-    public OrderListResponse list() {
-        return new OrderListResponse(orderDao.findAll().stream().map(Order::toResponse).collect(Collectors.toList()));
+    @Transactional(readOnly = true)
+    public List<OrderResponse> list() {
+        return OrderResponse.listOf(orderDao.findAll());
     }
 
-    @Transactional
-    public Order changeOrderStatus(final Long orderId, final Order order) {
+    public OrderResponse changeOrderStatus(final Long orderId, final OrderStatusRequest orderStatusRequest) {
         final Order savedOrder = orderDao.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new CustomException(ErrorInfo.NOT_FOUND_ORDER));
 
-        if (Objects.equals(OrderStatus.COMPLETION.name(), savedOrder.getOrderStatus())) {
+        if (Objects.equals(OrderStatus.COMPLETION, savedOrder.getOrderStatus())) {
             throw new IllegalArgumentException();
         }
 
-        final OrderStatus orderStatus = order.getOrderStatus();
-        savedOrder.changeOrderStatus(orderStatus);
-
-        orderDao.save(savedOrder);
-
-//        savedOrder.setOrderLineItems(orderLineItemDao.findAllByOrderId(orderId));
-
-        return savedOrder;
+        savedOrder.changeOrderStatus(OrderStatus.get(orderStatusRequest.getOrderStatus()));
+        return OrderResponse.of(savedOrder);
     }
+
 }

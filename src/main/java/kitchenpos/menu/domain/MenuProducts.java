@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
@@ -13,7 +14,7 @@ import kitchenpos.menu.dto.MenuProductResponse;
 public class MenuProducts {
     public MenuProducts() {}
 
-    @OneToMany(mappedBy = "menu")
+    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<MenuProduct> menuProducts = new ArrayList<>();
 
     public MenuProducts(Menu menu, ProductsQuantities productsQuantities) {
@@ -25,6 +26,8 @@ public class MenuProducts {
     }
 
     public List<MenuProductResponse> toResponse() {
-        return menuProducts.stream().map(MenuProduct::toResponse).collect(Collectors.toList());
+        return menuProducts.stream().map(
+                menuProduct -> menuProduct.toResponse(menuProduct)
+        ).collect(Collectors.toList());
     }
 }

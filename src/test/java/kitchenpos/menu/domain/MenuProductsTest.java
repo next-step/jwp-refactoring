@@ -60,6 +60,6 @@ class MenuProductsTest {
         List<MenuProductResponse> menuProductResponses = menuProducts.toResponse();
         // then
         assertThat(menuProductResponses.size()).isEqualTo(1);
-        assertThat(menuProductResponses.get(0).getProduct().getName()).isEqualTo("순대");
+        assertThat(menuProductResponses.get(0).getProductResponse().getName()).isEqualTo("순대");
     }
 }

@@ -3,12 +3,16 @@ package kitchenpos.order.acceptance;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 
+import kitchenpos.order.dto.OrderStatusRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,12 +21,10 @@ import org.springframework.http.HttpStatus;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
-import kitchenpos.menugroup.dto.MenuGroupListResponse;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
-import kitchenpos.order.dto.OrderListResponse;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.ordertable.domain.OrderTable;
@@ -81,15 +83,58 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         주문_조회_요청_응답_확인(주문_조회_요청_응답);
     }
 
-    private void 메뉴_그룹_조회_요청_응답_확인(ExtractableResponse<Response> 메뉴_그룹_조회_요청_응답) {
-        MenuGroupListResponse menuGroupListResponse = 메뉴_그룹_조회_요청_응답.as(MenuGroupListResponse.class);
-        assertThat(menuGroupListResponse.getMenuGroupResponses().get(0).getName()).isEqualTo("국밥");
+    @DisplayName("사용자는 주문 상태를 변경 할 수 있다.")
+    @Test
+    void changeOrderStatus() {
+        // given
+
+        // when
+        ExtractableResponse<Response> 주문_생성_요청_응답 = 주문_셍성_요청(주문_테이블_번호, 메뉴_번호, 1);
+        // then
+        주문_생성_요청_응답_확인(주문_생성_요청_응답);
+        Long 주문_번호 = 공통_번호_추출(주문_생성_요청_응답);
+
+        //when
+        ExtractableResponse<Response> 주문_상태_변경_요청_응답 = 주문_상태_변경_요청(주문_번호, OrderStatus.COMPLETION);
+        주문_상태_변경_확인(주문_상태_변경_요청_응답, OrderStatus.COMPLETION);
     }
 
-    private ExtractableResponse<Response> 메뉴_그룹_조회_요청() {
+    @DisplayName("주문 생성 실패 - 주문 테이블이 없음")
+    @Test
+    void createFailedByOrderTable() {
+        // given
+        // when
+        ExtractableResponse<Response> 주문_생성_요청_응답 = 주문_셍성_요청(0L, 메뉴_번호, 1);
+        // then
+        주문_생성_요청_실패_확인(주문_생성_요청_응답);
+    }
+
+    @DisplayName("주문 생성 실패 - 메뉴가 없음")
+    @Test
+    void createFailedByMenu() {
+        // given
+        // when
+        ExtractableResponse<Response> 주문_생성_요청_응답 = 주문_셍성_요청(주문_테이블_번호, 0L, 1);
+        // then
+        주문_생성_요청_실패_확인(주문_생성_요청_응답);
+    }
+
+    @DisplayName("주문 생성 실패 - 메뉴 수량이 음수")
+    @Test
+    void creatFailedByAmount() {
+        // given
+        // when
+        ExtractableResponse<Response> 주문_생성_요청_응답 = 주문_셍성_요청(주문_테이블_번호, 메뉴_번호, -1);
+        // then
+        주문_생성_요청_실패_확인(주문_생성_요청_응답);
+    }
+
+    private ExtractableResponse<Response> 주문_상태_변경_요청(Long 주문_번호, OrderStatus orderStatus) {
+        OrderStatusRequest orderStatusRequest = new OrderStatusRequest(orderStatus.name());
         return RestAssured.given().log().all()
+                .body(orderStatusRequest)
                 .contentType(ContentType.JSON)
-                .when().get("/api/menu-groups/")
+                .when().put("/api/orders/" + 주문_번호 + "/order-status")
                 .then().log().all()
                 .extract();
     }
@@ -102,10 +147,6 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 .when().post("/api/menu-groups/")
                 .then().log().all()
                 .extract();
-    }
-
-    private void 메뉴_그룹_생성_요청_응답_확인(ExtractableResponse<Response> 메뉴_그룹_생성_요청_응답) {
-        assertThat(메뉴_그룹_생성_요청_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     private ExtractableResponse<Response> 상품_생성_요청(String 상품_이름, int 상품_가격) {
@@ -159,9 +200,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     private void 주문_생성_요청_응답_확인(ExtractableResponse<Response> 주문_생성_요청_응답) {
-        OrderResponse orderResponse = 주문_생성_요청_응답.as(OrderResponse.class);
         assertThat(주문_생성_요청_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
+        assertThat(주문_생성_요청_응답.body().jsonPath().get("orderStatus").toString()).isEqualTo(OrderStatus.COOKING.name());
     }
 
     private ExtractableResponse<Response> 주문_조회_요청() {
@@ -173,7 +213,16 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     private void 주문_조회_요청_응답_확인(ExtractableResponse<Response> 주문_조회_요청_응답) {
-        OrderListResponse orderListResponse = 주문_조회_요청_응답.as(OrderListResponse.class);
-        assertThat(orderListResponse.getOrderResponses().get(0).getOrderStatus()).isEqualTo(OrderStatus.COOKING);
+        List<OrderResponse> orderResponses = 주문_조회_요청_응답.jsonPath().getList("", OrderResponse.class);
+        assertThat(orderResponses.get(0).getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
     }
+
+    private void 주문_상태_변경_확인(ExtractableResponse<Response> 주문_상태_변경_요청_응답, OrderStatus orderStatus) {
+        assertThat(주문_상태_변경_요청_응답.body().jsonPath().get("orderStatus").toString()).isEqualTo(orderStatus.name());
+    }
+
+    private void 주문_생성_요청_실패_확인(ExtractableResponse<Response> 주문_생성_요청_응답) {
+        assertThat(주문_생성_요청_응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
 }

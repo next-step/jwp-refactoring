@@ -1,17 +1,19 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.order.dto.OrderResponse;
+import java.time.LocalDateTime;
+import java.util.List;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.time.LocalDateTime;
-import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import kitchenpos.order.dto.OrderResponse;
 
 @Entity
 @Table(name = "orders")
@@ -30,8 +32,8 @@ public class Order {
 
     private LocalDateTime orderedTime;
 
-    @OneToMany(mappedBy = "order")
-    private List<OrderLineItem> orderLineItems;
+    @Embedded
+    private OrderLineItems orderLineItems = new OrderLineItems();
 
     private Order(Long orderTableId, OrderStatus orderStatus) {
         this.orderTableId = orderTableId;
@@ -68,14 +70,10 @@ public class Order {
     }
 
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
+        return orderLineItems.get();
     }
 
     public void addOrderLineItem(OrderLineItem orderLineItem) {
-
-    }
-
-    public OrderResponse toResponse() {
-        return new OrderResponse(id, orderTableId, orderStatus);
+        this.orderLineItems.add(orderLineItem);
     }
 }

@@ -2,6 +2,7 @@ package kitchenpos.menu.dto;
 
 import java.util.List;
 
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 
 public class MenuResponse {
@@ -21,8 +22,11 @@ public class MenuResponse {
         this.menuProductResponses = menuProductResponses;
     }
 
-    public static MenuResponse of(Long id, String name, int price, MenuGroupResponse menuGroupResponse, List<MenuProductResponse> menuProductResponses) {
-        return new MenuResponse(id, name, price, menuGroupResponse, menuProductResponses);
+    public static MenuResponse of(Menu menu) {
+        final List<MenuProductResponse> menuProductResponses = menu.toMenuProductResponse();
+        final MenuGroupResponse menuGroupResponse = menu.getMenuGroup().toResponse();
+        final String name = menu.getName();
+        return new MenuResponse(menu.id(), name, menu.priceToInt(), menuGroupResponse, menuProductResponses);
     }
 
     public Long getId() {
