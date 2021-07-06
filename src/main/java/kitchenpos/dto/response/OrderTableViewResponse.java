@@ -13,8 +13,8 @@ public class OrderTableViewResponse {
     public static OrderTableViewResponse of(OrderTable orderTable) {
         Long tableGroupId = null;
 
-        if(orderTable.getTableGroup() != null) {
-            tableGroupId = orderTable.getTableGroup().getId();
+        if(orderTable.getTableGroupId() != null) {
+            tableGroupId = orderTable.getTableGroupId();
         }
 
         return new OrderTableViewResponse(
