@@ -78,13 +78,8 @@ class TableServiceTest {
     @Test
     @DisplayName("주문 테이블이 존재하지 않는 경우 예외가 발생한다")
     void notExistOrderTableTest() {
+        assertThatNotExistOrderTableThrowsException();
 
-        // given
-        when(orderTableDao.findById(any())).thenReturn(Optional.empty());
-
-        // then
-        assertThatThrownBy(() -> tableService.changeEmpty(any(), orderTable))
-                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -128,5 +123,62 @@ class TableServiceTest {
 
         // then
         assertThat(changedOrderTable.isEmpty()).isEqualTo(orderTable.isEmpty());
+    }
+
+    @Test
+    @DisplayName("손님 수가 0보다 작은 경우 예외가 발생한다")
+    void notValidGuestCountTest() {
+
+        // given
+        orderTable.setNumberOfGuests(-1);
+
+        // then
+        assertThatThrownBy(() -> tableService.changeEmpty(any(), orderTable))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("주문 테이블이 없는 경우 예외가 발생한다")
+    void notExistOrderTableTestForChangeNumberGuest() {
+        assertThatNotExistOrderTableThrowsException();
+    }
+
+    @Test
+    @DisplayName("주문 테이블이 비어 있는 경우 예외가 발생한다")
+    void containsEmptyOrderTableTest() {
+
+        // given
+        orderTable.setEmpty(true);
+        orderTable.setNumberOfGuests(4);
+        when(orderTableDao.findById(any())).thenReturn(Optional.of(orderTable));
+
+        // then
+        assertThatThrownBy(() -> tableService.changeEmpty(any(), orderTable))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("손님 수를 변경한다")
+    void changeNumberOfGuestsTest() {
+
+        // given
+        orderTable.setNumberOfGuests(4);
+        when(orderTableDao.findById(any())).thenReturn(Optional.of(orderTable));
+        when(orderTableDao.save(any())).thenReturn(orderTable);
+
+        // when
+        OrderTable changedOrderTable = tableService.changeNumberOfGuests(any(), orderTable);
+
+        // then
+        assertThat(changedOrderTable.getNumberOfGuests()).isEqualTo(4);
+    }
+
+    private void assertThatNotExistOrderTableThrowsException() {
+        // given
+        when(orderTableDao.findById(any())).thenReturn(Optional.empty());
+
+        // then
+        assertThatThrownBy(() -> tableService.changeEmpty(any(), orderTable))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }
