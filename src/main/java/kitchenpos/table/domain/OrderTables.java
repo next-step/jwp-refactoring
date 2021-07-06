@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 
 @Embeddable
 public class OrderTables {
+    public static final int MINIMUM_ORDER_TABLE_SIZE = 2;
+
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<OrderTable> orderTables = new ArrayList<>();
 
@@ -23,8 +25,8 @@ public class OrderTables {
     }
 
     private void validate() {
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException();
+        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < MINIMUM_ORDER_TABLE_SIZE) {
+            throw new IllegalArgumentException(String.format("주문테이블 리스트는 최소 %d개 이상이어야 합니다.", MINIMUM_ORDER_TABLE_SIZE));
         }
     }
 
@@ -51,7 +53,7 @@ public class OrderTables {
 
     private void validateGroupingSizeWith(List<OrderTable> savedOrderTables) {
         if (orderTables.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException("그룹지으려는 주문테이블 개수가 올바르지 않음.");
+            throw new IllegalArgumentException("그룹지으려는 주문테이블 개수가 올바르지 않습니다.");
         }
     }
 

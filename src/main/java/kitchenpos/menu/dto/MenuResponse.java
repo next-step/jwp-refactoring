@@ -25,7 +25,7 @@ public class MenuResponse {
         this.price = price;
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts.stream()
-                .map(menuProduct -> MenuProductResponse.of(menuProduct))
+                .map(MenuProductResponse::of)
                 .collect(Collectors.toList());
     }
 

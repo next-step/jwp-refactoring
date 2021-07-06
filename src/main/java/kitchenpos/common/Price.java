@@ -16,9 +16,13 @@ public class Price {
     }
 
     private void validatePrice() {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+        if (Objects.isNull(price) || priceIsUnderZero()) {
             throw new IllegalArgumentException();
         }
+    }
+
+    private boolean priceIsUnderZero() {
+        return price.compareTo(BigDecimal.ZERO) < 0;
     }
 
     public void isOverThan(BigDecimal sum) {

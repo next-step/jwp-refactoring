@@ -18,7 +18,7 @@ public class TableGroupResponse {
     public static TableGroupResponse of(TableGroup tableGroup) {
         return new TableGroupResponse(tableGroup.getId(),
                 tableGroup.getOrderTables().stream()
-                        .map(orderTable -> OrderTableResponse.of(orderTable))
+                        .map(OrderTableResponse::of)
                         .collect(Collectors.toList()));
     }
 

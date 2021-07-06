@@ -38,7 +38,7 @@ public class MenuRequest {
     public Menu toEntity() {
         return new Menu(name, price, menuGroupId,
                 menuProducts.stream()
-                    .map(menuProductRequest -> menuProductRequest.toEntity())
+                    .map(MenuProductRequest::toEntity)
                     .collect(Collectors.toList()));
     }
 }

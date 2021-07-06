@@ -16,7 +16,7 @@ public class OrderRequest {
     public OrderRequest(Long orderTableId, List<OrderLineItem> orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderLineItems = orderLineItems.stream()
-                .map(orderLineItem -> OrderLineItemRequest.from(orderLineItem))
+                .map(OrderLineItemRequest::from)
                 .collect(Collectors.toList());
     }
 
@@ -24,7 +24,7 @@ public class OrderRequest {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderLineItems = orderLineItems.stream()
-                .map(orderLineItem -> OrderLineItemRequest.from(orderLineItem))
+                .map(OrderLineItemRequest::from)
                 .collect(Collectors.toList());
     }
 
@@ -33,7 +33,7 @@ public class OrderRequest {
                 OrderStatus.COOKING,
                 LocalDateTime.now(),
                 orderLineItems.stream()
-                    .map(orderLineItemRequest -> orderLineItemRequest.toEntity())
+                    .map(OrderLineItemRequest::toEntity)
                     .collect(Collectors.toList()));
     }
 

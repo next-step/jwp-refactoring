@@ -45,13 +45,13 @@ public class OrderTable {
 
     public void validateForGrouping() {
         if (!isEmpty() || Objects.nonNull(getTableGroupId())) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문테이블이 그룹핑하기에 올바르지 않습니다.");
         }
     }
 
     public void isValidForOrdering() {
         if (isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문테이블에 손님이 없습니다.");
         }
     }
 
@@ -71,11 +71,11 @@ public class OrderTable {
 
     public void changeNumberOfGuests(int numberOfGuests) {
         if (isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문테이블에 손님이 없습니다.");
         }
 
         if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문테이블의 바꾸려는 손님 숫자가 올바르지 않습니다.");
         }
 
         this.numberOfGuests = numberOfGuests;
