@@ -30,6 +30,6 @@ public class ProductRequest {
     }
 
     public Product toEntity() {
-        return new Product(null, name, price);
+        return new Product(name, price);
     }
 }

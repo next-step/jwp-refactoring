@@ -1,64 +1,135 @@
 package kitchenpos.domain;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+
+import kitchenpos.exception.CalculationFailedException;
+import kitchenpos.exception.ExceedingTotalPriceException;
+
+@Entity
 public class Menu {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
     private BigDecimal price;
-    private Long menuGroupId;
-    private List<MenuProduct> menuProducts;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
+    private MenuGroup menuGroup;
+
+    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MenuProduct> menuProducts = new ArrayList<>();
 
     public Menu() {
     }
 
-    public Menu(Long id, String name, BigDecimal price, Long menuGroupId,
-            List<MenuProduct> menuProducts) {
+    public Menu(String name, MenuGroup menuGroup) {
+        this.name = name;
+        this.menuGroup = menuGroup;
+    }
+
+    Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup) {
         this.id = id;
         this.name = name;
         this.price = price;
-        this.menuGroupId = menuGroupId;
-        this.menuProducts = menuProducts;
+        this.menuGroup = menuGroup;
+    }
+
+    public Menu withPrice(BigDecimal price) {
+        checkPrice(price);
+        checkTotalPrice(price);
+        this.price = price;
+        return this;
+    }
+
+    private void checkPrice(BigDecimal price) {
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private void checkTotalPrice(BigDecimal price) {
+        BigDecimal summation = menuProducts.stream()
+            .map(MenuProduct::getTotalPrice)
+            .reduce(BigDecimal::add)
+            .orElseThrow(() -> new CalculationFailedException("단품 가격의 합계를 계산하지 못했습니다."));
+
+        if (price.compareTo(summation) > 0) {
+            throw new ExceedingTotalPriceException("메뉴 가격이 제품 가격의 총 합을 초과합니다.");
+        }
+    }
+
+    public void addMenuProduct(MenuProduct menuProduct) {
+        menuProduct.setMenu(this);
+        menuProducts.add(menuProduct);
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
     }
 
-    public void setName(final String name) {
-        this.name = name;
+    public Long getMenuGroupId() {
+        return menuGroup.getId();
+    }
+
+    public List<MenuProduct> getMenuProducts() {
+        return Collections.unmodifiableList(menuProducts);
     }
 
     public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(final BigDecimal price) {
+    // TODO 이하 제거대상
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
-    public Long getMenuGroupId() {
-        return menuGroupId;
+    public void setMenuGroupId(long menu_group_id) {
+        this.menuGroup.setId(menu_group_id);
     }
 
-    public void setMenuGroupId(final Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
-    }
-
-    public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
-    }
-
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
+    public void setMenuProducts(List<MenuProduct> menuProducts) {
         this.menuProducts = menuProducts;
+    }
+
+    public Menu(Long id, String 특가세트, BigDecimal price, Long id1, List<MenuProduct> collect) {
+        this.id = id;
+        this.name = 특가세트;
+        this.price = price;
+        this.menuGroup.setId(id1);
+        this.menuProducts = collect;
     }
 }

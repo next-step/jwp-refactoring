@@ -23,7 +23,7 @@ public class Product {
         this(null, name, price);
     }
 
-    public Product(Long id, String name, BigDecimal price) {
+    public Product(Long id, String name, BigDecimal price) { // TODO default로 변경
         checkPrice(price);
         this.id = id;
         this.name = name;

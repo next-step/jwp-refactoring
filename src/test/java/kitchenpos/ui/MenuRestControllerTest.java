@@ -1,11 +1,13 @@
 package kitchenpos.ui;
 
+import static kitchenpos.domain.MenuGroupTest.*;
+import static kitchenpos.domain.ProductTest.*;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.DisplayName;
@@ -37,9 +39,10 @@ class MenuRestControllerTest {
     @Test
     @DisplayName("메뉴를 생성한다")
     void create() throws Exception {
-        MenuProductRequest menuProduct = new MenuProductRequest(1L, 2);
-        MenuRequest request = new MenuRequest("후라이드+후라이드",
-            BigInteger.valueOf(19000), 1L, Arrays.asList(menuProduct));
+        MenuProductRequest 양념 = new MenuProductRequest(양념치킨.getId(), 1);
+        MenuProductRequest 간장 = new MenuProductRequest(간장치킨.getId(), 1);
+        MenuRequest request = new MenuRequest(
+            "양념+간장", BigDecimal.valueOf(33000), 두마리메뉴.getId(), Arrays.asList(양념, 간장));
         mockMvc.perform(post("/api/menus")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(request)))

@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductRepository;
+import kitchenpos.exception.ProductNotFoundException;
 
 @Service
 public class  ProductService {
@@ -23,5 +24,10 @@ public class  ProductService {
 
     public List<Product> list() {
         return productRepository.findAll();
+    }
+
+    public Product findById(Long id) {
+        return productRepository.findById(id)
+            .orElseThrow(() -> new ProductNotFoundException("해당 ID의 제품이 존재하지 않습니다."));
     }
 }

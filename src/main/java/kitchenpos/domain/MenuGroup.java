@@ -10,13 +10,17 @@ public class MenuGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
 
     public MenuGroup() {
     }
 
-    public MenuGroup(Long id, String name) {
+    public MenuGroup(String name) {
+        this(null, name);
+    }
+
+    public MenuGroup(Long id, String name) { // TODO default로 변경
+        this.id = id;
         this.name = name;
     }
 
