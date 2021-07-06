@@ -1,4 +1,4 @@
-package kitchenpos.ui;
+package kitchenpos.ui.menu;
 
 import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kitchenpos.application.MenuGroupService;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.ui.MenuGroupRestController;
 
 @DisplayName("메뉴 그룹 컨트롤러 테스트")
 @WebMvcTest(MenuGroupRestController.class)
@@ -56,7 +57,7 @@ public class MenuGroupRestControllerTest {
 			.content(objectMapper.writeValueAsString(menuGroup))
 			.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isCreated())
-			.andExpect(header().string("location", "/api/menu-groups/1"))
+			.andExpect(header().string("location", "/api/menu-groups/" + menuGroup.getId()))
 		;
 	}
 
