@@ -16,6 +16,7 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderListResponse;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.repository.OrderDao;
@@ -91,9 +92,9 @@ class OrderServiceTest {
         // when
         when(orderDao.findAll()).thenReturn(Arrays.asList(order));
         when(orderLineItemDao.findByOrder(order)).thenReturn(Arrays.asList(new OrderLineItem()));
-        List<Order> orders = orderService.list();
+        OrderListResponse orders = orderService.list();
         // then
-        assertThat(orders.size()).isEqualTo(1);
+        assertThat(orders.getOrderResponses().size()).isEqualTo(1);
         assertThat(order.getOrderLineItems().size()).isEqualTo(1);
     }
 

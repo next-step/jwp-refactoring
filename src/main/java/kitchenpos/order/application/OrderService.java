@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import kitchenpos.order.dto.OrderListResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -79,8 +80,8 @@ public class OrderService {
         return orderDao.save(order).toResponse();
     }
 
-    public List<Order> list() {
-        return orderDao.findAll();
+    public OrderListResponse list() {
+        return new OrderListResponse(orderDao.findAll().stream().map(Order::toResponse).collect(Collectors.toList()));
     }
 
     @Transactional

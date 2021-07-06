@@ -2,6 +2,7 @@ package kitchenpos.order.ui;
 
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.dto.OrderListResponse;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,7 @@ public class OrderRestController {
     }
 
     @GetMapping("/api/orders")
-    public ResponseEntity<List<Order>> list() {
+    public ResponseEntity<OrderListResponse> list() {
         return ResponseEntity.ok()
                 .body(orderService.list())
                 ;

@@ -61,7 +61,7 @@ class TableGroupServiceTest {
         // given
 
         // when
-        when(orderTableDao.findAllByIdIn(any())).thenReturn(Arrays.asList(orderTable, addOrderTable));
+//        when(orderTableDao.findAllByIdIn(any())).thenReturn(Arrays.asList(orderTable, addOrderTable));
         when(orderTableDao.save(any())).thenReturn(new OrderTable());
         when(tableGroupDao.save(tableGroup)).thenReturn(tableGroup);
 
@@ -76,8 +76,8 @@ class TableGroupServiceTest {
         // given
         List<OrderTable> orderTables = Arrays.asList(orderTable, addOrderTable);
         // when
-        when(orderTableDao.findAllByTableGroupId(1L)).thenReturn(orderTables);
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(false);
+//        when(orderTableDao.findAllByTableGroupId(1L)).thenReturn(orderTables);
+//        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(false);
         // then
         tableGroupService.ungroup(1L);
         assertTrue(true);
@@ -99,7 +99,7 @@ class TableGroupServiceTest {
         // given
 
         // when
-        when(orderTableDao.findAllByIdIn(any())).thenReturn(Arrays.asList(orderTable));
+//        when(orderTableDao.findAllByIdIn(any())).thenReturn(Arrays.asList(orderTable));
         // then
         assertThatThrownBy(() -> tableGroupService.create(tableGroup)).isInstanceOf(IllegalArgumentException.class);
     }
@@ -111,8 +111,8 @@ class TableGroupServiceTest {
         List<OrderTable> orderTables = Arrays.asList(orderTable, addOrderTable);
 
         // when
-        when(orderTableDao.findAllByTableGroupId(1L)).thenReturn(orderTables);
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(true);
+//        when(orderTableDao.findAllByTableGroupId(1L)).thenReturn(orderTables);
+//        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(true);
 
         // then
         assertThatThrownBy(() -> tableGroupService.ungroup(1L)).isInstanceOf(IllegalArgumentException.class);
