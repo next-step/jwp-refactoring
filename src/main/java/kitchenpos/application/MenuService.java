@@ -9,30 +9,32 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.repository.MenuGroupRepository;
+import kitchenpos.repository.ProductRepository;
+
+;
 
 @Service
 public class MenuService {
 	private final MenuDao menuDao;
-	private final MenuGroupDao menuGroupDao;
+	private final MenuGroupRepository menuGroupRepository;
 	private final MenuProductDao menuProductDao;
-	private final ProductDao productDao;
+	private final ProductRepository productRepository;
 
 	public MenuService(
 		final MenuDao menuDao,
-		final MenuGroupDao menuGroupDao,
+		final MenuGroupRepository menuGroupRepository,
 		final MenuProductDao menuProductDao,
-		final ProductDao productDao
+		final ProductRepository productDao
 	) {
 		this.menuDao = menuDao;
-		this.menuGroupDao = menuGroupDao;
+		this.menuGroupRepository = menuGroupRepository;
 		this.menuProductDao = menuProductDao;
-		this.productDao = productDao;
+		this.productRepository = productDao;
 	}
 
 	@Transactional
@@ -43,7 +45,7 @@ public class MenuService {
 			throw new IllegalArgumentException("메뉴 가격은 0원 미만이 될 수 없습니다.");
 		}
 
-		if (!menuGroupDao.existsById(menu.getMenuGroupId())) {
+		if (!menuGroupRepository.existsById(menu.getMenuGroupId())) {
 			throw new IllegalArgumentException("메뉴가 메뉴그룹에 등록되지 않았습니다.");
 		}
 
@@ -51,7 +53,7 @@ public class MenuService {
 
 		BigDecimal sum = BigDecimal.ZERO;
 		for (final MenuProduct menuProduct : menuProducts) {
-			final Product product = productDao.findById(menuProduct.getProductId())
+			final Product product = productRepository.findById(menuProduct.getProductId())
 				.orElseThrow(() -> new IllegalArgumentException("상품에 없는 메뉴상품입니다."));
 			sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
 		}

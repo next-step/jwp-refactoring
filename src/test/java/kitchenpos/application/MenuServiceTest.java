@@ -18,14 +18,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
+import kitchenpos.repository.MenuGroupRepository;
+import kitchenpos.repository.ProductRepository;
 
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
@@ -33,11 +33,11 @@ class MenuServiceTest {
 	@Mock
 	private MenuDao menuDao;
 	@Mock
-	private MenuGroupDao menuGroupDao;
+	private MenuGroupRepository menuGroupRepository;
 	@Mock
 	private MenuProductDao menuProductDao;
 	@Mock
-	private ProductDao productDao;
+	private ProductRepository productRepository;
 	@InjectMocks
 	private MenuService menuService;
 
@@ -74,9 +74,9 @@ class MenuServiceTest {
 	@DisplayName("Menu 생성을 테스트 - happy path")
 	@Test
 	void testCreateMenu() {
-		when(menuGroupDao.existsById(A세트.getMenuGroupId())).thenReturn(true);
-		when(productDao.findById(탕수육중.getProductId())).thenReturn(Optional.of(탕수육));
-		when(productDao.findById(깐풍기중.getProductId())).thenReturn(Optional.of(깐풍기));
+		when(menuGroupRepository.existsById(A세트.getMenuGroupId())).thenReturn(true);
+		when(productRepository.findById(탕수육중.getProductId())).thenReturn(Optional.of(탕수육));
+		when(productRepository.findById(깐풍기중.getProductId())).thenReturn(Optional.of(깐풍기));
 		when(menuDao.save(A세트)).thenReturn(A세트);
 		when(menuProductDao.save(탕수육중)).thenReturn(탕수육중);
 		when(menuProductDao.save(깐풍기중)).thenReturn(깐풍기중);
@@ -114,7 +114,7 @@ class MenuServiceTest {
 		Menu menu = new Menu(1L, "menu", price, 1L, null);
 		Long menuGroupId = menu.getMenuGroupId();
 
-		when(menuGroupDao.existsById(menuGroupId)).thenReturn(false);
+		when(menuGroupRepository.existsById(menuGroupId)).thenReturn(false);
 
 		assertThatThrownBy(() -> {
 			menuService.create(menu);
@@ -125,8 +125,8 @@ class MenuServiceTest {
 	@DisplayName("메뉴의 메뉴상품이 상품에 등록되어 있지 않은경우 오류 발생")
 	@Test
 	void testMenuProductNotSavedProduct() {
-		when(menuGroupDao.existsById(A세트.getMenuGroupId())).thenReturn(true);
-		when(productDao.findById(탕수육중.getProductId())).thenReturn(Optional.empty());
+		when(menuGroupRepository.existsById(A세트.getMenuGroupId())).thenReturn(true);
+		when(productRepository.findById(탕수육중.getProductId())).thenReturn(Optional.empty());
 
 		assertThatThrownBy(() -> {
 			menuService.create(A세트);
@@ -137,10 +137,10 @@ class MenuServiceTest {
 	@DisplayName("메뉴 가격이 메뉴 상품의 가격의 합보다 크면 오류 발생")
 	@Test
 	void testMenuPriceBiggerThanTotalMenuProductPrice() {
-		when(menuGroupDao.existsById(B세트.getMenuGroupId())).thenReturn(true);
-		when(productDao.findById(탕수육중.getProductId())).thenReturn(Optional.empty());
-		when(productDao.findById(탕수육중.getProductId())).thenReturn(Optional.of(탕수육));
-		when(productDao.findById(깐풍기중.getProductId())).thenReturn(Optional.of(깐풍기));
+		when(menuGroupRepository.existsById(B세트.getMenuGroupId())).thenReturn(true);
+		when(productRepository.findById(탕수육중.getProductId())).thenReturn(Optional.empty());
+		when(productRepository.findById(탕수육중.getProductId())).thenReturn(Optional.of(탕수육));
+		when(productRepository.findById(깐풍기중.getProductId())).thenReturn(Optional.of(깐풍기));
 
 		assertThatThrownBy(() -> {
 			menuService.create(B세트);
