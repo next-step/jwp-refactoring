@@ -3,6 +3,8 @@ package kitchenpos.menu.application;
 import kitchenpos.menu.domain.MenuEntity;
 import kitchenpos.menu.domain.MenuProductEntity;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroupEntity;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.ProductEntity;
