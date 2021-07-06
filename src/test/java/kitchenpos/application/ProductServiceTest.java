@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.domain.menu.Price;
 import kitchenpos.domain.menu.Product;
 import kitchenpos.dto.menu.ProductRequest;
 import kitchenpos.repository.ProductRepository;
@@ -29,7 +30,7 @@ class ProductServiceTest {
 
     @BeforeEach
     void setUp() {
-        product = Product.of("product", BigDecimal.valueOf(1000L));
+        product = Product.of("product", Price.of(1000L));
     }
 
     @Test
@@ -37,7 +38,7 @@ class ProductServiceTest {
     void create() {
         given(productRepository.save(product)).willReturn(product);
 
-        ProductRequest productRequest = new ProductRequest("product", BigDecimal.valueOf(1000L));
+        ProductRequest productRequest = new ProductRequest("product", Price.of(1000L));
         productService.create(productRequest);
 
         verify(productRepository).save(product);

@@ -1,6 +1,8 @@
 package kitchenpos.application;
 
 import kitchenpos.domain.order.TableGroup;
+import kitchenpos.exception.InvalidOrderStatusException;
+import kitchenpos.exception.InvalidOrderTableException;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import kitchenpos.domain.order.OrderStatus;
@@ -86,8 +88,7 @@ class TableServiceTest {
 
 
         assertThatThrownBy(() -> tableService.changeEmpty(ANY_ORDER_TABLE_ID))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Invalid orderTable Status");
+                .isInstanceOf(InvalidOrderStatusException.class);
     }
 
     @Test
@@ -110,8 +111,7 @@ class TableServiceTest {
         given(orderTableRepository.findById(ANY_ORDER_TABLE_ID)).willReturn(Optional.of(orderTableDummy));
 
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(ANY_ORDER_TABLE_ID, 10))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("orderTable is empty");
+                .isInstanceOf(InvalidOrderTableException.class);
     }
 
     @Test

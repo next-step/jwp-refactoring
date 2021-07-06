@@ -20,7 +20,7 @@ class MenuTest {
     void setUp() {
         menuGroup = MenuGroup.of("menuGroupName");
         ReflectionTestUtils.setField(menuGroup, "id", ANY_MENU_GROUP_ID);
-        menu = Menu.of("tomato pasta", BigDecimal.ZERO, menuGroup, new ArrayList<>());
+        menu = Menu.of("tomato pasta", Price.of(0L), menuGroup, new ArrayList<>());
     }
 
     @Test

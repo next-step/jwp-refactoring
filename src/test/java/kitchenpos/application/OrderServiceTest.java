@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.exception.InvalidOrderLineItemsException;
 import kitchenpos.repository.MenuRepository;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderLineItemRepository;
@@ -94,8 +95,7 @@ class OrderServiceTest {
         orderRequest = new OrderRequest(ANY_ORDER_TABLE_ID, Lists.list(new OrderLineItemRequest(MENU_ID_1L, 10L)));
 
         assertThatThrownBy(() -> orderService.create(orderRequest))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Not Same as orderLineItems");
+                .isInstanceOf(InvalidOrderLineItemsException.class);
     }
 
     @Test

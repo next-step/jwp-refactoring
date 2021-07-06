@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.domain.menu.Price;
 import kitchenpos.repository.MenuRepository;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuGroup;
@@ -52,10 +53,10 @@ class MenuServiceTest {
         menuGroup = MenuGroup.of("menuGroupName");
         ReflectionTestUtils.setField(menuGroup, "id", ANY_MENU_GROUP_ID);
 
-        menuRequest = new MenuRequest("tomato pasta", BigDecimal.ZERO, ANY_MENU_GROUP_ID, new ArrayList<>());
-        menu = Menu.of("tomato pasta", BigDecimal.ZERO, menuGroup, new ArrayList<>());
+        menuRequest = new MenuRequest("tomato pasta", Price.of(BigDecimal.ZERO), ANY_MENU_GROUP_ID, new ArrayList<>());
+        menu = Menu.of("tomato pasta", Price.of(BigDecimal.ZERO), menuGroup, new ArrayList<>());
 
-        dummyProduct = Product.of("rice", BigDecimal.valueOf(10L));
+        dummyProduct = Product.of("rice", Price.of(BigDecimal.valueOf(10)));
         ReflectionTestUtils.setField(dummyProduct, "id", ANY_PRODUCT_ID);
     }
 
@@ -89,7 +90,7 @@ class MenuServiceTest {
         given(menuGroupService.findById(ANY_MENU_GROUP_ID)).willReturn(menuGroup);
         given(productService.getProduct(1L)).willReturn(dummyProduct);
 
-        menuRequest = new MenuRequest("tomato pasta", BigDecimal.valueOf(100L), ANY_MENU_GROUP_ID,
+        menuRequest = new MenuRequest("tomato pasta", Price.of(BigDecimal.valueOf(100L)), ANY_MENU_GROUP_ID,
                 Lists.list(new MenuProductRequest(ANY_PRODUCT_ID, 1)));
 
         assertThatThrownBy(() -> menuService.create(menuRequest))

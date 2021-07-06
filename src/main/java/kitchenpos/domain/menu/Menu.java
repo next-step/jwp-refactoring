@@ -16,7 +16,9 @@ public class Menu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private BigDecimal price;
+
+    @Embedded
+    private Price price;
 
     @OneToOne(fetch = LAZY, orphanRemoval = true)
     @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"))
@@ -29,16 +31,16 @@ public class Menu {
     public Menu() {
     }
 
-    private Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+    private Menu(Long id, String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = name;
-        setPrice(price);
+        this.price = price;
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
 
     }
 
-    public static Menu of(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+    public static Menu of(String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         return new Menu(null, name, price, menuGroup, menuProducts);
     }
 
@@ -50,15 +52,8 @@ public class Menu {
         return name;
     }
 
-    public BigDecimal getPrice() {
+    public Price getPrice() {
         return price;
-    }
-
-    private void setPrice(BigDecimal price) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("Should expect price is over zero");
-        }
-        this.price = price;
     }
 
     public MenuGroup getMenuGroup() {
@@ -73,9 +68,10 @@ public class Menu {
         BigDecimal sum = BigDecimal.ZERO;
         for (final MenuProduct menuProduct : this.menuProducts) {
             final Product product = menuProduct.getProduct();
-            sum = sum.add(product.multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
+            Price multiply = product.multiply(BigDecimal.valueOf(menuProduct.getQuantity()));
+            sum = sum.add(multiply.value);
         }
-        return this.price.compareTo(sum) <= 0;
+        return price.value.compareTo(sum) <= 0;
     }
 
     public void addMenuProducts(MenuProduct menuProduct) {

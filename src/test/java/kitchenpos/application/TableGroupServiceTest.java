@@ -1,5 +1,7 @@
 package kitchenpos.application;
 
+import kitchenpos.exception.InvalidOrderStatusException;
+import kitchenpos.exception.NotMatchOrderTableException;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import kitchenpos.domain.order.OrderStatus;
@@ -78,8 +80,7 @@ class TableGroupServiceTest {
                 new OrderTableId(ORDER_TABLE_ID_2L)));
 
         assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("not same as orderTable size");
+                .isInstanceOf(NotMatchOrderTableException.class);
     }
 
     @Test
@@ -133,7 +134,6 @@ class TableGroupServiceTest {
                 .willReturn(true);
 
         assertThatThrownBy(() -> tableGroupService.ungroup(ANY_TABLE_GROUP_ID))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Invalid OrderStatus");
+                .isInstanceOf(InvalidOrderStatusException.class);
     }
 }

@@ -14,19 +14,19 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private BigDecimal price;
+    private Price price;
 
     // for jpa
     public Product() {
     }
 
-    private Product(Long id, String name, BigDecimal price) {
+    private Product(Long id, String name, Price price) {
         this.id = id;
         this.name = name;
-        setPrice(price);
+        this.price = price;
     }
 
-    public static Product of(String name, BigDecimal price) {
+    public static Product of(String name, Price price) {
         return new Product(null, name, price);
     }
 
@@ -38,23 +38,16 @@ public class Product {
         return name;
     }
 
-    public BigDecimal getPrice() {
+    public Price getPrice() {
         return price;
     }
 
-    private void setPrice(BigDecimal price) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("Invalid price");
-        }
+    public void changePrice(Price price) {
         this.price = price;
     }
 
-    public void changePrice(BigDecimal price) {
-        setPrice(price);
-    }
-
-    public BigDecimal multiply(BigDecimal factor) {
-        return this.price.multiply(factor);
+    public Price multiply(BigDecimal factor) {
+        return price.multiply(factor);
     }
 
     @Override
