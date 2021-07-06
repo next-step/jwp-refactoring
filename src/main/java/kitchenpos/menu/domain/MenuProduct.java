@@ -18,12 +18,6 @@ import kitchenpos.product.domain.Product;
 public class MenuProduct {
     public MenuProduct() {}
 
-    private MenuProduct(Menu menu, Product product, Quantity quantity) {
-        this.menu = menu;
-        this.product = product;
-        this.quantity = quantity;
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
@@ -38,6 +32,12 @@ public class MenuProduct {
 
     @Embedded
     private Quantity quantity;
+
+    private MenuProduct(Menu menu, Product product, Quantity quantity) {
+        this.menu = menu;
+        this.product = product;
+        this.quantity = quantity;
+    }
 
     public static MenuProduct of(Menu menu, Product product, Quantity quantity) {
         return new MenuProduct(menu, product, quantity);
