@@ -8,16 +8,16 @@ import java.util.stream.Collectors;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 
-import kitchenpos.order.dto.OrderStatusRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import kitchenpos.order.dto.OrderStatusRequest;
+import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -27,7 +27,6 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.product.dto.ProductRequest;
 
 @DisplayName("주문 인수 테스트")
@@ -182,7 +181,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> 주문_테이블_생성_요청(int 손님_수, boolean 비어있음_여부) {
         return RestAssured.given().log().all()
-                .body(new OrderTable(손님_수, 비어있음_여부))
+                .body(new OrderTableRequest(손님_수, 비어있음_여부))
                 .contentType(ContentType.JSON)
                 .when().post("/api/tables")
                 .then().log().all()

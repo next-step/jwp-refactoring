@@ -139,9 +139,6 @@ class OrderServiceTest {
     @Test
     void createFailedByOrderTable() {
         // given
-        OrderTable orderTable = new OrderTable();
-        orderTable.setEmpty(true);
-
         // when
         // then
         assertThatThrownBy(() -> orderService.create(orderRequest))

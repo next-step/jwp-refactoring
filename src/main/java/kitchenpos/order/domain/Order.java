@@ -12,14 +12,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.common.error.CustomException;
+import kitchenpos.common.error.ErrorInfo;
 
 @Entity
 @Table(name = "orders")
 public class Order {
 
-    public Order() {}
+    public Order() {
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,6 +54,12 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
+    public void checkChangeableStatus() {
+        if (orderStatus.equals(OrderStatus.COOKING) || orderStatus.equals(OrderStatus.MEAL)) {
+            throw new CustomException(ErrorInfo.INVALID_ORDER_STATUS);
+        }
+    }
+
     public Long getId() {
         return id;
     }
@@ -75,9 +82,5 @@ public class Order {
 
     public void addOrderLineItem(OrderLineItem orderLineItem) {
         this.orderLineItems.add(orderLineItem);
-    }
-
-    public boolean checkOrderStatus() {
-        return orderStatus.equals(OrderStatus.COOKING) || orderStatus.equals(OrderStatus.MEAL);
     }
 }
