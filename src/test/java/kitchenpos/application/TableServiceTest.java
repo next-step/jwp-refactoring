@@ -145,10 +145,10 @@ class TableServiceTest {
     @DisplayName("손님 수 변경 실패(손님 숫자가 0보다 작음)")
     void changeNumberOfGuests_failed1() {
         // given
-        OrderTable 손님10명 = new OrderTable(-1);
+        OrderTable 손님_음수1명 = new OrderTable(-1);
 
         // then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(테이블1번_USING.getId(), 손님10명))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(테이블1번_USING.getId(), 손님_음수1명))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
