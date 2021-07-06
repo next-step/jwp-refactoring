@@ -14,7 +14,7 @@ public class OrderLineItemViewResponse {
         return new OrderLineItemViewResponse(
                 orderLineItem.getId(),
                 orderLineItem.getOrder().getId(),
-                orderLineItem.getMenu().getId(),
+                orderLineItem.getMenuId(),
                 orderLineItem.getQuantity().toLong()
         );
     }

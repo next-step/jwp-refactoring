@@ -1,5 +1,7 @@
 package kitchenpos.domain.order;
 
+import kitchenpos.domain.Name;
+import kitchenpos.domain.Price;
 import kitchenpos.domain.Quantity;
 import kitchenpos.domain.menu.Menu;
 
@@ -15,8 +17,13 @@ public class OrderLineItem {
     @ManyToOne(fetch = FetchType.LAZY)
     private Order order;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Menu menu;
+    private Long menuId;
+
+    @AttributeOverride(name = "name", column = @Column(name = "menu_name"))
+    private Name menuName;
+
+    @AttributeOverride(name = "price", column = @Column(name = "menu_price"))
+    private Price menuPrice;
 
     private Quantity quantity;
 
@@ -34,7 +41,9 @@ public class OrderLineItem {
     public OrderLineItem(Long id, Order order, Menu menu, Quantity quantity) {
         this.id = id;
         this.order = order;
-        this.menu = menu;
+        this.menuId = menu.getId();
+        this.menuName = menu.getName();
+        this.menuPrice = menu.getPrice();
         this.quantity = quantity;
     }
 
@@ -42,8 +51,16 @@ public class OrderLineItem {
         return order;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public Long getMenuId() {
+        return menuId;
+    }
+
+    public Name getMenuName() {
+        return menuName;
+    }
+
+    public Price getMenuPrice() {
+        return menuPrice;
     }
 
     public Long getId() {

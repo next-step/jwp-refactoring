@@ -73,7 +73,7 @@ class OrderServiceTest {
         orderLineItems = Arrays.asList(주문_연결_안된_양념치킨_콜라_1000원_1개, 주문_연결_안된_후라이드치킨_콜라_2000원_1개);
 
         orderLineItemCreates = this.orderLineItems.stream()
-                .map(item -> new OrderLineItemCreate(item.getMenu().getId(), item.getQuantity()))
+                .map(item -> new OrderLineItemCreate(item.getMenuId(), item.getQuantity()))
                 .collect(Collectors.toList());
     }
 

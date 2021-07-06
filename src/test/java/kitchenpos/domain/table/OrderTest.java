@@ -22,6 +22,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static kitchenpos.fixture.OrderFixture.결제완료1;
 import static kitchenpos.fixture.OrderTableFixture.미사용중인_테이블;
@@ -97,6 +98,9 @@ class OrderTest {
                 new Menu(2L, new Name("2"), new Price(2), null, Arrays.asList(menuProduct2))
         );
         Menus menus = new Menus(menuList);
+        List<Long> menuIds = menuList.stream()
+                .map(Menu::getId)
+                .collect(Collectors.toList());
 
         // when
         Order order = Order.create(orderCreate, menus, 사용중인_1명_테이블);
@@ -107,8 +111,8 @@ class OrderTest {
         assertThat(order.getOrderedTime()).isNotNull();
 
         assertThat(order.getOrderLineItems())
-                .map(item -> item.getMenu())
-                .containsExactlyElementsOf(menuList);
+                .map(item -> item.getMenuId())
+                .containsExactlyElementsOf(menuIds);
         assertThat(order.getOrderLineItems())
                 .map(item -> item.getQuantity())
                 .containsExactly(new Quantity(1L), new Quantity(2L));

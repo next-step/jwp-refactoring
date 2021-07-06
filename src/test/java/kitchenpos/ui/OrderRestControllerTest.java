@@ -117,7 +117,7 @@ class OrderRestControllerTest {
             ResultMatcher.matchAll(
                     jsonPath(prefix + ".seq").value(orderLineItem.getId()),
                     jsonPath(prefix + ".orderId").value(orderLineItem.getOrder().getId()),
-                    jsonPath(prefix + ".menuId").value(orderLineItem.getMenu().getId()),
+                    jsonPath(prefix + ".menuId").value(orderLineItem.getMenuId()),
                     jsonPath(prefix + ".quantity").value(orderLineItem.getQuantity().toLong())
             ).match(result);
         };
