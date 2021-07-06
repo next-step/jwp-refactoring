@@ -15,6 +15,8 @@ public enum ErrorInfo {
     INVALID_NUMBER_OF_GUESTS("고객 수가 음수입니다."),
     EXISTS_TABLE_GROUP("테이블 그룹이 비어 있지 않습니다."),
     ORDER_TABLE_IS_EMPTY("주문 테이블이 비어있습니다."),
+    INVALID_REQUEST_ORDER_TABLE_SIZE("주문 테이블 개수가 유효하지 않습니다."),
+    ORDER_TABLE_IS_NOT_EMPTY("주문 테이블이 비어있지 않습니다."),
     ;
 
     private String message;

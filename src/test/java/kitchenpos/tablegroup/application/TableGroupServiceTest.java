@@ -9,6 +9,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import kitchenpos.common.error.CustomException;
+import kitchenpos.common.error.ErrorInfo;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.tablegroup.domain.OrderTables;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,9 +55,6 @@ class TableGroupServiceTest {
     void setup() {
         orderTable = new OrderTable(1L, new NumberOfGuests(2), true);
         addOrderTable = new OrderTable(2L, new NumberOfGuests(2), true);
-
-        tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Arrays.asList(orderTable, addOrderTable));
     }
 
     @DisplayName("사용자는 단체 지정을 할 수 있다.")
@@ -59,11 +63,10 @@ class TableGroupServiceTest {
         // given
 
         // when
-//        when(orderTableDao.findAllByIdIn(any())).thenReturn(Arrays.asList(orderTable, addOrderTable));
-        when(orderTableDao.save(any())).thenReturn(new OrderTable());
-        when(tableGroupDao.save(tableGroup)).thenReturn(tableGroup);
+        when(orderTableDao.findAllById(any())).thenReturn(Arrays.asList(orderTable, addOrderTable));
+        when(tableGroupDao.save(any())).thenReturn(tableGroup);
 
-        TableGroup createdTableGroup = tableGroupService.create(tableGroup);
+        TableGroupResponse createdTableGroup = tableGroupService.create(new TableGroupRequest(Arrays.asList(1L, 2L)));
         // then
         assertThat(createdTableGroup).isNotNull();
     }
@@ -73,46 +76,50 @@ class TableGroupServiceTest {
     void ungroup() {
         // given
         List<OrderTable> orderTables = Arrays.asList(orderTable, addOrderTable);
+        Order order = Order.of(1L, OrderStatus.COMPLETION);
         // when
-//        when(orderTableDao.findAllByTableGroupId(1L)).thenReturn(orderTables);
-//        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(false);
+        when(orderTableDao.findAllByTableGroupId(1L)).thenReturn(orderTables);
+        when(orderDao.findByOrderTableId(any())).thenReturn(Arrays.asList(order));
+
         // then
         tableGroupService.ungroup(1L);
-        assertTrue(true);
     }
 
     @DisplayName("주문테이블의 요청 id의 개수가 2보다 작은지 체크한다.")
     @Test
     void createFailedByOrderTables() {
         // given
-        tableGroup.setOrderTables(new ArrayList<>());
         // when
         // then
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableGroupService.create(new TableGroupRequest(Arrays.asList(1L))))
+                .isInstanceOf(CustomException.class)
+                .hasMessage(ErrorInfo.INVALID_REQUEST_ORDER_TABLE_SIZE.message());
     }
 
     @DisplayName("주문테이블의 데이터를 체크한다. 이 때 요청 받은 주문테이블의 데이터가 모두 있는지 체크한다.")
     @Test
     void createFailedByOrderTablesCount() {
         // given
-
         // when
-//        when(orderTableDao.findAllByIdIn(any())).thenReturn(Arrays.asList(orderTable));
         // then
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableGroupService.create(new TableGroupRequest()))
+                .isInstanceOf(CustomException.class)
+                .hasMessage(ErrorInfo.INVALID_REQUEST_ORDER_TABLE_SIZE.message());
     }
 
-    @DisplayName("조회 시 주문 상태가 요리중, 식사중 상태가아닌지 체크한다.")
+    @DisplayName("그룹 제거 시 주문 상태가 요리중, 식사중 상태가아닌지 체크한다.")
     @Test
     void ungroupFailedByCookingStatus() {
         // given
         List<OrderTable> orderTables = Arrays.asList(orderTable, addOrderTable);
-
+        Order order = Order.of(1L, OrderStatus.MEAL);
         // when
-//        when(orderTableDao.findAllByTableGroupId(1L)).thenReturn(orderTables);
-//        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(true);
+        when(orderTableDao.findAllByTableGroupId(1L)).thenReturn(orderTables);
+        when(orderDao.findByOrderTableId(any())).thenReturn(Arrays.asList(order));
 
         // then
-        assertThatThrownBy(() -> tableGroupService.ungroup(1L)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableGroupService.ungroup(1L))
+                .isInstanceOf(CustomException.class)
+                .hasMessage(ErrorInfo.INVALID_ORDER_STATUS.message());
     }
 }

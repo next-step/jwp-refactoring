@@ -1,21 +1,17 @@
 package kitchenpos.tablegroup.domain;
 
 import kitchenpos.ordertable.domain.OrderTable;
-import org.springframework.web.bind.annotation.PutMapping;
 
-import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
+@Table(name = "table_group")
 public class TableGroup {
 
     public TableGroup() {}
@@ -23,10 +19,20 @@ public class TableGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private LocalDateTime createdDate;
 
-    @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderTable> orderTables;
+    @Embedded
+    private OrderTables orderTables;
+
+    public TableGroup(OrderTables orderTables) {
+        this.orderTables = orderTables;
+        this.createdDate = LocalDateTime.now();
+    }
+
+    public static TableGroup of(OrderTables orderTables) {
+        return new TableGroup(orderTables);
+    }
 
     public Long getId() {
         return id;
@@ -44,11 +50,7 @@ public class TableGroup {
         this.createdDate = createdDate;
     }
 
-    public List<OrderTable> getOrderTables() {
-        return orderTables;
-    }
-
-    public void setOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
+    public void initOrderTable() {
+        orderTables.init(this);
     }
 }

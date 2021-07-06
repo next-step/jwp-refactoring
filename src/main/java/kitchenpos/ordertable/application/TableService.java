@@ -1,5 +1,6 @@
 package kitchenpos.ordertable.application;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -42,14 +43,13 @@ public class TableService {
         final OrderTable orderTable = orderTableDao.findById(orderTableId)
                 .orElseThrow(() -> new CustomException(ErrorInfo.NOT_FOUND_ORDER_TABLE));
 
-        final List<Order> orders = orderDao.findByOrderTableId(orderTableId);
+        final List<Order> orders = orderDao.findByOrderTableId(Arrays.asList(orderTableId));
 
         if (orders.isEmpty()) {
             throw new CustomException(ErrorInfo.NOT_FOUND_ORDER);
         }
 
         orders.forEach(Order::checkChangeableStatus);
-        orderTable.checkExistsTableGroup();
         orderTable.empty(orderTableRequest.isEmpty());
 
         return OrderTableResponse.of(orderTable);

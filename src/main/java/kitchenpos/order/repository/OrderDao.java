@@ -9,6 +9,6 @@ import org.springframework.data.repository.query.Param;
 import kitchenpos.order.domain.Order;
 
 public interface OrderDao extends JpaRepository<Order, Long> {
-    @Query("select o from Order o where o.orderTableId in (:orderTableId)")
-    List<Order> findByOrderTableId(@Param("orderTableId") Long orderTableId);
+    @Query("select o from Order o where o.orderTableId in (:orderTableIds)")
+    List<Order> findByOrderTableId(@Param("orderTableIds") List<Long> orderTableIds);
 }
