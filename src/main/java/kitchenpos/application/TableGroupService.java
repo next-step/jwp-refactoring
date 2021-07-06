@@ -49,7 +49,7 @@ public class TableGroupService {
 		}
 
 		for (final OrderTable savedOrderTable : savedOrderTables) {
-			if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
+			if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup())) {
 				throw new IllegalArgumentException("주문테이블이 단체지정이 되어있거나, 비어있지 않은 테이블입니다.");
 			}
 		}
@@ -60,7 +60,7 @@ public class TableGroupService {
 
 		final Long tableGroupId = savedTableGroup.getId();
 		for (final OrderTable savedOrderTable : savedOrderTables) {
-			savedOrderTable.setTableGroupId(tableGroupId);
+			savedOrderTable.setTableGroup(savedTableGroup);
 			savedOrderTable.setEmpty(false);
 			orderTableDao.save(savedOrderTable);
 		}
@@ -83,7 +83,7 @@ public class TableGroupService {
 		}
 
 		for (final OrderTable orderTable : orderTables) {
-			orderTable.setTableGroupId(null);
+			orderTable.setTableGroup(null);
 			orderTableDao.save(orderTable);
 		}
 	}

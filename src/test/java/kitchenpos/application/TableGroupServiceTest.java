@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
+import kitchenpos.domain.NumberOfGuests;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
@@ -44,8 +45,8 @@ class TableGroupServiceTest {
 	@BeforeEach
 	void setUp() {
 		주문테이블 = new ArrayList<>();
-		일번테이블 = new OrderTable(1L, 1L, 3, false);
-		이번테이블 = new OrderTable(2L, 1L, 3, false);
+		일번테이블 = new OrderTable(null, new NumberOfGuests(1), false);
+		이번테이블 = new OrderTable(null, new NumberOfGuests(2), false);
 
 		주문테이블.add(일번테이블);
 		주문테이블.add(이번테이블);
@@ -89,7 +90,6 @@ class TableGroupServiceTest {
 	@Test
 	void testOrderTablesEmpty() {
 		List<OrderTable> emptyOrderTables = new ArrayList<>();
-		emptyOrderTables.add(new OrderTable(1L, 1L, 3, false));
 		TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), emptyOrderTables);
 
 		assertThatThrownBy(() -> {
@@ -104,9 +104,9 @@ class TableGroupServiceTest {
 		TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), 주문테이블);
 
 		List<OrderTable> savedOrderTables = new ArrayList<>();
-		savedOrderTables.add(new OrderTable(1L, 1L, 3, false));
-		savedOrderTables.add(new OrderTable(2L, 1L, 3, false));
-		savedOrderTables.add(new OrderTable(3L, 1L, 3, false));
+		savedOrderTables.add(new OrderTable(null, new NumberOfGuests(3), false));
+		savedOrderTables.add(new OrderTable(null, new NumberOfGuests(3), false));
+		savedOrderTables.add(new OrderTable(null, new NumberOfGuests(3), false));
 
 		when(orderTableDao.findAllByIdIn(주문테이블아이디목록)).thenReturn(savedOrderTables);
 
@@ -122,8 +122,8 @@ class TableGroupServiceTest {
 		TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), 주문테이블);
 
 		List<OrderTable> savedOrderTables = new ArrayList<>();
-		savedOrderTables.add(new OrderTable(1L, 1L, 3, false));
-		savedOrderTables.add(new OrderTable(2L, null, 3, false));
+		savedOrderTables.add(new OrderTable(null, new NumberOfGuests(3), false));
+		savedOrderTables.add(new OrderTable(null, new NumberOfGuests(3), false));
 
 		when(orderTableDao.findAllByIdIn(주문테이블아이디목록)).thenReturn(savedOrderTables);
 
@@ -139,8 +139,8 @@ class TableGroupServiceTest {
 		TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), 주문테이블);
 
 		List<OrderTable> savedOrderTables = new ArrayList<>();
-		savedOrderTables.add(new OrderTable(1L, 1L, 3, false));
-		savedOrderTables.add(new OrderTable(2L, 1L, 3, true));
+		savedOrderTables.add(new OrderTable(null, new NumberOfGuests(3), false));
+		savedOrderTables.add(new OrderTable(null, new NumberOfGuests(3), false));
 
 		when(orderTableDao.findAllByIdIn(주문테이블아이디목록)).thenReturn(savedOrderTables);
 
@@ -157,8 +157,8 @@ class TableGroupServiceTest {
 		TableGroup tableGroup = new TableGroup(1L, createdDate, 주문테이블);
 
 		List<OrderTable> savedOrderTables = new ArrayList<>();
-		savedOrderTables.add(new OrderTable(1L, null, 3, true));
-		savedOrderTables.add(new OrderTable(2L, null, 3, true));
+		savedOrderTables.add(new OrderTable(null, new NumberOfGuests(3), true));
+		savedOrderTables.add(new OrderTable(null, new NumberOfGuests(3), true));
 		TableGroup savedTableGroup = new TableGroup(1L, createdDate, savedOrderTables);
 
 		when(orderTableDao.findAllByIdIn(주문테이블아이디목록)).thenReturn(savedOrderTables);
@@ -168,5 +168,4 @@ class TableGroupServiceTest {
 
 		assertThat(actual.getOrderTables()).containsExactlyElementsOf(savedOrderTables);
 	}
-
 }

@@ -2,18 +2,36 @@ package kitchenpos.domain;
 
 import java.util.Objects;
 
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+@Entity
 public class OrderTable {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private Long tableGroupId;
-	private int numberOfGuests;
+
+	@ManyToOne
+	@JoinColumn(name = "table_group_id")
+	private TableGroup tableGroup;
+
+	@Embedded
+	private NumberOfGuests numberOfGuests;
+
+	@Column(name = "empty")
 	private boolean empty;
 
 	protected OrderTable() {
 	}
 
-	public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
-		this.id = id;
-		this.tableGroupId = tableGroupId;
+	public OrderTable(TableGroup tableGroup, NumberOfGuests numberOfGuests, boolean empty) {
+		this.tableGroup = tableGroup;
 		this.numberOfGuests = numberOfGuests;
 		this.empty = empty;
 	}
@@ -22,32 +40,16 @@ public class OrderTable {
 		return id;
 	}
 
-	public void setId(final Long id) {
-		this.id = id;
+	public TableGroup getTableGroup() {
+		return tableGroup;
 	}
 
-	public Long getTableGroupId() {
-		return tableGroupId;
-	}
-
-	public void setTableGroupId(final Long tableGroupId) {
-		this.tableGroupId = tableGroupId;
-	}
-
-	public int getNumberOfGuests() {
+	public NumberOfGuests getNumberOfGuests() {
 		return numberOfGuests;
-	}
-
-	public void setNumberOfGuests(final int numberOfGuests) {
-		this.numberOfGuests = numberOfGuests;
 	}
 
 	public boolean isEmpty() {
 		return empty;
-	}
-
-	public void setEmpty(final boolean empty) {
-		this.empty = empty;
 	}
 
 	@Override
@@ -57,12 +59,42 @@ public class OrderTable {
 		if (o == null || getClass() != o.getClass())
 			return false;
 		OrderTable that = (OrderTable)o;
-		return numberOfGuests == that.numberOfGuests && empty == that.empty && Objects.equals(id, that.id)
-			&& Objects.equals(tableGroupId, that.tableGroupId);
+		return empty == that.empty && Objects.equals(id, that.id) && Objects.equals(tableGroup,
+			that.tableGroup) && Objects.equals(numberOfGuests, that.numberOfGuests);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, tableGroupId, numberOfGuests, empty);
+		return Objects.hash(id, tableGroup, numberOfGuests, empty);
+	}
+
+	public void changeTableGroup(TableGroup tableGroup) {
+		this.tableGroup = tableGroup;
+	}
+
+	public void changeNumberOfGuests(NumberOfGuests numberOfGuests) {
+		if (empty) {
+			throw new IllegalArgumentException("비어있는 테이블입니다.");
+		}
+		this.numberOfGuests = numberOfGuests;
+	}
+
+	public void changeEmpty(boolean empty) {
+		if (this.tableGroup != null) {
+			throw new IllegalArgumentException("단체 지정되어있는 테이블은 변경할 수 없습니다.");
+		}
+		this.empty = empty;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public void setTableGroup(TableGroup tableGroup) {
+		this.tableGroup = tableGroup;
+	}
+
+	public void setEmpty(boolean empty) {
+		this.empty = empty;
 	}
 }
