@@ -33,11 +33,10 @@ class MenuGroupServiceTest {
 		MenuGroup menuGroup = new MenuGroup(1L, "중식");
 		MenuGroup expected = new MenuGroup(1L, "중식");
 
-		when(menuGroupDao.save(eq(menuGroup))).thenReturn(expected);
-
+		when(menuGroupDao.save(menuGroup)).thenReturn(expected);
 		MenuGroup actual = menuGroupService.create(menuGroup);
 
-		verify(menuGroupDao, times(1)).save(eq(menuGroup));
+		verify(menuGroupDao, times(1)).save(menuGroup);
 		assertThat(actual.getId()).isEqualTo(expected.getId());
 		assertThat(actual.getName()).isEqualTo(expected.getName());
 	}

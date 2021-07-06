@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -43,6 +44,7 @@ class OrderServiceTest {
 	private OrderLineItem A세트3개;
 	private Order 주문;
 	private List<OrderLineItem> 주문항목;
+	private List<Long> 주문항목아이디목록;
 
 	@BeforeEach
 	void setUp() {
@@ -50,6 +52,8 @@ class OrderServiceTest {
 		A세트3개 = new OrderLineItem(1L, 1L, 1L, 3);
 		주문항목.add(A세트3개);
 		주문 = new Order(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), 주문항목);
+
+		주문항목아이디목록 = 주문항목.stream().map(OrderLineItem::getMenuId).collect(Collectors.toList());
 	}
 
 	@DisplayName("빈 테이블에서 주문이 생성된경우 오류 발생")
@@ -58,8 +62,8 @@ class OrderServiceTest {
 		Order order = new Order(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), 주문항목);
 		OrderTable orderTable = new OrderTable(1L, 1L, 0, true);
 
-		when(menuDao.countByIdIn(any())).thenReturn(1L);
-		when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(orderTable));
+		when(menuDao.countByIdIn(주문항목아이디목록)).thenReturn(1L);
+		when(orderTableDao.findById(order.getId())).thenReturn(Optional.of(orderTable));
 
 		assertThatThrownBy(() -> {
 			orderService.create(order);
@@ -71,8 +75,8 @@ class OrderServiceTest {
 	@Test
 	void testNotFoundOrderTable() {
 		Order order = new Order(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), 주문항목);
-		when(menuDao.countByIdIn(any())).thenReturn(1L);
-		when(orderTableDao.findById(anyLong())).thenReturn(Optional.empty());
+		when(menuDao.countByIdIn(주문항목아이디목록)).thenReturn(1L);
+		when(orderTableDao.findById(order.getId())).thenReturn(Optional.empty());
 
 		assertThatThrownBy(() -> {
 			orderService.create(order);
@@ -86,7 +90,7 @@ class OrderServiceTest {
 		Order order = new Order(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), 주문항목);
 
 		List<Long> menuIds = Arrays.asList(1L);
-		when(menuDao.countByIdIn(eq(menuIds))).thenReturn(2L);
+		when(menuDao.countByIdIn(menuIds)).thenReturn(2L);
 		assertThatThrownBy(() -> {
 			orderService.create(order);
 		}).isInstanceOf(IllegalArgumentException.class)
@@ -111,9 +115,9 @@ class OrderServiceTest {
 		OrderTable orderTable = new OrderTable(1L, 1L, 0, false);
 		Long orderTableId = order.getOrderTableId();
 
-		when(menuDao.countByIdIn(any())).thenReturn(1L);
-		when(orderTableDao.findById(eq(orderTableId))).thenReturn(Optional.of(orderTable));
-		when(orderDao.save(eq(order))).thenReturn(order);
+		when(menuDao.countByIdIn(주문항목아이디목록)).thenReturn(1L);
+		when(orderTableDao.findById(orderTableId)).thenReturn(Optional.of(orderTable));
+		when(orderDao.save(order)).thenReturn(order);
 		when(orderLineItemDao.save(A세트3개)).thenReturn(A세트3개);
 
 		Order actual = orderService.create(order);
@@ -127,7 +131,7 @@ class OrderServiceTest {
 	void testAlreadyOrderStatusCompletion() {
 		Order completionOrder = new Order(1L, 1L, OrderStatus.COMPLETION.name(), LocalDateTime.now(), 주문항목);
 
-		when(orderDao.findById(eq(completionOrder.getId()))).thenReturn(Optional.of(completionOrder));
+		when(orderDao.findById(completionOrder.getId())).thenReturn(Optional.of(completionOrder));
 
 		assertThatThrownBy(() -> {
 			orderService.changeOrderStatus(1L, completionOrder);
@@ -142,7 +146,7 @@ class OrderServiceTest {
 		Order order = new Order(1L, 1L, OrderStatus.MEAL.name(), LocalDateTime.now(), 주문항목);
 		Long orderId = 1L;
 
-		when(orderDao.findById(eq(orderId))).thenReturn(Optional.of(주문));
+		when(orderDao.findById(orderId)).thenReturn(Optional.of(주문));
 
 		Order actual = orderService.changeOrderStatus(orderId, order);
 		assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
@@ -154,7 +158,7 @@ class OrderServiceTest {
 		Order order = new Order(1L, 1L, OrderStatus.MEAL.name(), LocalDateTime.now(), 주문항목);
 		Long orderId = 1L;
 
-		when(orderDao.findById(eq(orderId))).thenReturn(Optional.empty());
+		when(orderDao.findById(orderId)).thenReturn(Optional.empty());
 
 		assertThatThrownBy(() -> {
 			orderService.changeOrderStatus(orderId, order);

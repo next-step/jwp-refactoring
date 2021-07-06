@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.dao.MenuDao;
@@ -53,8 +52,10 @@ class MenuServiceTest {
 	@BeforeEach
 	void setUp() {
 		중식 = new MenuGroup(1L, "중식");
-		탕수육 = new Product(1L, "탕수육", BigDecimal.valueOf(10000));
-		깐풍기 = new Product(2L, "깐풍기", BigDecimal.valueOf(12000));
+		BigDecimal 탕수육가격 = BigDecimal.valueOf(10000);
+		BigDecimal 깐풍기가격 = BigDecimal.valueOf(12000);
+		탕수육 = new Product(1L, "탕수육", 탕수육가격);
+		깐풍기 = new Product(2L, "깐풍기", 깐풍기가격);
 
 		탕수육중 = new MenuProduct(1L, 1L, 탕수육.getId(), 1);
 		깐풍기중 = new MenuProduct(2L, 1L, 깐풍기.getId(), 1);
@@ -63,22 +64,23 @@ class MenuServiceTest {
 		menuProducts.add(탕수육중);
 		menuProducts.add(깐풍기중);
 
-		A세트 = new Menu(1L, "A세트", BigDecimal.valueOf(20000), 중식.getId(), menuProducts);
-		B세트 = new Menu(1L, "B세트", BigDecimal.valueOf(23000), 중식.getId(), menuProducts);
+		BigDecimal A세트가격 = BigDecimal.valueOf(20000);
+		BigDecimal B세트가격 = BigDecimal.valueOf(23000);
+		A세트 = new Menu(1L, "A세트", A세트가격, 중식.getId(), menuProducts);
+		B세트 = new Menu(1L, "B세트", B세트가격, 중식.getId(), menuProducts);
 	}
 
 	@DisplayName("Menu 생성을 테스트 - happy path")
 	@Test
 	void testCreateMenu() {
-		when(menuGroupDao.existsById(eq(A세트.getMenuGroupId()))).thenReturn(true);
+		when(menuGroupDao.existsById(A세트.getMenuGroupId())).thenReturn(true);
 		when(productDao.findById(탕수육중.getProductId())).thenReturn(Optional.of(탕수육));
 		when(productDao.findById(깐풍기중.getProductId())).thenReturn(Optional.of(깐풍기));
-		when(menuDao.save(eq(A세트))).thenReturn(A세트);
-		when(menuProductDao.save(any())).thenReturn(탕수육중).thenReturn(깐풍기중);
+		when(menuDao.save(A세트)).thenReturn(A세트);
+		when(menuProductDao.save(탕수육중)).thenReturn(탕수육중);
+		when(menuProductDao.save(깐풍기중)).thenReturn(깐풍기중);
 
 		Menu actual = menuService.create(A세트);
-
-		verify(menuProductDao, times(2)).save(any());
 
 		List<Long> actualMenuProductsId = actual.getMenuProducts()
 			.stream()
@@ -95,7 +97,8 @@ class MenuServiceTest {
 	@DisplayName("메뉴 가격이 0보다 작은경우 오류발생")
 	@Test
 	void testCreateErrorPriceZero() {
-		Menu menu = new Menu(1L, "menu", BigDecimal.valueOf(-1), 1L, null);
+		BigDecimal price = BigDecimal.valueOf(-1);
+		Menu menu = new Menu(1L, "menu", price, 1L, null);
 
 		assertThatThrownBy(() -> {
 			menuService.create(menu);
@@ -106,10 +109,11 @@ class MenuServiceTest {
 	@DisplayName("메뉴가 메뉴 그룹에 포함되어있지 않은경우 오류 발생")
 	@Test
 	void testMenuNotContainsInMenuGroup() {
-		Menu menu = new Menu(1L, "menu", BigDecimal.valueOf(20000), 1L, null);
+		BigDecimal price = BigDecimal.valueOf(20000);
+		Menu menu = new Menu(1L, "menu", price, 1L, null);
 		Long menuGroupId = menu.getMenuGroupId();
 
-		when(menuGroupDao.existsById(Mockito.eq(menuGroupId))).thenReturn(false);
+		when(menuGroupDao.existsById(menuGroupId)).thenReturn(false);
 
 		assertThatThrownBy(() -> {
 			menuService.create(menu);
@@ -120,8 +124,8 @@ class MenuServiceTest {
 	@DisplayName("메뉴의 메뉴상품이 상품에 등록되어 있지 않은경우 오류 발생")
 	@Test
 	void testMenuProductNotSavedProduct() {
-		when(menuGroupDao.existsById(eq(A세트.getMenuGroupId()))).thenReturn(true);
-		when(productDao.findById(eq(탕수육중.getProductId()))).thenReturn(Optional.empty());
+		when(menuGroupDao.existsById(A세트.getMenuGroupId())).thenReturn(true);
+		when(productDao.findById(탕수육중.getProductId())).thenReturn(Optional.empty());
 
 		assertThatThrownBy(() -> {
 			menuService.create(A세트);
@@ -132,8 +136,8 @@ class MenuServiceTest {
 	@DisplayName("메뉴 가격이 메뉴 상품의 가격의 합보다 크면 오류 발생")
 	@Test
 	void testMenuPriceBiggerThanTotalMenuProductPrice() {
-		when(menuGroupDao.existsById(eq(B세트.getMenuGroupId()))).thenReturn(true);
-		when(productDao.findById(eq(탕수육중.getProductId()))).thenReturn(Optional.empty());
+		when(menuGroupDao.existsById(B세트.getMenuGroupId())).thenReturn(true);
+		when(productDao.findById(탕수육중.getProductId())).thenReturn(Optional.empty());
 		when(productDao.findById(탕수육중.getProductId())).thenReturn(Optional.of(탕수육));
 		when(productDao.findById(깐풍기중.getProductId())).thenReturn(Optional.of(깐풍기));
 

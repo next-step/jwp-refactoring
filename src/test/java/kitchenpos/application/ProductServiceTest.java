@@ -32,7 +32,7 @@ class ProductServiceTest {
 	void testCreateProduct() {
 		Product product = new Product(1L, "상품1", BigDecimal.valueOf(2000));
 
-		when(productDao.save(eq(product))).thenReturn(product);
+		when(productDao.save(product)).thenReturn(product);
 		Product actual = productService.create(product);
 
 		assertThat(actual.getPrice()).isEqualTo(product.getPrice());
@@ -43,7 +43,7 @@ class ProductServiceTest {
 	void testPriceUnderZero() {
 		Product product = new Product(1L, "상품1", BigDecimal.valueOf(-1));
 
-		verify(productDao, never()).save(eq(product));
+		verify(productDao, never()).save(product);
 		assertThatThrownBy(() -> {
 			productService.create(product);
 		}).isInstanceOf(IllegalArgumentException.class)
