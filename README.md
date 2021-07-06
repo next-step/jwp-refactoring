@@ -88,6 +88,16 @@ TODO
 - [x] Menu Service 리팩토링
 - [x] Order Service 리팩토링
   
+
+---
+피드백 리뷰 결과
+- [ ] Custom Exception 만들기
+- [ ] setter 제거하기
+- [ ] base Entity
+- [ ] Price 컬럼 원시값 포장 객체 생성
+- [ ] 일급 컬렉션 생성
+
+
 - Menu 도메인 테스트 코드 추가
   - [ ] Menu
   - [ ] MenuGroup
