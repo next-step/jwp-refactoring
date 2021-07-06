@@ -11,7 +11,6 @@ import kitchenpos.repository.MenuRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -39,14 +38,14 @@ public class MenuService {
             throw new MenuGroupAlreadyExistsException("findMenuGroup: " + findMenuGroup);
         }
 
-        Menu menu = Menu.of(menuRequest.getName(), menuRequest.getPrice(), findMenuGroup, new ArrayList<>());
+        Menu menu = Menu.of(menuRequest.getName(), menuRequest.getPrice(), findMenuGroup);
 
         List<MenuProductRequest> menuProducts = menuRequest.getMenuProducts();
 
         menuProducts.stream()
                 .map(menuProduct ->
                         MenuProduct.of(null, productService.getProduct(menuProduct.getProductId()), menuProduct.getQuantity()))
-                .forEach(menu::addMenuProducts);
+                .forEach(menu::addMenuProduct);
 
         if (!menu.isReasonablePrice()) {
             throw new InvalidPriceException("Total Price is higher then expected MenuProduct Price");

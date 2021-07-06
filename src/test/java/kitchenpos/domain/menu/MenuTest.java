@@ -20,7 +20,7 @@ class MenuTest {
     void setUp() {
         menuGroup = MenuGroup.of("menuGroupName");
         ReflectionTestUtils.setField(menuGroup, "id", ANY_MENU_GROUP_ID);
-        menu = Menu.of("tomato pasta", Price.of(0L), menuGroup, new ArrayList<>());
+        menu = Menu.of("tomato pasta", Price.of(0L), menuGroup);
     }
 
     @Test
@@ -30,7 +30,7 @@ class MenuTest {
         assertThat(menu.getPrice()).isNotNull();
         assertThat(menu.getMenuGroup()).isNotNull();
 
-        List<MenuProduct> menuProducts = menu.getMenuProducts();
+        MenuProducts menuProducts = menu.getMenuProducts();
         assertThat(menuProducts).isNotNull();
     }
 }

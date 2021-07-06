@@ -43,6 +43,10 @@ public class Price {
                 '}';
     }
 
+    public boolean isGreaterThen(Price price){
+        return value.compareTo(price.value) > 0;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

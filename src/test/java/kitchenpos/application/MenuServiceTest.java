@@ -54,7 +54,7 @@ class MenuServiceTest {
         ReflectionTestUtils.setField(menuGroup, "id", ANY_MENU_GROUP_ID);
 
         menuRequest = new MenuRequest("tomato pasta", Price.of(BigDecimal.ZERO), ANY_MENU_GROUP_ID, new ArrayList<>());
-        menu = Menu.of("tomato pasta", Price.of(BigDecimal.ZERO), menuGroup, new ArrayList<>());
+        menu = Menu.of("tomato pasta", Price.of(BigDecimal.ZERO), menuGroup);
 
         dummyProduct = Product.of("rice", Price.of(BigDecimal.valueOf(10)));
         ReflectionTestUtils.setField(dummyProduct, "id", ANY_PRODUCT_ID);

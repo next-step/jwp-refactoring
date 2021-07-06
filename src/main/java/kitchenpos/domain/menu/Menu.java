@@ -1,10 +1,7 @@
 package kitchenpos.domain.menu;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
 import static javax.persistence.FetchType.LAZY;
@@ -24,14 +21,14 @@ public class Menu {
     @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"))
     private MenuGroup menuGroup;
 
-    @OneToMany(fetch = LAZY, mappedBy = "menu")
-    private List<MenuProduct> menuProducts = new ArrayList<>();
+    @Embedded
+    private MenuProducts menuProducts = MenuProducts.of(new ArrayList<>());
 
     // for jpa
     public Menu() {
     }
 
-    private Menu(Long id, String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+    private Menu(Long id, String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -40,8 +37,12 @@ public class Menu {
 
     }
 
-    public static Menu of(String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+    public static Menu of(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
         return new Menu(null, name, price, menuGroup, menuProducts);
+    }
+
+    public static Menu of(String name, Price price, MenuGroup menuGroup) {
+        return new Menu(null, name, price, menuGroup, MenuProducts.of(new ArrayList<>()));
     }
 
     public Long getId() {
@@ -60,22 +61,17 @@ public class Menu {
         return menuGroup;
     }
 
-    public List<MenuProduct> getMenuProducts() {
-        return Collections.unmodifiableList(menuProducts);
+    public MenuProducts getMenuProducts() {
+        return menuProducts;
     }
 
     public boolean isReasonablePrice() {
-        BigDecimal sum = BigDecimal.ZERO;
-        for (final MenuProduct menuProduct : this.menuProducts) {
-            final Product product = menuProduct.getProduct();
-            Price multiply = product.multiply(BigDecimal.valueOf(menuProduct.getQuantity()));
-            sum = sum.add(multiply.value);
-        }
-        return price.value.compareTo(sum) <= 0;
+        Price sum = menuProducts.sumOfMenuProductPrice();
+        return !price.isGreaterThen(sum);
     }
 
-    public void addMenuProducts(MenuProduct menuProduct) {
-        this.menuProducts.add(menuProduct);
+    public void addMenuProduct(MenuProduct menuProduct) {
+        menuProducts.addMenuProduct(menuProduct);
         menuProduct.setMenu(this);
     }
 

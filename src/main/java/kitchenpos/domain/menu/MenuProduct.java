@@ -1,6 +1,7 @@
 package kitchenpos.domain.menu;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class MenuProduct {
@@ -52,5 +53,28 @@ public class MenuProduct {
 
     public long getQuantity() {
         return quantity;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MenuProduct that = (MenuProduct) o;
+        return quantity == that.quantity && Objects.equals(seq, that.seq) && Objects.equals(menu, that.menu) && Objects.equals(product, that.product);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(seq, menu, product, quantity);
+    }
+
+    @Override
+    public String toString() {
+        return "MenuProduct{" +
+                "seq=" + seq +
+                ", menu=" + menu +
+                ", product=" + product +
+                ", quantity=" + quantity +
+                '}';
     }
 }
