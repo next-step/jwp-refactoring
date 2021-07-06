@@ -11,6 +11,7 @@ import java.util.Optional;
 import kitchenpos.order.repository.OrderDao;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.repository.OrderTableDao;
+import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -68,7 +69,7 @@ class TableServiceTest {
     @Test
     void changeEmpty() {
         // given
-        orderTable.setTableGroupId(null);
+        orderTable.setTableGroup(null);
 
         // when
         when(orderTableDao.findById(1L)).thenReturn(Optional.of(orderTable));
@@ -106,7 +107,7 @@ class TableServiceTest {
     @Test
     void changeEmptyFailedByTableGroupId() {
         // given
-        orderTable.setTableGroupId(1L);
+        orderTable.setTableGroup(new TableGroup());
         // when
         when(orderTableDao.findById(1L)).thenReturn(Optional.of(orderTable));
         // then
@@ -118,11 +119,11 @@ class TableServiceTest {
     @Test
     void changeEmptyFailedByOrderStatus() {
         // given
-        orderTable.setTableGroupId(null);
+        orderTable.setTableGroup(null);
 
         // when
         when(orderTableDao.findById(1L)).thenReturn(Optional.of(orderTable));
-        doReturn(true).when(orderDao).existsByOrderTableIdAndOrderStatusIn(any(), any());
+//        doReturn(true).when(orderDao).existsByOrderTableIdAndOrderStatusIn(any(), any());
         //then
         assertThatThrownBy(() -> tableService.changeEmpty(1L, new OrderTable()))
                 .isInstanceOf(IllegalArgumentException.class);
