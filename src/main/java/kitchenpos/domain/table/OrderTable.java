@@ -1,8 +1,12 @@
 package kitchenpos.domain.table;
 
 import kitchenpos.domain.NumberOfGuest;
+import kitchenpos.domain.menu.Menus;
 import kitchenpos.domain.order.Order;
+import kitchenpos.domain.order.OrderCreate;
+import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.order.Orders;
+import kitchenpos.exception.TableEmptyException;
 
 import javax.persistence.*;
 import java.util.Collections;
@@ -26,6 +30,16 @@ public class OrderTable {
 
     public static OrderTable from(OrderTableCreate create) {
         return new OrderTable(create.getNumberOfGuests(), create.isEmpty());
+    }
+
+    public static Order newOrder(OrderTable orderTable, OrderCreate orderCreate, Menus menus) {
+        if (orderTable.isEmpty()) {
+            throw new TableEmptyException();
+        }
+
+        orderCreate = orderCreate.changeOrderStatus(OrderStatus.COOKING);
+
+        return Order.createOrder(orderTable.getId(), orderCreate, menus);
     }
 
     protected OrderTable() {
