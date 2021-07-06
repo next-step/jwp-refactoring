@@ -22,13 +22,13 @@ public class OrderTableResponse {
     }
 
     public static OrderTableResponse of(OrderTable orderTable) {
-        return new OrderTableResponse(orderTable.getId(), groupId(orderTable), orderTable.getNumberOfGuests(), orderTable.isEmpty());
+        return new OrderTableResponse(orderTable.id(), groupId(orderTable), orderTable.numberOfGuests(), orderTable.isEmpty());
     }
 
     public static List<OrderTableResponse> ofList(List<OrderTable> orderTables) {
         List<OrderTableResponse> orderTableResponses = new ArrayList<>();
         for (OrderTable orderTable : orderTables) {
-            orderTableResponses.add(new OrderTableResponse(orderTable.getId(), groupId(orderTable), orderTable.getNumberOfGuests(), orderTable.isEmpty()));
+            orderTableResponses.add(new OrderTableResponse(orderTable.id(), groupId(orderTable), orderTable.numberOfGuests(), orderTable.isEmpty()));
         }
         return orderTableResponses;
     }
@@ -36,8 +36,8 @@ public class OrderTableResponse {
     private static Long groupId(OrderTable orderTable) {
         Long groupId = null;
 
-        if (orderTable.getTableGroup() != null) {
-            groupId = orderTable.getTableGroup().getId();
+        if (orderTable.tableGroup() != null) {
+            groupId = orderTable.tableGroup().id();
         }
         return groupId;
     }

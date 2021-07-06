@@ -90,7 +90,7 @@ public class TableGroupControllerTest extends ControllerTest {
     }
 
     @Test
-    @DisplayName("단체 지정 실패 - 기존 데이터베이스에 존재하지 테이블을 포함하여 단체 지정 할 경우")
+    @DisplayName("단체 지정 실패 - 기존 데이터베이스에 존재하지 않는 테이블을 포함하여 단체 지정 할 경우")
     public void createOrderTableGroupFailByNotExistsTable() {
         // given
         orderTables.add(new OrderTableRequest(10L, 0, false));

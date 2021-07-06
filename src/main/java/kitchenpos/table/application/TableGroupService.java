@@ -2,10 +2,7 @@ package kitchenpos.table.application;
 
 import kitchenpos.dao.OrderDao;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.table.domain.*;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
@@ -33,60 +30,45 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-        final List<OrderTableRequest> orderTables = tableGroupRequest.getOrderTables();
+        final List<OrderTableRequest> orderTableRequests = tableGroupRequest.getOrderTables();
 
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException();
-        }
+        validateOrderTableSize(orderTableRequests);
 
-        final List<Long> orderTableIds = orderTables.stream()
+        final List<Long> orderTableIds = orderTableRequests.stream()
                 .map(OrderTableRequest::getId)
                 .collect(Collectors.toList());
 
-        final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
+        final OrderTables savedOrderTables = new OrderTables(orderTableRepository.findAllByIdIn(orderTableIds));
+        savedOrderTables.validateOrderTables();
+        savedOrderTables.validateDbDataSize(orderTableRequests.size());
 
-        if (orderTables.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
-        }
+        final TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(LocalDateTime.now(), savedOrderTables));
 
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup())) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        tableGroupRequest.setCreatedDate(LocalDateTime.now());
-
-        TableGroup tableGroup = new TableGroup(LocalDateTime.now(), savedOrderTables);
-
-        final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
-
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.setTableGroup(savedTableGroup);
-            savedOrderTable.setEmpty(false);
-            orderTableRepository.save(savedOrderTable);
-        }
-        savedTableGroup.setOrderTables(savedOrderTables);
+        savedOrderTables.createTableGroup(savedTableGroup);
+        orderTableRepository.saveAll(savedOrderTables.orderTables());
+        savedTableGroup.mappingOrderTables(savedOrderTables);
 
         return TableGroupResponse.of(savedTableGroup);
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
+        final OrderTables orderTables = new OrderTables(orderTableRepository.findAllByTableGroupId(tableGroupId));
 
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
+        final List<Long> orderTableIds = orderTables.orderTableIds();
 
         if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
                 orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
             throw new IllegalArgumentException();
         }
 
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.setTableGroup(null);
-            orderTableRepository.save(orderTable);
+        orderTables.unGroup();
+        orderTableRepository.saveAll(orderTables.orderTables());
+    }
+
+    private void validateOrderTableSize(List<OrderTableRequest> orderTables) {
+        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
+            throw new IllegalArgumentException();
         }
     }
 }

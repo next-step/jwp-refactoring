@@ -60,7 +60,7 @@ public class OrderService {
             throw new IllegalArgumentException();
         }
 
-        order.setOrderTableId(orderTable.getId());
+        order.setOrderTableId(orderTable.id());
         order.setOrderStatus(OrderStatus.COOKING.name());
         order.setOrderedTime(LocalDateTime.now());
 

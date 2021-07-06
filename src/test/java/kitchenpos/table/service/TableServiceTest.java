@@ -52,10 +52,10 @@ public class TableServiceTest {
     @DisplayName("주문 테이블 상태를 빈 테이블로 변경 한다")
     public void modifyOrderTableEmpty() {
         // given
-        OrderTable orderTable = new OrderTable(0, true);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(0, true);
 
         // when
-        OrderTableResponse changeOrderTableResponse = tableService.changeEmpty(4L, orderTable);
+        OrderTableResponse changeOrderTableResponse = tableService.changeEmpty(4L, orderTableRequest);
 
         // then
         assertThat(changeOrderTableResponse.getId()).isNotNull();
@@ -66,7 +66,7 @@ public class TableServiceTest {
     @DisplayName("주문 테이블 손님 수를 변경 한다")
     public void modifyOrderTableGuests() {
         // given
-        OrderTable orderTable = new OrderTable(3, false);
+        OrderTableRequest orderTable = new OrderTableRequest(3, false);
 
         // when
         OrderTableResponse changeOrderTableResponse = tableService.changeNumberOfGuests(2L, orderTable);
