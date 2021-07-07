@@ -11,9 +11,11 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -41,7 +43,8 @@ public class Order {
 
     private LocalDateTime orderedTime;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
     private List<OrderLineItem> orderLineItems;
 
     protected Order() {}
@@ -54,7 +57,7 @@ public class Order {
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
         if (Objects.nonNull(orderedTime)) {
-            orderLineItems.forEach(orderLineItem -> orderLineItem.assignOrder(this));
+            orderLineItems.forEach(orderLineItem -> orderLineItem.assignOrder(id));
         }
 
     }
@@ -108,11 +111,12 @@ public class Order {
         return new Order(orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
     }
 
-    private static Menu findMenu(List<Menu> menuList, OrderLineItemRequest orderLineItemRequest) {
+    private static Long findMenu(List<Menu> menuList, OrderLineItemRequest orderLineItemRequest) {
         return menuList.stream()
             .filter(menu -> menu.getId().equals(orderLineItemRequest.getMenuId()))
+            .map(Menu::getId)
             .findFirst()
-            .orElse(Menu.EMPTY);
+            .orElse(null);
     }
 
     public void updateStatus(OrderRequest orderRequest) {

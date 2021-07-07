@@ -101,7 +101,8 @@ public class OrderServiceTest {
         //given
         OrderRequest request = new OrderRequest(1L, OrderStatus.MEAL, null);
         Order 주문_1번 = new Order(1L, 테이블_3번_존재.getId(),
-            Arrays.asList(new OrderLineItem(1L, null, 원플원_후라이드, 1L), new OrderLineItem(1L, null, 원플원_양념, 1L)));
+            Arrays.asList(new OrderLineItem(1L, null, 원플원_후라이드.getId(), 1L),
+                new OrderLineItem(1L, null, 원플원_양념.getId(), 1L)));
 
         given(orderRepository.findById(any())).willReturn(Optional.of(주문_1번));
 
@@ -121,7 +122,8 @@ public class OrderServiceTest {
         //given
         OrderRequest request = new OrderRequest(1L, OrderStatus.MEAL, null);
         Order 주문_1번 = new Order(1L, 테이블_3번_존재.getId(),
-            Arrays.asList(new OrderLineItem(1L, null, 원플원_후라이드, 1L), new OrderLineItem(1L, null, 원플원_양념, 1L)));
+            Arrays.asList(new OrderLineItem(1L, null, 원플원_후라이드.getId(), 1L),
+                new OrderLineItem(1L, null, 원플원_양념.getId(), 1L)));
 
         given(orderRepository.findById(any())).willReturn(Optional.empty());
 
