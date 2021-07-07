@@ -55,7 +55,6 @@ public class TableGroupService {
     public void ungroup(final Long tableGroupId) {
         final List<OrderTable> orderTables = orderTableRepository.findByTableGroupId(tableGroupId);
 
-        orderTables.stream()
-                .forEach(OrderTable::ungroup);
+        orderTables.forEach(OrderTable::ungroup);
     }
 }
