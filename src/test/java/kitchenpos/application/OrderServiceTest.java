@@ -82,7 +82,7 @@ class OrderServiceTest {
         //given
         OrderStatus orderStatus = OrderStatus.COOKING;
 
-        OrderRequest order = new OrderRequest(savedOrderTable.getId(), orderStatus, Arrays.asList(new OrderLineItemRequest(orderLineItem.getSeq(), orderLineItem.getOrderId(), orderLineItem.getMenuId(), orderLineItem.getQuantity())));
+        OrderRequest order = new OrderRequest(savedOrderTable.getId(), orderStatus, Arrays.asList(new OrderLineItemRequest(orderLineItem.getSeq(), null, orderLineItem.getMenuId(), orderLineItem.getQuantity())));
 
         //when
         OrderResponse savedOrder = orderService.create(order);
@@ -100,8 +100,8 @@ class OrderServiceTest {
         //given
         LocalDateTime orderedTime = LocalDateTime.of(2021, 7, 1, 01, 10, 00);
 
-        Order order = new Order(savedOrderTable.getId(), OrderStatus.COOKING, orderedTime, new OrderLineItems(Arrays.asList(orderLineItem)));
-
+        Order order = new Order(savedOrderTable.getId(), OrderStatus.COOKING, orderedTime, Arrays.asList(orderLineItem));
+        order.reception();
         Order savedOrder = orderRepository.save(order);
 
         //when
@@ -131,7 +131,7 @@ class OrderServiceTest {
     @Test
     public void failCreateOrderInvalidOrderTableId() throws Exception {
         //given
-        OrderRequest orderRequest = new OrderRequest(0L, OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(new OrderLineItemRequest(orderLineItem.getSeq(), orderLineItem.getOrderId(), orderLineItem.getMenuId(), orderLineItem.getQuantity())));
+        OrderRequest orderRequest = new OrderRequest(0L, OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(new OrderLineItemRequest(orderLineItem.getSeq(), null, orderLineItem.getMenuId(), orderLineItem.getQuantity())));
 
         //when
         assertThatThrownBy(
@@ -143,7 +143,7 @@ class OrderServiceTest {
     @Test
     public void failCreateOrderEmptyOrderTableId() throws Exception {
         //given
-        OrderRequest orderRequest = new OrderRequest(savedEmptyOrderTable.getId(), OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(new OrderLineItemRequest(orderLineItem.getSeq(), orderLineItem.getOrderId(), orderLineItem.getMenuId(), orderLineItem.getQuantity())));
+        OrderRequest orderRequest = new OrderRequest(savedEmptyOrderTable.getId(), OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(new OrderLineItemRequest(orderLineItem.getSeq(), null, orderLineItem.getMenuId(), orderLineItem.getQuantity())));
 
         //when
         assertThatThrownBy(
@@ -157,7 +157,9 @@ class OrderServiceTest {
         //given
         LocalDateTime orderedTime = LocalDateTime.of(2021, 7, 1, 01, 10, 00);
 
-        Order order = new Order(savedOrderTable.getId(), OrderStatus.COOKING, orderedTime, new OrderLineItems(Arrays.asList(orderLineItem)));
+        OrderLineItem orderLineItem = new OrderLineItem(savedMenu.getId(), 1);
+        Order order = new Order(savedOrderTable.getId(), OrderStatus.COOKING, orderedTime, Arrays.asList(orderLineItem));
+        order.reception();
 
         Order savedOrder = orderRepository.save(order);
 
@@ -187,8 +189,8 @@ class OrderServiceTest {
     @Test
     public void couldNotChangeOrderStatus() throws Exception {
         // given
-        Order order = new Order(savedOrderTable.getId(), OrderStatus.COMPLETION, LocalDateTime.now(), new OrderLineItems(Arrays.asList(orderLineItem)));
-
+        Order order = new Order(savedOrderTable.getId(), OrderStatus.COMPLETION, LocalDateTime.now(), Arrays.asList(orderLineItem));
+        order.reception();
         Order savedOrder = orderRepository.save(order);
 
         OrderRequest changeOrder = new OrderRequest(savedOrderTable.getId(), OrderStatus.MEAL);

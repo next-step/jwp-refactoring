@@ -1,5 +1,7 @@
 package kitchenpos.order.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -10,8 +12,10 @@ public class OrderLineItem {
     @Column(name = "seq")
     private Long seq;
 
-    @Column(name = "order_id")
-    private Long orderId;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
+    private Order order;
 
     @Column(name = "menu_id")
     private Long menuId;
@@ -27,9 +31,9 @@ public class OrderLineItem {
         this.quantity = quantity;
     }
 
-    public OrderLineItem(Long seq, Long orderId, Long menuId, long quantity) {
+    public OrderLineItem(Long seq, Order order, Long menuId, long quantity) {
         this.seq = seq;
-        this.orderId = orderId;
+        this.order = order;
         this.menuId = menuId;
         this.quantity = quantity;
     }
@@ -38,8 +42,8 @@ public class OrderLineItem {
         return seq;
     }
 
-    public Long getOrderId() {
-        return orderId;
+    public Order getOrder() {
+        return order;
     }
 
     public Long getMenuId() {
@@ -50,4 +54,7 @@ public class OrderLineItem {
         return quantity;
     }
 
+    public void reception(Order order) {
+        this.order = order;
+    }
 }

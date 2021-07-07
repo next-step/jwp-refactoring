@@ -1,13 +1,11 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItems;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.Orders;
+import kitchenpos.order.domain.*;
 import kitchenpos.table.dto.OrderTableRequest;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -99,12 +97,12 @@ public class OrderTable {
         groupBy(null);
     }
 
-    public Order newOrder(LocalDateTime orderedTime, OrderLineItems newOrderLineItems) {
+    public Order newOrder(LocalDateTime orderedTime, List<OrderLineItem> newOrderLineItems) {
         if (isEmpty()) {
             throw new IllegalArgumentException("빈테이블은 주문을 할수 없습니다.");
         }
-
-        Order newOrder = new Order(this.getId(), OrderStatus.COOKING, orderedTime, newOrderLineItems);
+        Order newOrder = Order.newOrder(this, orderedTime, newOrderLineItems);
+        newOrder.reception();
         this.orders.newOrder(newOrder);
         return newOrder;
     }

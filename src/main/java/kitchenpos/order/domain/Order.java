@@ -38,14 +38,14 @@ public class Order {
         this.orderedTime = orderedTime;
     }
 
-    public Order(Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, OrderLineItems orderLineItems) {
+    public Order(Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
-        this.orderLineItems = orderLineItems;
+        this.orderLineItems = new OrderLineItems(orderLineItems);
     }
 
-    public static Order newOrder(OrderTable orderTable, LocalDateTime orderedTime, OrderLineItems newOrderLineItems) {
+    public static Order newOrder(OrderTable orderTable, LocalDateTime orderedTime, List<OrderLineItem> newOrderLineItems) {
 
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException("빈테이블은 주문을 할수 없습니다.");
@@ -105,5 +105,9 @@ public class Order {
         if(orderStatus == OrderStatus.COOKING || orderStatus == OrderStatus.MEAL ) {
             throw new IllegalArgumentException("요리중이거나 식사중인 테이블은 빈테이블로 변경이 불가능합니다.");
         }
+    }
+
+    public void reception() {
+        orderLineItems.reception(this);
     }
 }
