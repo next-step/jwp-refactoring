@@ -1,17 +1,12 @@
 package kitchenpos.utils.acceptan;
 
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
-import kitchenpos.product.dto.ProductRequest;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
@@ -29,33 +24,21 @@ public class ResponseHelper {
         return 응답.getId();
     }
 
-    public static void 테이블_그룹_제거_실패_확인(ExtractableResponse<Response> 주문_테이블_비어있음_요청_응답_실패) {
-        assertThat(주문_테이블_비어있음_요청_응답_실패.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    public static void 요청_실패_확인(ExtractableResponse<Response> 실패_응답) {
+        assertThat(실패_응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    public static void 테이블_그룹_생성_요청_응답_확인(ExtractableResponse<Response> 테이블_그룹_생성_요청_응답) {
-        assertThat(테이블_그룹_생성_요청_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    public static void 생성_요청_확인(ExtractableResponse<Response> 생성_응답) {
+        assertThat(생성_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    public static void 테이블_그룹_제거_요청_확인(ExtractableResponse<Response> 테이블_그룹_제거_요청) {
-        assertThat(테이블_그룹_제거_요청.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-    public static void 주문_테이블_생성_요청_응답_확인(ExtractableResponse<Response> 주문_생성_요청_응답) {
-        assertThat(주문_생성_요청_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    public static void 제거_요청_확인(ExtractableResponse<Response> 제거_응답) {
+        assertThat(제거_응답.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     public static void 주문_테이블_조회_요청_응답_확인(ExtractableResponse<Response> 주문_테이블_조회_요청_응답) {
         List<OrderTableResponse> orderTableResponses = 주문_테이블_조회_요청_응답.jsonPath().getList("", OrderTableResponse.class);
         assertThat(orderTableResponses.get(0).isEmpty()).isFalse();
-    }
-
-    public static void 주문_테이블_비어있음_요청_응답_실패_확인(ExtractableResponse<Response> 주문_테이블_비어있음_요청_응답_실패) {
-        assertThat(주문_테이블_비어있음_요청_응답_실패.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
-    public static void 주문_테이블_고객수_변경_실패_확인(ExtractableResponse<Response> 주문_테이블_고객수_변경_실패) {
-        assertThat(주문_테이블_고객수_변경_실패.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static void 주문_테이블_비어있음_요청_응답_확인(ExtractableResponse<Response> 주문_테이블_비어있음_요청_응답) {
@@ -77,17 +60,9 @@ public class ResponseHelper {
         assertThat(주문_상태_변경_요청_응답.body().jsonPath().get("orderStatus").toString()).isEqualTo(orderStatus.name());
     }
 
-    public static void 주문_생성_요청_실패_확인(ExtractableResponse<Response> 주문_생성_요청_응답) {
-        assertThat(주문_생성_요청_응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
-    public static void 메뉴_그룹_조회_요청_응답_확인(ExtractableResponse<Response> 메뉴_그룹_조회_요청_응답) {
+    public static void 메뉴_그룹_조회_요청_응답_확인(ExtractableResponse<Response> 메뉴_그룹_조회_요청_응답, String 메뉴_그룹_이름) {
         List<MenuGroupResponse> menuGroupResponses = 메뉴_그룹_조회_요청_응답.jsonPath().getList("", MenuGroupResponse.class);
-        assertThat(menuGroupResponses.get(0).getName()).isEqualTo("국밥");
-    }
-
-    public static void 메뉴_그룹_생성_요청_응답_확인(ExtractableResponse<Response> 메뉴_그룹_생성_요청_응답) {
-        assertThat(메뉴_그룹_생성_요청_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(menuGroupResponses.get(0).getName()).isEqualTo(메뉴_그룹_이름);
     }
 
     public static Long 상품_번호_추출(ExtractableResponse<Response> 상품_생성_요청_응답) {

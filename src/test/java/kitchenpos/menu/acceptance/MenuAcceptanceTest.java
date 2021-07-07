@@ -18,9 +18,9 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     private static final String 메뉴_그룹_이름_국밥 = "국밥";
     private static final String 상품_이름_순대 = "순대";
     private static final int 상품_가격 = 8000;
-    public static final String 메뉴_이름_순대국 = "순대국";
-    public static final int 메뉴_가격 = 8000;
-    public static final Long 상품_수량 = 1L;
+    private static final String 메뉴_이름_순대국 = "순대국";
+    private static final int 메뉴_가격 = 8000;
+    private static final Long 상품_수량 = 1L;
 
     private Long 메뉴_그룹_번호;
     private Long 상품_번호;
@@ -42,7 +42,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 메뉴_그룹_생성_요청_응답 = 메뉴_생성_요청(메뉴_이름_순대국, 메뉴_가격, 메뉴_그룹_번호, 상품_번호, 상품_수량);
 
         // then
-        메뉴_그룹_생성_요청_응답_확인(메뉴_그룹_생성_요청_응답);
+        생성_요청_확인(메뉴_그룹_생성_요청_응답);
     }
 
     @DisplayName("사용자는 메뉴 전체를 조회 할 수 있다.")

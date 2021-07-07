@@ -90,7 +90,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> 주문_생성_요청_응답 = 주문_생성_요청(0L, 메뉴_번호, 1);
         // then
-        주문_생성_요청_실패_확인(주문_생성_요청_응답);
+        요청_실패_확인(주문_생성_요청_응답);
     }
 
     @DisplayName("주문 생성 실패 - 메뉴가 없음")
@@ -100,7 +100,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> 주문_생성_요청_응답 = 주문_생성_요청(주문_테이블_번호, 0L, 1);
         // then
-        주문_생성_요청_실패_확인(주문_생성_요청_응답);
+        요청_실패_확인(주문_생성_요청_응답);
     }
 
     @DisplayName("주문 생성 실패 - 메뉴 수량이 음수")
@@ -110,6 +110,6 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> 주문_생성_요청_응답 = 주문_생성_요청(주문_테이블_번호, 메뉴_번호, -1);
         // then
-        주문_생성_요청_실패_확인(주문_생성_요청_응답);
+        요청_실패_확인(주문_생성_요청_응답);
     }
 }

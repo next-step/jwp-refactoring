@@ -24,7 +24,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 메뉴_그룹_생성_요청_응답 = 메뉴_그룹_생성_요청(국밥);
 
         // then
-        메뉴_그룹_생성_요청_응답_확인(메뉴_그룹_생성_요청_응답);
+        생성_요청_확인(메뉴_그룹_생성_요청_응답);
     }
 
     @DisplayName("사용자는 메뉴 그룹 전체를 조회 할 수 있다.")
@@ -35,11 +35,11 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> 메뉴_그룹_생성_요청_응답 = 메뉴_그룹_생성_요청(국밥);
         //then
-        메뉴_그룹_생성_요청_응답_확인(메뉴_그룹_생성_요청_응답);
+        생성_요청_확인(메뉴_그룹_생성_요청_응답);
 
         // when
         ExtractableResponse<Response> 메뉴_그룹_조회_요청_응답 = 메뉴_그룹_조회_요청();
         // then
-        메뉴_그룹_조회_요청_응답_확인(메뉴_그룹_조회_요청_응답);
+        메뉴_그룹_조회_요청_응답_확인(메뉴_그룹_조회_요청_응답, 국밥);
     }
 }

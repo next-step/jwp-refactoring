@@ -59,7 +59,7 @@ public class TableGroupAcceptanceTest  extends AcceptanceTest {
         // when
         ExtractableResponse<Response> 테이블_그룹_생성_요청_응답 = 테이블_그룹_생성_요청(주문_테이블_고객_수_2명_번호, 주문_테이블_고객_수_5명_번호);
         // then
-        테이블_그룹_생성_요청_응답_확인(테이블_그룹_생성_요청_응답);
+        생성_요청_확인(테이블_그룹_생성_요청_응답);
     }
 
     @DisplayName("테이블 그룹 제거")
@@ -82,7 +82,7 @@ public class TableGroupAcceptanceTest  extends AcceptanceTest {
         ExtractableResponse<Response> 테이블_그룹_제거_요청 = 테이블_그룹_제거_요청(테이블_그룹_번호);
 
         // then
-        테이블_그룹_제거_요청_확인(테이블_그룹_제거_요청);
+        제거_요청_확인(테이블_그룹_제거_요청);
     }
 
     @DisplayName("테이블 그룹 제거 살패, 주문 테이블이 비어 있지 않음")
@@ -102,7 +102,7 @@ public class TableGroupAcceptanceTest  extends AcceptanceTest {
         ExtractableResponse<Response> 테이블_그룹_제거_요청_실패 = 테이블_그룹_제거_요청(테이블_그룹_번호);
 
         // then
-        테이블_그룹_제거_실패_확인(테이블_그룹_제거_요청_실패);
+        요청_실패_확인(테이블_그룹_제거_요청_실패);
     }
 
 

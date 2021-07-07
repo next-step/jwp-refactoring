@@ -58,7 +58,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> 주문_테이블_생성_요청_응답 = 주문_테이블_생성_요청(고객_수_2명, 비어있지_않음);
         // then
-        주문_테이블_생성_요청_응답_확인(주문_테이블_생성_요청_응답);
+        생성_요청_확인(주문_테이블_생성_요청_응답);
     }
 
     @DisplayName("사용자는 주문 테이블 전체를 조회 할 수 있다.")
@@ -90,7 +90,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> 주문_테이블_비어있음_요청_응답_실패 = 주문_테이블_비어있음_요청(주문_테이블_번호, 비어있음);
         // then
-        주문_테이블_비어있음_요청_응답_실패_확인(주문_테이블_비어있음_요청_응답_실패);
+        요청_실패_확인(주문_테이블_비어있음_요청_응답_실패);
     }
 
     @DisplayName("사용자는 고객수를 변경 할 수 있다.")
@@ -110,7 +110,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> 주문_테이블_고객수_변경_실패 = 주문_테이블_고객수_변경_요청(주문_테이블_번호, -5);
         // then
-        주문_테이블_고객수_변경_실패_확인(주문_테이블_고객수_변경_실패);
+        요청_실패_확인(주문_테이블_고객수_변경_실패);
     }
 
     @DisplayName("고객 수 변경 실패 - 주문 테이블이 비어 있음")
@@ -122,6 +122,6 @@ public class TableAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> 주문_테이블_고객수_변경_실패 = 주문_테이블_고객수_변경_요청(주문_테이블_번호, 고객_수_5명);
         // then
-        주문_테이블_고객수_변경_실패_확인(주문_테이블_고객수_변경_실패);
+        요청_실패_확인(주문_테이블_고객수_변경_실패);
     }
 }
