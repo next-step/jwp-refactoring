@@ -5,6 +5,7 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTableEntity;
 import kitchenpos.table.domain.TableRepository;
 import kitchenpos.table.dto.TableRequest;
+import kitchenpos.table.dto.TableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -84,7 +85,6 @@ class TableService2Test {
     when(tableRepository.findById(savedOrderTableId)).thenReturn(Optional.of(savedOrderTable));
     when(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(false);
     OrderTableEntity orderAfterChangeEmpty = OrderTableEntity.initWithId(savedOrderTableId, 4, false);
-    when(orderTableDao.save(any())).thenReturn(orderAfterChangeEmpty);
     //when
     TableResponse changedOrderTable = tableService.changeEmpty(savedOrderTableId, tableRequest);
 
