@@ -50,18 +50,7 @@ public class OrderService {
     public OrderResponse changeOrderStatus(final Long orderId, final OrderStatus orderStatus) {
         final Order savedOrder = orderRepository.findById(orderId)
             .orElseThrow(() -> new IllegalArgumentException("등록이 안된 주문은 상태를 변경할 수 없습니다."));
-
-        if (orderStatus == OrderStatus.COOKING) {
-            savedOrder.startCooking();
-            return OrderResponse.of(savedOrder);
-        }
-
-        if (orderStatus == OrderStatus.MEAL) {
-            savedOrder.startMeal();
-            return OrderResponse.of(savedOrder);
-        }
-
-        savedOrder.complete();
+        savedOrder.changeStatus(orderStatus);
         return OrderResponse.of(savedOrder);
     }
 

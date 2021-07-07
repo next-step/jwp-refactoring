@@ -82,11 +82,15 @@ class OrderTest {
 		Order order = Order.create(asList(orderLineItem), orderTable, now());
 
 		// when
-		order.startMeal();
+		order.changeStatus(OrderStatus.MEAL);
+
+		// then
 		assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
 
-		// than
-		order.complete();
+		// when
+		order.changeStatus(OrderStatus.COMPLETION);
+
+		// then
 		assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
 	}
 }

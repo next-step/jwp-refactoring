@@ -120,32 +120,16 @@ class OrderServiceTest {
 
 		when(orderRepository.findById(anyLong())).thenReturn(Optional.of(order));
 
-		verifyToUpdateMealStatus(order);
-		verifyToUpdateCompletionStatus(order);
-		verifyToUpdateCookingStatus(order);
+		verifyToChangeOrderStatus(order);
 	}
 
-	private void verifyToUpdateCompletionStatus(Order order) {
-		when(order.getOrderStatus()).thenReturn(OrderStatus.COMPLETION);
+	private void verifyToChangeOrderStatus(Order order) {
+		for (OrderStatus orderStatus : OrderStatus.values()) {
+			when(order.getOrderStatus()).thenReturn(orderStatus);
 
-		orderService.changeOrderStatus(1L, OrderStatus.COMPLETION);
+			orderService.changeOrderStatus(1L, orderStatus);
 
-		verify(order).complete();
-	}
-
-	private void verifyToUpdateMealStatus(Order order) {
-		when(order.getOrderStatus()).thenReturn(OrderStatus.MEAL);
-
-		orderService.changeOrderStatus(1L, OrderStatus.MEAL);
-
-		verify(order).startMeal();
-	}
-
-	private void verifyToUpdateCookingStatus(Order order) {
-		when(order.getOrderStatus()).thenReturn(OrderStatus.COOKING);
-
-		orderService.changeOrderStatus(1L, OrderStatus.COOKING);
-
-		verify(order).startCooking();
+			verify(order).changeStatus(orderStatus);
+		}
 	}
 }

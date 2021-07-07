@@ -100,4 +100,16 @@ public class Order {
             throw new IllegalArgumentException("계산 완료 주문은 상태를 변경할 수 없습니다.");
         }
     }
+
+    public void changeStatus(OrderStatus orderStatus) {
+        if (orderStatus == COOKING) {
+            startCooking();
+            return;
+        }
+        if (orderStatus == MEAL) {
+            startMeal();
+            return;
+        }
+        complete();
+    }
 }
