@@ -2,6 +2,7 @@ package kitchenpos.domain;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -16,14 +17,18 @@ public class Menu {
     @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_to_menu_group"))
     private MenuGroup menuGroup;
 
-    //TODO
-    @Transient
-    private List<MenuProduct> menuProducts;
+    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MenuProduct> menuProducts = new ArrayList<>();
 
     public Menu() {
     }
 
     public Menu(final String name, final BigDecimal price, final MenuGroup menuGroup) {
+        this(null, name, price, menuGroup);
+    }
+
+    public Menu(final Long id, final String name, final BigDecimal price, final MenuGroup menuGroup) {
+        this.id = id;
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
@@ -50,7 +55,7 @@ public class Menu {
         return menuProducts;
     }
 
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
+    protected void appendMenuProducts(final MenuProduct menuProduct) {
+        this.menuProducts.add(menuProduct);
     }
 }

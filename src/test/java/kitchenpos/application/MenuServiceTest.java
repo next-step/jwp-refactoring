@@ -3,12 +3,12 @@ package kitchenpos.application;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -21,10 +21,12 @@ class MenuServiceTest {
     private MenuService menuService;
 
     @Autowired
+    private ProductService productService;
+
+    @Autowired
     private MenuGroupService menuGroupService;
 
     private String name = "치즈치킨";
-    private long nonExistentID = 9999L;
 
     @DisplayName("메뉴를 등록할수 있다.")
     @Test
@@ -32,7 +34,8 @@ class MenuServiceTest {
         // given
         MenuGroup menuGroup = menuGroupService.create(new MenuGroup("테스트 메뉴"));
         Menu menu = new Menu(name, BigDecimal.valueOf(15000), menuGroup);
-        menu.setMenuProducts(Arrays.asList(new MenuProduct(menu.getId(), 1L,1)));
+        Product product = productService.create(new Product(name, BigDecimal.valueOf(15000)));
+        new MenuProduct(menu, product,1);
 
         // when
         Menu actualMenu = menuService.create(menu);
@@ -62,7 +65,8 @@ class MenuServiceTest {
         MenuGroup noneMenuGroup = new MenuGroup("없는 메뉴");
 
         Menu menu = new Menu(name, BigDecimal.valueOf(15000), noneMenuGroup);
-        menu.setMenuProducts(Arrays.asList(new MenuProduct(1L, 1L,1)));
+        Product product = productService.create(new Product(name, BigDecimal.valueOf(15000)));
+        new MenuProduct(menu, product,1);
 
         assertThatThrownBy(() -> menuService.create(menu))
                 .isInstanceOf(RuntimeException.class)
@@ -75,7 +79,8 @@ class MenuServiceTest {
         // given
         MenuGroup menuGroup = menuGroupService.create(new MenuGroup("테스트 메뉴"));
         Menu menu = new Menu(name, BigDecimal.valueOf(15000), menuGroup);
-        menu.setMenuProducts(Arrays.asList(new MenuProduct(1L, nonExistentID,1)));
+        Product product = new Product(999L, name, BigDecimal.valueOf(15000));
+        new MenuProduct( menu, product,1);
 
         assertThatThrownBy(() -> menuService.create(menu))
                 .isInstanceOf(RuntimeException.class)
@@ -88,7 +93,8 @@ class MenuServiceTest {
         // given
         MenuGroup menuGroup = menuGroupService.create(new MenuGroup("테스트 메뉴"));
         Menu menu = new Menu(name, BigDecimal.valueOf(1500000), menuGroup);
-        menu.setMenuProducts(Arrays.asList(new MenuProduct(10L, 1L,1)));
+        Product product = productService.create(new Product(name, BigDecimal.valueOf(15000)));
+        new MenuProduct(menu, product,1);
 
         assertThatThrownBy(() -> menuService.create(menu))
                 .isInstanceOf(RuntimeException.class)
