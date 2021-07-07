@@ -19,7 +19,7 @@ public class OrderTable {
     @Column(name = "table_group_id")
     private Long tableGroupId;
 
-    @Column(name = "number_og_guests")
+    @Column(name = "number_of_guests")
     private int numberOfGuests;
 
     @Column(name = "empty")

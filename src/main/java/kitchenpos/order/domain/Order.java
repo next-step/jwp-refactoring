@@ -23,7 +23,7 @@ public class Order {
     @Column(name = "order_status")
     private OrderStatus orderStatus;
 
-    @Column(name = "irdered_time")
+    @Column(name = "ordered_time")
     private LocalDateTime orderedTime;
 
     @OneToMany(mappedBy = "orderId")
