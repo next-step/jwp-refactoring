@@ -25,4 +25,8 @@ public class Orders {
     public void ungroup() {
         orders.forEach(Order::ungroupValidation);
     }
+
+    public void newOrder(Order newOrder) {
+        this.orders.add(newOrder);
+    }
 }

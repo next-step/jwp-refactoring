@@ -41,7 +41,7 @@ public class OrderService {
         final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
                 .orElseThrow(IllegalArgumentException::new);
 
-        Order newOrder = Order.newOrder(orderTable, LocalDateTime.now(), newOrderLineItems);
+        Order newOrder = orderTable.newOrder(LocalDateTime.now(), newOrderLineItems);
         final Order savedOrder = orderRepository.save(newOrder);
 
         return OrderResponse.of(savedOrder);
