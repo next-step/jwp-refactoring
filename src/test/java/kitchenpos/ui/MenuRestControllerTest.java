@@ -87,53 +87,11 @@ class MenuRestControllerTest {
         //when
         ResultActions actions = mockMvc.perform(post(URI)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(menu1)));
-
-        //then
-        actions.andExpect(status().isCreated())
-                .andExpect(header().string("location", URI + "/1"))
-                .andExpect(content().string(containsString("1")))
-                .andExpect(content().string(containsString("후라이드반+양념반")))
-                .andExpect(content().string(containsString("21000")))
-                .andExpect(content().string(containsString("1")));
-    }
-
-    @DisplayName("메뉴를 모두 조회한다.")
-    @Test
-    void list() throws Exception {
-        //given
-        given(menuService.list()).willReturn(Arrays.asList(menu1, menu2));
-
-        //when
-        ResultActions actions = mockMvc.perform(get(URI));
-
-        //then
-        actions.andExpect(status().isOk())
-                .andExpect(jsonPath("$").isNotEmpty())
-                .andExpect(jsonPath("$[0].id").isNotEmpty())
-                .andExpect(jsonPath("$[0].name").value("후라이드반+양념반"))
-                .andExpect(jsonPath("$[0].price").value(21000))
-                .andExpect(jsonPath("$[0].menuGroupId").isNotEmpty())
-                .andExpect(jsonPath("$[1].id").isNotEmpty())
-                .andExpect(jsonPath("$[1].name").value("후라이드+콜라세트"))
-                .andExpect(jsonPath("$[1].price").value(15000))
-                .andExpect(jsonPath("$[1].menuGroupId").isNotEmpty());
-    }
-
-    @DisplayName("메뉴를 추가한다.2")
-    @Test
-    void create2() throws Exception {
-        //given
-        given(menuService.create(any())).willReturn(menu1);
-
-        //when
-        ResultActions actions = mockMvc.perform(post(URI + "2")
-                .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(menuRequest1)));
 
         //then
         actions.andExpect(status().isCreated())
-                .andExpect(header().string("location", URI + "2" + "/" + menuResponse1.getId()))
+                .andExpect(header().string("location", URI + "/" + menuResponse1.getId()))
                 .andExpect(jsonPath("$.name").value(menuResponse1.getName()))
                 .andExpect(jsonPath("$.price").value(menuResponse1.getPrice()))
                 .andExpect(jsonPath("$.menuGroupId").value(menuResponse1.getMenuGroupId()))
@@ -148,14 +106,14 @@ class MenuRestControllerTest {
         ;
     }
 
-    @DisplayName("메뉴를 모두 조회한다.2")
+    @DisplayName("메뉴를 모두 조회한다.")
     @Test
-    void list2() throws Exception {
+    void list() throws Exception {
         //given
         given(menuService.list()).willReturn(Arrays.asList(menu1, menu2));
 
         //when
-        ResultActions actions = mockMvc.perform(get(URI + "2"));
+        ResultActions actions = mockMvc.perform(get(URI));
 
         //then
         actions.andExpect(status().isOk())
