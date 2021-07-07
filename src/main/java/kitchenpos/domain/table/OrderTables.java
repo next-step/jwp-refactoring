@@ -1,5 +1,6 @@
 package kitchenpos.domain.table;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
@@ -10,7 +11,7 @@ import java.util.List;
 
 @Embeddable
 public class OrderTables {
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "table_group_id")
     private List<OrderTable> orderTables = new ArrayList<>();
 

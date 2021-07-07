@@ -24,22 +24,10 @@ public class MenuProduct {
     protected MenuProduct() {
     }
 
-    public MenuProduct(Product product, Quantity quantity) {
-        this(null, product, quantity);
-    }
-
     public MenuProduct(Menu menu, Product product, Quantity quantity) {
         this.menu = menu;
         this.product = product;
         this.quantity = quantity;
-    }
-
-    void changeMenu(Menu menu) {
-        if (this.menu != null) {
-            throw new IllegalStateException("이미 메뉴가 등록되어 있으면, 불가능합니다.");
-        }
-
-        this.menu = menu;
     }
 
     public Long getSeq() {

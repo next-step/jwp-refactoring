@@ -69,7 +69,7 @@ class OrderServiceTest {
     void setUp() {
         CleanUp.cleanUp();
 
-        orderService = new OrderService(menuRepository, orderRepository, orderTableRepository, orderLineItemRepository);
+        orderService = new OrderService(menuRepository, orderRepository, orderTableRepository);
         orderQueryService = new OrderQueryService(orderRepository);
 
         menus = Arrays.asList(양념치킨_콜라_1000원_1개, 후라이드치킨_콜라_2000원_1개);
