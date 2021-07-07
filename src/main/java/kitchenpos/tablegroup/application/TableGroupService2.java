@@ -29,7 +29,7 @@ public class TableGroupService2 {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest request) {
-        List<OrderTableEntity> savedOrderTables = getTablesByIds(request.getOrderTableIds());
+        List<OrderTableEntity> savedOrderTables = getTablesByIds(request.extractTableIds());
         TableGroupEntity savedGroup = tableGroupRepository.save(new TableGroupEntity());
         savedOrderTables.forEach(table -> table.bindTableGroup(savedGroup.getId()));
         return TableGroupResponse.of(savedGroup, savedOrderTables);

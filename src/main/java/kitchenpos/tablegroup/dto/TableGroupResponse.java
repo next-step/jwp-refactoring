@@ -13,7 +13,7 @@ public class TableGroupResponse {
   private final LocalDateTime createdDate;
   private final List<TableResponse> orderTables;
 
-  private TableGroupResponse(long id, LocalDateTime createdDate, List<TableResponse> orderTables) {
+  public TableGroupResponse(long id, LocalDateTime createdDate, List<TableResponse> orderTables) {
     this.id = id;
     this.createdDate = createdDate;
     this.orderTables = orderTables;
