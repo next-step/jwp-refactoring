@@ -90,7 +90,7 @@
 - [x] order 패키지 리팩토링
     - [x] tableDao를 제외한 리팩토링 완료
     - [x] tableDao를 tableRepository로 리팩토링 완료
-- [ ] tablegroup 패키지 리팩토링
+- [x] tablegroup 패키지 리팩토링
 - [x] table 패키지 리팩토링
 - [ ] 리팩토링 전 코드들 삭제
 
