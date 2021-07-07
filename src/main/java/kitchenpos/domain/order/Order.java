@@ -23,32 +23,32 @@ public class Order {
     @Enumerated(value = EnumType.STRING)
     private OrderStatus orderStatus;
 
-    private LocalDateTime orderedTime;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderLineItem> orderLineItems;
+
+    private LocalDateTime orderedTime;
 
     // for JPA
     public Order() {
     }
 
-    private Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+    private Order(Long id, OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems, LocalDateTime orderedTime) {
         this.id = id;
         if (orderTable.isEmpty()) {
             throw new InvalidOrderTableException("Should have not orderTable empty");
         }
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
         if (CollectionUtils.isEmpty(orderLineItems)) {
             throw new InvalidOrderLineItemsException("should have orderLineItems");
         }
         orderLineItems.forEach(orderLineItem -> orderLineItem.setOrder(this));
         this.orderLineItems = orderLineItems;
+        this.orderedTime = orderedTime;
     }
 
     public static Order of(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
-        return new Order(null, orderTable, orderStatus, LocalDateTime.now(), orderLineItems);
+        return new Order(null, orderTable, orderStatus, orderLineItems, LocalDateTime.now());
     }
 
     public Long getId() {

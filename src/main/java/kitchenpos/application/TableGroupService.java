@@ -32,7 +32,7 @@ public class TableGroupService {
 
     @Transactional
     public TableGroup create(final TableGroupRequest tableGroupRequest) {
-
+        // TODO orderTable 의존성
         List<OrderTable> orderTables = tableGroupRequest
                 .getOrderTableRequests().stream()
                 .map(orderTableRequest -> orderTableRepository

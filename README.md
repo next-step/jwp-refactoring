@@ -87,7 +87,6 @@ TODO
 
 - [x] Menu Service 리팩토링
 - [x] Order Service 리팩토링
-  
 
 ---
 피드백 리뷰 결과
@@ -96,21 +95,18 @@ TODO
 - [x] Price 컬럼 원시값 포장 객체 생성
 - [x] 일급 컬렉션 생성 (MenuProducts)
 
+---
 
-- Menu 도메인 테스트 코드 추가
-  - [ ] Menu
-  - [ ] MenuGroup
-  - [ ] MenuProduct
-  - [ ] Product
+**2단계**
 
-
-- Order 도메인 테스트 코드 추가
-  - [ ] Order
-  - [ ] OrderLine
-  - [ ] OrderTable
-  - [ ] TableGroup
 
 - [ ] 이벤트 기반 상태 변경
+  - [ ] MenuService - MenuGroup 이벤트 생성  
+    : MenuGroup안에 존재하는지.
+  - [ ] OrderService - OrderLineItem 이벤트 생성  
+    : validate orderLineItems size
+  - [ ] TableGroupService - OrderTable 이벤트 생성  
+    : create 할 때, orderTables 사이즈 비교
 
 해볼 수 있는 기능들
 - JPA 적용

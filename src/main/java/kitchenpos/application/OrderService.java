@@ -49,6 +49,7 @@ public class OrderService {
 
         Order order = Order.of(findOrderTable, OrderStatus.COOKING, findOrderLineItems);
 
+        // TODO orderLineItems 이벤트 로 의존성 분리
         List<OrderLineItem> orderLineItems = order.getOrderLineItems();
 
         final List<Long> menuIds = orderLineItems.stream()
