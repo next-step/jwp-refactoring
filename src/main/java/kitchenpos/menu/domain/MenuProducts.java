@@ -7,14 +7,12 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 @Embeddable
 public class MenuProducts {
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "menu_id")
+    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<MenuProduct> menuProductList;
 
     protected MenuProducts() {
@@ -46,7 +44,7 @@ public class MenuProducts {
     }
 
     public void assginMenu(Menu menu) {
-        menuProductList.forEach(menuProduct -> menuProduct.assginMenu(menu.getId()));
+        menuProductList.forEach(menuProduct -> menuProduct.assginMenu(menu));
     }
 
 }

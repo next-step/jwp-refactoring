@@ -4,9 +4,12 @@ import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class OrderLineItem {
@@ -15,8 +18,9 @@ public class OrderLineItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
 
-    @Column(name = "order_id")
-    private Long orderId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
+    private Order order;
 
     @Column(name = "menu_id")
     private Long menuId;
@@ -25,9 +29,9 @@ public class OrderLineItem {
 
     protected OrderLineItem() {}
 
-    public OrderLineItem(Long seq, Long orderId, Long menuId, Long quantity) {
+    public OrderLineItem(Long seq, Order order, Long menuId, Long quantity) {
         this.seq = seq;
-        this.orderId = orderId;
+        this.order = order;
         this.menuId = menuId;
         this.quantity = quantity;
     }
@@ -37,10 +41,10 @@ public class OrderLineItem {
     }
 
     public Long getOrderId() {
-        if (Objects.isNull(orderId)) {
+        if (Objects.isNull(order)) {
             return null;
         }
-        return orderId;
+        return order.getId();
     }
 
     public Long getMenuId() {
@@ -51,8 +55,8 @@ public class OrderLineItem {
         return quantity;
     }
 
-    public void assignOrder(Long orderId) {
-        this.orderId = orderId;
+    public void assignOrder(Order order) {
+        this.order = order;
     }
 
     public Long getSeq() {

@@ -55,7 +55,7 @@ public class Order {
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
         if (Objects.nonNull(orderedTime)) {
-            orderLineItems.forEach(orderLineItem -> orderLineItem.assignOrder(id));
+            orderLineItems.forEach(orderLineItem -> orderLineItem.assignOrder(this));
         }
 
     }
