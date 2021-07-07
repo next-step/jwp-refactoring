@@ -42,8 +42,8 @@ public class OrderService {
         final List<Menu> menuList = menuRepository.findAllById(menuIds);
         final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
             .orElseThrow(NoOrderTableException::new);
-
-        Order order = Order.create(orderRequest, orderTable, menuList, orderValidator);
+        orderValidator.createValidator(orderRequest, orderTable, menuList);
+        Order order = Order.create(orderRequest, orderTable.getId(), menuList);
 
         return OrderResponse.of(orderRepository.save(order));
     }

@@ -20,12 +20,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.order.application.OrderValidator;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.exception.CompletedOrderException;
 import kitchenpos.product.constant.OrderStatus;
-import kitchenpos.table.domain.OrderTable;
 
 @Entity
 @Table(name = "orders")
@@ -99,16 +97,15 @@ public class Order {
         return OrderStatus.COOKING.equals(orderStatus) || OrderStatus.MEAL.equals(orderStatus);
     }
 
-    public static Order create(OrderRequest orderRequest, OrderTable orderTable, List<Menu> menuList,
-            OrderValidator validator) {
-        validator.createValidator(orderRequest, orderTable, menuList);
+    public static Order create(OrderRequest orderRequest, Long orderTableId, List<Menu> menuList) {
+
         List<OrderLineItem> orderLineItems = orderRequest.getOrderLineItems()
             .stream()
             .map(orderLineItemRequest -> new OrderLineItem(findMenu(menuList, orderLineItemRequest),
                 orderLineItemRequest.getQuantity()))
             .collect(Collectors.toList());
 
-        return new Order(orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
+        return new Order(orderTableId, OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
     }
 
     private static Long findMenu(List<Menu> menuList, OrderLineItemRequest orderLineItemRequest) {
