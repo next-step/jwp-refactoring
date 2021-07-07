@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import kitchenpos.product.exception.ProductPriceCannotBeNegativeException;
+import kitchenpos.product.exception.ProductPriceEmptyException;
 
 @Entity
 public class Product {
@@ -29,9 +31,7 @@ public class Product {
     }
 
     public Product(String name, BigDecimal price) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("상품의 가격은 음수가 될 수 없습니다.");
-        }
+        validationPrice(price);
         this.name = name;
         this.price = price;
     }
@@ -40,6 +40,19 @@ public class Product {
         this.id = id;
         this.name = name;
         this.price = price;
+    }
+
+    private void validationPrice(BigDecimal price) {
+        if (Objects.isNull(price)) {
+            throw new ProductPriceEmptyException();
+        }
+        if (isNegativeNumber(price)) {
+            throw new ProductPriceCannotBeNegativeException();
+        }
+    }
+
+    private boolean isNegativeNumber(BigDecimal price) {
+        return price.compareTo(BigDecimal.ZERO) < 0;
     }
 
     public Long getId() {

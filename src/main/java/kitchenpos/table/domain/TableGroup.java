@@ -1,15 +1,16 @@
 package kitchenpos.table.domain;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import kitchenpos.table.exception.ExistNonEmptyOrderTableException;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -25,8 +26,8 @@ public class TableGroup {
     @Column(nullable = false)
     private LocalDateTime createdDate;
 
-    @OneToMany(mappedBy = "tableGroup", orphanRemoval = true)
-    private List<OrderTable> orderTables;
+    @Embedded
+    private OrderTables orderTables;
 
     public TableGroup() {
     }
@@ -35,14 +36,26 @@ public class TableGroup {
         this.id = id;
     }
 
-    public TableGroup(List<OrderTable> orderTables) {
+    public TableGroup(OrderTables orderTables) {
+        validationOrderTables(orderTables);
         this.orderTables = orderTables;
-        orderTables.forEach(orderTable -> orderTable.toTableGroup(this));
+        orderTables.toTableGroup(this);
+    }
+
+    private void validationOrderTables(OrderTables orderTables) {
+        if (isExistEmptyOrderTable(orderTables)) {
+            throw new ExistNonEmptyOrderTableException();
+        }
+    }
+
+    private boolean isExistEmptyOrderTable(OrderTables orderTables) {
+        return orderTables.getOrderTables().stream()
+            .anyMatch(orderTable -> !orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup()));
     }
 
     public TableGroup(Long id, List<OrderTable> orderTables) {
         this.id = id;
-        this.orderTables = orderTables;
+        this.orderTables = new OrderTables(orderTables);
     }
 
     public Long getId() {
@@ -53,14 +66,11 @@ public class TableGroup {
         return createdDate;
     }
 
-    public List<OrderTable> getOrderTables() {
-        return Collections.unmodifiableList(orderTables);
+    public void upgroup() {
+        orderTables.upgroup();
     }
 
-    public void upgroup() {
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.ungroup();
-        }
-
+    public List<OrderTable> getOrderTables() {
+        return orderTables.getOrderTables();
     }
 }

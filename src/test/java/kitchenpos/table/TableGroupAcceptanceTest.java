@@ -63,7 +63,6 @@ public class TableGroupAcceptanceTest extends AcceptancePerMethodTest {
         }
         Map<String, Object> params = new HashMap<>();
         params.put("orderTables", orderTables);
-
         return post(params, BASE_URL);
     }
 

@@ -2,7 +2,6 @@ package kitchenpos.order.application;
 
 import static kitchenpos.table.application.TableServiceTest.두명;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -13,8 +12,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.menu.dao.MenuDao;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.dao.OrderDao;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -46,8 +43,6 @@ public class OrderServiceTest {
     @Mock
     private OrderDao orderDao;
     @Mock
-    private MenuDao menuDao;
-    @Mock
     private OrderTableDao orderTableDao;
     @InjectMocks
     private OrderService orderService;
@@ -57,7 +52,6 @@ public class OrderServiceTest {
     void create() {
         // Given
         OrderRequest 주문 = new OrderRequest(주문테이블_ID, OrderStatus.COOKING, LocalDateTime.now(), OrderLineItemRequest.listOf(주문_항목_목록));
-        given(menuDao.countByIdIn(any())).willReturn(2L);
         given(orderTableDao.findById(any())).willReturn(Optional.of(주문테이블));
         given(orderDao.save(any())).willReturn(주문.toOrder());
 
@@ -65,50 +59,8 @@ public class OrderServiceTest {
         orderService.create(주문);
 
         // Then
-        verify(menuDao, times(1)).countByIdIn(any());
         verify(orderTableDao, times(1)).findById(any());
         verify(orderDao, times(1)).save(any());
-    }
-
-    @DisplayName("주문 항목은 1개 이상 이어야한다.")
-    @Test
-    void create_Fail_01() {
-        // Given
-        List<OrderLineItemRequest> 비어있는_주문_항목_목록 = new ArrayList<>();
-        OrderRequest 주문 = new OrderRequest(주문테이블_ID, OrderStatus.COOKING, LocalDateTime.now(), 비어있는_주문_항목_목록);
-
-        // When & Then
-        assertThatThrownBy(() -> orderService.create(주문))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("주문 항목의 메뉴는 모두 존재해야 한다.")
-    @Test
-    void create_Fail_02() {
-        // Given
-        OrderRequest 주문 = new OrderRequest(주문테이블_ID, OrderStatus.COOKING, LocalDateTime.now(), OrderLineItemRequest.listOf(주문_항목_목록));
-
-        // When & Then
-        assertThatThrownBy(() -> orderService.create(주문))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("주문 테이블은 빈 테이블일 수 없다.")
-    @Test
-    void create_Fail_03() {
-        // Given
-        OrderTable 비어있는_주문테이블 = new OrderTable(주문테이블_ID, 두명, 비어있음);
-        OrderRequest 주문 = new OrderRequest(비어있는_주문테이블.getId(), OrderStatus.COOKING, LocalDateTime.now(), OrderLineItemRequest.listOf(주문_항목_목록));
-        List<Menu> menus = new ArrayList<>(Arrays.asList(new Menu(1L), new Menu(2L)));
-        given(menuDao.countByIdIn(any())).willReturn(2L);
-        given(orderTableDao.findById(any())).willReturn(Optional.of(비어있는_주문테이블));
-
-        // When & Then
-        assertThatThrownBy(() -> orderService.create(주문))
-            .isInstanceOf(IllegalArgumentException.class);
-
-        verify(menuDao, times(1)).countByIdIn(any());
-        verify(orderTableDao, times(1)).findById(any());
     }
 
     @DisplayName("주문 목록을 조회한다.")
@@ -137,19 +89,6 @@ public class OrderServiceTest {
 
         // Then
         verify(orderDao, times(1)).findById(any());
-    }
-
-    @DisplayName("주문상태가 계산완료인 주문은 변경할 수 없다.")
-    @Test
-    void changeOrderStatus_Fail() {
-        // Given
-        OrderStatus 진행상태 = OrderStatus.COMPLETION;
-        OrderRequest 주문 = new OrderRequest(주문_ID, 주문테이블_ID, 진행상태, LocalDateTime.now(), OrderLineItemRequest.listOf(주문_항목_목록));
-        given(orderDao.findById(any())).willReturn(Optional.of(주문.toOrder()));
-
-        // When & Then
-        assertThatThrownBy(() -> orderService.changeOrderStatus(주문_ID, 진행상태))
-            .isInstanceOf(IllegalArgumentException.class);
     }
 
 }

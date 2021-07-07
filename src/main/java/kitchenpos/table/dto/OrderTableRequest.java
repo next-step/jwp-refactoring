@@ -47,7 +47,11 @@ public class OrderTableRequest {
     }
 
     public OrderTable toOrderTable() {
-        return new OrderTable(new TableGroup(tableGroupId), numberOfGuests, empty);
+        TableGroup tableGroup = null;
+        if (tableGroupId != null) {
+            tableGroup = new TableGroup(tableGroupId);
+        }
+        return new OrderTable(id, tableGroup, numberOfGuests, empty);
     }
 
     public Long getId() {

@@ -15,6 +15,8 @@ import kitchenpos.product.dao.ProductDao;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.product.exception.ProductPriceCannotBeNegativeException;
+import kitchenpos.product.exception.ProductPriceEmptyException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -53,7 +55,7 @@ public class ProductServiceTest {
 
         // When & Then
         assertThatThrownBy(() -> productService.create(햄버거))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(ProductPriceEmptyException.class);
         verify(productDao, never()).save(any());
     }
 
@@ -65,7 +67,7 @@ public class ProductServiceTest {
 
         // When & Then
         assertThatThrownBy(() -> productService.create(햄버거))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(ProductPriceCannotBeNegativeException.class);
         verify(productDao, never()).save(any());
     }
 

@@ -7,13 +7,19 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.order.dao.OrderDao;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.exception.CannotChangeNumberOfGuestException;
+import kitchenpos.table.exception.CannotChangeTableEmptyException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,8 +41,6 @@ public class TableServiceTest {
 
     @Mock
     private OrderTableDao orderTableDao;
-    @Mock
-    private OrderDao orderDao;
     @InjectMocks
     private OrderTableService tableService;
 
@@ -76,14 +80,12 @@ public class TableServiceTest {
         OrderTable 주문테이블 = new OrderTable(주문테이블_ID, null, 두명);
         OrderTableRequest 주문테이블_요청 = OrderTableRequest.of(주문테이블);
         given(orderTableDao.findById(any())).willReturn(Optional.of(주문테이블));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(진행중이_아님);
 
         // When
         tableService.changeEmpty(주문테이블_ID, 주문테이블_요청);
 
         // Then
         verify(orderTableDao, times(1)).findById(any());
-        verify(orderDao, times(1)).existsByOrderTableIdAndOrderStatusIn(any(), any());
     }
 
     @DisplayName("단체 지정된 주문테이블인 경우 빈 테이블로 변경이 불가능하다.")
@@ -96,7 +98,7 @@ public class TableServiceTest {
 
         // When
         assertThatThrownBy(() -> tableService.changeEmpty(주문테이블_ID, 주문테이블_요청))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(CannotChangeTableEmptyException.class);
 
         // Then
         verify(orderTableDao, times(1)).findById(any());
@@ -106,18 +108,18 @@ public class TableServiceTest {
     @Test
     void changeEmpty_Fail_02() {
         // Given
-        OrderTable 주문테이블 = new OrderTable(주문테이블_ID, 두명, 진행중임);
+        OrderTable 주문테이블 = new OrderTable(주문테이블_ID, 두명, 비어있음);
+        OrderLineItem 주문항목 = new OrderLineItem(1L, 1L, 1L);
+        주문테이블.addOrder(new Order(1L, OrderStatus.COOKING, LocalDateTime.now(), new ArrayList<>(Arrays.asList(주문항목))));
         OrderTableRequest 주문테이블_요청 = OrderTableRequest.of(주문테이블);
         given(orderTableDao.findById(any())).willReturn(Optional.of(주문테이블));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(진행중임);
 
         // When
         assertThatThrownBy(() -> tableService.changeEmpty(주문테이블_ID, 주문테이블_요청))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(CannotChangeTableEmptyException.class);
 
         // Then
         verify(orderTableDao, times(1)).findById(any());
-        verify(orderDao, times(1)).existsByOrderTableIdAndOrderStatusIn(any(), any());
     }
 
     @DisplayName("주문 테이블의 손님 수를 변경한다.")
@@ -141,10 +143,11 @@ public class TableServiceTest {
         // Given
         OrderTable 주문테이블 = new OrderTable(주문테이블_ID, 1L, -1);
         OrderTableRequest 주문테이블_요청 = OrderTableRequest.of(주문테이블);
+        given(orderTableDao.findById(any())).willReturn(Optional.of(주문테이블));
 
         // When & then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(주문테이블_ID, 주문테이블_요청))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(CannotChangeNumberOfGuestException.class);
     }
 
     @DisplayName("빈 테이블의 주문 테이블은 손님 수를 변경할 수 없다.")
@@ -157,7 +160,7 @@ public class TableServiceTest {
 
         // When
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(주문테이블_ID, 주문테이블_요청))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(CannotChangeNumberOfGuestException.class);
 
         // Then
         verify(orderTableDao, times(1)).findById(any());

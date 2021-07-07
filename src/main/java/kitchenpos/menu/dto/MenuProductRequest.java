@@ -3,6 +3,7 @@ package kitchenpos.menu.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.product.domain.Product;
 
 public class MenuProductRequest {
 
@@ -60,7 +61,7 @@ public class MenuProductRequest {
     }
 
     public MenuProduct toMenuProduct() {
-        return new MenuProduct(menuId, productId, quantity);
+        return new MenuProduct(menuId, new Product(productId), quantity);
     }
 
     @Override
