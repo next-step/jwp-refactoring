@@ -15,7 +15,6 @@ public class MenuGroup {
 
     private Name name;
 
-
     public static MenuGroup from(MenuGroupCreate create) {
         return new MenuGroup(create.getName());
     }

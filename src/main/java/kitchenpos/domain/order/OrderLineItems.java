@@ -20,19 +20,19 @@ public class OrderLineItems {
         update(orderLineItems);
     }
 
-    public int size() {
-        return orderLineItems.size();
-    }
-
-    public List<OrderLineItem> toCollection() {
-        return Collections.unmodifiableList(orderLineItems);
-    }
-
     public void update(List<OrderLineItem> orderLineItems) {
         if (this.orderLineItems.size() > 0) {
             throw new OrderLineItemNotEmptyException();
         }
 
         orderLineItems.forEach(item -> this.orderLineItems.add(item));
+    }
+
+    public int size() {
+        return orderLineItems.size();
+    }
+
+    public List<OrderLineItem> toCollection() {
+        return Collections.unmodifiableList(orderLineItems);
     }
 }

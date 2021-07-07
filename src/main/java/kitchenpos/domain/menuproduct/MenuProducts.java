@@ -9,18 +9,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class MenuProducts {
-    private List<MenuProduct> menuProducts = new ArrayList<>();
+    private List<MenuProduct> menuProducts;
 
-    public static List<MenuProduct> create(List<MenuProductCreate> menuProducts, Menu menu, Products products) {
-        return menuProducts.stream()
+    public static MenuProducts create(List<MenuProductCreate> menuProducts, Menu menu, Products products) {
+        List<MenuProduct> results = menuProducts.stream()
                 .map(item -> new MenuProduct(menu, products.findById(item.getProductId()), item.getQuantity()))
                 .collect(Collectors.toList());
-    }
 
-    public static List<MenuProduct> create(List<MenuProductCreate> menuProducts, Products products) {
-        return menuProducts.stream()
-                .map(item -> new MenuProduct(null, products.findById(item.getProductId()), item.getQuantity()))
-                .collect(Collectors.toList());
+        return new MenuProducts(results);
     }
 
     public MenuProducts(List<MenuProduct> menuProducts) {

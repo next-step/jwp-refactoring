@@ -17,12 +17,10 @@ public class TableService {
         this.orderTableRepository = orderTableRepository;
     }
 
-
     public Long create(final OrderTableCreate create) {
         return orderTableRepository.save(OrderTable.from(create))
                 .getId();
     }
-
 
     public void changeEmpty(final Long orderTableId, boolean empty) {
         final OrderTable orderTable = findById(orderTableId);

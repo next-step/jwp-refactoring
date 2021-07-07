@@ -37,6 +37,12 @@ public class Order {
             throw new IllegalArgumentException();
         }
 
+        List<OrderLineItem> orderLineItems = parseOrderLineItemBy(orderCreate, menus);
+
+        return new Order(orderId, orderCreate.getOrderTableId(), orderCreate.getOrderStatus(), LocalDateTime.now(), orderLineItems);
+    }
+
+    private static List<OrderLineItem> parseOrderLineItemBy(OrderCreate orderCreate, Menus menus) {
         List<OrderLineItem> orderLineItems = orderCreate.getOrderLineItems()
                 .stream()
                 .map(item -> {
@@ -44,8 +50,7 @@ public class Order {
                     return new OrderLineItem(null, menu.getId(), menu.getName(), menu.getPrice(), item.getQuantity());
                 })
                 .collect(Collectors.toList());
-
-        return new Order(orderId, orderCreate.getOrderTableId(), orderCreate.getOrderStatus(), LocalDateTime.now(), orderLineItems);
+        return orderLineItems;
     }
 
     private Order(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
