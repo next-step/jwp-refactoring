@@ -51,7 +51,7 @@ class TableGroupRestControllerTest {
     @Autowired
     TableGroupRepository tableGroupRepository;
 
-    @MockBean
+    @Autowired
     TableGroupService tableGroupService;
 
     @BeforeEach
@@ -72,31 +72,27 @@ class TableGroupRestControllerTest {
         OrderTableRequest orderTableRequest2 = new OrderTableRequest(savedOrderTable2.getId(), null, savedOrderTable2.getNumberOfGuests(), savedOrderTable2.isEmpty());
 
         TableGroupRequest tableGroupRequest = new TableGroupRequest(LocalDateTime.now(), Arrays.asList(orderTableRequest1, orderTableRequest2));
-
         String requestBody = objectMapper.writeValueAsString(tableGroupRequest);
 
-        TableGroup tableGroup = new TableGroup(LocalDateTime.now(), Arrays.asList(savedOrderTable1, savedOrderTable2));
-        TableGroup saveTableGroup = tableGroupRepository.save(tableGroup);
-
-        TableGroupResponse responseTableGroup = TableGroupResponse.of(saveTableGroup);
-        String responseBody = objectMapper.writeValueAsString(responseTableGroup);
-
-        when(tableGroupService.create(any())).thenReturn(responseTableGroup);
         mockMvc.perform(post("/api/table-groups")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody)
         )
                 .andDo(print())
                 .andExpect(status().isCreated())
-                .andExpect(content().string(responseBody))
         ;
     }
 
     @DisplayName("테이블 그룹 해제 Api 테스트")
     @Test
     void ungroup() throws Exception {
-        Long tableGroupId = 1L;
-        mockMvc.perform(delete("/api/table-groups/" + tableGroupId)
+        TableGroup tableGroup = new TableGroup(LocalDateTime.now());
+        TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
+        OrderTable initOrderTable = new OrderTable(savedTableGroup.getId(), 3, false);
+        orderTableRepository.save(initOrderTable);
+        orderTableRepository.save(initOrderTable);
+
+        mockMvc.perform(delete("/api/table-groups/" + savedTableGroup.getId())
         )
                 .andDo(print())
                 .andExpect(status().isNoContent())
