@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.application.unit.TableServiceTest.주문테이블_등록됨;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -47,7 +46,7 @@ public class OrderServiceTest {
         //given
         OrderLineItem orderLineItem1 = 주문항목_생성(1L, 1L, 1L, 4L);
         OrderLineItem orderLineItem2 = 주문항목_생성(2L, 2L, 1L, 2L);
-        OrderTable orderTable = 주문테이블_등록됨(1L, 1L, false, 5);
+        OrderTable orderTable = null;
         Order order = 주문_등록됨(1L, 1L, OrderStatus.COOKING.name(),
                 Arrays.asList(orderLineItem1, orderLineItem2), LocalDateTime.now());
         given(menuDao.countByIdIn(Arrays.asList(1L, 2L))).willReturn(2L);
@@ -113,7 +112,7 @@ public class OrderServiceTest {
         //given
         OrderLineItem orderLineItem1 = 주문항목_생성(1L, 1L, 1L, 4L);
         OrderLineItem orderLineItem2 = 주문항목_생성(2L, 2L, 1L, 2L);
-        OrderTable orderTable = 주문테이블_등록됨(1L, 1L, true, 5);
+        OrderTable orderTable = null;
         given(menuDao.countByIdIn(Arrays.asList(1L, 2L))).willReturn(2L);
         given(orderTableDao.findById(1L)).willReturn(Optional.of(orderTable));
         Order createOrder = 주문_생성(1L, OrderStatus.COOKING.name(), Arrays.asList(orderLineItem1, orderLineItem2),
@@ -157,7 +156,7 @@ public class OrderServiceTest {
         Order order = 주문_등록됨(1L, 1L, OrderStatus.COOKING.name(),
                 Arrays.asList(orderLineItem1, orderLineItem2), LocalDateTime.now());
         given(orderDao.findById(1L)).willReturn(Optional.of(order));
-        order.setOrderStatus(OrderStatus.MEAL.name());
+        order.setOrderStatus(OrderStatus.MEAL);
         given(orderDao.save(any(Order.class))).willReturn(order);
         given(orderLineItemDao.findAllByOrderId(1L)).willReturn(Arrays.asList(orderLineItem1, orderLineItem2));
 
@@ -195,7 +194,7 @@ public class OrderServiceTest {
         Order order = 주문_등록됨(1L, 1L, OrderStatus.COOKING.name(),
                 Arrays.asList(orderLineItem1, orderLineItem2), LocalDateTime.now());
         given(orderDao.findById(1L)).willReturn(Optional.of(order));
-        order.setOrderStatus(OrderStatus.COMPLETION.name());
+        order.setOrderStatus(OrderStatus.COMPLETION);
         Order changeOrder = 주문_생성(1L, OrderStatus.MEAL.name(),
                 Arrays.asList(orderLineItem1, orderLineItem2), LocalDateTime.now());
 
@@ -214,20 +213,20 @@ public class OrderServiceTest {
 
     public Order 주문_생성(Long orderTableId, String orderStatus, List<OrderLineItem> orderLineItems,
                        LocalDateTime orderedTime) {
-        Order order = new Order();
+        /*Order order = new Order();
         order.setOrderTableId(orderTableId);
-        order.setOrderStatus(orderStatus);
+        //order.setOrderStatus(orderStatus);
         order.setOrderLineItems(orderLineItems);
-        order.setOrderedTime(orderedTime);
-        return order;
+        order.setOrderedTime(orderedTime);*/
+        return null;
     }
 
     public OrderLineItem 주문항목_생성(Long seq, Long menuId, Long orderId, Long quantity) {
-        OrderLineItem orderLineItem = new OrderLineItem();
+        /*OrderLineItem orderLineItem = new OrderLineItem();
         orderLineItem.setSeq(seq);
         orderLineItem.setMenuId(menuId);
-        orderLineItem.setOrderId(orderId);
-        orderLineItem.setQuantity(quantity);
-        return orderLineItem;
+        //orderLineItem.setOrderId(orderId);
+        orderLineItem.setQuantity(quantity);*/
+        return null;
     }
 }

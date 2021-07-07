@@ -1,14 +1,24 @@
 package kitchenpos.domain;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
+@Table(name = "orders")
+@Entity
 public class Order {
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     private Long id;
     private Long orderTableId;
-    private String orderStatus;
+    @Enumerated(value = EnumType.STRING)
+    private OrderStatus orderStatus;
     private LocalDateTime orderedTime;
-    private List<OrderLineItem> orderLineItems;
+    @OneToMany(mappedBy = "order")
+    private List<OrderLineItem> orderLineItems = new ArrayList<>();
+
+    protected Order() {}
 
     public Long getId() {
         return id;
@@ -27,10 +37,10 @@ public class Order {
     }
 
     public String getOrderStatus() {
-        return orderStatus;
+        return orderStatus.name();
     }
 
-    public void setOrderStatus(final String orderStatus) {
+    public void setOrderStatus(final OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 

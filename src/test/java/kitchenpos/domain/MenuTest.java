@@ -34,15 +34,4 @@ public class MenuTest {
                 1L, Arrays.asList(menuProduct)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
-
-    @DisplayName("메뉴 가격 계산")
-    @Test
-    public void 메뉴가격_계산_확인() throws Exception {
-        //given
-
-
-        //when
-
-        //then
-    }
 }

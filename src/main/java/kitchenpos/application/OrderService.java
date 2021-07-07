@@ -61,7 +61,7 @@ public class OrderService {
         }
 
         order.setOrderTableId(orderTable.getId());
-        order.setOrderStatus(OrderStatus.COOKING.name());
+        order.setOrderStatus(OrderStatus.COOKING);
         order.setOrderedTime(LocalDateTime.now());
 
         final Order savedOrder = orderDao.save(order);
@@ -69,7 +69,7 @@ public class OrderService {
         final Long orderId = savedOrder.getId();
         final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
         for (final OrderLineItem orderLineItem : orderLineItems) {
-            orderLineItem.setOrderId(orderId);
+            //orderLineItem.setOrderId(orderId);
             savedOrderLineItems.add(orderLineItemDao.save(orderLineItem));
         }
         savedOrder.setOrderLineItems(savedOrderLineItems);
@@ -97,7 +97,7 @@ public class OrderService {
         }
 
         final OrderStatus orderStatus = OrderStatus.valueOf(order.getOrderStatus());
-        savedOrder.setOrderStatus(orderStatus.name());
+        savedOrder.setOrderStatus(orderStatus);
 
         orderDao.save(savedOrder);
 
