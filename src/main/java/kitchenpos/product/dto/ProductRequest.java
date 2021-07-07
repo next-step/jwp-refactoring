@@ -7,6 +7,9 @@ public class ProductRequest {
     private String name;
     private BigDecimal price;
 
+    public ProductRequest() {
+    }
+
     public ProductRequest(String name) {
         this.name = name;
     }
