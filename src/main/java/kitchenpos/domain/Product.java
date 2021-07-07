@@ -1,13 +1,29 @@
 package kitchenpos.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.math.BigDecimal;
+import java.util.Objects;
 
+@Table(name = "product")
+@Entity
 public class Product {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "name", nullable = false)
     private String name;
+
+    @Column(name = "price", nullable = false)
     private BigDecimal price;
 
-    public Product() {}
+    protected Product() {}
 
     public Product(Long id, String name, BigDecimal price) {
         this.id = id;
@@ -19,23 +35,33 @@ public class Product {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
     }
 
     public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return Objects.equals(id, product.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", price=" + price +
+                '}';
     }
 }
