@@ -20,19 +20,20 @@ public class TableGroupRequest {
     public List<Ids> getOrderTables() {
         return orderTables;
     }
+
+    public static class Ids{
+        private Long id;
+
+        public Ids() {
+        }
+
+        public Ids(Long id) {
+            this.id = id;
+        }
+
+        public Long getId() {
+            return id;
+        }
+    }
 }
 
-class Ids{
-    private Long id;
-
-    public Ids() {
-    }
-
-    public Ids(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
-    }
-}
