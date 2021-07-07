@@ -1,5 +1,6 @@
 package kitchenpos.table.domain;
 
-//TODO : JPA ENTITY 설계 후 JpaRepository 상속
-public interface TableRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface TableRepository extends JpaRepository<OrderTableEntity, Long> {
 }
