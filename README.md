@@ -92,5 +92,5 @@
     - [x] tableDao를 tableRepository로 리팩토링 완료
 - [x] tablegroup 패키지 리팩토링
 - [x] table 패키지 리팩토링
-- [ ] 리팩토링 전 코드들 삭제
+- [x] 리팩토링 전 코드들 삭제
 
