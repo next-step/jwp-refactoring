@@ -2,7 +2,8 @@ package kitchenpos.menugroup.application;
 
 import kitchenpos.menugroup.dao.MenuGroupDao;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.application.MenuGroupService;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,15 +31,15 @@ class MenuGroupServiceTest {
     @Test
     void createTest() {
         // given
-        MenuGroup expected = new MenuGroup("메뉴그룹1");
-        Mockito.when(menuGroupDao.save(any())).thenReturn(expected);
+        MenuGroupRequest expected = new MenuGroupRequest("메뉴그룹1");
+        Mockito.when(menuGroupDao.save(any())).thenReturn(expected.toMenuGroup());
 
         // when
-        MenuGroup actual = menuGroupService.create(expected);
+        MenuGroupResponse actual = menuGroupService.create(expected);
 
         // then
         assertThat(actual).isNotNull()
-                          .extracting(MenuGroup::getName)
+                          .extracting(MenuGroupResponse::getName)
                           .isEqualTo(expected.getName());
     }
 
@@ -50,7 +51,7 @@ class MenuGroupServiceTest {
         Mockito.when(menuGroupDao.findAll()).thenReturn(Arrays.asList(expected));
 
         // when
-        List<MenuGroup> actual = menuGroupService.list();
+        List<MenuGroupResponse> actual = menuGroupService.list();
 
         // then
         assertThat(actual).isNotEmpty().hasSize(1);

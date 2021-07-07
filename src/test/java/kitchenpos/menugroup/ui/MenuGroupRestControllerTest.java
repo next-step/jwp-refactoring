@@ -4,7 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import kitchenpos.IntegrationTestHelper;
 import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.ui.MenuGroupRestController;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -40,17 +41,19 @@ class MenuGroupRestControllerTest extends IntegrationTestHelper {
     @Test
     void createTest() throws Exception {
         // given
-        MenuGroup menuGroup = new MenuGroup("메뉴그룹1");
-        Mockito.when(menuGroupService.create(any())).thenReturn(menuGroup);
+        MenuGroupRequest expected = new MenuGroupRequest("메뉴그룹1");
+        Mockito.when(menuGroupService.create(any()))
+               .thenReturn(MenuGroupResponse.of(expected.toMenuGroup()));
 
         // when
-        ResultActions resultActions = 메뉴_그룹_생성_요청(menuGroup);
+        ResultActions resultActions = 메뉴_그룹_생성_요청(expected);
 
         // then
         MvcResult mvcResult = 메뉴_그룹_생성_성공(resultActions);
-        MenuGroup responseBody = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), MenuGroup.class);
+        MenuGroup responseBody = objectMapper
+            .readValue(mvcResult.getResponse().getContentAsString(), MenuGroup.class);
         assertAll(() -> {
-            assertThat(responseBody.getName()).isEqualTo(menuGroup.getName());
+            assertThat(responseBody.getName()).isEqualTo(expected.getName());
         });
         Mockito.verify(menuGroupService).create(any());
     }
@@ -60,20 +63,21 @@ class MenuGroupRestControllerTest extends IntegrationTestHelper {
     void listTest() throws Exception {
         // given
         MenuGroup menuGroup = new MenuGroup("메뉴그룹1");
-        Mockito.when(menuGroupService.list()).thenReturn(Arrays.asList(menuGroup));
+        Mockito.when(menuGroupService.list()).thenReturn(Arrays.asList(MenuGroupResponse.of(menuGroup)));
 
         // when
         ResultActions resultActions = 메뉴_그룹_조회_요청();
 
         // then
         MvcResult mvcResult = 메뉴_그룹_조회_성공(resultActions);
-        List<MenuGroup> menuGroups = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), new TypeReference<List<MenuGroup>>(){});
+        List<MenuGroup> menuGroups = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),
+                                                            new TypeReference<List<MenuGroup>>() {});
         assertThat(menuGroups).isNotEmpty().hasSize(1);
     }
 
 
-    private ResultActions 메뉴_그룹_생성_요청(MenuGroup menuGroup) throws Exception {
-        return postRequest("/api/menu-groups", menuGroup);
+    private ResultActions 메뉴_그룹_생성_요청(MenuGroupRequest menuGroupRequest) throws Exception {
+        return postRequest("/api/menu-groups", menuGroupRequest);
     }
 
     private MvcResult 메뉴_그룹_생성_성공(ResultActions resultActions) throws Exception {
