@@ -85,14 +85,14 @@ class OrderServiceTest {
         //given
         OrderStatus orderStatus = OrderStatus.COOKING;
 
-        OrderRequest order = new OrderRequest(savedOrderTable.getId(), orderStatus.name(), Arrays.asList(new OrderLineItemRequest(orderLineItem.getSeq(), orderLineItem.getOrderId(), orderLineItem.getMenuId(), orderLineItem.getQuantity())));
+        OrderRequest order = new OrderRequest(savedOrderTable.getId(), orderStatus, Arrays.asList(new OrderLineItemRequest(orderLineItem.getSeq(), orderLineItem.getOrderId(), orderLineItem.getMenuId(), orderLineItem.getQuantity())));
 
         //when
         OrderResponse savedOrder = orderService.create(order);
 
         //then
         assertNotNull(savedOrder.getId());
-        assertThat(savedOrder.getOrderStatus()).isEqualTo(orderStatus.name());
+        assertThat(savedOrder.getOrderStatus()).isEqualTo(orderStatus);
         assertThat(savedOrder.getOrderTableId()).isEqualTo(savedOrderTable.getId());
         assertThat(savedOrder.getOrderLineItems()).hasSize(1);
     }
@@ -122,7 +122,7 @@ class OrderServiceTest {
     @Test
     public void failCreateOrderEmptyOrderLineItems() throws Exception {
         //given
-        OrderRequest orderRequest = new OrderRequest(savedOrderTable.getId(), OrderStatus.COOKING.name(), LocalDateTime.now());
+        OrderRequest orderRequest = new OrderRequest(savedOrderTable.getId(), OrderStatus.COOKING, LocalDateTime.now());
 
         //when
         assertThatThrownBy(
@@ -134,7 +134,7 @@ class OrderServiceTest {
     @Test
     public void failCreateOrderInvalidOrderTableId() throws Exception {
         //given
-        OrderRequest orderRequest = new OrderRequest(0L, OrderStatus.COOKING.name(), LocalDateTime.now(), Arrays.asList(new OrderLineItemRequest(orderLineItem.getSeq(), orderLineItem.getOrderId(), orderLineItem.getMenuId(), orderLineItem.getQuantity())));
+        OrderRequest orderRequest = new OrderRequest(0L, OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(new OrderLineItemRequest(orderLineItem.getSeq(), orderLineItem.getOrderId(), orderLineItem.getMenuId(), orderLineItem.getQuantity())));
 
         //when
         assertThatThrownBy(
@@ -146,7 +146,7 @@ class OrderServiceTest {
     @Test
     public void failCreateOrderEmptyOrderTableId() throws Exception {
         //given
-        OrderRequest orderRequest = new OrderRequest(savedEmptyOrderTable.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), Arrays.asList(new OrderLineItemRequest(orderLineItem.getSeq(), orderLineItem.getOrderId(), orderLineItem.getMenuId(), orderLineItem.getQuantity())));
+        OrderRequest orderRequest = new OrderRequest(savedEmptyOrderTable.getId(), OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(new OrderLineItemRequest(orderLineItem.getSeq(), orderLineItem.getOrderId(), orderLineItem.getMenuId(), orderLineItem.getQuantity())));
 
         //when
         assertThatThrownBy(
@@ -165,7 +165,7 @@ class OrderServiceTest {
         Order savedOrder = orderRepository.save(order);
 
 
-        String orderStatusMeal = OrderStatus.MEAL.name();
+        OrderStatus orderStatusMeal = OrderStatus.MEAL;
 
         OrderRequest changeOrder = new OrderRequest(savedOrderTable.getId(), orderStatusMeal, orderedTime);
 
@@ -194,7 +194,7 @@ class OrderServiceTest {
 
         Order savedOrder = orderRepository.save(order);
 
-        OrderRequest changeOrder = new OrderRequest(savedOrderTable.getId(), OrderStatus.MEAL.name());
+        OrderRequest changeOrder = new OrderRequest(savedOrderTable.getId(), OrderStatus.MEAL);
 
         //then
         assertThatThrownBy(

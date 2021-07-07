@@ -1,5 +1,7 @@
 package kitchenpos.order.dto;
 
+import kitchenpos.order.domain.OrderStatus;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,31 +9,31 @@ import java.util.List;
 public class OrderRequest {
     private Long id;
     private Long orderTableId;
-    private String orderStatus;
+    private OrderStatus orderStatus;
     private LocalDateTime orderedTime;
     private List<OrderLineItemRequest> orderLineItems = new ArrayList<>();
 
     public OrderRequest() {
     }
 
-    public OrderRequest(Long orderTableId, String orderStatus) {
+    public OrderRequest(Long orderTableId, OrderStatus orderStatus) {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
     }
 
-    public OrderRequest(Long orderTableId, String orderStatus, LocalDateTime orderedTime) {
+    public OrderRequest(Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime) {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
     }
 
-    public OrderRequest(Long orderTableId, String orderStatus, List<OrderLineItemRequest> orderLineItems) {
+    public OrderRequest(Long orderTableId, OrderStatus orderStatus, List<OrderLineItemRequest> orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderLineItems = orderLineItems;
     }
 
-    public OrderRequest(Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItemRequest> orderLineItems) {
+    public OrderRequest(Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItemRequest> orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
@@ -46,7 +48,7 @@ public class OrderRequest {
         return orderTableId;
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
