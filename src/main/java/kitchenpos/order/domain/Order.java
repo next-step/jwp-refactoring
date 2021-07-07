@@ -26,8 +26,8 @@ public class Order {
     @Column(name = "ordered_time")
     private LocalDateTime orderedTime;
 
-    @OneToMany(mappedBy = "orderId")
-    private List<OrderLineItem> orderLineItems;
+    @Embedded
+    private OrderLineItems orderLineItems;
 
     public Order() {
     }
@@ -38,14 +38,14 @@ public class Order {
         this.orderedTime = orderedTime;
     }
 
-    public Order(Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+    public Order(Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, OrderLineItems orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
     }
 
-    public static Order newOrder(OrderTable orderTable, LocalDateTime orderedTime, List<OrderLineItem> newOrderLineItems) {
+    public static Order newOrder(OrderTable orderTable, LocalDateTime orderedTime, OrderLineItems newOrderLineItems) {
 
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException("빈테이블은 주문을 할수 없습니다.");
@@ -71,7 +71,7 @@ public class Order {
     }
 
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
+        return orderLineItems.getOrderLineItems();
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {

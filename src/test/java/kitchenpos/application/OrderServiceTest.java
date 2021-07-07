@@ -1,10 +1,7 @@
 package kitchenpos.application;
 
 import kitchenpos.order.application.OrderService;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
@@ -103,7 +100,7 @@ class OrderServiceTest {
         //given
         LocalDateTime orderedTime = LocalDateTime.of(2021, 7, 1, 01, 10, 00);
 
-        Order order = new Order(savedOrderTable.getId(), OrderStatus.COOKING, orderedTime, Arrays.asList(orderLineItem));
+        Order order = new Order(savedOrderTable.getId(), OrderStatus.COOKING, orderedTime, new OrderLineItems(Arrays.asList(orderLineItem)));
 
         Order savedOrder = orderRepository.save(order);
 
@@ -160,7 +157,7 @@ class OrderServiceTest {
         //given
         LocalDateTime orderedTime = LocalDateTime.of(2021, 7, 1, 01, 10, 00);
 
-        Order order = new Order(savedOrderTable.getId(), OrderStatus.COOKING, orderedTime, Arrays.asList(orderLineItem));
+        Order order = new Order(savedOrderTable.getId(), OrderStatus.COOKING, orderedTime, new OrderLineItems(Arrays.asList(orderLineItem)));
 
         Order savedOrder = orderRepository.save(order);
 
@@ -190,7 +187,7 @@ class OrderServiceTest {
     @Test
     public void couldNotChangeOrderStatus() throws Exception {
         // given
-        Order order = new Order(savedOrderTable.getId(), OrderStatus.COMPLETION, LocalDateTime.now(), Arrays.asList(orderLineItem));
+        Order order = new Order(savedOrderTable.getId(), OrderStatus.COMPLETION, LocalDateTime.now(), new OrderLineItems(Arrays.asList(orderLineItem)));
 
         Order savedOrder = orderRepository.save(order);
 

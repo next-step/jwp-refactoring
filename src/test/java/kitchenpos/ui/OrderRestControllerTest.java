@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.dto.OrderLineItemResponse;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.ui.OrderRestController;
 import kitchenpos.table.domain.OrderTable;
@@ -64,7 +64,7 @@ class OrderRestControllerTest {
     public void create() throws Exception {
         OrderTable orderTable = new OrderTable(4, false);
 
-        Order order = new Order(orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(orderLineItem));
+        Order order = new Order(orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now(), new OrderLineItems(Arrays.asList(orderLineItem)));
 
         String requestBody = objectMapper.writeValueAsString(order);
 
@@ -86,7 +86,7 @@ class OrderRestControllerTest {
     @DisplayName("주문 목록 Api 테스트")
     @Test
     void list() throws Exception {
-        Order order = new Order(1L, OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(orderLineItem));
+        Order order = new Order(1L, OrderStatus.COOKING, LocalDateTime.now(), new OrderLineItems(Arrays.asList(orderLineItem)));
         OrderResponse responseOrder = OrderResponse.of(order);
 
         List<OrderResponse> orders = Arrays.asList(responseOrder);
@@ -109,7 +109,7 @@ class OrderRestControllerTest {
 
         OrderTable orderTable = new OrderTable(4, false);
 
-        Order order = new Order(orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(orderLineItem));
+        Order order = new Order(orderTable.getId(), OrderStatus.COOKING, orderedTime, new OrderLineItems(Arrays.asList(orderLineItem)));
 
         String requestBody = objectMapper.writeValueAsString(order);
 

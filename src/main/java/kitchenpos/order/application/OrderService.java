@@ -36,17 +36,18 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        List<OrderLineItem> newOrderLineItems = getOrderLineItems(orderRequest);
+        OrderLineItems newOrderLineItems = getOrderLineItems(orderRequest);
 
         final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
                 .orElseThrow(IllegalArgumentException::new);
+
         Order newOrder = Order.newOrder(orderTable, LocalDateTime.now(), newOrderLineItems);
         final Order savedOrder = orderRepository.save(newOrder);
 
         return OrderResponse.of(savedOrder);
     }
 
-    private List<OrderLineItem> getOrderLineItems(OrderRequest orderRequest) {
+    private OrderLineItems getOrderLineItems(OrderRequest orderRequest) {
         List<OrderLineItemRequest> orderLineItemRequests = orderRequest.getOrderLineItems();
 
         if (CollectionUtils.isEmpty(orderLineItemRequests)) {
@@ -60,7 +61,7 @@ public class OrderService {
 
 
 
-        return orderLineItems;
+        return new OrderLineItems(orderLineItems);
     }
 
     private OrderLineItem findByOrderLineItem(OrderLineItemRequest orderLineItemRequest) {
