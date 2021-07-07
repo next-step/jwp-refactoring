@@ -1,23 +1,23 @@
-package kitchenpos.domain;
+package kitchenpos.menu.domain;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+@Entity
 public class Menu {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private BigDecimal price;
     private Long menuGroupId;
-    private List<MenuProduct> menuProducts;
+    @Embedded
+    private MenuProducts menuProducts = new MenuProducts();
 
     public Menu() {
-    }
-
-    public Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        this.name = name;
-        this.price = price;
-        this.menuGroupId = menuGroupId;
-        this.menuProducts = menuProducts;
     }
 
     public Menu(String name, BigDecimal price, Long menuGroupId) {
@@ -39,9 +39,31 @@ public class Menu {
         this.menuGroupId = menuGroupId;
     }
 
+    public void addMenuProducts(List<MenuProduct> menuProducts) {
+        this.menuProducts.addAll(menuProducts);
+    }
 
+    public void addMenuProducts(MenuProducts menuProducts) {
+        this.menuProducts.addAll(menuProducts.menuProducts());
+    }
 
-    public Menu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    public List<MenuProduct> menuProducts() {
+        return menuProducts.menuProducts();
+    }
+
+    public void validatePrice() {
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public void compareMenuPriceToProductsSum(BigDecimal sum) {
+        if (price.compareTo(sum) > 0) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public Menu(Long id, String name, BigDecimal price, Long menuGroupId, MenuProducts menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -80,14 +102,4 @@ public class Menu {
     public void setMenuGroupId(final Long menuGroupId) {
         this.menuGroupId = menuGroupId;
     }
-
-    public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
-    }
-
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
-    }
-
-
 }
