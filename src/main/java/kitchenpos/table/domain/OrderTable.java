@@ -58,16 +58,8 @@ public class OrderTable {
         return numberOfGuests;
     }
 
-    private void setNumberOfGuests(final int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
-    }
-
     public boolean isEmpty() {
         return empty;
-    }
-
-    private void setEmpty(final boolean empty) {
-        this.empty = empty;
     }
 
     public void changeNumberOfGuests(int numberOfGuests) {
@@ -79,7 +71,7 @@ public class OrderTable {
             throw new IllegalArgumentException("빈테이블은 손님의 수를 변경할수 없습니다.");
         }
 
-        setNumberOfGuests(numberOfGuests);
+        this.numberOfGuests = numberOfGuests;
     }
 
     public void changeEmpty(OrderTableRequest orderTableRequest) {
@@ -87,7 +79,7 @@ public class OrderTable {
             throw new IllegalArgumentException("단체테이블인 경우 테이블을 비울수 없습니다.");
         }
 
-        setEmpty(orderTableRequest.isEmpty());
+        this.empty = orderTableRequest.isEmpty();
     }
 
     public boolean isUnableTableGroup() {
@@ -98,8 +90,7 @@ public class OrderTable {
     }
 
     public void ungroup() {
-        orders.stream()
-                .forEach(Order::ungroupValidation);
+        orders.forEach(Order::ungroupValidation);
         groupBy(null);
     }
 }
