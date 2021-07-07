@@ -13,12 +13,17 @@ public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
+    @Column(name = "order_table_id")
     private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "order_status")
     private OrderStatus orderStatus;
+
+    @Column(name = "irdered_time")
     private LocalDateTime orderedTime;
 
     @OneToMany(mappedBy = "orderId")
