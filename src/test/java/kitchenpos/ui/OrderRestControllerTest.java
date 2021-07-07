@@ -1,10 +1,7 @@
 package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuGroupRepository;
-import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.domain.*;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.*;
 import kitchenpos.table.domain.OrderTable;
@@ -70,7 +67,7 @@ class OrderRestControllerTest {
         Menu menu = new Menu("햄버거", BigDecimal.valueOf(5000), savedMenuGroup);
         Menu savedMenu = menuRepository.save(menu);
 
-        orderLineItem = new OrderLineItem(savedMenu.getId(), 10);
+        orderLineItem = new OrderLineItem(savedMenu.getId(), new Quantity(10));
 
         this.mockMvc = MockMvcBuilders.webAppContextSetup(ctx)
                 .addFilters(new CharacterEncodingFilter("UTF-8", true))

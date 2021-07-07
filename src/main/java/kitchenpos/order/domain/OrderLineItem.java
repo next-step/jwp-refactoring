@@ -1,6 +1,7 @@
 package kitchenpos.order.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import kitchenpos.menu.domain.Quantity;
 
 import javax.persistence.*;
 
@@ -20,18 +21,18 @@ public class OrderLineItem {
     @Column(name = "menu_id")
     private Long menuId;
 
-    @Column(name = "quantity")
-    private long quantity;
+    @Embedded
+    private Quantity quantity;
 
     public OrderLineItem() {
     }
 
-    public OrderLineItem(Long menuId, long quantity) {
+    public OrderLineItem(Long menuId, Quantity quantity) {
         this.menuId = menuId;
         this.quantity = quantity;
     }
 
-    public OrderLineItem(Long seq, Order order, Long menuId, long quantity) {
+    public OrderLineItem(Long seq, Order order, Long menuId, Quantity quantity) {
         this.seq = seq;
         this.order = order;
         this.menuId = menuId;
@@ -50,7 +51,7 @@ public class OrderLineItem {
         return menuId;
     }
 
-    public long getQuantity() {
+    public Quantity getQuantity() {
         return quantity;
     }
 

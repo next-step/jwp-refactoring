@@ -1,17 +1,18 @@
 package kitchenpos.order.dto;
 
+import kitchenpos.menu.domain.Quantity;
 import kitchenpos.order.domain.OrderLineItem;
 
 public class OrderLineItemResponse {
     private Long seq;
     private Long orderId;
     private Long menuId;
-    private long quantity;
+    private Quantity quantity;
 
     private OrderLineItemResponse() {
     }
 
-    private OrderLineItemResponse(Long seq, Long orderId, Long menuId, long quantity) {
+    private OrderLineItemResponse(Long seq, Long orderId, Long menuId, Quantity quantity) {
         this.seq = seq;
         this.orderId = orderId;
         this.menuId = menuId;
@@ -42,11 +43,11 @@ public class OrderLineItemResponse {
         this.menuId = menuId;
     }
 
-    public long getQuantity() {
+    public Quantity getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(final long quantity) {
+    public void setQuantity(final Quantity quantity) {
         this.quantity = quantity;
     }
 

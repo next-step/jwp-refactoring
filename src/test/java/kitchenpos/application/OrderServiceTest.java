@@ -1,15 +1,11 @@
 package kitchenpos.application;
 
+import kitchenpos.menu.domain.*;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuGroupRepository;
-import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.product.domain.Price;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -73,7 +69,7 @@ class OrderServiceTest {
 
         savedEmptyOrderTable = orderTableRepository.save(emptyOrderTable);
 
-        orderLineItem = new OrderLineItem(savedMenu.getId(), 1);
+        orderLineItem = new OrderLineItem(savedMenu.getId(), new Quantity(1));
     }
 
     @DisplayName("주문을 생성하자")
@@ -157,7 +153,7 @@ class OrderServiceTest {
         //given
         LocalDateTime orderedTime = LocalDateTime.of(2021, 7, 1, 01, 10, 00);
 
-        OrderLineItem orderLineItem = new OrderLineItem(savedMenu.getId(), 1);
+        OrderLineItem orderLineItem = new OrderLineItem(savedMenu.getId(), new Quantity(1));
         Order order = new Order(savedOrderTable.getId(), OrderStatus.COOKING, orderedTime, Arrays.asList(orderLineItem));
         order.reception();
 
