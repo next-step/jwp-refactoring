@@ -90,7 +90,6 @@ class TableServiceTest {
     public void changeEmpty() {
         //given
         OrderTableRequest orderTableRequest = new OrderTableRequest(0, true);
-        orderTableRequest.setEmpty(true);
 
         //when
         OrderTableResponse changedTable = tableService.changeEmpty(savedOrderTable.getId(), orderTableRequest);

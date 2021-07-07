@@ -11,43 +11,51 @@ public class OrderRequest {
     private LocalDateTime orderedTime;
     private List<OrderLineItemRequest> orderLineItems = new ArrayList<>();
 
-    public Long getId() {
-        return id;
+    public OrderRequest() {
     }
 
-    public void setId(final Long id) {
-        this.id = id;
+    public OrderRequest(Long orderTableId, String orderStatus) {
+        this.orderTableId = orderTableId;
+        this.orderStatus = orderStatus;
+    }
+
+    public OrderRequest(Long orderTableId, String orderStatus, LocalDateTime orderedTime) {
+        this.orderTableId = orderTableId;
+        this.orderStatus = orderStatus;
+        this.orderedTime = orderedTime;
+    }
+
+    public OrderRequest(Long orderTableId, String orderStatus, List<OrderLineItemRequest> orderLineItems) {
+        this.orderTableId = orderTableId;
+        this.orderStatus = orderStatus;
+        this.orderLineItems = orderLineItems;
+    }
+
+    public OrderRequest(Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItemRequest> orderLineItems) {
+        this.orderTableId = orderTableId;
+        this.orderStatus = orderStatus;
+        this.orderedTime = orderedTime;
+        this.orderLineItems = orderLineItems;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public Long getOrderTableId() {
         return orderTableId;
     }
 
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
-    }
-
     public String getOrderStatus() {
         return orderStatus;
-    }
-
-    public void setOrderStatus(final String orderStatus) {
-        this.orderStatus = orderStatus;
     }
 
     public LocalDateTime getOrderedTime() {
         return orderedTime;
     }
 
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
-    }
-
     public List<OrderLineItemRequest> getOrderLineItems() {
         return orderLineItems;
     }
 
-    public void setOrderLineItems(final List<OrderLineItemRequest> orderLineItems) {
-        this.orderLineItems = orderLineItems;
-    }
 }

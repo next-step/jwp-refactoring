@@ -66,11 +66,7 @@ class MenuRestControllerTest {
     public void create() throws Exception {
         MenuProductRequest menuProductRequest = new MenuProductRequest(menuProduct.getSeq(), menuProduct.getMenuId(), menuProduct.getProduct().getId(), menuProduct.getQuantity());
 
-        MenuRequest menu = new MenuRequest();
-        menu.setName("패스트푸드");
-        menu.setMenuGroupId(1L);
-        menu.setPrice(BigDecimal.valueOf(10000));
-        menu.setMenuProducts(Arrays.asList(menuProductRequest));
+        MenuRequest menu = new MenuRequest("패스트푸드", BigDecimal.valueOf(10000), 1L, Arrays.asList(menuProductRequest));
 
         String requestBody = objectMapper.writeValueAsString(menu);
 

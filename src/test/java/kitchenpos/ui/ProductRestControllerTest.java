@@ -2,7 +2,6 @@ package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.product.application.ProductService;
-import kitchenpos.product.domain.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.ui.ProductRestController;
@@ -56,9 +55,7 @@ class ProductRestControllerTest {
     @DisplayName("상품 생성 Api 테스트")
     @Test
     void create() throws Exception {
-        ProductRequest product = new ProductRequest();
-        product.setName("맥도날드햄버거");
-        product.setPrice(BigDecimal.valueOf(5000));
+        ProductRequest product = new ProductRequest("맥도날드햄버거", BigDecimal.valueOf(5000));
 
         String requestBody = objectMapper.writeValueAsString(product);
 

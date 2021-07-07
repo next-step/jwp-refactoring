@@ -52,15 +52,9 @@ class TableGroupRestControllerTest {
 
     @BeforeEach
     void setUp() {
-        orderTableRequest1 = new OrderTableRequest();
-        orderTableRequest1.setTableGroupId(1L);
-        orderTableRequest1.setEmpty(true);
-        orderTableRequest1.setNumberOfGuests(0);
+        orderTableRequest1 = new OrderTableRequest(1L, 0, true);
 
-        orderTableRequest2 = new OrderTableRequest();
-        orderTableRequest2.setTableGroupId(1L);
-        orderTableRequest2.setEmpty(true);
-        orderTableRequest2.setNumberOfGuests(0);
+        orderTableRequest2 = new OrderTableRequest(1L, 0, true);
 
         orderTableResponse1 = new OrderTableResponse();
         orderTableResponse1.setTableGroupId(1L);
@@ -81,9 +75,7 @@ class TableGroupRestControllerTest {
     @DisplayName("테이블 그룹 생성 Api 테스트")
     @Test
     void create() throws Exception {
-        TableGroupRequest tableGroup = new TableGroupRequest();
-        tableGroup.setOrderTables(Arrays.asList(orderTableRequest1, orderTableRequest2));
-        tableGroup.setCreatedDate(LocalDateTime.now());
+        TableGroupRequest tableGroup = new TableGroupRequest(LocalDateTime.now(), Arrays.asList(orderTableRequest1, orderTableRequest2));
 
         String requestBody = objectMapper.writeValueAsString(tableGroup);
 

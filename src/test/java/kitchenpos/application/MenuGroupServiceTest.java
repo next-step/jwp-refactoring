@@ -31,8 +31,7 @@ class MenuGroupServiceTest {
         //given
         String menuGroupName = "테스트메뉴그룹";
 
-        MenuGroupRequest menuGroupRequest = new MenuGroupRequest();
-        menuGroupRequest.setName(menuGroupName);
+        MenuGroupRequest menuGroupRequest = new MenuGroupRequest(menuGroupName);
 
         //when
         MenuGroupResponse savedMenuGroup = menuGroupService.create(menuGroupRequest);

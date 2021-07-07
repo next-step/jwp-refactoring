@@ -48,8 +48,7 @@ class TableGroupServiceTest {
 
         OrderTableRequest orderTableRequest1 = new OrderTableRequest(savedOrderTable1.getId(), savedOrderTable1.getTableGroupId(), savedOrderTable1.getNumberOfGuests(), savedOrderTable1.isEmpty());
         OrderTableRequest orderTableRequest2 = new OrderTableRequest(savedOrderTable2.getId(), savedOrderTable2.getTableGroupId(), savedOrderTable2.getNumberOfGuests(), savedOrderTable2.isEmpty());
-        TableGroupRequest tableGroup = new TableGroupRequest();
-        tableGroup.setOrderTables(Arrays.asList(orderTableRequest1, orderTableRequest2));
+        TableGroupRequest tableGroup = new TableGroupRequest(Arrays.asList(orderTableRequest1, orderTableRequest2));
 
         //when
         TableGroupResponse savedTableGroup = tableGroupService.create(tableGroup);
@@ -69,8 +68,7 @@ class TableGroupServiceTest {
 
         OrderTableRequest orderTableRequest1 = new OrderTableRequest(savedOrderTable1.getId(), savedOrderTable1.getTableGroupId(), savedOrderTable1.getNumberOfGuests(), savedOrderTable1.isEmpty());
         OrderTableRequest orderTableRequest2 = new OrderTableRequest(savedOrderTable2.getId(), savedOrderTable2.getTableGroupId(), savedOrderTable2.getNumberOfGuests(), savedOrderTable2.isEmpty());
-        TableGroupRequest tableGroup = new TableGroupRequest();
-        tableGroup.setOrderTables(Arrays.asList(orderTableRequest1, orderTableRequest2));
+        TableGroupRequest tableGroup = new TableGroupRequest(Arrays.asList(orderTableRequest1, orderTableRequest2));
 
         //then
         assertThatThrownBy(
@@ -96,8 +94,7 @@ class TableGroupServiceTest {
 
         OrderTableRequest orderTableRequest1 = new OrderTableRequest(savedOrderTable1.getId(), savedOrderTable1.getTableGroupId(), savedOrderTable1.getNumberOfGuests(), savedOrderTable1.isEmpty());
         OrderTableRequest orderTableRequest2 = new OrderTableRequest(savedOrderTable2.getId(), savedOrderTable2.getTableGroupId(), savedOrderTable2.getNumberOfGuests(), savedOrderTable2.isEmpty());
-        TableGroupRequest tableGroup = new TableGroupRequest();
-        tableGroup.setOrderTables(Arrays.asList(orderTableRequest1, orderTableRequest2));
+        TableGroupRequest tableGroup = new TableGroupRequest(Arrays.asList(orderTableRequest1, orderTableRequest2));
 
         //then
         assertThatThrownBy(

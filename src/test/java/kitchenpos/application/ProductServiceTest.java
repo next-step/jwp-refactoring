@@ -34,9 +34,7 @@ class ProductServiceTest {
         String productName = "테스트상품";
         BigDecimal price = BigDecimal.valueOf(1000);
 
-        ProductRequest product = new ProductRequest();
-        product.setName(productName);
-        product.setPrice(price);
+        ProductRequest product = new ProductRequest(productName, price);
 
         //when
         Product savedProduct = productService.create(product);
@@ -53,8 +51,7 @@ class ProductServiceTest {
         //given
         String productName = "테스트상품";
 
-        ProductRequest product = new ProductRequest();
-        product.setName(productName);
+        ProductRequest product = new ProductRequest(productName);
 
         //when
         assertThatThrownBy(
@@ -69,9 +66,7 @@ class ProductServiceTest {
         String productName = "테스트상품";
         BigDecimal price = BigDecimal.valueOf(-1000);
 
-        ProductRequest productRequest = new ProductRequest();
-        productRequest.setName(productName);
-        productRequest.setPrice(price);
+        ProductRequest productRequest = new ProductRequest(productName, price);
 
         //when
         assertThatThrownBy(
