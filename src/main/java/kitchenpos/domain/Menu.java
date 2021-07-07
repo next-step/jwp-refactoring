@@ -40,7 +40,7 @@ public class Menu {
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
-    public Menu() {
+    protected Menu() {
     }
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
@@ -109,23 +109,5 @@ public class Menu {
 
     public BigDecimal getPrice() {
         return price;
-    }
-
-    // TODO 이하 제거대상
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public void setMenuGroupId(long menu_group_id) {
-        this.menuGroup.setId(menu_group_id);
     }
 }

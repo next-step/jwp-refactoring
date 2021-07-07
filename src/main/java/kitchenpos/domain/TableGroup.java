@@ -30,7 +30,7 @@ public class TableGroup {
     @Column(nullable = false)
     private LocalDateTime createdDate = LocalDateTime.now();
 
-    public TableGroup() {
+    protected TableGroup() {
     }
 
     public TableGroup(List<OrderTable> orderTables) {
@@ -67,7 +67,7 @@ public class TableGroup {
 
     private void addOrderTable(OrderTable orderTable) {
         checkOrderTable(orderTable);
-        orderTable.setEmpty(false);
+        orderTable.changeEmpty(false);
         orderTable.setTableGroup(this);
         orderTables.add(orderTable);
     }
@@ -84,15 +84,5 @@ public class TableGroup {
 
     public void ungroupAll() {
         orderTables.forEach(OrderTable::ungroup);
-    }
-
-    // TODO 이하 삭제
-
-    public void setId(Long tableGroupId) {
-        this.id = tableGroupId;
-    }
-
-    public void setCreatedDate(LocalDateTime created_date) {
-        this.createdDate = created_date;
     }
 }

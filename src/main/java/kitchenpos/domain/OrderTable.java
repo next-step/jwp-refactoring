@@ -36,7 +36,7 @@ public class OrderTable {
     @OneToMany(mappedBy = "orderTable")
     private List<Order> orders = new ArrayList<>();
 
-    public OrderTable() {
+    protected OrderTable() {
     }
 
     public OrderTable(int numberOfGuests, boolean empty) {
@@ -143,31 +143,7 @@ public class OrderTable {
         return Objects.hash(id);
     }
 
-    // TODO 이하 삭제
-
-    public Long getTableGroupId() {
-        // return tableGroup.getId();
-        return 2L; // TODO 흠..
-    }
-
-    public void setTableGroupId(Long tableGroupId) {
-        // tableGroup.setId(tableGroupId);
-        // TODO 흠..
-    }
-
-    public void setEmpty(boolean b) {
-        this.empty = b;
-    }
-
-    public void setId(long aLong) {
-        this.id = aLong;
-    }
-
-    public void setNumberOfGuests(int number_of_guests) {
-        this.numberOfGuests = number_of_guests;
-    }
-
-    public void addOrder(Order order) {
+    public void addOrder(Order order) { // TODO 제대로 변경 필요
         orders.add(order);
     }
 }

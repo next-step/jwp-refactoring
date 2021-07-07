@@ -41,7 +41,7 @@ public class Order {
     @OneToMany(mappedBy = "order")
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
-    public Order() {
+    protected Order() {
     }
 
     public Order(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
@@ -63,7 +63,7 @@ public class Order {
         }
     }
 
-    private void checkOrderTable(OrderTable orderTable) {
+    private void checkOrderTable(OrderTable orderTable) { // TODO OrderTable에서 확인하도록 개선 필요
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException("빈 테이블에는 주문을 넣을 수 없습니다.");
         }

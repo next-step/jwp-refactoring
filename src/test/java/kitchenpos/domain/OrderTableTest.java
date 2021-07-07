@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import kitchenpos.exception.OrderNotCompletedException;
 
+@DisplayName("주문 테이블 단위 테스트")
 public class OrderTableTest {
     public static OrderTable 테이블1 = new OrderTable(1L, 그룹1, 0, true);
     public static OrderTable 테이블2 = new OrderTable(2L, 그룹1, 0, true);
@@ -28,7 +29,7 @@ public class OrderTableTest {
 
 
     @Test
-    @DisplayName("특정 테이블의 테이블 상태를 변경한다")
+    @DisplayName("테이블 상태를 변경한다")
     void changeEmpty() {
         // when
         테이블8.changeEmpty(false);
@@ -38,7 +39,7 @@ public class OrderTableTest {
     }
 
     @Test
-    @DisplayName("테이블 상태 변경 실패(테이블이 그룹에 포함되어 있음)")
+    @DisplayName("상태 변경 실패(테이블이 그룹에 포함되어 있음)")
     void changeEmpty_failed2() {
         // then
         assertThatThrownBy(() -> 테이블1.changeEmpty(false))
@@ -46,7 +47,7 @@ public class OrderTableTest {
     }
 
     @Test
-    @DisplayName("테이블 상태 변경 실패(테이블이 조리/식사 상태)")
+    @DisplayName("상태 변경 실패(테이블이 조리/식사 상태)")
     void changeEmpty_failed3() {
         // given
         OrderLineItem 더미1 = new OrderLineItem(후라이드_메뉴, 1);

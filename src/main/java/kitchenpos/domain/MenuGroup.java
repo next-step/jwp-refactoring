@@ -15,14 +15,14 @@ public class MenuGroup {
     @Column(nullable = false)
     private String name;
 
-    public MenuGroup() {
+    protected MenuGroup() {
     }
 
     public MenuGroup(String name) {
         this(null, name);
     }
 
-    public MenuGroup(Long id, String name) { // TODO default로 변경
+    public MenuGroup(Long id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -33,15 +33,5 @@ public class MenuGroup {
 
     public String getName() {
         return name;
-    }
-
-    // TODO 이하 삭제
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 }

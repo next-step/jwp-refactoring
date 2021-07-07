@@ -21,7 +21,7 @@ public class Product {
     @Column(nullable = false)
     private BigDecimal price;
 
-    public Product() {
+    protected Product() {
     }
 
     public Product(String name, BigDecimal price) {
@@ -51,19 +51,5 @@ public class Product {
 
     public BigDecimal getPrice() {
         return price;
-    }
-
-    // TODO 이 밑으로 필요 없으면 삭제
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
     }
 }

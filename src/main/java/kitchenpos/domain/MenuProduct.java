@@ -32,7 +32,7 @@ public class MenuProduct {
     @Column(nullable = false)
     private long quantity;
 
-    public MenuProduct() {
+    protected MenuProduct() {
     }
 
     public MenuProduct(Product product, long quantity) {
@@ -69,43 +69,5 @@ public class MenuProduct {
 
     public BigDecimal getTotalPrice() {
         return product.getPrice().multiply(BigDecimal.valueOf(quantity));
-    }
-
-    // TODO 삭제 대상
-
-    public Long getProductId() {
-        return product.getId();
-    }
-
-    public MenuProduct(Long seq, Long menuId, Long productId, long quantity) {
-        this.seq = seq;
-        this.menu.setId(menuId);
-        this.product.setId(productId);
-        this.quantity = quantity;
-    }
-
-    public MenuProduct(Long productId, Long menuId) {
-        setMenuId(menuId);
-        setProductId(productId);
-    }
-
-    public void setSeq(Long seq) {
-        this.seq = seq;
-    }
-
-    public void setMenuId(Long menuId) {
-        this.menu.setId(menuId);;
-    }
-
-    public void setProductId(Long productId) {
-        this.product.setId(productId);
-    }
-
-    public void setQuantity(long quantity) {
-        this.quantity = quantity;
-    }
-
-    public Long getMenuId() {
-        return menu.getId();
     }
 }
