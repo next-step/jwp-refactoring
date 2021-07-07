@@ -9,7 +9,7 @@ public class MenuProductResponse {
     private Long productId;
     private Quantity quantity;
 
-    public MenuProductResponse(Long seq, Long menuId, Long productId, Quantity quantity) {
+    private MenuProductResponse(Long seq, Long menuId, Long productId, Quantity quantity) {
         this.seq = seq;
         this.menuId = menuId;
         this.productId = productId;

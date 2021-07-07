@@ -43,8 +43,8 @@ class TableGroupServiceTest {
     @Test
     public void createTableGroup() throws Exception {
         //given
-        OrderTable savedOrderTable1 = createOrderTable(4, true);
-        OrderTable savedOrderTable2 = createOrderTable(4, true);
+        OrderTable savedOrderTable1 = createOrderTable(4, false);
+        OrderTable savedOrderTable2 = createOrderTable(4, false);
 
         OrderTableRequest orderTableRequest1 = new OrderTableRequest(savedOrderTable1.getId(), savedOrderTable1.getTableGroupId(), savedOrderTable1.getNumberOfGuests(), savedOrderTable1.isEmpty());
         OrderTableRequest orderTableRequest2 = new OrderTableRequest(savedOrderTable2.getId(), savedOrderTable2.getTableGroupId(), savedOrderTable2.getNumberOfGuests(), savedOrderTable2.isEmpty());
@@ -81,8 +81,8 @@ class TableGroupServiceTest {
     public void failCreateTableGroupNotNullTableGroupId() throws Exception {
         //given
         int countOfPeople = 4;
-        OrderTable savedOrderTable1 = createOrderTable(countOfPeople, true);
-        OrderTable savedOrderTable2 = createOrderTable(countOfPeople, true);
+        OrderTable savedOrderTable1 = createOrderTable(countOfPeople, false);
+        OrderTable savedOrderTable2 = createOrderTable(countOfPeople, false);
 
         TableGroup anotherTableGroup = new TableGroup(LocalDateTime.now());
 

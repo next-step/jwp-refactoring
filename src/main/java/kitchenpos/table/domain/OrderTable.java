@@ -36,8 +36,8 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public OrderTable(Long id, int numberOfGuests, boolean empty) {
-        this.id = id;
+    public OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
@@ -91,7 +91,7 @@ public class OrderTable {
     }
 
     public boolean isUnableTableGroup() {
-        if (!isEmpty() || Objects.nonNull(getTableGroupId())) {
+        if (isEmpty() || Objects.nonNull(getTableGroupId())) {
             return true;
         }
         return false;

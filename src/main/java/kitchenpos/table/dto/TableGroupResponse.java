@@ -11,10 +11,10 @@ public class TableGroupResponse {
     private LocalDateTime createdDate;
     private List<OrderTableResponse> orderTables;
 
-    public TableGroupResponse() {
+    private TableGroupResponse() {
     }
 
-    public TableGroupResponse(Long id, LocalDateTime createdDate, List<OrderTableResponse> orderTables) {
+    private TableGroupResponse(Long id, LocalDateTime createdDate, List<OrderTableResponse> orderTables) {
         this.id = id;
         this.createdDate = createdDate;
         this.orderTables = orderTables;

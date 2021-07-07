@@ -2,10 +2,11 @@ package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.Quantity;
 import kitchenpos.menu.dto.MenuProductRequest;
-import kitchenpos.menu.dto.MenuProductResponse;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.ui.MenuRestController;
@@ -53,7 +54,7 @@ class MenuRestControllerTest {
 
     @BeforeEach
     void setUp() {
-        menuProduct = new MenuProduct(1L, new Product(), new Quantity(1));
+        menuProduct = new MenuProduct(1L, new Product("햄버거", BigDecimal.valueOf(5000)), new Quantity(1));
 
         this.mockMvc = MockMvcBuilders.webAppContextSetup(ctx)
                 .addFilters(new CharacterEncodingFilter("UTF-8", true))
@@ -66,11 +67,11 @@ class MenuRestControllerTest {
     public void create() throws Exception {
         MenuProductRequest menuProductRequest = new MenuProductRequest(menuProduct.getSeq(), menuProduct.getMenuId(), menuProduct.getProduct().getId(), menuProduct.getQuantity());
 
-        MenuRequest menu = new MenuRequest("패스트푸드", BigDecimal.valueOf(10000), 1L, Arrays.asList(menuProductRequest));
+        MenuRequest menu = new MenuRequest("패스트푸드", BigDecimal.valueOf(5000), 1L, Arrays.asList(menuProductRequest));
 
         String requestBody = objectMapper.writeValueAsString(menu);
 
-        MenuResponse responseMenu = new MenuResponse(1L, "패스트푸드", BigDecimal.valueOf(10000), 1L, Arrays.asList(MenuProductResponse.of(menuProduct)));
+        MenuResponse responseMenu = MenuResponse.of(new Menu("패스트푸드", BigDecimal.valueOf(5000), 1L, new MenuProducts(Arrays.asList(menuProduct))));
 
         String responseBody = objectMapper.writeValueAsString(responseMenu);
 
@@ -89,7 +90,7 @@ class MenuRestControllerTest {
     @DisplayName("메뉴 목록 Api 테스트")
     @Test
     void list() throws Exception {
-        MenuResponse menu = new MenuResponse(1L, "패스트푸드", BigDecimal.valueOf(10000), 1L, Arrays.asList(MenuProductResponse.of(menuProduct)));
+        MenuResponse menu = MenuResponse.of(new Menu("패스트푸드", BigDecimal.valueOf(5000), 1L, new MenuProducts(Arrays.asList(menuProduct))));
         List<MenuResponse> menus = Arrays.asList(menu);
 
         String responseBody = objectMapper.writeValueAsString(menus);

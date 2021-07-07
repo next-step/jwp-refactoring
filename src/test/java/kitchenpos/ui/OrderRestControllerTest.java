@@ -68,11 +68,7 @@ class OrderRestControllerTest {
 
         String requestBody = objectMapper.writeValueAsString(order);
 
-        OrderResponse responseOrder = new OrderResponse();
-        responseOrder.setOrderLineItems(Arrays.asList(OrderLineItemResponse.of(orderLineItem)));
-        responseOrder.setOrderTableId(orderTable.getId());
-        responseOrder.setOrderStatus(OrderStatus.COOKING);
-        responseOrder.setOrderedTime(LocalDateTime.now());
+        OrderResponse responseOrder = OrderResponse.of(order);
         String responseBody = objectMapper.writeValueAsString(responseOrder);
 
         when(orderService.create(any())).thenReturn(responseOrder);
@@ -90,13 +86,10 @@ class OrderRestControllerTest {
     @DisplayName("주문 목록 Api 테스트")
     @Test
     void list() throws Exception {
-        OrderResponse order = new OrderResponse();
-        order.setOrderLineItems(Arrays.asList(OrderLineItemResponse.of(orderLineItem)));
-        order.setOrderTableId(1L);
-        order.setOrderStatus(OrderStatus.COOKING);
-        order.setOrderedTime(LocalDateTime.now());
+        Order order = new Order(1L, OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(orderLineItem));
+        OrderResponse responseOrder = OrderResponse.of(order);
 
-        List<OrderResponse> orders = Arrays.asList(order);
+        List<OrderResponse> orders = Arrays.asList(responseOrder);
 
         String responseBody = objectMapper.writeValueAsString(orders);
 
@@ -120,11 +113,7 @@ class OrderRestControllerTest {
 
         String requestBody = objectMapper.writeValueAsString(order);
 
-        OrderResponse orderResponse = new OrderResponse();
-        orderResponse.setOrderLineItems(Arrays.asList(OrderLineItemResponse.of(orderLineItem)));
-        orderResponse.setOrderTableId(1L);
-        orderResponse.setOrderStatus(OrderStatus.COOKING);
-        orderResponse.setOrderedTime(orderedTime);
+        OrderResponse orderResponse = OrderResponse.of(order);
         String responseBody = objectMapper.writeValueAsString(orderResponse);
 
         when(orderService.changeOrderStatus(any(), any())).thenReturn(orderResponse);

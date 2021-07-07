@@ -13,7 +13,7 @@ public class MenuResponse {
     private Long menuGroupId;
     private List<MenuProductResponse> menuProducts;
 
-    public MenuResponse(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProductResponse> menuProducts) {
+    private MenuResponse(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProductResponse> menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;

@@ -57,10 +57,8 @@ class TableRestControllerTest {
 
         String requestBody = objectMapper.writeValueAsString(orderTable);
 
-        OrderTableResponse responseOrderTable = new OrderTableResponse();
-        responseOrderTable.setId(1L);
-        responseOrderTable.setEmpty(false);
-        responseOrderTable.setNumberOfGuests(4);
+        OrderTableResponse responseOrderTable = OrderTableResponse.of(orderTable);
+
         String responseBody = objectMapper.writeValueAsString(responseOrderTable);
 
         when(tableService.create(any())).thenReturn(responseOrderTable);
@@ -78,7 +76,7 @@ class TableRestControllerTest {
     @DisplayName("테이블 목록 Api 테스트")
     @Test
     void list() throws Exception {
-        OrderTable orderTable = new OrderTable(1L, 4, false);
+        OrderTable orderTable = new OrderTable(4, false);
 
         List<OrderTableResponse> orders = Arrays.asList(OrderTableResponse.of(orderTable));
 
@@ -98,14 +96,12 @@ class TableRestControllerTest {
     void changeEmpty() throws Exception {
         Long orderTableId = 1L;
 
-        OrderTable orderTable = new OrderTable(1L, 4, false);
+        OrderTable orderTable = new OrderTable(4, false);
 
         String requestBody = objectMapper.writeValueAsString(orderTable);
 
-        OrderTableResponse responseOrderTable = new OrderTableResponse();
-        responseOrderTable.setId(1L);
-        responseOrderTable.setEmpty(true);
-        responseOrderTable.setNumberOfGuests(0);
+        OrderTable emptyOrderTable = new OrderTable(0, true);
+        OrderTableResponse responseOrderTable = OrderTableResponse.of(emptyOrderTable);
         String responseBody = objectMapper.writeValueAsString(responseOrderTable);
 
         when(tableService.changeEmpty(any(), any())).thenReturn(responseOrderTable);
@@ -125,14 +121,12 @@ class TableRestControllerTest {
     void changeNumberOfGuests() throws Exception {
         Long orderTableId = 1L;
 
-        OrderTable orderTable = new OrderTable(1L, 4, false);
+        OrderTable orderTable = new OrderTable(4, false);
 
         String requestBody = objectMapper.writeValueAsString(orderTable);
 
-        OrderTableResponse responseOrderTable = new OrderTableResponse();
-        responseOrderTable.setId(1L);
-        responseOrderTable.setEmpty(false);
-        responseOrderTable.setNumberOfGuests(2);
+        OrderTable changeGuestCountOrderTable = new OrderTable(2, false);
+        OrderTableResponse responseOrderTable = OrderTableResponse.of(changeGuestCountOrderTable);
         String responseBody = objectMapper.writeValueAsString(responseOrderTable);
 
         when(tableService.changeNumberOfGuests(any(), any())).thenReturn(responseOrderTable);

@@ -2,6 +2,7 @@ package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.menu.application.MenuGroupService;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.menu.ui.MenuGroupRestController;
@@ -57,7 +58,7 @@ class MenuGroupRestControllerTest {
 
         String requestBody = objectMapper.writeValueAsString(menuGroup);
 
-        MenuGroupResponse responseMenuGroup = new MenuGroupResponse(1L, "패스트푸드");
+        MenuGroupResponse responseMenuGroup = MenuGroupResponse.of(new MenuGroup("패스트푸드"));
 
         String responseBody = objectMapper.writeValueAsString(responseMenuGroup);
 
@@ -75,7 +76,7 @@ class MenuGroupRestControllerTest {
     @DisplayName("메뉴그룹 목록 Api 테스트")
     @Test
     void list() throws Exception {
-        MenuGroupResponse responseMenuGroup = new MenuGroupResponse(1L, "패스트푸드");
+        MenuGroupResponse responseMenuGroup = MenuGroupResponse.of(new MenuGroup("패스트푸드"));
 
         List<MenuGroupResponse> menuGroups = Arrays.asList(responseMenuGroup);
 
