@@ -3,6 +3,7 @@ package kitchenpos.table.dto;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import kitchenpos.table.domain.OrderTableEntity;
 
 import java.util.Objects;
 
@@ -23,8 +24,12 @@ public class TableRequest {
     return numberOfGuests;
   }
 
-  public Boolean getEmpty() {
+  public Boolean isEmpty() {
     return empty;
+  }
+
+  public OrderTableEntity toEntity() {
+    return new OrderTableEntity(numberOfGuests, empty);
   }
 
   @Override
