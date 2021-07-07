@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -39,7 +40,7 @@ public class OrderService {
 
         final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
                 .orElseThrow(IllegalArgumentException::new);
-        Order newOrder = Order.newOrder(orderTable, newOrderLineItems);
+        Order newOrder = Order.newOrder(orderTable, LocalDateTime.now(), newOrderLineItems);
         final Order savedOrder = orderRepository.save(newOrder);
 
         return OrderResponse.of(savedOrder);

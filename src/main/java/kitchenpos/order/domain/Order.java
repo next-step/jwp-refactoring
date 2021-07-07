@@ -45,13 +45,13 @@ public class Order {
         this.orderLineItems = orderLineItems;
     }
 
-    public static Order newOrder(OrderTable orderTable, List<OrderLineItem> newOrderLineItems) {
+    public static Order newOrder(OrderTable orderTable, LocalDateTime orderedTime, List<OrderLineItem> newOrderLineItems) {
 
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException("빈테이블은 주문을 할수 없습니다.");
         }
 
-        return new Order(orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now(), newOrderLineItems);
+        return new Order(orderTable.getId(), OrderStatus.COOKING, orderedTime, newOrderLineItems);
     }
 
     public Long getId() {
