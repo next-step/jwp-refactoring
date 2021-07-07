@@ -23,7 +23,7 @@ public class MenuProducts {
     public BigDecimal menuProductsPrice() {
         BigDecimal sum = BigDecimal.ZERO;
         for (final MenuProduct menuProduct : menuProducts) {
-            sum = sum.add(menuProduct.product().price().multiply(BigDecimal.valueOf(menuProduct.quantity())));
+            sum = sum.add(menuProduct.price(menuProduct.quantity()));
         }
         return sum;
     }

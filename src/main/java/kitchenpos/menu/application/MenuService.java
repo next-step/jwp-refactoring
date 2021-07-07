@@ -47,12 +47,6 @@ public class MenuService {
         return MenuResponse.of(savedMenu);
     }
 
-    private void existsCheckByGroupId(MenuRequest menuRequest) {
-        if (!menuGroupRepository.existsById(menuRequest.getMenuGroupId())) {
-            throw new IllegalArgumentException();
-        }
-    }
-
     @Transactional(readOnly = true)
     public List<MenuResponse> list() {
         final List<Menu> menus = menuRepository.findAll();
@@ -62,6 +56,12 @@ public class MenuService {
         }
 
         return MenuResponse.ofList(menus);
+    }
+
+    private void existsCheckByGroupId(MenuRequest menuRequest) {
+        if (!menuGroupRepository.existsById(menuRequest.getMenuGroupId())) {
+            throw new IllegalArgumentException();
+        }
     }
 
     private Product findProduct(MenuProductRequest menuProduct) {

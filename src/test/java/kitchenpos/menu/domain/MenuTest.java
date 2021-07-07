@@ -48,7 +48,7 @@ public class MenuTest {
 
         //when
         //then
-        assertThrows(IllegalArgumentException.class, () ->  new Menu(name, price, menuGroup));
+        assertThrows(IllegalArgumentException.class, () -> new Menu(name, price, menuGroup));
     }
 
     @Test
@@ -58,8 +58,7 @@ public class MenuTest {
         String name = "불고기피자";
         BigDecimal price = new BigDecimal(20000);
         Menu menu = new Menu(name, price, menuGroup);
-        MenuProduct menuProduct = new MenuProduct(menu, new Product("불고기피자", new BigDecimal(15000)), 1L);
-        menuProducts.add(menuProduct);
+        menuProducts.add(new MenuProduct(menu, new Product(name, new BigDecimal(15000)), 1L));
         menu.mappingProducts(new MenuProducts(menuProducts));
 
         //when

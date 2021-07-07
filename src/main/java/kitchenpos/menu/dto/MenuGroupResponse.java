@@ -2,19 +2,12 @@ package kitchenpos.menu.dto;
 
 import kitchenpos.menu.domain.MenuGroup;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MenuGroupResponse {
     private Long id;
     private String name;
-
-    public MenuGroupResponse() {
-    }
-
-    public MenuGroupResponse(String name) {
-        this.name = name;
-    }
 
     public MenuGroupResponse(Long id, String name) {
         this.id = id;
@@ -26,11 +19,7 @@ public class MenuGroupResponse {
     }
 
     public static List<MenuGroupResponse> ofList(List<MenuGroup> menuGroups) {
-        List<MenuGroupResponse> menuGroupResponses = new ArrayList<>();
-        for (MenuGroup menuGroup : menuGroups) {
-            menuGroupResponses.add(new MenuGroupResponse(menuGroup.id(), menuGroup.name()));
-        }
-        return menuGroupResponses;
+        return menuGroups.stream().map(MenuGroupResponse::of).collect(Collectors.toList());
     }
 
     public Long getId() {
