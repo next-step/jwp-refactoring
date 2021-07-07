@@ -6,8 +6,8 @@ import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
-import kitchenpos.table.dao.OrderTableDao;
-import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableEntity;
+import kitchenpos.table.domain.TableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,17 +18,16 @@ import java.util.List;
 public class OrderService2 {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
-    //TODO: TableRepository 로 리팩토링 후 변경
-    private final OrderTableDao orderTableDao;
+    private final TableRepository tableRepository;
 
     public OrderService2(
             final MenuRepository menuRepository,
             final OrderRepository orderRepository,
-            final OrderTableDao orderTableDao
+            final TableRepository tableRepository
     ) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
-        this.orderTableDao = orderTableDao;
+        this.tableRepository = tableRepository;
     }
 
     public OrderResponse create(final OrderRequest request) {
@@ -38,7 +37,7 @@ public class OrderService2 {
     }
 
     private void validateOrderTable(Long orderTableId) {
-        final OrderTable orderTable = orderTableDao.findById(orderTableId)
+        final OrderTableEntity orderTable = tableRepository.findById(orderTableId)
             .orElseThrow(IllegalArgumentException::new);
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException();

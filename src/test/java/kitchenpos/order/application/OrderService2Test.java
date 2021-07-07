@@ -8,8 +8,8 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
-import kitchenpos.table.dao.OrderTableDao;
-import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableEntity;
+import kitchenpos.table.domain.TableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,9 +41,9 @@ class OrderService2Test {
 
   //TODO : TableRepository 로 리팩토링 후 변경
   @Mock
-  private OrderTableDao orderTableDao;
+  private TableRepository tableRepository;
 
-  private OrderTable orderTable;
+  private OrderTableEntity orderTable;
   private OrderLineItemEntity orderLineItemEntity1;
   private OrderLineItemEntity orderLineItemEntity2;
   private OrderRequest.OrderLineItemRequest orderLineItemRequest1;
@@ -53,13 +53,13 @@ class OrderService2Test {
 
   @BeforeEach
   void setUp() {
-    orderTable = new OrderTable(1L, 1L, 4, false);
+    orderTable = OrderTableEntity.initWithAll(1L, 1L, 4, false);
     orderLineItemEntity1 = new OrderLineItemEntity(1L, 1L, 2L);
     orderLineItemEntity2 = new OrderLineItemEntity(2L, 2L, 1L);
     orderLineItemRequest1 = new OrderRequest.OrderLineItemRequest(1L, 2L);
     orderLineItemRequest2 = new OrderRequest.OrderLineItemRequest(2L, 1L);
 
-    orderService = new OrderService2(menuRepository, orderRepository, orderTableDao);
+    orderService = new OrderService2(menuRepository, orderRepository, tableRepository);
   }
 
   @DisplayName("주문테이블, 주문 항목을 입력받아 저장할 수 있다.")
@@ -69,7 +69,7 @@ class OrderService2Test {
     OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Arrays.asList(orderLineItemRequest1, orderLineItemRequest2));
     when(menuRepository.countByIdIn(Arrays.asList(orderLineItemRequest1.getMenuId(), orderLineItemRequest2.getMenuId())))
           .thenReturn(2L);
-    when(orderTableDao.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
+    when(tableRepository.findById(orderTable.getId())).thenReturn(Optional.of(orderTable));
     when(orderRepository.save(any())).thenReturn(new OrderEntity(1L, orderTable.getId(), Arrays.asList(orderLineItemEntity1, orderLineItemEntity2)));
 
     //when
@@ -84,7 +84,7 @@ class OrderService2Test {
         () -> assertThat(savedOrder.getOrderLineItems()).contains(OrderResponse.OrderLineItemResponse.from(orderLineItemEntity1), OrderResponse.OrderLineItemResponse.from(orderLineItemEntity2))
     );
     verify(menuRepository, VerificationModeFactory.times(1)).countByIdIn(Arrays.asList(orderLineItemRequest1.getMenuId(), orderLineItemRequest2.getMenuId()));
-    verify(orderTableDao, VerificationModeFactory.times(1)).findById(orderTable.getId());
+    verify(tableRepository, VerificationModeFactory.times(1)).findById(orderTable.getId());
     verify(orderRepository, VerificationModeFactory.times(1)).save(any());
   }
 
@@ -120,23 +120,23 @@ class OrderService2Test {
     OrderRequest notExistTableRequest = new OrderRequest(notExistTableId, Arrays.asList(orderLineItemRequest1, orderLineItemRequest2));
     when(menuRepository.countByIdIn(Arrays.asList(orderLineItemRequest1.getMenuId(), orderLineItemRequest2.getMenuId())))
         .thenReturn(2L);
-    when(orderTableDao.findById(notExistTableId)).thenReturn(Optional.empty());
+    when(tableRepository.findById(notExistTableId)).thenReturn(Optional.empty());
 
     //when & then
     assertThatThrownBy(() -> orderService.create(notExistTableRequest)).isInstanceOf(IllegalArgumentException.class);
     verify(menuRepository, VerificationModeFactory.times(1)).countByIdIn(Arrays.asList(orderLineItemRequest1.getMenuId(), orderLineItemRequest2.getMenuId()));
-    verify(orderTableDao, VerificationModeFactory.times(1)).findById(notExistTableId);
+    verify(tableRepository, VerificationModeFactory.times(1)).findById(notExistTableId);
   }
 
   @DisplayName("주문테이블이 주문을 등록할 수 있는 테이블이어야 한다.")
   @Test
   void createFailCauseOrderTableIsEmptyTableTest() {
     //given
-    OrderTable emptyTable = new OrderTable(1L, 1L, 4, true);
+    OrderTableEntity emptyTable = OrderTableEntity.initWithAll(1L, 1L, 4, true);
     OrderRequest emptyTableRequest = new OrderRequest(emptyTable.getId(), Arrays.asList(orderLineItemRequest1, orderLineItemRequest2));
     when(menuRepository.countByIdIn(Arrays.asList(orderLineItemRequest1.getMenuId(), orderLineItemRequest2.getMenuId())))
         .thenReturn(2L);
-    when(orderTableDao.findById(emptyTable.getId())).thenReturn(Optional.of(emptyTable));
+    when(tableRepository.findById(emptyTable.getId())).thenReturn(Optional.of(emptyTable));
 
     //when & then
     assertThatThrownBy(() -> orderService.create(emptyTableRequest)).isInstanceOf(IllegalArgumentException.class);

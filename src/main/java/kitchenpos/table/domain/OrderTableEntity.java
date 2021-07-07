@@ -59,7 +59,7 @@ public class OrderTableEntity {
     return numberOfGuests.getValue();
   }
 
-  public Boolean isEmpty() {
+  public boolean isEmpty() {
     return empty;
   }
 
