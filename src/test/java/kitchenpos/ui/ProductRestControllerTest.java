@@ -3,8 +3,9 @@ package kitchenpos.ui;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.ProductService;
 import kitchenpos.domain.Product;
-import kitchenpos.ui.dto.ProductRequest;
-import kitchenpos.ui.dto.ProductResponse;
+import kitchenpos.ui.api.ProductRestController;
+import kitchenpos.ui.dto.product.ProductRequest;
+import kitchenpos.ui.dto.product.ProductResponse;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -60,7 +61,7 @@ class ProductRestControllerTest {
 
         후라이드치킨 = Product.of(1L, "후라이드치킨", BigDecimal.valueOf(12000));
         양념치킨 = Product.of(2L, "양념치킨", BigDecimal.valueOf(13000));
-        후라이드치킨_request = ProductRequest.of("후라이드치킨", BigDecimal.valueOf(12000));
+        후라이드치킨_request = ProductRequest.of(후라이드치킨);
         후라이드치킨_response = ProductResponse.of(후라이드치킨);
         양념치킨_response = ProductResponse.of(양념치킨);
     }

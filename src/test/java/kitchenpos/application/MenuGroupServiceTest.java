@@ -33,9 +33,7 @@ class MenuGroupServiceTest {
     @Test
     void create() {
         //given
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setId(1L);
-        menuGroup.setName("후라이드반 양념반");
+        MenuGroup menuGroup = MenuGroup.of(1L, "후라이드반 양념반");
 
         //and
         given(menuGroupDao.save(any())).willReturn(menuGroup);
@@ -58,12 +56,8 @@ class MenuGroupServiceTest {
     @Test
     void list() {
         //given
-        MenuGroup 착한세트 = new MenuGroup();
-        착한세트.setId(1L);
-        착한세트.setName("착한세트");
-        MenuGroup 더착한세트 = new MenuGroup();
-        더착한세트.setId(2L);
-        더착한세트.setName("더착한세트");
+        MenuGroup 착한세트 = MenuGroup.of(1L, "착한세트");
+        MenuGroup 더착한세트 = MenuGroup.of(2L, "더착한세트");
         List<MenuGroup> menuGroups = Lists.list(착한세트, 더착한세트);
 
         //and
