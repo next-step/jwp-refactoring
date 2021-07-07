@@ -61,7 +61,7 @@ class OrderServiceTest {
         MenuGroup menuGroup = new MenuGroup("패스트푸드");
         savedMenuGroup = menuGroupRepository.save(menuGroup);
 
-        Menu menu = new Menu("맥도날드햄버거", new Price(BigDecimal.valueOf(10000)), savedMenuGroup.getId());
+        Menu menu = new Menu("맥도날드햄버거", BigDecimal.valueOf(10000), savedMenuGroup);
 
         savedMenu = menuRepository.save(menu);
 
