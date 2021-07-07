@@ -17,11 +17,11 @@ public class Price {
     }
 
     public Price(BigDecimal price) {
-        this.price = price;
-
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("가격은 필수이고 0보다 작은값이 될수 없습니다.");
         }
+
+        this.price = price;
     }
 
     public Price multiply(Quantity quantity) {
