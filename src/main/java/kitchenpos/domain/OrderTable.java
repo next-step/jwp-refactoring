@@ -26,7 +26,7 @@ public class OrderTable {
     private boolean empty;
 
     @OneToMany(mappedBy = "orderTable")
-    private List<Order2> orders = new ArrayList<>();
+    private List<Order> orders = new ArrayList<>();
 
     public OrderTable() {
     }
@@ -101,7 +101,7 @@ public class OrderTable {
         this.tableGroup = null;
     }
 
-    public void checkOrderStatus(Order2 order) {
+    public void checkOrderStatus(Order order) {
         if (Objects.nonNull(order) && !order.isCompleted()) {
             throw new OrderNotCompletedException("테이블에 완결되지 않은 주문이 존재합니다.");
         }
@@ -146,7 +146,7 @@ public class OrderTable {
         this.numberOfGuests = number_of_guests;
     }
 
-    public void addOrder(Order2 order) {
+    public void addOrder(Order order) {
         orders.add(order);
     }
 }

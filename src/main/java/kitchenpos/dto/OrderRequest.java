@@ -6,13 +6,13 @@ import kitchenpos.domain.OrderStatus;
 
 public class OrderRequest {
     private Long orderTableId;
-    private String orderStatus;
+    private OrderStatus orderStatus;
     private List<OrderLineItemRequest> orderLineItems;
 
     public OrderRequest() {
     }
 
-    public OrderRequest(String orderStatus) {
+    public OrderRequest(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 
@@ -29,11 +29,11 @@ public class OrderRequest {
         this.orderTableId = orderTableId;
     }
 
-    public OrderStatus status() {
-        return OrderStatus.valueOf(orderStatus);
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
     }
 
-    public void setOrderStatus(String orderStatus) {
+    public void setOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 

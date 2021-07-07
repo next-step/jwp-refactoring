@@ -1,5 +1,6 @@
 package kitchenpos.ui;
 
+import static kitchenpos.domain.OrderStatus.*;
 import static kitchenpos.domain.OrderTableTest.*;
 import static kitchenpos.domain.OrderTest.*;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.*;
@@ -61,7 +62,7 @@ class OrderRestControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$").exists())
             .andExpect(jsonPath("$[0].id").value(테이블9주문.getId()))
-            .andExpect(jsonPath("$[0].orderTableId").value(테이블9_사용중.getId()))
+            .andExpect(jsonPath("$[0].orderTable.id").value(테이블9_사용중.getId()))
             .andExpect(jsonPath("$[0].orderStatus").value(테이블9주문.getOrderStatus().name()));
     }
 
@@ -69,15 +70,17 @@ class OrderRestControllerTest {
     @Order(3)
     @DisplayName("특정 주문의 상태를 변경한다")
     void changeOrderStatus() throws Exception {
-        OrderRequest request = new OrderRequest("COMPLETION");
+        OrderRequest request = new OrderRequest(COMPLETION);
+
+        String content = objectMapper.writeValueAsString(request);
         mockMvc.perform(put("/api/orders/{id}/order-status", 테이블10주문.getId())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(request)))
+            .content(content))
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$").exists())
             .andExpect(jsonPath("$.id").value(테이블10주문.getId()))
-            .andExpect(jsonPath("$.orderTableId").value(테이블10_사용중.getId()))
-            .andExpect(jsonPath("$.orderStatus").value(request.status()));
+            .andExpect(jsonPath("$.orderTable.id").value(테이블10_사용중.getId()))
+            .andExpect(jsonPath("$.orderStatus").value(request.getOrderStatus().name()));
     }
 }
