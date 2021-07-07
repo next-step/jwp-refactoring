@@ -75,7 +75,7 @@ class ProductRestControllerTest {
         )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize((int)countOfProduct)))
+                .andExpect(jsonPath("$", hasSize((int) countOfProduct)))
         ;
     }
 }

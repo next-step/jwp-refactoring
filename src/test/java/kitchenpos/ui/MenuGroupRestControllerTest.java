@@ -74,7 +74,7 @@ class MenuGroupRestControllerTest {
         )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize((int)countOfMenuGroup)))
+                .andExpect(jsonPath("$", hasSize((int) countOfMenuGroup)))
         ;
     }
 

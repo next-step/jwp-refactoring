@@ -102,7 +102,7 @@ public class Order {
     }
 
     public void isEnabledChangeEmptyStatus() {
-        if(orderStatus == OrderStatus.COOKING || orderStatus == OrderStatus.MEAL ) {
+        if (orderStatus == OrderStatus.COOKING || orderStatus == OrderStatus.MEAL) {
             throw new IllegalArgumentException("요리중이거나 식사중인 테이블은 빈테이블로 변경이 불가능합니다.");
         }
     }

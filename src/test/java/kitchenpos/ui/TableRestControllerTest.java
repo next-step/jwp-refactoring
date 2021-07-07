@@ -76,7 +76,7 @@ class TableRestControllerTest {
         )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize((int)countOfOrderTable)))
+                .andExpect(jsonPath("$", hasSize((int) countOfOrderTable)))
         ;
     }
 

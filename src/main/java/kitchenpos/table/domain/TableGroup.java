@@ -1,7 +1,5 @@
 package kitchenpos.table.domain;
 
-import org.springframework.util.CollectionUtils;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,11 +15,9 @@ public class TableGroup {
     @Column(name = "created_date")
     private LocalDateTime createdDate;
 
-//    @OneToMany(mappedBy = "tableGroupId")
-//    private List<OrderTable> orderTables;
-
     @Embedded
     private OrderTables orderTables;
+
     public TableGroup() {
     }
 

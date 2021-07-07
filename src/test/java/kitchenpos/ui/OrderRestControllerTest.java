@@ -132,7 +132,7 @@ class OrderRestControllerTest {
 
         String requestBody = objectMapper.writeValueAsString(order);
 
-        mockMvc.perform(put("/api/orders/"+savedOrder.getId()+"/order-status")
+        mockMvc.perform(put("/api/orders/" + savedOrder.getId() + "/order-status")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody)
         )

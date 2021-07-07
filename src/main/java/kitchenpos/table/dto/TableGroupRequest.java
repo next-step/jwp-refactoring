@@ -8,6 +8,9 @@ public class TableGroupRequest {
     private LocalDateTime createdDate;
     private List<OrderTableRequest> orderTables;
 
+    public TableGroupRequest() {
+    }
+
     public TableGroupRequest(List<OrderTableRequest> orderTables) {
         this.orderTables = orderTables;
     }
