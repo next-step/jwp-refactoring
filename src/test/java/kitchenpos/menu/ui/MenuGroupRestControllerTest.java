@@ -23,7 +23,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 @WebMvcTest(MenuGroupRestController.class)
 public class MenuGroupRestControllerTest extends RestControllerTest<MenuGroupRequest> {
 
-    private static final String BASE_URL = "/api/menu-groups";
+    public static final String BASE_URL = "/api/menu-groups";
     private static final MenuGroup 한식 = new MenuGroup("한식");
 
     @MockBean

@@ -19,6 +19,12 @@ public class MenuProductRequest {
         this.quantity = quantity;
     }
 
+    public MenuProductRequest(Long productId, Long quantity) {
+        this.menuId = null;
+        this.productId = productId;
+        this.quantity = quantity;
+    }
+
     public static MenuProductRequest of(MenuProduct menuProduct) {
         return new MenuProductRequest(menuProduct.getMenu().getId(), menuProduct.getProduct().getId(), menuProduct.getQuantity());
     }

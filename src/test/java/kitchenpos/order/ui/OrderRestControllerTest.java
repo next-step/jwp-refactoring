@@ -29,7 +29,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 @WebMvcTest(OrderRestController.class)
 public class OrderRestControllerTest extends RestControllerTest<OrderRequest> {
 
-    private static final String BASE_URL = "/api/orders";
+    public static final String BASE_URL = "/api/orders";
     private static final OrderLineItem 첫번째_주문항목 = new OrderLineItem(1L, 1L, 1L);
     private static final List<OrderLineItem> 주문_항목_목록 = new ArrayList<>(Arrays.asList(첫번째_주문항목));
     private static final OrderTable 주문테이블 = new OrderTable(1L, 2);

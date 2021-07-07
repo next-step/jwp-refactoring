@@ -26,6 +26,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class TableServiceTest {
 
     public static final int 두명 = 2;
+    public static final int 세명 = 3;
     public static final boolean 비어있지않음 = false;
     public static final boolean 비어있음 = true;
     public static final boolean 진행중이_아님 = false;
@@ -126,13 +127,12 @@ public class TableServiceTest {
         OrderTable 주문테이블 = new OrderTable(주문테이블_ID, 1L, 두명, 비어있지않음);
         OrderTableRequest 주문테이블_요청 = OrderTableRequest.of(주문테이블);
         given(orderTableDao.findById(any())).willReturn(Optional.of(주문테이블));
-        given(orderTableDao.save(any())).willReturn(주문테이블);
 
         // When
         tableService.changeNumberOfGuests(주문테이블_ID, 주문테이블_요청);
 
         // Then
-        verify(orderTableDao, times(1)).save(any());
+        verify(orderTableDao, times(1)).findById(any());
     }
 
     @DisplayName("변경하려는 손님 수는 최소 1명 이상이어야 한다.")

@@ -24,7 +24,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 @WebMvcTest(TableRestController.class)
 public class TableRestControllerTest extends RestControllerTest<OrderTableRequest> {
 
-    private static final String BASE_URL = "/api/tables";
+    public static final String BASE_URL = "/api/tables";
 
     @MockBean
     private OrderTableService tableService;

@@ -24,7 +24,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 @WebMvcTest(ProductRestController.class)
 public class ProductRestControllerTest extends RestControllerTest<ProductRequest> {
 
-    private static final String BASE_URL = "/api/products";
+    public static final String BASE_URL = "/api/products";
     private static final Product 햄버거 = new Product(1L, "햄버거", new BigDecimal(10000));
     private static final ProductResponse 햄버거_응답 = ProductResponse.of(햄버거);
 

@@ -30,7 +30,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 @WebMvcTest(MenuRestController.class)
 public class MenuRestControllerTest extends RestControllerTest<MenuRequest> {
 
-    private static final String BASE_URL = "/api/menus";
+    public static final String BASE_URL = "/api/menus";
     private static final Product 치즈버거 = new Product(1L, "치즈버거", 치즈버거_가격);
     private static final Product 감자튀김 = new Product(2L, "감자튀김", 감자튀김_가격);
     private static final Product 콜라 = new Product(3L, "콜라", 콜라_가격);

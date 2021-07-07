@@ -27,7 +27,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 @WebMvcTest(TableGroupRestController.class)
 public class TableGroupRestControllerTest extends RestControllerTest<TableGroupRequest> {
 
-    private static final String BASE_URL = "/api/table-groups";
+    public static final String BASE_URL = "/api/table-groups";
 
     @MockBean
     private TableGroupService tableGroupService;
