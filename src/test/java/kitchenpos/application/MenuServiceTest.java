@@ -52,29 +52,23 @@ class MenuServiceTest {
     void setUp() {
         menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
         후라이드치킨 = Product.of(1L, "후라이드치킨", BigDecimal.valueOf(10000));
-        후라이드치킨_세트메뉴 = new MenuProduct();
-        후라이드치킨_세트메뉴.setProductId(1L);
-        후라이드치킨_세트메뉴.setQuantity(3);
+        후라이드치킨_세트메뉴 = MenuProduct.of(1L, null, null, 3);
         양념치킨 = Product.of(2L, "양념치킨", BigDecimal.valueOf(11000));
-        양념치킨_세트메뉴 = new MenuProduct();
-        양념치킨_세트메뉴.setProductId(2L);
-        양념치킨_세트메뉴.setQuantity(4);
+        양념치킨_세트메뉴 = MenuProduct.of(2L, null, null, 4);
         족발 = Product.of(3L, "족발", BigDecimal.valueOf(15000));
-        족발_세트메뉴 = new MenuProduct();
-        족발_세트메뉴.setProductId(3L);
-        족발_세트메뉴.setQuantity(5);
+        족발_세트메뉴 = MenuProduct.of(3L, null, null, 5);
     }
 
     @DisplayName("메뉴를 추가한다.")
     @Test
     void create() {
         //given
-        Menu menu = new Menu();
-        menu.setId(1L);
-        menu.setName("10만원의 행복 파티 세트 (12인)");
-        menu.setPrice(BigDecimal.valueOf(100000));
-        menu.setMenuGroupId(1L);
-        menu.setMenuProducts(Lists.list(후라이드치킨_세트메뉴, 양념치킨_세트메뉴, 족발_세트메뉴));
+        Menu menu = Menu.of(
+                1L,
+                "10만원의 행복 파티 세트 (12인)",
+                BigDecimal.valueOf(100000),
+                1L,
+                Lists.list(후라이드치킨_세트메뉴, 양념치킨_세트메뉴, 족발_세트메뉴));
 
         //and
         given(menuGroupDao.existsById(any())).willReturn(true);
@@ -103,12 +97,12 @@ class MenuServiceTest {
     @Test
     void createMenuExceptionIfPriceIsNull() {
         //given
-        Menu menu = new Menu();
-        menu.setId(1L);
-        menu.setName("10만원의 행복 파티 세트 (12인)");
-        menu.setPrice(BigDecimal.valueOf(-1000));
-        menu.setMenuGroupId(1L);
-        menu.setMenuProducts(Lists.list(후라이드치킨_세트메뉴, 양념치킨_세트메뉴, 족발_세트메뉴));
+        Menu menu = Menu.of(
+                1L,
+                "10만원의 행복 파티 세트 (12인)",
+                BigDecimal.valueOf(-1000),
+                1L,
+                Lists.list(후라이드치킨_세트메뉴, 양념치킨_세트메뉴, 족발_세트메뉴));
 
         //when
         assertThatThrownBy(() -> menuService.create(menu))
@@ -119,12 +113,12 @@ class MenuServiceTest {
     @Test
     void createMenuExceptionIfMenuGroupIsNull() {
         //given
-        Menu menu = new Menu();
-        menu.setId(1L);
-        menu.setName("10만원의 행복 파티 세트 (12인)");
-        menu.setPrice(BigDecimal.valueOf(100000));
-        menu.setMenuGroupId(null);
-        menu.setMenuProducts(Lists.list(후라이드치킨_세트메뉴, 양념치킨_세트메뉴, 족발_세트메뉴));
+        Menu menu = Menu.of(
+                1L,
+                "10만원의 행복 파티 세트 (12인)",
+                BigDecimal.valueOf(100000),
+                null,
+                Lists.list(후라이드치킨_세트메뉴, 양념치킨_세트메뉴, 족발_세트메뉴));
 
         //and
         given(menuGroupDao.existsById(any())).willReturn(false);
@@ -138,12 +132,12 @@ class MenuServiceTest {
     @Test
     void createMenuExceptionIfMenuProductIsNotExist() {
         //given
-        Menu menu = new Menu();
-        menu.setId(1L);
-        menu.setName("10만원의 행복 파티 세트 (12인)");
-        menu.setPrice(BigDecimal.valueOf(100000));
-        menu.setMenuGroupId(1L);
-        menu.setMenuProducts(Lists.list(후라이드치킨_세트메뉴, 양념치킨_세트메뉴, 족발_세트메뉴));
+        Menu menu = Menu.of(
+                1L,
+                "10만원의 행복 파티 세트 (12인)",
+                BigDecimal.valueOf(100000),
+                1L,
+                Lists.list(후라이드치킨_세트메뉴, 양념치킨_세트메뉴, 족발_세트메뉴));
 
         //and
         given(menuGroupDao.existsById(any())).willReturn(true);
@@ -164,12 +158,12 @@ class MenuServiceTest {
     @Test
     void createMenuExceptionIfMenuPriceHigherThanProductTotalPrice() {
         //given
-        Menu menu = new Menu();
-        menu.setId(1L);
-        menu.setName("10만원의 행복 파티 세트 (12인)");
-        menu.setPrice(BigDecimal.valueOf(200000));
-        menu.setMenuGroupId(1L);
-        menu.setMenuProducts(Lists.list(후라이드치킨_세트메뉴, 양념치킨_세트메뉴, 족발_세트메뉴));
+        Menu menu = Menu.of(
+                1L,
+                "10만원의 행복 파티 세트 (12인)",
+                BigDecimal.valueOf(200000),
+                1L,
+                Lists.list(후라이드치킨_세트메뉴, 양념치킨_세트메뉴, 족발_세트메뉴));
 
         //and
         given(menuGroupDao.existsById(any())).willReturn(true);
@@ -186,18 +180,18 @@ class MenuServiceTest {
     @Test
     void list() {
         //given
-        Menu menu1 = new Menu();
-        menu1.setId(1L);
-        menu1.setName("10만원의 행복 파티 세트 (7인)");
-        menu1.setPrice(BigDecimal.valueOf(60000));
-        menu1.setMenuGroupId(1L);
-        menu1.setMenuProducts(Lists.list(후라이드치킨_세트메뉴, 양념치킨_세트메뉴));
-        Menu menu2 = new Menu();
-        menu2.setId(2L);
-        menu2.setName("10만원의 행복 파티 세트2 (12인)");
-        menu2.setPrice(BigDecimal.valueOf(100000));
-        menu2.setMenuGroupId(1L);
-        menu2.setMenuProducts(Lists.list(후라이드치킨_세트메뉴, 양념치킨_세트메뉴, 족발_세트메뉴));
+        Menu menu1 = Menu.of(
+                1L,
+                "10만원의 행복 파티 세트 (7인)",
+                BigDecimal.valueOf(60000),
+                1L,
+                Lists.list(후라이드치킨_세트메뉴, 양념치킨_세트메뉴));
+        Menu menu2 = Menu.of(
+                2L,
+                "10만원의 행복 파티 세트2 (12인)",
+                BigDecimal.valueOf(100000),
+                1L,
+                Lists.list(후라이드치킨_세트메뉴, 양념치킨_세트메뉴, 족발_세트메뉴));
         List<Menu> menus = Lists.list(menu1, menu2);
 
         //and
