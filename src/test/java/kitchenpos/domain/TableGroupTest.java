@@ -15,7 +15,7 @@ public class TableGroupTest {
         //given
         OrderTable orderTable1 = new OrderTable(1L, null, 5, false);
         OrderTable orderTable2 = new OrderTable(2L, null, 5, false);
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), null);
+        TableGroup tableGroup = new TableGroup(1L, null);
 
         //when
         tableGroup.group(Arrays.asList(orderTable1, orderTable2));
@@ -31,7 +31,7 @@ public class TableGroupTest {
         //given
         OrderTable orderTable1 = new OrderTable(1L, null, 5, false);
         OrderTable orderTable2 = new OrderTable(2L, null, 5, false);
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), null);
+        TableGroup tableGroup = new TableGroup(1L, null);
         tableGroup.group(Arrays.asList(orderTable1, orderTable2));
 
         //when

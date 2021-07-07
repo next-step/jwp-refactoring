@@ -1,9 +1,12 @@
 package kitchenpos.application.integration;
 
+import kitchenpos.application.OrderService;
 import kitchenpos.application.TableGroupService;
+import kitchenpos.domain.Menu;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.dto.TableGroupRequest;
-import kitchenpos.dto.TableGroupResponse;
+import kitchenpos.dto.*;
+import kitchenpos.repository.MenuRepository;
 import kitchenpos.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,6 +29,10 @@ public class TableGroupServiceTest {
     private TableGroupService tableGroupService;
     @Autowired
     private OrderTableRepository orderTableRepository;
+    @Autowired
+    private MenuRepository menuRepository;
+    @Autowired
+    private OrderService orderService;
 
     private OrderTable orderTable1;
     private OrderTable orderTable2;
@@ -98,7 +106,22 @@ public class TableGroupServiceTest {
     @DisplayName("단체지정 해제 예외 - 주문상태가 조리나 식사인 경우")
     @Test
     public void 주문상태가조리나식사인경우_단체지정_해제_확인() throws Exception {
-        //주문 리팩터링 후 작성
+        //give
+        Menu menu = menuRepository.save(new Menu("메뉴", BigDecimal.valueOf(1000), null));
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menu.getId(), 2L);
+        orderTable1.changeEmpty(false);
+        OrderRequest orderRequest = new OrderRequest(orderTable1.getId(), Arrays.asList(orderLineItemRequest));
+        OrderResponse orderResponse = orderService.create(orderRequest);
+        orderService.changeOrderStatus(orderResponse.getId(), new OrderStatusRequest(OrderStatus.MEAL));
+
+        orderTable1.changeEmpty(true);
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(orderTable1.getId(), orderTable2.getId()));
+        TableGroupResponse tableGroupResponse = tableGroupService.create(tableGroupRequest);
+
+        //when
+        //then
+        assertThatThrownBy(() -> tableGroupService.ungroup(tableGroupResponse.getId()))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("단체지정 해제")

@@ -1,16 +1,19 @@
 package kitchenpos.application.integration;
 
+import kitchenpos.application.OrderService;
 import kitchenpos.application.TableService;
-import kitchenpos.dto.TableEmptyRequest;
-import kitchenpos.dto.TableNumberOfGuestsRequest;
-import kitchenpos.dto.TableRequest;
-import kitchenpos.dto.TableResponse;
+import kitchenpos.domain.Menu;
+import kitchenpos.domain.OrderStatus;
+import kitchenpos.dto.*;
+import kitchenpos.repository.MenuRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,6 +25,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class TableServiceTest {
     @Autowired
     private TableService tableService;
+    @Autowired
+    private OrderService orderService;
+    @Autowired
+    private MenuRepository menuRepository;
 
     @DisplayName("주문테이블 등록")
     @Test
@@ -77,20 +84,40 @@ public class TableServiceTest {
         //when
         //then
         TableEmptyRequest tableEmptyRequest = new TableEmptyRequest(true);
-        assertThatThrownBy(() -> tableService.changeEmpty(100L, tableEmptyRequest))
+        assertThatThrownBy(() -> tableService.changeEmpty(-1L, tableEmptyRequest))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문테이블 빈테이블 여부 변경 예외 - 주문상태가 조리인 경우")
     @Test
     public void 주문상태가조리인경우_빈테이블여부_변경_예외() throws Exception {
-        // Order 리팩터링 후 진행
+        TableRequest tableRequest = new TableRequest(5, false);
+        TableResponse tableResponse = tableService.create(tableRequest);
+        Menu menu = menuRepository.save(new Menu("메뉴", BigDecimal.valueOf(1000), null));
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menu.getId(), 2L);
+        OrderRequest orderRequest = new OrderRequest(tableResponse.getId(), Arrays.asList(orderLineItemRequest));
+        OrderResponse orderResponse = orderService.create(orderRequest);
+        orderService.changeOrderStatus(orderResponse.getId(), new OrderStatusRequest(OrderStatus.COOKING));
+
+        TableEmptyRequest tableEmptyRequest = new TableEmptyRequest(true);
+        assertThatThrownBy(() -> tableService.changeEmpty(tableResponse.getId(), tableEmptyRequest))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문테이블 빈테이블 여부 변경 예외 - 주문상태가 식사인 경우")
     @Test
     public void 주문상태가식사인경우_빈테이블여부_변경_예외() throws Exception {
-        // Order 리팩터링 후 진행
+        TableRequest tableRequest = new TableRequest(5, false);
+        TableResponse tableResponse = tableService.create(tableRequest);
+        Menu menu = menuRepository.save(new Menu("메뉴", BigDecimal.valueOf(1000), null));
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menu.getId(), 2L);
+        OrderRequest orderRequest = new OrderRequest(tableResponse.getId(), Arrays.asList(orderLineItemRequest));
+        OrderResponse orderResponse = orderService.create(orderRequest);
+        orderService.changeOrderStatus(orderResponse.getId(), new OrderStatusRequest(OrderStatus.MEAL));
+
+        TableEmptyRequest tableEmptyRequest = new TableEmptyRequest(true);
+        assertThatThrownBy(() -> tableService.changeEmpty(tableResponse.getId(), tableEmptyRequest))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문테이블 방문한 손님 수 변경")
