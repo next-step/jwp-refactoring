@@ -60,16 +60,16 @@ class OrderServiceTest {
         // given
         order.setOrderTableId(1L);
         order.setOrderLineItems(Arrays.asList(orderLineItem, orderLineItem2));
-        when(menuDao.countByIdIn(anyList())).thenReturn(2L);
-        when(orderTableDao.findById(order.getOrderTableId())).thenReturn(Optional.of(new OrderTable()));
+        given(menuDao.countByIdIn(anyList())).willReturn(2L);
+        given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(new OrderTable()));
 
         savedOrder.setId(1L);
-        when(orderDao.save(order)).thenReturn(savedOrder);
+        given(orderDao.save(order)).willReturn(savedOrder);
 
         OrderLineItem savedOrderLineItem = new OrderLineItem();
         OrderLineItem savedOrderLineItem2 = new OrderLineItem();
-        when(orderLineItemDao.save(orderLineItem)).thenReturn(savedOrderLineItem);
-        when(orderLineItemDao.save(orderLineItem2)).thenReturn(savedOrderLineItem2);
+        given(orderLineItemDao.save(orderLineItem)).willReturn(savedOrderLineItem);
+        given(orderLineItemDao.save(orderLineItem2)).willReturn(savedOrderLineItem2);
 
         // when
         final Order actual = orderService.create(order);
@@ -113,9 +113,9 @@ class OrderServiceTest {
     void list() {
         // given
         order.setId(1L);
-        when(orderDao.findAll()).thenReturn(Collections.singletonList(order));
+        given(orderDao.findAll()).willReturn(Collections.singletonList(order));
         final List<OrderLineItem> orderLineItems = Collections.singletonList(orderLineItem);
-        when(orderLineItemDao.findAllByOrderId(order.getId())).thenReturn(orderLineItems);
+        given(orderLineItemDao.findAllByOrderId(order.getId())).willReturn(orderLineItems);
 
         // when
         final List<Order> actual = orderService.list();
@@ -130,7 +130,7 @@ class OrderServiceTest {
         // given
         order.setOrderStatus("COOKING");
         Order savedOrder = new Order();
-        when(orderDao.findById(orderId)).thenReturn(Optional.of(savedOrder));
+        given(orderDao.findById(orderId)).willReturn(Optional.of(savedOrder));
 
         // when
         orderService.changeOrderStatus(orderId, order);

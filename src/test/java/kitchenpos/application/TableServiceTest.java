@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.*;
 
 import java.util.Optional;
 
@@ -56,7 +56,7 @@ class TableServiceTest {
         Long orderTableId = 1L;
         OrderTable orderTable = new OrderTable();
         OrderTable savedOrderTable = new OrderTable();
-        when(orderTableDao.findById(orderTableId)).thenReturn(Optional.of(savedOrderTable));
+        given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(savedOrderTable));
 
         // when
         tableService.changeEmpty(orderTableId, orderTable);
@@ -70,7 +70,7 @@ class TableServiceTest {
         // given
         Long notExistId = 1L;
         OrderTable orderTable = new OrderTable();
-        when(orderTableDao.findById(notExistId)).thenReturn(Optional.empty());
+        given(orderTableDao.findById(notExistId)).willReturn(Optional.empty());
 
         // when
         final Throwable notExistIdException = catchThrowable(() -> tableService.changeEmpty(notExistId, orderTable));
@@ -86,7 +86,7 @@ class TableServiceTest {
         OrderTable orderTable = new OrderTable();
         final OrderTable notNullTableGroupId = new OrderTable();
         notNullTableGroupId.setTableGroupId(1L);
-        when(orderTableDao.findById(orderTableId)).thenReturn(Optional.of(notNullTableGroupId));
+        given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(notNullTableGroupId));
 
         // when
         final Throwable notNullTableGroupIdException = catchThrowable(() -> tableService.changeEmpty(orderTableId, orderTable));
@@ -102,7 +102,7 @@ class TableServiceTest {
         OrderTable orderTable = new OrderTable();
         orderTable.setNumberOfGuests(1);
         OrderTable savedOrderTable = new OrderTable();
-        when(orderTableDao.findById(orderTableId)).thenReturn(Optional.of(savedOrderTable));
+        given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(savedOrderTable));
 
         // when
         tableService.changeNumberOfGuests(orderTableId, orderTable);
@@ -134,7 +134,7 @@ class TableServiceTest {
         orderTable.setNumberOfGuests(1);
         OrderTable savedOrderTable = new OrderTable();
         savedOrderTable.setEmpty(true);
-        when(orderTableDao.findById(orderTableId)).thenReturn(Optional.of(savedOrderTable));
+        given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(savedOrderTable));
 
 
         // when

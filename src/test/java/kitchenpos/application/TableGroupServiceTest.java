@@ -1,14 +1,13 @@
 package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.*;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -49,11 +48,11 @@ class TableGroupServiceTest {
         OrderTable orderTable2 = new OrderTable();
         orderTable2.setEmpty(true);
         List<OrderTable> savedOrderTables = Arrays.asList(orderTable, orderTable2);
-        when(orderTableDao.findAllByIdIn(anyList())).thenReturn(savedOrderTables);
+        given(orderTableDao.findAllByIdIn(anyList())).willReturn(savedOrderTables);
 
         TableGroup savedTableGroup = new TableGroup();
         savedTableGroup.setId(1L);
-        when(tableGroupDao.save(tableGroup)).thenReturn(savedTableGroup);
+        given(tableGroupDao.save(tableGroup)).willReturn(savedTableGroup);
 
         // when
         tableGroupService.create(tableGroup);
@@ -92,7 +91,7 @@ class TableGroupServiceTest {
         // given
         TableGroup twoOrderTables = new TableGroup();
         twoOrderTables.setOrderTables(Arrays.asList(new OrderTable(), new OrderTable()));
-        when(orderTableDao.findAllByIdIn(anyList())).thenReturn(orderTables);
+        given(orderTableDao.findAllByIdIn(anyList())).willReturn(orderTables);
 
         // when
         final Throwable differentTableSize = catchThrowable(() -> tableGroupService.create(twoOrderTables));
@@ -117,7 +116,7 @@ class TableGroupServiceTest {
         OrderTable orderTable2 = new OrderTable();
         orderTable2.setId(2L);
         List<OrderTable> orderTables = Arrays.asList(orderTable, orderTable2);
-        when(orderTableDao.findAllByTableGroupId(tableGroupId)).thenReturn(orderTables);
+        given(orderTableDao.findAllByTableGroupId(tableGroupId)).willReturn(orderTables);
 
         // when
         tableGroupService.ungroup(tableGroupId);

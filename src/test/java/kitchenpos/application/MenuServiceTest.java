@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -49,8 +49,8 @@ class MenuServiceTest {
         menu.setMenuProducts(new ArrayList<>());
         Menu savedMenu = new Menu();
         savedMenu.setId(1L);
-        when(menuGroupDao.existsById(menu.getMenuGroupId())).thenReturn(true);
-        when(menuDao.save(menu)).thenReturn(savedMenu);
+        given(menuGroupDao.existsById(menu.getMenuGroupId())).willReturn(true);
+        given(menuDao.save(menu)).willReturn(savedMenu);
 
         // when
         menuService.create(menu);
@@ -93,8 +93,8 @@ class MenuServiceTest {
         invalidPrice.setMenuProducts(Collections.singletonList(menuProduct));
         final Product product = new Product();
         product.setPrice(new BigDecimal(1));
-        when(menuGroupDao.existsById(invalidPrice.getMenuGroupId())).thenReturn(true);
-        when(productDao.findById(menuProduct.getProductId())).thenReturn(Optional.of(product));
+        given(menuGroupDao.existsById(invalidPrice.getMenuGroupId())).willReturn(true);
+        given(productDao.findById(menuProduct.getProductId())).willReturn(Optional.of(product));
 
         // when
         final Throwable invalidPriceException = catchThrowable(() -> menuService.create(invalidPrice));
