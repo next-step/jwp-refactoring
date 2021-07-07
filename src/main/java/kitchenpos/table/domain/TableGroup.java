@@ -17,9 +17,11 @@ public class TableGroup {
     @Column(name = "created_date")
     private LocalDateTime createdDate;
 
-    @OneToMany(mappedBy = "tableGroupId")
-    private List<OrderTable> orderTables;
+//    @OneToMany(mappedBy = "tableGroupId")
+//    private List<OrderTable> orderTables;
 
+    @Embedded
+    private OrderTables orderTables;
     public TableGroup() {
     }
 
@@ -28,16 +30,12 @@ public class TableGroup {
     }
 
     public TableGroup(LocalDateTime createdDate, List<OrderTable> orderTables) {
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException("단체테이블은 최소 2테이블부터 구성할수 있습니다.");
-        }
-
         if (isValidation(orderTables)) {
             throw new IllegalArgumentException("빈테이블 또는 이미 단체테이블인 테이블이 존재하는 경우는 단체테이블을 구성할수 없습니다.");
         }
 
+        this.orderTables = new OrderTables(orderTables);
         this.createdDate = createdDate;
-        this.orderTables = orderTables;
 
     }
 
@@ -56,6 +54,6 @@ public class TableGroup {
     }
 
     public List<OrderTable> getOrderTables() {
-        return orderTables;
+        return orderTables.getOrderTables();
     }
 }
