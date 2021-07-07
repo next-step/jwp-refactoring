@@ -51,24 +51,15 @@ class MenuServiceTest {
     @BeforeEach
     void setUp() {
         menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
-        후라이드치킨 = new Product();
-        후라이드치킨.setId(1L);
-        후라이드치킨.setName("후라이드치킨");
-        후라이드치킨.setPrice(BigDecimal.valueOf(10000));
+        후라이드치킨 = Product.of(1L, "후라이드치킨", BigDecimal.valueOf(10000));
         후라이드치킨_세트메뉴 = new MenuProduct();
         후라이드치킨_세트메뉴.setProductId(1L);
         후라이드치킨_세트메뉴.setQuantity(3);
-        양념치킨 = new Product();
-        양념치킨.setId(2L);
-        양념치킨.setName("양념치킨");
-        양념치킨.setPrice(BigDecimal.valueOf(11000));
+        양념치킨 = Product.of(2L, "양념치킨", BigDecimal.valueOf(11000));
         양념치킨_세트메뉴 = new MenuProduct();
         양념치킨_세트메뉴.setProductId(2L);
         양념치킨_세트메뉴.setQuantity(4);
-        족발 = new Product();
-        족발.setId(3L);
-        족발.setName("족발");
-        족발.setPrice(BigDecimal.valueOf(15000));
+        족발 = Product.of(3L, "족발", BigDecimal.valueOf(15000));
         족발_세트메뉴 = new MenuProduct();
         족발_세트메뉴.setProductId(3L);
         족발_세트메뉴.setQuantity(5);

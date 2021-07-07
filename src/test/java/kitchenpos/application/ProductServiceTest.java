@@ -35,10 +35,7 @@ class ProductServiceTest {
     @Test
     void create() {
         //given
-        Product product = new Product();
-        product.setId(1L);
-        product.setName("후라이드치킨");
-        product.setPrice(BigDecimal.valueOf(10000));
+        Product product = Product.of(1L, "후라이드치킨", BigDecimal.valueOf(10000));
 
         //and
         given(productDao.save(any())).willReturn(product);
@@ -56,10 +53,7 @@ class ProductServiceTest {
     @Test
     void createProductExceptionIfPriceIsNull() {
         //given
-        Product product = new Product();
-        product.setId(1L);
-        product.setName("후라이드치킨");
-        product.setPrice(null);
+        Product product = Product.of(1L,"후라이드치킨",null);
 
         //when
         assertThatThrownBy(() -> productService.create(product))
@@ -70,10 +64,7 @@ class ProductServiceTest {
     @Test
     void createProductExceptionIfPriceIsNegative() {
         //given
-        Product product = new Product();
-        product.setId(1L);
-        product.setName("후라이드치킨");
-        product.setPrice(BigDecimal.valueOf(-1000));
+        Product product = Product.of(1L,"후라이드치킨",BigDecimal.valueOf(-1000));
 
         //when
         assertThatThrownBy(() -> productService.create(product))
@@ -90,14 +81,8 @@ class ProductServiceTest {
     @Test
     void list() {
         //given
-        Product 후라이드치킨 = new Product();
-        후라이드치킨.setId(1L);
-        후라이드치킨.setName("후라이드치킨");
-        후라이드치킨.setPrice(BigDecimal.valueOf(10000));
-        Product 양념치킨 = new Product();
-        양념치킨.setId(2L);
-        양념치킨.setName("양념치킨");
-        양념치킨.setPrice(BigDecimal.valueOf(12000));
+        Product 후라이드치킨 = Product.of(1L,"후라이드치킨",BigDecimal.valueOf(10000));
+        Product 양념치킨 = Product.of(2L,"양념치킨",BigDecimal.valueOf(12000));
         List<Product> products = Lists.list(후라이드치킨, 양념치킨);
 
         //and

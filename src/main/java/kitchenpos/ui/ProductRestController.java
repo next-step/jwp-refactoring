@@ -22,31 +22,15 @@ public class ProductRestController {
     }
 
     @PostMapping("/api/products")
-    public ResponseEntity<Product> create(@RequestBody final Product product) {
-        final Product created = productService.create(product);
-        final URI uri = URI.create("/api/products/" + created.getId());
-        return ResponseEntity.created(uri)
-                .body(created)
-                ;
-    }
-
-    @PostMapping("/api/products2")
     public ResponseEntity<ProductResponse> create2(@RequestBody final ProductRequest request) {
         final Product created = productService.create(request.toProduct());
-        final URI uri = URI.create("/api/products2/" + created.getId());
+        final URI uri = URI.create("/api/products/" + created.getId());
         return ResponseEntity.created(uri)
                 .body(ProductResponse.of(created))
                 ;
     }
 
     @GetMapping("/api/products")
-    public ResponseEntity<List<Product>> list() {
-        return ResponseEntity.ok()
-                .body(productService.list())
-                ;
-    }
-
-    @GetMapping("/api/products2")
     public ResponseEntity<List<ProductResponse>> list2() {
         return ResponseEntity.ok()
                 .body(ProductResponse.ofList(productService.list()))
