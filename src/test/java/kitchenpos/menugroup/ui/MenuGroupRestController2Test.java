@@ -3,7 +3,6 @@ package kitchenpos.menugroup.ui;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.UTF8MockMvcTest;
 import kitchenpos.menugroup.application.MenuGroupService2;
-import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;

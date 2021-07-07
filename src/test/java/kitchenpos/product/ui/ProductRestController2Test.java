@@ -2,9 +2,7 @@ package kitchenpos.product.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.UTF8MockMvcTest;
-import kitchenpos.product.application.ProductService;
 import kitchenpos.product.application.ProductService2;
-import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
