@@ -3,11 +3,15 @@ package kitchenpos.domain;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
@@ -20,9 +24,13 @@ public class OrderTable {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
     private TableGroup tableGroup;
 
+    @Column(nullable = false)
     private int numberOfGuests;
+
+    @Column(nullable = false)
     private boolean empty;
 
     @OneToMany(mappedBy = "orderTable")
@@ -50,6 +58,14 @@ public class OrderTable {
         return id;
     }
 
+    public Optional<TableGroup> getTableGroup() {
+        return Optional.ofNullable(tableGroup);
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
     public int getNumberOfGuests() {
         return numberOfGuests;
     }
@@ -60,7 +76,7 @@ public class OrderTable {
 
     public void changeEmpty(boolean empty) {
         checkTableGroup();
-        orders.forEach(this::checkOrderStatus);
+        checkAllOrderStatus();
         this.empty = empty;
     }
 
@@ -98,11 +114,15 @@ public class OrderTable {
     }
 
     public void ungroup() {
-        orders.forEach(this::checkOrderStatus);
+        checkAllOrderStatus();
         this.tableGroup = null;
     }
 
-    public void checkOrderStatus(Order order) {
+    private void checkAllOrderStatus() {
+        orders.forEach(this::checkOrderStatus);
+    }
+
+    private void checkOrderStatus(Order order) {
         if (Objects.nonNull(order) && !order.isCompleted()) {
             throw new OrderNotCompletedException("테이블에 완결되지 않은 주문이 존재합니다.");
         }

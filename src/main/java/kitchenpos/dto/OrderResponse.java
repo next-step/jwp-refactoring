@@ -9,7 +9,7 @@ import kitchenpos.domain.OrderStatus;
 
 public class OrderResponse {
     private Long id;
-    private OrderTableResponse orderTable;
+    private Long orderTableId;
     private OrderStatus orderStatus;
     private LocalDateTime orderedTime;
     private List<OrderLineItemResponse> orderLineItems;
@@ -17,7 +17,7 @@ public class OrderResponse {
     public static OrderResponse of(Order order) {
         return new OrderResponse(
             order.getId(),
-            OrderTableResponse.of(order.getOrderTable()),
+            order.getOrderTable().getId(),
             order.getOrderStatus(),
             order.getOrderedTime(),
             order.getOrderLineItems()
@@ -29,10 +29,10 @@ public class OrderResponse {
     public OrderResponse() {
     }
 
-    public OrderResponse(Long id, OrderTableResponse orderTable, OrderStatus orderStatus,
-        LocalDateTime orderedTime, List<OrderLineItemResponse> orderLineItems) {
+    public OrderResponse(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime,
+            List<OrderLineItemResponse> orderLineItems) {
         this.id = id;
-        this.orderTable = orderTable;
+        this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
@@ -46,12 +46,12 @@ public class OrderResponse {
         this.id = id;
     }
 
-    public OrderTableResponse getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
-    public void setOrderTable(OrderTableResponse orderTable) {
-        this.orderTable = orderTable;
+    public void setOrderTableId(Long orderTableId) {
+        this.orderTableId = orderTableId;
     }
 
     public OrderStatus getOrderStatus() {
