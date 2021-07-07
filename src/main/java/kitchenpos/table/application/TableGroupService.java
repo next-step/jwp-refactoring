@@ -39,10 +39,6 @@ public class TableGroupService {
                 .map(orderTableRequest -> findByOrderTable(orderTableRequest.getId()))
                 .collect(Collectors.toList());
 
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException();
-        }
-
         return orderTables;
     }
 
