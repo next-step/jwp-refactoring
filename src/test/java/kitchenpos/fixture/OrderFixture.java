@@ -53,9 +53,7 @@ public class OrderFixture {
                 .collect(Collectors.toList());
 
         OrderCreate orderCreate = new OrderCreate(orderTable.getId(), orderStatus, creates);
-        Order order = Order.createOrder(id, orderCreate, menus);
-        order.updateOrderLines(orderCreate, menus);
 
-        return order;
+        return Order.createOrder(id, orderCreate, menus);
     }
 }

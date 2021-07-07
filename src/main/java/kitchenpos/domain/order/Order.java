@@ -5,7 +5,6 @@ import kitchenpos.domain.menu.Menus;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,7 +37,15 @@ public class Order {
             throw new IllegalArgumentException();
         }
 
-        return new Order(orderId, orderCreate.getOrderTableId(), orderCreate.getOrderStatus(), LocalDateTime.now(), Collections.emptyList());
+        List<OrderLineItem> orderLineItems = orderCreate.getOrderLineItems()
+                .stream()
+                .map(item -> {
+                    Menu menu = menus.findById(item.getMenuId());
+                    return new OrderLineItem(null, menu.getId(), menu.getName(), menu.getPrice(), item.getQuantity());
+                })
+                .collect(Collectors.toList());
+
+        return new Order(orderId, orderCreate.getOrderTableId(), orderCreate.getOrderStatus(), LocalDateTime.now(), orderLineItems);
     }
 
     private Order(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
@@ -79,17 +86,5 @@ public class Order {
 
     public Long getOrderTableId() {
         return orderTableId;
-    }
-
-    public void updateOrderLines(OrderCreate orderCreate, Menus menus) {
-        List<OrderLineItem> orderLineItems = orderCreate.getOrderLineItems()
-                .stream()
-                .map(item -> {
-                    Menu menu = menus.findById(item.getMenuId());
-                    return new OrderLineItem(this.getId(), menu.getId(), menu.getName(), menu.getPrice(), item.getQuantity());
-                })
-                .collect(Collectors.toList());
-
-        this.orderLineItems.update(orderLineItems);
     }
 }

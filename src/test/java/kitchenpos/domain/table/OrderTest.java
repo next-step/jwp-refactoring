@@ -87,7 +87,6 @@ class OrderTest {
 
         // when
         Order order = Order.createOrder(2L, orderCreate, menus);
-        order.updateOrderLines(orderCreate, menus);
 
         // then
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
@@ -100,8 +99,5 @@ class OrderTest {
         assertThat(order.getOrderLineItems())
                 .map(item -> item.getQuantity())
                 .containsExactly(new Quantity(1L), new Quantity(2L));
-        assertThat(order.getOrderLineItems())
-                .map(item -> item.getOrderId())
-                .containsOnly(order.getId());
     }
 }

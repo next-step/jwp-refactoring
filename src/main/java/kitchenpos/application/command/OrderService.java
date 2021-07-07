@@ -38,12 +38,8 @@ public class OrderService {
         OrderTable orderTable = orderTableRepository.findById(orderCreate.getOrderTableId())
                 .orElseThrow(EntityNotExistsException::new);
 
-        Order order = orderRepository.save(OrderTable.newOrder(orderTable, orderCreate, menus));
-        order.updateOrderLines(orderCreate, menus);
-
-        orderLineItemRepository.saveAll(order.getOrderLineItems());
-
-        return order.getId();
+        return orderRepository.save(OrderTable.newOrder(orderTable, orderCreate, menus))
+                .getId();
     }
 
     public void changeOrderStatus(final Long orderId, final OrderStatus orderStatus) {
