@@ -17,8 +17,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.dto.OrderTableRequest;
@@ -30,11 +28,6 @@ class TableServiceTest {
 
     @InjectMocks
     TableService tableService;
-
-    @Mock
-    OrderDao orderDao;
-    @Mock
-    OrderTableDao orderTableDao;
 
     @Mock
     OrderTableRepository orderTableRepository;
@@ -83,8 +76,6 @@ class TableServiceTest {
         OrderTableRequest 비우는_상태 = new OrderTableRequest(10, true);
         when(orderTableRepository.findById(손님이_앉은_테이블.getId()))
             .thenReturn(Optional.ofNullable(손님이_앉은_테이블));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any()))
-            .thenReturn(false);
 
         // when
         OrderTable changedTable = tableService.changeEmpty(손님이_앉은_테이블.getId(), 비우는_상태);
@@ -115,22 +106,6 @@ class TableServiceTest {
 
         // then
         assertThatThrownBy(() -> tableService.changeEmpty(그룹에_포함된_테이블.getId(), 비우는_상태))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    @DisplayName("테이블 상태 변경 실패(테이블이 조리/식사 상태)")
-    void changeEmpty_failed3() {
-        // given
-        OrderTable 식사중인_테이블 = new OrderTable(20L, 10, false);
-        OrderTableRequest 비우는_상태 = new OrderTableRequest(10, true);
-        when(orderTableRepository.findById(식사중인_테이블.getId()))
-            .thenReturn(Optional.ofNullable(식사중인_테이블));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any()))
-            .thenReturn(true);
-
-        // then
-        assertThatThrownBy(() -> tableService.changeEmpty(식사중인_테이블.getId(), 비우는_상태))
             .isInstanceOf(IllegalArgumentException.class);
     }
 

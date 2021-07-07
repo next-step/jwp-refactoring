@@ -60,6 +60,7 @@ public class OrderTable {
 
     public void changeEmpty(boolean empty) {
         checkTableGroup();
+        orders.forEach(this::checkOrderStatus);
         this.empty = empty;
     }
 

@@ -1,13 +1,10 @@
 package kitchenpos.application;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.dto.OrderTableRequest;
@@ -15,11 +12,10 @@ import kitchenpos.exception.OrderTableNotFoundException;
 
 @Service
 public class TableService {
-    private final OrderDao orderDao;
+
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(OrderDao orderDao, OrderTableRepository orderTableRepository) {
-        this.orderDao = orderDao;
+    public TableService(OrderTableRepository orderTableRepository) {
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -35,12 +31,6 @@ public class TableService {
     @Transactional
     public OrderTable changeEmpty(final Long orderTableId, final OrderTableRequest request) {
         final OrderTable savedOrderTable = findById(orderTableId);
-
-        if (orderDao.existsByOrderTableIdAndOrderStatusIn( // TODO 추후 리팩터링
-                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
-        }
-
         savedOrderTable.changeEmpty(request.isEmpty());
 
         return savedOrderTable;
