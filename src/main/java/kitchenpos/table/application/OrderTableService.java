@@ -57,18 +57,18 @@ public class OrderTableService {
         final int numberOfGuests = orderTableRequest.getNumberOfGuests();
 
         if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("변경하려는 손님 수는 최소 1명 이상이어야 합니다.");
         }
 
         final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
             .orElseThrow(IllegalArgumentException::new);
 
         if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("빈 테이블의 주문 테이블은 손님 수를 변경할 수 없습니다.");
         }
 
         savedOrderTable.changeNumberOfGuests(numberOfGuests);
 
-        return OrderTableResponse.of(orderTableDao.save(savedOrderTable));
+        return OrderTableResponse.of(savedOrderTable);
     }
 }
