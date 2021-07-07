@@ -6,6 +6,8 @@ import kitchenpos.table.domain.TableRepository;
 import kitchenpos.table.dto.TableResponse;
 import kitchenpos.tablegroup.domain.TableGroupEntity;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
