@@ -66,7 +66,7 @@ class ProductsQuantitiesTest {
 
     @DisplayName("메뉴 상품 생성")
     @Test
-    void toResponse() {
+    void toMenuProducts() {
         // given
 
         // when

@@ -32,7 +32,4 @@ public class MenuGroup {
         return name;
     }
 
-    public MenuGroupResponse toResponse() {
-        return MenuGroupResponse.of(this);
-    }
 }

@@ -3,7 +3,6 @@ package kitchenpos.menu.ui;
 import java.net.URI;
 import java.util.List;
 
-import kitchenpos.menu.dto.MenuListResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,7 +31,7 @@ public class MenuRestController {
     }
 
     @GetMapping("/api/menus")
-    public ResponseEntity<MenuListResponse> list() {
+    public ResponseEntity<List<MenuResponse>> list() {
         return ResponseEntity.ok()
                 .body(menuService.list())
                 ;

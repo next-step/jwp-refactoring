@@ -37,10 +37,6 @@ public class Product {
     @Embedded
     private Price price;
 
-    public ProductResponse toResponse() {
-        return ProductResponse.of(this);
-    }
-
     public Price priceMultiplyQuantity(Quantity quantity) {
         return price.multiplyQuantity(quantity);
     }

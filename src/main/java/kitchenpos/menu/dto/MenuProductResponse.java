@@ -4,6 +4,9 @@ import kitchenpos.common.domian.Quantity;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.dto.ProductResponse;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class MenuProductResponse {
     private Long seq;
     private ProductResponse productResponse;
@@ -17,14 +20,16 @@ public class MenuProductResponse {
         this.quantity = quantity;
     }
 
-    public static MenuProductResponse of(Long seq, ProductResponse productResponse, Long quantity) {
-        return new MenuProductResponse(seq, productResponse, quantity);
-    }
-
     public static MenuProductResponse of(MenuProduct menuProduct) {
         Quantity quantity = menuProduct.getQuantity();
-        ProductResponse response = menuProduct.getProduct().toResponse();
+        ProductResponse response = ProductResponse.of(menuProduct.getProduct());
         return new MenuProductResponse(menuProduct.getSeq(), response, quantity.amount());
+    }
+
+    public static List<MenuProductResponse> listOf(List<MenuProduct> menuProducts) {
+        return menuProducts.stream()
+                .map(MenuProductResponse::of)
+                .collect(Collectors.toList());
     }
 
     public Long getSeq() {

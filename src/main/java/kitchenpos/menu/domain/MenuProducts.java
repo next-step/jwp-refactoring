@@ -24,10 +24,4 @@ public class MenuProducts {
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
     }
-
-    public List<MenuProductResponse> toResponse() {
-        return menuProducts.stream().map(
-                menuProduct -> menuProduct.toResponse(menuProduct)
-        ).collect(Collectors.toList());
-    }
 }

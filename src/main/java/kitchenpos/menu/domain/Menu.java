@@ -84,19 +84,7 @@ public class Menu {
         return menuGroup;
     }
 
-    public MenuGroupResponse menuGroupResponse() {
-        return menuGroup.toResponse();
-    }
-
     public List<MenuProduct> getMenuProducts() {
         return menuProducts.getMenuProducts();
-    }
-
-    public MenuResponse toResponse() {
-        return MenuResponse.of(this);
-    }
-
-    public List<MenuProductResponse> toMenuProductResponse() {
-        return menuProducts.toResponse();
     }
 }

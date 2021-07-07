@@ -58,8 +58,4 @@ public class MenuProduct {
     public Quantity getQuantity() {
         return quantity;
     }
-
-    public MenuProductResponse toResponse(MenuProduct menuProduct) {
-        return MenuProductResponse.of(menuProduct);
-    }
 }

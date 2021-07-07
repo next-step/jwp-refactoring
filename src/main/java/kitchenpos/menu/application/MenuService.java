@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.common.domian.Price;
 import kitchenpos.common.domian.Quantity;
-import kitchenpos.menu.dto.MenuListResponse;
 import kitchenpos.menu.repository.MenuProductDao;
 import kitchenpos.menu.domain.ProductsQuantities;
 import kitchenpos.menu.domain.Quantities;
@@ -62,15 +61,14 @@ public class MenuService {
                 ,
                 new Price(menuRequest.getPrice())
         );
+
         Menu menu = Menu.of(menuGroup, menuRequest.getName(), productsQuantities);
         menuProductDao.saveAll(menu.getMenuProducts());
-        return menuDao.save(menu).toResponse();
+        return MenuResponse.of(menuDao.save(menu));
     }
 
     @Transactional(readOnly = true)
-    public MenuListResponse list() {
-        return MenuListResponse.of(menuDao.findAll().stream()
-                .map(Menu::toResponse)
-                .collect(Collectors.toList()));
+    public List<MenuResponse> list() {
+        return MenuResponse.listOf(menuDao.findAll());
     }
 }

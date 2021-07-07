@@ -5,7 +5,6 @@ import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.menu.dto.MenuListResponse;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
@@ -18,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -119,8 +119,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     }
 
     private void 메뉴_조회_요청_응답_확인(ExtractableResponse<Response> 메뉴_조회_요청_응답) {
-        MenuListResponse menuListResponse = 메뉴_조회_요청_응답.as(MenuListResponse.class);
-        MenuResponse menuResponse = menuListResponse.getMenuResponses().get(0);
+        List<MenuResponse> menuResponses = 메뉴_조회_요청_응답.jsonPath().getList("", MenuResponse.class);
+        MenuResponse menuResponse = menuResponses.get(0);
         assertThat(menuResponse.getName()).isEqualTo(메뉴_이름_순대국);
         assertThat(menuResponse.getMenuProductResponses().get(0).getQuantity()).isEqualTo(상품_수량);
         assertThat(menuResponse.getMenuProductResponses().get(0).getProductResponse().getPrice()).isEqualTo(상품_가격);

@@ -5,19 +5,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
-import kitchenpos.common.domian.Quantity;
-import kitchenpos.menu.domain.ProductsQuantities;
-import kitchenpos.menu.domain.Quantities;
-import kitchenpos.menu.domain.Products;
-import kitchenpos.menu.dto.MenuListResponse;
-import kitchenpos.utils.MenuCreator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.utils.MenuCreator;
 import kitchenpos.common.domian.Price;
 import kitchenpos.common.error.CustomException;
 import kitchenpos.menu.dto.MenuRequest;
@@ -94,10 +86,10 @@ class MenuServiceTest {
 
         // when
         when(menuDao.findAll()).thenReturn(Arrays.asList(menu));
-        MenuListResponse menus = menuService.list();
+        List<MenuResponse> menus = menuService.list();
         // then
-        assertThat(menus.getMenuResponses().size()).isEqualTo(1);
-        assertThat(menus.getMenuResponses().get(0).getName()).isEqualTo(순대국);
+        assertThat(menus.size()).isEqualTo(1);
+        assertThat(menus.get(0).getName()).isEqualTo(순대국);
     }
 
     @DisplayName("메뉴 가격이 음수 일 수 없다.")

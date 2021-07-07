@@ -50,16 +50,4 @@ class MenuProductsTest {
         // then
         assertThat(menuProducts).isNotNull();
     }
-
-    @DisplayName("응답 생성")
-    @Test
-    void toResponse() {
-        // given
-        MenuProducts menuProducts = new MenuProducts(menu, productsQuantities);
-        // when
-        List<MenuProductResponse> menuProductResponses = menuProducts.toResponse();
-        // then
-        assertThat(menuProductResponses.size()).isEqualTo(1);
-        assertThat(menuProductResponses.get(0).getProductResponse().getName()).isEqualTo("순대");
-    }
 }

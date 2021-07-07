@@ -11,9 +11,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
-import kitchenpos.menugroup.dto.MenuGroupListResponse;
+
+import java.util.List;
 
 @DisplayName("메뉴 그룹 인수 테스트")
 public class MenuGroupAcceptanceTest extends AcceptanceTest {
@@ -48,8 +50,8 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     }
 
     private void 메뉴_그룹_조회_요청_응답_확인(ExtractableResponse<Response> 메뉴_그룹_조회_요청_응답) {
-        MenuGroupListResponse menuGroupListResponse = 메뉴_그룹_조회_요청_응답.as(MenuGroupListResponse.class);
-        assertThat(menuGroupListResponse.getMenuGroupResponses().get(0).getName()).isEqualTo("국밥");
+        List<MenuGroupResponse> menuGroupResponses = 메뉴_그룹_조회_요청_응답.jsonPath().getList("", MenuGroupResponse.class);
+        assertThat(menuGroupResponses.get(0).getName()).isEqualTo("국밥");
     }
 
     private ExtractableResponse<Response> 메뉴_그룹_조회_요청() {
