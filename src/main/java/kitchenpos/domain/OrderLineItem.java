@@ -12,7 +12,7 @@ import javax.persistence.ManyToOne;
 public class OrderLineItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private Long seq;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
@@ -29,8 +29,8 @@ public class OrderLineItem {
         this.quantity = quantity;
     }
 
-    public Long getSeq() {
-        return seq;
+    public Long getId() {
+        return id;
     }
 
     public Long getOrderId() {

@@ -12,7 +12,7 @@ public class OrderLineItemResponse {
 	private long quantity;
 
 	OrderLineItemResponse(OrderLineItem orderLineItem) {
-		this.seq = orderLineItem.getSeq();
+		this.seq = orderLineItem.getId();
 		this.orderId = orderLineItem.getOrderId();
 		this.menuId = orderLineItem.getMenuId();
 		this.quantity = orderLineItem.getQuantity();
