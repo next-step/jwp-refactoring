@@ -37,7 +37,7 @@ public class OrderTableRequest {
 
     @Override
     public String toString() {
-        return "OrderTableRequest2{" +
+        return "OrderTableRequest{" +
                 "numberOfGuests=" + numberOfGuests +
                 ", empty=" + empty +
                 '}';

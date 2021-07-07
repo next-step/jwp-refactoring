@@ -32,11 +32,15 @@ public class MenuService {
     @Transactional
     public Menu create(final MenuRequest menuRequest) {
 
-        MenuGroup findMenuGroup = menuGroupService.findById(menuRequest.getMenuGroupId());
+        // TODO menuGroupService 의존성 분리
 
-        if (menuGroupService.isExists(findMenuGroup)) {
-            throw new MenuGroupAlreadyExistsException("findMenuGroup: " + findMenuGroup);
+        Long menuGroupId = menuRequest.getMenuGroupId();
+
+        if (menuGroupService.isExists(menuGroupId)) {
+            throw new MenuGroupAlreadyExistsException("findMenuGroup: " + menuGroupId);
         }
+
+        MenuGroup findMenuGroup = menuGroupService.findById(menuGroupId);
 
         Menu menu = Menu.of(menuRequest.getName(), menuRequest.getPrice(), findMenuGroup);
 

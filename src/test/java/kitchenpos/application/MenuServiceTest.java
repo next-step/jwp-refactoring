@@ -1,6 +1,8 @@
 package kitchenpos.application;
 
 import kitchenpos.domain.menu.Price;
+import kitchenpos.exception.InvalidPriceException;
+import kitchenpos.exception.MenuGroupAlreadyExistsException;
 import kitchenpos.repository.MenuRepository;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuGroup;
@@ -63,7 +65,7 @@ class MenuServiceTest {
     @Test
     @DisplayName("메뉴를 등록할 수 잇다.")
     void create_test() {
-        given(menuGroupService.isExists(menuGroup)).willReturn(false);
+        given(menuGroupService.isExists(menuGroup.getId())).willReturn(false);
         given(menuGroupService.findById(ANY_MENU_GROUP_ID)).willReturn(menuGroup);
         given(menuRepository.save(menu)).willReturn(menu);
 
@@ -75,18 +77,16 @@ class MenuServiceTest {
     @Test
     @DisplayName("메뉴를 등록하는 시점에 메뉴 그룹(MENU_GROUP)이 미리 등록되어 있어야 한다.")
     void menuGroup() {
-        given(menuGroupService.isExists(menuGroup)).willReturn(true);
-        given(menuGroupService.findById(ANY_MENU_GROUP_ID)).willReturn(menuGroup);
+        given(menuGroupService.isExists(menuGroup.getId())).willReturn(true);
 
         assertThatThrownBy(() -> menuService.create(menuRequest))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("menuGroup");
+                .isInstanceOf(MenuGroupAlreadyExistsException.class);
     }
 
     @Test
     @DisplayName("메뉴의 전체 가격이 메뉴그룹의 가격 전체 합보다 높을 경우 등록될 수 없다.")
     void price() {
-        given(menuGroupService.isExists(menuGroup)).willReturn(false);
+        given(menuGroupService.isExists(menuGroup.getId())).willReturn(false);
         given(menuGroupService.findById(ANY_MENU_GROUP_ID)).willReturn(menuGroup);
         given(productService.getProduct(1L)).willReturn(dummyProduct);
 
@@ -94,7 +94,6 @@ class MenuServiceTest {
                 Lists.list(new MenuProductRequest(ANY_PRODUCT_ID, 1)));
 
         assertThatThrownBy(() -> menuService.create(menuRequest))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Total Price");
+                .isInstanceOf(InvalidPriceException.class);
     }
 }
