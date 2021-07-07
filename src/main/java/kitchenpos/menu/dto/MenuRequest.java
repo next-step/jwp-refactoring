@@ -1,64 +1,48 @@
-package kitchenpos.menu.domain;
+package kitchenpos.menu.dto;
 
 import java.math.BigDecimal;
 import java.util.List;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
 
-public class Menu {
-    private Long id;
+public class MenuRequest {
     private String name;
     private BigDecimal price;
     private Long menuGroupId;
     private List<MenuProduct> menuProducts;
 
-    public Menu() {
+    public MenuRequest() {
         // empty
     }
 
-    public Menu(Builder builder) {
+    private MenuRequest(Builder builder) {
         this.name = builder.name;
         this.price = builder.price;
         this.menuGroupId = builder.menuGroupId;
         this.menuProducts = builder.menuProducts;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
     }
 
     public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
-    }
-
     public Long getMenuGroupId() {
         return menuGroupId;
-    }
-
-    public void setMenuGroupId(final Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
     }
 
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
     }
 
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
+    public Menu toMenu() {
+        return Menu.Builder.of(this.name, this.price)
+                           .menuGroupId(this.menuGroupId)
+                           .menuProducts(this.menuProducts)
+                           .build();
     }
 
     public static class Builder {
@@ -76,18 +60,18 @@ public class Menu {
             return new Builder(name, price);
         }
 
-        public Builder menuGroupId(final Long menuGroupId) {
+        public Builder menuGroupId(Long menuGroupId) {
             this.menuGroupId = menuGroupId;
             return this;
         }
 
-        public Builder menuProducts(final List<MenuProduct> menuProducts) {
+        public Builder menuProducts(List<MenuProduct> menuProducts) {
             this.menuProducts = menuProducts;
             return this;
         }
 
-        public Menu build() {
-            return new Menu(this);
+        public MenuRequest build() {
+            return new MenuRequest(this);
         }
     }
 }

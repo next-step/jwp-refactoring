@@ -1,12 +1,12 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.menu.dao.MenuDao;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.dao.MenuGroupDao;
 import kitchenpos.menu.dao.MenuProductDao;
 import kitchenpos.product.dao.ProductDao;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.application.MenuService;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,6 +27,7 @@ import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
+
     @Mock
     private MenuDao menuDao;
     @Mock
@@ -45,24 +46,24 @@ class MenuServiceTest {
         // given
         Product 불고기 = new Product("불고기", new BigDecimal(1000));
         MenuProduct 메뉴_불고기 = new MenuProduct(1L, 불고기.getId(), 3);
-        Menu menu = Menu.Builder.of("메뉴1", new BigDecimal(2000))
-                                .menuGroupId(1L)
-                                .menuProducts(Arrays.asList(메뉴_불고기))
-                                .build();
+        MenuRequest menuRequest = MenuRequest.Builder.of("메뉴1", new BigDecimal(2000))
+                                                     .menuGroupId(1L)
+                                                     .menuProducts(Arrays.asList(메뉴_불고기))
+                                                     .build();
         Mockito.when(menuGroupDao.existsById(any())).thenReturn(true);
         Mockito.when(productDao.findById(any())).thenReturn(Optional.of(불고기));
-        Mockito.when(menuDao.save(any())).thenReturn(menu);
+        Mockito.when(menuDao.save(any())).thenReturn(menuRequest.toMenu());
         Mockito.when(menuProductDao.save(any())).thenReturn(메뉴_불고기);
 
         // when
-        Menu result = menuService.create(menu);
+        MenuResponse result = menuService.create(menuRequest);
 
         // then
         assertAll(() -> {
-           assertThat(result).isNotNull();
-           assertThat(result.getName()).isEqualTo("메뉴1");
-           assertThat(result.getMenuGroupId()).isEqualTo(1L);
-           assertThat(result.getMenuProducts()).isNotEmpty().containsExactly(메뉴_불고기);
+            assertThat(result).isNotNull();
+            assertThat(result.getName()).isEqualTo("메뉴1");
+            assertThat(result.getMenuGroupId()).isEqualTo(1L);
+            assertThat(result.getMenuProducts()).isNotEmpty().containsExactly(메뉴_불고기);
         });
         Mockito.verify(menuGroupDao).existsById(any());
         Mockito.verify(productDao).findById(any());
@@ -76,14 +77,14 @@ class MenuServiceTest {
         // given
         Product 불고기 = new Product("불고기", new BigDecimal(1000));
         MenuProduct 메뉴_불고기 = new MenuProduct(1L, 불고기.getId(), 3);
-        Menu menu = Menu.Builder.of("메뉴1", new BigDecimal(2000))
-                                .menuGroupId(1L)
-                                .menuProducts(Arrays.asList(메뉴_불고기))
-                                .build();
+        MenuRequest menuRequest = MenuRequest.Builder.of("메뉴1", new BigDecimal(2000))
+                                                     .menuGroupId(1L)
+                                                     .menuProducts(Arrays.asList(메뉴_불고기))
+                                                     .build();
         Mockito.when(menuGroupDao.existsById(any())).thenReturn(false);
 
         // when
-        assertThatThrownBy(() -> menuService.create(menu))
+        assertThatThrownBy(() -> menuService.create(menuRequest))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -93,15 +94,15 @@ class MenuServiceTest {
         // given
         Product 불고기 = new Product("불고기", new BigDecimal(1000));
         MenuProduct 메뉴_불고기 = new MenuProduct(1L, 불고기.getId(), 3);
-        Menu menu = Menu.Builder.of("메뉴1", new BigDecimal(5000))
-                                .menuGroupId(1L)
-                                .menuProducts(Arrays.asList(메뉴_불고기))
-                                .build();
+        MenuRequest menuRequest = MenuRequest.Builder.of("메뉴1", new BigDecimal(5000))
+                                                     .menuGroupId(1L)
+                                                     .menuProducts(Arrays.asList(메뉴_불고기))
+                                                     .build();
         Mockito.when(menuGroupDao.existsById(any())).thenReturn(true);
         Mockito.when(productDao.findById(any())).thenReturn(Optional.of(불고기));
 
         // when
-        assertThatThrownBy(() -> menuService.create(menu))
+        assertThatThrownBy(() -> menuService.create(menuRequest))
             .isInstanceOf(IllegalArgumentException.class);
     }
 

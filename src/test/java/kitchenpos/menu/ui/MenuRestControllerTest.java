@@ -4,7 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import kitchenpos.IntegrationTestHelper;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.ui.MenuRestController;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -41,11 +42,12 @@ class MenuRestControllerTest extends IntegrationTestHelper {
     @Test
     void createTest() throws Exception {
         // given
-        Menu menu = Menu.Builder.of("메뉴1", new BigDecimal(10000)).build();
-        Mockito.when(menuService.create(any())).thenReturn(menu);
+        MenuRequest menuRequest = MenuRequest.Builder.of("메뉴1", new BigDecimal(10000))
+                                                     .build();
+        Mockito.when(menuService.create(any())).thenReturn(MenuResponse.of(menuRequest.toMenu()));
 
         // when
-        ResultActions resultActions = 메뉴_생성_요청(menu);
+        ResultActions resultActions = 메뉴_생성_요청(menuRequest);
 
         // then
         메뉴_생성_성공(resultActions);
@@ -57,7 +59,8 @@ class MenuRestControllerTest extends IntegrationTestHelper {
         // given
         Menu menu1 = Menu.Builder.of("메뉴1", new BigDecimal(10000)).build();
         Menu menu2 = Menu.Builder.of("메뉴2", new BigDecimal(15000)).build();
-        Mockito.when(menuService.list()).thenReturn(Arrays.asList(menu1, menu2));
+        Mockito.when(menuService.list()).thenReturn(Arrays.asList(MenuResponse.of(menu1),
+                                                                  MenuResponse.of(menu2)));
 
         // when
         ResultActions resultActions = 전체_메뉴_조회();
@@ -68,8 +71,8 @@ class MenuRestControllerTest extends IntegrationTestHelper {
         assertThat(menus).isNotEmpty().hasSize(2);
     }
 
-    private ResultActions 메뉴_생성_요청(final Menu menu) throws Exception {
-        return postRequest("/api/menus", menu);
+    private ResultActions 메뉴_생성_요청(final MenuRequest request) throws Exception {
+        return postRequest("/api/menus", request);
     }
 
     private MvcResult 메뉴_생성_성공(final ResultActions resultActions) throws Exception {
