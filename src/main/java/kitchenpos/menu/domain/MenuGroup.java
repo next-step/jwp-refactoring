@@ -1,8 +1,6 @@
 package kitchenpos.menu.domain;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 public class MenuGroup {
@@ -15,8 +13,8 @@ public class MenuGroup {
     @Column(name = "name")
     private String name;
 
-    @OneToMany(mappedBy = "menuGroup", cascade = CascadeType.ALL)
-    private List<Menu> menus = new ArrayList<>();
+    @Embedded
+    private Menus menus;
 
     public MenuGroup() {
     }
