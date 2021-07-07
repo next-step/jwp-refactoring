@@ -2,8 +2,8 @@ package kitchenpos.table.dto;
 
 import kitchenpos.table.domain.OrderTable;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class OrderTableResponse {
     private Long id;
@@ -26,11 +26,7 @@ public class OrderTableResponse {
     }
 
     public static List<OrderTableResponse> ofList(List<OrderTable> orderTables) {
-        List<OrderTableResponse> orderTableResponses = new ArrayList<>();
-        for (OrderTable orderTable : orderTables) {
-            orderTableResponses.add(new OrderTableResponse(orderTable.id(), groupId(orderTable), orderTable.numberOfGuests(), orderTable.isEmpty()));
-        }
-        return orderTableResponses;
+        return orderTables.stream().map(OrderTableResponse::of).collect(Collectors.toList());
     }
 
     private static Long groupId(OrderTable orderTable) {

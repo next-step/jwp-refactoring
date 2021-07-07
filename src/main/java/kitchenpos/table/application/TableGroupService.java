@@ -46,7 +46,7 @@ public class TableGroupService {
 
         final TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(LocalDateTime.now(), savedOrderTables));
 
-        savedOrderTables.createTableGroup(savedTableGroup);
+        savedOrderTables.mappingTableGroup(savedTableGroup);
         orderTableRepository.saveAll(savedOrderTables.orderTables());
         savedTableGroup.mappingOrderTables(savedOrderTables);
 
@@ -57,12 +57,7 @@ public class TableGroupService {
     public void ungroup(final Long tableGroupId) {
         final OrderTables orderTables = new OrderTables(orderTableRepository.findAllByTableGroupId(tableGroupId));
 
-        final List<Long> orderTableIds = orderTables.orderTableIds();
-
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
-        }
+        validateOrderTablesAlreadyUse(orderTables.orderTableIds());
 
         orderTables.unGroup();
         orderTableRepository.saveAll(orderTables.orderTables());
@@ -70,6 +65,12 @@ public class TableGroupService {
 
     private void validateOrderTableSize(List<OrderTableRequest> orderTables) {
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private void validateOrderTablesAlreadyUse(List<Long> orderTableIds) {
+        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
             throw new IllegalArgumentException();
         }
     }

@@ -24,25 +24,20 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
-        OrderTable orderTable = orderTableRepository.save(new OrderTable(orderTableRequest.getNumberOfGuests(), orderTableRequest.isEmpty()));
-        return OrderTableResponse.of(orderTable);
+        return OrderTableResponse.of(orderTableRepository.save(new OrderTable(orderTableRequest.getNumberOfGuests(), orderTableRequest.isEmpty())));
     }
 
+    @Transactional(readOnly = true)
     public List<OrderTableResponse> list() {
         return OrderTableResponse.ofList(orderTableRepository.findAll());
     }
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId).orElseThrow(IllegalArgumentException::new);
+        final OrderTable savedOrderTable = findOrderTable(orderTableId);
 
         savedOrderTable.validateTableGroupIsNull();
-
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
-        }
-
+        validateOrderTableAlreadyUse(orderTableId);
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
 
         return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
@@ -54,7 +49,7 @@ public class TableService {
 
         validateNumberOfGuests(numberOfGuests);
 
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId).orElseThrow(IllegalArgumentException::new);
+        final OrderTable savedOrderTable = findOrderTable(orderTableId);
 
         savedOrderTable.validateNotEmpty();
         savedOrderTable.changeNumberOfGuests(numberOfGuests);
@@ -62,8 +57,18 @@ public class TableService {
         return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
     }
 
+    private OrderTable findOrderTable(Long orderTableId) {
+        return orderTableRepository.findById(orderTableId).orElseThrow(IllegalArgumentException::new);
+    }
+
     private void validateNumberOfGuests(int numberOfGuests) {
         if (numberOfGuests < 0) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private void validateOrderTableAlreadyUse(Long orderTableId) {
+        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
             throw new IllegalArgumentException();
         }
     }

@@ -33,7 +33,7 @@ public class OrderTables {
         orderTables.forEach(OrderTable::validateOrderTable);
     }
 
-    public void createTableGroup(TableGroup tableGroup) {
+    public void mappingTableGroup(TableGroup tableGroup) {
         for (OrderTable orderTable : orderTables) {
             orderTable.mappingTableGroup(tableGroup);
         }
