@@ -28,6 +28,12 @@ public class OrderLineItemEntity {
     this.quantity = quantity;
   }
 
+  public OrderLineItemEntity(Long seq, Long menuId, Long quantity) {
+    this.seq = seq;
+    this.menuId = menuId;
+    this.quantity = quantity;
+  }
+
   public Long getSeq() {
     return seq;
   }
