@@ -1,4 +1,4 @@
-package kitchenpos.menugroup.ui;
+package kitchenpos.menu.ui;
 
 import static kitchenpos.util.TestDataSet.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -18,8 +18,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import kitchenpos.menugroup.application.MenuGroupService;
-import kitchenpos.menugroup.dto.MenuGroupResponse;
+import kitchenpos.menu.application.MenuGroupService;
+import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menu.ui.MenuGroupRestController;
 
 @WebMvcTest(controllers = MenuGroupRestController.class)
 public class MenuGroupRestControllerTest {

@@ -21,7 +21,6 @@ import kitchenpos.common.domain.Price;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.exception.NoMenuProductListException;
 import kitchenpos.menu.exception.OverSumPriceException;
-import kitchenpos.menugroup.domain.MenuGroup;
 
 @Entity
 public class Menu {

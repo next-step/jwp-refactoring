@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
-import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 
 public class MenuTest {
