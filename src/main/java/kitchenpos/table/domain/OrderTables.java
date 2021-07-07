@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 import kitchenpos.table.exception.OrderUsingException;
@@ -12,7 +13,8 @@ import kitchenpos.table.exception.OrderUsingException;
 @Embeddable
 public class OrderTables {
 
-    @OneToMany(mappedBy = "tableGroup")
+    @OneToMany
+    @JoinColumn(name = "table_group_id")
     private final List<OrderTable> orderTables;
 
     protected OrderTables() {

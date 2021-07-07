@@ -28,7 +28,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.product.constant.OrderStatus;
-import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTables;
@@ -125,7 +124,7 @@ public class TableGroupServiceTest {
     void aleadyTable() {
         // when
         //OrderTable already = new OrderTable(1L, 10, true);
-        OrderTable already = new OrderTable(1L, TableGroup.EMPTY, 10, true, Collections.emptyList());
+        OrderTable already = new OrderTable(1L, 1L, 10, true, Collections.emptyList());
         given(orderTableRepository.findAllById(any())).willReturn(Arrays.asList(already, new OrderTable(2L, 10, true)));
         // then
         assertThrows(IllegalArgumentException.class, () -> {
@@ -166,13 +165,13 @@ public class TableGroupServiceTest {
         Order isCooking = new Order(1L, OrderStatus.COOKING, null, null);
         OrderTables orderTablesCooking = new OrderTables(
             Arrays.asList(
-                new OrderTable(1L, new TableGroup(1L, LocalDateTime.now()), 10, false, Arrays.asList(isCooking))));
+                new OrderTable(1L, 1L, 10, false, Arrays.asList(isCooking))));
         TableGroup isCookingGroup = new TableGroup(1L, LocalDateTime.now(), orderTablesCooking);
 
         Order isMeal = new Order(1L, OrderStatus.MEAL, null, null);
         OrderTables orderTablesMeal = new OrderTables(
             Arrays
-                .asList(new OrderTable(1L, new TableGroup(1L, LocalDateTime.now()), 10, false, Arrays.asList(isMeal))));
+                .asList(new OrderTable(1L, 1L, 10, false, Arrays.asList(isMeal))));
         TableGroup isMealGroup = new TableGroup(1L, LocalDateTime.now(), orderTablesMeal);
 
         return Stream.of(Arguments.of(isCookingGroup), Arguments.of(isMealGroup));

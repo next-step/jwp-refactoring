@@ -4,13 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import kitchenpos.order.domain.Order;
@@ -27,9 +25,8 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "table_group_id")
-    private TableGroup tableGroup;
+    @Column(name = "table_group_id")
+    private Long tableGroupId;
 
     private int numberOfGuests;
 
@@ -40,17 +37,17 @@ public class OrderTable {
 
     protected OrderTable() {}
 
-    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, Boolean empty, List<Order> orders) {
+    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, Boolean empty, List<Order> orders) {
         this.id = id;
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
         this.orders = orders;
     }
 
-    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, Boolean empty) {
+    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, Boolean empty) {
         this.id = id;
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
@@ -76,12 +73,12 @@ public class OrderTable {
     }
 
     public Boolean hasTableGroup() {
-        return Objects.nonNull(tableGroup);
+        return Objects.nonNull(tableGroupId);
     }
 
     public void chargedBy(TableGroup tableGroup) {
         this.empty = false;
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroup.getId();
     }
 
     public Boolean isImmutableOrder() {
@@ -93,7 +90,7 @@ public class OrderTable {
     }
 
     public void ungroup() {
-        tableGroup = null;
+        tableGroupId = null;
         this.empty = true;
     }
 
@@ -129,9 +126,9 @@ public class OrderTable {
     }
 
     public Long getTableGroupId() {
-        if (Objects.isNull(tableGroup)) {
+        if (Objects.isNull(tableGroupId)) {
             return null;
         }
-        return tableGroup.getId();
+        return tableGroupId;
     }
 }

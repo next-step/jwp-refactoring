@@ -3,7 +3,6 @@ package kitchenpos.table.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,10 +11,6 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTables;
-import kitchenpos.table.domain.TableGroup;
 
 public class TableGroupTest {
 
@@ -74,8 +69,8 @@ public class TableGroupTest {
         //given
         List<OrderTable> orderTables = new ArrayList<>();
         //given
-        orderTables.add(new OrderTable(1L, new TableGroup(1L, LocalDateTime.now()), 10, true));
-        orderTables.add(new OrderTable(1L, new TableGroup(1L, LocalDateTime.now()), 10, true));
+        orderTables.add(new OrderTable(1L, 1L, 10, true));
+        orderTables.add(new OrderTable(1L, 1L, 10, true));
 
         //then
         assertThrows(IllegalArgumentException.class, () -> {

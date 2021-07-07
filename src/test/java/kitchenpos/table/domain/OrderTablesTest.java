@@ -3,7 +3,6 @@ package kitchenpos.table.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -42,7 +41,7 @@ public class OrderTablesTest {
         list.add(new OrderTable(1L, 10, true));
 
         List<OrderTable> list2 = new ArrayList<>();
-        list2.add(new OrderTable(1L, new TableGroup(2L, LocalDateTime.now()), 10, true));
+        list2.add(new OrderTable(1L, 2L, 10, true));
         list2.add(new OrderTable(1L, 10, true));
 
         List<OrderTable> list3 = new ArrayList<>();
@@ -56,12 +55,12 @@ public class OrderTablesTest {
         Order isCooking = new Order(1L, OrderStatus.COOKING, null, null);
         OrderTables orderTablesCooking = new OrderTables(
             Arrays.asList(
-                new OrderTable(1L, new TableGroup(1L, LocalDateTime.now()), 10, false, Arrays.asList(isCooking))));
+                new OrderTable(1L, 1L, 10, false, Arrays.asList(isCooking))));
 
         Order isMeal = new Order(1L, OrderStatus.MEAL, null, null);
         OrderTables orderTablesMeal = new OrderTables(
             Arrays
-                .asList(new OrderTable(1L, new TableGroup(1L, LocalDateTime.now()), 10, false, Arrays.asList(isMeal))));
+                .asList(new OrderTable(1L, 1L, 10, false, Arrays.asList(isMeal))));
 
         return Stream.of(Arguments.of(orderTablesCooking), Arguments.of(orderTablesMeal));
     }
