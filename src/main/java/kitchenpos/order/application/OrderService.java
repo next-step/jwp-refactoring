@@ -22,14 +22,17 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final MenuRepository menuRepository;
     private final OrderTableRepository orderTableRepository;
+    private final OrderValidator orderValidator;
 
     public OrderService(
             final OrderRepository orderRepository,
             final MenuRepository menuRepository,
-            final OrderTableRepository orderTableRepository) {
+            final OrderTableRepository orderTableRepository,
+            final OrderValidator orderValidator) {
         this.orderRepository = orderRepository;
         this.menuRepository = menuRepository;
         this.orderTableRepository = orderTableRepository;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
@@ -40,7 +43,7 @@ public class OrderService {
         final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
             .orElseThrow(NoOrderTableException::new);
 
-        Order order = Order.create(orderRequest, orderTable, menuList);
+        Order order = Order.create(orderRequest, orderTable, menuList, orderValidator);
 
         return OrderResponse.of(orderRepository.save(order));
     }

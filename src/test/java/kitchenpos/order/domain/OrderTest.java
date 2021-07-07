@@ -13,6 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.order.application.OrderValidator;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.product.constant.OrderStatus;
@@ -23,6 +24,7 @@ public class OrderTest {
     private OrderRequest request;
     private OrderTable 테이블;
     private List<Menu> menuList;
+    private OrderValidator orderValidator;
 
     @BeforeEach
     void setUp() {
@@ -30,13 +32,14 @@ public class OrderTest {
         request = new OrderRequest(1L, OrderStatus.COOKING,
             Arrays.asList(new OrderLineItemRequest(1L, 3L), new OrderLineItemRequest(2L, 3L)));
         menuList = Arrays.asList(원플원_후라이드, 원플원_양념);
+        orderValidator = new OrderValidator();
 
     }
 
     @Test
     @DisplayName("정상 생성 케스트 테스트")
     void creat() {
-        Order order = Order.create(request, 테이블, menuList);
+        Order order = Order.create(request, 테이블, menuList, orderValidator);
         assertThat(order.getOrderTableId()).isEqualTo(테이블.getId());
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
     }
@@ -47,7 +50,7 @@ public class OrderTest {
         request = new OrderRequest(1L, OrderStatus.COOKING,
             Arrays.asList(new OrderLineItemRequest(1L, 3L)));
         assertThrows(IllegalArgumentException.class, () -> {
-            Order.create(request, 테이블, menuList);
+            Order.create(request, 테이블, menuList, orderValidator);
         });
     }
 
@@ -56,7 +59,7 @@ public class OrderTest {
     void emptyTable() {
         테이블 = new OrderTable(1L, 1L, 10, true, null);
         assertThrows(IllegalArgumentException.class, () -> {
-            Order.create(request, 테이블, menuList);
+            Order.create(request, 테이블, menuList, orderValidator);
         });
     }
 }

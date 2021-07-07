@@ -6,9 +6,11 @@ import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 import kitchenpos.order.domain.Order;
@@ -32,7 +34,8 @@ public class OrderTable {
 
     private Boolean empty;
 
-    @OneToMany(mappedBy = "orderTable")
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_table_id")
     private List<Order> orders = new ArrayList<>();
 
     protected OrderTable() {}

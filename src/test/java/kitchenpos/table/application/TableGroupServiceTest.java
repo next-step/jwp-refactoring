@@ -162,13 +162,13 @@ public class TableGroupServiceTest {
     }
 
     private static Stream<Arguments> cookingSet() {
-        Order isCooking = new Order(1L, OrderStatus.COOKING, null, null);
+        Order isCooking = new Order(1L, OrderStatus.COOKING, 1L, null);
         OrderTables orderTablesCooking = new OrderTables(
             Arrays.asList(
                 new OrderTable(1L, 1L, 10, false, Arrays.asList(isCooking))));
         TableGroup isCookingGroup = new TableGroup(1L, LocalDateTime.now(), orderTablesCooking);
 
-        Order isMeal = new Order(1L, OrderStatus.MEAL, null, null);
+        Order isMeal = new Order(1L, OrderStatus.MEAL, 1L, null);
         OrderTables orderTablesMeal = new OrderTables(
             Arrays
                 .asList(new OrderTable(1L, 1L, 10, false, Arrays.asList(isMeal))));
