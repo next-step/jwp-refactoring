@@ -1,6 +1,7 @@
 package kitchenpos.table.domain;
 
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.Orders;
 import kitchenpos.table.dto.OrderTableRequest;
 
 import javax.persistence.*;
@@ -25,8 +26,8 @@ public class OrderTable {
     @Column(name = "empty")
     private boolean empty;
 
-    @OneToMany(mappedBy = "orderTableId")
-    private List<Order> orders = new ArrayList<>();
+    @Embedded
+    private Orders orders;
 
     public OrderTable() {
     }
@@ -90,7 +91,7 @@ public class OrderTable {
     }
 
     public void ungroup() {
-        orders.forEach(Order::ungroupValidation);
+        orders.ungroup();
         groupBy(null);
     }
 }
