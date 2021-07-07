@@ -20,6 +20,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.dao.OrderDao;
 import kitchenpos.domain.NumberOfGuests;
+import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
@@ -38,10 +40,26 @@ class TableServiceTest {
 	private TableService tableSevrice;
 
 	private List<String> 주문상태목록;
+	private OrderTable 일번테이블;
+	private OrderTable 이번테이블;
+	private OrderTable 삼번테이블;
+	private OrderTable 사번테이블;
+
+	private TableGroup 단체지정;
 
 	@BeforeEach
 	void setUp() {
+
 		주문상태목록 = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
+		일번테이블 = new OrderTable(null, null, true);
+		이번테이블 = new OrderTable(null, null, true);
+		삼번테이블 = new OrderTable(null, new NumberOfGuests(3), false);
+		사번테이블 = new OrderTable(null, new NumberOfGuests(3), false);
+		List<OrderTable> orderTableList = new ArrayList<>();
+		orderTableList.add(일번테이블);
+		orderTableList.add(이번테이블);
+		단체지정 = new TableGroup(null, orderTableList);
+
 	}
 
 	@DisplayName("주문 테이블 생성을 확인")
@@ -79,9 +97,6 @@ class TableServiceTest {
 		Long orderTableId = 1L;
 
 		when(orderTableRepository.findById(orderTableId)).thenReturn(Optional.of(savedOrderTable));
-		when(orderDao.existsByOrderTableIdAndOrderStatusIn(orderTableId, 주문상태목록)).thenReturn(
-			false);
-		when(orderTableRepository.save(savedOrderTable)).thenReturn(savedOrderTable);
 
 		OrderTableResponse actual = tableSevrice.changeEmpty(orderTableId, orderTableRequest);
 		Assertions.assertThat(actual.isEmpty()).isTrue();
@@ -105,10 +120,8 @@ class TableServiceTest {
 	void testAlreadyTableGroup() {
 		OrderTableRequest orderTableRequest = new OrderTableRequest(3, true);
 		Long orderTableId = 1L;
-		TableGroup tableGroup = new TableGroup(null, null);
-		OrderTable savedOrderTable = new OrderTable(tableGroup, new NumberOfGuests(3), false);
 
-		when(orderTableRepository.findById(orderTableId)).thenReturn(Optional.of(savedOrderTable));
+		when(orderTableRepository.findById(orderTableId)).thenReturn(Optional.of(일번테이블));
 		Assertions.assertThatThrownBy(() -> {
 			tableSevrice.changeEmpty(orderTableId, orderTableRequest);
 		}).isInstanceOf(IllegalArgumentException.class)
@@ -120,14 +133,17 @@ class TableServiceTest {
 	void testOrderTableStatusNotCompletion() {
 		OrderTableRequest orderTableRequest = new OrderTableRequest(3, true);
 		Long orderTableId = 1L;
-		OrderTable savedOrderTable = new OrderTable(null, new NumberOfGuests(3), false);
 
-		when(orderTableRepository.findById(orderTableId)).thenReturn(Optional.of(savedOrderTable));
-		when(orderDao.existsByOrderTableIdAndOrderStatusIn(1L, 주문상태목록)).thenReturn(true);
+		List<OrderLineItem> orderLineItems = new ArrayList<>();
+		orderLineItems.add(new OrderLineItem(null, null, 3));
+		new Order(삼번테이블, OrderStatus.COOKING, null, orderLineItems);
+
+		when(orderTableRepository.findById(orderTableId)).thenReturn(Optional.of(삼번테이블));
+
 		Assertions.assertThatThrownBy(() -> {
 			tableSevrice.changeEmpty(orderTableId, orderTableRequest);
 		}).isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("주문 테이블의 주문상태가 완료되지 않아 변경할 수 없습니다");
+			.hasMessageContaining("주문 상태가 완료되어야 단체지정이 해제가능합니다.");
 	}
 
 	@DisplayName("주문 테이블의 방문 손님 수를 변경한다.")

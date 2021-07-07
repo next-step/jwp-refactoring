@@ -1,15 +1,12 @@
 package kitchenpos.application;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.dao.OrderDao;
 import kitchenpos.domain.NumberOfGuests;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.OrderTableResponse;
@@ -18,11 +15,9 @@ import kitchenpos.repository.OrderTableRepository;
 @Service
 @Transactional(readOnly = true)
 public class TableService {
-	private final OrderDao orderDao;
 	private final OrderTableRepository orderTableRepository;
 
-	public TableService(OrderDao orderDao, OrderTableRepository orderTableRepository) {
-		this.orderDao = orderDao;
+	public TableService(OrderTableRepository orderTableRepository) {
 		this.orderTableRepository = orderTableRepository;
 	}
 
@@ -43,14 +38,8 @@ public class TableService {
 	@Transactional
 	public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
 		final OrderTable savedOrderTable = findOrderTable(orderTableId);
-
-		if (orderDao.existsByOrderTableIdAndOrderStatusIn(
-			orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-			throw new IllegalArgumentException("주문 테이블의 주문상태가 완료되지 않아 변경할 수 없습니다");
-		}
-
 		savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
-		return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
+		return OrderTableResponse.of(savedOrderTable);
 	}
 
 	@Transactional

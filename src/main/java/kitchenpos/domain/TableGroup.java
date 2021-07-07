@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.util.CollectionUtils;
 
 @Entity
 public class TableGroup {
@@ -36,8 +37,14 @@ public class TableGroup {
 	}
 
 	public TableGroup(LocalDateTime createdDate, List<OrderTable> orderTables) {
+		if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
+			throw new IllegalArgumentException("주문 테이블이이 둘 이상이어야 단체지정을 할 수 있습니다.");
+		}
+
+		for (OrderTable orderTable : orderTables) {
+			addOrderTable(orderTable);
+		}
 		this.createdDate = createdDate;
-		this.orderTables = orderTables;
 	}
 
 	public Long getId() {
@@ -67,5 +74,11 @@ public class TableGroup {
 
 	public void setCreatedDate(LocalDateTime now) {
 		this.createdDate = now;
+	}
+
+	public void unGroup() {
+		for (OrderTable orderTable : this.orderTables) {
+			orderTable.unGroup();
+		}
 	}
 }

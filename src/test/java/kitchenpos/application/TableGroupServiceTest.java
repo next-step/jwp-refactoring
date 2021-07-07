@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.OrderDao;
 import kitchenpos.domain.NumberOfGuests;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
@@ -31,8 +31,6 @@ import kitchenpos.repository.TableGroupRepository;
 
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
-	@Mock
-	private OrderDao orderDao;
 	@Mock
 	private OrderTableRepository orderTableRepository;
 	@Mock
@@ -67,31 +65,16 @@ class TableGroupServiceTest {
 	@Test
 	void testUnGroup() {
 		Long tableGroupId = 1L;
-		List<String> OrderStatusList = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
 
-		when(orderTableRepository.findAllByTableGroupId(tableGroupId)).thenReturn(주문테이블);
-		when(orderDao.existsByOrderTableIdInAndOrderStatusIn(주문테이블아이디목록, OrderStatusList)).thenReturn(false);
-		when(orderTableRepository.save(일번테이블)).thenReturn(일번테이블);
-		when(orderTableRepository.save(이번테이블)).thenReturn(이번테이블);
+		when(tableGroupRepository.findById(tableGroupId)).thenReturn(Optional.of(단체지정));
 
 		tableGroupService.ungroup(tableGroupId);
 
-		verify(orderTableRepository, times(1)).save(일번테이블);
-		verify(orderTableRepository, times(1)).save(이번테이블);
-	}
-
-	@DisplayName("단체 지정 해제시 주문 테이블이 목록에 존재하고, 상태가 COOKING 또는 MEAL인 경우 오류 발생")
-	@Test
-	void testUnGroupExistsByOrderTableIdInAndOrderStatusIn() {
-		//given
-		long tableGroupId = 1L;
-		when(orderTableRepository.findAllByTableGroupId(tableGroupId)).thenReturn(주문테이블);
-		when(orderDao.existsByOrderTableIdInAndOrderStatusIn(주문테이블아이디목록, OrderStatusList)).thenReturn(true);
-		//when
-		assertThatThrownBy(() -> {
-			tableGroupService.ungroup(tableGroupId);
-		}).isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("주문 상태가 완료되어야 단체지정이 해제가능합니다.");
+		List<TableGroup> actual = 단체지정.getOrderTables()
+			.stream()
+			.map(OrderTable::getTableGroup)
+			.collect(Collectors.toList());
+		Assertions.assertThat(actual.isEmpty()).isTrue();
 	}
 
 	@DisplayName("주문 테이블이 2테이블 이하인경우 단체지정 오류 발생")
@@ -119,27 +102,6 @@ class TableGroupServiceTest {
 
 		when(orderTableRepository.findById(1L)).thenReturn(Optional.of(일번테이블));
 		when(orderTableRepository.findById(2L)).thenReturn(Optional.of(이번테이블));
-
-		assertThatThrownBy(() -> {
-			tableGroupService.create(tableGroupRequest);
-		}).isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("주문테이블이 단체지정이 되어있거나, 비어있지 않은 테이블입니다.");
-	}
-
-	@DisplayName("저장 되어있는 주문 테이블이 비어있는 테이블이 아니면 오류 발생")
-	@Test
-	void testOrderTableIsEmpty() {
-		List<Long> orderTableIds = new ArrayList<>();
-		orderTableIds.add(1L);
-		orderTableIds.add(2L);
-		TableGroupRequest tableGroupRequest = new TableGroupRequest(orderTableIds);
-
-		LocalDateTime createdDate = LocalDateTime.of(2021, 7, 6, 0, 0, 0);
-		TableGroup tableGroup = new TableGroup(createdDate, 주문테이블);
-		OrderTable emptyTable = new OrderTable(tableGroup, new NumberOfGuests(3), false);
-
-		when(orderTableRepository.findById(1L)).thenReturn(Optional.of(emptyTable));
-		when(orderTableRepository.findById(2L)).thenReturn(Optional.of(emptyTable));
 
 		assertThatThrownBy(() -> {
 			tableGroupService.create(tableGroupRequest);

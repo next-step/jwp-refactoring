@@ -2,6 +2,7 @@ package kitchenpos.domain;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -52,9 +53,14 @@ public class Order {
 		for (OrderLineItem orderLineItem : orderLineItems) {
 			addOrderLineItem(orderLineItem);
 		}
-		this.orderTable = orderTable;
+		order(orderTable);
 		this.orderStatus = orderStatus;
 		this.orderedTime = orderedTime;
+	}
+
+	public void order(OrderTable orderTable) {
+		this.orderTable = orderTable;
+		orderTable.addOrder(this);
 	}
 
 	private void ValidateEmptyOrderItems(List<OrderLineItem> orderLineItems) {
@@ -120,5 +126,10 @@ public class Order {
 	@Override
 	public int hashCode() {
 		return Objects.hash(id, orderTable, orderStatus, orderedTime, orderLineItems);
+	}
+
+	public boolean isUnChangeable() {
+		List<OrderStatus> orderStatuses = Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL);
+		return orderStatuses.contains(orderStatus);
 	}
 }
