@@ -107,7 +107,7 @@ public class Order {
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
-        if (orderStatus.equals(OrderStatus.COMPLETION)) {
+        if (this.orderStatus.equals(OrderStatus.COMPLETION)) {
             throw new CannotChangeOrderStatusException(YOU_CANNOT_CHANGE_A_CALCULATED_ORDER);
         }
         this.orderStatus = orderStatus;
