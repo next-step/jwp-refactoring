@@ -9,10 +9,17 @@ public class MenuProduct {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "seq")
     private Long seq;
+
+    @Column(name = "menu_id")
     private Long menuId;
+
     @ManyToOne(fetch = FetchType.LAZY)
+    @Column(name = "product_id")
     private Product product;
+
+    @Column(name = "quantity")
     private long quantity;
 
     public MenuProduct() {
