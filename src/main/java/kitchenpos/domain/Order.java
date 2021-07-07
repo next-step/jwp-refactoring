@@ -13,6 +13,12 @@ public class Order {
     public Order() {
     }
 
+    public Order(final Long orderTableId, final String orderStatus, final LocalDateTime orderedTime) {
+        this.orderTableId = orderTableId;
+        this.orderStatus = orderStatus;
+        this.orderedTime = orderedTime;
+    }
+
     public Long getId() {
         return id;
     }

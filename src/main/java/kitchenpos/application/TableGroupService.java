@@ -33,7 +33,7 @@ public class TableGroupService {
         final List<OrderTable> orderTables = tableGroup.getOrderTables();
 
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("2개 이상의 주문 테이블만 등록할수 있다");
         }
 
         final List<Long> orderTableIds = orderTables.stream()
@@ -43,12 +43,12 @@ public class TableGroupService {
         final List<OrderTable> savedOrderTables = orderTableDao.findAllByIdIn(orderTableIds);
 
         if (orderTables.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문 테이블들은 사전에 등록되어 있어야 한다.");
         }
 
         for (final OrderTable savedOrderTable : savedOrderTables) {
             if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("테이블이 비어있지 않습니다.");
             }
         }
 
@@ -77,7 +77,7 @@ public class TableGroupService {
 
         if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
                 orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(String.format("%s 또는 %s 상태일때는 삭제할수 없습니다.", OrderStatus.COOKING, OrderStatus.MEAL));
         }
 
         for (final OrderTable orderTable : orderTables) {

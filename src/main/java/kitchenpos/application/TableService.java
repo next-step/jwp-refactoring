@@ -35,15 +35,16 @@ public class TableService {
     @Transactional
     public OrderTable changeEmpty(final Long orderTableId, final OrderTable orderTable) {
         final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("등록된 주문 테이블만 상태값을 변경할수 있습니다."));
 
         if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("그룹 설정이 되어 있는 주문테이블은 상태를 변경할수 없습니다.");
         }
 
         if (orderDao.existsByOrderTableIdAndOrderStatusIn(
                 orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(String.format("%s 또는 %s 상태일때는 변경할수 없습니다.",
+                    OrderStatus.COOKING.name(), OrderStatus.MEAL.name()));
         }
 
         savedOrderTable.setEmpty(orderTable.isEmpty());
@@ -56,14 +57,14 @@ public class TableService {
         final int numberOfGuests = orderTable.getNumberOfGuests();
 
         if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("손님 수는 음수는 불가능합니다.");
         }
 
         final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("등록된 주문 테이블만 수정할 수 있습니다."));
 
         if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("해당테이블은 비어있어 수정이 불가능합니다");
         }
 
         savedOrderTable.setNumberOfGuests(numberOfGuests);

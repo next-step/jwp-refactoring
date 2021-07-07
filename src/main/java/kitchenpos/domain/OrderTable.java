@@ -9,6 +9,11 @@ public class OrderTable {
     public OrderTable() {
     }
 
+    public OrderTable(final int numberOfGuests, final boolean empty) {
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
+
     public Long getId() {
         return id;
     }

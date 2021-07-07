@@ -9,6 +9,12 @@ public class OrderLineItem {
     public OrderLineItem() {
     }
 
+    public OrderLineItem(final Long orderId, final Long menuId, final long quantity) {
+        this.orderId = orderId;
+        this.menuId = menuId;
+        this.quantity = quantity;
+    }
+
     public Long getSeq() {
         return seq;
     }
