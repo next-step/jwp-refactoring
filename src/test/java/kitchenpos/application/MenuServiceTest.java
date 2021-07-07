@@ -38,23 +38,26 @@ class MenuServiceTest {
     @Mock
     ProductService productService;
 
-    MenuProductRequest 두마리_후라이드;
-    MenuProductRequest 두마리_양념치킨;
-    MenuRequest 두마리_양념후라이드;
+    MenuProductRequest 두마리_후라이드_요청;
+    MenuProductRequest 두마리_양념치킨_요청;
+    MenuRequest 두마리_양념후라이드_요청;
 
-    Menu 양념후라이드;
+    MenuProduct 두마리_후라이드;
+    MenuProduct 두마리_양념치킨;
+    Menu 두마리_양념후라이드;
 
     @BeforeEach
     void setUp() {
-        두마리_후라이드 = new MenuProductRequest(후라이드.getId(), 1);
-        두마리_양념치킨 = new MenuProductRequest(양념치킨.getId(), 1);
-        두마리_양념후라이드 = new MenuRequest(null, "두마리_양념후라이드",
-            BigDecimal.valueOf(23000), 두마리메뉴.getId(), Arrays.asList(두마리_후라이드, 두마리_양념치킨));
+        BigDecimal 이만_삼천_원 = BigDecimal.valueOf(23000);
+        두마리_후라이드_요청 = new MenuProductRequest(후라이드.getId(), 1);
+        두마리_양념치킨_요청 = new MenuProductRequest(양념치킨.getId(), 1);
+        두마리_양념후라이드_요청 = new MenuRequest(null, "두마리_양념후라이드", 이만_삼천_원, 두마리메뉴.getId(),
+            Arrays.asList(두마리_후라이드_요청, 두마리_양념치킨_요청));
 
-        양념후라이드 = new Menu("양념후라이드", 두마리메뉴);
-        양념후라이드.addMenuProduct(new MenuProduct(후라이드, 1));
-        양념후라이드.addMenuProduct(new MenuProduct(양념치킨, 1));
-        양념후라이드 = 양념후라이드.withPrice(BigDecimal.valueOf(23000));
+        두마리_양념치킨 = new MenuProduct(후라이드, 1);
+        두마리_후라이드 = new MenuProduct(양념치킨, 1);
+        두마리_양념후라이드 = new Menu(100L, "두마리_양념후라이드", 이만_삼천_원, 두마리메뉴,
+            Arrays.asList(두마리_양념치킨, 두마리_후라이드));
     }
 
     @Test
@@ -63,16 +66,16 @@ class MenuServiceTest {
         when(menuGroupService.findById(두마리메뉴.getId())).thenReturn(두마리메뉴);
         when(productService.findById(후라이드.getId())).thenReturn(후라이드);
         when(productService.findById(양념치킨.getId())).thenReturn(양념치킨);
-        when(menuRepository.save(any())).thenReturn(양념후라이드);
+        when(menuRepository.save(any())).thenReturn(두마리_양념후라이드);
 
         // when
-        Menu savedMenu = menuService.create(두마리_양념후라이드);
+        Menu savedMenu = menuService.create(두마리_양념후라이드_요청);
 
         // then
-        assertThat(savedMenu.getName()).isEqualTo(양념후라이드.getName());
-        assertThat(savedMenu.getMenuGroupId()).isEqualTo(양념후라이드.getMenuGroupId());
+        assertThat(savedMenu.getName()).isEqualTo(두마리_양념후라이드.getName());
+        assertThat(savedMenu.getMenuGroupId()).isEqualTo(두마리_양념후라이드.getMenuGroupId());
         savedMenu.getMenuProducts().forEach(menuProduct -> {
-            assertThat(menuProduct.getMenuId()).isEqualTo(양념후라이드.getId());
+            assertThat(menuProduct.getMenuId()).isEqualTo(두마리_양념후라이드.getId());
         });
     }
 
@@ -80,11 +83,11 @@ class MenuServiceTest {
     @DisplayName("메뉴 생성 실패(메뉴 그룹이 존재하지 않음)")
     void create_fail2() {
         // given
-        when(menuGroupService.findById(두마리_양념후라이드.getMenuGroupId()))
+        when(menuGroupService.findById(두마리_양념후라이드_요청.getMenuGroupId()))
             .thenThrow(IllegalArgumentException.class);
 
         // then
-        assertThatThrownBy(() -> menuService.create(두마리_양념후라이드))
+        assertThatThrownBy(() -> menuService.create(두마리_양념후라이드_요청))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -96,7 +99,7 @@ class MenuServiceTest {
         when(productService.findById(후라이드.getId())).thenThrow(IllegalArgumentException.class);
 
         // then
-        assertThatThrownBy(() -> menuService.create(두마리_양념후라이드))
+        assertThatThrownBy(() -> menuService.create(두마리_양념후라이드_요청))
             .isInstanceOf(IllegalArgumentException.class);
     }
 

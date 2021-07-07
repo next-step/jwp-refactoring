@@ -42,32 +42,35 @@ public class Menu {
     public Menu() {
     }
 
-    public Menu(String name, MenuGroup menuGroup) {
-        this.name = name;
-        this.menuGroup = menuGroup;
+    public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        this(null, name, price, menuGroup, menuProducts);
     }
 
-    Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup) {
+    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        checkArguments(name, price, menuGroup, menuProducts);
+        checkPriceAndSummation(price, menuProducts);
         this.id = id;
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
+        menuProducts.forEach(this::addMenuProduct);
     }
 
-    public Menu withPrice(BigDecimal price) {
-        checkPrice(price);
-        checkTotalPrice(price);
-        this.price = price;
-        return this;
-    }
+    private void checkArguments(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        if (Objects.isNull(name) || Objects.isNull(price) || Objects.isNull(menuGroup) || Objects.isNull(menuProducts)) {
+            throw new IllegalArgumentException("메뉴를 생성하려면 모든 필수값이 입력되어야 합니다.");
+        }
 
-    private void checkPrice(BigDecimal price) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
+        if (menuProducts.isEmpty()) {
+            throw new IllegalArgumentException("메뉴 구성요소는 1개 이상 존재해야 합니다.");
+        }
+
+        if (price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("메뉴 가격은 음수가 될 수 없습니다.");
         }
     }
 
-    private void checkTotalPrice(BigDecimal price) {
+    private void checkPriceAndSummation(BigDecimal price, List<MenuProduct> menuProducts) {
         BigDecimal summation = menuProducts.stream()
             .map(MenuProduct::getTotalPrice)
             .reduce(BigDecimal::add)
@@ -78,7 +81,7 @@ public class Menu {
         }
     }
 
-    public void addMenuProduct(MenuProduct menuProduct) {
+    private void addMenuProduct(MenuProduct menuProduct) {
         menuProduct.setMenu(this);
         menuProducts.add(menuProduct);
     }
@@ -119,17 +122,5 @@ public class Menu {
 
     public void setMenuGroupId(long menu_group_id) {
         this.menuGroup.setId(menu_group_id);
-    }
-
-    public void setMenuProducts(List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
-    }
-
-    public Menu(Long id, String 특가세트, BigDecimal price, Long id1, List<MenuProduct> collect) {
-        this.id = id;
-        this.name = 특가세트;
-        this.price = price;
-        this.menuGroup.setId(id1);
-        this.menuProducts = collect;
     }
 }
