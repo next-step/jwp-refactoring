@@ -18,7 +18,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.OrderDao;
 import kitchenpos.domain.NumberOfGuests;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
@@ -32,8 +31,6 @@ import kitchenpos.repository.OrderTableRepository;
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
 
-	@Mock
-	private OrderDao orderDao;
 	@Mock
 	private OrderTableRepository orderTableRepository;
 	@InjectMocks
