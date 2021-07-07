@@ -3,7 +3,6 @@ package kitchenpos.tablegroup.application;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.dto.OrderTableRequest;
-import kitchenpos.tablegroup.domain.OrderTables;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class TableGroupService {
@@ -26,8 +24,8 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest request) {
-        OrderTables orderTables = findOrderTables(request.getOrderTables());
-        TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(orderTables));
+        List<OrderTable> orderTables = orderTableRepository.findAllByIdIn(request.getOrderTables());
+        TableGroup savedTableGroup = tableGroupRepository.save(TableGroup.fromGroupingTables(orderTables));
         return TableGroupResponse.of(savedTableGroup);
     }
 
@@ -35,14 +33,8 @@ public class TableGroupService {
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
                 .orElseThrow(() -> new IllegalArgumentException("단체 지정된 그룹이 없습니다."));
-        tableGroup.ungroup();
-    }
-
-    private OrderTables findOrderTables(List<OrderTableRequest> OrderTableRequests) {
-        List<OrderTable> orderTables = OrderTableRequests.stream()
-                .map(this::findByIdOrderTable)
-                .collect(Collectors.toList());
-        return new OrderTables(orderTables);
+        tableGroup.ungroupTables();
+        tableGroupRepository.delete(tableGroup);
     }
 
     private OrderTable findByIdOrderTable(OrderTableRequest orderTableRequest) {

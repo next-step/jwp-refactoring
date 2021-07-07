@@ -20,8 +20,7 @@ public class TableService {
     @Transactional
     public OrderTableResponse create(final OrderTableRequest request) {
         OrderTable orderTable = new OrderTable(request.getNumberOfGuests(), request.isEmpty());
-        OrderTable savedOrderTable = orderTableRepository.save(orderTable);
-        return OrderTableResponse.of(savedOrderTable);
+        return OrderTableResponse.of(orderTableRepository.save(orderTable));
     }
 
     public List<OrderTableResponse> findAll() {

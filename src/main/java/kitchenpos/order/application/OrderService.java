@@ -34,6 +34,7 @@ public class OrderService {
         return OrderResponse.of(savedOrder);
     }
 
+    @Transactional
     public List<OrderResponse> findAll() {
         List<Order> orders = orderRepository.findAll();
         return OrderResponse.ofList(orders);
