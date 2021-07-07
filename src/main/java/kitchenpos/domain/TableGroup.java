@@ -1,7 +1,9 @@
 package kitchenpos.domain;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,18 +26,16 @@ public class TableGroup {
 	private LocalDateTime createdDate;
 
 	@OneToMany(mappedBy = "tableGroup")
-	private List<OrderTable> orderTables;
+	private List<OrderTable> orderTables = new ArrayList<>();
 
 	protected TableGroup() {
 	}
 
-	public TableGroup(LocalDateTime createdDate, List<OrderTable> orderTables) {
+	public TableGroup(LocalDateTime createdDate) {
 		this.createdDate = createdDate;
-		this.orderTables = orderTables;
 	}
 
-	public TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
-		this.id = id;
+	public TableGroup(LocalDateTime createdDate, List<OrderTable> orderTables) {
 		this.createdDate = createdDate;
 		this.orderTables = orderTables;
 	}
@@ -53,6 +53,10 @@ public class TableGroup {
 	}
 
 	public void addOrderTable(OrderTable orderTable) {
+		if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup())) {
+			throw new IllegalArgumentException("주문테이블이 단체지정이 되어있거나, 비어있지 않은 테이블입니다.");
+		}
+
 		this.orderTables.add(orderTable);
 		orderTable.changeTableGroup(this);
 	}

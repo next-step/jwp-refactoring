@@ -105,7 +105,7 @@ class TableServiceTest {
 	void testAlreadyTableGroup() {
 		OrderTableRequest orderTableRequest = new OrderTableRequest(3, true);
 		Long orderTableId = 1L;
-		TableGroup tableGroup = new TableGroup(1L, null, null);
+		TableGroup tableGroup = new TableGroup(null, null);
 		OrderTable savedOrderTable = new OrderTable(tableGroup, new NumberOfGuests(3), false);
 
 		when(orderTableRepository.findById(orderTableId)).thenReturn(Optional.of(savedOrderTable));
