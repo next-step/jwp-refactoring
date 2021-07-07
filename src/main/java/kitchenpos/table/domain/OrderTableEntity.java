@@ -18,7 +18,7 @@ public class OrderTableEntity {
   private NumberOfGuests numberOfGuests;
 
   @Column(name = "empty", nullable = false)
-  private Boolean empty;
+  private boolean empty;
 
   protected OrderTableEntity() {
   }
@@ -75,5 +75,17 @@ public class OrderTableEntity {
       throw new IllegalArgumentException();
     }
     this.numberOfGuests = NumberOfGuests.from(numberOfGuests);
+  }
+
+  public void bindTableGroup(long groupId) {
+    if (!this.empty || Objects.nonNull(this.tableGroupId)) {
+      throw new IllegalArgumentException();
+    }
+    this.tableGroupId = groupId;
+    this.empty = false;
+  }
+
+  public void ungroup() {
+    tableGroupId = null;
   }
 }
