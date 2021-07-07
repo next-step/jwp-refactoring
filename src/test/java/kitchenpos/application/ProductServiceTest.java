@@ -1,7 +1,10 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,14 +17,16 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
 
     @Mock
-    ProductDao productDao;
+    ProductRepository productRepository;
 
+    ProductRequest 후라이드치킨요청;
     Product 후라이드치킨;
     Product 양념치킨;
 
@@ -29,21 +34,21 @@ public class ProductServiceTest {
 
     @BeforeEach
     void setUp() {
-        후라이드치킨 = new Product( 1L, "후라이드치킨", BigDecimal.valueOf(18000L));
+        후라이드치킨요청 = new ProductRequest("후라이드치킨", BigDecimal.valueOf(18000L));
+        후라이드치킨 = new Product(1L, "후라이드치킨", BigDecimal.valueOf(18000L));
         양념치킨 = new Product(2L, "양념치킨", BigDecimal.valueOf(19000L));
 
-        productService = new ProductService(productDao);
+        productService = new ProductService(productRepository);
     }
 
     @DisplayName("상품을 등록")
     @Test
     void 상품을_등록() {
         //given
-        Product product = new Product("후라이드치킨", BigDecimal.valueOf(18000L));
-        when(productDao.save(product)).thenReturn(후라이드치킨);
+        when(productRepository.save(any())).thenReturn(후라이드치킨);
 
         //when
-        Product savedProduct = productService.create(product);
+        ProductResponse savedProduct = productService.create(후라이드치킨요청);
 
         //then
         assertThat(savedProduct.getId()).isEqualTo(후라이드치킨.getId());
@@ -53,13 +58,14 @@ public class ProductServiceTest {
     @Test
     void 상품_목록을_부러옴() {
         //given
-        when(productDao.findAll()).thenReturn(Arrays.asList(후라이드치킨, 양념치킨));
+        when(productRepository.findAll()).thenReturn(Arrays.asList(후라이드치킨, 양념치킨));
 
         //when
-        List<Product> list = productService.list();
+        List<ProductResponse> list = productService.list();
 
         //then
         assertThat(list).hasSize(2);
-        assertThat(list).containsExactly(후라이드치킨, 양념치킨);
+        assertThat(list.stream().map(ProductResponse::getName))
+                .containsExactly(후라이드치킨.getName(), 양념치킨.getName());
     }
 }
