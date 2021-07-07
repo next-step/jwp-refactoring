@@ -64,7 +64,7 @@ class MenuServiceTest {
         BigDecimal price = BigDecimal.valueOf(10000);
         String menuName = "맥도날드햄버거";
 
-        MenuProductRequest menuProductRequest = new MenuProductRequest(menuProduct.getSeq(), menuProduct.getMenuId(), menuProduct.getProduct().getId(), menuProduct.getQuantity());
+        MenuProductRequest menuProductRequest = new MenuProductRequest(menuProduct.getProduct().getId(), menuProduct.getQuantity());
         MenuRequest menu = new MenuRequest(menuName, price, savedMenuGroup.getId(), Arrays.asList(menuProductRequest));
 
         //when
@@ -85,7 +85,7 @@ class MenuServiceTest {
         BigDecimal price = BigDecimal.valueOf(10000);
         String menuName = "맥도날드햄버거";
 
-        Menu menu = new Menu(menuName, new Price(price), savedMenuGroup.getId());
+        Menu menu = new Menu(menuName, price, savedMenuGroup);
 
         Menu savedMenu = menuRepository.save(menu);
 
@@ -104,7 +104,7 @@ class MenuServiceTest {
     @Test
     public void invalidCreateMenu() throws Exception {
         //given
-        MenuProductRequest menuProductRequest = new MenuProductRequest(menuProduct.getSeq(), menuProduct.getMenuId(), menuProduct.getProduct().getId(), menuProduct.getQuantity());
+        MenuProductRequest menuProductRequest = new MenuProductRequest(menuProduct.getProduct().getId(), menuProduct.getQuantity());
         MenuRequest menu = new MenuRequest("맥도날드햄버거", BigDecimal.valueOf(-1), savedMenuGroup.getId(), Arrays.asList(menuProductRequest));
 
         //when
@@ -117,7 +117,7 @@ class MenuServiceTest {
     @Test
     public void failCreateMenuNotExistGroupMenu() throws Exception {
         //given
-        MenuProductRequest menuProductRequest = new MenuProductRequest(menuProduct.getSeq(), menuProduct.getMenuId(), menuProduct.getProduct().getId(), menuProduct.getQuantity());
+        MenuProductRequest menuProductRequest = new MenuProductRequest(menuProduct.getProduct().getId(), menuProduct.getQuantity());
         MenuRequest menu = new MenuRequest("맥도날드햄버거", BigDecimal.valueOf(10000), 0L, Arrays.asList(menuProductRequest));
 
         //when
@@ -130,7 +130,7 @@ class MenuServiceTest {
     @Test
     public void failCreateMenuInvalidPrice() throws Exception {
         //given
-        MenuProductRequest menuProductRequest = new MenuProductRequest(menuProduct.getSeq(), menuProduct.getMenuId(), menuProduct.getProduct().getId(), menuProduct.getQuantity());
+        MenuProductRequest menuProductRequest = new MenuProductRequest(menuProduct.getProduct().getId(), menuProduct.getQuantity());
         MenuRequest menu = new MenuRequest("맥도날드햄버거", BigDecimal.valueOf(20000), savedMenuGroup.getId(), Arrays.asList(menuProductRequest));
 
         //when
