@@ -7,9 +7,14 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.stream.Stream;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -54,33 +59,32 @@ class MenuServiceTest {
         verify(menuDao).save(menu);
     }
 
-    @Test
-    void given_InvalidMenu_when_Create_then_ThrownException() {
+    @DisplayName("금액이 null, -1, 0 인 경우 예외 발생 테스트")
+    @ParameterizedTest
+    @MethodSource("providePrice")
+    void given_InvalidPrice_when_Create_then_ThrownException(BigDecimal price) {
         // given
         Menu minusPrice = new Menu();
-        minusPrice.setPrice(new BigDecimal(-1));
+        minusPrice.setPrice(price);
+
         // when
         final Throwable minusPriceException = catchThrowable(() -> menuService.create(minusPrice));
+
         // then
         assertThat(minusPriceException).isInstanceOf(IllegalArgumentException.class);
+    }
 
-        // given
-        Menu nullPrice = new Menu();
-        nullPrice.setPrice(null);
-        // when
-        final Throwable nullPriceException = catchThrowable(() -> menuService.create(nullPrice));
-        // then
-        assertThat(nullPriceException).isInstanceOf(IllegalArgumentException.class);
+    private static Stream<Arguments> providePrice() {
+        return Stream.of(
+            Arguments.of((Object)null),
+            Arguments.of(new BigDecimal(-1)),
+            Arguments.of(new BigDecimal(0))
+        );
+    }
 
-        // given
-        Menu notExistGroupId = new Menu();
-        notExistGroupId.setPrice(BigDecimal.ZERO);
-        when(menuGroupDao.existsById(notExistGroupId.getMenuGroupId())).thenReturn(false);
-        // when
-        final Throwable notExistGroupIdException = catchThrowable(() -> menuService.create(notExistGroupId));
-        // then
-        assertThat(notExistGroupIdException).isInstanceOf(IllegalArgumentException.class);
-
+    @DisplayName("메뉴 금액이 상품 금액보다 큰 경우 예외가 발생하는지 테스트")
+    @Test
+    void given_WrongPrice_when_Create_then_ThrownException() {
         // given
         Menu invalidPrice = new Menu();
         invalidPrice.setPrice(new BigDecimal(100));
@@ -91,8 +95,10 @@ class MenuServiceTest {
         product.setPrice(new BigDecimal(1));
         when(menuGroupDao.existsById(invalidPrice.getMenuGroupId())).thenReturn(true);
         when(productDao.findById(menuProduct.getProductId())).thenReturn(Optional.of(product));
+
         // when
         final Throwable invalidPriceException = catchThrowable(() -> menuService.create(invalidPrice));
+
         // then
         assertThat(invalidPriceException).isInstanceOf(IllegalArgumentException.class);
     }

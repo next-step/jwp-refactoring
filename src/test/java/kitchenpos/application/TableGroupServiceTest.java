@@ -6,9 +6,14 @@ import static org.mockito.Mockito.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -60,40 +65,47 @@ class TableGroupServiceTest {
         assertThat(savedTableGroup.getOrderTables()).isEqualTo(savedOrderTables);
     }
 
-    @Test
-    void given_InvalidTableGroup_when_Create_then_ThrownException() {
+    @ParameterizedTest
+    @MethodSource("provideOrderTables")
+    void given_InvalidOrderTables_when_Create_then_ThrownException(List<OrderTable> orderTables) {
         // given
-        TableGroup emptyOrderTable = new TableGroup();
-        // when
-        final Throwable emptyOrderTableException = catchThrowable(() -> tableGroupService.create(emptyOrderTable));
-        // then
-        assertThat(emptyOrderTableException).isInstanceOf(IllegalArgumentException.class);
+        TableGroup tableGroup = new TableGroup();
+        tableGroup.setOrderTables(orderTables);
 
-        // given
-        TableGroup oneOrderTable = new TableGroup();
-        oneOrderTable.setOrderTables(Collections.singletonList(new OrderTable()));
         // when
-        final Throwable oneOrderTableException = catchThrowable(() -> tableGroupService.create(oneOrderTable));
+        final Throwable oneOrderTableException = catchThrowable(() -> tableGroupService.create(tableGroup));
+
         // then
         assertThat(oneOrderTableException).isInstanceOf(IllegalArgumentException.class);
+    }
 
+    private static Stream<Arguments> provideOrderTables() {
+        return Stream.of(
+            Arguments.of((Object)null),
+            Arguments.of(Collections.singletonList(new OrderTable()))
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideAllOrderTables")
+    void given_InvalidTableGroup_when_Create_then_ThrownException(List<OrderTable> orderTables) {
         // given
         TableGroup twoOrderTables = new TableGroup();
         twoOrderTables.setOrderTables(Arrays.asList(new OrderTable(), new OrderTable()));
-        when(orderTableDao.findAllByIdIn(anyList())).thenReturn(Collections.singletonList(new OrderTable()));
+        when(orderTableDao.findAllByIdIn(anyList())).thenReturn(orderTables);
+
         // when
         final Throwable differentTableSize = catchThrowable(() -> tableGroupService.create(twoOrderTables));
+
         // then
         assertThat(differentTableSize).isInstanceOf(IllegalArgumentException.class);
+    }
 
-        // given
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Arrays.asList(new OrderTable(), new OrderTable()));
-        when(orderTableDao.findAllByIdIn(anyList())).thenReturn(Arrays.asList(new OrderTable(), new OrderTable()));
-        // when
-        final Throwable notEmptyOrderTable = catchThrowable(() -> tableGroupService.create(tableGroup));
-        // then
-        assertThat(notEmptyOrderTable).isInstanceOf(IllegalArgumentException.class);
+    private static Stream<Arguments> provideAllOrderTables() {
+        return Stream.of(
+            Arguments.of(Arrays.asList(new OrderTable(), new OrderTable())),
+            Arguments.of(Collections.singletonList(new OrderTable()))
+        );
     }
 
     @Test

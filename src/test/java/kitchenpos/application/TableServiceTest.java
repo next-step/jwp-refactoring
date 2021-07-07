@@ -66,7 +66,7 @@ class TableServiceTest {
     }
 
     @Test
-    void given_InvalidOrderTableIdOrOrderTable_when_changeEmpty_then_ThrownException() {
+    void given_NotExistOrderTable_when_changeEmpty_then_ThrownException() {
         // given
         Long notExistId = 1L;
         OrderTable orderTable = new OrderTable();
@@ -77,9 +77,13 @@ class TableServiceTest {
 
         // then
         assertThat(notExistIdException).isInstanceOf(IllegalArgumentException.class);
+    }
 
+    @Test
+    void given_OrderTableHasTableGroupId_when_changeEmpty_then_ThrownException() {
         // given
         Long orderTableId = 1L;
+        OrderTable orderTable = new OrderTable();
         final OrderTable notNullTableGroupId = new OrderTable();
         notNullTableGroupId.setTableGroupId(1L);
         when(orderTableDao.findById(orderTableId)).thenReturn(Optional.of(notNullTableGroupId));
@@ -109,7 +113,7 @@ class TableServiceTest {
     }
 
     @Test
-    void given_InvalidOrderTable_when_ChangeNumberOfGuests_then_ThrownException() {
+    void given_InvalidNumberOfGuests_when_ChangeNumberOfGuests_then_ThrownException() {
         // given
         Long orderTableId = 1L;
         OrderTable minusGuestsOrderTable = new OrderTable();
@@ -120,8 +124,12 @@ class TableServiceTest {
 
         // then
         assertThat(invalidNumberOfGuests).isInstanceOf(IllegalArgumentException.class);
+    }
 
+    @Test
+    void given_PersistedOrderTableHasEmpty_when_ChangeNumberOfGuests_then_ThrownException() {
         // given
+        Long orderTableId = 1L;
         OrderTable orderTable = new OrderTable();
         orderTable.setNumberOfGuests(1);
         OrderTable savedOrderTable = new OrderTable();

@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.*;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -80,21 +81,30 @@ class OrderServiceTest {
         assertThat(actual.getOrderLineItems()).isEqualTo(Arrays.asList(savedOrderLineItem, savedOrderLineItem2));
     }
 
+    @DisplayName("아이템이 없는 주문을 생성할 때 예외가 발생하는지 테스트")
     @Test
-    void given_InvalidOrder_when_Create_then_ThrownException() {
+    void given_OrderHasEmptyItem_when_Create_then_ThrownException() {
         // given
-        Order emptyItemOrder = new Order();
+        Order order = new Order();
+
         // when
-        final Throwable throwable = catchThrowable(() -> orderService.create(emptyItemOrder));
+        final Throwable throwable = catchThrowable(() -> orderService.create(order));
+
         // then
         assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
+    }
 
+    @DisplayName("아이템이 하나만 있는 주문을 생성할 때 예외가 발생하는지 테스트")
+    @Test
+    void given_OrderHasOnlyOneItem_when_Create_then_ThrownException() {
         // given
-        Order oneItemOrder = new Order();
-        oneItemOrder.setOrderLineItems(Collections.singletonList(new OrderLineItem()));
-        when(menuDao.countByIdIn(anyList())).thenReturn(2L);
+        Order order = new Order();
+        order.setOrderLineItems(Collections.singletonList(new OrderLineItem()));
+        given(menuDao.countByIdIn(anyList())).willReturn(2L);
+
         // when
-        final Throwable differentSizeException = catchThrowable(() -> orderService.create(oneItemOrder));
+        final Throwable differentSizeException = catchThrowable(() -> orderService.create(order));
+
         // then
         assertThat(differentSizeException).isInstanceOf(IllegalArgumentException.class);
     }

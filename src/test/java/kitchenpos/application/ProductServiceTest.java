@@ -4,9 +4,13 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.math.BigDecimal;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -36,23 +40,25 @@ class ProductServiceTest {
         verify(productDao).save(product);
     }
 
-    @Test
-    void given_InvalidProduct_when_CreateProduct_thenThrownException() {
+    @ParameterizedTest
+    @MethodSource("providePrice")
+    void given_InvalidPrice_when_CreateProduct_thenThrownException(BigDecimal price) {
         // given
-        final Product minusPrice = new Product();
-        minusPrice.setPrice(new BigDecimal(-1));
-        // when
-        final Throwable minusPriceExcpetion = catchThrowable(() -> productService.create(minusPrice));
-        // then
-        assertThat(minusPriceExcpetion).isInstanceOf(IllegalArgumentException.class);
+        final Product product = new Product();
+        product.setPrice(price);
 
-        // given
-        final Product nullPrice = new Product();
-        nullPrice.setPrice(null);
         // when
-        final Throwable nullPriceException = catchThrowable(() -> productService.create(nullPrice));
+        final Throwable throwable = catchThrowable(() -> productService.create(product));
+
         // then
-        assertThat(nullPriceException).isInstanceOf(IllegalArgumentException.class);
+        assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    private static Stream<Arguments> providePrice() {
+        return Stream.of(
+            Arguments.of((Object)null),
+            Arguments.of(new BigDecimal(-1))
+        );
     }
 
     @Test
