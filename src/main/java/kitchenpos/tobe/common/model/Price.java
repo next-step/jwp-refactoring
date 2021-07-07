@@ -1,4 +1,4 @@
-package kitchenpos.tobe.common;
+package kitchenpos.tobe.common.model;
 
 import javax.persistence.Embeddable;
 import java.math.BigDecimal;

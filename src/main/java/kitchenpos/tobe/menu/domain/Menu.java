@@ -1,6 +1,6 @@
 package kitchenpos.tobe.menu.domain;
 
-import kitchenpos.tobe.common.Price;
+import kitchenpos.tobe.common.model.Price;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
