@@ -87,10 +87,10 @@
 - [x] 테이블그룹 aggregate 패키지로 분리
 - [x] menugroup 패키지 리팩토링
 - [x] menu 패키지 리팩토링
-- [ ] order 패키지 리팩토링
+- [x] order 패키지 리팩토링
     - [x] tableDao를 제외한 리팩토링 완료
-    - [ ] tableDao를 tableRepository로 리팩토링 완료
+    - [x] tableDao를 tableRepository로 리팩토링 완료
 - [ ] tablegroup 패키지 리팩토링
-- [ ] table 패키지 리팩토링
+- [x] table 패키지 리팩토링
 - [ ] 리팩토링 전 코드들 삭제
 
