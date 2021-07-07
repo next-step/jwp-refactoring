@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Entity;
@@ -7,6 +8,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+
+import kitchenpos.exception.OrderNotCompletedException;
 
 @Entity
 public class OrderTable {
@@ -15,10 +19,13 @@ public class OrderTable {
     private Long id;
 
     @ManyToOne
-    private TableGroup tableGroup;
+    private TableGroup2 tableGroup;
 
     private int numberOfGuests;
     private boolean empty;
+
+    @OneToMany(mappedBy = "orderTable")
+    private List<Order2> orders;
 
     public OrderTable() {
     }
@@ -33,7 +40,7 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, TableGroup2 tableGroup, int numberOfGuests, boolean empty) {
         this.id = id;
         this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
@@ -59,7 +66,7 @@ public class OrderTable {
 
     private void checkTableGroup() {
         if (Objects.nonNull(tableGroup)) {
-            throw new IllegalArgumentException("테이블 그룹에 포함된 주문 테이블입니다.");
+            throw new IllegalArgumentException("테이블 그룹에 포함되어 있습니다.");
         }
     }
 
@@ -78,6 +85,26 @@ public class OrderTable {
     private void checkNumberOfGuests(int numberOfGuests) {
         if (numberOfGuests < 0) {
             throw new IllegalArgumentException("테이블의 손님 수는 음수가 될 수 없습니다.");
+        }
+    }
+
+    public boolean hasTableGroup() {
+        return Objects.nonNull(tableGroup);
+    }
+
+    public void setTableGroup(TableGroup2 tableGroup) {
+        checkTableGroup();
+        this.tableGroup = tableGroup;
+    }
+
+    public void ungroup() {
+        orders.forEach(this::checkOrderStatus);
+        this.tableGroup = null;
+    }
+
+    private void checkOrderStatus(Order2 order) {
+        if (!order.isCompleted()) {
+            throw new OrderNotCompletedException("테이블에 완결되지 않은 주문이 존재합니다.");
         }
     }
 

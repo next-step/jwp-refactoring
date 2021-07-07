@@ -54,7 +54,7 @@ public class TableService {
         return savedOrderTable;
     }
 
-    private OrderTable findById(Long id) {
+    public OrderTable findById(Long id) {
         return orderTableRepository.findById(id)
             .orElseThrow(() -> new OrderTableNotFoundException("해당 ID 의 주문 테이블이 존재하지 않습니다."));
     }

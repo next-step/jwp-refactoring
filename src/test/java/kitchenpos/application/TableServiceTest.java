@@ -21,7 +21,6 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
-import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.exception.OrderTableNotFoundException;
 

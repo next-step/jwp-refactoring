@@ -1,5 +1,6 @@
 package kitchenpos.ui;
 
+import static kitchenpos.domain.OrderTableTest.*;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
@@ -21,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import kitchenpos.domain.OrderTableTest;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.TableGroupRequest;
 
@@ -41,9 +43,9 @@ class TableGroupRestControllerTest {
     @Order(1)
     @DisplayName("테이블 그룹을 생성한다")
     void create() throws Exception {
-        OrderTableRequest req1 = new OrderTableRequest(3L, 0, true);
-        OrderTableRequest req2 = new OrderTableRequest(4L, 0, true);
-        TableGroupRequest request = new TableGroupRequest(Arrays.asList(req1, req2));
+        OrderTableRequest orderTable1 = new OrderTableRequest(테이블3.getId(), 0, true);
+        OrderTableRequest orderTable2 = new OrderTableRequest(테이블4.getId(), 0, true);
+        TableGroupRequest request = new TableGroupRequest(Arrays.asList(orderTable1, orderTable2));
         mockMvc.perform(post("/api/table-groups")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(request)))
