@@ -2,6 +2,7 @@ package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.table.application.TableService;
+import kitchenpos.table.domain.NumberOfGeusts;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -108,7 +109,7 @@ class TableRestControllerTest {
     void changeNumberOfGuests() throws Exception {
         OrderTable orderTable = new OrderTable(4, false);
         OrderTable savedOrderTable = orderTableRepository.save(orderTable);
-        savedOrderTable.changeNumberOfGuests(2);
+        savedOrderTable.changeNumberOfGuests(NumberOfGeusts.of(2));
 
         OrderTable changeGuestCountOrderTable = new OrderTable(2, false);
         String requestBody = objectMapper.writeValueAsString(changeGuestCountOrderTable);

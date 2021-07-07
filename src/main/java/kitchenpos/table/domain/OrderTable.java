@@ -11,9 +11,6 @@ import java.util.Objects;
 @Entity
 public class OrderTable {
 
-    private static final String EXCEPTION_MESSAGE_MIN_NUMBER_OF_GUESTS = "손님의 수는 %s보다 작을수 없습니다.";
-    private static final int MIN_NUMBER_OF_GUESTS = 0;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -22,8 +19,8 @@ public class OrderTable {
     @Column(name = "table_group_id")
     private Long tableGroupId;
 
-    @Column(name = "number_of_guests")
-    private int numberOfGuests;
+    @Embedded
+    private NumberOfGeusts numberOfGuests;
 
     @Column(name = "empty")
     private boolean empty;
@@ -35,13 +32,13 @@ public class OrderTable {
     }
 
     public OrderTable(int numberOfGuests, boolean empty) {
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = NumberOfGeusts.of(numberOfGuests);
         this.empty = empty;
     }
 
     public OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
         this.tableGroupId = tableGroupId;
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = NumberOfGeusts.of(numberOfGuests);
         this.empty = empty;
     }
 
@@ -58,18 +55,14 @@ public class OrderTable {
     }
 
     public int getNumberOfGuests() {
-        return numberOfGuests;
+        return numberOfGuests.getNumberOfGuests();
     }
 
     public boolean isEmpty() {
         return empty;
     }
 
-    public void changeNumberOfGuests(int numberOfGuests) {
-        if (numberOfGuests < MIN_NUMBER_OF_GUESTS) {
-            throw new IllegalArgumentException(String.format(EXCEPTION_MESSAGE_MIN_NUMBER_OF_GUESTS, MIN_NUMBER_OF_GUESTS));
-        }
-
+    public void changeNumberOfGuests(NumberOfGeusts numberOfGuests) {
         if (isEmpty()) {
             throw new IllegalArgumentException("빈테이블은 손님의 수를 변경할수 없습니다.");
         }

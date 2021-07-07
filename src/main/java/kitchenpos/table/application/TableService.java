@@ -2,6 +2,7 @@ package kitchenpos.table.application;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.table.domain.NumberOfGeusts;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -50,7 +51,7 @@ public class TableService {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        savedOrderTable.changeNumberOfGuests(orderTableRequest.getNumberOfGuests());
+        savedOrderTable.changeNumberOfGuests(NumberOfGeusts.of(orderTableRequest.getNumberOfGuests()));
 
         return OrderTableResponse.of(savedOrderTable);
     }
