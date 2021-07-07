@@ -1,6 +1,7 @@
 package kitchenpos.application;
 
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,9 @@ class MenuServiceTest {
     @Autowired
     private MenuService menuService;
 
+    @Autowired
+    private MenuGroupService menuGroupService;
+
     private String name = "치즈치킨";
     private long nonExistentID = 9999L;
 
@@ -26,8 +30,9 @@ class MenuServiceTest {
     @Test
     void createTest() {
         // given
-        Menu menu = new Menu(name, BigDecimal.valueOf(15000), 1L);
-        menu.setMenuProducts(Arrays.asList(new MenuProduct(1L, 1L,1)));
+        MenuGroup menuGroup = menuGroupService.create(new MenuGroup("테스트 메뉴"));
+        Menu menu = new Menu(name, BigDecimal.valueOf(15000), menuGroup);
+        menu.setMenuProducts(Arrays.asList(new MenuProduct(menu.getId(), 1L,1)));
 
         // when
         Menu actualMenu = menuService.create(menu);
@@ -40,11 +45,12 @@ class MenuServiceTest {
     @Test
     void createExceptionTest1() {
         // given
-        assertThatThrownBy(() -> menuService.create(new Menu(name, null, 1L)))
+        MenuGroup menuGroup = menuGroupService.create(new MenuGroup("테스트 메뉴"));
+        assertThatThrownBy(() -> menuService.create(new Menu(name, null, menuGroup)))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("가격");
 
-        assertThatThrownBy(() -> menuService.create(new Menu(name, BigDecimal.valueOf(-1), 1L)))
+        assertThatThrownBy(() -> menuService.create(new Menu(name, BigDecimal.valueOf(-1), menuGroup)))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("가격").hasMessageContaining("0원");
     }
@@ -53,7 +59,9 @@ class MenuServiceTest {
     @Test
     void createExceptionTest2() {
         // given
-        Menu menu = new Menu(name, BigDecimal.valueOf(15000), nonExistentID);
+        MenuGroup noneMenuGroup = new MenuGroup("없는 메뉴");
+
+        Menu menu = new Menu(name, BigDecimal.valueOf(15000), noneMenuGroup);
         menu.setMenuProducts(Arrays.asList(new MenuProduct(1L, 1L,1)));
 
         assertThatThrownBy(() -> menuService.create(menu))
@@ -65,7 +73,8 @@ class MenuServiceTest {
     @Test
     void createExceptionTest3() {
         // given
-        Menu menu = new Menu(name, BigDecimal.valueOf(15000), 1L);
+        MenuGroup menuGroup = menuGroupService.create(new MenuGroup("테스트 메뉴"));
+        Menu menu = new Menu(name, BigDecimal.valueOf(15000), menuGroup);
         menu.setMenuProducts(Arrays.asList(new MenuProduct(1L, nonExistentID,1)));
 
         assertThatThrownBy(() -> menuService.create(menu))
@@ -77,7 +86,8 @@ class MenuServiceTest {
     @Test
     void createExceptionTest4() {
         // given
-        Menu menu = new Menu(name, BigDecimal.valueOf(1500000), 1L);
+        MenuGroup menuGroup = menuGroupService.create(new MenuGroup("테스트 메뉴"));
+        Menu menu = new Menu(name, BigDecimal.valueOf(1500000), menuGroup);
         menu.setMenuProducts(Arrays.asList(new MenuProduct(10L, 1L,1)));
 
         assertThatThrownBy(() -> menuService.create(menu))

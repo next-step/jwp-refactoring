@@ -1,11 +1,11 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import kitchenpos.repository.MenuGroupRepository;
+import kitchenpos.repository.MenuRepository;
 import kitchenpos.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,18 +17,18 @@ import java.util.Objects;
 
 @Service
 public class MenuService {
-    private final MenuDao menuDao;
+    private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
     private final MenuProductDao menuProductDao;
     private final ProductRepository productRepository;
 
     public MenuService(
-            final MenuDao menuDao,
+            final MenuRepository menuRepository,
             final MenuGroupRepository menuGroupRepository,
             final MenuProductDao menuProductDao,
             final ProductRepository productRepository
     ) {
-        this.menuDao = menuDao;
+        this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
         this.menuProductDao = menuProductDao;
         this.productRepository = productRepository;
@@ -59,7 +59,7 @@ public class MenuService {
             throw new IllegalArgumentException("메뉴의 가격은 `[메뉴의 수량] X [상품의 가격]` 보다 비쌀 수 없다.");
         }
 
-        final Menu savedMenu = menuDao.save(menu);
+        final Menu savedMenu = menuRepository.save(menu);
 
         final Long menuId = savedMenu.getId();
         final List<MenuProduct> savedMenuProducts = new ArrayList<>();
@@ -73,7 +73,7 @@ public class MenuService {
     }
 
     public List<Menu> list() {
-        final List<Menu> menus = menuDao.findAll();
+        final List<Menu> menus = menuRepository.findAll();
 
         for (final Menu menu : menus) {
             menu.setMenuProducts(menuProductDao.findAllByMenuId(menu.getId()));
