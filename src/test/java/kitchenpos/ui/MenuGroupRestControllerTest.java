@@ -21,13 +21,14 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = MenuGroupRestController.class)
 class MenuGroupRestControllerTest {
@@ -72,12 +73,12 @@ class MenuGroupRestControllerTest {
         //when
         ResultActions actions = mockMvc.perform(post(URI)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(착한세트)));
+                .content(objectMapper.writeValueAsString(착한세트_request)));
 
         //then
         actions.andExpect(status().isCreated())
-                .andExpect(header().string("location", URI + "/1"))
-                .andExpect(content().string(containsString("착한세트")));
+                .andExpect(header().string("location", URI + "/" + 착한세트_response.getId()))
+                .andExpect(jsonPath("$.name").value(착한세트_response.getName()));
     }
 
     @DisplayName("메뉴 그룹을 모두 조회한다.")
@@ -88,40 +89,6 @@ class MenuGroupRestControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(get(URI));
-
-        //then
-        actions.andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").isNotEmpty())
-                .andExpect(jsonPath("$[0].name").value("착한세트"))
-                .andExpect(jsonPath("$[1].id").isNotEmpty())
-                .andExpect(jsonPath("$[1].name").value("더착한세트"));
-    }
-
-    @DisplayName("메뉴 그룹을 추가한다.2")
-    @Test
-    void create2() throws Exception {
-        //given
-        given(menuGroupService.create(any())).willReturn(착한세트);
-
-        //when
-        ResultActions actions = mockMvc.perform(post(URI+"2")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(착한세트_request)));
-
-        //then
-        actions.andExpect(status().isCreated())
-                .andExpect(header().string("location", URI +"2/" +착한세트_response.getId()))
-                .andExpect(jsonPath("$.name").value(착한세트_response.getName()));
-    }
-
-    @DisplayName("메뉴 그룹을 모두 조회한다.2")
-    @Test
-    void list2() throws Exception {
-        //given
-        given(menuGroupService.list()).willReturn(Arrays.asList(착한세트, 더착한세트));
-
-        //when
-        ResultActions actions = mockMvc.perform(get(URI+"2"));
 
         //then
         actions.andExpect(status().isOk())
