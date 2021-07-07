@@ -46,14 +46,18 @@ public class OrderService {
     }
 
     private List<OrderLineItem> getOrderLineItems(OrderRequest orderRequest) {
-        List<OrderLineItem> orderLineItems = orderRequest.getOrderLineItems()
+        List<OrderLineItemRequest> orderLineItemRequests = orderRequest.getOrderLineItems();
+
+        if (CollectionUtils.isEmpty(orderLineItemRequests)) {
+            throw new IllegalArgumentException("메뉴가 없이 주문을 할수 없습니다.");
+        }
+
+        List<OrderLineItem> orderLineItems = orderLineItemRequests
                 .stream()
                 .map(orderLineItemRequest -> findByOrderLineItem(orderLineItemRequest))
                 .collect(Collectors.toList());
 
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException("메뉴가 없이 주문을 할수 없습니다.");
-        }
+
 
         return orderLineItems;
     }
