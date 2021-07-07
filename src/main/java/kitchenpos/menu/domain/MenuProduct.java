@@ -12,8 +12,9 @@ public class MenuProduct {
     @Column(name = "seq")
     private Long seq;
 
-    @Column(name = "menu_id")
-    private Long menuId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_id")
+    private Menu menu;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
@@ -30,25 +31,18 @@ public class MenuProduct {
         this.quantity = quantity;
     }
 
-    public MenuProduct(Long menuId, Product product, Quantity quantity) {
-        this.menuId = menuId;
+    public MenuProduct(Menu menu, Product product, Quantity quantity) {
+        this.menu = menu;
         this.product = product;
         this.quantity = quantity;
     }
-
-//    public MenuProduct(Long seq, Long menuId, Product product, Quantity quantity) {
-//        this.seq = seq;
-//        this.menuId = menuId;
-//        this.product = product;
-//        this.quantity = quantity;
-//    }
 
     public Long getSeq() {
         return seq;
     }
 
-    public Long getMenuId() {
-        return menuId;
+    public Menu getMenu() {
+        return menu;
     }
 
     public Product getProduct() {
@@ -57,5 +51,9 @@ public class MenuProduct {
 
     public Quantity getQuantity() {
         return quantity;
+    }
+
+    public void matchMenu(Menu menu) {
+        this.menu = menu;
     }
 }

@@ -20,8 +20,9 @@ public class Menu {
     @Column(name = "price")
     private Price price;
 
-    @Column(name = "menu_group_id")
-    private Long menuGroupId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_group_id")
+    private MenuGroup menuGroup;
 
     @Embedded
     private MenuProducts menuProducts;
@@ -29,18 +30,23 @@ public class Menu {
     public Menu() {
     }
 
-    public Menu(String name, Price price, Long menuGroupId) {
-        this.name = name;
-        this.price = price;
-        this.menuGroupId = menuGroupId;
-    }
-
-    public Menu(String name, BigDecimal price, Long menuGroupId, MenuProducts menuProducts) {
+    public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
         this.name = name;
         this.price = new Price(price);
-        this.menuGroupId = menuGroupId;
+        this.menuGroup = menuGroup;
+    }
+
+    public Menu(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        this.name = name;
+        this.price = new Price(price);
+        this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
 
+        validation(menuProducts);
+        this.menuProducts.matchMenu(this);
+    }
+
+    private void validation(MenuProducts menuProducts) {
         Price totalPrice = menuProducts.getProductTotalPrice();
 
         if (this.price.compareTo(totalPrice) > 0) {
@@ -60,8 +66,8 @@ public class Menu {
         return price;
     }
 
-    public Long getMenuGroupId() {
-        return menuGroupId;
+    public MenuGroup getMenuGroup() {
+        return menuGroup;
     }
 
     public List<MenuProduct> getMenuProducts() {
