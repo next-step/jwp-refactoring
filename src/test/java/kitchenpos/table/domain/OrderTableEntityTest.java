@@ -49,7 +49,7 @@ class OrderTableEntityTest {
   void changeEmptyFailCauseTableGroupTest() {
     //given
     int numberOfGuest = 4;
-    OrderTableEntity orderTableEntity = new OrderTableEntity(1L, numberOfGuest, true);
+    OrderTableEntity orderTableEntity = OrderTableEntity.initWithTableGroupId(1L, numberOfGuest, true);
 
     //when & then
     assertThatThrownBy(() -> orderTableEntity.changeEmpty(false)).isInstanceOf(IllegalArgumentException.class);

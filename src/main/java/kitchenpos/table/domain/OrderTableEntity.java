@@ -28,10 +28,23 @@ public class OrderTableEntity {
     this.empty = empty;
   }
 
-  public OrderTableEntity(Long tableGroupId, Integer numberOfGuests, Boolean empty) {
+  private OrderTableEntity(Long id, Long tableGroupId, Integer numberOfGuests, Boolean empty) {
+    this.id = id;
     this.tableGroupId = tableGroupId;
     this.numberOfGuests = NumberOfGuests.from(numberOfGuests);
     this.empty = empty;
+  }
+
+  public static OrderTableEntity initWithTableGroupId(Long tableGroupId, Integer numberOfGuests, Boolean empty) {
+    return new OrderTableEntity(null, tableGroupId, numberOfGuests, empty);
+  }
+
+  public static OrderTableEntity initWithId(Long id, Integer numberOfGuests, Boolean empty) {
+    return new OrderTableEntity(id, null, numberOfGuests, empty);
+  }
+
+  public static OrderTableEntity initWithAll(Long id, Long tableGroupId, Integer numberOfGuests, Boolean empty) {
+    return new OrderTableEntity(id, tableGroupId, numberOfGuests, empty);
   }
 
   public Long getId() {
