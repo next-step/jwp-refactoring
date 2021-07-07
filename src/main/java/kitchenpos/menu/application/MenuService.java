@@ -31,14 +31,11 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        if (!menuGroupRepository.existsById(menuRequest.getMenuGroupId())) {
-            throw new IllegalArgumentException("존재하지 않는 메뉴그룹입니다.");
-        }
+        MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 메뉴그룹입니다."));
 
         final MenuProducts menuProducts = getMenuProducts(menuRequest);
 
-        Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuRequest.getMenuGroupId(), menuProducts);
-        final Menu savedMenu = menuRepository.save(menu);
+        final Menu savedMenu = menuRepository.save(new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup, menuProducts));
 
         return MenuResponse.of(savedMenu);
     }
