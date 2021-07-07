@@ -19,6 +19,10 @@ public class Quantities {
         return quantities.get(id);
     }
 
+    public Long getQuantity(Long id) {
+        return quantities.get(id).amount();
+    }
+
     public int size() {
         return quantities.size();
     }

@@ -48,20 +48,14 @@ public class Menu {
         this.menuProducts = new MenuProducts(this, productsQuantities);
     }
 
-    private Menu(Long id, MenuGroup menuGroup, String name, ProductsQuantities productsQuantities) {
-        this.id = id;
-        this.menuGroup = menuGroup;
-        this.name = name;
-        this.price = productsQuantities.totalPrice();
-        this.menuProducts = new MenuProducts(this, productsQuantities);
-    }
-
     public static Menu of(MenuGroup menuGroup, String name, ProductsQuantities productsQuantities) {
         return new Menu(menuGroup, name, productsQuantities);
     }
 
     public static Menu of(Long id, MenuGroup menuGroup, String name, ProductsQuantities productsQuantities) {
-        return new Menu(id, menuGroup, name, productsQuantities);
+        Menu menu = new Menu(menuGroup, name, productsQuantities);
+        menu.id = id;
+        return menu;
     }
 
     public Long id() {

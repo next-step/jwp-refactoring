@@ -3,7 +3,10 @@ package kitchenpos.menu.domain;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
+import kitchenpos.common.domian.Quantity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +18,7 @@ import kitchenpos.product.domain.Product;
 @DisplayName("상품 일급 컬렉션 테스트")
 class ProductsTest {
 
-    Product product;
+    private Product product;
 
     @BeforeEach
     void setup() {
@@ -41,5 +44,18 @@ class ProductsTest {
         // then
         assertThatThrownBy(() -> new Products(Arrays.asList(product), 2))
                 .isInstanceOf(InvalidRequestException.class);
+    }
+
+    @DisplayName("전체 금액 구하기")
+    @Test
+    void totalPrice() {
+        // given
+        Products products = new Products(Arrays.asList(product), 1);
+        Map<Long, Quantity> quantityMap = new HashMap<>();
+        quantityMap.put(1L, new Quantity(2L));
+        // when
+        Price totalPrice = products.totalPrice(new Quantities(quantityMap, 1));
+        // then
+        assertThat(totalPrice.amountToInt()).isEqualTo(200);
     }
 }

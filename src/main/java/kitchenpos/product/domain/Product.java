@@ -10,6 +10,8 @@ import javax.persistence.Table;
 import kitchenpos.common.domian.Price;
 import kitchenpos.common.domian.Quantity;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "product")
 public class Product {
@@ -36,12 +38,16 @@ public class Product {
     @Embedded
     private Price price;
 
-    public Price priceMultiplyQuantity(Quantity quantity) {
-        return price.multiplyQuantity(quantity);
-    }
-
     public Long getId() {
         return id;
+    }
+
+    public BigDecimal getPriceAmount() {
+        return price.get();
+    }
+
+    public Price getPrice() {
+        return price;
     }
 
     public String getName() {
@@ -50,9 +56,5 @@ public class Product {
 
     public static Product of(String name, int price) {
         return new Product(name, new Price(price));
-    }
-
-    public Price getPrice() {
-        return price;
     }
 }
