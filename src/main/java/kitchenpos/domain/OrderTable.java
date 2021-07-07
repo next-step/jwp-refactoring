@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -19,13 +20,13 @@ public class OrderTable {
     private Long id;
 
     @ManyToOne
-    private TableGroup2 tableGroup;
+    private TableGroup tableGroup;
 
     private int numberOfGuests;
     private boolean empty;
 
     @OneToMany(mappedBy = "orderTable")
-    private List<Order2> orders;
+    private List<Order2> orders = new ArrayList<>();
 
     public OrderTable() {
     }
@@ -40,7 +41,7 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public OrderTable(Long id, TableGroup2 tableGroup, int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
         this.id = id;
         this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
@@ -92,7 +93,7 @@ public class OrderTable {
         return Objects.nonNull(tableGroup);
     }
 
-    public void setTableGroup(TableGroup2 tableGroup) {
+    public void setTableGroup(TableGroup tableGroup) {
         checkTableGroup();
         this.tableGroup = tableGroup;
     }
@@ -102,10 +103,25 @@ public class OrderTable {
         this.tableGroup = null;
     }
 
-    private void checkOrderStatus(Order2 order) {
+    public void checkOrderStatus(Order2 order) {
         if (!order.isCompleted()) {
             throw new OrderNotCompletedException("테이블에 완결되지 않은 주문이 존재합니다.");
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        OrderTable that = (OrderTable)o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     // TODO 이하 삭제
@@ -130,5 +146,9 @@ public class OrderTable {
 
     public void setNumberOfGuests(int number_of_guests) {
         this.numberOfGuests = number_of_guests;
+    }
+
+    public void addOrder(Order2 order) {
+        orders.add(order);
     }
 }

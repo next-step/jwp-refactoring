@@ -35,6 +35,14 @@ public class Order2 {
     protected Order2() {
     }
 
+    public Order2(Long id, OrderTable orderTable, OrderStatus orderStatus, // TODO 추후 재 검토
+        List<OrderLineItem2> orderLineItems) {
+        this.id = id;
+        this.orderTable = orderTable;
+        this.orderStatus = orderStatus;
+        this.orderLineItems = orderLineItems;
+    }
+
     public boolean isCompleted() {
         return orderStatus.equals(OrderStatus.COMPLETION);
     }
