@@ -3,10 +3,12 @@ package kitchenpos.order.application;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import kitchenpos.common.domian.Quantity;
 import kitchenpos.common.error.NotFoundMenuException;
 import kitchenpos.common.error.NotFoundOrderException;
 import kitchenpos.common.error.InvalidRequestException;
 import kitchenpos.menugroup.repository.MenuGroupDao;
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.dto.OrderStatusRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,7 +69,16 @@ public class OrderService {
         final OrderTable orderTable = orderTableDao.findById(orderRequest.getOrderTableId())
                 .orElseThrow(NotFoundOrderException::new);
 
-        Order order = Order.of(orderTable.getId(), orderLineItemRequests, menus);
+        Order order = Order.of(orderTable.getId(), OrderStatus.COOKING);
+
+        for (OrderLineItemRequest orderLineItemRequest : orderLineItemRequests) {
+            Menu findMenu = menus.stream()
+                    .filter(menu -> menu.id().equals(orderLineItemRequest.getMenuId()))
+                    .findFirst()
+                    .orElseThrow(NotFoundOrderException::new);
+            OrderLineItem.of(order, findMenu, new Quantity(orderLineItemRequest.getQuantity()));
+        }
+
         return OrderResponse.of(orderDao.save(order));
     }
 

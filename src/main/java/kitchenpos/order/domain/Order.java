@@ -50,18 +50,6 @@ public class Order {
         return new Order(orderTableId, orderStatus);
     }
 
-    public static Order of(Long orderTableId, List<OrderLineItemRequest> orderLineItemRequests, List<Menu> menus) {
-        Order order = new Order(orderTableId, OrderStatus.COOKING);
-        for (final OrderLineItemRequest orderLineItemRequest : orderLineItemRequests) {
-            Menu findMenu = menus.stream()
-                    .filter(menu -> menu.id().equals(orderLineItemRequest.getMenuId()))
-                    .findFirst()
-                    .orElseThrow(NotFoundOrderException::new);
-            order.addOrderLineItem(OrderLineItem.of(order, findMenu, new Quantity(orderLineItemRequest.getQuantity())));
-        }
-        return order;
-    }
-
     public void changeOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }

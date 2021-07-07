@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import kitchenpos.ordertable.domain.NumberOfGuests;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -75,7 +76,7 @@ class OrderServiceTest {
         // when
         when(orderDao.save(any())).thenReturn(order);
         when(menuDao.findAllById(any())).thenReturn(Arrays.asList(menu));
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(new OrderTable()));
+        when(orderTableDao.findById(any())).thenReturn(Optional.of(new OrderTable(1L, new NumberOfGuests(1), true)));
         OrderResponse createdOrder = orderService.create(orderRequest);
 
         // then
