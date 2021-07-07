@@ -42,14 +42,6 @@ public class TableGroup {
         this.id = id;
     }
 
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(final LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
     public void initOrderTable() {
         orderTables.init(this);
     }

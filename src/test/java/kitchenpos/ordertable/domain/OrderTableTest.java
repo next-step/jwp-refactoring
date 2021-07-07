@@ -6,8 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.common.error.CustomException;
-import kitchenpos.common.error.ErrorInfo;
+import kitchenpos.common.error.OrderTableEmptyException;
 
 @DisplayName("주문 테이블 도메인 테스트")
 class OrderTableTest {
@@ -45,7 +44,6 @@ class OrderTableTest {
         // when
         // then
         assertThatThrownBy(() -> orderTable.checkEmpty())
-                .isInstanceOf(CustomException.class)
-                .hasMessage(ErrorInfo.ORDER_TABLE_IS_EMPTY.message());
+                .isInstanceOf(OrderTableEmptyException.class);
     }
 }

@@ -1,16 +1,16 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.common.domian.Price;
-import kitchenpos.common.error.CustomException;
-import kitchenpos.common.error.ErrorInfo;
-import kitchenpos.product.domain.Product;
+import static org.assertj.core.api.Assertions.*;
+
+import java.util.Arrays;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-
-import static org.assertj.core.api.Assertions.*;
+import kitchenpos.common.domian.Price;
+import kitchenpos.common.error.InvalidRequestException;
+import kitchenpos.product.domain.Product;
 
 @DisplayName("상품 일급 컬렉션 테스트")
 class ProductsTest {
@@ -40,7 +40,6 @@ class ProductsTest {
         // when
         // then
         assertThatThrownBy(() -> new Products(Arrays.asList(product), 2))
-                .isInstanceOf(CustomException.class)
-                .hasMessage(ErrorInfo.NOT_EQUAL_REQUEST_SIZE.message());
+                .isInstanceOf(InvalidRequestException.class);
     }
 }

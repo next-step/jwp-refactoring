@@ -5,8 +5,7 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import kitchenpos.common.error.CustomException;
-import kitchenpos.common.error.ErrorInfo;
+import kitchenpos.common.error.NegativeValueException;
 
 @Embeddable
 public class Quantity {
@@ -28,7 +27,7 @@ public class Quantity {
 
     private void checkNegative(Long amount) {
         if (amount < 0L) {
-            throw new CustomException(ErrorInfo.QUANTITY_CAN_NOT_NEGATIVE);
+            throw new NegativeValueException();
         }
     }
 

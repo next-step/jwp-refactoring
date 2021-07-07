@@ -13,8 +13,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import kitchenpos.common.domian.Quantity;
-import kitchenpos.common.error.CustomException;
-import kitchenpos.common.error.ErrorInfo;
+import kitchenpos.common.error.InvalidOrderStatusException;
+import kitchenpos.common.error.NotFoundOrderException;
+import kitchenpos.common.error.OrderStatusException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.dto.OrderLineItemRequest;
 
@@ -55,7 +56,7 @@ public class Order {
             Menu findMenu = menus.stream()
                     .filter(menu -> menu.id().equals(orderLineItemRequest.getMenuId()))
                     .findFirst()
-                    .orElseThrow(() -> new CustomException(ErrorInfo.NOT_FOUND_MENU));
+                    .orElseThrow(NotFoundOrderException::new);
             order.addOrderLineItem(OrderLineItem.of(order, findMenu, new Quantity(orderLineItemRequest.getQuantity())));
         }
         return order;
@@ -67,7 +68,7 @@ public class Order {
 
     public void checkChangeableStatus() {
         if (orderStatus.equals(OrderStatus.COOKING) || orderStatus.equals(OrderStatus.MEAL)) {
-            throw new CustomException(ErrorInfo.INVALID_ORDER_STATUS);
+            throw new InvalidOrderStatusException();
         }
     }
 
@@ -77,7 +78,7 @@ public class Order {
 
     public void checkAlreadyComplete() {
         if (orderStatus.equals(OrderStatus.COMPLETION)) {
-            throw new CustomException(ErrorInfo.ALREADY_COMPLETE);
+            throw new OrderStatusException();
         }
     }
 
@@ -91,10 +92,6 @@ public class Order {
 
     public OrderStatus getOrderStatus() {
         return orderStatus;
-    }
-
-    public LocalDateTime getOrderedTime() {
-        return orderedTime;
     }
 
     public List<OrderLineItem> getOrderLineItems() {

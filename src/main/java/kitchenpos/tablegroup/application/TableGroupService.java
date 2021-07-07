@@ -2,11 +2,10 @@ package kitchenpos.tablegroup.application;
 
 import java.util.List;
 
+import kitchenpos.common.error.InvalidRequestException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.common.error.CustomException;
-import kitchenpos.common.error.ErrorInfo;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.repository.OrderDao;
 import kitchenpos.ordertable.repository.OrderTableDao;
@@ -34,7 +33,7 @@ public class TableGroupService {
         final OrderTables orderTables = OrderTables.of(orderTableDao.findAllById(orderTableIds));
 
         if (orderTables.size() != orderTableIds.size()) {
-            throw new CustomException(ErrorInfo.INVALID_REQUEST_ORDER_TABLE_SIZE);
+            throw new InvalidRequestException();
         }
 
         final TableGroup tableGroup = TableGroup.of(orderTables);

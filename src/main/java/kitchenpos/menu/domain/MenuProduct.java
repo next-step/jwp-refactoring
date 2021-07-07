@@ -11,7 +11,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import kitchenpos.common.domian.Quantity;
-import kitchenpos.menu.dto.MenuProductResponse;
 import kitchenpos.product.domain.Product;
 
 @Entity

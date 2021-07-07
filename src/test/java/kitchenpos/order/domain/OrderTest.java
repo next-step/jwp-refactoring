@@ -6,8 +6,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.common.error.CustomException;
-import kitchenpos.common.error.ErrorInfo;
+import kitchenpos.common.error.OrderStatusException;
+import kitchenpos.common.error.InvalidOrderStatusException;
 
 @DisplayName("주문 도메인 테스트")
 class OrderTest {
@@ -41,8 +41,7 @@ class OrderTest {
         // when
         // then
         assertThatThrownBy(order::checkChangeableStatus)
-                .isInstanceOf(CustomException.class)
-                .hasMessage(ErrorInfo.INVALID_ORDER_STATUS.message());
+                .isInstanceOf(InvalidOrderStatusException.class);
     }
 
     @DisplayName("주문 상태 체크 - COMPLETE 인지")
@@ -53,7 +52,6 @@ class OrderTest {
         // when
         // then
         assertThatThrownBy(order::checkAlreadyComplete)
-                .isInstanceOf(CustomException.class)
-                .hasMessage(ErrorInfo.ALREADY_COMPLETE.message());
+                .isInstanceOf(OrderStatusException.class);
     }
 }

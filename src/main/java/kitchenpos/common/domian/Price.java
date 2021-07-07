@@ -6,8 +6,7 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import kitchenpos.common.error.ErrorInfo;
-import kitchenpos.common.error.CustomException;
+import kitchenpos.common.error.NegativeValueException;
 
 @Embeddable
 public class Price {
@@ -30,7 +29,7 @@ public class Price {
 
     private void checkNegative(BigDecimal amount) {
         if (amount.compareTo(BigDecimal.ZERO) < 0) {
-            throw new CustomException(ErrorInfo.PRICE_CAN_NOT_NEGATIVE);
+            throw new NegativeValueException();
         }
     }
 

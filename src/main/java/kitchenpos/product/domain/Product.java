@@ -9,7 +9,6 @@ import javax.persistence.Table;
 
 import kitchenpos.common.domian.Price;
 import kitchenpos.common.domian.Quantity;
-import kitchenpos.product.dto.ProductResponse;
 
 @Entity
 @Table(name = "product")

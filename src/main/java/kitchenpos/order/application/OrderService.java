@@ -1,21 +1,19 @@
 package kitchenpos.order.application;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
+import kitchenpos.common.error.NotFoundMenuException;
+import kitchenpos.common.error.NotFoundOrderException;
+import kitchenpos.common.error.InvalidRequestException;
 import kitchenpos.menugroup.repository.MenuGroupDao;
 import kitchenpos.order.dto.OrderStatusRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import kitchenpos.common.domian.Quantity;
-import kitchenpos.common.error.CustomException;
-import kitchenpos.common.error.ErrorInfo;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.repository.MenuDao;
-import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.domain.Order;
@@ -53,7 +51,7 @@ public class OrderService {
         final List<OrderLineItemRequest> orderLineItemRequests = orderRequest.getOrderLineItemRequests();
 
         if (CollectionUtils.isEmpty(orderLineItemRequests)) {
-            throw new CustomException(ErrorInfo.NOT_FOUND_ORDER_LINE_REQUEST);
+            throw new InvalidRequestException();
         }
 
         final List<Long> menuIds = orderLineItemRequests.stream()
@@ -63,11 +61,11 @@ public class OrderService {
         final List<Menu> menus = menuDao.findAllById(menuIds);
 
         if (orderLineItemRequests.size() != menus.size()) {
-            throw new CustomException(ErrorInfo.NOT_FOUND_MENU);
+            throw new NotFoundMenuException();
         }
 
         final OrderTable orderTable = orderTableDao.findById(orderRequest.getOrderTableId())
-                .orElseThrow(() -> new CustomException(ErrorInfo.NOT_FOUND_ORDER_TABLE));
+                .orElseThrow(NotFoundOrderException::new);
 
         Order order = Order.of(orderTable.getId(), orderLineItemRequests, menus);
         return OrderResponse.of(orderDao.save(order));
@@ -80,7 +78,7 @@ public class OrderService {
 
     public OrderResponse changeOrderStatus(final Long orderId, final OrderStatusRequest orderStatusRequest) {
         final Order order = orderDao.findById(orderId)
-                .orElseThrow(() -> new CustomException(ErrorInfo.NOT_FOUND_ORDER));
+                .orElseThrow(NotFoundOrderException::new);
 
         order.checkAlreadyComplete();
         order.changeOrderStatus(OrderStatus.get(orderStatusRequest.getOrderStatus()));

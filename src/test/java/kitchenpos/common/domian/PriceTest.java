@@ -5,8 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.common.error.CustomException;
-import kitchenpos.common.error.ErrorInfo;
+import kitchenpos.common.error.NegativeValueException;
 
 @DisplayName("가격 테스트")
 class PriceTest {
@@ -27,8 +26,7 @@ class PriceTest {
         // when
         // then
         assertThatThrownBy(() -> new Price(-100))
-                .isInstanceOf(CustomException.class)
-                .hasMessage(ErrorInfo.PRICE_CAN_NOT_NEGATIVE.message());
+                .isInstanceOf(NegativeValueException.class);
     }
 
     @DisplayName("가격 계산")

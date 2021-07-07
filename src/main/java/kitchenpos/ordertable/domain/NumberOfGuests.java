@@ -3,8 +3,7 @@ package kitchenpos.ordertable.domain;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import kitchenpos.common.error.CustomException;
-import kitchenpos.common.error.ErrorInfo;
+import kitchenpos.common.error.NegativeValueException;
 
 @Embeddable
 public class NumberOfGuests {
@@ -22,7 +21,7 @@ public class NumberOfGuests {
 
     private void checkNegative(int number) {
         if (number < 0) {
-            throw new CustomException(ErrorInfo.INVALID_NUMBER_OF_GUESTS);
+            throw new NegativeValueException();
         }
     }
 

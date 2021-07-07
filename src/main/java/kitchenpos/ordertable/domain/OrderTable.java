@@ -1,7 +1,5 @@
 package kitchenpos.ordertable.domain;
 
-import java.util.Objects;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -13,8 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import kitchenpos.common.error.CustomException;
-import kitchenpos.common.error.ErrorInfo;
+import kitchenpos.common.error.OrderTableEmptyException;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 @Entity
@@ -55,15 +52,9 @@ public class OrderTable {
         this.numberOfGuests = new NumberOfGuests(numberOfGuests.number());
     }
 
-    public void checkExistsTableGroup() {
-        if (Objects.nonNull(tableGroup)) {
-            throw new CustomException(ErrorInfo.EXISTS_TABLE_GROUP);
-        }
-    }
-
     public void checkEmpty() {
         if (empty) {
-            throw new CustomException(ErrorInfo.ORDER_TABLE_IS_EMPTY);
+            throw new OrderTableEmptyException();
         }
     }
 

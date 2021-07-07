@@ -8,10 +8,10 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
+import kitchenpos.common.error.OrderTableNotEmptyException;
+import kitchenpos.common.error.InvalidRequestException;
 import org.springframework.util.CollectionUtils;
 
-import kitchenpos.common.error.CustomException;
-import kitchenpos.common.error.ErrorInfo;
 import kitchenpos.ordertable.domain.OrderTable;
 
 @Embeddable
@@ -34,14 +34,14 @@ public class OrderTables {
 
     private static void checkValid(List<OrderTable> orderTables) {
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < MIN_SIZE) {
-            throw new CustomException(ErrorInfo.INVALID_REQUEST_ORDER_TABLE_SIZE);
+            throw new InvalidRequestException();
         }
     }
 
     private static void checkOrderTableIsEmpty(List<OrderTable> orderTables) {
         orderTables.forEach(orderTable -> {
             if (!orderTable.isEmpty()) {
-                throw new CustomException(ErrorInfo.ORDER_TABLE_IS_NOT_EMPTY);
+                throw new OrderTableNotEmptyException();
             }
         });
     }

@@ -5,15 +5,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import kitchenpos.common.domian.Quantity;
-import kitchenpos.common.error.CustomException;
-import kitchenpos.common.error.ErrorInfo;
+import kitchenpos.common.error.InvalidRequestException;
 
 public class Quantities {
     private final Map<Long, Quantity> quantities;
-
-    private Quantities() {
-        this.quantities = new HashMap<>();
-    }
 
     public Quantities(Map<Long, Quantity> quantities, int requestSize) {
         checkRequestSize(quantities, requestSize);
@@ -30,7 +25,7 @@ public class Quantities {
 
     private void checkRequestSize(Map<Long, Quantity> quantities, int requestSize) {
         if (quantities.size() != requestSize) {
-            throw new CustomException(ErrorInfo.NOT_EQUAL_REQUEST_SIZE);
+            throw new InvalidRequestException();
         }
     }
 }

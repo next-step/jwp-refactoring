@@ -3,11 +3,10 @@ package kitchenpos.common.domian;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import kitchenpos.common.error.CustomException;
-import kitchenpos.common.error.ErrorInfo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import kitchenpos.common.error.NegativeValueException;
 @DisplayName("수량 테스트")
 class QuantityTest {
 
@@ -28,7 +27,6 @@ class QuantityTest {
         // when
         // then
         assertThatThrownBy(() -> new Quantity(-100L))
-                .isInstanceOf(CustomException.class)
-                .hasMessage(ErrorInfo.QUANTITY_CAN_NOT_NEGATIVE.message());
+                .isInstanceOf(NegativeValueException.class);
     }
 }

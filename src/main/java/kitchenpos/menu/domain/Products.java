@@ -5,16 +5,11 @@ import java.util.Collections;
 import java.util.List;
 
 import kitchenpos.common.domian.Price;
-import kitchenpos.common.error.CustomException;
-import kitchenpos.common.error.ErrorInfo;
+import kitchenpos.common.error.InvalidRequestException;
 import kitchenpos.product.domain.Product;
 
 public class Products {
     private final List<Product> products;
-
-    private Products() {
-        products = new ArrayList<>();
-    }
 
     public Products(List<Product> products, int requestSize) {
         checkRequestSize(products, requestSize);
@@ -23,7 +18,7 @@ public class Products {
 
     private void checkRequestSize(List<Product> products, int requestSize) {
         if (products.size() != requestSize) {
-            throw new CustomException(ErrorInfo.NOT_EQUAL_REQUEST_SIZE);
+            throw new InvalidRequestException();
         }
     }
 

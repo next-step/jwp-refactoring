@@ -1,18 +1,17 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.common.domian.Quantity;
-import kitchenpos.common.error.CustomException;
-import kitchenpos.common.error.ErrorInfo;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import kitchenpos.common.domian.Quantity;
+import kitchenpos.common.error.InvalidRequestException;
 
 @DisplayName("상품id 수량 일급 컬렉션")
 class QuantitiesTest {
@@ -43,7 +42,6 @@ class QuantitiesTest {
         // when
         // then
         assertThatThrownBy(() -> new Quantities(quantityMap, 2))
-                .isInstanceOf(CustomException.class)
-                .hasMessage(ErrorInfo.NOT_EQUAL_REQUEST_SIZE.message());
+                .isInstanceOf(InvalidRequestException.class);
     }
 }

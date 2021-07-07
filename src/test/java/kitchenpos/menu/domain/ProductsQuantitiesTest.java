@@ -1,22 +1,21 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.common.domian.Price;
-import kitchenpos.common.domian.Quantity;
-import kitchenpos.common.error.CustomException;
-import kitchenpos.common.error.ErrorInfo;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.product.domain.Product;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.*;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import kitchenpos.common.domian.Price;
+import kitchenpos.common.domian.Quantity;
+import kitchenpos.common.error.InvalidRequestException;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.product.domain.Product;
 
 @DisplayName("상품 수랑 컬렉션 테스트")
 class ProductsQuantitiesTest {
@@ -83,7 +82,6 @@ class ProductsQuantitiesTest {
         // when
         // then
         assertThatThrownBy(() -> new ProductsQuantities(products, quantities, new Price(9999)))
-                .isInstanceOf(CustomException.class)
-                .hasMessage(ErrorInfo.TOTAL_PRICE_NOT_EQUAL_REQUEST.message());
+                .isInstanceOf(InvalidRequestException.class);
     }
 }

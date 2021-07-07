@@ -18,8 +18,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.common.error.CustomException;
-import kitchenpos.common.error.ErrorInfo;
+import kitchenpos.common.error.InvalidRequestException;
+import kitchenpos.common.error.NotFoundMenuException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
@@ -116,8 +116,7 @@ class OrderServiceTest {
         orderRequest = new OrderRequest();
         // then
         assertThatThrownBy(() -> orderService.create(orderRequest))
-                .isInstanceOf(CustomException.class)
-                .hasMessage(ErrorInfo.NOT_FOUND_ORDER_LINE_REQUEST.message());
+                .isInstanceOf(InvalidRequestException.class);
     }
 
     @DisplayName("사용자는 주문시 주문테이블id, 그리고 메뉴id와 수량을 요청으로 한다.")
@@ -131,8 +130,7 @@ class OrderServiceTest {
         orderRequest = new OrderRequest(1L, orderLineItems);
         // then
         assertThatThrownBy(() -> orderService.create(orderRequest))
-                .isInstanceOf(CustomException.class)
-                .hasMessage(ErrorInfo.NOT_FOUND_MENU.message());
+                .isInstanceOf(NotFoundMenuException.class);
     }
 
     @DisplayName("요청시 기입한 메뉴가 존재해야한다.")
@@ -142,7 +140,6 @@ class OrderServiceTest {
         // when
         // then
         assertThatThrownBy(() -> orderService.create(orderRequest))
-                .isInstanceOf(CustomException.class)
-                .hasMessage(ErrorInfo.NOT_FOUND_MENU.message());
+                .isInstanceOf(NotFoundMenuException.class);
     }
 }

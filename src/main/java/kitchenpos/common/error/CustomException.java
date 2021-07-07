@@ -1,7 +1,11 @@
 package kitchenpos.common.error;
 
 public class CustomException extends RuntimeException{
-    public CustomException(ErrorInfo errorInfo) {
-        super(errorInfo.message());
+    public CustomException() {
+        super();
+    }
+
+    public CustomException(String errorInfo) {
+        super(errorInfo);
     }
 }

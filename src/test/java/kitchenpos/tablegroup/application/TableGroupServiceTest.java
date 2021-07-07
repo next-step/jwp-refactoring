@@ -1,21 +1,12 @@
 package kitchenpos.tablegroup.application;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import kitchenpos.common.error.CustomException;
-import kitchenpos.common.error.ErrorInfo;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.tablegroup.domain.OrderTables;
-import kitchenpos.tablegroup.dto.TableGroupRequest;
-import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,6 +15,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.common.error.InvalidRequestException;
+import kitchenpos.common.error.InvalidOrderStatusException;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import kitchenpos.order.repository.OrderDao;
 import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
@@ -92,8 +89,7 @@ class TableGroupServiceTest {
         // when
         // then
         assertThatThrownBy(() -> tableGroupService.create(new TableGroupRequest(Arrays.asList(1L))))
-                .isInstanceOf(CustomException.class)
-                .hasMessage(ErrorInfo.INVALID_REQUEST_ORDER_TABLE_SIZE.message());
+                .isInstanceOf(InvalidRequestException.class);
     }
 
     @DisplayName("주문테이블의 데이터를 체크한다. 이 때 요청 받은 주문테이블의 데이터가 모두 있는지 체크한다.")
@@ -103,8 +99,7 @@ class TableGroupServiceTest {
         // when
         // then
         assertThatThrownBy(() -> tableGroupService.create(new TableGroupRequest()))
-                .isInstanceOf(CustomException.class)
-                .hasMessage(ErrorInfo.INVALID_REQUEST_ORDER_TABLE_SIZE.message());
+                .isInstanceOf(InvalidRequestException.class);
     }
 
     @DisplayName("그룹 제거 시 주문 상태가 요리중, 식사중 상태가아닌지 체크한다.")
@@ -119,7 +114,6 @@ class TableGroupServiceTest {
 
         // then
         assertThatThrownBy(() -> tableGroupService.ungroup(1L))
-                .isInstanceOf(CustomException.class)
-                .hasMessage(ErrorInfo.INVALID_ORDER_STATUS.message());
+                .isInstanceOf(InvalidOrderStatusException.class);
     }
 }

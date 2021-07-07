@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kitchenpos.common.error.NotFoundMenuGroupException;
 import kitchenpos.common.domian.Price;
 import kitchenpos.common.domian.Quantity;
 import kitchenpos.menu.repository.MenuProductDao;
@@ -13,8 +14,6 @@ import kitchenpos.menu.domain.ProductsQuantities;
 import kitchenpos.menu.domain.Quantities;
 import kitchenpos.menu.domain.Products;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.common.error.ErrorInfo;
-import kitchenpos.common.error.CustomException;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.repository.MenuDao;
 import kitchenpos.menugroup.domain.MenuGroup;
@@ -45,7 +44,7 @@ public class MenuService {
 
     public MenuResponse create(final MenuRequest menuRequest) {
         MenuGroup menuGroup = menuGroupDao.findById(menuRequest.getMenuGroupId())
-                .orElseThrow(() -> new CustomException(ErrorInfo.NOT_FOUND_MENU_GROUP));
+                .orElseThrow(NotFoundMenuGroupException::new);
 
         List<MenuProductRequest> menuProductsRequest = menuRequest.getMenuProducts();
 

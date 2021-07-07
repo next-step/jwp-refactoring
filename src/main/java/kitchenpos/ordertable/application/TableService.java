@@ -6,10 +6,9 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kitchenpos.common.error.NotFoundOrderException;
 import kitchenpos.ordertable.dto.OrderTableEmptyRequest;
 import kitchenpos.ordertable.dto.OrderTableNumberOfGuestsRequest;
-import kitchenpos.common.error.CustomException;
-import kitchenpos.common.error.ErrorInfo;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.repository.OrderDao;
 import kitchenpos.ordertable.domain.NumberOfGuests;
@@ -41,12 +40,12 @@ public class TableService {
 
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableEmptyRequest orderTableRequest) {
         final OrderTable orderTable = orderTableDao.findById(orderTableId)
-                .orElseThrow(() -> new CustomException(ErrorInfo.NOT_FOUND_ORDER_TABLE));
+                .orElseThrow(NotFoundOrderException::new);
 
         final List<Order> orders = orderDao.findByOrderTableId(Arrays.asList(orderTableId));
 
         if (orders.isEmpty()) {
-            throw new CustomException(ErrorInfo.NOT_FOUND_ORDER);
+            throw new NotFoundOrderException();
         }
 
         orders.forEach(Order::checkChangeableStatus);
@@ -59,7 +58,7 @@ public class TableService {
         final NumberOfGuests numberOfGuests = new NumberOfGuests(orderTableNumberOfGuestsRequest.getNumberOfGuests());
 
         final OrderTable orderTable = orderTableDao.findById(orderTableId)
-                .orElseThrow(() -> new CustomException(ErrorInfo.NOT_FOUND_ORDER_TABLE));
+                .orElseThrow(NotFoundOrderException::new);
 
         orderTable.checkEmpty();
         orderTable.changeNumberOfGuests(numberOfGuests);

@@ -3,8 +3,7 @@ package kitchenpos.menu.domain;
 import java.util.List;
 
 import kitchenpos.common.domian.Price;
-import kitchenpos.common.error.CustomException;
-import kitchenpos.common.error.ErrorInfo;
+import kitchenpos.common.error.InvalidRequestException;
 
 public class ProductsQuantities {
     private final Products products;
@@ -28,7 +27,7 @@ public class ProductsQuantities {
 
     private void checkTotalPrice(Price price) {
         if (!this.totalPrice.equals(price)) {
-            throw new CustomException(ErrorInfo.TOTAL_PRICE_NOT_EQUAL_REQUEST);
+            throw new InvalidRequestException();
         }
     }
 }
