@@ -1,29 +1,41 @@
 package kitchenpos.domain;
 
+import java.util.Objects;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+
+@Entity
 public class OrderTable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long tableGroupId;
+
+    @ManyToOne
+    private TableGroup tableGroup;
+
     private int numberOfGuests;
     private boolean empty;
 
     public OrderTable() {
     }
 
-    public OrderTable(int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
-    }
-
-    public OrderTable(boolean empty) {
-        this.empty = empty;
+    public OrderTable(int numberOfGuests, boolean empty) {
+        this(null, numberOfGuests, empty);
     }
 
     public OrderTable(Long id, int numberOfGuests, boolean empty) {
-        this(id, null, numberOfGuests, empty);
+        this.id = id;
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
     }
 
-    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroupId = tableGroupId;
+        this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
@@ -32,31 +44,64 @@ public class OrderTable {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public Long getTableGroupId() {
-        return tableGroupId;
-    }
-
-    public void setTableGroupId(final Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
-    }
-
     public int getNumberOfGuests() {
         return numberOfGuests;
-    }
-
-    public void setNumberOfGuests(final int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
     }
 
     public boolean isEmpty() {
         return empty;
     }
 
-    public void setEmpty(final boolean empty) {
+    public void changeEmpty(boolean empty) {
+        checkTableGroup();
         this.empty = empty;
+    }
+
+    private void checkTableGroup() {
+        if (Objects.nonNull(tableGroup)) {
+            throw new IllegalArgumentException("테이블 그룹에 포함된 주문 테이블입니다.");
+        }
+    }
+
+    public void changeNumberOfGuests(int numberOfGuests) {
+        checkTableIsEmpty();
+        checkNumberOfGuests(numberOfGuests);
+        this.numberOfGuests = numberOfGuests;
+    }
+
+    private void checkTableIsEmpty() {
+        if (isEmpty()) {
+            throw new IllegalArgumentException("빈 테이블의 손님 수를 변경할 수 없습니다.");
+        }
+    }
+
+    private void checkNumberOfGuests(int numberOfGuests) {
+        if (numberOfGuests < 0) {
+            throw new IllegalArgumentException("테이블의 손님 수는 음수가 될 수 없습니다.");
+        }
+    }
+
+    // TODO 이하 삭제
+
+    public Long getTableGroupId() {
+        // return tableGroup.getId();
+        return 2L; // TODO 흠..
+    }
+
+    public void setTableGroupId(Long tableGroupId) {
+        // tableGroup.setId(tableGroupId);
+        // TODO 흠..
+    }
+
+    public void setEmpty(boolean b) {
+        this.empty = b;
+    }
+
+    public void setId(long aLong) {
+        this.id = aLong;
+    }
+
+    public void setNumberOfGuests(int number_of_guests) {
+        this.numberOfGuests = number_of_guests;
     }
 }

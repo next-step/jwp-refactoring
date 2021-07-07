@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.domain.MenuGroupTest;
+import kitchenpos.dto.MenuGroupRequest;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("메뉴 그룹 서비스")
@@ -33,11 +34,12 @@ class MenuGroupServiceTest {
     @DisplayName("메뉴 그룹을 생성한다")
     void create() {
         // given
+        MenuGroupRequest 바베큐치킨메뉴_요청 = new MenuGroupRequest("바베큐치킨메뉴");
         MenuGroup 바베큐치킨메뉴 = new MenuGroup(100L, "바베큐치킨메뉴");
-        when(menuGroupRepository.save(바베큐치킨메뉴)).thenReturn(바베큐치킨메뉴);
+        when(menuGroupRepository.save(any())).thenReturn(바베큐치킨메뉴);
 
         // when
-        MenuGroup savedGroup = menuGroupService.create(바베큐치킨메뉴);
+        MenuGroup savedGroup = menuGroupService.create(바베큐치킨메뉴_요청);
 
         // then
         assertThat(savedGroup.getId()).isEqualTo(바베큐치킨메뉴.getId());

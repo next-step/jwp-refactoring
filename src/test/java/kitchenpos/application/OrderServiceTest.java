@@ -24,6 +24,7 @@ import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderLineItemTest;
 import kitchenpos.domain.OrderStatus;
 
 @ExtendWith(MockitoExtension.class)

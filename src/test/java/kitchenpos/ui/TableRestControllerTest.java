@@ -1,5 +1,6 @@
 package kitchenpos.ui;
 
+import static kitchenpos.domain.OrderTableTest.*;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
@@ -19,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import kitchenpos.domain.OrderTableTest;
 import kitchenpos.dto.OrderTableRequest;
 
 @SpringBootTest
@@ -65,8 +67,8 @@ class TableRestControllerTest {
     @Order(3)
     @DisplayName("특정 테이블의 상태를 변경한다")
     void changeEmpty() throws Exception {
-        OrderTableRequest request = new OrderTableRequest(false);
-        mockMvc.perform(put("/api/tables/{id}/empty", 1L)
+        OrderTableRequest request = new OrderTableRequest(10, false);
+        mockMvc.perform(put("/api/tables/{id}/empty", 테이블5.getId())
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(request)))
             .andDo(print())
@@ -78,8 +80,8 @@ class TableRestControllerTest {
     @Order(4)
     @DisplayName("특정 테이블의 손님 수를 변경한다")
     void changeNumberOfGuests() throws Exception {
-        OrderTableRequest request = new OrderTableRequest(10);
-        mockMvc.perform(put("/api/tables/{id}/number-of-guests", 1L)
+        OrderTableRequest request = new OrderTableRequest(10, false);
+        mockMvc.perform(put("/api/tables/{id}/number-of-guests", 테이블9_사용중.getId())
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(request)))
             .andDo(print())

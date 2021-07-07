@@ -7,6 +7,9 @@ public class OrderRequest {
     private String orderStatus;
     private List<OrderLineItemRequest> orderLineItems;
 
+    public OrderRequest() {
+    }
+
     public OrderRequest(String orderStatus) {
         this.orderStatus = orderStatus;
     }

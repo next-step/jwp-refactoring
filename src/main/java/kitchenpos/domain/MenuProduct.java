@@ -46,8 +46,20 @@ public class MenuProduct {
         }
     }
 
-    public Long getProductId() {
-        return product.getId();
+    public Long getSeq() {
+        return seq;
+    }
+
+    public Menu getMenu() {
+        return menu;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public long getQuantity() {
+        return quantity;
     }
 
     public BigDecimal getTotalPrice() {
@@ -55,6 +67,10 @@ public class MenuProduct {
     }
 
     // TODO 삭제 대상
+
+    public Long getProductId() {
+        return product.getId();
+    }
 
     public MenuProduct(Long seq, Long menuId, Long productId, long quantity) {
         this.seq = seq;

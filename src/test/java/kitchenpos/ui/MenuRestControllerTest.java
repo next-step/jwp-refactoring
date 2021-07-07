@@ -60,6 +60,6 @@ class MenuRestControllerTest {
             .andExpect(jsonPath("$[2].id").value(3))
             .andExpect(jsonPath("$[2].name").value("반반치킨"))
             .andExpect(jsonPath("$[2].price").value(16000))
-            .andExpect(jsonPath("$[2].menuGroupId").value(2));
+            .andExpect(jsonPath("$[2].menuGroup.id").value(2));
     }
 }

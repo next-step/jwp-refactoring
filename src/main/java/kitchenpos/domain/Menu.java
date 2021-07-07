@@ -94,6 +94,10 @@ public class Menu {
         return name;
     }
 
+    public MenuGroup getMenuGroup() {
+        return menuGroup;
+    }
+
     public Long getMenuGroupId() {
         return menuGroup.getId();
     }

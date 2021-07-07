@@ -20,7 +20,7 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.TableGroup3;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("테이블 그룹 서비스")
@@ -37,35 +37,35 @@ class TableGroupServiceTest {
     TableGroupDao tableGroupDao;
 
     List<OrderTable> 테이블_리스트;
-    TableGroup 테이블_그룹;
+    TableGroup3 테이블_그룹;
 
     @BeforeEach
     void setUp() {
-        테이블_리스트 = Arrays.asList(테이블1, 테이블2);
-        테이블_그룹 = new TableGroup(1L, 테이블_리스트);
+        테이블_리스트 = Arrays.asList(테이블3, 테이블4);
+        테이블_그룹 = new TableGroup3(1L, 테이블_리스트);
     }
 
     @Test
     @DisplayName("테이블 그룹을 생성한다")
     void create() {
         // given
-        when(orderTableDao.findAllByIdIn(Arrays.asList(테이블1.getId(), 테이블2.getId())))
-            .thenReturn(Arrays.asList(테이블1, 테이블2));
+        when(orderTableDao.findAllByIdIn(Arrays.asList(테이블3.getId(), 테이블4.getId())))
+            .thenReturn(Arrays.asList(테이블3, 테이블4));
         when(tableGroupDao.save(테이블_그룹)).thenReturn(테이블_그룹);
 
         // when
-        TableGroup savedTableGroup = tableGroupService.create(테이블_그룹);
+        TableGroup3 savedTableGroup = tableGroupService.create(테이블_그룹);
 
         // then
         assertThat(savedTableGroup.getId()).isEqualTo(테이블_그룹.getId());
-        assertThat(savedTableGroup.getOrderTables()).containsExactly(테이블1, 테이블2);
+        assertThat(savedTableGroup.getOrderTables()).containsExactly(테이블3, 테이블4);
     }
 
     @Test
     @DisplayName("테이블 그룹 생성 실패(빈 테이블이거나 목록이 2보다 작음)")
     void create_failed1() {
         // given
-        TableGroup 신규_테이블_그룹 = new TableGroup(1L, singletonList(테이블1));
+        TableGroup3 신규_테이블_그룹 = new TableGroup3(1L, singletonList(테이블3));
 
         // then
         assertThatThrownBy(() -> tableGroupService.create(신규_테이블_그룹))
@@ -76,8 +76,8 @@ class TableGroupServiceTest {
     @DisplayName("테이블 그룹 생성 실패(주문 테이블 DB 검증 실패)")
     void create_failed2() {
         // given
-        when(orderTableDao.findAllByIdIn(Arrays.asList(테이블1.getId(), 테이블2.getId())))
-            .thenReturn(singletonList(테이블1));
+        when(orderTableDao.findAllByIdIn(Arrays.asList(테이블3.getId(), 테이블4.getId())))
+            .thenReturn(singletonList(테이블3));
 
         // then
         assertThatThrownBy(() -> tableGroupService.create(테이블_그룹))
@@ -88,10 +88,10 @@ class TableGroupServiceTest {
     @DisplayName("테이블 그룹 생성 실패(테이블이 비어있지 않거나 이미 그룹화 된 테이블)")
     void create_failed3() {
         // given
-        List<OrderTable> 테이블_리스트 = Arrays.asList(테이블1, 테이블9_사용중);
-        TableGroup 테이블_그룹 = new TableGroup(1L, 테이블_리스트);
-        when(orderTableDao.findAllByIdIn(Arrays.asList(테이블1.getId(), 테이블9_사용중.getId())))
-            .thenReturn(Arrays.asList(테이블1, 테이블9_사용중));
+        List<OrderTable> 테이블_리스트 = Arrays.asList(테이블3, 테이블9_사용중);
+        TableGroup3 테이블_그룹 = new TableGroup3(1L, 테이블_리스트);
+        when(orderTableDao.findAllByIdIn(Arrays.asList(테이블3.getId(), 테이블9_사용중.getId())))
+            .thenReturn(Arrays.asList(테이블3, 테이블9_사용중));
 
         // then
         assertThatThrownBy(() -> tableGroupService.create(테이블_그룹))
