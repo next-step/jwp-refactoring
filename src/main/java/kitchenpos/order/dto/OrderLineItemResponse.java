@@ -6,23 +6,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class OrderLineItemResponse {
-    private Long seq;
-    private Long orderId;
     private Long menuId;
-    private long quantity;
+    private Long quantity;
 
-    public OrderLineItemResponse() {
+    protected OrderLineItemResponse() {
     }
 
-    private OrderLineItemResponse(Long seq, Long orderId, Long menuId, long quantity) {
-        this.seq = seq;
-        this.orderId = orderId;
+    public OrderLineItemResponse(Long menuId, Long quantity) {
         this.menuId = menuId;
         this.quantity = quantity;
     }
 
     public static OrderLineItemResponse of(OrderLineItem orderLineItem) {
-        return new OrderLineItemResponse(orderLineItem.getId(), orderLineItem.getOrder().getId(), orderLineItem.getMenu().getId(), orderLineItem.getQuantity());
+        return new OrderLineItemResponse(orderLineItem.getMenu().getId(), orderLineItem.getQuantity());
     }
 
     public static List<OrderLineItemResponse> ofList(final List<OrderLineItem> orderLineItems) {
@@ -31,19 +27,11 @@ public class OrderLineItemResponse {
                 .collect(Collectors.toList());
     }
 
-    public Long getSeq() {
-        return seq;
-    }
-
-    public Long getOrderId() {
-        return orderId;
-    }
-
     public Long getMenuId() {
         return menuId;
     }
 
-    public long getQuantity() {
+    public Long getQuantity() {
         return quantity;
     }
 }

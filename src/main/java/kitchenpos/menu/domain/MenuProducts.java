@@ -10,7 +10,7 @@ import java.util.List;
 
 @Embeddable
 public class MenuProducts {
-    @OneToMany(mappedBy = "menu", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
     protected MenuProducts() {
@@ -29,10 +29,8 @@ public class MenuProducts {
     }
 
     public Price calculateSumPrice() {
-        int sum = menuProducts.stream()
+        return menuProducts.stream()
                 .map(MenuProduct::calculatePrice)
-                .mapToInt(Price::intValue)
-                .sum();
-        return Price.of(sum);
+                .reduce(Price.ZERO, Price::add);
     }
 }

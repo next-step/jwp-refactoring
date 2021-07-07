@@ -5,10 +5,15 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class TableGroup {
+    private static final int TABLE_GROUP_MIN = 2;
+    static final String MSG_TABLE_COUNT_LEAST = String.format("TableIds'size must be at least %d", TABLE_GROUP_MIN);
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -16,33 +21,36 @@ public class TableGroup {
     @CreationTimestamp
     private LocalDateTime createdDate;
 
-    @Embedded
-    private OrderTables orderTables;
+    @OneToMany(mappedBy = "tableGroup")
+    private List<OrderTable> orderTables;
 
-    protected TableGroup() {
+    public static TableGroup fromGroupingTables(List<OrderTable> orderTables) {
+        return new TableGroup(orderTables);
     }
 
-    public TableGroup(OrderTables orderTables) {
-        validate(orderTables);
-        this.orderTables = new OrderTables(orderTables.getOrderTables(), this);
+    public TableGroup() {
     }
 
-    public void ungroup() {
-        getOrderTables().forEach(OrderTable::ungroup);
+    public TableGroup(List<OrderTable> orderTables) {
+        groupTables(orderTables);
     }
 
-    private void validate(OrderTables orderTables) {
-        if (orderTables.isEmptyTablesNotMore(2)) {
-            throw new IllegalArgumentException("2 개 이상의 빈 테이블이 없습니다.");
+    private void groupTables(List<OrderTable> orderTables) {
+        if (orderTables.size() < TABLE_GROUP_MIN) {
+            throw new IllegalArgumentException(MSG_TABLE_COUNT_LEAST);
         }
 
-        if (orderTables.hasOtherOrderTable()) {
-            throw new IllegalArgumentException("단체 지정은 중복될 수 없습니다.");
-        }
+        orderTables.forEach(orderTable -> orderTable.putIntoGroup(this));
+        this.orderTables = orderTables;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public void ungroupTables() {
+        orderTables.forEach(OrderTable::ungroup);
+        this.orderTables = Collections.emptyList();
     }
 
     public LocalDateTime getCreatedDate() {
@@ -50,6 +58,21 @@ public class TableGroup {
     }
 
     public List<OrderTable> getOrderTables() {
-        return orderTables.getOrderTables();
+        return orderTables;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TableGroup)) return false;
+        if (!super.equals(o)) return false;
+        TableGroup that = (TableGroup) o;
+        return Objects.equals(createdDate, that.createdDate) &&
+                Objects.equals(orderTables, that.orderTables);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), createdDate, orderTables);
     }
 }

@@ -15,7 +15,7 @@ public class ProductResponse {
     private ProductResponse(Long id, String name, Price price) {
         this.id = id;
         this.name = name;
-        this.price = price.getPrice();
+        this.price = price.getValue();
     }
 
     public static ProductResponse of(Product product) {

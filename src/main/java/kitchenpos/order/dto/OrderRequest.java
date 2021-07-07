@@ -1,5 +1,7 @@
 package kitchenpos.order.dto;
 
+import kitchenpos.order.domain.OrderLineItems;
+
 import java.util.List;
 
 public class OrderRequest {

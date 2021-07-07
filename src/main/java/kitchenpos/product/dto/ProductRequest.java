@@ -12,9 +12,9 @@ public class ProductRequest {
     public ProductRequest() {
     }
 
-    public ProductRequest(String name, Price price) {
+    public ProductRequest(String name, BigDecimal price) {
         this.name = name;
-        this.price = price.getPrice();
+        this.price = price;
     }
     public String getName() {
         return name;

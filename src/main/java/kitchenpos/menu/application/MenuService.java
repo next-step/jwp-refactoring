@@ -39,6 +39,7 @@ public class MenuService {
         return MenuResponse.of(menuRepository.save(menu));
     }
 
+    @Transactional
     public List<MenuResponse> findAll() {
         List<Menu> menus = menuRepository.findAll();
         return menus.stream()

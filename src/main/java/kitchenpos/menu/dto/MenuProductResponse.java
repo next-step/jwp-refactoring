@@ -2,28 +2,23 @@ package kitchenpos.menu.dto;
 
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.product.domain.Product;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class MenuProductResponse {
-    private Long seq;
-    private Long menuId;
-    private Long productId;
-    private Long quantity;
+    private long productId;
+    private long quantity;
 
-    private MenuProductResponse(Long seq, Long menuId, Long productId, Long quantity) {
-        this.seq = seq;
-        this.menuId = menuId;
-        this.productId = productId;
-        this.quantity = quantity;
+    public MenuProductResponse(Product product, long quantity) {
+
     }
 
     public static MenuProductResponse of(MenuProduct menuProduct) {
-        return new MenuProductResponse(menuProduct.getId()
-                , menuProduct.getMenu().getId()
-                , menuProduct.getProduct().getId()
-                , menuProduct.getQuantity());
+        return new MenuProductResponse(
+                menuProduct.getProduct(),
+                menuProduct.getQuantity());
     }
 
     public static List<MenuProductResponse> ofList(MenuProducts menuProducts) {
@@ -32,19 +27,16 @@ public class MenuProductResponse {
                 .collect(Collectors.toList());
     }
 
-    public Long getSeq() {
-        return seq;
+    public MenuProductResponse(long productId, long quantity) {
+        this.productId = productId;
+        this.quantity = quantity;
     }
 
-    public Long getMenuId() {
-        return menuId;
-    }
-
-    public Long getProductId() {
+    public long getProductId() {
         return productId;
     }
 
-    public Long getQuantity() {
+    public long getQuantity() {
         return quantity;
     }
 }

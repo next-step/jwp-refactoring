@@ -36,6 +36,10 @@ public class OrderTable {
         this.orders = new Orders();
     }
 
+    public OrderTable() {
+
+    }
+
     public void changeEmpty(boolean empty) {
         if (hasOtherOrderTable()) {
             throw new IllegalArgumentException("단체 지정된 주문 테이블은 빈 테이블 설정 또는 해지할 수 없습니다.");
@@ -54,6 +58,23 @@ public class OrderTable {
             throw new IllegalArgumentException("방문한 손님 수는 0명 이상이어야 합니다.");
         }
         this.numberOfGuests = numberOfGuests;
+    }
+
+    public void putIntoGroup(TableGroup tableGroup) {
+        if (tableGroup == null) {
+            throw new IllegalArgumentException("tableGroup은 널이 아니어야합니다.");
+        }
+
+        if (this.tableGroup != null) {
+            throw new IllegalArgumentException("OrderTable에 이미 TableGroup이 있습니다.");
+        }
+
+        if (!this.empty) {
+            throw new IllegalArgumentException("OrderTable은 비어 있어야합니다.");
+        }
+
+        this.tableGroup = tableGroup;
+        this.empty = false;
     }
 
     public void changeTableGroup(TableGroup tableGroup) {

@@ -1,12 +1,14 @@
 package kitchenpos.common;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
 @Embeddable
 public class Price {
-    public static final int PRICE_ZERO = 0;
+    public static final Price ZERO = Price.of(0);
+    @Column
     private BigDecimal price;
 
     protected Price() {}
@@ -33,21 +35,15 @@ public class Price {
     }
 
     public Price subtract(Price other) {
-        return new Price(this.price.subtract(other.getPrice()));
+        return new Price(this.price.subtract(other.getValue()));
     }
 
     public Price multiply(long count) {
         return new Price(this.price.multiply(BigDecimal.valueOf(count)));
     }
 
-    public BigDecimal getPrice() {
+    public BigDecimal getValue() {
         return this.price;
-    }
-
-    private void validate(BigDecimal price) {
-        if (price.compareTo(BigDecimal.ZERO) < PRICE_ZERO) {
-            throw new IllegalArgumentException("가격은 0 원 이상이어야 합니다.");
-        }
     }
 
     public int intValue() {
@@ -55,7 +51,13 @@ public class Price {
     }
 
     public boolean isBiggerThan(Price other) {
-        return price.intValue() > other.price.intValue();
+        return price.intValue() > other.getValue().intValue();
+    }
+
+    private void validate(BigDecimal price) {
+        if (price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("가격은 0 원 이상이어야 합니다.");
+        }
     }
 
     @Override
