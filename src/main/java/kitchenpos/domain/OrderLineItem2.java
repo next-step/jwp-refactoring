@@ -25,4 +25,16 @@ public class OrderLineItem2 {
 
     protected OrderLineItem2() {
     }
+
+    public OrderLineItem2(Menu menu, long quantity) {
+        this.menu = menu;
+        this.quantity = quantity;
+    }
+
+    OrderLineItem2(Long seq, Order2 order, Menu menu, long quantity) {
+        this.seq = seq;
+        this.order = order;
+        this.menu = menu;
+        this.quantity = quantity;
+    }
 }

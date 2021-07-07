@@ -2,6 +2,8 @@ package kitchenpos.dto;
 
 import java.util.List;
 
+import kitchenpos.domain.OrderStatus;
+
 public class OrderRequest {
     private Long orderTableId;
     private String orderStatus;
@@ -27,8 +29,8 @@ public class OrderRequest {
         this.orderTableId = orderTableId;
     }
 
-    public String getOrderStatus() {
-        return orderStatus;
+    public OrderStatus status() {
+        return OrderStatus.valueOf(orderStatus);
     }
 
     public void setOrderStatus(String orderStatus) {

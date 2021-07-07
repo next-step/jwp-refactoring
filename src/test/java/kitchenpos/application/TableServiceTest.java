@@ -109,7 +109,7 @@ class TableServiceTest {
     @DisplayName("테이블 상태 변경 실패(테이블이 그룹에 포함되어 있음)")
     void changeEmpty_failed2() {
         // given
-        OrderTable 그룹에_포함된_테이블 = new OrderTable(20L, 그룹1, 10, false); // TODO TableGroup 변경 필요
+        OrderTable 그룹에_포함된_테이블 = new OrderTable(20L, 그룹1, 10, false);
         OrderTableRequest 비우는_상태 = new OrderTableRequest(10, true);
         when(orderTableRepository.findById(그룹에_포함된_테이블.getId())).thenReturn(Optional.ofNullable(그룹에_포함된_테이블));
 

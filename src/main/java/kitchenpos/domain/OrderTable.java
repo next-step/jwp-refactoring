@@ -36,9 +36,7 @@ public class OrderTable {
     }
 
     public OrderTable(Long id, int numberOfGuests, boolean empty) {
-        this.id = id;
-        this.numberOfGuests = numberOfGuests;
-        this.empty = empty;
+        this(id,null, numberOfGuests, empty);
     }
 
     public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
@@ -104,7 +102,7 @@ public class OrderTable {
     }
 
     public void checkOrderStatus(Order2 order) {
-        if (!order.isCompleted()) {
+        if (Objects.nonNull(order) && !order.isCompleted()) {
             throw new OrderNotCompletedException("테이블에 완결되지 않은 주문이 존재합니다.");
         }
     }

@@ -13,6 +13,7 @@ import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
+import kitchenpos.exception.MenuNotFoundException;
 
 @Service
 public class MenuService {
@@ -32,18 +33,23 @@ public class MenuService {
         MenuGroup menuGroup = menuGroupService.findById(request.getMenuGroupId());
         List<MenuProduct> menuProducts = request.getMenuProducts()
             .stream()
-            .map(this::getMenuProduct)
+            .map(this::newMenuProduct)
             .collect(Collectors.toList());
 
         return menuRepository.save(new Menu(request.getName(), request.getPrice(), menuGroup, menuProducts));
     }
 
-    private MenuProduct getMenuProduct(MenuProductRequest menuProductRequest) {
+    private MenuProduct newMenuProduct(MenuProductRequest menuProductRequest) {
         Product product = productService.findById(menuProductRequest.getProductId());
         return new MenuProduct(product, menuProductRequest.getQuantity());
     }
 
     public List<Menu> list() {
         return menuRepository.findAll();
+    }
+
+    public Menu findById(Long id) {
+        return menuRepository.findById(id)
+            .orElseThrow(() -> new MenuNotFoundException("해당 ID의 메뉴가 존재하지 않습니다."));
     }
 }

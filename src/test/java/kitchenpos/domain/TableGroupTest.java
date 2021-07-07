@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import static kitchenpos.domain.MenuTest.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
@@ -59,8 +60,6 @@ public class TableGroupTest {
         // given
         OrderTable 테이블3 = new OrderTable(3L, 0, true);
         OrderTable 테이블4 = new OrderTable(4L, 0, true);
-        테이블3.addOrder(new Order2(100L, 테이블3, OrderStatus.COMPLETION, null));
-        테이블4.addOrder(new Order2(200L, 테이블4, OrderStatus.COMPLETION, null));
         TableGroup 테이블_그룹 = new TableGroup(1L, Arrays.asList(테이블3, 테이블4));
 
         // when
@@ -78,11 +77,11 @@ public class TableGroupTest {
         // given
         OrderTable 테이블3 = new OrderTable(3L, 0, true);
         OrderTable 테이블4 = new OrderTable(4L, 0, true);
-        테이블3.addOrder(new Order2(100L, 테이블3, OrderStatus.COMPLETION, null));
-        테이블4.addOrder(new Order2(200L, 테이블4, OrderStatus.COOKING, null));
         TableGroup 테이블_그룹 = new TableGroup(1L, Arrays.asList(테이블3, 테이블4));
-
-        // when
+        테이블3.addOrder(new Order2(100L, 테이블3, OrderStatus.COMPLETION,
+            Arrays.asList(new OrderLineItem2(후라이드_메뉴, 1))));
+        테이블4.addOrder(new Order2(200L, 테이블4, OrderStatus.COOKING,
+            Arrays.asList(new OrderLineItem2(양념치킨_메뉴, 1))));
 
         // then
         assertThatThrownBy(테이블_그룹::ungroupAll)

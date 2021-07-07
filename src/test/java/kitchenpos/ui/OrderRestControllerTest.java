@@ -25,7 +25,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
-import kitchenpos.dto.OrderTableRequest;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -62,8 +61,8 @@ class OrderRestControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$").exists())
             .andExpect(jsonPath("$[0].id").value(테이블9주문.getId()))
-            .andExpect(jsonPath("$[0].orderTableId").value(테이블9_사용중.getId())) // TODO 나중에 복구
-            .andExpect(jsonPath("$[0].orderStatus").value(테이블9주문.getOrderStatus()));
+            .andExpect(jsonPath("$[0].orderTableId").value(테이블9_사용중.getId()))
+            .andExpect(jsonPath("$[0].orderStatus").value(테이블9주문.getOrderStatus().name()));
     }
 
     @Test
@@ -79,6 +78,6 @@ class OrderRestControllerTest {
             .andExpect(jsonPath("$").exists())
             .andExpect(jsonPath("$.id").value(테이블10주문.getId()))
             .andExpect(jsonPath("$.orderTableId").value(테이블10_사용중.getId()))
-            .andExpect(jsonPath("$.orderStatus").value(request.getOrderStatus()));
+            .andExpect(jsonPath("$.orderStatus").value(request.status()));
     }
 }
