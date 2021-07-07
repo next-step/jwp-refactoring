@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -36,13 +36,13 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        List<OrderLineItem> orderLineItemList = new ArrayList<>();
+        List<OrderLineItem> orderLineItemList;
 
         validateOrderLineItems(orderRequest.getOrderLineItemRequests());
 
-        for (OrderLineItemRequest orderLineItemRequest : orderRequest.getOrderLineItemRequests()) {
-            orderLineItemList.add(new OrderLineItem(findMenu(orderLineItemRequest), orderLineItemRequest.getQuantity()));
-        }
+        orderLineItemList = orderRequest.getOrderLineItemRequests().stream()
+                .map(orderLineItemRequest -> new OrderLineItem(findMenu(orderLineItemRequest), orderLineItemRequest.getQuantity()))
+                .collect(Collectors.toList());
 
         final OrderLineItems orderLineItems = new OrderLineItems(orderLineItemList);
         final List<Long> menuIds = orderLineItems.menuIds();
@@ -59,34 +59,24 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public List<OrderResponse> list() {
-        final List<Order> orders = orderRepository.findAll();
-        return OrderResponse.ofList(orders);
+        return OrderResponse.ofList(orderRepository.findAll());
     }
 
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
         final Order savedOrder = orderRepository.findById(orderId).orElseThrow(IllegalArgumentException::new);
         savedOrder.changeOrderStatus(OrderStatus.valueOf(orderRequest.getOrderStatus()).name());
-        orderRepository.save(savedOrder);
-        return OrderResponse.of(savedOrder);
+        return OrderResponse.of(orderRepository.save(savedOrder));
     }
 
     private OrderTable findOrderTable(Long orderTableId) {
         OrderTable orderTable = orderTableRepository.findById(orderTableId).orElseThrow(IllegalArgumentException::new);
-
-        validateOrderTableIsEmpty(orderTable);
-
+        orderTable.validateNotEmpty();
         return orderTable;
     }
 
     private void validateOrderLineItems(List<OrderLineItemRequest> orderLineItemRequests) {
         if (orderLineItemRequests == null) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    private void validateOrderTableIsEmpty(OrderTable orderTable) {
-        if (orderTable.isEmpty()) {
             throw new IllegalArgumentException();
         }
     }

@@ -32,10 +32,6 @@ public class OrderRequest {
         return orderTableId;
     }
 
-    public void setOrderTableId(Long orderTableId) {
-        this.orderTableId = orderTableId;
-    }
-
     public String getOrderStatus() {
         return orderStatus;
     }
@@ -48,15 +44,7 @@ public class OrderRequest {
         return orderedTime;
     }
 
-    public void setOrderedTime(LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
-    }
-
     public List<OrderLineItemRequest> getOrderLineItemRequests() {
         return orderLineItemRequests;
-    }
-
-    public void setOrderLineItemRequests(List<OrderLineItemRequest> orderLineItemRequests) {
-        this.orderLineItemRequests = orderLineItemRequests;
     }
 }

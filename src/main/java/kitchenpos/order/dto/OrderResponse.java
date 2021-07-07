@@ -3,8 +3,8 @@ package kitchenpos.order.dto;
 import kitchenpos.order.domain.Order;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class OrderResponse {
     private Long id;
@@ -29,52 +29,27 @@ public class OrderResponse {
     }
 
     public static List<OrderResponse> ofList(List<Order> orders) {
-        List<OrderResponse> orderResponses = new ArrayList<>();
-
-        for (Order order : orders) {
-            orderResponses.add(of(order));
-        }
-
-        return orderResponses;
+        return orders.stream().map(OrderResponse::of).collect(Collectors.toList());
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public Long getOrderTableId() {
         return orderTableId;
-    }
-
-    public void setOrderTableId(Long orderTableId) {
-        this.orderTableId = orderTableId;
     }
 
     public String getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(String orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
     public LocalDateTime getOrderedTime() {
         return orderedTime;
-    }
-
-    public void setOrderedTime(LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
     }
 
     public List<OrderLineItemResponse> getOrderLineItems() {
         return orderLineItems;
     }
 
-    public void setOrderLineItems(List<OrderLineItemResponse> orderLineItemResponses) {
-        this.orderLineItems = orderLineItemResponses;
-    }
 }
