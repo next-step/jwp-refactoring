@@ -17,14 +17,13 @@ public class Price {
         amount = BigDecimal.valueOf(0);
     }
 
-    public Price(int amount) {
-        checkNegative(BigDecimal.valueOf(amount));
-        this.amount = BigDecimal.valueOf(amount);
-    }
-
     public Price(BigDecimal amount) {
         checkNegative(amount);
         this.amount = amount;
+    }
+
+    public Price(int amount) {
+        this(BigDecimal.valueOf(amount));
     }
 
     private void checkNegative(BigDecimal amount) {
