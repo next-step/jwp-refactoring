@@ -42,7 +42,7 @@ public class TableService {
         final OrderTable orderTable = orderTableDao.findById(orderTableId)
                 .orElseThrow(NotFoundOrderException::new);
 
-        final List<Order> orders = orderDao.findByOrderTableId(Arrays.asList(orderTableId));
+        final List<Order> orders = orderDao.findOrdersByOrderTableIdIn(Arrays.asList(orderTableId));
 
         if (orders.isEmpty()) {
             throw new NotFoundOrderException();

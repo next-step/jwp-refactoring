@@ -70,7 +70,7 @@ class MenuServiceTest {
         MenuRequest menuRequest = new MenuRequest("순대국", 8000, 1L, Arrays.asList(new MenuProductRequest(PRODUCT_ID, QUANTITY)));
         // when
         when(menuGroupDao.findById(any())).thenReturn(Optional.of(menuGroup));
-        when(productDao.findByIds(any())).thenReturn(Arrays.asList(product));
+        when(productDao.findAllById(any())).thenReturn(Arrays.asList(product));
         when(menuDao.save(any())).thenReturn(menu);
         MenuResponse createdMenu = menuService.create(menuRequest);
 

@@ -85,7 +85,7 @@ class TableServiceTest {
         order.changeOrderStatus(OrderStatus.COMPLETION);
 
         when(orderTableDao.findById(1L)).thenReturn(Optional.of(orderTable));
-        when(orderDao.findByOrderTableId(any())).thenReturn(Arrays.asList(order));
+        when(orderDao.findOrdersByOrderTableIdIn(any())).thenReturn(Arrays.asList(order));
         OrderTableResponse changedOrderTable = tableService.changeEmpty(1L, orderTableEmptyRequest);
         // then
         assertThat(changedOrderTable.isEmpty()).isFalse();

@@ -76,7 +76,7 @@ class TableGroupServiceTest {
         Order order = Order.of(1L, OrderStatus.COMPLETION);
         // when
         when(orderTableDao.findAllByTableGroupId(1L)).thenReturn(orderTables);
-        when(orderDao.findByOrderTableId(any())).thenReturn(Arrays.asList(order));
+        when(orderDao.findOrdersByOrderTableIdIn(any())).thenReturn(Arrays.asList(order));
 
         // then
         tableGroupService.ungroup(1L);
@@ -110,7 +110,7 @@ class TableGroupServiceTest {
         Order order = Order.of(1L, OrderStatus.MEAL);
         // when
         when(orderTableDao.findAllByTableGroupId(1L)).thenReturn(orderTables);
-        when(orderDao.findByOrderTableId(any())).thenReturn(Arrays.asList(order));
+        when(orderDao.findOrdersByOrderTableIdIn(any())).thenReturn(Arrays.asList(order));
 
         // then
         assertThatThrownBy(() -> tableGroupService.ungroup(1L))

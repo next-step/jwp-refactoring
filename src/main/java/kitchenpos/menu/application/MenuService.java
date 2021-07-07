@@ -49,7 +49,7 @@ public class MenuService {
         List<MenuProductRequest> menuProductsRequest = menuRequest.getMenuProducts();
 
         ProductsQuantities productsQuantities = new ProductsQuantities(
-                new Products(productDao.findByIds(menuProductsRequest.stream()
+                new Products(productDao.findAllById(menuProductsRequest.stream()
                         .map(MenuProductRequest::getProductId)
                         .collect(Collectors.toList()))
                         , menuProductsRequest.size())

@@ -2,10 +2,10 @@ package kitchenpos.tablegroup.application;
 
 import java.util.List;
 
-import kitchenpos.common.error.InvalidRequestException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kitchenpos.common.error.InvalidRequestException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.repository.OrderDao;
 import kitchenpos.ordertable.repository.OrderTableDao;
@@ -49,7 +49,7 @@ public class TableGroupService {
         final OrderTables orderTables = OrderTables.of(orderTableDao.findAllByTableGroupId(tableGroupId));
 
         List<Long> orderTableIds = orderTables.orderTableIds();
-        List<Order> orders = orderDao.findByOrderTableId(orderTableIds);
+        List<Order> orders = orderDao.findOrdersByOrderTableIdIn(orderTableIds);
 
         orders.forEach(Order::checkChangeableStatus);
         orderTables.unGroup();
