@@ -1,7 +1,10 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.application.MenuGroupService;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +24,7 @@ import static org.mockito.Mockito.when;
 public class MenuGroupServiceTest {
 
     @Mock
-    MenuGroupDao menuGroupDao;
+    MenuGroupRepository menuGroupRepository;
 
     MenuGroup 한마리메뉴;
     MenuGroup 두마리메뉴;
@@ -33,35 +36,39 @@ public class MenuGroupServiceTest {
         한마리메뉴 = new MenuGroup(1L, "한마리메뉴");
         두마리메뉴 = new MenuGroup(2L, "두마리메뉴");
 
-        menuGroupService = new MenuGroupService(menuGroupDao);
+        menuGroupService = new MenuGroupService(menuGroupRepository);
     }
 
     @DisplayName("메뉴 그룹을 등록")
     @Test
     void 메뉴그룹을_등록() {
         //given
-        MenuGroup menuGroup = new MenuGroup("한마리메뉴");
-        given(menuGroupDao.save(any())).willReturn(한마리메뉴);
+        MenuGroupRequest menuGroupRequest = new MenuGroupRequest("한마리메뉴");
+        given(menuGroupRepository.save(any())).willReturn(한마리메뉴);
 
         //when
-        MenuGroup savedMenuGroup = menuGroupService.create(menuGroup);
+        MenuGroupResponse savedMenuGroupResponse = menuGroupService.create(menuGroupRequest);
 
         //then
-        assertThat(savedMenuGroup.getName()).isEqualTo(menuGroup.getName());
-        assertThat(savedMenuGroup.getId()).isNotNull();
+        assertThat(savedMenuGroupResponse.getName()).isEqualTo(한마리메뉴.getName());
+        assertThat(savedMenuGroupResponse.getId()).isNotNull();
     }
 
     @DisplayName("메뉴 그룹 목록을 불러옴")
     @Test
     void list() {
         //given
-        when(menuGroupDao.findAll()).thenReturn(Arrays.asList(한마리메뉴, 두마리메뉴));
+        when(menuGroupRepository.findAll()).thenReturn(Arrays.asList(한마리메뉴, 두마리메뉴));
 
         //when
-        List<MenuGroup> list = menuGroupService.list();
+        List<MenuGroupResponse> list = menuGroupService.list();
 
         //then
         assertThat(list).hasSize(2);
-        assertThat(list).containsExactly(한마리메뉴, 두마리메뉴);
+        assertThat(list.stream().map(MenuGroupResponse::getName))
+                .containsExactly(
+                        한마리메뉴.getName(),
+                        두마리메뉴.getName()
+                );
     }
 }
