@@ -8,9 +8,12 @@ import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -20,29 +23,28 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("상품 기능 테스트")
 @SpringBootTest
+@Transactional
 public class ProductServiceTest {
-    private Product product1;
     private ProductRequest productRequest;
 
     @Autowired
     private ProductService productService;
 
-    @BeforeEach
-    void setUp() {
-        product1 = new Product("후라이드", Price.of(16000));
-        productRequest = new ProductRequest(this.product1.getName(), this.product1.getPrice());
-    }
-
-    @Test
     @DisplayName("상품을 등록할 수 있다.")
-    public void create() throws Exception {
+    @ParameterizedTest
+    @ValueSource(strings = {"초코파이", "가나파이"})
+    public void create(String name) throws Exception {
+        // given
+        final BigDecimal price = new BigDecimal(1000);
+        productRequest = new ProductRequest(name, price);
+
         // when
         ProductResponse productResponse = productService.create(productRequest);
 
         // then
         assertThat(productResponse).isNotNull();
-        assertThat(productResponse.getName()).isEqualTo(this.product1.getName());
-        assertThat(productResponse.getPrice()).isEqualTo(this.product1.getPrice().getPrice());
+        assertThat(productResponse.getName()).isEqualTo(productRequest.getName());
+        assertThat(productResponse.getPrice().longValue()).isEqualTo(productRequest.getPrice().longValue());
     }
 
     @Test
@@ -51,13 +53,18 @@ public class ProductServiceTest {
         // when then
         assertThatThrownBy(() -> {
             new Product("실패상품", Price.of(-1));
-            productService.create(productRequest);
+            create("김밥");
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("상품의 목록을 조회할 수 있다.")
     public void list() throws Exception {
+        // given
+        // given
+        create("떡볶이");
+        create("순대");
+
         // when
         List<ProductResponse> products = productService.findAll();
 

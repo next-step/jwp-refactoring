@@ -3,7 +3,6 @@ package kitchenpos.ordertable.domain;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
-import kitchenpos.tablegroup.domain.OrderTables;
 import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,7 +46,7 @@ class OrderTableTest {
         OrderTable orderTable1 = new OrderTable(3, true);
         OrderTable orderTable2 = new OrderTable(5, true);
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
-        new TableGroup(new OrderTables(orderTables));
+        new TableGroup(orderTables);
 
         // when then
         assertThatIllegalArgumentException()

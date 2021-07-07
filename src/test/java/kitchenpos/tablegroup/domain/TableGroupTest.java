@@ -1,58 +1,45 @@
 package kitchenpos.tablegroup.domain;
 
 import kitchenpos.ordertable.domain.OrderTable;
-import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("단체 지정 테스트")
 class TableGroupTest {
-    @Test
-    @DisplayName("2 개 이상의 빈 테이블을 단체로 지정할 수 있다.")
-    public void create() throws Exception {
-        // given
-        OrderTable orderTable1 = new OrderTable(0, true);
-        OrderTable orderTable2 = new OrderTable(0, true);
+    private OrderTable orderTable1;
+    private OrderTable orderTable2;
+    private OrderTable orderTable3;
 
-        // when
-        TableGroup tableGroup = new TableGroup(new OrderTables(Arrays.asList(orderTable1, orderTable2)));
-
-        // then
-        Assertions.assertThat(tableGroup).isNotNull();
+    @BeforeEach
+    void setUp() {
+        orderTable1 = new OrderTable(20, true);
+        orderTable2 = new OrderTable(20, true);
+        orderTable3 = new OrderTable(20, true);
     }
 
+    @DisplayName("여러 주문테이블을 묶어 단체지정한다.")
     @Test
-    @DisplayName("단체 지정은 중복될 수 없다.")
-    public void createFail() throws Exception {
-        // given
-        OrderTable orderTable1 = new OrderTable(0, true);
-        OrderTable orderTable2 = new OrderTable(0, true);
-        new TableGroup(new OrderTables(Arrays.asList(orderTable1, orderTable2)));
-
-        // when then
-        Assertions.assertThatIllegalArgumentException()
-                .isThrownBy(() -> new TableGroup(new OrderTables(Arrays.asList(orderTable1, orderTable2))))
-                .withMessageMatching("단체 지정은 중복될 수 없습니다.");
-
-    }
-
-    @Test
-    @DisplayName("단체 지정을 해지할 수 있다.")
-    public void ungroup() throws Exception {
-        // given
-        OrderTable orderTable1 = new OrderTable(0, true);
-        OrderTable orderTable2 = new OrderTable(0, true);
-        TableGroup tableGroup = new TableGroup(new OrderTables(Arrays.asList(orderTable1, orderTable2)));
-
+    void fromGroupingTables() {
         // when
-        tableGroup.ungroup();
+        TableGroup tableGroup = TableGroup.fromGroupingTables(Arrays.asList(orderTable1, orderTable2, orderTable3));
 
         // then
-        Assertions.assertThat(orderTable1.getTableGroup()).isNull();
-        Assertions.assertThat(orderTable2.getTableGroup()).isNull();
+        assertThat(tableGroup.getOrderTables())
+                .containsExactly(orderTable1, orderTable2, orderTable3);
+    }
+
+    @DisplayName("단체지정하려는 주문테이블 수가 적으면 예외 발생.")
+    @Test
+    void fromGroupingTables_Exception() {
+        assertThatThrownBy(() -> TableGroup.fromGroupingTables(Collections.singletonList(orderTable1)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageMatching(TableGroup.MSG_TABLE_COUNT_LEAST);
     }
 }
