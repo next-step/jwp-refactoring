@@ -13,9 +13,16 @@ public class OrderTable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
+
+    @Column(name = "table_group_id")
     private Long tableGroupId;
+
+    @Column(name = "number_og_guests")
     private int numberOfGuests;
+
+    @Column(name = "empty")
     private boolean empty;
 
     @OneToMany(mappedBy = "orderTableId")
