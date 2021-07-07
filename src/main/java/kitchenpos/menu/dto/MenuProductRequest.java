@@ -8,9 +8,17 @@ public class MenuProductRequest {
     private Long productId;
     private Quantity quantity;
 
+    public MenuProductRequest() {
+    }
+
     public MenuProductRequest(Long seq, Long menuId, Long productId, Quantity quantity) {
         this.seq = seq;
         this.menuId = menuId;
+        this.productId = productId;
+        this.quantity = quantity;
+    }
+
+    public MenuProductRequest(Long productId, Quantity quantity) {
         this.productId = productId;
         this.quantity = quantity;
     }
