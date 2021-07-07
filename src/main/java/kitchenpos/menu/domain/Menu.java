@@ -34,16 +34,15 @@ public class Menu {
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
 
-        BigDecimal totalPrice = menuProducts.stream()
+        Price totalPrice = menuProducts.stream()
                 .map(menuProduct -> menuProduct.getProduct()
                         .getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                .reduce(new Price(BigDecimal.ZERO), Price::add)
+                ;
 
-        if (price.compareTo(totalPrice) > 0) {
+        if (this.price.compareTo(totalPrice) > 0) {
             throw new IllegalArgumentException("상품의 총 가격보다 메뉴의 가격이 더 높을수는 없습니다.");
         }
-
-
     }
 
     public Long getId() {

@@ -20,8 +20,8 @@ public class Price {
         }
     }
 
-    public BigDecimal multiply(BigDecimal quantity) {
-        return price.multiply(quantity);
+    public Price multiply(BigDecimal quantity) {
+        return new Price(price.multiply(quantity));
     }
 
     public BigDecimal getPrice() {
@@ -40,5 +40,13 @@ public class Price {
     @Override
     public int hashCode() {
         return Objects.hash(price);
+    }
+
+    public static Price add(Price totalPrice, Price addPrice) {
+        return new Price(totalPrice.price.add(addPrice.price));
+    }
+
+    public int compareTo(Price totalPrice) {
+        return this.price.compareTo(totalPrice.price);
     }
 }
