@@ -45,7 +45,7 @@ class MenuGroupRestController2Test {
 
     //when & then
     mockMvc
-        .perform(post("/api/v2/menu-groups")
+        .perform(post("/api/menu-groups")
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .content(requestBody))
         .andExpect(status().isCreated());
@@ -58,7 +58,7 @@ class MenuGroupRestController2Test {
     MenuGroupResponse createdMenuGroup2 = new MenuGroupResponse(2L, "오늘의메뉴");
     when(menuGroupService.findAllMenuGroups()).thenReturn(Arrays.asList(createdMenuGroup1, createdMenuGroup2));
     mockMvc
-        .perform(get("/api/v2/menu-groups"))
+        .perform(get("/api/menu-groups"))
         .andExpect(status().isOk())
         .andExpect(content().string(containsString("추천메뉴")))
         .andExpect(content().string(containsString("오늘의메뉴")));

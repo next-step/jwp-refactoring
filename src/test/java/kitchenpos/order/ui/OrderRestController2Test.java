@@ -52,7 +52,7 @@ class OrderRestController2Test {
 
     //when & then
     mockMvc
-        .perform(post("/api/v2/orders")
+        .perform(post("/api/orders")
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .content(requestBody))
         .andExpect(status().isCreated());
@@ -76,7 +76,7 @@ class OrderRestController2Test {
 
     //when & then
     mockMvc
-        .perform(get("/api/v2/orders"))
+        .perform(get("/api/orders"))
         .andExpect(status().isOk())
         .andExpect(content().string(containsString("\"id\":1")))
         .andExpect(content().string(containsString("\"id\":2")));
@@ -97,7 +97,7 @@ class OrderRestController2Test {
 
     //when & then
     mockMvc
-        .perform(put("/api/v2/orders/{orderId}/order-status", createdOrder.getId())
+        .perform(put("/api/orders/{orderId}/order-status", createdOrder.getId())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .content(requestBody))
         .andExpect(status().isOk())

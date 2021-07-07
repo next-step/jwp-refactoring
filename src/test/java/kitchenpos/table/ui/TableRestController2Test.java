@@ -44,7 +44,7 @@ class TableRestController2Test {
 
     //when & then
     mockMvc
-        .perform(post("/api/v2/tables")
+        .perform(post("/api/tables")
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .content(requestBody))
         .andExpect(status().isCreated());
@@ -60,7 +60,7 @@ class TableRestController2Test {
 
     //when & then
     mockMvc
-        .perform(get("/api/v2/tables"))
+        .perform(get("/api/tables"))
         .andExpect(status().isOk())
         .andExpect(content().string(containsString("\"id\":1")))
         .andExpect(content().string(containsString("\"id\":2")));
@@ -77,7 +77,7 @@ class TableRestController2Test {
 
     //when & then
     mockMvc
-        .perform(put("/api/v2/tables/{orderTableId}/empty", modifiedOrderTable.getId())
+        .perform(put("/api/tables/{orderTableId}/empty", modifiedOrderTable.getId())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .content(requestBody))
         .andExpect(status().isOk())
@@ -95,7 +95,7 @@ class TableRestController2Test {
 
     //when & then
     mockMvc
-        .perform(put("/api/v2/tables/{orderTableId}/number-of-guests", modifiedOrderTable.getId())
+        .perform(put("/api/tables/{orderTableId}/number-of-guests", modifiedOrderTable.getId())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .content(requestBody))
         .andExpect(status().isOk())

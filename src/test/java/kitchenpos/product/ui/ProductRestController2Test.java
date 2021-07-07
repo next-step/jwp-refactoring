@@ -46,7 +46,7 @@ class ProductRestController2Test {
 
     //when & then
     mockMvc
-        .perform(post("/api/v2/products")
+        .perform(post("/api/products")
                   .contentType(MediaType.APPLICATION_JSON_VALUE)
                   .content(requestBody))
         .andExpect(status().isCreated());
@@ -59,7 +59,7 @@ class ProductRestController2Test {
     ProductResponse createdProduct2 = new ProductResponse(2L, "후라이드치킨", BigDecimal.valueOf(15_000D));
     when(productService.findAllProducts()).thenReturn(Arrays.asList(createdProduct1, createdProduct2));
     mockMvc
-        .perform(get("/api/v2/products"))
+        .perform(get("/api/products"))
         .andExpect(status().isOk())
         .andExpect(content().string(containsString("강정치킨")))
         .andExpect(content().string(containsString("후라이드치킨")));

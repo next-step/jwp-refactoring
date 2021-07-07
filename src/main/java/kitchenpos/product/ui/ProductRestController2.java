@@ -20,7 +20,7 @@ public class ProductRestController2 {
         this.productService = productService;
     }
 
-    @PostMapping("/api/v2/products")
+    @PostMapping("/api/products")
     public ResponseEntity<ProductResponse> create(@RequestBody final ProductRequest product) {
         final ProductResponse created = productService.create(product);
         final URI uri = URI.create("/api/products/" + created.getId());
@@ -29,7 +29,7 @@ public class ProductRestController2 {
                 ;
     }
 
-    @GetMapping("/api/v2/products")
+    @GetMapping("/api/products")
     public ResponseEntity<List<ProductResponse>> list() {
         return ResponseEntity.ok()
                 .body(productService.findAllProducts())

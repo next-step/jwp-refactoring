@@ -16,7 +16,7 @@ public class TableGroupRestController2 {
         this.tableGroupService = tableGroupService;
     }
 
-    @PostMapping("/api/v2/table-groups")
+    @PostMapping("/api/table-groups")
     public ResponseEntity<TableGroupResponse> create(@RequestBody final TableGroupRequest request) {
         final TableGroupResponse created = tableGroupService.create(request);
         final URI uri = URI.create("/api/table-groups/" + created.getId());
@@ -25,7 +25,7 @@ public class TableGroupRestController2 {
                 ;
     }
 
-    @DeleteMapping("/api/v2/table-groups/{tableGroupId}")
+    @DeleteMapping("/api/table-groups/{tableGroupId}")
     public ResponseEntity<Void> ungroup(@PathVariable final Long tableGroupId) {
         tableGroupService.ungroup(tableGroupId);
         return ResponseEntity.noContent()

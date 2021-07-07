@@ -47,7 +47,7 @@ class MenuRestController2Test {
 
     //when & then
     mockMvc
-        .perform(post("/api/v2/menus")
+        .perform(post("/api/menus")
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .content(requestBody))
         .andExpect(status().isCreated());
@@ -60,7 +60,7 @@ class MenuRestController2Test {
     MenuResponse createdMenu2 = new MenuResponse(2L, "후라이드+양념", BigDecimal.valueOf(20_000D), 1L, Collections.singletonList(new MenuResponse.MenuProductResponse(2L, 2L, 2L, 1)));
     when(menuService.findAllMenus()).thenReturn(Arrays.asList(createdMenu1, createdMenu2));
     mockMvc
-        .perform(get("/api/v2/menus"))
+        .perform(get("/api/menus"))
         .andExpect(status().isOk())
         .andExpect(content().string(containsString("후라이드+후라이드")))
         .andExpect(content().string(containsString("후라이드+양념")));

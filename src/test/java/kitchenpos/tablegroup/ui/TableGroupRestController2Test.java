@@ -52,7 +52,7 @@ class TableGroupRestController2Test {
 
     //when & then
     mockMvc
-        .perform(post("/api/v2/table-groups")
+        .perform(post("/api/table-groups")
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .content(requestBody))
         .andExpect(status().isCreated());
@@ -67,7 +67,7 @@ class TableGroupRestController2Test {
 
     //when & then
     mockMvc
-        .perform(delete("/api/v2/table-groups/{tableGroupId}", ungroupId))
+        .perform(delete("/api/table-groups/{tableGroupId}", ungroupId))
         .andExpect(status().isNoContent());
   }
 

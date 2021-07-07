@@ -20,7 +20,7 @@ public class MenuRestController2 {
         this.menuService = menuService;
     }
 
-    @PostMapping("/api/v2/menus")
+    @PostMapping("/api/menus")
     public ResponseEntity<MenuResponse> create(@RequestBody final MenuRequest menu) {
         final MenuResponse created = menuService.create(menu);
         final URI uri = URI.create("/api/menus/" + created.getId());
@@ -29,7 +29,7 @@ public class MenuRestController2 {
                 ;
     }
 
-    @GetMapping("/api/v2/menus")
+    @GetMapping("/api/menus")
     public ResponseEntity<List<MenuResponse>> list() {
         return ResponseEntity.ok()
                 .body(menuService.findAllMenus())
