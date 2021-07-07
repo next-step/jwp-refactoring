@@ -43,4 +43,7 @@ public class Product {
         return price;
     }
 
+    public boolean sameProduct(Long productId) {
+        return id.equals(productId);
+    }
 }

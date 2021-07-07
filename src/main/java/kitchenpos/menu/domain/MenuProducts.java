@@ -1,12 +1,16 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.product.domain.Price;
+import kitchenpos.product.domain.Product;
 
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class MenuProducts {
@@ -19,6 +23,21 @@ public class MenuProducts {
 
     public MenuProducts(List<MenuProduct> menuProducts) {
         this.menuProducts = menuProducts;
+    }
+
+    public MenuProducts(List<MenuProductRequest> menuProductRequests, List<Product> findProducts) {
+        List<MenuProduct> menuProducts = menuProductRequests.stream()
+                .map(menuProductRequest -> new MenuProduct(getMatchedProduct(menuProductRequest, findProducts), menuProductRequest.getQuantity()))
+                .collect(Collectors.toList());
+
+        this.menuProducts = menuProducts;
+    }
+
+    private Product getMatchedProduct(MenuProductRequest menuProductRequest, List<Product> findProducts) {
+        return findProducts.stream()
+                .filter(product -> product.sameProduct(menuProductRequest.getProductId()))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 상품입니다."));
     }
 
     public Price getProductTotalPrice() {

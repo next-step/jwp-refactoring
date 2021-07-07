@@ -1,6 +1,7 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.*;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.Product;
@@ -43,17 +44,16 @@ public class MenuService {
     }
 
     private MenuProducts getMenuProducts(MenuRequest menuRequest) {
-        List<MenuProduct> menuProducts = menuRequest.getMenuProducts()
-                .stream()
-                .map(menuProductRequest -> new MenuProduct(findByProduct(menuProductRequest.getProductId()), menuProductRequest.getQuantity()))
-                .collect(Collectors.toList());
+        List<MenuProductRequest> menuProductRequests = menuRequest.getMenuProducts();
 
-        return new MenuProducts(menuProducts);
+        List<Long> productIds = getProductIds(menuProductRequests);
+        List<Product> findProducts = productRepository.findByIdIn(productIds);
+
+        return new MenuProducts(menuProductRequests, findProducts);
     }
 
-    private Product findByProduct(Long productId) {
-        return productRepository.findById(productId)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 상품입니다."));
+    private List<Long> getProductIds(List<MenuProductRequest> menuProductRequests) {
+        return menuProductRequests.stream().map(menuProductRequest -> menuProductRequest.getProductId()).collect(Collectors.toList());
     }
 
     public List<MenuResponse> list() {
