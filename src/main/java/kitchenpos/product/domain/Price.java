@@ -1,5 +1,6 @@
 package kitchenpos.product.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -7,6 +8,7 @@ import java.util.Objects;
 @Embeddable
 public class Price {
 
+    @Column(name = "price")
     private BigDecimal price;
 
     public Price() {
