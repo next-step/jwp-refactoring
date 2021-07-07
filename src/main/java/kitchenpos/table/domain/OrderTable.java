@@ -13,6 +13,9 @@ import java.util.Objects;
 @Entity
 public class OrderTable {
 
+    private static final String EXCEPTION_MESSAGE_MIN_NUMBER_OF_GUESTS = "손님의 수는 %s보다 작을수 없습니다.";
+    private static final int MIN_NUMBER_OF_GUESTS = 0;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -65,8 +68,8 @@ public class OrderTable {
     }
 
     public void changeNumberOfGuests(int numberOfGuests) {
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException("손님의 수는 0보다 작을수 없습니다.");
+        if (numberOfGuests < MIN_NUMBER_OF_GUESTS) {
+            throw new IllegalArgumentException(String.format(EXCEPTION_MESSAGE_MIN_NUMBER_OF_GUESTS, MIN_NUMBER_OF_GUESTS));
         }
 
         if (isEmpty()) {
