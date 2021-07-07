@@ -1,9 +1,11 @@
 package kitchenpos.order.controller;
 
 import kitchenpos.common.ControllerTest;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,14 +25,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class OrderControllerTest extends ControllerTest {
 
-    private Order order;
+    private OrderRequest order;
 
     @BeforeEach
     public void setup() {
-        List<OrderLineItem> orderLineItems = new ArrayList<>();
-        OrderLineItem orderLineItem = new OrderLineItem(1L, 1L, 1L);
+        List<OrderLineItemRequest> orderLineItems = new ArrayList<>();
+        OrderLineItemRequest orderLineItem = new OrderLineItemRequest(1L, 1L, 1L);
         orderLineItems.add(orderLineItem);
-        order = new Order(3L, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItems);
+        order = new OrderRequest(3L, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItems);
     }
 
     @Test
@@ -52,7 +54,7 @@ public class OrderControllerTest extends ControllerTest {
     @DisplayName("주문을 생성 실패 - orderLineItems 가 없을 경우")
     public void createOrderFailByOrderLineItemsIsNull() {
         // given
-        Order order = new Order(1L, OrderStatus.COOKING.name(), LocalDateTime.now(), null);
+        OrderRequest order = new OrderRequest(1L, OrderStatus.COOKING.name(), LocalDateTime.now(), null);
 
         // when
         // then
@@ -106,10 +108,10 @@ public class OrderControllerTest extends ControllerTest {
     }
 
 
-    private ResultActions 주문_생성_요청(Order order) throws Exception {
+    private ResultActions 주문_생성_요청(OrderRequest orderRequest) throws Exception {
         return mockMvc.perform(post("/api/orders")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(order)))
+                .content(objectMapper.writeValueAsString(orderRequest)))
                 .andDo(print());
     }
 
@@ -119,7 +121,7 @@ public class OrderControllerTest extends ControllerTest {
                 .andDo(print());
     }
 
-    private ResultActions 주문_상태_변경_요청(Order order, Long orderId) throws Exception {
+    private ResultActions 주문_상태_변경_요청(OrderRequest order, Long orderId) throws Exception {
         return mockMvc.perform(put("/api/orders/{orderId}/order-status", orderId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(order)))
