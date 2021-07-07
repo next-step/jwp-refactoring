@@ -11,9 +11,16 @@ public class Menu {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
+
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "price")
     private Price price;
+
+    @Column(name = "menu_group_id")
     private Long menuGroupId;
 
     @OneToMany(mappedBy = "menuId")
