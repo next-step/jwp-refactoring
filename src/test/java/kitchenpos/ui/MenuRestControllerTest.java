@@ -2,21 +2,18 @@ package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.menu.domain.Quantity;
+import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
-import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menu.ui.MenuRestController;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -25,17 +22,15 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(MenuRestController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 class MenuRestControllerTest {
 
     @Autowired
@@ -44,17 +39,36 @@ class MenuRestControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @Autowired
     MenuService menuService;
+
+    @Autowired
+    MenuGroupRepository menuGroupRepository;
+
+    @Autowired
+    MenuProductRepository menuProductRepository;
+
+    @Autowired
+    ProductRepository productRepository;
+
+    @Autowired
+    MenuRepository menuRepository;
 
     @Autowired
     ObjectMapper objectMapper;
 
-    MenuProduct menuProduct;
+    MenuProduct savedMenuProduct;
+    MenuGroup savedMenuGroup;
+    Product savedProduct;
+
 
     @BeforeEach
     void setUp() {
-        menuProduct = new MenuProduct(1L, new Product("햄버거", BigDecimal.valueOf(5000)), new Quantity(1));
+        MenuGroup menuGroup = new MenuGroup("패스트푸드");
+        savedMenuGroup = menuGroupRepository.save(menuGroup);
+
+        Product product = new Product("빅맥", BigDecimal.valueOf(5000));
+        savedProduct = productRepository.save(product);
 
         this.mockMvc = MockMvcBuilders.webAppContextSetup(ctx)
                 .addFilters(new CharacterEncodingFilter("UTF-8", true))
@@ -62,27 +76,26 @@ class MenuRestControllerTest {
                 .build();
     }
 
+    @AfterEach
+    void resetData() {
+
+    }
+
     @DisplayName("메뉴등록 api 테스트")
     @Test
     public void create() throws Exception {
-        MenuProductRequest menuProductRequest = new MenuProductRequest(menuProduct.getSeq(), menuProduct.getMenuId(), menuProduct.getProduct().getId(), menuProduct.getQuantity());
+        MenuProductRequest menuProductRequest = new MenuProductRequest(savedProduct.getId(), new Quantity(1));
 
-        MenuRequest menu = new MenuRequest("패스트푸드", BigDecimal.valueOf(5000), 1L, Arrays.asList(menuProductRequest));
+        MenuRequest menu = new MenuRequest("햄버거세트", BigDecimal.valueOf(5000), savedMenuGroup.getId(), Arrays.asList(menuProductRequest));
 
         String requestBody = objectMapper.writeValueAsString(menu);
 
-        MenuResponse responseMenu = MenuResponse.of(new Menu("패스트푸드", BigDecimal.valueOf(5000), 1L, new MenuProducts(Arrays.asList(menuProduct))));
-
-        String responseBody = objectMapper.writeValueAsString(responseMenu);
-
-        when(menuService.create(any())).thenReturn(responseMenu);
         mockMvc.perform(post("/api/menus")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody)
         )
                 .andDo(print())
                 .andExpect(status().isCreated())
-                .andExpect(content().string(responseBody))
         ;
 
     }
@@ -90,17 +103,19 @@ class MenuRestControllerTest {
     @DisplayName("메뉴 목록 Api 테스트")
     @Test
     void list() throws Exception {
-        MenuResponse menu = MenuResponse.of(new Menu("패스트푸드", BigDecimal.valueOf(5000), 1L, new MenuProducts(Arrays.asList(menuProduct))));
-        List<MenuResponse> menus = Arrays.asList(menu);
+        Menu newMenu = new Menu("햄버거세트", BigDecimal.valueOf(5000), savedMenuGroup);
+        Menu savedNewMenu = menuRepository.save(newMenu);
 
-        String responseBody = objectMapper.writeValueAsString(menus);
+        MenuProduct menuProduct = new MenuProduct(savedNewMenu, savedProduct, new Quantity(1));
+        savedMenuProduct = menuProductRepository.save(menuProduct);
 
-        when(menuService.list()).thenReturn(menus);
+        long countOfMenus = menuRepository.count();
+
         mockMvc.perform(get("/api/menus")
         )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(responseBody))
+        .andExpect(jsonPath("$", hasSize((int)countOfMenus)))
         ;
     }
 }

@@ -2,10 +2,11 @@ package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.*;
-import kitchenpos.product.domain.Price;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -14,9 +15,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -57,13 +56,18 @@ class OrderRestControllerTest {
     MenuRepository menuRepository;
 
     @Autowired
+    MenuGroupRepository menuGroupRepository;
+
+    @Autowired
     OrderLineItemRepository orderLineItemRepository;
 
     OrderLineItem orderLineItem;
 
     @BeforeEach
     void setUp() {
-        Menu menu = new Menu("햄버거", new Price(BigDecimal.valueOf(5000)), 1L);
+        MenuGroup menuGroup = new MenuGroup("패스트푸드");
+        MenuGroup savedMenuGroup = menuGroupRepository.save(menuGroup);
+        Menu menu = new Menu("햄버거", BigDecimal.valueOf(5000), savedMenuGroup);
         Menu savedMenu = menuRepository.save(menu);
 
         orderLineItem = new OrderLineItem(savedMenu.getId(), 10);
