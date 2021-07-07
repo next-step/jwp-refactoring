@@ -68,15 +68,20 @@ public class Menu {
         if (price.compareTo(BigDecimal.ZERO) < 0) {
             throw new MenuPriceCannotBeNegativeException();
         }
+        BigDecimal sum = sumMenuProductPrices(menuProducts);
+        if (price.compareTo(sum) > 0) {
+            throw new InvalidMenuPriceException(THE_SUM_OF_THE_PRICES_OF_THE_GOODS_HAS_EXCEEDED);
+        }
+    }
+
+    private BigDecimal sumMenuProductPrices(List<MenuProduct> menuProducts) {
         BigDecimal sum = BigDecimal.ZERO;
         for (MenuProduct menuProduct : menuProducts) {
             Product product = menuProduct.getProduct();
             sum = sum.add(product.getPrice()
                 .multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
         }
-        if (price.compareTo(sum) > 0) {
-            throw new InvalidMenuPriceException(THE_SUM_OF_THE_PRICES_OF_THE_GOODS_HAS_EXCEEDED);
-        }
+        return sum;
     }
 
     public Long getId() {
