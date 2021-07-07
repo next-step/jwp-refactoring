@@ -9,7 +9,10 @@ public class TableGroup {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
+
+    @Column(name = "created_date")
     private LocalDateTime createdDate;
 
     @OneToMany(mappedBy = "tableGroupId")
