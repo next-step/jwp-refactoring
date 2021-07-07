@@ -23,8 +23,8 @@ public class Menu {
     @Column(name = "menu_group_id")
     private Long menuGroupId;
 
-    @OneToMany(mappedBy = "menuId")
-    private List<MenuProduct> menuProducts;
+    @Embedded
+    private MenuProducts menuProducts;
 
     public Menu() {
     }
@@ -35,17 +35,13 @@ public class Menu {
         this.menuGroupId = menuGroupId;
     }
 
-    public Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    public Menu(String name, BigDecimal price, Long menuGroupId, MenuProducts menuProducts) {
         this.name = name;
         this.price = new Price(price);
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
 
-        Price totalPrice = menuProducts.stream()
-                .map(menuProduct -> menuProduct.getProduct()
-                        .getPrice().multiply(menuProduct.getQuantity()))
-                .reduce(new Price(BigDecimal.ZERO), Price::add)
-                ;
+        Price totalPrice = menuProducts.getProductTotalPrice();
 
         if (this.price.compareTo(totalPrice) > 0) {
             throw new IllegalArgumentException("상품의 총 가격보다 메뉴의 가격이 더 높을수는 없습니다.");
@@ -69,6 +65,6 @@ public class Menu {
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
+        return menuProducts.getMenuProducts();
     }
 }
