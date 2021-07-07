@@ -11,10 +11,9 @@ import static org.mockito.Mockito.verify;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import kitchenpos.product.dao.ProductDao;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
-import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.product.exception.ProductPriceCannotBeNegativeException;
 import kitchenpos.product.exception.ProductPriceEmptyException;
 import org.junit.jupiter.api.DisplayName;
@@ -29,7 +28,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class ProductServiceTest {
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
     @InjectMocks
     private ProductService productService;
 
@@ -38,13 +37,13 @@ public class ProductServiceTest {
     void create() {
         // Given
         Product 피자 = new Product(1L, "피자", new BigDecimal(20000));
-        given(productDao.save(any())).willReturn(피자);
+        given(productRepository.save(any())).willReturn(피자);
 
         // When
         productService.create(ProductRequest.of(피자));
 
         // Then
-        verify(productDao, times(1)).save(any());
+        verify(productRepository, times(1)).save(any());
     }
 
     @DisplayName("가격은 필수입력항목이다.")
@@ -56,7 +55,7 @@ public class ProductServiceTest {
         // When & Then
         assertThatThrownBy(() -> productService.create(햄버거))
             .isInstanceOf(ProductPriceEmptyException.class);
-        verify(productDao, never()).save(any());
+        verify(productRepository, never()).save(any());
     }
 
     @DisplayName("가격은 0원 이상이어야 한다.")
@@ -68,7 +67,7 @@ public class ProductServiceTest {
         // When & Then
         assertThatThrownBy(() -> productService.create(햄버거))
             .isInstanceOf(ProductPriceCannotBeNegativeException.class);
-        verify(productDao, never()).save(any());
+        verify(productRepository, never()).save(any());
     }
 
     @DisplayName("상품 목록을 조회한다.")
@@ -78,11 +77,11 @@ public class ProductServiceTest {
         List<Product> products = new ArrayList<>();
         products.add(new Product(1L, "피자", new BigDecimal(20000)));
         products.add(new Product(2L, "햄버거", new BigDecimal(10000)));
-        given(productDao.findAll()).willReturn(products);
+        given(productRepository.findAll()).willReturn(products);
 
         // When & Then
         assertThat(productService.list()).hasSize(2);
-        verify(productDao, times(1)).findAll();
+        verify(productRepository, times(1)).findAll();
     }
 
 }

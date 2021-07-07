@@ -8,8 +8,8 @@ import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
 import java.util.List;
-import kitchenpos.menu.dao.MenuGroupDao;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class MenuGroupServiceTest {
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
     @InjectMocks
     private MenuGroupService menuGroupService;
 
@@ -32,13 +32,13 @@ public class MenuGroupServiceTest {
     void create() {
         // Given
         MenuGroup 한식 = new MenuGroup(1L, "한식");
-        given(menuGroupDao.save(any())).willReturn(한식);
+        given(menuGroupRepository.save(any())).willReturn(한식);
 
         // When
         menuGroupService.create(MenuGroupRequest.of(한식));
 
         // Then
-        verify(menuGroupDao, times(1)).save(any());
+        verify(menuGroupRepository, times(1)).save(any());
     }
 
     @DisplayName("메뉴 그룹 목록이 정상적으로 조회된다.")
@@ -48,10 +48,10 @@ public class MenuGroupServiceTest {
         List<MenuGroup> menuGroups = new ArrayList<>();
         menuGroups.add(new MenuGroup(1L, "한식"));
         menuGroups.add(new MenuGroup(2L, "중식"));
-        given(menuGroupDao.findAll()).willReturn(menuGroups);
+        given(menuGroupRepository.findAll()).willReturn(menuGroups);
 
         // When & Then
         assertThat(menuGroupService.list()).hasSize(2);
-        verify(menuGroupDao, times(1)).findAll();
+        verify(menuGroupRepository, times(1)).findAll();
     }
 }

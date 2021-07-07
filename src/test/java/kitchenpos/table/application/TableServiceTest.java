@@ -15,8 +15,8 @@ import java.util.Optional;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.exception.CannotChangeNumberOfGuestException;
 import kitchenpos.table.exception.CannotChangeTableEmptyException;
@@ -40,7 +40,7 @@ public class TableServiceTest {
     public static final Long 주문테이블_ID = 1L;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
     @InjectMocks
     private OrderTableService tableService;
 
@@ -50,13 +50,13 @@ public class TableServiceTest {
         // Given
         OrderTable 주문테이블 = new OrderTable(1L, 두명);
         OrderTableRequest 주문테이블_요청 = OrderTableRequest.of(주문테이블);
-        given(orderTableDao.save(any())).willReturn(주문테이블);
+        given(orderTableRepository.save(any())).willReturn(주문테이블);
 
         // When
         tableService.create(주문테이블_요청);
 
         // Then
-        verify(orderTableDao, times(1)).save(any());
+        verify(orderTableRepository, times(1)).save(any());
     }
 
     @DisplayName("주문 테이블 목록을 조회한다.")
@@ -66,11 +66,11 @@ public class TableServiceTest {
         List<OrderTable> orderTables = new ArrayList<>();
         orderTables.add(new OrderTable(1L, 두명, 비어있음));
         orderTables.add(new OrderTable(2L, 두명, 비어있음));
-        given(orderTableDao.findAll()).willReturn(orderTables);
+        given(orderTableRepository.findAll()).willReturn(orderTables);
 
         // When & Then
         assertThat(tableService.list()).hasSize(2);
-        verify(orderTableDao, times(1)).findAll();
+        verify(orderTableRepository, times(1)).findAll();
     }
 
     @DisplayName("주문 테이블을 빈 테이블로 변경한다.")
@@ -79,13 +79,13 @@ public class TableServiceTest {
         // Given
         OrderTable 주문테이블 = new OrderTable(주문테이블_ID, null, 두명);
         OrderTableRequest 주문테이블_요청 = OrderTableRequest.of(주문테이블);
-        given(orderTableDao.findById(any())).willReturn(Optional.of(주문테이블));
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(주문테이블));
 
         // When
         tableService.changeEmpty(주문테이블_ID, 주문테이블_요청);
 
         // Then
-        verify(orderTableDao, times(1)).findById(any());
+        verify(orderTableRepository, times(1)).findById(any());
     }
 
     @DisplayName("단체 지정된 주문테이블인 경우 빈 테이블로 변경이 불가능하다.")
@@ -94,14 +94,14 @@ public class TableServiceTest {
         // Given
         OrderTable 주문테이블 = new OrderTable(주문테이블_ID, 1L, 두명);
         OrderTableRequest 주문테이블_요청 = OrderTableRequest.of(주문테이블);
-        given(orderTableDao.findById(any())).willReturn(Optional.of(주문테이블));
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(주문테이블));
 
         // When
         assertThatThrownBy(() -> tableService.changeEmpty(주문테이블_ID, 주문테이블_요청))
             .isInstanceOf(CannotChangeTableEmptyException.class);
 
         // Then
-        verify(orderTableDao, times(1)).findById(any());
+        verify(orderTableRepository, times(1)).findById(any());
     }
 
     @DisplayName("진행중(조리 or 식사)인 경우 빈 테이블로 변경이 불가능하다.")
@@ -112,14 +112,14 @@ public class TableServiceTest {
         OrderLineItem 주문항목 = new OrderLineItem(1L, 1L, 1L);
         주문테이블.addOrder(new Order(1L, OrderStatus.COOKING, LocalDateTime.now(), new ArrayList<>(Arrays.asList(주문항목))));
         OrderTableRequest 주문테이블_요청 = OrderTableRequest.of(주문테이블);
-        given(orderTableDao.findById(any())).willReturn(Optional.of(주문테이블));
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(주문테이블));
 
         // When
         assertThatThrownBy(() -> tableService.changeEmpty(주문테이블_ID, 주문테이블_요청))
             .isInstanceOf(CannotChangeTableEmptyException.class);
 
         // Then
-        verify(orderTableDao, times(1)).findById(any());
+        verify(orderTableRepository, times(1)).findById(any());
     }
 
     @DisplayName("주문 테이블의 손님 수를 변경한다.")
@@ -128,13 +128,13 @@ public class TableServiceTest {
         // Given
         OrderTable 주문테이블 = new OrderTable(주문테이블_ID, 1L, 두명, 비어있지않음);
         OrderTableRequest 주문테이블_요청 = OrderTableRequest.of(주문테이블);
-        given(orderTableDao.findById(any())).willReturn(Optional.of(주문테이블));
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(주문테이블));
 
         // When
         tableService.changeNumberOfGuests(주문테이블_ID, 주문테이블_요청);
 
         // Then
-        verify(orderTableDao, times(1)).findById(any());
+        verify(orderTableRepository, times(1)).findById(any());
     }
 
     @DisplayName("변경하려는 손님 수는 최소 1명 이상이어야 한다.")
@@ -143,7 +143,7 @@ public class TableServiceTest {
         // Given
         OrderTable 주문테이블 = new OrderTable(주문테이블_ID, 1L, -1);
         OrderTableRequest 주문테이블_요청 = OrderTableRequest.of(주문테이블);
-        given(orderTableDao.findById(any())).willReturn(Optional.of(주문테이블));
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(주문테이블));
 
         // When & then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(주문테이블_ID, 주문테이블_요청))
@@ -156,14 +156,14 @@ public class TableServiceTest {
         // Given
         OrderTable 주문테이블 = new OrderTable(주문테이블_ID, 1L, 두명, 비어있음);
         OrderTableRequest 주문테이블_요청 = OrderTableRequest.of(주문테이블);
-        given(orderTableDao.findById(any())).willReturn(Optional.of(주문테이블));
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(주문테이블));
 
         // When
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(주문테이블_ID, 주문테이블_요청))
             .isInstanceOf(CannotChangeNumberOfGuestException.class);
 
         // Then
-        verify(orderTableDao, times(1)).findById(any());
+        verify(orderTableRepository, times(1)).findById(any());
     }
 
 }

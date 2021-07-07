@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.table.dao.OrderTableDao;
-import kitchenpos.table.dao.TableGroupDao;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.TableGroupRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.TableGroupRequest;
 import org.junit.jupiter.api.DisplayName;
@@ -31,9 +31,9 @@ public class TableGroupServiceTest {
     private static final List<OrderTableRequest> 주문테이블_목록 = new ArrayList<>(Arrays.asList(첫번째_주문테이블, 두번째_주문테이블));
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
     @InjectMocks
     private TableGroupService tableGroupService;
 
@@ -45,15 +45,15 @@ public class TableGroupServiceTest {
         List<OrderTable> orderTables = new ArrayList<>();
         orderTables.add(new OrderTable(1L, 두명));
         orderTables.add(new OrderTable(2L, 두명));
-        given(orderTableDao.findAllById(any())).willReturn(orderTables);
-        given(tableGroupDao.save(any())).willReturn(단체지정.toTableGroup());
+        given(orderTableRepository.findAllById(any())).willReturn(orderTables);
+        given(tableGroupRepository.save(any())).willReturn(단체지정.toTableGroup());
 
         // When
         tableGroupService.create(단체지정);
 
         // Then
-        verify(orderTableDao, times(1)).findAllById(any());
-        verify(tableGroupDao, times(1)).save(any());
+        verify(orderTableRepository, times(1)).findAllById(any());
+        verify(tableGroupRepository, times(1)).save(any());
     }
 
     @DisplayName("단체 지정을 해제한다.")
@@ -64,13 +64,13 @@ public class TableGroupServiceTest {
         List<OrderTable> orderTables = new ArrayList<>();
         orderTables.add(new OrderTable(1L, 두명));
         orderTables.add(new OrderTable(2L, 두명));
-        given(tableGroupDao.findById(any())).willReturn(Optional.of(단체지정.toTableGroup()));
+        given(tableGroupRepository.findById(any())).willReturn(Optional.of(단체지정.toTableGroup()));
 
         // When
         tableGroupService.ungroup(단체지정.getId());
 
         // Then
-        verify(tableGroupDao, times(1)).findById(any());
+        verify(tableGroupRepository, times(1)).findById(any());
     }
 
 }

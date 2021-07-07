@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
-import kitchenpos.menu.dao.MenuDao;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.product.dao.ProductDao;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,23 +19,23 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class MenuService {
 
-    private final MenuDao menuDao;
-    private final ProductDao productDao;
+    private final MenuRepository menuRepository;
+    private final ProductRepository productRepository;
 
-    public MenuService(MenuDao menuDao, ProductDao productDao) {
-        this.menuDao = menuDao;
-        this.productDao = productDao;
+    public MenuService(MenuRepository menuRepository, ProductRepository productRepository) {
+        this.menuRepository = menuRepository;
+        this.productRepository = productRepository;
     }
 
     public MenuResponse create(final MenuRequest menuRequest) {
         List<MenuProduct> menuProducts = makeMenuProducts(menuRequest.getMenuProducts());
         Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuRequest.getMenuGroupId(), menuProducts);
-        return MenuResponse.of(menuDao.save(menu));
+        return MenuResponse.of(menuRepository.save(menu));
     }
 
     private List<MenuProduct> makeMenuProducts(List<MenuProductRequest> menuProductRequests) {
         List<Long> productIds = findProductIds(menuProductRequests);
-        return replaceWithSavedProduct(menuProductRequests, productDao.findAllById(productIds));
+        return replaceWithSavedProduct(menuProductRequests, productRepository.findAllById(productIds));
     }
 
     private List<Long> findProductIds(List<MenuProductRequest> menuProductRequests) {
@@ -61,6 +61,6 @@ public class MenuService {
     }
 
     public List<MenuResponse> list() {
-        return MenuResponse.listOf(menuDao.findAll());
+        return MenuResponse.listOf(menuRepository.findAll());
     }
 }

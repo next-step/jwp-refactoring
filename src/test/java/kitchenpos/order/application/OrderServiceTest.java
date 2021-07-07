@@ -12,14 +12,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.order.dao.OrderDao;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
-import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,9 +41,9 @@ public class OrderServiceTest {
     private static final List<OrderLineItem> 주문_항목_목록 = new ArrayList<>(Arrays.asList(첫번째_주문항목, 두번째_주문항목));
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
     @InjectMocks
     private OrderService orderService;
 
@@ -52,15 +52,15 @@ public class OrderServiceTest {
     void create() {
         // Given
         OrderRequest 주문 = new OrderRequest(주문테이블_ID, OrderStatus.COOKING, LocalDateTime.now(), OrderLineItemRequest.listOf(주문_항목_목록));
-        given(orderTableDao.findById(any())).willReturn(Optional.of(주문테이블));
-        given(orderDao.save(any())).willReturn(주문.toOrder());
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(주문테이블));
+        given(orderRepository.save(any())).willReturn(주문.toOrder());
 
         // When
         orderService.create(주문);
 
         // Then
-        verify(orderTableDao, times(1)).findById(any());
-        verify(orderDao, times(1)).save(any());
+        verify(orderTableRepository, times(1)).findById(any());
+        verify(orderRepository, times(1)).save(any());
     }
 
     @DisplayName("주문 목록을 조회한다.")
@@ -69,11 +69,11 @@ public class OrderServiceTest {
         // Given
         OrderRequest 주문 = new OrderRequest(주문테이블_ID, OrderStatus.COOKING, LocalDateTime.now(), OrderLineItemRequest.listOf(주문_항목_목록));
         List<Order> 주문_목록 = new ArrayList<>(Arrays.asList(주문.toOrder()));
-        given(orderDao.findAll()).willReturn(주문_목록);
+        given(orderRepository.findAll()).willReturn(주문_목록);
 
         // When & Then
         assertThat(orderService.list()).hasSize(1);
-        verify(orderDao, times(1)).findAll();
+        verify(orderRepository, times(1)).findAll();
     }
 
     @DisplayName("주문 상태를 변경한다.")
@@ -82,13 +82,13 @@ public class OrderServiceTest {
         // Given
         OrderStatus 진행상태 = OrderStatus.COOKING;
         OrderRequest 주문 = new OrderRequest(주문_ID, 주문테이블_ID, 진행상태, LocalDateTime.now(), OrderLineItemRequest.listOf(주문_항목_목록));
-        given(orderDao.findById(any())).willReturn(Optional.of(주문.toOrder()));
+        given(orderRepository.findById(any())).willReturn(Optional.of(주문.toOrder()));
 
         // When
         orderService.changeOrderStatus(주문_ID, 진행상태);
 
         // Then
-        verify(orderDao, times(1)).findById(any());
+        verify(orderRepository, times(1)).findById(any());
     }
 
 }

@@ -10,13 +10,13 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.menu.dao.MenuDao;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuRequest;
-import kitchenpos.product.dao.ProductDao;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,9 +42,9 @@ public class MenuServiceTest {
     public static final MenuGroup 패스트푸드 = new MenuGroup(1L, "패스트푸드");
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
     @InjectMocks
     private MenuService menuService;
 
@@ -54,15 +54,15 @@ public class MenuServiceTest {
         // Given
         Menu 치즈버거세트 = new Menu("치즈버거세트", 치즈버거세트_가격, 패스트푸드.getId(), Arrays.asList(치즈버거세트_치즈버거, 치즈버거세트_감자튀김, 치즈버거세트_콜라));
         MenuRequest 메뉴 = MenuRequest.of(치즈버거세트);
-        given(productDao.findAllById(any())).willReturn(new ArrayList<>(Arrays.asList(치즈버거, 감자튀김, 콜라)));
-        given(menuDao.save(any())).willReturn(치즈버거세트);
+        given(productRepository.findAllById(any())).willReturn(new ArrayList<>(Arrays.asList(치즈버거, 감자튀김, 콜라)));
+        given(menuRepository.save(any())).willReturn(치즈버거세트);
 
         // When
         menuService.create(메뉴);
 
         // Then
-        verify(productDao, times(1)).findAllById(any());
-        verify(menuDao, times(1)).save(any());
+        verify(productRepository, times(1)).findAllById(any());
+        verify(menuRepository, times(1)).save(any());
     }
 
     @DisplayName("메뉴 목록을 조회한다.")
@@ -71,11 +71,11 @@ public class MenuServiceTest {
         // Given
         Menu 치즈버거세트 = new Menu(1L, "치즈버거세트", 치즈버거세트_가격, 패스트푸드, Arrays.asList(치즈버거세트_치즈버거, 치즈버거세트_감자튀김, 치즈버거세트_콜라));
         List<Menu> menus = new ArrayList<>(Arrays.asList(치즈버거세트));
-        given(menuDao.findAll()).willReturn(menus);
+        given(menuRepository.findAll()).willReturn(menus);
 
         // When & Then
         assertThat(menuService.list()).hasSize(1);
-        verify(menuDao, times(1)).findAll();
+        verify(menuRepository, times(1)).findAll();
     }
 
 }
