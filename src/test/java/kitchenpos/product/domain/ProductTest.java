@@ -12,7 +12,7 @@ public class ProductTest {
 
     @Test
     @DisplayName("상품을 생성 한다")
-    public void createProduct(){
+    public void createProduct() {
         //given
         String name = "치킨";
         BigDecimal price = new BigDecimal(20000);
@@ -33,6 +33,6 @@ public class ProductTest {
 
         //when
         //then
-        assertThrows(IllegalArgumentException.class, () ->  new Product(name, price));
+        assertThrows(IllegalArgumentException.class, () -> new Product(name, price));
     }
 }

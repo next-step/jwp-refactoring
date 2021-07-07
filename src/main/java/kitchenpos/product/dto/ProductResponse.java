@@ -3,24 +3,20 @@ package kitchenpos.product.dto;
 import kitchenpos.product.domain.Product;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ProductResponse {
-    private Long id;
-    private String name;
-    private BigDecimal price;
+    private final Long id;
+    private final String name;
+    private final BigDecimal price;
 
     public static ProductResponse of(Product product) {
         return new ProductResponse(product.id(), product.name(), product.price());
     }
 
     public static List<ProductResponse> ofList(List<Product> products) {
-        List<ProductResponse> productResponses = new ArrayList<>();
-        for (Product product : products) {
-            productResponses.add(new ProductResponse(product.id(), product.name(), product.price()));
-        }
-        return productResponses;
+        return products.stream().map(ProductResponse::of).collect(Collectors.toList());
     }
 
     public ProductResponse(Long id, String name, BigDecimal price) {
