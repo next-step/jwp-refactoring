@@ -55,4 +55,27 @@ class OrderEntityTest {
         .isInstanceOf(IllegalArgumentException.class);
   }
 
+  @DisplayName("주문 상태를 입력받아 바꿀 수 있다.")
+  @Test
+  void changeStatusTest() {
+    // given
+    OrderEntity orderEntity = new OrderEntity(orderTableId, Arrays.asList(orderLineItemEntity1, orderLineItemEntity2));
+
+    //when
+    orderEntity.changeStatus(OrderStatus.MEAL.name());
+
+    //then
+    assertThat(orderEntity.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
+  }
+
+  @DisplayName("완료 상태의 주문이 아니어야 상태를 변경할 수 있다.")
+  @Test
+  void changeStatusFailCauseCompleteStatusTest() {
+    // given
+    OrderEntity orderEntity = new OrderEntity(orderTableId, OrderStatus.COMPLETION, Arrays.asList(orderLineItemEntity1, orderLineItemEntity2));
+
+    //when & then
+    assertThatThrownBy(() -> orderEntity.changeStatus(OrderStatus.MEAL.name())).isInstanceOf(IllegalArgumentException.class);
+  }
+
 }

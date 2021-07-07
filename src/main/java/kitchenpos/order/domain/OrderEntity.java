@@ -38,6 +38,13 @@ public class OrderEntity {
     orderLineItems.addOrderLineItem(this, items);
   }
 
+  public OrderEntity(Long orderTableId, OrderStatus orderStatus, List<OrderLineItemEntity> items) {
+    this.orderTableId = orderTableId;
+    this.orderStatus = orderStatus;
+    this.orderedTime = LocalDateTime.now();
+    orderLineItems.addOrderLineItem(this, items);
+  }
+
   public OrderEntity(Long id, Long orderTableId, List<OrderLineItemEntity> items) {
     this.id = id;
     this.orderTableId = orderTableId;
