@@ -8,7 +8,6 @@ import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
 import kitchenpos.table.exception.OrderUsingException;
-import kitchenpos.tablegroup.domain.TableGroup;
 
 @Embeddable
 public class OrderTables {

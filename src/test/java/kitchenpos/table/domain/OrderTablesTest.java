@@ -16,7 +16,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.product.constant.OrderStatus;
-import kitchenpos.tablegroup.domain.TableGroup;
 
 public class OrderTablesTest {
 

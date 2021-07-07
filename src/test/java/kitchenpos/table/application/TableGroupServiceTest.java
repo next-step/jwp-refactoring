@@ -1,4 +1,4 @@
-package kitchenpos.tablegroup.application;
+package kitchenpos.table.application;
 
 import static kitchenpos.util.TestDataSet.테이블_1번;
 import static kitchenpos.util.TestDataSet.테이블_2번;
@@ -28,14 +28,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.product.constant.OrderStatus;
+import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTables;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.domain.TableGroupRepository;
 import kitchenpos.table.dto.OrderTableRequest;
-import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.domain.TableGroupRepository;
-import kitchenpos.tablegroup.dto.TableGroupRequest;
-import kitchenpos.tablegroup.dto.TableGroupResponse;
+import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupResponse;
 
 @ExtendWith(MockitoExtension.class)
 public class TableGroupServiceTest {

@@ -16,7 +16,7 @@ import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
-import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.table.domain.TableGroup;
 
 public class TestDataSet {
     public static final MenuGroup 추천_메뉴_그륩 = new MenuGroup(1L, "추천메뉴");

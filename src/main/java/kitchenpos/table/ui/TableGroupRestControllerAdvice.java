@@ -1,4 +1,4 @@
-package kitchenpos.tablegroup.ui;
+package kitchenpos.table.ui;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -6,11 +6,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import kitchenpos.common.exception.ErrorResponse;
+import kitchenpos.table.exception.AlreadyUseTableException;
 import kitchenpos.table.exception.NoOrderTableException;
-import kitchenpos.tablegroup.exception.AlreadyUseTableException;
-import kitchenpos.tablegroup.exception.NoTableGroupException;
-import kitchenpos.tablegroup.exception.NoTableSizeException;
-import kitchenpos.tablegroup.exception.NotAbaliableOrderTableException;
+import kitchenpos.table.exception.NoTableGroupException;
+import kitchenpos.table.exception.NoTableSizeException;
+import kitchenpos.table.exception.NotAbaliableOrderTableException;
 
 @RestControllerAdvice
 public class TableGroupRestControllerAdvice {

@@ -1,4 +1,4 @@
-package kitchenpos.tablegroup.ui;
+package kitchenpos.table.ui;
 
 import static kitchenpos.util.TestDataSet.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -18,8 +18,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import kitchenpos.tablegroup.application.TableGroupService;
-import kitchenpos.tablegroup.dto.TableGroupResponse;
+import kitchenpos.table.application.TableGroupService;
+import kitchenpos.table.dto.TableGroupResponse;
+import kitchenpos.table.ui.TableGroupRestController;
 
 @WebMvcTest(controllers = TableGroupRestController.class)
 @ExtendWith(MockitoExtension.class)

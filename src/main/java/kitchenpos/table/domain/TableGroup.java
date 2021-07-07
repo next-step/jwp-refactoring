@@ -1,4 +1,4 @@
-package kitchenpos.tablegroup.domain;
+package kitchenpos.table.domain;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -12,11 +12,9 @@ import javax.persistence.Id;
 
 import org.springframework.util.CollectionUtils;
 
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTables;
-import kitchenpos.tablegroup.exception.AlreadyUseTableException;
-import kitchenpos.tablegroup.exception.NoTableSizeException;
-import kitchenpos.tablegroup.exception.NotAbaliableOrderTableException;
+import kitchenpos.table.exception.AlreadyUseTableException;
+import kitchenpos.table.exception.NoTableSizeException;
+import kitchenpos.table.exception.NotAbaliableOrderTableException;
 
 @Entity
 public class TableGroup {

@@ -18,7 +18,7 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.product.constant.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.table.domain.TableGroup;
 
 public class OrderTest {
 

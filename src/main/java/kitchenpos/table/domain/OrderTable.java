@@ -19,7 +19,6 @@ import kitchenpos.table.exception.AlreadyExsistGroupException;
 import kitchenpos.table.exception.EmptyTableException;
 import kitchenpos.table.exception.NoGuestsException;
 import kitchenpos.table.exception.OrderUsingException;
-import kitchenpos.tablegroup.domain.TableGroup;
 
 @Entity
 public class OrderTable {
