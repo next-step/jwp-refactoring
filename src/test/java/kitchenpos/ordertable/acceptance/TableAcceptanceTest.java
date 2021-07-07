@@ -1,34 +1,17 @@
 package kitchenpos.ordertable.acceptance;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static kitchenpos.utils.acceptan.RequestHelper.*;
+import static kitchenpos.utils.acceptan.ResponseHelper.*;
 
-import java.util.Arrays;
-import java.util.List;
-
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 
 import kitchenpos.AcceptanceTest;
-import kitchenpos.menu.dto.MenuProductRequest;
-import kitchenpos.menu.dto.MenuRequest;
-import kitchenpos.menugroup.dto.MenuGroupRequest;
-import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.dto.OrderLineItemRequest;
-import kitchenpos.order.dto.OrderRequest;
-import kitchenpos.order.dto.OrderStatusRequest;
-import kitchenpos.ordertable.dto.OrderTableEmptyRequest;
-import kitchenpos.ordertable.dto.OrderTableNumberOfGuestsRequest;
-import kitchenpos.ordertable.dto.OrderTableRequest;
-import kitchenpos.ordertable.dto.OrderTableResponse;
-import kitchenpos.product.dto.ProductRequest;
 
 @DisplayName("주문 테이블 인수 테스트")
 public class TableAcceptanceTest extends AcceptanceTest {
@@ -117,7 +100,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> 주문_테이블_고객수_변경_요청_응답 = 주문_테이블_고객수_변경_요청(주문_테이블_번호, 고객_수_5명);
         // then
-        주문_테이블_고객수_변경_요청_응답_확인(주문_테이블_고객수_변경_요청_응답);
+        주문_테이블_고객수_변경_요청_응답_확인(주문_테이블_고객수_변경_요청_응답, 고객_수_5명);
     }
 
     @DisplayName("고객 수 변경 실패 - 고객 수가 음수")
@@ -140,131 +123,5 @@ public class TableAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 주문_테이블_고객수_변경_실패 = 주문_테이블_고객수_변경_요청(주문_테이블_번호, 고객_수_5명);
         // then
         주문_테이블_고객수_변경_실패_확인(주문_테이블_고객수_변경_실패);
-    }
-
-    private ExtractableResponse<Response> 주문_상태_변경_요청(Long 주문_번호, OrderStatus orderStatus) {
-        OrderStatusRequest orderStatusRequest = new OrderStatusRequest(orderStatus.name());
-        return RestAssured.given().log().all()
-                .body(orderStatusRequest)
-                .contentType(ContentType.JSON)
-                .when().put("/api/orders/" + 주문_번호 + "/order-status")
-                .then().log().all()
-                .extract();
-    }
-
-    private ExtractableResponse<Response> 메뉴_그룹_생성_요청(String 요청_메뉴_그룹) {
-        MenuGroupRequest menuGroupRequest = new MenuGroupRequest(요청_메뉴_그룹);
-        return RestAssured.given().log().all()
-                .body(menuGroupRequest)
-                .contentType(ContentType.JSON)
-                .when().post("/api/menu-groups/")
-                .then().log().all()
-                .extract();
-    }
-
-    private ExtractableResponse<Response> 상품_생성_요청(String 상품_이름, int 상품_가격) {
-        ProductRequest productRequest = new ProductRequest(상품_이름, 상품_가격);
-        return RestAssured.given().log().all()
-                .body(productRequest)
-                .contentType(ContentType.JSON)
-                .when().post("/api/products")
-                .then().log().all()
-                .extract();
-    }
-
-    private Long 공통_번호_추출(ExtractableResponse<Response> 상품_생성_요청_응답) {
-        String[] locationInfo = 상품_생성_요청_응답.header("Location").split("/");
-        return Long.parseLong(locationInfo[3]);
-    }
-
-    private Long 메뉴_그룹_번호_추출(ExtractableResponse<Response> 메뉴_그룹_생성_요청_응답) {
-        MenuGroupResponse 응답 = 메뉴_그룹_생성_요청_응답.as(MenuGroupResponse.class);
-        return 응답.getId();
-    }
-
-    private ExtractableResponse<Response> 메뉴_생성_요청(String 메뉴_이름, int 가격, Long 메뉴_그룹_번호, Long 상품_번호, Long 상품_수량) {
-        MenuProductRequest 메뉴_상품_요청 = new MenuProductRequest(상품_번호, 상품_수량);
-        MenuRequest menuRequest = new MenuRequest(메뉴_이름, 가격, 메뉴_그룹_번호, Arrays.asList(메뉴_상품_요청));
-        return RestAssured.given().log().all()
-                .body(menuRequest)
-                .contentType(ContentType.JSON)
-                .when().post("/api/menus/")
-                .then().log().all()
-                .extract();
-    }
-
-    private ExtractableResponse<Response> 주문_테이블_생성_요청(int 고객_수, boolean 비어있음_여부) {
-        OrderTableRequest orderTableRequest = new OrderTableRequest(고객_수, 비어있음_여부);
-        return RestAssured.given().log().all()
-                .body(orderTableRequest)
-                .contentType(ContentType.JSON)
-                .when().post("/api/tables")
-                .then().log().all()
-                .extract();
-    }
-
-    private void 주문_테이블_생성_요청_응답_확인(ExtractableResponse<Response> 주문_생성_요청_응답) {
-        assertThat(주문_생성_요청_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-    }
-
-    private ExtractableResponse<Response> 주문_테이블_조회_요청() {
-        return RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .when().get("/api/tables")
-                .then().log().all()
-                .extract();
-    }
-
-    private ExtractableResponse<Response> 주문_테이블_비어있음_요청(Long 주문_테이블_번호, boolean 비어있음_여부) {
-        OrderTableEmptyRequest orderTableEmptyRequest = new OrderTableEmptyRequest(비어있음_여부);
-        return RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .body(orderTableEmptyRequest)
-                .when().put("/api/tables/" + 주문_테이블_번호 + "/empty")
-                .then().log().all()
-                .extract();
-    }
-
-    private ExtractableResponse<Response> 주문_테이블_고객수_변경_요청(Long 주문_테이블_번호, int 고객수5명) {
-        OrderTableNumberOfGuestsRequest orderTableNumberOfGuestsRequest = new OrderTableNumberOfGuestsRequest(고객수5명);
-        return RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .body(orderTableNumberOfGuestsRequest)
-                .when().put("/api/tables/" + 주문_테이블_번호 + "/number-of-guests")
-                .then().log().all()
-                .extract();
-    }
-
-    private void 주문_테이블_조회_요청_응답_확인(ExtractableResponse<Response> 주문_테이블_조회_요청_응답) {
-        List<OrderTableResponse> orderTableResponses = 주문_테이블_조회_요청_응답.jsonPath().getList("", OrderTableResponse.class);
-        assertThat(orderTableResponses.get(0).isEmpty()).isFalse();
-    }
-
-    private void 주문_테이블_비어있음_요청_응답_실패_확인(ExtractableResponse<Response> 주문_테이블_비어있음_요청_응답_실패) {
-        assertThat(주문_테이블_비어있음_요청_응답_실패.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
-    private void 주문_테이블_고객수_변경_실패_확인(ExtractableResponse<Response> 주문_테이블_고객수_변경_실패) {
-        assertThat(주문_테이블_고객수_변경_실패.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
-    private void 주문_테이블_비어있음_요청_응답_확인(ExtractableResponse<Response> 주문_테이블_비어있음_요청_응답) {
-        OrderTableResponse orderTableResponse = 주문_테이블_비어있음_요청_응답.as(OrderTableResponse.class);
-        assertThat(orderTableResponse.isEmpty()).isTrue();
-    }
-
-    private ExtractableResponse<Response> 주문_생성_요청(Long 주문_테이블_번호, Long 메뉴_번호, int 메뉴_수량) {
-        OrderRequest orderRequest = new OrderRequest(주문_테이블_번호, Arrays.asList(new OrderLineItemRequest(메뉴_번호, 메뉴_수량)));
-        return RestAssured.given().log().all()
-                .body(orderRequest)
-                .contentType(ContentType.JSON)
-                .when().post("/api/orders")
-                .then().log().all()
-                .extract();
-    }
-
-    private void 주문_테이블_고객수_변경_요청_응답_확인(ExtractableResponse<Response> 주문_테이블_고객수_변경_요청_응답) {
-        OrderTableResponse orderTableResponse = 주문_테이블_고객수_변경_요청_응답.as(OrderTableResponse.class);
-        assertThat(orderTableResponse.getNumberOfGuests()).isEqualTo(고객_수_5명);
     }
 }

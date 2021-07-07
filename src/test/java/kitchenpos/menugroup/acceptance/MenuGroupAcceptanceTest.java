@@ -1,21 +1,15 @@
 package kitchenpos.menugroup.acceptance;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static kitchenpos.utils.acceptan.RequestHelper.*;
+import static kitchenpos.utils.acceptan.ResponseHelper.*;
 
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 
-import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.menugroup.dto.MenuGroupRequest;
-
-import java.util.List;
 
 @DisplayName("메뉴 그룹 인수 테스트")
 public class MenuGroupAcceptanceTest extends AcceptanceTest {
@@ -47,32 +41,5 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 메뉴_그룹_조회_요청_응답 = 메뉴_그룹_조회_요청();
         // then
         메뉴_그룹_조회_요청_응답_확인(메뉴_그룹_조회_요청_응답);
-    }
-
-    private void 메뉴_그룹_조회_요청_응답_확인(ExtractableResponse<Response> 메뉴_그룹_조회_요청_응답) {
-        List<MenuGroupResponse> menuGroupResponses = 메뉴_그룹_조회_요청_응답.jsonPath().getList("", MenuGroupResponse.class);
-        assertThat(menuGroupResponses.get(0).getName()).isEqualTo("국밥");
-    }
-
-    private ExtractableResponse<Response> 메뉴_그룹_조회_요청() {
-        return RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .when().get("/api/menu-groups/")
-                .then().log().all()
-                .extract();
-    }
-
-    private ExtractableResponse<Response> 메뉴_그룹_생성_요청(String 요청_메뉴_그룹) {
-        MenuGroupRequest menuGroupRequest = new MenuGroupRequest(요청_메뉴_그룹);
-        return RestAssured.given().log().all()
-                .body(menuGroupRequest)
-                .contentType(ContentType.JSON)
-                .when().post("/api/menu-groups/")
-                .then().log().all()
-                .extract();
-    }
-
-    private void 메뉴_그룹_생성_요청_응답_확인(ExtractableResponse<Response> 메뉴_그룹_생성_요청_응답) {
-        assertThat(메뉴_그룹_생성_요청_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 }
