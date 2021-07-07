@@ -1,5 +1,7 @@
 package kitchenpos.product.domain;
 
+import kitchenpos.menu.domain.Quantity;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.math.BigDecimal;
@@ -22,8 +24,8 @@ public class Price {
         }
     }
 
-    public Price multiply(BigDecimal quantity) {
-        return new Price(price.multiply(quantity));
+    public Price multiply(Quantity quantity) {
+        return new Price(price.multiply(BigDecimal.valueOf(quantity.getQuantity())));
     }
 
     public BigDecimal getPrice() {

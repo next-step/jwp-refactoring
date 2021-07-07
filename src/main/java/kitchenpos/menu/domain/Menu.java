@@ -43,7 +43,7 @@ public class Menu {
 
         Price totalPrice = menuProducts.stream()
                 .map(menuProduct -> menuProduct.getProduct()
-                        .getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())))
+                        .getPrice().multiply(menuProduct.getQuantity()))
                 .reduce(new Price(BigDecimal.ZERO), Price::add)
                 ;
 

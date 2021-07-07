@@ -3,6 +3,7 @@ package kitchenpos.ui;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.Quantity;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuProductResponse;
 import kitchenpos.menu.dto.MenuRequest;
@@ -52,7 +53,7 @@ class MenuRestControllerTest {
 
     @BeforeEach
     void setUp() {
-        menuProduct = new MenuProduct(1L, 1L, new Product(), 1);
+        menuProduct = new MenuProduct(1L, 1L, new Product(), new Quantity(1));
 
         this.mockMvc = MockMvcBuilders.webAppContextSetup(ctx)
                 .addFilters(new CharacterEncodingFilter("UTF-8", true))

@@ -54,7 +54,7 @@ class MenuServiceTest {
         Product product = new Product("빅맥", price);
         savedProduct = productRepository.save(product);
 
-        menuProduct = new MenuProduct(savedProduct, 1);
+        menuProduct = new MenuProduct(savedProduct, new Quantity(1));
     }
 
     @DisplayName("메뉴를 만들어보자")
