@@ -66,10 +66,6 @@ public class Order {
         return orderStatus;
     }
 
-    private void setOrderStatus(final OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
     public LocalDateTime getOrderedTime() {
         return orderedTime;
     }
@@ -83,7 +79,7 @@ public class Order {
             throw new IllegalArgumentException("완료상태인 준문은 상태변경이 불가능합니다.");
         }
 
-        setOrderStatus(orderStatus);
+        this.orderStatus = orderStatus;
     }
 
     public void ungroupValidation() {
