@@ -3,7 +3,6 @@ package kitchenpos.menu;
 import kitchenpos.application.MenuService;
 import kitchenpos.common.ControllerTest;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.ui.MenuRestController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -40,7 +39,6 @@ public class MenuControllerTest extends ControllerTest<Menu> {
 
     @BeforeEach
     void 사전준비() {
-
         후라이드치킨 = new Menu();
         후라이드치킨.setId(1L);
         후라이드치킨.setName("후라이드치킨");
@@ -59,7 +57,7 @@ public class MenuControllerTest extends ControllerTest<Menu> {
         생성성공(결과, 후라이드치킨);
     }
 
-    @DisplayName("메뉴그룹 목록 조회요청")
+    @DisplayName("메뉴 목록 조회요청")
     @Test
     void 메뉴_목록_조회요청() throws Exception {
         //Given
