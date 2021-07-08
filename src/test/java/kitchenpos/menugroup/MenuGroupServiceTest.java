@@ -59,9 +59,7 @@ public class MenuGroupServiceTest {
 	}
 
 	public static MenuGroup 메뉴그룹_생성(Long id, String name) {
-		MenuGroup 메뉴그룹 = new MenuGroup();
-		메뉴그룹.setId(id);
-		메뉴그룹.setName(name);
+		MenuGroup 메뉴그룹 = new MenuGroup(id, name);
 		return 메뉴그룹;
 	}
 
