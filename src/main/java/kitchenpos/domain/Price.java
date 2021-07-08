@@ -28,8 +28,8 @@ public class Price {
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final Price price1 = (Price) o;
-        return price.equals(price1.price);
+        final Price that = (Price) o;
+        return Objects.equals(price, that.price);
     }
 
     @Override
