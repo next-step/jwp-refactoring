@@ -1,16 +1,13 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.order.OrderTable;
 import kitchenpos.dto.order.OrderTableId;
 import kitchenpos.dto.order.TableGroupRequest;
 import kitchenpos.exception.InvalidOrderStatusException;
 import kitchenpos.exception.InvalidOrderTableException;
 import kitchenpos.exception.NotMatchOrderTableException;
-import kitchenpos.repository.OrderRepository;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,7 +29,7 @@ import static org.mockito.Mockito.verify;
 class TableGroupServiceTest {
 
     @Mock
-    private OrderRepository orderRepository;
+    private OrderService orderService;
     @Mock
     private OrderTableService orderTableService;
     @Mock
@@ -105,10 +102,9 @@ class TableGroupServiceTest {
         List<OrderTable> orderTables = Lists.list(orderTable1, orderTable2);
         given(orderTableService.getAllOrderTablesByGroupId(ANY_TABLE_GROUP_ID))
                 .willReturn(orderTables);
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                Lists.list(ORDER_TABLE_ID_1L, ORDER_TABLE_ID_2L),
-                Lists.list(OrderStatus.COOKING, OrderStatus.MEAL)))
-                .willReturn(false);
+        given(orderService.isOrderCompletionByOrderTableIds(
+                Lists.list(ORDER_TABLE_ID_1L, ORDER_TABLE_ID_2L)))
+                .willReturn(true);
 
         tableGroupService.ungroup(ANY_TABLE_GROUP_ID);
 
@@ -122,11 +118,9 @@ class TableGroupServiceTest {
         List<OrderTable> orderTables = Lists.list(orderTable1, orderTable2);
         given(orderTableService.getAllOrderTablesByGroupId(ANY_TABLE_GROUP_ID))
                 .willReturn(orderTables);
-
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                Lists.list(ORDER_TABLE_ID_1L, ORDER_TABLE_ID_2L),
-                Lists.list(OrderStatus.COOKING, OrderStatus.MEAL)))
-                .willReturn(true);
+        given(orderService.isOrderCompletionByOrderTableIds(
+                Lists.list(ORDER_TABLE_ID_1L, ORDER_TABLE_ID_2L)))
+                .willReturn(false);
 
         assertThatThrownBy(() -> tableGroupService.ungroup(ANY_TABLE_GROUP_ID))
                 .isInstanceOf(InvalidOrderStatusException.class);

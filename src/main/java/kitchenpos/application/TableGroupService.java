@@ -1,18 +1,15 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.order.OrderTable;
 import kitchenpos.domain.order.TableGroup;
 import kitchenpos.dto.order.TableGroupRequest;
 import kitchenpos.exception.InvalidOrderStatusException;
 import kitchenpos.exception.NotMatchOrderTableException;
-import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.TableGroupRepository;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,12 +17,12 @@ import static kitchenpos.domain.order.TableGroup.of;
 
 @Service
 public class TableGroupService {
-    private final OrderRepository orderRepository;
+    private final OrderService orderService;
     private final OrderTableService orderTableService;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final OrderRepository orderRepository, final OrderTableService orderTableService, final TableGroupRepository tableGroupRepository) {
-        this.orderRepository = orderRepository;
+    public TableGroupService(final OrderService orderService, final OrderTableService orderTableService, final TableGroupRepository tableGroupRepository) {
+        this.orderService = orderService;
         this.orderTableService = orderTableService;
         this.tableGroupRepository = tableGroupRepository;
     }
@@ -62,7 +59,8 @@ public class TableGroupService {
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
 
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+
+        if (!orderService.isOrderCompletionByOrderTableIds(orderTableIds)) {
             throw new InvalidOrderStatusException("orderTableIds: " + Strings.join(orderTableIds, ','));
         }
 

@@ -13,6 +13,7 @@ import kitchenpos.repository.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -78,5 +79,9 @@ public class OrderService {
         savedOrder.changeStatus(orderStatus);
 
         return savedOrder;
+    }
+
+    public boolean isOrderCompletionByOrderTableIds(List<Long> orderTableIds) {
+        return !orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
     }
 }
