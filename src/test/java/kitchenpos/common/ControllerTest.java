@@ -71,8 +71,7 @@ public abstract class ControllerTest<T> {
     }
 
     protected void 수정성공(ResultActions resultActions, T expectedResult) throws Exception {
-        resultActions.andExpect(status().isOk())
-                .andExpect(content().string(objectMapper.writeValueAsString(expectedResult)));
+        resultActions.andExpect(status().isOk());
     }
 
     protected void 삭제성공(ResultActions resultActions) throws Exception {
