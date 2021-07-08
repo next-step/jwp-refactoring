@@ -1,7 +1,6 @@
 package kitchenpos.menu.domain;
 
 import kitchenpos.common.Price;
-import kitchenpos.product.domain.Product;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -46,7 +45,7 @@ public class Menu {
             priceSumOfMenuProducts = priceSumOfMenuProducts.add(menuProduct.getPrice());
         }
 
-        price.isInvalidIfOverThan(priceSumOfMenuProducts);
+        price.checkIfOverThan(priceSumOfMenuProducts);
     }
 
     public Long getId() {

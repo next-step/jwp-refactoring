@@ -25,7 +25,7 @@ public class Price {
         return price.compareTo(BigDecimal.ZERO) < 0;
     }
 
-    public void isInvalidIfOverThan(BigDecimal sum) {
+    public void checkIfOverThan(BigDecimal sum) {
         if (price.compareTo(sum) > 0) {
             throw new IllegalArgumentException();
         }

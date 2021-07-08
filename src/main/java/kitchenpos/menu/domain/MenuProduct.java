@@ -13,13 +13,9 @@ public class MenuProduct {
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Menu menu;
-//    @Column
-//    private Long menuId;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Product product;
-//    @Column
-//    private Long productId;
 
     @Column
     private long quantity;
