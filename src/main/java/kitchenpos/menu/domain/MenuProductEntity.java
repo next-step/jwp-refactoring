@@ -61,7 +61,7 @@ public class MenuProductEntity {
 
   public Price calculateAmount() {
     BigDecimal productPrice = product.getPrice();
-    return Price.from(productPrice.multiply(quantity.getBigDecimalValue()));
+    return Price.fromBigDecimal(productPrice.multiply(quantity.getBigDecimalValue()));
   }
 
   @Override

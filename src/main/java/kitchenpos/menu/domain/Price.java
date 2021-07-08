@@ -23,12 +23,12 @@ class Price {
     this.value = value;
   }
 
-  public static Price from(Double price) {
+  public static Price fromDouble(Double price) {
     validateDoubleValue(price);
     return new Price(BigDecimal.valueOf(price));
   }
 
-  public static Price from(BigDecimal price) {
+  public static Price fromBigDecimal(BigDecimal price) {
     validateBigDecimalValue(price);
     return new Price(price);
   }
@@ -49,7 +49,7 @@ class Price {
     return value;
   }
   public Price sum(Price price2) {
-    return Price.from(this.value.add(price2.value));
+    return Price.fromBigDecimal(this.value.add(price2.value));
   }
 
   @Override

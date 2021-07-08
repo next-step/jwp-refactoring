@@ -33,7 +33,7 @@ public class MenuEntity {
 
   public MenuEntity(String name, Double menuPrice, MenuGroupEntity menuGroup, List<MenuProductEntity> products) {
     this.name = name;
-    this.price = Price.from(menuPrice);
+    this.price = Price.fromDouble(menuPrice);
     this.menuGroup = menuGroup;
     menuProducts.addMenuProducts(this, products);
   }
@@ -41,7 +41,7 @@ public class MenuEntity {
   public MenuEntity(Long id, String name, Double menuPrice, MenuGroupEntity menuGroup, List<MenuProductEntity> products) {
     this.id = id;
     this.name = name;
-    this.price = Price.from(menuPrice);
+    this.price = Price.fromDouble(menuPrice);
     this.menuGroup = menuGroup;
     menuProducts.addMenuProducts(this, products);
   }
