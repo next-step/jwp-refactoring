@@ -32,14 +32,9 @@ import static org.mockito.Mockito.verify;
 class TableGroupServiceTest {
 
     @Mock
-    private OrderService orderService;
-    @Mock
     private OrderTableService orderTableService;
     @Mock
     private ApplicationEventPublisher publisher;
-
-    @Captor
-    private ArgumentCaptor<TableOrderUngroupEvent> tableOrderUngroupEventArgumentCaptor;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -116,22 +111,6 @@ class TableGroupServiceTest {
         verify(orderTableService).makeTableGroupEmpty(orderTable1);
         verify(orderTableService).makeTableGroupEmpty(orderTable2);
     }
-
-//    @Test
-//    @DisplayName("단체 지정을 취소할 수 있다.")
-//    void ungroup2() {
-//        List<OrderTable> orderTables = Lists.list(orderTable1, orderTable2);
-//        given(orderTableService.getAllOrderTablesByGroupId(ANY_TABLE_GROUP_ID))
-//                .willReturn(orderTables);
-//
-//        tableGroupService.ungroup(ANY_TABLE_GROUP_ID);
-//
-//        verify(publisher).publishEvent(tableOrderUngroupEventArgumentCaptor.capture());
-//
-//        assertThat(tableOrderUngroupEventArgumentCaptor.getValue().getOrderTables()).isEqualTo(orderTables);
-//        verify(orderTableService).makeTableGroupEmpty(orderTable1);
-//        verify(orderTableService).makeTableGroupEmpty(orderTable2);
-//    }
 
     @Test
     @DisplayName("주문이 식사 또는 조리의 경우 단체 지정을 취소할 수 없다.")
