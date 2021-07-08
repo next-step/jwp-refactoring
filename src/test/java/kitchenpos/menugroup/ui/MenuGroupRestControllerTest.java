@@ -1,9 +1,9 @@
-package kitchenpos.ui;
+package kitchenpos.menugroup.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.menugroup.application.MenuGroupService;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.ui.MenuGroupRestController;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,8 @@ import java.util.List;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -51,9 +52,9 @@ class MenuGroupRestControllerTest {
     @DisplayName("메뉴 그룹을 등록한다.")
     @Test
     void create() throws Exception {
-        MenuGroup menuGroup = new MenuGroup(5L, "기타안주메뉴");
+        MenuGroupRequest menuGroup = new MenuGroupRequest( "기타안주메뉴");
         String params = mapper.writeValueAsString(menuGroup);
-        given(menuGroupService.create(any())).willReturn(menuGroup);
+        given(menuGroupService.create(any())).willReturn(new MenuGroupResponse(1L, "기타안주메뉴"));
 
         mockMvc.perform(post("/api/menu-groups")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -64,8 +65,8 @@ class MenuGroupRestControllerTest {
     @DisplayName("메뉴 그룹 리스트를 조회한다.")
     @Test
     void list() throws Exception {
-        List<MenuGroup> menuGroups = new ArrayList<>();
-        menuGroups.add(new MenuGroup(5L, "기타안주메뉴"));
+        List<MenuGroupResponse> menuGroups = new ArrayList<>();
+        menuGroups.add(new MenuGroupResponse(5L, "기타안주메뉴"));
 
         given(menuGroupService.list()).willReturn(menuGroups);
 
