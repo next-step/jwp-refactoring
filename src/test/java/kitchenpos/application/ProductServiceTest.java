@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductRequest;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
@@ -30,25 +31,25 @@ class ProductServiceTest {
     @Test
     void given_Product_when_CreateProduct_thenSaveExecuted() {
         // given
-        final Product product = new Product();
-        product.setPrice(BigDecimal.ZERO);
+        final ProductRequest productRequest = new ProductRequest();
+        productRequest.setPrice(BigDecimal.ZERO);
 
         // when
-        productService.create(product);
+        productService.create(productRequest);
 
         // then
-        verify(productDao).save(product);
+        verify(productDao).save(any(Product.class));
     }
 
     @ParameterizedTest
     @MethodSource("providePrice")
     void given_InvalidPrice_when_CreateProduct_thenThrownException(BigDecimal price) {
         // given
-        final Product product = new Product();
-        product.setPrice(price);
+        final ProductRequest productRequest = new ProductRequest();
+        productRequest.setPrice(price);
 
         // when
-        final Throwable throwable = catchThrowable(() -> productService.create(product));
+        final Throwable throwable = catchThrowable(() -> productService.create(productRequest));
 
         // then
         assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
