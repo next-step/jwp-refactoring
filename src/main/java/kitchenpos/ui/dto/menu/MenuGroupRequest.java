@@ -14,6 +14,10 @@ public class MenuGroupRequest {
         this.name = name;
     }
 
+    public static MenuGroupRequest of(String name) {
+        return new MenuGroupRequest(null, name);
+    }
+
     public static MenuGroupRequest of(MenuGroup menuGroup) {
         return new MenuGroupRequest(menuGroup.getId(), menuGroup.getName());
     }
