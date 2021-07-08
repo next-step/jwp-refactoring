@@ -1,9 +1,13 @@
 package kitchenpos.tablegroup.ui;
 
 import kitchenpos.IntegrationTestHelper;
+import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupRequest.OrderTableRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import kitchenpos.tablegroup.ui.TableGroupRestController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,12 +41,13 @@ class TableGroupRestControllerTest extends IntegrationTestHelper {
     @Test
     void createTest() throws Exception {
         // given
+        TableGroupRequest request = new TableGroupRequest(Arrays.asList(new OrderTableRequest(1L)));
         OrderTable orderTable = new OrderTable(1l, 3);
         TableGroup tableGroup = new TableGroup(Arrays.asList(orderTable));
-        Mockito.when(tableGroupService.create(any())).thenReturn(tableGroup);
+        Mockito.when(tableGroupService.create(any())).thenReturn(TableGroupResponse.of(tableGroup));
 
         // when
-        ResultActions resultActions = 테이블_그룹_생성_요청(tableGroup);
+        ResultActions resultActions = 테이블_그룹_생성_요청(request);
 
         // then
         테이블_그룹_생성_성공(resultActions);
@@ -59,8 +64,8 @@ class TableGroupRestControllerTest extends IntegrationTestHelper {
     }
 
 
-    private ResultActions 테이블_그룹_생성_요청(final TableGroup tableGroup) throws Exception {
-        return postRequest("/api/table-groups", tableGroup);
+    private ResultActions 테이블_그룹_생성_요청(final TableGroupRequest request) throws Exception {
+        return postRequest("/api/table-groups", request);
     }
 
     private MvcResult 테이블_그룹_생성_성공(final ResultActions resultActions) throws Exception {

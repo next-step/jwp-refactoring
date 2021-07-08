@@ -2,7 +2,8 @@ package kitchenpos.tablegroup.ui;
 
 import io.swagger.annotations.ApiOperation;
 import kitchenpos.tablegroup.application.TableGroupService;
-import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,10 +19,10 @@ public class TableGroupRestController {
 
     @ApiOperation("테이블 그룹(단체) 생성")
     @PostMapping("/api/table-groups")
-    public ResponseEntity<TableGroup> create(@RequestBody final TableGroup tableGroup) {
-        final TableGroup created = tableGroupService.create(tableGroup);
-        final URI uri = URI.create("/api/table-groups/" + created.getId());
-        return ResponseEntity.created(uri).body(created);
+    public ResponseEntity<TableGroupResponse> create(@RequestBody final TableGroupRequest request) {
+        final TableGroupResponse created = tableGroupService.create(request);
+        return ResponseEntity.created(URI.create("/api/table-groups/" + created.getId()))
+                             .body(created);
     }
 
     @ApiOperation("테이블 그룹(단체) 삭제")

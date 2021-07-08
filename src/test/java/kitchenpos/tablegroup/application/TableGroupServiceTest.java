@@ -5,7 +5,9 @@ import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.tablegroup.dao.TableGroupDao;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.application.TableGroupService;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupRequest.OrderTableRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,11 +47,14 @@ class TableGroupServiceTest {
         orderTable1.setEmpty(true);
         orderTable2.setEmpty(true);
 
+        TableGroupRequest request = new TableGroupRequest(Arrays.asList(new OrderTableRequest(1L),
+                                                                        new OrderTableRequest(2L)));
+
         Mockito.when(orderTableDao.findAllByIdIn(any())).thenReturn(Arrays.asList(orderTable1, orderTable2));
         Mockito.when(tableGroupDao.save(any())).thenReturn(tableGroup);
 
         // when
-        TableGroup actual = tableGroupService.create(tableGroup);
+        TableGroupResponse actual = tableGroupService.create(request);
 
         // then
         assertThat(actual).isNotNull();
@@ -60,11 +65,10 @@ class TableGroupServiceTest {
     @Test
     void createTestWrongSize() {
         // given
-        OrderTable orderTable = new OrderTable(null, 3);
-        TableGroup tableGroup = new TableGroup(Arrays.asList(orderTable));
+        TableGroupRequest request = new TableGroupRequest(Arrays.asList(new OrderTableRequest(2L)));
 
         // when
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+        assertThatThrownBy(() -> tableGroupService.create(request))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -72,14 +76,14 @@ class TableGroupServiceTest {
     @Test
     void createTestWrongOrderTable() {
         // given
+        TableGroupRequest request = new TableGroupRequest(Arrays.asList(new OrderTableRequest(1L),
+                                                                        new OrderTableRequest(2L)));
         OrderTable orderTable1 = new OrderTable(null, 3);
         OrderTable orderTable2 = new OrderTable(1L, 4);
-        TableGroup tableGroup = new TableGroup(Arrays.asList(orderTable1, orderTable2));
-
         Mockito.when(orderTableDao.findAllByIdIn(any())).thenReturn(Arrays.asList(orderTable1, orderTable2));
 
         // when
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+        assertThatThrownBy(() -> tableGroupService.create(request))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
