@@ -28,12 +28,15 @@ public class OrderRepositoryTest {
     @Autowired
     private OrderRepository orderRepository;
 
+    @Autowired
+    private OrderTableRepository orderTableRepository;
+
     private Order order;
 
     @BeforeEach
     public void setup() {
         List<OrderLineItem> orderLineItemList = new ArrayList<>();
-        OrderTable orderTable = new OrderTable(3L, 0, false);
+        OrderTable orderTable = orderTableRepository.save(new OrderTable(0, false));
         Menu menu = new Menu(3L, "반반치킨", new BigDecimal(16000), new MenuGroup("한마리메뉴"));
         String orderStatus = OrderStatus.COOKING.name();
         orderLineItemList.add(new OrderLineItem(menu, 1));

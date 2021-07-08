@@ -1,7 +1,7 @@
 package kitchenpos.order.dto;
 
 public class OrderLineItemRequest {
-    private Long seq;
+    private Long id;
     private Long orderId;
     private Long menuId;
     private long quantity;
@@ -15,12 +15,12 @@ public class OrderLineItemRequest {
         this.quantity = quantity;
     }
 
-    public Long getSeq() {
-        return seq;
+    public Long getId() {
+        return id;
     }
 
-    public void setSeq(Long seq) {
-        this.seq = seq;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getOrderId() {

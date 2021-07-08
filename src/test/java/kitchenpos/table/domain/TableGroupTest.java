@@ -24,8 +24,8 @@ public class TableGroupTest {
     @DisplayName("단체를 지정 한다")
     public void createOrderTableGroup() {
        // given
-        orderTableList.add(new OrderTable(5L, 0, true));
-        orderTableList.add(new OrderTable(6L, 0, true));
+        orderTableList.add(new OrderTable(0, true));
+        orderTableList.add(new OrderTable(0, true));
         OrderTables orderTables = new OrderTables(orderTableList);
         LocalDateTime createDate = LocalDateTime.now();
         Long id = 100L;
@@ -41,9 +41,9 @@ public class TableGroupTest {
     @DisplayName("단체 지정을 해제 한다")
     public void deleteOrderTableGroup() {
         // given
-        OrderTable orderTable = new OrderTable(7L, 0, true);
+        OrderTable orderTable = new OrderTable(0, true);
         orderTableList.add(orderTable);
-        orderTableList.add(new OrderTable(8L, 0, true));
+        orderTableList.add(new OrderTable(0, true));
         TableGroup tableGroup = new TableGroup(LocalDateTime.now(), new OrderTables(orderTableList));
 
         // when

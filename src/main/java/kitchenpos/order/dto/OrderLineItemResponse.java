@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OrderLineItemResponse {
-    private Long seq;
+    private Long id;
     private Long orderId;
     private Long menuId;
     private long quantity;
@@ -14,8 +14,8 @@ public class OrderLineItemResponse {
     public OrderLineItemResponse() {
     }
 
-    public OrderLineItemResponse(Long seq, Long orderId, Long menuId, long quantity) {
-        this.seq = seq;
+    public OrderLineItemResponse(Long id, Long orderId, Long menuId, long quantity) {
+        this.id = id;
         this.orderId = orderId;
         this.menuId = menuId;
         this.quantity = quantity;
@@ -25,18 +25,18 @@ public class OrderLineItemResponse {
         List<OrderLineItemResponse> orderLineItemResponses = new ArrayList<>();
 
         for (OrderLineItem orderLineItem : orderLineItems) {
-            orderLineItemResponses.add(new OrderLineItemResponse(orderLineItem.seq(), orderLineItem.order().id(), orderLineItem.menu().id(), orderLineItem.quantity()));
+            orderLineItemResponses.add(new OrderLineItemResponse(orderLineItem.id(), orderLineItem.order().id(), orderLineItem.menu().id(), orderLineItem.quantity()));
         }
 
         return orderLineItemResponses;
     }
 
-    public Long getSeq() {
-        return seq;
+    public Long getId() {
+        return id;
     }
 
-    public void setSeq(Long seq) {
-        this.seq = seq;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getOrderId() {

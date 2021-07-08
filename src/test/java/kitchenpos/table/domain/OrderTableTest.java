@@ -66,8 +66,8 @@ public class OrderTableTest {
     @DisplayName("단체 지정 실패 - 주문 테이블이 empty가 아닐 경우")
     public void createOrderTableGroupFailByOnderTableIsNotEmpty() {
         // given
-        orderTableList.add(new OrderTable(3L, 0, false));
-        orderTableList.add(new OrderTable(6L, 0, false));
+        orderTableList.add(new OrderTable(0, false));
+        orderTableList.add(new OrderTable(0, false));
         OrderTables orderTables = new OrderTables(orderTableList);
         // when
         // then
@@ -78,8 +78,8 @@ public class OrderTableTest {
     @DisplayName("단체 지정 실패 - 이미 단체 지정이 된 테이블")
     public void createOrderTableGroupFailByAlreadyExistsTableGroup() {
         // given
-        orderTableList.add(new OrderTable(9L, 0, false));
-        orderTableList.add(new OrderTable(10L, 0, false));
+        orderTableList.add(new OrderTable(0, false));
+        orderTableList.add(new OrderTable(0, false));
         OrderTables orderTables = new OrderTables(orderTableList);
         // when
         // then
@@ -90,8 +90,8 @@ public class OrderTableTest {
     @DisplayName("단체 지정 실패 - 기존 데이터베이스에 존재하지 않는 테이블을 포함하여 단체 지정 할 경우")
     public void createOrderTableGroupFailByNotExistsTable() {
         // given
-        orderTableList.add(new OrderTable(10L, 0, false));
-        orderTableList.add(new OrderTable(11L, 0, false));
+        orderTableList.add(new OrderTable(0, false));
+        orderTableList.add(new OrderTable(0, false));
         OrderTables orderTables = new OrderTables(orderTableList);
         // when
         // then

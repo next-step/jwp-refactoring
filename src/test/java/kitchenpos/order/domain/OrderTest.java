@@ -27,7 +27,7 @@ public class OrderTest {
         OrderLineItem orderLineItem = new OrderLineItem(menu, 1L);
         orderLineItemList.add(orderLineItem);
         orderStatus = OrderStatus.COOKING.name();
-        orderTable = new OrderTable(3L, 1, false);
+        orderTable = new OrderTable(1, false);
         orderLineItems = new OrderLineItems(orderLineItemList);
     }
 

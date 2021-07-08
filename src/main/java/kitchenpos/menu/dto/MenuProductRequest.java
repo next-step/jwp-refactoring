@@ -1,7 +1,7 @@
 package kitchenpos.menu.dto;
 
 public class MenuProductRequest {
-    private Long seq;
+    private Long id;
     private Long menuId;
     private Long productId;
     private long quantity;
@@ -14,12 +14,12 @@ public class MenuProductRequest {
         this.quantity = quantity;
     }
 
-    public Long getSeq() {
-        return seq;
+    public Long getId() {
+        return id;
     }
 
-    public void setSeq(Long seq) {
-        this.seq = seq;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getMenuId() {
