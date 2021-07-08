@@ -2,6 +2,7 @@ package kitchenpos.menu.application;
 
 import java.util.stream.Collectors;
 import kitchenpos.menu.dao.MenuDao;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.dao.MenuGroupDao;
@@ -21,17 +22,16 @@ import java.util.Objects;
 @Transactional
 @Service
 public class MenuService {
+
     private final MenuDao menuDao;
     private final MenuGroupDao menuGroupDao;
     private final MenuProductDao menuProductDao;
     private final ProductDao productDao;
 
-    public MenuService(
-            final MenuDao menuDao,
-            final MenuGroupDao menuGroupDao,
-            final MenuProductDao menuProductDao,
-            final ProductDao productDao
-    ) {
+    public MenuService(final MenuDao menuDao,
+                       final MenuGroupDao menuGroupDao,
+                       final MenuProductDao menuProductDao,
+                       final ProductDao productDao) {
         this.menuDao = menuDao;
         this.menuGroupDao = menuGroupDao;
         this.menuProductDao = menuProductDao;
@@ -49,13 +49,14 @@ public class MenuService {
             throw new IllegalArgumentException();
         }
 
-        final List<MenuProduct> menuProducts = request.getMenuProducts();
+        final List<MenuProductRequest> menuProductRequests = request.getMenuProducts();
 
         BigDecimal sum = BigDecimal.ZERO;
-        for (final MenuProduct menuProduct : menuProducts) {
+        for (final MenuProductRequest menuProduct : menuProductRequests) {
             final Product product = productDao.findById(menuProduct.getProductId())
-                    .orElseThrow(IllegalArgumentException::new);
-            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
+                                              .orElseThrow(IllegalArgumentException::new);
+            sum = sum
+                .add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
         }
 
         if (price.compareTo(sum) > 0) {
@@ -66,8 +67,8 @@ public class MenuService {
 
         final Long menuId = savedMenu.getId();
         final List<MenuProduct> savedMenuProducts = new ArrayList<>();
-        for (final MenuProduct menuProduct : menuProducts) {
-            menuProduct.setMenuId(menuId);
+        for (final MenuProductRequest menuProductRequest : menuProductRequests) {
+            MenuProduct menuProduct = menuProductRequest.toMenuProduct(menuId);
             savedMenuProducts.add(menuProductDao.save(menuProduct));
         }
         savedMenu.setMenuProducts(savedMenuProducts);

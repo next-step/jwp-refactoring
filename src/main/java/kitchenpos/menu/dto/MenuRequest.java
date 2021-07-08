@@ -3,13 +3,12 @@ package kitchenpos.menu.dto;
 import java.math.BigDecimal;
 import java.util.List;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
 
 public class MenuRequest {
     private String name;
     private BigDecimal price;
     private Long menuGroupId;
-    private List<MenuProduct> menuProducts;
+    private List<MenuProductRequest> menuProducts;
 
     public MenuRequest() {
         // empty
@@ -19,7 +18,6 @@ public class MenuRequest {
         this.name = builder.name;
         this.price = builder.price;
         this.menuGroupId = builder.menuGroupId;
-        this.menuProducts = builder.menuProducts;
     }
 
     public String getName() {
@@ -34,14 +32,17 @@ public class MenuRequest {
         return menuGroupId;
     }
 
-    public List<MenuProduct> getMenuProducts() {
+    public void setMenuProducts(List<MenuProductRequest> menuProducts) {
+        this.menuProducts = menuProducts;
+    }
+
+    public List<MenuProductRequest> getMenuProducts() {
         return menuProducts;
     }
 
     public Menu toMenu() {
         return Menu.Builder.of(this.name, this.price)
                            .menuGroupId(this.menuGroupId)
-                           .menuProducts(this.menuProducts)
                            .build();
     }
 
@@ -49,7 +50,6 @@ public class MenuRequest {
         private final String name;
         private final BigDecimal price;
         private Long menuGroupId;
-        private List<MenuProduct> menuProducts;
 
         private Builder(final String name, final BigDecimal price) {
             this.name = name;
@@ -62,11 +62,6 @@ public class MenuRequest {
 
         public Builder menuGroupId(Long menuGroupId) {
             this.menuGroupId = menuGroupId;
-            return this;
-        }
-
-        public Builder menuProducts(List<MenuProduct> menuProducts) {
-            this.menuProducts = menuProducts;
             return this;
         }
 
