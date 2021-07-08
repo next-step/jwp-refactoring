@@ -1,6 +1,7 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.*;
+import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
@@ -59,6 +60,40 @@ public class MenuService {
         }
 
         final Menu savedMenu = menuRepository.save(menu);
+
+        final Long menuId = savedMenu.getId();
+        final List<MenuProduct> savedMenuProducts = new ArrayList<>();
+        for (final MenuProduct menuProduct : menuProducts) {
+            menuProduct.setMenuId(menuId);
+            savedMenuProducts.add(menuProductRepository.save(menuProduct));
+        }
+        savedMenu.setMenuProducts(savedMenuProducts);
+
+        return savedMenu;
+    }
+
+    @Transactional
+    public Menu create2(final MenuRequest menuRequest) {
+        Menu createdMenu = new Menu(menuRequest.getName(), BigDecimal.valueOf(menuRequest.getPrice()), menuRequest.getMenuGroupId(), menuRequest.getMenuProducts());
+
+        if (!menuGroupRepository.existsById(createdMenu.getMenuGroupId())) {
+            throw new IllegalArgumentException();
+        }
+
+        final List<MenuProduct> menuProducts = createdMenu.getMenuProducts();
+
+        BigDecimal sum = BigDecimal.ZERO;
+        for (final MenuProduct menuProduct : menuProducts) {
+            final Product product = productRepository.findById(menuProduct.getProductId())
+                    .orElseThrow(IllegalArgumentException::new);
+            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
+        }
+
+        if (createdMenu.getPrice().compareTo(sum) > 0) {
+            throw new IllegalArgumentException();
+        }
+
+        final Menu savedMenu = menuRepository.save(createdMenu);
 
         final Long menuId = savedMenu.getId();
         final List<MenuProduct> savedMenuProducts = new ArrayList<>();

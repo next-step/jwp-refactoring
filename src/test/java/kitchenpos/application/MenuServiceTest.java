@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.*;
+import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
@@ -70,6 +71,23 @@ class MenuServiceTest {
 
         assertAll(
                 () -> assertThat(savedMenu).isEqualTo(menu1),
+                () -> assertThat(savedMenu.getMenuProducts()).contains(menuProduct));
+    }
+
+    @DisplayName("메뉴를 등록한다. (메뉴 상품(MenuProduct) 리스트에도 메뉴를 등록한다.)")
+    @Test
+    void create2() {
+        MenuRequest menuRequest = new MenuRequest("후라이드2마리", 20000L, 1L, menuProducts);
+        Menu created = new Menu(menuRequest.getName(), BigDecimal.valueOf(menuRequest.getPrice()), menuRequest.getMenuGroupId(), menuRequest.getMenuProducts());
+        given(menuGroupRepository.existsById(any())).willReturn(true);
+        given(productRepository.findById(anyLong())).willReturn(Optional.of(product));
+        given(menuRepository.save(any())).willReturn(created);
+        given(menuProductRepository.save(any())).willReturn(menuProduct);
+
+        Menu savedMenu = menuService.create2(menuRequest);
+
+        assertAll(
+                () -> assertThat(savedMenu).isEqualTo(created),
                 () -> assertThat(savedMenu.getMenuProducts()).contains(menuProduct));
     }
 
