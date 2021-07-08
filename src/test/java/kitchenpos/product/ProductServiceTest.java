@@ -15,9 +15,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.application.ProductService;
 import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
+import kitchenpos.menu.domain.Price;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.Product;
 
 @DisplayName("상품 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -49,7 +50,7 @@ public class ProductServiceTest {
 	@DisplayName("상품 생성 시 - 상품의 가격이 Null이면 생성할 수 없다.")
 	@Test
 	void 상품_생성_시_상품의_가격이_NULL_이면_생성할_수_없다() {
-		양념치킨.setPrice(null);
+		양념치킨 = ProductServiceTest.상품생성(1L, null, "양념 치킨");
 		assertThatThrownBy(() -> {
 			productService.create(양념치킨);
 		}).isInstanceOf(IllegalArgumentException.class);
@@ -58,7 +59,7 @@ public class ProductServiceTest {
 	@DisplayName("상품 생성 시 - 상품의 가격이 0원 이상이여야 한다")
 	@Test
 	void 상품_생성_시_상품의_가격이_0원_초과하여야_한다() {
-		양념치킨.setPrice(new BigDecimal(-1));
+		양념치킨 = ProductServiceTest.상품생성(1L, new BigDecimal(-5), "양념 치킨");
 		assertThatThrownBy(() -> {
 			productService.create(양념치킨);
 		}).isInstanceOf(IllegalArgumentException.class);
@@ -85,10 +86,7 @@ public class ProductServiceTest {
 	}
 
 	public static Product 상품생성(Long id, BigDecimal price, String name) {
-		Product product = new Product();
-		product.setId(id);
-		product.setPrice(price);
-		product.setName(name);
+		Product product = new Product(id, name, new Price(price));
 		return product;
 	}
 }
