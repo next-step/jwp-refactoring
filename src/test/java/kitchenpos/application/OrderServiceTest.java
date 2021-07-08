@@ -52,9 +52,7 @@ class OrderServiceTest {
         orderLineItem1 = OrderLineItem.of(null, null, 1L, 2);
         orderLineItem2 = OrderLineItem.of(null, null, 2L, 3);
         orderLineItems = Lists.list(orderLineItem1, orderLineItem2);
-        orderTable = new OrderTable();
-        orderTable.setId(1L);
-        orderTable.setEmpty(false);
+        orderTable = OrderTable.of(1L, null, 0, false);
     }
 
     @DisplayName("주문을 추가한다.")

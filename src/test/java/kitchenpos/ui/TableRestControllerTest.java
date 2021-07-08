@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.TableService;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.ui.api.TableRestController;
+import kitchenpos.ui.dto.order.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -50,14 +51,8 @@ class TableRestControllerTest {
                 .alwaysDo(print())
                 .build();
 
-        orderTable1 = new OrderTable();
-        orderTable1.setId(1L);
-        orderTable1.setNumberOfGuests(6);
-        orderTable1.setEmpty(true);
-        orderTable2 = new OrderTable();
-        orderTable2.setId(2L);
-        orderTable2.setNumberOfGuests(3);
-        orderTable2.setEmpty(true);
+        orderTable1 = OrderTable.of(1L, null, 6, true);
+        orderTable2 = OrderTable.of(2L, null, 3, true);
     }
 
     @DisplayName("주문 테이블을 추가한다.")
@@ -120,10 +115,81 @@ class TableRestControllerTest {
     @Test
     void changeNumberOfGuests() throws Exception {
         //given
-        given(tableService.changeEmpty(orderTable1.getId(), orderTable1)).willReturn(orderTable1);
+        given(tableService.changeNumberOfGuests(orderTable1.getId(), orderTable1)).willReturn(orderTable1);
 
         //when
         ResultActions actions = mockMvc.perform(put(URI + "/{orderTableId}/number-of-guests", orderTable1.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(orderTable1)));
+
+        //then
+        actions.andExpect(status().isOk());
+    }
+
+    @DisplayName("주문 테이블을 추가한다.2")
+    @Test
+    void create2() throws Exception {
+        //given
+        given(tableService.create(any())).willReturn(orderTable1);
+
+        //when
+        ResultActions actions = mockMvc.perform(post(URI+"2")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(orderTable1)));
+
+        //then
+        actions.andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").isNotEmpty())
+                .andExpect(jsonPath("$.tableGroupId").isEmpty())
+                .andExpect(jsonPath("$.numberOfGuests").value(orderTable1.getNumberOfGuests()))
+                .andExpect(jsonPath("$.empty").value(orderTable1.isEmpty()));
+    }
+
+    @DisplayName("주문 테이블을 모두 조회한다.2")
+    @Test
+    void list2() throws Exception {
+        //given
+        given(tableService.list()).willReturn(Arrays.asList(orderTable1, orderTable2));
+
+        //when
+        ResultActions actions = mockMvc.perform(get(URI+"2"));
+
+        //then
+        actions.andExpect(status().isOk())
+                .andExpect(jsonPath("$").isNotEmpty())
+                .andExpect(jsonPath("$[0].id").isNotEmpty())
+                .andExpect(jsonPath("$[0].tableGroupId").isEmpty())
+                .andExpect(jsonPath("$[0].numberOfGuests").value(orderTable1.getNumberOfGuests()))
+                .andExpect(jsonPath("$[0].empty").value(orderTable1.isEmpty()))
+                .andExpect(jsonPath("$[1].id").isNotEmpty())
+                .andExpect(jsonPath("$[1].tableGroupId").isEmpty())
+                .andExpect(jsonPath("$[1].numberOfGuests").value(orderTable2.getNumberOfGuests()))
+                .andExpect(jsonPath("$[1].empty").value(orderTable2.isEmpty()));
+    }
+
+    @DisplayName("특정 주문 테이블의 상태를 변경한다.2")
+    @Test
+    void changeEmpty2() throws Exception {
+        //given
+        given(tableService.changeEmpty(any(), any())).willReturn(orderTable2);
+
+        //when
+        ResultActions actions = mockMvc.perform(put(URI + "2/{orderTableId}/empty", orderTable2.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(orderTable2)));
+
+        //then
+        actions.andExpect(status().isOk());
+    }
+
+    @DisplayName("특정 테이블의 인원 수를 예약한다.2")
+    @Test
+    void changeNumberOfGuests2() throws Exception {
+        //given
+        given(tableService.changeNumberOfGuests(any(), any())).willReturn(orderTable1);
+
+        //when
+        ResultActions actions = mockMvc.perform(put(URI + "2/{orderTableId}/number-of-guests", orderTable1.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(orderTable1)));
 

@@ -39,7 +39,7 @@ class TableServiceTest {
     @Test
     void create() {
         //given
-        OrderTable orderTable = new OrderTable();
+        OrderTable orderTable = OrderTable.of(null,null,0, false);
         given(orderTableDao.save(any())).willReturn(orderTable);
 
         //when
@@ -53,10 +53,8 @@ class TableServiceTest {
     @Test
     void list() {
         //given
-        OrderTable orderTable1 = new OrderTable();
-        orderTable1.setId(1L);
-        OrderTable orderTable2 = new OrderTable();
-        orderTable2.setId(2L);
+        OrderTable orderTable1 = OrderTable.of(1L, null, 0, false);
+        OrderTable orderTable2 = OrderTable.of(2L, null, 0, false);
         given(orderTableDao.findAll()).willReturn(Lists.list(orderTable1, orderTable2));
 
         //when
@@ -72,10 +70,8 @@ class TableServiceTest {
     @Test
     void changeEmpty() {
         //given
-        OrderTable orderTable = new OrderTable();
-        orderTable.setEmpty(true);
-        OrderTable changeOrderTable = new OrderTable();
-        changeOrderTable.setEmpty(false);
+        OrderTable orderTable = OrderTable.of(null, null, 0, true);
+        OrderTable changeOrderTable = OrderTable.of(null, null, 0, false);
         given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(false);
         given(orderTableDao.save(any())).willReturn(changeOrderTable);
@@ -91,7 +87,7 @@ class TableServiceTest {
     @Test
     void changeEmptyExceptionIfTableOrderStatusIsNotCompletion() {
         //given
-        OrderTable orderTable = new OrderTable();
+        OrderTable orderTable = OrderTable.of(null, null, 0, true);
         given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(true);
 
@@ -104,9 +100,7 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuests() {
         //given
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(4);
-        orderTable.setEmpty(false);
+        OrderTable orderTable = OrderTable.of(null, null, 4, false);
         given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
         given(orderTableDao.save(any())).willReturn(orderTable);
 
@@ -122,8 +116,7 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuestsIfTableEmptyIsTrue() {
         //given
-        OrderTable orderTable = new OrderTable();
-        orderTable.setEmpty(true);
+        OrderTable orderTable = OrderTable.of(null, null, 0, true);
         given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
 
         //when
@@ -135,8 +128,7 @@ class TableServiceTest {
     @Test
     void createTableExceptionIfNumberOfGuestsIsNull() {
         //given
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(-10);
+        OrderTable orderTable = OrderTable.of(null, null, -10, false);
 
         //when
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, orderTable))

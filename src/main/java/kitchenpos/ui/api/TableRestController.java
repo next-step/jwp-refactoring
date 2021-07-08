@@ -2,6 +2,8 @@ package kitchenpos.ui.api;
 
 import kitchenpos.application.TableService;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.ui.dto.order.OrderTableRequest;
+import kitchenpos.ui.dto.order.OrderTableResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,6 +51,42 @@ public class TableRestController {
     ) {
         return ResponseEntity.ok()
                 .body(tableService.changeNumberOfGuests(orderTableId, orderTable))
+                ;
+    }
+
+    @PostMapping("/api/tables2")
+    public ResponseEntity<OrderTableResponse> create2(@RequestBody final OrderTableRequest request) {
+        final OrderTable created = tableService.create(request.toOrderTable());
+        final URI uri = URI.create("/api/tables2/" + created.getId());
+        return ResponseEntity.created(uri)
+                .body(OrderTableResponse.of(created))
+                ;
+    }
+
+    @GetMapping("/api/tables2")
+    public ResponseEntity<List<OrderTableResponse>> list2() {
+        return ResponseEntity.ok()
+                .body(OrderTableResponse.ofList(tableService.list()))
+                ;
+    }
+
+    @PutMapping("/api/tables2/{orderTableId}/empty")
+    public ResponseEntity<OrderTableResponse> changeEmpty2(
+            @PathVariable final Long orderTableId,
+            @RequestBody final OrderTableRequest request
+    ) {
+        return ResponseEntity.ok()
+                .body(OrderTableResponse.of(tableService.changeEmpty(orderTableId, request.toOrderTable())))
+                ;
+    }
+
+    @PutMapping("/api/tables2/{orderTableId}/number-of-guests")
+    public ResponseEntity<OrderTableResponse> changeNumberOfGuests2(
+            @PathVariable final Long orderTableId,
+            @RequestBody final OrderTableRequest request
+    ) {
+        return ResponseEntity.ok()
+                .body(OrderTableResponse.of(tableService.changeNumberOfGuests(orderTableId, request.toOrderTable())))
                 ;
     }
 }
