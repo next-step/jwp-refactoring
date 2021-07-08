@@ -17,6 +17,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 @SpringBootTest
@@ -41,6 +42,17 @@ class IntegrationSupportTest {
     protected MockHttpServletRequestBuilder postAsJson(String url, Object object) {
         try {
             return post(url)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(object))
+                    .accept(MediaType.APPLICATION_JSON);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected MockHttpServletRequestBuilder putAsJson(String url, Object object) {
+        try {
+            return put(url)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(object))
                     .accept(MediaType.APPLICATION_JSON);

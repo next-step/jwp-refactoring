@@ -21,6 +21,10 @@ public class OrderLineItemRequest {
         this.quantity = quantity;
     }
 
+    public static OrderLineItemRequest of(Long menuId, long quantity) {
+        return new OrderLineItemRequest(null, null, menuId, quantity);
+    }
+
     public static OrderLineItemRequest of(OrderLineItem orderLineItem) {
         return new OrderLineItemRequest(orderLineItem.getSeq(), orderLineItem.getOrderId(), orderLineItem.getMenuId(), orderLineItem.getQuantity());
     }

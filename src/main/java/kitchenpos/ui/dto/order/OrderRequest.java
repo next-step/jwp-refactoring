@@ -24,6 +24,10 @@ public class OrderRequest {
         this.orderLineItems = orderLineItems;
     }
 
+    public static OrderRequest of(Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItemRequest> orderLineItems) {
+        return new OrderRequest(null, orderTableId, orderStatus, orderedTime, orderLineItems);
+    }
+
     public static OrderRequest of(Order order) {
         return new OrderRequest(order.getId(), order.getOrderTableId(), order.getOrderStatus(), order.getOrderedTime(), OrderLineItemRequest.ofList(order.getOrderLineItems()));
     }
