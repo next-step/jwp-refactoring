@@ -36,7 +36,7 @@ class ProductServiceTest {
     @BeforeEach
     void setUp() {
         강정치킨 = new ProductResponse(1L, "강정치킨", BigDecimal.valueOf(17000));
-        후라이드 = new ProductResponse(2L, "후라이드", BigDecimal.valueOf(-1000));
+        후라이드 = new ProductResponse(2L, "후라이드", BigDecimal.valueOf(16000));
     }
 
     @DisplayName("상품을 등록할 수 있다.")
@@ -68,7 +68,7 @@ class ProductServiceTest {
     void listTest() {
         // given
         Product 강정치킨 = new Product(1L, "강정치킨", BigDecimal.valueOf(17000));
-        Product 후라이드 = new Product(2L, "후라이드", BigDecimal.valueOf(-1000));
+        Product 후라이드 = new Product(2L, "후라이드", BigDecimal.valueOf(16000));
         given(productRepository.findAll()).willReturn(Arrays.asList(강정치킨, 후라이드));
 
         // when
