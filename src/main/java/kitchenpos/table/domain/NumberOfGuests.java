@@ -7,7 +7,7 @@ import java.util.Objects;
 @Embeddable
 public class NumberOfGuests {
 
-  private static final int MINIMUM_NUMBER_OF_GUEST = 0;
+  private static final int MIN = 0;
 
   @Column(name = "number_of_guests", precision = 11, nullable = false)
   private Integer value;
@@ -25,7 +25,7 @@ public class NumberOfGuests {
   }
 
   private static void validateValue(int value) {
-    if (value < MINIMUM_NUMBER_OF_GUEST) {
+    if (value < MIN) {
       throw new IllegalArgumentException();
     }
   }

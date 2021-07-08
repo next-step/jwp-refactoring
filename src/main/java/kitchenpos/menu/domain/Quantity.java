@@ -8,7 +8,7 @@ import java.util.Objects;
 @Embeddable
 class Quantity {
 
-  private static final long MIN_QUANTITY = 1L;
+  private static final long MIN = 1L;
   private static final String QUANTITY_SHOULD_EQUAL_OR_LARGER_THAN_MIN_QUANTITY = "수량은 %d 이상이어야 합니다.";
 
   @Column(name = "quantity", nullable = false)
@@ -35,8 +35,8 @@ class Quantity {
   }
 
   private static void validateQuantityValue(long value) {
-    if (value < MIN_QUANTITY) {
-      throw new IllegalArgumentException(String.format(QUANTITY_SHOULD_EQUAL_OR_LARGER_THAN_MIN_QUANTITY, MIN_QUANTITY));
+    if (value < MIN) {
+      throw new IllegalArgumentException(String.format(QUANTITY_SHOULD_EQUAL_OR_LARGER_THAN_MIN_QUANTITY, MIN));
     }
   }
 
