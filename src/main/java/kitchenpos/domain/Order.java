@@ -91,7 +91,7 @@ public class Order {
         this.orderStatus = COOKING;
     }
 
-    boolean isComplete() {
+    public boolean isComplete() {
         return this.orderStatus == COMPLETION;
     }
 

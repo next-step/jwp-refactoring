@@ -14,6 +14,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import kitchenpos.tablegroup.domain.TableGroup;
+
 @Entity
 public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,7 +40,7 @@ public class OrderTable {
         this(numberOfGuests, empty, new ArrayList<>());
     }
 
-    OrderTable(int numberOfGuests, boolean empty, List<Order> orders) {
+    public OrderTable(int numberOfGuests, boolean empty, List<Order> orders) {
         this.numberOfGuests = NumberOfGuests.valueOf(numberOfGuests);
         this.empty = empty;
         this.orders = orders;
@@ -81,7 +83,7 @@ public class OrderTable {
         this.empty = isEmpty;
     }
 
-    boolean isGrouped() {
+    public boolean isGrouped() {
         return nonNull(tableGroup);
     }
 

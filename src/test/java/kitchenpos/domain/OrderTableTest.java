@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import kitchenpos.tablegroup.domain.TableGroup;
+
 class OrderTableTest {
 
 	@DisplayName("주문테이블을 생성시 그룹은 설정 안되어 있다.")

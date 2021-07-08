@@ -6,6 +6,8 @@ import java.util.List;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
+import kitchenpos.tablegroup.domain.TableGroup;
+
 @Embeddable
 public class OrderTables {
 	private static final int MIN_TABLE_COUNT = 2;
@@ -26,17 +28,17 @@ public class OrderTables {
 		return new OrderTables(orderTables);
 	}
 
-	void toGroup(TableGroup tableGroup) {
+	public void toGroup(TableGroup tableGroup) {
 		for (OrderTable orderTable : orderTables) {
 			orderTable.toGroup(tableGroup);
 		}
 	}
 
-	List<OrderTable> getOrderTables() {
+	public List<OrderTable> getOrderTables() {
 		return Collections.unmodifiableList(orderTables);
 	}
 
-	void ungrouped() {
+	public void ungrouped() {
 		for (OrderTable orderTable : orderTables) {
 			orderTable.ungrouped();
 		}
