@@ -55,18 +55,18 @@ public class Order {
     }
 
     public void proceedTo(OrderStatus orderStatus) {
-        checkCompletion();
+        checkChangeable();
         this.orderStatus = orderStatus;
     }
 
-    private void checkCompletion() {
-        if (isCompleted()) {
-            throw new IllegalArgumentException("완료 된 주문은 상태를 변경할 수 없습니다.");
+    private void checkChangeable() {
+        if (orderStatus.isCompleted()) {
+            throw new IllegalArgumentException("완결 된 주문은 상태를 변경할 수 없습니다.");
         }
     }
 
-    public boolean isCompleted() {
-        return orderStatus.equals(OrderStatus.COMPLETION);
+    public boolean inProgress() {
+        return orderStatus.inProgress();
     }
 
     public void setTable(OrderTable orderTable) {

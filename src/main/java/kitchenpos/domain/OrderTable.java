@@ -125,7 +125,7 @@ public class OrderTable {
     }
 
     private void checkOrderStatus(Order order) {
-        if (Objects.nonNull(order) && !order.isCompleted()) {
+        if (Objects.nonNull(order) && order.inProgress()) {
             throw new OrderNotCompletedException("테이블에 완결되지 않은 주문이 존재합니다.");
         }
     }
