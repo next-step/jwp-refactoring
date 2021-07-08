@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
@@ -8,6 +7,7 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.menu.domain.MenuRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,20 +19,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
     private OrderDao orderDao;
@@ -64,7 +61,7 @@ class OrderServiceTest {
     @Test
     void createTest() {
         // given
-        given(menuDao.countByIdIn(Arrays.asList(1L))).willReturn(Long.valueOf(order.getOrderLineItems().size()));
+        given(menuRepository.countByIdIn(Arrays.asList(1L))).willReturn(order.getOrderLineItems().size());
         given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
         given(orderDao.save(order)).willReturn(order);
         given(orderLineItemDao.save(orderLineItem)).willReturn(orderLineItem);
@@ -94,7 +91,7 @@ class OrderServiceTest {
     void createTest_duplicateMenu() {
         // given
         orderLineItems.add(new OrderLineItem(2L, 1L, 1L, 1L));
-        given(menuDao.countByIdIn(Arrays.asList(1L, 1L))).willReturn(1L);
+        given(menuRepository.countByIdIn(Arrays.asList(1L, 1L))).willReturn(1);
 
         // when & then
         assertThatThrownBy(() -> orderService.create(order))
@@ -106,7 +103,7 @@ class OrderServiceTest {
     void createTest_unregisteredOrderTable() {
         // given
         order.setOrderTableId(100L);
-        given(menuDao.countByIdIn(Arrays.asList(1L))).willReturn(Long.valueOf(order.getOrderLineItems().size()));
+        given(menuRepository.countByIdIn(Arrays.asList(1L))).willReturn(order.getOrderLineItems().size());
 
         // when & then
         assertThatThrownBy(() -> orderService.create(order))

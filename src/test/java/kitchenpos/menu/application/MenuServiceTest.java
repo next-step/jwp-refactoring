@@ -1,13 +1,12 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.MenuGroupRepository;
-import kitchenpos.dao.MenuProductDao;
+import kitchenpos.menu.domain.MenuProductRepository;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,13 +28,13 @@ import static org.mockito.BDDMockito.given;
 class MenuServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
     private MenuGroupRepository menuGroupRepository;
 
     @Mock
-    private MenuProductDao menuProductDao;
+    private MenuProductRepository menuProductRepository;
 
     @Mock
     private ProductRepository ProductRepository;
@@ -62,8 +61,8 @@ class MenuServiceTest {
         // given
         given(menuGroupRepository.existsById(강정치킨plus강정치킨.getMenuGroupId())).willReturn(true);
         given(ProductRepository.findById(강정치킨양두배.getProductId())).willReturn(Optional.of(강정치킨));
-        given(menuDao.save(강정치킨plus강정치킨)).willReturn(강정치킨plus강정치킨);
-        given(menuProductDao.save(강정치킨양두배)).willReturn(강정치킨양두배);
+        given(menuRepository.save(강정치킨plus강정치킨)).willReturn(강정치킨plus강정치킨);
+        given(menuProductRepository.save(강정치킨양두배)).willReturn(강정치킨양두배);
 
         // when
         Menu createdMenu = menuService.create(강정치킨plus강정치킨);
@@ -126,7 +125,7 @@ class MenuServiceTest {
     @Test
     void listTest() {
         // given
-        given(menuDao.findAll()).willReturn(Arrays.asList(강정치킨plus강정치킨));
+        given(menuRepository.findAll()).willReturn(Arrays.asList(강정치킨plus강정치킨));
 
         // when
         List<Menu> menus = menuService.list();

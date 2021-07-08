@@ -1,6 +1,7 @@
 package kitchenpos.menu.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kitchenpos.config.MockMvcTestConfig;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.ui.MenuRestController;
@@ -29,11 +30,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = MenuRestController.class)
+@MockMvcTestConfig
 class MenuRestControllerTest {
     private static final String MENU_API_URI = "/api/menus";
 
     @Autowired
-    private MenuRestController menuRestController;
+    private MockMvc mockMvc;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -41,17 +43,11 @@ class MenuRestControllerTest {
     @MockBean
     private MenuService menuService;
 
-    private MockMvc mockMvc;
     private Menu 강정치킨plus강정치킨;
     private Menu 후라이드plus후라이드;
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(menuRestController)
-                .addFilter(new CharacterEncodingFilter(StandardCharsets.UTF_8.name(), true))
-                .alwaysDo(print())
-                .build();
-
         강정치킨plus강정치킨 = new Menu(1L, "강정치킨+강정치킨", BigDecimal.valueOf(20000), 1L, new ArrayList<>());
         후라이드plus후라이드 = new Menu(2L, "후라이드+후라이드", BigDecimal.valueOf(19000), 1L, new ArrayList<>());
     }

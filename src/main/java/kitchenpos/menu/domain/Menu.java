@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 
 @Table(name = "menu")
@@ -36,14 +38,14 @@ public class Menu {
 
     protected Menu() {}
 
-    public Menu(final String name, final Price price, final MenuGroup menuGroup) {
+    public Menu(final String name, final BigDecimal price, final MenuGroup menuGroup) {
         this(null, name, price, menuGroup);
     }
 
-    public Menu(final Long id, final String name, final Price price, final MenuGroup menuGroup) {
+    public Menu(final Long id, final String name, final BigDecimal price, final MenuGroup menuGroup) {
         this.id = id;
         this.name = name;
-        this.price = price;
+        this.price = Price.from(price);
         this.menuGroup = menuGroup;
     }
 
@@ -68,8 +70,8 @@ public class Menu {
         return menuGroup;
     }
 
-    public MenuProducts getMenuProducts() {
-        return menuProducts;
+    public List<MenuProduct> getMenuProducts() {
+        return menuProducts.getMenuProducts();
     }
 
     @Override
