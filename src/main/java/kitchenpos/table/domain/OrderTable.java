@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.table.domain;
 
 import static java.util.Objects.*;
 
@@ -14,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import kitchenpos.domain.Order;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 @Entity

@@ -9,8 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.OrderTables;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTables;
 
 @Entity
 public class TableGroup {

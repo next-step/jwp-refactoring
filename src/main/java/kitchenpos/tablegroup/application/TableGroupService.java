@@ -2,9 +2,9 @@ package kitchenpos.tablegroup.application;
 
 import static java.time.LocalDateTime.*;
 
-import kitchenpos.domain.OrderTableRepository;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;

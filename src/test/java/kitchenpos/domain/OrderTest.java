@@ -11,6 +11,8 @@ import java.util.Collections;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import kitchenpos.table.domain.OrderTable;
+
 class OrderTest {
 
 	@DisplayName("주문을 생성할 수 있다.")
