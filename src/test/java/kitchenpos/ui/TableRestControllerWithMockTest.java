@@ -8,7 +8,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -26,14 +25,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-class TableRestControllerTest {
+@WebMvcTest(controllers = TableRestController.class)
+class TableRestControllerWithMockTest {
+    @Autowired
     MockMvc mockMvc;
     @Autowired
     TableRestController tableRestController;
     @Autowired
     ObjectMapper objectMapper;
-    @Autowired
+    @MockBean
     TableService tableService;
 
     OrderTable 오더테이블;
@@ -55,7 +55,7 @@ class TableRestControllerTest {
     void create() throws Exception {
         //given
         String requestBody = objectMapper.writeValueAsString(오더테이블);
-        //when(tableService.create(any())).thenReturn(오더테이블);
+        when(tableService.create(any())).thenReturn(오더테이블);
 
         //when && then
         mockMvc.perform(post("/api/tables")
