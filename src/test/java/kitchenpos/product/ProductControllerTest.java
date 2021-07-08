@@ -2,7 +2,6 @@ package kitchenpos.product;
 
 import kitchenpos.application.ProductService;
 import kitchenpos.common.ControllerTest;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.Product;
 import kitchenpos.ui.ProductRestController;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +23,7 @@ import static org.mockito.Mockito.when;
 @WebMvcTest(controllers = ProductRestController.class)
 public class ProductControllerTest extends ControllerTest<Product> {
 
-    private static final String MENU_GROUP_URI = "/api/products";
+    private static final String BASE_URI = "/api/products";
 
     @MockBean
     private ProductService productService;
@@ -60,7 +59,7 @@ public class ProductControllerTest extends ControllerTest<Product> {
         when(productService.create(any())).thenReturn(후라이드);
 
         //When
-        ResultActions 결과 = postRequest(MENU_GROUP_URI, 후라이드);
+        ResultActions 결과 = postRequest(BASE_URI, 후라이드);
 
         //Then
         생성성공(결과, 후라이드);
@@ -74,7 +73,7 @@ public class ProductControllerTest extends ControllerTest<Product> {
         when(productService.list()).thenReturn(상품_목록);
 
         //When
-        ResultActions 결과 = getRequest(MENU_GROUP_URI);
+        ResultActions 결과 = getRequest(BASE_URI);
 
         //Then
         목록_조회성공(결과, 상품_목록);

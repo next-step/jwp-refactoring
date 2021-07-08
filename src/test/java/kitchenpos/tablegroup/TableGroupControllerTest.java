@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
 @WebMvcTest(controllers = TableGroupRestController.class)
 public class TableGroupControllerTest extends ControllerTest<TableGroup> {
 
-    private static final String MENU_GROUP_URI = "/api/table-groups";
+    private static final String BASE_URI = "/api/table-groups";
 
     @MockBean
     private TableGroupService tableGroupService;
@@ -46,7 +46,7 @@ public class TableGroupControllerTest extends ControllerTest<TableGroup> {
         when(tableGroupService.create(any())).thenReturn(테이블그룹);
 
         //When
-        ResultActions 결과 = postRequest(MENU_GROUP_URI, 테이블그룹);
+        ResultActions 결과 = postRequest(BASE_URI, 테이블그룹);
 
         //Then
         생성성공(결과, 테이블그룹);
@@ -56,7 +56,7 @@ public class TableGroupControllerTest extends ControllerTest<TableGroup> {
     @Test
     void 단체지정_취소요청() throws Exception {
         //When
-        ResultActions 결과 = deleteRequest(MENU_GROUP_URI);
+        ResultActions 결과 = deleteRequest(BASE_URI);
 
         //Then
         삭제성공(결과);

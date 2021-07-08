@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
 @WebMvcTest(controllers = MenuGroupRestController.class)
 class MenuGroupControllerTest extends ControllerTest<MenuGroup> {
 
-    private static final String MENU_GROUP_URI = "/api/menu-groups";
+    private static final String BASE_URI = "/api/menu-groups";
 
     @MockBean
     private MenuGroupService menuGroupService;
@@ -58,7 +58,7 @@ class MenuGroupControllerTest extends ControllerTest<MenuGroup> {
         /* when(menuGroupService.create(첫번째_메뉴그룹)).thenReturn(첫번째_메뉴그룹); */
 
         //When
-        ResultActions 결과 = postRequest(MENU_GROUP_URI, 첫번째_메뉴그룹);
+        ResultActions 결과 = postRequest(BASE_URI, 첫번째_메뉴그룹);
 
         //Then
         생성성공(결과, 첫번째_메뉴그룹);
@@ -72,7 +72,7 @@ class MenuGroupControllerTest extends ControllerTest<MenuGroup> {
         when(menuGroupService.list()).thenReturn(메뉴그룹_목록);
 
         //When
-        ResultActions 결과 = getRequest(MENU_GROUP_URI);
+        ResultActions 결과 = getRequest(BASE_URI);
 
         //Then
         목록_조회성공(결과, 메뉴그룹_목록);
