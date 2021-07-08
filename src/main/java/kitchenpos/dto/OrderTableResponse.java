@@ -24,10 +24,7 @@ public class OrderTableResponse {
                 .orElse(null),
             orderTable.getNumberOfGuests(),
             orderTable.isEmpty(),
-            orderTable.getOrders()
-                .stream()
-                .map(OrderResponse::of)
-                .collect(Collectors.toList()));
+            orderTable.getOrders().mapList(OrderResponse::of));
     }
 
     public OrderTableResponse(Long id, Long tableGroupId, int numberOfGuests, boolean empty,
