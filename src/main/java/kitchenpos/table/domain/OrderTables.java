@@ -49,7 +49,7 @@ public class OrderTables {
     }
 
     private void validationOrderTable(OrderTable orderTable) {
-        if (orderTable.isNotComplete()) {
+        if (orderTable.isNotCompleted()) {
             throw new CannotUngroupOrderTableException(THERE_IS_A_HISTORY_OF_ORDERS_AT_AN_ONGOING);
         }
     }

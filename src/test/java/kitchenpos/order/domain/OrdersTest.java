@@ -18,7 +18,7 @@ public class OrdersTest {
     void notExistCompleteOrder() {
         Order order = new Order(1L, 주문테이블, OrderStatus.COOKING, LocalDateTime.now(), 주문_항목_목록);
         Orders orders = new Orders(new ArrayList<>(Arrays.asList(order)));
-        assertThat(orders.notExistCompleteOrder()).isTrue();
+        assertThat(orders.isNotCompleted()).isTrue();
     }
 
 }

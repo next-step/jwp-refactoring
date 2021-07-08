@@ -135,7 +135,7 @@ public class OrderTable {
         if (Objects.nonNull(tableGroup)) {
             throw new CannotChangeTableEmptyException(THIS_IS_A_GROUP_ORDER_TABLE);
         }
-        if (isNotComplete()) {
+        if (isNotCompleted()) {
             throw new CannotChangeTableEmptyException(THERE_IS_AN_ONGOING_ORDER);
         }
     }
@@ -158,7 +158,7 @@ public class OrderTable {
         this.tableGroup = tableGroup;
     }
 
-    public boolean isNotComplete() {
-        return orders.notExistCompleteOrder();
+    public boolean isNotCompleted() {
+        return orders.isNotCompleted();
     }
 }

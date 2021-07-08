@@ -102,6 +102,10 @@ public class Order {
         return orderStatus;
     }
 
+    public boolean isCompleted() {
+        return orderStatus.equals(OrderStatus.COMPLETION);
+    }
+
     public LocalDateTime getOrderedTime() {
         return orderedTime;
     }

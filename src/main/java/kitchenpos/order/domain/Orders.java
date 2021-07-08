@@ -22,8 +22,8 @@ public class Orders {
         orders.add(order);
     }
 
-    public boolean notExistCompleteOrder() {
-        return orders.stream()
-            .anyMatch(order -> !order.getOrderStatus().equals(OrderStatus.COMPLETION));
+    public boolean isNotCompleted() {
+        return !orders.stream()
+            .allMatch(Order::isCompleted);
     }
 }
