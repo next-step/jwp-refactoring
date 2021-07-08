@@ -2,11 +2,11 @@ package kitchenpos.application;
 
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.utils.TestUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import java.util.Arrays;
 import java.util.Objects;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -29,15 +29,14 @@ class TableGroupServiceTest {
     void createAndUngroupTest() {
         // given
         OrderTable orderTable1 = tableService.create(
-            new OrderTable(1, true)
+            new OrderTable(TestUtils.getRandomId(), 1, true)
         );
 
         OrderTable orderTable2 = tableService.create(
-            new OrderTable(1, true)
+            new OrderTable(TestUtils.getRandomId(), 1, true)
         );
 
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
+        TableGroup tableGroup = new TableGroup(TestUtils.getRandomId(), orderTable1, orderTable2);
 
         //주문 테이블 등록
         // when
@@ -46,7 +45,8 @@ class TableGroupServiceTest {
         // then
         assertThat(actualTableGroup).isNotNull();
         assertThat(tableService.list().stream()
-                .noneMatch(x -> Objects.equals(x.getTableGroupId(), actualTableGroup.getId()))
+            .filter(x -> Objects.nonNull(x.getTableGroup()))
+            .noneMatch(x -> Objects.equals(x.getTableGroup().getId(), actualTableGroup.getId()))
         ).isFalse();
 
         //주문 테이블 삭제
@@ -55,7 +55,8 @@ class TableGroupServiceTest {
 
         // then
         assertThat(tableService.list().stream()
-            .noneMatch(x -> Objects.equals(x.getTableGroupId(), actualTableGroup.getId()))
+            .filter(x -> Objects.nonNull(x.getTableGroup()))
+            .noneMatch(x -> Objects.equals(x.getTableGroup().getId(), actualTableGroup.getId()))
         ).isTrue();
 
     }
@@ -68,22 +69,21 @@ class TableGroupServiceTest {
             new OrderTable(1, true)
         );
 
-        // when
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Arrays.asList(orderTable1));
-
         // then
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("2개").hasMessageContaining("등록");
+        assertThatThrownBy(() -> {
+            TableGroup tableGroup = new TableGroup(orderTable1, null);
+            tableGroupService.create(tableGroup);
+        }).isInstanceOf(RuntimeException.class).hasMessageContaining("주문테이블 최소 갯수는 2개입니다.");
     }
 
     @DisplayName("주문 테이블 그룹을 등록시, 주문테이블들은 사전에 등록되어 있어야 한다.")
     @Test
     void createExceptionTest2() {
         // when
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Arrays.asList(new OrderTable(1, true), new OrderTable(1, true)));
+        TableGroup tableGroup = new TableGroup(
+            new OrderTable(1, true),
+            new OrderTable(1, true)
+        );
 
         // then
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
@@ -104,8 +104,7 @@ class TableGroupServiceTest {
         );
 
         // when
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
+        TableGroup tableGroup = new TableGroup(orderTable1, orderTable2);
 
         // then
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))

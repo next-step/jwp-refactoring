@@ -4,6 +4,7 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.utils.TestUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,9 +91,9 @@ class OrderServiceTest {
     @Test
     void createExceptionTest3() {
         // given
-        OrderTable orderTable = new OrderTable(1, false);
+        OrderTable orderTable = new OrderTable(TestUtils.getRandomId(), 1, false);
 
-        Order order = new Order(orderTable.getId(), OrderStatus.COOKING.name(), LocalDateTime.now());
+        Order order = new Order(TestUtils.getRandomId(), orderTable.getId(), OrderStatus.COOKING.name(), LocalDateTime.now());
         order.setOrderLineItems(Arrays.asList(new OrderLineItem(order.getId(), 1L, 1L)));
 
         // when

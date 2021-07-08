@@ -1,6 +1,7 @@
 package kitchenpos.application;
 
 import kitchenpos.domain.*;
+import kitchenpos.utils.TestUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -10,7 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -87,14 +87,13 @@ class TableServiceTest {
             new OrderTable(1, true)
         );
 
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
+        TableGroup tableGroup = new TableGroup(TestUtils.getRandomId(), orderTable1, orderTable2);
         tableGroupService.create(tableGroup);
 
         // then
-        assertThatThrownBy(() -> tableService.changeEmpty(orderTable1.getId(), orderTable1))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("그룹 설정이 되어 있는");
+        assertThatThrownBy(() ->
+            tableService.changeEmpty(orderTable1.getId(), new OrderTable(1, true)
+        )).isInstanceOf(RuntimeException.class).hasMessageContaining("그룹 설정이 되어 있는");
     }
 
     @ParameterizedTest
