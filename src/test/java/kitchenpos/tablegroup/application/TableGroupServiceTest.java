@@ -1,12 +1,12 @@
 package kitchenpos.tablegroup.application;
 
-import kitchenpos.order.dao.OrderDao;
-import kitchenpos.table.dao.OrderTableDao;
-import kitchenpos.tablegroup.dao.TableGroupDao;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
-import kitchenpos.tablegroup.dto.TableGroupRequest.OrderTableRequest;
+import kitchenpos.tablegroup.dto.TableGroupRequest.OrderTableIdRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,13 +26,13 @@ import static org.mockito.ArgumentMatchers.any;
 class TableGroupServiceTest {
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -47,11 +47,11 @@ class TableGroupServiceTest {
         orderTable1.setEmpty(true);
         orderTable2.setEmpty(true);
 
-        TableGroupRequest request = new TableGroupRequest(Arrays.asList(new OrderTableRequest(1L),
-                                                                        new OrderTableRequest(2L)));
+        TableGroupRequest request = new TableGroupRequest(Arrays.asList(new OrderTableIdRequest(1L),
+                                                                        new OrderTableIdRequest(2L)));
 
-        Mockito.when(orderTableDao.findAllByIdIn(any())).thenReturn(Arrays.asList(orderTable1, orderTable2));
-        Mockito.when(tableGroupDao.save(any())).thenReturn(tableGroup);
+        Mockito.when(orderTableRepository.findAllByIdIn(any())).thenReturn(Arrays.asList(orderTable1, orderTable2));
+        Mockito.when(tableGroupRepository.save(any())).thenReturn(tableGroup);
 
         // when
         TableGroupResponse actual = tableGroupService.create(request);
@@ -65,7 +65,7 @@ class TableGroupServiceTest {
     @Test
     void createTestWrongSize() {
         // given
-        TableGroupRequest request = new TableGroupRequest(Arrays.asList(new OrderTableRequest(2L)));
+        TableGroupRequest request = new TableGroupRequest(Arrays.asList(new OrderTableIdRequest(2L)));
 
         // when
         assertThatThrownBy(() -> tableGroupService.create(request))
@@ -76,11 +76,11 @@ class TableGroupServiceTest {
     @Test
     void createTestWrongOrderTable() {
         // given
-        TableGroupRequest request = new TableGroupRequest(Arrays.asList(new OrderTableRequest(1L),
-                                                                        new OrderTableRequest(2L)));
+        TableGroupRequest request = new TableGroupRequest(Arrays.asList(new OrderTableIdRequest(1L),
+                                                                        new OrderTableIdRequest(2L)));
         OrderTable orderTable1 = new OrderTable(null, 3);
         OrderTable orderTable2 = new OrderTable(1L, 4);
-        Mockito.when(orderTableDao.findAllByIdIn(any())).thenReturn(Arrays.asList(orderTable1, orderTable2));
+        Mockito.when(orderTableRepository.findAllByIdIn(any())).thenReturn(Arrays.asList(orderTable1, orderTable2));
 
         // when
         assertThatThrownBy(() -> tableGroupService.create(request))
@@ -95,14 +95,14 @@ class TableGroupServiceTest {
         OrderTable orderTable1 = new OrderTable(1L, 3);
         OrderTable orderTable2 = new OrderTable(1L, 4);
 
-        Mockito.when(orderTableDao.findAllByTableGroupId(any())).thenReturn(Arrays.asList(orderTable1, orderTable2));
-        Mockito.when(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(false);
+        Mockito.when(orderTableRepository.findAllByTableGroupId(any())).thenReturn(Arrays.asList(orderTable1, orderTable2));
+        Mockito.when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(false);
 
         // when
         tableGroupService.ungroup(1L);
 
         // then
-        Mockito.verify(orderTableDao, Mockito.times(2)).save(any());
+        Mockito.verify(orderTableRepository, Mockito.times(2)).save(any());
     }
 
     @DisplayName("테이블 그룹으로 묶일 주문 테이블의 상태가 COMPLETION이 아닐 경우")
@@ -112,8 +112,8 @@ class TableGroupServiceTest {
         OrderTable orderTable1 = new OrderTable(1L, 3);
         OrderTable orderTable2 = new OrderTable(1L, 4);
 
-        Mockito.when(orderTableDao.findAllByTableGroupId(any())).thenReturn(Arrays.asList(orderTable1, orderTable2));
-        Mockito.when(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(true);
+        Mockito.when(orderTableRepository.findAllByTableGroupId(any())).thenReturn(Arrays.asList(orderTable1, orderTable2));
+        Mockito.when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(true);
 
         // when
         assertThatThrownBy(() -> tableGroupService.ungroup(1L))

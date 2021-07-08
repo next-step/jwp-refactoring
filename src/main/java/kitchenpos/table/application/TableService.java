@@ -1,8 +1,8 @@
 package kitchenpos.table.application;
 
 import java.util.stream.Collectors;
-import kitchenpos.order.dao.OrderDao;
-import kitchenpos.table.dao.OrderTableDao;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableChangeEmptyRequest;
@@ -12,62 +12,69 @@ import kitchenpos.table.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @Transactional
 public class TableService {
-    private final OrderDao orderDao;
-    private final OrderTableDao orderTableDao;
+    private final OrderRepository orderRepository;
+    private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderDao orderDao, final OrderTableDao orderTableDao) {
-        this.orderDao = orderDao;
-        this.orderTableDao = orderTableDao;
+    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
+        this.orderRepository = orderRepository;
+        this.orderTableRepository = orderTableRepository;
     }
 
     public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
-        return OrderTableResponse.of(orderTableDao.save(orderTableRequest.toOrderTable()));
+        return OrderTableResponse.of(orderTableRepository.save(orderTableRequest.toOrderTable()));
     }
 
     @Transactional(readOnly = true)
     public List<OrderTableResponse> list() {
-        return orderTableDao.findAll()
-                            .stream()
-                            .map(OrderTableResponse::of)
-                            .collect(Collectors.toList());
+        return orderTableRepository.findAll()
+                                   .stream()
+                                   .map(OrderTableResponse::of)
+                                   .collect(Collectors.toList());
     }
 
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableChangeEmptyRequest request) {
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
-            throw new IllegalArgumentException();
-        }
-
-        if (orderDao.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
-        }
-
+        final OrderTable savedOrderTable = findOrderTableById(orderTableId);
+        savedOrderTable.checkNotIncludeTableGroup();
+        checkNotCompletionOrder(orderTableId);
         savedOrderTable.setEmpty(request.isEmpty());
-        return OrderTableResponse.of(orderTableDao.save(savedOrderTable));
+        return OrderTableResponse.of(savedOrderTable);
+    }
+
+    private OrderTable findOrderTableById(Long orderTableId) {
+        return orderTableRepository.findById(orderTableId)
+                                   .orElseThrow(IllegalArgumentException::new);
+    }
+
+    private void checkNotCompletionOrder(Long orderTableId) {
+        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId,
+                                                                 getOrderStatusListExcludeCompletion())) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private List<String> getOrderStatusListExcludeCompletion() {
+        return OrderStatus.excludeCompletionList()
+                          .stream()
+                          .map(Enum::name)
+                          .collect(Collectors.toList());
     }
 
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableChangeNumberOfGuestsRequest request) {
-        final int numberOfGuests = request.getNumberOfGuests();
+        checkNumberOfGuestsOverMin(request.getNumberOfGuests());
+        final OrderTable savedOrderTable = findOrderTableById(orderTableId);
+        savedOrderTable.checkEmpty();
+        savedOrderTable.changeNumberOfGuests(request.getNumberOfGuests());
+        return OrderTableResponse.of(savedOrderTable);
+    }
+
+    public void checkNumberOfGuestsOverMin(final int numberOfGuests) {
         if (numberOfGuests < 0) {
             throw new IllegalArgumentException();
         }
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
-        if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        savedOrderTable.setNumberOfGuests(numberOfGuests);
-        return OrderTableResponse.of(orderTableDao.save(savedOrderTable));
     }
 }

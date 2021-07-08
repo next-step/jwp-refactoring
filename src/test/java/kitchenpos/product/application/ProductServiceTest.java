@@ -1,6 +1,6 @@
 package kitchenpos.product.application;
 
-import kitchenpos.product.dao.ProductDao;
+import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
@@ -22,7 +22,7 @@ import static org.mockito.ArgumentMatchers.any;
 class ProductServiceTest {
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private ProductService productService;
@@ -33,7 +33,7 @@ class ProductServiceTest {
         // given
         ProductRequest productRequest = new ProductRequest("불고기", new BigDecimal(1000));
         Product 불고기 = new Product("불고기", new BigDecimal(1000));
-        Mockito.when(productDao.save(any())).thenReturn(불고기);
+        Mockito.when(productRepository.save(any())).thenReturn(불고기);
 
         // when
         ProductResponse actual = productService.create(productRequest);

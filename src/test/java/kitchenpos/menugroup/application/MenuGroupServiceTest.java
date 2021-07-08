@@ -1,6 +1,6 @@
 package kitchenpos.menugroup.application;
 
-import kitchenpos.menugroup.dao.MenuGroupDao;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
@@ -22,7 +22,7 @@ import static org.mockito.ArgumentMatchers.any;
 class MenuGroupServiceTest {
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @InjectMocks
     private MenuGroupService menuGroupService;
@@ -32,7 +32,7 @@ class MenuGroupServiceTest {
     void createTest() {
         // given
         MenuGroupRequest expected = new MenuGroupRequest("메뉴그룹1");
-        Mockito.when(menuGroupDao.save(any())).thenReturn(expected.toMenuGroup());
+        Mockito.when(menuGroupRepository.save(any())).thenReturn(expected.toMenuGroup());
 
         // when
         MenuGroupResponse actual = menuGroupService.create(expected);
@@ -48,7 +48,7 @@ class MenuGroupServiceTest {
     void listTest() {
         // given
         MenuGroup expected = new MenuGroup("메뉴그룹1");
-        Mockito.when(menuGroupDao.findAll()).thenReturn(Arrays.asList(expected));
+        Mockito.when(menuGroupRepository.findAll()).thenReturn(Arrays.asList(expected));
 
         // when
         List<MenuGroupResponse> actual = menuGroupService.list();

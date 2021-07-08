@@ -1,87 +1,81 @@
 package kitchenpos.tablegroup.application;
 
-import kitchenpos.order.dao.OrderDao;
-import kitchenpos.table.dao.OrderTableDao;
-import kitchenpos.tablegroup.dao.TableGroupDao;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.tablegroup.domain.OrderTables;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
-import kitchenpos.tablegroup.dto.TableGroupRequest.OrderTableRequest;
+import kitchenpos.tablegroup.dto.TableGroupRequest.OrderTableIdRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class TableGroupService {
-    private final OrderDao orderDao;
-    private final OrderTableDao orderTableDao;
-    private final TableGroupDao tableGroupDao;
 
-    public TableGroupService(final OrderDao orderDao, final OrderTableDao orderTableDao, final TableGroupDao tableGroupDao) {
-        this.orderDao = orderDao;
-        this.orderTableDao = orderTableDao;
-        this.tableGroupDao = tableGroupDao;
+    private static final int ORDER_TABLE_MIN_SIZE = 2;
+
+    private final OrderRepository orderRepository;
+    private final OrderTableRepository orderTableRepository;
+    private final TableGroupRepository tableGroupRepository;
+
+    public TableGroupService(final OrderRepository orderRepository,
+                             final OrderTableRepository orderTableRepository,
+                             final TableGroupRepository tableGroupRepository) {
+        this.orderRepository = orderRepository;
+        this.orderTableRepository = orderTableRepository;
+        this.tableGroupRepository = tableGroupRepository;
     }
 
     public TableGroupResponse create(final TableGroupRequest request) {
-        final List<OrderTableRequest> orderTables = request.getOrderTables();
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
+        checkOrderTableOverMin(request.getOrderTables());
+        final List<OrderTable> savedOrderTables = getOrderTables(request);
+        return TableGroupResponse.of(tableGroupRepository.save(new TableGroup(savedOrderTables)));
+    }
+
+    private void checkOrderTableOverMin(List<OrderTableIdRequest> orderTables) {
+        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < ORDER_TABLE_MIN_SIZE) {
             throw new IllegalArgumentException();
         }
+    }
 
-        final List<Long> orderTableIds = orderTables.stream()
-                                                    .map(OrderTableRequest::getId)
-                                                    .collect(Collectors.toList());
+    private List<OrderTable> getOrderTables(TableGroupRequest request) {
+        return request.getOrderTables()
+                      .stream()
+                      .map(this::findOrderTableById)
+                      .collect(Collectors.toList());
+    }
 
-        final List<OrderTable> savedOrderTables = orderTableDao.findAllByIdIn(orderTableIds);
-        if (orderTables.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
-        }
-
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        TableGroup tableGroup = new TableGroup(savedOrderTables);
-        final TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
-
-        final Long tableGroupId = savedTableGroup.getId();
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.setTableGroupId(tableGroupId);
-            savedOrderTable.setEmpty(false);
-            orderTableDao.save(savedOrderTable);
-        }
-        savedTableGroup.setOrderTables(savedOrderTables);
-
-        return TableGroupResponse.of(savedTableGroup);
+    private OrderTable findOrderTableById(OrderTableIdRequest orderTableIdRequest) {
+        return orderTableRepository.findById(orderTableIdRequest.getId())
+                                   .orElseThrow(IllegalArgumentException::new);
     }
 
     public void ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableDao.findAllByTableGroupId(tableGroupId);
+        OrderTables orderTables = OrderTables.of(orderTableRepository.findAllByTableGroupId(tableGroupId));
+        checkNotCompletionOrders(orderTables.getOrderTableIds());
+        orderTables.ungroup();
+    }
 
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-
-        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+    private void checkNotCompletionOrders(List<Long> orderTableIds) {
+        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds,
+                                                                   getOrderStatusListExcludeCompletion())) {
             throw new IllegalArgumentException();
         }
+    }
 
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.setTableGroupId(null);
-            orderTableDao.save(orderTable);
-        }
+    private List<String> getOrderStatusListExcludeCompletion() {
+        return OrderStatus.excludeCompletionList()
+                          .stream()
+                          .map(Enum::name)
+                          .collect(Collectors.toList());
     }
 }

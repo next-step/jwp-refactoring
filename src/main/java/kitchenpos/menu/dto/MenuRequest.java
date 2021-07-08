@@ -3,6 +3,8 @@ package kitchenpos.menu.dto;
 import java.math.BigDecimal;
 import java.util.List;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menugroup.domain.MenuGroup;
 
 public class MenuRequest {
     private String name;
@@ -41,11 +43,13 @@ public class MenuRequest {
         return menuProducts;
     }
 
-    public Menu toMenu() {
+    public Menu toMenu(final MenuGroup menuGroup, final List<MenuProduct> menuProducts) {
         return Menu.Builder.of(this.name, this.price)
-                           .menuGroupId(this.menuGroupId)
+                           .menuGroup(menuGroup)
+                           .menuProducts(menuProducts)
                            .build();
     }
+
 
     public static class Builder {
         private final String name;

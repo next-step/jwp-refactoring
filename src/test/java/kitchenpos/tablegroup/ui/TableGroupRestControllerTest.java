@@ -1,14 +1,12 @@
 package kitchenpos.tablegroup.ui;
 
 import kitchenpos.IntegrationTestHelper;
-import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
-import kitchenpos.tablegroup.dto.TableGroupRequest.OrderTableRequest;
+import kitchenpos.tablegroup.dto.TableGroupRequest.OrderTableIdRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
-import kitchenpos.tablegroup.ui.TableGroupRestController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -41,7 +39,7 @@ class TableGroupRestControllerTest extends IntegrationTestHelper {
     @Test
     void createTest() throws Exception {
         // given
-        TableGroupRequest request = new TableGroupRequest(Arrays.asList(new OrderTableRequest(1L)));
+        TableGroupRequest request = new TableGroupRequest(Arrays.asList(new OrderTableIdRequest(1L)));
         OrderTable orderTable = new OrderTable(1l, 3);
         TableGroup tableGroup = new TableGroup(Arrays.asList(orderTable));
         Mockito.when(tableGroupService.create(any())).thenReturn(TableGroupResponse.of(tableGroup));

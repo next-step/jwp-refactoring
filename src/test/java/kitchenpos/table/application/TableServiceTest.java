@@ -1,7 +1,7 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.dao.OrderDao;
-import kitchenpos.table.dao.OrderTableDao;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableChangeEmptyRequest;
 import kitchenpos.table.dto.OrderTableChangeNumberOfGuestsRequest;
@@ -26,10 +26,10 @@ import static org.mockito.ArgumentMatchers.any;
 class TableServiceTest {
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private TableService tableService;
@@ -40,7 +40,7 @@ class TableServiceTest {
         // given
         OrderTableRequest request = new OrderTableRequest(3, true);
         OrderTable orderTable = new OrderTable(1l, 3);
-        Mockito.when(orderTableDao.save(any())).thenReturn(orderTable);
+        Mockito.when(orderTableRepository.save(any())).thenReturn(orderTable);
 
         // when
         OrderTableResponse actual = tableService.create(request);
@@ -55,7 +55,7 @@ class TableServiceTest {
         // given
         OrderTable orderTable1 = new OrderTable(1l, 3);
         OrderTable orderTable2 = new OrderTable(1l, 3);
-        Mockito.when(orderTableDao.findAll()).thenReturn(Arrays.asList(orderTable1, orderTable2));
+        Mockito.when(orderTableRepository.findAll()).thenReturn(Arrays.asList(orderTable1, orderTable2));
 
         // when
         List<OrderTableResponse> actual = tableService.list();
@@ -70,9 +70,9 @@ class TableServiceTest {
         // given
         OrderTableChangeEmptyRequest request = new OrderTableChangeEmptyRequest(true);
         OrderTable orderTable = new OrderTable(null, 3);
-        Mockito.when(orderTableDao.findById(any())).thenReturn(Optional.of(orderTable));
-        Mockito.when(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(false);
-        Mockito.when(orderTableDao.save(any())).thenReturn(orderTable);
+        Mockito.when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
+        Mockito.when(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(false);
+        Mockito.when(orderTableRepository.save(any())).thenReturn(orderTable);
 
         // when
         OrderTableResponse actual = tableService.changeEmpty(1l, request);
@@ -88,8 +88,8 @@ class TableServiceTest {
         // given
         OrderTableChangeNumberOfGuestsRequest request = new OrderTableChangeNumberOfGuestsRequest(3);
         OrderTable orderTable = new OrderTable(1l, 3);
-        Mockito.when(orderTableDao.findById(any())).thenReturn(Optional.of(orderTable));
-        Mockito.when(orderTableDao.save(any())).thenReturn(orderTable);
+        Mockito.when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
+        Mockito.when(orderTableRepository.save(any())).thenReturn(orderTable);
 
         // when
         OrderTableResponse actual = tableService.changeNumberOfGuests(1l, request);
