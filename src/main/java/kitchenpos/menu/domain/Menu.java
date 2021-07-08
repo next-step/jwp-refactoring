@@ -17,8 +17,8 @@ public class Menu {
     private BigDecimal price;
     private MenuGroup menuGroup;
 
-    @OneToMany
-    private List<MenuProduct> menuProducts;
+    @Embedded
+    private MenuProducts menuProducts;
 
     protected Menu() {
     }
@@ -29,7 +29,7 @@ public class Menu {
         this.price = price;
         validateLimitPrice(sum);
         this.menuGroup = menuGroup;
-        this.menuProducts = menuProducts;
+        this.menuProducts = new MenuProducts(menuProducts);
     }
 
     public void validatePrice(BigDecimal price) {
@@ -61,6 +61,6 @@ public class Menu {
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
+        return menuProducts.getMenuProducts();
     }
 }
