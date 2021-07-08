@@ -5,6 +5,7 @@ import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.ui.MenuRestController;
+import kitchenpos.menugroup.domain.MenuGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -54,7 +55,7 @@ class MenuRestControllerTest {
     @Test
     void create() throws Exception {
         List<MenuProduct> menuProducts = Arrays.asList(new MenuProduct(7L, 7L, 7L, 1));
-        Menu menu = new Menu("쓰리라차치킨", BigDecimal.valueOf(20000), 2L, menuProducts);
+        Menu menu = new Menu("쓰리라차치킨", BigDecimal.valueOf(20000), new MenuGroup(1L, "그룹1"), 30000L, menuProducts);
         String jsonString = objectMapper.writeValueAsString(menu);
 
         given(menuService.create(any())).willReturn(menu);
@@ -69,7 +70,7 @@ class MenuRestControllerTest {
     @Test
     void list() throws Exception {
         List<MenuProduct> menuProducts = Arrays.asList(new MenuProduct(7L, 7L, 7L, 1));
-        Menu menu = new Menu("쓰리라차치킨", BigDecimal.valueOf(20000), 2L, menuProducts);
+        Menu menu = new Menu("쓰리라차치킨", BigDecimal.valueOf(20000), new MenuGroup(1L, "그룹1"), 30000L, menuProducts);
 
         given(menuService.list()).willReturn(Arrays.asList(menu));
 
