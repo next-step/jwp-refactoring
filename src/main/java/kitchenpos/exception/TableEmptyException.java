@@ -1,6 +1,6 @@
 package kitchenpos.exception;
 
-public class TableEmptyException extends IllegalArgumentException {
+public class TableEmptyException extends RuntimeException {
     public TableEmptyException() {
     }
 

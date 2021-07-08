@@ -1,6 +1,6 @@
 package kitchenpos.exception;
 
-public class InvalidQuantityException extends IllegalArgumentException {
+public class InvalidQuantityException extends RuntimeException {
     public InvalidQuantityException() {
     }
 

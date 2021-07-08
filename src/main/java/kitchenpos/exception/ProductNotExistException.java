@@ -1,6 +1,6 @@
 package kitchenpos.exception;
 
-public class ProductNotExistException extends IllegalArgumentException {
+public class ProductNotExistException extends RuntimeException {
     public ProductNotExistException() {
     }
 
