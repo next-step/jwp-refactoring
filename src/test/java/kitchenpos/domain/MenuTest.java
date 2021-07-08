@@ -7,8 +7,6 @@ import static kitchenpos.domain.ProductTest.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.math.BigDecimal;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -55,7 +53,7 @@ class MenuTest {
 
 		// than
 		assertThat(menu.getName()).isEqualTo(Name.valueOf("치킨_피자_세트"));
-		assertThat(menu.getPrice()).isEqualTo(BigDecimal.valueOf(1000));
+		assertThat(menu.getPrice()).isEqualTo(Price.wonOf(1000));
 		assertThat(menu.getMenu()).isEqualTo(치킨그룹);
 		assertThat(menu.getMenuProducts()).containsExactly(후라이드치킨1개);
 		assertThat(후라이드치킨1개.getMenu()).isEqualTo(menu);

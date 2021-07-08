@@ -1,10 +1,12 @@
 package kitchenpos.application;
 
 import static java.util.Arrays.*;
+import static kitchenpos.domain.TextFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderRepository;
@@ -47,7 +50,7 @@ class OrderServiceTest {
 		// given
 		OrderRequest orderRequest = mock(OrderRequest.class);
 		when(orderRequest.getOrderLineItemSize()).thenReturn(1);
-		when(menuRepository.countByIdIn(anyList())).thenReturn(0L);
+		when(menuRepository.findAllById(anyList())).thenReturn(Collections.emptyList());
 
 		// when
 		// then
@@ -62,7 +65,7 @@ class OrderServiceTest {
 		// given
 		OrderRequest orderRequest = mock(OrderRequest.class);
 		when(orderRequest.getOrderLineItemSize()).thenReturn(1);
-		when(menuRepository.countByIdIn(anyList())).thenReturn(1L);
+		when(menuRepository.findAllById(anyList())).thenReturn(asList(mock(Menu.class)));
 		when(orderTableRepository.findById(anyLong())).thenReturn(Optional.empty());
 
 		// when
@@ -92,7 +95,7 @@ class OrderServiceTest {
 	@DisplayName("주문 상태가 완료인 경우 변경할 수 없다.")
 	@Test
 	void changeStatusOfCompletedOrderTest() {
-		Order completedOrder = Order.create(asList(new OrderLineItem(1L, 2)),
+		Order completedOrder = Order.create(asList(new OrderLineItem(주문_메뉴_후라이드, 2)),
 			new OrderTable(1, false), LocalDateTime.now());
 		completedOrder.complete();
 

@@ -1,6 +1,8 @@
 package kitchenpos.dto;
 
+import kitchenpos.domain.Menu;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderMenu;
 
 public class OrderLineItemRequest {
 	private long menuId;
@@ -15,7 +17,11 @@ public class OrderLineItemRequest {
 		return quantity;
 	}
 
-	OrderLineItem toEntity() {
-		return new OrderLineItem(menuId, quantity);
+	boolean isEqualMenuId(long menuId) {
+		return this.menuId == menuId;
+	}
+
+	OrderLineItem toEntity(Menu menu) {
+		return new OrderLineItem(OrderMenu.of(menu.getId(), menu.getName(), menu.getPrice()), quantity);
 	}
 }

@@ -2,6 +2,7 @@ package kitchenpos.domain;
 
 import static java.time.LocalDateTime.*;
 import static java.util.Arrays.*;
+import static kitchenpos.domain.TextFixture.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDateTime;
@@ -16,7 +17,7 @@ class OrderTest {
 	@Test
 	void createTest() {
 		//given
-		OrderLineItem orderLineItem = new OrderLineItem(1L, 1L);
+		OrderLineItem orderLineItem = new OrderLineItem(주문_메뉴_후라이드, 1L);
 		OrderTable orderTable = new OrderTable(1, false);
 		LocalDateTime orderedTime = now();
 
@@ -47,7 +48,7 @@ class OrderTest {
 	@Test
 	void createOrderWithEmptyOrderTableTest() {
 		// given
-		OrderLineItem orderLineItem = new OrderLineItem(1L, 1L);
+		OrderLineItem orderLineItem = new OrderLineItem(주문_메뉴_후라이드, 1L);
 		OrderTable orderTable = new OrderTable(1, true);
 
 		// when
@@ -61,7 +62,7 @@ class OrderTest {
 	@Test
 	void changeCompletedOrderTest() {
 		// given
-		OrderLineItem orderLineItem = new OrderLineItem(1L, 1L);
+		OrderLineItem orderLineItem = new OrderLineItem(주문_메뉴_후라이드, 1L);
 		OrderTable orderTable = new OrderTable(1, false);
 		Order completedOrder = Order.create(asList(orderLineItem), orderTable, now());
 		completedOrder.complete();
@@ -77,7 +78,7 @@ class OrderTest {
 	@Test
 	void changeOrderTest() {
 		// given
-		OrderLineItem orderLineItem = new OrderLineItem(1L, 1L);
+		OrderLineItem orderLineItem = new OrderLineItem(주문_메뉴_후라이드, 1L);
 		OrderTable orderTable = new OrderTable(1, false);
 		Order order = Order.create(asList(orderLineItem), orderTable, now());
 

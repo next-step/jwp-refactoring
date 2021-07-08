@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -18,14 +19,15 @@ public class OrderLineItem {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    private Long menuId;
+    @Embedded
+    private OrderMenu orderMenu;
 
     private long quantity;
 
     protected OrderLineItem() {}
 
-    public OrderLineItem(Long menuId, long quantity) {
-        this.menuId = menuId;
+    public OrderLineItem(OrderMenu orderMenu, long quantity) {
+        this.orderMenu = orderMenu;
         this.quantity = quantity;
     }
 
@@ -38,14 +40,14 @@ public class OrderLineItem {
     }
 
     public Long getMenuId() {
-        return menuId;
+        return orderMenu.getId();
     }
 
     public long getQuantity() {
         return quantity;
     }
 
-    public Order getOrder() {
+    Order getOrder() {
         return order;
     }
 

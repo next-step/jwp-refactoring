@@ -95,8 +95,8 @@ public class Menu {
         return name;
     }
 
-    public BigDecimal getPrice() {
-        return price.getAmount();
+    public Price getPrice() {
+        return price;
     }
 
     public List<MenuProduct> getMenuProducts() {

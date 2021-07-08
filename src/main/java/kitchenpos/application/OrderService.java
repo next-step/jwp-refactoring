@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderTableRepository;
@@ -34,8 +35,8 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        validateExistsMenus(orderRequest);
-        final List<OrderLineItem> orderLineItems = orderRequest.toOrderLineItems();
+        final List<Menu> menus = findMenus(orderRequest);
+        final List<OrderLineItem> orderLineItems = orderRequest.toOrderLineItems(menus);
         final OrderTable orderTable = findOrderTable(orderRequest);
         final Order persistOrder = orderRepository.save(Order.create(orderLineItems, orderTable, LocalDateTime.now()));
         return OrderResponse.of(persistOrder);
@@ -59,10 +60,12 @@ public class OrderService {
             .orElseThrow(() -> new IllegalArgumentException("등록이 안된 주문 테이블에서는 주문할 수 없습니다."));
     }
 
-    private void validateExistsMenus(OrderRequest orderRequest) {
+    private List<Menu> findMenus(OrderRequest orderRequest) {
         List<Long> menuIds = orderRequest.getMenuIds();
-        if (orderRequest.getOrderLineItemSize() != menuRepository.countByIdIn(menuIds)) {
+        List<Menu> menus = menuRepository.findAllById(menuIds);
+        if (orderRequest.getOrderLineItemSize() != menus.size()) {
             throw new IllegalArgumentException("등록이 안된 메뉴는 주문할 수 없습니다.");
         }
+        return menus;
     }
 }

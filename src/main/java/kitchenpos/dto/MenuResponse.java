@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.Name;
+import kitchenpos.domain.Price;
 
 public class MenuResponse {
 
@@ -31,7 +32,8 @@ public class MenuResponse {
 	public static MenuResponse of(Menu menu) {
 		final List<MenuProductResponse> menuProducts = MenuProductResponse.listOf(menu.getMenuProducts());
 		final Name menuName = menu.getName();
-		return new MenuResponse(menu.getId(), menuName.getValue(), menu.getPrice(), menu.getMenuGroupId(), menuProducts);
+		final Price price = menu.getPrice();
+		return new MenuResponse(menu.getId(), menuName.getValue(), price.getAmount(), menu.getMenuGroupId(), menuProducts);
 	}
 
 	public static List<MenuResponse> listOf(List<Menu> menus) {
