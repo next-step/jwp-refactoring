@@ -41,7 +41,11 @@ public class TableGroupServiceTest {
     @Test
     void create() {
         // Given
+        List<OrderTableRequest> 주문테이블_목록 = new ArrayList<>();
+        주문테이블_목록.add(new OrderTableRequest(1));
+        주문테이블_목록.add(new OrderTableRequest(2));
         TableGroupRequest 단체지정 = new TableGroupRequest(주문테이블_목록);
+
         List<OrderTable> orderTables = new ArrayList<>();
         orderTables.add(new OrderTable(1L, 두명));
         orderTables.add(new OrderTable(2L, 두명));

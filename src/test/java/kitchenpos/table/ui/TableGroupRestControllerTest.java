@@ -36,8 +36,8 @@ public class TableGroupRestControllerTest extends RestControllerTest<TableGroupR
     @Test
     void create() throws Exception {
         // Given
-        OrderTable 주문테이블1 = new OrderTable(1L, 2, false);
-        OrderTable 주문테이블2 = new OrderTable(1L, 2, false);
+        OrderTable 주문테이블1 = new OrderTable(1L, 2, true);
+        OrderTable 주문테이블2 = new OrderTable(1L, 2, true);
         TableGroup 단체지정 = new TableGroup(1L, new ArrayList<>(Arrays.asList(주문테이블1, 주문테이블2)));
         given(tableGroupService.create(any())).willReturn(TableGroupResponse.of(단체지정));
 

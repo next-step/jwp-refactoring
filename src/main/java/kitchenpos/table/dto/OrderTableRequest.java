@@ -16,7 +16,7 @@ public class OrderTableRequest {
     }
 
     public OrderTableRequest(int numberOfGuests) {
-        this(null, null, numberOfGuests, false);
+        this(null, null, numberOfGuests, true);
     }
 
     public OrderTableRequest(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
