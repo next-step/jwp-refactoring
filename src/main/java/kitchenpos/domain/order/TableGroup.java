@@ -33,8 +33,7 @@ public class TableGroup {
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
             throw new InvalidOrderTableException("should have over 2 orderTables");
         }
-
-        initialSettingOrderTables(orderTables);
+        orderTables.forEach(orderTable -> orderTable.changeTableGroup(this));
         this.orderTables = orderTables;
         this.createdDate = createdDate;
     }
