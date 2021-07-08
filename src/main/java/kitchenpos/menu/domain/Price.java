@@ -14,6 +14,10 @@ public class Price {
 
 	private BigDecimal price;
 
+	protected Price() {
+
+	}
+
 	public Price(BigDecimal price) {
 		validate(price);
 		this.price = price;
@@ -46,5 +50,20 @@ public class Price {
 
 	public int compareTo(Price price) {
 		return this.price.compareTo(price.price);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		Price price1 = (Price)o;
+		return Objects.equals(price, price1.price);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(price);
 	}
 }

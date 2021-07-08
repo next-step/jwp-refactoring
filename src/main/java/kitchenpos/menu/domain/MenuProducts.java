@@ -13,16 +13,20 @@ public class MenuProducts {
 	@OneToMany(fetch = FetchType.EAGER)
 	private List<MenuProduct> menuProducts;
 
+	protected MenuProducts() {
+
+	}
+
 	public MenuProducts(List<MenuProduct> menuProducts) {
 		this.menuProducts = menuProducts;
 	}
 
 	public Price getSumMenuProductPrice() {
-		Price sumPrice = new Price(BigDecimal.ZERO);
+		BigDecimal sum = BigDecimal.ZERO;
 		this.menuProducts.forEach(menuProduct -> {
-			sumPrice.add(menuProduct.getProduct().getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
+			sum.add(menuProduct.getProduct().getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
 		});
-		return sumPrice;
+		return new Price(sum);
 	}
 
 }

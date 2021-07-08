@@ -1,58 +1,45 @@
 package kitchenpos.menu.application;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kitchenpos.manugroup.domain.MenuGroup;
+import kitchenpos.manugroup.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProductRepository;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.exception.MenuException;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 
 @Service
 public class MenuService {
 	private final MenuRepository menuRepository;
+	private final MenuGroupRepository menuGroupRepository;
+	private final ProductRepository productRepository;
 
-	public MenuService(final MenuRepository menuRepository) {
+	public MenuService(final MenuRepository menuRepository,
+		MenuGroupRepository menuGroupRepository, ProductRepository productRepository) {
 		this.menuRepository = menuRepository;
+		this.menuGroupRepository = menuGroupRepository;
+		this.productRepository = productRepository;
 	}
 
 	@Transactional
-	public Menu create(final Menu menu) {
-		/*
-		final BigDecimal price = menu.getPrice();
+	public Menu create(final MenuRequest menuRequest) {
+		MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId()).orElseThrow(() -> new MenuException("메뉴 그룹이 존재하지 않습니다."));
 
-		if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-			throw new IllegalArgumentException();
-		}
-
-		if (!menuGroupRepository.existsById(menu.getMenuGroupId())) {
-			throw new IllegalArgumentException();
-		}
-
-		final List<MenuProduct> menuProducts = menu.getMenuProducts();
-
-		BigDecimal sum = BigDecimal.ZERO;
-		for (final MenuProduct menuProduct : menuProducts) {
-			final Product product = productRepository.findById(menuProduct.getProductId())
-				.orElseThrow(IllegalArgumentException::new);
-			sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
-		}
-
-		if (price.compareTo(sum) > 0) {
-			throw new IllegalArgumentException();
-		}
-
-
-		final Menu savedMenu = menuRepository.save(menu);
-
-		final Long menuId = savedMenu.getId();
-		final List<MenuProduct> savedMenuProducts = new ArrayList<>();
-		for (final MenuProduct menuProduct : menuProducts) {
-			menuProduct.setMenuId(menuId);
-			savedMenuProducts.add(menuProductRepository.save(menuProduct));
-		}
-		savedMenu.setMenuProducts(savedMenuProducts);
-		*/
+		List<Product> products = menuRequest.getMenuProductIds().stream()
+			.map(menuProductId -> productRepository.findById(menuProductId).orElseThrow(() -> new MenuException("해당 상품이 존재하지 않습니다.")))
+			.collect(Collectors.toList());
+		Menu menu = menuRequest.toMenu(menuGroup, new MenuProducts(Arrays.asList()));
 		return menuRepository.save(menu);
 	}
 
