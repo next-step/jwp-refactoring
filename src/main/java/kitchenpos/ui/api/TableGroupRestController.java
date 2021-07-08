@@ -17,15 +17,6 @@ public class TableGroupRestController {
         this.tableGroupService = tableGroupService;
     }
 
-    @PostMapping("/api/table-groups")
-    public ResponseEntity<TableGroup> create(@RequestBody final TableGroup tableGroup) {
-        final TableGroup created = tableGroupService.create(tableGroup);
-        final URI uri = URI.create("/api/table-groups/" + created.getId());
-        return ResponseEntity.created(uri)
-                .body(created)
-                ;
-    }
-
     @DeleteMapping("/api/table-groups/{tableGroupId}")
     public ResponseEntity<Void> ungroup(@PathVariable final Long tableGroupId) {
         tableGroupService.ungroup(tableGroupId);
@@ -34,10 +25,10 @@ public class TableGroupRestController {
                 ;
     }
 
-    @PostMapping("/api/table-groups2")
-    public ResponseEntity<OrderTableGroupResponse> create2(@RequestBody final OrderTableGroupRequest request) {
+    @PostMapping("/api/table-groups")
+    public ResponseEntity<OrderTableGroupResponse> create(@RequestBody final OrderTableGroupRequest request) {
         final TableGroup created = tableGroupService.create(request.toTableGroup());
-        final URI uri = URI.create("/api/table-groups2/" + created.getId());
+        final URI uri = URI.create("/api/table-groups/" + created.getId());
         return ResponseEntity.created(uri)
                 .body(OrderTableGroupResponse.of(created))
                 ;

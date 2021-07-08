@@ -56,6 +56,16 @@ class TableGroupRestControllerTest {
         tableGroup = TableGroup.of(1L, LocalDateTime.now(), Lists.list(orderTable));
     }
 
+    @DisplayName("특정 테이블 그룹을 삭제한다.")
+    @Test
+    void ungroup() throws Exception {
+        //when
+        ResultActions actions = mockMvc.perform(delete(URI + "/{tableGroupId}", tableGroup.getId()));
+
+        //then
+        actions.andExpect(status().isNoContent());
+    }
+
     @DisplayName("테이블 그룹을 추가한다.")
     @Test
     void create() throws Exception {
@@ -70,38 +80,6 @@ class TableGroupRestControllerTest {
         //then
         actions.andExpect(status().isCreated())
                 .andExpect(header().string("location", URI + "/1"))
-                .andExpect(jsonPath("$.id").isNotEmpty())
-                .andExpect(jsonPath("$.orderTables").isNotEmpty())
-                .andExpect(jsonPath("orderTables[0].id").value(orderTable.getId()))
-                .andExpect(jsonPath("orderTables[0].tableGroupId").value(orderTable.getTableGroupId()))
-                .andExpect(jsonPath("orderTables[0].numberOfGuests").value(orderTable.getNumberOfGuests()))
-                .andExpect(jsonPath("orderTables[0].empty").value(orderTable.isEmpty()));
-    }
-
-    @DisplayName("특정 테이블 그룹을 삭제한다.")
-    @Test
-    void ungroup() throws Exception {
-        //when
-        ResultActions actions = mockMvc.perform(delete(URI + "/{tableGroupId}", tableGroup.getId()));
-
-        //then
-        actions.andExpect(status().isNoContent());
-    }
-
-    @DisplayName("테이블 그룹을 추가한다.2")
-    @Test
-    void create2() throws Exception {
-        //given
-        given(tableGroupService.create(any())).willReturn(tableGroup);
-
-        //when
-        ResultActions actions = mockMvc.perform(post(URI +"2")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(tableGroup)));
-
-        //then
-        actions.andExpect(status().isCreated())
-                .andExpect(header().string("location", URI + "2/1"))
                 .andExpect(jsonPath("$.id").isNotEmpty())
                 .andExpect(jsonPath("$.orderTables").isNotEmpty())
                 .andExpect(jsonPath("orderTables[0].id").value(orderTable.getId()))
