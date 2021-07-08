@@ -1,7 +1,5 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.product.domain.Product;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
@@ -22,6 +20,10 @@ public class MenuProducts {
         this.menuProducts = menuProducts;
     }
 
+    public void add(MenuProduct menuProduct) {
+        this.menuProducts.add(menuProduct);
+    }
+
     public void addAll(List<MenuProduct> menuProducts) {
         this.menuProducts.addAll(menuProducts);
     }
@@ -33,9 +35,9 @@ public class MenuProducts {
     public BigDecimal sumOfMenuProducts() {
         BigDecimal sum = BigDecimal.ZERO;
         for (final MenuProduct menuProduct : menuProducts) {
-            final Product product = menuProduct.getProduct();
-            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
+            sum = sum.add(menuProduct.menuProductPrice());
         }
+
         return sum;
     }
 }
