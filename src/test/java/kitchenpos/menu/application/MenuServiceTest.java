@@ -1,10 +1,11 @@
-package kitchenpos.application;
+package kitchenpos.menu.application;
 
 import kitchenpos.dao.MenuDao;
+import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.product.domain.ProductRepository;
-import kitchenpos.domain.Menu;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
