@@ -5,8 +5,7 @@ import kitchenpos.domain.Name;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.menu.MenuCreate;
 import kitchenpos.domain.menu.MenuGroup;
-import kitchenpos.domain.menuproduct.MenuAmountCreateValidator;
-import kitchenpos.domain.menuproduct.MenuProductCreate;
+import kitchenpos.domain.menu.MenuProductCreate;
 import kitchenpos.dto.response.MenuViewResponse;
 import kitchenpos.fixture.CleanUp;
 import kitchenpos.repository.MenuGroupRepository;
@@ -63,7 +62,7 @@ class MenuServiceTest {
     void setUp() {
         CleanUp.cleanUp();
 
-        menuService = new MenuService(menuRepository, menuGroupRepository, productRepository, new MenuAmountCreateValidator());
+        menuService = new MenuService(menuRepository, menuGroupRepository, productRepository);
         menuQueryService = new MenuQueryService(menuRepository, menuProductRepository);
 
         menuGroup = new MenuGroup(1L, new Name("Hello"));

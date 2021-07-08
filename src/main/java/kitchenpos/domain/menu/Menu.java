@@ -3,6 +3,7 @@ package kitchenpos.domain.menu;
 import kitchenpos.domain.Name;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.product.Products;
+import kitchenpos.exception.MenuCheapException;
 import kitchenpos.exception.ProductNotExistException;
 
 import javax.persistence.*;
@@ -18,17 +19,21 @@ public class Menu {
     @ManyToOne(fetch = FetchType.LAZY)
     private MenuGroup menuGroup;
 
-    public static Menu create(MenuCreate create, MenuGroup menuGroup, Products products, MenuCreateValidator menuCreateValidator) throws RuntimeException {
-        return create(null, create, menuGroup, products, menuCreateValidator);
+    public static Menu create(MenuCreate create, MenuGroup menuGroup, Products products) throws RuntimeException {
+        return create(null, create, menuGroup, products);
     }
 
-    public static Menu create(Long id, MenuCreate create, MenuGroup menuGroup, Products products, MenuCreateValidator menuCreateValidator) throws RuntimeException {
+    public static Menu create(Long id, MenuCreate create, MenuGroup menuGroup, Products products) throws RuntimeException {
         if (create.getMenuProducts().size() != products.size()) {
             throw new ProductNotExistException();
         }
         Menu menu = new Menu(id, create.getName(), create.getPrice(), menuGroup);
 
-        menuCreateValidator.validate(menu, products, create);
+        MenuProducts menuProducts = MenuProducts.create(create.getMenuProducts(), menu, products);
+
+        if (menu.getPrice().compareTo(menuProducts.sumAmount()) > 0) {
+            throw new MenuCheapException();
+        }
 
         return menu;
     }

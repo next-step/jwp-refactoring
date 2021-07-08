@@ -1,7 +1,7 @@
 package kitchenpos.application.query;
 
 import kitchenpos.domain.menu.Menu;
-import kitchenpos.domain.menuproduct.MenuProduct;
+import kitchenpos.domain.menu.MenuProduct;
 import kitchenpos.dto.response.MenuViewResponse;
 import kitchenpos.exception.EntityNotExistsException;
 import kitchenpos.repository.MenuProductRepository;

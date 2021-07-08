@@ -1,7 +1,6 @@
-package kitchenpos.domain.menuproduct;
+package kitchenpos.domain.menu;
 
 import kitchenpos.domain.Price;
-import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.product.Products;
 
 import java.util.ArrayList;

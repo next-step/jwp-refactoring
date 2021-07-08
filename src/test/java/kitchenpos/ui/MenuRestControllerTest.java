@@ -4,7 +4,7 @@ import kitchenpos.application.command.MenuService;
 import kitchenpos.application.query.MenuQueryService;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuCreate;
-import kitchenpos.domain.menuproduct.MenuProduct;
+import kitchenpos.domain.menu.MenuProduct;
 import kitchenpos.dto.request.MenuCreateRequest;
 import kitchenpos.dto.request.MenuProductCreateRequest;
 import kitchenpos.dto.response.MenuViewResponse;

@@ -2,8 +2,6 @@ package kitchenpos.domain.menu;
 
 import kitchenpos.domain.Name;
 import kitchenpos.domain.Price;
-import kitchenpos.domain.menuproduct.MenuAmountCreateValidator;
-import kitchenpos.domain.menuproduct.MenuProductCreate;
 import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.Products;
 import kitchenpos.exception.MenuCheapException;
@@ -48,7 +46,7 @@ class MenuTest {
 
         // when & then
         assertThatExceptionOfType(ProductNotExistException.class)
-                .isThrownBy(() -> Menu.create(menuCreate, null, products, new MenuAmountCreateValidator()));
+                .isThrownBy(() -> Menu.create(menuCreate, null, products));
     }
 
     @Test
@@ -61,7 +59,7 @@ class MenuTest {
 
         // when & then
         assertThatExceptionOfType(MenuCheapException.class)
-                .isThrownBy(() -> Menu.create(menuCreate, null, products, new MenuAmountCreateValidator()));
+                .isThrownBy(() -> Menu.create(menuCreate, null, products));
     }
 
     @Test
@@ -75,7 +73,7 @@ class MenuTest {
         Products products = new Products(productList);
 
         // when
-        Menu menu = Menu.create(menuCreate, menuGroup, products, new MenuAmountCreateValidator());
+        Menu menu = Menu.create(menuCreate, menuGroup, products);
 
         // when & then
         assertThat(menu.getMenuGroup()).isEqualTo(menuGroup);

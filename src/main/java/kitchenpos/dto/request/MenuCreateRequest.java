@@ -3,7 +3,7 @@ package kitchenpos.dto.request;
 import kitchenpos.domain.Name;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.menu.MenuCreate;
-import kitchenpos.domain.menuproduct.MenuProductCreate;
+import kitchenpos.domain.menu.MenuProductCreate;
 
 import java.math.BigDecimal;
 import java.util.List;

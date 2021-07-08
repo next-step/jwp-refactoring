@@ -3,13 +3,7 @@ package kitchenpos.fixture;
 import kitchenpos.domain.Name;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.Quantity;
-import kitchenpos.domain.menu.Menu;
-import kitchenpos.domain.menu.MenuCreate;
-import kitchenpos.domain.menu.MenuGroup;
-import kitchenpos.domain.menu.Menus;
-import kitchenpos.domain.menuproduct.MenuAmountCreateValidator;
-import kitchenpos.domain.menuproduct.MenuProduct;
-import kitchenpos.domain.menuproduct.MenuProductCreate;
+import kitchenpos.domain.menu.*;
 import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.Products;
 
@@ -97,6 +91,6 @@ public class MenuFixture {
                                    MenuGroup group) throws Exception {
         MenuCreate menuCreate = new MenuCreate(menuName, menuPrice, group.getId(), menuProductsCreate);
 
-        return Menu.create(menuId, menuCreate, group, new Products(products), new MenuAmountCreateValidator());
+        return Menu.create(menuId, menuCreate, group, new Products(products));
     }
 }
