@@ -3,6 +3,10 @@ package kitchenpos.order.application;
 import kitchenpos.menu.dao.MenuDao;
 import kitchenpos.order.dao.OrderDao;
 import kitchenpos.order.dao.OrderLineItemDao;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -36,57 +40,50 @@ public class OrderService {
         this.orderTableDao = orderTableDao;
     }
 
-    public Order create(final Order order) {
-        final List<OrderLineItem> orderLineItems = order.getOrderLineItems();
-
+    public OrderResponse create(final OrderRequest orderRequest) {
+        final List<OrderLineItemRequest> orderLineItems = orderRequest.getOrderLineItems();
         if (CollectionUtils.isEmpty(orderLineItems)) {
             throw new IllegalArgumentException();
         }
 
         final List<Long> menuIds = orderLineItems.stream()
-                                                 .map(OrderLineItem::getMenuId)
+                                                 .map(OrderLineItemRequest::getMenuId)
                                                  .collect(Collectors.toList());
-
         if (orderLineItems.size() != menuDao.countByIdIn(menuIds)) {
             throw new IllegalArgumentException();
         }
 
-        final OrderTable orderTable = orderTableDao.findById(order.getOrderTableId())
+        final OrderTable orderTable = orderTableDao.findById(orderRequest.getOrderTableId())
                                                    .orElseThrow(IllegalArgumentException::new);
-
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException();
         }
 
-        order.setOrderTableId(orderTable.getId());
-        order.setOrderStatus(OrderStatus.COOKING.name());
-        order.setOrderedTime(LocalDateTime.now());
+        Order order = orderRequest.toOrder(OrderStatus.COOKING);
 
         final Order savedOrder = orderDao.save(order);
-
-        final Long orderId = savedOrder.getId();
         final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
-        for (final OrderLineItem orderLineItem : orderLineItems) {
-            orderLineItem.setOrderId(orderId);
+        for (final OrderLineItemRequest orderLineItemRequest : orderLineItems) {
+            OrderLineItem orderLineItem = orderLineItemRequest.toOrderLineItem(savedOrder.getId());
             savedOrderLineItems.add(orderLineItemDao.save(orderLineItem));
         }
         savedOrder.setOrderLineItems(savedOrderLineItems);
 
-        return savedOrder;
+        return OrderResponse.of(savedOrder);
     }
 
     @Transactional(readOnly = true)
-    public List<Order> list() {
+    public List<OrderResponse> list() {
         final List<Order> orders = orderDao.findAll();
-
         for (final Order order : orders) {
             order.setOrderLineItems(orderLineItemDao.findAllByOrderId(order.getId()));
         }
-
-        return orders;
+        return orders.stream()
+                     .map(OrderResponse::of)
+                     .collect(Collectors.toList());
     }
 
-    public Order changeOrderStatus(final Long orderId, final Order order) {
+    public OrderResponse changeOrderStatus(final Long orderId, final OrderStatusRequest orderStatusRequest) {
         final Order savedOrder = orderDao.findById(orderId)
                                          .orElseThrow(IllegalArgumentException::new);
 
@@ -94,13 +91,10 @@ public class OrderService {
             throw new IllegalArgumentException();
         }
 
-        final OrderStatus orderStatus = OrderStatus.valueOf(order.getOrderStatus());
-        savedOrder.setOrderStatus(orderStatus.name());
-
+        savedOrder.setOrderStatus(orderStatusRequest.getOrderStatus().name());
         orderDao.save(savedOrder);
 
         savedOrder.setOrderLineItems(orderLineItemDao.findAllByOrderId(orderId));
-
-        return savedOrder;
+        return OrderResponse.of(savedOrder);
     }
 }

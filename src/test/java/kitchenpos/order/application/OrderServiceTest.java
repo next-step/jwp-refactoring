@@ -3,11 +3,14 @@ package kitchenpos.order.application;
 import kitchenpos.menu.dao.MenuDao;
 import kitchenpos.order.dao.OrderDao;
 import kitchenpos.order.dao.OrderLineItemDao;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.application.OrderService;
 import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,19 +48,21 @@ class OrderServiceTest {
     @Test
     void createTest() {
         // given
-        OrderLineItem orderLineItem1 = new OrderLineItem(1L, 1L, 3);
-        OrderLineItem orderLineItem2 = new OrderLineItem(1L, 2L, 1);
-        Order order = new Order(1L, null, Arrays.asList(orderLineItem1, orderLineItem2));
+        List<OrderLineItemRequest> orderLineItemRequests = Arrays
+            .asList(new OrderLineItemRequest(1L, 3),
+                    new OrderLineItemRequest(2L, 1));
+        OrderLineItem orderLineItem = new OrderLineItem(1L, 1L, 3);
+        Order order = new Order(1L, OrderStatus.COOKING.name());
         OrderTable orderTable = new OrderTable(1L, 5);
+        OrderRequest orderRequest = new OrderRequest(1l, orderLineItemRequests);
 
         Mockito.when(menuDao.countByIdIn(any())).thenReturn(2L);
         Mockito.when(orderTableDao.findById(1L)).thenReturn(Optional.of(orderTable));
         Mockito.when(orderDao.save(any())).thenReturn(order);
-        Mockito.when(orderLineItemDao.save(orderLineItem1)).thenReturn(orderLineItem1);
-        Mockito.when(orderLineItemDao.save(orderLineItem2)).thenReturn(orderLineItem2);
+        Mockito.when(orderLineItemDao.save(any())).thenReturn(orderLineItem);
 
         // when
-        Order actual = orderService.create(order);
+        OrderResponse actual = orderService.create(orderRequest);
 
         // then
         assertThat(actual).isNotNull();
@@ -68,10 +73,10 @@ class OrderServiceTest {
     @Test
     void createTestMenuEmpty() {
         // given
-        Order order = new Order(1L, null, Collections.emptyList());
+        OrderRequest orderRequest = new OrderRequest(1l, Collections.emptyList());
 
         // when
-        assertThatThrownBy(() -> orderService.create(order))
+        assertThatThrownBy(() -> orderService.create(orderRequest))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -79,14 +84,15 @@ class OrderServiceTest {
     @Test
     void createTestWithoutMenu() {
         // given
-        OrderLineItem orderLineItem1 = new OrderLineItem(1L, 1L, 3);
-        OrderLineItem orderLineItem2 = new OrderLineItem(1L, 2L, 1);
-        Order order = new Order(1L, null, Arrays.asList(orderLineItem1, orderLineItem2));
+        List<OrderLineItemRequest> orderLineItemRequests = Arrays
+            .asList(new OrderLineItemRequest(1L, 3),
+                    new OrderLineItemRequest(2L, 1));
+        OrderRequest orderRequest = new OrderRequest(1l, orderLineItemRequests);
 
         Mockito.when(menuDao.countByIdIn(any())).thenReturn(1L);
 
         // when
-        assertThatThrownBy(() -> orderService.create(order))
+        assertThatThrownBy(() -> orderService.create(orderRequest))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -94,15 +100,16 @@ class OrderServiceTest {
     @Test
     void createTestWithoutOrderTable() {
         // given
-        OrderLineItem orderLineItem1 = new OrderLineItem(1L, 1L, 3);
-        OrderLineItem orderLineItem2 = new OrderLineItem(1L, 2L, 1);
-        Order order = new Order(1L, null, Arrays.asList(orderLineItem1, orderLineItem2));
+        List<OrderLineItemRequest> orderLineItemRequests = Arrays
+            .asList(new OrderLineItemRequest(1L, 3),
+                    new OrderLineItemRequest(2L, 1));
+        OrderRequest orderRequest = new OrderRequest(1l, orderLineItemRequests);
 
         Mockito.when(menuDao.countByIdIn(any())).thenReturn(2L);
         Mockito.when(orderTableDao.findById(1L)).thenReturn(Optional.empty());
 
         // when
-        assertThatThrownBy(() -> orderService.create(order))
+        assertThatThrownBy(() -> orderService.create(orderRequest))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -112,14 +119,15 @@ class OrderServiceTest {
         // given
         OrderLineItem orderLineItem1 = new OrderLineItem(1L, 1L, 3);
         OrderLineItem orderLineItem2 = new OrderLineItem(1L, 2L, 1);
-        Order order1 = new Order(1L, null, Arrays.asList(orderLineItem1, orderLineItem2));
-        Order order2 = new Order(1L, null, Arrays.asList(orderLineItem1, orderLineItem2));
+        Order order1 = new Order(1L, null);
+        Order order2 = new Order(1L, null);
 
         Mockito.when(orderDao.findAll()).thenReturn(Arrays.asList(order1, order2));
-        Mockito.when(orderLineItemDao.findAllByOrderId(any())).thenReturn(Arrays.asList(orderLineItem1, orderLineItem2));
+        Mockito.when(orderLineItemDao.findAllByOrderId(any()))
+               .thenReturn(Arrays.asList(orderLineItem1, orderLineItem2));
 
         // when
-        List<Order> actual = orderService.list();
+        List<OrderResponse> actual = orderService.list();
 
         // then
         assertThat(actual).isNotEmpty().hasSize(2);
@@ -131,14 +139,14 @@ class OrderServiceTest {
         // given
         OrderLineItem orderLineItem1 = new OrderLineItem(1L, 1L, 3);
         OrderLineItem orderLineItem2 = new OrderLineItem(1L, 2L, 1);
-        Order order = new Order(1L, null, Arrays.asList(orderLineItem1, orderLineItem2));
-        Order expected = new Order(1L, OrderStatus.COOKING.name(), Arrays.asList(orderLineItem1, orderLineItem2));
+        Order order = new Order(1L, null);
 
         Mockito.when(orderDao.findById(any())).thenReturn(Optional.of(order));
-        Mockito.when(orderLineItemDao.findAllByOrderId(any())).thenReturn(Arrays.asList(orderLineItem1, orderLineItem2));
+        Mockito.when(orderLineItemDao.findAllByOrderId(any()))
+               .thenReturn(Arrays.asList(orderLineItem1, orderLineItem2));
 
         // when
-        Order actual = orderService.changeOrderStatus(1l, expected);
+        OrderResponse actual = orderService.changeOrderStatus(1l, new OrderStatusRequest(OrderStatus.COOKING));
 
         // then
         assertThat(actual).isNotNull();
@@ -149,14 +157,11 @@ class OrderServiceTest {
     @Test
     void changeOrderStatusWithoutOrderTest() {
         // given
-        OrderLineItem orderLineItem1 = new OrderLineItem(1L, 1L, 3);
-        OrderLineItem orderLineItem2 = new OrderLineItem(1L, 2L, 1);
-        Order expected = new Order(1L, OrderStatus.COOKING.name(), Arrays.asList(orderLineItem1, orderLineItem2));
-
         Mockito.when(orderDao.findById(any())).thenReturn(Optional.empty());
 
         // when
-        assertThatThrownBy(() -> orderService.changeOrderStatus(1l, expected))
+        assertThatThrownBy(() -> orderService.changeOrderStatus(1l,
+                                                                new OrderStatusRequest(OrderStatus.COOKING)))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -164,15 +169,13 @@ class OrderServiceTest {
     @Test
     void changeOrderStatusAlreadyCompleteTest() {
         // given
-        OrderLineItem orderLineItem1 = new OrderLineItem(1L, 1L, 3);
-        OrderLineItem orderLineItem2 = new OrderLineItem(1L, 2L, 1);
-        Order order = new Order(1L, OrderStatus.COMPLETION.name(), Arrays.asList(orderLineItem1, orderLineItem2));
-        Order expected = new Order(1L, OrderStatus.COOKING.name(), Arrays.asList(orderLineItem1, orderLineItem2));
+        Order order = new Order(1L, OrderStatus.COMPLETION.name());
 
         Mockito.when(orderDao.findById(any())).thenReturn(Optional.of(order));
 
         // when
-        assertThatThrownBy(() -> orderService.changeOrderStatus(1l, expected))
+        assertThatThrownBy(() -> orderService.changeOrderStatus(1l,
+                                                                new OrderStatusRequest(OrderStatus.COOKING)))
             .isInstanceOf(IllegalArgumentException.class);
     }
 

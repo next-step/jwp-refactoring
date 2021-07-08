@@ -14,10 +14,9 @@ public class Order {
         // empty
     }
 
-    public Order(final Long orderTableId, final String orderStatus, final List<OrderLineItem> orderLineItems) {
+    public Order(final Long orderTableId, final String orderStatus) {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
-        this.orderLineItems = orderLineItems;
         this.orderedTime = LocalDateTime.now();
     }
 
