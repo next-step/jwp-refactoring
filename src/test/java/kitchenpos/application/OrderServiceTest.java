@@ -119,7 +119,7 @@ class OrderServiceTest {
     @DisplayName("주문 생성 실패(테이블이 empty)")
     void create_failed4() {
         // given
-        when(tableService.findById(any())).thenReturn(테이블1);
+        when(tableService.findById(any())).thenReturn(테이블3);
 
         // then
         assertThatThrownBy(() -> orderService.create(양념_후라이드_각_한마리_요청))

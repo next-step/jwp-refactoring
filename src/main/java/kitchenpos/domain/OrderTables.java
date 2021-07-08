@@ -9,8 +9,6 @@ import java.util.stream.Collectors;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
-import kitchenpos.dto.OrderTableResponse;
-
 @Embeddable
 public class OrderTables {
     @OneToMany(mappedBy = "tableGroup")
@@ -18,6 +16,7 @@ public class OrderTables {
 
     public void add(OrderTable orderTable) {
         checkOrderTable(orderTable);
+        orderTable.changeEmpty(false);
         orderTables.add(orderTable);
     }
 
@@ -27,7 +26,7 @@ public class OrderTables {
         }
 
         if (orderTable.hasTableGroup()) {
-            throw new IllegalArgumentException("테이블 그룹에 포함되어 있습니다.");
+            throw new IllegalArgumentException("테이블이 이미 그룹에 포함되어 있습니다.");
         }
     }
 

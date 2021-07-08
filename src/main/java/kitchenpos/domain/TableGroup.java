@@ -14,7 +14,6 @@ import javax.persistence.Table;
 import org.springframework.util.CollectionUtils;
 
 @Entity
-@Table(name = "table_group")
 public class TableGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,10 +44,6 @@ public class TableGroup {
         }
     }
 
-    TableGroup(Long id) {
-        this.id = id;
-    }
-
     public Long getId() {
         return id;
     }
@@ -63,7 +58,6 @@ public class TableGroup {
 
     private void addOrderTable(OrderTable orderTable) {
         orderTables.add(orderTable);
-        orderTable.changeEmpty(false);
         orderTable.setTableGroup(this);
     }
 

@@ -26,8 +26,8 @@ INSERT INTO menu_product (menu_id, product_id, quantity) VALUES (6, 6, 1);
 
 INSERT INTO table_group (id, created_date) VALUES (1, now());
 
-INSERT INTO order_table (id, table_group_id, number_of_guests, empty) VALUES (1, 1, 0, true);
-INSERT INTO order_table (id, table_group_id, number_of_guests, empty) VALUES (2, 1, 0, true);
+INSERT INTO order_table (id, table_group_id, number_of_guests, empty) VALUES (1, 1, 0, false);
+INSERT INTO order_table (id, table_group_id, number_of_guests, empty) VALUES (2, 1, 0, false);
 INSERT INTO order_table (id, number_of_guests, empty) VALUES (3, 0, true);
 INSERT INTO order_table (id, number_of_guests, empty) VALUES (4, 0, true);
 INSERT INTO order_table (id, number_of_guests, empty) VALUES (5, 0, true);

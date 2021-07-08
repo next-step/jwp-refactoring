@@ -2,7 +2,6 @@ package kitchenpos.domain;
 
 import static kitchenpos.domain.MenuTest.*;
 import static kitchenpos.domain.OrderStatus.*;
-import static kitchenpos.domain.TableGroupTest.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
@@ -14,8 +13,8 @@ import kitchenpos.exception.OrderNotCompletedException;
 
 @DisplayName("주문 테이블 단위 테스트")
 public class OrderTableTest {
-    public static OrderTable 테이블1 = new OrderTable(1L, 그룹1, 0, true);
-    public static OrderTable 테이블2 = new OrderTable(2L, 그룹1, 0, true);
+    public static OrderTable 테이블1 = new OrderTable(1L, 0, false);
+    public static OrderTable 테이블2 = new OrderTable(2L, 0, false);
     public static OrderTable 테이블3 = new OrderTable(3L, 0, true);
     public static OrderTable 테이블4 = new OrderTable(4L, 0, true);
     public static OrderTable 테이블5 = new OrderTable(5L, 0, true);
@@ -42,7 +41,10 @@ public class OrderTableTest {
     @DisplayName("상태 변경 실패(테이블이 그룹에 포함되어 있음)")
     void changeEmpty_failed2() {
         // then
-        assertThatThrownBy(() -> 테이블1.changeEmpty(false))
+        OrderTable 테이블A = new OrderTable(1L, 0, true);
+        OrderTable 테이블B = new OrderTable(2L, 0, true);
+        TableGroup 그룹 = new TableGroup(1L, Arrays.asList(테이블A, 테이블B));
+        assertThatThrownBy(() -> 테이블A.changeEmpty(false))
             .isInstanceOf(IllegalArgumentException.class);
     }
 

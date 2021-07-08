@@ -19,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
+import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.exception.OrderTableNotFoundException;
 
@@ -58,7 +59,7 @@ class TableServiceTest {
     @DisplayName("테이블 목록을 가져온다")
     void list() {
         // given
-        List<OrderTable> orderTables = Arrays.asList(테이블1, 테이블3, 테이블5);
+        List<OrderTable> orderTables = Arrays.asList(테이블1, 테이블2, 테이블3);
         when(orderTableRepository.findAll()).thenReturn(orderTables);
 
         // when
@@ -66,7 +67,7 @@ class TableServiceTest {
 
         // then
         assertThat(allOrderTables.size()).isEqualTo(orderTables.size());
-        assertThat(allOrderTables).containsExactly(테이블1, 테이블3, 테이블5);
+        assertThat(allOrderTables).containsExactly(테이블1, 테이블2, 테이블3);
     }
 
     @Test
@@ -100,12 +101,14 @@ class TableServiceTest {
     @DisplayName("테이블 상태 변경 실패(테이블이 그룹에 포함되어 있음)")
     void changeEmpty_failed2() {
         // given
-        OrderTable 그룹에_포함된_테이블 = new OrderTable(20L, 그룹1, 10, false);
+        OrderTable 테이블A = new OrderTable(1L, 0, true);
+        OrderTable 테이블B = new OrderTable(2L, 0, true);
+        TableGroup 그룹 = new TableGroup(1L, Arrays.asList(테이블A, 테이블B));
         OrderTableRequest 비우는_상태 = new OrderTableRequest(10, true);
-        when(orderTableRepository.findById(그룹에_포함된_테이블.getId())).thenReturn(Optional.ofNullable(그룹에_포함된_테이블));
+        when(orderTableRepository.findById(테이블A.getId())).thenReturn(Optional.ofNullable(테이블A));
 
         // then
-        assertThatThrownBy(() -> tableService.changeEmpty(그룹에_포함된_테이블.getId(), 비우는_상태))
+        assertThatThrownBy(() -> tableService.changeEmpty(테이블A.getId(), 비우는_상태))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -154,10 +157,10 @@ class TableServiceTest {
     void changeNumberOfGuests_failed3() {
         // given
         OrderTableRequest 손님10명 = new OrderTableRequest(10, false);
-        when(orderTableRepository.findById(테이블1.getId())).thenReturn(Optional.ofNullable(테이블1));
+        when(orderTableRepository.findById(테이블3.getId())).thenReturn(Optional.ofNullable(테이블3));
 
         // then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(테이블1.getId(), 손님10명))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(테이블3.getId(), 손님10명))
             .isInstanceOf(IllegalArgumentException.class);
     }
 }

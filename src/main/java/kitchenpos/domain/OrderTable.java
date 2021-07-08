@@ -80,7 +80,7 @@ public class OrderTable {
     }
 
     private void checkTableGroup() {
-        if (Objects.nonNull(tableGroup)) {
+        if (this.hasTableGroup()) {
             throw new IllegalArgumentException("테이블 그룹에 포함되어 있습니다.");
         }
     }
