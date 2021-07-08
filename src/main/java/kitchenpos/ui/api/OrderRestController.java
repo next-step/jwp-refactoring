@@ -19,47 +19,23 @@ public class OrderRestController {
     }
 
     @PostMapping("/api/orders")
-    public ResponseEntity<Order> create(@RequestBody final Order order) {
-        final Order created = orderService.create(order);
-        final URI uri = URI.create("/api/orders/" + created.getId());
-        return ResponseEntity.created(uri)
-                .body(created)
-                ;
-    }
-
-    @GetMapping("/api/orders")
-    public ResponseEntity<List<Order>> list() {
-        return ResponseEntity.ok()
-                .body(orderService.list())
-                ;
-    }
-
-    @PutMapping("/api/orders/{orderId}/order-status")
-    public ResponseEntity<Order> changeOrderStatus(
-            @PathVariable final Long orderId,
-            @RequestBody final Order order
-    ) {
-        return ResponseEntity.ok(orderService.changeOrderStatus(orderId, order));
-    }
-
-    @PostMapping("/api/orders2")
-    public ResponseEntity<OrderResponse> create2(@RequestBody final OrderRequest request) {
+    public ResponseEntity<OrderResponse> create(@RequestBody final OrderRequest request) {
         final Order created = orderService.create(request.toOrder());
-        final URI uri = URI.create("/api/orders2/" + created.getId());
+        final URI uri = URI.create("/api/orders/" + created.getId());
         return ResponseEntity.created(uri)
                 .body(OrderResponse.of(created))
                 ;
     }
 
-    @GetMapping("/api/orders2")
-    public ResponseEntity<List<OrderResponse>> list2() {
+    @GetMapping("/api/orders")
+    public ResponseEntity<List<OrderResponse>> list() {
         return ResponseEntity.ok()
                 .body(OrderResponse.ofList(orderService.list()))
                 ;
     }
 
-    @PutMapping("/api/orders2/{orderId}/order-status")
-    public ResponseEntity<OrderResponse> changeOrderStatus2(
+    @PutMapping("/api/orders/{orderId}/order-status")
+    public ResponseEntity<OrderResponse> changeOrderStatus(
             @PathVariable final Long orderId,
             @RequestBody final OrderRequest request
     ) {
