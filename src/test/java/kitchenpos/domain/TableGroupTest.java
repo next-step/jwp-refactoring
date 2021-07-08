@@ -63,7 +63,7 @@ public class TableGroupTest {
         TableGroup 테이블_그룹 = new TableGroup(1L, Arrays.asList(테이블3, 테이블4));
 
         // when
-        테이블_그룹.ungroupAll();
+        테이블_그룹.ungroup();
 
         // then
         테이블_그룹.getOrderTables().forEach(orderTable -> {
@@ -84,7 +84,7 @@ public class TableGroupTest {
             Arrays.asList(new OrderLineItem(양념치킨_메뉴, 1))));
 
         // then
-        assertThatThrownBy(테이블_그룹::ungroupAll)
+        assertThatThrownBy(테이블_그룹::ungroup)
             .isInstanceOf(OrderNotCompletedException.class);
     }
 }

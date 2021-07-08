@@ -2,7 +2,6 @@ package kitchenpos.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import kitchenpos.domain.TableGroup;
 
@@ -17,10 +16,7 @@ public class TableGroupResponse {
     public static TableGroupResponse of(TableGroup tableGroup) {
         return new TableGroupResponse(
             tableGroup.getId(),
-            tableGroup.getOrderTables()
-                .stream()
-                .map(OrderTableResponse::of)
-                .collect(Collectors.toList()),
+            tableGroup.getOrderTables().mapList(OrderTableResponse::of),
             tableGroup.getCreatedDate());
     }
 

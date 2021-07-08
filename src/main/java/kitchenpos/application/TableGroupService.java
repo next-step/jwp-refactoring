@@ -36,7 +36,7 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = findById(tableGroupId);
-        tableGroup.ungroupAll();
+        tableGroup.ungroup();
 
         tableGroupRepository.delete(tableGroup);
     }

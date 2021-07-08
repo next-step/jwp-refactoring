@@ -1,18 +1,14 @@
 package kitchenpos.domain;
 
-import static java.util.Collections.*;
-
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.springframework.util.CollectionUtils;
@@ -24,8 +20,8 @@ public class TableGroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "tableGroup")
-    private List<OrderTable> orderTables = new ArrayList<>();
+    @Embedded
+    private OrderTables orderTables = new OrderTables();
 
     @Column(nullable = false)
     private LocalDateTime createdDate = LocalDateTime.now();
@@ -57,8 +53,8 @@ public class TableGroup {
         return id;
     }
 
-    public List<OrderTable> getOrderTables() {
-        return unmodifiableList(orderTables);
+    public OrderTables getOrderTables() {
+        return orderTables;
     }
 
     public LocalDateTime getCreatedDate() {
@@ -66,23 +62,12 @@ public class TableGroup {
     }
 
     private void addOrderTable(OrderTable orderTable) {
-        checkOrderTable(orderTable);
+        orderTables.add(orderTable);
         orderTable.changeEmpty(false);
         orderTable.setTableGroup(this);
-        orderTables.add(orderTable);
     }
 
-    private void checkOrderTable(OrderTable orderTable) {
-        if (!orderTable.isEmpty()) {
-            throw new IllegalArgumentException("빈 테이블만 그룹화 할 수 있습니다.");
-        }
-
-        if (orderTable.hasTableGroup()) {
-            throw new IllegalArgumentException("테이블 그룹에 포함되어 있습니다.");
-        }
-    }
-
-    public void ungroupAll() {
-        orderTables.forEach(OrderTable::ungroup);
+    public void ungroup() {
+        orderTables.ungroup();
     }
 }
