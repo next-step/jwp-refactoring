@@ -44,7 +44,7 @@ public class TableGroup {
     }
 
     private void validationOrderTables(OrderTables orderTables) {
-        if (isExistEmptyOrderTable(orderTables)) {
+        if (isExistNonEmptyOrderTable(orderTables)) {
             throw new ExistNonEmptyOrderTableException();
         }
         if (isExistAssignedTableGroup(orderTables)) {
@@ -52,7 +52,7 @@ public class TableGroup {
         }
     }
 
-    private boolean isExistEmptyOrderTable(OrderTables orderTables) {
+    private boolean isExistNonEmptyOrderTable(OrderTables orderTables) {
         return orderTables.getOrderTables().stream()
             .anyMatch(orderTable -> !orderTable.isEmpty());
     }
