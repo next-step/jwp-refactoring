@@ -102,14 +102,12 @@ TODO
 서비스 생성 후, 해당 서비스의 역할을 호출하는 이벤트 생성 예정
 
 
-- [ ] 이벤트 기반 상태 변경
-  - [ ] MenuService - MenuGroup 이벤트 생성  
-    : MenuGroup안에 존재하는지.
-    - 
-  - [ ] OrderService - OrderLineItem 이벤트 생성  
-    : validate orderLineItems size
-  - [x] TableGroupService - OrderTable 이벤트 생성  
-    : unorder 할 때, OrderService 에 의존하는 부분 분리
+- [x] 이벤트 기반 상태 변경
+  - [x] OrderCreatedEvent 이벤트 생성  
+  
+  - [x] MenuCreatedEvent 이벤트 생성
+    
+  - [x] TableGroupCreatedEvent 이벤트 생성
 
 해볼 수 있는 기능들
 - JPA 적용
