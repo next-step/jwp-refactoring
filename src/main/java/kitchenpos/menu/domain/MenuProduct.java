@@ -1,6 +1,7 @@
 package kitchenpos.menu.domain;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
@@ -9,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import kitchenpos.common.domain.Price;
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.exception.MenuProductQuantityNegativeException;
 import kitchenpos.product.domain.Product;
 
@@ -27,23 +30,24 @@ public class MenuProduct {
     @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_menu_product_product"), nullable = false)
     private Product product;
 
+    @Embedded
     @Column(nullable = false)
-    private Long quantity;
+    private Quantity quantity;
 
-    public MenuProduct() {
+    protected MenuProduct() {
     }
 
     public MenuProduct(Product product, Long quantity) {
         validationQuantity(quantity);
         this.product = product;
-        this.quantity = quantity;
+        this.quantity = new Quantity(quantity);
     }
 
     public MenuProduct(Long menuId, Product product, Long quantity) {
         validationQuantity(quantity);
         this.menu = new Menu(menuId);
         this.product = product;
-        this.quantity = quantity;
+        this.quantity = new Quantity(quantity);
     }
 
     private void validationQuantity(Long quantity) {
@@ -64,7 +68,11 @@ public class MenuProduct {
         return product;
     }
 
-    public long getQuantity() {
+    public Price getPrice() {
+        return product.multiplyPrice(quantity);
+    }
+
+    public Quantity getQuantity() {
         return quantity;
     }
 

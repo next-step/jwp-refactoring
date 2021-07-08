@@ -22,7 +22,7 @@ public class MenuRequest {
     }
 
     public static MenuRequest of(Menu menu) {
-        return new MenuRequest(menu.getName(), menu.getPrice(), menu.getMenuGroup().getId(), MenuProductRequest.listOf(menu.getMenuProducts()));
+        return new MenuRequest(menu.getName(), menu.getPrice().getAmount(), menu.getMenuGroup().getId(), MenuProductRequest.listOf(menu.getMenuProducts()));
     }
 
     public String getName() {

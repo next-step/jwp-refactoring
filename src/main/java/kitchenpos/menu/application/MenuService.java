@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
+import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
@@ -29,7 +30,7 @@ public class MenuService {
 
     public MenuResponse create(final MenuRequest menuRequest) {
         List<MenuProduct> menuProducts = makeMenuProducts(menuRequest.getMenuProducts());
-        Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuRequest.getMenuGroupId(), menuProducts);
+        Menu menu = new Menu(menuRequest.getName(), Price.wonOf(menuRequest.getPrice()), menuRequest.getMenuGroupId(), menuProducts);
         return MenuResponse.of(menuRepository.save(menu));
     }
 

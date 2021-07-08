@@ -1,9 +1,8 @@
 package kitchenpos.menu.domain;
 
-import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
@@ -12,11 +11,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import kitchenpos.menu.exception.MenuPriceNegativeException;
+import kitchenpos.common.domain.Price;
 import kitchenpos.menu.exception.MenuPriceEmptyException;
-import kitchenpos.menu.exception.MenuPriceExceedException;
-import kitchenpos.product.domain.Product;
 
 @Entity
 public class Menu {
@@ -27,14 +23,15 @@ public class Menu {
 
     private String name;
 
-    private BigDecimal price;
+    @Embedded
+    private Price price = Price.wonOf(0);
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"), nullable = false)
     private MenuGroup menuGroup;
 
-    @OneToMany(mappedBy = "menu", orphanRemoval = true)
-    private List<MenuProduct> menuProducts;
+    @Embedded
+    private MenuProducts menuProducts;
 
     public Menu() {
     }
@@ -43,43 +40,23 @@ public class Menu {
         this.id = id;
     }
 
-    public Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    public Menu(String name, Price price, Long menuGroupId, List<MenuProduct> menuProducts) {
         this(null, name, price, new MenuGroup(menuGroupId), menuProducts);
     }
 
-    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        validationPrice(price, menuProducts);
+    public Menu(Long id, String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        validationPrice(price);
         this.id = id;
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
-        this.menuProducts = menuProducts;
-        for (MenuProduct menuProduct : menuProducts) {
-            menuProduct.toMenu(this);
-        }
+        this.menuProducts = new MenuProducts(menuProducts, this);
     }
 
-    private void validationPrice(BigDecimal price, List<MenuProduct> menuProducts) {
+    private void validationPrice(Price price) {
         if (Objects.isNull(price)) {
             throw new MenuPriceEmptyException();
         }
-        if (price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new MenuPriceNegativeException();
-        }
-        BigDecimal sum = sumMenuProductPrices(menuProducts);
-        if (price.compareTo(sum) > 0) {
-            throw new MenuPriceExceedException();
-        }
-    }
-
-    private BigDecimal sumMenuProductPrices(List<MenuProduct> menuProducts) {
-        BigDecimal sum = BigDecimal.ZERO;
-        for (MenuProduct menuProduct : menuProducts) {
-            Product product = menuProduct.getProduct();
-            sum = sum.add(product.getPrice()
-                .multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
-        }
-        return sum;
     }
 
     public Long getId() {
@@ -90,7 +67,7 @@ public class Menu {
         return name;
     }
 
-    public BigDecimal getPrice() {
+    public Price getPrice() {
         return price;
     }
 
@@ -99,7 +76,7 @@ public class Menu {
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return Collections.unmodifiableList(menuProducts);
+        return menuProducts.getMenuProducts();
     }
 
 }

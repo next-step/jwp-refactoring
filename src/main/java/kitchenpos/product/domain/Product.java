@@ -1,14 +1,15 @@
 package kitchenpos.product.domain;
 
-import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import kitchenpos.product.exception.ProductPriceNegativeException;
-import kitchenpos.product.exception.ProductPriceEmptyException;
+import kitchenpos.common.domain.Price;
+import kitchenpos.common.domain.Quantity;
+import kitchenpos.common.exception.PriceEmptyException;
 
 @Entity
 public class Product {
@@ -20,8 +21,9 @@ public class Product {
     @Column(nullable = false)
     private String name;
 
+    @Embedded
     @Column(nullable = false)
-    private BigDecimal price;
+    private Price price = Price.wonOf(0);
 
     public Product() {
     }
@@ -30,29 +32,21 @@ public class Product {
         this.id = id;
     }
 
-    public Product(String name, BigDecimal price) {
-        validationPrice(price);
-        this.name = name;
-        this.price = price;
+    public Product(String name, Price price) {
+        this(null, name, price);
     }
 
-    public Product(Long id, String name, BigDecimal price) {
+    public Product(Long id, String name, Price price) {
+        validationPrice(price);
         this.id = id;
         this.name = name;
         this.price = price;
     }
 
-    private void validationPrice(BigDecimal price) {
+    private void validationPrice(Price price) {
         if (Objects.isNull(price)) {
-            throw new ProductPriceEmptyException();
+            throw new PriceEmptyException();
         }
-        if (isNegativeNumber(price)) {
-            throw new ProductPriceNegativeException();
-        }
-    }
-
-    private boolean isNegativeNumber(BigDecimal price) {
-        return price.compareTo(BigDecimal.ZERO) < 0;
     }
 
     public Long getId() {
@@ -63,7 +57,11 @@ public class Product {
         return name;
     }
 
-    public BigDecimal getPrice() {
+    public Price getPrice() {
         return price;
+    }
+
+    public Price multiplyPrice(Quantity quantity) {
+        return price.multiply(quantity);
     }
 }

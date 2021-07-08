@@ -11,11 +11,12 @@ import static org.mockito.Mockito.verify;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import kitchenpos.common.domain.Price;
+import kitchenpos.common.exception.PriceEmptyException;
+import kitchenpos.common.exception.PriceNegativeException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
-import kitchenpos.product.exception.ProductPriceNegativeException;
-import kitchenpos.product.exception.ProductPriceEmptyException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,7 +37,7 @@ public class ProductServiceTest {
     @Test
     void create() {
         // Given
-        Product 피자 = new Product(1L, "피자", new BigDecimal(20000));
+        Product 피자 = new Product(1L, "피자", Price.wonOf(20000));
         given(productRepository.save(any())).willReturn(피자);
 
         // When
@@ -54,7 +55,7 @@ public class ProductServiceTest {
 
         // When & Then
         assertThatThrownBy(() -> productService.create(햄버거))
-            .isInstanceOf(ProductPriceEmptyException.class);
+            .isInstanceOf(PriceEmptyException.class);
         verify(productRepository, never()).save(any());
     }
 
@@ -66,7 +67,7 @@ public class ProductServiceTest {
 
         // When & Then
         assertThatThrownBy(() -> productService.create(햄버거))
-            .isInstanceOf(ProductPriceNegativeException.class);
+            .isInstanceOf(PriceNegativeException.class);
         verify(productRepository, never()).save(any());
     }
 
@@ -75,8 +76,8 @@ public class ProductServiceTest {
     void list() {
         // Given
         List<Product> products = new ArrayList<>();
-        products.add(new Product(1L, "피자", new BigDecimal(20000)));
-        products.add(new Product(2L, "햄버거", new BigDecimal(10000)));
+        products.add(new Product(1L, "피자", Price.wonOf(20000)));
+        products.add(new Product(2L, "햄버거", Price.wonOf(10000)));
         given(productRepository.findAll()).willReturn(products);
 
         // When & Then

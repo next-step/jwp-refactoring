@@ -3,14 +3,14 @@ package kitchenpos.product.ui;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import kitchenpos.RestControllerTest;
+import kitchenpos.common.domain.Price;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
@@ -25,7 +25,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 public class ProductRestControllerTest extends RestControllerTest<ProductRequest> {
 
     public static final String BASE_URL = "/api/products";
-    private static final Product 햄버거 = new Product(1L, "햄버거", new BigDecimal(10000));
+    private static final Product 햄버거 = new Product(1L, "햄버거", Price.wonOf(10000));
     private static final ProductResponse 햄버거_응답 = ProductResponse.of(햄버거);
 
     @MockBean
@@ -46,7 +46,7 @@ public class ProductRestControllerTest extends RestControllerTest<ProductRequest
     @Test
     void list() throws Exception {
         // Given
-        List<ProductResponse> products = new ArrayList<>(Arrays.asList(햄버거_응답));
+        List<ProductResponse> products = new ArrayList<>(Collections.singletonList(햄버거_응답));
         given(productService.list()).willReturn(products);
 
         // When & Then
