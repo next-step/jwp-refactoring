@@ -75,9 +75,6 @@ public class OrderService {
 
         savedOrder.chaangeOrderStatus(order.getOrderStatus());
 
-        //TODO : 확인사항
-        //savedOrder.setOrderLineItems(orderLineItemRepository.findAllByOrderId(orderId));
-
         return savedOrder;
     }
 }

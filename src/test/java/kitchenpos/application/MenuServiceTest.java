@@ -4,6 +4,7 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.utils.TestUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +63,7 @@ class MenuServiceTest {
     @Test
     void createExceptionTest2() {
         // given
-        MenuGroup noneMenuGroup = new MenuGroup("없는 메뉴");
+        MenuGroup noneMenuGroup = new MenuGroup(TestUtils.getRandomId(), "없는 메뉴");
 
         Menu menu = new Menu(name, BigDecimal.valueOf(15000), noneMenuGroup);
         Product product = productService.create(new Product(name, BigDecimal.valueOf(15000)));
