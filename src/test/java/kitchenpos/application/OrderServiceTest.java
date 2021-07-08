@@ -23,6 +23,7 @@ import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderRequest;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -128,6 +129,7 @@ class OrderServiceTest {
     @Test
     void changeOrderStatus() {
         // given
+        OrderRequest order = new OrderRequest();
         order.setOrderStatus("COOKING");
         Order savedOrder = new Order();
         given(orderDao.findById(orderId)).willReturn(Optional.of(savedOrder));
@@ -143,6 +145,7 @@ class OrderServiceTest {
     @Test
     void given_CompletedOrder_when_ChangeOrderStatus_then_ThrownException() {
         // given
+        OrderRequest order = new OrderRequest();
         order.setOrderStatus("COMPLETION");
 
         // when
