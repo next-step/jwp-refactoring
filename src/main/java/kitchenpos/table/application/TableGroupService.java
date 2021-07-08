@@ -21,6 +21,9 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class TableGroupService {
+    private static final String MORE_THAN_TWO_TABLE = "단체 지정을 위해서는 두 개 이상의 테이블이 필요합니다.";
+    public static final String ALREADY_USE_ORDER_TABLE = "주문 테이블이 이미 사용중입니다.";
+
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
@@ -42,7 +45,7 @@ public class TableGroupService {
 
         final OrderTables savedOrderTables = new OrderTables(orderTableRepository.findAllByIdIn(orderTableIds));
         savedOrderTables.validateOrderTables();
-        savedOrderTables.validateDbDataSize(orderTableRequests.size());
+        savedOrderTables.validateOrderTableSize(orderTableRequests.size());
 
         final TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(LocalDateTime.now(), savedOrderTables));
 
@@ -64,13 +67,13 @@ public class TableGroupService {
 
     private void validateOrderTableSize(List<OrderTableRequest> orderTables) {
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(MORE_THAN_TWO_TABLE);
         }
     }
 
     private void validateOrderTablesAlreadyUse(List<Long> orderTableIds) {
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(ALREADY_USE_ORDER_TABLE);
         }
     }
 }

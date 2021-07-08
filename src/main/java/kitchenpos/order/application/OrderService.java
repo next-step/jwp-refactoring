@@ -10,14 +10,22 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static kitchenpos.order.domain.OrderLineItems.ORDER_LINE_ITEM_IS_EMPTY;
+
 @Service
 @Transactional
 public class OrderService {
+
+    private static final String NOT_FOUND_ORDER = "찾으려는 주문이 존재하지 않습니다.";
+    private static final String NOT_FOUND_ORDER_TABLE = "찾으려는 주문 테이블이 존재하지 않습니다.";
+    private static final String NOT_FOUND_MENU = "찾으려는 메뉴가 존재하지 않습니다.";
+
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
     private final OrderLineItemRepository orderLineItemRepository;
@@ -41,12 +49,12 @@ public class OrderService {
         validateOrderLineItems(orderRequest.getOrderLineItemRequests());
 
         orderLineItemList = orderRequest.getOrderLineItemRequests().stream()
-                .map(orderLineItemRequest -> new OrderLineItem(findMenu(orderLineItemRequest), orderLineItemRequest.getQuantity()))
+                .map(orderLineItemRequest -> new OrderLineItem(findMenu(orderLineItemRequest.getMenuId()), orderLineItemRequest.getQuantity()))
                 .collect(Collectors.toList());
 
         final OrderLineItems orderLineItems = new OrderLineItems(orderLineItemList);
         final List<Long> menuIds = orderLineItems.menuIds();
-        orderLineItems.validateDbDataSize(menuRepository.countByIdIn(menuIds));
+        orderLineItems.validateMenuDataSize(menuRepository.countByIdIn(menuIds));
 
         final OrderTable orderTable = findOrderTable(orderRequest.getOrderTableId());
         final Order order = orderRepository.save(new Order(orderTable, OrderStatus.COOKING.name(), LocalDateTime.now()));
@@ -64,24 +72,27 @@ public class OrderService {
 
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
-        final Order savedOrder = orderRepository.findById(orderId).orElseThrow(IllegalArgumentException::new);
+        final Order savedOrder = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_ORDER + " Find Order Id : " + orderId));
         savedOrder.changeOrderStatus(OrderStatus.valueOf(orderRequest.getOrderStatus()).name());
         return OrderResponse.of(orderRepository.save(savedOrder));
     }
 
     private OrderTable findOrderTable(Long orderTableId) {
-        OrderTable orderTable = orderTableRepository.findById(orderTableId).orElseThrow(IllegalArgumentException::new);
+        OrderTable orderTable = orderTableRepository.findById(orderTableId)
+                .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_ORDER_TABLE + " Find Order Table Id : " + orderTableId));
         orderTable.validateNotEmpty();
         return orderTable;
     }
 
     private void validateOrderLineItems(List<OrderLineItemRequest> orderLineItemRequests) {
-        if (orderLineItemRequests == null) {
-            throw new IllegalArgumentException();
+        if (CollectionUtils.isEmpty(orderLineItemRequests)) {
+            throw new IllegalArgumentException(ORDER_LINE_ITEM_IS_EMPTY);
         }
     }
 
-    private Menu findMenu(OrderLineItemRequest orderLineItemRequest) {
-        return menuRepository.findById(orderLineItemRequest.getMenuId()).orElseThrow(IllegalArgumentException::new);
+    private Menu findMenu(Long menuId) {
+        return menuRepository.findById(menuId)
+                .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_MENU + " Find Menu Id : " + menuId));
     }
 }

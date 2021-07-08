@@ -10,11 +10,13 @@ import java.util.Objects;
 @Entity
 @Table(name = "orders")
 public class Order {
+    private static final String ALREADY_COMPLETION_ORDER = "이미 계산 완료 된 주문입니다.";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private OrderTable orderTable;
 
     private String orderStatus;
@@ -75,7 +77,7 @@ public class Order {
 
     private void validateCompletion() {
         if (Objects.equals(OrderStatus.COMPLETION.name(), orderStatus)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(ALREADY_COMPLETION_ORDER);
         }
     }
 

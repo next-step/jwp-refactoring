@@ -12,9 +12,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.List;
 
+import static kitchenpos.table.application.TableGroupService.ALREADY_USE_ORDER_TABLE;
+
 @Service
 @Transactional
 public class TableService {
+    private static final String INVALID_NUMBER_OF_GUESTS = "방문 고객 수는 0 이상이어야 합니다.";
+
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
 
@@ -61,13 +65,13 @@ public class TableService {
 
     private void validateNumberOfGuests(int numberOfGuests) {
         if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(INVALID_NUMBER_OF_GUESTS);
         }
     }
 
     private void validateOrderTableAlreadyUse(Long orderTableId) {
         if (orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(ALREADY_USE_ORDER_TABLE);
         }
     }
 }

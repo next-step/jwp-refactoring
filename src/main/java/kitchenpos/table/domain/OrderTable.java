@@ -5,6 +5,10 @@ import java.util.Objects;
 
 @Entity
 public class OrderTable {
+    private static final String TABLE_THAT_CANNOT_BE_TABLE_GROUP = "단체 지정을 할 수 없는 테이블 입니다.";
+    private static final String TABLE_IS_EMPTY = "테이블은 빈 테이블 상태 입니다.";
+    private static final String ALREADY_EXISTS_GROUP_TABLE = "이미 단체 지정 된 테이블 입니다.";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,7 +36,7 @@ public class OrderTable {
 
     public void validateOrderTable() {
         if (!empty || Objects.nonNull(tableGroup)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(TABLE_THAT_CANNOT_BE_TABLE_GROUP);
         }
     }
 
@@ -47,13 +51,13 @@ public class OrderTable {
 
     public void validateTableGroupIsNull() {
         if (Objects.nonNull(tableGroup)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(ALREADY_EXISTS_GROUP_TABLE);
         }
     }
 
     public void validateNotEmpty() {
         if (empty) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(TABLE_IS_EMPTY);
         }
     }
 

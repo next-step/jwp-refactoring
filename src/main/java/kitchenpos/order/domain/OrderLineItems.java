@@ -12,6 +12,9 @@ import java.util.stream.Collectors;
 @Embeddable
 public class OrderLineItems {
 
+    public static final String ORDER_LINE_ITEM_IS_EMPTY = "주문 항목이 존재하지 않습니다.";
+    public static final String NOT_MATCH_MENU_SIZE = "조회 된 메뉴의 수와 다릅니다.";
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "order")
     private List<OrderLineItem> orderLineItems;
 
@@ -29,7 +32,7 @@ public class OrderLineItems {
 
     private void validateIsEmpty(List<OrderLineItem> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(ORDER_LINE_ITEM_IS_EMPTY);
         }
     }
 
@@ -39,9 +42,9 @@ public class OrderLineItems {
                 .collect(Collectors.toList());
     }
 
-    public void validateDbDataSize(int dbDataSize) {
-        if (orderLineItems.size() != dbDataSize) {
-            throw new IllegalArgumentException();
+    public void validateMenuDataSize(int menuDataSize) {
+        if (orderLineItems.size() != menuDataSize) {
+            throw new IllegalArgumentException(NOT_MATCH_MENU_SIZE);
         }
     }
 

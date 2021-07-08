@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 @Embeddable
 public class OrderTables {
+    public static final String NOT_MATCH_ORDER_TABLE_SIZE = "조회 된 주문 테이블의 수와 다릅니다.";
 
     @OneToMany(mappedBy = "tableGroup")
     private List<OrderTable> orderTables;
@@ -23,9 +24,9 @@ public class OrderTables {
         return Collections.unmodifiableList(orderTables);
     }
 
-    public void validateDbDataSize(int requestSize) {
-        if (requestSize != orderTables.size()) {
-            throw new IllegalArgumentException();
+    public void validateOrderTableSize(int size) {
+        if (size != orderTables.size()) {
+            throw new IllegalArgumentException(NOT_MATCH_ORDER_TABLE_SIZE);
         }
     }
 
