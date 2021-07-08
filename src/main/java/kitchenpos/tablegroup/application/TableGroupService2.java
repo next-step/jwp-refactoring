@@ -17,6 +17,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class TableGroupService2 {
+
+    private static final int MIN_GROUP_SIZE = 2;
+
     private final OrderRepository orderRepository;
     private final TableRepository tableRepository;
     private final TableGroupRepository tableGroupRepository;
@@ -49,7 +52,7 @@ public class TableGroupService2 {
     }
 
     private void validateTableCount(List<Long> tableIds) {
-        if (CollectionUtils.isEmpty(tableIds) || tableIds.size() < 2) {
+        if (CollectionUtils.isEmpty(tableIds) || tableIds.size() < MIN_GROUP_SIZE) {
             throw new IllegalArgumentException();
         }
     }
