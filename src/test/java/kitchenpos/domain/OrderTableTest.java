@@ -13,18 +13,18 @@ import kitchenpos.exception.OrderNotCompletedException;
 
 @DisplayName("주문 테이블 단위 테스트")
 public class OrderTableTest {
-    public static OrderTable 테이블1 = new OrderTable(1L, 0, false);
-    public static OrderTable 테이블2 = new OrderTable(2L, 0, false);
-    public static OrderTable 테이블3 = new OrderTable(3L, 0, true);
-    public static OrderTable 테이블4 = new OrderTable(4L, 0, true);
-    public static OrderTable 테이블5 = new OrderTable(5L, 0, true);
-    public static OrderTable 테이블6 = new OrderTable(6L, 0, true);
-    public static OrderTable 테이블7 = new OrderTable(7L, 0, true);
-    public static OrderTable 테이블8 = new OrderTable(8L, 0, true);
-    public static OrderTable 테이블9_사용중 = new OrderTable(9L, 4, false);
-    public static OrderTable 테이블10_사용중 = new OrderTable(10L, 8, false);
-    public static OrderTable 테이블11_사용중 = new OrderTable(11L, 2, false);
-    public static OrderTable 테이블12_사용중_주문전 = new OrderTable(12L, 2, false);
+    public static OrderTable 테이블1 = new OrderTable(1L, NumberOfGuests.of(0), false);
+    public static OrderTable 테이블2 = new OrderTable(2L, NumberOfGuests.of(0), false);
+    public static OrderTable 테이블3 = new OrderTable(3L, NumberOfGuests.of(0), true);
+    public static OrderTable 테이블4 = new OrderTable(4L, NumberOfGuests.of(0), true);
+    public static OrderTable 테이블5 = new OrderTable(5L, NumberOfGuests.of(0), true);
+    public static OrderTable 테이블6 = new OrderTable(6L, NumberOfGuests.of(0), true);
+    public static OrderTable 테이블7 = new OrderTable(7L, NumberOfGuests.of(0), true);
+    public static OrderTable 테이블8 = new OrderTable(8L, NumberOfGuests.of(0), true);
+    public static OrderTable 테이블9_사용중 = new OrderTable(9L, NumberOfGuests.of(4), false);
+    public static OrderTable 테이블10_사용중 = new OrderTable(10L, NumberOfGuests.of(8), false);
+    public static OrderTable 테이블11_사용중 = new OrderTable(11L, NumberOfGuests.of(2), false);
+    public static OrderTable 테이블12_사용중_주문전 = new OrderTable(12L, NumberOfGuests.of(2), false);
 
 
     @Test
@@ -41,8 +41,8 @@ public class OrderTableTest {
     @DisplayName("상태 변경 실패(테이블이 그룹에 포함되어 있음)")
     void changeEmpty_failed2() {
         // then
-        OrderTable 테이블A = new OrderTable(1L, 0, true);
-        OrderTable 테이블B = new OrderTable(2L, 0, true);
+        OrderTable 테이블A = new OrderTable(1L, NumberOfGuests.of(0), true);
+        OrderTable 테이블B = new OrderTable(2L, NumberOfGuests.of(0), true);
         TableGroup 그룹 = new TableGroup(1L, OrderTables.of(테이블A, 테이블B));
         assertThatThrownBy(() -> 테이블A.changeEmpty(false))
             .isInstanceOf(IllegalArgumentException.class);

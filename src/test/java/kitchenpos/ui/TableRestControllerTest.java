@@ -60,7 +60,7 @@ class TableRestControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$").exists())
             .andExpect(jsonPath("$[0].id").value(테이블1.getId()))
-            .andExpect(jsonPath("$[0].numberOfGuests").value(테이블1.getNumberOfGuests()))
+            .andExpect(jsonPath("$[0].numberOfGuests").value(테이블1.getNumberOfGuests().value()))
             .andExpect(jsonPath("$[0].empty").value(테이블1.isEmpty()));
     }
 

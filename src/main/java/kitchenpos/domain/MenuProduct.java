@@ -30,7 +30,7 @@ public class MenuProduct {
     private Product product;
 
     @Column(nullable = false)
-    private long quantity; // TODO 포장포장
+    private long quantity;
 
     protected MenuProduct() {
     }

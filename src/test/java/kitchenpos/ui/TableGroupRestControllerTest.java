@@ -54,7 +54,7 @@ class TableGroupRestControllerTest {
             .andExpect(jsonPath("$.id").exists())
             .andExpect(jsonPath("$.orderTables").isNotEmpty())
             .andExpect(jsonPath("$.orderTables[0].id").value(테이블3.getId()))
-            .andExpect(jsonPath("$.orderTables[0].numberOfGuests").value(테이블3.getNumberOfGuests()))
+            .andExpect(jsonPath("$.orderTables[0].numberOfGuests").value(테이블3.getNumberOfGuests().value()))
             .andExpect(jsonPath("$.orderTables[0].empty").value(false));
     }
 

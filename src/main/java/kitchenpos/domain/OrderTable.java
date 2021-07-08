@@ -28,10 +28,11 @@ public class OrderTable {
     private TableGroup tableGroup;
 
     @Column(nullable = false)
-    private int numberOfGuests; // TODO 생각생각
+    @Embedded
+    private NumberOfGuests numberOfGuests;
 
     @Column(nullable = false)
-    private boolean empty; // TODO TableStatus ?
+    private boolean empty;
 
     @Embedded
     private Orders orders = new Orders();
@@ -39,39 +40,38 @@ public class OrderTable {
     protected OrderTable() {
     }
 
-    public OrderTable(int numberOfGuests, boolean empty) {
+    public OrderTable(NumberOfGuests numberOfGuests, boolean empty) {
         this(null, numberOfGuests, empty);
     }
 
-    public OrderTable(Long id, int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, NumberOfGuests numberOfGuests, boolean empty) {
         this.id = id;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
 
     public OrderTable withTableGroup(TableGroup tableGroup) {
-        checkGrouped();
-        checkNotEmpty();
+        checkEmpty();
+        checkNotGrouped();
         this.tableGroup = tableGroup;
         this.empty = false;
         return this;
     }
 
     public void addOrder(Order order) {
-        checkEmpty();
+        checkNotEmpty();
         order.setTable(this);
         orders.add(order);
     }
 
     public void changeEmpty(boolean empty) {
         checkOrders();
-        checkGrouped();
+        checkNotGrouped();
         this.empty = empty;
     }
 
-    public void changeNumberOfGuests(int numberOfGuests) {
-        checkEmpty();
-        checkNumberOfGuests(numberOfGuests);
+    public void changeNumberOfGuests(NumberOfGuests numberOfGuests) {
+        checkNotEmpty();
         this.numberOfGuests = numberOfGuests;
     }
 
@@ -86,27 +86,21 @@ public class OrderTable {
         }
     }
 
-    private void checkNotEmpty() {
+    private void checkEmpty() {
         if (!this.isEmpty()) {
             throw new IllegalOperationException("테이블이 비어있지 않습니다.");
         }
     }
 
-    private void checkGrouped() {
+    private void checkNotGrouped() {
         if (this.hasTableGroup()) {
             throw new IllegalArgumentException("테이블 그룹에 포함되어 있습니다.");
         }
     }
 
-    private void checkEmpty() {
+    private void checkNotEmpty() {
         if (this.isEmpty()) {
             throw new IllegalOperationException("빈 테이블 입니다.");
-        }
-    }
-
-    private void checkNumberOfGuests(int numberOfGuests) {
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException("테이블의 손님 수는 음수가 될 수 없습니다.");
         }
     }
 
@@ -130,7 +124,7 @@ public class OrderTable {
         return orders;
     }
 
-    public int getNumberOfGuests() {
+    public NumberOfGuests getNumberOfGuests() {
         return numberOfGuests;
     }
 

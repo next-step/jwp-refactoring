@@ -17,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.domain.NumberOfGuests;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.domain.OrderTables;
@@ -39,7 +40,7 @@ class TableServiceTest {
 
     @BeforeEach
     void setUp() {
-        손님이_앉은_테이블 = new OrderTable(50L, 8, false);
+        손님이_앉은_테이블 = new OrderTable(50L, NumberOfGuests.of(8), false);
     }
 
     @Test
@@ -47,7 +48,7 @@ class TableServiceTest {
     void create() {
         // given
         OrderTableRequest 새로운_테이블_요청 = new OrderTableRequest(100L, 0, true);
-        OrderTable 새로운_테이블 = new OrderTable(100L, 0, true);
+        OrderTable 새로운_테이블 = new OrderTable(100L, NumberOfGuests.of(0), true);
         when(orderTableRepository.save(any())).thenReturn(새로운_테이블);
 
         // when
@@ -103,8 +104,8 @@ class TableServiceTest {
     @DisplayName("테이블 상태 변경 실패(테이블이 그룹에 포함되어 있음)")
     void changeEmpty_failed2() {
         // given
-        OrderTable 테이블A = new OrderTable(1L, 0, true);
-        OrderTable 테이블B = new OrderTable(2L, 0, true);
+        OrderTable 테이블A = new OrderTable(1L, NumberOfGuests.of(0), true);
+        OrderTable 테이블B = new OrderTable(2L, NumberOfGuests.of(0), true);
         TableGroup 그룹 = new TableGroup(1L, OrderTables.of(테이블A, 테이블B));
         OrderTableRequest 비우는_상태 = new OrderTableRequest(10, true);
         when(orderTableRepository.findById(테이블A.getId())).thenReturn(Optional.ofNullable(테이블A));
@@ -118,7 +119,7 @@ class TableServiceTest {
     @DisplayName("특정 테이블의 손님 수를 변경한다")
     void changeNumberOfGuests() {
         // given
-        OrderTable 바꿀_테이블 = new OrderTable(200L, 4, false);
+        OrderTable 바꿀_테이블 = new OrderTable(200L, NumberOfGuests.of(4), false);
         OrderTableRequest 손님10명 = new OrderTableRequest(10, false);
         when(orderTableRepository.findById(바꿀_테이블.getId())).thenReturn(Optional.ofNullable(바꿀_테이블));
 
@@ -127,7 +128,7 @@ class TableServiceTest {
 
         // then
         assertThat(changedTable.getId()).isEqualTo(200L);
-        assertThat(changedTable.getNumberOfGuests()).isEqualTo(손님10명.getNumberOfGuests());
+        assertThat(changedTable.getNumberOfGuests().value()).isEqualTo(손님10명.getNumberOfGuests());
     }
 
     @Test

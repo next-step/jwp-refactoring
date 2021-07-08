@@ -19,6 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.domain.NumberOfGuests;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderLineItems;
@@ -45,7 +46,7 @@ class OrderServiceTest {
     @Mock
     OrderRepository orderRepository;
 
-    OrderTable 테이블100_사용중 = new OrderTable(100L, 4, false);
+    OrderTable 테이블100_사용중 = new OrderTable(100L, NumberOfGuests.of(4), false);
 
     OrderLineItemRequest 후라이드_한마리_요청;
     OrderLineItemRequest 양념치킨_한마리_요청;

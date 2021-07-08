@@ -21,9 +21,10 @@ public class TableRestController {
     }
 
     @PostMapping("/api/tables")
-    public ResponseEntity<OrderTable> create(@RequestBody final OrderTableRequest request) {
+    public ResponseEntity<OrderTableResponse> create(@RequestBody final OrderTableRequest request) {
         final OrderTable created = tableService.create(request);
-        return ResponseEntity.created(URI.create("/api/tables/" + created.getId())).body(created);
+        return ResponseEntity.created(URI.create("/api/tables/" + created.getId()))
+            .body(OrderTableResponse.of(created));
     }
 
     @GetMapping("/api/tables")

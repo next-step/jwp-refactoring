@@ -22,7 +22,7 @@ public class OrderTableResponse {
             orderTable.getTableGroup()
                 .map(TableGroup::getId)
                 .orElse(null),
-            orderTable.getNumberOfGuests(),
+            orderTable.getNumberOfGuests().value(),
             orderTable.isEmpty(),
             orderTable.getOrders().mapList(OrderResponse::of));
     }
