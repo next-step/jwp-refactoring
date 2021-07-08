@@ -77,7 +77,8 @@ class OrderServiceTest {
 
         // then
         assertThat(savedOrder.getOrderTable().getId()).isEqualTo(테이블100_사용중.getId());
-        assertThat(savedOrder.getOrderLineItems()).containsExactly(후라이드_한마리, 양념치킨_한마리);
+        assertThat(savedOrder.getOrderLineItems().contains(후라이드_한마리)).isTrue();
+        assertThat(savedOrder.getOrderLineItems().contains(양념치킨_한마리)).isTrue();
     }
 
     @Test

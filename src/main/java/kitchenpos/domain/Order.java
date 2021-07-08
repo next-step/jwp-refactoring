@@ -1,11 +1,11 @@
 package kitchenpos.domain;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -16,10 +16,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import org.springframework.util.CollectionUtils;
 
 import kitchenpos.exception.AlreadyAllocatedException;
 
@@ -41,8 +38,8 @@ public class Order {
     @Column(nullable = false)
     private LocalDateTime orderedTime = LocalDateTime.now();
 
-    @OneToMany(mappedBy = "order")
-    private List<OrderLineItem> orderLineItems = new ArrayList<>();
+    @Embedded
+    private OrderLineItems orderLineItems = new OrderLineItems();
 
     protected Order() {
     }
@@ -52,16 +49,9 @@ public class Order {
     }
 
     public Order(Long id, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
-        checkOrderLineItems(orderLineItems);
         this.id = id;
         this.orderStatus = orderStatus;
-        this.orderLineItems = orderLineItems;
-    }
-
-    private void checkOrderLineItems(List<OrderLineItem> orderLineItems) {
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException("주문 상세 내역은 하나 이상 존재해야 합니다.");
-        }
+        this.orderLineItems = new OrderLineItems(orderLineItems);
     }
 
     public void proceedTo(OrderStatus orderStatus) {
@@ -106,7 +96,7 @@ public class Order {
         return orderedTime;
     }
 
-    public List<OrderLineItem> getOrderLineItems() {
+    public OrderLineItems getOrderLineItems() {
         return orderLineItems;
     }
 }
