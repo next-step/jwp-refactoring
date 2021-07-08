@@ -11,7 +11,7 @@ public class MenuResponse {
     private Long id;
     private String name;
     private BigDecimal price;
-    private MenuGroupResponse menuGroup;
+    private Long menuGroupId;
     private List<MenuProductResponse> menuProducts = new ArrayList<>();
 
     public static MenuResponse of(Menu menu) {
@@ -19,7 +19,7 @@ public class MenuResponse {
             menu.getId(),
             menu.getName(),
             menu.getPrice(),
-            MenuGroupResponse.of(menu.getMenuGroup()),
+            menu.getMenuGroup().getId(),
             menu.getMenuProducts().stream()
                 .map(MenuProductResponse::of)
                 .collect(Collectors.toList()));
@@ -28,12 +28,12 @@ public class MenuResponse {
     public MenuResponse() {
     }
 
-    public MenuResponse(Long id, String name, BigDecimal price,
-            MenuGroupResponse menuGroup, List<MenuProductResponse> menuProducts) {
+    public MenuResponse(Long id, String name, BigDecimal price, Long menuGroupId,
+        List<MenuProductResponse> menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;
-        this.menuGroup = menuGroup;
+        this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
     }
 
@@ -61,12 +61,12 @@ public class MenuResponse {
         this.price = price;
     }
 
-    public MenuGroupResponse getMenuGroup() {
-        return menuGroup;
+    public Long getMenuGroupId() {
+        return menuGroupId;
     }
 
-    public void setMenuGroup(MenuGroupResponse menuGroup) {
-        this.menuGroup = menuGroup;
+    public void setMenuGroupId(Long menuGroupId) {
+        this.menuGroupId = menuGroupId;
     }
 
     public List<MenuProductResponse> getMenuProducts() {

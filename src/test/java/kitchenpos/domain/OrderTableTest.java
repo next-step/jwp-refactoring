@@ -52,7 +52,7 @@ public class OrderTableTest {
         // given
         OrderLineItem 더미1 = new OrderLineItem(후라이드_메뉴, 1);
         OrderLineItem 더미2 = new OrderLineItem(양념치킨_메뉴, 1);
-        테이블12_사용중_주문전.addOrder(new Order(테이블12_사용중_주문전, COOKING, Arrays.asList(더미1, 더미2)));
+        테이블12_사용중_주문전.addOrder(new Order(COOKING, Arrays.asList(더미1, 더미2)));
 
         // then
         assertThatThrownBy(() -> 테이블12_사용중_주문전.changeEmpty(true))

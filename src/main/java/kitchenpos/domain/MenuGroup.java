@@ -1,10 +1,14 @@
 package kitchenpos.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 @Entity
 public class MenuGroup {
@@ -14,6 +18,9 @@ public class MenuGroup {
 
     @Column(nullable = false)
     private String name;
+
+    @OneToMany(mappedBy = "menuGroup")
+    private List<Menu> menus = new ArrayList<>();
 
     protected MenuGroup() {
     }
@@ -33,5 +40,9 @@ public class MenuGroup {
 
     public String getName() {
         return name;
+    }
+
+    public List<Menu> getMenus() {
+        return menus;
     }
 }

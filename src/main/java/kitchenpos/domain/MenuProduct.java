@@ -1,6 +1,7 @@
 package kitchenpos.domain;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -46,7 +47,7 @@ public class MenuProduct {
     }
 
     private void checkAllocation() {
-        if (this.menu != null) {
+        if (Objects.nonNull(this.menu)) {
             throw new AlreadyAllocatedException("이미 할당 된 메뉴-제품 입니다.");
         }
     }

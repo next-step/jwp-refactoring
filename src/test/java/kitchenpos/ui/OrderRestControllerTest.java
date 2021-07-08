@@ -50,7 +50,10 @@ class OrderRestControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(request)))
             .andDo(print())
-            .andExpect(status().isCreated());
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.id").exists())
+            .andExpect(jsonPath("$.orderTableId").value(테이블12_사용중_주문전.getId()))
+            .andExpect(jsonPath("$.orderStatus").value(COOKING.name()));
     }
 
     @Test
@@ -60,7 +63,6 @@ class OrderRestControllerTest {
         mockMvc.perform(get("/api/orders"))
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$").exists())
             .andExpect(jsonPath("$[0].id").value(테이블9주문.getId()))
             .andExpect(jsonPath("$[0].orderTableId").value(테이블9_사용중.getId()))
             .andExpect(jsonPath("$[0].orderStatus").value(테이블9주문.getOrderStatus().name()));
@@ -78,7 +80,6 @@ class OrderRestControllerTest {
             .content(content))
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$").exists())
             .andExpect(jsonPath("$.id").value(테이블10주문.getId()))
             .andExpect(jsonPath("$.orderTableId").value(테이블10_사용중.getId()))
             .andExpect(jsonPath("$.orderStatus").value(request.getOrderStatus().name()));

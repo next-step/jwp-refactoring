@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -23,7 +25,7 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
     private TableGroup tableGroup;
 
@@ -33,7 +35,7 @@ public class OrderTable {
     @Column(nullable = false)
     private boolean empty;
 
-    @OneToMany(mappedBy = "orderTable")
+    @OneToMany(mappedBy = "orderTable", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> orders = new ArrayList<>();
 
     protected OrderTable() {
@@ -128,6 +130,18 @@ public class OrderTable {
         }
     }
 
+    public void addOrder(Order order) {
+        checkTableStatus();
+        order.setTable(this);
+        orders.add(order);
+    }
+
+    private void checkTableStatus() {
+        if (isEmpty()) {
+            throw new IllegalArgumentException("빈 테이블에는 주문을 넣을 수 없습니다.");
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -141,9 +155,5 @@ public class OrderTable {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    public void addOrder(Order order) { // TODO 제대로 변경 필요
-        orders.add(order);
     }
 }

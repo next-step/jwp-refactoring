@@ -31,14 +31,16 @@ public class OrderService {
     }
 
     @Transactional
-    public Order create(final OrderRequest order) {
-        OrderTable orderTable = tableService.findById(order.getOrderTableId());
-        List<OrderLineItem> orderLineItems = order.getOrderLineItems()
+    public Order create(final OrderRequest request) {
+        OrderTable orderTable = tableService.findById(request.getOrderTableId());
+        List<OrderLineItem> orderLineItems = request.getOrderLineItems()
             .stream()
             .map(this::newOrderLineItem)
             .collect(Collectors.toList());
 
-        return orderRepository.save(new Order(orderTable, COOKING, orderLineItems));
+        Order order = new Order(COOKING, orderLineItems);
+        orderTable.addOrder(order);
+        return order;
     }
 
     private OrderLineItem newOrderLineItem(OrderLineItemRequest req) {

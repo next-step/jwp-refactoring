@@ -3,6 +3,7 @@ package kitchenpos.domain;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,6 +20,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.springframework.util.CollectionUtils;
+
+import kitchenpos.exception.AlreadyAllocatedException;
 
 @Entity
 @Table(name = "orders")
@@ -44,15 +47,13 @@ public class Order {
     protected Order() {
     }
 
-    public Order(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
-        this(null, orderTable, orderStatus, orderLineItems);
+    public Order(OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        this(null, orderStatus, orderLineItems);
     }
 
-    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
-        checkOrderTable(orderTable);
+    public Order(Long id, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
         checkOrderLineItems(orderLineItems);
         this.id = id;
-        this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderLineItems = orderLineItems;
     }
@@ -63,9 +64,14 @@ public class Order {
         }
     }
 
-    private void checkOrderTable(OrderTable orderTable) { // TODO OrderTable에서 확인하도록 개선 필요
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException("빈 테이블에는 주문을 넣을 수 없습니다.");
+    public void proceedTo(OrderStatus orderStatus) {
+        checkCompletion();
+        this.orderStatus = orderStatus;
+    }
+
+    private void checkCompletion() {
+        if (isCompleted()) {
+            throw new IllegalArgumentException("완료 된 주문은 상태를 변경할 수 없습니다.");
         }
     }
 
@@ -73,14 +79,14 @@ public class Order {
         return orderStatus.equals(OrderStatus.COMPLETION);
     }
 
-    public void proceedTo(OrderStatus orderStatus) {
-        checkCompletion();
-        this.orderStatus = orderStatus;
+    public void setTable(OrderTable orderTable) {
+        checkAllocation();
+        this.orderTable = orderTable;
     }
 
-    private void checkCompletion() {
-        if (orderStatus.equals(OrderStatus.COMPLETION)) {
-            throw new IllegalArgumentException("완료 된 주문은 상태를 변경할 수 없습니다.");
+    private void checkAllocation() {
+        if (Objects.nonNull(this.orderTable)) {
+            throw new AlreadyAllocatedException("이미 테이블에 할당 된 주문입니다.");
         }
     }
 

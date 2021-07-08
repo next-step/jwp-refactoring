@@ -46,6 +46,7 @@ class TableRestControllerTest {
             .content(objectMapper.writeValueAsString(request)))
             .andDo(print())
             .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.id").exists())
             .andExpect(jsonPath("$.numberOfGuests").value(request.getNumberOfGuests()))
             .andExpect(jsonPath("$.empty").value(request.isEmpty()));
     }
@@ -58,9 +59,9 @@ class TableRestControllerTest {
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$").exists())
-            .andExpect(jsonPath("$[0].id").value(1))
-            .andExpect(jsonPath("$[0].numberOfGuests").value(0))
-            .andExpect(jsonPath("$[0].empty").value(true));
+            .andExpect(jsonPath("$[0].id").value(테이블1.getId()))
+            .andExpect(jsonPath("$[0].numberOfGuests").value(테이블1.getNumberOfGuests()))
+            .andExpect(jsonPath("$[0].empty").value(테이블1.isEmpty()));
     }
 
     @Test
