@@ -3,6 +3,7 @@ package kitchenpos.application;
 import kitchenpos.domain.order.OrderTable;
 import kitchenpos.dto.order.OrderTableId;
 import kitchenpos.dto.order.TableGroupRequest;
+import kitchenpos.event.order.TableGroupCreatedEvent;
 import kitchenpos.event.order.TableOrderUngroupEvent;
 import kitchenpos.exception.InvalidOrderStatusException;
 import kitchenpos.exception.InvalidOrderTableException;
@@ -94,11 +95,12 @@ class TableGroupServiceTest {
         given(orderTableService.getOrderTable(ORDER_TABLE_ID_2L)).willReturn(orderTable2);
         given(orderTableService.getAllOrderTablesByIds(any())).willReturn(Lists.list(orderTable1, orderTable2));
 
+        doThrow(InvalidOrderTableException.class).when(publisher).publishEvent(any(TableGroupCreatedEvent.class));
+
         tableGroupRequest = new TableGroupRequest(Lists.list(new OrderTableId(ORDER_TABLE_ID_1L), new OrderTableId(ORDER_TABLE_ID_2L)));
 
         assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
-                .isInstanceOf(InvalidOrderTableException.class)
-                .hasMessageContaining("savedOrderTable");
+                .isInstanceOf(InvalidOrderTableException.class);
     }
 
     @Test

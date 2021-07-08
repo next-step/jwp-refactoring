@@ -41,7 +41,7 @@ public class TableGroup implements Serializable {
         this.createdDate = createdDate;
     }
 
-    private void initialSettingOrderTables(List<OrderTable> orderTables) {
+    public void initialSettingOrderTables(List<OrderTable> orderTables) {
         orderTables.forEach(orderTable -> {
 
             if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup())) {
@@ -69,8 +69,4 @@ public class TableGroup implements Serializable {
         return orderTables;
     }
 
-    public void changeOrderTables(List<OrderTable> orderTables) {
-        initialSettingOrderTables(orderTables);
-        this.orderTables = orderTables;
-    }
 }

@@ -2,6 +2,8 @@ package kitchenpos.application;
 
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderLineItem;
+import kitchenpos.domain.order.TableGroup;
+import kitchenpos.event.order.TableGroupCreatedEvent;
 import kitchenpos.event.order.OrderCreatedEvent;
 import kitchenpos.exception.InvalidOrderLineItemsException;
 import kitchenpos.repository.MenuRepository;
@@ -22,7 +24,7 @@ public class OrderEventHandler {
     }
 
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
-    public void createOrderEvent(OrderCreatedEvent event) {
+    public void createOrder(OrderCreatedEvent event) {
         Order order = event.getOrder();
 
         List<OrderLineItem> orderLineItems = order.getOrderLineItems();
@@ -37,5 +39,10 @@ public class OrderEventHandler {
             throw new InvalidOrderLineItemsException("orderLineItems size: " + size +
                     "saved orderLineItems size: " + savedMenuCount);
         }
+    }
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
+    public void createdTableGroup(TableGroupCreatedEvent event){
+        TableGroup tableGroup = event.getTableGroup();
+        tableGroup.initialSettingOrderTables(tableGroup.getOrderTables());
     }
 }

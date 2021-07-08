@@ -3,6 +3,7 @@ package kitchenpos.application;
 import kitchenpos.domain.order.OrderTable;
 import kitchenpos.domain.order.TableGroup;
 import kitchenpos.dto.order.TableGroupRequest;
+import kitchenpos.event.order.TableGroupCreatedEvent;
 import kitchenpos.event.order.TableOrderUngroupEvent;
 import kitchenpos.exception.NotMatchOrderTableException;
 import kitchenpos.repository.TableGroupRepository;
@@ -33,15 +34,15 @@ public class TableGroupService {
                 .map(orderTableRequest -> orderTableService.getOrderTable(orderTableRequest.getId()))
                 .collect(Collectors.toList());
 
-        final List<OrderTable> savedOrderTables = validateSizeOfOrderTables(orderTables);
+        validateSizeOfOrderTables(orderTables);
 
         TableGroup tableGroup = TableGroup.of(orderTables);
-        tableGroup.changeOrderTables(savedOrderTables);
+        publisher.publishEvent(new TableGroupCreatedEvent(tableGroup));
 
         return tableGroupRepository.save(tableGroup);
     }
 
-    private List<OrderTable> validateSizeOfOrderTables(List<OrderTable> orderTables) {
+    private void validateSizeOfOrderTables(List<OrderTable> orderTables) {
         final List<Long> orderTableIds = orderTables.stream()
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
@@ -52,7 +53,6 @@ public class TableGroupService {
             throw new NotMatchOrderTableException("orderTable size: " + orderTables.size() +
                     " savedOrderTables size: " + savedOrderTables.size());
         }
-        return savedOrderTables;
     }
 
     @Transactional
