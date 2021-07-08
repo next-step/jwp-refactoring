@@ -5,11 +5,11 @@ import kitchenpos.domain.order.OrderLineItem;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.order.OrderTable;
 import kitchenpos.dto.order.OrderRequest;
+import kitchenpos.event.order.OrderCreatedEvent;
 import kitchenpos.exception.InvalidEntityException;
-import kitchenpos.exception.InvalidOrderLineItemsException;
-import kitchenpos.repository.MenuRepository;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,25 +19,23 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
-    private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     public OrderService(
-            final MenuRepository menuRepository,
             final OrderRepository orderRepository,
-            final OrderTableRepository orderTableRepository
-    ) {
-        this.menuRepository = menuRepository;
+            final OrderTableRepository orderTableRepository,
+            final ApplicationEventPublisher eventPublisher) {
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     @Transactional
     public Order create(final OrderRequest orderRequest) {
 
-        OrderTable findOrderTable = orderTableRepository
-                .findById(orderRequest.getOrderTableId())
+        OrderTable findOrderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
                 .orElseThrow(() -> new InvalidEntityException("Not found OrderTable " + orderRequest.getOrderTableId()));
 
         List<OrderLineItem> findOrderLineItems = orderRequest.getOrderLineItemRequests()
@@ -49,20 +47,7 @@ public class OrderService {
                 .collect(Collectors.toList());
 
         Order order = Order.of(findOrderTable, OrderStatus.COOKING, findOrderLineItems);
-
-        // TODO orderLineItems 이벤트 로 의존성 분리
-        List<OrderLineItem> orderLineItems = order.getOrderLineItems();
-
-        final List<Long> menuIds = orderLineItems.stream()
-                .map(OrderLineItem::getMenuId)
-                .collect(Collectors.toList());
-
-        int size = orderLineItems.size();
-        long savedOrderLineItemsCount = menuRepository.countByIdIn(menuIds);
-        if (size != savedOrderLineItemsCount) {
-            throw new InvalidOrderLineItemsException("orderLineItems size: " + size +
-                    "saved orderLineItems size: " + savedOrderLineItemsCount);
-        }
+        eventPublisher.publishEvent(new OrderCreatedEvent(order));
 
         return orderRepository.save(order);
     }

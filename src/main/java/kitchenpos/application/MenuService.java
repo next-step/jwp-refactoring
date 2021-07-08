@@ -32,23 +32,23 @@ public class MenuService {
     @Transactional
     public Menu create(final MenuRequest menuRequest) {
 
-        // TODO menuGroupService 의존성 분리
-
         Long menuGroupId = menuRequest.getMenuGroupId();
 
         if (menuGroupService.isExists(menuGroupId)) {
-            throw new MenuGroupAlreadyExistsException("findMenuGroup: " + menuGroupId);
+            throw new MenuGroupAlreadyExistsException("menuGroup: " + menuGroupId);
         }
 
         MenuGroup findMenuGroup = menuGroupService.findById(menuGroupId);
 
         Menu menu = Menu.of(menuRequest.getName(), menuRequest.getPrice(), findMenuGroup);
 
-        List<MenuProductRequest> menuProducts = menuRequest.getMenuProducts();
+        List<MenuProductRequest> menuProductRequests = menuRequest.getMenuProductRequests();
 
-        menuProducts.stream()
-                .map(menuProduct ->
-                        MenuProduct.of(null, productService.getProduct(menuProduct.getProductId()), menuProduct.getQuantity()))
+        menuProductRequests.stream()
+                .map(menuProductRequest ->
+                        MenuProduct.of(null,
+                                productService.getProduct(menuProductRequest.getProductId()),
+                                menuProductRequest.getQuantity()))
                 .forEach(menu::addMenuProduct);
 
         if (!menu.isReasonablePrice()) {

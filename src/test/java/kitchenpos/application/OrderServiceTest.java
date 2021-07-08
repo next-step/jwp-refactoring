@@ -1,17 +1,15 @@
 package kitchenpos.application;
 
-import kitchenpos.exception.InvalidOrderLineItemsException;
-import kitchenpos.exception.InvalidOrderStatusException;
-import kitchenpos.repository.MenuRepository;
-import kitchenpos.repository.OrderRepository;
-import kitchenpos.repository.OrderLineItemRepository;
-import kitchenpos.repository.OrderTableRepository;
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderLineItem;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.order.OrderTable;
 import kitchenpos.dto.order.OrderLineItemRequest;
 import kitchenpos.dto.order.OrderRequest;
+import kitchenpos.event.order.OrderCreatedEvent;
+import kitchenpos.exception.InvalidOrderLineItemsException;
+import kitchenpos.repository.OrderRepository;
+import kitchenpos.repository.OrderTableRepository;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,29 +18,30 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
 
     @Mock
-    private MenuRepository menuRepository;
-    @Mock
     private OrderRepository orderRepository;
     @Mock
     private OrderTableRepository orderTableRepository;
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
 
     @InjectMocks
-    OrderService orderService;
+    private OrderService orderService;
 
     private Order order;
 
@@ -87,12 +86,8 @@ class OrderServiceTest {
     @DisplayName("주문 항목의 갯수가 주문 항목의 메뉴의 갯수와 일치 하지 않으면 등록할 수 없다.")
     void exception2_create() {
         given(orderTableRepository.findById(ANY_ORDER_TABLE_ID)).willReturn(Optional.of(orderTable));
-
-        given(menuRepository.countByIdIn(Lists.list(ORDER_LINE_ITEM_ID_1L)))
-                .willReturn(100L);
-
-        OrderLineItem orderLineItem1 = OrderLineItem.of(order, MENU_ID_1L, 10);
-        ReflectionTestUtils.setField(orderLineItem1, "seq", ORDER_LINE_ITEM_ID_1L);
+        doThrow(InvalidOrderLineItemsException.class)
+                .when(eventPublisher).publishEvent(any(OrderCreatedEvent.class));
 
         orderRequest = new OrderRequest(ANY_ORDER_TABLE_ID, Lists.list(new OrderLineItemRequest(MENU_ID_1L, 10L)));
 
@@ -117,8 +112,10 @@ class OrderServiceTest {
     void after_create_orderStatus_is_COOKING() {
         orderTable.changeNonEmptyTable();
         given(orderTableRepository.findById(ANY_ORDER_TABLE_ID)).willReturn(Optional.of(orderTable));
-        given(menuRepository.countByIdIn(Lists.list(MENU_ID_1L, MENU_ID_2L))).willReturn(2L);
         given(orderRepository.save(any())).willReturn(order);
+
+        orderRequest = new OrderRequest(ANY_ORDER_TABLE_ID,
+                Lists.list(new OrderLineItemRequest(MENU_ID_1L, 10L), new OrderLineItemRequest(MENU_ID_2L, 10L)));
 
         Order saveOrder = orderService.create(orderRequest);
 

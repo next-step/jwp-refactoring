@@ -37,10 +37,6 @@ public class Menu {
 
     }
 
-    public static Menu of(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        return new Menu(null, name, price, menuGroup, menuProducts);
-    }
-
     public static Menu of(String name, Price price, MenuGroup menuGroup) {
         return new Menu(null, name, price, menuGroup, MenuProducts.of(new ArrayList<>()));
     }
@@ -97,5 +93,10 @@ public class Menu {
                 ", menuGroup=" + menuGroup +
                 ", menuProducts=" + menuProducts +
                 '}';
+    }
+
+    public void changeNameAndPrice(String name, Price price) {
+        this.name = name;
+        this.price = price;
     }
 }
