@@ -37,9 +37,6 @@ class MenuServiceTest {
     MenuGroupRepository menuGroupRepository;
 
     @Mock
-    MenuProductRepository menuProductRepository;
-
-    @Mock
     ProductRepository productRepository;
 
     @InjectMocks
@@ -84,21 +81,9 @@ class MenuServiceTest {
                 () -> assertThat(savedMenu.getMenuProducts()).contains(menuProduct1, menuProduct2));
     }
 
-    /*@DisplayName("메뉴를 등록에 실패한다 - 메뉴 가격이 null 이거나 0보다 작을 경우")
-    @Test
-    void fail_create1() {
-        Menu menu1 = new Menu("신메뉴", BigDecimal.valueOf(-1), 1L, menuProducts);
-        Menu menu2 = new Menu("신메뉴", null, 1L, menuProducts);
-
-        assertThatThrownBy(() -> menuService.create(menu1))
-                .isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> menuService.create(menu2))
-                .isInstanceOf(IllegalArgumentException.class);
-    }*/
-
     @DisplayName("메뉴를 등록에 실패한다 - 메뉴 그룹 아이디가 등록되어 있지 않은 경우")
     @Test
-    void fail_create2() {
+    void fail_create1() {
         MenuRequest menu = new MenuRequest("후라이드2마리", 20000L, 1L, menuProducts);
         Product product = new Product(1L, "신메뉴", BigDecimal.valueOf(20000L));
         given(productRepository.findAllById(anyList())).willReturn(Arrays.asList(product));
@@ -109,7 +94,7 @@ class MenuServiceTest {
 
     @DisplayName("메뉴를 등록에 실패한다 - 메뉴 등록시 메뉴 상품들의 총 가격(상품 * 수량의 총합) 보다 클 수 없다.")
     @Test
-    void fail_create3() {
+    void fail_create2() {
         MenuRequest menu = new MenuRequest("후라이드2마리", 20000L, 1L, menuProducts);
         Product product = new Product(1L, "신메뉴", BigDecimal.valueOf(2000L));
         given(productRepository.findAllById(anyList())).willReturn(Arrays.asList(product));

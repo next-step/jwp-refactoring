@@ -10,8 +10,6 @@ import java.util.Objects;
 
 @Entity
 public class Menu {
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
