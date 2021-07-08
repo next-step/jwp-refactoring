@@ -29,12 +29,26 @@ public class TableGroup {
 
     private TableGroup(Long id, List<OrderTable> orderTables, LocalDateTime createdDate) {
         this.id = id;
+
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
             throw new InvalidOrderTableException("should have over 2 orderTables");
         }
 
+        initialSettingOrderTables(orderTables);
         this.orderTables = orderTables;
         this.createdDate = createdDate;
+    }
+
+    private void initialSettingOrderTables(List<OrderTable> orderTables) {
+        orderTables.forEach(orderTable -> {
+
+            if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup())) {
+                throw new InvalidOrderTableException("should have not empty savedOrderTable");
+            }
+
+            orderTable.changeTableGroup(this);
+            orderTable.changeNonEmptyTable();
+        });
     }
 
     public static TableGroup of(List<OrderTable> orderTables) {
@@ -54,15 +68,7 @@ public class TableGroup {
     }
 
     public void changeOrderTables(List<OrderTable> orderTables) {
+        initialSettingOrderTables(orderTables);
         this.orderTables = orderTables;
-        orderTables.forEach(orderTable -> {
-
-            if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup())) {
-                throw new InvalidOrderTableException("should have not empty savedOrderTable");
-            }
-
-            orderTable.changeTableGroup(this);
-            orderTable.changeNonEmptyTable();
-        });
     }
 }
