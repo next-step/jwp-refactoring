@@ -1,9 +1,8 @@
-package kitchenpos.domain;
+package kitchenpos.product.domain;
 
 import static java.util.Objects.*;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
@@ -34,7 +33,7 @@ public class Product {
         this(Name.valueOf(name), Price.wonOf(price));
     }
 
-    Product(Name name, Price price) {
+    public Product(Name name, Price price) {
         validateNonNull(name, price);
         this.name = name;
         this.price = price;

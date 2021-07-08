@@ -15,7 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.Name;
+import kitchenpos.product.domain.Name;
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
 

@@ -2,9 +2,7 @@ package kitchenpos.domain;
 
 import static java.util.Objects.*;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
@@ -17,6 +15,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import kitchenpos.product.domain.Name;
+import kitchenpos.product.domain.Price;
 
 @Entity
 @Table

@@ -6,6 +6,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import kitchenpos.product.domain.Name;
+import kitchenpos.product.domain.Price;
+
 class OrderMenuTest {
 
 	@DisplayName("주문메뉴의 주문한 메뉴 id, 이름, 가격은 필수정보이다.")

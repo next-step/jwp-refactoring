@@ -5,6 +5,9 @@ import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import kitchenpos.product.domain.Name;
+import kitchenpos.product.domain.Price;
+
 class OrderLineItemTest {
 
 	@DisplayName("주문항목은 주문메뉴정보와 주문수량정보 생성된다.")

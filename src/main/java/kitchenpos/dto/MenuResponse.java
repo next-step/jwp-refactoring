@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.Name;
-import kitchenpos.domain.Price;
+import kitchenpos.product.domain.Name;
+import kitchenpos.product.domain.Price;
 
 public class MenuResponse {
 

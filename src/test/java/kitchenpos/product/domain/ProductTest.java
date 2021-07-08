@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.product.domain;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -8,10 +8,11 @@ import java.math.BigDecimal;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class ProductTest {
+import kitchenpos.product.domain.Name;
+import kitchenpos.product.domain.Price;
+import kitchenpos.product.domain.Product;
 
-	public static Product 후라이드치킨 = new Product(Name.valueOf("후라이드치킨"), Price.wonOf(1000));
-	public static Product 피자 = new Product(Name.valueOf("피자"), Price.wonOf(2000));
+class ProductTest {
 
 	@DisplayName("가격이 음수인 상품은 생성 될 수 없다.")
 	@Test

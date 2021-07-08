@@ -1,15 +1,15 @@
 package kitchenpos.application;
 
 import static kitchenpos.domain.MenuProducts.*;
-import static kitchenpos.domain.Name.*;
-import static kitchenpos.domain.Price.*;
+import static kitchenpos.product.domain.Name.*;
+import static kitchenpos.product.domain.Price.*;
 
 import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.domain.MenuRepository;
-import kitchenpos.domain.ProductRepository;
+import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
 import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.MenuResponse;
 

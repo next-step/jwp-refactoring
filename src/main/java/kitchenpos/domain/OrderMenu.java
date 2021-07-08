@@ -8,6 +8,9 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import kitchenpos.product.domain.Name;
+import kitchenpos.product.domain.Price;
+
 @Embeddable
 public class OrderMenu {
 

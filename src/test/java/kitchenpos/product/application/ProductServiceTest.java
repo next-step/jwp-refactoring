@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.product.application;
 
 import static java.util.Arrays.*;
 import static org.assertj.core.api.Assertions.*;
@@ -13,11 +13,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.domain.Name;
-import kitchenpos.domain.ProductRepository;
-import kitchenpos.domain.Product;
-import kitchenpos.dto.ProductRequest;
-import kitchenpos.dto.ProductResponse;
+import kitchenpos.product.domain.Name;
+import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.product.application.ProductService;
 
 @DisplayName("상품 요구사항 테스트")
 @ExtendWith(MockitoExtension.class)

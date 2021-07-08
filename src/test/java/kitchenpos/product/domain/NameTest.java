@@ -1,10 +1,12 @@
-package kitchenpos.domain;
+package kitchenpos.product.domain;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import kitchenpos.product.domain.Name;
 
 class NameTest {
 
