@@ -13,6 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@DisplayName("상품 통합테스트")
 class ProductRestControllerTest extends IntegrationSupportTest {
     private static final String URI = "/api/products";
 

@@ -15,6 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@DisplayName("메뉴 통합테스트")
 class MenuRestControllerTest extends IntegrationSupportTest {
     private static final String URI = "/api/menus";
 
