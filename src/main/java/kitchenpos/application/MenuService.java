@@ -36,10 +36,6 @@ public class MenuService {
     public Menu create(final Menu menu) {
         final BigDecimal price = menu.getPrice();
 
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("가격은 0원 이상이어야 합니다.");
-        }
-
         if (!menuGroupRepository.existsById(menu.getMenuGroupId())) {
             throw new IllegalArgumentException(String.format("%s의 메뉴 그룹은 존재하지 않습니다.", menu.getMenuGroupId()));
         }

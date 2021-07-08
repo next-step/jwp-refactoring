@@ -19,12 +19,6 @@ public class ProductService {
 
     @Transactional
     public Product create(final Product product) {
-        final BigDecimal price = product.getPrice();
-
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("가격은 0원 이상이어야 합니다.");
-        }
-
         return productRepository.save(product);
     }
 
