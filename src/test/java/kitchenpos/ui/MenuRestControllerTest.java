@@ -54,7 +54,7 @@ class MenuRestControllerTest {
     @Test
     void create() throws Exception {
         List<MenuProduct> menuProducts = Arrays.asList(new MenuProduct(7L, 7L, 7L, 1));
-        Menu menu = new Menu(7L, "쓰리라차치킨", BigDecimal.valueOf(20000), 2L, menuProducts);
+        Menu menu = new Menu("쓰리라차치킨", BigDecimal.valueOf(20000), 2L, menuProducts);
         String jsonString = objectMapper.writeValueAsString(menu);
 
         given(menuService.create(any())).willReturn(menu);
@@ -69,7 +69,7 @@ class MenuRestControllerTest {
     @Test
     void list() throws Exception {
         List<MenuProduct> menuProducts = Arrays.asList(new MenuProduct(7L, 7L, 7L, 1));
-        Menu menu = new Menu(7L, "쓰리라차치킨", BigDecimal.valueOf(20000), 2L, menuProducts);
+        Menu menu = new Menu("쓰리라차치킨", BigDecimal.valueOf(20000), 2L, menuProducts);
 
         given(menuService.list()).willReturn(Arrays.asList(menu));
 

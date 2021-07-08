@@ -54,8 +54,8 @@ class MenuServiceTest {
         menuProduct = new MenuProduct(1L, 1L, 1L, 1);
         menuProducts = Arrays.asList(menuProduct);
         product = new Product(1L, "신메뉴", BigDecimal.valueOf(20000));
-        menu1 = new Menu(1L, "신메뉴", BigDecimal.valueOf(20000), 1L, menuProducts);
-        menu2 = new Menu(2L, "신메뉴", null, 1L, menuProducts);
+        menu1 = new Menu("신메뉴", BigDecimal.valueOf(20000), 1L, menuProducts);
+        menu2 = new Menu("신메뉴", null, 1L, menuProducts);
     }
 
     @DisplayName("메뉴를 등록한다. (메뉴 상품(MenuProduct) 리스트에도 메뉴를 등록한다.)")
@@ -76,8 +76,8 @@ class MenuServiceTest {
     @DisplayName("메뉴를 등록에 실패한다 - 메뉴 가격이 null 이거나 0보다 작을 경우")
     @Test
     void fail_create1() {
-        Menu menu1 = new Menu(1L, "신메뉴", BigDecimal.valueOf(-1), 1L, menuProducts);
-        Menu menu2 = new Menu(2L, "신메뉴", null, 1L, menuProducts);
+        Menu menu1 = new Menu("신메뉴", BigDecimal.valueOf(-1), 1L, menuProducts);
+        Menu menu2 = new Menu("신메뉴", null, 1L, menuProducts);
 
         assertThatThrownBy(() -> menuService.create(menu1))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -88,7 +88,7 @@ class MenuServiceTest {
     @DisplayName("메뉴를 등록에 실패한다 - 메뉴 그룹 아이디가 등록되어 있지 않은 경우")
     @Test
     void fail_create2() {
-        Menu menu = new Menu(1L, "신메뉴", BigDecimal.valueOf(18000), 1L, menuProducts);
+        Menu menu = new Menu("신메뉴", BigDecimal.valueOf(18000), 1L, menuProducts);
 
         assertThatThrownBy(() -> menuService.create(menu))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -111,9 +111,9 @@ class MenuServiceTest {
         List<MenuProduct> menuProducts1 = Arrays.asList(new MenuProduct(1L, 1L, 1L, 1L));
         List<MenuProduct> menuProducts2 = Arrays.asList(new MenuProduct(2L, 2L, 2L, 1L));
         List<MenuProduct> menuProducts3 = Arrays.asList(new MenuProduct(3L, 3L, 3L, 1L));
-        Menu menu1 = new Menu(1L, "메뉴1", BigDecimal.valueOf(15000), 1L, menuProducts1);
-        Menu menu2 = new Menu(2L, "메뉴2", BigDecimal.valueOf(17000), 1L, menuProducts2);
-        Menu menu3 = new Menu(3L, "메뉴3", BigDecimal.valueOf(15000), 1L, menuProducts3);
+        Menu menu1 = new Menu("메뉴1", BigDecimal.valueOf(15000), 1L, menuProducts1);
+        Menu menu2 = new Menu("메뉴2", BigDecimal.valueOf(17000), 1L, menuProducts2);
+        Menu menu3 = new Menu("메뉴3", BigDecimal.valueOf(15000), 1L, menuProducts3);
         List<Menu> menus = Arrays.asList(menu1, menu2, menu3);
         given(menuRepository.findAll()).willReturn(menus);
         given(menuProductDao.findAllByMenuId(1L)).willReturn(menuProducts1);
