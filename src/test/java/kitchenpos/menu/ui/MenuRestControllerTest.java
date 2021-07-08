@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,8 +55,9 @@ class MenuRestControllerTest {
     @Test
     void create() throws Exception {
         List<MenuProduct> menuProducts = Arrays.asList(new MenuProduct(7L, 7L, 7L, 1));
+        MenuRequest menuRequest = new MenuRequest("쓰리라차치킨", 20000L, 1L, menuProducts);
         Menu menu = new Menu("쓰리라차치킨", BigDecimal.valueOf(20000), new MenuGroup(1L, "그룹1"), 30000L, menuProducts);
-        String jsonString = objectMapper.writeValueAsString(menu);
+        String jsonString = objectMapper.writeValueAsString(menuRequest);
 
         given(menuService.create(any())).willReturn(MenuResponse.from(menu));
 
