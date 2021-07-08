@@ -31,7 +31,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
 
-    private static final boolean 비어있음 = true;
     private static final boolean 비어있지않음 = false;
     private static final Long 주문테이블_ID = 1L;
     private static final Long 주문_ID = 1L;

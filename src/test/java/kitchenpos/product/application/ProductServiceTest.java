@@ -14,7 +14,7 @@ import java.util.List;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
-import kitchenpos.product.exception.ProductPriceCannotBeNegativeException;
+import kitchenpos.product.exception.ProductPriceNegativeException;
 import kitchenpos.product.exception.ProductPriceEmptyException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -66,7 +66,7 @@ public class ProductServiceTest {
 
         // When & Then
         assertThatThrownBy(() -> productService.create(햄버거))
-            .isInstanceOf(ProductPriceCannotBeNegativeException.class);
+            .isInstanceOf(ProductPriceNegativeException.class);
         verify(productRepository, never()).save(any());
     }
 
