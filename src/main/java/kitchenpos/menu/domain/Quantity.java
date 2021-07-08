@@ -26,18 +26,18 @@ class Quantity {
     return new Quantity(value);
   }
 
+  private static void validateQuantityValue(long value) {
+    if (value < MIN) {
+      throw new IllegalArgumentException(String.format(QUANTITY_SHOULD_EQUAL_OR_LARGER_THAN_MIN_QUANTITY, MIN));
+    }
+  }
+
   public long getValue() {
     return value;
   }
 
   public BigDecimal getBigDecimalValue() {
     return BigDecimal.valueOf(value);
-  }
-
-  private static void validateQuantityValue(long value) {
-    if (value < MIN) {
-      throw new IllegalArgumentException(String.format(QUANTITY_SHOULD_EQUAL_OR_LARGER_THAN_MIN_QUANTITY, MIN));
-    }
   }
 
   @Override
