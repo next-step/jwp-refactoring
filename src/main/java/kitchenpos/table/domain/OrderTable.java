@@ -21,7 +21,7 @@ public class OrderTable {
 
     public static final String THIS_IS_A_GROUP_ORDER_TABLE = "단체 지정된 주문테이블인 경우 빈 테이블로 변경이 불가능합니다.";
     public static final String THERE_IS_AN_ONGOING_ORDER = "진행중(조리 or 식사)인 경우 빈 테이블로 변경이 불가능하다.";
-    public static final String THE_NUMBER_OF_GUESTS_MUST_BE_AT_LEAST_ONE = "변경하려는 손님 수는 최소 1명 이상이어야 합니다.";
+    public static final String THE_NUMBER_OF_GUESTS_CANNOT_BE_NEGATIVE = "변경하려는 손님 수는 음수일 수 없다.";
     public static final String THERE_IS_AN_EMPTY_ORDER_TABLE = "빈 테이블의 주문 테이블은 손님 수를 변경할 수 없습니다.";
 
     @Id
@@ -146,8 +146,8 @@ public class OrderTable {
     }
 
     private void validationChangeNumberOfGuests(int numberOfGuests) {
-        if (numberOfGuests < 1) {
-            throw new CannotChangeNumberOfGuestException(THE_NUMBER_OF_GUESTS_MUST_BE_AT_LEAST_ONE);
+        if (numberOfGuests < 0) {
+            throw new CannotChangeNumberOfGuestException(THE_NUMBER_OF_GUESTS_CANNOT_BE_NEGATIVE);
         }
         if (empty) {
             throw new CannotChangeNumberOfGuestException(THERE_IS_AN_EMPTY_ORDER_TABLE);
