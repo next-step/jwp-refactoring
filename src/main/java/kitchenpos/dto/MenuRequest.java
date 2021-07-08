@@ -3,6 +3,8 @@ package kitchenpos.dto;
 import java.math.BigDecimal;
 import java.util.List;
 
+import kitchenpos.domain.Price;
+
 public class MenuRequest {
     private Long id;
     private String name;
@@ -39,6 +41,10 @@ public class MenuRequest {
 
     public BigDecimal getPrice() {
         return price;
+    }
+
+    public Price price() {
+        return Price.valueOf(price);
     }
 
     public void setPrice(BigDecimal price) {

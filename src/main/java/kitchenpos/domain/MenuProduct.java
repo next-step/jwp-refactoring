@@ -37,19 +37,29 @@ public class MenuProduct {
     }
 
     public MenuProduct(Product product, long quantity) {
+        this(null, product, quantity);
+    }
+
+    private MenuProduct(Menu menu, Product product, long quantity) {
+        this.menu = menu;
         this.product = product;
         this.quantity = quantity;
     }
 
-    public void setMenu(Menu menu) {
+    public MenuProduct withMenu(Menu menu) {
         checkAllocation();
         this.menu = menu;
+        return this;
     }
 
     private void checkAllocation() {
         if (Objects.nonNull(this.menu)) {
-            throw new AlreadyAllocatedException("이미 할당 된 메뉴-제품 입니다.");
+            throw new AlreadyAllocatedException("매핑 정보의 메뉴를 재 할당 할 수 없습니다.");
         }
+    }
+
+    public BigDecimal getTotalPrice() { // TODO 해결 필요
+        return product.getPrice().multiply(BigDecimal.valueOf(quantity));
     }
 
     public Long getSeq() {
@@ -66,9 +76,5 @@ public class MenuProduct {
 
     public long getQuantity() {
         return quantity;
-    }
-
-    public BigDecimal getTotalPrice() {
-        return product.getPrice().multiply(BigDecimal.valueOf(quantity));
     }
 }

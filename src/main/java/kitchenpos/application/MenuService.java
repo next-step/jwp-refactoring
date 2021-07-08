@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.MenuProducts;
 import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuProductRequest;
@@ -31,12 +32,13 @@ public class MenuService {
     @Transactional
     public Menu create(final MenuRequest request) {
         MenuGroup menuGroup = menuGroupService.findById(request.getMenuGroupId());
-        List<MenuProduct> menuProducts = request.getMenuProducts()
+        MenuProducts menuProducts = MenuProducts.of(request.getMenuProducts()
             .stream()
             .map(this::newMenuProduct)
-            .collect(Collectors.toList());
+            .collect(Collectors.toList()));
 
-        return menuRepository.save(new Menu(request.getName(), request.getPrice(), menuGroup, menuProducts));
+        return menuRepository.save(
+            new Menu(request.getName(), request.price(), menuGroup, menuProducts));
     }
 
     private MenuProduct newMenuProduct(MenuProductRequest menuProductRequest) {

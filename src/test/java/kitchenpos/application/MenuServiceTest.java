@@ -20,7 +20,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.MenuProducts;
 import kitchenpos.domain.MenuRepository;
+import kitchenpos.domain.Price;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
 
@@ -48,16 +50,17 @@ class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        BigDecimal 이만_삼천_원 = BigDecimal.valueOf(23000);
+        BigDecimal 이만_삼천 = BigDecimal.valueOf(23000);
         두마리_후라이드_요청 = new MenuProductRequest(후라이드.getId(), 1);
         두마리_양념치킨_요청 = new MenuProductRequest(양념치킨.getId(), 1);
-        두마리_양념후라이드_요청 = new MenuRequest(null, "두마리_양념후라이드", 이만_삼천_원, 두마리메뉴.getId(),
+        두마리_양념후라이드_요청 = new MenuRequest(null, "두마리_양념후라이드", 이만_삼천, 두마리메뉴.getId(),
             Arrays.asList(두마리_후라이드_요청, 두마리_양념치킨_요청));
 
+        Price 이만_삼천_원 = Price.valueOf(23000);
         두마리_양념치킨 = new MenuProduct(후라이드, 1);
         두마리_후라이드 = new MenuProduct(양념치킨, 1);
         두마리_양념후라이드 = new Menu(100L, "두마리_양념후라이드", 이만_삼천_원, 두마리메뉴,
-            Arrays.asList(두마리_양념치킨, 두마리_후라이드));
+            MenuProducts.of(두마리_양념치킨, 두마리_후라이드));
     }
 
     @Test
