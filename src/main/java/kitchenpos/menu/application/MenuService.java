@@ -52,11 +52,10 @@ public class MenuService {
         final List<MenuProductRequest> menuProductRequests = request.getMenuProducts();
 
         BigDecimal sum = BigDecimal.ZERO;
-        for (final MenuProductRequest menuProduct : menuProductRequests) {
+        for (MenuProductRequest menuProduct : menuProductRequests) {
             final Product product = productDao.findById(menuProduct.getProductId())
                                               .orElseThrow(IllegalArgumentException::new);
-            sum = sum
-                .add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
+            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
         }
 
         if (price.compareTo(sum) > 0) {
@@ -67,7 +66,7 @@ public class MenuService {
 
         final Long menuId = savedMenu.getId();
         final List<MenuProduct> savedMenuProducts = new ArrayList<>();
-        for (final MenuProductRequest menuProductRequest : menuProductRequests) {
+        for (MenuProductRequest menuProductRequest : menuProductRequests) {
             MenuProduct menuProduct = menuProductRequest.toMenuProduct(menuId);
             savedMenuProducts.add(menuProductDao.save(menuProduct));
         }

@@ -49,8 +49,8 @@ class MenuServiceTest {
         MenuProduct 메뉴_불고기 = new MenuProduct(1L, 불고기.getId(), 3);
         MenuRequest menuRequest = MenuRequest.Builder.of("메뉴1", new BigDecimal(2000))
                                                      .menuGroupId(1L)
+                                                     .menuProducts(Arrays.asList(new MenuProductRequest(1L, 1000)))
                                                      .build();
-        menuRequest.setMenuProducts(Arrays.asList(new MenuProductRequest()));
         Mockito.when(menuGroupDao.existsById(any())).thenReturn(true);
         Mockito.when(productDao.findById(any())).thenReturn(Optional.of(불고기));
         Mockito.when(menuDao.save(any())).thenReturn(menuRequest.toMenu());
@@ -78,6 +78,7 @@ class MenuServiceTest {
         Product 불고기 = new Product("불고기", new BigDecimal(1000));
         MenuRequest menuRequest = MenuRequest.Builder.of("메뉴1", new BigDecimal(2000))
                                                      .menuGroupId(1L)
+                                                     .menuProducts(Arrays.asList(new MenuProductRequest()))
                                                      .build();
         Mockito.when(menuGroupDao.existsById(any())).thenReturn(false);
 
@@ -93,7 +94,9 @@ class MenuServiceTest {
         Product 불고기 = new Product("불고기", new BigDecimal(1000));
         MenuRequest menuRequest = MenuRequest.Builder.of("메뉴1", new BigDecimal(5000))
                                                      .menuGroupId(1L)
+                                                     .menuProducts(Arrays.asList(new MenuProductRequest()))
                                                      .build();
+        menuRequest.setMenuProducts(Arrays.asList(new MenuProductRequest(1L, 3)));
         Mockito.when(menuGroupDao.existsById(any())).thenReturn(true);
         Mockito.when(productDao.findById(any())).thenReturn(Optional.of(불고기));
 

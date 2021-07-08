@@ -18,6 +18,7 @@ public class MenuRequest {
         this.name = builder.name;
         this.price = builder.price;
         this.menuGroupId = builder.menuGroupId;
+        this.menuProducts = builder.menuProducts;
     }
 
     public String getName() {
@@ -50,6 +51,7 @@ public class MenuRequest {
         private final String name;
         private final BigDecimal price;
         private Long menuGroupId;
+        private List<MenuProductRequest> menuProducts;
 
         private Builder(final String name, final BigDecimal price) {
             this.name = name;
@@ -62,6 +64,11 @@ public class MenuRequest {
 
         public Builder menuGroupId(Long menuGroupId) {
             this.menuGroupId = menuGroupId;
+            return this;
+        }
+
+        public Builder menuProducts(List<MenuProductRequest> menuProducts) {
+            this.menuProducts = menuProducts;
             return this;
         }
 

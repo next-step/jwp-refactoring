@@ -24,7 +24,7 @@ public class MenuProductRequest {
         return quantity;
     }
 
-    public MenuProduct toMenuProduct(final long menuId) {
+    public MenuProduct toMenuProduct(final Long menuId) {
         return new MenuProduct(menuId, this.productId, this.quantity);
     }
 }

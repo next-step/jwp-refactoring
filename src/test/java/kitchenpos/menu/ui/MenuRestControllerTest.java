@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import kitchenpos.IntegrationTestHelper;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -43,8 +45,14 @@ class MenuRestControllerTest extends IntegrationTestHelper {
     void createTest() throws Exception {
         // given
         MenuRequest menuRequest = MenuRequest.Builder.of("메뉴1", new BigDecimal(10000))
+                                                     .menuGroupId(1L)
+                                                     .menuProducts(Arrays.asList(new MenuProductRequest()))
                                                      .build();
-        Mockito.when(menuService.create(any())).thenReturn(MenuResponse.of(menuRequest.toMenu()));
+        Mockito.when(menuService.create(any()))
+               .thenReturn(MenuResponse.of(Menu.Builder.of("메뉴1", new BigDecimal(10000))
+                                                       .menuGroupId(1L)
+                                                       .menuProducts(Arrays.asList(new MenuProduct()))
+                                                       .build()));
 
         // when
         ResultActions resultActions = 메뉴_생성_요청(menuRequest);
@@ -57,8 +65,14 @@ class MenuRestControllerTest extends IntegrationTestHelper {
     @Test
     void listTest() throws Exception {
         // given
-        Menu menu1 = Menu.Builder.of("메뉴1", new BigDecimal(10000)).build();
-        Menu menu2 = Menu.Builder.of("메뉴2", new BigDecimal(15000)).build();
+        Menu menu1 = Menu.Builder.of("메뉴1", new BigDecimal(10000))
+                                 .menuGroupId(1L)
+                                 .menuProducts(Arrays.asList(new MenuProduct()))
+                                 .build();
+        Menu menu2 = Menu.Builder.of("메뉴2", new BigDecimal(15000))
+                                 .menuGroupId(1L)
+                                 .menuProducts(Arrays.asList(new MenuProduct()))
+                                 .build();
         Mockito.when(menuService.list()).thenReturn(Arrays.asList(MenuResponse.of(menu1),
                                                                   MenuResponse.of(menu2)));
 
