@@ -8,6 +8,7 @@ import java.util.Arrays;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import kitchenpos.exception.IllegalOperationException;
 import kitchenpos.exception.OrderNotCompletedException;
 
 @DisplayName("테이블 그룹 단위 테스트")
@@ -21,7 +22,7 @@ public class TableGroupTest {
         OrderTable 테이블2 = new OrderTable(2, true);
 
         // when
-        TableGroup tableGroup = new TableGroup(Arrays.asList(테이블1, 테이블2));
+        TableGroup tableGroup = new TableGroup(OrderTables.of(테이블1, 테이블2));
 
         // then
         tableGroup.getOrderTables().forEach(orderTable -> {
@@ -36,7 +37,7 @@ public class TableGroupTest {
         OrderTable 테이블1 = new OrderTable(2, true);
 
         // then
-        assertThatThrownBy(() -> new TableGroup(Arrays.asList(테이블1)))
+        assertThatThrownBy(() -> new TableGroup(OrderTables.of(테이블1)))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -48,8 +49,8 @@ public class TableGroupTest {
         OrderTable 테이블9_사용중 = new OrderTable(9L, 4, false);
 
         // then
-        assertThatThrownBy(() -> new TableGroup(1L, Arrays.asList(테이블3, 테이블9_사용중)))
-            .isInstanceOf(IllegalArgumentException.class); // TODO CUSTOM EXCEPTION 으로 변경
+        assertThatThrownBy(() -> new TableGroup(1L, OrderTables.of(테이블3, 테이블9_사용중)))
+            .isInstanceOf(IllegalOperationException.class); // TODO CUSTOM EXCEPTION 으로 변경
     }
 
     @Test
@@ -58,7 +59,7 @@ public class TableGroupTest {
         // given
         OrderTable 테이블3 = new OrderTable(3L, 0, true);
         OrderTable 테이블4 = new OrderTable(4L, 0, true);
-        TableGroup 테이블_그룹 = new TableGroup(1L, Arrays.asList(테이블3, 테이블4));
+        TableGroup 테이블_그룹 = new TableGroup(1L, OrderTables.of(테이블3, 테이블4));
 
         // when
         테이블_그룹.ungroup();
@@ -75,7 +76,7 @@ public class TableGroupTest {
         // given
         OrderTable 테이블3 = new OrderTable(3L, 0, true);
         OrderTable 테이블4 = new OrderTable(4L, 0, true);
-        TableGroup 테이블_그룹 = new TableGroup(1L, Arrays.asList(테이블3, 테이블4));
+        TableGroup 테이블_그룹 = new TableGroup(1L, OrderTables.of(테이블3, 테이블4));
         테이블3.addOrder(new Order(100L, OrderStatus.COMPLETION,
             OrderLineItems.of(new OrderLineItem(후라이드_메뉴, 1))));
         테이블4.addOrder(new Order(200L, OrderStatus.COOKING,

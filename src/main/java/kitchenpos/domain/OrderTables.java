@@ -1,6 +1,7 @@
 package kitchenpos.domain;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -9,29 +10,44 @@ import java.util.stream.Collectors;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
+import org.springframework.util.CollectionUtils;
+
 @Embeddable
 public class OrderTables {
+
     @OneToMany(mappedBy = "tableGroup")
     private List<OrderTable> orderTables = new ArrayList<>();
 
-    public void add(OrderTable orderTable) {
-        checkOrderTable(orderTable);
-        orderTable.changeEmpty(false);
-        orderTables.add(orderTable);
+    public static OrderTables of(OrderTable... orderTables) {
+        return new OrderTables(Arrays.asList(orderTables));
     }
 
-    private void checkOrderTable(OrderTable orderTable) {
-        if (!orderTable.isEmpty()) {
-            throw new IllegalArgumentException("빈 테이블만 그룹화 할 수 있습니다.");
-        }
+    public static OrderTables of(List<OrderTable> orderTables) {
+        return new OrderTables(orderTables);
+    }
 
-        if (orderTable.hasTableGroup()) {
-            throw new IllegalArgumentException("테이블이 이미 그룹에 포함되어 있습니다.");
+    protected OrderTables() {
+    }
+
+    public OrderTables(List<OrderTable> orderTables) {
+        checkArgument(orderTables);
+        this.orderTables = orderTables;
+    }
+
+    private void checkArgument(List<OrderTable> orderTables) {
+        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
+            throw new IllegalArgumentException("그룹화 하려면 2개 이상의 테이블이 필요합니다.");
         }
     }
 
     public void ungroup() {
-        orderTables.forEach(OrderTable::ungroup);
+        orderTables.forEach(OrderTable::leaveTableGroup);
+    }
+
+    public OrderTables withTableGroup(TableGroup tableGroup) {
+        return new OrderTables(orderTables.stream()
+            .map(orderTable -> orderTable.withTableGroup(tableGroup))
+            .collect(Collectors.toList()));
     }
 
     public void forEach(Consumer<OrderTable> consumer) {

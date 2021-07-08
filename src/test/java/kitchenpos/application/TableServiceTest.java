@@ -19,8 +19,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
+import kitchenpos.domain.OrderTables;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.exception.IllegalOperationException;
 import kitchenpos.exception.OrderTableNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
@@ -103,7 +105,7 @@ class TableServiceTest {
         // given
         OrderTable 테이블A = new OrderTable(1L, 0, true);
         OrderTable 테이블B = new OrderTable(2L, 0, true);
-        TableGroup 그룹 = new TableGroup(1L, Arrays.asList(테이블A, 테이블B));
+        TableGroup 그룹 = new TableGroup(1L, OrderTables.of(테이블A, 테이블B));
         OrderTableRequest 비우는_상태 = new OrderTableRequest(10, true);
         when(orderTableRepository.findById(테이블A.getId())).thenReturn(Optional.ofNullable(테이블A));
 
@@ -161,6 +163,6 @@ class TableServiceTest {
 
         // then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(테이블3.getId(), 손님10명))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(IllegalOperationException.class);
     }
 }

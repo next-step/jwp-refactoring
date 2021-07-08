@@ -1,12 +1,11 @@
 package kitchenpos.application;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTables;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.domain.TableGroupRepository;
 import kitchenpos.dto.TableGroupRequest;
@@ -25,10 +24,10 @@ public class TableGroupService {
 
     @Transactional
     public TableGroup create(final TableGroupRequest request) {
-        List<OrderTable> orderTables = request.getOrderTables()
+        OrderTables orderTables = OrderTables.of(request.getOrderTables()
             .stream()
             .map(req -> tableService.findById(req.getId()))
-            .collect(Collectors.toList());
+            .collect(Collectors.toList()));
 
         return tableGroupRepository.save(new TableGroup(orderTables));
     }

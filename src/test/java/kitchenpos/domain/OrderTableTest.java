@@ -43,7 +43,7 @@ public class OrderTableTest {
         // then
         OrderTable 테이블A = new OrderTable(1L, 0, true);
         OrderTable 테이블B = new OrderTable(2L, 0, true);
-        TableGroup 그룹 = new TableGroup(1L, Arrays.asList(테이블A, 테이블B));
+        TableGroup 그룹 = new TableGroup(1L, OrderTables.of(테이블A, 테이블B));
         assertThatThrownBy(() -> 테이블A.changeEmpty(false))
             .isInstanceOf(IllegalArgumentException.class);
     }

@@ -125,7 +125,7 @@ class OrderServiceTest {
 
         // then
         assertThatThrownBy(() -> orderService.create(양념_후라이드_각_한마리_요청))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(IllegalOperationException.class);
     }
 
     @Test
