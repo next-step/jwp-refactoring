@@ -33,6 +33,15 @@ public class TableGroupService {
                 .map(orderTableRequest -> orderTableService.getOrderTable(orderTableRequest.getId()))
                 .collect(Collectors.toList());
 
+        final List<OrderTable> savedOrderTables = validateSizeOfOrderTables(orderTables);
+
+        TableGroup tableGroup = TableGroup.of(orderTables);
+        tableGroup.changeOrderTables(savedOrderTables);
+
+        return tableGroupRepository.save(tableGroup);
+    }
+
+    private List<OrderTable> validateSizeOfOrderTables(List<OrderTable> orderTables) {
         final List<Long> orderTableIds = orderTables.stream()
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
@@ -43,11 +52,7 @@ public class TableGroupService {
             throw new NotMatchOrderTableException("orderTable size: " + orderTables.size() +
                     " savedOrderTables size: " + savedOrderTables.size());
         }
-
-        TableGroup tableGroup = TableGroup.of(orderTables);
-        tableGroup.changeOrderTables(savedOrderTables);
-
-        return tableGroupRepository.save(tableGroup);
+        return savedOrderTables;
     }
 
     @Transactional
