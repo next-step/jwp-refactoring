@@ -39,7 +39,7 @@ class TableServiceTest {
     @Test
     void create() {
         //given
-        OrderTable orderTable = OrderTable.of(null,null,0, false);
+        OrderTable orderTable = OrderTable.of(null, null, 0, false);
         given(orderTableDao.save(any())).willReturn(orderTable);
 
         //when

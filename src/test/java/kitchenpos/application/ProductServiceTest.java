@@ -53,7 +53,7 @@ class ProductServiceTest {
     @Test
     void createProductExceptionIfPriceIsNull() {
         //given
-        Product product = Product.of(1L,"후라이드치킨",null);
+        Product product = Product.of(1L, "후라이드치킨", null);
 
         //when
         assertThatThrownBy(() -> productService.create(product))
@@ -64,7 +64,7 @@ class ProductServiceTest {
     @Test
     void createProductExceptionIfPriceIsNegative() {
         //given
-        Product product = Product.of(1L,"후라이드치킨",BigDecimal.valueOf(-1000));
+        Product product = Product.of(1L, "후라이드치킨", BigDecimal.valueOf(-1000));
 
         //when
         assertThatThrownBy(() -> productService.create(product))
@@ -81,8 +81,8 @@ class ProductServiceTest {
     @Test
     void list() {
         //given
-        Product 후라이드치킨 = Product.of(1L,"후라이드치킨",BigDecimal.valueOf(10000));
-        Product 양념치킨 = Product.of(2L,"양념치킨",BigDecimal.valueOf(12000));
+        Product 후라이드치킨 = Product.of(1L, "후라이드치킨", BigDecimal.valueOf(10000));
+        Product 양념치킨 = Product.of(2L, "양념치킨", BigDecimal.valueOf(12000));
         List<Product> products = Lists.list(후라이드치킨, 양념치킨);
 
         //and
