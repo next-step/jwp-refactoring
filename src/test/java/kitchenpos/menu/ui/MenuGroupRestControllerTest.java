@@ -3,7 +3,7 @@ package kitchenpos.menu.ui;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.config.MockMvcTestConfig;
 import kitchenpos.menu.application.MenuGroupService;
-import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,13 +37,13 @@ class MenuGroupRestControllerTest {
     @MockBean
     private MenuGroupService menuGroupService;
 
-    private MenuGroup 추천메뉴;
-    private MenuGroup 인기메뉴;
+    private MenuGroupResponse 추천메뉴;
+    private MenuGroupResponse 인기메뉴;
 
     @BeforeEach
     void setUp() {
-        추천메뉴 = new MenuGroup(1L, "추천메뉴");
-        인기메뉴 = new MenuGroup(2L, "인기메뉴");
+        추천메뉴 = new MenuGroupResponse(1L, "추천메뉴");
+        인기메뉴 = new MenuGroupResponse(2L, "인기메뉴");
     }
 
     @DisplayName("메뉴 그룹을 등록할 수 있다.")
