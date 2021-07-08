@@ -1,6 +1,6 @@
 package kitchenpos.exception;
 
-public class OrderLineItemNotEmptyException extends IllegalArgumentException {
+public class OrderLineItemNotEmptyException extends RuntimeException {
     public OrderLineItemNotEmptyException() {
     }
 

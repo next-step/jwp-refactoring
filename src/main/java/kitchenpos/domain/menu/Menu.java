@@ -18,11 +18,11 @@ public class Menu {
     @ManyToOne(fetch = FetchType.LAZY)
     private MenuGroup menuGroup;
 
-    public static Menu create(MenuCreate create, MenuGroup menuGroup, Products products, MenuCreateValidator menuCreateValidator) throws Exception {
+    public static Menu create(MenuCreate create, MenuGroup menuGroup, Products products, MenuCreateValidator menuCreateValidator) throws RuntimeException {
         return create(null, create, menuGroup, products, menuCreateValidator);
     }
 
-    public static Menu create(Long id, MenuCreate create, MenuGroup menuGroup, Products products, MenuCreateValidator menuCreateValidator) throws Exception {
+    public static Menu create(Long id, MenuCreate create, MenuGroup menuGroup, Products products, MenuCreateValidator menuCreateValidator) throws RuntimeException {
         if (create.getMenuProducts().size() != products.size()) {
             throw new ProductNotExistException();
         }

@@ -13,10 +13,8 @@ public class OrderLineItem {
     @Column(name = "seq")
     private Long id;
 
-    @Column(name = "order_id")
     private Long orderId;
 
-    @Column(name = "menu_id")
     private Long menuId;
 
     @AttributeOverride(name = "name", column = @Column(name = "menu_name"))

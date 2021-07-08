@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MenuAmountCreateValidator implements MenuCreateValidator {
     @Override
-    public void validate(Menu menu, Products products, MenuCreate create) throws Exception {
+    public void validate(Menu menu, Products products, MenuCreate create) throws RuntimeException {
         MenuProducts menuProducts = MenuProducts.create(create.getMenuProducts(), menu, products);
         if (menu.getPrice().compareTo(menuProducts.sumAmount()) > 0) {
             throw new MenuCheapException();

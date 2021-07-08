@@ -12,7 +12,7 @@ import java.util.List;
 @Embeddable
 public class OrderTables {
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "table_group_id")
+    @JoinColumn(name = "tableGroupId")
     private List<OrderTable> orderTables = new ArrayList<>();
 
     public OrderTables() {

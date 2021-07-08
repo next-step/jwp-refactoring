@@ -10,7 +10,7 @@ import java.util.List;
 @Embeddable
 public class OrderLineItems {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "orderId")
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     protected OrderLineItems() {
@@ -21,7 +21,7 @@ public class OrderLineItems {
     }
 
     public void update(List<OrderLineItem> orderLineItems) {
-        if (this.orderLineItems.size() > 0) {
+        if (!this.orderLineItems.isEmpty()) {
             throw new OrderLineItemNotEmptyException();
         }
 

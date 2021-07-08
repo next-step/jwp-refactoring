@@ -11,7 +11,7 @@ import java.util.List;
 @Embeddable
 public class Orders {
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_table_id")
+    @JoinColumn(name = "orderTableId")
     private List<Order> orders = new ArrayList<>();
 
     public Orders() {

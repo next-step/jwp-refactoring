@@ -8,7 +8,10 @@ import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.order.Orders;
 import kitchenpos.exception.TableEmptyException;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -19,7 +22,6 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "table_group_id")
     private Long tableGroupId;
 
     private Orders orders = new Orders();

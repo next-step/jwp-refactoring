@@ -15,7 +15,6 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "order_table_id")
     private Long orderTableId;
 
     @Enumerated(value = EnumType.STRING)
