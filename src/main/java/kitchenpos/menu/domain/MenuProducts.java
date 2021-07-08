@@ -16,7 +16,7 @@ public class MenuProducts {
 
     public void add(final MenuProduct menuProduct) {
         if (!menuProducts.contains(menuProduct)) {
-            this.add(menuProduct);
+            this.menuProducts.add(menuProduct);
         }
     }
 
