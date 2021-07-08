@@ -68,7 +68,7 @@ public class TableGroupService {
     }
 
     @Transactional
-    public void ungroup(final Long tableGroupId) {
+    public List<OrderTable> ungroup(final Long tableGroupId) {
         final List<OrderTable> orderTables = orderTableDao.findAllByTableGroupId(tableGroupId);
 
         final List<Long> orderTableIds = orderTables.stream()
@@ -84,5 +84,7 @@ public class TableGroupService {
             orderTable.setTableGroupId(null);
             orderTableDao.save(orderTable);
         }
+
+        return orderTables;
     }
 }
