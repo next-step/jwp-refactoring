@@ -1,35 +1,34 @@
 package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.application.OrderService;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.menu.domain.*;
+import kitchenpos.order.application.OrderService;
+import kitchenpos.order.domain.*;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(OrderRestController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 class OrderRestControllerTest {
 
     @Autowired
@@ -41,18 +40,34 @@ class OrderRestControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
-    @MockBean
+    @Autowired
     OrderService orderService;
+
+    @Autowired
+    OrderTableRepository orderTableRepository;
+
+    @Autowired
+    OrderRepository orderRepository;
+
+    @Autowired
+    MenuRepository menuRepository;
+
+    @Autowired
+    MenuGroupRepository menuGroupRepository;
+
+    @Autowired
+    OrderLineItemRepository orderLineItemRepository;
 
     OrderLineItem orderLineItem;
 
     @BeforeEach
     void setUp() {
-        orderLineItem = new OrderLineItem();
-        orderLineItem.setMenuId(1L);
-        orderLineItem.setOrderId(1L);
-        orderLineItem.setQuantity(10);
-        orderLineItem.setSeq(5L);
+        MenuGroup menuGroup = new MenuGroup("패스트푸드");
+        MenuGroup savedMenuGroup = menuGroupRepository.save(menuGroup);
+        Menu menu = new Menu("햄버거", BigDecimal.valueOf(5000), savedMenuGroup);
+        Menu savedMenu = menuRepository.save(menu);
+
+        orderLineItem = new OrderLineItem(savedMenu.getId(), new Quantity(10));
 
         this.mockMvc = MockMvcBuilders.webAppContextSetup(ctx)
                 .addFilters(new CharacterEncodingFilter("UTF-8", true))
@@ -60,33 +75,27 @@ class OrderRestControllerTest {
                 .build();
     }
 
+    @AfterEach
+    void afterTest() {
+        orderRepository.deleteAll();
+        orderTableRepository.deleteAll();
+    }
+
     @DisplayName("주문등록 api 테스트")
     @Test
     public void create() throws Exception {
-        Order order = new Order();
-        order.setOrderLineItems(Arrays.asList(orderLineItem));
-        order.setOrderTableId(1L);
-        order.setOrderStatus(OrderStatus.COOKING.name());
-        order.setOrderedTime(LocalDateTime.now());
-
+        OrderTable orderTable = new OrderTable(4, false);
+        OrderTable savedOrderTable = orderTableRepository.save(orderTable);
+        Order order = new Order(savedOrderTable.getId(), OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(orderLineItem));
 
         String requestBody = objectMapper.writeValueAsString(order);
 
-        Order responseOrder = new Order();
-        responseOrder.setOrderLineItems(Arrays.asList(orderLineItem));
-        responseOrder.setOrderTableId(1L);
-        responseOrder.setOrderStatus(OrderStatus.COOKING.name());
-        responseOrder.setOrderedTime(LocalDateTime.now());
-        String responseBody = objectMapper.writeValueAsString(responseOrder);
-
-        when(orderService.create(any())).thenReturn(responseOrder);
         mockMvc.perform(post("/api/orders")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody)
         )
                 .andDo(print())
                 .andExpect(status().isCreated())
-                .andExpect(content().string(responseBody))
         ;
 
     }
@@ -94,46 +103,41 @@ class OrderRestControllerTest {
     @DisplayName("주문 목록 Api 테스트")
     @Test
     void list() throws Exception {
-        Order order = new Order();
-        order.setOrderLineItems(Arrays.asList(orderLineItem));
-        order.setOrderTableId(1L);
-        order.setOrderStatus(OrderStatus.COOKING.name());
-        order.setOrderedTime(LocalDateTime.now());
-        order.setOrderLineItems(Arrays.asList(orderLineItem));
+        OrderTable orderTable = new OrderTable(4, false);
+        OrderTable savedOrderTable = orderTableRepository.save(orderTable);
+        LocalDateTime orderedTime = LocalDateTime.now();
 
-        List<Order> orders = Arrays.asList(order);
+        Order order = new Order(savedOrderTable.getId(), OrderStatus.COOKING, orderedTime, Arrays.asList(orderLineItem));
+        order.reception();
+        orderRepository.save(order);
 
-        String responseBody = objectMapper.writeValueAsString(orders);
-
-        when(orderService.list()).thenReturn(orders);
         mockMvc.perform(get("/api/orders")
         )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(responseBody))
         ;
     }
 
     @DisplayName("주문 상태 변경 Api 테스트")
     @Test
     void changeOrderStatus() throws Exception {
-        Order order = new Order();
-        order.setOrderLineItems(Arrays.asList(orderLineItem));
-        order.setOrderTableId(1L);
-        order.setOrderStatus(OrderStatus.COOKING.name());
-        order.setOrderedTime(LocalDateTime.now());
-        order.setOrderLineItems(Arrays.asList(orderLineItem));
+        LocalDateTime orderedTime = LocalDateTime.now();
+
+        OrderTable orderTable = new OrderTable(4, false);
+        OrderTable savedOrderTable = orderTableRepository.save(orderTable);
+
+        Order order = new Order(savedOrderTable.getId(), OrderStatus.COOKING, orderedTime, Arrays.asList(orderLineItem));
+        order.reception();
+        Order savedOrder = orderRepository.save(order);
 
         String requestBody = objectMapper.writeValueAsString(order);
 
-        when(orderService.changeOrderStatus(any(), any())).thenReturn(order);
-        mockMvc.perform(put("/api/orders/1/order-status")
+        mockMvc.perform(put("/api/orders/" + savedOrder.getId() + "/order-status")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody)
         )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(requestBody))
         ;
     }
 }

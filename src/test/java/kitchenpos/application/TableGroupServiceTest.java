@@ -1,12 +1,16 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupResponse;
+import kitchenpos.table.application.TableGroupService;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.dto.OrderTableRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,28 +30,28 @@ class TableGroupServiceTest {
     TableGroupService tableGroupService;
 
     @Autowired
-    OrderDao orderDao;
+    OrderRepository orderRepository;
 
     @Autowired
-    OrderTableDao orderTableDao;
+    OrderTableRepository orderTableRepository;
 
     @Autowired
-    TableGroupDao tableGroupDao;
+    TableGroupRepository tableGroupRepository;
 
 
     @DisplayName("테이블 그룹을 만들어보자")
     @Test
     public void createTableGroup() throws Exception {
         //given
-        OrderTable savedOrderTable1 = createOrderTable(4, true);
-        OrderTable savedOrderTable2 = createOrderTable(4, true);
+        OrderTable savedOrderTable1 = createOrderTable(4, false);
+        OrderTable savedOrderTable2 = createOrderTable(4, false);
 
-
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Arrays.asList(savedOrderTable1, savedOrderTable2));
+        OrderTableRequest orderTableRequest1 = new OrderTableRequest(savedOrderTable1.getId(), savedOrderTable1.getTableGroupId(), savedOrderTable1.getNumberOfGuests(), savedOrderTable1.isEmpty());
+        OrderTableRequest orderTableRequest2 = new OrderTableRequest(savedOrderTable2.getId(), savedOrderTable2.getTableGroupId(), savedOrderTable2.getNumberOfGuests(), savedOrderTable2.isEmpty());
+        TableGroupRequest tableGroup = new TableGroupRequest(Arrays.asList(orderTableRequest1, orderTableRequest2));
 
         //when
-        TableGroup savedTableGroup = tableGroupService.create(tableGroup);
+        TableGroupResponse savedTableGroup = tableGroupService.create(tableGroup);
 
         //then
         assertNotNull(savedTableGroup.getId());
@@ -62,8 +66,9 @@ class TableGroupServiceTest {
         OrderTable savedOrderTable2 = createOrderTable(4, false);
 
 
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Arrays.asList(savedOrderTable1, savedOrderTable2));
+        OrderTableRequest orderTableRequest1 = new OrderTableRequest(savedOrderTable1.getId(), savedOrderTable1.getTableGroupId(), savedOrderTable1.getNumberOfGuests(), savedOrderTable1.isEmpty());
+        OrderTableRequest orderTableRequest2 = new OrderTableRequest(savedOrderTable2.getId(), savedOrderTable2.getTableGroupId(), savedOrderTable2.getNumberOfGuests(), savedOrderTable2.isEmpty());
+        TableGroupRequest tableGroup = new TableGroupRequest(Arrays.asList(orderTableRequest1, orderTableRequest2));
 
         //then
         assertThatThrownBy(
@@ -76,20 +81,20 @@ class TableGroupServiceTest {
     public void failCreateTableGroupNotNullTableGroupId() throws Exception {
         //given
         int countOfPeople = 4;
-        OrderTable savedOrderTable1 = createOrderTable(countOfPeople, true);
-        OrderTable savedOrderTable2 = createOrderTable(countOfPeople, true);
+        OrderTable savedOrderTable1 = createOrderTable(countOfPeople, false);
+        OrderTable savedOrderTable2 = createOrderTable(countOfPeople, false);
 
-        TableGroup anotherTableGroup = new TableGroup();
-        anotherTableGroup.setCreatedDate(LocalDateTime.now());
+        TableGroup anotherTableGroup = new TableGroup(LocalDateTime.now());
 
-        TableGroup savedAnotherTableGroup = tableGroupDao.save(anotherTableGroup);
-        savedOrderTable2.setTableGroupId(savedAnotherTableGroup.getId());
+        TableGroup savedAnotherTableGroup = tableGroupRepository.save(anotherTableGroup);
+        savedOrderTable2.groupBy(savedAnotherTableGroup.getId());
 
-        orderTableDao.save(savedOrderTable2);
+        orderTableRepository.save(savedOrderTable2);
 
 
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Arrays.asList(savedOrderTable1, savedOrderTable2));
+        OrderTableRequest orderTableRequest1 = new OrderTableRequest(savedOrderTable1.getId(), savedOrderTable1.getTableGroupId(), savedOrderTable1.getNumberOfGuests(), savedOrderTable1.isEmpty());
+        OrderTableRequest orderTableRequest2 = new OrderTableRequest(savedOrderTable2.getId(), savedOrderTable2.getTableGroupId(), savedOrderTable2.getNumberOfGuests(), savedOrderTable2.isEmpty());
+        TableGroupRequest tableGroup = new TableGroupRequest(Arrays.asList(orderTableRequest1, orderTableRequest2));
 
         //then
         assertThatThrownBy(
@@ -98,11 +103,9 @@ class TableGroupServiceTest {
     }
 
     private OrderTable createOrderTable(int countOfPeople, boolean emptyFlag) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(countOfPeople);
-        orderTable.setEmpty(emptyFlag);
+        OrderTable orderTable = new OrderTable(countOfPeople, emptyFlag);
 
-        return orderTableDao.save(orderTable);
+        return orderTableRepository.save(orderTable);
     }
 
     @DisplayName("테이블 그룹을 해지하자")
@@ -110,11 +113,9 @@ class TableGroupServiceTest {
     public void ungroup() throws Exception {
         //given
         // 테이블 추가
+        TableGroup tableGroup = new TableGroup(LocalDateTime.now());
 
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setCreatedDate(LocalDateTime.now());
-
-        TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
+        TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
 
         OrderTable savedOrderTable1 = createOrderTable(4, savedTableGroup.getId());
         OrderTable savedOrderTable2 = createOrderTable(4, savedTableGroup.getId());
@@ -122,9 +123,9 @@ class TableGroupServiceTest {
         tableGroupService.ungroup(savedTableGroup.getId());
 
         //then
-        OrderTable orderTable1 = orderTableDao.findById(savedOrderTable1.getId()).get();
+        OrderTable orderTable1 = orderTableRepository.findById(savedOrderTable1.getId()).get();
         assertNull(orderTable1.getTableGroupId());
-        OrderTable orderTable2 = orderTableDao.findById(savedOrderTable2.getId()).get();
+        OrderTable orderTable2 = orderTableRepository.findById(savedOrderTable2.getId()).get();
         assertNull(orderTable2.getTableGroupId());
     }
 
@@ -132,19 +133,16 @@ class TableGroupServiceTest {
     @Test
     public void failUnGroupBecauseStatus() throws Exception {
         //given
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setCreatedDate(LocalDateTime.now());
-        TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
+        TableGroup tableGroup = new TableGroup(LocalDateTime.now());
+        TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
 
         OrderTable savedOrderTable1 = createOrderTable(4, savedTableGroup.getId());
         OrderTable savedOrderTable2 = createOrderTable(4, savedTableGroup.getId());
 
         // 주문 상태 추가
-        Order order = new Order();
-        order.setOrderStatus(OrderStatus.COOKING.name());
-        order.setOrderTableId(savedOrderTable1.getId());
-        order.setOrderedTime(LocalDateTime.now());
-        orderDao.save(order);
+        Order order = new Order(savedOrderTable1.getId(), OrderStatus.COOKING, LocalDateTime.now());
+
+        orderRepository.save(order);
 
         //then
         assertThatThrownBy(
@@ -153,11 +151,9 @@ class TableGroupServiceTest {
     }
 
     private OrderTable createOrderTable(int countOfPeople, Long id) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(countOfPeople);
-        orderTable.setEmpty(false);
-        orderTable.setTableGroupId(id);
-        OrderTable savedOrderTable = orderTableDao.save(orderTable);
+        OrderTable orderTable = new OrderTable(countOfPeople, false);
+        orderTable.groupBy(id);
+        OrderTable savedOrderTable = orderTableRepository.save(orderTable);
         return savedOrderTable;
     }
 }

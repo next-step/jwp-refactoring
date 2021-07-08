@@ -1,7 +1,10 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.application.MenuGroupService;
+import kitchenpos.menu.domain.MenuGroupRepository;
+import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class MenuGroupServiceTest {
 
     @Autowired
-    MenuGroupDao menuGroupDao;
+    MenuGroupRepository menuGroupRepository;
 
     @Autowired
     MenuGroupService menuGroupService;
@@ -28,11 +31,10 @@ class MenuGroupServiceTest {
         //given
         String menuGroupName = "테스트메뉴그룹";
 
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setName(menuGroupName);
+        MenuGroupRequest menuGroupRequest = new MenuGroupRequest(menuGroupName);
 
         //when
-        MenuGroup savedMenuGroup = menuGroupService.create(menuGroup);
+        MenuGroupResponse savedMenuGroup = menuGroupService.create(menuGroupRequest);
 
         //then
         assertNotNull(savedMenuGroup.getId());
@@ -45,12 +47,11 @@ class MenuGroupServiceTest {
         //given
         String menuGroupName = "테스트메뉴그룹";
 
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setName(menuGroupName);
-        MenuGroup savedMenuGroup = menuGroupDao.save(menuGroup);
+        MenuGroup menuGroup = new MenuGroup(menuGroupName);
+        MenuGroup savedMenuGroup = menuGroupRepository.save(menuGroup);
 
         //when
-        List<MenuGroup> menuGroups = menuGroupService.list();
+        List<MenuGroupResponse> menuGroups = menuGroupService.list();
         List<Long> findMenuGroupIds = menuGroups.stream()
                 .map(findMenuGroup -> findMenuGroup.getId())
                 .collect(Collectors.toList());

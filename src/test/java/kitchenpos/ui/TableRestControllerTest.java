@@ -1,32 +1,31 @@
 package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.application.TableService;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.table.application.TableService;
+import kitchenpos.table.domain.NumberOfGeusts;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-import java.util.Arrays;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(TableRestController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 class TableRestControllerTest {
 
     @Autowired
@@ -38,8 +37,11 @@ class TableRestControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
-    @MockBean
+    @Autowired
     TableService tableService;
+
+    @Autowired
+    OrderTableRepository orderTableRepository;
 
     @BeforeEach
     void setUp() {
@@ -52,19 +54,9 @@ class TableRestControllerTest {
     @DisplayName("테이블 생성 Api 테스트")
     @Test
     void create() throws Exception {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setEmpty(false);
-        orderTable.setNumberOfGuests(4);
+        OrderTable orderTable = new OrderTable(4, false);
 
         String requestBody = objectMapper.writeValueAsString(orderTable);
-
-        OrderTable responseOrderTable = new OrderTable();
-        responseOrderTable.setId(1L);
-        responseOrderTable.setEmpty(false);
-        responseOrderTable.setNumberOfGuests(4);
-        String responseBody = objectMapper.writeValueAsString(responseOrderTable);
-
-        when(tableService.create(any())).thenReturn(responseOrderTable);
 
         mockMvc.perform(post("/api/tables")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -72,52 +64,37 @@ class TableRestControllerTest {
         )
                 .andDo(print())
                 .andExpect(status().isCreated())
-                .andExpect(content().string(responseBody))
         ;
     }
 
     @DisplayName("테이블 목록 Api 테스트")
     @Test
     void list() throws Exception {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setId(1L);
-        orderTable.setEmpty(false);
-        orderTable.setNumberOfGuests(4);
+        long countOfOrderTable = orderTableRepository.count();
 
-        List<OrderTable> orders = Arrays.asList(orderTable);
-
-        String responseBody = objectMapper.writeValueAsString(orders);
-
-        when(tableService.list()).thenReturn(orders);
         mockMvc.perform(get("/api/tables")
         )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(responseBody))
+                .andExpect(jsonPath("$", hasSize((int) countOfOrderTable)))
         ;
     }
 
     @DisplayName("테이블 정리 Api 테스트")
     @Test
     void changeEmpty() throws Exception {
-        Long orderTableId = 1L;
+        OrderTable orderTable = new OrderTable(4, false);
+        OrderTable savedOrderTable = orderTableRepository.save(orderTable);
 
-        OrderTable orderTable = new OrderTable();
-        orderTable.setId(1L);
-        orderTable.setEmpty(false);
-        orderTable.setNumberOfGuests(4);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(0, true);
+        savedOrderTable.changeEmpty(orderTableRequest);
 
-        String requestBody = objectMapper.writeValueAsString(orderTable);
+        String requestBody = objectMapper.writeValueAsString(orderTableRequest);
 
-        OrderTable responseOrderTable = new OrderTable();
-        responseOrderTable.setId(1L);
-        responseOrderTable.setEmpty(true);
-        responseOrderTable.setNumberOfGuests(0);
+        OrderTableResponse responseOrderTable = OrderTableResponse.of(savedOrderTable);
         String responseBody = objectMapper.writeValueAsString(responseOrderTable);
 
-        when(tableService.changeEmpty(any(), any())).thenReturn(responseOrderTable);
-
-        mockMvc.perform(put("/api/tables/" + orderTableId + "/empty")
+        mockMvc.perform(put("/api/tables/" + savedOrderTable.getId() + "/empty")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody)
         )
@@ -130,24 +107,17 @@ class TableRestControllerTest {
     @DisplayName("테이블 인원수 변경 Api 테스트")
     @Test
     void changeNumberOfGuests() throws Exception {
-        Long orderTableId = 1L;
+        OrderTable orderTable = new OrderTable(4, false);
+        OrderTable savedOrderTable = orderTableRepository.save(orderTable);
+        savedOrderTable.changeNumberOfGuests(NumberOfGeusts.of(2));
 
-        OrderTable orderTable = new OrderTable();
-        orderTable.setId(1L);
-        orderTable.setEmpty(false);
-        orderTable.setNumberOfGuests(4);
+        OrderTable changeGuestCountOrderTable = new OrderTable(2, false);
+        String requestBody = objectMapper.writeValueAsString(changeGuestCountOrderTable);
 
-        String requestBody = objectMapper.writeValueAsString(orderTable);
-
-        OrderTable responseOrderTable = new OrderTable();
-        responseOrderTable.setId(1L);
-        responseOrderTable.setEmpty(false);
-        responseOrderTable.setNumberOfGuests(2);
+        OrderTableResponse responseOrderTable = OrderTableResponse.of(savedOrderTable);
         String responseBody = objectMapper.writeValueAsString(responseOrderTable);
 
-        when(tableService.changeNumberOfGuests(any(), any())).thenReturn(responseOrderTable);
-
-        mockMvc.perform(put("/api/tables/" + orderTableId + "/number-of-guests")
+        mockMvc.perform(put("/api/tables/" + savedOrderTable.getId() + "/number-of-guests")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody)
         )

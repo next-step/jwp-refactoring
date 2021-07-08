@@ -1,14 +1,20 @@
 package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.application.TableGroupService;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.table.application.TableGroupService;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupResponse;
+import kitchenpos.table.dto.OrderTableRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -19,7 +25,6 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -27,7 +32,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(TableGroupRestController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 class TableGroupRestControllerTest {
 
     @Autowired
@@ -39,24 +45,17 @@ class TableGroupRestControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
-    @MockBean
-    TableGroupService tableGroupService;
+    @Autowired
+    OrderTableRepository orderTableRepository;
 
-    OrderTable orderTable1;
-    OrderTable orderTable2;
+    @Autowired
+    TableGroupRepository tableGroupRepository;
+
+    @Autowired
+    TableGroupService tableGroupService;
 
     @BeforeEach
     void setUp() {
-        orderTable1 = new OrderTable();
-        orderTable1.setTableGroupId(1L);
-        orderTable1.setEmpty(true);
-        orderTable1.setNumberOfGuests(0);
-
-        orderTable2 = new OrderTable();
-        orderTable2.setTableGroupId(1L);
-        orderTable2.setEmpty(true);
-        orderTable2.setNumberOfGuests(0);
-
         this.mockMvc = MockMvcBuilders.webAppContextSetup(ctx)
                 .addFilters(new CharacterEncodingFilter("UTF-8", true))
                 .alwaysDo(print())
@@ -66,33 +65,34 @@ class TableGroupRestControllerTest {
     @DisplayName("테이블 그룹 생성 Api 테스트")
     @Test
     void create() throws Exception {
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
-        tableGroup.setCreatedDate(LocalDateTime.now());
+        OrderTable initOrderTable = new OrderTable(3, false);
+        OrderTable savedOrderTable1 = orderTableRepository.save(initOrderTable);
+        OrderTable savedOrderTable2 = orderTableRepository.save(initOrderTable);
+        OrderTableRequest orderTableRequest1 = new OrderTableRequest(savedOrderTable1.getId(), null, savedOrderTable1.getNumberOfGuests(), savedOrderTable1.isEmpty());
+        OrderTableRequest orderTableRequest2 = new OrderTableRequest(savedOrderTable2.getId(), null, savedOrderTable2.getNumberOfGuests(), savedOrderTable2.isEmpty());
 
-        String requestBody = objectMapper.writeValueAsString(tableGroup);
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(LocalDateTime.now(), Arrays.asList(orderTableRequest1, orderTableRequest2));
+        String requestBody = objectMapper.writeValueAsString(tableGroupRequest);
 
-        TableGroup responseTableGroup = new TableGroup();
-        responseTableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
-        responseTableGroup.setCreatedDate(LocalDateTime.now());
-        String responseBody = objectMapper.writeValueAsString(responseTableGroup);
-
-        when(tableGroupService.create(any())).thenReturn(responseTableGroup);
         mockMvc.perform(post("/api/table-groups")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody)
         )
                 .andDo(print())
                 .andExpect(status().isCreated())
-                .andExpect(content().string(responseBody))
         ;
     }
 
     @DisplayName("테이블 그룹 해제 Api 테스트")
     @Test
     void ungroup() throws Exception {
-        Long tableGroupId = 1L;
-        mockMvc.perform(delete("/api/table-groups/" + tableGroupId)
+        TableGroup tableGroup = new TableGroup(LocalDateTime.now());
+        TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
+        OrderTable initOrderTable = new OrderTable(savedTableGroup.getId(), 3, false);
+        orderTableRepository.save(initOrderTable);
+        orderTableRepository.save(initOrderTable);
+
+        mockMvc.perform(delete("/api/table-groups/" + savedTableGroup.getId())
         )
                 .andDo(print())
                 .andExpect(status().isNoContent())

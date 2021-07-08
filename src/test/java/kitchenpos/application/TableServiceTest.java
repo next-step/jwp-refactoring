@@ -1,12 +1,12 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.table.domain.*;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.application.TableService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,13 +28,13 @@ class TableServiceTest {
     TableService tableService;
 
     @Autowired
-    OrderTableDao orderTableDao;
+    OrderTableRepository orderTableRepository;
 
     @Autowired
-    TableGroupDao tableGroupDao;
+    TableGroupRepository tableGroupRepository;
 
     @Autowired
-    OrderDao orderDao;
+    OrderRepository orderRepository;
 
     OrderTable orderTable;
 
@@ -45,11 +43,9 @@ class TableServiceTest {
     @BeforeEach
     void setUp() {
         int countOfPeople = 4;
-        orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(countOfPeople);
-        orderTable.setEmpty(false);
+        orderTable = new OrderTable(countOfPeople, false);
 
-        savedOrderTable = orderTableDao.save(orderTable);
+        savedOrderTable = orderTableRepository.save(orderTable);
     }
 
     @DisplayName("테이블을 생성해보자")
@@ -57,11 +53,10 @@ class TableServiceTest {
     void createTable() {
         // given
         int countOfPeople = 4;
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(countOfPeople);
+        OrderTableRequest orderTable = new OrderTableRequest(countOfPeople, false);
 
         // when
-        OrderTable savedOrderTable = tableService.create(orderTable);
+        OrderTableResponse savedOrderTable = tableService.create(orderTable);
 
         // then
         assertThat(savedOrderTable.getId()).isNotNull();
@@ -71,13 +66,11 @@ class TableServiceTest {
     @Test
     public void tableLists() throws Exception {
         // given
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(4);
-        orderTable.setEmpty(false);
-        OrderTable savedOrderTable = orderTableDao.save(orderTable);
+        OrderTable orderTable = new OrderTable(4, false);
+        OrderTable savedOrderTable = orderTableRepository.save(orderTable);
 
         //when
-        List<OrderTable> orderTables = tableService.list();
+        List<OrderTableResponse> orderTables = tableService.list();
         List<Long> findOrderTableIds = orderTables.stream()
                 .map(findOrderTable -> findOrderTable.getId())
                 .collect(Collectors.toList());
@@ -91,9 +84,10 @@ class TableServiceTest {
     @Test
     public void changeEmpty() {
         //given
-        orderTable.setEmpty(true);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(0, true);
+
         //when
-        OrderTable changedTable = tableService.changeEmpty(savedOrderTable.getId(), orderTable);
+        OrderTableResponse changedTable = tableService.changeEmpty(savedOrderTable.getId(), orderTableRequest);
 
         //then
         assertThat(changedTable.getId()).isEqualTo(savedOrderTable.getId());
@@ -104,17 +98,23 @@ class TableServiceTest {
     @Test
     public void failChangeEmptyExistTableGroup() throws Exception {
         //given
-        // 테이블그룹 추가
-        TableGroup tableGroup = new TableGroup();
-        List<OrderTable> orderTables = new ArrayList<>(Arrays.asList(savedOrderTable));
-        tableGroup.setOrderTables(orderTables);
-        tableGroup.setCreatedDate(LocalDateTime.now());
+        OrderTableRequest orderTableRequest = new OrderTableRequest(0, true);
 
-        tableGroupDao.save(tableGroup);
+        // 테이블그룹 추가
+        TableGroup tableGroup = new TableGroup(LocalDateTime.now());
+
+        TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
+
+        // 테이블 정보 추가
+        int countOfPeople = 4;
+        OrderTable orderTable = new OrderTable(countOfPeople, false);
+        orderTable.groupBy(savedTableGroup.getId());
+
+        OrderTable savedOrderTable = orderTableRepository.save(orderTable);
 
         //when
         assertThatThrownBy(
-                () -> tableService.changeEmpty(savedOrderTable.getTableGroupId(), orderTable)
+                () -> tableService.changeEmpty(savedOrderTable.getId(), orderTableRequest)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -122,15 +122,15 @@ class TableServiceTest {
     @Test
     public void failChangeEmptyBecauseStatusForCookingAndMeal() throws Exception {
         //given
-        Order order = new Order();
-        order.setOrderStatus(OrderStatus.COOKING.name());
-        order.setOrderTableId(savedOrderTable.getId());
-        order.setOrderedTime(LocalDateTime.now());
-        orderDao.save(order);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(0, true);
+
+        Order order = new Order(savedOrderTable.getId(), OrderStatus.COOKING, LocalDateTime.now());
+
+        orderRepository.save(order);
 
         //when
         assertThatThrownBy(
-                () -> tableService.changeEmpty(savedOrderTable.getTableGroupId(), orderTable)
+                () -> tableService.changeEmpty(savedOrderTable.getId(), orderTableRequest)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -139,10 +139,10 @@ class TableServiceTest {
     public void changeNumberOfGuests() throws Exception {
         //given
         int changedPeopleCount = 2;
-        orderTable.setNumberOfGuests(changedPeopleCount);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(changedPeopleCount, false);
 
         //when
-        OrderTable changedOrderTable = tableService.changeNumberOfGuests(savedOrderTable.getId(), orderTable);
+        OrderTableResponse changedOrderTable = tableService.changeNumberOfGuests(savedOrderTable.getId(), orderTableRequest);
 
         //then
         assertThat(changedOrderTable.getId()).isEqualTo(savedOrderTable.getId());
@@ -154,12 +154,11 @@ class TableServiceTest {
     public void failChangeNumberOfGuestsInvalidPeopleCount() throws Exception {
         //given
         int changedPeopleCount = -1;
-
-        orderTable.setNumberOfGuests(changedPeopleCount);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(changedPeopleCount, false);
 
         //when
         assertThatThrownBy(
-                () -> tableService.changeNumberOfGuests(savedOrderTable.getId(), orderTable)
+                () -> tableService.changeNumberOfGuests(savedOrderTable.getId(), orderTableRequest)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -167,18 +166,16 @@ class TableServiceTest {
     @Test
     public void failChangeNumberOfGuestsNotEmptyOrderTable() throws Exception {
         //given
-        int emptyPeopleCount = 0;
-        int countOfPeople = 4;
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(emptyPeopleCount);
-        orderTable.setEmpty(true);
+        OrderTable orderTable = new OrderTable(0, true);
+        OrderTable savedOrderTable = orderTableRepository.save(orderTable);
 
-        OrderTable savedOrderTable = orderTableDao.save(orderTable);
-
-        orderTable.setNumberOfGuests(countOfPeople);
         //when
+        int emptyPeopleCount = 2;
+        OrderTableRequest orderTableRequest = new OrderTableRequest(emptyPeopleCount, false);
+
+        //then
         assertThatThrownBy(
-                () -> tableService.changeNumberOfGuests(savedOrderTable.getId(), orderTable)
+                () -> tableService.changeNumberOfGuests(savedOrderTable.getId(), orderTableRequest)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 }
