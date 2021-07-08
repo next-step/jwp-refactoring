@@ -34,7 +34,7 @@ public class OrderRepositoryTest {
     public void setup() {
         List<OrderLineItem> orderLineItemList = new ArrayList<>();
         OrderTable orderTable = new OrderTable(3L, 0, false);
-        Menu menu = new Menu(3L, "반반치킨", new BigDecimal(16000), new MenuGroup(2L, "한마리메뉴"));
+        Menu menu = new Menu(3L, "반반치킨", new BigDecimal(16000), new MenuGroup("한마리메뉴"));
         String orderStatus = OrderStatus.COOKING.name();
         orderLineItemList.add(new OrderLineItem(menu, 1));
 

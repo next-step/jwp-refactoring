@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
+@Transactional
 public class TableService {
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
@@ -22,7 +23,6 @@ public class TableService {
         this.orderTableRepository = orderTableRepository;
     }
 
-    @Transactional
     public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
         return OrderTableResponse.of(orderTableRepository.save(new OrderTable(orderTableRequest.getNumberOfGuests(), orderTableRequest.isEmpty())));
     }
@@ -32,7 +32,6 @@ public class TableService {
         return OrderTableResponse.ofList(orderTableRepository.findAll());
     }
 
-    @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = findOrderTable(orderTableId);
 
@@ -43,7 +42,6 @@ public class TableService {
         return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
     }
 
-    @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final int numberOfGuests = orderTableRequest.getNumberOfGuests();
 

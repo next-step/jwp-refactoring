@@ -9,7 +9,8 @@ import java.math.BigDecimal;
 public class MenuProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long seq;
+    @Column(name = "seq")
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "menu_id")
@@ -30,7 +31,7 @@ public class MenuProduct {
     }
 
     public Long seq() {
-        return seq;
+        return id;
     }
 
     public Menu menu() {

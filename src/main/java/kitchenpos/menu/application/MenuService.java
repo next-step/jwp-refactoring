@@ -13,7 +13,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class MenuService {
+    private static final String NOT_FOUND_PRODUCT = "찾으려는 상품이 존재하지 않습니다.";
+    private static final String NOT_FOUND_MENU_GROUP = "찾으려는 메뉴 그룹이 존재하지 않습니다.";
+
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
     private final MenuProductRepository menuProductRepository;
@@ -31,15 +35,12 @@ public class MenuService {
         this.productRepository = productRepository;
     }
 
-    @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
 
-        existsCheckByGroupId(menuRequest);
-
-        final Menu savedMenu = menuRepository.save(new Menu(menuRequest.getName(), menuRequest.getPrice(), findMenuGroup(menuRequest)));
+        final Menu savedMenu = menuRepository.save(new Menu(menuRequest.getName(), menuRequest.getPrice(), findMenuGroup(menuRequest.getMenuGroupId())));
 
         List<MenuProduct> menuProducts = menuRequest.getMenuProducts().stream()
-                .map(menuProduct -> new MenuProduct(savedMenu, findProduct(menuProduct), menuProduct.getQuantity())).collect(Collectors.toList());
+                .map(menuProduct -> new MenuProduct(savedMenu, findProduct(menuProduct.getProductId()), menuProduct.getQuantity())).collect(Collectors.toList());
 
         savedMenu.mappingProducts(new MenuProducts(menuProductRepository.saveAll(menuProducts)));
         savedMenu.validateMenuProductsPrice();
@@ -58,17 +59,14 @@ public class MenuService {
         return MenuResponse.ofList(menus);
     }
 
-    private void existsCheckByGroupId(MenuRequest menuRequest) {
-        if (!menuGroupRepository.existsById(menuRequest.getMenuGroupId())) {
-            throw new IllegalArgumentException();
-        }
+    private MenuGroup findMenuGroup( Long menuGroupId) {
+        return menuGroupRepository.findById(menuGroupId)
+                .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_MENU_GROUP + " find menuGroupId : " + menuGroupId));
     }
 
-    private Product findProduct(MenuProductRequest menuProduct) {
-        return productRepository.findById(menuProduct.getProductId()).orElseThrow(IllegalArgumentException::new);
+    private Product findProduct(Long productId) {
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_PRODUCT + " find productId : " + productId));
     }
 
-    private MenuGroup findMenuGroup(MenuRequest menuRequest) {
-        return menuGroupRepository.findById(menuRequest.getMenuGroupId()).orElseThrow(IllegalArgumentException::new);
-    }
 }
