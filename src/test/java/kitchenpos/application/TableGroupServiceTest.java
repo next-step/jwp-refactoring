@@ -41,12 +41,8 @@ class TableGroupServiceTest {
     @BeforeEach
     void setUp() {
         tableGroupService = new TableGroupService(orderDao, orderTableDao, tableGroupDao);
-        orderTable1 = new OrderTable();
-        orderTable1.setId(1L);
-        orderTable1.setEmpty(true);
-        orderTable2 = new OrderTable();
-        orderTable2.setId(2L);
-        orderTable2.setEmpty(true);
+        orderTable1 = OrderTable.of(1L, null, 0, true);
+        orderTable2 = OrderTable.of(2L, null, 0, true);
         orderTables = Lists.list(orderTable1, orderTable2);
     }
 
@@ -54,9 +50,7 @@ class TableGroupServiceTest {
     @Test
     void create() {
         //given
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setId(1L);
-        tableGroup.setOrderTables(orderTables);
+        TableGroup tableGroup = TableGroup.of(1L, null, orderTables);
 
         //and
         given(orderTableDao.findAllByIdIn(any())).willReturn(orderTables);
@@ -74,8 +68,7 @@ class TableGroupServiceTest {
     @Test
     void createTableGroupExceptionIfOrderTableIsNull() {
         //given
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Lists.list());
+        TableGroup tableGroup = TableGroup.of(null, null, Lists.list());
 
         //when
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
@@ -86,8 +79,7 @@ class TableGroupServiceTest {
     @Test
     void createTableGroupExceptionIfOrderTableIsNotBiggerTwo() {
         //given
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Lists.list(orderTable1));
+        TableGroup tableGroup = TableGroup.of(null, null, Lists.list(orderTable1));
 
         //when
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
@@ -98,8 +90,7 @@ class TableGroupServiceTest {
     @Test
     void createTableGroupExceptionIfOrderTableIsNotExist() {
         //given
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(orderTables);
+        TableGroup tableGroup = TableGroup.of(null, null, orderTables);
         given(orderTableDao.findAllByIdIn(any())).willReturn(Lists.list());
 
         //when
@@ -111,9 +102,8 @@ class TableGroupServiceTest {
     @Test
     void createTableGroupExceptionIfOrderTableEmptyIsTrue() {
         //given
-        TableGroup tableGroup = new TableGroup();
+        TableGroup tableGroup = TableGroup.of(null, null, orderTables);
         orderTable1.setEmpty(false); // 주문 가능
-        tableGroup.setOrderTables(orderTables);
         given(orderTableDao.findAllByIdIn(any())).willReturn(orderTables);
 
         //when
@@ -125,8 +115,7 @@ class TableGroupServiceTest {
     @Test
     void createTableGroupExceptionIfTheOtherTableGroupContains() {
         //given
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(orderTables);
+        TableGroup tableGroup = TableGroup.of(null, null, orderTables);
         orderTable1.setTableGroupId(99L); // 다른 테이블 그룹에 속함
         given(orderTableDao.findAllByIdIn(any())).willReturn(orderTables);
 

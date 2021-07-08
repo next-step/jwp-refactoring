@@ -1,12 +1,30 @@
 package kitchenpos.domain;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TableGroup {
     private Long id;
     private LocalDateTime createdDate;
     private List<OrderTable> orderTables;
+
+    protected TableGroup() {
+    }
+
+    private TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
+        this.id = id;
+        this.createdDate = createdDate;
+        this.orderTables = orderTables;
+    }
+
+    public static TableGroup of(Long id, LocalDateTime createdDate) {
+        return new TableGroup(id, createdDate, new ArrayList<>());
+    }
+
+    public static TableGroup of(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
+        return new TableGroup(id, createdDate, orderTables);
+    }
 
     public Long getId() {
         return id;
