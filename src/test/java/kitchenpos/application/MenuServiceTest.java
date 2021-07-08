@@ -72,13 +72,9 @@ class MenuServiceTest {
 
         //and
         given(menuGroupDao.existsById(any())).willReturn(true);
-        given(productDao.findById(후라이드치킨.getId())).willReturn(Optional.of(후라이드치킨));
-        given(productDao.findById(양념치킨.getId())).willReturn(Optional.of(양념치킨));
-        given(productDao.findById(족발.getId())).willReturn(Optional.of(족발));
+        given(productDao.findById(any())).willReturn(Optional.of(후라이드치킨));
         given(menuDao.save(menu)).willReturn(menu);
-        given(menuProductDao.save(후라이드치킨_세트메뉴)).willReturn(후라이드치킨_세트메뉴);
-        given(menuProductDao.save(양념치킨_세트메뉴)).willReturn(후라이드치킨_세트메뉴);
-        given(menuProductDao.save(족발_세트메뉴)).willReturn(후라이드치킨_세트메뉴);
+        given(menuProductDao.save(any())).willReturn(any());
 
         //when
         Menu actual = menuService.create(menu);
@@ -167,9 +163,7 @@ class MenuServiceTest {
 
         //and
         given(menuGroupDao.existsById(any())).willReturn(true);
-        given(productDao.findById(후라이드치킨.getId())).willReturn(Optional.of(후라이드치킨));
-        given(productDao.findById(양념치킨.getId())).willReturn(Optional.of(양념치킨));
-        given(productDao.findById(족발.getId())).willReturn(Optional.of(족발));
+        given(productDao.findById(any())).willReturn(Optional.of(후라이드치킨));
 
         //when
         assertThatThrownBy(() -> menuService.create(menu))

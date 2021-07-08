@@ -49,12 +49,8 @@ class OrderServiceTest {
     @BeforeEach
     void setUp() {
         orderService = new OrderService(menuDao, orderDao, orderLineItemDao, orderTableDao);
-        orderLineItem1 = new OrderLineItem();
-        orderLineItem1.setMenuId(1L);
-        orderLineItem1.setQuantity(2);
-        orderLineItem2 = new OrderLineItem();
-        orderLineItem2.setMenuId(2L);
-        orderLineItem2.setQuantity(3);
+        orderLineItem1 = OrderLineItem.of(null, null, 1L, 2);
+        orderLineItem2 = OrderLineItem.of(null, null, 2L, 3);
         orderLineItems = Lists.list(orderLineItem1, orderLineItem2);
         orderTable = new OrderTable();
         orderTable.setId(1L);
@@ -65,8 +61,7 @@ class OrderServiceTest {
     @Test
     void create() {
         //given
-        Order order = new Order();
-        order.setOrderLineItems(orderLineItems);
+        Order order = Order.of(null, null, null, null, orderLineItems);
 
         //and
         given(menuDao.countByIdIn(any())).willReturn(2L);
@@ -84,8 +79,7 @@ class OrderServiceTest {
     @Test
     void createOrderExceptionIfMenuIsNull() {
         //given
-        Order order = new Order();
-        order.setOrderLineItems(orderLineItems);
+        Order order = Order.of(null, null, null, null, orderLineItems);
 
         //and
         given(menuDao.countByIdIn(any())).willReturn(0L); //메뉴를 지정하지 않음
@@ -105,8 +99,7 @@ class OrderServiceTest {
     @Test
     void createOrderExceptionIfOrderTableIsNull() {
         //given
-        Order order = new Order();
-        order.setOrderLineItems(orderLineItems);
+        Order order = Order.of(null, null, null, null, orderLineItems);
         orderTable.setEmpty(true);
 
         //and
@@ -122,8 +115,7 @@ class OrderServiceTest {
     @Test
     void createOrderExceptionIfTableEmptyIsTrue() {
         //given
-        Order order = new Order();
-        order.setOrderLineItems(orderLineItems);
+        Order order = Order.of(null, null, null, null, orderLineItems);
         orderTable.setEmpty(true);
 
         //and
@@ -139,10 +131,8 @@ class OrderServiceTest {
     @Test
     void list() {
         //given
-        Order order1 = new Order();
-        order1.setId(1L);
-        Order order2 = new Order();
-        order2.setId(2L);
+        Order order1 = Order.of(1L, null, null, null, null);
+        Order order2 = Order.of(2L, null, null, null, null);
         List<Order> orders = Lists.list(order1, order2);
 
         //and
@@ -161,13 +151,9 @@ class OrderServiceTest {
     @Test
     void changeOrderStatus() {
         //given
-        Order order = new Order();
-        order.setId(1L);
-        order.setOrderStatus(OrderStatus.COOKING.name());
-        Order mealOrder = new Order();
-        mealOrder.setOrderStatus(OrderStatus.MEAL.name());
-        Order completionOrder = new Order();
-        completionOrder.setOrderStatus(OrderStatus.COMPLETION.name());
+        Order order = Order.of(1L, null, OrderStatus.COOKING.name(), null, null);
+        Order mealOrder = Order.of(1L, null, OrderStatus.MEAL.name(), null, null);
+        Order completionOrder = Order.of(1L, null, OrderStatus.COMPLETION.name(), null, null);
 
         //and
         given(orderDao.findById(any())).willReturn(Optional.of(order));
@@ -187,11 +173,8 @@ class OrderServiceTest {
     @Test
     void changeOrderStatusExceptionIfSameStatusBefore() {
         //given
-        Order order = new Order();
-        order.setId(1L);
-        order.setOrderStatus(OrderStatus.COMPLETION.name());
-        Order changeOrder = new Order();
-        changeOrder.setOrderStatus(OrderStatus.COMPLETION.name());
+        Order order = Order.of(1L, null, OrderStatus.COMPLETION.name(), null, null);
+        Order changeOrder = Order.of(1L, null, OrderStatus.COMPLETION.name(), null, null);
 
         //and
         given(orderDao.findById(any())).willReturn(Optional.of(order));
