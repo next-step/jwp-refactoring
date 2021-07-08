@@ -4,8 +4,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -16,39 +14,22 @@ public class TableGroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Embedded
+    private OrderTables orderTables = new OrderTables();
+
     @CreatedDate
     private LocalDateTime createdDate;
-
-    @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.MERGE)
-    private final List<OrderTable> orderTables = new ArrayList<>();
 
     public TableGroup() {
     }
 
-    public TableGroup(final OrderTable requireOrderTable1, final OrderTable requireOrderTable2, final OrderTable ...orderTables) {
-        this(null, requireOrderTable1, requireOrderTable2, orderTables);
+    public TableGroup(final OrderTable ...orderTables) {
+        this(null, orderTables);
     }
 
-    public TableGroup(Long id, final OrderTable requireOrderTable1, final OrderTable requireOrderTable2, final OrderTable ...orderTables) {
-        if (requireOrderTable1 == null || requireOrderTable2 == null) {
-            throw new IllegalArgumentException("주문테이블 최소 갯수는 2개입니다.");
-        }
-
+    public TableGroup(Long id, final OrderTable ...orderTables) {
         this.id = id;
-        appendOrderTables(requireOrderTable1, requireOrderTable2, orderTables);
-    }
-
-    private void appendOrderTables(final OrderTable orderTable1, final OrderTable orderTable2, final OrderTable ...orderTables) {
-        //TODO
-        List<OrderTable> list = Arrays.asList(orderTable1, orderTable2);
-        list.addAll(Arrays.asList(orderTables));
-
-        list.stream()
-            .distinct()
-            .forEach(orderTable -> {
-                this.orderTables.add(orderTable);
-                orderTable.setTableGroup(this);
-            });
+        this.orderTables.append(this, orderTables);
     }
 
     public Long getId() {
@@ -56,12 +37,11 @@ public class TableGroup {
     }
 
     public List<OrderTable> getOrderTables() {
-        return orderTables;
+        return orderTables.list();
     }
 
     public void changeEmpty(final boolean empty) {
-        orderTables.stream()
-                .forEach(orderTable -> orderTable.changeEmpty(empty));
+        orderTables.changeEmpty(empty);
     }
 
     @Override

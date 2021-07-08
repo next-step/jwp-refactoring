@@ -66,7 +66,7 @@ class TableGroupServiceTest {
     void createExceptionTest1() {
         //given
         OrderTable orderTable1 = tableService.create(
-            new OrderTable(1, true)
+            new OrderTable(TestUtils.getRandomId(), 1, true)
         );
 
         // then
@@ -81,8 +81,8 @@ class TableGroupServiceTest {
     void createExceptionTest2() {
         // when
         TableGroup tableGroup = new TableGroup(
-            new OrderTable(1, true),
-            new OrderTable(1, true)
+            new OrderTable(TestUtils.getRandomId(),1, true),
+            new OrderTable(TestUtils.getRandomId(),1, true)
         );
 
         // then
