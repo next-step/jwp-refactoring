@@ -4,6 +4,7 @@ import kitchenpos.ordertable.domain.OrderTable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -17,14 +18,16 @@ public class Order {
     private OrderTable orderTable;
     private String orderStatus;
     private LocalDateTime orderedTime;
-    @Embedded
-    private OrderLineItems orderLineItems = new OrderLineItems();
+    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     public Order() {
     }
 
-    public Order(OrderTable orderTable) {
+    public Order(OrderTable orderTable, String orderStatus, LocalDateTime orderedTime) {
         this.orderTable = orderTable;
+        this.orderStatus = orderStatus;
+        this.orderedTime = orderedTime;
     }
 
     public Order(Long id, OrderTable orderTable) {
@@ -40,10 +43,6 @@ public class Order {
 
     public void addOrderLineItems(List<OrderLineItem> orderLineItems) {
         this.orderLineItems.addAll(orderLineItems);
-    }
-
-    public void addOrderLineItems(OrderLineItems orderLineItems) {
-        this.orderLineItems.addAll(orderLineItems.orderLineItems());
     }
 
     private boolean isOrderStatusComplete() {
@@ -73,6 +72,10 @@ public class Order {
     }
 
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems.orderLineItems();
+        return orderLineItems;
+    }
+
+    public void changeOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
     }
 }
