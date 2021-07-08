@@ -1,12 +1,9 @@
 package kitchenpos.application;
 
 import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.domain.MenuDao;
+import kitchenpos.menu.domain.*;
 import kitchenpos.menugroup.domain.MenuGroupDao;
-import kitchenpos.menu.domain.MenuProductDao;
 import kitchenpos.product.domain.ProductDao;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -32,7 +29,7 @@ import static org.mockito.BDDMockito.given;
 class MenuServiceTest {
 
     @Mock
-    MenuDao menuDao;
+    MenuRepository menuRepository;
 
     @Mock
     MenuGroupDao menuGroupDao;
@@ -66,7 +63,7 @@ class MenuServiceTest {
     void create() {
         given(menuGroupDao.existsById(1L)).willReturn(true);
         given(productDao.findById(anyLong())).willReturn(Optional.of(product));
-        given(menuDao.save(any())).willReturn(menu1);
+        given(menuRepository.save(any())).willReturn(menu1);
         given(menuProductDao.save(any())).willReturn(menuProduct);
 
         Menu savedMenu = menuService.create(menu1);
@@ -118,7 +115,7 @@ class MenuServiceTest {
         Menu menu2 = new Menu(2L, "메뉴2", BigDecimal.valueOf(17000), 1L, menuProducts2);
         Menu menu3 = new Menu(3L, "메뉴3", BigDecimal.valueOf(15000), 1L, menuProducts3);
         List<Menu> menus = Arrays.asList(menu1, menu2, menu3);
-        given(menuDao.findAll()).willReturn(menus);
+        given(menuRepository.findAll()).willReturn(menus);
         given(menuProductDao.findAllByMenuId(1L)).willReturn(menuProducts1);
         given(menuProductDao.findAllByMenuId(2L)).willReturn(menuProducts2);
         given(menuProductDao.findAllByMenuId(3L)).willReturn(menuProducts3);
