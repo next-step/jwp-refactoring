@@ -1,9 +1,9 @@
 package kitchenpos.product.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.application.ProductService;
 import kitchenpos.config.MockMvcTestConfig;
-import kitchenpos.product.domain.Product;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,7 @@ import java.util.Arrays;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -38,20 +38,20 @@ class ProductRestControllerTest {
     @MockBean
     private ProductService productService;
 
-    private Product 강정치킨;
-    private Product 후라이드;
+    private ProductResponse 강정치킨;
+    private ProductResponse 후라이드;
 
     @BeforeEach
     void setUp() {
-        강정치킨 = new Product(1L, "강정치킨", BigDecimal.valueOf(17000));
-        후라이드 = new Product(2L, "후라이드", BigDecimal.valueOf(16000));
+        강정치킨 = new ProductResponse(1L, "강정치킨", BigDecimal.valueOf(17000));
+        후라이드 = new ProductResponse(2L, "후라이드", BigDecimal.valueOf(16000));
     }
 
     @DisplayName("상품을 등록할 수 있다.")
     @Test
     void createTest() throws Exception {
         // given
-        when(productService.create(any())).thenReturn(강정치킨);
+        given(productService.create(any())).willReturn(강정치킨);
 
         // when
         ResultActions actions = mockMvc.perform(post(PRODUCT_API_URI)
@@ -69,7 +69,7 @@ class ProductRestControllerTest {
     @Test
     void listTest() throws Exception {
         // given
-        when(productService.list()).thenReturn(Arrays.asList(강정치킨, 후라이드));
+        given(productService.list()).willReturn(Arrays.asList(강정치킨, 후라이드));
 
         // when
         ResultActions actions = mockMvc.perform(get(PRODUCT_API_URI));
