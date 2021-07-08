@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.OrderDao;
 import kitchenpos.order.domain.OrderLineItemDao;
 import kitchenpos.table.domain.OrderTableDao;
@@ -31,7 +32,7 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @Mock
-    MenuDao menuDao;
+    MenuRepository menuRepository;
 
     @Mock
     OrderDao orderDao;
@@ -67,7 +68,7 @@ class OrderServiceTest {
     @DisplayName("주문을 등록한다.")
     @Test
     void create() {
-        given(menuDao.countByIdIn(anyList())).willReturn((long) orderLineItems.size());
+        given(menuRepository.findAllById(anyList()).size()).willReturn(orderLineItems.size());
         given(orderTableDao.findById(anyLong())).willReturn(Optional.of(new OrderTable(1L, null, 0, false)));
         given(orderDao.save(any())).willReturn(order);
         given(orderLineItemDao.save(orderLineItem1)).willReturn(orderLineItem1);
@@ -93,7 +94,7 @@ class OrderServiceTest {
     @Test
     void fail_create2() {
         Order order = new Order(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItems);
-        given(menuDao.countByIdIn(any())).willReturn((long) orderLineItems.size() - 1);
+        given(menuRepository.findAllById(any()).size()).willReturn(orderLineItems.size() - 1);
 
         assertThatThrownBy(() -> orderService.create(order))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -102,7 +103,7 @@ class OrderServiceTest {
     @DisplayName("주문을 등록을 실패한다 - 주문 테이블이 없는 주문은 등록 실패한다.")
     @Test
     void fail_create3() {
-        given(menuDao.countByIdIn(any())).willReturn((long) orderLineItems.size());
+        given(menuRepository.findAllById(any()).size()).willReturn(orderLineItems.size());
 
         assertThatThrownBy(() -> orderService.create(order))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -111,7 +112,7 @@ class OrderServiceTest {
     @DisplayName("주문을 등록을 실패한다 - 주문 테이블이 empty (true) 상태면 주문 등록 실패한다.")
     @Test
     void fail_create4() {
-        given(menuDao.countByIdIn(any())).willReturn((long) orderLineItems.size());
+        given(menuRepository.findAllById(any()).size()).willReturn(orderLineItems.size() - 1);
         given(orderTableDao.findById(any())).willReturn(Optional.of(new OrderTable(1L, 1L, 2, true)));
 
         assertThatThrownBy(() -> orderService.create(order))
