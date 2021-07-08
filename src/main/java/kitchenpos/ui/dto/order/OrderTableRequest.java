@@ -21,6 +21,10 @@ public class OrderTableRequest {
         this.empty = empty;
     }
 
+    public static OrderTableRequest of(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+        return new OrderTableRequest(id, tableGroupId, numberOfGuests, empty);
+    }
+
     public static OrderTableRequest of(Long tableGroupId, int numberOfGuests, boolean empty) {
         return new OrderTableRequest(null, tableGroupId, numberOfGuests, empty);
     }

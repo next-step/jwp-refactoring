@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 
 @SpringBootTest
 @Transactional
-class IntegrationSupportTest {
+class IntegrationSupport {
     protected MockMvc mockMvc;
 
     @Autowired

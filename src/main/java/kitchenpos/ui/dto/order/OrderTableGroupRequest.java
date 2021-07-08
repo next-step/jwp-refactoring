@@ -20,6 +20,10 @@ public class OrderTableGroupRequest {
         this.orderTables = orderTables;
     }
 
+    public static OrderTableGroupRequest of(LocalDateTime createdDate, List<OrderTableRequest> orderTables){
+        return new OrderTableGroupRequest(null, createdDate, orderTables);
+    }
+
     public static OrderTableGroupRequest of(TableGroup tableGroup) {
         return new OrderTableGroupRequest(tableGroup.getId(), tableGroup.getCreatedDate(), tableGroup.getOrderTables().stream()
                 .map(OrderTableRequest::of)

@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("주문 통합테스트")
-class OrderRestControllerTest extends IntegrationSupportTest {
+class OrderRestControllerTest extends IntegrationSupport {
     private static final String URI = "/api/orders";
 
     @DisplayName("주문을 추가한다.")

@@ -14,7 +14,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("상품 통합테스트")
-class ProductRestControllerTest extends IntegrationSupportTest {
+class ProductRestControllerTest extends IntegrationSupport {
     private static final String URI = "/api/products";
 
     @DisplayName("상품을 추가한다.")

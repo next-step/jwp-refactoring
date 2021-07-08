@@ -13,7 +13,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("메뉴 그룹 통합테스트")
-class MenuGroupRestControllerTest extends IntegrationSupportTest {
+class MenuGroupRestControllerTest extends IntegrationSupport {
     private static final String URI = "/api/menu-groups";
 
     @DisplayName("메뉴 그룹을 추가한다.")
