@@ -56,7 +56,7 @@ public class TableGroupControllerTest extends ControllerTest<TableGroup> {
     @Test
     void 단체지정_취소요청() throws Exception {
         //When
-        ResultActions 결과 = deleteRequest(BASE_URI);
+        ResultActions 결과 = deleteRequest(BASE_URI + "/" + 테이블그룹.getId());
 
         //Then
         삭제성공(결과);
