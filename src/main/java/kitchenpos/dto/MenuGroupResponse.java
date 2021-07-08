@@ -1,7 +1,6 @@
 package kitchenpos.dto;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import kitchenpos.domain.MenuGroup;
 
@@ -14,10 +13,7 @@ public class MenuGroupResponse {
         return new MenuGroupResponse(
             menuGroup.getId(),
             menuGroup.getName(),
-            menuGroup.getMenus()
-                .stream()
-                .map(MenuResponse::of)
-                .collect(Collectors.toList()));
+            menuGroup.getMenus().mapList(MenuResponse::of));
     }
 
     public MenuGroupResponse() {
