@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain;
 
-import static kitchenpos.domain.TextFixture.*;
+import static kitchenpos.TextFixture.*;
 import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;

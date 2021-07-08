@@ -42,7 +42,7 @@ class MenuServiceTest {
 	@Test
 	void createMenuNoGroupMenuTest() {
 		MenuRequest menuRequest = new MenuRequest("치킨", BigDecimal.valueOf(1000), 1L, new ArrayList<>());
-		when(productRepository.findAllById(anyList())).thenReturn(new ArrayList<>());
+		when(menuGroupRepository.existsById(anyLong())).thenReturn(false);
 
 		assertThatThrownBy(() -> menuService.create(menuRequest))
 			.isInstanceOf(IllegalArgumentException.class)
@@ -55,6 +55,7 @@ class MenuServiceTest {
 		// given
 		List<MenuProductRequest> menuProductRequests = asList(new MenuProductRequest(1L, 1L));
 		MenuRequest menuRequest = new MenuRequest("치킨", BigDecimal.ZERO, 1L, menuProductRequests);
+		when(menuGroupRepository.existsById(anyLong())).thenReturn(true);
 		when(productRepository.findAllById(anyList())).thenReturn(new ArrayList<>());
 
 		// when

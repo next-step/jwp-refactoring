@@ -4,11 +4,11 @@ import static kitchenpos.menu.domain.MenuProducts.*;
 import static kitchenpos.product.domain.Name.*;
 import static kitchenpos.product.domain.Price.*;
 
+import kitchenpos.menu.domain.MenuGroupId;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -36,13 +36,14 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
+        validateRequest(menuRequest);
         final List<Product> products = findProducts(menuRequest);
         Menu.Builder menuBuilder = new Menu.Builder();
         Menu persistMenu = menuRepository.save(
             menuBuilder
                 .name(valueOf(menuRequest.getName()))
                 .price(wonOf(menuRequest.getPrice()))
-                .menuGroup(findMenuGroup(menuRequest))
+                .menuGroupId(new MenuGroupId(menuRequest.getMenuGroupId()))
                 .menuProducts(of(menuRequest.toMenuProducts(products)))
                 .build());
         return MenuResponse.of(persistMenu);
@@ -54,11 +55,6 @@ public class MenuService {
         return MenuResponse.listOf(menus);
     }
 
-    private MenuGroup findMenuGroup(MenuRequest menuRequest) {
-        return menuGroupRepository.findById(menuRequest.getMenuGroupId())
-            .orElseThrow(() -> new IllegalArgumentException("메뉴 그룹이 존재하지 않는 메뉴는 등록할 수 없습니다."));
-    }
-
     private List<Product> findProducts(final MenuRequest menuRequest) {
         final List<Long> productIds = menuRequest.getProductIds();
         final List<Product> products = productRepository.findAllById(productIds);
@@ -67,4 +63,15 @@ public class MenuService {
         }
         return products;
     }
+
+    private void validateRequest(MenuRequest menuRequest) {
+        validateExistMenuGroup(menuRequest.getMenuGroupId());
+    }
+
+    private void validateExistMenuGroup(Long menuGroupId) {
+        if (!menuGroupRepository.existsById(menuGroupId)) {
+            throw new IllegalArgumentException("메뉴 그룹이 존재하지 않는 메뉴는 등록할 수 없습니다.");
+        }
+    }
+
 }

@@ -8,15 +8,11 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.domain.Name;
 import kitchenpos.product.domain.Price;
 
@@ -35,9 +31,8 @@ public class Menu {
     @AttributeOverride(name = "amount", column = @Column(name = "price", nullable = false))
     private Price price;
 
-    @ManyToOne
-    @JoinColumn(name = "menu_group_id", nullable = false, foreignKey = @ForeignKey(name = "fk_menu_menu_group"))
-    private MenuGroup menuGroup;
+    @Embedded
+    private MenuGroupId menuGroupId;
 
     @Embedded
     private MenuProducts menuProducts = new MenuProducts();
@@ -45,7 +40,7 @@ public class Menu {
     public static class Builder {
         private Name name;
         private Price price;
-        private MenuGroup menuGroup;
+        private MenuGroupId menuGroupId;
         private MenuProducts menuProducts;
 
         public Builder name(Name name) {
@@ -58,8 +53,8 @@ public class Menu {
             return this;
         }
 
-        public Builder menuGroup(MenuGroup menuGroup) {
-            this.menuGroup = menuGroup;
+        public Builder menuGroupId(MenuGroupId menuGroupId) {
+            this.menuGroupId = menuGroupId;
             return this;
         }
 
@@ -69,24 +64,24 @@ public class Menu {
         }
 
         public Menu build() {
-            return new Menu(name, price, menuGroup, menuProducts);
+            return new Menu(name, price, menuGroupId, menuProducts);
         }
     }
 
     protected Menu() {}
 
-    private Menu(Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        validateNonNull(name, price, menuGroup, menuProducts);
+    private Menu(Name name, Price price, MenuGroupId menuGroupId, MenuProducts menuProducts) {
+        validateNonNull(name, price, menuGroupId, menuProducts);
         validatePriceCheaperThanMenuProducts(price, menuProducts);
         this.name = name;
         this.price = price;
-        this.menuGroup = menuGroup;
+        this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
         menuProducts.toMenu(this);
     }
 
-    public static Menu create(Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        return new Menu(name, price, menuGroup, menuProducts);
+    public static Menu create(Name name, Price price, MenuGroupId menuGroupId, MenuProducts menuProducts) {
+        return new Menu(name, price, menuGroupId, menuProducts);
     }
 
     public Long getId() {
@@ -106,11 +101,7 @@ public class Menu {
     }
 
     public Long getMenuGroupId() {
-        return this.menuGroup.getId();
-    }
-
-    MenuGroup getMenu() {
-        return this.menuGroup;
+        return this.menuGroupId.getId();
     }
 
     private void validatePriceCheaperThanMenuProducts(Price price, MenuProducts menuProducts) {
@@ -119,8 +110,8 @@ public class Menu {
         }
     }
 
-    private void validateNonNull(Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        if (isNull(name) || isNull(price) || isNull(menuGroup) || isNull(menuProducts)) {
+    private void validateNonNull(Name name, Price price, MenuGroupId menuGroupId, MenuProducts menuProducts) {
+        if (isNull(name) || isNull(price) || isNull(menuGroupId) || isNull(menuProducts)) {
             throw new IllegalArgumentException("메뉴의 이름, 가격, 메뉴그룹, 메뉴상품리스트 는 필수정보입니다.");
         }
     }
