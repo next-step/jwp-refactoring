@@ -1,6 +1,7 @@
 package kitchenpos.menu.domain;
 
 import kitchenpos.menu.exception.IllegalPriceException;
+import kitchenpos.menugroup.domain.MenuGroup;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -10,12 +11,13 @@ import java.util.Objects;
 @Entity
 public class Menu {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private BigDecimal price;
-    private Long menuGroupId;
+    private MenuGroup menuGroup;
 
     @OneToMany
     private List<MenuProduct> menuProducts;
@@ -23,17 +25,24 @@ public class Menu {
     protected Menu() {
     }
 
-    public Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    public Menu(String name, BigDecimal price, MenuGroup menuGroup, Long sum, List<MenuProduct> menuProducts) {
         validatePrice(price);
         this.name = name;
         this.price = price;
-        this.menuGroupId = menuGroupId;
+        validateLimitPrice(sum);
+        this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
     }
 
     public void validatePrice(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalPriceException("금액은 0보다 작거나 null일 수 없습니다.");
+        }
+    }
+
+    public void validateLimitPrice(long sumPrice) {
+        if (price.compareTo(BigDecimal.valueOf(sumPrice)) > 0) {
+            throw new IllegalArgumentException();
         }
     }
 
@@ -57,8 +66,8 @@ public class Menu {
         return price;
     }
 
-    public Long getMenuGroupId() {
-        return menuGroupId;
+    public MenuGroup getMenuGroup() {
+        return menuGroup;
     }
 
     public List<MenuProduct> getMenuProducts() {
