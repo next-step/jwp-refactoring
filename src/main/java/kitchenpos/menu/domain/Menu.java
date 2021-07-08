@@ -42,7 +42,7 @@ public class Menu {
 
     public void validateLimitPrice(long sumPrice) {
         if (price.compareTo(BigDecimal.valueOf(sumPrice)) > 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalPriceException("금액은 메뉴 상품들의 총 가격 보다 클 수 없습니다.");
         }
     }
 
