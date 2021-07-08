@@ -9,8 +9,7 @@ import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.domain.Order;
-import kitchenpos.table.domain.OrderTable;
+import kitchenpos.order.domain.Order;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 class OrderTableTest {

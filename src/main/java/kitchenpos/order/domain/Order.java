@@ -1,6 +1,6 @@
-package kitchenpos.domain;
+package kitchenpos.order.domain;
 
-import static kitchenpos.domain.OrderStatus.*;
+import static kitchenpos.order.domain.OrderStatus.*;
 
 import java.time.LocalDateTime;
 import java.util.List;

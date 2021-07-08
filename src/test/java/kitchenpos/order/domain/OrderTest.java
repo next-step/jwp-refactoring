@@ -1,8 +1,8 @@
-package kitchenpos.domain;
+package kitchenpos.order.domain;
 
 import static java.time.LocalDateTime.*;
 import static java.util.Arrays.*;
-import static kitchenpos.domain.TextFixture.*;
+import static kitchenpos.TextFixture.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDateTime;

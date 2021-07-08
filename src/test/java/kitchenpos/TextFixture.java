@@ -1,6 +1,8 @@
-package kitchenpos.domain;
+package kitchenpos;
 
+import kitchenpos.menu.domain.MenuGroupId;
 import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.product.domain.Name;
 import kitchenpos.product.domain.Price;
 import kitchenpos.product.domain.Product;

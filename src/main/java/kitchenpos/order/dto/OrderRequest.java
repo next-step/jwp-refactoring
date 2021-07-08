@@ -1,11 +1,11 @@
-package kitchenpos.dto;
+package kitchenpos.order.dto;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
 
 public class OrderRequest {
 	private long orderTableId;

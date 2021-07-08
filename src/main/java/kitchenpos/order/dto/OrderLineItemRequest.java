@@ -1,8 +1,8 @@
-package kitchenpos.dto;
+package kitchenpos.order.dto;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderMenu;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderMenu;
 
 public class OrderLineItemRequest {
 	private long menuId;
