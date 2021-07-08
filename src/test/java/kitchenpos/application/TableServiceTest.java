@@ -5,11 +5,10 @@ import kitchenpos.utils.TestUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -20,6 +19,9 @@ class TableServiceTest {
 
     @Autowired
     private TableService tableService;
+
+    @Autowired
+    private MenuService menuService;
 
     @Autowired
     private TableGroupService tableGroupService;
@@ -98,21 +100,22 @@ class TableServiceTest {
 
     @ParameterizedTest
     @DisplayName("주문 테이블의 비어있는 상태값을 수정시, 주문테이블의 주문이 `조리` 상태, `식사` 상태이면 주문 테이블 상태를 바꿀 수 없다.")
-    @ValueSource(strings = {"COOKING", "MEAL"})
-    void changeEmptyExceptionTest3(String orderStatus) {
+    @EnumSource(value = OrderStatus.class, names = {"COOKING", "MEAL"})
+    void changeEmptyExceptionTest3(OrderStatus orderStatus) {
         //given
+        Menu menu = menuService.list().get(0);
         OrderTable orderTable = tableService.create(
             new OrderTable(1, false)
         );
 
-        Order order = new Order(orderTable.getId(), orderStatus, LocalDateTime.now());
-        order.setOrderLineItems(Arrays.asList(new OrderLineItem(order.getId(), 1L, 1L)));
+        Order order = new Order(orderTable, orderStatus);
+        order.appendOrderLineItems(new OrderLineItem(order, menu, 1L));
         orderService.create(order);
 
         // then
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), orderTable))
             .isInstanceOf(RuntimeException.class)
-            .hasMessageContaining(orderStatus)
+            .hasMessageContaining(orderStatus.name())
             .hasMessageContaining("변경");
     }
 

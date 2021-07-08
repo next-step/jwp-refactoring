@@ -1,18 +1,12 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.*;
 import kitchenpos.utils.TestUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -22,6 +16,9 @@ class OrderServiceTest {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private MenuService menuService;
 
     @Autowired
     private TableService tableService;
@@ -40,12 +37,13 @@ class OrderServiceTest {
     @Test
     void createTest() {
         // given
+        Menu menu = menuService.list().get(0);
         OrderTable orderTable = tableService.create(
             new OrderTable(1, false)
         );
 
-        Order order = new Order(orderTable.getId(), OrderStatus.COOKING.name(), LocalDateTime.now());
-        order.setOrderLineItems(Arrays.asList(new OrderLineItem(order.getId(), 1L, 1L)));
+        Order order = new Order(orderTable, OrderStatus.COOKING);
+        order.appendOrderLineItems(new OrderLineItem(order, menu, 1L));
 
         // when
         Order actualOrder = orderService.create(order);
@@ -62,7 +60,7 @@ class OrderServiceTest {
             new OrderTable(1, false)
         );
 
-        Order order = new Order(orderTable.getId(), OrderStatus.COOKING.name(), LocalDateTime.now());
+        Order order = new Order(orderTable, OrderStatus.COOKING);
 
         // when
         assertThatThrownBy(() -> orderService.create(order))
@@ -74,12 +72,13 @@ class OrderServiceTest {
     @Test
     void createExceptionTest2() {
         // given
+        Menu noneMenu = new Menu();
         OrderTable orderTable = tableService.create(
             new OrderTable(1, false)
         );
 
-        Order order = new Order(orderTable.getId(), OrderStatus.COOKING.name(), LocalDateTime.now());
-        order.setOrderLineItems(Arrays.asList(new OrderLineItem(order.getId(), 999L, 1L)));
+        Order order = new Order(orderTable, OrderStatus.COOKING);
+        order.appendOrderLineItems(new OrderLineItem(order, noneMenu, 1L));
 
         // when
         assertThatThrownBy(() -> orderService.create(order))
@@ -91,10 +90,11 @@ class OrderServiceTest {
     @Test
     void createExceptionTest3() {
         // given
+        Menu menu = menuService.list().get(0);
         OrderTable orderTable = new OrderTable(TestUtils.getRandomId(), 1, false);
 
-        Order order = new Order(TestUtils.getRandomId(), orderTable.getId(), OrderStatus.COOKING.name(), LocalDateTime.now());
-        order.setOrderLineItems(Arrays.asList(new OrderLineItem(order.getId(), 1L, 1L)));
+        Order order = new Order(TestUtils.getRandomId(), orderTable, OrderStatus.COOKING);
+        order.appendOrderLineItems(new OrderLineItem(order, menu, 1L));
 
         // when
         assertThatThrownBy(() -> orderService.create(order))
@@ -106,12 +106,13 @@ class OrderServiceTest {
     @Test
     void createExceptionTest4() {
         // given
+        Menu menu = menuService.list().get(0);
         OrderTable orderTable = tableService.create(
             new OrderTable(1, true)
         );
 
-        Order order = new Order(orderTable.getId(), OrderStatus.COOKING.name(), LocalDateTime.now());
-        order.setOrderLineItems(Arrays.asList(new OrderLineItem(order.getId(), 1L, 1L)));
+        Order order = new Order(orderTable, OrderStatus.COOKING);
+        order.appendOrderLineItems(new OrderLineItem(order, menu, 1L));
 
         // when
         assertThatThrownBy(() -> orderService.create(order))
@@ -123,33 +124,35 @@ class OrderServiceTest {
     @Test
     void changeOrderStatusTest() {
         // given
+        Menu menu = menuService.list().get(0);
         OrderTable orderTable = tableService.create(
             new OrderTable(1, false)
         );
 
-        Order order = new Order(orderTable.getId(), OrderStatus.COOKING.name(), LocalDateTime.now());
-        order.setOrderLineItems(Arrays.asList(new OrderLineItem(order.getId(), 1L, 1L)));
+        Order order = new Order(orderTable, OrderStatus.COOKING);
+        order.appendOrderLineItems(new OrderLineItem(order, menu, 1L));
         order = orderService.create(order);
 
         // when
-        order.setOrderStatus(OrderStatus.MEAL.name());
+        order.chaangeOrderStatus(OrderStatus.MEAL);
         Order changedOrder = orderService.changeOrderStatus(order.getId(), order);
 
         // then
         assertThat(changedOrder).isNotNull();
-        assertThat(changedOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
+        assertThat(changedOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
     }
 
     @DisplayName("주문상태를 수정시, 존재하는 주문만 상태를 변경 가능하다.")
     @Test
     void changeOrderStatusExceptionTest1() {
         // given
+        Menu menu = menuService.list().get(0);
         OrderTable orderTable = tableService.create(
             new OrderTable(1, false)
         );
 
-        Order order = new Order(orderTable.getId(), OrderStatus.COOKING.name(), LocalDateTime.now());
-        order.setOrderLineItems(Arrays.asList(new OrderLineItem(order.getId(), 1L, 1L)));
+        Order order = new Order(TestUtils.getRandomId(), orderTable, OrderStatus.COOKING);
+        order.appendOrderLineItems(new OrderLineItem(order, menu, 1L));
 
         // then
         assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), order))
@@ -161,16 +164,17 @@ class OrderServiceTest {
     @Test
     void changeOrderStatusExceptionTest2() {
         // given
+        Menu menu = menuService.list().get(0);
         OrderTable orderTable = tableService.create(
             new OrderTable(1, false)
         );
 
-        Order order = new Order(orderTable.getId(), OrderStatus.COMPLETION.name(), LocalDateTime.now());
-        order.setOrderLineItems(Arrays.asList(new OrderLineItem(order.getId(), 1L, 1L)));
+        Order order = new Order(orderTable, OrderStatus.COMPLETION);
+        order.appendOrderLineItems(new OrderLineItem(order, menu, 1L));
         Order createdOrder = orderService.create(order);
 
         // when
-        createdOrder.setOrderStatus(OrderStatus.COMPLETION.name());
+        createdOrder.chaangeOrderStatus(OrderStatus.COMPLETION);
         Order changedOrder = orderService.changeOrderStatus(createdOrder.getId(), createdOrder);
 
         // then
