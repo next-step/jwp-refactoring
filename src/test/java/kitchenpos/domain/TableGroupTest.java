@@ -77,9 +77,9 @@ public class TableGroupTest {
         OrderTable 테이블4 = new OrderTable(4L, 0, true);
         TableGroup 테이블_그룹 = new TableGroup(1L, Arrays.asList(테이블3, 테이블4));
         테이블3.addOrder(new Order(100L, OrderStatus.COMPLETION,
-            Arrays.asList(new OrderLineItem(후라이드_메뉴, 1))));
+            OrderLineItems.of(new OrderLineItem(후라이드_메뉴, 1))));
         테이블4.addOrder(new Order(200L, OrderStatus.COOKING,
-            Arrays.asList(new OrderLineItem(양념치킨_메뉴, 1))));
+            OrderLineItems.of(new OrderLineItem(양념치킨_메뉴, 1))));
 
         // then
         assertThatThrownBy(테이블_그룹::ungroup)

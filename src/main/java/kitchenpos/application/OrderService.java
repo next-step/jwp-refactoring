@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderLineItems;
 import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderLineItemRequest;
@@ -33,10 +34,10 @@ public class OrderService {
     @Transactional
     public Order create(final OrderRequest request) {
         OrderTable orderTable = tableService.findById(request.getOrderTableId());
-        List<OrderLineItem> orderLineItems = request.getOrderLineItems()
+        OrderLineItems orderLineItems = OrderLineItems.of(request.getOrderLineItems()
             .stream()
             .map(this::newOrderLineItem)
-            .collect(Collectors.toList());
+            .collect(Collectors.toList()));
 
         Order order = new Order(COOKING, orderLineItems);
         orderTable.addOrder(order);

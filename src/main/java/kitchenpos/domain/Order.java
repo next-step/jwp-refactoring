@@ -19,6 +19,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import kitchenpos.exception.AlreadyAllocatedException;
+import kitchenpos.exception.IllegalOperationException;
 
 @Entity
 @Table(name = "orders")
@@ -44,14 +45,14 @@ public class Order {
     protected Order() {
     }
 
-    public Order(OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+    public Order(OrderStatus orderStatus, OrderLineItems orderLineItems) {
         this(null, orderStatus, orderLineItems);
     }
 
-    public Order(Long id, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+    public Order(Long id, OrderStatus orderStatus, OrderLineItems orderLineItems) {
         this.id = id;
         this.orderStatus = orderStatus;
-        this.orderLineItems = new OrderLineItems(orderLineItems);
+        this.orderLineItems = orderLineItems;
     }
 
     public void proceedTo(OrderStatus orderStatus) {
@@ -61,12 +62,8 @@ public class Order {
 
     private void checkChangeable() {
         if (orderStatus.isCompleted()) {
-            throw new IllegalArgumentException("완결 된 주문은 상태를 변경할 수 없습니다.");
+            throw new IllegalOperationException("완결 된 주문은 상태를 변경할 수 없습니다.");
         }
-    }
-
-    public boolean inProgress() {
-        return orderStatus.inProgress();
     }
 
     public void setTable(OrderTable orderTable) {
@@ -78,6 +75,10 @@ public class Order {
         if (Objects.nonNull(this.orderTable)) {
             throw new AlreadyAllocatedException("이미 테이블에 할당 된 주문입니다.");
         }
+    }
+
+    public boolean inProgress() {
+        return orderStatus.inProgress();
     }
 
     public Long getId() {

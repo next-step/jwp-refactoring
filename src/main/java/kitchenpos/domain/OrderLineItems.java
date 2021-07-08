@@ -1,6 +1,7 @@
 package kitchenpos.domain;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -15,10 +16,18 @@ public class OrderLineItems {
     @OneToMany(mappedBy = "order")
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
+    public static OrderLineItems of(OrderLineItem... orderLineItems) {
+        return new OrderLineItems(Arrays.asList(orderLineItems));
+    }
+
+    public static OrderLineItems of(List<OrderLineItem> orderLineItems) {
+        return new OrderLineItems(orderLineItems);
+    }
+
     protected OrderLineItems() {
     }
 
-    public OrderLineItems(List<OrderLineItem> orderLineItems) {
+    private OrderLineItems(List<OrderLineItem> orderLineItems) {
         checkOrderLineItems(orderLineItems);
         this.orderLineItems = orderLineItems;
     }
