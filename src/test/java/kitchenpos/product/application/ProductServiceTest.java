@@ -2,7 +2,8 @@ package kitchenpos.product.application;
 
 import kitchenpos.product.dao.ProductDao;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.application.ProductService;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,11 +31,12 @@ class ProductServiceTest {
     @Test
     void createTest() {
         // given
+        ProductRequest productRequest = new ProductRequest("불고기", new BigDecimal(1000));
         Product 불고기 = new Product("불고기", new BigDecimal(1000));
         Mockito.when(productDao.save(any())).thenReturn(불고기);
 
         // when
-        Product actual = productService.create(불고기);
+        ProductResponse actual = productService.create(productRequest);
 
         // then
         assertThat(actual).isNotNull()
@@ -46,10 +48,10 @@ class ProductServiceTest {
     @Test
     void createTestWithWrongPrice() {
         // given
-        Product 불고기 = new Product("불고기", new BigDecimal(-1));
+        ProductRequest productRequest = new ProductRequest("불고기", new BigDecimal(-1));
 
         // when
-        assertThatThrownBy(() -> productService.create(불고기))
+        assertThatThrownBy(() -> productService.create(productRequest))
             .isInstanceOf(IllegalArgumentException.class);
     }
 }
