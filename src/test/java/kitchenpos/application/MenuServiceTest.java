@@ -3,6 +3,7 @@ package kitchenpos.application;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.exception.IllegalPriceException;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
@@ -68,28 +69,13 @@ class MenuServiceTest {
     @DisplayName("메뉴를 등록한다. (메뉴 상품(MenuProduct) 리스트에도 메뉴를 등록한다.)")
     @Test
     void create() {
-        given(menuGroupRepository.existsById(any())).willReturn(true);
-        given(productRepository.findById(anyLong())).willReturn(Optional.of(product1));
-        given(menuRepository.save(any())).willReturn(menu1);
-        given(menuProductRepository.save(any())).willReturn(menuProduct1, menuProduct2);
-
-        Menu savedMenu = menuService.create(menu1);
-
-        assertAll(
-                () -> assertThat(savedMenu).isEqualTo(menu1),
-                () -> assertThat(savedMenu.getMenuProducts()).contains(menuProduct1, menuProduct2));
-    }
-
-    @DisplayName("메뉴를 등록한다. (메뉴 상품(MenuProduct) 리스트에도 메뉴를 등록한다.)")
-    @Test
-    void create2() {
         MenuRequest menu = new MenuRequest("후라이드2마리", 20000L, 1L, menuProducts);
         given(menuGroupRepository.findById(any())).willReturn(Optional.ofNullable(menuGroup));
         given(productRepository.findAllById(anyList())).willReturn(Arrays.asList(product1, product2));
         given(menuRepository.save(any())).willReturn(new Menu(menu.getName(),
                 BigDecimal.valueOf(menu.getPrice()), new MenuGroup(1L, "그룹1"),30000L, menuProducts));
 
-        Menu savedMenu = menuService.create2(menu);
+        Menu savedMenu = menuService.create(menu);
 
         assertAll(
                 () -> assertThat(savedMenu.getName()).isEqualTo(menu.getName()),
@@ -113,7 +99,9 @@ class MenuServiceTest {
     @DisplayName("메뉴를 등록에 실패한다 - 메뉴 그룹 아이디가 등록되어 있지 않은 경우")
     @Test
     void fail_create2() {
-        Menu menu = new Menu("신메뉴", BigDecimal.valueOf(18000), new MenuGroup(1L, "그룹1"), 30000L, menuProducts);
+        MenuRequest menu = new MenuRequest("후라이드2마리", 20000L, 1L, menuProducts);
+        Product product = new Product(1L, "신메뉴", BigDecimal.valueOf(20000L));
+        given(productRepository.findAllById(anyList())).willReturn(Arrays.asList(product));
 
         assertThatThrownBy(() -> menuService.create(menu))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -122,12 +110,13 @@ class MenuServiceTest {
     @DisplayName("메뉴를 등록에 실패한다 - 메뉴 등록시 메뉴 상품들의 총 가격(상품 * 수량의 총합) 보다 클 수 없다.")
     @Test
     void fail_create3() {
-        Product product = new Product(1L, "신메뉴", BigDecimal.valueOf(2000));
-        given(menuGroupRepository.existsById(1L)).willReturn(true);
-        given(productRepository.findById(anyLong())).willReturn(Optional.of(product));
+        MenuRequest menu = new MenuRequest("후라이드2마리", 20000L, 1L, menuProducts);
+        Product product = new Product(1L, "신메뉴", BigDecimal.valueOf(2000L));
+        given(productRepository.findAllById(anyList())).willReturn(Arrays.asList(product));
+        given(menuGroupRepository.findById(anyLong())).willReturn(Optional.of(new MenuGroup(1L, "그룹1")));
 
-        assertThatThrownBy(() -> menuService.create(menu1))
-                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuService.create(menu))
+                .isInstanceOf(IllegalPriceException.class);
     }
 
     @DisplayName("메뉴 리스트를 조회한다. (메뉴 조회시 메뉴에 대한 수량 정보도 같이 가져온다.)")
