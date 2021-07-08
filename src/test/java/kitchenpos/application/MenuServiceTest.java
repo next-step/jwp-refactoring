@@ -3,6 +3,7 @@ package kitchenpos.application;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.exception.IllegalPriceException;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
@@ -72,12 +73,12 @@ class MenuServiceTest {
         given(menuRepository.save(any())).willReturn(new Menu(menu.getName(),
                 BigDecimal.valueOf(menu.getPrice()), new MenuGroup(1L, "그룹1"),30000L, menuProducts));
 
-        Menu savedMenu = menuService.create(menu);
+        MenuResponse savedMenu = menuService.create(menu);
 
         assertAll(
                 () -> assertThat(savedMenu.getName()).isEqualTo(menu.getName()),
-                () -> assertThat(savedMenu.getPrice()).isEqualTo(BigDecimal.valueOf(menu.getPrice())),
-                () -> assertThat(savedMenu.getMenuGroup().getId()).isEqualTo(menu.getMenuGroupId()),
+                () -> assertThat(savedMenu.getPrice()).isEqualTo(menu.getPrice()),
+                () -> assertThat(savedMenu.getMenuGroupId()).isEqualTo(menu.getMenuGroupId()),
                 () -> assertThat(savedMenu.getMenuProducts()).contains(menuProduct1, menuProduct2));
     }
 
@@ -116,10 +117,10 @@ class MenuServiceTest {
         List<Menu> menus = Arrays.asList(menu1, menu2, menu3);
         given(menuRepository.findAll()).willReturn(menus);
 
-        List<Menu> selectedMenus = menuService.list();
+        List<MenuResponse> selectedMenus = menuService.list();
 
         assertAll(
-                () -> assertThat(selectedMenus).isEqualTo(menus),
+                () -> assertThat(selectedMenus.get(0).getName()).isEqualTo(menus.get(0).getName()),
                 () -> assertThat(selectedMenus.get(0).getMenuProducts()).isEqualTo(menuProducts1),
                 () -> assertThat(selectedMenus.get(1).getMenuProducts()).isEqualTo(menuProducts2),
                 () -> assertThat(selectedMenus.get(2).getMenuProducts()).isEqualTo(menuProducts3));
