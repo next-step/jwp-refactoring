@@ -24,20 +24,25 @@ public class MenuTest {
 
     @Test
     @DisplayName("메뉴 가격이 단품 가격의 합을 초과")
-    void create_fail4() {
+    void create_fail1() {
         Price 오만원 = Price.valueOf(50000);
-        List<MenuProduct> 후라이드_하나 = singletonList(new MenuProduct(후라이드, 1L));
-        assertThatThrownBy(() -> {
-            new Menu("어떤메뉴", 오만원, 한마리메뉴, MenuProducts.of(후라이드_하나));
-        })
+        MenuProducts 후라이드_하나 = MenuProducts.of(new MenuProduct(후라이드, 1L));
+        assertThatThrownBy(() -> new Menu("어떤메뉴", 오만원, 한마리메뉴, 후라이드_하나))
             .isInstanceOf(ExceedingTotalPriceException.class);
     }
 
     @Test
-    @DisplayName("메뉴 생성 실패(가격없음)")
-    void create_fail1() {
-        List<MenuProduct> 후라이드_하나 = singletonList(new MenuProduct(후라이드, 1L));
-        assertThatThrownBy(() -> new Menu("어떤메뉴", null, 한마리메뉴, MenuProducts.of(후라이드_하나)))
+    @DisplayName("필수 파라미터가 하나라도 없으면 실패")
+    void create_fail2() {
+        MenuProducts 후라이드_하나 = MenuProducts.of(new MenuProduct(후라이드, 1L));
+        Price 가격 = Price.valueOf(10000);
+        assertThatThrownBy(() -> new Menu(null, 가격, 한마리메뉴, 후라이드_하나))
+            .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new Menu("어떤메뉴", null, 한마리메뉴, 후라이드_하나))
+            .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new Menu("어떤메뉴", 가격, null, 후라이드_하나))
+            .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new Menu("어떤메뉴", 가격, 한마리메뉴, null))
             .isInstanceOf(IllegalArgumentException.class);
     }
 }

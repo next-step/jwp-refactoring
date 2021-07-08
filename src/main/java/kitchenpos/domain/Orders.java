@@ -14,10 +14,11 @@ public class Orders {
     @OneToMany(mappedBy = "orderTable", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> orders = new ArrayList<>();
 
-    public <T> List<T> mapList(Function<Order, T> function) {
-        return orders.stream()
-            .map(function)
-            .collect(Collectors.toList());
+    protected Orders() {
+    }
+
+    Orders(List<Order> orders) {
+        this.orders = orders;
     }
 
     public void add(Order order) {
@@ -26,5 +27,11 @@ public class Orders {
 
     public boolean hasOrderInProgress() {
         return orders.stream().anyMatch(Order::inProgress);
+    }
+
+    public <T> List<T> mapList(Function<Order, T> function) {
+        return orders.stream()
+            .map(function)
+            .collect(Collectors.toList());
     }
 }
