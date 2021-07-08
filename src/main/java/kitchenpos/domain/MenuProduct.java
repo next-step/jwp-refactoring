@@ -1,6 +1,5 @@
 package kitchenpos.domain;
 
-import java.math.BigDecimal;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -58,8 +57,8 @@ public class MenuProduct {
         }
     }
 
-    public BigDecimal getTotalPrice() { // TODO 해결 필요
-        return product.getPrice().multiply(BigDecimal.valueOf(quantity));
+    public Price getTotalPrice() {
+        return product.priceOf(quantity);
     }
 
     public Long getSeq() {

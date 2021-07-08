@@ -1,6 +1,5 @@
 package kitchenpos.domain;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -45,8 +44,7 @@ public class MenuProducts {
     public Price summation() {
         return menuProducts.stream()
             .map(MenuProduct::getTotalPrice)
-            .reduce(BigDecimal::add)
-            .map(Price::valueOf)
+            .reduce(Price::add)
             .orElseThrow(() -> new CalculationFailedException("단품 가격의 합계를 계산하지 못했습니다."));
     }
 

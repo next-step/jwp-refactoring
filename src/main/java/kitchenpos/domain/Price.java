@@ -41,4 +41,12 @@ public class Price {
     public long longValue() {
         return price.longValue();
     }
+
+    public Price of(long quantity) {
+        return new Price(price.multiply(BigDecimal.valueOf(quantity)));
+    }
+
+    public Price add(Price val) {
+        return new Price(price.add(val.price));
+    }
 }

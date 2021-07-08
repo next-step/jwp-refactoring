@@ -1,9 +1,9 @@
 package kitchenpos.domain;
 
-import java.math.BigDecimal;
 import java.util.Objects;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,26 +19,31 @@ public class Product {
     private String name;
 
     @Column(nullable = false)
-    private BigDecimal price;
+    @Embedded
+    private Price price;
 
     protected Product() {
     }
 
-    public Product(String name, BigDecimal price) {
+    public Product(String name, Price price) {
         this(null, name, price);
     }
 
-    public Product(Long id, String name, BigDecimal price) { // TODO default로 변경
-        checkPrice(price);
+    public Product(Long id, String name, Price price) {
+        checkArguments(name, price);
         this.id = id;
         this.name = name;
         this.price = price;
     }
 
-    private void checkPrice(BigDecimal price) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
+    private void checkArguments(String name, Price price) {
+        if (Objects.isNull(name) || Objects.isNull(price)) {
+            throw new IllegalArgumentException("제품을 생성하려면 모든 필수값이 입력되어야 합니다.");
         }
+    }
+
+    public Price priceOf(long quantity) {
+        return price.of(quantity);
     }
 
     public Long getId() {
@@ -49,7 +54,7 @@ public class Product {
         return name;
     }
 
-    public BigDecimal getPrice() {
+    public Price getPrice() {
         return price;
     }
 }
