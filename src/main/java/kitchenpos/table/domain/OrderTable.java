@@ -146,7 +146,7 @@ public class OrderTable {
     }
 
     private void validationChangeNumberOfGuests(int numberOfGuests) {
-        if (numberOfGuests < 0) {
+        if (numberOfGuests < 1) {
             throw new CannotChangeNumberOfGuestException(THE_NUMBER_OF_GUESTS_MUST_BE_AT_LEAST_ONE);
         }
         if (empty) {

@@ -10,6 +10,7 @@ import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import kitchenpos.table.exception.ExistAssignedTableGroupException;
 import kitchenpos.table.exception.ExistNonEmptyOrderTableException;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -46,14 +47,23 @@ public class TableGroup {
         if (isExistEmptyOrderTable(orderTables)) {
             throw new ExistNonEmptyOrderTableException();
         }
+        if (isExistAssignedTableGroup(orderTables)) {
+            throw new ExistAssignedTableGroupException();
+        }
     }
 
     private boolean isExistEmptyOrderTable(OrderTables orderTables) {
         return orderTables.getOrderTables().stream()
-            .anyMatch(orderTable -> !orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup()));
+            .anyMatch(orderTable -> !orderTable.isEmpty());
+    }
+
+    private boolean isExistAssignedTableGroup(OrderTables orderTables) {
+        return orderTables.getOrderTables().stream()
+            .anyMatch(orderTable -> Objects.nonNull(orderTable.getTableGroup()));
     }
 
     public TableGroup(Long id, List<OrderTable> orderTables) {
+        validationOrderTables(new OrderTables(orderTables));
         this.id = id;
         this.orderTables = new OrderTables(orderTables);
     }

@@ -13,15 +13,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import kitchenpos.menu.exception.InvalidMenuPriceException;
-import kitchenpos.menu.exception.MenuPriceCannotBeNegativeException;
+import kitchenpos.menu.exception.MenuPriceNegativeException;
 import kitchenpos.menu.exception.MenuPriceEmptyException;
+import kitchenpos.menu.exception.MenuPriceExceedException;
 import kitchenpos.product.domain.Product;
 
 @Entity
 public class Menu {
-
-    public static final String THE_SUM_OF_THE_PRICES_OF_THE_GOODS_HAS_EXCEEDED = "메뉴의 가격은 메뉴상품들 가격의 합을 초과할 수 없습니다.";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -66,11 +64,11 @@ public class Menu {
             throw new MenuPriceEmptyException();
         }
         if (price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new MenuPriceCannotBeNegativeException();
+            throw new MenuPriceNegativeException();
         }
         BigDecimal sum = sumMenuProductPrices(menuProducts);
         if (price.compareTo(sum) > 0) {
-            throw new InvalidMenuPriceException(THE_SUM_OF_THE_PRICES_OF_THE_GOODS_HAS_EXCEEDED);
+            throw new MenuPriceExceedException();
         }
     }
 

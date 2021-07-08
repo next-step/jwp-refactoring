@@ -7,7 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import kitchenpos.product.exception.ProductPriceCannotBeNegativeException;
+import kitchenpos.product.exception.ProductPriceNegativeException;
 import kitchenpos.product.exception.ProductPriceEmptyException;
 
 @Entity
@@ -47,7 +47,7 @@ public class Product {
             throw new ProductPriceEmptyException();
         }
         if (isNegativeNumber(price)) {
-            throw new ProductPriceCannotBeNegativeException();
+            throw new ProductPriceNegativeException();
         }
     }
 

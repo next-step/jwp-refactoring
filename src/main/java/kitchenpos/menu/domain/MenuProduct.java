@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import kitchenpos.menu.exception.MenuProductQuantityNegativeException;
 import kitchenpos.product.domain.Product;
 
 @Entity
@@ -33,14 +34,22 @@ public class MenuProduct {
     }
 
     public MenuProduct(Product product, Long quantity) {
+        validationQuantity(quantity);
         this.product = product;
         this.quantity = quantity;
     }
 
     public MenuProduct(Long menuId, Product product, Long quantity) {
+        validationQuantity(quantity);
         this.menu = new Menu(menuId);
         this.product = product;
         this.quantity = quantity;
+    }
+
+    private void validationQuantity(Long quantity) {
+        if (quantity < 0) {
+            throw new MenuProductQuantityNegativeException();
+        }
     }
 
     public Long getSeq() {

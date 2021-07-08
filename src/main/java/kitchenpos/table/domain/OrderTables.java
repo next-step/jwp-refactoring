@@ -29,7 +29,7 @@ public class OrderTables {
 
     private void validationOrderTables(List<OrderTable> orderTables) {
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < MIN_ORDER_TABLE_COUNT) {
-            throw new OutOfOrderTableException();
+            throw new OutOfOrderTableException(MIN_ORDER_TABLE_COUNT);
         }
     }
 
