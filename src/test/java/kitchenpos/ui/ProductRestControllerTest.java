@@ -20,7 +20,7 @@ class ProductRestControllerTest extends IntegrationSupportTest {
     @Test
     void create() throws Exception {
         //when
-        ResultActions actions = mockMvc.perform(postAsJson(URI, ProductRequest.of(1L, "후라이드치킨", BigDecimal.valueOf(12000))));
+        ResultActions actions = mockMvc.perform(postAsJson(URI, ProductRequest.of("후라이드치킨", BigDecimal.valueOf(12000))));
 
         //then
         actions.andExpect(status().isCreated());
@@ -28,7 +28,7 @@ class ProductRestControllerTest extends IntegrationSupportTest {
         ProductResponse response = toObject(actions.andReturn(), ProductResponse.class);
         assertThat(response.getId()).isNotNull();
         assertThat(response.getName()).isEqualTo("후라이드치킨");
-        assertThat(response.getPrice()).isEqualTo(BigDecimal.valueOf(12000));
+        assertThat(response.getPrice().longValue()).isEqualTo(12000L);
     }
 
     @DisplayName("상품을 모두 조회한다.")

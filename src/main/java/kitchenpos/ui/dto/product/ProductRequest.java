@@ -22,8 +22,8 @@ public class ProductRequest {
         return new ProductRequest(product.getId(), product.getName(), product.getPrice());
     }
 
-    public static ProductRequest of(Long id, String name, BigDecimal price) {
-        return new ProductRequest(id, name, price);
+    public static ProductRequest of(String name, BigDecimal price) {
+        return new ProductRequest(null, name, price);
     }
 
     public Long getId() {

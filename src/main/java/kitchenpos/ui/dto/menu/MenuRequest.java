@@ -24,6 +24,10 @@ public class MenuRequest {
         this.menuProductRequests = menuProductRequests;
     }
 
+    public static MenuRequest of(String name, BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProductRequests) {
+        return new MenuRequest(null, name, price, menuGroupId, menuProductRequests);
+    }
+
     public static MenuRequest of(Menu menu) {
         return new MenuRequest(menu.getId(), menu.getName(), menu.getPrice(), menu.getMenuGroupId(), MenuProductRequest.ofList(menu.getMenuProducts()));
     }
