@@ -31,8 +31,8 @@ import kitchenpos.utils.domain.OrderLineItemObjects;
 import kitchenpos.utils.domain.OrderObjects;
 import kitchenpos.utils.domain.OrderTableObjects;
 
-@ExtendWith(MockitoExtension.class)
 @DisplayName("주문 서비스")
+@ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @Mock
     private MenuDao menuDao;

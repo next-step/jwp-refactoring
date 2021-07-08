@@ -25,8 +25,8 @@ import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
 import kitchenpos.utils.domain.ProductObjects;
 
-@ExtendWith(MockitoExtension.class)
 @DisplayName("상품 서비스")
+@ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
 
     @Mock

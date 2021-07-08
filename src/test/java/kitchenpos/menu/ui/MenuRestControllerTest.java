@@ -83,7 +83,9 @@ class MenuRestControllerTest extends MockMvcControllerTest {
         when(menuService.create(any(Menu.class))).thenReturn(menuObjects.getMenu1());
 
         // then
-        mockMvc.perform(post(REQUEST_URL).contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(menuObjects.getMenu1())))
+        mockMvc.perform(post(REQUEST_URL)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(new ObjectMapper().writeValueAsString(menuObjects.getMenu1())))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").value(menuObjects.getMenu1().getId()))

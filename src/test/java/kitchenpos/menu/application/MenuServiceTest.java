@@ -34,8 +34,8 @@ import kitchenpos.utils.domain.MenuObjects;
 import kitchenpos.utils.domain.MenuProductObjects;
 import kitchenpos.utils.domain.ProductObjects;
 
-@ExtendWith(MockitoExtension.class)
 @DisplayName("메뉴 서비스")
+@ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
 
     @Mock

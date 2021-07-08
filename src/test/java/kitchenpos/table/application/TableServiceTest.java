@@ -25,8 +25,8 @@ import kitchenpos.domain.TableGroup;
 import kitchenpos.utils.domain.OrderTableObjects;
 import kitchenpos.utils.domain.TableGroupObjects;
 
-@ExtendWith(MockitoExtension.class)
 @DisplayName("테이블 서비스")
+@ExtendWith(MockitoExtension.class)
 class TableServiceTest {
 
     @Mock

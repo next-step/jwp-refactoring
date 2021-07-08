@@ -23,7 +23,7 @@ import kitchenpos.utils.domain.ProductObjects;
 import kitchenpos.ui.ProductRestController;
 import kitchenpos.utils.MockMvcControllerTest;
 
-@DisplayName("상품 관리 기능 테스트")
+@DisplayName("상품 관리 기능")
 @WebMvcTest(controllers = ProductRestController.class)
 class ProductRestControllerTest extends MockMvcControllerTest {
     private static final String REQUEST_URL = "/api/products";
@@ -71,7 +71,9 @@ class ProductRestControllerTest extends MockMvcControllerTest {
         when(productService.create(any(Product.class))).thenReturn(productObject.getProduct3());
 
         // when
-        mockMvc.perform(post(REQUEST_URL).contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(productObject.getProduct1())))
+        mockMvc.perform(post(REQUEST_URL)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(new ObjectMapper().writeValueAsString(productObject.getProduct1())))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").value(productObject.getProduct3().getId()))

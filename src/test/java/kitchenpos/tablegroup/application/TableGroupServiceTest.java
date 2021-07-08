@@ -30,8 +30,8 @@ import kitchenpos.domain.TableGroup;
 import kitchenpos.utils.domain.OrderTableObjects;
 import kitchenpos.utils.domain.TableGroupObjects;
 
-@ExtendWith(MockitoExtension.class)
 @DisplayName("단체 지정 서비스")
+@ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
 
     @Mock

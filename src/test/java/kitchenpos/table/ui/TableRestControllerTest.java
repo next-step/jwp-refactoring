@@ -74,9 +74,9 @@ class TableRestControllerTest extends MockMvcControllerTest {
 
         // then
         mockMvc.perform(post(DEFAULT_REQUEST_URL)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(orderTableObjects.getOrderTable2()))
-                .accept(MediaType.APPLICATION_JSON_VALUE))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(new ObjectMapper().writeValueAsString(orderTableObjects.getOrderTable2()))
+                    .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").value(orderTableObjects.getOrderTable1().getId()))
@@ -93,9 +93,9 @@ class TableRestControllerTest extends MockMvcControllerTest {
 
         // then
         mockMvc.perform(put(DEFAULT_REQUEST_URL + "/1/empty")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(new ObjectMapper().writeValueAsString(orderTableObjects.getOrderTable1()))
-                .accept(MediaType.APPLICATION_JSON_VALUE))
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .content(new ObjectMapper().writeValueAsString(orderTableObjects.getOrderTable1()))
+                    .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("id").value(orderTableObjects.getOrderTable1().getId()))
@@ -113,9 +113,9 @@ class TableRestControllerTest extends MockMvcControllerTest {
 
         // then
         mockMvc.perform(put(DEFAULT_REQUEST_URL + "/4/number-of-guests")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(new ObjectMapper().writeValueAsString(orderTableObjects.getOrderTable1()))
-                .accept(MediaType.APPLICATION_JSON_VALUE))
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .content(new ObjectMapper().writeValueAsString(orderTableObjects.getOrderTable1()))
+                    .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("id").value(orderTableObjects.getOrderTable4().getId()))
