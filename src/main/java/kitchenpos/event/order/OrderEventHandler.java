@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.event.order;
 
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderLineItem;
