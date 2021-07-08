@@ -3,7 +3,10 @@ package kitchenpos.table.application;
 import kitchenpos.order.dao.OrderDao;
 import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.application.TableService;
+import kitchenpos.table.dto.OrderTableChangeEmptyRequest;
+import kitchenpos.table.dto.OrderTableChangeNumberOfGuestsRequest;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,11 +38,12 @@ class TableServiceTest {
     @Test
     void createTest() {
         // given
+        OrderTableRequest request = new OrderTableRequest(3, true);
         OrderTable orderTable = new OrderTable(1l, 3);
         Mockito.when(orderTableDao.save(any())).thenReturn(orderTable);
 
         // when
-        OrderTable actual = tableService.create(orderTable);
+        OrderTableResponse actual = tableService.create(request);
 
         // then
         assertThat(actual).isNotNull();
@@ -54,7 +58,7 @@ class TableServiceTest {
         Mockito.when(orderTableDao.findAll()).thenReturn(Arrays.asList(orderTable1, orderTable2));
 
         // when
-        List<OrderTable> actual = tableService.list();
+        List<OrderTableResponse> actual = tableService.list();
 
         // then
         assertThat(actual).isNotEmpty().hasSize(2);
@@ -64,13 +68,14 @@ class TableServiceTest {
     @Test
     void changeEmptyTest() {
         // given
+        OrderTableChangeEmptyRequest request = new OrderTableChangeEmptyRequest(true);
         OrderTable orderTable = new OrderTable(null, 3);
         Mockito.when(orderTableDao.findById(any())).thenReturn(Optional.of(orderTable));
         Mockito.when(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(false);
         Mockito.when(orderTableDao.save(any())).thenReturn(orderTable);
 
         // when
-        OrderTable actual = tableService.changeEmpty(1l, orderTable);
+        OrderTableResponse actual = tableService.changeEmpty(1l, request);
 
         // then
         assertThat(actual).isNotNull();
@@ -81,12 +86,13 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuestsTest() {
         // given
+        OrderTableChangeNumberOfGuestsRequest request = new OrderTableChangeNumberOfGuestsRequest(3);
         OrderTable orderTable = new OrderTable(1l, 3);
         Mockito.when(orderTableDao.findById(any())).thenReturn(Optional.of(orderTable));
         Mockito.when(orderTableDao.save(any())).thenReturn(orderTable);
 
         // when
-        OrderTable actual = tableService.changeNumberOfGuests(1l, orderTable);
+        OrderTableResponse actual = tableService.changeNumberOfGuests(1l, request);
 
         // then
         assertThat(actual).isNotNull();

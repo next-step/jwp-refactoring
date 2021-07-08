@@ -4,6 +4,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import kitchenpos.IntegrationTestHelper;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.OrderTableChangeEmptyRequest;
+import kitchenpos.table.dto.OrderTableChangeNumberOfGuestsRequest;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.ui.TableRestController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,11 +43,12 @@ class TableRestControllerTest extends IntegrationTestHelper {
     @Test
     void createTest() throws Exception {
         // given
+        OrderTableRequest request = new OrderTableRequest(3, true);
         OrderTable orderTable = new OrderTable(1l, 3);
-        Mockito.when(tableService.create(any())).thenReturn(orderTable);
+        Mockito.when(tableService.create(any())).thenReturn(OrderTableResponse.of(orderTable));
 
         // when
-        ResultActions resultActions = 테이블_생성_요청(orderTable);
+        ResultActions resultActions = 테이블_생성_요청(request);
 
         // then
         테이블_생성_성공(resultActions);
@@ -55,7 +60,8 @@ class TableRestControllerTest extends IntegrationTestHelper {
         // given
         OrderTable orderTable1 = new OrderTable(1l, 3);
         OrderTable orderTable2 = new OrderTable(2l, 5);
-        Mockito.when(tableService.list()).thenReturn(Arrays.asList(orderTable1, orderTable2));
+        Mockito.when(tableService.list()).thenReturn(Arrays.asList(OrderTableResponse.of(orderTable1),
+                                                                   OrderTableResponse.of(orderTable2)));
 
         // when
         ResultActions resultActions = 테이블_조회_요청();
@@ -70,12 +76,14 @@ class TableRestControllerTest extends IntegrationTestHelper {
     @Test
     void changeEmptyTest() throws Exception {
         // given
+        OrderTableChangeEmptyRequest request = new OrderTableChangeEmptyRequest(true);
         OrderTable orderTable = new OrderTable(1l, 3);
         orderTable.setEmpty(true);
-        Mockito.when(tableService.changeEmpty(1l, orderTable)).thenReturn(orderTable);
+        Mockito.when(tableService.changeEmpty(1l, request))
+               .thenReturn(OrderTableResponse.of(orderTable));
 
         // when
-        ResultActions resultActions = 테이블_빈상태_변경_요청(1l, orderTable);
+        ResultActions resultActions = 테이블_빈상태_변경_요청(1l, request);
 
         // then
         테이블_변경_성공(resultActions);
@@ -85,12 +93,14 @@ class TableRestControllerTest extends IntegrationTestHelper {
     @Test
     void changeNumberOfGuestsTest() throws Exception {
         // given
+        OrderTableChangeNumberOfGuestsRequest request = new OrderTableChangeNumberOfGuestsRequest(5);
         OrderTable orderTable = new OrderTable(1l, 5);
         orderTable.setEmpty(true);
-        Mockito.when(tableService.changeNumberOfGuests(1l, orderTable)).thenReturn(orderTable);
+        Mockito.when(tableService.changeNumberOfGuests(1l, request))
+               .thenReturn(OrderTableResponse.of(orderTable));
 
         // when
-        ResultActions resultActions = 테이블_손님수_변경_요청(1l, orderTable);
+        ResultActions resultActions = 테이블_손님수_변경_요청(1l, request);
 
         // then
         테이블_변경_성공(resultActions);
@@ -98,8 +108,8 @@ class TableRestControllerTest extends IntegrationTestHelper {
 
 
 
-    private ResultActions 테이블_생성_요청(OrderTable orderTable) throws Exception {
-        return postRequest("/api/tables", orderTable);
+    private ResultActions 테이블_생성_요청(OrderTableRequest orderTableRequest) throws Exception {
+        return postRequest("/api/tables", orderTableRequest);
     }
 
     private MvcResult 테이블_생성_성공(final ResultActions resultActions) throws Exception {
@@ -114,17 +124,17 @@ class TableRestControllerTest extends IntegrationTestHelper {
         return resultActions.andExpect(status().isOk()).andReturn();
     }
 
-    private ResultActions 테이블_빈상태_변경_요청(final long orderTableId, final OrderTable orderTable) throws Exception {
+    private ResultActions 테이블_빈상태_변경_요청(final long orderTableId, final OrderTableChangeEmptyRequest request) throws Exception {
         String uri = String.format("/api/tables/%s/empty", orderTableId);
-        return putRequest(uri, orderTable);
+        return putRequest(uri, request);
     }
 
     private MvcResult 테이블_변경_성공(final ResultActions resultActions) throws Exception {
         return resultActions.andExpect(status().isOk()).andReturn();
     }
 
-    private ResultActions 테이블_손님수_변경_요청(final long orderTableId, final OrderTable orderTable) throws Exception {
+    private ResultActions 테이블_손님수_변경_요청(final long orderTableId, final OrderTableChangeNumberOfGuestsRequest request) throws Exception {
         String uri = String.format("/api/tables/%s/number-of-guests", orderTableId);
-        return putRequest(uri, orderTable);
+        return putRequest(uri, request);
     }
 }
