@@ -20,9 +20,7 @@ public class MenuResponse {
             menu.getName(),
             menu.getPrice(),
             menu.getMenuGroup().getId(),
-            menu.getMenuProducts().stream()
-                .map(MenuProductResponse::of)
-                .collect(Collectors.toList()));
+            menu.getMenuProducts().mapList(MenuProductResponse::of));
     }
 
     public MenuResponse() {
