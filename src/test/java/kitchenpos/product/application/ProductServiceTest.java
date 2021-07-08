@@ -1,7 +1,7 @@
-package kitchenpos.application;
+package kitchenpos.product.application;
 
-import kitchenpos.dao.ProductRepository;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
