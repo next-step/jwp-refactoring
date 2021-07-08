@@ -22,7 +22,7 @@ import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.manugroup.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import kitchenpos.menugroup.MenuGroupServiceTest;
@@ -146,12 +146,7 @@ public class MenuServiceTest {
 	}
 
 	public static Menu 메뉴생성(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-		Menu 메뉴 = new Menu();
-		메뉴.setId(id);
-		메뉴.setMenuProducts(menuProducts);
-		메뉴.setName(name);
-		메뉴.setPrice(price);
-		메뉴.setMenuGroupId(menuGroupId);
+		Menu 메뉴 = new Menu(id, name, price, menuGroupId, menuProducts);
 		return 메뉴;
 	}
 

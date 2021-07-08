@@ -14,16 +14,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.application.MenuGroupService;
+import kitchenpos.manugroup.application.MenuGroupService;
 import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.manugroup.domain.MenuGroup;
+import kitchenpos.manugroup.domain.MenuGroupRepository;
 
 @DisplayName("메뉴 그룹 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 public class MenuGroupServiceTest {
 
 	@Mock
-	private MenuGroupDao menuGroupDao;
+	private MenuGroupRepository menuGroupRepository;
 
 	@InjectMocks
 	private MenuGroupService menuGroupService;
@@ -40,7 +41,7 @@ public class MenuGroupServiceTest {
 	@DisplayName("메뉴 그룹을 생성한다.")
 	@Test
 	void 메뉴_그룹을_등록한다() {
-		given(menuGroupDao.save(피자)).willReturn(피자);
+		given(menuGroupRepository.save(피자)).willReturn(피자);
 
 		MenuGroup createdMenuGroup = menuGroupService.create(피자);
 
@@ -51,7 +52,7 @@ public class MenuGroupServiceTest {
 	@DisplayName("메뉴 그룹 리스트를 조회한다.")
 	@Test
 	void 메뉴_그룹_리스트를_조회한다() {
-		given(menuGroupDao.findAll()).willReturn(Arrays.asList(피자, 치킨));
+		given(menuGroupRepository.findAll()).willReturn(Arrays.asList(피자, 치킨));
 
 		List<MenuGroup> 메뉴그룹들 = menuGroupService.list();
 
