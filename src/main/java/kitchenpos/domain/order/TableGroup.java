@@ -4,13 +4,16 @@ import kitchenpos.exception.InvalidOrderTableException;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
-public class TableGroup {
+public class TableGroup implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     public static final TableGroup EMPTY = new TableGroup();
 

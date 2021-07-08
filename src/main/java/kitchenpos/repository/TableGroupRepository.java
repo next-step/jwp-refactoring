@@ -12,4 +12,5 @@ public interface TableGroupRepository extends JpaRepository<TableGroup, Long> {
     Optional<TableGroup> findById(Long id);
 
     List<TableGroup> findAll();
+
 }

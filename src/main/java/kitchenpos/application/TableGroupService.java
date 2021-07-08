@@ -3,32 +3,31 @@ package kitchenpos.application;
 import kitchenpos.domain.order.OrderTable;
 import kitchenpos.domain.order.TableGroup;
 import kitchenpos.dto.order.TableGroupRequest;
-import kitchenpos.exception.InvalidOrderStatusException;
+import kitchenpos.event.order.TableOrderUngroupEvent;
 import kitchenpos.exception.NotMatchOrderTableException;
 import kitchenpos.repository.TableGroupRepository;
-import org.apache.logging.log4j.util.Strings;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static kitchenpos.domain.order.TableGroup.of;
-
 @Service
 public class TableGroupService {
-    private final OrderService orderService;
     private final OrderTableService orderTableService;
     private final TableGroupRepository tableGroupRepository;
+    private final ApplicationEventPublisher publisher;
 
-    public TableGroupService(final OrderService orderService, final OrderTableService orderTableService, final TableGroupRepository tableGroupRepository) {
-        this.orderService = orderService;
+    public TableGroupService(final OrderTableService orderTableService, final TableGroupRepository tableGroupRepository, ApplicationEventPublisher publisher) {
         this.orderTableService = orderTableService;
         this.tableGroupRepository = tableGroupRepository;
+        this.publisher = publisher;
     }
 
     @Transactional
     public TableGroup create(final TableGroupRequest tableGroupRequest) {
+
         List<OrderTable> orderTables = tableGroupRequest
                 .getOrderTableRequests().stream()
                 .map(orderTableRequest -> orderTableService.getOrderTable(orderTableRequest.getId()))
@@ -45,7 +44,7 @@ public class TableGroupService {
                     " savedOrderTables size: " + savedOrderTables.size());
         }
 
-        TableGroup tableGroup = of(orderTables);
+        TableGroup tableGroup = TableGroup.of(orderTables);
         tableGroup.changeOrderTables(savedOrderTables);
 
         return tableGroupRepository.save(tableGroup);
@@ -55,14 +54,7 @@ public class TableGroupService {
     public void ungroup(final Long tableGroupId) {
         final List<OrderTable> orderTables = orderTableService.getAllOrderTablesByGroupId(tableGroupId);
 
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-
-
-        if (!orderService.isOrderCompletionByOrderTableIds(orderTableIds)) {
-            throw new InvalidOrderStatusException("orderTableIds: " + Strings.join(orderTableIds, ','));
-        }
+        publisher.publishEvent(new TableOrderUngroupEvent(orderTables));
 
         for (final OrderTable orderTable : orderTables) {
             orderTableService.makeTableGroupEmpty(orderTable);
