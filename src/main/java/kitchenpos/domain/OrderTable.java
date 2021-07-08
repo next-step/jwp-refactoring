@@ -43,12 +43,7 @@ public class OrderTable {
     }
 
     public OrderTable(Long id, int numberOfGuests, boolean empty) {
-        this(id,null, numberOfGuests, empty);
-    }
-
-    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }

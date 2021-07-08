@@ -43,7 +43,7 @@ class OrderServiceTest {
     @Mock
     OrderRepository orderRepository;
 
-    OrderTable 테이블100_사용중 = new OrderTable(100L, null, 4, false);
+    OrderTable 테이블100_사용중 = new OrderTable(100L, 4, false);
 
     OrderLineItemRequest 후라이드_한마리_요청;
     OrderLineItemRequest 양념치킨_한마리_요청;
