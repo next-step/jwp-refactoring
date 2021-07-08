@@ -4,7 +4,6 @@ import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,15 +29,6 @@ class ProductServiceTest {
     @InjectMocks
     private ProductService productService;
 
-    private ProductResponse 강정치킨;
-    private ProductResponse 후라이드;
-
-    @BeforeEach
-    void setUp() {
-        강정치킨 = new ProductResponse(1L, "강정치킨", BigDecimal.valueOf(17000));
-        후라이드 = new ProductResponse(2L, "후라이드", BigDecimal.valueOf(16000));
-    }
-
     @DisplayName("상품을 등록할 수 있다.")
     @Test
     void createTest() {
@@ -50,9 +40,9 @@ class ProductServiceTest {
         ProductResponse createdProduct = productService.create(new ProductRequest("강정치킨", BigDecimal.valueOf(17000)));
 
         // then
-        assertThat(createdProduct.getId()).isEqualTo(this.강정치킨.getId());
-        assertThat(createdProduct.getName()).isEqualTo(this.강정치킨.getName());
-        assertThat(createdProduct.getPrice()).isEqualTo(this.강정치킨.getPrice());
+        assertThat(createdProduct.getId()).isEqualTo(강정치킨.getId());
+        assertThat(createdProduct.getName()).isEqualTo(강정치킨.getName());
+        assertThat(createdProduct.getPrice()).isEqualTo(강정치킨.getPrice());
     }
 
     @DisplayName("상품의 가격이 올바르지 않으면 등록할 수 없다 : 상품의 가격은 0 원 이상이어야 한다.")
@@ -77,12 +67,12 @@ class ProductServiceTest {
         // then
         assertAll(
                 () -> assertThat(products).hasSize(2),
-                () -> assertThat(products.get(0).getId()).isEqualTo(this.강정치킨.getId()),
-                () -> assertThat(products.get(0).getName()).isEqualTo(this.강정치킨.getName()),
-                () -> assertThat(products.get(0).getPrice()).isEqualTo(this.강정치킨.getPrice()),
-                () -> assertThat(products.get(1).getId()).isEqualTo(this.후라이드.getId()),
-                () -> assertThat(products.get(1).getName()).isEqualTo(this.후라이드.getName()),
-                () -> assertThat(products.get(1).getPrice()).isEqualTo(this.후라이드.getPrice())
+                () -> assertThat(products.get(0).getId()).isEqualTo(강정치킨.getId()),
+                () -> assertThat(products.get(0).getName()).isEqualTo(강정치킨.getName()),
+                () -> assertThat(products.get(0).getPrice()).isEqualTo(강정치킨.getPrice()),
+                () -> assertThat(products.get(1).getId()).isEqualTo(후라이드.getId()),
+                () -> assertThat(products.get(1).getName()).isEqualTo(후라이드.getName()),
+                () -> assertThat(products.get(1).getPrice()).isEqualTo(후라이드.getPrice())
         );
     }
 }
