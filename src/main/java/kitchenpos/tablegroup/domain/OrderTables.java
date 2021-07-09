@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableGroupId;
 
 public class OrderTables {
 	private static final int MIN_TABLE_COUNT = 2;
@@ -27,7 +28,7 @@ public class OrderTables {
 		return Collections.unmodifiableList(tables);
 	}
 
-	void grouped(Long tableGroupId) {
+	void grouped(TableGroupId tableGroupId) {
 		validateMinTableSize();
 		validateNoGroupedTables();
 		validateNoEmptyTables();

@@ -19,7 +19,9 @@ public class OrderTableResponse {
 
 	public OrderTableResponse(OrderTable orderTable) {
 		this.id = orderTable.getId();
-		this.tableGroupId = orderTable.getTableGroupId();
+		if (nonNull(orderTable.getTableGroupId())) {
+			this.tableGroupId = orderTable.getTableGroupId().getId();
+		}
 		this.numberOfGuests = orderTable.getNumberOfGuests();
 		this.empty = orderTable.isEmpty();
 	}

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderTableId;
 import kitchenpos.table.domain.OrderTable;
 
 public class UngroupValidator {
@@ -15,19 +16,12 @@ public class UngroupValidator {
 
 	public void validate(OrderTable orderTable) {
 		final List<Order> ordersFromTable = findOrdersFrom(orderTable);
-		validateNotEmpty(ordersFromTable);
 		validateCompleteOrder(ordersFromTable);
-	}
-
-	private void validateNotEmpty(List<Order> ordersFromTable) {
-		if (ordersFromTable == null || ordersFromTable.isEmpty()) {
-			throw new IllegalArgumentException("주문테이블의 주문이 존재하지 않습니다.");
-		}
 	}
 
 	private List<Order> findOrdersFrom(OrderTable orderTable) {
 		return orders.stream()
-			.filter(order -> order.isFrom(orderTable.getId()))
+			.filter(order -> order.isFrom(new OrderTableId(orderTable.getId())))
 			.collect(Collectors.toList());
 	}
 

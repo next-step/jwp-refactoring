@@ -145,6 +145,6 @@ public class OrderTableTest {
 	}
 
 	public static OrderTable createOrderTable(Long id, Long groupId, NumberOfGuests numberOfGuests, boolean empty) {
-		return new OrderTable(id, groupId, numberOfGuests, empty);
+		return new OrderTable(id, new TableGroupId(groupId), numberOfGuests, empty);
 	}
 }

@@ -19,8 +19,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderTableId;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.order.domain.Order;
@@ -83,6 +83,7 @@ class OrderServiceTest {
 		Order order = mock(Order.class);
 		when(order.getId()).thenReturn(1L);
 		when(order.getOrderStatus()).thenReturn(OrderStatus.MEAL);
+		when(order.getOrderTableId()).thenReturn(new OrderTableId(1L));
 		when(orderRepository.findAll()).thenReturn(asList(order));
 
 		// when
@@ -130,6 +131,7 @@ class OrderServiceTest {
 	private void verifyToChangeOrderStatus(Order order) {
 		for (OrderStatus orderStatus : OrderStatus.values()) {
 			when(order.getOrderStatus()).thenReturn(orderStatus);
+			when(order.getOrderTableId()).thenReturn(new OrderTableId(1L));
 
 			orderService.changeOrderStatus(1L, orderStatus);
 

@@ -15,7 +15,7 @@ public class OrderResponse {
 
 	public OrderResponse(Order order, List<OrderLineItemResponse> orderLineItems) {
 		this.id = order.getId();
-		this.orderTableId = order.getOrderTableId();
+		this.orderTableId = order.getOrderTableId().getId();
 		this.orderStatus = order.getOrderStatus().name();
 		this.orderedTime = order.getOrderedTime();
 		this.orderLineItems = orderLineItems;

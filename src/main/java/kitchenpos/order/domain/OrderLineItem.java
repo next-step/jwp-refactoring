@@ -47,10 +47,6 @@ public class OrderLineItem {
         return quantity;
     }
 
-    Order getOrder() {
-        return order;
-    }
-
     void toOrder(Order order) {
         this.order = order;
     }

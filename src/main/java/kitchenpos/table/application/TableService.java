@@ -2,6 +2,7 @@ package kitchenpos.table.application;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderTableId;
 import kitchenpos.table.domain.ChangeEmptyValidator;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTable;
@@ -40,7 +41,7 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
             .orElseThrow(() -> new IllegalArgumentException("등록이 되지 않은 주문테이블은 상태를 변경할 수 없습니다."));
-        final List<Order> orders = orderRepository.findAllByOrderTableId(orderTableId);
+        final List<Order> orders = orderRepository.findAllByOrderTableId(new OrderTableId(orderTableId));
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty(), new ChangeEmptyValidator(savedOrderTable, orders));
         return OrderTableResponse.of(savedOrderTable);
     }

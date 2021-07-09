@@ -5,7 +5,6 @@ import static kitchenpos.order.domain.OrderStatus.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -22,8 +21,8 @@ public class Order {
     @Id
     private Long id;
 
-    @Column(nullable = false)
-    private Long orderTableId;
+    @Embedded
+    private OrderTableId orderTableId;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
@@ -35,7 +34,8 @@ public class Order {
 
     protected Order() {}
 
-    private Order(Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, OrderLineItems orderLineItems) {
+    public Order(OrderTableId orderTableId, OrderStatus orderStatus, OrderLineItems orderLineItems,
+        LocalDateTime orderedTime) {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
@@ -43,15 +43,11 @@ public class Order {
         this.orderLineItems.toOrder(this);
     }
 
-    public static Order create(Long orderTableId, OrderLineItems orderLineItems, LocalDateTime orderedTime) {
-        return new Order(orderTableId, COOKING, orderedTime, orderLineItems);
-    }
-
     public Long getId() {
         return id;
     }
 
-    public Long getOrderTableId() {
+    public OrderTableId getOrderTableId() {
         return orderTableId;
     }
 
@@ -86,7 +82,7 @@ public class Order {
         return this.orderStatus == COMPLETION;
     }
 
-    public boolean isFrom(Long orderTableId) {
+    public boolean isFrom(OrderTableId orderTableId) {
         return this.orderTableId.equals(orderTableId);
     }
 

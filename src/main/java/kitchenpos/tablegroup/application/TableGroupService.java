@@ -4,7 +4,9 @@ import static java.time.LocalDateTime.*;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderTableId;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.TableGroupId;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.tablegroup.domain.TableGroup;
@@ -45,7 +47,7 @@ public class TableGroupService {
     public void ungroup(final Long tableGroupId) {
         final TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
             .orElseThrow(() -> new IllegalArgumentException("등록된 테이블 그룹만 그룹해제 가능합니다."));
-        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
+        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(new TableGroupId(tableGroupId));
         final List<Order> orders = orderRepository.findAllByOrderTableIdIn(extractIds(orderTables));
         final UngroupValidator ungroupValidator = new UngroupValidator(orders);
         tableGroup.ungroup(orderTables, ungroupValidator);
@@ -60,9 +62,10 @@ public class TableGroupService {
         return orderTables;
     }
 
-    private List<Long> extractIds(List<OrderTable> orderTables) {
+    private List<OrderTableId> extractIds(List<OrderTable> orderTables) {
         return orderTables.stream()
             .map(OrderTable::getId)
+            .map(OrderTableId::new)
             .collect(Collectors.toList());
     }
 }

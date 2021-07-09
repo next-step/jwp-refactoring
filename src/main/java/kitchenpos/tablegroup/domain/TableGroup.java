@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableGroupId;
 
 @Entity
 public class TableGroup {
@@ -45,7 +46,7 @@ public class TableGroup {
 
     public void group(List<OrderTable> tables) {
         OrderTables orderTables = OrderTables.of(tables);
-        orderTables.grouped(getId());
+        orderTables.grouped(new TableGroupId(getId()));
     }
 
     void group(OrderTable... tables) {

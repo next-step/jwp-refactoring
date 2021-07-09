@@ -1,4 +1,4 @@
-package kitchenpos.menu.domain;
+package kitchenpos.table.domain;
 
 import java.util.Objects;
 
@@ -6,14 +6,14 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class MenuGroupId {
+public class TableGroupId {
 
-	@Column(name = "menu_group_id", nullable = false)
+	@Column(name = "table_group_id")
 	private Long id;
 
-	protected MenuGroupId() {}
+	protected TableGroupId() {}
 
-	public MenuGroupId(Long id) {
+	public TableGroupId(Long id) {
 		this.id = id;
 	}
 
@@ -27,12 +27,12 @@ public class MenuGroupId {
 			return true;
 		if (o == null || getClass() != o.getClass())
 			return false;
-		MenuGroupId that = (MenuGroupId)o;
-		return Objects.equals(getId(), that.getId());
+		TableGroupId that = (TableGroupId)o;
+		return Objects.equals(id, that.id);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(getId());
+		return Objects.hash(id);
 	}
 }
