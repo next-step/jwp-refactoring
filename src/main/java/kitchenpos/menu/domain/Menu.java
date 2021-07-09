@@ -32,6 +32,12 @@ public class Menu {
         this.menuProducts = new MenuProducts(menuProducts);
     }
 
+    public Menu(Long id, String name, BigDecimal price) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+    }
+
     public void validatePrice(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalPriceException("금액은 0보다 작거나 null일 수 없습니다.");
