@@ -13,7 +13,8 @@ import kitchenpos.tobe.order.dto.OrderResponse;
 import kitchenpos.tobe.table.application.OrderTableNotFoundException;
 import kitchenpos.tobe.table.domain.OrderTable;
 import kitchenpos.tobe.table.domain.OrderTableRepository;
-import kitchenpos.tobe.table.domain.TableGroup;
+import kitchenpos.tobe.table.domain.OrderTables;
+import kitchenpos.tobe.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +22,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -53,9 +53,9 @@ class OrderServiceTest {
     @DisplayName("주어진 주문을 저장하고, 저장된 객체를 리턴한다.")
     @Test
     void create_order() {
-        OrderTable orderTable = new OrderTable(1L, new TableGroup(1L, new ArrayList<>(), LocalDateTime.now()), 2, false);
+        OrderTable givenOrderTable = new OrderTable(1L, null, 2, false);
         Order givenOrder = Order.builder()
-                .orderTable(orderTable)
+                .orderTable(givenOrderTable)
                 .orderLineItems(new OrderLineItems())
                 .orderStatus(OrderStatus.COOKING)
                 .build();
@@ -69,7 +69,7 @@ class OrderServiceTest {
         when(menuRepository.findAllById(anyList()))
                 .thenReturn(Arrays.asList(menu1, menu2));
         when(orderTableRepository.findById(anyLong()))
-                .thenReturn(Optional.of(orderTable));
+                .thenReturn(Optional.of(givenOrderTable));
         when(orderRepository.save(any(Order.class)))
                 .thenReturn(givenOrder);
 
@@ -93,13 +93,16 @@ class OrderServiceTest {
         OrderLineItemRequest orderLineItemRequest1 = new OrderLineItemRequest(1L, 2L);
         OrderLineItemRequest orderLineItemRequest2 = new OrderLineItemRequest(2L, 3L);
         OrderRequest orderRequest = new OrderRequest(1L, Arrays.asList(orderLineItemRequest1, orderLineItemRequest2));
-        OrderTable orderTable = new OrderTable(1L, new TableGroup(1L, new ArrayList<>(), LocalDateTime.now()), 5, false);
+        OrderTable orderTable = new OrderTable(1L, null, 4, false);
+        OrderTable orderTable2 = new OrderTable(1L, null, 4, false);
+        TableGroup tableGroup = TableGroup.of(new OrderTables(Arrays.asList(orderTable, orderTable2)));
+        OrderTable givenOrderTable = new OrderTable(1L, tableGroup, 5, false);
         Menu menu1 = Menu.builder().builder();
 
         when(menuRepository.findAllById(anyList()))
                 .thenReturn(Arrays.asList(menu1));
         when(orderTableRepository.findById(anyLong()))
-                .thenReturn(Optional.of(orderTable));
+                .thenReturn(Optional.of(givenOrderTable));
 
         assertThatThrownBy(() -> orderService.create(orderRequest))
                 .isInstanceOf(MenuNotMatchException.class);
@@ -117,7 +120,7 @@ class OrderServiceTest {
     @DisplayName("주문이 주문 테이블이 비어있는 상태로 주어지면 예외를 던진다.")
     @Test
     void create_order_with_empty_order_table() {
-        OrderTable orderTable = new OrderTable(1L, new TableGroup(1L, new ArrayList<>(), LocalDateTime.now()), 2, true);
+        OrderTable givenOrderTable = new OrderTable(1L, null, 2, true);
         OrderLineItemRequest orderLineItemRequest1 = new OrderLineItemRequest(1L, 2L);
         OrderLineItemRequest orderLineItemRequest2 = new OrderLineItemRequest(2L, 3L);
         OrderRequest orderRequest = new OrderRequest(1L, Arrays.asList(orderLineItemRequest1, orderLineItemRequest2));
@@ -127,7 +130,7 @@ class OrderServiceTest {
         when(menuRepository.findAllById(anyList()))
                 .thenReturn(Arrays.asList(menu1, menu2));
         when(orderTableRepository.findById(anyLong()))
-                .thenReturn(Optional.of(orderTable));
+                .thenReturn(Optional.of(givenOrderTable));
 
         assertThatThrownBy(() -> orderService.create(orderRequest))
                 .isInstanceOf(IllegalStateException.class);

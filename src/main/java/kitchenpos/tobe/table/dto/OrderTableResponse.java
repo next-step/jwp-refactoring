@@ -1,7 +1,7 @@
 package kitchenpos.tobe.table.dto;
 
 import kitchenpos.tobe.table.domain.OrderTable;
-import kitchenpos.tobe.table.domain.TableGroup;
+import kitchenpos.tobe.tablegroup.domain.TableGroup;
 
 import java.util.Objects;
 

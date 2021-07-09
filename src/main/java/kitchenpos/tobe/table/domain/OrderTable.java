@@ -1,6 +1,8 @@
 package kitchenpos.tobe.table.domain;
 
 
+import kitchenpos.tobe.tablegroup.domain.TableGroup;
+
 import javax.persistence.Entity;
 import javax.persistence.EntityExistsException;
 import javax.persistence.FetchType;
@@ -16,8 +18,8 @@ import java.util.Objects;
 public class OrderTable {
     private static final String TABLE_GROUP_EXIST = "단체 지정에 포함되어 있습니다.";
     private static final int MINIMUM_GUEST_NUMBER = 0;
-    public static final String GUEST_NOT_EXIST = "변경할 손님이 존재 하지 않습니다.";
-    public static final String TABLE_EMPTY = "테이블이 비어있는 상태입니다";
+    private static final String GUEST_NOT_EXIST = "변경할 손님이 존재 하지 않습니다.";
+    private static final String TABLE_EMPTY = "테이블이 비어있는 상태입니다";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,6 +62,10 @@ public class OrderTable {
         return Objects.nonNull(tableGroup);
     }
 
+    public boolean checkIsNotValidTableGroup() {
+        return !empty || checkTableGroupExist();
+    }
+
     public void changeNumberOfGuests(Integer numberOfGuests) {
         validateNumberOfGuests(numberOfGuests);
         this.numberOfGuests = numberOfGuests;
@@ -72,6 +78,15 @@ public class OrderTable {
         if (isEmpty()) {
             throw new IllegalStateException(TABLE_EMPTY);
         }
+    }
+
+    public void assignTableGroup(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
+        this.empty = false;
+    }
+
+    public void ungroup() {
+        this.tableGroup = null;
     }
 
     public Long getId() {

@@ -3,9 +3,10 @@ package kitchenpos.tobe.table.application;
 import kitchenpos.tobe.order.domain.OrderRepository;
 import kitchenpos.tobe.table.domain.OrderTable;
 import kitchenpos.tobe.table.domain.OrderTableRepository;
-import kitchenpos.tobe.table.domain.TableGroup;
+import kitchenpos.tobe.table.domain.OrderTables;
 import kitchenpos.tobe.table.dto.OrderTableRequest;
 import kitchenpos.tobe.table.dto.OrderTableResponse;
+import kitchenpos.tobe.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,8 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.persistence.EntityExistsException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -93,7 +92,9 @@ class TableServiceTest {
     @DisplayName("주문 테이블을 비울 시 테이블 그룹이 포함된 경우 예외를 던진다.")
     void change_order_empty_with_group_table() {
         final Long givenOrderTableId = 1L;
-        TableGroup tableGroup = new TableGroup(1L, new ArrayList<>(), LocalDateTime.of(2021, 7, 10, 0, 0));
+        final OrderTable orderTable = new OrderTable(1L, null, 4, false);
+        final OrderTable orderTable2 = new OrderTable(1L, null, 4, false);
+        TableGroup tableGroup = TableGroup.of(new OrderTables(Arrays.asList(orderTable, orderTable2)));
         final OrderTable savedOrderTable1 = new OrderTable(1L, tableGroup, 3, false);
         final OrderTableRequest orderTableRequest = new OrderTableRequest(0, true);
 
@@ -111,8 +112,7 @@ class TableServiceTest {
     void change_number_of_guests() {
         Long givenOrderTableId = 1L;
         int updateNumberOfGuest = 5;
-        TableGroup tableGroup = new TableGroup(1L, new ArrayList<>(), LocalDateTime.of(2021, 7, 10, 0, 0));
-        final OrderTable savedOrderTable = new OrderTable(1L, tableGroup, 3, false);
+        final OrderTable savedOrderTable = new OrderTable(1L, null, 3, false);
         final OrderTableRequest orderTableRequest = new OrderTableRequest(updateNumberOfGuest, false);
 
         when(orderTableRepository.findById(anyLong()))
@@ -127,10 +127,8 @@ class TableServiceTest {
     void change_with_empty_number_of_guests() {
         Long givenOrderTableId = 1L;
         int updateNumberOfGuest = -1;
-        TableGroup tableGroup = new TableGroup(
-                1L, new ArrayList<>(), LocalDateTime.of(2021, 7, 10, 0, 0)
-        );
-        final OrderTable savedOrderTable = new OrderTable(1L, tableGroup, 3, false);
+//        TableGroup tableGroup = TableGroup.of(new OrderTables(new ArrayList<>()));
+        final OrderTable savedOrderTable = new OrderTable(1L, null, 3, false);
         final OrderTableRequest orderTableRequest = new OrderTableRequest(updateNumberOfGuest, false);
 
         when(orderTableRepository.findById(anyLong()))
@@ -144,10 +142,7 @@ class TableServiceTest {
     void change_number_of_guest_with_empty_order_table() {
         Long givenOrderTableId = 1L;
         int updateNumberOfGuest = 5;
-        TableGroup tableGroup = new TableGroup(
-                1L, new ArrayList<>(), LocalDateTime.of(2021, 7, 10, 0, 0)
-        );
-        final OrderTable savedOrderTable = new OrderTable(1L, tableGroup, 3, true);
+        final OrderTable savedOrderTable = new OrderTable(1L, null, 3, true);
         final OrderTableRequest orderTableRequest = new OrderTableRequest(updateNumberOfGuest, false);
 
         when(orderTableRepository.findById(anyLong()))
