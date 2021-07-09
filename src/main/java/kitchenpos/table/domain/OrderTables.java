@@ -38,6 +38,12 @@ public class OrderTables {
         return new ArrayList<>(orderTables);
     }
 
+    public void ungroup() {
+        for (final OrderTable orderTable : orderTables) {
+            orderTable.setTableGroupId(null);
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

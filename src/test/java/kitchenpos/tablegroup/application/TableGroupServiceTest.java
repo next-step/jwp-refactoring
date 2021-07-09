@@ -129,8 +129,6 @@ class TableGroupServiceTest {
         List<OrderTable> groupedTables = Arrays.asList(groupedTable1, groupedTable2);
         TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), groupedTables);
         given(orderTableRepository.findAllByTableGroupId(tableGroup.getId())).willReturn(groupedTables);
-        given(orderTableRepository.save(groupedTable1)).willReturn(groupedTable1);
-        given(orderTableRepository.save(groupedTable2)).willReturn(groupedTable2);
 
         tableGroupService.ungroup(tableGroup.getId());
 
@@ -148,6 +146,6 @@ class TableGroupServiceTest {
         given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
 
         assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalOrderTableException.class);
     }
 }
