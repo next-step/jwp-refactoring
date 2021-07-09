@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.tablegroup.application;
 
 import kitchenpos.order.domain.OrderDao;
 import kitchenpos.table.domain.OrderTableDao;
@@ -56,7 +56,7 @@ class TableGroupServiceTest {
     @DisplayName("테이블 그룹을 등록한다.")
     @Test
     void create() {
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
+        TableGroup tableGroup = new TableGroup(LocalDateTime.now(), orderTables);
         given(orderTableDao.findAllByIdIn(anyList())).willReturn(orderTables);
         given(tableGroupDao.save(any())).willReturn(tableGroup);
         given(orderTableDao.save(orderTable1)).willReturn(orderTable1);

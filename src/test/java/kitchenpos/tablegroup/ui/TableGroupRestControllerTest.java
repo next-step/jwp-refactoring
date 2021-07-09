@@ -1,4 +1,4 @@
-package kitchenpos.ui;
+package kitchenpos.tablegroup.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.tablegroup.application.TableGroupService;
