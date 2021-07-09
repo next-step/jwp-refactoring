@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Menu {
@@ -39,7 +40,7 @@ public class Menu {
     public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
         this.name = name;
         this.price = new Price(price);
-        this.menuGroup = menuGroup;
+        setMenuGroup(menuGroup);
     }
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
@@ -70,6 +71,11 @@ public class Menu {
         }
     }
 
+    public void setMenuGroup(MenuGroup menuGroup) {
+        this.menuGroup = menuGroup;
+        menuGroup.addMenu(this);
+    }
+
     public Long getId() {
         return id;
     }
@@ -88,5 +94,18 @@ public class Menu {
 
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Menu menu = (Menu) o;
+        return Objects.equals(getId(), menu.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 }

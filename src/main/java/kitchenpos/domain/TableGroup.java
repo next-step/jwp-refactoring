@@ -5,6 +5,7 @@ import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,7 +23,7 @@ public class TableGroup {
     private LocalDateTime createdDate;
 
     @OneToMany(mappedBy = "tableGroup")
-    private List<OrderTable> orderTables;
+    private List<OrderTable> orderTables = new ArrayList<>();
 
     protected TableGroup() {}
 
@@ -53,6 +54,12 @@ public class TableGroup {
         verifyAvailableUngroup();
         orderTables.stream()
                 .forEach(orderTable -> orderTable.changeTableGroup(null));
+    }
+
+    public void addOrderTable(OrderTable orderTable) {
+        if (!orderTables.contains(orderTable)) {
+            orderTables.add(orderTable);
+        }
     }
 
     private void verifyAvailableUngroup() {

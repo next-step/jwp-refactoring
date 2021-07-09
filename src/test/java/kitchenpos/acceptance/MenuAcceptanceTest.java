@@ -42,7 +42,6 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> postResponse = 메뉴_등록_요청(후라이드메뉴);
         메뉴_등록됨(postResponse);
 
-
         MenuProductRequest 양념치킨한개 = new MenuProductRequest(양념치킨.getId(), 1L);
         MenuRequest 양념치킨메뉴 = new MenuRequest("양념치킨", BigDecimal.valueOf(15_000), 치킨메뉴.getId(),
                 Arrays.asList(양념치킨한개));

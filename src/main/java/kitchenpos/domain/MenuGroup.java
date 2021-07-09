@@ -23,6 +23,12 @@ public class MenuGroup {
         this.id = id;
     }
 
+    public void addMenu(Menu menu) {
+        if (!menus.contains(menu)) {
+            menus.add(menu);
+        }
+    }
+
     public MenuGroup(String name) {
         this.name = name;
     }
