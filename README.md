@@ -176,6 +176,7 @@
   * Menu <-> MenuProduct
   * Order <-> orderLineItem
   * OrderTable <-> TableGroup
+  * OrderLineItem -> Menu를 객체 참조 제거 하도록 수정
   * 패키지 사이클링은 없는지 체크한다.
 
 * 도메인에서 의존관계를 고려해본다.  (탐색이 반드시 필요한 것인가) -> LazyLoading 이슈를 고려하자
