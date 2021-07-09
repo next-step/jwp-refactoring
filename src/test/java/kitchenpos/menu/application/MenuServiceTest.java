@@ -16,8 +16,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.ProductRepository;
 
 @ExtendWith(MockitoExtension.class)

@@ -7,14 +7,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.domain.MenuGroupRepository;
-import kitchenpos.menugroup.exception.NoSuchMenuGroupException;
+import kitchenpos.menu.exception.NoSuchMenuGroupException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 
@@ -39,7 +39,8 @@ public class MenuService {
             .orElseThrow(NoSuchMenuGroupException::new);
         List<Product> productList = productRepository.findAllById(menuRequest.getProductIds());
         List<MenuProduct> menuProductList = menuRequest.toMenuProducts(productList);
-        Menu menu = Menu.create(menuRequest, menuGroup, MenuProducts.of(menuProductList));
+        Menu menu = menuRepository.save(Menu.create(menuRequest, menuGroup));
+        menu.productsAssginMenu(menuRequest, MenuProducts.of(menuProductList));
 
         return MenuResponse.of(menuRepository.save(menu));
     }

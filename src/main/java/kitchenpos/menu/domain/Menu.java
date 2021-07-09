@@ -21,7 +21,6 @@ import kitchenpos.common.domain.Price;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.exception.NoMenuProductListException;
 import kitchenpos.menu.exception.OverSumPriceException;
-import kitchenpos.menugroup.domain.MenuGroup;
 
 @Entity
 public class Menu {
@@ -56,12 +55,10 @@ public class Menu {
         this.name = name;
         this.price = price;
         this.menuProducts = menuProducts;
-        menuProducts.assginMenu(this);
     }
 
-    public static Menu create(MenuRequest menuRequest, MenuGroup menuGroup, MenuProducts menuProducts) {
-        validationCreate(menuRequest, menuProducts);
-        return new Menu(menuRequest.getName(), Price.of(menuRequest.getPrice()), menuGroup, menuProducts);
+    public static Menu create(MenuRequest menuRequest, MenuGroup menuGroup) {
+        return new Menu(menuRequest.getName(), Price.of(menuRequest.getPrice()), menuGroup, null);
     }
 
     private static void validationCreate(MenuRequest menuRequest, MenuProducts menuProducts) {
@@ -92,6 +89,12 @@ public class Menu {
 
     public List<MenuProduct> getMenuProducts() {
         return Collections.unmodifiableList(menuProducts.toCollection());
+    }
+
+    public void productsAssginMenu(MenuRequest menuRequest, MenuProducts menuProducts) {
+        validationCreate(menuRequest, menuProducts);
+        this.menuProducts = menuProducts;
+        menuProducts.assginMenu(id);
     }
 
 }

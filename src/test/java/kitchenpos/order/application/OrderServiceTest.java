@@ -3,7 +3,6 @@ package kitchenpos.order.application;
 import static kitchenpos.util.TestDataSet.원플원_양념;
 import static kitchenpos.util.TestDataSet.원플원_후라이드;
 import static kitchenpos.util.TestDataSet.주문_1번;
-import static kitchenpos.util.TestDataSet.테이블_1번;
 import static kitchenpos.util.TestDataSet.테이블_3번_존재;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -97,32 +96,13 @@ public class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("빈 테이블은 실패한다.")
-    void emptyTable() {
-        //given
-        given(menuRepository.findAllById(any())).willReturn(Arrays.asList(원플원_후라이드));
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(테이블_1번));
-
-        //when
-        OrderRequest requet = new OrderRequest(주문_1번.getId(), OrderStatus.COOKING,
-            Arrays.asList(new OrderLineItemRequest(1L, 3L)));
-
-        //then
-        assertThrows(IllegalArgumentException.class, () -> {
-            orderService.create(requet);
-        });
-
-        verify(menuRepository, times(1)).findAllById(any());
-        verify(orderTableRepository, times(1)).findById(any());
-    }
-
-    @Test
     @DisplayName("주문 업데이트 성공 케이스 ")
     void changeOrderStatus() {
         //given
         OrderRequest request = new OrderRequest(1L, OrderStatus.MEAL, null);
-        Order 주문_1번 = new Order(1L, 테이블_3번_존재,
-            Arrays.asList(new OrderLineItem(1L, null, 원플원_후라이드, 1L), new OrderLineItem(1L, null, 원플원_양념, 1L)));
+        Order 주문_1번 = new Order(1L, 테이블_3번_존재.getId(),
+            Arrays.asList(new OrderLineItem(1L, null, 원플원_후라이드.getId(), 1L),
+                new OrderLineItem(1L, null, 원플원_양념.getId(), 1L)));
 
         given(orderRepository.findById(any())).willReturn(Optional.of(주문_1번));
 
@@ -141,8 +121,9 @@ public class OrderServiceTest {
     void noOder() {
         //given
         OrderRequest request = new OrderRequest(1L, OrderStatus.MEAL, null);
-        Order 주문_1번 = new Order(1L, 테이블_3번_존재,
-            Arrays.asList(new OrderLineItem(1L, null, 원플원_후라이드, 1L), new OrderLineItem(1L, null, 원플원_양념, 1L)));
+        Order 주문_1번 = new Order(1L, 테이블_3번_존재.getId(),
+            Arrays.asList(new OrderLineItem(1L, null, 원플원_후라이드.getId(), 1L),
+                new OrderLineItem(1L, null, 원플원_양념.getId(), 1L)));
 
         given(orderRepository.findById(any())).willReturn(Optional.empty());
 

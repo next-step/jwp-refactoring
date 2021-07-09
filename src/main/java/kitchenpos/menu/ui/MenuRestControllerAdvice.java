@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import kitchenpos.common.exception.ErrorResponse;
 import kitchenpos.menu.exception.NoMenuProductListException;
+import kitchenpos.menu.exception.NoSuchMenuGroupException;
 import kitchenpos.menu.exception.OverSumPriceException;
-import kitchenpos.menugroup.exception.NoSuchMenuGroupException;
 import kitchenpos.product.exception.NoProductException;
 
 @RestControllerAdvice

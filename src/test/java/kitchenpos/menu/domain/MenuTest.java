@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
-import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 
 public class MenuTest {
@@ -44,9 +43,9 @@ public class MenuTest {
     @DisplayName("Menu 정상 생성 테스트")
     void create() {
 
-        List<MenuProduct> menuProductList = request.toMenuProducts(productList);
+        request.toMenuProducts(productList);
 
-        Menu 정상 = Menu.create(request, menuGroup, MenuProducts.of(menuProductList));
+        Menu 정상 = Menu.create(request, menuGroup);
 
         assertThat(정상.getMenuGroupId()).isEqualTo(menuGroup.getId());
         assertThat(정상.getName()).isEqualTo("후라이드+양념");
@@ -56,7 +55,8 @@ public class MenuTest {
     @DisplayName("menuProducts가 빈 값으로 들어올 시 에러를 뱉는다. ")
     void noProducts() {
         assertThrows(IllegalArgumentException.class, () -> {
-            Menu.create(request, menuGroup, MenuProducts.of(Collections.emptyList()));
+            Menu menu = Menu.create(request, menuGroup);
+            menu.productsAssginMenu(request, MenuProducts.of(Collections.emptyList()));
         });
     }
 
@@ -67,7 +67,8 @@ public class MenuTest {
             .asList(new MenuProduct(new Product("양념", BigDecimal.valueOf(100)), 1L),
                 new MenuProduct(new Product("후라이드", BigDecimal.valueOf(100)), 1L));
         assertThrows(IllegalArgumentException.class, () -> {
-            Menu.create(request, menuGroup, MenuProducts.of(menuProductList));
+            Menu menu = Menu.create(request, menuGroup);
+            menu.productsAssginMenu(request, MenuProducts.of(menuProductList));
         });
     }
 }

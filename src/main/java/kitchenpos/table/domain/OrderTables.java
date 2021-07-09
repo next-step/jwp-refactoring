@@ -5,15 +5,17 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 import kitchenpos.table.exception.OrderUsingException;
-import kitchenpos.tablegroup.domain.TableGroup;
 
 @Embeddable
 public class OrderTables {
 
-    @OneToMany(mappedBy = "tableGroup")
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "table_group_id")
     private final List<OrderTable> orderTables;
 
     protected OrderTables() {
