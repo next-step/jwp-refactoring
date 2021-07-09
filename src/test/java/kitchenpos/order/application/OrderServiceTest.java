@@ -6,7 +6,6 @@ import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
-import kitchenpos.order.dto.OrderStatusResponse;
 import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -138,12 +137,12 @@ class OrderServiceTest {
         String changedStatus = OrderStatus.COMPLETION.name();
         OrderStatusRequest orderStatusRequest = new OrderStatusRequest(changedStatus);
         given(orderRepository.findById(anyLong())).willReturn(Optional.ofNullable(주문));
-        given(orderRepository.save(any())).willReturn(주문);
 
-        OrderStatusResponse changed = orderService.changeOrderStatus(주문.getId(), orderStatusRequest);
+        OrderResponse changed = orderService.changeOrderStatus(주문.getId(), orderStatusRequest);
 
         assertAll(
-                () -> assertThat(changed.getOrderStatus()).isEqualTo(changedStatus));
+                () -> assertThat(changed.getOrderStatus()).isEqualTo(changedStatus),
+                () -> assertThat(changed.getOrderLineItems()).isEqualTo(주문.getOrderLineItems()));
     }
 
     @DisplayName("주문 상태를 변경을 실패한다 - 기존에 등록된 주문이 없으면 주문 상태 변경에 실패한다.")

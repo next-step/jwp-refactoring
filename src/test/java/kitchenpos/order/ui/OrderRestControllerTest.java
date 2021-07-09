@@ -8,7 +8,6 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
-import kitchenpos.order.dto.OrderStatusResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -97,7 +96,7 @@ class OrderRestControllerTest {
         String orderJsonString = objectMapper.writeValueAsString(orderStatusRequest);
 
         given(orderService.changeOrderStatus(anyLong(), any()))
-                .willReturn(OrderStatusResponse.from(changedOrder.getOrderStatus()));
+                .willReturn(OrderResponse.from(changedOrder));
 
         mockMvc.perform(put("/api/orders/" + orderId + "/order-status")
                 .contentType(MediaType.APPLICATION_JSON)
