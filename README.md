@@ -83,3 +83,16 @@
     * [x] 테이블 관련 기능 service test 작성
     * [x] 테이블 그룹 관련 service test 작성
     * [x] 주문 관련 기능 service test 작성
+
+### 1단계 - 테스트를 통한 코드 보호
+#### 요구 사항1
+* ``kitchenpos`` 패키지의 코드를 보고 키친포스의 요구 사항을 ``READMO.md``에 작성
+* 정리한 키친포스의 요구 사항을 토대로 테스트 코드를 작성한다. 모든 Business Object에 대한 테스트 코드를 작성한다.
+
+#### 프로그래밍 요구 사항 
+* Lombok 사용 없이 미션 진행
+
+#### 작업 진행 순서
+* [ ] 키친포스 요구 사항 분석
+* [ ] Event Storming 진행해보기
+* [ ] Business Object 테스트 코드 작성
