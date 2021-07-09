@@ -38,10 +38,6 @@ public class OrderLineItem {
         return orderId;
     }
 
-    public void setOrderId(final Long orderId) {
-        this.orderId = orderId;
-    }
-
     public Long getMenuId() {
         return menuId;
     }

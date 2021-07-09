@@ -41,7 +41,7 @@ public class OrderTable {
         return tableGroupId;
     }
 
-    public void setTableGroupId(final Long tableGroupId) {
+    public void changeTableGroupId(final Long tableGroupId) {
         this.tableGroupId = tableGroupId;
     }
 

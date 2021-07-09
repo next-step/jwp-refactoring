@@ -40,7 +40,7 @@ public class OrderTables {
 
     public void ungroup() {
         for (final OrderTable orderTable : orderTables) {
-            orderTable.setTableGroupId(null);
+            orderTable.changeTableGroupId(null);
         }
     }
 
