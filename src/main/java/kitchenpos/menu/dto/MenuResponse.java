@@ -40,7 +40,7 @@ public class MenuResponse {
     }
 
     public static MenuResponse of(Menu menu) {
-        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(), menu.getMenuGroup(), menu.getMenuProducts(),menu.getCreatedDate(), menu.getModifiedDate());
+        return new MenuResponse(menu.getId(), menu.getName(), menu.getAmount(), menu.getMenuGroup(), menu.getMenuProducts(),menu.getCreatedDate(), menu.getModifiedDate());
     }
 
     public Long getId() {

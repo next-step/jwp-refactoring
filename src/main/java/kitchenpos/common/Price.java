@@ -25,12 +25,6 @@ public class Price extends Number {
         return price.compareTo(BigDecimal.ZERO) < 0;
     }
 
-    public void checkIfOverThan(BigDecimal sum) {
-        if (price.compareTo(sum) > 0) {
-            throw new IllegalArgumentException();
-        }
-    }
-
     public BigDecimal get() {
         return price;
     }
