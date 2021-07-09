@@ -16,9 +16,8 @@ public class MenuProduct {
     @JoinColumn(name = "menu_id")
     private Menu menu;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
-    private Product product;
+    @Column(name = "product_id")
+    private Long productId;
 
     @Embedded
     private Quantity quantity;
@@ -26,14 +25,14 @@ public class MenuProduct {
     public MenuProduct() {
     }
 
-    public MenuProduct(Product product, Quantity quantity) {
-        this.product = product;
+    public MenuProduct(Long productId, Quantity quantity) {
+        this.productId = productId;
         this.quantity = quantity;
     }
 
-    public MenuProduct(Menu menu, Product product, Quantity quantity) {
+    public MenuProduct(Menu menu, Long productId, Quantity quantity) {
         this.menu = menu;
-        this.product = product;
+        this.productId = productId;
         this.quantity = quantity;
     }
 
@@ -45,8 +44,8 @@ public class MenuProduct {
         return menu;
     }
 
-    public Product getProduct() {
-        return product;
+    public Long getProductId() {
+        return productId;
     }
 
     public Quantity getQuantity() {

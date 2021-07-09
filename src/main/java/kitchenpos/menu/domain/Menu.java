@@ -41,17 +41,7 @@ public class Menu {
         this.price = new Price(price);
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
-
-        validation(menuProducts);
         this.menuProducts.matchMenu(this);
-    }
-
-    private void validation(MenuProducts menuProducts) {
-        Price totalPrice = menuProducts.getProductTotalPrice();
-
-        if (this.price.compareTo(totalPrice) > 0) {
-            throw new IllegalArgumentException("상품의 총 가격보다 메뉴의 가격이 더 높을수는 없습니다.");
-        }
     }
 
     public Long getId() {
