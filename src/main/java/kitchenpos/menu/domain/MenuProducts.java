@@ -2,6 +2,7 @@ package kitchenpos.menu.domain;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Stream;
 
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
@@ -26,6 +27,10 @@ public class MenuProducts {
 			.map(menuProduct -> menuProduct.getMenuProductPrice().value())
 			.reduce(BigDecimal.ZERO, BigDecimal::add);
 		return new Price(sum);
+	}
+
+	public Stream<MenuProduct> stream() {
+		return this.menuProducts.stream();
 	}
 
 }
