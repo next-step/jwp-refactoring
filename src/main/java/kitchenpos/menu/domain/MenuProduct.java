@@ -12,19 +12,15 @@ public class MenuProduct {
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    private Menu menu;
-
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Product product;
 
     @Column
-    private long quantity;
+    private int quantity;
 
     public MenuProduct() { }
 
-    public MenuProduct(Long id, Menu menu, Product product, long quantity) {
+    public MenuProduct(Long id, Product product, int quantity) {
         this.id = id;
-        this.menu = menu;
         this.product = product;
         this.quantity = quantity;
     }
@@ -42,15 +38,11 @@ public class MenuProduct {
         return id;
     }
 
-    public Menu getMenu() {
-        return menu;
-    }
-
     public Product getProduct() {
         return product;
     }
 
-    public long getQuantity() {
+    public int getQuantity() {
         return quantity;
     }
 

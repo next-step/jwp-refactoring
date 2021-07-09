@@ -17,15 +17,10 @@ public class MenuProducts {
 
     public MenuProducts(List<MenuProduct> menuProducts, Long menuId) {
         this.menuProducts = menuProducts;
-//        allMenuProductsArePartOf(menuId);
     }
 
     public List<MenuProduct> get() {
         return menuProducts;
     }
 
-//    private void allMenuProductsArePartOf(Long id) {
-//        this.menuProducts.stream()
-//                .forEach(menuProduct -> menuProduct.setProductId(id));
-//    }
 }

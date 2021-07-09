@@ -10,6 +10,9 @@ public class ProductResponse {
     private String name;
     private BigDecimal price;
 
+    public ProductResponse() {
+    }
+
     private ProductResponse(String name, BigDecimal price) {
         this.name = name;
         this.price = price;

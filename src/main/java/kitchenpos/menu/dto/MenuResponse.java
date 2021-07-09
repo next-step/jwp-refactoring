@@ -1,6 +1,5 @@
 package kitchenpos.menu.dto;
 
-import kitchenpos.common.Price;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
@@ -13,7 +12,7 @@ public class MenuResponse {
 
     private Long id;
     private String name;
-    private Price price;
+    private BigDecimal price;
     private MenuGroup menuGroup;
     private List<MenuProductResponse> menuProducts;
 
@@ -24,7 +23,7 @@ public class MenuResponse {
     public MenuResponse(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = name;
-        this.price = new Price(price);
+        this.price = price;
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts.stream()
                 .map(MenuProductResponse::of)
@@ -52,11 +51,11 @@ public class MenuResponse {
     }
 
     public BigDecimal getPrice() {
-        return price.get();
+        return price;
     }
 
     public void setPrice(BigDecimal price) {
-        this.price = new Price(price);
+        this.price = price;
     }
 
     public MenuGroup getMenuGroup() {

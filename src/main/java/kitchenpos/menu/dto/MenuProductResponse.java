@@ -2,13 +2,14 @@ package kitchenpos.menu.dto;
 
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductResponse;
 
 public class MenuProductResponse {
-    private Product product;
+    private ProductResponse product;
     private long quantity;
 
     private MenuProductResponse(Product product, long quantity) {
-        this.product = product;
+        this.product = ProductResponse.of(product);
         this.quantity = quantity;
     }
 

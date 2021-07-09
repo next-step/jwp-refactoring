@@ -46,7 +46,7 @@ public class MenuServiceTest {
     private MenuProductRequest menuProductRequest = new MenuProductRequest(1L, 1);
     private Product product = new Product(1L, "상품1", BigDecimal.valueOf(5000));
     private final List<MenuProductRequest> menu1MenuProductRequests = Arrays.asList(menuProductRequest);
-    private final MenuProduct menuProduct1 = new MenuProduct(1L, new Menu(), product, 1);
+    private final MenuProduct menuProduct1 = new MenuProduct(1L, product, 1);
     private final List<MenuProduct> menu1MenuProduct = Arrays.asList(menuProduct1);
 
     @BeforeEach
