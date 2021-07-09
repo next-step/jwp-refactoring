@@ -10,7 +10,7 @@ import kitchenpos.domain.ProductRepository;
 import kitchenpos.exception.ProductNotFoundException;
 
 @Service
-public class  ProductService {
+public class ProductService {
     private final ProductRepository productRepository;
 
     public ProductService(ProductRepository productRepository) {
