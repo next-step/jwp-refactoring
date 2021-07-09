@@ -54,9 +54,6 @@ public class Order {
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
-        if (Objects.nonNull(orderedTime)) {
-            orderLineItems.forEach(orderLineItem -> orderLineItem.assignOrder(this));
-        }
 
     }
 
@@ -97,15 +94,8 @@ public class Order {
         return OrderStatus.COOKING.equals(orderStatus) || OrderStatus.MEAL.equals(orderStatus);
     }
 
-    public static Order create(OrderRequest orderRequest, Long orderTableId, List<Menu> menuList) {
-
-        List<OrderLineItem> orderLineItems = orderRequest.getOrderLineItems()
-            .stream()
-            .map(orderLineItemRequest -> new OrderLineItem(findMenu(menuList, orderLineItemRequest),
-                orderLineItemRequest.getQuantity()))
-            .collect(Collectors.toList());
-
-        return new Order(orderTableId, OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
+    public static Order create(Long orderTableId) {
+        return new Order(orderTableId, OrderStatus.COOKING, LocalDateTime.now(), Collections.emptyList());
     }
 
     private static Long findMenu(List<Menu> menuList, OrderLineItemRequest orderLineItemRequest) {
@@ -125,5 +115,19 @@ public class Order {
         if (Objects.equals(OrderStatus.COMPLETION, orderStatus)) {
             throw new CompletedOrderException();
         }
+    }
+
+    public void makeLineItems(OrderRequest orderRequest, List<Menu> menuList) {
+        List<OrderLineItem> orderLineItems = orderRequest.getOrderLineItems()
+            .stream()
+            .map(orderLineItemRequest -> new OrderLineItem(findMenu(menuList, orderLineItemRequest),
+                orderLineItemRequest.getQuantity()))
+            .collect(Collectors.toList());
+
+        if (orderLineItems != null) {
+            orderLineItems.forEach(orderLineItem -> orderLineItem.assignOrder(this.id));
+            this.orderLineItems = orderLineItems;
+        }
+
     }
 }

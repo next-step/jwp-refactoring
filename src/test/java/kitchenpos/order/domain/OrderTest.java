@@ -35,7 +35,7 @@ public class OrderTest {
     @Test
     @DisplayName("정상 생성 케스트 테스트")
     void creat() {
-        Order order = Order.create(request, 테이블.getId(), menuList);
+        Order order = Order.create(테이블.getId());
         assertThat(order.getOrderTableId()).isEqualTo(테이블.getId());
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
     }

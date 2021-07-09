@@ -43,9 +43,9 @@ public class OrderService {
         final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
             .orElseThrow(NoOrderTableException::new);
         orderValidator.createValidator(orderRequest, orderTable, menuList);
-        Order order = Order.create(orderRequest, orderTable.getId(), menuList);
-
-        return OrderResponse.of(orderRepository.save(order));
+        Order order = orderRepository.save(Order.create(orderTable.getId()));
+        order.makeLineItems(orderRequest, menuList);
+        return OrderResponse.of(order);
     }
 
     public List<OrderResponse> list() {
