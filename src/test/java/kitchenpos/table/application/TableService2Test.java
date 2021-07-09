@@ -2,7 +2,7 @@ package kitchenpos.table.application;
 
 import kitchenpos.table.domain.OrderTableEntity;
 import kitchenpos.table.domain.TableRepository;
-import kitchenpos.table.domain.TableValidator;
+import kitchenpos.table.domain.TableExternalValidator;
 import kitchenpos.table.dto.TableRequest;
 import kitchenpos.table.dto.TableResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +27,7 @@ import static org.mockito.Mockito.*;
 class TableService2Test {
 
   @Mock
-  private TableValidator tableValidator;
+  private TableExternalValidator tableExternalValidator;
 
   @Mock
   private TableRepository tableRepository;
@@ -36,7 +36,7 @@ class TableService2Test {
 
   @BeforeEach
   void setUp() {
-    tableService = new TableService2(tableValidator, tableRepository);
+    tableService = new TableService2(tableExternalValidator, tableRepository);
   }
 
   @DisplayName("손님수, 주문을 등록할 수 있는 테이블 여부를 입력받아 저장할 수 있다.")
@@ -81,7 +81,7 @@ class TableService2Test {
     long savedOrderTableId = 1L;
     OrderTableEntity savedOrderTable = OrderTableEntity.initWithId(savedOrderTableId, 4, true);
     when(tableRepository.findById(savedOrderTableId)).thenReturn(Optional.of(savedOrderTable));
-    doNothing().when(tableValidator).validateTableInUse(savedOrderTableId);
+    doNothing().when(tableExternalValidator).validateTableInUse(savedOrderTableId);
     OrderTableEntity orderAfterChangeEmpty = OrderTableEntity.initWithId(savedOrderTableId, 4, false);
     //when
     TableResponse changedOrderTable = tableService.changeEmpty(savedOrderTableId, tableRequest);
@@ -123,7 +123,7 @@ class TableService2Test {
     TableRequest tableRequest = new TableRequest(null, false);
     OrderTableEntity savedOrderTable = OrderTableEntity.initWithId(savedOrderTableId, 4, true);
     when(tableRepository.findById(savedOrderTableId)).thenReturn(Optional.of(savedOrderTable));
-    doThrow(IllegalArgumentException.class).when(tableValidator).validateTableInUse(savedOrderTableId);
+    doThrow(IllegalArgumentException.class).when(tableExternalValidator).validateTableInUse(savedOrderTableId);
     //when & then
     assertThatThrownBy(() -> tableService.changeEmpty(savedOrderTableId, tableRequest)).isInstanceOf(IllegalArgumentException.class);
   }

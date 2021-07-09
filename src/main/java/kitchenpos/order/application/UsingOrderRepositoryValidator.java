@@ -2,14 +2,14 @@ package kitchenpos.order.application;
 
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.TableValidator;
+import kitchenpos.table.domain.TableExternalValidator;
 import kitchenpos.tablegroup.domain.TableGroupExternalValidator;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
-public class UsingOrderRepositoryValidator implements TableValidator, TableGroupExternalValidator {
+public class UsingOrderRepositoryValidator implements TableExternalValidator, TableGroupExternalValidator {
 
   private final OrderRepository orderRepository;
 

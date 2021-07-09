@@ -2,7 +2,7 @@ package kitchenpos.table.application;
 
 import kitchenpos.table.domain.OrderTableEntity;
 import kitchenpos.table.domain.TableRepository;
-import kitchenpos.table.domain.TableValidator;
+import kitchenpos.table.domain.TableExternalValidator;
 import kitchenpos.table.dto.TableRequest;
 import kitchenpos.table.dto.TableResponse;
 import org.springframework.stereotype.Service;
@@ -13,11 +13,11 @@ import java.util.List;
 @Transactional
 @Service
 public class TableService2 {
-    private final TableValidator tableValidator;
+    private final TableExternalValidator tableExternalValidator;
     private final TableRepository tableRepository;
 
-    public TableService2(final TableValidator tableValidator, final TableRepository tableRepository) {
-        this.tableValidator = tableValidator;
+    public TableService2(final TableExternalValidator tableExternalValidator, final TableRepository tableRepository) {
+        this.tableExternalValidator = tableExternalValidator;
         this.tableRepository = tableRepository;
     }
 
@@ -32,7 +32,7 @@ public class TableService2 {
 
     public TableResponse changeEmpty(final Long orderTableId, final TableRequest request) {
         OrderTableEntity table = findTableById(orderTableId);
-        tableValidator.validateTableInUse(orderTableId);
+        tableExternalValidator.validateTableInUse(orderTableId);
         table.changeEmpty(request.isEmpty());
         return TableResponse.from(table);
     }
