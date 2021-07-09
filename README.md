@@ -114,4 +114,8 @@
 - [ ] 패키지 간 의존성 사이클 제거
   * 제거 전 패키지간 의존성 사이클
     ![package-dependency-before-refactoring](docs/image/kitchenpos-package-dependency.png)
+    * import kitchenpos.패키지. 으로 검색해서 다른 패키지를 참조하는 방향을 알아낸 뒤 도식화 진행.
+    * order 에서는 주문 전 테이블 상태를 확인하면서 order -> table 의존성 발생
+      table 에서는 테이블 상태를 바꿀 때 테이블에 연결된 조리중 혹은 식사중 주문이 있는지 확인하면서 table -> order 의존성 발생
+    
   * 제거 후 패키지간 의존성 사이클
