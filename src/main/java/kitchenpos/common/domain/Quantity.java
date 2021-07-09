@@ -6,6 +6,9 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class Quantity {
 
+    private static final String EXCEPTION_MESSAGE_MIN_QUANTITY = "수량은 %s보다 작을수 없습니다.";
+    private static final int MIN_QUANTITY = 0;
+
     @Column(name = "quantity")
     private long quantity;
 
@@ -13,6 +16,9 @@ public class Quantity {
     }
 
     public Quantity(long quantity) {
+        if (quantity < MIN_QUANTITY) {
+            throw new IllegalArgumentException(EXCEPTION_MESSAGE_MIN_QUANTITY);
+        }
         this.quantity = quantity;
     }
 
