@@ -15,13 +15,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @DisplayName("주문 기능 관련 테스트")
@@ -127,7 +125,7 @@ public class OrderServiceTest {
         OrderTable orderTable = new OrderTable();
         orderTable.setId(1L);
         when(orderTableDao.findById(1L)).thenReturn(Optional.ofNullable(orderTable));
-        when(orderDao.save(any())).thenReturn(order);
+        when(orderDao.save(order)).thenReturn(order);
         when(orderLineItemDao.save(firstOrderLineItem)).thenReturn(firstOrderLineItem);
         when(orderLineItemDao.save(secondOrderLineItem)).thenReturn(secondOrderLineItem);
 
