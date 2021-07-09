@@ -85,10 +85,10 @@ class OrderServiceTest {
     @DisplayName("create - 등록을 원하는 주문항목이 DB에 전부 존재하는지 확인하여 전부 존재하지 않으면 IllegalArgumentException이 발생한다.")
     void 등록을_원하는_주문항목이_DB에_전부_존재하는지_확인하여_전부_존재하지_않으면_IllegalArgumentException이_발생한다() {
         // given
-        OrderCreate orderCreate = new OrderCreate(미사용중인_테이블.getId(), OrderStatus.MEAL, orderLineItemCreates);
+        OrderCreate orderCreate = new OrderCreate(사용중인_1명_테이블.getId(), OrderStatus.MEAL, orderLineItemCreates);
 
         given(orderTableRepository.findById(any()))
-                .willReturn(Optional.of(미사용중인_테이블));
+                .willReturn(Optional.of(사용중인_1명_테이블));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(orderCreate));

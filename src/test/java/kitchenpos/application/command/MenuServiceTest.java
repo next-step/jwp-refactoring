@@ -7,6 +7,8 @@ import kitchenpos.domain.menu.MenuCreate;
 import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menu.MenuProductCreate;
 import kitchenpos.dto.response.MenuViewResponse;
+import kitchenpos.exception.MenuCheapException;
+import kitchenpos.exception.ProductNotExistException;
 import kitchenpos.fixture.CleanUp;
 import kitchenpos.repository.MenuGroupRepository;
 import kitchenpos.repository.MenuProductRepository;
@@ -28,8 +30,7 @@ import static kitchenpos.fixture.MenuFixture.양념치킨_콜라_1000원_1개;
 import static kitchenpos.fixture.MenuFixture.양념치킨_콜라_1000원_1개_MenuProduct;
 import static kitchenpos.fixture.ProductFixture.양념치킨_1000원;
 import static kitchenpos.fixture.ProductFixture.콜라_100원;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -89,8 +90,8 @@ class MenuServiceTest {
     }
 
     @Test
-    @DisplayName("create - 메뉴 상품의 상품이 DB에 있는지 확인하고, 없으면 IllegalArgumentException 이 발생한다.")
-    void 메뉴_상품의_상품이_DB에_있는지_확인하고_없으면_IllegalArgumentException이_발생한다() {
+    @DisplayName("create - 메뉴 상품의 상품이 DB에 있는지 확인하고, 없으면 ProductNotExistException 이 발생한다.")
+    void 메뉴_상품의_상품이_DB에_있는지_확인하고_없으면_ProductNotExistException이_발생한다() {
         // given
         MenuCreate menuCreate = new MenuCreate("menu", new Price(0),
                 menuGroup.getId(), Arrays.asList(양념치킨));
@@ -101,7 +102,8 @@ class MenuServiceTest {
         when(productRepository.findAllById(Arrays.asList(양념치킨.getProductId()))).thenReturn(Arrays.asList());
 
         // then
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuCreate));
+        assertThatExceptionOfType(ProductNotExistException.class)
+                .isThrownBy(() -> menuService.create(menuCreate));
 
         verify(menuGroupRepository, VerificationModeFactory.times(1))
                 .findById(menuGroup.getId());
@@ -110,8 +112,8 @@ class MenuServiceTest {
     }
 
     @Test
-    @DisplayName("create - 메뉴의 가격이 메뉴 상품의 금액 합계보다 크면 IllegalArgumentException 이 발생한다.")
-    void 메뉴의_가격이_메뉴_상품의_금액_합계보다_크면_IllegalArgumentException이_발생한다() {
+    @DisplayName("create - 메뉴의 가격이 메뉴 상품의 금액 합계보다 크면 MenuCheapException 이 발생한다.")
+    void 메뉴의_가격이_메뉴_상품의_금액_합계보다_크면_MenuCheapException이_발생한다() {
         // given
         MenuCreate menuCreate = new MenuCreate("menu", new Price(2000),
                 menuGroup.getId(), Arrays.asList(양념치킨));
@@ -122,8 +124,8 @@ class MenuServiceTest {
                 .thenReturn(Arrays.asList(양념치킨_1000원));
 
         // when & then
-
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuCreate));
+        assertThatExceptionOfType(MenuCheapException.class)
+                .isThrownBy(() -> menuService.create(menuCreate));
 
         verify(menuGroupRepository, VerificationModeFactory.times(1)).findById(menuGroup.getId());
         verify(productRepository, VerificationModeFactory.times(1))
