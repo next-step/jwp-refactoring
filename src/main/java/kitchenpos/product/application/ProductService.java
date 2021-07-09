@@ -25,6 +25,7 @@ public class ProductService {
                 new Product(productRequest.getName(), BigDecimal.valueOf(productRequest.getPrice()))));
     }
 
+    @Transactional(readOnly = true)
     public List<ProductResponse> list() {
         List<Product> products = productRepository.findAll();
         return products.stream()

@@ -58,6 +58,7 @@ public class OrderService {
         return menuRepository.findAllById(orderLineItems.toMenuIds()).size();
     }
 
+    @Transactional(readOnly = true)
     public List<OrderResponse> list() {
         final List<Order> orders = orderRepository.findAll();
         return orders.stream()

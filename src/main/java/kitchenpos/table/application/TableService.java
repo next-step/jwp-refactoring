@@ -29,6 +29,7 @@ public class TableService {
                 new OrderTable(null, orderTableRequest.getNumberOfGuests(), orderTableRequest.isEmpty())));
     }
 
+    @Transactional(readOnly = true)
     public List<OrderTableResponse> list() {
         List<OrderTable> tables = orderTableRepository.findAll();
         return tables.stream()
