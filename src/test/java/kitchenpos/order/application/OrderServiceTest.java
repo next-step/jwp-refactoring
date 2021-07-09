@@ -1,7 +1,5 @@
 package kitchenpos.order.application;
 
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuRepository;
@@ -13,6 +11,8 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemDto;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,7 +46,7 @@ class OrderServiceTest {
     private OrderLineItemRepository orderLineItemRepository;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private OrderService orderService;
@@ -73,7 +73,7 @@ class OrderServiceTest {
 
         given(menuRepository.countByIdIn(any())).willReturn(1);
         given(menuRepository.findById(any())).willReturn(Optional.of(menu));
-        given(orderTableDao.findById(any())).willReturn(Optional.of(new OrderTable()));
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(new OrderTable(1L, 1, true)));
         given(orderRepository.save(any())).willReturn(order);
 
         // when
@@ -105,7 +105,7 @@ class OrderServiceTest {
         OrderRequest orderRequest = new OrderRequest(1L, new ArrayList<>());
 
         given(menuRepository.countByIdIn(any())).willReturn(order.getOrderLineItems().size());
-        given(orderTableDao.findById(any())).willReturn(Optional.empty());
+        given(orderTableRepository.findById(any())).willReturn(Optional.empty());
 
         // when & then
         assertThatThrownBy(() -> orderService.create(orderRequest))
