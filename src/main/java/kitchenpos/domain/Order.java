@@ -11,6 +11,16 @@ public class Order {
     private LocalDateTime orderedTime;
     private List<OrderLineItem> orderLineItems;
 
+    public Order() {
+    }
+
+    public Order(Long orderTableId, String orderStatus, List<OrderLineItem> orderLineItems) {
+        this.orderTableId = orderTableId;
+        this.orderStatus = orderStatus;
+        this.orderLineItems = orderLineItems;
+        this.orderedTime = LocalDateTime.now();
+    }
+
     public Long getId() {
         return id;
     }
@@ -57,5 +67,9 @@ public class Order {
         }
 
         this.orderStatus = orderStatus.name();
+    }
+
+    public boolean isNotCompleted() {
+        return !Objects.equals(orderStatus, OrderStatus.COMPLETION.name());
     }
 }
