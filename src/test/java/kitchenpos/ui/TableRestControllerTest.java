@@ -1,5 +1,6 @@
 package kitchenpos.ui;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.TableService;
 import kitchenpos.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,13 +10,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -27,7 +32,10 @@ class TableRestControllerTest {
     private OrderTable table4;
 
     @Autowired
-    private TestRestTemplate testRestTemplate;
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @MockBean
     private TableService tableService;
@@ -57,32 +65,28 @@ class TableRestControllerTest {
 
     @DisplayName("테이블 정보를 등록한다")
     @Test
-    void create() {
+    void create() throws Exception {
         // given
         given(tableService.create(any())).willReturn(table);
 
-        // when
-        OrderTable actual = testRestTemplate.postForObject("/api/tables", table, OrderTable.class);
-
-        // then
-        assertThat(actual.getNumberOfGuests()).isZero();
-        assertThat(actual.isEmpty()).isTrue();
+        // when then
+        mockMvc.perform(post("/api/tables")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(table)))
+                .andDo(print())
+                .andExpect(status().isCreated());
     }
 
     @DisplayName("등록한 테이블 목록을 조회한다")
     @Test
-    void list() {
+    void list() throws Exception {
         // given
         given(tableService.list()).willReturn(Arrays.asList(table, table2, table3, table4));
 
-        // when
-        OrderTable[] tables = testRestTemplate.getForObject("/api/tables", OrderTable[].class);
-
-        // then
-        long[] actual = Arrays.stream(tables)
-                .mapToLong(OrderTable::getId)
-                .toArray();
-        assertThat(actual).isEqualTo(new long[]{1L, 2L, 3L, 4L});
+        // when then
+        mockMvc.perform(get("/api/tables"))
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 
 }
