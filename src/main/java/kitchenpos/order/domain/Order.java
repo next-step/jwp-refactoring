@@ -50,11 +50,6 @@ public class Order {
     }
 
     public static Order newOrder(OrderTable orderTable, LocalDateTime orderedTime, List<OrderLineItem> newOrderLineItems) {
-
-        if (orderTable.isEmpty()) {
-            throw new UnableOrderCausedByEmptyTableException("빈테이블은 주문을 할수 없습니다.");
-        }
-
         return new Order(orderTable.getId(), OrderStatus.COOKING, orderedTime, newOrderLineItems);
     }
 
