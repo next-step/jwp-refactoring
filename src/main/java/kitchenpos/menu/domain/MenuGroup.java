@@ -13,9 +13,6 @@ public class MenuGroup {
     @Column(name = "name")
     private String name;
 
-//    @Embedded
-//    private Menus menus;
-
     public MenuGroup() {
     }
 
