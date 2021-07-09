@@ -22,7 +22,10 @@ public class Menu {
     @Embedded
     private MenuProducts menuProducts;
 
-    protected Menu() {
+    private static final String BASIC_PRICE_EXCEPTION = "금액은 0보다 작거나 null일 수 없습니다.";
+    private static final String PRICE_LIMIT_EXCEPTION = "금액은 메뉴 상품들의 총 가격 보다 클 수 없습니다.";
+
+   protected Menu() {
     }
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup, Long sum, List<MenuProduct> menuProducts) {
@@ -42,13 +45,13 @@ public class Menu {
 
     public void validatePrice(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalPriceException("금액은 0보다 작거나 null일 수 없습니다.");
+            throw new IllegalPriceException(BASIC_PRICE_EXCEPTION);
         }
     }
 
     public void validateLimitPrice(long sumPrice) {
         if (price.compareTo(BigDecimal.valueOf(sumPrice)) > 0) {
-            throw new IllegalPriceException("금액은 메뉴 상품들의 총 가격 보다 클 수 없습니다.");
+            throw new IllegalPriceException(PRICE_LIMIT_EXCEPTION);
         }
     }
 

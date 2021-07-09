@@ -1,6 +1,8 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.menu.domain.*;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
@@ -36,8 +38,9 @@ public class MenuService {
         Products products = new Products(productRepository.findAllById(menuProducts.toMenuProductIds()));
         Long sum = products.calculateSumPrice(menuRequest.getMenuProducts());
 
-        return MenuResponse.from(menuRepository.save(new Menu(menuRequest.getName(), BigDecimal.valueOf(menuRequest.getPrice()),
-                findMenuGroup(menuRequest), sum, menuRequest.getMenuProducts())));
+        return MenuResponse.from(menuRepository.save(
+                new Menu(menuRequest.getName(), BigDecimal.valueOf(menuRequest.getPrice()), findMenuGroup(menuRequest),
+                        sum, menuRequest.getMenuProducts())));
     }
 
     private MenuGroup findMenuGroup(MenuRequest menuRequest) {

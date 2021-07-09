@@ -25,7 +25,7 @@ public class OrderLineItems {
 
     private void checkEmptyOrderLineItems(List<OrderLineItem> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new NotOrderLineItemsException("주문 내역이 없습니다.");
+            throw new NotOrderLineItemsException();
         }
     }
 
