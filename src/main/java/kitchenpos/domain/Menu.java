@@ -11,9 +11,14 @@ public class Menu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
+
     private String name;
-    private BigDecimal price;
+
+    @Embedded
+    private Price price;
+
     private Long menuGroupId;
+
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL)
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
@@ -31,21 +36,14 @@ public class Menu {
     }
 
     public Menu(String name, BigDecimal price, Long menuGroupId) {
-        verifyAvailable(price);
         this.name = name;
-        this.price = price;
+        this.price = new Price(price);
         this.menuGroupId = menuGroupId;
     }
 
     public Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         this(name, price, menuGroupId);
         menuProducts.forEach(this::addMenuProduct);
-    }
-
-    private void verifyAvailable(BigDecimal price) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
     }
 
     public void addMenuProduct(MenuProduct menuProduct) {
@@ -63,7 +61,7 @@ public class Menu {
         return name;
     }
 
-    public BigDecimal getPrice() {
+    public Price getPrice() {
         return price;
     }
 

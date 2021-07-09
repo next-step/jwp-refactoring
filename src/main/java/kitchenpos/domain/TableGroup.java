@@ -13,9 +13,11 @@ public class TableGroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
+
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdDate;
+
     @OneToMany(mappedBy = "tableGroup")
     private List<OrderTable> orderTables;
 

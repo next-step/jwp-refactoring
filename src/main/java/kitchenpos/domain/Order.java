@@ -14,12 +14,16 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
+
     private Long orderTableId;
+
     @Enumerated(value = EnumType.STRING)
     private OrderStatus orderStatus;
+
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime orderedTime;
+
     @OneToMany(mappedBy = "order")
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 

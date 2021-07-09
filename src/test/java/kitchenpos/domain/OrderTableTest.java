@@ -27,7 +27,7 @@ public class OrderTableTest {
     @Test
     public void 단체지정이되어있는경우_빈테이블여부_변경_예외() throws Exception {
         //given
-        OrderTable orderTable = new OrderTable(1L, new TableGroup(1L, Arrays.asList()), 5, false);
+        OrderTable orderTable = new OrderTable(1L, new TableGroup(1L), 5, false);
 
         //when
         //then
