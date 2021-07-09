@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.menugroup.application;
 
 import kitchenpos.menugroup.dao.MenuGroupDao;
 import kitchenpos.menugroup.domain.MenuGroup;
@@ -18,7 +18,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class MenuGroupServiceTest {
+class MenuGroupServiceMockTest {
     @Mock
     private MenuGroupDao menuGroupDao;
 

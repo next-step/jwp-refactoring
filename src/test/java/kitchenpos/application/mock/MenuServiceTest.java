@@ -1,5 +1,6 @@
-package kitchenpos.application;
+package kitchenpos.application.mock;
 
+import kitchenpos.application.MenuService;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.menugroup.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;

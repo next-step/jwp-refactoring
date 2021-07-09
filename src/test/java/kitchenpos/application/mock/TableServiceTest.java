@@ -1,5 +1,6 @@
-package kitchenpos.application;
+package kitchenpos.application.mock;
 
+import kitchenpos.application.TableService;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderTable;

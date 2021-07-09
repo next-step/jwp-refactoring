@@ -1,5 +1,6 @@
-package kitchenpos.application;
+package kitchenpos.application.mock;
 
+import kitchenpos.application.ProductService;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
