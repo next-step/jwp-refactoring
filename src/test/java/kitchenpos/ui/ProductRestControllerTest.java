@@ -1,11 +1,12 @@
 package kitchenpos.ui;
 
+import static kitchenpos.domain.ProductTest.*;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.math.BigInteger;
+import java.math.BigDecimal;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,16 +36,15 @@ class ProductRestControllerTest {
     @Test
     @DisplayName("제품을 생성한다")
     void create() throws Exception {
-        ProductRequest request = new ProductRequest("강정치킨", BigInteger.valueOf(17000));
+        ProductRequest request = new ProductRequest("강정치킨", BigDecimal.valueOf(17000));
         mockMvc.perform(post("/api/products")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(request)))
             .andDo(print())
             .andExpect(status().isCreated())
-            .andExpect(jsonPath("$").exists())
             .andExpect(jsonPath("$.id").exists())
-            .andExpect(jsonPath("$.name").value("강정치킨"))
-            .andExpect(jsonPath("$.price").value(17000));
+            .andExpect(jsonPath("$.name").value(request.getName()))
+            .andExpect(jsonPath("$.price").value(request.getPrice().longValue()));
     }
 
     @Test
@@ -54,7 +54,7 @@ class ProductRestControllerTest {
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$").exists())
-            .andExpect(jsonPath("$[0].id").value(1))
-            .andExpect(jsonPath("$[0].name").value("후라이드"));
+            .andExpect(jsonPath("$[0].id").value(후라이드.getId()))
+            .andExpect(jsonPath("$[0].name").value(후라이드.getName()));
     }
 }

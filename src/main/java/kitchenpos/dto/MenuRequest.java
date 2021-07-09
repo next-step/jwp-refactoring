@@ -1,15 +1,30 @@
 package kitchenpos.dto;
 
-import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.util.List;
 
+import kitchenpos.domain.Price;
+
 public class MenuRequest {
+    private Long id;
     private String name;
-    private BigInteger price;
+    private BigDecimal price;
     private Long menuGroupId;
     private List<MenuProductRequest> menuProducts;
 
-    public MenuRequest(String name, BigInteger price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
+    public MenuRequest() {
+    }
+
+    public MenuRequest(String name, BigDecimal price, Long menuGroupId) {
+        this(null, name, price, menuGroupId, null);
+    }
+
+    public MenuRequest(String name, BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
+        this(null, name, price, menuGroupId, menuProducts);
+    }
+
+    public MenuRequest(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
+        this.id = id;
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
@@ -24,11 +39,15 @@ public class MenuRequest {
         this.name = name;
     }
 
-    public BigInteger getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(BigInteger price) {
+    public Price price() {
+        return Price.valueOf(price);
+    }
+
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 

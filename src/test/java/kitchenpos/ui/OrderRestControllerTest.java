@@ -1,5 +1,8 @@
 package kitchenpos.ui;
 
+import static kitchenpos.domain.OrderStatus.*;
+import static kitchenpos.domain.OrderTableTest.*;
+import static kitchenpos.domain.OrderTest.*;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
@@ -23,7 +26,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
-import kitchenpos.dto.OrderTableRequest;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -42,20 +44,16 @@ class OrderRestControllerTest {
     @Order(1)
     @DisplayName("주문을 생성한다")
     void create() throws Exception {
-        Long orderTableId = 1L;
-
-        OrderTableRequest orderTableRequest = new OrderTableRequest(false);
-        mockMvc.perform(put("/api/tables/{id}/empty", orderTableId)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(orderTableRequest)));
-
         OrderLineItemRequest orderLineItem = new OrderLineItemRequest(1L, 1);
-        OrderRequest request = new OrderRequest(orderTableId, Arrays.asList(orderLineItem));
+        OrderRequest request = new OrderRequest(테이블12_사용중_주문전.getId(), Arrays.asList(orderLineItem));
         mockMvc.perform(post("/api/orders")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(request)))
             .andDo(print())
-            .andExpect(status().isCreated());
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.id").exists())
+            .andExpect(jsonPath("$.orderTableId").value(테이블12_사용중_주문전.getId()))
+            .andExpect(jsonPath("$.orderStatus").value(COOKING.name()));
     }
 
     @Test
@@ -65,25 +63,25 @@ class OrderRestControllerTest {
         mockMvc.perform(get("/api/orders"))
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$").exists())
-            .andExpect(jsonPath("$[0].id").value(1))
-            .andExpect(jsonPath("$[0].orderTableId").value(1))
-            .andExpect(jsonPath("$[0].orderStatus").value("COOKING"));
+            .andExpect(jsonPath("$[0].id").value(테이블9주문.getId()))
+            .andExpect(jsonPath("$[0].orderTableId").value(테이블9_사용중.getId()))
+            .andExpect(jsonPath("$[0].orderStatus").value(테이블9주문.getOrderStatus().name()));
     }
 
     @Test
     @Order(3)
     @DisplayName("특정 주문의 상태를 변경한다")
     void changeOrderStatus() throws Exception {
-        OrderRequest request = new OrderRequest("MEAL");
-        mockMvc.perform(put("/api/orders/{id}/order-status", 1L)
+        OrderRequest request = new OrderRequest(COMPLETION);
+
+        String content = objectMapper.writeValueAsString(request);
+        mockMvc.perform(put("/api/orders/{id}/order-status", 테이블10주문.getId())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(request)))
+            .content(content))
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$").exists())
-            .andExpect(jsonPath("$.id").value(1))
-            .andExpect(jsonPath("$.orderTableId").value(1))
-            .andExpect(jsonPath("$.orderStatus").value("MEAL"));
+            .andExpect(jsonPath("$.id").value(테이블10주문.getId()))
+            .andExpect(jsonPath("$.orderTableId").value(테이블10_사용중.getId()))
+            .andExpect(jsonPath("$.orderStatus").value(request.getOrderStatus().name()));
     }
 }

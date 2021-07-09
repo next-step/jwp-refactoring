@@ -1,23 +1,23 @@
 package kitchenpos.dto;
 
+import kitchenpos.domain.NumberOfGuests;
+import kitchenpos.domain.OrderTable;
+
 public class OrderTableRequest {
     private Long id;
     private int numberOfGuests;
     private boolean empty;
 
-    public OrderTableRequest(Long id) {
-        this.id = id;
-    }
-
-    public OrderTableRequest(int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
-    }
-
-    public OrderTableRequest(boolean empty) {
-        this.empty = empty;
+    public OrderTableRequest() {
     }
 
     public OrderTableRequest(int numberOfGuests, boolean empty) {
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
+
+    public OrderTableRequest(Long id, int numberOfGuests, boolean empty) {
+        this.id = id;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
@@ -34,6 +34,10 @@ public class OrderTableRequest {
         return numberOfGuests;
     }
 
+    public NumberOfGuests numberOfGuests() {
+        return NumberOfGuests.of(numberOfGuests);
+    }
+
     public void setNumberOfGuests(int numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
     }
@@ -44,5 +48,9 @@ public class OrderTableRequest {
 
     public void setEmpty(boolean empty) {
         this.empty = empty;
+    }
+
+    public OrderTable toEntity() {
+        return new OrderTable(numberOfGuests(), empty);
     }
 }

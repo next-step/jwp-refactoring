@@ -1,42 +1,51 @@
 package kitchenpos.domain;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
 public class TableGroup {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDateTime createdDate;
-    private List<OrderTable> orderTables;
 
-    public TableGroup() {
+    @Embedded
+    private OrderTables orderTables = new OrderTables();
+
+    @Column(nullable = false)
+    private LocalDateTime createdDate = LocalDateTime.now();
+
+    protected TableGroup() {
     }
 
-    public TableGroup(Long id, List<OrderTable> orderTables) {
+    public TableGroup(OrderTables orderTables) {
+        this(null, orderTables);
+    }
+
+    public TableGroup(Long id, OrderTables orderTables) {
         this.id = id;
-        this.orderTables = orderTables;
+        this.orderTables = orderTables.withTableGroup(this);
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
+    public OrderTables getOrderTables() {
+        return orderTables;
     }
 
     public LocalDateTime getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(final LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public List<OrderTable> getOrderTables() {
-        return orderTables;
-    }
-
-    public void setOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
+    public void ungroup() {
+        orderTables.ungroup();
     }
 }

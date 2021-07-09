@@ -1,5 +1,6 @@
 package kitchenpos.ui;
 
+import static kitchenpos.domain.OrderTableTest.*;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
@@ -19,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import kitchenpos.domain.OrderTableTest;
 import kitchenpos.dto.OrderTableRequest;
 
 @SpringBootTest
@@ -44,6 +46,7 @@ class TableRestControllerTest {
             .content(objectMapper.writeValueAsString(request)))
             .andDo(print())
             .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.id").exists())
             .andExpect(jsonPath("$.numberOfGuests").value(request.getNumberOfGuests()))
             .andExpect(jsonPath("$.empty").value(request.isEmpty()));
     }
@@ -56,17 +59,17 @@ class TableRestControllerTest {
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$").exists())
-            .andExpect(jsonPath("$[0].id").value(1))
-            .andExpect(jsonPath("$[0].numberOfGuests").value(0))
-            .andExpect(jsonPath("$[0].empty").value(true));
+            .andExpect(jsonPath("$[0].id").value(테이블1.getId()))
+            .andExpect(jsonPath("$[0].numberOfGuests").value(테이블1.getNumberOfGuests().value()))
+            .andExpect(jsonPath("$[0].empty").value(테이블1.isEmpty()));
     }
 
     @Test
     @Order(3)
     @DisplayName("특정 테이블의 상태를 변경한다")
     void changeEmpty() throws Exception {
-        OrderTableRequest request = new OrderTableRequest(false);
-        mockMvc.perform(put("/api/tables/{id}/empty", 1L)
+        OrderTableRequest request = new OrderTableRequest(10, false);
+        mockMvc.perform(put("/api/tables/{id}/empty", 테이블5.getId())
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(request)))
             .andDo(print())
@@ -78,8 +81,8 @@ class TableRestControllerTest {
     @Order(4)
     @DisplayName("특정 테이블의 손님 수를 변경한다")
     void changeNumberOfGuests() throws Exception {
-        OrderTableRequest request = new OrderTableRequest(10);
-        mockMvc.perform(put("/api/tables/{id}/number-of-guests", 1L)
+        OrderTableRequest request = new OrderTableRequest(10, false);
+        mockMvc.perform(put("/api/tables/{id}/number-of-guests", 테이블9_사용중.getId())
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(request)))
             .andDo(print())

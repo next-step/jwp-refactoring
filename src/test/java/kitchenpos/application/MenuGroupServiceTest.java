@@ -1,14 +1,13 @@
 package kitchenpos.application;
 
-import static java.util.stream.Collectors.*;
-import static kitchenpos.utils.UnitTestData.*;
+import static kitchenpos.domain.MenuGroupTest.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,9 +15,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
-import kitchenpos.utils.UnitTestData;
+import kitchenpos.domain.MenuGroupRepository;
+import kitchenpos.domain.MenuGroupTest;
+import kitchenpos.dto.MenuGroupRequest;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("메뉴 그룹 서비스")
@@ -28,38 +28,36 @@ class MenuGroupServiceTest {
     MenuGroupService menuGroupService;
 
     @Mock
-    MenuGroupDao menuGroupDao;
-
-    @BeforeEach
-    void setUp() {
-        UnitTestData.reset();
-    }
+    MenuGroupRepository menuGroupRepository;
 
     @Test
     @DisplayName("메뉴 그룹을 생성한다")
     void create() {
         // given
-        when(menuGroupDao.save(추천메뉴)).thenReturn(추천메뉴);
+        MenuGroupRequest 바베큐치킨메뉴_요청 = new MenuGroupRequest("바베큐치킨메뉴");
+        MenuGroup 바베큐치킨메뉴 = new MenuGroup(100L, "바베큐치킨메뉴");
+        when(menuGroupRepository.save(any())).thenReturn(바베큐치킨메뉴);
 
         // when
-        MenuGroup savedGroup = menuGroupService.create(추천메뉴);
+        MenuGroup savedGroup = menuGroupService.create(바베큐치킨메뉴_요청);
 
         // then
-        assertEquals(추천메뉴, savedGroup);
+        assertThat(savedGroup.getId()).isEqualTo(바베큐치킨메뉴.getId());
+        assertThat(savedGroup.getName()).isEqualTo(바베큐치킨메뉴.getName());
     }
 
     @Test
     @DisplayName("메뉴 그룹 목록을 가져온다")
     void list() {
         // given
-        List<MenuGroup> groups = Stream.of(추천메뉴, 베스트메뉴, 세트메뉴)
-            .collect(toList());
-        when(menuGroupDao.findAll()).thenReturn(groups);
+        List<MenuGroup> groups = Arrays.asList(두마리메뉴, 한마리메뉴, 순살파닭두마리메뉴);
+        when(menuGroupRepository.findAll()).thenReturn(groups);
 
         // when
         List<MenuGroup> allGroups = menuGroupService.list();
 
         // then
+        assertThat(allGroups).containsExactly(두마리메뉴, 한마리메뉴, 순살파닭두마리메뉴);
         assertIterableEquals(groups, allGroups);
     }
 }

@@ -1,5 +1,7 @@
 package kitchenpos.ui;
 
+import static kitchenpos.domain.MenuGroupTest.*;
+import static kitchenpos.domain.MenuTest.*;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
@@ -38,7 +40,9 @@ class MenuGroupRestControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(request)))
             .andDo(print())
-            .andExpect(status().isCreated());
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.id").exists())
+            .andExpect(jsonPath("$.name").value(request.getName()));
     }
 
     @Test
@@ -48,7 +52,10 @@ class MenuGroupRestControllerTest {
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$").exists())
-            .andExpect(jsonPath("$[0].id").value(1))
-            .andExpect(jsonPath("$[0].name").value("두마리메뉴"));
+            .andExpect(jsonPath("$[1].id").value(한마리메뉴.getId()))
+            .andExpect(jsonPath("$[1].name").value(한마리메뉴.getName()))
+            .andExpect(jsonPath("$[1].menus[0].name").value(후라이드_메뉴.getName()))
+            .andExpect(jsonPath("$[1].menus[0].price").value(후라이드_메뉴.getPrice().longValue()))
+            .andExpect(jsonPath("$[1].menus[0].menuGroupId").value(후라이드_메뉴.getMenuGroup().getId()));
     }
 }

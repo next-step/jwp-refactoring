@@ -72,7 +72,7 @@
   - DB의 주문 테이블 중 조리, 식사 상태가 존재할 경우 예외 발생
 
 
-### 테이블(tables)
+### 주문 테이블(order tables)
 
 - `POST /api/tables`: 테이블을 생성한다.
 - `GET /api/tables`: 테이블 목록을 가져온다.

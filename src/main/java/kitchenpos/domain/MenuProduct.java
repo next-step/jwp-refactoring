@@ -1,54 +1,81 @@
 package kitchenpos.domain;
 
+import java.util.Objects;
+
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import kitchenpos.exception.AlreadyAllocatedException;
+
+@Entity
 public class MenuProduct {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "seq")
     private Long seq;
-    private Long menuId;
-    private Long productId;
-    private long quantity;
 
-    public MenuProduct() {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false, foreignKey = @ForeignKey(name = "fk_menu_product_menu"))
+    private Menu menu;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false, foreignKey = @ForeignKey(name = "fk_menu_product_product"))
+    private Product product;
+
+    @Embedded
+    @Column(nullable = false)
+    private Quantity quantity;
+
+    protected MenuProduct() {
     }
 
-    public MenuProduct(Long productId, long quantity) {
-        this(null, null, productId, quantity);
+    public MenuProduct(Product product, Quantity quantity) {
+        this(null, product, quantity);
     }
 
-    public MenuProduct(Long seq, Long menuId, Long productId, long quantity) {
-        this.seq = seq;
-        this.menuId = menuId;
-        this.productId = productId;
+    private MenuProduct(Menu menu, Product product, Quantity quantity) {
+        this.menu = menu;
+        this.product = product;
         this.quantity = quantity;
+    }
+
+    public MenuProduct withMenu(Menu menu) {
+        checkAllocation();
+        this.menu = menu;
+        return this;
+    }
+
+    private void checkAllocation() {
+        if (Objects.nonNull(this.menu)) {
+            throw new AlreadyAllocatedException("매핑 정보의 메뉴를 재 할당 할 수 없습니다.");
+        }
+    }
+
+    public Price getTotalPrice() {
+        return product.priceOf(quantity);
     }
 
     public Long getSeq() {
         return seq;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
+    public Menu getMenu() {
+        return menu;
     }
 
-    public Long getMenuId() {
-        return menuId;
+    public Product getProduct() {
+        return product;
     }
 
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
-    }
-
-    public Long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(final Long productId) {
-        this.productId = productId;
-    }
-
-    public long getQuantity() {
+    public Quantity getQuantity() {
         return quantity;
-    }
-
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
     }
 }

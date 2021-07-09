@@ -1,6 +1,8 @@
 package kitchenpos.application;
 
-import static kitchenpos.utils.UnitTestData.*;
+import static kitchenpos.domain.MenuTest.*;
+import static kitchenpos.domain.OrderStatus.*;
+import static kitchenpos.domain.OrderTableTest.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -17,14 +19,19 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.domain.NumberOfGuests;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderLineItems;
+import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.utils.UnitTestData;
+import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.Quantity;
+import kitchenpos.dto.OrderLineItemRequest;
+import kitchenpos.dto.OrderRequest;
+import kitchenpos.exception.IllegalOperationException;
+import kitchenpos.exception.OrderNotFoundException;
+import kitchenpos.exception.OrderTableNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("주문 서비스")
@@ -34,157 +41,151 @@ class OrderServiceTest {
     OrderService orderService;
 
     @Mock
-    MenuDao menuDao;
+    MenuService menuService;
     @Mock
-    OrderDao orderDao;
+    TableService tableService;
     @Mock
-    OrderLineItemDao orderLineItemDao;
-    @Mock
-    OrderTableDao orderTableDao;
+    OrderRepository orderRepository;
 
-    OrderLineItem 신규_주문_치쏘세트;
-    OrderLineItem 신규_주문_피맥세트;
+    OrderTable 테이블100_사용중 = new OrderTable(100L, NumberOfGuests.of(4), false);
 
-    Order 신규_주문;
+    OrderLineItemRequest 후라이드_한마리_요청;
+    OrderLineItemRequest 양념치킨_한마리_요청;
+    OrderRequest 양념_후라이드_각_한마리_요청;
+
+    OrderLineItem 후라이드_한마리;
+    OrderLineItem 양념치킨_한마리;
+    Order 양념_후라이드_각_한마리;
 
     @BeforeEach
     void setUp() {
-        UnitTestData.reset();
+        후라이드_한마리_요청 = new OrderLineItemRequest(후라이드_메뉴.getId(), 1);
+        양념치킨_한마리_요청 = new OrderLineItemRequest(양념치킨_메뉴.getId(), 1);
+        양념_후라이드_각_한마리_요청 = new OrderRequest(테이블100_사용중.getId(), Arrays.asList(후라이드_한마리_요청, 양념치킨_한마리_요청));
 
-        신규_주문_치쏘세트 = new OrderLineItem(치쏘세트.getId(), 2);
-        신규_주문_피맥세트 = new OrderLineItem(피맥세트.getId(), 1);
-
-        신규_주문 = new Order(1L, 테이블1번_USING.getId(),
-            Arrays.asList(신규_주문_치쏘세트, 신규_주문_피맥세트));
+        후라이드_한마리 = new OrderLineItem(후라이드_메뉴, Quantity.valueOf(1));
+        양념치킨_한마리 = new OrderLineItem(양념치킨_메뉴, Quantity.valueOf(1));
+        양념_후라이드_각_한마리
+            = new Order(100L, COOKING, OrderLineItems.of(후라이드_한마리, 양념치킨_한마리));
+        테이블100_사용중.addOrder(양념_후라이드_각_한마리);
     }
 
     @Test
     @DisplayName("주문을 생성한다")
     void create() {
         // given
-        when(menuDao.countByIdIn(any())).thenReturn(2L);
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(테이블1번_USING));
-        when(orderDao.save(신규_주문)).thenReturn(신규_주문);
-        when(orderLineItemDao.save(신규_주문_치쏘세트)).thenReturn(신규_주문_치쏘세트);
-        when(orderLineItemDao.save(신규_주문_피맥세트)).thenReturn(신규_주문_피맥세트);
+        when(tableService.findById(테이블100_사용중.getId())).thenReturn(테이블100_사용중);
 
         // when
-        Order savedOrder = orderService.create(신규_주문);
+        Order savedOrder = orderService.create(양념_후라이드_각_한마리_요청);
 
         // then
-        assertThat(savedOrder.getId()).isEqualTo(신규_주문.getId());
-        assertThat(savedOrder.getOrderTableId()).isEqualTo(신규_주문.getOrderTableId());
-        assertThat(savedOrder.getOrderLineItems()).containsExactly(신규_주문_치쏘세트, 신규_주문_피맥세트);
+        assertThat(savedOrder.getOrderTable().getId()).isEqualTo(테이블100_사용중.getId());
+        assertThat(savedOrder.getOrderLineItems().contains(후라이드_한마리)).isTrue();
+        assertThat(savedOrder.getOrderLineItems().contains(양념치킨_한마리)).isTrue();
     }
 
     @Test
     @DisplayName("주문 생성 실패(주문 항목 비어있음)")
     void create_failed1() {
         // given
-        신규_주문 = new Order(1L, 테이블1번_USING.getId(), Collections.emptyList());
+        OrderRequest 주문내역이_없는_주문 = new OrderRequest(테이블100_사용중.getId(), Collections.emptyList());
+        when(tableService.findById(테이블100_사용중.getId())).thenReturn(테이블100_사용중);
 
         // then
-        assertThatThrownBy(() -> orderService.create(신규_주문))
+        assertThatThrownBy(() -> orderService.create(주문내역이_없는_주문))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    @DisplayName("주문 생성 실패(항목 갯수 불일치")
+    @DisplayName("주문 생성 실패(메뉴가 존재하지 않음")
     void create_failed2() {
         // given
-        when(menuDao.countByIdIn(any())).thenReturn(4L);
+        when(menuService.findById(any())).thenThrow(OrderTableNotFoundException.class);
 
         // then
-        assertThatThrownBy(() -> orderService.create(신규_주문))
-            .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(양념_후라이드_각_한마리_요청))
+            .isInstanceOf(OrderTableNotFoundException.class);
     }
 
     @Test
     @DisplayName("주문 생성 실패(테이블 없음)")
     void create_failed3() {
         // given
-        when(menuDao.countByIdIn(any())).thenReturn(2L);
-        when(orderTableDao.findById(any())).thenReturn(Optional.empty());
+        when(tableService.findById(any())).thenThrow(OrderTableNotFoundException.class);
 
         // then
-        assertThatThrownBy(() -> orderService.create(신규_주문))
-            .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(양념_후라이드_각_한마리_요청))
+            .isInstanceOf(OrderTableNotFoundException.class);
     }
 
     @Test
     @DisplayName("주문 생성 실패(테이블이 empty)")
     void create_failed4() {
         // given
-        when(menuDao.countByIdIn(any())).thenReturn(2L);
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(테이블3번_EMPTY));
+        when(tableService.findById(any())).thenReturn(테이블3);
 
         // then
-        assertThatThrownBy(() -> orderService.create(신규_주문))
-            .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(양념_후라이드_각_한마리_요청))
+            .isInstanceOf(IllegalOperationException.class);
     }
 
     @Test
     @DisplayName("주문 목록을 가져온다")
     void list() {
         // given
-        when(orderDao.findAll()).thenReturn(Arrays.asList(주문1_결제완료, 주문2_식사중));
-        when(orderLineItemDao.findAllByOrderId(주문1_결제완료.getId()))
-            .thenReturn(주문1_결제완료.getOrderLineItems());
-        when(orderLineItemDao.findAllByOrderId(주문2_식사중.getId()))
-            .thenReturn(주문2_식사중.getOrderLineItems());
+        Order 양념_후라이드_추가 = new Order(1L, COOKING, OrderLineItems.of(후라이드_한마리, 양념치킨_한마리));
+        테이블100_사용중.addOrder(양념_후라이드_추가);
+        when(orderRepository.findAll()).thenReturn(Arrays.asList(양념_후라이드_각_한마리, 양념_후라이드_추가));
 
         // when
         List<Order> orders = orderService.list();
 
         // then
         assertThat(orders.size()).isEqualTo(2);
-        assertThat(orders).containsExactly(주문1_결제완료, 주문2_식사중);
+        assertThat(orders).containsExactly(양념_후라이드_각_한마리, 양념_후라이드_추가);
     }
 
     @Test
     @DisplayName("주문 상태를 변경한다")
     void changeOrderStatus() {
         // given
-        Order 조리중인_주문 = new Order(1L, 테이블2번_USING.getId(), OrderStatus.COOKING.name(),
-            Arrays.asList(신규_주문_치쏘세트, 신규_주문_피맥세트));
-        Order 식사중인_주문 = new Order(OrderStatus.MEAL.name());
-        when(orderDao.findById(any())).thenReturn(Optional.of(조리중인_주문));
-        when(orderLineItemDao.findAllByOrderId(조리중인_주문.getId()))
-            .thenReturn(조리중인_주문.getOrderLineItems());
+        Order 조리중인_주문 = 양념_후라이드_각_한마리;
+        OrderRequest 식사중_상태 = new OrderRequest(OrderStatus.MEAL);
+        when(orderRepository.findById(any())).thenReturn(Optional.of(조리중인_주문));
 
         // when
-        Order changedOrder = orderService.changeOrderStatus(조리중인_주문.getId(), 식사중인_주문);
+        Order changedOrder = orderService.changeOrderStatus(조리중인_주문.getId(), 식사중_상태);
 
         // then
         assertThat(changedOrder.getId()).isEqualTo(조리중인_주문.getId());
-        assertThat(changedOrder.getOrderStatus()).isEqualTo(식사중인_주문.getOrderStatus());
+        assertThat(changedOrder.getOrderStatus()).isEqualTo(식사중_상태.getOrderStatus());
     }
 
     @Test
     @DisplayName("주문 상태 변경 실패(주문이 존재하지 않음)")
     void changeOrderStatus_failed1() {
         // given
-        Order 조리중인_주문 = new Order(1L, 테이블2번_USING.getId(), OrderStatus.COOKING.name(),
-            Arrays.asList(신규_주문_치쏘세트, 신규_주문_피맥세트));
-        Order 식사중인_주문 = new Order(OrderStatus.MEAL.name());
-        when(orderDao.findById(any())).thenReturn(Optional.empty());
+        Order 조리중인_주문 = 양념_후라이드_각_한마리;
+        OrderRequest 식사중_상태 = new OrderRequest(OrderStatus.MEAL);
+        when(orderRepository.findById(any())).thenReturn(Optional.empty());
 
         // then
-        assertThatThrownBy(() -> orderService.changeOrderStatus(조리중인_주문.getId(), 식사중인_주문))
-            .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.changeOrderStatus(조리중인_주문.getId(), 식사중_상태))
+            .isInstanceOf(OrderNotFoundException.class);
     }
 
     @Test
     @DisplayName("주문 상태 변경 실패(계산완료 상태)")
     void changeOrderStatus_failed2() {
         // given
-        Order 계산완료_주문 = new Order(1L, 테이블2번_USING.getId(), OrderStatus.COMPLETION.name(),
-            Arrays.asList(신규_주문_치쏘세트, 신규_주문_피맥세트));
-        Order 식사중인_주문 = new Order(OrderStatus.MEAL.name());
-        when(orderDao.findById(any())).thenReturn(Optional.of(계산완료_주문));
+        Order 계산완료_주문 = new Order(1L, COMPLETION, OrderLineItems.of(후라이드_한마리, 양념치킨_한마리));
+        OrderRequest 식사중인_주문 = new OrderRequest(OrderStatus.MEAL);
+        테이블100_사용중.addOrder(계산완료_주문);
+        when(orderRepository.findById(any())).thenReturn(Optional.of(계산완료_주문));
 
         // then
         assertThatThrownBy(() -> orderService.changeOrderStatus(계산완료_주문.getId(), 식사중인_주문))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(IllegalOperationException.class);
     }
 }
