@@ -10,11 +10,11 @@ public class OrderLineItemDto {
 
     public OrderLineItemDto() {}
 
-    public OrderLineItemDto(Long orderId, Long menuId, long quantity) {
+    public OrderLineItemDto(final Long orderId, final Long menuId, final long quantity) {
         this(null, orderId, menuId, quantity);
     }
 
-    public OrderLineItemDto(Long id, Long orderId, Long menuId, long quantity) {
+    public OrderLineItemDto(final Long id, final Long orderId, final Long menuId, final long quantity) {
         this.id = id;
         this.orderId = orderId;
         this.menuId = menuId;

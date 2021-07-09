@@ -42,7 +42,7 @@ public class Order {
         this.orderStatus = OrderStatus.COOKING;
     }
 
-    public Order(final Long orderTableId, List<OrderLineItem> orderLineItems) {
+    public Order(final Long orderTableId, final List<OrderLineItem> orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderStatus = OrderStatus.COOKING;
         addOrderLineItems(orderLineItems);
@@ -53,15 +53,14 @@ public class Order {
         this.orderStatus = OrderStatus.COOKING;
     }
 
-    public void changeOrderStatus(String orderStatus) {
+    public void changeOrderStatus(final String orderStatus) {
         changeOrderStatus(OrderStatus.valueOf(orderStatus));
     }
 
-    private void changeOrderStatus(OrderStatus orderStatus) {
+    private void changeOrderStatus(final OrderStatus orderStatus) {
         if (this.orderStatus.equals(OrderStatus.COMPLETION)) {
             throw new IllegalArgumentException();
         }
-
         this.orderStatus = orderStatus;
     }
 

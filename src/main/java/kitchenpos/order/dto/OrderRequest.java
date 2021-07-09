@@ -9,11 +9,11 @@ public class OrderRequest {
 
     public OrderRequest() {}
 
-    public OrderRequest(String orderStatus) {
+    public OrderRequest(final String orderStatus) {
         this.orderStatus = orderStatus;
     }
 
-    public OrderRequest(Long orderTableId, List<OrderLineItemDto> orderLineItems) {
+    public OrderRequest(final Long orderTableId, final List<OrderLineItemDto> orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderLineItems = orderLineItems;
     }
