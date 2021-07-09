@@ -14,11 +14,13 @@ public class MenuTest {
     @Test
     public void 가격미입력시_메뉴생성_예외() throws Exception {
         //given
-        MenuProduct menuProduct = new MenuProduct(1L, null, 1L, 1L);
+        MenuGroup menuGroup = new MenuGroup(1L, "메뉴그룹");
+        MenuProduct menuProduct = new MenuProduct(1L, null,
+                new Product(1L, "", BigDecimal.TEN), 1L);
         
         //when
         //then
-        assertThatThrownBy(() -> new Menu(1L, "반반치킨", null, 1L, Arrays.asList(menuProduct)))
+        assertThatThrownBy(() -> new Menu(1L, "반반치킨", null, menuGroup, Arrays.asList(menuProduct)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -26,12 +28,14 @@ public class MenuTest {
     @Test
     public void 가격음수입력시_메뉴생성_예외() throws Exception {
         //given
-        MenuProduct menuProduct = new MenuProduct(1L, null, 1L, 1L);
+        MenuGroup menuGroup = new MenuGroup(1L, "메뉴그룹");
+        MenuProduct menuProduct = new MenuProduct(1L, null,
+                new Product(1L, "", BigDecimal.TEN), 1L);
 
         //when
         //then
         assertThatThrownBy(() -> new Menu(1L, "반반치킨", BigDecimal.valueOf(-1),
-                1L, Arrays.asList(menuProduct)))
+                menuGroup, Arrays.asList(menuProduct)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

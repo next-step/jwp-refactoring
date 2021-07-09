@@ -1,16 +1,19 @@
 package kitchenpos.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class MenuGroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
+
     private String name;
+
+    @OneToMany(mappedBy = "menuGroup")
+    private List<Menu> menus = new ArrayList<>();
 
     protected MenuGroup() {
     }

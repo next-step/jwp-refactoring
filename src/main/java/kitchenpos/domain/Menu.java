@@ -17,7 +17,9 @@ public class Menu {
     @Embedded
     private Price price;
 
-    private Long menuGroupId;
+    @JoinColumn(name = "menu_group_id")
+    @ManyToOne
+    private MenuGroup menuGroup;
 
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL)
     private List<MenuProduct> menuProducts = new ArrayList<>();
@@ -25,24 +27,24 @@ public class Menu {
     protected Menu() {
     }
 
-    public Menu(Long id, String name, BigDecimal price, Long menuGroupId) {
-        this(name, price, menuGroupId);
+    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup) {
+        this(name, price, menuGroup);
         this.id = id;
     }
 
-    public Menu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        this(name, price, menuGroupId, menuProducts);
+    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        this(name, price, menuGroup, menuProducts);
         this.id = id;
     }
 
-    public Menu(String name, BigDecimal price, Long menuGroupId) {
+    public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
         this.name = name;
         this.price = new Price(price);
-        this.menuGroupId = menuGroupId;
+        this.menuGroup = menuGroup;
     }
 
-    public Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        this(name, price, menuGroupId);
+    public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        this(name, price, menuGroup);
         menuProducts.forEach(this::addMenuProduct);
     }
 
@@ -65,8 +67,8 @@ public class Menu {
         return price;
     }
 
-    public Long getMenuGroupId() {
-        return menuGroupId;
+    public MenuGroup getMenuGroup() {
+        return menuGroup;
     }
 
     public List<MenuProduct> getMenuProducts() {

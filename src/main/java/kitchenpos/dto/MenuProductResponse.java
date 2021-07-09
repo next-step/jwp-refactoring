@@ -15,7 +15,7 @@ public class MenuProductResponse {
     }
 
     public static MenuProductResponse of(MenuProduct menuProduct) {
-        return new MenuProductResponse(menuProduct.getProductId(), menuProduct.getQuantity().value());
+        return new MenuProductResponse(menuProduct.getProduct().getId(), menuProduct.getQuantity().value());
     }
 
     public Long getProductId() {
