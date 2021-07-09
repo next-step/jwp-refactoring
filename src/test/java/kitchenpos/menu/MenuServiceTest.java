@@ -26,17 +26,16 @@ import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProductRepository;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.domain.Price;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.exception.MenuException;
 import kitchenpos.menu.exception.PriceException;
 import kitchenpos.menugroup.MenuGroupServiceTest;
 import kitchenpos.product.ProductServiceTest;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
 
 @DisplayName("메뉴 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 public class MenuServiceTest {
 
 	@Mock
@@ -54,18 +53,18 @@ public class MenuServiceTest {
 	MenuGroup 치킨;
 	MenuRequest 양념반_후라이드반_요청;
 	Menu 양념반_후라이드반;
-	Product 양념치킨;
-	Product 후라이드치킨;
+	ProductRequest 양념치킨_요청;
+	ProductRequest 후라이드치킨_요청;
 	MenuProduct 양념_반_치킨;
 	MenuProduct 후라이드_반_치킨;
 
 	@BeforeEach
 	void setUp() {
 		치킨 = MenuGroupServiceTest.메뉴그룹_생성(1L, "치킨");
-		양념치킨 = ProductServiceTest.상품생성(1L, new BigDecimal(10000), "양념 치킨");
-		후라이드치킨 = ProductServiceTest.상품생성(2L, new BigDecimal(9000), "후라이드 치킨");
-		양념_반_치킨 = 메뉴상품생성(1L, 양념치킨, 1);
-		후라이드_반_치킨 = 메뉴상품생성(2L, 후라이드치킨, 1);
+		양념치킨_요청 = ProductServiceTest.상품생성_요청(new BigDecimal(10000), "양념 치킨");
+		후라이드치킨_요청 = ProductServiceTest.상품생성_요청(new BigDecimal(9000), "후라이드 치킨");
+		//양념_반_치킨 = 메뉴상품생성(1L, 양념치킨_요청, 1);
+		//후라이드_반_치킨 = 메뉴상품생성(2L, 후라이드치킨_요청, 1);
 		양념반_후라이드반_요청 = 메뉴생성(1L, "양념 반 후라이드 반", 19000, 치킨.getId(), Arrays.asList(양념_반_치킨.getSeq(), 후라이드_반_치킨.getSeq()));
 		양념반_후라이드반 = 양념반_후라이드반_요청.toMenu(치킨, new MenuProducts(Arrays.asList(양념_반_치킨, 후라이드_반_치킨)));
 	}
@@ -74,7 +73,8 @@ public class MenuServiceTest {
 	@Test
 	void 메뉴를_생성한다() {
 		given(menuGroupRepository.findById(양념반_후라이드반_요청.getMenuGroupId())).willReturn(Optional.of(치킨));
-		given(menuProductRepository.findAllById(양념반_후라이드반_요청.getMenuProductIds())).willReturn(Arrays.asList(양념_반_치킨, 후라이드_반_치킨));
+		given(menuProductRepository.findAllById(양념반_후라이드반_요청.getMenuProductIds())).willReturn(
+			Arrays.asList(양념_반_치킨, 후라이드_반_치킨));
 		given(menuRepository.save(양념반_후라이드반)).willReturn(양념반_후라이드반);
 
 		Menu created = menuService.create(양념반_후라이드반_요청);
@@ -86,10 +86,12 @@ public class MenuServiceTest {
 	@Test
 	void 메뉴_생성_메뉴의_가격은_0보다_커야_한다() {
 		given(menuGroupRepository.findById(양념반_후라이드반_요청.getMenuGroupId())).willReturn(Optional.of(치킨));
-		given(menuProductRepository.findAllById(양념반_후라이드반_요청.getMenuProductIds())).willReturn(Arrays.asList(양념_반_치킨, 후라이드_반_치킨));
+		given(menuProductRepository.findAllById(양념반_후라이드반_요청.getMenuProductIds())).willReturn(
+			Arrays.asList(양념_반_치킨, 후라이드_반_치킨));
 
 		assertThatThrownBy(() -> {
-			양념반_후라이드반_요청 = 메뉴생성(1L, "양념 반 후라이드 반", -1000, 치킨.getId(), Arrays.asList(양념_반_치킨.getSeq(), 후라이드_반_치킨.getSeq()));
+			양념반_후라이드반_요청 = 메뉴생성(1L, "양념 반 후라이드 반", -1000, 치킨.getId(),
+				Arrays.asList(양념_반_치킨.getSeq(), 후라이드_반_치킨.getSeq()));
 			menuService.create(양념반_후라이드반_요청);
 		}).isInstanceOf(PriceException.class);
 

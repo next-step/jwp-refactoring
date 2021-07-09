@@ -1,7 +1,5 @@
 package kitchenpos.product.domain;
 
-import java.math.BigDecimal;
-
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -39,10 +37,6 @@ public class Product {
 
 	public Long getId() {
 		return id;
-	}
-
-	public void setId(final Long id) {
-		this.id = id;
 	}
 
 	public String getName() {

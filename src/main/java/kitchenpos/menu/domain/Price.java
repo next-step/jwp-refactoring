@@ -31,6 +31,10 @@ public class Price {
 		return this.price.add(otherValue);
 	}
 
+	public BigDecimal value() {
+		return price;
+	}
+
 	private void validate(BigDecimal price) {
 		nonNullValidate(price);
 		moreThanZeroValidate(price);

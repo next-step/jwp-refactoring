@@ -10,8 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import kitchenpos.manugroup.domain.MenuGroup;
 import kitchenpos.manugroup.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProductRepository;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuRequest;
