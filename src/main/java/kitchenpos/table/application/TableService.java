@@ -52,15 +52,9 @@ public class TableService {
 
     private void checkNotCompletionOrder(Long orderTableId) {
         if (orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId,
-                                                                 getOrderStatusListExcludeCompletion())) {
+                                                                 OrderStatus.excludeCompletionList())) {
             throw new IllegalArgumentException();
         }
-    }
-
-    private List<OrderStatus> getOrderStatusListExcludeCompletion() {
-        return OrderStatus.excludeCompletionList()
-                          .stream()
-                          .collect(Collectors.toList());
     }
 
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableChangeNumberOfGuestsRequest request) {

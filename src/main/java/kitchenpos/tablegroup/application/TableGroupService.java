@@ -67,14 +67,8 @@ public class TableGroupService {
 
     private void checkNotCompletionOrders(List<Long> orderTableIds) {
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds,
-                                                                   getOrderStatusListExcludeCompletion())) {
+                                                                   OrderStatus.excludeCompletionList())) {
             throw new IllegalArgumentException();
         }
-    }
-
-    private List<OrderStatus> getOrderStatusListExcludeCompletion() {
-        return OrderStatus.excludeCompletionList()
-                          .stream()
-                          .collect(Collectors.toList());
     }
 }
