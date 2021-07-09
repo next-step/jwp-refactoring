@@ -39,26 +39,11 @@ public class OrderLineItem {
 		return seq;
 	}
 
-	public Order getOrder() {
-		return order;
-	}
-
 	public Long getOrderId() {
 		if (order == null) {
 			return null;
 		}
 		return order.getId();
-	}
-
-	public Long getMenuId() {
-		if (menu == null) {
-			return null;
-		}
-		return menu.getId();
-	}
-
-	public Menu getMenu() {
-		return menu;
 	}
 
 	public long getQuantity() {

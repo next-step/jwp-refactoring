@@ -93,18 +93,6 @@ public class OrderTable {
 		this.empty = empty;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public void setTableGroup(TableGroup tableGroup) {
-		this.tableGroup = tableGroup;
-	}
-
-	public void setEmpty(boolean empty) {
-		this.empty = empty;
-	}
-
 	public void unGroup() {
 		validateChangeableStatus();
 		this.tableGroup = null;

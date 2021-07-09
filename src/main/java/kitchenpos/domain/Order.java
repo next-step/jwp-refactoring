@@ -48,7 +48,7 @@ public class Order {
 		List<OrderLineItem> orderLineItems) {
 
 		validateEmptyTableOrder(orderTable);
-		ValidateEmptyOrderItems(orderLineItems);
+		validateEmptyOrderItems(orderLineItems);
 
 		for (OrderLineItem orderLineItem : orderLineItems) {
 			addOrderLineItem(orderLineItem);
@@ -63,7 +63,7 @@ public class Order {
 		orderTable.addOrder(this);
 	}
 
-	private void ValidateEmptyOrderItems(List<OrderLineItem> orderLineItems) {
+	private void validateEmptyOrderItems(List<OrderLineItem> orderLineItems) {
 		if (CollectionUtils.isEmpty(orderLineItems)) {
 			throw new IllegalArgumentException("주문 항목을 구성해야 주문이 가능합니다.");
 		}

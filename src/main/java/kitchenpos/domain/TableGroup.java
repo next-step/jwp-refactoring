@@ -68,14 +68,6 @@ public class TableGroup {
 		orderTable.changeTableGroup(this);
 	}
 
-	public void setOrderTables(List<OrderTable> orderTables) {
-		this.orderTables = orderTables;
-	}
-
-	public void setCreatedDate(LocalDateTime now) {
-		this.createdDate = now;
-	}
-
 	public void unGroup() {
 		for (OrderTable orderTable : this.orderTables) {
 			orderTable.unGroup();
