@@ -17,8 +17,7 @@ import java.util.Arrays;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -85,6 +84,34 @@ class TableRestControllerTest {
 
         // when then
         mockMvc.perform(get("/api/tables"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @DisplayName("테이블을 빈 상태로 변경한다")
+    @Test
+    void changeEmpty() throws Exception {
+        // given
+        given(tableService.changeEmpty(table4.getId(), table4)).willReturn(table4);
+
+        // when then
+        mockMvc.perform(put("/api/tables/" + table4.getId() + "/empty")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(table4)))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @DisplayName("테이블에 착석한 손님의 수를 변경한다")
+    @Test
+    void changeNumberOfGuests() throws Exception {
+        // given
+        given(tableService.changeNumberOfGuests(table4.getId(), table4)).willReturn(table4);
+
+        // when then
+        mockMvc.perform(put("/api/tables/" + table4.getId() + "/number-of-guests")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(table4)))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
