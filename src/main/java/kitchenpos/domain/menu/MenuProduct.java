@@ -17,13 +17,14 @@ public class MenuProduct implements Serializable {
 
     private Long productId;
 
-    private long quantity;
+    @Embedded
+    private Quantity quantity;
 
     // for JPA
     public MenuProduct() {
     }
 
-    private MenuProduct(Long seq, Menu menu, Long productId, long quantity) {
+    private MenuProduct(Long seq, Menu menu, Long productId, Quantity quantity) {
         this.seq = seq;
         this.menu = menu;
         this.productId = productId;
@@ -31,6 +32,10 @@ public class MenuProduct implements Serializable {
     }
 
     public static MenuProduct of(Menu menu, Long productId, long quantity) {
+        return new MenuProduct(null, menu, productId, Quantity.of(quantity));
+    }
+
+    public static MenuProduct of(Menu menu, Long productId, Quantity quantity) {
         return new MenuProduct(null, menu, productId, quantity);
     }
 
@@ -50,7 +55,7 @@ public class MenuProduct implements Serializable {
         return productId;
     }
 
-    public long getQuantity() {
+    public Quantity getQuantity() {
         return quantity;
     }
 
@@ -65,5 +70,15 @@ public class MenuProduct implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(seq, menu, productId, quantity);
+    }
+
+    @Override
+    public String toString() {
+        return "MenuProduct{" +
+                "seq=" + seq +
+                ", menu=" + menu +
+                ", productId=" + productId +
+                ", quantity=" + quantity +
+                '}';
     }
 }

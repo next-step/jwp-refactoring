@@ -1,8 +1,12 @@
 package kitchenpos.domain.menu;
 
+import kitchenpos.domain.menugroup.MenuGroup;
+import kitchenpos.domain.product.Product;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import static javax.persistence.FetchType.LAZY;
@@ -13,7 +17,9 @@ public class Menu implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+
+    @Embedded
+    private Name name;
 
     @Embedded
     private Price price;
@@ -29,7 +35,7 @@ public class Menu implements Serializable {
     public Menu() {
     }
 
-    private Menu(Long id, String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+    private Menu(Long id, Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -39,14 +45,14 @@ public class Menu implements Serializable {
     }
 
     public static Menu of(String name, Price price, MenuGroup menuGroup) {
-        return new Menu(null, name, price, menuGroup, MenuProducts.of(new ArrayList<>()));
+        return new Menu(null, Name.of(name), price, menuGroup, MenuProducts.of(new ArrayList<>()));
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getName() {
+    public Name getName() {
         return name;
     }
 
@@ -89,10 +95,5 @@ public class Menu implements Serializable {
                 ", menuGroup=" + menuGroup +
                 ", menuProducts=" + menuProducts +
                 '}';
-    }
-
-    public void changeNameAndPrice(String name, Price price) {
-        this.name = name;
-        this.price = price;
     }
 }
