@@ -31,8 +31,8 @@ class ProductServiceTest {
     @Test
     void createTest() {
         // given
-        ProductRequest productRequest = new ProductRequest("불고기", new BigDecimal(1000));
-        Product 불고기 = new Product("불고기", new BigDecimal(1000));
+        ProductRequest productRequest = new ProductRequest("불고기", BigDecimal.valueOf(1000L));
+        Product 불고기 = new Product("불고기", BigDecimal.valueOf(1000L));
         Mockito.when(productRepository.save(any())).thenReturn(불고기);
 
         // when
@@ -48,7 +48,7 @@ class ProductServiceTest {
     @Test
     void createTestWithWrongPrice() {
         // given
-        ProductRequest productRequest = new ProductRequest("불고기", new BigDecimal(-1));
+        ProductRequest productRequest = new ProductRequest("불고기", BigDecimal.valueOf(-1L));
 
         // when
         assertThatThrownBy(() -> productService.create(productRequest))

@@ -43,11 +43,11 @@ class MenuServiceTest {
     @Test
     void createTest() {
         // given
-        Product 불고기 = new Product("불고기", new BigDecimal(1000));
+        Product 불고기 = new Product("불고기", BigDecimal.valueOf(1000L));
         MenuProduct 메뉴_불고기 = new MenuProduct(불고기, 3);
         MenuGroup 메뉴_그룹 = new MenuGroup("메뉴그룹");
 
-        MenuRequest menuRequest = MenuRequest.Builder.of("메뉴1", new BigDecimal(2000))
+        MenuRequest menuRequest = MenuRequest.Builder.of("메뉴1", BigDecimal.valueOf(2000L))
                                                      .menuGroupId(1L)
                                                      .menuProducts(Arrays.asList(new MenuProductRequest(1L, 1000)))
                                                      .build();
@@ -73,7 +73,7 @@ class MenuServiceTest {
     @Test
     void notExistedMenuGroup() {
         // given
-        MenuRequest menuRequest = MenuRequest.Builder.of("메뉴1", new BigDecimal(2000))
+        MenuRequest menuRequest = MenuRequest.Builder.of("메뉴1", BigDecimal.valueOf(2000L))
                                                      .menuGroupId(1L)
                                                      .menuProducts(Arrays.asList(new MenuProductRequest()))
                                                      .build();
@@ -88,9 +88,9 @@ class MenuServiceTest {
     @Test
     void overPriceMenu() {
         // given
-        Product 불고기 = new Product("불고기", new BigDecimal(1000));
+        Product 불고기 = new Product("불고기", BigDecimal.valueOf(1000L));
         MenuGroup 메뉴_그룹 = new MenuGroup("메뉴그룹");
-        MenuRequest menuRequest = MenuRequest.Builder.of("메뉴1", new BigDecimal(5000))
+        MenuRequest menuRequest = MenuRequest.Builder.of("메뉴1", BigDecimal.valueOf(5000L))
                                                      .menuGroupId(1L)
                                                      .menuProducts(Arrays.asList(new MenuProductRequest(1l, 3)))
                                                      .build();

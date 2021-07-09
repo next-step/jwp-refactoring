@@ -42,7 +42,7 @@ class MenuRestControllerTest extends MockMvcTestHelper {
     @Test
     void createTest() throws Exception {
         // given
-        MenuRequest menuRequest = MenuRequest.Builder.of("메뉴1", new BigDecimal(10000))
+        MenuRequest menuRequest = MenuRequest.Builder.of("메뉴1", BigDecimal.valueOf(10000L))
                                                      .menuGroupId(1L)
                                                      .menuProducts(Arrays.asList(new MenuProductRequest()))
                                                      .build();

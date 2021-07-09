@@ -42,8 +42,8 @@ class ProductRestControllerTest extends MockMvcTestHelper {
     @Test
     void createTest() throws Exception {
         // given
-        ProductRequest productRequest = new ProductRequest("불고기", new BigDecimal(1000));
-        Product product = new Product("불고기", new BigDecimal(1000));
+        ProductRequest productRequest = new ProductRequest("불고기", BigDecimal.valueOf(1000L));
+        Product product = new Product("불고기", BigDecimal.valueOf(1000L));
         ProductResponse expected = ProductResponse.of(product);
         Mockito.when(productService.create(any())).thenReturn(expected);
 
@@ -66,8 +66,8 @@ class ProductRestControllerTest extends MockMvcTestHelper {
     @Test
     void listTest() throws Exception {
         // then
-        Product 불고기 = new Product("불고기", new BigDecimal(1000));
-        Product 삼겹살 = new Product("삼겹살", new BigDecimal(1500));
+        Product 불고기 = new Product("불고기", BigDecimal.valueOf(1000L));
+        Product 삼겹살 = new Product("삼겹살", BigDecimal.valueOf(1500L));
         Mockito.when(productService.list()).thenReturn(Arrays.asList(ProductResponse.of(불고기),
                                                                      ProductResponse.of(삼겹살)));
 
