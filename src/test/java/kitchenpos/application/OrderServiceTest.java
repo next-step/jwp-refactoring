@@ -16,10 +16,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -28,6 +30,7 @@ class OrderServiceTest {
 
     private Order order;
     private OrderLineItem orderLineItem;
+    private OrderLineItem orderLineItem2;
     private OrderTable orderTable;
 
     @Mock
@@ -49,6 +52,7 @@ class OrderServiceTest {
         order.setOrderTableId(1L);
 
         orderLineItem = new OrderLineItem();
+        orderLineItem2 = new OrderLineItem();
 
         orderTable = new OrderTable();
         orderTable.setId(1L);
@@ -75,4 +79,51 @@ class OrderServiceTest {
         // then
         assertThat(actual).isEqualTo(order);
     }
+
+    @DisplayName("주문을 등록한다 - 메뉴 정보는 필수 입력사항이다")
+    @Test
+    void create_menuIsEssentialInput() {
+        // given when
+        order.setOrderLineItems(Collections.emptyList());
+
+        // then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> orderService.create(this.order));
+    }
+
+    @DisplayName("주문을 등록한다 - 테이블 정보는 필수 입력사항이다")
+    @Test
+    void create_tableIsEssentialInput() {
+        // given
+        List<OrderLineItem> orderLineItems = new ArrayList<>();
+        orderLineItems.add(orderLineItem);
+        orderLineItems.add(orderLineItem2);
+        given(menuDao.countByIdIn(any())).willReturn((long)orderLineItems.size());
+        given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.empty());
+
+        // when
+        order.setOrderLineItems(orderLineItems);
+
+        // then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> orderService.create(this.order));
+    }
+
+    @DisplayName("주문을 등록한다 - 동일한 메뉴정보는 중복 입력할 수 없다")
+    @Test
+    void create_duplicateMenu() {
+        // given
+        given(menuDao.countByIdIn(any())).willReturn(1L);
+
+        // when
+        List<OrderLineItem> orderLineItems = new ArrayList<>();
+        orderLineItems.add(orderLineItem);
+        orderLineItems.add(orderLineItem2);
+        order.setOrderLineItems(orderLineItems);
+
+        // then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> orderService.create(this.order));
+    }
+
 }
