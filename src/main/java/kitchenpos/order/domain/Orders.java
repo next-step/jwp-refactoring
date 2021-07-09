@@ -11,7 +11,7 @@ import javax.persistence.OneToMany;
 @Embeddable
 public class Orders {
 
-    @OneToMany(mappedBy = "orderTable", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "orderTableId", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Order> data = new ArrayList<>();
 
     public Orders() { }
