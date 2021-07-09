@@ -1,8 +1,11 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.order.exception.AlreadyCompletionException;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Order {
@@ -20,7 +23,6 @@ public class Order {
     }
 
     public Order(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
-
         this.id = id;
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
@@ -30,6 +32,17 @@ public class Order {
 
     public Order(Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
         this(null, orderTableId, orderStatus, orderedTime, orderLineItems);
+    }
+
+    public void changeOrderStatus(String orderStatus) {
+        checkOrderStatus();
+        this.orderStatus = orderStatus;
+    }
+
+    private void checkOrderStatus() {
+        if (Objects.equals(OrderStatus.COMPLETION.name(), this.orderStatus)) {
+            throw new AlreadyCompletionException();
+        }
     }
 
     public Long getId() {
@@ -50,9 +63,5 @@ public class Order {
 
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems.getOrderLineItemValues();
-    }
-
-    public void changeOrderStatus(String orderStatus) {
-        this.orderStatus = orderStatus;
     }
 }

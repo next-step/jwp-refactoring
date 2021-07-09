@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Transactional
@@ -63,18 +62,16 @@ public class OrderService {
     }
 
     public OrderResponse changeOrderStatus(final Long orderId, final OrderStatusRequest orderStatusRequest) {
-        final Order findedOrder = orderRepository.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (Objects.equals(OrderStatus.COMPLETION.name(), findedOrder.getOrderStatus())) {
-            throw new IllegalArgumentException();
-        }
+        final Order findedOrder = findOrder(orderId);
 
         final OrderStatus orderStatus = OrderStatus.valueOf(orderStatusRequest.getOrderStatus());
         findedOrder.changeOrderStatus(orderStatus.name());
 
-        //Order changedOrder = orderRepository.save(findedOrder);
-
         return OrderResponse.from(findedOrder);
+    }
+
+    private Order findOrder(Long orderId) {
+        return orderRepository.findById(orderId)
+                .orElseThrow(IllegalArgumentException::new);
     }
 }
