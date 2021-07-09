@@ -35,7 +35,7 @@ public class OrderService {
         verifyMenuCount(orderRequest);
         OrderTable orderTable = findOrderTableById(orderRequest.getOrderTableId());
         verifyAvailableOrderTable(orderTable);
-        Order order = new Order(orderTable.getId(), OrderStatus.COOKING, orderLineItems);
+        Order order = new Order(orderTable, orderLineItems);
         Order saveOrder = orderRepository.save(order);
         return OrderResponse.of(saveOrder);
     }

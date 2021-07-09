@@ -1,6 +1,8 @@
 package kitchenpos.domain;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -16,6 +18,9 @@ public class OrderTable {
     private NumberOfGuests numberOfGuests;
 
     private boolean empty;
+
+    @OneToMany(mappedBy = "orderTable")
+    private List<Order> orders = new ArrayList<>();
 
     protected OrderTable() {
     }

@@ -3,6 +3,7 @@ package kitchenpos.application;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.dto.TableGroupResponse;
 import kitchenpos.repository.OrderRepository;
@@ -30,10 +31,22 @@ public class TableGroupService {
     }
 
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-        List<OrderTable> orderTables = orderTableRepository.findAllByIdIn(tableGroupRequest.getIds());
+        List<OrderTable> orderTables = findOrderTableAllBy(tableGroupRequest.getOrderTables());
         verifyAvailableTableGroupSize(tableGroupRequest.getOrderTables().size(), orderTables.size());
         TableGroup saveTableGroup = tableGroupRepository.save(new TableGroup(orderTables));
         return TableGroupResponse.of(saveTableGroup);
+    }
+
+    private List<OrderTable> findOrderTableAllBy(List<OrderTableRequest> orderTableRequests) {
+        List<Long> orderTableIds = findOrderTableIds(orderTableRequests);
+        List<OrderTable> orderTables = orderTableRepository.findAllByIdIn(orderTableIds);
+        return orderTables;
+    }
+
+    private List<Long> findOrderTableIds(List<OrderTableRequest> orderTableRequests) {
+        return orderTableRequests.stream()
+                .map(orderTableRequest -> orderTableRequest.getId())
+                .collect(Collectors.toList());
     }
 
     private void verifyAvailableTableGroupSize(int requestSize, int dbSize) {

@@ -15,7 +15,9 @@ public class Order {
     @Id
     private Long id;
 
-    private Long orderTableId;
+    @JoinColumn(name = "order_table_id")
+    @ManyToOne
+    private OrderTable orderTable;
 
     @Enumerated(value = EnumType.STRING)
     private OrderStatus orderStatus;
@@ -29,10 +31,10 @@ public class Order {
 
     protected Order() {}
 
-    public Order(Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         verifyAvailable(orderLineItems);
-        this.orderTableId = orderTableId;
-        this.orderStatus = orderStatus;
+        this.orderTable = orderTable;
+        this.orderStatus = OrderStatus.COOKING;
         orderLineItems.forEach(this::addOrderLineItem);
     }
 
@@ -42,8 +44,8 @@ public class Order {
         }
     }
 
-    public Order(Long id, Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
-        this(orderTableId, orderStatus, orderLineItems);
+    public Order(Long id, OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        this(orderTable, orderLineItems);
         this.id = id;
     }
 
@@ -69,8 +71,8 @@ public class Order {
         this.id = id;
     }
 
-    public Long getOrderTableId() {
-        return orderTableId;
+    public OrderTable getOrderTable() {
+        return orderTable;
     }
 
     public OrderStatus getOrderStatus() {

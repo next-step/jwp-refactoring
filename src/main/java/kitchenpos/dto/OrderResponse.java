@@ -29,7 +29,7 @@ public class OrderResponse {
         List<OrderLineItemRequest> orderLineItemRequests = order.getOrderLineItems().stream()
                 .map(OrderLineItemRequest::of)
                 .collect(Collectors.toList());
-        return new OrderResponse(order.getId(), order.getOrderTableId(), order.getOrderStatus(), order.getOrderedTime(), orderLineItemRequests);
+        return new OrderResponse(order.getId(), order.getOrderTable().getId(), order.getOrderStatus(), order.getOrderedTime(), orderLineItemRequests);
     }
 
     public Long getId() {
