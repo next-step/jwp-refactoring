@@ -1,6 +1,7 @@
 package kitchenpos.tablegroup.application;
 
 import java.util.Optional;
+import kitchenpos.exception.KitchenposException;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
@@ -19,6 +20,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 
+import static kitchenpos.exception.KitchenposExceptionMessage.EXISTS_NOT_COMPLETION_ORDER;
+import static kitchenpos.exception.KitchenposExceptionMessage.ORDER_TABLE_CONNOT_LOWER_THAN_MIN;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -68,7 +71,8 @@ class TableGroupServiceTest {
 
         // when
         assertThatThrownBy(() -> tableGroupService.create(request))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(KitchenposException.class)
+            .hasMessageContaining(ORDER_TABLE_CONNOT_LOWER_THAN_MIN.getMessage());
     }
 
 
@@ -79,7 +83,8 @@ class TableGroupServiceTest {
         OrderTable orderTable1 = new OrderTable(3, false);
         OrderTable orderTable2 = new OrderTable(4, false);
 
-        Mockito.when(orderTableRepository.findAllByTableGroupId(any())).thenReturn(Arrays.asList(orderTable1, orderTable2));
+        Mockito.when(tableGroupRepository.findById(1L))
+               .thenReturn(Optional.of(new TableGroup(Arrays.asList(orderTable1, orderTable2))));
         Mockito.when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(false);
 
         // when
@@ -93,11 +98,13 @@ class TableGroupServiceTest {
         OrderTable orderTable1 = new OrderTable(3, false);
         OrderTable orderTable2 = new OrderTable(4, false);
 
-        Mockito.when(orderTableRepository.findAllByTableGroupId(any())).thenReturn(Arrays.asList(orderTable1, orderTable2));
+        Mockito.when(tableGroupRepository.findById(1L))
+               .thenReturn(Optional.of(new TableGroup(Arrays.asList(orderTable1, orderTable2))));
         Mockito.when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(true);
 
         // when
         assertThatThrownBy(() -> tableGroupService.ungroup(1L))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(KitchenposException.class)
+            .hasMessageContaining(EXISTS_NOT_COMPLETION_ORDER.getMessage());
     }
 }

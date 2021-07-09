@@ -1,5 +1,6 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.exception.KitchenposException;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -21,6 +22,8 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Optional;
 
+import static kitchenpos.exception.KitchenposExceptionMessage.MENU_PRICE_CANNOT_OVER_THAN_PRODUCT_PRICE;
+import static kitchenpos.exception.KitchenposExceptionMessage.NOT_FOUND_MENU_GROUP;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
@@ -81,7 +84,8 @@ class MenuServiceTest {
 
         // when
         assertThatThrownBy(() -> menuService.create(menuRequest))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(KitchenposException.class)
+            .hasMessageContaining(NOT_FOUND_MENU_GROUP.getMessage());
     }
 
     @DisplayName("메뉴에 포함된 금액보다 메뉴 가격이 더 비싼경우")
@@ -99,7 +103,8 @@ class MenuServiceTest {
 
         // when
         assertThatThrownBy(() -> menuService.create(menuRequest))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(KitchenposException.class)
+            .hasMessageContaining(MENU_PRICE_CANNOT_OVER_THAN_PRODUCT_PRICE.getMessage());
     }
 
 }

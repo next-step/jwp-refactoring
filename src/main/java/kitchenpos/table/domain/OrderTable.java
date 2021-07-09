@@ -1,5 +1,8 @@
 package kitchenpos.table.domain;
 
+import static kitchenpos.exception.KitchenposExceptionMessage.ALREADY_INCLUDE_TABLE_GROUP;
+import static kitchenpos.exception.KitchenposExceptionMessage.EMPTY_GUESTS;
+
 import java.util.Objects;
 import java.util.Optional;
 import javax.persistence.CascadeType;
@@ -11,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import kitchenpos.exception.KitchenposException;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 @Entity
@@ -38,7 +42,7 @@ public class OrderTable {
 
     public void checkNotIncludeTableGroup() {
         if (Objects.nonNull(this.tableGroup)) {
-            throw new IllegalArgumentException();
+            throw new KitchenposException(ALREADY_INCLUDE_TABLE_GROUP);
         }
     }
 
@@ -53,7 +57,7 @@ public class OrderTable {
 
     public void checkEmpty() {
         if (this.empty) {
-            throw new IllegalArgumentException();
+            throw new KitchenposException(EMPTY_GUESTS);
         }
     }
 

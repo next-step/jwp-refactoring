@@ -1,6 +1,9 @@
 package kitchenpos.product.application;
 
+import static kitchenpos.exception.KitchenposExceptionMessage.MENU_PRICE_CANNOT_OVER_THAN_PRODUCT_PRICE;
+
 import java.util.stream.Collectors;
+import kitchenpos.exception.KitchenposException;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
@@ -30,7 +33,7 @@ public class ProductService {
 
     private void checkPriceGreaterThanMin(final BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(MIN_PRICE) < 0) {
-            throw new IllegalArgumentException();
+            throw new KitchenposException(MENU_PRICE_CANNOT_OVER_THAN_PRODUCT_PRICE);
         }
     }
 

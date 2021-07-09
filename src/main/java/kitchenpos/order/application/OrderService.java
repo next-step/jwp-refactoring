@@ -1,5 +1,12 @@
 package kitchenpos.order.application;
 
+import static kitchenpos.exception.KitchenposExceptionMessage.ALREADY_COMPLETION_ORDER;
+import static kitchenpos.exception.KitchenposExceptionMessage.NOT_FOUND_MENU;
+import static kitchenpos.exception.KitchenposExceptionMessage.NOT_FOUND_ORDER;
+import static kitchenpos.exception.KitchenposExceptionMessage.NOT_FOUND_ORDER_LINE_ITEM;
+import static kitchenpos.exception.KitchenposExceptionMessage.NOT_FOUND_ORDER_TABLE;
+
+import kitchenpos.exception.KitchenposException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.OrderRepository;
@@ -45,7 +52,7 @@ public class OrderService {
     private List<OrderLineItem> getOrderLineItems(OrderRequest orderRequest) {
         final List<OrderLineItemRequest> orderLineItems = orderRequest.getOrderLineItems();
         if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
+            throw new KitchenposException(NOT_FOUND_ORDER_LINE_ITEM);
         }
 
         return orderLineItems.stream()
@@ -60,12 +67,12 @@ public class OrderService {
 
     private Menu findMenuById(OrderLineItemRequest orderLineItemRequest) {
         return menuRepository.findById(orderLineItemRequest.getMenuId())
-                             .orElseThrow(IllegalArgumentException::new);
+                             .orElseThrow(() -> new KitchenposException(NOT_FOUND_MENU));
     }
 
     private OrderTable findOrderTableById(final Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
-                                   .orElseThrow(IllegalArgumentException::new);
+                                   .orElseThrow(() -> new KitchenposException(NOT_FOUND_ORDER_TABLE));
     }
 
 
@@ -80,7 +87,7 @@ public class OrderService {
     public OrderResponse changeOrderStatus(final Long orderId, final OrderStatusRequest orderStatusRequest) {
         final Order savedOrder = findOrderById(orderId);
         if (savedOrder.isCompletion()) {
-           throw new IllegalArgumentException();
+           throw new KitchenposException(ALREADY_COMPLETION_ORDER);
         }
         savedOrder.changeOrderStatus(orderStatusRequest.getOrderStatus());
         return OrderResponse.of(savedOrder);
@@ -88,6 +95,6 @@ public class OrderService {
 
     private Order findOrderById(Long orderId) {
         return orderRepository.findById(orderId)
-                              .orElseThrow(IllegalArgumentException::new);
+                              .orElseThrow(() -> new KitchenposException(NOT_FOUND_ORDER));
     }
 }

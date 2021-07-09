@@ -1,11 +1,13 @@
 package kitchenpos.menu.domain;
 
+import static kitchenpos.exception.KitchenposExceptionMessage.MENU_PRICE_CANNOT_OVER_THAN_PRODUCT_PRICE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import kitchenpos.exception.KitchenposException;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,7 +39,8 @@ class MenuProductsTest {
     void checkOverPriceTestWithWrongPrice() {
         // when
         assertThatThrownBy(() -> menuProducts.checkOverPrice(BigDecimal.valueOf(13000)))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(KitchenposException.class)
+            .hasMessageContaining(MENU_PRICE_CANNOT_OVER_THAN_PRODUCT_PRICE.getMessage());
     }
 
     @DisplayName("제네릭을 사용한 변환 테스트")

@@ -1,6 +1,7 @@
 package kitchenpos.order.application;
 
 import java.math.BigDecimal;
+import kitchenpos.exception.KitchenposException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
@@ -29,6 +30,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static kitchenpos.exception.KitchenposExceptionMessage.ALREADY_COMPLETION_ORDER;
+import static kitchenpos.exception.KitchenposExceptionMessage.NOT_FOUND_ORDER;
+import static kitchenpos.exception.KitchenposExceptionMessage.NOT_FOUND_ORDER_TABLE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -83,7 +87,8 @@ class OrderServiceTest {
 
         // when
         assertThatThrownBy(() -> orderService.create(orderRequest))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(KitchenposException.class)
+            .hasMessageContaining(NOT_FOUND_ORDER_TABLE.getMessage());
     }
 
     @DisplayName("주문 대상인 테이블이 없을 경우 테스트")
@@ -99,7 +104,8 @@ class OrderServiceTest {
 
         // when
         assertThatThrownBy(() -> orderService.create(orderRequest))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(KitchenposException.class)
+            .hasMessageContaining(NOT_FOUND_ORDER_TABLE.getMessage());
     }
 
     @DisplayName("전체 주문 테이블 리스트 조회 테스트")
@@ -143,7 +149,8 @@ class OrderServiceTest {
         // when
         assertThatThrownBy(() -> orderService.changeOrderStatus(1l,
                                                                 new OrderStatusRequest(OrderStatus.COOKING)))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(KitchenposException.class)
+            .hasMessageContaining(NOT_FOUND_ORDER.getMessage());
     }
 
     @DisplayName("주문이 이미 완료가 된 경우 테스트")
@@ -157,7 +164,8 @@ class OrderServiceTest {
         // when
         assertThatThrownBy(() -> orderService.changeOrderStatus(1l,
                                                                 new OrderStatusRequest(OrderStatus.COOKING)))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(KitchenposException.class)
+            .hasMessageContaining(ALREADY_COMPLETION_ORDER.getMessage());
     }
 
 }

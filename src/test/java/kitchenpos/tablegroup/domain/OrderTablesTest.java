@@ -1,10 +1,13 @@
 package kitchenpos.tablegroup.domain;
 
+import static kitchenpos.exception.KitchenposExceptionMessage.ALREADY_INCLUDE_TABLE_GROUP;
+import static kitchenpos.exception.KitchenposExceptionMessage.EMPTY_GUESTS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Arrays;
+import kitchenpos.exception.KitchenposException;
 import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,7 +49,8 @@ class OrderTablesTest {
                                          new OrderTable(10, false)));
 
         assertThatThrownBy(orderTables::checkEmptyAndNotIncludeTableGroup)
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(KitchenposException.class)
+            .hasMessageContaining(EMPTY_GUESTS.getMessage());
     }
 
 
@@ -62,6 +66,7 @@ class OrderTablesTest {
 
         // when
         assertThatThrownBy(orderTables::checkEmptyAndNotIncludeTableGroup)
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(KitchenposException.class)
+            .hasMessageContaining(ALREADY_INCLUDE_TABLE_GROUP.getMessage());
     }
 }

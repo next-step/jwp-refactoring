@@ -1,5 +1,6 @@
 package kitchenpos.product.application;
 
+import kitchenpos.exception.KitchenposException;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
@@ -14,6 +15,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 
+import static kitchenpos.exception.KitchenposExceptionMessage.MENU_PRICE_CANNOT_OVER_THAN_PRODUCT_PRICE;
+import static kitchenpos.exception.KitchenposExceptionMessage.PRICE_CANNOT_LOWER_THAN_MIN;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -52,6 +55,7 @@ class ProductServiceTest {
 
         // when
         assertThatThrownBy(() -> productService.create(productRequest))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(KitchenposException.class)
+            .hasMessageContaining(MENU_PRICE_CANNOT_OVER_THAN_PRODUCT_PRICE.getMessage());
     }
 }

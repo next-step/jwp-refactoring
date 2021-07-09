@@ -1,6 +1,11 @@
 package kitchenpos.menu.application;
 
+import static kitchenpos.exception.KitchenposExceptionMessage.NOT_FOUND_MENU_GROUP;
+import static kitchenpos.exception.KitchenposExceptionMessage.NOT_FOUND_PRODUCT;
+import static kitchenpos.exception.KitchenposExceptionMessage.PRICE_CANNOT_LOWER_THAN_MIN;
+
 import java.util.stream.Collectors;
+import kitchenpos.exception.KitchenposException;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -56,18 +61,18 @@ public class MenuService {
 
     private Product findProductById(MenuProductRequest menuProductRequest) {
         return productRepository.findById(menuProductRequest.getProductId())
-                                .orElseThrow(IllegalArgumentException::new);
+                                .orElseThrow(() -> new KitchenposException(NOT_FOUND_PRODUCT));
     }
 
     private void checkPriceGreaterThanMin(final BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(MIN_PRICE) < 0) {
-            throw new IllegalArgumentException();
+            throw new KitchenposException(PRICE_CANNOT_LOWER_THAN_MIN);
         }
     }
 
     private MenuGroup findMenuGroupById(final Long menuGroupId) {
         return menuGroupRepository.findById(menuGroupId)
-                                  .orElseThrow(IllegalArgumentException::new);
+                                  .orElseThrow(() -> new KitchenposException(NOT_FOUND_MENU_GROUP));
     }
 
     @Transactional(readOnly = true)

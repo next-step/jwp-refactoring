@@ -1,6 +1,11 @@
 package kitchenpos.table.application;
 
+import static kitchenpos.exception.KitchenposExceptionMessage.EXISTS_NOT_COMPLETION_ORDER;
+import static kitchenpos.exception.KitchenposExceptionMessage.GUESTS_CANNOT_LOWER_THAN_MIN;
+import static kitchenpos.exception.KitchenposExceptionMessage.NOT_FOUND_ORDER_TABLE;
+
 import java.util.stream.Collectors;
+import kitchenpos.exception.KitchenposException;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.order.domain.OrderStatus;
@@ -17,6 +22,9 @@ import java.util.List;
 @Service
 @Transactional
 public class TableService {
+
+    private static final int MIN_NUMBER_OF_GUESTS = 0;
+
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
 
@@ -47,13 +55,13 @@ public class TableService {
 
     private OrderTable findOrderTableById(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
-                                   .orElseThrow(IllegalArgumentException::new);
+                                   .orElseThrow(() -> new KitchenposException(NOT_FOUND_ORDER_TABLE));
     }
 
     private void checkNotCompletionOrder(Long orderTableId) {
         if (orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId,
                                                                  OrderStatus.excludeCompletionList())) {
-            throw new IllegalArgumentException();
+            throw new KitchenposException(EXISTS_NOT_COMPLETION_ORDER);
         }
     }
 
@@ -66,8 +74,8 @@ public class TableService {
     }
 
     public void checkNumberOfGuestsOverMin(final int numberOfGuests) {
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
+        if (numberOfGuests < MIN_NUMBER_OF_GUESTS) {
+            throw new KitchenposException(GUESTS_CANNOT_LOWER_THAN_MIN);
         }
     }
 }

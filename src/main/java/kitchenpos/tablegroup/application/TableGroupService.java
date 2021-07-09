@@ -1,5 +1,11 @@
 package kitchenpos.tablegroup.application;
 
+import static kitchenpos.exception.KitchenposExceptionMessage.EXISTS_NOT_COMPLETION_ORDER;
+import static kitchenpos.exception.KitchenposExceptionMessage.NOT_FOUND_ORDER_TABLE;
+import static kitchenpos.exception.KitchenposExceptionMessage.NOT_FOUND_TABLE_GROUP;
+import static kitchenpos.exception.KitchenposExceptionMessage.ORDER_TABLE_CONNOT_LOWER_THAN_MIN;
+
+import kitchenpos.exception.KitchenposException;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.OrderTables;
@@ -43,7 +49,7 @@ public class TableGroupService {
 
     private void checkOrderTableOverMin(List<OrderTableIdRequest> orderTables) {
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < ORDER_TABLE_MIN_SIZE) {
-            throw new IllegalArgumentException();
+            throw new KitchenposException(ORDER_TABLE_CONNOT_LOWER_THAN_MIN);
         }
     }
 
@@ -56,7 +62,7 @@ public class TableGroupService {
 
     private OrderTable findOrderTableById(OrderTableIdRequest orderTableIdRequest) {
         return orderTableRepository.findById(orderTableIdRequest.getId())
-                                   .orElseThrow(IllegalArgumentException::new);
+                                   .orElseThrow(() -> new KitchenposException(NOT_FOUND_ORDER_TABLE));
     }
 
     public void ungroup(final Long tableGroupId) {
@@ -66,13 +72,14 @@ public class TableGroupService {
     }
 
     private TableGroup findTableGroupById(Long tableGroupId) {
-        return tableGroupRepository.findById(tableGroupId).orElseThrow(IllegalAccessError::new);
+        return tableGroupRepository.findById(tableGroupId)
+                                   .orElseThrow(() -> new KitchenposException(NOT_FOUND_TABLE_GROUP));
     }
 
     private void checkNotCompletionOrders(List<Long> orderTableIds) {
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds,
                                                                    OrderStatus.excludeCompletionList())) {
-            throw new IllegalArgumentException();
+            throw new KitchenposException(EXISTS_NOT_COMPLETION_ORDER);
         }
     }
 }

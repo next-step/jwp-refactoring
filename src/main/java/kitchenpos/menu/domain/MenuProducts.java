@@ -1,5 +1,7 @@
 package kitchenpos.menu.domain;
 
+import static kitchenpos.exception.KitchenposExceptionMessage.MENU_PRICE_CANNOT_OVER_THAN_PRODUCT_PRICE;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import kitchenpos.exception.KitchenposException;
 
 @Embeddable
 public class MenuProducts {
@@ -28,7 +31,7 @@ public class MenuProducts {
                                           .map(this::calculatePrice)
                                           .reduce(BigDecimal.ZERO, BigDecimal::add);
         if (price.compareTo(sum) > 0) {
-            throw new IllegalArgumentException();
+            throw new KitchenposException(MENU_PRICE_CANNOT_OVER_THAN_PRODUCT_PRICE);
         }
     }
 
