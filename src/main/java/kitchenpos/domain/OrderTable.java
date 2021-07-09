@@ -10,7 +10,7 @@ public class OrderTable {
     private Long id;
 
     @JoinColumn(name = "table_group_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private TableGroup tableGroup;
 
     private NumberOfGuests numberOfGuests;

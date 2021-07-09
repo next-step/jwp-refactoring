@@ -9,7 +9,7 @@ public class OrderLineItem {
     private Long seq;
 
     @JoinColumn(name = "order_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Order order;
 
     private Long menuId;

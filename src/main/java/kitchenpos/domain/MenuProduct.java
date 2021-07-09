@@ -10,11 +10,11 @@ public class MenuProduct {
     private Long seq;
 
     @JoinColumn(name = "menu_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Menu menu;
 
     @JoinColumn(name = "product_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Product product;
 
     @Embedded

@@ -19,13 +19,16 @@ import static org.springframework.http.HttpStatus.OK;
 @DisplayName("메뉴 관리 기능")
 public class MenuAcceptanceTest extends AcceptanceTest {
     private ProductResponse 후라이드;
+    private ProductResponse 양념치킨;
     private MenuGroupResponse 치킨메뉴;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        ProductRequest productRequest = new ProductRequest("후라이드", BigDecimal.valueOf(15_000));
-        후라이드 = 상품_등록_되어있음(productRequest);
+        ProductRequest productRequest1 = new ProductRequest("후라이드", BigDecimal.valueOf(15_000));
+        후라이드 = 상품_등록_되어있음(productRequest1);
+        ProductRequest productRequest2 = new ProductRequest("양념치킨", BigDecimal.valueOf(15_000));
+        양념치킨 = 상품_등록_되어있음(productRequest2);
         MenuGroupRequest menuGroupRequest = new MenuGroupRequest("치킨메뉴");
         치킨메뉴 = 메뉴그룹_등록_되어있음(menuGroupRequest);
     }
@@ -36,9 +39,15 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         MenuProductRequest 후라이드두개 = new MenuProductRequest(후라이드.getId(), 2L);
         MenuRequest 후라이드메뉴 = new MenuRequest("후라이드", BigDecimal.valueOf(29_000), 치킨메뉴.getId(),
                 Arrays.asList(후라이드두개));
-
         ExtractableResponse<Response> postResponse = 메뉴_등록_요청(후라이드메뉴);
         메뉴_등록됨(postResponse);
+
+
+        MenuProductRequest 양념치킨한개 = new MenuProductRequest(양념치킨.getId(), 1L);
+        MenuRequest 양념치킨메뉴 = new MenuRequest("양념치킨", BigDecimal.valueOf(15_000), 치킨메뉴.getId(),
+                Arrays.asList(양념치킨한개));
+        ExtractableResponse<Response> postResponse2 = 메뉴_등록_요청(양념치킨메뉴);
+        메뉴_등록됨(postResponse2);
 
         ExtractableResponse<Response> getResponse = 메뉴_목록조회_요청();
         메뉴_목록조회됨(getResponse);
