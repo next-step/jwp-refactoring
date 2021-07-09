@@ -1,5 +1,7 @@
 package kitchenpos.domain;
 
+import kitchenpos.dto.MenuProductRequest;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -46,6 +48,9 @@ public class Menu {
     public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this(name, price, menuGroup);
         menuProducts.forEach(this::addMenuProduct);
+        Price calculatePrice = calculatePrice();
+        validatePrice(calculatePrice);
+        this.price = calculatePrice;
     }
 
     public void addMenuProduct(MenuProduct menuProduct) {
@@ -53,6 +58,19 @@ public class Menu {
             menuProducts.add(menuProduct);
         }
         menuProduct.setMenu(this);
+    }
+
+    public Price calculatePrice() {
+        return menuProducts.stream()
+                .map(MenuProduct::calculateMenuProductPrice)
+                .reduce((a, b) -> a.add(b))
+                .orElseThrow(() -> new IllegalArgumentException());
+    }
+
+    private void validatePrice(Price calculatePrice) {
+        if (price.compareTo(calculatePrice) > 0) {
+            throw new IllegalArgumentException("입력받은 메뉴가격이 상품의 총 가격보다 같거나 작아야합니다.");
+        }
     }
 
     public Long getId() {

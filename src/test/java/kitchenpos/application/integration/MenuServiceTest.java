@@ -108,20 +108,6 @@ public class MenuServiceTest {
         assertThat(menuResponse.getId()).isNotNull();
     }
 
-    @DisplayName("메뉴 가격 계산")
-    @Test
-    public void 메뉴가격_계산_확인() throws Exception {
-        //given
-        MenuProductRequest 치킨후라이드 = new MenuProductRequest(후라이드.getId(), 2L);
-        MenuProductRequest 치킨양념치킨 = new MenuProductRequest(양념치킨.getId(), 1L);
-
-        //when
-        BigDecimal sumMenuPrice = menuService.sumMenuPrice(Arrays.asList(치킨후라이드, 치킨양념치킨));
-
-        //then
-        assertThat(sumMenuPrice).isEqualTo(BigDecimal.valueOf(55_000));
-    }
-
     @DisplayName("메뉴 목록 조회")
     @Test
     public void 메뉴_목록조회_확인() throws Exception {

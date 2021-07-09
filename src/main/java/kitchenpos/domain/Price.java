@@ -26,8 +26,14 @@ public class Price {
         return price;
     }
 
-    public BigDecimal multiply(BigDecimal value) {
-        return price.multiply(value);
+    public Price multiply(Price operand) {
+        return new Price(price.multiply(operand.value()));
+    }
+
+    public Price add(Price operand) { return new Price(price.add(operand.value())); }
+
+    public int compareTo(Price operand) {
+        return price.compareTo(operand.value());
     }
 
     @Override
