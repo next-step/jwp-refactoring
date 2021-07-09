@@ -21,7 +21,7 @@ public class TableGroup implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "orderTables", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "tableGroup", cascade = CascadeType.ALL)
     private List<OrderTable> orderTables = new ArrayList<>();
 
     private LocalDateTime createdDate;
