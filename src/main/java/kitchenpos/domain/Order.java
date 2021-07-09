@@ -7,6 +7,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Table(name = "orders")
 @Entity
@@ -26,27 +27,36 @@ public class Order {
     @Column(updatable = false)
     private LocalDateTime orderedTime;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     protected Order() {}
 
     public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        verifyAvailable(orderLineItems);
-        this.orderTable = orderTable;
+        verifyAvailable(orderTable, orderLineItems);
+        setOrderTable(orderTable);
         this.orderStatus = OrderStatus.COOKING;
         orderLineItems.forEach(this::addOrderLineItem);
-    }
-
-    private void verifyAvailable(List<OrderLineItem> orderLineItems) {
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException("주문항목이 존재하지 않습니다.");
-        }
     }
 
     public Order(Long id, OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         this(orderTable, orderLineItems);
         this.id = id;
+    }
+
+    private void verifyAvailable(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException("주문테이블이 빈테이블입니다.");
+        }
+
+        if (CollectionUtils.isEmpty(orderLineItems)) {
+            throw new IllegalArgumentException("주문항목이 존재하지 않습니다.");
+        }
+    }
+
+    public void setOrderTable(OrderTable orderTable) {
+        this.orderTable = orderTable;
+        orderTable.addOrder(this);
     }
 
     public void addOrderLineItem(OrderLineItem orderLineItem) {
@@ -57,8 +67,8 @@ public class Order {
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
-        if (orderStatus == OrderStatus.COMPLETION) {
-            throw new IllegalArgumentException();
+        if (this.orderStatus == OrderStatus.COMPLETION) {
+            throw new IllegalArgumentException("주문상태가 계산완료입니다.");
         }
         this.orderStatus = orderStatus;
     }
@@ -89,5 +99,18 @@ public class Order {
 
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Order order = (Order) o;
+        return Objects.equals(getId(), order.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 }

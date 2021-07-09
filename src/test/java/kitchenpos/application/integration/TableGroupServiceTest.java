@@ -36,6 +36,7 @@ public class TableGroupServiceTest {
 
     private OrderTable orderTable1;
     private OrderTable orderTable2;
+    private Menu menu;
 
     @BeforeEach
     public void setUp() {
@@ -43,6 +44,8 @@ public class TableGroupServiceTest {
         orderTable2 = new OrderTable(5, true);
         orderTableRepository.save(orderTable1);
         orderTableRepository.save(orderTable2);
+        menu = new Menu("메뉴", BigDecimal.valueOf(1_000), null);
+        menuRepository.save(menu);
     }
 
     @DisplayName("단체지정 등록 예외 - 입력한 주문테이블의 수와 실제 저장되었던 주문테이블 수가 다른 경우")
@@ -66,28 +69,6 @@ public class TableGroupServiceTest {
         //then
         assertThat(tableGroupResponse.getId()).isNotNull();
         assertThat(tableGroupResponse.getOrderTables().size()).isEqualTo(2);
-    }
-
-    @DisplayName("단체지정 해제 예외 - 주문상태가 조리나 식사인 경우")
-    @Test
-    public void 주문상태가조리나식사인경우_단체지정_해제_확인() throws Exception {
-        //give
-        Menu menu = menuRepository.save(new Menu("메뉴", BigDecimal.valueOf(1000), null));
-        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menu.getId(), 2L);
-        orderTable1.changeEmpty(false);
-        OrderRequest orderRequest = new OrderRequest(orderTable1.getId(), Arrays.asList(orderLineItemRequest));
-        OrderResponse orderResponse = orderService.create(orderRequest);
-        orderService.changeOrderStatus(orderResponse.getId(), new OrderStatusRequest(OrderStatus.MEAL));
-
-        orderTable1.changeEmpty(true);
-        TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(orderTable1.getId(), orderTable2.getId()));
-        TableGroupResponse tableGroupResponse = tableGroupService.create(tableGroupRequest);
-
-        //when
-        //then
-        assertThatThrownBy(() -> tableGroupService.ungroup(tableGroupResponse.getId()))
-                .hasMessage("주문상태가 단체지정 할 수 없는 상태입니다.")
-                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("단체지정 해제 예외 - 단체지정이 존재하지 않는 경우")

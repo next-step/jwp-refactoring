@@ -1,17 +1,14 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.TableEmptyRequest;
 import kitchenpos.dto.TableNumberOfGuestsRequest;
 import kitchenpos.dto.TableRequest;
 import kitchenpos.dto.TableResponse;
-import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,11 +16,9 @@ import java.util.stream.Collectors;
 @Service
 public class TableService {
     private final OrderTableRepository orderTableRepository;
-    private final OrderRepository orderRepository;
 
-    public TableService(final OrderTableRepository orderTableRepository, OrderRepository orderRepository) {
+    public TableService(final OrderTableRepository orderTableRepository) {
         this.orderTableRepository = orderTableRepository;
-        this.orderRepository = orderRepository;
     }
 
     public TableResponse create(final TableRequest tableRequest) {
@@ -42,16 +37,8 @@ public class TableService {
 
     public TableResponse changeEmpty(final Long orderTableId, final TableEmptyRequest tableEmptyRequest) {
         final OrderTable orderTable = findOrderTableById(orderTableId);
-        verifyAvailableOrderStatus(orderTableId);
         orderTable.changeEmpty(tableEmptyRequest.isEmpty());
         return TableResponse.of(orderTable);
-    }
-
-    private void verifyAvailableOrderStatus(Long orderTableId) {
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId,
-                Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException("주문테이블의 주문상태가 조리나 식사입니다.");
-        }
     }
 
     private OrderTable findOrderTableById(Long orderTableId) {

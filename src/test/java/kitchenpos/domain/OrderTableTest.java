@@ -3,7 +3,6 @@ package kitchenpos.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,7 +30,41 @@ public class OrderTableTest {
 
         //when
         //then
-        assertThatThrownBy(() -> orderTable.changeEmpty(true)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderTable.changeEmpty(true))
+                .hasMessage("단체지정이 되어있으면 안됩니다.")
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("주문테이블 빈테이블 여부 변경 예외 - 주문상태가 조리인 경우")
+    @Test
+    public void 주문상태가조리인경우_빈테이블여부_변경_예외() throws Exception {
+        //given
+        OrderTable orderTable = new OrderTable(1L, null, 5, false);
+        new Order(1L, orderTable, Arrays.asList(new OrderLineItem(1L, null, 1L, 1L)));
+        orderTable.getOrders().stream()
+                .forEach(order -> order.setOrderStatus(OrderStatus.COOKING));
+
+        //when
+        //then
+        assertThatThrownBy(() -> orderTable.changeEmpty(true))
+                .hasMessage("주문테이블의 주문상태가 조리나 식사입니다.")
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("주문테이블 빈테이블 여부 변경 예외 - 주문상태가 식사인 경우")
+    @Test
+    public void 주문상태가식사인경우_빈테이블여부_변경_예외() throws Exception {
+        //given
+        OrderTable orderTable = new OrderTable(1L, null, 5, false);
+        new Order(1L, orderTable, Arrays.asList(new OrderLineItem(1L, null, 1L, 1L)));
+        orderTable.getOrders().stream()
+                .forEach(order -> order.setOrderStatus(OrderStatus.MEAL));
+
+        //when
+        //then
+        assertThatThrownBy(() -> orderTable.changeEmpty(true))
+                .hasMessage("주문테이블의 주문상태가 조리나 식사입니다.")
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("방문한 손님 수 변경")

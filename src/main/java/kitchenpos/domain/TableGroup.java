@@ -50,8 +50,16 @@ public class TableGroup {
     }
 
     public void ungroup() {
+        verifyAvailableUngroup();
         orderTables.stream()
                 .forEach(orderTable -> orderTable.changeTableGroup(null));
+    }
+
+    private void verifyAvailableUngroup() {
+        if (orderTables.stream()
+                .anyMatch(orderTable -> !orderTable.isCompletionAllOrders())) {
+            throw new IllegalArgumentException("계산완료가 안된 테이블이 존재합니다.");
+        }
     }
 
     private void verifyAvailable(List<OrderTable> orderTables) {

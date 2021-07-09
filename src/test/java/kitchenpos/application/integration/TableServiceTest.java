@@ -89,40 +89,6 @@ public class TableServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("주문테이블 빈테이블 여부 변경 예외 - 주문상태가 조리인 경우")
-    @Test
-    public void 주문상태가조리인경우_빈테이블여부_변경_예외() throws Exception {
-        TableRequest tableRequest = new TableRequest(5, false);
-        TableResponse tableResponse = tableService.create(tableRequest);
-        Menu menu = menuRepository.save(new Menu("메뉴", BigDecimal.valueOf(1000), null));
-        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menu.getId(), 2L);
-        OrderRequest orderRequest = new OrderRequest(tableResponse.getId(), Arrays.asList(orderLineItemRequest));
-        OrderResponse orderResponse = orderService.create(orderRequest);
-        orderService.changeOrderStatus(orderResponse.getId(), new OrderStatusRequest(OrderStatus.COOKING));
-
-        TableEmptyRequest tableEmptyRequest = new TableEmptyRequest(true);
-        assertThatThrownBy(() -> tableService.changeEmpty(tableResponse.getId(), tableEmptyRequest))
-                .hasMessage("주문테이블의 주문상태가 조리나 식사입니다.")
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("주문테이블 빈테이블 여부 변경 예외 - 주문상태가 식사인 경우")
-    @Test
-    public void 주문상태가식사인경우_빈테이블여부_변경_예외() throws Exception {
-        TableRequest tableRequest = new TableRequest(5, false);
-        TableResponse tableResponse = tableService.create(tableRequest);
-        Menu menu = menuRepository.save(new Menu("메뉴", BigDecimal.valueOf(1000), null));
-        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menu.getId(), 2L);
-        OrderRequest orderRequest = new OrderRequest(tableResponse.getId(), Arrays.asList(orderLineItemRequest));
-        OrderResponse orderResponse = orderService.create(orderRequest);
-        orderService.changeOrderStatus(orderResponse.getId(), new OrderStatusRequest(OrderStatus.MEAL));
-
-        TableEmptyRequest tableEmptyRequest = new TableEmptyRequest(true);
-        assertThatThrownBy(() -> tableService.changeEmpty(tableResponse.getId(), tableEmptyRequest))
-                .hasMessage("주문테이블의 주문상태가 조리나 식사입니다.")
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
     @DisplayName("주문테이블 방문한 손님 수 변경")
     @Test
     public void 방문한손님수_변경_확인() throws Exception {

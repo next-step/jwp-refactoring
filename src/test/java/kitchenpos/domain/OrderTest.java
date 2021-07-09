@@ -15,10 +15,11 @@ public class OrderTest {
         OrderLineItem orderLineItem = new OrderLineItem(1L, null, 1L, 2L);
         Order order = new Order(1L, new OrderTable(1L, null, 3, false),
                 Arrays.asList(orderLineItem));
+        order.changeOrderStatus(OrderStatus.COMPLETION);
 
         //when
         //then
-        assertThatThrownBy(() -> order.changeOrderStatus(OrderStatus.COMPLETION))
+        assertThatThrownBy(() -> order.changeOrderStatus(OrderStatus.MEAL))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

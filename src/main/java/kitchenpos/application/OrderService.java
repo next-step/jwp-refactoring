@@ -34,16 +34,9 @@ public class OrderService {
         List<OrderLineItem> orderLineItems = createOrderLineItems(orderRequest.getOrderLineItems());
         verifyMenuCount(orderRequest);
         OrderTable orderTable = findOrderTableById(orderRequest.getOrderTableId());
-        verifyAvailableOrderTable(orderTable);
         Order order = new Order(orderTable, orderLineItems);
         Order saveOrder = orderRepository.save(order);
         return OrderResponse.of(saveOrder);
-    }
-
-    private void verifyAvailableOrderTable(OrderTable orderTable) {
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException("주문테이블이 빈테이블입니다.");
-        }
     }
 
     private OrderTable findOrderTableById(Long id) {

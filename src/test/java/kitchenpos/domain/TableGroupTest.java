@@ -88,4 +88,19 @@ public class TableGroupTest {
         assertThat(orderTable1.getTableGroup()).isNull();
         assertThat(orderTable2.getTableGroup()).isNull();
     }
+
+    @DisplayName("그룹해제 예외 - 계산완료가 안된 테이블이 존재할 경우")
+    @Test
+    public void 계산완료가안된테이블이존재하는경우_그룹해제_예외() throws Exception {
+        //given
+        OrderTable orderTable1 = new OrderTable(1L, null, 5, true);
+        OrderTable orderTable2 = new OrderTable(2L, null, 5, true);
+        TableGroup tableGroup = new TableGroup(1L);
+        tableGroup.group(Arrays.asList(orderTable1, orderTable2));
+        new Order(1L, orderTable1, Arrays.asList(new OrderLineItem(1L, null, 1L, 1L)));
+
+        assertThatThrownBy(() -> tableGroup.ungroup())
+                .hasMessage("계산완료가 안된 테이블이 존재합니다.")
+                .isInstanceOf(IllegalArgumentException.class);
+    }
 }

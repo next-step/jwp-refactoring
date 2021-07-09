@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.OrderTableRequest;
@@ -12,7 +11,6 @@ import kitchenpos.repository.TableGroupRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,26 +55,11 @@ public class TableGroupService {
 
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = findTableGroupById(tableGroupId);
-        final List<Long> orderTableIds = getOrderTableIds(tableGroup);
-        verifyOrderStatus(orderTableIds);
         tableGroup.ungroup();
     }
 
     private TableGroup findTableGroupById(Long tableGroupId) {
         return tableGroupRepository.findById(tableGroupId)
                 .orElseThrow(() -> new IllegalArgumentException("단체지정이 존재하지 않습니다."));
-    }
-
-    private void verifyOrderStatus(List<Long> orderTableIds) {
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds,
-                Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException("주문상태가 단체지정 할 수 없는 상태입니다.");
-        }
-    }
-
-    private List<Long> getOrderTableIds(TableGroup tableGroup) {
-        return tableGroup.getOrderTables().stream()
-                .map(orderTable -> orderTable.getId())
-                .collect(Collectors.toList());
     }
 }
