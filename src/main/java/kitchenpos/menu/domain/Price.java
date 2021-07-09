@@ -26,7 +26,7 @@ public class Price {
 
     private static void validateValue(final BigDecimal value) {
         if (Objects.isNull(value) || MIN_VALUE.compareTo(value) == 1) {
-            throw new IllegalArgumentException("");
+            throw new IllegalArgumentException();
         }
     }
 

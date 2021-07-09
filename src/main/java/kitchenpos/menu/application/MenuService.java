@@ -1,10 +1,12 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProductRepository;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.domain.ProductRepository;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -38,12 +40,10 @@ public class MenuService {
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
         List<MenuProduct> menuProducts = menuRequest.getMenuProducts().stream()
-                .map(menuProduct -> new MenuProduct(productRepository.findById(menuProduct.getProductId())
-                        .orElseThrow(EntityNotFoundException::new), menuProduct.getQuantity()))
+                .map(menuProduct -> new MenuProduct(findProductById(menuProduct.getProductId()), menuProduct.getQuantity()))
                 .collect(toList());
 
-        Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(),
-                menuGroupRepository.findById(menuRequest.getMenuGroupId()).orElseThrow(EntityNotFoundException::new));
+        Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), findMenuGroupById(menuRequest.getMenuGroupId()));
         menu.addMenuProducts(menuProducts);
         menuProducts.forEach(menuProductRepository::save);
         return MenuResponse.from(menuRepository.save(menu));
@@ -51,9 +51,16 @@ public class MenuService {
 
     @Transactional(readOnly = true)
     public List<MenuResponse> list() {
-        return menuRepository.findAll()
-                .stream()
+        return menuRepository.findAll().stream()
                 .map(MenuResponse::from)
                 .collect(toList());
+    }
+
+    private Product findProductById(final Long productId) {
+        return productRepository.findById(productId).orElseThrow(EntityNotFoundException::new);
+    }
+
+    private MenuGroup findMenuGroupById(final Long menuGroupId) {
+        return menuGroupRepository.findById(menuGroupId).orElseThrow(EntityNotFoundException::new);
     }
 }

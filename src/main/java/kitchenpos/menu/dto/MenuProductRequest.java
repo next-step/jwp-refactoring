@@ -6,7 +6,7 @@ public class MenuProductRequest {
 
     public MenuProductRequest() {}
 
-    public MenuProductRequest(Long productId, long quantity) {
+    public MenuProductRequest(final Long productId, final long quantity) {
         this.productId = productId;
         this.quantity = quantity;
     }
