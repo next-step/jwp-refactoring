@@ -1,12 +1,11 @@
 package kitchenpos.table.application;
 
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.application.TableGroupService;
+import kitchenpos.table.domain.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,10 +31,10 @@ class TableGroupServiceTest {
     private OrderRepository orderRepository;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -62,9 +61,9 @@ class TableGroupServiceTest {
         List<Long> orderTableIds = tableGroup.getOrderTables().stream()
                 .map(OrderTable::getId)
                 .collect(toList());
-        given(orderTableDao.findAllByIdIn(orderTableIds)).willReturn(orderTables);
-        given(tableGroupDao.save(tableGroup)).willReturn(tableGroup);
-        given(orderTableDao.save(orderTable1)).willReturn(orderTable1);
+        given(orderTableRepository.findAllByIdIn(orderTableIds)).willReturn(orderTables);
+        given(tableGroupRepository.save(tableGroup)).willReturn(tableGroup);
+        given(orderTableRepository.save(orderTable1)).willReturn(orderTable1);
 
         // when
         TableGroup createdTableGroup = tableGroupService.create(tableGroup);
@@ -93,7 +92,7 @@ class TableGroupServiceTest {
         List<Long> orderTableIds = tableGroup.getOrderTables().stream()
                 .map(OrderTable::getId)
                 .collect(toList());
-        given(orderTableDao.findAllByIdIn(orderTableIds)).willReturn(notDuplicatedOrderTable);
+        given(orderTableRepository.findAllByIdIn(orderTableIds)).willReturn(notDuplicatedOrderTable);
 
         // when & then
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
@@ -108,7 +107,7 @@ class TableGroupServiceTest {
         List<Long> orderTableIds = tableGroup.getOrderTables().stream()
                 .map(OrderTable::getId)
                 .collect(toList());
-        given(orderTableDao.findAllByIdIn(orderTableIds)).willReturn(orderTables);
+        given(orderTableRepository.findAllByIdIn(orderTableIds)).willReturn(orderTables);
 
         // when & then
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
@@ -126,11 +125,11 @@ class TableGroupServiceTest {
         orderTable1.setTableGroupId(tableGroup.getId());
         orderTable2.setTableGroupId(tableGroup.getId());
 
-        given(orderTableDao.findAllByTableGroupId(tableGroup.getId())).willReturn(orderTables);
+        given(orderTableRepository.findAllByTableGroupId(tableGroup.getId())).willReturn(orderTables);
         given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(
                 orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).willReturn(false);
-        given(orderTableDao.save(orderTable1)).willReturn(orderTable1);
-        given(orderTableDao.save(orderTable2)).willReturn(orderTable2);
+        given(orderTableRepository.save(orderTable1)).willReturn(orderTable1);
+        given(orderTableRepository.save(orderTable2)).willReturn(orderTable2);
 
         // when
         tableGroupService.ungroup(tableGroup.getId());
@@ -148,7 +147,7 @@ class TableGroupServiceTest {
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
 
-        given(orderTableDao.findAllByTableGroupId(tableGroup.getId())).willReturn(orderTables);
+        given(orderTableRepository.findAllByTableGroupId(tableGroup.getId())).willReturn(orderTables);
         given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(
                 orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).willReturn(true);
 
