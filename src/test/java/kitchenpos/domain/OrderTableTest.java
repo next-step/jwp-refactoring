@@ -81,8 +81,8 @@ public class OrderTableTest {
     @Test
     @DisplayName("테이블이 조리/식사 상태이면 상태 변경 실패")
     void changeEmpty_failed3() {
-        OrderLineItem 더미1 = new OrderLineItem(후라이드_메뉴, 1);
-        OrderLineItem 더미2 = new OrderLineItem(양념치킨_메뉴, 1);
+        OrderLineItem 더미1 = new OrderLineItem(후라이드_메뉴, Quantity.valueOf(1));
+        OrderLineItem 더미2 = new OrderLineItem(양념치킨_메뉴, Quantity.valueOf(1));
         테이블12_사용중_주문전.addOrder(new Order(COOKING, OrderLineItems.of(더미1, 더미2)));
 
         assertThatThrownBy(() -> 테이블12_사용중_주문전.changeEmpty(true))
@@ -113,8 +113,8 @@ public class OrderTableTest {
     @Test
     @DisplayName("진행중인 주문이 있다면 그룹핑을 해제할 수 없다")
     void leaveTableGroup() {
-        OrderLineItem 더미1 = new OrderLineItem(후라이드_메뉴, 1);
-        OrderLineItem 더미2 = new OrderLineItem(양념치킨_메뉴, 1);
+        OrderLineItem 더미1 = new OrderLineItem(후라이드_메뉴, Quantity.valueOf(1));
+        OrderLineItem 더미2 = new OrderLineItem(양념치킨_메뉴, Quantity.valueOf(1));
         테이블12_사용중_주문전.addOrder(new Order(COOKING, OrderLineItems.of(더미1, 더미2)));
 
         assertThatThrownBy(() -> 테이블12_사용중_주문전.leaveTableGroup())

@@ -43,7 +43,7 @@ public class MenuService {
 
     private MenuProduct newMenuProduct(MenuProductRequest menuProductRequest) {
         Product product = productService.findById(menuProductRequest.getProductId());
-        return new MenuProduct(product, menuProductRequest.getQuantity());
+        return new MenuProduct(product, menuProductRequest.quantity());
     }
 
     public List<Menu> list() {

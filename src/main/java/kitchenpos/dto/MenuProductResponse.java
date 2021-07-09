@@ -10,7 +10,7 @@ public class MenuProductResponse {
 
     public static MenuProductResponse of(MenuProduct menuProduct) {
         return new MenuProductResponse(menuProduct.getSeq(),
-            ProductResponse.of(menuProduct.getProduct()), menuProduct.getQuantity());
+            ProductResponse.of(menuProduct.getProduct()), menuProduct.getQuantity().value());
     }
 
     public MenuProductResponse() {

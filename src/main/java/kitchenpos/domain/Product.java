@@ -42,7 +42,7 @@ public class Product {
         }
     }
 
-    public Price priceOf(long quantity) {
+    public Price priceOf(Quantity quantity) {
         return price.of(quantity);
     }
 

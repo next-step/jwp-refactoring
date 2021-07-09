@@ -7,7 +7,7 @@ public class OrderLineItemResponse {
     private long quantity;
 
     public static OrderLineItemResponse of(OrderLineItem orderLineItem) {
-        return new OrderLineItemResponse(MenuResponse.of(orderLineItem.getMenu()), orderLineItem.getQuantity());
+        return new OrderLineItemResponse(MenuResponse.of(orderLineItem.getMenu()), orderLineItem.getQuantity().value());
     }
 
     public OrderLineItemResponse() {

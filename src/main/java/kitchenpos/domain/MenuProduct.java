@@ -3,6 +3,7 @@ package kitchenpos.domain;
 import java.util.Objects;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
@@ -29,17 +30,18 @@ public class MenuProduct {
     @JoinColumn(nullable = false, foreignKey = @ForeignKey(name = "fk_menu_product_product"))
     private Product product;
 
+    @Embedded
     @Column(nullable = false)
-    private long quantity;
+    private Quantity quantity;
 
     protected MenuProduct() {
     }
 
-    public MenuProduct(Product product, long quantity) {
+    public MenuProduct(Product product, Quantity quantity) {
         this(null, product, quantity);
     }
 
-    private MenuProduct(Menu menu, Product product, long quantity) {
+    private MenuProduct(Menu menu, Product product, Quantity quantity) {
         this.menu = menu;
         this.product = product;
         this.quantity = quantity;
@@ -73,7 +75,7 @@ public class MenuProduct {
         return product;
     }
 
-    public long getQuantity() {
+    public Quantity getQuantity() {
         return quantity;
     }
 }
