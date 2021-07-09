@@ -111,3 +111,7 @@
 
 ## TODO
 - [x] Menu Aggregate에서 다른 Aggregate의 entity 직접 참조 제거
+- [ ] 패키지 간 의존성 사이클 제거
+  * 제거 전 패키지간 의존성 사이클
+    ![package-dependency-before-refactoring](docs/image/kitchenpos-package-dependency.png)
+  * 제거 후 패키지간 의존성 사이클
