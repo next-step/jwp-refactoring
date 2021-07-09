@@ -19,13 +19,14 @@ public class Price {
     }
 
     // for jpa
-    public Price() { }
+    public Price() {
+    }
 
-    public static Price of(BigDecimal value){
+    public static Price of(BigDecimal value) {
         return new Price(value);
     }
 
-    public static Price of(Long value){
+    public static Price of(Long value) {
         return new Price(BigDecimal.valueOf(value));
     }
 

@@ -13,10 +13,8 @@ import java.util.Objects;
 @Entity
 public class TableGroup implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
     public static final TableGroup EMPTY = new TableGroup();
-
+    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -41,6 +39,10 @@ public class TableGroup implements Serializable {
         this.createdDate = createdDate;
     }
 
+    public static TableGroup of(List<OrderTable> orderTables) {
+        return new TableGroup(null, orderTables, LocalDateTime.now());
+    }
+
     public void initialSettingOrderTables(List<OrderTable> orderTables) {
         orderTables.forEach(orderTable -> {
 
@@ -51,10 +53,6 @@ public class TableGroup implements Serializable {
             orderTable.changeTableGroup(this);
             orderTable.changeNonEmptyTable();
         });
-    }
-
-    public static TableGroup of(List<OrderTable> orderTables) {
-        return new TableGroup(null, orderTables, LocalDateTime.now());
     }
 
     public Long getId() {

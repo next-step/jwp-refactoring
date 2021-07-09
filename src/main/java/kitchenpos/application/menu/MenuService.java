@@ -2,8 +2,8 @@ package kitchenpos.application.menu;
 
 import kitchenpos.application.menugroup.MenuGroupService;
 import kitchenpos.domain.menu.Menu;
-import kitchenpos.domain.menugroup.MenuGroup;
 import kitchenpos.domain.menu.MenuProduct;
+import kitchenpos.domain.menugroup.MenuGroup;
 import kitchenpos.dto.menu.MenuProductRequest;
 import kitchenpos.dto.menu.MenuRequest;
 import kitchenpos.event.product.MenuCreatedEvent;

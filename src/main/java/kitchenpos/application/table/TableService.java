@@ -82,7 +82,7 @@ public class TableService {
         return orderTableRepository.findAllByTableGroupId(tableGroupId);
     }
 
-    public void makeTableGroupEmpty(OrderTable orderTable){
+    public void makeTableGroupEmpty(OrderTable orderTable) {
         orderTable.changeTableGroup(EMPTY);
         orderTableRepository.save(orderTable);
     }

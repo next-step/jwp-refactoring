@@ -39,8 +39,9 @@ public class OrderEventHandler {
                     "saved orderLineItems size: " + savedMenuCount);
         }
     }
+
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
-    public void createdTableGroup(TableGroupCreatedEvent event){
+    public void createdTableGroup(TableGroupCreatedEvent event) {
         TableGroup tableGroup = event.getTableGroup();
         tableGroup.initialSettingOrderTables(tableGroup.getOrderTables());
     }

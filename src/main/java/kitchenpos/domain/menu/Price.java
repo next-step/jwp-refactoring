@@ -5,6 +5,7 @@ import javax.persistence.Embeddable;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
+
 @Embeddable
 public class Price implements Serializable {
 
@@ -19,13 +20,14 @@ public class Price implements Serializable {
     }
 
     // for jpa
-    public Price() { }
+    public Price() {
+    }
 
-    public static Price of(BigDecimal value){
+    public static Price of(BigDecimal value) {
         return new Price(value);
     }
 
-    public static Price of(Long value){
+    public static Price of(Long value) {
         return new Price(BigDecimal.valueOf(value));
     }
 
@@ -44,7 +46,7 @@ public class Price implements Serializable {
                 '}';
     }
 
-    public boolean isGreaterThen(Price price){
+    public boolean isGreaterThen(Price price) {
         return value.compareTo(price.value) > 0;
     }
 

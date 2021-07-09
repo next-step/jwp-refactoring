@@ -2,10 +2,11 @@ package kitchenpos.domain.menu;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
-public class Name {
+public class Name implements Serializable {
 
     @Column(name = "name")
     private String value;
@@ -13,12 +14,12 @@ public class Name {
     public Name() {
     }
 
-    public static Name of(String value){
-        return new Name(value);
-    }
-
     private Name(String value) {
         this.value = value;
+    }
+
+    public static Name of(String value) {
+        return new Name(value);
     }
 
     public String getValue() {

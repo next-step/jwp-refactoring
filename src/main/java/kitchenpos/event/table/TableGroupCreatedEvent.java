@@ -9,7 +9,7 @@ public class TableGroupCreatedEvent extends ApplicationEvent {
 
     public TableGroupCreatedEvent(TableGroup tableGroup) {
         super(tableGroup);
-        this.tableGroup= tableGroup;
+        this.tableGroup = tableGroup;
     }
 
     public TableGroup getTableGroup() {

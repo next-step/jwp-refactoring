@@ -15,10 +15,6 @@ public class MenuProducts implements Serializable {
     @OneToMany(fetch = LAZY, mappedBy = "menu")
     private List<MenuProduct> value;
 
-    public static MenuProducts of(List<MenuProduct> menuProducts) {
-        return new MenuProducts(menuProducts);
-    }
-
     private MenuProducts(List<MenuProduct> value) {
         this.value = value;
     }
@@ -26,11 +22,15 @@ public class MenuProducts implements Serializable {
     public MenuProducts() {
     }
 
+    public static MenuProducts of(List<MenuProduct> menuProducts) {
+        return new MenuProducts(menuProducts);
+    }
+
     public List<MenuProduct> getValue() {
         return Collections.unmodifiableList(value);
     }
 
-    protected void addMenuProduct(MenuProduct menuProduct){
+    protected void addMenuProduct(MenuProduct menuProduct) {
         value.add(menuProduct);
     }
 

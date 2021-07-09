@@ -11,7 +11,8 @@ public class Quantity {
     @Column(name = "quantity")
     private long value;
 
-    public Quantity() { }
+    public Quantity() {
+    }
 
     private Quantity(long value) {
         this.value = value;

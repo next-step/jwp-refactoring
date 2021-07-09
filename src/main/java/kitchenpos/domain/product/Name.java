@@ -10,14 +10,15 @@ public class Name {
     @Column(name = "name")
     private String value;
 
-    public Name() { }
-
-    public static Name of(String value){
-        return new Name(value);
+    public Name() {
     }
 
     private Name(String value) {
         this.value = value;
+    }
+
+    public static Name of(String value) {
+        return new Name(value);
     }
 
     public String getValue() {

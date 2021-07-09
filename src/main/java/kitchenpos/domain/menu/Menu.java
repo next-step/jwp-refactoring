@@ -1,12 +1,10 @@
 package kitchenpos.domain.menu;
 
 import kitchenpos.domain.menugroup.MenuGroup;
-import kitchenpos.domain.product.Product;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import static javax.persistence.FetchType.LAZY;
