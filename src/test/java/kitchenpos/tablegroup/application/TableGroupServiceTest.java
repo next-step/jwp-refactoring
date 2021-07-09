@@ -1,5 +1,6 @@
 package kitchenpos.tablegroup.application;
 
+import java.util.Optional;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
@@ -41,16 +42,15 @@ class TableGroupServiceTest {
     @Test
     void createTest() {
         // given
-        OrderTable orderTable1 = new OrderTable(null, 3);
-        OrderTable orderTable2 = new OrderTable(null, 4);
+        OrderTable orderTable1 = new OrderTable(3);
+        OrderTable orderTable2 = new OrderTable(4);
         TableGroup tableGroup = new TableGroup(Arrays.asList(orderTable1, orderTable2));
-        orderTable1.setEmpty(true);
-        orderTable2.setEmpty(true);
 
         TableGroupRequest request = new TableGroupRequest(Arrays.asList(new OrderTableIdRequest(1L),
                                                                         new OrderTableIdRequest(2L)));
 
-        Mockito.when(orderTableRepository.findAllByIdIn(any())).thenReturn(Arrays.asList(orderTable1, orderTable2));
+        Mockito.when(orderTableRepository.findById(1L)).thenReturn(Optional.of(orderTable1));
+        Mockito.when(orderTableRepository.findById(2L)).thenReturn(Optional.of(orderTable2));
         Mockito.when(tableGroupRepository.save(any())).thenReturn(tableGroup);
 
         // when
@@ -72,28 +72,13 @@ class TableGroupServiceTest {
             .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("테이블 그룹으로 묶일 주문 테이블이 빈 테이블이 아닌 경우")
-    @Test
-    void createTestWrongOrderTable() {
-        // given
-        TableGroupRequest request = new TableGroupRequest(Arrays.asList(new OrderTableIdRequest(1L),
-                                                                        new OrderTableIdRequest(2L)));
-        OrderTable orderTable1 = new OrderTable(null, 3);
-        OrderTable orderTable2 = new OrderTable(1L, 4);
-        Mockito.when(orderTableRepository.findAllByIdIn(any())).thenReturn(Arrays.asList(orderTable1, orderTable2));
-
-        // when
-        assertThatThrownBy(() -> tableGroupService.create(request))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
 
     @DisplayName("테이블 그룹 해제 테스트")
     @Test
     void ungroupTest() {
         // given
-        OrderTable orderTable1 = new OrderTable(1L, 3);
-        OrderTable orderTable2 = new OrderTable(1L, 4);
+        OrderTable orderTable1 = new OrderTable(3);
+        OrderTable orderTable2 = new OrderTable(4);
 
         Mockito.when(orderTableRepository.findAllByTableGroupId(any())).thenReturn(Arrays.asList(orderTable1, orderTable2));
         Mockito.when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(false);
@@ -109,8 +94,8 @@ class TableGroupServiceTest {
     @Test
     void ungroupTestWithWrongStatus() {
         // given
-        OrderTable orderTable1 = new OrderTable(1L, 3);
-        OrderTable orderTable2 = new OrderTable(1L, 4);
+        OrderTable orderTable1 = new OrderTable(3);
+        OrderTable orderTable2 = new OrderTable(4);
 
         Mockito.when(orderTableRepository.findAllByTableGroupId(any())).thenReturn(Arrays.asList(orderTable1, orderTable2));
         Mockito.when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(true);

@@ -1,7 +1,7 @@
 package kitchenpos.product.ui;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import kitchenpos.IntegrationTestHelper;
+import kitchenpos.MockMvcTestHelper;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
@@ -25,7 +25,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ProductRestController.class)
-class ProductRestControllerTest extends IntegrationTestHelper {
+class ProductRestControllerTest extends MockMvcTestHelper {
 
     @MockBean
     private ProductService productService;

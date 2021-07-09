@@ -25,6 +25,6 @@ public class OrderTableRequest {
     }
 
     public OrderTable toOrderTable() {
-        return new OrderTable(null, this.numberOfGuests);
+        return new OrderTable(this.numberOfGuests);
     }
 }

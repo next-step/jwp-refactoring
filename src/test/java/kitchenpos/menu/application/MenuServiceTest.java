@@ -4,8 +4,8 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
-import kitchenpos.menu.domain.MenuProductRepository;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
@@ -34,8 +34,6 @@ class MenuServiceTest {
     @Mock
     private MenuGroupRepository menuGroupRepository;
     @Mock
-    private MenuProductRepository menuProductRepository;
-    @Mock
     private ProductRepository productRepository;
 
     @InjectMocks
@@ -46,15 +44,17 @@ class MenuServiceTest {
     void createTest() {
         // given
         Product 불고기 = new Product("불고기", new BigDecimal(1000));
-        MenuProduct 메뉴_불고기 = new MenuProduct(1L, 불고기.getId(), 3);
+        MenuProduct 메뉴_불고기 = new MenuProduct(불고기, 3);
+        MenuGroup 메뉴_그룹 = new MenuGroup("메뉴그룹");
+
         MenuRequest menuRequest = MenuRequest.Builder.of("메뉴1", new BigDecimal(2000))
                                                      .menuGroupId(1L)
                                                      .menuProducts(Arrays.asList(new MenuProductRequest(1L, 1000)))
                                                      .build();
-        Mockito.when(menuGroupRepository.existsById(any())).thenReturn(true);
+
+        Mockito.when(menuGroupRepository.findById(any())).thenReturn(Optional.of(메뉴_그룹));
         Mockito.when(productRepository.findById(any())).thenReturn(Optional.of(불고기));
-        Mockito.when(menuRepository.save(any())).thenReturn(menuRequest.toMenu());
-        Mockito.when(menuProductRepository.save(any())).thenReturn(메뉴_불고기);
+        Mockito.when(menuRepository.save(any())).thenReturn(menuRequest.toMenu(메뉴_그룹, Arrays.asList(메뉴_불고기)));
 
         // when
         MenuResponse result = menuService.create(menuRequest);
@@ -65,22 +65,20 @@ class MenuServiceTest {
             assertThat(result.getName()).isEqualTo("메뉴1");
             assertThat(result.getMenuGroupId()).isEqualTo(1L);
         });
-        Mockito.verify(menuGroupRepository).existsById(any());
+        Mockito.verify(menuGroupRepository).findById(any());
         Mockito.verify(productRepository).findById(any());
         Mockito.verify(menuRepository).save(any());
-        Mockito.verify(menuProductRepository).save(any());
     }
 
     @DisplayName("메뉴 그룹이 없는 경우")
     @Test
     void notExistedMenuGroup() {
         // given
-        Product 불고기 = new Product("불고기", new BigDecimal(1000));
         MenuRequest menuRequest = MenuRequest.Builder.of("메뉴1", new BigDecimal(2000))
                                                      .menuGroupId(1L)
                                                      .menuProducts(Arrays.asList(new MenuProductRequest()))
                                                      .build();
-        Mockito.when(menuGroupRepository.existsById(any())).thenReturn(false);
+        Mockito.when(menuGroupRepository.findById(any())).thenReturn(Optional.empty());
 
         // when
         assertThatThrownBy(() -> menuService.create(menuRequest))
@@ -92,12 +90,12 @@ class MenuServiceTest {
     void overPriceMenu() {
         // given
         Product 불고기 = new Product("불고기", new BigDecimal(1000));
+        MenuGroup 메뉴_그룹 = new MenuGroup("메뉴그룹");
         MenuRequest menuRequest = MenuRequest.Builder.of("메뉴1", new BigDecimal(5000))
                                                      .menuGroupId(1L)
-                                                     .menuProducts(Arrays.asList(new MenuProductRequest()))
+                                                     .menuProducts(Arrays.asList(new MenuProductRequest(1l, 3)))
                                                      .build();
-        menuRequest.setMenuProducts(Arrays.asList(new MenuProductRequest(1L, 3)));
-        Mockito.when(menuGroupRepository.existsById(any())).thenReturn(true);
+        Mockito.when(menuGroupRepository.findById(any())).thenReturn(Optional.of(메뉴_그룹));
         Mockito.when(productRepository.findById(any())).thenReturn(Optional.of(불고기));
 
         // when

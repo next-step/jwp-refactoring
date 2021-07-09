@@ -39,7 +39,7 @@ class TableServiceTest {
     void createTest() {
         // given
         OrderTableRequest request = new OrderTableRequest(3, true);
-        OrderTable orderTable = new OrderTable(1l, 3);
+        OrderTable orderTable = new OrderTable(3);
         Mockito.when(orderTableRepository.save(any())).thenReturn(orderTable);
 
         // when
@@ -53,8 +53,8 @@ class TableServiceTest {
     @Test
     void listTest() {
         // given
-        OrderTable orderTable1 = new OrderTable(1l, 3);
-        OrderTable orderTable2 = new OrderTable(1l, 3);
+        OrderTable orderTable1 = new OrderTable(3);
+        OrderTable orderTable2 = new OrderTable(3);
         Mockito.when(orderTableRepository.findAll()).thenReturn(Arrays.asList(orderTable1, orderTable2));
 
         // when
@@ -69,7 +69,7 @@ class TableServiceTest {
     void changeEmptyTest() {
         // given
         OrderTableChangeEmptyRequest request = new OrderTableChangeEmptyRequest(true);
-        OrderTable orderTable = new OrderTable(null, 3);
+        OrderTable orderTable = new OrderTable(3);
         Mockito.when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
         Mockito.when(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(false);
         Mockito.when(orderTableRepository.save(any())).thenReturn(orderTable);
@@ -87,7 +87,7 @@ class TableServiceTest {
     void changeNumberOfGuestsTest() {
         // given
         OrderTableChangeNumberOfGuestsRequest request = new OrderTableChangeNumberOfGuestsRequest(3);
-        OrderTable orderTable = new OrderTable(1l, 3);
+        OrderTable orderTable = new OrderTable(3);
         Mockito.when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
         Mockito.when(orderTableRepository.save(any())).thenReturn(orderTable);
 

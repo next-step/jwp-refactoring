@@ -26,13 +26,13 @@ public class TableGroup {
     @Embedded
     private OrderTables orderTables = new OrderTables();
 
-    public TableGroup() {
+    protected TableGroup() {
         // empty;
     }
 
     public TableGroup(final List<OrderTable> orderTables) {
         this.createdDate = LocalDateTime.now();
-        this.orderTables.add(orderTables);
+        this.orderTables = OrderTables.of(this, orderTables);
         this.orderTables.checkEmptyAndNotIncludeTableGroup();
     }
 
@@ -46,5 +46,9 @@ public class TableGroup {
 
     public OrderTables getOrderTables() {
         return orderTables;
+    }
+
+    public void addOrderTable(final OrderTable orderTable) {
+        this.orderTables.add(orderTable);
     }
 }

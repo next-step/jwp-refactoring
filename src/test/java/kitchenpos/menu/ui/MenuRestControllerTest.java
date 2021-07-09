@@ -1,10 +1,8 @@
 package kitchenpos.menu.ui;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import kitchenpos.IntegrationTestHelper;
+import kitchenpos.MockMvcTestHelper;
 import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -26,7 +24,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(MenuRestController.class)
-class MenuRestControllerTest extends IntegrationTestHelper {
+class MenuRestControllerTest extends MockMvcTestHelper {
 
     @MockBean
     private MenuService menuService;
@@ -48,11 +46,7 @@ class MenuRestControllerTest extends IntegrationTestHelper {
                                                      .menuGroupId(1L)
                                                      .menuProducts(Arrays.asList(new MenuProductRequest()))
                                                      .build();
-        Mockito.when(menuService.create(any()))
-               .thenReturn(MenuResponse.of(Menu.Builder.of("메뉴1", new BigDecimal(10000))
-                                                       .menuGroupId(1L)
-                                                       .menuProducts(Arrays.asList(new MenuProduct()))
-                                                       .build()));
+        Mockito.when(menuService.create(any())).thenReturn(new MenuResponse());
 
         // when
         ResultActions resultActions = 메뉴_생성_요청(menuRequest);
@@ -65,23 +59,16 @@ class MenuRestControllerTest extends IntegrationTestHelper {
     @Test
     void listTest() throws Exception {
         // given
-        Menu menu1 = Menu.Builder.of("메뉴1", new BigDecimal(10000))
-                                 .menuGroupId(1L)
-                                 .menuProducts(Arrays.asList(new MenuProduct()))
-                                 .build();
-        Menu menu2 = Menu.Builder.of("메뉴2", new BigDecimal(15000))
-                                 .menuGroupId(1L)
-                                 .menuProducts(Arrays.asList(new MenuProduct()))
-                                 .build();
-        Mockito.when(menuService.list()).thenReturn(Arrays.asList(MenuResponse.of(menu1),
-                                                                  MenuResponse.of(menu2)));
+        Mockito.when(menuService.list()).thenReturn(Arrays.asList(new MenuResponse(),
+                                                                  new MenuResponse()));
 
         // when
         ResultActions resultActions = 전체_메뉴_조회();
 
         // then
         MvcResult mvcResult = 전체_메뉴_조회_성공(resultActions);
-        List<Menu> menus = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), new TypeReference<List<Menu>>(){});
+        List<MenuResponse> menus = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),
+                                                          new TypeReference<List<MenuResponse>>(){});
         assertThat(menus).isNotEmpty().hasSize(2);
     }
 

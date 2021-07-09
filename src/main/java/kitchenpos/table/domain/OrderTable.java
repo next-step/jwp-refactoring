@@ -30,15 +30,20 @@ public class OrderTable {
         // empty
     }
 
-    public OrderTable(final TableGroup tableGroup, final int numberOfGuests) {
-        this.tableGroup = tableGroup;
+    public OrderTable(final int numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
+        this.empty = true;
     }
 
     public void checkNotIncludeTableGroup() {
         if (Objects.nonNull(this.tableGroup)) {
             throw new IllegalArgumentException();
         }
+    }
+
+    public void grouping(final TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
+        tableGroup.addOrderTable(this);
     }
 
     public void setEmpty(boolean empty) {

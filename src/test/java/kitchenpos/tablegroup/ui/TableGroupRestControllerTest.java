@@ -1,9 +1,7 @@
 package kitchenpos.tablegroup.ui;
 
-import kitchenpos.IntegrationTestHelper;
+import kitchenpos.MockMvcTestHelper;
 import kitchenpos.tablegroup.application.TableGroupService;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupRequest.OrderTableIdRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
@@ -22,7 +20,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(TableGroupRestController.class)
-class TableGroupRestControllerTest extends IntegrationTestHelper {
+class TableGroupRestControllerTest extends MockMvcTestHelper {
 
     @MockBean
     private TableGroupService tableGroupService;
@@ -40,9 +38,7 @@ class TableGroupRestControllerTest extends IntegrationTestHelper {
     void createTest() throws Exception {
         // given
         TableGroupRequest request = new TableGroupRequest(Arrays.asList(new OrderTableIdRequest(1L)));
-        OrderTable orderTable = new OrderTable(1l, 3);
-        TableGroup tableGroup = new TableGroup(Arrays.asList(orderTable));
-        Mockito.when(tableGroupService.create(any())).thenReturn(TableGroupResponse.of(tableGroup));
+        Mockito.when(tableGroupService.create(any())).thenReturn(new TableGroupResponse());
 
         // when
         ResultActions resultActions = 테이블_그룹_생성_요청(request);

@@ -1,14 +1,12 @@
 package kitchenpos.table.ui;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import kitchenpos.IntegrationTestHelper;
+import kitchenpos.MockMvcTestHelper;
 import kitchenpos.table.application.TableService;
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableChangeEmptyRequest;
 import kitchenpos.table.dto.OrderTableChangeNumberOfGuestsRequest;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.table.ui.TableRestController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -26,7 +24,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(TableRestController.class)
-class TableRestControllerTest extends IntegrationTestHelper {
+class TableRestControllerTest extends MockMvcTestHelper {
 
     @MockBean
     private TableService tableService;
@@ -44,8 +42,7 @@ class TableRestControllerTest extends IntegrationTestHelper {
     void createTest() throws Exception {
         // given
         OrderTableRequest request = new OrderTableRequest(3, true);
-        OrderTable orderTable = new OrderTable(1l, 3);
-        Mockito.when(tableService.create(any())).thenReturn(OrderTableResponse.of(orderTable));
+        Mockito.when(tableService.create(any())).thenReturn(new OrderTableResponse());
 
         // when
         ResultActions resultActions = 테이블_생성_요청(request);
@@ -58,17 +55,16 @@ class TableRestControllerTest extends IntegrationTestHelper {
     @Test
     void listTest() throws Exception {
         // given
-        OrderTable orderTable1 = new OrderTable(1l, 3);
-        OrderTable orderTable2 = new OrderTable(2l, 5);
-        Mockito.when(tableService.list()).thenReturn(Arrays.asList(OrderTableResponse.of(orderTable1),
-                                                                   OrderTableResponse.of(orderTable2)));
+        Mockito.when(tableService.list()).thenReturn(Arrays.asList(new OrderTableResponse(),
+                                                                   new OrderTableResponse()));
 
         // when
         ResultActions resultActions = 테이블_조회_요청();
 
         // then
         MvcResult mvcResult = 테이블_조회_성공(resultActions);
-        List<OrderTable> orderTables = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), new TypeReference<List<OrderTable>>(){});
+        List<OrderTableResponse> orderTables = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),
+                                                                      new TypeReference<List<OrderTableResponse>>(){});
         assertThat(orderTables).isNotEmpty().hasSize(2);
     }
 
@@ -77,10 +73,7 @@ class TableRestControllerTest extends IntegrationTestHelper {
     void changeEmptyTest() throws Exception {
         // given
         OrderTableChangeEmptyRequest request = new OrderTableChangeEmptyRequest(true);
-        OrderTable orderTable = new OrderTable(1l, 3);
-        orderTable.setEmpty(true);
-        Mockito.when(tableService.changeEmpty(1l, request))
-               .thenReturn(OrderTableResponse.of(orderTable));
+        Mockito.when(tableService.changeEmpty(1l, request)).thenReturn(new OrderTableResponse());
 
         // when
         ResultActions resultActions = 테이블_빈상태_변경_요청(1l, request);
@@ -94,10 +87,7 @@ class TableRestControllerTest extends IntegrationTestHelper {
     void changeNumberOfGuestsTest() throws Exception {
         // given
         OrderTableChangeNumberOfGuestsRequest request = new OrderTableChangeNumberOfGuestsRequest(5);
-        OrderTable orderTable = new OrderTable(1l, 5);
-        orderTable.setEmpty(true);
-        Mockito.when(tableService.changeNumberOfGuests(1l, request))
-               .thenReturn(OrderTableResponse.of(orderTable));
+        Mockito.when(tableService.changeNumberOfGuests(1l, request)).thenReturn(new OrderTableResponse());
 
         // when
         ResultActions resultActions = 테이블_손님수_변경_요청(1l, request);

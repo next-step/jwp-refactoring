@@ -1,12 +1,16 @@
 package kitchenpos.order.application;
 
+import java.math.BigDecimal;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderLineItemRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
+import kitchenpos.product.domain.Product;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -37,8 +41,6 @@ class OrderServiceTest {
     @Mock
     private OrderRepository orderRepository;
     @Mock
-    private OrderLineItemRepository orderLineItemRepository;
-    @Mock
     private OrderTableRepository orderTableRepository;
 
     @InjectMocks
@@ -48,18 +50,22 @@ class OrderServiceTest {
     @Test
     void createTest() {
         // given
-        List<OrderLineItemRequest> orderLineItemRequests = Arrays
-            .asList(new OrderLineItemRequest(1L, 3),
-                    new OrderLineItemRequest(2L, 1));
-        OrderLineItem orderLineItem = new OrderLineItem(1L, 1L, 3);
-        Order order = new Order(1L, OrderStatus.COOKING.name());
-        OrderTable orderTable = new OrderTable(1L, 5);
+        Product 불고기 = new Product("불고기", new BigDecimal(1000));
+        MenuGroup 메뉴_그룹 = new MenuGroup("메뉴 그룹");
+        Menu 메뉴 = Menu.Builder.of("메뉴1", new BigDecimal(10000))
+                                 .menuGroup(메뉴_그룹)
+                                 .menuProducts(Arrays.asList(new MenuProduct(불고기, 1)))
+                                 .build();
+        List<OrderLineItemRequest> orderLineItemRequests = Arrays.asList(new OrderLineItemRequest(1L, 3),
+                                                                         new OrderLineItemRequest(2L, 1));
+        OrderLineItem orderLineItem = new OrderLineItem(메뉴, 3);
+        OrderTable orderTable = new OrderTable(5);
+        Order order = new Order(orderTable, OrderStatus.COOKING, Arrays.asList(orderLineItem));
         OrderRequest orderRequest = new OrderRequest(1l, orderLineItemRequests);
 
-        Mockito.when(menuRepository.countByIdIn(any())).thenReturn(2L);
         Mockito.when(orderTableRepository.findById(1L)).thenReturn(Optional.of(orderTable));
+        Mockito.when(menuRepository.findById(any())).thenReturn(Optional.of(메뉴));
         Mockito.when(orderRepository.save(any())).thenReturn(order);
-        Mockito.when(orderLineItemRepository.save(any())).thenReturn(orderLineItem);
 
         // when
         OrderResponse actual = orderService.create(orderRequest);
@@ -80,22 +86,6 @@ class OrderServiceTest {
             .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("주문할 메뉴가 없을 경우 테스트")
-    @Test
-    void createTestWithoutMenu() {
-        // given
-        List<OrderLineItemRequest> orderLineItemRequests = Arrays
-            .asList(new OrderLineItemRequest(1L, 3),
-                    new OrderLineItemRequest(2L, 1));
-        OrderRequest orderRequest = new OrderRequest(1l, orderLineItemRequests);
-
-        Mockito.when(menuRepository.countByIdIn(any())).thenReturn(1L);
-
-        // when
-        assertThatThrownBy(() -> orderService.create(orderRequest))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
     @DisplayName("주문 대상인 테이블이 없을 경우 테스트")
     @Test
     void createTestWithoutOrderTable() {
@@ -105,7 +95,6 @@ class OrderServiceTest {
                     new OrderLineItemRequest(2L, 1));
         OrderRequest orderRequest = new OrderRequest(1l, orderLineItemRequests);
 
-        Mockito.when(menuRepository.countByIdIn(any())).thenReturn(2L);
         Mockito.when(orderTableRepository.findById(1L)).thenReturn(Optional.empty());
 
         // when
@@ -117,14 +106,10 @@ class OrderServiceTest {
     @Test
     void listTest() {
         // given
-        OrderLineItem orderLineItem1 = new OrderLineItem(1L, 1L, 3);
-        OrderLineItem orderLineItem2 = new OrderLineItem(1L, 2L, 1);
-        Order order1 = new Order(1L, null);
-        Order order2 = new Order(1L, null);
+        Order order1 = new Order(new OrderTable(3), null, Collections.emptyList());
+        Order order2 = new Order(new OrderTable(4), null, Collections.emptyList());
 
         Mockito.when(orderRepository.findAll()).thenReturn(Arrays.asList(order1, order2));
-        Mockito.when(orderLineItemRepository.findAllByOrderId(any()))
-               .thenReturn(Arrays.asList(orderLineItem1, orderLineItem2));
 
         // when
         List<OrderResponse> actual = orderService.list();
@@ -137,13 +122,9 @@ class OrderServiceTest {
     @Test
     void changeOrderStatusTest() {
         // given
-        OrderLineItem orderLineItem1 = new OrderLineItem(1L, 1L, 3);
-        OrderLineItem orderLineItem2 = new OrderLineItem(1L, 2L, 1);
-        Order order = new Order(1L, null);
+        Order order = new Order(new OrderTable(3), null, Collections.emptyList());
 
         Mockito.when(orderRepository.findById(any())).thenReturn(Optional.of(order));
-        Mockito.when(orderLineItemRepository.findAllByOrderId(any()))
-               .thenReturn(Arrays.asList(orderLineItem1, orderLineItem2));
 
         // when
         OrderResponse actual = orderService.changeOrderStatus(1l, new OrderStatusRequest(OrderStatus.COOKING));
@@ -169,7 +150,7 @@ class OrderServiceTest {
     @Test
     void changeOrderStatusAlreadyCompleteTest() {
         // given
-        Order order = new Order(1L, OrderStatus.COMPLETION.name());
+        Order order = new Order(new OrderTable(3), OrderStatus.COMPLETION, Collections.emptyList());
 
         Mockito.when(orderRepository.findById(any())).thenReturn(Optional.of(order));
 

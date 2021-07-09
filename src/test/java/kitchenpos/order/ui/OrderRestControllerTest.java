@@ -1,12 +1,9 @@
 package kitchenpos.order.ui;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import kitchenpos.IntegrationTestHelper;
+import kitchenpos.MockMvcTestHelper;
 import kitchenpos.order.application.OrderService;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
@@ -27,7 +24,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(OrderRestController.class)
-class OrderRestControllerTest extends IntegrationTestHelper {
+class OrderRestControllerTest extends MockMvcTestHelper {
 
     @MockBean
     private OrderService orderService;
@@ -45,17 +42,9 @@ class OrderRestControllerTest extends IntegrationTestHelper {
     @Test
     void createTest() throws Exception {
         // given
-        OrderLineItem orderLineItem1 = new OrderLineItem(1L, 1L, 3);
-        OrderLineItem orderLineItem2 = new OrderLineItem(1L, 2L, 1);
-        Order order = new Order(1l, OrderStatus.COOKING.name());
-        order.setOrderLineItems(Arrays.asList(orderLineItem1, orderLineItem2));
+        OrderRequest orderRequest = new OrderRequest();
 
-        OrderLineItemRequest orderLineItemRequest1 = new OrderLineItemRequest(1L, 3);
-        OrderLineItemRequest orderLineItemRequest2 = new OrderLineItemRequest(2L, 1);
-        List<OrderLineItemRequest> orderLineItemRequests = Arrays.asList(orderLineItemRequest1, orderLineItemRequest2);
-        OrderRequest orderRequest = new OrderRequest(1L, orderLineItemRequests);
-
-        OrderResponse orderResponse = OrderResponse.of(order);
+        OrderResponse orderResponse = new OrderResponse();
         Mockito.when(orderService.create(any())).thenReturn(orderResponse);
 
         // when
@@ -69,14 +58,8 @@ class OrderRestControllerTest extends IntegrationTestHelper {
     @Test
     void listTest() throws Exception {
         // given
-        OrderLineItem orderLineItem1 = new OrderLineItem(1L, 1L, 3);
-        OrderLineItem orderLineItem2 = new OrderLineItem(1L, 2L, 1);
-        Order order1 = new Order(1l, OrderStatus.COOKING.name());
-        order1.setOrderLineItems(Arrays.asList(orderLineItem1, orderLineItem2));
-        Order order2 = new Order(2l, OrderStatus.COOKING.name());
-        order2.setOrderLineItems(Arrays.asList(orderLineItem1, orderLineItem2));
-        Mockito.when(orderService.list()).thenReturn(Arrays.asList(OrderResponse.of(order1),
-                                                                   OrderResponse.of(order2)));
+        Mockito.when(orderService.list()).thenReturn(Arrays.asList(new OrderResponse(),
+                                                                   new OrderResponse()));
 
         // when
         ResultActions resultActions = 전체_주문_조회_요청();

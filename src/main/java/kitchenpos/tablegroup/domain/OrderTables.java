@@ -17,12 +17,25 @@ public class OrderTables {
 
     public static OrderTables of(final List<OrderTable> orderTableList) {
         OrderTables orderTables = new OrderTables();
-        orderTables.add(orderTableList);
+        orderTables.addAll(orderTableList);
         return orderTables;
     }
 
+    public static OrderTables of(final TableGroup tableGroup, final List<OrderTable> orderTableList) {
+        OrderTables orderTables = new OrderTables();
+        orderTables.addAll(orderTableList);
+        orderTables.grouping(tableGroup);
+        return orderTables;
+    }
 
-    public void add(List<OrderTable> orderTables) {
+    public void add(OrderTable orderTable) {
+        if (this.orderTables.contains(orderTable)) {
+            return;
+        }
+        this.orderTables.add(orderTable);
+    }
+
+    public void addAll(List<OrderTable> orderTables) {
         this.orderTables.addAll(orderTables);
     }
 
@@ -46,6 +59,10 @@ public class OrderTables {
         return this.orderTables.stream()
                                .map(OrderTable::getId)
                                .collect(Collectors.toList());
+    }
+
+    public void grouping(final TableGroup tableGroup) {
+        orderTables.forEach(orderTable -> orderTable.grouping(tableGroup));
     }
 
     public void ungroup() {

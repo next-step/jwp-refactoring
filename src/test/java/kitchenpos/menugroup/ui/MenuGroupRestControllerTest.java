@@ -1,9 +1,8 @@
 package kitchenpos.menugroup.ui;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import kitchenpos.IntegrationTestHelper;
+import kitchenpos.MockMvcTestHelper;
 import kitchenpos.menugroup.application.MenuGroupService;
-import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -24,7 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(MenuGroupRestController.class)
-class MenuGroupRestControllerTest extends IntegrationTestHelper {
+class MenuGroupRestControllerTest extends MockMvcTestHelper {
 
     @MockBean
     private MenuGroupService menuGroupService;
@@ -42,19 +41,13 @@ class MenuGroupRestControllerTest extends IntegrationTestHelper {
     void createTest() throws Exception {
         // given
         MenuGroupRequest expected = new MenuGroupRequest("메뉴그룹1");
-        Mockito.when(menuGroupService.create(any()))
-               .thenReturn(MenuGroupResponse.of(expected.toMenuGroup()));
+        Mockito.when(menuGroupService.create(any())).thenReturn(new MenuGroupResponse());
 
         // when
         ResultActions resultActions = 메뉴_그룹_생성_요청(expected);
 
         // then
-        MvcResult mvcResult = 메뉴_그룹_생성_성공(resultActions);
-        MenuGroup responseBody = objectMapper
-            .readValue(mvcResult.getResponse().getContentAsString(), MenuGroup.class);
-        assertAll(() -> {
-            assertThat(responseBody.getName()).isEqualTo(expected.getName());
-        });
+        메뉴_그룹_생성_성공(resultActions);
         Mockito.verify(menuGroupService).create(any());
     }
 
@@ -62,16 +55,15 @@ class MenuGroupRestControllerTest extends IntegrationTestHelper {
     @Test
     void listTest() throws Exception {
         // given
-        MenuGroup menuGroup = new MenuGroup("메뉴그룹1");
-        Mockito.when(menuGroupService.list()).thenReturn(Arrays.asList(MenuGroupResponse.of(menuGroup)));
+        Mockito.when(menuGroupService.list()).thenReturn(Arrays.asList(new MenuGroupResponse()));
 
         // when
         ResultActions resultActions = 메뉴_그룹_조회_요청();
 
         // then
         MvcResult mvcResult = 메뉴_그룹_조회_성공(resultActions);
-        List<MenuGroup> menuGroups = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),
-                                                            new TypeReference<List<MenuGroup>>() {});
+        List<MenuGroupResponse> menuGroups = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),
+                                                                    new TypeReference<List<MenuGroupResponse>>() {});
         assertThat(menuGroups).isNotEmpty().hasSize(1);
     }
 
