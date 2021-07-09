@@ -104,7 +104,6 @@ class MenuService2Test {
     //given
     MenuRequest menu = new MenuRequest(menuName, givenPrice, menuGroupId, Arrays.asList(menuProductRequest1, menuProductRequest2));
     when(menuGroupRepository.existsById(menuGroupId)).thenReturn(true);
-    when(productRepository.findAllById(Arrays.asList(productEntity1.getId(), productEntity2.getId()))).thenReturn(Arrays.asList(productEntity1, productEntity2));
 
     //when & then
     assertThatThrownBy(() -> menuService.create(menu)).isInstanceOf(IllegalArgumentException.class);

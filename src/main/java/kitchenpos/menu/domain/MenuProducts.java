@@ -31,6 +31,7 @@ public class MenuProducts {
   public List<Long> getProductIds() {
     return menuProductEntities.stream()
             .map(MenuProductEntity::getProductId)
+            .sorted()
             .collect(Collectors.toList());
   }
 
