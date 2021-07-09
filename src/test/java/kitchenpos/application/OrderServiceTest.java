@@ -6,6 +6,7 @@ import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,10 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -29,6 +27,7 @@ import static org.mockito.BDDMockito.given;
 class OrderServiceTest {
 
     private Order order;
+    private Order order2;
     private OrderLineItem orderLineItem;
     private OrderLineItem orderLineItem2;
     private OrderTable orderTable;
@@ -50,6 +49,10 @@ class OrderServiceTest {
         order = new Order();
         order.setId(1L);
         order.setOrderTableId(1L);
+
+        order2 = new Order();
+        order2.setId(2L);
+        order2.setOrderTableId(1L);
 
         orderLineItem = new OrderLineItem();
         orderLineItem2 = new OrderLineItem();
@@ -74,7 +77,7 @@ class OrderServiceTest {
         // when
         order.setOrderLineItems(orderLineItems);
 
-        Order actual = orderService.create(this.order);
+        Order actual = orderService.create(order);
 
         // then
         assertThat(actual).isEqualTo(order);
@@ -88,7 +91,7 @@ class OrderServiceTest {
 
         // then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderService.create(this.order));
+                .isThrownBy(() -> orderService.create(order));
     }
 
     @DisplayName("주문을 등록한다 - 테이블 정보는 필수 입력사항이다")
@@ -106,7 +109,7 @@ class OrderServiceTest {
 
         // then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderService.create(this.order));
+                .isThrownBy(() -> orderService.create(order));
     }
 
     @DisplayName("주문을 등록한다 - 동일한 메뉴정보는 중복 입력할 수 없다")
@@ -123,7 +126,54 @@ class OrderServiceTest {
 
         // then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderService.create(this.order));
+                .isThrownBy(() -> orderService.create(order));
+    }
+
+    @DisplayName("전체 주문 목록을 조회한다")
+    @Test
+    void list() {
+        // given
+        given(orderDao.findAll()).willReturn(Arrays.asList(order, order2));
+        given(orderLineItemDao.findAllByOrderId(any())).willReturn(new ArrayList<>());
+
+        // when
+        List<Order> actual = orderService.list();
+
+        // then
+        assertThat(actual).isEqualTo(Arrays.asList(order, order2));
+    }
+
+    @DisplayName("주문의 상태를 변경한다")
+    @Test
+    void changeOrderStatus() {
+        // given
+        given(orderDao.findById(order.getId())).willReturn(Optional.of(order));
+        given(orderLineItemDao.findAllByOrderId(any())).willReturn(new ArrayList<>());
+
+        // when
+        Order orderParam = new Order();
+        orderParam.setOrderStatus(OrderStatus.COOKING.name());
+        Order actual = orderService.changeOrderStatus(order.getId(), orderParam);
+
+        // then
+        assertThat(actual).isEqualTo(order);
+        assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+    }
+
+    @DisplayName("주문 상태변경 - 주문의 상태가 '계산완료' 인 경우 상태를 변경할 수 없다")
+    @Test
+    void changeOrderStatus_illegalState() {
+        // given
+        given(orderDao.findById(order.getId())).willReturn(Optional.of(order));
+        order.setOrderStatus(OrderStatus.COMPLETION.name());
+
+        // when
+        Order orderParam = new Order();
+        orderParam.setOrderStatus(OrderStatus.COOKING.name());
+
+        // then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> orderService.changeOrderStatus(order.getId(), orderParam));
     }
 
 }
