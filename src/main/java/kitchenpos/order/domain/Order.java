@@ -1,5 +1,7 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.order.exception.ChangeOrderStatusFailedException;
+import kitchenpos.order.exception.EmptyOrderLineItemException;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.util.CollectionUtils;
 
@@ -59,19 +61,19 @@ public class Order {
 
     private void changeOrderStatus(final OrderStatus orderStatus) {
         if (this.orderStatus.equals(OrderStatus.COMPLETION)) {
-            throw new IllegalArgumentException();
+            throw new ChangeOrderStatusFailedException("완료 상태인 주문은 상태를 변경할 수 없습니다.");
         }
         this.orderStatus = orderStatus;
     }
 
     public void addOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        validateEmptyOrderLineTimes(orderLineItems);
+        validateEmptyOrderLineItems(orderLineItems);
         orderLineItems.forEach(this::addOrderLineItem);
     }
 
-    private void validateEmptyOrderLineTimes(final List<OrderLineItem> orderLineItems) {
+    private void validateEmptyOrderLineItems(final List<OrderLineItem> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
+            throw new EmptyOrderLineItemException("주문시 주문항목은 1개 이상이어야 합니다.");
         }
     }
 

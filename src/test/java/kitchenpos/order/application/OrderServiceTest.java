@@ -11,6 +11,7 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemDto;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.exception.DuplicateMenuException;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -95,7 +96,7 @@ class OrderServiceTest {
 
         // when & then
         assertThatThrownBy(() -> orderService.create(orderRequest))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(DuplicateMenuException.class);
     }
 
     @DisplayName("주문 테이블이 올바르지 않으면 등록할 수 없다 : 주문 테이블은 등록된 주문 테이블이어야 한다.")

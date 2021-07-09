@@ -1,5 +1,6 @@
 package kitchenpos.order.application;
 
+import javassist.bytecode.DuplicateMemberException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
@@ -9,6 +10,7 @@ import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.dto.OrderLineItemDto;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.exception.DuplicateMenuException;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
@@ -53,7 +55,7 @@ public class OrderService {
                 .map(OrderLineItemDto::getMenuId)
                 .collect(toList());
         if (orderRequest.getOrderLineItems().size() != menuRepository.countByIdIn(menuIds)) {
-            throw new IllegalArgumentException();
+            throw new DuplicateMenuException("주문시 주문항목에 메뉴들은 중복될 수 없습니다.");
         }
     }
 
@@ -74,7 +76,7 @@ public class OrderService {
 
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
-        final Order savedOrder = orderRepository.findById(orderId).orElseThrow(IllegalArgumentException::new);
+        final Order savedOrder = orderRepository.findById(orderId).orElseThrow(EntityNotFoundException::new);
         savedOrder.changeOrderStatus(orderRequest.getOrderStatus());
         return OrderResponse.from(savedOrder);
     }

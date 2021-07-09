@@ -1,5 +1,7 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.order.exception.ChangeOrderStatusFailedException;
+import kitchenpos.order.exception.EmptyOrderLineItemException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +16,7 @@ class OrderTest {
     void createTest_emptyOrderLineItem() {
         // when & then
         assertThatThrownBy(() -> new Order(1L, new ArrayList<>()))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(EmptyOrderLineItemException.class);
     }
 
     @DisplayName("주문의 상태가 올바르지 않으면 변경할 수 없다 : 주문의 상태가 ('요리중', '식사중') 이어야 한다.")
@@ -26,6 +28,6 @@ class OrderTest {
 
         // when & then
         assertThatThrownBy(() -> order.changeOrderStatus(OrderStatus.MEAL.name()))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(ChangeOrderStatusFailedException.class);
     }
 }
