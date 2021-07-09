@@ -110,10 +110,10 @@ class MenuServiceTest {
         given(menuProductDao.save(메뉴상품_후라이드)).willReturn(메뉴상품_후라이드);
 
         // when
-        Menu expected = menuService.create(후라이드치킨);
+        Menu actual = menuService.create(후라이드치킨);
 
         // then
-        assertThat(expected).isEqualTo(후라이드치킨);
+        assertThat(actual).isEqualTo(후라이드치킨);
     }
 
     @DisplayName("메뉴 등록 - 가격은 0 이상의 숫자를 입력해야 한다")
@@ -167,10 +167,10 @@ class MenuServiceTest {
         given(menuDao.findAll()).willReturn(Arrays.asList(후라이드치킨, 양념치킨));
 
         // when
-        List<Menu> expected = menuService.list();
+        List<Menu> actual = menuService.list();
 
         // then
-        assertThat(expected).isEqualTo(Arrays.asList(후라이드치킨, 양념치킨));
+        assertThat(actual).isEqualTo(Arrays.asList(후라이드치킨, 양념치킨));
     }
 
 }

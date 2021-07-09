@@ -44,12 +44,12 @@ class ProductRestControllerTest {
         ResponseEntity<Product> productResponse = controller.create(불고기버거);
 
         // then
-        Product expected = productResponse.getBody();
-        assertThat(expected).isNotNull();
+        Product actual = productResponse.getBody();
+        assertThat(actual).isNotNull();
         assertThat(productResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(productResponse.getHeaders().getLocation().toString()).isEqualTo("/api/products/" + expected.getId());
-        assertThat(expected.getName()).isEqualTo(불고기버거.getName());
-        assertThat(expected.getPrice()).isEqualByComparingTo(불고기버거.getPrice());
+        assertThat(productResponse.getHeaders().getLocation().toString()).isEqualTo("/api/products/" + actual.getId());
+        assertThat(actual.getName()).isEqualTo(불고기버거.getName());
+        assertThat(actual.getPrice()).isEqualByComparingTo(불고기버거.getPrice());
     }
 
     @DisplayName("상품 등록 - 가격은 0 이상의 숫자를 입력해야 한다")
@@ -73,11 +73,11 @@ class ProductRestControllerTest {
         // when
         ResponseEntity<List<Product>> responseEntity = controller.list();
         List<Product> products = responseEntity.getBody();
-        List<String> expected = products.stream()
+        List<String> actual = products.stream()
                 .map(Product::getName)
                 .collect(Collectors.toList());
 
         // then
-        assertThat(expected).containsAll(Arrays.asList("후라이드", "양념치킨", "반반치킨", "통구이", "간장치킨", "순살치킨", "불고기버거", "치킨버거"));
+        assertThat(actual).containsAll(Arrays.asList("후라이드", "양념치킨", "반반치킨", "통구이", "간장치킨", "순살치킨", "불고기버거", "치킨버거"));
     }
 }

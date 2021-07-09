@@ -40,11 +40,11 @@ class MenuGroupRestControllerTest {
         ResponseEntity<MenuGroup> menuGroupResponse = controller.create(세마리메뉴);
 
         // then
-        MenuGroup expected = menuGroupResponse.getBody();
-        assertThat(expected).isNotNull();
+        MenuGroup actual = menuGroupResponse.getBody();
+        assertThat(actual).isNotNull();
         assertThat(menuGroupResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(menuGroupResponse.getHeaders().getLocation().toString()).isEqualTo("/api/menu-groups/" + expected.getId());
-        assertThat(expected.getName()).isEqualTo(세마리메뉴.getName());
+        assertThat(menuGroupResponse.getHeaders().getLocation().toString()).isEqualTo("/api/menu-groups/" + actual.getId());
+        assertThat(actual.getName()).isEqualTo(세마리메뉴.getName());
     }
 
     @DisplayName("메뉴그룹 목록을 조회한다")
@@ -57,11 +57,11 @@ class MenuGroupRestControllerTest {
         // then
         ResponseEntity<List<MenuGroup>> responseEntity = controller.list();
         List<MenuGroup> products = responseEntity.getBody();
-        List<String> expected = products.stream()
+        List<String> actual = products.stream()
                 .map(MenuGroup::getName)
                 .collect(Collectors.toList());
 
         // then
-        assertThat(expected).containsAll(Arrays.asList("두마리메뉴", "한마리메뉴", "순살파닭두마리메뉴", "신메뉴", "세마리메뉴", "패밀리메뉴"));
+        assertThat(actual).containsAll(Arrays.asList("두마리메뉴", "한마리메뉴", "순살파닭두마리메뉴", "신메뉴", "세마리메뉴", "패밀리메뉴"));
     }
 }
