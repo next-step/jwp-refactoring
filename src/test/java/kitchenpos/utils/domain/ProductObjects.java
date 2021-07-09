@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
 
 public class ProductObjects {
     private final Product product1;
@@ -16,30 +17,12 @@ public class ProductObjects {
     private final Product product6;
 
     public ProductObjects() {
-        product1 = new Product();
-        product1.setId(1L);
-        product1.setPrice(BigDecimal.valueOf(16000.00));
-        product1.setName("후라이드");
-        product2 = new Product();
-        product2.setId(2L);
-        product2.setName("양념치킨");
-        product2.setPrice(BigDecimal.valueOf(16000.00));
-        product3 = new Product();
-        product3.setId(3L);
-        product3.setName("반반치킨");
-        product3.setPrice(BigDecimal.valueOf(16000.00));
-        product4 = new Product();
-        product4.setId(4L);
-        product4.setName("통구이");
-        product4.setPrice(BigDecimal.valueOf(16000.00));
-        product5 = new Product();
-        product5.setId(5L);
-        product5.setName("간장치킨");
-        product5.setPrice(BigDecimal.valueOf(17000.00));
-        product6 = new Product();
-        product6.setId(6L);
-        product6.setName("순살치킨");
-        product6.setPrice(BigDecimal.valueOf(17000.00));
+        product1 = new Product("후라이드", BigDecimal.valueOf(16000.00));
+        product2 = new Product("양념치킨", BigDecimal.valueOf(16000.00));
+        product3 = new Product("반반치킨", BigDecimal.valueOf(16000.00));
+        product4 = new Product("통구이", BigDecimal.valueOf(16000.00));
+        product5 = new Product("간장치킨", BigDecimal.valueOf(17000.00));
+        product6 = new Product("순살치킨", BigDecimal.valueOf(17000.00));
     }
 
     public Product getProduct1() {
@@ -64,6 +47,30 @@ public class ProductObjects {
 
     public Product getProduct6() {
         return product6;
+    }
+
+    public ProductRequest getProductRequest1() {
+        return new ProductRequest(this.product1.getName(), this.product1.getPrice());
+    }
+
+    public ProductRequest getProductRequest2() {
+        return new ProductRequest(this.product2.getName(), this.product2.getPrice());
+    }
+
+    public ProductRequest getProductRequest3() {
+        return new ProductRequest(this.product3.getName(), this.product3.getPrice());
+    }
+
+    public ProductRequest getProductRequest4() {
+        return new ProductRequest(this.product4.getName(), this.product4.getPrice());
+    }
+
+    public ProductRequest getProductRequest5() {
+        return new ProductRequest(this.product5.getName(), this.product5.getPrice());
+    }
+
+    public ProductRequest getProductRequest6() {
+        return new ProductRequest(this.product6.getName(), this.product6.getPrice());
     }
 
     public List<Product> getProducts() {
