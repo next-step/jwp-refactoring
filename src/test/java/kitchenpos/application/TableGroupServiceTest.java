@@ -19,8 +19,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -134,5 +133,27 @@ class TableGroupServiceTest {
         // then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableGroupService.create(tableGroup));
+    }
+
+    @DisplayName("테이블 그룹 해지")
+    @Test
+    void ungroup() {
+        // given
+        given(orderTableDao.findAllByTableGroupId(tableGroup.getId())).willReturn(Arrays.asList(table, table2));
+        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(false);
+
+        assertThatNoException()
+                .isThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()));
+    }
+
+    @DisplayName("테이블 그룹 해지 - 테이블에 연결된 조리, 식사 상태의 주문이 존재하는 경우 변경이 불가하다")
+    @Test
+    void ungroup_existsActiveOrder() {
+        // given
+        given(orderTableDao.findAllByTableGroupId(tableGroup.getId())).willReturn(Arrays.asList(table, table2));
+        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(true);
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()));
     }
 }
