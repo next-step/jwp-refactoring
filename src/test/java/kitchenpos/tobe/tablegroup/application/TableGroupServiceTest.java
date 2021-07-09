@@ -5,9 +5,9 @@ import kitchenpos.tobe.order.domain.OrderStatus;
 import kitchenpos.tobe.table.domain.OrderTable;
 import kitchenpos.tobe.table.domain.OrderTableRepository;
 import kitchenpos.tobe.table.domain.OrderTables;
-import kitchenpos.tobe.table.dto.OrderTableRequest;
 import kitchenpos.tobe.tablegroup.domain.TableGroup;
 import kitchenpos.tobe.tablegroup.domain.TableGroupRepository;
+import kitchenpos.tobe.tablegroup.dto.TableGroupId;
 import kitchenpos.tobe.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tobe.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,9 +54,9 @@ class TableGroupServiceTest {
     @Test
     @DisplayName("테이블 그룹을 지정하고, 지정된 객체를 리턴한다")
     void create_table_group() {
-        OrderTableRequest orderTableRequest1 = new OrderTableRequest(1L);
-        OrderTableRequest orderTableRequest2 = new OrderTableRequest(2L);
-        List<OrderTableRequest> orderTableRequests = Arrays.asList(orderTableRequest1, orderTableRequest2);
+        TableGroupId orderTableRequest1 = new TableGroupId(1L);
+        TableGroupId orderTableRequest2 = new TableGroupId(2L);
+        List<TableGroupId> orderTableRequests = Arrays.asList(orderTableRequest1, orderTableRequest2);
         OrderTable orderTable1 = new OrderTable(1L, null, 3, true);
         OrderTable orderTable2 = new OrderTable(2L, null, 2, true);
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
@@ -86,7 +86,7 @@ class TableGroupServiceTest {
     @Test
     @DisplayName("테이블 그룹 지정시 주문 테이블 1개만 주어지면 예외를 던진다.")
     void create_table_group_with_one_order_table() {
-        OrderTableRequest orderTableRequest1 = new OrderTableRequest(1L);
+        TableGroupId orderTableRequest1 = new TableGroupId(1L);
         TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(orderTableRequest1));
         when(orderTableRepository.findAllById(anyList()))
                 .thenReturn(new ArrayList<>());
@@ -98,8 +98,8 @@ class TableGroupServiceTest {
     @Test
     @DisplayName("테이블 그룹 저장시 그룹 지정할 주문 테이블 갯수가 다르게 주어지면 예외를 던진다")
     void create_table_group_with_different_order_table() {
-        OrderTableRequest orderTableRequest1 = new OrderTableRequest(1L);
-        List<OrderTableRequest> orderTableRequests = Collections.singletonList(orderTableRequest1);
+        TableGroupId orderTableRequest1 = new TableGroupId(1L);
+        List<TableGroupId> orderTableRequests = Collections.singletonList(orderTableRequest1);
         OrderTable orderTable1 = new OrderTable(1L, null, 3, true);
         OrderTable orderTable2 = new OrderTable(2L, null, 2, true);
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
@@ -114,9 +114,9 @@ class TableGroupServiceTest {
     @Test
     @DisplayName("테이블 그룹 저장시 주문 테이블이 비어있지 않으면 예외를 던진다.")
     void create_table_group_with_not_empty_order_table() {
-        OrderTableRequest orderTableRequest1 = new OrderTableRequest(1L);
-        OrderTableRequest orderTableRequest2 = new OrderTableRequest(2L);
-        List<OrderTableRequest> orderTableRequests = Arrays.asList(orderTableRequest1, orderTableRequest2);
+        TableGroupId orderTableRequest1 = new TableGroupId(1L);
+        TableGroupId orderTableRequest2 = new TableGroupId(2L);
+        List<TableGroupId> orderTableRequests = Arrays.asList(orderTableRequest1, orderTableRequest2);
         OrderTable orderTable1 = new OrderTable(1L, null, 3, false);
         OrderTable orderTable2 = new OrderTable(2L, null, 2, false);
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
@@ -133,9 +133,9 @@ class TableGroupServiceTest {
     @Test
     @DisplayName("지정할 주문 테이블이 테이블 그룹에 이미 포함되어있으면 예외를 던진다.")
     void create_table_group_with_order_table_has_group_id() {
-        OrderTableRequest orderTableRequest1 = new OrderTableRequest(1L);
-        OrderTableRequest orderTableRequest2 = new OrderTableRequest(2L);
-        List<OrderTableRequest> orderTableRequests = Arrays.asList(orderTableRequest1, orderTableRequest2);
+        TableGroupId orderTableRequest1 = new TableGroupId(1L);
+        TableGroupId orderTableRequest2 = new TableGroupId(2L);
+        List<TableGroupId> orderTableRequests = Arrays.asList(orderTableRequest1, orderTableRequest2);
         TableGroupRequest tableGroupRequest = new TableGroupRequest(orderTableRequests);
 
         OrderTable savedOrderTable = new OrderTable(1L, null, 4, false);

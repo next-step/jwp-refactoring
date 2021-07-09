@@ -2,34 +2,49 @@ package kitchenpos.tobe.order.dto;
 
 import kitchenpos.tobe.menu.domain.Menu;
 import kitchenpos.tobe.order.domain.OrderLineItem;
+import kitchenpos.tobe.order.domain.OrderStatus;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class OrderRequest {
-    private final Long orderTableId;
-    private final List<OrderLineItemRequest> orderLineItemRequests;
+    private Long orderTableId;
+    private List<OrderLineItemRequest> orderLineItems;
+    private OrderStatus orderStatus;
 
-    public OrderRequest(Long orderTableId, List<OrderLineItemRequest> orderLineItemRequests) {
+    public OrderRequest() {
+    }
+
+    public OrderRequest(Long orderTableId, List<OrderLineItemRequest> orderLineItems) {
         this.orderTableId = orderTableId;
-        this.orderLineItemRequests = orderLineItemRequests;
+        this.orderLineItems = orderLineItems;
+        this.orderStatus = null;
+    }
+
+    public OrderRequest(Long orderTableId, List<OrderLineItemRequest> orderLineItems, OrderStatus orderStatus) {
+        this.orderTableId = orderTableId;
+        this.orderLineItems = orderLineItems;
+        this.orderStatus = orderStatus;
     }
 
     public Long getOrderTableId() {
         return orderTableId;
     }
 
-    public List<OrderLineItemRequest> getOrderLineItemRequests() {
-        return orderLineItemRequests;
+    public List<OrderLineItemRequest> getOrderLineItems() {
+        return orderLineItems;
+    }
+
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
     }
 
     public List<OrderLineItem> getOrderLineItem() {
-        return orderLineItemRequests
+        return orderLineItems
                 .stream()
                 .map(v -> {
                     Long quantity = v.getQuantity();
-                    Menu menu = Menu.builder().id(v.getMenuId()).builder();
-
+                    Menu menu = new Menu(v.getMenuId());
                     return OrderLineItem.builder()
                             .menu(menu)
                             .quantity(quantity)
@@ -38,8 +53,8 @@ public class OrderRequest {
     }
 
     public List<Long> getMenuIds() {
-        return orderLineItemRequests.stream()
-                .map(v -> v.getMenuId())
+        return orderLineItems.stream()
+                .map(OrderLineItemRequest::getMenuId)
                 .collect(Collectors.toList());
     }
 }

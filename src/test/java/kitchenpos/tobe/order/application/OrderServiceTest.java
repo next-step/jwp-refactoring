@@ -63,8 +63,8 @@ class OrderServiceTest {
         OrderLineItemRequest orderLineItemRequest1 = new OrderLineItemRequest(1L, 2L);
         OrderLineItemRequest orderLineItemRequest2 = new OrderLineItemRequest(2L, 3L);
         OrderRequest orderRequest = new OrderRequest(1L, Arrays.asList(orderLineItemRequest1, orderLineItemRequest2));
-        Menu menu1 = Menu.builder().builder();
-        Menu menu2 = Menu.builder().builder();
+        Menu menu1 = new Menu(1L);
+        Menu menu2 = new Menu(2L);
 
         when(menuRepository.findAllById(anyList()))
                 .thenReturn(Arrays.asList(menu1, menu2));
@@ -97,7 +97,7 @@ class OrderServiceTest {
         OrderTable orderTable2 = new OrderTable(1L, null, 4, false);
         TableGroup tableGroup = TableGroup.of(new OrderTables(Arrays.asList(orderTable, orderTable2)));
         OrderTable givenOrderTable = new OrderTable(1L, tableGroup, 5, false);
-        Menu menu1 = Menu.builder().builder();
+        Menu menu1 = new Menu(1L);
 
         when(menuRepository.findAllById(anyList()))
                 .thenReturn(Arrays.asList(menu1));
@@ -124,8 +124,8 @@ class OrderServiceTest {
         OrderLineItemRequest orderLineItemRequest1 = new OrderLineItemRequest(1L, 2L);
         OrderLineItemRequest orderLineItemRequest2 = new OrderLineItemRequest(2L, 3L);
         OrderRequest orderRequest = new OrderRequest(1L, Arrays.asList(orderLineItemRequest1, orderLineItemRequest2));
-        Menu menu1 = Menu.builder().builder();
-        Menu menu2 = Menu.builder().builder();
+        Menu menu1 = new Menu(1L);
+        Menu menu2 = new Menu(2L);
 
         when(menuRepository.findAllById(anyList()))
                 .thenReturn(Arrays.asList(menu1, menu2));

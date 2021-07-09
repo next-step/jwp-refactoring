@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
@@ -29,6 +30,24 @@ public class MenuProduct {
 
     private Long quantity;
 
+    public MenuProduct() {
+    }
+
+    public MenuProduct(Product product, Long quantity) {
+        this(null, null, product, quantity);
+    }
+
+    public MenuProduct(Long seq, Menu menu, Product product, Long quantity) {
+        this.seq = seq;
+        this.menu = menu;
+        this.product = product;
+        this.quantity = quantity;
+    }
+
+    public BigDecimal sumMenuProduct() {
+        return product.getPrice().multiply(BigDecimal.valueOf(quantity));
+    }
+
     public void registerMenu(Menu menu) {
         this.menu = menu;
     }
@@ -37,12 +56,12 @@ public class MenuProduct {
         return seq;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public Long getMenuId() {
+        return menu.getId();
     }
 
-    public Product getProduct() {
-        return product;
+    public Long getProductId() {
+        return product.getId();
     }
 
     public Long getQuantity() {

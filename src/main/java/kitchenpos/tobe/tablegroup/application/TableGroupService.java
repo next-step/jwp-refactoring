@@ -33,7 +33,7 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(TableGroupRequest tableGroupRequest) {
-        List<Long> orderTableIds = tableGroupRequest.getOrderTableIds();
+        List<Long> orderTableIds = tableGroupRequest.getOrderTables();
         List<OrderTable> orderTables = orderTableRepository.findAllById(orderTableIds);
         TableGroup tableGroup = TableGroup.createWithIdValidation(orderTableIds, new OrderTables(orderTables));
         TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);

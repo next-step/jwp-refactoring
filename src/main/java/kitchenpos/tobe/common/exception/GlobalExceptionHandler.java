@@ -1,6 +1,7 @@
 package kitchenpos.tobe.common.exception;
 
 import kitchenpos.tobe.menu.application.MenuNotMatchException;
+import kitchenpos.tobe.menugroup.application.MenuGroupNotFoundException;
 import kitchenpos.tobe.order.application.OrderLineItemNotFoundException;
 import kitchenpos.tobe.order.application.OrderNotFoundException;
 import kitchenpos.tobe.table.application.OrderTableNotFoundException;
@@ -52,6 +53,12 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(OrderTableNotFoundException.class)
     public ErrorResponse handleOrderTableNotFound(Exception e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(MenuGroupNotFoundException.class)
+    public ErrorResponse handleMenuGroupNotFound(Exception e) {
         return new ErrorResponse(e.getMessage());
     }
 

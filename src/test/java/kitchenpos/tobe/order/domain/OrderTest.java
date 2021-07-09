@@ -1,6 +1,5 @@
 package kitchenpos.tobe.order.domain;
 
-import kitchenpos.tobe.menu.domain.Menu;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +23,6 @@ class OrderTest {
         OrderLineItem orderLineItem = OrderLineItem.builder()
                 .id(1L)
                 .order(new Order())
-                .menu(Menu.builder().builder())
                 .quantity(5L)
                 .build();
 

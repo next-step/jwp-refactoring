@@ -16,15 +16,19 @@ public class Price {
         this.price = validate(amount);
     }
 
-    private BigDecimal validate(BigDecimal amount) {
-        if (Objects.isNull(amount) || amount.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException(INVALID_PRICE + amount);
+    private BigDecimal validate(BigDecimal price) {
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException(INVALID_PRICE + price);
         }
-        return amount;
+        return price;
     }
 
     public static Price of(BigDecimal amount) {
         return new Price(amount);
+    }
+
+    public boolean isBigger(BigDecimal price) {
+        return this.price.compareTo(price) > 0;
     }
 
     public BigDecimal getPrice() {
