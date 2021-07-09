@@ -1,9 +1,6 @@
-package kitchenpos.domain.menu;
+package kitchenpos.domain.menugroup;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
@@ -13,18 +10,24 @@ public class MenuGroup implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    @Embedded
+    private Name name;
 
     // for jpa
     public MenuGroup() {
     }
 
-    private MenuGroup(Long id, String name) {
+    private MenuGroup(Long id, Name name) {
         this.id = id;
         this.name = name;
     }
 
+    @Deprecated
     public static MenuGroup of(String name) {
+        return new MenuGroup(null, Name.of(name));
+    }
+
+    public static MenuGroup of(Name name) {
         return new MenuGroup(null, name);
     }
 
@@ -32,7 +35,7 @@ public class MenuGroup implements Serializable {
         return id;
     }
 
-    public String getName() {
+    public Name getName() {
         return name;
     }
 

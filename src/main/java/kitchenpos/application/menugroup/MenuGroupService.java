@@ -1,8 +1,8 @@
-package kitchenpos.application.menu;
+package kitchenpos.application.menugroup;
 
 import kitchenpos.exception.InvalidEntityException;
 import kitchenpos.repository.menu.MenuGroupRepository;
-import kitchenpos.domain.menu.MenuGroup;
+import kitchenpos.domain.menugroup.MenuGroup;
 import kitchenpos.dto.menu.MenuGroupRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
