@@ -42,14 +42,14 @@ class TableGroupServiceTest {
     @Test
     void createTest() {
         // given
-        TableGroup tableGroup = new TableGroup(Arrays.asList(new OrderTable(3),
-                                                             new OrderTable(4)));
+        TableGroup tableGroup = new TableGroup(Arrays.asList(new OrderTable(3, false),
+                                                             new OrderTable(4, false)));
 
         TableGroupRequest request = new TableGroupRequest(Arrays.asList(new OrderTableIdRequest(1L),
                                                                         new OrderTableIdRequest(2L)));
 
-        Mockito.when(orderTableRepository.findById(1L)).thenReturn(Optional.of(new OrderTable(3)));
-        Mockito.when(orderTableRepository.findById(2L)).thenReturn(Optional.of(new OrderTable(4)));
+        Mockito.when(orderTableRepository.findById(1L)).thenReturn(Optional.of(new OrderTable(3, false)));
+        Mockito.when(orderTableRepository.findById(2L)).thenReturn(Optional.of(new OrderTable(4, false)));
         Mockito.when(tableGroupRepository.save(any())).thenReturn(tableGroup);
 
         // when
@@ -76,8 +76,8 @@ class TableGroupServiceTest {
     @Test
     void ungroupTest() {
         // given
-        OrderTable orderTable1 = new OrderTable(3);
-        OrderTable orderTable2 = new OrderTable(4);
+        OrderTable orderTable1 = new OrderTable(3, false);
+        OrderTable orderTable2 = new OrderTable(4, false);
 
         Mockito.when(orderTableRepository.findAllByTableGroupId(any())).thenReturn(Arrays.asList(orderTable1, orderTable2));
         Mockito.when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(false);
@@ -90,8 +90,8 @@ class TableGroupServiceTest {
     @Test
     void ungroupTestWithWrongStatus() {
         // given
-        OrderTable orderTable1 = new OrderTable(3);
-        OrderTable orderTable2 = new OrderTable(4);
+        OrderTable orderTable1 = new OrderTable(3, false);
+        OrderTable orderTable2 = new OrderTable(4, false);
 
         Mockito.when(orderTableRepository.findAllByTableGroupId(any())).thenReturn(Arrays.asList(orderTable1, orderTable2));
         Mockito.when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(true);

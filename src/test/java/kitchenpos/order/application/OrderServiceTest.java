@@ -59,7 +59,7 @@ class OrderServiceTest {
         List<OrderLineItemRequest> orderLineItemRequests = Arrays.asList(new OrderLineItemRequest(1L, 3),
                                                                          new OrderLineItemRequest(2L, 1));
         OrderLineItem orderLineItem = new OrderLineItem(메뉴, 3);
-        OrderTable orderTable = new OrderTable(5);
+        OrderTable orderTable = new OrderTable(5, false);
         Order order = new Order(orderTable, OrderStatus.COOKING, Arrays.asList(orderLineItem));
         OrderRequest orderRequest = new OrderRequest(1l, orderLineItemRequests);
 
@@ -106,8 +106,8 @@ class OrderServiceTest {
     @Test
     void listTest() {
         // given
-        Order order1 = new Order(new OrderTable(3), null, Collections.emptyList());
-        Order order2 = new Order(new OrderTable(4), null, Collections.emptyList());
+        Order order1 = new Order(new OrderTable(3, false), null, Collections.emptyList());
+        Order order2 = new Order(new OrderTable(4, false), null, Collections.emptyList());
 
         Mockito.when(orderRepository.findAll()).thenReturn(Arrays.asList(order1, order2));
 
@@ -122,7 +122,7 @@ class OrderServiceTest {
     @Test
     void changeOrderStatusTest() {
         // given
-        Order order = new Order(new OrderTable(3), null, Collections.emptyList());
+        Order order = new Order(new OrderTable(3, false), null, Collections.emptyList());
 
         Mockito.when(orderRepository.findById(any())).thenReturn(Optional.of(order));
 
@@ -150,7 +150,7 @@ class OrderServiceTest {
     @Test
     void changeOrderStatusAlreadyCompleteTest() {
         // given
-        Order order = new Order(new OrderTable(3), OrderStatus.COMPLETION, Collections.emptyList());
+        Order order = new Order(new OrderTable(3, false), OrderStatus.COMPLETION, Collections.emptyList());
 
         Mockito.when(orderRepository.findById(any())).thenReturn(Optional.of(order));
 
