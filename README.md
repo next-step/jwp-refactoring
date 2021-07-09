@@ -75,5 +75,5 @@
 
 #### 작업 진행 순서
 * [x] 키친포스 요구 사항 분석
-* [ ] Event Storming 진행해보기
+* [x] Event Storming 진행해보기
 * [ ] Business Object 테스트 코드 작성
