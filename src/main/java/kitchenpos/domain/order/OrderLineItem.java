@@ -5,6 +5,7 @@ import kitchenpos.domain.Price;
 import kitchenpos.domain.Quantity;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class OrderLineItem {
@@ -63,5 +64,18 @@ public class OrderLineItem {
 
     public Quantity getQuantity() {
         return quantity;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderLineItem that = (OrderLineItem) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
