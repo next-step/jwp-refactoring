@@ -45,10 +45,6 @@ class MenuServiceTest {
     private MenuProductDao menuProductDao;
 
     @InjectMocks
-    private ProductService productService;
-    @InjectMocks
-    private MenuGroupService menuGroupService;
-    @InjectMocks
     private MenuService menuService;
 
     @BeforeEach
