@@ -13,6 +13,7 @@ import java.util.Objects;
 @Table(name = "order_table")
 @Entity
 public class OrderTable {
+    private static final int MIN_NUMBER_OF_GUESTS = 0;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +32,11 @@ public class OrderTable {
     protected OrderTable() {
     }
 
-    public OrderTable(Long id, int numberOfGuests, boolean empty) {
+    public OrderTable(final int numberOfGuests, final boolean empty) {
+        this(null, numberOfGuests, empty);
+    }
+
+    public OrderTable(final Long id, final int numberOfGuests, final boolean empty) {
         this.id = id;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
@@ -39,6 +44,20 @@ public class OrderTable {
 
     public void addedBy(final TableGroup tableGroup) {
         this.tableGroup = tableGroup;
+    }
+
+    public void changeEmpty(final boolean empty) {
+        if (tableGroup != null) {
+            throw new IllegalArgumentException();
+        }
+        this.empty = empty;
+    }
+
+    public void changeNumberOfGuests(final int numberOfGuests) {
+        if (numberOfGuests < MIN_NUMBER_OF_GUESTS || isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        this.numberOfGuests = numberOfGuests;
     }
 
     public Long getId() {
