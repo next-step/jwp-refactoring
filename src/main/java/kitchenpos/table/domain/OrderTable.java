@@ -1,5 +1,8 @@
 package kitchenpos.table.domain;
 
+import javax.persistence.Entity;
+
+@Entity
 public class OrderTable {
     private Long id;
     private Long tableGroupId;
@@ -14,6 +17,10 @@ public class OrderTable {
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
+    }
+
+    public OrderTable(int numberOfGuests, boolean empty) {
+        this(null, null, numberOfGuests, empty);
     }
 
     public Long getId() {

@@ -1,8 +1,10 @@
 package kitchenpos.table.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +19,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
@@ -52,7 +55,7 @@ class TableRestControllerTest {
     void create() throws Exception {
         OrderTable orderTable = new OrderTable(1L, 1L, 2, true);
         String params = mapper.writeValueAsString(orderTable);
-        given(tableService.create(any())).willReturn(orderTable);
+        given(tableService.create(any())).willReturn(OrderTableResponse.from(orderTable));
 
         mockMvc.perform(post("/api/tables")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -67,7 +70,11 @@ class TableRestControllerTest {
         orderTables.add(new OrderTable(1L, 1L, 2, true));
         orderTables.add(new OrderTable(2L, 2L, 3, true));
 
-        given(tableService.list()).willReturn(orderTables);
+        List<OrderTableResponse> expectedTables = orderTables.stream()
+                .map(OrderTableResponse::from)
+                .collect(Collectors.toList());
+
+        given(tableService.list()).willReturn(expectedTables);
 
         mockMvc.perform(get("/api/tables"))
                 .andExpect(status().isOk());
@@ -80,7 +87,7 @@ class TableRestControllerTest {
         OrderTable changedTable = new OrderTable(1L, 1L, 2, false);
         String orderTableJsonString = mapper.writeValueAsString(orderTable);
 
-        given(tableService.changeEmpty(anyLong(), any())).willReturn(changedTable);
+        given(tableService.changeEmpty(anyLong(), any())).willReturn(OrderTableResponse.from(changedTable));
 
         mockMvc.perform(put("/api/tables/" + orderTable.getId() + "/empty")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -96,7 +103,7 @@ class TableRestControllerTest {
         OrderTable changedTable = new OrderTable(1L, 1L, 4, false);
         String orderTableJsonString = mapper.writeValueAsString(orderTable);
 
-        given(tableService.changeNumberOfGuests(anyLong(), any())).willReturn(changedTable);
+        given(tableService.changeNumberOfGuests(anyLong(), any())).willReturn(OrderTableResponse.from(changedTable));
 
         mockMvc.perform(put("/api/tables/" + orderTable.getId() + "/number-of-guests")
                 .contentType(MediaType.APPLICATION_JSON)
