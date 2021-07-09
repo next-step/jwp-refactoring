@@ -3,6 +3,8 @@ package kitchenpos.product.application;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductDao;
 import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +19,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -33,23 +36,26 @@ class ProductServiceTest {
     @Test
     void create() {
         Product product = new Product(1L, "신상품", BigDecimal.valueOf(15000));
+        ProductRequest request = new ProductRequest( "신상품", 15000L);
         given(productRepository.save(any())).willReturn(product);
 
-        Product created = productService.create(product);
+        ProductResponse created = productService.create(request);
 
-        assertThat(created).isEqualTo(product);
+        assertAll(
+                () -> assertThat(created.getName()).isEqualTo(product.getName()),
+                () -> assertThat(created.getPrice()).isEqualTo(product.getPrice()));
     }
 
     @DisplayName("상품을 등록에 실패한다. - 상품 등록시 가격값이 null 이거나 0보다 작으면 등록 실패한다.")
     @Test
     void fail_create() {
-        Product product1 = new Product(1L, "신상품", BigDecimal.valueOf(-1));
-        Product product2 = new Product(1L, "신상품", null);
+        ProductRequest product1 = new ProductRequest("신상품", -1L);
+        ProductRequest product2 = new ProductRequest("신상품", null);
 
         assertThatThrownBy(() -> productService.create(product1))
                 .isInstanceOf(IllegalArgumentException.class);
         assertThatThrownBy(() -> productService.create(product2))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(NullPointerException.class);
     }
 
     @DisplayName("상품 리스트를 조회한다.")
@@ -60,8 +66,10 @@ class ProductServiceTest {
         List<Product> products = Arrays.asList(product1, product2);
         given(productRepository.findAll()).willReturn(products);
 
-        List<Product> findProducts = productService.list();
+        List<ProductResponse> findProducts = productService.list();
 
-        Assertions.assertThat(findProducts).containsExactly(product1, product2);
+        assertAll(
+                () -> assertThat(findProducts.get(0).getName()).isEqualTo(product1.getName()),
+                () -> assertThat(findProducts.get(1).getName()).isEqualTo(product2.getName()));
     }
 }

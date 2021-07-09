@@ -3,6 +3,7 @@ package kitchenpos.product.ui;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -53,7 +54,7 @@ class ProductRestControllerTest {
     void create() throws Exception {
         Product product = new Product(1L, "새상품", BigDecimal.valueOf(20000));
         String productJsonString = objectMapper.writeValueAsString(product);
-        given(productService.create(any())).willReturn(product);
+        given(productService.create(any())).willReturn(ProductResponse.from(product));
 
         mockMvc.perform(post("/api/products")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -66,7 +67,7 @@ class ProductRestControllerTest {
     void list() throws Exception {
         Product product = new Product(1L, "새상품", BigDecimal.valueOf(20000));
         Product product2 = new Product(2L, "새상품2", BigDecimal.valueOf(30000));
-        given(productService.list()).willReturn(Arrays.asList(product, product2));
+        given(productService.list()).willReturn(Arrays.asList(ProductResponse.from(product), ProductResponse.from(product2)));
 
         mockMvc.perform(get("/api/products"))
                 .andExpect(status().isOk())

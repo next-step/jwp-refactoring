@@ -23,6 +23,10 @@ public class Product {
         this.price = price;
     }
 
+    public Product(String name, BigDecimal price) {
+        this(null, name, price);
+    }
+
     public Long getId() {
         return id;
     }
