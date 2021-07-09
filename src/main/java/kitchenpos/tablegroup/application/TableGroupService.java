@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.common.error.InvalidRequestException;
+import kitchenpos.common.error.NotFoundTableGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.repository.OrderDao;
 import kitchenpos.ordertable.repository.OrderTableDao;
@@ -30,28 +31,30 @@ public class TableGroupService {
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         final List<Long> orderTableIds = tableGroupRequest.ids();
-        final OrderTables orderTables = OrderTables.of(orderTableDao.findAllById(orderTableIds));
+
+        final TableGroup tableGroup = new TableGroup();
+        tableGroupDao.save(tableGroup);
+
+        final OrderTables orderTables = OrderTables.of(tableGroup, orderTableDao.findAllById(orderTableIds));
 
         if (orderTables.size() != orderTableIds.size()) {
             throw new InvalidRequestException();
         }
 
-        final TableGroup tableGroup = TableGroup.of(orderTables);
-
-        tableGroupDao.save(tableGroup);
-        tableGroup.initOrderTable();
+        orderTableDao.saveAll(orderTables.getOrderTables());
+        orderTables.setTableGroup(tableGroup);
 
         return TableGroupResponse.of(tableGroup);
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        final OrderTables orderTables = OrderTables.of(orderTableDao.findAllByTableGroupId(tableGroupId));
+        TableGroup tableGroup = tableGroupDao.findById(tableGroupId).orElseThrow(NotFoundTableGroup::new);
 
-        List<Long> orderTableIds = orderTables.orderTableIds();
-        List<Order> orders = orderDao.findOrdersByOrderTableIdIn(orderTableIds);
+        final OrderTables orderTables = OrderTables.of(tableGroup, orderTableDao.findAllByTableGroupId(tableGroupId));
+        List<Order> orders = orderDao.findOrdersByOrderTableIdIn(orderTables.orderIds());
 
         orders.forEach(Order::checkChangeableStatus);
-        orderTables.unGroup();
+        orderTables.ungroup();
     }
 }

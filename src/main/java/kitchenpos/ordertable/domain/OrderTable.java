@@ -17,6 +17,7 @@ import kitchenpos.tablegroup.domain.TableGroup;
 @Entity
 @Table(name = "order_table")
 public class OrderTable {
+    public static final int MIN_GROUP_SIZE = 2;
 
     public OrderTable() {}
 
@@ -56,6 +57,10 @@ public class OrderTable {
         if (empty) {
             throw new OrderTableEmptyException();
         }
+    }
+
+    public void ungroup() {
+        this.setTableGroup(null);
     }
 
     public void setTableGroup(TableGroup tableGroup) {

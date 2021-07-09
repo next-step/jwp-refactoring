@@ -1,11 +1,13 @@
 package kitchenpos.tablegroup.application;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,17 +17,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.common.error.InvalidRequestException;
 import kitchenpos.common.error.InvalidOrderStatusException;
+import kitchenpos.common.error.InvalidRequestException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.tablegroup.dto.TableGroupRequest;
-import kitchenpos.tablegroup.dto.TableGroupResponse;
 import kitchenpos.order.repository.OrderDao;
 import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.repository.OrderTableDao;
 import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import kitchenpos.tablegroup.repository.TableGroupDao;
 
 @ExtendWith(MockitoExtension.class)
@@ -77,7 +79,7 @@ class TableGroupServiceTest {
         // when
         when(orderTableDao.findAllByTableGroupId(1L)).thenReturn(orderTables);
         when(orderDao.findOrdersByOrderTableIdIn(any())).thenReturn(Arrays.asList(order));
-
+        when(tableGroupDao.findById(any())).thenReturn(Optional.of(new TableGroup()));
         // then
         tableGroupService.ungroup(1L);
     }
@@ -109,6 +111,7 @@ class TableGroupServiceTest {
         List<OrderTable> orderTables = Arrays.asList(orderTable, addOrderTable);
         Order order = Order.of(1L, OrderStatus.MEAL);
         // when
+        when(tableGroupDao.findById(any())).thenReturn(Optional.of(new TableGroup()));
         when(orderTableDao.findAllByTableGroupId(1L)).thenReturn(orderTables);
         when(orderDao.findOrdersByOrderTableIdIn(any())).thenReturn(Arrays.asList(order));
 

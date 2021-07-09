@@ -3,12 +3,12 @@ package kitchenpos.tablegroup.acceptance;
 import static kitchenpos.utils.acceptan.RequestHelper.*;
 import static kitchenpos.utils.acceptan.ResponseHelper.*;
 
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 
 import kitchenpos.AcceptanceTest;
 import kitchenpos.order.domain.OrderStatus;
@@ -98,6 +98,9 @@ public class TableGroupAcceptanceTest  extends AcceptanceTest {
         // when
         주문_상태_변경_요청(주문_테이블_고객_수_2명_번호, OrderStatus.COMPLETION);
         주문_상태_변경_요청(주문_테이블_고객_수_5명_번호, OrderStatus.COMPLETION);
+
+        주문_테이블_비어있음_요청(주문_테이블_고객_수_2명_번호, 비어있지_않음);
+        주문_테이블_비어있음_요청(주문_테이블_고객_수_5명_번호, 비어있지_않음);
 
         ExtractableResponse<Response> 테이블_그룹_제거_요청_실패 = 테이블_그룹_제거_요청(테이블_그룹_번호);
 
