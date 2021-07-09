@@ -1,5 +1,7 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.table.exception.FailedChangeEmptyException;
+import kitchenpos.table.exception.FailedChangeNumberOfGuestsException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +21,7 @@ class OrderTableTest {
 
         // when & then
         assertThatThrownBy(() -> orderTable1.changeEmpty(true))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(FailedChangeEmptyException.class);
     }
 
     @DisplayName("주문 테이블의 손님수를 변경시 손님수는 0명 이상이어야 한다.")
@@ -30,7 +32,7 @@ class OrderTableTest {
 
         // when & then
         assertThatThrownBy(() -> orderTable.changeNumberOfGuests(-1))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(FailedChangeNumberOfGuestsException.class);
     }
 
     @DisplayName("주문 테이블의 손님수를 변경시 빈 주문 테이블이 아니어야 한다.")
@@ -41,6 +43,6 @@ class OrderTableTest {
 
         // when & then
         assertThatThrownBy(() -> orderTable.changeNumberOfGuests(1))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(FailedChangeNumberOfGuestsException.class);
     }
 }

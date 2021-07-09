@@ -1,5 +1,7 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.table.exception.AlreadyExistTableGroupException;
+import kitchenpos.table.exception.InvalidMinOrderTableSizeException;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.Column;
@@ -44,7 +46,7 @@ public class TableGroup {
 
     private void validateOrderTablesSize(final List<OrderTable> orderTables) {
         if (orderTables.size() < MIN_ORDER_TABLE_SIZE) {
-            throw new IllegalArgumentException();
+            throw new InvalidMinOrderTableSizeException(String.format("단체 지정시 테이블은 최소 %d개 이상이어야 합니다.", MIN_ORDER_TABLE_SIZE));
         }
     }
 
@@ -56,7 +58,7 @@ public class TableGroup {
 
     private void validateOrderTable(final OrderTable orderTable) {
         if (orderTable.getTableGroup() != null) {
-            throw new IllegalArgumentException();
+            throw new AlreadyExistTableGroupException("이미 단체 지정이 되어있는 테이블은 단체 지정을 할 수 없습니다.");
         }
     }
 

@@ -5,6 +5,7 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.exception.FailedChangeEmptyException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -82,7 +84,7 @@ class TableServiceTest {
 
         // when & then
         assertThatThrownBy(() -> tableService.changeEmpty(1L, orderTableRequest))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(EntityNotFoundException.class);
     }
 
     @DisplayName("주문 테이블의 빈 테이블 여부를 변경할시 주문의 상태가 완료 이어야 한다.")
@@ -95,7 +97,7 @@ class TableServiceTest {
 
         // when & then
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable1.getId(), orderTableRequest))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(FailedChangeEmptyException.class);
     }
 
     @DisplayName("주문 테이블의 손님수를 변경할 수 있다.")
@@ -121,7 +123,7 @@ class TableServiceTest {
 
         // when & then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, orderTableRequest))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(EntityNotFoundException.class);
     }
 
     @DisplayName("주문 테이블의 목록을 조회할 수 있다.")

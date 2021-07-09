@@ -6,9 +6,11 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.exception.FailedChangeEmptyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -43,7 +45,7 @@ public class TableService {
         final OrderTable savedOrderTable = findById(orderTableId);
         if (orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId,
                 Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
+            throw new FailedChangeEmptyException("주문 상태가 완료일때만 빈 테이블 여부 변경 가능합니다.");
         }
 
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
@@ -58,6 +60,6 @@ public class TableService {
     }
 
     private OrderTable findById(final Long orderTableId) {
-        return orderTableRepository.findById(orderTableId).orElseThrow(IllegalArgumentException::new);
+        return orderTableRepository.findById(orderTableId).orElseThrow(EntityNotFoundException::new);
     }
 }

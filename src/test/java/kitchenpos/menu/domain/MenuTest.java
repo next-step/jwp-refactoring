@@ -35,6 +35,4 @@ class MenuTest {
         assertThatThrownBy(() -> 강정치킨plus강정치킨.addMenuProducts(Arrays.asList(강정치킨양두배)))
                 .isInstanceOf(InvalidPriceException.class);
     }
-
-
 }

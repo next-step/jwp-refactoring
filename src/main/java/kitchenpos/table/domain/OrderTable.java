@@ -1,5 +1,8 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.table.exception.FailedChangeEmptyException;
+import kitchenpos.table.exception.FailedChangeNumberOfGuestsException;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -48,14 +51,17 @@ public class OrderTable {
 
     public void changeEmpty(final boolean empty) {
         if (tableGroup != null) {
-            throw new IllegalArgumentException();
+            throw new FailedChangeEmptyException("단체 지정이 되어있을때는 빈 테이블 여부를 변경할 수 없습니다.");
         }
         this.empty = empty;
     }
 
     public void changeNumberOfGuests(final int numberOfGuests) {
-        if (numberOfGuests < MIN_NUMBER_OF_GUESTS || isEmpty()) {
-            throw new IllegalArgumentException();
+        if (numberOfGuests < MIN_NUMBER_OF_GUESTS) {
+            throw new FailedChangeNumberOfGuestsException(String.format("손님수는 최소 %d명 이상이어야 합니다.", MIN_NUMBER_OF_GUESTS));
+        }
+        if (isEmpty()) {
+            throw new FailedChangeNumberOfGuestsException("테이블이 비어있을 경우 손님수를 변경할 수 없습니다.");
         }
         this.numberOfGuests = numberOfGuests;
     }

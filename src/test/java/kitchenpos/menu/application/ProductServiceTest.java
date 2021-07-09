@@ -4,6 +4,7 @@ import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.domain.ProductRepository;
 import kitchenpos.menu.dto.ProductRequest;
 import kitchenpos.menu.dto.ProductResponse;
+import kitchenpos.menu.exception.InvalidPriceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -50,7 +51,7 @@ class ProductServiceTest {
     void createTest_wrongPrice() {
         // when & then
         assertThatThrownBy(() -> productService.create(new ProductRequest("후라이드", BigDecimal.valueOf(-1000))))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidPriceException.class);
     }
 
     @DisplayName("상품의 목록을 조회할 수 있다.")

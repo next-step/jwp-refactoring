@@ -1,5 +1,7 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.table.exception.AlreadyExistTableGroupException;
+import kitchenpos.table.exception.InvalidMinOrderTableSizeException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +17,7 @@ class TableGroupTest {
     void createTest_orderTablesSize_lessThanTwo() {
         // when & then
         assertThatThrownBy(() -> new TableGroup(new ArrayList<>()))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidMinOrderTableSizeException.class);
     }
 
     @DisplayName("단체 지정의 주문 테이블 목록이 올바르지 않으면 등록할 수 없다 : 주문 테이블은 이미 다른 단체 지정에 등록되어있지 않아야 한다.")
@@ -28,7 +30,7 @@ class TableGroupTest {
 
         // when & then
         assertThatThrownBy(() -> new TableGroup(Arrays.asList(orderTable1, orderTable2)))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(AlreadyExistTableGroupException.class);
     }
 
     @DisplayName("단체 지정을 해제할 수 있다.")

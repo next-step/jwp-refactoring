@@ -7,6 +7,8 @@ import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
+import kitchenpos.table.exception.DuplicateOrderTableException;
+import kitchenpos.table.exception.FailedUngroupException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -69,7 +71,7 @@ class TableGroupServiceTest {
 
         // when & then
         assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(DuplicateOrderTableException.class);
     }
 
     @DisplayName("단체 지정된 주문 테이블 목록의 주문의 상태가 완료이어야 한다.")
@@ -85,6 +87,6 @@ class TableGroupServiceTest {
 
         // when & then
         assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(FailedUngroupException.class);
     }
 }
