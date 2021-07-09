@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -62,7 +63,8 @@ public class OrderServiceTest {
     void isNotCollectQuantityMenuCount_exception() {
         // given
         // 주문 아이템 생성됨
-        주문_아이템_생성됨();
+        firstOrderLineItem = 주문_아이템_생성(1L);
+        secondOrderLineItem = 주문_아이템_생성(2L);
 
         // and
         // 주문 생성되어 있음
@@ -71,7 +73,7 @@ public class OrderServiceTest {
 
         // when
         // 실제로 한개의 메뉴만 있음
-        when(menuDao.countByIdIn(any())).thenReturn(1L);
+        when(menuDao.countByIdIn(Arrays.asList(1L, 2L))).thenReturn(1L);
 
         // then
         // 주문 생성 요청하면 오류 발생
@@ -84,17 +86,19 @@ public class OrderServiceTest {
     void isNotExistOrderTable() {
         // given
         // 주문 아이템 생성됨
-        주문_아이템_생성됨();
-        when(menuDao.countByIdIn(any())).thenReturn(2L);
+        firstOrderLineItem = 주문_아이템_생성(1L);
+        secondOrderLineItem = 주문_아이템_생성(2L);
+        when(menuDao.countByIdIn(Arrays.asList(1L, 2L))).thenReturn(2L);
 
         // and
         // 주문 생성되어 있음
         Order order = new Order();
+        order.setOrderTableId(1L);
         order.setOrderLineItems(Arrays.asList(firstOrderLineItem, secondOrderLineItem));
 
         // when
         // 실제로 한개의 메뉴만 있음
-        when(orderTableDao.findById(any())).thenReturn(Optional.empty());
+        when(orderTableDao.findById(1L)).thenReturn(Optional.empty());
 
         // then
         // 주문 요청함
@@ -107,20 +111,22 @@ public class OrderServiceTest {
     void 주문_정상_접수() {
         // given
         // 주문 아이템 생성됨
-        주문_아이템_생성됨();
-        when(menuDao.countByIdIn(any())).thenReturn(2L);
+        firstOrderLineItem = 주문_아이템_생성(1L);
+        secondOrderLineItem = 주문_아이템_생성(2L);
+        when(menuDao.countByIdIn(Arrays.asList(1L, 2L))).thenReturn(2L);
 
         // and
         // 주문 생성되어 있음
         Order order = new Order();
         order.setId(1L);
+        order.setOrderTableId(1L);
         order.setOrderLineItems(Arrays.asList(firstOrderLineItem, secondOrderLineItem));
 
         // and
         // 주문 테이블 생성되어 있음
         OrderTable orderTable = new OrderTable();
         orderTable.setId(1L);
-        when(orderTableDao.findById(any())).thenReturn(Optional.ofNullable(orderTable));
+        when(orderTableDao.findById(1L)).thenReturn(Optional.ofNullable(orderTable));
         when(orderDao.save(any())).thenReturn(order);
         when(orderLineItemDao.save(firstOrderLineItem)).thenReturn(firstOrderLineItem);
         when(orderLineItemDao.save(secondOrderLineItem)).thenReturn(secondOrderLineItem);
@@ -134,12 +140,9 @@ public class OrderServiceTest {
         assertThat(expected.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
     }
 
-    private void 주문_아이템_생성됨() {
-        firstOrderLineItem = new OrderLineItem();
-        firstOrderLineItem.setMenuId(1L);
-        secondOrderLineItem = new OrderLineItem();
-        secondOrderLineItem.setMenuId(2l);
+    private OrderLineItem 주문_아이템_생성(Long menuId) {
+        OrderLineItem orderLineItem = new OrderLineItem();
+        orderLineItem.setMenuId(menuId);
+        return orderLineItem;
     }
-
-
 }
