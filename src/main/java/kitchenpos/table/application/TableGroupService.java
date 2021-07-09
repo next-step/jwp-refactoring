@@ -1,5 +1,8 @@
 package kitchenpos.table.application;
 
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.Orders;
 import kitchenpos.table.domain.TableGroupRepository;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
@@ -8,7 +11,6 @@ import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -16,10 +18,13 @@ import java.util.stream.Collectors;
 
 @Service
 public class TableGroupService {
+
+    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final OrderTableRepository orderTableRepository, final TableGroupRepository tableGroupRepository) {
+    public TableGroupService(OrderRepository orderRepository, OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository) {
+        this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
     }
@@ -51,6 +56,18 @@ public class TableGroupService {
     public void ungroup(final Long tableGroupId) {
         final List<OrderTable> orderTables = orderTableRepository.findByTableGroupId(tableGroupId);
 
+        Orders findOrders = getOrders(orderTables);
+
+        findOrders.ungroupValidation();
         orderTables.forEach(OrderTable::ungroup);
+    }
+
+    private Orders getOrders(List<OrderTable> orderTables) {
+        List<Long> orderTableIds = orderTables.stream()
+                .map(orderTable -> orderTable.getId())
+                .collect(Collectors.toList());
+
+        List<Order> findOrderTables = orderRepository.findByOrderTableIdIn(orderTableIds);
+        return new Orders(findOrderTables);
     }
 }

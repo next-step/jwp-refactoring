@@ -22,11 +22,7 @@ public class Orders {
         return orders;
     }
 
-    public void ungroup() {
+    public void ungroupValidation() {
         orders.forEach(Order::ungroupValidation);
-    }
-
-    public void newOrder(Order newOrder) {
-        this.orders.add(newOrder);
     }
 }

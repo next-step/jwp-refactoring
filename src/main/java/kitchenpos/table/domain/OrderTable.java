@@ -25,9 +25,6 @@ public class OrderTable {
     @Column(name = "empty")
     private boolean empty;
 
-    @Embedded
-    private Orders orders;
-
     public OrderTable() {
     }
 
@@ -86,7 +83,6 @@ public class OrderTable {
     }
 
     public void ungroup() {
-        orders.ungroup();
         groupBy(null);
     }
 
@@ -96,7 +92,6 @@ public class OrderTable {
         }
         Order newOrder = Order.newOrder(this, orderedTime, newOrderLineItems);
         newOrder.reception();
-        this.orders.newOrder(newOrder);
         return newOrder;
     }
 }
