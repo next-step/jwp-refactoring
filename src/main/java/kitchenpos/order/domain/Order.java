@@ -15,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Table(name = "order")
@@ -46,6 +47,26 @@ public class Order {
     public void addOrderLineItem(final OrderLineItem orderLineItem) {
         orderLineItems.add(orderLineItem);
         orderLineItem.addedBy(this);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public OrderTable getOrderTable() {
+        return orderTable;
+    }
+
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+
+    public LocalDateTime getOrderedTime() {
+        return orderedTime;
+    }
+
+    public List<OrderLineItem> getOrderLineItems() {
+        return orderLineItems.getOrderLineItems();
     }
 
     @Override

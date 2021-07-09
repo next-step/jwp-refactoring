@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
@@ -27,7 +28,7 @@ import static org.mockito.BDDMockito.given;
 class TableGroupServiceTest {
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
     private OrderTableDao orderTableDao;
@@ -125,8 +126,8 @@ class TableGroupServiceTest {
         orderTable2.setTableGroupId(tableGroup.getId());
 
         given(orderTableDao.findAllByTableGroupId(tableGroup.getId())).willReturn(orderTables);
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(false);
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(
+                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).willReturn(false);
         given(orderTableDao.save(orderTable1)).willReturn(orderTable1);
         given(orderTableDao.save(orderTable2)).willReturn(orderTable2);
 
@@ -147,8 +148,8 @@ class TableGroupServiceTest {
                 .collect(Collectors.toList());
 
         given(orderTableDao.findAllByTableGroupId(tableGroup.getId())).willReturn(orderTables);
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(true);
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(
+                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).willReturn(true);
 
         // when & then
         assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))

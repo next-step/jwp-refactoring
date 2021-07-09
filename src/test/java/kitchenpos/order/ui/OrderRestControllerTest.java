@@ -1,6 +1,7 @@
 package kitchenpos.order.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kitchenpos.config.MockMvcTestConfig;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
@@ -29,11 +30,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = OrderRestController.class)
+@MockMvcTestConfig
 class OrderRestControllerTest {
     private static final String ORDER_API_URI = "/api/orders";
 
     @Autowired
-    private OrderRestController orderRestController;
+    private MockMvc mockMvc;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -41,16 +43,10 @@ class OrderRestControllerTest {
     @MockBean
     private OrderService orderService;
 
-    private MockMvc mockMvc;
     private Order order;
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(orderRestController)
-                .addFilter(new CharacterEncodingFilter(StandardCharsets.UTF_8.name(), true))
-                .alwaysDo(print())
-                .build();
-
         order = new Order(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), new ArrayList<>());
     }
 

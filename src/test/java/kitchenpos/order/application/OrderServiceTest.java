@@ -4,6 +4,8 @@ import kitchenpos.dao.OrderTableDao;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItemRepository;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.menu.domain.MenuRepository;
@@ -31,10 +33,10 @@ class OrderServiceTest {
     private MenuRepository menuRepository;
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
-    private OrderLineItemDao orderLineItemDao;
+    private OrderLineItemRepository orderLineItemRepository;
 
     @Mock
     private OrderTableDao orderTableDao;
@@ -61,16 +63,16 @@ class OrderServiceTest {
     void createTest() {
         // given
         given(menuRepository.countByIdIn(Arrays.asList(1L))).willReturn(order.getOrderLineItems().size());
-        given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));
-        given(orderDao.save(order)).willReturn(order);
-        given(orderLineItemDao.save(orderLineItem)).willReturn(orderLineItem);
+        given(orderTableDao.findById(order.getOrderTable().getId())).willReturn(Optional.of(orderTable));
+        given(orderRepository.save(order)).willReturn(order);
+        given(orderLineItemRepository.save(orderLineItem)).willReturn(orderLineItem);
 
         // when
         Order createdOrder = orderService.create(order);
 
         // then
         assertThat(createdOrder.getId()).isEqualTo(order.getId());
-        assertThat(createdOrder.getOrderTableId()).isEqualTo(order.getOrderTableId());
+        assertThat(createdOrder.getOrderTable().getId()).isEqualTo(order.getOrderTable().getId());
         assertThat(createdOrder.getOrderStatus()).isEqualTo(order.getOrderStatus());
     }
 
@@ -114,8 +116,8 @@ class OrderServiceTest {
     void changeOrderStatusTest() {
         // given
         order.setOrderStatus(OrderStatus.MEAL.name());
-        given(orderDao.findById(order.getId())).willReturn(Optional.of(order));
-        given(orderLineItemDao.findAllByOrderId(order.getId())).willReturn(orderLineItems);
+        given(orderRepository.findById(order.getId())).willReturn(Optional.of(order));
+        given(orderLineItemRepository.findAllByOrderId(order.getId())).willReturn(orderLineItems);
 
         // when
         Order changedOrder = orderService.changeOrderStatus(order.getId(), order);
@@ -130,7 +132,7 @@ class OrderServiceTest {
     void changeOrderStatusTest_orderStatusCompletion() {
         // given
         order.setOrderStatus(OrderStatus.COMPLETION.name());
-        given(orderDao.findById(order.getId())).willReturn(Optional.of(order));
+        given(orderRepository.findById(order.getId())).willReturn(Optional.of(order));
 
         // when & then
         assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), order))
@@ -141,8 +143,8 @@ class OrderServiceTest {
     @Test
     void listTest() {
         // given
-        given(orderDao.findAll()).willReturn(Arrays.asList(order));
-        given(orderLineItemDao.findAllByOrderId(order.getId())).willReturn(orderLineItems);
+        given(orderRepository.findAll()).willReturn(Arrays.asList(order));
+        given(orderLineItemRepository.findAllByOrderId(order.getId())).willReturn(orderLineItems);
 
         // when
         List<Order> orders = orderService.list();
