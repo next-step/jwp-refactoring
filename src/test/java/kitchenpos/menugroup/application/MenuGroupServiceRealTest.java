@@ -25,7 +25,7 @@ public class MenuGroupServiceRealTest {
         expect.setName("JPA메뉴그룹");
 
         //when
-        MenuGroup result = menuGroupService.createTemp(expect);
+        MenuGroup result = menuGroupService.create(expect);
 
         //then
         assertThat(result.getName()).isEqualTo(expect.getName());
@@ -39,10 +39,10 @@ public class MenuGroupServiceRealTest {
         MenuGroup expect = new MenuGroup();
         expect.setName("JPA메뉴그룹");
 
-        menuGroupService.createTemp(expect);
+        menuGroupService.create(expect);
 
         //when
-        List<MenuGroup> result = menuGroupService.listTemp();
+        List<MenuGroup> result = menuGroupService.list();
 
         //then
         assertThat(result.size()).isGreaterThan(0);
