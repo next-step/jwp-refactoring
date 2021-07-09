@@ -1,9 +1,9 @@
-package kitchenpos.product.ui;
+package kitchenpos.menu.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.config.MockMvcTestConfig;
-import kitchenpos.product.application.ProductService;
-import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.menu.application.ProductService;
+import kitchenpos.menu.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
