@@ -19,6 +19,10 @@ public class MenuProducts {
         this.menuProducts.addAll(menuProducts);
     }
 
+    public void setMenu(final Menu menu) {
+        this.menuProducts.forEach(menuProduct -> menuProduct.setMenu(menu));
+    }
+
     public void checkOverPrice(final BigDecimal price) {
         BigDecimal sum = this.menuProducts.stream()
                                           .map(this::calculatePrice)

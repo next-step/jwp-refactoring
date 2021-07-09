@@ -31,9 +31,9 @@ public class OrderTable {
         // empty
     }
 
-    public OrderTable(final int numberOfGuests) {
+    public OrderTable(final int numberOfGuests, final boolean empty) {
         this.numberOfGuests = numberOfGuests;
-        this.empty = false;
+        this.empty = empty;
     }
 
     public void checkNotIncludeTableGroup() {

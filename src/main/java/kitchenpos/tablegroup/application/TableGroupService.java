@@ -72,10 +72,9 @@ public class TableGroupService {
         }
     }
 
-    private List<String> getOrderStatusListExcludeCompletion() {
+    private List<OrderStatus> getOrderStatusListExcludeCompletion() {
         return OrderStatus.excludeCompletionList()
                           .stream()
-                          .map(Enum::name)
                           .collect(Collectors.toList());
     }
 }

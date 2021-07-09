@@ -53,6 +53,8 @@ public class Order {
         this.orderStatus = orderStatus;
         this.orderLineItems.add(orderLineItems);
         this.orderedTime = LocalDateTime.now();
+
+        this.orderLineItems.setOrder(this);
     }
 
     public boolean isCompletion() {

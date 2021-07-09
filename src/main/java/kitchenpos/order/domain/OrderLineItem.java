@@ -37,6 +37,10 @@ public class OrderLineItem {
         this.quantity = quantity;
     }
 
+    public void setOrder(final Order order) {
+        this.order = order;
+    }
+
     public Long getSeq() {
         return seq;
     }

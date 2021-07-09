@@ -18,6 +18,10 @@ public class OrderLineItems {
         this.orderLineItems.addAll(orderLineItems);
     }
 
+    public void setOrder(final Order order) {
+        this.orderLineItems.forEach(orderLineItem -> orderLineItem.setOrder(order));
+    }
+
 
     public <R> List<R> convertAll(Function<OrderLineItem, R> converter) {
         return this.orderLineItems.stream()

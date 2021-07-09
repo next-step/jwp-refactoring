@@ -43,6 +43,8 @@ public class Menu {
         this.menuGroup = builder.menuGroup;
         this.menuProducts.add(builder.menuProducts);
 
+        this.menuProducts.setMenu(this);
+
         this.menuProducts.checkOverPrice(this.price);
     }
 
