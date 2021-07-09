@@ -1,7 +1,10 @@
 package kitchenpos.order.application;
 
+import static java.time.LocalDateTime.*;
+
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.order.domain.Order;
@@ -36,9 +39,9 @@ public class OrderService {
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
         final List<Menu> menus = findMenus(orderRequest);
-        final List<OrderLineItem> orderLineItems = orderRequest.toOrderLineItems(menus);
+        final OrderLineItems orderLineItems = orderRequest.toOrderLineItems(menus);
         final OrderTable orderTable = findOrderTable(orderRequest);
-        final Order persistOrder = orderRepository.save(Order.create(orderLineItems, orderTable, LocalDateTime.now()));
+        final Order persistOrder = orderRepository.save(orderTable.createOrder(orderLineItems, now()));
         return OrderResponse.of(persistOrder);
     }
 

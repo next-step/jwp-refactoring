@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.tablegroup.domain.TableGroup;
 
 public class OrderTableResponse {
 
@@ -18,23 +17,15 @@ public class OrderTableResponse {
 
 	private boolean empty;
 
-	public OrderTableResponse(Long id, int numberOfGuests, boolean empty) {
-		this(id, null, numberOfGuests, empty);
-	}
-
-	public OrderTableResponse(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
-		this.id = id;
-		this.tableGroupId = tableGroupId;
-		this.numberOfGuests = numberOfGuests;
-		this.empty = empty;
+	public OrderTableResponse(OrderTable orderTable) {
+		this.id = orderTable.getId();
+		this.tableGroupId = orderTable.getTableGroupId();
+		this.numberOfGuests = orderTable.getNumberOfGuests();
+		this.empty = orderTable.isEmpty();
 	}
 
 	public static OrderTableResponse of(OrderTable orderTable) {
-		TableGroup tableGroup = orderTable.getTableGroup();
-		if (isNull(tableGroup)) {
-			return new OrderTableResponse(orderTable.getId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
-		}
-		return new OrderTableResponse(orderTable.getId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
+		return new OrderTableResponse(orderTable);
 	}
 
 	public static List<OrderTableResponse> listOf(List<OrderTable> orderTables) {

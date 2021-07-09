@@ -1,16 +1,16 @@
 package kitchenpos.tablegroup.domain;
 
+import static java.util.Arrays.*;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTables;
 
 @Entity
 public class TableGroup {
@@ -20,23 +20,14 @@ public class TableGroup {
 
     private LocalDateTime createdDate;
 
-    @Embedded
-    private OrderTables orderTables;
-
     protected TableGroup() {}
 
-    private TableGroup(OrderTables orderTables, LocalDateTime createdDate) {
+    TableGroup(Long id, LocalDateTime createdDate) {
         this.createdDate = createdDate;
-        this.orderTables = orderTables;
-        this.orderTables.toGroup(this);
     }
 
-    public static TableGroup create(List<OrderTable> orderTables, LocalDateTime createdDate) {
-        return create(OrderTables.of(orderTables), createdDate);
-    }
-
-    public static TableGroup create(OrderTables orderTables, LocalDateTime createdDate) {
-        return new TableGroup(orderTables, createdDate);
+    public TableGroup(LocalDateTime createdDate) {
+        this(null, createdDate);
     }
 
     public Long getId() {
@@ -47,11 +38,17 @@ public class TableGroup {
         return createdDate;
     }
 
-    public List<OrderTable> getOrderTables() {
-        return orderTables.getOrderTables();
+    public void ungroup(List<OrderTable> tables, UngroupValidator ungroupValidator) {
+        OrderTables orderTables = OrderTables.of(tables);
+        orderTables.ungrouped(ungroupValidator);
     }
 
-    public void ungroup() {
-        orderTables.ungrouped();
+    public void group(List<OrderTable> tables) {
+        OrderTables orderTables = OrderTables.of(tables);
+        orderTables.grouped(getId());
+    }
+
+    void group(OrderTable... tables) {
+        group(asList(tables));
     }
 }

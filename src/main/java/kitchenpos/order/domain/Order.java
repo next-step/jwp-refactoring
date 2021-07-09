@@ -5,6 +5,7 @@ import static kitchenpos.order.domain.OrderStatus.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -12,11 +13,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import kitchenpos.table.domain.OrderTable;
 
 @Entity
 @Table(name = "orders")
@@ -25,9 +22,8 @@ public class Order {
     @Id
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "order_table_id")
-    private OrderTable orderTable;
+    @Column(nullable = false)
+    private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
@@ -39,23 +35,16 @@ public class Order {
 
     protected Order() {}
 
-    private Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, OrderLineItems orderLineItems) {
-        this.orderTable = orderTable;
+    private Order(Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, OrderLineItems orderLineItems) {
+        this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
         this.orderLineItems.toOrder(this);
     }
 
-    public static Order create(List<OrderLineItem> orderLineItems, OrderTable orderTable, LocalDateTime orderedTime) {
-        return create(OrderLineItems.of(orderLineItems), orderTable, orderedTime);
-    }
-
-    static Order create(OrderLineItems orderLineItems, OrderTable orderTable, LocalDateTime orderedTime) {
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException("빈테이블에서 주문할 수 없습니다.");
-        }
-        return new Order(orderTable, COOKING, orderedTime, orderLineItems);
+    public static Order create(Long orderTableId, OrderLineItems orderLineItems, LocalDateTime orderedTime) {
+        return new Order(orderTableId, COOKING, orderedTime, orderLineItems);
     }
 
     public Long getId() {
@@ -63,7 +52,7 @@ public class Order {
     }
 
     public Long getOrderTableId() {
-        return orderTable.getId();
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {
@@ -95,6 +84,10 @@ public class Order {
 
     public boolean isComplete() {
         return this.orderStatus == COMPLETION;
+    }
+
+    public boolean isFrom(Long orderTableId) {
+        return this.orderTableId.equals(orderTableId);
     }
 
     private void validateNotCompleted() {

@@ -1,8 +1,9 @@
 package kitchenpos.tablegroup.domain;
 
 import static java.util.Arrays.*;
+import static kitchenpos.TextFixture.*;
+import static kitchenpos.table.domain.OrderTableTest.*;
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 import java.time.LocalDateTime;
 
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import kitchenpos.order.domain.Order;
+import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
 
 class TableGroupTest {
@@ -19,10 +21,10 @@ class TableGroupTest {
 	void createTableGroupWithLessTwoOrderTables() {
 		// given
 		OrderTable orderTable = new OrderTable(1, true);
-
+		TableGroup tableGroup = new TableGroup(LocalDateTime.now());
 		// when
 		// than
-		assertThatThrownBy(() -> TableGroup.create(asList(orderTable), LocalDateTime.now()))
+		assertThatThrownBy(() -> tableGroup.group(orderTable))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("2개 미만의 주문테이블은 그룹화 할 수 없습니다.");
 	}
@@ -33,10 +35,10 @@ class TableGroupTest {
 		// given
 		OrderTable notEmptyTable = new OrderTable(1, false);
 		OrderTable orderTable = new OrderTable(1, true);
-
+		TableGroup tableGroup = new TableGroup(LocalDateTime.now());
 		// when
 		// than
-		assertThatThrownBy(() -> TableGroup.create(asList(notEmptyTable, orderTable), LocalDateTime.now()))
+		assertThatThrownBy(() -> tableGroup.group(orderTable, notEmptyTable))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("비어있지 않은 테이블은 그룹화 할 수 없습니다.");
 	}
@@ -45,14 +47,14 @@ class TableGroupTest {
 	@Test
 	void createTableGroupWithGroupedOrderTableTest() {
 		// given
-		OrderTable groupedTable1 = new OrderTable(1, true);
-		OrderTable groupedTable2 = new OrderTable(1, true);
-		TableGroup.create(asList(groupedTable1, groupedTable2), LocalDateTime.now());
-		OrderTable orderTable = new OrderTable(1, true);
+		OrderTable groupedTable = createOrderTable(1L, 1L, NumberOfGuests.valueOf(1), false);
+		OrderTable ungroupedTable = createOrderTable(2L, null, NumberOfGuests.valueOf(1), false);
+
+		TableGroup tableGroup = new TableGroup(LocalDateTime.now());
 
 		// when
 		// than
-		assertThatThrownBy(() -> TableGroup.create(asList(groupedTable1, orderTable), LocalDateTime.now()))
+		assertThatThrownBy(() -> tableGroup.group(groupedTable, ungroupedTable))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("이미 그룹화되어 있는 테이블은 그룹화 할 수 없습니다.");
 	}
@@ -63,30 +65,26 @@ class TableGroupTest {
 		// given
 		OrderTable groupedTable1 = new OrderTable(1, true);
 		OrderTable groupedTable2 = new OrderTable(1, true);
+		TableGroup tableGroup = new TableGroup(LocalDateTime.now());
 
 		// when
-		TableGroup.create(asList(groupedTable1, groupedTable2), LocalDateTime.now());
+		tableGroup.group(groupedTable1, groupedTable2);
 
 		// than
 		assertThat(groupedTable1.isEmpty()).isFalse();
 		assertThat(groupedTable2.isEmpty()).isFalse();
 	}
 
-	@DisplayName("테이블그룹은 주문테이블들과 생성시각으로 생성된다.")
+	@DisplayName("테이블그룹은 생성시각으로 생성된다.")
 	@Test
 	void createTest() {
 		// given
-		OrderTable orderTable1 = new OrderTable(1, true);
-		OrderTable orderTable2 = new OrderTable(1, true);
 		LocalDateTime createdDate = LocalDateTime.now();
 
 		// when
-		TableGroup tableGroup = TableGroup.create(asList(orderTable1, orderTable2), createdDate);
+		TableGroup tableGroup = new TableGroup(createdDate);
 
 		// than
-		assertThat(orderTable1.getTableGroup()).isEqualTo(tableGroup);
-		assertThat(orderTable2.getTableGroup()).isEqualTo(tableGroup);
-		assertThat(tableGroup.getOrderTables()).containsExactly(orderTable1, orderTable2);
 		assertThat(tableGroup.getCreatedDate()).isEqualTo(createdDate);
 	}
 
@@ -94,33 +92,40 @@ class TableGroupTest {
 	@Test
 	void ungroupTest() {
 		// given
-		OrderTable orderTable1 = new OrderTable(1, true);
-		OrderTable orderTable2 =  new OrderTable(1, true);
-		TableGroup tableGroup = TableGroup.create(asList(orderTable1, orderTable2), LocalDateTime.now());
+		OrderTable table1 = createOrderTable(1L, 1L, NumberOfGuests.valueOf(1), false);
+		Order order1 = table1.createOrder(주문항목들_후라이드_1개_양념_1개, LocalDateTime.now());
+		order1.complete();
+
+		OrderTable table2 =  createOrderTable(2L, 1L, NumberOfGuests.valueOf(1), false);
+		Order order2 = table2.createOrder(주문항목들_후라이드_1개_양념_1개, LocalDateTime.now());
+		order2.complete();
+
+		TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());
 
 		// when
-		tableGroup.ungroup();
+		tableGroup.ungroup(asList(table1, table2), new UngroupValidator(asList(order1, order2)));
 
 		// than
-		assertThat(orderTable1.isGrouped()).isFalse();
-		assertThat(orderTable2.isGrouped()).isFalse();
+		assertThat(table1.isGrouped()).isFalse();
+		assertThat(table2.isGrouped()).isFalse();
 	}
 
 
-	@DisplayName("그룹화된 주문테이블들 중 조리상태이거나 식사상태이면 그룹해제를 할 수 없다.")
+	@DisplayName("그룹화된 주문테이블들의 주문이 조리상태이거나 식사상태이면 그룹해제를 할 수 없다.")
 	@Test
 	void ungroupWithNotCompleteOrderTest() {
 		// given
-		Order order = mock(Order.class);
-		when(order.isComplete()).thenReturn(false);
+		OrderTable notCompletedOrderTable = createOrderTable(1L, 1L, NumberOfGuests.valueOf(1), false);
+		Order notCompletedOrder = notCompletedOrderTable.createOrder(주문항목들_후라이드_1개_양념_1개, LocalDateTime.now());
 
-		// when
-		OrderTable notCompletedOrderTable = new OrderTable(1, true, asList(order));
-		OrderTable orderTable =  new OrderTable(1, true);
-		TableGroup tableGroup = TableGroup.create(asList(notCompletedOrderTable, orderTable), LocalDateTime.now());
+		OrderTable orderTable = createOrderTable(2L, 1L, NumberOfGuests.valueOf(1), false);
+		Order order = orderTable.createOrder(주문항목들_후라이드_1개_양념_1개, LocalDateTime.now());
+		order.complete();
+
+		TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());
 
 		// than
-		assertThatThrownBy(() -> tableGroup.ungroup())
+		assertThatThrownBy(() -> tableGroup.ungroup(asList(notCompletedOrderTable, orderTable), new UngroupValidator(asList(notCompletedOrder, order))))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("조리상태이거나 식사상태인 주문이 있는 주문테이블은 그룹해제를 할 수 없습니다.");
 	}

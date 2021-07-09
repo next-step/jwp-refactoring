@@ -65,6 +65,7 @@ class OrderServiceTest {
 		// given
 		OrderRequest orderRequest = mock(OrderRequest.class);
 		when(orderRequest.getOrderLineItemSize()).thenReturn(1);
+		when(orderRequest.toOrderLineItems(anyList())).thenReturn(주문항목들_후라이드_1개_양념_1개);
 		when(menuRepository.findAllById(anyList())).thenReturn(asList(mock(Menu.class)));
 		when(orderTableRepository.findById(anyLong())).thenReturn(Optional.empty());
 
@@ -95,8 +96,8 @@ class OrderServiceTest {
 	@DisplayName("주문 상태가 완료인 경우 변경할 수 없다.")
 	@Test
 	void changeStatusOfCompletedOrderTest() {
-		Order completedOrder = Order.create(asList(new OrderLineItem(주문_메뉴_후라이드, 2)),
-			new OrderTable(1, false), LocalDateTime.now());
+		OrderTable orderTable = new OrderTable(1, false);
+		Order completedOrder = orderTable.createOrder(주문항목들_후라이드_1개_양념_1개, LocalDateTime.now());
 		completedOrder.complete();
 
 		when(orderRepository.findById(anyLong())).thenReturn(Optional.of(completedOrder));

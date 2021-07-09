@@ -1,6 +1,8 @@
 package kitchenpos.table.domain;
 
+import static java.time.LocalDateTime.*;
 import static java.util.Arrays.*;
+import static kitchenpos.TextFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -10,9 +12,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import kitchenpos.order.domain.Order;
-import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.order.domain.OrderStatus;
 
-class OrderTableTest {
+public class OrderTableTest {
 
 	@DisplayName("주문테이블을 생성시 그룹은 설정 안되어 있다.")
 	@Test
@@ -28,18 +30,18 @@ class OrderTableTest {
 	@DisplayName("그룹 설정이 되어 있는 주문테이블은 비우기 설정을 할 수 없다.")
 	@Test
 	void emptyGroupedTableTest() {
-		// given
-		OrderTable orderTable1 = new OrderTable(1, true);
-		OrderTable orderTable2 = new OrderTable(2, true);
-		TableGroup.create(asList(orderTable1, orderTable2), LocalDateTime.now());
+		OrderTable 그룹설정된_테이블 = mock(OrderTable.class);
+		when(그룹설정된_테이블.isGrouped()).thenReturn(true);
 
+		// given
+		ChangeEmptyValidator changeEmptyValidator = new ChangeEmptyValidator(그룹설정된_테이블, asList(주문_후라이드_1개_양념_1개_조리중));
 		// when
 		// than
-		assertThatThrownBy(() -> orderTable1.updateEmpty(true))
+		assertThatThrownBy(() -> 주문테이블_그룹O.changeEmpty(true, changeEmptyValidator))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("그룹 설정이 되어 있는 테이블은 주문 등록 불가 상태로 바꿀 수 없습니다.");
 
-		assertThatThrownBy(() -> orderTable1.updateEmpty(false))
+		assertThatThrownBy(() -> 주문테이블_그룹O.changeEmpty(false, changeEmptyValidator))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("그룹 설정이 되어 있는 테이블은 주문 등록 불가 상태로 바꿀 수 없습니다.");
 	}
@@ -48,17 +50,15 @@ class OrderTableTest {
 	@Test
 	void changeEmptyWithCookingOrderTest() {
 		// given
-		Order order = mock(Order.class);
-		when(order.isComplete()).thenReturn(false);
-		OrderTable orderTable = new OrderTable(1, true, asList(order));
+		ChangeEmptyValidator changeEmptyValidator = new ChangeEmptyValidator(주문테이블_주문가능_그룹X, asList(주문_후라이드_1개_양념_1개_조리중));
 
 		// when
 		// than
-		assertThatThrownBy(() -> orderTable.updateEmpty(true))
+		assertThatThrownBy(() -> 주문테이블_주문가능_그룹X.changeEmpty(true, changeEmptyValidator))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("조리상태이거나 식사상태주문의 주문테이블은 상태를 변경할 수 없습니다.");
 
-		assertThatThrownBy(() -> orderTable.updateEmpty(false))
+		assertThatThrownBy(() -> 주문테이블_주문가능_그룹X.changeEmpty(false, changeEmptyValidator))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("조리상태이거나 식사상태주문의 주문테이블은 상태를 변경할 수 없습니다.");
 	}
@@ -67,30 +67,25 @@ class OrderTableTest {
 	@Test
 	void emptyTest() {
 		// given
-		OrderTable orderTable = new OrderTable(1, false);
+		ChangeEmptyValidator changeEmptyValidator = new ChangeEmptyValidator(주문테이블_주문가능_그룹X, asList(주문_후라이드_1개_양념_1개_계산완료));
 
 		// when
-		orderTable.updateEmpty(true);
+		주문테이블_주문가능_그룹X.changeEmpty(true, changeEmptyValidator);
 
 		// than
-		assertThat(orderTable.isEmpty()).isTrue();
+		assertThat(주문테이블_주문가능_그룹X.isEmpty()).isTrue();
 
 		// when
-		orderTable.updateEmpty(false);
+		주문테이블_주문가능_그룹X.changeEmpty(false, changeEmptyValidator);
 
 		// than
-		assertThat(orderTable.isEmpty()).isFalse();
+		assertThat(주문테이블_주문가능_그룹X.isEmpty()).isFalse();
 	}
 
 	@DisplayName("방문 손님 수를 음수로 수정할 수 없다.")
 	@Test
 	void changeNumberOfGuestsNegativeNumberTest() {
-		// given
-		OrderTable orderTable = new OrderTable(1, false);
-
-		// when
-		// than
-		assertThatThrownBy(() -> orderTable.changeNumberOfGuests(-1))
+		assertThatThrownBy(() -> 주문테이블_주문가능_그룹X.changeNumberOfGuests(-1))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("방문 손님 수는 음수일 수 없습니다.");
 	}
@@ -121,4 +116,35 @@ class OrderTableTest {
 		assertThat(orderTable.getNumberOfGuests()).isEqualTo(2);
 	}
 
+	@DisplayName("주문테이블에서 주문을 생성할 수 있다.")
+	@Test
+	void createOrderTest() {
+		// given
+		OrderTable orderTable = new OrderTable(1, false);
+		LocalDateTime orderedTime = now();
+
+		// when
+		Order order = orderTable.createOrder(주문항목들_후라이드_1개_양념_1개, orderedTime);
+
+		// then
+		assertThat(order.getOrderedTime()).isEqualTo(orderedTime);
+		assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
+	}
+
+	@DisplayName("빈 주문테이블에서 주문할 수 없다.")
+	@Test
+	void createOrderWithEmptyOrderTableTest() {
+		// given
+		OrderTable orderTable = new OrderTable(1, true);
+
+		// when
+		// than
+		assertThatThrownBy(() ->  orderTable.createOrder(주문항목들_후라이드_1개_양념_1개, now()))
+			.isInstanceOf(IllegalArgumentException.class)
+			.hasMessageContaining("빈테이블에서 주문할 수 없습니다.");
+	}
+
+	public static OrderTable createOrderTable(Long id, Long groupId, NumberOfGuests numberOfGuests, boolean empty) {
+		return new OrderTable(id, groupId, numberOfGuests, empty);
+	}
 }

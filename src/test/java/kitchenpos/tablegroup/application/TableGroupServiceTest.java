@@ -14,14 +14,19 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
+import kitchenpos.tablegroup.domain.UngroupValidator;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 
 @DisplayName("주문테이블그룹 요구사항 테스트")
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
+	@Mock
+	private OrderRepository orderRepository;
 
 	@Mock
 	private OrderTableRepository orderTableRepository;
@@ -64,6 +69,6 @@ class TableGroupServiceTest {
 
 		tableGroupService.ungroup(1L);
 
-		verify(tableGroup).ungroup();
+		verify(tableGroup).ungroup(anyList(), any(UngroupValidator.class));
 	}
 }
