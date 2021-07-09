@@ -1,9 +1,13 @@
 package kitchenpos.ordering.acceptance;
 
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.*;
 import kitchenpos.ordering.domain.OrderLineItem;
+import kitchenpos.ordering.domain.OrderStatus;
 import kitchenpos.ordering.dto.OrderRequest;
 import kitchenpos.ordering.dto.OrderResponse;
 import kitchenpos.product.domain.Product;
@@ -18,6 +22,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -89,7 +94,30 @@ public class OrderingAcceptanceTest extends AcceptanceTest {
 //        TableGroup 테이블그룹 = new TableGroup(테이블그룹ID, Arrays.asList(주문테이블));
     }
 
-    @DisplayName("주문에 필요한 요소를 채워서 만든다.")
+    @Test
+    void 통합인수테스트_주문을_하고_조회를_해서_주문상태를_종료로_바꾼다() {
+        // Given
+        // 상품, 메뉴상품, 메뉴, 주문테이블, 주문항목 - 모두 준비되어있다.
+
+        // When 주문을 한다.
+        OrderRequest 주문요청 = new OrderRequest(주문테이블.getId(), Arrays.asList(주문항목치킨));
+        OrderResponse 주문결과 = RestAssuredCRUD.postRequest("/api/orders", 주문요청).as(OrderResponse.class);
+        // Then 주문이 된다.
+        assertThat(주문결과.getId()).isEqualTo(1L);
+        assertThat(주문결과.getOrderTableId()).isEqualTo(주문테이블.getId());
+
+        // When 주문목록을 조회한다.
+        List<OrderResponse> 주문조회결과 = getAll("/api/orders");
+        // Then 주문목록이 나온다.
+        assertThat(주문조회결과.get(0).getId()).isEqualTo(1L);
+        assertThat(주문조회결과.get(0).getOrderStatus()).isEqualTo(OrderStatus.COOKING);
+
+        // When 첫번째 (이자 마지막인) 주문을 상태 변경한다.
+        OrderRequest 변경주문 = new OrderRequest(null, OrderStatus.COMPLETION, Arrays.asList());
+        // Then 상태가 변경된다.
+        assertThat(변경주문.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
+    }
+
     @Test
     void 통합인수테스트_주문에_필요한_요소를_넣어서_주문을_넣는다() {
         // Given
@@ -109,4 +137,12 @@ public class OrderingAcceptanceTest extends AcceptanceTest {
         assertThat(주문결과.getId()).isEqualTo(주문항목치킨.getOrderId());
     }
 
+    private List<OrderResponse> getAll(String path) {
+        return RestAssured.given().log().all()
+                .when()
+                .get(path)
+                .then().log().all()
+                .extract()
+                .jsonPath().getList(".", OrderResponse.class);
+    }
 }
