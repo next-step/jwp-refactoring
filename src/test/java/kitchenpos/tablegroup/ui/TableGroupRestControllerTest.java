@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import kitchenpos.tablegroup.ui.TableGroupRestController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,8 +50,9 @@ class TableGroupRestControllerTest {
         orderTables.add(new OrderTable(1L, null, 2, true));
         orderTables.add(new OrderTable(2L, null, 3, true));
         TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
-        String params = mapper.writeValueAsString(tableGroup);
-        given(tableGroupService.create(any())).willReturn(tableGroup);
+        TableGroupRequest request = new TableGroupRequest(orderTables);
+        String params = mapper.writeValueAsString(request);
+        given(tableGroupService.create(any())).willReturn(TableGroupResponse.from(tableGroup));
 
         mockMvc.perform(post("/api/table-groups")
                 .contentType(MediaType.APPLICATION_JSON)

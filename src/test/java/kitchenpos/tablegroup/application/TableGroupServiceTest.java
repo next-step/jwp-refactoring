@@ -6,6 +6,8 @@ import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.tablegroup.domain.TableGroupDao;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -57,14 +59,15 @@ class TableGroupServiceTest {
     @Test
     void create() {
         TableGroup tableGroup = new TableGroup(LocalDateTime.now(), orderTables);
+        TableGroupRequest request = new TableGroupRequest(orderTables);
         given(orderTableDao.findAllByIdIn(anyList())).willReturn(orderTables);
         given(tableGroupDao.save(any())).willReturn(tableGroup);
         given(orderTableDao.save(orderTable1)).willReturn(orderTable1);
         given(orderTableDao.save(orderTable2)).willReturn(orderTable2);
 
-        TableGroup created = tableGroupService.create(tableGroup);
+        TableGroupResponse created = tableGroupService.create(request);
 
-        assertThat(created).isEqualTo(tableGroup);
+        assertThat(created.getCreatedDate()).isEqualTo(tableGroup.getCreatedDate());
         assertThat(created.getOrderTables()).containsExactly(orderTable1, orderTable2);
     }
 
@@ -72,22 +75,22 @@ class TableGroupServiceTest {
     @Test
     void fail_create1() {
         List<OrderTable> orderTables = Arrays.asList(orderTable1);
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
-        TableGroup nonetableGroup = new TableGroup(1L, LocalDateTime.now(), Collections.emptyList());
+        TableGroupRequest request = new TableGroupRequest(orderTables);
+        TableGroupRequest noneTableGroupRequest = new TableGroupRequest(Collections.emptyList());
 
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+        assertThatThrownBy(() -> tableGroupService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> tableGroupService.create(nonetableGroup))
+        assertThatThrownBy(() -> tableGroupService.create(noneTableGroupRequest))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("테이블 그룹 등록을 실패한다 - 주문 테이블이 사전에 등록(주문값이 있는 상태) 되어 있지 않을 경우 실패")
     @Test
     void fail_create2() {
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
+        TableGroupRequest request = new TableGroupRequest(orderTables);
         given(orderTableDao.findAllByIdIn(anyList())).willReturn(Collections.emptyList());
 
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+        assertThatThrownBy(() -> tableGroupService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -97,10 +100,10 @@ class TableGroupServiceTest {
         OrderTable orderTable1 = new OrderTable(1L, null, 2, false);
         OrderTable orderTable2 = new OrderTable(2L, null, 3, true);
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
+        TableGroupRequest request = new TableGroupRequest(orderTables);
         given(orderTableDao.findAllByIdIn(anyList())).willReturn(orderTables);
 
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+        assertThatThrownBy(() -> tableGroupService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
 
     }
@@ -111,10 +114,10 @@ class TableGroupServiceTest {
         OrderTable orderTable1 = new OrderTable(1L, 2L, 2, true);
         OrderTable orderTable2 = new OrderTable(2L, null, 3, true);
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
+        TableGroupRequest request = new TableGroupRequest(orderTables);
         given(orderTableDao.findAllByIdIn(anyList())).willReturn(orderTables);
 
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+        assertThatThrownBy(() -> tableGroupService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
