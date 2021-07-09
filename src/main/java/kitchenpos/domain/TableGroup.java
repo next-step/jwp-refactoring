@@ -10,6 +10,9 @@ import java.util.Objects;
 
 @Entity
 public class TableGroup {
+    @Transient
+    private static final int TABLE_COUNT_MIN = 2;
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
@@ -52,8 +55,8 @@ public class TableGroup {
     }
 
     private void verifyAvailable(List<OrderTable> orderTables) {
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException("주문테이블이 2개 미만입니다.");
+        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < TABLE_COUNT_MIN) {
+            throw new IllegalArgumentException("주문테이블이 " + TABLE_COUNT_MIN + "개 미만입니다.");
         }
 
         if (orderTables.stream()
