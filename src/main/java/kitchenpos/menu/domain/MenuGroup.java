@@ -10,7 +10,8 @@ public class MenuGroup extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
+
+    @Column
     private String name;
 
     public MenuGroup() { }
@@ -19,7 +20,7 @@ public class MenuGroup extends BaseEntity {
         this.name = name;
     }
 
-    private MenuGroup(Long id, String name) {
+    public MenuGroup(Long id, String name) {
         this.id = id;
         this.name = name;
     }

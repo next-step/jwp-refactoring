@@ -1,10 +1,12 @@
 package kitchenpos.ordering.domain;
 
+import kitchenpos.BaseEntity;
+
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-public class OrderLineItem {
+public class OrderLineItem extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

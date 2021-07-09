@@ -1,19 +1,16 @@
 package kitchenpos.ordering.acceptance;
 
 import kitchenpos.AcceptanceTest;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.*;
 import kitchenpos.ordering.domain.OrderLineItem;
-import kitchenpos.ordering.domain.Ordering;
 import kitchenpos.ordering.dto.OrderRequest;
 import kitchenpos.ordering.dto.OrderResponse;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.utils.RestAssuredCRUD;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -59,31 +56,36 @@ public class OrderingAcceptanceTest extends AcceptanceTest {
     private MenuProduct 메뉴피자상품;
     private MenuResponse 피자치킨메뉴;
     private OrderLineItem 주문항목치킨;
-    private OrderTable 주문테이블;
+    private OrderTableResponse 주문테이블;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
 
+        Long 주문ID = 1L;
+        Long 주문항목ID = 1L;
+        Long 주문테이블ID = 1L;
+        Long 테이블그룹ID = 1L;
+
         치킨상품 = RestAssuredCRUD
-                .postRequest("/api/products", ProductRequest.of("치킨", BigDecimal.valueOf(치킨가격))).as(ProductResponse.class);
+                .postRequest("/api/products", ProductRequest.of("치킨", BigDecimal.valueOf(치킨가격)))
+                .as(ProductResponse.class);
         피자상품 = RestAssuredCRUD
-                .postRequest("/api/products", ProductRequest.of("피자", BigDecimal.valueOf(피자가격))).as(ProductResponse.class);
-        메뉴치킨상품 = new MenuProduct(new Product(치킨상품.getId(), 치킨상품.getName(), 치킨상품.getPrice()), 2);
-        메뉴피자상품 = new MenuProduct(new Product(피자상품.getId(), 피자상품.getName(), 피자상품.getPrice()), 1);
+                .postRequest("/api/products", ProductRequest.of("피자", BigDecimal.valueOf(피자가격)))
+                .as(ProductResponse.class);
+        메뉴치킨상품 = new MenuProduct(1L, new Product(치킨상품.getId(), 치킨상품.getName(), 치킨상품.getPrice()), 2);
+        메뉴피자상품 = new MenuProduct(2L, new Product(피자상품.getId(), 피자상품.getName(), 피자상품.getPrice()), 1);
         피자치킨메뉴그룹 = RestAssuredCRUD
-                .postRequest("/api/menu-groups", MenuGroupRequest.of("피자치킨메뉴그룹")).as(MenuGroupResponse.class);
+                .postRequest("/api/menu-groups", MenuGroupRequest.of("피자치킨메뉴그룹"))
+                .as(MenuGroupResponse.class);
         피자치킨메뉴 = RestAssuredCRUD.postRequest("/api/menus", MenuRequest.of(
                         "피자치킨",
                         BigDecimal.valueOf(26000+17000),
                         피자치킨메뉴그룹.getId(),
                         Arrays.asList(MenuProductRequest.of(메뉴치킨상품), MenuProductRequest.of(메뉴피자상품)))).as(MenuResponse.class);
-
-        Long 주문ID = 1L;
-        Long 테이블그룹ID = 1L;
-
-        주문항목치킨 = new OrderLineItem(1L, 주문ID, 피자치킨메뉴.getId(), 3);
-        주문테이블 = new OrderTable(1L, null, 5, false);
+        주문항목치킨 = new OrderLineItem(주문항목ID, 주문ID, 피자치킨메뉴.getId(), 3);
+        주문테이블 = RestAssuredCRUD.postRequest("/api/tables", new OrderTable(주문테이블ID, null, 5, false))
+                .as(OrderTableResponse.class);
 //        TableGroup 테이블그룹 = new TableGroup(테이블그룹ID, Arrays.asList(주문테이블));
     }
 
@@ -96,13 +98,13 @@ public class OrderingAcceptanceTest extends AcceptanceTest {
         // When
         // 주문을 넣는다.
         OrderRequest 주문요청 = new OrderRequest(주문테이블.getId(), Arrays.asList(주문항목치킨));
-        OrderResponse 주문결과 = RestAssuredCRUD.postRequest("menus", 주문요청).as(OrderResponse.class);
+        OrderResponse 주문결과 = RestAssuredCRUD.postRequest("/api/orders", 주문요청).as(OrderResponse.class);
 
         // Then
         // 주문이 잘 만들어진다.
         assertThat(주문결과.getId()).isEqualTo(1L);
         assertThat(주문결과.getOrderTableId()).isEqualTo(주문테이블.getId());
-        assertThat(주문결과.getOrderLineItems().stream()
+        assertThat(주문결과.getOrderLineItemResponses().stream()
                 .map(orderLineItemResponse -> orderLineItemResponse.getId())).contains(주문항목치킨.getId());
         assertThat(주문결과.getId()).isEqualTo(주문항목치킨.getOrderId());
     }

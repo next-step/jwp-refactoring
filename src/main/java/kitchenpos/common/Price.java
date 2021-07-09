@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 @Embeddable
-public class Price {
+public class Price extends Number {
     private BigDecimal price;
 
     public Price() { }
@@ -34,4 +34,25 @@ public class Price {
     public BigDecimal get() {
         return price;
     }
+
+    @Override
+    public int intValue() {
+        return price.intValue();
+    }
+
+    @Override
+    public long longValue() {
+        return price.longValue();
+    }
+
+    @Override
+    public float floatValue() {
+        return price.floatValue();
+    }
+
+    @Override
+    public double doubleValue() {
+        return price.doubleValue();
+    }
+
 }

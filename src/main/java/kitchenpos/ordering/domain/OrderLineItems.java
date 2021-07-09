@@ -1,5 +1,7 @@
 package kitchenpos.ordering.domain;
 
+import kitchenpos.BaseEntity;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;

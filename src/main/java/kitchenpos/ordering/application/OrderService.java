@@ -44,9 +44,7 @@ public class OrderService {
         persistOrderTable.isValidForOrdering();
         order.isFrom(persistOrderTable);
 
-        final Ordering persistOrder = orderRepository.save(order);
-
-        return OrderResponse.of(persistOrder);
+        return OrderResponse.of(orderRepository.save(order));
     }
 
     @Transactional(readOnly = true)

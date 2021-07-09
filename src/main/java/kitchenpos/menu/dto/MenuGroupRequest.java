@@ -7,6 +7,9 @@ import java.util.Objects;
 public class MenuGroupRequest {
     private String name;
 
+    public MenuGroupRequest() {
+    }
+
     private MenuGroupRequest(String name) {
         this.name = name;
     }
@@ -15,16 +18,13 @@ public class MenuGroupRequest {
         return new MenuGroupRequest(name);
     }
 
+    public MenuGroup toEntity() {
+//        return MenuGroup.of(name);
+        return new MenuGroup(name);
+    }
+
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public MenuGroup toEntity() {
-        return MenuGroup.of(name);
     }
 
     @Override
