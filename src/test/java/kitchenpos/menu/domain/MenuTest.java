@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.menu.exception.InvalidPriceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +19,7 @@ class MenuTest {
 
         // when & then
         assertThatThrownBy(() -> new Menu(1L, "강정치킨plus강정치킨", BigDecimal.valueOf(-1000), 추천메뉴))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidPriceException.class);
     }
 
     @DisplayName("메뉴의 가격이 올바르지 않으면 등록할 수 없다 : 메뉴의 가격은 메뉴 상품 목록 가격의 합보다 작거나 같아야 한다.")
@@ -32,7 +33,7 @@ class MenuTest {
 
         // when & then
         assertThatThrownBy(() -> 강정치킨plus강정치킨.addMenuProducts(Arrays.asList(강정치킨양두배)))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidPriceException.class);
     }
 
 

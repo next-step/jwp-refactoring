@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.menu.exception.InvalidPriceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -17,6 +18,6 @@ class PriceTest {
 
         // when & then
         assertThatThrownBy(() -> Price.from(price))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidPriceException.class);
     }
 }

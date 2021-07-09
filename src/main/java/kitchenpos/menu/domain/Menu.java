@@ -1,5 +1,7 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.menu.exception.InvalidPriceException;
+
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -59,7 +61,7 @@ public class Menu {
 
     private void validatePrice() {
         if (price.getValue().compareTo(menuProducts.getSum().getValue()) > 0) {
-            throw new IllegalArgumentException();
+            throw new InvalidPriceException("메뉴의 가격은 메뉴 상품 목록 가격의 합보다 높을 수 없습니다.");
         }
     }
 
