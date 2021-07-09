@@ -4,47 +4,28 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class TableGroupRequest {
-    private List<OrderTable> orderTables;
+    private List<OrderTableRequest> orderTables;
 
     public TableGroupRequest() {
     }
 
     public TableGroupRequest(List<Long> ids) {
         orderTables = ids.stream()
-                .map(OrderTable::new)
+                .map(OrderTableRequest::new)
                 .collect(Collectors.toList());
     }
 
     public List<Long> getIds() {
         return orderTables.stream()
-                .map(orderTable -> orderTable.id)
+                .map(orderTable -> orderTable.getId())
                 .collect(Collectors.toList());
     }
 
-    public List<OrderTable> getOrderTables() {
+    public List<OrderTableRequest> getOrderTables() {
         return orderTables;
     }
 
-    public void setOrderTables(List<OrderTable> orderTables) {
+    public void setOrderTables(List<OrderTableRequest> orderTables) {
         this.orderTables = orderTables;
-    }
-
-    class OrderTable {
-        private Long id;
-
-        public OrderTable() {
-        }
-
-        public OrderTable(Long id) {
-            this.id = id;
-        }
-
-        public Long getId() {
-            return id;
-        }
-
-        public void setId(Long id) {
-            this.id = id;
-        }
     }
 }
