@@ -2,14 +2,10 @@ package kitchenpos.order.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.config.MockMvcTestConfig;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.order.application.OrderService;
-import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.order.ui.OrderRestController;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.filter.CharacterEncodingFilter;
 
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,7 +22,6 @@ import java.util.Arrays;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = OrderRestController.class)
@@ -50,7 +42,7 @@ class OrderRestControllerTest {
     @Test
     void createTest() throws Exception {
         // given
-        OrderRequest orderRequest = new OrderRequest(1L);
+        OrderRequest orderRequest = new OrderRequest(1L, new ArrayList<>());
         OrderResponse orderResponse = new OrderResponse(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), new ArrayList<>());
         given(orderService.create(any())).willReturn(orderResponse);
 
@@ -69,7 +61,7 @@ class OrderRestControllerTest {
     @Test
     void changeOrderStatusTest() throws Exception {
         // given
-        OrderRequest orderRequest = new OrderRequest(1L, OrderStatus.MEAL.name());
+        OrderRequest orderRequest = new OrderRequest(OrderStatus.MEAL.name());
         OrderResponse orderResponse = new OrderResponse(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), new ArrayList<>());
         given(orderService.changeOrderStatus(any(), any())).willReturn(orderResponse);
 

@@ -1,7 +1,7 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.domain.OrderTable;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -11,8 +11,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,15 +24,15 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "order_table_id")
-    private OrderTable orderTable;
+    @Column(name = "order_table_id")
+    private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "order_status")
     private OrderStatus orderStatus;
 
     @CreatedDate
+    @Column(name = "ordered_time")
     private LocalDateTime orderedTime;
 
     @Embedded // 양방향
@@ -44,12 +42,14 @@ public class Order {
         this.orderStatus = OrderStatus.COOKING;
     }
 
-    public Order(final OrderTable orderTable) {
-        this(null, orderTable);
+    public Order(final Long orderTableId, List<OrderLineItem> orderLineItems) {
+        this.orderTableId = orderTableId;
+        this.orderStatus = OrderStatus.COOKING;
+        addOrderLineItems(orderLineItems);
     }
-    public Order(final Long id, final OrderTable orderTable) {
+    public Order(final Long id, final Long orderTableId) {
         this.id = id;
-        this.orderTable = orderTable;
+        this.orderTableId = orderTableId;
         this.orderStatus = OrderStatus.COOKING;
     }
 
@@ -66,7 +66,14 @@ public class Order {
     }
 
     public void addOrderLineItems(final List<OrderLineItem> orderLineItems) {
+        validateEmptyOrderLineTimes(orderLineItems);
         orderLineItems.forEach(this::addOrderLineItem);
+    }
+
+    private void validateEmptyOrderLineTimes(final List<OrderLineItem> orderLineItems) {
+        if (CollectionUtils.isEmpty(orderLineItems)) {
+            throw new IllegalArgumentException();
+        }
     }
 
     public void addOrderLineItem(final OrderLineItem orderLineItem) {
@@ -78,8 +85,8 @@ public class Order {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {

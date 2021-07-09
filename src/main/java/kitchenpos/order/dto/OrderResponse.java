@@ -30,7 +30,7 @@ public class OrderResponse {
                 .map(OrderLineItemDto::from)
                 .collect(toList());
 
-        return new OrderResponse(order.getId(), order.getOrderTable().getId(), order.getOrderStatus().name(), order.getOrderedTime(), orderLineItems);
+        return new OrderResponse(order.getId(), order.getOrderTableId(), order.getOrderStatus().name(), order.getOrderedTime(), orderLineItems);
     }
 
     public Long getId() {
