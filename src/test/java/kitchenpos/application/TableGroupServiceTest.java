@@ -103,11 +103,8 @@ class TableGroupServiceTest {
             new OrderTable(1, true)
         );
 
-        // when
-        TableGroup tableGroup = new TableGroup(orderTable1, orderTable2);
-
         // then
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+        assertThatThrownBy(() -> new TableGroup(orderTable1, orderTable2))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("테이블이 비어있지 않습니다.");
     }

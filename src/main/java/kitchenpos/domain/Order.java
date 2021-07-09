@@ -60,6 +60,10 @@ public class Order {
         return orderLineItems;
     }
 
+    public boolean equalsByOrderStatus(OrderStatus orderStatus) {
+        return this.orderStatus == orderStatus;
+    }
+
     public void appendOrderLineItems(OrderLineItem orderLineItem) {
         this.orderLineItems.add(orderLineItem);
     }

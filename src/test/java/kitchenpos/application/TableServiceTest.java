@@ -115,7 +115,7 @@ class TableServiceTest {
         // then
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), orderTable))
             .isInstanceOf(RuntimeException.class)
-            .hasMessageContaining(orderStatus.name())
+            .hasMessageContaining(orderStatus.remark())
             .hasMessageContaining("변경");
     }
 

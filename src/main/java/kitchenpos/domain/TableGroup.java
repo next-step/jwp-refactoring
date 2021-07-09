@@ -44,6 +44,10 @@ public class TableGroup {
         orderTables.changeEmpty(empty);
     }
 
+    public void remove() {
+        orderTables.clearTableGroup();
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
