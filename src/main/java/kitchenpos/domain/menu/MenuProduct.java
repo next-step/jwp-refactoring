@@ -51,7 +51,7 @@ public class MenuProduct {
     }
 
     public boolean isSameMenu(Menu menu) {
-        return this.menu == menu;
+        return this.menu.equals(menu);
     }
 
     @Override
