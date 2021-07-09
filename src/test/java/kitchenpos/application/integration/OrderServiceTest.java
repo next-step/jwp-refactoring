@@ -41,16 +41,19 @@ public class OrderServiceTest {
     @Test
     public void 주문항목이없는경우_주문_등록_예외() throws Exception {
         //given
-        OrderRequest orderRequest = new OrderRequest(1L, Arrays.asList());
+        OrderTable orderTable = 테이블_등록됨(5, false);
+        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Arrays.asList());
 
         //when
         //then
-        assertThatThrownBy(() -> orderService.create(orderRequest)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(orderRequest))
+                .hasMessage("주문항목이 존재하지 않습니다.")
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("주문 등록 예외 - 주문항목 목록에 같은 메뉴가 있는 경우")
+    @DisplayName("주문 등록 예외 - 요청한 주문의 메뉴와 디비의 메뉴가 불일치할 경우")
     @Test
-    public void 주문항목목록에같은메뉴가있는경우_주문_등록_예외() throws Exception {
+    public void 요청주문메뉴와디비메뉴가불일치한경우_주문_등록_예외() throws Exception {
         //given
         Menu menu = 메뉴_등록됨("메뉴", BigDecimal.valueOf(1000));
         OrderLineItemRequest orderLineItemRequest1 = new OrderLineItemRequest(menu.getId(), 2L);
@@ -60,7 +63,9 @@ public class OrderServiceTest {
 
         //when
         //then
-        assertThatThrownBy(() -> orderService.create(orderRequest)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(orderRequest))
+                .hasMessage("요청한 주문의 메뉴와 디비의 메뉴가 불일치합니다.")
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문 등록 예외 - 주문테이블이 없는 경우")
@@ -73,7 +78,9 @@ public class OrderServiceTest {
 
         //when
         //then
-        assertThatThrownBy(() -> orderService.create(orderRequest)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(orderRequest))
+                .hasMessage("주문테이블이 존재하지 않습니다.")
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문 등록 예외 - 주문테이블이 빈테이블인 경우")
@@ -87,7 +94,9 @@ public class OrderServiceTest {
 
         //when
         //then
-        assertThatThrownBy(() -> orderService.create(orderRequest)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(orderRequest))
+                .hasMessage("주문테이블이 빈테이블입니다.")
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문 등록")
@@ -134,6 +143,7 @@ public class OrderServiceTest {
         //when
         //then
         assertThatThrownBy(() -> orderService.changeOrderStatus(-1L, orderStatusRequest))
+                .hasMessage("주문이 존재하지 않습니다.")
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

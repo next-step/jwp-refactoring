@@ -34,7 +34,7 @@ public class Order {
 
     private void verifyAvailable(List<OrderLineItem> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문항목이 존재하지 않습니다.");
         }
     }
 

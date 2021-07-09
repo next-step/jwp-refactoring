@@ -21,9 +21,13 @@ public class TableGroup {
 
     protected TableGroup() {}
 
-    public TableGroup(Long id, List<OrderTable> orderTables) {
+    public TableGroup(Long id) {
         this.id = id;
-        this.orderTables = orderTables;
+    }
+
+    public TableGroup(Long id, List<OrderTable> orderTables) {
+        this(orderTables);
+        this.id = id;
     }
 
     public TableGroup(List<OrderTable> orderTables) {
@@ -47,20 +51,15 @@ public class TableGroup {
 
     private void verifyAvailable(List<OrderTable> orderTables) {
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문테이블이 2개 미만입니다.");
         }
 
         if (orderTables.stream()
                 .filter(orderTable -> !orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup()))
                 .findFirst()
                 .isPresent()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문테이블은 빈테이블이어야하고 단체지정이 되어있으면 안됩니다.");
         }
-    }
-
-    public TableGroup(LocalDateTime createdDate, List<OrderTable> orderTables) {
-        this.createdDate = createdDate;
-        this.orderTables = orderTables;
     }
 
     public Long getId() {

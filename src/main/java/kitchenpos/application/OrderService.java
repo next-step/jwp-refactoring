@@ -42,12 +42,13 @@ public class OrderService {
 
     private void verifyAvailableOrderTable(OrderTable orderTable) {
         if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문테이블이 빈테이블입니다.");
         }
     }
 
     private OrderTable findOrderTableById(Long id) {
-        return orderTableRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        return orderTableRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("주문테이블이 존재하지 않습니다."));
     }
 
     private void verifyMenuCount(OrderRequest orderRequest) {
@@ -55,7 +56,7 @@ public class OrderService {
                 .map(OrderLineItemRequest::getMenuId)
                 .collect(Collectors.toList());
         if (menuIds.size() != menuRepository.countByIdIn(menuIds)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("요청한 주문의 메뉴와 디비의 메뉴가 불일치합니다.");
         }
     }
 
@@ -81,6 +82,6 @@ public class OrderService {
     }
 
     private Order findOrderById(Long id) {
-        return orderRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        return orderRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("주문이 존재하지 않습니다."));
     }
 }

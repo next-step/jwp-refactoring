@@ -55,7 +55,7 @@ public class OrderTable {
 
     private void verifyChangeableEmpty() {
         if (Objects.nonNull(tableGroup)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("단체지정이 되어있으면 안됩니다.");
         }
     }
 

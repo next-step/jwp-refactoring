@@ -39,28 +39,33 @@ public class TableGroupService {
 
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         List<OrderTable> orderTables = orderTableRepository.findAllByIdIn(tableGroupRequest.getIds());
-        verifyAvailable(tableGroupRequest, orderTables);
+        verifyAvailableTableGroupSize(tableGroupRequest.getOrderTables().size(), orderTables.size());
         TableGroup saveTableGroup = tableGroupRepository.save(new TableGroup(orderTables));
         return TableGroupResponse.of(saveTableGroup);
     }
 
-    private void verifyAvailable(TableGroupRequest tableGroupRequest, List<OrderTable> orderTables) {
-        if (orderTables.size() != tableGroupRequest.getOrderTables().size()) {
-            throw new IllegalArgumentException();
+    private void verifyAvailableTableGroupSize(int requestSize, int dbSize) {
+        if (requestSize != dbSize) {
+            throw new IllegalArgumentException("요청한 단체지정의 주문테이블 수와 디비의 주문테이블 수가 불일치합니다.");
         }
     }
 
     public void ungroup(final Long tableGroupId) {
-        TableGroup tableGroup = tableGroupRepository.findById(tableGroupId).orElseThrow(IllegalArgumentException::new);
+        TableGroup tableGroup = findTableGroupById(tableGroupId);
         final List<Long> orderTableIds = getOrderTableIds(tableGroup);
         verifyOrderStatus(orderTableIds);
         tableGroup.ungroup();
     }
 
+    private TableGroup findTableGroupById(Long tableGroupId) {
+        return tableGroupRepository.findById(tableGroupId)
+                .orElseThrow(() -> new IllegalArgumentException("단체지정이 존재하지 않습니다."));
+    }
+
     private void verifyOrderStatus(List<Long> orderTableIds) {
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds,
                 Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문상태가 단체지정 할 수 없는 상태입니다.");
         }
     }
 

@@ -85,6 +85,7 @@ public class TableServiceTest {
         //then
         TableEmptyRequest tableEmptyRequest = new TableEmptyRequest(true);
         assertThatThrownBy(() -> tableService.changeEmpty(-1L, tableEmptyRequest))
+                .hasMessage("주문테이블이 존재하지 않습니다.")
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -101,6 +102,7 @@ public class TableServiceTest {
 
         TableEmptyRequest tableEmptyRequest = new TableEmptyRequest(true);
         assertThatThrownBy(() -> tableService.changeEmpty(tableResponse.getId(), tableEmptyRequest))
+                .hasMessage("주문테이블의 주문상태가 조리나 식사입니다.")
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -117,6 +119,7 @@ public class TableServiceTest {
 
         TableEmptyRequest tableEmptyRequest = new TableEmptyRequest(true);
         assertThatThrownBy(() -> tableService.changeEmpty(tableResponse.getId(), tableEmptyRequest))
+                .hasMessage("주문테이블의 주문상태가 조리나 식사입니다.")
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -143,34 +146,7 @@ public class TableServiceTest {
         //then
         TableNumberOfGuestsRequest tableNumberOfGuestsRequest = new TableNumberOfGuestsRequest(2);
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(100L, tableNumberOfGuestsRequest))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("주문테이블 방문한 손님 수 변경 예외 - 방문한 손님 수가 음수인 경우")
-    @Test
-    public void 방문한손님수가음수인경우_방문한손님수변경_예외() throws Exception {
-        //given
-        TableRequest tableRequest = new TableRequest(5, false);
-        TableResponse tableResponse = tableService.create(tableRequest);
-
-        //when
-        //then
-        TableNumberOfGuestsRequest tableNumberOfGuestsRequest = new TableNumberOfGuestsRequest(-1);
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(tableResponse.getId(), tableNumberOfGuestsRequest))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("주문테이블 방문한 손님 수 변경 예외 - 주문테이블이 빈테이블인 경우")
-    @Test
-    public void 주문테이블이빈테이블인경우_방문한손님수변경_예외() throws Exception {
-        //given
-        TableRequest tableRequest = new TableRequest(5, true);
-        TableResponse tableResponse = tableService.create(tableRequest);
-
-        //when
-        //then
-        TableNumberOfGuestsRequest tableNumberOfGuestsRequest = new TableNumberOfGuestsRequest(2);
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(tableResponse.getId(), tableNumberOfGuestsRequest))
+                .hasMessage("주문테이블이 존재하지 않습니다.")
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

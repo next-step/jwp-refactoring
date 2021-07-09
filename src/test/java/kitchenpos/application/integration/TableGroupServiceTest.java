@@ -45,16 +45,6 @@ public class TableGroupServiceTest {
         orderTableRepository.save(orderTable2);
     }
 
-    @DisplayName("단체지정 등록 예외 - 주문테이블이 2개 미만인 경우")
-    @Test
-    public void 주문테이블이2개미만인경우_단체지정_등록_예외() throws Exception {
-        //when
-        //then
-        TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(orderTable1.getId()));
-        assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
     @DisplayName("단체지정 등록 예외 - 입력한 주문테이블의 수와 실제 저장되었던 주문테이블 수가 다른 경우")
     @Test
     public void 입력한주문테이블수와저장된주문테이블수가다른경우_단체지정_등록_예외() throws Exception {
@@ -62,32 +52,7 @@ public class TableGroupServiceTest {
         //then
         TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(100L, 200L));
         assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("단체지정 등록 예외 - 주문테이블이 빈테이블이 아닌경우")
-    @Test
-    public void 주문테이블이빈테이블이아닌경우_단체지정_등록_예외() throws Exception {
-        //given
-        orderTable1.changeEmpty(false);
-
-        //when
-        //then
-        TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(orderTable1.getId(), orderTable2.getId()));
-        assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("단체지정 등록 예외 - 주문테이블이 단체지정이 이미 되어있는 경우")
-    @Test
-    public void 주문테이블이이미단체지정이되어있는경우_단체지정_등록_예외() throws Exception {
-        //given
-        TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(orderTable1.getId(), orderTable2.getId()));
-        tableGroupService.create(tableGroupRequest);
-
-        //when
-        //then
-        assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
+                .hasMessage("요청한 단체지정의 주문테이블 수와 디비의 주문테이블 수가 불일치합니다.")
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -121,6 +86,17 @@ public class TableGroupServiceTest {
         //when
         //then
         assertThatThrownBy(() -> tableGroupService.ungroup(tableGroupResponse.getId()))
+                .hasMessage("주문상태가 단체지정 할 수 없는 상태입니다.")
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("단체지정 해제 예외 - 단체지정이 존재하지 않는 경우")
+    @Test
+    public void 단체지정이존재하지않는경우_단체지정_해제_확인() throws Exception {
+        //when
+        //then
+        assertThatThrownBy(() -> tableGroupService.ungroup(-1L))
+                .hasMessage("단체지정이 존재하지 않습니다.")
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

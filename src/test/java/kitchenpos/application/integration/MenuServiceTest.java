@@ -55,7 +55,9 @@ public class MenuServiceTest {
 
         //when
         //then
-        assertThatThrownBy(() -> menuService.create(menuRequest)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuService.create(menuRequest))
+                .hasMessage("메뉴그룹이 존재하지 않습니다.")
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("메뉴 등록 예외 - 존재하지않는 상품으로 메뉴등록할 경우")
@@ -69,7 +71,9 @@ public class MenuServiceTest {
 
         //when
         //then
-        assertThatThrownBy(() -> menuService.create(menuRequest)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuService.create(menuRequest))
+                .hasMessage("상품이 존재하지 않습니다.")
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("메뉴 등록 예외 - 입력받은 메뉴가격이 상품의 총 가격보다 더 큰 경우")
@@ -83,7 +87,9 @@ public class MenuServiceTest {
 
         //when
         //then
-        assertThatThrownBy(() -> menuService.create(menuRequest)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuService.create(menuRequest))
+                .hasMessage("입력받은 메뉴가격이 상품의 총 가격보다 같거나 작아야합니다.")
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("메뉴 등록")

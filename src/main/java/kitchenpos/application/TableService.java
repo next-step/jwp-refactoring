@@ -50,12 +50,13 @@ public class TableService {
     private void verifyAvailableOrderStatus(Long orderTableId) {
         if (orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId,
                 Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문테이블의 주문상태가 조리나 식사입니다.");
         }
     }
 
     private OrderTable findOrderTableById(Long orderTableId) {
-        return orderTableRepository.findById(orderTableId).orElseThrow(IllegalArgumentException::new);
+        return orderTableRepository.findById(orderTableId)
+                .orElseThrow(() -> new IllegalArgumentException("주문테이블이 존재하지 않습니다."));
     }
 
     public TableResponse changeNumberOfGuests(final Long orderTableId,

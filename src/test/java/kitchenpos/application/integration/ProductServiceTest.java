@@ -35,28 +35,6 @@ public class ProductServiceTest {
         assertThat(productResponse.getId()).isNotNull();
     }
 
-    @DisplayName("상품 등록 예외 - 가격 입력을 안했을 경우")
-    @Test
-    public void 가격입력안했을경우_상품등록_예외확인() throws Exception {
-        //given
-        ProductRequest productRequest = new ProductRequest("후라이드", null);
-
-        //when
-        //then
-        assertThatThrownBy(() -> productService.create(productRequest)).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("상품 등록 예외 - 가격이 음수인 경우")
-    @Test
-    public void 가격이음수인경우_상품등록_예외확인() throws Exception {
-        //given
-        ProductRequest productRequest = new ProductRequest("후라이드", BigDecimal.valueOf(-1));
-
-        //when
-        //then
-        assertThatThrownBy(() -> productService.create(productRequest)).isInstanceOf(IllegalArgumentException.class);
-    }
-
     @DisplayName("상품 목록 조회")
     @Test
     public void 상품_목록_조회() throws Exception {

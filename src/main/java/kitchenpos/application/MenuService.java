@@ -47,7 +47,7 @@ public class MenuService {
 
     private void verifyAvailablePrice(BigDecimal price, BigDecimal sum) {
         if (price.compareTo(sum) > 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("입력받은 메뉴가격이 상품의 총 가격보다 같거나 작아야합니다.");
         }
     }
 
@@ -56,7 +56,7 @@ public class MenuService {
                 .map(menuProductRequest -> {
                     BigDecimal sum = BigDecimal.ZERO;
                     sum = sum.add(productRepository.findById(menuProductRequest.getProductId())
-                            .orElseThrow(() -> new IllegalArgumentException())
+                            .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다."))
                             .getPrice()
                             .multiply(BigDecimal.valueOf(menuProductRequest.getQuantity())));
                     return sum;
@@ -67,7 +67,7 @@ public class MenuService {
 
     private void verifyExistsMenuGroupById(Long id) {
         if (!menuGroupRepository.existsById(id)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("메뉴그룹이 존재하지 않습니다.");
         }
     }
 
