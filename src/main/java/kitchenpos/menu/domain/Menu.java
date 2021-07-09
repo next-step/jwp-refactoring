@@ -49,9 +49,20 @@ public class Menu {
         this.menuGroup = menuGroup;
     }
 
-    public void addMenuProduct(final MenuProduct menuProduct) {
+    private void addMenuProduct(final MenuProduct menuProduct) {
         menuProducts.add(menuProduct);
         menuProduct.addedBy(this);
+    }
+
+    public void addMenuProducts(final List<MenuProduct> menuProducts) {
+        menuProducts.forEach(this::addMenuProduct);
+        validatePrice();
+    }
+
+    private void validatePrice() {
+        if (price.getValue().compareTo(menuProducts.getSum().getValue()) > 0) {
+            throw new IllegalArgumentException();
+        }
     }
 
     public Long getId() {

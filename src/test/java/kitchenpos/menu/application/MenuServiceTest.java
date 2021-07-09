@@ -19,6 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -64,11 +65,10 @@ class MenuServiceTest {
     @Test
     void createTest() {
         // given
-        given(menuGroupRepository.existsById(any())).willReturn(true);
         given(ProductRepository.findById(any())).willReturn(Optional.of(강정치킨));
         given(menuGroupRepository.findById(any())).willReturn(Optional.of(추천메뉴));
-        given(menuRepository.save(any())).willReturn(강정치킨plus강정치킨);
         given(menuProductRepository.save(any())).willReturn(강정치킨양두배);
+        given(menuRepository.save(any())).willReturn(강정치킨plus강정치킨);
         MenuProductRequest menuProductRequest = new MenuProductRequest(1L, 2);
 
         // when
@@ -81,36 +81,17 @@ class MenuServiceTest {
         assertThat(createdMenu.getMenuGroupId()).isEqualTo(강정치킨plus강정치킨.getMenuGroup().getId());
     }
 
-    @DisplayName("메뉴의 가격이 올바르지 않으면 등록할 수 없다 : 메뉴의 가격은 0 원 이상이어야 한다.")
-    @Test
-    void createTest_wrongPrice() {
-        // given
-        MenuProductRequest menuProductRequest = new MenuProductRequest(1L, 2);
-
-        // when & then
-        assertThatThrownBy(() -> menuService.create(new MenuRequest("강정치킨plus강정치킨", BigDecimal.valueOf(-1000), 1L, Arrays.asList(menuProductRequest))))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("메뉴의 가격이 올바르지 않으면 등록할 수 없다 : 메뉴의 가격은 메뉴 상품 목록 가격의 합보다 작거나 같아야 한다.")
-    @Test
-    void createTest_wrongPrice2() {
-        // given
-        MenuProductRequest menuProductRequest = new MenuProductRequest(1L, 2);
-        given(menuGroupRepository.existsById(any())).willReturn(true);
-        given(ProductRepository.findById(any())).willReturn(Optional.of(강정치킨));
-
-        // when & then
-        assertThatThrownBy(() -> menuService.create(new MenuRequest("강정치킨plus강정치킨", BigDecimal.valueOf(34001), 1L, Arrays.asList(menuProductRequest))))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
     @DisplayName("메뉴의 메뉴그룹이 올바르지 않으면 등록할 수 없다 : 메뉴의 메뉴 그룹은 등록된 메뉴 그룹이어야 한다.")
     @Test
     void createTest_unregisteredMenuGroup() {
+        // given
+        given(ProductRepository.findById(any())).willReturn(Optional.of(강정치킨));
+        given(menuGroupRepository.findById(any())).willReturn(Optional.empty());
+        MenuProductRequest menuProductRequest = new MenuProductRequest(1L, 2);
+
         // when & then
-        assertThatThrownBy(() -> menuService.create(new MenuRequest("강정치킨plus강정치킨", BigDecimal.valueOf(34001), 100L, new ArrayList<>())))
-                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuService.create(new MenuRequest("강정치킨plus강정치킨", BigDecimal.valueOf(2000), 100L, Arrays.asList(menuProductRequest))))
+                .isInstanceOf(EntityNotFoundException.class);
     }
 
     @DisplayName("메뉴의 메뉴 상품 목록이 올바르지 않으면 등록할 수 없다 : 메뉴의 메뉴 상품 목록의 상품은 등록된 상품이어야 한다.")
@@ -121,7 +102,7 @@ class MenuServiceTest {
 
         // when & then
         assertThatThrownBy(() -> menuService.create(new MenuRequest("강정치킨plus강정치킨", BigDecimal.valueOf(34001), 100L, Arrays.asList(menuProductRequest))))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(EntityNotFoundException.class);
     }
 
     @DisplayName("메뉴의 목록을 조회할 수 있다.")

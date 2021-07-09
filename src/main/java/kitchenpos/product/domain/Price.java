@@ -30,6 +30,10 @@ public class Price {
         }
     }
 
+    public Price add(BigDecimal price, long quantity) {
+        return Price.from(this.value.add(price.multiply(BigDecimal.valueOf(quantity))));
+    }
+
     public BigDecimal getValue() {
         return value;
     }
