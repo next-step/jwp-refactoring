@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import kitchenpos.menu.domain.Quantity;
 import kitchenpos.menu.exception.MenuException;
+import kitchenpos.menu.exception.QuantityException;
 
 @DisplayName("수량 도메인 테스트")
 public class QuantityTest {
@@ -24,7 +25,7 @@ public class QuantityTest {
 	void 수량_생성_시_0개_이하_에러_테스트() {
 		assertThatThrownBy(
 			() -> new Quantity(0)
-		).isInstanceOf(MenuException.class);
+		).isInstanceOf(QuantityException.class);
 	}
 	
 }
