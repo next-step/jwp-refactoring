@@ -15,6 +15,8 @@ public class Menu {
     private Long id;
     private String name;
     private BigDecimal price;
+
+    @ManyToOne
     private MenuGroup menuGroup;
 
     @Embedded
