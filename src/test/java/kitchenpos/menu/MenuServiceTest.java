@@ -15,11 +15,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 import kitchenpos.manugroup.domain.MenuGroup;
 import kitchenpos.manugroup.domain.MenuGroupRepository;
+import kitchenpos.manugroup.dto.MenuGroupRequest;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
@@ -52,6 +51,7 @@ public class MenuServiceTest {
 	private MenuService menuService;
 
 	MenuGroup 치킨;
+	MenuGroupRequest 치킨_요청;
 	MenuRequest 양념반_후라이드반_요청;
 	Menu 양념반_후라이드반;
 	ProductRequest 양념치킨_요청;
@@ -61,7 +61,8 @@ public class MenuServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		치킨 = MenuGroupServiceTest.메뉴그룹_생성(1L, "치킨");
+		치킨_요청 = MenuGroupServiceTest.메뉴그룹_생성_요청("치킨");
+		치킨 = 치킨_요청.toMenuGroup();
 		양념치킨_요청 = ProductServiceTest.상품생성_요청(new BigDecimal(10000), "양념 치킨");
 		후라이드치킨_요청 = ProductServiceTest.상품생성_요청(new BigDecimal(9000), "후라이드 치킨");
 		//양념_반_치킨 = 메뉴상품생성(1L, 양념치킨_요청, 1);
