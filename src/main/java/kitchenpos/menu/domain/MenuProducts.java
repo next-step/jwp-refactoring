@@ -22,10 +22,9 @@ public class MenuProducts {
 	}
 
 	public Price getSumMenuProductPrice() {
-		BigDecimal sum = BigDecimal.ZERO;
-		this.menuProducts.forEach(menuProduct -> {
-			sum.add(menuProduct.getProduct().getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
-		});
+		BigDecimal sum = this.menuProducts.stream()
+			.map(menuProduct -> menuProduct.getMenuProductPrice().value())
+			.reduce(BigDecimal.ZERO, BigDecimal::add);
 		return new Price(sum);
 	}
 

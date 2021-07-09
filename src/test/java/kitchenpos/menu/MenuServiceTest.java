@@ -26,6 +26,7 @@ import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProductRepository;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.domain.Quantity;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.exception.MenuException;
 import kitchenpos.menu.exception.PriceException;
@@ -146,8 +147,8 @@ public class MenuServiceTest {
 		return menuRequest;
 	}
 
-	public static MenuProduct 메뉴상품생성(Long seq, Product product, int quantity) {
-		MenuProduct menuProduct = new MenuProduct(seq, product, quantity);
+	public static MenuProduct 메뉴상품생성(Long seq, Product product, long quantity) {
+		MenuProduct menuProduct = new MenuProduct(seq, product, new Quantity(quantity));
 		return menuProduct;
 	}
 
