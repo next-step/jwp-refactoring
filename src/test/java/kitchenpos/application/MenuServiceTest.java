@@ -20,9 +20,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 @DisplayName("메뉴 기능 관련 테스트")
@@ -77,7 +77,7 @@ public class MenuServiceTest {
 
         // then
         // 등록 요청 시 예외 발생
-        when(menuGroupDao.existsById(any())).thenReturn(false);
+        when(menuGroupDao.existsById(1L)).thenReturn(false);
         assertThatThrownBy(() -> menuService.create(menu))
                 .isInstanceOf(IllegalArgumentException.class);
     }
@@ -87,7 +87,7 @@ public class MenuServiceTest {
     void isNotExistProduct_exception() {
         // given
         // 등록되지 않은 상품이 등록되어 있음
-        메뉴_그룹_등록_되어_있음();
+        firstMenuProduct = 메뉴_그룹_생성(1L, 1);
 
         // and
         // 메뉴에 등록되어 있음
@@ -97,7 +97,7 @@ public class MenuServiceTest {
 
         // and
         // 메뉴 그릅 등록되어 있음
-        when(menuGroupDao.existsById(any())).thenReturn(true);
+        when(menuGroupDao.existsById(1L)).thenReturn(true);
 
         // then
         // 등록 요청 시 예외 발생
@@ -110,8 +110,10 @@ public class MenuServiceTest {
     void isExpensiveMenuPriceSumThanProductAllPrice_exception() {
         // given
         // 메뉴에 상픔이 등록되어 있음
-        메뉴_그룹_등록_되어_있음();
-        상품_등록_되어_있음();
+        firstMenuProduct = 메뉴_그룹_생성(1L, 1);
+        secondMenuProduct = 메뉴_그룹_생성(2L, 1);
+        firstProduct = 상품_생성(1L, 1000);
+        secondProduct = 상품_생성(2L, 1000);
 
         // and
         // 메뉴에 등록되어 있음
@@ -121,7 +123,7 @@ public class MenuServiceTest {
 
         // and
         // 메뉴 그릅과 상품이 등록되어 있음
-        when(menuGroupDao.existsById(any())).thenReturn(true);
+        when(menuGroupDao.existsById(1L)).thenReturn(true);
         when(productDao.findById(1L)).thenReturn(Optional.ofNullable(firstProduct));
         when(productDao.findById(2L)).thenReturn(Optional.ofNullable(secondProduct));
 
@@ -136,8 +138,10 @@ public class MenuServiceTest {
     void 메뉴_정상_등록_테스트() {
         // given
         // 메뉴에 상픔이 등록되어 있음
-        메뉴_그룹_등록_되어_있음();
-        상품_등록_되어_있음();
+        firstMenuProduct = 메뉴_그룹_생성(1L, 1);
+        secondMenuProduct = 메뉴_그룹_생성(2L, 1);
+        firstProduct = 상품_생성(1L, 1000);
+        secondProduct = 상품_생성(2L, 1000);
 
         // and
         // 메뉴에 등록되어 있음
@@ -147,7 +151,7 @@ public class MenuServiceTest {
 
         // and
         // 메뉴 그릅과 상품이 등록되어 있음
-        when(menuGroupDao.existsById(any())).thenReturn(true);
+        when(menuGroupDao.existsById(1L)).thenReturn(true);
         when(productDao.findById(1L)).thenReturn(Optional.ofNullable(firstProduct));
         when(productDao.findById(2L)).thenReturn(Optional.ofNullable(secondProduct));
 
@@ -169,12 +173,14 @@ public class MenuServiceTest {
     void 메뉴_정상_조회_테스트() {
         // given
         // 메뉴에 상픔이 등록되어 있음
-        메뉴_그룹_등록_되어_있음();
+        firstMenuProduct = 메뉴_그룹_생성(1L, 1);
+        secondMenuProduct = 메뉴_그룹_생성(2L, 1);
 
         // and
         // 메뉴에 등록되어 있음
+        menu.setId(1L);
         when(menuDao.findAll()).thenReturn(Arrays.asList(menu));
-        when(menuProductDao.findAllByMenuId(any())).thenReturn(Arrays.asList(firstMenuProduct, secondMenuProduct));
+        when(menuProductDao.findAllByMenuId(1L)).thenReturn(Arrays.asList(firstMenuProduct, secondMenuProduct));
 
         // then
         // 정상 조회 됨
@@ -182,24 +188,17 @@ public class MenuServiceTest {
         assertThat(expected.size()).isNotZero();
         assertThat(expected.get(0).getMenuProducts().size()).isNotZero();
     }
-
-    private void 상품_등록_되어_있음() {
-        firstProduct = new Product();
-        firstProduct.setId(1L);
-        firstProduct.setPrice(BigDecimal.valueOf(1000));
-        secondProduct = new Product();
-        secondProduct.setId(2L);
-        secondProduct.setPrice(BigDecimal.valueOf(1000));
+    private Product 상품_생성(Long id, int price){
+        Product product = new Product();
+        product.setId(id);
+        product.setPrice(BigDecimal.valueOf(price));
+        return product;
     }
 
-    private void 메뉴_그룹_등록_되어_있음() {
-        firstMenuProduct = new MenuProduct();
-        firstMenuProduct.setProductId(1L);
-        firstMenuProduct.setQuantity(1);
-        secondMenuProduct = new MenuProduct();
-        secondMenuProduct.setProductId(2L);
-        secondMenuProduct.setQuantity(1);
+    private MenuProduct 메뉴_그룹_생성(Long productId, int quantity){
+        MenuProduct menuProduct = new MenuProduct();
+        menuProduct.setProductId(productId);
+        menuProduct.setQuantity(quantity);
+        return menuProduct;
     }
-
-
 }
