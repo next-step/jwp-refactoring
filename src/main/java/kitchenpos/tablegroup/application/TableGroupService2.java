@@ -1,10 +1,9 @@
 package kitchenpos.tablegroup.application;
 
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTableEntity;
 import kitchenpos.table.domain.TableRepository;
 import kitchenpos.tablegroup.domain.TableGroupEntity;
+import kitchenpos.tablegroup.domain.TableGroupExternalValidator;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
@@ -20,12 +19,12 @@ public class TableGroupService2 {
 
     private static final int MIN_GROUP_SIZE = 2;
 
-    private final OrderRepository orderRepository;
+    private final TableGroupExternalValidator tableGroupExternalValidator;
     private final TableRepository tableRepository;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService2(final OrderRepository orderRepository, final TableRepository tableRepository, final TableGroupRepository tableGroupRepository) {
-        this.orderRepository = orderRepository;
+    public TableGroupService2(final TableGroupExternalValidator tableGroupExternalValidator, final TableRepository tableRepository, final TableGroupRepository tableGroupRepository) {
+        this.tableGroupExternalValidator = tableGroupExternalValidator;
         this.tableRepository = tableRepository;
         this.tableGroupRepository = tableGroupRepository;
     }
@@ -61,13 +60,7 @@ public class TableGroupService2 {
     public void ungroup(final Long tableGroupId) {
         List<OrderTableEntity> tables = tableRepository.findAllByTableGroupId(tableGroupId);
         List<Long> tableIds = tables.stream().map(OrderTableEntity::getId).collect(Collectors.toList());
-        validateTablesInUse(tableIds);
+        tableGroupExternalValidator.validateTablesInUse(tableIds);
         tables.forEach(OrderTableEntity::ungroup);
-    }
-
-    private void validateTablesInUse(List<Long> tableIds) {
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(tableIds, OrderStatus.getBusyStatus())) {
-            throw new IllegalArgumentException();
-        }
     }
 }

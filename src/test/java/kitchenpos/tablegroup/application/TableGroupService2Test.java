@@ -1,10 +1,10 @@
 package kitchenpos.tablegroup.application;
 
-import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTableEntity;
 import kitchenpos.table.domain.TableRepository;
 import kitchenpos.table.dto.TableResponse;
 import kitchenpos.tablegroup.domain.TableGroupEntity;
+import kitchenpos.tablegroup.domain.TableGroupExternalValidator;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
@@ -24,13 +24,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class TableGroupService2Test {
 
   @Mock
-  private OrderRepository orderRepository;
+  private TableGroupExternalValidator tableGroupExternalValidator;
 
   @Mock
   private TableRepository tableRepository;
@@ -42,7 +42,7 @@ class TableGroupService2Test {
 
   @BeforeEach
   void setUp() {
-    tableGroupService = new TableGroupService2(orderRepository, tableRepository, tableGroupRepository);
+    tableGroupService = new TableGroupService2(tableGroupExternalValidator, tableRepository, tableGroupRepository);
   }
 
   @DisplayName("그룹으로 지정될 테이블 목록을 입력받아 테이블 그룹을 저장할 수 있다.")
@@ -145,7 +145,7 @@ class TableGroupService2Test {
     OrderTableEntity savedOrderTable2 = OrderTableEntity.initWithAll(2L, savedGroupId, 2, false);
     List<OrderTableEntity> tablesByGroupId = Arrays.asList(savedOrderTable1, savedOrderTable2);
     when(tableRepository.findAllByTableGroupId(savedGroupId)).thenReturn(tablesByGroupId);
-    when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(false);
+    doNothing().when(tableGroupExternalValidator).validateTablesInUse(any());
 
     //when
     tableGroupService.ungroup(savedGroupId);
@@ -168,7 +168,7 @@ class TableGroupService2Test {
     OrderTableEntity savedOrderTable2 = OrderTableEntity.initWithAll(2L, savedGroupId, 2, false);
     List<OrderTableEntity> tablesByGroupId = Arrays.asList(savedOrderTable1, savedOrderTable2);
     when(tableRepository.findAllByTableGroupId(savedGroupId)).thenReturn(tablesByGroupId);
-    when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(true);
+    doThrow(IllegalArgumentException.class).when(tableGroupExternalValidator).validateTablesInUse(any());
 
     //when & then
     assertThatThrownBy(() -> tableGroupService.ungroup(savedGroupId)).isInstanceOf(IllegalArgumentException.class);

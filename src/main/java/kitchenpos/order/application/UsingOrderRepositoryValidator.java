@@ -3,10 +3,13 @@ package kitchenpos.order.application;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.TableValidator;
+import kitchenpos.tablegroup.domain.TableGroupExternalValidator;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
-public class UsingOrderRepositoryValidator implements TableValidator {
+public class UsingOrderRepositoryValidator implements TableValidator, TableGroupExternalValidator {
 
   private final OrderRepository orderRepository;
 
@@ -18,6 +21,13 @@ public class UsingOrderRepositoryValidator implements TableValidator {
   public void validateTableInUse(Long orderTableId) {
     if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
         orderTableId, OrderStatus.getBusyStatus())) {
+      throw new IllegalArgumentException();
+    }
+  }
+
+  @Override
+  public void validateTablesInUse(List<Long> tableIds) {
+    if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(tableIds, OrderStatus.getBusyStatus())) {
       throw new IllegalArgumentException();
     }
   }
