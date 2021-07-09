@@ -37,14 +37,14 @@ public class Menu {
         this.menuGroup = menuGroup;
     }
 
-    public void addMenuProduct(MenuProduct menuProduct) {
-        menuProducts.add(menuProduct);
-        menuProduct.addedBy(id);
-    }
-
     public void addMenuProducts(List<MenuProduct> menuProducts) {
         menuProducts.forEach(this::addMenuProduct);
         verifyTotalPrice();
+    }
+
+    private void addMenuProduct(MenuProduct menuProduct) {
+        menuProducts.add(menuProduct);
+        menuProduct.addedBy(id);
     }
 
     private void verifyTotalPrice() {
