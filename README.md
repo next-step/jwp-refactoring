@@ -126,3 +126,7 @@
       tablegroup 패키지에 TableGroupExternalValidator interface를 두고 
       구현체는 order패키지에 둬서 order -> tablegroup으로 의존성 역전
     
+## 클래스 의존 다이어 그램
+![class-dependency](docs/image/kitchenpos-class-dependency.png)
+
+* 다이어 그램상 의존성이 한 방향 (그림 상 아래에서 위로) 흐르는 것으로 보인다.
