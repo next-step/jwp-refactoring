@@ -32,3 +32,9 @@ INSERT INTO order_table (id, number_of_guests, empty) VALUES (5, 0, true);
 INSERT INTO order_table (id, number_of_guests, empty) VALUES (6, 0, true);
 INSERT INTO order_table (id, number_of_guests, empty) VALUES (7, 0, true);
 INSERT INTO order_table (id, number_of_guests, empty) VALUES (8, 0, true);
+
+--contoller @SpringBootTest를 위한 데이터 추가
+INSERT INTO order_table (id, number_of_guests, empty) VALUES (99, 4, false);
+INSERT INTO orders (id, order_table_id, order_status, ordered_time) VALUES (1, 2, 'COOKING', now());
+INSERT INTO table_group (id, created_date) VALUES (99, now());
+INSERT INTO order_table (id, table_group_id, number_of_guests, empty) VALUES (98, 99, 4, false);
