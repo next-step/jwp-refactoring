@@ -2,7 +2,6 @@ package kitchenpos.domain;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -101,7 +100,7 @@ public class Order {
 	}
 
 	private void validateChangeStatus() {
-		if (Objects.equals(OrderStatus.COMPLETION.name(), this.getOrderStatus().name())) {
+		if (OrderStatus.isComplete(orderStatus)) {
 			throw new IllegalArgumentException("이미 완료된 주문입니다.");
 		}
 	}
@@ -129,7 +128,6 @@ public class Order {
 	}
 
 	public boolean isUnChangeable() {
-		List<OrderStatus> orderStatuses = Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL);
-		return orderStatuses.contains(orderStatus);
+		return OrderStatus.isUnChangeable(orderStatus);
 	}
 }
