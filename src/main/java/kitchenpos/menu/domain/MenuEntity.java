@@ -81,11 +81,11 @@ public class MenuEntity {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     MenuEntity that = (MenuEntity) o;
-    return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(price, that.price) && Objects.equals(menuGroupId, that.menuGroupId) && Objects.equals(menuProducts, that.menuProducts);
+    return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(price, that.price) && Objects.equals(menuGroupId, that.menuGroupId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, price, menuGroupId, menuProducts);
+    return Objects.hash(id, name, price, menuGroupId);
   }
 }
