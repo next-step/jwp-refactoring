@@ -44,6 +44,9 @@
 - 그룹핑된 테이블을 그룹핑 해제할 수 있다.(통합 계산 완료 시에 처리 가능)
 - 그룹핑된 테이블의 그룹핑 해제 시 주문 상태가 조리, 식사이면 해제할 수 없다.
 
+#### Event Storming
+* URL: https://app.mural.co/t/kitchenpos2842/m/kitchenpos2842/1625827859898/071be8045e12f01ceaaeccd1f739404baa5fac24?sender=ufe71fd8cb256068d80241893
+
 ## 용어 사전
 
 | 한글명 | 영문명 | 설명 |
