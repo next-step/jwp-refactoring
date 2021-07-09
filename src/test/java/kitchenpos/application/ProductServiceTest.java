@@ -11,6 +11,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -20,6 +22,7 @@ import static org.mockito.BDDMockito.given;
 class ProductServiceTest {
 
     private Product 불고기버거;
+    private Product 치킨버거;
 
     @Mock
     private ProductDao productDao;
@@ -33,6 +36,11 @@ class ProductServiceTest {
         불고기버거.setId(1L);
         불고기버거.setName("불고기버거");
         불고기버거.setPrice(BigDecimal.valueOf(4000));
+
+        치킨버거 = new Product();
+        치킨버거.setId(2L);
+        치킨버거.setName("치킨버거");
+        치킨버거.setPrice(BigDecimal.valueOf(3500));
     }
 
     @DisplayName("상품명과 가격 정보를 입력해 상품을 등록한다")
@@ -57,5 +65,18 @@ class ProductServiceTest {
         // when then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> productService.create(불고기버거));
+    }
+
+    @DisplayName("상품 목록을 조회한다")
+    @Test
+    void findAll() {
+        // given
+        given(productDao.findAll()).willReturn(Arrays.asList(불고기버거, 치킨버거));
+
+        // when
+        List<Product> actual = productService.list();
+
+        // when
+        assertThat(actual).isEqualTo(Arrays.asList(불고기버거, 치킨버거));
     }
 }
