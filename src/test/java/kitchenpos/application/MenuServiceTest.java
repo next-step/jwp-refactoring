@@ -18,10 +18,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -77,7 +79,7 @@ class MenuServiceTest {
         후라이드치킨.setMenuProducts(메뉴상품목록);
     }
 
-    @DisplayName("메뉴를 등록한다")
+    @DisplayName("메뉴 등록")
     @Test
     void create() {
         // given
@@ -91,6 +93,50 @@ class MenuServiceTest {
 
         // then
         assertThat(expected).isEqualTo(후라이드치킨);
+    }
+
+    @DisplayName("메뉴 등록 - 가격은 0 이상의 숫자를 입력해야 한다")
+    @Test
+    void create_invalidPrice() {
+        // given
+        후라이드치킨.setPrice(BigDecimal.valueOf(-1));
+
+        // when then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> menuService.create(후라이드치킨));
+    }
+
+    @DisplayName("메뉴 등록 - 메뉴그룹은 필수 입력")
+    @Test
+    void create_menuGroupIsEssential() {
+        // given
+        후라이드치킨.setMenuGroupId(null);
+
+        // when then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> menuService.create(후라이드치킨));
+    }
+
+    @DisplayName("메뉴 등록 - 메뉴상품은 필수 입력")
+    @Test
+    void create_menuProductIsEssential() {
+        // given
+        후라이드치킨.setMenuProducts(Collections.emptyList());
+
+        // when then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> menuService.create(후라이드치킨));
+    }
+
+    @DisplayName("메뉴 등록 - 메뉴 가격은 메뉴상품 가격의 총합보다 클 수 없다")
+    @Test
+    void create_menuPriceIsGreaterThanMenuProducts() {
+        // given
+        후라이드치킨.setPrice(BigDecimal.valueOf(17000));
+
+        // when then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> menuService.create(후라이드치킨));
     }
 
 }
