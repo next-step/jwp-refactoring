@@ -44,11 +44,25 @@ public class Order {
         this.orderStatus = OrderStatus.COOKING;
     }
 
-    public Order(final Long id, final OrderTable orderTable, final List<OrderLineItem> orderLineItems) {
+    public Order(final OrderTable orderTable) {
+        this(null, orderTable);
+    }
+    public Order(final Long id, final OrderTable orderTable) {
         this.id = id;
         this.orderTable = orderTable;
         this.orderStatus = OrderStatus.COOKING;
-        orderLineItems.forEach(this::addOrderLineItem);
+    }
+
+    public void changeOrderStatus(String orderStatus) {
+        changeOrderStatus(OrderStatus.valueOf(orderStatus));
+    }
+
+    private void changeOrderStatus(OrderStatus orderStatus) {
+        if (this.orderStatus.equals(OrderStatus.COMPLETION)) {
+            throw new IllegalArgumentException();
+        }
+
+        this.orderStatus = orderStatus;
     }
 
     public void addOrderLineItems(final List<OrderLineItem> orderLineItems) {

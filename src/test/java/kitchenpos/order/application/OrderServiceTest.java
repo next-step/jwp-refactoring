@@ -58,7 +58,7 @@ class OrderServiceTest {
         추천메뉴 = new MenuGroup(1L, "추천메뉴");
         강정치킨plus강정치킨 = new Menu(1L, "강정치킨+강정치킨", BigDecimal.valueOf(20000), 추천메뉴);
         orderTable = new OrderTable(1L, 1L, 0, false);
-        order = new Order(1L, orderTable, new ArrayList<>());
+        order = new Order(1L, orderTable);
 
         orderLineItem = new OrderLineItem(1L, order, 강정치킨plus강정치킨, 1);
         orderLineItems = new ArrayList<>();

@@ -34,8 +34,9 @@ public class OrderLineItem {
     protected OrderLineItem() {
     }
 
-    public OrderLineItem(final Order order, final Menu menu, final long quantity) {
-        this(null, order, menu, quantity);
+    public OrderLineItem(final Menu menu, final long quantity) {
+        this.menu = menu;
+        this.quantity = quantity;
     }
 
     public OrderLineItem(final Long id, final Order order, final Menu menu, final long quantity) {

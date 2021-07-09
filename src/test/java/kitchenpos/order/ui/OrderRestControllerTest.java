@@ -6,6 +6,8 @@ import kitchenpos.domain.OrderTable;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.ui.OrderRestController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -44,24 +46,18 @@ class OrderRestControllerTest {
     @MockBean
     private OrderService orderService;
 
-    private Order order;
-
-    @BeforeEach
-    void setUp() {
-        OrderTable orderTable = new OrderTable(1L, 1L, 0, false);
-        order = new Order(1L, orderTable, new ArrayList<>());
-    }
-
     @DisplayName("주문을 등록할 수 있다.")
     @Test
     void createTest() throws Exception {
         // given
-        given(orderService.create(any())).willReturn(order);
+        OrderRequest orderRequest = new OrderRequest(1L);
+        OrderResponse orderResponse = new OrderResponse(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), new ArrayList<>());
+        given(orderService.create(any())).willReturn(orderResponse);
 
         // when
         ResultActions actions = mockMvc.perform(post(ORDER_API_URI)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(order)));
+                .content(objectMapper.writeValueAsString(orderRequest)));
 
         // then
         actions.andExpect(status().isCreated())
@@ -73,12 +69,14 @@ class OrderRestControllerTest {
     @Test
     void changeOrderStatusTest() throws Exception {
         // given
-        given(orderService.changeOrderStatus(order.getId(), order)).willReturn(order);
+        OrderRequest orderRequest = new OrderRequest(1L, OrderStatus.MEAL.name());
+        OrderResponse orderResponse = new OrderResponse(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), new ArrayList<>());
+        given(orderService.changeOrderStatus(any(), any())).willReturn(orderResponse);
 
         // when
-        ResultActions actions = mockMvc.perform(put(ORDER_API_URI + "/{orderId}/order-status", order.getId())
+        ResultActions actions = mockMvc.perform(put(ORDER_API_URI + "/{orderId}/order-status", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(order)));
+                .content(objectMapper.writeValueAsString(orderRequest)));
 
         // then
         actions.andExpect(status().isOk());
@@ -88,7 +86,9 @@ class OrderRestControllerTest {
     @Test
     void listTest() throws Exception {
         // given
-        given(orderService.list()).willReturn(Arrays.asList(order));
+        OrderResponse orderResponse1 = new OrderResponse(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), new ArrayList<>());
+        OrderResponse orderResponse2 = new OrderResponse(2L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), new ArrayList<>());
+        given(orderService.list()).willReturn(Arrays.asList(orderResponse1, orderResponse2));
 
         // when
         ResultActions actions = mockMvc.perform(get(ORDER_API_URI));
