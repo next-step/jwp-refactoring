@@ -3,6 +3,7 @@ package kitchenpos.menu.ui;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.config.MockMvcTestConfig;
 import kitchenpos.menu.application.MenuGroupService;
+import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -50,16 +51,17 @@ class MenuGroupRestControllerTest {
     @Test
     void createTest() throws Exception {
         // given
+        MenuGroupRequest menuGroupRequest = new MenuGroupRequest("추천메뉴");
         given(menuGroupService.create(any())).willReturn(추천메뉴);
 
         // when
         ResultActions actions = mockMvc.perform(post(MENU_GROUP_API_URI)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(추천메뉴)));
+                .content(objectMapper.writeValueAsString(menuGroupRequest)))
+                .andDo(print());
 
         // then
-        actions.andDo(print())
-                .andExpect(status().isCreated())
+        actions.andExpect(status().isCreated())
                 .andExpect(header().string("location", MENU_GROUP_API_URI + "/1"))
                 .andExpect(content().string(containsString("추천메뉴")));
     }
@@ -71,11 +73,11 @@ class MenuGroupRestControllerTest {
         given(menuGroupService.list()).willReturn(Arrays.asList(추천메뉴, 인기메뉴));
 
         // when
-        ResultActions actions = mockMvc.perform(get(MENU_GROUP_API_URI));
+        ResultActions actions = mockMvc.perform(get(MENU_GROUP_API_URI))
+                .andDo(print());
 
         // then
-        actions.andDo(print())
-                .andExpect(status().isOk())
+        actions.andExpect(status().isOk())
                 .andExpect(content().string(containsString("추천메뉴")))
                 .andExpect(content().string(containsString("인기메뉴")));
     }

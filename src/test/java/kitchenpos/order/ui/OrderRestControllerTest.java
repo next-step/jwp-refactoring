@@ -22,6 +22,7 @@ import java.util.Arrays;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = OrderRestController.class)
@@ -49,7 +50,8 @@ class OrderRestControllerTest {
         // when
         ResultActions actions = mockMvc.perform(post(ORDER_API_URI)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(orderRequest)));
+                .content(objectMapper.writeValueAsString(orderRequest)))
+                .andDo(print());
 
         // then
         actions.andExpect(status().isCreated())
@@ -68,7 +70,8 @@ class OrderRestControllerTest {
         // when
         ResultActions actions = mockMvc.perform(put(ORDER_API_URI + "/{orderId}/order-status", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(orderRequest)));
+                .content(objectMapper.writeValueAsString(orderRequest)))
+                .andDo(print());
 
         // then
         actions.andExpect(status().isOk());
@@ -83,7 +86,7 @@ class OrderRestControllerTest {
         given(orderService.list()).willReturn(Arrays.asList(orderResponse1, orderResponse2));
 
         // when
-        ResultActions actions = mockMvc.perform(get(ORDER_API_URI));
+        ResultActions actions = mockMvc.perform(get(ORDER_API_URI)).andDo(print());
 
         // then
         actions.andExpect(status().isOk())

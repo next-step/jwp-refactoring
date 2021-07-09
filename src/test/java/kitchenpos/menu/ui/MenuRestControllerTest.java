@@ -3,6 +3,7 @@ package kitchenpos.menu.ui;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.config.MockMvcTestConfig;
 import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,6 +23,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = MenuRestController.class)
@@ -51,12 +53,14 @@ class MenuRestControllerTest {
     @Test
     void createTest() throws Exception {
         // given
+        MenuRequest menuRequest = new MenuRequest("강정치킨+강정치킨", BigDecimal.valueOf(20000), 1L, new ArrayList<>());
         given(menuService.create(any())).willReturn(강정치킨plus강정치킨);
 
         // when
         ResultActions actions = mockMvc.perform(post(MENU_API_URI)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(강정치킨plus강정치킨)));
+                .content(objectMapper.writeValueAsString(menuRequest)))
+                .andDo(print());
 
         // then
         actions.andExpect(status().isCreated())
@@ -74,7 +78,7 @@ class MenuRestControllerTest {
         given(menuService.list()).willReturn(Arrays.asList(강정치킨plus강정치킨, 후라이드plus후라이드));
 
         // when
-        ResultActions actions = mockMvc.perform(get(MENU_API_URI));
+        ResultActions actions = mockMvc.perform(get(MENU_API_URI)).andDo(print());
 
         // then
         actions.andExpect(status().isOk())

@@ -52,11 +52,11 @@ class TableGroupRestControllerTest {
         // when
         ResultActions actions = mockMvc.perform(post(TABLE_GROUP_API_URI)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(tableGroupRequest)));
+                .content(objectMapper.writeValueAsString(tableGroupRequest)))
+                .andDo(print());
 
         // then
-        actions.andDo(print())
-                .andExpect(status().isCreated())
+        actions.andExpect(status().isCreated())
                 .andExpect(header().string("location", TABLE_GROUP_API_URI + "/1"));
     }
 
@@ -64,10 +64,10 @@ class TableGroupRestControllerTest {
     @Test
     void ungroupTest() throws Exception {
         // when
-        ResultActions actions = mockMvc.perform(delete(TABLE_GROUP_API_URI + "/{tableGroupId}", 1L));
+        ResultActions actions = mockMvc.perform(delete(TABLE_GROUP_API_URI + "/{tableGroupId}", 1L))
+                .andDo(print());
 
         // then
-        actions.andDo(print())
-                .andExpect(status().isNoContent());
+        actions.andExpect(status().isNoContent());
     }
 }
