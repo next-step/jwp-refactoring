@@ -44,7 +44,7 @@ public class OrderTableTest {
         orderTable.changeNumberOfGuests(2);
 
         //then
-        assertThat(orderTable.getNumberOfGuests()).isEqualTo(2);
+        assertThat(orderTable.getNumberOfGuests()).isEqualTo(new NumberOfGuests(2));
     }
 
     @DisplayName("방문한 손님 수 변경 예외 - 방문한 손님 수가 음수인 경우")
