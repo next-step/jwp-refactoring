@@ -35,16 +35,16 @@ public class MenuService {
 	@Transactional
 	public MenuResponse create(final MenuRequest menuRequest) {
 		MenuGroup menuGroup = findMenuGroup(menuRequest.getMenuGroupId());
-		Menu menu = new Menu(menuRequest.getName(), new Price(menuRequest.getPrice()), menuGroup);
-
-		List<MenuProductRequest> menuProductRequests = menuRequest.getMenuProducts();
-		for (MenuProductRequest menuProductRequest : menuProductRequests) {
-			MenuProduct menuProduct = createMenuProduct(menuProductRequest);
-			menu.addMenuProduct(menuProduct);
-		}
-		menu.validateMenuPrice();
-
+		List<MenuProduct> menuProducts = createMenuProducts(menuRequest);
+		Menu menu = new Menu(menuRequest.getName(), new Price(menuRequest.getPrice()), menuGroup, menuProducts);
 		return MenuResponse.of(menuRepository.save(menu));
+	}
+
+	private List<MenuProduct> createMenuProducts(MenuRequest menuRequest) {
+		return menuRequest.getMenuProducts()
+			.stream()
+			.map(this::createMenuProduct)
+			.collect(Collectors.toList());
 	}
 
 	private MenuGroup findMenuGroup(Long menuGroupId) {

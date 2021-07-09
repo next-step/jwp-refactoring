@@ -5,6 +5,7 @@ import static org.mockito.BDDMockito.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -63,19 +64,18 @@ class MenuServiceTest {
 		토마토파스타2개 = new MenuProduct(토마토파스타, 2);
 
 		//메뉴, 메뉴상품목록 추가
-		피자파스타세트 = new Menu("피자파스타세트", new Price(BigDecimal.valueOf(30000)), 양식);
-		피자파스타세트.addMenuProduct(피자한판);
-		피자파스타세트.addMenuProduct(토마토파스타2개);
+		List<MenuProduct> menuProductList = new ArrayList<>();
+		menuProductList.add(피자한판);
+		menuProductList.add(토마토파스타2개);
+		피자파스타세트 = new Menu("피자파스타세트", new Price(BigDecimal.valueOf(30000)), 양식, menuProductList);
 	}
 
 	@DisplayName("Menu 생성을 테스트 - happy path")
 	@Test
 	void testCreateMenu() {
-		List<MenuProductRequest> menuProducts = new ArrayList<>();
 		MenuProductRequest 메뉴상품_토마토파스타 = new MenuProductRequest(1L, 2);
 		MenuProductRequest 메뉴상품_피자 = new MenuProductRequest(2L, 1);
-		menuProducts.add(메뉴상품_피자);
-		menuProducts.add(메뉴상품_토마토파스타);
+		List<MenuProductRequest> menuProducts = 메뉴상품요청목록_생성(메뉴상품_토마토파스타, 메뉴상품_피자);
 
 		BigDecimal price = BigDecimal.valueOf(30000);
 		long menuGroupId = 1L;
@@ -84,7 +84,7 @@ class MenuServiceTest {
 		when(menuGroupRepository.findById(menuGroupId)).thenReturn(Optional.of(양식));
 		when(productRepository.findById(메뉴상품_피자.getProductId())).thenReturn(Optional.of(피자));
 		when(productRepository.findById(메뉴상품_토마토파스타.getProductId())).thenReturn(Optional.of(토마토파스타));
-		when(menuRepository.save(피자파스타세트)).thenReturn(피자파스타세트);
+		when(menuRepository.save(any())).thenReturn(피자파스타세트);
 
 		MenuResponse actual = menuService.create(menuRequest);
 
@@ -99,15 +99,27 @@ class MenuServiceTest {
 	@DisplayName("메뉴 가격이 0보다 작은경우 오류발생")
 	@Test
 	void testCreateErrorPriceZero() {
+		MenuProductRequest 메뉴상품_토마토파스타 = new MenuProductRequest(1L, 2);
+		MenuProductRequest 메뉴상품_피자 = new MenuProductRequest(2L, 1);
+		List<MenuProductRequest> menuProducts = 메뉴상품요청목록_생성(메뉴상품_토마토파스타, 메뉴상품_피자);
+
 		BigDecimal price = BigDecimal.valueOf(-1);
-		MenuRequest menuRequest = new MenuRequest("신규메뉴", price, 1L, null);
+		MenuRequest menuRequest = new MenuRequest("신규메뉴", price, 1L, menuProducts);
 
 		when(menuGroupRepository.findById(menuRequest.getMenuGroupId())).thenReturn(Optional.of(양식));
+		when(productRepository.findById(메뉴상품_피자.getProductId())).thenReturn(Optional.of(피자));
+		when(productRepository.findById(메뉴상품_토마토파스타.getProductId())).thenReturn(Optional.of(토마토파스타));
 
 		assertThatThrownBy(() -> {
 			menuService.create(menuRequest);
 		}).isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("상품 가격은 0보다 작을 수 없습니다.");
+	}
+
+	private List<MenuProductRequest> 메뉴상품요청목록_생성(MenuProductRequest... menuProductRequests) {
+		List<MenuProductRequest> menuProducts = new ArrayList<>();
+		Collections.addAll(menuProducts, menuProductRequests);
+		return menuProducts;
 	}
 
 	@DisplayName("메뉴가 메뉴 그룹에 포함되어있지 않은경우 오류 발생")

@@ -1,7 +1,5 @@
 package kitchenpos.domain;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -14,7 +12,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 
 @Entity
 public class Menu {
@@ -32,8 +29,8 @@ public class Menu {
 	@JoinColumn(name = "menu_group_id", nullable = false)
 	private MenuGroup menuGroup;
 
-	@OneToMany(mappedBy = "menu")
-	private List<MenuProduct> menuProducts = new ArrayList<>();
+	@Embedded
+	private MenuProducts menuProducts = new MenuProducts();
 
 	protected Menu() {
 	}
@@ -44,8 +41,19 @@ public class Menu {
 		this.menuGroup = menuGroup;
 	}
 
+	public Menu(String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProductList) {
+		this.name = name;
+		this.price = price;
+		this.menuGroup = menuGroup;
+
+		for (MenuProduct menuProduct : menuProductList) {
+			addMenuProduct(menuProduct);
+		}
+		validateMenuPrice();
+	}
+
 	public void addMenuProduct(MenuProduct menuProduct) {
-		this.menuProducts.add(menuProduct);
+		this.menuProducts.addMenuProduct(menuProduct);
 		menuProduct.changeMenu(this);
 	}
 
@@ -66,14 +74,11 @@ public class Menu {
 	}
 
 	public List<MenuProduct> getMenuProducts() {
-		return menuProducts;
+		return menuProducts.getMenuProducts();
 	}
 
 	public void validateMenuPrice() {
-		Price totalPrice = new Price(BigDecimal.ZERO);
-		for (MenuProduct menuProduct : menuProducts) {
-			totalPrice.addPrice(menuProduct.getTotalPrice());
-		}
+		Price totalPrice = menuProducts.getTotalPrice();
 
 		if (this.price.compareTo(totalPrice) > 0) {
 			throw new IllegalArgumentException("메뉴 가격은 메뉴 상품 가격의 합보다 작아야합니다.");
