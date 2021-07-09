@@ -6,15 +6,18 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.common.exception.NotExistMenuException;
+import kitchenpos.common.exception.NotExistOrderException;
+import kitchenpos.common.exception.UnableCreateOrderException;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.common.exception.NotExistOrderTableException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
@@ -39,7 +42,7 @@ public class OrderService {
         List<OrderLineItem> newOrderLineItems = getOrderLineItems(orderRequest);
 
         final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new NotExistOrderTableException("주문테이블이 존재하지 않습니다."));
 
         Order newOrder = orderTable.newOrder(LocalDateTime.now(), newOrderLineItems);
         final Order savedOrder = orderRepository.save(newOrder);
@@ -52,7 +55,7 @@ public class OrderService {
         List<OrderLineItemRequest> orderLineItemRequests = orderRequest.getOrderLineItems();
 
         if (CollectionUtils.isEmpty(orderLineItemRequests)) {
-            throw new IllegalArgumentException("메뉴가 없이 주문을 할수 없습니다.");
+            throw new UnableCreateOrderException("메뉴가 없이 주문을 할수 없습니다.");
         }
 
         List<OrderLineItem> orderLineItems = orderLineItemRequests
@@ -65,7 +68,7 @@ public class OrderService {
 
     private OrderLineItem findByOrderLineItem(OrderLineItemRequest orderLineItemRequest) {
         Menu menu = menuRepository.findById(orderLineItemRequest.getMenuId())
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 메뉴입니다."));
+                .orElseThrow(() -> new NotExistMenuException("존재하지 않는 메뉴입니다."));
         return new OrderLineItem(menu.getId(), orderLineItemRequest.getQuantity());
     }
 
@@ -82,7 +85,7 @@ public class OrderService {
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
         final Order savedOrder = orderRepository.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(NotExistOrderException::new);
 
         savedOrder.changeOrderStatus(orderRequest.getOrderStatus());
 

@@ -1,5 +1,7 @@
 package kitchenpos.common.domain;
 
+import kitchenpos.common.exception.InvalidQuantityException;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -17,7 +19,7 @@ public class Quantity {
 
     public Quantity(long quantity) {
         if (quantity < MIN_QUANTITY) {
-            throw new IllegalArgumentException(EXCEPTION_MESSAGE_MIN_QUANTITY);
+            throw new InvalidQuantityException(EXCEPTION_MESSAGE_MIN_QUANTITY);
         }
         this.quantity = quantity;
     }

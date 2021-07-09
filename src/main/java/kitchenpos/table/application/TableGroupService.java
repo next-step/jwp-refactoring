@@ -9,6 +9,7 @@ import kitchenpos.table.dto.TableGroupResponse;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.common.exception.NotExistTableException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,7 +50,7 @@ public class TableGroupService {
 
     private OrderTable findByOrderTable(Long id) {
         return orderTableRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 테이블입니다."));
+                .orElseThrow(() -> new NotExistTableException("존재하지 않는 테이블입니다."));
     }
 
     @Transactional

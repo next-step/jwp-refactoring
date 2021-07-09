@@ -1,9 +1,11 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.common.exception.InvalidPriceException;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.common.domain.Price;
 import kitchenpos.product.domain.Product;
+import kitchenpos.common.exception.NotExistProductException;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -11,7 +13,6 @@ import javax.persistence.OneToMany;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Embeddable
@@ -50,7 +51,7 @@ public class MenuProducts {
                 .reduce(new Price(BigDecimal.ZERO), Price::add);
 
         if (totalPrice.compareTo(new Price(menuRequests.getPrice())) < 0) {
-            throw new IllegalArgumentException("상품의 총 가격보다 메뉴의 가격이 더 높을수는 없습니다.");
+            throw new InvalidPriceException("상품의 총 가격보다 메뉴의 가격이 더 높을수는 없습니다.");
         }
     }
 
@@ -58,7 +59,7 @@ public class MenuProducts {
         return findProducts.stream()
                 .filter(product -> product.sameProduct(menuProductRequest.getProductId()))
                 .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 상품입니다."));
+                .orElseThrow(() -> new NotExistProductException("존재하지 않는 상품입니다."));
     }
 
     public List<MenuProduct> getMenuProducts() {

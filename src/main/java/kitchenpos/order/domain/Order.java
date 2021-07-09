@@ -1,6 +1,10 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.common.exception.UnableChangeEmptyStatusException;
+import kitchenpos.common.exception.UnableChangeOrderStatusException;
+import kitchenpos.common.exception.UnableUngroupStatusException;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.common.exception.UnableOrderCausedByEmptyTableException;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -23,7 +27,7 @@ public class Order {
     @Column(name = "order_status")
     private OrderStatus orderStatus;
 
-    @Column(name = "ordered_time")
+    @Column(name = "ordered_time", updatable = false)
     private LocalDateTime orderedTime;
 
     @Embedded
@@ -48,7 +52,7 @@ public class Order {
     public static Order newOrder(OrderTable orderTable, LocalDateTime orderedTime, List<OrderLineItem> newOrderLineItems) {
 
         if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException("빈테이블은 주문을 할수 없습니다.");
+            throw new UnableOrderCausedByEmptyTableException("빈테이블은 주문을 할수 없습니다.");
         }
 
         return new Order(orderTable.getId(), OrderStatus.COOKING, orderedTime, newOrderLineItems);
@@ -76,7 +80,7 @@ public class Order {
 
     public void changeOrderStatus(OrderStatus orderStatus) {
         if (Objects.equals(OrderStatus.COMPLETION, getOrderStatus())) {
-            throw new IllegalArgumentException("완료상태인 준문은 상태변경이 불가능합니다.");
+            throw new UnableChangeOrderStatusException("완료상태인 준문은 상태변경이 불가능합니다.");
         }
 
         this.orderStatus = orderStatus;
@@ -84,7 +88,7 @@ public class Order {
 
     public void ungroupValidation() {
         if (getOrderStatus() == OrderStatus.COOKING || getOrderStatus() == OrderStatus.MEAL) {
-            throw new IllegalArgumentException("요리중이거나 식사중인 상태는 단체테이블을 해지할수 없습니다.");
+            throw new UnableUngroupStatusException("요리중이거나 식사중인 상태는 단체테이블을 해지할수 없습니다.");
         }
     }
 
@@ -103,7 +107,7 @@ public class Order {
 
     public void isEnabledChangeEmptyStatus() {
         if (orderStatus == OrderStatus.COOKING || orderStatus == OrderStatus.MEAL) {
-            throw new IllegalArgumentException("요리중이거나 식사중인 테이블은 빈테이블로 변경이 불가능합니다.");
+            throw new UnableChangeEmptyStatusException("요리중이거나 식사중인 테이블은 빈테이블로 변경이 불가능합니다.");
         }
     }
 

@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -123,7 +124,7 @@ class MenuServiceTest {
         //when
         assertThatThrownBy(
                 () -> menuService.create(menu)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(NoSuchElementException.class);
     }
 
     @DisplayName("메뉴 가격이 개별보다 비쌀 경우 메뉴는 생성할수 없다")

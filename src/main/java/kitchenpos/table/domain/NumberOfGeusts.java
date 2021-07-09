@@ -1,5 +1,7 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.common.exception.InvalidNumberOfGeustsException;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -21,7 +23,7 @@ public class NumberOfGeusts {
 
     public static NumberOfGeusts of(int numberOfGuests) {
         if (numberOfGuests < MIN_NUMBER_OF_GUESTS) {
-            throw new IllegalArgumentException(String.format(EXCEPTION_MESSAGE_MIN_NUMBER_OF_GUESTS, MIN_NUMBER_OF_GUESTS));
+            throw new InvalidNumberOfGeustsException(String.format(EXCEPTION_MESSAGE_MIN_NUMBER_OF_GUESTS, MIN_NUMBER_OF_GUESTS));
         }
 
         return new NumberOfGeusts(numberOfGuests);
