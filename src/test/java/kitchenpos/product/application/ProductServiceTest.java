@@ -5,6 +5,7 @@ import kitchenpos.product.domain.ProductDao;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.product.exception.IllegalProductPriceException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -53,7 +54,7 @@ class ProductServiceTest {
         ProductRequest product2 = new ProductRequest("신상품", null);
 
         assertThatThrownBy(() -> productService.create(product1))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalProductPriceException.class);
         assertThatThrownBy(() -> productService.create(product2))
                 .isInstanceOf(NullPointerException.class);
     }

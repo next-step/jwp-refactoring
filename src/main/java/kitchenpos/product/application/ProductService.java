@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Transactional
@@ -22,13 +21,8 @@ public class ProductService {
     }
 
     public ProductResponse create(final ProductRequest productRequest) {
-        final BigDecimal price = BigDecimal.valueOf(productRequest.getPrice());
-
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
-
-        return ProductResponse.from(productRepository.save(new Product(productRequest.getName(), price)));
+        return ProductResponse.from(productRepository.save(
+                new Product(productRequest.getName(), BigDecimal.valueOf(productRequest.getPrice()))));
     }
 
     public List<ProductResponse> list() {
