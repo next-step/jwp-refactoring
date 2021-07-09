@@ -60,9 +60,13 @@ public class TableGroupService {
     }
 
     public void ungroup(final Long tableGroupId) {
-        OrderTables orderTables = OrderTables.of(orderTableRepository.findAllByTableGroupId(tableGroupId));
+        OrderTables orderTables = findTableGroupById(tableGroupId).getOrderTables();
         checkNotCompletionOrders(orderTables.getOrderTableIds());
         orderTables.ungroup();
+    }
+
+    private TableGroup findTableGroupById(Long tableGroupId) {
+        return tableGroupRepository.findById(tableGroupId).orElseThrow(IllegalAccessError::new);
     }
 
     private void checkNotCompletionOrders(List<Long> orderTableIds) {
