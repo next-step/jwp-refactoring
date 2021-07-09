@@ -8,10 +8,8 @@ import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.table.domain.OrderTable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -34,42 +32,27 @@ public class OrderService {
     }
 
     public OrderResponse create(final OrderRequest orderRequest) {
-        final List<OrderLineItem> orderLineItems = orderRequest.getOrderLineItems();
+        OrderLineItems orderLineItems = new OrderLineItems(orderRequest.getOrderLineItems());
+        orderLineItems.checkInitOrderLineItems(countMenuSize(orderLineItems));
 
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
-        }
+        checkOrderTableEmpty(orderRequest.getOrderTableId());
 
-        final List<Long> menuIds = orderLineItems.stream()
-                .map(OrderLineItem::getMenuId)
-                .collect(Collectors.toList());
+        Order order = new Order(orderRequest.getOrderTableId(),
+                OrderStatus.COOKING.name(), LocalDateTime.now(), orderRequest.getOrderLineItems());
+        return OrderResponse.from(orderRepository.save(order));
+    }
 
-        if (orderLineItems.size() != menuRepository.findAllById(menuIds).size()) {
-            throw new IllegalArgumentException();
-        }
-
-        final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
+    public void checkOrderTableEmpty (Long orderTableId) {
+        OrderTable orderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException();
         }
+    }
 
-        /*order.setOrderTableId(orderTable.getId());
-        order.setOrderStatus(OrderStatus.COOKING.name());
-        order.setOrderedTime(LocalDateTime.now());*/
-
-        final Order savedOrder = orderRepository.save(new Order(orderRequest.getOrderTableId(), OrderStatus.COOKING.name(), LocalDateTime.now(), orderRequest.getOrderLineItems()));
-
-        final Long orderId = savedOrder.getId();
-        final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
-        for (final OrderLineItem orderLineItem : orderLineItems) {
-            orderLineItem.setOrderId(orderId);
-            savedOrderLineItems.add(orderLineItem);
-        }
-        //savedOrder.setOrderLineItems(savedOrderLineItems);
-
-        return OrderResponse.from(savedOrder);
+    private int countMenuSize(OrderLineItems orderLineItems) {
+        return menuRepository.findAllById(orderLineItems.toMenuIds()).size();
     }
 
     public List<OrderResponse> list() {
