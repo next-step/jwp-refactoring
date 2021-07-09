@@ -16,6 +16,7 @@ import java.util.Objects;
 @Table(name = "table_group")
 @Entity
 public class TableGroup {
+    private static final int MIN_ORDER_TABLE_SIZE = 2;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,9 +32,40 @@ public class TableGroup {
     protected TableGroup() {
     }
 
-    public void addOrderTable(final OrderTable orderTable) {
+    public TableGroup(final List<OrderTable> orderTables) {
+        this(null, orderTables);
+    }
+
+    public TableGroup(final Long id, final List<OrderTable> orderTables) {
+        validateOrderTablesSize(orderTables);
+        this.id = id;
+        orderTables.forEach(this::addOrderTable);
+    }
+
+    private void validateOrderTablesSize(final List<OrderTable> orderTables) {
+        if (orderTables.size() < MIN_ORDER_TABLE_SIZE) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private void addOrderTable(final OrderTable orderTable) {
+        validateOrderTable(orderTable);
         this.orderTables.add(orderTable);
         orderTable.addedBy(this);
+    }
+
+    private void validateOrderTable(final OrderTable orderTable) {
+        if (orderTable.getTableGroup() != null) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public void ungroup() {
+        orderTables.ungroup();
+    }
+
+    public List<Long> getOrderTableIds() {
+        return orderTables.getOrderTableIds();
     }
 
     public Long getId() {

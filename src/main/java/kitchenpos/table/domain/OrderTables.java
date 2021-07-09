@@ -6,6 +6,8 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
+
 @Embeddable
 public class OrderTables {
 
@@ -18,6 +20,16 @@ public class OrderTables {
         if (!this.orderTables.contains(orderTable)) {
             this.orderTables.add(orderTable);
         }
+    }
+
+    public void ungroup() {
+        this.orderTables.clear();
+    }
+
+    public List<Long> getOrderTableIds() {
+        return orderTables.stream()
+                .map(OrderTable::getId)
+                .collect(toList());
     }
 
     public List<OrderTable> getOrderTables() {

@@ -31,6 +31,12 @@ public class OrderTable {
     protected OrderTable() {
     }
 
+    public OrderTable(Long id, int numberOfGuests, boolean empty) {
+        this.id = id;
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
+
     public void addedBy(final TableGroup tableGroup) {
         this.tableGroup = tableGroup;
     }
