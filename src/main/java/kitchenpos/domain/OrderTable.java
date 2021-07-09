@@ -56,7 +56,9 @@ public class OrderTable {
 
     public void changeTableGroup(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
-        tableGroup.addOrderTable(this);
+        if (Objects.nonNull(tableGroup)) {
+            tableGroup.addOrderTable(this);
+        }
     }
 
     private void verifyChangeable() {

@@ -73,7 +73,9 @@ public class Menu {
 
     public void setMenuGroup(MenuGroup menuGroup) {
         this.menuGroup = menuGroup;
-        menuGroup.addMenu(this);
+        if (Objects.nonNull(menuGroup)) {
+            menuGroup.addMenu(this);
+        }
     }
 
     public Long getId() {
