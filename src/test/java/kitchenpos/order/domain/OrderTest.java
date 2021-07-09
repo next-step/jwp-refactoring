@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.order.exception.AlreadyCompletionException;
 import kitchenpos.order.exception.NotOrderLineItemsException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,5 +35,15 @@ class OrderTest {
     void fail_create() {
         assertThatThrownBy(() -> new Order(1L, 1L, 주문상태, LocalDateTime.now(), Collections.emptyList()))
                 .isInstanceOf(NotOrderLineItemsException.class);
+    }
+
+    @DisplayName("주문 상태 변경에 실패한다. - 주문 상태가 기존에 계산 완료(COMPLETION) 상태일 경우")
+    @Test
+    void fail_changeStatus() {
+        String 계산완료 = OrderStatus.COMPLETION.name();
+        String 변경할상태 = OrderStatus.COOKING.name();
+        Order order = new Order(1L, 1L, 계산완료, LocalDateTime.now(), 주문한내역들);
+        assertThatThrownBy(() -> order.changeOrderStatus(변경할상태))
+                .isInstanceOf(AlreadyCompletionException.class);
     }
 }

@@ -6,6 +6,7 @@ import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
+import kitchenpos.order.exception.AlreadyCompletionException;
 import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -165,6 +166,6 @@ class OrderServiceTest {
         given(orderRepository.findById(anyLong())).willReturn(Optional.ofNullable(order));
 
         assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), orderStatusRequest))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(AlreadyCompletionException.class);
     }
 }
