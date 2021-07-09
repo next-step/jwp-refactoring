@@ -89,7 +89,6 @@ class OrderServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    //TODO
     @Test
     @DisplayName("저장된 메뉴에 없는 메뉴일 경우 주문 생성을 실패한다.")
     void create_with_exception_when_menu_not_in_saved_menus() {
