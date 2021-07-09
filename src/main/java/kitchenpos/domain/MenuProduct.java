@@ -33,6 +33,9 @@ public class MenuProduct {
 	}
 
 	public MenuProduct(Product product, long quantity) {
+		if (product == null) {
+			throw new IllegalArgumentException("상품이 없어 메뉴상품을 구성할 수 없습니다");
+		}
 		this.product = product;
 		this.quantity = quantity;
 	}
