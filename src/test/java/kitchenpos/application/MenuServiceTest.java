@@ -17,10 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -30,9 +27,12 @@ import static org.mockito.BDDMockito.given;
 class MenuServiceTest {
 
     private Product 후라이드;
+    private Product 양념;
     private MenuGroup 두마리메뉴;
     private Menu 후라이드치킨;
+    private Menu 양념치킨;
     private MenuProduct 메뉴상품_후라이드;
+    private MenuProduct 메뉴상품_양념;
     private List<MenuProduct> 메뉴상품목록;
 
     @Mock
@@ -77,6 +77,27 @@ class MenuServiceTest {
         메뉴상품목록.add(메뉴상품_후라이드);
 
         후라이드치킨.setMenuProducts(메뉴상품목록);
+
+        양념 = new Product();
+        양념.setId(2L);
+        양념.setName("양념");
+        양념.setPrice(BigDecimal.valueOf(16000));
+
+        양념치킨 = new Menu();
+        양념치킨.setId(2L);
+        양념치킨.setName("양념치킨");
+        양념치킨.setPrice(BigDecimal.valueOf(16000));
+        양념치킨.setMenuGroupId(두마리메뉴.getId());
+
+        메뉴상품_양념 = new MenuProduct();
+        메뉴상품_양념.setMenuId(양념치킨.getId());
+        메뉴상품_양념.setProductId(양념.getId());
+        메뉴상품_양념.setQuantity(1L);
+
+        메뉴상품목록 = new ArrayList<>();
+        메뉴상품목록.add(메뉴상품_양념);
+
+        양념치킨.setMenuProducts(메뉴상품목록);
     }
 
     @DisplayName("메뉴 등록")
@@ -137,6 +158,19 @@ class MenuServiceTest {
         // when then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> menuService.create(후라이드치킨));
+    }
+
+    @DisplayName("등록한 메뉴목록을 조회한다.")
+    @Test
+    void findAll() {
+        // given
+        given(menuDao.findAll()).willReturn(Arrays.asList(후라이드치킨, 양념치킨));
+
+        // when
+        List<Menu> expected = menuService.list();
+
+        // then
+        assertThat(expected).isEqualTo(Arrays.asList(후라이드치킨, 양념치킨));
     }
 
 }
