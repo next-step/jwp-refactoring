@@ -6,21 +6,23 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.common.error.NotFoundMenuGroupException;
 import kitchenpos.common.domian.Price;
 import kitchenpos.common.domian.Quantity;
-import kitchenpos.menu.repository.MenuProductDao;
+import kitchenpos.common.error.NotFoundMenuGroupException;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.Products;
 import kitchenpos.menu.domain.ProductsQuantities;
 import kitchenpos.menu.domain.Quantities;
-import kitchenpos.menu.domain.Products;
-import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuProductResponse;
 import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.repository.MenuDao;
+import kitchenpos.menu.repository.MenuProductDao;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.repository.MenuGroupDao;
-import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.product.repository.ProductDao;
-import kitchenpos.menu.domain.Menu;
 
 @Service
 @Transactional
@@ -60,14 +62,19 @@ public class MenuService {
                 ,
                 new Price(menuRequest.getPrice())
         );
-
         Menu menu = Menu.of(menuGroup, menuRequest.getName(), productsQuantities);
-        menuProductDao.saveAll(menu.getMenuProducts());
-        return MenuResponse.of(menuDao.save(menu));
+        menuDao.save(menu);
+        List<MenuProduct> menuProducts = productsQuantities.toMenuProduct(menu);
+
+        menuProductDao.saveAll(menuProducts);
+        return MenuResponse.of(menu, MenuProductResponse.listOf(menuProducts));
     }
 
     @Transactional(readOnly = true)
     public List<MenuResponse> list() {
-        return MenuResponse.listOf(menuDao.findAll());
+        return menuDao.findAll().stream().map(menu -> {
+            List<MenuProduct> menuProducts = menuProductDao.findAllByMenu(menu);
+            return MenuResponse.of(menu, MenuProductResponse.listOf(menuProducts));
+        }).collect(Collectors.toList());
     }
 }
