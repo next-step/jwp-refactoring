@@ -42,15 +42,14 @@ class TableGroupServiceTest {
     @Test
     void createTest() {
         // given
-        OrderTable orderTable1 = new OrderTable(3);
-        OrderTable orderTable2 = new OrderTable(4);
-        TableGroup tableGroup = new TableGroup(Arrays.asList(orderTable1, orderTable2));
+        TableGroup tableGroup = new TableGroup(Arrays.asList(new OrderTable(3),
+                                                             new OrderTable(4)));
 
         TableGroupRequest request = new TableGroupRequest(Arrays.asList(new OrderTableIdRequest(1L),
                                                                         new OrderTableIdRequest(2L)));
 
-        Mockito.when(orderTableRepository.findById(1L)).thenReturn(Optional.of(orderTable1));
-        Mockito.when(orderTableRepository.findById(2L)).thenReturn(Optional.of(orderTable2));
+        Mockito.when(orderTableRepository.findById(1L)).thenReturn(Optional.of(new OrderTable(3)));
+        Mockito.when(orderTableRepository.findById(2L)).thenReturn(Optional.of(new OrderTable(4)));
         Mockito.when(tableGroupRepository.save(any())).thenReturn(tableGroup);
 
         // when
@@ -85,9 +84,6 @@ class TableGroupServiceTest {
 
         // when
         tableGroupService.ungroup(1L);
-
-        // then
-        Mockito.verify(orderTableRepository, Mockito.times(2)).save(any());
     }
 
     @DisplayName("테이블 그룹으로 묶일 주문 테이블의 상태가 COMPLETION이 아닐 경우")

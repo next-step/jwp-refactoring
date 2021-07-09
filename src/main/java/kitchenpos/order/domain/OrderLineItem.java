@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
@@ -40,15 +41,21 @@ public class OrderLineItem {
         return seq;
     }
 
-    public Order getOrder() {
-        return order;
-    }
-
-    public Menu getMenu() {
-        return menu;
-    }
-
     public long getQuantity() {
         return quantity;
+    }
+
+    public Long getOrderId() {
+        if (Objects.isNull(this.order)) {
+            return 0L;
+        }
+        return this.order.getId();
+    }
+
+    public Long getMenuId() {
+        if (Objects.isNull(this.menu)) {
+            return 0L;
+        }
+        return this.menu.getId();
     }
 }

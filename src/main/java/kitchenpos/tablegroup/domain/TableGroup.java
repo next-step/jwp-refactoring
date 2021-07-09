@@ -32,8 +32,9 @@ public class TableGroup {
 
     public TableGroup(final List<OrderTable> orderTables) {
         this.createdDate = LocalDateTime.now();
-        this.orderTables = OrderTables.of(this, orderTables);
+        this.orderTables = OrderTables.of(orderTables);
         this.orderTables.checkEmptyAndNotIncludeTableGroup();
+        this.orderTables.grouping(this);
     }
 
     public Long getId() {

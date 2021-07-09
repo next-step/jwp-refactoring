@@ -72,7 +72,6 @@ class TableServiceTest {
         OrderTable orderTable = new OrderTable(3);
         Mockito.when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
         Mockito.when(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(false);
-        Mockito.when(orderTableRepository.save(any())).thenReturn(orderTable);
 
         // when
         OrderTableResponse actual = tableService.changeEmpty(1l, request);
@@ -89,7 +88,6 @@ class TableServiceTest {
         OrderTableChangeNumberOfGuestsRequest request = new OrderTableChangeNumberOfGuestsRequest(3);
         OrderTable orderTable = new OrderTable(3);
         Mockito.when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
-        Mockito.when(orderTableRepository.save(any())).thenReturn(orderTable);
 
         // when
         OrderTableResponse actual = tableService.changeNumberOfGuests(1l, request);

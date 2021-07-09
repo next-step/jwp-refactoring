@@ -21,8 +21,8 @@ public class MenuProductResponse {
 
     public static MenuProductResponse of(final MenuProduct menuProduct) {
         return new MenuProductResponse(menuProduct.getSeq(),
-                                       menuProduct.getMenu().getId(),
-                                       menuProduct.getProduct().getId(),
+                                       menuProduct.getMenuId(),
+                                       menuProduct.getProductId(),
                                        menuProduct.getQuantity());
     }
 

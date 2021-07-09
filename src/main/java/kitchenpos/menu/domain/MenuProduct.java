@@ -1,6 +1,7 @@
 package kitchenpos.menu.domain;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -56,5 +57,19 @@ public class MenuProduct {
 
     public Product getProduct() {
         return product;
+    }
+
+    public Long getMenuId() {
+        if (Objects.isNull(this.menu)) {
+            return 0L;
+        }
+        return this.menu.getId();
+    }
+
+    public Long getProductId() {
+        if (Objects.isNull(this.product)) {
+            return 0L;
+        }
+        return this.product.getId();
     }
 }

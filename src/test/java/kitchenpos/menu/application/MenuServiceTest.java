@@ -63,7 +63,6 @@ class MenuServiceTest {
         assertAll(() -> {
             assertThat(result).isNotNull();
             assertThat(result.getName()).isEqualTo("메뉴1");
-            assertThat(result.getMenuGroupId()).isEqualTo(1L);
         });
         Mockito.verify(menuGroupRepository).findById(any());
         Mockito.verify(productRepository).findById(any());

@@ -1,6 +1,7 @@
 package kitchenpos.table.domain;
 
 import java.util.Objects;
+import java.util.Optional;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -32,7 +33,7 @@ public class OrderTable {
 
     public OrderTable(final int numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
-        this.empty = true;
+        this.empty = false;
     }
 
     public void checkNotIncludeTableGroup() {
@@ -64,8 +65,8 @@ public class OrderTable {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Optional<TableGroup> getTableGroup() {
+        return Optional.ofNullable(tableGroup);
     }
 
     public int getNumberOfGuests() {

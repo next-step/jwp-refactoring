@@ -21,13 +21,6 @@ public class OrderTables {
         return orderTables;
     }
 
-    public static OrderTables of(final TableGroup tableGroup, final List<OrderTable> orderTableList) {
-        OrderTables orderTables = new OrderTables();
-        orderTables.addAll(orderTableList);
-        orderTables.grouping(tableGroup);
-        return orderTables;
-    }
-
     public void add(OrderTable orderTable) {
         if (this.orderTables.contains(orderTable)) {
             return;
