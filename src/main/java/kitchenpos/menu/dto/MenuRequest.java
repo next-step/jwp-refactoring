@@ -2,6 +2,7 @@ package kitchenpos.menu.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import kitchenpos.menu.domain.MenuProductEntity;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,9 +41,9 @@ public class MenuRequest {
     return menuProducts;
   }
 
-  public List<Long> getProductIds() {
+  public List<MenuProductEntity> getProductEntities() {
     return menuProducts.stream()
-            .map(menuProductRequest -> menuProductRequest.productId)
+            .map(MenuProductRequest::toEntity)
             .collect(Collectors.toList());
   }
 
@@ -63,6 +64,10 @@ public class MenuRequest {
 
     public Long getQuantity() {
       return quantity;
+    }
+
+    public MenuProductEntity toEntity() {
+      return new MenuProductEntity(productId, quantity);
     }
   }
 }

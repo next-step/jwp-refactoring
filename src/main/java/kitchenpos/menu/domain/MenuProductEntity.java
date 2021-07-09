@@ -1,9 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.product.domain.ProductEntity;
-
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.util.Objects;
 
 @Table(name = "menu_product")
@@ -18,9 +15,8 @@ public class MenuProductEntity {
   @JoinColumn(name = "menu_id", nullable = false)
   private MenuEntity menu;
 
-  @ManyToOne
-  @JoinColumn(name = "product_id", nullable = false)
-  private ProductEntity product;
+  @Column(name = "product_id", nullable = false)
+  private Long productId;
 
   @Embedded
   private Quantity quantity;
@@ -28,14 +24,14 @@ public class MenuProductEntity {
   protected MenuProductEntity() {
   }
 
-  public MenuProductEntity(ProductEntity product, long quantity) {
-    this.product = product;
+  public MenuProductEntity(Long productId, long quantity) {
+    this.productId = productId;
     this.quantity = Quantity.from(quantity);
   }
 
-  public MenuProductEntity(Long seq, ProductEntity product, long quantity) {
+  public MenuProductEntity(Long seq, Long productId, long quantity) {
     this.seq = seq;
-    this.product = product;
+    this.productId = productId;
     this.quantity = Quantity.from(quantity);
   }
 
@@ -47,8 +43,8 @@ public class MenuProductEntity {
     return menu;
   }
 
-  public ProductEntity getProduct() {
-    return product;
+  public Long getProductId() {
+    return productId;
   }
 
   public long getQuantity() {
@@ -59,21 +55,16 @@ public class MenuProductEntity {
     this.menu = menuEntity;
   }
 
-  public Price calculateAmount() {
-    BigDecimal productPrice = product.getPrice();
-    return Price.fromBigDecimal(productPrice.multiply(quantity.getBigDecimalValue()));
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     MenuProductEntity that = (MenuProductEntity) o;
-    return Objects.equals(seq, that.seq) && Objects.equals(menu, that.menu) && Objects.equals(product, that.product) && Objects.equals(quantity, that.quantity);
+    return Objects.equals(seq, that.seq) && Objects.equals(menu, that.menu) && Objects.equals(productId, that.productId) && Objects.equals(quantity, that.quantity);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(seq, menu, product, quantity);
+    return Objects.hash(seq, menu, productId, quantity);
   }
 }

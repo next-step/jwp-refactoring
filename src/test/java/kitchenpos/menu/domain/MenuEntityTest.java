@@ -1,7 +1,5 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.menugroup.domain.MenuGroupEntity;
-import kitchenpos.product.domain.ProductEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,9 +19,9 @@ class MenuEntityTest {
 
   private String menuName;
   private Double menuPrice;
-  private MenuGroupEntity menuGroup;
-  private ProductEntity productEntity1;
-  private ProductEntity productEntity2;
+  private Long menuGroupId;
+  private Long productId1;
+  private Long productId2;
   private MenuProductEntity menuProductEntity1;
   private MenuProductEntity menuProductEntity2;
   private List<MenuProductEntity> menuProductEntities;
@@ -33,11 +31,11 @@ class MenuEntityTest {
     //given
     menuName = "메뉴이름";
     menuPrice = 4_000D;
-    menuGroup = new MenuGroupEntity(1L, "그룹1");
-    productEntity1 = new ProductEntity("상품1", 1_000D);
-    productEntity2 = new ProductEntity("상품2", 2_000D);
-    menuProductEntity1 = new MenuProductEntity(productEntity1, 2L);
-    menuProductEntity2 = new MenuProductEntity(productEntity2, 1L);
+    menuGroupId = 1L;
+    productId1 = 1L;
+    productId2 = 2L;
+    menuProductEntity1 = new MenuProductEntity(productId1, 2L);
+    menuProductEntity2 = new MenuProductEntity(productId2, 1L);
     menuProductEntities = Arrays.asList(menuProductEntity1, menuProductEntity2);
   }
 
@@ -46,13 +44,13 @@ class MenuEntityTest {
   @Test
   void createTest() {
     //when
-    MenuEntity menuEntity = new MenuEntity(menuName, menuPrice, menuGroup, menuProductEntities);
+    MenuEntity menuEntity = new MenuEntity(menuName, menuPrice, menuGroupId, menuProductEntities);
 
     //then
     assertAll(
         () -> assertThat(menuEntity.getName()).isEqualTo(menuName),
         () -> assertThat(menuEntity.getPrice()).isEqualTo(BigDecimal.valueOf(menuPrice)),
-        () -> assertThat(menuEntity.getMenuGroup()).isEqualTo(menuGroup),
+        () -> assertThat(menuEntity.getMenuGroupId()).isEqualTo(menuGroupId),
         () -> assertThat(menuEntity.getMenuProducts()).contains(menuProductEntity1, menuProductEntity2)
     );
   }
@@ -63,7 +61,7 @@ class MenuEntityTest {
   @ParameterizedTest
   void createFailCausePrice(Double givenPrice) {
     //when & then
-    assertThatThrownBy(() -> new MenuEntity(menuName, givenPrice, menuGroup, menuProductEntities)).isInstanceOf(IllegalArgumentException.class);
+    assertThatThrownBy(() -> new MenuEntity(menuName, givenPrice, menuGroupId, menuProductEntities)).isInstanceOf(IllegalArgumentException.class);
   }
 
   @DisplayName("가격이 메뉴상품 목록 세부 가격의 합보다 작거나 같아야 한다.")
@@ -73,6 +71,6 @@ class MenuEntityTest {
     Double menuPriceLargerThanMenuProductsAmount = 5_000D;
 
     //when & then
-    assertThatThrownBy(() -> new MenuEntity(menuName, menuPriceLargerThanMenuProductsAmount, menuGroup, menuProductEntities)).isInstanceOf(IllegalArgumentException.class);
+    assertThatThrownBy(() -> new MenuEntity(menuName, menuPriceLargerThanMenuProductsAmount, menuGroupId, menuProductEntities)).isInstanceOf(IllegalArgumentException.class);
   }
 }

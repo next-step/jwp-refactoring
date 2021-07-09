@@ -64,4 +64,8 @@ class Price {
   public int hashCode() {
     return Objects.hash(value);
   }
+
+  public int compare(BigDecimal otherValue) {
+    return value.compareTo(otherValue);
+  }
 }

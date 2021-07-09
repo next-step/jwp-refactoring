@@ -28,7 +28,7 @@ public class MenuResponse {
     return new MenuResponse(entity.getId(),
         entity.getName(),
         entity.getPrice(),
-        entity.getMenuGroup().getId(),
+        entity.getMenuGroupId(),
         toMenuProductResponse(entity.getMenuProducts()));
   }
 
@@ -92,7 +92,7 @@ public class MenuResponse {
     }
 
     public static MenuProductResponse from(MenuProductEntity entity) {
-      return new MenuProductResponse(entity.getSeq(), entity.getMenu().getId(), entity.getProduct().getId(), entity.getQuantity());
+      return new MenuProductResponse(entity.getSeq(), entity.getMenu().getId(), entity.getProductId(), entity.getQuantity());
     }
 
     public long getSeq() {
