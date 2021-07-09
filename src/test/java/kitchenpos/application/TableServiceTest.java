@@ -108,9 +108,10 @@ class TableServiceTest {
             new OrderTable(1, false)
         );
 
-        Order order = new Order(orderTable, orderStatus);
-        order.appendOrderLineItems(new OrderLineItem(order, menu, 1L));
-        orderService.create(order);
+
+        Order savedOrder = orderService.create(new Order(orderTable, OrderLineItem.valueOf(menu, 1L)));
+        savedOrder.chaangeOrderStatus(orderStatus);
+        orderService.changeOrderStatus(savedOrder.getId(), savedOrder);
 
         // then
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), orderTable))

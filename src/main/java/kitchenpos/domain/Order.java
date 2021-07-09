@@ -2,10 +2,9 @@ package kitchenpos.domain;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,8 +24,8 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
-    private List<OrderLineItem> orderLineItems = new ArrayList<>();
+    @Embedded
+    private OrderLineItems orderLineItems = new OrderLineItems(this);
 
     @CreatedDate
     private LocalDateTime orderedTime;
@@ -34,14 +33,19 @@ public class Order {
     public Order() {
     }
 
-    public Order(final Long id, final OrderTable orderTable, final OrderStatus orderStatus) {
+    public Order(final Long id, final OrderTable orderTable, final OrderLineItem... orderLineItems) {
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException("빈 테이블에서는 주문을 할수가 없습니다.");
+        }
+
         this.id = id;
         this.orderTable = orderTable;
-        this.orderStatus = orderStatus;
+        this.orderStatus = OrderStatus.COOKING;
+        this.orderLineItems.add(Arrays.asList(orderLineItems));
     }
 
-    public Order(final OrderTable orderTable, final OrderStatus orderStatus) {
-        this(null, orderTable, orderStatus);
+    public Order(final OrderTable orderTable, final OrderLineItem... orderLineItems) {
+        this(null, orderTable, orderLineItems);
     }
 
     public Long getId() {
@@ -57,7 +61,7 @@ public class Order {
     }
 
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
+        return orderLineItems.list();
     }
 
     public boolean equalsByOrderStatus(OrderStatus orderStatus) {

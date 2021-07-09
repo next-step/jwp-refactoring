@@ -23,10 +23,18 @@ public class OrderLineItem {
     public OrderLineItem() {
     }
 
-    public OrderLineItem(final Order order, final Menu menu, final long quantity) {
+    public static OrderLineItem valueOf(final Menu menu, final long quantity) {
+        return new OrderLineItem(null, menu, quantity);
+    }
+
+    private OrderLineItem(final Order order, final Menu menu, final long quantity) {
         this.order = order;
         this.menu = menu;
         this.quantity = quantity;
+    }
+
+    protected void order(Order order) {
+        this.order = order;
     }
 
     public Long getId() {

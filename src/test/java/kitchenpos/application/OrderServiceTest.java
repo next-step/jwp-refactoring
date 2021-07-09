@@ -42,8 +42,7 @@ class OrderServiceTest {
             new OrderTable(1, false)
         );
 
-        Order order = new Order(orderTable, OrderStatus.COOKING);
-        order.appendOrderLineItems(new OrderLineItem(order, menu, 1L));
+        Order order = new Order(orderTable, OrderLineItem.valueOf(menu, 1L));
 
         // when
         Order actualOrder = orderService.create(order);
@@ -60,10 +59,8 @@ class OrderServiceTest {
             new OrderTable(1, false)
         );
 
-        Order order = new Order(orderTable, OrderStatus.COOKING);
-
         // when
-        assertThatThrownBy(() -> orderService.create(order))
+        assertThatThrownBy(() -> new Order(orderTable))
             .isInstanceOf(RuntimeException.class)
             .hasMessageContaining("주문항목이 존재하지 않습니다.");
     }
@@ -77,8 +74,7 @@ class OrderServiceTest {
             new OrderTable(1, false)
         );
 
-        Order order = new Order(orderTable, OrderStatus.COOKING);
-        order.appendOrderLineItems(new OrderLineItem(order, noneMenu, 1L));
+        Order order = new Order(orderTable, OrderLineItem.valueOf(noneMenu, 1L));
 
         // when
         assertThatThrownBy(() -> orderService.create(order))
@@ -93,8 +89,7 @@ class OrderServiceTest {
         Menu menu = menuService.list().get(0);
         OrderTable orderTable = new OrderTable(TestUtils.getRandomId(), 1, false);
 
-        Order order = new Order(TestUtils.getRandomId(), orderTable, OrderStatus.COOKING);
-        order.appendOrderLineItems(new OrderLineItem(order, menu, 1L));
+        Order order = new Order(TestUtils.getRandomId(), orderTable, OrderLineItem.valueOf(menu, 1L));
 
         // when
         assertThatThrownBy(() -> orderService.create(order))
@@ -111,11 +106,8 @@ class OrderServiceTest {
             new OrderTable(1, true)
         );
 
-        Order order = new Order(orderTable, OrderStatus.COOKING);
-        order.appendOrderLineItems(new OrderLineItem(order, menu, 1L));
-
         // when
-        assertThatThrownBy(() -> orderService.create(order))
+        assertThatThrownBy(() -> new Order(orderTable, OrderLineItem.valueOf(menu, 1L)))
             .isInstanceOf(RuntimeException.class)
             .hasMessageContaining("빈 테이블에서는 주문을 할수가 없습니다.");
     }
@@ -129,8 +121,7 @@ class OrderServiceTest {
             new OrderTable(1, false)
         );
 
-        Order order = new Order(orderTable, OrderStatus.COOKING);
-        order.appendOrderLineItems(new OrderLineItem(order, menu, 1L));
+        Order order = new Order(orderTable, OrderLineItem.valueOf(menu, 1L));
         order = orderService.create(order);
 
         // when
@@ -151,8 +142,7 @@ class OrderServiceTest {
             new OrderTable(1, false)
         );
 
-        Order order = new Order(TestUtils.getRandomId(), orderTable, OrderStatus.COOKING);
-        order.appendOrderLineItems(new OrderLineItem(order, menu, 1L));
+        Order order = new Order(TestUtils.getRandomId(), orderTable, OrderLineItem.valueOf(menu, 1L));
 
         // then
         assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), order))
@@ -169,12 +159,11 @@ class OrderServiceTest {
             new OrderTable(1, false)
         );
 
-        Order order = new Order(orderTable, OrderStatus.COMPLETION);
-        order.appendOrderLineItems(new OrderLineItem(order, menu, 1L));
+        Order order = new Order(orderTable, OrderLineItem.valueOf(menu, 1L));
         Order createdOrder = orderService.create(order);
+        createdOrder.chaangeOrderStatus(OrderStatus.COMPLETION);
 
         // when
-        createdOrder.chaangeOrderStatus(OrderStatus.COMPLETION);
         Order changedOrder = orderService.changeOrderStatus(createdOrder.getId(), createdOrder);
 
         // then

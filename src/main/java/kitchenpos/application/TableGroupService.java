@@ -2,7 +2,6 @@ package kitchenpos.application;
 
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
-import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import kitchenpos.repository.OrderTableGroupRepository;
 import org.springframework.stereotype.Service;
@@ -13,18 +12,16 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class TableGroupService {
-    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
     private final OrderTableGroupRepository orderTableGroupRepository;
 
-    public TableGroupService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository, final OrderTableGroupRepository orderTableGroupRepository) {
-        this.orderRepository = orderRepository;
+    public TableGroupService(final OrderTableRepository orderTableRepository, final OrderTableGroupRepository orderTableGroupRepository) {
         this.orderTableRepository = orderTableRepository;
         this.orderTableGroupRepository = orderTableGroupRepository;
     }
 
     public TableGroup create(final TableGroup tableGroup) {
-        createValidation(tableGroup);
+        createTableGroupValidation(tableGroup);
 
         return orderTableGroupRepository.save(tableGroup);
     }
@@ -42,7 +39,7 @@ public class TableGroupService {
 
     //TODO : 도메인으로 이동 방법 고민
     @Transactional(readOnly = true)
-    protected void createValidation(final TableGroup tableGroup) {
+    protected void createTableGroupValidation(final TableGroup tableGroup) {
         final List<OrderTable> orderTables = tableGroup.getOrderTables();
         final List<Long> orderTableIds = orderTables.stream()
                 .map(OrderTable::getId)
