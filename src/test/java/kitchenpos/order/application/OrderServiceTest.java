@@ -5,6 +5,8 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.dto.OrderStatusRequest;
+import kitchenpos.order.dto.OrderStatusResponse;
 import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -62,7 +64,6 @@ class OrderServiceTest {
         주문내역들 = Arrays.asList(주문수량메뉴1, 주문수량메뉴2);
         주문 = new Order(1L, 주문테이블Id, OrderStatus.COOKING.name(), LocalDateTime.now(), 주문내역들);
         주문요청 = new OrderRequest(주문테이블Id, 주문내역들);
-        chageStatusOrder = new Order(1L, 주문테이블Id, OrderStatus.MEAL.name(), LocalDateTime.now(), 주문내역들);
         다른주문 = new Order(2L, new주문테이블Id, OrderStatus.MEAL.name(), LocalDateTime.now(), 주문내역들);
     }
 
@@ -125,39 +126,46 @@ class OrderServiceTest {
     void list() {
         given(orderRepository.findAll()).willReturn(Arrays.asList(주문, 다른주문));
 
-        List<Order> orders = orderService.list();
-
-        assertThat(orders).containsExactly(주문, 다른주문);
+        List<OrderResponse> orders = orderService.list();
+        assertAll(
+                () -> assertThat(orders.get(0).getOrderTableId()).isEqualTo(OrderResponse.from(주문).getOrderTableId()),
+                () -> assertThat(orders.get(1).getOrderTableId()).isEqualTo(OrderResponse.from(다른주문).getOrderTableId()));
     }
 
     @DisplayName("주문 상태를 변경한다.")
     @Test
     void changeOrderStatus() {
-        given(orderRepository.findById(anyLong())).willReturn(Optional.ofNullable(chageStatusOrder));
+        String changedStatus = OrderStatus.COMPLETION.name();
+        OrderStatusRequest orderStatusRequest = new OrderStatusRequest(changedStatus);
+        given(orderRepository.findById(anyLong())).willReturn(Optional.ofNullable(주문));
+        given(orderRepository.save(any())).willReturn(주문);
 
-        Order changed = orderService.changeOrderStatus(주문.getId(), chageStatusOrder);
+        OrderStatusResponse changed = orderService.changeOrderStatus(주문.getId(), orderStatusRequest);
 
         assertAll(
-                () -> assertThat(changed).isEqualTo(chageStatusOrder),
-                () -> assertThat(changed.getOrderLineItems()).isEqualTo(주문내역들));
+                () -> assertThat(changed.getOrderStatus()).isEqualTo(changedStatus));
     }
 
     @DisplayName("주문 상태를 변경을 실패한다 - 기존에 등록된 주문이 없으면 주문 상태 변경에 실패한다.")
     @Test
     void fail_changeOrderStatus1() {
+        String changedStatus = OrderStatus.COMPLETION.name();
+        OrderStatusRequest orderStatusRequest = new OrderStatusRequest(changedStatus);
         given(orderRepository.findById(anyLong())).willReturn(Optional.empty());
 
-        assertThatThrownBy(() -> orderService.changeOrderStatus(주문.getId(), chageStatusOrder))
+        assertThatThrownBy(() -> orderService.changeOrderStatus(주문.getId(), orderStatusRequest))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문 상태를 변경을 실패한다 - 주문 상태가 기존에 계산 완료(COMPLETION) 상태일 경우 주문 상태 변경에 실패한다.")
     @Test
     void fail_changeOrderStatus2() {
+        String changedStatus = OrderStatus.COMPLETION.name();
+        OrderStatusRequest orderStatusRequest = new OrderStatusRequest(changedStatus);
         Order order = new Order(1L, 1L, OrderStatus.COMPLETION.name(), LocalDateTime.now(), 주문내역들);
         given(orderRepository.findById(anyLong())).willReturn(Optional.ofNullable(order));
 
-        assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), chageStatusOrder))
+        assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), orderStatusRequest))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

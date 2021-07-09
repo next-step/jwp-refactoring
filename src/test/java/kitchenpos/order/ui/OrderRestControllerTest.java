@@ -7,6 +7,8 @@ import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.dto.OrderStatusRequest;
+import kitchenpos.order.dto.OrderStatusResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -78,7 +80,7 @@ class OrderRestControllerTest {
         OrderLineItem orderLineItem2 = new OrderLineItem(2L, 2L, 3L, 1L);
         Order order2 = new Order(2L, 2L, OrderStatus.MEAL.name(), LocalDateTime.now(), Arrays.asList(orderLineItem2));
 
-        given(orderService.list()).willReturn(Arrays.asList(order1, order2));
+        given(orderService.list()).willReturn(Arrays.asList(OrderResponse.from(order1), OrderResponse.from(order2)));
 
         mockMvc.perform(get("/api/orders"))
                 .andExpect(status().isOk());
@@ -89,10 +91,13 @@ class OrderRestControllerTest {
     void changeOrderStatus() throws Exception {
         Long orderId = 1L;
         OrderLineItem orderLineItem1 = new OrderLineItem(1L, 1L, 1L, 1L);
-        Order changedOrder = new Order(orderId, 1L, OrderStatus.MEAL.name(), LocalDateTime.now(), Arrays.asList(orderLineItem1));
-        String orderJsonString = objectMapper.writeValueAsString(changedOrder);
+        Order changedOrder = new Order(orderId, 1L, OrderStatus.MEAL.name(),
+                LocalDateTime.now(), Arrays.asList(orderLineItem1));
+        OrderStatusRequest orderStatusRequest = new OrderStatusRequest(OrderStatus.COMPLETION.name());
+        String orderJsonString = objectMapper.writeValueAsString(orderStatusRequest);
 
-        given(orderService.changeOrderStatus(anyLong(), any())).willReturn(changedOrder);
+        given(orderService.changeOrderStatus(anyLong(), any()))
+                .willReturn(OrderStatusResponse.from(changedOrder.getOrderStatus()));
 
         mockMvc.perform(put("/api/orders/" + orderId + "/order-status")
                 .contentType(MediaType.APPLICATION_JSON)
