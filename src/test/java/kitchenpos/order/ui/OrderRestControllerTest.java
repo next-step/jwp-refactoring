@@ -5,6 +5,8 @@ import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +21,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
@@ -53,10 +56,13 @@ class OrderRestControllerTest {
     @DisplayName("주문을 등록한다.")
     @Test
     void create() throws Exception {
+        Long 주문테이블Id = 1L;
         OrderLineItem orderLineItem = new OrderLineItem(1L, 1L, 1L, 1L);
-        Order order = new Order(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), Arrays.asList(orderLineItem));
-        String orderJsonString = objectMapper.writeValueAsString(order);
-        given(orderService.create(any())).willReturn(order);
+        List<OrderLineItem> 주문내역들 = Arrays.asList(orderLineItem);
+        OrderRequest orderRequest = new OrderRequest(주문테이블Id, 주문내역들);
+        Order order = new Order(1L, 주문테이블Id, OrderStatus.COOKING.name(), LocalDateTime.now(), 주문내역들);
+        String orderJsonString = objectMapper.writeValueAsString(orderRequest);
+        given(orderService.create(any())).willReturn(OrderResponse.from(order));
 
         mockMvc.perform(post("/api/orders")
                 .contentType(MediaType.APPLICATION_JSON)
