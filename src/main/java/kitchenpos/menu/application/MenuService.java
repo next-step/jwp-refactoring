@@ -39,7 +39,8 @@ public class MenuService {
             .orElseThrow(NoSuchMenuGroupException::new);
         List<Product> productList = productRepository.findAllById(menuRequest.getProductIds());
         List<MenuProduct> menuProductList = menuRequest.toMenuProducts(productList);
-        Menu menu = Menu.create(menuRequest, menuGroup, MenuProducts.of(menuProductList));
+        Menu menu = menuRepository.save(Menu.create(menuRequest, menuGroup));
+        menu.productsAssginMenu(menuRequest, MenuProducts.of(menuProductList));
 
         return MenuResponse.of(menuRepository.save(menu));
     }
