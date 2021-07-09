@@ -5,9 +5,10 @@ import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menu.MenuProduct;
 import kitchenpos.dto.menu.MenuProductRequest;
 import kitchenpos.dto.menu.MenuRequest;
-import kitchenpos.exception.InvalidPriceException;
+import kitchenpos.event.product.MenuCreatedEvent;
 import kitchenpos.exception.MenuGroupAlreadyExistsException;
 import kitchenpos.repository.MenuRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,17 +17,16 @@ import java.util.List;
 @Service
 public class MenuService {
     private final MenuRepository menuRepository;
-    private final ProductService productService;
     private final MenuGroupService menuGroupService;
+    private final ApplicationEventPublisher eventPublisher;
 
     public MenuService(
             final MenuRepository menuRepository,
-            final ProductService productService,
-            final MenuGroupService menuGroupService
-    ) {
+            final MenuGroupService menuGroupService,
+            final ApplicationEventPublisher eventPublisher) {
         this.menuRepository = menuRepository;
-        this.productService = productService;
         this.menuGroupService = menuGroupService;
+        this.eventPublisher = eventPublisher;
     }
 
     @Transactional
@@ -47,13 +47,11 @@ public class MenuService {
         menuProductRequests.stream()
                 .map(menuProductRequest ->
                         MenuProduct.of(null,
-                                productService.getProduct(menuProductRequest.getProductId()),
+                                menuProductRequest.getProductId(),
                                 menuProductRequest.getQuantity()))
                 .forEach(menu::addMenuProduct);
 
-        if (!menu.isReasonablePrice()) {
-            throw new InvalidPriceException("Total Price is higher then expected MenuProduct Price");
-        }
+        eventPublisher.publishEvent(new MenuCreatedEvent(menu));
 
         return menuRepository.save(menu);
     }

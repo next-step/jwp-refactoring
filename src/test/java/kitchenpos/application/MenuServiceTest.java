@@ -1,14 +1,15 @@
 package kitchenpos.application;
 
+import kitchenpos.domain.menu.Menu;
+import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menu.Price;
+import kitchenpos.domain.product.Product;
+import kitchenpos.dto.menu.MenuProductRequest;
+import kitchenpos.dto.menu.MenuRequest;
+import kitchenpos.event.product.MenuCreatedEvent;
 import kitchenpos.exception.InvalidPriceException;
 import kitchenpos.exception.MenuGroupAlreadyExistsException;
 import kitchenpos.repository.MenuRepository;
-import kitchenpos.domain.menu.Menu;
-import kitchenpos.domain.menu.MenuGroup;
-import kitchenpos.domain.menu.Product;
-import kitchenpos.dto.menu.MenuProductRequest;
-import kitchenpos.dto.menu.MenuRequest;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,13 +18,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,7 +37,7 @@ class MenuServiceTest {
     private MenuRepository menuRepository;
 
     @Mock
-    private ProductService productService;
+    private ApplicationEventPublisher eventPublisher;
 
     @Mock
     private MenuGroupService menuGroupService;
@@ -58,7 +62,7 @@ class MenuServiceTest {
         menuRequest = new MenuRequest("tomato pasta", Price.of(BigDecimal.ZERO), ANY_MENU_GROUP_ID, new ArrayList<>());
         menu = Menu.of("tomato pasta", Price.of(BigDecimal.ZERO), menuGroup);
 
-        dummyProduct = Product.of("rice", Price.of(BigDecimal.valueOf(10)));
+        dummyProduct = Product.of("rice", kitchenpos.domain.product.Price.of(BigDecimal.valueOf(10)));
         ReflectionTestUtils.setField(dummyProduct, "id", ANY_PRODUCT_ID);
     }
 
@@ -71,6 +75,7 @@ class MenuServiceTest {
 
         menuService.create(menuRequest);
 
+        verify(eventPublisher).publishEvent(any(MenuCreatedEvent.class));
         verify(menuRepository).save(menu);
     }
 
@@ -88,7 +93,7 @@ class MenuServiceTest {
     void price() {
         given(menuGroupService.isExists(menuGroup.getId())).willReturn(false);
         given(menuGroupService.findById(ANY_MENU_GROUP_ID)).willReturn(menuGroup);
-        given(productService.getProduct(1L)).willReturn(dummyProduct);
+        doThrow(InvalidPriceException.class).when(eventPublisher).publishEvent(any(MenuCreatedEvent.class));
 
         menuRequest = new MenuRequest("tomato pasta", Price.of(BigDecimal.valueOf(100L)), ANY_MENU_GROUP_ID,
                 Lists.list(new MenuProductRequest(ANY_PRODUCT_ID, 1)));

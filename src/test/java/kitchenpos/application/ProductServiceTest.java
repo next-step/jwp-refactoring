@@ -1,8 +1,9 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.menu.Price;
-import kitchenpos.domain.menu.Product;
-import kitchenpos.dto.menu.ProductRequest;
+import kitchenpos.application.product.ProductService;
+import kitchenpos.domain.product.Price;
+import kitchenpos.domain.product.Product;
+import kitchenpos.dto.product.ProductRequest;
 import kitchenpos.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,8 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.math.BigDecimal;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;

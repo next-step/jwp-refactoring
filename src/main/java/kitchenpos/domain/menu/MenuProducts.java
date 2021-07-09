@@ -2,7 +2,7 @@ package kitchenpos.domain.menu;
 
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import java.math.BigDecimal;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -10,7 +10,7 @@ import java.util.Objects;
 import static javax.persistence.FetchType.LAZY;
 
 @Embeddable
-public class MenuProducts {
+public class MenuProducts implements Serializable {
 
     @OneToMany(fetch = LAZY, mappedBy = "menu")
     private List<MenuProduct> value;
@@ -28,16 +28,6 @@ public class MenuProducts {
 
     public List<MenuProduct> getValue() {
         return Collections.unmodifiableList(value);
-    }
-
-    public Price sumOfMenuProductPrice() {
-        BigDecimal sum = BigDecimal.ZERO;
-        for (final MenuProduct menuProduct : value) {
-            final Product product = menuProduct.getProduct();
-            Price multiply = product.multiply(BigDecimal.valueOf(menuProduct.getQuantity()));
-            sum = sum.add(multiply.value);
-        }
-        return Price.of(sum);
     }
 
     protected void addMenuProduct(MenuProduct menuProduct){

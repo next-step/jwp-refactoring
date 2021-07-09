@@ -1,4 +1,4 @@
-package kitchenpos.domain.menu;
+package kitchenpos.domain.product;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -40,10 +40,6 @@ public class Product {
 
     public Price getPrice() {
         return price;
-    }
-
-    public void changePrice(Price price) {
-        this.price = price;
     }
 
     public Price multiply(BigDecimal factor) {

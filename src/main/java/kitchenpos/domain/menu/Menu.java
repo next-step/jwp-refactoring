@@ -1,13 +1,14 @@
 package kitchenpos.domain.menu;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Objects;
 
 import static javax.persistence.FetchType.LAZY;
 
 @Entity
-public class Menu {
+public class Menu implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,11 +60,6 @@ public class Menu {
 
     public MenuProducts getMenuProducts() {
         return menuProducts;
-    }
-
-    public boolean isReasonablePrice() {
-        Price sum = menuProducts.sumOfMenuProductPrice();
-        return !price.isGreaterThen(sum);
     }
 
     public void addMenuProduct(MenuProduct menuProduct) {

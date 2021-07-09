@@ -1,12 +1,12 @@
-package kitchenpos.domain.menu;
+package kitchenpos.domain.product;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
+
 @Embeddable
-public class Price implements Serializable {
+public class Price {
 
     @Column(name = "price")
     BigDecimal value;
@@ -44,10 +44,6 @@ public class Price implements Serializable {
                 '}';
     }
 
-    public boolean isGreaterThen(Price price){
-        return value.compareTo(price.value) > 0;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -59,5 +55,9 @@ public class Price implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(value);
+    }
+
+    public Price add(Price another) {
+        return Price.of(this.value.add(another.value));
     }
 }
