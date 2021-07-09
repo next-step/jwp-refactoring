@@ -39,7 +39,7 @@ public class MenuProduct {
         this.quantity = quantity;
     }
 
-    public void setMenu(final Menu menu) {
+    public void connectMenu(final Menu menu) {
         this.menu = menu;
     }
 

@@ -54,7 +54,7 @@ public class Order {
         this.orderLineItems.add(orderLineItems);
         this.orderedTime = LocalDateTime.now();
 
-        this.orderLineItems.setOrder(this);
+        this.orderLineItems.connectOrder(this);
     }
 
     public boolean isCompletion() {

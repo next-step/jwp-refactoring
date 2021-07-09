@@ -37,7 +37,7 @@ public class OrderLineItem {
         this.quantity = quantity;
     }
 
-    public void setOrder(final Order order) {
+    public void connectOrder(final Order order) {
         this.order = order;
     }
 

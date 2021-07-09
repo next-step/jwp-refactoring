@@ -22,8 +22,8 @@ public class MenuProducts {
         this.menuProducts.addAll(menuProducts);
     }
 
-    public void setMenu(final Menu menu) {
-        this.menuProducts.forEach(menuProduct -> menuProduct.setMenu(menu));
+    public void connectMenu(final Menu menu) {
+        this.menuProducts.forEach(menuProduct -> menuProduct.connectMenu(menu));
     }
 
     public void checkOverPrice(final BigDecimal price) {

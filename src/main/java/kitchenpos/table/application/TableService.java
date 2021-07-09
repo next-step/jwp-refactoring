@@ -49,7 +49,7 @@ public class TableService {
         final OrderTable savedOrderTable = findOrderTableById(orderTableId);
         savedOrderTable.checkNotIncludeTableGroup();
         checkNotCompletionOrder(orderTableId);
-        savedOrderTable.setEmpty(request.isEmpty());
+        savedOrderTable.changeEmpty(request.isEmpty());
         return OrderTableResponse.of(savedOrderTable);
     }
 

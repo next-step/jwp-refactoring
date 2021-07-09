@@ -18,8 +18,8 @@ public class OrderLineItems {
         this.orderLineItems.addAll(orderLineItems);
     }
 
-    public void setOrder(final Order order) {
-        this.orderLineItems.forEach(orderLineItem -> orderLineItem.setOrder(order));
+    public void connectOrder(final Order order) {
+        this.orderLineItems.forEach(orderLineItem -> orderLineItem.connectOrder(order));
     }
 
 

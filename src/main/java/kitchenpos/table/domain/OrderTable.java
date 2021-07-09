@@ -51,7 +51,7 @@ public class OrderTable {
         tableGroup.addOrderTable(this);
     }
 
-    public void setEmpty(boolean empty) {
+    public void changeEmpty(boolean empty) {
         this.empty = empty;
     }
 
