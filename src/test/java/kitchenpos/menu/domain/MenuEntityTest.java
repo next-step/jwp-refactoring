@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.product.domain.ProductEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,8 +21,8 @@ class MenuEntityTest {
   private String menuName;
   private Double menuPrice;
   private Long menuGroupId;
-  private Long productId1;
-  private Long productId2;
+  private ProductEntity productEntity1;
+  private ProductEntity productEntity2;
   private MenuProductEntity menuProductEntity1;
   private MenuProductEntity menuProductEntity2;
   private List<MenuProductEntity> menuProductEntities;
@@ -32,10 +33,10 @@ class MenuEntityTest {
     menuName = "메뉴이름";
     menuPrice = 4_000D;
     menuGroupId = 1L;
-    productId1 = 1L;
-    productId2 = 2L;
-    menuProductEntity1 = new MenuProductEntity(productId1, 2L);
-    menuProductEntity2 = new MenuProductEntity(productId2, 1L);
+    productEntity1 = new ProductEntity(1L, "상품1", 1_000D);
+    productEntity2 = new ProductEntity(2L, "상품2", 2_000D);
+    menuProductEntity1 = new MenuProductEntity(productEntity1.getId(), 2L);
+    menuProductEntity2 = new MenuProductEntity(productEntity2.getId(), 1L);
     menuProductEntities = Arrays.asList(menuProductEntity1, menuProductEntity2);
   }
 
@@ -69,8 +70,9 @@ class MenuEntityTest {
   void createFailCauseNotMatchedPrice() {
     //given
     Double menuPriceLargerThanMenuProductsAmount = 5_000D;
+    MenuEntity invalidPriceMenu = new MenuEntity(menuName, menuPriceLargerThanMenuProductsAmount, menuGroupId, menuProductEntities);
 
     //when & then
-    assertThatThrownBy(() -> new MenuEntity(menuName, menuPriceLargerThanMenuProductsAmount, menuGroupId, menuProductEntities)).isInstanceOf(IllegalArgumentException.class);
+    assertThatThrownBy(() -> invalidPriceMenu.validatePrice(Arrays.asList(productEntity1, productEntity2))).isInstanceOf(IllegalArgumentException.class);
   }
 }
