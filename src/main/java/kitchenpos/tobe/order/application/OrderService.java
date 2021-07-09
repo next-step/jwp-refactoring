@@ -7,10 +7,11 @@ import kitchenpos.tobe.order.domain.Order;
 import kitchenpos.tobe.order.domain.OrderLineItem;
 import kitchenpos.tobe.order.domain.OrderRepository;
 import kitchenpos.tobe.order.domain.OrderStatus;
-import kitchenpos.tobe.order.domain.OrderTable;
-import kitchenpos.tobe.order.domain.OrderTableRepository;
 import kitchenpos.tobe.order.dto.OrderRequest;
 import kitchenpos.tobe.order.dto.OrderResponse;
+import kitchenpos.tobe.table.application.OrderTableNotFoundException;
+import kitchenpos.tobe.table.domain.OrderTable;
+import kitchenpos.tobe.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +23,7 @@ import static java.util.stream.Collectors.toList;
 @Transactional(readOnly = true)
 public class OrderService {
     private static final String NOT_FOUND_ORDER_TABLE = "찾을 수 없는 주문 테이블: ";
-    public static final String NOT_FOUND_ORDER = "찾을 수 없는 주문 ";
+    private static final String NOT_FOUND_ORDER = "찾을 수 없는 주문 ";
 
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;

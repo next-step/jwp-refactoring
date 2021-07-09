@@ -1,7 +1,5 @@
 package kitchenpos.tobe.table.domain;
 
-import kitchenpos.tobe.order.domain.OrderTable;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -24,10 +22,6 @@ public class TableGroup {
     private List<OrderTable> orderTables = new ArrayList<>();
 
     private LocalDateTime createdDate;
-
-    private Integer numberOfGuests;
-
-    private boolean empty;
 
     protected TableGroup() {
     }

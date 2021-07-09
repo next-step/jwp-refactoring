@@ -3,7 +3,7 @@ package kitchenpos.tobe.order.dto;
 import kitchenpos.tobe.order.domain.Order;
 import kitchenpos.tobe.order.domain.OrderLineItem;
 import kitchenpos.tobe.order.domain.OrderStatus;
-import kitchenpos.tobe.order.domain.OrderTable;
+import kitchenpos.tobe.table.domain.OrderTable;
 
 import java.time.LocalDateTime;
 import java.util.List;

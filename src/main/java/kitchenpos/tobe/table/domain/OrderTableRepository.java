@@ -1,4 +1,4 @@
-package kitchenpos.tobe.order.domain;
+package kitchenpos.tobe.table.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

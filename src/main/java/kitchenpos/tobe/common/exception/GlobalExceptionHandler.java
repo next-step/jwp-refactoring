@@ -3,11 +3,13 @@ package kitchenpos.tobe.common.exception;
 import kitchenpos.tobe.menu.application.MenuNotMatchException;
 import kitchenpos.tobe.order.application.OrderLineItemNotFoundException;
 import kitchenpos.tobe.order.application.OrderNotFoundException;
-import kitchenpos.tobe.order.application.OrderTableNotFoundException;
+import kitchenpos.tobe.table.application.OrderTableNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import javax.persistence.EntityExistsException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -20,6 +22,12 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(IllegalStateException.class)
     public ErrorResponse handleIllegalState(Exception e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(EntityExistsException.class)
+    public ErrorResponse handleEntityExist(Exception e) {
         return new ErrorResponse(e.getMessage());
     }
 

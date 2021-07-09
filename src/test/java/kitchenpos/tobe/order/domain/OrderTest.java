@@ -1,6 +1,7 @@
 package kitchenpos.tobe.order.domain;
 
 import kitchenpos.tobe.menu.domain.Menu;
+import kitchenpos.tobe.table.domain.OrderTable;
 import kitchenpos.tobe.table.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

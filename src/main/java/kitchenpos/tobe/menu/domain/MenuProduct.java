@@ -29,7 +29,7 @@ public class MenuProduct {
 
     private Long quantity;
 
-    public void setMenu(Menu menu) {
+    public void registerMenu(Menu menu) {
         this.menu = menu;
     }
 

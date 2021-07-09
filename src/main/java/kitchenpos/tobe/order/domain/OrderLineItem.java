@@ -31,7 +31,7 @@ public class OrderLineItem {
     protected OrderLineItem() {
     }
 
-    public void setOrder(Order order) {
+    public void registerOrder(Order order) {
         this.order = order;
     }
 

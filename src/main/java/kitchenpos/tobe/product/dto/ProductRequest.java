@@ -4,7 +4,8 @@ import kitchenpos.tobe.product.domain.Product;
 
 import java.math.BigDecimal;
 
-public class ProductRequest {
+public class
+ProductRequest {
     private String name;
 
     private BigDecimal price;

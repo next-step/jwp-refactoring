@@ -2,6 +2,7 @@ package kitchenpos.tobe.order.domain;
 
 import kitchenpos.tobe.menu.application.MenuNotMatchException;
 import kitchenpos.tobe.menu.domain.Menu;
+import kitchenpos.tobe.table.domain.OrderTable;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -47,7 +48,7 @@ public class Order {
 
     public void addOrderLineItem(OrderLineItem orderLineItem) {
         orderLineItems.add(orderLineItem);
-        orderLineItem.setOrder(this);
+        orderLineItem.registerOrder(this);
     }
 
     public static Order generateOrder(OrderTable orderTable, List<OrderLineItem> orderLineItems, List<Menu> menus) {
@@ -75,6 +76,17 @@ public class Order {
         }
     }
 
+    public void changeOrderStatus(OrderStatus orderStatus) {
+        validateOrderState();
+        this.orderStatus = orderStatus;
+    }
+
+    private void validateOrderState() {
+        if (Objects.equals(orderStatus, OrderStatus.COMPLETION)) {
+            throw new IllegalStateException(CHANGE_NOT_ALLOWED);
+        }
+    }
+
     public Long getId() {
         return id;
     }
@@ -93,17 +105,6 @@ public class Order {
 
     public LocalDateTime getOrderedTime() {
         return orderedTime;
-    }
-
-    public void changeOrderStatus(OrderStatus orderStatus) {
-        validateOrderState();
-        this.orderStatus = orderStatus;
-    }
-
-    private void validateOrderState() {
-        if (Objects.equals(orderStatus, OrderStatus.COMPLETION)) {
-            throw new IllegalStateException(CHANGE_NOT_ALLOWED);
-        }
     }
 
     public static Builder builder() {

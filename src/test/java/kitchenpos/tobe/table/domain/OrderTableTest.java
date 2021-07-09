@@ -1,6 +1,5 @@
-package kitchenpos.tobe.order.domain;
+package kitchenpos.tobe.table.domain;
 
-import kitchenpos.tobe.table.domain.TableGroup;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;

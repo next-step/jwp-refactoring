@@ -1,9 +1,8 @@
-package kitchenpos.tobe.order.domain;
+package kitchenpos.tobe.table.domain;
 
-
-import kitchenpos.tobe.table.domain.TableGroup;
 
 import javax.persistence.Entity;
+import javax.persistence.EntityExistsException;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
@@ -15,6 +14,11 @@ import java.util.Objects;
 
 @Entity
 public class OrderTable {
+    private static final String TABLE_GROUP_EXIST = "단체 지정에 포함되어 있습니다.";
+    private static final int MINIMUM_GUEST_NUMBER = 0;
+    public static final String GUEST_NOT_EXIST = "변경할 손님이 존재 하지 않습니다.";
+    public static final String TABLE_EMPTY = "테이블이 비어있는 상태입니다";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,9 +29,13 @@ public class OrderTable {
 
     private Integer numberOfGuests;
 
-    private boolean empty;
+    private Boolean empty;
 
     protected OrderTable() {
+    }
+
+    public OrderTable(Integer numberOfGuests, Boolean empty) {
+        this(null, null, numberOfGuests, empty);
     }
 
     public OrderTable(Long id, TableGroup tableGroup, Integer numberOfGuests, boolean empty) {
@@ -35,6 +43,35 @@ public class OrderTable {
         this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
+    }
+
+    public void changeEmpty(Boolean empty) {
+        validateEmpty();
+        this.empty = empty;
+    }
+
+    private void validateEmpty() {
+        if (checkTableGroupExist()) {
+            throw new EntityExistsException(TABLE_GROUP_EXIST);
+        }
+    }
+
+    private boolean checkTableGroupExist() {
+        return Objects.nonNull(tableGroup);
+    }
+
+    public void changeNumberOfGuests(Integer numberOfGuests) {
+        validateNumberOfGuests(numberOfGuests);
+        this.numberOfGuests = numberOfGuests;
+    }
+
+    private void validateNumberOfGuests(Integer numberOfGuests) {
+        if (Objects.nonNull(numberOfGuests) && numberOfGuests < MINIMUM_GUEST_NUMBER) {
+            throw new IllegalArgumentException(GUEST_NOT_EXIST);
+        }
+        if (isEmpty()) {
+            throw new IllegalStateException(TABLE_EMPTY);
+        }
     }
 
     public Long getId() {

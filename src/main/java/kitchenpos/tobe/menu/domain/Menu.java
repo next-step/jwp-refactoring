@@ -30,7 +30,7 @@ public class Menu {
     }
 
     public void addMenuProduct(MenuProduct menuProduct) {
-        menuProduct.setMenu(this);
+        menuProduct.registerMenu(this);
         this.menuProducts.add(menuProduct);
     }
 

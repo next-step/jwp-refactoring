@@ -1,4 +1,4 @@
-package kitchenpos.tobe.order.application;
+package kitchenpos.tobe.table.application;
 
 public class OrderTableNotFoundException extends RuntimeException {
 

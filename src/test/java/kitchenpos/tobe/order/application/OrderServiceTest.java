@@ -7,11 +7,12 @@ import kitchenpos.tobe.order.domain.Order;
 import kitchenpos.tobe.order.domain.OrderLineItems;
 import kitchenpos.tobe.order.domain.OrderRepository;
 import kitchenpos.tobe.order.domain.OrderStatus;
-import kitchenpos.tobe.order.domain.OrderTable;
-import kitchenpos.tobe.order.domain.OrderTableRepository;
 import kitchenpos.tobe.order.dto.OrderLineItemRequest;
 import kitchenpos.tobe.order.dto.OrderRequest;
 import kitchenpos.tobe.order.dto.OrderResponse;
+import kitchenpos.tobe.table.application.OrderTableNotFoundException;
+import kitchenpos.tobe.table.domain.OrderTable;
+import kitchenpos.tobe.table.domain.OrderTableRepository;
 import kitchenpos.tobe.table.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -177,7 +178,7 @@ class OrderServiceTest {
                 .build();
         when(orderRepository.findById(anyLong()))
                 .thenReturn(Optional.of(givenOrder));
-        
+
         assertThatThrownBy(() -> orderService.changeOrderStatus(1L, OrderStatus.MEAL))
                 .isInstanceOf(IllegalStateException.class);
     }
