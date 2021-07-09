@@ -3,8 +3,11 @@ package kitchenpos.utils.domain;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 
 public class MenuGroupObjects {
     private final MenuGroup menuGroup1;
@@ -13,19 +16,10 @@ public class MenuGroupObjects {
     private final MenuGroup menuGroup4;
 
     public MenuGroupObjects() {
-        menuGroup1 = new MenuGroup();
-        menuGroup2 = new MenuGroup();
-        menuGroup3 = new MenuGroup();
-        menuGroup4 = new MenuGroup();
-
-        menuGroup1.setId(1L);
-        menuGroup1.setName("두마리메뉴");
-        menuGroup2.setId(2L);
-        menuGroup2.setName("한마리메뉴");
-        menuGroup3.setId(3L);
-        menuGroup3.setName("순살파닭두마리메뉴");
-        menuGroup4.setId(4L);
-        menuGroup4.setName("신메뉴");
+        menuGroup1 = new MenuGroup("두마리메뉴");
+        menuGroup2 = new MenuGroup("한마리메뉴");
+        menuGroup3 = new MenuGroup("순살파닭두마리메뉴");
+        menuGroup4 = new MenuGroup("신메뉴");
     }
 
     public MenuGroup getMenuGroup1() {
@@ -44,7 +38,30 @@ public class MenuGroupObjects {
         return menuGroup4;
     }
 
+    public MenuGroupRequest getMenuGroupRequest1() {
+        return new MenuGroupRequest(menuGroup1.getName());
+    }
+
+    public MenuGroupRequest getMenuGroupRequest2() {
+        return new MenuGroupRequest(menuGroup2.getName());
+    }
+
+    public MenuGroupRequest getMenuGroupRequest3() {
+        return new MenuGroupRequest(menuGroup3.getName());
+    }
+
+    public MenuGroupRequest getMenuGroupRequest4() {
+        return new MenuGroupRequest(menuGroup4.getName());
+    }
+
     public List<MenuGroup> getMenuGroups() {
         return new ArrayList<>(Arrays.asList(menuGroup1, menuGroup2, menuGroup3, menuGroup4));
+    }
+
+    public List<MenuGroupResponse> getMenuGroupResponses() {
+        return new ArrayList<>(Arrays.asList(menuGroup1, menuGroup2, menuGroup3, menuGroup4))
+                .stream()
+                .map(MenuGroupResponse::of)
+                .collect(Collectors.toList());
     }
 }
