@@ -20,11 +20,11 @@ public class MenuProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne // 양방향
     @JoinColumn(name = "menu_id")
     private Menu menu;
 
-    @ManyToOne
+    @ManyToOne // 단방향
     @JoinColumn(name = "product_id")
     private Product product;
 

@@ -29,11 +29,11 @@ public class Menu {
     @Embedded
     private Price price;
 
-    @ManyToOne
+    @ManyToOne // 단방향
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
 
-    @Embedded
+    @Embedded // 양방향
     private MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {}
