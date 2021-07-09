@@ -2,7 +2,7 @@ package kitchenpos.menu.domain;
 
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
-import kitchenpos.product.domain.Price;
+import kitchenpos.common.domain.Price;
 import kitchenpos.product.domain.Product;
 
 import javax.persistence.CascadeType;
