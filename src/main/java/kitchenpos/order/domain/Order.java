@@ -1,9 +1,7 @@
 package kitchenpos.order.domain;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -12,12 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import kitchenpos.common.domian.Quantity;
 import kitchenpos.common.error.InvalidOrderStatusException;
-import kitchenpos.common.error.NotFoundOrderException;
 import kitchenpos.common.error.OrderStatusException;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.order.dto.OrderLineItemRequest;
 
 @Entity
 @Table(name = "orders")
@@ -36,9 +30,6 @@ public class Order {
     private OrderStatus orderStatus;
 
     private LocalDateTime orderedTime;
-
-    @Embedded
-    private OrderLineItems orderLineItems = new OrderLineItems();
 
     private Order(Long orderTableId, OrderStatus orderStatus) {
         this.orderTableId = orderTableId;
@@ -60,10 +51,6 @@ public class Order {
         }
     }
 
-    public void addOrderLineItem(OrderLineItem orderLineItem) {
-        this.orderLineItems.add(orderLineItem);
-    }
-
     public void checkAlreadyComplete() {
         if (orderStatus.equals(OrderStatus.COMPLETION)) {
             throw new OrderStatusException();
@@ -80,9 +67,5 @@ public class Order {
 
     public OrderStatus getOrderStatus() {
         return orderStatus;
-    }
-
-    public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems.get();
     }
 }

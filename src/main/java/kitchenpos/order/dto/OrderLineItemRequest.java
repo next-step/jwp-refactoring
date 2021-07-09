@@ -18,4 +18,11 @@ public class OrderLineItemRequest {
     public long getQuantity() {
         return quantity;
     }
+
+    public OrderLineItemRequest findByMenuId(Long menuId) {
+        if (this.menuId.equals(menuId)) {
+            return this;
+        }
+        return null;
+    }
 }
