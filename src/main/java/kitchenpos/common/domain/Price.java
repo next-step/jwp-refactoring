@@ -1,7 +1,5 @@
 package kitchenpos.common.domain;
 
-import kitchenpos.menu.domain.Quantity;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.math.BigDecimal;

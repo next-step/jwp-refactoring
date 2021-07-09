@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.domain.*;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.*;
