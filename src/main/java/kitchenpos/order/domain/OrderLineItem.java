@@ -34,6 +34,17 @@ public class OrderLineItem {
     protected OrderLineItem() {
     }
 
+    public OrderLineItem(final Order order, final Menu menu, final long quantity) {
+        this(null, order, menu, quantity);
+    }
+
+    public OrderLineItem(final Long id, final Order order, final Menu menu, final long quantity) {
+        this.id = id;
+        this.order = order;
+        this.menu = menu;
+        this.quantity = quantity;
+    }
+
     public void addedBy(final Order order) {
         this.order = order;
     }

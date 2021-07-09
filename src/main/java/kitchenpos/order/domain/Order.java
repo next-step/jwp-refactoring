@@ -44,6 +44,17 @@ public class Order {
         this.orderStatus = OrderStatus.COOKING;
     }
 
+    public Order(final Long id, final OrderTable orderTable, final List<OrderLineItem> orderLineItems) {
+        this.id = id;
+        this.orderTable = orderTable;
+        this.orderStatus = OrderStatus.COOKING;
+        orderLineItems.forEach(this::addOrderLineItem);
+    }
+
+    public void addOrderLineItems(final List<OrderLineItem> orderLineItems) {
+        orderLineItems.forEach(this::addOrderLineItem);
+    }
+
     public void addOrderLineItem(final OrderLineItem orderLineItem) {
         orderLineItems.add(orderLineItem);
         orderLineItem.addedBy(this);

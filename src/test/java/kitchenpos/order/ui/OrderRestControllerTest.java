@@ -2,6 +2,7 @@ package kitchenpos.order.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.config.MockMvcTestConfig;
+import kitchenpos.domain.OrderTable;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
@@ -47,7 +48,8 @@ class OrderRestControllerTest {
 
     @BeforeEach
     void setUp() {
-        order = new Order(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), new ArrayList<>());
+        OrderTable orderTable = new OrderTable(1L, 1L, 0, false);
+        order = new Order(1L, orderTable, new ArrayList<>());
     }
 
     @DisplayName("주문을 등록할 수 있다.")

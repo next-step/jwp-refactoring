@@ -1,14 +1,15 @@
 package kitchenpos.order.application;
 
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.order.application.OrderService;
+import kitchenpos.domain.OrderTable;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItemRepository;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.menu.domain.MenuRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,13 +18,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -44,6 +46,8 @@ class OrderServiceTest {
     @InjectMocks
     private OrderService orderService;
 
+    private MenuGroup 추천메뉴;
+    private Menu 강정치킨plus강정치킨;
     private OrderTable orderTable;
     private Order order;
     private OrderLineItem orderLineItem;
@@ -51,11 +55,15 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
+        추천메뉴 = new MenuGroup(1L, "추천메뉴");
+        강정치킨plus강정치킨 = new Menu(1L, "강정치킨+강정치킨", BigDecimal.valueOf(20000), 추천메뉴);
         orderTable = new OrderTable(1L, 1L, 0, false);
-        orderLineItem = new OrderLineItem(1L, 1L, 1L, 1L);
+        order = new Order(1L, orderTable, new ArrayList<>());
+
+        orderLineItem = new OrderLineItem(1L, order, 강정치킨plus강정치킨, 1);
         orderLineItems = new ArrayList<>();
         orderLineItems.add(orderLineItem);
-        order = new Order(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItems);
+        order.addOrderLineItems(orderLineItems);
     }
 
     @DisplayName("주문을 등록할 수 있다.")
@@ -63,9 +71,9 @@ class OrderServiceTest {
     void createTest() {
         // given
         given(menuRepository.countByIdIn(Arrays.asList(1L))).willReturn(order.getOrderLineItems().size());
-        given(orderTableDao.findById(order.getOrderTable().getId())).willReturn(Optional.of(orderTable));
-        given(orderRepository.save(order)).willReturn(order);
-        given(orderLineItemRepository.save(orderLineItem)).willReturn(orderLineItem);
+        given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
+        given(orderRepository.save(any())).willReturn(order);
+        given(orderLineItemRepository.save(any())).willReturn(orderLineItem);
 
         // when
         Order createdOrder = orderService.create(order);
@@ -80,7 +88,7 @@ class OrderServiceTest {
     @Test
     void createTest_emptyOrderLineItem() {
         // given
-        order.setOrderLineItems(null);
+        Order order = new Order(2L, orderTable, new ArrayList<>());
 
         // when & then
         assertThatThrownBy(() -> orderService.create(order))
@@ -91,8 +99,8 @@ class OrderServiceTest {
     @Test
     void createTest_duplicateMenu() {
         // given
-        orderLineItems.add(new OrderLineItem(2L, 1L, 1L, 1L));
-        given(menuRepository.countByIdIn(Arrays.asList(1L, 1L))).willReturn(1);
+        orderLineItems.add(new OrderLineItem(2L, order, 강정치킨plus강정치킨, 1));
+        given(menuRepository.countByIdIn(any())).willReturn(1);
 
         // when & then
         assertThatThrownBy(() -> orderService.create(order))
@@ -103,8 +111,10 @@ class OrderServiceTest {
     @Test
     void createTest_unregisteredOrderTable() {
         // given
-        order.setOrderTableId(100L);
-        given(menuRepository.countByIdIn(Arrays.asList(1L))).willReturn(order.getOrderLineItems().size());
+        OrderTable orderTable = new OrderTable(100L, 1L, 0, false);
+        Order order = new Order(2L, orderTable, new ArrayList<>());
+
+        given(menuRepository.countByIdIn(any())).willReturn(order.getOrderLineItems().size());
 
         // when & then
         assertThatThrownBy(() -> orderService.create(order))
@@ -116,8 +126,8 @@ class OrderServiceTest {
     void changeOrderStatusTest() {
         // given
         order.setOrderStatus(OrderStatus.MEAL.name());
-        given(orderRepository.findById(order.getId())).willReturn(Optional.of(order));
-        given(orderLineItemRepository.findAllByOrderId(order.getId())).willReturn(orderLineItems);
+        given(orderRepository.findById(any())).willReturn(Optional.of(order));
+        given(orderLineItemRepository.findAllByOrderId(any())).willReturn(orderLineItems);
 
         // when
         Order changedOrder = orderService.changeOrderStatus(order.getId(), order);
@@ -132,7 +142,7 @@ class OrderServiceTest {
     void changeOrderStatusTest_orderStatusCompletion() {
         // given
         order.setOrderStatus(OrderStatus.COMPLETION.name());
-        given(orderRepository.findById(order.getId())).willReturn(Optional.of(order));
+        given(orderRepository.findById(any())).willReturn(Optional.of(order));
 
         // when & then
         assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), order))
@@ -144,7 +154,7 @@ class OrderServiceTest {
     void listTest() {
         // given
         given(orderRepository.findAll()).willReturn(Arrays.asList(order));
-        given(orderLineItemRepository.findAllByOrderId(order.getId())).willReturn(orderLineItems);
+        given(orderLineItemRepository.findAllByOrderId(any())).willReturn(orderLineItems);
 
         // when
         List<Order> orders = orderService.list();
