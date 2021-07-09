@@ -1,6 +1,7 @@
 package kitchenpos.menu.domain;
 
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,8 +16,8 @@ public class MenuProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
 
-    @ManyToOne
-    private Menu menu;
+    @Column(name = "menu_id")
+    private Long menuId;
 
     @ManyToOne
     private Product product;
@@ -30,16 +31,16 @@ public class MenuProduct {
         this.quantity = quantity;
     }
 
-    public void addedBy(Menu menu) {
-        this.menu = menu;
+    public void addedBy(Long menuId) {
+        this.menuId = menuId;
     }
 
     public Long getSeq() {
         return seq;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public Long getMenuId() {
+        return menuId;
     }
 
     public Product getProduct() {
@@ -60,11 +61,11 @@ public class MenuProduct {
         }
         MenuProduct that = (MenuProduct) o;
         return quantity == that.quantity && Objects.equals(seq, that.seq) && Objects
-            .equals(menu, that.menu) && Objects.equals(product, that.product);
+            .equals(menuId, that.menuId) && Objects.equals(product, that.product);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(seq, menu, product, quantity);
+        return Objects.hash(seq, menuId, product, quantity);
     }
 }

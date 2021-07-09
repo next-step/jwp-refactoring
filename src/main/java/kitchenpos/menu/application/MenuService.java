@@ -45,10 +45,11 @@ public class MenuService {
 
         Menu menu = new Menu(menuDto.getName(), menuDto.getPrice(),
                              menuGroupRepository.findById(menuDto.getMenuGroupId())
-                                                .orElseThrow(NotFoundEntityException::new),
-                             menuProducts);
+                                                .orElseThrow(NotFoundEntityException::new));
 
         Menu persistMenu = menuRepository.save(menu);
+        persistMenu.addMenuProducts(menuProducts);
+
         menuProducts.forEach(menuProductRepository::save);
 
         return MenuDto.of(persistMenu);

@@ -29,7 +29,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -86,7 +85,7 @@ class MenuServiceTest {
             .willReturn(Optional.of(menuGroup));
         givenProducts();
 
-        Menu menu = new Menu(menuDto.getName(), menuDto.getPrice(), menuGroup, menuProducts);
+        Menu menu = new Menu(menuDto.getName(), menuDto.getPrice(), menuGroup);
 
         given(menuRepository.save(any())).willReturn(menu);
 
@@ -133,6 +132,7 @@ class MenuServiceTest {
 
         givenProducts();
         given(menuGroupRepository.findById(menuDto.getMenuGroupId())).willReturn(Optional.of(menuGroup));
+        given(menuRepository.save(any())).willReturn(new Menu(menuDto.getName(), menuDto.getPrice(), menuGroup));
 
         // when
         assertThatExceptionOfType(NotCreateMenuException.class).isThrownBy(() -> menuService.create(menuDto));
