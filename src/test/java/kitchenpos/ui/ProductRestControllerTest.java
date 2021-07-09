@@ -48,7 +48,7 @@ class ProductRestControllerTest {
 
     @BeforeEach
     void setUp() {
-        CleanUp.cleanUpOrderFirst();
+        CleanUp.cleanUp();
     }
 
     @Test

@@ -14,7 +14,7 @@ class OrdersTest {
 
     @BeforeEach
     void setUp() {
-        CleanUp.cleanUpTableFirst();
+        CleanUp.cleanUp();
     }
 
     @Test

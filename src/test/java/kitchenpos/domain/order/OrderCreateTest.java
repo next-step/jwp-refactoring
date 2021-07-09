@@ -2,7 +2,7 @@ package kitchenpos.domain.order;
 
 import kitchenpos.domain.Name;
 import kitchenpos.domain.menu.MenuCreate;
-import kitchenpos.domain.menuproduct.MenuProductCreate;
+import kitchenpos.domain.menu.MenuProductCreate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

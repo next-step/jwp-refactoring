@@ -1,6 +1,6 @@
 package kitchenpos.dto.response;
 
-import kitchenpos.domain.menuproduct.MenuProduct;
+import kitchenpos.domain.menu.MenuProduct;
 
 import java.util.Objects;
 

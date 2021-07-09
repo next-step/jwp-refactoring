@@ -26,7 +26,7 @@ public class MenuService {
         this.menuGroupRepository = menuGroupRepository;
         this.productRepository = productRepository;
     }
-    public Long create(final MenuCreate create) {
+    public Long create(final MenuCreate create) throws RuntimeException {
         MenuGroup menuGroup = menuGroupRepository.findById(create.getMenuGroupId())
                 .orElseThrow(IllegalArgumentException::new);
         Products products = new Products(productRepository.findAllById(create.getProductsIdInMenuProducts()));

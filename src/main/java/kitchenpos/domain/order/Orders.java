@@ -2,6 +2,7 @@ package kitchenpos.domain.order;
 
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,7 +10,8 @@ import java.util.List;
 
 @Embeddable
 public class Orders {
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "orderTable")
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "orderTableId")
     private List<Order> orders = new ArrayList<>();
 
     public Orders() {

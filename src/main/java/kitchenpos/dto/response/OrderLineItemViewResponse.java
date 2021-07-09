@@ -13,8 +13,8 @@ public class OrderLineItemViewResponse {
     public static OrderLineItemViewResponse of(OrderLineItem orderLineItem) {
         return new OrderLineItemViewResponse(
                 orderLineItem.getId(),
-                orderLineItem.getOrder().getId(),
-                orderLineItem.getMenu().getId(),
+                orderLineItem.getOrderId(),
+                orderLineItem.getMenuId(),
                 orderLineItem.getQuantity().toLong()
         );
     }

@@ -24,7 +24,7 @@ public class MenuRestController {
     }
 
     @PostMapping("/api/menus")
-    public ResponseEntity<MenuViewResponse> create(@RequestBody final MenuCreateRequest menuCreateRequest) {
+    public ResponseEntity<MenuViewResponse> create(@RequestBody final MenuCreateRequest menuCreateRequest) throws RuntimeException {
         final Long id = menuService.create(menuCreateRequest.toCreate());
 
         return ResponseEntity.created(URI.create("/api/menus/" + id))

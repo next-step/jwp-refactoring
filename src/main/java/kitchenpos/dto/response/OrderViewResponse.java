@@ -24,7 +24,7 @@ public class OrderViewResponse {
 
         return new OrderViewResponse(
                 order.getId(),
-                order.getOrderTable().getId(),
+                order.getOrderTableId(),
                 order.getOrderStatus(),
                 order.getOrderedTime(),
                 itemViewResponses

@@ -1,10 +1,17 @@
 package kitchenpos.domain.table;
 
 import kitchenpos.domain.NumberOfGuest;
+import kitchenpos.domain.menu.Menus;
 import kitchenpos.domain.order.Order;
+import kitchenpos.domain.order.OrderCreate;
+import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.order.Orders;
+import kitchenpos.exception.TableEmptyException;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -15,8 +22,7 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private TableGroup tableGroup;
+    private Long tableGroupId;
 
     private Orders orders = new Orders();
 
@@ -28,6 +34,16 @@ public class OrderTable {
         return new OrderTable(create.getNumberOfGuests(), create.isEmpty());
     }
 
+    public static Order newOrder(OrderTable orderTable, OrderCreate orderCreate, Menus menus) {
+        if (orderTable.isEmpty()) {
+            throw new TableEmptyException();
+        }
+
+        orderCreate = orderCreate.changeOrderStatus(OrderStatus.COOKING);
+
+        return Order.createOrder(orderTable.getId(), orderCreate, menus);
+    }
+
     protected OrderTable() {
     }
 
@@ -35,21 +51,21 @@ public class OrderTable {
         this(null, null, Collections.emptyList(), numberOfGuest, empty);
     }
 
-    public OrderTable(TableGroup tableGroup, Orders orders, NumberOfGuest numberOfGuest, boolean empty) {
-        this(null, tableGroup, orders, numberOfGuest, empty);
+    public OrderTable(Long tableGroupId, Orders orders, NumberOfGuest numberOfGuest, boolean empty) {
+        this(null, tableGroupId, orders, numberOfGuest, empty);
     }
 
     public OrderTable(Long id, NumberOfGuest numberOfGuests, boolean empty) {
         this(id, null, Collections.emptyList(), numberOfGuests, empty);
     }
 
-    public OrderTable(Long id, TableGroup tableGroup, List<Order> orders, NumberOfGuest numberOfGuests, boolean empty) {
-        this(id, tableGroup, new Orders(orders), numberOfGuests, empty);
+    public OrderTable(Long id, Long tableGroupId, List<Order> orders, NumberOfGuest numberOfGuests, boolean empty) {
+        this(id, tableGroupId, new Orders(orders), numberOfGuests, empty);
     }
 
-    public OrderTable(Long id, TableGroup tableGroup, Orders orders, NumberOfGuest numberOfGuests, boolean empty) {
+    public OrderTable(Long id, Long tableGroupId, Orders orders, NumberOfGuest numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
         this.orders = orders;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
@@ -60,7 +76,7 @@ public class OrderTable {
             throw new IllegalStateException();
         }
 
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 
     public void changeNumberOfGuest(NumberOfGuest numberOfGuest) {
@@ -83,17 +99,17 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public void bookedBy(TableGroup tableGroup) {
+    public void bookedBy(Long tableGroupId) {
         if (isBooked()) {
             throw new IllegalStateException();
         }
 
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
         this.empty = false;
     }
 
     public boolean isBooked() {
-        return Objects.nonNull(getTableGroup()) || !isEmpty();
+        return Objects.nonNull(getTableGroupId()) || !isEmpty();
     }
 
     public boolean isUnGroupable() {
@@ -112,11 +128,24 @@ public class OrderTable {
         return numberOfGuests;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     public boolean isEmpty() {
         return empty;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderTable that = (OrderTable) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

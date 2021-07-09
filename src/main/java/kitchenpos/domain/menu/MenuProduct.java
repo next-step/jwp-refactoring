@@ -1,11 +1,11 @@
-package kitchenpos.domain.menuproduct;
+package kitchenpos.domain.menu;
 
 import kitchenpos.domain.Price;
 import kitchenpos.domain.Quantity;
-import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.product.Product;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class MenuProduct {
@@ -24,22 +24,10 @@ public class MenuProduct {
     protected MenuProduct() {
     }
 
-    public MenuProduct(Product product, Quantity quantity) {
-        this(null, product, quantity);
-    }
-
     public MenuProduct(Menu menu, Product product, Quantity quantity) {
         this.menu = menu;
         this.product = product;
         this.quantity = quantity;
-    }
-
-    void changeMenu(Menu menu) {
-        if (this.menu != null) {
-            throw new IllegalStateException("이미 메뉴가 등록되어 있으면, 불가능합니다.");
-        }
-
-        this.menu = menu;
     }
 
     public Long getSeq() {
@@ -60,5 +48,22 @@ public class MenuProduct {
 
     public Quantity getQuantity() {
         return quantity;
+    }
+
+    public boolean isSameMenu(Menu menu) {
+        return this.menu.equals(menu);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MenuProduct that = (MenuProduct) o;
+        return Objects.equals(seq, that.seq);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(seq);
     }
 }

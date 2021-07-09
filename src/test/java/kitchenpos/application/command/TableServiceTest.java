@@ -40,7 +40,7 @@ class TableServiceTest {
 
     @BeforeEach
     void setUp() {
-        CleanUp.cleanUpTableFirst();
+        CleanUp.cleanUp();
 
         tableService = new TableService(orderRepository, orderTableRepository);
         tableQueryService = new TableQueryService(orderTableRepository);

@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 class TableGroupTest {
     @BeforeEach
     void setUp() {
-        CleanUp.cleanUpOrderFirst();
+        CleanUp.cleanUp();
     }
 
     @Test
@@ -43,7 +43,7 @@ class TableGroupTest {
 
         // then
         for (OrderTable orderTable : tableGroup.getOrderTables()) {
-            assertThat(orderTable.getTableGroup()).isNull();
+            assertThat(orderTable.getTableGroupId()).isNull();
         }
 
     }

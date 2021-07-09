@@ -2,7 +2,6 @@ package kitchenpos.domain.menu;
 
 import kitchenpos.domain.Name;
 import kitchenpos.domain.Price;
-import kitchenpos.domain.menuproduct.MenuProductCreate;
 
 import java.util.List;
 import java.util.stream.Collectors;

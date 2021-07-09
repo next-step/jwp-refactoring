@@ -2,20 +2,25 @@ package kitchenpos.domain.order;
 
 import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class OrderCreate {
-    private Long orderTableId;
-    private OrderStatus orderStatus;
-    private List<OrderLineItemCreate> orderLineItems;
+    private final Long orderTableId;
+    private final OrderStatus orderStatus;
+    private final List<OrderLineItemCreate> orderLineItems;
 
     public OrderCreate(Long orderTableId, OrderStatus orderStatus, List<OrderLineItemCreate> orderLineItems) {
         validate(orderLineItems);
 
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
-        this.orderLineItems = orderLineItems;
+        this.orderLineItems = new ArrayList<>(orderLineItems);
+    }
+
+    public OrderCreate changeOrderStatus(OrderStatus orderStatus) {
+        return new OrderCreate(orderTableId, orderStatus, orderLineItems);
     }
 
     private void validate(List<OrderLineItemCreate> orderLineItems) {

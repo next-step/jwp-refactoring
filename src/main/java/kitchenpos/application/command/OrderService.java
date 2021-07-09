@@ -34,7 +34,7 @@ public class OrderService {
         OrderTable orderTable = orderTableRepository.findById(orderCreate.getOrderTableId())
                 .orElseThrow(EntityNotExistsException::new);
 
-        return orderRepository.save(Order.create(orderCreate, menus, orderTable))
+        return orderRepository.save(OrderTable.newOrder(orderTable, orderCreate, menus))
                 .getId();
     }
 

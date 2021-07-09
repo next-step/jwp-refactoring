@@ -12,6 +12,7 @@ import kitchenpos.exception.TableEmptyException;
 import kitchenpos.fixture.CleanUp;
 import kitchenpos.fixture.OrderFixture;
 import kitchenpos.repository.MenuRepository;
+import kitchenpos.repository.OrderLineItemRepository;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,6 +53,9 @@ class OrderServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
 
+    @Mock
+    private OrderLineItemRepository orderLineItemRepository;
+
     private OrderService orderService;
     private OrderQueryService orderQueryService;
 
@@ -63,7 +67,7 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        CleanUp.cleanUpTableFirst();
+        CleanUp.cleanUp();
 
         orderService = new OrderService(menuRepository, orderRepository, orderTableRepository);
         orderQueryService = new OrderQueryService(orderRepository);
@@ -73,7 +77,7 @@ class OrderServiceTest {
         orderLineItems = Arrays.asList(주문_연결_안된_양념치킨_콜라_1000원_1개, 주문_연결_안된_후라이드치킨_콜라_2000원_1개);
 
         orderLineItemCreates = this.orderLineItems.stream()
-                .map(item -> new OrderLineItemCreate(item.getMenu().getId(), item.getQuantity()))
+                .map(item -> new OrderLineItemCreate(item.getMenuId(), item.getQuantity()))
                 .collect(Collectors.toList());
     }
 
@@ -81,10 +85,10 @@ class OrderServiceTest {
     @DisplayName("create - 등록을 원하는 주문항목이 DB에 전부 존재하는지 확인하여 전부 존재하지 않으면 IllegalArgumentException이 발생한다.")
     void 등록을_원하는_주문항목이_DB에_전부_존재하는지_확인하여_전부_존재하지_않으면_IllegalArgumentException이_발생한다() {
         // given
-        OrderCreate orderCreate = new OrderCreate(미사용중인_테이블.getId(), OrderStatus.MEAL, orderLineItemCreates);
+        OrderCreate orderCreate = new OrderCreate(사용중인_1명_테이블.getId(), OrderStatus.MEAL, orderLineItemCreates);
 
         given(orderTableRepository.findById(any()))
-                .willReturn(Optional.of(미사용중인_테이블));
+                .willReturn(Optional.of(사용중인_1명_테이블));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(orderCreate));

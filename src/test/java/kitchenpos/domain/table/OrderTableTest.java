@@ -1,20 +1,20 @@
 package kitchenpos.domain.table;
 
 import kitchenpos.domain.NumberOfGuest;
+import kitchenpos.exception.TableEmptyException;
 import kitchenpos.fixture.CleanUp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static kitchenpos.fixture.OrderTableFixture.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class OrderTableTest {
     @BeforeEach
     void setUp() {
-        CleanUp.cleanUpOrderFirst();
+        CleanUp.cleanUp();
     }
 
     @Test
@@ -58,11 +58,20 @@ class OrderTableTest {
     @Test
     @DisplayName("정상적인 예약")
     void 정상적인_예약() {
-        TableGroup tableGroup = new TableGroup();
+        TableGroup tableGroup = new TableGroup(1L, null, null);
 
-        빈_테이블.bookedBy(tableGroup);
+        빈_테이블.bookedBy(tableGroup.getId());
 
         assertThat(빈_테이블.isEmpty()).isFalse();
-        assertThat(빈_테이블.getTableGroup()).isEqualTo(tableGroup);
+        assertThat(빈_테이블.getTableGroupId()).isEqualTo(tableGroup.getId());
+    }
+
+
+    @Test
+    @DisplayName("빈 테이블이면 TableEmptyException이 발생한다")
+    void 빈_테이블이면_TableEmptyException이_발생한다() {
+        // when & then
+        assertThatExceptionOfType(TableEmptyException.class)
+                .isThrownBy(() -> OrderTable.newOrder(미사용중인_테이블, null, null));
     }
 }

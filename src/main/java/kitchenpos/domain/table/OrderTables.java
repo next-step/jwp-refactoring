@@ -1,6 +1,8 @@
 package kitchenpos.domain.table;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,7 +11,8 @@ import java.util.List;
 
 @Embeddable
 public class OrderTables {
-    @OneToMany(mappedBy = "tableGroup")
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "tableGroupId")
     private List<OrderTable> orderTables = new ArrayList<>();
 
     public OrderTables() {
@@ -29,7 +32,7 @@ public class OrderTables {
         }
 
         for (OrderTable orderTable : orderTables) {
-            orderTable.bookedBy(tableGroup);
+            orderTable.bookedBy(tableGroup.getId());
         }
     }
 

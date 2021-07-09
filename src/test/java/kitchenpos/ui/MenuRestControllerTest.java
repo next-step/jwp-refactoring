@@ -4,7 +4,7 @@ import kitchenpos.application.command.MenuService;
 import kitchenpos.application.query.MenuQueryService;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuCreate;
-import kitchenpos.domain.menuproduct.MenuProduct;
+import kitchenpos.domain.menu.MenuProduct;
 import kitchenpos.dto.request.MenuCreateRequest;
 import kitchenpos.dto.request.MenuProductCreateRequest;
 import kitchenpos.dto.response.MenuViewResponse;
@@ -26,10 +26,8 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static kitchenpos.fixture.MenuFixture.양념치킨_콜라_1000원_1개;
-import static kitchenpos.fixture.MenuFixture.양념치킨_콜라_1000원_2개;
+import static kitchenpos.fixture.MenuFixture.*;
 import static kitchenpos.ui.JsonUtil.toJson;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -52,8 +50,8 @@ class MenuRestControllerTest {
     private MenuQueryService menuQueryService;
 
     @BeforeEach
-    void setUp() {
-        CleanUp.cleanUpOrderFirst();
+    void setUp() throws Exception {
+        CleanUp.cleanUp();
     }
 
     @Test
@@ -89,9 +87,10 @@ class MenuRestControllerTest {
                         new MenuProductCreateRequest(2L, 2L, 2L)
                 )
         );
+
         given(menuService.create(any(MenuCreate.class))).willReturn(양념치킨_콜라_1000원_1개.getId());
         given(menuQueryService.findById(양념치킨_콜라_1000원_1개.getId()))
-                .willReturn(MenuViewResponse.of(양념치킨_콜라_1000원_1개));
+                .willReturn(MenuViewResponse.of(양념치킨_콜라_1000원_1개, 양념치킨_콜라_1000원_1개_MenuProduct));
 
         // when & then
         mockMvc.perform(
@@ -100,8 +99,8 @@ class MenuRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(validateMenu("$", 양념치킨_콜라_1000원_1개))
-                .andExpect(validateMenuProducts("$.menuProducts[0]", 양념치킨_콜라_1000원_1개.getMenuProducts().get(0)))
-                .andExpect(validateMenuProducts("$.menuProducts[1]", 양념치킨_콜라_1000원_1개.getMenuProducts().get(1)))
+                .andExpect(validateMenuProducts("$.menuProducts[0]", 양념치킨_콜라_1000원_1개_MenuProduct.get(0)))
+                .andExpect(validateMenuProducts("$.menuProducts[1]", 양념치킨_콜라_1000원_1개_MenuProduct.get(1)))
                 .andReturn();
     }
 
@@ -109,9 +108,10 @@ class MenuRestControllerTest {
     @DisplayName("[get]/api/menus - 정상적인 리스트 조회")
     void 정상적인_리스트_조회() throws Exception {
         List<Menu> menus = Arrays.asList(양념치킨_콜라_1000원_1개, 양념치킨_콜라_1000원_2개);
-        List<MenuViewResponse> menuResponses = menus.stream()
-                .map(MenuViewResponse::of)
-                .collect(Collectors.toList());
+        List<MenuViewResponse> menuResponses = Arrays.asList(
+                MenuViewResponse.of(menus.get(0), 양념치킨_콜라_1000원_1개_MenuProduct),
+                MenuViewResponse.of(menus.get(1), 양념치킨_콜라_1000원_2개_MenuProduct)
+        );
         given(menuQueryService.list()).willReturn(menuResponses);
 
         // when & then
@@ -119,10 +119,10 @@ class MenuRestControllerTest {
                 get("/api/menus"))
                 .andExpect(status().isOk())
                 .andExpect(validateMenu("$[0]", menus.get(0)))
-                .andExpect(validateMenuProducts("$[0].menuProducts[0]", menus.get(0).getMenuProducts().get(0)))
-                .andExpect(validateMenuProducts("$[0].menuProducts[1]", menus.get(0).getMenuProducts().get(1)))
-                .andExpect(validateMenuProducts("$[1].menuProducts[0]", menus.get(1).getMenuProducts().get(0)))
-                .andExpect(validateMenuProducts("$[1].menuProducts[1]", menus.get(1).getMenuProducts().get(1)))
+                .andExpect(validateMenuProducts("$[0].menuProducts[0]", 양념치킨_콜라_1000원_1개_MenuProduct.get(0)))
+                .andExpect(validateMenuProducts("$[0].menuProducts[1]", 양념치킨_콜라_1000원_1개_MenuProduct.get(1)))
+                .andExpect(validateMenuProducts("$[1].menuProducts[0]", 양념치킨_콜라_1000원_2개_MenuProduct.get(0)))
+                .andExpect(validateMenuProducts("$[1].menuProducts[1]", 양념치킨_콜라_1000원_2개_MenuProduct.get(1)))
                 .andReturn();
 
     }

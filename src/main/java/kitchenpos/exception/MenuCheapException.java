@@ -1,6 +1,6 @@
 package kitchenpos.exception;
 
-public class MenuCheapException extends IllegalArgumentException {
+public class MenuCheapException extends RuntimeException {
     public MenuCheapException() {
     }
 

@@ -5,7 +5,6 @@ import kitchenpos.domain.table.OrderTables;
 import kitchenpos.domain.table.TableGroup;
 import kitchenpos.domain.table.TableGroupCreate;
 import kitchenpos.fixture.CleanUp;
-import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import kitchenpos.repository.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,9 +30,6 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     @Mock
-    private OrderRepository orderRepository;
-
-    @Mock
     private OrderTableRepository orderTableRepository;
 
     @Mock
@@ -51,9 +47,9 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        CleanUp.cleanUpOrderFirst();
+        CleanUp.cleanUp();
 
-        this.tableGroupService = new TableGroupService(orderRepository, orderTableRepository, tableGroupRepository);
+        this.tableGroupService = new TableGroupService(orderTableRepository, tableGroupRepository);
 
         tableGroupId = 1L;
 
@@ -171,7 +167,7 @@ class TableGroupServiceTest {
 
         // then
         for (OrderTable orderTable : tableGroup.getOrderTables()) {
-            assertThat(orderTable.getTableGroup()).isNull();
+            assertThat(orderTable.getTableGroupId()).isNull();
         }
 
         verify(tableGroupRepository, VerificationModeFactory.times(1))
