@@ -36,7 +36,8 @@ public class TableGroupService {
         if (orderTableIds.size() != savedOrderTables.size()) {
             throw new IllegalArgumentException();
         }
-        TableGroup persistTableGroup = tableGroupRepository.save(new TableGroup(savedOrderTables));
+
+        final TableGroup persistTableGroup = tableGroupRepository.save(new TableGroup(savedOrderTables));
         return TableGroupResponse.from(persistTableGroup);
     }
 

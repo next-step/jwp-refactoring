@@ -13,12 +13,12 @@ public class OrderTableResponse {
 
     public OrderTableResponse() {}
 
-    public OrderTableResponse(final Long id, int numberOfGuests, boolean empty) {
+    public OrderTableResponse(final Long id, final int numberOfGuests, final boolean empty) {
         this.id = id;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
-    public OrderTableResponse(final Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+    public OrderTableResponse(final Long id, final Long tableGroupId, final int numberOfGuests, final boolean empty) {
         this.id = id;
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
