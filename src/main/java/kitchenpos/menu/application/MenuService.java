@@ -31,7 +31,6 @@ public class MenuService {
         this.productRepository = productRepository;
     }
 
-    @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
         MenuProducts menuProducts = new MenuProducts(menuRequest.getMenuProducts());
         Products products = new Products(productRepository.findAllById(menuProducts.toMenuProductIds()));
