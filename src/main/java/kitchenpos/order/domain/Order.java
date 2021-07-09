@@ -80,8 +80,6 @@ public class Order {
         return this.orderStatus;
     }
 
-
-
     public OrderLineItems getOrderLineItems() {
         return orderLineItems;
     }
