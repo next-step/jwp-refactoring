@@ -11,7 +11,7 @@ import org.springframework.util.CollectionUtils;
 @Embeddable
 public class OrderTables {
 
-    @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "tableGroupId", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<OrderTable> data = new ArrayList<>();
 
     protected OrderTables() { }

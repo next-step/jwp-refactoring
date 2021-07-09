@@ -40,7 +40,7 @@ public class TableGroup {
 
     public void addOrderTable(OrderTable orderTable) {
 
-         if (!orderTable.isEmpty() || orderTable.getTableGroup() != null) {
+         if (!orderTable.isEmpty() || orderTable.getTableGroupId() != null) {
             throw new IllegalArgumentException("주문 테이블이 빈 상태이거나 주문 테이블이 이미 단체 지정되어 있습니다.");
         }
 

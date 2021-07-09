@@ -6,7 +6,6 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.CreateOrderTableDto;
 import kitchenpos.table.exception.NotChangeEmptyException;
 import kitchenpos.table.exception.NotChangeNumberOfGuestsException;
@@ -37,12 +36,12 @@ class TableServiceTest {
     private TableService tableService;
 
     private Long orderTableId;
-    private TableGroup tableGroup;
+    private Long tableGroupId;
 
     @BeforeEach
     void setUp() {
         orderTableId = 1L;
-        tableGroup = new TableGroup();
+        tableGroupId = 1L;
     }
 
     @DisplayName("생성 성공")
@@ -58,7 +57,7 @@ class TableServiceTest {
         OrderTable actual = tableService.create(orderTableDto);
 
         // then
-        assertNull(actual.getTableGroup());
+        assertNull(actual.getTableGroupId());
     }
 
     @DisplayName("empty 상태 변경 실패 - 찾을 수 없는 주문테이블")
@@ -75,7 +74,7 @@ class TableServiceTest {
     @Test
     void changeEmptyFail02() {
         // given
-        OrderTable orderTable = new OrderTable(1L, tableGroup, 0, true);
+        OrderTable orderTable = new OrderTable(1L, tableGroupId, 0, true);
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
 
         // when
