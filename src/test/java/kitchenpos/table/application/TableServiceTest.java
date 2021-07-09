@@ -5,6 +5,7 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.exception.EmptyException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -126,11 +127,11 @@ class TableServiceTest {
         assertThat(changed.getNumberOfGuests()).isEqualTo(expectedTable.getNumberOfGuests());
     }
 
-    @DisplayName("주문 테이블 guests 숫자값 변경 실패한다 - 변경하려는 주문 테이블의 기존 guests 숫자가 0보다 작을 경우 변경 실패")
+    @DisplayName("주문 테이블 guests 숫자값 변경 실패한다 - 변경하려는 guests 숫자가 0보다 작을 경우 0보다 작을 경우 변경 실패")
     @Test
     void fail_changeNumberOfGuests1() {
-        OrderTable orderTable = new OrderTable(1L, null, -1, false);
-        OrderTableRequest changeTable = new OrderTableRequest(4, false);
+        OrderTable orderTable = new OrderTable(1L, null, 4, false);
+        OrderTableRequest changeTable = new OrderTableRequest(-1, false);
 
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), changeTable))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -155,6 +156,6 @@ class TableServiceTest {
         given(orderTableRepository.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
 
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), changeTable))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(EmptyException.class);
     }
 }
