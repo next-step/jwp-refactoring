@@ -38,14 +38,14 @@ public class OrderService {
 
     @Transactional
     public Order create(final Order order) {
-        createOrderValidation(order);
+        validationByNewOrder(order);
 
         return orderRepository.save(order);
     }
 
     //TODO : 도메인으로 이동 방법 고민
     @Transactional(readOnly = true)
-    protected void createOrderValidation(final Order order) {
+    protected void validationByNewOrder(final Order order) {
         final List<OrderLineItem> orderLineItems = order.getOrderLineItems();
         final List<Long> menuIds = orderLineItems.stream()
                 .map(orderLineItem -> orderLineItem.getMenu().getId())

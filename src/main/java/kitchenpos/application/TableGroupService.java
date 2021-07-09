@@ -21,7 +21,7 @@ public class TableGroupService {
     }
 
     public TableGroup create(final TableGroup tableGroup) {
-        createTableGroupValidation(tableGroup);
+        validationByNewTableGroup(tableGroup);
 
         return orderTableGroupRepository.save(tableGroup);
     }
@@ -39,7 +39,7 @@ public class TableGroupService {
 
     //TODO : 도메인으로 이동 방법 고민
     @Transactional(readOnly = true)
-    protected void createTableGroupValidation(final TableGroup tableGroup) {
+    protected void validationByNewTableGroup(final TableGroup tableGroup) {
         final List<OrderTable> orderTables = tableGroup.getOrderTables();
         final List<Long> orderTableIds = orderTables.stream()
                 .map(OrderTable::getId)

@@ -2,9 +2,9 @@ package kitchenpos.domain;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Entity
 public class Menu {
@@ -20,8 +20,8 @@ public class Menu {
     @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"))
     private MenuGroup menuGroup;
 
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MenuProduct> menuProducts = new ArrayList<>();
+    @Embedded
+    private MenuProducts menuProducts = new MenuProducts();
 
     public Menu() {
     }
@@ -49,17 +49,26 @@ public class Menu {
         return price.getPrice();
     }
 
-    //TODO
     public Long getMenuGroupId() {
         return menuGroup.getId();
     }
 
+    public List<Long> getProductIds() {
+        return menuProducts.list().stream()
+                .map(menuProduct -> menuProduct.getProduct().getId())
+                .collect(Collectors.toList());
+    }
+
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
+        return menuProducts.list();
     }
 
     protected void appendMenuProducts(final MenuProduct menuProduct) {
         this.menuProducts.add(menuProduct);
+    }
+
+    public void validationByPrice() {
+        this.menuProducts.validationByPrice();
     }
 
     @Override
