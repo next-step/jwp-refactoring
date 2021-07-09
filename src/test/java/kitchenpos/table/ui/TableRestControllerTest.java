@@ -1,9 +1,10 @@
 package kitchenpos.table.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kitchenpos.config.MockMvcTestConfig;
 import kitchenpos.table.application.TableService;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.ui.TableRestController;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,10 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.filter.CharacterEncodingFilter;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -26,11 +24,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = TableRestController.class)
+@MockMvcTestConfig
 class TableRestControllerTest {
     private static final String TABLE_API_URI = "/api/tables";
 
     @Autowired
-    private TableRestController tableRestController;
+    private MockMvc mockMvc;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -38,50 +37,43 @@ class TableRestControllerTest {
     @MockBean
     private TableService tableService;
 
-    private MockMvc mockMvc;
-    private OrderTable orderTable1;
-    private OrderTable orderTable2;
+    private OrderTableResponse orderTableResponse;
+    private OrderTableRequest orderTableRequest;
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(tableRestController)
-                .addFilter(new CharacterEncodingFilter(StandardCharsets.UTF_8.name(), true))
-                .alwaysDo(print())
-                .build();
-
-        orderTable1 = new OrderTable(1L, null, 1, true);
-        orderTable1 = new OrderTable(2L, null, 1, true);
+        orderTableResponse = new OrderTableResponse(1L, 1, false);
+        orderTableRequest = new OrderTableRequest(1, false);
     }
 
     @DisplayName("주문 테이블을 등록할 수 있다.")
     @Test
     void createTest() throws Exception {
         // given
-        given(tableService.create(any())).willReturn(orderTable1);
+        given(tableService.create(any())).willReturn(orderTableResponse);
 
         // when
         ResultActions actions = mockMvc.perform(post(TABLE_API_URI)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(orderTable1)));
+                .content(objectMapper.writeValueAsString(orderTableRequest)))
+                .andDo(print());
 
         // then
         actions.andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").isNotEmpty())
-                .andExpect(jsonPath("$.tableGroupId").isEmpty())
-                .andExpect(jsonPath("$.numberOfGuests").value(orderTable1.getNumberOfGuests()))
-                .andExpect(jsonPath("$.empty").value(orderTable1.isEmpty()));
+                .andExpect(header().string("location", TABLE_API_URI + "/1"));
     }
 
     @DisplayName("주문 테이블의 빈 테이블 여부를 변경할 수 있다.")
     @Test
     void changeEmptyTest() throws Exception {
         // given
-        given(tableService.changeEmpty(orderTable1.getId(), orderTable1)).willReturn(orderTable1);
+        given(tableService.changeEmpty(any(), any())).willReturn(orderTableResponse);
 
         // when
-        ResultActions actions = mockMvc.perform(put(TABLE_API_URI +"/{orderTableId}/empty", orderTable1.getId())
+        ResultActions actions = mockMvc.perform(put(TABLE_API_URI +"/{orderTableId}/empty", orderTableResponse.getId())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(orderTable1)));
+                .content(objectMapper.writeValueAsString(orderTableRequest)))
+                .andDo(print());
 
         // then
         actions.andExpect(status().isOk());
@@ -91,12 +83,13 @@ class TableRestControllerTest {
     @Test
     void changeNumberOfGuestsTest() throws Exception {
         // given
-        given(tableService.changeEmpty(orderTable1.getId(), orderTable1)).willReturn(orderTable1);
+        given(tableService.changeNumberOfGuests(any(), any())).willReturn(orderTableResponse);
 
         // when
-        ResultActions actions = mockMvc.perform(put(TABLE_API_URI +"/{orderTableId}/number-of-guests", orderTable1.getId())
+        ResultActions actions = mockMvc.perform(put(TABLE_API_URI +"/{orderTableId}/number-of-guests", orderTableResponse.getId())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(orderTable1)));
+                .content(objectMapper.writeValueAsString(orderTableRequest)))
+                .andDo(print());
 
         // then
         actions.andExpect(status().isOk());
@@ -106,17 +99,14 @@ class TableRestControllerTest {
     @Test
     void listTest() throws Exception {
         // given
-        given(tableService.list()).willReturn(Arrays.asList(orderTable1, orderTable2));
+        OrderTableResponse orderTableResponse2 = new OrderTableResponse(2L, 1, false);
+        given(tableService.list()).willReturn(Arrays.asList(orderTableResponse, orderTableResponse2));
 
         // when
-        ResultActions actions = mockMvc.perform(get(TABLE_API_URI));
+        ResultActions actions = mockMvc.perform(get(TABLE_API_URI)).andDo(print());
 
         // then
         actions.andExpect(status().isOk())
-                .andExpect(jsonPath("$").isNotEmpty())
-                .andExpect(jsonPath("$[0].id").isNotEmpty())
-                .andExpect(jsonPath("$[0].tableGroupId").isEmpty())
-                .andExpect(jsonPath("$[0].numberOfGuests").value(orderTable1.getNumberOfGuests()))
-                .andExpect(jsonPath("$[0].empty").value(orderTable1.isEmpty()));
+                .andExpect(jsonPath("$").isNotEmpty());
     }
 }
