@@ -1,5 +1,6 @@
 package kitchenpos.application.product;
 
+import kitchenpos.domain.menu.Quantity;
 import kitchenpos.domain.product.Price;
 import kitchenpos.domain.product.Product;
 import kitchenpos.dto.product.ProductRequest;
@@ -34,8 +35,9 @@ public class ProductService {
                 .orElseThrow(() -> new InvalidEntityException("Not found Product Id" + id));
     }
 
-    public Price getProductPrice(Long productId, BigDecimal quantity) {
+    public Price getProductPrice(Long productId, Quantity quantity) {
         Product product = productRepository.findById(productId).orElseThrow(() -> new InvalidEntityException(productId));
-        return product.multiply(quantity);
+        return product.multiply(quantity.getBigDecimalValue());
     }
+
 }
