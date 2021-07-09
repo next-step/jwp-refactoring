@@ -1,7 +1,8 @@
 package kitchenpos.domain.order;
 
-import kitchenpos.exception.InvalidOrderLineItemsException;
-import kitchenpos.exception.InvalidOrderTableException;
+import kitchenpos.domain.table.OrderTable;
+import kitchenpos.exception.order.InvalidOrderLineItemsException;
+import kitchenpos.exception.order.InvalidOrderTableException;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;

@@ -2,11 +2,10 @@ package kitchenpos.event.order;
 
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderLineItem;
-import kitchenpos.domain.order.TableGroup;
-import kitchenpos.event.order.TableGroupCreatedEvent;
-import kitchenpos.event.order.OrderCreatedEvent;
-import kitchenpos.exception.InvalidOrderLineItemsException;
-import kitchenpos.repository.MenuRepository;
+import kitchenpos.domain.table.TableGroup;
+import kitchenpos.event.table.TableGroupCreatedEvent;
+import kitchenpos.exception.order.InvalidOrderLineItemsException;
+import kitchenpos.repository.menu.MenuRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;

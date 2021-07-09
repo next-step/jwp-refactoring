@@ -4,7 +4,7 @@ import kitchenpos.domain.product.Price;
 import kitchenpos.domain.product.Product;
 import kitchenpos.dto.product.ProductRequest;
 import kitchenpos.exception.InvalidEntityException;
-import kitchenpos.repository.ProductRepository;
+import kitchenpos.repository.product.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
