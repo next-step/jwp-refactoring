@@ -1,6 +1,6 @@
 package kitchenpos.menuproduct.event;
 
-import kitchenpos.menu.domain.MenuValidator;
+import kitchenpos.menuproduct.domain.MenuProductValidator;
 import kitchenpos.menu.event.MenuCreatedEvent;
 import kitchenpos.menuproduct.domain.MenuProduct;
 import kitchenpos.menuproduct.domain.MenuProductRepository;
@@ -38,7 +38,7 @@ public class MenuProductEventHandler {
 
         MenuProducts menuProducts = new MenuProducts(menuProductList);
 
-        MenuValidator.validatePrice(menuProducts, event.getMenu());
+        MenuProductValidator.validatePrice(menuProducts, event.getMenu());
 
         menuProductRepository.saveAll(menuProducts.menuProducts());
     }

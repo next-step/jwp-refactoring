@@ -1,10 +1,10 @@
-package kitchenpos.menu.domain;
+package kitchenpos.menuproduct.domain;
 
-import kitchenpos.menuproduct.domain.MenuProducts;
+import kitchenpos.menu.domain.Menu;
 
 import java.math.BigDecimal;
 
-public class MenuValidator {
+public class MenuProductValidator {
 
     public static void validatePrice(MenuProducts menuProducts, Menu menu) {
         BigDecimal sum = menuProducts.sumOfMenuProducts();
