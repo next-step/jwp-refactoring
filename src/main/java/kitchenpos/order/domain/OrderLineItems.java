@@ -18,13 +18,13 @@ public class OrderLineItems {
 	protected OrderLineItems() {}
 
 	private OrderLineItems(List<OrderLineItem> orderLineItems) {
+		if (isNull(orderLineItems) || orderLineItems.isEmpty()) {
+			throw new IllegalArgumentException("주문 항목이 없습니다.");
+		}
 		this.orderLineItems = orderLineItems;
 	}
 
 	public static OrderLineItems of(List<OrderLineItem> orderLineItems) {
-		if (isNull(orderLineItems) || orderLineItems.isEmpty()) {
-			throw new IllegalArgumentException("주문 항목이 없습니다.");
-		}
 		return new OrderLineItems(orderLineItems);
 	}
 

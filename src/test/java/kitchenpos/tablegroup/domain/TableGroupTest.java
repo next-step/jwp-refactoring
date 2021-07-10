@@ -11,7 +11,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import kitchenpos.order.domain.Order;
-import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
 
 class TableGroupTest {
@@ -22,6 +21,7 @@ class TableGroupTest {
 		// given
 		OrderTable orderTable = new OrderTable(1, true);
 		TableGroup tableGroup = new TableGroup(LocalDateTime.now());
+
 		// when
 		// than
 		assertThatThrownBy(() -> tableGroup.group(orderTable))
@@ -36,6 +36,7 @@ class TableGroupTest {
 		OrderTable notEmptyTable = new OrderTable(1, false);
 		OrderTable orderTable = new OrderTable(1, true);
 		TableGroup tableGroup = new TableGroup(LocalDateTime.now());
+
 		// when
 		// than
 		assertThatThrownBy(() -> tableGroup.group(orderTable, notEmptyTable))
@@ -47,8 +48,8 @@ class TableGroupTest {
 	@Test
 	void createTableGroupWithGroupedOrderTableTest() {
 		// given
-		OrderTable groupedTable = createOrderTable(1L, 1L, NumberOfGuests.valueOf(1), false);
-		OrderTable ungroupedTable = createOrderTable(2L, null, NumberOfGuests.valueOf(1), false);
+		OrderTable groupedTable = createOrderTable(1L, 1L, 1, false);
+		OrderTable ungroupedTable = createOrderTable(2L, null, 1, false);
 
 		TableGroup tableGroup = new TableGroup(LocalDateTime.now());
 
@@ -92,11 +93,11 @@ class TableGroupTest {
 	@Test
 	void ungroupTest() {
 		// given
-		OrderTable table1 = createOrderTable(1L, 1L, NumberOfGuests.valueOf(1), false);
+		OrderTable table1 = createOrderTable(1L, 1L, 1, false);
 		Order order1 = table1.createOrder(주문항목들_후라이드_1개_양념_1개, LocalDateTime.now());
 		order1.complete();
 
-		OrderTable table2 =  createOrderTable(2L, 1L, NumberOfGuests.valueOf(1), false);
+		OrderTable table2 =  createOrderTable(2L, 1L, 1, false);
 		Order order2 = table2.createOrder(주문항목들_후라이드_1개_양념_1개, LocalDateTime.now());
 		order2.complete();
 
@@ -115,10 +116,10 @@ class TableGroupTest {
 	@Test
 	void ungroupWithNotCompleteOrderTest() {
 		// given
-		OrderTable notCompletedOrderTable = createOrderTable(1L, 1L, NumberOfGuests.valueOf(1), false);
+		OrderTable notCompletedOrderTable = createOrderTable(1L, 1L, 1, false);
 		Order notCompletedOrder = notCompletedOrderTable.createOrder(주문항목들_후라이드_1개_양념_1개, LocalDateTime.now());
 
-		OrderTable orderTable = createOrderTable(2L, 1L, NumberOfGuests.valueOf(1), false);
+		OrderTable orderTable = createOrderTable(2L, 1L, 1, false);
 		Order order = orderTable.createOrder(주문항목들_후라이드_1개_양념_1개, LocalDateTime.now());
 		order.complete();
 

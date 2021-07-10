@@ -4,7 +4,7 @@ import static java.time.LocalDateTime.*;
 import static java.util.Arrays.*;
 import static kitchenpos.TextFixture.*;
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDateTime;
 
@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.OrderTableId;
 
 public class OrderTableTest {
 
@@ -30,11 +31,10 @@ public class OrderTableTest {
 	@DisplayName("그룹 설정이 되어 있는 주문테이블은 비우기 설정을 할 수 없다.")
 	@Test
 	void emptyGroupedTableTest() {
-		OrderTable 그룹설정된_테이블 = mock(OrderTable.class);
-		when(그룹설정된_테이블.isGrouped()).thenReturn(true);
-
 		// given
-		ChangeEmptyValidator changeEmptyValidator = new ChangeEmptyValidator(그룹설정된_테이블, asList(주문_후라이드_1개_양념_1개_조리중));
+		OrderTable groupedTable = createOrderTable(1L, 1L, 1, false);
+		ChangeEmptyValidator changeEmptyValidator = new ChangeEmptyValidator(groupedTable, asList(주문_후라이드_1개_양념_1개_조리중));
+
 		// when
 		// than
 		assertThatThrownBy(() -> 주문테이블_그룹O.changeEmpty(true, changeEmptyValidator))
@@ -120,7 +120,7 @@ public class OrderTableTest {
 	@Test
 	void createOrderTest() {
 		// given
-		OrderTable orderTable = new OrderTable(1, false);
+		OrderTable orderTable = createOrderTable(1L, 1L, 1, false);
 		LocalDateTime orderedTime = now();
 
 		// when
@@ -128,6 +128,7 @@ public class OrderTableTest {
 
 		// then
 		assertThat(order.getOrderedTime()).isEqualTo(orderedTime);
+		assertThat(order.getOrderTableId()).isEqualTo(new OrderTableId(1L));
 		assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
 	}
 
@@ -144,7 +145,25 @@ public class OrderTableTest {
 			.hasMessageContaining("빈테이블에서 주문할 수 없습니다.");
 	}
 
-	public static OrderTable createOrderTable(Long id, Long groupId, NumberOfGuests numberOfGuests, boolean empty) {
-		return new OrderTable(id, new TableGroupId(groupId), numberOfGuests, empty);
+	@DisplayName("주문 항목이 없으면 주문을 생성할 수 없다.")
+	@Test
+	void createOrderWithoutOrderLineItems() {
+		// given
+		OrderTable orderTable = new OrderTable(1, false);
+
+		// when
+		// than
+		assertAll(
+			() -> assertThatThrownBy(() ->  orderTable.createOrder(null, now()))
+				.isInstanceOf(IllegalArgumentException.class)
+				.hasMessageContaining("주문 필수 정보가 없습니다."),
+			() -> assertThatThrownBy(() ->  orderTable.createOrder(주문항목들_후라이드_1개_양념_1개, null))
+				.isInstanceOf(IllegalArgumentException.class)
+				.hasMessageContaining("주문 필수 정보가 없습니다.")
+		);
+	}
+
+	public static OrderTable createOrderTable(Long id, Long groupId, int numberOfGuests, boolean empty) {
+		return new OrderTable(id, new TableGroupId(groupId), NumberOfGuests.valueOf(numberOfGuests), empty);
 	}
 }
