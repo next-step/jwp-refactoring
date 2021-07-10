@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
-@Table(name = "order")
+@Table(name = "orders")
 @Entity
 public class Order {
 
