@@ -2,6 +2,7 @@ package kitchenpos.table.domain;
 
 import kitchenpos.table.exception.FailedChangeEmptyException;
 import kitchenpos.table.exception.FailedChangeNumberOfGuestsException;
+import org.springframework.util.ObjectUtils;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -50,7 +51,7 @@ public class OrderTable {
     }
 
     public void changeEmpty(final boolean empty) {
-        if (tableGroup != null) {
+        if (!isEmptyTableGroup()) {
             throw new FailedChangeEmptyException("단체 지정이 되어있을때는 빈 테이블 여부를 변경할 수 없습니다.");
         }
         this.empty = empty;
@@ -64,6 +65,10 @@ public class OrderTable {
             throw new FailedChangeNumberOfGuestsException("테이블이 비어있을 경우 손님수를 변경할 수 없습니다.");
         }
         this.numberOfGuests = numberOfGuests;
+    }
+
+    public boolean isEmptyTableGroup() {
+        return ObjectUtils.isEmpty(tableGroup);
     }
 
     public Long getId() {
