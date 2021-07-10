@@ -97,7 +97,7 @@
 * [x] Event Storming 진행해보기
 * [ ] Business Object 테스트 코드 작성
     * [x] 상품 관련 기능 service test 작성
-    * [ ] 메뉴 그룹 관련 기능 service test 작성
+    * [x] 메뉴 그룹 관련 기능 service test 작성
     * [ ] 메뉴 관련 기능 service test 작성
     * [ ] 테이블 관련 기능 service test 작성
     * [ ] 테이블 그룹 관련 service test 작성
