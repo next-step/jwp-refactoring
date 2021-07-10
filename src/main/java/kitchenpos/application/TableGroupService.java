@@ -84,6 +84,6 @@ public class TableGroupService {
     private List<Order> findAllOrderByOrderTableIds(OrderTables orderTables) {
         final List<Long> orderTableIds = orderTables.ids();
 
-        return orderDao.findAllByOrderTableIds(orderTableIds);
+        return orderDao.findAllByOrderTableIdIn(orderTableIds);
     }
 }

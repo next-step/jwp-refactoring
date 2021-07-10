@@ -5,10 +5,12 @@ import kitchenpos.domain.OrderLineItem;
 import java.util.List;
 import java.util.Optional;
 
-public interface OrderLineItemDao {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface OrderLineItemDao extends JpaRepository<OrderLineItem, Long> {
     OrderLineItem save(OrderLineItem entity);
 
-    Optional<OrderLineItem> findById(Long id);
+    Optional<OrderLineItem> findBySeq(Long id);
 
     List<OrderLineItem> findAll();
 

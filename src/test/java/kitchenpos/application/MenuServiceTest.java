@@ -60,7 +60,7 @@ class MenuServiceTest {
         savedMenu.setId(1L);
         given(menuGroupDao.existsById(menuRequest.getMenuGroupId())).willReturn(true);
         given(menuDao.save(any(Menu.class))).willReturn(savedMenu);
-        given(productDao.findAllByIds(anyList())).willReturn(productList);
+        given(productDao.findAllByIdIn(anyList())).willReturn(productList);
         given(mockMenu.getId()).willReturn(1L);
 
         // when
