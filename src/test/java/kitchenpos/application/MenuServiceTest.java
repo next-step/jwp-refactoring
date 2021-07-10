@@ -22,6 +22,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -45,6 +46,8 @@ public class MenuServiceTest {
     ProductRepository productRepository;
     @Mock
     MenuProductRepository menuProductRepository;
+    @Mock
+    ApplicationEventPublisher publisher;
 
     MenuService menuService;
 
@@ -75,7 +78,7 @@ public class MenuServiceTest {
 
         반반세트 = new Menu(1L, 반반세트요청.getName(), 반반세트요청.getPrice(), 반반세트요청.getMenuGroupId());
 
-        menuService = new MenuService(menuRepository, menuGroupRepository, productRepository, menuProductRepository);
+        menuService = new MenuService(menuRepository, menuGroupRepository, publisher);
     }
 
     @Test
@@ -83,9 +86,6 @@ public class MenuServiceTest {
     void 정상적으로_메뉴_등록() {
         //given
         given(menuGroupRepository.existsById(anyLong())).willReturn(true);
-        given(productRepository.findById(후라이드치킨.getId())).willReturn(Optional.of(후라이드치킨));
-        given(productRepository.findById(양념치킨.getId())).willReturn(Optional.of(양념치킨));
-
         given(menuRepository.save(any())).willReturn(반반세트);
 
         //when
