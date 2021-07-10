@@ -5,10 +5,16 @@ import kitchenpos.ordertable.domain.OrderTable;
 
 public class OrderTableRequest {
 
+	private Long tableGroupId;
 	private int numberOfGuests;
 
-	public OrderTableRequest(int numberOfGuests) {
+	public OrderTableRequest(Long tableGroupId, int numberOfGuests) {
+		this.tableGroupId = tableGroupId;
 		this.numberOfGuests = numberOfGuests;
+	}
+
+	public Long getTableGroupId() {
+		return tableGroupId;
 	}
 
 	public int getNumberOfGuests() {

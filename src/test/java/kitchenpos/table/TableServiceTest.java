@@ -37,6 +37,7 @@ import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.ordertable.exception.TableException;
 import kitchenpos.product.domain.Product;
+import kitchenpos.tablegroup.domain.TableGroup;
 
 @DisplayName("주문 테이블 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -51,7 +52,6 @@ public class TableServiceTest {
 	@InjectMocks
 	private TableService tableService;
 
-
 	MenuGroup 치킨;
 	Menu 양념반_후라이드반;
 	Product 양념치킨;
@@ -65,7 +65,6 @@ public class TableServiceTest {
 	OrderLineItems 주문항목들;
 	OrderTable 주문테이블;
 
-
 	@BeforeEach
 	void setUp() {
 		치킨 = new MenuGroup(1L, "치킨");
@@ -78,7 +77,7 @@ public class TableServiceTest {
 
 		주문항목1 = OrderServiceTest.주문항목생성(양념반_후라이드반, new Quantity(1), 1L);
 		주문항목2 = OrderServiceTest.주문항목생성(양념반_후라이드반, new Quantity(1), 2L);
-		주문테이블 = TableServiceTest.주문테이블생성(1L, new NumberOfGuests(1), false);
+		주문테이블 = 주문테이블생성(1L, new NumberOfGuests(1), false);
 		주문항목들 = new OrderLineItems(Arrays.asList(주문항목1, 주문항목2));
 		주문 = OrderServiceTest.주문생성(1L, 주문테이블, 주문항목들);
 
@@ -87,7 +86,7 @@ public class TableServiceTest {
 	@DisplayName("주문 테이블을 생성한다.")
 	@Test
 	void 주문_테이블_생성() {
-		OrderTableRequest 주문테이블_생성_요청 = new OrderTableRequest(1);
+		OrderTableRequest 주문테이블_생성_요청 = new OrderTableRequest(null, 1);
 		given(tableRepository.save(any())).willReturn(주문테이블);
 
 		OrderTableResponse created = tableService.create(주문테이블_생성_요청);
@@ -135,12 +134,16 @@ public class TableServiceTest {
 	@Test
 	void 주문_테이블을_비우거나_채울_때_주문_테이블이_단체_지정에_속하면_비울_수_없다() {
 		OrderTableChangeEmptyRequest 주문_테이블_비움_요청 = new OrderTableChangeEmptyRequest(true);
-		//주문테이블.setTableGroup(1L); todo : 주문테이블 채우는 방법 고려
-		given(tableRepository.findById(주문테이블.getId())).willReturn(Optional.of(주문테이블));
+
+		OrderTable 주문테이블1번 = 주문테이블생성(1L, new NumberOfGuests(1), true);
+		OrderTable 주문테이블2번 = 주문테이블생성(2L, new NumberOfGuests(1), true);
+		TableGroup 단체지정 = new TableGroup(1L, Arrays.asList(주문테이블1번, 주문테이블2번));
+
+		given(tableRepository.findById(주문테이블1번.getId())).willReturn(Optional.of(주문테이블1번));
 
 		assertThatThrownBy(() -> {
 			tableService.changeEmpty(주문테이블.getId(), 주문_테이블_비움_요청);
-		}).isInstanceOf(IllegalArgumentException.class);
+		}).isInstanceOf(TableException.class);
 	}
 
 	@DisplayName("주문 테이블을 비우거나 채울 때 주문 테이블들이 조리중이거나 식사중일 경우 비울 수 없다.")
@@ -159,7 +162,7 @@ public class TableServiceTest {
 	@DisplayName("주문 테이블의 손님 수를 변경한다")
 	@Test
 	void 주문_테이블의_손님_수_변경() {
-		OrderTableRequest 주문테이블_생성_요청 = new OrderTableRequest(4);
+		OrderTableRequest 주문테이블_생성_요청 = new OrderTableRequest(null, 4);
 		주문테이블.changeNumberOfGuests(new NumberOfGuests(4));
 		given(tableRepository.findById(주문테이블.getId())).willReturn(Optional.of(주문테이블));
 		given(tableRepository.save(주문테이블)).willReturn(주문테이블);
@@ -172,7 +175,7 @@ public class TableServiceTest {
 	@DisplayName("주문 테이블의 손님 수를 변경한다 - 변경할 손님 수가 0보다 작으면 변경할 수 없다")
 	@Test
 	void 주문_테이블의_손님_수_변경_변경할_손님_수가_0보다_작으면_변경할_수_없다() {
-		OrderTableRequest 주문테이블_생성_요청 = new OrderTableRequest(-1);
+		OrderTableRequest 주문테이블_생성_요청 = new OrderTableRequest(null, -1);
 		given(tableRepository.findById(주문테이블.getId())).willReturn(Optional.of(주문테이블));
 
 		assertThatThrownBy(() -> {
@@ -183,7 +186,7 @@ public class TableServiceTest {
 	@DisplayName("주문 테이블의 손님 수를 변경한다 - 변경할 주문 테이블이 존재하지 않으면 변경할 수 없다.")
 	@Test
 	void 주문_테이블의_손님_수_변경_변경할_주문_테이블이_존재하지_않으면_변경할_수_없다() {
-		OrderTableRequest 주문테이블_생성_요청 = new OrderTableRequest(-1);
+		OrderTableRequest 주문테이블_생성_요청 = new OrderTableRequest(null, -1);
 		주문테이블.changeNumberOfGuests(new NumberOfGuests(4));
 		given(tableRepository.findById(주문테이블.getId())).willReturn(Optional.ofNullable(null));
 
@@ -195,7 +198,7 @@ public class TableServiceTest {
 	@DisplayName("주문 테이블의 손님 수를 변경한다 - 변경할 주문 테이블이 비워져 있다면 변경할 수 없다.")
 	@Test
 	void 주문_테이블의_손님_수_변경_변경할_주문_테이블이_비워져_있다면_변경할_수_없다() {
-		OrderTableRequest 주문테이블_생성_요청 = new OrderTableRequest(4);
+		OrderTableRequest 주문테이블_생성_요청 = new OrderTableRequest(null, 4);
 		주문.changeOrderStatus(OrderStatus.COMPLETION);
 		주문테이블.changeNumberOfGuests(new NumberOfGuests(4));
 		주문테이블.changeEmpty(true, 주문);
@@ -235,5 +238,6 @@ public class TableServiceTest {
 		OrderTable orderTable = new OrderTable(id, numberOfGuests, isEmpty);
 		return orderTable;
 	}
+
 
 }

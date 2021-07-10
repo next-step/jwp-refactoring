@@ -34,7 +34,7 @@ public class OrderLineItemsTest {
 		MenuProduct menuProduct = new MenuProduct(1L, product, new Quantity(1));
 		menu = new Menu(1L, "메뉴", new Price(new BigDecimal(1000)), menuGroup,
 			new MenuProducts(Arrays.asList(menuProduct)));
-		orderLineItem =  new OrderLineItem(1L, menu, new Quantity(1));
+		orderLineItem = new OrderLineItem(1L, menu, new Quantity(1));
 	}
 
 	@Test

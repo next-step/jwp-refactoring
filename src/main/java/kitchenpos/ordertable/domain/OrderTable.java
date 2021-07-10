@@ -7,11 +7,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
-import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.ordertable.exception.TableException;
+import kitchenpos.tablegroup.domain.TableGroup;
 
 @Entity
 public class OrderTable {
@@ -20,6 +22,8 @@ public class OrderTable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@ManyToOne
+	@JoinColumn(name = "table_group_id")
 	private TableGroup tableGroup;
 
 	@Embedded
@@ -45,6 +49,14 @@ public class OrderTable {
 	public OrderTable(long id, NumberOfGuests numberOfGuests, boolean isEmpty) {
 		this(id, numberOfGuests);
 		this.empty = isEmpty;
+	}
+
+	public void group(TableGroup tableGroup) {
+		this.tableGroup = tableGroup;
+	}
+
+	public void unGroup() {
+		this.tableGroup = null;
 	}
 
 	public TableGroup getTableGroup() {
@@ -82,4 +94,6 @@ public class OrderTable {
 		}
 		this.numberOfGuests = numberOfGuests;
 	}
+
+
 }
