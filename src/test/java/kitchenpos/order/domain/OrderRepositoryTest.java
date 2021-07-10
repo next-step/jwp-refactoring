@@ -39,7 +39,7 @@ public class OrderRepositoryTest {
         OrderTable orderTable = orderTableRepository.save(new OrderTable(0, false));
         Menu menu = new Menu(3L, "반반치킨", new BigDecimal(16000), new MenuGroup("한마리메뉴"));
         String orderStatus = OrderStatus.COOKING.name();
-        orderLineItemList.add(new OrderLineItem(menu, 1));
+        orderLineItemList.add(new OrderLineItem(menu.id(), 1));
 
         order = new Order(orderTable, orderStatus, LocalDateTime.now());
         orderLineItemList.forEach(orderLineItem -> orderLineItem.mappingOrder(order));

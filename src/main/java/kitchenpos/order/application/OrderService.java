@@ -1,6 +1,5 @@
 package kitchenpos.order.application;
 
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemRequest;
@@ -47,9 +46,10 @@ public class OrderService {
         List<OrderLineItem> orderLineItemList;
 
         validateOrderLineItems(orderRequest.getOrderLineItemRequests());
+        validateExistsMenus(orderRequest.getOrderLineItemRequests());
 
         orderLineItemList = orderRequest.getOrderLineItemRequests().stream()
-                .map(orderLineItemRequest -> new OrderLineItem(findMenu(orderLineItemRequest.getMenuId()), orderLineItemRequest.getQuantity()))
+                .map(orderLineItemRequest -> new OrderLineItem(orderLineItemRequest.getMenuId(), orderLineItemRequest.getQuantity()))
                 .collect(Collectors.toList());
 
         final OrderLineItems orderLineItems = new OrderLineItems(orderLineItemList);
@@ -91,8 +91,15 @@ public class OrderService {
         }
     }
 
-    private Menu findMenu(Long menuId) {
-        return menuRepository.findById(menuId)
-                .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_MENU + " Find Menu Id : " + menuId));
+
+    private void validateExistsMenus(List<OrderLineItemRequest> orderLineItemRequests) {
+        orderLineItemRequests.stream()
+                .map(OrderLineItemRequest::getMenuId)
+                .forEach(this::validateExistsMenu);
+    }
+
+    private void validateExistsMenu(Long menuId) {
+        menuRepository.findById(menuId)
+                      .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_MENU + " Find Menu Id : " + menuId));
     }
 }

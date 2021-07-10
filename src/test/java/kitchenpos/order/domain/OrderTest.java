@@ -24,7 +24,7 @@ public class OrderTest {
     public void setup() {
         List<OrderLineItem> orderLineItemList = new ArrayList<>();
         Menu menu = new Menu("후라이드치킨", new BigDecimal(16000), new MenuGroup("새로운 메뉴"));
-        OrderLineItem orderLineItem = new OrderLineItem(menu, 1L);
+        OrderLineItem orderLineItem = new OrderLineItem(menu.id(), 1L);
         orderLineItemList.add(orderLineItem);
         orderStatus = OrderStatus.COOKING.name();
         orderTable = new OrderTable(1, false);

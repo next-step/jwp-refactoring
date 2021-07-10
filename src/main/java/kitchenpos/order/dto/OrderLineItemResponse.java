@@ -25,7 +25,7 @@ public class OrderLineItemResponse {
         List<OrderLineItemResponse> orderLineItemResponses = new ArrayList<>();
 
         for (OrderLineItem orderLineItem : orderLineItems) {
-            orderLineItemResponses.add(new OrderLineItemResponse(orderLineItem.id(), orderLineItem.order().id(), orderLineItem.menu().id(), orderLineItem.quantity()));
+            orderLineItemResponses.add(new OrderLineItemResponse(orderLineItem.id(), orderLineItem.order().id(), orderLineItem.menuId(), orderLineItem.quantity()));
         }
 
         return orderLineItemResponses;
