@@ -35,10 +35,10 @@ public class Order {
 
     protected Order() {}
 
-    public Order(OrderTableId tableId, OrderStatus status, OrderLineItems orderLineItems, LocalDateTime orderedTime) {
-        validateNonNull(status, orderLineItems, orderedTime);
+    public Order(OrderTableId tableId, OrderLineItems orderLineItems, LocalDateTime orderedTime) {
+        validateNonNull(tableId, orderLineItems, orderedTime);
         this.orderTableId = tableId;
-        this.orderStatus = status;
+        this.orderStatus = COOKING;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
         this.orderLineItems.toOrder(this);
@@ -83,7 +83,7 @@ public class Order {
         return this.orderStatus == COMPLETION;
     }
 
-    public boolean isFrom(OrderTableId orderTableId) {
+    public boolean isCreatedFrom(OrderTableId orderTableId) {
         return this.orderTableId.equals(orderTableId);
     }
 
@@ -105,8 +105,8 @@ public class Order {
         }
     }
 
-    private void validateNonNull(OrderStatus orderStatus, OrderLineItems orderLineItems, LocalDateTime orderedTime) {
-        if (isNull(orderStatus) || isNull(orderLineItems) || isNull(orderedTime)) {
+    private void validateNonNull(OrderTableId orderTableId, OrderLineItems orderLineItems, LocalDateTime orderedTime) {
+        if (isNull(orderTableId) || isNull(orderLineItems) || isNull(orderedTime)) {
             throw new IllegalArgumentException("주문 필수 정보가 없습니다.");
         }
     }

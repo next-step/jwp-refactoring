@@ -21,7 +21,7 @@ public class UngroupValidator {
 
 	private List<Order> findOrdersFrom(OrderTable orderTable) {
 		return orders.stream()
-			.filter(order -> order.isFrom(new OrderTableId(orderTable.getId())))
+			.filter(order -> order.isCreatedFrom(new OrderTableId(orderTable.getId())))
 			.collect(Collectors.toList());
 	}
 

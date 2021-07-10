@@ -12,7 +12,6 @@ import javax.persistence.Id;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItems;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTableId;
 import kitchenpos.tablegroup.domain.UngroupValidator;
 
@@ -51,7 +50,7 @@ public class OrderTable {
         if (isEmpty()) {
             throw new IllegalArgumentException("빈테이블에서 주문할 수 없습니다.");
         }
-        return new Order(new OrderTableId(getId()), OrderStatus.COOKING, orderLineItems, orderedTime);
+        return new Order(new OrderTableId(getId()), orderLineItems, orderedTime);
     }
 
     public Long getId() {

@@ -4,7 +4,6 @@ import static java.time.LocalDateTime.*;
 import static java.util.Arrays.*;
 import static kitchenpos.TextFixture.*;
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDateTime;
 
@@ -120,19 +119,19 @@ public class OrderTableTest {
 	@Test
 	void createOrderTest() {
 		// given
-		OrderTable orderTable = createOrderTable(1L, 1L, 1, false);
+		OrderTable orderTable = OrderTableTest.createOrderTable(1L, 1L, 1, false);
 		LocalDateTime orderedTime = now();
 
 		// when
 		Order order = orderTable.createOrder(주문항목들_후라이드_1개_양념_1개, orderedTime);
 
 		// then
+		assertThat(order.isCreatedFrom(new OrderTableId(1L))).isTrue();
 		assertThat(order.getOrderedTime()).isEqualTo(orderedTime);
-		assertThat(order.getOrderTableId()).isEqualTo(new OrderTableId(1L));
 		assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
 	}
 
-	@DisplayName("빈 주문테이블에서 주문할 수 없다.")
+	@DisplayName("빈 주문테이블에서 주문을 생성할 수 없다.")
 	@Test
 	void createOrderWithEmptyOrderTableTest() {
 		// given
@@ -143,24 +142,6 @@ public class OrderTableTest {
 		assertThatThrownBy(() ->  orderTable.createOrder(주문항목들_후라이드_1개_양념_1개, now()))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("빈테이블에서 주문할 수 없습니다.");
-	}
-
-	@DisplayName("주문 항목이 없으면 주문을 생성할 수 없다.")
-	@Test
-	void createOrderWithoutOrderLineItems() {
-		// given
-		OrderTable orderTable = new OrderTable(1, false);
-
-		// when
-		// than
-		assertAll(
-			() -> assertThatThrownBy(() ->  orderTable.createOrder(null, now()))
-				.isInstanceOf(IllegalArgumentException.class)
-				.hasMessageContaining("주문 필수 정보가 없습니다."),
-			() -> assertThatThrownBy(() ->  orderTable.createOrder(주문항목들_후라이드_1개_양념_1개, null))
-				.isInstanceOf(IllegalArgumentException.class)
-				.hasMessageContaining("주문 필수 정보가 없습니다.")
-		);
 	}
 
 	public static OrderTable createOrderTable(Long id, Long groupId, int numberOfGuests, boolean empty) {
