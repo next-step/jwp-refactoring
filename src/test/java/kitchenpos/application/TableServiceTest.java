@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderTableRequest;
 
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
@@ -30,15 +31,13 @@ class TableServiceTest {
     @Test
     void create() {
         // given
-        OrderTable orderTable = new OrderTable();
-        orderTable.setTableGroupId(1L);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(1);
 
         // when
-        tableService.create(orderTable);
+        tableService.create(orderTableRequest);
 
         // then
-        verify(orderTableDao).save(orderTable);
-        assertThat(orderTable.getTableGroupId()).isEqualTo(null);
+        verify(orderTableDao).save(any(OrderTable.class));
     }
 
     @Test
@@ -54,12 +53,12 @@ class TableServiceTest {
     void changeEmpty() {
         // given
         Long orderTableId = 1L;
-        OrderTable orderTable = new OrderTable();
+        OrderTableRequest orderTableRequest = new OrderTableRequest();
         OrderTable savedOrderTable = new OrderTable();
         given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(savedOrderTable));
 
         // when
-        tableService.changeEmpty(orderTableId, orderTable);
+        tableService.changeEmpty(orderTableId, orderTableRequest);
 
         // then
         verify(orderTableDao).save(savedOrderTable);
@@ -69,11 +68,11 @@ class TableServiceTest {
     void given_NotExistOrderTable_when_changeEmpty_then_ThrownException() {
         // given
         Long notExistId = 1L;
-        OrderTable orderTable = new OrderTable();
+        OrderTableRequest orderTableRequest = new OrderTableRequest();
         given(orderTableDao.findById(notExistId)).willReturn(Optional.empty());
 
         // when
-        final Throwable notExistIdException = catchThrowable(() -> tableService.changeEmpty(notExistId, orderTable));
+        final Throwable notExistIdException = catchThrowable(() -> tableService.changeEmpty(notExistId, orderTableRequest));
 
         // then
         assertThat(notExistIdException).isInstanceOf(IllegalArgumentException.class);
@@ -83,13 +82,13 @@ class TableServiceTest {
     void given_OrderTableHasTableGroupId_when_changeEmpty_then_ThrownException() {
         // given
         Long orderTableId = 1L;
-        OrderTable orderTable = new OrderTable();
+        OrderTableRequest orderTableRequest = new OrderTableRequest();
         final OrderTable notNullTableGroupId = new OrderTable();
         notNullTableGroupId.setTableGroupId(1L);
         given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(notNullTableGroupId));
 
         // when
-        final Throwable notNullTableGroupIdException = catchThrowable(() -> tableService.changeEmpty(orderTableId, orderTable));
+        final Throwable notNullTableGroupIdException = catchThrowable(() -> tableService.changeEmpty(orderTableId, orderTableRequest));
 
         // then
         assertThat(notNullTableGroupIdException).isInstanceOf(IllegalArgumentException.class);
@@ -99,28 +98,26 @@ class TableServiceTest {
     void changeNumberOfGuests() {
         // given
         Long orderTableId = 1L;
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(1);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(1);
         OrderTable savedOrderTable = new OrderTable();
         given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(savedOrderTable));
 
         // when
-        tableService.changeNumberOfGuests(orderTableId, orderTable);
+        tableService.changeNumberOfGuests(orderTableId, orderTableRequest);
 
         // then
         verify(orderTableDao).save(savedOrderTable);
-        assertThat(savedOrderTable.getNumberOfGuests()).isEqualTo(orderTable.getNumberOfGuests());
+        assertThat(savedOrderTable.getNumberOfGuests()).isEqualTo(orderTableRequest.getNumberOfGuests());
     }
 
     @Test
     void given_InvalidNumberOfGuests_when_ChangeNumberOfGuests_then_ThrownException() {
         // given
         Long orderTableId = 1L;
-        OrderTable minusGuestsOrderTable = new OrderTable();
-        minusGuestsOrderTable.setNumberOfGuests(-1);
+        OrderTableRequest minusGuestsOrderTableRequest = new OrderTableRequest();
 
         // when
-        final Throwable invalidNumberOfGuests = catchThrowable(() -> tableService.changeNumberOfGuests(orderTableId, minusGuestsOrderTable));
+        final Throwable invalidNumberOfGuests = catchThrowable(() -> tableService.changeNumberOfGuests(orderTableId, minusGuestsOrderTableRequest));
 
         // then
         assertThat(invalidNumberOfGuests).isInstanceOf(IllegalArgumentException.class);
@@ -130,15 +127,14 @@ class TableServiceTest {
     void given_PersistedOrderTableHasEmpty_when_ChangeNumberOfGuests_then_ThrownException() {
         // given
         Long orderTableId = 1L;
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(1);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(1);
         OrderTable savedOrderTable = new OrderTable();
         savedOrderTable.setEmpty(true);
         given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(savedOrderTable));
 
 
         // when
-        final Throwable emptyOrderTable = catchThrowable(() -> tableService.changeNumberOfGuests(orderTableId, orderTable));
+        final Throwable emptyOrderTable = catchThrowable(() -> tableService.changeNumberOfGuests(orderTableId, orderTableRequest));
 
         // then
         assertThat(emptyOrderTable).isInstanceOf(IllegalArgumentException.class);

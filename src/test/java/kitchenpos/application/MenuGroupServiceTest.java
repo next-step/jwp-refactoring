@@ -10,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupRequest;
 
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
@@ -24,13 +25,13 @@ class MenuGroupServiceTest {
     @Test
     void create() {
         // given
-        MenuGroup menuGroup = new MenuGroup();
+        MenuGroupRequest menuGroup = new MenuGroupRequest();
 
         // when
         menuGroupService.create(menuGroup);
 
         // then
-        verify(menuGroupDao).save(menuGroup);
+        verify(menuGroupDao).save(any(MenuGroup.class));
     }
 
     @Test
