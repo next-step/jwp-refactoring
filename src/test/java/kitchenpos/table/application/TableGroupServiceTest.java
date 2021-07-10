@@ -2,6 +2,8 @@ package kitchenpos.table.application;
 
 import java.util.Collections;
 import java.util.Optional;
+import kitchenpos.handler.exception.NotChangeStatusException;
+import kitchenpos.handler.exception.NotCreateTableGroupException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -18,7 +20,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -42,7 +44,7 @@ class TableGroupServiceTest {
         CreateTableGroupDto tableGroupDto = new CreateTableGroupDto();
 
         // when
-        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroupDto));
+        assertThatExceptionOfType(NotCreateTableGroupException.class).isThrownBy(() -> tableGroupService.create(tableGroupDto));
     }
 
     @DisplayName("create 실패 - orderTable 개수가 2개 미만")
@@ -52,7 +54,7 @@ class TableGroupServiceTest {
         CreateTableGroupDto tableGroupDto = new CreateTableGroupDto(Collections.singletonList(new OrderTableIdDto()));
 
         // when
-        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroupDto));
+        assertThatExceptionOfType(NotCreateTableGroupException.class).isThrownBy(() -> tableGroupService.create(tableGroupDto));
     }
 
     @DisplayName("create 실패 - orderTable 목록에 중복된 것이 존재")
@@ -63,7 +65,7 @@ class TableGroupServiceTest {
         given(orderTableRepository.findAllByIdIn(any())).willReturn(Collections.singletonList(entity(1L, true)));
 
         // when
-        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroupDto));
+        assertThatExceptionOfType(NotCreateTableGroupException.class).isThrownBy(() -> tableGroupService.create(tableGroupDto));
     }
 
     @DisplayName("create 실패 - 저장된 orderTable 이 empty 상태가 아님")
@@ -75,7 +77,7 @@ class TableGroupServiceTest {
             .willReturn(Lists.newArrayList(entity(1L, true), entity(2L, false)));
 
         // when
-        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(tableGroupDto));
+        assertThatExceptionOfType(NotCreateTableGroupException.class).isThrownBy(() -> tableGroupService.create(tableGroupDto));
     }
 
     @DisplayName("create 성공")
@@ -116,7 +118,7 @@ class TableGroupServiceTest {
         given(tableGroupRepository.findById(1L)).willReturn(Optional.of(tableGroup));
 
         // when
-        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.ungroup(targetId));
+        assertThatExceptionOfType(NotChangeStatusException.class).isThrownBy(() -> tableGroupService.ungroup(targetId));
     }
 
     @DisplayName("ungroup 성공")

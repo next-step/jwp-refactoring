@@ -1,7 +1,7 @@
 package kitchenpos.table.application;
 
 import java.util.Optional;
-import kitchenpos.handler.exception.NotChangeEmptyException;
+import kitchenpos.handler.exception.NotChangeStatusException;
 import kitchenpos.handler.exception.NotChangeNumberOfGuestsException;
 import kitchenpos.handler.exception.NotFoundEntityException;
 import kitchenpos.order.domain.Order;
@@ -78,7 +78,8 @@ class TableServiceTest {
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
 
         // when
-        assertThatExceptionOfType(NotChangeEmptyException.class).isThrownBy(() -> tableService.changeEmpty(orderTableId, true));
+        assertThatExceptionOfType(
+            NotChangeStatusException.class).isThrownBy(() -> tableService.changeEmpty(orderTableId, true));
     }
 
     @DisplayName("empty 상태 변경 실패 - 주문의 상태가 COOKING 또는 MEAL")
@@ -97,7 +98,7 @@ class TableServiceTest {
 
         // when
         assertThatExceptionOfType(
-            NotChangeEmptyException.class).isThrownBy(() -> tableService.changeEmpty(orderTableId, true));
+            NotChangeStatusException.class).isThrownBy(() -> tableService.changeEmpty(orderTableId, true));
     }
 
     @DisplayName("empty 상태 변경 성공")

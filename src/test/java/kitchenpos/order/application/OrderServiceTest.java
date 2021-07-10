@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Stream;
+import kitchenpos.handler.exception.NotChangeStatusException;
+import kitchenpos.handler.exception.NotCreateOrderException;
 import kitchenpos.handler.exception.NotFoundEntityException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
@@ -27,7 +29,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -63,7 +64,7 @@ class OrderServiceTest {
     @DisplayName("create order 실패 - orderLineItems 가 비어 있음")
     @Test
     void createFail01() {
-        assertThatIllegalArgumentException().isThrownBy(
+        assertThatExceptionOfType(NotCreateOrderException.class).isThrownBy(
             () -> orderService.create(new CreateOrderDto(null, new ArrayList<>())));
     }
 
@@ -79,7 +80,7 @@ class OrderServiceTest {
         given(menuRepository.countByIdIn(any())).willReturn(0);
 
         // when
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(orderDto));
+        assertThatExceptionOfType(NotCreateOrderException.class).isThrownBy(() -> orderService.create(orderDto));
     }
 
     @DisplayName("create order 실패 - order table id를 찾을 수 없음")
@@ -110,7 +111,7 @@ class OrderServiceTest {
         given(orderTableRepository.findById(orderDto.getOrderTableId())).willReturn(Optional.of(orderTable));
 
         // when
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(orderDto));
+        assertThatExceptionOfType(NotCreateOrderException.class).isThrownBy(() -> orderService.create(orderDto));
     }
 
     @DisplayName("create order 성공")
@@ -158,7 +159,7 @@ class OrderServiceTest {
         given(orderRepository.findById(any())).willReturn(Optional.of(order));
 
         // when
-        assertThatIllegalArgumentException().isThrownBy(
+        assertThatExceptionOfType(NotChangeStatusException.class).isThrownBy(
             () -> orderService.changeOrderStatus(1L, new ChangeOrderStatusDto(OrderStatus.COMPLETION.name())));
     }
 

@@ -1,6 +1,7 @@
 package kitchenpos.order.application;
 
 import java.util.List;
+import kitchenpos.handler.exception.NotCreateOrderException;
 import kitchenpos.handler.exception.NotFoundEntityException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
@@ -40,7 +41,7 @@ public class OrderService {
     public Order create(CreateOrderDto createOrderDto) {
 
         if (CollectionUtils.isEmpty(createOrderDto.getOrderLineItems())) {
-            throw new IllegalArgumentException("주문 항목을 1개 이상 입력해야 합니다.");
+            throw new NotCreateOrderException("주문 항목을 1개 이상 입력해야 합니다.");
         }
 
         final List<OrderLineItem> orderLineItems =
@@ -59,7 +60,7 @@ public class OrderService {
                                                  .collect(toList());
 
         if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
-            throw new IllegalArgumentException("입력한 메뉴에 중복이 있습니다.");
+            throw new NotCreateOrderException("입력한 메뉴에 중복이 있습니다.");
         }
 
         OrderTable orderTable = orderTableRepository.findById(createOrderDto.getOrderTableId())

@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import kitchenpos.handler.exception.NotChangeStatusException;
 import kitchenpos.table.domain.OrderTable;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -58,7 +59,7 @@ public class Order {
 
     public void changeOrderStatus(OrderStatus orderStatus) {
         if (this.orderStatus.isCompletedOrder()) {
-            throw new IllegalArgumentException("완료된 주문의 상태는 변경할 수 없습니다.");
+            throw new NotChangeStatusException("완료된 주문의 상태는 변경할 수 없습니다.");
         }
 
         this.orderStatus = orderStatus;

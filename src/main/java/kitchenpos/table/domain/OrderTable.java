@@ -6,8 +6,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import kitchenpos.handler.exception.NotChangeEmptyException;
+import kitchenpos.handler.exception.NotChangeStatusException;
 import kitchenpos.handler.exception.NotChangeNumberOfGuestsException;
+import kitchenpos.handler.exception.NotCreateOrderException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.Orders;
 
@@ -63,11 +64,11 @@ public class OrderTable {
     public void changeEmpty(boolean empty) {
 
         if (tableGroupId != null) {
-            throw new NotChangeEmptyException("단체 지정된 주문 테이블은 빈 테이블 상태 변경이 불가능합니다.");
+            throw new NotChangeStatusException("단체 지정된 주문 테이블은 빈 테이블 여부 변경이 불가능합니다.");
         }
 
         if (hasCookingOrMealOrder()) {
-            throw new NotChangeEmptyException("요리 중이거나 식사 중인 주문이 있으면 빈 테이블 변경이 불가능합니다.");
+            throw new NotChangeStatusException("요리 중이거나 식사 중인 주문이 있으면 빈 테이블 여부 변경이 불가능합니다.");
         }
 
         this.empty = empty;
@@ -92,7 +93,7 @@ public class OrderTable {
     public void addOrder(Order order) {
 
         if (isEmpty()) {
-            throw new IllegalArgumentException("빈 상태의 주문 테이블에는 주문을 추가할 수 없습니다.");
+            throw new NotCreateOrderException("빈 상태의 주문 테이블에는 주문을 추가할 수 없습니다.");
         }
 
         this.orders.add(order);

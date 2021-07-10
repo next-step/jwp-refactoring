@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import kitchenpos.handler.exception.NotChangeStatusException;
 import org.springframework.util.CollectionUtils;
 
 @Embeddable
@@ -27,7 +28,7 @@ public class OrderTables {
         }
 
         if (hasNotCompletedOrder()) {
-            throw new IllegalArgumentException("요리 중이거나 식사 중인 주문이 있으면 단체 지정 해제할 수 없습니다.");
+            throw new NotChangeStatusException("요리 중이거나 식사 중인 주문이 있으면 단체 지정 해제할 수 없습니다.");
         }
 
         data.forEach(OrderTable::ungroup);
