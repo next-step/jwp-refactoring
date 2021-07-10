@@ -29,6 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ProductAccteptanceTest extends AcceptanceTest {
     private ProductRequest productRequest;
 
+
     @BeforeEach
     public void setUp() {
         super.setUp();
@@ -65,6 +66,12 @@ public class ProductAccteptanceTest extends AcceptanceTest {
                 .collect(Collectors.toList());
         assertThat(productNames).contains(productRequest.getName());
 
+    }
+
+    public static ProductResponse 상품_등록되어_있음(ProductRequest productRequest) {
+        ExtractableResponse<Response> response = 상품_등록_요청(productRequest);
+        정상_등록(response);
+        return response.as(ProductResponse.class);
     }
 
     public static ExtractableResponse<Response> 상품_등록_요청(ProductRequest productRequest) {

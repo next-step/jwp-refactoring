@@ -4,12 +4,16 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
+import kitchenpos.Product.ProductAccteptanceTest;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.MenuGroupAcceptanceTest;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,27 +21,38 @@ import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MenuAcceptanceTest extends AcceptanceTest {
     private MenuRequest menuRequest;
     private MenuGroupResponse givenMenuGroup;
-    private Product givenProduct;
+    private ProductResponse givenProductOne;
+    private ProductResponse givenProductTwo;
 
 
     @BeforeEach
     public void setUp() {
         super.setUp();
         givenMenuGroup = MenuGroupAcceptanceTest.메뉴그룹_등록되어_있음(new MenuGroupRequest("테스트메뉴그룹"));
+        List<MenuProductRequest> menuProductRequests = generateMenuRequests();
+        menuRequest = new MenuRequest("일번메뉴", BigDecimal.valueOf(1000), givenMenuGroup.getId(), menuProductRequests);
+    }
 
-        menuRequest = new MenuRequest("일번메뉴", BigDecimal.valueOf(1000), givenMenuGroup.getId(), new ArrayList<>());
+    private List<MenuProductRequest> generateMenuRequests() {
+        givenProductOne = ProductAccteptanceTest.상품_등록되어_있음(new ProductRequest("커피",BigDecimal.valueOf(3000)));
+        givenProductTwo = ProductAccteptanceTest.상품_등록되어_있음(new ProductRequest("라면",BigDecimal.valueOf(5000)));
+        MenuProductRequest firstMenuProduct = new MenuProductRequest(givenProductOne.getId(), 1);
+        MenuProductRequest secondMenuProduct = new MenuProductRequest(givenProductOne.getId(), 2);
+        return Arrays.asList(firstMenuProduct, secondMenuProduct);
+
     }
 
     @DisplayName("Dto와 JPA를 사용하여 메뉴를 등록할 수 있다")
     @Test
     void createTest() {
-
         //when
         ExtractableResponse<Response> response = 메뉴_등록_요청(menuRequest);
 
