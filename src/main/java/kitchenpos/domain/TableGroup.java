@@ -6,7 +6,25 @@ import java.util.List;
 public class TableGroup {
     private Long id;
     private LocalDateTime createdDate;
-    private List<OrderTable> orderTables;
+    private OrderTables orderTables;
+
+    public TableGroup() {
+    }
+
+    public TableGroup(OrderTables orderTables) {
+        validateOrderTables(orderTables);
+        this.orderTables = orderTables;
+        this.createdDate = LocalDateTime.now();
+    }
+    private void validateOrderTables(OrderTables orderTables) {
+        if (isNotSatisfyToTableGroup(orderTables)) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private boolean isNotSatisfyToTableGroup(OrderTables orderTables) {
+        return orderTables.hasOccupiedTable() || orderTables.hasTableGroupId();
+    }
 
     public Long getId() {
         return id;
@@ -25,10 +43,10 @@ public class TableGroup {
     }
 
     public List<OrderTable> getOrderTables() {
-        return orderTables;
+        return orderTables.toList();
     }
 
-    public void setOrderTables(final List<OrderTable> orderTables) {
+    public void setOrderTables(final OrderTables orderTables) {
         this.orderTables = orderTables;
     }
 }

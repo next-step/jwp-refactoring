@@ -41,4 +41,25 @@ public class OrderTables {
     public List<OrderTable> toList() {
         return Collections.unmodifiableList(orderTables);
     }
+
+    public int size() {
+        return orderTables.size();
+    }
+
+    public void changeTableGroupId(Long tableGroupId) {
+        orderTables.forEach(orderTable -> {
+            orderTable.changeTableGroupId(tableGroupId);
+            orderTable.occupy();
+        });
+    }
+
+    public boolean hasOccupiedTable() {
+        return orderTables.stream()
+            .anyMatch(OrderTable::isOccupied);
+    }
+
+    public boolean hasTableGroupId() {
+        return orderTables.stream()
+            .anyMatch(orderTable -> orderTable.getId() != null);
+    }
 }

@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -45,4 +46,20 @@ class OrderTablesTest {
         assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
     }
 
+    @Test
+    void changeTableGroupId() {
+        // given
+        List<OrderTable> orderTableList = Arrays.asList(new OrderTable(1L, 1), new OrderTable(1L, 2));
+        final OrderTables orderTables = new OrderTables(orderTableList);
+
+        // when
+        orderTables.changeTableGroupId(2L);
+
+        // then
+        final OrderTable orderTable1 = new OrderTable(2L, 1);
+        final OrderTable orderTable2 = new OrderTable(2L, 2);
+        assertThat(orderTables.toList()).containsExactly(orderTable1, orderTable2);
+        assertThat(orderTable1.isOccupied()).isEqualTo(true);
+        assertThat(orderTable2.isOccupied()).isEqualTo(true);
+    }
 }

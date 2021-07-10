@@ -21,7 +21,9 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTables;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.TableGroupRequest;
 
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
@@ -41,8 +43,8 @@ class TableGroupServiceTest {
     @Test
     void create() {
         // given
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Arrays.asList(new OrderTable(), new OrderTable()));
+        TableGroupRequest tableGroupRequest = new TableGroupRequest();
+        tableGroupRequest.setOrderTables(Arrays.asList(new OrderTable(), new OrderTable()));
         OrderTable orderTable = new OrderTable();
         orderTable.setEmpty(true);
         OrderTable orderTable2 = new OrderTable();
@@ -50,15 +52,15 @@ class TableGroupServiceTest {
         List<OrderTable> savedOrderTables = Arrays.asList(orderTable, orderTable2);
         given(orderTableDao.findAllByIdIn(anyList())).willReturn(savedOrderTables);
 
-        TableGroup savedTableGroup = new TableGroup();
+        TableGroup savedTableGroup = new TableGroup(new OrderTables(savedOrderTables));
         savedTableGroup.setId(1L);
-        given(tableGroupDao.save(tableGroup)).willReturn(savedTableGroup);
+        given(tableGroupDao.save(any(TableGroup.class))).willReturn(savedTableGroup);
 
         // when
-        tableGroupService.create(tableGroup);
+        tableGroupService.create(tableGroupRequest);
 
         // then
-        verify(tableGroupDao).save(tableGroup);
+        verify(tableGroupDao).save(any(TableGroup.class));
         verify(orderTableDao).save(orderTable);
         verify(orderTableDao).save(orderTable2);
         assertThat(savedTableGroup.getOrderTables()).isEqualTo(savedOrderTables);
@@ -68,11 +70,11 @@ class TableGroupServiceTest {
     @MethodSource("provideOrderTables")
     void given_InvalidOrderTables_when_Create_then_ThrownException(List<OrderTable> orderTables) {
         // given
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(orderTables);
+        TableGroupRequest tableGroupRequest = new TableGroupRequest();
+        tableGroupRequest.setOrderTables(orderTables);
 
         // when
-        final Throwable oneOrderTableException = catchThrowable(() -> tableGroupService.create(tableGroup));
+        final Throwable oneOrderTableException = catchThrowable(() -> tableGroupService.create(tableGroupRequest));
 
         // then
         assertThat(oneOrderTableException).isInstanceOf(IllegalArgumentException.class);
@@ -89,7 +91,7 @@ class TableGroupServiceTest {
     @MethodSource("provideAllOrderTables")
     void given_InvalidTableGroup_when_Create_then_ThrownException(List<OrderTable> orderTables) {
         // given
-        TableGroup twoOrderTables = new TableGroup();
+        TableGroupRequest twoOrderTables = new TableGroupRequest();
         twoOrderTables.setOrderTables(Arrays.asList(new OrderTable(), new OrderTable()));
         given(orderTableDao.findAllByIdIn(anyList())).willReturn(orderTables);
 
@@ -124,5 +126,17 @@ class TableGroupServiceTest {
         // then
         verify(orderTableDao).save(orderTable);
         verify(orderTableDao).save(orderTable2);
+    }
+
+    @Test
+    void given_GroupedOrderTables_when_CreateTableGroup_then_ThrowException() {
+        // given
+        List<OrderTable> orderTables = Arrays.asList(new OrderTable(1L, 1), new OrderTable(1L, 2));
+
+        // when
+        final Throwable throwable = catchThrowable(() -> new TableGroup(new OrderTables(orderTables)));
+
+        // then
+        assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
     }
 }
