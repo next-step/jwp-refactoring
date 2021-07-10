@@ -17,6 +17,11 @@ public class OrderTable {
         this.empty = false;
     }
 
+    public OrderTable(int numberOfGuests) {
+        this.numberOfGuests = numberOfGuests;
+        this.empty = false;
+    }
+
     public Long getId() {
         return id;
     }
@@ -38,6 +43,10 @@ public class OrderTable {
     }
 
     public void setNumberOfGuests(final int numberOfGuests) {
+        if (empty) {
+            throw new IllegalArgumentException();
+        }
+
         this.numberOfGuests = numberOfGuests;
     }
 

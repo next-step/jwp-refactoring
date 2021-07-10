@@ -60,6 +60,16 @@ public class JdbcTemplateOrderDao implements OrderDao {
     }
 
     @Override
+    public List<Order> findAllByOrderTableId(final Long orderTableId) {
+        final String sql = "SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END" +
+            " FROM orders WHERE order_table_id = (:orderTableId)";
+        final SqlParameterSource parameters = new MapSqlParameterSource()
+            .addValue("orderTableIds", orderTableId);
+
+        return jdbcTemplate.queryForList(sql, parameters, Order.class);
+    }
+
+    @Override
     public List<Order> findAllByOrderTableIds(final List<Long> orderTableIds) {
         final String sql = "SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END" +
             " FROM orders WHERE order_table_id IN (:orderTableIds)";

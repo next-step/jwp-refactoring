@@ -15,4 +15,9 @@ public class Orders {
             .anyMatch(order -> Objects.equals(order.getOrderTableId(), orderTableId) &&
                 order.isNotCompleted());
     }
+
+    public boolean isNotCompleted() {
+        return orders.stream()
+            .anyMatch(Order::isNotCompleted);
+    }
 }
