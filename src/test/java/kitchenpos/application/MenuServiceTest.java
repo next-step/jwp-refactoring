@@ -1,11 +1,14 @@
 package kitchenpos.application;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.menu.ui.exception.IllegalMenuPriceException;
+import kitchenpos.menu.ui.exception.NoMenuGroupException;
+import kitchenpos.menuproduct.exception.NoMenuProductException;
+import kitchenpos.menuproduct.domain.MenuProductRepository;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menuproduct.domain.MenuProduct;
+import kitchenpos.menuproduct.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
@@ -22,7 +25,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,6 +43,8 @@ public class MenuServiceTest {
     MenuGroupRepository menuGroupRepository;
     @Mock
     ProductRepository productRepository;
+    @Mock
+    MenuProductRepository menuProductRepository;
 
     MenuService menuService;
 
@@ -71,7 +75,7 @@ public class MenuServiceTest {
 
         반반세트 = new Menu(1L, 반반세트요청.getName(), 반반세트요청.getPrice(), 반반세트요청.getMenuGroupId());
 
-        menuService = new MenuService(menuRepository, menuGroupRepository, productRepository);
+        menuService = new MenuService(menuRepository, menuGroupRepository, productRepository, menuProductRepository);
     }
 
     @Test
@@ -89,7 +93,6 @@ public class MenuServiceTest {
 
         //then
         assertThat(savedMenuResponse.getId()).isEqualTo(1L);
-        assertThat(savedMenuResponse.getMenuProducts()).hasSize(2);
     }
 
     @Test
@@ -100,7 +103,7 @@ public class MenuServiceTest {
                 Arrays.asList(반반세트후라이드요청, 반반세트양념요청));
 
         //when, then
-        assertThatThrownBy(() -> menuService.create(반반세트요청)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuService.create(반반세트요청)).isInstanceOf(IllegalMenuPriceException.class);
     }
 
     @Test
@@ -110,18 +113,18 @@ public class MenuServiceTest {
         given(menuGroupRepository.existsById(anyLong())).willReturn(false);
 
         //when, then
-        assertThatThrownBy(() -> menuService.create(반반세트요청)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuService.create(반반세트요청)).isInstanceOf(NoMenuGroupException.class);
     }
 
+    @DisplayName("등록시 메뉴의 상품이 등록이 하나도 안되어 있어서 메뉴상품을 구성할 수 없음")
     @Test
-    @DisplayName("등록시 메뉴의 상품이 등록이 안되어 있는 경우")
-    void 상품_등록이_안되어_있음() {
+    void 상품_등록이_하나도_안되어_있어_메뉴상품_구성안됨() {
         //given
         given(menuGroupRepository.existsById(anyLong())).willReturn(true);
         given(productRepository.findById(anyLong())).willReturn(Optional.empty());
 
         //when, then
-        assertThatThrownBy(() -> menuService.create(반반세트요청)).isInstanceOf(NoSuchElementException.class);
+        assertThatThrownBy(() -> menuService.create(반반세트요청)).isInstanceOf(NoMenuProductException.class);
     }
 
     @Test
@@ -131,13 +134,12 @@ public class MenuServiceTest {
         given(menuGroupRepository.existsById(anyLong())).willReturn(true);
         given(productRepository.findById(후라이드치킨.getId())).willReturn(Optional.of(후라이드치킨));
         given(productRepository.findById(양념치킨.getId())).willReturn(Optional.of(양념치킨));
-
-        //when
         반반세트요청 = new MenuRequest("반반세트", BigDecimal.valueOf(40000L), 한마리메뉴.getId(),
                 Arrays.asList(반반세트후라이드요청, 반반세트양념요청));
+        given(menuRepository.save(any())).willReturn(new Menu(1L, 반반세트요청.getName(), 반반세트요청.getPrice(), 반반세트요청.getMenuGroupId()));
 
-        //then
-        assertThatThrownBy(() -> menuService.create(반반세트요청)).isInstanceOf(IllegalArgumentException.class);
+        //when, then
+        assertThatThrownBy(() -> menuService.create(반반세트요청)).isInstanceOf(IllegalMenuPriceException.class);
     }
 
     @Test
@@ -146,10 +148,8 @@ public class MenuServiceTest {
         MenuGroup 파격할인메뉴 = new MenuGroup(1L, "파격할인메뉴");
         //given
         given(menuRepository.findAll()).willReturn(Arrays.asList(
-                new Menu(1L, "반반세트", BigDecimal.valueOf(40000L), 한마리메뉴.getId(),
-                        new MenuProducts(Arrays.asList(반반세트후라이드, 반반세트양념))),
-                new Menu(2L, "반반세트", BigDecimal.valueOf(1000L), 파격할인메뉴.getId(),
-                        new MenuProducts(Arrays.asList(반반세트후라이드, 반반세트양념)))
+                new Menu(1L, "반반세트", BigDecimal.valueOf(40000L), 한마리메뉴.getId()),
+                new Menu(2L, "반반세트", BigDecimal.valueOf(1000L), 파격할인메뉴.getId())
         ));
 
         //when, then
