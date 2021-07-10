@@ -71,7 +71,7 @@ public class Menu {
 	}
 
 	private void validatePrice(Price price, MenuProducts menuProducts) {
-		if (price.compareTo(menuProducts.getSumMenuProductPrice()) < 0) {
+		if (price.compareTo(menuProducts.getSumMenuProductPrice()) > 0) {
 			throw new MenuException("메뉴의 가격이 메뉴 상품들의 총합보다 클 수 없습니다.");
 		}
 	}

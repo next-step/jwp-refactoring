@@ -21,7 +21,6 @@ import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
-import kitchenpos.order.OrderServiceTest;
 import kitchenpos.table.TableServiceTest;
 
 @DisplayName("단체 지정 서비스 테스트")
