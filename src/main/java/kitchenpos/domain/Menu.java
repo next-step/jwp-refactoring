@@ -50,16 +50,8 @@ public class Menu {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
     }
 
     public Price getPrice() {
@@ -72,9 +64,5 @@ public class Menu {
 
     public List<MenuProduct> getMenuProducts() {
         return menuProducts.toList();
-    }
-
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
-        this.menuProducts.addAll(menuProducts);
     }
 }

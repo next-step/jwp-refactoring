@@ -44,23 +44,15 @@ public class OrderTable {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public Long getTableGroupId() {
         return tableGroup.getId();
-    }
-
-    public void setTableGroupId(final Long tableGroupId) {
-        this.tableGroup.setId(tableGroupId);
     }
 
     public int getNumberOfGuests() {
         return numberOfGuests;
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
+    public void changeNumberOfGuests(final int numberOfGuests) {
         if (empty) {
             throw new IllegalArgumentException();
         }
@@ -85,7 +77,7 @@ public class OrderTable {
     }
 
     public void changeTableGroupId(Long tableGroupId) {
-        this.tableGroup.setId(tableGroupId);
+        this.tableGroup.changeId(tableGroupId);
     }
 
     public void occupy() {

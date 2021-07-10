@@ -46,32 +46,16 @@ public class MenuProduct {
         return seq;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
-    }
-
     public Long getMenuId() {
         return menu.getId();
-    }
-
-    public void setMenuId(final Long menuId) {
-        this.menu.setId(menuId);
     }
 
     public Long getProductId() {
         return product.getId();
     }
 
-    public void setProductId(final Long productId) {
-        this.product.setId(productId);
-    }
-
     public long getQuantity() {
         return quantity;
-    }
-
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
     }
 
     public BigDecimal price() {

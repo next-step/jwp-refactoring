@@ -62,7 +62,7 @@ public class TableService {
     public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         validateNumberOfGuests(orderTableRequest);
         final OrderTable savedOrderTable = findOrderTable(orderTableId);
-        savedOrderTable.setNumberOfGuests(orderTableRequest.getNumberOfGuests());
+        savedOrderTable.changeNumberOfGuests(orderTableRequest.getNumberOfGuests());
 
         return orderTableDao.save(savedOrderTable);
     }

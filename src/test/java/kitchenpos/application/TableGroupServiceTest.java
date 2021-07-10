@@ -108,9 +108,7 @@ class TableGroupServiceTest {
         // given
         Long tableGroupId = 1L;
         OrderTable orderTable = new OrderTable();
-        orderTable.setId(1L);
         OrderTable orderTable2 = new OrderTable();
-        orderTable2.setId(2L);
         List<OrderTable> orderTables = Arrays.asList(orderTable, orderTable2);
         given(orderTableDao.findAllByTableGroupId(tableGroupId)).willReturn(orderTables);
 

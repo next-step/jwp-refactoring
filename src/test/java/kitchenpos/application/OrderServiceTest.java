@@ -65,7 +65,6 @@ class OrderServiceTest {
         final OrderLineItemRequest orderLineItemRequest2 = new OrderLineItemRequest(2L, 1);
         final List<OrderLineItemRequest> orderLineItemRequests = Arrays.asList(orderLineItemRequest1, orderLineItemRequest2);
         OrderRequest orderRequest = new OrderRequest(1L, orderLineItemRequests);
-        order.setOrderLineItems(Arrays.asList(orderLineItem, orderLineItem2));
         final Menu menu1 = mock(Menu.class);
         final Menu menu2 = mock(Menu.class);
         given(menu1.getId()).willReturn(1L);

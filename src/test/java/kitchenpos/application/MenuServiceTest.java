@@ -54,18 +54,15 @@ class MenuServiceTest {
     @Test
     void given_Menu_when_Create_then_SaveExecuted() {
         // given
-        Product product = new Product(1L, "name", new BigDecimal(100));
-        final List<MenuProductRequest> menuProductRequests = Collections.singletonList(new MenuProductRequest(product.getId(), 1));
+        final List<MenuProductRequest> menuProductRequests = Collections.singletonList(new MenuProductRequest(1L, 1));
         MenuRequest menuRequest = new MenuRequest("name", BigDecimal.ZERO, 1L, menuProductRequests);
-        final List<Product> productList = Collections.singletonList(new Product(1L, "name", new BigDecimal(100)));
         final MenuProducts menuProducts = new MenuProducts(
             Collections.singletonList(new MenuProduct(new Product("name", BigDecimal.ONE), 1L)));
         final MenuGroup menuGroup = new MenuGroup();
         Menu savedMenu = new Menu("name", new Price(menuRequest.getPrice()), menuGroup, menuProducts);
-        savedMenu.setId(1L);
         given(menuDao.save(any(Menu.class))).willReturn(savedMenu);
         given(menuGroupDao.findById(menuRequest.getMenuGroupId())).willReturn(Optional.of(menuGroup));
-        given(productDao.findById(anyLong())).willReturn(Optional.of(product));
+        given(productDao.findById(anyLong())).willReturn(Optional.of(new Product("name", new BigDecimal(100))));
 
         // when
         menuService.create(menuRequest);
@@ -102,8 +99,7 @@ class MenuServiceTest {
         // given
         final MenuProductRequest menuProductRequest = new MenuProductRequest(1L, 1L);
         MenuRequest invalidPrice = new MenuRequest("name", new BigDecimal(100), 1L, Collections.singletonList(menuProductRequest));
-        final Product product = new Product();
-        product.setPrice(new BigDecimal(1));
+        final Product product = new Product("name", new BigDecimal(1));
 
         // when
         final Throwable invalidPriceException = catchThrowable(() -> menuService.create(invalidPrice));

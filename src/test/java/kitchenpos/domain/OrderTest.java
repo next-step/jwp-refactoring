@@ -3,6 +3,7 @@ package kitchenpos.domain;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -11,8 +12,7 @@ public class OrderTest {
     @Test
     void given_CompletedOrder_when_ChangeOrderStatus_then_ThrowException() {
         // given
-        final Order order = new Order();
-        order.setOrderStatus(OrderStatus.COMPLETION.name());
+        final Order order = new Order(new OrderTable(), OrderStatus.COMPLETION.name(), Collections.emptyList());
 
         // when
         final Throwable throwable = catchThrowable(() -> order.changeStatus(OrderStatus.COMPLETION));

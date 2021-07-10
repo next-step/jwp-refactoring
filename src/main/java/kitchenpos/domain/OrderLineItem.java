@@ -44,32 +44,16 @@ public class OrderLineItem {
         return seq;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
-    }
-
     public Long getOrderId() {
         return order.getId();
-    }
-
-    public void setOrderId(final Long orderId) {
-        this.order.setId(orderId);
     }
 
     public Long getMenuId() {
         return menu.getId();
     }
 
-    public void setMenuId(final Long menuId) {
-        this.menu.setId(menuId);
-    }
-
     public long getQuantity() {
         return quantity;
-    }
-
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
     }
 
     public void updateOrder(Order order) {

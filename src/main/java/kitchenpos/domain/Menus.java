@@ -12,7 +12,7 @@ import javax.persistence.OneToMany;
 public class Menus {
 
     @OneToMany(mappedBy = "menuGroup", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Menu> menus = new ArrayList<>();
+    private final List<Menu> menus = new ArrayList<>();
 
     public Menus() {
     }

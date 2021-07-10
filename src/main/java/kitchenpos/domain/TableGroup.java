@@ -21,7 +21,7 @@ public class TableGroup {
     private LocalDateTime createdDate;
 
     @Embedded
-    private OrderTables orderTables = new OrderTables();
+    private final OrderTables orderTables = new OrderTables();
 
     public TableGroup() {
     }
@@ -30,8 +30,8 @@ public class TableGroup {
         validateOrderTables(orderTables);
         this.orderTables.addAll(orderTables.toList());
         this.orderTables.updateTableGroup(this);
-        this.createdDate = LocalDateTime.now();
     }
+
     private void validateOrderTables(OrderTables orderTables) {
         if (isNotSatisfyToTableGroup(orderTables)) {
             throw new IllegalArgumentException();
@@ -46,7 +46,7 @@ public class TableGroup {
         return id;
     }
 
-    public void setId(final Long id) {
+    public void changeId(final Long id) {
         this.id = id;
     }
 
@@ -54,15 +54,7 @@ public class TableGroup {
         return createdDate;
     }
 
-    public void setCreatedDate(final LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
     public List<OrderTable> getOrderTables() {
         return orderTables.toList();
-    }
-
-    public void setOrderTables(final OrderTables orderTables) {
-        this.orderTables = orderTables;
     }
 }

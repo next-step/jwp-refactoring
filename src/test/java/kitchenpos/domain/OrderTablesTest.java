@@ -70,4 +70,17 @@ class OrderTablesTest {
         assertThat(orderTable1.isOccupied()).isEqualTo(true);
         assertThat(orderTable2.isOccupied()).isEqualTo(true);
     }
+
+    @Test
+    void changeNumberOfGuests() {
+        // given
+        final OrderTable orderTable = new OrderTable();
+        orderTable.changeEmpty(true);
+
+        // when
+        final Throwable throwable = catchThrowable(() -> orderTable.changeNumberOfGuests(1));
+
+        // then
+        assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
+    }
 }

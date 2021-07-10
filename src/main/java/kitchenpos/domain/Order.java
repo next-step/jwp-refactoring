@@ -44,7 +44,7 @@ public class Order {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderLineItems.addAll(orderLineItems);
-        this.orderedTime = LocalDateTime.now();
+        this.orderLineItems.updateOrder(this);
     }
 
     public Order(OrderTable orderTable, OrderLineItems orderLineItems) {
@@ -53,7 +53,6 @@ public class Order {
         this.orderLineItems.addAll(orderLineItems.toList());
         this.orderLineItems.updateOrder(this);
         this.orderStatus = OrderStatus.COOKING.name();
-        this.orderedTime = LocalDateTime.now();
     }
 
     private void validateOrderTable(OrderTable orderTable) {
@@ -74,32 +73,16 @@ public class Order {
         return orderTable.getId();
     }
 
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTable.setId(orderTableId);
-    }
-
     public String getOrderStatus() {
         return orderStatus;
-    }
-
-    public void setOrderStatus(final String orderStatus) {
-        this.orderStatus = orderStatus;
     }
 
     public LocalDateTime getOrderedTime() {
         return orderedTime;
     }
 
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
-    }
-
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems.toList();
-    }
-
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems.addAll(orderLineItems);
     }
 
     public void changeStatus(OrderStatus orderStatus) {

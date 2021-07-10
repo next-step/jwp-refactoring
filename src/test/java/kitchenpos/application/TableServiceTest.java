@@ -86,9 +86,10 @@ class TableServiceTest {
         // given
         Long orderTableId = 1L;
         OrderTableRequest orderTableRequest = new OrderTableRequest();
-        final OrderTable notNullTableGroupId = new OrderTable(new TableGroup(), 1);
-        notNullTableGroupId.setTableGroupId(1L);
+        final TableGroup tableGroup = mock(TableGroup.class);
+        final OrderTable notNullTableGroupId = new OrderTable(tableGroup, 1);
         given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(notNullTableGroupId));
+        given(tableGroup.getId()).willReturn(1L);
 
         // when
         final Throwable notNullTableGroupIdException = catchThrowable(() -> tableService.changeEmpty(orderTableId, orderTableRequest));
