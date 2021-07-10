@@ -1,6 +1,5 @@
 package kitchenpos.order.application;
 
-import javassist.bytecode.DuplicateMemberException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
