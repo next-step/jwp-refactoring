@@ -1,7 +1,6 @@
 package kitchenpos.ordering.domain;
 
 import kitchenpos.BaseEntity;
-import kitchenpos.table.domain.OrderTable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -59,12 +58,6 @@ public class Ordering extends BaseEntity {
         if (Objects.isNull(orderLineItems) || orderLineItems.isNull()) {
             throw new IllegalArgumentException("테이블이 비어있으면 주문 할 수 없습니다.");
         }
-    }
-
-    public void calledFrom(OrderTable orderTable) {
-        orderTable.isValidForOrdering();
-
-        this.orderTableId = orderTable.getId();
     }
 
     public void validateOrderLineItemsSize(long savedMenuIdsSize) {
