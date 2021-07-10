@@ -16,7 +16,6 @@ public class OrderLineItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
 
-
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
@@ -32,6 +31,11 @@ public class OrderLineItem {
 
     public OrderLineItem(Order order, Menu menu, long quantity) {
         this.order = order;
+        this.menu = menu;
+        this.quantity = quantity;
+    }
+
+    public OrderLineItem(Menu menu, long quantity) {
         this.menu = menu;
         this.quantity = quantity;
     }
@@ -66,5 +70,9 @@ public class OrderLineItem {
 
     public void setQuantity(final long quantity) {
         this.quantity = quantity;
+    }
+
+    public void updateOrder(Order order) {
+        this.order = order;
     }
 }

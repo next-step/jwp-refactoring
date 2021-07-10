@@ -1,20 +1,23 @@
 package kitchenpos.dto;
 
 import java.util.List;
-
-import kitchenpos.domain.OrderLineItem;
+import java.util.stream.Collectors;
 
 public class OrderRequest {
     private Long orderTableId;
     private String orderStatus;
-    private List<OrderLineItem> orderLineItems;
+    private List<OrderLineItemRequest> orderLineItemRequests;
+
+    public OrderRequest() {
+    }
+
+    public OrderRequest(Long orderTableId, List<OrderLineItemRequest> orderLineItemRequests) {
+        this.orderTableId = orderTableId;
+        this.orderLineItemRequests = orderLineItemRequests;
+    }
 
     public Long getOrderTableId() {
         return orderTableId;
-    }
-
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
     }
 
     public String getOrderStatus() {
@@ -25,11 +28,18 @@ public class OrderRequest {
         this.orderStatus = orderStatus;
     }
 
-    public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
+    public List<OrderLineItemRequest> getOrderLineItemRequests() {
+        return orderLineItemRequests;
     }
 
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
+    public List<Long> menuIds() {
+        if (orderLineItemRequests == null) {
+            throw new IllegalArgumentException();
+        }
+
+        return orderLineItemRequests.stream()
+            .map(OrderLineItemRequest::getMenuId)
+            .collect(Collectors.toList());
     }
+
 }

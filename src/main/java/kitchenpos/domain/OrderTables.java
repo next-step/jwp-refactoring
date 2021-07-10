@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,7 +13,7 @@ import javax.persistence.OneToMany;
 public class OrderTables {
 
     @OneToMany(mappedBy = "tableGroup", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<OrderTable> orderTables;
+    private List<OrderTable> orderTables = new ArrayList<>();
 
     public OrderTables(List<OrderTable> orderTables) {
         this.orderTables = orderTables;
@@ -75,5 +76,9 @@ public class OrderTables {
 
     public void addAll(List<OrderTable> orderTables) {
         this.orderTables.addAll(orderTables);
+    }
+
+    public void updateTableGroup(TableGroup tableGroup) {
+        orderTables.forEach(orderTable -> orderTable.updateTableGroup(tableGroup));
     }
 }

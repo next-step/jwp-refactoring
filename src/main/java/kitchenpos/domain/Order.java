@@ -51,6 +51,7 @@ public class Order {
         validateOrderTable(orderTable);
         this.orderTable = orderTable;
         this.orderLineItems.addAll(orderLineItems.toList());
+        this.orderLineItems.updateOrder(this);
         this.orderStatus = OrderStatus.COOKING.name();
         this.orderedTime = LocalDateTime.now();
     }

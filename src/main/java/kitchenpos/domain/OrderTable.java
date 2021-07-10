@@ -76,7 +76,7 @@ public class OrderTable {
         return !empty;
     }
 
-    public void setEmpty(final boolean empty) {
+    public void changeEmpty(final boolean empty) {
         this.empty = empty;
     }
 
@@ -90,6 +90,11 @@ public class OrderTable {
 
     public void occupy() {
         empty = false;
+    }
+
+    public void updateTableGroup(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
+        this.empty = false;
     }
 
     @Override

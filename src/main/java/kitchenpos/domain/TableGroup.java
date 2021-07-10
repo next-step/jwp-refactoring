@@ -9,12 +9,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import org.springframework.data.annotation.CreatedDate;
+
 @Entity
 public class TableGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @CreatedDate
     private LocalDateTime createdDate;
 
     @Embedded
@@ -26,6 +29,7 @@ public class TableGroup {
     public TableGroup(OrderTables orderTables) {
         validateOrderTables(orderTables);
         this.orderTables.addAll(orderTables.toList());
+        this.orderTables.updateTableGroup(this);
         this.createdDate = LocalDateTime.now();
     }
     private void validateOrderTables(OrderTables orderTables) {

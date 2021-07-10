@@ -47,4 +47,12 @@ public class OrderLineItems {
     public void addAll(List<OrderLineItem> orderLineItems) {
         this.orderLineItems.addAll(orderLineItems);
     }
+
+    public void add(OrderLineItem orderLineItem) {
+        this.orderLineItems.add(orderLineItem);
+    }
+
+    public void updateOrder(Order order) {
+        orderLineItems.forEach(orderLineItem -> orderLineItem.updateOrder(order));
+    }
 }

@@ -1,13 +1,16 @@
 package kitchenpos.domain;
 
-import java.math.BigDecimal;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Menu {
@@ -21,7 +24,9 @@ public class Menu {
     @Embedded
     private Price price;
 
-    private Long menuGroupId;
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_group_id")
+    private MenuGroup menuGroup;
 
     @Embedded
     private MenuProducts menuProducts;
@@ -29,15 +34,16 @@ public class Menu {
     public Menu() {
     }
 
-    public Menu(String name, Price price, Long menuGroupId, MenuProducts menuProducts) {
+    public Menu(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
         if (price.greaterThan(menuProducts.totalPrice())) {
             throw new IllegalArgumentException();
         }
 
         this.name = name;
         this.price = price;
-        this.menuGroupId = menuGroupId;
+        this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
+        this.menuProducts.updateMenu(this);
     }
 
     public Long getId() {
@@ -60,16 +66,8 @@ public class Menu {
         return price;
     }
 
-    public void setPrice(final BigDecimal price) {
-        this.price = new Price(price);
-    }
-
     public Long getMenuGroupId() {
-        return menuGroupId;
-    }
-
-    public void setMenuGroupId(final Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
+        return menuGroup.getId();
     }
 
     public List<MenuProduct> getMenuProducts() {

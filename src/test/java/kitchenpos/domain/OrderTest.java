@@ -26,7 +26,7 @@ public class OrderTest {
         // given
         List<OrderLineItem> orderLineItems = Arrays.asList(new OrderLineItem(), new OrderLineItem());
         final OrderTable orderTable = new OrderTable(1);
-        orderTable.setEmpty(true);
+        orderTable.changeEmpty(true);
 
         // when
         final Throwable throwable = catchThrowable(() -> new Order(orderTable, new OrderLineItems(orderLineItems)));

@@ -37,7 +37,7 @@ public class TableService {
     public OrderTable changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         validateOrdersStatus(new Orders(findAllOrder(orderTableId)));
         final OrderTable savedOrderTable = findOrderTable(orderTableId);
-        savedOrderTable.setEmpty(orderTableRequest.isEmpty());
+        savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
 
         return orderTableDao.save(savedOrderTable);
     }

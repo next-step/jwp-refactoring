@@ -15,22 +15,16 @@ class MenuTest {
     void create() {
         // given
         Menu mockMenu = mock(Menu.class);
-        Product mockProduct = mock(Product.class);
-        Product mockProduct2 = mock(Product.class);
-        final MenuProduct menuProduct1 = new MenuProduct(mockMenu, mockProduct, 1L);
-        final MenuProduct menuProduct2 = new MenuProduct(mockMenu, mockProduct2, 2L);
+        Product product1 = new Product("name", BigDecimal.ONE);
+        Product product2 = new Product("name", BigDecimal.ONE);
+        final MenuProduct menuProduct1 = new MenuProduct(mockMenu, product1, 1L);
+        final MenuProduct menuProduct2 = new MenuProduct(mockMenu, product2, 2L);
         List<MenuProduct> menuProducts = Arrays.asList(menuProduct1, menuProduct2);
-        final Product product1 = new Product(1L, "name", new BigDecimal(100));
-        final Product product2 = new Product(2L, "name", new BigDecimal(200));
-        List<Product> productList = Arrays.asList(product1, product2);
-        final Products products = new Products(productList);
         final BigDecimal price = new BigDecimal(1000);
         given(mockMenu.getId()).willReturn(1L);
-        given(mockProduct.getId()).willReturn(1L);
-        given(mockProduct.getId()).willReturn(2L);
 
         // when
-        final Throwable throwable = catchThrowable(() -> new Menu("name", new Price(price), 1L, new MenuProducts(menuProducts)));
+        final Throwable throwable = catchThrowable(() -> new Menu("name", new Price(price), new MenuGroup(), new MenuProducts(menuProducts)));
 
         // then
         assertThat(throwable).isInstanceOf(IllegalArgumentException.class);

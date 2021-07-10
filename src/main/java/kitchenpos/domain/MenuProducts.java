@@ -1,6 +1,7 @@
 package kitchenpos.domain;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,14 +15,14 @@ import org.springframework.util.CollectionUtils;
 public class MenuProducts {
 
     @OneToMany(mappedBy = "menu",cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<MenuProduct> menuProducts;
+    private final List<MenuProduct> menuProducts = new ArrayList<>();
 
     public MenuProducts(List<MenuProduct> menuProducts) {
         validate(menuProducts);
-        this.menuProducts = menuProducts;
+        this.menuProducts.addAll(menuProducts);
     }
 
-    protected MenuProducts() {
+    public MenuProducts() {
 
     }
 
@@ -49,6 +50,14 @@ public class MenuProducts {
         return menuProducts.stream()
             .map(MenuProduct::price)
             .reduce(BigDecimal::add)
-            .orElseThrow(IllegalAccessError::new);
+            .orElseThrow(IllegalArgumentException::new);
+    }
+
+    public void add(MenuProduct menuProduct) {
+        menuProducts.add(menuProduct);
+    }
+
+    public void updateMenu(Menu menu) {
+        menuProducts.forEach(menuProduct -> menuProduct.updateMenu(menu));
     }
 }

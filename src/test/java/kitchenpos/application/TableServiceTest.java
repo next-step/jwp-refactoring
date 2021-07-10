@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.OrderTableRequest;
 
 @ExtendWith(MockitoExtension.class)
@@ -54,8 +55,10 @@ class TableServiceTest {
         // given
         Long orderTableId = 1L;
         OrderTableRequest orderTableRequest = new OrderTableRequest();
-        OrderTable savedOrderTable = new OrderTable();
+        TableGroup tableGroup = mock(TableGroup.class);
+        OrderTable savedOrderTable = new OrderTable(tableGroup, 1);
         given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(savedOrderTable));
+        given(tableGroup.getId()).willReturn(null);
 
         // when
         tableService.changeEmpty(orderTableId, orderTableRequest);
@@ -83,7 +86,7 @@ class TableServiceTest {
         // given
         Long orderTableId = 1L;
         OrderTableRequest orderTableRequest = new OrderTableRequest();
-        final OrderTable notNullTableGroupId = new OrderTable();
+        final OrderTable notNullTableGroupId = new OrderTable(new TableGroup(), 1);
         notNullTableGroupId.setTableGroupId(1L);
         given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(notNullTableGroupId));
 
@@ -99,8 +102,10 @@ class TableServiceTest {
         // given
         Long orderTableId = 1L;
         OrderTableRequest orderTableRequest = new OrderTableRequest(1);
-        OrderTable savedOrderTable = new OrderTable();
+        TableGroup tableGroup = mock(TableGroup.class);
+        OrderTable savedOrderTable = new OrderTable(tableGroup, 1);
         given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(savedOrderTable));
+        given(tableGroup.getId()).willReturn(null);
 
         // when
         tableService.changeNumberOfGuests(orderTableId, orderTableRequest);
@@ -128,9 +133,11 @@ class TableServiceTest {
         // given
         Long orderTableId = 1L;
         OrderTableRequest orderTableRequest = new OrderTableRequest(1);
-        OrderTable savedOrderTable = new OrderTable();
-        savedOrderTable.setEmpty(true);
+        TableGroup tableGroup = mock(TableGroup.class);
+        OrderTable savedOrderTable = new OrderTable(tableGroup, 1);
+        savedOrderTable.changeEmpty(true);
         given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(savedOrderTable));
+        given(tableGroup.getId()).willReturn(null);
 
 
         // when

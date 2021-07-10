@@ -22,6 +22,7 @@ import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTables;
+import kitchenpos.domain.Orders;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.TableGroupRequest;
 
@@ -46,24 +47,17 @@ class TableGroupServiceTest {
         TableGroupRequest tableGroupRequest = new TableGroupRequest();
         tableGroupRequest.setOrderTables(Arrays.asList(new OrderTable(), new OrderTable()));
         OrderTable orderTable = new OrderTable(2);
-        orderTable.setEmpty(true);
+        orderTable.changeEmpty(true);
         OrderTable orderTable2 = new OrderTable(3);
-        orderTable2.setEmpty(true);
+        orderTable2.changeEmpty(true);
         List<OrderTable> savedOrderTables = Arrays.asList(orderTable, orderTable2);
         given(orderTableDao.findAllByIdIn(anyList())).willReturn(savedOrderTables);
-
-        TableGroup savedTableGroup = new TableGroup(new OrderTables(savedOrderTables));
-        savedTableGroup.setId(1L);
-        given(tableGroupDao.save(any(TableGroup.class))).willReturn(savedTableGroup);
 
         // when
         tableGroupService.create(tableGroupRequest);
 
         // then
         verify(tableGroupDao).save(any(TableGroup.class));
-        verify(orderTableDao).save(orderTable);
-        verify(orderTableDao).save(orderTable2);
-        assertThat(savedTableGroup.getOrderTables()).isEqualTo(savedOrderTables);
     }
 
     @ParameterizedTest
@@ -124,8 +118,8 @@ class TableGroupServiceTest {
         tableGroupService.ungroup(tableGroupId);
 
         // then
-        verify(orderTableDao).save(orderTable);
-        verify(orderTableDao).save(orderTable2);
+        verify(orderTableDao).findAllByTableGroupId(tableGroupId);
+        verify(orderDao).findAllByOrderTableIdIn(anyList());
     }
 
     @Test

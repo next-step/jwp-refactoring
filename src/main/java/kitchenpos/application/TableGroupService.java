@@ -34,13 +34,7 @@ public class TableGroupService {
         final OrderTables orderTables = new OrderTables(findOrderTables(ids));
         validateOrderTableSize(ids, orderTables);
 
-        final TableGroup savedTableGroup = saveTableGroup(orderTables);
-        savedTableGroup.setOrderTables(orderTables);
-
-        orderTables.changeTableGroupId(savedTableGroup.getId());
-        saveOrderTables(orderTables);
-
-        return savedTableGroup;
+        return saveTableGroup(orderTables);
     }
 
     private void validateRequest(TableGroupRequest tableGroupRequest) {
@@ -63,25 +57,18 @@ public class TableGroupService {
         return tableGroupDao.save(new TableGroup(orderTables));
     }
 
-    private void saveOrderTables(OrderTables orderTables) {
-        for (final OrderTable savedOrderTable : orderTables.toList()) {
-            orderTableDao.save(savedOrderTable);
-        }
-    }
-
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        final OrderTables orderTables = new OrderTables(findAllOrderTableByTableGroupId(tableGroupId));
-        final Orders orders = new Orders(findAllOrderByOrderTableIds(orderTables));
+        final OrderTables orderTables = new OrderTables(findAllOrderTable(tableGroupId));
+        final Orders orders = new Orders(findAllOrder(orderTables));
         orderTables.ungroup(orders);
-        saveOrderTables(orderTables);
     }
 
-    private List<OrderTable> findAllOrderTableByTableGroupId(Long tableGroupId) {
+    private List<OrderTable> findAllOrderTable(Long tableGroupId) {
         return orderTableDao.findAllByTableGroupId(tableGroupId);
     }
 
-    private List<Order> findAllOrderByOrderTableIds(OrderTables orderTables) {
+    private List<Order> findAllOrder(OrderTables orderTables) {
         final List<Long> orderTableIds = orderTables.ids();
 
         return orderDao.findAllByOrderTableIdIn(orderTableIds);

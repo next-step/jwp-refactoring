@@ -20,9 +20,11 @@ import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
+import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
 
 @ExtendWith(MockitoExtension.class)
@@ -59,34 +61,33 @@ class OrderServiceTest {
     @Test
     void create() {
         // given
-        order.setOrderTableId(1L);
+        final OrderLineItemRequest orderLineItemRequest1 = new OrderLineItemRequest(1L, 1);
+        final OrderLineItemRequest orderLineItemRequest2 = new OrderLineItemRequest(2L, 1);
+        final List<OrderLineItemRequest> orderLineItemRequests = Arrays.asList(orderLineItemRequest1, orderLineItemRequest2);
+        OrderRequest orderRequest = new OrderRequest(1L, orderLineItemRequests);
         order.setOrderLineItems(Arrays.asList(orderLineItem, orderLineItem2));
-        given(menuDao.countByIdIn(anyList())).willReturn(2L);
-        given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(new OrderTable()));
+        final Menu menu1 = mock(Menu.class);
+        final Menu menu2 = mock(Menu.class);
+        given(menu1.getId()).willReturn(1L);
+        given(menu2.getId()).willReturn(2L);
+        given(menuDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(menu1, menu2));
+        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(new OrderTable()));
 
         savedOrder.setId(1L);
         given(orderDao.save(any(Order.class))).willReturn(savedOrder);
 
-        OrderLineItem savedOrderLineItem = new OrderLineItem();
-        OrderLineItem savedOrderLineItem2 = new OrderLineItem();
-        given(orderLineItemDao.save(orderLineItem)).willReturn(savedOrderLineItem);
-        given(orderLineItemDao.save(orderLineItem2)).willReturn(savedOrderLineItem2);
-
         // when
-        final Order actual = orderService.create(order);
+        orderService.create(orderRequest);
 
         // then
         verify(orderDao).save(any(Order.class));
-        verify(orderLineItemDao).save(orderLineItem);
-        verify(orderLineItemDao).save(orderLineItem2);
-        assertThat(actual.getOrderLineItems()).isEqualTo(Arrays.asList(savedOrderLineItem, savedOrderLineItem2));
     }
 
     @DisplayName("아이템이 없는 주문을 생성할 때 예외가 발생하는지 테스트")
     @Test
     void given_OrderHasEmptyItem_when_Create_then_ThrownException() {
         // given
-        Order order = new Order();
+        OrderRequest order = new OrderRequest();
 
         // when
         final Throwable throwable = catchThrowable(() -> orderService.create(order));
@@ -99,9 +100,7 @@ class OrderServiceTest {
     @Test
     void given_OrderHasOnlyOneItem_when_Create_then_ThrownException() {
         // given
-        Order order = new Order();
-        order.setOrderLineItems(Collections.singletonList(new OrderLineItem()));
-        given(menuDao.countByIdIn(anyList())).willReturn(2L);
+        OrderRequest order = new OrderRequest(1L, Collections.singletonList(new OrderLineItemRequest()));
 
         // when
         final Throwable differentSizeException = catchThrowable(() -> orderService.create(order));
@@ -113,17 +112,13 @@ class OrderServiceTest {
     @Test
     void list() {
         // given
-        order.setId(1L);
         given(orderDao.findAll()).willReturn(Collections.singletonList(order));
-        final List<OrderLineItem> orderLineItems = Collections.singletonList(orderLineItem);
-        given(orderLineItemDao.findAllByOrderId(order.getId())).willReturn(orderLineItems);
 
         // when
-        final List<Order> actual = orderService.list();
+        orderService.list();
 
         // then
         verify(orderDao).findAll();
-        assertThat(actual.get(0).getOrderLineItems()).isEqualTo(orderLineItems);
     }
 
     @Test
