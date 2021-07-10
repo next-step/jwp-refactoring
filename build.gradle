@@ -27,15 +27,15 @@ subprojects {
     }
 }
 
-project(':module-application') {
+project(':module-domain') {
     dependencies {
         compile project(':module-common')
-        compile project(':module-domain')
     }
 }
 
-project(':module-domain') {
+project(':module-application') {
     dependencies {
+        compile project(':module-domain')
         compile project(':module-common')
     }
 }
