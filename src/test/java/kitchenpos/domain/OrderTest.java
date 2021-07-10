@@ -2,6 +2,9 @@ package kitchenpos.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 public class OrderTest {
@@ -13,6 +16,20 @@ public class OrderTest {
 
         // when
         final Throwable throwable = catchThrowable(() -> order.changeStatus(OrderStatus.COMPLETION));
+
+        // then
+        assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void given_EmptyOrderTable_when_CreateOrder_then_ThrowException() {
+        // given
+        List<OrderLineItem> orderLineItems = Arrays.asList(new OrderLineItem(), new OrderLineItem());
+        final OrderTable orderTable = new OrderTable(1);
+        orderTable.setEmpty(true);
+
+        // when
+        final Throwable throwable = catchThrowable(() -> new Order(orderTable, new OrderLineItems(orderLineItems)));
 
         // then
         assertThat(throwable).isInstanceOf(IllegalArgumentException.class);

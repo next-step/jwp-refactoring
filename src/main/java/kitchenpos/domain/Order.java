@@ -21,6 +21,20 @@ public class Order {
         this.orderedTime = LocalDateTime.now();
     }
 
+    public Order(OrderTable orderTable, OrderLineItems orderLineItems) {
+        validateOrderTable(orderTable);
+        this.orderTableId = orderTable.getId();
+        this.orderLineItems = orderLineItems.toList();
+        this.orderStatus = OrderStatus.COOKING.name();
+        this.orderedTime = LocalDateTime.now();
+    }
+
+    private void validateOrderTable(OrderTable orderTable) {
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+    }
+
     public Long getId() {
         return id;
     }
