@@ -1,26 +1,24 @@
 package kitchenpos.table.application;
 
-import kitchenpos.ordering.domain.OrderRepository;
-import kitchenpos.ordering.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.OrderTableValidator;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class TableService {
-    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
+    private final OrderTableValidator orderTableValidator;
 
-    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
-        this.orderRepository = orderRepository;
+    public TableService(OrderTableRepository orderTableRepository, OrderTableValidator orderTableValidator) {
         this.orderTableRepository = orderTableRepository;
+        this.orderTableValidator = orderTableValidator;
     }
 
     @Transactional
@@ -40,9 +38,7 @@ public class TableService {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        savedOrderTable.checkIfAlreadyGrouped();
-
-        checkIfAllOfOrderInOrderTableIsCompleted(orderTableId);
+        orderTableValidator.validate(savedOrderTable);
 
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
 
@@ -59,10 +55,4 @@ public class TableService {
         return OrderTableResponse.of(savedOrderTable);
     }
 
-    private void checkIfAllOfOrderInOrderTableIsCompleted(Long orderTableId) {
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException("주문테이블에 아직 완료되지 않은 주문이 있습니다.");
-        }
-    }
 }
