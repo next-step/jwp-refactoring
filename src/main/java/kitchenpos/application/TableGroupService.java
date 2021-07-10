@@ -3,7 +3,6 @@ package kitchenpos.application;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -13,9 +12,9 @@ import org.springframework.util.CollectionUtils;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.ordertable.domain.OrderTable;
 
 @Service
 public class TableGroupService {
@@ -49,9 +48,9 @@ public class TableGroupService {
 		}
 
 		for (final OrderTable savedOrderTable : savedOrderTables) {
-			if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
+/*			if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
 				throw new IllegalArgumentException();
-			}
+			}*/
 		}
 
 		tableGroup.setCreatedDate(LocalDateTime.now());
@@ -60,8 +59,8 @@ public class TableGroupService {
 
 		final Long tableGroupId = savedTableGroup.getId();
 		for (final OrderTable savedOrderTable : savedOrderTables) {
-			savedOrderTable.setTableGroupId(tableGroupId);
-			savedOrderTable.setEmpty(false);
+		/*	savedOrderTable.setTableGroupId(tableGroupId);
+			savedOrderTable.setEmpty(false);*/
 			orderTableDao.save(savedOrderTable);
 		}
 		savedTableGroup.setOrderTables(savedOrderTables);
@@ -83,7 +82,7 @@ public class TableGroupService {
 		}
 
 		for (final OrderTable orderTable : orderTables) {
-			orderTable.setTableGroupId(null);
+			// orderTable.setTableGroupId(null);
 			orderTableDao.save(orderTable);
 		}
 	}
