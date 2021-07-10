@@ -1,6 +1,6 @@
 package kitchenpos.order.dto;
 
-import kitchenpos.menu.domain.Quantity;
+import kitchenpos.common.domain.Quantity;
 
 public class OrderLineItemRequest {
     private Long seq;

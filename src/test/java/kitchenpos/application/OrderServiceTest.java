@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.domain.*;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.*;
@@ -18,6 +19,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -132,7 +134,7 @@ class OrderServiceTest {
         //when
         assertThatThrownBy(
                 () -> orderService.create(orderRequest)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(NoSuchElementException.class);
     }
 
     @DisplayName("주문테이블이 비어있는 경우에 주문생성에 실패한다.")
@@ -178,7 +180,7 @@ class OrderServiceTest {
         //then
         assertThatThrownBy(
                 () -> orderService.changeOrderStatus(0L, new OrderRequest())
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(NoSuchElementException.class);
     }
 
     @DisplayName("완료된 주문의 상태를 변경할수는 없다.")

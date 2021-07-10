@@ -4,6 +4,7 @@ import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.common.exception.NotExistMenuGroupException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,8 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 메뉴그룹입니다."));
+        MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
+                .orElseThrow(() -> new NotExistMenuGroupException("존재하지 않는 메뉴그룹입니다."));
 
         final MenuProducts menuProducts = getMenuProducts(menuRequest);
 
@@ -41,16 +43,16 @@ public class MenuService {
     }
 
     private MenuProducts getMenuProducts(MenuRequest menuRequest) {
-        List<MenuProductRequest> menuProductRequests = menuRequest.getMenuProducts();
-
-        List<Long> productIds = getProductIds(menuProductRequests);
+        List<Long> productIds = getProductIds(menuRequest.getMenuProducts());
         List<Product> findProducts = productRepository.findByIdIn(productIds);
 
-        return new MenuProducts(menuProductRequests, findProducts);
+        return new MenuProducts(menuRequest, findProducts);
     }
 
     private List<Long> getProductIds(List<MenuProductRequest> menuProductRequests) {
-        return menuProductRequests.stream().map(menuProductRequest -> menuProductRequest.getProductId()).collect(Collectors.toList());
+        return menuProductRequests.stream()
+                .map(menuProductRequest -> menuProductRequest.getProductId())
+                .collect(Collectors.toList());
     }
 
     public List<MenuResponse> list() {

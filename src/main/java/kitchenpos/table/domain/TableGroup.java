@@ -1,5 +1,7 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.common.exception.UnableCreateTableGroupException;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,7 +29,7 @@ public class TableGroup {
 
     public TableGroup(LocalDateTime createdDate, List<OrderTable> orderTables) {
         if (isValidation(orderTables)) {
-            throw new IllegalArgumentException("빈테이블 또는 이미 단체테이블인 테이블이 존재하는 경우는 단체테이블을 구성할수 없습니다.");
+            throw new UnableCreateTableGroupException("빈테이블 또는 이미 단체테이블인 테이블이 존재하는 경우는 단체테이블을 구성할수 없습니다.");
         }
 
         this.orderTables = new OrderTables(orderTables);

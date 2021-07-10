@@ -1,6 +1,7 @@
 package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuProductRequest;
@@ -106,7 +107,7 @@ class MenuRestControllerTest {
         Menu newMenu = new Menu("햄버거세트", BigDecimal.valueOf(5000), savedMenuGroup);
         Menu savedNewMenu = menuRepository.save(newMenu);
 
-        MenuProduct menuProduct = new MenuProduct(savedNewMenu, savedProduct, new Quantity(1));
+        MenuProduct menuProduct = new MenuProduct(savedNewMenu, savedProduct.getId(), new Quantity(1));
         savedMenuProduct = menuProductRepository.save(menuProduct);
 
         long countOfMenus = menuRepository.count();

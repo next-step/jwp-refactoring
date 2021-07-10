@@ -1,6 +1,7 @@
 package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.domain.*;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.*;

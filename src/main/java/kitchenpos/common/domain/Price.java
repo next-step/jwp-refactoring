@@ -1,6 +1,6 @@
-package kitchenpos.product.domain;
+package kitchenpos.common.domain;
 
-import kitchenpos.menu.domain.Quantity;
+import kitchenpos.common.exception.InvalidPriceException;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -18,7 +18,7 @@ public class Price {
 
     public Price(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("가격은 필수이고 0보다 작은값이 될수 없습니다.");
+            throw new InvalidPriceException("가격은 필수이고 0보다 작은값이 될수 없습니다.");
         }
 
         this.price = price;

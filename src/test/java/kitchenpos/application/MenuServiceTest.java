@@ -1,11 +1,11 @@
 package kitchenpos.application;
 
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.application.MenuService;
-import kitchenpos.product.domain.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -54,7 +55,7 @@ class MenuServiceTest {
         Product product = new Product("빅맥", price);
         savedProduct = productRepository.save(product);
 
-        menuProduct = new MenuProduct(savedProduct, new Quantity(1));
+        menuProduct = new MenuProduct(savedProduct.getId(), new Quantity(1));
     }
 
     @DisplayName("메뉴를 만들어보자")
@@ -64,7 +65,7 @@ class MenuServiceTest {
         BigDecimal price = BigDecimal.valueOf(10000);
         String menuName = "맥도날드햄버거";
 
-        MenuProductRequest menuProductRequest = new MenuProductRequest(menuProduct.getProduct().getId(), menuProduct.getQuantity());
+        MenuProductRequest menuProductRequest = new MenuProductRequest(menuProduct.getProductId(), menuProduct.getQuantity());
         MenuRequest menu = new MenuRequest(menuName, price, savedMenuGroup.getId(), Arrays.asList(menuProductRequest));
 
         //when
@@ -104,7 +105,7 @@ class MenuServiceTest {
     @Test
     public void invalidCreateMenu() throws Exception {
         //given
-        MenuProductRequest menuProductRequest = new MenuProductRequest(menuProduct.getProduct().getId(), menuProduct.getQuantity());
+        MenuProductRequest menuProductRequest = new MenuProductRequest(menuProduct.getProductId(), menuProduct.getQuantity());
         MenuRequest menu = new MenuRequest("맥도날드햄버거", BigDecimal.valueOf(-1), savedMenuGroup.getId(), Arrays.asList(menuProductRequest));
 
         //when
@@ -117,20 +118,20 @@ class MenuServiceTest {
     @Test
     public void failCreateMenuNotExistGroupMenu() throws Exception {
         //given
-        MenuProductRequest menuProductRequest = new MenuProductRequest(menuProduct.getProduct().getId(), menuProduct.getQuantity());
+        MenuProductRequest menuProductRequest = new MenuProductRequest(menuProduct.getProductId(), menuProduct.getQuantity());
         MenuRequest menu = new MenuRequest("맥도날드햄버거", BigDecimal.valueOf(10000), 0L, Arrays.asList(menuProductRequest));
 
         //when
         assertThatThrownBy(
                 () -> menuService.create(menu)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(NoSuchElementException.class);
     }
 
     @DisplayName("메뉴 가격이 개별보다 비쌀 경우 메뉴는 생성할수 없다")
     @Test
     public void failCreateMenuInvalidPrice() throws Exception {
         //given
-        MenuProductRequest menuProductRequest = new MenuProductRequest(menuProduct.getProduct().getId(), menuProduct.getQuantity());
+        MenuProductRequest menuProductRequest = new MenuProductRequest(menuProduct.getProductId(), menuProduct.getQuantity());
         MenuRequest menu = new MenuRequest("맥도날드햄버거", BigDecimal.valueOf(20000), savedMenuGroup.getId(), Arrays.asList(menuProductRequest));
 
         //when

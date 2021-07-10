@@ -7,6 +7,7 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.common.exception.NotExistOrderTableException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,7 +37,7 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new NotExistOrderTableException("존재하지 않는 주문테이블 입니다."));
 
         List<Order> orders = orderRepository.findByOrderTableId(orderTableId);
         orders.forEach(order -> order.isEnabledChangeEmptyStatus());
@@ -49,7 +50,7 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new NotExistOrderTableException("존재하지 않는 주문테이블 입니다."));
 
         savedOrderTable.changeNumberOfGuests(NumberOfGeusts.of(orderTableRequest.getNumberOfGuests()));
 

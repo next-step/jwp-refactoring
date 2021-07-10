@@ -1,8 +1,11 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.common.exception.InvalidPriceException;
 import kitchenpos.menu.dto.MenuProductRequest;
-import kitchenpos.product.domain.Price;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.common.domain.Price;
 import kitchenpos.product.domain.Product;
+import kitchenpos.common.exception.NotExistProductException;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -10,7 +13,6 @@ import javax.persistence.OneToMany;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Embeddable
@@ -26,27 +28,38 @@ public class MenuProducts {
         this.menuProducts = menuProducts;
     }
 
-    public MenuProducts(List<MenuProductRequest> menuProductRequests, List<Product> findProducts) {
-        List<MenuProduct> menuProducts = menuProductRequests.stream()
-                .map(menuProductRequest -> new MenuProduct(getMatchedProduct(menuProductRequest, findProducts), menuProductRequest.getQuantity()))
-                .collect(Collectors.toList());
+    public MenuProducts(MenuRequest menuRequests, List<Product> findProducts) {
+
+        List<MenuProduct> menuProducts = createMenuProduct(menuRequests, findProducts);
+
+        priceValidator(menuRequests, findProducts);
 
         this.menuProducts = menuProducts;
+    }
+
+    private List<MenuProduct> createMenuProduct(MenuRequest menuRequests, List<Product> findProducts) {
+        return menuRequests.getMenuProducts()
+                .stream()
+                .map(menuProductRequest -> new MenuProduct(getMatchedProduct(menuProductRequest, findProducts).getId(), menuProductRequest.getQuantity()))
+                .collect(Collectors.toList());
+    }
+
+    private void priceValidator(MenuRequest menuRequests, List<Product> findProducts) {
+        Price totalPrice = menuRequests.getMenuProducts()
+                .stream()
+                .map(menuProductRequest -> getMatchedProduct(menuProductRequest, findProducts).getPrice().multiply(menuProductRequest.getQuantity()))
+                .reduce(new Price(BigDecimal.ZERO), Price::add);
+
+        if (totalPrice.compareTo(new Price(menuRequests.getPrice())) < 0) {
+            throw new InvalidPriceException("상품의 총 가격보다 메뉴의 가격이 더 높을수는 없습니다.");
+        }
     }
 
     private Product getMatchedProduct(MenuProductRequest menuProductRequest, List<Product> findProducts) {
         return findProducts.stream()
                 .filter(product -> product.sameProduct(menuProductRequest.getProductId()))
                 .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 상품입니다."));
-    }
-
-    public Price getProductTotalPrice() {
-        return menuProducts.stream()
-                .map(menuProduct -> menuProduct.getProduct()
-                        .getPrice().multiply(menuProduct.getQuantity()))
-                .reduce(new Price(BigDecimal.ZERO), Price::add)
-                ;
+                .orElseThrow(() -> new NotExistProductException("존재하지 않는 상품입니다."));
     }
 
     public List<MenuProduct> getMenuProducts() {
