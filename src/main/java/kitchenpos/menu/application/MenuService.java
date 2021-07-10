@@ -1,9 +1,11 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menuproduct.domain.MenuProduct;
+import kitchenpos.menuproduct.domain.MenuProductRepository;
+import kitchenpos.menu.domain.MenuValidator;
+import kitchenpos.menuproduct.domain.MenuProducts;
+import kitchenpos.menuproduct.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.ui.exception.NoMenuGroupException;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
@@ -13,7 +15,7 @@ import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,13 +25,15 @@ public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
     private final ProductRepository productRepository;
+    private final MenuProductRepository menuProductRepository;
 
     public MenuService(
             MenuRepository menuRepository,
-            MenuGroupRepository menuGroupRepository, ProductRepository productRepository) {
+            MenuGroupRepository menuGroupRepository, ProductRepository productRepository, MenuProductRepository menuProductRepository) {
         this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
         this.productRepository = productRepository;
+        this.menuProductRepository = menuProductRepository;
     }
 
     public MenuResponse create(MenuRequest menuRequest) {
@@ -41,21 +45,19 @@ public class MenuService {
 
         final Menu savedMenu = menuRepository.save(menu);
 
-        MenuProducts menuProducts = new MenuProducts();
+        List<MenuProduct> menuProductList = new ArrayList<>();
 
         for (MenuProductRequest menuProductRequest : menuRequest.getMenuProducts()) {
             productRepository.findById(menuProductRequest.getProductId()).ifPresent(
-                    product -> menuProducts.add(
+                    product -> menuProductList.add(
                             new MenuProduct(savedMenu, product, menuProductRequest.getQuantity())
                     )
             );
         }
 
-        BigDecimal sum = menuProducts.sumOfMenuProducts();
+        MenuProducts menuProducts = new MenuProducts(menuProductList);
 
-        savedMenu.compareMenuPriceToProductsSum(sum);
-
-        savedMenu.addMenuProducts(menuProducts);
+        MenuValidator.validatePrice(menuProducts, savedMenu);
 
         return MenuResponse.of(savedMenu);
     }
