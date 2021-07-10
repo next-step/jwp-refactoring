@@ -8,6 +8,7 @@ import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,8 @@ import sun.security.x509.OtherName;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ProductAccteptanceTest extends AcceptanceTest {
     private ProductRequest productRequest;
@@ -57,6 +60,9 @@ public class ProductAccteptanceTest extends AcceptanceTest {
 
         //then
         정상_등록(response);
+        ProductResponse productResponse = response.as(ProductResponse.class);
+        assertThat(productRequest.getName()).isEqualTo(productResponse.getName());
+        assertThat(productRequest.getPrice()).isEqualTo(productResponse.getPrice());
     }
 
     public static ExtractableResponse<Response> 상품_등록_요청(ProductRequest productRequest) {
@@ -64,7 +70,7 @@ public class ProductAccteptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .body(productRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/api/menu-groups")
+                .when().post("/api/products/temp")
                 .then().log().all()
                 .extract();
     }

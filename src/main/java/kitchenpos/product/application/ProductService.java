@@ -2,6 +2,10 @@ package kitchenpos.product.application;
 
 import kitchenpos.product.dao.ProductDao;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductEntity;
+import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,9 +16,11 @@ import java.util.Objects;
 @Service
 public class ProductService {
     private final ProductDao productDao;
+    private final ProductRepository productRepository;
 
-    public ProductService(final ProductDao productDao) {
+    public ProductService(ProductDao productDao, ProductRepository productRepository) {
         this.productDao = productDao;
+        this.productRepository = productRepository;
     }
 
     @Transactional
@@ -26,6 +32,13 @@ public class ProductService {
         }
 
         return productDao.save(product);
+    }
+
+    @Transactional
+    public ProductResponse createTemp(final ProductRequest productRequest) {
+
+        ProductEntity productEntity =  productRepository.save(productRequest.toEntity());
+        return ProductResponse.of(productEntity);
     }
 
     public List<Product> list() {

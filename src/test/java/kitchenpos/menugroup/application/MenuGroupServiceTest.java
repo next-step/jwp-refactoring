@@ -14,7 +14,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
 @SpringBootTest
-public class MenuGroupServiceRealTest {
+public class MenuGroupServiceTest {
     @Autowired
     MenuGroupService menuGroupService;
 
