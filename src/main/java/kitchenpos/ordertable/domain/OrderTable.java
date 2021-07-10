@@ -8,7 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import kitchenpos.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.ordertable.exception.TableException;
