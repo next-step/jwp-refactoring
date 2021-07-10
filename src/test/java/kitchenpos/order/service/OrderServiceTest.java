@@ -1,14 +1,18 @@
 package kitchenpos.order.service;
 
-import kitchenpos.application.OrderService;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.application.OrderService;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -25,23 +29,24 @@ public class OrderServiceTest {
 
     private String orderStatus;
     private Long orderTableId;
-    private Order order;
+    private OrderRequest order;
 
     @BeforeEach
     public void setup() {
-        List<OrderLineItem> orderLineItems = new ArrayList<>();
-        OrderLineItem orderLineItem = new OrderLineItem(1L, 1L, 1L);
+        List<OrderLineItemRequest> orderLineItems = new ArrayList<>();
+        OrderLineItemRequest orderLineItem = new OrderLineItemRequest(1L, 1L, 1L);
         orderLineItems.add(orderLineItem);
         orderStatus = OrderStatus.COOKING.name();
         orderTableId = 3L;
-        order = new Order(orderTableId, orderStatus, LocalDateTime.now(), orderLineItems);
+        order = new OrderRequest(orderTableId, orderStatus, LocalDateTime.now(), orderLineItems);
     }
 
     @Test
+    @Transactional
     @DisplayName("주문을 생성 한다")
     public void createOrder() {
         // when
-        Order createOrder = orderService.create(order);
+        OrderResponse createOrder = orderService.create(order);
 
         // then
         assertThat(createOrder.getOrderTableId()).isEqualTo(orderTableId);
@@ -53,7 +58,7 @@ public class OrderServiceTest {
     @DisplayName("주문을 생성 실패 - orderLineItems 가 없을 경우")
     public void createOrderFailByOrderLineItemsIsNull() {
         // given
-        Order order = new Order(1L, OrderStatus.COOKING.name(), LocalDateTime.now(), null);
+        OrderRequest order = new OrderRequest(1L, OrderStatus.COOKING.name(), LocalDateTime.now(), null);
 
         // when
         // then
@@ -67,10 +72,10 @@ public class OrderServiceTest {
         orderService.create(order);
 
         // when
-        List<Order> orders = orderService.list();
+        List<OrderResponse> orders = orderService.list();
 
         // then
-        for (Order selectOrder : orders) {
+        for (OrderResponse selectOrder : orders) {
             assertThat(selectOrder.getId()).isNotNull();
             assertThat(selectOrder.getOrderTableId()).isNotNull();
             assertThat(selectOrder.getOrderLineItems()).isNotEmpty();
@@ -78,15 +83,16 @@ public class OrderServiceTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("주문 상태를 변경한다")
     public void modifyOrder() {
         // given
-        orderService.create(order);
+        OrderResponse orderResponse = orderService.create(order);
         String changeStatus = OrderStatus.MEAL.name();
         order.setOrderStatus(changeStatus);
 
         // when
-        Order changeOrder = orderService.changeOrderStatus(3L, this.order);
+        OrderResponse changeOrder = orderService.changeOrderStatus(orderResponse.getId(), order);
 
         // then
         assertThat(changeOrder.getOrderStatus()).isEqualTo(changeStatus);

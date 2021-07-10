@@ -1,8 +1,14 @@
 package kitchenpos.menu.service;
 
-import kitchenpos.application.MenuService;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,25 +28,26 @@ public class MenuServiceTest {
     @Autowired
     private MenuService menuService;
 
-
-    private List<MenuProduct> menuProducts;
+    private String name;
+    private BigDecimal price;
+    private List<MenuProductRequest> menuProducts;
 
     @BeforeEach
     public void setup() {
+        name = "후라이드치킨";
+        price = new BigDecimal(16000);
         menuProducts = new ArrayList<>();
-        menuProducts.add(new MenuProduct(1L, 1L, 1L));
+        menuProducts.add(new MenuProductRequest(1L, 1L));
     }
 
     @Test
     @DisplayName("메뉴를 생성 한다")
     public void createMenu() {
         //given
-        String name = "후라이드치킨";
-        BigDecimal price = new BigDecimal(16000);
-        Menu menu = new Menu(name, price, 1L, menuProducts);
+        MenuRequest menu = new MenuRequest(name, price, 1L, menuProducts);
 
         //when
-        Menu createMenu = menuService.create(menu);
+        MenuResponse createMenu = menuService.create(menu);
 
         //then
         assertThat(createMenu.getName()).isEqualTo(name);
@@ -48,14 +55,11 @@ public class MenuServiceTest {
         assertThat(createMenu.getMenuGroupId()).isEqualTo(1L);
     }
 
-
     @Test
     @DisplayName("메뉴 생성 실패 - 가격이 음수")
     public void createMenuFailByPriceMinus() {
         //given
-        String name = "불고기피자";
-        BigDecimal price = new BigDecimal(-10000);
-        Menu menu = new Menu(name, price, 1L, menuProducts);
+        MenuRequest menu = new MenuRequest(name, new BigDecimal(-10000), 1L, menuProducts);
 
         //when
         //then
@@ -66,14 +70,14 @@ public class MenuServiceTest {
     @DisplayName("메뉴 리스트를 가져온다")
     public void selectMenuList() {
         //when
-        List<Menu> menus = menuService.list();
+        List<MenuResponse> menuResponses = menuService.list();
 
         //then
-        for (Menu menu : menus) {
-            assertThat(menu.getId()).isNotNull();
-            assertThat(menu.getName()).isNotNull();
-            assertThat(menu.getPrice()).isNotNull();
-            assertThat(menu.getMenuProducts()).isNotEmpty();
+        for (MenuResponse menuResponse : menuResponses) {
+            assertThat(menuResponse.getId()).isNotNull();
+            assertThat(menuResponse.getName()).isNotNull();
+            assertThat(menuResponse.getPrice()).isNotNull();
+            assertThat(menuResponse.getMenuProducts()).isNotEmpty();
         }
     }
 }
