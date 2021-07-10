@@ -4,7 +4,6 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderLineItemRepository;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.dto.OrderLineItemDto;
 import kitchenpos.order.dto.OrderRequest;
@@ -24,18 +23,15 @@ import static java.util.stream.Collectors.toList;
 public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
-    private final OrderLineItemRepository orderLineItemRepository;
     private final OrderTableRepository orderTableRepository;
 
     public OrderService(
             final MenuRepository menuRepository,
             final OrderRepository orderRepository,
-            final OrderLineItemRepository orderLineItemRepository,
             final OrderTableRepository orderTableRepository
     ) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
-        this.orderLineItemRepository = orderLineItemRepository;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -45,7 +41,6 @@ public class OrderService {
         final List<OrderLineItem> orderLineItems = toOrderLineItems(orderRequest);
         final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId()).orElseThrow(EntityNotFoundException::new);
         final Order savedOrder = orderRepository.save(new Order(orderTable.getId(), orderLineItems));
-        orderLineItems.forEach(orderLineItemRepository::save);
         return OrderResponse.from(savedOrder);
     }
 
@@ -53,6 +48,7 @@ public class OrderService {
         final List<Long> menuIds = orderRequest.getOrderLineItems().stream()
                 .map(OrderLineItemDto::getMenuId)
                 .collect(toList());
+
         if (orderRequest.getOrderLineItems().size() != menuRepository.countByIdIn(menuIds)) {
             throw new DuplicateMenuException("주문시 주문항목에 메뉴들은 중복될 수 없습니다.");
         }
