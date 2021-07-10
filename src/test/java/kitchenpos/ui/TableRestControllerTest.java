@@ -63,10 +63,10 @@ class TableRestControllerTest extends IntegrationSupport {
     @Test
     void changeNumberOfGuests() throws Exception {
         //given
-        mockMvc.perform(putAsJson("/api/tables/1/empty", OrderTableRequest.of(1L, 2, false)));
+        mockMvc.perform(putAsJson("/api/tables/1/empty", OrderTableRequest.of(false)));
 
         //when
-        ResultActions actions = mockMvc.perform(putAsJson(URI + "/1/number-of-guests", OrderTableRequest.of(null, 4, false)));
+        ResultActions actions = mockMvc.perform(putAsJson(URI + "/1/number-of-guests", OrderTableRequest.of(4)));
 
         //then
         actions.andExpect(status().isOk());

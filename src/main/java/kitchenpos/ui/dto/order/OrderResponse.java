@@ -1,6 +1,6 @@
 package kitchenpos.ui.dto.order;
 
-import kitchenpos.domain.Order;
+import kitchenpos.domain.order.Order;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,7 +25,7 @@ public class OrderResponse {
     }
 
     public static OrderResponse of(Order order) {
-        return new OrderResponse(order.getId(), order.getOrderTableId(), order.getOrderStatus(), order.getOrderedTime(), order.getOrderLineItems().stream()
+        return new OrderResponse(order.getId(), order.getOrderTable().getId(), order.getOrderStatus(), order.getOrderedTime(), order.getOrderLineItems().stream()
                 .map(OrderLineItemResponse::of)
                 .collect(Collectors.toList()));
     }

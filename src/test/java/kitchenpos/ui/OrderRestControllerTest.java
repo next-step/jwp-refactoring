@@ -1,6 +1,6 @@
 package kitchenpos.ui;
 
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.ui.dto.order.OrderLineItemRequest;
 import kitchenpos.ui.dto.order.OrderRequest;
 import kitchenpos.ui.dto.order.OrderResponse;
@@ -26,7 +26,7 @@ class OrderRestControllerTest extends IntegrationSupport {
     @Test
     void create() throws Exception {
         //given
-        mockMvc.perform(putAsJson("/api/tables/1/empty", OrderTableRequest.of(1L, 4, false)));
+        mockMvc.perform(putAsJson("/api/tables/1/empty", OrderTableRequest.of(false)));
 
         //when
         ResultActions actions = mockMvc.perform(postAsJson(URI, OrderRequest.of(1L, OrderStatus.COOKING.name(), LocalDateTime.now(), Lists.list(OrderLineItemRequest.of(1L, 1)))));
@@ -44,7 +44,7 @@ class OrderRestControllerTest extends IntegrationSupport {
     @Test
     void list() throws Exception {
         //given
-        mockMvc.perform(putAsJson("/api/tables/2/empty", OrderTableRequest.of(2L, 8, false)));
+        mockMvc.perform(putAsJson("/api/tables/2/empty", OrderTableRequest.of(false)));
         mockMvc.perform(postAsJson(URI, OrderRequest.of(2L, OrderStatus.COOKING.name(), LocalDateTime.now(), Lists.list(OrderLineItemRequest.of(2L, 2)))));
 
         //when
@@ -61,7 +61,7 @@ class OrderRestControllerTest extends IntegrationSupport {
     @Test
     void changeOrderStatus() throws Exception {
         //given
-        mockMvc.perform(putAsJson("/api/tables/3/empty", OrderTableRequest.of(3L, 3, false)));
+        mockMvc.perform(putAsJson("/api/tables/3/empty", OrderTableRequest.of(false)));
         MvcResult mvcResult = mockMvc.perform(postAsJson(URI, OrderRequest.of(3L, OrderStatus.COOKING.name(), LocalDateTime.now(), Lists.list(OrderLineItemRequest.of(3L, 3))))).andReturn();
         OrderResponse orderResponse = toObject(mvcResult, OrderResponse.class);
 

@@ -1,6 +1,6 @@
 package kitchenpos.ui.dto.order;
 
-import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.order.OrderTableGroup;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,14 +20,14 @@ public class OrderTableGroupResponse {
         this.orderTables = orderTables;
     }
 
-    public static OrderTableGroupResponse of(TableGroup tableGroup) {
+    public static OrderTableGroupResponse of(OrderTableGroup tableGroup) {
         return new OrderTableGroupResponse(tableGroup.getId(), tableGroup.getCreatedDate(), tableGroup.getOrderTables().stream()
                 .map(OrderTableResponse::of)
                 .collect(Collectors.toList()));
 
     }
 
-    public static List<OrderTableGroupResponse> ofList(List<TableGroup> tableGroups) {
+    public static List<OrderTableGroupResponse> ofList(List<OrderTableGroup> tableGroups) {
         return tableGroups.stream()
                 .map(OrderTableGroupResponse::of)
                 .collect(Collectors.toList());

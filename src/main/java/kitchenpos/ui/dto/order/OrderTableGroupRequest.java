@@ -1,6 +1,6 @@
 package kitchenpos.ui.dto.order;
 
-import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.order.OrderTableGroup;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,18 +22,6 @@ public class OrderTableGroupRequest {
 
     public static OrderTableGroupRequest of(LocalDateTime createdDate, List<OrderTableRequest> orderTables){
         return new OrderTableGroupRequest(null, createdDate, orderTables);
-    }
-
-    public static OrderTableGroupRequest of(TableGroup tableGroup) {
-        return new OrderTableGroupRequest(tableGroup.getId(), tableGroup.getCreatedDate(), tableGroup.getOrderTables().stream()
-                .map(OrderTableRequest::of)
-                .collect(Collectors.toList()));
-    }
-
-    public TableGroup toTableGroup() {
-        return TableGroup.of(id, createdDate, orderTables.stream()
-                .map(OrderTableRequest::toOrderTable)
-                .collect(Collectors.toList()));
     }
 
     public Long getId() {

@@ -1,6 +1,6 @@
 package kitchenpos.ui.dto.menu;
 
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.menu.MenuProduct;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,7 +22,7 @@ public class MenuProductResponse {
     }
 
     public static MenuProductResponse of(MenuProduct menuProduct) {
-        return new MenuProductResponse(menuProduct.getSeq(), menuProduct.getMenuId(), menuProduct.getProductId(), menuProduct.getQuantity());
+        return new MenuProductResponse(menuProduct.getSeq(), menuProduct.getProduct().getId(), menuProduct.getProduct().getId(), menuProduct.getQuantity());
     }
 
     public static List<MenuProductResponse> ofList(List<MenuProduct> menuProducts) {

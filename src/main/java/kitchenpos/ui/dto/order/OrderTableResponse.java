@@ -1,8 +1,9 @@
 package kitchenpos.ui.dto.order;
 
-import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.order.OrderTable;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class OrderTableResponse {
@@ -22,7 +23,10 @@ public class OrderTableResponse {
     }
 
     public static OrderTableResponse of(OrderTable orderTable) {
-        return new OrderTableResponse(orderTable.getId(), orderTable.getTableGroupId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
+        if (Objects.isNull(orderTable.getTableGroup())) {
+            return new OrderTableResponse(orderTable.getId(), null, orderTable.getNumberOfGuests(), orderTable.isEmpty());
+        }
+        return new OrderTableResponse(orderTable.getId(), orderTable.getTableGroup().getId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
     }
 
     public static List<OrderTableResponse> ofList(List<OrderTable> orderTables) {

@@ -1,6 +1,6 @@
 package kitchenpos.ui.dto.order;
 
-import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.order.OrderLineItem;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,17 +26,13 @@ public class OrderLineItemRequest {
     }
 
     public static OrderLineItemRequest of(OrderLineItem orderLineItem) {
-        return new OrderLineItemRequest(orderLineItem.getSeq(), orderLineItem.getOrderId(), orderLineItem.getMenuId(), orderLineItem.getQuantity());
+        return new OrderLineItemRequest(orderLineItem.getSeq(), orderLineItem.getOrder().getId(), orderLineItem.getMenu().getId(), orderLineItem.getQuantity());
     }
 
     public static List<OrderLineItemRequest> ofList(List<OrderLineItem> menuProducts) {
         return menuProducts.stream()
                 .map(OrderLineItemRequest::of)
                 .collect(Collectors.toList());
-    }
-
-    public OrderLineItem toOrderLineItem() {
-        return OrderLineItem.of(seq, orderId, menuId, quantity);
     }
 
     public Long getSeq() {
