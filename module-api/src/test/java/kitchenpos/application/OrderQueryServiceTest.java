@@ -1,6 +1,5 @@
-package kitchenpos.application.query;
+package kitchenpos.application;
 
-import kitchenpos.application.command.OrderQueryService;
 import kitchenpos.domain.order.OrderRepository;
 import kitchenpos.dto.response.OrderViewResponse;
 import kitchenpos.fixture.CleanUp;

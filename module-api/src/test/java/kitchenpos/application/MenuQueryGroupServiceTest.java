@@ -1,6 +1,5 @@
-package kitchenpos.application.query;
+package kitchenpos.application;
 
-import kitchenpos.application.command.MenuGroupQueryService;
 import kitchenpos.domain.Name;
 import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menu.MenuGroupRepository;

@@ -54,7 +54,7 @@ project(':module-domain') {
 project(':module-api') {
     dependencies {
         compile project(':module-domain')
-        testImplementation(testFixtures(project(":module-domain")))
+        testImplementation(testFixtures(project(':module-domain')))
     }
 }
 

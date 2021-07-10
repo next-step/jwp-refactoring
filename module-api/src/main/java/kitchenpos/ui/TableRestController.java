@@ -1,6 +1,6 @@
 package kitchenpos.ui;
 
-import kitchenpos.application.command.TableQueryService;
+import kitchenpos.application.TableQueryService;
 import kitchenpos.application.command.TableService;
 import kitchenpos.domain.NumberOfGuest;
 import kitchenpos.dto.request.ChangeEmptyRequest;

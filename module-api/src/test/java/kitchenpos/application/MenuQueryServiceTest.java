@@ -1,6 +1,5 @@
-package kitchenpos.application.query;
+package kitchenpos.application;
 
-import kitchenpos.application.command.MenuQueryService;
 import kitchenpos.domain.menu.MenuProductRepository;
 import kitchenpos.domain.menu.MenuRepository;
 import kitchenpos.dto.response.MenuViewResponse;

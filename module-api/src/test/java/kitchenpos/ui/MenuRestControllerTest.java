@@ -1,6 +1,6 @@
 package kitchenpos.ui;
 
-import kitchenpos.application.command.MenuQueryService;
+import kitchenpos.application.MenuQueryService;
 import kitchenpos.application.command.MenuService;
 import kitchenpos.common.exception.InvalidPriceException;
 import kitchenpos.domain.menu.Menu;

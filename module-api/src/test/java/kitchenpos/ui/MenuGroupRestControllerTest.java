@@ -1,6 +1,6 @@
 package kitchenpos.ui;
 
-import kitchenpos.application.command.MenuGroupQueryService;
+import kitchenpos.application.MenuGroupQueryService;
 import kitchenpos.application.command.MenuGroupService;
 import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menu.MenuGroupCreate;

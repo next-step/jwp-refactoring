@@ -1,6 +1,5 @@
-package kitchenpos.application.query;
+package kitchenpos.application;
 
-import kitchenpos.application.command.ProductQueryService;
 import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.ProductRepository;
 import kitchenpos.dto.response.ProductViewResponse;
