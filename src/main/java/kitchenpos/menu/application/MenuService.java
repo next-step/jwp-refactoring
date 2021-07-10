@@ -43,16 +43,10 @@ public class MenuService {
     }
 
     private MenuProducts getMenuProducts(MenuRequest menuRequest) {
-        List<Long> productIds = getProductIds(menuRequest.getMenuProducts());
+        List<Long> productIds = menuRequest.getProductIds();
         List<Product> findProducts = productRepository.findByIdIn(productIds);
 
         return new MenuProducts(menuRequest, findProducts);
-    }
-
-    private List<Long> getProductIds(List<MenuProductRequest> menuProductRequests) {
-        return menuProductRequests.stream()
-                .map(menuProductRequest -> menuProductRequest.getProductId())
-                .collect(Collectors.toList());
     }
 
     public List<MenuResponse> list() {
