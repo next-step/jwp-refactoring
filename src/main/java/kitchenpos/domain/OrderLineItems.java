@@ -1,16 +1,27 @@
 package kitchenpos.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Embeddable;
+import javax.persistence.OneToMany;
+
 import org.springframework.util.CollectionUtils;
 
+@Embeddable
 public class OrderLineItems {
-    private final List<OrderLineItem> orderLineItems;
+
+    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    private List<OrderLineItem> orderLineItems = new ArrayList<>();
+
+    public OrderLineItems() {
+    }
 
     public OrderLineItems(List<OrderLineItem> orderLineItems) {
         validate(orderLineItems);
-        this.orderLineItems = orderLineItems;
+        this.orderLineItems.addAll(orderLineItems);
     }
 
     private void validate(List<OrderLineItem> orderLineItems) {
@@ -31,5 +42,9 @@ public class OrderLineItems {
 
     public List<OrderLineItem> toList() {
         return orderLineItems;
+    }
+
+    public void addAll(List<OrderLineItem> orderLineItems) {
+        this.orderLineItems.addAll(orderLineItems);
     }
 }

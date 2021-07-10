@@ -2,17 +2,35 @@ package kitchenpos.domain;
 
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+@Entity
 public class OrderTable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long tableGroupId;
+
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @JoinColumn(name = "table_group_id")
+    private TableGroup tableGroup;
+
     private int numberOfGuests;
+
     private boolean empty;
 
     public OrderTable() {
     }
 
-    public OrderTable(Long tableGroupId, int numberOfGuests) {
-        this.tableGroupId = tableGroupId;
+    public OrderTable(TableGroup tableGroup, int numberOfGuests) {
+        this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
         this.empty = false;
     }
@@ -31,11 +49,11 @@ public class OrderTable {
     }
 
     public Long getTableGroupId() {
-        return tableGroupId;
+        return tableGroup.getId();
     }
 
     public void setTableGroupId(final Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
+        this.tableGroup.setId(tableGroupId);
     }
 
     public int getNumberOfGuests() {
@@ -63,11 +81,11 @@ public class OrderTable {
     }
 
     public void ungroup() {
-        tableGroupId = null;
+        tableGroup = null;
     }
 
     public void changeTableGroupId(Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
+        this.tableGroup.setId(tableGroupId);
     }
 
     public void occupy() {
@@ -82,11 +100,11 @@ public class OrderTable {
             return false;
         OrderTable that = (OrderTable)o;
         return numberOfGuests == that.numberOfGuests && empty == that.empty && Objects.equals(id, that.id)
-            && Objects.equals(tableGroupId, that.tableGroupId);
+            && Objects.equals(tableGroup, that.tableGroup);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, tableGroupId, numberOfGuests, empty);
+        return Objects.hash(id, tableGroup, numberOfGuests, empty);
     }
 }

@@ -4,27 +4,53 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import org.springframework.data.annotation.CreatedDate;
+
+@Entity
+@Table(name = "orders")
 public class Order {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long orderTableId;
+
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_table_id")
+    private OrderTable orderTable;
+
     private String orderStatus;
+
+    @CreatedDate
     private LocalDateTime orderedTime;
-    private List<OrderLineItem> orderLineItems;
+
+    @Embedded
+    private final OrderLineItems orderLineItems = new OrderLineItems();
 
     public Order() {
     }
 
-    public Order(Long orderTableId, String orderStatus, List<OrderLineItem> orderLineItems) {
-        this.orderTableId = orderTableId;
+    public Order(OrderTable orderTable, String orderStatus, List<OrderLineItem> orderLineItems) {
+        this.orderTable = orderTable;
         this.orderStatus = orderStatus;
-        this.orderLineItems = orderLineItems;
+        this.orderLineItems.addAll(orderLineItems);
         this.orderedTime = LocalDateTime.now();
     }
 
     public Order(OrderTable orderTable, OrderLineItems orderLineItems) {
         validateOrderTable(orderTable);
-        this.orderTableId = orderTable.getId();
-        this.orderLineItems = orderLineItems.toList();
+        this.orderTable = orderTable;
+        this.orderLineItems.addAll(orderLineItems.toList());
         this.orderStatus = OrderStatus.COOKING.name();
         this.orderedTime = LocalDateTime.now();
     }
@@ -44,11 +70,11 @@ public class Order {
     }
 
     public Long getOrderTableId() {
-        return orderTableId;
+        return orderTable.getId();
     }
 
     public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
+        this.orderTable.setId(orderTableId);
     }
 
     public String getOrderStatus() {
@@ -68,11 +94,11 @@ public class Order {
     }
 
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
+        return orderLineItems.toList();
     }
 
     public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
+        this.orderLineItems.addAll(orderLineItems);
     }
 
     public void changeStatus(OrderStatus orderStatus) {

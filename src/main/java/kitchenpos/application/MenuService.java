@@ -14,8 +14,6 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.MenuProducts;
 import kitchenpos.domain.Price;
-import kitchenpos.domain.Product;
-import kitchenpos.domain.Products;
 import kitchenpos.dto.MenuRequest;
 
 @Service
@@ -46,9 +44,8 @@ public class MenuService {
         final List<MenuProduct> menuProductList = menuRequest.getMenuProducts();
         final MenuProducts menuProducts = new MenuProducts(menuProductList);
 
-        final List<Product> products = productDao.findAllByIds(menuProducts.ids());
         final Menu menu = new Menu(menuRequest.getName(), new Price(menuRequest.getPrice()),
-            menuRequest.getMenuGroupId(), menuRequest.getMenuProducts(), new Products(products));
+            menuRequest.getMenuGroupId(), new MenuProducts(menuRequest.getMenuProducts()));
 
         final Menu savedMenu = menuDao.save(menu);
 

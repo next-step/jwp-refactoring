@@ -131,7 +131,7 @@ class TableGroupServiceTest {
     @Test
     void given_GroupedOrderTables_when_CreateTableGroup_then_ThrowException() {
         // given
-        List<OrderTable> orderTables = Arrays.asList(new OrderTable(1L, 1), new OrderTable(1L, 2));
+        List<OrderTable> orderTables = Arrays.asList(new OrderTable(new TableGroup(), 1), new OrderTable(new TableGroup(), 2));
 
         // when
         final Throwable throwable = catchThrowable(() -> new TableGroup(new OrderTables(orderTables)));

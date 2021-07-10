@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -13,18 +14,22 @@ class OrderTablesTest {
     @Test
     void given_CompletedOrder_when_Ungroup_then_UngroupTable() {
         // given
-        final OrderTable orderTable1 = new OrderTable(1L, 2);
-        final OrderTable orderTable2 = new OrderTable(1L, 3);
+        final TableGroup tableGroup = mock(TableGroup.class);
+        final OrderTable orderTable1 = mock(OrderTable.class);
+        final OrderTable orderTable2 = mock(OrderTable.class);
         final OrderTables orderTables = new OrderTables(Arrays.asList(orderTable1, orderTable2));
-        final Order order1 = new Order(1L, OrderStatus.COMPLETION.name(), null);
-        final Order order2 = new Order(2L, OrderStatus.COMPLETION.name(), null);
+        List<OrderLineItem> orderLineItems = Collections.emptyList();
+        final Order order1 = new Order(orderTable1, OrderStatus.COMPLETION.name(), orderLineItems);
+        final Order order2 = new Order(orderTable2, OrderStatus.COMPLETION.name(), orderLineItems);
         Orders orders = new Orders(Arrays.asList(order1, order2));
+        given(tableGroup.getId()).willReturn(1L);
 
         // when
         orderTables.ungroup(orders);
 
         // then
-        assertThat(orderTables.tableGroupIds()).isEqualTo(Arrays.asList(null, null));
+        verify(orderTable1).ungroup();
+        verify(orderTable2).ungroup();
     }
 
     @Test
@@ -33,8 +38,9 @@ class OrderTablesTest {
         final OrderTable orderTable1 = mock(OrderTable.class);
         final OrderTable orderTable2 = mock(OrderTable.class);
         final OrderTables orderTables = new OrderTables(Arrays.asList(orderTable1, orderTable2));
-        final Order order1 = new Order(1L, OrderStatus.COOKING.name(), null);
-        final Order order2 = new Order(2L, OrderStatus.COMPLETION.name(), null);
+        List<OrderLineItem> orderLineItems = Collections.emptyList();
+        final Order order1 = new Order(orderTable1, OrderStatus.COOKING.name(), orderLineItems);
+        final Order order2 = new Order(orderTable2, OrderStatus.COMPLETION.name(), orderLineItems);
         Orders orders = new Orders(Arrays.asList(order1, order2));
         given(orderTable1.getId()).willReturn(1L);
         given(orderTable2.getId()).willReturn(2L);
@@ -49,15 +55,17 @@ class OrderTablesTest {
     @Test
     void changeTableGroupId() {
         // given
-        List<OrderTable> orderTableList = Arrays.asList(new OrderTable(1L, 1), new OrderTable(1L, 2));
+        final TableGroup tableGroup1 = mock(TableGroup.class);
+        final TableGroup tableGroup2 = mock(TableGroup.class);
+        final OrderTable orderTable1 = new OrderTable(tableGroup1, 1);
+        final OrderTable orderTable2 = new OrderTable(tableGroup2, 2);
+        List<OrderTable> orderTableList = Arrays.asList(orderTable1, orderTable2);
         final OrderTables orderTables = new OrderTables(orderTableList);
 
         // when
         orderTables.changeTableGroupId(2L);
 
         // then
-        final OrderTable orderTable1 = new OrderTable(2L, 1);
-        final OrderTable orderTable2 = new OrderTable(2L, 2);
         assertThat(orderTables.toList()).containsExactly(orderTable1, orderTable2);
         assertThat(orderTable1.isOccupied()).isEqualTo(true);
         assertThat(orderTable2.isOccupied()).isEqualTo(true);

@@ -25,9 +25,9 @@ import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.MenuProducts;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
-import kitchenpos.domain.Products;
 import kitchenpos.dto.MenuRequest;
 
 @ExtendWith(MockitoExtension.class)
@@ -51,16 +51,17 @@ class MenuServiceTest {
     @Test
     void given_Menu_when_Create_then_SaveExecuted() {
         // given
-        final List<MenuProduct> menuProducts = Collections.singletonList(new MenuProduct(1L, 1L, 1));
+        Menu mockMenu = mock(Menu.class);
+        Product product = new Product(1L, "name", new BigDecimal(100));
+        final List<MenuProduct> menuProducts = Collections.singletonList(new MenuProduct(mockMenu, product, 1));
         MenuRequest menuRequest = new MenuRequest("name", BigDecimal.ZERO, 1L, menuProducts);
         final List<Product> productList = Collections.singletonList(new Product(1L, "name", new BigDecimal(100)));
-        Products products = new Products(productList);
-        Menu savedMenu = new Menu("name", new Price(menuRequest.getPrice()), 1L, menuRequest.getMenuProducts(), products);
+        Menu savedMenu = new Menu("name", new Price(menuRequest.getPrice()), 1L, new MenuProducts(menuRequest.getMenuProducts()));
         savedMenu.setId(1L);
         given(menuGroupDao.existsById(menuRequest.getMenuGroupId())).willReturn(true);
         given(menuDao.save(any(Menu.class))).willReturn(savedMenu);
         given(productDao.findAllByIds(anyList())).willReturn(productList);
-        given(menuProductDao.save(any(MenuProduct.class))).willReturn(any(MenuProduct.class));
+        given(mockMenu.getId()).willReturn(1L);
 
         // when
         menuService.create(menuRequest);

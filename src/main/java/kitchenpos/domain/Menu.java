@@ -3,32 +3,37 @@ package kitchenpos.domain;
 import java.math.BigDecimal;
 import java.util.List;
 
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
 public class Menu {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
+
+    @Embedded
     private Price price;
+
     private Long menuGroupId;
-    private List<MenuProduct> menuProducts;
-    private Products products;
+
+    @Embedded
+    private MenuProducts menuProducts;
 
     public Menu() {
     }
 
-    public Menu(String name, Price price, Long menuGroupId, List<MenuProduct> menuProducts, Products products) {
-        this(name, price, menuGroupId, menuProducts);
-        this.products = products;
-
-        final BigDecimal price1 = menuProducts.stream()
-            .map(menuProduct -> products.calculatePrice(menuProduct.getProductId(), menuProduct.getQuantity()))
-            .reduce(BigDecimal::add)
-            .orElseThrow(IllegalArgumentException::new);
-
-        if (price.greaterThan(price1)) {
+    public Menu(String name, Price price, Long menuGroupId, MenuProducts menuProducts) {
+        if (price.greaterThan(menuProducts.totalPrice())) {
             throw new IllegalArgumentException();
         }
-    }
 
-    public Menu(String name, Price price, Long menuGroupId, List<MenuProduct> menuProducts) {
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
@@ -68,10 +73,10 @@ public class Menu {
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
+        return menuProducts.toList();
     }
 
     public void setMenuProducts(final List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
+        this.menuProducts.addAll(menuProducts);
     }
 }

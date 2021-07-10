@@ -4,11 +4,21 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Embeddable;
+import javax.persistence.OneToMany;
+
+@Embeddable
 public class OrderTables {
-    private final List<OrderTable> orderTables;
+
+    @OneToMany(mappedBy = "tableGroup", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    private List<OrderTable> orderTables;
 
     public OrderTables(List<OrderTable> orderTables) {
         this.orderTables = orderTables;
+    }
+
+    protected OrderTables() {
     }
 
     public List<Long> ids() {
@@ -61,5 +71,9 @@ public class OrderTables {
     public boolean hasTableGroupId() {
         return orderTables.stream()
             .anyMatch(orderTable -> orderTable.getId() != null);
+    }
+
+    public void addAll(List<OrderTable> orderTables) {
+        this.orderTables.addAll(orderTables);
     }
 }

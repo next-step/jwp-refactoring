@@ -3,8 +3,15 @@ package kitchenpos.domain;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+import javax.persistence.Embeddable;
+
+@Embeddable
 public class Price {
-    private final BigDecimal price;
+
+    private BigDecimal price;
+
+    protected Price() {
+    }
 
     public Price(BigDecimal price) {
         validate(price);
