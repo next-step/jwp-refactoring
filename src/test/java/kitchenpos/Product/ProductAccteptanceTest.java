@@ -29,7 +29,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ProductAccteptanceTest extends AcceptanceTest {
     private ProductRequest productRequest;
 
-
     @BeforeEach
     public void setUp() {
         super.setUp();

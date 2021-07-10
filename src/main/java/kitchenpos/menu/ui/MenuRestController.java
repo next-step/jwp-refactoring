@@ -33,7 +33,7 @@ public class MenuRestController {
 
     @PostMapping("/api/menus/temp")
     public ResponseEntity<MenuResponse> createTemp(@RequestBody final MenuRequest menuRequest) {
-        MenuResponse created = new MenuResponse(1L, menuRequest.getName(), menuRequest.getPrice(), menuRequest.getMenuGroupId(), new ArrayList<>());
+        MenuResponse created = menuService.createTemp(menuRequest);
         final URI uri = URI.create("/api/menus/" + created.getId());
         return ResponseEntity.created(uri)
                 .body(created)
@@ -46,5 +46,6 @@ public class MenuRestController {
                 .body(menuService.list())
                 ;
     }
+
 
 }

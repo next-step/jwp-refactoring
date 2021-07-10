@@ -52,4 +52,10 @@ public class ProductService {
                 .map(productEntity -> ProductResponse.of(productEntity))
                 .collect(Collectors.toList());
     }
+
+    @Transactional(readOnly = true)
+    public ProductEntity findById(Long productId) {
+        return productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("등록되지 않은 상품입니다."));
+    }
+
 }

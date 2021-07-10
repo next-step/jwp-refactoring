@@ -42,9 +42,6 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     @Test
     @Order(2)
     void listTest() {
-        //given
-//        메뉴그룹_등록_요청(menuGroupRequest);
-
         //when
         ExtractableResponse<Response> response = 메뉴그룹_조회_요청();
 

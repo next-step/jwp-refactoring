@@ -97,7 +97,7 @@ class MenuServiceTest {
         //when && //then
         assertThatThrownBy(() -> menuService.create(givenMenu))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("메뉴 그룹이 없는 메뉴는 등록할 수 없습니다.");
+                .hasMessageContaining("존재하지 않는 메뉴그룹입니다.");
 
     }
 
@@ -110,7 +110,7 @@ class MenuServiceTest {
         //when && //then
         assertThatThrownBy(() -> menuService.create(givenMenu))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("등록된 상품이 아닌 메뉴는 등록할 수 없습니다.");
+                .hasMessageContaining("등록되지 않은 상품입니다.");
 
     }
 

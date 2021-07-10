@@ -36,4 +36,9 @@ public class MenuGroupService {
         List<MenuGroupEntity> menuGroupEntities = menuGroupRepository.findAll();;
         return menuGroupEntities.stream().map(menuGroupEntity -> MenuGroupResponse.of(menuGroupEntity)).collect(Collectors.toList());
     }
+
+    @Transactional(readOnly = true)
+    public MenuGroupEntity findById(Long menuGroupId) {
+        return menuGroupRepository.findById(menuGroupId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 메뉴그룹입니다."));
+    }
 }

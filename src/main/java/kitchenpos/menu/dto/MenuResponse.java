@@ -1,6 +1,6 @@
 package kitchenpos.menu.dto;
 
-import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuEntity;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -12,7 +12,7 @@ public class MenuResponse {
     private Long menuGroupId;
     private List<MenuProductResponse> menuProducts;
 
-    private MenuResponse() {
+    protected MenuResponse() {
     }
 
     public MenuResponse(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProductResponse> menuProducts) {
@@ -41,5 +41,13 @@ public class MenuResponse {
 
     public List<MenuProductResponse> getMenuProducts() {
         return menuProducts;
+    }
+
+    public static MenuResponse of(MenuEntity menu) {
+        return new MenuResponse(menu.getId()
+                , menu.getName()
+                , menu.getPrice()
+                , menu.getMenuGroupId()
+                , MenuProductResponse.ofList(menu.getMenuProductsValues()));
     }
 }

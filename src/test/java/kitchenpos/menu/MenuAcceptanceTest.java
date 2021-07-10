@@ -47,7 +47,6 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         MenuProductRequest firstMenuProduct = new MenuProductRequest(givenProductOne.getId(), 1);
         MenuProductRequest secondMenuProduct = new MenuProductRequest(givenProductOne.getId(), 2);
         return Arrays.asList(firstMenuProduct, secondMenuProduct);
-
     }
 
     @DisplayName("Dto와 JPA를 사용하여 메뉴를 등록할 수 있다")

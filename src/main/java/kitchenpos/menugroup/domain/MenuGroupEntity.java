@@ -13,7 +13,7 @@ public class MenuGroupEntity {
     @Column(nullable = false)
     private String name;
 
-    public MenuGroupEntity() {
+    protected MenuGroupEntity() {
     }
 
     public Long getId() {
