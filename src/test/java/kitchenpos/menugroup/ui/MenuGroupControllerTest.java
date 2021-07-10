@@ -1,4 +1,4 @@
-package kitchenpos.menugroup;
+package kitchenpos.menugroup.ui;
 
 import kitchenpos.common.ControllerTest;
 import kitchenpos.menugroup.application.MenuGroupRestController;
@@ -41,13 +41,11 @@ class MenuGroupControllerTest extends ControllerTest<MenuGroup> {
     @BeforeEach
     void 사전준비() {
 
-        첫번째_메뉴그룹 = new MenuGroup();
+        첫번째_메뉴그룹 = new MenuGroup("첫번째_메뉴그룹");
         첫번째_메뉴그룹.setId(1L);
-        첫번째_메뉴그룹.setName("첫번째_메뉴그룹");
 
-        두번째_메뉴그룹 = new MenuGroup();
+        두번째_메뉴그룹 = new MenuGroup("두번째_메뉴그룹");
         두번째_메뉴그룹.setId(2L);
-        두번째_메뉴그룹.setName("두번째_메뉴그룹");
     }
 
     @DisplayName("메뉴그룹 생성요청")

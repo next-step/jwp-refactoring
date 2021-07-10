@@ -56,9 +56,8 @@ class MenuServiceTest {
         후라이드.setName("후라이드");
         후라이드.setPrice(BigDecimal.valueOf(16000));
 
-        한마리메뉴 = new MenuGroup();
+        한마리메뉴 = new MenuGroup("한마리메뉴");
         한마리메뉴.setId(1L);
-        한마리메뉴.setName("한마리메뉴");
 
         후라이드_한마리 = new MenuProduct();
         후라이드_한마리.setMenuId(1L);

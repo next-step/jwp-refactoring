@@ -1,4 +1,4 @@
-package kitchenpos.menugroup;
+package kitchenpos.menugroup.application;
 
 import kitchenpos.menugroup.ui.MenuGroupService;
 import kitchenpos.menugroup.domain.MenuGroupDao;
@@ -32,13 +32,11 @@ class MenuGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        한마리메뉴 = new MenuGroup();
+        한마리메뉴 = new MenuGroup("한마리메뉴");
         한마리메뉴.setId(1L);
-        한마리메뉴.setName("한마리메뉴");
 
-        두마리메뉴 = new MenuGroup();
+        두마리메뉴 = new MenuGroup("두마리메뉴");
         두마리메뉴.setId(2L);
-        두마리메뉴.setName("두마리메뉴");
     }
 
     @DisplayName("메뉴 그룹을 등록한다")
