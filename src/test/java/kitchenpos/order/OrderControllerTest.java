@@ -2,10 +2,8 @@ package kitchenpos.order;
 
 import kitchenpos.application.OrderService;
 import kitchenpos.common.ControllerTest;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.ui.OrderRestController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
