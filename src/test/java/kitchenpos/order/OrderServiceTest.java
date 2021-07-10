@@ -2,7 +2,7 @@ package kitchenpos.order;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.application.OrderService;
-import kitchenpos.menu.domain.MenuDao;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.*;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableDao;
@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
 class OrderServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
     OrderDao orderDao;
@@ -67,7 +67,7 @@ class OrderServiceTest {
         첫번째_주문.setOrderLineItems(Arrays.asList(주문_항목_첫번째));
         첫번째_주문.setOrderTableId(첫번째_테이블.getId());
 
-        when(menuDao.countByIdIn(Arrays.asList(첫번째_메뉴.getId()))).thenReturn((long) 첫번째_주문.getOrderLineItems().size());
+        when(menuRepository.countByIdIn(Arrays.asList(첫번째_메뉴.getId()))).thenReturn((long) 첫번째_주문.getOrderLineItems().size());
         when(orderTableDao.findById(첫번째_테이블.getId())).thenReturn(Optional.of(첫번째_테이블));
         when(orderDao.save(첫번째_주문)).thenReturn(첫번째_주문);
         when(orderLineItemDao.save(주문_항목_첫번째)).thenReturn(주문_항목_첫번째);
@@ -111,7 +111,7 @@ class OrderServiceTest {
         Long 생성되지_않은_주문테이블_id = 99L;
         첫번째_주문.setOrderLineItems(Arrays.asList(주문_항목_첫번째));
         첫번째_주문.setOrderTableId(생성되지_않은_주문테이블_id);
-        when(menuDao.countByIdIn(Arrays.asList(첫번째_메뉴.getId()))).thenReturn((long) 첫번째_주문.getOrderLineItems().size());
+        when(menuRepository.countByIdIn(Arrays.asList(첫번째_메뉴.getId()))).thenReturn((long) 첫번째_주문.getOrderLineItems().size());
 
         //When + Then
         assertThatThrownBy(() -> orderService.create(첫번째_주문))
@@ -124,7 +124,7 @@ class OrderServiceTest {
         //Given
         첫번째_주문.setOrderLineItems(Arrays.asList(주문_항목_첫번째));
         첫번째_주문.setOrderTableId(첫번째_테이블.getId());
-        when(menuDao.countByIdIn(Arrays.asList(첫번째_메뉴.getId()))).thenReturn((long) 첫번째_주문.getOrderLineItems().size());
+        when(menuRepository.countByIdIn(Arrays.asList(첫번째_메뉴.getId()))).thenReturn((long) 첫번째_주문.getOrderLineItems().size());
 
         //When + Then
         assertThatThrownBy(() -> orderService.create(첫번째_주문))

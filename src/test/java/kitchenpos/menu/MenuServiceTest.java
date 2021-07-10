@@ -1,9 +1,9 @@
 package kitchenpos.menu;
 
 import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.domain.MenuDao;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.domain.MenuGroupRepository;
-import kitchenpos.menu.domain.MenuProductDao;
+import kitchenpos.menu.domain.MenuProductRepository;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
@@ -30,13 +30,13 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
     @Mock
-    MenuDao menuDao;
+    MenuRepository menuRepository;
 
     @Mock
     MenuGroupRepository menuGroupRepository;
 
     @Mock
-    MenuProductDao menuProductDao;
+    MenuProductRepository menuProductRepository;
 
     @Mock
     ProductRepository productRepository;
@@ -57,7 +57,7 @@ class MenuServiceTest {
         한마리메뉴.setId(1L);
 
         후라이드_한마리 = new MenuProduct();
-        후라이드_한마리.setMenuId(1L);
+        //후라이드_한마리.setMenu(1L);
         후라이드_한마리.setProductId(후라이드.getId());
         후라이드_한마리.setQuantity(1L);
 
@@ -72,13 +72,13 @@ class MenuServiceTest {
     void 메뉴_등록() {
         //Given
         후라이드치킨.setMenuProducts(Arrays.asList(후라이드_한마리));
-        후라이드치킨.setMenuGroupId(한마리메뉴.getId());
+        후라이드치킨.setMenuGroup(한마리메뉴);
         후라이드치킨.setPrice(BigDecimal.valueOf(16000));
 
         when(menuGroupRepository.existsById(한마리메뉴.getId())).thenReturn(true);
         when(productRepository.findById(후라이드.getId())).thenReturn(Optional.of(후라이드));
-        when(menuDao.save(후라이드치킨)).thenReturn(후라이드치킨);
-        when(menuProductDao.save(후라이드_한마리)).thenReturn(후라이드_한마리);
+        when(menuRepository.save(후라이드치킨)).thenReturn(후라이드치킨);
+        when(menuProductRepository.save(후라이드_한마리)).thenReturn(후라이드_한마리);
 
         //When
         Menu 생성된_메뉴 = menuService.create(후라이드치킨);
@@ -126,9 +126,10 @@ class MenuServiceTest {
     @Test
     void 메뉴그룹_등록되어있지_않은_경우_예외발생() {
         //Given
+        MenuGroup 등록되지_않은_메뉴그룹 = new MenuGroup("등록안된 메뉴그룹");
         후라이드치킨.setPrice(BigDecimal.valueOf(16000));
-        후라이드치킨.setMenuGroupId(99L);
-        when(menuGroupRepository.existsById(99L)).thenReturn(false);
+        후라이드치킨.setMenuGroup(등록되지_않은_메뉴그룹);
+        when(menuGroupRepository.existsById(등록되지_않은_메뉴그룹.getId())).thenReturn(false);
 
         //When + Then
         assertThatThrownBy(() -> menuService.create(후라이드치킨))
@@ -139,7 +140,7 @@ class MenuServiceTest {
     @Test
     void 메뉴상품_등록되어있지_않은_경우_예외발생() {
         //Given
-        후라이드치킨.setMenuGroupId(1L);
+        후라이드치킨.setMenuGroup(한마리메뉴);
         후라이드치킨.setPrice(BigDecimal.valueOf(16000));
         when(menuGroupRepository.existsById(1L)).thenReturn(true);
         when(productRepository.findById(후라이드.getId())).thenThrow(IllegalArgumentException.class);
@@ -154,7 +155,7 @@ class MenuServiceTest {
     void 메뉴_목록_조회() {
         //Given
         List<Menu> 입력한_메뉴_목록 = new ArrayList<>(Arrays.asList(후라이드치킨));
-        when(menuDao.findAll()).thenReturn(입력한_메뉴_목록);
+        when(menuRepository.findAll()).thenReturn(입력한_메뉴_목록);
 
         //When
         List<Menu> 조회된_메뉴_목록 = menuService.list();
