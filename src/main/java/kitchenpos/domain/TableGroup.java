@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -36,12 +37,14 @@ public class TableGroup {
         return id;
     }
 
-    public List<OrderTable> getOrderTables() {
-        return orderTables.list();
+    public List<Long> getOrderTableIds() {
+        return orderTables.list().stream()
+            .map(OrderTable::getId)
+            .collect(Collectors.toList());
     }
 
-    public void changeEmpty(final boolean empty) {
-        orderTables.changeEmpty(empty);
+    public boolean isSameSize(final Long size) {
+        return orderTables.isSameSize(size);
     }
 
     public void remove() {

@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "orders")
@@ -60,8 +61,10 @@ public class Order {
         return orderStatus;
     }
 
-    public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems.list();
+    public List<Long> getOrderLineItemIds() {
+        return orderLineItems.list().stream()
+            .map(orderLineItem -> orderLineItem.getMenu().getId())
+            .collect(Collectors.toList());
     }
 
     public boolean equalsByOrderStatus(OrderStatus orderStatus) {
@@ -74,6 +77,10 @@ public class Order {
 
     public void chaangeOrderStatus(final OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
+    }
+
+    public boolean isSameSize(final Long size) {
+        return orderLineItems.isSameSize(size);
     }
 
     @Override

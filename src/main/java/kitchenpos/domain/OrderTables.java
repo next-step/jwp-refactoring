@@ -21,8 +21,9 @@ public class OrderTables {
     }
 
     public void changeEmpty(final boolean empty) {
-        orderTables.stream()
-                .forEach(orderTable -> orderTable.changeEmpty(empty));
+        for (OrderTable orderTable : orderTables) {
+            orderTable.changeEmpty(empty);
+        }
     }
 
     public void append(final TableGroup tableGroup, final OrderTable ...orderTableArray) {
@@ -40,8 +41,9 @@ public class OrderTables {
     }
 
     private void validation(final List<OrderTable> orderTables) {
-        if (orderTables.size() < 2) {
-            throw new IllegalArgumentException("주문테이블 최소 갯수는 2개입니다.");
+        final int orderTableLimit = 2;
+        if (orderTables.size() < orderTableLimit) {
+            throw new IllegalArgumentException(String.format("주문테이블 최소 갯수는 %d개 입니다.", orderTableLimit));
         }
 
         if (isNotEmpty(orderTables) || alreadyRegisteredTableGroup(orderTables)) {
@@ -60,6 +62,12 @@ public class OrderTables {
     }
 
     public void clearTableGroup() {
-        orderTables.stream().forEach(OrderTable::clearTableGroup);
+        for (OrderTable orderTable : orderTables) {
+            orderTable.clearTableGroup();
+        }
+    }
+
+    public boolean isSameSize(final Long size) {
+        return orderTables.size() == size;
     }
 }

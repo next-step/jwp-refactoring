@@ -44,4 +44,8 @@ public class OrderLineItems {
     public List<OrderLineItem> list() {
         return Collections.unmodifiableList(orderLineItems);
     }
+
+    public boolean isSameSize(Long size) {
+        return orderLineItems.size() == size;
+    }
 }

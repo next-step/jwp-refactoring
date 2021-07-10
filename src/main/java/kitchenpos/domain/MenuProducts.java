@@ -18,7 +18,9 @@ public class MenuProducts {
     }
 
     public void validationByPrice() {
-        menuProducts.stream().forEach(menuProduct -> validationByPrice(menuProduct.getProduct(), menuProduct.getMenu()));
+        for (MenuProduct menuProduct : menuProducts) {
+            validationByPrice(menuProduct.getProduct(), menuProduct.getMenu());
+        }
     }
 
     private void validationByPrice(Product product, Menu menu) {
@@ -31,7 +33,7 @@ public class MenuProducts {
 
     private BigDecimal calcTotalPrice(final Product product) {
         BigDecimal sum = BigDecimal.ZERO;
-        for (final MenuProduct menuProduct : menuProducts) {
+        for (MenuProduct menuProduct : menuProducts) {
             sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
         }
 
