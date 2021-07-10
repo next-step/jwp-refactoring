@@ -24,7 +24,9 @@ import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.MenuRequest;
 
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
@@ -44,19 +46,17 @@ class MenuServiceTest {
     @Test
     void given_Menu_when_Create_then_SaveExecuted() {
         // given
-        Menu menu = new Menu();
-        menu.setPrice(BigDecimal.ZERO);
-        menu.setMenuProducts(new ArrayList<>());
-        Menu savedMenu = new Menu();
+        MenuRequest menuRequest = new MenuRequest("name", BigDecimal.ZERO, 1L, new ArrayList<>());
+        Menu savedMenu = new Menu("name", new Price(menuRequest.getPrice()), 1L, menuRequest.getMenuProducts());
         savedMenu.setId(1L);
-        given(menuGroupDao.existsById(menu.getMenuGroupId())).willReturn(true);
-        given(menuDao.save(menu)).willReturn(savedMenu);
+        given(menuGroupDao.existsById(menuRequest.getMenuGroupId())).willReturn(true);
+        given(menuDao.save(any(Menu.class))).willReturn(savedMenu);
 
         // when
-        menuService.create(menu);
+        menuService.create(menuRequest);
 
         // then
-        verify(menuDao).save(menu);
+        verify(menuDao).save(any(Menu.class));
     }
 
     @DisplayName("금액이 null, -1, 0 인 경우 예외 발생 테스트")
@@ -64,8 +64,7 @@ class MenuServiceTest {
     @MethodSource("providePrice")
     void given_InvalidPrice_when_Create_then_ThrownException(BigDecimal price) {
         // given
-        Menu minusPrice = new Menu();
-        minusPrice.setPrice(price);
+        MenuRequest minusPrice = new MenuRequest("name", price, 1L, new ArrayList<>());
 
         // when
         final Throwable minusPriceException = catchThrowable(() -> menuService.create(minusPrice));
@@ -86,11 +85,11 @@ class MenuServiceTest {
     @Test
     void given_WrongPrice_when_Create_then_ThrownException() {
         // given
-        Menu invalidPrice = new Menu();
-        invalidPrice.setPrice(new BigDecimal(100));
+        // invalidPrice.setPrice(new BigDecimal(100));
         final MenuProduct menuProduct = new MenuProduct();
         menuProduct.setQuantity(1L);
-        invalidPrice.setMenuProducts(Collections.singletonList(menuProduct));
+        MenuRequest invalidPrice = new MenuRequest("name", new BigDecimal(100), 1L, Collections.singletonList(menuProduct));
+        // invalidPrice.setMenuProducts(Collections.singletonList(menuProduct));
         final Product product = new Product();
         product.setPrice(new BigDecimal(1));
         given(menuGroupDao.existsById(invalidPrice.getMenuGroupId())).willReturn(true);

@@ -15,6 +15,11 @@ public class Product {
         this.price = new Price(price);
     }
 
+    public Product(long id, String name, BigDecimal price) {
+        this(name, price);
+        this.id = id;
+    }
+
     public Long getId() {
         return id;
     }
