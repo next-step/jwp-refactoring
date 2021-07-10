@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import static java.util.Arrays.*;
 import static java.util.Objects.*;
 
 import java.util.Collections;
@@ -26,6 +27,10 @@ public class OrderLineItems {
 
 	public static OrderLineItems of(List<OrderLineItem> orderLineItems) {
 		return new OrderLineItems(orderLineItems);
+	}
+
+	public static OrderLineItems of(OrderLineItem... orderLineItems) {
+		return new OrderLineItems(asList(orderLineItems));
 	}
 
 	void toOrder(Order order) {

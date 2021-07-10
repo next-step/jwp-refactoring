@@ -100,8 +100,8 @@ public class Menu {
         return menuProducts.getMenuProducts();
     }
 
-    public Long getMenuGroupId() {
-        return this.menuGroupId.getId();
+    public MenuGroupId getMenuGroupId() {
+        return this.menuGroupId;
     }
 
     private void validatePriceCheaperThanMenuProducts(Price price, MenuProducts menuProducts) {

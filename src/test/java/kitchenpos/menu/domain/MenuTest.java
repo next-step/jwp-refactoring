@@ -1,8 +1,7 @@
 package kitchenpos.menu.domain;
 
 import static java.util.Arrays.*;
-import static kitchenpos.menu.domain.MenuProductsTest.*;
-import static kitchenpos.TextFixture.*;
+import static kitchenpos.menu.domain.TextFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -45,8 +44,7 @@ class MenuTest {
 		MenuProduct 후라이드치킨1개 = new MenuProduct(후라이드치킨, 1);
 
 		// when
-		Menu.Builder menuBuilder = new Menu.Builder();
-		Menu menu = menuBuilder
+		Menu menu = new Menu.Builder()
 			.name(Name.valueOf("치킨_피자_세트"))
 			.price(Price.wonOf(1000))
 			.menuGroupId(new MenuGroupId(1L))
@@ -56,7 +54,7 @@ class MenuTest {
 		// than
 		assertThat(menu.getName()).isEqualTo(Name.valueOf("치킨_피자_세트"));
 		assertThat(menu.getPrice()).isEqualTo(Price.wonOf(1000));
-		// assertThat(menu.getMenu()).isEqualTo(치킨그룹);
+		assertThat(menu.getMenuGroupId()).isEqualTo(new MenuGroupId(1L));
 		assertThat(menu.getMenuProducts()).containsExactly(후라이드치킨1개);
 		assertThat(후라이드치킨1개.getMenu()).isEqualTo(menu);
 	}

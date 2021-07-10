@@ -2,7 +2,7 @@ package kitchenpos.order.domain;
 
 import static java.time.LocalDateTime.*;
 import static java.util.Arrays.*;
-import static kitchenpos.TextFixture.*;
+import static kitchenpos.order.domain.OrderMenuTest.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -39,8 +39,9 @@ class OrderTest {
 	@Test
 	void changeCompletedOrderTest() {
 		// given
+		OrderLineItem orderLineItem = new OrderLineItem(ORDER_MENU, 1);
 		OrderTable orderTable = new OrderTable(1, false);
-		Order completedOrder = orderTable.createOrder(주문항목들_후라이드_1개_양념_1개, now());
+		Order completedOrder = orderTable.createOrder(OrderLineItems.of(orderLineItem), now());
 		completedOrder.complete();
 
 		// when
@@ -54,8 +55,9 @@ class OrderTest {
 	@Test
 	void changeOrderTest() {
 		// given
+		OrderLineItem orderLineItem = new OrderLineItem(ORDER_MENU, 1);
 		OrderTable orderTable = new OrderTable(1, false);
-		Order order = orderTable.createOrder(주문항목들_후라이드_1개_양념_1개, now());
+		Order order = orderTable.createOrder(OrderLineItems.of(orderLineItem), now());
 
 		// when
 		order.changeStatus(OrderStatus.MEAL);

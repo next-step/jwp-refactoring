@@ -1,7 +1,7 @@
 package kitchenpos.order.application;
 
 import static java.util.Arrays.*;
-import static kitchenpos.TextFixture.*;
+import static kitchenpos.order.domain.OrderMenuTest.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -19,6 +19,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderTableId;
 import kitchenpos.table.domain.OrderTable;
@@ -65,7 +67,6 @@ class OrderServiceTest {
 		// given
 		OrderRequest orderRequest = mock(OrderRequest.class);
 		when(orderRequest.getOrderLineItemSize()).thenReturn(1);
-		when(orderRequest.toOrderLineItems(anyList())).thenReturn(주문항목들_후라이드_1개_양념_1개);
 		when(menuRepository.findAllById(anyList())).thenReturn(asList(mock(Menu.class)));
 		when(orderTableRepository.findById(anyLong())).thenReturn(Optional.empty());
 
@@ -98,7 +99,8 @@ class OrderServiceTest {
 	@Test
 	void changeStatusOfCompletedOrderTest() {
 		OrderTable orderTable = new OrderTable(1, false);
-		Order completedOrder = orderTable.createOrder(주문항목들_후라이드_1개_양념_1개, LocalDateTime.now());
+		OrderLineItem orderLineItem = new OrderLineItem(ORDER_MENU, 1);
+		Order completedOrder = orderTable.createOrder(OrderLineItems.of(orderLineItem), LocalDateTime.now());
 		completedOrder.complete();
 
 		when(orderRepository.findById(anyLong())).thenReturn(Optional.of(completedOrder));

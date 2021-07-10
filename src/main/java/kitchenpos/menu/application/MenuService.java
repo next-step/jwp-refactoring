@@ -38,9 +38,8 @@ public class MenuService {
     public MenuResponse create(final MenuRequest menuRequest) {
         validateRequest(menuRequest);
         final List<Product> products = findProducts(menuRequest);
-        Menu.Builder menuBuilder = new Menu.Builder();
         Menu persistMenu = menuRepository.save(
-            menuBuilder
+                new Menu.Builder()
                 .name(valueOf(menuRequest.getName()))
                 .price(wonOf(menuRequest.getPrice()))
                 .menuGroupId(new MenuGroupId(menuRequest.getMenuGroupId()))

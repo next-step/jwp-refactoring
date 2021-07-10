@@ -33,7 +33,7 @@ public class MenuResponse {
 		final List<MenuProductResponse> menuProducts = MenuProductResponse.listOf(menu.getMenuProducts());
 		final Name menuName = menu.getName();
 		final Price price = menu.getPrice();
-		return new MenuResponse(menu.getId(), menuName.getValue(), price.getAmount(), menu.getMenuGroupId(), menuProducts);
+		return new MenuResponse(menu.getId(), menuName.getValue(), price.getAmount(), menu.getMenuGroupId().getId(), menuProducts);
 	}
 
 	public static List<MenuResponse> listOf(List<Menu> menus) {

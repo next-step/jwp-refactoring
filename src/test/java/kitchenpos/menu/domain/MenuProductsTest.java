@@ -1,6 +1,5 @@
 package kitchenpos.menu.domain;
 
-import static kitchenpos.TextFixture.*;
 import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
@@ -11,9 +10,6 @@ import kitchenpos.product.domain.Price;
 import kitchenpos.product.domain.Product;
 
 class MenuProductsTest {
-
-	public static MenuProduct 후라이드치킨2개 = new MenuProduct(후라이드치킨, 2);
-	public static MenuProduct 피자3개 = new MenuProduct(피자, 3);
 
 	@DisplayName("메뉴 상품의 가격은 상품의 가격 * 개수로 계산된다")
 	@Test

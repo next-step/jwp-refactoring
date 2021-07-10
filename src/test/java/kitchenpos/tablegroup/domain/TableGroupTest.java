@@ -1,7 +1,7 @@
 package kitchenpos.tablegroup.domain;
 
 import static java.util.Arrays.*;
-import static kitchenpos.TextFixture.*;
+import static kitchenpos.order.domain.OrderMenuTest.*;
 import static kitchenpos.table.domain.OrderTableTest.*;
 import static org.assertj.core.api.Assertions.*;
 
@@ -11,6 +11,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.table.domain.OrderTable;
 
 class TableGroupTest {
@@ -93,12 +95,14 @@ class TableGroupTest {
 	@Test
 	void ungroupTest() {
 		// given
+		OrderLineItems orderLineItems1 = OrderLineItems.of(new OrderLineItem(ORDER_MENU, 1));
 		OrderTable table1 = createOrderTable(1L, 1L, 1, false);
-		Order order1 = table1.createOrder(주문항목들_후라이드_1개_양념_1개, LocalDateTime.now());
+		Order order1 = table1.createOrder(orderLineItems1, LocalDateTime.now());
 		order1.complete();
 
+		OrderLineItems orderLineItems2 = OrderLineItems.of(new OrderLineItem(ORDER_MENU, 1));
 		OrderTable table2 =  createOrderTable(2L, 1L, 1, false);
-		Order order2 = table2.createOrder(주문항목들_후라이드_1개_양념_1개, LocalDateTime.now());
+		Order order2 = table2.createOrder(orderLineItems2, LocalDateTime.now());
 		order2.complete();
 
 		TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());
@@ -116,11 +120,13 @@ class TableGroupTest {
 	@Test
 	void ungroupWithNotCompleteOrderTest() {
 		// given
+		OrderLineItems orderLineItems1 = OrderLineItems.of(new OrderLineItem(ORDER_MENU, 1));
 		OrderTable notCompletedOrderTable = createOrderTable(1L, 1L, 1, false);
-		Order notCompletedOrder = notCompletedOrderTable.createOrder(주문항목들_후라이드_1개_양념_1개, LocalDateTime.now());
+		Order notCompletedOrder = notCompletedOrderTable.createOrder(orderLineItems1, LocalDateTime.now());
 
+		OrderLineItems orderLineItems2 = OrderLineItems.of(new OrderLineItem(ORDER_MENU, 2));
 		OrderTable orderTable = createOrderTable(2L, 1L, 1, false);
-		Order order = orderTable.createOrder(주문항목들_후라이드_1개_양념_1개, LocalDateTime.now());
+		Order order = orderTable.createOrder(orderLineItems2, LocalDateTime.now());
 		order.complete();
 
 		TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());

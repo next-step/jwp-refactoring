@@ -9,7 +9,9 @@ import org.junit.jupiter.api.Test;
 import kitchenpos.product.domain.Name;
 import kitchenpos.product.domain.Price;
 
-class OrderMenuTest {
+public class OrderMenuTest {
+
+	public static final OrderMenu ORDER_MENU = OrderMenu.of(1L, Name.valueOf("치킨"), Price.wonOf(16000));
 
 	@DisplayName("주문메뉴의 주문한 메뉴 id, 이름, 가격은 필수정보이다.")
 	@Test
