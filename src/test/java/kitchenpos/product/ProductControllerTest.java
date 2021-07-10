@@ -41,15 +41,8 @@ public class ProductControllerTest extends ControllerTest<Product> {
 
     @BeforeEach
     void 사전준비() {
-        후라이드 = new Product();
-        후라이드.setId(1L);
-        후라이드.setName("후라이드");
-        후라이드.setPrice(BigDecimal.valueOf(16000));
-
-        양념치킨 = new Product();
-        양념치킨.setId(2L);
-        양념치킨.setName("양념치킨");
-        양념치킨.setPrice(BigDecimal.valueOf(19000));
+        후라이드 = new Product("후라이드",BigDecimal.valueOf(16000) );
+        양념치킨 = new Product("양념치킨", BigDecimal.valueOf(19000));
     }
 
     @DisplayName("상품 생성요청")

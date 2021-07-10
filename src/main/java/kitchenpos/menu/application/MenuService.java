@@ -3,7 +3,7 @@ package kitchenpos.menu.application;
 import kitchenpos.menu.domain.MenuDao;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProductDao;
-import kitchenpos.product.domain.ProductDao;
+import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
@@ -20,18 +20,18 @@ public class MenuService {
     private final MenuDao menuDao;
     private final MenuGroupRepository menuGroupRepository;
     private final MenuProductDao menuProductDao;
-    private final ProductDao productDao;
+    private final ProductRepository productRepository;
 
     public MenuService(
             final MenuDao menuDao,
             final MenuGroupRepository menuGroupRepository,
             final MenuProductDao menuProductDao,
-            final ProductDao productDao
+            final ProductRepository productRepository
     ) {
         this.menuDao = menuDao;
         this.menuGroupRepository = menuGroupRepository;
         this.menuProductDao = menuProductDao;
-        this.productDao = productDao;
+        this.productRepository = productRepository;
     }
 
     @Transactional
@@ -50,7 +50,7 @@ public class MenuService {
 
         BigDecimal sum = BigDecimal.ZERO;
         for (final MenuProduct menuProduct : menuProducts) {
-            final Product product = productDao.findById(menuProduct.getProductId())
+            final Product product = productRepository.findById(menuProduct.getProductId())
                     .orElseThrow(IllegalArgumentException::new);
             sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
         }

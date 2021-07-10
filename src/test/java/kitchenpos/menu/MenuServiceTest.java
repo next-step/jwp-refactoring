@@ -4,7 +4,7 @@ import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.MenuDao;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProductDao;
-import kitchenpos.product.domain.ProductDao;
+import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
@@ -39,7 +39,7 @@ class MenuServiceTest {
     MenuProductDao menuProductDao;
 
     @Mock
-    ProductDao productDao;
+    ProductRepository productRepository;
 
     @InjectMocks
     private MenuService menuService;
@@ -51,10 +51,7 @@ class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        후라이드 = new Product();
-        후라이드.setId(1L);
-        후라이드.setName("후라이드");
-        후라이드.setPrice(BigDecimal.valueOf(16000));
+        후라이드 = new Product("후라이드", BigDecimal.valueOf(16000));
 
         한마리메뉴 = new MenuGroup("한마리메뉴");
         한마리메뉴.setId(1L);
@@ -79,7 +76,7 @@ class MenuServiceTest {
         후라이드치킨.setPrice(BigDecimal.valueOf(16000));
 
         when(menuGroupRepository.existsById(한마리메뉴.getId())).thenReturn(true);
-        when(productDao.findById(후라이드.getId())).thenReturn(Optional.of(후라이드));
+        when(productRepository.findById(후라이드.getId())).thenReturn(Optional.of(후라이드));
         when(menuDao.save(후라이드치킨)).thenReturn(후라이드치킨);
         when(menuProductDao.save(후라이드_한마리)).thenReturn(후라이드_한마리);
 
@@ -145,7 +142,7 @@ class MenuServiceTest {
         후라이드치킨.setMenuGroupId(1L);
         후라이드치킨.setPrice(BigDecimal.valueOf(16000));
         when(menuGroupRepository.existsById(1L)).thenReturn(true);
-        when(productDao.findById(후라이드.getId())).thenThrow(IllegalArgumentException.class);
+        when(productRepository.findById(후라이드.getId())).thenThrow(IllegalArgumentException.class);
 
         //When + Then
         assertThatThrownBy(() -> menuService.create(후라이드치킨))

@@ -1,7 +1,7 @@
 package kitchenpos.product;
 
 import kitchenpos.product.application.ProductService;
-import kitchenpos.product.domain.ProductDao;
+import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,7 +24,7 @@ import static org.mockito.Mockito.when;
 class ProductServiceTest {
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private ProductService productService;
@@ -34,13 +34,8 @@ class ProductServiceTest {
 
     @BeforeEach
     void setUp() {
-        후라이드 = new Product();
-        후라이드.setId(1L);
-        후라이드.setName("후라이드");
-
-        양념치킨 = new Product();
-        양념치킨.setId(2L);
-        양념치킨.setName("양념치킨");
+        후라이드 = new Product("후라이드", BigDecimal.valueOf(16000));
+        양념치킨 = new Product("양념치킨", BigDecimal.valueOf(19000));
     }
 
     @DisplayName("0원 이상의 가격으로 상품을 등록한다")
@@ -48,13 +43,12 @@ class ProductServiceTest {
     void 상품_등록() {
         //Given
         후라이드.setPrice(BigDecimal.valueOf(16000));
-        when(productDao.save(후라이드)).thenReturn(후라이드);
+        when(productRepository.save(후라이드)).thenReturn(후라이드);
 
         //When
         Product 생성된_상품 = productService.create(후라이드);
 
         //Then
-        assertThat(생성된_상품.getId()).isNotNull();
         assertThat(생성된_상품.getName()).isEqualTo(후라이드.getName());
     }
 
@@ -85,7 +79,7 @@ class ProductServiceTest {
     void 상품_목록_조회() {
         //Given
         List<Product> 입력한_상품_목록 = new ArrayList<>(Arrays.asList(후라이드));
-        when(productDao.findAll()).thenReturn(입력한_상품_목록);
+        when(productRepository.findAll()).thenReturn(입력한_상품_목록);
 
         //When
         List<Product> 조회된_상품_목록 = productService.list();
