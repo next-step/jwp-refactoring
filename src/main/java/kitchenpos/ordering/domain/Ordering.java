@@ -123,4 +123,13 @@ public class Ordering extends BaseEntity {
         return Objects.hash(id, orderTableId, orderStatus, orderedTime, orderLineItems);
     }
 
+    public void called(OrderValidator orderValidator) {
+        orderValidator.validate(this);
+        accepted();
+    }
+
+    private void accepted() {
+        this.orderStatus = OrderStatus.COOKING;
+    }
+
 }
