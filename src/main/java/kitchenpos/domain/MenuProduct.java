@@ -1,40 +1,61 @@
 package kitchenpos.domain;
 
+import javax.persistence.*;
+import java.math.BigDecimal;
+
+@Entity
 public class MenuProduct {
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     private Long seq;
-    private Long menuId;
-    private Long productId;
-    private long quantity;
+
+    @JoinColumn(name = "menu_id")
+    @ManyToOne
+    private Menu menu;
+
+    @JoinColumn(name = "product_id")
+    @ManyToOne
+    private Product product;
+
+    @Embedded
+    private Quantity quantity;
+
+    protected MenuProduct() {
+    }
+
+    public MenuProduct(Long seq, Menu menu, Product product, Long quantity) {
+        this(menu, product, quantity);
+        this.seq = seq;
+    }
+
+    public MenuProduct(Menu menu, Product product, Long quantity) {
+        this.menu = menu;
+        this.product = product;
+        this.quantity = new Quantity(quantity);
+    }
+
+    public Price calculateMenuProductPrice() {
+        return product.getPrice()
+                .multiply(new Price(BigDecimal.valueOf(quantity.value())));
+    }
+
+    public void setMenu(Menu menu) {
+        this.menu = menu;
+    }
 
     public Long getSeq() {
         return seq;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
+    public Menu getMenu() {
+        return menu;
     }
 
-    public Long getMenuId() {
-        return menuId;
+    public Product getProduct() {
+        return product;
     }
 
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
-    }
-
-    public Long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(final Long productId) {
-        this.productId = productId;
-    }
-
-    public long getQuantity() {
+    public Quantity getQuantity() {
         return quantity;
-    }
-
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
     }
 }
