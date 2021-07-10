@@ -45,9 +45,9 @@ class TableGroupServiceTest {
         // given
         TableGroupRequest tableGroupRequest = new TableGroupRequest();
         tableGroupRequest.setOrderTables(Arrays.asList(new OrderTable(), new OrderTable()));
-        OrderTable orderTable = new OrderTable();
+        OrderTable orderTable = new OrderTable(2);
         orderTable.setEmpty(true);
-        OrderTable orderTable2 = new OrderTable();
+        OrderTable orderTable2 = new OrderTable(3);
         orderTable2.setEmpty(true);
         List<OrderTable> savedOrderTables = Arrays.asList(orderTable, orderTable2);
         given(orderTableDao.findAllByIdIn(anyList())).willReturn(savedOrderTables);

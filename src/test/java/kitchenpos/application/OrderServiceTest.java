@@ -65,7 +65,7 @@ class OrderServiceTest {
         given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(new OrderTable()));
 
         savedOrder.setId(1L);
-        given(orderDao.save(order)).willReturn(savedOrder);
+        given(orderDao.save(any(Order.class))).willReturn(savedOrder);
 
         OrderLineItem savedOrderLineItem = new OrderLineItem();
         OrderLineItem savedOrderLineItem2 = new OrderLineItem();
@@ -76,7 +76,7 @@ class OrderServiceTest {
         final Order actual = orderService.create(order);
 
         // then
-        verify(orderDao).save(order);
+        verify(orderDao).save(any(Order.class));
         verify(orderLineItemDao).save(orderLineItem);
         verify(orderLineItemDao).save(orderLineItem2);
         assertThat(actual.getOrderLineItems()).isEqualTo(Arrays.asList(savedOrderLineItem, savedOrderLineItem2));

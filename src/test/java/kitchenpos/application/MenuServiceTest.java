@@ -6,7 +6,7 @@ import static org.mockito.BDDMockito.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Optional;
+import java.util.List;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DisplayName;
@@ -21,11 +21,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
+import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.Products;
 import kitchenpos.dto.MenuRequest;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,17 +42,25 @@ class MenuServiceTest {
     @Mock
     private ProductDao productDao;
 
+    @Mock
+    private MenuProductDao menuProductDao;
+
     @InjectMocks
     private MenuService menuService;
 
     @Test
     void given_Menu_when_Create_then_SaveExecuted() {
         // given
-        MenuRequest menuRequest = new MenuRequest("name", BigDecimal.ZERO, 1L, new ArrayList<>());
-        Menu savedMenu = new Menu("name", new Price(menuRequest.getPrice()), 1L, menuRequest.getMenuProducts());
+        final List<MenuProduct> menuProducts = Collections.singletonList(new MenuProduct(1L, 1L, 1));
+        MenuRequest menuRequest = new MenuRequest("name", BigDecimal.ZERO, 1L, menuProducts);
+        final List<Product> productList = Collections.singletonList(new Product(1L, "name", new BigDecimal(100)));
+        Products products = new Products(productList);
+        Menu savedMenu = new Menu("name", new Price(menuRequest.getPrice()), 1L, menuRequest.getMenuProducts(), products);
         savedMenu.setId(1L);
         given(menuGroupDao.existsById(menuRequest.getMenuGroupId())).willReturn(true);
         given(menuDao.save(any(Menu.class))).willReturn(savedMenu);
+        given(productDao.findAllByIds(anyList())).willReturn(productList);
+        given(menuProductDao.save(any(MenuProduct.class))).willReturn(any(MenuProduct.class));
 
         // when
         menuService.create(menuRequest);
@@ -93,7 +103,6 @@ class MenuServiceTest {
         final Product product = new Product();
         product.setPrice(new BigDecimal(1));
         given(menuGroupDao.existsById(invalidPrice.getMenuGroupId())).willReturn(true);
-        given(productDao.findById(menuProduct.getProductId())).willReturn(Optional.of(product));
 
         // when
         final Throwable invalidPriceException = catchThrowable(() -> menuService.create(invalidPrice));
