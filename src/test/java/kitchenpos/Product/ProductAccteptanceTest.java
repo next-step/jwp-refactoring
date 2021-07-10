@@ -22,6 +22,7 @@ import sun.security.x509.OtherName;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -33,23 +34,6 @@ public class ProductAccteptanceTest extends AcceptanceTest {
         super.setUp();
         productRequest = new ProductRequest("테스트상품", BigDecimal.valueOf(10000));
     }
-
-//    @PostMapping("/api/products")
-//    public ResponseEntity<Product> create(@RequestBody final Product product) {
-//        final Product created = productService.create(product);
-//        final URI uri = URI.create("/api/products/" + created.getId());
-//        return ResponseEntity.created(uri)
-//                .body(created)
-//                ;
-//    }
-//
-//    @GetMapping("/api/products")
-//    public ResponseEntity<List<Product>> list() {
-//        return ResponseEntity.ok()
-//                .body(productService.list())
-//                ;
-//    }
-//
 
     @DisplayName("DTO와 JPA를 사용하여 상품을 등록한다")
     @Test
@@ -68,12 +52,19 @@ public class ProductAccteptanceTest extends AcceptanceTest {
     @DisplayName("DTO와 JPA를 사용하여 상품을 조회한다")
     @Test
     void listTest() {
+        //given
+        상품_등록_요청(productRequest);
 
         //when
         ExtractableResponse<Response> response = 상품_조회_요청();
 
         //then
         정상_처리(response);
+        List<String> productNames = response.jsonPath().getList(".", ProductResponse.class).stream()
+                .map(ProductResponse::getName)
+                .collect(Collectors.toList());
+        assertThat(productNames).contains(productRequest.getName());
+
     }
 
     public static ExtractableResponse<Response> 상품_등록_요청(ProductRequest productRequest) {

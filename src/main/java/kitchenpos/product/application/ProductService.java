@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -45,7 +46,10 @@ public class ProductService {
         return productDao.findAll();
     }
 
-    public List<Product> listTemp() {
-        return productDao.findAll();
+    public List<ProductResponse> listTemp() {
+        List<ProductEntity> productEntities = productRepository.findAll();
+        return productEntities.stream()
+                .map(productEntity -> ProductResponse.of(productEntity))
+                .collect(Collectors.toList());
     }
 }

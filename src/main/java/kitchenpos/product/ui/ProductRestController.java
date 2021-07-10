@@ -50,7 +50,7 @@ public class ProductRestController {
     @GetMapping("/api/products/temp")
     public ResponseEntity<List<ProductResponse>> listTemp() {
         return ResponseEntity.ok()
-                .body(new ArrayList<>())
+                .body(productService.listTemp())
                 ;
     }
 

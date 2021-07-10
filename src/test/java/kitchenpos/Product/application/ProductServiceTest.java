@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -54,6 +55,19 @@ class ProductServiceTest {
         assertThat(productRequest.getPrice()).isEqualTo(productResponse.getPrice());
     }
 
+    @DisplayName("상품 목록을 조회할 수 있다.")
+    @Test
+    void listTest() {
+        //given
+        given(productRepository.findAll()).willReturn(Arrays.asList(productRequest.toEntity()));
+
+        //when
+        List<ProductResponse> productResponses = productService.listTemp();
+
+        //then
+        List<String> productNames = productResponses.stream().map(ProductResponse::getName).collect(Collectors.toList());
+        assertThat(productNames).contains(productRequest.getName());
+    }
 
 
 }
