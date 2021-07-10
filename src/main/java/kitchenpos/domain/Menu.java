@@ -1,61 +1,86 @@
 package kitchenpos.domain;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
+@Entity
 public class Menu {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private BigDecimal price;
-    private Long menuGroupId;
-    private List<MenuProduct> menuProducts;
+
+    @Embedded
+    private Price price;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"))
+    private MenuGroup menuGroup;
+
+    @Embedded
+    private MenuProducts menuProducts = new MenuProducts();
 
     public Menu() {
     }
 
-    public Menu(final String name, final BigDecimal price, final Long menuGroupId) {
+    public Menu(final String name, final BigDecimal price, final MenuGroup menuGroup) {
+        this(null, name, price, menuGroup);
+    }
+
+    public Menu(final Long id, final String name, final BigDecimal price, final MenuGroup menuGroup) {
+        this.id = id;
         this.name = name;
-        this.price = price;
-        this.menuGroupId = menuGroupId;
+        this.price = new Price(price);
+        this.menuGroup = menuGroup;
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
     }
 
-    public void setName(final String name) {
-        this.name = name;
-    }
-
     public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
+        return price.getPrice();
     }
 
     public Long getMenuGroupId() {
-        return menuGroupId;
+        return menuGroup.getId();
     }
 
-    public void setMenuGroupId(final Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
+    public List<Long> getProductIds() {
+        return menuProducts.list().stream()
+                .map(menuProduct -> menuProduct.getProduct().getId())
+                .collect(Collectors.toList());
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
+        return menuProducts.list();
     }
 
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
+    protected void appendMenuProducts(final MenuProduct menuProduct) {
+        this.menuProducts.add(menuProduct);
+    }
+
+    public void validationByPrice() {
+        this.menuProducts.validationByPrice();
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final Menu that = (Menu) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

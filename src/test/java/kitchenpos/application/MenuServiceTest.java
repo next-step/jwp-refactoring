@@ -1,13 +1,15 @@
 package kitchenpos.application;
 
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.Product;
+import kitchenpos.utils.TestUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -19,15 +21,22 @@ class MenuServiceTest {
     @Autowired
     private MenuService menuService;
 
+    @Autowired
+    private ProductService productService;
+
+    @Autowired
+    private MenuGroupService menuGroupService;
+
     private String name = "치즈치킨";
-    private long nonExistentID = 9999L;
 
     @DisplayName("메뉴를 등록할수 있다.")
     @Test
     void createTest() {
         // given
-        Menu menu = new Menu(name, BigDecimal.valueOf(15000), 1L);
-        menu.setMenuProducts(Arrays.asList(new MenuProduct(1L, 1L,1)));
+        MenuGroup menuGroup = menuGroupService.create(new MenuGroup("테스트 메뉴"));
+        Menu menu = new Menu(name, BigDecimal.valueOf(15000), menuGroup);
+        Product product = productService.create(new Product(name, BigDecimal.valueOf(15000)));
+        new MenuProduct(menu, product,1);
 
         // when
         Menu actualMenu = menuService.create(menu);
@@ -40,11 +49,12 @@ class MenuServiceTest {
     @Test
     void createExceptionTest1() {
         // given
-        assertThatThrownBy(() -> menuService.create(new Menu(name, null, 1L)))
+        MenuGroup menuGroup = menuGroupService.create(new MenuGroup("테스트 메뉴"));
+        assertThatThrownBy(() -> menuService.create(new Menu(name, null, menuGroup)))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("가격");
 
-        assertThatThrownBy(() -> menuService.create(new Menu(name, BigDecimal.valueOf(-1), 1L)))
+        assertThatThrownBy(() -> menuService.create(new Menu(name, BigDecimal.valueOf(-1), menuGroup)))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("가격").hasMessageContaining("0원");
     }
@@ -53,8 +63,11 @@ class MenuServiceTest {
     @Test
     void createExceptionTest2() {
         // given
-        Menu menu = new Menu(name, BigDecimal.valueOf(15000), nonExistentID);
-        menu.setMenuProducts(Arrays.asList(new MenuProduct(1L, 1L,1)));
+        MenuGroup noneMenuGroup = new MenuGroup(TestUtils.getRandomId(), "없는 메뉴");
+
+        Menu menu = new Menu(name, BigDecimal.valueOf(15000), noneMenuGroup);
+        Product product = productService.create(new Product(name, BigDecimal.valueOf(15000)));
+        new MenuProduct(menu, product,1);
 
         assertThatThrownBy(() -> menuService.create(menu))
                 .isInstanceOf(RuntimeException.class)
@@ -65,8 +78,10 @@ class MenuServiceTest {
     @Test
     void createExceptionTest3() {
         // given
-        Menu menu = new Menu(name, BigDecimal.valueOf(15000), 1L);
-        menu.setMenuProducts(Arrays.asList(new MenuProduct(1L, nonExistentID,1)));
+        MenuGroup menuGroup = menuGroupService.create(new MenuGroup("테스트 메뉴"));
+        Menu menu = new Menu(name, BigDecimal.valueOf(15000), menuGroup);
+        Product product = new Product(999L, name, BigDecimal.valueOf(15000));
+        new MenuProduct( menu, product,1);
 
         assertThatThrownBy(() -> menuService.create(menu))
                 .isInstanceOf(RuntimeException.class)
@@ -77,8 +92,10 @@ class MenuServiceTest {
     @Test
     void createExceptionTest4() {
         // given
-        Menu menu = new Menu(name, BigDecimal.valueOf(1500000), 1L);
-        menu.setMenuProducts(Arrays.asList(new MenuProduct(10L, 1L,1)));
+        MenuGroup menuGroup = menuGroupService.create(new MenuGroup("테스트 메뉴"));
+        Menu menu = new Menu(name, BigDecimal.valueOf(1500000), menuGroup);
+        Product product = productService.create(new Product(name, BigDecimal.valueOf(15000)));
+        new MenuProduct(menu, product,1);
 
         assertThatThrownBy(() -> menuService.create(menu))
                 .isInstanceOf(RuntimeException.class)

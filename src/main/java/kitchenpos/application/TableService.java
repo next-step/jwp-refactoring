@@ -1,74 +1,49 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.repository.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 @Service
+@Transactional
 public class TableService {
-    private final OrderDao orderDao;
-    private final OrderTableDao orderTableDao;
+    private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderDao orderDao, final OrderTableDao orderTableDao) {
-        this.orderDao = orderDao;
-        this.orderTableDao = orderTableDao;
+    public TableService(final OrderTableRepository orderTableRepository) {
+        this.orderTableRepository = orderTableRepository;
     }
 
-    @Transactional
-    public OrderTable create(final OrderTable orderTable) {
-        orderTable.setTableGroupId(null);
-
-        return orderTableDao.save(orderTable);
+    @Transactional(readOnly = true)
+    public OrderTable getOrderTableByOrderTableId(final Long orderTableId) {
+        return orderTableRepository.findById(orderTableId)
+            .orElseThrow(() -> new IllegalArgumentException("등록된 주문 테이블만 상태값을 변경할수 있습니다."));
     }
 
+    @Transactional(readOnly = true)
     public List<OrderTable> list() {
-        return orderTableDao.findAll();
+        return orderTableRepository.findAll();
     }
 
-    @Transactional
+    public OrderTable create(final OrderTable orderTable) {
+        orderTable.clearTableGroup();
+        return orderTableRepository.save(orderTable);
+    }
+
     public OrderTable changeEmpty(final Long orderTableId, final OrderTable orderTable) {
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
-                .orElseThrow(() -> new IllegalArgumentException("등록된 주문 테이블만 상태값을 변경할수 있습니다."));
+        final OrderTable savedOrderTable = getOrderTableByOrderTableId(orderTableId);
 
-        if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
-            throw new IllegalArgumentException("그룹 설정이 되어 있는 주문테이블은 상태를 변경할수 없습니다.");
-        }
+        savedOrderTable.changeEmpty(orderTable.isEmpty());
 
-        if (orderDao.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException(String.format("%s 또는 %s 상태일때는 변경할수 없습니다.",
-                    OrderStatus.COOKING.name(), OrderStatus.MEAL.name()));
-        }
-
-        savedOrderTable.setEmpty(orderTable.isEmpty());
-
-        return orderTableDao.save(savedOrderTable);
+        return savedOrderTable;
     }
 
-    @Transactional
     public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTable orderTable) {
-        final int numberOfGuests = orderTable.getNumberOfGuests();
+        final OrderTable savedOrderTable = getOrderTableByOrderTableId(orderTableId);
 
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException("손님 수는 음수는 불가능합니다.");
-        }
+        savedOrderTable.changeNumberOfGuests(orderTable.getNumberOfGuests());
 
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
-                .orElseThrow(() -> new IllegalArgumentException("등록된 주문 테이블만 수정할 수 있습니다."));
-
-        if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException("해당테이블은 비어있어 수정이 불가능합니다");
-        }
-
-        savedOrderTable.setNumberOfGuests(numberOfGuests);
-
-        return orderTableDao.save(savedOrderTable);
+        return savedOrderTable;
     }
 }

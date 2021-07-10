@@ -1,61 +1,91 @@
 package kitchenpos.domain;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
+@Entity
+@Table(name = "orders")
+@EntityListeners(AuditingEntityListener.class)
 public class Order {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long orderTableId;
-    private String orderStatus;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_orders_order_table"))
+    private OrderTable orderTable;
+
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
+
+    @Embedded
+    private OrderLineItems orderLineItems = new OrderLineItems(this);
+
+    @CreatedDate
     private LocalDateTime orderedTime;
-    private List<OrderLineItem> orderLineItems;
 
     public Order() {
     }
 
-    public Order(final Long orderTableId, final String orderStatus, final LocalDateTime orderedTime) {
-        this.orderTableId = orderTableId;
-        this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
+    public Order(final Long id, final OrderTable orderTable, final OrderLineItem... orderLineItems) {
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException("빈 테이블에서는 주문을 할수가 없습니다.");
+        }
+
+        this.id = id;
+        this.orderTable = orderTable;
+        this.orderStatus = OrderStatus.COOKING;
+        this.orderLineItems.add(Arrays.asList(orderLineItems));
+    }
+
+    public Order(final OrderTable orderTable, final OrderLineItem... orderLineItems) {
+        this(null, orderTable, orderLineItems);
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
+    public OrderTable getOrderTable() {
+        return orderTable;
     }
 
-    public Long getOrderTableId() {
-        return orderTableId;
-    }
-
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
-    }
-
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(final String orderStatus) {
+    public List<OrderLineItem> getOrderLineItems() {
+        return orderLineItems.list();
+    }
+
+    public boolean equalsByOrderStatus(OrderStatus orderStatus) {
+        return this.orderStatus == orderStatus;
+    }
+
+    public void appendOrderLineItems(OrderLineItem orderLineItem) {
+        this.orderLineItems.add(orderLineItem);
+    }
+
+    public void chaangeOrderStatus(final OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 
-    public LocalDateTime getOrderedTime() {
-        return orderedTime;
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final Order that = (Order) o;
+        return Objects.equals(id, that.id);
     }
 
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
-    }
-
-    public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
-    }
-
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
