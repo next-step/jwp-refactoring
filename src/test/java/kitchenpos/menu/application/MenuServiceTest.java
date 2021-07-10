@@ -3,6 +3,7 @@ package kitchenpos.menu.application;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import kitchenpos.common.NotFoundEntityException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
@@ -12,6 +13,7 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.CreateMenuDto;
 import kitchenpos.menu.dto.CreateMenuProductDto;
 import kitchenpos.menu.dto.MenuDto;
+import kitchenpos.menu.exception.NotCreateMenuException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +28,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -83,7 +85,7 @@ class MenuServiceTest {
             .willReturn(Optional.of(menuGroup));
         givenProducts();
 
-        Menu menu = new Menu(menuDto.getName(), menuDto.getPrice(), menuGroup, menuProducts);
+        Menu menu = new Menu(menuDto.getName(), menuDto.getPrice(), menuGroup);
 
         given(menuRepository.save(any())).willReturn(menu);
 
@@ -105,7 +107,7 @@ class MenuServiceTest {
         CreateMenuDto menuDto = createMenuDto(price);
 
         // when
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuDto));
+        assertThatExceptionOfType(NotFoundEntityException.class).isThrownBy(() -> menuService.create(menuDto));
     }
 
     @DisplayName("메뉴 생성 요청 실패 - 등록되지 않은 메뉴 그룹의 ID를 사용")
@@ -118,7 +120,7 @@ class MenuServiceTest {
         given(menuGroupRepository.findById(NOT_SAVED_ID)).willReturn(Optional.empty());
 
         // when
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuDto));
+        assertThatExceptionOfType(NotFoundEntityException.class).isThrownBy(() -> menuService.create(menuDto));
     }
 
     @DisplayName("메뉴 생성 요청 실패 - 메뉴 가격은 메뉴 상품 가격의 합보다 작아야 함")
@@ -130,9 +132,10 @@ class MenuServiceTest {
 
         givenProducts();
         given(menuGroupRepository.findById(menuDto.getMenuGroupId())).willReturn(Optional.of(menuGroup));
+        given(menuRepository.save(any())).willReturn(new Menu(menuDto.getName(), menuDto.getPrice(), menuGroup));
 
         // when
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuDto));
+        assertThatExceptionOfType(NotCreateMenuException.class).isThrownBy(() -> menuService.create(menuDto));
     }
 
     public CreateMenuDto createMenuDto(Long price) {

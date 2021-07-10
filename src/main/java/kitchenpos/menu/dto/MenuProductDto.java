@@ -17,7 +17,7 @@ public class MenuProductDto {
     }
 
     public static MenuProductDto of(MenuProduct menuProduct) {
-        return new MenuProductDto(menuProduct.getMenu().getId(),
+        return new MenuProductDto(menuProduct.getMenuId(),
                                   menuProduct.getProduct().getId(),
                                   menuProduct.getQuantity());
     }

@@ -11,7 +11,7 @@ import org.springframework.util.CollectionUtils;
 @Embeddable
 public class OrderTables {
 
-    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "tableGroupId", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<OrderTable> data = new ArrayList<>();
 
     protected OrderTables() { }
@@ -27,7 +27,7 @@ public class OrderTables {
         }
 
         if (hasNotCompletedOrder()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("요리 중이거나 식사 중인 주문이 있으면 단체 지정 해제할 수 없습니다.");
         }
 
         data.forEach(OrderTable::ungroup);
@@ -35,7 +35,7 @@ public class OrderTables {
     }
 
     private boolean hasNotCompletedOrder() {
-        return data.stream().anyMatch(orderTable -> !orderTable.isAllOrderCompleted());
+        return data.stream().anyMatch(OrderTable::hasCookingOrMealOrder);
     }
 
     public int size() {

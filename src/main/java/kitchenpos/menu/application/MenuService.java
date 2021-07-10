@@ -1,6 +1,7 @@
 package kitchenpos.menu.application;
 
 import java.util.List;
+import kitchenpos.common.NotFoundEntityException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
@@ -38,16 +39,17 @@ public class MenuService {
             menuDto.getMenuProducts()
                    .stream()
                    .map(dto -> new MenuProduct(productRepository.findById(dto.getProductId())
-                                                                .orElseThrow(IllegalArgumentException::new),
+                                                                .orElseThrow(NotFoundEntityException::new),
                                                dto.getQuantity()))
                    .collect(toList());
 
         Menu menu = new Menu(menuDto.getName(), menuDto.getPrice(),
                              menuGroupRepository.findById(menuDto.getMenuGroupId())
-                                                .orElseThrow(IllegalArgumentException::new),
-                             menuProducts);
+                                                .orElseThrow(NotFoundEntityException::new));
 
         Menu persistMenu = menuRepository.save(menu);
+        persistMenu.addMenuProducts(menuProducts);
+
         menuProducts.forEach(menuProductRepository::save);
 
         return MenuDto.of(persistMenu);

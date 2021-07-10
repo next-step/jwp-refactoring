@@ -26,7 +26,7 @@ public class Price {
 
     private void validateValue(Long value) {
         if (value == null || value < 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("가격은 0 이상의 정수만 입력할 수 있습니다.");
         }
     }
 

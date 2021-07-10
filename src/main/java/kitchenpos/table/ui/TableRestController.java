@@ -4,8 +4,10 @@ import java.net.URI;
 import java.util.List;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.UpdateEmptyDto;
 import kitchenpos.table.dto.CreateOrderTableDto;
 import kitchenpos.table.dto.OrderTableDto;
+import kitchenpos.table.dto.UpdateNumberOfGuestsDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,14 +43,15 @@ public class TableRestController {
     }
 
     @PutMapping("/api/tables/{orderTableId}/empty")
-    public ResponseEntity<OrderTableDto> changeEmpty(@PathVariable Long orderTableId,
-                                                     @RequestBody Boolean empty) {
-        return ResponseEntity.ok().body(OrderTableDto.of(tableService.changeEmpty(orderTableId, empty)));
+    public ResponseEntity<OrderTableDto> changeEmpty2(@PathVariable Long orderTableId,
+                                                      @RequestBody UpdateEmptyDto updateEmptyDto) {
+        return ResponseEntity.ok().body(OrderTableDto.of(tableService.changeEmpty(orderTableId, updateEmptyDto.isEmpty())));
     }
 
     @PutMapping("/api/tables/{orderTableId}/number-of-guests")
     public ResponseEntity<OrderTableDto> changeNumberOfGuests(@PathVariable Long orderTableId,
-                                                              @RequestBody Integer numberOfGuests) {
-        return ResponseEntity.ok().body(OrderTableDto.of(tableService.changeNumberOfGuests(orderTableId, numberOfGuests)));
+                                                              @RequestBody UpdateNumberOfGuestsDto updateNumberOfGuestsDto) {
+        return ResponseEntity.ok().body(OrderTableDto.of(
+            tableService.changeNumberOfGuests(orderTableId, updateNumberOfGuestsDto.getNumberOfGuests())));
     }
 }

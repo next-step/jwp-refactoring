@@ -16,10 +16,6 @@ public class OrderDto {
 
     public OrderDto() { }
 
-    public OrderDto(Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItemDto> orderLineItems) {
-        this(null, orderTableId, orderStatus, orderedTime, orderLineItems);
-    }
-
     public OrderDto(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItemDto> orderLineItems) {
         this.id = id;
         this.orderTableId = orderTableId;
@@ -36,7 +32,7 @@ public class OrderDto {
                                                         .map(OrderLineItemDto::of)
                                                         .collect(toList());
 
-        return new OrderDto(order.getId(), order.getOrderTable().getId(),
+        return new OrderDto(order.getId(), order.getOrderTableId(),
                             order.getOrderStatus().name(), order.getOrderedTime(), orderLineItemDtos);
     }
 

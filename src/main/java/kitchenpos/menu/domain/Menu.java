@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import kitchenpos.menu.exception.NotCreateMenuException;
 import kitchenpos.product.domain.Price;
 
 @Entity
@@ -28,7 +29,7 @@ public class Menu {
     @Embedded
     private final MenuProducts menuProducts = new MenuProducts();
 
-    public Menu() { }
+    protected Menu() { }
 
     public Menu(String name, Long price, MenuGroup menuGroup) {
         this.name = name;
@@ -36,23 +37,19 @@ public class Menu {
         this.menuGroup = menuGroup;
     }
 
-    public Menu(String name, Long price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        this.name = name;
-        this.price = new Price(price);
-        this.menuGroup = menuGroup;
-
+    public void addMenuProducts(List<MenuProduct> menuProducts) {
         menuProducts.forEach(this::addMenuProduct);
         verifyTotalPrice();
     }
 
-    public void addMenuProduct(MenuProduct menuProduct) {
+    private void addMenuProduct(MenuProduct menuProduct) {
         menuProducts.add(menuProduct);
-        menuProduct.addedBy(this);
+        menuProduct.addedBy(id);
     }
 
     private void verifyTotalPrice() {
         if (price.getValue() > menuProducts.getSum().getValue()) {
-            throw new IllegalArgumentException();
+            throw new NotCreateMenuException();
         }
     }
 

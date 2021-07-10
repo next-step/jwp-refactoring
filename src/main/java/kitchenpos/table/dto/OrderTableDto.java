@@ -1,8 +1,6 @@
 package kitchenpos.table.dto;
 
-import java.util.Optional;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.TableGroup;
 
 public class OrderTableDto {
 
@@ -34,9 +32,7 @@ public class OrderTableDto {
 
     public static OrderTableDto of(OrderTable orderTable) {
         return new OrderTableDto(orderTable.getId(),
-                                 Optional.ofNullable(orderTable.getTableGroup())
-                                         .map(TableGroup::getId)
-                                         .orElse(null),
+                                 orderTable.getTableGroupId(),
                                  orderTable.getNumberOfGuests(),
                                  orderTable.isEmpty());
     }

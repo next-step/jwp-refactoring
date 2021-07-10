@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Stream;
+import kitchenpos.common.NotFoundEntityException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
@@ -25,6 +26,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static java.util.stream.Collectors.toList;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -50,9 +52,12 @@ class OrderServiceTest {
 
     private OrderLineItemDto item;
 
+    private Menu menu;
+
     @BeforeEach
     void setUp() {
         item = new OrderLineItemDto(null, null, 1L, 1);
+        menu = new Menu("name", 0L, null);
     }
 
     @DisplayName("create order 실패 - orderLineItems 가 비어 있음")
@@ -70,7 +75,7 @@ class OrderServiceTest {
                                                                  .limit(5)
                                                                  .collect(toList()));
 
-        given(menuRepository.findById(any())).willReturn(Optional.of(new Menu()));
+        given(menuRepository.findById(any())).willReturn(Optional.of(menu));
         given(menuRepository.countByIdIn(any())).willReturn(0);
 
         // when
@@ -83,12 +88,12 @@ class OrderServiceTest {
         // given
         CreateOrderDto orderDto = new CreateOrderDto(1L, Collections.singletonList(item));
 
-        given(menuRepository.findById(any())).willReturn(Optional.of(new Menu()));
+        given(menuRepository.findById(any())).willReturn(Optional.of(menu));
         given(menuRepository.countByIdIn(any())).willReturn(1);
         given(orderTableRepository.findById(orderDto.getOrderTableId())).willReturn(Optional.empty());
 
         // when
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(orderDto));
+        assertThatExceptionOfType(NotFoundEntityException.class).isThrownBy(() -> orderService.create(orderDto));
     }
 
     @DisplayName("create order 실패 - order table의 상태가 empty")
@@ -100,7 +105,7 @@ class OrderServiceTest {
 
         CreateOrderDto orderDto = new CreateOrderDto(1L, Collections.singletonList(item));
 
-        given(menuRepository.findById(any())).willReturn(Optional.of(new Menu()));
+        given(menuRepository.findById(any())).willReturn(Optional.of(menu));
         given(menuRepository.countByIdIn(any())).willReturn(1);
         given(orderTableRepository.findById(orderDto.getOrderTableId())).willReturn(Optional.of(orderTable));
 
@@ -117,7 +122,7 @@ class OrderServiceTest {
         OrderTable orderTable = new OrderTable(1L, null, 0, false);
         Order order = new Order();
 
-        given(menuRepository.findById(any())).willReturn(Optional.of(new Menu()));
+        given(menuRepository.findById(any())).willReturn(Optional.of(menu));
         given(menuRepository.countByIdIn(any())).willReturn(1);
         given(orderTableRepository.findById(orderDto.getOrderTableId())).willReturn(Optional.of(orderTable));
         given(orderRepository.save(any())).willReturn(order);
@@ -136,7 +141,7 @@ class OrderServiceTest {
         given(orderRepository.findById(any())).willReturn(Optional.empty());
 
         // when
-        assertThatIllegalArgumentException().isThrownBy(
+        assertThatExceptionOfType(NotFoundEntityException.class).isThrownBy(
             () -> orderService.changeOrderStatus(1L, new ChangeOrderStatusDto(OrderStatus.COMPLETION.name())));
     }
 

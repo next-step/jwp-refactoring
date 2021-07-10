@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -148,7 +149,7 @@ class OrderRestControllerTest {
                    .andDo(print())
                    .andExpect(status().isBadRequest());
         } catch (Exception e) {
-            assertTrue(e.getCause() instanceof IllegalArgumentException);
+            fail();
         }
     }
 
@@ -156,7 +157,7 @@ class OrderRestControllerTest {
         try {
             putRequestFail(orderId, changeOrderStatusDto);
         } catch (Exception e) {
-            assertTrue(e.getCause() instanceof IllegalArgumentException);
+            fail();
         }
     }
 

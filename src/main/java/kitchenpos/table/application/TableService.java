@@ -1,9 +1,11 @@
 package kitchenpos.table.application;
 
 import java.util.List;
+import kitchenpos.common.NotFoundEntityException;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.CreateOrderTableDto;
+import kitchenpos.table.exception.NotChangeNumberOfGuestsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,8 +29,9 @@ public class TableService {
 
     @Transactional
     public OrderTable changeEmpty(Long orderTableId, Boolean empty) {
-        OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                                                         .orElseThrow(IllegalArgumentException::new);
+        OrderTable savedOrderTable =
+            orderTableRepository.findById(orderTableId)
+                                .orElseThrow(NotFoundEntityException::new);
 
         savedOrderTable.changeEmpty(empty);
         return savedOrderTable;
@@ -38,11 +41,11 @@ public class TableService {
     public OrderTable changeNumberOfGuests(Long orderTableId, Integer numberOfGuests) {
 
         if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
+            throw new NotChangeNumberOfGuestsException("변경할 손님 수는 0 이상의 수만 입력할 수 있습니다.");
         }
 
         OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                                                         .orElseThrow(IllegalArgumentException::new);
+                                                         .orElseThrow(NotFoundEntityException::new);
 
         savedOrderTable.changeNumberOfGuests(numberOfGuests);
         return savedOrderTable;

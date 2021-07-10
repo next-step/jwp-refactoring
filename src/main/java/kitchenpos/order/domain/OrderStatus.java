@@ -6,4 +6,8 @@ public enum OrderStatus {
     public boolean isCompletedOrder() {
         return this == COMPLETION;
     }
+
+    public boolean isNotCompletedOrder() {
+        return this != COMPLETION;
+    }
 }

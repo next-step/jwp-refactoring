@@ -1,6 +1,7 @@
 package kitchenpos.order.application;
 
 import java.util.List;
+import kitchenpos.common.NotFoundEntityException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
@@ -39,14 +40,14 @@ public class OrderService {
     public Order create(CreateOrderDto createOrderDto) {
 
         if (CollectionUtils.isEmpty(createOrderDto.getOrderLineItems())) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문 항목을 1개 이상 입력해야 합니다.");
         }
 
         final List<OrderLineItem> orderLineItems =
             createOrderDto.getOrderLineItems()
                     .stream()
                     .map(dto -> {
-                        Menu menu = menuRepository.findById(dto.getMenuId()).orElseThrow(IllegalArgumentException::new);
+                        Menu menu = menuRepository.findById(dto.getMenuId()).orElseThrow(NotFoundEntityException::new);
                         return new OrderLineItem(menu, dto.getQuantity());
                     })
                     .collect(toList());
@@ -57,11 +58,11 @@ public class OrderService {
                                                  .collect(toList());
 
         if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("입력한 메뉴에 중복이 있습니다.");
         }
 
-        final OrderTable orderTable = orderTableRepository.findById(createOrderDto.getOrderTableId())
-                                                          .orElseThrow(IllegalArgumentException::new);
+        OrderTable orderTable = orderTableRepository.findById(createOrderDto.getOrderTableId())
+                                                          .orElseThrow(NotFoundEntityException::new);
 
         Order order = new Order(orderLineItems);
         orderTable.addOrder(order);
@@ -81,8 +82,8 @@ public class OrderService {
 
     @Transactional
     public OrderDto changeOrderStatus(Long orderId, ChangeOrderStatusDto changeOrderStatusDto) {
-        final Order savedOrder = orderRepository.findById(orderId)
-                                                .orElseThrow(IllegalArgumentException::new);
+        Order savedOrder = orderRepository.findById(orderId)
+                                          .orElseThrow(NotFoundEntityException::new);
 
         savedOrder.changeOrderStatus(changeOrderStatusDto.getOrderStatus());
         return OrderDto.of(savedOrder);

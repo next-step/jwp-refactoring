@@ -2,6 +2,7 @@ package kitchenpos.table.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import kitchenpos.common.NotFoundEntityException;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
@@ -28,7 +29,7 @@ public class TableGroupService {
         List<OrderTableIdDto> orderTables = createTableGroupDto.getOrderTables();
 
         if (CollectionUtils.isEmpty(orderTables)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문 테이블이 입력되지 않았습니다.");
         }
 
         List<Long> orderTableIds = orderTables.stream()
@@ -38,7 +39,7 @@ public class TableGroupService {
         List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
 
         if (orderTables.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("입력한 주문 테이블에 중복이 있습니다.");
         }
 
         return tableGroupRepository.save(new TableGroup(savedOrderTables));
@@ -47,7 +48,7 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
-                                                    .orElseThrow(IllegalArgumentException::new);
+                                                    .orElseThrow(NotFoundEntityException::new);
 
         tableGroup.ungroup();
     }
