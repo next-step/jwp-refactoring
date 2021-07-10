@@ -1,5 +1,7 @@
 package kitchenpos.product.domain;
 
+import kitchenpos.menu.domain.Product;
+import kitchenpos.menu.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
