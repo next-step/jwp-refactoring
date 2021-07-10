@@ -1,7 +1,6 @@
 package kitchenpos.tablegroup.domain;
 
 import static java.util.Arrays.*;
-import static kitchenpos.order.domain.OrderMenuTest.*;
 import static kitchenpos.table.domain.OrderTableTest.*;
 import static org.assertj.core.api.Assertions.*;
 
@@ -10,10 +9,8 @@ import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableUngroupValidator;
 
 class TableGroupTest {
 
@@ -95,20 +92,13 @@ class TableGroupTest {
 	@Test
 	void ungroupTest() {
 		// given
-		OrderLineItems orderLineItems1 = OrderLineItems.of(new OrderLineItem(ORDER_MENU, 1));
 		OrderTable table1 = createOrderTable(1L, 1L, 1, false);
-		Order order1 = Order.create(table1, orderLineItems1, LocalDateTime.now());
-		order1.complete();
-
-		OrderLineItems orderLineItems2 = OrderLineItems.of(new OrderLineItem(ORDER_MENU, 1));
 		OrderTable table2 =  createOrderTable(2L, 1L, 1, false);
-		Order order2 = Order.create(table2, orderLineItems2, LocalDateTime.now());
-		order2.complete();
-
 		TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());
+		TableUngroupValidator ungroupValidator = (orderTableId) -> {};
 
 		// when
-		tableGroup.ungroup(asList(table1, table2), new UngroupValidator(asList(order1, order2)));
+		tableGroup.ungroup(asList(table1, table2), ungroupValidator);
 
 		// than
 		assertThat(table1.isGrouped()).isFalse();
@@ -120,19 +110,15 @@ class TableGroupTest {
 	@Test
 	void ungroupWithNotCompleteOrderTest() {
 		// given
-		OrderLineItems orderLineItems1 = OrderLineItems.of(new OrderLineItem(ORDER_MENU, 1));
 		OrderTable notCompletedOrderTable = createOrderTable(1L, 1L, 1, false);
-		Order notCompletedOrder = Order.create(notCompletedOrderTable, orderLineItems1, LocalDateTime.now());
-
-		OrderLineItems orderLineItems2 = OrderLineItems.of(new OrderLineItem(ORDER_MENU, 2));
 		OrderTable orderTable = createOrderTable(2L, 1L, 1, false);
-		Order order = Order.create(orderTable, orderLineItems2, LocalDateTime.now());
-		order.complete();
-
 		TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());
+		TableUngroupValidator ungroupValidator = (orderTableId) -> {
+			throw new IllegalArgumentException("조리상태이거나 식사상태인 주문이 있는 주문테이블은 그룹해제를 할 수 없습니다.");
+		};
 
 		// than
-		assertThatThrownBy(() -> tableGroup.ungroup(asList(notCompletedOrderTable, orderTable), new UngroupValidator(asList(notCompletedOrder, order))))
+		assertThatThrownBy(() -> tableGroup.ungroup(asList(notCompletedOrderTable, orderTable), ungroupValidator))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("조리상태이거나 식사상태인 주문이 있는 주문테이블은 그룹해제를 할 수 없습니다.");
 	}

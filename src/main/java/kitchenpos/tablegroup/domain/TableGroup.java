@@ -12,6 +12,7 @@ import javax.persistence.Id;
 
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroupId;
+import kitchenpos.table.domain.TableUngroupValidator;
 
 @Entity
 public class TableGroup {
@@ -39,7 +40,7 @@ public class TableGroup {
         return createdDate;
     }
 
-    public void ungroup(List<OrderTable> tables, UngroupValidator ungroupValidator) {
+    public void ungroup(List<OrderTable> tables, TableUngroupValidator ungroupValidator) {
         OrderTables orderTables = OrderTables.of(tables);
         orderTables.ungrouped(ungroupValidator);
     }

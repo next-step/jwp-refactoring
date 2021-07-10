@@ -8,8 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import kitchenpos.tablegroup.domain.UngroupValidator;
-
 @Entity
 public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -64,7 +62,7 @@ public class OrderTable {
         return empty;
     }
 
-    public void changeEmpty(boolean isEmpty, ChangeEmptyExternalValidator externalValidator) {
+    public void changeEmpty(boolean isEmpty, TableChangeEmptyValidator externalValidator) {
         externalValidator.validate(getId());
         validateNotGrouped();
         this.empty = isEmpty;
@@ -79,8 +77,8 @@ public class OrderTable {
         emptyOff();
     }
 
-    public void ungrouped(UngroupValidator ungroupValidator) {
-        ungroupValidator.validate(this);
+    public void ungrouped(TableUngroupValidator ungroupValidator) {
+        ungroupValidator.validate(getId());
         this.tableGroupId = null;
     }
 

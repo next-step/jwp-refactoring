@@ -33,7 +33,7 @@ public class OrderTableTest {
 	void emptyGroupedTableTest() {
 		// given
 		OrderTable groupedTable = createOrderTable(1L, 1L, 1, false);
-		ChangeEmptyExternalValidator externalValidator = (orderTableId) -> {};
+		TableChangeEmptyValidator externalValidator = (orderTableId) -> {};
 
 		// when
 		// than
@@ -51,7 +51,7 @@ public class OrderTableTest {
 	void changeEmptyWithCookingOrderTest() {
 		// given
 		OrderTable orderTable = new OrderTable(1, false);
-		ChangeEmptyExternalValidator externalValidator = (orderTableId) -> {
+		TableChangeEmptyValidator externalValidator = (orderTableId) -> {
 			throw new IllegalArgumentException("조리상태이거나 식사상태주문의 주문테이블은 상태를 변경할 수 없습니다.");
 		};
 
@@ -71,7 +71,7 @@ public class OrderTableTest {
 	void emptyTest() {
 		// given
 		OrderTable orderTable = new OrderTable(1, false);
-		ChangeEmptyExternalValidator externalValidator = (orderTableId) -> {};
+		TableChangeEmptyValidator externalValidator = (orderTableId) -> {};
 		// when
 		orderTable.changeEmpty(true, externalValidator);
 

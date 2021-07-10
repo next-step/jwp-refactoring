@@ -2,35 +2,31 @@ package kitchenpos.tablegroup.application;
 
 import static java.time.LocalDateTime.*;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderTableId;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.TableGroupId;
-import kitchenpos.tablegroup.domain.TableGroupRepository;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.domain.UngroupValidator;
-import kitchenpos.tablegroup.dto.TableGroupRequest;
-import kitchenpos.tablegroup.dto.TableGroupResponse;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.TableGroupId;
+import kitchenpos.table.domain.TableUngroupValidator;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 
 @Service
 public class TableGroupService {
-    private final OrderRepository orderRepository;
+    private final TableUngroupValidator tableUngroupValidator;
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
 
     public TableGroupService(
-        final OrderRepository orderRepository,
+        final TableUngroupValidator tableUngroupValidator,
         final OrderTableRepository orderTableRepository,
         final TableGroupRepository tableGroupRepository) {
-        this.orderRepository = orderRepository;
+        this.tableUngroupValidator = tableUngroupValidator;
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
     }
@@ -48,9 +44,7 @@ public class TableGroupService {
         final TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
             .orElseThrow(() -> new IllegalArgumentException("등록된 테이블 그룹만 그룹해제 가능합니다."));
         final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(new TableGroupId(tableGroupId));
-        final List<Order> orders = orderRepository.findAllByOrderTableIdIn(extractIds(orderTables));
-        final UngroupValidator ungroupValidator = new UngroupValidator(orders);
-        tableGroup.ungroup(orderTables, ungroupValidator);
+        tableGroup.ungroup(orderTables, tableUngroupValidator);
     }
 
     private List<OrderTable> findOrderTables(final TableGroupRequest tableGroupRequest) {
@@ -60,12 +54,5 @@ public class TableGroupService {
             throw new IllegalArgumentException("등록이 되지 않은 주문테이블은 그룹화 할 수 없습니다.");
         }
         return orderTables;
-    }
-
-    private List<OrderTableId> extractIds(List<OrderTable> orderTables) {
-        return orderTables.stream()
-            .map(OrderTable::getId)
-            .map(OrderTableId::new)
-            .collect(Collectors.toList());
     }
 }
