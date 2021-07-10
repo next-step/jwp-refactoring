@@ -130,7 +130,7 @@ public class OrderTableTest {
 		LocalDateTime orderedTime = now();
 
 		// when
-		Order order = orderTable.createOrder(OrderLineItems.of(orderLineItem), orderedTime);
+		Order order = Order.create(orderTable, OrderLineItems.of(orderLineItem), orderedTime);
 
 		// then
 		assertThat(order.isCreatedFrom(new OrderTableId(1L))).isTrue();
@@ -147,7 +147,7 @@ public class OrderTableTest {
 
 		// when
 		// than
-		assertThatThrownBy(() ->  orderTable.createOrder(OrderLineItems.of(orderLineItem), now()))
+		assertThatThrownBy(() ->  Order.create(orderTable, OrderLineItems.of(orderLineItem), now()))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("빈테이블에서 주문할 수 없습니다.");
 	}

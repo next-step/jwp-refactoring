@@ -15,6 +15,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import kitchenpos.table.domain.OrderTable;
+
 @Entity
 @Table(name = "orders")
 public class Order {
@@ -42,6 +44,13 @@ public class Order {
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
         this.orderLineItems.toOrder(this);
+    }
+
+    public static Order create(OrderTable orderTable, OrderLineItems orderLineItems, LocalDateTime orderedTime) {
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException("빈테이블에서 주문할 수 없습니다.");
+        }
+        return new Order(new OrderTableId(orderTable.getId()), orderLineItems, orderedTime);
     }
 
     public Long getId() {

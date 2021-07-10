@@ -19,16 +19,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderTableId;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.OrderTableId;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 
 @DisplayName("주문 요구사항 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -100,7 +100,7 @@ class OrderServiceTest {
 	void changeStatusOfCompletedOrderTest() {
 		OrderTable orderTable = new OrderTable(1, false);
 		OrderLineItem orderLineItem = new OrderLineItem(ORDER_MENU, 1);
-		Order completedOrder = orderTable.createOrder(OrderLineItems.of(orderLineItem), LocalDateTime.now());
+		Order completedOrder = Order.create(orderTable, OrderLineItems.of(orderLineItem), LocalDateTime.now());
 		completedOrder.complete();
 
 		when(orderRepository.findById(anyLong())).thenReturn(Optional.of(completedOrder));

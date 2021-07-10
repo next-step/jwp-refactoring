@@ -39,7 +39,7 @@ public class OrderService {
         final List<Menu> menus = findMenus(orderRequest);
         final OrderLineItems orderLineItems = orderRequest.toOrderLineItems(menus);
         final OrderTable orderTable = findOrderTable(orderRequest);
-        final Order persistOrder = orderRepository.save(orderTable.createOrder(orderLineItems, now()));
+        final Order persistOrder = orderRepository.save(Order.create(orderTable, orderLineItems, now()));
         return OrderResponse.of(persistOrder);
     }
 

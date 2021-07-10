@@ -97,12 +97,12 @@ class TableGroupTest {
 		// given
 		OrderLineItems orderLineItems1 = OrderLineItems.of(new OrderLineItem(ORDER_MENU, 1));
 		OrderTable table1 = createOrderTable(1L, 1L, 1, false);
-		Order order1 = table1.createOrder(orderLineItems1, LocalDateTime.now());
+		Order order1 = Order.create(table1, orderLineItems1, LocalDateTime.now());
 		order1.complete();
 
 		OrderLineItems orderLineItems2 = OrderLineItems.of(new OrderLineItem(ORDER_MENU, 1));
 		OrderTable table2 =  createOrderTable(2L, 1L, 1, false);
-		Order order2 = table2.createOrder(orderLineItems2, LocalDateTime.now());
+		Order order2 = Order.create(table2, orderLineItems2, LocalDateTime.now());
 		order2.complete();
 
 		TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());
@@ -122,11 +122,11 @@ class TableGroupTest {
 		// given
 		OrderLineItems orderLineItems1 = OrderLineItems.of(new OrderLineItem(ORDER_MENU, 1));
 		OrderTable notCompletedOrderTable = createOrderTable(1L, 1L, 1, false);
-		Order notCompletedOrder = notCompletedOrderTable.createOrder(orderLineItems1, LocalDateTime.now());
+		Order notCompletedOrder = Order.create(notCompletedOrderTable, orderLineItems1, LocalDateTime.now());
 
 		OrderLineItems orderLineItems2 = OrderLineItems.of(new OrderLineItem(ORDER_MENU, 2));
 		OrderTable orderTable = createOrderTable(2L, 1L, 1, false);
-		Order order = orderTable.createOrder(orderLineItems2, LocalDateTime.now());
+		Order order = Order.create(orderTable, orderLineItems2, LocalDateTime.now());
 		order.complete();
 
 		TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now());

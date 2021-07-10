@@ -41,7 +41,7 @@ class OrderTest {
 		// given
 		OrderLineItem orderLineItem = new OrderLineItem(ORDER_MENU, 1);
 		OrderTable orderTable = new OrderTable(1, false);
-		Order completedOrder = orderTable.createOrder(OrderLineItems.of(orderLineItem), now());
+		Order completedOrder = Order.create(orderTable, OrderLineItems.of(orderLineItem), now());
 		completedOrder.complete();
 
 		// when
@@ -57,7 +57,7 @@ class OrderTest {
 		// given
 		OrderLineItem orderLineItem = new OrderLineItem(ORDER_MENU, 1);
 		OrderTable orderTable = new OrderTable(1, false);
-		Order order = orderTable.createOrder(OrderLineItems.of(orderLineItem), now());
+		Order order = Order.create(orderTable, OrderLineItems.of(orderLineItem), now());
 
 		// when
 		order.changeStatus(OrderStatus.MEAL);

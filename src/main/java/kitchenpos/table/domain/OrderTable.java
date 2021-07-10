@@ -2,17 +2,12 @@ package kitchenpos.table.domain;
 
 import static java.util.Objects.*;
 
-import java.time.LocalDateTime;
-
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItems;
-import kitchenpos.order.domain.OrderTableId;
 import kitchenpos.tablegroup.domain.UngroupValidator;
 
 @Entity
@@ -46,13 +41,6 @@ public class OrderTable {
         this(null, null, numberOfGuests, empty);
     }
 
-    public Order createOrder(OrderLineItems orderLineItems, LocalDateTime orderedTime) {
-        if (isEmpty()) {
-            throw new IllegalArgumentException("빈테이블에서 주문할 수 없습니다.");
-        }
-        return new Order(new OrderTableId(getId()), orderLineItems, orderedTime);
-    }
-
     public Long getId() {
         return id;
     }
@@ -75,11 +63,10 @@ public class OrderTable {
     public boolean isEmpty() {
         return empty;
     }
-        public void changeEmpty(boolean isEmpty, ChangeEmptyExternalValidator externalValidator) {
+
+    public void changeEmpty(boolean isEmpty, ChangeEmptyExternalValidator externalValidator) {
         externalValidator.validate(getId());
-        if (isGrouped()) {
-            throw new IllegalArgumentException("그룹 설정이 되어 있는 테이블은 주문 등록 불가 상태로 바꿀 수 없습니다.");
-        }
+        validateNotGrouped();
         this.empty = isEmpty;
     }
 
@@ -100,4 +87,11 @@ public class OrderTable {
     private void emptyOff() {
         this.empty = false;
     }
+
+    private void validateNotGrouped() {
+        if (isGrouped()) {
+            throw new IllegalArgumentException("그룹 설정이 되어 있는 테이블은 주문 등록 불가 상태로 바꿀 수 없습니다.");
+        }
+    }
+
 }
