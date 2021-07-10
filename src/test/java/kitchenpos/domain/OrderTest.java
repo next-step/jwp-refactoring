@@ -12,7 +12,7 @@ public class OrderTest {
     @Test
     void given_CompletedOrder_when_ChangeOrderStatus_then_ThrowException() {
         // given
-        final Order order = new Order(new OrderTable(), OrderStatus.COMPLETION.name(), Collections.emptyList());
+        final Order order = new Order(new OrderTable(), OrderStatus.COMPLETION, Collections.emptyList());
 
         // when
         final Throwable throwable = catchThrowable(() -> order.changeStatus(OrderStatus.COMPLETION));

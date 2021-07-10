@@ -7,6 +7,8 @@ import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -29,7 +31,8 @@ public class Order {
     @JoinColumn(name = "order_table_id")
     private OrderTable orderTable;
 
-    private String orderStatus;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
 
     @CreatedDate
     private LocalDateTime orderedTime;
@@ -40,7 +43,7 @@ public class Order {
     public Order() {
     }
 
-    public Order(OrderTable orderTable, String orderStatus, List<OrderLineItem> orderLineItems) {
+    public Order(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderLineItems.addAll(orderLineItems);
@@ -52,7 +55,7 @@ public class Order {
         this.orderTable = orderTable;
         this.orderLineItems.addAll(orderLineItems.toList());
         this.orderLineItems.updateOrder(this);
-        this.orderStatus = OrderStatus.COOKING.name();
+        this.orderStatus = OrderStatus.COOKING;
     }
 
     private void validateOrderTable(OrderTable orderTable) {
@@ -73,7 +76,7 @@ public class Order {
         return orderTable.getId();
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
@@ -86,14 +89,14 @@ public class Order {
     }
 
     public void changeStatus(OrderStatus orderStatus) {
-        if (Objects.equals(this.orderStatus, OrderStatus.COMPLETION.name())) {
+        if (Objects.equals(this.orderStatus, OrderStatus.COMPLETION)) {
             throw new IllegalArgumentException();
         }
 
-        this.orderStatus = orderStatus.name();
+        this.orderStatus = orderStatus;
     }
 
     public boolean isNotCompleted() {
-        return !Objects.equals(orderStatus, OrderStatus.COMPLETION.name());
+        return !Objects.equals(orderStatus, OrderStatus.COMPLETION);
     }
 }
