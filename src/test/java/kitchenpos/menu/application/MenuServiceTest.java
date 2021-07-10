@@ -68,7 +68,7 @@ public class MenuServiceTest {
 
         assertThat(menuResponse.getName()).isEqualTo(menuRequest1.getName());
         assertThat(menuResponse.getPrice()).isEqualTo(menuRequest1.getPrice());
-        assertThat(menuResponse.getMenuGroup().getId()).isEqualTo(menuRequest1.getMenuGroupId());
+        assertThat(menuResponse.getMenuGroupResponse().getId()).isEqualTo(menuRequest1.getMenuGroupId());
 //        assertThat(menuResponse.getMenuProductRequests()).isEqualTo(menuRequest1.getMenuProductRequests());
     }
 

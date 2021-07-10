@@ -12,9 +12,6 @@ public class OrderLineItem extends BaseEntity {
     private Long id;
 
     @Column
-    private Long orderId;
-
-    @Column
     private Long menuId;
 
     @Column
@@ -27,29 +24,14 @@ public class OrderLineItem extends BaseEntity {
         this.quantity = quantity;
     }
 
-    public OrderLineItem(Long orderId, Long menuId, long quantity) {
-        this.orderId = orderId;
-        this.menuId = menuId;
-        this.quantity = quantity;
-    }
-
-    public OrderLineItem(Long id, Long orderId, Long menuId, long quantity) {
+    public OrderLineItem(Long id, Long menuId, long quantity) {
         this.id = id;
-        this.orderId = orderId;
         this.menuId = menuId;
         this.quantity = quantity;
-    }
-
-    public void isIn(Ordering order) {
-        this.orderId = order.getId();
     }
 
     public Long getId() {
         return id;
-    }
-
-    public Long getOrderId() {
-        return orderId;
     }
 
     public Long getMenuId() {
@@ -65,12 +47,11 @@ public class OrderLineItem extends BaseEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OrderLineItem that = (OrderLineItem) o;
-        return quantity == that.quantity && Objects.equals(id, that.id) && Objects.equals(orderId, that.orderId) && Objects.equals(menuId, that.menuId);
+        return quantity == that.quantity && Objects.equals(id, that.id) && Objects.equals(menuId, that.menuId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, orderId, menuId, quantity);
+        return Objects.hash(id, menuId, quantity);
     }
-
 }

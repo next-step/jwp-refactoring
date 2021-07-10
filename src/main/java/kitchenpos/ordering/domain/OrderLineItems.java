@@ -1,11 +1,6 @@
 package kitchenpos.ordering.domain;
 
-import kitchenpos.BaseEntity;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Embeddable;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -13,12 +8,12 @@ import java.util.stream.Collectors;
 
 @Embeddable
 public class OrderLineItems {
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE }, orphanRemoval = true)
+
+    @OneToMany( fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE } )
+    @JoinColumn(name="order_id")
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
-    public OrderLineItems() {
-
-    }
+    public OrderLineItems() { }
 
     public OrderLineItems(List<OrderLineItem> orderLineItems) {
         this.orderLineItems = orderLineItems;
@@ -27,12 +22,6 @@ public class OrderLineItems {
     public boolean isNull() {
         return Objects.isNull(orderLineItems);
     }
-
-    public void setOrderIdOnOrderLineItems(Ordering ordering) {
-        this.orderLineItems.stream()
-                .forEach(orderLineItem -> orderLineItem.isIn(ordering));
-    }
-
 
     public boolean isEmpty() {
         return orderLineItems.isEmpty();

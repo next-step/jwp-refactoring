@@ -59,10 +59,11 @@ public class Ordering extends BaseEntity {
         if (Objects.isNull(orderLineItems) || orderLineItems.isNull()) {
             throw new IllegalArgumentException("테이블이 비어있으면 주문 할 수 없습니다.");
         }
-        orderLineItems.setOrderIdOnOrderLineItems(this);
     }
 
-    public void isFrom(OrderTable orderTable) {
+    public void calledFrom(OrderTable orderTable) {
+        orderTable.isValidForOrdering();
+
         this.orderTableId = orderTable.getId();
     }
 

@@ -1,8 +1,6 @@
 package kitchenpos.ordering.acceptance;
 
 import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.*;
@@ -84,11 +82,12 @@ public class OrderingAcceptanceTest extends AcceptanceTest {
                 .postRequest("/api/menu-groups", MenuGroupRequest.of("피자치킨메뉴그룹"))
                 .as(MenuGroupResponse.class);
         피자치킨메뉴 = RestAssuredCRUD.postRequest("/api/menus", MenuRequest.of(
-                        "피자치킨",
-                        BigDecimal.valueOf(26000+17000),
-                        피자치킨메뉴그룹.getId(),
-                        Arrays.asList(MenuProductRequest.of(메뉴치킨상품), MenuProductRequest.of(메뉴피자상품)))).as(MenuResponse.class);
-        주문항목치킨 = new OrderLineItem(주문항목ID, 주문ID, 피자치킨메뉴.getId(), 3);
+                "피자치킨",
+                BigDecimal.valueOf(26000+17000),
+                피자치킨메뉴그룹.getId(),
+                Arrays.asList(MenuProductRequest.of(메뉴치킨상품), MenuProductRequest.of(메뉴피자상품))))
+                .as(MenuResponse.class);
+        주문항목치킨 = new OrderLineItem(주문항목ID, 피자치킨메뉴.getId(), 3);
         주문테이블 = RestAssuredCRUD.postRequest("/api/tables", new OrderTable(주문테이블ID, null, 5, false))
                 .as(OrderTableResponse.class);
 //        TableGroup 테이블그룹 = new TableGroup(테이블그룹ID, Arrays.asList(주문테이블));
@@ -114,8 +113,11 @@ public class OrderingAcceptanceTest extends AcceptanceTest {
 
         // When 첫번째 (이자 마지막인) 주문을 상태 변경한다.
         OrderRequest 변경주문 = new OrderRequest(null, OrderStatus.COMPLETION, Arrays.asList());
-        // Then 상태가 변경된다.
-        assertThat(변경주문.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
+        update(String.format("/api/orders/%d/order-status", 주문결과.getId()), 변경주문);
+        // Then 주문목록 조회한다.
+        주문조회결과 = getAll("/api/orders");
+        // And 상태 변경 확인된다.
+        assertThat(주문조회결과.get(0).getOrderStatus()).isEqualTo(변경주문.getOrderStatus());
     }
 
     @Test
@@ -134,7 +136,7 @@ public class OrderingAcceptanceTest extends AcceptanceTest {
         assertThat(주문결과.getOrderTableId()).isEqualTo(주문테이블.getId());
         assertThat(주문결과.getOrderLineItemResponses().stream()
                 .map(orderLineItemResponse -> orderLineItemResponse.getId())).contains(주문항목치킨.getId());
-        assertThat(주문결과.getId()).isEqualTo(주문항목치킨.getOrderId());
+//        assertThat(주문결과.getId()).isEqualTo(주문항목치킨.getOrder());
     }
 
     private List<OrderResponse> getAll(String path) {
@@ -144,5 +146,10 @@ public class OrderingAcceptanceTest extends AcceptanceTest {
                 .then().log().all()
                 .extract()
                 .jsonPath().getList(".", OrderResponse.class);
+    }
+
+    private OrderResponse update(String path, OrderRequest orderRequest) {
+        return RestAssuredCRUD.putRequest(path, orderRequest)
+                .as(OrderResponse.class);
     }
 }

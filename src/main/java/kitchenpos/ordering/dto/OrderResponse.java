@@ -2,10 +2,7 @@ package kitchenpos.ordering.dto;
 
 import kitchenpos.ordering.domain.OrderStatus;
 import kitchenpos.ordering.domain.Ordering;
-import org.springframework.data.annotation.LastModifiedDate;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -78,11 +75,11 @@ public class OrderResponse {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OrderResponse that = (OrderResponse) o;
-        return Objects.equals(id, that.id) && Objects.equals(orderTableId, that.orderTableId) && Objects.equals(orderStatus, that.orderStatus) && Objects.equals(orderedTime, that.orderedTime) && Objects.equals(orderLineItemResponses, that.orderLineItemResponses);
+        return Objects.equals(id, that.id) && Objects.equals(orderTableId, that.orderTableId) && Objects.equals(orderStatus, that.orderStatus) && Objects.equals(orderedTime, that.orderedTime) && Objects.equals(orderLineItemResponses, that.orderLineItemResponses) && Objects.equals(createdDate, that.createdDate) && Objects.equals(modifiedDate, that.modifiedDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, orderTableId, orderStatus, orderedTime, orderLineItemResponses);
+        return Objects.hash(id, orderTableId, orderStatus, orderedTime, orderLineItemResponses, createdDate, modifiedDate);
     }
 }

@@ -1,12 +1,14 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.BaseEntity;
 import kitchenpos.product.domain.Product;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Entity
-public class MenuProduct {
+public class MenuProduct extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -46,4 +48,16 @@ public class MenuProduct {
         return quantity;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MenuProduct that = (MenuProduct) o;
+        return quantity == that.quantity && Objects.equals(id, that.id) && Objects.equals(product, that.product);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, product, quantity);
+    }
 }

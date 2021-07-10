@@ -19,9 +19,6 @@ public class OrderRepositoryTest {
     private OrderRepository orderRepository;
 
     @Autowired
-    private OrderLineItemRepository orderLineItemRepository;
-
-    @Autowired
     private OrderTableRepository orderTableRepository;
 
     private Long orderTableId = 1L;

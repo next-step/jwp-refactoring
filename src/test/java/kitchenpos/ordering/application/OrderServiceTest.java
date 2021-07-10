@@ -35,21 +35,19 @@ public class OrderServiceTest {
     @Mock
     private OrderRepository orderRepository;
     @Mock
-    private OrderLineItemRepository orderLineItemRepository;
-    @Mock
     private OrderTableRepository orderTableRepository;
 
     private Long order1Id = 1L;
     private Long order1OrderTableId = 1L;
     private OrderStatus order1OrderStatus = OrderStatus.COOKING;
     private LocalDateTime order1OrderTime = LocalDateTime.now();
-    private OrderLineItem orderLineItem = new OrderLineItem(1L, null, 1L, 1);
+    private OrderLineItem orderLineItem = new OrderLineItem(1L, 1L, 1);
     private List<OrderLineItem> order1OrderLineItems = Arrays.asList(orderLineItem);
     private OrderTable orderTable = new OrderTable(1L, 5, false);
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(menuRepository, orderRepository, orderLineItemRepository, orderTableRepository);
+        orderService = new OrderService(menuRepository, orderRepository, orderTableRepository);
     }
 
     @DisplayName("주문을 등록할 수 있다")

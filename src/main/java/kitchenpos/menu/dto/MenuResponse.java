@@ -3,7 +3,6 @@ package kitchenpos.menu.dto;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -15,7 +14,7 @@ public class MenuResponse {
     private Long id;
     private String name;
     private BigDecimal price;
-    private MenuGroup menuGroup;
+    private MenuGroupResponse menuGroupResponse;
     private List<MenuProductResponse> menuProducts;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
@@ -31,7 +30,7 @@ public class MenuResponse {
         this.id = id;
         this.name = name;
         this.price = price;
-        this.menuGroup = menuGroup;
+        this.menuGroupResponse = MenuGroupResponse.of(menuGroup);
         this.menuProducts = menuProducts.stream()
                 .map(MenuProductResponse::of)
                 .collect(Collectors.toList());
@@ -67,12 +66,12 @@ public class MenuResponse {
         this.price = price;
     }
 
-    public MenuGroup getMenuGroup() {
-        return menuGroup;
+    public MenuGroupResponse getMenuGroupResponse() {
+        return menuGroupResponse;
     }
 
-    public void setMenuGroup(MenuGroup menuGroup) {
-        this.menuGroup = menuGroup;
+    public void setMenuGroupResponse(MenuGroupResponse menuGroupResponse) {
+        this.menuGroupResponse = menuGroupResponse;
     }
 
     public List<MenuProductResponse> getMenuProducts() {
