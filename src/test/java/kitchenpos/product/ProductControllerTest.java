@@ -1,9 +1,9 @@
 package kitchenpos.product;
 
-import kitchenpos.application.ProductService;
+import kitchenpos.product.application.ProductService;
 import kitchenpos.common.ControllerTest;
-import kitchenpos.domain.Product;
-import kitchenpos.ui.ProductRestController;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.ui.ProductRestController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

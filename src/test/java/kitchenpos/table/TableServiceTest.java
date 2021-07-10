@@ -1,10 +1,10 @@
 package kitchenpos.table;
 
-import kitchenpos.application.TableService;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.ordertable.application.TableService;
+import kitchenpos.order.domain.OrderDao;
+import kitchenpos.ordertable.domain.OrderTableDao;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.ordertable.domain.OrderTable;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

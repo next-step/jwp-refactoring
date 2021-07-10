@@ -1,9 +1,9 @@
 package kitchenpos.tablegroup;
 
-import kitchenpos.application.TableGroupService;
+import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.common.ControllerTest;
-import kitchenpos.domain.TableGroup;
-import kitchenpos.ui.TableGroupRestController;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.ui.TableGroupRestController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

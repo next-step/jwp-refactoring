@@ -1,10 +1,10 @@
 package kitchenpos.table;
 
 
-import kitchenpos.application.TableService;
+import kitchenpos.ordertable.application.TableService;
 import kitchenpos.common.ControllerTest;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.ui.TableRestController;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.ui.TableRestController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
