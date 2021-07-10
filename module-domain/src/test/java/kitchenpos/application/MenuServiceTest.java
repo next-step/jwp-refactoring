@@ -1,4 +1,4 @@
-package kitchenpos.application.command;
+package kitchenpos.application;
 
 import kitchenpos.common.exception.MenuCheapException;
 import kitchenpos.common.exception.ProductNotExistException;

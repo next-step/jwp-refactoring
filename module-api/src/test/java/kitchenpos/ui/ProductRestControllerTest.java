@@ -1,7 +1,7 @@
 package kitchenpos.ui;
 
 import kitchenpos.application.ProductQueryService;
-import kitchenpos.application.command.ProductService;
+import kitchenpos.application.ProductService;
 import kitchenpos.common.exception.InvalidPriceException;
 import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.ProductCreate;

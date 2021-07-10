@@ -1,7 +1,7 @@
 package kitchenpos.ui;
 
 import kitchenpos.application.TableQueryService;
-import kitchenpos.application.command.TableService;
+import kitchenpos.application.TableService;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableCreate;
 import kitchenpos.dto.request.ChangeEmptyRequest;

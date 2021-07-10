@@ -1,7 +1,7 @@
 package kitchenpos.ui;
 
 import kitchenpos.application.OrderQueryService;
-import kitchenpos.application.command.OrderService;
+import kitchenpos.application.OrderService;
 import kitchenpos.dto.request.OrderCreateRequest;
 import kitchenpos.dto.request.OrderStatusChangeRequest;
 import kitchenpos.dto.response.OrderViewResponse;

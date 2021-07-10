@@ -1,4 +1,4 @@
-package kitchenpos.application.command;
+package kitchenpos.application;
 
 import kitchenpos.domain.Name;
 import kitchenpos.domain.Price;

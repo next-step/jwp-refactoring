@@ -1,4 +1,4 @@
-package kitchenpos.application.command;
+package kitchenpos.application;
 
 import kitchenpos.common.exception.EntityNotExistsException;
 import kitchenpos.domain.menu.MenuRepository;

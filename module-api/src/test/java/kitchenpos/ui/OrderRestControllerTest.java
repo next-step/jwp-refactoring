@@ -1,7 +1,7 @@
 package kitchenpos.ui;
 
 import kitchenpos.application.OrderQueryService;
-import kitchenpos.application.command.OrderService;
+import kitchenpos.application.OrderService;
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderCreate;
 import kitchenpos.domain.order.OrderLineItem;
@@ -30,8 +30,7 @@ import static kitchenpos.fixture.OrderFixture.결제완료_음식_2;
 import static kitchenpos.ui.JsonUtil.toJson;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

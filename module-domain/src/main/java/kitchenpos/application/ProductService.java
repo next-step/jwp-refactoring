@@ -1,4 +1,4 @@
-package kitchenpos.application.command;
+package kitchenpos.application;
 
 import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.ProductCreate;
