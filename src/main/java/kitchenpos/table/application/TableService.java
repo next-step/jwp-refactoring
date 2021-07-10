@@ -1,29 +1,26 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderTableId;
-import kitchenpos.table.domain.ChangeEmptyValidator;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.dto.OrderTableRequest;
-import kitchenpos.table.dto.OrderTableResponse;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import kitchenpos.table.domain.ChangeEmptyExternalValidator;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 
 @Service
 public class TableService {
     private final OrderTableRepository orderTableRepository;
-    private final OrderRepository orderRepository;
+    private final ChangeEmptyExternalValidator changeEmptyExternalValidator;
 
     public TableService(
         final OrderTableRepository orderTableRepository,
-        final OrderRepository orderRepository) {
+        final ChangeEmptyExternalValidator changeEmptyExternalValidator) {
         this.orderTableRepository = orderTableRepository;
-        this.orderRepository = orderRepository;
+        this.changeEmptyExternalValidator = changeEmptyExternalValidator;
     }
 
     @Transactional
@@ -41,8 +38,7 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
             .orElseThrow(() -> new IllegalArgumentException("등록이 되지 않은 주문테이블은 상태를 변경할 수 없습니다."));
-        final List<Order> orders = orderRepository.findAllByOrderTableId(new OrderTableId(orderTableId));
-        savedOrderTable.changeEmpty(orderTableRequest.isEmpty(), new ChangeEmptyValidator(savedOrderTable, orders));
+        savedOrderTable.changeEmpty(orderTableRequest.isEmpty(), changeEmptyExternalValidator);
         return OrderTableResponse.of(savedOrderTable);
     }
 

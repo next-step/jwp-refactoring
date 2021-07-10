@@ -1,7 +1,6 @@
 package kitchenpos.table.domain;
 
 import static java.time.LocalDateTime.*;
-import static java.util.Arrays.*;
 import static kitchenpos.order.domain.OrderMenuTest.*;
 import static org.assertj.core.api.Assertions.*;
 
@@ -33,19 +32,16 @@ public class OrderTableTest {
 	@Test
 	void emptyGroupedTableTest() {
 		// given
-		OrderLineItem orderLineItem = new OrderLineItem(ORDER_MENU, 1);
-		OrderLineItems orderLineItems = OrderLineItems.of(orderLineItem);
 		OrderTable groupedTable = createOrderTable(1L, 1L, 1, false);
-		Order order = groupedTable.createOrder(orderLineItems, now());
-		ChangeEmptyValidator changeEmptyValidator = new ChangeEmptyValidator(groupedTable, asList(order));
+		ChangeEmptyExternalValidator externalValidator = (orderTableId) -> {};
 
 		// when
 		// than
-		assertThatThrownBy(() -> groupedTable.changeEmpty(true, changeEmptyValidator))
+		assertThatThrownBy(() -> groupedTable.changeEmpty(true, externalValidator))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("그룹 설정이 되어 있는 테이블은 주문 등록 불가 상태로 바꿀 수 없습니다.");
 
-		assertThatThrownBy(() -> groupedTable.changeEmpty(false, changeEmptyValidator))
+		assertThatThrownBy(() -> groupedTable.changeEmpty(false, externalValidator))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("그룹 설정이 되어 있는 테이블은 주문 등록 불가 상태로 바꿀 수 없습니다.");
 	}
@@ -55,17 +51,17 @@ public class OrderTableTest {
 	void changeEmptyWithCookingOrderTest() {
 		// given
 		OrderTable orderTable = new OrderTable(1, false);
-		OrderLineItem orderLineItem = new OrderLineItem(ORDER_MENU, 1);
-		Order order = orderTable.createOrder(OrderLineItems.of(orderLineItem), now());
-		ChangeEmptyValidator changeEmptyValidator = new ChangeEmptyValidator(orderTable, asList(order));
+		ChangeEmptyExternalValidator externalValidator = (orderTableId) -> {
+			throw new IllegalArgumentException("조리상태이거나 식사상태주문의 주문테이블은 상태를 변경할 수 없습니다.");
+		};
 
 		// when
 		// than
-		assertThatThrownBy(() -> orderTable.changeEmpty(true, changeEmptyValidator))
+		assertThatThrownBy(() -> orderTable.changeEmpty(true, externalValidator))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("조리상태이거나 식사상태주문의 주문테이블은 상태를 변경할 수 없습니다.");
 
-		assertThatThrownBy(() -> orderTable.changeEmpty(false, changeEmptyValidator))
+		assertThatThrownBy(() -> orderTable.changeEmpty(false, externalValidator))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("조리상태이거나 식사상태주문의 주문테이블은 상태를 변경할 수 없습니다.");
 	}
@@ -75,19 +71,15 @@ public class OrderTableTest {
 	void emptyTest() {
 		// given
 		OrderTable orderTable = new OrderTable(1, false);
-		OrderLineItem orderLineItem = new OrderLineItem(ORDER_MENU, 1);
-		Order order = orderTable.createOrder(OrderLineItems.of(orderLineItem), now());
-		order.complete();
-		ChangeEmptyValidator changeEmptyValidator = new ChangeEmptyValidator(orderTable, asList(order));
-
+		ChangeEmptyExternalValidator externalValidator = (orderTableId) -> {};
 		// when
-		orderTable.changeEmpty(true, changeEmptyValidator);
+		orderTable.changeEmpty(true, externalValidator);
 
 		// than
 		assertThat(orderTable.isEmpty()).isTrue();
 
 		// when
-		orderTable.changeEmpty(false, changeEmptyValidator);
+		orderTable.changeEmpty(false, externalValidator);
 
 		// than
 		assertThat(orderTable.isEmpty()).isFalse();

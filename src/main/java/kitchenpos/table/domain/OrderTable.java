@@ -75,9 +75,11 @@ public class OrderTable {
     public boolean isEmpty() {
         return empty;
     }
-
-    public void changeEmpty(boolean isEmpty, ChangeEmptyValidator changeEmptyValidator) {
-        changeEmptyValidator.validate();
+        public void changeEmpty(boolean isEmpty, ChangeEmptyExternalValidator externalValidator) {
+        externalValidator.validate(getId());
+        if (isGrouped()) {
+            throw new IllegalArgumentException("그룹 설정이 되어 있는 테이블은 주문 등록 불가 상태로 바꿀 수 없습니다.");
+        }
         this.empty = isEmpty;
     }
 
