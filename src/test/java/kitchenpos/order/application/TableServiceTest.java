@@ -1,4 +1,4 @@
-package kitchenpos.ordertable.application;
+package kitchenpos.order.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -19,16 +19,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.common.error.CustomException;
 import kitchenpos.common.error.InvalidOrderStatusException;
+import kitchenpos.order.domain.NumberOfGuests;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.dto.OrderTableEmptyRequest;
+import kitchenpos.order.dto.OrderTableNumberOfGuestsRequest;
+import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.order.repository.OrderDao;
-import kitchenpos.ordertable.domain.NumberOfGuests;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.dto.OrderTableEmptyRequest;
-import kitchenpos.ordertable.dto.OrderTableNumberOfGuestsRequest;
-import kitchenpos.ordertable.dto.OrderTableRequest;
-import kitchenpos.ordertable.dto.OrderTableResponse;
-import kitchenpos.ordertable.repository.OrderTableDao;
+import kitchenpos.order.repository.OrderTableDao;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 @DisplayName("테이블 테스트")

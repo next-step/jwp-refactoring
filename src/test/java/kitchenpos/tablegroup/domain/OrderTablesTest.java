@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 
 import kitchenpos.common.error.InvalidRequestException;
 import kitchenpos.common.error.OrderTableNotEmptyException;
-import kitchenpos.ordertable.domain.NumberOfGuests;
-import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.order.domain.NumberOfGuests;
+import kitchenpos.order.domain.OrderTable;
 @DisplayName("주문 테이블 일급 컬렉션 테스트")
 class OrderTablesTest {
 

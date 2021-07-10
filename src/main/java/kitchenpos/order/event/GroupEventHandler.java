@@ -1,9 +1,9 @@
-package kitchenpos.ordertable.event;
+package kitchenpos.order.event;
 
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-import kitchenpos.ordertable.application.TableService;
+import kitchenpos.order.application.TableService;
 
 @Component
 public class GroupEventHandler {

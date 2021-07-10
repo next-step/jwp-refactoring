@@ -12,7 +12,7 @@ import org.springframework.util.CollectionUtils;
 
 import kitchenpos.common.error.InvalidRequestException;
 import kitchenpos.common.error.OrderTableNotEmptyException;
-import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.order.domain.OrderTable;
 
 @Embeddable
 public class OrderTables {

@@ -8,13 +8,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.common.error.InvalidRequestException;
 import kitchenpos.common.error.NotFoundTableGroup;
-import kitchenpos.ordertable.event.GroupCreatedEvent;
-import kitchenpos.ordertable.event.UnGroupedEvent;
-import kitchenpos.ordertable.repository.OrderTableDao;
+import kitchenpos.order.repository.OrderTableDao;
 import kitchenpos.tablegroup.domain.OrderTables;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
+import kitchenpos.tablegroup.event.GroupCreatedEvent;
+import kitchenpos.tablegroup.event.UnGroupedEvent;
 import kitchenpos.tablegroup.repository.TableGroupDao;
 
 @Service

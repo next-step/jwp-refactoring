@@ -107,6 +107,4 @@ public class TableGroupAcceptanceTest  extends AcceptanceTest {
         // then
         요청_실패_확인(테이블_그룹_제거_요청_실패);
     }
-
-
 }

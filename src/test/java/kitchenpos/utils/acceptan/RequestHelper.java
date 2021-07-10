@@ -1,27 +1,28 @@
 package kitchenpos.utils.acceptan;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Arrays;
+
+import org.springframework.http.HttpStatus;
+
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
-import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderStatusRequest;
-import kitchenpos.ordertable.dto.OrderTableEmptyRequest;
-import kitchenpos.ordertable.dto.OrderTableNumberOfGuestsRequest;
-import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.order.dto.OrderTableEmptyRequest;
+import kitchenpos.order.dto.OrderTableNumberOfGuestsRequest;
+import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
-import org.springframework.http.HttpStatus;
-
-import java.util.Arrays;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class RequestHelper {
     public static ExtractableResponse<Response> 테이블_그룹_생성_요청(Long 주문_테이블_고객_수_2명_번호, Long 주문_테이블_고객_수_5명_번호) {

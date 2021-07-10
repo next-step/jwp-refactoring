@@ -24,16 +24,16 @@ import kitchenpos.common.error.InvalidRequestException;
 import kitchenpos.common.error.NotFoundMenuException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.repository.MenuDao;
+import kitchenpos.order.domain.NumberOfGuests;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.order.repository.OrderDao;
 import kitchenpos.order.repository.OrderLineItemDao;
-import kitchenpos.ordertable.domain.NumberOfGuests;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.repository.OrderTableDao;
+import kitchenpos.order.repository.OrderTableDao;
 import kitchenpos.utils.MenuCreator;
 
 @DisplayName("주문 테스트")
