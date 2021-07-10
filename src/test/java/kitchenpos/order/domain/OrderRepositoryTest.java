@@ -6,6 +6,7 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.TableStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,7 +37,7 @@ public class OrderRepositoryTest {
     @BeforeEach
     public void setup() {
         List<OrderLineItem> orderLineItemList = new ArrayList<>();
-        OrderTable orderTable = orderTableRepository.save(new OrderTable(0, false));
+        OrderTable orderTable = orderTableRepository.save(new OrderTable(0, TableStatus.ORDER));
         Menu menu = new Menu(3L, "반반치킨", new BigDecimal(16000), new MenuGroup("한마리메뉴"));
         String orderStatus = OrderStatus.COOKING.name();
         orderLineItemList.add(new OrderLineItem(menu.id(), 1));

@@ -1,15 +1,13 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.TableStatus;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static kitchenpos.table.application.TableGroupService.ALREADY_USE_ORDER_TABLE;
@@ -19,16 +17,14 @@ import static kitchenpos.table.application.TableGroupService.ALREADY_USE_ORDER_T
 public class TableService {
     private static final String INVALID_NUMBER_OF_GUESTS = "방문 고객 수는 0 이상이어야 합니다.";
 
-    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
-        this.orderRepository = orderRepository;
+    public TableService(final OrderTableRepository orderTableRepository) {
         this.orderTableRepository = orderTableRepository;
     }
 
     public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
-        return OrderTableResponse.of(orderTableRepository.save(new OrderTable(orderTableRequest.getNumberOfGuests(), orderTableRequest.isEmpty())));
+        return OrderTableResponse.of(orderTableRepository.save(new OrderTable(orderTableRequest.getNumberOfGuests(), orderTableRequest.getTableStatus())));
     }
 
     @Transactional(readOnly = true)
@@ -41,7 +37,7 @@ public class TableService {
 
         savedOrderTable.validateTableGroupIsNull();
         validateOrderTableAlreadyUse(orderTableId);
-        savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
+        savedOrderTable.changeTableStatus(orderTableRequest.getTableStatus());
 
         return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
     }
@@ -70,7 +66,7 @@ public class TableService {
     }
 
     private void validateOrderTableAlreadyUse(Long orderTableId) {
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+        if (orderTableRepository.existsByIdAndTableStatus(orderTableId, TableStatus.IN_USE)) {
             throw new IllegalArgumentException(ALREADY_USE_ORDER_TABLE);
         }
     }

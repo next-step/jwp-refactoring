@@ -2,7 +2,6 @@ package kitchenpos.table.domain;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 

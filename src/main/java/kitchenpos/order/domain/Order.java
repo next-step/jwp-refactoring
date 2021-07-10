@@ -1,6 +1,7 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableStatus;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -16,7 +17,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private OrderTable orderTable;
 
     private String orderStatus;
@@ -72,12 +73,19 @@ public class Order {
 
     public void changeOrderStatus(String orderStatus) {
         validateCompletion();
+        changeTableStatusIfCompletion(orderStatus);
         this.orderStatus = orderStatus;
     }
 
     private void validateCompletion() {
         if (Objects.equals(OrderStatus.COMPLETION.name(), orderStatus)) {
             throw new IllegalArgumentException(ALREADY_COMPLETION_ORDER);
+        }
+    }
+
+    private void changeTableStatusIfCompletion(String orderStatus) {
+        if (orderStatus.equals(OrderStatus.COMPLETION.name())) {
+            orderTable.changeTableStatus(TableStatus.COMPLETION);
         }
     }
 

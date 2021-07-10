@@ -3,6 +3,7 @@ package kitchenpos.order.domain;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,7 +28,7 @@ public class OrderTest {
         OrderLineItem orderLineItem = new OrderLineItem(menu.id(), 1L);
         orderLineItemList.add(orderLineItem);
         orderStatus = OrderStatus.COOKING.name();
-        orderTable = new OrderTable(1, false);
+        orderTable = new OrderTable(1, TableStatus.ORDER);
         orderLineItems = new OrderLineItems(orderLineItemList);
     }
 

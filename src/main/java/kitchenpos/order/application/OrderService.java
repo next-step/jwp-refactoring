@@ -7,6 +7,7 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.TableStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -61,7 +62,7 @@ public class OrderService {
 
         orderLineItems.mappingOrder(order);
         order.mappingOrderLineItems(new OrderLineItems(orderLineItemRepository.saveAll(orderLineItems.orderLineItems())));
-
+        orderTable.changeTableStatus(TableStatus.IN_USE);
         return OrderResponse.of(order);
     }
 
