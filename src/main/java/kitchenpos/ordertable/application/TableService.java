@@ -7,15 +7,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.common.error.NotFoundOrderException;
-import kitchenpos.ordertable.dto.OrderTableEmptyRequest;
-import kitchenpos.ordertable.dto.OrderTableNumberOfGuestsRequest;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.repository.OrderDao;
 import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.dto.OrderTableEmptyRequest;
+import kitchenpos.ordertable.dto.OrderTableNumberOfGuestsRequest;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.ordertable.repository.OrderTableDao;
+import kitchenpos.tablegroup.domain.OrderTables;
+import kitchenpos.tablegroup.domain.TableGroup;
 
 @Service
 @Transactional
@@ -64,5 +66,19 @@ public class TableService {
         orderTable.changeNumberOfGuests(numberOfGuests);
 
         return OrderTableResponse.of(orderTable);
+    }
+
+    public void setGroup(TableGroup tableGroup, List<Long> orderTableIds) {
+        final OrderTables orderTables = OrderTables.of(tableGroup, orderTableDao.findAllById(orderTableIds));
+        orderTables.setTableGroup(tableGroup);
+        orderTableDao.saveAll(orderTables.getOrderTables());
+    }
+
+    public void ungroup(TableGroup tableGroup) {
+        final OrderTables orderTables = OrderTables.of(tableGroup, orderTableDao.findAllByTableGroupId(tableGroup.getId()));
+        List<Order> orders = orderDao.findOrdersByOrderTableIdIn(orderTables.orderIds());
+
+        orders.forEach(Order::checkChangeableStatus);
+        orderTables.ungroup();
     }
 }

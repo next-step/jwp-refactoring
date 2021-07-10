@@ -6,7 +6,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -16,11 +15,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
-import kitchenpos.common.error.InvalidOrderStatusException;
 import kitchenpos.common.error.InvalidRequestException;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.repository.OrderDao;
 import kitchenpos.ordertable.domain.NumberOfGuests;
 import kitchenpos.ordertable.domain.OrderTable;
@@ -42,6 +39,9 @@ class TableGroupServiceTest {
 
     @Mock
     private TableGroupDao tableGroupDao;
+
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -74,11 +74,7 @@ class TableGroupServiceTest {
     @Test
     void ungroup() {
         // given
-        List<OrderTable> orderTables = Arrays.asList(orderTable, addOrderTable);
-        Order order = Order.of(1L, OrderStatus.COMPLETION);
         // when
-        when(orderTableDao.findAllByTableGroupId(1L)).thenReturn(orderTables);
-        when(orderDao.findOrdersByOrderTableIdIn(any())).thenReturn(Arrays.asList(order));
         when(tableGroupDao.findById(any())).thenReturn(Optional.of(new TableGroup()));
         // then
         tableGroupService.ungroup(1L);
@@ -102,21 +98,5 @@ class TableGroupServiceTest {
         // then
         assertThatThrownBy(() -> tableGroupService.create(new TableGroupRequest()))
                 .isInstanceOf(InvalidRequestException.class);
-    }
-
-    @DisplayName("그룹 제거 시 주문 상태가 요리중, 식사중 상태가아닌지 체크한다.")
-    @Test
-    void ungroupFailedByCookingStatus() {
-        // given
-        List<OrderTable> orderTables = Arrays.asList(orderTable, addOrderTable);
-        Order order = Order.of(1L, OrderStatus.MEAL);
-        // when
-        when(tableGroupDao.findById(any())).thenReturn(Optional.of(new TableGroup()));
-        when(orderTableDao.findAllByTableGroupId(1L)).thenReturn(orderTables);
-        when(orderDao.findOrdersByOrderTableIdIn(any())).thenReturn(Arrays.asList(order));
-
-        // then
-        assertThatThrownBy(() -> tableGroupService.ungroup(1L))
-                .isInstanceOf(InvalidOrderStatusException.class);
     }
 }
