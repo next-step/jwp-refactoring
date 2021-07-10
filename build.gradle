@@ -23,6 +23,12 @@ dependencies {
     implementation 'mysql:mysql-connector-java'
 }
 
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+}
+
 test {
     useJUnitPlatform()
 }
