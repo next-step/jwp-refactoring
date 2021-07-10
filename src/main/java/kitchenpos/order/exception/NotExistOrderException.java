@@ -1,4 +1,4 @@
-package kitchenpos.common.exception;
+package kitchenpos.order.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -6,11 +6,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import java.util.NoSuchElementException;
 
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class NotExistTableException extends NoSuchElementException {
-    public NotExistTableException() {
+public class NotExistOrderException extends NoSuchElementException {
+    public NotExistOrderException() {
     }
 
-    public NotExistTableException(String s) {
+    public NotExistOrderException(String s) {
         super(s);
     }
 }

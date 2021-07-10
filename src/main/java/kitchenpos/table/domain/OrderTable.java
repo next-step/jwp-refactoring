@@ -1,10 +1,10 @@
 package kitchenpos.table.domain;
 
 import kitchenpos.order.domain.*;
-import kitchenpos.common.exception.UnableCreateOrderException;
 import kitchenpos.table.dto.OrderTableRequest;
-import kitchenpos.common.exception.UnableChangeEmptyOrderTableException;
-import kitchenpos.common.exception.UnableChangeNumberOfGuestsException;
+import kitchenpos.table.exception.UnableChangeEmptyOrderTableException;
+import kitchenpos.table.exception.UnableChangeNumberOfGuestsException;
+import kitchenpos.table.exception.UnableOrderCausedByEmptyTableException;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -91,7 +91,7 @@ public class OrderTable {
 
     public Order newOrder(LocalDateTime orderedTime, List<OrderLineItem> newOrderLineItems) {
         if (isEmpty()) {
-            throw new UnableCreateOrderException("빈테이블은 주문을 할수 없습니다.");
+            throw new UnableOrderCausedByEmptyTableException("빈테이블은 주문을 할수 없습니다.");
         }
         Order newOrder = Order.newOrder(this, orderedTime, newOrderLineItems);
         newOrder.reception();

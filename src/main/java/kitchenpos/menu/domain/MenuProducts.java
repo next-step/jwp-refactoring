@@ -5,7 +5,7 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.common.domain.Price;
 import kitchenpos.product.domain.Product;
-import kitchenpos.common.exception.NotExistProductException;
+import kitchenpos.product.exception.NotExistProductException;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;

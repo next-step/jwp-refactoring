@@ -1,10 +1,9 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.common.exception.UnableChangeEmptyStatusException;
-import kitchenpos.common.exception.UnableChangeOrderStatusException;
-import kitchenpos.common.exception.UnableUngroupStatusException;
+import kitchenpos.order.exception.UnableChangeEmptyStatusException;
+import kitchenpos.order.exception.UnableChangeOrderStatusException;
+import kitchenpos.table.exception.UnableUngroupStatusException;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.common.exception.UnableOrderCausedByEmptyTableException;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

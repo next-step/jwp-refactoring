@@ -1,6 +1,6 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.common.exception.UnableCreateTableGroupException;
+import kitchenpos.table.exception.UnableCreateTableGroupException;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

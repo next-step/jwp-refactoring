@@ -9,7 +9,7 @@ import kitchenpos.table.dto.TableGroupResponse;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.common.exception.NotExistTableException;
+import kitchenpos.table.exception.NotExistTableException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

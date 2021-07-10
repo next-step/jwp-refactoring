@@ -1,6 +1,6 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.common.exception.InvalidNumberOfGeustsException;
+import kitchenpos.table.exception.InvalidNumberOfGeustsException;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
