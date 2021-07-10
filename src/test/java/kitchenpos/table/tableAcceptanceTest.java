@@ -5,6 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.net.URI;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -43,12 +46,36 @@ public class tableAcceptanceTest extends AcceptanceTest {
         assertThat(orderTableResponse.getNumberOfGuests()).isEqualTo(orderTableRequest.getNumberOfGuests());
     }
 
+    @DisplayName("DTO와 JPA를 사용하여 주문 테이블을 조회한다")
+    @Test
+    void listTest() {
+        //given
+        주문_테이블_등록_요청(orderTableRequest);
+
+        //when
+        ExtractableResponse<Response> response = 주문_테이블_조회_요청();
+
+        //then
+        정상_처리(response);
+    }
+
+
+
     private ExtractableResponse<Response> 주문_테이블_등록_요청(OrderTableRequest orderTableRequest) {
         return RestAssured
                 .given().log().all()
                 .body(orderTableRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/api/tables/temp")
+                .then().log().all()
+                .extract();
+    }
+
+    private ExtractableResponse<Response> 주문_테이블_조회_요청() {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/api/tables/temp")
                 .then().log().all()
                 .extract();
     }

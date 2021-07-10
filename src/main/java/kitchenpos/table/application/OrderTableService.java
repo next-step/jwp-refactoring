@@ -45,6 +45,13 @@ public class OrderTableService {
         return orderTableDao.findAll();
     }
 
+    @Transactional(readOnly = true)
+    public List<OrderTableResponse> listTemp() {
+        List<OrderTableEntity> orderTableEntities = orderTableRepository.findAll();
+        return OrderTableResponse.ofList(orderTableEntities);
+
+    }
+
     @Transactional
     public OrderTable changeEmpty(final Long orderTableId, final OrderTable orderTable) {
         final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
@@ -83,4 +90,6 @@ public class OrderTableService {
 
         return orderTableDao.save(savedOrderTable);
     }
+
+
 }

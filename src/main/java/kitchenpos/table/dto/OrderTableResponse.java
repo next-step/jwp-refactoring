@@ -2,6 +2,9 @@ package kitchenpos.table.dto;
 
 import kitchenpos.table.domain.OrderTableEntity;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class OrderTableResponse {
     private Long id;
     private Long tableGroupId;
@@ -24,6 +27,12 @@ public class OrderTableResponse {
                 , orderTableEntity.getTableGroupId()
                 , orderTableEntity.getNumberOfGuests()
                 , orderTableEntity.isEmpty());
+    }
+
+    public static List<OrderTableResponse> ofList(List<OrderTableEntity> orderTableEntities) {
+        return orderTableEntities.stream()
+                .map(OrderTableResponse::of)
+                .collect(Collectors.toList());
     }
 
     public Long getId() {

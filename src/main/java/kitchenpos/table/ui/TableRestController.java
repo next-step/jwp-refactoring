@@ -42,6 +42,12 @@ public class TableRestController {
                 ;
     }
 
+    @GetMapping("/api/tables/temp")
+    public ResponseEntity<List<OrderTableResponse>> listTemp() {
+        return ResponseEntity.ok()
+                .body(orderTableService.listTemp());
+    }
+
     @PutMapping("/api/tables/{orderTableId}/empty")
     public ResponseEntity<OrderTable> changeEmpty(
             @PathVariable final Long orderTableId,
