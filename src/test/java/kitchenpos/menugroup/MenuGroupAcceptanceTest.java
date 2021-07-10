@@ -10,7 +10,6 @@ import org.junit.jupiter.api.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,13 +56,18 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
         assertThat(menuGroupNames).contains(menuGroupRequest.getName());
     }
 
+    public static MenuGroupResponse 메뉴그룹_등록되어_있음(MenuGroupRequest menuGroupRequest) {
+        ExtractableResponse<Response> response = 메뉴그룹_등록_요청(menuGroupRequest);
+        정상_등록(response);
+        return response.as(MenuGroupResponse.class);
+    }
 
-    private ExtractableResponse<Response> 메뉴그룹_등록_요청(MenuGroupRequest menuGroupRequest) {
+    public static ExtractableResponse<Response> 메뉴그룹_등록_요청(MenuGroupRequest menuGroupRequest) {
         return RestAssured
                 .given().log().all()
                 .body(menuGroupRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/api/menu-groups/temp")
+                .when().post("/api/menu-groups")
                 .then().log().all()
                 .extract();
     }
@@ -72,7 +76,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/api/menu-groups/temp")
+                .when().get("/api/menu-groups")
                 .then().log().all()
                 .extract();
 
