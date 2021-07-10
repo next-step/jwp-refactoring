@@ -1,6 +1,7 @@
 package kitchenpos.menugroup.application;
 
 import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,7 @@ public class MenuGroupServiceRealTest {
         menuGroupService.create(expect);
 
         //when
-        List<MenuGroup> result = menuGroupService.list();
+        List<MenuGroupResponse> result = menuGroupService.list();
 
         //then
         assertThat(result.size()).isGreaterThan(0);

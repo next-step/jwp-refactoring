@@ -13,15 +13,15 @@ public class MenuGroupEntity {
     @Column(nullable = false)
     private String name;
 
+    public MenuGroupEntity() {
+    }
+
     public Long getId() {
         return id;
     }
 
     public String getName() {
         return name;
-    }
-
-    private MenuGroupEntity() {
     }
 
     public MenuGroupEntity(String name) {
