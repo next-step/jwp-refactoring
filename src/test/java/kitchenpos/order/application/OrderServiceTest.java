@@ -4,8 +4,6 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderLineItemRepository;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemDto;
@@ -33,7 +31,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -45,9 +42,6 @@ class OrderServiceTest {
     private OrderRepository orderRepository;
 
     @Mock
-    private OrderLineItemRepository orderLineItemRepository;
-
-    @Mock
     private OrderTableRepository orderTableRepository;
 
     @InjectMocks
@@ -56,14 +50,12 @@ class OrderServiceTest {
     private Order order;
     private MenuGroup menuGroup;
     private Menu menu;
-    private OrderLineItem orderLineItem;
 
     @BeforeEach
     void setUp() {
         order = new Order(1L, 1L);
         menuGroup = new MenuGroup(1L, "추천메뉴");
         menu = new Menu(1L, "강정치킨+강정치킨", BigDecimal.valueOf(0), menuGroup, Collections.emptyList());
-        orderLineItem = new OrderLineItem(1L, order, menu, 1);
     }
 
     @DisplayName("주문을 등록할 수 있다.")
@@ -79,10 +71,12 @@ class OrderServiceTest {
         given(orderRepository.save(any())).willReturn(order);
 
         // when
-        orderService.create(orderRequest);
+        OrderResponse createdOrder = orderService.create(orderRequest);
 
         // then
-        verify(orderLineItemRepository).save(any());
+        assertThat(createdOrder.getId()).isEqualTo(order.getId());
+        assertThat(createdOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(createdOrder.getOrderTableId()).isEqualTo(order.getOrderTableId());
     }
 
     @DisplayName("주문 항목이 올바르지 않으면 등록할 수 없다 : 주문 항목은 메뉴에 존재하고 중복되지않는 메뉴이어야 한다.")
