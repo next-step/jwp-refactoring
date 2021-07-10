@@ -1,11 +1,9 @@
 package kitchenpos.ordering.application;
 
-import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.ordering.domain.*;
 import kitchenpos.ordering.dto.OrderRequest;
 import kitchenpos.ordering.dto.OrderResponse;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,11 +29,7 @@ public class OrderServiceTest {
     private OrderService orderService;
 
     @Mock
-    private MenuRepository menuRepository;
-    @Mock
     private OrderRepository orderRepository;
-    @Mock
-    private OrderTableRepository orderTableRepository;
     @Mock
     private OrderValidator orderValidator;
 
@@ -58,8 +52,6 @@ public class OrderServiceTest {
         OrderRequest orderRequest1 = new OrderRequest(order1OrderTableId, order1OrderLineItems);
         Ordering order1 = orderRequest1.toEntity();
 
-//        when(menuRepository.countByIdIn(any())).thenReturn(1L);
-//        when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
         when(orderRepository.save(any())).thenReturn(order1);
 
         OrderResponse orderResponse = orderService.create(orderRequest1);
@@ -76,11 +68,8 @@ public class OrderServiceTest {
         when(orderRepository.findAll()).thenReturn(Arrays.asList(order1));
 
         assertThat(orderService.list().stream()
-        .map(orderResponse -> orderResponse.getId())
-        .collect(Collectors.toList())).contains(order1.getId());
-
-//        assertThat(orderService.list()).contains(order1);
-//        assertThat(order1.getOrderLineItems()).contains(orderLineItem);
+                .map(orderResponse -> orderResponse.getId())
+                .collect(Collectors.toList())).contains(order1.getId());
     }
 
     @DisplayName("주문 상태를 변경할 수 있다")
