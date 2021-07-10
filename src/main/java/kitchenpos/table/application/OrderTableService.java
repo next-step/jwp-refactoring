@@ -4,6 +4,10 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableEntity;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,13 +16,15 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-public class TableService {
+public class OrderTableService {
     private final OrderDao orderDao;
     private final OrderTableDao orderTableDao;
+    private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderDao orderDao, final OrderTableDao orderTableDao) {
+    public OrderTableService(OrderDao orderDao, OrderTableDao orderTableDao, OrderTableRepository orderTableRepository) {
         this.orderDao = orderDao;
         this.orderTableDao = orderTableDao;
+        this.orderTableRepository = orderTableRepository;
     }
 
     @Transactional
@@ -26,6 +32,13 @@ public class TableService {
         orderTable.setTableGroupId(null);
 
         return orderTableDao.save(orderTable);
+    }
+
+    @Transactional
+    public OrderTableResponse createTemp(final OrderTableRequest orderTableRequest) {
+        OrderTableEntity orderTableEntity = orderTableRepository.save(orderTableRequest.toEntity());
+
+        return OrderTableResponse.of(orderTableEntity);
     }
 
     public List<OrderTable> list() {

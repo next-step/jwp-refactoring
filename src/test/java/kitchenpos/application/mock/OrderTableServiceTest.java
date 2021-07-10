@@ -1,6 +1,6 @@
 package kitchenpos.application.mock;
 
-import kitchenpos.table.application.TableService;
+import kitchenpos.table.application.OrderTableService;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.table.domain.OrderTable;
@@ -23,13 +23,13 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class TableServiceTest {
+class OrderTableServiceTest {
     @Mock
     private OrderDao orderDao;
     @Mock
     private OrderTableDao orderTableDao;
     @InjectMocks
-    private TableService tableService;
+    private OrderTableService orderTableService;
 
     private OrderTable givenOrderTable = new OrderTable();
 
@@ -44,7 +44,7 @@ class TableServiceTest {
     @Test
     void createTest() {
         //when
-        tableService.create(givenOrderTable);
+        orderTableService.create(givenOrderTable);
 
         //then
         verify(orderTableDao).save(givenOrderTable);
@@ -57,7 +57,7 @@ class TableServiceTest {
         given(orderTableDao.findAll()).willReturn(Arrays.asList(givenOrderTable));
 
         //when
-        List<OrderTable> result = tableService.list();
+        List<OrderTable> result = orderTableService.list();
 
         //then
         assertThat(result).containsExactly(givenOrderTable);
@@ -70,7 +70,7 @@ class TableServiceTest {
         given(orderTableDao.findById(givenOrderTable.getId())).willReturn(Optional.empty());
 
         //when && then
-        assertThatThrownBy(() -> tableService.changeEmpty(givenOrderTable.getId(), givenOrderTable))
+        assertThatThrownBy(() -> orderTableService.changeEmpty(givenOrderTable.getId(), givenOrderTable))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("등록되지 않은 주문 테이블입니다.");
     }
@@ -83,7 +83,7 @@ class TableServiceTest {
         given(orderTableDao.findById(givenOrderTable.getId())).willReturn(Optional.ofNullable(givenOrderTable));
 
         //when && then
-        assertThatThrownBy(() -> tableService.changeEmpty(givenOrderTable.getId(), givenOrderTable))
+        assertThatThrownBy(() -> orderTableService.changeEmpty(givenOrderTable.getId(), givenOrderTable))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("단체 지정된 테이블입니다.");
     }
@@ -96,7 +96,7 @@ class TableServiceTest {
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(),any())).willReturn(true);
 
         //when && then
-        assertThatThrownBy(() -> tableService.changeEmpty(givenOrderTable.getId(), givenOrderTable))
+        assertThatThrownBy(() -> orderTableService.changeEmpty(givenOrderTable.getId(), givenOrderTable))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("주문이 조리나 식사 상태입니다.");
     }
@@ -109,7 +109,7 @@ class TableServiceTest {
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(),any())).willReturn(false);
 
         //when
-        tableService.changeEmpty(givenOrderTable.getId(), givenOrderTable);
+        orderTableService.changeEmpty(givenOrderTable.getId(), givenOrderTable);
 
         //then
         verify(orderTableDao).save(givenOrderTable);
@@ -122,7 +122,7 @@ class TableServiceTest {
         givenOrderTable.setNumberOfGuests(-1);
 
         //when && then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(givenOrderTable.getId(), givenOrderTable))
+        assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(givenOrderTable.getId(), givenOrderTable))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("방문한 고객 수는 0명 이상이어야 합니다.");
     }
@@ -135,7 +135,7 @@ class TableServiceTest {
         given(orderTableDao.findById(givenOrderTable.getId())).willReturn(Optional.empty());
 
         //when && then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(givenOrderTable.getId(), givenOrderTable))
+        assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(givenOrderTable.getId(), givenOrderTable))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("등록되지 않은 주문 테이블입니다.");
     }
@@ -148,7 +148,7 @@ class TableServiceTest {
         given(orderTableDao.findById(givenOrderTable.getId())).willReturn(Optional.ofNullable(givenOrderTable));
 
         //when && then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(givenOrderTable.getId(), givenOrderTable))
+        assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(givenOrderTable.getId(), givenOrderTable))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("빈 주문 테이블입니다.");
     }
@@ -160,7 +160,7 @@ class TableServiceTest {
         given(orderTableDao.findById(givenOrderTable.getId())).willReturn(Optional.ofNullable(givenOrderTable));
 
         //when
-        tableService.changeNumberOfGuests(givenOrderTable.getId(), givenOrderTable);
+        orderTableService.changeNumberOfGuests(givenOrderTable.getId(), givenOrderTable);
 
         //then
         verify(orderTableDao).save(givenOrderTable);

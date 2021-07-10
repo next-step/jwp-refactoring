@@ -1,6 +1,6 @@
 package kitchenpos.table.ui;
 
-import kitchenpos.table.application.TableService;
+import kitchenpos.table.application.OrderTableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
@@ -12,15 +12,15 @@ import java.util.List;
 
 @RestController
 public class TableRestController {
-    private final TableService tableService;
+    private final OrderTableService orderTableService;
 
-    public TableRestController(final TableService tableService) {
-        this.tableService = tableService;
+    public TableRestController(final OrderTableService orderTableService) {
+        this.orderTableService = orderTableService;
     }
 
     @PostMapping("/api/tables")
     public ResponseEntity<OrderTable> create(@RequestBody final OrderTable orderTable) {
-        final OrderTable created = tableService.create(orderTable);
+        final OrderTable created = orderTableService.create(orderTable);
         final URI uri = URI.create("/api/tables/" + created.getId());
         return ResponseEntity.created(uri)
                 .body(created)
@@ -29,17 +29,16 @@ public class TableRestController {
 
     @PostMapping("/api/tables/temp")
     public ResponseEntity<OrderTableResponse> createTemp(@RequestBody final OrderTableRequest orderTableRequest) {
-//        final OrderTable created = tableService.create(orderTable);
-        final URI uri = URI.create("/api/tables/" + 1L);
+        final OrderTableResponse created = orderTableService.createTemp(orderTableRequest);
+        final URI uri = URI.create("/api/tables/" + created);
         return ResponseEntity.created(uri)
-                .body(null)
-                ;
+                .body(null);
     }
 
     @GetMapping("/api/tables")
     public ResponseEntity<List<OrderTable>> list() {
         return ResponseEntity.ok()
-                .body(tableService.list())
+                .body(orderTableService.list())
                 ;
     }
 
@@ -49,7 +48,7 @@ public class TableRestController {
             @RequestBody final OrderTable orderTable
     ) {
         return ResponseEntity.ok()
-                .body(tableService.changeEmpty(orderTableId, orderTable))
+                .body(orderTableService.changeEmpty(orderTableId, orderTable))
                 ;
     }
 
@@ -59,7 +58,7 @@ public class TableRestController {
             @RequestBody final OrderTable orderTable
     ) {
         return ResponseEntity.ok()
-                .body(tableService.changeNumberOfGuests(orderTableId, orderTable))
+                .body(orderTableService.changeNumberOfGuests(orderTableId, orderTable))
                 ;
     }
 }
