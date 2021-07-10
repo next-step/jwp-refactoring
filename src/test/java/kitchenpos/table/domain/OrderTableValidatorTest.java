@@ -30,7 +30,7 @@ public class OrderTableValidatorTest {
         orderTableValidator = new OrderTableValidator(orderRepository);
     }
 
-    @DisplayName("검증 - 등록되어있던 주문테이블이 이미 단체지정 되어있지 않은지 확인한다.")
+    @DisplayName("주문테이블 상태 검증 - 등록되어있던 주문테이블이 이미 단체지정 되어있지 않은지 확인한다.")
     @Test
     void 주문테이블이_올바르지_않으면_테이블상태를_변경할_수_없다_2() {
         OrderTable orderTableSaved = new OrderTable(orderTable1Id, 2L, orderTable1NumberOfGuests, orderTable1Empty);
@@ -40,7 +40,7 @@ public class OrderTableValidatorTest {
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("검증 - 주문테이블의 주문 상태가 계산완료인지 확인한다.")
+    @DisplayName("주문테이블 상태 검증 - 주문테이블의 주문 상태가 계산완료인지 확인한다.")
     @Test
     void 주문테이블이_올바르지_않으면_빈테이블로_변경할_수_없다_3() {
         OrderTable orderTableSaved = new OrderTable(orderTable1Id, null, orderTable1NumberOfGuests, orderTable1Empty);
