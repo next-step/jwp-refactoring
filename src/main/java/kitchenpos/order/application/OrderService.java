@@ -1,7 +1,7 @@
 package kitchenpos.order.application;
 
 import java.util.List;
-import kitchenpos.common.NotFoundEntityException;
+import kitchenpos.handler.exception.NotFoundEntityException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
@@ -47,7 +47,8 @@ public class OrderService {
             createOrderDto.getOrderLineItems()
                     .stream()
                     .map(dto -> {
-                        Menu menu = menuRepository.findById(dto.getMenuId()).orElseThrow(NotFoundEntityException::new);
+                        Menu menu = menuRepository.findById(dto.getMenuId())
+                                                  .orElseThrow(NotFoundEntityException::new);
                         return new OrderLineItem(menu, dto.getQuantity());
                     })
                     .collect(toList());

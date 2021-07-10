@@ -6,10 +6,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import kitchenpos.handler.exception.NotChangeEmptyException;
+import kitchenpos.handler.exception.NotChangeNumberOfGuestsException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.Orders;
-import kitchenpos.table.exception.NotChangeEmptyException;
-import kitchenpos.table.exception.NotChangeNumberOfGuestsException;
 
 @Entity
 public class OrderTable {

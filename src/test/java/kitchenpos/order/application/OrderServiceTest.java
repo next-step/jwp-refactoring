@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Stream;
-import kitchenpos.common.NotFoundEntityException;
+import kitchenpos.handler.exception.NotFoundEntityException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;

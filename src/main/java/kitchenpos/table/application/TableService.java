@@ -1,11 +1,11 @@
 package kitchenpos.table.application;
 
 import java.util.List;
-import kitchenpos.common.NotFoundEntityException;
+import kitchenpos.handler.exception.NotChangeNumberOfGuestsException;
+import kitchenpos.handler.exception.NotFoundEntityException;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.CreateOrderTableDto;
-import kitchenpos.table.exception.NotChangeNumberOfGuestsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

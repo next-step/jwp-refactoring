@@ -1,14 +1,14 @@
 package kitchenpos.table.application;
 
 import java.util.Optional;
-import kitchenpos.common.NotFoundEntityException;
+import kitchenpos.handler.exception.NotChangeEmptyException;
+import kitchenpos.handler.exception.NotChangeNumberOfGuestsException;
+import kitchenpos.handler.exception.NotFoundEntityException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.CreateOrderTableDto;
-import kitchenpos.table.exception.NotChangeEmptyException;
-import kitchenpos.table.exception.NotChangeNumberOfGuestsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -78,8 +78,7 @@ class TableServiceTest {
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
 
         // when
-        assertThatExceptionOfType(
-            NotChangeEmptyException.class).isThrownBy(() -> tableService.changeEmpty(orderTableId, true));
+        assertThatExceptionOfType(NotChangeEmptyException.class).isThrownBy(() -> tableService.changeEmpty(orderTableId, true));
     }
 
     @DisplayName("empty 상태 변경 실패 - 주문의 상태가 COOKING 또는 MEAL")
