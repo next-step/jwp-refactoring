@@ -7,7 +7,6 @@ import java.util.Objects;
 
 public class OrderLineItemResponse {
     private Long id;
-//    private Long orderId;
     private Long menuId;
     private long quantity;
     private LocalDateTime createdDate;
@@ -18,7 +17,6 @@ public class OrderLineItemResponse {
 
     public OrderLineItemResponse(Long id, Long menuId, long quantity, LocalDateTime createdDate, LocalDateTime modifiedDate) {
         this.id = id;
-//        this.orderId = orderId;
         this.menuId = menuId;
         this.quantity = quantity;
         this.createdDate = createdDate;
@@ -27,7 +25,6 @@ public class OrderLineItemResponse {
 
     public static OrderLineItemResponse of(OrderLineItem orderLineItem) {
         return new OrderLineItemResponse(orderLineItem.getId(),
-//                orderLineItem.getOrder(),
                 orderLineItem.getMenuId(),
                 orderLineItem.getQuantity(),
                 orderLineItem.getCreatedDate(),
@@ -37,10 +34,6 @@ public class OrderLineItemResponse {
     public Long getId() {
         return id;
     }
-
-//    public Long getOrderId() {
-//        return orderId;
-//    }
 
     public Long getMenuId() {
         return menuId;
