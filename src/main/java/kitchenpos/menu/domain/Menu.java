@@ -5,7 +5,6 @@ import kitchenpos.menu.ui.exception.IllegalMenuPriceException;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -16,8 +15,6 @@ public class Menu {
     private String name;
     private BigDecimal price;
     private Long menuGroupId;
-    @Embedded
-    private MenuProducts menuProducts = new MenuProducts();
 
     public Menu() {
     }
@@ -52,14 +49,6 @@ public class Menu {
         return menu;
     }
 
-    public void addMenuProducts(MenuProducts menuProducts) {
-        this.menuProducts.addAll(menuProducts.menuProducts());
-    }
-
-    public List<MenuProduct> menuProducts() {
-        return menuProducts.menuProducts();
-    }
-
     public void validatePrice() {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalMenuPriceException("메뉴의 가격이 없거나 음수입니다");
@@ -70,14 +59,6 @@ public class Menu {
         if (price.compareTo(sum) > 0) {
             throw new IllegalMenuPriceException("메뉴의 가격이 상품의 가격보다 큽니다");
         }
-    }
-
-    public Menu(Long id, String name, BigDecimal price, Long menuGroupId, MenuProducts menuProducts) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.menuGroupId = menuGroupId;
-        this.menuProducts = menuProducts;
     }
 
     public Long getId() {
