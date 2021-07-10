@@ -1,6 +1,6 @@
 package kitchenpos.domain;
 
-import kitchenpos.exception.InvalidNameException;
+import kitchenpos.common.exception.InvalidNameException;
 
 import javax.persistence.Embeddable;
 import java.util.Objects;

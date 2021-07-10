@@ -1,6 +1,6 @@
 package kitchenpos.domain;
 
-import kitchenpos.exception.InvalidQuantityException;
+import kitchenpos.common.exception.InvalidQuantityException;
 
 import javax.persistence.Embeddable;
 import java.util.Objects;

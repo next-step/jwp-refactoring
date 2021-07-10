@@ -1,6 +1,6 @@
 package kitchenpos.domain;
 
-import kitchenpos.exception.InvalidChangeNumberOfGuestsException;
+import kitchenpos.common.exception.InvalidChangeNumberOfGuestsException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

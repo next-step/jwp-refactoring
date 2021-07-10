@@ -1,10 +1,10 @@
 package kitchenpos.application.command;
 
 import kitchenpos.domain.NumberOfGuest;
+import kitchenpos.domain.order.OrderRepository;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableCreate;
-import kitchenpos.repository.OrderRepository;
-import kitchenpos.repository.OrderTableRepository;
+import kitchenpos.domain.table.OrderTableRepository;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -2,10 +2,10 @@ package kitchenpos.ui;
 
 import kitchenpos.application.command.ProductService;
 import kitchenpos.application.query.ProductQueryService;
+import kitchenpos.common.exception.InvalidPriceException;
 import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.ProductCreate;
 import kitchenpos.dto.request.ProductCreateRequest;
-import kitchenpos.exception.InvalidPriceException;
 import kitchenpos.fixture.CleanUp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

@@ -1,10 +1,10 @@
 package kitchenpos.domain.menu;
 
+import kitchenpos.common.exception.MenuCheapException;
+import kitchenpos.common.exception.ProductNotExistException;
 import kitchenpos.domain.Name;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.product.Products;
-import kitchenpos.exception.MenuCheapException;
-import kitchenpos.exception.ProductNotExistException;
 
 import javax.persistence.*;
 import java.util.Objects;

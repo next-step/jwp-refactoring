@@ -1,6 +1,6 @@
 package kitchenpos.domain;
 
-import kitchenpos.exception.InvalidPriceException;
+import kitchenpos.common.exception.InvalidPriceException;
 
 import javax.persistence.Embeddable;
 import java.math.BigDecimal;

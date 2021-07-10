@@ -1,8 +1,8 @@
 package kitchenpos.application.query;
 
+import kitchenpos.common.exception.EntityNotExistsException;
+import kitchenpos.domain.order.OrderRepository;
 import kitchenpos.dto.response.OrderViewResponse;
-import kitchenpos.exception.EntityNotExistsException;
-import kitchenpos.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

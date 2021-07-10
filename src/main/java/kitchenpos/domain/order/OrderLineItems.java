@@ -1,6 +1,6 @@
 package kitchenpos.domain.order;
 
-import kitchenpos.exception.OrderLineItemNotEmptyException;
+import kitchenpos.common.exception.OrderLineItemNotEmptyException;
 
 import javax.persistence.*;
 import java.util.ArrayList;

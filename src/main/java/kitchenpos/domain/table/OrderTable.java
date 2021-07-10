@@ -1,12 +1,12 @@
 package kitchenpos.domain.table;
 
+import kitchenpos.common.exception.TableEmptyException;
 import kitchenpos.domain.NumberOfGuest;
 import kitchenpos.domain.menu.Menus;
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderCreate;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.order.Orders;
-import kitchenpos.exception.TableEmptyException;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

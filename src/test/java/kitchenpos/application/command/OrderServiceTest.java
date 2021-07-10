@@ -1,20 +1,15 @@
 package kitchenpos.application.command;
 
 import kitchenpos.application.query.OrderQueryService;
+import kitchenpos.common.exception.EntityNotExistsException;
+import kitchenpos.common.exception.TableEmptyException;
 import kitchenpos.domain.menu.Menu;
-import kitchenpos.domain.order.OrderCreate;
-import kitchenpos.domain.order.OrderLineItem;
-import kitchenpos.domain.order.OrderLineItemCreate;
-import kitchenpos.domain.order.OrderStatus;
+import kitchenpos.domain.menu.MenuRepository;
+import kitchenpos.domain.order.*;
+import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.dto.response.OrderViewResponse;
-import kitchenpos.exception.EntityNotExistsException;
-import kitchenpos.exception.TableEmptyException;
 import kitchenpos.fixture.CleanUp;
 import kitchenpos.fixture.OrderFixture;
-import kitchenpos.repository.MenuRepository;
-import kitchenpos.repository.OrderLineItemRepository;
-import kitchenpos.repository.OrderRepository;
-import kitchenpos.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

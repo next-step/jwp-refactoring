@@ -2,11 +2,11 @@ package kitchenpos.application.command;
 
 import kitchenpos.application.query.TableQueryService;
 import kitchenpos.domain.NumberOfGuest;
+import kitchenpos.domain.order.OrderRepository;
 import kitchenpos.domain.table.OrderTableCreate;
+import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.dto.response.OrderTableViewResponse;
 import kitchenpos.fixture.CleanUp;
-import kitchenpos.repository.OrderRepository;
-import kitchenpos.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

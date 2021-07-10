@@ -1,6 +1,6 @@
 package kitchenpos.domain;
 
-import kitchenpos.exception.InvalidChangeNumberOfGuestsException;
+import kitchenpos.common.exception.InvalidChangeNumberOfGuestsException;
 
 import javax.persistence.Embeddable;
 import java.util.Objects;

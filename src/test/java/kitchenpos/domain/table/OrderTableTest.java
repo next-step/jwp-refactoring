@@ -1,7 +1,7 @@
 package kitchenpos.domain.table;
 
+import kitchenpos.common.exception.TableEmptyException;
 import kitchenpos.domain.NumberOfGuest;
-import kitchenpos.exception.TableEmptyException;
 import kitchenpos.fixture.CleanUp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

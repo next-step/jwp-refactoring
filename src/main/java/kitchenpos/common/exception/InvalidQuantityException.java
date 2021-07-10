@@ -1,4 +1,4 @@
-package kitchenpos.exception;
+package kitchenpos.common.exception;
 
 public class InvalidQuantityException extends RuntimeException {
     public InvalidQuantityException() {

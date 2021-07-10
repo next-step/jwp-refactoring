@@ -1,8 +1,8 @@
 package kitchenpos.application.query;
 
+import kitchenpos.common.exception.EntityNotExistsException;
+import kitchenpos.domain.menu.MenuGroupRepository;
 import kitchenpos.dto.response.MenuGroupViewResponse;
-import kitchenpos.exception.EntityNotExistsException;
-import kitchenpos.repository.MenuGroupRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

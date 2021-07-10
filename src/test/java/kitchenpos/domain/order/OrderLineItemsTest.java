@@ -1,9 +1,9 @@
 package kitchenpos.domain.order;
 
+import kitchenpos.common.exception.OrderLineItemNotEmptyException;
 import kitchenpos.domain.Name;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.Quantity;
-import kitchenpos.exception.OrderLineItemNotEmptyException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

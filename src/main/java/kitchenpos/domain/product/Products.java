@@ -1,6 +1,6 @@
 package kitchenpos.domain.product;
 
-import kitchenpos.exception.EntityNotExistsException;
+import kitchenpos.common.exception.EntityNotExistsException;
 
 import java.util.ArrayList;
 import java.util.List;

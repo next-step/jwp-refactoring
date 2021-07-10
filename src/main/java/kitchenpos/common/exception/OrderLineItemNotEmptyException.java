@@ -1,4 +1,4 @@
-package kitchenpos.exception;
+package kitchenpos.common.exception;
 
 public class OrderLineItemNotEmptyException extends RuntimeException {
     public OrderLineItemNotEmptyException() {
