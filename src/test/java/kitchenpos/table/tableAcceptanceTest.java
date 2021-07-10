@@ -7,6 +7,7 @@ import kitchenpos.AcceptanceTest;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.net.URI;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class tableAcceptanceTest extends AcceptanceTest {
 
@@ -32,10 +35,12 @@ public class tableAcceptanceTest extends AcceptanceTest {
     void createTest() {
 
         //when
-        ExtractableResponse<Response> response =주문_테이블_등록_요청(orderTableRequest);
+        ExtractableResponse<Response> response = 주문_테이블_등록_요청(orderTableRequest);
 
         //then
         정상_등록(response);
+        OrderTableResponse orderTableResponse = response.as(OrderTableResponse.class);
+        assertThat(orderTableResponse.getNumberOfGuests()).isEqualTo(orderTableRequest.getNumberOfGuests());
     }
 
     private ExtractableResponse<Response> 주문_테이블_등록_요청(OrderTableRequest orderTableRequest) {

@@ -32,7 +32,7 @@ public class TableRestController {
         final OrderTableResponse created = orderTableService.createTemp(orderTableRequest);
         final URI uri = URI.create("/api/tables/" + created);
         return ResponseEntity.created(uri)
-                .body(null);
+                .body(created);
     }
 
     @GetMapping("/api/tables")
