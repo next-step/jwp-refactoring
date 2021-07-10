@@ -1,4 +1,3 @@
 rootProject.name = 'kitchenpos'
 
-include 'module-common'
-
+include 'module-common', 'module-domain'

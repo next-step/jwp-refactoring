@@ -29,6 +29,12 @@ subprojects {
     apply plugin: 'io.spring.dependency-management'
 }
 
+project(':module-domain') {
+    dependencies {
+        compile project(':module-common')
+    }
+}
+
 test {
     useJUnitPlatform()
 }
