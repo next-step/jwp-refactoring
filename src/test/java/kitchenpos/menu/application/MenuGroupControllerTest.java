@@ -1,11 +1,10 @@
-package kitchenpos.menu.ui;
+package kitchenpos.menu.application;
 
 import kitchenpos.common.ControllerTest;
-import kitchenpos.menu.application.MenuGroupRestController;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
-import kitchenpos.menu.ui.MenuGroupService;
+import kitchenpos.menu.ui.MenuGroupRestController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

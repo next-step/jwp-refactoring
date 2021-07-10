@@ -1,8 +1,7 @@
-package kitchenpos.menu.application;
+package kitchenpos.menu.ui;
 
-import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
-import kitchenpos.menu.ui.MenuGroupService;
+import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuGroup;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,7 +45,7 @@ class MenuGroupServiceTest {
         when(menuGroupRepository.save(any())).thenReturn(한마리메뉴);
 
         //When
-        MenuGroupResponse 생성된_메뉴그룹 = menuGroupService.create(MenuGroupRequest.of(한마리메뉴));
+        MenuGroupResponse 생성된_메뉴그룹 = menuGroupService.create(한마리메뉴);
 
         //Then
         assertThat(생성된_메뉴그룹.getName()).isEqualTo(한마리메뉴.getName());
