@@ -1,11 +1,11 @@
 package kitchenpos.application.mock;
 
-import kitchenpos.application.MenuService;
-import kitchenpos.dao.MenuDao;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.dao.MenuDao;
 import kitchenpos.menugroup.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Menu;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
