@@ -38,25 +38,27 @@ public class Menu {
 
     protected Menu() {}
 
-    public Menu(final String name, final BigDecimal price, final MenuGroup menuGroup) {
-        this(null, name, price, menuGroup);
+    public Menu(final String name, final BigDecimal price, final MenuGroup menuGroup, final List<MenuProduct> menuProducts) {
+        this(null, name, price, menuGroup, menuProducts);
     }
 
-    public Menu(final Long id, final String name, final BigDecimal price, final MenuGroup menuGroup) {
+    public Menu(final Long id, final String name, final BigDecimal price, final MenuGroup menuGroup,
+                final List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = name;
         this.price = Price.from(price);
         this.menuGroup = menuGroup;
+        addMenuProducts(menuProducts);
+    }
+
+    private void addMenuProducts(final List<MenuProduct> menuProducts) {
+        menuProducts.forEach(this::addMenuProduct);
+        validatePrice();
     }
 
     private void addMenuProduct(final MenuProduct menuProduct) {
         menuProducts.add(menuProduct);
         menuProduct.addedBy(this);
-    }
-
-    public void addMenuProducts(final List<MenuProduct> menuProducts) {
-        menuProducts.forEach(this::addMenuProduct);
-        validatePrice();
     }
 
     private void validatePrice() {

@@ -4,7 +4,6 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProductRepository;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.domain.ProductRepository;
@@ -39,9 +38,6 @@ class MenuServiceTest {
     private MenuGroupRepository menuGroupRepository;
 
     @Mock
-    private MenuProductRepository menuProductRepository;
-
-    @Mock
     private ProductRepository ProductRepository;
 
     @InjectMocks
@@ -55,9 +51,9 @@ class MenuServiceTest {
     @BeforeEach
     void setUp() {
         추천메뉴 = new MenuGroup(1L, "추천메뉴");
-        강정치킨plus강정치킨 = new Menu(1L, "강정치킨+강정치킨", BigDecimal.valueOf(20000), 추천메뉴);
         강정치킨 = new Product(1L, "강정치킨", BigDecimal.valueOf(17000));
-        강정치킨양두배 = new MenuProduct(1L, 강정치킨plus강정치킨, 강정치킨, 2);
+        강정치킨양두배 = new MenuProduct(1L, 강정치킨, 2);
+        강정치킨plus강정치킨 = new Menu(1L, "강정치킨+강정치킨", BigDecimal.valueOf(20000), 추천메뉴, Arrays.asList(강정치킨양두배));
     }
 
     @DisplayName("메뉴를 등록할 수 있다.")
@@ -66,7 +62,6 @@ class MenuServiceTest {
         // given
         given(ProductRepository.findById(any())).willReturn(Optional.of(강정치킨));
         given(menuGroupRepository.findById(any())).willReturn(Optional.of(추천메뉴));
-        given(menuProductRepository.save(any())).willReturn(강정치킨양두배);
         given(menuRepository.save(any())).willReturn(강정치킨plus강정치킨);
         MenuProductRequest menuProductRequest = new MenuProductRequest(1L, 2);
 

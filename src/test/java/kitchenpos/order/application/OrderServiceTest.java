@@ -2,6 +2,7 @@ package kitchenpos.order.application;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -26,6 +27,7 @@ import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,7 +63,7 @@ class OrderServiceTest {
     void setUp() {
         order = new Order(1L, 1L);
         menuGroup = new MenuGroup(1L, "추천메뉴");
-        menu = new Menu(1L, "강정치킨+강정치킨", BigDecimal.valueOf(20000), menuGroup);
+        menu = new Menu(1L, "강정치킨+강정치킨", BigDecimal.valueOf(0), menuGroup, Collections.emptyList());
         orderLineItem = new OrderLineItem(1L, order, menu, 1);
     }
 
