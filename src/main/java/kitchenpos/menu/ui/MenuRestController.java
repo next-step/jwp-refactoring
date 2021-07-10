@@ -5,6 +5,7 @@ import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.ui.exception.IllegalMenuPriceException;
 import kitchenpos.menu.ui.exception.NoMenuGroupException;
+import kitchenpos.menuproduct.exception.NoMenuProductException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +35,8 @@ public class MenuRestController {
     }
 
     @ExceptionHandler({
-            NoMenuGroupException.class, IllegalMenuPriceException.class
+            NoMenuGroupException.class, IllegalMenuPriceException.class,
+            NoMenuProductException.class
     })
     public ResponseEntity handleException() {
         return ResponseEntity.badRequest().build();
