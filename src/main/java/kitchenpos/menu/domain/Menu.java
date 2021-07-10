@@ -36,7 +36,8 @@ public class Menu {
     @Embedded // 양방향
     private MenuProducts menuProducts = new MenuProducts();
 
-    protected Menu() {}
+    protected Menu() {
+    }
 
     public Menu(final String name, final BigDecimal price, final MenuGroup menuGroup, final List<MenuProduct> menuProducts) {
         this(null, name, price, menuGroup, menuProducts);
@@ -62,7 +63,7 @@ public class Menu {
     }
 
     private void validatePrice() {
-        if (price.getValue().compareTo(menuProducts.getSum().getValue()) > 0) {
+        if (price.getValue().compareTo(menuProducts.totalPrice()) > 0) {
             throw new InvalidPriceException("메뉴의 가격은 메뉴 상품 목록 가격의 합보다 높을 수 없습니다.");
         }
     }

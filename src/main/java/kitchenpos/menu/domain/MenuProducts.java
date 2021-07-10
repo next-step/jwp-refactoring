@@ -15,7 +15,7 @@ public class MenuProducts {
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
     @Transient
-    private Price sum = Price.from(BigDecimal.ZERO);
+    private Price totalPrice = Price.from(BigDecimal.ZERO);
 
     protected MenuProducts() {}
 
@@ -23,11 +23,11 @@ public class MenuProducts {
         if (!menuProducts.contains(menuProduct)) {
             this.menuProducts.add(menuProduct);
         }
-        sum = sum.add(menuProduct.getProduct().getPrice(), menuProduct.getQuantity());
+        totalPrice = totalPrice.add(menuProduct.getProduct().getPrice(), menuProduct.getQuantity());
     }
 
-    public Price getSum() {
-        return sum;
+    public BigDecimal totalPrice() {
+        return totalPrice.getValue();
     }
 
     public List<MenuProduct> getMenuProducts() {
