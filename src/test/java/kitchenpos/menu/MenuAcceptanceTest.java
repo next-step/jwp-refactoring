@@ -4,12 +4,12 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.MenuGroupAcceptanceTest;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
+import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MenuAcceptanceTest extends AcceptanceTest {
     private MenuRequest menuRequest;
     private MenuGroupResponse givenMenuGroup;
+    private Product givenProduct;
 
 
     @BeforeEach
@@ -57,13 +58,4 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
     }
 
-    private ExtractableResponse<Response> 메뉴그룹_등록_요청(MenuGroupRequest menuGroupRequest) {
-        return RestAssured
-                .given().log().all()
-                .body(menuGroupRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/api/menu-groups/temp")
-                .then().log().all()
-                .extract();
-    }
 }

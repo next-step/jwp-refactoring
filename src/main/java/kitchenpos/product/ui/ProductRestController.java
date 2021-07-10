@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -45,4 +46,13 @@ public class ProductRestController {
                 .body(productService.list())
                 ;
     }
+
+    @GetMapping("/api/products/temp")
+    public ResponseEntity<List<ProductResponse>> listTemp() {
+        return ResponseEntity.ok()
+                .body(new ArrayList<>())
+                ;
+    }
+
+
 }

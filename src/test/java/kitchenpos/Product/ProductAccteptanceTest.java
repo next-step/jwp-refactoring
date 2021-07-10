@@ -65,12 +65,32 @@ public class ProductAccteptanceTest extends AcceptanceTest {
         assertThat(productRequest.getPrice()).isEqualTo(productResponse.getPrice());
     }
 
+    @DisplayName("DTO와 JPA를 사용하여 상품을 조회한다")
+    @Test
+    void listTest() {
+
+        //when
+        ExtractableResponse<Response> response = 상품_조회_요청();
+
+        //then
+        정상_처리(response);
+    }
+
     public static ExtractableResponse<Response> 상품_등록_요청(ProductRequest productRequest) {
         return RestAssured
                 .given().log().all()
                 .body(productRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/api/products/temp")
+                .then().log().all()
+                .extract();
+    }
+
+    private ExtractableResponse<Response> 상품_조회_요청() {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/api/products/temp")
                 .then().log().all()
                 .extract();
     }

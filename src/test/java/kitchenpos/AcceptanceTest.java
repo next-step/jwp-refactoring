@@ -20,8 +20,13 @@ public class AcceptanceTest {
         RestAssured.port = port;
     }
 
-
     public static void 정상_등록(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
+
+    public static void 정상_처리(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+
 }

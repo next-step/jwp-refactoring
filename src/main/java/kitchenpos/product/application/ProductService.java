@@ -44,4 +44,8 @@ public class ProductService {
     public List<Product> list() {
         return productDao.findAll();
     }
+
+    public List<Product> listTemp() {
+        return productDao.findAll();
+    }
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -32,8 +33,7 @@ public class MenuRestController {
 
     @PostMapping("/api/menus/temp")
     public ResponseEntity<MenuResponse> createTemp(@RequestBody final MenuRequest menuRequest) {
-//        final Menu created = menuService.create(menu);
-        MenuResponse created = new MenuResponse(1L, menuRequest.getName(), menuRequest.getPrice(), menuRequest.getMenuGroupId(), menuRequest.getMenuProducts());
+        MenuResponse created = new MenuResponse(1L, menuRequest.getName(), menuRequest.getPrice(), menuRequest.getMenuGroupId(), new ArrayList<>());
         final URI uri = URI.create("/api/menus/" + created.getId());
         return ResponseEntity.created(uri)
                 .body(created)
@@ -46,4 +46,5 @@ public class MenuRestController {
                 .body(menuService.list())
                 ;
     }
+
 }
