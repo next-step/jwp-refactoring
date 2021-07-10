@@ -4,8 +4,8 @@ import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.product.domain.ProductRepository;
-import kitchenpos.product.domain.Product;
+import kitchenpos.menu.domain.ProductRepository;
+import kitchenpos.menu.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,7 +46,7 @@ public class MenuServiceTest {
     private MenuProductRequest menuProductRequest = new MenuProductRequest(1L, 1);
     private Product product = new Product(1L, "상품1", BigDecimal.valueOf(5000));
     private final List<MenuProductRequest> menu1MenuProductRequests = Arrays.asList(menuProductRequest);
-    private final MenuProduct menuProduct1 = new MenuProduct(1L, new Menu(), product, 1);
+    private final MenuProduct menuProduct1 = new MenuProduct(1L, product, 1);
     private final List<MenuProduct> menu1MenuProduct = Arrays.asList(menuProduct1);
 
     @BeforeEach
@@ -68,7 +68,7 @@ public class MenuServiceTest {
 
         assertThat(menuResponse.getName()).isEqualTo(menuRequest1.getName());
         assertThat(menuResponse.getPrice()).isEqualTo(menuRequest1.getPrice());
-        assertThat(menuResponse.getMenuGroup().getId()).isEqualTo(menuRequest1.getMenuGroupId());
+        assertThat(menuResponse.getMenuGroupResponse().getId()).isEqualTo(menuRequest1.getMenuGroupId());
 //        assertThat(menuResponse.getMenuProductRequests()).isEqualTo(menuRequest1.getMenuProductRequests());
     }
 

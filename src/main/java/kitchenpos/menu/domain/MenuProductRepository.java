@@ -6,5 +6,6 @@ import java.util.List;
 
 public interface MenuProductRepository extends JpaRepository<MenuProduct, Long> {
 
-    List<MenuProduct> findAllByMenuId(Long menuId);
+//    List<MenuProduct> findAllByMenuId(Long menuId);
+
 }

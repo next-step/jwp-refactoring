@@ -3,6 +3,7 @@ package kitchenpos.table.application;
 import kitchenpos.ordering.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.OrderTableValidator;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,6 +32,8 @@ public class TableServiceTest {
     private OrderRepository orderRepository;
     @Mock
     private OrderTableRepository orderTableRepository;
+    @Mock
+    private OrderTableValidator orderTableValidator;
 
     private Long orderTable1Id = 1L;
     private Long orderTable1TableGroupId = 1L;
@@ -39,7 +42,7 @@ public class TableServiceTest {
 
     @BeforeEach
     void setUp() {
-        tableService = new TableService(orderRepository, orderTableRepository);
+        tableService = new TableService(orderTableRepository, orderTableValidator);
     }
 
     @DisplayName("테이블을 등록할 수 있다.")
@@ -85,7 +88,7 @@ public class TableServiceTest {
         OrderTableRequest orderTableRequest = OrderTableRequest.of(orderTable1NumberOfGuests, !orderTable1Empty);
 
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTableSaved));
-        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(false);
+//        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(false);
 
         OrderTableResponse response = tableService.changeEmpty(orderTableSaved.getId(), orderTableRequest);
 

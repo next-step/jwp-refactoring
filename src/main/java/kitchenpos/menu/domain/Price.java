@@ -1,11 +1,11 @@
-package kitchenpos.common;
+package kitchenpos.menu.domain;
 
 import javax.persistence.Embeddable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
 @Embeddable
-public class Price {
+public class Price extends Number {
     private BigDecimal price;
 
     public Price() { }
@@ -25,13 +25,28 @@ public class Price {
         return price.compareTo(BigDecimal.ZERO) < 0;
     }
 
-    public void isInvalidIfOverThan(BigDecimal sum) {
-        if (price.compareTo(sum) > 0) {
-            throw new IllegalArgumentException();
-        }
-    }
-
     public BigDecimal get() {
         return price;
     }
+
+    @Override
+    public int intValue() {
+        return price.intValue();
+    }
+
+    @Override
+    public long longValue() {
+        return price.longValue();
+    }
+
+    @Override
+    public float floatValue() {
+        return price.floatValue();
+    }
+
+    @Override
+    public double doubleValue() {
+        return price.doubleValue();
+    }
+
 }

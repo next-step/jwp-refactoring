@@ -11,16 +11,23 @@ import java.util.stream.Collectors;
 public class OrderResponse {
     private Long id;
     private Long orderTableId;
-    private OrderStatus orderStatus;
+    private String orderStatus;
     private LocalDateTime orderedTime;
     private List<OrderLineItemResponse> orderLineItemResponses;
+    private LocalDateTime createdDate;
+    private LocalDateTime modifiedDate;
 
-    private OrderResponse(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItemResponse> orderLineItemResponses) {
+    public OrderResponse() {
+    }
+
+    public OrderResponse(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItemResponse> orderLineItemResponses, LocalDateTime createdDate, LocalDateTime modifiedDate) {
         this.id = id;
         this.orderTableId = orderTableId;
-        this.orderStatus = orderStatus;
+        this.orderStatus = orderStatus.name();
         this.orderedTime = orderedTime;
         this.orderLineItemResponses = orderLineItemResponses;
+        this.createdDate = createdDate;
+        this.modifiedDate = modifiedDate;
     }
 
     public static OrderResponse of(Ordering order) {
@@ -30,7 +37,9 @@ public class OrderResponse {
                 order.getOrderedTime(),
                 order.getOrderLineItems().stream()
         .map(OrderLineItemResponse::of)
-        .collect(Collectors.toList()));
+        .collect(Collectors.toList()),
+                order.getCreatedDate(),
+                order.getModifiedDate());
     }
 
     public Long getId() {
@@ -42,15 +51,23 @@ public class OrderResponse {
     }
 
     public OrderStatus getOrderStatus() {
-        return orderStatus;
+        return OrderStatus.valueOf(orderStatus);
     }
 
     public LocalDateTime getOrderedTime() {
         return orderedTime;
     }
 
-    public List<OrderLineItemResponse> getOrderLineItems() {
+    public List<OrderLineItemResponse> getOrderLineItemResponses() {
         return orderLineItemResponses;
+    }
+
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public LocalDateTime getModifiedDate() {
+        return modifiedDate;
     }
 
     @Override
@@ -58,11 +75,11 @@ public class OrderResponse {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OrderResponse that = (OrderResponse) o;
-        return Objects.equals(id, that.id) && Objects.equals(orderTableId, that.orderTableId) && Objects.equals(orderStatus, that.orderStatus) && Objects.equals(orderedTime, that.orderedTime) && Objects.equals(orderLineItemResponses, that.orderLineItemResponses);
+        return Objects.equals(id, that.id) && Objects.equals(orderTableId, that.orderTableId) && Objects.equals(orderStatus, that.orderStatus) && Objects.equals(orderedTime, that.orderedTime) && Objects.equals(orderLineItemResponses, that.orderLineItemResponses) && Objects.equals(createdDate, that.createdDate) && Objects.equals(modifiedDate, that.modifiedDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, orderTableId, orderStatus, orderedTime, orderLineItemResponses);
+        return Objects.hash(id, orderTableId, orderStatus, orderedTime, orderLineItemResponses, createdDate, modifiedDate);
     }
 }
