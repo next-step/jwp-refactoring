@@ -49,6 +49,7 @@ public class Order {
         this.orderStatus = OrderStatus.COOKING;
         addOrderLineItems(orderLineItems);
     }
+
     public Order(final Long id, final Long orderTableId) {
         this.id = id;
         this.orderTableId = orderTableId;
