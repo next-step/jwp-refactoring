@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.domain.order;
 
 import org.springframework.data.annotation.ReadOnlyProperty;
 
@@ -7,8 +7,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Table(name = "table_group")
 @Entity
-public class TableGroup {
+public class OrderTableGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -16,25 +17,25 @@ public class TableGroup {
     @Column(nullable = false)
     private LocalDateTime createdDate;
 
-    @OneToMany(mappedBy = "tableGroup")
+    @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL)
     @ReadOnlyProperty
     private List<OrderTable> orderTables;
 
-    protected TableGroup() {
+    protected OrderTableGroup() {
     }
 
-    private TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
+    private OrderTableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
         this.id = id;
         this.createdDate = createdDate;
         this.orderTables = orderTables;
     }
 
-    public static TableGroup of(Long id, LocalDateTime createdDate) {
-        return new TableGroup(id, createdDate, new ArrayList<>());
+    public static OrderTableGroup of(Long id, LocalDateTime createdDate) {
+        return new OrderTableGroup(id, createdDate, new ArrayList<>());
     }
 
-    public static TableGroup of(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
-        return new TableGroup(id, createdDate, orderTables);
+    public static OrderTableGroup of(LocalDateTime createdDate, List<OrderTable> orderTables) {
+        return new OrderTableGroup(null, createdDate, orderTables);
     }
 
     public Long getId() {

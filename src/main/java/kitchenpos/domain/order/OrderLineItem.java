@@ -1,4 +1,6 @@
-package kitchenpos.domain;
+package kitchenpos.domain.order;
+
+import kitchenpos.domain.menu.Menu;
 
 import javax.persistence.*;
 
@@ -29,8 +31,8 @@ public class OrderLineItem {
         this.quantity = quantity;
     }
 
-    public static OrderLineItem of(Long seq, Order order, Menu menu, long quantity) {
-        return new OrderLineItem(seq, order, menu, quantity);
+    public static OrderLineItem of(Order order, Menu menu, long quantity) {
+        return new OrderLineItem(null, order, menu, quantity);
     }
 
     public Long getSeq() {

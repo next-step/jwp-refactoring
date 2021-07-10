@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.domain.order;
 
 import org.springframework.data.annotation.ReadOnlyProperty;
 
@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Table(name = "orders")
 @Entity
 public class Order {
     @Id
@@ -23,7 +24,7 @@ public class Order {
     @Column(nullable = false)
     private LocalDateTime orderedTime;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     @ReadOnlyProperty
     private List<OrderLineItem> orderLineItems;
 
@@ -38,12 +39,8 @@ public class Order {
         this.orderLineItems = orderLineItems;
     }
 
-    public static Order of(Long id, OrderTable orderTable, String orderStatus, LocalDateTime orderedTime) {
-        return new Order(id, orderTable, orderStatus, orderedTime, new ArrayList<>());
-    }
-
-    public static Order of(Long id, OrderTable orderTable, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
-        return new Order(id, orderTable, orderStatus, orderedTime, orderLineItems);
+    public static Order of(OrderTable orderTable, String orderStatus, LocalDateTime orderedTime) {
+        return new Order(null, orderTable, orderStatus, orderedTime, new ArrayList<>());
     }
 
     public Long getId() {
@@ -64,5 +61,13 @@ public class Order {
 
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
+    }
+
+    public void addOrderLineItem(OrderLineItem orderLineItem) {
+        orderLineItems.add(orderLineItem);
+    }
+
+    public void setOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
     }
 }

@@ -1,4 +1,6 @@
-package kitchenpos.domain;
+package kitchenpos.domain.menu;
+
+import kitchenpos.domain.product.Product;
 
 import javax.persistence.*;
 
@@ -32,6 +34,10 @@ public class MenuProduct {
         return new MenuProduct(seq, menu, product, quantity);
     }
 
+    public static MenuProduct of(Product product, long quantity) {
+        return new MenuProduct(null, null, product, quantity);
+    }
+
     public Long getSeq() {
         return seq;
     }
@@ -46,5 +52,9 @@ public class MenuProduct {
 
     public long getQuantity() {
         return quantity;
+    }
+
+    public void setMenu(Menu menu) {
+        this.menu = menu;
     }
 }

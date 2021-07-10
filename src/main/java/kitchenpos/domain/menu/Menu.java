@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.domain.menu;
 
 import org.springframework.data.annotation.ReadOnlyProperty;
 
@@ -23,7 +23,7 @@ public class Menu {
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
 
-    @OneToMany(mappedBy = "menu")
+    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL)
     @ReadOnlyProperty
     private List<MenuProduct> menuProducts;
 
@@ -42,8 +42,8 @@ public class Menu {
         return new Menu(id, name, price, menuGroup, menuProducts);
     }
 
-    public static Menu of(Long id, String name, BigDecimal price, MenuGroup menuGroup) {
-        return new Menu(id, name, price, menuGroup, new ArrayList<>());
+    public static Menu of(String name, BigDecimal price, MenuGroup menuGroup) {
+        return new Menu(null, name, price, menuGroup, new ArrayList<>());
     }
 
     public Long getId() {
@@ -64,5 +64,9 @@ public class Menu {
 
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
+    }
+
+    public void addMenuProduct(MenuProduct menuProduct){
+        menuProducts.add(menuProduct);
     }
 }

@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.domain.menu;
 
 import javax.persistence.*;
 
@@ -21,6 +21,10 @@ public class MenuGroup {
 
     public static MenuGroup of(Long id, String name) {
         return new MenuGroup(id, name);
+    }
+
+    public static MenuGroup of(String name) {
+        return new MenuGroup(null, name);
     }
 
     public Long getId() {
