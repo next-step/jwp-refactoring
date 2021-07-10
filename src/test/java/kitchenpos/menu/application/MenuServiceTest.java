@@ -1,6 +1,8 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -57,9 +59,11 @@ class MenuServiceTest {
         MenuProductRequest menuProductRequest2 = new MenuProductRequest(2L, 1L);
         List<MenuProductRequest> menuProducts = Arrays.asList(menuProductRequest1, menuProductRequest2);
         MenuRequest menuRequest = new MenuRequest("반반치킨", BigDecimal.valueOf(32000), 1L, menuProducts);
-        Menu givenMenu = Menu.of(1L, "반반치킨", BigDecimal.valueOf(32000), menuGroup);
         Product product1 = new Product(1L, "후라이드", BigDecimal.valueOf(16000));
         Product product2 = new Product(2L, "양념통닭", BigDecimal.valueOf(16000));
+        MenuProduct menuProduct1 = new MenuProduct(product1, 1L);
+        MenuProduct menuProduct2 = new MenuProduct(product2, 1L);
+        Menu givenMenu = Menu.createWithMenuProduct("후라이드치킨", BigDecimal.valueOf(16000), new MenuProducts(Arrays.asList(menuProduct1, menuProduct2)), menuGroup);
 
         when(menuGroupRepository.findById(anyLong()))
                 .thenReturn(Optional.of(menuGroup));
@@ -167,13 +171,15 @@ class MenuServiceTest {
     void list() {
         MenuGroup menuGroup1 = new MenuGroup(1L, "추천메뉴");
         MenuGroup menuGroup2 = new MenuGroup(2L, "오늘의메뉴");
-        final Menu givenMenu1 = Menu.of(1L, "후라이드치킨", BigDecimal.valueOf(16000), menuGroup1);
-        final Menu givenMenu2 = new Menu(2L, "양념치킨", BigDecimal.valueOf(16000), menuGroup2);
+        Product product = new Product("후라이드치킨", BigDecimal.valueOf(16000));
+        MenuProduct menuProduct = new MenuProduct(product, 1L);
+        Menu givenMenu1 = Menu.createWithMenuProduct("후라이드치킨", BigDecimal.valueOf(16000), new MenuProducts(Arrays.asList(menuProduct)), menuGroup1);
+        Menu givenMenu2 = Menu.createWithMenuProduct("후라이드치킨", BigDecimal.valueOf(16000), new MenuProducts(Arrays.asList(menuProduct)), menuGroup2);
 
         when(menuRepository.findAll())
                 .thenReturn(Arrays.asList(givenMenu1, givenMenu2));
         List<MenuResponse> menus = menuService.list();
 
-        assertThat(menus).containsExactly(new MenuResponse(givenMenu1), new MenuResponse(givenMenu2));
+        assertThat(menus.size()).isEqualTo(2);
     }
 }

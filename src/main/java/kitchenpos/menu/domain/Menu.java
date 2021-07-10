@@ -53,21 +53,9 @@ public class Menu {
         menuProducts.registerMenu(this);
     }
 
-    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup) {
-        this.id = id;
-        this.name = name;
-        this.price = Price.of(price);
-        this.menuProducts = new MenuProducts();
-        this.menuGroup = menuGroup;
-    }
-
     public static Menu createWithMenuProduct(String name, BigDecimal price, MenuProducts menuProducts, MenuGroup menuGroup) {
         validateProduct(menuProducts, price);
         return new Menu(name, price, menuProducts, menuGroup);
-    }
-
-    public static Menu of(Long id, String name, BigDecimal price, MenuGroup menuGroup) {
-        return new Menu(id, name, price, menuGroup);
     }
 
     private static void validateProduct(MenuProducts menuProducts, BigDecimal price) {
@@ -94,4 +82,6 @@ public class Menu {
     public Long getMenuGroupId() {
         return menuGroup.getId();
     }
+
+
 }
