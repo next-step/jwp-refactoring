@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 public class TableGroupService {
     private static final String MORE_THAN_TWO_TABLE = "단체 지정을 위해서는 두 개 이상의 테이블이 필요합니다.";
     public static final String ALREADY_USE_ORDER_TABLE = "주문 테이블이 이미 사용중입니다.";
+    public static final int MINIMUM_TABLE_GROUP_SIZE = 2;
 
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
@@ -66,7 +67,7 @@ public class TableGroupService {
     }
 
     private void validateOrderTableSize(List<OrderTableRequest> orderTables) {
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
+        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < MINIMUM_TABLE_GROUP_SIZE) {
             throw new IllegalArgumentException(MORE_THAN_TWO_TABLE);
         }
     }

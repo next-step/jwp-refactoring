@@ -21,11 +21,9 @@ public class MenuProducts {
     }
 
     public BigDecimal menuProductsPrice() {
-        BigDecimal sum = BigDecimal.ZERO;
-        for (final MenuProduct menuProduct : menuProducts) {
-            sum = sum.add(menuProduct.price(menuProduct.quantity()));
-        }
-        return sum;
+        return menuProducts.stream()
+                .map(menuProduct -> menuProduct.price(menuProduct.quantity()))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     public List<MenuProduct> menuProducts() {
