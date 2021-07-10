@@ -29,7 +29,7 @@ public class Product {
         this(null, name, price);
     }
 
-    public Product(Long id, String name, Price price) {
+    Product(Long id, String name, Price price) {
         checkArguments(name, price);
         this.id = id;
         this.name = name;

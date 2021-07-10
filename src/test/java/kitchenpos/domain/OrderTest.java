@@ -24,6 +24,10 @@ public class OrderTest {
         테이블11_사용중.addOrder(테이블11주문);
     }
 
+    public static Order order(Long id, OrderStatus orderStatus, OrderLineItems orderLineItems) {
+        return new Order(id, orderStatus, orderLineItems);
+    }
+
     Order 주문;
 
     @BeforeEach

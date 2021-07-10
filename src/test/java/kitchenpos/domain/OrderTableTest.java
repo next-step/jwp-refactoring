@@ -25,6 +25,9 @@ public class OrderTableTest {
     public static OrderTable 테이블11_사용중 = new OrderTable(11L, NumberOfGuests.of(2), false);
     public static OrderTable 테이블12_사용중_주문전 = new OrderTable(12L, NumberOfGuests.of(2), false);
 
+    public static OrderTable orderTable(Long id, NumberOfGuests numberOfGuests, boolean empty) {
+        return new OrderTable(id, numberOfGuests, empty);
+    }
 
     @Test
     @DisplayName("테이블 그룹을 할당한다")

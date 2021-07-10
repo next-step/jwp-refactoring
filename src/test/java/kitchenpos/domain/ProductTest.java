@@ -16,6 +16,10 @@ public class ProductTest {
     public static Product 간장치킨 = new Product(5L, "간장치킨", Price.valueOf(17000));
     public static Product 순살치킨 = new Product(6L, "순살치킨", Price.valueOf(17000));
 
+    public static Product product(Long id, String name, Price price) {
+        return new Product(id, name, price);
+    }
+
     @Test
     @DisplayName("가격이 없거나 음수이면 오류 발생")
     void negativePriceOrNull() {

@@ -14,6 +14,10 @@ import kitchenpos.exception.OrderNotCompletedException;
 @DisplayName("테이블 그룹 단위 테스트")
 public class TableGroupTest {
 
+    public static TableGroup tableGroup(Long id, OrderTables orderTables) {
+        return new TableGroup(id, orderTables);
+    }
+
     @Test
     @DisplayName("테이블 그룹을 생성한다")
     void create() {

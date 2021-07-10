@@ -35,7 +35,7 @@ class MenuGroupServiceTest {
     void create() {
         // given
         MenuGroupRequest 바베큐치킨메뉴_요청 = new MenuGroupRequest("바베큐치킨메뉴");
-        MenuGroup 바베큐치킨메뉴 = new MenuGroup(100L, "바베큐치킨메뉴");
+        MenuGroup 바베큐치킨메뉴 = MenuGroupTest.menuGroup(100L, "바베큐치킨메뉴");
         when(menuGroupRepository.save(any())).thenReturn(바베큐치킨메뉴);
 
         // when

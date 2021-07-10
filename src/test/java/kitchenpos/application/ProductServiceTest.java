@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductRepository;
+import kitchenpos.domain.ProductTest;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("제품 서비스")
@@ -33,7 +34,7 @@ class ProductServiceTest {
     @DisplayName("제품을 생성한다")
     void create() {
         // given
-        Product 깐풍치킨 = new Product(100L, "깐풍치킨", Price.valueOf(17000));
+        Product 깐풍치킨 = ProductTest.product(100L, "깐풍치킨", Price.valueOf(17000));
         when(productRepository.save(깐풍치킨)).thenReturn(깐풍치킨);
 
         // when

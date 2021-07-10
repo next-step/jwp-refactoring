@@ -22,6 +22,7 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.MenuProducts;
 import kitchenpos.domain.MenuRepository;
+import kitchenpos.domain.MenuTest;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.Quantity;
 import kitchenpos.dto.MenuProductRequest;
@@ -60,7 +61,7 @@ class MenuServiceTest {
         Price 이만_삼천_원 = Price.valueOf(23000);
         두마리_양념치킨 = new MenuProduct(후라이드, Quantity.valueOf(1));
         두마리_후라이드 = new MenuProduct(양념치킨, Quantity.valueOf(1));
-        두마리_양념후라이드 = new Menu(100L, "두마리_양념후라이드", 이만_삼천_원, 두마리메뉴,
+        두마리_양념후라이드 = MenuTest.menu(100L, "두마리_양념후라이드", 이만_삼천_원, 두마리메뉴,
             MenuProducts.of(두마리_양념치킨, 두마리_후라이드));
     }
 

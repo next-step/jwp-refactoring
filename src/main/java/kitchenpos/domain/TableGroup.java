@@ -28,7 +28,7 @@ public class TableGroup {
         this(null, orderTables);
     }
 
-    public TableGroup(Long id, OrderTables orderTables) {
+    TableGroup(Long id, OrderTables orderTables) {
         this.id = id;
         this.orderTables = orderTables.withTableGroup(this);
     }

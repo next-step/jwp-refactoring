@@ -42,7 +42,7 @@ public class Menu {
         this(null, name, price, menuGroup, menuProducts);
     }
 
-    public Menu(Long id, String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+    Menu(Long id, String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
         checkArguments(name, price, menuGroup, menuProducts);
         checkPriceAndSummation(price, menuProducts);
         this.id = id;

@@ -1,12 +1,8 @@
 package kitchenpos.domain;
 
-import static java.util.Collections.*;
 import static kitchenpos.domain.MenuGroupTest.*;
 import static kitchenpos.domain.ProductTest.*;
 import static org.assertj.core.api.Assertions.*;
-
-import java.math.BigDecimal;
-import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,6 +17,10 @@ public class MenuTest {
     public static Menu 통구이_메뉴 = new Menu(4L, "통구이", Price.valueOf(16000), 한마리메뉴, MenuProducts.of(new MenuProduct(통구이, Quantity.valueOf(1))));
     public static Menu 간장치킨_메뉴 = new Menu(5L, "간장치킨", Price.valueOf(16000), 한마리메뉴, MenuProducts.of(new MenuProduct(간장치킨, Quantity.valueOf(1))));
     public static Menu 순살치킨_메뉴 = new Menu(6L, "순살치킨", Price.valueOf(16000), 한마리메뉴, MenuProducts.of(new MenuProduct(순살치킨, Quantity.valueOf(1))));
+
+    public static Menu menu(Long id, String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        return new Menu(id, name, price, menuGroup, menuProducts);
+    }
 
     @Test
     @DisplayName("메뉴 가격이 단품 가격의 합을 초과")

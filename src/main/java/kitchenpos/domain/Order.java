@@ -49,7 +49,7 @@ public class Order {
         this(null, orderStatus, orderLineItems);
     }
 
-    public Order(Long id, OrderStatus orderStatus, OrderLineItems orderLineItems) {
+    Order(Long id, OrderStatus orderStatus, OrderLineItems orderLineItems) {
         this.id = id;
         this.orderStatus = orderStatus;
         this.orderLineItems = orderLineItems;

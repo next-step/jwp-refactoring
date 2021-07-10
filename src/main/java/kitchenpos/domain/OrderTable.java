@@ -44,7 +44,7 @@ public class OrderTable {
         this(null, numberOfGuests, empty);
     }
 
-    public OrderTable(Long id, NumberOfGuests numberOfGuests, boolean empty) {
+    OrderTable(Long id, NumberOfGuests numberOfGuests, boolean empty) {
         this.id = id;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
