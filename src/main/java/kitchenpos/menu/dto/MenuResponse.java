@@ -28,10 +28,6 @@ public class MenuResponse {
         return new MenuResponse(menu.id(), name, menu.priceToInt(), menuGroupResponse, menuProductResponses);
     }
 
-//    public static List<MenuResponse> listOf(List<Menu> menus) {
-//        return menus.stream().map(MenuResponse::of).collect(Collectors.toList());
-//    }
-
     public Long getId() {
         return id;
     }
