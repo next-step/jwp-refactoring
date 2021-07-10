@@ -40,7 +40,6 @@ public class OrderTest {
 
         // when
         Order order = new Order(orderTable, orderStatus, orderedTime);
-        orderLineItems.mappingOrder(order);
 
         // then
         assertThat(order).isEqualTo(new Order(orderTable, orderStatus, orderedTime));
@@ -51,7 +50,6 @@ public class OrderTest {
     public void modifyOrder() {
         // given
         Order order = new Order(orderTable, orderStatus, LocalDateTime.now());
-        orderLineItems.mappingOrder(order);
 
         // when
         order.changeOrderStatus(OrderStatus.MEAL.name());
@@ -65,7 +63,6 @@ public class OrderTest {
     public void modifyOrderFailByCompletionOrder() {
         // given
         Order order = new Order(orderTable, OrderStatus.COMPLETION.name(), LocalDateTime.now());
-        orderLineItems.mappingOrder(order);
 
         // when
         // then

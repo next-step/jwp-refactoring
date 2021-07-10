@@ -11,9 +11,8 @@ public class OrderLineItem {
     @Column(name = "seq")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
-    private Order order;
+    @Column(name = "order_id")
+    private Long orderId;
 
     private Long menuId;
 
@@ -28,16 +27,16 @@ public class OrderLineItem {
         this.quantity = new Quantity(quantity);
     }
 
-    public void mappingOrder(Order order) {
-        this.order = order;
+    public void mappingOrder(Long orderId) {
+        this.orderId = orderId;
     }
 
     public Long id() {
         return id;
     }
 
-    public Order order() {
-        return order;
+    public Long orderId() {
+        return orderId;
     }
 
     public Long menuId() {

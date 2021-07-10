@@ -15,7 +15,7 @@ public class OrderLineItems {
     public static final String ORDER_LINE_ITEM_IS_EMPTY = "주문 항목이 존재하지 않습니다.";
     public static final String NOT_MATCH_MENU_SIZE = "조회 된 메뉴의 수와 다릅니다.";
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "order")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "orderId")
     private List<OrderLineItem> orderLineItems;
 
     protected OrderLineItems() {
@@ -26,8 +26,8 @@ public class OrderLineItems {
         this.orderLineItems = orderLineItems;
     }
 
-    public void mappingOrder(Order order) {
-        orderLineItems.forEach(orderLineItem -> orderLineItem.mappingOrder(order));
+    public void mappingOrder(Long orderId) {
+        orderLineItems.forEach(orderLineItem -> orderLineItem.mappingOrder(orderId));
     }
 
     private void validateIsEmpty(List<OrderLineItem> orderLineItems) {

@@ -17,9 +17,8 @@ public class MenuProduct {
     @Column(name = "seq")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id")
-    private Menu menu;
+    @Column(name = "menu_id")
+    private Long menuId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Product product;
@@ -30,16 +29,16 @@ public class MenuProduct {
     public MenuProduct() {
     }
 
-    public MenuProduct(Menu menu, Product product, long quantity) {
-        validateMenu(menu);
+    public MenuProduct(Long menuId, Product product, long quantity) {
+        validateMenu(menuId);
         validateProduct(product);
-        this.menu = menu;
+        this.menuId = menuId;
         this.product = product;
         this.quantity = new Quantity(quantity);
     }
 
-    private void validateMenu(Menu menu) {
-        if (Objects.isNull(menu)) {
+    private void validateMenu(Long menuId) {
+        if (Objects.isNull(menuId)) {
             throw new IllegalArgumentException(INVALID_MENU);
         }
     }
@@ -54,8 +53,8 @@ public class MenuProduct {
         return id;
     }
 
-    public Menu menu() {
-        return menu;
+    public Long menuId() {
+        return menuId;
     }
 
     public BigDecimal price(long quantity) {

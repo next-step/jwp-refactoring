@@ -57,7 +57,7 @@ public class MenuTest {
         String name = "불고기피자";
         BigDecimal price = new BigDecimal(20000);
         Menu menu = new Menu(name, price, menuGroup);
-        menuProducts.add(new MenuProduct(menu, new Product(name, new BigDecimal(15000)), 1L));
+        menuProducts.add(new MenuProduct(8L, new Product(name, new BigDecimal(15000)), 1L));
         menu.mappingProducts(new MenuProducts(menuProducts));
 
         //when

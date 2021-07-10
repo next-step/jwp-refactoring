@@ -42,11 +42,11 @@ public class OrderRepositoryTest {
         String orderStatus = OrderStatus.COOKING.name();
         orderLineItemList.add(new OrderLineItem(menu.id(), 1));
 
-        order = new Order(orderTable, orderStatus, LocalDateTime.now());
-        orderLineItemList.forEach(orderLineItem -> orderLineItem.mappingOrder(order));
+        order = orderRepository.save(new Order(orderTable, orderStatus, LocalDateTime.now()));
+        orderLineItemList.forEach(orderLineItem -> orderLineItem.mappingOrder(order.id()));
 
         OrderLineItems orderLineItems = new OrderLineItems(orderLineItemList);
-        orderLineItems.mappingOrder(order);
+        orderLineItems.mappingOrder(order.id());
         order.mappingOrderLineItems(orderLineItems);
     }
 

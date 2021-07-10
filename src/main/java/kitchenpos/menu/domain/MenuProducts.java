@@ -10,7 +10,7 @@ import java.util.List;
 @Embeddable
 public class MenuProducts {
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "menu")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "menuId")
     private List<MenuProduct> menuProducts;
 
     protected MenuProducts() {

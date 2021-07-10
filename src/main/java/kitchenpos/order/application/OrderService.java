@@ -60,7 +60,7 @@ public class OrderService {
         final OrderTable orderTable = findOrderTable(orderRequest.getOrderTableId());
         final Order order = orderRepository.save(new Order(orderTable, OrderStatus.COOKING.name(), LocalDateTime.now()));
 
-        orderLineItems.mappingOrder(order);
+        orderLineItems.mappingOrder(order.id());
         order.mappingOrderLineItems(new OrderLineItems(orderLineItemRepository.saveAll(orderLineItems.orderLineItems())));
         orderTable.changeTableStatus(TableStatus.IN_USE);
         return OrderResponse.of(order);
