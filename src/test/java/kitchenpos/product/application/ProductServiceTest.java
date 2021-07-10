@@ -1,8 +1,9 @@
-package kitchenpos.product;
+package kitchenpos.product.application;
 
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -46,32 +46,10 @@ class ProductServiceTest {
         when(productRepository.save(후라이드)).thenReturn(후라이드);
 
         //When
-        Product 생성된_상품 = productService.create(후라이드);
+        ProductResponse 생성된_상품 = productService.create(후라이드);
 
         //Then
         assertThat(생성된_상품.getName()).isEqualTo(후라이드.getName());
-    }
-
-    @DisplayName("가격이 입력되지 않은 경우, 상품 등록시 예외가 발생한다")
-    @Test
-    void 가격_입력되지_않음_예외발생() {
-        //Given
-        후라이드.setPrice(null);
-
-        //When + Then
-        assertThatThrownBy(() -> productService.create(후라이드))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("가격이 0원 미만인 경우, 상품 등록시 예외가 발생한다")
-    @Test
-    void 가격_0원미만_예외발생() {
-        //Given
-        후라이드.setPrice(BigDecimal.valueOf(-1));
-
-        //When + Then
-        assertThatThrownBy(() -> productService.create(후라이드))
-                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("상품 목록을 조회한다")
@@ -82,11 +60,11 @@ class ProductServiceTest {
         when(productRepository.findAll()).thenReturn(입력한_상품_목록);
 
         //When
-        List<Product> 조회된_상품_목록 = productService.list();
+        List<ProductResponse> 조회된_상품_목록 = productService.list();
 
         //Then
         assertThat(조회된_상품_목록).isNotNull()
                 .hasSize(조회된_상품_목록.size())
-                .containsExactly(후라이드);
+                .containsExactly(ProductResponse.of(후라이드));
     }
 }

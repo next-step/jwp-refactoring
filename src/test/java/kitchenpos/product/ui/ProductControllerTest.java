@@ -1,9 +1,8 @@
-package kitchenpos.product;
+package kitchenpos.product.ui;
 
 import kitchenpos.product.application.ProductService;
 import kitchenpos.common.ControllerTest;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.ui.ProductRestController;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +20,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @WebMvcTest(controllers = ProductRestController.class)
-public class ProductControllerTest extends ControllerTest<Product> {
+public class ProductControllerTest extends ControllerTest<ProductResponse> {
 
     private static final String BASE_URI = "/api/products";
 
@@ -31,8 +30,8 @@ public class ProductControllerTest extends ControllerTest<Product> {
     @Autowired
     private ProductRestController productRestController;
 
-    private Product 후라이드;
-    private Product 양념치킨;
+    private ProductResponse 후라이드;
+    private ProductResponse 양념치킨;
 
     @Override
     protected Object controller() {
@@ -41,8 +40,8 @@ public class ProductControllerTest extends ControllerTest<Product> {
 
     @BeforeEach
     void 사전준비() {
-        후라이드 = new Product("후라이드",BigDecimal.valueOf(16000) );
-        양념치킨 = new Product("양념치킨", BigDecimal.valueOf(19000));
+        후라이드 = new ProductResponse(1L,"후라이드",BigDecimal.valueOf(16000) );
+        양념치킨 = new ProductResponse(2L,"양념치킨", BigDecimal.valueOf(19000));
     }
 
     @DisplayName("상품 생성요청")
@@ -62,7 +61,7 @@ public class ProductControllerTest extends ControllerTest<Product> {
     @Test
     void 메뉴그룹_목록_조회요청() throws Exception {
         //Given
-        List<Product> 상품_목록 = new ArrayList<>(Arrays.asList(후라이드, 양념치킨));
+        List<ProductResponse> 상품_목록 = new ArrayList<>(Arrays.asList(후라이드, 양념치킨));
         when(productService.list()).thenReturn(상품_목록);
 
         //When
