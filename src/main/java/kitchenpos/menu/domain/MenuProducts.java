@@ -1,12 +1,13 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.product.domain.ProductEntity;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.math.BigDecimal;
 import java.util.*;
-
-import static kitchenpos.menu.domain.Price.REDUCE_IDENTITY;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class MenuProducts {
@@ -20,7 +21,6 @@ public class MenuProducts {
 
   public void addMenuProducts(MenuEntity menuEntity, List<MenuProductEntity> products) {
     products.forEach(product -> product.defineParentMenu(menuEntity));
-    validateMenuProductsAmount(menuEntity, calculateMenuProductsAmount(products));
     menuProductEntities.addAll(products);
   }
 
@@ -28,17 +28,23 @@ public class MenuProducts {
     return new ArrayList<>(menuProductEntities);
   }
 
-  private void validateMenuProductsAmount(MenuEntity menuEntity, Price menuProductsAmount) {
-    BigDecimal menuPrice = menuEntity.getPrice();
-    if (menuPrice.compareTo(menuProductsAmount.getValue()) > 0) {
-      throw new IllegalArgumentException();
-    }
+  public List<Long> getProductIds() {
+    return menuProductEntities.stream()
+            .map(MenuProductEntity::getProductId)
+            .sorted()
+            .collect(Collectors.toList());
   }
 
-  private Price calculateMenuProductsAmount(List<MenuProductEntity> products) {
+  public BigDecimal calculateAmount(List<ProductEntity> products) {
+    Map<Long, Long> productPerQuantity = makeProductPerQuantity();
     return products.stream()
-          .map(MenuProductEntity::calculateAmount)
-          .reduce(REDUCE_IDENTITY, Price::sum);
+        .map(productEntity -> productEntity.calculateAmountWithQuantity(productPerQuantity.getOrDefault(productEntity.getId(), 0L)))
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
+  }
+
+  private Map<Long, Long> makeProductPerQuantity() {
+    return menuProductEntities.stream()
+        .collect(Collectors.toMap(MenuProductEntity::getProductId, MenuProductEntity::getQuantity));
   }
 
   @Override

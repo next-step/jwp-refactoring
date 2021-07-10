@@ -100,3 +100,33 @@
 - [x] 클래스명.MIN_클래스명 과 같은 형태의 상수명 simplify
 - [x] 매직넘버 제거
 - [x] 컨벤션에 맞지않는 메서드 위치 수정
+
+---
+
+# 3 단계 - 의존성 리팩터링
+
+## 요구 사항
+* 메뉴의 이름과 가격이 변경되면 주문 항목도 함께 변경된다. 메뉴 정보가 변경되더라도 주문 항목이 변경되지 않게 구현한다.
+* 클래스 간의 방향도 중요하고 패키지 간의 방향도 중요하다. 클래스 사이, 패키지 사이의 의존 관계는 단방향이 되도록 해야 한다.
+
+## TODO
+- [x] Menu Aggregate에서 다른 Aggregate의 entity 직접 참조 제거
+- [x] 패키지 간 의존성 사이클 제거
+  * 패키지간 의존성 사이클 제거 전
+    ![package-dependency-before-refactoring](docs/image/kitchenpos-package-dependency-before-refactoring.png)
+    * import kitchenpos.패키지. 으로 검색해서 다른 패키지를 참조하는 방향을 알아낸 뒤 도식화 진행.
+    * order 에서는 주문 전 테이블 상태를 확인하면서 order -> table 의존성 발생 
+    * table 에서는 테이블 상태를 바꿀 때 테이블에 연결된 조리중 혹은 식사중 주문이 있는지 확인하면서 table -> order 의존성 발생
+    
+  * 패키지간 의존성 사이클 제거 후
+    ![package-dependency-after-refactoring](docs/image/kitchenpos-package-depencency-after-refactoring.png)
+    * table 패키지에 TableExternalValidator interface를 두고 테이블 상태를 바꿀 때 해당 인터페이스로 validation을 하고,
+      구현체는 order패키지에 둬서 order -> table 의존만 남게 변경
+    * 잘 변하지 않는 패키지인 tablegroup이 잘 변하는 패키지인 order를 의존하는 형태가 어색해보여
+      tablegroup 패키지에 TableGroupExternalValidator interface를 두고 
+      구현체는 order패키지에 둬서 order -> tablegroup으로 의존성 역전
+    
+## 클래스 의존 다이어 그램
+![class-dependency](docs/image/kitchenpos-class-dependency.png)
+
+* 다이어 그램상 의존성이 한 방향 (그림 상 아래에서 위로) 흐르는 것으로 보인다.

@@ -1,9 +1,8 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTableEntity;
 import kitchenpos.table.domain.TableRepository;
+import kitchenpos.table.domain.TableExternalValidator;
 import kitchenpos.table.dto.TableRequest;
 import kitchenpos.table.dto.TableResponse;
 import org.springframework.stereotype.Service;
@@ -14,11 +13,11 @@ import java.util.List;
 @Transactional
 @Service
 public class TableService2 {
-    private final OrderRepository orderRepository;
+    private final TableExternalValidator tableExternalValidator;
     private final TableRepository tableRepository;
 
-    public TableService2(final OrderRepository orderRepository, final TableRepository tableRepository) {
-        this.orderRepository = orderRepository;
+    public TableService2(final TableExternalValidator tableExternalValidator, final TableRepository tableRepository) {
+        this.tableExternalValidator = tableExternalValidator;
         this.tableRepository = tableRepository;
     }
 
@@ -33,7 +32,7 @@ public class TableService2 {
 
     public TableResponse changeEmpty(final Long orderTableId, final TableRequest request) {
         OrderTableEntity table = findTableById(orderTableId);
-        validateTableInUse(orderTableId);
+        tableExternalValidator.validateTableInUse(orderTableId);
         table.changeEmpty(request.isEmpty());
         return TableResponse.from(table);
     }
@@ -41,13 +40,6 @@ public class TableService2 {
     private OrderTableEntity findTableById(Long orderTableId) {
         return tableRepository.findById(orderTableId)
             .orElseThrow(IllegalArgumentException::new);
-    }
-
-    private void validateTableInUse(Long orderTableId) {
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-            orderTableId, OrderStatus.getBusyStatus())) {
-            throw new IllegalArgumentException();
-        }
     }
 
     public TableResponse changeNumberOfGuests(final Long orderTableId, final TableRequest request) {

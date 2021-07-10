@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.menugroup.domain.MenuGroupEntity;
+import kitchenpos.product.domain.ProductEntity;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -21,9 +21,8 @@ public class MenuEntity {
   @Embedded
   private Price price;
 
-  @ManyToOne
-  @JoinColumn(name = "menu_group_id", nullable = false)
-  private MenuGroupEntity menuGroup;
+  @Column(name = "menu_group_id", nullable = false)
+  private Long menuGroupId;
 
   @Embedded
   private MenuProducts menuProducts = new MenuProducts();
@@ -31,18 +30,18 @@ public class MenuEntity {
   protected MenuEntity() {
   }
 
-  public MenuEntity(String name, Double menuPrice, MenuGroupEntity menuGroup, List<MenuProductEntity> products) {
+  public MenuEntity(String name, Double menuPrice, Long menuGroupId, List<MenuProductEntity> products) {
     this.name = name;
     this.price = Price.fromDouble(menuPrice);
-    this.menuGroup = menuGroup;
+    this.menuGroupId = menuGroupId;
     menuProducts.addMenuProducts(this, products);
   }
 
-  public MenuEntity(Long id, String name, Double menuPrice, MenuGroupEntity menuGroup, List<MenuProductEntity> products) {
+  public MenuEntity(Long id, String name, Double menuPrice, Long menuGroupId, List<MenuProductEntity> products) {
     this.id = id;
     this.name = name;
     this.price = Price.fromDouble(menuPrice);
-    this.menuGroup = menuGroup;
+    this.menuGroupId = menuGroupId;
     menuProducts.addMenuProducts(this, products);
   }
 
@@ -58,12 +57,23 @@ public class MenuEntity {
     return price.getValue();
   }
 
-  public MenuGroupEntity getMenuGroup() {
-    return menuGroup;
+  public Long getMenuGroupId() {
+    return menuGroupId;
   }
 
   public List<MenuProductEntity> getMenuProducts() {
     return menuProducts.getMenuProducts();
+  }
+
+  public List<Long> getMenuProductProductIds() {
+    return menuProducts.getProductIds();
+  }
+
+  public void validatePrice(List<ProductEntity> products) {
+    BigDecimal productsAmount = menuProducts.calculateAmount(products);
+    if (price.compare(productsAmount) > 0) {
+      throw new IllegalArgumentException();
+    }
   }
 
   @Override
@@ -71,11 +81,11 @@ public class MenuEntity {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     MenuEntity that = (MenuEntity) o;
-    return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(price, that.price) && Objects.equals(menuGroup, that.menuGroup);
+    return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(price, that.price) && Objects.equals(menuGroupId, that.menuGroupId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, price, menuGroup);
+    return Objects.hash(id, name, price, menuGroupId);
   }
 }

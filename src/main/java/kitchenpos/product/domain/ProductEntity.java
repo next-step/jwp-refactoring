@@ -43,6 +43,11 @@ public class ProductEntity {
     return price.getValue();
   }
 
+  public BigDecimal calculateAmountWithQuantity(Long quantity) {
+    return price.getValue()
+        .multiply(BigDecimal.valueOf(quantity));
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;

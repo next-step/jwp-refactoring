@@ -1,9 +1,8 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTableEntity;
 import kitchenpos.table.domain.TableRepository;
+import kitchenpos.table.domain.TableExternalValidator;
 import kitchenpos.table.dto.TableRequest;
 import kitchenpos.table.dto.TableResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,14 +21,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class TableService2Test {
 
   @Mock
-  private OrderRepository orderRepository;
+  private TableExternalValidator tableExternalValidator;
 
   @Mock
   private TableRepository tableRepository;
@@ -38,7 +36,7 @@ class TableService2Test {
 
   @BeforeEach
   void setUp() {
-    tableService = new TableService2(orderRepository, tableRepository);
+    tableService = new TableService2(tableExternalValidator, tableRepository);
   }
 
   @DisplayName("손님수, 주문을 등록할 수 있는 테이블 여부를 입력받아 저장할 수 있다.")
@@ -83,7 +81,7 @@ class TableService2Test {
     long savedOrderTableId = 1L;
     OrderTableEntity savedOrderTable = OrderTableEntity.initWithId(savedOrderTableId, 4, true);
     when(tableRepository.findById(savedOrderTableId)).thenReturn(Optional.of(savedOrderTable));
-    when(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(false);
+    doNothing().when(tableExternalValidator).validateTableInUse(savedOrderTableId);
     OrderTableEntity orderAfterChangeEmpty = OrderTableEntity.initWithId(savedOrderTableId, 4, false);
     //when
     TableResponse changedOrderTable = tableService.changeEmpty(savedOrderTableId, tableRequest);
@@ -125,7 +123,7 @@ class TableService2Test {
     TableRequest tableRequest = new TableRequest(null, false);
     OrderTableEntity savedOrderTable = OrderTableEntity.initWithId(savedOrderTableId, 4, true);
     when(tableRepository.findById(savedOrderTableId)).thenReturn(Optional.of(savedOrderTable));
-    when(orderRepository.existsByOrderTableIdAndOrderStatusIn(savedOrderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).thenReturn(true);
+    doThrow(IllegalArgumentException.class).when(tableExternalValidator).validateTableInUse(savedOrderTableId);
     //when & then
     assertThatThrownBy(() -> tableService.changeEmpty(savedOrderTableId, tableRequest)).isInstanceOf(IllegalArgumentException.class);
   }

@@ -45,7 +45,7 @@ class MenuService2Test {
 
   private String menuName;
   private Double menuPrice;
-  private MenuGroupEntity menuGroup;
+  private Long menuGroupId;
   private ProductEntity productEntity1;
   private ProductEntity productEntity2;
   private MenuRequest.MenuProductRequest menuProductRequest1;
@@ -60,13 +60,13 @@ class MenuService2Test {
     //given
     menuName = "메뉴이름";
     menuPrice = 4_000D;
-    menuGroup = new MenuGroupEntity(1L, "그룹1");
+    menuGroupId = 1L;
     productEntity1 = new ProductEntity(1L, "상품1", 1_000D);
     productEntity2 = new ProductEntity(2L, "상품2", 2_000D);
     menuProductRequest1 = new MenuRequest.MenuProductRequest(productEntity1.getId(), 2L);
     menuProductRequest2 = new MenuRequest.MenuProductRequest(productEntity2.getId(), 1L);
-    menuProductEntity1 = new MenuProductEntity(1L, productEntity1, 2L);
-    menuProductEntity2 = new MenuProductEntity(2L, productEntity2, 1L);
+    menuProductEntity1 = new MenuProductEntity(1L, productEntity1.getId(), 2L);
+    menuProductEntity2 = new MenuProductEntity(2L, productEntity2.getId(), 1L);
 
     menuService = new MenuService2(menuRepository, menuGroupRepository, productRepository);
   }
@@ -75,10 +75,10 @@ class MenuService2Test {
   @Test
   void createTest() {
     //given
-    MenuRequest menu = new MenuRequest(menuName, menuPrice, menuGroup.getId(), Arrays.asList(menuProductRequest1, menuProductRequest2));
-    when(menuGroupRepository.findById(menuGroup.getId())).thenReturn(Optional.of(menuGroup));
+    MenuRequest menu = new MenuRequest(menuName, menuPrice, menuGroupId, Arrays.asList(menuProductRequest1, menuProductRequest2));
+    when(menuGroupRepository.existsById(menuGroupId)).thenReturn(true);
     when(productRepository.findAllById(Arrays.asList(productEntity1.getId(), productEntity2.getId()))).thenReturn(Arrays.asList(productEntity1, productEntity2));
-    when(menuRepository.save(any())).thenReturn(new MenuEntity(1L, menuName, menuPrice, menuGroup, Arrays.asList(menuProductEntity1, menuProductEntity2)));
+    when(menuRepository.save(any())).thenReturn(new MenuEntity(1L, menuName, menuPrice, menuGroupId, Arrays.asList(menuProductEntity1, menuProductEntity2)));
 
     //when
     MenuResponse savedMenu = menuService.create(menu);
@@ -91,7 +91,7 @@ class MenuService2Test {
         () -> assertThat(savedMenu.getMenuGroupId()).isEqualTo(menu.getMenuGroupId()),
         () -> assertThat(savedMenu.getMenuProducts()).contains(MenuResponse.MenuProductResponse.from(menuProductEntity1), MenuResponse.MenuProductResponse.from(menuProductEntity2))
     );
-    verify(menuGroupRepository, VerificationModeFactory.times(1)).findById(menuGroup.getId());
+    verify(menuGroupRepository, VerificationModeFactory.times(1)).existsById(menuGroupId);
     verify(productRepository, VerificationModeFactory.times(1)).findAllById(Arrays.asList(productEntity1.getId(), productEntity2.getId()));
     verify(menuRepository, VerificationModeFactory.times(1)).save(any());
   }
@@ -102,9 +102,8 @@ class MenuService2Test {
   @ParameterizedTest
   void createFailCausePrice(Double givenPrice) {
     //given
-    MenuRequest menu = new MenuRequest(menuName, givenPrice, menuGroup.getId(), Arrays.asList(menuProductRequest1, menuProductRequest2));
-    when(menuGroupRepository.findById(menuGroup.getId())).thenReturn(Optional.of(menuGroup));
-    when(productRepository.findAllById(Arrays.asList(productEntity1.getId(), productEntity2.getId()))).thenReturn(Arrays.asList(productEntity1, productEntity2));
+    MenuRequest menu = new MenuRequest(menuName, givenPrice, menuGroupId, Arrays.asList(menuProductRequest1, menuProductRequest2));
+    when(menuGroupRepository.existsById(menuGroupId)).thenReturn(true);
 
     //when & then
     assertThatThrownBy(() -> menuService.create(menu)).isInstanceOf(IllegalArgumentException.class);
@@ -116,7 +115,7 @@ class MenuService2Test {
     //given
     long notExistMenuGroupId = 999L;
     MenuRequest menu = new MenuRequest(menuName, menuPrice, notExistMenuGroupId, Arrays.asList(menuProductRequest1, menuProductRequest2));
-    when(menuGroupRepository.findById(notExistMenuGroupId)).thenReturn(Optional.empty());
+    when(menuGroupRepository.existsById(notExistMenuGroupId)).thenReturn(false);
 
     //when & then
     assertThatThrownBy(() -> menuService.create(menu)).isInstanceOf(IllegalArgumentException.class);
@@ -127,8 +126,8 @@ class MenuService2Test {
   void createFailCauseNotMatchedPrice() {
     //given
     Double menuPriceLargerThanMenuProductsAmount = 5_000D;
-    MenuRequest menu = new MenuRequest(menuName, menuPriceLargerThanMenuProductsAmount, menuGroup.getId(), Arrays.asList(menuProductRequest1, menuProductRequest2));
-    when(menuGroupRepository.findById(menuGroup.getId())).thenReturn(Optional.of(menuGroup));
+    MenuRequest menu = new MenuRequest(menuName, menuPriceLargerThanMenuProductsAmount, menuGroupId, Arrays.asList(menuProductRequest1, menuProductRequest2));
+    when(menuGroupRepository.existsById(menuGroupId)).thenReturn(true);
     when(productRepository.findAllById(Arrays.asList(productEntity1.getId(), productEntity2.getId()))).thenReturn(Arrays.asList(productEntity1, productEntity2));
 
     //when & then
@@ -139,8 +138,8 @@ class MenuService2Test {
   @Test
   void findAllTest() {
     //given
-    MenuEntity savedMenu1 = new MenuEntity(1L, "메뉴이름1", 2_000D, menuGroup, Collections.singletonList(menuProductEntity1));
-    MenuEntity savedMenu2 = new MenuEntity(2L, "메뉴이름2", 2_000D, menuGroup, Collections.singletonList(menuProductEntity2));
+    MenuEntity savedMenu1 = new MenuEntity(1L, "메뉴이름1", 2_000D, menuGroupId, Collections.singletonList(menuProductEntity1));
+    MenuEntity savedMenu2 = new MenuEntity(2L, "메뉴이름2", 2_000D, menuGroupId, Collections.singletonList(menuProductEntity2));
     when(menuRepository.findAll()).thenReturn(Arrays.asList(savedMenu1, savedMenu2));
 
     //when
