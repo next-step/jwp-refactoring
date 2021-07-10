@@ -23,7 +23,7 @@ public class MenuProducts {
 
     public BigDecimal totalPrice() {
         return menuProducts.stream()
-                .map(menuProduct -> menuProduct.getProductPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())))
+                .map(menuProduct -> menuProduct.productPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 

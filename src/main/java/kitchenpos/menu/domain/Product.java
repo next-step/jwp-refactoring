@@ -45,7 +45,7 @@ public class Product {
         return name;
     }
 
-    public BigDecimal getPrice() {
+    public BigDecimal price() {
         return price.getValue();
     }
 

@@ -62,8 +62,8 @@ public class MenuProduct {
         return quantity;
     }
 
-    public BigDecimal getProductPrice() {
-        return this.product.getPrice();
+    public BigDecimal productPrice() {
+        return this.product.price();
     }
 
     @Override
