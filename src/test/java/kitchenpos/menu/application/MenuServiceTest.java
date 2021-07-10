@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -48,6 +49,20 @@ class MenuServiceTest {
         assertThat(menuResponse.getPrice()).isEqualTo(menuRequest.getPrice());
         assertThat(menuResponse.getMenuProducts().stream().map(MenuProductResponse::getProductId)).contains(후라이드.getProductId());
         assertThat(menuResponse.getMenuProducts().stream().map(MenuProductResponse::getProductId)).contains(양념치킨.getProductId());
+    }
+
+    @DisplayName("메뉴를 조회할 수 있다")
+    @Test
+    void listTest() {
+        //given
+        menuService.createTemp(menuRequest);
+
+        //when
+        List<MenuResponse> menuResponse = menuService.listTemp();
+
+        //then
+        List<String> menuNames = menuResponse.stream().map(MenuResponse::getName).collect(Collectors.toList());
+        assertThat(menuNames).contains(menuRequest.getName());
     }
 
 

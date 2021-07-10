@@ -4,6 +4,8 @@ import kitchenpos.menu.domain.MenuEntity;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class MenuResponse {
     private Long id;
@@ -49,5 +51,11 @@ public class MenuResponse {
                 , menu.getPrice()
                 , menu.getMenuGroupId()
                 , MenuProductResponse.ofList(menu.getMenuProductsValues()));
+    }
+
+    public static List<MenuResponse> ofList(List<MenuEntity> menus) {
+        return menus.stream()
+                .map(MenuResponse::of)
+                .collect(Collectors.toList());
     }
 }

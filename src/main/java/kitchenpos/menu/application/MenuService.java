@@ -120,5 +120,8 @@ public class MenuService {
         return menus;
     }
 
-
+    @Transactional(readOnly = true)
+    public List<MenuResponse> listTemp() {
+        return MenuResponse.ofList(menuRepository.findAll());
+    }
 }
