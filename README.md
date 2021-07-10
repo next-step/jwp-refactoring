@@ -87,7 +87,6 @@ TODO
 
 - [x] Menu Service 리팩토링
 - [x] Order Service 리팩토링
-  
 
 ---
 피드백 리뷰 결과
@@ -96,23 +95,25 @@ TODO
 - [x] Price 컬럼 원시값 포장 객체 생성
 - [x] 일급 컬렉션 생성 (MenuProducts)
 
+---
 
-- Menu 도메인 테스트 코드 추가
-  - [ ] Menu
-  - [ ] MenuGroup
-  - [ ] MenuProduct
-  - [ ] Product
+**2단계**
+
+서비스 생성 후, 해당 서비스의 역할을 호출하는 이벤트 생성 예정
 
 
-- Order 도메인 테스트 코드 추가
-  - [ ] Order
-  - [ ] OrderLine
-  - [ ] OrderTable
-  - [ ] TableGroup
-
-- [ ] 이벤트 기반 상태 변경
+- [x] 이벤트 기반 상태 변경
+  - [x] OrderCreatedEvent 이벤트 생성  
+  
+  - [x] MenuCreatedEvent 이벤트 생성
+    
+  - [x] TableGroupCreatedEvent 이벤트 생성
 
 해볼 수 있는 기능들
 - JPA 적용
 - 이벤트 주도 개발
 - 쿼리 커멘드 분리
+
+도메인별 라이프사이클을 고려해 의존성을 분리한다.
+
+- Product 는 메뉴가 주문되기 전 미리 등록되어있어야 한다. 그러므로, MenuProduct 에서 분리되어있어야 한다.

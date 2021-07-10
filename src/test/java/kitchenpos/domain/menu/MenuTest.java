@@ -1,13 +1,10 @@
 package kitchenpos.domain.menu;
 
+import kitchenpos.domain.menugroup.MenuGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

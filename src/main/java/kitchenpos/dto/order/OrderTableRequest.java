@@ -1,6 +1,6 @@
 package kitchenpos.dto.order;
 
-import kitchenpos.domain.order.OrderTable;
+import kitchenpos.domain.table.OrderTable;
 
 import java.util.Objects;
 
@@ -37,7 +37,7 @@ public class OrderTableRequest {
 
     @Override
     public String toString() {
-        return "OrderTableRequest2{" +
+        return "OrderTableRequest{" +
                 "numberOfGuests=" + numberOfGuests +
                 ", empty=" + empty +
                 '}';

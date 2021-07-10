@@ -1,6 +1,6 @@
 package kitchenpos.dto.menu;
 
-import kitchenpos.domain.menu.MenuGroup;
+import kitchenpos.domain.menugroup.MenuGroup;
 
 public class MenuGroupResponse {
 
@@ -13,7 +13,7 @@ public class MenuGroupResponse {
     }
 
     public static MenuGroupResponse of(MenuGroup menuGroup) {
-        return new MenuGroupResponse(menuGroup.getId(), menuGroup.getName());
+        return new MenuGroupResponse(menuGroup.getId(), menuGroup.getName().getValue());
     }
 
     public Long getId() {
