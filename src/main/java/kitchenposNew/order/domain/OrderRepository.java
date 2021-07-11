@@ -1,2 +1,6 @@
-package kitchenposNew.order.domain;public class OrderRespository {
+package kitchenposNew.order.domain;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface OrderRepository extends JpaRepository<Order, Long> {
 }
