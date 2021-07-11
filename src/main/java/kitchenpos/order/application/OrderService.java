@@ -4,12 +4,15 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusChangeRequest;
+import kitchenpos.order.event.OrderCreatedEvent;
+import kitchenpos.order.event.OrderStatusChangedEvent;
+import kitchenpos.order.exception.EmptyOrderTableException;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.order.dto.OrderCreateRequest;
 import kitchenpos.ordertable.domain.OrderTableRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,29 +22,21 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class OrderService {
-    private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
+    private final ApplicationEventPublisher publisher;
 
     public OrderService(
-            MenuRepository menuRepository, OrderRepository orderRepository,
-            OrderTableRepository orderTableRepository) {
-        this.menuRepository = menuRepository;
+            OrderRepository orderRepository,
+            OrderTableRepository orderTableRepository, ApplicationEventPublisher publisher) {
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
+        this.publisher = publisher;
     }
 
     public OrderResponse create(OrderCreateRequest orderCreateRequest) {
-        List<OrderLineItem> orderLineItems = generateOrderLineItems(orderCreateRequest);
-
         OrderTable orderTable = generateOrderTable(orderCreateRequest);
 
-        Order savedOrder = generateOrder(orderTable, orderLineItems);
-
-        return OrderResponse.of(savedOrder);
-    }
-
-    private Order generateOrder(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         Order savedOrder = orderRepository.save(
                 new Order(
                         orderTable,
@@ -50,12 +45,9 @@ public class OrderService {
                 )
         );
 
-        for (OrderLineItem orderLineItem : orderLineItems) {
-            orderLineItem.setOrder(savedOrder);
-        }
+        publisher.publishEvent(new OrderCreatedEvent(savedOrder, orderCreateRequest.getOrderLineItems()));
 
-        savedOrder.addOrderLineItems(orderLineItems);
-        return savedOrder;
+        return OrderResponse.of(savedOrder);
     }
 
     private OrderTable generateOrderTable(OrderCreateRequest orderCreateRequest) {
@@ -63,44 +55,9 @@ public class OrderService {
                 .orElseThrow(NoSuchElementException::new);
 
         if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new EmptyOrderTableException();
         }
         return orderTable;
-    }
-
-    private List<OrderLineItem> generateOrderLineItems(OrderCreateRequest orderCreateRequest) {
-        List<OrderLineItem> orderLineItems = orderCreateRequest.getOrderLineItems()
-                .stream()
-                .map(orderLineItemRequest -> new OrderLineItem(
-                        orderLineItemRequest.getMenuId(),
-                        orderLineItemRequest.getQuantity()
-                )).collect(Collectors.toList());
-
-        validateOrderLineItemsEmpty(orderLineItems);
-
-        List<Long> menuIds = orderLineItems.stream()
-                .map(OrderLineItem::getMenuId)
-                .collect(Collectors.toList());
-
-        validateSizeAndMenuCountDifferent(orderLineItems, menuRepository.countByIdIn(menuIds));
-
-        return orderLineItems;
-    }
-
-    private void validateOrderLineItemsEmpty(List<OrderLineItem> orderLineItems) {
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    private void validateSizeAndMenuCountDifferent(List<OrderLineItem> orderLineItems, long menuCount) {
-        if (isSizeDifferentFromMenuCount(orderLineItems, menuCount)) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    private boolean isSizeDifferentFromMenuCount(List<OrderLineItem> orderLineItems, long menuCount) {
-        return orderLineItems.size() != menuCount;
     }
 
     public List<OrderResponse> list() {
@@ -117,6 +74,10 @@ public class OrderService {
 
         final OrderStatus orderStatus = OrderStatus.valueOf(orderStatusChangeRequest.getOrderStatus());
         savedOrder.changeOrderStatus(orderStatus.name());
+
+        if(orderStatus.equals(OrderStatus.COMPLETION)) {
+            publisher.publishEvent(new OrderStatusChangedEvent(orderId));
+        }
 
         return OrderResponse.of(savedOrder);
     }
