@@ -36,6 +36,5 @@ project(':module-domain') {
 project(':module-application') {
     dependencies {
         compile project(':module-domain')
-        compile project(':module-common')
     }
 }
