@@ -1,6 +1,5 @@
 package kitchenposNew.order.domain;
 
-import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderTable;
 import kitchenposNew.order.OrderStatus;
 
@@ -35,6 +34,9 @@ public class Order {
         this.orderStatus = OrderStatus.COOKING;
         this.orderLineItems = orderLineItems;
         this.orderedTime = LocalDateTime.now();
+        orderLineItems.forEach(
+                orderLineItem -> orderLineItem.registerOrder(this)
+        );
     }
 
     public Order(OrderTable orderTableId, List<OrderLineItem> orderLineItems) {
@@ -42,6 +44,9 @@ public class Order {
         this.orderStatus = OrderStatus.COOKING;
         this.orderLineItems = orderLineItems;
         this.orderedTime = LocalDateTime.now();
+        orderLineItems.forEach(
+                orderLineItem -> orderLineItem.registerOrder(this)
+        );
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {

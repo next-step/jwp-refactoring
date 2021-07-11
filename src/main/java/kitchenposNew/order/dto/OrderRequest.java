@@ -1,6 +1,7 @@
 package kitchenposNew.order.dto;
 
-import kitchenpos.domain.OrderLineItem;
+import kitchenposNew.menu.domain.Menu;
+import kitchenposNew.order.domain.OrderLineItem;
 import kitchenpos.domain.OrderTable;
 import kitchenposNew.order.domain.Order;
 import kitchenposNew.order.exception.EmptyOrderLineItemsException;
@@ -12,39 +13,50 @@ import java.util.stream.Collectors;
 
 public class OrderRequest {
     private Long orderTableId;
-    private List<OrderLineItem> orderLineItems;
+    private List<OrderLineItemRequest> orderLineItemRequests;
 
     protected OrderRequest() {
     }
 
-    public OrderRequest(Long orderTableId, List<OrderLineItem> orderLineItems) {
+    public OrderRequest(Long orderTableId, List<OrderLineItemRequest> orderLineItemRequests) {
         this.orderTableId = orderTableId;
-        this.orderLineItems = orderLineItems;
+        this.orderLineItemRequests = orderLineItemRequests;
     }
 
-    public Order toOrder(OrderTable orderTable) {
+    public Order toOrder(OrderTable orderTable, List<Menu> menus) {
+        List<OrderLineItem> orderLineItems = toOrderLineItem(menus);
         return new Order(orderTable, orderLineItems);
     }
 
+    private List<OrderLineItem> toOrderLineItem(List<Menu> menus) {
+        return menus.stream()
+                .map(this::findOrderLineItem)
+                .collect(Collectors.toList());
+    }
+
+    private OrderLineItem findOrderLineItem(Menu menus) {
+        return orderLineItemRequests.stream()
+                .filter(orderLineItemRequest -> orderLineItemRequest.getMenuId() == menus.getId())
+                .map(orderLineItemRequest -> new OrderLineItem(menus, orderLineItemRequest.getQuantity()))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
+    }
+
     public List<Long> getMenuIds() {
-        if(CollectionUtils.isEmpty(orderLineItems)){
+        if(CollectionUtils.isEmpty(orderLineItemRequests)){
             throw new EmptyOrderLineItemsException();
         }
-        return orderLineItems.stream()
-                .map(OrderLineItem::getMenuId)
+        return orderLineItemRequests.stream()
+                .map(OrderLineItemRequest::getMenuId)
                 .collect(Collectors.toList());
     }
 
     public boolean isEqualsMenuSize(Long countByIdIn) {
-        return Long.valueOf(orderLineItems.size()) == countByIdIn;
+        return Long.valueOf(orderLineItemRequests.size()) == countByIdIn;
     }
 
     public Long getOrderTableId() {
         return orderTableId;
-    }
-
-    public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
     }
 
     @Override
@@ -52,11 +64,11 @@ public class OrderRequest {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OrderRequest that = (OrderRequest) o;
-        return Objects.equals(orderTableId, that.orderTableId) && Objects.equals(orderLineItems, that.orderLineItems);
+        return Objects.equals(orderTableId, that.orderTableId) && Objects.equals(orderLineItemRequests, that.orderLineItemRequests);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(orderTableId, orderLineItems);
+        return Objects.hash(orderTableId, orderLineItemRequests);
     }
 }
