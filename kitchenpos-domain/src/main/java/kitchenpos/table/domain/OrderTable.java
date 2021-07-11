@@ -1,7 +1,6 @@
 package kitchenpos.table.domain;
 
 import kitchenpos.order.domain.*;
-import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.exception.UnableChangeEmptyOrderTableException;
 import kitchenpos.table.exception.UnableChangeNumberOfGuestsException;
 import kitchenpos.table.exception.UnableOrderCausedByEmptyTableException;
@@ -70,12 +69,12 @@ public class OrderTable {
         this.numberOfGuests = numberOfGuests;
     }
 
-    public void changeEmpty(OrderTableRequest orderTableRequest) {
+    public void changeEmpty(boolean isOrderTableEmpty) {
         if (Objects.nonNull(getTableGroupId())) {
             throw new UnableChangeEmptyOrderTableException("단체테이블인 경우 테이블을 비울수 없습니다.");
         }
 
-        this.empty = orderTableRequest.isEmpty();
+        this.empty = isOrderTableEmpty;
     }
 
     public boolean isUnableTableGroup() {
