@@ -9,7 +9,7 @@ import java.util.Objects;
 public class ProductResponse {
     public Long id;
     public String name;
-    private BigDecimal price;
+    public BigDecimal price;
 
     protected ProductResponse() {
     }

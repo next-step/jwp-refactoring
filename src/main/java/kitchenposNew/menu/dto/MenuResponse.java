@@ -1,27 +1,34 @@
 package kitchenposNew.menu.dto;
 
-import kitchenposNew.menu.domain.MenuGroup;
-import kitchenposNew.menu.domain.Product;
+import kitchenpos.domain.MenuProduct;
+import kitchenposNew.menu.domain.Menu;
 
 import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
-public class ProductResponse {
+public class MenuResponse {
     public Long id;
     public String name;
-    private BigDecimal price;
+    public BigDecimal price;
+    public Long menuGroupId;
+    public List<MenuProduct> menuProducts;
 
-    protected ProductResponse() {
+
+    protected MenuResponse() {
     }
 
-    public ProductResponse(Long id, String name, BigDecimal price) {
+    public MenuResponse(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;
+        this.menuGroupId = menuGroupId;
+        this.menuProducts = menuProducts;
     }
 
-    public static ProductResponse of(Product product){
-        return new ProductResponse(product.getId(), product.getName(), product.getPrice().getPrice());
+    public static MenuResponse of(Menu menu) {
+        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice().getPrice(), menu.getMenuGroupId(), menu.getMenuProducts());
     }
 
     public Long getId() {
@@ -32,11 +39,15 @@ public class ProductResponse {
         return name;
     }
 
+    public List<MenuProduct> getMenuProducts() {
+        return menuProducts;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ProductResponse that = (ProductResponse) o;
+        MenuResponse that = (MenuResponse) o;
         return Objects.equals(id, that.id) && Objects.equals(name, that.name);
     }
 
