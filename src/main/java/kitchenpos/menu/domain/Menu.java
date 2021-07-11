@@ -50,17 +50,16 @@ public class Menu {
         this.price = price;
         this.menuProducts = menuProducts;
         this.menuGroup = menuGroup;
-        menuProducts.registerMenu(this);
     }
 
-    public static Menu createWithMenuProduct(String name, BigDecimal price, MenuProducts menuProducts, MenuGroup menuGroup) {
-        validateProduct(menuProducts, price);
+    public static Menu of(String name, BigDecimal price, MenuProducts menuProducts, MenuGroup menuGroup) {
+        menuProducts.validateIsEmpty();
         return new Menu(name, price, menuProducts, menuGroup);
     }
 
-    private static void validateProduct(MenuProducts menuProducts, BigDecimal price) {
-        menuProducts.validatePrice(price);
-        menuProducts.validateIsEmpty();
+    public void registerMenuProduct(MenuProduct menuProduct) {
+        menuProducts.add(menuProduct);
+        menuProduct.registerMenu(this);
     }
 
     public Long getId() {

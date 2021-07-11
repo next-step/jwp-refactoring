@@ -11,13 +11,14 @@ import kitchenpos.menugroup.application.MenuGroupNotFoundException;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -27,7 +28,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
@@ -40,15 +40,15 @@ class MenuServiceTest {
     @Mock
     private MenuGroupRepository menuGroupRepository;
 
-    @Mock
-    private ProductRepository productRepository;
+    @Autowired
+    private ApplicationEventPublisher applicationEventPublisher;
 
     private MenuService menuService;
 
 
     @BeforeEach
     void setUp() {
-        menuService = new MenuService(menuRepository, menuGroupRepository, productRepository);
+        menuService = new MenuService(menuRepository, menuGroupRepository, applicationEventPublisher);
     }
 
     @Test
@@ -63,12 +63,12 @@ class MenuServiceTest {
         Product product2 = new Product(2L, "양념통닭", BigDecimal.valueOf(16000));
         MenuProduct menuProduct1 = new MenuProduct(product1, 1L);
         MenuProduct menuProduct2 = new MenuProduct(product2, 1L);
-        Menu givenMenu = Menu.createWithMenuProduct("후라이드치킨", BigDecimal.valueOf(16000), new MenuProducts(Arrays.asList(menuProduct1, menuProduct2)), menuGroup);
+        Menu givenMenu = Menu.of("후라이드치킨", BigDecimal.valueOf(16000), new MenuProducts(Arrays.asList(menuProduct1, menuProduct2)), menuGroup);
 
         when(menuGroupRepository.findById(anyLong()))
                 .thenReturn(Optional.of(menuGroup));
-        when(productRepository.findAllById(anyList()))
-                .thenReturn(Arrays.asList(product1, product2));
+//        when(productRepository.findAllById(anyList()))
+//                .thenReturn(Arrays.asList(product1, product2));
         when(menuRepository.save(any(Menu.class)))
                 .thenReturn(givenMenu);
         MenuResponse actual = menuService.create(menuRequest);
@@ -89,8 +89,8 @@ class MenuServiceTest {
 
         when(menuGroupRepository.findById(anyLong()))
                 .thenReturn(Optional.of(menuGroup));
-        when(productRepository.findAllById(anyList()))
-                .thenReturn(Arrays.asList(product1, product2));
+//        when(productRepository.findAllById(anyList()))
+//                .thenReturn(Arrays.asList(product1, product2));
 
         assertThatThrownBy(() -> menuService.create(menuRequest))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -109,8 +109,8 @@ class MenuServiceTest {
 
         when(menuGroupRepository.findById(anyLong()))
                 .thenReturn(Optional.of(menuGroup));
-        when(productRepository.findAllById(anyList()))
-                .thenReturn(Arrays.asList(product1, product2));
+//        when(productRepository.findAllById(anyList()))
+//                .thenReturn(Arrays.asList(product1, product2));
 
         assertThatThrownBy(() -> menuService.create(menuRequest))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -158,8 +158,8 @@ class MenuServiceTest {
 
         when(menuGroupRepository.findById(anyLong()))
                 .thenReturn(Optional.of(menuGroup));
-        when(productRepository.findAllById(anyList()))
-                .thenReturn(Arrays.asList(product1, product2));
+//        when(productRepository.findAllById(anyList()))
+//                .thenReturn(Arrays.asList(product1, product2));
 
         assertThatThrownBy(() -> menuService.create(menuRequest))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -173,8 +173,8 @@ class MenuServiceTest {
         MenuGroup menuGroup2 = new MenuGroup(2L, "오늘의메뉴");
         Product product = new Product("후라이드치킨", BigDecimal.valueOf(16000));
         MenuProduct menuProduct = new MenuProduct(product, 1L);
-        Menu givenMenu1 = Menu.createWithMenuProduct("후라이드치킨", BigDecimal.valueOf(16000), new MenuProducts(Arrays.asList(menuProduct)), menuGroup1);
-        Menu givenMenu2 = Menu.createWithMenuProduct("후라이드치킨", BigDecimal.valueOf(16000), new MenuProducts(Arrays.asList(menuProduct)), menuGroup2);
+        Menu givenMenu1 = Menu.of("후라이드치킨", BigDecimal.valueOf(16000), new MenuProducts(Arrays.asList(menuProduct)), menuGroup1);
+        Menu givenMenu2 = Menu.of("후라이드치킨", BigDecimal.valueOf(16000), new MenuProducts(Arrays.asList(menuProduct)), menuGroup2);
 
         when(menuRepository.findAll())
                 .thenReturn(Arrays.asList(givenMenu1, givenMenu2));

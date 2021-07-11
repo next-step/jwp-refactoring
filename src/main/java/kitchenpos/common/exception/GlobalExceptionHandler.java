@@ -4,6 +4,7 @@ import kitchenpos.menu.application.MenuNotMatchException;
 import kitchenpos.menugroup.application.MenuGroupNotFoundException;
 import kitchenpos.order.application.OrderLineItemNotFoundException;
 import kitchenpos.order.application.OrderNotFoundException;
+import kitchenpos.product.application.ProductNotFoundException;
 import kitchenpos.table.application.OrderTableNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -59,6 +60,12 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(MenuGroupNotFoundException.class)
     public ErrorResponse handleMenuGroupNotFound(Exception e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ErrorResponse handleProductNotFound(Exception e) {
         return new ErrorResponse(e.getMessage());
     }
 

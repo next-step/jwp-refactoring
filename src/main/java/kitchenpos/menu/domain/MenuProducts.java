@@ -1,17 +1,14 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.common.model.Price;
 import kitchenpos.menu.application.MenuProductNotFoundException;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 @Embeddable
 public class MenuProducts {
@@ -37,23 +34,23 @@ public class MenuProducts {
         return CollectionUtils.isEmpty(menuProducts);
     }
 
-    private Price totalPrice() {
-        BigDecimal sum = menuProducts.stream()
-                .map(MenuProduct::sumMenuProduct)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-        return Price.of(sum);
-    }
+//    private Price totalPrice() {
+//        BigDecimal sum = menuProducts.stream()
+//                .map(MenuProduct::sumMenuProduct)
+//                .reduce(BigDecimal.ZERO, BigDecimal::add);
+//        return Price.of(sum);
+//    }
 
-    public void validatePrice(BigDecimal price) {
-        Price totalPrice = totalPrice();
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException(INVALID_PRICE);
-        }
-
-        if (totalPrice.isBigger(price)) {
-            throw new IllegalArgumentException(INVALID_PRICE);
-        }
-    }
+//    public void validatePrice(BigDecimal price) {
+//        Price totalPrice = totalPrice();
+//        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+//            throw new IllegalArgumentException(INVALID_PRICE);
+//        }
+//
+//        if (totalPrice.isBigger(price)) {
+//            throw new IllegalArgumentException(INVALID_PRICE);
+//        }
+//    }
 
     public void validateIsEmpty() {
         if (menuProducts.isEmpty()) {

@@ -1,7 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.product.domain.Product;
-
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
@@ -10,7 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
@@ -24,29 +22,28 @@ public class MenuProduct {
     @ManyToOne(fetch = FetchType.LAZY)
     private Menu menu;
 
-    @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_menu_product_product"))
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Product product;
+    @Column(name = "product_id")
+    private Long productId;
 
     private Long quantity;
 
     public MenuProduct() {
     }
 
-    public MenuProduct(Product product, Long quantity) {
-        this(null, null, product, quantity);
+    public MenuProduct(Long productId, Long quantity) {
+        this(null, null, productId, quantity);
     }
 
-    public MenuProduct(Long seq, Menu menu, Product product, Long quantity) {
+    public MenuProduct(Long seq, Menu menu, Long productId, Long quantity) {
         this.seq = seq;
         this.menu = menu;
-        this.product = product;
+        this.productId = productId;
         this.quantity = quantity;
     }
 
-    public BigDecimal sumMenuProduct() {
-        return product.getPrice().multiply(BigDecimal.valueOf(quantity));
-    }
+//    public BigDecimal sumMenuProduct() {
+//        return product.getPrice().multiply(BigDecimal.valueOf(quantity));
+//    }
 
     public void registerMenu(Menu menu) {
         this.menu = menu;
@@ -61,7 +58,7 @@ public class MenuProduct {
     }
 
     public Long getProductId() {
-        return product.getId();
+        return productId;
     }
 
     public Long getQuantity() {
@@ -85,8 +82,8 @@ public class MenuProduct {
             return this;
         }
 
-        public Builder product(Product product) {
-            menuProduct.product = product;
+        public Builder productId(Long productId) {
+            menuProduct.productId = productId;
             return this;
         }
 
@@ -118,7 +115,7 @@ public class MenuProduct {
         return "MenuProduct{" +
                 "seq=" + seq +
                 ", menu=" + menu +
-                ", product=" + product +
+                ", productId=" + productId +
                 ", quantity=" + quantity +
                 '}';
     }
