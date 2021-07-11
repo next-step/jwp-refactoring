@@ -3,7 +3,6 @@ package kitchenpos.menu.dto;
 import java.util.Objects;
 
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.product.dto.ProductResponse;
 
 public class MenuProductResponse {
 	private Long seq;

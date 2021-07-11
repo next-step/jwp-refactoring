@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.Price;
-import kitchenpos.product.domain.Product;
+import kitchenpos.menu.domain.Product;
 
 class MenuProductsTest {
 

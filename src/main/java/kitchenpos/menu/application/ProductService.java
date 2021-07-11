@@ -1,4 +1,4 @@
-package kitchenpos.product.application;
+package kitchenpos.menu.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -7,10 +7,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.menu.domain.Price;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.dto.ProductRequest;
-import kitchenpos.product.dto.ProductResponse;
-import kitchenpos.product.repository.ProductRepository;
+import kitchenpos.menu.domain.Product;
+import kitchenpos.menu.dto.ProductRequest;
+import kitchenpos.menu.dto.ProductResponse;
+import kitchenpos.menu.repository.ProductRepository;
 
 @Service
 @Transactional(readOnly = true)

@@ -10,7 +10,7 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.Price;
-import kitchenpos.product.domain.Product;
+import kitchenpos.menu.domain.Product;
 
 class MenuTest {
 
