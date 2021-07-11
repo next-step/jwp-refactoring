@@ -66,11 +66,9 @@ public class OrderService {
 
         final Order order = orderDao.save(Order.of(orderTable.getId(), OrderStatus.COOKING));
 
-        final List<OrderLineItem> orderLineItems = menus.stream().map(menu -> {
-            OrderLineItemRequest orderLineItemRequest = orderLineItemRequests.stream()
-                    .map(request -> request.findByMenuId(menu.id()))
-                    .findFirst().orElseThrow(InvalidRequestException::new);
-            return OrderLineItem.of(order, menu.id(), new Quantity(orderLineItemRequest.getQuantity()));
+        final List<OrderLineItem> orderLineItems = orderLineItemRequests.stream().map(request -> {
+            Menu savedMenu = menus.stream().filter(menu -> menu.id().equals(request.getMenuId())).findFirst().orElseThrow(NotFoundMenuException::new);
+            return OrderLineItem.of(order, savedMenu.id(), new Quantity(request.getQuantity()));
         }).collect(Collectors.toList());
 
         orderLineItemDao.saveAll(orderLineItems);

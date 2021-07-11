@@ -13,10 +13,6 @@ public class TableGroupRequest {
         orderTables = ids.stream().map(Ids::new).collect(Collectors.toList());
     }
 
-    public List<Long> ids() {
-        return orderTables.stream().map(Ids::getId).collect(Collectors.toList());
-    }
-
     public List<Ids> getOrderTables() {
         return orderTables;
     }

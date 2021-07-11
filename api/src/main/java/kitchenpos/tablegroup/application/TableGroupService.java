@@ -1,6 +1,7 @@
 package kitchenpos.tablegroup.application;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,7 @@ public class TableGroupService {
     }
 
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-        final List<Long> orderTableIds = tableGroupRequest.ids();
+        final List<Long> orderTableIds = tableGroupRequest.getOrderTables().stream().map(TableGroupRequest.Ids::getId).collect(Collectors.toList());
 
         final TableGroup tableGroup = new TableGroup();
         tableGroupDao.save(tableGroup);
