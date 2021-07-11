@@ -23,7 +23,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -71,8 +70,8 @@ class OrderServiceTest {
         주문수량메뉴1 = new OrderLineItem(1L, 1L, 치킨메뉴.getId(), 1L);
         주문수량메뉴2 = new OrderLineItem(2L, 1L, 튀김메뉴.getId(), 1L);
         주문내역들 = Arrays.asList(주문수량메뉴1, 주문수량메뉴2);
-        주문테이블 = new OrderTable(4, false);
-        new주문테이블 = new OrderTable(4, false);
+        주문테이블 = new OrderTable(1L, 1L, 4, false);
+        new주문테이블 = new OrderTable(2L, 1L, 4, false);
         주문테이블묶음 = new OrderTables(Arrays.asList(주문테이블, new주문테이블));
         테이블그룹 = new TableGroup(1L, 주문테이블묶음);
         주문 = new Order(1L, 주문테이블, OrderStatus.COOKING, 주문내역들);
@@ -136,7 +135,7 @@ class OrderServiceTest {
     void fail_create4() {
         OrderRequest order = new OrderRequest(1L, 주문내역들);
         given(menuRepository.findAllById(any())).willReturn(Arrays.asList(치킨메뉴, 튀김메뉴));
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(new OrderTable(1L, 테이블그룹, 2, true)));
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(new OrderTable(1L, 테이블그룹.getId(), 2, true)));
 
         assertThatThrownBy(() -> orderService.create(order))
                 .isInstanceOf(IllegalArgumentException.class);

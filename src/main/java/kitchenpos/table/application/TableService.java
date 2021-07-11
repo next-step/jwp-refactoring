@@ -58,8 +58,7 @@ public class TableService {
     }
 
     private OrderTable findOrderTable(Long orderTableId) {
-        OrderTable orderTable = orderTableRepository.findById(orderTableId)
+        return orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
-        return orderTable;
     }
 }

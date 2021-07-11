@@ -3,11 +3,9 @@ package kitchenpos.order.domain;
 import kitchenpos.order.exception.AlreadyCompletionException;
 import kitchenpos.order.exception.NotOrderLineItemsException;
 import kitchenpos.table.domain.OrderTable;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;

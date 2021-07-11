@@ -82,8 +82,8 @@ class TableRestControllerTest {
     @DisplayName("(주문)테이블의 empty 값을 변경할 수 있다.")
     @Test
     void changeEmpty() throws Exception {
-        OrderTable orderTable = new OrderTable( 2, true);
-        OrderTable changedTable = new OrderTable(2, false);
+        OrderTable orderTable = new OrderTable(1L, 1L, 2, true);
+        OrderTable changedTable = new OrderTable(1L, 1L, 2, false);
         String orderTableJsonString = mapper.writeValueAsString(orderTable);
 
         given(tableService.changeEmpty(anyLong(), any())).willReturn(OrderTableResponse.from(changedTable));
@@ -98,8 +98,8 @@ class TableRestControllerTest {
     @DisplayName("(주문)테이블의 guests(손님) 숫자를 변경할 수 있다.")
     @Test
     void changeNumberOfGuests() throws Exception {
-        OrderTable orderTable = new OrderTable(2, true);
-        OrderTable changedTable = new OrderTable(4, false);
+        OrderTable orderTable = new OrderTable(1L, 1L, 2, true);
+        OrderTable changedTable = new OrderTable(1L, 1L, 4, false);
         String orderTableJsonString = mapper.writeValueAsString(orderTable);
 
         given(tableService.changeNumberOfGuests(anyLong(), any())).willReturn(OrderTableResponse.from(changedTable));

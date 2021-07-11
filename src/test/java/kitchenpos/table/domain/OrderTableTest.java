@@ -2,12 +2,12 @@ package kitchenpos.table.domain;
 
 import kitchenpos.table.exception.EmptyException;
 import kitchenpos.table.exception.IllegalNumberOfGuestsException;
-import kitchenpos.table.exception.NullGroupException;
+import kitchenpos.table.exception.NoneNullGroupIdException;
 import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -37,11 +37,13 @@ class OrderTableTest {
     @Test
     void fail_changeEmpty1() {
         boolean expectedEmpty = false;
-        TableGroup tableGroup = new TableGroup(1L, new OrderTables(new ArrayList()));
-        OrderTable orderTable = new OrderTable(tableGroup, 2, true);
+        OrderTable 주문테이블1 = new OrderTable();
+        OrderTable 주문테이블2 = new OrderTable();
+        TableGroup tableGroup = new TableGroup(1L, new OrderTables(Arrays.asList(주문테이블1, 주문테이블2)));
+        OrderTable orderTable = new OrderTable(tableGroup.getId(), 2, true);
 
         assertThatThrownBy(() -> orderTable.changeEmpty(expectedEmpty))
-                .isInstanceOf(NullGroupException.class);
+                .isInstanceOf(NoneNullGroupIdException.class);
     }
 
     @DisplayName("주문 테이블 손님 숫자값(NumberOfGuests)을 변경한다.")

@@ -46,7 +46,7 @@ public class Order {
     }
 
     private void checkOrderStatus() {
-        if (Objects.equals(OrderStatus.COMPLETION.name(), this.orderStatus)) {
+        if (Objects.equals(OrderStatus.COMPLETION, this.orderStatus)) {
             throw new AlreadyCompletionException();
         }
     }

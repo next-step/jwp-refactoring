@@ -19,7 +19,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,7 +26,8 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -120,12 +120,11 @@ class TableGroupServiceTest {
     @DisplayName("테이블 그룹 등록을 실패한다 -  주문 테이블 groupId 값이 있을 경우 실패")
     @Test
     void fail_create4() {
-        TableGroup tableGroup = new TableGroup(1L, new OrderTables(new ArrayList<>()));
-        OrderTable orderTable1 = new OrderTable(1L, tableGroup, 2, true);
-        OrderTable orderTable2 = new OrderTable(2L, null, 3, true);
-        List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
-        TableGroupRequest request = new TableGroupRequest(orderTables);
-        given(orderTableRepository.findAllById(anyList())).willReturn(orderTables);
+        OrderTable groupedTable1 = new OrderTable(orderTable1.getId(), 1L, 2, true);
+        OrderTable groupedTable2 = new OrderTable(orderTable2.getId(), null, 3, true);
+        List<OrderTable> groupedTables = Arrays.asList(groupedTable1, groupedTable2);
+        TableGroupRequest request = new TableGroupRequest(groupedTables);
+        given(orderTableRepository.findAllById(anyList())).willReturn(groupedTables);
 
         assertThatThrownBy(() -> tableGroupService.create(request))
                 .isInstanceOf(IllegalOrderTableException.class);
@@ -136,16 +135,16 @@ class TableGroupServiceTest {
     @DisplayName("테이블 그룹을 등록해제(ungroup) 한다.")
     @Test
     void ungroup() {
-        TableGroup tableGroup = new TableGroup(1L, new OrderTables(new ArrayList<>()));
-        OrderTable groupedTable1 = new OrderTable(1L, tableGroup, 2, true);
-        OrderTable groupedTable2 = new OrderTable(1L, tableGroup, 2, true);
+        TableGroup tableGroup = new TableGroup(1L, new OrderTables(Arrays.asList(orderTable1, orderTable2)));
+        OrderTable groupedTable1 = new OrderTable(orderTable1.getId(), 1L, 2, true);
+        OrderTable groupedTable2 = new OrderTable(orderTable2.getId(), 1L, 2, true);
         List<OrderTable> groupedTables = Arrays.asList(groupedTable1, groupedTable2);
         OrderTables groups = new OrderTables(groupedTables);
         given(orderTableRepository.findAllByTableGroupId(tableGroup.getId())).willReturn(groupedTables);
 
         tableGroupService.ungroup(tableGroup.getId());
 
-        assertThat(tableGroup.getOrderTables().get(0).getTableGroup().getId()).isNull();
+        assertThat(tableGroup.getOrderTables().get(0).getTableGroupId()).isNull();
 
         verify(orderTableRepository, times(1)).findAllByTableGroupId(tableGroup.getId());
     }
@@ -153,9 +152,9 @@ class TableGroupServiceTest {
     @DisplayName("테이블 그룹 등록해제를 실패 한다. - 그룹된 주문 테이블이 조리중이거나, 식사중일때에는 그룹 해제 불가")
     @Test
     void fail_ungroup() {
-        TableGroup tableGroup = new TableGroup(1L, new OrderTables(new ArrayList<>()));
-        OrderTable groupedTable1 = new OrderTable(1L, tableGroup, 2, true);
-        OrderTable groupedTable2 = new OrderTable(1L, tableGroup, 2, true);
+        TableGroup tableGroup = new TableGroup(1L, new OrderTables(Arrays.asList(orderTable1, orderTable2)));
+        OrderTable groupedTable1 = new OrderTable(orderTable1.getId(), tableGroup.getId(), 2, true);
+        OrderTable groupedTable2 = new OrderTable(orderTable2.getId(), tableGroup.getId(), 2, true);
         List<OrderTable> groupedTables = Arrays.asList(groupedTable1, groupedTable2);
         OrderTables groups = new OrderTables(groupedTables);
         given(orderTableRepository.findAllByTableGroupId(tableGroup.getId())).willReturn(groupedTables);

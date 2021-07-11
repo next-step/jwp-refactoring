@@ -3,7 +3,6 @@ package kitchenpos.order.domain;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.exception.NotInitMenuException;
 import kitchenpos.order.exception.NotOrderLineItemsException;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

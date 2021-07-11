@@ -44,7 +44,7 @@ class TableServiceTest {
     @DisplayName("주문 테이블을 등록한다.")
     @Test
     void create() {
-        OrderTable orderTable = new OrderTable(2, true);
+        OrderTable orderTable = new OrderTable(1L, null, 2, true);
         OrderTableRequest orderTableRequest = new OrderTableRequest(1, true);
         given(orderTableRepository.save(any())).willReturn(orderTable);
 
@@ -78,8 +78,8 @@ class TableServiceTest {
     @ParameterizedTest
     @CsvSource(value = {"false:true", "true:false"}, delimiter = ':')
     void changeEmpty(boolean preEmptyValue, boolean afterEmptyValue) {
-        OrderTable orderTable = new OrderTable(2, preEmptyValue);
-        OrderTable expectedTable = new OrderTable(2, afterEmptyValue);
+        OrderTable orderTable = new OrderTable( 1L, null, 2, preEmptyValue);
+        OrderTable expectedTable = new OrderTable(1L, null, 2, afterEmptyValue);
         OrderTableRequest changeTable = new OrderTableRequest(2, afterEmptyValue);
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(orderTable));
         given(orderTableRepository.save(any())).willReturn(orderTable);
@@ -105,12 +105,13 @@ class TableServiceTest {
     @DisplayName("주문 테이블 empty 값을 변경 실패한다. - 변경하려는 주문 테이블이 테이블 그룹으로 지정되어 있으면 변경 실패")
     @Test
     void fail_changeEmpty2() {
-        TableGroup tableGroup = new TableGroup(1L, new OrderTables(new ArrayList<>()));
-        OrderTable orderTable = new OrderTable(1L, tableGroup, 2, true);
+        OrderTable 주문테이블1 = new OrderTable(1L, 1L, 2, false);
+        OrderTable 주문테이블2 = new OrderTable(2L, 1L, 3, false);
+        TableGroup tableGroup = new TableGroup(1L, new OrderTables(Arrays.asList(주문테이블1, 주문테이블2)));
         OrderTableRequest changeTable = new OrderTableRequest(2, false);
-        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(orderTable));
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(주문테이블1));
 
-        assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), changeTable))
+        assertThatThrownBy(() -> tableService.changeEmpty(주문테이블1.getId(), changeTable))
                 .isInstanceOf(IllegalArgumentException.class);
 
         verify(orderTableRepository, times(1)).findById(anyLong());
@@ -119,7 +120,7 @@ class TableServiceTest {
     @DisplayName("주문 테이블 empty 값을 변경 실패한다. - 변경하려는 주문 테이블의 상태가 조리 또는 식사 중일 경우 변경 실패")
     @Test
     void fail_changeEmpty3() {
-        OrderTable orderTable = new OrderTable(2, true);
+        OrderTable orderTable = new OrderTable(1L, 1L, 2, true);
         OrderTableRequest changeTable = new OrderTableRequest(2, false);
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(orderTable));
         given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(true);
@@ -134,8 +135,8 @@ class TableServiceTest {
     @DisplayName("주문 테이블 guests(손님) 숫자값을 변경한다.")
     @Test
     void changeNumberOfGuests() {
-        OrderTable orderTable = new OrderTable(2, false);
-        OrderTable expectedTable = new OrderTable(4, false);
+        OrderTable orderTable = new OrderTable(1L, null, 2, false);
+        OrderTable expectedTable = new OrderTable(1L, null, 4, false);
         OrderTableRequest changeTable = new OrderTableRequest(4, false);
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(orderTable));
         given(orderTableRepository.save(any())).willReturn(orderTable);

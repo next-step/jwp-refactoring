@@ -2,7 +2,7 @@ package kitchenpos.table.domain;
 
 import kitchenpos.table.exception.EmptyException;
 import kitchenpos.table.exception.IllegalNumberOfGuestsException;
-import kitchenpos.table.exception.NullGroupIdException;
+import kitchenpos.table.exception.NoneNullGroupIdException;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -61,7 +61,7 @@ public class OrderTable {
 
     private void validateGroupId() {
         if (Objects.nonNull(tableGroupId)) {
-            throw new NullGroupIdException();
+            throw new NoneNullGroupIdException();
         }
     }
 
