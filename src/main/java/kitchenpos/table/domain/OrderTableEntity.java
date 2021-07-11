@@ -17,7 +17,7 @@ public class OrderTableEntity {
     private int numberOfGuests;
     private boolean empty;
 
-    public OrderTableEntity() {
+    protected OrderTableEntity() {
     }
 
     public OrderTableEntity(Long id, TableGroupEntity tableGroup, int numberOfGuests, boolean empty) {

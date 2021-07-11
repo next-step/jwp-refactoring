@@ -124,4 +124,12 @@ public class MenuService {
     public List<MenuResponse> listTemp() {
         return MenuResponse.ofList(menuRepository.findAll());
     }
+
+    public int countByIdIn(List<Long> menuIds) {
+        return menuRepository.countByIdIn(menuIds);
+    }
+
+    public MenuEntity findById(Long menuId) {
+        return menuRepository.findById(menuId).orElseThrow(() -> new IllegalArgumentException("등록된 메뉴가 아닙니다."));
+    }
 }

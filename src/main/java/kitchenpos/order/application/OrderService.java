@@ -1,12 +1,16 @@
 package kitchenpos.order.application;
 
+import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.dao.MenuDao;
+import kitchenpos.menu.domain.MenuEntity;
 import kitchenpos.order.dao.OrderDao;
 import kitchenpos.order.dao.OrderLineItemDao;
+import kitchenpos.order.domain.*;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.table.application.OrderTableService;
 import kitchenpos.table.dao.OrderTableDao;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableEntity;
 import org.springframework.stereotype.Service;
@@ -26,17 +30,20 @@ public class OrderService {
     private final OrderLineItemDao orderLineItemDao;
     private final OrderTableDao orderTableDao;
 
-    public OrderService(
-            final MenuDao menuDao,
-            final OrderDao orderDao,
-            final OrderLineItemDao orderLineItemDao,
-            final OrderTableDao orderTableDao
-    ) {
+    private final MenuService menuService;
+    private final OrderTableService orderTableService;
+    private final OrderRepository orderRepository;
+
+    public OrderService(MenuDao menuDao, OrderDao orderDao, OrderLineItemDao orderLineItemDao, OrderTableDao orderTableDao, MenuService menuService, OrderTableService orderTableService, OrderRepository orderRepository) {
         this.menuDao = menuDao;
         this.orderDao = orderDao;
         this.orderLineItemDao = orderLineItemDao;
         this.orderTableDao = orderTableDao;
+        this.menuService = menuService;
+        this.orderTableService = orderTableService;
+        this.orderRepository = orderRepository;
     }
+
 
     @Transactional
     public Order create(final Order order) {
@@ -78,6 +85,50 @@ public class OrderService {
         return savedOrder;
     }
 
+    public OrderResponse createTemp(OrderRequest orderRequest) {
+
+        OrderLineItems orderLineItems = findOrderItems(orderRequest.getOrderLineItems());
+        OrderTableEntity orderTable = findOrderTable(orderRequest.getOrderTableId());
+        OrderEntity orderEntity = new OrderEntity(orderTable, orderLineItems);
+
+        return OrderResponse.of(orderRepository.save(orderEntity));
+    }
+
+    private OrderTableEntity findOrderTable(Long orderTableId) {
+        OrderTableEntity orderTable = orderTableService.findById(orderTableId);
+        emptyCheck(orderTable.isEmpty());
+        return orderTable;
+    }
+
+    private OrderLineItems findOrderItems(List<OrderLineItemRequest> orderLineItemRequests) {
+        orderLineItemsEmptyCheck(orderLineItemRequests);
+        List<OrderLineItemEntity> orderlineItems = new ArrayList<>();
+        for (OrderLineItemRequest orderLineItemRequest : orderLineItemRequests) {
+            MenuEntity menu = menuService.findById(orderLineItemRequest.getMenuId());
+            orderlineItems.add(new OrderLineItemEntity(menu, orderLineItemRequest.getQuantity()));
+        }
+        allRegisteredItemCheck(orderLineItemRequests.size(), orderlineItems.size());
+        return new OrderLineItems(orderlineItems);
+    }
+
+    private void allRegisteredItemCheck(int request, int searched) {
+        if (request != searched) {
+            throw new IllegalArgumentException("등록되지 않은 메뉴가 있습니다.");
+        }
+    }
+
+    private void orderLineItemsEmptyCheck(List<OrderLineItemRequest> orderLineItemRequests) {
+        if (CollectionUtils.isEmpty(orderLineItemRequests)) {
+            throw new IllegalArgumentException("주문 항목이 비어있습니다.");
+        }
+    }
+
+    private void emptyCheck(boolean empty) {
+        if (empty) {
+            throw new IllegalArgumentException("빈 테이블은 주문 할 수 없습니다.");
+        }
+    }
+
     public List<Order> list() {
         final List<Order> orders = orderDao.findAll();
 
@@ -117,4 +168,6 @@ public class OrderService {
     public boolean existsByOrderTableIdInAndOrderStatusIn(List<OrderTableEntity> orderTables, List<String> asList) {
         return false;
     }
+
+
 }

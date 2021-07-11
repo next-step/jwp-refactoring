@@ -5,6 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,14 +17,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.net.URI;
+import java.util.Arrays;
 
 public class OrderAcceptanceTest extends AcceptanceTest {
 
     private OrderRequest orderRequest;
+    private OrderLineItemRequest orderLineItemRequest;
     @BeforeEach
     public void setUp() {
         super.setUp();
-        orderRequest = new OrderRequest();
+        orderLineItemRequest = new OrderLineItemRequest(1l,1l,1l,11l);
+        orderRequest = new OrderRequest(1l, "COOKING", Arrays.asList(orderLineItemRequest));
     }
 
     @DisplayName("dto와 jpa를 사용하여 주문을 등록할 수 있다")

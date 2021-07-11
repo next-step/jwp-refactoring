@@ -28,9 +28,9 @@ public class OrderRestController {
     }
 
     @PostMapping("/api/orders/temp")
-    public ResponseEntity<OrderResponse> createTemp(@RequestBody final OrderRequest order) {
-//        final Order created = orderService.create(order);
-        final URI uri = URI.create("/api/orders/" + 1l);
+    public ResponseEntity<OrderResponse> createTemp(@RequestBody final OrderRequest orderRequest) {
+        final OrderResponse created = orderService.createTemp(orderRequest);
+        final URI uri = URI.create("/api/orders/" + created);
         return ResponseEntity.created(uri)
                 .body(null);
     }
