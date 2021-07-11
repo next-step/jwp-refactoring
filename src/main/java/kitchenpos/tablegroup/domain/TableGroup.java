@@ -13,14 +13,12 @@ public class TableGroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDateTime createdDate;
-    @Embedded
-    private OrderTables orderTables = new OrderTables();
 
     public TableGroup() {
     }
 
-    public TableGroup(List<OrderTable> orderTables) {
-        this.orderTables = new OrderTables(orderTables);
+    public TableGroup(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
     }
 
     public TableGroup(Long id, LocalDateTime createdDate) {
@@ -34,9 +32,5 @@ public class TableGroup {
 
     public LocalDateTime getCreatedDate() {
         return createdDate;
-    }
-
-    public List<OrderTable> getOrderTables() {
-        return this.orderTables.getOrderTables();
     }
 }

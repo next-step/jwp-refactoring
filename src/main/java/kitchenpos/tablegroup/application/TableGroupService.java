@@ -41,23 +41,19 @@ public class TableGroupService {
 
         List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
 
-        OrderTables orderTables = new OrderTables(savedOrderTables);
-        orderTables.validateOrderTableNotEmpty();
+        for (OrderTable savedOrderTable : savedOrderTables) {
+            savedOrderTable.changeEmpty(false);
+        }
 
         TableGroup savedTableGroup = generateTableGroup(savedOrderTables);
-        savedTableGroup.setOrderTables(orderTables);
 
         return TableGroupResponse.of(savedTableGroup);
     }
 
     private TableGroup generateTableGroup(List<OrderTable> savedOrderTables) {
-        TableGroup tableGroup = new TableGroup(savedOrderTables);
-        tableGroup.setCreatedDate(LocalDateTime.now());
+        TableGroup tableGroup = new TableGroup(LocalDateTime.now());
         TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
 
-        for (OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.changeEmpty(false);
-        }
         return savedTableGroup;
     }
 
@@ -82,7 +78,7 @@ public class TableGroupService {
         }
 
         for (final OrderTable orderTable : orderTableList) {
-            orderTable.setTableGroup(null);
+            orderTable.unlinkTableGroup();
         }
     }
 }
