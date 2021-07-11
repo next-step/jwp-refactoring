@@ -54,7 +54,7 @@ public class TableControllerTest extends ControllerTest<OrderTable> {
         ResultActions 결과 = postRequest(BASE_URI, 첫번째_테이블);
 
         //Then
-        생성성공(결과, 첫번째_테이블);
+        생성성공(결과);
     }
 
     @DisplayName("주문테이블 목록 조회요청")
@@ -68,7 +68,7 @@ public class TableControllerTest extends ControllerTest<OrderTable> {
         ResultActions 결과 = getRequest(BASE_URI);
 
         //Then
-        목록_조회성공(결과, 주문테이블_목록);
+        조회성공(결과);
     }
 
     @DisplayName("주문테이블 비어있음 여부 수정요청")
@@ -86,7 +86,7 @@ public class TableControllerTest extends ControllerTest<OrderTable> {
         ResultActions 결과 = putRequest(수정요청_URI, 테이블_리퀘스트);
 
         //Then
-        수정성공(결과, 테이블_리퀘스트);
+        수정성공(결과);
     }
 
     @DisplayName("주문테이블 손님수 수정요청")
@@ -104,6 +104,6 @@ public class TableControllerTest extends ControllerTest<OrderTable> {
         ResultActions 결과 = putRequest(수정요청_URI, 테이블_리퀘스트);
 
         //Then
-        수정성공(결과, 테이블_리퀘스트);
+        수정성공(결과);
     }
 }

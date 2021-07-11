@@ -54,7 +54,7 @@ public class OrderControllerTest  extends ControllerTest<Order> {
         ResultActions 결과 = postRequest(BASE_URI, 첫번째_주문);
 
         //Then
-        생성성공(결과, 첫번째_주문);
+        생성성공(결과);
     }
 
     @DisplayName("주문 목록 조회요청")
@@ -68,7 +68,7 @@ public class OrderControllerTest  extends ControllerTest<Order> {
         ResultActions 결과 = getRequest(BASE_URI);
 
         //Then
-        목록_조회성공(결과, 주문_목록);
+        조회성공(결과);
     }
 
     @DisplayName("주문 상태 수정요청")
@@ -86,6 +86,6 @@ public class OrderControllerTest  extends ControllerTest<Order> {
         ResultActions 결과 = putRequest(수정요청_URI, 주문_리퀘스트);
 
         //Then
-        수정성공(결과, 주문_리퀘스트);
+        수정성공(결과);
     }
 }

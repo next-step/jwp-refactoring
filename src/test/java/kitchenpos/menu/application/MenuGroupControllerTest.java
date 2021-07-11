@@ -56,7 +56,7 @@ class MenuGroupControllerTest extends ControllerTest<MenuGroup> {
         ResultActions 결과 = postRequest(BASE_URI, 첫번째_메뉴그룹.toMenuGroup());
 
         //Then
-        생성성공(결과, 첫번째_메뉴그룹.toMenuGroup());
+        생성성공(결과);
     }
 
     @DisplayName("메뉴그룹 목록 조회요청")
@@ -70,6 +70,6 @@ class MenuGroupControllerTest extends ControllerTest<MenuGroup> {
         ResultActions 결과 = getRequest(BASE_URI);
 
         //Then
-        목록_조회성공(결과, MenuGroupRequest.toMenuGroupList(메뉴그룹_목록));
+        조회성공(결과);
     }
 }

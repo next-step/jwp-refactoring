@@ -54,7 +54,7 @@ public class ProductControllerTest extends ControllerTest<ProductResponse> {
         ResultActions 결과 = postRequest(BASE_URI, 후라이드);
 
         //Then
-        생성성공(결과, 후라이드);
+        생성성공(결과);
     }
 
     @DisplayName("메뉴그룹 목록 조회요청")
@@ -68,6 +68,6 @@ public class ProductControllerTest extends ControllerTest<ProductResponse> {
         ResultActions 결과 = getRequest(BASE_URI);
 
         //Then
-        목록_조회성공(결과, 상품_목록);
+        조회성공(결과);
     }
 }

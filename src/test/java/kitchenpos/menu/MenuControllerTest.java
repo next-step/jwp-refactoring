@@ -54,13 +54,15 @@ public class MenuControllerTest extends ControllerTest<MenuRequest> {
     @Test
     void 메뉴_생성요청() throws Exception {
         //Given
-        when(menuService.create(any())).thenReturn(MenuResponse.of(후라이드세트));
+        MenuResponse 메뉴_첫번째_응답 = new MenuResponse(1L, 후라이드세트.getName(), 후라이드세트.getPrice(),
+                후라이드세트.getMenuGroup().getId(), new ArrayList<>());
+        when(menuService.create(any())).thenReturn(메뉴_첫번째_응답);
 
         //When
         ResultActions 결과 = postRequest(BASE_URI, MenuRequest.of(후라이드세트));
 
         //Then
-        생성성공(결과, MenuRequest.of(후라이드세트));
+        생성성공(결과);
     }
 
     @DisplayName("메뉴 목록 조회요청")

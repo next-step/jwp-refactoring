@@ -49,7 +49,7 @@ public class TableGroupControllerTest extends ControllerTest<TableGroup> {
         ResultActions 결과 = postRequest(BASE_URI, 테이블그룹);
 
         //Then
-        생성성공(결과, 테이블그룹);
+        생성성공(결과);
     }
 
     @DisplayName("단체지정 취소요청")

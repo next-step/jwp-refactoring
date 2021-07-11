@@ -60,21 +60,15 @@ public abstract class ControllerTest<T> {
                 .contentType(MediaType.APPLICATION_JSON_VALUE));
     }
 
-    protected void 목록_조회성공(ResultActions resultActions, List<T> expectedResult) throws Exception {
-        resultActions.andExpect(status().isOk())
-                .andExpect(content().string(objectMapper.writeValueAsString(expectedResult)));
-    }
-
     protected void 조회성공(ResultActions resultActions) throws Exception {
         resultActions.andExpect(status().isOk());
     }
 
-    protected void 생성성공(ResultActions resultActions, T expectedResult) throws Exception {
-        resultActions.andExpect(status().isCreated())
-                .andExpect(content().string(objectMapper.writeValueAsString(expectedResult)));
+    protected void 생성성공(ResultActions resultActions) throws Exception {
+        resultActions.andExpect(status().isCreated());
     }
 
-    protected void 수정성공(ResultActions resultActions, T expectedResult) throws Exception {
+    protected void 수정성공(ResultActions resultActions) throws Exception {
         resultActions.andExpect(status().isOk());
     }
 
