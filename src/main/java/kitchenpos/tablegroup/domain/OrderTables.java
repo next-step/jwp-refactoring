@@ -44,8 +44,7 @@ public class OrderTables {
     }
 
     private void checkEmptyAndNotIncludeOrderTable(final OrderTable orderTable) {
-        orderTable.checkEmpty();
-        orderTable.checkNotIncludeTableGroup();
+        orderTable.checkEmptyAndNotIncludeOrderTable();
     }
 
     public List<Long> getOrderTableIds() {

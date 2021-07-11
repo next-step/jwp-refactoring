@@ -47,7 +47,7 @@ public class TableService {
 
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableChangeEmptyRequest request) {
         final OrderTable savedOrderTable = findOrderTableById(orderTableId);
-        savedOrderTable.checkNotIncludeTableGroup();
+        savedOrderTable.checkEmptyAndNotIncludeOrderTable();
         checkNotCompletionOrder(orderTableId);
         savedOrderTable.changeEmpty(request.isEmpty());
         return OrderTableResponse.of(savedOrderTable);
@@ -68,7 +68,6 @@ public class TableService {
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableChangeNumberOfGuestsRequest request) {
         checkNumberOfGuestsOverMin(request.getNumberOfGuests());
         final OrderTable savedOrderTable = findOrderTableById(orderTableId);
-        savedOrderTable.checkEmpty();
         savedOrderTable.changeNumberOfGuests(request.getNumberOfGuests());
         return OrderTableResponse.of(savedOrderTable);
     }

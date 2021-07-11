@@ -1,6 +1,5 @@
 package kitchenpos.order.application;
 
-import static kitchenpos.exception.KitchenposExceptionMessage.ALREADY_COMPLETION_ORDER;
 import static kitchenpos.exception.KitchenposExceptionMessage.NOT_FOUND_MENU;
 import static kitchenpos.exception.KitchenposExceptionMessage.NOT_FOUND_ORDER;
 import static kitchenpos.exception.KitchenposExceptionMessage.NOT_FOUND_ORDER_LINE_ITEM;
@@ -10,7 +9,6 @@ import kitchenpos.exception.KitchenposException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderLineItemRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;

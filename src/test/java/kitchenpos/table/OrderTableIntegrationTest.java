@@ -32,7 +32,7 @@ public class OrderTableIntegrationTest {
     @BeforeEach
     void setUp() {
         주문_테이블_1 = orderTableRepository.save(new OrderTable(3, false));
-        주문_테이블_2 = orderTableRepository.save(new OrderTable(0, true));
+        주문_테이블_2 = orderTableRepository.save(new OrderTable(2, false));
     }
 
 

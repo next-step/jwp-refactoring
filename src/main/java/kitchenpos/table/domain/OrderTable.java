@@ -40,7 +40,8 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public void checkNotIncludeTableGroup() {
+    public void checkEmptyAndNotIncludeOrderTable() {
+        checkEmpty();
         if (Objects.nonNull(this.tableGroup)) {
             throw new KitchenposException(ALREADY_INCLUDE_TABLE_GROUP);
         }
@@ -55,14 +56,15 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public void checkEmpty() {
+    public void changeNumberOfGuests(final int numberOfGuests) {
+        checkEmpty();
+        this.numberOfGuests = numberOfGuests;
+    }
+
+    private void checkEmpty() {
         if (this.empty) {
             throw new KitchenposException(EMPTY_GUESTS);
         }
-    }
-
-    public void changeNumberOfGuests(final int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
     }
 
     public Long getId() {
