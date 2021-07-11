@@ -1,4 +1,4 @@
-package kitchenpos.ui;
+package kitchenpos.order.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Arrays;
@@ -23,7 +23,6 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;

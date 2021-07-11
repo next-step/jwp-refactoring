@@ -2,10 +2,12 @@ package kitchenpos.product.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.Transient;
 
 @Embeddable
 public class Price {
 
+    @Transient
     public static final Price ZERO = new Price(0);
 
     @Column(name = "price", nullable = false)
