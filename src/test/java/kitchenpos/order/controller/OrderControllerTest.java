@@ -32,7 +32,7 @@ public class OrderControllerTest extends ControllerTest {
         List<OrderLineItemRequest> orderLineItems = new ArrayList<>();
         OrderLineItemRequest orderLineItem = new OrderLineItemRequest(1L, 1L, 1L);
         orderLineItems.add(orderLineItem);
-        order = new OrderRequest(3L, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItems);
+        order = new OrderRequest(3L, OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
     }
 
     @Test
@@ -54,7 +54,7 @@ public class OrderControllerTest extends ControllerTest {
     @DisplayName("주문을 생성 실패 - orderLineItems 가 없을 경우")
     public void createOrderFailByOrderLineItemsIsNull() {
         // given
-        OrderRequest order = new OrderRequest(1L, OrderStatus.COOKING.name(), LocalDateTime.now(), null);
+        OrderRequest order = new OrderRequest(1L, OrderStatus.COOKING, LocalDateTime.now(), null);
 
         // when
         // then
@@ -83,7 +83,7 @@ public class OrderControllerTest extends ControllerTest {
     public void modifyOrder() throws Exception {
         // given
         주문_생성_요청(order);
-        order.setOrderStatus(OrderStatus.MEAL.name());
+        order.setOrderStatus(OrderStatus.MEAL);
 
         // when
         // then
@@ -100,7 +100,7 @@ public class OrderControllerTest extends ControllerTest {
     @DisplayName("주문 상태를 변경 실패 - 이미 계산 완료 된 주문")
     public void modifyOrderFailByCompletionOrder() {
         // given
-        order.setOrderStatus(OrderStatus.MEAL.name());
+        order.setOrderStatus(OrderStatus.MEAL);
 
         // when
         // then

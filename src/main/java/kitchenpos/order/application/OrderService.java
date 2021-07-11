@@ -58,7 +58,7 @@ public class OrderService {
         orderLineItems.validateMenuDataSize(menuRepository.countByIdIn(menuIds));
 
         final OrderTable orderTable = findOrderTable(orderRequest.getOrderTableId());
-        final Order order = orderRepository.save(new Order(orderTable, OrderStatus.COOKING.name(), LocalDateTime.now()));
+        final Order order = orderRepository.save(new Order(orderTable, OrderStatus.COOKING, LocalDateTime.now()));
 
         orderLineItems.mappingOrder(order.id());
         order.mappingOrderLineItems(new OrderLineItems(orderLineItemRepository.saveAll(orderLineItems.orderLineItems())));
@@ -75,7 +75,7 @@ public class OrderService {
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
         final Order savedOrder = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_ORDER + " Find Order Id : " + orderId));
-        savedOrder.changeOrderStatus(OrderStatus.valueOf(orderRequest.getOrderStatus()).name());
+        savedOrder.changeOrderStatus(orderRequest.getOrderStatus());
         return OrderResponse.of(orderRepository.save(savedOrder));
     }
 

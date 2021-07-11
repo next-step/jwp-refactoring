@@ -19,6 +19,7 @@ public class OrderTable {
     private int numberOfGuests;
 
     @Column(name = "table_status")
+    @Convert(converter = TableStatusConverter.class)
     private TableStatus tableStatus;
 
     public OrderTable() {

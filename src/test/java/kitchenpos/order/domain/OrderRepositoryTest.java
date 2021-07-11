@@ -39,7 +39,7 @@ public class OrderRepositoryTest {
         List<OrderLineItem> orderLineItemList = new ArrayList<>();
         OrderTable orderTable = orderTableRepository.save(new OrderTable(0, TableStatus.ORDER));
         Menu menu = new Menu(3L, "반반치킨", new BigDecimal(16000), new MenuGroup("한마리메뉴"));
-        String orderStatus = OrderStatus.COOKING.name();
+        OrderStatus orderStatus = OrderStatus.COOKING;
         orderLineItemList.add(new OrderLineItem(menu.id(), 1));
 
         order = orderRepository.save(new Order(orderTable, orderStatus, LocalDateTime.now()));
@@ -66,13 +66,13 @@ public class OrderRepositoryTest {
     @Transactional
     public void modifyOrder() {
         // given
-        order.changeOrderStatus(OrderStatus.MEAL.name());
+        order.changeOrderStatus(OrderStatus.MEAL);
 
         // when
         Order saveOrder = orderRepository.save(order);
 
         // then
-        assertThat(saveOrder.orderStatus()).isEqualTo(OrderStatus.MEAL.name());
+        assertThat(saveOrder.orderStatus()).isEqualTo(OrderStatus.MEAL);
     }
 
     @Test

@@ -6,7 +6,7 @@ public enum TableStatus {
     IN_USE(2),
     COMPLETION(3);
 
-    int statusCode;
+    private int statusCode;
 
     TableStatus(int statusCode) {
         this.statusCode = statusCode;

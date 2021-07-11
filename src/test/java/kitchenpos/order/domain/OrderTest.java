@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class OrderTest {
     private OrderLineItems orderLineItems;
-    private String orderStatus;
+    private OrderStatus orderStatus;
     private OrderTable orderTable;
 
     @BeforeEach
@@ -27,7 +27,7 @@ public class OrderTest {
         Menu menu = new Menu("후라이드치킨", new BigDecimal(16000), new MenuGroup("새로운 메뉴"));
         OrderLineItem orderLineItem = new OrderLineItem(menu.id(), 1L);
         orderLineItemList.add(orderLineItem);
-        orderStatus = OrderStatus.COOKING.name();
+        orderStatus = OrderStatus.COOKING;
         orderTable = new OrderTable(1, TableStatus.ORDER);
         orderLineItems = new OrderLineItems(orderLineItemList);
     }
@@ -52,20 +52,20 @@ public class OrderTest {
         Order order = new Order(orderTable, orderStatus, LocalDateTime.now());
 
         // when
-        order.changeOrderStatus(OrderStatus.MEAL.name());
+        order.changeOrderStatus(OrderStatus.MEAL);
 
         // then
-        assertThat(order.orderStatus()).isEqualTo(OrderStatus.MEAL.name());
+        assertThat(order.orderStatus()).isEqualTo(OrderStatus.MEAL);
     }
 
     @Test
     @DisplayName("주문 상태를 변경 실패 - 이미 계산 완료 된 주문")
     public void modifyOrderFailByCompletionOrder() {
         // given
-        Order order = new Order(orderTable, OrderStatus.COMPLETION.name(), LocalDateTime.now());
+        Order order = new Order(orderTable, OrderStatus.COMPLETION, LocalDateTime.now());
 
         // when
         // then
-        assertThrows(IllegalArgumentException.class, () -> order.changeOrderStatus(OrderStatus.MEAL.name()));
+        assertThrows(IllegalArgumentException.class, () -> order.changeOrderStatus(OrderStatus.MEAL));
     }
 }
