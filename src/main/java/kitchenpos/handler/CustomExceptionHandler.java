@@ -1,11 +1,11 @@
 package kitchenpos.handler;
 
-import kitchenpos.handler.exception.NotChangeNumberOfGuestsException;
-import kitchenpos.handler.exception.NotChangeStatusException;
-import kitchenpos.handler.exception.NotCreateMenuException;
-import kitchenpos.handler.exception.NotCreateOrderException;
-import kitchenpos.handler.exception.NotCreateTableGroupException;
-import kitchenpos.handler.exception.NotFoundEntityException;
+import kitchenpos.exception.NotChangeNumberOfGuestsException;
+import kitchenpos.exception.NotChangeStatusException;
+import kitchenpos.exception.NotCreateMenuException;
+import kitchenpos.exception.NotCreateOrderException;
+import kitchenpos.exception.NotCreateTableGroupException;
+import kitchenpos.exception.NotFoundEntityException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;

@@ -1,4 +1,4 @@
-package kitchenpos.handler.exception;
+package kitchenpos.exception;
 
 import java.io.Serializable;
 

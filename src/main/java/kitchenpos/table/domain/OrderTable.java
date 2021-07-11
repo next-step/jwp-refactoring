@@ -6,9 +6,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import kitchenpos.handler.exception.NotChangeStatusException;
-import kitchenpos.handler.exception.NotChangeNumberOfGuestsException;
-import kitchenpos.handler.exception.NotCreateOrderException;
+import kitchenpos.exception.NotChangeStatusException;
+import kitchenpos.exception.NotChangeNumberOfGuestsException;
+import kitchenpos.exception.NotCreateOrderException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.Orders;
 

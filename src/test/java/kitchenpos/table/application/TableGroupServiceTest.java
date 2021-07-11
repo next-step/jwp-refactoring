@@ -2,8 +2,8 @@ package kitchenpos.table.application;
 
 import java.util.Collections;
 import java.util.Optional;
-import kitchenpos.handler.exception.NotChangeStatusException;
-import kitchenpos.handler.exception.NotCreateTableGroupException;
+import kitchenpos.exception.NotChangeStatusException;
+import kitchenpos.exception.NotCreateTableGroupException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;

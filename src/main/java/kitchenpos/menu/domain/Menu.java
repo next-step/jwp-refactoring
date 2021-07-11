@@ -8,7 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import kitchenpos.handler.exception.NotCreateMenuException;
+import kitchenpos.exception.NotCreateMenuException;
 import kitchenpos.product.domain.Price;
 
 @Entity

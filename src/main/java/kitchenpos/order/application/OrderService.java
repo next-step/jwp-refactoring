@@ -1,8 +1,8 @@
 package kitchenpos.order.application;
 
 import java.util.List;
-import kitchenpos.handler.exception.NotCreateOrderException;
-import kitchenpos.handler.exception.NotFoundEntityException;
+import kitchenpos.exception.NotCreateOrderException;
+import kitchenpos.exception.NotFoundEntityException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;

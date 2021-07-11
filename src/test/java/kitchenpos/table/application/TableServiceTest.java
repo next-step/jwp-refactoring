@@ -1,9 +1,9 @@
 package kitchenpos.table.application;
 
 import java.util.Optional;
-import kitchenpos.handler.exception.NotChangeStatusException;
-import kitchenpos.handler.exception.NotChangeNumberOfGuestsException;
-import kitchenpos.handler.exception.NotFoundEntityException;
+import kitchenpos.exception.NotChangeStatusException;
+import kitchenpos.exception.NotChangeNumberOfGuestsException;
+import kitchenpos.exception.NotFoundEntityException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;

@@ -2,8 +2,8 @@ package kitchenpos.table.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.handler.exception.NotCreateTableGroupException;
-import kitchenpos.handler.exception.NotFoundEntityException;
+import kitchenpos.exception.NotCreateTableGroupException;
+import kitchenpos.exception.NotFoundEntityException;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;

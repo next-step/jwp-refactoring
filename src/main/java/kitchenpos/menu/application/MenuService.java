@@ -1,7 +1,7 @@
 package kitchenpos.menu.application;
 
 import java.util.List;
-import kitchenpos.handler.exception.NotFoundEntityException;
+import kitchenpos.exception.NotFoundEntityException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
