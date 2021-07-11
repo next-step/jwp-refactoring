@@ -38,7 +38,7 @@ public class OrderService {
         final Menus menus = new Menus(menuRepository.findAllByIdIn(menuIds));
 
         if (menuIds.size() != menus.size()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("등록되지 않은 메뉴가 있습니다.");
         }
 
         final OrderTable orderTable = findOrderTable(orderRequest.getOrderTableId());

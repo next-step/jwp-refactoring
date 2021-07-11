@@ -93,7 +93,7 @@ public class Order {
 
     public void changeStatus(final OrderStatus orderStatus) {
         if (Objects.equals(this.orderStatus, OrderStatus.COMPLETION)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("완료된 주문은 변경할 수 없습니다.");
         }
 
         this.orderStatus = orderStatus;

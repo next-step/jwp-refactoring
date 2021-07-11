@@ -20,7 +20,7 @@ public class Price {
 
     private void validate(final BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("금액은 0 이상입니다.");
         }
     }
 

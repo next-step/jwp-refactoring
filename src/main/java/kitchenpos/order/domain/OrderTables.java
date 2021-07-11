@@ -46,7 +46,7 @@ public class OrderTables {
             .filter(it -> orders.isNotCompleted(it.getId()))
             .findFirst()
             .ifPresent(orderTable -> {
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("사용 중인 테이블은 그룹을 해제할 수 없습니다.");
             });
     }
 

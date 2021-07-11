@@ -44,7 +44,7 @@ public class TableGroupService {
 
     private void validateRequest(final TableGroupRequest tableGroupRequest) {
         if (tableGroupRequest.isEmptyOrderTables() || tableGroupRequest.orderTablesSize() < MINIMUM_TABLE_SIZE) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(MINIMUM_TABLE_SIZE + "개 이상 테이블이 있어야 그룹을 만들 수 있습니다.");
         }
     }
 
@@ -54,7 +54,7 @@ public class TableGroupService {
 
     private void validateOrderTableSize(final List<Long> ids, final OrderTables orderTables) {
         if (ids.size() != orderTables.size()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("등록되지 않은 테이블이 있습니다.");
         }
     }
 

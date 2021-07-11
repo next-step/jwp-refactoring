@@ -11,7 +11,7 @@ public class OrderRequest {
     public OrderRequest() {
     }
 
-    public OrderRequest(Long orderTableId, List<OrderLineItemRequest> orderLineItems) {
+    public OrderRequest(final Long orderTableId, final List<OrderLineItemRequest> orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderLineItems = orderLineItems;
     }
@@ -34,7 +34,7 @@ public class OrderRequest {
 
     public List<Long> menuIds() {
         if (orderLineItems == null) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문 아이템이 없습니다.");
         }
 
         return orderLineItems.stream()

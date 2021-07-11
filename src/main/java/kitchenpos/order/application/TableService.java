@@ -52,7 +52,7 @@ public class TableService {
 
     private void validateOrdersStatus(final Orders orders) {
         if (orders.isNotCompleted()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문이 완료되지 않은 테이블은 변경할 수 없습니다.");
         }
     }
 
@@ -78,7 +78,7 @@ public class TableService {
 
     private void validateNumberOfGuests(final OrderTableRequest orderTableRequest) {
         if (orderTableRequest.isNotValidNumberOfGuests()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("손님 숫자는 0이상 입니다.");
         }
     }
 }

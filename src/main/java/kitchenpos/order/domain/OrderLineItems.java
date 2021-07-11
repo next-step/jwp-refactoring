@@ -27,7 +27,7 @@ public class OrderLineItems {
 
     private void validate(final List<OrderLineItem> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("빈 주문 아이템은 추가할 수 없습니다.");
         }
     }
 

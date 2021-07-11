@@ -45,7 +45,7 @@ public class Menu {
         this.menuProducts.updateMenu(this);
 
         if (this.price.greaterThan(this.menuProducts.totalPrice())) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("요청한 금액은 전체 메뉴별 가격보다 클 수 없습니다.");
         }
     }
 
