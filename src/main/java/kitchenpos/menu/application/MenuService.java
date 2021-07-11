@@ -1,6 +1,5 @@
 package kitchenpos.menu.application;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,12 +48,10 @@ public class MenuService {
     }
 
     private List<MenuProduct> makeMenuProducts(final MenuRequest menuRequest) {
-        final List<MenuProduct> menuProducts = new ArrayList<>();
-        final List<MenuProductRequest> menuProductRequests = menuRequest.getMenuProducts();
-        menuProductRequests.forEach(menuProductRequest -> menuProducts.add(
-            new MenuProduct(findProduct(menuProductRequest), menuProductRequest.getQuantity())));
-
-        return menuProducts;
+        return menuRequest.getMenuProducts().stream()
+            .map(menuProductRequest -> new MenuProduct(findProduct(menuProductRequest),
+                menuProductRequest.getQuantity()))
+            .collect(Collectors.toList());
     }
 
     private Product findProduct(final MenuProductRequest menuProductRequest) {
