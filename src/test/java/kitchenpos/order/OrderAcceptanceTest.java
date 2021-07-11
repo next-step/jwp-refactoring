@@ -35,13 +35,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class OrderAcceptanceTest extends AcceptanceTest {
 
     private OrderRequest orderRequest;
+    OrderTableResponse orderTableResponse;
     private OrderLineItemRequest orderLineItemRequest;
     @BeforeEach
     public void setUp() {
         super.setUp();
 
         MenuResponse menuResponse = 메뉴_등록되어_있음(generateMenuRequest());
-        OrderTableResponse orderTableResponse = 주문_테이블_등록_되어있음(new OrderTableRequest(1, false));
+        orderTableResponse = 주문_테이블_등록_되어있음(new OrderTableRequest(1, false));
         orderLineItemRequest = new OrderLineItemRequest(menuResponse.getId(),11l);
         orderRequest = new OrderRequest(orderTableResponse.getId(), "COOKING", Arrays.asList(orderLineItemRequest));
     }
@@ -89,6 +90,23 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
     }
 
+    @DisplayName("dto와 jpa를 사용하여 주문상태를 변경할 수 있다")
+    @Test
+    void changeOrderStatusTest() {
+        //given
+        ExtractableResponse<Response> savedResponse = 주문_등록_요청(orderRequest);
+        OrderResponse savedOrderResponse = savedResponse.as(OrderResponse.class);
+        OrderRequest changeStatusRequest = new OrderRequest(orderTableResponse.getId(), "MEAL", Arrays.asList(orderLineItemRequest));
+
+        //when
+        ExtractableResponse<Response> response = 주문_상태변경_요청(savedOrderResponse.getId(), changeStatusRequest);
+
+        //then
+        정상_처리(response);
+        OrderResponse changedOrderResponse = response.as(OrderResponse.class);
+        assertThat(changedOrderResponse.getOrderStatus()).isEqualTo(changeStatusRequest.getOrderStatus());
+    }
+
     private ExtractableResponse<Response> 주문_등록_요청(OrderRequest orderRequest) {
         return RestAssured
                 .given().log().all()
@@ -106,6 +124,17 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 .when().get("/api/orders/temp")
                 .then().log().all()
                 .extract();
+    }
+
+    private ExtractableResponse<Response> 주문_상태변경_요청(Long orderId, OrderRequest changeStatusRequest) {
+        return RestAssured
+                .given().log().all()
+                .body(changeStatusRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().put("/api/orders/{orderId}/order-status/temp",orderId)
+                .then().log().all()
+                .extract();
+
     }
 
 

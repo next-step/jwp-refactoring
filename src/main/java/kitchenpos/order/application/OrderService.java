@@ -163,6 +163,19 @@ public class OrderService {
         return savedOrder;
     }
 
+    @Transactional
+    public OrderResponse changeOrderStatusTemp(Long orderId, OrderRequest orderRequest) {
+        OrderEntity savedOrder = findById(orderId);
+        savedOrder.updateStatus(orderRequest.getOrderStatus());
+
+        return OrderResponse.of(savedOrder);
+    }
+
+    private OrderEntity findById(Long orderId) {
+        return orderRepository.findById(orderId).orElseThrow(() -> new IllegalArgumentException("등록되지 않은 주문입니다."));
+
+    }
+
     public void changeStatusValidCheck(Long orderTableId) {
 //        if (orderDao.existsByOrderTableIdAndOrderStatusIn(
 //                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {

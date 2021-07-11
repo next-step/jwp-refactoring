@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -126,6 +127,71 @@ class OrderServiceTest {
 
         //then
         assertThat(orderRequest.getOrderTableId()).isEqualTo(orderResponse.getOrderTableId());
+    }
+
+
+    @DisplayName("주문 목록을 조회할 수 있다.")
+    @Test
+    void list() {
+        //given
+        OrderTableEntity givenOrderTable = new OrderTableEntity(1L, null, 0, false);
+        OrderEntity orderEntity = new OrderEntity(givenOrderTable, OrderStatus.COOKING, LocalDateTime.now(), new OrderLineItems(Arrays.asList(new OrderLineItemEntity())));
+        List<OrderEntity> expect = Arrays.asList(orderEntity);
+        given(orderRepository.findAll())
+                .willReturn(expect);
+
+        //when
+        List<OrderResponse> result = orderService.listTemp();
+
+        //then
+        assertThat(result.size()).isEqualTo(expect.size());
+        List<Long> orderTalbeIds = result.stream().map(OrderResponse::getOrderTableId).collect(Collectors.toList());
+        assertThat(orderTalbeIds).contains(givenOrderTable.getId());
+    }
+
+    @DisplayName("등록되지 않은 주문은 변경할 수 없다.")
+    @Test
+    void changeOrderStatusFailBecauseOfNotExistOrderTest() {
+        //given
+        given(orderRepository.findById(any())).willReturn(Optional.empty());
+
+        //when && then
+        assertThatThrownBy(() -> orderService.changeOrderStatusTemp(any(), orderRequest))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("등록되지 않은 주문입니다.");
+
+    }
+
+    @DisplayName("완료된 주문은 변경할 수 없다")
+    @Test
+    void changeOrderStatusFailBecauseOfOrderStatusTest() {
+        //given
+        OrderTableEntity givenOrderTable = new OrderTableEntity(1L, null, 0, false);
+        OrderEntity orderEntity = new OrderEntity(givenOrderTable, OrderStatus.COMPLETION, LocalDateTime.now(), new OrderLineItems(Arrays.asList(new OrderLineItemEntity())));
+        given(orderRepository.findById(any())).willReturn(Optional.of(orderEntity));
+
+        //when && then
+        assertThatThrownBy(() -> orderService.changeOrderStatusTemp(1l, orderRequest))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("이미 완료된 주문입니다.");
+
+    }
+
+    @DisplayName("주문 상태를 변경할 수 있다")
+    @Test
+    void changeOrderStatusTest() {
+        //given
+        OrderTableEntity givenOrderTable = new OrderTableEntity(1L, null, 0, false);
+        OrderEntity orderEntity = new OrderEntity(givenOrderTable, OrderStatus.MEAL, LocalDateTime.now(), new OrderLineItems(Arrays.asList(new OrderLineItemEntity())));
+        given(orderRepository.findById(any())).willReturn(Optional.of(orderEntity));
+        OrderRequest changStatus = new OrderRequest(1l, "COOKING", Arrays.asList(orderLineItemRequest));
+
+        //when
+        OrderResponse result = orderService.changeOrderStatusTemp(1l, changStatus);
+
+        //
+        assertThat(result.getOrderStatus()).isEqualTo(changStatus.getOrderStatus());
+
     }
 
 }

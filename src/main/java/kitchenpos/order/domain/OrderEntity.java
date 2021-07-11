@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.table.domain.OrderTableEntity;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -7,6 +8,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "orders")
@@ -75,5 +77,12 @@ public class OrderEntity {
 
     public Long getOrderTableId() {
         return orderTable.getId();
+    }
+
+    public void updateStatus(String orderStatusRequest) {
+        if (orderStatus.equals(OrderStatus.COMPLETION)) {
+            throw new IllegalArgumentException("이미 완료된 주문입니다.");
+        }
+        this.orderStatus = OrderStatus.valueOf(orderStatusRequest);
     }
 }
