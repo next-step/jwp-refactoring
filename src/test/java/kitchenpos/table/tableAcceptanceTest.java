@@ -16,11 +16,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class tableAcceptanceTest extends AcceptanceTest {
 
     private OrderTableRequest orderTableRequest;
+    private OrderTableRequest changeEmptyRequest;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
         orderTableRequest = new OrderTableRequest(0, true);
+        changeEmptyRequest = new OrderTableRequest(0, false);
     }
 
     @DisplayName("DTO와 JPA를 사용하여 주문 테이블을 생성할 수 있다")
@@ -52,17 +54,18 @@ public class tableAcceptanceTest extends AcceptanceTest {
     @DisplayName("DTO와 JPA를 사용하여 주문 테이블 빈 상태를 변경할 수 있다")
     @Test
     void emptyChangeTest() {
-
         //given
-        주문_테이블_등록_요청(orderTableRequest);
+        ExtractableResponse<Response> saveResponse = 주문_테이블_등록_요청(orderTableRequest);
+        OrderTableResponse orderResponse = saveResponse.as(OrderTableResponse.class);
 
         //when
-        ExtractableResponse<Response> response = 주문_테이블_조회_요청();
+        ExtractableResponse<Response> response = 주문_테이블_빈_상태변경_요청(orderResponse.getId(), changeEmptyRequest);
 
         //then
         정상_처리(response);
+        OrderTableResponse changeResponse = response.as(OrderTableResponse.class);
+        assertThat(changeResponse.isEmpty()).isEqualTo(changeEmptyRequest.isEmpty());
     }
-
 
 
     private ExtractableResponse<Response> 주문_테이블_등록_요청(OrderTableRequest orderTableRequest) {
@@ -84,7 +87,7 @@ public class tableAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 주문_테이블_조회_요청(Long orderTableId, OrderTableRequest orderTableRequest) {
+    public static ExtractableResponse<Response> 주문_테이블_빈_상태변경_요청(Long orderTableId, OrderTableRequest orderTableRequest) {
         return RestAssured
                 .given().log().all()
                 .body(orderTableRequest)
