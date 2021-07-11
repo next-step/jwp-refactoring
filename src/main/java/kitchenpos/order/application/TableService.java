@@ -14,6 +14,7 @@ import kitchenpos.order.domain.Orders;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
 
+@Transactional
 @Service
 public class TableService {
     private final OrderRepository orderRepository;
@@ -24,7 +25,6 @@ public class TableService {
         this.orderTableRepository = orderTableRepository;
     }
 
-    @Transactional
     public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
         final OrderTable orderTable = new OrderTable(orderTableRequest.getNumberOfGuests());
         final OrderTable saved = orderTableRepository.save(orderTable);
@@ -40,7 +40,6 @@ public class TableService {
             .collect(Collectors.toList());
     }
 
-    @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         validateOrdersStatus(new Orders(findAllOrder(orderTableId)));
         final OrderTable savedOrderTable = findOrderTable(orderTableId);
@@ -66,7 +65,6 @@ public class TableService {
             .orElseThrow(IllegalArgumentException::new);
     }
 
-    @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         validateNumberOfGuests(orderTableRequest);
         final OrderTable savedOrderTable = findOrderTable(orderTableId);

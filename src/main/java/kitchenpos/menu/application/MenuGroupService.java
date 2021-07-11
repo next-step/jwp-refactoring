@@ -11,6 +11,7 @@ import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
 
+@Transactional
 @Service
 public class MenuGroupService {
     private final MenuGroupRepository menuGroupRepository;
@@ -19,7 +20,6 @@ public class MenuGroupService {
         this.menuGroupRepository = menuGroupRepository;
     }
 
-    @Transactional
     public MenuGroupResponse create(final MenuGroupRequest menuGroupRequest) {
         final MenuGroup menuGroup = new MenuGroup(menuGroupRequest.getName());
         final MenuGroup saved = menuGroupRepository.save(menuGroup);

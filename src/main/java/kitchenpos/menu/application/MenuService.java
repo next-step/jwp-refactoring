@@ -18,6 +18,7 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 
+@Transactional
 @Service
 public class MenuService {
     private final MenuRepository menuRepository;
@@ -32,7 +33,6 @@ public class MenuService {
         this.productRepository = productRepository;
     }
 
-    @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
         final String name = menuRequest.getName();
         final MenuGroup menuGroup = findMenuGroup(menuRequest);

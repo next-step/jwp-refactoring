@@ -16,6 +16,7 @@ import kitchenpos.order.domain.TableGroupRepository;
 import kitchenpos.order.dto.TableGroupRequest;
 import kitchenpos.order.dto.TableGroupResponse;
 
+@Transactional
 @Service
 public class TableGroupService {
     private static final int MINIMUM_TABLE_SIZE = 2;
@@ -31,7 +32,6 @@ public class TableGroupService {
         this.tableGroupRepository = tableGroupRepository;
     }
 
-    @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         validateRequest(tableGroupRequest);
         final List<Long> ids = tableGroupRequest.ids();
@@ -62,7 +62,6 @@ public class TableGroupService {
         return tableGroupRepository.save(new TableGroup(orderTables));
     }
 
-    @Transactional
     public void ungroup(final Long tableGroupId) {
         final OrderTables orderTables = new OrderTables(findAllOrderTable(tableGroupId));
         final Orders orders = new Orders(findAllOrder(orderTables));

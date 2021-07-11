@@ -18,6 +18,7 @@ import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 
+@Transactional
 @Service
 public class OrderService {
     private final MenuRepository menuRepository;
@@ -32,7 +33,6 @@ public class OrderService {
         this.orderTableRepository = orderTableRepository;
     }
 
-    @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
         final List<Long> menuIds = orderRequest.menuIds();
         final Menus menus = new Menus(menuRepository.findAllByIdIn(menuIds));
@@ -70,7 +70,6 @@ public class OrderService {
             .collect(Collectors.toList());
     }
 
-    @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
         final Order order = findOrder(orderId);
         final OrderStatus orderStatus = OrderStatus.valueOf(orderRequest.getOrderStatus());
