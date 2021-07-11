@@ -20,7 +20,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.ArrayList;
@@ -40,7 +39,7 @@ class OrderServiceTest {
     private OrderRepository orderRepository;
     @Mock
     private OrderTableRepository orderTableRepository;
-    @Autowired
+    @Mock
     private ApplicationEventPublisher applicationEventPublisher;
 
     private OrderService orderService;

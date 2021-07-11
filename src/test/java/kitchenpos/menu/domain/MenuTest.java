@@ -4,7 +4,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -14,7 +13,7 @@ class MenuTest {
     @Test
     void create() {
         MenuProduct menuProduct = new MenuProduct(1L, 1L);
-        Menu menu = Menu.of("추천메뉴", BigDecimal.valueOf(16000), new MenuProducts(Arrays.asList(menuProduct)), null);
+        Menu menu = Menu.of("추천메뉴", BigDecimal.valueOf(16000), null);
 
         assertThat(menu).isNotNull();
     }
