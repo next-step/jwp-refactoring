@@ -8,7 +8,7 @@ import javax.persistence.OneToMany;
 @Embeddable
 public class OrderLineItems {
 
-    @OneToMany(mappedBy = "order", orphanRemoval = true)
+    @OneToMany(mappedBy = "orderId", orphanRemoval = true)
     private List<OrderLineItem> orderLineItems;
 
     public OrderLineItems() {
