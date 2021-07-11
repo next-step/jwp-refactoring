@@ -5,20 +5,20 @@ import kitchenpos.table.domain.OrderTableEntity;
 public class OrderTableRequest {
     private Long id;
     private int numberOfGuests;
-    private boolean isEmpty;
+    private boolean empty;
 
     public OrderTableRequest() {
     }
 
-    public OrderTableRequest(Long id, int numberOfGuests, boolean isEmpty) {
+    public OrderTableRequest(Long id, int numberOfGuests, boolean empty) {
         this.id = id;
         this.numberOfGuests = numberOfGuests;
-        this.isEmpty = isEmpty;
+        this.empty = empty;
     }
 
-    public OrderTableRequest(int numberOfGuests, boolean isEmpty) {
+    public OrderTableRequest(int numberOfGuests, boolean empty) {
         this.numberOfGuests = numberOfGuests;
-        this.isEmpty = isEmpty;
+        this.empty = empty;
     }
 
     public Long getId() {
@@ -30,10 +30,10 @@ public class OrderTableRequest {
     }
 
     public boolean isEmpty() {
-        return isEmpty;
+        return empty;
     }
 
     public OrderTableEntity toEntity() {
-        return new OrderTableEntity(numberOfGuests, isEmpty);
+        return new OrderTableEntity(numberOfGuests, empty);
     }
 }

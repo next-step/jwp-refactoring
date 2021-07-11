@@ -9,6 +9,7 @@ import kitchenpos.table.domain.OrderTableEntity;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.tablegroup.domain.TableGroupEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -117,7 +118,7 @@ public class OrderTableService {
     }
 
     private void changeEmptyValidCheck(OrderTableEntity savedOrderTable) {
-        tableGroupValidCheck(savedOrderTable.getTableGroupId());
+        tableGroupValidCheck(savedOrderTable.getTableGroup());
         orderStatusValidCheck(savedOrderTable.getId());
     }
 
@@ -126,8 +127,8 @@ public class OrderTableService {
 
     }
 
-    private void tableGroupValidCheck(Long tableGroupId) {
-        if (Objects.nonNull(tableGroupId)) {
+    private void tableGroupValidCheck(TableGroupEntity tableGroupEntity) {
+        if (Objects.nonNull(tableGroupEntity)) {
             throw new IllegalArgumentException("단체 지정된 테이블은 변경할 수 없습니다.");
         }
     }
@@ -157,4 +158,7 @@ public class OrderTableService {
     }
 
 
+    public List<OrderTableEntity> findAllByIdIn(List<Long> orderTableIds) {
+        return orderTableRepository.findAllByIdIn(orderTableIds);
+    }
 }

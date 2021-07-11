@@ -5,6 +5,7 @@ import kitchenpos.table.domain.OrderTableEntity;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.tablegroup.domain.TableGroupEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -92,7 +95,8 @@ class TableServiceTest {
     @Test
     void changeEmptyFailBecauseOfHasTableGroupIdTest() {
         //given
-        givenOrderTable.updateTableGroupId(1L);
+        TableGroupEntity tableGroupEntity = new TableGroupEntity(1l, LocalDateTime.now());
+        givenOrderTable.updateTableGroup(tableGroupEntity);
         given(orderTableRepository.findById(givenOrderTable.getId())).willReturn(Optional.ofNullable(givenOrderTable));
 
         //when && then

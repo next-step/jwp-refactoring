@@ -28,10 +28,10 @@ public class TableGroupRestController {
 
     @PostMapping("/api/table-groups/temp")
     public ResponseEntity<TableGroupResponse> createTemp(@RequestBody final TableGroupRequest tableGroupRequest) {
-//        final TableGroup created = tableGroupService.create(tableGroup);
-        final URI uri = URI.create("/api/table-groups/" + 1l);
+        final TableGroupResponse created = tableGroupService.createTemp(tableGroupRequest);
+        final URI uri = URI.create("/api/table-groups/" + created.getId());
         return ResponseEntity.created(uri)
-                .body(null)
+                .body(created)
                 ;
     }
 

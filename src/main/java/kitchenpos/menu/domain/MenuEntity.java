@@ -33,10 +33,10 @@ public class MenuEntity {
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
-        addMenuProducts(menuProducts);
+        updateMenuProducts(menuProducts);
     }
 
-    private void addMenuProducts(MenuProducts menuProducts) {
+    private void updateMenuProducts(MenuProducts menuProducts) {
         priceValidCheck(menuProducts.getTotalPrice());
         menuProducts.updateMenu(this);
         this.menuProducts = menuProducts;
