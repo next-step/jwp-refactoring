@@ -176,3 +176,29 @@
 - [x] ProductRestController
 - [x] TableGroupRestController
 - [x] TableRestController
+
+---
+
+# Step4 멀티 모듈 적용
+
+1. module 분리
+   - common, api, domain
+
+2. module 설명
+    - common (Outside the system layer)
+        - 독립적으로 실행 불가능
+        - exception, 공용 라이브러리 등 대체되어도 충분한 코드가 이 영역에 위치
+            - 더 나은 라이브러리가 나타나면 이 계층에서 관련 코드가 삭제될 수 있다.
+        - 최하위 계층으로 다른 module이 common을 의존할 순 있으나 common은 다른 module을 의존하면 안된다.
+    - domain (Inside the system layer)
+        - 독립적으로 실행 불가능
+        - Layered architecture에서 service, domain, repository 영역을 담당
+            - domain logic 구현 
+        - 중간 계층으로 common dodule을 의존할 수 있지만, application module은 의존하지 않는다.
+        - 각 module은 하나의 Infra structure만 사용
+        - domain의 조합으로 새로운 domain을 만들 수 있다.
+    - application (Inside the system layer)
+        - 독립적으로 실행 가능
+        - Layered architecture에서 presentation 영역을 담당
+            - 외부와의 통신
+        - 최상위 계층으로 다른 module은 이 계층을 의존할 수 없다.
