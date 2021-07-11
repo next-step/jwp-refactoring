@@ -76,7 +76,7 @@ public class OrderTableTest {
 	}
 
 	private void 주문_테이블_비우거나_채우기_확인(OrderTable actual) {
-		assertThat(actual.isEmpty()).isEqualTo(false);
+		assertThat(actual.isEmpty()).isFalse();
 	}
 
 	private void 주문_테이블_생성_확인(OrderTable actual, Long expectedId) {

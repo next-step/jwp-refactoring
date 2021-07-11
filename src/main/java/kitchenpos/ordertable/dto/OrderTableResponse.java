@@ -15,7 +15,7 @@ public class OrderTableResponse {
 	public OrderTableResponse(Long id, boolean isEmpty, int numberOfGuests) {
 		this.id = id;
 		this.isEmpty = isEmpty;
-		this.tableGroupId = 0L; //todo 수정필요
+		this.tableGroupId = null;
 		this.numberOfGuests = numberOfGuests;
 	}
 
@@ -44,7 +44,7 @@ public class OrderTableResponse {
 
 	public static OrderTableResponse of(OrderTable orderTable) {
 		return new OrderTableResponse(orderTable.getId(), orderTable.isEmpty(), 1L,
-			orderTable.getNumberOfGuests().value());//todo
+			orderTable.getNumberOfGuests().value());
 	}
 
 	public static List<OrderTableResponse> of(List<OrderTable> orderTables) {

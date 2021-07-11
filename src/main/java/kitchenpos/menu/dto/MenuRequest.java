@@ -2,14 +2,11 @@ package kitchenpos.menu.dto;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import kitchenpos.manugroup.domain.MenuGroup;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.Price;
-import kitchenpos.product.domain.Product;
 
 public class MenuRequest {
 
