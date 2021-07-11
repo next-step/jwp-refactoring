@@ -3,13 +3,10 @@ package kitchenpos.menu.application;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.product.application.ProductService;
-import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,9 +40,6 @@ class MenuServiceTest {
 
     private MenuService menuService;
 
-    @Mock
-    private ProductService productService;
-
 
     @BeforeEach
     void setUp() {
@@ -60,16 +54,10 @@ class MenuServiceTest {
         MenuProductRequest menuProductRequest2 = new MenuProductRequest(2L, 1L);
         List<MenuProductRequest> menuProducts = Arrays.asList(menuProductRequest1, menuProductRequest2);
         MenuRequest menuRequest = new MenuRequest("반반치킨", BigDecimal.valueOf(32000), 1L, menuProducts);
-        Product product1 = new Product(1L, "후라이드", BigDecimal.valueOf(16000));
-        Product product2 = new Product(2L, "양념통닭", BigDecimal.valueOf(16000));
-        MenuProduct menuProduct1 = new MenuProduct(1L, 1L);
-        MenuProduct menuProduct2 = new MenuProduct(2L, 1L);
         Menu givenMenu = Menu.of("후라이드치킨", BigDecimal.valueOf(16000), menuGroup);
 
         when(menuGroupRepository.findById(anyLong()))
                 .thenReturn(Optional.of(menuGroup));
-//        when(productRepository.findAllById(anyList()))
-//                .thenReturn(Arrays.asList(product1, product2));
         when(menuRepository.save(any(Menu.class)))
                 .thenReturn(givenMenu);
         MenuResponse actual = menuService.create(menuRequest);
@@ -84,14 +72,10 @@ class MenuServiceTest {
         MenuProductRequest menuProductRequest2 = new MenuProductRequest(2L, 1L);
         List<MenuProductRequest> menuProducts = Arrays.asList(menuProductRequest1, menuProductRequest2);
         MenuRequest menuRequest = new MenuRequest("반반치킨", null, 1L, menuProducts);
-        Product product1 = new Product(1L, "후라이드", BigDecimal.valueOf(16000));
-        Product product2 = new Product(2L, "양념통닭", BigDecimal.valueOf(16000));
         MenuGroup menuGroup = new MenuGroup(1L, "추천메뉴");
 
         when(menuGroupRepository.findById(anyLong()))
                 .thenReturn(Optional.of(menuGroup));
-//        when(productRepository.findAllById(anyList()))
-//                .thenReturn(Arrays.asList(product1, product2));
 
         assertThatThrownBy(() -> menuService.create(menuRequest))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -104,14 +88,10 @@ class MenuServiceTest {
         MenuProductRequest menuProductRequest2 = new MenuProductRequest(2L, 1L);
         List<MenuProductRequest> menuProducts = Arrays.asList(menuProductRequest1, menuProductRequest2);
         MenuRequest menuRequest = new MenuRequest("반반치킨", BigDecimal.valueOf(-1000), 1L, menuProducts);
-        Product product1 = new Product(1L, "후라이드", BigDecimal.valueOf(16000));
-        Product product2 = new Product(2L, "양념통닭", BigDecimal.valueOf(16000));
         MenuGroup menuGroup = new MenuGroup(1L, "추천메뉴");
 
         when(menuGroupRepository.findById(anyLong()))
                 .thenReturn(Optional.of(menuGroup));
-//        when(productRepository.findAllById(anyList()))
-//                .thenReturn(Arrays.asList(product1, product2));
 
         assertThatThrownBy(() -> menuService.create(menuRequest))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -134,8 +114,6 @@ class MenuServiceTest {
     void list() {
         MenuGroup menuGroup1 = new MenuGroup(1L, "추천메뉴");
         MenuGroup menuGroup2 = new MenuGroup(2L, "오늘의메뉴");
-        Product product = new Product("후라이드치킨", BigDecimal.valueOf(16000));
-        MenuProduct menuProduct = new MenuProduct(1L, 1L);
         Menu givenMenu1 = Menu.of("후라이드치킨", BigDecimal.valueOf(16000), menuGroup1);
         Menu givenMenu2 = Menu.of("후라이드치킨", BigDecimal.valueOf(16000), menuGroup2);
 
