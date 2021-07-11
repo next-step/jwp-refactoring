@@ -2,8 +2,10 @@ package kitchenpos.order.ui;
 
 import java.net.URI;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,5 +38,10 @@ public class TableGroupRestController {
 
         return ResponseEntity.noContent()
             .build();
+    }
+
+    @ExceptionHandler({DataIntegrityViolationException.class, IllegalArgumentException.class})
+    public ResponseEntity<Void> handleIllegalArgsException(final RuntimeException e) {
+        return ResponseEntity.badRequest().build();
     }
 }

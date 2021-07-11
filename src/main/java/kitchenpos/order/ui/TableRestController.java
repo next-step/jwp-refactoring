@@ -3,7 +3,9 @@ package kitchenpos.order.ui;
 import java.net.URI;
 import java.util.List;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,7 +30,7 @@ public class TableRestController {
         final OrderTableResponse created = tableService.create(orderTableRequest);
         final URI uri = URI.create("/api/tables/" + created.getId());
         return ResponseEntity.created(uri)
-                .body(created);
+            .body(created);
     }
 
     @GetMapping("/api/tables")
@@ -36,24 +38,29 @@ public class TableRestController {
         final List<OrderTableResponse> orderTables = tableService.list();
 
         return ResponseEntity.ok()
-                .body(orderTables);
+            .body(orderTables);
     }
 
     @PutMapping("/api/tables/{orderTableId}/empty")
     public ResponseEntity<OrderTableResponse> changeEmpty(@PathVariable final Long orderTableId,
-            @RequestBody final OrderTableRequest orderTableRequest) {
+        @RequestBody final OrderTableRequest orderTableRequest) {
         final OrderTableResponse orderTable1 = tableService.changeEmpty(orderTableId, orderTableRequest);
 
         return ResponseEntity.ok()
-                .body(orderTable1);
+            .body(orderTable1);
     }
 
     @PutMapping("/api/tables/{orderTableId}/number-of-guests")
     public ResponseEntity<OrderTableResponse> changeNumberOfGuests(@PathVariable final Long orderTableId,
-            @RequestBody final OrderTableRequest orderTableRequest) {
+        @RequestBody final OrderTableRequest orderTableRequest) {
         final OrderTableResponse orderTable = tableService.changeNumberOfGuests(orderTableId, orderTableRequest);
 
         return ResponseEntity.ok()
-                .body(orderTable);
+            .body(orderTable);
+    }
+
+    @ExceptionHandler({DataIntegrityViolationException.class, IllegalArgumentException.class})
+    public ResponseEntity<Void> handleIllegalArgsException(final RuntimeException e) {
+        return ResponseEntity.badRequest().build();
     }
 }

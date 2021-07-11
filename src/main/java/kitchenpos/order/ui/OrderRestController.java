@@ -3,7 +3,9 @@ package kitchenpos.order.ui;
 import java.net.URI;
 import java.util.List;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,5 +49,10 @@ public class OrderRestController {
         final OrderResponse order = orderService.changeOrderStatus(orderId, orderRequest);
 
         return ResponseEntity.ok(order);
+    }
+
+    @ExceptionHandler({DataIntegrityViolationException.class, IllegalArgumentException.class})
+    public ResponseEntity<Void> handleIllegalArgsException(final RuntimeException e) {
+        return ResponseEntity.badRequest().build();
     }
 }
