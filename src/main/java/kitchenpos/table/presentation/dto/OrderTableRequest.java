@@ -2,38 +2,32 @@ package kitchenpos.table.presentation.dto;
 
 public class OrderTableRequest {
     private Long id;
-    private Long tableGroupId;
     private int numberOfGuests;
     private boolean empty;
 
     protected OrderTableRequest() {
     }
 
-    private OrderTableRequest(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+    private OrderTableRequest(Long id, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
 
-    public static OrderTableRequest of(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
-        return new OrderTableRequest(id, tableGroupId, numberOfGuests, empty);
+    public static OrderTableRequest of(Long id, int numberOfGuests, boolean empty) {
+        return new OrderTableRequest(id, numberOfGuests, empty);
     }
 
     public static OrderTableRequest of(boolean empty) {
-        return new OrderTableRequest(null, null, 0, empty);
+        return new OrderTableRequest(null, 0, empty);
     }
 
     public static OrderTableRequest of(int numberOfGuests) {
-        return new OrderTableRequest(null, null, numberOfGuests, false);
+        return new OrderTableRequest(null, numberOfGuests, false);
     }
 
     public Long getId() {
         return id;
-    }
-
-    public Long getTableGroupId() {
-        return tableGroupId;
     }
 
     public int getNumberOfGuests() {

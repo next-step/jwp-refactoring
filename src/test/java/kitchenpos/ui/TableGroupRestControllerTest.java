@@ -22,10 +22,9 @@ class TableGroupRestControllerTest extends IntegrationSupport {
     void ungroup() throws Exception {
         //given
         OrderTableGroupResponse orderTableGroupResponse = toObject(mockMvc.perform(postAsJson(URI, OrderTableGroupRequest.of(
-                LocalDateTime.now(),
                 Lists.list(
-                        OrderTableRequest.of(1L, null, 0, false),
-                        OrderTableRequest.of(2L, null, 0, false)
+                        OrderTableRequest.of(1L, 0, false),
+                        OrderTableRequest.of(2L, 0, false)
                 )
         ))).andReturn(), OrderTableGroupResponse.class);
 
@@ -41,10 +40,9 @@ class TableGroupRestControllerTest extends IntegrationSupport {
     void create() throws Exception {
         //when
         ResultActions actions = mockMvc.perform(postAsJson(URI, OrderTableGroupRequest.of(
-                LocalDateTime.now(),
                 Lists.list(
-                        OrderTableRequest.of(1L, null, 0, false),
-                        OrderTableRequest.of(2L, null, 0, false)
+                        OrderTableRequest.of(1L, 0, false),
+                        OrderTableRequest.of(2L, 0, false)
                 )
         )));
 

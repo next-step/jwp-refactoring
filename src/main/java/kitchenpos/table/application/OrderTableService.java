@@ -2,6 +2,7 @@ package kitchenpos.table.application;
 
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.table.application.exception.NotExistOrderTableException;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.presentation.dto.OrderTableRequest;
@@ -40,7 +41,7 @@ public class OrderTableService {
             throw new IllegalArgumentException();
         }
         if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException();
         }
 
@@ -62,5 +63,11 @@ public class OrderTableService {
         }
         savedOrderTable.setNumberOfGuests(numberOfGuests);
         return OrderTableResponse.of(savedOrderTable);
+    }
+
+    @Transactional(readOnly = true)
+    public OrderTable findById(Long id){
+        return orderTableRepository.findById(id)
+                .orElseThrow(NotExistOrderTableException::new);
     }
 }

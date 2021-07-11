@@ -72,7 +72,7 @@ class TableServiceTest extends DataBaseCleanSupport {
     @Test
     void changeEmptyExceptionIfTableOrderStatusIsNotCompletion() {
         //given
-        orderRepository.save(Order.of(주문한_테이블, OrderStatus.COOKING.name(), LocalDateTime.now()));
+        orderRepository.save(Order.of(주문한_테이블, OrderStatus.COOKING, LocalDateTime.now()));
         Long orderTableId = 주문한_테이블.getId();
         OrderTableRequest orderTableRequest = OrderTableRequest.of(false);
 

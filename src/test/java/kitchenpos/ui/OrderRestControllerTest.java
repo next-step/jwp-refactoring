@@ -29,14 +29,14 @@ class OrderRestControllerTest extends IntegrationSupport {
         mockMvc.perform(putAsJson("/api/tables/1/empty", OrderTableRequest.of(false)));
 
         //when
-        ResultActions actions = mockMvc.perform(postAsJson(URI, OrderRequest.of(1L, OrderStatus.COOKING.name(), LocalDateTime.now(), Lists.list(OrderLineItemRequest.of(1L, 1)))));
+        ResultActions actions = mockMvc.perform(postAsJson(URI, OrderRequest.of(1L, OrderStatus.COOKING, Lists.list(OrderLineItemRequest.of(1L, 1)))));
 
         //then
         actions.andExpect(status().isCreated());
         //and then
         OrderResponse response = toObject(actions.andReturn(), OrderResponse.class);
         assertThat(response.getId()).isNotNull();
-        assertThat(response.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(response.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
         assertThat(response.getOrderLineItems()).isNotEmpty();
     }
 
@@ -45,7 +45,7 @@ class OrderRestControllerTest extends IntegrationSupport {
     void list() throws Exception {
         //given
         mockMvc.perform(putAsJson("/api/tables/2/empty", OrderTableRequest.of(false)));
-        mockMvc.perform(postAsJson(URI, OrderRequest.of(2L, OrderStatus.COOKING.name(), LocalDateTime.now(), Lists.list(OrderLineItemRequest.of(2L, 2)))));
+        mockMvc.perform(postAsJson(URI, OrderRequest.of(2L, OrderStatus.COOKING, Lists.list(OrderLineItemRequest.of(2L, 2)))));
 
         //when
         ResultActions actions = mockMvc.perform(get(URI));
@@ -62,14 +62,13 @@ class OrderRestControllerTest extends IntegrationSupport {
     void changeOrderStatus() throws Exception {
         //given
         mockMvc.perform(putAsJson("/api/tables/3/empty", OrderTableRequest.of(false)));
-        MvcResult mvcResult = mockMvc.perform(postAsJson(URI, OrderRequest.of(3L, OrderStatus.COOKING.name(), LocalDateTime.now(), Lists.list(OrderLineItemRequest.of(3L, 3))))).andReturn();
+        MvcResult mvcResult = mockMvc.perform(postAsJson(URI, OrderRequest.of(3L, OrderStatus.COOKING, Lists.list(OrderLineItemRequest.of(3L, 3))))).andReturn();
         OrderResponse orderResponse = toObject(mvcResult, OrderResponse.class);
 
         //when
         ResultActions actions = mockMvc.perform(putAsJson(URI + "/" + orderResponse.getId() + "/order-status", OrderRequest.of(
                 3L,
-                OrderStatus.COMPLETION.name(),
-                LocalDateTime.now(),
+                OrderStatus.COMPLETION,
                 Lists.list(OrderLineItemRequest.of(3L, 4))
         )));
 
@@ -78,6 +77,6 @@ class OrderRestControllerTest extends IntegrationSupport {
         //and then
         OrderResponse response = toObject(actions.andReturn(), OrderResponse.class);
         assertThat(response.getId()).isEqualTo(orderResponse.getId());
-        assertThat(response.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
+        assertThat(response.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
     }
 }

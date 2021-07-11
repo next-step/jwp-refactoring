@@ -1,5 +1,6 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.menu.application.exception.NotExistMenusException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
@@ -37,5 +38,15 @@ public class MenuService {
     @Transactional(readOnly = true)
     public List<MenuResponse> list() {
         return MenuResponse.ofList(menuRepository.findAll());
+    }
+
+    @Transactional(readOnly = true)
+    public List<Menu> findByIdIn(List<Long> menuIds) {
+        List<Menu> menus = menuRepository.findByIdIn(menuIds);
+        if(menus.isEmpty()){
+            throw new NotExistMenusException();
+        }
+
+        return menus;
     }
 }

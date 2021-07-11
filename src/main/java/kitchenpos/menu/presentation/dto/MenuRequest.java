@@ -10,29 +10,27 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class MenuRequest {
-    private Long id;
     private String name;
     private BigDecimal price;
     private Long menuGroupId;
-    private List<MenuProductRequest> menuProductRequests;
+    private List<MenuProductRequest> menuProducts;
 
     protected MenuRequest() {
     }
 
-    private MenuRequest(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProductRequests) {
-        this.id = id;
+    private MenuRequest(String name, BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
-        this.menuProductRequests = menuProductRequests;
+        this.menuProducts = menuProducts;
     }
 
-    public static MenuRequest of(String name, BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProductRequests) {
-        return new MenuRequest(null, name, price, menuGroupId, menuProductRequests);
+    public static MenuRequest of(String name, BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
+        return new MenuRequest(name, price, menuGroupId, menuProducts);
     }
 
     public List<Long> getProductsIds() {
-        return menuProductRequests.stream()
+        return menuProducts.stream()
                 .map(MenuProductRequest::getProductId)
                 .collect(Collectors.toList());
     }
@@ -44,7 +42,7 @@ public class MenuRequest {
     }
 
     private MenuProduct createMenuProductWith(Product product) {
-        return menuProductRequests.stream()
+        return menuProducts.stream()
                 .filter(menuProductRequest -> isProductIdMatch(menuProductRequest, product))
                 .map(menuProductRequest -> MenuProduct.of(product, menuProductRequest.getQuantity()))
                 .findFirst()
@@ -53,10 +51,6 @@ public class MenuRequest {
 
     private boolean isProductIdMatch(MenuProductRequest menuProductRequest, Product product) {
         return Objects.equals(menuProductRequest.getProductId(), product.getId());
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public String getName() {
@@ -71,7 +65,7 @@ public class MenuRequest {
         return menuGroupId;
     }
 
-    public List<MenuProductRequest> getMenuProductRequests() {
-        return menuProductRequests;
+    public List<MenuProductRequest> getMenuProducts() {
+        return menuProducts;
     }
 }

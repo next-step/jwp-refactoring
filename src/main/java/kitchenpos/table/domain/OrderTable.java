@@ -1,5 +1,7 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.table.domain.exception.UnUseOrderTableException;
+
 import javax.persistence.*;
 
 @Entity
@@ -60,5 +62,11 @@ public class OrderTable {
 
     public void setTableGroup(OrderTableGroup orderTableGroup) {
         this.tableGroup = orderTableGroup;
+    }
+
+    public void validateOrderable() {
+        if (empty) {
+            throw new UnUseOrderTableException();
+        }
     }
 }

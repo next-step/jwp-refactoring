@@ -3,25 +3,19 @@ package kitchenpos.product.presentation.dto;
 import java.math.BigDecimal;
 
 public class ProductRequest {
-    private Long id;
     private String name;
     private BigDecimal price;
 
     protected ProductRequest() {
     }
 
-    private ProductRequest(Long id, String name, BigDecimal price) {
-        this.id = id;
+    private ProductRequest(String name, BigDecimal price) {
         this.name = name;
         this.price = price;
     }
 
     public static ProductRequest of(String name, BigDecimal price) {
-        return new ProductRequest(null, name, price);
-    }
-
-    public Long getId() {
-        return id;
+        return new ProductRequest(name, price);
     }
 
     public String getName() {

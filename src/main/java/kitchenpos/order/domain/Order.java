@@ -1,12 +1,13 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.order.domain.exception.UnUseOrderException;
 import kitchenpos.table.domain.OrderTable;
-import org.springframework.data.annotation.ReadOnlyProperty;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Table(name = "orders")
 @Entity
@@ -19,20 +20,19 @@ public class Order {
     @JoinColumn(name = "order_table_id")
     private OrderTable orderTable;
 
-    @Column(nullable = false)
-    private String orderStatus;
+    @Enumerated(value = EnumType.STRING)
+    private OrderStatus orderStatus;
 
     @Column(nullable = false)
     private LocalDateTime orderedTime;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    @ReadOnlyProperty
-    private List<OrderLineItem> orderLineItems;
+    @Embedded
+    private OrderLineItems orderLineItems;
 
     protected Order() {
     }
 
-    private Order(Long id, OrderTable orderTable, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+    private Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, OrderLineItems orderLineItems) {
         this.id = id;
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
@@ -40,12 +40,22 @@ public class Order {
         this.orderLineItems = orderLineItems;
     }
 
-    public static Order of(Long id, OrderTable orderTable, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
-        return new Order(id, orderTable, orderStatus, orderedTime, orderLineItems);
+    private Order(OrderTable orderTable, OrderLineItems orderLineItems) {
+        this(null, orderTable, OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
+        orderLineItems.registerAll(this);
     }
 
-    public static Order of(OrderTable orderTable, String orderStatus, LocalDateTime orderedTime) {
-        return new Order(null, orderTable, orderStatus, orderedTime, new ArrayList<>());
+    public static Order of(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+        return new Order(id, orderTable, orderStatus, orderedTime, OrderLineItems.of(orderLineItems));
+    }
+
+    public static Order of(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
+        return new Order(null, orderTable, orderStatus, orderedTime, OrderLineItems.of(new ArrayList<>()));
+    }
+
+    public static Order create(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        orderTable.validateOrderable();
+        return new Order(orderTable, OrderLineItems.of(orderLineItems));
     }
 
     public Long getId() {
@@ -56,7 +66,7 @@ public class Order {
         return orderTable;
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
@@ -65,14 +75,17 @@ public class Order {
     }
 
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
+        return orderLineItems.getUnmodifiableList();
     }
 
-    public void addOrderLineItem(OrderLineItem orderLineItem) {
-        orderLineItems.add(orderLineItem);
-    }
-
-    public void setOrderStatus(String orderStatus) {
+    public void changeOrderStatus(OrderStatus orderStatus) {
+        validateOrderable();
         this.orderStatus = orderStatus;
+    }
+
+    private void validateOrderable() {
+        if (Objects.equals(orderStatus, OrderStatus.COMPLETION)) {
+            throw new UnUseOrderException();
+        }
     }
 }
