@@ -160,6 +160,21 @@ class OrderServiceTest {
         assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
     }
 
+    @DisplayName("주문 상태변경 - 주문이 존재하지 않는 경우 상태를 변경할 수 없다")
+    @Test
+    void changeOrderStatus_orderNotFound() {
+        // given
+        given(orderDao.findById(order.getId())).willThrow(IllegalArgumentException.class);
+
+        // when
+        Order orderParam = new Order();
+        orderParam.setOrderStatus(OrderStatus.COOKING.name());
+
+        // then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> orderService.changeOrderStatus(order.getId(), orderParam));
+    }
+
     @DisplayName("주문 상태변경 - 주문의 상태가 '계산완료' 인 경우 상태를 변경할 수 없다")
     @Test
     void changeOrderStatus_illegalState() {
