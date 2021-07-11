@@ -1,14 +1,16 @@
 package kitchenpos.application;
 
-import kitchenpos.application.order.OrderService;
-import kitchenpos.domain.menu.Menu;
-import kitchenpos.domain.menu.MenuGroup;
-import kitchenpos.domain.menu.MenuGroupRepository;
-import kitchenpos.domain.menu.MenuRepository;
-import kitchenpos.domain.order.*;
-import kitchenpos.ui.dto.order.OrderLineItemRequest;
-import kitchenpos.ui.dto.order.OrderRequest;
-import kitchenpos.ui.dto.order.OrderResponse;
+import kitchenpos.order.application.OrderService;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroupRepository;
+import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.presentation.dto.OrderLineItemRequest;
+import kitchenpos.order.presentation.dto.OrderRequest;
+import kitchenpos.order.presentation.dto.OrderResponse;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

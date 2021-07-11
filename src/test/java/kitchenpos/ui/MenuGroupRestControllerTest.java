@@ -1,7 +1,7 @@
 package kitchenpos.ui;
 
-import kitchenpos.ui.dto.menu.MenuGroupRequest;
-import kitchenpos.ui.dto.menu.MenuGroupResponse;
+import kitchenpos.menu.presentation.dto.MenuGroupRequest;
+import kitchenpos.menu.presentation.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.ResultActions;

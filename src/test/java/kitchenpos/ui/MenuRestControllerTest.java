@@ -1,8 +1,8 @@
 package kitchenpos.ui;
 
-import kitchenpos.ui.dto.menu.MenuProductRequest;
-import kitchenpos.ui.dto.menu.MenuRequest;
-import kitchenpos.ui.dto.menu.MenuResponse;
+import kitchenpos.menu.presentation.dto.MenuProductRequest;
+import kitchenpos.menu.presentation.dto.MenuRequest;
+import kitchenpos.menu.presentation.dto.MenuResponse;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

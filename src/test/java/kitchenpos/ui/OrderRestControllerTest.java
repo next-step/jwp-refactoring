@@ -1,10 +1,10 @@
 package kitchenpos.ui;
 
-import kitchenpos.domain.order.OrderStatus;
-import kitchenpos.ui.dto.order.OrderLineItemRequest;
-import kitchenpos.ui.dto.order.OrderRequest;
-import kitchenpos.ui.dto.order.OrderResponse;
-import kitchenpos.ui.dto.order.OrderTableRequest;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.presentation.dto.OrderLineItemRequest;
+import kitchenpos.order.presentation.dto.OrderRequest;
+import kitchenpos.order.presentation.dto.OrderResponse;
+import kitchenpos.table.presentation.dto.OrderTableRequest;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

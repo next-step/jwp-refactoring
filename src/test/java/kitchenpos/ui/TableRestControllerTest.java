@@ -1,7 +1,7 @@
 package kitchenpos.ui;
 
-import kitchenpos.ui.dto.order.OrderTableRequest;
-import kitchenpos.ui.dto.order.OrderTableResponse;
+import kitchenpos.table.presentation.dto.OrderTableRequest;
+import kitchenpos.table.presentation.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.ResultActions;

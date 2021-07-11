@@ -1,13 +1,13 @@
 package kitchenpos.application;
 
-import kitchenpos.application.menu.MenuService;
-import kitchenpos.domain.menu.MenuGroup;
-import kitchenpos.domain.menu.MenuGroupRepository;
-import kitchenpos.domain.product.Product;
-import kitchenpos.domain.product.ProductRepository;
-import kitchenpos.ui.dto.menu.MenuProductRequest;
-import kitchenpos.ui.dto.menu.MenuRequest;
-import kitchenpos.ui.dto.menu.MenuResponse;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroupRepository;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.menu.presentation.dto.MenuProductRequest;
+import kitchenpos.menu.presentation.dto.MenuRequest;
+import kitchenpos.menu.presentation.dto.MenuResponse;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
