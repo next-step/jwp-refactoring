@@ -116,32 +116,6 @@ public class MenuServiceTest {
         assertThatThrownBy(() -> menuService.create(반반세트요청)).isInstanceOf(NoMenuGroupException.class);
     }
 
-    @DisplayName("등록시 메뉴의 상품이 등록이 하나도 안되어 있어서 메뉴상품을 구성할 수 없음")
-    @Test
-    void 상품_등록이_하나도_안되어_있어_메뉴상품_구성안됨() {
-        //given
-        given(menuGroupRepository.existsById(anyLong())).willReturn(true);
-        given(productRepository.findById(anyLong())).willReturn(Optional.empty());
-
-        //when, then
-        assertThatThrownBy(() -> menuService.create(반반세트요청)).isInstanceOf(NoMenuProductException.class);
-    }
-
-    @Test
-    @DisplayName("세트메뉴 가격이 단일 메뉴 합한 가격보다 큰 경우")
-    void 세트_메뉴_가격이_단일_메뉴_합한_가격보다_큰_경우() {
-        //given
-        given(menuGroupRepository.existsById(anyLong())).willReturn(true);
-        given(productRepository.findById(후라이드치킨.getId())).willReturn(Optional.of(후라이드치킨));
-        given(productRepository.findById(양념치킨.getId())).willReturn(Optional.of(양념치킨));
-        반반세트요청 = new MenuRequest("반반세트", BigDecimal.valueOf(40000L), 한마리메뉴.getId(),
-                Arrays.asList(반반세트후라이드요청, 반반세트양념요청));
-        given(menuRepository.save(any())).willReturn(new Menu(1L, 반반세트요청.getName(), 반반세트요청.getPrice(), 반반세트요청.getMenuGroupId()));
-
-        //when, then
-        assertThatThrownBy(() -> menuService.create(반반세트요청)).isInstanceOf(IllegalMenuPriceException.class);
-    }
-
     @Test
     @DisplayName("메뉴 목록을 불러옴")
     void 메뉴_목록을_불러옴() {
