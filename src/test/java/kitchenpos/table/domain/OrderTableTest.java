@@ -19,7 +19,7 @@ public class OrderTableTest {
     @Test
     void changeEmpty_Fail01() {
         // Given
-        OrderTable 주문테이블 = new OrderTable(1L, new TableGroup(1L), 2, false);
+        OrderTable 주문테이블 = new OrderTable(1L, 1L, 2, false);
 
         // When & Then
         assertThatThrownBy(() -> 주문테이블.changeEmpty(true))
