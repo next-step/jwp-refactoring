@@ -13,7 +13,6 @@ import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,20 +37,16 @@ public class OrderService {
         OrderLineItems orderLineItems = new OrderLineItems(orderRequest.getOrderLineItems());
         orderLineItems.checkInitOrderLineItems(countMenuSize(orderLineItems));
 
-        checkOrderTableEmpty(orderRequest.getOrderTableId());
+        OrderTable orderTable = findOrderTable(orderRequest);
+        orderTable.checkEmptyTable();
 
-        Order order = new Order(orderRequest.getOrderTableId(),
-                OrderStatus.COOKING.name(), LocalDateTime.now(), orderRequest.getOrderLineItems());
+        Order order = new Order(orderTable, OrderStatus.COOKING, orderRequest.getOrderLineItems());
         return OrderResponse.from(orderRepository.save(order));
     }
 
-    public void checkOrderTableEmpty (Long orderTableId) {
-        OrderTable orderTable = orderTableRepository.findById(orderTableId)
+    private OrderTable findOrderTable(OrderRequest orderRequest) {
+        return orderTableRepository.findById(orderRequest.getOrderTableId())
                 .orElseThrow(IllegalArgumentException::new);
-
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
     }
 
     private int countMenuSize(OrderLineItems orderLineItems) {
@@ -70,7 +65,7 @@ public class OrderService {
         final Order findedOrder = findOrder(orderId);
 
         final OrderStatus orderStatus = OrderStatus.valueOf(orderStatusRequest.getOrderStatus());
-        findedOrder.changeOrderStatus(orderStatus.name());
+        findedOrder.changeOrderStatus(orderStatus);
 
         return OrderResponse.from(findedOrder);
     }

@@ -8,6 +8,7 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
+import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,21 +48,26 @@ class OrderRestControllerTest {
     @MockBean
     private OrderService orderService;
 
+    private OrderTable 주문테이블1;
+    private OrderTable 주문테이블2;
+
     @BeforeEach
     public void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(context)
                 .addFilters(new CharacterEncodingFilter("UTF-8", true)) //한글 깨짐 처리
                 .build();
+
+        주문테이블1 = new OrderTable(4, false);
+        주문테이블2 = new OrderTable(2, false);
     }
 
     @DisplayName("주문을 등록한다.")
     @Test
     void create() throws Exception {
-        Long 주문테이블Id = 1L;
         OrderLineItem orderLineItem = new OrderLineItem(1L, 1L, 1L, 1L);
         List<OrderLineItem> 주문내역들 = Arrays.asList(orderLineItem);
-        OrderRequest orderRequest = new OrderRequest(주문테이블Id, 주문내역들);
-        Order order = new Order(1L, 주문테이블Id, OrderStatus.COOKING.name(), LocalDateTime.now(), 주문내역들);
+        OrderRequest orderRequest = new OrderRequest(주문테이블1.getId(), 주문내역들);
+        Order order = new Order(1L, 주문테이블1, OrderStatus.COOKING, 주문내역들);
         String orderJsonString = objectMapper.writeValueAsString(orderRequest);
         given(orderService.create(any())).willReturn(OrderResponse.from(order));
 
@@ -75,9 +81,9 @@ class OrderRestControllerTest {
     @Test
     void list() throws Exception {
         OrderLineItem orderLineItem1 = new OrderLineItem(1L, 1L, 1L, 1L);
-        Order order1 = new Order(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), Arrays.asList(orderLineItem1));
+        Order order1 = new Order(1L, 주문테이블1, OrderStatus.COOKING, Arrays.asList(orderLineItem1));
         OrderLineItem orderLineItem2 = new OrderLineItem(2L, 2L, 3L, 1L);
-        Order order2 = new Order(2L, 2L, OrderStatus.MEAL.name(), LocalDateTime.now(), Arrays.asList(orderLineItem2));
+        Order order2 = new Order(2L, 주문테이블2, OrderStatus.MEAL, Arrays.asList(orderLineItem2));
 
         given(orderService.list()).willReturn(Arrays.asList(OrderResponse.from(order1), OrderResponse.from(order2)));
 
@@ -89,9 +95,8 @@ class OrderRestControllerTest {
     @Test
     void changeOrderStatus() throws Exception {
         Long orderId = 1L;
-        OrderLineItem orderLineItem1 = new OrderLineItem(1L, 1L, 1L, 1L);
-        Order changedOrder = new Order(orderId, 1L, OrderStatus.MEAL.name(),
-                LocalDateTime.now(), Arrays.asList(orderLineItem1));
+        OrderLineItem orderLineItem1 = new OrderLineItem(1L, orderId, 1L, 1L);
+        Order changedOrder = new Order(orderId, 주문테이블1, OrderStatus.MEAL, Arrays.asList(orderLineItem1));
         OrderStatusRequest orderStatusRequest = new OrderStatusRequest(OrderStatus.COMPLETION.name());
         String orderJsonString = objectMapper.writeValueAsString(orderStatusRequest);
 

@@ -3,6 +3,7 @@ package kitchenpos.tablegroup.application;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.exception.IllegalOrderTableException;
 import kitchenpos.table.exception.IllegalOrderTablesSizeException;
 import kitchenpos.table.exception.NotInitOrderTablesException;
@@ -47,23 +48,24 @@ class TableGroupServiceTest {
 
     private OrderTable orderTable1;
     private OrderTable orderTable2;
-    private List<OrderTable> orderTables;
+    private OrderTables orderTables;
 
     @BeforeEach
     void setUp() {
         orderTable1 = new OrderTable(1L, null, 2, true);
         orderTable2 = new OrderTable(2L, null, 3, true);
-        orderTables = new ArrayList<>();
-        orderTables.add(orderTable1);
-        orderTables.add(orderTable2);
+        List<OrderTable> ordertableSamples = new ArrayList<>();
+        ordertableSamples.add(orderTable1);
+        ordertableSamples.add(orderTable2);
+        orderTables = new OrderTables(ordertableSamples);
     }
 
     @DisplayName("테이블 그룹을 등록한다.")
     @Test
     void create() {
-        TableGroup tableGroup = new TableGroup(LocalDateTime.now(), orderTables);
-        TableGroupRequest request = new TableGroupRequest(orderTables);
-        given(orderTableRepository.findAllById(anyList())).willReturn(orderTables);
+        TableGroup tableGroup = new TableGroup(orderTables);
+        TableGroupRequest request = new TableGroupRequest(orderTables.getOrderTables());
+        given(orderTableRepository.findAllById(anyList())).willReturn(orderTables.getOrderTables());
         given(tableGroupRepository.save(any())).willReturn(tableGroup);
 
         TableGroupResponse created = tableGroupService.create(request);
@@ -91,7 +93,7 @@ class TableGroupServiceTest {
     @DisplayName("테이블 그룹 등록을 실패한다 - 주문 테이블이 사전에 등록(주문값이 있는 상태) 되어 있지 않을 경우 실패")
     @Test
     void fail_create2() {
-        TableGroupRequest request = new TableGroupRequest(orderTables);
+        TableGroupRequest request = new TableGroupRequest(orderTables.getOrderTables());
         given(orderTableRepository.findAllById(anyList())).willReturn(Collections.emptyList());
 
         assertThatThrownBy(() -> tableGroupService.create(request))
@@ -118,7 +120,8 @@ class TableGroupServiceTest {
     @DisplayName("테이블 그룹 등록을 실패한다 -  주문 테이블 groupId 값이 있을 경우 실패")
     @Test
     void fail_create4() {
-        OrderTable orderTable1 = new OrderTable(1L, 2L, 2, true);
+        TableGroup tableGroup = new TableGroup(1L, new OrderTables(new ArrayList<>()));
+        OrderTable orderTable1 = new OrderTable(1L, tableGroup, 2, true);
         OrderTable orderTable2 = new OrderTable(2L, null, 3, true);
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
         TableGroupRequest request = new TableGroupRequest(orderTables);
@@ -133,15 +136,16 @@ class TableGroupServiceTest {
     @DisplayName("테이블 그룹을 등록해제(ungroup) 한다.")
     @Test
     void ungroup() {
-        OrderTable groupedTable1 = new OrderTable(1L, 1L, 2, true);
-        OrderTable groupedTable2 = new OrderTable(1L, 1L, 2, true);
+        TableGroup tableGroup = new TableGroup(1L, new OrderTables(new ArrayList<>()));
+        OrderTable groupedTable1 = new OrderTable(1L, tableGroup, 2, true);
+        OrderTable groupedTable2 = new OrderTable(1L, tableGroup, 2, true);
         List<OrderTable> groupedTables = Arrays.asList(groupedTable1, groupedTable2);
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), groupedTables);
+        OrderTables groups = new OrderTables(groupedTables);
         given(orderTableRepository.findAllByTableGroupId(tableGroup.getId())).willReturn(groupedTables);
 
         tableGroupService.ungroup(tableGroup.getId());
 
-        assertThat(tableGroup.getOrderTables().get(0).getTableGroupId()).isNull();
+        assertThat(tableGroup.getOrderTables().get(0).getTableGroup().getId()).isNull();
 
         verify(orderTableRepository, times(1)).findAllByTableGroupId(tableGroup.getId());
     }
@@ -149,10 +153,11 @@ class TableGroupServiceTest {
     @DisplayName("테이블 그룹 등록해제를 실패 한다. - 그룹된 주문 테이블이 조리중이거나, 식사중일때에는 그룹 해제 불가")
     @Test
     void fail_ungroup() {
-        OrderTable groupedTable1 = new OrderTable(1L, 1L, 2, true);
-        OrderTable groupedTable2 = new OrderTable(1L, 1L, 2, true);
+        TableGroup tableGroup = new TableGroup(1L, new OrderTables(new ArrayList<>()));
+        OrderTable groupedTable1 = new OrderTable(1L, tableGroup, 2, true);
+        OrderTable groupedTable2 = new OrderTable(1L, tableGroup, 2, true);
         List<OrderTable> groupedTables = Arrays.asList(groupedTable1, groupedTable2);
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), groupedTables);
+        OrderTables groups = new OrderTables(groupedTables);
         given(orderTableRepository.findAllByTableGroupId(tableGroup.getId())).willReturn(groupedTables);
         given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
 

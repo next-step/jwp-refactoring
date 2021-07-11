@@ -14,7 +14,6 @@ import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -35,27 +34,27 @@ public class TableGroupService {
 
     public TableGroupResponse create(final TableGroupRequest request) {
         OrderTables orderTables = new OrderTables(request.getOrderTables());
-        checkInitOrderTables(request.getOrderTables().size(), orderTables.toOrderTableIds());
+        checkInitOrderTables(orderTables);
         final TableGroup savedTableGroup = tableGroupRepository.save(
-                new TableGroup(LocalDateTime.now(), request.getOrderTables()));
+                new TableGroup(orderTables));
 
         return TableGroupResponse.from(savedTableGroup);
     }
 
-    private void checkInitOrderTables(int size, List<Long> orderTableIds) {
-        List<OrderTable> savedOrderTables = orderTableRepository.findAllById(orderTableIds);
+    private void checkInitOrderTables(OrderTables orderTables) {
+        List<OrderTable> savedOrderTables = orderTableRepository.findAllById(orderTables.toOrderTableIds());
 
-        if (size != savedOrderTables.size()) {
+        if (orderTables.size() != savedOrderTables.size()) {
             throw new NotInitOrderTablesException();
         }
 
         for (final OrderTable savedOrderTable : savedOrderTables) {
-            checkOrderTableEmptyOrGroupIdNull(savedOrderTable);
+            checkOrderTableEmptyOrGroupNull(savedOrderTable);
         }
     }
 
-    private void checkOrderTableEmptyOrGroupIdNull(OrderTable savedOrderTable) {
-        if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
+    private void checkOrderTableEmptyOrGroupNull(OrderTable savedOrderTable) {
+        if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup())) {
             throw new IllegalOrderTableException();
         }
     }

@@ -2,6 +2,7 @@ package kitchenpos.tablegroup.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTables;
 import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
@@ -48,7 +49,8 @@ class TableGroupRestControllerTest {
         List<OrderTable> orderTables = new ArrayList<>();
         orderTables.add(new OrderTable(1L, null, 2, true));
         orderTables.add(new OrderTable(2L, null, 3, true));
-        TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(), orderTables);
+        OrderTables tables = new OrderTables(orderTables);
+        TableGroup tableGroup = new TableGroup(1L, tables);
         TableGroupRequest request = new TableGroupRequest(orderTables);
         String params = mapper.writeValueAsString(request);
         given(tableGroupService.create(any())).willReturn(TableGroupResponse.from(tableGroup));

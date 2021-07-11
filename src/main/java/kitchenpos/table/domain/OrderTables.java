@@ -40,8 +40,12 @@ public class OrderTables {
 
     public void ungroup() {
         for (final OrderTable orderTable : orderTables) {
-            orderTable.changeTableGroupId(null);
+            orderTable.upgroup();
         }
+    }
+
+    public int size() {
+        return orderTables.size();
     }
 
     @Override

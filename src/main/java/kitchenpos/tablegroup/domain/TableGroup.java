@@ -2,6 +2,7 @@ package kitchenpos.tablegroup.domain;
 
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -12,6 +13,9 @@ public class TableGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @CreatedDate
+    @Column(updatable = false)
     private LocalDateTime createdDate;
 
     @Embedded
@@ -20,14 +24,13 @@ public class TableGroup {
     protected TableGroup() {
     }
 
-    public TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
+    public TableGroup(Long id, OrderTables orderTables) {
         this.id = id;
-        this.createdDate = createdDate;
-        this.orderTables = new OrderTables(orderTables);
+        this.orderTables = orderTables;
     }
 
-    public TableGroup(LocalDateTime createdDate, List<OrderTable> orderTables) {
-        this(null, createdDate, orderTables);
+    public TableGroup(OrderTables orderTables) {
+        this(null, orderTables);
     }
 
     public Long getId() {

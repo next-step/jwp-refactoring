@@ -12,6 +12,8 @@ import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.order.exception.AlreadyCompletionException;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.OrderTables;
+import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,14 +51,15 @@ class OrderServiceTest {
     @InjectMocks
     private OrderService orderService;
 
-    private Long 주문테이블Id = 1L;
-    private Long new주문테이블Id = 2L;
+    private OrderTable 주문테이블;
+    private OrderTable new주문테이블;
+    private OrderTables 주문테이블묶음;
+    private TableGroup 테이블그룹;
     private OrderLineItem 주문수량메뉴1;
     private OrderLineItem 주문수량메뉴2;
     private List<OrderLineItem> 주문내역들;
     private Order 주문;
     private OrderRequest 주문요청;
-    private Order chageStatusOrder;
     private Order 다른주문;
     private Menu 치킨메뉴;
     private Menu 튀김메뉴;
@@ -68,16 +71,20 @@ class OrderServiceTest {
         주문수량메뉴1 = new OrderLineItem(1L, 1L, 치킨메뉴.getId(), 1L);
         주문수량메뉴2 = new OrderLineItem(2L, 1L, 튀김메뉴.getId(), 1L);
         주문내역들 = Arrays.asList(주문수량메뉴1, 주문수량메뉴2);
-        주문 = new Order(1L, 주문테이블Id, OrderStatus.COOKING.name(), LocalDateTime.now(), 주문내역들);
-        주문요청 = new OrderRequest(주문테이블Id, 주문내역들);
-        다른주문 = new Order(2L, new주문테이블Id, OrderStatus.MEAL.name(), LocalDateTime.now(), 주문내역들);
+        주문테이블 = new OrderTable(4, false);
+        new주문테이블 = new OrderTable(4, false);
+        주문테이블묶음 = new OrderTables(Arrays.asList(주문테이블, new주문테이블));
+        테이블그룹 = new TableGroup(1L, 주문테이블묶음);
+        주문 = new Order(1L, 주문테이블, OrderStatus.COOKING, 주문내역들);
+        주문요청 = new OrderRequest(주문테이블.getId(), 주문내역들);
+        다른주문 = new Order(2L, new주문테이블, OrderStatus.MEAL, 주문내역들);
     }
 
     @DisplayName("주문을 등록한다.")
     @Test
     void create() {
         given(menuRepository.findAllById(anyList())).willReturn(Arrays.asList(치킨메뉴, 튀김메뉴));
-        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(new OrderTable(1L, null, 0, false)));
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(주문테이블));
         given(orderRepository.save(any())).willReturn(주문);
 
         OrderResponse savedOrder = orderService.create(주문요청);
@@ -129,7 +136,7 @@ class OrderServiceTest {
     void fail_create4() {
         OrderRequest order = new OrderRequest(1L, 주문내역들);
         given(menuRepository.findAllById(any())).willReturn(Arrays.asList(치킨메뉴, 튀김메뉴));
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(new OrderTable(1L, 1L, 2, true)));
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(new OrderTable(1L, 테이블그룹, 2, true)));
 
         assertThatThrownBy(() -> orderService.create(order))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -185,7 +192,7 @@ class OrderServiceTest {
     void fail_changeOrderStatus2() {
         String changedStatus = OrderStatus.COMPLETION.name();
         OrderStatusRequest orderStatusRequest = new OrderStatusRequest(changedStatus);
-        Order order = new Order(1L, 1L, OrderStatus.COMPLETION.name(), LocalDateTime.now(), 주문내역들);
+        Order order = new Order(1L, 주문테이블, OrderStatus.COMPLETION, 주문내역들);
         given(orderRepository.findById(anyLong())).willReturn(Optional.ofNullable(order));
 
         assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), orderStatusRequest))
