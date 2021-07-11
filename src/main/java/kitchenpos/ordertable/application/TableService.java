@@ -2,9 +2,11 @@ package kitchenpos.ordertable.application;
 
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.exception.EmptyOrderTableException;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.dto.*;
+import kitchenpos.ordertable.exception.OrderStatusNotCompleteException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,13 +44,13 @@ public class TableService {
 
     public OrderTableEmptyChangeResponse changeEmpty(final Long orderTableId, OrderTableEmptyChangeRequest orderTableRequest) {
         final OrderTable orderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(NoSuchElementException::new);
 
         orderTable.validateTableGroupNonNull();
 
         if (orderRepository.existsByOrderTableAndOrderStatusIn(
                 orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
+            throw new OrderStatusNotCompleteException();
         }
 
         orderTable.changeEmpty(orderTableRequest.isEmpty());
@@ -67,7 +69,7 @@ public class TableService {
                 .orElseThrow(NoSuchElementException::new);
 
         if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new EmptyOrderTableException();
         }
 
         savedOrderTable.changeNumberOfGuests(numberOfGuests);
