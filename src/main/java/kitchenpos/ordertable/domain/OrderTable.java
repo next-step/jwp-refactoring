@@ -1,5 +1,6 @@
 package kitchenpos.ordertable.domain;
 
+import kitchenpos.ordertable.exception.AlreadyHaveTableGroupException;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 import javax.persistence.*;
@@ -45,7 +46,7 @@ public class OrderTable {
 
     public void validateTableGroupNonNull() {
         if (Objects.nonNull(this.getTableGroup())) {
-            throw new IllegalArgumentException();
+            throw new AlreadyHaveTableGroupException();
         }
     }
 
