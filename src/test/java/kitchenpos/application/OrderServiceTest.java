@@ -4,7 +4,6 @@ import kitchenpos.order.dto.*;
 import kitchenpos.order.exception.EmptyOrderTableException;
 import kitchenpos.order.exception.OrderStatusCompleteException;
 import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderRepository;
@@ -32,8 +31,6 @@ import static org.mockito.BDDMockito.given;
 public class OrderServiceTest {
 
     @Mock
-    MenuRepository menuRepository;
-    @Mock
     OrderRepository orderRepository;
     @Mock
     OrderTableRepository orderTableRepository;
@@ -56,7 +53,7 @@ public class OrderServiceTest {
         );
         orderStatusChangeRequest = new OrderStatusChangeRequest(OrderStatus.MEAL.name());
 
-        orderService = new OrderService(menuRepository, orderRepository, orderTableRepository, publisher);
+        orderService = new OrderService(orderRepository, orderTableRepository, publisher);
     }
 
     @DisplayName("주문이 발생함")
