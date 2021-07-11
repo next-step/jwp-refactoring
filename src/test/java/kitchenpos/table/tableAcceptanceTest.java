@@ -81,8 +81,8 @@ public class tableAcceptanceTest extends AcceptanceTest {
 
         //then
         정상_처리(response);
-//        OrderTableResponse changeResponse = response.as(OrderTableResponse.class);
-//        assertThat(changeResponse.isEmpty()).isEqualTo(changeEmptyRequest.isEmpty());
+        OrderTableResponse changeResponse = response.as(OrderTableResponse.class);
+        assertThat(changeResponse.getNumberOfGuests()).isEqualTo(changeNumberOfGuestsRequest.getNumberOfGuests());
     }
 
 
