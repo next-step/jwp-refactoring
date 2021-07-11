@@ -72,4 +72,12 @@ public class OrderTable {
     public void changeEmpty(final boolean empty) {
         this.empty = empty;
     }
+
+    public void changeNumberOfGuests(int numberOfGuests) {
+        this.numberOfGuests = numberOfGuests;
+    }
+
+    public void unlinkTableGroup() {
+        this.tableGroup = null;
+    }
 }
