@@ -1,6 +1,8 @@
 package kitchenpos.application;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,11 +13,10 @@ import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.MenuProducts;
-import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.MenuResponse;
 
 @Service
 public class MenuService {
@@ -32,14 +33,14 @@ public class MenuService {
     }
 
     @Transactional
-    public Menu create(final MenuRequest menuRequest) {
+    public MenuResponse create(final MenuRequest menuRequest) {
         final String name = menuRequest.getName();
-        final Price price = new Price(menuRequest.getPrice());
         final MenuGroup menuGroup = findMenuGroup(menuRequest);
-        final MenuProducts menuProducts = makeMenuProducts(menuRequest);
-        final Menu menu = new Menu(name, price, menuGroup, menuProducts);
+        final List<MenuProduct> menuProducts = makeMenuProducts(menuRequest);
+        final Menu menu = new Menu(name, menuRequest.getPrice(), menuGroup, menuProducts);
+        final Menu saved = menuDao.save(menu);
 
-        return menuDao.save(menu);
+        return MenuResponse.of(saved);
     }
 
     private MenuGroup findMenuGroup(MenuRequest menuRequest) {
@@ -47,8 +48,8 @@ public class MenuService {
             .orElseThrow(IllegalArgumentException::new);
     }
 
-    private MenuProducts makeMenuProducts(MenuRequest menuRequest) {
-        final MenuProducts menuProducts = new MenuProducts();
+    private List<MenuProduct> makeMenuProducts(MenuRequest menuRequest) {
+        final List<MenuProduct> menuProducts = new ArrayList<>();
         final List<MenuProductRequest> menuProductRequests = menuRequest.getMenuProducts();
         menuProductRequests.forEach(menuProductRequest -> menuProducts.add(
             new MenuProduct(findProduct(menuProductRequest), menuProductRequest.getQuantity())));
@@ -61,7 +62,11 @@ public class MenuService {
             .orElseThrow(IllegalArgumentException::new);
     }
 
-    public List<Menu> list() {
-        return menuDao.findAll();
+    @Transactional(readOnly = true)
+    public List<MenuResponse> list() {
+        return menuDao.findAll()
+            .stream()
+            .map(MenuResponse::of)
+            .collect(Collectors.toList());
     }
 }

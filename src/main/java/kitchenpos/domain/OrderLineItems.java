@@ -14,7 +14,7 @@ import org.springframework.util.CollectionUtils;
 public class OrderLineItems {
 
     @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<OrderLineItem> orderLineItems = new ArrayList<>();
+    private final List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     public OrderLineItems() {
     }

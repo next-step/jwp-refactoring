@@ -1,6 +1,7 @@
 package kitchenpos.application;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,7 @@ import kitchenpos.domain.OrderLineItems;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderResponse;
 
 @Service
 public class OrderService {
@@ -31,7 +33,7 @@ public class OrderService {
     }
 
     @Transactional
-    public Order create(final OrderRequest orderRequest) {
+    public OrderResponse create(final OrderRequest orderRequest) {
         final List<Long> menuIds = orderRequest.menuIds();
         final Menus menus = new Menus(menuDao.findAllByIdIn(menuIds));
 
@@ -42,8 +44,9 @@ public class OrderService {
         final OrderTable orderTable = findOrderTable(orderRequest.getOrderTableId());
         final OrderLineItems orderLineItems = makeOrderLineItems(orderRequest, menus);
         final Order order = new Order(orderTable, orderLineItems);
+        final Order saved = orderDao.save(order);
 
-        return orderDao.save(order);
+        return OrderResponse.of(saved);
     }
 
     private OrderLineItems makeOrderLineItems(OrderRequest orderRequest, Menus menus) {
@@ -59,17 +62,22 @@ public class OrderService {
             .orElseThrow(IllegalArgumentException::new);
     }
 
-    public List<Order> list() {
-        return orderDao.findAll();
+    @Transactional(readOnly = true)
+    public List<OrderResponse> list() {
+        return orderDao.findAll()
+            .stream()
+            .map(OrderResponse::of)
+            .collect(Collectors.toList());
     }
 
     @Transactional
-    public Order changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
+    public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
         final Order order = findOrder(orderId);
         final OrderStatus orderStatus = OrderStatus.valueOf(orderRequest.getOrderStatus());
         order.changeStatus(orderStatus);
+        final Order saved = orderDao.save(order);
 
-        return orderDao.save(order);
+        return OrderResponse.of(saved);
     }
 
     private Order findOrder(Long orderId) {

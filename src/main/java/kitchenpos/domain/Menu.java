@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -34,16 +35,16 @@ public class Menu {
     public Menu() {
     }
 
-    public Menu(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        if (price.greaterThan(menuProducts.totalPrice())) {
+    public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        this.name = name;
+        this.price = new Price(price);
+        this.menuGroup = menuGroup;
+        this.menuProducts = new MenuProducts(menuProducts);
+        this.menuProducts.updateMenu(this);
+
+        if (this.price.greaterThan(this.menuProducts.totalPrice())) {
             throw new IllegalArgumentException();
         }
-
-        this.name = name;
-        this.price = price;
-        this.menuGroup = menuGroup;
-        this.menuProducts = menuProducts;
-        this.menuProducts.updateMenu(this);
     }
 
     public Long getId() {

@@ -24,7 +24,7 @@ class MenuTest {
         given(mockMenu.getId()).willReturn(1L);
 
         // when
-        final Throwable throwable = catchThrowable(() -> new Menu("name", new Price(price), new MenuGroup(), new MenuProducts(menuProducts)));
+        final Throwable throwable = catchThrowable(() -> new Menu("name", price, new MenuGroup(), menuProducts));
 
         // then
         assertThat(throwable).isInstanceOf(IllegalArgumentException.class);

@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import kitchenpos.application.TableGroupService;
-import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
 
 @RestController
 public class TableGroupRestController {
@@ -22,9 +22,10 @@ public class TableGroupRestController {
     }
 
     @PostMapping("/api/table-groups")
-    public ResponseEntity<TableGroup> create(@RequestBody final TableGroupRequest tableGroupRequest) {
-        final TableGroup created = tableGroupService.create(tableGroupRequest);
+    public ResponseEntity<TableGroupResponse> create(@RequestBody final TableGroupRequest tableGroupRequest) {
+        final TableGroupResponse created = tableGroupService.create(tableGroupRequest);
         final URI uri = URI.create("/api/table-groups/" + created.getId());
+
         return ResponseEntity.created(uri)
             .body(created);
     }
@@ -32,6 +33,7 @@ public class TableGroupRestController {
     @DeleteMapping("/api/table-groups/{tableGroupId}")
     public ResponseEntity<Void> ungroup(@PathVariable final Long tableGroupId) {
         tableGroupService.ungroup(tableGroupId);
+
         return ResponseEntity.noContent()
             .build();
     }

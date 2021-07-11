@@ -1,5 +1,11 @@
 package kitchenpos.application;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Order;
@@ -7,12 +13,6 @@ import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Orders;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.OrderTableResponse;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class TableService {
@@ -25,12 +25,14 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTable create(final OrderTableRequest orderTableRequest) {
+    public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
         final OrderTable orderTable = new OrderTable(orderTableRequest.getNumberOfGuests());
+        final OrderTable saved = orderTableDao.save(orderTable);
 
-        return orderTableDao.save(orderTable);
+        return OrderTableResponse.of(saved);
     }
 
+    @Transactional(readOnly = true)
     public List<OrderTableResponse> list() {
         return orderTableDao.findAll()
             .stream()
@@ -39,12 +41,13 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTable changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
+    public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         validateOrdersStatus(new Orders(findAllOrder(orderTableId)));
         final OrderTable savedOrderTable = findOrderTable(orderTableId);
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
+        final OrderTable saved = orderTableDao.save(savedOrderTable);
 
-        return orderTableDao.save(savedOrderTable);
+        return OrderTableResponse.of(saved);
     }
 
     private void validateOrdersStatus(Orders orders) {
@@ -64,12 +67,13 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
+    public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         validateNumberOfGuests(orderTableRequest);
         final OrderTable savedOrderTable = findOrderTable(orderTableId);
         savedOrderTable.changeNumberOfGuests(orderTableRequest.getNumberOfGuests());
+        final OrderTable saved = orderTableDao.save(savedOrderTable);
 
-        return orderTableDao.save(savedOrderTable);
+        return OrderTableResponse.of(saved);
     }
 
     private void validateNumberOfGuests(OrderTableRequest orderTableRequest) {

@@ -56,10 +56,10 @@ class MenuServiceTest {
         // given
         final List<MenuProductRequest> menuProductRequests = Collections.singletonList(new MenuProductRequest(1L, 1));
         MenuRequest menuRequest = new MenuRequest("name", BigDecimal.ZERO, 1L, menuProductRequests);
-        final MenuProducts menuProducts = new MenuProducts(
-            Collections.singletonList(new MenuProduct(new Product("name", BigDecimal.ONE), 1L)));
         final MenuGroup menuGroup = new MenuGroup();
-        Menu savedMenu = new Menu("name", new Price(menuRequest.getPrice()), menuGroup, menuProducts);
+        final List<MenuProduct> menuProducts = Collections.singletonList(
+            new MenuProduct(new Product("name", BigDecimal.ONE), 1L));
+        Menu savedMenu = new Menu("name", menuRequest.getPrice(), menuGroup, menuProducts);
         given(menuDao.save(any(Menu.class))).willReturn(savedMenu);
         given(menuGroupDao.findById(menuRequest.getMenuGroupId())).willReturn(Optional.of(menuGroup));
         given(productDao.findById(anyLong())).willReturn(Optional.of(new Product("name", new BigDecimal(100))));

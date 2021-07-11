@@ -14,6 +14,7 @@ import kitchenpos.domain.OrderTables;
 import kitchenpos.domain.Orders;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
 
 @Service
 public class TableGroupService {
@@ -30,13 +31,14 @@ public class TableGroupService {
     }
 
     @Transactional
-    public TableGroup create(final TableGroupRequest tableGroupRequest) {
+    public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         validateRequest(tableGroupRequest);
         final List<Long> ids = tableGroupRequest.ids();
         final OrderTables orderTables = new OrderTables(findOrderTables(ids));
         validateOrderTableSize(ids, orderTables);
+        final TableGroup saved = saveTableGroup(orderTables);
 
-        return saveTableGroup(orderTables);
+        return TableGroupResponse.of(saved);
     }
 
     private void validateRequest(TableGroupRequest tableGroupRequest) {
