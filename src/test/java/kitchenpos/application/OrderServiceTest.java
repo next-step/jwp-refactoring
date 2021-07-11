@@ -26,6 +26,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.domain.NumberOfGuests;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderLineItemDetails;
 import kitchenpos.domain.OrderLineItems;
 import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderStatus;
@@ -74,12 +75,16 @@ class OrderServiceTest {
         후라이드_한마리_상세_요청 = new OrderLineItemDetailRequest(MP1후라이드.getSeq(), 후라이드.getId(), "후라이드", BigDecimal.valueOf(16000), 1);
         양념치킨_한마리_상세_요청 = new OrderLineItemDetailRequest(MP2양념치킨.getSeq(), 양념치킨.getId(), "양념치킨", BigDecimal.valueOf(16000), 1);
 
-        후라이드_한마리_요청 = new OrderLineItemRequest(후라이드_메뉴.getId(), 후라이드_메뉴.getName(), 후라이드_메뉴.getPrice().value(), 1, Arrays.asList(후라이드_한마리_상세_요청));
-        양념치킨_한마리_요청 = new OrderLineItemRequest(양념치킨_메뉴.getId(), 양념치킨_메뉴.getName(), 양념치킨_메뉴.getPrice().value(), 1, Arrays.asList(양념치킨_한마리_상세_요청));
+        후라이드_한마리_요청 = new OrderLineItemRequest(후라이드_메뉴.getId(), 후라이드_메뉴.getName(), 후라이드_메뉴.getPrice().value(),
+            1, Arrays.asList(후라이드_한마리_상세_요청));
+        양념치킨_한마리_요청 = new OrderLineItemRequest(양념치킨_메뉴.getId(), 양념치킨_메뉴.getName(), 양념치킨_메뉴.getPrice().value(),
+            1, Arrays.asList(양념치킨_한마리_상세_요청));
         양념_후라이드_각_한마리_요청 = new OrderRequest(테이블100_사용중.getId(), Arrays.asList(후라이드_한마리_요청, 양념치킨_한마리_요청));
 
-        후라이드_한마리 = new OrderLineItem(후라이드_메뉴, 후라이드_메뉴.getName(), 후라이드_메뉴.getPrice(), Quantity.valueOf(1), Arrays.asList(후라이드_주문내역_상세));
-        양념치킨_한마리 = new OrderLineItem(양념치킨_메뉴, 양념치킨_메뉴.getName(), 양념치킨_메뉴.getPrice(), Quantity.valueOf(1), Arrays.asList(양념치킨_주문내역_상세));
+        후라이드_한마리 = new OrderLineItem(후라이드_메뉴, 후라이드_메뉴.getName(), 후라이드_메뉴.getPrice(),
+            Quantity.valueOf(1), OrderLineItemDetails.of(후라이드_주문내역_상세));
+        양념치킨_한마리 = new OrderLineItem(양념치킨_메뉴, 양념치킨_메뉴.getName(), 양념치킨_메뉴.getPrice(),
+            Quantity.valueOf(1), OrderLineItemDetails.of(양념치킨_주문내역_상세));
         양념_후라이드_각_한마리 = OrderTest.order(100L, COOKING, OrderLineItems.of(후라이드_한마리, 양념치킨_한마리));
         테이블100_사용중.addOrder(양념_후라이드_각_한마리);
     }

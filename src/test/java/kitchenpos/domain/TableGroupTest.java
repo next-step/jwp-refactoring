@@ -85,10 +85,10 @@ public class TableGroupTest {
         TableGroup 테이블_그룹 = new TableGroup(1L, OrderTables.of(테이블3, 테이블4));
         테이블3.addOrder(new Order(100L, OrderStatus.COMPLETION,
             OrderLineItems.of(new OrderLineItem(후라이드_메뉴, 후라이드_메뉴.getName(), 후라이드_메뉴.getPrice(), Quantity.valueOf(1),
-                Arrays.asList(후라이드_주문내역_상세)))));
+                OrderLineItemDetails.of(후라이드_주문내역_상세)))));
         테이블4.addOrder(new Order(200L, OrderStatus.COOKING,
             OrderLineItems.of(new OrderLineItem(양념치킨_메뉴, 양념치킨_메뉴.getName(), 양념치킨_메뉴.getPrice(), Quantity.valueOf(1),
-                Arrays.asList(양념치킨_주문내역_상세)))));
+                OrderLineItemDetails.of(양념치킨_주문내역_상세)))));
 
         // then
         assertThatThrownBy(테이블_그룹::ungroup)

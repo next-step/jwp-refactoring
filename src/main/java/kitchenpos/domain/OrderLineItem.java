@@ -1,11 +1,8 @@
 package kitchenpos.domain;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -16,7 +13,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 
 @Entity
 public class OrderLineItem {
@@ -36,20 +32,19 @@ public class OrderLineItem {
     @Column(nullable = false)
     private Quantity quantity;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "order_line_item_seq", foreignKey = @ForeignKey(name = "fk_order_menu_product_order_line_item"))
-    private List<OrderLineItemDetail> orderLineItemDetails = new ArrayList<>();
+    @Embedded
+    private OrderLineItemDetails orderLineItemDetails = new OrderLineItemDetails();
 
     protected OrderLineItem() {
     }
 
     public OrderLineItem(Menu menu, String name, Price price, Quantity quantity,
-            List<OrderLineItemDetail> orderLineItemDetails) {
+            OrderLineItemDetails orderLineItemDetails) {
         this(null, menu, name, price, quantity, orderLineItemDetails);
     }
 
     OrderLineItem(Long seq, Menu menu, String name, Price price, Quantity quantity,
-            List<OrderLineItemDetail> orderLineItemDetails) {
+            OrderLineItemDetails orderLineItemDetails) {
         this.seq = seq;
         this.name = name;
         this.price = price;
@@ -90,8 +85,6 @@ public class OrderLineItem {
     }
 
     private List<MenuDetailOption> toMenuDetailOptions() {
-        return this.orderLineItemDetails.stream()
-            .map(OrderLineItemDetail::toMenuDetailOption)
-            .collect(Collectors.toList());
+        return this.orderLineItemDetails.toMenuDetailOptions();
     }
 }

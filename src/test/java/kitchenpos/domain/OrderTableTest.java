@@ -88,9 +88,9 @@ public class OrderTableTest {
     @DisplayName("테이블이 조리/식사 상태이면 상태 변경 실패")
     void changeEmpty_failed3() {
         OrderLineItem 후라이드_주문내역 = new OrderLineItem(후라이드_메뉴, 후라이드_메뉴.getName(), 후라이드_메뉴.getPrice(), Quantity.valueOf(1),
-            Arrays.asList(후라이드_주문내역_상세));
+            OrderLineItemDetails.of(후라이드_주문내역_상세));
         OrderLineItem 양념치킨_주문내역 = new OrderLineItem(양념치킨_메뉴, 양념치킨_메뉴.getName(), 양념치킨_메뉴.getPrice(), Quantity.valueOf(1),
-            Arrays.asList(양념치킨_주문내역_상세));
+            OrderLineItemDetails.of(양념치킨_주문내역_상세));
         테이블12_사용중_주문전.addOrder(new Order(COOKING, OrderLineItems.of(후라이드_주문내역, 양념치킨_주문내역)));
 
         assertThatThrownBy(() -> 테이블12_사용중_주문전.changeEmpty(true))
@@ -122,9 +122,9 @@ public class OrderTableTest {
     @DisplayName("진행중인 주문이 있다면 그룹핑을 해제할 수 없다")
     void leaveTableGroup() {
         OrderLineItem 후라이드_주문내역 = new OrderLineItem(후라이드_메뉴, 후라이드_메뉴.getName(), 후라이드_메뉴.getPrice(), Quantity.valueOf(1),
-            Arrays.asList(후라이드_주문내역_상세));
+            OrderLineItemDetails.of(후라이드_주문내역_상세));
         OrderLineItem 양념치킨_주문내역 = new OrderLineItem(양념치킨_메뉴, 양념치킨_메뉴.getName(), 양념치킨_메뉴.getPrice(), Quantity.valueOf(1),
-            Arrays.asList(양념치킨_주문내역_상세));
+            OrderLineItemDetails.of(양념치킨_주문내역_상세));
         테이블12_사용중_주문전.addOrder(new Order(COOKING, OrderLineItems.of(후라이드_주문내역, 양념치킨_주문내역)));
 
         assertThatThrownBy(() -> 테이블12_사용중_주문전.leaveTableGroup())

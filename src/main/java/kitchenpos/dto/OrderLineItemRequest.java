@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import kitchenpos.domain.OrderLineItemDetail;
+import kitchenpos.domain.OrderLineItemDetails;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.Quantity;
 
@@ -75,9 +75,9 @@ public class OrderLineItemRequest {
         return Quantity.valueOf(quantity);
     }
 
-    public List<OrderLineItemDetail> details() {
-        return menuDetails.stream()
+    public OrderLineItemDetails details() {
+        return OrderLineItemDetails.of(menuDetails.stream()
             .map(OrderLineItemDetailRequest::toEntity)
-            .collect(Collectors.toList());
+            .collect(Collectors.toList()));
     }
 }
