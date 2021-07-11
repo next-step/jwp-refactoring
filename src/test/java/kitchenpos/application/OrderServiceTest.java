@@ -40,8 +40,8 @@ class OrderServiceTest {
     private OrderService orderService;
 
     private OrderTable 주문테이블;
-    private OrderLineItem 주문_메뉴1;
-    private OrderLineItem 주문_메뉴2;
+    private OrderLineItem 짜장면_메뉴;
+    private OrderLineItem 짬뽕_메뉴;
     private Order 주문;
 
     @BeforeEach
@@ -51,13 +51,13 @@ class OrderServiceTest {
         주문테이블.setEmpty(false);
         주문테이블.setNumberOfGuests(2);
 
-        주문_메뉴1 = new OrderLineItem();
-        주문_메뉴1.setMenuId(1L);
-        주문_메뉴1.setQuantity(1L);
+        짜장면_메뉴 = new OrderLineItem();
+        짜장면_메뉴.setMenuId(1L);
+        짜장면_메뉴.setQuantity(1L);
 
-        주문_메뉴2 = new OrderLineItem();
-        주문_메뉴2.setMenuId(2L);
-        주문_메뉴2.setQuantity(1L);
+        짬뽕_메뉴 = new OrderLineItem();
+        짬뽕_메뉴.setMenuId(2L);
+        짬뽕_메뉴.setQuantity(1L);
 
         주문 = new Order();
         주문.setOrderTableId(1L);
@@ -65,13 +65,13 @@ class OrderServiceTest {
 
     @Test
     void 주문_생성_기능() {
-        주문.setOrderLineItems(Arrays.asList(주문_메뉴1, 주문_메뉴2));
+        주문.setOrderLineItems(Arrays.asList(짜장면_메뉴, 짬뽕_메뉴));
         when(menuDao.countByIdIn(Arrays.asList(1L, 2L))).thenReturn(2L);
         when(orderTableDao.findById(주문.getOrderTableId())).thenReturn(Optional.of(주문테이블));
         주문.setId(1L);
         when(orderDao.save(주문)).thenReturn(주문);
-        when(orderLineItemDao.save(주문_메뉴1)).thenReturn(주문_메뉴1);
-        when(orderLineItemDao.save(주문_메뉴2)).thenReturn(주문_메뉴2);
+        when(orderLineItemDao.save(짜장면_메뉴)).thenReturn(짜장면_메뉴);
+        when(orderLineItemDao.save(짬뽕_메뉴)).thenReturn(짬뽕_메뉴);
 
         Order expected = orderService.create(주문);
         assertThat(expected.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
@@ -92,14 +92,14 @@ class OrderServiceTest {
 
     @Test
     void 주문한_아이템의_갯수와_실제_조회한_아이템의_갯수가_일치하지않을때_에러발생() {
-        주문.setOrderLineItems(Arrays.asList(주문_메뉴1, 주문_메뉴2));
+        주문.setOrderLineItems(Arrays.asList(짜장면_메뉴, 짬뽕_메뉴));
         when(menuDao.countByIdIn(Arrays.asList(1L, 2L))).thenReturn(1L);
         assertThatThrownBy(() -> orderService.create(주문)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void 주문_테이블_정보가_존재하지않을시_에러발생() {
-        주문.setOrderLineItems(Arrays.asList(주문_메뉴1, 주문_메뉴2));
+        주문.setOrderLineItems(Arrays.asList(짜장면_메뉴, 짬뽕_메뉴));
         when(menuDao.countByIdIn(Arrays.asList(1L, 2L))).thenReturn(2L);
         when(orderTableDao.findById(주문.getOrderTableId())).thenReturn(Optional.empty());
         assertThatThrownBy(() -> orderService.create(주문)).isInstanceOf(IllegalArgumentException.class);
@@ -108,7 +108,7 @@ class OrderServiceTest {
     @Test
     void 주문_테이블이_비어있는_상태이면_에러발생() {
         주문테이블.setEmpty(true);
-        주문.setOrderLineItems(Arrays.asList(주문_메뉴1, 주문_메뉴2));
+        주문.setOrderLineItems(Arrays.asList(짜장면_메뉴, 짬뽕_메뉴));
         when(menuDao.countByIdIn(Arrays.asList(1L, 2L))).thenReturn(2L);
         when(orderTableDao.findById(주문.getOrderTableId())).thenReturn(Optional.of(주문테이블));
         assertThatThrownBy(() -> orderService.create(주문)).isInstanceOf(IllegalArgumentException.class);
@@ -120,7 +120,7 @@ class OrderServiceTest {
         주문.setOrderStatus("COOKING");
 
         when(orderDao.findAll()).thenReturn(Arrays.asList(주문));
-        when(orderLineItemDao.findAllByOrderId(주문.getId())).thenReturn(Arrays.asList(주문_메뉴1, 주문_메뉴2));
+        when(orderLineItemDao.findAllByOrderId(주문.getId())).thenReturn(Arrays.asList(짜장면_메뉴, 짬뽕_메뉴));
 
         List<Order> orders = orderService.list();
         assertThat(orders.size()).isEqualTo(1);
@@ -138,7 +138,7 @@ class OrderServiceTest {
 
         when(orderDao.findById(주문.getId())).thenReturn(Optional.of(주문));
         when(orderDao.save(주문)).thenReturn(주문);
-        when(orderLineItemDao.findAllByOrderId(주문.getId())).thenReturn(Arrays.asList(주문_메뉴1, 주문_메뉴2));
+        when(orderLineItemDao.findAllByOrderId(주문.getId())).thenReturn(Arrays.asList(짜장면_메뉴, 짬뽕_메뉴));
 
         Order expected = orderService.changeOrderStatus(주문.getId(), 주문);
 
