@@ -1,7 +1,6 @@
 package kitchenpos.menu.application;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
@@ -32,14 +31,8 @@ public class MenuService {
 
     private List<MenuProduct> makeMenuProducts(MenuRequest menuRequest) {
         List<MenuProductRequest> menuProductRequests = menuRequest.getMenuProducts();
-        menuValidator.validationMenuProductPrices(Price.wonOf(menuRequest.getPrice()), findProductIds(menuProductRequests));
+        menuValidator.validationMenuProductPrices(Price.wonOf(menuRequest.getPrice()), menuProductRequests);
         return menuRequest.toMenuProducts();
-    }
-
-    private List<Long> findProductIds(List<MenuProductRequest> menuProductRequests) {
-        return menuProductRequests.stream()
-            .map(MenuProductRequest::getProductId)
-            .collect(Collectors.toList());
     }
 
     public List<MenuResponse> list() {

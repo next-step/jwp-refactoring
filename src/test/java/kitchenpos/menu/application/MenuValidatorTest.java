@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.common.domain.Price;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.exception.MenuPriceExceedException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
@@ -41,8 +42,13 @@ public class MenuValidatorTest {
         Price 상품_가격을_초과한_가격 = 상품_가격_합.plus(Price.wonOf(1));
         given(productRepository.findAllById(any())).willReturn(상품목록);
 
+        List<MenuProductRequest> menuProductRequests = new ArrayList<>();
+        menuProductRequests.add(new MenuProductRequest(치즈버거.getId(), 1L));
+        menuProductRequests.add(new MenuProductRequest(감자튀김.getId(), 1L));
+        menuProductRequests.add(new MenuProductRequest(콜라.getId(), 1L));
+
         // When & Then
-        assertThatThrownBy(() -> menuValidator.validationMenuProductPrices(상품_가격을_초과한_가격, any()))
+        assertThatThrownBy(() -> menuValidator.validationMenuProductPrices(상품_가격을_초과한_가격, menuProductRequests))
             .isInstanceOf(MenuPriceExceedException.class);
 
     }
