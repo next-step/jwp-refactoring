@@ -116,6 +116,20 @@ class TableServiceTest {
                 .isThrownBy(() -> tableService.changeEmpty(table3.getId(), table3));
     }
 
+    @DisplayName("테이블 빈 상태로 변경 - 주문 테이블이 존재하지 않을 경우 변경불가")
+    @Test
+    void changeEmpty_orderTableIsNotExists() {
+        // given
+        given(orderTableDao.findById(table3.getId())).willThrow(IllegalArgumentException.class);
+
+        // when
+        table3.setEmpty(true);
+
+        // then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> tableService.changeEmpty(table3.getId(), table3));
+    }
+
     @DisplayName("테이블 빈 상태로 변경 - 테이블에 연결된 테이블 그룹이 존재하는 경우 변경 불가")
     @Test
     void changeEmpty_existsTableGroup() {
