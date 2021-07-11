@@ -1,4 +1,4 @@
-package kitchenpos.menu.ui.exception;
+package kitchenpos.menu.exception;
 
 public class NoMenuGroupException extends RuntimeException{
     public NoMenuGroupException() {

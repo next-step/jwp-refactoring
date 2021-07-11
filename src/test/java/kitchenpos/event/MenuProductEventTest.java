@@ -1,12 +1,8 @@
 package kitchenpos.event;
 
-import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.event.MenuCreatedEvent;
-import kitchenpos.menu.ui.exception.IllegalMenuPriceException;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menuproduct.domain.MenuProduct;
+import kitchenpos.menu.exception.IllegalMenuPriceException;
 import kitchenpos.menuproduct.domain.MenuProductRepository;
 import kitchenpos.menuproduct.dto.MenuProductRequest;
 import kitchenpos.menuproduct.event.MenuProductEventHandler;

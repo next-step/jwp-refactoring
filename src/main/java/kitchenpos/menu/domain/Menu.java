@@ -1,7 +1,7 @@
 package kitchenpos.menu.domain;
 
 import kitchenpos.menu.dto.MenuRequest;
-import kitchenpos.menu.ui.exception.IllegalMenuPriceException;
+import kitchenpos.menu.exception.IllegalMenuPriceException;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
