@@ -9,7 +9,6 @@ import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.table.application.OrderTableService;
 import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableEntity;
@@ -20,6 +19,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -176,15 +176,13 @@ public class OrderService {
 
     }
 
-    public void changeStatusValidCheck(Long orderTableId) {
-//        if (orderDao.existsByOrderTableIdAndOrderStatusIn(
-//                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-//            throw new IllegalArgumentException("주문이 조리나 식사 상태에서는 변경할 수 없습니다.");
-//        }
+    public boolean changeStatusValidCheck(Long orderTableId) {
+        return orderRepository.existsByOrderTableIdAndOrderStatusIn(
+                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()));
     }
 
     public boolean existsByOrderTableIdInAndOrderStatusIn(List<OrderTableEntity> orderTables, List<String> asList) {
-        return false;
+        return orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTables, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()));
     }
 
 }

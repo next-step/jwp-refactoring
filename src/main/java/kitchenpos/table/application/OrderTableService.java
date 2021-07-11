@@ -123,8 +123,9 @@ public class OrderTableService {
     }
 
     private void orderStatusValidCheck(Long orderTableId) {
-        orderService.changeStatusValidCheck(orderTableId);
-
+        if (orderService.changeStatusValidCheck(orderTableId)) {
+            throw new IllegalArgumentException("주문이 조리나 식사 상태에서는 변경할 수 없습니다.");
+        }
     }
 
     private void tableGroupValidCheck(TableGroupEntity tableGroupEntity) {
