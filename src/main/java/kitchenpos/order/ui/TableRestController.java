@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import kitchenpos.order.application.TableService;
@@ -18,6 +19,7 @@ import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
 
 @RestController
+@RequestMapping("/api/tables")
 public class TableRestController {
     private final TableService tableService;
 
@@ -25,7 +27,7 @@ public class TableRestController {
         this.tableService = tableService;
     }
 
-    @PostMapping("/api/tables")
+    @PostMapping
     public ResponseEntity<OrderTableResponse> create(@RequestBody final OrderTableRequest orderTableRequest) {
         final OrderTableResponse created = tableService.create(orderTableRequest);
         final URI uri = URI.create("/api/tables/" + created.getId());
@@ -33,7 +35,7 @@ public class TableRestController {
             .body(created);
     }
 
-    @GetMapping("/api/tables")
+    @GetMapping
     public ResponseEntity<List<OrderTableResponse>> list() {
         final List<OrderTableResponse> orderTables = tableService.list();
 
@@ -41,7 +43,7 @@ public class TableRestController {
             .body(orderTables);
     }
 
-    @PutMapping("/api/tables/{orderTableId}/empty")
+    @PutMapping("/{orderTableId}/empty")
     public ResponseEntity<OrderTableResponse> changeEmpty(@PathVariable final Long orderTableId,
         @RequestBody final OrderTableRequest orderTableRequest) {
         final OrderTableResponse orderTable1 = tableService.changeEmpty(orderTableId, orderTableRequest);
@@ -50,7 +52,7 @@ public class TableRestController {
             .body(orderTable1);
     }
 
-    @PutMapping("/api/tables/{orderTableId}/number-of-guests")
+    @PutMapping("/{orderTableId}/number-of-guests")
     public ResponseEntity<OrderTableResponse> changeNumberOfGuests(@PathVariable final Long orderTableId,
         @RequestBody final OrderTableRequest orderTableRequest) {
         final OrderTableResponse orderTable = tableService.changeNumberOfGuests(orderTableId, orderTableRequest);

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import kitchenpos.order.application.TableGroupService;
@@ -16,6 +17,7 @@ import kitchenpos.order.dto.TableGroupRequest;
 import kitchenpos.order.dto.TableGroupResponse;
 
 @RestController
+@RequestMapping("/api/table-groups")
 public class TableGroupRestController {
     private final TableGroupService tableGroupService;
 
@@ -23,7 +25,7 @@ public class TableGroupRestController {
         this.tableGroupService = tableGroupService;
     }
 
-    @PostMapping("/api/table-groups")
+    @PostMapping
     public ResponseEntity<TableGroupResponse> create(@RequestBody final TableGroupRequest tableGroupRequest) {
         final TableGroupResponse created = tableGroupService.create(tableGroupRequest);
         final URI uri = URI.create("/api/table-groups/" + created.getId());
@@ -32,7 +34,7 @@ public class TableGroupRestController {
             .body(created);
     }
 
-    @DeleteMapping("/api/table-groups/{tableGroupId}")
+    @DeleteMapping("/{tableGroupId}")
     public ResponseEntity<Void> ungroup(@PathVariable final Long tableGroupId) {
         tableGroupService.ungroup(tableGroupId);
 
