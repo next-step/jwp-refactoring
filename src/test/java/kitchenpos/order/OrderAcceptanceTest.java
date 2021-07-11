@@ -25,6 +25,8 @@ import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static kitchenpos.menu.MenuAcceptanceTest.메뉴_등록되어_있음;
 import static kitchenpos.table.tableAcceptanceTest.주문_테이블_등록_되어있음;
@@ -71,11 +73,20 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @DisplayName("dto와 jpa를 사용하여 주문을 조회할 수 있다")
     @Test
     void listTest() {
+        //given
+        ExtractableResponse<Response> savedResponse = 주문_등록_요청(orderRequest);
+
         //when
         ExtractableResponse<Response> response = 주문_조회_요청();
 
         //then
         정상_처리(response);
+        OrderResponse saved = savedResponse.as(OrderResponse.class);
+        List<Long> ids = response.jsonPath().getList(".", OrderResponse.class).stream()
+                .map(OrderResponse::getId)
+                .collect(Collectors.toList());
+        assertThat(ids).contains(saved.getId());
+
     }
 
     private ExtractableResponse<Response> 주문_등록_요청(OrderRequest orderRequest) {

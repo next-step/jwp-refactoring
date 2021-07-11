@@ -139,6 +139,11 @@ public class OrderService {
         return orders;
     }
 
+    @Transactional(readOnly = true)
+    public List<OrderResponse> listTemp() {
+        return OrderResponse.ofList(orderRepository.findAll());
+    }
+
     @Transactional
     public Order changeOrderStatus(final Long orderId, final Order order) {
         final Order savedOrder = orderDao.findById(orderId)
@@ -168,6 +173,5 @@ public class OrderService {
     public boolean existsByOrderTableIdInAndOrderStatusIn(List<OrderTableEntity> orderTables, List<String> asList) {
         return false;
     }
-
 
 }
