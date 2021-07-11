@@ -101,7 +101,7 @@ class OrderServiceTest {
         Order savedOrder = orderService.create(양념_후라이드_각_한마리_요청);
 
         // then
-        assertThat(savedOrder.getOrderTable().getId()).isEqualTo(테이블100_사용중.getId());
+        assertThat(테이블100_사용중.getOrders().contains(savedOrder)).isTrue();
         assertThat(savedOrder.getOrderLineItems().contains(후라이드_한마리)).isTrue();
         assertThat(savedOrder.getOrderLineItems().contains(양념치킨_한마리)).isTrue();
     }

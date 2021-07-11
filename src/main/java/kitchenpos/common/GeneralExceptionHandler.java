@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-import kitchenpos.exception.AlreadyAllocatedException;
 import kitchenpos.exception.CalculationFailedException;
 import kitchenpos.exception.ExceedingTotalPriceException;
 import kitchenpos.exception.IllegalOperationException;
@@ -58,7 +57,6 @@ public class GeneralExceptionHandler {
     }
 
     @ExceptionHandler(value = {
-        AlreadyAllocatedException.class,
         ExceedingTotalPriceException.class,
         IllegalOperationException.class,
         NotEnoughTablesException.class,

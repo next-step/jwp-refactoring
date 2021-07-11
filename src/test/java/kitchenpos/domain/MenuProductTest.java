@@ -1,13 +1,8 @@
 package kitchenpos.domain;
 
-import static kitchenpos.domain.MenuTest.*;
 import static kitchenpos.domain.ProductTest.*;
-import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import kitchenpos.exception.AlreadyAllocatedException;
 
 @DisplayName("메뉴-제품 매핑 단위 테스트")
 public class MenuProductTest {

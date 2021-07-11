@@ -57,7 +57,6 @@ public class OrderProcessSeparationAcceptanceTest {
             .andDo(print())
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.id").exists())
-            .andExpect(jsonPath("$.orderTableId").value(테이블12_사용중_주문전.getId()))
             .andExpect(jsonPath("$.orderStatus").value(COOKING.name()));
     }
 

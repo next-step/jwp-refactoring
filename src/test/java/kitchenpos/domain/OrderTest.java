@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.exception.AlreadyAllocatedException;
 import kitchenpos.exception.IllegalOperationException;
 
 @DisplayName("주문 단위 테스트")
@@ -48,15 +47,6 @@ public class OrderTest {
         주문.proceedTo(COMPLETION);
         assertThatThrownBy(() -> 주문.proceedTo(MEAL))
             .isInstanceOf(IllegalOperationException.class);
-    }
-
-    @Test
-    @DisplayName("주문 테이블 재 할당 불가")
-    void setTable_failed() {
-        OrderTable 테이블 = new OrderTable();
-        주문.setTable(테이블);
-        assertThatThrownBy(() -> 주문.setTable(테이블))
-            .isInstanceOf(AlreadyAllocatedException.class);
     }
 
     @Test

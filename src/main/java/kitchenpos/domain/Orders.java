@@ -7,11 +7,14 @@ import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 @Embeddable
 public class Orders {
-    @OneToMany(mappedBy = "orderTable", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "order_table_id", nullable = false, foreignKey = @ForeignKey(name = "fk_orders_order_table"))
     private List<Order> orders = new ArrayList<>();
 
     protected Orders() {
@@ -27,6 +30,10 @@ public class Orders {
 
     public boolean hasOrderInProgress() {
         return orders.stream().anyMatch(Order::inProgress);
+    }
+
+    public boolean contains(Order order) {
+        return orders.contains(order);
     }
 
     public <T> List<T> mapList(Function<Order, T> function) {

@@ -8,16 +8,11 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import kitchenpos.exception.AlreadyAllocatedException;
 import kitchenpos.exception.IllegalOperationException;
 
 @Entity
@@ -26,10 +21,6 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, foreignKey = @ForeignKey(name = "fk_orders_order_table"))
-    private OrderTable orderTable;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -65,27 +56,12 @@ public class Order {
         }
     }
 
-    public void setTable(OrderTable orderTable) {
-        checkAllocation();
-        this.orderTable = orderTable;
-    }
-
-    private void checkAllocation() {
-        if (Objects.nonNull(this.orderTable)) {
-            throw new AlreadyAllocatedException("이미 테이블에 할당 된 주문입니다.");
-        }
-    }
-
     public boolean inProgress() {
         return orderStatus.inProgress();
     }
 
     public Long getId() {
         return id;
-    }
-
-    public OrderTable getOrderTable() {
-        return orderTable;
     }
 
     public OrderStatus getOrderStatus() {
@@ -98,5 +74,20 @@ public class Order {
 
     public OrderLineItems getOrderLineItems() {
         return orderLineItems;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        Order order = (Order)o;
+        return Objects.equals(id, order.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

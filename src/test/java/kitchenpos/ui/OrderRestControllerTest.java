@@ -58,7 +58,6 @@ class OrderRestControllerTest {
             .andDo(print())
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.id").exists())
-            .andExpect(jsonPath("$.orderTableId").value(테이블12_사용중_주문전.getId()))
             .andExpect(jsonPath("$.orderStatus").value(COOKING.name()));
     }
 
@@ -70,7 +69,6 @@ class OrderRestControllerTest {
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$[0].id").value(테이블9주문.getId()))
-            .andExpect(jsonPath("$[0].orderTableId").value(테이블9_사용중.getId()))
             .andExpect(jsonPath("$[0].orderStatus").value(테이블9주문.getOrderStatus().name()));
     }
 
@@ -87,7 +85,6 @@ class OrderRestControllerTest {
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id").value(테이블10주문.getId()))
-            .andExpect(jsonPath("$.orderTableId").value(테이블10_사용중.getId()))
             .andExpect(jsonPath("$.orderStatus").value(request.getOrderStatus().name()));
     }
 }

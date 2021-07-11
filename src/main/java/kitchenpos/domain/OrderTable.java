@@ -60,7 +60,6 @@ public class OrderTable {
 
     public void addOrder(Order order) {
         checkNotEmpty();
-        order.setTable(this);
         orders.add(order);
     }
 

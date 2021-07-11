@@ -54,7 +54,7 @@ public class OrderTableTest {
         Order 주문 = new Order();
         테이블.addOrder(주문);
 
-        assertThat(주문.getOrderTable()).isEqualTo(테이블);
+        assertThat(테이블.getOrders().contains(주문)).isTrue();
     }
 
     @Test
