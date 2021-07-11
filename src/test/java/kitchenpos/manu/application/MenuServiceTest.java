@@ -153,7 +153,7 @@ public class MenuServiceTest {
         // and
         // 메뉴에 등록되어 있음
         중식_요청 = new MenuRequest("중식", BigDecimal.valueOf(2000), 1L, Arrays.asList(중식_짜장면_포함_메뉴_요청, 중식_탕수육_포함_메뉴_요청));
-        Menu 중식 = new Menu(1L, "중식", new Price(BigDecimal.valueOf(2000)), 1L, new MenuProducts(Arrays.asList(중식_짜장면, 중식_탕수육)));
+        Menu 중식 = new Menu(1L, "중식", new Price(BigDecimal.valueOf(2000)), new MenuGroup(1L, "중식메뉴"), new MenuProducts(Arrays.asList(중식_짜장면, 중식_탕수육)));
 
         // and
         // 메뉴 그릅과 상품이 등록되어 있음
@@ -184,7 +184,7 @@ public class MenuServiceTest {
 
         // and
         // 메뉴에 등록되어 있음
-        Menu 중식 = new Menu(1L, "중식", new Price(BigDecimal.valueOf(2000)), 1L, new MenuProducts(Arrays.asList(중식_짜장면, 중식_탕수육)));
+        Menu 중식 = new Menu(1L, "중식", new Price(BigDecimal.valueOf(2000)), new MenuGroup(1L, "중식메뉴"), new MenuProducts(Arrays.asList(중식_짜장면, 중식_탕수육)));
         when(menuRepository.findAll()).thenReturn(Arrays.asList(중식));
 
         // then

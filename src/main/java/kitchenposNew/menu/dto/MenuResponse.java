@@ -31,7 +31,7 @@ public class MenuResponse {
         List<MenuProductResponse> menuProducts = menu.getMenuProducts().stream()
                 .map(menuProduct -> MenuProductResponse.of(menuProduct))
                 .collect(Collectors.toList());
-        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice().getPrice(), menu.getMenuGroupId(), menuProducts);
+        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice().getPrice(), menu.getMenuGroup().getId(), menuProducts);
     }
 
     public Long getId() {

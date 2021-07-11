@@ -2,11 +2,7 @@ package kitchenposNew.menu.application;
 
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.domain.MenuProduct;
-import kitchenposNew.menu.domain.Product;
-import kitchenposNew.menu.domain.Menu;
-import kitchenposNew.menu.domain.MenuGroupRepository;
-import kitchenposNew.menu.domain.MenuRepository;
-import kitchenposNew.menu.domain.ProductRepository;
+import kitchenposNew.menu.domain.*;
 import kitchenposNew.menu.dto.MenuRequest;
 import kitchenposNew.menu.dto.MenuResponse;
 import org.springframework.stereotype.Service;
@@ -33,11 +29,11 @@ public class MenuService {
     }
 
     public MenuResponse create(final MenuRequest menuRequest) {
-        menuGroupRepository.findById(menuRequest.getMenuGroupId()).orElseThrow(IllegalArgumentException::new);
+        MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId()).orElseThrow(IllegalArgumentException::new);
         List<Product> products = menuRequest.getProductIds().stream()
                 .map(productId -> productRepository.findById(productId).orElseThrow(IllegalArgumentException::new))
                 .collect(Collectors.toList());
-        Menu persistMenu = menuRepository.save(menuRequest.toMenu(products));
+        Menu persistMenu = menuRepository.save(menuRequest.toMenu(products, menuGroup));
         return MenuResponse.of(persistMenu);
     }
 

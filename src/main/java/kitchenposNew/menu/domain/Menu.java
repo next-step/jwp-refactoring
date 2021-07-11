@@ -18,7 +18,9 @@ public class Menu {
     @Embedded
     private Price price;
 
-    private Long menuGroupId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menuGroup_to_menu"))
+    private MenuGroup menuGroup;
 
     @Embedded
     private MenuProducts menuProducts = new MenuProducts();
@@ -26,21 +28,21 @@ public class Menu {
     protected Menu() {
     }
 
-    public Menu(Long id, String name, Price price, Long menuGroupId, MenuProducts menuProducts) {
+    public Menu(Long id, String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
         priceValidate(price, menuProducts);
         this.id = id;
         this.name = name;
         this.price = price;
-        this.menuGroupId = menuGroupId;
+        this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
         menuProducts.registerProduct(this);
     }
 
-    public Menu(String name, Price price, Long menuGroupId, MenuProducts menuProducts) {
+    public Menu(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
         priceValidate(price, menuProducts);
         this.name = name;
         this.price = price;
-        this.menuGroupId = menuGroupId;
+        this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
         menuProducts.registerProduct(this);
     }
@@ -68,8 +70,8 @@ public class Menu {
         return this.menuProducts.getMenuProducts();
     }
 
-    public Long getMenuGroupId() {
-        return this.menuGroupId;
+    public MenuGroup getMenuGroup() {
+        return this.menuGroup;
     }
 
     @Override
@@ -77,11 +79,11 @@ public class Menu {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Menu menu = (Menu) o;
-        return Objects.equals(id, menu.id) && Objects.equals(name, menu.name) && Objects.equals(price, menu.price) && Objects.equals(menuGroupId, menu.menuGroupId) && Objects.equals(menuProducts, menu.menuProducts);
+        return Objects.equals(id, menu.id) && Objects.equals(name, menu.name) && Objects.equals(price, menu.price) && Objects.equals(menuGroup, menu.menuGroup) && Objects.equals(menuProducts, menu.menuProducts);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, price, menuGroupId, menuProducts);
+        return Objects.hash(id, name, price, menuGroup, menuProducts);
     }
 }
