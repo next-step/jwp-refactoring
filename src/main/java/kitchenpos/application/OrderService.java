@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
@@ -36,7 +34,7 @@ public class OrderService {
 	public OrderResponse create(final OrderRequest orderRequest) {
 		List<OrderLineItem> orderLineItems = createOrderLineItems(orderRequest);
 		final OrderTable orderTable = findOrderTable(orderRequest);
-		Order order = new Order(orderTable, OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
+		Order order = Order.ofCooking(orderTable, orderLineItems);
 		return OrderResponse.of(orderRepository.save(order));
 	}
 
@@ -56,7 +54,7 @@ public class OrderService {
 		return orderRequest.getOrderLineItems().stream()
 			.map(orderLineItemRequest -> {
 				Menu menu = findMenu(orderLineItemRequest.getMenuId());
-				return new OrderLineItem(null, menu, orderLineItemRequest.getQuantity());
+				return new OrderLineItem(menu, orderLineItemRequest.getQuantity());
 			}).collect(Collectors.toList());
 	}
 

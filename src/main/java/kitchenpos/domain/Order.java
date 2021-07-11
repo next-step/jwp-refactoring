@@ -43,6 +43,10 @@ public class Order {
 	protected Order() {
 	}
 
+	public static Order ofCooking(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+		return new Order(orderTable, OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
+	}
+
 	public Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
 		List<OrderLineItem> orderLineItems) {
 

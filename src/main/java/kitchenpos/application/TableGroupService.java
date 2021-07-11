@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,7 +29,7 @@ public class TableGroupService {
 	public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
 		List<Long> orderTableIds = tableGroupRequest.getOrderTableIds();
 		List<OrderTable> orderTables = orderTableIds.stream().map(this::findOrderTable).collect(Collectors.toList());
-		TableGroup tableGroup = new TableGroup(LocalDateTime.now(), orderTables);
+		TableGroup tableGroup = TableGroup.of(orderTables);
 		return TableGroupResponse.of(tableGroupRepository.save(tableGroup));
 	}
 
