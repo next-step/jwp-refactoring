@@ -1,7 +1,7 @@
 package kitchenpos.application.mock;
 
 import kitchenpos.table.application.OrderTableService;
-import kitchenpos.dao.OrderDao;
+import kitchenpos.order.dao.OrderDao;
 import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;

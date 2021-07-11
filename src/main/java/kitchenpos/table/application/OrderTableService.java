@@ -1,9 +1,9 @@
 package kitchenpos.table.application;
 
-import kitchenpos.application.OrderService;
-import kitchenpos.dao.OrderDao;
+import kitchenpos.order.application.OrderService;
+import kitchenpos.order.dao.OrderDao;
 import kitchenpos.table.dao.OrderTableDao;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableEntity;
 import kitchenpos.table.domain.OrderTableRepository;

@@ -1,7 +1,7 @@
 package kitchenpos.application.mock;
 
 import kitchenpos.tablegroup.application.TableGroupService;
-import kitchenpos.dao.OrderDao;
+import kitchenpos.order.dao.OrderDao;
 import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.tablegroup.dao.TableGroupDao;
 import kitchenpos.table.domain.OrderTable;
