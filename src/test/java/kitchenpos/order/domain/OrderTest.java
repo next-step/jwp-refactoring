@@ -3,6 +3,7 @@ package kitchenpos.order.domain;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,17 +18,17 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class OrderTest {
     private OrderLineItems orderLineItems;
-    private String orderStatus;
+    private OrderStatus orderStatus;
     private OrderTable orderTable;
 
     @BeforeEach
     public void setup() {
         List<OrderLineItem> orderLineItemList = new ArrayList<>();
         Menu menu = new Menu("후라이드치킨", new BigDecimal(16000), new MenuGroup("새로운 메뉴"));
-        OrderLineItem orderLineItem = new OrderLineItem(menu, 1L);
+        OrderLineItem orderLineItem = new OrderLineItem(menu.id(), 1L);
         orderLineItemList.add(orderLineItem);
-        orderStatus = OrderStatus.COOKING.name();
-        orderTable = new OrderTable(1, false);
+        orderStatus = OrderStatus.COOKING;
+        orderTable = new OrderTable(1, TableStatus.ORDER);
         orderLineItems = new OrderLineItems(orderLineItemList);
     }
 
@@ -39,7 +40,6 @@ public class OrderTest {
 
         // when
         Order order = new Order(orderTable, orderStatus, orderedTime);
-        orderLineItems.mappingOrder(order);
 
         // then
         assertThat(order).isEqualTo(new Order(orderTable, orderStatus, orderedTime));
@@ -50,24 +50,22 @@ public class OrderTest {
     public void modifyOrder() {
         // given
         Order order = new Order(orderTable, orderStatus, LocalDateTime.now());
-        orderLineItems.mappingOrder(order);
 
         // when
-        order.changeOrderStatus(OrderStatus.MEAL.name());
+        order.changeOrderStatus(OrderStatus.MEAL);
 
         // then
-        assertThat(order.orderStatus()).isEqualTo(OrderStatus.MEAL.name());
+        assertThat(order.orderStatus()).isEqualTo(OrderStatus.MEAL);
     }
 
     @Test
     @DisplayName("주문 상태를 변경 실패 - 이미 계산 완료 된 주문")
     public void modifyOrderFailByCompletionOrder() {
         // given
-        Order order = new Order(orderTable, OrderStatus.COMPLETION.name(), LocalDateTime.now());
-        orderLineItems.mappingOrder(order);
+        Order order = new Order(orderTable, OrderStatus.COMPLETION, LocalDateTime.now());
 
         // when
         // then
-        assertThrows(IllegalArgumentException.class, () -> order.changeOrderStatus(OrderStatus.MEAL.name()));
+        assertThrows(IllegalArgumentException.class, () -> order.changeOrderStatus(OrderStatus.MEAL));
     }
 }

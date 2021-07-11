@@ -6,6 +6,7 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.TableStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,16 +37,16 @@ public class OrderRepositoryTest {
     @BeforeEach
     public void setup() {
         List<OrderLineItem> orderLineItemList = new ArrayList<>();
-        OrderTable orderTable = orderTableRepository.save(new OrderTable(0, false));
+        OrderTable orderTable = orderTableRepository.save(new OrderTable(0, TableStatus.ORDER));
         Menu menu = new Menu(3L, "반반치킨", new BigDecimal(16000), new MenuGroup("한마리메뉴"));
-        String orderStatus = OrderStatus.COOKING.name();
-        orderLineItemList.add(new OrderLineItem(menu, 1));
+        OrderStatus orderStatus = OrderStatus.COOKING;
+        orderLineItemList.add(new OrderLineItem(menu.id(), 1));
 
-        order = new Order(orderTable, orderStatus, LocalDateTime.now());
-        orderLineItemList.forEach(orderLineItem -> orderLineItem.mappingOrder(order));
+        order = orderRepository.save(new Order(orderTable, orderStatus, LocalDateTime.now()));
+        orderLineItemList.forEach(orderLineItem -> orderLineItem.mappingOrder(order.id()));
 
         OrderLineItems orderLineItems = new OrderLineItems(orderLineItemList);
-        orderLineItems.mappingOrder(order);
+        orderLineItems.mappingOrder(order.id());
         order.mappingOrderLineItems(orderLineItems);
     }
 
@@ -65,13 +66,13 @@ public class OrderRepositoryTest {
     @Transactional
     public void modifyOrder() {
         // given
-        order.changeOrderStatus(OrderStatus.MEAL.name());
+        order.changeOrderStatus(OrderStatus.MEAL);
 
         // when
         Order saveOrder = orderRepository.save(order);
 
         // then
-        assertThat(saveOrder.orderStatus()).isEqualTo(OrderStatus.MEAL.name());
+        assertThat(saveOrder.orderStatus()).isEqualTo(OrderStatus.MEAL);
     }
 
     @Test

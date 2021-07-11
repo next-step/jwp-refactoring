@@ -2,6 +2,7 @@ package kitchenpos.table.controller;
 
 import kitchenpos.common.ControllerTest;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableStatus;
 import kitchenpos.table.dto.OrderTableRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,7 @@ public class TableControllerTest extends ControllerTest {
     @DisplayName("주문 테이블을 생성 한다")
     public void createOrderTable() throws Exception {
         // given
-        OrderTableRequest orderTableRequest = new OrderTableRequest(0, false);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(0, TableStatus.ORDER);
 
         // when
         // then
@@ -27,7 +28,7 @@ public class TableControllerTest extends ControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").exists())
                 .andExpect(jsonPath("numberOfGuests").value(0))
-                .andExpect(jsonPath("empty").value(false))
+                .andExpect(jsonPath("tableStatus").value(TableStatus.ORDER.name()))
         ;
     }
 
@@ -40,7 +41,7 @@ public class TableControllerTest extends ControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.[0].numberOfGuests").value(0))
-                .andExpect(jsonPath("$.[0].empty").value(false))
+                .andExpect(jsonPath("$.[0].tableStatus").value(TableStatus.ORDER.name()))
         ;
     }
 
@@ -48,7 +49,7 @@ public class TableControllerTest extends ControllerTest {
     @DisplayName("주문 테이블 상태를 빈 테이블로 변경 한다")
     public void modifyOrderTableEmpty() throws Exception {
         // given
-        OrderTableRequest orderTableRequest = new OrderTableRequest(0, true);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(0, TableStatus.EMPTY);
 
         // when
         // then
@@ -56,7 +57,7 @@ public class TableControllerTest extends ControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("id").exists())
                 .andExpect(jsonPath("numberOfGuests").value(0))
-                .andExpect(jsonPath("empty").value(true))
+                .andExpect(jsonPath("tableStatus").value(TableStatus.EMPTY.name()))
         ;
     }
 
@@ -64,7 +65,7 @@ public class TableControllerTest extends ControllerTest {
     @DisplayName("주문 테이블 손님 수를 변경 한다")
     public void modifyOrderTableGuests() throws Exception {
         // given
-        OrderTableRequest orderTableRequest = new OrderTableRequest(3, false);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(3, TableStatus.ORDER);
 
         // when
         // then
@@ -72,7 +73,7 @@ public class TableControllerTest extends ControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("id").exists())
                 .andExpect(jsonPath("numberOfGuests").value(3))
-                .andExpect(jsonPath("empty").value(false))
+                .andExpect(jsonPath("tableStatus").value(TableStatus.ORDER.name()))
         ;
     }
 

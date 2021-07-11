@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 public class OrderTables {
     public static final String NOT_MATCH_ORDER_TABLE_SIZE = "조회 된 주문 테이블의 수와 다릅니다.";
 
-    @OneToMany(mappedBy = "tableGroup")
+    @OneToMany(mappedBy = "tableGroupId")
     private List<OrderTable> orderTables;
 
     protected OrderTables() {
@@ -34,9 +34,9 @@ public class OrderTables {
         orderTables.forEach(OrderTable::validateOrderTable);
     }
 
-    public void mappingTableGroup(TableGroup tableGroup) {
+    public void useTables() {
         for (OrderTable orderTable : orderTables) {
-            orderTable.mappingTableGroup(tableGroup);
+            orderTable.useTable();
         }
     }
 

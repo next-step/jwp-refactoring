@@ -19,20 +19,20 @@ public class OrderTableRepositoryTest {
 
     private List<OrderTable> orderTableList;
     private int numberOfGuests;
-    private boolean empty;
+    private TableStatus tableStatus;
 
     @BeforeEach
     public void setup() {
         orderTableList = new ArrayList<>();
         numberOfGuests = 1;
-        empty = false;
+        tableStatus = TableStatus.ORDER;
     }
 
     @Test
     @DisplayName("생성한 주문 테이블을 저장 한다")
     public void createOrderTable() {
         //given
-        OrderTable orderTable = new OrderTable(numberOfGuests, empty);
+        OrderTable orderTable = new OrderTable(numberOfGuests, tableStatus);
 
         //when
         OrderTable saveOrderTable = orderTableRepository.save(orderTable);
@@ -46,7 +46,7 @@ public class OrderTableRepositoryTest {
     @DisplayName("주문 테이블 리스트를 가져온다")
     public void selectOrderTableList() {
         //given
-        OrderTable orderTable = new OrderTable(numberOfGuests, empty);
+        OrderTable orderTable = new OrderTable(numberOfGuests, tableStatus);
         orderTableRepository.save(orderTable);
 
         //when
@@ -63,21 +63,21 @@ public class OrderTableRepositoryTest {
     @DisplayName("주문 테이블 상태를 빈 테이블로 변경 한다")
     public void modifyOrderTableEmpty() {
         //given
-        OrderTable orderTable = new OrderTable(numberOfGuests, empty);
-        orderTable.changeEmpty(true);
+        OrderTable orderTable = new OrderTable(numberOfGuests, tableStatus);
+        orderTable.changeTableStatus(TableStatus.EMPTY);
 
         //when
         OrderTable saveOrderTable = orderTableRepository.save(orderTable);
 
         //then
-        assertThat(saveOrderTable.isEmpty()).isTrue();
+        assertThat(saveOrderTable.tableStatus()).isEqualTo(TableStatus.EMPTY);
     }
 
     @Test
     @DisplayName("주문 테이블 손님 수를 변경 한다")
     public void modifyOrderTableGuests() {
         //given
-        OrderTable orderTable = new OrderTable(numberOfGuests, empty);
+        OrderTable orderTable = new OrderTable(numberOfGuests, tableStatus);
         orderTable.changeNumberOfGuests(3);
 
         //when

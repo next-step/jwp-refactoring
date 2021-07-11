@@ -30,8 +30,8 @@ public class TableGroupRepositoryTest {
     @DisplayName("단체를 지정 한다")
     public void createOrderTableGroup() {
        // given
-        orderTableList.add(new OrderTable(0, true));
-        orderTableList.add(new OrderTable(0, true));
+        orderTableList.add(new OrderTable(0, TableStatus.EMPTY));
+        orderTableList.add(new OrderTable(0, TableStatus.EMPTY));
         TableGroup tableGroup = new TableGroup(LocalDateTime.now(), new OrderTables(orderTableList));
 
         // when
@@ -44,16 +44,16 @@ public class TableGroupRepositoryTest {
     @DisplayName("단체 지정을 해제 한다")
     public void deleteOrderTableGroup() {
         // given
-        OrderTable orderTable = new OrderTable(0, true);
+        OrderTable orderTable = new OrderTable(0, TableStatus.EMPTY);
         orderTableList.add(orderTable);
-        orderTableList.add(new OrderTable(0, true));
+        orderTableList.add(new OrderTable(0, TableStatus.EMPTY));
         TableGroup tableGroup = new TableGroup(LocalDateTime.now(), new OrderTables(orderTableList));
 
         // when
         tableGroup.unGroup();
 
         // then
-        assertThat(orderTable.tableGroup()).isNull();
+        assertThat(orderTable.tableGroupId()).isNull();
     }
 
 }

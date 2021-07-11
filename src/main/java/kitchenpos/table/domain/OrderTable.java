@@ -6,57 +6,58 @@ import java.util.Objects;
 @Entity
 public class OrderTable {
     private static final String TABLE_THAT_CANNOT_BE_TABLE_GROUP = "단체 지정을 할 수 없는 테이블 입니다.";
-    private static final String TABLE_IS_EMPTY = "테이블은 빈 테이블 상태 입니다.";
+    private static final String TABLE_IS_EMPTY = "테이블이 빈 테이블 상태 입니다.";
     private static final String ALREADY_EXISTS_GROUP_TABLE = "이미 단체 지정 된 테이블 입니다.";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "table_group_id")
-    private TableGroup tableGroup;
+    @Column(name = "table_group_id")
+    private Long tableGroupId;
 
     private int numberOfGuests;
-    private boolean empty;
+
+    @Column(name = "table_status")
+    @Convert(converter = TableStatusConverter.class)
+    private TableStatus tableStatus;
 
     public OrderTable() {
     }
 
-    public OrderTable(int numberOfGuests, boolean empty) {
+    public OrderTable(int numberOfGuests, TableStatus tableStatus) {
         this.numberOfGuests = numberOfGuests;
-        this.empty = empty;
+        this.tableStatus = tableStatus;
     }
 
     public void validateOrderTable() {
-        if (!empty || Objects.nonNull(tableGroup)) {
+        if (!tableStatus.equals(TableStatus.EMPTY) || Objects.nonNull(tableGroupId)) {
             throw new IllegalArgumentException(TABLE_THAT_CANNOT_BE_TABLE_GROUP);
         }
     }
 
-    public void mappingTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
-        this.empty = false;
+    public void useTable() {
+        this.tableStatus = TableStatus.ORDER;
     }
 
     public void unGroup() {
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 
     public void validateTableGroupIsNull() {
-        if (Objects.nonNull(tableGroup)) {
+        if (Objects.nonNull(tableGroupId)) {
             throw new IllegalArgumentException(ALREADY_EXISTS_GROUP_TABLE);
         }
     }
 
     public void validateNotEmpty() {
-        if (empty) {
+        if (tableStatus.equals(TableStatus.EMPTY)) {
             throw new IllegalArgumentException(TABLE_IS_EMPTY);
         }
     }
 
-    public void changeEmpty(boolean empty) {
-        this.empty = empty;
+    public void changeTableStatus(TableStatus tableStatus) {
+        this.tableStatus = tableStatus;
     }
 
     public void changeNumberOfGuests(int numberOfGuests) {
@@ -67,16 +68,16 @@ public class OrderTable {
         return id;
     }
 
-    public TableGroup tableGroup() {
-        return tableGroup;
+    public Long tableGroupId() {
+        return tableGroupId;
     }
 
     public int numberOfGuests() {
         return numberOfGuests;
     }
 
-    public boolean isEmpty() {
-        return empty;
+    public TableStatus tableStatus() {
+        return tableStatus;
     }
 
     @Override
@@ -84,11 +85,11 @@ public class OrderTable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OrderTable that = (OrderTable) o;
-        return numberOfGuests == that.numberOfGuests && empty == that.empty && Objects.equals(id, that.id) && Objects.equals(tableGroup, that.tableGroup);
+        return numberOfGuests == that.numberOfGuests && Objects.equals(id, that.id) && Objects.equals(tableGroupId, that.tableGroupId) && tableStatus == that.tableStatus;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, tableGroup, numberOfGuests, empty);
+        return Objects.hash(id, tableGroupId, numberOfGuests, tableStatus);
     }
 }

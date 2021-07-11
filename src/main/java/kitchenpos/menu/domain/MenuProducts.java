@@ -10,7 +10,7 @@ import java.util.List;
 @Embeddable
 public class MenuProducts {
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "menu")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "menuId")
     private List<MenuProduct> menuProducts;
 
     protected MenuProducts() {
@@ -21,11 +21,9 @@ public class MenuProducts {
     }
 
     public BigDecimal menuProductsPrice() {
-        BigDecimal sum = BigDecimal.ZERO;
-        for (final MenuProduct menuProduct : menuProducts) {
-            sum = sum.add(menuProduct.price(menuProduct.quantity()));
-        }
-        return sum;
+        return menuProducts.stream()
+                .map(menuProduct -> menuProduct.price(menuProduct.quantity()))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     public List<MenuProduct> menuProducts() {

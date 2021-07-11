@@ -1,7 +1,7 @@
 package kitchenpos.table.service;
 
 import kitchenpos.table.application.TableService;
-import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableStatus;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -23,7 +23,7 @@ public class TableServiceTest {
     @DisplayName("주문 테이블을 생성 한다")
     public void createOrderTable() {
         // given
-        OrderTableRequest orderTableRequest = new OrderTableRequest(0, false);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(0, TableStatus.ORDER);
 
         // when
         OrderTableResponse createOrderTableResponse = tableService.create(orderTableRequest);
@@ -52,21 +52,21 @@ public class TableServiceTest {
     @DisplayName("주문 테이블 상태를 빈 테이블로 변경 한다")
     public void modifyOrderTableEmpty() {
         // given
-        OrderTableRequest orderTableRequest = new OrderTableRequest(0, true);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(0, TableStatus.EMPTY);
 
         // when
         OrderTableResponse changeOrderTableResponse = tableService.changeEmpty(4L, orderTableRequest);
 
         // then
         assertThat(changeOrderTableResponse.getId()).isNotNull();
-        assertThat(changeOrderTableResponse.isEmpty()).isTrue();
+        assertThat(changeOrderTableResponse.getTableStatus()).isEqualTo(TableStatus.EMPTY);
     }
 
     @Test
     @DisplayName("주문 테이블 손님 수를 변경 한다")
     public void modifyOrderTableGuests() {
         // given
-        OrderTableRequest orderTable = new OrderTableRequest(3, false);
+        OrderTableRequest orderTable = new OrderTableRequest(3, TableStatus.ORDER);
 
         // when
         OrderTableResponse changeOrderTableResponse = tableService.changeNumberOfGuests(2L, orderTable);

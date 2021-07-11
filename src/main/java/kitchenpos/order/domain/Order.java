@@ -1,6 +1,7 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableStatus;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -19,7 +20,8 @@ public class Order {
     @ManyToOne(fetch = FetchType.LAZY)
     private OrderTable orderTable;
 
-    private String orderStatus;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
     private LocalDateTime orderedTime;
 
     @Embedded
@@ -28,17 +30,17 @@ public class Order {
     public Order() {
     }
 
-    public Order(OrderTable orderTable, String orderStatus, LocalDateTime orderedTime) {
+    public Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
     }
 
-    public Order(OrderTable orderTable, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+    public Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
         this(orderTable, orderStatus, orderedTime, new OrderLineItems(orderLineItems));
     }
 
-    public Order(OrderTable orderTable, String orderStatus, LocalDateTime orderedTime, OrderLineItems orderLineItems) {
+    public Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, OrderLineItems orderLineItems) {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
@@ -54,7 +56,7 @@ public class Order {
         return orderTable;
     }
 
-    public String orderStatus() {
+    public OrderStatus orderStatus() {
         return orderStatus;
     }
 
@@ -70,14 +72,21 @@ public class Order {
         this.orderLineItems = orderLineItems;
     }
 
-    public void changeOrderStatus(String orderStatus) {
+    public void changeOrderStatus(OrderStatus orderStatus) {
         validateCompletion();
+        changeTableStatusIfCompletion(orderStatus);
         this.orderStatus = orderStatus;
     }
 
     private void validateCompletion() {
-        if (Objects.equals(OrderStatus.COMPLETION.name(), orderStatus)) {
+        if (this.orderStatus == OrderStatus.COMPLETION) {
             throw new IllegalArgumentException(ALREADY_COMPLETION_ORDER);
+        }
+    }
+
+    private void changeTableStatusIfCompletion(OrderStatus orderStatus) {
+        if (orderStatus == OrderStatus.COMPLETION) {
+            orderTable.changeTableStatus(TableStatus.COMPLETION);
         }
     }
 

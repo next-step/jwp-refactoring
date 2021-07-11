@@ -39,7 +39,7 @@ public class MenuService {
         final Menu savedMenu = menuRepository.save(new Menu(menuRequest.getName(), menuRequest.getPrice(), findMenuGroup(menuRequest.getMenuGroupId())));
 
         List<MenuProduct> menuProducts = menuRequest.getMenuProducts().stream()
-                .map(menuProduct -> new MenuProduct(savedMenu, findProduct(menuProduct.getProductId()), menuProduct.getQuantity())).collect(Collectors.toList());
+                .map(menuProduct -> new MenuProduct(savedMenu.id(), findProduct(menuProduct.getProductId()), menuProduct.getQuantity())).collect(Collectors.toList());
 
         savedMenu.mappingProducts(new MenuProducts(menuProductRepository.saveAll(menuProducts)));
         savedMenu.validateMenuProductsPrice();

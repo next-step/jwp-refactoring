@@ -1,6 +1,7 @@
 package kitchenpos.table.dto;
 
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableStatus;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,20 +10,20 @@ public class OrderTableResponse {
     private Long id;
     private Long tableGroupId;
     private int numberOfGuests;
-    private boolean empty;
+    private TableStatus tableStatus;
 
     public OrderTableResponse() {
     }
 
-    public OrderTableResponse(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+    public OrderTableResponse(Long id, Long tableGroupId, int numberOfGuests, TableStatus tableStatus) {
         this.id = id;
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
-        this.empty = empty;
+        this.tableStatus = tableStatus;
     }
 
     public static OrderTableResponse of(OrderTable orderTable) {
-        return new OrderTableResponse(orderTable.id(), groupId(orderTable), orderTable.numberOfGuests(), orderTable.isEmpty());
+        return new OrderTableResponse(orderTable.id(), groupId(orderTable), orderTable.numberOfGuests(), orderTable.tableStatus());
     }
 
     public static List<OrderTableResponse> ofList(List<OrderTable> orderTables) {
@@ -32,8 +33,8 @@ public class OrderTableResponse {
     private static Long groupId(OrderTable orderTable) {
         Long groupId = null;
 
-        if (orderTable.tableGroup() != null) {
-            groupId = orderTable.tableGroup().id();
+        if (orderTable.tableGroupId() != null) {
+            groupId = orderTable.tableGroupId();
         }
         return groupId;
     }
@@ -50,8 +51,8 @@ public class OrderTableResponse {
         return numberOfGuests;
     }
 
-    public boolean isEmpty() {
-        return empty;
+    public TableStatus getTableStatus() {
+        return tableStatus;
     }
 
 }

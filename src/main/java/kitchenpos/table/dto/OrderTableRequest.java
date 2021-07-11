@@ -1,23 +1,25 @@
 package kitchenpos.table.dto;
 
+import kitchenpos.table.domain.TableStatus;
+
 public class OrderTableRequest {
     private Long id;
     private Long tableGroupId;
     private int numberOfGuests;
-    private boolean empty;
+    private TableStatus tableStatus;
 
     public OrderTableRequest() {
     }
 
-    public OrderTableRequest(Long id, int numberOfGuests, boolean empty) {
+    public OrderTableRequest(Long id, int numberOfGuests, TableStatus tableStatus) {
         this.id = id;
         this.numberOfGuests = numberOfGuests;
-        this.empty = empty;
+        this.tableStatus = tableStatus;
     }
 
-    public OrderTableRequest(int numberOfGuests, boolean empty) {
+    public OrderTableRequest(int numberOfGuests, TableStatus tableStatus) {
         this.numberOfGuests = numberOfGuests;
-        this.empty = empty;
+        this.tableStatus = tableStatus;
     }
 
     public Long getId() {
@@ -32,8 +34,8 @@ public class OrderTableRequest {
         return numberOfGuests;
     }
 
-    public boolean isEmpty() {
-        return empty;
+    public TableStatus getTableStatus() {
+        return tableStatus;
     }
 
 }

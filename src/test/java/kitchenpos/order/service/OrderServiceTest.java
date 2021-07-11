@@ -27,7 +27,7 @@ public class OrderServiceTest {
     @Autowired
     private OrderService orderService;
 
-    private String orderStatus;
+    private OrderStatus orderStatus;
     private Long orderTableId;
     private OrderRequest order;
 
@@ -36,7 +36,7 @@ public class OrderServiceTest {
         List<OrderLineItemRequest> orderLineItems = new ArrayList<>();
         OrderLineItemRequest orderLineItem = new OrderLineItemRequest(1L, 1L, 1L);
         orderLineItems.add(orderLineItem);
-        orderStatus = OrderStatus.COOKING.name();
+        orderStatus = OrderStatus.COOKING;
         orderTableId = 3L;
         order = new OrderRequest(orderTableId, orderStatus, LocalDateTime.now(), orderLineItems);
     }
@@ -58,7 +58,7 @@ public class OrderServiceTest {
     @DisplayName("주문을 생성 실패 - orderLineItems 가 없을 경우")
     public void createOrderFailByOrderLineItemsIsNull() {
         // given
-        OrderRequest order = new OrderRequest(1L, OrderStatus.COOKING.name(), LocalDateTime.now(), null);
+        OrderRequest order = new OrderRequest(1L, OrderStatus.COOKING, LocalDateTime.now(), null);
 
         // when
         // then
@@ -88,7 +88,7 @@ public class OrderServiceTest {
     public void modifyOrder() {
         // given
         OrderResponse orderResponse = orderService.create(order);
-        String changeStatus = OrderStatus.MEAL.name();
+        OrderStatus changeStatus = OrderStatus.MEAL;
         order.setOrderStatus(changeStatus);
 
         // when
@@ -102,7 +102,7 @@ public class OrderServiceTest {
     @DisplayName("주문 상태를 변경 실패 - 이미 계산 완료 된 주문")
     public void modifyOrderFailByCompletionOrder() {
         // given
-        order.setOrderStatus(OrderStatus.MEAL.name());
+        order.setOrderStatus(OrderStatus.MEAL);
 
         // when
         // then

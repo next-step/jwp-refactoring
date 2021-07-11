@@ -1,6 +1,6 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.menu.domain.Menu;
+import kitchenpos.common.domain.Quantity;
 
 import javax.persistence.*;
 
@@ -11,46 +11,39 @@ public class OrderLineItem {
     @Column(name = "seq")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
-    private Order order;
+    @Column(name = "order_id")
+    private Long orderId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Menu menu;
-    private long quantity;
+    private Long menuId;
+
+    @Embedded
+    private Quantity quantity;
 
     public OrderLineItem() {
     }
 
-    public OrderLineItem(Menu menu, long quantity) {
-        this.menu = menu;
-        this.quantity = quantity;
+    public OrderLineItem(Long menuId, long quantity) {
+        this.menuId = menuId;
+        this.quantity = new Quantity(quantity);
     }
 
-    public OrderLineItem(Long id, Order order, Menu menu, long quantity) {
-        this.id = id;
-        this.order = order;
-        this.menu = menu;
-        this.quantity = quantity;
-    }
-
-    public void mappingOrder(Order order) {
-        this.order = order;
+    public void mappingOrder(Long orderId) {
+        this.orderId = orderId;
     }
 
     public Long id() {
         return id;
     }
 
-    public Order order() {
-        return order;
+    public Long orderId() {
+        return orderId;
     }
 
-    public Menu menu() {
-        return menu;
+    public Long menuId() {
+        return menuId;
     }
 
     public long quantity() {
-        return quantity;
+        return quantity.quantity();
     }
 }
