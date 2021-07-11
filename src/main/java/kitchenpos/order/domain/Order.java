@@ -23,9 +23,8 @@ import kitchenpos.table.domain.OrderTable;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-@Entity
+@Entity(name = "orders")
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "orders")
 public class Order {
 
     @Id

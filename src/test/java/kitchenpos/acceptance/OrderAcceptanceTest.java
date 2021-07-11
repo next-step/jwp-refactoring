@@ -1,4 +1,4 @@
-package kitchenpos.order;
+package kitchenpos.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -33,27 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-@SpringBootTest
-@Transactional
-public class OrderIntegrationTest {
-
-    @Autowired
-    private MenuGroupRepository menuGroupRepository;
-
-    @Autowired
-    private ProductRepository productRepository;
-
-    @Autowired
-    private OrderTableRepository orderTableRepository;
-
-    @Autowired
-    private MenuRepository menuRepository;
-
-    @Autowired
-    private OrderRepository orderRepository;
-
-    @Autowired
-    private OrderService orderService;
+public class OrderIntegrationTest extends AcceptanceTest {
 
     private OrderTable 주문_테이블;
     private Menu 메뉴1;
@@ -64,33 +44,7 @@ public class OrderIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        주문_테이블 = orderTableRepository.save(new OrderTable(3, false));
-
-        MenuGroup 메뉴그룹 = menuGroupRepository.save(new MenuGroup("테스트메뉴그룹"));
-        Product 제품1 = productRepository.save(new Product("테스트제품1", Price.of(BigDecimal.valueOf(1000L))));
-        Product 제품2 = productRepository.save(new Product("테스트제품2", Price.of(BigDecimal.valueOf(3000L))));
-
-        메뉴1 = menuRepository.save(Menu.Builder.of("테스트메뉴1", Price.of(BigDecimal.valueOf(3000L)))
-                                              .menuGroup(메뉴그룹)
-                                              .menuProducts(Arrays.asList(new MenuProduct(제품1, 2),
-                                                                          new MenuProduct(제품2, 4)))
-                                              .build());
-
-        메뉴2 = menuRepository.save(Menu.Builder.of("테스트메뉴2", Price.of(BigDecimal.valueOf(5000L)))
-                                              .menuGroup(메뉴그룹)
-                                              .menuProducts(Arrays.asList(new MenuProduct(제품1, 2),
-                                                                          new MenuProduct(제품2, 4)))
-                                              .build());
-
-        주문1 = orderRepository.save(new Order(주문_테이블,
-                                             OrderStatus.COOKING,
-                                             Arrays.asList(new OrderLineItem(메뉴1, 3),
-                                                           new OrderLineItem(메뉴2, 4))));
-
-        주문2 = orderRepository.save(new Order(주문_테이블,
-                                             OrderStatus.COOKING,
-                                             Arrays.asList(new OrderLineItem(메뉴1, 3),
-                                                           new OrderLineItem(메뉴2, 4))));
+        
     }
 
 
