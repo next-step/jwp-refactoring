@@ -19,6 +19,10 @@ public class OrderLineItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
 
+    private String name;
+
+    private Price price;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, foreignKey = @ForeignKey(name = "fk_order_line_item_orders"))
     private Order order;
