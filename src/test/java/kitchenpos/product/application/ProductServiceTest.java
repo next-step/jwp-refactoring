@@ -13,12 +13,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.product.domain.Name;
-import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.common.domain.Name;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
-import kitchenpos.product.application.ProductService;
 
 @DisplayName("상품 요구사항 테스트")
 @ExtendWith(MockitoExtension.class)

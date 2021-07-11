@@ -11,8 +11,8 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.product.domain.Name;
-import kitchenpos.product.domain.Price;
+import kitchenpos.common.domain.Name;
+import kitchenpos.common.domain.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductTest;
 
@@ -88,14 +88,15 @@ class MenuTest {
 		Price price = Price.wonOf(1000);
 		MenuGroupId menuGroupId = new MenuGroupId(1L);
 		MenuProducts menuProducts = MenuProducts.of(asList(new MenuProduct(1L, 1)));
-
+		List<Product> products = asList(createProduct(1L, "후라이드치킨", 1000));
 		// when then
 		assertAll(
-			() -> verifyThrowException(null, price, menuGroupId, menuProducts, new ArrayList<>()),
-			() -> verifyThrowException(name, null, menuGroupId, menuProducts, new ArrayList<>()),
-			() -> verifyThrowException(name, price, null, menuProducts, new ArrayList<>()),
-			() -> verifyThrowException(name, price, menuGroupId, null, new ArrayList<>()),
-			() -> verifyThrowException(name, price, menuGroupId, menuProducts, null)
+			() -> verifyThrowException(null, price, menuGroupId, menuProducts, products),
+			() -> verifyThrowException(name, null, menuGroupId, menuProducts, products),
+			() -> verifyThrowException(name, price, null, menuProducts, products),
+			() -> verifyThrowException(name, price, menuGroupId, null, products),
+			() -> verifyThrowException(name, price, menuGroupId, menuProducts, null),
+			() -> verifyThrowException(name, price, menuGroupId, menuProducts, new ArrayList<>())
 		);
 	}
 
@@ -106,8 +107,7 @@ class MenuTest {
 					.price(price)
 					.menuGroupId(menuGroupId)
 					.menuProducts(menuProducts)
-					.build()
-			, "메뉴상품리스트가 없는 경우")
+					.build())
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("메뉴의 필수정보가 부족합니다.");
 	}

@@ -13,8 +13,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import kitchenpos.product.domain.Name;
-import kitchenpos.product.domain.Price;
+import kitchenpos.common.domain.Name;
+import kitchenpos.common.domain.Price;
 import kitchenpos.product.domain.Product;
 
 @Entity
@@ -108,7 +108,7 @@ public class Menu {
     }
 
     private void validateNonNull(Name name, Price price, MenuGroupId menuGroupId, MenuProducts menuProducts, List<Product> products) {
-        if (isNull(name) || isNull(price) || isNull(menuGroupId) || isNull(menuProducts) || isNull(products)) {
+        if (isNull(name) || isNull(price) || isNull(menuGroupId) || isNull(menuProducts) || isNull(products) || products.isEmpty()) {
             throw new IllegalArgumentException("메뉴의 필수정보가 부족합니다.");
         }
     }

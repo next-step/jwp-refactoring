@@ -10,7 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import kitchenpos.product.domain.Name;
+import kitchenpos.common.domain.Name;
 
 @Entity
 @Table

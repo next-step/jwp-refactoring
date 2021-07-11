@@ -9,8 +9,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.product.domain.Name;
-import kitchenpos.product.domain.Price;
+import kitchenpos.common.domain.Name;
+import kitchenpos.common.domain.Price;
 import kitchenpos.table.domain.OrderTable;
 
 class OrderTest {
@@ -21,15 +21,16 @@ class OrderTest {
 		OrderMenu orderMenu = OrderMenu.of(1L, Name.valueOf("치킨"), Price.wonOf(16000));
 		OrderLineItem orderLineItem = new OrderLineItem(orderMenu, 1);
 		OrderLineItems orderLineItems = OrderLineItems.of(asList(orderLineItem));
+		OrderTable orderTable = new OrderTable(1, true);
 
 		assertAll(
-			() -> assertThatThrownBy(() -> new Order(null, orderLineItems, now()))
+			() -> assertThatThrownBy(() -> Order.create(null, orderLineItems, now()))
 				.isInstanceOf(IllegalArgumentException.class)
 				.hasMessageContaining("주문 필수 정보가 없습니다."),
-			() -> assertThatThrownBy(() -> new Order(new OrderTableId(1L), null, now()))
+			() -> assertThatThrownBy(() -> Order.create(orderTable, null, now()))
 				.isInstanceOf(IllegalArgumentException.class)
 				.hasMessageContaining("주문 필수 정보가 없습니다."),
-			() -> assertThatThrownBy(() -> new Order(new OrderTableId(1L), orderLineItems, null))
+			() -> assertThatThrownBy(() -> Order.create(orderTable, orderLineItems, null))
 				.isInstanceOf(IllegalArgumentException.class)
 				.hasMessageContaining("주문 필수 정보가 없습니다.")
 		);

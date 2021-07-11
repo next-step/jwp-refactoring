@@ -7,7 +7,8 @@ import java.math.BigDecimal;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.product.domain.Price;
+import kitchenpos.common.domain.Price;
+import kitchenpos.common.domain.Quantity;
 
 class PriceTest {
 
@@ -47,6 +48,20 @@ class PriceTest {
 
 		// than
 		assertThat(만천원).isEqualTo(Price.wonOf(11000));
+	}
+
+	@DisplayName("가격과 수량을 곱할 수 있다.")
+	@Test
+	void priceXQuantityTest() {
+		// given
+		Price 천원 = Price.wonOf(1000);
+		Quantity 두개 = Quantity.of(2);
+
+		// when
+		Price 이천원 = 천원.times(두개);
+
+		// then
+		assertThat(이천원).isEqualTo(Price.wonOf(2000));
 	}
 
 }

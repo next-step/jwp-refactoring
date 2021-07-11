@@ -8,7 +8,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
-import kitchenpos.product.domain.Price;
+import kitchenpos.common.domain.Price;
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.product.domain.Product;
 
 @Embeddable
@@ -54,11 +55,11 @@ public class MenuProducts {
 	}
 
 	private Price calculatePrice(Product product) {
-		long quantity = findQuantity(product);
+		Quantity quantity = findQuantity(product);
 		return product.calculatePrice(quantity);
 	}
 
-	private Long findQuantity(Product product) {
+	private Quantity findQuantity(Product product) {
 		return menuProducts.stream()
 			.filter(menuProduct -> menuProduct.matchProductId(product.getId()))
 			.map(MenuProduct::getQuantity)

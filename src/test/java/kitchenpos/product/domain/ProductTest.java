@@ -8,6 +8,10 @@ import java.math.BigDecimal;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import kitchenpos.common.domain.Name;
+import kitchenpos.common.domain.Price;
+import kitchenpos.common.domain.Quantity;
+
 public class ProductTest {
 
 	@DisplayName("가격이 음수인 상품은 생성 될 수 없다.")
@@ -42,10 +46,10 @@ public class ProductTest {
 		Product product = new Product(Name.valueOf("치킨"), Price.wonOf(1000));
 
 
-		assertThat(product.calculatePrice(2)).isEqualTo(Price.wonOf(2000));
+		assertThat(product.calculatePrice(Quantity.of(2))).isEqualTo(Price.wonOf(2000));
 
 
-		assertThat(product.calculatePrice(0)).isEqualTo(Price.wonOf(0));
+		assertThat(product.calculatePrice(Quantity.of(0))).isEqualTo(Price.wonOf(0));
 	}
 
 	public static Product createProduct(Long id, String name, int price) {

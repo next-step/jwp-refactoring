@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -9,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import kitchenpos.common.domain.Quantity;
 
 @Entity
 @Table
@@ -25,21 +28,25 @@ public class MenuProduct {
     @Column(name = "product_id", nullable = false)
     private Long productId;
 
-    @Column(nullable = false)
-    private long quantity;
+    @AttributeOverride(name = "value", column = @Column(name = "quantity", nullable = false))
+    private Quantity quantity;
 
     protected MenuProduct() { }
 
-    public MenuProduct(Long productId, long quantity) {
+    public MenuProduct(Long productId, Quantity quantity) {
         this.productId = productId;
         this.quantity = quantity;
+    }
+
+    public MenuProduct(Long productId, long quantity) {
+        this(productId, Quantity.of(quantity));
     }
 
     public Long getId() {
         return id;
     }
 
-    public long getQuantity() {
+    public Quantity getQuantity() {
         return quantity;
     }
 

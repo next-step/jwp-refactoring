@@ -37,8 +37,7 @@ public class Order {
 
     protected Order() {}
 
-    public Order(OrderTableId tableId, OrderLineItems orderLineItems, LocalDateTime orderedTime) {
-        validateNonNull(tableId, orderLineItems, orderedTime);
+    private Order(OrderTableId tableId, OrderLineItems orderLineItems, LocalDateTime orderedTime) {
         this.orderTableId = tableId;
         this.orderStatus = COOKING;
         this.orderedTime = orderedTime;
@@ -47,6 +46,7 @@ public class Order {
     }
 
     public static Order create(OrderTable orderTable, OrderLineItems orderLineItems, LocalDateTime orderedTime) {
+        validateNonNull(orderTable, orderLineItems, orderedTime);
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException("빈테이블에서 주문할 수 없습니다.");
         }
@@ -114,8 +114,8 @@ public class Order {
         }
     }
 
-    private void validateNonNull(OrderTableId orderTableId, OrderLineItems orderLineItems, LocalDateTime orderedTime) {
-        if (isNull(orderTableId) || isNull(orderLineItems) || isNull(orderedTime)) {
+    private static void validateNonNull(OrderTable orderTable, OrderLineItems orderLineItems, LocalDateTime orderedTime) {
+        if (isNull(orderTable) || isNull(orderLineItems) || isNull(orderedTime)) {
             throw new IllegalArgumentException("주문 필수 정보가 없습니다.");
         }
     }

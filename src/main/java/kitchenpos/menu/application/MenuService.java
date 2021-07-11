@@ -1,8 +1,8 @@
 package kitchenpos.menu.application;
 
+import static kitchenpos.common.domain.Name.*;
+import static kitchenpos.common.domain.Price.*;
 import static kitchenpos.menu.domain.MenuProducts.*;
-import static kitchenpos.product.domain.Name.*;
-import static kitchenpos.product.domain.Price.*;
 
 import java.util.List;
 

@@ -13,6 +13,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import kitchenpos.common.domain.Name;
+import kitchenpos.common.domain.Price;
+import kitchenpos.common.domain.Quantity;
+
 @Entity
 @Table
 public class Product {
@@ -66,7 +70,7 @@ public class Product {
         return price.getAmount();
     }
 
-    public Price calculatePrice(long quantity) {
+    public Price calculatePrice(Quantity quantity) {
         return this.price.times(quantity);
     }
 }

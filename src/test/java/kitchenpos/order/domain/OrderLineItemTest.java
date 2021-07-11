@@ -5,8 +5,9 @@ import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.product.domain.Name;
-import kitchenpos.product.domain.Price;
+import kitchenpos.common.domain.Name;
+import kitchenpos.common.domain.Price;
+import kitchenpos.common.domain.Quantity;
 
 class OrderLineItemTest {
 
@@ -18,7 +19,7 @@ class OrderLineItemTest {
 		OrderLineItem orderLineItem = new OrderLineItem(orderMenu, 2L);
 
 		assertThat(orderLineItem.getMenuId()).isEqualTo(1L);
-		assertThat(orderLineItem.getQuantity()).isEqualTo(2L);
+		assertThat(orderLineItem.getQuantity()).isEqualTo(Quantity.of(2));
 	}
 
 }

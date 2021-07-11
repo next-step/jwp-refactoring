@@ -1,4 +1,4 @@
-package kitchenpos.product.domain;
+package kitchenpos.common.domain;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -35,6 +35,10 @@ public class Price implements Comparable<Price> {
 	public Price times(long n) {
 		BigDecimal otherAmount = BigDecimal.valueOf(n);
 		return Price.wonOf(amount.multiply(otherAmount));
+	}
+
+	public Price times(Quantity quantity) {
+		return times(quantity.getValue());
 	}
 
 	public Price plus(Price otherPrice) {
