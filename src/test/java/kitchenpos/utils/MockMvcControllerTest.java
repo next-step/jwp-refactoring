@@ -22,13 +22,10 @@ public abstract class MockMvcControllerTest {
 
     @BeforeEach
     private void setup() {
-        mockMvc = MockMvcBuilders.standaloneSetup(controller())
+        mockMvc = MockMvcBuilders.standaloneSetup(
+                controller())
                 .addFilter(new CharacterEncodingFilter(StandardCharsets.UTF_8.name(), true))
                 .alwaysDo(print())
                 .build();
-    }
-
-    protected <T> ArrayList<T> toArrayListBy(T... a) {
-        return new ArrayList<>(Arrays.asList(a));
     }
 }
