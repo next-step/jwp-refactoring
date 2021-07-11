@@ -35,10 +35,6 @@ public class TableService {
         return orderTableRepository.findById(id).orElseThrow(() -> new OrderTableNotFoundException("대상 주문테이블이 존재하지 않습니다. ID : " + id));
     }
 
-    public Long countByIds(List<Long> ids) {
-        return orderTableRepository.countByIdIn(ids);
-    }
-
     public List<OrderTableResponse> list() {
         return orderTableRepository.findAll()
                 .stream()
@@ -54,7 +50,7 @@ public class TableService {
             throw new IllegalArgumentException();
         }
         if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException();
         }
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty());

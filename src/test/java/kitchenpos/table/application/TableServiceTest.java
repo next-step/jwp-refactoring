@@ -28,6 +28,7 @@ import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.exception.NonEmptyOrderTableNotFoundException;
+import kitchenpos.table.exception.OrderTableNotFoundException;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.utils.domain.OrderTableObjects;
 
@@ -186,5 +187,12 @@ class TableServiceTest {
                             .isInstanceOf(IllegalArgumentException.class);
                 })
         );
+    }
+
+    @Test
+    @DisplayName("등록되지 않은 테이블 정보 조회 시 오류 발생")
+    void tableNotFoundException() {
+        assertThatThrownBy(() -> tableService.findById(10L))
+                .isInstanceOf(OrderTableNotFoundException.class);
     }
 }

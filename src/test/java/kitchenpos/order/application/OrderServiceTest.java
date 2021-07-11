@@ -5,8 +5,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.*;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,145 +20,108 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.application.OrderService;
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.utils.domain.OrderLineItemObjects;
-import kitchenpos.utils.domain.OrderObjects;
-import kitchenpos.utils.domain.OrderTableObjects;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.exception.MenuNotFoundException;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.exception.OrderNotFoundException;
+import kitchenpos.product.domain.Product;
+import kitchenpos.table.application.TableService;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.exception.OrderTableEmptyException;
+import kitchenpos.table.exception.OrderTableNotFoundException;
 
 @DisplayName("주문 서비스")
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @Mock
-    private MenuDao menuDao;
+    private TableService tableService;
     @Mock
-    private OrderDao orderDao;
+    private MenuService menuService;
     @Mock
-    private OrderLineItemDao orderLineItemDao;
-    @Mock
-    private OrderTableDao orderTableDao;
+    private OrderRepository orderRepository;
 
     @InjectMocks
     private OrderService orderService;
-    private Order order1;
-    private Order order2;
-    private Order changeOrder;
-    private Order createOrder;
-    private OrderLineItem orderLineItem1;
-    private OrderLineItem orderLineItem2;
-    private OrderLineItem orderLineItem3;
-    private OrderLineItem orderLineItem4;
-    private List<Order> orders;
-    private List<OrderLineItem> orderLineItems1;
-    private List<OrderLineItem> orderLineItems2;
-    private OrderTable orderTable1;
+
+    private Menu menu;
 
     @BeforeEach
     void setUp() {
-        OrderObjects orderObjects = new OrderObjects();
-        OrderLineItemObjects orderLineItemObjects = new OrderLineItemObjects();
-        OrderTableObjects orderTableObjects = new OrderTableObjects();
-        order1 = orderObjects.getOrder1();
-        order2 = orderObjects.getOrder2();
-        changeOrder = orderObjects.getOrder3();
-        createOrder = orderObjects.getOrder4();
-        orders = new ArrayList<>(Arrays.asList(order1, order2));
-        orderLineItem1 = orderLineItemObjects.getOrderLineItem1();
-        orderLineItem2 = orderLineItemObjects.getOrderLineItem2();
-        orderLineItem3 = orderLineItemObjects.getOrderLineItem3();
-        orderLineItem4 = orderLineItemObjects.getOrderLineItem4();
-        orderLineItems1 = new ArrayList<>(Arrays.asList(orderLineItem1, orderLineItem2));
-        orderLineItems2 = new ArrayList<>(Arrays.asList(orderLineItem3, orderLineItem4));
-        orderTable1 = orderTableObjects.getOrderTable1();
+        MenuGroup menuGroup = new MenuGroup("AB");
+        menu = new Menu("A", BigDecimal.valueOf(20000.00), menuGroup);
+        menu.addMenuProduct(new MenuProduct(menu, new Product("a", BigDecimal.valueOf(15000.00)), 1));
+        menu.addMenuProduct(new MenuProduct(menu, new Product("a", BigDecimal.valueOf(15000.00)), 1));
     }
 
     @TestFactory
     @DisplayName("모든 주문을 조회하는 기능")
-    List<DynamicTest> find_allOrders() {
+    List<DynamicTest> find_allOrders1() {
         // mocking
-        when(orderDao.findAll()).thenReturn(orders);
-        when(orderLineItemDao.findAllByOrderId(order1.getId())).thenReturn(orderLineItems1);
-        when(orderLineItemDao.findAllByOrderId(order2.getId())).thenReturn(orderLineItems2);
+        Order order = new Order(OrderStatus.COOKING, LocalDateTime.now(), new OrderTable(3, false));
+        order.addOrderLineItem(new OrderLineItem(order, menu, 3L));
+        given(orderRepository.findAll()).willReturn(Arrays.asList(order));
 
         // when
-        List<Order> findOrders = orderService.list();
+        List<OrderResponse> findOrderResponses = orderService.list1();
 
         // then
         return Arrays.asList(
                 dynamicTest("조회 결과 주문 ID 포함 확인됨.", () -> {
-                    assertThat(findOrders)
-                            .extracting("id")
-                            .contains(order1.getId(), order2.getId());
+                    assertThat(findOrderResponses).extracting("orderStatus").contains(order.getOrderStatusEnum());
                 }),
                 dynamicTest("주문 별 주문 항목 확인 됨.", () -> {
-                    assertThat(findOrders.get(0).getOrderLineItems())
-                            .extracting("seq")
-                            .contains(orderLineItem1.getSeq(), orderLineItem2.getSeq());
-                    assertThat(findOrders.get(1).getOrderLineItems())
-                            .extracting("seq")
-                            .contains(orderLineItem3.getSeq(), orderLineItem4.getSeq());
+                    assertThat(findOrderResponses.get(0).getOrderLineItemResponses()).size().isOne();
                 })
         );
     }
 
-    @TestFactory
+    @Test
     @DisplayName("주문 상태 변경 기능")
-    List<DynamicTest> change_orderStatus() {
+    void change_orderStatus1() {
         // given
-        changeOrder.setOrderStatus(OrderStatus.COOKING.name());
-
-        // mocking
-        when(orderDao.findById(anyLong())).thenReturn(Optional.of(changeOrder));
-        when(orderDao.save(any(Order.class))).thenReturn(null);
-        when(orderLineItemDao.findAllByOrderId(anyLong())).thenReturn(orderLineItems1);
+        OrderRequest orderRequest = new OrderRequest(OrderStatus.MEAL, 1L, new ArrayList<>());
+        Order order = new Order(OrderStatus.COOKING, LocalDateTime.now(), new OrderTable(3, false));
+        order.addOrderLineItem(new OrderLineItem(order, menu, 3L));
+        given(orderRepository.findById(anyLong())).willReturn(Optional.of(order));
 
         // when
-        Order resultOrder = orderService.changeOrderStatus(1L, changeOrder);
+        OrderResponse resultOrderResponse = orderService.changeOrderStatus1(1L, orderRequest);
 
         // then
-        return Arrays.asList(
-                dynamicTest("상태가 변경된 주문 ID 확인됨.", () -> {
-                    assertThat(resultOrder.getId()).isEqualTo(changeOrder.getId());
-                }),
-                dynamicTest("변경 주문 상태 확인됨.", () -> {
-                    assertThat(resultOrder.getOrderStatus()).isEqualTo(changeOrder.getOrderStatus());
-                }),
-                dynamicTest("주문 내역 확인됨.", () -> {
-                    assertThat(resultOrder.getOrderLineItems())
-                            .extracting("seq")
-                            .contains(orderLineItem1.getSeq(), orderLineItem2.getSeq());
-                })
-        );
+        assertThat(resultOrderResponse.getOrderStatus()).isEqualTo(order.getOrderStatusEnum());
     }
 
     @TestFactory
     @DisplayName("주문 상태 변경 시 오류 발생 테스트")
-    List<DynamicTest> change_exception() {
+    List<DynamicTest> change_exception1() {
         return Arrays.asList(
                 dynamicTest("수정 대상 조회 실패 시 오류 발생함.", () -> {
                     // given
-                    when(orderDao.findById(anyLong())).thenReturn(Optional.empty());
+                    OrderRequest orderRequest = new OrderRequest(OrderStatus.MEAL, 1L, new ArrayList<>());
+                    given(orderRepository.findById(anyLong())).willReturn(Optional.empty());
 
                     // then
-                    assertThatThrownBy(() -> orderService.changeOrderStatus(1L, changeOrder))
-                            .isInstanceOf(IllegalArgumentException.class);
+                    assertThatThrownBy(() -> orderService.changeOrderStatus1(1L, orderRequest))
+                            .isInstanceOf(OrderNotFoundException.class);
                 }),
                 dynamicTest("주분 상태가 완성일 경우 수정 요청 시 오류 발생함.", () -> {
                     // given
-                    changeOrder.setOrderStatus(OrderStatus.COMPLETION.name());
-
-                    // mocking
-                    when(orderDao.findById(anyLong())).thenReturn(Optional.of(changeOrder));
+                    OrderRequest orderRequest = new OrderRequest(OrderStatus.MEAL, 1L, new ArrayList<>());
+                    Order order = new Order(OrderStatus.COMPLETION, LocalDateTime.now(), new OrderTable(3, false));
+                    given(orderRepository.findById(anyLong())).willReturn(Optional.of(order));
 
                     // then
-                    assertThatThrownBy(() -> orderService.changeOrderStatus(1L, changeOrder))
+                    assertThatThrownBy(() -> orderService.changeOrderStatus1(1L, orderRequest))
                             .isInstanceOf(IllegalArgumentException.class);
                 })
         );
@@ -164,82 +129,73 @@ class OrderServiceTest {
 
     @TestFactory
     @DisplayName("신규 주문 등록 기능")
-    List<DynamicTest> create_order() {
+    List<DynamicTest> create_order1() {
         // given
-        createOrder.setOrderLineItems(orderLineItems1);
-        orderTable1.setEmpty(false);
+        OrderRequest orderRequest = new OrderRequest(OrderStatus.COOKING, 1L,
+                Arrays.asList(new OrderLineItemRequest(1L, 1L)));
+        OrderTable orderTable = new OrderTable(3, false);
+        Order order = new Order(OrderStatus.COOKING, LocalDateTime.now(), orderTable);
+        order.addOrderLineItem(new OrderLineItem(order, menu, 3L));
 
-        // mocking
-        when(menuDao.countByIdIn(any(List.class))).thenReturn(2L);
-        when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(orderTable1));
-        when(orderDao.save(any(Order.class))).thenReturn(createOrder);
-        when(orderLineItemDao.save(orderLineItem1)).thenReturn(orderLineItem1);
-        when(orderLineItemDao.save(orderLineItem2)).thenReturn(orderLineItem2);
+        given(tableService.findById(anyLong())).willReturn(orderTable);
+        given(menuService.findMenuById(anyLong())).willReturn(menu);
+        given(orderRepository.save(any(Order.class))).willReturn(order);
 
         // when
-        Order newOrder = orderService.create(createOrder);
+        OrderResponse resultOrderResponse = orderService.create1(orderRequest);
 
         // then
         return Arrays.asList(
-                dynamicTest("주문 ID 확인됨.", () -> assertThat(newOrder.getId()).isEqualTo(createOrder.getId())),
-                dynamicTest("주문 상태 확인됨.", () -> assertThat(newOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name())),
-                dynamicTest("주문 테이블 확인됨.", () -> assertThat(newOrder.getOrderTableId()).isEqualTo(orderTable1.getId())),
-                dynamicTest("주문 내역 확인됨.", () -> {
-                    assertThat(newOrder.getOrderLineItems())
-                            .extracting("seq")
-                            .contains(orderLineItem1.getSeq(), orderLineItem2.getSeq());
-                })
+                dynamicTest("주문 초기 상태 확인됨.", () -> assertThat(resultOrderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING)),
+                dynamicTest("주문 테이블 확인됨.", () -> assertThat(resultOrderResponse.getOrderTableResponse()).isNotNull()),
+                dynamicTest("주문 항목 갯수 확인됨.", () -> assertThat(resultOrderResponse.getOrderLineItemResponses()).size().isOne())
         );
     }
 
     @TestFactory
     @DisplayName("주문 등록 요청 시 예외상황 발생 테스트")
-    List<DynamicTest> create_order_exception() {
-
+    List<DynamicTest> create_order_exception1() {
         return Arrays.asList(
                 dynamicTest("주문 내역 누락 시 오류 발생됨.", () -> {
                     // given
-                    createOrder.setOrderLineItems(null);
+                    OrderRequest orderRequest = new OrderRequest(OrderStatus.COOKING, 1L, new ArrayList<>());
 
                     // then
-                    assertThatThrownBy(() -> orderService.create(createOrder))
-                            .isInstanceOf(IllegalArgumentException.class);
-                }),
-                dynamicTest("주문 내역 메뉴에 등록되지 않은 메뉴가 포함되어 있을 경우 오류 발생됨.", () -> {
-                    // given
-                    createOrder.setOrderLineItems(orderLineItems1);
-
-                    // mocking
-                    when(menuDao.countByIdIn(any(List.class))).thenReturn(1L);
-
-                    // then
-                    assertThatThrownBy(() -> orderService.create(createOrder))
-                            .isInstanceOf(IllegalArgumentException.class);
+                    assertThatThrownBy(() -> orderService.create1(orderRequest))
+                            .isInstanceOf(IllegalArgumentException.class)
+                            .hasMessage("입력된 주문 항목이 없습니다.");
                 }),
                 dynamicTest("주문 테이블이 누락되었을 경우 오류 발생됨.", () -> {
                     // given
-                    createOrder.setOrderLineItems(orderLineItems1);
-
-                    // mocking
-                    when(menuDao.countByIdIn(any(List.class))).thenReturn(2L);
-                    when(orderTableDao.findById(anyLong())).thenReturn(Optional.empty());
+                    OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(1L, 1L);
+                    OrderRequest orderRequest = new OrderRequest(OrderStatus.COOKING, 1L, Arrays.asList(orderLineItemRequest));
+                    given(tableService.findById(1L)).willThrow(OrderTableNotFoundException.class);
 
                     // then
-                    assertThatThrownBy(() -> orderService.create(createOrder))
-                            .isInstanceOf(IllegalArgumentException.class);
+                    assertThatThrownBy(() -> orderService.create1(orderRequest))
+                            .isInstanceOf(OrderTableNotFoundException.class);
                 }),
                 dynamicTest("주문한 테이블이 비어있을 경우 오류 발생됨.", () -> {
                     // given
-                    createOrder.setOrderLineItems(orderLineItems1);
-                    orderTable1.setEmpty(true);
-
-                    // mocking
-                    when(menuDao.countByIdIn(any(List.class))).thenReturn(2L);
-                    when(orderTableDao.findById(anyLong())).thenReturn(Optional.of(orderTable1));
+                    OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(1L, 1L);
+                    OrderRequest orderRequest = new OrderRequest(OrderStatus.COOKING, 2L, Arrays.asList(orderLineItemRequest));
+                    given(tableService.findById(2L)).willReturn(new OrderTable(3, true));
 
                     // then
-                    assertThatThrownBy(() -> orderService.create(createOrder))
-                            .isInstanceOf(IllegalArgumentException.class);
+                    assertThatThrownBy(() -> orderService.create1(orderRequest))
+                            .isInstanceOf(OrderTableEmptyException.class)
+                            .hasMessage("대상 테이블이 비어있습니다.");
+                }),
+                dynamicTest("주문 내역 메뉴에 등록되지 않은 메뉴가 포함되어 있을 경우 오류 발생됨.", () -> {
+                    // given
+                    OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(1L, 1L);
+                    OrderRequest orderRequest = new OrderRequest(OrderStatus.COOKING, 2L, Arrays.asList(orderLineItemRequest));
+                    given(tableService.findById(2L)).willReturn(new OrderTable(3, false));
+                    given(menuService.findMenuById(1L)).willThrow(MenuNotFoundException.class);
+
+                    // then
+                    assertThatThrownBy(() -> orderService.create1(orderRequest))
+                            .isInstanceOf(MenuNotFoundException.class);
                 })
         );
     }

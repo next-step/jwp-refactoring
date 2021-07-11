@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import kitchenpos.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItem;
 
 public class OrderLineItemObjects {
     private final MenuObjects menuObjects;

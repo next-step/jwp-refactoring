@@ -14,6 +14,7 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.exception.MenuNotFoundException;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.menugroup.exception.MenuGroupNotFoundException;
@@ -61,5 +62,9 @@ public class MenuService {
                 .stream()
                 .map(MenuResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    public Menu findMenuById(Long id) {
+        return menuRepository.findById(id).orElseThrow(MenuNotFoundException::new);
     }
 }
