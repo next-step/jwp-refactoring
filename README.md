@@ -72,13 +72,19 @@
 
   - Business Object 에 대한 테스트 코드를 작성
   - `@ExtendWith(MockitoExtension.class)`를 이용
-
   - [x] MenuGroupServiceTest 구현
   - [x] MenuServiceTest 구현
   - [x] OrderServiceTest 구현
   - [x] ProductServiceTest 구현
   - [x] TableGroupServiceTest 구현
   - [x] TableServiceTest 구현
+
+### Step3 - 의존성 리팩토링
+
+- [x] Aggregate 별 패키지 분리
+  - [x] Order, Menu, Table
+- [x] 메뉴 정보가 변경되더라도 주문 항목이 변경되지 않게 구현
+- [x] 클래스, 패키지의 의존관계를 단방향으로 리팩토링
 
 ## 용어 사전
 
