@@ -79,9 +79,7 @@ class MenuServiceTest {
         // then
         assertThat(savedMenu.getName()).isEqualTo(두마리_양념후라이드.getName());
         assertThat(savedMenu.getMenuGroup().getId()).isEqualTo(두마리_양념후라이드.getMenuGroup().getId());
-        savedMenu.getMenuProducts().forEach(menuProduct -> {
-            assertThat(menuProduct.getMenu().getId()).isEqualTo(두마리_양념후라이드.getId());
-        });
+        assertThat(savedMenu.getMenuProducts().containsAll(두마리_양념후라이드.getMenuProducts())).isTrue();
     }
 
     @Test

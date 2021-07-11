@@ -52,7 +52,7 @@ public class Menu {
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
-        this.menuProducts = menuProducts.withMenu(this);
+        this.menuProducts = menuProducts;
     }
 
     private void checkArguments(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {

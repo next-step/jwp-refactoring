@@ -17,19 +17,4 @@ public class MenuProductTest {
     public static MenuProduct MP4통구이 = new MenuProduct(통구이, Quantity.valueOf(1));
     public static MenuProduct MP5간장치킨 = new MenuProduct(간장치킨, Quantity.valueOf(1));
     public static MenuProduct MP6순살치킨 = new MenuProduct(순살치킨, Quantity.valueOf(1));
-
-    @Test
-    @DisplayName("메뉴-제품의 메뉴를 세팅한다")
-    void withMenu() {
-        MP5간장치킨.withMenu(간장치킨_메뉴);
-        assertThat(MP5간장치킨.getMenu()).isEqualTo(간장치킨_메뉴);
-    }
-
-    @Test
-    @DisplayName("메뉴-제품의 메뉴를 세팅이 실패한다")
-    void withMenu_failed() {
-        MP6순살치킨.withMenu(순살치킨_메뉴);
-        assertThatThrownBy(() -> MP6순살치킨.withMenu(순살치킨_메뉴))
-            .isInstanceOf(AlreadyAllocatedException.class);
-    }
 }

@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 import kitchenpos.exception.CalculationFailedException;
@@ -16,7 +18,8 @@ import kitchenpos.exception.CalculationFailedException;
 @Embeddable
 public class MenuProducts {
 
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_menu_product_menu"))
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
     public static MenuProducts of(MenuProduct... menuProducts) {
@@ -48,10 +51,8 @@ public class MenuProducts {
             .orElseThrow(() -> new CalculationFailedException("단품 가격의 합계를 계산하지 못했습니다."));
     }
 
-    public MenuProducts withMenu(Menu menu) {
-        return new MenuProducts(menuProducts.stream()
-            .map(menuProduct -> menuProduct.withMenu(menu))
-            .collect(Collectors.toList()));
+    public boolean containsAll(MenuProducts menuProducts) {
+        return this.menuProducts.containsAll(menuProducts.menuProducts);
     }
 
     public void forEach(Consumer<MenuProduct> consumer) {

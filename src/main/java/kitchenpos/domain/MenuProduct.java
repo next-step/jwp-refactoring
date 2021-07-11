@@ -1,7 +1,5 @@
 package kitchenpos.domain;
 
-import java.util.Objects;
-
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -13,18 +11,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import kitchenpos.exception.AlreadyAllocatedException;
-
 @Entity
 public class MenuProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "seq")
     private Long seq;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, foreignKey = @ForeignKey(name = "fk_menu_product_menu"))
-    private Menu menu;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, foreignKey = @ForeignKey(name = "fk_menu_product_product"))
@@ -38,25 +30,8 @@ public class MenuProduct {
     }
 
     public MenuProduct(Product product, Quantity quantity) {
-        this(null, product, quantity);
-    }
-
-    private MenuProduct(Menu menu, Product product, Quantity quantity) {
-        this.menu = menu;
         this.product = product;
         this.quantity = quantity;
-    }
-
-    public MenuProduct withMenu(Menu menu) {
-        checkAllocation();
-        this.menu = menu;
-        return this;
-    }
-
-    private void checkAllocation() {
-        if (Objects.nonNull(this.menu)) {
-            throw new AlreadyAllocatedException("매핑 정보의 메뉴를 재 할당 할 수 없습니다.");
-        }
     }
 
     public Price getTotalPrice() {
@@ -65,10 +40,6 @@ public class MenuProduct {
 
     public Long getSeq() {
         return seq;
-    }
-
-    public Menu getMenu() {
-        return menu;
     }
 
     public Product getProduct() {
