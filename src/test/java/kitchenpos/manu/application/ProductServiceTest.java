@@ -82,7 +82,7 @@ public class ProductServiceTest {
         return new ProductRequest(name, BigDecimal.valueOf(price));
     }
 
-    private Product 상품_생성(String name, int price) {
+    public static Product 상품_생성(String name, int price) {
         return new Product(name, new Price(BigDecimal.valueOf(price)));
     }
 }
