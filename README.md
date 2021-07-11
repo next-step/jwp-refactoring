@@ -91,3 +91,21 @@
 | 단체 지정 | table group | 통합 계산을 위해 개별 주문 테이블을 그룹화하는 기능 |
 | 주문 항목 | order line item | 주문에 속하는 수량이 있는 메뉴 |
 | 매장 식사 | eat in | 포장하지 않고 매장에서 식사하는 것 |
+
+---
+
+## 2 단계 - 서비스 리팩터링
+
+### 요구사항
+* Spring Data JPA 사용 시 spring.jpa.hibernate.ddl-auto=validate 옵션을 필수로 준다.
+* 데이터베이스 스키마 변경 및 마이그레이션이 필요하다면 아래 문서를 적극 활용한다.
+    * [DB도 형상관리를 해보자!](https://meetup.toast.com/posts/173)
+    
+### 구현 list
+- [ ] Spring Data jpa 의존성 추가
+- [ ] menu service refactoring
+- [ ] menuProduct service refactoring
+- [ ] menuGroup service refactoring
+- [ ] table service refactoring
+- [ ] tableGroup service refactoring
+- [ ] order service refactoring
