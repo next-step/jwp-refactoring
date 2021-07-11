@@ -58,7 +58,7 @@ class OrderServiceTest {
 		양식 = new MenuGroup("양식");
 		피자파스타세트 = new Menu("피자파스타세트", new Price(BigDecimal.valueOf(30000)), 양식);
 
-		피자파스타세트2개 = new OrderLineItem(null, 피자파스타세트, 2);
+		피자파스타세트2개 = new OrderLineItem(null, 피자파스타세트.getId(), 2);
 		주문항목 = new ArrayList<>();
 		주문항목.add(피자파스타세트2개);
 		주문테이블 = new OrderTable(null, null, false);

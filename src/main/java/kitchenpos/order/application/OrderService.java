@@ -54,7 +54,7 @@ public class OrderService {
 		return orderRequest.getOrderLineItems().stream()
 			.map(orderLineItemRequest -> {
 				Menu menu = findMenu(orderLineItemRequest.getMenuId());
-				return new OrderLineItem(menu, orderLineItemRequest.getQuantity());
+				return new OrderLineItem(menu.getId(), orderLineItemRequest.getQuantity());
 			}).collect(Collectors.toList());
 	}
 
