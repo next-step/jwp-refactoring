@@ -189,6 +189,7 @@ class OrderServiceTest {
         // then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> orderService.changeOrderStatus(order.getId(), orderParam));
+        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
     }
 
 }
