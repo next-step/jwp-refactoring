@@ -5,6 +5,7 @@ import kitchenpos.ordertable.dto.OrderTableEmptyChangeRequest;
 import kitchenpos.ordertable.dto.OrderTableGuestChangeRequest;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
+import kitchenpos.ordertable.exception.IllegalOrderTableEmptyChangeException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,5 +49,12 @@ public class TableRestController {
     ) {
         return ResponseEntity.ok()
                 .body(tableService.changeNumberOfGuests(orderTableId, orderTableRequest));
+    }
+
+    @ExceptionHandler({
+            IllegalOrderTableEmptyChangeException.class
+    })
+    public ResponseEntity handleException() {
+        return ResponseEntity.badRequest().build();
     }
 }
