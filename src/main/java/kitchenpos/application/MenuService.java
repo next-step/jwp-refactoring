@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Transactional
@@ -47,16 +48,30 @@ public class MenuService {
 
     private List<MenuProduct> createMenuProducts(MenuRequest menuRequest) {
         List<MenuProduct> menuProducts = new ArrayList<>();
-        menuRequest.getMenuProducts()
-                .forEach(menuProductRequest -> {
-                    Product product = findProductById(menuProductRequest.getProductId());
-                    menuProducts.add(new MenuProduct(null, product, menuProductRequest.getQuantity()));
-                });
+        List<Long> productIds = getProductIds(menuRequest.getMenuProducts());
+        List<Product> products = productRepository.findAllById(productIds);
+        addMenuProduct(menuRequest.getMenuProducts(), menuProducts, products);
         return menuProducts;
     }
 
-    private Product findProductById(Long id) {
-        return productRepository.findById(id)
+    private void addMenuProduct(List<MenuProductRequest> menuProductRequests, List<MenuProduct> menuProducts,
+                                List<Product> products) {
+        menuProductRequests.forEach(menuProductRequest -> {
+                    Product product = findProductById(products, menuProductRequest);
+                    menuProducts.add(new MenuProduct(null, product, menuProductRequest.getQuantity()));
+                });
+    }
+
+    private List<Long> getProductIds(List<MenuProductRequest> menuProductRequests) {
+        return menuProductRequests.stream()
+                .map(MenuProductRequest::getProductId)
+                .collect(Collectors.toList());
+    }
+
+    private Product findProductById(List<Product> products, MenuProductRequest menuProductRequest) {
+        return products.stream()
+                .filter(tempProduce -> tempProduce.getId().equals(menuProductRequest.getProductId()))
+                .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다."));
     }
 
