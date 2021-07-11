@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.Quantity;
 
 @Entity
 public class OrderLineItem {
@@ -23,7 +24,7 @@ public class OrderLineItem {
     @JoinColumn(name = "menu_id")
     private Long menuId;
 
-    private long quantity;
+    private Quantity quantity;
 
     public OrderLineItem() {
     }
@@ -31,12 +32,12 @@ public class OrderLineItem {
     public OrderLineItem(final Order order, final Menu menu, final long quantity) {
         this.orderId = order.getId();
         this.menuId = menu.getId();
-        this.quantity = quantity;
+        this.quantity = new Quantity(quantity);
     }
 
     public OrderLineItem(final Menu menu, final long quantity) {
         this.menuId = menu.getId();
-        this.quantity = quantity;
+        this.quantity = new Quantity(quantity);
     }
 
     public Long getSeq() {
@@ -52,7 +53,7 @@ public class OrderLineItem {
     }
 
     public long getQuantity() {
-        return quantity;
+        return quantity.value();
     }
 
     public void updateOrder(final Order order) {
