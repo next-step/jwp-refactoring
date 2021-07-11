@@ -6,7 +6,6 @@ import kitchenpos.order.domain.OrderGeneratedEvent;
 import kitchenpos.order.domain.OrderLineItem;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -26,9 +25,6 @@ public class OrderEventHandler {
     public void generateOrder(OrderGeneratedEvent orderGeneratedEvent) {
         Order order = orderGeneratedEvent.getOrder();
         List<OrderLineItem> orderLineItems = order.getOrderLineItems();
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException(NOT_EXIST_ORDER_LINE_ITEMS);
-        }
         List<Long> menuIds = getMenuIds(orderLineItems);
         int menuExistedSize = menuRepository.countByIdIn(menuIds);
         int orderLineItemsSize = orderLineItems.size();

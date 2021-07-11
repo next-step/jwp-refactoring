@@ -1,15 +1,10 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.menu.domain.Menu;
-
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 @Entity
 public class OrderLineItem {
@@ -18,37 +13,31 @@ public class OrderLineItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
 
-    @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_line_item_orders"))
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Order order;
+    @Column(name = "order_id")
+    private Long orderId;
 
-    @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_order_line_item_menu"))
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Menu menu;
+    @Column(name = "menu_id")
+    private Long menuId;
 
     private Long quantity;
 
     protected OrderLineItem() {
     }
 
-    public void registerOrder(Order order) {
-        this.order = order;
+    public void registerOrder(Long orderId) {
+        this.orderId = orderId;
     }
 
     public Long getSeq() {
         return seq;
     }
 
-    public Order getOrder() {
-        return order;
-    }
-
-    public Menu getMenu() {
-        return menu;
+    public Long getOrderId() {
+        return orderId;
     }
 
     public Long getMenuId() {
-        return menu.getId();
+        return getMenuId();
     }
 
     public Long getQuantity() {
@@ -67,13 +56,13 @@ public class OrderLineItem {
             return this;
         }
 
-        public Builder order(Order order) {
-            orderLineItem.order = order;
+        public Builder orderId(Long orderId) {
+            orderLineItem.orderId = orderId;
             return this;
         }
 
-        public Builder menu(Menu menu) {
-            orderLineItem.menu = menu;
+        public Builder menuId(Long menuId) {
+            orderLineItem.menuId = menuId;
             return this;
         }
 

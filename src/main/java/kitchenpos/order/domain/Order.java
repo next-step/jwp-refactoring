@@ -46,7 +46,7 @@ public class Order {
 
     public void addOrderLineItem(OrderLineItem orderLineItem) {
         orderLineItems.add(orderLineItem);
-        orderLineItem.registerOrder(this);
+        orderLineItem.registerOrder(id);
     }
 
     public static Order of(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
