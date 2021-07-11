@@ -1,6 +1,7 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGeneratedEvent;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuRepository;
@@ -33,7 +34,7 @@ public class MenuService {
         MenuGroup menuGroup = getMenuGroup(menuRequest);
         Menu menu = Menu.of(menuRequest.getName(), menuRequest.getPrice(), menuGroup);
         menuRequest.registerMenu(menu);
-        applicationEventPublisher.publishEvent(new MenuCreatedEvent(menu));
+        applicationEventPublisher.publishEvent(new MenuGeneratedEvent(menu));
 
         Menu savedMenu = menuRepository.save(menu);
         return new MenuResponse(savedMenu);

@@ -1,7 +1,5 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.menu.application.MenuNotMatchException;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.table.domain.OrderTable;
 
 import javax.persistence.Embedded;
@@ -51,8 +49,8 @@ public class Order {
         orderLineItem.registerOrder(this);
     }
 
-    public static Order generateOrder(OrderTable orderTable, List<OrderLineItem> orderLineItems, List<Menu> menus) {
-        validateOrder(orderTable, orderLineItems, menus);
+    public static Order of(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        validateOrder(orderTable);
 
         Order order = Order.builder()
                 .orderTable(orderTable)
@@ -67,10 +65,7 @@ public class Order {
         return order;
     }
 
-    private static void validateOrder(OrderTable orderTable, List<OrderLineItem> orderLineItems, List<Menu> menus) {
-        if (orderLineItems.size() != menus.size()) {
-            throw new MenuNotMatchException(INVALID_MENU_COUNT);
-        }
+    private static void validateOrder(OrderTable orderTable) {
         if (orderTable.isEmpty()) {
             throw new IllegalStateException(ORDER_LINE_EMPTY);
         }

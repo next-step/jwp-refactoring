@@ -1,11 +1,11 @@
 package kitchenpos.product.application;
 
 import kitchenpos.common.model.Price;
-import kitchenpos.menu.application.MenuCreatedEvent;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGeneratedEvent;
 import kitchenpos.menu.domain.MenuProduct;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -19,9 +19,9 @@ public class MenuEventHandler {
         this.productService = productService;
     }
 
-    @TransactionalEventListener
-    public void createMenuEventListener(MenuCreatedEvent menuCreatedEvent) {
-        Menu menu = menuCreatedEvent.getMenu();
+    @EventListener
+    public void createMenuEventListener(MenuGeneratedEvent menuGeneratedEvent) {
+        Menu menu = menuGeneratedEvent.getMenu();
         BigDecimal price = menu.getPrice();
 
         List<MenuProduct> menuProducts = menu.getMenuProducts();

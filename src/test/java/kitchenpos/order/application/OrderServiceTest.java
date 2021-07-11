@@ -2,7 +2,6 @@ package kitchenpos.order.application;
 
 import kitchenpos.menu.application.MenuNotMatchException;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderRepository;
@@ -21,6 +20,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,7 +31,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
@@ -40,14 +40,14 @@ class OrderServiceTest {
     private OrderRepository orderRepository;
     @Mock
     private OrderTableRepository orderTableRepository;
-    @Mock
-    private MenuRepository menuRepository;
+    @Autowired
+    private ApplicationEventPublisher applicationEventPublisher;
 
     private OrderService orderService;
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(orderRepository, orderTableRepository, menuRepository);
+        orderService = new OrderService(orderRepository, orderTableRepository, applicationEventPublisher);
     }
 
     @DisplayName("주어진 주문을 저장하고, 저장된 객체를 리턴한다.")
@@ -66,8 +66,6 @@ class OrderServiceTest {
         Menu menu1 = new Menu(1L);
         Menu menu2 = new Menu(2L);
 
-        when(menuRepository.findAllById(anyList()))
-                .thenReturn(Arrays.asList(menu1, menu2));
         when(orderTableRepository.findById(anyLong()))
                 .thenReturn(Optional.of(givenOrderTable));
         when(orderRepository.save(any(Order.class)))
@@ -99,8 +97,6 @@ class OrderServiceTest {
         OrderTable givenOrderTable = new OrderTable(1L, tableGroup, 5, false);
         Menu menu1 = new Menu(1L);
 
-        when(menuRepository.findAllById(anyList()))
-                .thenReturn(Arrays.asList(menu1));
         when(orderTableRepository.findById(anyLong()))
                 .thenReturn(Optional.of(givenOrderTable));
 
@@ -127,8 +123,6 @@ class OrderServiceTest {
         Menu menu1 = new Menu(1L);
         Menu menu2 = new Menu(2L);
 
-        when(menuRepository.findAllById(anyList()))
-                .thenReturn(Arrays.asList(menu1, menu2));
         when(orderTableRepository.findById(anyLong()))
                 .thenReturn(Optional.of(givenOrderTable));
 
