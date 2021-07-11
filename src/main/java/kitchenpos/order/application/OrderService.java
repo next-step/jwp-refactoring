@@ -85,12 +85,7 @@ public class OrderService {
     }
 
     public OrderResponse changeOrderStatus(final Long orderId, final OrderStatusRequest orderStatusRequest) {
-        final Order savedOrder = findOrderById(orderId);
-        if (savedOrder.isCompletion()) {
-           throw new KitchenposException(ALREADY_COMPLETION_ORDER);
-        }
-        savedOrder.changeOrderStatus(orderStatusRequest.getOrderStatus());
-        return OrderResponse.of(savedOrder);
+        return OrderResponse.of(findOrderById(orderId).changeOrderStatus(orderStatusRequest.getOrderStatus()));
     }
 
     private Order findOrderById(Long orderId) {

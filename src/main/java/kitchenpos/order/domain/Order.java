@@ -1,5 +1,7 @@
 package kitchenpos.order.domain;
 
+import static kitchenpos.exception.KitchenposExceptionMessage.ALREADY_COMPLETION_ORDER;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -16,6 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import kitchenpos.exception.KitchenposException;
 import kitchenpos.table.domain.OrderTable;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -57,12 +60,16 @@ public class Order {
         this.orderLineItems.connectOrder(this);
     }
 
-    public boolean isCompletion() {
-        return this.orderStatus == OrderStatus.COMPLETION;
+    public Order changeOrderStatus(final OrderStatus orderStatus) {
+        if (isCompletion()) {
+            throw new KitchenposException(ALREADY_COMPLETION_ORDER);
+        }
+        this.orderStatus = orderStatus;
+        return this;
     }
 
-    public void changeOrderStatus(final OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
+    private boolean isCompletion() {
+        return this.orderStatus == OrderStatus.COMPLETION;
     }
 
     public Long getId() {
