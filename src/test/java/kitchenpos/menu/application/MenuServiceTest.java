@@ -1,5 +1,6 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.common.Price;
 import kitchenpos.exception.KitchenposException;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
@@ -46,7 +47,7 @@ class MenuServiceTest {
     @Test
     void createTest() {
         // given
-        Product 불고기 = new Product("불고기", BigDecimal.valueOf(1000L));
+        Product 불고기 = new Product("불고기", Price.of(BigDecimal.valueOf(1000L)));
         MenuProduct 메뉴_불고기 = new MenuProduct(불고기, 3);
         MenuGroup 메뉴_그룹 = new MenuGroup("메뉴그룹");
 
@@ -92,7 +93,7 @@ class MenuServiceTest {
     @Test
     void overPriceMenu() {
         // given
-        Product 불고기 = new Product("불고기", BigDecimal.valueOf(1000L));
+        Product 불고기 = new Product("불고기", Price.of(BigDecimal.valueOf(1000L)));
         MenuGroup 메뉴_그룹 = new MenuGroup("메뉴그룹");
         MenuRequest menuRequest = MenuRequest.Builder.of("메뉴1", BigDecimal.valueOf(5000L))
                                                      .menuGroupId(1L)

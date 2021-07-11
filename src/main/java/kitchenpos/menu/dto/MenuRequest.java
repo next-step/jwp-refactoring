@@ -2,6 +2,7 @@ package kitchenpos.menu.dto;
 
 import java.math.BigDecimal;
 import java.util.List;
+import kitchenpos.common.Price;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menugroup.domain.MenuGroup;
@@ -44,7 +45,7 @@ public class MenuRequest {
     }
 
     public Menu toMenu(final MenuGroup menuGroup, final List<MenuProduct> menuProducts) {
-        return Menu.Builder.of(this.name, this.price)
+        return Menu.Builder.of(this.name, Price.of(this.price))
                            .menuGroup(menuGroup)
                            .menuProducts(menuProducts)
                            .build();

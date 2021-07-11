@@ -7,6 +7,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import kitchenpos.common.Price;
 import kitchenpos.exception.KitchenposException;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,8 +21,8 @@ class MenuProductsTest {
     @BeforeEach
     void setUp() {
         menuProducts = new MenuProducts();
-        MenuProduct 테스트_상품_1 = new MenuProduct(new Product("테스트1", BigDecimal.valueOf(3000L)), 3); // 9000
-        MenuProduct 테스트_상품_2 = new MenuProduct(new Product("테스트2", BigDecimal.valueOf(2000L)), 1); // 2000
+        MenuProduct 테스트_상품_1 = new MenuProduct(new Product("테스트1", Price.of(BigDecimal.valueOf(3000L))), 3); // 9000
+        MenuProduct 테스트_상품_2 = new MenuProduct(new Product("테스트2", Price.of(BigDecimal.valueOf(2000L))), 1); // 2000
         menuProducts.add(Arrays.asList(테스트_상품_1, 테스트_상품_2));
     }
 
@@ -30,7 +31,7 @@ class MenuProductsTest {
     @Test
     void checkOverPriceTest() {
         // when
-        assertThatCode(() -> menuProducts.checkOverPrice(BigDecimal.valueOf(10000)))
+        assertThatCode(() -> menuProducts.checkOverPrice(Price.of(BigDecimal.valueOf(10000))))
             .doesNotThrowAnyException();
     }
 
@@ -38,7 +39,7 @@ class MenuProductsTest {
     @Test
     void checkOverPriceTestWithWrongPrice() {
         // when
-        assertThatThrownBy(() -> menuProducts.checkOverPrice(BigDecimal.valueOf(13000)))
+        assertThatThrownBy(() -> menuProducts.checkOverPrice(Price.of(BigDecimal.valueOf(13000))))
             .isInstanceOf(KitchenposException.class)
             .hasMessageContaining(MENU_PRICE_CANNOT_OVER_THAN_PRODUCT_PRICE.getMessage());
     }

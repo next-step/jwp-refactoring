@@ -1,9 +1,7 @@
 package kitchenpos.menu.domain;
 
-import java.math.BigDecimal;
 import java.util.List;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import kitchenpos.common.Price;
 import kitchenpos.menugroup.domain.MenuGroup;
 
 @Entity
@@ -23,8 +22,8 @@ public class Menu {
     private Long id;
     private String name;
 
-    @Column(precision = 19, scale = 2)
-    private BigDecimal price;
+    @Embedded
+    private Price price;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"))
@@ -56,7 +55,7 @@ public class Menu {
         return name;
     }
 
-    public BigDecimal getPrice() {
+    public Price getPrice() {
         return price;
     }
 
@@ -70,16 +69,16 @@ public class Menu {
 
     public static class Builder {
         private final String name;
-        private final BigDecimal price;
+        private final Price price;
         private MenuGroup menuGroup;
         private List<MenuProduct> menuProducts;
 
-        private Builder(final String name, final BigDecimal price) {
+        private Builder(final String name, final Price price) {
             this.name = name;
             this.price = price;
         }
 
-        public static Builder of(final String name, final BigDecimal price) {
+        public static Builder of(final String name, final Price price) {
             return new Builder(name, price);
         }
 

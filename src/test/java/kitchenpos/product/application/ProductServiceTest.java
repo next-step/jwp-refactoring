@@ -1,5 +1,6 @@
 package kitchenpos.product.application;
 
+import kitchenpos.common.Price;
 import kitchenpos.exception.KitchenposException;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.domain.Product;
@@ -35,7 +36,7 @@ class ProductServiceTest {
     void createTest() {
         // given
         ProductRequest productRequest = new ProductRequest("불고기", BigDecimal.valueOf(1000L));
-        Product 불고기 = new Product("불고기", BigDecimal.valueOf(1000L));
+        Product 불고기 = new Product("불고기", Price.of(BigDecimal.valueOf(1000L)));
         Mockito.when(productRepository.save(any())).thenReturn(불고기);
 
         // when
@@ -56,6 +57,6 @@ class ProductServiceTest {
         // when
         assertThatThrownBy(() -> productService.create(productRequest))
             .isInstanceOf(KitchenposException.class)
-            .hasMessageContaining(MENU_PRICE_CANNOT_OVER_THAN_PRODUCT_PRICE.getMessage());
+            .hasMessageContaining(PRICE_CANNOT_LOWER_THAN_MIN.getMessage());
     }
 }

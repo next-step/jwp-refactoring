@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import kitchenpos.common.Price;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menugroup.domain.MenuGroup;
@@ -18,9 +19,9 @@ class OrderLineItemsTest {
     @Test
     void convertAllTest() {
         // given
-        Product 불고기 = new Product("불고기", BigDecimal.valueOf(1000L));
+        Product 불고기 = new Product("불고기", Price.of(BigDecimal.valueOf(1000L)));
         MenuGroup 메뉴_그룹 = new MenuGroup("메뉴 그룹");
-        Menu 메뉴 = Menu.Builder.of("메뉴1", BigDecimal.valueOf(2000L))
+        Menu 메뉴 = Menu.Builder.of("메뉴1", Price.of(BigDecimal.valueOf(2000L)))
                               .menuGroup(메뉴_그룹)
                               .menuProducts(Arrays.asList(new MenuProduct(불고기, 5)))
                               .build();

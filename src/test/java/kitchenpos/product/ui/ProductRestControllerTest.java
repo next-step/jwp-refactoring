@@ -2,6 +2,7 @@ package kitchenpos.product.ui;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import kitchenpos.MockMvcTestHelper;
+import kitchenpos.common.Price;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
@@ -43,7 +44,7 @@ class ProductRestControllerTest extends MockMvcTestHelper {
     void createTest() throws Exception {
         // given
         ProductRequest productRequest = new ProductRequest("불고기", BigDecimal.valueOf(1000L));
-        Product product = new Product("불고기", BigDecimal.valueOf(1000L));
+        Product product = new Product("불고기", Price.of(BigDecimal.valueOf(1000L)));
         ProductResponse expected = ProductResponse.of(product);
         Mockito.when(productService.create(any())).thenReturn(expected);
 
@@ -56,7 +57,7 @@ class ProductRestControllerTest extends MockMvcTestHelper {
                                                               ProductResponse.class);
         assertAll(() -> {
             assertThat(responseBody.getName()).isEqualTo(product.getName());
-            assertThat(responseBody.getPrice()).isEqualTo(product.getPrice());
+            assertThat(responseBody.getPrice()).isEqualTo(product.getPrice().getValue());
         });
         Mockito.verify(productService).create(any());
 
@@ -66,8 +67,8 @@ class ProductRestControllerTest extends MockMvcTestHelper {
     @Test
     void listTest() throws Exception {
         // then
-        Product 불고기 = new Product("불고기", BigDecimal.valueOf(1000L));
-        Product 삼겹살 = new Product("삼겹살", BigDecimal.valueOf(1500L));
+        Product 불고기 = new Product("불고기", Price.of(BigDecimal.valueOf(1000L)));
+        Product 삼겹살 = new Product("삼겹살", Price.of(BigDecimal.valueOf(1500L)));
         Mockito.when(productService.list()).thenReturn(Arrays.asList(ProductResponse.of(불고기),
                                                                      ProductResponse.of(삼겹살)));
 

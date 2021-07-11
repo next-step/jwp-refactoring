@@ -3,6 +3,7 @@ package kitchenpos.product;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
+import kitchenpos.common.Price;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
@@ -27,8 +28,8 @@ public class ProductIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        productRepository.save(new Product("테스트제품1", BigDecimal.valueOf(1000L)));
-        productRepository.save(new Product("테스트제품2", BigDecimal.valueOf(2000L)));
+        productRepository.save(new Product("테스트제품1", Price.of(BigDecimal.valueOf(1000L))));
+        productRepository.save(new Product("테스트제품2", Price.of(BigDecimal.valueOf(2000L))));
     }
 
 

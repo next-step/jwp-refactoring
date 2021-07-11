@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import kitchenpos.common.Price;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
@@ -66,16 +67,16 @@ public class OrderIntegrationTest {
         주문_테이블 = orderTableRepository.save(new OrderTable(3, false));
 
         MenuGroup 메뉴그룹 = menuGroupRepository.save(new MenuGroup("테스트메뉴그룹"));
-        Product 제품1 = productRepository.save(new Product("테스트제품1", BigDecimal.valueOf(1000L)));
-        Product 제품2 = productRepository.save(new Product("테스트제품2", BigDecimal.valueOf(3000L)));
+        Product 제품1 = productRepository.save(new Product("테스트제품1", Price.of(BigDecimal.valueOf(1000L))));
+        Product 제품2 = productRepository.save(new Product("테스트제품2", Price.of(BigDecimal.valueOf(3000L))));
 
-        메뉴1 = menuRepository.save(Menu.Builder.of("테스트메뉴1", BigDecimal.valueOf(3000L))
+        메뉴1 = menuRepository.save(Menu.Builder.of("테스트메뉴1", Price.of(BigDecimal.valueOf(3000L)))
                                               .menuGroup(메뉴그룹)
                                               .menuProducts(Arrays.asList(new MenuProduct(제품1, 2),
                                                                           new MenuProduct(제품2, 4)))
                                               .build());
 
-        메뉴2 = menuRepository.save(Menu.Builder.of("테스트메뉴2", BigDecimal.valueOf(5000L))
+        메뉴2 = menuRepository.save(Menu.Builder.of("테스트메뉴2", Price.of(BigDecimal.valueOf(5000L)))
                                               .menuGroup(메뉴그룹)
                                               .menuProducts(Arrays.asList(new MenuProduct(제품1, 2),
                                                                           new MenuProduct(제품2, 4)))
