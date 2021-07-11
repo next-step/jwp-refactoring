@@ -2,6 +2,7 @@ package kitchenpos.order.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -29,19 +30,19 @@ public class TableGroup {
     public TableGroup() {
     }
 
-    public TableGroup(OrderTables orderTables) {
+    public TableGroup(final OrderTables orderTables) {
         validateOrderTables(orderTables);
         this.orderTables.addAll(orderTables.toList());
         this.orderTables.updateTableGroup(this);
     }
 
-    private void validateOrderTables(OrderTables orderTables) {
+    private void validateOrderTables(final OrderTables orderTables) {
         if (isNotSatisfyToTableGroup(orderTables)) {
             throw new IllegalArgumentException("이미 사용 중이거나 다른 그룹에 속한 테이블은 그룹으로 설정할 수 없습니다.");
         }
     }
 
-    private boolean isNotSatisfyToTableGroup(OrderTables orderTables) {
+    private boolean isNotSatisfyToTableGroup(final OrderTables orderTables) {
         return orderTables.hasOccupiedTable() || orderTables.hasTableGroupId();
     }
 
@@ -59,5 +60,21 @@ public class TableGroup {
 
     public List<OrderTable> getOrderTables() {
         return orderTables.toList();
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        final TableGroup that = (TableGroup)o;
+        return Objects.equals(id, that.id) && Objects.equals(createdDate, that.createdDate)
+            && Objects.equals(orderTables, that.orderTables);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, createdDate, orderTables);
     }
 }

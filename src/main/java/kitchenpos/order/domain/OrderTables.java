@@ -3,6 +3,7 @@ package kitchenpos.order.domain;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -15,7 +16,7 @@ public class OrderTables {
     @OneToMany(mappedBy = "tableGroup", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<OrderTable> orderTables = new ArrayList<>();
 
-    public OrderTables(List<OrderTable> orderTables) {
+    public OrderTables(final List<OrderTable> orderTables) {
         this.orderTables = orderTables;
     }
 
@@ -34,13 +35,13 @@ public class OrderTables {
             .collect(Collectors.toList());
     }
 
-    public void ungroup(Orders orders) {
+    public void ungroup(final Orders orders) {
         validateOrderStatus(orders);
 
         orderTables.forEach(OrderTable::ungroup);
     }
 
-    private void validateOrderStatus(Orders orders) {
+    private void validateOrderStatus(final Orders orders) {
         orderTables.stream()
             .filter(it -> orders.isNotCompleted(it.getId()))
             .findFirst()
@@ -57,7 +58,7 @@ public class OrderTables {
         return orderTables.size();
     }
 
-    public void changeTableGroupId(Long tableGroupId) {
+    public void changeTableGroupId(final Long tableGroupId) {
         orderTables.forEach(orderTable -> {
             orderTable.changeTableGroupId(tableGroupId);
             orderTable.occupy();
@@ -74,11 +75,26 @@ public class OrderTables {
             .anyMatch(orderTable -> orderTable.getTableGroupId() != null);
     }
 
-    public void addAll(List<OrderTable> orderTables) {
+    public void addAll(final List<OrderTable> orderTables) {
         this.orderTables.addAll(orderTables);
     }
 
-    public void updateTableGroup(TableGroup tableGroup) {
+    public void updateTableGroup(final TableGroup tableGroup) {
         orderTables.forEach(orderTable -> orderTable.updateTableGroup(tableGroup));
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        final OrderTables that = (OrderTables)o;
+        return Objects.equals(orderTables, that.orderTables);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(orderTables);
     }
 }

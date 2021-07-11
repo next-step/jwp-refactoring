@@ -46,14 +46,14 @@ public class Order {
     public Order() {
     }
 
-    public Order(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+    public Order(final OrderTable orderTable, final OrderStatus orderStatus, final List<OrderLineItem> orderLineItems) {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderLineItems.addAll(orderLineItems);
         this.orderLineItems.updateOrder(this);
     }
 
-    public Order(OrderTable orderTable, OrderLineItems orderLineItems) {
+    public Order(final OrderTable orderTable, final OrderLineItems orderLineItems) {
         validateOrderTable(orderTable);
         this.orderTable = orderTable;
         this.orderLineItems.addAll(orderLineItems.toList());
@@ -61,7 +61,7 @@ public class Order {
         this.orderStatus = OrderStatus.COOKING;
     }
 
-    private void validateOrderTable(OrderTable orderTable) {
+    private void validateOrderTable(final OrderTable orderTable) {
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException("빈 테이블에는 주문할 수 없습니다.");
         }
@@ -91,7 +91,7 @@ public class Order {
         return orderLineItems.toList();
     }
 
-    public void changeStatus(OrderStatus orderStatus) {
+    public void changeStatus(final OrderStatus orderStatus) {
         if (Objects.equals(this.orderStatus, OrderStatus.COMPLETION)) {
             throw new IllegalArgumentException();
         }
@@ -101,5 +101,22 @@ public class Order {
 
     public boolean isNotCompleted() {
         return !Objects.equals(orderStatus, OrderStatus.COMPLETION);
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        final Order order = (Order)o;
+        return Objects.equals(id, order.id) && Objects.equals(orderTable, order.orderTable)
+            && orderStatus == order.orderStatus && Objects.equals(orderedTime, order.orderedTime)
+            && Objects.equals(orderLineItems, order.orderLineItems);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, orderTable, orderStatus, orderedTime, orderLineItems);
     }
 }

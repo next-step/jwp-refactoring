@@ -2,6 +2,7 @@ package kitchenpos.order.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -19,12 +20,12 @@ public class OrderLineItems {
     public OrderLineItems() {
     }
 
-    public OrderLineItems(List<OrderLineItem> orderLineItems) {
+    public OrderLineItems(final List<OrderLineItem> orderLineItems) {
         validate(orderLineItems);
         this.orderLineItems.addAll(orderLineItems);
     }
 
-    private void validate(List<OrderLineItem> orderLineItems) {
+    private void validate(final List<OrderLineItem> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
             throw new IllegalArgumentException();
         }
@@ -44,15 +45,30 @@ public class OrderLineItems {
         return orderLineItems;
     }
 
-    public void addAll(List<OrderLineItem> orderLineItems) {
+    public void addAll(final List<OrderLineItem> orderLineItems) {
         this.orderLineItems.addAll(orderLineItems);
     }
 
-    public void add(OrderLineItem orderLineItem) {
+    public void add(final OrderLineItem orderLineItem) {
         this.orderLineItems.add(orderLineItem);
     }
 
-    public void updateOrder(Order order) {
+    public void updateOrder(final Order order) {
         orderLineItems.forEach(orderLineItem -> orderLineItem.updateOrder(order));
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        final OrderLineItems that = (OrderLineItems)o;
+        return Objects.equals(orderLineItems, that.orderLineItems);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(orderLineItems);
     }
 }
