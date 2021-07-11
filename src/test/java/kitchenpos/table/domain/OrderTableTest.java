@@ -65,18 +65,4 @@ class OrderTableTest {
 		}).isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("단체 지정되어있는 테이블은 변경할 수 없습니다.");
 	}
-
-	@DisplayName("주문상태가 완료가 아닐때 그룹해제시 오류 발생")
-	@Test
-	void testUnGroup() {
-		// OrderTable orderTable = new OrderTable(null, new NumberOfGuests(3), false);
-		// List<OrderLineItem> orderLineItems = Arrays.asList(new OrderLineItem(null, null, 3));
-		// Order order = new Order(orderTable, OrderStatus.MEAL, null, orderLineItems);
-		//
-		// assertThatThrownBy(() -> {
-		// 	orderTable.unGroup();
-		// }).isInstanceOf(IllegalArgumentException.class)
-		// 	.hasMessageContaining("주문 상태가 완료되어야 단체지정이 해제가능합니다.");
-
-	}
 }

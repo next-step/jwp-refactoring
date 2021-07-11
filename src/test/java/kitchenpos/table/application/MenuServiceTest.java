@@ -85,7 +85,7 @@ class MenuServiceTest {
 		when(menuGroupRepository.findById(menuGroupId)).thenReturn(Optional.of(양식));
 		when(productRepository.findById(메뉴상품_피자.getProductId())).thenReturn(Optional.of(피자));
 		when(productRepository.findById(메뉴상품_토마토파스타.getProductId())).thenReturn(Optional.of(토마토파스타));
-		when(menuRepository.save(any())).thenReturn(피자파스타세트);
+		when(menuRepository.save(any(Menu.class))).thenReturn(피자파스타세트);
 
 		MenuResponse actual = menuService.create(menuRequest);
 

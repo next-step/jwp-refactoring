@@ -126,7 +126,7 @@ class TableGroupServiceTest {
 
 		when(orderTableRepository.findById(1L)).thenReturn(Optional.of(일번테이블));
 		when(orderTableRepository.findById(2L)).thenReturn(Optional.of(이번테이블));
-		when(tableGroupRepository.save(any())).thenReturn(단체지정);
+		when(tableGroupRepository.save(any(TableGroup.class))).thenReturn(단체지정);
 
 		TableGroupResponse actual = tableGroupService.create(tableGroupRequest);
 

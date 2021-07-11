@@ -134,7 +134,7 @@ class OrderServiceTest {
 
 		when(orderTableRepository.findById(1L)).thenReturn(Optional.of(주문테이블));
 		when(menuRepository.findById(2L)).thenReturn(Optional.of(피자파스타세트));
-		when(orderRepository.save(any())).thenReturn(주문);
+		when(orderRepository.save(any(Order.class))).thenReturn(주문);
 		OrderResponse actual = orderService.create(orderRequest);
 		//then
 		assertThat(actual.getOrderStatus()).isEqualTo(주문.getOrderStatus());
