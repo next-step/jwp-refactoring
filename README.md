@@ -81,8 +81,8 @@
 
 ### Step3 - 의존성 리팩토링
 
-- [ ] Aggregate 별 패키지 분리
-  - [ ] Order, Menu, Table
+- [x] Aggregate 별 패키지 분리
+  - [x] Order, Menu, Table
 - [ ] 메뉴 정보가 변경되더라도 주문 항목이 변경되지 않게 구현
 - [ ] 클래스, 패키지의 의존관계를 단방향으로 리팩토링
 - [ ] DB형상관리
