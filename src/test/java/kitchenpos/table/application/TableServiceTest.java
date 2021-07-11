@@ -122,13 +122,11 @@ class TableServiceTest {
         OrderTable orderTable = new OrderTable(1L, 1L, 2, true);
         OrderTableRequest changeTable = new OrderTableRequest(2, false);
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(orderTable));
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(true);
 
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), changeTable))
                 .isInstanceOf(IllegalArgumentException.class);
 
         verify(orderTableRepository, times(1)).findById(anyLong());
-        verify(orderRepository, times(1)).existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList());
     }
 
     @DisplayName("주문 테이블 guests(손님) 숫자값을 변경한다.")
