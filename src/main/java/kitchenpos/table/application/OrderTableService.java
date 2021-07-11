@@ -119,11 +119,11 @@ public class OrderTableService {
 
     private void changeEmptyValidCheck(OrderTableEntity savedOrderTable) {
         tableGroupValidCheck(savedOrderTable.getTableGroup());
-        orderStatusValidCheck(savedOrderTable.getId());
+        orderStatusValidCheck(savedOrderTable);
     }
 
-    private void orderStatusValidCheck(Long orderTableId) {
-        if (orderService.changeStatusValidCheck(orderTableId)) {
+    private void orderStatusValidCheck(OrderTableEntity orderTable) {
+        if (orderService.changeStatusValidCheck(orderTable)) {
             throw new IllegalArgumentException("주문이 조리나 식사 상태에서는 변경할 수 없습니다.");
         }
     }

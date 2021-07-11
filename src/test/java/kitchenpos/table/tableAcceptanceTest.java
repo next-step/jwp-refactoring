@@ -22,7 +22,7 @@ public class tableAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        orderTableRequest = new OrderTableRequest(1, true);
+        orderTableRequest = new OrderTableRequest(1, false);
         changeEmptyRequest = new OrderTableRequest(1, false);
         changeNumberOfGuestsRequest = new OrderTableRequest(2, false);
     }

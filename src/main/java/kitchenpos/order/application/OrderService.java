@@ -176,13 +176,13 @@ public class OrderService {
 
     }
 
-    public boolean changeStatusValidCheck(Long orderTableId) {
-        return orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()));
+    public boolean changeStatusValidCheck(OrderTableEntity ordertable) {
+        return orderRepository.existsByOrderTableAndOrderStatusIn(
+                ordertable, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
     }
 
-    public boolean existsByOrderTableIdInAndOrderStatusIn(List<OrderTableEntity> orderTables, List<String> asList) {
-        return orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTables, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()));
+    public boolean existsByOrderTableIdInAndOrderStatusIn(List<OrderTableEntity> orderTableIds, List<OrderStatus> orderStatuses) {
+        return orderRepository.existsByOrderTableInAndOrderStatusIn(orderTableIds, orderStatuses);
     }
 
 }

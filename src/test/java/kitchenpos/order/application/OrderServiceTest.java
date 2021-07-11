@@ -6,9 +6,8 @@ import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.table.application.OrderTableService;
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableEntity;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,11 +25,9 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -38,10 +35,11 @@ class OrderServiceTest {
     private MenuService menuService;
 
     @Mock
-    private OrderTableService orderTableService;
+    private OrderTableRepository orderTableRepository;
 
     @Mock
     private OrderRepository orderRepository;
+
 
 
     @InjectMocks
@@ -74,20 +72,21 @@ class OrderServiceTest {
     @Test
     void createFailBecauseOfNotExistMenuTest() {
         //given
-        given(menuService.countByIdIn(any())).willReturn(0);
+        doThrow(new IllegalArgumentException("등록된 메뉴가 아닙니다.")).when(menuService).findById(any());
 
         //when && then
         assertThatThrownBy(() -> orderService.createTemp(orderRequest))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("등록되지 않은 메뉴가 있습니다.");
+                .hasMessageContaining("등록된 메뉴가 아닙니다.");
     }
 
     @DisplayName("주문 테이블이 존재해야 한다.")
     @Test
     void createFailBecauseOfNotExistTableTest() {
         //given
-        given(menuService.countByIdIn(any())).willReturn(1);
-        doThrow(new IllegalArgumentException("등록되지 않은 주문 테이블입니다.")).when(orderTableService).findById(any());
+        given(orderTableRepository.findById(any())).willReturn(Optional.empty());
+        MenuEntity menuEntity = new MenuEntity();
+        given(menuService.findById(any())).willReturn(menuEntity);
 
         //when && then
         assertThatThrownBy(() -> orderService.createTemp(orderRequest))
@@ -100,9 +99,9 @@ class OrderServiceTest {
     @Test
     void createFailBecauseOfEmptyTableTest() {
         //given
-        given(menuService.countByIdIn(any())).willReturn(1);
+        given(menuService.findById(any())).willReturn(new MenuEntity());
         OrderTableEntity givenOrderTable = new OrderTableEntity(1L, null, 0, true);
-        given(orderTableService.findById(any())).willReturn(givenOrderTable);
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(givenOrderTable));
 
         //when && then
         assertThatThrownBy(() -> orderService.createTemp(orderRequest))
@@ -117,7 +116,7 @@ class OrderServiceTest {
         //given
         given(menuService.findById(any())).willReturn(new MenuEntity());
         OrderTableEntity givenOrderTable = new OrderTableEntity(1L, null, 0, false);
-        given(orderTableService.findById(any())).willReturn(givenOrderTable);
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(givenOrderTable));
         OrderEntity orderEntity = new OrderEntity(givenOrderTable, OrderStatus.COOKING, LocalDateTime.now(), new OrderLineItems(Arrays.asList(new OrderLineItemEntity())));
         given(orderRepository.save(any())).willReturn(orderEntity);
 
