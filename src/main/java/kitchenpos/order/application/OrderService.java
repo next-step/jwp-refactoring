@@ -42,19 +42,18 @@ public class OrderService {
         }
 
         final OrderTable orderTable = findOrderTable(orderRequest.getOrderTableId());
-        final OrderLineItems orderLineItems = makeOrderLineItems(orderRequest, menus);
+        final OrderLineItems orderLineItems = new OrderLineItems(toOrderLineItemList(orderRequest, menus));
         final Order order = new Order(orderTable, orderLineItems);
         final Order saved = orderRepository.save(order);
 
         return OrderResponse.of(saved);
     }
 
-    private OrderLineItems makeOrderLineItems(final OrderRequest orderRequest, final Menus menus) {
-        final OrderLineItems orderLineItems = new OrderLineItems();
-        orderRequest.getOrderLineItems()
-            .forEach(it -> orderLineItems.add(new OrderLineItem(menus.get(it.getMenuId()), it.getQuantity())));
-
-        return orderLineItems;
+    private List<OrderLineItem> toOrderLineItemList(final OrderRequest orderRequest, final Menus menus) {
+        return orderRequest.getOrderLineItems()
+            .stream()
+            .map(it -> new OrderLineItem(menus.get(it.getMenuId()), it.getQuantity()))
+            .collect(Collectors.toList());
     }
 
     private OrderTable findOrderTable(final Long orderTableId) {
