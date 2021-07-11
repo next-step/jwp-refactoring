@@ -2,18 +2,20 @@ package kitchenpos.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@DataJpaTest
 public class OrderTableTest {
     @DisplayName("빈테이블 여부 변경")
     @Test
     public void 빈테이블여부_변경_확인() throws Exception {
         //given
-        OrderTable orderTable = new OrderTable(1L, null, 5, false);
+        OrderTable orderTable = new OrderTable(5, false);
 
         //when
         orderTable.changeEmpty(true);
@@ -26,11 +28,13 @@ public class OrderTableTest {
     @Test
     public void 단체지정이되어있는경우_빈테이블여부_변경_예외() throws Exception {
         //given
-        OrderTable orderTable = new OrderTable(1L, new TableGroup(1L), 5, false);
+        OrderTable orderTable1 = new OrderTable(5, true);
+        OrderTable orderTable2 = new OrderTable(5, true);
+        new TableGroup(Arrays.asList(orderTable1, orderTable2));
 
         //when
         //then
-        assertThatThrownBy(() -> orderTable.changeEmpty(true))
+        assertThatThrownBy(() -> orderTable1.changeEmpty(true))
                 .hasMessage("단체지정이 되어있으면 안됩니다.")
                 .isInstanceOf(IllegalArgumentException.class);
     }
@@ -39,8 +43,8 @@ public class OrderTableTest {
     @Test
     public void 주문상태가조리인경우_빈테이블여부_변경_예외() throws Exception {
         //given
-        OrderTable orderTable = new OrderTable(1L, null, 5, false);
-        new Order(1L, orderTable, Arrays.asList(new OrderLineItem(1L, null, 1L, 1L)));
+        OrderTable orderTable = new OrderTable(5, false);
+        new Order(orderTable, Arrays.asList(new OrderLineItem(1L, 1L)));
         orderTable.getOrders().stream()
                 .forEach(order -> order.setOrderStatus(OrderStatus.COOKING));
 
@@ -55,8 +59,8 @@ public class OrderTableTest {
     @Test
     public void 주문상태가식사인경우_빈테이블여부_변경_예외() throws Exception {
         //given
-        OrderTable orderTable = new OrderTable(1L, null, 5, false);
-        new Order(1L, orderTable, Arrays.asList(new OrderLineItem(1L, null, 1L, 1L)));
+        OrderTable orderTable = new OrderTable(5, false);
+        new Order(orderTable, Arrays.asList(new OrderLineItem(1L, 1L)));
         orderTable.getOrders().stream()
                 .forEach(order -> order.setOrderStatus(OrderStatus.MEAL));
 
@@ -71,7 +75,7 @@ public class OrderTableTest {
     @Test
     public void 방문한손님수_변경_확인() throws Exception {
         //given
-        OrderTable orderTable = new OrderTable(1L, null, 5, false);
+        OrderTable orderTable = new OrderTable(5, false);
 
         //when
         orderTable.changeNumberOfGuests(2);
@@ -84,7 +88,7 @@ public class OrderTableTest {
     @Test
     public void 방문한손님수가음수인경우_방문한손님수_변경_확인() throws Exception {
         //given
-        OrderTable orderTable = new OrderTable(1L, null, 5, false);
+        OrderTable orderTable = new OrderTable(5, false);
 
         //when
         //then
@@ -95,7 +99,7 @@ public class OrderTableTest {
     @Test
     public void 빈테이블인경우_방문한손님수_변경_확인() throws Exception {
         //given
-        OrderTable orderTable = new OrderTable(1L, null, 0, true);
+        OrderTable orderTable = new OrderTable(0, true);
 
         //when
         //then

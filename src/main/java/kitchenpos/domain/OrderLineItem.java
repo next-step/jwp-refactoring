@@ -19,12 +19,6 @@ public class OrderLineItem {
 
     protected OrderLineItem() {}
 
-    public OrderLineItem(Long seq, Order order, Long menuId, Long quantity) {
-        this(menuId, quantity);
-        this.seq = seq;
-        this.order = order;
-    }
-
     public OrderLineItem(Long menuId, Long quantity) {
         this.menuId = menuId;
         this.quantity = new Quantity(quantity);

@@ -27,16 +27,6 @@ public class Menu {
     protected Menu() {
     }
 
-    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup) {
-        this(name, price, menuGroup);
-        this.id = id;
-    }
-
-    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        this(name, price, menuGroup, menuProducts);
-        this.id = id;
-    }
-
     public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
         this.name = name;
         this.price = new Price(price);

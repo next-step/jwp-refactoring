@@ -23,11 +23,6 @@ public class MenuProduct {
     protected MenuProduct() {
     }
 
-    public MenuProduct(Long seq, Menu menu, Product product, Long quantity) {
-        this(menu, product, quantity);
-        this.seq = seq;
-    }
-
     public MenuProduct(Menu menu, Product product, Long quantity) {
         this.menu = menu;
         this.product = product;

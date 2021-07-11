@@ -39,11 +39,6 @@ public class Order {
         orderLineItems.forEach(this::addOrderLineItem);
     }
 
-    public Order(Long id, OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        this(orderTable, orderLineItems);
-        this.id = id;
-    }
-
     private void verifyAvailable(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException("주문테이블이 빈테이블입니다.");

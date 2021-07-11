@@ -27,15 +27,6 @@ public class TableGroup {
 
     protected TableGroup() {}
 
-    public TableGroup(Long id) {
-        this.id = id;
-    }
-
-    public TableGroup(Long id, List<OrderTable> orderTables) {
-        this(orderTables);
-        this.id = id;
-    }
-
     public TableGroup(List<OrderTable> orderTables) {
         verifyAvailable(orderTables);
         group(orderTables);

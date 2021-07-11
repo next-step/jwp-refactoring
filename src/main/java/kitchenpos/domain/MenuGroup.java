@@ -18,19 +18,14 @@ public class MenuGroup {
     protected MenuGroup() {
     }
 
-    public MenuGroup(Long id, String name) {
-        this(name);
-        this.id = id;
+    public MenuGroup(String name) {
+        this.name = name;
     }
 
     public void addMenu(Menu menu) {
         if (!menus.contains(menu)) {
             menus.add(menu);
         }
-    }
-
-    public MenuGroup(String name) {
-        this.name = name;
     }
 
     public Long getId() {
