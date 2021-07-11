@@ -17,6 +17,8 @@ import kitchenpos.dto.TableGroupRequest;
 
 @Service
 public class TableGroupService {
+    private static final int MINIMUM_TABLE_SIZE = 2;
+
     private final OrderDao orderDao;
     private final OrderTableDao orderTableDao;
     private final TableGroupDao tableGroupDao;
@@ -38,7 +40,7 @@ public class TableGroupService {
     }
 
     private void validateRequest(TableGroupRequest tableGroupRequest) {
-        if (tableGroupRequest.isEmptyOrderTables() || tableGroupRequest.orderTablesSize() < 2) {
+        if (tableGroupRequest.isEmptyOrderTables() || tableGroupRequest.orderTablesSize() < MINIMUM_TABLE_SIZE) {
             throw new IllegalArgumentException();
         }
     }
@@ -65,12 +67,12 @@ public class TableGroupService {
     }
 
     private List<OrderTable> findAllOrderTable(Long tableGroupId) {
-        return orderTableDao.findAllByTableGroupId(tableGroupId);
+        return orderTableDao.findAllByTableGroup_Id(tableGroupId);
     }
 
     private List<Order> findAllOrder(OrderTables orderTables) {
         final List<Long> orderTableIds = orderTables.ids();
 
-        return orderDao.findAllByOrderTableIdIn(orderTableIds);
+        return orderDao.findAllByOrderTable_IdIn(orderTableIds);
     }
 }

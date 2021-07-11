@@ -14,5 +14,5 @@ public interface OrderLineItemDao extends JpaRepository<OrderLineItem, Long> {
 
     List<OrderLineItem> findAll();
 
-    List<OrderLineItem> findAllByOrderId(Long orderId);
+    List<OrderLineItem> findAllByOrder_Id(Long orderId);
 }

@@ -6,11 +6,13 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Orders;
 import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TableService {
@@ -29,8 +31,11 @@ public class TableService {
         return orderTableDao.save(orderTable);
     }
 
-    public List<OrderTable> list() {
-        return orderTableDao.findAll();
+    public List<OrderTableResponse> list() {
+        return orderTableDao.findAll()
+            .stream()
+            .map(OrderTableResponse::of)
+            .collect(Collectors.toList());
     }
 
     @Transactional
@@ -49,7 +54,7 @@ public class TableService {
     }
 
     private List<Order> findAllOrder(Long orderTableId) {
-        return orderDao.findAllByOrderTableId(orderTableId);
+        return orderDao.findAllByOrderTable_Id(orderTableId);
     }
 
     private OrderTable findOrderTable(Long orderTableId) {

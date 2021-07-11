@@ -22,7 +22,6 @@ import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTables;
-import kitchenpos.domain.Orders;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.TableGroupRequest;
 
@@ -110,14 +109,14 @@ class TableGroupServiceTest {
         OrderTable orderTable = new OrderTable();
         OrderTable orderTable2 = new OrderTable();
         List<OrderTable> orderTables = Arrays.asList(orderTable, orderTable2);
-        given(orderTableDao.findAllByTableGroupId(tableGroupId)).willReturn(orderTables);
+        given(orderTableDao.findAllByTableGroup_Id(tableGroupId)).willReturn(orderTables);
 
         // when
         tableGroupService.ungroup(tableGroupId);
 
         // then
-        verify(orderTableDao).findAllByTableGroupId(tableGroupId);
-        verify(orderDao).findAllByOrderTableIdIn(anyList());
+        verify(orderTableDao).findAllByTableGroup_Id(tableGroupId);
+        verify(orderDao).findAllByOrderTable_IdIn(anyList());
     }
 
     @Test

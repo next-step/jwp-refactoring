@@ -14,5 +14,5 @@ public interface MenuProductDao extends JpaRepository<MenuProduct, Long> {
 
     List<MenuProduct> findAll();
 
-    List<MenuProduct> findAllByMenuId(Long menuId);
+    List<MenuProduct> findAllByMenu_Id(Long menuId);
 }

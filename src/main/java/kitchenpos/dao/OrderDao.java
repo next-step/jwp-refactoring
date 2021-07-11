@@ -14,7 +14,7 @@ public interface OrderDao extends JpaRepository<Order, Long> {
 
     List<Order> findAll();
 
-    List<Order> findAllByOrderTableId(Long orderTableId);
+    List<Order> findAllByOrderTable_Id(Long orderTableId);
 
-    List<Order> findAllByOrderTableIdIn(List<Long> orderTableIds);
+    List<Order> findAllByOrderTable_IdIn(List<Long> orderTableIds);
 }
