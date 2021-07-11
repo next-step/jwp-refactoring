@@ -20,7 +20,7 @@ public class Order {
     @ManyToOne(fetch = FetchType.LAZY)
     private OrderTable orderTable;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = OrderStatusConverter.class)
     private OrderStatus orderStatus;
     private LocalDateTime orderedTime;
 
