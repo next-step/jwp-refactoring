@@ -2,6 +2,7 @@ package kitchenposNew.menu.dto;
 
 import kitchenposNew.menu.domain.Menu;
 import kitchenposNew.menu.domain.MenuProduct;
+import kitchenposNew.menu.domain.MenuProducts;
 import kitchenposNew.menu.domain.Product;
 import kitchenposNew.wrap.Price;
 
@@ -27,7 +28,7 @@ public class MenuRequest {
 
     public Menu toMenu(List<Product> products) {
         List<MenuProduct> menuProducts = toMenuProduct(products);
-        return new Menu(name, new Price(price), menuGroupId, menuProducts);
+        return new Menu(name, new Price(price), menuGroupId, new MenuProducts(menuProducts));
     }
 
     private List<MenuProduct> toMenuProduct(List<Product> products) {

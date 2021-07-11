@@ -20,42 +20,33 @@ public class Menu {
 
     private Long menuGroupId;
 
-    @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MenuProduct> menuProducts;
+    @Embedded
+    private MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {
     }
 
-    public Menu(Long id, String name, Price price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    public Menu(Long id, String name, Price price, Long menuGroupId, MenuProducts menuProducts) {
         priceValidate(price, menuProducts);
         this.id = id;
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
-        registerProduct();
+        menuProducts.registerProduct(this);
     }
 
-    public Menu(String name, Price price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    public Menu(String name, Price price, Long menuGroupId, MenuProducts menuProducts) {
         priceValidate(price, menuProducts);
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
-        registerProduct();
+        menuProducts.registerProduct(this);
     }
 
-    private void registerProduct() {
-        menuProducts.forEach(
-                menuProduct -> menuProduct.registerMenu(this)
-        );
-    }
-
-    private void priceValidate(Price price, List<MenuProduct> menuProducts) {
-        BigDecimal productsPrice = BigDecimal.ZERO;
-        for (MenuProduct menuProduct: menuProducts) {
-            productsPrice = productsPrice.add(menuProduct.getPriceByQuantity());
-        }
+    private void priceValidate(Price price, MenuProducts menuProducts) {
+        BigDecimal productsPrice = menuProducts.calculationTotalAmount();
         if (!price.isCheapThanProductsPrice(productsPrice)) {
             throw new IllegalArgumentException();
         }
@@ -74,7 +65,7 @@ public class Menu {
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return this.menuProducts;
+        return this.menuProducts.getMenuProducts();
     }
 
     public Long getMenuGroupId() {
