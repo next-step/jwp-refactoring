@@ -71,7 +71,7 @@ public class OrderTables {
 
     public boolean hasTableGroupId() {
         return orderTables.stream()
-            .anyMatch(orderTable -> orderTable.getId() != null);
+            .anyMatch(orderTable -> orderTable.getTableGroupId() != null);
     }
 
     public void addAll(List<OrderTable> orderTables) {
