@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.common.valueobject.Price;
 import org.springframework.data.annotation.ReadOnlyProperty;
 
 import javax.persistence.*;
@@ -16,8 +17,8 @@ public class Menu {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private BigDecimal price;
+    @Embedded
+    private Price price;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_group_id")
@@ -33,7 +34,7 @@ public class Menu {
     private Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = name;
-        this.price = price;
+        this.price = Price.of(price);
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
     }
@@ -54,7 +55,7 @@ public class Menu {
         return name;
     }
 
-    public BigDecimal getPrice() {
+    public Price getPrice() {
         return price;
     }
 

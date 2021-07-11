@@ -47,8 +47,8 @@ class TableGroupServiceTest extends DataBaseCleanSupport {
         OrderTable orderTable1 = saveOrderTable(4, true);
         OrderTable orderTable2 = saveOrderTable(2, true);
         OrderTableGroupRequest tableGroup = OrderTableGroupRequest.of(LocalDateTime.now(), Lists.list(
-                OrderTableRequest.of(orderTable1.getId(), null, orderTable1.getNumberOfGuests(), orderTable1.isEmpty()),
-                OrderTableRequest.of(orderTable2.getId(), null, orderTable2.getNumberOfGuests(), orderTable2.isEmpty())));
+                OrderTableRequest.of(orderTable1.getId(), null, orderTable1.getNumberOfGuests().getValue(), orderTable1.isEmpty()),
+                OrderTableRequest.of(orderTable2.getId(), null, orderTable2.getNumberOfGuests().getValue(), orderTable2.isEmpty())));
 
         //when
         OrderTableGroupResponse actual = orderTableGroupService.create(tableGroup);
@@ -76,7 +76,7 @@ class TableGroupServiceTest extends DataBaseCleanSupport {
         //given
         OrderTable orderTable1 = saveOrderTable(4, true);
         OrderTableGroupRequest tableGroup = OrderTableGroupRequest.of(LocalDateTime.now(), Lists.list(
-                OrderTableRequest.of(orderTable1.getId(), null, orderTable1.getNumberOfGuests(), orderTable1.isEmpty())));
+                OrderTableRequest.of(orderTable1.getId(), null, orderTable1.getNumberOfGuests().getValue(), orderTable1.isEmpty())));
 
         //when
         assertThatThrownBy(() -> orderTableGroupService.create(tableGroup))
@@ -102,8 +102,8 @@ class TableGroupServiceTest extends DataBaseCleanSupport {
         OrderTable orderTable1 = saveOrderTable(4, true);
         OrderTable orderTable2 = saveOrderTable(2, false);
         OrderTableGroupRequest tableGroup = OrderTableGroupRequest.of(LocalDateTime.now(), Lists.list(
-                OrderTableRequest.of(orderTable1.getId(), null, orderTable1.getNumberOfGuests(), orderTable1.isEmpty()),
-                OrderTableRequest.of(orderTable2.getId(), null, orderTable2.getNumberOfGuests(), orderTable2.isEmpty())));
+                OrderTableRequest.of(orderTable1.getId(), null, orderTable1.getNumberOfGuests().getValue(), orderTable1.isEmpty()),
+                OrderTableRequest.of(orderTable2.getId(), null, orderTable2.getNumberOfGuests().getValue(), orderTable2.isEmpty())));
 
         //when
         assertThatThrownBy(() -> orderTableGroupService.create(tableGroup))

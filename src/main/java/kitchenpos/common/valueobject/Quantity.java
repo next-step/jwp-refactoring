@@ -10,7 +10,7 @@ import java.util.Objects;
 public class Quantity {
     static final long MIN_QUANTITY = 0;
 
-    @Column(name = "quantity")
+    @Column(name = "quantity", nullable = false)
     private final long value;
 
     protected Quantity() {

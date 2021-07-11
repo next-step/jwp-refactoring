@@ -1,17 +1,18 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.common.valueobject.Price;
+import kitchenpos.common.valueobject.Quantity;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.presentation.dto.MenuProductRequest;
 import kitchenpos.menu.presentation.dto.MenuRequest;
 import kitchenpos.menu.presentation.dto.MenuResponse;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class MenuService {
@@ -27,21 +28,17 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        final BigDecimal price = menuRequest.getPrice();
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
-
         MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId()).orElseThrow(IllegalArgumentException::new);
         Menu menu = Menu.of(menuRequest.getName(), menuRequest.getPrice(), menuGroup);
 
         BigDecimal sum = BigDecimal.ZERO;
         for (final MenuProductRequest menuProductRequest : menuRequest.getMenuProductRequests()) {
             final Product product = productRepository.findById(menuProductRequest.getProductId()).orElseThrow(IllegalArgumentException::new);
-            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProductRequest.getQuantity())));
+            Price price = product.getPrice().calculatePriceByQuantity(Quantity.of(menuProductRequest.getQuantity()));
+            sum = sum.add(price.getValue());
             menu.addMenuProduct(MenuProduct.of(product, menuProductRequest.getQuantity()));
         }
-        if (price.compareTo(sum) > 0) {
+        if (menu.getPrice().isBiggerThan(sum)) {
             throw new IllegalArgumentException();
         }
 

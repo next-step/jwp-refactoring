@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.common.valueobject.exception.NegativePriceException;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
@@ -91,7 +92,7 @@ class MenuServiceTest extends DataBaseCleanSupport {
 
         //when
         assertThatThrownBy(() -> menuService.create(menuRequest))
-                .isInstanceOf(IllegalArgumentException.class); //then
+                .isInstanceOf(NegativePriceException.class); //then
     }
 
     @DisplayName("메뉴는 속할 메뉴 그룹을 지정해야한다.")

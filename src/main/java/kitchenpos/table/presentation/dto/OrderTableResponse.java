@@ -24,9 +24,9 @@ public class OrderTableResponse {
 
     public static OrderTableResponse of(OrderTable orderTable) {
         if (Objects.isNull(orderTable.getTableGroup())) {
-            return new OrderTableResponse(orderTable.getId(), null, orderTable.getNumberOfGuests(), orderTable.isEmpty());
+            return new OrderTableResponse(orderTable.getId(), null, orderTable.getNumberOfGuests().getValue(), orderTable.isEmpty());
         }
-        return new OrderTableResponse(orderTable.getId(), orderTable.getTableGroup().getId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
+        return new OrderTableResponse(orderTable.getId(), orderTable.getTableGroup().getId(), orderTable.getNumberOfGuests().getValue(), orderTable.isEmpty());
     }
 
     public static List<OrderTableResponse> ofList(List<OrderTable> orderTables) {

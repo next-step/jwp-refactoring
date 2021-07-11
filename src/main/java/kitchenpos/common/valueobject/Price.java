@@ -11,7 +11,7 @@ import java.util.Objects;
 public class Price {
     static final long MIN_PRICE = 0;
 
-    @Column(name = "price")
+    @Column(name = "price", nullable = false)
     private final BigDecimal value;
 
     protected Price() {
@@ -35,6 +35,14 @@ public class Price {
 
     public BigDecimal getValue() {
         return BigDecimal.valueOf(value.longValue());
+    }
+
+    public Price calculatePriceByQuantity(Quantity quantity) {
+        return Price.of(value.multiply(BigDecimal.valueOf(quantity.getValue())));
+    }
+
+    public boolean isBiggerThan(BigDecimal value) {
+        return this.value.compareTo(value) > 0;
     }
 
     @Override

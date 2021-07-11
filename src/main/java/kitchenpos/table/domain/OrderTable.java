@@ -11,7 +11,9 @@ public class OrderTable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "table_group_id")
     private OrderTableGroup tableGroup;
-    private int numberOfGuests;
+
+    @Embedded
+    private NumberOfGuests numberOfGuests;
     private boolean empty;
 
     protected OrderTable() {
@@ -20,7 +22,7 @@ public class OrderTable {
     private OrderTable(Long id, OrderTableGroup tableGroup, int numberOfGuests, boolean empty) {
         this.id = id;
         this.tableGroup = tableGroup;
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
         this.empty = empty;
     }
 
@@ -40,7 +42,7 @@ public class OrderTable {
         return tableGroup;
     }
 
-    public int getNumberOfGuests() {
+    public NumberOfGuests getNumberOfGuests() {
         return numberOfGuests;
     }
 
@@ -53,7 +55,7 @@ public class OrderTable {
     }
 
     public void setNumberOfGuests(int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
     }
 
     public void setTableGroup(OrderTableGroup orderTableGroup) {

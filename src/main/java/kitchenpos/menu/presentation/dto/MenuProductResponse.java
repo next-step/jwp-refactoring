@@ -22,7 +22,7 @@ public class MenuProductResponse {
     }
 
     public static MenuProductResponse of(MenuProduct menuProduct) {
-        return new MenuProductResponse(menuProduct.getSeq(), menuProduct.getProduct().getId(), menuProduct.getProduct().getId(), menuProduct.getQuantity());
+        return new MenuProductResponse(menuProduct.getSeq(), menuProduct.getProduct().getId(), menuProduct.getProduct().getId(), menuProduct.getQuantity().getValue());
     }
 
     public static List<MenuProductResponse> ofList(List<MenuProduct> menuProducts) {
