@@ -102,10 +102,11 @@
     * [DB도 형상관리를 해보자!](https://meetup.toast.com/posts/173)
     
 ### 구현 list
-- [ ] Spring Data jpa 의존성 추가
-- [ ] menu service refactoring
-- [ ] menuProduct service refactoring
-- [ ] menuGroup service refactoring
+- [x] Spring Data jpa 의존성 추가
+- [x] menu service refactoring
+    - [ ] menuProduct relation refactoring
+- [x] menuGroup service refactoring
+- [x] product service refactoring
 - [ ] table service refactoring
 - [ ] tableGroup service refactoring
 - [ ] order service refactoring
