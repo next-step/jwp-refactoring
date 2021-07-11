@@ -51,17 +51,6 @@ class ProductServiceTest {
     }
 
     @Test
-    void 상품_가격_음수_등록시_등록_실패() {
-        product.setPrice(new BigDecimal(-1000));
-        assertThatThrownBy(() -> 상품_등록(product)).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    void 상품_가격_null값_등록시_등록_실패() {
-        assertThatThrownBy(() -> 상품_등록(product)).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
     void 등록된_상품_목록_조회() {
         when(productDao.findAll()).thenReturn(Arrays.asList(product));
         List<Product> products = productService.list();

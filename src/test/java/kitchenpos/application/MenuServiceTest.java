@@ -105,18 +105,6 @@ class MenuServiceTest {
     }
 
     @Test
-    void 메뉴_가격에_음수_입력_하여_등록_요청_시_에러_발생() {
-        메뉴.setPrice(new BigDecimal(-1000));
-        assertThatThrownBy(() -> menuService.create(메뉴)).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    void 메뉴_가격에_null_입력_하여_등록_요청_시_에러_발생() {
-        메뉴.setPrice(null);
-        assertThatThrownBy(() -> menuService.create(메뉴)).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
     void 존재하지않는_메뉴그룹_아이디_등록_요청_시_에러_발생() {
         when(menuGroupDao.existsById(1L)).thenReturn(false);
         assertThatThrownBy(() -> menuService.create(메뉴)).isInstanceOf(IllegalArgumentException.class);
