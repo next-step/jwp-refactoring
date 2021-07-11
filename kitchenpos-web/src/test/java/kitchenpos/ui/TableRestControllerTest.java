@@ -87,7 +87,7 @@ class TableRestControllerTest {
         OrderTable savedOrderTable = orderTableRepository.save(orderTable);
 
         OrderTableRequest orderTableRequest = new OrderTableRequest(0, true);
-        savedOrderTable.changeEmpty(orderTableRequest);
+        savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
 
         String requestBody = objectMapper.writeValueAsString(orderTableRequest);
 

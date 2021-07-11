@@ -42,7 +42,7 @@ public class TableService {
         List<Order> orders = orderRepository.findByOrderTableId(orderTableId);
         orders.forEach(order -> order.isEnabledChangeEmptyStatus());
 
-        savedOrderTable.changeEmpty(orderTableRequest);
+        savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
 
         return OrderTableResponse.of(savedOrderTable);
     }
