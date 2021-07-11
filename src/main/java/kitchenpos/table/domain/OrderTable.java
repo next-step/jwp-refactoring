@@ -2,10 +2,12 @@ package kitchenpos.table.domain;
 
 import kitchenpos.table.exception.EmptyException;
 import kitchenpos.table.exception.IllegalNumberOfGuestsException;
-import kitchenpos.table.exception.NullGroupException;
-import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.table.exception.NullGroupIdException;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.Objects;
 
 @Entity
@@ -14,23 +16,22 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private TableGroup tableGroup;
+    private Long tableGroupId;
     private int numberOfGuests;
     private boolean empty;
 
     protected OrderTable() {
     }
 
-    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
 
-    public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
-        this(null, tableGroup, numberOfGuests, empty);
+    public OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
+        this(null, tableGroupId, numberOfGuests, empty);
     }
 
     public OrderTable(int numberOfGuests, boolean empty) {
@@ -41,8 +42,8 @@ public class OrderTable {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     public int getNumberOfGuests() {
@@ -54,13 +55,13 @@ public class OrderTable {
     }
 
     public void changeEmpty(final boolean empty) {
-        validateGroup();
+        validateGroupId();
         this.empty = empty;
     }
 
-    private void validateGroup() {
-        if (Objects.nonNull(tableGroup)) {
-            throw new NullGroupException();
+    private void validateGroupId() {
+        if (Objects.nonNull(tableGroupId)) {
+            throw new NullGroupIdException();
         }
     }
 
@@ -89,7 +90,7 @@ public class OrderTable {
     }
 
     public void upgroup() {
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 
     @Override
@@ -100,11 +101,11 @@ public class OrderTable {
         return numberOfGuests == that.numberOfGuests &&
                 empty == that.empty &&
                 Objects.equals(id, that.id) &&
-                Objects.equals(tableGroup, that.tableGroup);
+                Objects.equals(tableGroupId, that.tableGroupId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, tableGroup, numberOfGuests, empty);
+        return Objects.hash(id, tableGroupId, numberOfGuests, empty);
     }
 }

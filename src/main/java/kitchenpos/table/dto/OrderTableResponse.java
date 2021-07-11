@@ -21,7 +21,7 @@ public class OrderTableResponse {
     }
 
     public static OrderTableResponse from(OrderTable save) {
-        return new OrderTableResponse(save.getId(), save.getTableGroup().getId(), save.getNumberOfGuests(), save.isEmpty());
+        return new OrderTableResponse(save.getId(), save.getTableGroupId(), save.getNumberOfGuests(), save.isEmpty());
     }
 
     public Long getId() {

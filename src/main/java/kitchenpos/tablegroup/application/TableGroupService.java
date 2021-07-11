@@ -54,7 +54,7 @@ public class TableGroupService {
     }
 
     private void checkOrderTableEmptyOrGroupNull(OrderTable savedOrderTable) {
-        if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup())) {
+        if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
             throw new IllegalOrderTableException();
         }
     }
