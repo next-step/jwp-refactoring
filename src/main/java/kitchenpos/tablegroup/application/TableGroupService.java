@@ -36,9 +36,4 @@ public class TableGroupService {
         tableGroup.ungroupTables();
         tableGroupRepository.delete(tableGroup);
     }
-
-    private OrderTable findByIdOrderTable(OrderTableRequest orderTableRequest) {
-        return orderTableRepository.findById(orderTableRequest.getId())
-                .orElseThrow(() -> new IllegalArgumentException("주문 테이블을 찾을 수 없습니다."));
-    }
 }

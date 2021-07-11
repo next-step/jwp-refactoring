@@ -13,7 +13,7 @@ public class Price {
 
     protected Price() {}
 
-    private Price(final BigDecimal price) {
+    public Price(final BigDecimal price) {
         validate(price);
         this.price = price;
     }

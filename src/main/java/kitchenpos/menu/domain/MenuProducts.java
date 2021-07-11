@@ -33,4 +33,8 @@ public class MenuProducts {
                 .map(MenuProduct::calculatePrice)
                 .reduce(Price.ZERO, Price::add);
     }
+
+    public void updateMenu(Menu menu) {
+        menuProducts.forEach(menuProduct -> menuProduct.updateMenu(menu));
+    }
 }
