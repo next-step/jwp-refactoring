@@ -1,11 +1,11 @@
 package kitchenpos.application.mock;
 
-import kitchenpos.application.TableGroupService;
+import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.table.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
+import kitchenpos.tablegroup.dao.TableGroupDao;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
