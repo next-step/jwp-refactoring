@@ -161,4 +161,5 @@ public class OrderTableService {
     public List<OrderTableEntity> findAllByIdIn(List<Long> orderTableIds) {
         return orderTableRepository.findAllByIdIn(orderTableIds);
     }
+
 }

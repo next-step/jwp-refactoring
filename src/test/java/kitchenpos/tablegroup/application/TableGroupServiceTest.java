@@ -1,5 +1,6 @@
 package kitchenpos.tablegroup.application;
 
+import kitchenpos.application.OrderService;
 import kitchenpos.table.application.OrderTableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableEntity;
@@ -28,6 +29,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willReturn;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,6 +39,8 @@ class TableGroupServiceTest {
     private OrderTableService orderTableService;
     @Mock
     private TableGroupRepository tableGroupRepository;
+    @Mock
+    private OrderService orderService;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -131,5 +135,37 @@ class TableGroupServiceTest {
         //then
         assertThat(tableGroupResponse.getOrderTables().size()).isEqualTo(tableGroupRequest.getOrderTables().size());
     }
+
+
+    @DisplayName("주문 테이블의 주문 상태가 `조리`, `식사` 이면 해제할 수 없다.")
+    @Test
+    void ungroupFailBecauseOfOrderStatusTest() {
+        //given
+        OrderTableEntity normalTableEntity = new OrderTableEntity(1L,null,1,true);
+        OrderTableEntity normalTableEntity2 = new OrderTableEntity(1L, null,2,true);
+        TableGroupEntity tableGroupEntity =new TableGroupEntity(1L, LocalDateTime.now(), new OrderTables(Arrays.asList(normalTableEntity,normalTableEntity2)));
+        given(tableGroupRepository.findById(any())).willReturn(java.util.Optional.of(tableGroupEntity));
+        given(orderService.existsByOrderTableIdInAndOrderStatusIn(any(),any())).willReturn(true);
+
+        //when && then
+        assertThatThrownBy(() -> tableGroupService.ungroupTemp(1L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("주문이 조리나 식사 상태에서는 변경할 수 없습니다.");
+    }
+
+    @DisplayName("단체 지정 해제.")
+    @Test
+    void ungroupTest() {
+        //given
+        OrderTableEntity normalTableEntity = new OrderTableEntity(1L,null,1,true);
+        OrderTableEntity normalTableEntity2 = new OrderTableEntity(1L, null,2,true);
+        TableGroupEntity tableGroupEntity =new TableGroupEntity(1L, LocalDateTime.now(), new OrderTables(Arrays.asList(normalTableEntity,normalTableEntity2)));
+        given(tableGroupRepository.findById(any())).willReturn(java.util.Optional.of(tableGroupEntity));
+        given(orderService.existsByOrderTableIdInAndOrderStatusIn(any(),any())).willReturn(false);
+
+        //when
+        tableGroupService.ungroupTemp(any());
+    }
+
 
 }

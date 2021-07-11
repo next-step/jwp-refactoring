@@ -1,5 +1,6 @@
 package kitchenpos.tablegroup.application;
 
+import kitchenpos.application.OrderService;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.table.application.OrderTableService;
 import kitchenpos.table.dao.OrderTableDao;
@@ -34,14 +35,17 @@ public class TableGroupService {
 
     private final OrderTableService orderTableService;
     private final TableGroupRepository tableGroupRepository;
+    private final OrderService orderService;
 
-    public TableGroupService(OrderDao orderDao, OrderTableDao orderTableDao, TableGroupDao tableGroupDao, OrderTableService orderTableService, TableGroupRepository tableGroupRepository) {
+    public TableGroupService(OrderDao orderDao, OrderTableDao orderTableDao, TableGroupDao tableGroupDao, OrderTableService orderTableService, TableGroupRepository tableGroupRepository, OrderService orderService) {
         this.orderDao = orderDao;
         this.orderTableDao = orderTableDao;
         this.tableGroupDao = tableGroupDao;
         this.orderTableService = orderTableService;
         this.tableGroupRepository = tableGroupRepository;
+        this.orderService = orderService;
     }
+
 
     @Transactional
     public TableGroup create(final TableGroup tableGroup) {
@@ -144,5 +148,21 @@ public class TableGroupService {
         }
     }
 
+    @Transactional
+    public void ungroupTemp(Long tableGroupId) {
+        final TableGroupEntity saveTableGroup = findById(tableGroupId);
+        orderStatusCheck(saveTableGroup.getOrderTables());
+        saveTableGroup.unGroup();
+    }
 
+    private void orderStatusCheck(List<OrderTableEntity> orderTables) {
+        if (orderService.existsByOrderTableIdInAndOrderStatusIn(
+                orderTables, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+            throw new IllegalArgumentException("주문이 조리나 식사 상태에서는 변경할 수 없습니다.");
+        }
+    }
+
+    private TableGroupEntity findById(Long tableGroupId) {
+        return tableGroupRepository.findById(tableGroupId).orElseThrow(() -> new IllegalArgumentException("단체 지정된 ID가 아닙니다."));
+    }
 }

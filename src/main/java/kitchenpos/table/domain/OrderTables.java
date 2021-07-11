@@ -1,5 +1,6 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableEntity;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -9,6 +10,7 @@ import org.springframework.util.CollectionUtils;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,4 +43,11 @@ public class OrderTables {
         orderTable.isEmptyCheck();
         orderTable.hasTableGroupIdCheck();
     }
+
+    public void releaseGroup() {
+        for (OrderTableEntity orderTable : orderTables) {
+            orderTable.releaseGroup();
+        }
+    }
+
 }

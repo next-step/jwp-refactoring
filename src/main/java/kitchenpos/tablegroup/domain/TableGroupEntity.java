@@ -60,4 +60,7 @@ public class TableGroupEntity {
         return orderTables.values();
     }
 
+    public void unGroup() {
+        orderTables.releaseGroup();
+    }
 }

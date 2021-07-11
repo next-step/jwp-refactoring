@@ -82,4 +82,7 @@ public class OrderTableEntity {
     }
 
 
+    public void releaseGroup() {
+        this.tableGroup = null;
+    }
 }

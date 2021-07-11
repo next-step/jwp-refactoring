@@ -102,7 +102,7 @@ public class tableAcceptanceTest extends AcceptanceTest {
         return response.as(OrderTableResponse.class);
     }
 
-    private ExtractableResponse<Response> 주문_테이블_조회_요청() {
+    public static ExtractableResponse<Response> 주문_테이블_조회_요청() {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
