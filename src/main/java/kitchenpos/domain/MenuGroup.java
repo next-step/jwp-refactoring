@@ -31,6 +31,10 @@ public class MenuGroup {
         this.name = name;
     }
 
+    public void add(Menu menu) {
+        menus.add(menu);
+    }
+
     public Long getId() {
         return id;
     }

@@ -61,8 +61,7 @@ class MenuServiceTest {
         Price 이만_삼천_원 = Price.valueOf(23000);
         두마리_양념치킨 = new MenuProduct(후라이드, Quantity.valueOf(1));
         두마리_후라이드 = new MenuProduct(양념치킨, Quantity.valueOf(1));
-        두마리_양념후라이드 = MenuTest.menu(100L, "두마리_양념후라이드", 이만_삼천_원, 두마리메뉴,
-            MenuProducts.of(두마리_양념치킨, 두마리_후라이드));
+        두마리_양념후라이드 = MenuTest.menu(100L, "두마리_양념후라이드", 이만_삼천_원, MenuProducts.of(두마리_양념치킨, 두마리_후라이드));
     }
 
     @Test
@@ -78,7 +77,6 @@ class MenuServiceTest {
 
         // then
         assertThat(savedMenu.getName()).isEqualTo(두마리_양념후라이드.getName());
-        assertThat(savedMenu.getMenuGroup().getId()).isEqualTo(두마리_양념후라이드.getMenuGroup().getId());
         assertThat(savedMenu.getMenuProducts().containsAll(두마리_양념후라이드.getMenuProducts())).isTrue();
     }
 

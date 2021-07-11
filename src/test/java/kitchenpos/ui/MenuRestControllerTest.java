@@ -52,7 +52,6 @@ class MenuRestControllerTest {
             .andExpect(jsonPath("$.id").exists())
             .andExpect(jsonPath("$.name").value(request.getName()))
             .andExpect(jsonPath("$.price").value(request.getPrice().longValue()))
-            .andExpect(jsonPath("$.menuGroupId").value(두마리메뉴.getId()))
             .andExpect(jsonPath("$.menuProducts[0].seq").exists())
             .andExpect(jsonPath("$.menuProducts[0].quantity").value(양념.getQuantity()))
             .andExpect(jsonPath("$.menuProducts[0].product.name").value(양념치킨.getName()))
@@ -68,7 +67,6 @@ class MenuRestControllerTest {
             .andExpect(jsonPath("$").exists())
             .andExpect(jsonPath("$[2].id").value(반반치킨_메뉴.getId()))
             .andExpect(jsonPath("$[2].name").value(반반치킨_메뉴.getName()))
-            .andExpect(jsonPath("$[2].price").value(반반치킨_메뉴.getPrice().longValue()))
-            .andExpect(jsonPath("$[2].menuGroupId").value(반반치킨_메뉴.getMenuGroup().getId()));
+            .andExpect(jsonPath("$[2].price").value(반반치킨_메뉴.getPrice().longValue()));
     }
 }

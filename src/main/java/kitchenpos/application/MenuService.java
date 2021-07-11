@@ -37,8 +37,9 @@ public class MenuService {
             .map(this::newMenuProduct)
             .collect(Collectors.toList()));
 
-        return menuRepository.save(
-            new Menu(request.getName(), request.price(), menuGroup, menuProducts));
+        Menu menu = new Menu(request.getName(), request.price(), menuProducts);
+        menuGroup.add(menu);
+        return menuRepository.save(menu);
     }
 
     private MenuProduct newMenuProduct(MenuProductRequest menuProductRequest) {
