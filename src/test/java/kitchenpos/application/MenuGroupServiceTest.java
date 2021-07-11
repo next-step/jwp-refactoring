@@ -14,14 +14,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
+import kitchenpos.repository.MenuGroupRepository;
 
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
 
 	@Mock
-	private MenuGroupDao menuGroupDao;
+	private MenuGroupRepository menuGroupRepository;
 
 	@InjectMocks
 	private MenuGroupService menuGroupService;
@@ -29,15 +31,15 @@ class MenuGroupServiceTest {
 	@DisplayName("메뉴 그룹 생성 테스트")
 	@Test
 	void testCreateMenuGroup() {
-		// MenuGroup menuGroup = mock(MenuGroup.class);
-		MenuGroup menuGroup = new MenuGroup(1L, "중식");
-		MenuGroup expected = new MenuGroup(1L, "중식");
+		MenuGroupRequest menuGroupRequest = new MenuGroupRequest("중식");
 
-		when(menuGroupDao.save(eq(menuGroup))).thenReturn(expected);
+		MenuGroup menuGroup = new MenuGroup(menuGroupRequest.getName());
+		MenuGroup expected = new MenuGroup("중식");
 
-		MenuGroup actual = menuGroupService.create(menuGroup);
+		when(menuGroupRepository.save(menuGroup)).thenReturn(expected);
+		MenuGroupResponse actual = menuGroupService.create(menuGroupRequest);
 
-		verify(menuGroupDao, times(1)).save(eq(menuGroup));
+		verify(menuGroupRepository, times(1)).save(menuGroup);
 		assertThat(actual.getId()).isEqualTo(expected.getId());
 		assertThat(actual.getName()).isEqualTo(expected.getName());
 	}
@@ -46,18 +48,20 @@ class MenuGroupServiceTest {
 	@Test
 	void testList() {
 		List<MenuGroup> expected = new ArrayList<>();
-		expected.add(new MenuGroup(1L, "menuGroup1"));
-		expected.add(new MenuGroup(2L, "menuGroup2"));
-		expected.add(new MenuGroup(3L, "menuGroup3"));
+		expected.add(new MenuGroup("menuGroup1"));
+		expected.add(new MenuGroup("menuGroup2"));
+		expected.add(new MenuGroup("menuGroup3"));
 		List<Long> savedMenuGroupIds = expected.stream().map(MenuGroup::getId).collect(Collectors.toList());
 
-		when(menuGroupDao.findAll()).thenReturn(expected);
+		when(menuGroupRepository.findAll()).thenReturn(expected);
 
-		List<MenuGroup> actual = menuGroupService.list();
+		List<MenuGroupResponse> actual = menuGroupService.list();
 
-		verify(menuGroupDao, times(1)).findAll();
-		List<Long> actualMenuGroupIds = actual.stream().map(MenuGroup::getId).collect(Collectors.toList());
-		assertThat(actualMenuGroupIds)
-			.containsExactlyElementsOf(savedMenuGroupIds);
+		verify(menuGroupRepository, times(1)).findAll();
+		List<MenuGroupResponse> expectedMenuGroupResponses = expected.stream()
+			.map(MenuGroupResponse::of)
+			.collect(Collectors.toList());
+		assertThat(actual)
+			.containsExactlyElementsOf(expectedMenuGroupResponses);
 	}
 }
