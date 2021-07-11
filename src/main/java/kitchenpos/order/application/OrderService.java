@@ -53,11 +53,9 @@ public class OrderService {
             throw new InvalidRequestException();
         }
 
-        final List<Long> menuIds = orderLineItemRequests.stream()
+        final List<Menu> menus = menuDao.findAllById(orderLineItemRequests.stream()
                 .map(OrderLineItemRequest::getMenuId)
-                .collect(Collectors.toList());
-
-        final List<Menu> menus = menuDao.findAllById(menuIds);
+                .collect(Collectors.toList()));
 
         if (orderLineItemRequests.size() != menus.size()) {
             throw new NotFoundMenuException();
