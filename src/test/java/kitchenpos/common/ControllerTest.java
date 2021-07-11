@@ -65,6 +65,10 @@ public abstract class ControllerTest<T> {
                 .andExpect(content().string(objectMapper.writeValueAsString(expectedResult)));
     }
 
+    protected void 조회성공(ResultActions resultActions) throws Exception {
+        resultActions.andExpect(status().isOk());
+    }
+
     protected void 생성성공(ResultActions resultActions, T expectedResult) throws Exception {
         resultActions.andExpect(status().isCreated())
                 .andExpect(content().string(objectMapper.writeValueAsString(expectedResult)));

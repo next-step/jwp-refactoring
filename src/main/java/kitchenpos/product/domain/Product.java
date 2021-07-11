@@ -27,6 +27,14 @@ public class Product {
         this.price = price;
     }
 
+    public Product(Long id, String name, BigDecimal price) {
+        validateName(name);
+        validatePrice(price);
+        this.id = id;
+        this.name = name;
+        this.price = price;
+    }
+
     private void validatePrice(BigDecimal price) {
         if (price == null) {
             throw new IllegalArgumentException(Message.ERROR_PRODUCT_PRICE_REQUIRED.showText());
@@ -40,6 +48,11 @@ public class Product {
         if (name == null) {
             throw new IllegalArgumentException(Message.ERROR_PRODUCT_NAME_REQUIRED.showText());
         }
+    }
+
+
+    public boolean hasSameIdAs(Long productId) {
+        return this.id.equals(productId);
     }
 
     public Long getId() {
@@ -57,4 +70,5 @@ public class Product {
     public void setPrice(final BigDecimal price) {
         this.price = price;
     }
+
 }

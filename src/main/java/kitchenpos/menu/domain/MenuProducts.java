@@ -1,14 +1,16 @@
 package kitchenpos.menu.domain;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
 @Embeddable
 public class MenuProducts {
 
-    @OneToMany(mappedBy = "menu")
+    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL)
     private List<MenuProduct> menuProducts;
 
     public MenuProducts() {
@@ -24,5 +26,13 @@ public class MenuProducts {
 
     public List<MenuProduct> getMenuProducts() {
         return Collections.unmodifiableList(menuProducts);
+    }
+
+    public BigDecimal calculateTotalPrice() {
+        BigDecimal sum = BigDecimal.ZERO;
+        for (MenuProduct menuProduct : menuProducts) {
+            sum = sum.add(menuProduct.getTotalPrice());
+        }
+        return sum;
     }
 }

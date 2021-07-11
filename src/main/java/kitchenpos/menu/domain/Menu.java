@@ -4,7 +4,6 @@ import kitchenpos.common.Message;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -26,17 +25,28 @@ public class Menu {
     private MenuGroup menuGroup;
 
     @Embedded
-    private MenuProducts menuProducts = new MenuProducts(new ArrayList<>());
+    private MenuProducts menuProducts;
 
     public Menu() {
     }
 
-    public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+    public Menu(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
         validatePrice(price);
+        validateMenuProducts(menuProducts, price);
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
-        this.menuProducts = MenuProducts.of(menuProducts);
+        this.menuProducts = menuProducts;
+    }
+
+    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        validatePrice(price);
+        validateMenuProducts(menuProducts, price);
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.menuGroup = menuGroup;
+        this.menuProducts = menuProducts;
     }
 
     private void validatePrice(BigDecimal price) {
@@ -45,6 +55,13 @@ public class Menu {
         }
         if (price.compareTo(BigDecimal.ZERO) < 1) {
             throw new IllegalArgumentException(Message.ERROR_MENU_PRICE_SHOULD_BE_OVER_THAN_ZERO.showText());
+        }
+    }
+
+    public void validateMenuProducts(MenuProducts menuProducts, BigDecimal price) {
+        BigDecimal priceSumOfMenuProducts = menuProducts.calculateTotalPrice();
+        if (price.compareTo(priceSumOfMenuProducts) > 0) {
+            throw new IllegalArgumentException(Message.ERROR_MENU_PRICE_CANNOT_BE_BIGGER_THAN_MENUPRODUCTS_TOTAL.showText());
         }
     }
 

@@ -22,6 +22,12 @@ public class MenuGroup {
         this.name = name;
     }
 
+    public MenuGroup(Long id, String name) {
+        validateName(name);
+        this.id = id;
+        this.name = name;
+    }
+
     private void validateName(String name) {
         if (name == null) {
             throw new IllegalArgumentException(Message.ERROR_MENUGROUP_NAME_REQUIRED.showText());
