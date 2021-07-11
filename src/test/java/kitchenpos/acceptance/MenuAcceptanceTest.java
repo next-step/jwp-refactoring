@@ -1,4 +1,4 @@
-package Acceptance;
+package kitchenpos.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -8,7 +8,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.List;
+import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -73,9 +73,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 전체_메뉴_조회_요청();
 
         // then
-        List<MenuResponse> actual = 전체_메뉴_조회_성공(response);
-        assertThat(actual).isNotEmpty();
-        assertThat(actual).hasSizeGreaterThanOrEqualTo(2);
+        전체_메뉴_조회_성공(response);
     }
 
     public static ExtractableResponse<Response> 메뉴_생성_요청(final MenuRequest menuRequest) {
@@ -98,9 +96,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    public static List<MenuResponse> 전체_메뉴_조회_성공(final ExtractableResponse<Response> response) {
+    public static void 전체_메뉴_조회_성공(final ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        return response.as(List.class);
     }
 
 

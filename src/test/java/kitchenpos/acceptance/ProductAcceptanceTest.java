@@ -1,4 +1,4 @@
-package Acceptance;
+package kitchenpos.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -6,7 +6,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
-import java.util.List;
+import kitchenpos.AcceptanceTest;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -39,8 +39,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 전체_제품_조회_요청();
 
         // then
-        List<ProductResponse> actual = 전체_제품_조회_성공(response);
-        assertThat(actual).isNotEmpty().hasSizeGreaterThanOrEqualTo(2);
+        전체_제품_조회_성공(response);
     }
 
     public static ExtractableResponse<Response> 제품_생성_요청(final ProductRequest request) {
@@ -64,8 +63,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
                           .then().log().all().extract();
     }
 
-    public List<ProductResponse> 전체_제품_조회_성공(final ExtractableResponse<Response> response) {
+    public static void 전체_제품_조회_성공(final ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        return response.as(List.class);
     }
 }
