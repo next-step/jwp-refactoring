@@ -17,19 +17,21 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.utils.MenuCreator;
 import kitchenpos.common.domian.Price;
-import kitchenpos.common.error.CustomException;
+import kitchenpos.common.error.InvalidRequestException;
+import kitchenpos.common.error.NegativeValueException;
+import kitchenpos.common.error.NotFoundMenuGroupException;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.repository.MenuDao;
-import kitchenpos.menugroup.repository.MenuGroupDao;
 import kitchenpos.menu.repository.MenuProductDao;
-import kitchenpos.product.repository.ProductDao;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.repository.MenuGroupDao;
 import kitchenpos.product.domain.Product;
-import kitchenpos.menu.domain.Menu;
+import kitchenpos.product.repository.ProductDao;
+import kitchenpos.utils.MenuCreator;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("메뉴 테스트")
@@ -98,8 +100,10 @@ class MenuServiceTest {
         // given
         MenuRequest menuRequest = new MenuRequest(순대국, -100, 1L, Arrays.asList(new MenuProductRequest(PRODUCT_ID, QUANTITY)));
         // when
+        when(menuGroupDao.findById(any())).thenReturn(Optional.of(new MenuGroup("국밥")));
+        when(productDao.findAllById(any())).thenReturn(Arrays.asList(new Product(1L, 순대국, new Price(100))));
         // then
-        assertThatThrownBy(() -> menuService.create(menuRequest)).isInstanceOf(CustomException.class);
+        assertThatThrownBy(() -> menuService.create(menuRequest)).isInstanceOf(NegativeValueException.class);
     }
 
     @DisplayName("메뉴는 메뉴 그룹에 반드시 포함 되어야 한다.")
@@ -109,7 +113,7 @@ class MenuServiceTest {
         MenuRequest menuRequest = new MenuRequest(순대국, 0, 0L, Arrays.asList(new MenuProductRequest(PRODUCT_ID, QUANTITY)));
         // when
         // then
-        assertThatThrownBy(() -> menuService.create(menuRequest)).isInstanceOf(CustomException.class);
+        assertThatThrownBy(() -> menuService.create(menuRequest)).isInstanceOf(NotFoundMenuGroupException.class);
     }
 
     @DisplayName("메뉴의 상품은 반드시 존재해야 한다.")
@@ -121,6 +125,6 @@ class MenuServiceTest {
         // when
         when(menuGroupDao.findById(any())).thenReturn(Optional.of(menuGroup));
         // then
-        assertThatThrownBy(() -> menuService.create(menuRequest)).isInstanceOf(CustomException.class);
+        assertThatThrownBy(() -> menuService.create(menuRequest)).isInstanceOf(InvalidRequestException.class);
     }
 }

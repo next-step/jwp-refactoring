@@ -1,14 +1,14 @@
-package kitchenpos.ordertable.acceptance;
+package kitchenpos.order.acceptance;
 
 import static kitchenpos.utils.acceptan.RequestHelper.*;
 import static kitchenpos.utils.acceptan.ResponseHelper.*;
 
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 
 import kitchenpos.AcceptanceTest;
 import kitchenpos.order.domain.OrderStatus;
@@ -109,18 +109,6 @@ public class TableAcceptanceTest extends AcceptanceTest {
         // given
         // when
         ExtractableResponse<Response> 주문_테이블_고객수_변경_실패 = 주문_테이블_고객수_변경_요청(주문_테이블_번호, -5);
-        // then
-        요청_실패_확인(주문_테이블_고객수_변경_실패);
-    }
-
-    @DisplayName("고객 수 변경 실패 - 주문 테이블이 비어 있음")
-    @Test
-    void changeNumberOfGuestsFailedByOrderTableEmpty() {
-        // given
-        주문_상태_변경_요청(주문_번호, OrderStatus.COMPLETION);
-        주문_테이블_비어있음_요청(주문_테이블_번호, 비어있음);
-        // when
-        ExtractableResponse<Response> 주문_테이블_고객수_변경_실패 = 주문_테이블_고객수_변경_요청(주문_테이블_번호, 고객_수_5명);
         // then
         요청_실패_확인(주문_테이블_고객수_변경_실패);
     }

@@ -1,9 +1,9 @@
-package kitchenpos.ordertable.dto;
-
-import kitchenpos.ordertable.domain.OrderTable;
+package kitchenpos.order.dto;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import kitchenpos.order.domain.OrderTable;
 
 public class OrderTableResponse {
     private Long id;

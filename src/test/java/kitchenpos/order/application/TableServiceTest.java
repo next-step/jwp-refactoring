@@ -1,8 +1,9 @@
-package kitchenpos.ordertable.application;
+package kitchenpos.order.application;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,17 +17,19 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.ordertable.dto.OrderTableEmptyRequest;
-import kitchenpos.ordertable.dto.OrderTableNumberOfGuestsRequest;
-import kitchenpos.ordertable.domain.NumberOfGuests;
-import kitchenpos.ordertable.dto.OrderTableRequest;
-import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.common.error.CustomException;
+import kitchenpos.common.error.InvalidOrderStatusException;
+import kitchenpos.order.domain.NumberOfGuests;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.dto.OrderTableEmptyRequest;
+import kitchenpos.order.dto.OrderTableNumberOfGuestsRequest;
+import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.order.repository.OrderDao;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.repository.OrderTableDao;
+import kitchenpos.order.repository.OrderTableDao;
+import kitchenpos.tablegroup.domain.TableGroup;
 
 @DisplayName("테이블 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -166,5 +169,51 @@ class TableServiceTest {
         // then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, new OrderTableNumberOfGuestsRequest(10)))
                 .isInstanceOf(CustomException.class);
+    }
+
+    @DisplayName("그룹 세팅")
+    @Test
+    void setGroup() {
+        // given
+        // when
+        when(orderTableDao.findAllById(Arrays.asList(1L, 2L))).thenReturn(Arrays.asList(
+                new OrderTable(1L, new NumberOfGuests(2), true),
+                new OrderTable(2L, new NumberOfGuests(2), true)
+        ));
+        tableService.setGroup(new TableGroup(), Arrays.asList(1L, 2L));
+        // then
+        verify(orderTableDao, times(1)).saveAll(any());
+    }
+
+    @DisplayName("그룹 해제")
+    @Test
+    void ungroup(){
+        // given
+        // when
+        when(orderTableDao.findAllByTableGroupId(any())).thenReturn(Arrays.asList(
+                new OrderTable(1L, new NumberOfGuests(2), true),
+                new OrderTable(2L, new NumberOfGuests(2), true)));
+
+        when(orderDao.findOrdersByOrderTableIdIn(Arrays.asList(1L, 2L))).thenReturn(Arrays.asList(Order.of(1L, OrderStatus.COMPLETION)));
+
+        tableService.ungroup(new TableGroup());
+        // then
+        verify(orderDao, times(1)).findOrdersByOrderTableIdIn(any());
+    }
+
+    @DisplayName("그룹 제거 시 주문 상태가 요리중, 식사중 상태가아닌지 체크한다.")
+    @Test
+    void ungroupFailedByCookingStatus() {
+        // given
+        Order order = Order.of(1L, OrderStatus.MEAL);
+        // when
+        when(orderTableDao.findAllByTableGroupId(any())).thenReturn(Arrays.asList(
+                new OrderTable(1L, new NumberOfGuests(2), true),
+                new OrderTable(2L, new NumberOfGuests(2), true)));
+        when(orderDao.findOrdersByOrderTableIdIn(any())).thenReturn(Arrays.asList(order));
+
+        // then
+        assertThatThrownBy(() -> tableService.ungroup(new TableGroup()))
+                .isInstanceOf(InvalidOrderStatusException.class);
     }
 }

@@ -1,7 +1,9 @@
 package kitchenpos.order.application;
 
-import static kitchenpos.order.domain.OrderStatus.*;
-import static org.assertj.core.api.Assertions.*;
+import static kitchenpos.order.domain.OrderStatus.COOKING;
+import static kitchenpos.order.domain.OrderStatus.MEAL;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -10,7 +12,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import kitchenpos.ordertable.domain.NumberOfGuests;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,17 +23,18 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.common.error.InvalidRequestException;
 import kitchenpos.common.error.NotFoundMenuException;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.repository.MenuDao;
+import kitchenpos.order.domain.NumberOfGuests;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.order.repository.OrderDao;
 import kitchenpos.order.repository.OrderLineItemDao;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.repository.OrderTableDao;
+import kitchenpos.order.repository.OrderTableDao;
 import kitchenpos.utils.MenuCreator;
-import kitchenpos.menu.repository.MenuDao;
-import kitchenpos.order.domain.Order;
 
 @DisplayName("주문 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -73,10 +75,11 @@ class OrderServiceTest {
     void create() {
         // given
         Menu menu = MenuCreator.of("국밥", "순대", 1000, 1L, "순대국", 1000);
+
         // when
-        when(orderDao.save(any())).thenReturn(order);
         when(menuDao.findAllById(any())).thenReturn(Arrays.asList(menu));
         when(orderTableDao.findById(any())).thenReturn(Optional.of(new OrderTable(1L, new NumberOfGuests(1), true)));
+        when(orderDao.save(any())).thenReturn(order);
         OrderResponse createdOrder = orderService.create(orderRequest);
 
         // then

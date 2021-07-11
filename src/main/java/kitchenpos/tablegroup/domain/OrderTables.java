@@ -8,11 +8,11 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
-import kitchenpos.common.error.OrderTableNotEmptyException;
-import kitchenpos.common.error.InvalidRequestException;
 import org.springframework.util.CollectionUtils;
 
-import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.common.error.InvalidRequestException;
+import kitchenpos.common.error.OrderTableNotEmptyException;
+import kitchenpos.order.domain.OrderTable;
 
 @Embeddable
 public class OrderTables {
@@ -26,10 +26,13 @@ public class OrderTables {
         this.orderTables = orderTables;
     }
 
-    public static OrderTables of(List<OrderTable> orderTables) {
-        checkValid(orderTables);
-        checkOrderTableIsEmpty(orderTables);
-        return new OrderTables(orderTables);
+    public static OrderTables of(TableGroup tableGroup, List<OrderTable> orderTableList) {
+        checkValid(orderTableList);
+        checkOrderTableIsEmpty(orderTableList);
+        for (OrderTable orderTable : orderTableList) {
+            orderTable.setTableGroup(tableGroup);
+        }
+        return new OrderTables(orderTableList);
     }
 
     private static void checkValid(List<OrderTable> orderTables) {
@@ -46,24 +49,25 @@ public class OrderTables {
         });
     }
 
-    public void init(TableGroup tableGroup) {
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.setTableGroup(tableGroup);
-            orderTable.empty(false);
-        }
-    }
-
     public int size() {
         return orderTables.size();
     }
 
-    public List<Long> orderTableIds() {
-        return orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
+    public List<OrderTable> getOrderTables() {
+        return orderTables;
     }
 
-    public void unGroup() {
-        orderTables.forEach(orderTable -> orderTable.setTableGroup(null));
+    public void setTableGroup(TableGroup tableGroup) {
+        for (OrderTable orderTable : orderTables) {
+            orderTable.setTableGroup(tableGroup);
+        }
+    }
+
+    public List<Long> orderIds() {
+        return orderTables.stream().map(OrderTable::getId).collect(Collectors.toList());
+    }
+
+    public void ungroup() {
+        orderTables.forEach(OrderTable::ungroup);
     }
 }

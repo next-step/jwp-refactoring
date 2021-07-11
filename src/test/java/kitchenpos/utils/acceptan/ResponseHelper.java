@@ -1,17 +1,19 @@
 package kitchenpos.utils.acceptan;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.ordertable.dto.OrderTableResponse;
-import org.springframework.http.HttpStatus;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import kitchenpos.order.dto.OrderTableResponse;
 
 public class ResponseHelper {
     public static Long 공통_번호_추출(ExtractableResponse<Response> 상품_생성_요청_응답) {

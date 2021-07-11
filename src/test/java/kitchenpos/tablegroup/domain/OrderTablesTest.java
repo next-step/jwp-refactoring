@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 
 import kitchenpos.common.error.InvalidRequestException;
 import kitchenpos.common.error.OrderTableNotEmptyException;
-import kitchenpos.ordertable.domain.NumberOfGuests;
-import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.order.domain.NumberOfGuests;
+import kitchenpos.order.domain.OrderTable;
 @DisplayName("주문 테이블 일급 컬렉션 테스트")
 class OrderTablesTest {
 
@@ -23,7 +23,7 @@ class OrderTablesTest {
         List<OrderTable> orderTablesList = Arrays.asList(new OrderTable(1L, new NumberOfGuests(1), true), new OrderTable(2L, new NumberOfGuests(1), true));
         List<Long> ids = Arrays.asList(1L, 2L);
         // when
-        OrderTables orderTable = OrderTables.of(orderTablesList);
+        OrderTables orderTable = OrderTables.of(new TableGroup(), orderTablesList);
         // then
         assertThat(orderTable).isNotNull();
     }
@@ -36,7 +36,7 @@ class OrderTablesTest {
         List<Long> ids = Arrays.asList(1L, 2L);
         // when
         // then
-        assertThatThrownBy(() -> OrderTables.of(orderTablesList))
+        assertThatThrownBy(() -> OrderTables.of(new TableGroup(), orderTablesList))
                 .isInstanceOf(InvalidRequestException.class);
     }
 
@@ -48,7 +48,7 @@ class OrderTablesTest {
         List<Long> ids = Arrays.asList(1L, 2L);
         // when
         // then
-        assertThatThrownBy(() -> OrderTables.of(orderTablesList))
+        assertThatThrownBy(() -> OrderTables.of(new TableGroup(), orderTablesList))
                 .isInstanceOf(OrderTableNotEmptyException.class);
     }
 }
