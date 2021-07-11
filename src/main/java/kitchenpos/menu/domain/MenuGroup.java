@@ -1,6 +1,9 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.menu.domain.exception.InvalidMenuGroupNameException;
+
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class MenuGroup {
@@ -15,8 +18,15 @@ public class MenuGroup {
     }
 
     private MenuGroup(Long id, String name) {
+        validateName(name);
         this.id = id;
         this.name = name;
+    }
+
+    private void validateName(String name) {
+        if (Objects.isNull(name) || Objects.equals(name, "")) {
+            throw new InvalidMenuGroupNameException();
+        }
     }
 
     public static MenuGroup of(Long id, String name) {
@@ -31,15 +41,7 @@ public class MenuGroup {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
     }
 }

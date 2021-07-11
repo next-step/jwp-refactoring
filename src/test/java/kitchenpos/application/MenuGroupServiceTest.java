@@ -31,12 +31,6 @@ class MenuGroupServiceTest extends DataBaseCleanSupport {
         assertThat(actual.getName()).isEqualTo(착한세트.getName());
     }
 
-    @DisplayName("메뉴 그룹의 이름을 지정해야한다.")
-    @Test
-    void createMenuGroupExceptionIfNameIsNull() {
-        //TODO: 추가 기능 개발
-    }
-
     @DisplayName("메뉴 그룹을 모두 조회한다.")
     @Test
     void list() {
