@@ -1,4 +1,4 @@
-package kitchenpos.order.event;
+package kitchenpos.common.event;
 
 import kitchenpos.tablegroup.domain.TableGroup;
 
