@@ -25,16 +25,19 @@ public class MenuEventHandler {
         BigDecimal price = menu.getPrice();
 
         List<MenuProduct> menuProducts = menu.getMenuProducts();
-        Price totalPrice = menuProducts.stream()
-                .map(v -> {
-                    Long quantity = v.getQuantity();
-                    return productService.getProductPrice(v.getProductId(), quantity);
-                })
-                .reduce(Price.ZERO, Price::add);
+        Price totalPrice = getTotalPrice(menuProducts);
 
         if (totalPrice.isBigger(price)) {
             throw new IllegalArgumentException(INVALID_PRICE);
         }
     }
 
+    private Price getTotalPrice(List<MenuProduct> menuProducts) {
+        return menuProducts.stream()
+                .map(v -> {
+                    Long quantity = v.getQuantity();
+                    return productService.getProductPrice(v.getProductId(), quantity);
+                })
+                .reduce(Price.ZERO, Price::add);
+    }
 }

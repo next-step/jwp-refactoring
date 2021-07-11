@@ -34,24 +34,6 @@ public class MenuProducts {
         return CollectionUtils.isEmpty(menuProducts);
     }
 
-//    private Price totalPrice() {
-//        BigDecimal sum = menuProducts.stream()
-//                .map(MenuProduct::sumMenuProduct)
-//                .reduce(BigDecimal.ZERO, BigDecimal::add);
-//        return Price.of(sum);
-//    }
-
-//    public void validatePrice(BigDecimal price) {
-//        Price totalPrice = totalPrice();
-//        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-//            throw new IllegalArgumentException(INVALID_PRICE);
-//        }
-//
-//        if (totalPrice.isBigger(price)) {
-//            throw new IllegalArgumentException(INVALID_PRICE);
-//        }
-//    }
-
     public void validateIsEmpty() {
         if (menuProducts.isEmpty()) {
             throw new MenuProductNotFoundException(NOT_EXIST_MENU_PRODUCT);
