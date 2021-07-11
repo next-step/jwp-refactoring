@@ -77,9 +77,9 @@ class OrderServiceTest {
         Menu menu = MenuCreator.of("국밥", "순대", 1000, 1L, "순대국", 1000);
 
         // when
-        when(orderDao.save(any())).thenReturn(order);
         when(menuDao.findAllById(any())).thenReturn(Arrays.asList(menu));
         when(orderTableDao.findById(any())).thenReturn(Optional.of(new OrderTable(1L, new NumberOfGuests(1), true)));
+        when(orderDao.save(any())).thenReturn(order);
         OrderResponse createdOrder = orderService.create(orderRequest);
 
         // then

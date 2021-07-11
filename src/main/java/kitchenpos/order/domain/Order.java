@@ -37,7 +37,7 @@ public class Order {
         this.orderedTime = LocalDateTime.now();
     }
 
-    public static Order of(long orderTableId, OrderStatus orderStatus) {
+    public static Order of(Long orderTableId, OrderStatus orderStatus) {
         return new Order(orderTableId, orderStatus);
     }
 

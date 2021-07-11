@@ -112,18 +112,4 @@ public class TableAcceptanceTest extends AcceptanceTest {
         // then
         요청_실패_확인(주문_테이블_고객수_변경_실패);
     }
-
-    /*
-    @DisplayName("고객 수 변경 실패 - 주문 테이블이 비어 있음")
-    @Test
-    void changeNumberOfGuestsFailedByOrderTableEmpty() {
-        // given
-        주문_상태_변경_요청(주문_번호, OrderStatus.COMPLETION);
-        주문_테이블_비어있음_요청(주문_테이블_번호, 비어있음);
-        // when
-        ExtractableResponse<Response> 주문_테이블_고객수_변경_실패 = 주문_테이블_고객수_변경_요청(주문_테이블_번호, 고객_수_5명);
-        // then
-        요청_실패_확인(주문_테이블_고객수_변경_실패);
-    }
-     */
 }

@@ -84,27 +84,4 @@ public class TableGroupAcceptanceTest  extends AcceptanceTest {
         // then
         제거_요청_확인(테이블_그룹_제거_요청);
     }
-
-    @DisplayName("테이블 그룹 제거 살패, 주문 테이블이 비어 있지 않음")
-    @Test
-    void ungroupFailedByOrderStatus() {
-        // given
-        주문_생성_요청(주문_테이블_고객_수_2명_번호, 메뉴_번호, 1);
-        주문_생성_요청(주문_테이블_고객_수_5명_번호, 메뉴_번호, 1);
-
-        ExtractableResponse<Response> 테이블_그룹_생성_요청_응답 = 테이블_그룹_생성_요청(주문_테이블_고객_수_2명_번호, 주문_테이블_고객_수_5명_번호);
-        Long 테이블_그룹_번호 = 공통_번호_추출(테이블_그룹_생성_요청_응답);
-
-        // when
-        주문_상태_변경_요청(주문_테이블_고객_수_2명_번호, OrderStatus.COMPLETION);
-        주문_상태_변경_요청(주문_테이블_고객_수_5명_번호, OrderStatus.COMPLETION);
-
-        주문_테이블_비어있음_요청(주문_테이블_고객_수_2명_번호, 비어있지_않음);
-        주문_테이블_비어있음_요청(주문_테이블_고객_수_5명_번호, 비어있지_않음);
-
-        ExtractableResponse<Response> 테이블_그룹_제거_요청_실패 = 테이블_그룹_제거_요청(테이블_그룹_번호);
-
-        // then
-        요청_실패_확인(테이블_그룹_제거_요청_실패);
-    }
 }
