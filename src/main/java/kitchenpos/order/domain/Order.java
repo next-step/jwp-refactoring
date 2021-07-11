@@ -20,7 +20,7 @@ public class Order {
     @ManyToOne(fetch = FetchType.LAZY)
     private OrderTable orderTable;
 
-    @Convert(converter = OrderStatusConverter.class)
+    @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
     private LocalDateTime orderedTime;
 
@@ -79,13 +79,13 @@ public class Order {
     }
 
     private void validateCompletion() {
-        if (Objects.equals(OrderStatus.COMPLETION, orderStatus)) {
+        if (this.orderStatus == OrderStatus.COMPLETION) {
             throw new IllegalArgumentException(ALREADY_COMPLETION_ORDER);
         }
     }
 
     private void changeTableStatusIfCompletion(OrderStatus orderStatus) {
-        if (orderStatus.equals(OrderStatus.COMPLETION)) {
+        if (orderStatus == OrderStatus.COMPLETION) {
             orderTable.changeTableStatus(TableStatus.COMPLETION);
         }
     }
