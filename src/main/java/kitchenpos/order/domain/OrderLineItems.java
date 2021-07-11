@@ -4,6 +4,7 @@ import kitchenpos.order.exception.NotInitMenuException;
 import kitchenpos.order.exception.NotOrderLineItemsException;
 import org.springframework.util.CollectionUtils;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.stream.Collectors;
 @Embeddable
 public class OrderLineItems {
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<OrderLineItem> orderLineItems;
 
     protected OrderLineItems() {
