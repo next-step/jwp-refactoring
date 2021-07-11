@@ -14,11 +14,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.table.application.TableService;
 
 @DisplayName("주문테이블 요구사항 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -73,7 +72,7 @@ class TableServiceTest {
 		// then
 		assertThatThrownBy(() -> tableService.changeEmpty(1L, mock(OrderTableRequest.class)))
 			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("등록이 되지 않은 주문테이블은 상태를 변경할 수 없습니다.");
+			.hasMessageContaining("등록이 되지 않은 주문테이블은 수정할 수 없습니다.");
 	}
 
 	@DisplayName("등록된 주문 테이블만 방문 손님 수를 수정할 수 없다.")
@@ -86,6 +85,6 @@ class TableServiceTest {
 		// then
 		assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, mock(OrderTableRequest.class)))
 			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("등록이 안된 주문테이블은 방문 손님 수를 수정할 수 없습니다.");
+			.hasMessageContaining("등록이 되지 않은 주문테이블은 수정할 수 없습니다.");
 	}
 }
