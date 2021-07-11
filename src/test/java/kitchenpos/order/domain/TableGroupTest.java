@@ -1,9 +1,15 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.order.domain.service.OrderValidator;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -11,6 +17,15 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DataJpaTest
 public class TableGroupTest {
+    private OrderValidator orderValidator;
+    @Autowired
+    private MenuRepository menuRepository;
+
+    @BeforeEach
+    public void setUp() {
+        orderValidator = new OrderValidator(menuRepository);
+    }
+
     @DisplayName("단체지정 등록 예외 - 주문테이블이 2개 미만인 경우")
     @Test
     public void 주문테이블이2개미만인경우_단체지정등록_예외() throws Exception {
@@ -94,7 +109,9 @@ public class TableGroupTest {
         OrderTable orderTable1 = new OrderTable(5, true);
         OrderTable orderTable2 = new OrderTable(5, true);
         TableGroup tableGroup = new TableGroup(Arrays.asList(orderTable1, orderTable2));
-        new Order(orderTable1, Arrays.asList(new OrderLineItem(1L, 1L)));
+
+        Menu menu = menuRepository.save(new Menu("치킨후라이드", BigDecimal.valueOf(15_000)));
+        new Order(orderTable1, Arrays.asList(new OrderLineItem(menu.getId(), 1L)), orderValidator);
 
         assertThatThrownBy(() -> tableGroup.ungroup())
                 .hasMessage("계산완료가 안된 테이블이 존재합니다.")

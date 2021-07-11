@@ -36,68 +36,6 @@ public class OrderServiceTest {
     @Autowired
     private OrderRepository orderRepository;
 
-    @DisplayName("주문 등록 예외 - 주문항목이 없을 경우")
-    @Test
-    public void 주문항목이없는경우_주문_등록_예외() throws Exception {
-        //given
-        OrderTable orderTable = 테이블_등록됨(5, false);
-        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Arrays.asList());
-
-        //when
-        //then
-        assertThatThrownBy(() -> orderService.create(orderRequest))
-                .hasMessage("주문항목이 존재하지 않습니다.")
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("주문 등록 예외 - 요청한 주문의 메뉴와 디비의 메뉴가 불일치할 경우")
-    @Test
-    public void 요청주문메뉴와디비메뉴가불일치한경우_주문_등록_예외() throws Exception {
-        //given
-        Menu menu = 메뉴_등록됨("메뉴", BigDecimal.valueOf(1000));
-        OrderLineItemRequest orderLineItemRequest1 = new OrderLineItemRequest(menu.getId(), 2L);
-        OrderLineItemRequest orderLineItemRequest2 = new OrderLineItemRequest(menu.getId(), 3L);
-        OrderRequest orderRequest = new OrderRequest(1L, Arrays.asList(orderLineItemRequest1,
-                orderLineItemRequest2));
-
-        //when
-        //then
-        assertThatThrownBy(() -> orderService.create(orderRequest))
-                .hasMessage("요청한 주문의 메뉴와 디비의 메뉴가 불일치합니다.")
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("주문 등록 예외 - 주문테이블이 없는 경우")
-    @Test
-    public void 주문테이블이없는경우_주문_등록_예외() throws Exception {
-        //given
-        Menu menu = 메뉴_등록됨("메뉴", BigDecimal.valueOf(1000));
-        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menu.getId(), 2L);
-        OrderRequest orderRequest = new OrderRequest(-1L, Arrays.asList(orderLineItemRequest));
-
-        //when
-        //then
-        assertThatThrownBy(() -> orderService.create(orderRequest))
-                .hasMessage("주문테이블이 존재하지 않습니다.")
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("주문 등록 예외 - 주문테이블이 빈테이블인 경우")
-    @Test
-    public void 주문테이블이빈테이블인경우_주문_등록_예외() throws Exception {
-        //given
-        Menu menu = 메뉴_등록됨("메뉴", BigDecimal.valueOf(1000));
-        OrderTable orderTable = 테이블_등록됨(5, true);
-        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menu.getId(), 2L);
-        OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Arrays.asList(orderLineItemRequest));
-
-        //when
-        //then
-        assertThatThrownBy(() -> orderService.create(orderRequest))
-                .hasMessage("주문테이블이 빈테이블입니다.")
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
     @DisplayName("주문 등록")
     @Test
     public void 주문_등록_확인() throws Exception {

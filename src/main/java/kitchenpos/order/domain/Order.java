@@ -1,7 +1,7 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.order.domain.service.OrderValidator;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -32,21 +32,11 @@ public class Order {
 
     protected Order() {}
 
-    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        verifyAvailable(orderTable, orderLineItems);
+    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems, OrderValidator orderValidator) {
         setOrderTable(orderTable);
         this.orderStatus = OrderStatus.COOKING;
         orderLineItems.forEach(this::addOrderLineItem);
-    }
-
-    private void verifyAvailable(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException("주문테이블이 빈테이블입니다.");
-        }
-
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException("주문항목이 존재하지 않습니다.");
-        }
+        orderValidator.validate(this);
     }
 
     public void setOrderTable(OrderTable orderTable) {

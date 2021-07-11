@@ -1,45 +1,46 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.order.domain.service.OrderMapper;
 import kitchenpos.order.domain.service.OrderValidator;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DataJpaTest
-public class OrderTest {
+public class OrderMapperTest {
+    @Autowired
+    private OrderTableRepository orderTableRepository;
+
     private OrderValidator orderValidator;
+
     @Autowired
     private MenuRepository menuRepository;
-
-    private Menu menu;
 
     @BeforeEach
     public void setUp() {
         orderValidator = new OrderValidator(menuRepository);
-        menu = menuRepository.save(new Menu("치킨후라이드", BigDecimal.valueOf(15_000)));
     }
 
-    @DisplayName("주문상태 변경 예외 - 주문상태가 계산완료인 경우")
+    @DisplayName("주문 등록 예외 - 주문테이블이 없는 경우")
     @Test
-    public void 주문상태가계산완료인경우_주문상태변경_예외() throws Exception {
+    public void 주문테이블이없는경우_주문_등록_예외() throws Exception {
         //given
-        OrderLineItem orderLineItem = new OrderLineItem(menu.getId(), 2L);
-        Order order = new Order(new OrderTable(3, false),
-                Arrays.asList(orderLineItem), orderValidator);
-        order.changeOrderStatus(OrderStatus.COMPLETION);
+        OrderMapper orderMapper = new OrderMapper(orderTableRepository, orderValidator);
 
         //when
         //then
-        assertThatThrownBy(() -> order.changeOrderStatus(OrderStatus.MEAL))
+        assertThatThrownBy(() -> orderMapper.mapToFrom(new OrderRequest(-1L,
+                Arrays.asList(new OrderLineItemRequest(1L, 1L)))))
+                .hasMessage("주문테이블이 존재하지 않습니다.")
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

@@ -27,9 +27,13 @@ public class Menu {
     protected Menu() {
     }
 
-    public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
+    public Menu(String name, BigDecimal price) {
         this.name = name;
         this.price = new Price(price);
+    }
+
+    public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
+        this(name, price);
         setMenuGroup(menuGroup);
     }
 
