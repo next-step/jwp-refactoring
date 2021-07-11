@@ -22,7 +22,7 @@ class OrderTest {
 
         OrderLineItem orderLineItem = OrderLineItem.builder()
                 .id(1L)
-                .order(new Order())
+                .orderId(1L)
                 .quantity(5L)
                 .build();
 

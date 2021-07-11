@@ -2,6 +2,7 @@ package kitchenpos.tablegroup.domain;
 
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
+import kitchenpos.table.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

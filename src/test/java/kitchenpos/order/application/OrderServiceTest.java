@@ -1,8 +1,6 @@
 package kitchenpos.order.application;
 
-import kitchenpos.menu.application.MenuNotMatchException;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderRepository;
@@ -13,14 +11,13 @@ import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.application.OrderTableNotFoundException;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.OrderTables;
-import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,7 +27,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
@@ -41,13 +37,13 @@ class OrderServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
-    private MenuRepository menuRepository;
+    private ApplicationEventPublisher applicationEventPublisher;
 
     private OrderService orderService;
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(orderRepository, orderTableRepository, menuRepository);
+        orderService = new OrderService(orderRepository, orderTableRepository, applicationEventPublisher);
     }
 
     @DisplayName("주어진 주문을 저장하고, 저장된 객체를 리턴한다.")
@@ -66,8 +62,6 @@ class OrderServiceTest {
         Menu menu1 = new Menu(1L);
         Menu menu2 = new Menu(2L);
 
-        when(menuRepository.findAllById(anyList()))
-                .thenReturn(Arrays.asList(menu1, menu2));
         when(orderTableRepository.findById(anyLong()))
                 .thenReturn(Optional.of(givenOrderTable));
         when(orderRepository.save(any(Order.class)))
@@ -85,27 +79,6 @@ class OrderServiceTest {
 
         assertThatThrownBy(() -> orderService.create(orderRequest))
                 .isInstanceOf(OrderTableNotFoundException.class);
-    }
-
-    @DisplayName("주문 저장시 주문항목 갯수와 메뉴의 갯수가 다르게 주어지면 예외를 던진다.")
-    @Test
-    void create_with_different_menu_size() {
-        OrderLineItemRequest orderLineItemRequest1 = new OrderLineItemRequest(1L, 2L);
-        OrderLineItemRequest orderLineItemRequest2 = new OrderLineItemRequest(2L, 3L);
-        OrderRequest orderRequest = new OrderRequest(1L, Arrays.asList(orderLineItemRequest1, orderLineItemRequest2));
-        OrderTable orderTable = new OrderTable(1L, null, 4, false);
-        OrderTable orderTable2 = new OrderTable(1L, null, 4, false);
-        TableGroup tableGroup = TableGroup.of(new OrderTables(Arrays.asList(orderTable, orderTable2)));
-        OrderTable givenOrderTable = new OrderTable(1L, tableGroup, 5, false);
-        Menu menu1 = new Menu(1L);
-
-        when(menuRepository.findAllById(anyList()))
-                .thenReturn(Arrays.asList(menu1));
-        when(orderTableRepository.findById(anyLong()))
-                .thenReturn(Optional.of(givenOrderTable));
-
-        assertThatThrownBy(() -> orderService.create(orderRequest))
-                .isInstanceOf(MenuNotMatchException.class);
     }
 
     @DisplayName("주문 저장시 주문 테이블이 존재하지 않으면 예외를 던진다.")
@@ -127,8 +100,6 @@ class OrderServiceTest {
         Menu menu1 = new Menu(1L);
         Menu menu2 = new Menu(2L);
 
-        when(menuRepository.findAllById(anyList()))
-                .thenReturn(Arrays.asList(menu1, menu2));
         when(orderTableRepository.findById(anyLong()))
                 .thenReturn(Optional.of(givenOrderTable));
 

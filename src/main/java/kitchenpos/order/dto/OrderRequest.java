@@ -1,6 +1,5 @@
 package kitchenpos.order.dto;
 
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 
@@ -44,17 +43,10 @@ public class OrderRequest {
                 .stream()
                 .map(v -> {
                     Long quantity = v.getQuantity();
-                    Menu menu = new Menu(v.getMenuId());
                     return OrderLineItem.builder()
-                            .menu(menu)
+                            .menuId(v.getMenuId())
                             .quantity(quantity)
                             .build();
                 }).collect(Collectors.toList());
-    }
-
-    public List<Long> getMenuIds() {
-        return orderLineItems.stream()
-                .map(OrderLineItemRequest::getMenuId)
-                .collect(Collectors.toList());
     }
 }

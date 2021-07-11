@@ -1,4 +1,4 @@
-package kitchenpos.tablegroup.application;
+package kitchenpos.table.application;
 
 public class TableGroupNotFoundException extends RuntimeException {
     public TableGroupNotFoundException() {

@@ -1,9 +1,8 @@
 package kitchenpos.order.application;
 
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderGeneratedEvent;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
@@ -12,9 +11,11 @@ import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.application.OrderTableNotFoundException;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -27,21 +28,20 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
-    private final MenuRepository menuRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
-    public OrderService(OrderRepository orderRepository, OrderTableRepository orderTableRepository, MenuRepository menuRepository) {
+    public OrderService(OrderRepository orderRepository, OrderTableRepository orderTableRepository, ApplicationEventPublisher applicationEventPublisher) {
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
-        this.menuRepository = menuRepository;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Transactional
     public OrderResponse create(OrderRequest orderRequest) {
         OrderTable orderTable = findOrderTable(orderRequest);
         List<OrderLineItem> orderLineItems = orderRequest.getOrderLineItem();
-        List<Long> menuIds = orderRequest.getMenuIds();
-        List<Menu> menus = menuRepository.findAllById(menuIds);
-        Order order = Order.generateOrder(orderTable, orderLineItems, menus);
+        Order order = Order.of(orderTable, orderLineItems);
+        applicationEventPublisher.publishEvent(new OrderGeneratedEvent(order));
         Order savedOrder = orderRepository.save(order);
         return new OrderResponse(savedOrder);
     }
@@ -59,6 +59,11 @@ public class OrderService {
                 .orElseThrow(() -> new OrderNotFoundException(NOT_FOUND_ORDER));
         order.changeOrderStatus(orderStatus);
         return new OrderResponse(order);
+    }
+
+    public boolean isUpgroupTableStatus(List<Long> orderTableId) {
+        return orderRepository.existsByOrderTableIdInAndOrderStatusIn(
+                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
     }
 
     private OrderTable findOrderTable(OrderRequest orderRequest) {

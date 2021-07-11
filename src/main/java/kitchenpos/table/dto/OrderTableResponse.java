@@ -1,29 +1,28 @@
 package kitchenpos.table.dto;
 
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.tablegroup.domain.TableGroup;
 
 import java.util.Objects;
 
 public class OrderTableResponse {
     private Long id;
-    private TableGroup tableGroup;
+    private Long tableGroupId;
     private Integer numberOfGuests;
     private Boolean empty;
 
     public OrderTableResponse() {
     }
 
-    public OrderTableResponse(Long id, TableGroup tableGroup, Integer numberOfGuests, Boolean empty) {
+    public OrderTableResponse(Long id, Long tableGroupId, Integer numberOfGuests, Boolean empty) {
         this.id = id;
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
 
     public OrderTableResponse(OrderTable orderTable) {
         this.id = orderTable.getId();
-        this.tableGroup = orderTable.getTableGroup();
+        this.tableGroupId = orderTable.getTableGroupId();
         this.numberOfGuests = orderTable.getNumberOfGuests();
         this.empty = orderTable.isEmpty();
     }
@@ -32,8 +31,8 @@ public class OrderTableResponse {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     public Integer getNumberOfGuests() {
@@ -49,11 +48,11 @@ public class OrderTableResponse {
         if (this == o) return true;
         if (!(o instanceof OrderTableResponse)) return false;
         OrderTableResponse that = (OrderTableResponse) o;
-        return Objects.equals(getId(), that.getId()) && Objects.equals(getTableGroup(), that.getTableGroup()) && Objects.equals(getNumberOfGuests(), that.getNumberOfGuests()) && Objects.equals(getEmpty(), that.getEmpty());
+        return Objects.equals(getId(), that.getId()) && Objects.equals(getTableGroupId(), that.getTableGroupId()) && Objects.equals(getNumberOfGuests(), that.getNumberOfGuests()) && Objects.equals(getEmpty(), that.getEmpty());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getTableGroup(), getNumberOfGuests(), getEmpty());
+        return Objects.hash(getId(), getTableGroupId(), getNumberOfGuests(), getEmpty());
     }
 }

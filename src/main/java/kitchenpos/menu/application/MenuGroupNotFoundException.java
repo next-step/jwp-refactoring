@@ -1,4 +1,4 @@
-package kitchenpos.menugroup.application;
+package kitchenpos.menu.application;
 
 public class MenuGroupNotFoundException extends RuntimeException {
 

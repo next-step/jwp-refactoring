@@ -6,6 +6,7 @@ import java.util.Objects;
 
 @Embeddable
 public class Price {
+    public static final Price ZERO = Price.of(BigDecimal.ZERO);
     private static final String INVALID_PRICE = "올바르지 않은 금액입니다 : ";
     private BigDecimal price;
 
@@ -14,6 +15,14 @@ public class Price {
 
     private Price(BigDecimal amount) {
         this.price = validate(amount);
+    }
+
+    public Price times(Long quantity) {
+        return new Price(price.multiply(BigDecimal.valueOf(quantity)));
+    }
+
+    public Price add(Price price) {
+        return new Price(this.price.add(price.getPrice()));
     }
 
     private BigDecimal validate(BigDecimal price) {

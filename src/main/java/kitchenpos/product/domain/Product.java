@@ -44,6 +44,10 @@ public class Product {
         return price.getPrice();
     }
 
+    public Price getTotalPrice(Long quantity) {
+        return price.times(quantity);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

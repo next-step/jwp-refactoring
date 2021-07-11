@@ -1,17 +1,12 @@
 package kitchenpos.table.domain;
 
 
-import kitchenpos.tablegroup.domain.TableGroup;
-
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityExistsException;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import java.util.Objects;
 
 @Entity
@@ -25,9 +20,8 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
-    private TableGroup tableGroup;
+    @Column(name = "table_group_id")
+    private Long tableGroupId;
 
     private Integer numberOfGuests;
 
@@ -40,9 +34,9 @@ public class OrderTable {
         this(null, null, numberOfGuests, empty);
     }
 
-    public OrderTable(Long id, TableGroup tableGroup, Integer numberOfGuests, boolean empty) {
+    public OrderTable(Long id, Long tableGroupId, Integer numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
@@ -59,7 +53,7 @@ public class OrderTable {
     }
 
     private boolean checkTableGroupExist() {
-        return Objects.nonNull(tableGroup);
+        return Objects.nonNull(tableGroupId);
     }
 
     public boolean checkIsNotValidTableGroup() {
@@ -80,21 +74,21 @@ public class OrderTable {
         }
     }
 
-    public void assignTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
+    public void assignTableGroup(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
         this.empty = false;
     }
 
     public void ungroup() {
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 
     public Long getId() {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     public Integer getNumberOfGuests() {
@@ -122,7 +116,7 @@ public class OrderTable {
     public String toString() {
         return "OrderTable{" +
                 "id=" + id +
-                ", tableGroup=" + tableGroup +
+                ", tableGroupId=" + tableGroupId +
                 ", numberOfGuests=" + numberOfGuests +
                 ", empty=" + empty +
                 '}';
