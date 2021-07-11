@@ -88,7 +88,7 @@ public class TableGroupService {
 
         if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
                 orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException("주문이 조리나 식사 상태입니다.");
+            throw new IllegalArgumentException("주문이 조리나 식사 상태에서는 변경할 수 없습니다.");
         }
 
         for (final OrderTable orderTable : orderTables) {

@@ -139,7 +139,7 @@ class TableGroupServiceTest {
         //when && then
         assertThatThrownBy(() -> tableGroupService.ungroup(1L))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("주문이 조리나 식사 상태입니다.");
+                .hasMessageContaining("주문이 조리나 식사 상태에서는 변경할 수 없습니다.");
     }
 
     @DisplayName("단체 지정 해제.")

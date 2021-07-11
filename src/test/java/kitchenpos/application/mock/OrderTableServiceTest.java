@@ -85,7 +85,7 @@ class OrderTableServiceTest {
         //when && then
         assertThatThrownBy(() -> orderTableService.changeEmpty(givenOrderTable.getId(), givenOrderTable))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("단체 지정된 테이블입니다.");
+                .hasMessageContaining("단체 지정된 테이블은 변경할 수 없습니다.");
     }
 
     @DisplayName("주문 상태가 `조리`, `식사` 이면 빈 테이블 설정 할 수 없다.")
@@ -98,7 +98,7 @@ class OrderTableServiceTest {
         //when && then
         assertThatThrownBy(() -> orderTableService.changeEmpty(givenOrderTable.getId(), givenOrderTable))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("주문이 조리나 식사 상태입니다.");
+                .hasMessageContaining("주문이 조리나 식사 상태에서는 변경할 수 없습니다.");
     }
 
     @DisplayName("빈 테이블 설정을 할 수 있다.")

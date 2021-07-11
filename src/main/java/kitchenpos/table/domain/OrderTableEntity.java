@@ -42,4 +42,12 @@ public class OrderTableEntity {
     public boolean isEmpty() {
         return empty;
     }
+
+    public void changeEmpty(boolean empty) {
+        this.empty = empty;
+    }
+
+    public void updateTableGroupId(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
+    }
 }

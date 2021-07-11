@@ -1,5 +1,7 @@
 package kitchenpos.table.application;
 
+import kitchenpos.application.OrderService;
+import kitchenpos.table.domain.OrderTableEntity;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
@@ -13,10 +15,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -24,14 +29,21 @@ class TableServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
 
+    @Mock
+    private OrderService orderService;
+
     @InjectMocks
     private OrderTableService orderTableService;
 
     private OrderTableRequest orderTableRequest;
+    private OrderTableRequest changeEmptyRequest;
+    private OrderTableEntity givenOrderTable;
 
     @BeforeEach
     public void setUp() {
         orderTableRequest = new OrderTableRequest(0, true);
+        changeEmptyRequest = new OrderTableRequest(0, false);
+        givenOrderTable = new OrderTableEntity(1L, null, 0, true);
     }
 
     @DisplayName("주문테이블을 등록할 수 있다.")
@@ -59,6 +71,58 @@ class TableServiceTest {
 
         //then
         assertThat(orderTableResponses.size()).isGreaterThan(0);
+    }
+
+
+    @DisplayName("등록되어있지 않은 주문 테이블은 빈 테이블 설정할 수 없다.")
+    @Test
+    void changeEmptyFailBecauseOfNotExistOrderTableTest() {
+        //given
+        given(orderTableRepository.findById(any())).willReturn(Optional.empty());
+
+        //when && then
+        assertThatThrownBy(() -> orderTableService.changeEmptyTemp(givenOrderTable.getId(), changeEmptyRequest))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("등록되지 않은 주문 테이블입니다.");
+    }
+
+    @DisplayName("단체 지정된 테이블은 빈 테이블 설정 할 수 없다.")
+    @Test
+    void changeEmptyFailBecauseOfHasTableGroupIdTest() {
+        //given
+        givenOrderTable.updateTableGroupId(1L);
+        given(orderTableRepository.findById(givenOrderTable.getId())).willReturn(Optional.ofNullable(givenOrderTable));
+
+        //when && then
+        assertThatThrownBy(() -> orderTableService.changeEmptyTemp(givenOrderTable.getId(), changeEmptyRequest))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("단체 지정된 테이블은 변경할 수 없습니다.");
+    }
+
+    @DisplayName("주문 상태가 `조리`, `식사` 이면 빈 테이블 설정 할 수 없다.")
+    @Test
+    void changeEmptyFailBecauseOfOrderStatusTest() {
+        //given
+        given(orderTableRepository.findById(givenOrderTable.getId())).willReturn(Optional.ofNullable(givenOrderTable));
+        doThrow(new IllegalArgumentException("주문이 조리나 식사 상태에서는 변경할 수 없습니다.")).when(orderService).changeStatusValidCheck(any());
+
+        //when && then
+        assertThatThrownBy(() -> orderTableService.changeEmptyTemp(givenOrderTable.getId(), changeEmptyRequest))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("주문이 조리나 식사 상태에서는 변경할 수 없습니다.");
+    }
+
+    @DisplayName("빈 테이블 설정을 할 수 있다.")
+    @Test
+    void changeEmptyTest() {
+        //given
+        given(orderTableRepository.findById(givenOrderTable.getId())).willReturn(Optional.ofNullable(givenOrderTable));
+
+        //when
+        OrderTableResponse orderTableResponse = orderTableService.changeEmptyTemp(givenOrderTable.getId(), changeEmptyRequest);
+
+        //then
+        assertThat(orderTableResponse.isEmpty()).isEqualTo(changeEmptyRequest.isEmpty());
     }
 
 

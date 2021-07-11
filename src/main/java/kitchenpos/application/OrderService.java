@@ -14,6 +14,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -104,5 +105,12 @@ public class OrderService {
         savedOrder.setOrderLineItems(orderLineItemDao.findAllByOrderId(orderId));
 
         return savedOrder;
+    }
+
+    public void changeStatusValidCheck(Long orderTableId) {
+//        if (orderDao.existsByOrderTableIdAndOrderStatusIn(
+//                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+//            throw new IllegalArgumentException("주문이 조리나 식사 상태에서는 변경할 수 없습니다.");
+//        }
     }
 }
