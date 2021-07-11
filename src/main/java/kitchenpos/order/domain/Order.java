@@ -63,7 +63,7 @@ public class Order {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
-        this.orderLineItems = new OrderLineItems(orderLineItems);
+        this.orderLineItems = new OrderLineItems(orderLineItems, this);
     }
 
     private void validationOrderLineItems(List<OrderLineItem> orderLineItems) {
