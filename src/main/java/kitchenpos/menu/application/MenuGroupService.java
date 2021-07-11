@@ -1,5 +1,6 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.menu.application.exception.NotExistMenuGroupException;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.presentation.dto.MenuGroupRequest;
@@ -26,5 +27,10 @@ public class MenuGroupService {
     @Transactional(readOnly = true)
     public List<MenuGroupResponse> list() {
         return MenuGroupResponse.ofList(menuGroupRepository.findAll());
+    }
+
+    @Transactional(readOnly = true)
+    public MenuGroup findById(Long id){
+        return menuGroupRepository.findById(id).orElseThrow(NotExistMenuGroupException::new);
     }
 }

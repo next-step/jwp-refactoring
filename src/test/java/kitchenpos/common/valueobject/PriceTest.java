@@ -38,9 +38,9 @@ class PriceTest {
         Price price = Price.of(BigDecimal.valueOf(1000L));
 
         //when
-        Price actual = price.calculatePriceByQuantity(Quantity.of(3L));
+        BigDecimal actual = price.calculateByQuantity(Quantity.of(3L));
 
         //then
-        assertThat(actual.getValue().longValue()).isEqualTo(3000L);
+        assertThat(actual.longValue()).isEqualTo(3000L);
     }
 }

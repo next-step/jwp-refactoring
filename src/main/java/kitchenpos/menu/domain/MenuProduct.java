@@ -4,6 +4,7 @@ import kitchenpos.common.valueobject.Quantity;
 import kitchenpos.product.domain.Product;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 public class MenuProduct {
@@ -22,7 +23,8 @@ public class MenuProduct {
     @Embedded
     private Quantity quantity;
 
-    protected MenuProduct(){}
+    protected MenuProduct() {
+    }
 
     public MenuProduct(Long seq, Menu menu, Product product, long quantity) {
         this.seq = seq;
@@ -31,12 +33,12 @@ public class MenuProduct {
         this.quantity = Quantity.of(quantity);
     }
 
-    public static MenuProduct of(Long seq, Menu menu, Product product, long quantity) {
-        return new MenuProduct(seq, menu, product, quantity);
-    }
-
     public static MenuProduct of(Product product, long quantity) {
         return new MenuProduct(null, null, product, quantity);
+    }
+
+    public static MenuProduct of(long quantity) {
+        return new MenuProduct(null, null, null, quantity);
     }
 
     public Long getSeq() {
@@ -55,7 +57,11 @@ public class MenuProduct {
         return quantity;
     }
 
-    public void setMenu(Menu menu) {
+    public void registerMenu(Menu menu) {
         this.menu = menu;
+    }
+
+    public BigDecimal getCalculatedPrice() {
+        return product.getPrice().calculateByQuantity(quantity);
     }
 }

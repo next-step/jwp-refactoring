@@ -37,12 +37,16 @@ public class Price {
         return BigDecimal.valueOf(value.longValue());
     }
 
-    public Price calculatePriceByQuantity(Quantity quantity) {
-        return Price.of(value.multiply(BigDecimal.valueOf(quantity.getValue())));
+    public BigDecimal calculateByQuantity(Quantity quantity) {
+        return value.multiply(BigDecimal.valueOf(quantity.getValue()));
     }
 
-    public boolean isBiggerThan(BigDecimal value) {
-        return this.value.compareTo(value) > 0;
+    public Price add(Price price){
+        return Price.of(value.add(price.getValue()));
+    }
+
+    public boolean isMoreExpensiveThan(Price price) {
+        return this.value.compareTo(price.getValue()) > 0;
     }
 
     @Override

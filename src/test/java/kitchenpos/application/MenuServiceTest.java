@@ -1,14 +1,15 @@
 package kitchenpos.application;
 
-import kitchenpos.common.valueobject.exception.NegativePriceException;
 import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.application.exception.NotExistMenuGroupException;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.menu.presentation.dto.MenuProductRequest;
 import kitchenpos.menu.presentation.dto.MenuRequest;
 import kitchenpos.menu.presentation.dto.MenuResponse;
+import kitchenpos.product.application.exception.NotExistProductsException;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -74,27 +75,6 @@ class MenuServiceTest extends DataBaseCleanSupport {
         assertThat(actual.getMenuProducts().size()).isEqualTo(3);
     }
 
-    @DisplayName("메뉴의 이름을 지정해야한다.")
-    @Test
-    void createMenuExceptionIfNameIsNull() {
-        //TODO: 추가 기능 개발
-    }
-
-    @DisplayName("메뉴의 총 가격은 0원 이상이어야한다.")
-    @Test
-    void createMenuExceptionIfPriceIsNull() {
-        //given
-        MenuRequest menuRequest = MenuRequest.of(
-                "10만원의 행복 파티 세트 (12인)",
-                BigDecimal.valueOf(-10),
-                착한세트.getId(),
-                Lists.list(후라이드치킨_세트메뉴, 양념치킨_세트메뉴, 족발_세트메뉴));
-
-        //when
-        assertThatThrownBy(() -> menuService.create(menuRequest))
-                .isInstanceOf(NegativePriceException.class); //then
-    }
-
     @DisplayName("메뉴는 속할 메뉴 그룹을 지정해야한다.")
     @Test
     void createMenuExceptionIfMenuGroupIsNull() {
@@ -107,7 +87,7 @@ class MenuServiceTest extends DataBaseCleanSupport {
 
         //when
         assertThatThrownBy(() -> menuService.create(menuRequest))
-                .isInstanceOf(IllegalArgumentException.class); //then
+                .isInstanceOf(NotExistMenuGroupException.class); //then
     }
 
     @DisplayName("메뉴는 존재하는 상품으로 구성해야한다.")
@@ -122,28 +102,7 @@ class MenuServiceTest extends DataBaseCleanSupport {
 
         //when
         assertThatThrownBy(() -> menuService.create(menuRequest))
-                .isInstanceOf(IllegalArgumentException.class); //then
-    }
-
-    @DisplayName("메뉴의 메뉴상품은 갯수를 지정해야한다.")
-    @Test
-    void createMenuExceptionIfMenuProductQuantityIsNull() {
-        //TODO: 추가 기능 개발
-    }
-
-    @DisplayName("메뉴의 총 가격이 기존 상품들의 총합 가격보다 비쌀 수 없다.")
-    @Test
-    void createMenuExceptionIfMenuPriceHigherThanProductTotalPrice() {
-        //given
-        MenuRequest menuRequest = MenuRequest.of(
-                "10만원의 행복 파티 세트 (12인)",
-                BigDecimal.valueOf(99999999),
-                착한세트.getId(),
-                Lists.list(후라이드치킨_세트메뉴, 양념치킨_세트메뉴, 족발_세트메뉴));
-
-        //when
-        assertThatThrownBy(() -> menuService.create(menuRequest))
-                .isInstanceOf(IllegalArgumentException.class); //then
+                .isInstanceOf(NotExistProductsException.class); //then
     }
 
     @DisplayName("메뉴 그룹을 모두 조회한다.")

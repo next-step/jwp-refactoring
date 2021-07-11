@@ -2,6 +2,7 @@ package kitchenpos.product.application;
 
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.application.exception.NotExistProductsException;
 import kitchenpos.product.presentation.dto.ProductRequest;
 import kitchenpos.product.presentation.dto.ProductResponse;
 import org.springframework.stereotype.Service;
@@ -26,5 +27,15 @@ public class ProductService {
     @Transactional(readOnly = true)
     public List<ProductResponse> list() {
         return ProductResponse.ofList(productRepository.findAll());
+    }
+
+    @Transactional(readOnly = true)
+    public List<Product> findByIdIn(List<Long> productIds) {
+        List<Product> products = productRepository.findByIdIn(productIds);
+        if (products.isEmpty()) {
+            throw new NotExistProductsException();
+        }
+
+        return products;
     }
 }

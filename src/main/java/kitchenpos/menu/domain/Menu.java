@@ -1,7 +1,7 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.common.valueobject.Name;
 import kitchenpos.common.valueobject.Price;
-import org.springframework.data.annotation.ReadOnlyProperty;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -14,8 +14,8 @@ public class Menu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String name;
+    @Embedded
+    private Name name;
 
     @Embedded
     private Price price;
@@ -24,34 +24,45 @@ public class Menu {
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
 
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL)
-    @ReadOnlyProperty
-    private List<MenuProduct> menuProducts;
+    @Embedded
+    private MenuProducts menuProducts;
 
     protected Menu() {
     }
 
-    private Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+    private Menu(Long id, Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
         this.id = id;
         this.name = name;
-        this.price = Price.of(price);
+        this.price = price;
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
     }
 
-    public static Menu of(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        return new Menu(id, name, price, menuGroup, menuProducts);
+    private Menu(Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        this(null, name, price, menuGroup, menuProducts);
+        menuProducts.registerAll(this);
     }
 
     public static Menu of(String name, BigDecimal price, MenuGroup menuGroup) {
-        return new Menu(null, name, price, menuGroup, new ArrayList<>());
+        return new Menu(null, Name.of(name), Price.of(price), menuGroup, MenuProducts.of(new ArrayList<>()));
+    }
+
+    public static Menu of(String name, BigDecimal price) {
+        return new Menu(null, Name.of(name), Price.of(price), null, MenuProducts.of(new ArrayList<>()));
+    }
+
+    public static Menu create(String name, BigDecimal menuPrice, MenuGroup menuGroup, List<MenuProduct> menuProductList) {
+        MenuProducts menuProducts = MenuProducts.of(menuProductList);
+        Price price = Price.of(menuPrice);
+        menuProducts.validatePrice(price);
+        return new Menu(Name.of(name), price, menuGroup, menuProducts);
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getName() {
+    public Name getName() {
         return name;
     }
 
@@ -64,10 +75,6 @@ public class Menu {
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
-    }
-
-    public void addMenuProduct(MenuProduct menuProduct){
-        menuProducts.add(menuProduct);
+        return menuProducts.getUnmodifiableList();
     }
 }
