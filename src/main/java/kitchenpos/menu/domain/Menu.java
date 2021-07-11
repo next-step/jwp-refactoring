@@ -50,7 +50,7 @@ public class Menu {
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
-        this.menuProducts = new MenuProducts(menuProducts, this);
+        this.menuProducts = new MenuProducts(menuProducts);
     }
 
     private void validationPrice(Price price) {

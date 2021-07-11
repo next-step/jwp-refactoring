@@ -17,7 +17,6 @@ import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,15 +36,13 @@ public class MenuServiceTest {
     public static final Product 감자튀김 = new Product(2L, "감자튀김", 감자튀김_가격);
     public static final Product 콜라 = new Product(3L, "콜라", 콜라_가격);
     public static final Long 치즈버거세트_메뉴ID = 1L;
-    public static final MenuProduct 치즈버거세트_치즈버거 = new MenuProduct(치즈버거세트_메뉴ID, 치즈버거, 1L);
-    public static final MenuProduct 치즈버거세트_감자튀김 = new MenuProduct(치즈버거세트_메뉴ID, 감자튀김, 1L);
-    public static final MenuProduct 치즈버거세트_콜라 = new MenuProduct(치즈버거세트_메뉴ID, 콜라, 1L);
+    public static final MenuProduct 치즈버거세트_치즈버거 = new MenuProduct(치즈버거세트_메뉴ID, 치즈버거.getId(), 1L);
+    public static final MenuProduct 치즈버거세트_감자튀김 = new MenuProduct(치즈버거세트_메뉴ID, 감자튀김.getId(), 1L);
+    public static final MenuProduct 치즈버거세트_콜라 = new MenuProduct(치즈버거세트_메뉴ID, 콜라.getId(), 1L);
     public static final MenuGroup 패스트푸드 = new MenuGroup(1L, "패스트푸드");
 
     @Mock
     private MenuRepository menuRepository;
-    @Mock
-    private ProductRepository productRepository;
     @InjectMocks
     private MenuService menuService;
 
@@ -55,14 +52,12 @@ public class MenuServiceTest {
         // Given
         Menu 치즈버거세트 = new Menu("치즈버거세트", 치즈버거세트_가격, 패스트푸드.getId(), Arrays.asList(치즈버거세트_치즈버거, 치즈버거세트_감자튀김, 치즈버거세트_콜라));
         MenuRequest 메뉴 = MenuRequest.of(치즈버거세트);
-        given(productRepository.findAllById(any())).willReturn(new ArrayList<>(Arrays.asList(치즈버거, 감자튀김, 콜라)));
         given(menuRepository.save(any())).willReturn(치즈버거세트);
 
         // When
         menuService.create(메뉴);
 
         // Then
-        verify(productRepository, times(1)).findAllById(any());
         verify(menuRepository, times(1)).save(any());
     }
 

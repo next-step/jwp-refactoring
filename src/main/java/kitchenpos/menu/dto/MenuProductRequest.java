@@ -3,7 +3,6 @@ package kitchenpos.menu.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.product.domain.Product;
 
 public class MenuProductRequest {
 
@@ -27,7 +26,7 @@ public class MenuProductRequest {
     }
 
     public static MenuProductRequest of(MenuProduct menuProduct) {
-        return new MenuProductRequest(menuProduct.getMenuId(), menuProduct.getProduct().getId(), menuProduct.getQuantity().getValue());
+        return new MenuProductRequest(menuProduct.getMenuId(), menuProduct.getProductId(), menuProduct.getQuantity().getValue());
     }
 
     public static List<MenuProductRequest> listOf(List<MenuProduct> menuProducts) {
@@ -61,7 +60,7 @@ public class MenuProductRequest {
     }
 
     public MenuProduct toMenuProduct() {
-        return new MenuProduct(menuId, new Product(productId), quantity);
+        return new MenuProduct(menuId, productId, quantity);
     }
 
     @Override
