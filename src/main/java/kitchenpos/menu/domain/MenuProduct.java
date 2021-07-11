@@ -41,10 +41,6 @@ public class MenuProduct {
         this.quantity = quantity;
     }
 
-//    public BigDecimal sumMenuProduct() {
-//        return product.getPrice().multiply(BigDecimal.valueOf(quantity));
-//    }
-
     public void registerMenu(Menu menu) {
         this.menu = menu;
     }

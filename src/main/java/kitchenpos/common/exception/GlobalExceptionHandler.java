@@ -1,7 +1,7 @@
 package kitchenpos.common.exception;
 
+import kitchenpos.menu.application.MenuGroupNotFoundException;
 import kitchenpos.menu.application.MenuNotMatchException;
-import kitchenpos.menugroup.application.MenuGroupNotFoundException;
 import kitchenpos.order.application.OrderLineItemNotFoundException;
 import kitchenpos.order.application.OrderNotFoundException;
 import kitchenpos.product.application.ProductNotFoundException;
