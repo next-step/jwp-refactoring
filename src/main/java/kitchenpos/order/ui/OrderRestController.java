@@ -1,9 +1,16 @@
 package kitchenpos.order.ui;
 
+import kitchenpos.menu.ui.exception.IllegalMenuPriceException;
+import kitchenpos.menu.ui.exception.NoMenuGroupException;
+import kitchenpos.menuproduct.exception.NoMenuProductException;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.dto.OrderCreateRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusChangeRequest;
+import kitchenpos.order.exception.EmptyOrderTableException;
+import kitchenpos.order.exception.OrderStatusCompleteException;
+import kitchenpos.orderlineitem.exception.EmptyOrderLineItemsException;
+import kitchenpos.orderlineitem.exception.MenuAndOrderLineItemSizeNotMatchException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,5 +44,13 @@ public class OrderRestController {
             @RequestBody OrderStatusChangeRequest orderStatusChangeRequest
     ) {
         return ResponseEntity.ok(orderService.changeOrderStatus(orderId, orderStatusChangeRequest));
+    }
+
+    @ExceptionHandler({
+            EmptyOrderLineItemsException.class, MenuAndOrderLineItemSizeNotMatchException.class,
+            EmptyOrderTableException.class, OrderStatusCompleteException.class
+    })
+    public ResponseEntity handleException() {
+        return ResponseEntity.badRequest().build();
     }
 }

@@ -1,6 +1,8 @@
 package kitchenpos.application;
 
 import kitchenpos.order.dto.*;
+import kitchenpos.order.exception.EmptyOrderTableException;
+import kitchenpos.order.exception.OrderStatusCompleteException;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
@@ -15,9 +17,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -35,6 +37,9 @@ public class OrderServiceTest {
     OrderRepository orderRepository;
     @Mock
     OrderTableRepository orderTableRepository;
+    @Mock
+    ApplicationEventPublisher publisher;
+
 
     OrderService orderService;
 
@@ -51,14 +56,13 @@ public class OrderServiceTest {
         );
         orderStatusChangeRequest = new OrderStatusChangeRequest(OrderStatus.MEAL.name());
 
-        orderService = new OrderService(menuRepository, orderRepository, orderTableRepository);
+        orderService = new OrderService(menuRepository, orderRepository, orderTableRepository, publisher);
     }
 
     @DisplayName("주문이 발생함")
     @Test
     void 주문이_발생함() {
         //given
-        given(menuRepository.countByIdIn(anyList())).willReturn(2L);
         OrderTable orderTable = new OrderTable(1L, new TableGroup(), 4, false);
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(orderTable));
         Order savedOrder = new Order(1L, orderTable, OrderStatus.COOKING.name());
@@ -68,34 +72,13 @@ public class OrderServiceTest {
 
         //then
         assertThat(orderResponse.getId()).isNotNull();
-        assertThat(orderResponse.getOrderLineItems()).hasSize(2);
         assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
-    }
-
-    @DisplayName("주문 항목이 아무것도 입력이 안되었을 경우")
-    @Test
-    void 주문_항목이_아무것도_입력이_안되었을_경우() {
-        //given
-        orderCreateRequest = new OrderCreateRequest(1L, Collections.emptyList());
-
-        //when, then
-        assertThatThrownBy(() -> orderService.create(orderCreateRequest)).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("주문 항목의 메뉴 중 등록되지 않은 메뉴가 있을 때")
-    @Test
-    void 주문_항목의_메뉴_중_등록되지_않은_메뉴가_있을_때() {
-        //when
-        given(menuRepository.countByIdIn(anyList())).willReturn(1L);
-
-        assertThatThrownBy(() -> orderService.create(orderCreateRequest)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문에, 존재하지 않는 주문테이블을 입력한 경우")
     @Test
     void 주문에_존재하지_않는_주문테이블을_입력한_경우() {
         //given
-        given(menuRepository.countByIdIn(anyList())).willReturn(2L);
         given(orderTableRepository.findById(1L)).willReturn(Optional.empty());
 
         //when, then
@@ -106,11 +89,11 @@ public class OrderServiceTest {
     @Test
     void 주문테이블이_비어있는_경우() {
         //given
-        given(menuRepository.countByIdIn(anyList())).willReturn(2L);
         given(orderTableRepository.findById(1L)).willReturn(Optional.of(new OrderTable(1L, new TableGroup(), 0, true)));
 
         //when, then
-        assertThatThrownBy(() -> orderService.create(orderCreateRequest)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(orderCreateRequest))
+                .isInstanceOf(EmptyOrderTableException.class);
     }
 
     @DisplayName("주문테이블 리스트 가져오기")
@@ -146,7 +129,7 @@ public class OrderServiceTest {
         given(orderRepository.findById(1L)).willReturn(Optional.of(new Order(1L, new OrderTable(), OrderStatus.COMPLETION.name())));
         //when, then
         assertThatThrownBy(() -> orderService.changeOrderStatus(1L, orderStatusChangeRequest))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(OrderStatusCompleteException.class);
     }
 
     @DisplayName("주문상태 변경시 주문번호가 없는 경우")
