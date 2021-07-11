@@ -86,7 +86,7 @@ public class tableAcceptanceTest extends AcceptanceTest {
     }
 
 
-    private ExtractableResponse<Response> 주문_테이블_등록_요청(OrderTableRequest orderTableRequest) {
+    private static ExtractableResponse<Response> 주문_테이블_등록_요청(OrderTableRequest orderTableRequest) {
         return RestAssured
                 .given().log().all()
                 .body(orderTableRequest)
@@ -94,6 +94,12 @@ public class tableAcceptanceTest extends AcceptanceTest {
                 .when().post("/api/tables/temp")
                 .then().log().all()
                 .extract();
+    }
+
+    public static OrderTableResponse 주문_테이블_등록_되어있음(OrderTableRequest orderTableRequest) {
+        ExtractableResponse<Response> response = 주문_테이블_등록_요청(orderTableRequest);
+        정상_등록(response);
+        return response.as(OrderTableResponse.class);
     }
 
     private ExtractableResponse<Response> 주문_테이블_조회_요청() {
