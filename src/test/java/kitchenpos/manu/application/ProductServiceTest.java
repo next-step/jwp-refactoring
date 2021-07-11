@@ -3,7 +3,6 @@ package kitchenpos.manu.application;
 import kitchenposNew.menu.application.ProductService;
 import kitchenposNew.menu.domain.Product;
 import kitchenposNew.menu.domain.ProductRepository;
-import kitchenposNew.menu.dto.MenuGroupResponse;
 import kitchenposNew.menu.dto.ProductRequest;
 import kitchenposNew.menu.dto.ProductResponse;
 import kitchenposNew.wrap.Price;
@@ -26,7 +25,6 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
     private ProductRequest 치킨_요청;
-    private ProductResponse 치킨;
 
     @Mock
     private ProductRepository productRepository;
@@ -38,8 +36,8 @@ public class ProductServiceTest {
     @DisplayName("상품 등록 테스트")
     void 상품_등록_테스트() {
         // given
-        치킨_요청 = new ProductRequest("치킨", BigDecimal.valueOf(17000));
-        Product 치킨 = new Product("치킨", new Price(BigDecimal.valueOf(17000)));
+        치킨_요청 = 상품_요청("치킨", 17000);
+        Product 치킨 = 상품_생성("치킨", 17000);
         when(productRepository.save(치킨_요청.toProduct())).thenReturn(치킨);
 
         // when
@@ -56,7 +54,7 @@ public class ProductServiceTest {
     void 상품_가격_오류_테스트() {
         // given
         // 잘못된 가격을 요청함
-        치킨_요청 = new ProductRequest("치킨", BigDecimal.valueOf(-17000));
+        치킨_요청 = 상품_요청("치킨", -17000);
 
         // than
         // 예외 발생
@@ -69,8 +67,8 @@ public class ProductServiceTest {
     void 상품_리스트_조회_테스트() {
         // when
         // 메뉴 그룹 리스트 조회 요청 함
-        Product 치킨 = new Product("치킨", new Price(BigDecimal.valueOf(17000)));
-        Product 콜라 = new Product("콜라", new Price(BigDecimal.valueOf(17000)));
+        Product 치킨 = 상품_생성("치킨", 17000);
+        Product 콜라 = 상품_생성("콜라", 1000);
         when(productRepository.findAll()).thenReturn(Arrays.asList(치킨, 콜라));
         List<ProductResponse> expected = productService.list();
 
@@ -78,5 +76,13 @@ public class ProductServiceTest {
         // 메뉴 그릅 등록 됨
         assertThat(expected.size()).isEqualTo(2);
         assertThat(expected).containsAll(Arrays.asList(ProductResponse.of(치킨), ProductResponse.of(콜라)));
+    }
+
+    private ProductRequest 상품_요청(String name, int price) {
+        return new ProductRequest(name, BigDecimal.valueOf(price));
+    }
+
+    private Product 상품_생성(String name, int price) {
+        return new Product(name, new Price(BigDecimal.valueOf(price)));
     }
 }
