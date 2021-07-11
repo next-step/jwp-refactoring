@@ -51,9 +51,8 @@ public class Menu {
         this.menuGroup = menuGroup;
     }
 
-    public static Menu of(String name, BigDecimal price, MenuProducts menuProducts, MenuGroup menuGroup) {
-        menuProducts.validateIsEmpty();
-        return new Menu(name, price, menuProducts, menuGroup);
+    public static Menu of(String name, BigDecimal price, MenuGroup menuGroup) {
+        return new Menu(name, price, new MenuProducts(), menuGroup);
     }
 
     public void registerMenuProduct(MenuProduct menuProduct) {

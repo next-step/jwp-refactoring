@@ -3,7 +3,6 @@ package kitchenpos.menu.application;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -32,13 +31,8 @@ public class MenuService {
     @Transactional
     public MenuResponse create(MenuRequest menuRequest) {
         MenuGroup menuGroup = getMenuGroup(menuRequest);
-        Menu menu = Menu.of(menuRequest.getName(), menuRequest.getPrice(), null, menuGroup);
-
-        menuRequest.getMenuProducts()
-                .stream()
-                .map(v -> new MenuProduct(v.getProductId(), v.getQuantity()))
-                .forEach(menu::registerMenuProduct);
-
+        Menu menu = Menu.of(menuRequest.getName(), menuRequest.getPrice(), menuGroup);
+        menuRequest.registerMenu(menu);
         applicationEventPublisher.publishEvent(new MenuCreatedEvent(menu));
 
         Menu savedMenu = menuRepository.save(menu);

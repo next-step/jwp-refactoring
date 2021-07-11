@@ -1,5 +1,7 @@
 package kitchenpos.menu.dto;
 
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
 
 import java.math.BigDecimal;
@@ -47,22 +49,12 @@ public class MenuRequest {
                 .collect(toList());
     }
 
-//    public List<MenuProduct> getMenuProductsBy(List<Product> products) {
-//        if (products.isEmpty()) {
-//            throw new IllegalArgumentException(INVALID_PRODUCT);
-//        }
-//        return products.stream()
-//                .map(this::changeToMenuProduct)
-//                .collect(toList());
-//    }
-//
-//    private MenuProduct changeToMenuProduct(Product product) {
-//        return menuProducts.stream()
-//                .filter(v -> isProductIdMatch(product, v))
-//                .map(v -> new MenuProduct(product, v.getQuantity()))
-//                .findAny()
-//                .orElseThrow(() -> new IllegalArgumentException(INVALID_PRODUCT));
-//    }
+    public void registerMenu(Menu menu) {
+        for (MenuProductRequest request : menuProducts) {
+            MenuProduct menuProduct = new MenuProduct(request.getProductId(), request.getQuantity());
+            menu.registerMenuProduct(menuProduct);
+        }
+    }
 
     private boolean isProductIdMatch(Product product, MenuProductRequest v) {
         return v.getProductId().equals(product.getId());
