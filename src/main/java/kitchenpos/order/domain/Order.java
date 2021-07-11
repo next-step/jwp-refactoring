@@ -1,11 +1,10 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.order.exception.OrderStatusCompleteException;
 import kitchenpos.ordertable.domain.OrderTable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -18,8 +17,6 @@ public class Order {
     private OrderTable orderTable;
     private String orderStatus;
     private LocalDateTime orderedTime;
-    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     public Order() {
     }
@@ -41,17 +38,13 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
-    public void addOrderLineItems(List<OrderLineItem> orderLineItems) {
-        this.orderLineItems.addAll(orderLineItems);
-    }
-
     private boolean isOrderStatusComplete() {
         return Objects.equals(OrderStatus.COMPLETION.name(), this.getOrderStatus());
     }
 
     public void validateOrderStatusComplete() {
         if (isOrderStatusComplete()) {
-            throw new IllegalArgumentException();
+            throw new OrderStatusCompleteException();
         }
     }
 
@@ -69,10 +62,6 @@ public class Order {
 
     public LocalDateTime getOrderedTime() {
         return orderedTime;
-    }
-
-    public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
     }
 
     public void changeOrderStatus(String orderStatus) {
