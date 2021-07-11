@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.order.domain.NumberOfGuests;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
@@ -16,9 +18,12 @@ import kitchenpos.table.repository.OrderTableRepository;
 @Transactional(readOnly = true)
 public class TableService {
 	private final OrderTableRepository orderTableRepository;
+	private final OrderRepository orderRepository;
 
-	public TableService(OrderTableRepository orderTableRepository) {
+	public TableService(OrderTableRepository orderTableRepository,
+		OrderRepository orderRepository) {
 		this.orderTableRepository = orderTableRepository;
+		this.orderRepository = orderRepository;
 	}
 
 	@Transactional
@@ -38,6 +43,13 @@ public class TableService {
 	@Transactional
 	public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
 		final OrderTable savedOrderTable = findOrderTable(orderTableId);
+
+		List<Order> orders = orderRepository.findByOrderTableId(orderTableId);
+		boolean unChangeable = orders.stream().anyMatch(Order::isUnChangeable);
+		if (unChangeable) {
+			throw new IllegalArgumentException("주문 상태가 완료되어야 단체지정이 해제가능합니다.");
+		}
+
 		savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
 		return OrderTableResponse.of(savedOrderTable);
 	}

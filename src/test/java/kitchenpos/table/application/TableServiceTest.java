@@ -3,6 +3,7 @@ package kitchenpos.table.application;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,6 +23,7 @@ import kitchenpos.order.domain.NumberOfGuests;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -33,6 +35,8 @@ class TableServiceTest {
 
 	@Mock
 	private OrderTableRepository orderTableRepository;
+	@Mock
+	private OrderRepository orderRepository;
 	@InjectMocks
 	private TableService tableSevrice;
 
@@ -133,9 +137,12 @@ class TableServiceTest {
 
 		List<OrderLineItem> orderLineItems = new ArrayList<>();
 		orderLineItems.add(new OrderLineItem(null, null, 3));
-		new Order(삼번테이블, OrderStatus.COOKING, null, orderLineItems);
+
+		List<Order> orders = new ArrayList<>();
+		orders.add(new Order(orderTableId, OrderStatus.COOKING, LocalDateTime.now(), orderLineItems));
 
 		when(orderTableRepository.findById(orderTableId)).thenReturn(Optional.of(삼번테이블));
+		when(orderRepository.findByOrderTableId(orderTableId)).thenReturn(orders);
 
 		Assertions.assertThatThrownBy(() -> {
 			tableSevrice.changeEmpty(orderTableId, orderTableRequest);

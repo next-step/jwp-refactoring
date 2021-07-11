@@ -34,7 +34,7 @@ public class OrderResponse {
 			.map(OrderLineItemResponse::of)
 			.collect(Collectors.toList());
 
-		return new OrderResponse(order.getId(), order.getOrderTable().getId(), order.getOrderStatus(),
+		return new OrderResponse(order.getId(), order.getOrderTableId(), order.getOrderStatus(),
 			order.getOrderedTime(), orderLineItemResponses);
 	}
 

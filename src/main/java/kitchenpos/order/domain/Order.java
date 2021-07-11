@@ -3,24 +3,18 @@ package kitchenpos.order.domain;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.springframework.util.CollectionUtils;
-
-import kitchenpos.table.domain.OrderTable;
 
 @Entity
 @Table(name = "orders")
@@ -29,9 +23,8 @@ public class Order {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "order_table_id")
-	private OrderTable orderTable;
+	@Column(name = "order_table_id")
+	private Long orderTableId;
 
 	@Enumerated(value = EnumType.STRING)
 	private OrderStatus orderStatus;
@@ -45,27 +38,25 @@ public class Order {
 	protected Order() {
 	}
 
-	public static Order ofCooking(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-		return new Order(orderTable, OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
+	public static Order ofCooking(Long orderTableId, List<OrderLineItem> orderLineItems) {
+		return new Order(orderTableId, OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
 	}
 
-	public Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
+	public Order(Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime,
 		List<OrderLineItem> orderLineItems) {
 
-		validateEmptyTableOrder(orderTable);
 		validateEmptyOrderItems(orderLineItems);
 
 		for (OrderLineItem orderLineItem : orderLineItems) {
 			addOrderLineItem(orderLineItem);
 		}
-		order(orderTable);
+		this.orderTableId = orderTableId;
 		this.orderStatus = orderStatus;
 		this.orderedTime = orderedTime;
 	}
 
-	public void order(OrderTable orderTable) {
-		this.orderTable = orderTable;
-		orderTable.addOrder(this);
+	public Long getOrderTableId() {
+		return orderTableId;
 	}
 
 	private void validateEmptyOrderItems(List<OrderLineItem> orderLineItems) {
@@ -74,19 +65,9 @@ public class Order {
 		}
 	}
 
-	private void validateEmptyTableOrder(OrderTable orderTable) {
-		if (orderTable.isEmpty()) {
-			throw new IllegalArgumentException("비어있는 테이블은 주문할 수 없습니다.");
-		}
-	}
-
 	public void addOrderLineItem(OrderLineItem orderLineItem) {
 		this.orderLineItems.add(orderLineItem);
 		orderLineItem.changeOrder(this);
-	}
-
-	public OrderTable getOrderTable() {
-		return orderTable;
 	}
 
 	public OrderStatus getOrderStatus() {
@@ -114,23 +95,6 @@ public class Order {
 	public void changeState(OrderStatus orderStatus) {
 		this.validateChangeStatus();
 		this.orderStatus = orderStatus;
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (o == null || getClass() != o.getClass())
-			return false;
-		Order order = (Order)o;
-		return Objects.equals(id, order.id) && Objects.equals(orderTable, order.orderTable)
-			&& orderStatus == order.orderStatus && Objects.equals(orderedTime, order.orderedTime)
-			&& Objects.equals(orderLineItems, order.orderLineItems);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(id, orderTable, orderStatus, orderedTime, orderLineItems);
 	}
 
 	public boolean isUnChangeable() {

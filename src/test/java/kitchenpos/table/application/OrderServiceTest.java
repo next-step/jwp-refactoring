@@ -62,7 +62,7 @@ class OrderServiceTest {
 		주문항목 = new ArrayList<>();
 		주문항목.add(피자파스타세트2개);
 		주문테이블 = new OrderTable(null, null, false);
-		주문 = new Order(주문테이블, OrderStatus.COOKING, LocalDateTime.of(2021, 7, 4, 0, 0), 주문항목);
+		주문 = new Order(주문테이블.getId(), OrderStatus.COOKING, LocalDateTime.of(2021, 7, 4, 0, 0), 주문항목);
 
 	}
 
@@ -146,7 +146,7 @@ class OrderServiceTest {
 	void testAlreadyOrderStatusCompletion() {
 		Long orderId = 1L;
 		OrderRequest orderRequest = new OrderRequest(null, OrderStatus.MEAL, null);
-		주문 = new Order(주문테이블, OrderStatus.COMPLETION, LocalDateTime.of(2021, 7, 4, 0, 0), 주문항목);
+		주문 = new Order(주문테이블.getId(), OrderStatus.COMPLETION, LocalDateTime.of(2021, 7, 4, 0, 0), 주문항목);
 		when(orderRepository.findById(orderId)).thenReturn(Optional.of(주문));
 
 		assertThatThrownBy(() -> {

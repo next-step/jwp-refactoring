@@ -21,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.order.domain.NumberOfGuests;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.OrderTableResponse;
@@ -35,6 +36,8 @@ class TableGroupServiceTest {
 	private OrderTableRepository orderTableRepository;
 	@Mock
 	private TableGroupRepository tableGroupRepository;
+	@Mock
+	private OrderRepository orderRepository;
 	@InjectMocks
 	private TableGroupService tableGroupService;
 
