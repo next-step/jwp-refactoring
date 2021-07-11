@@ -1,10 +1,5 @@
 package kitchenpos.ui.dto.order;
 
-import kitchenpos.domain.order.OrderTable;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
 public class OrderTableRequest {
     private Long id;
     private Long tableGroupId;

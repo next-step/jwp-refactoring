@@ -1,6 +1,5 @@
 package kitchenpos.application.product;
 
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.ProductRepository;
 import kitchenpos.ui.dto.product.ProductRequest;

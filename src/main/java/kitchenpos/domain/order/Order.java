@@ -39,6 +39,10 @@ public class Order {
         this.orderLineItems = orderLineItems;
     }
 
+    public static Order of(Long id, OrderTable orderTable, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+        return new Order(id, orderTable, orderStatus, orderedTime, orderLineItems);
+    }
+
     public static Order of(OrderTable orderTable, String orderStatus, LocalDateTime orderedTime) {
         return new Order(null, orderTable, orderStatus, orderedTime, new ArrayList<>());
     }

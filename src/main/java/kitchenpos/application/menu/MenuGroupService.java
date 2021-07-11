@@ -1,6 +1,5 @@
 package kitchenpos.application.menu;
 
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menu.MenuGroupRepository;
 import kitchenpos.ui.dto.menu.MenuGroupRequest;

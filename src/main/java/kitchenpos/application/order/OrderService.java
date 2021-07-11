@@ -42,6 +42,10 @@ public class OrderService {
         }
 
         final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId()).orElseThrow(IllegalArgumentException::new);
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+
         Order order = Order.of(orderTable, OrderStatus.COOKING.name(), LocalDateTime.now());
         for (final OrderLineItemRequest orderLineItemRequest : orderRequest.getOrderLineItemRequests()) {
             Menu menu = menuRepository.findById(orderLineItemRequest.getMenuId()).orElseThrow(IllegalArgumentException::new);
@@ -56,13 +60,13 @@ public class OrderService {
     }
 
     @Transactional
-    public Order changeOrderStatus(final Long orderId, final String orderStatus) {
+    public OrderResponse changeOrderStatus(final Long orderId, final String orderStatus) {
         final Order savedOrder = orderRepository.findById(orderId).orElseThrow(IllegalArgumentException::new);
         if (Objects.equals(OrderStatus.COMPLETION.name(), savedOrder.getOrderStatus())) {
             throw new IllegalArgumentException();
         }
 
         savedOrder.setOrderStatus(OrderStatus.valueOf(orderStatus).name());
-        return savedOrder;
+        return OrderResponse.of(savedOrder);
     }
 }

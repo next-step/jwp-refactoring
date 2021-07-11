@@ -1,7 +1,5 @@
 package kitchenpos.ui.dto.menu;
 
-import kitchenpos.domain.menu.MenuGroup;
-
 public class MenuGroupRequest {
     private Long id;
     private String name;
@@ -18,19 +16,11 @@ public class MenuGroupRequest {
         return new MenuGroupRequest(null, name);
     }
 
-    public static MenuGroupRequest of(MenuGroup menuGroup) {
-        return new MenuGroupRequest(menuGroup.getId(), menuGroup.getName());
-    }
-
     public Long getId() {
         return id;
     }
 
     public String getName() {
         return name;
-    }
-
-    public MenuGroup toMenuGroup(){
-        return MenuGroup.of(id, name);
     }
 }

@@ -1,10 +1,5 @@
 package kitchenpos.ui.dto.order;
 
-import kitchenpos.domain.order.OrderLineItem;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
 public class OrderLineItemRequest {
     private Long seq;
     private Long orderId;
@@ -23,16 +18,6 @@ public class OrderLineItemRequest {
 
     public static OrderLineItemRequest of(Long menuId, long quantity) {
         return new OrderLineItemRequest(null, null, menuId, quantity);
-    }
-
-    public static OrderLineItemRequest of(OrderLineItem orderLineItem) {
-        return new OrderLineItemRequest(orderLineItem.getSeq(), orderLineItem.getOrder().getId(), orderLineItem.getMenu().getId(), orderLineItem.getQuantity());
-    }
-
-    public static List<OrderLineItemRequest> ofList(List<OrderLineItem> menuProducts) {
-        return menuProducts.stream()
-                .map(OrderLineItemRequest::of)
-                .collect(Collectors.toList());
     }
 
     public Long getSeq() {

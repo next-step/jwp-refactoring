@@ -24,6 +24,10 @@ public class OrderTable {
         this.empty = empty;
     }
 
+    public static OrderTable of(Long id, OrderTableGroup tableGroup, int numberOfGuests, boolean empty) {
+        return new OrderTable(id, tableGroup, numberOfGuests, empty);
+    }
+
     public static OrderTable of(int numberOfGuests, boolean empty) {
         return new OrderTable(null, null, numberOfGuests, empty);
     }

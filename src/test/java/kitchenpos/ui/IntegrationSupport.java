@@ -2,6 +2,7 @@ package kitchenpos.ui;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -31,12 +33,34 @@ class IntegrationSupport {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private EntityManager entityManager;
+
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
                 .addFilters(new CharacterEncodingFilter("UTF-8", true))
                 .alwaysDo(print())
                 .build();
+    }
+
+    @AfterEach
+    void tearDown() {
+        this.entityManager
+                .createNativeQuery("ALTER TABLE order_table ALTER COLUMN `id` RESTART WITH 9")
+                .executeUpdate();
+        this.entityManager
+                .createNativeQuery("ALTER TABLE menu_product ALTER COLUMN `seq` RESTART WITH 7")
+                .executeUpdate();
+        this.entityManager
+                .createNativeQuery("ALTER TABLE menu ALTER COLUMN `id` RESTART WITH 7")
+                .executeUpdate();
+        this.entityManager
+                .createNativeQuery("ALTER TABLE product ALTER COLUMN `id` RESTART WITH 7")
+                .executeUpdate();
+        this.entityManager
+                .createNativeQuery("ALTER TABLE menu_group ALTER COLUMN `id` RESTART WITH 5")
+                .executeUpdate();
     }
 
     protected MockHttpServletRequestBuilder postAsJson(String url, Object object) {

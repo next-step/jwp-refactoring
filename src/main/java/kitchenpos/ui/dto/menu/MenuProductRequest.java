@@ -35,5 +35,4 @@ public class MenuProductRequest {
     public long getQuantity() {
         return quantity;
     }
-
 }

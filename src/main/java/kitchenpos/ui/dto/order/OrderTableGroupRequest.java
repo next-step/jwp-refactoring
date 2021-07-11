@@ -1,10 +1,7 @@
 package kitchenpos.ui.dto.order;
 
-import kitchenpos.domain.order.OrderTableGroup;
-
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class OrderTableGroupRequest {
     private Long id;
@@ -20,7 +17,7 @@ public class OrderTableGroupRequest {
         this.orderTables = orderTables;
     }
 
-    public static OrderTableGroupRequest of(LocalDateTime createdDate, List<OrderTableRequest> orderTables){
+    public static OrderTableGroupRequest of(LocalDateTime createdDate, List<OrderTableRequest> orderTables) {
         return new OrderTableGroupRequest(null, createdDate, orderTables);
     }
 
