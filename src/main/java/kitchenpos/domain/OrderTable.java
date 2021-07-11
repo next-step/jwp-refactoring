@@ -45,6 +45,10 @@ public class OrderTable {
     }
 
     public Long getTableGroupId() {
+        if (tableGroup == null) {
+            return null;
+        }
+
         return tableGroup.getId();
     }
 
@@ -54,7 +58,7 @@ public class OrderTable {
 
     public void changeNumberOfGuests(final int numberOfGuests) {
         if (empty) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("빈 테이블은 변경할 수 없습니다.");
         }
 
         this.numberOfGuests = numberOfGuests;
