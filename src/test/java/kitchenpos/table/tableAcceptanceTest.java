@@ -17,12 +17,14 @@ public class tableAcceptanceTest extends AcceptanceTest {
 
     private OrderTableRequest orderTableRequest;
     private OrderTableRequest changeEmptyRequest;
+    private OrderTableRequest changeNumberOfGuestsRequest;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        orderTableRequest = new OrderTableRequest(0, true);
-        changeEmptyRequest = new OrderTableRequest(0, false);
+        orderTableRequest = new OrderTableRequest(1, true);
+        changeEmptyRequest = new OrderTableRequest(1, false);
+        changeNumberOfGuestsRequest = new OrderTableRequest(2, false);
     }
 
     @DisplayName("DTO와 JPA를 사용하여 주문 테이블을 생성할 수 있다")
@@ -53,7 +55,7 @@ public class tableAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("DTO와 JPA를 사용하여 주문 테이블 빈 상태를 변경할 수 있다")
     @Test
-    void emptyChangeTest() {
+    void changeEmptyTest() {
         //given
         ExtractableResponse<Response> saveResponse = 주문_테이블_등록_요청(orderTableRequest);
         OrderTableResponse orderResponse = saveResponse.as(OrderTableResponse.class);
@@ -65,6 +67,22 @@ public class tableAcceptanceTest extends AcceptanceTest {
         정상_처리(response);
         OrderTableResponse changeResponse = response.as(OrderTableResponse.class);
         assertThat(changeResponse.isEmpty()).isEqualTo(changeEmptyRequest.isEmpty());
+    }
+
+    @DisplayName("DTO와 JPA를 사용하여 주문 테이블 고객 수를 변경할 수 있다")
+    @Test
+    void changeNumberOfGuestsTest() {
+        //given
+        ExtractableResponse<Response> saveResponse = 주문_테이블_등록_요청(orderTableRequest);
+        OrderTableResponse orderResponse = saveResponse.as(OrderTableResponse.class);
+
+        //when
+        ExtractableResponse<Response> response = 주문_테이블_방문고객수_변경_요청(orderResponse.getId(), changeNumberOfGuestsRequest);
+
+        //then
+        정상_처리(response);
+//        OrderTableResponse changeResponse = response.as(OrderTableResponse.class);
+//        assertThat(changeResponse.isEmpty()).isEqualTo(changeEmptyRequest.isEmpty());
     }
 
 
@@ -92,7 +110,17 @@ public class tableAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .body(orderTableRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().put(" /api/tables/{orderTableId}/empty/temp",orderTableId)
+                .when().put("/api/tables/{orderTableId}/empty/temp",orderTableId)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 주문_테이블_방문고객수_변경_요청(Long orderTableId, OrderTableRequest orderTableRequest) {
+        return RestAssured
+                .given().log().all()
+                .body(orderTableRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().put("/api/tables/{orderTableId}/number-of-guests/temp",orderTableId)
                 .then().log().all()
                 .extract();
     }
