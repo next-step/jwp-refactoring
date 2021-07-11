@@ -7,6 +7,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.time.LocalDateTime;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.exception.CannotOrderException;
 import kitchenpos.table.exception.CannotChangeNumberOfGuestException;
 import kitchenpos.table.exception.CannotChangeTableEmptyException;
 import org.junit.jupiter.api.DisplayName;
@@ -30,7 +31,7 @@ public class OrderTableTest {
     @Test
     void changeEmpty_Fail02() {
         // Given
-        Order 진행중인_주문 = new Order(1L, 주문테이블, OrderStatus.COOKING, LocalDateTime.now(), 주문_항목_목록);
+        Order 진행중인_주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING, LocalDateTime.now(), 주문_항목_목록);
         OrderTable 주문테이블 = new OrderTable(1L, 2, 진행중인_주문);
 
         // When & Then
@@ -58,6 +59,18 @@ public class OrderTableTest {
         // When & Then
         assertThatThrownBy(() -> 주문테이블.changeNumberOfGuests(-1))
             .isInstanceOf(CannotChangeNumberOfGuestException.class);
+    }
+
+    @DisplayName("빈 테이블인경우 주문할 수 없다.")
+    @Test
+    void addOrder_fail() {
+        // Given
+        OrderTable 주문테이블 = new OrderTable(1L, 2, true);
+        Order 주문 = new Order(1L);
+
+        // When & Then
+        assertThatThrownBy(() -> 주문테이블.addOrder(주문))
+            .isInstanceOf(CannotOrderException.class);
     }
 
 

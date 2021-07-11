@@ -36,15 +36,15 @@ public class OrderTablesTest {
     @Test
     void ungroup_Fail() {
         // Given
-        Order 첫번째_주문 = new Order(1L, 주문테이블, OrderStatus.COOKING, LocalDateTime.now(), 주문_항목_목록);
-        Order 두번째_주문 = new Order(2L, 주문테이블, OrderStatus.COMPLETION, LocalDateTime.now(), 주문_항목_목록);
+        Order 첫번째_주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING, LocalDateTime.now(), 주문_항목_목록);
+        Order 두번째_주문 = new Order(2L, 주문테이블.getId(), OrderStatus.COMPLETION, LocalDateTime.now(), 주문_항목_목록);
         List<OrderTable> 주문테이블_목록 = new ArrayList<>();
         주문테이블_목록.add(new OrderTable(1L, 두명, 첫번째_주문));
         주문테이블_목록.add(new OrderTable(2L, 두명, 두번째_주문));
 
         // When & Then
         OrderTables orderTables = new OrderTables(주문테이블_목록);
-        assertThatThrownBy(() -> orderTables.upgroup())
+        assertThatThrownBy(orderTables::upgroup)
             .isInstanceOf(CannotUngroupOrderTableException.class);
     }
 }

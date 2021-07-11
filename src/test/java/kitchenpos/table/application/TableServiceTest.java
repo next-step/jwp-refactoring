@@ -108,7 +108,7 @@ public class TableServiceTest {
     @Test
     void changeEmpty_Fail_02() {
         // Given
-        OrderTable 주문테이블 = new OrderTable(주문테이블_ID, 두명, 비어있음);
+        OrderTable 주문테이블 = new OrderTable(주문테이블_ID, 두명, 비어있지않음);
         OrderLineItem 주문항목 = new OrderLineItem(1L, 1L, 1L);
         주문테이블.addOrder(new Order(1L, OrderStatus.COOKING, LocalDateTime.now(), new ArrayList<>(Arrays.asList(주문항목))));
         OrderTableRequest 주문테이블_요청 = OrderTableRequest.of(주문테이블);

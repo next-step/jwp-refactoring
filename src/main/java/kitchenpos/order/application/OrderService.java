@@ -27,7 +27,7 @@ public class OrderService {
     public OrderResponse create(final OrderRequest orderRequest) {
         OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
             .orElseThrow(IllegalArgumentException::new);
-        Order order = new Order(orderTable, OrderLineItemRequest.toOrderLineItems(orderRequest.getOrderLineItems()));
+        Order order = new Order(orderTable.getId(), OrderLineItemRequest.toOrderLineItems(orderRequest.getOrderLineItems()));
         return OrderResponse.of(orderRepository.save(order));
     }
 

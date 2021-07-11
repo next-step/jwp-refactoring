@@ -16,7 +16,7 @@ public class OrdersTest {
     @DisplayName("완료되지 않은 주문이 존재한다.")
     @Test
     void notExistCompleteOrder() {
-        Order order = new Order(1L, 주문테이블, OrderStatus.COOKING, LocalDateTime.now(), 주문_항목_목록);
+        Order order = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING, LocalDateTime.now(), 주문_항목_목록);
         Orders orders = new Orders(new ArrayList<>(Arrays.asList(order)));
         assertThat(orders.isNotCompleted()).isTrue();
     }
