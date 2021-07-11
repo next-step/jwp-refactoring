@@ -54,7 +54,7 @@ public class OrderTables {
     }
 
     private boolean hasCookingOrMealOrder() {
-        return orderTables.stream().anyMatch(orderTable -> !orderTable.isCompletedOrder());
+        return orderTables.stream().anyMatch(orderTable -> !orderTable.isCompletedOrders());
     }
 
     public int size() {

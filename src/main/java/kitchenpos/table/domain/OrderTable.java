@@ -58,7 +58,14 @@ public class OrderTable {
 
     public void changeEmpty(final boolean empty) {
         validateGroupId();
+        checkMealOrCook();
         this.empty = empty;
+    }
+
+    private void checkMealOrCook() {
+        if (!orders.isCompletedAllOrders()) {
+            throw new IllegalArgumentException();
+        }
     }
 
     private void validateGroupId() {
@@ -99,7 +106,7 @@ public class OrderTable {
         orders.add(order);
     }
 
-    public boolean isCompletedOrder() {
+    public boolean isCompletedOrders() {
         return orders.isCompletedAllOrders();
     }
 
