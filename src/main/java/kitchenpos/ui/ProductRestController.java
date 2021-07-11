@@ -2,16 +2,18 @@ package kitchenpos.ui;
 
 import kitchenpos.application.ProductService;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.request.ProductRequest;
+import kitchenpos.dto.response.ProductResponse;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping(value = "/api/products", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ProductRestController {
     private final ProductService productService;
 
@@ -19,19 +21,21 @@ public class ProductRestController {
         this.productService = productService;
     }
 
-    @PostMapping("/api/products")
-    public ResponseEntity<Product> create(@RequestBody final Product product) {
-        final Product created = productService.create(product);
+    @PostMapping
+    public ResponseEntity<ProductResponse> create(@RequestBody final ProductRequest productRequest) {
+        final Product created = productService.create(productRequest);
         final URI uri = URI.create("/api/products/" + created.getId());
         return ResponseEntity.created(uri)
-                .body(created)
-                ;
+            .body(ProductResponse.of(created));
     }
 
-    @GetMapping("/api/products")
-    public ResponseEntity<List<Product>> list() {
+    @GetMapping
+    public ResponseEntity<List<ProductResponse>> list() {
+        List<ProductResponse> productResponses = productService.list().stream()
+            .map(ProductResponse::of)
+            .collect(Collectors.toList());
+
         return ResponseEntity.ok()
-                .body(productService.list())
-                ;
+            .body(productResponses);
     }
 }
