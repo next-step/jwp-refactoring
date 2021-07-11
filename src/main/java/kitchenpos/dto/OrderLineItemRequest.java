@@ -1,6 +1,7 @@
 package kitchenpos.dto;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import kitchenpos.domain.Price;
 import kitchenpos.domain.Quantity;
@@ -10,15 +11,18 @@ public class OrderLineItemRequest {
     private String name;
     private BigDecimal price;
     private long quantity;
+    private List<OrderLineItemDetailRequest> products;
 
     public OrderLineItemRequest() {
     }
 
-    public OrderLineItemRequest(Long menuId, String name, BigDecimal price, long quantity) {
+    public OrderLineItemRequest(Long menuId, String name, BigDecimal price, long quantity,
+        List<OrderLineItemDetailRequest> products) {
         this.menuId = menuId;
         this.name = name;
         this.price = price;
         this.quantity = quantity;
+        this.products = products;
     }
 
     public Long getMenuId() {

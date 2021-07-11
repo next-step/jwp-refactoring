@@ -1,14 +1,17 @@
 package kitchenpos.ui;
 
+import static kitchenpos.domain.MenuProductTest.*;
 import static kitchenpos.domain.MenuTest.*;
 import static kitchenpos.domain.OrderStatus.*;
 import static kitchenpos.domain.OrderTableTest.*;
 import static kitchenpos.domain.OrderTest.*;
+import static kitchenpos.domain.ProductTest.*;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.DisplayName;
@@ -25,6 +28,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import kitchenpos.dto.OrderLineItemDetailRequest;
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
 
@@ -45,7 +49,8 @@ class OrderRestControllerTest {
     @Order(1)
     @DisplayName("주문을 생성한다")
     void create() throws Exception {
-        OrderLineItemRequest orderLineItem = new OrderLineItemRequest(1L, 후라이드_메뉴.getName(), 후라이드_메뉴.getPrice().value(), 1);
+        OrderLineItemDetailRequest detailRequest = new OrderLineItemDetailRequest(MP1후라이드.getSeq(), 후라이드.getId(), "후라이드", BigDecimal.valueOf(16000), 1);
+        OrderLineItemRequest orderLineItem = new OrderLineItemRequest(1L, 후라이드_메뉴.getName(), 후라이드_메뉴.getPrice().value(), 1, Arrays.asList(detailRequest));
         OrderRequest request = new OrderRequest(테이블12_사용중_주문전.getId(), Arrays.asList(orderLineItem));
         mockMvc.perform(post("/api/orders")
             .contentType(MediaType.APPLICATION_JSON)

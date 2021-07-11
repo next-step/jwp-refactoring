@@ -1,11 +1,14 @@
 package kitchenpos.application;
 
+import static kitchenpos.domain.MenuProductTest.*;
 import static kitchenpos.domain.MenuTest.*;
 import static kitchenpos.domain.OrderStatus.*;
 import static kitchenpos.domain.OrderTableTest.*;
+import static kitchenpos.domain.ProductTest.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -29,6 +32,7 @@ import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableTest;
 import kitchenpos.domain.OrderTest;
 import kitchenpos.domain.Quantity;
+import kitchenpos.dto.OrderLineItemDetailRequest;
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.exception.IllegalOperationException;
@@ -50,6 +54,9 @@ class OrderServiceTest {
     OrderRepository orderRepository;
 
     OrderTable 테이블100_사용중;
+    
+    OrderLineItemDetailRequest 후라이드_한마리_상세_요청;
+    OrderLineItemDetailRequest 양념치킨_한마리_상세_요청;
 
     OrderLineItemRequest 후라이드_한마리_요청;
     OrderLineItemRequest 양념치킨_한마리_요청;
@@ -63,8 +70,11 @@ class OrderServiceTest {
     void setUp() {
         테이블100_사용중 = OrderTableTest.orderTable(100L, NumberOfGuests.of(4), false);
 
-        후라이드_한마리_요청 = new OrderLineItemRequest(후라이드_메뉴.getId(), 후라이드_메뉴.getName(), 후라이드_메뉴.getPrice().value(), 1);
-        양념치킨_한마리_요청 = new OrderLineItemRequest(양념치킨_메뉴.getId(), 양념치킨_메뉴.getName(), 양념치킨_메뉴.getPrice().value(), 1);
+        후라이드_한마리_상세_요청 = new OrderLineItemDetailRequest(MP1후라이드.getSeq(), 후라이드.getId(), "후라이드", BigDecimal.valueOf(16000), 1);
+        양념치킨_한마리_상세_요청 = new OrderLineItemDetailRequest(MP2양념치킨.getSeq(), 양념치킨.getId(), "양념치킨", BigDecimal.valueOf(16000), 1);
+
+        후라이드_한마리_요청 = new OrderLineItemRequest(후라이드_메뉴.getId(), 후라이드_메뉴.getName(), 후라이드_메뉴.getPrice().value(), 1, Arrays.asList(후라이드_한마리_상세_요청));
+        양념치킨_한마리_요청 = new OrderLineItemRequest(양념치킨_메뉴.getId(), 양념치킨_메뉴.getName(), 양념치킨_메뉴.getPrice().value(), 1, Arrays.asList(양념치킨_한마리_상세_요청));
         양념_후라이드_각_한마리_요청 = new OrderRequest(테이블100_사용중.getId(), Arrays.asList(후라이드_한마리_요청, 양념치킨_한마리_요청));
 
         후라이드_한마리 = new OrderLineItem(후라이드_메뉴, 후라이드_메뉴.getName(), 후라이드_메뉴.getPrice(), Quantity.valueOf(1));
