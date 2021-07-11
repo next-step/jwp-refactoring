@@ -34,43 +34,16 @@ public class MenuService {
 
     public MenuResponse create(final MenuRequest menuRequest) {
         menuGroupRepository.findById(menuRequest.getMenuGroupId()).orElseThrow(IllegalArgumentException::new);
-        final List<MenuProduct> menuProducts = menuRequest.getMenuProducts();
-        menuProducts.forEach(menuProduct ->
-                productRepository.findById(menuProduct.getProductId()).orElseThrow(IllegalArgumentException::new)
-        );
-
-        BigDecimal sum = BigDecimal.ZERO;
-        for (final MenuProduct menuProduct : menuProducts) {
-            final Product product = productRepository.findById(menuProduct.getProductId())
-                    .orElseThrow(IllegalArgumentException::new);
-            sum = sum.add(product.getPrice().getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
-        }
-
-        if (menuRequest.price.compareTo(sum) > 0) {
-            throw new IllegalArgumentException();
-        }
-
-        Menu menu = menuRequest.toMenu();
-        final Menu savedMenu = menuRepository.save(menu);
-
-        final Long menuId = savedMenu.getId();
-        final List<MenuProduct> savedMenuProducts = new ArrayList<>();
-        for (final MenuProduct menuProduct : menuRequest.getMenuProducts()) {
-            menuProduct.setMenuId(menuId);
-            savedMenuProducts.add(menuProductDao.save(menuProduct));
-        }
-        savedMenu.setMenuProducts(savedMenuProducts);
-
-        return MenuResponse.of(savedMenu);
+        List<Product> products = menuRequest.getProductIds().stream()
+                .map(productId -> productRepository.findById(productId).orElseThrow(IllegalArgumentException::new))
+                .collect(Collectors.toList());
+        Menu persistMenu = menuRepository.save(menuRequest.toMenu(products));
+        return MenuResponse.of(persistMenu);
     }
 
     @Transactional(readOnly = true)
     public List<MenuResponse> list() {
         final List<Menu> menus = menuRepository.findAll();
-
-        for (final Menu menu : menus) {
-            menu.setMenuProducts(menuProductDao.findAllByMenuId(menu.getId()));
-        }
 
         return menus.stream()
                 .map(menu -> MenuResponse.of(menu))

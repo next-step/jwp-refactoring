@@ -3,6 +3,7 @@ package kitchenposNew.menu.domain;
 import kitchenposNew.wrap.Price;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
@@ -14,6 +15,12 @@ public class Product {
 
     @Embedded
     private Price price;
+
+    public Product(Long id, String name, Price price) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+    }
 
     public Product(String name, Price price) {
         this.name = name;
@@ -30,6 +37,10 @@ public class Product {
 
     public Price getPrice() {
         return price;
+    }
+
+    public BigDecimal getPriceByQuantity(Long quantity) {
+        return price.calculateTotalPrice(quantity);
     }
 
     @Override

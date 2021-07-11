@@ -23,6 +23,10 @@ public class Price {
         return price;
     }
 
+    public BigDecimal calculateTotalPrice(Long quantity) {
+        return price.multiply(BigDecimal.valueOf(quantity));
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -34,5 +38,9 @@ public class Price {
     @Override
     public int hashCode() {
         return Objects.hash(price);
+    }
+
+    public boolean isCheapThanProductsPrice(BigDecimal productsPrice) {
+        return price.compareTo(productsPrice) <= 0;
     }
 }

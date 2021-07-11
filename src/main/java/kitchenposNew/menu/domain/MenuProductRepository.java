@@ -1,2 +1,6 @@
-package kitchenposNew.menu.domain;public interface MenuProductRepository {
+package kitchenposNew.menu.domain;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface MenuProductRepository extends JpaRepository<MenuProduct, Long> {
 }

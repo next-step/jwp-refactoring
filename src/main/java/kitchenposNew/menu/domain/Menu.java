@@ -1,9 +1,10 @@
 package kitchenposNew.menu.domain;
 
-import kitchenpos.domain.MenuProduct;
+import kitchenposNew.menu.domain.MenuProduct;
 import kitchenposNew.wrap.Price;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
@@ -18,24 +19,46 @@ public class Menu {
     private Price price;
 
     private Long menuGroupId;
+
+    @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MenuProduct> menuProducts;
 
     protected Menu() {
     }
 
     public Menu(Long id, String name, Price price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        priceValidate(price, menuProducts);
         this.id = id;
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
+        registerProduct();
     }
 
     public Menu(String name, Price price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        priceValidate(price, menuProducts);
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
+        registerProduct();
+    }
+
+    private void registerProduct() {
+        menuProducts.forEach(
+                menuProduct -> menuProduct.registerMenu(this)
+        );
+    }
+
+    private void priceValidate(Price price, List<MenuProduct> menuProducts) {
+        BigDecimal productsPrice = BigDecimal.ZERO;
+        for (MenuProduct menuProduct: menuProducts) {
+            productsPrice = productsPrice.add(menuProduct.getPriceByQuantity());
+        }
+        if (!price.isCheapThanProductsPrice(productsPrice)) {
+            throw new IllegalArgumentException();
+        }
     }
 
     public Long getId() {
@@ -48,9 +71,6 @@ public class Menu {
 
     public Price getPrice() {
         return price;
-    }
-
-    public void setMenuProducts(List<MenuProduct> savedMenuProducts) {
     }
 
     public List<MenuProduct> getMenuProducts() {
