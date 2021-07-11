@@ -49,7 +49,7 @@ public class MenuService {
 
     private MenuProducts makeMenuProducts(MenuRequest menuRequest) {
         final MenuProducts menuProducts = new MenuProducts();
-        final List<MenuProductRequest> menuProductRequests = menuRequest.getMenuProductRequests();
+        final List<MenuProductRequest> menuProductRequests = menuRequest.getMenuProducts();
         menuProductRequests.forEach(menuProductRequest -> menuProducts.add(
             new MenuProduct(findProduct(menuProductRequest), menuProductRequest.getQuantity())));
 

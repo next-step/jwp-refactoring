@@ -48,7 +48,7 @@ public class OrderService {
 
     private OrderLineItems makeOrderLineItems(OrderRequest orderRequest, Menus menus) {
         final OrderLineItems orderLineItems = new OrderLineItems();
-        orderRequest.getOrderLineItemRequests()
+        orderRequest.getOrderLineItems()
             .forEach(it -> orderLineItems.add(new OrderLineItem(menus.get(it.getMenuId()), it.getQuantity())));
 
         return orderLineItems;

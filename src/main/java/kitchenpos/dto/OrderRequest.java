@@ -6,14 +6,14 @@ import java.util.stream.Collectors;
 public class OrderRequest {
     private Long orderTableId;
     private String orderStatus;
-    private List<OrderLineItemRequest> orderLineItemRequests;
+    private List<OrderLineItemRequest> orderLineItems;
 
     public OrderRequest() {
     }
 
-    public OrderRequest(Long orderTableId, List<OrderLineItemRequest> orderLineItemRequests) {
+    public OrderRequest(Long orderTableId, List<OrderLineItemRequest> orderLineItems) {
         this.orderTableId = orderTableId;
-        this.orderLineItemRequests = orderLineItemRequests;
+        this.orderLineItems = orderLineItems;
     }
 
     public Long getOrderTableId() {
@@ -28,16 +28,16 @@ public class OrderRequest {
         this.orderStatus = orderStatus;
     }
 
-    public List<OrderLineItemRequest> getOrderLineItemRequests() {
-        return orderLineItemRequests;
+    public List<OrderLineItemRequest> getOrderLineItems() {
+        return orderLineItems;
     }
 
     public List<Long> menuIds() {
-        if (orderLineItemRequests == null) {
+        if (orderLineItems == null) {
             throw new IllegalArgumentException();
         }
 
-        return orderLineItemRequests.stream()
+        return orderLineItems.stream()
             .map(OrderLineItemRequest::getMenuId)
             .collect(Collectors.toList());
     }
