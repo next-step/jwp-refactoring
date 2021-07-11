@@ -35,7 +35,6 @@ public class OrderLineItemTest {
 
 	@Test
 	void 주문항목_생성() {
-		Order order = new Order();
 		OrderLineItem actual = new OrderLineItem(1L, menu, new Quantity(1));
 		assertThat(actual).isNotNull();
 	}

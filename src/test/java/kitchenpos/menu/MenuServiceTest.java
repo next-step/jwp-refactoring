@@ -74,8 +74,8 @@ public class MenuServiceTest {
 	@DisplayName("메뉴를 생성한다")
 	@Test
 	void 메뉴를_생성한다() {
-		MenuProductRequest 양념_반_치킨_요청 = new MenuProductRequest(1L, 1);
-		MenuProductRequest 후라이드_반_치킨_요청 = new MenuProductRequest(2L, 1);
+		MenuProductRequest 양념_반_치킨_요청 = new MenuProductRequest(1L, 1L,1);
+		MenuProductRequest 후라이드_반_치킨_요청 = new MenuProductRequest(2L, 1L, 1);
 		MenuRequest 양념반_후라이드_반_요청 = new MenuRequest("치킨", 2000, 1L, Arrays.asList(양념_반_치킨_요청, 후라이드_반_치킨_요청));
 
 		given(menuGroupRepository.findById(치킨.getId())).willReturn(Optional.of(치킨));
@@ -92,8 +92,8 @@ public class MenuServiceTest {
 	@Test
 	void 메뉴_생성_메뉴의_가격은_0보다_커야_한다() {
 
-		MenuProductRequest 양념_반_치킨_요청 = new MenuProductRequest(1L, 1);
-		MenuProductRequest 후라이드_반_치킨_요청 = new MenuProductRequest(2L, 1);
+		MenuProductRequest 양념_반_치킨_요청 = new MenuProductRequest(1L, 1L,1);
+		MenuProductRequest 후라이드_반_치킨_요청 = new MenuProductRequest(2L, 1L, 1);
 		MenuRequest 양념반_후라이드_반_요청 = new MenuRequest("치킨", -1000, 1L, Arrays.asList(양념_반_치킨_요청, 후라이드_반_치킨_요청));
 
 		given(menuGroupRepository.findById(치킨.getId())).willReturn(Optional.of(치킨));
@@ -109,8 +109,8 @@ public class MenuServiceTest {
 	@DisplayName("메뉴 생성 - 메뉴의 메뉴 그룹이 존재하지 않으면 에러 발생.")
 	@Test
 	void 메뉴_생성_메뉴의_메뉴_그룹이_존재하지_않으면_에러_발생() {
-		MenuProductRequest 양념_반_치킨_요청 = new MenuProductRequest(1L, 1);
-		MenuProductRequest 후라이드_반_치킨_요청 = new MenuProductRequest(2L, 1);
+		MenuProductRequest 양념_반_치킨_요청 = new MenuProductRequest(1L, 1L, 1);
+		MenuProductRequest 후라이드_반_치킨_요청 = new MenuProductRequest(2L, 1L, 1);
 		MenuRequest 양념반_후라이드_반_요청 = new MenuRequest("치킨", 2000, 1L, Arrays.asList(양념_반_치킨_요청, 후라이드_반_치킨_요청));
 
 		given(menuGroupRepository.findById(치킨.getId())).willReturn(Optional.ofNullable(null));
@@ -124,8 +124,8 @@ public class MenuServiceTest {
 	@DisplayName("메뉴 생성 - 메뉴 가격보다 메뉴의 메뉴 상품 리스트의 가격의 합이 크면 안된다.")
 	@Test
 	void 메뉴_생성_메뉴_가격보다_메뉴의_메뉴_상품_리스트의_가격의_합이_크면_안된다() {
-		MenuProductRequest 양념_반_치킨_요청 = new MenuProductRequest(1L, 1);
-		MenuProductRequest 후라이드_반_치킨_요청 = new MenuProductRequest(2L, 1);
+		MenuProductRequest 양념_반_치킨_요청 = new MenuProductRequest(1L, 1L, 1);
+		MenuProductRequest 후라이드_반_치킨_요청 = new MenuProductRequest(2L, 1L, 1);
 		MenuRequest 양념반_후라이드_반_요청 = new MenuRequest("치킨", 3000, 1L, Arrays.asList(양념_반_치킨_요청, 후라이드_반_치킨_요청));
 
 		given(menuGroupRepository.findById(치킨.getId())).willReturn(Optional.of(치킨));

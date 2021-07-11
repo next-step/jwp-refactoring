@@ -1,5 +1,6 @@
 package kitchenpos.ordertable.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import kitchenpos.ordertable.exception.TableException;
@@ -9,7 +10,12 @@ public class NumberOfGuests {
 
 	private static final int MIN_GUEST = 0;
 
+	@Column(name = "number_of_guests", length = 11, nullable = false)
 	private int number;
+
+	protected NumberOfGuests() {
+
+	}
 
 	public NumberOfGuests(int number) {
 		validate(number);

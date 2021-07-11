@@ -6,16 +6,19 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 import kitchenpos.menu.domain.Price;
 
 @Entity
+@Table(name = "product")
 public class Product {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(nullable = false, length = 20)
 	private Long id;
 
-	@Column(unique = true)
+	@Column(nullable = false)
 	private String name;
 
 	@Embedded

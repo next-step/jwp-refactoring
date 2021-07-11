@@ -12,24 +12,27 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 import kitchenpos.manugroup.domain.MenuGroup;
 import kitchenpos.menu.exception.MenuException;
 
 @Entity
+@Table(name = "menu")
 public class Menu {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(length = 20, nullable = false)
 	private Long id;
 
-	@Column(unique = true)
+	@Column(nullable = false)
 	private String name;
 
 	@Embedded
 	private Price price;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "menuGroupId", foreignKey = @ForeignKey(name = "fk_menu_group_to_menu"), nullable = false)
+	@JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"), nullable = false)
 	private MenuGroup menuGroup;
 
 	@Embedded

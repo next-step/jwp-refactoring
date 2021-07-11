@@ -1,8 +1,5 @@
 package kitchenpos.menu.dto;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.Quantity;
 import kitchenpos.product.domain.Product;
@@ -10,10 +7,12 @@ import kitchenpos.product.domain.Product;
 public class MenuProductRequest {
 
 	private Long productId;
+	private Long menuId;
 	private long quantity;
 
-	public MenuProductRequest(Long productId, long quantity) {
+	public MenuProductRequest(Long productId, Long menuId, long quantity) {
 		this.productId = productId;
+		this.menuId = menuId;
 		this.quantity = quantity;
 	}
 
@@ -23,6 +22,10 @@ public class MenuProductRequest {
 
 	public long getQuantity() {
 		return quantity;
+	}
+
+	public Long getMenuId() {
+		return menuId;
 	}
 
 	public MenuProduct toMenuProduct(Product product) {

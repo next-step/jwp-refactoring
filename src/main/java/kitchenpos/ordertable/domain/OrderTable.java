@@ -2,13 +2,17 @@ package kitchenpos.ordertable.domain;
 
 import java.util.Objects;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
@@ -16,22 +20,25 @@ import kitchenpos.ordertable.exception.TableException;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 @Entity
+@Table(name = "order_table")
 public class OrderTable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(nullable = false, length = 20)
 	private Long id;
 
-	@ManyToOne
-	@JoinColumn(name = "table_group_id")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
 	private TableGroup tableGroup;
 
 	@Embedded
 	private NumberOfGuests numberOfGuests;
 
+	@Column(nullable = false, length = 1)
 	private boolean empty;
 
-	public OrderTable() {
+	protected OrderTable() {
 
 	}
 
@@ -94,6 +101,5 @@ public class OrderTable {
 		}
 		this.numberOfGuests = numberOfGuests;
 	}
-
 
 }

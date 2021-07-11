@@ -89,8 +89,8 @@ public class OrderServiceTest {
 	@DisplayName("주문을 생성한다.")
 	@Test
 	void 주문_생성() {
-		OrderLineItemRequest 주문항목_요청1 = new OrderLineItemRequest(1L, 1);
-		OrderLineItemRequest 주문항목_요청2 = new OrderLineItemRequest(2L, 1);
+		OrderLineItemRequest 주문항목_요청1 = new OrderLineItemRequest(1L, 1L, 1);
+		OrderLineItemRequest 주문항목_요청2 = new OrderLineItemRequest(2L, 1L, 1);
 		OrderRequest 주문_요청 = new OrderRequest(1L, Arrays.asList(주문항목_요청1, 주문항목_요청2));
 		given(tableRepository.findById(주문.getId())).willReturn(Optional.of(주문테이블));
 		given(menuRepository.findById(주문항목_요청1.getMenuId())).willReturn(Optional.of(양념반_후라이드반));
@@ -116,8 +116,8 @@ public class OrderServiceTest {
 	@DisplayName("주문 생성 시 주문의 주문 항목들이 메뉴에 존재하지 않으면 생성할 수 없다.")
 	@Test
 	void 주문_생성_시_주문의_주문_항목들이_메뉴에_존재하지_않으면_생성할_수_없다() {
-		OrderLineItemRequest 주문항목_요청1 = new OrderLineItemRequest(1L, 1);
-		OrderLineItemRequest 주문항목_요청2 = new OrderLineItemRequest(2L, 1);
+		OrderLineItemRequest 주문항목_요청1 = new OrderLineItemRequest(1L, 1L, 1);
+		OrderLineItemRequest 주문항목_요청2 = new OrderLineItemRequest(2L, 1L, 1);
 		OrderRequest 주문_요청 = new OrderRequest(1L, Arrays.asList(주문항목_요청1, 주문항목_요청2));
 		given(tableRepository.findById(주문.getId())).willReturn(Optional.of(주문테이블));
 
@@ -129,8 +129,8 @@ public class OrderServiceTest {
 	@DisplayName("주문 생성 시 주문의 주문 테이블이 존재하지 않으면 생성할 수 없다")
 	@Test
 	void 주문_생성_시_주문의_주문_테이블이_존재하지_않으면_생성할_수_없다() {
-		OrderLineItemRequest 주문항목_요청1 = new OrderLineItemRequest(1L, 1);
-		OrderLineItemRequest 주문항목_요청2 = new OrderLineItemRequest(2L, 1);
+		OrderLineItemRequest 주문항목_요청1 = new OrderLineItemRequest(1L, 1L, 1);
+		OrderLineItemRequest 주문항목_요청2 = new OrderLineItemRequest(2L, 1L, 1);
 		OrderRequest 주문_요청 = new OrderRequest(1L, Arrays.asList(주문항목_요청1, 주문항목_요청2));
 		given(tableRepository.findById(주문.getId())).willReturn(Optional.ofNullable(null));
 
@@ -142,8 +142,8 @@ public class OrderServiceTest {
 	@DisplayName("주문 생성 시 주문의 주문 테이블이 빈 테이블이 있으면 생성할 수 없다.")
 	@Test
 	void 주문_생성_시_주문의_주문_테이블이_빈_테이블이_있으면_생성할_수_없다() {
-		OrderLineItemRequest 주문항목_요청1 = new OrderLineItemRequest(1L, 1);
-		OrderLineItemRequest 주문항목_요청2 = new OrderLineItemRequest(2L, 1);
+		OrderLineItemRequest 주문항목_요청1 = new OrderLineItemRequest(1L, 1L, 1);
+		OrderLineItemRequest 주문항목_요청2 = new OrderLineItemRequest(2L, 1L, 1);
 		OrderRequest 주문_요청 = new OrderRequest(1L, Arrays.asList(주문항목_요청1, 주문항목_요청2));
 		주문테이블 = TableServiceTest.주문테이블생성(1L, new NumberOfGuests(1), false);
 		given(tableRepository.findById(주문.getId())).willReturn(Optional.of(주문테이블));
@@ -168,7 +168,6 @@ public class OrderServiceTest {
 	void 주문_상태_변경() {
 		OrderStatusChangeRequest 주문_상태_변경_요청 = new OrderStatusChangeRequest(OrderStatus.MEAL.name());
 		given(orderRepository.findById(주문.getId())).willReturn(Optional.of(주문));
-
 
 		OrderResponse changedStatusOrder = orderService.changeOrderStatus(주문.getId(), 주문_상태_변경_요청);
 
@@ -213,7 +212,6 @@ public class OrderServiceTest {
 
 	public static OrderLineItem 주문항목생성(Menu menu, Quantity quantity, Long seq) {
 		OrderLineItem orderLineItem = new OrderLineItem(seq, menu, quantity);
-		orderLineItem.setSeq(seq);
 		return orderLineItem;
 	}
 

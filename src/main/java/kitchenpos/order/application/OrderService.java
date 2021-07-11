@@ -1,7 +1,7 @@
 package kitchenpos.order.application;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,18 +26,15 @@ import kitchenpos.ordertable.domain.TableRepository;
 public class OrderService {
 	private final MenuRepository menuRepository;
 	private final OrderRepository orderRepository;
-	private final OrderLineItemRepository orderLineItemRepository;
 	private final TableRepository tableRepository;
 
 	public OrderService(
 		final MenuRepository menuRepository,
 		final OrderRepository orderRepository,
-		final OrderLineItemRepository orderLineItemRepository,
 		final TableRepository tableRepository
 	) {
 		this.menuRepository = menuRepository;
 		this.orderRepository = orderRepository;
-		this.orderLineItemRepository = orderLineItemRepository;
 		this.tableRepository = tableRepository;
 	}
 
@@ -46,15 +43,9 @@ public class OrderService {
 		final OrderTable orderTable = tableRepository.findById(orderRequest.getOrderTableId())
 			.orElseThrow(() -> new OrderException("주문 테이블이 존재하지 않아 주문 할 수 없습니다."));
 
-		List<OrderLineItem> orderLineItems = new ArrayList<>();
-		for (OrderLineItemRequest orderLineItemRequest : orderRequest.getOrderLineItemRequests()) {
-			Menu menu = menuRepository.findById(orderLineItemRequest.getMenuId())
-				.orElseThrow(() -> new OrderException("메뉴가 존재하지 않아 주문 생성할 수 없습니다."));
-			OrderLineItem orderLineItem = orderLineItemRequest.toOrderLineItem(menu);
-			orderLineItems.add(orderLineItem);
-		}
-
+		List<OrderLineItem> orderLineItems = findOrderLineItems(orderRequest.getOrderLineItemRequests());
 		Order order = orderRequest.toOrder(orderTable, new OrderLineItems(orderLineItems));
+
 		final Order savedOrder = orderRepository.save(order);
 		return OrderResponse.of(savedOrder);
 	}
@@ -72,5 +63,14 @@ public class OrderService {
 		savedOrder.changeOrderStatus(OrderStatus.valueOf(orderStatusChangeRequest.getOrderStatus()));
 
 		return OrderResponse.of(savedOrder);
+	}
+
+	private List<OrderLineItem> findOrderLineItems(List<OrderLineItemRequest> orderLineItemRequests) {
+		return orderLineItemRequests.stream()
+			.map(orderLineItemRequest -> {
+				Menu menu = menuRepository.findById(orderLineItemRequest.getMenuId())
+					.orElseThrow(() -> new OrderException("메뉴가 존재하지 않아 주문 생성할 수 없습니다."));
+				return orderLineItemRequest.toOrderLineItem(menu);
+			}).collect(Collectors.toList());
 	}
 }

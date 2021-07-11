@@ -10,7 +10,7 @@ public class Quantity {
 
 	private static final long MIN_QUANTITY = 1;
 
-	@Column(nullable = false)
+	@Column(length = 20, nullable = false)
 	private long quantity;
 
 	public Quantity(long quantity) {

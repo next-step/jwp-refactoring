@@ -3,6 +3,7 @@ package kitchenpos.menu.domain;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import kitchenpos.menu.exception.PriceException;
@@ -12,6 +13,7 @@ public class Price {
 
 	private static final BigDecimal MIN_PRICE = BigDecimal.ZERO;
 
+	@Column(nullable = false)
 	private BigDecimal price;
 
 	protected Price() {

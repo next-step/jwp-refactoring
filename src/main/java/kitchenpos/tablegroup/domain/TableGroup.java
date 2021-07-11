@@ -3,28 +3,35 @@ package kitchenpos.tablegroup.domain;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.tablegroup.exception.TableGroupException;
 
 @Entity
+@Table(name = "table_group")
 public class TableGroup {
 
 	private static final int MIN_TABLE_GROUP_SIZE = 2;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(length = 20)
 	private Long id;
 
+	@Column(nullable = false)
 	private LocalDateTime createdDate;
 
+	@OneToMany(mappedBy = "tableGroup")
 	private List<OrderTable> orderTables;
 
-	public TableGroup() { //todo protected
+	protected TableGroup() {
 
 	}
 
@@ -58,28 +65,17 @@ public class TableGroup {
 		return id;
 	}
 
-	public void setId(final Long id) {
-		this.id = id;
-	}
-
 	public LocalDateTime getCreatedDate() {
 		return createdDate;
-	}
-
-	public void setCreatedDate(final LocalDateTime createdDate) {
-		this.createdDate = createdDate;
 	}
 
 	public List<OrderTable> getOrderTables() {
 		return orderTables;
 	}
 
-	public void setOrderTables(final List<OrderTable> orderTables) {
-		this.orderTables = orderTables;
-	}
-
 	public void unGroup() {
 		orderTables.stream()
-			.forEach(orderTable -> orderTable.unGroup());
+			.forEach(OrderTable::unGroup);
 	}
+
 }

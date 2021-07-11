@@ -11,7 +11,7 @@ import javax.persistence.OneToMany;
 @Embeddable
 public class MenuProducts {
 
-	@OneToMany(fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "menu", fetch = FetchType.EAGER)
 	private List<MenuProduct> menuProducts;
 
 	protected MenuProducts() {

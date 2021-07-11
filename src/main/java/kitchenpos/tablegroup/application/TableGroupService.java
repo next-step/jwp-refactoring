@@ -42,14 +42,19 @@ public class TableGroupService {
 		final TableGroup savedTableGroup = tableGroupRepository.findById(tableGroupId)
 			.orElseThrow(() -> new TableGroupException("존재하지 않는 단체 지정입니다."));
 
-		//todo refactor
-		// for(OrderTable orderTable : savedTableGroup.getOrderTables()) {
-		// 	Order order = orderRepository.findByOrderTableId(orderTable.getId());
-		// 	if(order.getOrderStatus() != OrderStatus.COMPLETION) {
-		// 		throw new TableGroupException("조리중이거나 식사중일 경우 단체지정을 해체할 수 없다.");
-		// 	}
-		// }
+		if(isUngroup(savedTableGroup.getOrderTables())){
+			throw new TableGroupException("조리중이거나 식사중일 경우 단체지정을 해체할 수 없다.");
+		}
+
 		savedTableGroup.unGroup();
 
+	}
+
+	private boolean isUngroup(List<OrderTable> orderTables) {
+		return orderTables.stream()
+			.anyMatch(orderTable -> {
+				Order order = orderRepository.findByOrderTableId(orderTable.getId());
+				return order.getOrderStatus() != OrderStatus.COMPLETION;
+			});
 	}
 }
