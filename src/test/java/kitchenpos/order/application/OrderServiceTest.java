@@ -23,10 +23,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -140,6 +140,32 @@ public class OrderServiceTest {
         // than
         // 주문 접수됨
         assertThat(expected.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+    }
+
+    @Test
+    @DisplayName("주문 조회 테스트")
+    void 주문_조회_테스트() {
+        // given
+        // 주문 아이템 생성됨
+        firstOrderLineItem = 주문_아이템_생성(1L);
+        secondOrderLineItem = 주문_아이템_생성(2L);
+
+        // and
+        // 주문 테이블 생성되어 있음
+        OrderTable orderTable = new OrderTable();
+        orderTable.setId(1L);
+        Order order = new Order(1L, orderTable, Arrays.asList(firstOrderLineItem, secondOrderLineItem));
+
+        // when
+        // 주문 조회 함
+        when(orderRepository.findAll()).thenReturn(Arrays.asList(order));
+        when(orderLineItemDao.findAllByOrderId(1L)).thenReturn(Arrays.asList(firstOrderLineItem, secondOrderLineItem));
+
+        // than
+        // 주문 조회 됨
+        List<OrderResponse> orderResponseList = orderService.list();
+        assertThat(orderResponseList.get(0).getOrderLineItems()).containsAll(Arrays.asList(firstOrderLineItem, secondOrderLineItem));
+
     }
 
     private OrderLineItem 주문_아이템_생성(Long menuId) {
