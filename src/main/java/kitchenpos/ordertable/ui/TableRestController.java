@@ -5,9 +5,7 @@ import kitchenpos.ordertable.dto.OrderTableEmptyChangeRequest;
 import kitchenpos.ordertable.dto.OrderTableGuestChangeRequest;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
-import kitchenpos.ordertable.exception.IllegalOrderTableEmptyChangeException;
-import kitchenpos.ordertable.exception.IllegalOrderTableIdRequestException;
-import kitchenpos.ordertable.exception.NoOrderTableException;
+import kitchenpos.ordertable.exception.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,7 +53,8 @@ public class TableRestController {
 
     @ExceptionHandler({
             IllegalOrderTableEmptyChangeException.class, NoOrderTableException.class,
-            IllegalOrderTableIdRequestException.class
+            IllegalOrderTableIdRequestException.class, AlreadyHaveTableGroupException.class,
+            OrderStatusNotCompleteException.class
     })
     public ResponseEntity handleException() {
         return ResponseEntity.badRequest().build();
