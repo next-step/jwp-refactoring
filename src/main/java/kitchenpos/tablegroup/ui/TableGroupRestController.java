@@ -1,6 +1,7 @@
 package kitchenpos.tablegroup.ui;
 
 import io.swagger.annotations.ApiOperation;
+import javax.validation.Valid;
 import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
@@ -19,7 +20,7 @@ public class TableGroupRestController {
 
     @ApiOperation("테이블 그룹(단체) 생성")
     @PostMapping("/api/table-groups")
-    public ResponseEntity<TableGroupResponse> create(@RequestBody final TableGroupRequest request) {
+    public ResponseEntity<TableGroupResponse> create(@Valid @RequestBody final TableGroupRequest request) {
         final TableGroupResponse created = tableGroupService.create(request);
         return ResponseEntity.created(URI.create("/api/table-groups/" + created.getId()))
                              .body(created);

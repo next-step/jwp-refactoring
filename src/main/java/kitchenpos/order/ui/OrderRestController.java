@@ -1,6 +1,7 @@
 package kitchenpos.order.ui;
 
 import io.swagger.annotations.ApiOperation;
+import javax.validation.Valid;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
@@ -22,7 +23,7 @@ public class OrderRestController {
 
     @ApiOperation("주문 생성")
     @PostMapping("/api/orders")
-    public ResponseEntity<OrderResponse> create(@RequestBody final OrderRequest order) {
+    public ResponseEntity<OrderResponse> create(@Valid @RequestBody final OrderRequest order) {
         final OrderResponse created = orderService.create(order);
         return ResponseEntity.created(URI.create("/api/orders/" + created.getId())).body(created);
     }

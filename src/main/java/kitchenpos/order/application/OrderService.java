@@ -20,7 +20,6 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,6 +27,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class OrderService {
+
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
@@ -48,14 +48,10 @@ public class OrderService {
     }
 
     private List<OrderLineItem> getOrderLineItems(OrderRequest orderRequest) {
-        final List<OrderLineItemRequest> orderLineItems = orderRequest.getOrderLineItems();
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new KitchenposException(NOT_FOUND_ORDER_LINE_ITEM);
-        }
-
-        return orderLineItems.stream()
-                             .map(this::createOrderLineItem)
-                             .collect(Collectors.toList());
+        return orderRequest.getOrderLineItems()
+                           .stream()
+                           .map(this::createOrderLineItem)
+                           .collect(Collectors.toList());
     }
 
     private OrderLineItem createOrderLineItem(OrderLineItemRequest orderLineItemRequest) {
@@ -82,7 +78,8 @@ public class OrderService {
                               .collect(Collectors.toList());
     }
 
-    public OrderResponse changeOrderStatus(final Long orderId, final OrderStatusRequest orderStatusRequest) {
+    public OrderResponse changeOrderStatus(final Long orderId,
+                                           final OrderStatusRequest orderStatusRequest) {
         return OrderResponse.of(findOrderById(orderId).changeOrderStatus(orderStatusRequest.getOrderStatus()));
     }
 

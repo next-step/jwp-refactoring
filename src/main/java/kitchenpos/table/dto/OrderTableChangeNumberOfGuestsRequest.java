@@ -1,8 +1,11 @@
 package kitchenpos.table.dto;
 
+import org.hibernate.validator.constraints.Range;
+
 public class OrderTableChangeNumberOfGuestsRequest {
 
-    private int numberOfGuests;
+    @Range
+    private Integer numberOfGuests;
 
     public OrderTableChangeNumberOfGuestsRequest() {
         // empty

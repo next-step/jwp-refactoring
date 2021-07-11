@@ -63,18 +63,6 @@ class TableGroupServiceTest {
         assertThat(actual.getOrderTables()).isNotEmpty().hasSize(2);
     }
 
-    @DisplayName("테이블 그룹으로 묶일 주문 테이블이 2개 이하일 경우")
-    @Test
-    void createTestWrongSize() {
-        // given
-        TableGroupRequest request = new TableGroupRequest(Arrays.asList(new OrderTableIdRequest(2L)));
-
-        // when
-        assertThatThrownBy(() -> tableGroupService.create(request))
-            .isInstanceOf(KitchenposException.class)
-            .hasMessageContaining(ORDER_TABLE_CONNOT_LOWER_THAN_MIN.getMessage());
-    }
-
 
     @DisplayName("테이블 그룹 해제 테스트")
     @Test

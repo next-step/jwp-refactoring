@@ -1,8 +1,15 @@
 package kitchenpos.tablegroup.dto;
 
 import java.util.List;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 public class TableGroupRequest {
+
+    private static final int ORDER_TABLE_MIN_SIZE = 2;
+
+    @NotEmpty
+    @Size(min = ORDER_TABLE_MIN_SIZE)
     private List<OrderTableIdRequest> orderTables;
 
     public TableGroupRequest() {

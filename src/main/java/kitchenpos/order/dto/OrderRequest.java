@@ -1,9 +1,12 @@
 package kitchenpos.order.dto;
 
 import java.util.List;
+import javax.validation.constraints.NotEmpty;
 
 public class OrderRequest {
     private Long orderTableId;
+
+    @NotEmpty
     private List<OrderLineItemRequest> orderLineItems;
 
 

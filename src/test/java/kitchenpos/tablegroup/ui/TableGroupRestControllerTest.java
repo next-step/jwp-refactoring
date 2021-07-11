@@ -37,7 +37,8 @@ class TableGroupRestControllerTest extends MockMvcTestHelper {
     @Test
     void createTest() throws Exception {
         // given
-        TableGroupRequest request = new TableGroupRequest(Arrays.asList(new OrderTableIdRequest(1L)));
+        TableGroupRequest request = new TableGroupRequest(Arrays.asList(new OrderTableIdRequest(1L),
+                                                                        new OrderTableIdRequest(2L)));
         Mockito.when(tableGroupService.create(any())).thenReturn(new TableGroupResponse());
 
         // when

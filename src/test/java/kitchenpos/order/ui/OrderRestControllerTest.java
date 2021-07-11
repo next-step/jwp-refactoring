@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import kitchenpos.MockMvcTestHelper;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
@@ -42,7 +43,7 @@ class OrderRestControllerTest extends MockMvcTestHelper {
     @Test
     void createTest() throws Exception {
         // given
-        OrderRequest orderRequest = new OrderRequest();
+        OrderRequest orderRequest = new OrderRequest(1L, Arrays.asList(new OrderLineItemRequest()));
 
         OrderResponse orderResponse = new OrderResponse();
         Mockito.when(orderService.create(any())).thenReturn(orderResponse);

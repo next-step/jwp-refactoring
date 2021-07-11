@@ -3,7 +3,6 @@ package kitchenpos.tablegroup.application;
 import static kitchenpos.exception.KitchenposExceptionMessage.EXISTS_NOT_COMPLETION_ORDER;
 import static kitchenpos.exception.KitchenposExceptionMessage.NOT_FOUND_ORDER_TABLE;
 import static kitchenpos.exception.KitchenposExceptionMessage.NOT_FOUND_TABLE_GROUP;
-import static kitchenpos.exception.KitchenposExceptionMessage.ORDER_TABLE_CONNOT_LOWER_THAN_MIN;
 
 import kitchenpos.exception.KitchenposException;
 import kitchenpos.order.domain.OrderRepository;
@@ -18,7 +17,6 @@ import kitchenpos.tablegroup.dto.TableGroupRequest.OrderTableIdRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,8 +24,6 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class TableGroupService {
-
-    private static final int ORDER_TABLE_MIN_SIZE = 2;
 
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
@@ -42,15 +38,8 @@ public class TableGroupService {
     }
 
     public TableGroupResponse create(final TableGroupRequest request) {
-        checkOrderTableOverMin(request.getOrderTables());
         final List<OrderTable> savedOrderTables = getOrderTables(request);
         return TableGroupResponse.of(tableGroupRepository.save(new TableGroup(savedOrderTables)));
-    }
-
-    private void checkOrderTableOverMin(List<OrderTableIdRequest> orderTables) {
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < ORDER_TABLE_MIN_SIZE) {
-            throw new KitchenposException(ORDER_TABLE_CONNOT_LOWER_THAN_MIN);
-        }
     }
 
     private List<OrderTable> getOrderTables(TableGroupRequest request) {

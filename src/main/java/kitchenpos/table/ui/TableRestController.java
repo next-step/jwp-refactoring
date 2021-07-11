@@ -1,6 +1,7 @@
 package kitchenpos.table.ui;
 
 import io.swagger.annotations.ApiOperation;
+import javax.validation.Valid;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.dto.OrderTableChangeEmptyRequest;
 import kitchenpos.table.dto.OrderTableChangeNumberOfGuestsRequest;
@@ -44,7 +45,7 @@ public class TableRestController {
     @ApiOperation("테이블 손님 수를 변경")
     @PutMapping("/api/tables/{orderTableId}/number-of-guests")
     public ResponseEntity<OrderTableResponse> changeNumberOfGuests(@PathVariable final Long orderTableId,
-                                                                   @RequestBody final OrderTableChangeNumberOfGuestsRequest request) {
+                                                                   @Valid @RequestBody final OrderTableChangeNumberOfGuestsRequest request) {
         return ResponseEntity.ok().body(tableService.changeNumberOfGuests(orderTableId, request));
     }
 }
