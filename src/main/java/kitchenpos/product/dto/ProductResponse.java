@@ -22,6 +22,10 @@ public class ProductResponse {
         return new ProductResponse(product.getId(), product.getName(), product.getPrice());
     }
 
+    public static ProductResponse of(Long id, String name, BigDecimal price) {
+        return new ProductResponse(id, name, price);
+    }
+
     public Long getId() {
         return id;
     }
