@@ -1,18 +1,27 @@
 package kitchenpos.event;
 
+import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
+import kitchenpos.ordertable.dto.OrderTableIdRequest;
 import kitchenpos.ordertable.event.OrderTableEventHandler;
 import kitchenpos.ordertable.exception.IllegalOrderTableEmptyChangeException;
+import kitchenpos.ordertable.exception.IllegalOrderTableIdRequestException;
 import kitchenpos.tablegroup.event.TableGroupCreatedEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.BDDMockito.given;
 
+@ExtendWith(MockitoExtension.class)
 public class OrderTableEventHandlerTest {
 
     @Mock
@@ -36,5 +45,28 @@ public class OrderTableEventHandlerTest {
         //when, then
         assertThatThrownBy(() -> orderTableEventHandler.orderTablesEmptyChange(tableGroupCreatedEvent))
                 .isInstanceOf(IllegalOrderTableEmptyChangeException.class);
+    }
+
+    @DisplayName("요청한 주문 테이블이 중복되거나 없는 경우")
+    @Test
+    void 요청한_주문_테이블이_중복되거나_없는_경우() {
+        //given
+        tableGroupCreatedEvent = new TableGroupCreatedEvent(
+                Arrays.asList(
+                        new OrderTableIdRequest(1L),
+                        new OrderTableIdRequest(2L),
+                        new OrderTableIdRequest(3L)
+                )
+        );
+        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(
+                Arrays.asList(
+                        new OrderTable(1L),
+                        new OrderTable(2L)
+                        )
+        );
+
+        //when, then
+        assertThatThrownBy(() -> orderTableEventHandler.orderTablesEmptyChange(tableGroupCreatedEvent))
+                .isInstanceOf(IllegalOrderTableIdRequestException.class);
     }
 }

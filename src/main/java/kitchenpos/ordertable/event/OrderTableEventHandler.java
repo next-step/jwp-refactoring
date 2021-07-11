@@ -5,6 +5,7 @@ import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.dto.OrderTableIdRequest;
 import kitchenpos.ordertable.exception.IllegalOrderTableEmptyChangeException;
+import kitchenpos.ordertable.exception.IllegalOrderTableIdRequestException;
 import kitchenpos.tablegroup.event.TableGroupCreatedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -46,6 +47,10 @@ public class OrderTableEventHandler {
                 .collect(Collectors.toList());
 
         List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
+
+        if(savedOrderTables.size() != orderTableIdRequests.size()) {
+            throw new IllegalOrderTableIdRequestException();
+        }
 
         for (OrderTable savedOrderTable : savedOrderTables) {
             savedOrderTable.changeEmpty(false);
