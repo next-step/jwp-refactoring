@@ -52,7 +52,7 @@ class MenuGroupRestControllerTest {
     @DisplayName("메뉴 그룹을 등록한다.")
     @Test
     void create() throws Exception {
-        MenuGroupRequest menuGroup = new MenuGroupRequest( "기타안주메뉴");
+        MenuGroupRequest menuGroup = new MenuGroupRequest("기타안주메뉴");
         String params = mapper.writeValueAsString(menuGroup);
         given(menuGroupService.create(any())).willReturn(new MenuGroupResponse(1L, "기타안주메뉴"));
 

@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.internal.verification.VerificationModeFactory;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
@@ -28,6 +29,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
@@ -61,7 +64,7 @@ class MenuServiceTest {
         product1 = new Product(1L, "신메뉴1", BigDecimal.valueOf(20000));
         product2 = new Product(2L, "신메뉴2", BigDecimal.valueOf(10000));
         menu1 = new Menu("신메뉴1", BigDecimal.valueOf(20000), new MenuGroup(1L, "그룹1"), 30000L, menuProducts);
-        menu2 = new Menu("신메뉴2", BigDecimal.valueOf(30000), new MenuGroup(1L, "그룹1"), 30000L,menuProducts);
+        menu2 = new Menu("신메뉴2", BigDecimal.valueOf(30000), new MenuGroup(1L, "그룹1"), 30000L, menuProducts);
         menuGroup = new MenuGroup(1L, "그룹1");
     }
 
@@ -72,7 +75,7 @@ class MenuServiceTest {
         given(menuGroupRepository.findById(any())).willReturn(Optional.ofNullable(menuGroup));
         given(productRepository.findAllById(anyList())).willReturn(Arrays.asList(product1, product2));
         given(menuRepository.save(any())).willReturn(new Menu(menu.getName(),
-                BigDecimal.valueOf(menu.getPrice()), new MenuGroup(1L, "그룹1"),30000L, menuProducts));
+                BigDecimal.valueOf(menu.getPrice()), new MenuGroup(1L, "그룹1"), 30000L, menuProducts));
 
         MenuResponse savedMenu = menuService.create(menu);
 
@@ -81,6 +84,10 @@ class MenuServiceTest {
                 () -> assertThat(savedMenu.getPrice()).isEqualTo(menu.getPrice()),
                 () -> assertThat(savedMenu.getMenuGroupId()).isEqualTo(menu.getMenuGroupId()),
                 () -> assertThat(savedMenu.getMenuProducts()).contains(menuProduct1, menuProduct2));
+
+        verify(menuGroupRepository, times(1)).findById(any());
+        verify(productRepository, times(1)).findAllById(anyList());
+        verify(menuRepository, times(1)).save(any());
     }
 
     @DisplayName("메뉴를 등록에 실패한다 - 메뉴 그룹 아이디가 등록되어 있지 않은 경우")
@@ -92,6 +99,8 @@ class MenuServiceTest {
 
         assertThatThrownBy(() -> menuService.create(menu))
                 .isInstanceOf(IllegalArgumentException.class);
+
+        verify(productRepository, times(1)).findAllById(anyList());
     }
 
     @DisplayName("메뉴를 등록에 실패한다 - 메뉴 등록시 메뉴 상품들의 총 가격(상품 * 수량의 총합) 보다 클 수 없다.")
@@ -104,6 +113,9 @@ class MenuServiceTest {
 
         assertThatThrownBy(() -> menuService.create(menu))
                 .isInstanceOf(IllegalPriceException.class);
+
+        verify(productRepository, times(1)).findAllById(anyList());
+        verify(menuGroupRepository, times(1)).findById(anyLong());
     }
 
     @DisplayName("메뉴 리스트를 조회한다. (메뉴 조회시 메뉴에 대한 수량 정보도 같이 가져온다.)")
@@ -125,5 +137,7 @@ class MenuServiceTest {
                 () -> assertThat(selectedMenus.get(0).getMenuProducts()).isEqualTo(menuProducts1),
                 () -> assertThat(selectedMenus.get(1).getMenuProducts()).isEqualTo(menuProducts2),
                 () -> assertThat(selectedMenus.get(2).getMenuProducts()).isEqualTo(menuProducts3));
+
+        verify(menuRepository, times(1)).findAll();
     }
 }

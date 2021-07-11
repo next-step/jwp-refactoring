@@ -20,7 +20,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
@@ -35,7 +38,7 @@ class ProductServiceTest {
     @Test
     void create() {
         Product product = new Product(1L, "신상품", BigDecimal.valueOf(15000));
-        ProductRequest request = new ProductRequest( "신상품", 15000L);
+        ProductRequest request = new ProductRequest("신상품", 15000L);
         given(productRepository.save(any())).willReturn(product);
 
         ProductResponse created = productService.create(request);
@@ -43,6 +46,8 @@ class ProductServiceTest {
         assertAll(
                 () -> assertThat(created.getName()).isEqualTo(product.getName()),
                 () -> assertThat(created.getPrice()).isEqualTo(product.getPrice()));
+
+        verify(productRepository, times(1)).save(any());
     }
 
     @DisplayName("상품을 등록에 실패한다. - 상품 등록시 가격값이 null 이거나 0보다 작으면 등록 실패한다.")
@@ -70,5 +75,7 @@ class ProductServiceTest {
         assertAll(
                 () -> assertThat(findProducts.get(0).getName()).isEqualTo(product1.getName()),
                 () -> assertThat(findProducts.get(1).getName()).isEqualTo(product2.getName()));
+
+        verify(productRepository, times(1)).findAll();
     }
 }

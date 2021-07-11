@@ -18,7 +18,10 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
@@ -46,6 +49,8 @@ class MenuGroupServiceTest {
         MenuGroupResponse created = menuGroupService.create(menuGroupRequest);
 
         assertThat(created.getName()).isEqualTo(menuGroup.getName());
+
+        verify(menuGroupRepository, times(1)).save(any());
     }
 
     @DisplayName("메뉴 그룹 리스트를 조회한다.")
@@ -61,5 +66,7 @@ class MenuGroupServiceTest {
                 () -> assertThat(menuGroups.get(0).getName()).isEqualTo(MenuGroupResponse.from(menuGroup).getName()),
                 () -> assertThat(menuGroups.get(1).getName()).isEqualTo(MenuGroupResponse.from(anotherGroup).getName())
         );
+
+        verify(menuGroupRepository, times(1)).findAll();
     }
 }

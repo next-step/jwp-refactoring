@@ -43,7 +43,7 @@ class MenuTest {
     @ParameterizedTest
     @ValueSource(ints = {-1, Integer.MIN_VALUE})
     void fail_createMenu_for_price1(int price) {
-        assertThatThrownBy(() -> new Menu(menuName, new BigDecimal(price), menuGroup,20_000L, menuProducts))
+        assertThatThrownBy(() -> new Menu(menuName, new BigDecimal(price), menuGroup, 20_000L, menuProducts))
                 .isInstanceOf(IllegalPriceException.class);
     }
 

@@ -32,6 +32,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -83,6 +85,10 @@ class OrderServiceTest {
         assertAll(
                 () -> assertThat(savedOrder.getId()).isEqualTo(주문.getId()),
                 () -> assertThat(savedOrder.getOrderLineItems()).contains(주문수량메뉴1, 주문수량메뉴2));
+
+        verify(menuRepository, times(1)).findAllById(anyList());
+        verify(orderTableRepository, times(1)).findById(anyLong());
+        verify(orderRepository, times(1)).save(any());
     }
 
     @DisplayName("주문을 등록을 실패한다 - 주문에 포함된 주문된 메뉴들이(주문 아이템[OrderLineItem]) 없으면 실패한다.")
@@ -102,6 +108,8 @@ class OrderServiceTest {
 
         assertThatThrownBy(() -> orderService.create(order))
                 .isInstanceOf(IllegalArgumentException.class);
+
+        verify(menuRepository, times(1)).findAllById(any());
     }
 
     @DisplayName("주문을 등록을 실패한다 - 주문 테이블이 없는 주문은 등록 실패한다.")
@@ -112,6 +120,8 @@ class OrderServiceTest {
 
         assertThatThrownBy(() -> orderService.create(order))
                 .isInstanceOf(IllegalArgumentException.class);
+
+        verify(menuRepository, times(1)).findAllById(any());
     }
 
     @DisplayName("주문을 등록을 실패한다 - 주문 테이블이 empty (true) 상태면 주문 등록 실패한다.")
@@ -123,6 +133,9 @@ class OrderServiceTest {
 
         assertThatThrownBy(() -> orderService.create(order))
                 .isInstanceOf(IllegalArgumentException.class);
+
+        verify(menuRepository, times(1)).findAllById(any());
+        verify(orderTableRepository, times(1)).findById(any());
     }
 
     @DisplayName("주문을 조회한다.")
@@ -134,6 +147,8 @@ class OrderServiceTest {
         assertAll(
                 () -> assertThat(orders.get(0).getOrderTableId()).isEqualTo(OrderResponse.from(주문).getOrderTableId()),
                 () -> assertThat(orders.get(1).getOrderTableId()).isEqualTo(OrderResponse.from(다른주문).getOrderTableId()));
+
+        verify(orderRepository, times(1)).findAll();
     }
 
     @DisplayName("주문 상태를 변경한다.")
@@ -148,6 +163,8 @@ class OrderServiceTest {
         assertAll(
                 () -> assertThat(changed.getOrderStatus()).isEqualTo(changedStatus),
                 () -> assertThat(changed.getOrderLineItems()).isEqualTo(주문.getOrderLineItems()));
+
+        verify(orderRepository, times(1)).findById(anyLong());
     }
 
     @DisplayName("주문 상태를 변경을 실패한다 - 기존에 등록된 주문이 없으면 주문 상태 변경에 실패한다.")
@@ -159,6 +176,8 @@ class OrderServiceTest {
 
         assertThatThrownBy(() -> orderService.changeOrderStatus(주문.getId(), orderStatusRequest))
                 .isInstanceOf(IllegalArgumentException.class);
+
+        verify(orderRepository, times(1)).findById(anyLong());
     }
 
     @DisplayName("주문 상태를 변경을 실패한다 - 주문 상태가 기존에 계산 완료(COMPLETION) 상태일 경우 주문 상태 변경에 실패한다.")
@@ -171,5 +190,7 @@ class OrderServiceTest {
 
         assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), orderStatusRequest))
                 .isInstanceOf(AlreadyCompletionException.class);
+
+        verify(orderRepository, times(1)).findById(anyLong());
     }
 }

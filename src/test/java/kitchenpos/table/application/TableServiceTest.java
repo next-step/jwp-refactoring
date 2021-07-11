@@ -24,6 +24,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
@@ -49,6 +51,8 @@ class TableServiceTest {
                 () -> assertThat(created.getId()).isNotNull(),
                 () -> assertThat(created.getNumberOfGuests()).isEqualTo(orderTable.getNumberOfGuests()),
                 () -> assertThat(created.getTableGroupId()).isEqualTo(orderTable.getTableGroupId()));
+
+        verify(orderTableRepository, times(1)).save(any());
     }
 
     @DisplayName("주문 테이블 리스트를 조회한다.")
@@ -63,6 +67,8 @@ class TableServiceTest {
 
         assertThat(findedTables)
                 .containsExactly(OrderTableResponse.from(orderTable1), OrderTableResponse.from(orderTable2));
+
+        verify(orderTableRepository, times(1)).findAll();
     }
 
     @DisplayName("주문 테이블 empty 값을 변경한다.")
@@ -78,6 +84,9 @@ class TableServiceTest {
         OrderTableResponse changed = tableService.changeEmpty(orderTable.getId(), changeTable);
 
         assertThat(changed.isEmpty()).isEqualTo(expectedTable.isEmpty());
+
+        verify(orderTableRepository, times(1)).findById(anyLong());
+        verify(orderTableRepository, times(1)).save(any());
     }
 
     @DisplayName("주문 테이블 empty 값을 변경 실패한다. - 변경하려는 주문 테이블이 기존에 등록되지 않은 테이블이면 변경 실패")
@@ -99,6 +108,8 @@ class TableServiceTest {
 
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), changeTable))
                 .isInstanceOf(IllegalArgumentException.class);
+
+        verify(orderTableRepository, times(1)).findById(anyLong());
     }
 
     @DisplayName("주문 테이블 empty 값을 변경 실패한다. - 변경하려는 주문 테이블의 상태가 조리 또는 식사 중일 경우 변경 실패")
@@ -111,6 +122,9 @@ class TableServiceTest {
 
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), changeTable))
                 .isInstanceOf(IllegalArgumentException.class);
+
+        verify(orderTableRepository, times(1)).findById(anyLong());
+        verify(orderRepository, times(1)).existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList());
     }
 
     @DisplayName("주문 테이블 guests(손님) 숫자값을 변경한다.")
@@ -125,6 +139,9 @@ class TableServiceTest {
         OrderTableResponse changed = tableService.changeNumberOfGuests(orderTable.getId(), changeTable);
 
         assertThat(changed.getNumberOfGuests()).isEqualTo(expectedTable.getNumberOfGuests());
+
+        verify(orderTableRepository, times(1)).findById(anyLong());
+        verify(orderTableRepository, times(1)).save(any());
     }
 
     @DisplayName("주문 테이블 guests 숫자값 변경 실패한다 - 변경하려는 guests 숫자가 0보다 작을 경우 0보다 작을 경우 변경 실패")
@@ -146,6 +163,8 @@ class TableServiceTest {
 
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), changeTable))
                 .isInstanceOf(IllegalArgumentException.class);
+
+        verify(orderTableRepository, times(1)).findById(orderTable.getId());
     }
 
     @DisplayName("주문 테이블 guests 숫자값 변경 실패한다 - 변경하려는 주문 테이블의 empty 값이 true이면 변경 실패")
@@ -157,5 +176,7 @@ class TableServiceTest {
 
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), changeTable))
                 .isInstanceOf(EmptyException.class);
+
+        verify(orderTableRepository, times(1)).findById(orderTable.getId());
     }
 }
