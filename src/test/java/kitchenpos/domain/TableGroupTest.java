@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import kitchenpos.exception.IllegalOperationException;
+import kitchenpos.exception.NotEnoughTablesException;
 import kitchenpos.exception.OrderNotCompletedException;
 
 @DisplayName("테이블 그룹 단위 테스트")
@@ -42,7 +43,7 @@ public class TableGroupTest {
 
         // then
         assertThatThrownBy(() -> new TableGroup(OrderTables.of(테이블1)))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(NotEnoughTablesException.class);
     }
 
     @Test

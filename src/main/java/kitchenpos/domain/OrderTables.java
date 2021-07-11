@@ -12,8 +12,12 @@ import javax.persistence.OneToMany;
 
 import org.springframework.util.CollectionUtils;
 
+import kitchenpos.exception.NotEnoughTablesException;
+
 @Embeddable
 public class OrderTables {
+
+    private static final int MINIMUM_TABLE_COUNT = 2;
 
     @OneToMany(mappedBy = "tableGroup")
     private List<OrderTable> orderTables = new ArrayList<>();
@@ -35,8 +39,8 @@ public class OrderTables {
     }
 
     private void checkArgument(List<OrderTable> orderTables) {
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException("그룹화 하려면 2개 이상의 테이블이 필요합니다.");
+        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < MINIMUM_TABLE_COUNT) {
+            throw new NotEnoughTablesException("그룹화 하려면 %d개 이상의 테이블이 필요합니다.", MINIMUM_TABLE_COUNT);
         }
     }
 
