@@ -2,13 +2,11 @@ package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.event.MenuCreatedEvent;
-import kitchenpos.menuproduct.domain.MenuProductRepository;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.ui.exception.NoMenuGroupException;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuRequest;
-import kitchenpos.product.domain.ProductRepository;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +36,7 @@ public class MenuService {
             throw new NoMenuGroupException();
         }
 
-        final Menu savedMenu = menuRepository.save(menu);
+        Menu savedMenu = menuRepository.save(menu);
 
         publisher.publishEvent(new MenuCreatedEvent(savedMenu, menuRequest.getMenuProducts()));
 
