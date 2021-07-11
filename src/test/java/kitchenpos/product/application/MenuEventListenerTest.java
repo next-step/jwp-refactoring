@@ -14,16 +14,16 @@ import java.math.BigDecimal;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ExtendWith(MockitoExtension.class)
-class MenuEventHandlerTest {
+class MenuEventListenerTest {
 
     @Mock
     private ProductService productService;
 
-    private MenuEventHandler menuEventHandler;
+    private MenuEventListener menuEventListener;
 
     @BeforeEach
     void setUp() {
-        menuEventHandler = new MenuEventHandler(productService);
+        menuEventListener = new MenuEventListener(productService);
     }
 
     @Test
@@ -32,7 +32,7 @@ class MenuEventHandlerTest {
         Menu menu = Menu.of("반반치킨", BigDecimal.valueOf(16000), null);
         MenuGeneratedEvent menuGeneratedEvent = new MenuGeneratedEvent(menu);
 
-        assertThatThrownBy(() -> menuEventHandler.generateMenuEventListener(menuGeneratedEvent))
+        assertThatThrownBy(() -> menuEventListener.generateMenuEventListener(menuGeneratedEvent))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

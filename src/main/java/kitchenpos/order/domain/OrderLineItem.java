@@ -37,7 +37,7 @@ public class OrderLineItem {
     }
 
     public Long getMenuId() {
-        return getMenuId();
+        return menuId;
     }
 
     public Long getQuantity() {

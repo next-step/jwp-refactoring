@@ -1,6 +1,5 @@
 package kitchenpos.order.application;
 
-import kitchenpos.menu.application.MenuNotMatchException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItems;
@@ -12,8 +11,6 @@ import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.application.OrderTableNotFoundException;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.OrderTables;
-import kitchenpos.table.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -82,25 +79,6 @@ class OrderServiceTest {
 
         assertThatThrownBy(() -> orderService.create(orderRequest))
                 .isInstanceOf(OrderTableNotFoundException.class);
-    }
-
-    @DisplayName("주문 저장시 주문항목 갯수와 메뉴의 갯수가 다르게 주어지면 예외를 던진다.")
-    @Test
-    void create_with_different_menu_size() {
-        OrderLineItemRequest orderLineItemRequest1 = new OrderLineItemRequest(1L, 2L);
-        OrderLineItemRequest orderLineItemRequest2 = new OrderLineItemRequest(2L, 3L);
-        OrderRequest orderRequest = new OrderRequest(1L, Arrays.asList(orderLineItemRequest1, orderLineItemRequest2));
-        OrderTable orderTable = new OrderTable(1L, null, 4, false);
-        OrderTable orderTable2 = new OrderTable(1L, null, 4, false);
-        TableGroup tableGroup = TableGroup.of(new OrderTables(Arrays.asList(orderTable, orderTable2)));
-        OrderTable givenOrderTable = new OrderTable(1L, 1L, 5, false);
-        Menu menu1 = new Menu(1L);
-
-        when(orderTableRepository.findById(anyLong()))
-                .thenReturn(Optional.of(givenOrderTable));
-
-        assertThatThrownBy(() -> orderService.create(orderRequest))
-                .isInstanceOf(MenuNotMatchException.class);
     }
 
     @DisplayName("주문 저장시 주문 테이블이 존재하지 않으면 예외를 던진다.")

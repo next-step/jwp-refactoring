@@ -11,11 +11,11 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Component
-public class MenuEventHandler {
+public class MenuEventListener {
     private static final String INVALID_PRICE = "올바르지 않은 금액입니다.";
     private final ProductService productService;
 
-    public MenuEventHandler(ProductService productService) {
+    public MenuEventListener(ProductService productService) {
         this.productService = productService;
     }
 

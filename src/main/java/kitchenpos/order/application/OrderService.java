@@ -15,6 +15,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -58,6 +59,11 @@ public class OrderService {
                 .orElseThrow(() -> new OrderNotFoundException(NOT_FOUND_ORDER));
         order.changeOrderStatus(orderStatus);
         return new OrderResponse(order);
+    }
+
+    public boolean isUpgroupTableStatus(List<Long> orderTableId) {
+        return orderRepository.existsByOrderTableIdInAndOrderStatusIn(
+                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
     }
 
     private OrderTable findOrderTable(OrderRequest orderRequest) {

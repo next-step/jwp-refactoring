@@ -1,7 +1,5 @@
 package kitchenpos.tablegroup.application;
 
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -17,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,14 +29,10 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
-
-    @Mock
-    private OrderRepository orderRepository;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -45,11 +40,14 @@ class TableGroupServiceTest {
     @Mock
     private TableGroupRepository tableGroupRepository;
 
+    @Mock
+    private ApplicationEventPublisher applicationEventPublisher;
+
     private TableGroupService tableGroupService;
 
     @BeforeEach
     void setUp() {
-        tableGroupService = new TableGroupService(orderRepository, orderTableRepository, tableGroupRepository);
+        tableGroupService = new TableGroupService(orderTableRepository, tableGroupRepository, applicationEventPublisher);
     }
 
     @Test
@@ -166,23 +164,5 @@ class TableGroupServiceTest {
                 .thenReturn(Optional.of(givenTableGroup));
 
         assertDoesNotThrow(() -> tableGroupService.ungroup(tableGroupId));
-    }
-
-    @Test
-    @DisplayName("테이블 그룹을 해제할 주문테이블이 완료 상태가 아니면 예외를 던진다.")
-    void ungroup_table_with_table_status_is_not_complete() {
-        OrderTable orderTable1 = new OrderTable(1L, null, 3, true);
-        OrderTable orderTable2 = new OrderTable(2L, null, 2, true);
-        Long tableGroupId = 1L;
-        List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
-        TableGroup givenTableGroup = TableGroup.of(new OrderTables(orderTables));
-        when(tableGroupRepository.findById(anyLong()))
-                .thenReturn(Optional.of(givenTableGroup));
-        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                anyList(), eq(Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)))
-        ).thenReturn(true);
-
-        assertThatThrownBy(() -> tableGroupService.ungroup(tableGroupId))
-                .isInstanceOf(IllegalStateException.class);
     }
 }
