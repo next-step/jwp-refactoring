@@ -13,7 +13,7 @@ import kitchenpos.table.application.OrderTableNotFoundException;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTables;
-import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.table.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -93,7 +93,7 @@ class OrderServiceTest {
         OrderTable orderTable = new OrderTable(1L, null, 4, false);
         OrderTable orderTable2 = new OrderTable(1L, null, 4, false);
         TableGroup tableGroup = TableGroup.of(new OrderTables(Arrays.asList(orderTable, orderTable2)));
-        OrderTable givenOrderTable = new OrderTable(1L, tableGroup, 5, false);
+        OrderTable givenOrderTable = new OrderTable(1L, 1L, 5, false);
         Menu menu1 = new Menu(1L);
 
         when(orderTableRepository.findById(anyLong()))

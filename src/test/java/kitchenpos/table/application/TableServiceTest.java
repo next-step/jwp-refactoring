@@ -4,9 +4,9 @@ import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTables;
+import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -95,7 +95,7 @@ class TableServiceTest {
         final OrderTable orderTable = new OrderTable(1L, null, 4, false);
         final OrderTable orderTable2 = new OrderTable(1L, null, 4, false);
         TableGroup tableGroup = TableGroup.of(new OrderTables(Arrays.asList(orderTable, orderTable2)));
-        final OrderTable savedOrderTable1 = new OrderTable(1L, tableGroup, 3, false);
+        final OrderTable savedOrderTable1 = new OrderTable(1L, 1L, 3, false);
         final OrderTableRequest orderTableRequest = new OrderTableRequest(0, true);
 
         when(orderTableRepository.findById(anyLong()))
