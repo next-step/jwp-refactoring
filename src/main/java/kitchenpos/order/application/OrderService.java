@@ -13,6 +13,7 @@ import kitchenpos.table.application.OrderTableService;
 import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableEntity;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -31,19 +32,18 @@ public class OrderService {
     private final OrderTableDao orderTableDao;
 
     private final MenuService menuService;
-    private final OrderTableService orderTableService;
+    private final OrderTableRepository orderTableRepository;
     private final OrderRepository orderRepository;
 
-    public OrderService(MenuDao menuDao, OrderDao orderDao, OrderLineItemDao orderLineItemDao, OrderTableDao orderTableDao, MenuService menuService, OrderTableService orderTableService, OrderRepository orderRepository) {
+    public OrderService(MenuDao menuDao, OrderDao orderDao, OrderLineItemDao orderLineItemDao, OrderTableDao orderTableDao, MenuService menuService, OrderTableRepository orderTableRepository, OrderRepository orderRepository) {
         this.menuDao = menuDao;
         this.orderDao = orderDao;
         this.orderLineItemDao = orderLineItemDao;
         this.orderTableDao = orderTableDao;
         this.menuService = menuService;
-        this.orderTableService = orderTableService;
+        this.orderTableRepository = orderTableRepository;
         this.orderRepository = orderRepository;
     }
-
 
     @Transactional
     public Order create(final Order order) {
@@ -95,7 +95,7 @@ public class OrderService {
     }
 
     private OrderTableEntity findOrderTable(Long orderTableId) {
-        OrderTableEntity orderTable = orderTableService.findById(orderTableId);
+        OrderTableEntity orderTable = orderTableRepository.findById(orderTableId).orElseThrow(() -> new IllegalArgumentException("등록되지 않은 주문 테이블입니다."));
         emptyCheck(orderTable.isEmpty());
         return orderTable;
     }

@@ -16,6 +16,11 @@ public class OrderLineItemRequest {
         this.quantity = quantity;
     }
 
+    public OrderLineItemRequest(Long menuId, long quantity) {
+        this.menuId = menuId;
+        this.quantity = quantity;
+    }
+
     public Long getSeq() {
         return seq;
     }

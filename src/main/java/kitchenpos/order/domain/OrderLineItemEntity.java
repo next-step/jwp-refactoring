@@ -5,6 +5,7 @@ import kitchenpos.menu.domain.MenuEntity;
 
 import javax.persistence.*;
 
+@Table(name = "order_line_item")
 @Entity
 public class OrderLineItemEntity {
     @Id

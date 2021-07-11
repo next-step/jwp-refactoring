@@ -30,9 +30,10 @@ public class OrderRestController {
     @PostMapping("/api/orders/temp")
     public ResponseEntity<OrderResponse> createTemp(@RequestBody final OrderRequest orderRequest) {
         final OrderResponse created = orderService.createTemp(orderRequest);
-        final URI uri = URI.create("/api/orders/" + created);
+
+        final URI uri = URI.create("/api/orders/" + created.getId());
         return ResponseEntity.created(uri)
-                .body(null);
+                .body(created);
     }
 
     @GetMapping("/api/orders")

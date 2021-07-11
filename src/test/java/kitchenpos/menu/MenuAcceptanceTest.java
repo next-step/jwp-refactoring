@@ -88,8 +88,15 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    public static MenuResponse 메뉴_등록되어_있음(MenuRequest menuRequest) {
+        ExtractableResponse<Response> response = 메뉴_등록_요청(menuRequest);
+        정상_등록(response);
+        return response.as(MenuResponse.class);
 
-    private ExtractableResponse<Response> 메뉴_등록_요청(MenuRequest menuRequest) {
+    }
+
+
+    private static ExtractableResponse<Response> 메뉴_등록_요청(MenuRequest menuRequest) {
         return RestAssured
                 .given().log().all()
                 .body(menuRequest)
