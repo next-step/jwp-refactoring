@@ -22,11 +22,11 @@ public class MenuEventHandler {
     @EventListener
     public void generateMenuEventListener(MenuGeneratedEvent menuGeneratedEvent) {
         Menu menu = menuGeneratedEvent.getMenu();
-        BigDecimal price = menu.getPrice();
         List<MenuProduct> menuProducts = menu.getMenuProducts();
         Price totalPrice = getTotalPrice(menuProducts);
+        BigDecimal menuPrice = menu.getPrice();
 
-        if (totalPrice.isBigger(price)) {
+        if (totalPrice.isBigger(menuPrice)) {
             throw new IllegalArgumentException(INVALID_PRICE);
         }
     }

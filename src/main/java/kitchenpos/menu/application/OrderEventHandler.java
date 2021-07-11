@@ -6,6 +6,7 @@ import kitchenpos.order.domain.OrderGeneratedEvent;
 import kitchenpos.order.domain.OrderLineItem;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ import static java.util.stream.Collectors.toList;
 @Component
 public class OrderEventHandler {
     private static final String ITEM_SIZE_NOT_MATCH = "주문 항목이 일치하지 않습니다.";
+    private static final String NOT_EXIST_ORDER_LINE_ITEMS = "주문이 존재하지 않습니다.";
     private final MenuRepository menuRepository;
 
     public OrderEventHandler(MenuRepository menuRepository) {
@@ -24,6 +26,9 @@ public class OrderEventHandler {
     public void generateOrder(OrderGeneratedEvent orderGeneratedEvent) {
         Order order = orderGeneratedEvent.getOrder();
         List<OrderLineItem> orderLineItems = order.getOrderLineItems();
+        if (CollectionUtils.isEmpty(orderLineItems)) {
+            throw new IllegalArgumentException(NOT_EXIST_ORDER_LINE_ITEMS);
+        }
         List<Long> menuIds = getMenuIds(orderLineItems);
         int menuExistedSize = menuRepository.countByIdIn(menuIds);
         int orderLineItemsSize = orderLineItems.size();
