@@ -139,21 +139,37 @@ class TableGroupServiceTest {
     @Test
     void ungroup() {
         // given
+        table.setTableGroupId(1L);
+        table2.setTableGroupId(1L);
         given(orderTableDao.findAllByTableGroupId(tableGroup.getId())).willReturn(Arrays.asList(table, table2));
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(false);
 
+        // when then
         assertThatNoException()
                 .isThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()));
+
+        List<OrderTable> actual = orderTableDao.findAllByTableGroupId(tableGroup.getId());
+        for (OrderTable orderTable : actual) {
+            assertThat(orderTable.getTableGroupId()).isNull();
+        }
     }
 
     @DisplayName("테이블 그룹 해지 - 테이블에 연결된 조리, 식사 상태의 주문이 존재하는 경우 변경이 불가하다")
     @Test
     void ungroup_existsActiveOrder() {
         // given
+        table.setTableGroupId(1L);
+        table2.setTableGroupId(1L);
         given(orderTableDao.findAllByTableGroupId(tableGroup.getId())).willReturn(Arrays.asList(table, table2));
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(true);
 
+        // when then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()));
+
+        List<OrderTable> actual = orderTableDao.findAllByTableGroupId(tableGroup.getId());
+        for (OrderTable orderTable : actual) {
+            assertThat(orderTable.getTableGroupId()).isNotNull();
+        }
     }
 }
