@@ -33,6 +33,10 @@ public class TableGroup {
         this(null, orderTables);
     }
 
+    public void ungroup() {
+        orderTables.ungroup();
+    }
+
     public Long getId() {
         return id;
     }

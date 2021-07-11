@@ -36,6 +36,10 @@ public class Order {
         this.orderLineItems = new OrderLineItems(orderLineItems);
     }
 
+    public Order(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
     public Order(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
         this(null, orderTable, orderStatus, orderLineItems);
     }
@@ -69,5 +73,9 @@ public class Order {
 
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems.getOrderLineItemValues();
+    }
+
+    public boolean isOrderStatusCompleted() {
+        return orderStatus.isCompleted();
     }
 }

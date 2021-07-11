@@ -60,17 +60,7 @@ public class TableGroupService {
     }
 
     public void ungroup(final Long tableGroupId) {
-        final OrderTables orderTables = new OrderTables(orderTableRepository.findAllByTableGroupId(tableGroupId));
-        final List<Long> orderTableIds = orderTables.toOrderTableIds();
-        checkOrderTableIdAndStatus(orderTableIds);
-
-        orderTables.ungroup();
-    }
-
-    private void checkOrderTableIdAndStatus(List<Long> orderTableIds) {
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalOrderTableException();
-        }
+        TableGroup tableGroup = tableGroupRepository.findById(tableGroupId).orElseThrow(IllegalArgumentException::new);
+        tableGroup.ungroup();
     }
 }

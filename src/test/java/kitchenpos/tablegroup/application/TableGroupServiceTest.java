@@ -1,6 +1,8 @@
 package kitchenpos.tablegroup.application;
 
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTables;
@@ -19,10 +21,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -135,35 +134,34 @@ class TableGroupServiceTest {
     @DisplayName("테이블 그룹을 등록해제(ungroup) 한다.")
     @Test
     void ungroup() {
+        OrderTable orderTable1 = new OrderTable(2, true);
+        orderTable1.addOrder(new Order(OrderStatus.COMPLETION));
+        OrderTable orderTable2 = new OrderTable(2, true);
+        orderTable2.addOrder(new Order(OrderStatus.COMPLETION));
         TableGroup tableGroup = new TableGroup(1L, new OrderTables(Arrays.asList(orderTable1, orderTable2)));
-        OrderTable groupedTable1 = new OrderTable(orderTable1.getId(), 1L, 2, true);
-        OrderTable groupedTable2 = new OrderTable(orderTable2.getId(), 1L, 2, true);
-        List<OrderTable> groupedTables = Arrays.asList(groupedTable1, groupedTable2);
-        OrderTables groups = new OrderTables(groupedTables);
-        given(orderTableRepository.findAllByTableGroupId(tableGroup.getId())).willReturn(groupedTables);
+        given(tableGroupRepository.findById(tableGroup.getId())).willReturn(Optional.of(tableGroup));
 
         tableGroupService.ungroup(tableGroup.getId());
 
         assertThat(tableGroup.getOrderTables().get(0).getTableGroupId()).isNull();
 
-        verify(orderTableRepository, times(1)).findAllByTableGroupId(tableGroup.getId());
+        verify(tableGroupRepository, times(1)).findById(tableGroup.getId());
     }
 
     @DisplayName("테이블 그룹 등록해제를 실패 한다. - 그룹된 주문 테이블이 조리중이거나, 식사중일때에는 그룹 해제 불가")
     @Test
     void fail_ungroup() {
+        OrderTable orderTable1 = new OrderTable(2, true);
+        orderTable1.addOrder(new Order(OrderStatus.COOKING));
+        OrderTable orderTable2 = new OrderTable(2, true);
+        orderTable2.addOrder(new Order(OrderStatus.COMPLETION));
         TableGroup tableGroup = new TableGroup(1L, new OrderTables(Arrays.asList(orderTable1, orderTable2)));
-        OrderTable groupedTable1 = new OrderTable(orderTable1.getId(), tableGroup.getId(), 2, true);
-        OrderTable groupedTable2 = new OrderTable(orderTable2.getId(), tableGroup.getId(), 2, true);
-        List<OrderTable> groupedTables = Arrays.asList(groupedTable1, groupedTable2);
-        OrderTables groups = new OrderTables(groupedTables);
-        given(orderTableRepository.findAllByTableGroupId(tableGroup.getId())).willReturn(groupedTables);
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
+
+        given(tableGroupRepository.findById(tableGroup.getId())).willReturn(Optional.of(tableGroup));
 
         assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))
                 .isInstanceOf(IllegalOrderTableException.class);
 
-        verify(orderTableRepository, times(1)).findAllByTableGroupId(tableGroup.getId());
-        verify(orderRepository, times(1)).existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList());
+        verify(tableGroupRepository, times(1)).findById(tableGroup.getId());
     }
 }

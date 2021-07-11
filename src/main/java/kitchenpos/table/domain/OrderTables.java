@@ -1,5 +1,6 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.table.exception.IllegalOrderTableException;
 import kitchenpos.table.exception.IllegalOrderTablesSizeException;
 import org.springframework.util.CollectionUtils;
 
@@ -39,9 +40,21 @@ public class OrderTables {
     }
 
     public void ungroup() {
+        if (CollectionUtils.isEmpty(orderTables)) {
+            return;
+        }
+
+        if (hasCookingOrMealOrder()) {
+            throw new IllegalOrderTableException();
+        }
+
         for (final OrderTable orderTable : orderTables) {
             orderTable.upgroup();
         }
+    }
+
+    private boolean hasCookingOrMealOrder() {
+        return orderTables.stream().anyMatch(orderTable -> !orderTable.isCompletedOrder());
     }
 
     public int size() {
