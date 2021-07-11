@@ -1,12 +1,11 @@
-package kitchenpos.table;
+package kitchenpos.table.application;
 
 import kitchenpos.ordertable.application.TableService;
 import kitchenpos.order.domain.OrderDao;
-import kitchenpos.ordertable.domain.OrderTableDao;
+import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.ordertable.domain.OrderTable;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,41 +25,33 @@ class TableServiceTest {
     private OrderDao orderDao;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private TableService tableService;
 
-    private OrderTable 첫번째_테이블;
-    private OrderTable 두번째_테이블;
-
-    @BeforeEach
-    void setUp() {
-        첫번째_테이블 = new OrderTable();
-        첫번째_테이블.setId(1L);
-        두번째_테이블 = new OrderTable();
-        두번째_테이블.setId(2L);
-    }
+    private OrderTable 첫번째_테이블 = new OrderTable(null, 3, true);
+    private OrderTable 두번째_테이블 = new OrderTable(null, 5, false);
 
     @DisplayName("테이블을 등록한다")
     @Test
     void 테이블_등록() {
         //Given
-        Mockito.when(orderTableDao.save(첫번째_테이블)).thenReturn(첫번째_테이블);
+        Mockito.when(orderTableRepository.save(첫번째_테이블)).thenReturn(첫번째_테이블);
 
         //When
         OrderTable 생성된_테이블 = tableService.create(첫번째_테이블);
 
         //Then
         Assertions.assertThat(생성된_테이블).isNotNull();
-        Assertions.assertThat(생성된_테이블.getTableGroupId()).isNull();
+        Assertions.assertThat(생성된_테이블.getTableGroup()).isNull();
     }
 
     @DisplayName("테이블의 목록을 조회한다")
     @Test
     void 테이블_목록_조회() {
         //Given
-        Mockito.when(orderTableDao.findAll()).thenReturn(Arrays.asList(첫번째_테이블, 두번째_테이블));
+        Mockito.when(orderTableRepository.findAll()).thenReturn(Arrays.asList(첫번째_테이블, 두번째_테이블));
 
         //When
         List<OrderTable> 조회된_테이블_목록 = tableService.list();
@@ -74,10 +65,10 @@ class TableServiceTest {
     @Test
     void 테이블의_비어있음_여부_변경() {
         //Given
-        Mockito.when(orderTableDao.findById(첫번째_테이블.getId())).thenReturn(Optional.of(첫번째_테이블));
+        Mockito.when(orderTableRepository.findById(첫번째_테이블.getId())).thenReturn(Optional.of(첫번째_테이블));
         Mockito.when(orderDao.existsByOrderTableIdAndOrderStatusIn(첫번째_테이블.getId(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
                 .thenReturn(false);
-        Mockito.when(orderTableDao.save(첫번째_테이블)).thenReturn(첫번째_테이블);
+        Mockito.when(orderTableRepository.save(첫번째_테이블)).thenReturn(첫번째_테이블);
 
         //When
         첫번째_테이블.setEmpty(false);
@@ -91,19 +82,7 @@ class TableServiceTest {
     @Test
     void 등록안된_테이블의_비어있음_여부_변경시_예외발생() {
         //Given
-        Mockito.when(orderTableDao.findById(첫번째_테이블.getId())).thenReturn(Optional.empty());
-
-        //When + Then
-        Assertions.assertThatThrownBy(() -> tableService.changeEmpty(첫번째_테이블.getId(), 첫번째_테이블))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("단체지정된 테이블의 비어있음 여부를 변경하는 경우, 예외발생한다")
-    @Test
-    void 단체지정된_테이블의_비어있음_여부_변경시_예외발생() {
-        //Given
-        첫번째_테이블.setTableGroupId(1L);
-        Mockito.when(orderTableDao.findById(첫번째_테이블.getId())).thenReturn(Optional.of(첫번째_테이블));
+        Mockito.when(orderTableRepository.findById(첫번째_테이블.getId())).thenReturn(Optional.empty());
 
         //When + Then
         Assertions.assertThatThrownBy(() -> tableService.changeEmpty(첫번째_테이블.getId(), 첫번째_테이블))
@@ -114,7 +93,7 @@ class TableServiceTest {
     @Test
     void 상태가_요리중_혹은_식사중인_테이블의_비어있음_여부_변경시_예외발생() {
         //Given
-        Mockito.when(orderTableDao.findById(첫번째_테이블.getId())).thenReturn(Optional.of(첫번째_테이블));
+        Mockito.when(orderTableRepository.findById(첫번째_테이블.getId())).thenReturn(Optional.of(첫번째_테이블));
         Mockito.when(orderDao.existsByOrderTableIdAndOrderStatusIn(첫번째_테이블.getId(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
                 .thenReturn(true);
 
@@ -127,8 +106,8 @@ class TableServiceTest {
     @Test
     void 테이블의_손님수_변경() {
         //Given
-        Mockito.when(orderTableDao.findById(첫번째_테이블.getId())).thenReturn(Optional.of(첫번째_테이블));
-        Mockito.when(orderTableDao.save(첫번째_테이블)).thenReturn(첫번째_테이블);
+        Mockito.when(orderTableRepository.findById(첫번째_테이블.getId())).thenReturn(Optional.of(첫번째_테이블));
+        Mockito.when(orderTableRepository.save(첫번째_테이블)).thenReturn(첫번째_테이블);
 
         //When
         첫번째_테이블.setNumberOfGuests(3);
@@ -138,38 +117,14 @@ class TableServiceTest {
         Assertions.assertThat(변경된_테이블.getNumberOfGuests()).isEqualTo(첫번째_테이블.getNumberOfGuests());
     }
 
-    @DisplayName("테이블의 손님수를 0명 미만으로 입력하여 변경시, 예외 발생한다")
-    @Test
-    void 테이블의_손님수를_0명미만으로_입력하여_변경시_예외발생() {
-        //Given
-        첫번째_테이블.setNumberOfGuests(-1);
-
-        //When + Then
-        Assertions.assertThatThrownBy(() -> tableService.changeNumberOfGuests(첫번째_테이블.getId(), 첫번째_테이블))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
     @DisplayName("등록되지 않은 테이블의 손님수를 변경시, 예외 발생한다")
     @Test
     void 등록되지_않은_테이블의_손님수_변경시_예외발생() {
         //Given
         첫번째_테이블.setNumberOfGuests(3);
-        Mockito.when(orderTableDao.findById(첫번째_테이블.getId())).thenReturn(Optional.empty());
+        Mockito.when(orderTableRepository.findById(첫번째_테이블.getId())).thenReturn(Optional.empty());
 
         //When + Then
-        Assertions.assertThatThrownBy(() -> tableService.changeNumberOfGuests(첫번째_테이블.getId(), 첫번째_테이블))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("비어있는 테이블의 손님수를 변경시, 예외 발생한다")
-    @Test
-    void 비어있는_테이블의_손님수_변경시_예외발생() {
-        //Given
-        첫번째_테이블.setNumberOfGuests(3);
-        Mockito.when(orderTableDao.findById(첫번째_테이블.getId())).thenReturn(Optional.of(첫번째_테이블));
-
-        //When + Then
-        첫번째_테이블.setEmpty(true);
         Assertions.assertThatThrownBy(() -> tableService.changeNumberOfGuests(첫번째_테이블.getId(), 첫번째_테이블))
                 .isInstanceOf(IllegalArgumentException.class);
     }

@@ -1,4 +1,4 @@
-package kitchenpos.table;
+package kitchenpos.table.ui;
 
 
 import kitchenpos.ordertable.application.TableService;

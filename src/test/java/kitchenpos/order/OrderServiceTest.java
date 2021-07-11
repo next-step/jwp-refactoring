@@ -5,7 +5,7 @@ import kitchenpos.order.application.OrderService;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.*;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTableDao;
+import kitchenpos.ordertable.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,7 +35,7 @@ class OrderServiceTest {
     OrderLineItemDao orderLineItemDao;
 
     @Mock
-    OrderTableDao orderTableDao;
+    OrderTableRepository orderTableRepository;
 
     @InjectMocks
     OrderService orderService;
@@ -68,7 +68,7 @@ class OrderServiceTest {
         첫번째_주문.setOrderTableId(첫번째_테이블.getId());
 
         when(menuRepository.countByIdIn(Arrays.asList(첫번째_메뉴.getId()))).thenReturn((long) 첫번째_주문.getOrderLineItems().size());
-        when(orderTableDao.findById(첫번째_테이블.getId())).thenReturn(Optional.of(첫번째_테이블));
+        when(orderTableRepository.findById(첫번째_테이블.getId())).thenReturn(Optional.of(첫번째_테이블));
         when(orderDao.save(첫번째_주문)).thenReturn(첫번째_주문);
         when(orderLineItemDao.save(주문_항목_첫번째)).thenReturn(주문_항목_첫번째);
 

@@ -2,8 +2,8 @@ package kitchenpos.tablegroup;
 
 import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.order.domain.OrderDao;
-import kitchenpos.ordertable.domain.OrderTableDao;
-import kitchenpos.tablegroup.domain.TableGroupDao;
+import kitchenpos.ordertable.domain.OrderTableRepository;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.tablegroup.domain.TableGroup;
@@ -30,10 +30,10 @@ class TableGroupServiceTest {
     private OrderDao orderDao;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -61,10 +61,10 @@ class TableGroupServiceTest {
     void 단체지정_등록() {
         //Given
         테이블그룹.setOrderTables(Arrays.asList(첫번째_테이블, 두번째_테이블));
-        when(orderTableDao.findAllByIdIn(Arrays.asList(1L, 2L))).thenReturn(Arrays.asList(첫번째_테이블, 두번째_테이블));
-        when(tableGroupDao.save(테이블그룹)).thenReturn(테이블그룹);
-        when(orderTableDao.save(첫번째_테이블)).thenReturn(첫번째_테이블);
-        when(orderTableDao.save(두번째_테이블)).thenReturn(두번째_테이블);
+        when(orderTableRepository.findAllByIdIn(Arrays.asList(1L, 2L))).thenReturn(Arrays.asList(첫번째_테이블, 두번째_테이블));
+        when(tableGroupRepository.save(테이블그룹)).thenReturn(테이블그룹);
+        when(orderTableRepository.save(첫번째_테이블)).thenReturn(첫번째_테이블);
+        when(orderTableRepository.save(두번째_테이블)).thenReturn(두번째_테이블);
 
         //When
         TableGroup 생성된_단체지정 = tableGroupService.create(테이블그룹);
@@ -102,7 +102,7 @@ class TableGroupServiceTest {
     void 주문테이블이_중복입력된_경우_예외발생() {
         //Given
         테이블그룹.setOrderTables(Arrays.asList(첫번째_테이블, 첫번째_테이블));
-        when(orderTableDao.findAllByIdIn(Arrays.asList(1L, 1L))).thenReturn(Arrays.asList(첫번째_테이블));
+        when(orderTableRepository.findAllByIdIn(Arrays.asList(1L, 1L))).thenReturn(Arrays.asList(첫번째_테이블));
 
         //When + Then
         assertThatThrownBy(() -> tableGroupService.create(테이블그룹))
@@ -113,9 +113,9 @@ class TableGroupServiceTest {
     @Test
     void 주문테이블이_이미_단체지정된_경우_예외발생() {
         //Given
-        첫번째_테이블.setTableGroupId(99L);
+        첫번째_테이블.setTableGroup(99L);
         테이블그룹.setOrderTables(Arrays.asList(첫번째_테이블, 두번째_테이블));
-        when(orderTableDao.findAllByIdIn(Arrays.asList(1L, 2L))).thenReturn(Arrays.asList(첫번째_테이블, 두번째_테이블));
+        when(orderTableRepository.findAllByIdIn(Arrays.asList(1L, 2L))).thenReturn(Arrays.asList(첫번째_테이블, 두번째_테이블));
 
         //When + Then
         assertThatThrownBy(() -> tableGroupService.create(테이블그룹))
@@ -128,7 +128,7 @@ class TableGroupServiceTest {
         //Given
         첫번째_테이블.setEmpty(false);
         테이블그룹.setOrderTables(Arrays.asList(첫번째_테이블, 두번째_테이블));
-        when(orderTableDao.findAllByIdIn(Arrays.asList(1L, 2L))).thenReturn(Arrays.asList(첫번째_테이블, 두번째_테이블));
+        when(orderTableRepository.findAllByIdIn(Arrays.asList(1L, 2L))).thenReturn(Arrays.asList(첫번째_테이블, 두번째_테이블));
 
         //When + Then
         assertThatThrownBy(() -> tableGroupService.create(테이블그룹))
@@ -143,7 +143,7 @@ class TableGroupServiceTest {
         List<Long> 테이블_ID_목록 = 테이블_목록.stream()
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
-        when(orderTableDao.findAllByTableGroupId(테이블그룹.getId())).thenReturn(테이블_목록);
+        when(orderTableRepository.findAllByTableGroupId(테이블그룹.getId())).thenReturn(테이블_목록);
         when(orderDao.existsByOrderTableIdInAndOrderStatusIn(테이블_ID_목록,Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
                 .thenReturn(false);
 
@@ -151,7 +151,7 @@ class TableGroupServiceTest {
         tableGroupService.ungroup(테이블그룹.getId());
 
         //Then
-        assertThat(첫번째_테이블.getTableGroupId()).isNull();
-        assertThat(두번째_테이블.getTableGroupId()).isNull();
+        assertThat(첫번째_테이블.getTableGroup()).isNull();
+        assertThat(두번째_테이블.getTableGroup()).isNull();
     }
 }
