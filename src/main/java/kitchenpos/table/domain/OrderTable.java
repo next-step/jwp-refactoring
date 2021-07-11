@@ -1,6 +1,7 @@
 package kitchenpos.table.domain;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.persistence.*;
 
@@ -18,9 +19,6 @@ public class OrderTable {
     private int numberOfGuests;
     private boolean empty;
 
-    @Transient
-    private Long tableGroupId;
-
     public OrderTable() {
     }
 
@@ -33,20 +31,12 @@ public class OrderTable {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public Long getTableGroupId() {
-        return this.tableGroupId;
+        return Optional.ofNullable(this.tableGroup).map(tg -> tg.getId()).orElse(null);
     }
 
     public TableGroup getTableGroup() {
         return tableGroup;
-    }
-
-    public void setTableGroupId(final Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
     }
 
     public void setTableGroup(final TableGroup tableGroup) {
@@ -60,20 +50,12 @@ public class OrderTable {
         return numberOfGuests;
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
-    }
-
     public boolean isEmpty() {
         return empty;
     }
 
     public boolean hasTableGroup() {
         return !Objects.isNull(this.tableGroup);
-    }
-
-    public void setEmpty(final boolean empty) {
-        this.empty = empty;
     }
 
     public void changeEmpty(boolean empty) {

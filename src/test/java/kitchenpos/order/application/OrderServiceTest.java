@@ -23,7 +23,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.exception.MenuNotFoundException;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
@@ -77,7 +76,7 @@ class OrderServiceTest {
         // then
         return Arrays.asList(
                 dynamicTest("조회 결과 주문 ID 포함 확인됨.", () -> {
-                    assertThat(findOrderResponses).extracting("orderStatus").contains(order.getOrderStatusEnum());
+                    assertThat(findOrderResponses).extracting("orderStatus").contains(order.getOrderStatus());
                 }),
                 dynamicTest("주문 별 주문 항목 확인 됨.", () -> {
                     assertThat(findOrderResponses.get(0).getOrderLineItemResponses()).size().isOne();
@@ -98,7 +97,7 @@ class OrderServiceTest {
         OrderResponse resultOrderResponse = orderService.changeOrderStatus1(1L, orderRequest);
 
         // then
-        assertThat(resultOrderResponse.getOrderStatus()).isEqualTo(order.getOrderStatusEnum());
+        assertThat(resultOrderResponse.getOrderStatus()).isEqualTo(order.getOrderStatus());
     }
 
     @TestFactory

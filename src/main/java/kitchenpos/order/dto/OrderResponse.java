@@ -32,7 +32,7 @@ public class OrderResponse {
                 .stream()
                 .map(OrderLineItemResponse::of)
                 .collect(Collectors.toList());
-        return new OrderResponse(order.getId(), order.getOrderStatusEnum(), order.getOrderedTime(), OrderTableResponse.of(order.getOrderTable()), collect);
+        return new OrderResponse(order.getId(), order.getOrderStatus(), order.getOrderedTime(), OrderTableResponse.of(order.getOrderTable()), collect);
     }
 
     public Long getId() {

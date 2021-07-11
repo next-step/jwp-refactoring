@@ -21,21 +21,13 @@ public class OrderTableObjects {
 
     public OrderTableObjects() {
         orderTable1 = new OrderTable(0, true);
-        orderTable1.setId(1L);
         orderTable2 = new OrderTable(0, true);
-        orderTable2.setId(2L);
         orderTable3 = new OrderTable(0, true);
-        orderTable3.setId(3L);
         orderTable4 = new OrderTable(0, true);
-        orderTable4.setId(4L);
         orderTable5 = new OrderTable(0, true);
-        orderTable5.setId(5L);
         orderTable6 = new OrderTable(0, true);
-        orderTable6.setId(6L);
         orderTable7 = new OrderTable(0, true);
-        orderTable7.setId(7L);
         orderTable8 = new OrderTable(0, true);
-        orderTable8.setId(8L);
     }
 
     public OrderTable getOrderTable1() {

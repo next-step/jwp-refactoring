@@ -63,7 +63,7 @@ class OrderRepositoryTest {
         // then
         return Arrays.asList(
                 dynamicTest("ID 생성 확인.", () -> assertThat(saveOrder.getId()).isNotNull()),
-                dynamicTest("초기 주문상태 확인", () -> assertThat(saveOrder.getOrderStatusEnum()).isEqualTo(OrderStatus.COOKING)),
+                dynamicTest("초기 주문상태 확인", () -> assertThat(saveOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING)),
                 dynamicTest("주문 항목 개수 확인", () -> assertThat(saveOrder.getOrderLineItems()).size().isEqualTo(2)),
                 dynamicTest("주문 항목 ID 생성 확인", () -> assertThat(saveOrder.getOrderLineItems().stream()
                         .noneMatch(orderLineItem -> Objects.isNull(orderLineItem.getSeq()))).isTrue())

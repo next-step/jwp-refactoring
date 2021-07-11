@@ -96,7 +96,7 @@ class TableServiceTest {
     void changeEmpty_table() {
         // given
         OrderTableRequest orderTableRequest = new OrderTableRequest(4, true);
-        beforeOrderTable.setEmpty(false);
+        beforeOrderTable.changeEmpty(false);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(beforeOrderTable));
         given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any(List.class))).willReturn(false);
 
@@ -150,10 +150,10 @@ class TableServiceTest {
     @DisplayName("고객 수 변경 요청")
     void change_numberOfGuests() {
         // given
-        beforeOrderTable.setNumberOfGuests(3);
-        beforeOrderTable.setEmpty(false);
+        beforeOrderTable.changeNumberOfGuests(3);
+        beforeOrderTable.changeEmpty(false);
         OrderTableResponse orderTableResponse = OrderTableResponse.of(1L, 1L, 5, false);
-        changeNumberOrderTable.setNumberOfGuests(4);
+        changeNumberOrderTable.changeNumberOfGuests(4);
         given(orderTableRepository.findByIdAndEmptyIsFalse(anyLong())).willReturn(Optional.of(beforeOrderTable));
 
         // when

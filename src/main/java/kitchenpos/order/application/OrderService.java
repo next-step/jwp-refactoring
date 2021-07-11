@@ -62,10 +62,10 @@ public class OrderService {
     @Transactional
     public OrderResponse changeOrderStatus1(final Long orderId, final OrderRequest orderRequest) {
         Order order = orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
-        if (order.getOrderStatusEnum().equals(OrderStatus.COMPLETION)) {
+        if (order.getOrderStatus().equals(OrderStatus.COMPLETION)) {
             throw new IllegalArgumentException("계산이 완료된 주문 입니다.");
         }
-        order.changeOrderStatusEnum(orderRequest.getOrderStatus());
+        order.changeOrderStatus(orderRequest.getOrderStatus());
         return OrderResponse.of(order);
     }
 }

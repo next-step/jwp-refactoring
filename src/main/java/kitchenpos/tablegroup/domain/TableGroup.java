@@ -25,32 +25,16 @@ public class TableGroup {
         this.createdDate = LocalDateTime.now();
     }
 
-    public TableGroup(List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
-    }
-
     public Long getId() {
         return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
     }
 
     public LocalDateTime getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(final LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
     public List<OrderTable> getOrderTables() {
         return orderTables;
-    }
-
-    public void setOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
     }
 
     public void addOrderTable(OrderTable orderTable) {

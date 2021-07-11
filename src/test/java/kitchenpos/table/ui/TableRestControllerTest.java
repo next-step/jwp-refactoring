@@ -72,9 +72,7 @@ class TableRestControllerTest extends MockMvcControllerTest {
     @DisplayName("테이블을 등록할 수 있다.")
     void save_table() throws Exception {
         // given
-        OrderTable orderTable = orderTableObjects.getOrderTable1();
-        OrderTableResponse orderTableResponse = OrderTableResponse.of(1L, orderTable.getTableGroupId(),
-                orderTable.getNumberOfGuests(), orderTable.isEmpty());
+        OrderTableResponse orderTableResponse = OrderTableResponse.of(1L, 1L, 3, false);
         given(tableService.create(any(OrderTableRequest.class))).willReturn(orderTableResponse);
 
         // then
@@ -84,9 +82,8 @@ class TableRestControllerTest extends MockMvcControllerTest {
                     .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andDo(print())
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("id").value(orderTableObjects.getOrderTable1().getId()))
-                .andExpect(jsonPath("numberOfGuests").value(orderTableObjects.getOrderTable1().getNumberOfGuests()))
-                .andExpect(jsonPath("empty").value(orderTableObjects.getOrderTable1().isEmpty()))
+                .andExpect(jsonPath("numberOfGuests").value(orderTableResponse.getNumberOfGuests()))
+                .andExpect(jsonPath("empty").value(orderTableResponse.isEmpty()))
         ;
     }
 

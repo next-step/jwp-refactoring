@@ -2,7 +2,13 @@ package kitchenpos.menu.domain;
 
 import java.math.BigDecimal;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import kitchenpos.product.domain.Product;
 
@@ -21,11 +27,6 @@ public class MenuProduct {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    @Transient
-    private Long menuId;
-    @Transient
-    private Long productId;
-
     public MenuProduct() {
     }
 
@@ -39,24 +40,8 @@ public class MenuProduct {
         return seq;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
-    }
-
     public long getQuantity() {
         return quantity;
-    }
-    // jdbc 제거 후 삭제
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
-    }
-    // jdbc 제거 후 삭제
-    public void setProductId(final Long productId) {
-        this.productId = productId;
-    }
-    // jdbc 제거 후 삭제
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
     }
 
     public BigDecimal multiplyProductPriceByQuantity() {

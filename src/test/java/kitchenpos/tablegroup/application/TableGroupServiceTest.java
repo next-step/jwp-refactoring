@@ -63,8 +63,6 @@ class TableGroupServiceTest {
         TableGroup tableGroup = new TableGroup();
         OrderTable groupOrderTable1 = new OrderTable(3, true);
         OrderTable groupOrderTable2 = new OrderTable(3, true);
-//        groupOrderTable1.setTableGroupId(null);
-//        groupOrderTable2.setTableGroupId(null);
         groupOrderTable1.setTableGroup(null);
         groupOrderTable2.setTableGroup(null);
         given(tableService.findOrderTablesByIds(any(List.class))).willReturn(Arrays.asList(groupOrderTable1, groupOrderTable2));
@@ -133,7 +131,6 @@ class TableGroupServiceTest {
                     // then
                     assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
                             .isInstanceOf(IllegalArgumentException.class);
-//                            .hasMessage("정산 그룹에 포함된 테이블을 새로운 정산그룹에 포함시킬 수 없습니다.");
                 })
         );
     }
