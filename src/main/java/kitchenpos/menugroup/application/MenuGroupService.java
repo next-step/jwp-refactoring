@@ -1,7 +1,6 @@
 package kitchenpos.menugroup.application;
 
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.domain.MenuGroupEntity;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
@@ -20,25 +19,19 @@ public class MenuGroupService {
     }
 
     @Transactional
-    public MenuGroup create(MenuGroup menuGroup) {
-        MenuGroupEntity savedMenuGroup = menuGroupRepository.save(new MenuGroupEntity(menuGroup.getName()));
-        return new MenuGroup(savedMenuGroup.getId(), savedMenuGroup.getName());
-    }
-
-    @Transactional
-    public MenuGroupResponse createTemp(MenuGroupRequest menuGroupRequest) {
-        MenuGroupEntity savedMenuGroup = menuGroupRepository.save(new MenuGroupEntity(menuGroupRequest.getName()));
+    public MenuGroupResponse create(MenuGroupRequest menuGroupRequest) {
+        MenuGroup savedMenuGroup = menuGroupRepository.save(new MenuGroup(menuGroupRequest.getName()));
         return MenuGroupResponse.of(savedMenuGroup);
     }
 
     @Transactional(readOnly = true)
     public List<MenuGroupResponse> list() {
-        List<MenuGroupEntity> menuGroupEntities = menuGroupRepository.findAll();;
+        List<MenuGroup> menuGroupEntities = menuGroupRepository.findAll();;
         return menuGroupEntities.stream().map(menuGroupEntity -> MenuGroupResponse.of(menuGroupEntity)).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public MenuGroupEntity findById(Long menuGroupId) {
+    public MenuGroup findById(Long menuGroupId) {
         return menuGroupRepository.findById(menuGroupId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 메뉴그룹입니다."));
     }
 }

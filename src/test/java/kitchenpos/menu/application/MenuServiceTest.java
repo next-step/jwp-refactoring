@@ -41,7 +41,7 @@ class MenuServiceTest {
     void createTest() {
 
         //when
-        MenuResponse menuResponse = menuService.createTemp(menuRequest);
+        MenuResponse menuResponse = menuService.create(menuRequest);
 
         //then
         assertThat(menuResponse.getName()).isEqualTo(menuRequest.getName());
@@ -55,10 +55,10 @@ class MenuServiceTest {
     @Test
     void listTest() {
         //given
-        menuService.createTemp(menuRequest);
+        menuService.create(menuRequest);
 
         //when
-        List<MenuResponse> menuResponse = menuService.listTemp();
+        List<MenuResponse> menuResponse = menuService.list();
 
         //then
         List<String> menuNames = menuResponse.stream().map(MenuResponse::getName).collect(Collectors.toList());

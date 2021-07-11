@@ -2,5 +2,5 @@ package kitchenpos.tablegroup.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface TableGroupRepository extends JpaRepository<TableGroupEntity, Long> {
+public interface TableGroupRepository extends JpaRepository<TableGroup, Long> {
 }

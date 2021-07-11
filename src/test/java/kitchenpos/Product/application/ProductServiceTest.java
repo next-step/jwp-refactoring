@@ -1,8 +1,6 @@
 package kitchenpos.Product.application;
 
 import kitchenpos.product.application.ProductService;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductEntity;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
@@ -23,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
@@ -48,7 +45,7 @@ class ProductServiceTest {
         given(productRepository.save(any())).willReturn(productRequest.toEntity());
 
         //when
-        ProductResponse productResponse = productService.createTemp(productRequest);
+        ProductResponse productResponse = productService.create(productRequest);
 
         //then
         assertThat(productRequest.getName()).isEqualTo(productResponse.getName());
@@ -62,7 +59,7 @@ class ProductServiceTest {
         given(productRepository.findAll()).willReturn(Arrays.asList(productRequest.toEntity()));
 
         //when
-        List<ProductResponse> productResponses = productService.listTemp();
+        List<ProductResponse> productResponses = productService.list();
 
         //then
         List<String> productNames = productResponses.stream().map(ProductResponse::getName).collect(Collectors.toList());

@@ -84,7 +84,7 @@ public class tableGroupAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .body(tableGroupRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/api/table-groups/temp")
+                .when().post("/api/table-groups")
                 .then().log().all()
                 .extract();
     }
@@ -93,7 +93,7 @@ public class tableGroupAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().delete("/api/table-groups/{tableGroupId}/temp",tableGroupId)
+                .when().delete("/api/table-groups/{tableGroupId}",tableGroupId)
                 .then().log().all()
                 .extract();
     }

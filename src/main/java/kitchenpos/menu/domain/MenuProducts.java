@@ -12,27 +12,27 @@ import java.util.List;
 public class MenuProducts {
 
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MenuProductEntity> menuProducts = new ArrayList<>();
+    private List<MenuProduct> menuProducts = new ArrayList<>();
 
     protected MenuProducts() {
     }
 
-    public MenuProducts(List<MenuProductEntity> menuProducts) {
+    public MenuProducts(List<MenuProduct> menuProducts) {
         this.menuProducts = menuProducts;
     }
 
-    public List<MenuProductEntity> values() {
+    public List<MenuProduct> values() {
         return Collections.unmodifiableList(this.menuProducts);
     }
 
-    public void updateMenu(MenuEntity menuEntity) {
-        for (MenuProductEntity menuProduct : menuProducts) {
-            menuProduct.updateMenu(menuEntity);
+    public void updateMenu(Menu menu) {
+        for (MenuProduct menuProduct : menuProducts) {
+            menuProduct.updateMenu(menu);
         }
     }
 
     public BigDecimal getTotalPrice() {
-        return menuProducts.stream().map(MenuProductEntity::getMenuProductPrice)
+        return menuProducts.stream().map(MenuProduct::getMenuProductPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 

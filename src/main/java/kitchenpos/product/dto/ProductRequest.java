@@ -1,6 +1,6 @@
 package kitchenpos.product.dto;
 
-import kitchenpos.product.domain.ProductEntity;
+import kitchenpos.product.domain.Product;
 
 import java.math.BigDecimal;
 
@@ -24,7 +24,7 @@ public class ProductRequest {
         return price;
     }
 
-    public ProductEntity toEntity() {
-        return new ProductEntity(name, price);
+    public Product toEntity() {
+        return new Product(name, price);
     }
 }

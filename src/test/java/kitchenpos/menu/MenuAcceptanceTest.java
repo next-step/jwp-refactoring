@@ -11,7 +11,6 @@ import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.MenuGroupAcceptanceTest;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
-import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +19,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -83,7 +81,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/api/menus/temp")
+                .when().get("/api/menus")
                 .then().log().all()
                 .extract();
     }
@@ -101,7 +99,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .body(menuRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/api/menus/temp")
+                .when().post("/api/menus")
                 .then().log().all()
                 .extract();
 

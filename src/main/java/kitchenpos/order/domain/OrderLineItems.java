@@ -8,25 +8,25 @@ import java.util.List;
 @Embeddable
 public class OrderLineItems {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderLineItemEntity> orderLineItems;
+    private List<OrderLineItem> orderLineItems;
 
     public OrderLineItems() {
     }
 
-    public OrderLineItems(List<OrderLineItemEntity> orderLineItems) {
+    public OrderLineItems(List<OrderLineItem> orderLineItems) {
         this.orderLineItems = orderLineItems;
     }
 
-    public void updateOrder(OrderEntity orderEntity) {
-        for (OrderLineItemEntity orderLineItem : orderLineItems) {
-            orderLineItem.updateOrder(orderEntity);
+    public void updateOrder(Order order) {
+        for (OrderLineItem orderLineItem : orderLineItems) {
+            orderLineItem.updateOrder(order);
         }
 
     }
 
 
 
-    public List<OrderLineItemEntity> values() {
+    public List<OrderLineItem> values() {
         return orderLineItems;
     }
 }

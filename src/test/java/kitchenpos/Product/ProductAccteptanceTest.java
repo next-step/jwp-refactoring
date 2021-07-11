@@ -4,23 +4,14 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.menugroup.dto.MenuGroupRequest;
-import kitchenpos.menugroup.dto.MenuGroupResponse;
-import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import sun.security.x509.OtherName;
 
 import java.math.BigDecimal;
-import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -78,7 +69,7 @@ public class ProductAccteptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .body(productRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/api/products/temp")
+                .when().post("/api/products")
                 .then().log().all()
                 .extract();
     }
@@ -87,7 +78,7 @@ public class ProductAccteptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/api/products/temp")
+                .when().get("/api/products")
                 .then().log().all()
                 .extract();
     }

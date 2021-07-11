@@ -2,10 +2,10 @@ package kitchenpos.tablegroup.application;
 
 import kitchenpos.order.application.OrderService;
 import kitchenpos.table.application.OrderTableService;
-import kitchenpos.table.domain.OrderTableEntity;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.dto.OrderTableRequest;
-import kitchenpos.tablegroup.domain.TableGroupEntity;
+import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
@@ -61,7 +61,7 @@ class TableGroupServiceTest {
         TableGroupRequest emptyRequest= new TableGroupRequest(new ArrayList<>());
 
         //when && then
-        assertThatThrownBy(() -> tableGroupService.createTemp(emptyRequest))
+        assertThatThrownBy(() -> tableGroupService.create(emptyRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("주문 테이블이 2개 이상이어야 합니다.");
 
@@ -69,7 +69,7 @@ class TableGroupServiceTest {
         TableGroupRequest sizeOneRequest= new TableGroupRequest(Arrays.asList(tableRequest1));
 
         //when && then
-        assertThatThrownBy(() -> tableGroupService.createTemp(sizeOneRequest))
+        assertThatThrownBy(() -> tableGroupService.create(sizeOneRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("주문 테이블이 2개 이상이어야 합니다.");
     }
@@ -81,7 +81,7 @@ class TableGroupServiceTest {
         given(orderTableService.findAllByIdIn(any())).willReturn(new ArrayList<>());
 
         //when && then
-        assertThatThrownBy(() -> tableGroupService.createTemp(tableGroupRequest))
+        assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("등록되지 않은 주문 테이블이 있습니다.");
     }
@@ -90,13 +90,13 @@ class TableGroupServiceTest {
     @Test
     void createTempFailBecauseOfNotEmptyTableTest() {
         //given
-        OrderTableEntity notEmptyOrderTable = new OrderTableEntity(1L,null,1,false);
-        OrderTableEntity emptyOrderTable = new OrderTableEntity(1L,null,1,true);
+        OrderTable notEmptyOrderTable = new OrderTable(1L,null,1,false);
+        OrderTable emptyOrderTable = new OrderTable(1L,null,1,true);
 
         given(orderTableService.findAllByIdIn(any())).willReturn(Arrays.asList(notEmptyOrderTable,emptyOrderTable));
 
         //when && then
-        assertThatThrownBy(() -> tableGroupService.createTemp(tableGroupRequest))
+        assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("빈 주문 테이블이 아닙니다.");
     }
@@ -105,12 +105,12 @@ class TableGroupServiceTest {
     @Test
     void createTempFailBecauseOfHasTableGroupIdTest() {
         //given
-        OrderTableEntity hasNotOrderTable = new OrderTableEntity(1L,null,1,true);
-        OrderTableEntity hasGroupOrderTable = new OrderTableEntity(1L, new TableGroupEntity(),1,true);
+        OrderTable hasNotOrderTable = new OrderTable(1L,null,1,true);
+        OrderTable hasGroupOrderTable = new OrderTable(1L, new TableGroup(),1,true);
         given(orderTableService.findAllByIdIn(any())).willReturn(Arrays.asList(hasNotOrderTable,hasGroupOrderTable));
 
         //when && then
-        assertThatThrownBy(() -> tableGroupService.createTemp(tableGroupRequest))
+        assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("이미 단체 지정된 테이블이 있습니다.");
     }
@@ -119,14 +119,14 @@ class TableGroupServiceTest {
     @Test
     void createTempTest() {
         //given
-        OrderTableEntity normalTableEntity = new OrderTableEntity(1L,null,1,true);
-        OrderTableEntity normalTableEntity2 = new OrderTableEntity(1L, null,2,true);
-        TableGroupEntity tableGroupEntity =new TableGroupEntity(1L, LocalDateTime.now(), new OrderTables(Arrays.asList(normalTableEntity,normalTableEntity2)));
+        OrderTable normalTableEntity = new OrderTable(1L,null,1,true);
+        OrderTable normalTableEntity2 = new OrderTable(1L, null,2,true);
+        TableGroup tableGroup =new TableGroup(1L, LocalDateTime.now(), new OrderTables(Arrays.asList(normalTableEntity,normalTableEntity2)));
         given(orderTableService.findAllByIdIn(any())).willReturn(Arrays.asList(normalTableEntity,normalTableEntity2));
-        given(tableGroupRepository.save(any())).willReturn(tableGroupEntity);
+        given(tableGroupRepository.save(any())).willReturn(tableGroup);
 
         //when
-        TableGroupResponse tableGroupResponse = tableGroupService.createTemp(tableGroupRequest);
+        TableGroupResponse tableGroupResponse = tableGroupService.create(tableGroupRequest);
 
         //then
         assertThat(tableGroupResponse.getOrderTables().size()).isEqualTo(tableGroupRequest.getOrderTables().size());
@@ -137,14 +137,14 @@ class TableGroupServiceTest {
     @Test
     void ungroupFailBecauseOfOrderStatusTest() {
         //given
-        OrderTableEntity normalTableEntity = new OrderTableEntity(1L,null,1,true);
-        OrderTableEntity normalTableEntity2 = new OrderTableEntity(1L, null,2,true);
-        TableGroupEntity tableGroupEntity =new TableGroupEntity(1L, LocalDateTime.now(), new OrderTables(Arrays.asList(normalTableEntity,normalTableEntity2)));
-        given(tableGroupRepository.findById(any())).willReturn(java.util.Optional.of(tableGroupEntity));
+        OrderTable normalTableEntity = new OrderTable(1L,null,1,true);
+        OrderTable normalTableEntity2 = new OrderTable(1L, null,2,true);
+        TableGroup tableGroup =new TableGroup(1L, LocalDateTime.now(), new OrderTables(Arrays.asList(normalTableEntity,normalTableEntity2)));
+        given(tableGroupRepository.findById(any())).willReturn(java.util.Optional.of(tableGroup));
         given(orderService.existsByOrderTableIdInAndOrderStatusIn(any(),any())).willReturn(true);
 
         //when && then
-        assertThatThrownBy(() -> tableGroupService.ungroupTemp(1L))
+        assertThatThrownBy(() -> tableGroupService.ungroup(1L))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("주문이 조리나 식사 상태에서는 변경할 수 없습니다.");
     }
@@ -153,14 +153,14 @@ class TableGroupServiceTest {
     @Test
     void ungroupTest() {
         //given
-        OrderTableEntity normalTableEntity = new OrderTableEntity(1L,null,1,true);
-        OrderTableEntity normalTableEntity2 = new OrderTableEntity(1L, null,2,true);
-        TableGroupEntity tableGroupEntity =new TableGroupEntity(1L, LocalDateTime.now(), new OrderTables(Arrays.asList(normalTableEntity,normalTableEntity2)));
-        given(tableGroupRepository.findById(any())).willReturn(java.util.Optional.of(tableGroupEntity));
+        OrderTable normalTableEntity = new OrderTable(1L,null,1,true);
+        OrderTable normalTableEntity2 = new OrderTable(1L, null,2,true);
+        TableGroup tableGroup =new TableGroup(1L, LocalDateTime.now(), new OrderTables(Arrays.asList(normalTableEntity,normalTableEntity2)));
+        given(tableGroupRepository.findById(any())).willReturn(java.util.Optional.of(tableGroup));
         given(orderService.existsByOrderTableIdInAndOrderStatusIn(any(),any())).willReturn(false);
 
         //when
-        tableGroupService.ungroupTemp(any());
+        tableGroupService.ungroup(any());
     }
 
 

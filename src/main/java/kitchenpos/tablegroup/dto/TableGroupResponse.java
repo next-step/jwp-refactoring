@@ -1,8 +1,7 @@
 package kitchenpos.tablegroup.dto;
 
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.tablegroup.domain.TableGroupEntity;
+import kitchenpos.tablegroup.domain.TableGroup;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,7 +20,7 @@ public class TableGroupResponse {
         this.orderTables = orderTables;
     }
 
-    public static TableGroupResponse of(TableGroupEntity tableGroup) {
+    public static TableGroupResponse of(TableGroup tableGroup) {
 
         return new TableGroupResponse(tableGroup.getId()
         , tableGroup.getCreatedDate()

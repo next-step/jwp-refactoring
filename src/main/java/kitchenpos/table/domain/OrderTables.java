@@ -1,6 +1,6 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.tablegroup.domain.TableGroupEntity;
+import kitchenpos.tablegroup.domain.TableGroup;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -11,35 +11,35 @@ import java.util.List;
 @Embeddable
 public class OrderTables {
     @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderTableEntity> orderTables;
+    private List<OrderTable> orderTables;
 
     public static final int MINIMUM_SIZE = 2;
 
     protected OrderTables() {
     }
 
-    public OrderTables(List<OrderTableEntity> orderTables) {
+    public OrderTables(List<OrderTable> orderTables) {
         this.orderTables = orderTables;
     }
 
-    public List<OrderTableEntity> values() {
+    public List<OrderTable> values() {
         return Collections.unmodifiableList(orderTables);
     }
 
-    public void updateTableGroup(TableGroupEntity tableGroupEntity) {
-        for (OrderTableEntity orderTable : orderTables) {
+    public void updateTableGroup(TableGroup tableGroup) {
+        for (OrderTable orderTable : orderTables) {
             updatePossible(orderTable);
-            orderTable.updateTableGroup(tableGroupEntity);
+            orderTable.updateTableGroup(tableGroup);
         }
     }
 
-    private void updatePossible(OrderTableEntity orderTable) {
+    private void updatePossible(OrderTable orderTable) {
         orderTable.isEmptyCheck();
         orderTable.hasTableGroupIdCheck();
     }
 
     public void releaseGroup() {
-        for (OrderTableEntity orderTable : orderTables) {
+        for (OrderTable orderTable : orderTables) {
             orderTable.releaseGroup();
         }
     }

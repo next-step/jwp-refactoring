@@ -1,11 +1,11 @@
 package kitchenpos.table.application;
 
 import kitchenpos.order.application.OrderService;
-import kitchenpos.table.domain.OrderTableEntity;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.tablegroup.domain.TableGroupEntity;
+import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,14 +40,14 @@ class TableServiceTest {
     private OrderTableRequest orderTableRequest;
     private OrderTableRequest changeEmptyRequest;
     private OrderTableRequest changeNumberOfGuestsRequest;
-    private OrderTableEntity givenOrderTable;
+    private OrderTable givenOrderTable;
 
     @BeforeEach
     public void setUp() {
         orderTableRequest = new OrderTableRequest(1, true);
         changeEmptyRequest = new OrderTableRequest(1, false);
         changeNumberOfGuestsRequest = new OrderTableRequest(2, false);
-        givenOrderTable = new OrderTableEntity(1L, null, 0, true);
+        givenOrderTable = new OrderTable(1L, null, 0, true);
     }
 
     @DisplayName("주문테이블을 등록할 수 있다.")
@@ -57,7 +57,7 @@ class TableServiceTest {
         given(orderTableRepository.save(any())).willReturn(orderTableRequest.toEntity());
 
         //when
-        OrderTableResponse orderTableResponse = orderTableService.createTemp(orderTableRequest);
+        OrderTableResponse orderTableResponse = orderTableService.create(orderTableRequest);
 
         //then
         assertThat(orderTableResponse.getNumberOfGuests()).isEqualTo(orderTableRequest.getNumberOfGuests());
@@ -71,7 +71,7 @@ class TableServiceTest {
         given(orderTableRepository.findAll()).willReturn(Arrays.asList(orderTableRequest.toEntity()));
 
         //when
-        List<OrderTableResponse> orderTableResponses = orderTableService.listTemp();
+        List<OrderTableResponse> orderTableResponses = orderTableService.list();
 
         //then
         assertThat(orderTableResponses.size()).isGreaterThan(0);
@@ -85,7 +85,7 @@ class TableServiceTest {
         given(orderTableRepository.findById(any())).willReturn(Optional.empty());
 
         //when && then
-        assertThatThrownBy(() -> orderTableService.changeEmptyTemp(givenOrderTable.getId(), changeEmptyRequest))
+        assertThatThrownBy(() -> orderTableService.changeEmpty(givenOrderTable.getId(), changeEmptyRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("등록되지 않은 주문 테이블입니다.");
     }
@@ -94,12 +94,12 @@ class TableServiceTest {
     @Test
     void changeEmptyFailBecauseOfHasTableGroupIdTest() {
         //given
-        TableGroupEntity tableGroupEntity = new TableGroupEntity(1l, LocalDateTime.now());
-        givenOrderTable.updateTableGroup(tableGroupEntity);
+        TableGroup tableGroup = new TableGroup(1l, LocalDateTime.now());
+        givenOrderTable.updateTableGroup(tableGroup);
         given(orderTableRepository.findById(givenOrderTable.getId())).willReturn(Optional.ofNullable(givenOrderTable));
 
         //when && then
-        assertThatThrownBy(() -> orderTableService.changeEmptyTemp(givenOrderTable.getId(), changeEmptyRequest))
+        assertThatThrownBy(() -> orderTableService.changeEmpty(givenOrderTable.getId(), changeEmptyRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("단체 지정된 테이블은 변경할 수 없습니다.");
     }
@@ -112,7 +112,7 @@ class TableServiceTest {
         doThrow(new IllegalArgumentException("주문이 조리나 식사 상태에서는 변경할 수 없습니다.")).when(orderService).changeStatusValidCheck(any());
 
         //when && then
-        assertThatThrownBy(() -> orderTableService.changeEmptyTemp(givenOrderTable.getId(), changeEmptyRequest))
+        assertThatThrownBy(() -> orderTableService.changeEmpty(givenOrderTable.getId(), changeEmptyRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("주문이 조리나 식사 상태에서는 변경할 수 없습니다.");
     }
@@ -124,7 +124,7 @@ class TableServiceTest {
         given(orderTableRepository.findById(givenOrderTable.getId())).willReturn(Optional.ofNullable(givenOrderTable));
 
         //when
-        OrderTableResponse orderTableResponse = orderTableService.changeEmptyTemp(givenOrderTable.getId(), changeEmptyRequest);
+        OrderTableResponse orderTableResponse = orderTableService.changeEmpty(givenOrderTable.getId(), changeEmptyRequest);
 
         //then
         assertThat(orderTableResponse.isEmpty()).isEqualTo(changeEmptyRequest.isEmpty());
@@ -139,7 +139,7 @@ class TableServiceTest {
         given(orderTableRepository.findById(givenOrderTable.getId())).willReturn(Optional.ofNullable(givenOrderTable));
 
         //when && then
-        assertThatThrownBy(() -> orderTableService.changeNumberOfGuestsTemp(givenOrderTable.getId(), orderTableRequest))
+        assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(givenOrderTable.getId(), orderTableRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("방문 고객 수는 0명 이상이어야 합니다.");
     }
@@ -152,7 +152,7 @@ class TableServiceTest {
         given(orderTableRepository.findById(givenOrderTable.getId())).willReturn(Optional.empty());
 
         //when && then
-        assertThatThrownBy(() -> orderTableService.changeNumberOfGuestsTemp(givenOrderTable.getId(), changeNumberOfGuestsRequest))
+        assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(givenOrderTable.getId(), changeNumberOfGuestsRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("등록되지 않은 주문 테이블입니다.");
     }
@@ -165,7 +165,7 @@ class TableServiceTest {
         given(orderTableRepository.findById(givenOrderTable.getId())).willReturn(Optional.ofNullable(givenOrderTable));
 
         //when && then
-        assertThatThrownBy(() -> orderTableService.changeNumberOfGuestsTemp(givenOrderTable.getId(), orderTableRequest))
+        assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(givenOrderTable.getId(), orderTableRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("빈 주문 테이블입니다.");
     }
@@ -178,7 +178,7 @@ class TableServiceTest {
         given(orderTableRepository.findById(givenOrderTable.getId())).willReturn(Optional.ofNullable(givenOrderTable));
 
         //when
-        OrderTableResponse orderTableResponse = orderTableService.changeNumberOfGuestsTemp(givenOrderTable.getId(), changeNumberOfGuestsRequest);
+        OrderTableResponse orderTableResponse = orderTableService.changeNumberOfGuests(givenOrderTable.getId(), changeNumberOfGuestsRequest);
 
         //then
         assertThat(orderTableResponse.getNumberOfGuests()).isEqualTo(changeNumberOfGuestsRequest.getNumberOfGuests());

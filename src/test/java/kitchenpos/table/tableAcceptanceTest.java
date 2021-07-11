@@ -91,7 +91,7 @@ public class tableAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .body(orderTableRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/api/tables/temp")
+                .when().post("/api/tables")
                 .then().log().all()
                 .extract();
     }
@@ -106,7 +106,7 @@ public class tableAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/api/tables/temp")
+                .when().get("/api/tables")
                 .then().log().all()
                 .extract();
     }
@@ -116,7 +116,7 @@ public class tableAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .body(orderTableRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().put("/api/tables/{orderTableId}/empty/temp",orderTableId)
+                .when().put("/api/tables/{orderTableId}/empty",orderTableId)
                 .then().log().all()
                 .extract();
     }
@@ -126,7 +126,7 @@ public class tableAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .body(orderTableRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().put("/api/tables/{orderTableId}/number-of-guests/temp",orderTableId)
+                .when().put("/api/tables/{orderTableId}/number-of-guests",orderTableId)
                 .then().log().all()
                 .extract();
     }

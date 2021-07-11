@@ -1,7 +1,6 @@
 package kitchenpos.order.dto;
 
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderLineItemEntity;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,17 +21,17 @@ public class OrderLineItemResponse {
         this.quantity = quantity;
     }
 
-    public static List<OrderLineItemResponse> ofList(List<OrderLineItemEntity> orderLineItems) {
+    public static List<OrderLineItemResponse> ofList(List<OrderLineItem> orderLineItems) {
         return orderLineItems.stream()
                 .map(OrderLineItemResponse::of)
                 .collect(Collectors.toList());
     }
 
-    public static OrderLineItemResponse of(OrderLineItemEntity orderLineItemEntity) {
-        return new OrderLineItemResponse(orderLineItemEntity.getSeq()
-                , orderLineItemEntity.getOrderId()
-                , orderLineItemEntity.getMenuId()
-                , orderLineItemEntity.getQuantity());
+    public static OrderLineItemResponse of(OrderLineItem orderLineItem) {
+        return new OrderLineItemResponse(orderLineItem.getSeq()
+                , orderLineItem.getOrderId()
+                , orderLineItem.getMenuId()
+                , orderLineItem.getQuantity());
     }
 
     public Long getSeq() {

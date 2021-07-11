@@ -1,12 +1,12 @@
 package kitchenpos.order.application;
 
 import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.domain.MenuEntity;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.table.domain.OrderTableEntity;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -40,8 +40,6 @@ class OrderServiceTest {
     @Mock
     private OrderRepository orderRepository;
 
-
-
     @InjectMocks
     private OrderService orderService;
 
@@ -61,7 +59,7 @@ class OrderServiceTest {
         orderRequest = new OrderRequest(1l, "COOKING", new ArrayList<>());
 
         //when && then
-        assertThatThrownBy(() -> orderService.createTemp(orderRequest))
+        assertThatThrownBy(() -> orderService.create(orderRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("주문 항목이 비어있습니다.");
 
@@ -75,7 +73,7 @@ class OrderServiceTest {
         doThrow(new IllegalArgumentException("등록된 메뉴가 아닙니다.")).when(menuService).findById(any());
 
         //when && then
-        assertThatThrownBy(() -> orderService.createTemp(orderRequest))
+        assertThatThrownBy(() -> orderService.create(orderRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("등록된 메뉴가 아닙니다.");
     }
@@ -85,11 +83,11 @@ class OrderServiceTest {
     void createFailBecauseOfNotExistTableTest() {
         //given
         given(orderTableRepository.findById(any())).willReturn(Optional.empty());
-        MenuEntity menuEntity = new MenuEntity();
-        given(menuService.findById(any())).willReturn(menuEntity);
+        Menu menu = new Menu();
+        given(menuService.findById(any())).willReturn(menu);
 
         //when && then
-        assertThatThrownBy(() -> orderService.createTemp(orderRequest))
+        assertThatThrownBy(() -> orderService.create(orderRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("등록되지 않은 주문 테이블입니다.");
 
@@ -99,12 +97,12 @@ class OrderServiceTest {
     @Test
     void createFailBecauseOfEmptyTableTest() {
         //given
-        given(menuService.findById(any())).willReturn(new MenuEntity());
-        OrderTableEntity givenOrderTable = new OrderTableEntity(1L, null, 0, true);
+        given(menuService.findById(any())).willReturn(new Menu());
+        OrderTable givenOrderTable = new OrderTable(1L, null, 0, true);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(givenOrderTable));
 
         //when && then
-        assertThatThrownBy(() -> orderService.createTemp(orderRequest))
+        assertThatThrownBy(() -> orderService.create(orderRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("빈 테이블은 주문 할 수 없습니다.");
 
@@ -114,15 +112,15 @@ class OrderServiceTest {
     @Test
     void createTest() {
         //given
-        given(menuService.findById(any())).willReturn(new MenuEntity());
-        OrderTableEntity givenOrderTable = new OrderTableEntity(1L, null, 0, false);
+        given(menuService.findById(any())).willReturn(new Menu());
+        OrderTable givenOrderTable = new OrderTable(1L, null, 0, false);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(givenOrderTable));
-        OrderEntity orderEntity = new OrderEntity(givenOrderTable, OrderStatus.COOKING, LocalDateTime.now(), new OrderLineItems(Arrays.asList(new OrderLineItemEntity())));
-        given(orderRepository.save(any())).willReturn(orderEntity);
+        Order order = new Order(givenOrderTable, OrderStatus.COOKING, LocalDateTime.now(), new OrderLineItems(Arrays.asList(new OrderLineItem())));
+        given(orderRepository.save(any())).willReturn(order);
 
 
         //when
-        OrderResponse orderResponse = orderService.createTemp(orderRequest);
+        OrderResponse orderResponse = orderService.create(orderRequest);
 
         //then
         assertThat(orderRequest.getOrderTableId()).isEqualTo(orderResponse.getOrderTableId());
@@ -133,14 +131,14 @@ class OrderServiceTest {
     @Test
     void list() {
         //given
-        OrderTableEntity givenOrderTable = new OrderTableEntity(1L, null, 0, false);
-        OrderEntity orderEntity = new OrderEntity(givenOrderTable, OrderStatus.COOKING, LocalDateTime.now(), new OrderLineItems(Arrays.asList(new OrderLineItemEntity())));
-        List<OrderEntity> expect = Arrays.asList(orderEntity);
+        OrderTable givenOrderTable = new OrderTable(1L, null, 0, false);
+        Order order = new Order(givenOrderTable, OrderStatus.COOKING, LocalDateTime.now(), new OrderLineItems(Arrays.asList(new OrderLineItem())));
+        List<Order> expect = Arrays.asList(order);
         given(orderRepository.findAll())
                 .willReturn(expect);
 
         //when
-        List<OrderResponse> result = orderService.listTemp();
+        List<OrderResponse> result = orderService.list();
 
         //then
         assertThat(result.size()).isEqualTo(expect.size());
@@ -155,7 +153,7 @@ class OrderServiceTest {
         given(orderRepository.findById(any())).willReturn(Optional.empty());
 
         //when && then
-        assertThatThrownBy(() -> orderService.changeOrderStatusTemp(any(), orderRequest))
+        assertThatThrownBy(() -> orderService.changeOrderStatus(any(), orderRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("등록되지 않은 주문입니다.");
 
@@ -165,12 +163,12 @@ class OrderServiceTest {
     @Test
     void changeOrderStatusFailBecauseOfOrderStatusTest() {
         //given
-        OrderTableEntity givenOrderTable = new OrderTableEntity(1L, null, 0, false);
-        OrderEntity orderEntity = new OrderEntity(givenOrderTable, OrderStatus.COMPLETION, LocalDateTime.now(), new OrderLineItems(Arrays.asList(new OrderLineItemEntity())));
-        given(orderRepository.findById(any())).willReturn(Optional.of(orderEntity));
+        OrderTable givenOrderTable = new OrderTable(1L, null, 0, false);
+        Order order = new Order(givenOrderTable, OrderStatus.COMPLETION, LocalDateTime.now(), new OrderLineItems(Arrays.asList(new OrderLineItem())));
+        given(orderRepository.findById(any())).willReturn(Optional.of(order));
 
         //when && then
-        assertThatThrownBy(() -> orderService.changeOrderStatusTemp(1l, orderRequest))
+        assertThatThrownBy(() -> orderService.changeOrderStatus(1l, orderRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("이미 완료된 주문입니다.");
 
@@ -180,13 +178,13 @@ class OrderServiceTest {
     @Test
     void changeOrderStatusTest() {
         //given
-        OrderTableEntity givenOrderTable = new OrderTableEntity(1L, null, 0, false);
-        OrderEntity orderEntity = new OrderEntity(givenOrderTable, OrderStatus.MEAL, LocalDateTime.now(), new OrderLineItems(Arrays.asList(new OrderLineItemEntity())));
-        given(orderRepository.findById(any())).willReturn(Optional.of(orderEntity));
+        OrderTable givenOrderTable = new OrderTable(1L, null, 0, false);
+        Order order = new Order(givenOrderTable, OrderStatus.MEAL, LocalDateTime.now(), new OrderLineItems(Arrays.asList(new OrderLineItem())));
+        given(orderRepository.findById(any())).willReturn(Optional.of(order));
         OrderRequest changStatus = new OrderRequest(1l, "COOKING", Arrays.asList(orderLineItemRequest));
 
         //when
-        OrderResponse result = orderService.changeOrderStatusTemp(1l, changStatus);
+        OrderResponse result = orderService.changeOrderStatus(1l, changStatus);
 
         //
         assertThat(result.getOrderStatus()).isEqualTo(changStatus.getOrderStatus());
