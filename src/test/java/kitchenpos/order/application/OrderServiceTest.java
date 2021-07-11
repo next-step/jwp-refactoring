@@ -17,29 +17,29 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuDao;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderDao;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderLineItemDao;
+import kitchenpos.order.domain.OrderLineItemRepository;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableDao;
+import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
-    private OrderLineItemDao orderLineItemDao;
+    private OrderLineItemRepository orderLineItemRepository;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private OrderService orderService;
@@ -63,30 +63,31 @@ class OrderServiceTest {
         // given
         final OrderLineItemRequest orderLineItemRequest1 = new OrderLineItemRequest(1L, 1);
         final OrderLineItemRequest orderLineItemRequest2 = new OrderLineItemRequest(2L, 1);
-        final List<OrderLineItemRequest> orderLineItemRequests = Arrays.asList(orderLineItemRequest1, orderLineItemRequest2);
-        OrderRequest orderRequest = new OrderRequest(1L, orderLineItemRequests);
+        final List<OrderLineItemRequest> orderLineItemRequests = Arrays.asList(orderLineItemRequest1,
+            orderLineItemRequest2);
+        final OrderRequest orderRequest = new OrderRequest(1L, orderLineItemRequests);
         final Menu menu1 = mock(Menu.class);
         final Menu menu2 = mock(Menu.class);
         given(menu1.getId()).willReturn(1L);
         given(menu2.getId()).willReturn(2L);
-        given(menuDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(menu1, menu2));
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(new OrderTable()));
+        given(menuRepository.findAllByIdIn(anyList())).willReturn(Arrays.asList(menu1, menu2));
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(new OrderTable()));
 
         savedOrder.setId(1L);
-        given(orderDao.save(any(Order.class))).willReturn(savedOrder);
+        given(orderRepository.save(any(Order.class))).willReturn(savedOrder);
 
         // when
         orderService.create(orderRequest);
 
         // then
-        verify(orderDao).save(any(Order.class));
+        verify(orderRepository).save(any(Order.class));
     }
 
     @DisplayName("아이템이 없는 주문을 생성할 때 예외가 발생하는지 테스트")
     @Test
     void given_OrderHasEmptyItem_when_Create_then_ThrownException() {
         // given
-        OrderRequest order = new OrderRequest();
+        final OrderRequest order = new OrderRequest();
 
         // when
         final Throwable throwable = catchThrowable(() -> orderService.create(order));
@@ -99,7 +100,7 @@ class OrderServiceTest {
     @Test
     void given_OrderHasOnlyOneItem_when_Create_then_ThrownException() {
         // given
-        OrderRequest order = new OrderRequest(1L, Collections.singletonList(new OrderLineItemRequest()));
+        final OrderRequest order = new OrderRequest(1L, Collections.singletonList(new OrderLineItemRequest()));
 
         // when
         final Throwable differentSizeException = catchThrowable(() -> orderService.create(order));
@@ -111,35 +112,35 @@ class OrderServiceTest {
     @Test
     void list() {
         // given
-        given(orderDao.findAll()).willReturn(Collections.singletonList(order));
+        given(orderRepository.findAll()).willReturn(Collections.singletonList(order));
 
         // when
         orderService.list();
 
         // then
-        verify(orderDao).findAll();
+        verify(orderRepository).findAll();
     }
 
     @Test
     void changeOrderStatus() {
         // given
-        OrderRequest order = new OrderRequest();
+        final OrderRequest order = new OrderRequest();
         order.setOrderStatus("COOKING");
-        Order savedOrder = new Order();
-        given(orderDao.findById(orderId)).willReturn(Optional.of(savedOrder));
+        final Order savedOrder = new Order();
+        given(orderRepository.findById(orderId)).willReturn(Optional.of(savedOrder));
 
         // when
         orderService.changeOrderStatus(orderId, order);
 
         // then
-        verify(orderDao).save(savedOrder);
+        verify(orderRepository).save(savedOrder);
         assertThat(savedOrder.getOrderStatus().name()).isEqualTo(order.getOrderStatus());
     }
 
     @Test
     void given_CompletedOrder_when_ChangeOrderStatus_then_ThrownException() {
         // given
-        OrderRequest order = new OrderRequest();
+        final OrderRequest order = new OrderRequest();
         order.setOrderStatus("COMPLETION");
 
         // when

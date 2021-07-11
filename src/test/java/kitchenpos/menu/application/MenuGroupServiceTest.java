@@ -9,14 +9,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuGroupDao;
+import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.dto.MenuGroupRequest;
 
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @InjectMocks
     private MenuGroupService menuGroupService;
@@ -31,7 +31,7 @@ class MenuGroupServiceTest {
         menuGroupService.create(menuGroup);
 
         // then
-        verify(menuGroupDao).save(any(MenuGroup.class));
+        verify(menuGroupRepository).save(any(MenuGroup.class));
     }
 
     @Test
@@ -40,6 +40,6 @@ class MenuGroupServiceTest {
         menuGroupService.list();
 
         // then
-        verify(menuGroupDao).findAll();
+        verify(menuGroupRepository).findAll();
     }
 }

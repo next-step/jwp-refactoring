@@ -6,36 +6,36 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.menu.domain.MenuDao;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.domain.Menus;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderDao;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableDao;
+import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 
 @Service
 public class OrderService {
-    private final MenuDao menuDao;
-    private final OrderDao orderDao;
-    private final OrderTableDao orderTableDao;
+    private final MenuRepository menuRepository;
+    private final OrderRepository orderRepository;
+    private final OrderTableRepository orderTableRepository;
 
-    public OrderService(final MenuDao menuDao, final OrderDao orderDao,
-        final OrderTableDao orderTableDao) {
+    public OrderService(final MenuRepository menuRepository, final OrderRepository orderRepository,
+        final OrderTableRepository orderTableRepository) {
 
-        this.menuDao = menuDao;
-        this.orderDao = orderDao;
-        this.orderTableDao = orderTableDao;
+        this.menuRepository = menuRepository;
+        this.orderRepository = orderRepository;
+        this.orderTableRepository = orderTableRepository;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
         final List<Long> menuIds = orderRequest.menuIds();
-        final Menus menus = new Menus(menuDao.findAllByIdIn(menuIds));
+        final Menus menus = new Menus(menuRepository.findAllByIdIn(menuIds));
 
         if (menuIds.size() != menus.size()) {
             throw new IllegalArgumentException();
@@ -44,12 +44,12 @@ public class OrderService {
         final OrderTable orderTable = findOrderTable(orderRequest.getOrderTableId());
         final OrderLineItems orderLineItems = makeOrderLineItems(orderRequest, menus);
         final Order order = new Order(orderTable, orderLineItems);
-        final Order saved = orderDao.save(order);
+        final Order saved = orderRepository.save(order);
 
         return OrderResponse.of(saved);
     }
 
-    private OrderLineItems makeOrderLineItems(OrderRequest orderRequest, Menus menus) {
+    private OrderLineItems makeOrderLineItems(final OrderRequest orderRequest, final Menus menus) {
         final OrderLineItems orderLineItems = new OrderLineItems();
         orderRequest.getOrderLineItems()
             .forEach(it -> orderLineItems.add(new OrderLineItem(menus.get(it.getMenuId()), it.getQuantity())));
@@ -57,14 +57,14 @@ public class OrderService {
         return orderLineItems;
     }
 
-    private OrderTable findOrderTable(Long orderTableId) {
-        return orderTableDao.findById(orderTableId)
+    private OrderTable findOrderTable(final Long orderTableId) {
+        return orderTableRepository.findById(orderTableId)
             .orElseThrow(IllegalArgumentException::new);
     }
 
     @Transactional(readOnly = true)
     public List<OrderResponse> list() {
-        return orderDao.findAll()
+        return orderRepository.findAll()
             .stream()
             .map(OrderResponse::of)
             .collect(Collectors.toList());
@@ -75,13 +75,13 @@ public class OrderService {
         final Order order = findOrder(orderId);
         final OrderStatus orderStatus = OrderStatus.valueOf(orderRequest.getOrderStatus());
         order.changeStatus(orderStatus);
-        final Order saved = orderDao.save(order);
+        final Order saved = orderRepository.save(order);
 
         return OrderResponse.of(saved);
     }
 
-    private Order findOrder(Long orderId) {
-        return orderDao.findById(orderId)
+    private Order findOrder(final Long orderId) {
+        return orderRepository.findById(orderId)
             .orElseThrow(IllegalArgumentException::new);
     }
 }

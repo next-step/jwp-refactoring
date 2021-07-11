@@ -16,14 +16,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.menu.domain.Product;
-import kitchenpos.menu.domain.ProductDao;
+import kitchenpos.menu.domain.ProductRepository;
 import kitchenpos.menu.dto.ProductRequest;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private ProductService productService;
@@ -38,12 +38,12 @@ class ProductServiceTest {
         productService.create(productRequest);
 
         // then
-        verify(productDao).save(any(Product.class));
+        verify(productRepository).save(any(Product.class));
     }
 
     @ParameterizedTest
     @MethodSource("providePrice")
-    void given_InvalidPrice_when_CreateProduct_thenThrownException(BigDecimal price) {
+    void given_InvalidPrice_when_CreateProduct_thenThrownException(final BigDecimal price) {
         // given
         final ProductRequest productRequest = new ProductRequest();
         productRequest.setPrice(price);
@@ -68,6 +68,6 @@ class ProductServiceTest {
         productService.list();
 
         // then
-        verify(productDao).findAll();
+        verify(productRepository).findAll();
     }
 }

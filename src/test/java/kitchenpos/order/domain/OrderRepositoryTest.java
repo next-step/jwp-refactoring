@@ -16,25 +16,25 @@ import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.Product;
 
 @DataJpaTest
-class OrderDaoTest {
+class OrderRepositoryTest {
 
     @Autowired
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Test
     void findAllByOrderTableIdIn() {
         // given
         final OrderTable orderTable = new OrderTable(new TableGroup(), 1);
-        List<MenuProduct> menuProducts = Collections.singletonList(
+        final List<MenuProduct> menuProducts = Collections.singletonList(
             new MenuProduct(new Product("name", BigDecimal.ONE), 1));
         final Menu menu = new Menu("name", BigDecimal.ONE, new MenuGroup("name"), menuProducts);
         final OrderLineItem orderLineItem = new OrderLineItem(menu, 1);
         final List<OrderLineItem> orderLineItemList = Collections.singletonList(orderLineItem);
         final OrderLineItems orderLineItems = new OrderLineItems(orderLineItemList);
-        final Order order = orderDao.save(new Order(orderTable, orderLineItems));
+        final Order order = orderRepository.save(new Order(orderTable, orderLineItems));
 
         // when
-        final List<Order> actual = orderDao.findAllByOrderTable_IdIn(
+        final List<Order> actual = orderRepository.findAllByOrderTable_IdIn(
             Collections.singletonList(order.getOrderTableId()));
 
         // then

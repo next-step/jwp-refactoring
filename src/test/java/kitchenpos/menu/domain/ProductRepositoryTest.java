@@ -14,7 +14,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 class ProductRepositoryTest {
 
     @Autowired
-    private ProductDao productRepository;
+    private ProductRepository productRepository;
 
     @Test
     void findAllByIds() {

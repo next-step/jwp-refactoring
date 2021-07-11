@@ -21,13 +21,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuDao;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuGroupDao;
+import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProductDao;
+import kitchenpos.menu.domain.MenuProductRepository;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.domain.Product;
-import kitchenpos.menu.domain.ProductDao;
+import kitchenpos.menu.domain.ProductRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 
@@ -35,16 +35,16 @@ import kitchenpos.menu.dto.MenuRequest;
 class MenuServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @Mock
-    private MenuProductDao menuProductDao;
+    private MenuProductRepository menuProductRepository;
 
     @InjectMocks
     private MenuService menuService;
@@ -53,28 +53,28 @@ class MenuServiceTest {
     void given_Menu_when_Create_then_SaveExecuted() {
         // given
         final List<MenuProductRequest> menuProductRequests = Collections.singletonList(new MenuProductRequest(1L, 1));
-        MenuRequest menuRequest = new MenuRequest("name", BigDecimal.ZERO, 1L, menuProductRequests);
+        final MenuRequest menuRequest = new MenuRequest("name", BigDecimal.ZERO, 1L, menuProductRequests);
         final MenuGroup menuGroup = new MenuGroup();
         final List<MenuProduct> menuProducts = Collections.singletonList(
             new MenuProduct(new Product("name", BigDecimal.ONE), 1L));
-        Menu savedMenu = new Menu("name", menuRequest.getPrice(), menuGroup, menuProducts);
-        given(menuDao.save(any(Menu.class))).willReturn(savedMenu);
-        given(menuGroupDao.findById(menuRequest.getMenuGroupId())).willReturn(Optional.of(menuGroup));
-        given(productDao.findById(anyLong())).willReturn(Optional.of(new Product("name", new BigDecimal(100))));
+        final Menu savedMenu = new Menu("name", menuRequest.getPrice(), menuGroup, menuProducts);
+        given(menuRepository.save(any(Menu.class))).willReturn(savedMenu);
+        given(menuGroupRepository.findById(menuRequest.getMenuGroupId())).willReturn(Optional.of(menuGroup));
+        given(productRepository.findById(anyLong())).willReturn(Optional.of(new Product("name", new BigDecimal(100))));
 
         // when
         menuService.create(menuRequest);
 
         // then
-        verify(menuDao).save(any(Menu.class));
+        verify(menuRepository).save(any(Menu.class));
     }
 
     @DisplayName("금액이 null, -1, 0 인 경우 예외 발생 테스트")
     @ParameterizedTest
     @MethodSource("providePrice")
-    void given_InvalidPrice_when_Create_then_ThrownException(BigDecimal price) {
+    void given_InvalidPrice_when_Create_then_ThrownException(final BigDecimal price) {
         // given
-        MenuRequest minusPrice = new MenuRequest("name", price, 1L, new ArrayList<>());
+        final MenuRequest minusPrice = new MenuRequest("name", price, 1L, new ArrayList<>());
 
         // when
         final Throwable minusPriceException = catchThrowable(() -> menuService.create(minusPrice));
@@ -96,7 +96,8 @@ class MenuServiceTest {
     void given_WrongPrice_when_Create_then_ThrownException() {
         // given
         final MenuProductRequest menuProductRequest = new MenuProductRequest(1L, 1L);
-        MenuRequest invalidPrice = new MenuRequest("name", new BigDecimal(100), 1L, Collections.singletonList(menuProductRequest));
+        final MenuRequest invalidPrice = new MenuRequest("name", new BigDecimal(100), 1L,
+            Collections.singletonList(menuProductRequest));
         final Product product = new Product("name", new BigDecimal(1));
 
         // when
@@ -112,6 +113,6 @@ class MenuServiceTest {
         menuService.list();
 
         // then
-        verify(menuDao).findAll();
+        verify(menuRepository).findAll();
     }
 }
