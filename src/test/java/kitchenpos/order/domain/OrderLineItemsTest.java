@@ -3,6 +3,7 @@ package kitchenpos.order.domain;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.exception.NotInitMenuException;
 import kitchenpos.order.exception.NotOrderLineItemsException;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -11,6 +12,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class OrderLineItemsTest {
@@ -20,6 +22,14 @@ class OrderLineItemsTest {
     private OrderLineItem 주문수량메뉴1 = new OrderLineItem(1L, 1L, 치킨메뉴.getId(), 1L);
     private OrderLineItem 주문수량메뉴2 = new OrderLineItem(2L, 1L, 튀김메뉴.getId(), 1L);
     private List<OrderLineItem> 주문내역들 = Arrays.asList(주문수량메뉴1, 주문수량메뉴2);
+
+    @DisplayName("주문이 생성된다.")
+    @Test
+    void create() {
+        OrderLineItems orderLineItems = new OrderLineItems(주문내역들);
+
+        assertThat(orderLineItems.getOrderLineItemValues()).containsExactly(주문수량메뉴1, 주문수량메뉴2);
+    }
 
     @DisplayName("주문 생성에 실패한다. - 주문 내역이 없으면 주문 등록에 실패한다.")
     @Test
