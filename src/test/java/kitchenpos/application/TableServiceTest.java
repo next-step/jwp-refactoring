@@ -89,13 +89,15 @@ class TableServiceTest {
     @Test
     void changeEmpty() {
         // given
+        table3.setEmpty(false);
         given(orderTableDao.findById(table3.getId())).willReturn(Optional.of(table3));
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(table3.getId(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(false);
         given(orderTableDao.save(table3)).willReturn(table3);
 
         // when
-        table3.setEmpty(true);
-        OrderTable actual = tableService.changeEmpty(table3.getId(), table3);
+        OrderTable tableParam = new OrderTable();
+        tableParam.setEmpty(true);
+        OrderTable actual = tableService.changeEmpty(table3.getId(), tableParam);
 
         // then
         assertThat(actual.isEmpty()).isTrue();
@@ -105,56 +107,68 @@ class TableServiceTest {
     @Test
     void changeEmpty_existsCookingOrMealOrder() {
         // given
+        table3.setEmpty(false);
         given(orderTableDao.findById(table3.getId())).willReturn(Optional.of(table3));
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(table3.getId(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(true);
 
         // when
-        table3.setEmpty(true);
+        OrderTable tableParam = new OrderTable();
+        tableParam.setEmpty(true);
 
         // then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableService.changeEmpty(table3.getId(), table3));
+                .isThrownBy(() -> tableService.changeEmpty(table3.getId(), tableParam));
+        assertThat(table3.isEmpty()).isFalse();
     }
 
     @DisplayName("테이블 빈 상태로 변경 - 주문 테이블이 존재하지 않을 경우 변경불가")
     @Test
     void changeEmpty_orderTableIsNotExists() {
         // given
+        table3.setEmpty(false);
         given(orderTableDao.findById(table3.getId())).willThrow(IllegalArgumentException.class);
 
         // when
-        table3.setEmpty(true);
+        OrderTable tableParam = new OrderTable();
+        tableParam.setEmpty(true);
 
         // then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableService.changeEmpty(table3.getId(), table3));
+                .isThrownBy(() -> tableService.changeEmpty(table3.getId(), tableParam));
+        assertThat(table3.isEmpty()).isFalse();
     }
 
     @DisplayName("테이블 빈 상태로 변경 - 테이블에 연결된 테이블 그룹이 존재하는 경우 변경 불가")
     @Test
     void changeEmpty_existsTableGroup() {
         // given
+        table3.setEmpty(false);
+        table3.setTableGroupId(1L);
         given(orderTableDao.findById(table3.getId())).willReturn(Optional.of(table3));
 
         // when
-        table3.setTableGroupId(1L);
-        table3.setEmpty(true);
+        OrderTable tableParam = new OrderTable();
+        tableParam.setEmpty(true);
 
         // then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableService.changeEmpty(table3.getId(), table3));
+                .isThrownBy(() -> tableService.changeEmpty(table3.getId(), tableParam));
+        assertThat(table3.isEmpty()).isFalse();
+        assertThat(table3.getTableGroupId()).isEqualTo(1L);
     }
 
     @DisplayName("테이블에 착석한 손님의 수를 변경한다")
     @Test
     void changeNumberOfGuests() {
         // given
+        table4.setNumberOfGuests(1);
         given(orderTableDao.findById(table4.getId())).willReturn(Optional.of(table4));
         given(orderTableDao.save(table4)).willReturn(table4);
 
         // when
-        table4.setNumberOfGuests(3);
-        OrderTable actual = tableService.changeNumberOfGuests(table4.getId(), table4);
+        OrderTable tableParam = new OrderTable();
+        tableParam.setNumberOfGuests(3);
+        OrderTable actual = tableService.changeNumberOfGuests(table4.getId(), tableParam);
 
         // then
         assertThat(actual.getNumberOfGuests()).isEqualTo(3);
@@ -163,25 +177,32 @@ class TableServiceTest {
     @DisplayName("테이블 손님 수 변경 - 손님 수는 0 이상의 정수여야 한다")
     @Test
     void changeNumberOfGuests_invalidNumber() {
-        // given when
-        table4.setNumberOfGuests(-1);
+        // given
+        table4.setNumberOfGuests(2);
+        OrderTable tableParam = new OrderTable();
+        tableParam.setNumberOfGuests(-1);
 
-        // then
+        // when then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableService.changeNumberOfGuests(table4.getId(), table4));
+                .isThrownBy(() -> tableService.changeNumberOfGuests(table4.getId(), tableParam));
+        assertThat(table4.getNumberOfGuests()).isEqualTo(2);
     }
 
     @DisplayName("테이블 손님 수 변경 - 테이블이 비어있는 경우 변경 불가")
     @Test
     void changeNumberOfGuests_emptyTable() {
         // given
+        table.setEmpty(true);
         given(orderTableDao.findById(table.getId())).willReturn(Optional.of(table));
 
         // when
-        table.setNumberOfGuests(5);
+        OrderTable tableParam = new OrderTable();
+        tableParam.setEmpty(false);
+        tableParam.setNumberOfGuests(5);
 
         // then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableService.changeNumberOfGuests(table.getId(), table));
+                .isThrownBy(() -> tableService.changeNumberOfGuests(table.getId(), tableParam));
+        assertThat(table.isEmpty()).isTrue();
     }
 }
