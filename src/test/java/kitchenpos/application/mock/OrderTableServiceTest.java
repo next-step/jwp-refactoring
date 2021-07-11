@@ -124,7 +124,7 @@ class OrderTableServiceTest {
         //when && then
         assertThatThrownBy(() -> orderTableService.changeNumberOfGuests(givenOrderTable.getId(), givenOrderTable))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("방문한 고객 수는 0명 이상이어야 합니다.");
+                .hasMessageContaining("방문 고객 수는 0명 이상이어야 합니다.");
     }
 
 

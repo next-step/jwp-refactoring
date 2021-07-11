@@ -44,6 +44,7 @@ public class OrderTableService {
         return OrderTableResponse.of(orderTableEntity);
     }
 
+    @Transactional(readOnly = true)
     public List<OrderTable> list() {
         return orderTableDao.findAll();
     }
@@ -78,14 +79,44 @@ public class OrderTableService {
     public OrderTableResponse changeEmptyTemp(Long orderTableId, OrderTableRequest orderTableRequest) {
         final OrderTableEntity savedOrderTable = findById(orderTableId);
 
-        availableChangeEmptyCheck(savedOrderTable);
+        changeEmptyValidCheck(savedOrderTable);
 
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
 
         return OrderTableResponse.of(savedOrderTable);
     }
 
-    private void availableChangeEmptyCheck(OrderTableEntity savedOrderTable) {
+    @Transactional
+    public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTable orderTable) {
+        final int numberOfGuests = orderTable.getNumberOfGuests();
+
+        if (numberOfGuests < 0) {
+            throw new IllegalArgumentException("방문 고객 수는 0명 이상이어야 합니다.");
+        }
+
+        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
+                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 주문 테이블입니다."));
+
+        if (savedOrderTable.isEmpty()) {
+            throw new IllegalArgumentException("빈 주문 테이블입니다.");
+        }
+
+        savedOrderTable.setNumberOfGuests(numberOfGuests);
+
+        return orderTableDao.save(savedOrderTable);
+    }
+
+    @Transactional
+    public OrderTableResponse changeNumberOfGuestsTemp(Long orderTableId, OrderTableRequest orderTableRequest) {
+        final OrderTableEntity savedOrderTable = findById(orderTableId);
+        changeNumberOfGuestsValidCheck(orderTableRequest, savedOrderTable);
+        final int numberOfGuests = orderTableRequest.getNumberOfGuests();
+        savedOrderTable.changeNumberOfGuests(numberOfGuests);
+
+        return OrderTableResponse.of(savedOrderTable);
+    }
+
+    private void changeEmptyValidCheck(OrderTableEntity savedOrderTable) {
         tableGroupValidCheck(savedOrderTable.getTableGroupId());
         orderStatusValidCheck(savedOrderTable.getId());
     }
@@ -106,24 +137,23 @@ public class OrderTableService {
 
     }
 
-    @Transactional
-    public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTable orderTable) {
-        final int numberOfGuests = orderTable.getNumberOfGuests();
 
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException("방문한 고객 수는 0명 이상이어야 합니다.");
-        }
+    private void changeNumberOfGuestsValidCheck(OrderTableRequest orderTableRequest, OrderTableEntity savedOrderTable) {
+        numberOfGuestsValidCheck(orderTableRequest.getNumberOfGuests());
+        emptyValidCheck(savedOrderTable.isEmpty());
 
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
-                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 주문 테이블입니다."));
+    }
 
-        if (savedOrderTable.isEmpty()) {
+    private void emptyValidCheck(boolean empty) {
+        if (empty) {
             throw new IllegalArgumentException("빈 주문 테이블입니다.");
         }
+    }
 
-        savedOrderTable.setNumberOfGuests(numberOfGuests);
-
-        return orderTableDao.save(savedOrderTable);
+    private void numberOfGuestsValidCheck(int numberOfGuests) {
+        if (numberOfGuests < 0) {
+            throw new IllegalArgumentException("방문 고객 수는 0명 이상이어야 합니다.");
+        }
     }
 
 

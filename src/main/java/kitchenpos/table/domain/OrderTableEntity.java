@@ -50,4 +50,8 @@ public class OrderTableEntity {
     public void updateTableGroupId(Long tableGroupId) {
         this.tableGroupId = tableGroupId;
     }
+
+    public void changeNumberOfGuests(int numberOfGuests) {
+        this.numberOfGuests = numberOfGuests;
+    }
 }

@@ -37,12 +37,14 @@ class TableServiceTest {
 
     private OrderTableRequest orderTableRequest;
     private OrderTableRequest changeEmptyRequest;
+    private OrderTableRequest changeNumberOfGuestsRequest;
     private OrderTableEntity givenOrderTable;
 
     @BeforeEach
     public void setUp() {
-        orderTableRequest = new OrderTableRequest(0, true);
-        changeEmptyRequest = new OrderTableRequest(0, false);
+        orderTableRequest = new OrderTableRequest(1, true);
+        changeEmptyRequest = new OrderTableRequest(1, false);
+        changeNumberOfGuestsRequest = new OrderTableRequest(2, false);
         givenOrderTable = new OrderTableEntity(1L, null, 0, true);
     }
 
@@ -74,7 +76,7 @@ class TableServiceTest {
     }
 
 
-    @DisplayName("등록되어있지 않은 주문 테이블은 빈 테이블 설정할 수 없다.")
+    @DisplayName("빈 테이블 설정을 할 때 등록되어있지 않은 주문 테이블은 빈 테이블 설정할 수 없다.")
     @Test
     void changeEmptyFailBecauseOfNotExistOrderTableTest() {
         //given
@@ -86,7 +88,7 @@ class TableServiceTest {
                 .hasMessageContaining("등록되지 않은 주문 테이블입니다.");
     }
 
-    @DisplayName("단체 지정된 테이블은 빈 테이블 설정 할 수 없다.")
+    @DisplayName("빈 테이블 설정을 할 때 단체 지정된 테이블은 빈 테이블 설정 할 수 없다.")
     @Test
     void changeEmptyFailBecauseOfHasTableGroupIdTest() {
         //given
@@ -99,7 +101,7 @@ class TableServiceTest {
                 .hasMessageContaining("단체 지정된 테이블은 변경할 수 없습니다.");
     }
 
-    @DisplayName("주문 상태가 `조리`, `식사` 이면 빈 테이블 설정 할 수 없다.")
+    @DisplayName("빈 테이블 설정을 할 때 주문 상태가 `조리`, `식사` 이면 빈 테이블 설정 할 수 없다.")
     @Test
     void changeEmptyFailBecauseOfOrderStatusTest() {
         //given
@@ -123,6 +125,60 @@ class TableServiceTest {
 
         //then
         assertThat(orderTableResponse.isEmpty()).isEqualTo(changeEmptyRequest.isEmpty());
+    }
+
+
+    @DisplayName("방문 고객 수를 변경할 때 방문한 고객 수를 마이너스로 변경 할 수 없다.")
+    @Test
+    void changeNumberOfGuestsFailBecauseOfMinusGuestNumberTest() {
+        //given
+        OrderTableRequest orderTableRequest =new OrderTableRequest(-1, false);
+        given(orderTableRepository.findById(givenOrderTable.getId())).willReturn(Optional.ofNullable(givenOrderTable));
+
+        //when && then
+        assertThatThrownBy(() -> orderTableService.changeNumberOfGuestsTemp(givenOrderTable.getId(), orderTableRequest))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("방문 고객 수는 0명 이상이어야 합니다.");
+    }
+
+
+    @DisplayName("방문 고객 수를 변경할 때 주문 테이블이 존재해야 한다.")
+    @Test
+    void changeNumberOfGuestsFailBecauseOfNotExistOrderTableTest() {
+        //given
+        given(orderTableRepository.findById(givenOrderTable.getId())).willReturn(Optional.empty());
+
+        //when && then
+        assertThatThrownBy(() -> orderTableService.changeNumberOfGuestsTemp(givenOrderTable.getId(), changeNumberOfGuestsRequest))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("등록되지 않은 주문 테이블입니다.");
+    }
+
+    @DisplayName("방문 고객 수를 변경할 때 빈 주문 테이블이어선 안됩니다.")
+    @Test
+    void changeNumberOfGuestsFailBecauseOfOrderTableIsEmptyTest() {
+        //given
+        OrderTableRequest orderTableRequest =new OrderTableRequest(1, true);
+        given(orderTableRepository.findById(givenOrderTable.getId())).willReturn(Optional.ofNullable(givenOrderTable));
+
+        //when && then
+        assertThatThrownBy(() -> orderTableService.changeNumberOfGuestsTemp(givenOrderTable.getId(), orderTableRequest))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("빈 주문 테이블입니다.");
+    }
+
+    @DisplayName("방문 고객 수를 변경할 수 있다.")
+    @Test
+    void changeNumberOfGuestsTest() {
+        //given
+        givenOrderTable.changeEmpty(false);
+        given(orderTableRepository.findById(givenOrderTable.getId())).willReturn(Optional.ofNullable(givenOrderTable));
+
+        //when
+        OrderTableResponse orderTableResponse = orderTableService.changeNumberOfGuestsTemp(givenOrderTable.getId(), changeNumberOfGuestsRequest);
+
+        //then
+        assertThat(orderTableResponse.getNumberOfGuests()).isEqualTo(changeNumberOfGuestsRequest.getNumberOfGuests());
     }
 
 

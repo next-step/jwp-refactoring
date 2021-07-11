@@ -81,10 +81,10 @@ public class TableRestController {
     @PutMapping("/api/tables/{orderTableId}/number-of-guests/temp")
     public ResponseEntity<OrderTableResponse> changeNumberOfGuestsTemp(
             @PathVariable final Long orderTableId,
-            @RequestBody final OrderTable orderTable
+            @RequestBody final OrderTableRequest orderTableRequest
     ) {
         return ResponseEntity.ok()
-                .body(null)
+                .body(orderTableService.changeNumberOfGuestsTemp(orderTableId, orderTableRequest))
                 ;
     }
 }
