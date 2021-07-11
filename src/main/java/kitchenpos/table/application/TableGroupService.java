@@ -18,34 +18,44 @@ public class TableGroupService {
 
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
+    private final TableGroupValidator tableGroupValidator;
 
-    public TableGroupService(OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository) {
+    public TableGroupService(OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository, TableGroupValidator tableGroupValidator) {
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
+        this.tableGroupValidator = tableGroupValidator;
     }
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-        List<OrderTable> savedOrderTables = findOrderTables(tableGroupRequest.toOrderTables());
+        List<OrderTable> savedOrderTables = findOrderTables(tableGroupRequest.findOrderTableIds());
         TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(new OrderTables(savedOrderTables)));
-
-        for (OrderTable orderTable : savedOrderTables) {
-            orderTable.changeTableGroupId(savedTableGroup.getId());
-        }
+        changeTableGroupId(savedOrderTables, savedTableGroup);
         return TableGroupResponse.of(savedTableGroup);
     }
 
-    private List<OrderTable> findOrderTables(List<OrderTable> orderTables) {
-        List<Long> orderTableIds = orderTables.stream()
+    private void changeTableGroupId(List<OrderTable> savedOrderTables, TableGroup savedTableGroup) {
+        for (OrderTable orderTable : savedOrderTables) {
+            orderTable.changeTableGroupId(savedTableGroup.getId());
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrderTable> findOrderTables(List<Long> orderTableIds) {
+        return orderTableRepository.findAllById(orderTableIds);
+    }
+
+    private List<Long> findOrderTableIds(List<OrderTable> orderTables) {
+        return orderTables.stream()
             .map(OrderTable::getId)
             .collect(Collectors.toList());
-        return orderTableRepository.findAllById(orderTableIds);
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
             .orElseThrow(EntityNotFoundException::new);
+        tableGroupValidator.validationUpgroup(findOrderTableIds(tableGroup.getOrderTables()));
         tableGroup.upgroup();
     }
 }

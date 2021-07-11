@@ -27,14 +27,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class TableGroupServiceTest {
 
-    private static final OrderTableRequest 첫번째_주문테이블 = new OrderTableRequest(두명);
-    private static final OrderTableRequest 두번째_주문테이블 = new OrderTableRequest(두명);
-    private static final List<OrderTableRequest> 주문테이블_목록 = new ArrayList<>(Arrays.asList(첫번째_주문테이블, 두번째_주문테이블));
+    protected static final OrderTableRequest 첫번째_주문테이블 = new OrderTableRequest(두명);
+    protected static final OrderTableRequest 두번째_주문테이블 = new OrderTableRequest(두명);
+    protected static final List<OrderTableRequest> 주문테이블_목록 = new ArrayList<>(Arrays.asList(첫번째_주문테이블, 두번째_주문테이블));
 
     @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
     private TableGroupRepository tableGroupRepository;
+    @Mock
+    private TableGroupValidator tableGroupValidator;
     @InjectMocks
     private TableGroupService tableGroupService;
 

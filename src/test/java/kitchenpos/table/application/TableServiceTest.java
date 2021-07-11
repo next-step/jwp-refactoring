@@ -7,14 +7,10 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -41,6 +37,10 @@ public class TableServiceTest {
 
     @Mock
     private OrderTableRepository orderTableRepository;
+    @Mock
+    private OrderRepository orderRepository;
+    @Mock
+    private OrderTableValidator orderTableValidator;
     @InjectMocks
     private OrderTableService tableService;
 
@@ -93,24 +93,6 @@ public class TableServiceTest {
     void changeEmpty_Fail_01() {
         // Given
         OrderTable 주문테이블 = new OrderTable(주문테이블_ID, 1L, 두명);
-        OrderTableRequest 주문테이블_요청 = OrderTableRequest.of(주문테이블);
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(주문테이블));
-
-        // When
-        assertThatThrownBy(() -> tableService.changeEmpty(주문테이블_ID, 주문테이블_요청))
-            .isInstanceOf(CannotChangeTableEmptyException.class);
-
-        // Then
-        verify(orderTableRepository, times(1)).findById(any());
-    }
-
-    @DisplayName("진행중(조리 or 식사)인 경우 빈 테이블로 변경이 불가능하다.")
-    @Test
-    void changeEmpty_Fail_02() {
-        // Given
-        OrderTable 주문테이블 = new OrderTable(주문테이블_ID, 두명, 비어있지않음);
-        OrderLineItem 주문항목 = new OrderLineItem(1L, 1L, 1L);
-        주문테이블.addOrder(new Order(1L, OrderStatus.COOKING, LocalDateTime.now(), new ArrayList<>(Arrays.asList(주문항목))));
         OrderTableRequest 주문테이블_요청 = OrderTableRequest.of(주문테이블);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(주문테이블));
 

@@ -1,7 +1,9 @@
 package kitchenpos.order.application;
 
 import static kitchenpos.table.application.TableServiceTest.두명;
+import static kitchenpos.table.application.TableServiceTest.비어있음;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -18,6 +20,7 @@ import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.exception.CannotOrderException;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -60,6 +63,19 @@ public class OrderServiceTest {
         // Then
         verify(orderTableRepository, times(1)).findById(any());
         verify(orderRepository, times(1)).save(any());
+    }
+
+    @DisplayName("빈 테이블인경우 주문할 수 없다.")
+    @Test
+    void create_fail() {
+        // Given
+        OrderTable 빈테이블 = new OrderTable(주문테이블_ID, 두명, 비어있음);
+        OrderRequest 주문 = new OrderRequest(주문테이블_ID, OrderStatus.COOKING, LocalDateTime.now(), OrderLineItemRequest.listOf(주문_항목_목록));
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(빈테이블));
+
+        // When & Then
+        assertThatThrownBy(() -> orderService.create(주문))
+            .isInstanceOf(CannotOrderException.class);
     }
 
     @DisplayName("주문 목록을 조회한다.")

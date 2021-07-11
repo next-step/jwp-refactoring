@@ -27,18 +27,6 @@ public class OrderTableTest {
             .isInstanceOf(CannotChangeTableEmptyException.class);
     }
 
-    @DisplayName("진행중(조리 or 식사)인 경우 빈 테이블로 변경이 불가능하다.")
-    @Test
-    void changeEmpty_Fail02() {
-        // Given
-        Order 진행중인_주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING, LocalDateTime.now(), 주문_항목_목록);
-        OrderTable 주문테이블 = new OrderTable(1L, 2, 진행중인_주문);
-
-        // When & Then
-        assertThatThrownBy(() -> 주문테이블.changeEmpty(true))
-            .isInstanceOf(CannotChangeTableEmptyException.class);
-    }
-
     @DisplayName("빈 테이블의 주문 테이블은 손님 수를 변경할 수 없습니다.")
     @Test
     void changeNumberOfGuests_Fail01() {
@@ -59,18 +47,6 @@ public class OrderTableTest {
         // When & Then
         assertThatThrownBy(() -> 주문테이블.changeNumberOfGuests(-1))
             .isInstanceOf(CannotChangeNumberOfGuestException.class);
-    }
-
-    @DisplayName("빈 테이블인경우 주문할 수 없다.")
-    @Test
-    void addOrder_fail() {
-        // Given
-        OrderTable 주문테이블 = new OrderTable(1L, 2, true);
-        Order 주문 = new Order(1L);
-
-        // When & Then
-        assertThatThrownBy(() -> 주문테이블.addOrder(주문))
-            .isInstanceOf(CannotOrderException.class);
     }
 
 
