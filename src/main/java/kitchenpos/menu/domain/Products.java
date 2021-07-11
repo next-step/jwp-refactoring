@@ -8,19 +8,19 @@ import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
 @Embeddable
-public class Products {
+class Products {
 
     @OneToMany(mappedBy = "menuProduct")
     private List<Product> products;
 
-    public Products() {
+    protected Products() {
     }
 
-    public Products(final List<Product> productList) {
+    Products(final List<Product> productList) {
         this.products = productList;
     }
 
-    public BigDecimal calculatePrice(final Long productId, final long quantity) {
+    BigDecimal calculatePrice(final Long productId, final long quantity) {
         return products.stream()
             .filter(product -> Objects.equals(product.getId(), productId))
             .findFirst()

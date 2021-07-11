@@ -5,7 +5,6 @@ import java.util.List;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.Price;
 
 public class MenuResponse {
 
@@ -22,8 +21,8 @@ public class MenuResponse {
     public MenuResponse() {
     }
 
-    public MenuResponse(Long id, String name, BigDecimal price, Long menuGroupId,
-        List<MenuProduct> menuProducts) {
+    public MenuResponse(final Long id, final String name, final BigDecimal price, final Long menuGroupId,
+        final List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -31,9 +30,8 @@ public class MenuResponse {
         this.menuProducts = menuProducts;
     }
 
-    public static MenuResponse of(Menu menu) {
-        final Price price = menu.getPrice();
-        return new MenuResponse(menu.getId(), menu.getName(), price.value(),
+    public static MenuResponse of(final Menu menu) {
+        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(),
             menu.getMenuGroupId(), menu.getMenuProducts());
     }
 

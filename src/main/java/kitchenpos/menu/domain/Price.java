@@ -6,14 +6,14 @@ import java.util.Objects;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class Price {
+class Price {
 
     private BigDecimal price;
 
     protected Price() {
     }
 
-    public Price(final BigDecimal price) {
+    Price(final BigDecimal price) {
         validate(price);
         this.price = price;
     }
@@ -24,11 +24,11 @@ public class Price {
         }
     }
 
-    public BigDecimal value() {
+    BigDecimal value() {
         return price;
     }
 
-    public boolean greaterThan(final BigDecimal bigDecimal) {
+    boolean greaterThan(final BigDecimal bigDecimal) {
         return price.compareTo(bigDecimal) > 0;
     }
 
