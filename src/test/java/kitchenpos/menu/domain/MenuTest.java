@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -18,7 +19,7 @@ class MenuTest {
     private Product 콜라 = new Product("콜라", BigDecimal.valueOf(3000));
     private MenuProduct 후라이드한마리 = new MenuProduct(후라이드, 1L);
     private MenuProduct 콜라한개 = new MenuProduct(콜라, 1L);
-    private MenuProducts 메뉴상품목록 = new MenuProducts(Arrays.asList(콜라한개, 후라이드한마리));
+    private List<MenuProduct> 메뉴상품목록 = Arrays.asList(콜라한개, 후라이드한마리);
 
     @DisplayName("메뉴 등록시, 가격정보가 입력되지 않으면 예외발생")
     @Test

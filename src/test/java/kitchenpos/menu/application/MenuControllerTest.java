@@ -1,11 +1,9 @@
-package kitchenpos.menu;
+package kitchenpos.menu.application;
 
-import kitchenpos.menu.application.MenuService;
 import kitchenpos.common.ControllerTest;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.ui.MenuRestController;
@@ -20,6 +18,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -40,11 +39,14 @@ public class MenuControllerTest extends ControllerTest<MenuRequest> {
     private MenuGroup 인기메뉴 = new MenuGroup("인기메뉴");
     private MenuProduct 후라이드_한마리 = new MenuProduct(후라이드, 1L);
     private MenuProduct 콜라_한개 = new MenuProduct(콜라, 1L);
-    private MenuProducts 메뉴상품목록 = new MenuProducts(Arrays.asList(후라이드_한마리, 콜라_한개));
+    private List<MenuProduct> 메뉴상품목록 = Arrays.asList(후라이드_한마리, 콜라_한개);
     private Menu 후라이드세트 = new Menu(1L,"후라이드세트", BigDecimal.valueOf(15000),
             인기메뉴, 메뉴상품목록);
 
-
+    private MenuResponse 메뉴_첫번째_응답 = new MenuResponse(1L, 후라이드세트.getName(), 후라이드세트.getPrice(),
+            후라이드세트.getMenuGroup().getId(), new ArrayList<>());
+    private MenuResponse 메뉴_두번째_응답 = new MenuResponse(2L, 후라이드세트.getName(), 후라이드세트.getPrice(),
+            후라이드세트.getMenuGroup().getId(), new ArrayList<>());
     @Override
     protected Object controller() {
         return menuRestController;
@@ -54,8 +56,6 @@ public class MenuControllerTest extends ControllerTest<MenuRequest> {
     @Test
     void 메뉴_생성요청() throws Exception {
         //Given
-        MenuResponse 메뉴_첫번째_응답 = new MenuResponse(1L, 후라이드세트.getName(), 후라이드세트.getPrice(),
-                후라이드세트.getMenuGroup().getId(), new ArrayList<>());
         when(menuService.create(any())).thenReturn(메뉴_첫번째_응답);
 
         //When
@@ -69,10 +69,6 @@ public class MenuControllerTest extends ControllerTest<MenuRequest> {
     @Test
     void 메뉴_목록_조회요청() throws Exception {
         //Given
-        MenuResponse 메뉴_첫번째_응답 = new MenuResponse(1L, 후라이드세트.getName(), 후라이드세트.getPrice(),
-                후라이드세트.getMenuGroup().getId(), new ArrayList<>());
-        MenuResponse 메뉴_두번째_응답 = new MenuResponse(1L, 후라이드세트.getName(), 후라이드세트.getPrice(),
-                후라이드세트.getMenuGroup().getId(), new ArrayList<>());
         when(menuService.list()).thenReturn(Arrays.asList(메뉴_첫번째_응답, 메뉴_두번째_응답));
 
         //When

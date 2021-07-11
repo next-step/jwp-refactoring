@@ -5,7 +5,6 @@ import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.menu.ui.MenuGroupRestController;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +18,7 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = MenuGroupRestController.class)
 class MenuGroupControllerTest extends ControllerTest<MenuGroup> {
@@ -31,20 +31,14 @@ class MenuGroupControllerTest extends ControllerTest<MenuGroup> {
     @Autowired
     private MenuGroupRestController menuGroupRestController;
 
-    private MenuGroupRequest 첫번째_메뉴그룹;
-    private MenuGroupRequest 두번째_메뉴그룹;
+    private MenuGroupRequest 첫번째_메뉴그룹 = new MenuGroupRequest("첫번째_메뉴그룹");
+    private MenuGroupRequest 두번째_메뉴그룹 = new MenuGroupRequest("두번째_메뉴그룹");
 
     @Override
     protected Object controller() {
         return menuGroupRestController;
     }
 
-    @BeforeEach
-    void 사전준비() {
-
-        첫번째_메뉴그룹 = new MenuGroupRequest("첫번째_메뉴그룹");
-        두번째_메뉴그룹 = new MenuGroupRequest("두번째_메뉴그룹");
-    }
 
     @DisplayName("메뉴그룹 생성요청")
     @Test
@@ -57,6 +51,7 @@ class MenuGroupControllerTest extends ControllerTest<MenuGroup> {
 
         //Then
         생성성공(결과);
+        결과.andExpect(jsonPath("$.name").value(첫번째_메뉴그룹.getName()));
     }
 
     @DisplayName("메뉴그룹 목록 조회요청")
@@ -64,7 +59,7 @@ class MenuGroupControllerTest extends ControllerTest<MenuGroup> {
     void 메뉴그룹_목록_조회요청() throws Exception {
         //Given
         List<MenuGroupRequest> 메뉴그룹_목록 = new ArrayList<>(Arrays.asList(첫번째_메뉴그룹, 두번째_메뉴그룹));
-        when(menuGroupService.newList()).thenReturn(MenuGroupResponse.ofList(MenuGroupRequest.toMenuGroupList(메뉴그룹_목록)));
+        when(menuGroupService.list()).thenReturn(MenuGroupResponse.ofList(MenuGroupRequest.toMenuGroupList(메뉴그룹_목록)));
 
         //When
         ResultActions 결과 = getRequest(BASE_URI);

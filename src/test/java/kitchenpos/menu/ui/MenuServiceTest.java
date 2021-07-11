@@ -1,4 +1,4 @@
-package kitchenpos.menu;
+package kitchenpos.menu.ui;
 
 import kitchenpos.exception.CannotFindException;
 import kitchenpos.menu.application.MenuService;
@@ -26,6 +26,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
@@ -44,38 +46,36 @@ class MenuServiceTest {
     private static Long 메뉴_ID = 1L;
     private static Long 상품_ID = 1L;
     private static Long 메뉴그룹_ID = 1L;
-    private Product 후라이드;
-    private MenuGroup 인기메뉴;
-    private Menu 후라이드세트;
-    private MenuProduct 후라이드_한마리;
-    private MenuProducts 메뉴상품_목록;
 
-    @BeforeEach
-    void setUp() {
-        후라이드 = new Product(상품_ID, "후라이드", BigDecimal.valueOf(16000));
-        인기메뉴 = new MenuGroup(메뉴그룹_ID, "인기메뉴");
-        후라이드_한마리 = new MenuProduct(후라이드, 1L);
-        메뉴상품_목록 = new MenuProducts(Arrays.asList(후라이드_한마리));
-        후라이드세트 = new Menu("후라이드세트", BigDecimal.valueOf(10000), 인기메뉴, 메뉴상품_목록);
-    }
+    private final Product 후라이드 = new Product(1L, "후라이드", BigDecimal.valueOf(16000));
+    private final Product 콜라 = new Product(2L, "콜라", BigDecimal.valueOf(1000));
+    private final MenuGroup 인기메뉴 = new MenuGroup(메뉴그룹_ID, "인기메뉴");
+
+    private final MenuProduct 후라이드_한마리 = new MenuProduct(후라이드, 1L);
+    private final MenuProduct 콜라_한개 = new MenuProduct(콜라, 1L);
+    private final List<MenuProduct> 메뉴상품_목록 = Arrays.asList(후라이드_한마리, 콜라_한개);
+    private Menu 후라이드세트 = new Menu("후라이드세트", BigDecimal.valueOf(10000), 인기메뉴, 메뉴상품_목록);
 
     @DisplayName("0원 이상의 가격으로 메뉴를 등록한다")
     @Test
     void 메뉴_등록() {
         //Given
-        MenuProductRequest 후라이드_한마리_요청 = new MenuProductRequest(메뉴_ID, 상품_ID, 1L);
+        MenuProductRequest 후라이드_한마리_요청 = new MenuProductRequest(메뉴_ID, 후라이드.getId(), 1L);
+        MenuProductRequest 콜라_한개_요청 = new MenuProductRequest(메뉴_ID, 콜라.getId(), 1L);
         MenuRequest 후라이드세트_요청 = new MenuRequest(후라이드세트.getName(), 후라이드세트.getPrice(),
-                메뉴그룹_ID, Arrays.asList(후라이드_한마리_요청));
+                메뉴그룹_ID, Arrays.asList(후라이드_한마리_요청,콜라_한개_요청));
 
         when(menuGroupRepository.findById(인기메뉴.getId())).thenReturn(Optional.of(인기메뉴));
-        when(productRepository.findAllById(Arrays.asList(후라이드.getId()))).thenReturn(Arrays.asList(후라이드));
+        when(productRepository.findAllById(Arrays.asList(후라이드.getId(), 콜라.getId()))).thenReturn(Arrays.asList(후라이드, 콜라));
         when(menuRepository.save(any())).thenReturn(후라이드세트);
 
         //When
-        MenuResponse 생성된_메뉴 = menuService.create(후라이드세트_요청);
+        menuService.create(후라이드세트_요청);
 
         //Then
-        assertThat(생성된_메뉴.getName()).isEqualTo("후라이드세트");
+        verify(menuRepository, times(1)).save(any());
+        verify(productRepository).findAllById(any());
+        verify(menuGroupRepository).findById(any());
     }
 
     @DisplayName("메뉴 그룹이 기존에 등록되어 있지 않은 경우, 메뉴 등록시 예외가 발생한다")
@@ -115,8 +115,8 @@ class MenuServiceTest {
         List<MenuResponse> 조회된_메뉴_목록 = menuService.list();
 
         //Then
-        assertThat(조회된_메뉴_목록).isNotNull()
-                .hasSize(입력한_메뉴_목록.size());
+        verify(menuRepository, times(1)).findAll();
+        assertThat(조회된_메뉴_목록).hasSize(입력한_메뉴_목록.size());
 
     }
 }
