@@ -43,6 +43,13 @@ public class OrderRestController {
                 ;
     }
 
+    @GetMapping("/api/orders/temp")
+    public ResponseEntity<List<OrderResponse>> listTemp() {
+        return ResponseEntity.ok()
+                .body(orderService.listTemp())
+                ;
+    }
+
     @PutMapping("/api/orders/{orderId}/order-status")
     public ResponseEntity<Order> changeOrderStatus(
             @PathVariable final Long orderId,

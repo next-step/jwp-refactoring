@@ -67,12 +67,32 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         assertThat(orderResponse.getOrderTableId()).isEqualTo(orderRequest.getOrderTableId());
     }
 
+
+    @DisplayName("dto와 jpa를 사용하여 주문을 조회할 수 있다")
+    @Test
+    void listTest() {
+        //when
+        ExtractableResponse<Response> response = 주문_조회_요청();
+
+        //then
+        정상_처리(response);
+    }
+
     private ExtractableResponse<Response> 주문_등록_요청(OrderRequest orderRequest) {
         return RestAssured
                 .given().log().all()
                 .body(orderRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/api/orders/temp")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 주문_조회_요청() {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/api/orders/temp")
                 .then().log().all()
                 .extract();
     }
