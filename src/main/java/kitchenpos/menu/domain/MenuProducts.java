@@ -10,7 +10,7 @@ import kitchenpos.menu.exception.MenuPriceExceedException;
 @Embeddable
 public class MenuProducts {
 
-    @OneToMany(mappedBy = "menu", orphanRemoval = true)
+    @OneToMany(mappedBy = "menuId", orphanRemoval = true)
     private List<MenuProduct> menuProducts;
 
     public MenuProducts() {
@@ -19,9 +19,6 @@ public class MenuProducts {
     public MenuProducts(List<MenuProduct> menuProducts, Menu menu) {
         this.menuProducts = menuProducts;
         validationMenuProductPrices(menu.getPrice());
-        for (MenuProduct menuProduct : menuProducts) {
-            menuProduct.toMenu(menu);
-        }
     }
 
     private void validationMenuProductPrices(Price menuPrice) {
