@@ -8,11 +8,7 @@ import java.math.BigDecimal;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.product.domain.Name;
-import kitchenpos.product.domain.Price;
-import kitchenpos.product.domain.Product;
-
-class ProductTest {
+public class ProductTest {
 
 	@DisplayName("가격이 음수인 상품은 생성 될 수 없다.")
 	@Test
@@ -37,5 +33,22 @@ class ProductTest {
 				.isInstanceOf(IllegalArgumentException.class)
 				.hasMessageContaining("상품의 이름과 가격은 필수 정보입니다.")
 		);
+	}
+
+	@DisplayName("상품의 가격은 상품의 가격 * 개수로 계산할 수 있다.")
+	@Test
+	void calculatePriceTest() {
+		// given
+		Product product = new Product(Name.valueOf("치킨"), Price.wonOf(1000));
+
+
+		assertThat(product.calculatePrice(2)).isEqualTo(Price.wonOf(2000));
+
+
+		assertThat(product.calculatePrice(0)).isEqualTo(Price.wonOf(0));
+	}
+
+	public static Product createProduct(Long id, String name, int price) {
+		return new Product(id, Name.valueOf(name), Price.wonOf(price));
 	}
 }

@@ -4,19 +4,19 @@ import static kitchenpos.menu.domain.MenuProducts.*;
 import static kitchenpos.product.domain.Name.*;
 import static kitchenpos.product.domain.Price.*;
 
-import kitchenpos.menu.domain.MenuGroupId;
-import kitchenpos.menugroup.domain.MenuGroupRepository;
-import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.product.domain.ProductRepository;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.product.domain.Product;
-import kitchenpos.menu.dto.MenuRequest;
-import kitchenpos.menu.dto.MenuResponse;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroupId;
+import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 
 @Service
 public class MenuService {
@@ -37,13 +37,13 @@ public class MenuService {
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
         validateRequest(menuRequest);
-        final List<Product> products = findProducts(menuRequest);
         Menu persistMenu = menuRepository.save(
                 new Menu.Builder()
                 .name(valueOf(menuRequest.getName()))
                 .price(wonOf(menuRequest.getPrice()))
                 .menuGroupId(new MenuGroupId(menuRequest.getMenuGroupId()))
-                .menuProducts(of(menuRequest.toMenuProducts(products)))
+                .menuProducts(of(menuRequest.toMenuProducts()))
+                .products(findProducts(menuRequest))
                 .build());
         return MenuResponse.of(persistMenu);
     }

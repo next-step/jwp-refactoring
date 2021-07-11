@@ -29,14 +29,19 @@ public class Product {
 
     protected Product() {}
 
+    Product(Long id, Name name, Price price) {
+        validateNonNull(name, price);
+        this.id = id;
+        this.name = name;
+        this.price = price;
+    }
+
     public Product(String name, BigDecimal price) {
         this(Name.valueOf(name), Price.wonOf(price));
     }
 
     public Product(Name name, Price price) {
-        validateNonNull(name, price);
-        this.name = name;
-        this.price = price;
+        this(null, name, price);
     }
 
     private void validateNonNull(Name name, Price price) {
@@ -59,5 +64,9 @@ public class Product {
 
     public BigDecimal getPriceAmount() {
         return price.getAmount();
+    }
+
+    public Price calculatePrice(long quantity) {
+        return this.price.times(quantity);
     }
 }

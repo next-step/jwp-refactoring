@@ -27,7 +27,7 @@ public class MenuProductRequest {
 		return quantity;
 	}
 
-	MenuProduct toEntity(Product product) {
-		return new MenuProduct(product, quantity);
+	MenuProduct toEntity() {
+		return new MenuProduct(productId, quantity);
 	}
 }

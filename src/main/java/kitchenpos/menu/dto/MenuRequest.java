@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.product.domain.Product;
 
 public class MenuRequest {
 
@@ -48,17 +47,9 @@ public class MenuRequest {
 			.collect(Collectors.toList());
 	}
 
-	public List<MenuProduct> toMenuProducts(List<Product> products) {
-		return products.stream()
-			.map(this::toMenuProduct)
-			.collect(Collectors.toList());
-	}
-
-	private MenuProduct toMenuProduct(Product product) {
+	public List<MenuProduct> toMenuProducts() {
 		return menuProducts.stream()
-			.filter(menuProductRequest -> menuProductRequest.isEqualProductId(product))
-			.map(menuProductRequest -> menuProductRequest.toEntity(product))
-			.findAny()
-			.orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없습니다."));
+			.map(MenuProductRequest::toEntity)
+			.collect(Collectors.toList());
 	}
 }

@@ -9,6 +9,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
 import kitchenpos.product.domain.Price;
+import kitchenpos.product.domain.Product;
 
 @Embeddable
 public class MenuProducts {
@@ -33,8 +34,10 @@ public class MenuProducts {
 		return Collections.unmodifiableList(menuProducts);
 	}
 
-	boolean isMoreExpensiveThan(Price price) {
-		return price.compareTo(sumPriceOfMenuProducts()) > 0;
+	void validatePrice(Price price, List<Product> products) {
+		if (price.compareTo(sumTotalPrice(products)) > 0) {
+			throw new IllegalArgumentException("메뉴의 가격이 메뉴와 연결된 상품의 수량 * 가격 보다 비쌀 수 없습니다.");
+		}
 	}
 
 	void toMenu(Menu menu) {
@@ -43,10 +46,23 @@ public class MenuProducts {
 		}
 	}
 
-	private Price sumPriceOfMenuProducts() {
-		return this.menuProducts.stream()
-			.map(MenuProduct::calculatePrice)
+	private Price sumTotalPrice(List<Product> products) {
+		return products.stream()
+			.map(this::calculatePrice)
 			.reduce(Price::plus)
 			.orElseThrow(() -> new IllegalArgumentException("메뉴에 대한 상품 가격을 구할 수 없습니다."));
+	}
+
+	private Price calculatePrice(Product product) {
+		long quantity = findQuantity(product);
+		return product.calculatePrice(quantity);
+	}
+
+	private Long findQuantity(Product product) {
+		return menuProducts.stream()
+			.filter(menuProduct -> menuProduct.matchProductId(product.getId()))
+			.map(MenuProduct::getQuantity)
+			.findAny()
+			.orElseThrow(() -> new IllegalArgumentException("상품에 대한 수량을 구할 수 없습니다."));
 	}
 }
