@@ -1,8 +1,15 @@
 package kitchenpos.order.domain;
 
+import javax.persistence.*;
+
+@Entity
 public class OrderLineItem {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
-    private Long orderId;
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private Order orderId;
     private Long menuId;
     private long quantity;
 
@@ -15,11 +22,12 @@ public class OrderLineItem {
     }
 
     public Long getOrderId() {
-        return orderId;
+        return orderId.getId();
     }
 
     public void setOrderId(final Long orderId) {
-        this.orderId = orderId;
+        this.orderId = new Order();
+        this.orderId.setId(orderId);
     }
 
     public Long getMenuId() {

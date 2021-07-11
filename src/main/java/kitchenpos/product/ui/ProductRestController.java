@@ -34,4 +34,21 @@ public class ProductRestController {
                 .body(productService.list())
                 ;
     }
+
+    //TODO re
+    @PostMapping("/api/products_re")
+    public ResponseEntity<Product> create_re(@RequestBody final Product product) {
+        final Product created = productService.create_re(product);
+        final URI uri = URI.create("/api/products_re/" + created.getId());
+        return ResponseEntity.created(uri)
+                .body(created)
+                ;
+    }
+
+    @GetMapping("/api/products_re")
+    public ResponseEntity<List<Product>> list_re() {
+        return ResponseEntity.ok()
+                .body(productService.list_re())
+                ;
+    }
 }

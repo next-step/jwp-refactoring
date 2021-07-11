@@ -3,6 +3,7 @@ package kitchenpos.product.application;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.dao.ProductDao;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,9 @@ import static org.mockito.Mockito.when;
 class ProductServiceTest {
     @Mock
     ProductDao productDao;
+    @Mock
+    ProductRepository productRepository;
+
     @InjectMocks
     ProductService productService;
 
@@ -52,6 +56,19 @@ class ProductServiceTest {
     }
 
     @Test
+    @DisplayName("상품을 생성한다.")
+    void create_re() {
+        //given
+        when(productRepository.save(양념치킨)).thenReturn(양념치킨);
+
+        //when
+        Product createdProduct = productService.create_re(양념치킨);
+
+        //then
+        assertThat(createdProduct.getPrice()).isEqualTo(양념치킨.getPrice());
+    }
+
+    @Test
     @DisplayName("상품가격이 0원 미만일 경우 상품 생성을 실패한다.")
     void create_with_exception_when_price_smaller_than_zero() {
         //given
@@ -63,6 +80,17 @@ class ProductServiceTest {
     }
 
     @Test
+    @DisplayName("상품가격이 0원 미만일 경우 상품 생성을 실패한다.")
+    void create_with_exception_when_price_smaller_than_zero_re() {
+        //given
+        양념치킨.setPrice(BigDecimal.valueOf(-1));
+
+        //when
+        assertThatThrownBy(() -> productService.create_re(양념치킨))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
     @DisplayName("전체 상품을 조회한다.")
     void list() {
         //given
@@ -70,6 +98,19 @@ class ProductServiceTest {
 
         //when
         List<Product> foundProducts = productService.list();
+
+        //then
+        assertThat(foundProducts).containsExactly(양념치킨, 후라이드치킨);
+    }
+
+    @Test
+    @DisplayName("전체 상품을 조회한다.")
+    void list_re() {
+        //given
+        when(productRepository.findAll()).thenReturn(Arrays.asList(양념치킨, 후라이드치킨));
+
+        //when
+        List<Product> foundProducts = productService.list_re();
 
         //then
         assertThat(foundProducts).containsExactly(양념치킨, 후라이드치킨);

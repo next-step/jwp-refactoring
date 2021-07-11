@@ -3,6 +3,7 @@ package kitchenpos.menu.application;
 import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.dao.MenuGroupDao;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,8 +24,12 @@ class MenuGroupServiceTest {
     @Mock
     MenuGroupDao menuGroupDao;
 
+    @Mock
+    MenuGroupRepository menuGroupRepository;
+
     @InjectMocks
     MenuGroupService menuGroupService;
+
     MenuGroup 추천메뉴그룹;
     MenuGroup 베스트메뉴그룹;
 
@@ -50,6 +55,19 @@ class MenuGroupServiceTest {
     }
 
     @Test
+    @DisplayName("메뉴그룹을 생성한다.")
+    void create_re() {
+        //given
+        when(menuGroupRepository.save(any())).thenReturn(추천메뉴그룹);
+
+        //when
+        MenuGroup createdMenuGroup = menuGroupService.create_re(추천메뉴그룹);
+
+        //then
+        assertThat(createdMenuGroup.getName()).isEqualTo(추천메뉴그룹.getName());
+    }
+
+    @Test
     @DisplayName("전체 메뉴그룹을 조회한다.")
     void list() {
         //given
@@ -57,6 +75,19 @@ class MenuGroupServiceTest {
 
         //when
         List<MenuGroup> foundMenuGroups = menuGroupService.list();
+
+        //then
+        assertThat(foundMenuGroups).containsExactly(추천메뉴그룹, 베스트메뉴그룹);
+    }
+
+    @Test
+    @DisplayName("전체 메뉴그룹을 조회한다.")
+    void list_re() {
+        //given
+        when(menuGroupRepository.findAll()).thenReturn(Arrays.asList(추천메뉴그룹, 베스트메뉴그룹));
+
+        //when
+        List<MenuGroup> foundMenuGroups = menuGroupService.list_re();
 
         //then
         assertThat(foundMenuGroups).containsExactly(추천메뉴그룹, 베스트메뉴그룹);

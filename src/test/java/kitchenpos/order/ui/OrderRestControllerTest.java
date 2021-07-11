@@ -153,4 +153,87 @@ class OrderRestControllerTest {
             assertThat(e.getCause()).isInstanceOf(IllegalArgumentException.class);
         }
     }
+
+    //TODO re ------
+
+    @Test
+    @DisplayName("주문을 생성한다.")
+    void create_re() throws Exception {
+        //given
+        String requestBody = objectMapper.writeValueAsString(주문);
+
+        //when && then
+        mockMvc.perform(post("/api/orders_re")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    @DisplayName("주문항목이 비어있을 경우 주문 생성을 실패한다.")
+    void create_with_exception_when_order_line_items_is_empty_re() throws JsonProcessingException {
+        //given
+        주문.setOrderLineItems(Arrays.asList());
+
+        //when && then
+        주문_생성_요청_실패();
+    }
+
+    @Test
+    @DisplayName("저장된 메뉴에 없는 메뉴일 경우 주문 생성을 실패한다.")
+    void create_with_exception_when_menu_not_in_saved_menus_re() throws JsonProcessingException {
+        //given
+        주문.setOrderLineItems(Arrays.asList(존재하지않는_메뉴를_가진_주문서));
+
+        //when && then
+        주문_생성_요청_실패();
+    }
+
+    @Test
+    @DisplayName("빈 테이블에서 주문할 경우 주문 생성을 실패한다.")
+    void create_with_exception_when_table_is_null_re() throws JsonProcessingException {
+        //given
+        주문.setOrderTableId(비어있는_테스트데이터_테이블_아이디);
+
+        //when && then
+        주문_생성_요청_실패();
+    }
+
+    @Test
+    @DisplayName("전체 주문을 조회한다.")
+    void list_re() throws Exception {
+        //when && then
+        mockMvc.perform(get("/api/orders_re"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("\"id\":1")));
+    }
+
+    @Test
+    @DisplayName("주문 상태를 변경한다.")
+    void changeOrderStatus_re() throws Exception {
+        //given
+        주문.setId(1L);
+        주문.setOrderStatus(OrderStatus.MEAL.name());
+        String requestBody = objectMapper.writeValueAsString(주문);
+
+        //when && then
+        mockMvc.perform(put("/api/orders/{orderId}/order-status_re", 주문.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("MEAL")));
+    }
+
+    private void 주문_생성_요청_실패_re() throws JsonProcessingException {
+        String requestBody = objectMapper.writeValueAsString(주문);
+
+        try {
+            mockMvc.perform(post("/api/orders_re")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(requestBody))
+                    .andExpect(status().is5xxServerError());
+        } catch (Exception e) {
+            assertThat(e.getCause()).isInstanceOf(IllegalArgumentException.class);
+        }
+    }
 }

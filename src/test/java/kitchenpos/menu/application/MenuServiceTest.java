@@ -1,17 +1,13 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.dao.MenuDao;
 import kitchenpos.menu.dao.MenuGroupDao;
 import kitchenpos.menu.dao.MenuProductDao;
+import kitchenpos.menu.domain.*;
 import kitchenpos.product.dao.ProductDao;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import kitchenpos.product.domain.ProductRepository;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -21,10 +17,11 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,6 +34,16 @@ class MenuServiceTest {
     MenuProductDao menuProductDao;
     @Mock
     ProductDao productDao;
+
+    //TODO 리팩토링
+    @Mock
+    MenuRepository menuRepository;
+    @Mock
+    MenuGroupRepository menuGroupRepository;
+    @Mock
+    MenuProductRepository menuProductRepository;
+    @Mock
+    ProductRepository productRepository;
 
     @InjectMocks
     MenuService menuService;
@@ -120,49 +127,103 @@ class MenuServiceTest {
     }
 
     @Test
-    @DisplayName("메뉴가격이 0보다 작거나 비어있는경우 메뉴 생성을 실패한다.")
-    void create_with_exception_when_price_smaller_than_zero_or_null() {
-        assertAll(() -> {
-                    //given
-                    메뉴_후라이드_후라이드.setPrice(null);
+    @DisplayName("메뉴를 생성한다.")
+    void create_re() {
+        //given
+        when(menuGroupRepository.existsById(메뉴_후라이드_후라이드.getMenuGroupId())).thenReturn(true);
+        when(productRepository.findById(메뉴프로덕트_후라이드_치킨.getProductId())).thenReturn(Optional.of(프로덕트_후라이드_치킨));
+        when(menuRepository.save(메뉴_후라이드_후라이드)).thenReturn(메뉴_후라이드_후라이드);
+        when(menuProductRepository.save(메뉴프로덕트_후라이드_치킨)).thenReturn(메뉴프로덕트_후라이드_치킨);
 
-                    //when && then
-                    assertThatThrownBy(() -> menuService.create(메뉴_후라이드_후라이드))
-                            .isInstanceOf(IllegalArgumentException.class);
-                }, () -> {
+        //when
+        Menu createdMenu = menuService.create_re(메뉴_후라이드_후라이드);
+
+        //then
+        assertThat(createdMenu.getName()).isEqualTo(메뉴_후라이드_후라이드.getName());
+    }
+
+    @TestFactory
+    @DisplayName("메뉴생성 실패 테스트")
+    Stream<DynamicTest> create_with_exception() {
+        return Stream.of(
+                dynamicTest("메뉴가격이 0보다 작을 경우", () -> {
                     //given
                     메뉴_후라이드_후라이드.setPrice(BigDecimal.valueOf(-1));
 
                     //when && then
                     assertThatThrownBy(() -> menuService.create(메뉴_후라이드_후라이드))
                             .isInstanceOf(IllegalArgumentException.class);
-                }
+                }),
+                dynamicTest("메뉴가격이 비어있는 경우", () -> {
+                    //given
+                    메뉴_후라이드_후라이드.setPrice(null);
+
+                    //when && then
+                    assertThatThrownBy(() -> menuService.create(메뉴_후라이드_후라이드))
+                            .isInstanceOf(IllegalArgumentException.class);
+                }),
+                dynamicTest("메뉴 그룹이 없는 경우", () -> {
+                    //given
+                    메뉴_후라이드_후라이드.setMenuGroupId(존재하지않는아이디);
+                    when(menuGroupDao.existsById(존재하지않는아이디)).thenReturn(false);
+
+                    //when && then
+                    assertThatThrownBy(() -> menuService.create(메뉴_후라이드_후라이드))
+                            .isInstanceOf(IllegalArgumentException.class);
+                }),
+                dynamicTest("메뉴의 가격이 포함된 상품의 가격합보다 큰 경우", () -> {
+                    //given
+                    메뉴_후라이드_후라이드.setPrice(프로덕트의_합보다_큰_가격);
+                    when(menuGroupDao.existsById(메뉴_후라이드_후라이드.getMenuGroupId())).thenReturn(true);
+                    when(productDao.findById(메뉴프로덕트_후라이드_치킨.getProductId())).thenReturn(Optional.of(프로덕트_후라이드_치킨));
+
+                    //when && then
+                    assertThatThrownBy(() -> menuService.create(메뉴_후라이드_후라이드))
+                            .isInstanceOf(IllegalArgumentException.class);
+                })
         );
     }
 
-    @Test
-    @DisplayName("메뉴 그룹이 없는 경우 메뉴 생성을 실패한다.")
-    void create_with_exception_when_menu_group_is_null() {
-        //given
-        메뉴_후라이드_후라이드.setMenuGroupId(존재하지않는아이디);
-        when(menuGroupDao.existsById(존재하지않는아이디)).thenReturn(false);
+    @TestFactory
+    @DisplayName("메뉴생성 실패 테스트")
+    Stream<DynamicTest> create_with_exception_re() {
+        return Stream.of(
+                dynamicTest("메뉴가격이 0보다 작을 경우", () -> {
+                    //given
+                    메뉴_후라이드_후라이드.setPrice(BigDecimal.valueOf(-1));
 
-        //when && then
-        assertThatThrownBy(() -> menuService.create(메뉴_후라이드_후라이드))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
+                    //when && then
+                    assertThatThrownBy(() -> menuService.create_re(메뉴_후라이드_후라이드))
+                            .isInstanceOf(IllegalArgumentException.class);
+                }),
+                dynamicTest("메뉴가격이 비어있는 경우", () -> {
+                    //given
+                    메뉴_후라이드_후라이드.setPrice(null);
 
-    @Test
-    @DisplayName("메뉴의 가격이 포함된 상품의 가격합보다 큰 경우 메뉴 생성을 실패한다.")
-    void create_with_exception_when_menu_price_greater_than_sum_of_product() {
-        //given
-        메뉴_후라이드_후라이드.setPrice(프로덕트의_합보다_큰_가격);
-        when(menuGroupDao.existsById(메뉴_후라이드_후라이드.getMenuGroupId())).thenReturn(true);
-        when(productDao.findById(메뉴프로덕트_후라이드_치킨.getProductId())).thenReturn(Optional.of(프로덕트_후라이드_치킨));
+                    //when && then
+                    assertThatThrownBy(() -> menuService.create_re(메뉴_후라이드_후라이드))
+                            .isInstanceOf(IllegalArgumentException.class);
+                }),
+                dynamicTest("메뉴 그룹이 없는 경우", () -> {
+                    //given
+                    메뉴_후라이드_후라이드.setMenuGroupId(존재하지않는아이디);
+                    when(menuGroupRepository.existsById(존재하지않는아이디)).thenReturn(false);
 
-        //when && then
-        assertThatThrownBy(() -> menuService.create(메뉴_후라이드_후라이드))
-                .isInstanceOf(IllegalArgumentException.class);
+                    //when && then
+                    assertThatThrownBy(() -> menuService.create_re(메뉴_후라이드_후라이드))
+                            .isInstanceOf(IllegalArgumentException.class);
+                }),
+                dynamicTest("메뉴의 가격이 포함된 상품의 가격합보다 큰 경우", () -> {
+                    //given
+                    메뉴_후라이드_후라이드.setPrice(프로덕트의_합보다_큰_가격);
+                    when(menuGroupRepository.existsById(메뉴_후라이드_후라이드.getMenuGroupId())).thenReturn(true);
+                    when(productRepository.findById(메뉴프로덕트_후라이드_치킨.getProductId())).thenReturn(Optional.of(프로덕트_후라이드_치킨));
+
+                    //when && then
+                    assertThatThrownBy(() -> menuService.create_re(메뉴_후라이드_후라이드))
+                            .isInstanceOf(IllegalArgumentException.class);
+                })
+        );
     }
 
     @Test
@@ -175,6 +236,21 @@ class MenuServiceTest {
 
         //when
         List<Menu> menus = menuService.list();
+
+        //then
+        assertThat(menus).containsExactly(메뉴_후라이드_후라이드, 메뉴_후라이드_양념);
+    }
+
+    @Test
+    @DisplayName("전체 메뉴를 조회한다.")
+    void list_re() {
+        //given
+        when(menuRepository.findAll()).thenReturn(Arrays.asList(메뉴_후라이드_후라이드, 메뉴_후라이드_양념));
+        when(menuProductRepository.findAllByMenuId(메뉴_후라이드_후라이드)).thenReturn(Arrays.asList(메뉴프로덕트_후라이드_치킨));
+        when(menuProductRepository.findAllByMenuId(메뉴_후라이드_양념)).thenReturn(Arrays.asList(메뉴프로덕트_후라이드_양념_메뉴_후라이드치킨, 메뉴프로덕트_후라이드_양념_메뉴_양념치킨));
+
+        //when
+        List<Menu> menus = menuService.list_re();
 
         //then
         assertThat(menus).containsExactly(메뉴_후라이드_후라이드, 메뉴_후라이드_양념);

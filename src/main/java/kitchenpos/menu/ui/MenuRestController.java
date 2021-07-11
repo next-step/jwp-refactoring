@@ -34,4 +34,22 @@ public class MenuRestController {
                 .body(menuService.list())
                 ;
     }
+
+    //TODO re
+    @PostMapping("/api/menus_re")
+    public ResponseEntity<Menu> create_re(@RequestBody final Menu menu) {
+        final Menu created = menuService.create_re(menu);
+        final URI uri = URI.create("/api/menus/" + created.getId());
+        return ResponseEntity.created(uri)
+                .body(created)
+                ;
+    }
+
+    @GetMapping("/api/menus_re")
+    public ResponseEntity<List<Menu>> list_re() {
+        return ResponseEntity.ok()
+                .body(menuService.list_re())
+                ;
+    }
+
 }

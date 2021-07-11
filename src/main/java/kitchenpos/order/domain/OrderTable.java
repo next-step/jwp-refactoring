@@ -1,8 +1,16 @@
 package kitchenpos.order.domain;
 
+import javax.persistence.*;
+import java.util.Objects;
+
+@Entity
 public class OrderTable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long tableGroupId;
+    @ManyToOne
+    @JoinColumn(name = "table_group_id")
+    private TableGroup tableGroupId;
     private int numberOfGuests;
     private boolean empty;
 
@@ -15,11 +23,15 @@ public class OrderTable {
     }
 
     public Long getTableGroupId() {
-        return tableGroupId;
+        if (Objects.isNull(tableGroupId)){
+            return null;
+        }
+        return tableGroupId.getId();
     }
 
     public void setTableGroupId(final Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
+        this.tableGroupId = new TableGroup();
+        this.tableGroupId.setId(tableGroupId);
     }
 
     public int getNumberOfGuests() {

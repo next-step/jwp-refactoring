@@ -2,8 +2,10 @@ package kitchenpos.order.application;
 
 import kitchenpos.order.dao.OrderDao;
 import kitchenpos.order.dao.OrderTableDao;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,9 +18,14 @@ public class TableService {
     private final OrderDao orderDao;
     private final OrderTableDao orderTableDao;
 
-    public TableService(final OrderDao orderDao, final OrderTableDao orderTableDao) {
+    private final OrderRepository orderRepository;
+    private final OrderTableRepository orderTableRepository;
+
+    public TableService(final OrderDao orderDao, final OrderTableDao orderTableDao, OrderRepository orderRepository, OrderTableRepository orderTableRepository) {
         this.orderDao = orderDao;
         this.orderTableDao = orderTableDao;
+        this.orderRepository = orderRepository;
+        this.orderTableRepository = orderTableRepository;
     }
 
     @Transactional
@@ -69,5 +76,57 @@ public class TableService {
         savedOrderTable.setNumberOfGuests(numberOfGuests);
 
         return orderTableDao.save(savedOrderTable);
+    }
+    //TODO re ------------
+
+
+    @Transactional
+    public OrderTable create_re(final OrderTable orderTable) {
+        orderTable.setTableGroupId(null);
+
+        return orderTableRepository.save(orderTable);
+    }
+
+    public List<OrderTable> list_re() {
+        return orderTableRepository.findAll();
+    }
+
+    @Transactional
+    public OrderTable changeEmpty_re(final Long orderTableId, final OrderTable orderTable) {
+        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
+                .orElseThrow(IllegalArgumentException::new);
+
+        if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
+            throw new IllegalArgumentException();
+        }
+
+        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
+                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+            throw new IllegalArgumentException();
+        }
+
+        savedOrderTable.setEmpty(orderTable.isEmpty());
+
+        return orderTableRepository.save(savedOrderTable);
+    }
+
+    @Transactional
+    public OrderTable changeNumberOfGuests_re(final Long orderTableId, final OrderTable orderTable) {
+        final int numberOfGuests = orderTable.getNumberOfGuests();
+
+        if (numberOfGuests < 0) {
+            throw new IllegalArgumentException();
+        }
+
+        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
+                .orElseThrow(IllegalArgumentException::new);
+
+        if (savedOrderTable.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+
+        savedOrderTable.setNumberOfGuests(numberOfGuests);
+
+        return orderTableRepository.save(savedOrderTable);
     }
 }

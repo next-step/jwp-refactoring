@@ -95,4 +95,47 @@ class ProductRestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("양념치킨")));
     }
+
+
+    //TODO re---------------------------------------------------------------------------------------------------
+    @Test
+    @DisplayName("상품을 생성한다.")
+    void create_re() throws Exception {
+        //given
+        String requestBody = objectMapper.writeValueAsString(상품);
+
+        //when && then
+        mockMvc.perform(post("/api/products_re")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isCreated())
+                .andExpect(content().string(containsString("강정치킨")));
+    }
+
+    @Test
+    @DisplayName("상품가격이 0원 미만일 경우 상품 생성을 실패한다.")
+    void create_with_exception_when_price_smaller_than_zero_re() throws Exception {
+        //given
+        상품.setPrice(BigDecimal.valueOf(-1));
+        String requestBody = objectMapper.writeValueAsString(상품);
+
+        //when && then
+        try {
+            mockMvc.perform(post("/api/products_re")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(requestBody))
+                    .andExpect(status().is5xxServerError());
+        } catch (Exception e) {
+            assertThat(e.getCause()).isInstanceOf(IllegalArgumentException.class);
+        }
+    }
+
+    @Test
+    @DisplayName("전체 상품을 조회한다.")
+    void list_re() throws Exception {
+        //when && then
+        mockMvc.perform(get("/api/products_re"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("양념치킨")));
+    }
 }

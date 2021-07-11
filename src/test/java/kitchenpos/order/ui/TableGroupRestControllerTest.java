@@ -51,10 +51,12 @@ class TableGroupRestControllerTest {
                 .build();
 
         테이블1 = new OrderTable();
-        테이블1.setId(1L);
+        테이블1.setId(4L);
+        테이블1.setTableGroupId(101L);
 
         테이블2 = new OrderTable();
-        테이블2.setId(2L);
+        테이블2.setId(5L);
+        테이블2.setTableGroupId(101L);
 
         테이블_손님이_존재 = new OrderTable();
         테이블_손님이_존재.setId(99L);
@@ -64,7 +66,7 @@ class TableGroupRestControllerTest {
 
 
         테이블그룹 = new TableGroup();
-        테이블그룹.setId(1L);
+        테이블그룹.setId(101L);
         테이블그룹.setOrderTables(Arrays.asList(테이블1, 테이블2));
 
 
@@ -157,7 +159,7 @@ class TableGroupRestControllerTest {
 
     @Test
     @DisplayName("이미 단체테이블에 포함되어있는 테이블일경우 그룹테이블 생성요청은 실패한다.")
-    void create_with_exception_when_() throws JsonProcessingException {
+    void create_with_exception_when_has_group_id() throws JsonProcessingException {
         //given
         테이블그룹.setOrderTables(Arrays.asList(테이블1, 테이블_단체테이블에_속해있는));
         String requestBody = objectMapper.writeValueAsString(테이블그룹);
@@ -178,6 +180,121 @@ class TableGroupRestControllerTest {
     void ungroup() throws Exception {
         //when && then
         mockMvc.perform(delete("/api/table-groups/{tableGroupId}", 테이블그룹.getId()))
+                .andExpect(status().isNoContent());
+    }
+
+
+    //TODO re ---------
+
+    @Test
+    @DisplayName("단체 테이블을 생성한다.")
+    void create_re() throws Exception {
+        //given
+
+        String requestBody = objectMapper.writeValueAsString(테이블그룹);
+
+        //when && then
+        mockMvc.perform(post("/api/table-groups_re")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    @DisplayName("빈테이블 일 경우 그룹테이블 생성요청은 실패한다.")
+    void create_with_exception_when_table_isEmpty_re() throws JsonProcessingException {
+        //given
+        테이블그룹.setOrderTables(Arrays.asList());
+        String requestBody = objectMapper.writeValueAsString(테이블그룹);
+
+        //when && then
+        try {
+            mockMvc.perform(post("/api/table-groups")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(requestBody))
+                    .andExpect(status().is5xxServerError());
+        } catch (Exception e) {
+            assertThat(e.getCause()).isInstanceOf(IllegalArgumentException.class);
+        }
+    }
+
+    @Test
+    @DisplayName("1개의 테이블일 경우 그룹테이블 생성요청은 실패한다.")
+    void create_with_exception_when_table_counting_is_one_re() throws JsonProcessingException {
+        //given
+        테이블그룹.setOrderTables(Arrays.asList(테이블1));
+        String requestBody = objectMapper.writeValueAsString(테이블그룹);
+
+        //when && then
+        try {
+            mockMvc.perform(post("/api/table-groups")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(requestBody))
+                    .andExpect(status().is5xxServerError());
+        } catch (Exception e) {
+            assertThat(e.getCause()).isInstanceOf(IllegalArgumentException.class);
+        }
+    }
+
+    @Test
+    @DisplayName("동일 테이블일 경우 그룹테이블 생성요청은 실패한다.")
+    void create_with_exception_when_same_orderTables_re() throws JsonProcessingException {
+        //given
+        테이블그룹.setOrderTables(Arrays.asList(테이블1, 테이블1));
+        String requestBody = objectMapper.writeValueAsString(테이블그룹);
+
+        //when && then
+        try {
+            mockMvc.perform(post("/api/table-groups")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(requestBody))
+                    .andExpect(status().is5xxServerError());
+        } catch (Exception e) {
+            assertThat(e.getCause()).isInstanceOf(IllegalArgumentException.class);
+        }
+    }
+
+    @Test
+    @DisplayName("빈테이블이 아닐경우 그룹테이블 생성요청은 실패한다.")
+    void create_with_exception_when_orderTable_is_not_empty_re() throws JsonProcessingException {
+        //given
+        테이블그룹.setOrderTables(Arrays.asList(테이블1, 테이블_손님이_존재));
+        String requestBody = objectMapper.writeValueAsString(테이블그룹);
+
+        //when && then
+        try {
+            mockMvc.perform(post("/api/table-groups")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(requestBody))
+                    .andExpect(status().is5xxServerError());
+        } catch (Exception e) {
+            assertThat(e.getCause()).isInstanceOf(IllegalArgumentException.class);
+        }
+    }
+
+    @Test
+    @DisplayName("이미 단체테이블에 포함되어있는 테이블일경우 그룹테이블 생성요청은 실패한다.")
+    void create_with_exception_when_has_group_id_re() throws JsonProcessingException {
+        //given
+        테이블그룹.setOrderTables(Arrays.asList(테이블1, 테이블_단체테이블에_속해있는));
+        String requestBody = objectMapper.writeValueAsString(테이블그룹);
+
+        //when && then
+        try {
+            mockMvc.perform(post("/api/table-groups")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(requestBody))
+                    .andExpect(status().is5xxServerError());
+        } catch (Exception e) {
+            assertThat(e.getCause()).isInstanceOf(IllegalArgumentException.class);
+        }
+    }
+
+    @Test
+    @DisplayName("단체테이블을 해체한다.")
+    void ungroup_re() throws Exception {
+        //when && then
+        mockMvc.perform(delete("/api/table-groups_re/{tableGroupId}", 99))
                 .andExpect(status().isNoContent());
     }
 }
