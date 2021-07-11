@@ -63,4 +63,17 @@ public class MenuProducts {
             .map(function)
             .collect(Collectors.toList());
     }
+
+    public boolean isSatisfiedBy(List<MenuDetailOption> menuDetailOptions) {
+        if (menuProducts.size() != menuDetailOptions.size()) {
+            return false;
+        }
+
+        return menuDetailOptions.stream().allMatch(this::isSatisfiedBy);
+    }
+
+    private boolean isSatisfiedBy(MenuDetailOption menuDetailOption) {
+        return menuProducts.stream()
+            .anyMatch(menuProduct -> menuProduct.isSatisfiedBy(menuDetailOption));
+    }
 }

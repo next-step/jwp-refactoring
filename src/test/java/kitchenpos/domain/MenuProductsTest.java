@@ -27,7 +27,7 @@ class MenuProductsTest {
     void summation() {
         MenuProducts 메뉴제품컬렉션_각_1개씩 = MenuProducts.of(MP1후라이드, MP2양념치킨, MP3반반치킨);
         Price addedPrice = 후라이드.getPrice().add(양념치킨.getPrice()).add(반반치킨.getPrice());
-        assertThat(메뉴제품컬렉션_각_1개씩.summation()).isEqualTo(addedPrice);
+        assertThat(메뉴제품컬렉션_각_1개씩.summation().hasSameValueAs(addedPrice)).isTrue();
     }
 
     @Test

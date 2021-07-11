@@ -2,7 +2,9 @@ package kitchenpos.dto;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import kitchenpos.domain.OrderLineItemDetail;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.Quantity;
 
@@ -11,18 +13,18 @@ public class OrderLineItemRequest {
     private String name;
     private BigDecimal price;
     private long quantity;
-    private List<OrderLineItemDetailRequest> products;
+    private List<OrderLineItemDetailRequest> menuDetails;
 
     public OrderLineItemRequest() {
     }
 
     public OrderLineItemRequest(Long menuId, String name, BigDecimal price, long quantity,
-        List<OrderLineItemDetailRequest> products) {
+            List<OrderLineItemDetailRequest> menuDetails) {
         this.menuId = menuId;
         this.name = name;
         this.price = price;
         this.quantity = quantity;
-        this.products = products;
+        this.menuDetails = menuDetails;
     }
 
     public Long getMenuId() {
@@ -57,11 +59,25 @@ public class OrderLineItemRequest {
         this.quantity = quantity;
     }
 
+    public List<OrderLineItemDetailRequest> getMenuDetails() {
+        return menuDetails;
+    }
+
+    public void setMenuDetails(List<OrderLineItemDetailRequest> menuDetails) {
+        this.menuDetails = menuDetails;
+    }
+
     public Price price() {
         return Price.valueOf(price);
     }
 
     public Quantity quantity() {
         return Quantity.valueOf(quantity);
+    }
+
+    public List<OrderLineItemDetail> details() {
+        return menuDetails.stream()
+            .map(OrderLineItemDetailRequest::toEntity)
+            .collect(Collectors.toList());
     }
 }

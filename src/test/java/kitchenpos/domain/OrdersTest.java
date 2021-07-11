@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import static kitchenpos.domain.OrderLineItemTest.*;
 import static kitchenpos.domain.OrderStatus.*;
 import static org.assertj.core.api.Assertions.*;
 
@@ -14,7 +15,7 @@ class OrdersTest {
     @Test
     @DisplayName("진행중인 주문이 있는지 확인")
     void hasOrderInProgress() {
-        OrderLineItems 더미 = OrderLineItems.of(new OrderLineItem());
+        OrderLineItems 더미 = OrderLineItems.of(테이블9주문_1);
         Order 주문1_COMPLETION = new Order(COMPLETION, 더미);
         Order 주문2_COMPLETION = new Order(COMPLETION, 더미);
         Order 주문3_COOKING = new Order(COOKING, 더미);

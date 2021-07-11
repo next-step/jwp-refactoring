@@ -2,6 +2,10 @@ package kitchenpos.dto;
 
 import java.math.BigDecimal;
 
+import kitchenpos.domain.OrderLineItemDetail;
+import kitchenpos.domain.Price;
+import kitchenpos.domain.Quantity;
+
 public class OrderLineItemDetailRequest {
     private Long menuProductSeq;
     private Long productId;
@@ -59,5 +63,17 @@ public class OrderLineItemDetailRequest {
 
     public void setQuantity(long quantity) {
         this.quantity = quantity;
+    }
+
+    public Price price() {
+        return Price.valueOf(price);
+    }
+
+    public Quantity quantity() {
+        return Quantity.valueOf(quantity);
+    }
+
+    public OrderLineItemDetail toEntity() {
+        return new OrderLineItemDetail(this.name, this.price(), this.quantity());
     }
 }

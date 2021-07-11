@@ -57,4 +57,12 @@ public class Product {
     public Price getPrice() {
         return price;
     }
+
+    public boolean isSatisfiedBy(MenuDetailOption menuDetailOption) {
+        if (!this.name.equals(menuDetailOption.getName())) {
+            return false;
+        }
+
+        return this.price.hasSameValueAs(menuDetailOption.getPrice());
+    }
 }

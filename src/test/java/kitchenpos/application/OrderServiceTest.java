@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import static kitchenpos.domain.MenuProductTest.*;
 import static kitchenpos.domain.MenuTest.*;
+import static kitchenpos.domain.OrderLineItemDetailTest.*;
 import static kitchenpos.domain.OrderStatus.*;
 import static kitchenpos.domain.OrderTableTest.*;
 import static kitchenpos.domain.ProductTest.*;
@@ -77,8 +78,8 @@ class OrderServiceTest {
         양념치킨_한마리_요청 = new OrderLineItemRequest(양념치킨_메뉴.getId(), 양념치킨_메뉴.getName(), 양념치킨_메뉴.getPrice().value(), 1, Arrays.asList(양념치킨_한마리_상세_요청));
         양념_후라이드_각_한마리_요청 = new OrderRequest(테이블100_사용중.getId(), Arrays.asList(후라이드_한마리_요청, 양념치킨_한마리_요청));
 
-        후라이드_한마리 = new OrderLineItem(후라이드_메뉴, 후라이드_메뉴.getName(), 후라이드_메뉴.getPrice(), Quantity.valueOf(1));
-        양념치킨_한마리 = new OrderLineItem(양념치킨_메뉴, 양념치킨_메뉴.getName(), 양념치킨_메뉴.getPrice(), Quantity.valueOf(1));
+        후라이드_한마리 = new OrderLineItem(후라이드_메뉴, 후라이드_메뉴.getName(), 후라이드_메뉴.getPrice(), Quantity.valueOf(1), Arrays.asList(후라이드_주문내역_상세));
+        양념치킨_한마리 = new OrderLineItem(양념치킨_메뉴, 양념치킨_메뉴.getName(), 양념치킨_메뉴.getPrice(), Quantity.valueOf(1), Arrays.asList(양념치킨_주문내역_상세));
         양념_후라이드_각_한마리 = OrderTest.order(100L, COOKING, OrderLineItems.of(후라이드_한마리, 양념치킨_한마리));
         테이블100_사용중.addOrder(양념_후라이드_각_한마리);
     }
@@ -88,6 +89,8 @@ class OrderServiceTest {
     void create() {
         // given
         when(tableService.findById(테이블100_사용중.getId())).thenReturn(테이블100_사용중);
+        when(menuService.findById(후라이드_메뉴.getId())).thenReturn(후라이드_메뉴);
+        when(menuService.findById(양념치킨_메뉴.getId())).thenReturn(양념치킨_메뉴);
 
         // when
         Order savedOrder = orderService.create(양념_후라이드_각_한마리_요청);
@@ -137,6 +140,8 @@ class OrderServiceTest {
     void create_failed4() {
         // given
         when(tableService.findById(any())).thenReturn(테이블3);
+        when(menuService.findById(후라이드_메뉴.getId())).thenReturn(후라이드_메뉴);
+        when(menuService.findById(양념치킨_메뉴.getId())).thenReturn(양념치킨_메뉴);
 
         // then
         assertThatThrownBy(() -> orderService.create(양념_후라이드_각_한마리_요청))

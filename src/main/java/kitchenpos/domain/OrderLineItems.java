@@ -41,6 +41,12 @@ public class OrderLineItems {
         if (CollectionUtils.isEmpty(orderLineItems)) {
             throw new IllegalArgumentException("주문 상세 내역은 하나 이상 존재해야 합니다.");
         }
+
+        validateOrderLineItems(orderLineItems);
+    }
+
+    private void validateOrderLineItems(List<OrderLineItem> orderLineItems) {
+        orderLineItems.forEach(OrderLineItem::validate);
     }
 
     public boolean contains(OrderLineItem orderLineItem) {

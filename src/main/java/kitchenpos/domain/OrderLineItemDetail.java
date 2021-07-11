@@ -25,48 +25,16 @@ public class OrderLineItemDetail {
     @Column(nullable = false)
     private Quantity quantity;
 
-    // protected OrderMenuProduct() {
-    // }
-    //
-    // public OrderMenuProduct(Product product, Quantity quantity) {
-    //     this(null, product, quantity);
-    // }
-    //
-    // private OrderMenuProduct(Menu menu, Product product, Quantity quantity) {
-    //     this.menu = menu;
-    //     this.product = product;
-    //     this.quantity = quantity;
-    // }
-    //
-    // public OrderMenuProduct withMenu(Menu menu) {
-    //     checkAllocation();
-    //     this.menu = menu;
-    //     return this;
-    // }
-    //
-    // private void checkAllocation() {
-    //     if (Objects.nonNull(this.menu)) {
-    //         throw new AlreadyAllocatedException("매핑 정보의 메뉴를 재 할당 할 수 없습니다.");
-    //     }
-    // }
-    //
-    // public Price getTotalPrice() {
-    //     return product.priceOf(quantity);
-    // }
-    //
-    // public Long getSeq() {
-    //     return seq;
-    // }
-    //
-    // public Menu getMenu() {
-    //     return menu;
-    // }
-    //
-    // public Product getProduct() {
-    //     return product;
-    // }
-    //
-    // public Quantity getQuantity() {
-    //     return quantity;
-    // }
+    protected OrderLineItemDetail() {
+    }
+
+    public OrderLineItemDetail(String name, Price price, Quantity quantity) {
+        this.name = name;
+        this.price = price;
+        this.quantity = quantity;
+    }
+
+    public MenuDetailOption toMenuDetailOption() {
+        return new MenuDetailOption(this.name, this.price, this.quantity);
+    }
 }

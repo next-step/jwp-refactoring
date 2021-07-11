@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -14,6 +15,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import kitchenpos.exception.ExceedingTotalPriceException;
+import kitchenpos.exception.MenuDetailMismatchException;
+import kitchenpos.exception.MenuMismatchException;
 
 @Entity
 public class Menu {
@@ -98,5 +101,27 @@ public class Menu {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public void validateOrder(MenuOption menuOption, List<MenuDetailOption> menuDetailOptions) {
+        if (!isSatisfiedBy(menuOption)) {
+            throw new MenuMismatchException("메뉴가 변경되었습니다.");
+        }
+
+        if (!isSatisfiedBy(menuDetailOptions)) {
+            throw new MenuDetailMismatchException("메뉴 구성이 변경되었습니다.");
+        }
+    }
+
+    private boolean isSatisfiedBy(MenuOption menuOption) {
+        if (!this.name.equals(menuOption.getName())) {
+            return false;
+        }
+
+        return this.price.hasSameValueAs(menuOption.getPrice());
+    }
+
+    private boolean isSatisfiedBy(List<MenuDetailOption> menuDetailOptions) {
+        return menuProducts.isSatisfiedBy(menuDetailOptions);
     }
 }

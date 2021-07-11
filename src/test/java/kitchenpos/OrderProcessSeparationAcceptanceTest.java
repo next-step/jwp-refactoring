@@ -23,7 +23,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import kitchenpos.domain.Price;
 import kitchenpos.dto.OrderLineItemDetailRequest;
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
@@ -44,13 +43,13 @@ public class OrderProcessSeparationAcceptanceTest {
 
     @BeforeEach
     void setUp() {
-        후라이드_주문목록_상세_요청 = new OrderLineItemDetailRequest(MP1후라이드.getSeq(), 후라이드.getId(), "후라이드", BigDecimal.valueOf(16000), 1);
-        후라이드_주문목록_요청 = new OrderLineItemRequest(1L, 후라이드_메뉴.getName(), Price.valueOf(200).value(), 1, Arrays.asList(후라이드_주문목록_상세_요청));
+        후라이드_주문목록_상세_요청 = new OrderLineItemDetailRequest(MP1후라이드.getSeq(), 후라이드.getId(), 후라이드.getName(), BigDecimal.valueOf(16000), 1);
+        후라이드_주문목록_요청 = new OrderLineItemRequest(1L, 후라이드_메뉴.getName(), 후라이드_메뉴.getPrice().value(), 1, Arrays.asList(후라이드_주문목록_상세_요청));
         후라이드_주문_요청 = new OrderRequest(테이블12_사용중_주문전.getId(), Arrays.asList(후라이드_주문목록_요청));
     }
 
     @Test
-    @DisplayName("주문 요청정보가 주문스펙과 일치할 경우 성공")
+    @DisplayName("주문 요청정보가 메뉴스펙과 일치할 경우 성공")
     void request_succeed() throws Exception {
         mockMvc.perform(post("/api/orders")
             .contentType(MediaType.APPLICATION_JSON)

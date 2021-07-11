@@ -1,7 +1,9 @@
 package kitchenpos.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -36,19 +38,24 @@ public class OrderLineItem {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "order_line_item_seq", foreignKey = @ForeignKey(name = "fk_order_menu_product_order_line_item"))
-    private List<OrderLineItemDetail> orderLineItemDetails;
+    private List<OrderLineItemDetail> orderLineItemDetails = new ArrayList<>();
 
     protected OrderLineItem() {
     }
 
-    public OrderLineItem(Menu menu, String name, Price price, Quantity quantity) {
-        this(null, menu, name, price, quantity);
+    public OrderLineItem(Menu menu, String name, Price price, Quantity quantity,
+            List<OrderLineItemDetail> orderLineItemDetails) {
+        this(null, menu, name, price, quantity, orderLineItemDetails);
     }
 
-    OrderLineItem(Long seq, Menu menu, String name, Price price, Quantity quantity) {
+    OrderLineItem(Long seq, Menu menu, String name, Price price, Quantity quantity,
+            List<OrderLineItemDetail> orderLineItemDetails) {
         this.seq = seq;
+        this.name = name;
+        this.price = price;
         this.menu = menu;
         this.quantity = quantity;
+        this.orderLineItemDetails = orderLineItemDetails;
     }
 
     public Menu getMenu() {
@@ -72,5 +79,19 @@ public class OrderLineItem {
     @Override
     public int hashCode() {
         return Objects.hash(seq);
+    }
+
+    public void validate() {
+        menu.validateOrder(toMenuOption(), toMenuDetailOptions());
+    }
+
+    private MenuOption toMenuOption() {
+        return new MenuOption(this.name, this.price);
+    }
+
+    private List<MenuDetailOption> toMenuDetailOptions() {
+        return this.orderLineItemDetails.stream()
+            .map(OrderLineItemDetail::toMenuDetailOption)
+            .collect(Collectors.toList());
     }
 }

@@ -78,4 +78,12 @@ public class MenuProduct {
     public Quantity getQuantity() {
         return quantity;
     }
+
+    public boolean isSatisfiedBy(MenuDetailOption menuDetailOption) {
+        if (!this.quantity.equals(menuDetailOption.getQuantity())) {
+            return false;
+        }
+
+        return product.isSatisfiedBy(menuDetailOption);
+    }
 }
