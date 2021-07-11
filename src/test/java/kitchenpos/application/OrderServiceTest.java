@@ -63,12 +63,12 @@ class OrderServiceTest {
     void setUp() {
         테이블100_사용중 = OrderTableTest.orderTable(100L, NumberOfGuests.of(4), false);
 
-        후라이드_한마리_요청 = new OrderLineItemRequest(후라이드_메뉴.getId(), 1);
-        양념치킨_한마리_요청 = new OrderLineItemRequest(양념치킨_메뉴.getId(), 1);
+        후라이드_한마리_요청 = new OrderLineItemRequest(후라이드_메뉴.getId(), 후라이드_메뉴.getName(), 후라이드_메뉴.getPrice().value(), 1);
+        양념치킨_한마리_요청 = new OrderLineItemRequest(양념치킨_메뉴.getId(), 양념치킨_메뉴.getName(), 양념치킨_메뉴.getPrice().value(), 1);
         양념_후라이드_각_한마리_요청 = new OrderRequest(테이블100_사용중.getId(), Arrays.asList(후라이드_한마리_요청, 양념치킨_한마리_요청));
 
-        후라이드_한마리 = new OrderLineItem(후라이드_메뉴, Quantity.valueOf(1));
-        양념치킨_한마리 = new OrderLineItem(양념치킨_메뉴, Quantity.valueOf(1));
+        후라이드_한마리 = new OrderLineItem(후라이드_메뉴, 후라이드_메뉴.getName(), 후라이드_메뉴.getPrice(), Quantity.valueOf(1));
+        양념치킨_한마리 = new OrderLineItem(양념치킨_메뉴, 양념치킨_메뉴.getName(), 양념치킨_메뉴.getPrice(), Quantity.valueOf(1));
         양념_후라이드_각_한마리 = OrderTest.order(100L, COOKING, OrderLineItems.of(후라이드_한마리, 양념치킨_한마리));
         테이블100_사용중.addOrder(양념_후라이드_각_한마리);
     }

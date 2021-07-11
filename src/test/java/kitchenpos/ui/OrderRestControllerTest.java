@@ -1,5 +1,6 @@
 package kitchenpos.ui;
 
+import static kitchenpos.domain.MenuTest.*;
 import static kitchenpos.domain.OrderStatus.*;
 import static kitchenpos.domain.OrderTableTest.*;
 import static kitchenpos.domain.OrderTest.*;
@@ -44,7 +45,7 @@ class OrderRestControllerTest {
     @Order(1)
     @DisplayName("주문을 생성한다")
     void create() throws Exception {
-        OrderLineItemRequest orderLineItem = new OrderLineItemRequest(1L, 1);
+        OrderLineItemRequest orderLineItem = new OrderLineItemRequest(1L, 후라이드_메뉴.getName(), 후라이드_메뉴.getPrice().value(), 1);
         OrderRequest request = new OrderRequest(테이블12_사용중_주문전.getId(), Arrays.asList(orderLineItem));
         mockMvc.perform(post("/api/orders")
             .contentType(MediaType.APPLICATION_JSON)

@@ -46,7 +46,7 @@ public class OrderService {
 
     private OrderLineItem newOrderLineItem(OrderLineItemRequest req) {
         Menu menu = menuService.findById(req.getMenuId());
-        return new OrderLineItem(menu, req.quantity());
+        return new OrderLineItem(menu, req.getName(), req.price(), req.quantity());
     }
 
     public List<Order> list() {

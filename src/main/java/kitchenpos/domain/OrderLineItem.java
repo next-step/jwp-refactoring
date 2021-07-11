@@ -1,7 +1,9 @@
 package kitchenpos.domain;
 
+import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -12,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 @Entity
 public class OrderLineItem {
@@ -23,10 +26,6 @@ public class OrderLineItem {
 
     private Price price;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, foreignKey = @ForeignKey(name = "fk_order_line_item_orders"))
-    private Order order;
-
     @JoinColumn(nullable = false, foreignKey = @ForeignKey(name = "fk_order_line_item_menu"))
     @ManyToOne(fetch = FetchType.LAZY)
     private Menu menu;
@@ -35,17 +34,19 @@ public class OrderLineItem {
     @Column(nullable = false)
     private Quantity quantity;
 
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "order_line_item_seq", foreignKey = @ForeignKey(name = "fk_order_menu_product_order_line_item"))
+    private List<OrderLineItemDetail> orderLineItemDetails;
+
     protected OrderLineItem() {
     }
 
-    public OrderLineItem(Menu menu, Quantity quantity) {
-        this.menu = menu;
-        this.quantity = quantity;
+    public OrderLineItem(Menu menu, String name, Price price, Quantity quantity) {
+        this(null, menu, name, price, quantity);
     }
 
-    OrderLineItem(Long seq, Order order, Menu menu, Quantity quantity) {
+    OrderLineItem(Long seq, Menu menu, String name, Price price, Quantity quantity) {
         this.seq = seq;
-        this.order = order;
         this.menu = menu;
         this.quantity = quantity;
     }

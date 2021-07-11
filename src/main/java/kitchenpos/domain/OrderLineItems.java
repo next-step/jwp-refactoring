@@ -6,14 +6,19 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 import org.springframework.util.CollectionUtils;
 
 @Embeddable
 public class OrderLineItems {
-    @OneToMany(mappedBy = "order")
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_line_item_orders"))
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     public static OrderLineItems of(OrderLineItem... orderLineItems) {

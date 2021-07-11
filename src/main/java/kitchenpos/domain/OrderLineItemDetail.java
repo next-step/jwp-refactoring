@@ -3,24 +3,23 @@ package kitchenpos.domain;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 @Entity
-public class OrderMenuProduct {
+public class OrderLineItemDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "seq")
     private Long seq;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, foreignKey = @ForeignKey(name = "fk_order_menu_product_order_line_item"))
-    private OrderLineItem orderLineItem;
+    @Column(nullable = false)
+    private String name;
+
+    @Embedded
+    @Column(nullable = false)
+    private Price price;
 
     @Embedded
     @Column(nullable = false)
