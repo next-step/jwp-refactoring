@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import kitchenpos.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
 
 public class TableGroupObjects {
     private final OrderTableObjects orderTableObjects;
@@ -21,17 +22,9 @@ public class TableGroupObjects {
         tableGroup4 = new TableGroup();
 
         tableGroup1.setId(1L);
-        tableGroup1.setOrderTables(new ArrayList<>(Arrays.asList(orderTableObjects.getOrderTable1(), orderTableObjects.getOrderTable2())));
         tableGroup2.setId(2L);
-        tableGroup2.setOrderTables(new ArrayList<>(Arrays.asList(orderTableObjects.getOrderTable2(), orderTableObjects.getOrderTable3())));
         tableGroup3.setId(3L);
-        tableGroup3.setOrderTables(new ArrayList<>(Arrays.asList(orderTableObjects.getOrderTable3(), orderTableObjects.getOrderTable4())));
         tableGroup4.setId(4L);
-        tableGroup4.setOrderTables(new ArrayList<>(Arrays.asList(orderTableObjects.getOrderTable4(), orderTableObjects.getOrderTable5())));
-    }
-
-    public OrderTableObjects getOrderTableObjects() {
-        return orderTableObjects;
     }
 
     public TableGroup getTableGroup1() {

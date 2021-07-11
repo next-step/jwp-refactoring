@@ -1,5 +1,7 @@
 package kitchenpos.table.domain;
 
+import java.util.Objects;
+
 import javax.persistence.*;
 
 import kitchenpos.tablegroup.domain.TableGroup;
@@ -9,15 +11,15 @@ public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Transient
-    private Long tableGroupId;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "table_group_id")
     private TableGroup tableGroup;
-
     @Column(name = "number_of_guests")
     private int numberOfGuests;
     private boolean empty;
+
+    @Transient
+    private Long tableGroupId;
 
     public OrderTable() {
     }
@@ -48,6 +50,9 @@ public class OrderTable {
     }
 
     public void setTableGroup(final TableGroup tableGroup) {
+        if (!Objects.isNull(tableGroup)) {
+            this.empty = false;
+        }
         this.tableGroup = tableGroup;
     }
 
@@ -61,6 +66,10 @@ public class OrderTable {
 
     public boolean isEmpty() {
         return empty;
+    }
+
+    public boolean hasTableGroup() {
+        return !Objects.isNull(this.tableGroup);
     }
 
     public void setEmpty(final boolean empty) {

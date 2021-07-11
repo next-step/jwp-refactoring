@@ -1,9 +1,7 @@
 package kitchenpos.table.application;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -16,6 +14,7 @@ import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.exception.NonEmptyOrderTableNotFoundException;
+import kitchenpos.table.exception.OrderTableNotFoundException;
 
 @Service
 public class TableService {
@@ -32,6 +31,14 @@ public class TableService {
         return OrderTableResponse.of(orderTableRepository.save(orderTableRequest.toOrderTable()));
     }
 
+    public OrderTable findById(Long id) {
+        return orderTableRepository.findById(id).orElseThrow(() -> new OrderTableNotFoundException("대상 주문테이블이 존재하지 않습니다. ID : " + id));
+    }
+
+    public Long countByIds(List<Long> ids) {
+        return orderTableRepository.countByIdIn(ids);
+    }
+
     public List<OrderTableResponse> list() {
         return orderTableRepository.findAll()
                 .stream()
@@ -43,11 +50,11 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId).orElseThrow(IllegalArgumentException::new);
 
-        if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
+        if (savedOrderTable.hasTableGroup()) {
             throw new IllegalArgumentException();
         }
         if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, new ArrayList(Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))) {
+                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
             throw new IllegalArgumentException();
         }
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
@@ -61,5 +68,21 @@ public class TableService {
                 .orElseThrow(NonEmptyOrderTableNotFoundException::new);
         savedOrderTable.changeNumberOfGuests(orderTableRequest.getNumberOfGuests());
         return OrderTableResponse.of(savedOrderTable);
+    }
+
+    public List<OrderTable> findOrderTablesByIds(List<Long> ids) {
+        return orderTableRepository.findByIdIn(ids);
+    }
+
+    private void validateParametersIsEmpty(List<Long> ids) {
+        if (ids.isEmpty()) {
+            throw new IllegalArgumentException("입력된 ID가 없습니다.");
+        }
+    }
+
+    private void validateOrderTablesIsEmpty(List<OrderTable> orderTables) {
+        if (orderTables.isEmpty()) {
+            throw new OrderTableNotFoundException();
+        }
     }
 }

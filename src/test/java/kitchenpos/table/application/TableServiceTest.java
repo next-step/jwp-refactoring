@@ -28,6 +28,7 @@ import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.exception.NonEmptyOrderTableNotFoundException;
+import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.utils.domain.OrderTableObjects;
 
 @DisplayName("테이블 서비스")
@@ -41,6 +42,7 @@ class TableServiceTest {
 
     @InjectMocks
     private TableService tableService;
+
     private OrderTable changeEmptyOrderTable;
     private OrderTable beforeOrderTable;
     private OrderTable createOrderTable;
@@ -121,7 +123,8 @@ class TableServiceTest {
                 }),
                 dynamicTest("단체지정이 된 상태일 경우 오류 발생.", () -> {
                     // And
-                    changeEmptyOrderTable.setTableGroupId(1L);
+//                    changeEmptyOrderTable.setTableGroupId(1L);
+                    changeEmptyOrderTable.setTableGroup(new TableGroup());
                     given(orderTableRepository.findById(any())).willReturn(Optional.of(changeEmptyOrderTable));
 
                     // when
@@ -130,7 +133,8 @@ class TableServiceTest {
                 }),
                 dynamicTest("주문 상태가 COOKING이거나 MEAL상태이면 오류 발생.", () -> {
                     // And
-                    changeEmptyOrderTable.setTableGroupId(null);
+//                    changeEmptyOrderTable.setTableGroupId(null);
+                    changeEmptyOrderTable.setTableGroup(null);
                     given(orderTableRepository.findById(any())).willReturn(Optional.of(changeEmptyOrderTable));
                     given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any(List.class))).willReturn(true);
 
