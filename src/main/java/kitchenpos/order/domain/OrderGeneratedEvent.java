@@ -1,6 +1,4 @@
-package kitchenpos.order.application;
-
-import kitchenpos.order.domain.Order;
+package kitchenpos.order.domain;
 
 public class OrderGeneratedEvent {
     private Order order;

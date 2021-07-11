@@ -35,7 +35,6 @@ public class MenuService {
         Menu menu = Menu.of(menuRequest.getName(), menuRequest.getPrice(), menuGroup);
         menuRequest.registerMenu(menu);
         applicationEventPublisher.publishEvent(new MenuGeneratedEvent(menu));
-
         Menu savedMenu = menuRepository.save(menu);
         return new MenuResponse(savedMenu);
     }
@@ -45,6 +44,10 @@ public class MenuService {
                 .stream()
                 .map(MenuResponse::new)
                 .collect(Collectors.toList());
+    }
+
+    public int getMenuExistCount(List<Long> ids) {
+        return menuRepository.countByIdIn(ids);
     }
 
     private MenuGroup getMenuGroup(MenuRequest menuRequest) {

@@ -20,10 +20,9 @@ public class MenuEventHandler {
     }
 
     @EventListener
-    public void createMenuEventListener(MenuGeneratedEvent menuGeneratedEvent) {
+    public void generateMenuEventListener(MenuGeneratedEvent menuGeneratedEvent) {
         Menu menu = menuGeneratedEvent.getMenu();
         BigDecimal price = menu.getPrice();
-
         List<MenuProduct> menuProducts = menu.getMenuProducts();
         Price totalPrice = getTotalPrice(menuProducts);
 

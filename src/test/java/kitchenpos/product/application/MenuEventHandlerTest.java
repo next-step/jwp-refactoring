@@ -32,7 +32,7 @@ class MenuEventHandlerTest {
         Menu menu = Menu.of("반반치킨", BigDecimal.valueOf(16000), null);
         MenuGeneratedEvent menuGeneratedEvent = new MenuGeneratedEvent(menu);
 
-        assertThatThrownBy(() -> menuEventHandler.createMenuEventListener(menuGeneratedEvent))
+        assertThatThrownBy(() -> menuEventHandler.generateMenuEventListener(menuGeneratedEvent))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }
