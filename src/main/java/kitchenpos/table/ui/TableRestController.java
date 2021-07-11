@@ -58,6 +58,16 @@ public class TableRestController {
                 ;
     }
 
+    @PutMapping("/api/tables/{orderTableId}/empty/temp")
+    public ResponseEntity<OrderTableResponse> changeEmptyTemp(
+            @PathVariable final Long orderTableId,
+            @RequestBody final OrderTableRequest orderTableRequest
+    ) {
+        return ResponseEntity.ok()
+                .body(orderTableService.changeEmptyTemp(orderTableId, orderTableRequest))
+                ;
+    }
+
     @PutMapping("/api/tables/{orderTableId}/number-of-guests")
     public ResponseEntity<OrderTable> changeNumberOfGuests(
             @PathVariable final Long orderTableId,
