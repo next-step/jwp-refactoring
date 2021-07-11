@@ -6,14 +6,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
 @Embeddable
 public class OrderTables {
 
-    @OneToMany(mappedBy = "tableGroup", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "tableGroup")
     private List<OrderTable> orderTables = new ArrayList<>();
 
     public OrderTables(final List<OrderTable> orderTables) {
@@ -58,13 +57,6 @@ public class OrderTables {
         return orderTables.size();
     }
 
-    public void changeTableGroupId(final Long tableGroupId) {
-        orderTables.forEach(orderTable -> {
-            orderTable.changeTableGroupId(tableGroupId);
-            orderTable.occupy();
-        });
-    }
-
     public boolean hasOccupiedTable() {
         return orderTables.stream()
             .anyMatch(OrderTable::isOccupied);
@@ -80,7 +72,7 @@ public class OrderTables {
     }
 
     public void updateTableGroup(final TableGroup tableGroup) {
-        orderTables.forEach(orderTable -> orderTable.updateTableGroup(tableGroup));
+        orderTables.forEach(orderTable -> orderTable.updateTableGroup(tableGroup.getId()));
     }
 
     @Override

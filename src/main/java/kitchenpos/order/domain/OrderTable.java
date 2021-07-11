@@ -2,14 +2,11 @@ package kitchenpos.order.domain;
 
 import java.util.Objects;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 @Entity
 public class OrderTable {
@@ -18,9 +15,8 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinColumn(name = "table_group_id")
-    private TableGroup tableGroup;
+    private Long tableGroupId;
 
     private int numberOfGuests;
 
@@ -29,13 +25,13 @@ public class OrderTable {
     public OrderTable() {
     }
 
-    public OrderTable(TableGroup tableGroup, int numberOfGuests) {
-        this.tableGroup = tableGroup;
+    public OrderTable(final TableGroup tableGroup, final int numberOfGuests) {
+        this.tableGroupId = tableGroup.getId();
         this.numberOfGuests = numberOfGuests;
         this.empty = false;
     }
 
-    public OrderTable(int numberOfGuests) {
+    public OrderTable(final int numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
         this.empty = false;
     }
@@ -45,11 +41,7 @@ public class OrderTable {
     }
 
     public Long getTableGroupId() {
-        if (tableGroup == null) {
-            return null;
-        }
-
-        return tableGroup.getId();
+        return tableGroupId;
     }
 
     public int getNumberOfGuests() {
@@ -77,35 +69,27 @@ public class OrderTable {
     }
 
     public void ungroup() {
-        tableGroup = null;
+        tableGroupId = null;
     }
 
-    public void changeTableGroupId(Long tableGroupId) {
-        this.tableGroup.changeId(tableGroupId);
-    }
-
-    public void occupy() {
-        empty = false;
-    }
-
-    public void updateTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
+    public void updateTableGroup(final Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
         this.empty = false;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o)
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-        OrderTable that = (OrderTable)o;
+        final OrderTable that = (OrderTable)o;
         return numberOfGuests == that.numberOfGuests && empty == that.empty && Objects.equals(id, that.id)
-            && Objects.equals(tableGroup, that.tableGroup);
+            && Objects.equals(tableGroupId, that.tableGroupId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, tableGroup, numberOfGuests, empty);
+        return Objects.hash(id, tableGroupId, numberOfGuests, empty);
     }
 }
