@@ -6,6 +6,7 @@ import kitchenposNew.menu.domain.ProductRepository;
 import kitchenposNew.menu.dto.MenuGroupResponse;
 import kitchenposNew.menu.dto.ProductRequest;
 import kitchenposNew.menu.dto.ProductResponse;
+import kitchenposNew.wrap.Price;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,7 +39,7 @@ public class ProductServiceTest {
     void 상품_등록_테스트() {
         // given
         치킨_요청 = new ProductRequest("치킨", BigDecimal.valueOf(17000));
-        Product 치킨 = new Product("치킨", BigDecimal.valueOf(17000));
+        Product 치킨 = new Product("치킨", new Price(BigDecimal.valueOf(17000)));
         when(productRepository.save(치킨_요청.toProduct())).thenReturn(치킨);
 
         // when
@@ -68,8 +69,8 @@ public class ProductServiceTest {
     void 상품_리스트_조회_테스트() {
         // when
         // 메뉴 그룹 리스트 조회 요청 함
-        Product 치킨 = new Product("치킨", BigDecimal.valueOf(17000));
-        Product 콜라 = new Product("콜라", BigDecimal.valueOf(1000));
+        Product 치킨 = new Product("치킨", new Price(BigDecimal.valueOf(17000)));
+        Product 콜라 = new Product("콜라", new Price(BigDecimal.valueOf(17000)));
         when(productRepository.findAll()).thenReturn(Arrays.asList(치킨, 콜라));
         List<ProductResponse> expected = productService.list();
 
