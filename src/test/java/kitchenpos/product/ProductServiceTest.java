@@ -14,81 +14,85 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-import kitchenpos.application.ProductService;
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
+import kitchenpos.menu.domain.Price;
+import kitchenpos.menu.exception.PriceException;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 
 @DisplayName("상품 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
 
 	@Mock
-	private ProductDao productDao;
+	private ProductRepository productRepository;
 
 	@InjectMocks
 	private ProductService productService;
 
+	ProductRequest 양념치킨_요청;
 	Product 양념치킨;
 
 	@BeforeEach
 	void setUp() {
-		양념치킨 = ProductServiceTest.상품생성(1L, new BigDecimal(10000), "양념 치킨");
+		양념치킨_요청 = 상품생성_요청(new BigDecimal(10000), "양념 치킨");
+		양념치킨 = 양념치킨_요청.toProduct();
 	}
 
 	@DisplayName("상품을 생성한다.")
 	@Test
 	void 상품_생성한다() {
-		given(productDao.save(양념치킨)).willReturn(양념치킨);
+		given(productRepository.save(any())).willReturn(양념치킨);
 
-		Product created = productService.create(양념치킨);
+		ProductResponse created = productService.create(양념치킨_요청);
 
-		상품_생성_확인(created, 양념치킨);
+		상품_생성_확인(created, 양념치킨_요청);
 	}
 
 	@DisplayName("상품 생성 시 - 상품의 가격이 Null이면 생성할 수 없다.")
 	@Test
 	void 상품_생성_시_상품의_가격이_NULL_이면_생성할_수_없다() {
-		양념치킨.setPrice(null);
 		assertThatThrownBy(() -> {
-			productService.create(양념치킨);
-		}).isInstanceOf(IllegalArgumentException.class);
+			양념치킨_요청 = ProductServiceTest.상품생성_요청(null, "양념 치킨");
+			productService.create(양념치킨_요청);
+		}).isInstanceOf(PriceException.class);
 	}
 
 	@DisplayName("상품 생성 시 - 상품의 가격이 0원 이상이여야 한다")
 	@Test
 	void 상품_생성_시_상품의_가격이_0원_초과하여야_한다() {
-		양념치킨.setPrice(new BigDecimal(-1));
 		assertThatThrownBy(() -> {
-			productService.create(양념치킨);
-		}).isInstanceOf(IllegalArgumentException.class);
+			양념치킨_요청 = ProductServiceTest.상품생성_요청(new BigDecimal(-5), "양념 치킨");
+			productService.create(양념치킨_요청);
+		}).isInstanceOf(PriceException.class);
 	}
 
 	@DisplayName("상품의 리스트를 조회한다.")
 	@Test
 	void 상품의_리스트를_조회한다() {
-		given(productDao.findAll()).willReturn(Arrays.asList(양념치킨));
+		given(productRepository.findAll()).willReturn(Arrays.asList(양념치킨));
 
-		List<Product> selected = productService.list();
+		List<ProductResponse> selected = productService.list();
 
-		상품_리스트_조회_확인(selected, Arrays.asList(양념치킨));
+		상품_리스트_조회_확인(selected);
 	}
 
-	private void 상품_리스트_조회_확인(List<Product> selected, List<Product> expected) {
-		assertThat(selected).containsAll(expected);
+	private void 상품_리스트_조회_확인(List<ProductResponse> selected) {
+		assertThat(selected).isNotEmpty();
 	}
 
-	private void 상품_생성_확인(Product created, Product expected) {
-		assertThat(created.getId()).isEqualTo(expected.getId());
+	private void 상품_생성_확인(ProductResponse created, ProductRequest expected) {
 		assertThat(created.getName()).isEqualTo(expected.getName());
 		assertThat(created.getPrice()).isEqualTo(expected.getPrice());
 	}
 
-	public static Product 상품생성(Long id, BigDecimal price, String name) {
-		Product product = new Product();
-		product.setId(id);
-		product.setPrice(price);
-		product.setName(name);
-		return product;
+	public static ProductRequest 상품생성_요청(BigDecimal price, String name) {
+		ProductRequest productRequest = new ProductRequest(name, price);
+		return productRequest;
 	}
 }

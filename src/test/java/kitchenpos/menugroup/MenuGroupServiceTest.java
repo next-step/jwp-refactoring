@@ -14,55 +14,59 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.application.MenuGroupService;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.manugroup.application.MenuGroupService;
+import kitchenpos.manugroup.domain.MenuGroup;
+import kitchenpos.manugroup.domain.MenuGroupRepository;
+import kitchenpos.manugroup.dto.MenuGroupRequest;
+import kitchenpos.manugroup.dto.MenuGroupResponse;
 
 @DisplayName("메뉴 그룹 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 public class MenuGroupServiceTest {
 
 	@Mock
-	private MenuGroupDao menuGroupDao;
+	private MenuGroupRepository menuGroupRepository;
 
 	@InjectMocks
 	private MenuGroupService menuGroupService;
 
-	MenuGroup 피자;
-	MenuGroup 치킨;
+	MenuGroupRequest 피자_요청;
+	MenuGroupRequest 치킨_요청;
+	MenuGroupResponse 피자_응답;
+	MenuGroupResponse 치킨_응답;
 
 	@BeforeEach
 	void setUp() {
-		피자 = 메뉴그룹_생성(1L, "피자");
-		치킨 = 메뉴그룹_생성(2L, "치킨");
+		피자_요청 = 메뉴그룹_생성_요청("피자");
+		치킨_요청 = 메뉴그룹_생성_요청("치킨");
+		피자_응답 = new MenuGroupResponse(1L, "피자");
+		치킨_응답 = new MenuGroupResponse(2L, "치킨");
 	}
 
 	@DisplayName("메뉴 그룹을 생성한다.")
 	@Test
 	void 메뉴_그룹을_등록한다() {
-		given(menuGroupDao.save(피자)).willReturn(피자);
+		given(menuGroupRepository.save(any())).willReturn(피자_요청.toMenuGroup());
 
-		MenuGroup createdMenuGroup = menuGroupService.create(피자);
+		MenuGroupResponse createdMenuGroup = menuGroupService.create(피자_요청);
 
-		assertThat(createdMenuGroup.getId()).isEqualTo(피자.getId());
-		assertThat(createdMenuGroup.getName()).isEqualTo(피자.getName());
+		assertThat(createdMenuGroup).isNotNull();
+		assertThat(createdMenuGroup.getName()).isEqualTo(피자_요청.getName());
 	}
 
 	@DisplayName("메뉴 그룹 리스트를 조회한다.")
 	@Test
 	void 메뉴_그룹_리스트를_조회한다() {
-		given(menuGroupDao.findAll()).willReturn(Arrays.asList(피자, 치킨));
+		given(menuGroupRepository.findAll()).willReturn(Arrays.asList(피자_요청.toMenuGroup(), 치킨_요청.toMenuGroup()));
 
-		List<MenuGroup> 메뉴그룹들 = menuGroupService.list();
+		List<MenuGroupResponse> 메뉴그룹들 = menuGroupService.list();
 
-		assertThat(메뉴그룹들).containsAll(Arrays.asList(피자, 치킨));
+		assertThat(메뉴그룹들).hasSize(2);
 	}
 
-	public static MenuGroup 메뉴그룹_생성(Long id, String name) {
-		MenuGroup 메뉴그룹 = new MenuGroup();
-		메뉴그룹.setId(id);
-		메뉴그룹.setName(name);
-		return 메뉴그룹;
+	public static MenuGroupRequest 메뉴그룹_생성_요청(String name) {
+		MenuGroupRequest 메뉴그룹_요청 = new MenuGroupRequest(name);
+		return 메뉴그룹_요청;
 	}
 
 }
