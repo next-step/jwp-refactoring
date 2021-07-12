@@ -19,9 +19,6 @@ public class OrderRepositoryTest {
     private OrderRepository orderRepository;
 
     @Autowired
-    private OrderLineItemRepository orderLineItemRepository;
-
-    @Autowired
     private OrderTableRepository orderTableRepository;
 
     private Long orderTableId = 1L;
@@ -35,8 +32,6 @@ public class OrderRepositoryTest {
     void setUp() {
         OrderLineItem orderLineItem1 = new OrderLineItem(1L, 1);
         OrderLineItem orderLineItem2 = new OrderLineItem(3L, 2);
-//        orderLineItems.add(orderLineItemRepository.save(orderLineItem1));
-//        orderLineItems.add(orderLineItemRepository.save(orderLineItem2));
         orderLineItems.add(orderLineItem1);
         orderLineItems.add(orderLineItem2);
 

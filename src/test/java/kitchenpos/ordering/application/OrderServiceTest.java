@@ -35,8 +35,6 @@ public class OrderServiceTest {
     @Mock
     private OrderRepository orderRepository;
     @Mock
-    private OrderLineItemRepository orderLineItemRepository;
-    @Mock
     private OrderTableRepository orderTableRepository;
 
     private Long order1Id = 1L;
@@ -49,7 +47,7 @@ public class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(menuRepository, orderRepository, orderLineItemRepository, orderTableRepository);
+        orderService = new OrderService(menuRepository, orderRepository, orderTableRepository);
     }
 
     @DisplayName("주문을 등록할 수 있다")
