@@ -1,7 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.common.Price;
-import kitchenpos.product.domain.Product;
+import kitchenpos.BaseEntity;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -9,7 +8,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-public class Menu {
+public class Menu extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -18,7 +17,7 @@ public class Menu {
     private String name;
 
     @Embedded
-    private Price price;
+    private Amount amount;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private MenuGroup menuGroup;
@@ -30,9 +29,9 @@ public class Menu {
 
     }
 
-    public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+    public Menu(String name, BigDecimal amount, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.name = name;
-        this.price = new Price(price);
+        this.amount = new Amount(amount);
         this.menuGroup = menuGroup;
         this.menuProducts = new MenuProducts(menuProducts, id);
 
@@ -46,7 +45,7 @@ public class Menu {
             priceSumOfMenuProducts = priceSumOfMenuProducts.add(menuProduct.getPrice());
         }
 
-        price.isInvalidIfOverThan(priceSumOfMenuProducts);
+        amount.checkIfOverThan(priceSumOfMenuProducts);
     }
 
     public Long getId() {
@@ -57,8 +56,8 @@ public class Menu {
         return name;
     }
 
-    public BigDecimal getPrice() {
-        return price.get();
+    public BigDecimal getAmount() {
+        return amount.get();
     }
 
     public MenuGroup getMenuGroup() {
@@ -74,11 +73,11 @@ public class Menu {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Menu menu = (Menu) o;
-        return Objects.equals(id, menu.id) && Objects.equals(name, menu.name) && Objects.equals(price, menu.price) && Objects.equals(menuGroup, menu.menuGroup) && Objects.equals(menuProducts, menu.menuProducts);
+        return Objects.equals(id, menu.id) && Objects.equals(name, menu.name) && Objects.equals(amount, menu.amount) && Objects.equals(menuGroup, menu.menuGroup) && Objects.equals(menuProducts, menu.menuProducts);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, price, menuGroup, menuProducts);
+        return Objects.hash(id, name, amount, menuGroup, menuProducts);
     }
 }

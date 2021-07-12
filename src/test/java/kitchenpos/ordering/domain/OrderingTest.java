@@ -53,20 +53,4 @@ public class OrderingTest {
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("주문을 만들 때 있던 주문아이템들은 해당 주문의 아이디를 갖는다.")
-    @Test
-    void 주문을_만들_때_넣은_주문아이템들은_해당_주문의_아이디를_갖는다() {
-        OrderLineItem orderLineItem1 = new OrderLineItem(1L, 3);
-        OrderLineItem orderLineItem2 = new OrderLineItem(2L, 1);
-        OrderLineItem orderLineItem3 = new OrderLineItem(3L, 2);
-
-        Ordering order = new Ordering(1L, 1L,
-                Arrays.asList(orderLineItem1, orderLineItem2, orderLineItem3));
-
-        assertThat(order.getOrderLineItems().stream()
-        .map(orderLineItem -> orderLineItem.getOrderId())
-        .collect(Collectors.toList()))
-                .containsExactly(order.getId(),order.getId(),order.getId());
-    }
-
 }

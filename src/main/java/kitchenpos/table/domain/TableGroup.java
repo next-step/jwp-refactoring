@@ -1,7 +1,6 @@
 package kitchenpos.table.domain;
 
 import kitchenpos.BaseEntity;
-import kitchenpos.table.dto.TableGroupRequest;
 
 import javax.persistence.*;
 import java.util.List;
@@ -17,10 +16,6 @@ public class TableGroup extends BaseEntity {
     private OrderTables orderTables;
 
     public TableGroup() { }
-
-    public TableGroup(Long id) {
-        this.id = id;
-    }
 
     public TableGroup(List<OrderTable> orderTables) {
         this.orderTables = new OrderTables(orderTables);

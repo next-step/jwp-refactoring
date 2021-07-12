@@ -10,11 +10,15 @@ import java.util.stream.Collectors;
 
 public class OrderRequest {
     private Long orderTableId;
-    private OrderStatus orderStatus;
+    private String orderStatus;
     private List<OrderLineItemRequest> orderLineItems;
+
+    public OrderRequest() {
+    }
 
     public OrderRequest(Long orderTableId, List<OrderLineItem> orderLineItems) {
         this.orderTableId = orderTableId;
+        this.orderStatus = OrderStatus.COOKING.name();
         this.orderLineItems = orderLineItems.stream()
                 .map(OrderLineItemRequest::from)
                 .collect(Collectors.toList());
@@ -22,7 +26,7 @@ public class OrderRequest {
 
     public OrderRequest(Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
         this.orderTableId = orderTableId;
-        this.orderStatus = orderStatus;
+        this.orderStatus = orderStatus.name();
         this.orderLineItems = orderLineItems.stream()
                 .map(OrderLineItemRequest::from)
                 .collect(Collectors.toList());
@@ -42,7 +46,7 @@ public class OrderRequest {
     }
 
     public OrderStatus getOrderStatus() {
-        return orderStatus;
+        return OrderStatus.valueOf(orderStatus);
     }
 
     public List<OrderLineItemRequest> getOrderLineItems() {

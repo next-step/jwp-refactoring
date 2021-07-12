@@ -1,34 +1,27 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.product.domain.Product;
+import kitchenpos.BaseEntity;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Entity
-public class MenuProduct {
+public class MenuProduct extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    private Menu menu;
-//    @Column
-//    private Long menuId;
-
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Product product;
-//    @Column
-//    private Long productId;
 
     @Column
-    private long quantity;
+    private int quantity;
 
     public MenuProduct() { }
 
-    public MenuProduct(Long id, Menu menu, Product product, long quantity) {
+    public MenuProduct(Long id, Product product, int quantity) {
         this.id = id;
-        this.menu = menu;
         this.product = product;
         this.quantity = quantity;
     }
@@ -46,16 +39,24 @@ public class MenuProduct {
         return id;
     }
 
-    public Menu getMenu() {
-        return menu;
-    }
-
     public Product getProduct() {
         return product;
     }
 
-    public long getQuantity() {
+    public int getQuantity() {
         return quantity;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MenuProduct that = (MenuProduct) o;
+        return quantity == that.quantity && Objects.equals(id, that.id) && Objects.equals(product, that.product);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, product, quantity);
+    }
 }
