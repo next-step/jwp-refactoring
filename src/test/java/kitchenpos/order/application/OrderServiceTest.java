@@ -12,6 +12,7 @@ import kitchenposNew.order.dto.OrderRequest;
 import kitchenposNew.order.dto.OrderResponse;
 import kitchenposNew.order.exception.EmptyOrderLineItemsException;
 import kitchenposNew.order.exception.NotEqualsOrderCountAndMenuCount;
+import kitchenposNew.order.exception.NotFoundOrder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -171,7 +172,52 @@ public class OrderServiceTest {
         List<OrderResponse> orderResponseList = orderService.list();
         assertThat(orderResponseList.get(0).getOrderLineItems()).containsAll(Arrays.asList(OrderLineItemResponse.of(firstOrderLineItem)
                 , OrderLineItemResponse.of(secondOrderLineItem)));
+    }
 
+    @Test
+    @DisplayName("주문 상태 변경 시 없는 주문 예외")
+    void 주문_상태_변경_테스트() {
+        // given
+        // 주문 아이템 생성됨
+        firstOrderLineItemRequest = 주문_아이템_생성(1L, 1L);
+        secondOrderLineItemRequest = 주문_아이템_생성(2L, 1L);
+
+        // and
+        // 주문 생성되어 있음
+        OrderRequest order = new OrderRequest(1L, Arrays.asList(firstOrderLineItemRequest, secondOrderLineItemRequest));
+
+        // then
+        // 주문이 없음
+        assertThatThrownBy(() -> orderService.changeOrderStatus(1L))
+                .isInstanceOf(NotFoundOrder.class);
+    }
+
+    @Test
+    @DisplayName("주문 상태 변경")
+    void 주문_상태_변경() {
+        // given
+        // 주문 아이템 생성됨
+        firstOrderLineItemRequest = 주문_아이템_생성(1L, 1L);
+        secondOrderLineItemRequest = 주문_아이템_생성(2L, 1L);
+
+        // and
+        // 주문 메뉴 및 테이블 생성되어 있음
+        Menu firstMenu = new Menu(1L);
+        Menu secondMenu = new Menu(2L);
+        OrderTable orderTable = new OrderTable();
+        orderTable.setId(1L);
+        OrderLineItem firstOrderLineItem = new OrderLineItem(firstMenu, 1L);
+        OrderLineItem secondOrderLineItem = new OrderLineItem(secondMenu, 1L);
+        Order order = new Order(orderTable, new OrderLineItems(Arrays.asList(firstOrderLineItem, secondOrderLineItem)));
+
+        // when
+        // 주문 조회됨
+        when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
+
+        // then
+        // 상태 변경됨
+        OrderResponse orderResponse = orderService.changeOrderStatus(1L);
+        assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
     }
 
     private OrderLineItemRequest 주문_아이템_생성(Long menuId, Long quantity) {

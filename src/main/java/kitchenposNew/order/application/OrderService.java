@@ -61,11 +61,9 @@ public class OrderService {
     }
 
     @Transactional
-    public Order changeOrderStatus(final Long orderId, final Order order) {
+    public OrderResponse changeOrderStatus(final Long orderId) {
         final Order savedOrder = orderRepository.findById(orderId).orElseThrow(() -> new NotFoundOrder());
-        savedOrder.changeOrderStatus(order.getOrderStatus());
-        savedOrder.changeOrderLineItems(orderLineItemRepository.findAllByOrderId(orderId).orElseThrow(IllegalAccessError::new));
-
-        return savedOrder;
+        savedOrder.changeOrderStatus();
+        return OrderResponse.of(savedOrder);
     }
 }

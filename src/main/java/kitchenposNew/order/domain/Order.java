@@ -45,11 +45,11 @@ public class Order {
         this.orderLineItems.registerOrder(this);
     }
 
-    public void changeOrderStatus(OrderStatus orderStatus) {
+    public void changeOrderStatus() {
         if (orderStatus.isCompletion()) {
             throw new IllegalArgumentException();
         }
-        this.orderStatus = orderStatus;
+        this.orderStatus = OrderStatus.COOKING;
     }
 
     public void changeOrderLineItems(List<OrderLineItem> orderLineItems) {
