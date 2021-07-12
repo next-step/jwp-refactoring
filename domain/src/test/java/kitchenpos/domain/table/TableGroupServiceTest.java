@@ -1,6 +1,5 @@
-package kitchenpos.application.table;
+package kitchenpos.domain.table;
 
-import kitchenpos.domain.table.OrderTable;
 import kitchenpos.dto.order.OrderTableId;
 import kitchenpos.dto.table.TableGroupRequest;
 import kitchenpos.event.table.TableGroupCreatedEvent;

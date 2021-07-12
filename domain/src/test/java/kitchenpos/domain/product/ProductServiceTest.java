@@ -1,8 +1,5 @@
-package kitchenpos.application.product;
+package kitchenpos.domain.product;
 
-import kitchenpos.application.product.ProductService;
-import kitchenpos.domain.product.Price;
-import kitchenpos.domain.product.Product;
 import kitchenpos.dto.product.ProductRequest;
 import kitchenpos.repository.product.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,7 +34,7 @@ class ProductServiceTest {
     void create() {
         given(productRepository.save(product)).willReturn(product);
 
-        ProductRequest productRequest = new ProductRequest("product", Price.of(1000L));
+        ProductRequest productRequest = new ProductRequest("product", 1000L);
         productService.create(productRequest);
 
         verify(productRepository).save(product);

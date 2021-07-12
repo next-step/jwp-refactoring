@@ -1,13 +1,11 @@
-package kitchenpos.application.table;
+package kitchenpos.domain.table;
 
-import kitchenpos.domain.table.TableGroup;
+import kitchenpos.domain.order.OrderStatus;
+import kitchenpos.dto.order.OrderTableRequest;
 import kitchenpos.exception.order.InvalidOrderStatusException;
 import kitchenpos.exception.order.InvalidOrderTableException;
 import kitchenpos.repository.order.OrderRepository;
 import kitchenpos.repository.order.OrderTableRepository;
-import kitchenpos.domain.order.OrderStatus;
-import kitchenpos.domain.table.OrderTable;
-import kitchenpos.dto.order.OrderTableRequest;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,7 +17,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static kitchenpos.domain.table.TableGroup.EMPTY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -55,7 +52,7 @@ class TableServiceTest {
         given(orderTableRepository.save(orderTableDummy)).willReturn(orderTableDummy);
 
         OrderTable savedOrderTable = tableService.create(orderTableRequest);
-        assertThat(savedOrderTable.getTableGroup()).isEqualTo(EMPTY);
+        assertThat(savedOrderTable.getTableGroup()).isNull();
     }
 
     @Test
