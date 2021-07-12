@@ -8,6 +8,7 @@ import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.ProductEntity;
 import kitchenpos.product.domain.ProductRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -144,6 +145,6 @@ class MenuService2Test {
     List<MenuResponse> menuList = menuService.findAllMenus();
 
     //then
-    assertThat(menuList).contains(MenuResponse.from(savedMenu1), MenuResponse.from(savedMenu2));
+    Assertions.assertThat(menuList).contains(MenuResponse.from(savedMenu1), MenuResponse.from(savedMenu2));
   }
 }

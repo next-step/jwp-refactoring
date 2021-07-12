@@ -31,6 +31,14 @@ allprojects {
 dependencies {
     implementation project(':module-product')
     implementation project(':module-menugroup')
+    implementation project(':module-menu')
+}
+
+project(':module-menu') {
+    dependencies {
+        implementation project(':module-product')
+        implementation project(':module-menugroup')
+    }
 }
 
 test {
