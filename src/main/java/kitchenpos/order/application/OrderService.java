@@ -55,12 +55,13 @@ public class OrderService {
     }
 
     private OrderLineItem createOrderLineItem(OrderLineItemRequest orderLineItemRequest) {
-        return new OrderLineItem(findMenuById(orderLineItemRequest),
+        Menu menu = findMenuById(orderLineItemRequest.getMenuId());
+        return new OrderLineItem(menu.getId(),
                                  orderLineItemRequest.getQuantity());
     }
 
-    private Menu findMenuById(OrderLineItemRequest orderLineItemRequest) {
-        return menuRepository.findById(orderLineItemRequest.getMenuId())
+    private Menu findMenuById(final Long menuId) {
+        return menuRepository.findById(menuId)
                              .orElseThrow(() -> new KitchenposException(NOT_FOUND_MENU));
     }
 

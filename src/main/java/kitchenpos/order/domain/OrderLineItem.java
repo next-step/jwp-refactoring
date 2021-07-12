@@ -9,7 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import kitchenpos.menu.domain.Menu;
 
 @Entity
 public class OrderLineItem {
@@ -22,9 +21,7 @@ public class OrderLineItem {
     @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_line_item_orders"))
     private Order order;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_order_line_item_menu"))
-    private Menu menu;
+    private Long menuId;
 
     private long quantity;
 
@@ -32,8 +29,8 @@ public class OrderLineItem {
         // empty
     }
 
-    public OrderLineItem(final Menu menu, final long quantity) {
-        this.menu = menu;
+    public OrderLineItem(final Long menuId, final long quantity) {
+        this.menuId = menuId;
         this.quantity = quantity;
     }
 
@@ -49,17 +46,14 @@ public class OrderLineItem {
         return quantity;
     }
 
-    public Long getOrderId() {
+    public Long orderId() {
         if (Objects.isNull(this.order)) {
             return 0L;
         }
         return this.order.getId();
     }
 
-    public Long getMenuId() {
-        if (Objects.isNull(this.menu)) {
-            return 0L;
-        }
-        return this.menu.getId();
+    public Long menuId() {
+        return this.menuId;
     }
 }

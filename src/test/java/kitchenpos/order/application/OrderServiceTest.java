@@ -63,7 +63,7 @@ class OrderServiceTest {
                                  .build();
         List<OrderLineItemRequest> orderLineItemRequests = Arrays.asList(new OrderLineItemRequest(1L, 3),
                                                                          new OrderLineItemRequest(2L, 1));
-        OrderLineItem orderLineItem = new OrderLineItem(메뉴, 3);
+        OrderLineItem orderLineItem = new OrderLineItem(1L, 3);
         OrderTable orderTable = new OrderTable(5, false);
         Order order = new Order(orderTable, OrderStatus.COOKING, Arrays.asList(orderLineItem));
         OrderRequest orderRequest = new OrderRequest(1l, orderLineItemRequests);
