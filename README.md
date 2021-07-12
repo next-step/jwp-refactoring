@@ -105,12 +105,13 @@
 - [x] Spring Data jpa 의존성 추가
 - [x] menu service refactoring
     - [x] menuProduct relation refactoring
-    - [x] menuProducts first collection creat
+    - [x] menuProducts first collection create
 - [x] menuGroup service refactoring
 - [x] product service refactoring
 - [x] table service refactoring
     - [x] order table relation refactoring
-- [ ] tableGroup service refactoring
+- [x] tableGroup service refactoring
+    - [x] order table group relation refactoring
 - [x] order service refactoring
     - [x] orderLineTimes relation refactoring
     - [x] orderLineTimes first collection create
