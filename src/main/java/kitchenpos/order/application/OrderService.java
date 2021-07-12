@@ -4,9 +4,13 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusChangeRequest;
+import kitchenpos.order.event.OrderCreatedEvent;
+import kitchenpos.order.event.OrderStatusChangedEvent;
+import kitchenpos.order.exception.EmptyOrderTableException;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.order.dto.OrderCreateRequest;
 import kitchenpos.ordertable.domain.OrderTableRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,24 +22,30 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class OrderService {
-    private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
+    private final ApplicationEventPublisher publisher;
 
     public OrderService(
-            MenuRepository menuRepository, OrderRepository orderRepository,
-            OrderTableRepository orderTableRepository) {
-        this.menuRepository = menuRepository;
+            OrderRepository orderRepository,
+            OrderTableRepository orderTableRepository, ApplicationEventPublisher publisher) {
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
+        this.publisher = publisher;
     }
 
     public OrderResponse create(OrderCreateRequest orderCreateRequest) {
-        OrderLineItems orderLineItems = generateOrderLineItems(orderCreateRequest);
-
         OrderTable orderTable = generateOrderTable(orderCreateRequest);
 
-        Order savedOrder = generateOrder(orderTable, orderLineItems);
+        Order savedOrder = orderRepository.save(
+                new Order(
+                        orderTable,
+                        OrderStatus.COOKING.name(),
+                        LocalDateTime.now()
+                )
+        );
+
+        publisher.publishEvent(new OrderCreatedEvent(savedOrder, orderCreateRequest.getOrderLineItems()));
 
         return OrderResponse.of(savedOrder);
     }
@@ -45,41 +55,9 @@ public class OrderService {
                 .orElseThrow(NoSuchElementException::new);
 
         if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new EmptyOrderTableException();
         }
         return orderTable;
-    }
-
-    private OrderLineItems generateOrderLineItems(OrderCreateRequest orderCreateRequest) {
-        List<OrderLineItem> orderLineItemList = orderCreateRequest.getOrderLineItems()
-                .stream()
-                .map(orderLineItemRequest -> new OrderLineItem(
-                        orderLineItemRequest.getMenuId(),
-                        orderLineItemRequest.getQuantity()
-                )).collect(Collectors.toList());
-
-        OrderLineItems orderLineItems = new OrderLineItems(orderLineItemList);
-
-        orderLineItems.validateOrderLineItemsEmpty();
-
-        List<Long> menuIds = orderLineItems.menuIds();
-
-        orderLineItems.validateSizeAndMenuCountDifferent(menuRepository.countByIdIn(menuIds));
-
-        return orderLineItems;
-    }
-
-    private Order generateOrder(OrderTable orderTable, OrderLineItems orderLineItems) {
-        Order savedOrder = orderRepository.save(new Order(orderTable));
-        savedOrder.setOrderStatus(OrderStatus.COOKING.name());
-        savedOrder.setOrderedTime(LocalDateTime.now());
-
-        for (OrderLineItem orderLineItem : orderLineItems.orderLineItems()) {
-            orderLineItem.setOrder(savedOrder);
-        }
-
-        savedOrder.addOrderLineItems(orderLineItems);
-        return savedOrder;
     }
 
     public List<OrderResponse> list() {
@@ -95,7 +73,11 @@ public class OrderService {
         savedOrder.validateOrderStatusComplete();
 
         final OrderStatus orderStatus = OrderStatus.valueOf(orderStatusChangeRequest.getOrderStatus());
-        savedOrder.setOrderStatus(orderStatus.name());
+        savedOrder.changeOrderStatus(orderStatus.name());
+
+        if(orderStatus.equals(OrderStatus.COMPLETION)) {
+            publisher.publishEvent(new OrderStatusChangedEvent(orderId));
+        }
 
         return OrderResponse.of(savedOrder);
     }

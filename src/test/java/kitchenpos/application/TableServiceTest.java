@@ -1,10 +1,13 @@
 package kitchenpos.application;
 
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.exception.EmptyOrderTableException;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.application.TableService;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.dto.*;
+import kitchenpos.ordertable.exception.AlreadyHaveTableGroupException;
+import kitchenpos.ordertable.exception.OrderStatusNotCompleteException;
 import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -95,7 +98,7 @@ public class TableServiceTest {
 
         //when, then
         assertThatThrownBy(() -> tableService.changeEmpty(1L, new OrderTableEmptyChangeRequest(false)))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(NoSuchElementException.class);
     }
 
     @DisplayName("개별 주문 테이블이 그룹에 속해있음")
@@ -107,7 +110,7 @@ public class TableServiceTest {
 
         //when, then
         assertThatThrownBy(() -> tableService.changeEmpty(1L, new OrderTableEmptyChangeRequest(false)))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(AlreadyHaveTableGroupException.class);
     }
 
     @DisplayName("주문이 조리 또는 식사의 상태이면 안됨")
@@ -120,7 +123,7 @@ public class TableServiceTest {
 
         //when, then
         assertThatThrownBy(() -> tableService.changeEmpty(1L, new OrderTableEmptyChangeRequest(false)))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(OrderStatusNotCompleteException.class);
     }
 
     @DisplayName("손님 숫자 정상적인 변경")
@@ -166,6 +169,6 @@ public class TableServiceTest {
 
         //when, then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, new OrderTableGuestChangeRequest(1)))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(EmptyOrderTableException.class);
     }
 }

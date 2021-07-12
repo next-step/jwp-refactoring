@@ -1,4 +1,6 @@
-package kitchenpos.order.domain;
+package kitchenpos.orderlineitem.domain;
+
+import kitchenpos.order.domain.Order;
 
 import javax.persistence.*;
 

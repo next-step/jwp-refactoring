@@ -1,11 +1,6 @@
-package kitchenpos.menu.dto;
+package kitchenpos.menuproduct.dto;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.product.domain.Product;
-
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import kitchenpos.menuproduct.domain.MenuProduct;
 
 public class MenuProductResponse {
     private Long id;
@@ -23,7 +18,7 @@ public class MenuProductResponse {
 
     public static MenuProductResponse of(MenuProduct menuProduct) {
         return new MenuProductResponse(
-                menuProduct.getId(), menuProduct.productId(), menuProduct.getQuantity()
+                menuProduct.getSeq(), menuProduct.productId(), menuProduct.getQuantity()
         );
     }
 

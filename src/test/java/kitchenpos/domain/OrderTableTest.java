@@ -1,6 +1,7 @@
 package kitchenpos.domain;
 
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.exception.AlreadyHaveTableGroupException;
 import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,6 @@ public class OrderTableTest {
         OrderTable orderTable = new OrderTable(1L, new TableGroup(), 4, true);
 
         //when, then
-        assertThatThrownBy(orderTable::validateTableGroupNonNull).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(orderTable::validateTableGroupNonNull).isInstanceOf(AlreadyHaveTableGroupException.class);
     }
 }

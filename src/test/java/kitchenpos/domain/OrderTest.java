@@ -2,6 +2,7 @@ package kitchenpos.domain;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.exception.OrderStatusCompleteException;
 import kitchenpos.ordertable.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,6 @@ public class OrderTest {
 
         //when, then
         assertThatThrownBy(order::validateOrderStatusComplete)
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(OrderStatusCompleteException.class);
     }
 }

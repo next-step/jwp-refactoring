@@ -1,10 +1,10 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.order.exception.OrderStatusCompleteException;
 import kitchenpos.ordertable.domain.OrderTable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -17,14 +17,14 @@ public class Order {
     private OrderTable orderTable;
     private String orderStatus;
     private LocalDateTime orderedTime;
-    @Embedded
-    private OrderLineItems orderLineItems = new OrderLineItems();
 
     public Order() {
     }
 
-    public Order(OrderTable orderTable) {
+    public Order(OrderTable orderTable, String orderStatus, LocalDateTime orderedTime) {
         this.orderTable = orderTable;
+        this.orderStatus = orderStatus;
+        this.orderedTime = orderedTime;
     }
 
     public Order(Long id, OrderTable orderTable) {
@@ -38,21 +38,13 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
-    public void addOrderLineItems(List<OrderLineItem> orderLineItems) {
-        this.orderLineItems.addAll(orderLineItems);
-    }
-
-    public void addOrderLineItems(OrderLineItems orderLineItems) {
-        this.orderLineItems.addAll(orderLineItems.orderLineItems());
-    }
-
     private boolean isOrderStatusComplete() {
         return Objects.equals(OrderStatus.COMPLETION.name(), this.getOrderStatus());
     }
 
     public void validateOrderStatusComplete() {
         if (isOrderStatusComplete()) {
-            throw new IllegalArgumentException();
+            throw new OrderStatusCompleteException();
         }
     }
 
@@ -72,7 +64,7 @@ public class Order {
         return orderedTime;
     }
 
-    public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems.orderLineItems();
+    public void changeOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
     }
 }

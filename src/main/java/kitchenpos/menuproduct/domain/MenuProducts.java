@@ -1,18 +1,12 @@
-package kitchenpos.menu.domain;
+package kitchenpos.menuproduct.domain;
 
-import kitchenpos.product.domain.Product;
+import kitchenpos.menuproduct.exception.NoMenuProductException;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Embeddable;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-@Embeddable
 public class MenuProducts {
-    @OneToMany(mappedBy = "menu", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
     public MenuProducts() {
@@ -20,6 +14,11 @@ public class MenuProducts {
 
     public MenuProducts(List<MenuProduct> menuProducts) {
         this.menuProducts = menuProducts;
+        validateSize();
+    }
+
+    public void add(MenuProduct menuProduct) {
+        this.menuProducts.add(menuProduct);
     }
 
     public void addAll(List<MenuProduct> menuProducts) {
@@ -33,9 +32,15 @@ public class MenuProducts {
     public BigDecimal sumOfMenuProducts() {
         BigDecimal sum = BigDecimal.ZERO;
         for (final MenuProduct menuProduct : menuProducts) {
-            final Product product = menuProduct.getProduct();
-            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
+            sum = sum.add(menuProduct.menuProductPrice());
         }
+
         return sum;
+    }
+
+    public void validateSize() {
+        if(this.menuProducts.isEmpty()) {
+            throw new NoMenuProductException();
+        }
     }
 }

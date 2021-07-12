@@ -1,6 +1,6 @@
 package kitchenpos.order.dto;
 
-import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.orderlineitem.domain.OrderLineItem;
 
 public class OrderLineItemResponse {
     private Long id;
