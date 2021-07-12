@@ -1,24 +1,17 @@
 package kitchenpos.order.application;
 
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.OrderTable;
 import kitchenposNew.menu.domain.Menu;
 import kitchenposNew.menu.domain.MenuRepository;
 import kitchenposNew.menu.exception.NotFoundMenu;
 import kitchenposNew.order.OrderStatus;
 import kitchenposNew.order.application.OrderService;
-import kitchenposNew.order.domain.Order;
-import kitchenposNew.order.domain.OrderLineItem;
-import kitchenposNew.order.domain.OrderLineItemRepository;
-import kitchenposNew.order.domain.OrderRepository;
+import kitchenposNew.order.domain.*;
 import kitchenposNew.order.dto.OrderLineItemRequest;
 import kitchenposNew.order.dto.OrderLineItemResponse;
 import kitchenposNew.order.dto.OrderRequest;
 import kitchenposNew.order.dto.OrderResponse;
 import kitchenposNew.order.exception.EmptyOrderLineItemsException;
 import kitchenposNew.order.exception.NotEqualsOrderCountAndMenuCount;
-import kitchenposNew.order.exception.NotFoundOrderTable;
-import kitchenposNew.wrap.Price;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,13 +19,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -52,7 +45,7 @@ public class OrderServiceTest {
     private OrderLineItemRepository orderLineItemRepository;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private OrderService orderService;
@@ -139,7 +132,7 @@ public class OrderServiceTest {
         OrderLineItem firstOrderLineItem = new OrderLineItem(firstMenu, 1L);
         OrderLineItem secondOrderLineItem = new OrderLineItem(secondMenu, 1L);
         Order order = new Order(orderTable, Arrays.asList(firstOrderLineItem, secondOrderLineItem));
-        when(orderTableDao.findById(1L)).thenReturn(Optional.ofNullable(orderTable));
+        when(orderTableRepository.findById(1L)).thenReturn(Optional.ofNullable(orderTable));
 
         // when
         // 주문 요청함
@@ -177,7 +170,7 @@ public class OrderServiceTest {
         // 주문 조회 됨
         List<OrderResponse> orderResponseList = orderService.list();
         assertThat(orderResponseList.get(0).getOrderLineItems()).containsAll(Arrays.asList(OrderLineItemResponse.of(firstOrderLineItem)
-                                                                                            , OrderLineItemResponse.of(secondOrderLineItem)));
+                , OrderLineItemResponse.of(secondOrderLineItem)));
 
     }
 

@@ -1,6 +1,5 @@
 package kitchenposNew.order.domain;
 
-import kitchenpos.domain.OrderTable;
 import kitchenposNew.order.OrderStatus;
 
 import javax.persistence.*;
@@ -16,7 +15,7 @@ public class Order {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private OrderTable orderTableId;
+    private OrderTable orderTable;
 
     @Enumerated(value = EnumType.STRING)
     private OrderStatus orderStatus;
@@ -30,7 +29,7 @@ public class Order {
 
     public Order(Long id, OrderTable orderTableId, List<OrderLineItem> orderLineItems) {
         this.id = id;
-        this.orderTableId = orderTableId;
+        this.orderTable = orderTableId;
         this.orderStatus = OrderStatus.COOKING;
         this.orderLineItems = orderLineItems;
         this.orderedTime = LocalDateTime.now();
@@ -39,8 +38,8 @@ public class Order {
         );
     }
 
-    public Order(OrderTable orderTableId, List<OrderLineItem> orderLineItems) {
-        this.orderTableId = orderTableId;
+    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        this.orderTable = orderTable;
         this.orderStatus = OrderStatus.COOKING;
         this.orderLineItems = orderLineItems;
         this.orderedTime = LocalDateTime.now();
@@ -65,8 +64,8 @@ public class Order {
         return id;
     }
 
-    public OrderTable getOrderTableId() {
-        return orderTableId;
+    public OrderTable getOrderTable() {
+        return orderTable;
     }
 
     public OrderStatus getOrderStatus() {
@@ -86,11 +85,11 @@ public class Order {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Order order = (Order) o;
-        return Objects.equals(id, order.id) && Objects.equals(orderTableId, order.orderTableId) && orderStatus == order.orderStatus && Objects.equals(orderedTime, order.orderedTime) && Objects.equals(orderLineItems, order.orderLineItems);
+        return Objects.equals(id, order.id) && Objects.equals(orderTable, order.orderTable) && orderStatus == order.orderStatus && Objects.equals(orderedTime, order.orderedTime) && Objects.equals(orderLineItems, order.orderLineItems);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, orderTableId, orderStatus, orderedTime, orderLineItems);
+        return Objects.hash(id, orderTable, orderStatus, orderedTime, orderLineItems);
     }
 }

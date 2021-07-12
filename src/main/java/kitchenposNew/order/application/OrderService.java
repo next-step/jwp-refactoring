@@ -1,7 +1,7 @@
 package kitchenposNew.order.application;
 
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.OrderTable;
+import kitchenposNew.order.domain.OrderTableRepository;
+import kitchenposNew.order.domain.OrderTable;
 import kitchenposNew.menu.domain.Menu;
 import kitchenposNew.menu.domain.MenuRepository;
 import kitchenposNew.menu.exception.NotFoundMenu;
@@ -24,16 +24,14 @@ public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
     private final OrderLineItemRepository orderLineItemRepository;
-    private final OrderTableDao orderTableDao;
+    private final OrderTableRepository orderTableRepository;
 
     public OrderService(MenuRepository menuRepository, OrderRepository orderRepository
-            , OrderLineItemRepository orderLineItemRepository,
-            final OrderTableDao orderTableDao
-    ) {
+            , OrderLineItemRepository orderLineItemRepository, OrderTableRepository orderTableRepository) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
         this.orderLineItemRepository = orderLineItemRepository;
-        this.orderTableDao = orderTableDao;
+        this.orderTableRepository = orderTableRepository;
     }
 
     @Transactional
@@ -46,7 +44,7 @@ public class OrderService {
                 .map(menuId -> menuRepository.findById(menuId).orElseThrow(() -> new NotFoundMenu()))
                 .collect(Collectors.toList());
 
-        final OrderTable orderTable = orderTableDao.findById(orderRequest.getOrderTableId())
+        final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
                 .orElseThrow(() -> new NotFoundOrderTable());
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException();

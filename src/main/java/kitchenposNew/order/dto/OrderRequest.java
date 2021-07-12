@@ -2,7 +2,7 @@ package kitchenposNew.order.dto;
 
 import kitchenposNew.menu.domain.Menu;
 import kitchenposNew.order.domain.OrderLineItem;
-import kitchenpos.domain.OrderTable;
+import kitchenposNew.order.domain.OrderTable;
 import kitchenposNew.order.domain.Order;
 import kitchenposNew.order.exception.EmptyOrderLineItemsException;
 import org.springframework.util.CollectionUtils;
