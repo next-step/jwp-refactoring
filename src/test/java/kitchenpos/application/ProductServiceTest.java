@@ -1,7 +1,10 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @DisplayName("상품 관련 기능 테스트")
@@ -22,45 +26,40 @@ import static org.mockito.Mockito.when;
 class ProductServiceTest {
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private ProductService productService;
 
-    private Product product;
+    private Product 짜장면;
+    private Product 짬뽕;
 
     @BeforeEach
     void setUp() {
-        product = new Product();
-        product.setId(1L);
-        product.setName("고추 치킨");
+        짜장면 = new Product(1L, "짜장면", new BigDecimal(7000));
+        짬뽕 = new Product(2L, "짬뽕", new BigDecimal(8000));
     }
 
     @Test
     void 상품_등록() {
-        product.setPrice(new BigDecimal(17000));
 
-        when(productDao.save(product)).thenReturn(product);
+        ProductRequest productRequest = new ProductRequest("짜장면", new BigDecimal(7000));
+        when(productRepository.save(any(Product.class))).thenReturn(짜장면);
 
-        Product expected = 상품_등록(product);
+        ProductResponse actual = productService.create(productRequest);
 
-        assertThat(expected.getId()).isEqualTo(product.getId());
-        assertThat(expected.getName()).isEqualTo(product.getName());
-        assertThat(expected.getPrice()).isEqualTo(product.getPrice());
+        assertThat(actual.getId()).isEqualTo(짜장면.getId());
+        assertThat(actual.getName()).isEqualTo(짜장면.getName());
+        assertThat(actual.getPrice().compareTo(짜장면.getPrice().price())).isEqualTo(0);
     }
 
     @Test
     void 등록된_상품_목록_조회() {
-        when(productDao.findAll()).thenReturn(Arrays.asList(product));
-        List<Product> products = productService.list();
-        assertThat(products.size()).isEqualTo(1);
-        Product expected = products.get(0);
-        assertThat(expected.getId()).isEqualTo(product.getId());
-        assertThat(expected.getName()).isEqualTo(product.getName());
-        assertThat(expected.getPrice()).isEqualTo(product.getPrice());
-    }
+        ProductResponse 짜장면_결과 = ProductResponse.of(짜장면);
+        ProductResponse 짬뽕_결과 = ProductResponse.of(짬뽕);
 
-    private Product 상품_등록(Product product) {
-        return productService.create(product);
+        when(productRepository.findAll()).thenReturn(Arrays.asList(짜장면, 짬뽕));
+        List<ProductResponse> products = productService.list();
+        assertThat(products).containsExactly(짜장면_결과, 짬뽕_결과);
     }
 }
