@@ -1,6 +1,7 @@
 package kitchenpos.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kitchenpos.order.dto.OrderStatusRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -50,6 +51,12 @@ public abstract class ControllerTest<T> {
     }
 
     protected ResultActions putRequest(String path, T request) throws Exception {
+        return mockMvc.perform(put(path)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(request)));
+    }
+
+    protected ResultActions putStatusRequest(String path, OrderStatusRequest request) throws Exception {
         return mockMvc.perform(put(path)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(request)));

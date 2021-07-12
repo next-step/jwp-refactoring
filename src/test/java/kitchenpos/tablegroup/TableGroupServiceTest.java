@@ -1,7 +1,7 @@
 package kitchenpos.tablegroup;
 
 import kitchenpos.tablegroup.application.TableGroupService;
-import kitchenpos.order.domain.OrderDao;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.order.domain.OrderStatus;
@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
 class TableGroupServiceTest {
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -144,7 +144,7 @@ class TableGroupServiceTest {
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
         when(orderTableRepository.findAllByTableGroupId(테이블그룹.getId())).thenReturn(테이블_목록);
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(테이블_ID_목록,Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
+        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(테이블_ID_목록,Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
                 .thenReturn(false);
 
         //When

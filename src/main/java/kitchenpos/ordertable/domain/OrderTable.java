@@ -7,6 +7,7 @@ import javax.persistence.*;
 
 import static kitchenpos.common.Message.*;
 
+@Entity
 public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,16 +23,22 @@ public class OrderTable {
     @Column(name = "empty", nullable = false)
     private boolean empty;
 
-    public OrderTable(){}
+    public OrderTable() {
+    }
 
-    public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty){
+    public OrderTable(int numberOfGuests, boolean empty) {
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
+
+    public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
         this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
 
-    public boolean cleanTable(){
-        if(tableGroup!=null){
+    public boolean cleanTable() {
+        if (tableGroup != null) {
             throw new CannotCleanTableException(ERROR_ORDER_TABLE_CANNOT_BE_CLEANED_WHEN_GROUPED);
         }
         this.empty = true;
@@ -39,10 +46,10 @@ public class OrderTable {
     }
 
     public void updateNumberOfGuestsTo(int number) {
-        if(number<0){
+        if (number < 0) {
             throw new IllegalArgumentException(ERROR_TABLE_GUESTS_NUMBER_CANNOT_BE_SMALLER_THAN_ZERO.showText());
         }
-        if(empty){
+        if (empty) {
             throw new IllegalArgumentException(ERROR_TABLE_GUESTS_NUMBER_CANNOT_BE_CHANGED_WHEN_EMPTY.showText());
         }
         this.numberOfGuests = number;
@@ -63,6 +70,7 @@ public class OrderTable {
     public void setTableGroupNew(final TableGroup tableGroup) {
         this.tableGroup = tableGroup;
     }
+
     public void setTableGroup(final Long tableGroupId) {
         this.tableGroup = tableGroup;
     }

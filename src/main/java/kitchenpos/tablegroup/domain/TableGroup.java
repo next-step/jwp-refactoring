@@ -3,11 +3,13 @@ package kitchenpos.tablegroup.domain;
 import kitchenpos.common.BaseEntity;
 import kitchenpos.ordertable.domain.OrderTable;
 
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.List;
 
+@Entity
 public class TableGroup extends BaseEntity {
 
     @Id

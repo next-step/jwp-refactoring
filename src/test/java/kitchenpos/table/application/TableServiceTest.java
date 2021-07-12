@@ -1,7 +1,7 @@
 package kitchenpos.table.application;
 
 import kitchenpos.ordertable.application.TableService;
-import kitchenpos.order.domain.OrderDao;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.ordertable.domain.OrderTable;
@@ -22,7 +22,7 @@ import java.util.Optional;
 class TableServiceTest {
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -66,7 +66,7 @@ class TableServiceTest {
     void 테이블의_비어있음_여부_변경() {
         //Given
         Mockito.when(orderTableRepository.findById(첫번째_테이블.getId())).thenReturn(Optional.of(첫번째_테이블));
-        Mockito.when(orderDao.existsByOrderTableIdAndOrderStatusIn(첫번째_테이블.getId(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
+        Mockito.when(orderRepository.existsByOrderTableIdAndOrderStatusIn(첫번째_테이블.getId(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
                 .thenReturn(false);
         Mockito.when(orderTableRepository.save(첫번째_테이블)).thenReturn(첫번째_테이블);
 
@@ -94,7 +94,7 @@ class TableServiceTest {
     void 상태가_요리중_혹은_식사중인_테이블의_비어있음_여부_변경시_예외발생() {
         //Given
         Mockito.when(orderTableRepository.findById(첫번째_테이블.getId())).thenReturn(Optional.of(첫번째_테이블));
-        Mockito.when(orderDao.existsByOrderTableIdAndOrderStatusIn(첫번째_테이블.getId(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
+        Mockito.when(orderRepository.existsByOrderTableIdAndOrderStatusIn(첫번째_테이블.getId(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
                 .thenReturn(true);
 
         //When + Then
