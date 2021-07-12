@@ -52,7 +52,7 @@
     * 주문 테이블 그룹의 주문 테이블이 `조리` 상태이거나, `식사` 상태이면, 삭제할수 없다.
 
 ## 테이블 스키마
-![ERD](src\main\resources\db\erd\erd.png)
+![ERD](src/main/resources/db/erd/erd.png)
 
 ## 용어 사전
 
