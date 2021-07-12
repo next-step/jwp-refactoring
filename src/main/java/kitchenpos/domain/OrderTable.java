@@ -6,6 +6,9 @@ public class OrderTable {
     private int numberOfGuests;
     private boolean empty;
 
+    public OrderTable() {
+	}
+
     public Long getId() {
         return id;
     }
