@@ -1,6 +1,5 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.common.Message;
 import kitchenpos.exception.CannotFindException;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuProductRequest;
@@ -13,6 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static kitchenpos.common.Message.ERROR_MENUGROUP_NOT_FOUND;
+import static kitchenpos.common.Message.ERROR_PRODUCT_NOT_FOUND;
 
 @Service
 public class MenuService {
@@ -34,9 +36,9 @@ public class MenuService {
     public MenuResponse create(final MenuRequest menuRequest) {
 
         MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
-                .orElseThrow(() -> new CannotFindException(Message.ERROR_MENUGROUP_NOT_FOUND));
+                .orElseThrow(() -> new CannotFindException(ERROR_MENUGROUP_NOT_FOUND));
         List<MenuProduct> menuProducts = getMenuProducts(menuRequest);
-        Menu savedMenu = menuRepository.save(new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup, menuProducts));
+        Menu savedMenu = menuRepository.save(new Menu(menuRequest.getName(), Price.valueOf(menuRequest.getPrice()), menuGroup, menuProducts));
         return MenuResponse.of(savedMenu);
     }
 
@@ -58,7 +60,7 @@ public class MenuService {
         return products.stream()
                 .filter(product -> product.hasSameIdAs(productId))
                 .findFirst()
-                .orElseThrow(() -> new CannotFindException(Message.ERROR_PRODUCT_NOT_FOUND));
+                .orElseThrow(() -> new CannotFindException(ERROR_PRODUCT_NOT_FOUND));
     }
 
     private List<Product> getProducts(MenuRequest menuRequest) {
@@ -66,7 +68,7 @@ public class MenuService {
         List<Product> products = productRepository.findAllById(productIds);
 
         if (productIds.size() != products.size()) {
-            throw new CannotFindException(Message.ERROR_PRODUCT_NOT_FOUND);
+            throw new CannotFindException(ERROR_PRODUCT_NOT_FOUND);
         }
 
         return products;

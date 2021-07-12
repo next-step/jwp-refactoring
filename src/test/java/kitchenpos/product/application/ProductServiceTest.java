@@ -1,10 +1,9 @@
 package kitchenpos.product.application;
 
-import kitchenpos.product.application.ProductService;
+import kitchenpos.menu.domain.Price;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductResponse;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,7 +11,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,20 +27,13 @@ class ProductServiceTest {
     @InjectMocks
     private ProductService productService;
 
-    private Product 후라이드;
-    private Product 양념치킨;
-
-    @BeforeEach
-    void setUp() {
-        후라이드 = new Product("후라이드", BigDecimal.valueOf(16000));
-        양념치킨 = new Product("양념치킨", BigDecimal.valueOf(19000));
-    }
+    private Product 후라이드 = new Product("후라이드", Price.valueOf(16000));
+    private Product 양념치킨 = new Product("양념치킨", Price.valueOf(19000));
 
     @DisplayName("0원 이상의 가격으로 상품을 등록한다")
     @Test
     void 상품_등록() {
         //Given
-        후라이드.setPrice(BigDecimal.valueOf(16000));
         when(productRepository.save(후라이드)).thenReturn(후라이드);
 
         //When
@@ -56,7 +47,7 @@ class ProductServiceTest {
     @Test
     void 상품_목록_조회() {
         //Given
-        List<Product> 입력한_상품_목록 = new ArrayList<>(Arrays.asList(후라이드));
+        List<Product> 입력한_상품_목록 = new ArrayList<>(Arrays.asList(후라이드, 양념치킨));
         when(productRepository.findAll()).thenReturn(입력한_상품_목록);
 
         //When
@@ -65,6 +56,6 @@ class ProductServiceTest {
         //Then
         assertThat(조회된_상품_목록).isNotNull()
                 .hasSize(조회된_상품_목록.size())
-                .containsExactly(ProductResponse.of(후라이드));
+                .containsExactly(ProductResponse.of(후라이드), ProductResponse.of(양념치킨));
     }
 }

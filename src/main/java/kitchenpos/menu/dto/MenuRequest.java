@@ -24,19 +24,19 @@ public class MenuRequest {
     }
 
     public static MenuRequest of(Menu menu) {
-        return new MenuRequest(menu.getName(), menu.getPrice(), menu.getMenuGroup().getId(),
+        return new MenuRequest(menu.getName(), menu.getPrice().value(), menu.getMenuGroup().getId(),
                 MenuProductRequest.ofList(menu.getMenuProducts().getMenuProducts()));
     }
 
     public static List<MenuRequest> ofList(List<Menu> list) {
         return list.stream()
-                .map(menu -> MenuRequest.of(menu))
+                .map(MenuRequest::of)
                 .collect(Collectors.toList());
     }
 
     public List<Long> getAllProductIds() {
         return menuProductRequests.stream()
-                .map(menuProductRequest -> menuProductRequest.getProductId())
+                .map(MenuProductRequest::getProductId)
                 .collect(Collectors.toList());
     }
 

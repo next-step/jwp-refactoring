@@ -47,14 +47,14 @@ class MenuServiceTest {
     private static Long 상품_ID = 1L;
     private static Long 메뉴그룹_ID = 1L;
 
-    private final Product 후라이드 = new Product(1L, "후라이드", BigDecimal.valueOf(16000));
-    private final Product 콜라 = new Product(2L, "콜라", BigDecimal.valueOf(1000));
+    private final Product 후라이드 = new Product(1L, "후라이드", Price.valueOf(16000));
+    private final Product 콜라 = new Product(2L, "콜라", Price.valueOf(1000));
     private final MenuGroup 인기메뉴 = new MenuGroup(메뉴그룹_ID, "인기메뉴");
 
     private final MenuProduct 후라이드_한마리 = new MenuProduct(후라이드, 1L);
     private final MenuProduct 콜라_한개 = new MenuProduct(콜라, 1L);
     private final List<MenuProduct> 메뉴상품_목록 = Arrays.asList(후라이드_한마리, 콜라_한개);
-    private Menu 후라이드세트 = new Menu("후라이드세트", BigDecimal.valueOf(10000), 인기메뉴, 메뉴상품_목록);
+    private Menu 후라이드세트 = new Menu("후라이드세트", Price.valueOf(10000), 인기메뉴, 메뉴상품_목록);
 
     @DisplayName("0원 이상의 가격으로 메뉴를 등록한다")
     @Test
@@ -62,8 +62,8 @@ class MenuServiceTest {
         //Given
         MenuProductRequest 후라이드_한마리_요청 = new MenuProductRequest(메뉴_ID, 후라이드.getId(), 1L);
         MenuProductRequest 콜라_한개_요청 = new MenuProductRequest(메뉴_ID, 콜라.getId(), 1L);
-        MenuRequest 후라이드세트_요청 = new MenuRequest(후라이드세트.getName(), 후라이드세트.getPrice(),
-                메뉴그룹_ID, Arrays.asList(후라이드_한마리_요청,콜라_한개_요청));
+        MenuRequest 후라이드세트_요청 = new MenuRequest(후라이드세트.getName(), 후라이드세트.getPrice().value(),
+                메뉴그룹_ID, Arrays.asList(후라이드_한마리_요청, 콜라_한개_요청));
 
         when(menuGroupRepository.findById(인기메뉴.getId())).thenReturn(Optional.of(인기메뉴));
         when(productRepository.findAllById(Arrays.asList(후라이드.getId(), 콜라.getId()))).thenReturn(Arrays.asList(후라이드, 콜라));
@@ -84,7 +84,7 @@ class MenuServiceTest {
         //Given
         Long 등록되지_않은_메뉴그룹_ID = 99L;
         MenuProductRequest 후라이드_한마리_요청 = new MenuProductRequest(메뉴_ID, 상품_ID, 1L);
-        MenuRequest 후라이드세트_요청 = new MenuRequest(후라이드세트.getName(), 후라이드세트.getPrice(), 등록되지_않은_메뉴그룹_ID, Arrays.asList(후라이드_한마리_요청));
+        MenuRequest 후라이드세트_요청 = new MenuRequest(후라이드세트.getName(), 후라이드세트.getPrice().value(), 등록되지_않은_메뉴그룹_ID, Arrays.asList(후라이드_한마리_요청));
 
         //When + Then
         assertThatThrownBy(() -> menuService.create(후라이드세트_요청))
@@ -96,7 +96,7 @@ class MenuServiceTest {
     void 메뉴상품_등록되어있지_않은_경우_예외발생() {
         //Given
         MenuProductRequest 후라이드_한마리_요청 = new MenuProductRequest(메뉴_ID, 상품_ID, 1L);
-        MenuRequest 후라이드세트_요청 = new MenuRequest(후라이드세트.getName(), 후라이드세트.getPrice(), 인기메뉴.getId(), Arrays.asList(후라이드_한마리_요청));
+        MenuRequest 후라이드세트_요청 = new MenuRequest(후라이드세트.getName(), 후라이드세트.getPrice().value(), 인기메뉴.getId(), Arrays.asList(후라이드_한마리_요청));
         when(menuGroupRepository.findById(인기메뉴.getId())).thenReturn(Optional.of(인기메뉴));
 
         //When + Then

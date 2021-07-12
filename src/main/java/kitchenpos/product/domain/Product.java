@@ -1,9 +1,9 @@
 package kitchenpos.product.domain;
 
 import kitchenpos.common.Message;
+import kitchenpos.menu.domain.Price;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 
 @Entity
 public class Product {
@@ -14,34 +14,23 @@ public class Product {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "price", nullable = false, precision = 19, scale = 2)
-    private BigDecimal price;
+    @Embedded
+    Price price;
 
     protected Product() {
     }
 
-    public Product(String name, BigDecimal price) {
+    public Product(String name, Price price) {
         validateName(name);
-        validatePrice(price);
         this.name = name;
         this.price = price;
     }
 
-    public Product(Long id, String name, BigDecimal price) {
+    public Product(Long id, String name, Price price) {
         validateName(name);
-        validatePrice(price);
         this.id = id;
         this.name = name;
         this.price = price;
-    }
-
-    private void validatePrice(BigDecimal price) {
-        if (price == null) {
-            throw new IllegalArgumentException(Message.ERROR_PRODUCT_PRICE_REQUIRED.showText());
-        }
-        if (price.compareTo(BigDecimal.ZERO) < 1) {
-            throw new IllegalArgumentException(Message.ERROR_PRODUCT_PRICE_SHOULD_BE_OVER_THAN_ZERO.showText());
-        }
     }
 
     private void validateName(String name) {
@@ -49,7 +38,6 @@ public class Product {
             throw new IllegalArgumentException(Message.ERROR_PRODUCT_NAME_REQUIRED.showText());
         }
     }
-
 
     public boolean hasSameIdAs(Long productId) {
         return this.id.equals(productId);
@@ -63,12 +51,8 @@ public class Product {
         return name;
     }
 
-    public BigDecimal getPrice() {
+    public Price getPrice() {
         return price;
-    }
-
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
     }
 
 }

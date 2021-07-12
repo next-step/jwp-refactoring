@@ -37,8 +37,9 @@ public class MenuProduct {
         this.quantity = quantity;
     }
 
-    public BigDecimal getTotalPrice() {
-        return product.getPrice().multiply(BigDecimal.valueOf(quantity));
+    public Price getTotalPrice() {
+        return product.getPrice()
+                .multiply(BigDecimal.valueOf(quantity));
     }
 
     public void ofMenu(Menu menu) {

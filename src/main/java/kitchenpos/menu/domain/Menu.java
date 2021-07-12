@@ -3,7 +3,6 @@ package kitchenpos.menu.domain;
 import kitchenpos.common.Message;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -15,8 +14,8 @@ public class Menu {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "price", nullable = false)
-    private BigDecimal price;
+    @Embedded
+    private Price price;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_group_id",
@@ -30,8 +29,7 @@ public class Menu {
     public Menu() {
     }
 
-    public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        validatePrice(price);
+    public Menu(String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         validateMenuProducts(menuProducts, price);
         this.name = name;
         this.price = price;
@@ -39,8 +37,7 @@ public class Menu {
         this.menuProducts = new MenuProducts(menuProducts, this);
     }
 
-    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        validatePrice(price);
+    public Menu(Long id, String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         validateMenuProducts(menuProducts, price);
         this.id = id;
         this.name = name;
@@ -49,17 +46,8 @@ public class Menu {
         this.menuProducts = new MenuProducts(menuProducts, this);
     }
 
-    private void validatePrice(BigDecimal price) {
-        if (price == null) {
-            throw new IllegalArgumentException(Message.ERROR_MENU_PRICE_REQUIRED.showText());
-        }
-        if (price.compareTo(BigDecimal.ZERO) < 1) {
-            throw new IllegalArgumentException(Message.ERROR_MENU_PRICE_SHOULD_BE_OVER_THAN_ZERO.showText());
-        }
-    }
-
-    public void validateMenuProducts(List<MenuProduct> menuProducts, BigDecimal price) {
-        BigDecimal sum = BigDecimal.ZERO;
+    public void validateMenuProducts(List<MenuProduct> menuProducts, Price price) {
+        Price sum = Price.valueOf(0);
         for (MenuProduct menuProduct : menuProducts) {
             sum = sum.add(menuProduct.getTotalPrice());
         }
@@ -84,12 +72,8 @@ public class Menu {
         this.name = name;
     }
 
-    public BigDecimal getPrice() {
+    public Price getPrice() {
         return price;
-    }
-
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
     }
 
     public MenuGroup getMenuGroup() {
