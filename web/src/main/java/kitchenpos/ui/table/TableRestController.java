@@ -1,7 +1,7 @@
 package kitchenpos.ui.table;
 
-import kitchenpos.application.table.TableService;
 import kitchenpos.domain.table.OrderTable;
+import kitchenpos.domain.table.TableService;
 import kitchenpos.dto.order.OrderTableRequest;
 import kitchenpos.dto.order.OrderTableResponse;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +19,7 @@ public class TableRestController {
     }
 
     @PostMapping("/api/tables")
-    public ResponseEntity<OrderTableResponse> create(@RequestBody final OrderTableRequest orderTableRequest) {
+    public ResponseEntity<OrderTableResponse> create(@RequestBody OrderTableRequest orderTableRequest) {
         final OrderTable created = tableService.create(orderTableRequest);
         final URI uri = URI.create("/api/tables/" + created.getId());
         return ResponseEntity.created(uri)
