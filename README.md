@@ -140,5 +140,5 @@
 
 ## 이전 단계 코드리뷰 TODO
 - [x] 이전단계 코드리뷰 -  ProductEntity내에서 price.getter 사용하는 부분 개선
-- [ ] 이전단계 코드리뷰 -  MenuEntity에서 중복된 생성자 로직 개선
+- [x] 이전단계 코드리뷰 -  MenuEntity에서 중복된 생성자 로직 개선
 - [ ] 이전단계 코드리뷰 -  UsingOrderRepositoryValidator domain 패키지로 이동

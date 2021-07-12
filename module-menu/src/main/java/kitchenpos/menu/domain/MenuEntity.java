@@ -31,10 +31,7 @@ public class MenuEntity {
   }
 
   public MenuEntity(String name, Double menuPrice, Long menuGroupId, List<MenuProductEntity> products) {
-    this.name = name;
-    this.price = Price.fromDouble(menuPrice);
-    this.menuGroupId = menuGroupId;
-    menuProducts.addMenuProducts(this, products);
+    this(null, name, menuPrice, menuGroupId, products);
   }
 
   public MenuEntity(Long id, String name, Double menuPrice, Long menuGroupId, List<MenuProductEntity> products) {
