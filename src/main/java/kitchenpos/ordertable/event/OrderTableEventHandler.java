@@ -13,6 +13,7 @@ import kitchenpos.ordertable.exception.OrderStatusNotCompleteException;
 import kitchenpos.tablegroup.event.TableGroupCreatedEvent;
 import kitchenpos.tablegroup.event.TableGroupUnlinkEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -31,6 +32,7 @@ public class OrderTableEventHandler {
         this.orderRepository = orderRepository;
     }
 
+    @Async
     @EventListener
     public void orderTableEmptyChange(OrderStatusChangedEvent event) {
         final OrderTable orderTable = orderTableRepository.findById(event.getOrderId())
@@ -42,6 +44,7 @@ public class OrderTableEventHandler {
         orderTable.unlinkTableGroup();
     }
 
+    @Async
     @EventListener
     public void orderTablesEmptyChange(TableGroupCreatedEvent event) {
         List<OrderTableIdRequest> orderTableIdRequests = event.getOrderTableIdRequests();
@@ -65,6 +68,7 @@ public class OrderTableEventHandler {
         }
     }
 
+    @Async
     @EventListener
     public void orderTableUnlinkTableGroup(TableGroupUnlinkEvent event) {
         final List<OrderTable> orderTableList = orderTableRepository.findAllByTableGroupId(event.getTableGroupId());

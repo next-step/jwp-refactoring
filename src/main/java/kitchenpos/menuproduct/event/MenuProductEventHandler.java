@@ -8,6 +8,7 @@ import kitchenpos.menuproduct.domain.MenuProducts;
 import kitchenpos.menuproduct.dto.MenuProductRequest;
 import kitchenpos.product.domain.ProductRepository;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ public class MenuProductEventHandler {
         this.menuProductRepository = menuProductRepository;
     }
 
+    @Async
     @EventListener
     public void saveMenuProduct(MenuCreatedEvent event) {
         List<MenuProduct> menuProductList = new ArrayList<>();

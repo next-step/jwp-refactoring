@@ -7,6 +7,7 @@ import kitchenpos.orderlineitem.domain.OrderLineItemRepository;
 import kitchenpos.orderlineitem.exception.EmptyOrderLineItemsException;
 import kitchenpos.orderlineitem.exception.MenuAndOrderLineItemSizeNotMatchException;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -23,6 +24,7 @@ public class OrderLineItemEventHandler {
         this.menuRepository = menuRepository;
     }
 
+    @Async
     @EventListener
     public void saveOrderLineItem(OrderCreatedEvent orderCreatedEvent) {
         List<OrderLineItem> orderLineItems = orderCreatedEvent.getOrderLineItemRequests()
