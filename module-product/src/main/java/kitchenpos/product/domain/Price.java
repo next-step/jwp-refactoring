@@ -26,6 +26,11 @@ class Price {
     return new Price(BigDecimal.valueOf(price));
   }
 
+  public static Price from(BigDecimal price) {
+    validatePriceValue(price.doubleValue());
+    return new Price(price);
+  }
+
   private static void validatePriceValue(Double price) {
     if (Objects.isNull(price) || price < MIN_PRICE) {
       throw new IllegalArgumentException(String.format(PRICE_SHOULD_EQUAL_OR_LARGER_THAN_MIN_PRICE, MIN_PRICE));
@@ -34,6 +39,10 @@ class Price {
 
   public BigDecimal getValue() {
     return value;
+  }
+
+  public Price multiply(BigDecimal number) {
+    return from(value.multiply(number));
   }
 
   @Override

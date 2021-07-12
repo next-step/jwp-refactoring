@@ -43,9 +43,11 @@ public class ProductEntity {
     return price.getValue();
   }
 
+  // 다른 aggregate에서 product aggregate에 접근할 때 Root entity인 ProductEntity에만 접근하고
+  // 내부의 price는 노출시키지 않기 위해 BigDecimal 반환
   public BigDecimal calculateAmountWithQuantity(Long quantity) {
-    return price.getValue()
-        .multiply(BigDecimal.valueOf(quantity));
+    return price.multiply(BigDecimal.valueOf(quantity))
+            .getValue();
   }
 
   @Override
