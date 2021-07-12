@@ -30,7 +30,3 @@ project(':application') {
         implementation project(':domain')
     }
 }
-
-test {
-    useJUnitPlatform()
-}
