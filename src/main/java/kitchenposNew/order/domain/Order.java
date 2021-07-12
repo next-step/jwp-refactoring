@@ -22,42 +22,39 @@ public class Order {
 
     private LocalDateTime orderedTime;
 
-    private List<OrderLineItem> orderLineItems;
+    @Embedded
+    private OrderLineItems orderLineItems;
 
     protected Order() {
     }
 
-    public Order(Long id, OrderTable orderTableId, List<OrderLineItem> orderLineItems) {
+    public Order(Long id, OrderTable orderTableId, OrderLineItems orderLineItems) {
         this.id = id;
         this.orderTable = orderTableId;
         this.orderStatus = OrderStatus.COOKING;
         this.orderLineItems = orderLineItems;
         this.orderedTime = LocalDateTime.now();
-        orderLineItems.forEach(
-                orderLineItem -> orderLineItem.registerOrder(this)
-        );
+        this.orderLineItems.registerOrder(this);
     }
 
-    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+    public Order(OrderTable orderTable, OrderLineItems orderLineItems) {
         this.orderTable = orderTable;
         this.orderStatus = OrderStatus.COOKING;
         this.orderLineItems = orderLineItems;
         this.orderedTime = LocalDateTime.now();
-        orderLineItems.forEach(
-                orderLineItem -> orderLineItem.registerOrder(this)
-        );
+        this.orderLineItems.registerOrder(this);
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
+        if (orderStatus.isCompletion()) {
+            throw new IllegalArgumentException();
+        }
         this.orderStatus = orderStatus;
     }
 
-    public boolean isOrderStatus(OrderStatus completion) {
-        return this.orderStatus == completion;
-    }
-
-    public void setOrderLineItems(List<OrderLineItem> allByOrderId) {
-        this.orderLineItems = allByOrderId;
+    public void changeOrderLineItems(List<OrderLineItem> orderLineItems) {
+        this.orderLineItems = new OrderLineItems(orderLineItems);
+        this.orderLineItems.registerOrder(this);
     }
 
     public Long getId() {
@@ -77,7 +74,7 @@ public class Order {
     }
 
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
+        return orderLineItems.getOrderLineItems();
     }
 
     @Override
@@ -85,11 +82,11 @@ public class Order {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Order order = (Order) o;
-        return Objects.equals(id, order.id) && Objects.equals(orderTable, order.orderTable) && orderStatus == order.orderStatus && Objects.equals(orderedTime, order.orderedTime) && Objects.equals(orderLineItems, order.orderLineItems);
+        return Objects.equals(id, order.id) && Objects.equals(orderTable, order.orderTable) && orderStatus == order.orderStatus;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, orderTable, orderStatus, orderedTime, orderLineItems);
+        return Objects.hash(id, orderTable, orderStatus);
     }
 }

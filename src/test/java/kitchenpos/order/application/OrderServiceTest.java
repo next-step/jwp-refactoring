@@ -131,7 +131,7 @@ public class OrderServiceTest {
         orderTable.setId(1L);
         OrderLineItem firstOrderLineItem = new OrderLineItem(firstMenu, 1L);
         OrderLineItem secondOrderLineItem = new OrderLineItem(secondMenu, 1L);
-        Order order = new Order(orderTable, Arrays.asList(firstOrderLineItem, secondOrderLineItem));
+        Order order = new Order(orderTable, new OrderLineItems(Arrays.asList(firstOrderLineItem, secondOrderLineItem)));
         when(orderTableRepository.findById(1L)).thenReturn(Optional.ofNullable(orderTable));
 
         // when
@@ -160,7 +160,7 @@ public class OrderServiceTest {
         orderTable.setId(1L);
         OrderLineItem firstOrderLineItem = new OrderLineItem(firstMenu, 1L);
         OrderLineItem secondOrderLineItem = new OrderLineItem(secondMenu, 1L);
-        Order order = new Order(orderTable, Arrays.asList(firstOrderLineItem, secondOrderLineItem));
+        Order order = new Order(orderTable, new OrderLineItems(Arrays.asList(firstOrderLineItem, secondOrderLineItem)));
 
         // when
         // 주문 조회 함

@@ -12,6 +12,7 @@ import kitchenposNew.order.domain.OrderRepository;
 import kitchenposNew.order.dto.OrderRequest;
 import kitchenposNew.order.dto.OrderResponse;
 import kitchenposNew.order.exception.NotEqualsOrderCountAndMenuCount;
+import kitchenposNew.order.exception.NotFoundOrder;
 import kitchenposNew.order.exception.NotFoundOrderTable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,27 +55,16 @@ public class OrderService {
     }
 
     public List<OrderResponse> list() {
-        final List<Order> orders = orderRepository.findAll();
-
-        return orders.stream()
+        return orderRepository.findAll().stream()
                 .map(order -> OrderResponse.of(order))
                 .collect(Collectors.toList());
     }
 
     @Transactional
     public Order changeOrderStatus(final Long orderId, final Order order) {
-        final Order savedOrder = orderRepository.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (savedOrder.isOrderStatus(OrderStatus.COMPLETION)) {
-            throw new IllegalArgumentException();
-        }
-
+        final Order savedOrder = orderRepository.findById(orderId).orElseThrow(() -> new NotFoundOrder());
         savedOrder.changeOrderStatus(order.getOrderStatus());
-
-        orderRepository.save(savedOrder);
-
-        savedOrder.setOrderLineItems(orderLineItemRepository.findAllByOrderId(orderId).orElseThrow(IllegalAccessError::new));
+        savedOrder.changeOrderLineItems(orderLineItemRepository.findAllByOrderId(orderId).orElseThrow(IllegalAccessError::new));
 
         return savedOrder;
     }

@@ -2,6 +2,7 @@ package kitchenposNew.order.dto;
 
 import kitchenposNew.menu.domain.Menu;
 import kitchenposNew.order.domain.OrderLineItem;
+import kitchenposNew.order.domain.OrderLineItems;
 import kitchenposNew.order.domain.OrderTable;
 import kitchenposNew.order.domain.Order;
 import kitchenposNew.order.exception.EmptyOrderLineItemsException;
@@ -25,7 +26,7 @@ public class OrderRequest {
 
     public Order toOrder(OrderTable orderTable, List<Menu> menus) {
         List<OrderLineItem> orderLineItems = toOrderLineItem(menus);
-        return new Order(orderTable, orderLineItems);
+        return new Order(orderTable, new OrderLineItems(orderLineItems));
     }
 
     private List<OrderLineItem> toOrderLineItem(List<Menu> menus) {

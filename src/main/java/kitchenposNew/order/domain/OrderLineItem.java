@@ -3,6 +3,7 @@ package kitchenposNew.order.domain;
 import kitchenposNew.menu.domain.Menu;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class OrderLineItem {
@@ -48,4 +49,16 @@ public class OrderLineItem {
         return quantity;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderLineItem that = (OrderLineItem) o;
+        return Objects.equals(seq, that.seq) && Objects.equals(order, that.order) && Objects.equals(menu, that.menu) && Objects.equals(quantity, that.quantity);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(seq, order, menu, quantity);
+    }
 }
