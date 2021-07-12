@@ -4,6 +4,7 @@ import kitchenpos.menugroup.domain.MenuGroupEntity;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -57,7 +58,7 @@ class MenuGroupService2Test {
     List<MenuGroupResponse> menuGroupList = menuGroupService.findAllMenuGroups();
 
     //then
-    assertThat(menuGroupList).isEqualTo(MenuGroupResponse.ofList(Arrays.asList(menuGroup1, menuGroup2, menuGroup3)));
+    Assertions.assertThat(menuGroupList).isEqualTo(MenuGroupResponse.ofList(Arrays.asList(menuGroup1, menuGroup2, menuGroup3)));
   }
 
 }
