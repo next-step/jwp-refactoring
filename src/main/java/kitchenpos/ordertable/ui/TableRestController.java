@@ -6,6 +6,8 @@ import kitchenpos.ordertable.dto.OrderTableGuestChangeRequest;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.ordertable.exception.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,7 +58,7 @@ public class TableRestController {
             IllegalOrderTableIdRequestException.class, AlreadyHaveTableGroupException.class,
             OrderStatusNotCompleteException.class
     })
-    public ResponseEntity handleException() {
-        return ResponseEntity.badRequest().build();
+    public ResponseEntity handleException(RuntimeException e) {
+        return new ResponseEntity(e.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 }

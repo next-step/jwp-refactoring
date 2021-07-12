@@ -8,6 +8,8 @@ import kitchenpos.order.exception.EmptyOrderTableException;
 import kitchenpos.order.exception.OrderStatusCompleteException;
 import kitchenpos.orderlineitem.exception.EmptyOrderLineItemsException;
 import kitchenpos.orderlineitem.exception.MenuAndOrderLineItemSizeNotMatchException;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,7 +49,7 @@ public class OrderRestController {
             EmptyOrderLineItemsException.class, MenuAndOrderLineItemSizeNotMatchException.class,
             EmptyOrderTableException.class, OrderStatusCompleteException.class
     })
-    public ResponseEntity handleException() {
-        return ResponseEntity.badRequest().build();
+    public ResponseEntity handleException(RuntimeException e) {
+        return new ResponseEntity(e.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 }
