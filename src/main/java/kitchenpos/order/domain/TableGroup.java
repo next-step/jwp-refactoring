@@ -58,8 +58,12 @@ public class TableGroup {
         return createdDate;
     }
 
-    public List<OrderTable> getOrderTables() {
+    public List<OrderTable> getOrderTableList() {
         return orderTables.toList();
+    }
+
+    public OrderTables getOrderTables() {
+        return orderTables;
     }
 
     @Override

@@ -7,21 +7,21 @@ import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.TableGroup;
 
 public class TableGroupResponse {
-    private Long id;
+    private final Long id;
 
-    private LocalDateTime createdDate;
+    private final LocalDateTime createdDate;
 
-    private List<OrderTable> orderTables;
+    private final List<OrderTable> orderTables;
 
-    public TableGroupResponse(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
+    public TableGroupResponse(final Long id, final LocalDateTime createdDate, final List<OrderTable> orderTables) {
         this.id = id;
         this.createdDate = createdDate;
         this.orderTables = orderTables;
     }
 
-    public static TableGroupResponse of(TableGroup tableGroup) {
+    public static TableGroupResponse of(final TableGroup tableGroup) {
         return new TableGroupResponse(tableGroup.getId(), tableGroup.getCreatedDate(),
-            tableGroup.getOrderTables());
+            tableGroup.getOrderTableList());
     }
 
     public Long getId() {

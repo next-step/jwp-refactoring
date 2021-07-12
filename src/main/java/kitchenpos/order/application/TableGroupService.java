@@ -63,18 +63,18 @@ public class TableGroupService {
     }
 
     public void ungroup(final Long tableGroupId) {
-        final OrderTables orderTables = new OrderTables(findAllOrderTable(tableGroupId));
-        final Orders orders = new Orders(findAllOrder(orderTables));
-        orderTables.ungroup(orders);
+        final TableGroup tableGroup = findTableGroup(tableGroupId);
+        final OrderTables orderTables = tableGroup.getOrderTables();
+        final List<Order> orderList = findAllOrder(orderTables.ids());
+        orderTables.ungroup(new Orders(orderList));
     }
 
-    private List<OrderTable> findAllOrderTable(final Long tableGroupId) {
-        return orderTableRepository.findAllByTableGroup_Id(tableGroupId);
+    private TableGroup findTableGroup(final Long tableGroupId) {
+        return tableGroupRepository.findById(tableGroupId)
+            .orElseThrow(IllegalArgumentException::new);
     }
 
-    private List<Order> findAllOrder(final OrderTables orderTables) {
-        final List<Long> orderTableIds = orderTables.ids();
-
+    private List<Order> findAllOrder(final List<Long> orderTableIds) {
         return orderRepository.findAllByOrderTable_IdIn(orderTableIds);
     }
 }

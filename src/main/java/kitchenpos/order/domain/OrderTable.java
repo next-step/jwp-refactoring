@@ -1,12 +1,15 @@
 package kitchenpos.order.domain;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class OrderTable {
@@ -15,8 +18,9 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "table_group_id")
-    private Long tableGroupId;
+    private TableGroup tableGroup;
 
     private int numberOfGuests;
 
@@ -26,7 +30,7 @@ public class OrderTable {
     }
 
     public OrderTable(final TableGroup tableGroup, final int numberOfGuests) {
-        this.tableGroupId = tableGroup.getId();
+        this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
         this.empty = false;
     }
@@ -41,7 +45,9 @@ public class OrderTable {
     }
 
     public Long getTableGroupId() {
-        return tableGroupId;
+        return Optional.ofNullable(tableGroup)
+            .map(TableGroup::getId)
+            .orElse(null);
     }
 
     public int getNumberOfGuests() {
@@ -69,11 +75,11 @@ public class OrderTable {
     }
 
     public void ungroup() {
-        tableGroupId = null;
+        tableGroup = null;
     }
 
-    public void updateTableGroup(final Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
+    public void updateTableGroup(final TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
         this.empty = false;
     }
 
@@ -85,11 +91,11 @@ public class OrderTable {
             return false;
         final OrderTable that = (OrderTable)o;
         return numberOfGuests == that.numberOfGuests && empty == that.empty && Objects.equals(id, that.id)
-            && Objects.equals(tableGroupId, that.tableGroupId);
+            && Objects.equals(tableGroup, that.tableGroup);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, tableGroupId, numberOfGuests, empty);
+        return Objects.hash(id, tableGroup, numberOfGuests, empty);
     }
 }
