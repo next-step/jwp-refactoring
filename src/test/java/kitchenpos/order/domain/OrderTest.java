@@ -1,10 +1,7 @@
 package kitchenpos.order.domain;
 
-import kitchenposNew.menu.domain.Menu;
-import kitchenposNew.order.domain.Order;
-import kitchenposNew.order.domain.OrderLineItem;
-import kitchenposNew.order.domain.OrderLineItems;
-import kitchenposNew.table.domain.OrderTable;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

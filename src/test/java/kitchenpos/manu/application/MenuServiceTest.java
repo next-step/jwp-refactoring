@@ -1,11 +1,11 @@
 package kitchenpos.manu.application;
 
-import kitchenposNew.menu.application.MenuService;
-import kitchenposNew.menu.domain.*;
-import kitchenposNew.menu.dto.MenuProductRequest;
-import kitchenposNew.menu.dto.MenuRequest;
-import kitchenposNew.menu.dto.MenuResponse;
-import kitchenposNew.wrap.Price;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.*;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.wrap.Price;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
