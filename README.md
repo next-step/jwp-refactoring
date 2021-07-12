@@ -104,9 +104,13 @@
 ### 구현 list
 - [x] Spring Data jpa 의존성 추가
 - [x] menu service refactoring
-    - [ ] menuProduct relation refactoring
+    - [x] menuProduct relation refactoring
+    - [x] menuProducts first collection creat
 - [x] menuGroup service refactoring
 - [x] product service refactoring
-- [ ] table service refactoring
+- [x] table service refactoring
+    - [x] order table relation refactoring
 - [ ] tableGroup service refactoring
-- [ ] order service refactoring
+- [x] order service refactoring
+    - [x] orderLineTimes relation refactoring
+    - [x] orderLineTimes first collection create
