@@ -61,7 +61,7 @@ public class TableService {
 
     private void checkIfAllOfOrderInOrderTableIsCompleted(Long orderTableId) {
         if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException("주문테이블에 아직 완료되지 않은 주문이 있습니다.");
         }
     }
