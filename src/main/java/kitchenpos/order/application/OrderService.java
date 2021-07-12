@@ -33,26 +33,7 @@ public class OrderService {
         this.orderRepository = orderRepository;
     }
 
-    @Transactional
-    public OrderResponse create1(final OrderRequest orderRequest) {
-        List<OrderLineItemRequest> orderLineItemRequests = orderRequest.getOrderLineItemRequests();
-        if (orderLineItemRequests.isEmpty()) {
-            throw new IllegalArgumentException("입력된 주문 항목이 없습니다.");
-        }
-        OrderTable orderTable = tableService.findById(orderRequest.getOrderTableId());
-        if (orderTable.isEmpty()) {
-            throw new OrderTableEmptyException();
-        }
-        Order order = new Order(OrderStatus.COOKING, LocalDateTime.now(), orderTable);
-        for (OrderLineItemRequest orderLineItemRequest : orderLineItemRequests) {
-            Menu menu = menuService.findMenuById(orderLineItemRequest.getMenuId());
-            OrderLineItem orderLineItem = new OrderLineItem(order, menu, orderLineItemRequest.getQuantity());
-            order.addOrderLineItem(orderLineItem);
-        }
-        return OrderResponse.of(orderRepository.save(order));
-    }
-
-    public List<OrderResponse> list1() {
+    public List<OrderResponse> findAllOrders() {
         return orderRepository.findAll()
                 .stream()
                 .map(OrderResponse::of)
@@ -60,12 +41,54 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponse changeOrderStatus1(final Long orderId, final OrderRequest orderRequest) {
+    public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
         Order order = orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
+        validateOrderStatusIsCompleted(order);
+        order.changeOrderStatus(orderRequest.getOrderStatus());
+        return OrderResponse.of(order);
+    }
+
+    @Transactional
+    public OrderResponse create(final OrderRequest orderRequest) {
+        OrderTable orderTable = getOrderTable(orderRequest);
+        Order order = new Order(OrderStatus.COOKING, LocalDateTime.now(), orderTable);
+        getOrderLineItemRequests(orderRequest)
+                .forEach(o -> order.addOrderLineItem(createOrderLineItem(order, o)));
+        return OrderResponse.of(orderRepository.save(order));
+    }
+
+    private OrderTable getOrderTable(OrderRequest orderRequest) {
+        OrderTable orderTable = tableService.findById(orderRequest.getOrderTableId());
+        validateOrderTableIsEmpty(orderTable);
+        return orderTable;
+    }
+
+    private List<OrderLineItemRequest> getOrderLineItemRequests(OrderRequest orderRequest) {
+        List<OrderLineItemRequest> orderLineItemRequests = orderRequest.getOrderLineItemRequests();
+        validateOrderItemsSizeIsZero(orderLineItemRequests);
+        return orderLineItemRequests;
+    }
+
+    private OrderLineItem createOrderLineItem(Order order, OrderLineItemRequest orderLineItemRequest) {
+        Menu menu = menuService.findMenuById(orderLineItemRequest.getMenuId());
+        return new OrderLineItem(order, menu, orderLineItemRequest.getQuantity());
+    }
+
+    private void validateOrderStatusIsCompleted(Order order) {
         if (order.getOrderStatus().equals(OrderStatus.COMPLETION)) {
             throw new IllegalArgumentException("계산이 완료된 주문 입니다.");
         }
-        order.changeOrderStatus(orderRequest.getOrderStatus());
-        return OrderResponse.of(order);
+    }
+
+    private void validateOrderItemsSizeIsZero(List<OrderLineItemRequest> orderLineItemRequests) {
+        if (orderLineItemRequests.isEmpty()) {
+            throw new IllegalArgumentException("입력된 주문 항목이 없습니다.");
+        }
+    }
+
+    private void validateOrderTableIsEmpty(OrderTable orderTable) {
+        if (orderTable.isEmpty()) {
+            throw new OrderTableEmptyException();
+        }
     }
 }

@@ -72,7 +72,7 @@ class OrderRestControllerTest extends MockMvcControllerTest {
         Order order = new Order(OrderStatus.COOKING, LocalDateTime.now(), new OrderTable(3, false));
         order.addOrderLineItem(new OrderLineItem(order, menu, 3L));
         OrderResponse orderResponse = OrderResponse.of(order);
-        given(orderService.create1(any(OrderRequest.class))).willReturn(orderResponse);
+        given(orderService.create(any(OrderRequest.class))).willReturn(orderResponse);
 
         // then
         mockMvc.perform(post(DEFAULT_REQUEST_URL)
@@ -92,7 +92,7 @@ class OrderRestControllerTest extends MockMvcControllerTest {
         Order order = new Order(OrderStatus.COOKING, LocalDateTime.now(), new OrderTable(3, false));
         order.addOrderLineItem(new OrderLineItem(order, menu, 3L));
         OrderResponse orderResponse = OrderResponse.of(order);
-        given(orderService.list1()).willReturn(Arrays.asList(orderResponse));
+        given(orderService.findAllOrders()).willReturn(Arrays.asList(orderResponse));
 
         // then
         mockMvc.perform(get(DEFAULT_REQUEST_URL))
@@ -111,7 +111,7 @@ class OrderRestControllerTest extends MockMvcControllerTest {
         Order order = new Order(OrderStatus.MEAL, LocalDateTime.now(), new OrderTable(3, false));
         order.addOrderLineItem(new OrderLineItem(order, menu, 3L));
         OrderResponse orderResponse = OrderResponse.of(order);
-        given(orderService.changeOrderStatus1(anyLong(), any(OrderRequest.class))).willReturn(orderResponse);
+        given(orderService.changeOrderStatus(anyLong(), any(OrderRequest.class))).willReturn(orderResponse);
 
         // then
         mockMvc.perform(put(DEFAULT_REQUEST_URL + "/1/order-status")

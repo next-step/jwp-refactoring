@@ -63,35 +63,11 @@ public class OrderTableObjects {
     }
 
     public OrderTableRequest getOrderTableRequest1() {
-        return new OrderTableRequest(orderTable1.getNumberOfGuests(), orderTable1.isEmpty());
-    }
-
-    public OrderTableRequest getOrderTableRequest2() {
-        return new OrderTableRequest(orderTable2.getNumberOfGuests(), orderTable2.isEmpty());
-    }
-
-    public OrderTableRequest getOrderTableRequest3() {
-        return new OrderTableRequest(orderTable3.getNumberOfGuests(), orderTable3.isEmpty());
+        return new OrderTableRequest(orderTable1.getNumberOfGuests().toInt(), orderTable1.isEmpty());
     }
 
     public OrderTableRequest getOrderTableRequest4() {
-        return new OrderTableRequest(orderTable4.getNumberOfGuests(), orderTable4.isEmpty());
-    }
-
-    public OrderTableRequest getOrderTableRequest5() {
-        return new OrderTableRequest(orderTable5.getNumberOfGuests(), orderTable5.isEmpty());
-    }
-
-    public OrderTableRequest getOrderTableRequest6() {
-        return new OrderTableRequest(orderTable6.getNumberOfGuests(), orderTable6.isEmpty());
-    }
-
-    public OrderTableRequest getOrderTableRequest7() {
-        return new OrderTableRequest(orderTable7.getNumberOfGuests(), orderTable7.isEmpty());
-    }
-
-    public OrderTableRequest getOrderTableRequest8() {
-        return new OrderTableRequest(orderTable8.getNumberOfGuests(), orderTable8.isEmpty());
+        return new OrderTableRequest(orderTable4.getNumberOfGuests().toInt(), orderTable4.isEmpty());
     }
 
     public List<OrderTable> getOrderTables() {

@@ -35,40 +35,73 @@ public class TableGroupService {
     }
 
     @Transactional
-    public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-        List<Long> orderTableIds = tableGroupRequest.getOrderTableIds();
-        if (orderTableIds.size() < 2) {
-            throw new IllegalArgumentException("정산 그룹 생성은 2개 이상의 테이블만 가능합니다.");
-        }
-        List<OrderTable> orderTables = tableService.findOrderTablesByIds(tableGroupRequest.getOrderTableIds());
-        if (orderTables.size() != orderTableIds.size()) {
-            throw new MisMatchedOrderTablesSizeException();
-        }
-        TableGroup tableGroup = tableGroupRepository.save(new TableGroup());
-        for (final OrderTable orderTable : orderTables) {
-            if (!orderTable.isEmpty()) {
-                throw new IllegalArgumentException("비어있지 않은 테이블은 정산 그룹에 포함시킬 수 없습니다.");
-            }
-            if (orderTable.hasTableGroup()) {
-                throw new IllegalArgumentException("정산 그룹에 포함된 테이블을 새로운 정산그룹에 포함시킬 수 없습니다.");
-            }
-            tableGroup.addOrderTable(orderTable);
-        }
-        return TableGroupResponse.of(tableGroup);
-    }
-
-    @Transactional
     public void ungroup(final Long tableGroupId) {
         final List<OrderTable> orderTables = orderTableRepository.findByTableGroupId(tableGroupId);
-
         final List<Long> orderTableIds = orderTables.stream()
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
+        validateOrderStatusIsCookingOrMeal(orderTableIds);
+        orderTables.forEach(orderTable -> orderTable.setTableGroup(null));
+    }
 
+    @Transactional
+    public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
+        List<OrderTable> orderTables = getOrderTables(tableGroupRequest);
+        TableGroup tableGroup = getTableGroup(orderTables);
+        return TableGroupResponse.of(tableGroup);
+    }
+
+    private List<OrderTable> getOrderTables(TableGroupRequest tableGroupRequest) {
+        List<Long> orderTableIds = getOrderTableIds(tableGroupRequest);
+        return getOrderTables(orderTableIds);
+    }
+
+    private List<Long> getOrderTableIds(TableGroupRequest tableGroupRequest) {
+        List<Long> orderTableIds = tableGroupRequest.getOrderTableIds();
+        validateMinimumOrderTableSize(orderTableIds);
+        return orderTableIds;
+    }
+
+    private List<OrderTable> getOrderTables(List<Long> orderTableIds) {
+        List<OrderTable> orderTables = tableService.findOrderTablesByIds(orderTableIds);
+        validateMisMatchedOrderTableSize(orderTableIds, orderTables);
+        return orderTables;
+    }
+
+    private TableGroup getTableGroup(List<OrderTable> orderTables) {
+        TableGroup tableGroup = tableGroupRepository.save(new TableGroup());
+        for (final OrderTable orderTable : orderTables) {
+            validateOrderTableIsEmptyOrHasTableGroup(orderTable);
+            tableGroup.addOrderTable(orderTable);
+        }
+        return tableGroup;
+    }
+
+    private void validateOrderTableIsEmptyOrHasTableGroup(OrderTable orderTable) {
+        if (!orderTable.isEmpty()) {
+            throw new IllegalArgumentException("비어있지 않은 테이블은 정산 그룹에 포함시킬 수 없습니다.");
+        }
+        if (orderTable.hasTableGroup()) {
+            throw new IllegalArgumentException("정산 그룹에 포함된 테이블을 새로운 정산그룹에 포함시킬 수 없습니다.");
+        }
+    }
+
+    private void validateMinimumOrderTableSize(List<Long> orderTableIds) {
+        if (orderTableIds.size() < 2) {
+            throw new IllegalArgumentException("정산 그룹 생성은 2개 이상의 테이블만 가능합니다.");
+        }
+    }
+
+    private void validateMisMatchedOrderTableSize(List<Long> orderTableIds, List<OrderTable> orderTables) {
+        if (orderTables.size() != orderTableIds.size()) {
+            throw new MisMatchedOrderTablesSizeException();
+        }
+    }
+
+    private void validateOrderStatusIsCookingOrMeal(List<Long> orderTableIds) {
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
                 orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new OrderAlreadyExistsException("수정할 수 없는 주문이 존재합니다.");
         }
-        orderTables.forEach(orderTable -> orderTable.setTableGroup(null));
     }
 }

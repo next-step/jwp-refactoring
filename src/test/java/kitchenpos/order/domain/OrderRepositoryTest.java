@@ -7,7 +7,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -64,9 +63,8 @@ class OrderRepositoryTest {
         return Arrays.asList(
                 dynamicTest("ID 생성 확인.", () -> assertThat(saveOrder.getId()).isNotNull()),
                 dynamicTest("초기 주문상태 확인", () -> assertThat(saveOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING)),
-                dynamicTest("주문 항목 개수 확인", () -> assertThat(saveOrder.getOrderLineItems()).size().isEqualTo(2)),
-                dynamicTest("주문 항목 ID 생성 확인", () -> assertThat(saveOrder.getOrderLineItems().stream()
-                        .noneMatch(orderLineItem -> Objects.isNull(orderLineItem.getSeq()))).isTrue())
+                dynamicTest("주문 항목 개수 확인", () -> assertThat(saveOrder.getOrderLineItems().size()).isEqualTo(2)),
+                dynamicTest("주문 항목 ID 생성 확인", () -> assertThat(saveOrder.getOrderLineItems().isExistsAllIds()).isTrue())
         );
     }
 

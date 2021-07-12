@@ -43,22 +43,6 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId).orElseThrow(IllegalArgumentException::new);
-
-        if (savedOrderTable.hasTableGroup()) {
-            throw new IllegalArgumentException();
-        }
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
-        }
-        savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
-
-        return OrderTableResponse.of(savedOrderTable);
-    }
-
-    @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         OrderTable savedOrderTable = orderTableRepository.findByIdAndEmptyIsFalse(orderTableId)
                 .orElseThrow(NonEmptyOrderTableNotFoundException::new);
@@ -70,15 +54,31 @@ public class TableService {
         return orderTableRepository.findByIdIn(ids);
     }
 
-    private void validateParametersIsEmpty(List<Long> ids) {
-        if (ids.isEmpty()) {
-            throw new IllegalArgumentException("입력된 ID가 없습니다.");
+    @Transactional
+    public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
+        final OrderTable savedOrderTable = getOrderTable(orderTableId);
+        validateExistsOrderStatusIsCookingANdMeal(orderTableId);
+        savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
+        return OrderTableResponse.of(savedOrderTable);
+    }
+
+    private OrderTable getOrderTable(Long orderTableId) {
+        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
+                .orElseThrow(IllegalArgumentException::new);
+        validateHasTabledGroup(savedOrderTable);
+        return savedOrderTable;
+    }
+
+    private void validateExistsOrderStatusIsCookingANdMeal(Long orderTableId) {
+        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
+                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+            throw new IllegalArgumentException();
         }
     }
 
-    private void validateOrderTablesIsEmpty(List<OrderTable> orderTables) {
-        if (orderTables.isEmpty()) {
-            throw new OrderTableNotFoundException();
+    private void validateHasTabledGroup(OrderTable savedOrderTable) {
+        if (savedOrderTable.hasTableGroup()) {
+            throw new IllegalArgumentException();
         }
     }
 }

@@ -15,7 +15,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 
@@ -63,10 +62,10 @@ class ProductRestControllerTest extends MockMvcControllerTest {
         mockMvc.perform(get(REQUEST_URL))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("[0].name").value(productObject.getProduct1().getName()))
-                .andExpect(jsonPath("[0].price").value(productObject.getProduct1().getPrice()))
-                .andExpect(jsonPath("[5].name").value(productObject.getProduct6().getName()))
-                .andExpect(jsonPath("[5].price").value(productObject.getProduct6().getPrice()))
+                .andExpect(jsonPath("[0].name").value(productObject.getProduct1().getProductName().toString()))
+                .andExpect(jsonPath("[0].price").value(productObject.getProduct1().getProductPrice().toBigDecimal()))
+                .andExpect(jsonPath("[5].name").value(productObject.getProduct6().getProductName().toString()))
+                .andExpect(jsonPath("[5].price").value(productObject.getProduct6().getProductPrice().toBigDecimal()))
         ;
     }
 
@@ -93,8 +92,8 @@ class ProductRestControllerTest extends MockMvcControllerTest {
     @DisplayName("상품을 등록할 수 있다.")
     void save_product() throws Exception {
         // given
-        ProductRequest productRequest = new ProductRequest(productObject.getProduct3().getName(),
-                productObject.getProduct3().getPrice());
+        ProductRequest productRequest = new ProductRequest(productObject.getProduct3().getProductName().toString(),
+                productObject.getProduct3().getProductPrice().toBigDecimal());
         ProductResponse result = ProductResponse.of(productObject.getProduct3());
         given(productService.create(any(ProductRequest.class))).willReturn(result);
 

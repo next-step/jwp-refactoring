@@ -73,7 +73,7 @@ class TableServiceTest {
 
         // then
         assertAll(
-                () -> assertThat(orderTableResponse.getNumberOfGuests()).isEqualTo(createOrderTable.getNumberOfGuests()),
+                () -> assertThat(orderTableResponse.getNumberOfGuests()).isEqualTo(createOrderTable.getNumberOfGuests().toInt()),
                 () -> assertThat(orderTableResponse.isEmpty()).isEqualTo(createOrderTable.isEmpty())
         );
     }

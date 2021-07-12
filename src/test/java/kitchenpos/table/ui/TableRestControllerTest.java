@@ -55,7 +55,7 @@ class TableRestControllerTest extends MockMvcControllerTest {
     void retrieve_tableList1() throws Exception {
         // given
         OrderTable orderTable = orderTableObjects.getOrderTable1();
-        OrderTableResponse orderTableResponse = OrderTableResponse.of(1L, orderTable.getTableGroupId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
+        OrderTableResponse orderTableResponse = OrderTableResponse.of(1L, orderTable.getTableGroupId(), orderTable.getNumberOfGuests().toInt(), orderTable.isEmpty());
         given(tableService.list()).willReturn(new ArrayList<>(Arrays.asList(orderTableResponse)));
 
         // then
@@ -91,15 +91,14 @@ class TableRestControllerTest extends MockMvcControllerTest {
     @DisplayName("테이블을 비울 수 있다.")
     void set_emptyTable() throws Exception {
         // given
-        OrderTable orderTable = orderTableObjects.getOrderTable1();
-        OrderTableResponse orderTableResponse = OrderTableResponse.of(1L, orderTable.getTableGroupId(),
-                orderTable.getNumberOfGuests(), orderTable.isEmpty());
+        OrderTableRequest orderTableRequest = new OrderTableRequest(3, false);
+        OrderTableResponse orderTableResponse = OrderTableResponse.of(1L, 1L, 3, false);
         given(tableService.changeEmpty(anyLong(), any(OrderTableRequest.class))).willReturn(orderTableResponse);
 
         // then
         mockMvc.perform(put(DEFAULT_REQUEST_URL + "/1/empty")
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .content(new ObjectMapper().writeValueAsString(orderTableObjects.getOrderTable1()))
+                    .content(new ObjectMapper().writeValueAsString(orderTableRequest))
                     .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andDo(print())
                 .andExpect(status().isOk())

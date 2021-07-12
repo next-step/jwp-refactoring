@@ -3,7 +3,6 @@ package kitchenpos.menu.dto;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
@@ -27,11 +26,8 @@ public class MenuResponse {
     }
 
     public static MenuResponse of(Menu menu) {
-        List<MenuProductResponse> menuProductResponses = menu.getMenuProducts()
-                .stream()
-                .map(MenuProductResponse::of)
-                .collect(Collectors.toList());
-        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(), menuProductResponses, MenuGroupResponse.of(menu.getMenuGroup()));
+        List<MenuProductResponse> menuProductResponses = menu.getMenuProducts().toResponses();
+        return new MenuResponse(menu.getId(), menu.getName().toString(), menu.getPrice().toBigDecimal(), menuProductResponses, MenuGroupResponse.of(menu.getMenuGroup()));
     }
 
     public static MenuResponse of(Long id, String name, BigDecimal price,List<MenuProductResponse> menuProductResponses , MenuGroupResponse menuGroupResponse) {

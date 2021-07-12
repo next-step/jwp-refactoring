@@ -78,7 +78,7 @@ class MenuRestControllerTest extends MockMvcControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("length()").value(1))
-                .andExpect(jsonPath("[0].name").value(menu.getName()))
+                .andExpect(jsonPath("[0].name").value(menu.getName().toString()))
                 .andExpect(jsonPath("[0].menuProductResponses.length()").value(2))
         ;
     }

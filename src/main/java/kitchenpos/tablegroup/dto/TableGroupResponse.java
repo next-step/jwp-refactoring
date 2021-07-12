@@ -24,10 +24,7 @@ public class TableGroupResponse {
     }
 
     public static TableGroupResponse of(TableGroup tableGroup) {
-        List<OrderTableResponse> orderTableResponses = tableGroup.getOrderTables()
-                .stream()
-                .map(OrderTableResponse::of)
-                .collect(Collectors.toList());
+        List<OrderTableResponse> orderTableResponses = tableGroup.getOrderTables().toResponses();
         return new TableGroupResponse(tableGroup.getId(), tableGroup.getCreatedDate(), orderTableResponses);
     }
 

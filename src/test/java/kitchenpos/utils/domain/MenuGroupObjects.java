@@ -39,19 +39,19 @@ public class MenuGroupObjects {
     }
 
     public MenuGroupRequest getMenuGroupRequest1() {
-        return new MenuGroupRequest(menuGroup1.getName());
+        return new MenuGroupRequest(menuGroup1.getMenuGroupName().toString());
     }
 
     public MenuGroupRequest getMenuGroupRequest2() {
-        return new MenuGroupRequest(menuGroup2.getName());
+        return new MenuGroupRequest(menuGroup2.getMenuGroupName().toString());
     }
 
     public MenuGroupRequest getMenuGroupRequest3() {
-        return new MenuGroupRequest(menuGroup3.getName());
+        return new MenuGroupRequest(menuGroup3.getMenuGroupName().toString());
     }
 
     public MenuGroupRequest getMenuGroupRequest4() {
-        return new MenuGroupRequest(menuGroup4.getName());
+        return new MenuGroupRequest(menuGroup4.getMenuGroupName().toString());
     }
 
     public List<MenuGroup> getMenuGroups() {

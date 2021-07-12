@@ -20,12 +20,12 @@ class MenuGroupTest {
                 dynamicTest("메뉴그룹 이름 Null 입력시 오류 발생.", () -> {
                     assertThatThrownBy(() -> new MenuGroup(null))
                             .isInstanceOf(IllegalArgumentException.class)
-                            .hasMessage("메뉴그룹 이름은 필수 입력값입니다.");
+                            .hasMessage("메뉴그룹 이름은 Null 또는 공백일 수 없습니다.");
                 }),
                 dynamicTest("메뉴그룹 이름 공백 입력시 오류 발생.", () -> {
                     assertThatThrownBy(() -> new MenuGroup(""))
                             .isInstanceOf(IllegalArgumentException.class)
-                            .hasMessage("메뉴그룹 이름은 필수 입력값입니다.");
+                            .hasMessage("메뉴그룹 이름은 Null 또는 공백일 수 없습니다.");
                 })
         );
     }

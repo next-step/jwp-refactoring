@@ -3,7 +3,14 @@ package kitchenpos.table.domain;
 import java.util.Objects;
 import java.util.Optional;
 
-import javax.persistence.*;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import kitchenpos.tablegroup.domain.TableGroup;
 
@@ -15,15 +22,15 @@ public class OrderTable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "table_group_id")
     private TableGroup tableGroup;
-    @Column(name = "number_of_guests")
-    private int numberOfGuests;
+    @Embedded
+    private NumberOdGuests numberOfGuests;
     private boolean empty;
 
     public OrderTable() {
     }
 
     public OrderTable(int numberOfGuests, boolean empty) {
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = new NumberOdGuests(numberOfGuests);
         this.empty = empty;
     }
 
@@ -32,7 +39,9 @@ public class OrderTable {
     }
 
     public Long getTableGroupId() {
-        return Optional.ofNullable(this.tableGroup).map(tg -> tg.getId()).orElse(null);
+        return Optional.ofNullable(this.tableGroup)
+                .map(TableGroup::getId)
+                .orElse(null);
     }
 
     public TableGroup getTableGroup() {
@@ -46,7 +55,7 @@ public class OrderTable {
         this.tableGroup = tableGroup;
     }
 
-    public int getNumberOfGuests() {
+    public NumberOdGuests getNumberOfGuests() {
         return numberOfGuests;
     }
 
@@ -63,13 +72,6 @@ public class OrderTable {
     }
 
     public void changeNumberOfGuests(final int numberOfGuests) {
-        validateNumberOfGuestsIsLessThanZero(numberOfGuests);
-        this.numberOfGuests = numberOfGuests;
-    }
-
-    private void validateNumberOfGuestsIsLessThanZero(int numberOfGuests) {
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException("수정 가능한 인원이 0보다 작을 수 없습니다.");
-        }
+        this.numberOfGuests.changeNumberOfGuests(numberOfGuests);
     }
 }

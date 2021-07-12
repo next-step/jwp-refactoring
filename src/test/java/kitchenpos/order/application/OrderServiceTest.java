@@ -71,7 +71,7 @@ class OrderServiceTest {
         given(orderRepository.findAll()).willReturn(Arrays.asList(order));
 
         // when
-        List<OrderResponse> findOrderResponses = orderService.list1();
+        List<OrderResponse> findOrderResponses = orderService.findAllOrders();
 
         // then
         return Arrays.asList(
@@ -94,7 +94,7 @@ class OrderServiceTest {
         given(orderRepository.findById(anyLong())).willReturn(Optional.of(order));
 
         // when
-        OrderResponse resultOrderResponse = orderService.changeOrderStatus1(1L, orderRequest);
+        OrderResponse resultOrderResponse = orderService.changeOrderStatus(1L, orderRequest);
 
         // then
         assertThat(resultOrderResponse.getOrderStatus()).isEqualTo(order.getOrderStatus());
@@ -110,7 +110,7 @@ class OrderServiceTest {
                     given(orderRepository.findById(anyLong())).willReturn(Optional.empty());
 
                     // then
-                    assertThatThrownBy(() -> orderService.changeOrderStatus1(1L, orderRequest))
+                    assertThatThrownBy(() -> orderService.changeOrderStatus(1L, orderRequest))
                             .isInstanceOf(OrderNotFoundException.class);
                 }),
                 dynamicTest("주분 상태가 완성일 경우 수정 요청 시 오류 발생함.", () -> {
@@ -120,7 +120,7 @@ class OrderServiceTest {
                     given(orderRepository.findById(anyLong())).willReturn(Optional.of(order));
 
                     // then
-                    assertThatThrownBy(() -> orderService.changeOrderStatus1(1L, orderRequest))
+                    assertThatThrownBy(() -> orderService.changeOrderStatus(1L, orderRequest))
                             .isInstanceOf(IllegalArgumentException.class);
                 })
         );
@@ -141,7 +141,7 @@ class OrderServiceTest {
         given(orderRepository.save(any(Order.class))).willReturn(order);
 
         // when
-        OrderResponse resultOrderResponse = orderService.create1(orderRequest);
+        OrderResponse resultOrderResponse = orderService.create(orderRequest);
 
         // then
         return Arrays.asList(
@@ -158,9 +158,10 @@ class OrderServiceTest {
                 dynamicTest("주문 내역 누락 시 오류 발생됨.", () -> {
                     // given
                     OrderRequest orderRequest = new OrderRequest(OrderStatus.COOKING, 1L, new ArrayList<>());
+                    given(tableService.findById(1L)).willReturn(new OrderTable(3, false));
 
                     // then
-                    assertThatThrownBy(() -> orderService.create1(orderRequest))
+                    assertThatThrownBy(() -> orderService.create(orderRequest))
                             .isInstanceOf(IllegalArgumentException.class)
                             .hasMessage("입력된 주문 항목이 없습니다.");
                 }),
@@ -171,7 +172,7 @@ class OrderServiceTest {
                     given(tableService.findById(1L)).willThrow(OrderTableNotFoundException.class);
 
                     // then
-                    assertThatThrownBy(() -> orderService.create1(orderRequest))
+                    assertThatThrownBy(() -> orderService.create(orderRequest))
                             .isInstanceOf(OrderTableNotFoundException.class);
                 }),
                 dynamicTest("주문한 테이블이 비어있을 경우 오류 발생됨.", () -> {
@@ -181,7 +182,7 @@ class OrderServiceTest {
                     given(tableService.findById(2L)).willReturn(new OrderTable(3, true));
 
                     // then
-                    assertThatThrownBy(() -> orderService.create1(orderRequest))
+                    assertThatThrownBy(() -> orderService.create(orderRequest))
                             .isInstanceOf(OrderTableEmptyException.class)
                             .hasMessage("대상 테이블이 비어있습니다.");
                 }),
@@ -193,7 +194,7 @@ class OrderServiceTest {
                     given(menuService.findMenuById(1L)).willThrow(MenuNotFoundException.class);
 
                     // then
-                    assertThatThrownBy(() -> orderService.create1(orderRequest))
+                    assertThatThrownBy(() -> orderService.create(orderRequest))
                             .isInstanceOf(MenuNotFoundException.class);
                 })
         );

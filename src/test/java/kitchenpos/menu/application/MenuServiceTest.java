@@ -11,7 +11,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.*;
@@ -111,7 +110,7 @@ class MenuServiceTest {
         // then
         return Arrays.asList(
                 dynamicTest("메뉴 ID 확인됨.", () -> assertThat(menuResponse.getName()).isEqualTo(menu.getName().toString())),
-                dynamicTest("메뉴 그룹 ID 확인됨.", () -> assertThat(menuResponse.getMenuGroupResponse().getName()).isEqualTo(menuGroup.getName())),
+                dynamicTest("메뉴 그룹 ID 확인됨.", () -> assertThat(menuResponse.getMenuGroupResponse().getName()).isEqualTo(menuGroup.getMenuGroupName().toString())),
                 dynamicTest("메뉴상품의 상품 ID 확인됨.", () -> assertThat(menuResponse.getMenuProductResponses()).size().isEqualTo(2))
         );
     }

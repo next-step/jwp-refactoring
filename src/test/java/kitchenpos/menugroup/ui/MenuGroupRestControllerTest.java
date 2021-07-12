@@ -50,7 +50,7 @@ class MenuGroupRestControllerTest extends MockMvcControllerTest {
     @DisplayName("메뉴그룹을 등록할 수 있다.")
     void save_menuGroup() throws Exception {
         // given
-        MenuGroupResponse menuGroupResponse = MenuGroupResponse.of(1L, menuGroupObjects.getMenuGroup1().getName());
+        MenuGroupResponse menuGroupResponse = MenuGroupResponse.of(1L, menuGroupObjects.getMenuGroup1().getMenuGroupName().toString());
         given(menuGroupService.create(any(MenuGroupRequest.class))).willReturn(menuGroupResponse);
 
         // then
@@ -76,9 +76,9 @@ class MenuGroupRestControllerTest extends MockMvcControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("[0].id").value(menuGroupObjects.getMenuGroup1().getId()))
-                .andExpect(jsonPath("[0].name").value(menuGroupObjects.getMenuGroup1().getName()))
+                .andExpect(jsonPath("[0].name").value(menuGroupObjects.getMenuGroup1().getMenuGroupName().toString()))
                 .andExpect(jsonPath("[3].id").value(menuGroupObjects.getMenuGroup4().getId()))
-                .andExpect(jsonPath("[3].name").value(menuGroupObjects.getMenuGroup4().getName()))
+                .andExpect(jsonPath("[3].name").value(menuGroupObjects.getMenuGroup4().getMenuGroupName().toString()))
         ;
     }
 }

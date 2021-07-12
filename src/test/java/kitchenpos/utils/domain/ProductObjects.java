@@ -50,27 +50,7 @@ public class ProductObjects {
     }
 
     public ProductRequest getProductRequest1() {
-        return new ProductRequest(this.product1.getName(), this.product1.getPrice());
-    }
-
-    public ProductRequest getProductRequest2() {
-        return new ProductRequest(this.product2.getName(), this.product2.getPrice());
-    }
-
-    public ProductRequest getProductRequest3() {
-        return new ProductRequest(this.product3.getName(), this.product3.getPrice());
-    }
-
-    public ProductRequest getProductRequest4() {
-        return new ProductRequest(this.product4.getName(), this.product4.getPrice());
-    }
-
-    public ProductRequest getProductRequest5() {
-        return new ProductRequest(this.product5.getName(), this.product5.getPrice());
-    }
-
-    public ProductRequest getProductRequest6() {
-        return new ProductRequest(this.product6.getName(), this.product6.getPrice());
+        return new ProductRequest(this.product1.getProductName().toString(), this.product1.getProductPrice().toBigDecimal());
     }
 
     public List<Product> getProducts() {
