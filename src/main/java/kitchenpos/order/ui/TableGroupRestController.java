@@ -1,7 +1,8 @@
 package kitchenpos.order.ui;
 
 import kitchenpos.order.application.TableGroupService;
-import kitchenpos.order.domain.TableGroup;
+import kitchenpos.order.dto.TableGroupRequest;
+import kitchenpos.order.dto.TableGroupResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,8 +17,8 @@ public class TableGroupRestController {
     }
 
     @PostMapping("/api/table-groups")
-    public ResponseEntity<TableGroup> create(@RequestBody final TableGroup tableGroup) {
-        final TableGroup created = tableGroupService.create(tableGroup);
+    public ResponseEntity<TableGroupResponse> create(@RequestBody final TableGroupRequest tableGroupRequest) {
+        final TableGroupResponse created = tableGroupService.create(tableGroupRequest);
         final URI uri = URI.create("/api/table-groups/" + created.getId());
         return ResponseEntity.created(uri)
                 .body(created)
@@ -25,29 +26,16 @@ public class TableGroupRestController {
     }
 
     @DeleteMapping("/api/table-groups/{tableGroupId}")
-    public ResponseEntity<Void> ungroup(@PathVariable final Long tableGroupId) {
+    public ResponseEntity<Void> ungroup(@PathVariable final java.lang.Long tableGroupId) {
         tableGroupService.ungroup(tableGroupId);
         return ResponseEntity.noContent()
                 .build()
                 ;
     }
 
-    //TODO re -------
-
-    @PostMapping("/api/table-groups_re")
-    public ResponseEntity<TableGroup> create_re(@RequestBody final TableGroup tableGroup) {
-        final TableGroup created = tableGroupService.create_re(tableGroup);
-        final URI uri = URI.create("/api/table-groups/" + created.getId());
-        return ResponseEntity.created(uri)
-                .body(created)
-                ;
-    }
-
-    @DeleteMapping("/api/table-groups_re/{tableGroupId}")
-    public ResponseEntity<Void> ungroup_re(@PathVariable final Long tableGroupId) {
-        tableGroupService.ungroup_re(tableGroupId);
-        return ResponseEntity.noContent()
-                .build()
-                ;
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity handleIllegalArgsException(IllegalArgumentException e) {
+        e.printStackTrace();
+        return ResponseEntity.badRequest().build();
     }
 }

@@ -38,3 +38,5 @@ INSERT INTO order_table (id, number_of_guests, empty) VALUES (99, 4, false);
 INSERT INTO orders (id, order_table_id, order_status, ordered_time) VALUES (1, 2, 'COOKING', now());
 INSERT INTO table_group (id, created_date) VALUES (99, now());
 INSERT INTO order_table (id, table_group_id, number_of_guests, empty) VALUES (98, 99, 4, false);
+
+INSERT INTO order_line_item (order_id, menu_id, quantity) VALUES (1,3,1);

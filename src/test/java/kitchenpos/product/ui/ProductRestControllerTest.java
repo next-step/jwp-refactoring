@@ -2,8 +2,8 @@ package kitchenpos.product.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.product.application.ProductService;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.ui.ProductRestController;
+import kitchenpos.product.domain.entity.Product;
+import kitchenpos.product.dto.ProductRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,7 +40,8 @@ class ProductRestControllerTest {
     @Autowired
     ProductService productService;
 
-    Product 상품;
+    private Product 상품;
+    private ProductRequest 상품_리퀘스트;
 
     @BeforeEach
     void setUp() {
@@ -49,17 +50,15 @@ class ProductRestControllerTest {
                 .alwaysDo(print())
                 .build();
 
-        상품 = new Product();
-        상품.setId(1L);
-        상품.setName("강정치킨");
-        상품.setPrice(BigDecimal.valueOf(17000));
+        상품 = new Product(1L, "강정치킨", BigDecimal.valueOf(17000));
+        상품_리퀘스트 = new ProductRequest("강정치킨", BigDecimal.valueOf(17000));
     }
 
     @Test
     @DisplayName("상품을 생성한다.")
     void create() throws Exception {
         //given
-        String requestBody = objectMapper.writeValueAsString(상품);
+        String requestBody = objectMapper.writeValueAsString(상품_리퀘스트);
 
         //when && then
         mockMvc.perform(post("/api/products")
@@ -73,15 +72,15 @@ class ProductRestControllerTest {
     @DisplayName("상품가격이 0원 미만일 경우 상품 생성을 실패한다.")
     void create_with_exception_when_price_smaller_than_zero() throws Exception {
         //given
-        상품.setPrice(BigDecimal.valueOf(-1));
-        String requestBody = objectMapper.writeValueAsString(상품);
+        상품_리퀘스트 = new ProductRequest("강정치킨", BigDecimal.valueOf(-1));
+        String requestBody = objectMapper.writeValueAsString(상품_리퀘스트);
 
         //when && then
         try {
             mockMvc.perform(post("/api/products")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(requestBody))
-                    .andExpect(status().is5xxServerError());
+                    .andExpect(status().isBadRequest());
         } catch (Exception e) {
             assertThat(e.getCause()).isInstanceOf(IllegalArgumentException.class);
         }
@@ -92,49 +91,6 @@ class ProductRestControllerTest {
     void list() throws Exception {
         //when && then
         mockMvc.perform(get("/api/products"))
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString("양념치킨")));
-    }
-
-
-    //TODO re---------------------------------------------------------------------------------------------------
-    @Test
-    @DisplayName("상품을 생성한다.")
-    void create_re() throws Exception {
-        //given
-        String requestBody = objectMapper.writeValueAsString(상품);
-
-        //when && then
-        mockMvc.perform(post("/api/products_re")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
-                .andExpect(status().isCreated())
-                .andExpect(content().string(containsString("강정치킨")));
-    }
-
-    @Test
-    @DisplayName("상품가격이 0원 미만일 경우 상품 생성을 실패한다.")
-    void create_with_exception_when_price_smaller_than_zero_re() throws Exception {
-        //given
-        상품.setPrice(BigDecimal.valueOf(-1));
-        String requestBody = objectMapper.writeValueAsString(상품);
-
-        //when && then
-        try {
-            mockMvc.perform(post("/api/products_re")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(requestBody))
-                    .andExpect(status().is5xxServerError());
-        } catch (Exception e) {
-            assertThat(e.getCause()).isInstanceOf(IllegalArgumentException.class);
-        }
-    }
-
-    @Test
-    @DisplayName("전체 상품을 조회한다.")
-    void list_re() throws Exception {
-        //when && then
-        mockMvc.perform(get("/api/products_re"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("양념치킨")));
     }

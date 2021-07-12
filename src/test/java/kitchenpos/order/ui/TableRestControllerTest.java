@@ -3,8 +3,7 @@ package kitchenpos.order.ui;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.order.application.TableService;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.ui.TableRestController;
+import kitchenpos.order.dto.OrderTableRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,7 +35,7 @@ class TableRestControllerTest {
     @Autowired
     TableService tableService;
 
-    OrderTable 오더테이블;
+    OrderTableRequest 오더테이블_리퀘스트;
 
     long 테이블_존재하지않는_테이블아이디 = 999L;
     long 테이블_그룹아이디가_존재하는_테이블아이디 = 98L;
@@ -51,16 +50,16 @@ class TableRestControllerTest {
                 .alwaysDo(print())
                 .build();
 
-        오더테이블 = new OrderTable();
-        오더테이블.setId(100L);
-        오더테이블.setNumberOfGuests(3);
+        오더테이블_리퀘스트 = new OrderTableRequest();
+        //오더테이블.setId(100L);
+        //오더테이블.setNumberOfGuests(3);
     }
 
     @Test
     @DisplayName("테이블을 생성한다.")
     void create() throws Exception {
         //given
-        String requestBody = objectMapper.writeValueAsString(오더테이블);
+        String requestBody = objectMapper.writeValueAsString(오더테이블_리퀘스트);
 
         //when && then
         mockMvc.perform(post("/api/tables")
@@ -82,12 +81,11 @@ class TableRestControllerTest {
     @DisplayName("테이블의 상태를 변경한다.")
     void changeEmpty() throws Exception {
         //given
-        오더테이블.setId(테이블_상태변경할_테이블아이디);
-        오더테이블.setEmpty(true);
-        String requestBody = objectMapper.writeValueAsString(오더테이블);
+        오더테이블_리퀘스트 = new OrderTableRequest(1L,3,true);
+        String requestBody = objectMapper.writeValueAsString(오더테이블_리퀘스트);
 
         //when && then
-        mockMvc.perform(put("/api/tables/{orderTableId}/empty", 오더테이블.getId())
+        mockMvc.perform(put("/api/tables/{orderTableId}/empty", 오더테이블_리퀘스트.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
                 .andExpect(status().isOk())
@@ -98,7 +96,8 @@ class TableRestControllerTest {
     @DisplayName("존재하지않는 테이블의 상태변경은 실패한다.")
     void changeEmpty_with_exception_when_not_exist_orderTableId() throws JsonProcessingException {
         //given
-        오더테이블.setId(테이블_존재하지않는_테이블아이디);
+
+        오더테이블_리퀘스트 = new OrderTableRequest(테이블_존재하지않는_테이블아이디,3,true);
 
         //when && then
         테이블_상태변경_요청_실패();
@@ -107,8 +106,7 @@ class TableRestControllerTest {
     @Test
     @DisplayName("그룹테이블로 지정되어있을경우 상태변경은 실패한다.")
     void changeEmpty_with_exception() throws JsonProcessingException {
-        //given
-        오더테이블.setId(테이블_그룹아이디가_존재하는_테이블아이디);
+        오더테이블_리퀘스트 = new OrderTableRequest(테이블_그룹아이디가_존재하는_테이블아이디,3,true);
 
         //when && then
         테이블_상태변경_요청_실패();
@@ -118,7 +116,7 @@ class TableRestControllerTest {
     @DisplayName("조리 또는 식사중일 경우 상태변경은 실패한다.")
     void changeEmpty_when_orderStatus_in_cooking_or_meal() throws JsonProcessingException {
         //given
-        오더테이블.setId(테이블_조리중인_테이블아이디);
+        오더테이블_리퀘스트 = new OrderTableRequest(테이블_조리중인_테이블아이디,3,true);
 
         //when && then
         테이블_상태변경_요청_실패();
@@ -128,12 +126,12 @@ class TableRestControllerTest {
     @DisplayName("테이블 인원을 변경한다.")
     void changeNumberOfGuests() throws Exception {
         //given
-        오더테이블.setId(테이블_인원변경할_테이블아이디);
-        오더테이블.setNumberOfGuests(44);
-        String requestBody = objectMapper.writeValueAsString(오더테이블);
+        오더테이블_리퀘스트 = new OrderTableRequest(테이블_인원변경할_테이블아이디,4,true);
+
+        String requestBody = objectMapper.writeValueAsString(오더테이블_리퀘스트);
 
         //when && then
-        mockMvc.perform(put("/api/tables/{orderTableId}/number-of-guests", 오더테이블.getId())
+        mockMvc.perform(put("/api/tables/{orderTableId}/number-of-guests", 오더테이블_리퀘스트.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
                 .andExpect(status().isOk())
@@ -144,12 +142,12 @@ class TableRestControllerTest {
     @DisplayName("변경인원이 0명 미만일 경우 변경은 실패한다.")
     void changeNumberOfGuests_with_exception_when_person_smaller_than_zero() throws JsonProcessingException {
         //given
-        오더테이블.setNumberOfGuests(-1);
-        String requestBody = objectMapper.writeValueAsString(오더테이블);
+        오더테이블_리퀘스트 = new OrderTableRequest(1L,-4,true);
+        String requestBody = objectMapper.writeValueAsString(오더테이블_리퀘스트);
 
         //when && then
         try {
-            mockMvc.perform(put("/api/tables/{orderTableId}/number-of-guests", 오더테이블.getId())
+            mockMvc.perform(put("/api/tables/{orderTableId}/number-of-guests", 오더테이블_리퀘스트.getId())
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(requestBody))
                     .andExpect(status().is5xxServerError());
@@ -162,12 +160,13 @@ class TableRestControllerTest {
     @DisplayName("없는테이블의 인원을 변경할 경우 변경은 실패한다.")
     void changeNumberOfGuests_with_exception_when_not_exist_orderTableId() throws JsonProcessingException {
         //given
-        오더테이블.setId(테이블_존재하지않는_테이블아이디);
-        String requestBody = objectMapper.writeValueAsString(오더테이블);
+        오더테이블_리퀘스트 = new OrderTableRequest(테이블_존재하지않는_테이블아이디,3,true);
+
+        String requestBody = objectMapper.writeValueAsString(오더테이블_리퀘스트);
 
         //when && then
         try {
-            mockMvc.perform(put("/api/tables/{orderTableId}/number-of-guests", 오더테이블.getId())
+            mockMvc.perform(put("/api/tables/{orderTableId}/number-of-guests", 오더테이블_리퀘스트.getId())
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(requestBody))
                     .andExpect(status().is5xxServerError());
@@ -180,12 +179,13 @@ class TableRestControllerTest {
     @DisplayName("비어있는 테이블의 인원을 변경할 경우 변경은 실패한다.")
     void changeNumberOfGuests_with_exception_when_orderTable_isEmpty() throws JsonProcessingException {
         //given
-        오더테이블.setId(1L);
-        String requestBody = objectMapper.writeValueAsString(오더테이블);
+        오더테이블_리퀘스트 = new OrderTableRequest(1L,3,true);
+
+        String requestBody = objectMapper.writeValueAsString(오더테이블_리퀘스트);
 
         //when && then
         try {
-            mockMvc.perform(put("/api/tables/{orderTableId}/number-of-guests", 오더테이블.getId())
+            mockMvc.perform(put("/api/tables/{orderTableId}/number-of-guests", 오더테이블_리퀘스트.getId())
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(requestBody))
                     .andExpect(status().is5xxServerError());
@@ -195,11 +195,11 @@ class TableRestControllerTest {
     }
 
     private void 테이블_상태변경_요청_실패() throws JsonProcessingException {
-        String requestBody = objectMapper.writeValueAsString(오더테이블);
+        String requestBody = objectMapper.writeValueAsString(오더테이블_리퀘스트);
 
         //when && then
         try {
-            mockMvc.perform(put("/api/tables/{orderTableId}/empty", 오더테이블.getId())
+            mockMvc.perform(put("/api/tables/{orderTableId}/empty", 오더테이블_리퀘스트.getId())
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(requestBody))
                     .andExpect(status().is5xxServerError());

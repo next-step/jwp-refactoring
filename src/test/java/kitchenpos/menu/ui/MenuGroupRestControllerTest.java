@@ -1,8 +1,7 @@
 package kitchenpos.menu.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.ui.MenuGroupRestController;
+import kitchenpos.menu.dto.MenuGroupRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,18 +20,17 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
 @SpringBootTest
 @AutoConfigureMockMvc
 class MenuGroupRestControllerTest {
     private MockMvc mockMvc;
-
     @Autowired
     private MenuGroupRestController menuGroupRestController;
-
     @Autowired
     ObjectMapper objectMapper;
 
-    private MenuGroup 메뉴그룹_추천메뉴;
+    MenuGroupRequest 메뉴그룹_한마리메뉴_리퀘스트;
 
     @BeforeEach
     void setUp() {
@@ -41,15 +39,14 @@ class MenuGroupRestControllerTest {
                 .alwaysDo(print())
                 .build();
 
-        메뉴그룹_추천메뉴 = new MenuGroup();
-        메뉴그룹_추천메뉴.setName("추천메뉴");
+        메뉴그룹_한마리메뉴_리퀘스트 = new MenuGroupRequest("한마리메뉴");
     }
 
     @Test
     @DisplayName("메뉴그룹을 생성한다.")
     void create() throws Exception {
         //given
-        String requestBody = objectMapper.writeValueAsString(메뉴그룹_추천메뉴);
+        String requestBody = objectMapper.writeValueAsString(메뉴그룹_한마리메뉴_리퀘스트);
 
         //when && then
         mockMvc

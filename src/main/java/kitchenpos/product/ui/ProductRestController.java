@@ -1,12 +1,10 @@
 package kitchenpos.product.ui;
 
 import kitchenpos.product.application.ProductService;
-import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
@@ -18,37 +16,24 @@ public class ProductRestController {
     public ProductRestController(final ProductService productService) {
         this.productService = productService;
     }
-
     @PostMapping("/api/products")
-    public ResponseEntity<Product> create(@RequestBody final Product product) {
-        final Product created = productService.create(product);
-        final URI uri = URI.create("/api/products/" + created.getId());
-        return ResponseEntity.created(uri)
-                .body(created)
-                ;
-    }
-
-    @GetMapping("/api/products")
-    public ResponseEntity<List<Product>> list() {
-        return ResponseEntity.ok()
-                .body(productService.list())
-                ;
-    }
-
-    //TODO re
-    @PostMapping("/api/products_re")
-    public ResponseEntity<Product> create_re(@RequestBody final Product product) {
-        final Product created = productService.create_re(product);
+    public ResponseEntity<ProductResponse> create(@RequestBody final ProductRequest productRequest) {
+        final ProductResponse created = productService.create(productRequest);
         final URI uri = URI.create("/api/products_re/" + created.getId());
         return ResponseEntity.created(uri)
                 .body(created)
                 ;
     }
 
-    @GetMapping("/api/products_re")
-    public ResponseEntity<List<Product>> list_re() {
+    @GetMapping("/api/products")
+    public ResponseEntity<List<ProductResponse>> list() {
         return ResponseEntity.ok()
-                .body(productService.list_re())
+                .body(productService.list())
                 ;
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity handleIllegalArgsException(IllegalArgumentException e) {
+        return ResponseEntity.badRequest().build();
     }
 }
