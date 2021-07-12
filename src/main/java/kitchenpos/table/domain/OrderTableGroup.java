@@ -26,7 +26,7 @@ public class OrderTableGroup {
         this.orderTables = orderTables;
     }
 
-    private OrderTableGroup(OrderTables orderTables){
+    private OrderTableGroup(OrderTables orderTables) {
         this(null, LocalDateTime.now(), orderTables);
         orderTables.groupBy(this);
     }
@@ -39,7 +39,7 @@ public class OrderTableGroup {
         orderTables.ungroup();
     }
 
-    public void validateNotCompletionStatus(){
+    public void validateNotCompletionStatus() {
         orderTables.validateNotCompletionStatus();
     }
 

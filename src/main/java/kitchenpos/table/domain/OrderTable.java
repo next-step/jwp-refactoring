@@ -2,8 +2,8 @@ package kitchenpos.table.domain;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.Orders;
-import kitchenpos.table.domain.exception.UngroupTableException;
 import kitchenpos.table.domain.exception.CannotOrderEmptyTableException;
+import kitchenpos.table.domain.exception.UngroupTableException;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -38,10 +38,6 @@ public class OrderTable {
         this.numberOfGuests = numberOfGuests;
         this.orders = orders;
         this.empty = empty;
-    }
-
-    public static OrderTable of(Long id, OrderTableGroup tableGroup, int numberOfGuests, List<Order> orders, boolean empty) {
-        return new OrderTable(id, tableGroup, NumberOfGuests.of(numberOfGuests), Orders.of(orders), empty);
     }
 
     public static OrderTable of(int numberOfGuests, boolean empty) {
@@ -86,11 +82,11 @@ public class OrderTable {
         this.tableGroup = null;
     }
 
-    public void validateNotCompletionStatus(){
+    public void validateNotCompletionStatus() {
         orders.validateAllNotCompletionStatus();
     }
 
-    public void addOrder(Order order){
+    public void addOrder(Order order) {
         orders.add(order);
     }
 

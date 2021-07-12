@@ -43,7 +43,7 @@ public class MenuService {
     @Transactional(readOnly = true)
     public List<Menu> findByIdIn(List<Long> menuIds) {
         List<Menu> menus = menuRepository.findByIdIn(menuIds);
-        if(menus.isEmpty()){
+        if (menus.isEmpty()) {
             throw new NotExistMenusException();
         }
 

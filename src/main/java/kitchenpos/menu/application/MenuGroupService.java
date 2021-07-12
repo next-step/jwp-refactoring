@@ -30,7 +30,7 @@ public class MenuGroupService {
     }
 
     @Transactional(readOnly = true)
-    public MenuGroup findById(Long id){
+    public MenuGroup findById(Long id) {
         return menuGroupRepository.findById(id).orElseThrow(NotExistMenuGroupException::new);
     }
 }

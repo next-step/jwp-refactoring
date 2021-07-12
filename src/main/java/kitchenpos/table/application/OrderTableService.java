@@ -1,10 +1,8 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.application.OrderService;
 import kitchenpos.table.application.exception.NotExistOrderTableException;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.presentation.dto.OrderTableRequest;
 import kitchenpos.table.presentation.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;

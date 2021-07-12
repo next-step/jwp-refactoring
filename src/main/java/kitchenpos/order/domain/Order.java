@@ -1,12 +1,11 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.order.domain.exception.CannotUngroupException;
 import kitchenpos.order.domain.exception.CannotChangeOrderStatusException;
+import kitchenpos.order.domain.exception.CannotUngroupException;
 import kitchenpos.table.domain.OrderTable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 

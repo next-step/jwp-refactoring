@@ -32,12 +32,12 @@ public class OrderLineItem {
         this.quantity = Quantity.of(quantity);
     }
 
-    public static OrderLineItem of(Long seq, Order order, Menu menu, long quantity) {
-        return new OrderLineItem(seq, order, menu, quantity);
-    }
-
     public static OrderLineItem of(Menu menu, long quantity) {
         return new OrderLineItem(null, null, menu, quantity);
+    }
+
+    public void registerOrder(Order order) {
+        this.order = order;
     }
 
     public Long getSeq() {
@@ -54,9 +54,5 @@ public class OrderLineItem {
 
     public Quantity getQuantity() {
         return quantity;
-    }
-
-    public void registerOrder(Order order) {
-        this.order = order;
     }
 }
