@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,15 +42,9 @@ public class OrderService {
 
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final String orderStatus) {
-        final Order order = findOrderById(orderId);
-
-        if (Objects.equals(OrderStatus.COMPLETION.name(), order.getOrderStatus())) {
-            throw new IllegalArgumentException("계산 완료 주문의 경우 상태를 변경할 수 없습니다.");
-        }
-
+        Order order = findOrderById(orderId);
         order.changeOrderStatus(OrderStatus.valueOf(orderStatus));
-        Order savedOrder = orderRepository.save(order);
-        return OrderResponse.of(savedOrder);
+        return OrderResponse.of(order);
     }
 
     private OrderTable findOrderTableById(Long orderTableId) {
