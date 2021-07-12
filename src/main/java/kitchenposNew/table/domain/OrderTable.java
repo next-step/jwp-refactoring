@@ -77,6 +77,20 @@ public class OrderTable {
         return numberOfGuests;
     }
 
+    public boolean isEmptyTableAndNotExistTableGroupId() {
+        return this.empty || this.tableGroupId == NON_TABLE_GROUP;
+    }
+
+    public void registerTableGroup(TableGroup tableGroup) {
+        this.tableGroupId = tableGroup.getId();
+        this.empty = false;
+    }
+
+    public void ungroup() {
+        this.tableGroupId = NON_TABLE_GROUP;
+        this.empty = true;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

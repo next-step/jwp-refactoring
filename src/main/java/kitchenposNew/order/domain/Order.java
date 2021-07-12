@@ -2,6 +2,7 @@ package kitchenposNew.order.domain;
 
 import kitchenposNew.order.OrderStatus;
 import kitchenposNew.table.domain.OrderTable;
+import kitchenposNew.table.exception.NotChangeToEmptyThatCookingOrMealTable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -15,7 +16,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_orders_order_To_table"))
     private OrderTable orderTable;
 
     @Enumerated(value = EnumType.STRING)
@@ -80,6 +82,13 @@ public class Order {
 
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems.getOrderLineItems();
+    }
+
+    public void ungroup() {
+        if (orderStatus.isCookingOrMeal()){
+            throw new NotChangeToEmptyThatCookingOrMealTable();
+        }
+        orderTable.ungroup();
     }
 
     @Override
