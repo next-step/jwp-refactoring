@@ -2,7 +2,6 @@ package kitchenpos.table.domain;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.tableGroup.domain.TableGroup;
 
 import javax.persistence.*;
 import java.util.ArrayList;

@@ -1,7 +1,5 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.tableGroup.domain.TableGroup;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
