@@ -5,4 +5,5 @@ include 'module-menugroup'
 include 'module-menu'
 include 'module-table'
 include 'module-tablegroup'
+include 'module-order'
 

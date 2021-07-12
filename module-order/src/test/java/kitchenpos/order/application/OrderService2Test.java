@@ -10,6 +10,7 @@ import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.table.domain.OrderTableEntity;
 import kitchenpos.table.domain.TableRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -154,7 +155,7 @@ class OrderService2Test {
     List<OrderResponse> orderList = orderService.findAllOrders();
 
     //then
-    assertThat(orderList).contains(OrderResponse.from(orderEntity1), OrderResponse.from(orderEntity2));
+    Assertions.assertThat(orderList).contains(OrderResponse.from(orderEntity1), OrderResponse.from(orderEntity2));
     verify(orderRepository, VerificationModeFactory.times(1)).findAll();
   }
 
