@@ -1,6 +1,7 @@
 package kitchenposNew.order.domain;
 
 import kitchenposNew.order.OrderStatus;
+import kitchenposNew.table.domain.OrderTable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -45,12 +46,21 @@ public class Order {
         this.orderLineItems.registerOrder(this);
     }
 
-    public void changeOrderStatus() {
+    public void changeOrderStatusCooking() {
         if (orderStatus.isCompletion()) {
             throw new IllegalArgumentException();
         }
         this.orderStatus = OrderStatus.COOKING;
     }
+
+    public void changeOrderStatusComplete() {
+        this.orderStatus = OrderStatus.COMPLETION;
+    }
+
+    public boolean isCookingOrMeal() {
+        return this.orderStatus.isCookingOrMeal();
+    }
+
 
     public Long getId() {
         return id;

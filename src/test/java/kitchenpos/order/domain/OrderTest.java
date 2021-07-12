@@ -4,7 +4,7 @@ import kitchenposNew.menu.domain.Menu;
 import kitchenposNew.order.domain.Order;
 import kitchenposNew.order.domain.OrderLineItem;
 import kitchenposNew.order.domain.OrderLineItems;
-import kitchenposNew.order.domain.OrderTable;
+import kitchenposNew.table.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class OrderTest {
     @Test
     void 주문_생성_테스트() {
-        OrderTable orderTable = new OrderTable();
+        OrderTable orderTable = new OrderTable(1l, 10);
         OrderLineItem orderLineItem = new OrderLineItem(new Menu(1L),1L);
         Order order = new Order(orderTable, new OrderLineItems(Arrays.asList(orderLineItem)));
 

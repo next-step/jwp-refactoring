@@ -13,6 +13,8 @@ import kitchenposNew.order.dto.OrderResponse;
 import kitchenposNew.order.exception.EmptyOrderLineItemsException;
 import kitchenposNew.order.exception.NotEqualsOrderCountAndMenuCount;
 import kitchenposNew.order.exception.NotFoundOrder;
+import kitchenposNew.table.domain.OrderTable;
+import kitchenposNew.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -128,8 +130,7 @@ public class OrderServiceTest {
         // and
         // 주문 메뉴 및 테이블 생성되어 있음
         OrderRequest orderRequest = new OrderRequest(1L, Arrays.asList(firstOrderLineItemRequest, secondOrderLineItemRequest));
-        OrderTable orderTable = new OrderTable();
-        orderTable.setId(1L);
+        OrderTable orderTable = new OrderTable(1L, 10);
         OrderLineItem firstOrderLineItem = new OrderLineItem(firstMenu, 1L);
         OrderLineItem secondOrderLineItem = new OrderLineItem(secondMenu, 1L);
         Order order = new Order(orderTable, new OrderLineItems(Arrays.asList(firstOrderLineItem, secondOrderLineItem)));
@@ -157,8 +158,7 @@ public class OrderServiceTest {
         // 주문 메뉴 및 테이블 생성되어 있음
         Menu firstMenu = new Menu(1L);
         Menu secondMenu = new Menu(2L);
-        OrderTable orderTable = new OrderTable();
-        orderTable.setId(1L);
+        OrderTable orderTable = new OrderTable(1L, 10);
         OrderLineItem firstOrderLineItem = new OrderLineItem(firstMenu, 1L);
         OrderLineItem secondOrderLineItem = new OrderLineItem(secondMenu, 1L);
         Order order = new Order(orderTable, new OrderLineItems(Arrays.asList(firstOrderLineItem, secondOrderLineItem)));
@@ -204,8 +204,7 @@ public class OrderServiceTest {
         // 주문 메뉴 및 테이블 생성되어 있음
         Menu firstMenu = new Menu(1L);
         Menu secondMenu = new Menu(2L);
-        OrderTable orderTable = new OrderTable();
-        orderTable.setId(1L);
+        OrderTable orderTable = new OrderTable(1L, 10);
         OrderLineItem firstOrderLineItem = new OrderLineItem(firstMenu, 1L);
         OrderLineItem secondOrderLineItem = new OrderLineItem(secondMenu, 1L);
         Order order = new Order(orderTable, new OrderLineItems(Arrays.asList(firstOrderLineItem, secondOrderLineItem)));

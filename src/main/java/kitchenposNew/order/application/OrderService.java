@@ -9,6 +9,8 @@ import kitchenposNew.order.dto.OrderResponse;
 import kitchenposNew.order.exception.NotEqualsOrderCountAndMenuCount;
 import kitchenposNew.order.exception.NotFoundOrder;
 import kitchenposNew.order.exception.NotFoundOrderTable;
+import kitchenposNew.table.domain.OrderTable;
+import kitchenposNew.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,7 +60,7 @@ public class OrderService {
 
     public OrderResponse changeOrderStatus(final Long orderId) {
         final Order savedOrder = orderRepository.findById(orderId).orElseThrow(() -> new NotFoundOrder());
-        savedOrder.changeOrderStatus();
+        savedOrder.changeOrderStatusCooking();
         return OrderResponse.of(savedOrder);
     }
 }
