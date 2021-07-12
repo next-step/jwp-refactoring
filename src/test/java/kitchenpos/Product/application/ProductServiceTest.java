@@ -59,7 +59,7 @@ class ProductServiceTest {
         given(productRepository.findAll()).willReturn(Arrays.asList(productRequest.toEntity()));
 
         //when
-        List<ProductResponse> productResponses = productService.list();
+        List<ProductResponse> productResponses = productService.findAll();
 
         //then
         List<String> productNames = productResponses.stream().map(ProductResponse::getName).collect(Collectors.toList());

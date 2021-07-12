@@ -25,11 +25,10 @@ public class ProductService {
         return ProductResponse.of(product);
     }
 
-    public List<ProductResponse> list() {
-        List<Product> productEntities = productRepository.findAll();
-        return productEntities.stream()
-                .map(productEntity -> ProductResponse.of(productEntity))
-                .collect(Collectors.toList());
+    @Transactional(readOnly = true)
+    public List<ProductResponse> findAll() {
+        List<Product> products = productRepository.findAll();
+        return ProductResponse.ofList(products);
     }
 
     @Transactional(readOnly = true)

@@ -52,14 +52,7 @@ public class OrderService {
             Menu menu = menuService.findById(orderLineItemRequest.getMenuId());
             orderlineItems.add(new OrderLineItem(menu, orderLineItemRequest.getQuantity()));
         }
-        allRegisteredItemCheck(orderLineItemRequests.size(), orderlineItems.size());
         return new OrderLineItems(orderlineItems);
-    }
-
-    private void allRegisteredItemCheck(int request, int searched) {
-        if (request != searched) {
-            throw new IllegalArgumentException("등록되지 않은 메뉴가 있습니다.");
-        }
     }
 
     private void orderLineItemsEmptyCheck(List<OrderLineItemRequest> orderLineItemRequests) {

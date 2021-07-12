@@ -1,5 +1,7 @@
 package kitchenpos.product.domain;
 
+import kitchenpos.common.domain.Price;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -14,17 +16,16 @@ public class Product {
     private Long id;
     @Column(nullable = false)
     private String name;
-    @Column(nullable = false)
-    private BigDecimal price;
+    @Embedded
+    private Price price;
 
     protected Product() {
     }
 
     public Product(String name, BigDecimal price) {
         nameValidCheck(name);
-        priceValidCheck(price);
         this.name = name;
-        this.price = price;
+        this.price = new Price(price);
     }
 
     public Long getId() {
@@ -36,13 +37,7 @@ public class Product {
     }
 
     public BigDecimal getPrice() {
-        return price;
-    }
-
-    private void priceValidCheck(BigDecimal price) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("가격이 없거나 음수인 상품은 등록할 수 없습니다.");
-        }
+        return price.value();
     }
 
     private void nameValidCheck(String name) {
