@@ -3,7 +3,9 @@ package kitchenpos.order.application;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.exception.NotFoundMenu;
-import kitchenpos.order.domain.*;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItemRepository;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.exception.NotEqualsOrderCountAndMenuCount;
@@ -38,16 +40,7 @@ public class OrderService {
         if (!orderRequest.isEqualsMenuSize(menuRepository.countByIdIn(menuIds))) {
             throw new NotEqualsOrderCountAndMenuCount();
         }
-        List<Menu> menus = menuIds.stream()
-                .map(menuId -> menuRepository.findById(menuId).orElseThrow(() -> new NotFoundMenu()))
-                .collect(Collectors.toList());
-
-        final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
-                .orElseThrow(() -> new NotFoundOrderTable());
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-        final Order persistOrder = orderRepository.save(orderRequest.toOrder(orderTable, menus));
+        final Order persistOrder = orderRepository.save(orderRequest.toOrder(findOrderTable(orderRequest.getOrderTableId()), findMenusByIds(menuIds)));
         return OrderResponse.of(persistOrder);
     }
 
@@ -62,5 +55,19 @@ public class OrderService {
         final Order savedOrder = orderRepository.findById(orderId).orElseThrow(() -> new NotFoundOrder());
         savedOrder.changeOrderStatusCooking();
         return OrderResponse.of(savedOrder);
+    }
+
+    private List<Menu> findMenusByIds(List<Long> menuIds) {
+        return menuIds.stream()
+                .map(menuId -> menuRepository.findById(menuId).orElseThrow(() -> new NotFoundMenu()))
+                .collect(Collectors.toList());
+    }
+
+    private OrderTable findOrderTable(Long orderTableId) {
+        OrderTable orderTable = orderTableRepository.findById(orderTableId).orElseThrow(() -> new NotFoundOrderTable());
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        return orderTable;
     }
 }
