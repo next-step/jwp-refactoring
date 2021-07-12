@@ -3,10 +3,12 @@ package kitchenpos.order.domain;
 import java.util.Objects;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.Quantity;
@@ -18,8 +20,9 @@ public class OrderLineItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
 
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
-    private Long orderId;
+    private Order order;
 
     @JoinColumn(name = "menu_id")
     private Long menuId;
@@ -30,7 +33,7 @@ public class OrderLineItem {
     }
 
     public OrderLineItem(final Order order, final Menu menu, final long quantity) {
-        this.orderId = order.getId();
+        this.order = order;
         this.menuId = menu.getId();
         this.quantity = new Quantity(quantity);
     }
@@ -45,7 +48,7 @@ public class OrderLineItem {
     }
 
     public Long getOrderId() {
-        return orderId;
+        return order.getId();
     }
 
     public Long getMenuId() {
@@ -57,7 +60,7 @@ public class OrderLineItem {
     }
 
     public void updateOrder(final Order order) {
-        this.orderId = order.getId();
+        this.order = order;
     }
 
     @Override
@@ -67,12 +70,12 @@ public class OrderLineItem {
         if (o == null || getClass() != o.getClass())
             return false;
         final OrderLineItem that = (OrderLineItem)o;
-        return quantity == that.quantity && Objects.equals(seq, that.seq) && Objects.equals(orderId,
-            that.orderId) && Objects.equals(menuId, that.menuId);
+        return Objects.equals(seq, that.seq) && Objects.equals(order, that.order)
+            && Objects.equals(menuId, that.menuId) && Objects.equals(quantity, that.quantity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(seq, orderId, menuId, quantity);
+        return Objects.hash(seq, order, menuId, quantity);
     }
 }

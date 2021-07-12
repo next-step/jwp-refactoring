@@ -9,10 +9,12 @@ import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.springframework.data.annotation.CreatedDate;
@@ -27,8 +29,9 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_table_id")
-    private Long orderTableId;
+    private OrderTable orderTable;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
@@ -43,7 +46,7 @@ public class Order {
     }
 
     public Order(final OrderTable orderTable, final OrderStatus orderStatus, final List<OrderLineItem> orderLineItems) {
-        this.orderTableId = orderTable.getId();
+        this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderLineItems.addAll(orderLineItems);
         this.orderLineItems.updateOrder(this);
@@ -51,7 +54,7 @@ public class Order {
 
     public Order(final OrderTable orderTable, final OrderLineItems orderLineItems) {
         validateOrderTable(orderTable);
-        this.orderTableId = orderTable.getId();
+        this.orderTable = orderTable;
         this.orderLineItems.addAll(orderLineItems.toList());
         this.orderLineItems.updateOrder(this);
         this.orderStatus = OrderStatus.COOKING;
@@ -72,7 +75,7 @@ public class Order {
     }
 
     public Long getOrderTableId() {
-        return orderTableId;
+        return orderTable.getId();
     }
 
     public OrderStatus getOrderStatus() {
@@ -106,13 +109,13 @@ public class Order {
         if (o == null || getClass() != o.getClass())
             return false;
         final Order order = (Order)o;
-        return Objects.equals(id, order.id) && Objects.equals(orderTableId, order.orderTableId)
+        return Objects.equals(id, order.id) && Objects.equals(orderTable, order.orderTable)
             && orderStatus == order.orderStatus && Objects.equals(orderedTime, order.orderedTime)
             && Objects.equals(orderLineItems, order.orderLineItems);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, orderTableId, orderStatus, orderedTime, orderLineItems);
+        return Objects.hash(id, orderTable, orderStatus, orderedTime, orderLineItems);
     }
 }

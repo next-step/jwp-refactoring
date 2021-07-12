@@ -72,7 +72,7 @@ public class OrderTables {
     }
 
     public void updateTableGroup(final TableGroup tableGroup) {
-        orderTables.forEach(orderTable -> orderTable.updateTableGroup(tableGroup.getId()));
+        orderTables.forEach(orderTable -> orderTable.updateTableGroup(tableGroup));
     }
 
     @Override
