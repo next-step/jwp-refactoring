@@ -97,7 +97,7 @@ TODO
 
 ---
 
-**2단계**
+### **2단계**
 
 서비스 생성 후, 해당 서비스의 역할을 호출하는 이벤트 생성 예정
 
@@ -117,3 +117,138 @@ TODO
 도메인별 라이프사이클을 고려해 의존성을 분리한다.
 
 - Product 는 메뉴가 주문되기 전 미리 등록되어있어야 한다. 그러므로, MenuProduct 에서 분리되어있어야 한다.
+
+---
+
+### **3단계**
+
+3단계의 미션은 의존성 분리하기 입니다. 다시 말하면 도메인 어디에 어떤 의존성을 가져야하는가? 에 대한 질문으로�시작했어야 했었습니다.
+그러나, 2단계 서비스 리팩토링 하면서 도메인 레이어의 의존관계를 임의대로 만들어 버리면서 3단계 미션에 대한 이해가 부족했습니다. 그런 결과로 리뷰어님 입장에서는 더욱 곤란했을 거라 판단됩니다.
+
+이번에는 조금더 명확하게 의존성을 표현하기 위해서 다이어그램을 함께 첨부드립니다.
+
+![images](https://tva1.sinaimg.cn/large/008i3skNgy1gseef9dy6gj316f0u078v.jpg)
+
+ 크게 5개의 큰 영역을 가집니다. **Order, Menu, MenuGroup, TableGroup, Product** 이렇게 가지며 이는 각 엔티티의 라이프사이클에 따라 구분되어졌습니다.
+
+변경된 코드가 많아, 다이어그램과 함께 전체 코드를 보면 조금더 이해가 쉽지 않을까 싶습니다.
+
+양방향 의존은 모두 제거되었고, 다이어그램에서 점섬은 id 를 통한 접근을 말합니다.
+
+---
+
+### **4단계** 
+
+멀티 모듈 만들기
+
+먼저 총 4개의 모듈로 존재합니다.
+
+- common
+- domain
+- web
+
+먼저 **common** 은 최대한 작게 가져가기 위한 노력을 했습니다. 단순히 Type, Util 을 가진 순수한 자바 객체만 존재하도록 했습니다. 
+
+이 **Common** 모듈은 이름이 의도하는 것과 같이, domain, web 모듈 의존성에 추가되었습니다.
+
+그래서 의존성에서도 이런 부분이 반영되어있습니다.
+
+```groovy
+plugins {
+    id 'java-library'
+}
+
+group = 'camp.nextstep.edu'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+}
+
+repositories {
+    mavenCentral()
+}
+
+test {
+    useJUnitPlatform()
+}
+
+jar {
+    enabled = true
+}
+```
+
+다음  **Domain** 모듈은 핵심적인 역할을 합니다. 도메인 서비스, 도메인 엔티티, 레포지터리를 가지고 있습니다. 
+
+```groovy
+plugins {
+    id 'org.springframework.boot' version '2.4.1'
+    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+    id 'java'
+}
+
+group = 'camp.nextstep.edu'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    compile project(':common')
+
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.flywaydb:flyway-core'
+    runtimeOnly 'com.h2database:h2'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+bootJar { enabled = false }
+jar { enabled = true }
+```
+
+이전에 **Application** 패키지에 있던 Service는 도메인 서비스라 판단되어, **Application** 클래스를 도메인 서비스로 변경했습니다.
+
+마지막으로 **Web 패키지** 는 컨트롤러 관련된 코드로 `spring-boot-starter-web` 에 대한 의존성을 가지고 있습니다.
+
+```groovy
+plugins {
+    id 'org.springframework.boot' version '2.4.1'
+    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+    id 'java'
+}
+
+repositories {
+    mavenCentral()
+}
+
+group = 'camp.nextstep.edu'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+dependencies {
+
+    compile project(':domain')
+    compile project(':common')
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+test {
+    useJUnitPlatform()
+}
+```
+
+**마지막으로, 멀티모듈로 나눈 최종본에 root 모듈은 없습니다. root 모듈이 책임져야할 부분이 없을 것같아 제거했습니다.**
+
