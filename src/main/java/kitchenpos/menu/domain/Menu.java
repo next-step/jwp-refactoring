@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.common.domain.Price;
 import kitchenpos.menugroup.domain.MenuGroup;
 
 import javax.persistence.*;
@@ -17,7 +18,7 @@ public class Menu {
     private String name;
 
     @Column(nullable = false)
-    private BigDecimal price;
+    private Price price;
 
     @ManyToOne
     @JoinColumn(name = "menu_group_id")
@@ -31,21 +32,15 @@ public class Menu {
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
         this.name = name;
-        this.price = price;
+        this.price = new Price(price);
         this.menuGroup = menuGroup;
         updateMenuProducts(menuProducts);
     }
 
     private void updateMenuProducts(MenuProducts menuProducts) {
-        priceValidCheck(menuProducts.getTotalPrice());
+        price.availablePriceCheck(menuProducts.getTotalPrice());
         menuProducts.updateMenu(this);
         this.menuProducts = menuProducts;
-    }
-
-    private void priceValidCheck(BigDecimal totalPrice) {
-        if (price.compareTo(totalPrice) > 0) {
-            throw new IllegalArgumentException("메뉴 가격은 상품 가격의 총 합보다 클 수 없습니다.");
-        }
     }
 
     public Long getId() {
@@ -57,7 +52,7 @@ public class Menu {
     }
 
     public BigDecimal getPrice() {
-        return price;
+        return price.value();
     }
 
     public MenuGroup getMenuGroup() {

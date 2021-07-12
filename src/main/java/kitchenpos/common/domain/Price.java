@@ -30,4 +30,10 @@ public class Price {
     public BigDecimal value() {
         return price;
     }
+
+    public void availablePriceCheck(BigDecimal totalPrice) {
+        if (price.compareTo(totalPrice) > ZERO) {
+            throw new IllegalArgumentException("메뉴 가격은 상품 가격의 총 합보다 클 수 없습니다.");
+        }
+    }
 }
