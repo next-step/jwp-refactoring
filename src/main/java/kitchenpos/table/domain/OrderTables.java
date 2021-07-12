@@ -1,4 +1,4 @@
-package kitchenpos.tablegroup.domain;
+package kitchenpos.table.domain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableResponse;
 
 @Embeddable
@@ -19,6 +18,10 @@ public class OrderTables {
         this.orderTables = new ArrayList<>();
     }
 
+    public OrderTables(List<OrderTable> orderTables) {
+        this.orderTables = orderTables;
+    }
+
     public List<OrderTableResponse> toResponses() {
         return this.orderTables.stream()
                 .map(OrderTableResponse::of)
@@ -27,5 +30,15 @@ public class OrderTables {
 
     public void add(OrderTable orderTable) {
         this.orderTables.add(orderTable);
+    }
+
+    public List<Long> getOrderTableIds() {
+        return this.orderTables.stream()
+                .map(OrderTable::getId)
+                .collect(Collectors.toList());
+    }
+
+    public void ungroupOrderTables() {
+        this.orderTables.forEach(orderTable -> orderTable.setTableGroup(null));
     }
 }

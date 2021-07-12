@@ -2,7 +2,6 @@ package kitchenpos.tablegroup.application;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +12,7 @@ import kitchenpos.order.exception.OrderAlreadyExistsException;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.exception.MisMatchedOrderTablesSizeException;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
@@ -21,6 +21,7 @@ import kitchenpos.tablegroup.dto.TableGroupResponse;
 
 @Service
 public class TableGroupService {
+    private static final int ORDER_TABLE_MINIMUM_SIZE = 2;
     private final TableService tableService;
     private final TableGroupRepository tableGroupRepository;
     private final OrderTableRepository orderTableRepository;
@@ -36,39 +37,27 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableRepository.findByTableGroupId(tableGroupId);
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-        validateOrderStatusIsCookingOrMeal(orderTableIds);
-        orderTables.forEach(orderTable -> orderTable.setTableGroup(null));
+        OrderTables orderTables = new OrderTables(orderTableRepository.findByTableGroupId(tableGroupId));
+        validateOrderStatusIsCookingOrMeal(orderTables.getOrderTableIds());
+        orderTables.ungroupOrderTables();
     }
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         List<OrderTable> orderTables = getOrderTables(tableGroupRequest);
-        TableGroup tableGroup = getTableGroup(orderTables);
+        TableGroup tableGroup = makeTableGroup(orderTables);
         return TableGroupResponse.of(tableGroup);
     }
 
     private List<OrderTable> getOrderTables(TableGroupRequest tableGroupRequest) {
-        List<Long> orderTableIds = getOrderTableIds(tableGroupRequest);
-        return getOrderTables(orderTableIds);
-    }
-
-    private List<Long> getOrderTableIds(TableGroupRequest tableGroupRequest) {
         List<Long> orderTableIds = tableGroupRequest.getOrderTableIds();
         validateMinimumOrderTableSize(orderTableIds);
-        return orderTableIds;
-    }
-
-    private List<OrderTable> getOrderTables(List<Long> orderTableIds) {
         List<OrderTable> orderTables = tableService.findOrderTablesByIds(orderTableIds);
         validateMisMatchedOrderTableSize(orderTableIds, orderTables);
         return orderTables;
     }
 
-    private TableGroup getTableGroup(List<OrderTable> orderTables) {
+    private TableGroup makeTableGroup(List<OrderTable> orderTables) {
         TableGroup tableGroup = tableGroupRepository.save(new TableGroup());
         for (final OrderTable orderTable : orderTables) {
             validateOrderTableIsEmptyOrHasTableGroup(orderTable);
@@ -87,7 +76,7 @@ public class TableGroupService {
     }
 
     private void validateMinimumOrderTableSize(List<Long> orderTableIds) {
-        if (orderTableIds.size() < 2) {
+        if (orderTableIds.size() < ORDER_TABLE_MINIMUM_SIZE) {
             throw new IllegalArgumentException("정산 그룹 생성은 2개 이상의 테이블만 가능합니다.");
         }
     }

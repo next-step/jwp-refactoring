@@ -12,13 +12,17 @@ public class MenuName {
     }
 
     public MenuName(String name) {
-        if (Objects.isNull(name) || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("메뉴 이름은 Null 또는 공백일 수 없습니다.");
-        }
+        validateMenuNameIsNullOrEmpty(name);
         this.name = name;
     }
 
     public String toString() {
         return name;
+    }
+
+    private void validateMenuNameIsNullOrEmpty(String name) {
+        if (Objects.isNull(name) || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("메뉴 이름은 Null 또는 공백일 수 없습니다.");
+        }
     }
 }

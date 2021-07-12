@@ -1,12 +1,15 @@
 package kitchenpos.tablegroup.domain;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
-import javax.persistence.*;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTables;
 
 @Entity
 public class TableGroup {
