@@ -4,6 +4,7 @@ import kitchenpos.product.domain.ProductEntity;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -73,7 +74,7 @@ class ProductService2Test {
     List<ProductResponse> productList = productService.findAllProducts();
 
     //then
-    assertThat(productList).isEqualTo(ProductResponse.ofList(Arrays.asList(product1, product2, product3)));
+    Assertions.assertThat(productList).isEqualTo(ProductResponse.ofList(Arrays.asList(product1, product2, product3)));
   }
 
 }

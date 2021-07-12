@@ -5,7 +5,6 @@ import kitchenpos.menu.domain.MenuProductEntity;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menugroup.domain.MenuGroupEntity;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.ProductEntity;
 import kitchenpos.product.domain.ProductRepository;
@@ -24,7 +23,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
