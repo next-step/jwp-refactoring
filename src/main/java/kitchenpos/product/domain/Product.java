@@ -39,4 +39,8 @@ public class Product {
     public Price getPrice() {
         return price;
     }
+
+    public Price multiply(final long times) {
+        return this.price.multiply(times);
+    }
 }

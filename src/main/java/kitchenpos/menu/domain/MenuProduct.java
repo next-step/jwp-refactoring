@@ -44,7 +44,7 @@ public class MenuProduct {
     }
 
     public Price calculatePrice(final long times) {
-        return this.product.getPrice().multiply(times);
+        return this.product.multiply(times);
     }
 
     public long getQuantity() {

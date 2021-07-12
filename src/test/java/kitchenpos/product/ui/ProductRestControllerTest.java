@@ -57,7 +57,7 @@ class ProductRestControllerTest extends MockMvcTestHelper {
                                                               ProductResponse.class);
         assertAll(() -> {
             assertThat(responseBody.getName()).isEqualTo(product.getName());
-            assertThat(responseBody.getPrice()).isEqualTo(product.getPrice().getValue());
+            assertThat(responseBody.getPrice()).isEqualTo(product.getPrice().value());
         });
         Mockito.verify(productService).create(any());
 
