@@ -1,23 +1,21 @@
 package kitchenpos.application;
 
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.exception.CannotUngroupException;
 import kitchenpos.table.application.OrderTableGroupService;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableGroup;
-import kitchenpos.table.domain.OrderTableGroupRepository;
-import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.*;
+import kitchenpos.table.domain.exception.UngroupTableException;
 import kitchenpos.table.presentation.dto.OrderTableGroupRequest;
 import kitchenpos.table.presentation.dto.OrderTableGroupResponse;
 import kitchenpos.table.presentation.dto.OrderTableRequest;
+import kitchenpos.table.presentation.dto.exception.BadSizeOrderTableException;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;
-import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -27,9 +25,6 @@ class TableGroupServiceTest extends DataBaseCleanSupport {
 
     @Autowired
     private OrderTableGroupService orderTableGroupService;
-
-    @Autowired
-    private OrderRepository orderRepository;
 
     @Autowired
     private OrderTableRepository orderTableRepository;
@@ -67,7 +62,7 @@ class TableGroupServiceTest extends DataBaseCleanSupport {
 
         //when
         assertThatThrownBy(() -> orderTableGroupService.create(tableGroup))
-                .isInstanceOf(IllegalArgumentException.class); //then
+                .isInstanceOf(BadSizeOrderTableException.class); //then
     }
 
     @DisplayName("주문 테이블이 2개 이상이어야 한다.")
@@ -80,7 +75,7 @@ class TableGroupServiceTest extends DataBaseCleanSupport {
 
         //when
         assertThatThrownBy(() -> orderTableGroupService.create(tableGroup))
-                .isInstanceOf(IllegalArgumentException.class); //then
+                .isInstanceOf(BadSizeOrderTableException.class); //then
     }
 
     @DisplayName("주문 테이블이 존재해야만 한다.")
@@ -92,7 +87,7 @@ class TableGroupServiceTest extends DataBaseCleanSupport {
 
         //when
         assertThatThrownBy(() -> orderTableGroupService.create(tableGroup))
-                .isInstanceOf(IllegalArgumentException.class); //then
+                .isInstanceOf(BadSizeOrderTableException.class); //then
     }
 
     @DisplayName("테이블 그룹을 지정할 때 주문 테이블은 주문 불가능 상태여야만 한다.")
@@ -107,7 +102,7 @@ class TableGroupServiceTest extends DataBaseCleanSupport {
 
         //when
         assertThatThrownBy(() -> orderTableGroupService.create(tableGroup))
-                .isInstanceOf(IllegalArgumentException.class); //then
+                .isInstanceOf(UngroupTableException.class); //then
     }
 
     @DisplayName("다른 주문 테이블 그룹에 속하지 않아야만 한다.")
@@ -119,16 +114,16 @@ class TableGroupServiceTest extends DataBaseCleanSupport {
 
         //when
         assertThatThrownBy(() -> orderTableGroupService.create(tableGroup))
-                .isInstanceOf(IllegalArgumentException.class); //then
+                .isInstanceOf(BadSizeOrderTableException.class); //then
     }
 
     @DisplayName("특정 테이블 그룹을 삭제한다.")
     @Test
     void ungroup() {
         //given
-        OrderTable orderTable1 = saveOrderTable(4, false);
-        OrderTable orderTable2 = saveOrderTable(2, false);
-        OrderTableGroup orderTableGroup = orderTableGroupRepository.save(OrderTableGroup.of(LocalDateTime.now(), Lists.list(orderTable1, orderTable2)));
+        OrderTable orderTable1 = saveOrderTable(4, true);
+        OrderTable orderTable2 = saveOrderTable(2, true);
+        OrderTableGroup orderTableGroup = orderTableGroupRepository.save(OrderTableGroup.createWithMapping(OrderTables.of(Lists.list(orderTable1, orderTable2))));
 
         //when
         orderTableGroupService.ungroup(orderTableGroup.getId());
@@ -144,16 +139,13 @@ class TableGroupServiceTest extends DataBaseCleanSupport {
     @Test
     void ungroupExceptionIfOrderTableStatusIsCookingOrMeal() {
         //given
-        OrderTable orderTable1 = saveOrderTable(4, false);
-        OrderTableGroup orderTableGroup = orderTableGroupRepository.save(OrderTableGroup.of(LocalDateTime.now(), Lists.list(orderTable1)));
-        orderTable1.setTableGroup(orderTableGroup);
-        Order order = Order.of(orderTable1, OrderStatus.COOKING, LocalDateTime.now());
-        orderRepository.save(order);
-        Long orderTableGroupId = orderTableGroup.getId();
+        OrderTable orderTable = saveOrderTable(4, false);
+        OrderTableGroup orderTableGroup = orderTableGroupRepository.save(OrderTableGroup.createWithMapping(OrderTables.of(Lists.list(orderTable))));
+        Order.createWithMapping(orderTable, OrderStatus.COOKING, Lists.list());
 
         //when
-        assertThatThrownBy(() -> orderTableGroupService.ungroup(orderTableGroupId))
-                .isInstanceOf(IllegalArgumentException.class); //then
+        assertThatThrownBy(() -> orderTableGroupService.ungroup(orderTableGroup.getId()))
+                .isInstanceOf(CannotUngroupException.class); //then
     }
 
     private OrderTable saveOrderTable(int numberOfGuests, boolean empty) {

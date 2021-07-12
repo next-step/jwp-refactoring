@@ -31,7 +31,7 @@ public class MenuService {
         MenuGroup menuGroup = menuGroupService.findById(menuRequest.getMenuGroupId());
         List<Product> products = productService.findByIdIn(menuRequest.getProductsIds());
         List<MenuProduct> menuProducts = menuRequest.getMenuProductsBy(products);
-        Menu menu = Menu.create(menuRequest.getName(), menuRequest.getPrice(), menuGroup, menuProducts);
+        Menu menu = Menu.createWithMapping(menuRequest.getName(), menuRequest.getPrice(), menuGroup, menuProducts);
         return MenuResponse.of(menuRepository.save(menu));
     }
 

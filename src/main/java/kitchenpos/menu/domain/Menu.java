@@ -51,7 +51,7 @@ public class Menu {
         return new Menu(null, Name.of(name), Price.of(price), null, MenuProducts.of(new ArrayList<>()));
     }
 
-    public static Menu create(String name, BigDecimal menuPrice, MenuGroup menuGroup, List<MenuProduct> menuProductList) {
+    public static Menu createWithMapping(String name, BigDecimal menuPrice, MenuGroup menuGroup, List<MenuProduct> menuProductList) {
         MenuProducts menuProducts = MenuProducts.of(menuProductList);
         Price price = Price.of(menuPrice);
         menuProducts.validatePrice(price);

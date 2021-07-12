@@ -1,6 +1,7 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.order.domain.exception.UnUseOrderException;
+import kitchenpos.order.domain.exception.CannotUngroupException;
+import kitchenpos.order.domain.exception.CannotChangeOrderStatusException;
 import kitchenpos.table.domain.OrderTable;
 
 import javax.persistence.*;
@@ -40,22 +41,33 @@ public class Order {
         this.orderLineItems = orderLineItems;
     }
 
-    private Order(OrderTable orderTable, OrderLineItems orderLineItems) {
-        this(null, orderTable, OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
+    private Order(OrderTable orderTable, OrderStatus orderStatus, OrderLineItems orderLineItems) {
+        this(null, orderTable, orderStatus, LocalDateTime.now(), orderLineItems);
         orderLineItems.registerAll(this);
+        orderTable.addOrder(this);
     }
 
-    public static Order of(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
-        return new Order(id, orderTable, orderStatus, orderedTime, OrderLineItems.of(orderLineItems));
-    }
-
-    public static Order of(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
-        return new Order(null, orderTable, orderStatus, orderedTime, OrderLineItems.of(new ArrayList<>()));
-    }
-
-    public static Order create(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+    public static Order createWithMapping(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
         orderTable.validateOrderable();
-        return new Order(orderTable, OrderLineItems.of(orderLineItems));
+        return new Order(orderTable, orderStatus, OrderLineItems.of(orderLineItems));
+    }
+
+    public void changeOrderStatus(OrderStatus orderStatus) {
+        validateOrderable();
+        this.orderStatus = orderStatus;
+    }
+
+    private void validateOrderable() {
+        if (Objects.equals(orderStatus, OrderStatus.COMPLETION)) {
+            throw new CannotChangeOrderStatusException();
+        }
+    }
+
+    public void validateNotCompletionStatus() {
+        if (Objects.equals(orderStatus, OrderStatus.COOKING) ||
+                Objects.equals(orderStatus, OrderStatus.MEAL)) {
+            throw new CannotUngroupException();
+        }
     }
 
     public Long getId() {
@@ -76,16 +88,5 @@ public class Order {
 
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems.getUnmodifiableList();
-    }
-
-    public void changeOrderStatus(OrderStatus orderStatus) {
-        validateOrderable();
-        this.orderStatus = orderStatus;
-    }
-
-    private void validateOrderable() {
-        if (Objects.equals(orderStatus, OrderStatus.COMPLETION)) {
-            throw new UnUseOrderException();
-        }
     }
 }

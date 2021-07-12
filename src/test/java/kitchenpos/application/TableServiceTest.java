@@ -3,17 +3,20 @@ package kitchenpos.application;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.exception.CannotUngroupException;
 import kitchenpos.table.application.OrderTableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.exception.NegativeNumberOfGuestsException;
+import kitchenpos.table.domain.exception.CannotOrderEmptyTableException;
 import kitchenpos.table.presentation.dto.OrderTableRequest;
 import kitchenpos.table.presentation.dto.OrderTableResponse;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -72,13 +75,13 @@ class TableServiceTest extends DataBaseCleanSupport {
     @Test
     void changeEmptyExceptionIfTableOrderStatusIsNotCompletion() {
         //given
-        orderRepository.save(Order.of(주문한_테이블, OrderStatus.COOKING, LocalDateTime.now()));
+        orderRepository.save(Order.createWithMapping(주문한_테이블, OrderStatus.COOKING, Lists.list()));
         Long orderTableId = 주문한_테이블.getId();
         OrderTableRequest orderTableRequest = OrderTableRequest.of(false);
 
         //when
         assertThatThrownBy(() -> tableService.changeEmpty(orderTableId, orderTableRequest))
-                .isInstanceOf(IllegalArgumentException.class); //then
+                .isInstanceOf(CannotUngroupException.class); //then
     }
 
     @DisplayName("특정 테이블의 인원 수를 예약한다.")
@@ -101,7 +104,7 @@ class TableServiceTest extends DataBaseCleanSupport {
 
         //when
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(주문불가능_테이블_id, orderTableRequest))
-                .isInstanceOf(IllegalArgumentException.class); //then
+                .isInstanceOf(CannotOrderEmptyTableException.class); //then
     }
 
     @DisplayName("주문 테이블의 인원수는 최소 0명 이상이어야 한다.")
@@ -113,6 +116,6 @@ class TableServiceTest extends DataBaseCleanSupport {
 
         //when
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(주문한_테이블_id, orderTableRequest))
-                .isInstanceOf(IllegalArgumentException.class); //then
+                .isInstanceOf(NegativeNumberOfGuestsException.class); //then
     }
 }

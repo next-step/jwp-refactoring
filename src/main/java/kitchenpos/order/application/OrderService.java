@@ -33,7 +33,7 @@ public class OrderService {
         List<Menu> menus = menuService.findByIdIn(orderRequest.getMenuIds());
         List<OrderLineItem> orderLineItems = orderRequest.getOrderLineItemsBy(menus);
         OrderTable orderTable = orderTableService.findById(orderRequest.getOrderTableId());
-        Order order = Order.create(orderTable, orderLineItems);
+        Order order = Order.createWithMapping(orderTable, OrderStatus.COOKING, orderLineItems);
         return OrderResponse.of(orderRepository.save(order));
     }
 
@@ -50,7 +50,7 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public Order findById(Long id){
+    public Order findById(Long id) {
         return orderRepository.findById(id)
                 .orElseThrow(NotExistOrderException::new);
     }

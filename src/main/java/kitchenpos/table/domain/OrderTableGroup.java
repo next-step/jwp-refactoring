@@ -1,10 +1,7 @@
 package kitchenpos.table.domain;
 
-import org.springframework.data.annotation.ReadOnlyProperty;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Table(name = "table_group")
@@ -17,25 +14,33 @@ public class OrderTableGroup {
     @Column(nullable = false)
     private LocalDateTime createdDate;
 
-    @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL)
-    @ReadOnlyProperty
-    private List<OrderTable> orderTables;
+    @Embedded
+    private OrderTables orderTables;
 
     protected OrderTableGroup() {
     }
 
-    private OrderTableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
+    private OrderTableGroup(Long id, LocalDateTime createdDate, OrderTables orderTables) {
         this.id = id;
         this.createdDate = createdDate;
         this.orderTables = orderTables;
     }
 
-    public static OrderTableGroup of(Long id, LocalDateTime createdDate) {
-        return new OrderTableGroup(id, createdDate, new ArrayList<>());
+    private OrderTableGroup(OrderTables orderTables){
+        this(null, LocalDateTime.now(), orderTables);
+        orderTables.groupBy(this);
     }
 
-    public static OrderTableGroup of(LocalDateTime createdDate, List<OrderTable> orderTables) {
-        return new OrderTableGroup(null, createdDate, orderTables);
+    public static OrderTableGroup createWithMapping(OrderTables orderTables) {
+        return new OrderTableGroup(orderTables);
+    }
+
+    public void ungroup() {
+        orderTables.ungroup();
+    }
+
+    public void validateNotCompletionStatus(){
+        orderTables.validateNotCompletionStatus();
     }
 
     public Long getId() {
@@ -47,6 +52,10 @@ public class OrderTableGroup {
     }
 
     public List<OrderTable> getOrderTables() {
-        return orderTables;
+        return orderTables.getUnmodifiableList();
+    }
+
+    public List<Long> getOrderTableIds() {
+        return orderTables.getOrderTableIds();
     }
 }
