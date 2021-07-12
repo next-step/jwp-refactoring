@@ -3,4 +3,5 @@ include 'module-product'
 include 'module-util'
 include 'module-menugroup'
 include 'module-menu'
+include 'module-table'
 

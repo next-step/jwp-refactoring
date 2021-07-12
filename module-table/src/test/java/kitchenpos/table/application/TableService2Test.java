@@ -5,6 +5,7 @@ import kitchenpos.table.domain.TableRepository;
 import kitchenpos.table.domain.TableExternalValidator;
 import kitchenpos.table.dto.TableRequest;
 import kitchenpos.table.dto.TableResponse;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -70,7 +71,7 @@ class TableService2Test {
     List<TableResponse> orderTableList = tableService.findAllTables();
 
     //then
-    assertThat(orderTableList).contains(TableResponse.from(orderTableEntity1), TableResponse.from(orderTableEntity2));
+    Assertions.assertThat(orderTableList).contains(TableResponse.from(orderTableEntity1), TableResponse.from(orderTableEntity2));
   }
 
   @DisplayName("테이블 ID와 주문을 등록할 수 있는 테이블 여부를 입력받아 테이블의 주문을 등록할 수 있는 테이블 여부를 변경할 수 있다.")

@@ -32,6 +32,7 @@ dependencies {
     implementation project(':module-product')
     implementation project(':module-menugroup')
     implementation project(':module-menu')
+    implementation project(':module-table')
 }
 
 project(':module-menu') {
