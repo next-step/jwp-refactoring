@@ -1,7 +1,10 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menugroup.application.MenuGroupService;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @DisplayName("메뉴 그룹 관리 테스트")
@@ -21,41 +25,37 @@ import static org.mockito.Mockito.when;
 class MenuGroupServiceTest {
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @InjectMocks
     private MenuGroupService menuGroupService;
 
-    private MenuGroup menuGroup;
+    private MenuGroup 추천_메뉴;
+    private MenuGroup 세트_메뉴;
 
     @BeforeEach
     void setUp() {
-        menuGroup = new MenuGroup();
-        menuGroup.setId(1L);
-        menuGroup.setName("추천 메뉴");
+        추천_메뉴 = new MenuGroup(1L, "추천 메뉴");
+        세트_메뉴 = new MenuGroup(2L, "세트 메뉴");
     }
 
     @Test
     void 메뉴_그룹_생성() {
-        when(menuGroupDao.save(menuGroup)).thenReturn(menuGroup);
-        MenuGroup expected = 메뉴_그룹_저장(menuGroup);
-
-        assertThat(expected.getId()).isEqualTo(menuGroup.getId());
-        assertThat(expected.getName()).isEqualTo(menuGroup.getName());
+        MenuGroupRequest request = new MenuGroupRequest("추천 메뉴");
+        when(menuGroupRepository.save(any(MenuGroup.class))).thenReturn(추천_메뉴);
+        MenuGroupResponse actual = menuGroupService.newCreate(request);
+        assertThat(actual.getId()).isEqualTo(추천_메뉴.getId());
+        assertThat(actual.getName()).isEqualTo(추천_메뉴.getName());
     }
 
     @Test
     void 등록된_메뉴_그룹_리스트_조회() {
-        when(menuGroupDao.findAll()).thenReturn(Arrays.asList(menuGroup));
+        MenuGroupResponse 추천_메뉴_결과 = MenuGroupResponse.of(추천_메뉴);
+        MenuGroupResponse 세트_메뉴_결과 = MenuGroupResponse.of(세트_메뉴);
 
-        List<MenuGroup> menuGroups = menuGroupService.list();
-        assertThat(menuGroups.size()).isEqualTo(1);
-        MenuGroup expected = menuGroups.get(0);
-        assertThat(expected.getId()).isEqualTo(menuGroup.getId());
-        assertThat(expected.getName()).isEqualTo(menuGroup.getName());
-    }
+        when(menuGroupRepository.findAll()).thenReturn(Arrays.asList(추천_메뉴, 세트_메뉴));
+        List<MenuGroupResponse> menuGroups = menuGroupService.newList();
+        assertThat(menuGroups).containsExactly(추천_메뉴_결과, 세트_메뉴_결과);
 
-    private MenuGroup 메뉴_그룹_저장(MenuGroup menuGroup) {
-        return menuGroupService.create(menuGroup);
     }
 }

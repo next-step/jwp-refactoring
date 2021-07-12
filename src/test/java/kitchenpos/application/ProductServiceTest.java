@@ -42,7 +42,6 @@ class ProductServiceTest {
 
     @Test
     void 상품_등록() {
-
         ProductRequest productRequest = new ProductRequest("짜장면", new BigDecimal(7000));
         when(productRepository.save(any(Product.class))).thenReturn(짜장면);
 

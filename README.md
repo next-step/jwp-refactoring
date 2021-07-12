@@ -140,7 +140,7 @@
 #### 기능 구현 목록
 * [x] Spring Data Jpa 사용하도록 소스 수정 
 * [x] ProductService의 비즈니스 로직 domain으로 이관 및 단위 테스트 작성
-* [ ] MenuGroupService의 비즈니스 로직 domain으로 이관 및 단위 테스트 작성
+* [x] MenuGroupService의 비즈니스 로직 domain으로 이관 및 단위 테스트 작성
 * [ ] MenuService의 비즈니스 로직 domain으로 이관 및 단위 테스트 작성
 * [ ] TableSerivce의 비즈니스 로직 domain으로 이관 및 단위 테스트 작성
 * [ ] TableGroupService의 비즈니스 로직 domain으로 이관 및 단위 테스트 작성
