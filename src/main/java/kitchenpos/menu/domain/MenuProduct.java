@@ -19,18 +19,18 @@ public class MenuProduct {
     @Column(name = "product_id", nullable = false)
     private Product product;
 
-    @Column(name = "quantity", nullable = false)
-    private Long quantity;
+    @Embedded
+    Quantity quantity;
 
     public MenuProduct() {
     }
 
-    public MenuProduct(Product product, Long quantity) {
+    public MenuProduct(Product product, Quantity quantity) {
         this.product = product;
         this.quantity = quantity;
     }
 
-    public MenuProduct(Long seq, Menu menu, Product product, Long quantity) {
+    public MenuProduct(Long seq, Menu menu, Product product, Quantity quantity) {
         this.seq = seq;
         this.menu = menu;
         this.product = product;
@@ -39,7 +39,7 @@ public class MenuProduct {
 
     public Price getTotalPrice() {
         return product.getPrice()
-                .multiply(BigDecimal.valueOf(quantity));
+                .multiply(BigDecimal.valueOf(quantity.value()));
     }
 
     public void ofMenu(Menu menu) {
@@ -48,10 +48,6 @@ public class MenuProduct {
 
     public Long getSeq() {
         return seq;
-    }
-
-    public void setSeq(final Long seq) {
-        this.seq = seq;
     }
 
     public Menu getMenu() {
@@ -66,16 +62,8 @@ public class MenuProduct {
         return product;
     }
 
-    public void setProductId(final Product product) {
-        this.product = product;
-    }
-
-    public Long getQuantity() {
+    public Quantity getQuantity() {
         return quantity;
-    }
-
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
     }
 
 }

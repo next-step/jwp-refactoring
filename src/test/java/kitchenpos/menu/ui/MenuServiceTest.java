@@ -8,7 +8,6 @@ import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.domain.Product;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +15,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -51,8 +49,8 @@ class MenuServiceTest {
     private final Product 콜라 = new Product(2L, "콜라", Price.valueOf(1000));
     private final MenuGroup 인기메뉴 = new MenuGroup(메뉴그룹_ID, "인기메뉴");
 
-    private final MenuProduct 후라이드_한마리 = new MenuProduct(후라이드, 1L);
-    private final MenuProduct 콜라_한개 = new MenuProduct(콜라, 1L);
+    private final MenuProduct 후라이드_한마리 = new MenuProduct(후라이드, Quantity.of(1L));
+    private final MenuProduct 콜라_한개 = new MenuProduct(콜라, Quantity.of(1L));
     private final List<MenuProduct> 메뉴상품_목록 = Arrays.asList(후라이드_한마리, 콜라_한개);
     private Menu 후라이드세트 = new Menu("후라이드세트", Price.valueOf(10000), 인기메뉴, 메뉴상품_목록);
 

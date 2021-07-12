@@ -20,15 +20,18 @@ public class MenuProductRequest {
         this.quantity = quantity;
     }
 
-    public static List<MenuProductRequest> ofList(List<MenuProduct> menuProducts){
+    public static List<MenuProductRequest> ofList(List<MenuProduct> menuProducts) {
         return menuProducts.stream()
                 .map(MenuProductRequest::of)
                 .collect(Collectors.toList());
     }
 
-    public static MenuProductRequest of(MenuProduct menuProduct){
-        return  new MenuProductRequest(menuProduct.getMenu().getId(), menuProduct.getProduct().getId(), menuProduct.getQuantity());
+    public static MenuProductRequest of(MenuProduct menuProduct) {
+        return new MenuProductRequest(menuProduct.getMenu().getId(),
+                menuProduct.getProduct().getId(),
+                menuProduct.getQuantity().value());
     }
+
     public Long getMenuId() {
         return menuId;
     }

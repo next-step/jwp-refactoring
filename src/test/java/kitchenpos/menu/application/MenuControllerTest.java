@@ -1,10 +1,7 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.common.ControllerTest;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.Price;
+import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.ui.MenuRestController;
@@ -37,8 +34,8 @@ public class MenuControllerTest extends ControllerTest<MenuRequest> {
     private Product 후라이드 = new Product("후라이드", Price.valueOf(15000));
     private Product 콜라 = new Product("콜라", Price.valueOf(2000));
     private MenuGroup 인기메뉴 = new MenuGroup("인기메뉴");
-    private MenuProduct 후라이드_한마리 = new MenuProduct(후라이드, 1L);
-    private MenuProduct 콜라_한개 = new MenuProduct(콜라, 1L);
+    private MenuProduct 후라이드_한마리 = new MenuProduct(후라이드, Quantity.of(1L));
+    private MenuProduct 콜라_한개 = new MenuProduct(콜라, Quantity.of(1L));
     private List<MenuProduct> 메뉴상품목록 = Arrays.asList(후라이드_한마리, 콜라_한개);
     private Menu 후라이드세트 = new Menu(1L, "후라이드세트", Price.valueOf(15000),
             인기메뉴, 메뉴상품목록);

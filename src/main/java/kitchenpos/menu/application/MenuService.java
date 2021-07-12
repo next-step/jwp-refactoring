@@ -51,7 +51,7 @@ public class MenuService {
         List<MenuProduct> menuProducts = new ArrayList<>();
         for (MenuProductRequest menuProductRequest : menuProductRequests) {
             Product product = findProductById(menuProductRequest.getProductId(), products);
-            menuProducts.add(new MenuProduct(product, menuProductRequest.getQuantity()));
+            menuProducts.add(new MenuProduct(product, Quantity.of(menuProductRequest.getQuantity())));
         }
         return menuProducts;
     }
