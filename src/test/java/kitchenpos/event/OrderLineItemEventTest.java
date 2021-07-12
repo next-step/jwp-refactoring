@@ -40,7 +40,7 @@ public class OrderLineItemEventTest {
     @BeforeEach
     void setUp() {
         OrderTable orderTable = new OrderTable(1L, new TableGroup(), 4, false);
-        savedOrder = new Order(1L, orderTable, OrderStatus.COOKING.name());
+        savedOrder = new Order(1L, orderTable, OrderStatus.COOKING);
 
         orderCreatedEvent = new OrderCreatedEvent(savedOrder, Arrays.asList(
                 new OrderLineItemRequest(1L, 1L),

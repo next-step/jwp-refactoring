@@ -62,7 +62,7 @@ public class OrderServiceTest {
         //given
         OrderTable orderTable = new OrderTable(1L, new TableGroup(), 4, false);
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(orderTable));
-        Order savedOrder = new Order(1L, orderTable, OrderStatus.COOKING.name());
+        Order savedOrder = new Order(1L, orderTable, OrderStatus.COOKING);
         given(orderRepository.save(any())).willReturn(savedOrder);
         //when
         OrderResponse orderResponse = orderService.create(orderCreateRequest);
@@ -98,8 +98,8 @@ public class OrderServiceTest {
     void 주문테이블_리스트_가져오기() {
         //given
         given(orderRepository.findAll()).willReturn(Arrays.asList(
-                new Order(1L, new OrderTable(), OrderStatus.COOKING.name()),
-                new Order(2L, new OrderTable(), OrderStatus.COOKING.name())
+                new Order(1L, new OrderTable(), OrderStatus.COOKING),
+                new Order(2L, new OrderTable(), OrderStatus.COOKING)
         ));
 
         //when, then
@@ -110,7 +110,7 @@ public class OrderServiceTest {
     @Test
     void 주문상태_변경() {
         //given
-        given(orderRepository.findById(1L)).willReturn(Optional.of(new Order(1L, new OrderTable(), OrderStatus.COOKING.name())));
+        given(orderRepository.findById(1L)).willReturn(Optional.of(new Order(1L, new OrderTable(), OrderStatus.COOKING)));
 
         //when
         OrderResponse orderResponse = orderService.changeOrderStatus(1L, orderStatusChangeRequest);
@@ -123,7 +123,7 @@ public class OrderServiceTest {
     @Test
     void 주문상태_변경시_이미_계산_완료된_주문() {
         //given
-        given(orderRepository.findById(1L)).willReturn(Optional.of(new Order(1L, new OrderTable(), OrderStatus.COMPLETION.name())));
+        given(orderRepository.findById(1L)).willReturn(Optional.of(new Order(1L, new OrderTable(), OrderStatus.COMPLETION)));
         //when, then
         assertThatThrownBy(() -> orderService.changeOrderStatus(1L, orderStatusChangeRequest))
                 .isInstanceOf(OrderStatusCompleteException.class);

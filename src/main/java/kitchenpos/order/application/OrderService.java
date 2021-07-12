@@ -40,7 +40,7 @@ public class OrderService {
         Order savedOrder = orderRepository.save(
                 new Order(
                         orderTable,
-                        OrderStatus.COOKING.name(),
+                        OrderStatus.COOKING,
                         LocalDateTime.now()
                 )
         );
@@ -73,7 +73,7 @@ public class OrderService {
         savedOrder.validateOrderStatusComplete();
 
         final OrderStatus orderStatus = OrderStatus.valueOf(orderStatusChangeRequest.getOrderStatus());
-        savedOrder.changeOrderStatus(orderStatus.name());
+        savedOrder.changeOrderStatus(orderStatus);
 
         if(orderStatus.equals(OrderStatus.COMPLETION)) {
             publisher.publishEvent(new OrderStatusChangedEvent(orderId));

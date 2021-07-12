@@ -15,7 +15,7 @@ public class OrderTest {
     @Test
     void 주문상태를_바꾸려고_할때_이미_계산_완료된_주문() {
         //given
-        Order order = new Order(1L, new OrderTable(), OrderStatus.COMPLETION.name());
+        Order order = new Order(1L, new OrderTable(), OrderStatus.COMPLETION);
 
         //when, then
         assertThatThrownBy(order::validateOrderStatusComplete)

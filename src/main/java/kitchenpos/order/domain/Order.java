@@ -15,13 +15,14 @@ public class Order {
     @OneToOne
     @JoinColumn(name = "order_table_id")
     private OrderTable orderTable;
-    private String orderStatus;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
     private LocalDateTime orderedTime;
 
     public Order() {
     }
 
-    public Order(OrderTable orderTable, String orderStatus, LocalDateTime orderedTime) {
+    public Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
@@ -32,14 +33,14 @@ public class Order {
         this.orderTable = orderTable;
     }
 
-    public Order(Long id, OrderTable orderTable, String orderStatus) {
+    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus) {
         this.id = id;
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
     }
 
     private boolean isOrderStatusComplete() {
-        return Objects.equals(OrderStatus.COMPLETION.name(), this.getOrderStatus());
+        return Objects.equals(OrderStatus.COMPLETION, this.getOrderStatus());
     }
 
     public void validateOrderStatusComplete() {
@@ -56,7 +57,7 @@ public class Order {
         return this.orderTable.getId();
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
@@ -64,7 +65,7 @@ public class Order {
         return orderedTime;
     }
 
-    public void changeOrderStatus(String orderStatus) {
+    public void changeOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 }
