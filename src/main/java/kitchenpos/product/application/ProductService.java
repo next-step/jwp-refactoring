@@ -6,9 +6,11 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.product.exception.ProductNotFoundException;
 
 @Service
 public class ProductService {
@@ -28,5 +30,10 @@ public class ProductService {
                 .stream()
                 .map(ProductResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    public Product findById(Long id) {
+        return productRepository.findById(id)
+                .orElseThrow(ProductNotFoundException::new);
     }
 }

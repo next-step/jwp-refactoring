@@ -2,9 +2,9 @@ package kitchenpos.menu.application;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,45 +15,33 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.exception.MenuNotFoundException;
+import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.domain.MenuGroupRepository;
-import kitchenpos.menugroup.exception.MenuGroupNotFoundException;
+import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
-import kitchenpos.product.exception.ProductNotFoundException;
 
 @Service
 public class MenuService {
 
     private final MenuRepository menuRepository;
-    private final MenuGroupRepository menuGroupRepository;
-    private final ProductRepository productRepository;
+    private final MenuGroupService menuGroupService;
+    private final ProductService productService;
 
-    public MenuService(final MenuRepository menuRepository, final MenuGroupRepository menuGroupRepository,
-                       final ProductRepository productRepository) {
+    @Autowired
+    public MenuService(final MenuRepository menuRepository, final MenuGroupService menuGroupService,
+                       final ProductService productService) {
         this.menuRepository = menuRepository;
-        this.menuGroupRepository = menuGroupRepository;
-        this.productRepository = productRepository;
+        this.menuGroupService = menuGroupService;
+        this.productService = productService;
     }
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        final BigDecimal price = menuRequest.getPrice();
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
-        MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId()).orElseThrow(MenuGroupNotFoundException::new);
+        MenuGroup menuGroup = menuGroupService.findById(menuRequest.getMenuGroupId());
         Menu menu = menuRepository.save(new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup));
-        BigDecimal sum = BigDecimal.ZERO;
-        for (MenuProductRequest menuProductRequest : menuRequest.getMenuProductRequests()) {
-            Product product = productRepository.findById(menuProductRequest.getProductId()).orElseThrow(ProductNotFoundException::new);
-            MenuProduct menuProduct = new MenuProduct(menu, product, menuProductRequest.getQuantity());
-            sum = sum.add(menuProduct.multiplyProductPriceByQuantity());
-            menu.addMenuProduct(menuProduct);
-        }
-        if (price.compareTo(sum) > 0) {
-            throw new IllegalArgumentException();
-        }
+        menuRequest.getMenuProductRequests()
+                .forEach(menuProductRequest -> menu.addMenuProduct(createMenuProduct(menu, menuProductRequest)));
+        validateMenuPriceIsLessThanOrEqualToTotalProductPrice(menu);
         return MenuResponse.of(menu);
     }
 
@@ -65,6 +53,19 @@ public class MenuService {
     }
 
     public Menu findMenuById(Long id) {
-        return menuRepository.findById(id).orElseThrow(MenuNotFoundException::new);
+        return menuRepository.findById(id)
+                .orElseThrow(MenuNotFoundException::new);
+    }
+
+    private MenuProduct createMenuProduct(Menu menu, MenuProductRequest menuProductRequest) {
+        Product product = productService.findById(menuProductRequest.getProductId());
+        return new MenuProduct(menu, product, menuProductRequest.getQuantity());
+    }
+
+    private void validateMenuPriceIsLessThanOrEqualToTotalProductPrice(Menu menu) {
+        BigDecimal reduce = menu.getMenuProducts().getTotalProductPrice();
+        if (menu.isMenuPriceGreaterThan(reduce)) {
+            throw new IllegalArgumentException("메뉴 급액이 제품 합계금액보다 클 수 없습니다.");
+        }
     }
 }

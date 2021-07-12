@@ -6,9 +6,11 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
+import kitchenpos.menugroup.exception.MenuGroupNotFoundException;
 
 @Service
 public class MenuGroupService {
@@ -28,5 +30,10 @@ public class MenuGroupService {
                 .stream()
                 .map(MenuGroupResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    public MenuGroup findById(Long id) {
+        return menuGroupRepository.findById(id)
+                .orElseThrow(MenuGroupNotFoundException::new);
     }
 }
