@@ -33,12 +33,19 @@ dependencies {
     implementation project(':module-menugroup')
     implementation project(':module-menu')
     implementation project(':module-table')
+    implementation project(':module-tablegroup')
 }
 
 project(':module-menu') {
     dependencies {
         implementation project(':module-product')
         implementation project(':module-menugroup')
+    }
+}
+
+project(':module-tablegroup') {
+    dependencies {
+        implementation project(':module-table')
     }
 }
 
