@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.stream.Stream;
 import kitchenpos.config.MockMvcTestConfig;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.dto.ChangeOrderStatusDto;
-import kitchenpos.order.dto.CreateOrderDto;
-import kitchenpos.order.dto.OrderDto;
-import kitchenpos.order.dto.OrderLineItemDto;
+import kitchenpos.order.dto.ChangeOrderStatusRequest;
+import kitchenpos.order.dto.CreateOrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.dto.CreateOrderLineItemRequest;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -45,21 +45,21 @@ class OrderRestControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private OrderLineItemDto 후라이드치킨하나;
+    private CreateOrderLineItemRequest 후라이드치킨하나;
 
     @BeforeEach
     void setUp() {
-        후라이드치킨하나 = new OrderLineItemDto(1L, 1);
+        후라이드치킨하나 = new CreateOrderLineItemRequest(1L, 1);
     }
 
     @DisplayName("주문 생성 요청 성공")
     @Test
     void createOrderRequestSuccess() throws Exception {
 
-        OrderLineItemDto item = new OrderLineItemDto(1L, 1);
-        CreateOrderDto createOrderDto = new CreateOrderDto(9L, Lists.newArrayList(item));
+        CreateOrderLineItemRequest item = new CreateOrderLineItemRequest(1L, 1);
+        CreateOrderRequest createOrderRequest = new CreateOrderRequest(9L, Lists.newArrayList(item));
 
-        mockMvc.perform(post(BASE_URL).content(objectMapper.writeValueAsString(createOrderDto))
+        mockMvc.perform(post(BASE_URL).content(objectMapper.writeValueAsString(createOrderRequest))
                                       .contentType(MediaType.APPLICATION_JSON))
                .andDo(print())
                .andExpect(status().isCreated())
@@ -70,22 +70,22 @@ class OrderRestControllerTest {
     @DisplayName("주문 생성 요청 실패 - 주문 항목 포함되지 않음")
     @Test
     void createOrderRequestFail01() {
-        postFail(new CreateOrderDto());
+        postFail(new CreateOrderRequest());
     }
 
     @DisplayName("주문 생성 요청 실패 - 주문 항목에 메뉴가 중복")
     @Test
     void createOrderRequestFail02() {
-        CreateOrderDto dto = new CreateOrderDto(1L, Stream.generate(() -> 후라이드치킨하나)
-                                                          .limit(5)
-                                                          .collect(toList()));
+        CreateOrderRequest dto = new CreateOrderRequest(1L, Stream.generate(() -> 후라이드치킨하나)
+                                                                  .limit(5)
+                                                                  .collect(toList()));
         postFail(dto);
     }
 
     @DisplayName("주문 생성 요청 실패 - order table을 찾을 수 없음")
     @Test
     void createOrderRequestFail03() {
-        CreateOrderDto dto = new CreateOrderDto(NOT_FOUND_ID, Lists.newArrayList(후라이드치킨하나));
+        CreateOrderRequest dto = new CreateOrderRequest(NOT_FOUND_ID, Lists.newArrayList(후라이드치킨하나));
         postFail(dto);
     }
 
@@ -93,7 +93,7 @@ class OrderRestControllerTest {
     @Test
     void createOrderRequestFail04() {
         long emptyOrderTableId = 1L;
-        CreateOrderDto dto = new CreateOrderDto(emptyOrderTableId, Lists.newArrayList(후라이드치킨하나));
+        CreateOrderRequest dto = new CreateOrderRequest(emptyOrderTableId, Lists.newArrayList(후라이드치킨하나));
         postFail(dto);
     }
 
@@ -106,7 +106,7 @@ class OrderRestControllerTest {
                                   .andReturn();
 
         String response = result.getResponse().getContentAsString();
-        List<OrderDto> orders = Arrays.asList(objectMapper.readValue(response, OrderDto[].class));
+        List<OrderResponse> orders = Arrays.asList(objectMapper.readValue(response, OrderResponse[].class));
         assertThat(orders.size()).isGreaterThanOrEqualTo(2);
     }
 
@@ -114,7 +114,7 @@ class OrderRestControllerTest {
     @Test
     void updateOrderStatusRequestSuccess() throws Exception {
 
-        ChangeOrderStatusDto dto = new ChangeOrderStatusDto(OrderStatus.MEAL.name());
+        ChangeOrderStatusRequest dto = new ChangeOrderStatusRequest(OrderStatus.MEAL.name());
 
         MvcResult result = mockMvc.perform(put(BASE_URL + "/1/order-status")
                                                .content(objectMapper.writeValueAsString(dto))
@@ -124,24 +124,24 @@ class OrderRestControllerTest {
                                   .andReturn();
 
         String response = result.getResponse().getContentAsString();
-        OrderDto actual = objectMapper.readValue(response, OrderDto.class);
+        OrderResponse actual = objectMapper.readValue(response, OrderResponse.class);
         assertThat(actual.getOrderStatus()).isEqualTo(dto.getOrderStatus());
     }
 
     @DisplayName("주문 상태 변경 요청 실패 - order id를 찾을 수 없음")
     @Test
     void updateOrderStatusRequestFail01() {
-        putFail(NOT_FOUND_ID, new ChangeOrderStatusDto("COOKING"));
+        putFail(NOT_FOUND_ID, new ChangeOrderStatusRequest("COOKING"));
     }
 
     @DisplayName("주문 상태 변경 요청 실패 - 이미 완료(COMPLETION 상태)된 주문")
     @Test
     void updateOrderStatusRequestFail02() {
         // V2__insert_default_data.sql 에 id = 3인 데이터 추가
-        putFail(3, new ChangeOrderStatusDto("COOKING"));
+        putFail(3, new ChangeOrderStatusRequest("COOKING"));
     }
 
-    private void postFail(CreateOrderDto dto) {
+    private void postFail(CreateOrderRequest dto) {
         try {
             mockMvc.perform(post(BASE_URL).content(objectMapper.writeValueAsString(dto))
                                           .contentType(MediaType.APPLICATION_JSON))
@@ -152,17 +152,17 @@ class OrderRestControllerTest {
         }
     }
 
-    private void putFail(long orderId, ChangeOrderStatusDto changeOrderStatusDto) {
+    private void putFail(long orderId, ChangeOrderStatusRequest request) {
         try {
-            putRequestFail(orderId, changeOrderStatusDto);
+            putRequestFail(orderId, request);
         } catch (Exception e) {
             fail();
         }
     }
 
-    private void putRequestFail(long orderId, ChangeOrderStatusDto changeOrderStatusDto) throws Exception {
+    private void putRequestFail(long orderId, ChangeOrderStatusRequest request) throws Exception {
         mockMvc.perform(put(BASE_URL + "/" + orderId + "/order-status")
-                            .content(objectMapper.writeValueAsString(changeOrderStatusDto))
+                            .content(objectMapper.writeValueAsString(request))
                             .contentType(MediaType.APPLICATION_JSON))
                .andDo(print())
                .andExpect(status().isBadRequest());

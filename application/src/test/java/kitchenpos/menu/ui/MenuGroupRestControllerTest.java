@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.config.MockMvcTestConfig;
-import kitchenpos.menu.dto.MenuGroupDto;
-import kitchenpos.product.domain.Product;
+import kitchenpos.menu.dto.dto.CreateMenuGroupRequest;
+import kitchenpos.menu.dto.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +37,9 @@ class MenuGroupRestControllerTest {
     @DisplayName("메뉴 그룹 생성 요청 성공")
     @Test
     void createMenuGroupRequest() throws Exception {
-        MenuGroupDto menuGroupDto = new MenuGroupDto("menu group");
+        CreateMenuGroupRequest request = new CreateMenuGroupRequest("menu group");
 
-        String content = objectMapper.writeValueAsString(menuGroupDto);
+        String content = objectMapper.writeValueAsString(request);
 
         mockMvc.perform(post(BASE_URL).content(content)
                                       .contentType(MediaType.APPLICATION_JSON))
@@ -57,7 +57,7 @@ class MenuGroupRestControllerTest {
                                   .andReturn();
 
         String content = result.getResponse().getContentAsString();
-        List<Product> list = Arrays.asList(objectMapper.readValue(content, Product[].class));
+        List<MenuGroupResponse> list = Arrays.asList(objectMapper.readValue(content, MenuGroupResponse[].class));
         assertThat(list).hasSize(4); // default data size
     }
 }

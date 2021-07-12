@@ -1,11 +1,11 @@
 package kitchenpos.table.dto;
 
-public class UpdateEmptyDto {
+public class UpdateEmptyRequest {
     private Boolean empty;
 
-    public UpdateEmptyDto() { }
+    public UpdateEmptyRequest() { }
 
-    public UpdateEmptyDto(Boolean empty) {
+    public UpdateEmptyRequest(Boolean empty) {
         this.empty = empty;
     }
 

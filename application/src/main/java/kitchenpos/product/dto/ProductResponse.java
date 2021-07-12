@@ -1,26 +1,25 @@
 package kitchenpos.product.dto;
 
-import kitchenpos.product.domain.Product;
-
-public class ProductDto {
+public class ProductResponse {
     private Long id;
     private String name;
     private Long price;
 
-    protected ProductDto() { }
+    @SuppressWarnings("unused")
+    protected ProductResponse() { }
 
-    public ProductDto(String name, Long price) {
+    public ProductResponse(String name, Long price) {
         this(null, name, price);
     }
 
-    public ProductDto(Long id, String name, Long price) {
+    public ProductResponse(Long id, String name, Long price) {
         this.id = id;
         this.name = name;
         this.price = price;
     }
 
-    public static ProductDto of(Product product) {
-        return new ProductDto(product.getId(), product.getName(), product.getPrice().getValue());
+    public static ProductResponse of(ProductDto dto) {
+        return new ProductResponse(dto.getId(), dto.getName(), dto.getPrice());
     }
 
     public Long getId() {

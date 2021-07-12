@@ -1,11 +1,11 @@
 package kitchenpos.table.dto;
 
-public class UpdateNumberOfGuestsDto {
+public class UpdateNumberOfGuestsRequest {
     private Integer numberOfGuests;
 
-    public UpdateNumberOfGuestsDto() { }
+    public UpdateNumberOfGuestsRequest() { }
 
-    public UpdateNumberOfGuestsDto(Integer numberOfGuests) {
+    public UpdateNumberOfGuestsRequest(Integer numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
     }
 

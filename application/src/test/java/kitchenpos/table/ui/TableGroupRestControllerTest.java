@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
 import java.util.stream.Stream;
 import kitchenpos.config.MockMvcTestConfig;
-import kitchenpos.table.dto.CreateTableGroupDto;
-import kitchenpos.table.dto.OrderTableIdDto;
+import kitchenpos.table.dto.CreateTableGroupRequest;
+import kitchenpos.table.dto.OrderTableIdRequest;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,13 +40,13 @@ class TableGroupRestControllerTest {
     void createTableGroupRequestSuccess() throws Exception {
 
         // V2__Insert_default_data.sql에서 ID가 4, 5, 6인 order_table 데이터 활용
-        CreateTableGroupDto createTableGroupDto =
-            new CreateTableGroupDto(Stream.iterate(4, i -> i + 1)
-                                          .limit(3)
-                                          .map(this::orderTableIdDto)
-                                          .collect(toList()));
+        CreateTableGroupRequest request =
+            new CreateTableGroupRequest(Stream.iterate(4, i -> i + 1)
+                                              .limit(3)
+                                              .map(this::orderTableIdRequest)
+                                              .collect(toList()));
 
-        mockMvc.perform(post(BASE_URL).content(objectMapper.writeValueAsString(createTableGroupDto))
+        mockMvc.perform(post(BASE_URL).content(objectMapper.writeValueAsString(request))
                                       .contentType(MediaType.APPLICATION_JSON))
                .andDo(print())
                .andExpect(status().isCreated())
@@ -57,25 +57,25 @@ class TableGroupRestControllerTest {
     @DisplayName("단체 지정 생성 요청 실패 - orderTable size가 2 미만")
     @Test
     void createTableGroupRequestFail01() {
-        postFail(new CreateTableGroupDto(Collections.singletonList(orderTableIdDto(1))));
+        postFail(new CreateTableGroupRequest(Collections.singletonList(orderTableIdRequest(1))));
     }
 
     @DisplayName("단체 지정 생성 요청 실패 - orderTable id가 중복")
     @Test
     void createTableGroupRequestFail02() {
-        postFail(new CreateTableGroupDto(Lists.newArrayList(orderTableIdDto(1), orderTableIdDto(1))));
+        postFail(new CreateTableGroupRequest(Lists.newArrayList(orderTableIdRequest(1), orderTableIdRequest(1))));
     }
 
     @DisplayName("단체 지정 생성 요청 실패 - empty 상태가 아닌 orderTable 인입")
     @Test
     void createTableGroupRequestFail03() {
-        postFail(new CreateTableGroupDto(Lists.newArrayList(orderTableIdDto(1), orderTableIdDto(12))));
+        postFail(new CreateTableGroupRequest(Lists.newArrayList(orderTableIdRequest(1), orderTableIdRequest(12))));
     }
 
     @DisplayName("단체 지정 생성 요청 실패 - orderTable 의 tableGroupId는 null이 아니어야 함")
     @Test
     void createTableGroupRequestFail04() {
-        postFail(new CreateTableGroupDto(Lists.newArrayList(orderTableIdDto(1), orderTableIdDto(12))));
+        postFail(new CreateTableGroupRequest(Lists.newArrayList(orderTableIdRequest(1), orderTableIdRequest(12))));
     }
 
     @DisplayName("단체 지정 해제 요청 성공")
@@ -86,17 +86,17 @@ class TableGroupRestControllerTest {
                .andExpect(status().isNoContent());
     }
 
-    private OrderTableIdDto orderTableIdDto(Integer id) {
-        return orderTableIdDto(Long.valueOf(id));
+    private OrderTableIdRequest orderTableIdRequest(Integer id) {
+        return orderTableIdRequest(Long.valueOf(id));
     }
 
-    private OrderTableIdDto orderTableIdDto(Long id) {
-        return new OrderTableIdDto(id);
+    private OrderTableIdRequest orderTableIdRequest(Long id) {
+        return new OrderTableIdRequest(id);
     }
 
-    private void postFail(CreateTableGroupDto createTableGroupDto) {
+    private void postFail(CreateTableGroupRequest request) {
         try {
-            mockMvc.perform(post(BASE_URL).content(objectMapper.writeValueAsString(createTableGroupDto))
+            mockMvc.perform(post(BASE_URL).content(objectMapper.writeValueAsString(request))
                                           .contentType(MediaType.APPLICATION_JSON))
                    .andDo(print())
                    .andExpect(status().isBadRequest());

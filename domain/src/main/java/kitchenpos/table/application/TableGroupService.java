@@ -10,9 +10,9 @@ import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
 import kitchenpos.table.dto.CreateTableGroupDto;
 import kitchenpos.table.dto.OrderTableIdDto;
+import kitchenpos.table.dto.TableGroupDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 @Service
 public class TableGroupService {
@@ -25,14 +25,9 @@ public class TableGroupService {
     }
 
     @Transactional
-    public TableGroup create(CreateTableGroupDto createTableGroupDto) {
+    public TableGroupDto create(CreateTableGroupDto createTableGroupDto) {
 
         List<OrderTableIdDto> orderTables = createTableGroupDto.getOrderTables();
-
-        if (CollectionUtils.isEmpty(orderTables)) {
-            throw new NotCreateTableGroupException("주문 테이블이 입력되지 않았습니다.");
-        }
-
         List<Long> orderTableIds = orderTables.stream()
                                               .map(OrderTableIdDto::getId)
                                               .collect(Collectors.toList());
@@ -43,7 +38,7 @@ public class TableGroupService {
             throw new NotCreateTableGroupException("입력한 주문 테이블에 중복이 있습니다.");
         }
 
-        return tableGroupRepository.save(new TableGroup(savedOrderTables));
+        return TableGroupDto.of(tableGroupRepository.save(new TableGroup(savedOrderTables)));
     }
 
     @Transactional

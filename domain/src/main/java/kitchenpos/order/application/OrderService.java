@@ -38,7 +38,7 @@ public class OrderService {
     }
 
     @Transactional
-    public Order create(CreateOrderDto createOrderDto) {
+    public OrderDto create(CreateOrderDto createOrderDto) {
 
         if (CollectionUtils.isEmpty(createOrderDto.getOrderLineItems())) {
             throw new NotCreateOrderException("주문 항목을 1개 이상 입력해야 합니다.");
@@ -72,9 +72,10 @@ public class OrderService {
         Order savedOrder = orderRepository.save(order);
         orderLineItems.forEach(orderLineItemRepository::save);
 
-        return savedOrder;
+        return OrderDto.of(savedOrder);
     }
 
+    @Transactional(readOnly = true)
     public List<OrderDto> list() {
         return orderRepository.findAll()
                               .stream()

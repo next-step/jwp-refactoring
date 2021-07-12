@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.config.MockMvcTestConfig;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.dto.ProductDto;
+import kitchenpos.product.dto.CreateProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -44,8 +44,8 @@ class ProductRestControllerTest {
     @ParameterizedTest
     void createProductSuccess(Long price) throws Exception {
 
-        ProductDto productDto = new ProductDto("product", price);
-        String content = objectMapper.writeValueAsString(productDto);
+        CreateProductRequest request = new CreateProductRequest("product", price);
+        String content = objectMapper.writeValueAsString(request);
 
         mockMvc.perform(post(BASE_URL).content(content)
                                       .contentType(MediaType.APPLICATION_JSON))
@@ -59,8 +59,8 @@ class ProductRestControllerTest {
     @ValueSource(longs = { -1, -1000, -10000 })
     @ParameterizedTest
     void createProductFail(Long price) throws JsonProcessingException {
-        ProductDto productDto = new ProductDto("product", price);
-        String content = objectMapper.writeValueAsString(productDto);
+        CreateProductRequest request = new CreateProductRequest("product", price);
+        String content = objectMapper.writeValueAsString(request);
         createRequestFail(content);
     }
 
@@ -73,7 +73,7 @@ class ProductRestControllerTest {
                                      .andReturn();
 
         String content = result.getResponse().getContentAsString();
-        List<Product> list = Arrays.asList(objectMapper.readValue(content, Product[].class));
+        List<ProductResponse> list = Arrays.asList(objectMapper.readValue(content, ProductResponse[].class));
         assertThat(list).hasSize(6); // default data size
     }
 

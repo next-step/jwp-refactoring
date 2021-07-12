@@ -3,8 +3,11 @@ package kitchenpos.product.application;
 import java.util.List;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.dto.ProductDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class ProductService {
@@ -15,11 +18,14 @@ public class ProductService {
     }
 
     @Transactional
-    public Product create(String name, Long price) {
-        return productRepository.save(new Product(name, price));
+    public ProductDto create(String name, Long price) {
+        return ProductDto.of(productRepository.save(new Product(name, price)));
     }
 
-    public List<Product> list() {
-        return productRepository.findAll();
+    public List<ProductDto> list() {
+        return productRepository.findAll()
+                                .stream()
+                                .map(ProductDto::of)
+                                .collect(toList());
     }
 }

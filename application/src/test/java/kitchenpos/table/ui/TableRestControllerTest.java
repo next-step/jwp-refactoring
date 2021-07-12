@@ -5,13 +5,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import kitchenpos.config.MockMvcTestConfig;
-import kitchenpos.order.dto.CreateOrderDto;
-import kitchenpos.order.dto.OrderLineItemDto;
+import kitchenpos.order.dto.CreateOrderRequest;
+import kitchenpos.order.dto.CreateOrderLineItemRequest;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.dto.CreateOrderTableDto;
-import kitchenpos.table.dto.OrderTableDto;
-import kitchenpos.table.dto.UpdateEmptyDto;
-import kitchenpos.table.dto.UpdateNumberOfGuestsDto;
+import kitchenpos.table.dto.CreateOrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.dto.UpdateEmptyRequest;
+import kitchenpos.table.dto.UpdateNumberOfGuestsRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -50,8 +50,8 @@ class TableRestControllerTest {
     @DisplayName("주문 테이블 생성 요청 성공")
     @Test
     void createOrderTableRequestSuccess() {
-        CreateOrderTableDto createOrderTableDto = new CreateOrderTableDto(3, false);
-        createOrderTableRequest(createOrderTableDto);
+        CreateOrderTableRequest request = new CreateOrderTableRequest(3, false);
+        createOrderTableRequest(request);
     }
 
     @DisplayName("주문 테이블 목록 요청 성공")
@@ -63,7 +63,7 @@ class TableRestControllerTest {
                                   .andReturn();
 
         String content = result.getResponse().getContentAsString();
-        List<OrderTableDto> list = Arrays.asList(objectMapper.readValue(content, OrderTableDto[].class));
+        List<OrderTableResponse> list = Arrays.asList(objectMapper.readValue(content, OrderTableResponse[].class));
         assertThat(list).hasSizeGreaterThanOrEqualTo(8); // default data size
     }
 
@@ -94,7 +94,7 @@ class TableRestControllerTest {
     @Test
     void updateOrderTableEmptyStatusFail02() {
 
-        Long id = createOrderTableRequest(new CreateOrderTableDto(0, false));
+        Long id = createOrderTableRequest(new CreateOrderTableRequest(0, false));
         createOrder(id);
 
         // V2__Insert_default_data.sql에서 10번 데이터 삽입
@@ -132,9 +132,10 @@ class TableRestControllerTest {
         putNumberOfGuestsFail(4, 3);
     }
 
-    private Long createOrderTableRequest(CreateOrderTableDto createOrderTableDto) {
+    private Long createOrderTableRequest(CreateOrderTableRequest request) {
         try {
-            MvcResult result = mockMvc.perform(post(BASE_URL).content(objectMapper.writeValueAsString(createOrderTableDto))
+            MvcResult result = mockMvc.perform(post(BASE_URL).content(objectMapper.writeValueAsString(
+                request))
                                                              .contentType(MediaType.APPLICATION_JSON))
                                       .andDo(print())
                                       .andExpect(status().isCreated())
@@ -155,7 +156,7 @@ class TableRestControllerTest {
     private void putEmptyFail(Long id) {
         try {
             mockMvc.perform(put(BASE_URL + "/" + id + "/empty")
-                                .content(objectMapper.writeValueAsString(new UpdateEmptyDto(true)))
+                                .content(objectMapper.writeValueAsString(new UpdateEmptyRequest(true)))
                                 .contentType(MediaType.APPLICATION_JSON))
                    .andDo(print())
                    .andExpect(status().isBadRequest());
@@ -167,7 +168,7 @@ class TableRestControllerTest {
     private void putNumberOfGuestsFail(int id, int numberOfGuests) {
         try {
             mockMvc.perform(put(BASE_URL + "/" + id + "/number-of-guests")
-                                .content(objectMapper.writeValueAsString(new UpdateNumberOfGuestsDto(numberOfGuests)))
+                                .content(objectMapper.writeValueAsString(new UpdateNumberOfGuestsRequest(numberOfGuests)))
                                 .contentType(MediaType.APPLICATION_JSON))
                    .andDo(print())
                    .andExpect(status().isBadRequest());
@@ -178,10 +179,11 @@ class TableRestControllerTest {
 
     private void createOrder(Long orderTableId) {
         try {
-            CreateOrderDto createOrderDto =
-                new CreateOrderDto(orderTableId, Collections.singletonList(new OrderLineItemDto(1L, 1L)));
+            CreateOrderRequest createOrderRequest =
+                new CreateOrderRequest(orderTableId, Collections.singletonList(new CreateOrderLineItemRequest(1L, 1L)));
 
-            mockMvc.perform(post(ORDER_API_URL).content(objectMapper.writeValueAsString(createOrderDto))
+            mockMvc.perform(post(ORDER_API_URL).content(objectMapper.writeValueAsString(
+                createOrderRequest))
                                                              .contentType(MediaType.APPLICATION_JSON))
                                       .andDo(print())
                                       .andExpect(status().isCreated())

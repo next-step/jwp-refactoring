@@ -15,7 +15,7 @@ import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.ChangeOrderStatusDto;
 import kitchenpos.order.dto.CreateOrderDto;
-import kitchenpos.order.dto.OrderLineItemDto;
+import kitchenpos.order.dto.CreateOrderLineItemDto;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.assertj.core.util.Lists;
@@ -51,13 +51,13 @@ class OrderServiceTest {
     @InjectMocks
     private OrderService orderService;
 
-    private OrderLineItemDto item;
+    private CreateOrderLineItemDto item;
 
     private Menu menu;
 
     @BeforeEach
     void setUp() {
-        item = new OrderLineItemDto(null, null, 1L, 1);
+        item = new CreateOrderLineItemDto(null, 1L, 1);
         menu = new Menu("name", 0L, null);
     }
 

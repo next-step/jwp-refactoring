@@ -1,5 +1,6 @@
 package kitchenpos.handler;
 
+import javax.validation.UnexpectedTypeException;
 import kitchenpos.exception.NotChangeNumberOfGuestsException;
 import kitchenpos.exception.NotChangeStatusException;
 import kitchenpos.exception.NotCreateMenuException;
@@ -7,6 +8,7 @@ import kitchenpos.exception.NotCreateOrderException;
 import kitchenpos.exception.NotCreateTableGroupException;
 import kitchenpos.exception.NotFoundEntityException;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -53,6 +55,18 @@ public class CustomExceptionHandler {
     @ExceptionHandler(NotCreateOrderException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handleNotCreateOrderException(NotCreateOrderException e) {
+        return e.getMessage();
+    }
+
+    @ExceptionHandler(UnexpectedTypeException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleUnexpectedTypeException(UnexpectedTypeException e) {
+        return e.getMessage();
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         return e.getMessage();
     }
 }

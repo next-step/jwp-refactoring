@@ -9,6 +9,7 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.CreateOrderTableDto;
+import kitchenpos.table.dto.OrderTableDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -54,7 +55,7 @@ class TableServiceTest {
         given(orderTableRepository.save(any())).willReturn(orderTable);
 
         // when
-        OrderTable actual = tableService.create(orderTableDto);
+        OrderTableDto actual = tableService.create(orderTableDto);
 
         // then
         assertNull(actual.getTableGroupId());
@@ -151,7 +152,7 @@ class TableServiceTest {
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
 
         // when
-        OrderTable actual = tableService.changeNumberOfGuests(orderTable.getId(), 3);
+        OrderTableDto actual = tableService.changeNumberOfGuests(orderTable.getId(), 3);
 
         // then
         assertEquals(orderTable.getNumberOfGuests(), actual.getNumberOfGuests());

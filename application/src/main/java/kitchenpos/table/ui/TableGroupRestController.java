@@ -1,10 +1,11 @@
 package kitchenpos.table.ui;
 
 import java.net.URI;
+import javax.validation.Valid;
 import kitchenpos.table.application.TableGroupService;
-import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.dto.CreateTableGroupDto;
+import kitchenpos.table.dto.CreateTableGroupRequest;
 import kitchenpos.table.dto.TableGroupDto;
+import kitchenpos.table.dto.TableGroupResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,10 +22,10 @@ public class TableGroupRestController {
     }
 
     @PostMapping("/api/table-groups")
-    public ResponseEntity<TableGroupDto> create(@RequestBody CreateTableGroupDto createTableGroupDto) {
-        final TableGroup created = tableGroupService.create(createTableGroupDto);
-        final URI uri = URI.create("/api/table-groups/" + created.getId());
-        return ResponseEntity.created(uri).body(TableGroupDto.of(created));
+    public ResponseEntity<TableGroupResponse> create(@RequestBody @Valid CreateTableGroupRequest request) {
+        TableGroupDto created = tableGroupService.create(request.toDomainDto());
+        URI uri = URI.create("/api/table-groups/" + created.getId());
+        return ResponseEntity.created(uri).body(TableGroupResponse.of(created));
     }
 
     @DeleteMapping("/api/table-groups/{tableGroupId}")
