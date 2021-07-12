@@ -71,7 +71,7 @@ public class OrderTable {
         }
     }
 
-    protected void isEmptyCheck() {
+    protected void availableToUpdateCheck() {
         if (!empty) {
             throw new IllegalArgumentException("빈 주문 테이블이 아닙니다.");
         }
@@ -84,5 +84,11 @@ public class OrderTable {
 
     public void releaseGroup() {
         this.tableGroup = null;
+    }
+
+    public void availableToOrderCheck() {
+        if (empty) {
+            throw new IllegalArgumentException("빈 테이블은 주문 할 수 없습니다.");
+        }
     }
 }

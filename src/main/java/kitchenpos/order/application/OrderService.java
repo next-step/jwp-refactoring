@@ -41,7 +41,7 @@ public class OrderService {
 
     private OrderTable findOrderTable(Long orderTableId) {
         OrderTable orderTable = orderTableRepository.findById(orderTableId).orElseThrow(() -> new IllegalArgumentException("등록되지 않은 주문 테이블입니다."));
-        emptyCheck(orderTable.isEmpty());
+        orderTable.availableToOrderCheck();
         return orderTable;
     }
 
@@ -58,12 +58,6 @@ public class OrderService {
     private void orderLineItemsEmptyCheck(List<OrderLineItemRequest> orderLineItemRequests) {
         if (CollectionUtils.isEmpty(orderLineItemRequests)) {
             throw new IllegalArgumentException("주문 항목이 비어있습니다.");
-        }
-    }
-
-    private void emptyCheck(boolean empty) {
-        if (empty) {
-            throw new IllegalArgumentException("빈 테이블은 주문 할 수 없습니다.");
         }
     }
 

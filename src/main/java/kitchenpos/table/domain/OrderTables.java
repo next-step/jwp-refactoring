@@ -34,7 +34,7 @@ public class OrderTables {
     }
 
     private void updatePossible(OrderTable orderTable) {
-        orderTable.isEmptyCheck();
+        orderTable.availableToUpdateCheck();
         orderTable.hasTableGroupIdCheck();
     }
 
