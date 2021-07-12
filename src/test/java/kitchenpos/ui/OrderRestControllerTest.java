@@ -32,6 +32,7 @@ public class OrderRestControllerTest extends WebMvcTestConfiguration {
 
 	@BeforeEach
 	void setUp() {
+		super.setUp();
 		order1 = new Order(1L, "COOKING", LocalDateTime.now(), Arrays.asList(new OrderLineItem(1L, 1L, 5L), new OrderLineItem(1L, 2L, 4L)));
 		order2 = new Order(2L, "COMPLETION", LocalDateTime.now(), Arrays.asList(new OrderLineItem(2L, 1L, 3L)));
 	}
