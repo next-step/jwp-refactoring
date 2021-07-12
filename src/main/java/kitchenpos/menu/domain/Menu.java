@@ -21,7 +21,8 @@ public class Menu {
     @ManyToOne
     private MenuGroup menuGroup;
 
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL)
+    @JoinColumn(name = "menu_id")
+    @OneToMany(cascade = CascadeType.ALL)
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
     protected Menu() {
@@ -49,7 +50,6 @@ public class Menu {
         if (!menuProducts.contains(menuProduct)) {
             menuProducts.add(menuProduct);
         }
-        menuProduct.setMenu(this);
     }
 
     public Price calculatePrice() {
@@ -67,9 +67,6 @@ public class Menu {
 
     public void setMenuGroup(MenuGroup menuGroup) {
         this.menuGroup = menuGroup;
-        if (Objects.nonNull(menuGroup)) {
-            menuGroup.addMenu(this);
-        }
     }
 
     public Long getId() {

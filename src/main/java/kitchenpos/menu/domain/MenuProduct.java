@@ -9,10 +9,6 @@ public class MenuProduct {
     @Id
     private Long seq;
 
-    @JoinColumn(name = "menu_id")
-    @ManyToOne
-    private Menu menu;
-
     @JoinColumn(name = "product_id")
     @ManyToOne
     private Product product;
@@ -23,8 +19,7 @@ public class MenuProduct {
     protected MenuProduct() {
     }
 
-    public MenuProduct(Menu menu, Product product, Long quantity) {
-        this.menu = menu;
+    public MenuProduct(Product product, Long quantity) {
         this.product = product;
         this.quantity = new Quantity(quantity);
     }
@@ -34,16 +29,8 @@ public class MenuProduct {
                 .multiply(new Price(BigDecimal.valueOf(quantity.value())));
     }
 
-    public void setMenu(Menu menu) {
-        this.menu = menu;
-    }
-
     public Long getSeq() {
         return seq;
-    }
-
-    public Menu getMenu() {
-        return menu;
     }
 
     public Product getProduct() {

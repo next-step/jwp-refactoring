@@ -12,20 +12,11 @@ public class MenuGroup {
 
     private String name;
 
-    @OneToMany(mappedBy = "menuGroup")
-    private List<Menu> menus = new ArrayList<>();
-
     protected MenuGroup() {
     }
 
     public MenuGroup(String name) {
         this.name = name;
-    }
-
-    public void addMenu(Menu menu) {
-        if (!menus.contains(menu)) {
-            menus.add(menu);
-        }
     }
 
     public Long getId() {

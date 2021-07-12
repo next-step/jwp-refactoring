@@ -56,7 +56,7 @@ public class MenuService {
                                 List<Product> products) {
         menuProductRequests.forEach(menuProductRequest -> {
                     Product product = findProductById(products, menuProductRequest);
-                    menuProducts.add(new MenuProduct(null, product, menuProductRequest.getQuantity()));
+                    menuProducts.add(new MenuProduct(product, menuProductRequest.getQuantity()));
                 });
     }
 

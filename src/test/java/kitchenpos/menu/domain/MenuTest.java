@@ -17,8 +17,7 @@ public class MenuTest {
     public void 가격미입력시_메뉴생성_예외() throws Exception {
         //given
         MenuGroup menuGroup = new MenuGroup("메뉴그룹");
-        MenuProduct menuProduct = new MenuProduct(null,
-                new Product("", BigDecimal.TEN), 1L);
+        MenuProduct menuProduct = new MenuProduct(new Product("", BigDecimal.TEN), 1L);
         
         //when
         //then
@@ -31,8 +30,7 @@ public class MenuTest {
     public void 가격음수입력시_메뉴생성_예외() throws Exception {
         //given
         MenuGroup menuGroup = new MenuGroup("메뉴그룹");
-        MenuProduct menuProduct = new MenuProduct(null,
-                new Product("", BigDecimal.TEN), 1L);
+        MenuProduct menuProduct = new MenuProduct(new Product("", BigDecimal.TEN), 1L);
 
         //when
         //then
@@ -46,10 +44,8 @@ public class MenuTest {
     public void 메뉴가격_계산_확인() throws Exception {
         //given
         MenuGroup menuGroup = new MenuGroup("메뉴그룹");
-        MenuProduct menuProduct1 = new MenuProduct(null,
-                new Product("", BigDecimal.valueOf(1_000)), 5L);
-        MenuProduct menuProduct2 = new MenuProduct(null,
-                new Product("", BigDecimal.valueOf(2_000)), 2L);
+        MenuProduct menuProduct1 = new MenuProduct(new Product("", BigDecimal.valueOf(1_000)), 5L);
+        MenuProduct menuProduct2 = new MenuProduct(new Product("", BigDecimal.valueOf(2_000)), 2L);
         Menu menu = new Menu("메뉴", BigDecimal.valueOf(8_000), menuGroup);
         menu.addMenuProduct(menuProduct1);
         menu.addMenuProduct(menuProduct2);
@@ -66,10 +62,8 @@ public class MenuTest {
     public void 메뉴가격이계산한가격보다큰경우_계산_예외() throws Exception {
         //given
         MenuGroup menuGroup = new MenuGroup("메뉴그룹");
-        MenuProduct menuProduct1 = new MenuProduct(null,
-                new Product("", BigDecimal.valueOf(1_000)), 5L);
-        MenuProduct menuProduct2 = new MenuProduct(null,
-                new Product("", BigDecimal.valueOf(2_000)), 2L);
+        MenuProduct menuProduct1 = new MenuProduct(new Product("", BigDecimal.valueOf(1_000)), 5L);
+        MenuProduct menuProduct2 = new MenuProduct(new Product("", BigDecimal.valueOf(2_000)), 2L);
 
         //when
         assertThatThrownBy(() -> new Menu("메뉴", BigDecimal.valueOf(10_000), menuGroup,
