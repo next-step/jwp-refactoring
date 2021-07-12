@@ -1,6 +1,5 @@
 package kitchenposNew.menu.domain;
 
-import kitchenposNew.menu.domain.MenuProduct;
 import kitchenposNew.wrap.Price;
 
 import javax.persistence.*;

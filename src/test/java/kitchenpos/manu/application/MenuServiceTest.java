@@ -1,7 +1,5 @@
 package kitchenpos.manu.application;
 
-import kitchenposNew.menu.domain.MenuProductRepository;
-import kitchenposNew.menu.domain.MenuProduct;
 import kitchenposNew.menu.application.MenuService;
 import kitchenposNew.menu.domain.*;
 import kitchenposNew.menu.dto.MenuProductRequest;
@@ -40,9 +38,6 @@ public class MenuServiceTest {
 
     @Mock
     private MenuGroupRepository menuGroupRepository;
-
-    @Mock
-    private MenuProductRepository menuProductRepository;
 
     @Mock
     private ProductRepository productRepository;

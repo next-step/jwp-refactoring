@@ -1,14 +1,9 @@
 package kitchenposNew.order.application;
 
-import kitchenposNew.order.domain.OrderTableRepository;
-import kitchenposNew.order.domain.OrderTable;
 import kitchenposNew.menu.domain.Menu;
 import kitchenposNew.menu.domain.MenuRepository;
 import kitchenposNew.menu.exception.NotFoundMenu;
-import kitchenposNew.order.OrderStatus;
-import kitchenposNew.order.domain.Order;
-import kitchenposNew.order.domain.OrderLineItemRepository;
-import kitchenposNew.order.domain.OrderRepository;
+import kitchenposNew.order.domain.*;
 import kitchenposNew.order.dto.OrderRequest;
 import kitchenposNew.order.dto.OrderResponse;
 import kitchenposNew.order.exception.NotEqualsOrderCountAndMenuCount;
@@ -21,6 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
@@ -35,7 +31,6 @@ public class OrderService {
         this.orderTableRepository = orderTableRepository;
     }
 
-    @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
         final List<Long> menuIds = orderRequest.getMenuIds();
         if (!orderRequest.isEqualsMenuSize(menuRepository.countByIdIn(menuIds))) {
@@ -54,13 +49,13 @@ public class OrderService {
         return OrderResponse.of(persistOrder);
     }
 
+    @Transactional(readOnly = true)
     public List<OrderResponse> list() {
         return orderRepository.findAll().stream()
                 .map(order -> OrderResponse.of(order))
                 .collect(Collectors.toList());
     }
 
-    @Transactional
     public OrderResponse changeOrderStatus(final Long orderId) {
         final Order savedOrder = orderRepository.findById(orderId).orElseThrow(() -> new NotFoundOrder());
         savedOrder.changeOrderStatus();

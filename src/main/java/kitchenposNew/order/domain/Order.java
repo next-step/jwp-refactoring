@@ -52,11 +52,6 @@ public class Order {
         this.orderStatus = OrderStatus.COOKING;
     }
 
-    public void changeOrderLineItems(List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = new OrderLineItems(orderLineItems);
-        this.orderLineItems.registerOrder(this);
-    }
-
     public Long getId() {
         return id;
     }

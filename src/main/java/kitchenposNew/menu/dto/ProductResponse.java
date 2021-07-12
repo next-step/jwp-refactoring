@@ -1,6 +1,5 @@
 package kitchenposNew.menu.dto;
 
-import kitchenposNew.menu.domain.MenuGroup;
 import kitchenposNew.menu.domain.Product;
 
 import java.math.BigDecimal;

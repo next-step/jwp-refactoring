@@ -16,6 +16,9 @@ public class Product {
     @Embedded
     private Price price;
 
+    protected Product() {
+    }
+
     public Product(Long id, String name, Price price) {
         this.id = id;
         this.name = name;
