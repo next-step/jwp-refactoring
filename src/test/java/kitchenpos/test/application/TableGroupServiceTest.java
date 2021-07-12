@@ -28,6 +28,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @DisplayName("테이블 기능 관련 테스트")
@@ -87,7 +88,8 @@ public class TableGroupServiceTest {
         // and
         // 테이블 하나는 이미 단체 테이블에 속함
         OrderTable firstOrder = new OrderTable(1L, 10);
-        firstOrder.changeTableGroupId(1L);
+        TableGroup tableGroup = new TableGroup(new OrderTables(Arrays.asList(firstOrder)));
+        firstOrder.changeTableGroupId(tableGroup);
         OrderTable secondOrder = new OrderTable(2L, 10);
 
         // when
@@ -118,8 +120,12 @@ public class TableGroupServiceTest {
 
         // and
         // 단체 테이블 등록 요청
-        TableGroup tableGroup = new TableGroup(new OrderTables(Arrays.asList(firstOrder, secondOrder)));
-        when(tableGroupRepository.save(tableGroup)).thenReturn(tableGroup);
+        OrderTable mockFirstOrder = new OrderTable(1L, 10);
+        firstOrder.changeToEmpty();
+        OrderTable mockSecondOrder = new OrderTable(2L, 10);
+        secondOrder.changeToEmpty();
+        TableGroup tableGroup = new TableGroup(new OrderTables(Arrays.asList(mockFirstOrder, mockSecondOrder)));
+        when(tableGroupRepository.save(any(TableGroup.class))).thenReturn(tableGroup);
 
         // than
         // 단체테이블 등록됨

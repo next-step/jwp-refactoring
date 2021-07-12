@@ -3,20 +3,19 @@ package kitchenposNew.table.domain;
 import kitchenposNew.order.exception.NotChangeToEmptyThatGroupTable;
 import kitchenposNew.table.exception.NotChangeNumberOfGuestThatEmptyTable;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 public class OrderTable {
-    private static final Long NON_TABLE_GROUP = null;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long tableGroupId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
+    private TableGroup tableGroup;
+
     private int numberOfGuests;
     private boolean empty;
 
@@ -25,13 +24,11 @@ public class OrderTable {
 
     public OrderTable(Long id, int numberOfGuests) {
         this.id = id;
-        this.tableGroupId = NON_TABLE_GROUP;
         this.numberOfGuests = numberOfGuests;
         this.empty = false;
     }
 
     public OrderTable(int numberOfGuests) {
-        this.tableGroupId = NON_TABLE_GROUP;
         this.numberOfGuests = numberOfGuests;
         this.empty = false;
     }
@@ -49,14 +46,14 @@ public class OrderTable {
     }
 
     public void changeToEmpty() {
-        if(tableGroupId != NON_TABLE_GROUP){
+        if(tableGroup != null){
             throw new NotChangeToEmptyThatGroupTable();
         }
         this.empty = true;
     }
 
-    public void changeTableGroupId(Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
+    public void changeTableGroupId(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
     }
 
     public void changeNumberOfGuests(int numberOfGuests) {
@@ -69,8 +66,8 @@ public class OrderTable {
         this.numberOfGuests = numberOfGuests;
     }
 
-    public Long getTableGroupId() {
-        return tableGroupId;
+    public TableGroup getTableGroup() {
+        return tableGroup;
     }
 
     public int getNumberOfGuests() {
@@ -78,16 +75,16 @@ public class OrderTable {
     }
 
     public boolean isEmptyTableAndNotExistTableGroupId() {
-        return this.empty || this.tableGroupId == NON_TABLE_GROUP;
+        return this.empty || this.tableGroup == null;
     }
 
     public void registerTableGroup(TableGroup tableGroup) {
-        this.tableGroupId = tableGroup.getId();
+        this.tableGroup = tableGroup;
         this.empty = false;
     }
 
     public void ungroup() {
-        this.tableGroupId = NON_TABLE_GROUP;
+        this.tableGroup = null;
         this.empty = true;
     }
 
@@ -96,11 +93,11 @@ public class OrderTable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OrderTable that = (OrderTable) o;
-        return numberOfGuests == that.numberOfGuests && empty == that.empty && Objects.equals(id, that.id) && Objects.equals(tableGroupId, that.tableGroupId);
+        return numberOfGuests == that.numberOfGuests && empty == that.empty && Objects.equals(id, that.id) && Objects.equals(tableGroup, that.tableGroup);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, tableGroupId, numberOfGuests, empty);
+        return Objects.hash(id, tableGroup, numberOfGuests, empty);
     }
 }

@@ -19,7 +19,11 @@ public class OrderTableResponse {
     }
 
     public static OrderTableResponse of(OrderTable orderTable) {
-        return new OrderTableResponse(orderTable.getId(), orderTable.getTableGroupId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
+        Long tableGroupId = null;
+        if(orderTable.getTableGroup() != null){
+            tableGroupId = orderTable.getTableGroup().getId();
+        }
+        return new OrderTableResponse(orderTable.getId(), tableGroupId, orderTable.getNumberOfGuests(), orderTable.isEmpty());
     }
 
     public Long getId() {

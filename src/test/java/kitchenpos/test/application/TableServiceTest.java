@@ -10,6 +10,8 @@ import kitchenposNew.order.exception.NotFoundOrderTable;
 import kitchenposNew.table.application.TableService;
 import kitchenposNew.table.domain.OrderTable;
 import kitchenposNew.table.domain.OrderTableRepository;
+import kitchenposNew.table.domain.OrderTables;
+import kitchenposNew.table.domain.TableGroup;
 import kitchenposNew.table.dto.OrderTableRequest;
 import kitchenposNew.table.dto.OrderTableResponse;
 import kitchenposNew.table.exception.NotChangeNumberOfGuestThatEmptyTable;
@@ -104,7 +106,8 @@ public class TableServiceTest {
         // give
         // 해당 주문 테이블은 단체 테이블임
         OrderTable firstOrderTable = firstOrderTableRequest.toOrderTable();
-        firstOrderTable.changeTableGroupId(1L);
+        TableGroup tableGroup = new TableGroup(new OrderTables(Arrays.asList(firstOrderTable)));
+        firstOrderTable.changeTableGroupId(tableGroup);
 
         // and
         // 주문 메뉴 및 테이블 생성되어 있음
