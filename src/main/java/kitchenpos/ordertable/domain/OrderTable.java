@@ -24,9 +24,7 @@ public class OrderTable {
     private boolean empty;
 
     public OrderTable(int numberOfGuests, boolean empty) {
-        this.numberOfGuests = numberOfGuests;
-        this.empty = empty;
-        this.orders = new Orders();
+        this(null, numberOfGuests, empty);
     }
 
     public OrderTable(final TableGroup tableGroup, final int numberOfGuests, final boolean empty) {
@@ -41,22 +39,12 @@ public class OrderTable {
     }
 
     public void changeEmpty(boolean empty) {
-        if (hasOtherOrderTable()) {
-            throw new IllegalArgumentException("단체 지정된 주문 테이블은 빈 테이블 설정 또는 해지할 수 없습니다.");
-        }
-        if (orders.isNotCompletion()) {
-            throw new IllegalArgumentException("조리 또는 식사인 테이블은 빈 테이블 설정 또는 해지할 수 없습니다.");
-        }
+        emptyValidate();
         this.empty = empty;
     }
 
     public void changeNumberOfGuests(int numberOfGuests) {
-        if (empty) {
-            throw new IllegalArgumentException("빈 테이블은 방문한 손님 수를 입력할 수 없습니다.");
-        }
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException("방문한 손님 수는 0명 이상이어야 합니다.");
-        }
+        numberOfGuestsValidate(numberOfGuests);
         this.numberOfGuests = numberOfGuests;
     }
 
@@ -114,5 +102,23 @@ public class OrderTable {
 
     public boolean isEmpty() {
         return empty;
+    }
+
+    private void emptyValidate() {
+        if (hasOtherOrderTable()) {
+            throw new IllegalArgumentException("단체 지정된 주문 테이블은 빈 테이블 설정 또는 해지할 수 없습니다.");
+        }
+        if (orders.isNotCompletion()) {
+            throw new IllegalArgumentException("조리 또는 식사인 테이블은 빈 테이블 설정 또는 해지할 수 없습니다.");
+        }
+    }
+
+    private void numberOfGuestsValidate(int numberOfGuests) {
+        if (empty) {
+            throw new IllegalArgumentException("빈 테이블은 방문한 손님 수를 입력할 수 없습니다.");
+        }
+        if (numberOfGuests < 0) {
+            throw new IllegalArgumentException("방문한 손님 수는 0명 이상이어야 합니다.");
+        }
     }
 }
