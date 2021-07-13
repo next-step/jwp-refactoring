@@ -1,4 +1,4 @@
-package kitchenpos.order.application;
+package kitchenpos.order.service;
 
 import kitchenpos.menu.domain.entity.Menu;
 import kitchenpos.menu.domain.entity.MenuRepository;

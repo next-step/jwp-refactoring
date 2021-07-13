@@ -2,7 +2,7 @@ package kitchenpos.order.ui;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.order.application.TableService;
+import kitchenpos.order.service.TableService;
 import kitchenpos.order.dto.OrderTableRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

@@ -1,7 +1,7 @@
 package kitchenpos.order.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.order.application.TableGroupService;
+import kitchenpos.order.service.TableGroupService;
 import kitchenpos.order.domain.entity.OrderTable;
 import kitchenpos.order.domain.entity.TableGroup;
 import kitchenpos.order.domain.value.NumberOfGuests;

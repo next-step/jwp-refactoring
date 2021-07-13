@@ -1,4 +1,4 @@
-package kitchenpos.order.application;
+package kitchenpos.order.service;
 
 import kitchenpos.order.domain.entity.OrderRepository;
 import kitchenpos.order.domain.value.NumberOfGuests;

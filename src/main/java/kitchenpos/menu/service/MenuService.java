@@ -1,4 +1,4 @@
-package kitchenpos.menu.application;
+package kitchenpos.menu.service;
 
 import kitchenpos.menu.domain.entity.*;
 import kitchenpos.menu.domain.value.Price;

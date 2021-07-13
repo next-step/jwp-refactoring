@@ -1,7 +1,6 @@
-package kitchenpos.menu.application;
+package kitchenpos.menu.service;
 
 import kitchenpos.menu.domain.entity.*;
-import kitchenpos.menu.domain.value.MenuProducts;
 import kitchenpos.menu.domain.value.Price;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuProductRequest;
