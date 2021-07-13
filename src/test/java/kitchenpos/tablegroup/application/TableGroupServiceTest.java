@@ -6,8 +6,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,119 +22,117 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.application.TableGroupService;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
-import kitchenpos.utils.domain.OrderTableObjects;
-import kitchenpos.utils.domain.TableGroupObjects;
+import kitchenpos.order.application.OrderService;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.exception.OrderAlreadyExistsException;
+import kitchenpos.table.application.TableService;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.exception.MisMatchedOrderTablesSizeException;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 
 @DisplayName("단체 지정 서비스")
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
 
     @Mock
-    private OrderDao orderDao;
+    private TableService tableService;
     @Mock
-    private OrderTableDao orderTableDao;
+    private TableGroupRepository tableGroupRepository;
     @Mock
-    private TableGroupDao tableGroupDao;
+    private OrderTableRepository orderTableRepository;
+    @Mock
+    private OrderRepository orderRepository;
+    @Mock
+    private OrderService orderService;
+
     @InjectMocks
     private TableGroupService tableGroupService;
-    private TableGroup createTableGroup;
-    private TableGroup ungroupTableGroup;
-    private OrderTable orderTable1;
-    private OrderTable orderTable2;
+
 
     @BeforeEach
     void setUp() {
-        TableGroupObjects tableGroupObjects = new TableGroupObjects();
-        OrderTableObjects orderTableObjects = new OrderTableObjects();
-        createTableGroup = tableGroupObjects.getTableGroup1();
-        ungroupTableGroup = tableGroupObjects.getTableGroup2();
-        orderTable1 = orderTableObjects.getOrderTable1();
-        orderTable2 = orderTableObjects.getOrderTable2();
 
     }
 
     @Test
     @DisplayName("단체지정 등록")
-    void create_group() {
+    void create_group1() {
         // given
-        orderTable1.setTableGroupId(null);
-        orderTable2.setTableGroupId(null);
-        createTableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
-
-        // mocking
-        when(orderTableDao.findAllByIdIn(any(List.class))).thenReturn(Arrays.asList(orderTable1, orderTable2));
-        when(tableGroupDao.save(any(TableGroup.class))).thenReturn(createTableGroup);
-        when(orderTableDao.save(orderTable1)).thenReturn(orderTable1);
-        when(orderTableDao.save(orderTable2)).thenReturn(orderTable2);
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(1L, 2L));
+        TableGroup tableGroup = new TableGroup();
+        OrderTable groupOrderTable1 = new OrderTable(3, true);
+        OrderTable groupOrderTable2 = new OrderTable(3, true);
+        groupOrderTable1.setTableGroup(null);
+        groupOrderTable2.setTableGroup(null);
+        given(tableService.findOrderTablesByIds(any(List.class))).willReturn(Arrays.asList(groupOrderTable1, groupOrderTable2));
+        given(tableGroupRepository.save(any(TableGroup.class))).willReturn(tableGroup);
 
         // when
-        TableGroup resultTableGroup = tableGroupService.create(createTableGroup);
+        TableGroupResponse tableGroupResponse = tableGroupService.create(tableGroupRequest);
 
         // then
-        assertAll(
-                () -> assertThat(resultTableGroup.getId()).isEqualTo(createTableGroup.getId()),
-                () -> assertThat(resultTableGroup.getOrderTables()).extracting("id").contains(orderTable1.getId(), orderTable2.getId())
-        );
+        assertThat(tableGroupResponse.getOrderTableResponses()).size().isEqualTo(2);
     }
 
     @TestFactory
     @DisplayName("단체지정 등록 오류")
-    List<DynamicTest> group_exception() {
+    List<DynamicTest> group_exception1() {
         return Arrays.asList(
                 dynamicTest("단체지정 테이블이 없는 경우 오류 발생.", () -> {
                     // given
-                    createTableGroup.setOrderTables(null);
+                    TableGroupRequest tableGroupRequest = new TableGroupRequest(new ArrayList<>());
 
-                    assertThatThrownBy(() -> tableGroupService.create(createTableGroup))
+                    // then
+                    assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
                             .isInstanceOf(IllegalArgumentException.class);
                 }),
                 dynamicTest("단체지정 테이블이 2개 이상이 아닐 경우 오류 발생.", () -> {
                     // given
-                    createTableGroup.setOrderTables(Arrays.asList(orderTable1));
+                    TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(1L));
 
-                    assertThatThrownBy(() -> tableGroupService.create(createTableGroup))
+                    // then
+                    assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
                             .isInstanceOf(IllegalArgumentException.class);
                 }),
                 dynamicTest("단체지정 테이블 중 등록되지 않은 테이블이 존재할 경우 오류 발생.", () -> {
                     // given
-                    createTableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
+                    TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(1L, 2L));
+                    OrderTable orderTable = new OrderTable(3, true);
+                    given(tableService.findOrderTablesByIds(any(List.class))).willReturn(Arrays.asList(orderTable));
 
-                    // mocking
-                    when(orderTableDao.findAllByIdIn(any(List.class))).thenReturn(Arrays.asList(orderTable1));
-
-                    assertThatThrownBy(() -> tableGroupService.create(createTableGroup))
-                            .isInstanceOf(IllegalArgumentException.class);
+                    // then
+                    assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
+                            .isInstanceOf(MisMatchedOrderTablesSizeException.class)
+                            .hasMessage("입력된 항목과 조회결과가 일치하지 않습니다.");
                 }),
                 dynamicTest("단체지정 테이블 중 비어있지 않은 테이블이 존재할 경우 오류 발생.", () -> {
                     // given
-                    orderTable1.setEmpty(true);
-                    orderTable2.setEmpty(false);
-                    createTableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
+                    TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(1L, 2L));
+                    TableGroup tableGroup = new TableGroup();
+                    OrderTable orderTable1 = new OrderTable(3, true);
+                    OrderTable orderTable2 = new OrderTable(3, false);
+                    given(tableService.findOrderTablesByIds(any(List.class))).willReturn(Arrays.asList(orderTable1, orderTable2));
+                    given(tableGroupRepository.save(any(TableGroup.class))).willReturn(tableGroup);
 
-                    // mocking
-                    when(orderTableDao.findAllByIdIn(any(List.class))).thenReturn(Arrays.asList(orderTable1, orderTable2));
-
-                    assertThatThrownBy(() -> tableGroupService.create(createTableGroup))
-                            .isInstanceOf(IllegalArgumentException.class);
+                    // then
+                    assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
+                            .isInstanceOf(IllegalArgumentException.class)
+                            .hasMessage("비어있지 않은 테이블은 정산 그룹에 포함시킬 수 없습니다.");
                 }),
                 dynamicTest("단체지정 테이블 중 테이블 그룹이 지정되어 있는 테이블이 존재할 경우 오류 발생.", () -> {
                     // given
-                    orderTable1.setEmpty(true);
-                    orderTable1.setTableGroupId(null);
-                    orderTable2.setEmpty(true);
-                    orderTable2.setTableGroupId(createTableGroup.getId());
-                    createTableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
+                    TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(1L, 2L));
+                    OrderTable orderTable1 = new OrderTable(3, true);
+                    OrderTable orderTable2 = new OrderTable(3, true);
+                    orderTable1.setTableGroup(new TableGroup());
+                    given(tableService.findOrderTablesByIds(any(List.class))).willReturn(Arrays.asList(orderTable1, orderTable2));
 
-                    // mocking
-                    when(orderTableDao.findAllByIdIn(any(List.class))).thenReturn(Arrays.asList(orderTable1, orderTable2));
-
-                    assertThatThrownBy(() -> tableGroupService.create(createTableGroup))
+                    // then
+                    assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
                             .isInstanceOf(IllegalArgumentException.class);
                 })
         );
@@ -141,35 +140,45 @@ class TableGroupServiceTest {
 
     @Test
     @DisplayName("단체지정 취소")
-    void ungroup() {
+    void ungroup1() {
         // given
-        orderTable1.setTableGroupId(ungroupTableGroup.getId());
-        orderTable2.setTableGroupId(ungroupTableGroup.getId());
-
-        // mocking
-        when(orderTableDao.findAllByTableGroupId(anyLong())).thenReturn(Arrays.asList(orderTable1, orderTable2));
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(List.class), any(List.class))).thenReturn(false);
+        TableGroup tableGroup = new TableGroup();
+        OrderTable orderTable1 = new OrderTable(3, true);
+        OrderTable orderTable2 = new OrderTable(3, true);
+        tableGroup.addOrderTable(orderTable1);
+        tableGroup.addOrderTable(orderTable2);
+        given(orderTableRepository.findByTableGroupId(anyLong())).willReturn(Arrays.asList(orderTable1, orderTable2));
 
         // when
-        tableGroupService.ungroup(ungroupTableGroup.getId());
+        tableGroupService.ungroup(1L);
 
         // then
+        verify(orderService).validateExistsOrdersStatusIsCookingOrMeal(any(List.class));
         assertAll(
-                () -> assertThat(orderTable1.getTableGroupId()).isNull(),
-                () -> assertThat(orderTable2.getTableGroupId()).isNull()
+                () -> assertThat(orderTable1.hasTableGroup()).isFalse(),
+                () -> assertThat(orderTable2.hasTableGroup()).isFalse()
         );
     }
 
     @TestFactory
     @DisplayName("단체지정 취소 오류")
-    List<DynamicTest> ungroup_exception() {
+    List<DynamicTest> ungroup_exception1() {
+        // given
+        TableGroup tableGroup = new TableGroup();
+        OrderTable orderTable1 = new OrderTable(3, true);
+        OrderTable orderTable2 = new OrderTable(3, true);
+        tableGroup.addOrderTable(orderTable1);
+        tableGroup.addOrderTable(orderTable2);
+
         return Arrays.asList(
                 dynamicTest("테이블들의 주문 상태가 COOKING이거나 MEAL인 상태가 존재하는 경우 오류 발생.", () -> {
-                    when(orderTableDao.findAllByTableGroupId(anyLong())).thenReturn(Arrays.asList(orderTable1, orderTable2));
-                    when(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(List.class), any(List.class))).thenReturn(true);
+                    // and
+                    given(orderTableRepository.findByTableGroupId(anyLong())).willReturn(Arrays.asList(orderTable1, orderTable2));
+                    doThrow(OrderAlreadyExistsException.class).when(orderService).validateExistsOrdersStatusIsCookingOrMeal(any(List.class));
 
-                    assertThatThrownBy(() -> tableGroupService.ungroup(createTableGroup.getId()))
-                            .isInstanceOf(IllegalArgumentException.class);
+                    // then
+                    assertThatThrownBy(() -> tableGroupService.ungroup(1L))
+                            .isInstanceOf(OrderAlreadyExistsException.class);
                 })
         );
     }
