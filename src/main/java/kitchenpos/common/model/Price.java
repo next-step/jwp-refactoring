@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 @Embeddable
-public class Price {
+public class Price implements Comparable<Price> {
     private final BigDecimal price;
 
     public Price() {
@@ -22,6 +22,25 @@ public class Price {
 
     public BigDecimal getPrice() {
         return price;
+    }
+
+    public Price times(long multiple) {
+        return times(BigDecimal.valueOf(multiple));
+    }
+
+    public Price times(BigDecimal multiple) {
+        return new Price(price.multiply(multiple));
+    }
+
+    public Price plus(Price otherPrice) {
+        BigDecimal result = this.price.add(otherPrice.getPrice());
+
+        return new Price(result);
+    }
+
+    @Override
+    public int compareTo(final Price o) {
+        return this.price.compareTo(o.price);
     }
 
     @Override

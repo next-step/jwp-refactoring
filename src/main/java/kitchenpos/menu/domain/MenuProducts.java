@@ -1,11 +1,9 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.product.domain.Product;
-
+import kitchenpos.common.model.Price;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,27 +17,14 @@ public class MenuProducts {
         return Collections.unmodifiableList(menuProducts);
     }
 
-    public void validationByPrice() {
-        for (MenuProduct menuProduct : menuProducts) {
-            validationByPrice(menuProduct.getProduct(), menuProduct.getMenu());
-        }
-    }
+    public void validationByPrice(Price menuPrice) {
+        Price totalPrice = this.menuProducts.stream()
+            .map(MenuProduct::calculate)
+            .reduce(Price::plus).orElse(new Price());
 
-    private void validationByPrice(Product product, Menu menu) {
-        BigDecimal totalPrice = calcTotalPrice(product);
-
-        if (menu.getPrice().compareTo(totalPrice) > 0) {
+        if (menuPrice.compareTo(totalPrice) > 0) {
             throw new IllegalArgumentException("메뉴의 가격은 `[메뉴의 수량] X [상품의 가격]` 보다 비쌀 수 없다.");
         }
-    }
-
-    private BigDecimal calcTotalPrice(final Product product) {
-        BigDecimal sum = BigDecimal.ZERO;
-        for (MenuProduct menuProduct : menuProducts) {
-            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
-        }
-
-        return sum;
     }
 
     public void add(final MenuProduct menuProduct) {

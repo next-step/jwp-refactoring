@@ -45,10 +45,6 @@ public class Menu {
         return name;
     }
 
-    public BigDecimal getPrice() {
-        return price.getPrice();
-    }
-
     public Long getMenuGroupId() {
         return menuGroupId;
     }
@@ -59,16 +55,12 @@ public class Menu {
                 .collect(Collectors.toList());
     }
 
-    public List<MenuProduct> getMenuProducts() {
-        return menuProducts.list();
-    }
-
     protected void appendMenuProducts(final MenuProduct menuProduct) {
         this.menuProducts.add(menuProduct);
     }
 
     public void validationByPrice() {
-        this.menuProducts.validationByPrice();
+        this.menuProducts.validationByPrice(price);
     }
 
     @Override
