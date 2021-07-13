@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class OrderTableGroupRequest {
-    static final int MIN_VALUE = 2;
+    private static final int MIN_VALUE = 2;
 
     private List<OrderTableRequest> orderTables;
 

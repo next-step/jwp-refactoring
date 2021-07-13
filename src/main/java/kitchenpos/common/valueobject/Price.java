@@ -9,7 +9,7 @@ import java.util.Objects;
 
 @Embeddable
 public class Price {
-    static final long MIN_PRICE = 0;
+    private static final long MIN_PRICE = 0;
 
     @Column(name = "price", nullable = false)
     private final BigDecimal value;

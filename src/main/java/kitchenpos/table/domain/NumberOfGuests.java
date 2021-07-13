@@ -8,7 +8,7 @@ import java.util.Objects;
 
 @Embeddable
 public class NumberOfGuests {
-    static final int MIN_VALUE = 0;
+    private static final int MIN_VALUE = 0;
 
     @Column(name = "number_of_guests", nullable = false)
     private final int value;

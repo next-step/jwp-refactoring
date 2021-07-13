@@ -8,7 +8,7 @@ import java.util.Objects;
 
 @Embeddable
 public class Quantity {
-    static final long MIN_QUANTITY = 0;
+    private static final long MIN_QUANTITY = 0;
 
     @Column(name = "quantity", nullable = false)
     private final long value;
