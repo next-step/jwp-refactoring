@@ -1,11 +1,12 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableLinker;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.exception.EmptyException;
+import kitchenpos.table.exception.IllegalOrderTableException;
 import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,13 +27,12 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
     @Mock
-    private OrderRepository orderRepository;
+    private OrderTableLinker orderTableLinker;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -82,6 +82,7 @@ class TableServiceTest {
         OrderTableRequest changeTable = new OrderTableRequest(2, afterEmptyValue);
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(orderTable));
         given(orderTableRepository.save(any())).willReturn(orderTable);
+        doNothing().when(orderTableLinker).validateOrderStatusByOrderTableId(anyLong());
 
         OrderTableResponse changed = tableService.changeEmpty(orderTable.getId(), changeTable);
 
@@ -109,6 +110,7 @@ class TableServiceTest {
         OrderTable 주문테이블2 = new OrderTable(2L, tableGroup.getId(), 3, false);
         OrderTableRequest changeTable = new OrderTableRequest(2, false);
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(주문테이블1));
+        doNothing().when(orderTableLinker).validateOrderStatusByOrderTableId(anyLong());
 
         assertThatThrownBy(() -> tableService.changeEmpty(주문테이블1.getId(), changeTable))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -122,9 +124,10 @@ class TableServiceTest {
         OrderTable orderTable = new OrderTable(1L, 1L, 2, true);
         OrderTableRequest changeTable = new OrderTableRequest(2, false);
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(orderTable));
+        doThrow(IllegalOrderTableException.class).when(orderTableLinker).validateOrderStatusByOrderTableId(anyLong());
 
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), changeTable))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalOrderTableException.class);
 
         verify(orderTableRepository, times(1)).findById(anyLong());
     }
