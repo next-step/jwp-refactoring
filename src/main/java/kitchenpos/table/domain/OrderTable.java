@@ -1,7 +1,6 @@
 package kitchenpos.table.domain;
 
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderStatus;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -68,7 +67,7 @@ public class OrderTable {
 
         if (isCookingAndMealStatus()) {
             String errorMsg = String.format("%s 또는 %s 상태일때는 변경할수 없습니다.",
-                    OrderStatus.COOKING.remark(), OrderStatus.MEAL.remark());
+                    Order.OrderStatus.COOKING.remark(), Order.OrderStatus.MEAL.remark());
 
             throw new IllegalArgumentException(errorMsg);
         }
@@ -79,8 +78,8 @@ public class OrderTable {
     private boolean isCookingAndMealStatus() {
         return orders.stream()
             .filter(order -> Objects.equals(this, order.getOrderTable()))
-            .anyMatch(order -> order.equalsByOrderStatus(OrderStatus.COOKING) ||
-                    order.equalsByOrderStatus(OrderStatus.MEAL));
+            .anyMatch(order -> order.equalsByOrderStatus(Order.OrderStatus.COOKING) ||
+                    order.equalsByOrderStatus(Order.OrderStatus.MEAL));
     }
 
     public void setTableGroup(final TableGroup tableGroup) {
@@ -89,7 +88,7 @@ public class OrderTable {
 
     public void clearTableGroup() {
         if (isCookingAndMealStatus()) {
-            throw new IllegalArgumentException(String.format("%s 또는 %s 상태일때는 삭제할수 없습니다.", OrderStatus.COOKING, OrderStatus.MEAL));
+            throw new IllegalArgumentException(String.format("%s 또는 %s 상태일때는 삭제할수 없습니다.", Order.OrderStatus.COOKING, Order.OrderStatus.MEAL));
         }
 
         this.tableGroup = null;

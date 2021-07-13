@@ -62,6 +62,10 @@ public class Order {
         return orderStatus;
     }
 
+    public boolean isComplaationStatus() {
+        return Objects.equals(orderStatus, OrderStatus.COMPLETION);
+    }
+
     public List<Long> getOrderLineItemIds() {
         return orderLineItems.list().stream()
             .map(orderLineItem -> orderLineItem.getMenu().getId())
@@ -77,6 +81,10 @@ public class Order {
     }
 
     public void chaangeOrderStatus(final OrderStatus orderStatus) {
+        if (isComplaationStatus()) {
+            throw new IllegalArgumentException(String.format("%s의 상태는 변경 불가능합니다.", OrderStatus.COMPLETION.remark()));
+        }
+
         this.orderStatus = orderStatus;
     }
 
@@ -95,5 +103,19 @@ public class Order {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public enum OrderStatus {
+        COOKING("조리"), MEAL("식사"), COMPLETION("계산 완료");
+
+        private final String remark;
+
+        OrderStatus(final String remark) {
+            this.remark = remark;
+        }
+
+        public String remark() {
+            return remark;
+        }
     }
 }

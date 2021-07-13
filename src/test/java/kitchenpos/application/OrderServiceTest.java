@@ -5,7 +5,6 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.utils.TestUtils;
@@ -132,12 +131,12 @@ class OrderServiceTest {
         order = orderService.create(order);
 
         // when
-        order.chaangeOrderStatus(OrderStatus.MEAL);
+        order.chaangeOrderStatus(Order.OrderStatus.MEAL);
         Order changedOrder = orderService.changeOrderStatus(order.getId(), order);
 
         // then
         assertThat(changedOrder).isNotNull();
-        assertThat(changedOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
+        assertThat(changedOrder.getOrderStatus()).isEqualTo(Order.OrderStatus.MEAL);
     }
 
     @DisplayName("주문상태를 수정시, 존재하는 주문만 상태를 변경 가능하다.")
@@ -168,7 +167,7 @@ class OrderServiceTest {
 
         Order order = new Order(orderTable, OrderLineItem.valueOf(menu, 1L));
         Order createdOrder = orderService.create(order);
-        createdOrder.chaangeOrderStatus(OrderStatus.COMPLETION);
+        createdOrder.chaangeOrderStatus(Order.OrderStatus.COMPLETION);
 
         // when
         Order changedOrder = orderService.changeOrderStatus(createdOrder.getId(), createdOrder);
