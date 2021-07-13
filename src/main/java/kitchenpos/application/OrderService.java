@@ -1,52 +1,31 @@
 package kitchenpos.application;
 
-import static kitchenpos.domain.OrderStatus.*;
-
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderLineItems;
 import kitchenpos.domain.OrderRepository;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.exception.OrderNotFoundException;
+import kitchenpos.validator.OrderValidator;
 
 @Service
 public class OrderService {
-    private final MenuService menuService;
-    private final TableService tableService;
     private final OrderRepository orderRepository;
+    private final OrderValidator orderValidator;
 
-    public OrderService(MenuService menuService, TableService tableService,
-        OrderRepository orderRepository) {
-        this.menuService = menuService;
-        this.tableService = tableService;
+    public OrderService(OrderRepository orderRepository, OrderValidator orderValidator) {
         this.orderRepository = orderRepository;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
     public Order create(final OrderRequest request) {
-        OrderTable orderTable = tableService.findById(request.getOrderTableId());
-        OrderLineItems orderLineItems = OrderLineItems.of(request.getOrderLineItems()
-            .stream()
-            .map(this::newOrderLineItem)
-            .collect(Collectors.toList()));
-
-        Order order = new Order(COOKING, orderLineItems);
-        orderTable.addOrder(order);
-        return order;
-    }
-
-    private OrderLineItem newOrderLineItem(OrderLineItemRequest req) {
-        Menu menu = menuService.findById(req.getMenuId());
-        return new OrderLineItem(menu, req.getName(), req.price(), req.quantity(), req.details());
+        Order order = request.toEntity();
+        order.place(orderValidator);
+        return orderRepository.save(order);
     }
 
     public List<Order> list() {
@@ -54,9 +33,9 @@ public class OrderService {
     }
 
     @Transactional
-    public Order changeOrderStatus(final Long orderId, final OrderRequest order) {
-        final Order savedOrder = findById(orderId);
-        savedOrder.proceedTo(order.getOrderStatus());
+    public Order changeOrderStatus(final Long orderId, final OrderRequest request) {
+        Order savedOrder = findById(orderId);
+        savedOrder.changeStatus(orderValidator, request.getOrderStatus());
         return savedOrder;
     }
 

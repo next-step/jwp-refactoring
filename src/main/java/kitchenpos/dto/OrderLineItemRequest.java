@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderLineItemDetails;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.Quantity;
@@ -65,6 +66,10 @@ public class OrderLineItemRequest {
 
     public void setMenuDetails(List<OrderLineItemDetailRequest> menuDetails) {
         this.menuDetails = menuDetails;
+    }
+
+    public OrderLineItem toEntity() {
+        return new OrderLineItem(getMenuId(), getName(), price(), quantity(), details());
     }
 
     public Price price() {

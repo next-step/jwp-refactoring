@@ -6,13 +6,11 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 @Entity
 public class OrderLineItem {
@@ -25,8 +23,7 @@ public class OrderLineItem {
     private Price price;
 
     @JoinColumn(nullable = false, foreignKey = @ForeignKey(name = "fk_order_line_item_menu"))
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Menu menu;
+    private Long menuId;
 
     @Embedded
     @Column(nullable = false)
@@ -38,23 +35,31 @@ public class OrderLineItem {
     protected OrderLineItem() {
     }
 
-    public OrderLineItem(Menu menu, String name, Price price, Quantity quantity,
+    public OrderLineItem(Long menuId, String name, Price price, Quantity quantity,
             OrderLineItemDetails orderLineItemDetails) {
-        this(null, menu, name, price, quantity, orderLineItemDetails);
+        this(null, menuId, name, price, quantity, orderLineItemDetails);
     }
 
-    OrderLineItem(Long seq, Menu menu, String name, Price price, Quantity quantity,
+    OrderLineItem(Long seq, Long menuId, String name, Price price, Quantity quantity,
             OrderLineItemDetails orderLineItemDetails) {
         this.seq = seq;
         this.name = name;
         this.price = price;
-        this.menu = menu;
+        this.menuId = menuId;
         this.quantity = quantity;
         this.orderLineItemDetails = orderLineItemDetails;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public String getName() {
+        return name;
+    }
+
+    public Long getMenuId() {
+        return menuId;
+    }
+
+    public Price getPrice() {
+        return price;
     }
 
     public Quantity getQuantity() {
@@ -76,15 +81,11 @@ public class OrderLineItem {
         return Objects.hash(seq);
     }
 
-    public void validate() {
-        menu.validateOrder(toMenuOption(), toMenuDetailOptions());
-    }
-
-    private MenuOption toMenuOption() {
+    public MenuOption getMenuOption() {
         return new MenuOption(this.name, this.price);
     }
 
-    private List<MenuDetailOption> toMenuDetailOptions() {
+    public List<MenuDetailOption> getMenuDetailOptions() {
         return this.orderLineItemDetails.toMenuDetailOptions();
     }
 }

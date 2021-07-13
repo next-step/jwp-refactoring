@@ -34,9 +34,6 @@ public class OrderTable {
     @Column(nullable = false)
     private boolean empty;
 
-    @Embedded
-    private Orders orders = new Orders();
-
     protected OrderTable() {
     }
 
@@ -58,11 +55,6 @@ public class OrderTable {
         return this;
     }
 
-    public void addOrder(Order order) {
-        checkNotEmpty();
-        orders.add(order);
-    }
-
     public void changeEmpty(boolean empty) {
         checkOrders();
         checkNotGrouped();
@@ -80,9 +72,9 @@ public class OrderTable {
     }
 
     private void checkOrders() {
-        if (orders.hasOrderInProgress()) {
-            throw new OrderNotCompletedException("테이블에 완결되지 않은 주문이 존재합니다.");
-        }
+        // if (orders.hasOrderInProgress()) { // TODO 나중에 확인!
+        //     throw new OrderNotCompletedException("테이블에 완결되지 않은 주문이 존재합니다.");
+        // }
     }
 
     private void checkEmpty() {
@@ -117,10 +109,6 @@ public class OrderTable {
 
     public Optional<TableGroup> getTableGroup() {
         return Optional.ofNullable(tableGroup);
-    }
-
-    public Orders getOrders() {
-        return orders;
     }
 
     public NumberOfGuests getNumberOfGuests() {

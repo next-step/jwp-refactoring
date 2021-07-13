@@ -1,6 +1,7 @@
 package kitchenpos.domain;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -13,7 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import kitchenpos.exception.IllegalOperationException;
+import kitchenpos.validator.OrderValidator;
 
 @Entity
 @Table(name = "orders")
@@ -21,6 +22,9 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
+    private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -35,33 +39,50 @@ public class Order {
     protected Order() {
     }
 
-    public Order(OrderStatus orderStatus, OrderLineItems orderLineItems) {
-        this(null, orderStatus, orderLineItems);
+    public Order(Long orderTableId, OrderLineItems orderLineItems) {
+        this.orderTableId = orderTableId;
+        this.orderLineItems = orderLineItems;
     }
 
-    Order(Long id, OrderStatus orderStatus, OrderLineItems orderLineItems) {
+    Order(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    Order(Long id, Long orderTableId, OrderStatus orderStatus, OrderLineItems orderLineItems) {
         this.id = id;
+        this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderLineItems = orderLineItems;
     }
 
-    public void proceedTo(OrderStatus orderStatus) {
-        checkChangeable();
-        this.orderStatus = orderStatus;
+    public void place(OrderValidator validator) {
+        validator.validate(this);
+        orderStatus = OrderStatus.COOKING;
     }
 
-    private void checkChangeable() {
-        if (orderStatus.isCompleted()) {
-            throw new IllegalOperationException("완결 된 주문은 상태를 변경할 수 없습니다.");
-        }
+    public void changeStatus(OrderValidator validator, OrderStatus orderStatus) {
+        validator.checkChangeable(this);
+        this.orderStatus = orderStatus;
     }
 
     public boolean inProgress() {
         return orderStatus.inProgress();
     }
 
+    public boolean isCompleted() {
+        return orderStatus.isCompleted();
+    }
+
+    public List<Long> getMenuIds() {
+        return orderLineItems.mapList(OrderLineItem::getMenuId);
+    }
+
     public Long getId() {
         return id;
+    }
+
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {

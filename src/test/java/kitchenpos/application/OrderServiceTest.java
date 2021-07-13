@@ -4,14 +4,12 @@ import static kitchenpos.domain.MenuProductTest.*;
 import static kitchenpos.domain.MenuTest.*;
 import static kitchenpos.domain.OrderLineItemDetailTest.*;
 import static kitchenpos.domain.OrderStatus.*;
-import static kitchenpos.domain.OrderTableTest.*;
 import static kitchenpos.domain.ProductTest.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,9 +35,8 @@ import kitchenpos.domain.Quantity;
 import kitchenpos.dto.OrderLineItemDetailRequest;
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
-import kitchenpos.exception.IllegalOperationException;
 import kitchenpos.exception.OrderNotFoundException;
-import kitchenpos.exception.OrderTableNotFoundException;
+import kitchenpos.validator.OrderValidator;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("주문 서비스")
@@ -49,9 +46,7 @@ class OrderServiceTest {
     OrderService orderService;
 
     @Mock
-    MenuService menuService;
-    @Mock
-    TableService tableService;
+    OrderValidator orderValidator;
     @Mock
     OrderRepository orderRepository;
 
@@ -81,84 +76,33 @@ class OrderServiceTest {
             1, Arrays.asList(양념치킨_한마리_상세_요청));
         양념_후라이드_각_한마리_요청 = new OrderRequest(테이블100_사용중.getId(), Arrays.asList(후라이드_한마리_요청, 양념치킨_한마리_요청));
 
-        후라이드_한마리 = new OrderLineItem(후라이드_메뉴, 후라이드_메뉴.getName(), 후라이드_메뉴.getPrice(),
+        후라이드_한마리 = new OrderLineItem(후라이드_메뉴.getId(), 후라이드_메뉴.getName(), 후라이드_메뉴.getPrice(),
             Quantity.valueOf(1), OrderLineItemDetails.of(후라이드_주문내역_상세));
-        양념치킨_한마리 = new OrderLineItem(양념치킨_메뉴, 양념치킨_메뉴.getName(), 양념치킨_메뉴.getPrice(),
+        양념치킨_한마리 = new OrderLineItem(양념치킨_메뉴.getId(), 양념치킨_메뉴.getName(), 양념치킨_메뉴.getPrice(),
             Quantity.valueOf(1), OrderLineItemDetails.of(양념치킨_주문내역_상세));
-        양념_후라이드_각_한마리 = OrderTest.order(100L, COOKING, OrderLineItems.of(후라이드_한마리, 양념치킨_한마리));
-        테이블100_사용중.addOrder(양념_후라이드_각_한마리);
+        양념_후라이드_각_한마리 = OrderTest.order(100L, 테이블100_사용중.getId(), COOKING, OrderLineItems.of(후라이드_한마리, 양념치킨_한마리));
     }
 
     @Test
     @DisplayName("주문을 생성한다")
     void create() {
         // given
-        when(tableService.findById(테이블100_사용중.getId())).thenReturn(테이블100_사용중);
-        when(menuService.findById(후라이드_메뉴.getId())).thenReturn(후라이드_메뉴);
-        when(menuService.findById(양념치킨_메뉴.getId())).thenReturn(양념치킨_메뉴);
+        when(orderRepository.save(any())).thenReturn(양념_후라이드_각_한마리);
 
         // when
         Order savedOrder = orderService.create(양념_후라이드_각_한마리_요청);
 
         // then
-        assertThat(테이블100_사용중.getOrders().contains(savedOrder)).isTrue();
+        assertThat(savedOrder.getOrderTableId()).isEqualTo(양념_후라이드_각_한마리_요청.getOrderTableId());
         assertThat(savedOrder.getOrderLineItems().contains(후라이드_한마리)).isTrue();
         assertThat(savedOrder.getOrderLineItems().contains(양념치킨_한마리)).isTrue();
-    }
-
-    @Test
-    @DisplayName("주문 생성 실패(주문 항목 비어있음)")
-    void create_failed1() {
-        // given
-        OrderRequest 주문내역이_없는_주문 = new OrderRequest(테이블100_사용중.getId(), Collections.emptyList());
-        when(tableService.findById(테이블100_사용중.getId())).thenReturn(테이블100_사용중);
-
-        // then
-        assertThatThrownBy(() -> orderService.create(주문내역이_없는_주문))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    @DisplayName("주문 생성 실패(메뉴가 존재하지 않음")
-    void create_failed2() {
-        // given
-        when(menuService.findById(any())).thenThrow(OrderTableNotFoundException.class);
-
-        // then
-        assertThatThrownBy(() -> orderService.create(양념_후라이드_각_한마리_요청))
-            .isInstanceOf(OrderTableNotFoundException.class);
-    }
-
-    @Test
-    @DisplayName("주문 생성 실패(테이블 없음)")
-    void create_failed3() {
-        // given
-        when(tableService.findById(any())).thenThrow(OrderTableNotFoundException.class);
-
-        // then
-        assertThatThrownBy(() -> orderService.create(양념_후라이드_각_한마리_요청))
-            .isInstanceOf(OrderTableNotFoundException.class);
-    }
-
-    @Test
-    @DisplayName("주문 생성 실패(테이블이 empty)")
-    void create_failed4() {
-        // given
-        when(tableService.findById(any())).thenReturn(테이블3);
-        when(menuService.findById(후라이드_메뉴.getId())).thenReturn(후라이드_메뉴);
-        when(menuService.findById(양념치킨_메뉴.getId())).thenReturn(양념치킨_메뉴);
-
-        // then
-        assertThatThrownBy(() -> orderService.create(양념_후라이드_각_한마리_요청))
-            .isInstanceOf(IllegalOperationException.class);
     }
 
     @Test
     @DisplayName("주문 목록을 가져온다")
     void list() {
         // given
-        Order 양념_후라이드_추가 = OrderTest.order(1L, COOKING, OrderLineItems.of(후라이드_한마리, 양념치킨_한마리));
-        테이블100_사용중.addOrder(양념_후라이드_추가);
+        Order 양념_후라이드_추가 = OrderTest.order(1L, 테이블100_사용중.getId(), COOKING, OrderLineItems.of(후라이드_한마리, 양념치킨_한마리));
         when(orderRepository.findAll()).thenReturn(Arrays.asList(양념_후라이드_각_한마리, 양념_후라이드_추가));
 
         // when
@@ -196,19 +140,5 @@ class OrderServiceTest {
         // then
         assertThatThrownBy(() -> orderService.changeOrderStatus(조리중인_주문.getId(), 식사중_상태))
             .isInstanceOf(OrderNotFoundException.class);
-    }
-
-    @Test
-    @DisplayName("주문 상태 변경 실패(계산완료 상태)")
-    void changeOrderStatus_failed2() {
-        // given
-        Order 계산완료_주문 = OrderTest.order(1L, COMPLETION, OrderLineItems.of(후라이드_한마리, 양념치킨_한마리));
-        OrderRequest 식사중인_주문 = new OrderRequest(OrderStatus.MEAL);
-        테이블100_사용중.addOrder(계산완료_주문);
-        when(orderRepository.findById(any())).thenReturn(Optional.of(계산완료_주문));
-
-        // then
-        assertThatThrownBy(() -> orderService.changeOrderStatus(계산완료_주문.getId(), 식사중인_주문))
-            .isInstanceOf(IllegalOperationException.class);
     }
 }
