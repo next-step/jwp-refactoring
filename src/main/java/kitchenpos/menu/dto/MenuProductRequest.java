@@ -2,7 +2,7 @@ package kitchenpos.menu.dto;
 
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.Quantity;
-import kitchenpos.product.domain.Product;
+import kitchenpos.menu.domain.Product;
 
 public class MenuProductRequest {
 

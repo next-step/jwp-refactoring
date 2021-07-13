@@ -10,10 +10,8 @@ import javax.persistence.OneToMany;
 
 import kitchenpos.order.exception.OrderException;
 
-@Embeddable
 public class OrderLineItems {
 
-	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
 	private List<OrderLineItem> orderLineItems;
 
 	public OrderLineItems(List<OrderLineItem> orderLineItems) {

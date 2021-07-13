@@ -5,8 +5,8 @@ import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.ordertable.domain.NumberOfGuests;
-import kitchenpos.ordertable.exception.TableException;
+import kitchenpos.table.domain.NumberOfGuests;
+import kitchenpos.table.exception.TableException;
 
 @DisplayName("손님 수 도메인 테스트")
 public class NumberOfGuestTest {

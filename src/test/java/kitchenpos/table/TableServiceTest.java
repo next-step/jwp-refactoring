@@ -16,7 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.manugroup.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
@@ -28,16 +28,16 @@ import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.ordertable.application.TableService;
-import kitchenpos.ordertable.domain.NumberOfGuests;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.TableRepository;
-import kitchenpos.ordertable.dto.OrderTableChangeEmptyRequest;
-import kitchenpos.ordertable.dto.OrderTableRequest;
-import kitchenpos.ordertable.dto.OrderTableResponse;
-import kitchenpos.ordertable.exception.TableException;
-import kitchenpos.product.domain.Product;
-import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.table.application.TableService;
+import kitchenpos.table.domain.NumberOfGuests;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableRepository;
+import kitchenpos.table.dto.OrderTableChangeEmptyRequest;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.exception.TableException;
+import kitchenpos.menu.domain.Product;
+import kitchenpos.table.domain.TableGroup;
 
 @DisplayName("주문 테이블 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -72,8 +72,7 @@ public class TableServiceTest {
 		후라이드치킨 = new Product(2L, "후라이드치킨", new Price(BigDecimal.valueOf(1000)));
 		양념_반_치킨 = new MenuProduct(1L, 양념치킨, new Quantity(1));
 		후라이드_반_치킨 = new MenuProduct(2L, 후라이드치킨, new Quantity(1));
-		양념반_후라이드반 = new Menu(1L, "양념반 후라이드반", new Price(BigDecimal.valueOf(2000)), 치킨,
-			new MenuProducts(Arrays.asList(양념_반_치킨, 후라이드_반_치킨)));
+		양념반_후라이드반 = new Menu(1L, "양념반 후라이드반", new Price(BigDecimal.valueOf(2000)), 치킨);
 
 		주문항목1 = OrderServiceTest.주문항목생성(양념반_후라이드반, new Quantity(1), 1L);
 		주문항목2 = OrderServiceTest.주문항목생성(양념반_후라이드반, new Quantity(1), 2L);
@@ -137,7 +136,7 @@ public class TableServiceTest {
 
 		OrderTable 주문테이블1번 = 주문테이블생성(1L, new NumberOfGuests(1), true);
 		OrderTable 주문테이블2번 = 주문테이블생성(2L, new NumberOfGuests(1), true);
-		TableGroup 단체지정 = new TableGroup(1L, Arrays.asList(주문테이블1번, 주문테이블2번));
+		TableGroup 단체지정 = new TableGroup(1L);
 
 		given(tableRepository.findById(주문테이블1번.getId())).willReturn(Optional.of(주문테이블1번));
 

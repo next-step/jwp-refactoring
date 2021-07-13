@@ -9,7 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.manugroup.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
@@ -20,9 +20,9 @@ import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.exception.OrderException;
-import kitchenpos.ordertable.domain.NumberOfGuests;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.product.domain.Product;
+import kitchenpos.table.domain.NumberOfGuests;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.menu.domain.Product;
 
 @DisplayName("주문 도메인 테스트")
 public class OrderTest {
@@ -34,8 +34,7 @@ public class OrderTest {
 		MenuGroup menuGroup = new MenuGroup(1L, "메뉴그룹");
 		Product product = new Product(1L, "상품이름", new Price(new BigDecimal(1000)));
 		MenuProduct menuProduct = new MenuProduct(1L, product, new Quantity(1));
-		menu = new Menu(1L, "메뉴", new Price(new BigDecimal(1000)), menuGroup,
-			new MenuProducts(Arrays.asList(menuProduct)));
+		menu = new Menu(1L, "메뉴", new Price(new BigDecimal(1000)), menuGroup);
 	}
 
 	@DisplayName("주문 생성 테스트")
@@ -44,11 +43,10 @@ public class OrderTest {
 		OrderTable orderTable = new OrderTable(1L, new NumberOfGuests(1), false);
 		OrderLineItem orderLineItem = new OrderLineItem(1L, menu, new Quantity(1));
 		OrderLineItems orderLineItems = new OrderLineItems(Arrays.asList(orderLineItem));
-		Order actual = new Order(1L, orderTable, orderLineItems);
+		Order actual = new Order(1L, orderTable);
 
 		assertThat(actual).isNotNull();
 		assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
-		assertThat(actual.getOrderLineItems()).isNotNull();
 		assertThat(actual.getOrderTable()).isNotNull();
 	}
 
@@ -58,7 +56,7 @@ public class OrderTest {
 		OrderTable orderTable = new OrderTable(1L, new NumberOfGuests(1));
 		assertThatThrownBy(() -> {
 			OrderLineItems orderLineItems = new OrderLineItems(Arrays.asList());
-			new Order(1L, orderTable, orderLineItems);
+			new Order(1L, orderTable);
 		}).isInstanceOf(OrderException.class);
 	}
 
@@ -69,7 +67,7 @@ public class OrderTest {
 		OrderLineItem orderLineItem = new OrderLineItem(1L, menu, new Quantity(1));
 		OrderLineItems orderLineItems = new OrderLineItems(Arrays.asList(orderLineItem));
 		assertThatThrownBy(() ->
-			new Order(1L, orderTable, orderLineItems)
+			new Order(1L, orderTable)
 		).isInstanceOf(OrderException.class);
 	}
 
@@ -79,7 +77,7 @@ public class OrderTest {
 		OrderTable orderTable = new OrderTable(1L, new NumberOfGuests(1), false);
 		OrderLineItem orderLineItem = new OrderLineItem(1L, menu, new Quantity(1));
 		OrderLineItems orderLineItems = new OrderLineItems(Arrays.asList(orderLineItem));
-		Order order = new Order(1L, orderTable, orderLineItems);
+		Order order = new Order(1L, orderTable);
 
 		order.changeOrderStatus(OrderStatus.MEAL);
 
