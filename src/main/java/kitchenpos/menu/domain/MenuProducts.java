@@ -23,9 +23,7 @@ public class MenuProducts {
 
 
     public void registerProduct(Menu menu) {
-        this.menuProducts.forEach(
-                menuProduct -> menuProduct.registerMenu(menu)
-        );
+        this.menuProducts.forEach(menuProduct -> menuProduct.registerMenu(menu));
     }
 
     public BigDecimal calculationTotalAmount() {

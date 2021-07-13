@@ -22,9 +22,7 @@ public class OrderLineItems {
 
 
     public void registerOrder(Order order) {
-        orderLineItems.forEach(
-                orderLineItem -> orderLineItem.registerOrder(order)
-        );
+        orderLineItems.forEach(orderLineItem -> orderLineItem.registerOrder(order));
     }
 
     public List<OrderLineItem> getOrderLineItems() {

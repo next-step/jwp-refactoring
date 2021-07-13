@@ -48,9 +48,7 @@ public class TableGroupService {
                 .collect(Collectors.toList());
         final List<Order> orders = orderRepository.existsByOrderTableIdIn(orderTableIds)
                 .orElseThrow(() -> new NotFoundOrder());
-        orders.forEach(
-                order -> order.ungroup()
-        );
+        orders.forEach(order -> order.ungroup());
         tableGroupRepository.deleteById(tableGroupId);
         return orderTables.stream()
                 .map(orderTable -> OrderTableResponse.of(orderTable))

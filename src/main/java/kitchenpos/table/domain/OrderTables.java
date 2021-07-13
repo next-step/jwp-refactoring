@@ -31,9 +31,7 @@ public class OrderTables {
     }
 
     public void registerTableGroup(TableGroup tableGroup) {
-        orderTables.forEach(
-                orderTable -> orderTable.registerTableGroup(tableGroup)
-        );
+        orderTables.forEach(orderTable -> orderTable.registerTableGroup(tableGroup));
     }
 
     public List<OrderTable> getOrderTables() {
