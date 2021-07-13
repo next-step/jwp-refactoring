@@ -13,7 +13,7 @@ public class Name {
     private final String value;
 
     protected Name() {
-        this.value = "";
+        this.value = null;
     }
 
     private Name(String value) {
