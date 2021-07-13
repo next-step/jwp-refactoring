@@ -40,8 +40,8 @@ public class MenuGroupServiceTest {
         중식_요청 = new MenuGroupRequest("중식");
         양식_요청 = new MenuGroupRequest("양식");
 
-        중식 = 중식_요청.toMenuGroup();
-        양식 = 양식_요청.toMenuGroup();
+        중식 = new MenuGroup("중식");
+        양식 = new MenuGroup("양식");
     }
 
     @Test

@@ -1,10 +1,5 @@
 package kitchenpos.order.dto;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderLineItems;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.order.domain.Order;
 import kitchenpos.order.exception.EmptyOrderLineItemsException;
 import org.springframework.util.CollectionUtils;
 
