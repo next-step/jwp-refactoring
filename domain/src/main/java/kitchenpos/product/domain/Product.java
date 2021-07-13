@@ -1,7 +1,7 @@
 package kitchenpos.product.domain;
 
 import kitchenpos.common.domain.Price;
-import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductRequestModel;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -20,8 +20,8 @@ public class Product {
     public Product() {
     }
 
-    public Product(ProductRequest productRequest) {
-        this(productRequest.getName(), productRequest.getPrice());
+    public Product(ProductRequestModel productRequestModel) {
+        this(productRequestModel.getName(), productRequestModel.getPrice());
     }
 
     public Product(String name, BigDecimal price) {

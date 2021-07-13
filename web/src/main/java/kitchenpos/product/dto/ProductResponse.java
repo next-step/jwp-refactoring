@@ -1,7 +1,5 @@
 package kitchenpos.product.dto;
 
-import kitchenpos.product.domain.Product;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,12 +9,12 @@ public class ProductResponse {
     private final String name;
     private final BigDecimal price;
 
-    public static ProductResponse of(Product product) {
-        return new ProductResponse(product.id(), product.name(), product.price());
+    public static ProductResponse of(ProductResponseModel productResponseModel) {
+        return new ProductResponse(productResponseModel.id(), productResponseModel.name(), productResponseModel.price());
     }
 
-    public static List<ProductResponse> ofList(List<Product> products) {
-        return products.stream().map(ProductResponse::of).collect(Collectors.toList());
+    public static List<ProductResponse> ofList(List<ProductResponseModel> productResponseModels) {
+        return productResponseModels.stream().map(ProductResponse::of).collect(Collectors.toList());
     }
 
     public ProductResponse(Long id, String name, BigDecimal price) {

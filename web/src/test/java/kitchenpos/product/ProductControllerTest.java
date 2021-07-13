@@ -1,7 +1,7 @@
 package kitchenpos.product;
 
 import kitchenpos.common.ControllerTest;
-import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductRequestModel;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -26,7 +26,7 @@ public class ProductControllerTest extends ControllerTest {
         // given
         String name = "치킨";
         BigDecimal price = new BigDecimal(20000);
-        ProductRequest product = new ProductRequest(name, price);
+        ProductRequestModel product = new ProductRequestModel(name, price);
 
         // when
         // then
@@ -44,7 +44,7 @@ public class ProductControllerTest extends ControllerTest {
         // given
         String name = "피자";
         BigDecimal price = new BigDecimal(-10000);
-        ProductRequest product = new ProductRequest(name, price);
+        ProductRequestModel product = new ProductRequestModel(name, price);
 
         // when
         // then
@@ -64,7 +64,7 @@ public class ProductControllerTest extends ControllerTest {
         ;
     }
 
-    private ResultActions 상품_생성_요청(ProductRequest product) throws Exception {
+    private ResultActions 상품_생성_요청(ProductRequestModel product) throws Exception {
         return mockMvc.perform(post("/api/products")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(product)))
