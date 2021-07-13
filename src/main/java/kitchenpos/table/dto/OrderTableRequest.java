@@ -3,7 +3,6 @@ package kitchenpos.table.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.TableGroup;
 
 public class OrderTableRequest {
 
@@ -33,11 +32,7 @@ public class OrderTableRequest {
     }
 
     public static OrderTableRequest of(OrderTable orderTable) {
-        Long orderTableId = null;
-        if (orderTable.getTableGroup() != null) {
-            orderTableId = orderTable.getTableGroup().getId();
-        }
-        return new OrderTableRequest(orderTable.getId(), orderTableId, orderTable.getNumberOfGuests(), orderTable.isEmpty());
+        return new OrderTableRequest(orderTable.getId(), orderTable.getTableGroupId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
     }
 
     public static List<OrderTable> toOrderTables(List<OrderTableRequest> orderTables) {
@@ -47,11 +42,7 @@ public class OrderTableRequest {
     }
 
     public OrderTable toOrderTable() {
-        TableGroup tableGroup = null;
-        if (tableGroupId != null) {
-            tableGroup = new TableGroup(tableGroupId);
-        }
-        return new OrderTable(id, tableGroup, numberOfGuests, empty);
+        return new OrderTable(id, tableGroupId, numberOfGuests, empty);
     }
 
     public Long getId() {

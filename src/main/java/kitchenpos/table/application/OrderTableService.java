@@ -13,9 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderTableService {
 
     private final OrderTableRepository orderTableRepository;
+    private final OrderTableValidator orderTableValidator;
 
-    public OrderTableService(OrderTableRepository orderTableRepository) {
+    public OrderTableService(OrderTableRepository orderTableRepository, OrderTableValidator orderTableValidator) {
         this.orderTableRepository = orderTableRepository;
+        this.orderTableValidator = orderTableValidator;
     }
 
     @Transactional
@@ -32,6 +34,7 @@ public class OrderTableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
             .orElseThrow(EntityNotFoundException::new);
+        orderTableValidator.validationChangeEmpty(orderTableId);
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
         return OrderTableResponse.of(savedOrderTable);
     }

@@ -13,7 +13,7 @@ public class OrderTables {
 
     public static final int MIN_ORDER_TABLE_COUNT = 2;
 
-    @OneToMany(mappedBy = "tableGroup", orphanRemoval = true)
+    @OneToMany(mappedBy = "tableGroupId", orphanRemoval = true)
     private List<OrderTable> orderTables;
 
     protected OrderTables() {
@@ -29,10 +29,6 @@ public class OrderTables {
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < MIN_ORDER_TABLE_COUNT) {
             throw new OutOfOrderTableException(MIN_ORDER_TABLE_COUNT);
         }
-    }
-
-    public void toTableGroup(TableGroup tableGroup) {
-        orderTables.forEach(orderTable -> orderTable.toTableGroup(tableGroup));
     }
 
     public List<OrderTable> getOrderTables() {

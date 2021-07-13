@@ -32,7 +32,7 @@ public class OrderRequest {
     }
 
     public static OrderRequest of(Order order) {
-        return new OrderRequest(order.getOrderTable().getId(), order.getOrderStatus(), LocalDateTime.now(), OrderLineItemRequest.listOf(order.getOrderLineItems()));
+        return new OrderRequest(order.getOrderTableId(), order.getOrderStatus(), LocalDateTime.now(), OrderLineItemRequest.listOf(order.getOrderLineItems()));
     }
 
     public Long getId() {

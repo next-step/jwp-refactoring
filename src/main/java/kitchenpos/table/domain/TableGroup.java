@@ -40,7 +40,6 @@ public class TableGroup {
     public TableGroup(OrderTables orderTables) {
         validationOrderTables(orderTables);
         this.orderTables = orderTables;
-        orderTables.toTableGroup(this);
     }
 
     private void validationOrderTables(OrderTables orderTables) {
@@ -59,7 +58,7 @@ public class TableGroup {
 
     private boolean isExistAssignedTableGroup(OrderTables orderTables) {
         return orderTables.getOrderTables().stream()
-            .anyMatch(orderTable -> Objects.nonNull(orderTable.getTableGroup()));
+            .anyMatch(orderTable -> Objects.nonNull(orderTable.getTableGroupId()));
     }
 
     public TableGroup(Long id, List<OrderTable> orderTables) {
