@@ -23,17 +23,17 @@ public class Menu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Embedded
     private Price price;
 
-    @ManyToOne // 단방향
+    @ManyToOne
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
 
-    @Embedded // 양방향
+    @Embedded
     private MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {

@@ -18,14 +18,14 @@ public class OrderLineItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne // 양방향
+    @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
 
     @Column(name = "menu_id")
     private Long menuId;
 
-    @Column(name = "quantity")
+    @Column(name = "quantity", nullable = false)
     private long quantity;
 
     protected OrderLineItem() {

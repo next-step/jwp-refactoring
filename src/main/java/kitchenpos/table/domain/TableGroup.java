@@ -24,9 +24,8 @@ public class TableGroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @CreatedDate
-    @Column(name = "created_date")
-    private LocalDateTime createdDate;
+    @Column(name = "created_date", nullable = false)
+    private LocalDateTime createdDate = LocalDateTime.now();
 
     @Embedded
     private OrderTables orderTables = new OrderTables();

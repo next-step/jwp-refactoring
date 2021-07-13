@@ -30,12 +30,11 @@ public class Order {
     private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "order_status")
+    @Column(name = "order_status", nullable = false)
     private OrderStatus orderStatus;
 
-    @CreatedDate
-    @Column(name = "ordered_time")
-    private LocalDateTime orderedTime;
+    @Column(name = "ordered_time", nullable = false)
+    private LocalDateTime orderedTime = LocalDateTime.now();;
 
     @Embedded // 양방향
     private OrderLineItems orderLineItems = new OrderLineItems();

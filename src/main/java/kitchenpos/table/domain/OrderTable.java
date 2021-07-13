@@ -27,10 +27,10 @@ public class OrderTable {
     @JoinColumn(name = "table_group_id")
     private TableGroup tableGroup;
 
-    @Column(name = "number_of_guests")
+    @Column(name = "number_of_guests", nullable = false)
     private int numberOfGuests;
 
-    @Column(name = "empty")
+    @Column(name = "empty", nullable = false)
     private boolean empty;
 
     protected OrderTable() {
