@@ -1,4 +1,4 @@
-package kitchenpos.table.domain;
+package kitchenpos.menu.domain;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -7,12 +7,6 @@ import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.Price;
-import kitchenpos.menu.domain.Product;
 
 class MenuTest {
 
