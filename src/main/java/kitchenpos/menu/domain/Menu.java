@@ -42,6 +42,14 @@ public class Menu {
 	}
 
 	public Menu(String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProductList) {
+		if (name == null) {
+			throw new IllegalArgumentException("menu 명을 입력해주세요");
+		}
+
+		if (price == null) {
+			throw new IllegalArgumentException("가격을 입력해주세요");
+		}
+
 		this.name = name;
 		this.price = price;
 		this.menuGroup = menuGroup;
@@ -77,7 +85,7 @@ public class Menu {
 		return menuProducts.getMenuProducts();
 	}
 
-	public void validateMenuPrice() {
+	private void validateMenuPrice() {
 		Price totalPrice = menuProducts.getTotalPrice();
 
 		if (this.price.compareTo(totalPrice) > 0) {
