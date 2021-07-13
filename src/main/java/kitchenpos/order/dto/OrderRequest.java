@@ -52,8 +52,8 @@ public class OrderRequest {
                 .collect(Collectors.toList());
     }
 
-    public boolean isEqualsMenuSize(Long countByIdIn) {
-        return Long.valueOf(orderLineItemRequests.size()) == countByIdIn;
+    public boolean isEqualsMenuSize(long countByIdIn) {
+        return orderLineItemRequests.size() == countByIdIn;
     }
 
     public Long getOrderTableId() {

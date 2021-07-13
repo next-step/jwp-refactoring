@@ -24,14 +24,11 @@ import java.util.stream.Collectors;
 public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
-    private final OrderLineItemRepository orderLineItemRepository;
     private final OrderTableRepository orderTableRepository;
 
-    public OrderService(MenuRepository menuRepository, OrderRepository orderRepository
-            , OrderLineItemRepository orderLineItemRepository, OrderTableRepository orderTableRepository) {
+    public OrderService(MenuRepository menuRepository, OrderRepository orderRepository, OrderTableRepository orderTableRepository) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
-        this.orderLineItemRepository = orderLineItemRepository;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -40,7 +37,9 @@ public class OrderService {
         if (!orderRequest.isEqualsMenuSize(menuRepository.countByIdIn(menuIds))) {
             throw new NotEqualsOrderCountAndMenuCount();
         }
-        final Order persistOrder = orderRepository.save(orderRequest.toOrder(findOrderTable(orderRequest.getOrderTableId()), findMenusByIds(menuIds)));
+        final OrderTable orderTable = findOrderTable(orderRequest.getOrderTableId());
+        List<Menu> menus = findMenusByIds(menuIds);
+        final Order persistOrder = orderRepository.save(orderRequest.toOrder(orderTable, menus));
         return OrderResponse.of(persistOrder);
     }
 
