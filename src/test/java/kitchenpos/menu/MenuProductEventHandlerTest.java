@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -59,7 +58,7 @@ public class MenuProductEventHandlerTest {
 		given(menuProductRepository.save(any())).willReturn(양념_반_치킨);
 		given(menuProductRepository.save(any())).willReturn(후라이드_반_치킨);
 
-		menuProductEventHandler.saveMenuProducts(new MenuCreateEvent(양념반_후라이드반, 메뉴상품들_요청));
+		menuProductEventHandler.createMenuProducts(new MenuCreateEvent(양념반_후라이드반, 메뉴상품들_요청));
 	}
 
 	@DisplayName("메뉴 생성 시 메뉴 가격보다 메뉴의 메뉴 상품 리스트의 가격의 합이 크면 안된다.")
@@ -79,7 +78,7 @@ public class MenuProductEventHandlerTest {
 		given(productRepository.findById(후라이드치킨.getId())).willReturn(Optional.of(후라이드치킨));
 
 		assertThatThrownBy(() -> {
-			menuProductEventHandler.saveMenuProducts(new MenuCreateEvent(양념반_후라이드반, 메뉴상품들_요청));
+			menuProductEventHandler.createMenuProducts(new MenuCreateEvent(양념반_후라이드반, 메뉴상품들_요청));
 		}).isInstanceOf(MenuException.class);
 	}
 
@@ -99,7 +98,7 @@ public class MenuProductEventHandlerTest {
 		given(productRepository.findById(양념치킨.getId())).willReturn(Optional.ofNullable(null));
 
 		assertThatThrownBy(() -> {
-			menuProductEventHandler.saveMenuProducts(new MenuCreateEvent(양념반_후라이드반, 메뉴상품들_요청));
+			menuProductEventHandler.createMenuProducts(new MenuCreateEvent(양념반_후라이드반, 메뉴상품들_요청));
 		}).isInstanceOf(MenuException.class);
 	}
 }

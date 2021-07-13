@@ -37,7 +37,7 @@ public class OrderTableTest {
 		OrderTable orderTable = new OrderTable(1L, new NumberOfGuests(1), false);
 		OrderLineItem orderLineItem = new OrderLineItem(1L, menu, new Quantity(1));
 		OrderLineItems orderLineItems = new OrderLineItems(Arrays.asList(orderLineItem));
-		order = new Order(1L, orderTable, orderLineItems);
+		order = new Order(1L, orderTable);
 	}
 
 	@DisplayName("주문 테이블 생성 테스트")

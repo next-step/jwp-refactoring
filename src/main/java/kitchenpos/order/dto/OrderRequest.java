@@ -24,7 +24,7 @@ public class OrderRequest {
 		return orderLineItemRequests;
 	}
 
-	public Order toOrder(OrderTable orderTable, OrderLineItems orderLineItems) {
-		return new Order(orderTable, orderLineItems);
+	public Order toOrder(OrderTable orderTable) {
+		return new Order(orderTable);
 	}
 }

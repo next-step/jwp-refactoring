@@ -28,13 +28,13 @@ public class MenuProductEventHandler {
 	}
 
 	@EventListener
-	public void saveMenuProducts(MenuCreateEvent createEvent) {
-		MenuProducts menuProducts = findAllMenuProductByProductId(createEvent.getMenuProductRequests());
+	public void createMenuProducts(MenuCreateEvent createEvent) {
+		MenuProducts menuProducts = toMenuProducts(createEvent.getMenuProductRequests());
 		validate(menuProducts, createEvent.getMenu().getPrice());
 		menuProducts.stream().forEach(menuProductRepository::save);
 	}
 
-	private MenuProducts findAllMenuProductByProductId(List<MenuProductRequest> menuProductRequests) {
+	private MenuProducts toMenuProducts(List<MenuProductRequest> menuProductRequests) {
 		return menuProductRequests.stream()
 			.map(menuProductRequest -> {
 				Product product = findProductById(menuProductRequest.getProductId());

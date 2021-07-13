@@ -105,8 +105,8 @@ public class TableGroupServiceTest {
 		주문테이블1번 = TableServiceTest.주문테이블생성(1L, new NumberOfGuests(1), false);
 		주문테이블2번 = TableServiceTest.주문테이블생성(2L, new NumberOfGuests(1), false);
 		OrderLineItems 주문항목들 = mock(OrderLineItems.class);
-		Order 주문 = new Order(주문테이블1번, 주문항목들);
-		Order 주문2 = new Order(주문테이블2번, 주문항목들);
+		Order 주문 = new Order(주문테이블1번);
+		Order 주문2 = new Order(주문테이블2번);
 		주문.changeOrderStatus(OrderStatus.COMPLETION);
 		주문2.changeOrderStatus(OrderStatus.COMPLETION);
 		given(tableGroupRepository.findById(단체지정.getId())).willReturn(Optional.of(단체지정));
@@ -124,7 +124,7 @@ public class TableGroupServiceTest {
 	void 단체지정_해체_주문_테이블들이_조리중이거나_식사중일_경우_단체지정을_해체할_수_없다() {
 		주문테이블1번 = TableServiceTest.주문테이블생성(1L, new NumberOfGuests(1), false);
 		OrderLineItems 주문항목들 = mock(OrderLineItems.class);
-		Order 주문 = new Order(주문테이블1번, 주문항목들);
+		Order 주문 = new Order(주문테이블1번);
 
 		given(tableGroupRepository.findById(단체지정.getId())).willReturn(Optional.of(단체지정));
 		given(orderRepository.findByOrderTableId(주문테이블1번.getId())).willReturn(주문);

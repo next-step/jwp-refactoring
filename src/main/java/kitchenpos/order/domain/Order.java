@@ -32,9 +32,6 @@ public class Order {
 	@JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_orders_order_table"), nullable = false)
 	private OrderTable orderTable;
 
-	@Embedded
-	private OrderLineItems orderLineItems;
-
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private OrderStatus orderStatus;
@@ -46,16 +43,15 @@ public class Order {
 
 	}
 
-	public Order(OrderTable orderTable, OrderLineItems orderLineItems) {
+	public Order(OrderTable orderTable) {
 		validate(orderTable);
 		this.orderTable = orderTable;
-		this.orderLineItems = orderLineItems;
 		this.orderStatus = OrderStatus.COOKING;
 		this.orderedTime = LocalDateTime.now();
 	}
 
-	public Order(long id, OrderTable orderTable, OrderLineItems orderLineItems) {
-		this(orderTable, orderLineItems);
+	public Order(long id, OrderTable orderTable) {
+		this(orderTable);
 		this.id = id;
 	}
 
@@ -70,10 +66,6 @@ public class Order {
 			throw new OrderException("계산완료된 주문은 상태를 변경할 수 없습니다.");
 		}
 		this.orderStatus = orderStatus;
-	}
-
-	public OrderLineItems getOrderLineItems() {
-		return orderLineItems;
 	}
 
 	public OrderTable getOrderTable() {
