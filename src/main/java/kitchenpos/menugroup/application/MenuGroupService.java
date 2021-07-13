@@ -13,6 +13,7 @@ import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.menugroup.exception.MenuGroupNotFoundException;
 
 @Service
+@Transactional
 public class MenuGroupService {
     private final MenuGroupRepository menuGroupRepository;
 
@@ -20,7 +21,6 @@ public class MenuGroupService {
         this.menuGroupRepository = menuGroupRepository;
     }
 
-    @Transactional
     public MenuGroupResponse create(final MenuGroupRequest menuGroupRequest) {
         return MenuGroupResponse.of(menuGroupRepository.save(menuGroupRequest.toMenuGroup()));
     }
@@ -34,6 +34,6 @@ public class MenuGroupService {
 
     public MenuGroup findById(Long id) {
         return menuGroupRepository.findById(id)
-                .orElseThrow(MenuGroupNotFoundException::new);
+                .orElseThrow(() -> new MenuGroupNotFoundException("조회된 메뉴 그룹이 없습니다. 입력 ID : " + id));
     }
 }

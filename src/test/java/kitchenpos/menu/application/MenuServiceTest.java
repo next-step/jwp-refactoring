@@ -135,7 +135,8 @@ class MenuServiceTest {
 
                     // then
                     assertThatThrownBy(() -> menuService.create(menuRequest))
-                            .isInstanceOf(IllegalArgumentException.class);
+                            .isInstanceOf(IllegalArgumentException.class)
+                            .hasMessage("금액은 Null이거나 0보다 작을 수 없습니다.");
                 }),
                 dynamicTest("등록되지 않은 메뉴그룹으로 등록 시도 시 오류 발생함.", () -> {
                     // given

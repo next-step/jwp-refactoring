@@ -22,6 +22,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.exception.OrderAlreadyExistsException;
 import kitchenpos.table.application.TableService;
@@ -45,6 +46,8 @@ class TableGroupServiceTest {
     private OrderTableRepository orderTableRepository;
     @Mock
     private OrderRepository orderRepository;
+    @Mock
+    private OrderService orderService;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -104,7 +107,7 @@ class TableGroupServiceTest {
                     // then
                     assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
                             .isInstanceOf(MisMatchedOrderTablesSizeException.class)
-                            .hasMessage("입력된 항목과 조회결과가 일치하지 않습니다.");
+                            .hasMessage("입력된 항목과 조회결과가 일치하지 않습니다. size1 : 1, size2 : 2");
                 }),
                 dynamicTest("단체지정 테이블 중 비어있지 않은 테이블이 존재할 경우 오류 발생.", () -> {
                     // given
@@ -145,12 +148,12 @@ class TableGroupServiceTest {
         tableGroup.addOrderTable(orderTable1);
         tableGroup.addOrderTable(orderTable2);
         given(orderTableRepository.findByTableGroupId(anyLong())).willReturn(Arrays.asList(orderTable1, orderTable2));
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(List.class), any(List.class))).willReturn(false);
 
         // when
         tableGroupService.ungroup(1L);
 
         // then
+        verify(orderService).validateExistsOrdersStatusIsCookingOrMeal(any(List.class));
         assertAll(
                 () -> assertThat(orderTable1.hasTableGroup()).isFalse(),
                 () -> assertThat(orderTable2.hasTableGroup()).isFalse()
@@ -171,12 +174,11 @@ class TableGroupServiceTest {
                 dynamicTest("테이블들의 주문 상태가 COOKING이거나 MEAL인 상태가 존재하는 경우 오류 발생.", () -> {
                     // and
                     given(orderTableRepository.findByTableGroupId(anyLong())).willReturn(Arrays.asList(orderTable1, orderTable2));
-                    given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(List.class), any(List.class))).willReturn(true);
+                    doThrow(OrderAlreadyExistsException.class).when(orderService).validateExistsOrdersStatusIsCookingOrMeal(any(List.class));
 
                     // then
                     assertThatThrownBy(() -> tableGroupService.ungroup(1L))
-                            .isInstanceOf(OrderAlreadyExistsException.class)
-                            .hasMessage("수정할 수 없는 주문이 존재합니다.");
+                            .isInstanceOf(OrderAlreadyExistsException.class);
                 })
         );
     }

@@ -1,6 +1,7 @@
 package kitchenpos.order.application;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,12 +17,14 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.exception.OrderAlreadyExistsException;
 import kitchenpos.order.exception.OrderNotFoundException;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.exception.OrderTableEmptyException;
 
 @Service
+@Transactional
 public class OrderService {
     private final TableService tableService;
     private final MenuService menuService;
@@ -40,7 +43,6 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
         Order order = orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
         validateOrderStatusIsCompleted(order);
@@ -48,7 +50,6 @@ public class OrderService {
         return OrderResponse.of(order);
     }
 
-    @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
         OrderTable orderTable = getOrderTable(orderRequest);
         Order order = new Order(OrderStatus.COOKING, LocalDateTime.now(), orderTable);
@@ -89,6 +90,20 @@ public class OrderService {
     private void validateOrderTableIsEmpty(OrderTable orderTable) {
         if (orderTable.isEmpty()) {
             throw new OrderTableEmptyException();
+        }
+    }
+
+    public void validateExistsOrdersStatusIsCookingOrMeal(List<Long> orderTableIds) {
+        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
+                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+            throw new OrderAlreadyExistsException("주문 상태가 COOKING 또는 MEAL인 주문이 존재합니다.");
+        }
+    }
+
+    public void validateExistsOrderStatusIsCookingANdMeal(Long orderTableId) {
+        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
+                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+            throw new OrderAlreadyExistsException("주문 상태가 COOKING 또는 MEAL인 주문이 존재합니다. 입력 ID : " + orderTableId);
         }
     }
 }

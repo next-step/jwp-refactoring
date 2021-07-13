@@ -1,17 +1,17 @@
-package kitchenpos.product.domain;
+package kitchenpos.common.domain;
 
 import java.util.Objects;
 
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class ProductName {
+public class Name {
     private String name;
 
-    protected ProductName() {
+    protected Name() {
     }
 
-    public ProductName(String name) {
+    public Name(String name) {
         validateNameIsNullOrEmpty(name);
         this.name = name;
     }
@@ -20,9 +20,9 @@ public class ProductName {
         return name;
     }
 
-    private void validateNameIsNullOrEmpty(String name) {
+    protected void validateNameIsNullOrEmpty(String name) {
         if (Objects.isNull(name) || name.isEmpty()) {
-            throw new IllegalArgumentException("상품 이름은 Null이거나 공백일 수 없습니다.");
+            throw new IllegalArgumentException("이름은 Null이거나 공백일 수 없습니다.");
         }
     }
 }

@@ -21,6 +21,7 @@ import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 
 @Service
+@Transactional
 public class MenuService {
 
     private final MenuRepository menuRepository;
@@ -35,7 +36,6 @@ public class MenuService {
         this.productService = productService;
     }
 
-    @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
         MenuGroup menuGroup = menuGroupService.findById(menuRequest.getMenuGroupId());
         Menu menu = menuRepository.save(new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup));
@@ -54,7 +54,7 @@ public class MenuService {
 
     public Menu findMenuById(Long id) {
         return menuRepository.findById(id)
-                .orElseThrow(MenuNotFoundException::new);
+                .orElseThrow(() -> new MenuNotFoundException("조회된 메뉴가 없습니다. 입력 ID : " + id));
     }
 
     private MenuProduct createMenuProduct(Menu menu, MenuProductRequest menuProductRequest) {

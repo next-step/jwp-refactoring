@@ -36,13 +36,13 @@ class ProductTest {
                     // then
                     assertThatThrownBy(() -> new Product(null, BigDecimal.valueOf(-1)))
                             .isInstanceOf(IllegalArgumentException.class)
-                            .hasMessage("상품 이름은 Null이거나 공백일 수 없습니다.");
+                            .hasMessage("이름은 Null이거나 공백일 수 없습니다.");
                 }),
                 dynamicTest("상품 이름이 공백일 경우 예외처리.", () -> {
                     // then
                     assertThatThrownBy(() -> new Product("", BigDecimal.valueOf(-1)))
                             .isInstanceOf(IllegalArgumentException.class)
-                            .hasMessage("상품 이름은 Null이거나 공백일 수 없습니다.");
+                            .hasMessage("이름은 Null이거나 공백일 수 없습니다.");
                 })
         );
     }

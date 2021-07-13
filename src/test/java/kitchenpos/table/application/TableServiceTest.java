@@ -22,13 +22,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.exception.OrderAlreadyExistsException;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.exception.NonEmptyOrderTableNotFoundException;
 import kitchenpos.table.exception.OrderTableNotFoundException;
+import kitchenpos.table.exception.TableGroupAlreadyExistsException;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.utils.domain.OrderTableObjects;
 
@@ -37,7 +40,7 @@ import kitchenpos.utils.domain.OrderTableObjects;
 class TableServiceTest {
 
     @Mock
-    private OrderRepository orderRepository;
+    private OrderService orderService;
     @Mock
     private OrderTableRepository orderTableRepository;
 
@@ -98,12 +101,12 @@ class TableServiceTest {
         OrderTableRequest orderTableRequest = new OrderTableRequest(4, true);
         beforeOrderTable.changeEmpty(false);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(beforeOrderTable));
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any(List.class))).willReturn(false);
 
         // when
         OrderTableResponse resultOrderTableResponse = tableService.changeEmpty(1L, orderTableRequest);
 
         // then
+        verify(orderService).validateExistsOrderStatusIsCookingANdMeal(any());
         assertThat(resultOrderTableResponse.isEmpty()).isTrue();
     }
 
@@ -119,29 +122,29 @@ class TableServiceTest {
                     given(orderTableRepository.findById(any())).willReturn(Optional.empty());
 
                     // when
-                    assertThatThrownBy(() -> tableService.changeEmpty(changeEmptyOrderTable.getId(), orderTableRequest))
-                            .isInstanceOf(IllegalArgumentException.class);
+                    assertThatThrownBy(() -> tableService.changeEmpty(1L, orderTableRequest))
+                            .isInstanceOf(OrderTableNotFoundException.class)
+                            .hasMessage("대상 주문테이블이 존재하지 않습니다. 입력 ID : 1");
                 }),
                 dynamicTest("단체지정이 된 상태일 경우 오류 발생.", () -> {
                     // And
-//                    changeEmptyOrderTable.setTableGroupId(1L);
                     changeEmptyOrderTable.setTableGroup(new TableGroup());
                     given(orderTableRepository.findById(any())).willReturn(Optional.of(changeEmptyOrderTable));
 
                     // when
                     assertThatThrownBy(() -> tableService.changeEmpty(1L, orderTableRequest))
-                            .isInstanceOf(IllegalArgumentException.class);
+                            .isInstanceOf(TableGroupAlreadyExistsException.class)
+                            .hasMessage("테이블 그룹이 이미 존재합니다.");
                 }),
                 dynamicTest("주문 상태가 COOKING이거나 MEAL상태이면 오류 발생.", () -> {
                     // And
-//                    changeEmptyOrderTable.setTableGroupId(null);
                     changeEmptyOrderTable.setTableGroup(null);
                     given(orderTableRepository.findById(any())).willReturn(Optional.of(changeEmptyOrderTable));
-                    given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any(List.class))).willReturn(true);
+                    doThrow(OrderAlreadyExistsException.class).when(orderService).validateExistsOrderStatusIsCookingANdMeal(any());
 
                     // when
                     assertThatThrownBy(() -> tableService.changeEmpty(changeEmptyOrderTable.getId(), orderTableRequest))
-                            .isInstanceOf(IllegalArgumentException.class);
+                            .isInstanceOf(OrderAlreadyExistsException.class);
                 })
         );
     }
@@ -175,7 +178,7 @@ class TableServiceTest {
                     // then
                     assertThatThrownBy(() -> tableService.changeNumberOfGuests(100L, orderTableRequest))
                             .isInstanceOf(NonEmptyOrderTableNotFoundException.class)
-                            .hasMessage("비어있지 않은 테이블 대상이 존재하지 않습니다.");
+                            .hasMessage("비어있지 않은 테이블 대상이 존재하지 않습니다. 입력 ID : 100");
                 }),
                 dynamicTest("변경하려는 고객의 수가 음수로 입력되었을 경우 오류 발생.", () -> {
                     // given

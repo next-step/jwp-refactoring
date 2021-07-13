@@ -32,6 +32,7 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.exception.OrderAlreadyExistsException;
 import kitchenpos.order.exception.OrderNotFoundException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.application.TableService;
@@ -196,6 +197,31 @@ class OrderServiceTest {
                     // then
                     assertThatThrownBy(() -> orderService.create(orderRequest))
                             .isInstanceOf(MenuNotFoundException.class);
+                })
+        );
+    }
+
+    @TestFactory
+    @DisplayName("수정할 수 없는 주문 확인")
+    List<DynamicTest> cant_modify_order() {
+        return Arrays.asList(
+                dynamicTest("주문 목록 중 수정불가 항목이 포함되었을 경우", () -> {
+                    // given
+                    given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(true);
+
+                    // then
+                    assertThatThrownBy(() -> orderService.validateExistsOrdersStatusIsCookingOrMeal(Arrays.asList(1L)))
+                            .isInstanceOf(OrderAlreadyExistsException.class)
+                            .hasMessage("주문 상태가 COOKING 또는 MEAL인 주문이 존재합니다.");
+                }),
+                dynamicTest("입력 주문이 수정불가 상태일 경우", () -> {
+                    // given
+                    given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), any())).willReturn(true);
+
+                    // then
+                    assertThatThrownBy(() -> orderService.validateExistsOrderStatusIsCookingANdMeal(1L))
+                            .isInstanceOf(OrderAlreadyExistsException.class)
+                            .hasMessage("주문 상태가 COOKING 또는 MEAL인 주문이 존재합니다. 입력 ID : 1");
                 })
         );
     }

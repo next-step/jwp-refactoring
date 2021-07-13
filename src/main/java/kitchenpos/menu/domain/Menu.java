@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import kitchenpos.common.domain.Name;
 import kitchenpos.menugroup.domain.MenuGroup;
 
 @Entity
@@ -18,7 +19,7 @@ public class Menu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Embedded
-    private MenuName menuName;
+    private Name menuName;
     @Embedded
     private MenuPrice menuPrice;
     @Embedded
@@ -31,7 +32,7 @@ public class Menu {
     }
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
-        this.menuName = new MenuName(name);
+        this.menuName = new Name(name);
         this.menuPrice = new MenuPrice(price);
         this.menuProducts = new MenuProducts();
         this.menuGroup = menuGroup;
@@ -41,7 +42,7 @@ public class Menu {
         return id;
     }
 
-    public MenuName getName() {
+    public Name getName() {
         return menuName;
     }
 

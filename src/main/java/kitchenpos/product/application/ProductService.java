@@ -13,6 +13,7 @@ import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.product.exception.ProductNotFoundException;
 
 @Service
+@Transactional
 public class ProductService {
     private final ProductRepository productRepository;
 
@@ -20,7 +21,6 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    @Transactional
     public ProductResponse create(ProductRequest productRequest) {
         return ProductResponse.of(productRepository.save(productRequest.toProduct()));
     }
@@ -34,6 +34,6 @@ public class ProductService {
 
     public Product findById(Long id) {
         return productRepository.findById(id)
-                .orElseThrow(ProductNotFoundException::new);
+                .orElseThrow(() -> new ProductNotFoundException("조회된 제품이 없습니다. 입력 id : " + id));
     }
 }
