@@ -136,7 +136,7 @@ public class TableServiceTest {
 
 		OrderTable 주문테이블1번 = 주문테이블생성(1L, new NumberOfGuests(1), true);
 		OrderTable 주문테이블2번 = 주문테이블생성(2L, new NumberOfGuests(1), true);
-		TableGroup 단체지정 = new TableGroup(1L, Arrays.asList(주문테이블1번, 주문테이블2번));
+		TableGroup 단체지정 = new TableGroup(1L);
 
 		given(tableRepository.findById(주문테이블1번.getId())).willReturn(Optional.of(주문테이블1번));
 

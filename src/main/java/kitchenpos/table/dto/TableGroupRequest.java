@@ -17,7 +17,7 @@ public class TableGroupRequest {
 		return orderTableIds;
 	}
 
-	public TableGroup toTableGroup(List<OrderTable> orderTables) {
-		return new TableGroup(orderTables);
+	public TableGroup toTableGroup() {
+		return new TableGroup();
 	}
 }
