@@ -32,7 +32,7 @@ public class Menu {
     }
 
     public Menu(Long id, String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        priceValidate(price, menuProducts);
+        validatePrice(price, menuProducts);
         this.id = id;
         this.name = name;
         this.price = price;
@@ -42,7 +42,7 @@ public class Menu {
     }
 
     public Menu(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        priceValidate(price, menuProducts);
+        validatePrice(price, menuProducts);
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
@@ -50,7 +50,7 @@ public class Menu {
         menuProducts.registerProduct(this);
     }
 
-    private void priceValidate(Price price, MenuProducts menuProducts) {
+    private void validatePrice(Price price, MenuProducts menuProducts) {
         BigDecimal productsPrice = menuProducts.calculationTotalAmount();
         if (!price.isCheapThanProductsPrice(productsPrice)) {
             throw new IllegalArgumentException();
