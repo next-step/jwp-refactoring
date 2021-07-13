@@ -1,7 +1,6 @@
 package kitchenpos.ordertable.domain;
 
 import kitchenpos.exception.CannotCleanTableException;
-import kitchenpos.tablegroup.domain.TableGroup;
 
 import javax.persistence.*;
 

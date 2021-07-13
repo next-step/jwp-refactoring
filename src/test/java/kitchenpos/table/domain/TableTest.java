@@ -2,7 +2,7 @@ package kitchenpos.table.domain;
 
 import kitchenpos.exception.CannotCleanTableException;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.ordertable.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
