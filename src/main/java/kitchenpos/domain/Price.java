@@ -1,13 +1,17 @@
 package kitchenpos.domain;
 
-import java.math.BigDecimal;
-import java.util.Objects;
+import kitchenpos.advice.exception.MenuException;
+import kitchenpos.advice.exception.PriceException;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import kitchenpos.advice.exception.PriceException;
+import java.math.BigDecimal;
+import java.util.Objects;
 
 @Embeddable
 public class Price implements Comparable<Price> {
+
+    private static final int MIN_PRICE = 0;
 
     @Column(name = "price", nullable = false)
     private BigDecimal money;
@@ -29,7 +33,7 @@ public class Price implements Comparable<Price> {
     }
 
     private void validateEmptyPrice(BigDecimal price) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < MIN_PRICE) {
             throw new PriceException("가격이 0보다 작을 수 없습니다");
         }
     }
@@ -42,7 +46,7 @@ public class Price implements Comparable<Price> {
     @Override
     public String toString() {
         return "Price{" +
-                "price=" + money +
-                '}';
+            "price=" + money +
+            '}';
     }
 }
