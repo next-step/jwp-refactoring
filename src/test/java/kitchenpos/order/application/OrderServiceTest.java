@@ -99,6 +99,8 @@ public class OrderServiceTest {
         // and
         // 주문 생성되어 있음
         OrderRequest order = new OrderRequest(1L, Arrays.asList(firstOrderLineItemRequest, secondOrderLineItemRequest));
+        OrderTable orderTable = new OrderTable(1L, 10);
+        when(orderTableRepository.findById(1L)).thenReturn(Optional.ofNullable(orderTable));
 
         // when
         // 메뉴가 존재하지 않음
