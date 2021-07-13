@@ -1,7 +1,10 @@
 package kitchenpos.table.application;
 
+import kitchenpos.table.event.OrderTableChangedEvent;
+import kitchenpos.table.event.OrderTableEmptiedEvent;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -10,9 +13,11 @@ import java.util.List;
 @Transactional
 public class TableService {
     private final OrderTableRepository orderTableRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public TableService(final OrderTableRepository orderTableRepository) {
+    public TableService(final OrderTableRepository orderTableRepository, final ApplicationEventPublisher eventPublisher) {
         this.orderTableRepository = orderTableRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     @Transactional(readOnly = true)
@@ -27,14 +32,16 @@ public class TableService {
     }
 
     public OrderTable create(final OrderTable orderTable) {
-        orderTable.clearTableGroup();
+
+        eventPublisher.publishEvent(new OrderTableEmptiedEvent(orderTable));
+
         return orderTableRepository.save(orderTable);
     }
 
     public OrderTable changeEmpty(final Long orderTableId, final OrderTable orderTable) {
         final OrderTable savedOrderTable = getOrderTableByOrderTableId(orderTableId);
 
-        savedOrderTable.changeEmpty(orderTable.isEmpty());
+        eventPublisher.publishEvent(new OrderTableChangedEvent(savedOrderTable, orderTable.isEmpty()));
 
         return savedOrderTable;
     }

@@ -20,10 +20,10 @@ public class OrderTables {
         return Collections.unmodifiableList(orderTables);
     }
 
-    public void changeEmpty(final boolean empty) {
-        for (OrderTable orderTable : orderTables) {
-            orderTable.changeEmpty(empty);
-        }
+    public List<Long> getOrderTableIds() {
+        return orderTables.stream()
+                .map(OrderTable::getId)
+                .collect(Collectors.toList());
     }
 
     public void append(final TableGroup tableGroup, final OrderTable ...orderTableArray) {

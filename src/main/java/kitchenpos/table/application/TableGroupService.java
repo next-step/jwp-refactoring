@@ -26,8 +26,8 @@ public class TableGroupService {
 
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = getOrderTableGroupById(tableGroupId);
-
         tableGroup.remove();
+        orderTableGroupRepository.save(tableGroup);
     }
 
     @Transactional(readOnly = true)

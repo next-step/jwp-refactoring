@@ -1,6 +1,8 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.table.event.TableGroupRemovedEvent;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -10,7 +12,7 @@ import java.util.stream.Collectors;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class TableGroup {
+public class TableGroup extends AbstractAggregateRoot<TableGroup> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -48,7 +50,7 @@ public class TableGroup {
     }
 
     public void remove() {
-        orderTables.clearTableGroup();
+        registerEvent(new TableGroupRemovedEvent(orderTables));
     }
 
     @Override

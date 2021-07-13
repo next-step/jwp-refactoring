@@ -39,7 +39,7 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     protected void validationByNewOrder(final Order order) {
-        orderTableRepository.findById(order.getOrderTable().getId())
+        orderTableRepository.findById(order.getOrderTableId())
                 .orElseThrow(() -> new IllegalArgumentException("테이블이 존재하지 않습니다."));
 
         final List<Long> menuIds = order.getOrderLineItemIds();
@@ -54,7 +54,7 @@ public class OrderService {
         final Order savedOrder = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 주문은 존재하지 않습니다."));
 
-        savedOrder.chaangeOrderStatus(order.getOrderStatus());
+        savedOrder.changeOrderStatus(order.getOrderStatus());
 
         return savedOrder;
     }

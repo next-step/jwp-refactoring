@@ -1,7 +1,8 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.event.OrderTableCreatedEvent;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -13,15 +14,14 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "orders")
 @EntityListeners(AuditingEntityListener.class)
-public class Order {
+public class Order extends AbstractAggregateRoot<Order> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_orders_order_table"))
-    private OrderTable orderTable;
+    @Column(name = "order_table_id")
+    private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
@@ -35,35 +35,41 @@ public class Order {
     public Order() {
     }
 
-    public Order(final Long id, final OrderTable orderTable, final OrderLineItem... orderLineItems) {
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException("빈 테이블에서는 주문을 할수가 없습니다.");
-        }
+    public Order(final Long id, final Long orderTableId, final OrderLineItem... orderLineItems) {
+        validate(orderTableId);
 
         this.id = id;
-        this.orderTable = orderTable;
+        this.orderTableId = orderTableId;
         this.orderStatus = OrderStatus.COOKING;
         this.orderLineItems.add(Arrays.asList(orderLineItems));
     }
 
-    public Order(final OrderTable orderTable, final OrderLineItem... orderLineItems) {
-        this(null, orderTable, orderLineItems);
+    private void validate(final Long orderTableId) {
+        registerEvent(new OrderTableCreatedEvent(orderTableId));
+    }
+
+    public Order(final Long orderTableId, final OrderLineItem... orderLineItems) {
+        this(null, orderTableId, orderLineItems);
     }
 
     public Long getId() {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public boolean isComplaationStatus() {
+    public boolean isCompletionStatus() {
         return Objects.equals(orderStatus, OrderStatus.COMPLETION);
+    }
+
+    public boolean isNotCompletionStatus() {
+        return !isCompletionStatus();
     }
 
     public List<Long> getOrderLineItemIds() {
@@ -76,12 +82,8 @@ public class Order {
         return this.orderStatus == orderStatus;
     }
 
-    public void appendOrderLineItems(OrderLineItem orderLineItem) {
-        this.orderLineItems.add(orderLineItem);
-    }
-
-    public void chaangeOrderStatus(final OrderStatus orderStatus) {
-        if (isComplaationStatus()) {
+    public void changeOrderStatus(final OrderStatus orderStatus) {
+        if (isCompletionStatus()) {
             throw new IllegalArgumentException(String.format("%s의 상태는 변경 불가능합니다.", OrderStatus.COMPLETION.remark()));
         }
 

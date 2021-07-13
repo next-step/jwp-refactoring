@@ -1,10 +1,6 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.order.domain.Order;
-
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -19,9 +15,6 @@ public class OrderTable {
 
     private int numberOfGuests;
     private boolean empty;
-
-    @OneToMany(mappedBy = "orderTable", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Order> orders = new ArrayList<>();
 
     public OrderTable() {
     }
@@ -65,33 +58,15 @@ public class OrderTable {
             throw new IllegalArgumentException("그룹 설정이 되어 있는 주문테이블은 상태를 변경할수 없습니다.");
         }
 
-        if (isCookingAndMealStatus()) {
-            String errorMsg = String.format("%s 또는 %s 상태일때는 변경할수 없습니다.",
-                    Order.OrderStatus.COOKING.remark(), Order.OrderStatus.MEAL.remark());
-
-            throw new IllegalArgumentException(errorMsg);
-        }
-
         this.empty = empty;
     }
 
-    private boolean isCookingAndMealStatus() {
-        return orders.stream()
-            .filter(order -> Objects.equals(this, order.getOrderTable()))
-            .anyMatch(order -> order.equalsByOrderStatus(Order.OrderStatus.COOKING) ||
-                    order.equalsByOrderStatus(Order.OrderStatus.MEAL));
+    public void clearTableGroup() {
+        this.tableGroup = null;
     }
 
     public void setTableGroup(final TableGroup tableGroup) {
         this.tableGroup = tableGroup;
-    }
-
-    public void clearTableGroup() {
-        if (isCookingAndMealStatus()) {
-            throw new IllegalArgumentException(String.format("%s 또는 %s 상태일때는 삭제할수 없습니다.", Order.OrderStatus.COOKING, Order.OrderStatus.MEAL));
-        }
-
-        this.tableGroup = null;
     }
 
     public TableGroup getTableGroup() {
