@@ -28,6 +28,10 @@ public class Menu {
     public Menu() {
     }
 
+    public Menu(Long id) {
+        this.id = id;
+    }
+
     public Menu(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
         this.name = name;
         this.price = price;

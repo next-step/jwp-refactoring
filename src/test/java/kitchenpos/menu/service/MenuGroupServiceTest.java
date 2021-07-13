@@ -1,5 +1,12 @@
 package kitchenpos.menu.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import kitchenpos.menu.domain.entity.MenuGroup;
 import kitchenpos.menu.domain.entity.MenuGroupRepository;
 import kitchenpos.menu.dto.MenuGroupRequest;
@@ -12,16 +19,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
+
     @Mock
     MenuGroupRepository menuGroupRepository;
 
@@ -67,7 +67,8 @@ class MenuGroupServiceTest {
         List<MenuGroupResponse> foundMenuGroups = menuGroupService.list();
 
         //then
-        assertThat(foundMenuGroups.stream().map(MenuGroupResponse::getName).collect(Collectors.toList()))
-                .containsExactly(메뉴그룹_한마리메뉴.getName(), 메뉴그룹_두마리메뉴.getName());
+        assertThat(
+            foundMenuGroups.stream().map(MenuGroupResponse::getName).collect(Collectors.toList()))
+            .containsExactly(메뉴그룹_한마리메뉴.getName(), 메뉴그룹_두마리메뉴.getName());
     }
 }

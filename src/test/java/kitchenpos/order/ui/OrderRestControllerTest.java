@@ -1,9 +1,20 @@
 package kitchenpos.order.ui;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.order.domain.value.OrderStatus;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import kitchenpos.order.domain.entity.OrderTable;
+import kitchenpos.order.domain.value.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,19 +28,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @SpringBootTest
 @AutoConfigureMockMvc
 class OrderRestControllerTest {
+
     MockMvc mockMvc;
     @Autowired
     OrderRestController orderRestController;
@@ -43,9 +45,9 @@ class OrderRestControllerTest {
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(orderRestController)
-                .addFilter(new CharacterEncodingFilter(StandardCharsets.UTF_8.name(), true))
-                .alwaysDo(print())
-                .build();
+            .addFilter(new CharacterEncodingFilter(StandardCharsets.UTF_8.name(), true))
+            .alwaysDo(print())
+            .build();
 
         오더라인아이템_리퀘스트 = new OrderLineItemRequest(1L, 1L, 1L);
         주문_리퀘스트 = new OrderRequest(1L, 7L, Arrays.asList(오더라인아이템_리퀘스트));
@@ -60,9 +62,9 @@ class OrderRestControllerTest {
 
         //when && then
         mockMvc.perform(post("/api/orders")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
-                .andExpect(status().isCreated());
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(requestBody))
+            .andExpect(status().isCreated());
     }
 
     @Test
@@ -91,8 +93,8 @@ class OrderRestControllerTest {
     void list() throws Exception {
         //when && then
         mockMvc.perform(get("/api/orders"))
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString("\"id\":1")));
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("\"id\":1")));
     }
 
     @Test
@@ -105,10 +107,10 @@ class OrderRestControllerTest {
 
         //when && then
         mockMvc.perform(put("/api/orders/{orderId}/order-status", 주문_리퀘스트.getId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString("MEAL")));
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(requestBody))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("MEAL")));
     }
 
     private void 주문_생성_요청_실패() throws JsonProcessingException {
@@ -116,9 +118,9 @@ class OrderRestControllerTest {
 
         try {
             mockMvc.perform(post("/api/orders")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(requestBody))
-                    .andExpect(status().isBadRequest());
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isBadRequest());
         } catch (Exception e) {
             assertThat(e.getCause()).isInstanceOf(IllegalArgumentException.class);
         }

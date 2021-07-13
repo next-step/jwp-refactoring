@@ -92,11 +92,11 @@ public class TableGroupService {
         List<OrderTable> orderTables = orderTableRepository
             .findAllByTableGroupId(tableGroup.getId());
         List<Long> orderTableIds = getOrderTableIds(orderTables);
-        validateOrderStatus(orderTableIds);
+        validateOrderStatusInCookingOrMeal(orderTableIds);
         orderTables.forEach(OrderTable::unGroup);
     }
 
-    private void validateOrderStatus(List<Long> orderTableIds) {
+    private void validateOrderStatusInCookingOrMeal(List<Long> orderTableIds) {
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
             orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
             throw new OrderStatusInCookingOrMealException();

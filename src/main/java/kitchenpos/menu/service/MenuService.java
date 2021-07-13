@@ -46,7 +46,7 @@ public class MenuService {
         return menuRequest.getMenuProducts()
             .stream()
             .map(menuProductRequest -> {
-                Product product = productRepository.findById(menuProductRequest.getMenuId())
+                Product product = productRepository.findById(menuProductRequest.getProductId())
                     .orElseThrow(NotFoundProductException::new);
                 return new MenuProduct(product, menuProductRequest.getQuantity());
             }).collect(Collectors.toList());

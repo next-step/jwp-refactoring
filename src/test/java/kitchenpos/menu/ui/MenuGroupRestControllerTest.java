@@ -1,6 +1,12 @@
 package kitchenpos.menu.ui;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.nio.charset.StandardCharsets;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,17 +19,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-import java.nio.charset.StandardCharsets;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 
 @SpringBootTest
 @AutoConfigureMockMvc
 class MenuGroupRestControllerTest {
+
     private MockMvc mockMvc;
     @Autowired
     private MenuGroupRestController menuGroupRestController;
@@ -35,9 +35,9 @@ class MenuGroupRestControllerTest {
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(menuGroupRestController)
-                .addFilter(new CharacterEncodingFilter(StandardCharsets.UTF_8.name(), true))
-                .alwaysDo(print())
-                .build();
+            .addFilter(new CharacterEncodingFilter(StandardCharsets.UTF_8.name(), true))
+            .alwaysDo(print())
+            .build();
 
         메뉴그룹_한마리메뉴_리퀘스트 = new MenuGroupRequest("한마리메뉴");
     }
@@ -50,10 +50,10 @@ class MenuGroupRestControllerTest {
 
         //when && then
         mockMvc
-                .perform(post("/api/menu-groups")
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(requestBody))
-                .andExpect(status().isCreated());
+            .perform(post("/api/menu-groups")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(requestBody))
+            .andExpect(status().isCreated());
     }
 
     @Test
@@ -61,7 +61,7 @@ class MenuGroupRestControllerTest {
     void list() throws Exception {
         //when && then
         mockMvc
-                .perform(get("/api/menu-groups"))
-                .andExpect(status().isOk());
+            .perform(get("/api/menu-groups"))
+            .andExpect(status().isOk());
     }
 }

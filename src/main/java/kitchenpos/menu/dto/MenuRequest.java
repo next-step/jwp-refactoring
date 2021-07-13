@@ -6,12 +6,17 @@ import java.util.stream.Collectors;
 
 public class MenuRequest {
 
+    private Long id;
     private String name;
     private BigDecimal price;
     private Long menuGroupId;
     private List<MenuProductRequest> menuProducts;
 
     public MenuRequest() {
+    }
+
+    public MenuRequest(Long id) {
+        this.id = id;
     }
 
     public MenuRequest(String name, BigDecimal price, Long menuGroupId,

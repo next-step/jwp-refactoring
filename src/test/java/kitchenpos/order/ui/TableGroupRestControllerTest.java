@@ -1,13 +1,20 @@
 package kitchenpos.order.ui;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.order.service.TableGroupService;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import kitchenpos.order.domain.entity.OrderTable;
 import kitchenpos.order.domain.entity.TableGroup;
 import kitchenpos.order.domain.value.NumberOfGuests;
 import kitchenpos.order.domain.value.OrderTables;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.TableGroupRequest;
+import kitchenpos.order.service.TableGroupService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,18 +26,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @SpringBootTest
 @AutoConfigureMockMvc
 class TableGroupRestControllerTest {
+
     MockMvc mockMvc;
     @Autowired
     TableGroupRestController tableGroupRestController;
@@ -48,9 +47,9 @@ class TableGroupRestControllerTest {
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(tableGroupRestController)
-                .addFilter(new CharacterEncodingFilter(StandardCharsets.UTF_8.name(), true))
-                .alwaysDo(print())
-                .build();
+            .addFilter(new CharacterEncodingFilter(StandardCharsets.UTF_8.name(), true))
+            .alwaysDo(print())
+            .build();
 
         테이블1 = new OrderTable(4L, 테이블그룹, NumberOfGuests.of(4), true);
         테이블2 = new OrderTable(5L, 테이블그룹, NumberOfGuests.of(4), true);
@@ -69,16 +68,17 @@ class TableGroupRestControllerTest {
 
         OrderTableRequest 주문테이블_리퀘스트1 = new OrderTableRequest(1L, 99L, 4, true);
         OrderTableRequest 주문테이블_리퀘스트2 = new OrderTableRequest(2L, 99L, 4, true);
-        TableGroupRequest 테이블그룹_리퀘스트 = new TableGroupRequest(Arrays.asList(주문테이블_리퀘스트1, 주문테이블_리퀘스트2));
+        TableGroupRequest 테이블그룹_리퀘스트 = new TableGroupRequest(
+            Arrays.asList(주문테이블_리퀘스트1, 주문테이블_리퀘스트2));
 
         //given
         String requestBody = objectMapper.writeValueAsString(테이블그룹_리퀘스트);
 
         //when && then
         mockMvc.perform(post("/api/table-groups")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
-                .andExpect(status().isCreated());
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(requestBody))
+            .andExpect(status().isCreated());
     }
 
     @Test
@@ -91,9 +91,9 @@ class TableGroupRestControllerTest {
 
         //when && then
         mockMvc.perform(post("/api/table-groups")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
-                .andExpect(status().isBadRequest());
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(requestBody))
+            .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -106,9 +106,9 @@ class TableGroupRestControllerTest {
 
         //when && then
         mockMvc.perform(post("/api/table-groups")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
-                .andExpect(status().isBadRequest());
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(requestBody))
+            .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -116,14 +116,15 @@ class TableGroupRestControllerTest {
     void create_with_exception_when_same_orderTables() throws Exception {
         //given
         OrderTableRequest 주문테이블_리퀘스트1 = new OrderTableRequest(1L, 99L, 4, true);
-        TableGroupRequest 테이블그룹_리퀘스트 = new TableGroupRequest(Arrays.asList(주문테이블_리퀘스트1,주문테이블_리퀘스트1));
+        TableGroupRequest 테이블그룹_리퀘스트 = new TableGroupRequest(
+            Arrays.asList(주문테이블_리퀘스트1, 주문테이블_리퀘스트1));
         String requestBody = objectMapper.writeValueAsString(테이블그룹_리퀘스트);
 
         //when && then
         mockMvc.perform(post("/api/table-groups")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
-                .andExpect(status().isBadRequest());
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(requestBody))
+            .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -132,14 +133,15 @@ class TableGroupRestControllerTest {
         //given
         OrderTableRequest 주문테이블_리퀘스트1 = new OrderTableRequest(1L, 99L, 4, true);
         OrderTableRequest 주문테이블_리퀘스트2 = new OrderTableRequest(7L, 99L, 4, true);
-        TableGroupRequest 테이블그룹_리퀘스트 = new TableGroupRequest(Arrays.asList(주문테이블_리퀘스트1, 주문테이블_리퀘스트2));
+        TableGroupRequest 테이블그룹_리퀘스트 = new TableGroupRequest(
+            Arrays.asList(주문테이블_리퀘스트1, 주문테이블_리퀘스트2));
         String requestBody = objectMapper.writeValueAsString(테이블그룹_리퀘스트);
 
         //when && then
         mockMvc.perform(post("/api/table-groups")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
-                .andExpect(status().isBadRequest());
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(requestBody))
+            .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -148,14 +150,15 @@ class TableGroupRestControllerTest {
         //given
         OrderTableRequest 주문테이블_리퀘스트1 = new OrderTableRequest(1L, 99L, 4, true);
         OrderTableRequest 주문테이블_리퀘스트2 = new OrderTableRequest(98L, 99L, 4, true);
-        TableGroupRequest 테이블그룹_리퀘스트 = new TableGroupRequest(Arrays.asList(주문테이블_리퀘스트1, 주문테이블_리퀘스트2));
+        TableGroupRequest 테이블그룹_리퀘스트 = new TableGroupRequest(
+            Arrays.asList(주문테이블_리퀘스트1, 주문테이블_리퀘스트2));
         String requestBody = objectMapper.writeValueAsString(테이블그룹_리퀘스트);
 
         //when && then
         mockMvc.perform(post("/api/table-groups")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
-                .andExpect(status().isBadRequest());
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(requestBody))
+            .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -163,6 +166,6 @@ class TableGroupRestControllerTest {
     void ungroup() throws Exception {
         //when && then
         mockMvc.perform(delete("/api/table-groups/{tableGroupId}", 99))
-                .andExpect(status().isNoContent());
+            .andExpect(status().isNoContent());
     }
 }

@@ -1,6 +1,7 @@
 package kitchenpos.order.service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import kitchenpos.menu.domain.entity.Menu;
 import kitchenpos.menu.domain.entity.MenuRepository;
@@ -16,6 +17,7 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.exception.NotFoundOrderException;
 import kitchenpos.order.exception.NotFoundOrderTableException;
+import kitchenpos.order.exception.OrderLineItemIsNullOrZeroException;
 import kitchenpos.order.exception.OrderTableIsEmptyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,12 +46,19 @@ public class OrderService {
     }
 
     private List<OrderLineItem> findOrderLineItems(OrderRequest orderRequest) {
+        validateOrderLineItemIsNullOrZero(orderRequest);
         return orderRequest.getOrderLineItems().stream()
             .map(orderLineItemRequest -> {
                 Menu menu = menuRepository.findById(orderLineItemRequest.getMenuId())
                     .orElseThrow(NotFoundMenuException::new);
                 return new OrderLineItem(menu, Quantity.of(orderLineItemRequest.getQuantity()));
             }).collect(Collectors.toList());
+    }
+
+    private void validateOrderLineItemIsNullOrZero(OrderRequest orderRequest) {
+        if (Objects.isNull(orderRequest.getOrderLineItems()) || orderRequest.getOrderLineItems().size() == 0){
+            throw new OrderLineItemIsNullOrZeroException();
+        }
     }
 
     private OrderTable findOrderTable(OrderRequest orderRequest) {
@@ -66,9 +75,13 @@ public class OrderService {
     }
 
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
-        Order savedOrder = orderRepository.findById(orderId)
-            .orElseThrow(NotFoundOrderException::new);
+        Order savedOrder = findOrder(orderId);
         savedOrder.changeOrderStatus(orderRequest.getOrderStatus());
         return OrderResponse.of(savedOrder);
+    }
+
+    private Order findOrder(Long orderId) {
+        return orderRepository.findById(orderId)
+            .orElseThrow(NotFoundOrderException::new);
     }
 }
