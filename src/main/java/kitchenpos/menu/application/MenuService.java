@@ -3,6 +3,8 @@ package kitchenpos.menu.application;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.exception.NotFoundMenuGroupException;
+import kitchenpos.menu.exception.NotFoundProductException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,10 +25,8 @@ public class MenuService {
     }
 
     public MenuResponse create(final MenuRequest menuRequest) {
-        MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId()).orElseThrow(IllegalArgumentException::new);
-        List<Product> products = menuRequest.getProductIds().stream()
-                .map(productId -> productRepository.findById(productId).orElseThrow(IllegalArgumentException::new))
-                .collect(Collectors.toList());
+        MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId()).orElseThrow(() -> new NotFoundMenuGroupException());
+        List<Product> products = findAllProductByIds(menuRequest.getProductIds());
         Menu persistMenu = menuRepository.save(menuRequest.toMenu(products, menuGroup));
         return MenuResponse.of(persistMenu);
     }
@@ -34,9 +34,16 @@ public class MenuService {
     @Transactional(readOnly = true)
     public List<MenuResponse> list() {
         final List<Menu> menus = menuRepository.findAll();
-
         return menus.stream()
                 .map(menu -> MenuResponse.of(menu))
                 .collect(Collectors.toList());
+    }
+
+    private List<Product> findAllProductByIds(List<Long> productIds) {
+        List<Product> products = productRepository.findAllByIdIn(productIds).orElseThrow(() -> new NotFoundProductException());
+        if(products.size() != productIds.size()){
+            throw new NotFoundProductException();
+        }
+        return products;
     }
 }

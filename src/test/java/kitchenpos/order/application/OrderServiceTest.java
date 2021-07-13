@@ -2,7 +2,7 @@ package kitchenpos.order.application;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.exception.NotFoundMenu;
+import kitchenpos.menu.exception.NotFoundMenuException;
 import kitchenpos.order.OrderStatus;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemRequest;
@@ -107,7 +107,7 @@ public class OrderServiceTest {
         // then
         // 주문 요청함
         assertThatThrownBy(() -> orderService.create(order))
-                .isInstanceOf(NotFoundMenu.class);
+                .isInstanceOf(NotFoundMenuException.class);
     }
 
     @Test

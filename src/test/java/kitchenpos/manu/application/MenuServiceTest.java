@@ -5,6 +5,9 @@ import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.exception.NotFoundMenuGroupException;
+import kitchenpos.menu.exception.NotFoundProductException;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.wrap.Price;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -50,7 +54,7 @@ public class MenuServiceTest {
         // given
         // 중식에 포함된 메뉴가 생성되어 있음
         //중식_포함_메뉴 = new MenuProduct();
-        짜장면 = new Product("짜장면", new Price(BigDecimal.valueOf(1000)));
+        짜장면 = new Product(1L,"짜장면", new Price(BigDecimal.valueOf(1000)));
     }
 
     @Test
@@ -64,6 +68,10 @@ public class MenuServiceTest {
         // when
         // 메뉴 그룹 등록되어 있음
         when(menuGroupRepository.findById(1L)).thenReturn(Optional.of(new MenuGroup("중식")));
+
+        // and
+        // 제품 등록되어 있음
+        when(productRepository.findAllByIdIn(Arrays.asList(1L))).thenReturn(Optional.of(new ArrayList<Product>(Arrays.asList(짜장면))));
 
         // then
         // 등록 요청 시 예외 발생
@@ -83,7 +91,7 @@ public class MenuServiceTest {
         // 등록 요청 시 예외 발생
         when(menuGroupRepository.findById(1L)).thenReturn(Optional.empty());
         assertThatThrownBy(() -> menuService.create(중식_요청))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(NotFoundMenuGroupException.class);
     }
 
     @Test
@@ -104,7 +112,7 @@ public class MenuServiceTest {
         // then
         // 등록 요청 시 예외 발생
         assertThatThrownBy(() -> menuService.create(중식_요청))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(NotFoundProductException.class);
     }
 
     @Test
@@ -124,8 +132,10 @@ public class MenuServiceTest {
         // and
         // 메뉴 그릅과 상품이 등록되어 있음
         when(menuGroupRepository.findById(1L)).thenReturn(Optional.of(new MenuGroup("중식")));
-        when(productRepository.findById(1L)).thenReturn(Optional.of(짜장면));
-        when(productRepository.findById(2L)).thenReturn(Optional.of(탕수육));
+
+        // and
+        // 제품 등록되어 있음
+        when(productRepository.findAllByIdIn(Arrays.asList(1L, 2L))).thenReturn(Optional.of(new ArrayList<Product>(Arrays.asList(짜장면, 탕수육))));
 
         // then
         // 등록 요청 시 예외 발생
@@ -153,8 +163,10 @@ public class MenuServiceTest {
         // and
         // 메뉴 그릅과 상품이 등록되어 있음
         when(menuGroupRepository.findById(1L)).thenReturn(Optional.of(new MenuGroup("중식")));
-        when(productRepository.findById(1L)).thenReturn(Optional.of(짜장면));
-        when(productRepository.findById(2L)).thenReturn(Optional.of(탕수육));
+
+        // and
+        // 제품 등록되어 있음
+        when(productRepository.findAllByIdIn(Arrays.asList(1L, 2L))).thenReturn(Optional.of(new ArrayList<Product>(Arrays.asList(짜장면, 탕수육))));
 
         // and
         // 메뉴와 메뉴에 등록된 상품들이 등록되어 있음

@@ -2,7 +2,7 @@ package kitchenpos.order.application;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.exception.NotFoundMenu;
+import kitchenpos.menu.exception.NotFoundMenuException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItemRepository;
 import kitchenpos.order.domain.OrderRepository;
@@ -59,7 +59,7 @@ public class OrderService {
 
     private List<Menu> findMenusByIds(List<Long> menuIds) {
         return menuIds.stream()
-                .map(menuId -> menuRepository.findById(menuId).orElseThrow(() -> new NotFoundMenu()))
+                .map(menuId -> menuRepository.findById(menuId).orElseThrow(() -> new NotFoundMenuException()))
                 .collect(Collectors.toList());
     }
 
