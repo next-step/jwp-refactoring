@@ -46,13 +46,14 @@ class TableGroupRestControllerTest {
     @Test
     void create() throws Exception {
         List<OrderTable> orderTables = new ArrayList<>();
+        TableGroup tableGroup = new TableGroup(1L);
         orderTables.add(new OrderTable(1L, null, 2, true));
         orderTables.add(new OrderTable(2L, null, 3, true));
         OrderTables tables = new OrderTables(orderTables);
-        TableGroup tableGroup = new TableGroup(1L, tables);
+        tables.grouped(tableGroup.getId());
         TableGroupRequest request = new TableGroupRequest(orderTables);
         String params = mapper.writeValueAsString(request);
-        given(tableGroupService.create(any())).willReturn(TableGroupResponse.from(tableGroup));
+        given(tableGroupService.create(any())).willReturn(TableGroupResponse.from(tableGroup, tables));
 
         mockMvc.perform(post("/api/table-groups")
                 .contentType(MediaType.APPLICATION_JSON)

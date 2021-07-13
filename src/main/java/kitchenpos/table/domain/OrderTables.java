@@ -14,9 +14,11 @@ import java.util.stream.Collectors;
 
 @Embeddable
 public class OrderTables {
-
     @OneToMany
-    private final List<OrderTable> orderTables;
+    private List<OrderTable> orderTables;
+
+    protected OrderTables() {
+    }
 
     public OrderTables(List<OrderTable> orderTables) {
         validateOrderTablesSize(orderTables);
@@ -59,6 +61,11 @@ public class OrderTables {
 
     public int size() {
         return orderTables.size();
+    }
+
+    public void grouped(Long tableGroupId) {
+        orderTables.stream()
+                  .forEach(orderTable -> orderTable.grouped(tableGroupId));
     }
 
     @Override

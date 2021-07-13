@@ -30,10 +30,10 @@ public class TableGroupService {
     public TableGroupResponse create(final TableGroupRequest request) {
         OrderTables orderTables = new OrderTables(request.getOrderTables());
         checkInitOrderTables(orderTables);
-        final TableGroup savedTableGroup = tableGroupRepository.save(
-                new TableGroup(orderTables));
+        final TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup());
+        orderTables.grouped(savedTableGroup.getId());
 
-        return TableGroupResponse.from(savedTableGroup);
+        return TableGroupResponse.from(savedTableGroup, orderTables);
     }
 
     private void checkInitOrderTables(OrderTables orderTables) {
@@ -55,7 +55,7 @@ public class TableGroupService {
     }
 
     public void ungroup(final Long tableGroupId) {
-        TableGroup tableGroup = tableGroupRepository.findById(tableGroupId).orElseThrow(IllegalArgumentException::new);
-        tableGroup.ungroup();
+        OrderTables orderTables = new OrderTables(orderTableRepository.findAllByTableGroupId(tableGroupId));
+        orderTables.ungroup();
     }
 }

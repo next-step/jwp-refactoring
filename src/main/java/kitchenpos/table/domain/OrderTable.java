@@ -110,6 +110,10 @@ public class OrderTable {
         return orders.isCompletedAllOrders();
     }
 
+    public void grouped(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -21,7 +21,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -62,7 +65,7 @@ class TableGroupServiceTest {
     @DisplayName("테이블 그룹을 등록한다.")
     @Test
     void create() {
-        TableGroup tableGroup = new TableGroup(orderTables);
+        TableGroup tableGroup = new TableGroup();
         TableGroupRequest request = new TableGroupRequest(orderTables.getOrderTables());
         given(orderTableRepository.findAllById(anyList())).willReturn(orderTables.getOrderTables());
         given(tableGroupRepository.save(any())).willReturn(tableGroup);
@@ -134,34 +137,35 @@ class TableGroupServiceTest {
     @DisplayName("테이블 그룹을 등록해제(ungroup) 한다.")
     @Test
     void ungroup() {
-        OrderTable orderTable1 = new OrderTable(2, true);
+        TableGroup tableGroup = new TableGroup(1L);
+        OrderTable orderTable1 = new OrderTable(tableGroup.getId(), 2, true);
         orderTable1.addOrder(new Order(OrderStatus.COMPLETION));
-        OrderTable orderTable2 = new OrderTable(2, true);
+        OrderTable orderTable2 = new OrderTable(tableGroup.getId(), 2, true);
         orderTable2.addOrder(new Order(OrderStatus.COMPLETION));
-        TableGroup tableGroup = new TableGroup(1L, new OrderTables(Arrays.asList(orderTable1, orderTable2)));
-        given(tableGroupRepository.findById(tableGroup.getId())).willReturn(Optional.of(tableGroup));
+        given(orderTableRepository.findAllByTableGroupId(tableGroup.getId())).willReturn(Arrays.asList(orderTable1, orderTable2));
 
         tableGroupService.ungroup(tableGroup.getId());
 
-        assertThat(tableGroup.getOrderTables().get(0).getTableGroupId()).isNull();
+        assertThat(orderTable1.getTableGroupId()).isNull();
+        assertThat(orderTable2.getTableGroupId()).isNull();
 
-        verify(tableGroupRepository, times(1)).findById(tableGroup.getId());
+        verify(orderTableRepository, times(1)).findAllByTableGroupId(tableGroup.getId());
     }
 
     @DisplayName("테이블 그룹 등록해제를 실패 한다. - 그룹된 주문 테이블이 조리중이거나, 식사중일때에는 그룹 해제 불가")
     @Test
     void fail_ungroup() {
-        OrderTable orderTable1 = new OrderTable(2, true);
+        TableGroup tableGroup = new TableGroup(1L);
+        OrderTable orderTable1 = new OrderTable(tableGroup.getId(), 2, true);
         orderTable1.addOrder(new Order(OrderStatus.COOKING));
-        OrderTable orderTable2 = new OrderTable(2, true);
+        OrderTable orderTable2 = new OrderTable(tableGroup.getId(), 2, true);
         orderTable2.addOrder(new Order(OrderStatus.COMPLETION));
-        TableGroup tableGroup = new TableGroup(1L, new OrderTables(Arrays.asList(orderTable1, orderTable2)));
 
-        given(tableGroupRepository.findById(tableGroup.getId())).willReturn(Optional.of(tableGroup));
+        given(orderTableRepository.findAllByTableGroupId(tableGroup.getId())).willReturn(Arrays.asList(orderTable1, orderTable2));
 
         assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))
                 .isInstanceOf(IllegalOrderTableException.class);
 
-        verify(tableGroupRepository, times(1)).findById(tableGroup.getId());
+        verify(orderTableRepository, times(1)).findAllByTableGroupId(tableGroup.getId());
     }
 }

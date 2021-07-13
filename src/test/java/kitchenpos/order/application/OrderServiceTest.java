@@ -73,7 +73,7 @@ class OrderServiceTest {
         주문테이블 = new OrderTable(1L, 1L, 4, false);
         new주문테이블 = new OrderTable(2L, 1L, 4, false);
         주문테이블묶음 = new OrderTables(Arrays.asList(주문테이블, new주문테이블));
-        테이블그룹 = new TableGroup(1L, 주문테이블묶음);
+        테이블그룹 = new TableGroup(1L);
         주문 = new Order(1L, 주문테이블, OrderStatus.COOKING, 주문내역들);
         주문요청 = new OrderRequest(주문테이블.getId(), 주문내역들);
         다른주문 = new Order(2L, new주문테이블, OrderStatus.MEAL, 주문내역들);
