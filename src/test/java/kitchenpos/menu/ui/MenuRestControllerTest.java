@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.menu.domain.entity.Menu;
 import kitchenpos.menu.domain.entity.MenuGroup;
 import kitchenpos.menu.domain.entity.MenuProduct;
+import kitchenpos.menu.domain.value.Price;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -61,12 +62,12 @@ class MenuRestControllerTest {
         메뉴그룹_한마리메뉴 = new MenuGroup(1L, "한마리메뉴");
         프로덕트_후라이드치킨 = new Product(1L, "후라이드치킨", BigDecimal.valueOf(18000));
         메뉴프로덕트_후라이드치킨_후라이드치킨 = new MenuProduct(1L, 프로덕트_후라이드치킨, 1);
-        메뉴_후라이드 = Menu.of("후라이드", BigDecimal.valueOf(18000), 메뉴그룹_한마리메뉴, Arrays.asList(메뉴프로덕트_후라이드치킨_후라이드치킨));
+        메뉴_후라이드 = Menu.of("후라이드", Price.of(BigDecimal.valueOf(18000)), 메뉴그룹_한마리메뉴, Arrays.asList(메뉴프로덕트_후라이드치킨_후라이드치킨));
 
         메뉴그룹_한마리메뉴_리퀘스트 = new MenuGroupRequest(1L, "한마리메뉴");
         프로덕트_후라이드치킨_리퀘스트 = new ProductRequest(1L, "후라이드치킨", BigDecimal.valueOf(18000));
         메뉴프로덕트_후라이드치킨_후라이드치킨_리퀘스트 = new MenuProductRequest(1L, 1L, 프로덕트_후라이드치킨_리퀘스트.getId(), 1);
-        메뉴_후라이드_리퀘스트 = new MenuRequest("후라이드", BigDecimal.valueOf(18000), 메뉴그룹_한마리메뉴_리퀘스트.getId(), Arrays.asList(메뉴프로덕트_후라이드치킨_후라이드치킨_리퀘스트));
+        메뉴_후라이드_리퀘스트 = new MenuRequest("후라이드", BigDecimal.valueOf(16000), 메뉴그룹_한마리메뉴_리퀘스트.getId(), Arrays.asList(메뉴프로덕트_후라이드치킨_후라이드치킨_리퀘스트));
     }
 
     @Test

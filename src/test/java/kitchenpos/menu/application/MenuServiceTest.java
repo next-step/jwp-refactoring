@@ -1,6 +1,8 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.entity.*;
+import kitchenpos.menu.domain.value.MenuProducts;
+import kitchenpos.menu.domain.value.Price;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -54,7 +56,7 @@ class MenuServiceTest {
         메뉴그룹_한마리메뉴 = new MenuGroup(1L, "한마리메뉴");
         프로덕트_후라이드치킨 = new Product(1L, "후라이드치킨", BigDecimal.valueOf(18000));
         메뉴프로덕트_후라이드치킨_후라이드치킨 = new MenuProduct(1L, 프로덕트_후라이드치킨, 1);
-        메뉴_후라이드 = Menu.of("후라이드", BigDecimal.valueOf(18000), 메뉴그룹_한마리메뉴, Arrays.asList(메뉴프로덕트_후라이드치킨_후라이드치킨));
+        메뉴_후라이드 = Menu.of("후라이드", Price.of(BigDecimal.valueOf(18000)), 메뉴그룹_한마리메뉴, Arrays.asList(메뉴프로덕트_후라이드치킨_후라이드치킨));
 
         메뉴그룹_한마리메뉴_리퀘스트 = new MenuGroupRequest(1L, "한마리메뉴");
         프로덕트_후라이드치킨_리퀘스트 = new ProductRequest(1L, "후라이드치킨", BigDecimal.valueOf(18000));
@@ -109,17 +111,11 @@ class MenuServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    //TODO
     @Test
     @DisplayName("메뉴의 가격이 포함된 상품의 가격합보다 큰 경우 메뉴 생성을 실패한다.")
     void create_with_exception_when_menu_price_greater_than_sum_of_product() {
-        //given
-        메뉴_후라이드 = Menu.of("후라이드", BigDecimal.valueOf(999999), 메뉴그룹_한마리메뉴, Arrays.asList(메뉴프로덕트_후라이드치킨_후라이드치킨));
-        when(menuGroupRepository.findById(메뉴_후라이드.getMenuGroup().getId())).thenReturn(Optional.of(메뉴그룹_한마리메뉴));
-        when(productRepository.findById(any())).thenReturn(Optional.of(프로덕트_후라이드치킨));
-
         //when && then
-        assertThatThrownBy(() -> menuService.create(메뉴_후라이드_리퀘스트))
+        assertThatThrownBy(() -> Menu.of("후라이드", Price.of(BigDecimal.valueOf(999999)), 메뉴그룹_한마리메뉴, Arrays.asList(메뉴프로덕트_후라이드치킨_후라이드치킨)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

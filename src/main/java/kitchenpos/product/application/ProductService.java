@@ -18,9 +18,8 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public ProductResponse create(final ProductRequest productRequest) {
-        Product product = new Product(productRequest.getName(),productRequest.getPrice());
-        return ProductResponse.of(productRepository.save(product));
+    public ProductResponse create(ProductRequest productRequest) {
+        return ProductResponse.of(productRepository.save(new Product(productRequest.getName(), productRequest.getPrice())));
     }
 
     public List<ProductResponse> list() {

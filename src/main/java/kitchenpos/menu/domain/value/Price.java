@@ -29,4 +29,8 @@ public class Price {
     public BigDecimal getValue(){
         return price;
     }
+
+    public boolean greaterThan(Double target) {
+        return price.doubleValue() - target > (double) 0;
+    }
 }
