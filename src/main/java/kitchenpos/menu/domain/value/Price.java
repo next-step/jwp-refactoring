@@ -1,11 +1,13 @@
 package kitchenpos.menu.domain.value;
 
-import javax.persistence.Embeddable;
 import java.math.BigDecimal;
 import java.util.Objects;
+import javax.persistence.Embeddable;
+import kitchenpos.menu.exception.PriceNotNegativeNumberException;
 
 @Embeddable
 public class Price {
+
     private BigDecimal price;
 
     public Price() {
@@ -22,11 +24,11 @@ public class Price {
 
     private static void validatePrice(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
+            throw new PriceNotNegativeNumberException();
         }
     }
 
-    public BigDecimal getValue(){
+    public BigDecimal getValue() {
         return price;
     }
 

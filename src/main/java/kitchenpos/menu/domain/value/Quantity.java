@@ -1,9 +1,11 @@
 package kitchenpos.menu.domain.value;
 
 import javax.persistence.Embeddable;
+import kitchenpos.menu.exception.QuantityNotNegativeNumberException;
 
 @Embeddable
 public class Quantity {
+
     private long quantity;
 
     public Quantity() {
@@ -19,8 +21,8 @@ public class Quantity {
     }
 
     private static void validateQuantity(long quantity) {
-        if(quantity < 0) {
-            throw new IllegalArgumentException();
+        if (quantity < 0) {
+            throw new QuantityNotNegativeNumberException();
         }
     }
 

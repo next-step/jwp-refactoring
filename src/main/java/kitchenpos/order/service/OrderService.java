@@ -16,12 +16,14 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class OrderService {
+
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
 
     public OrderService(
-            MenuRepository menuRepository, OrderRepository orderRepository, OrderTableRepository orderTableRepository) {
+        MenuRepository menuRepository, OrderRepository orderRepository,
+        OrderTableRepository orderTableRepository) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
@@ -35,19 +37,18 @@ public class OrderService {
     }
 
     private List<OrderLineItem> findOrderLineItems(OrderRequest orderRequest) {
-        return orderRequest.getOrderLineItems()
-                .stream()
-                .map(orderLineItemRequest -> {
-                    Menu menu = menuRepository.findById(orderLineItemRequest.getMenuId())
-                            .orElseThrow(IllegalArgumentException::new);
-                    return new OrderLineItem(menu, Quantity.of(orderLineItemRequest.getQuantity()));
-                }).collect(Collectors.toList());
+        return orderRequest.getOrderLineItems().stream()
+            .map(orderLineItemRequest -> {
+                Menu menu = menuRepository.findById(orderLineItemRequest.getMenuId())
+                    .orElseThrow(IllegalArgumentException::new);
+                return new OrderLineItem(menu, Quantity.of(orderLineItemRequest.getQuantity()));
+            }).collect(Collectors.toList());
     }
 
     private OrderTable findOrderTable(OrderRequest orderRequest) {
         OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
-                .orElseThrow(IllegalArgumentException::new);
-        if(orderTable.isEmpty()){
+            .orElseThrow(IllegalArgumentException::new);
+        if (orderTable.isEmpty()) {
             throw new IllegalArgumentException();
         }
         return orderTable;
@@ -59,7 +60,7 @@ public class OrderService {
 
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
         Order savedOrder = orderRepository.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(IllegalArgumentException::new);
         savedOrder.changeOrderStatus(orderRequest.getOrderStatus());
         return OrderResponse.of(savedOrder);
     }

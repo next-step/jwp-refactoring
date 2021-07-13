@@ -1,15 +1,15 @@
 package kitchenpos.menu.domain.value;
 
+import java.util.Collections;
+import java.util.List;
+import javax.persistence.Embeddable;
+import javax.persistence.OneToMany;
 import kitchenpos.menu.domain.entity.Menu;
 import kitchenpos.menu.domain.entity.MenuProduct;
 
-import javax.persistence.Embeddable;
-import javax.persistence.OneToMany;
-import java.util.Collections;
-import java.util.List;
-
 @Embeddable
 public class MenuProducts {
+
     @OneToMany(mappedBy = "menu")
     private List<MenuProduct> menuProducts;
 

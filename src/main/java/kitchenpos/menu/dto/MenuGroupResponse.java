@@ -1,11 +1,11 @@
 package kitchenpos.menu.dto;
 
-import kitchenpos.menu.domain.entity.MenuGroup;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import kitchenpos.menu.domain.entity.MenuGroup;
 
 public class MenuGroupResponse {
+
     private Long id;
     private String name;
 
@@ -23,8 +23,8 @@ public class MenuGroupResponse {
 
     public static List<MenuGroupResponse> ofList(List<MenuGroup> menuGroups) {
         return menuGroups.stream()
-                .map(MenuGroupResponse::of)
-                .collect(Collectors.toList());
+            .map(MenuGroupResponse::of)
+            .collect(Collectors.toList());
     }
 
     public Long getId() {

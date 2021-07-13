@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class MenuRequest {
+
     private String name;
     private BigDecimal price;
     private Long menuGroupId;
@@ -13,7 +14,8 @@ public class MenuRequest {
     public MenuRequest() {
     }
 
-    public MenuRequest(String name, BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
+    public MenuRequest(String name, BigDecimal price, Long menuGroupId,
+        List<MenuProductRequest> menuProducts) {
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
@@ -38,7 +40,7 @@ public class MenuRequest {
 
     public List<Long> getMenuProductIds() {
         return menuProducts.stream()
-                .map(MenuProductRequest::getMenuId)
-                .collect(Collectors.toList());
+            .map(MenuProductRequest::getMenuId)
+            .collect(Collectors.toList());
     }
 }

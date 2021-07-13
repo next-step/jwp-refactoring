@@ -1,8 +1,7 @@
 package kitchenpos.menu.dto;
 
-import kitchenpos.product.dto.ProductRequest;
-
 public class MenuProductRequest {
+
     private Long seq;
     private Long menuId;
     private Long productId;

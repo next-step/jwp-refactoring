@@ -5,9 +5,11 @@ import kitchenpos.menu.domain.value.Price;
 
 import javax.persistence.*;
 import java.util.List;
+import kitchenpos.menu.exception.MenuPriceGreaterThanProductsSumException;
 
 @Entity
 public class Menu {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,17 +36,18 @@ public class Menu {
         this.menuProducts.toMenu(this);
     }
 
-    public static Menu of(String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+    public static Menu of(String name, Price price, MenuGroup menuGroup,
+        List<MenuProduct> menuProducts) {
         validateMenuProductsSum(price, menuProducts);
         return new Menu(name, price, menuGroup, new MenuProducts(menuProducts));
     }
 
     private static void validateMenuProductsSum(Price menuPrice, List<MenuProduct> menuProducts) {
         Double sum = menuProducts.stream()
-                .mapToDouble(menuProduct -> menuProduct.getProduct().price())
-                .sum();
-        if(menuPrice.greaterThan(sum)){
-            throw new IllegalArgumentException();
+            .mapToDouble(menuProduct -> menuProduct.getProduct().price())
+            .sum();
+        if (menuPrice.greaterThan(sum)) {
+            throw new MenuPriceGreaterThanProductsSumException();
         }
     }
 
