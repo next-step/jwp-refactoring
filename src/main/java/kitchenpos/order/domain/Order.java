@@ -17,7 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import kitchenpos.order.exception.OrderException;
-import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 
 @Entity
 @Table(name = "orders")

@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import kitchenpos.manugroup.dto.MenuGroupResponse;
 import kitchenpos.menu.domain.Menu;
 
 public class MenuResponse {

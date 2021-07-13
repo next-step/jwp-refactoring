@@ -14,7 +14,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import kitchenpos.manugroup.domain.MenuGroup;
 import kitchenpos.menu.exception.MenuException;
 
 @Entity

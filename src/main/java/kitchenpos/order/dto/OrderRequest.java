@@ -4,7 +4,7 @@ import java.util.List;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItems;
-import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 
 public class OrderRequest {
 
