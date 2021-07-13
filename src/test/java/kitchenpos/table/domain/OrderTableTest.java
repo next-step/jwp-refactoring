@@ -7,8 +7,6 @@ import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -37,9 +35,7 @@ class OrderTableTest {
     @Test
     void fail_changeEmpty1() {
         boolean expectedEmpty = false;
-        OrderTable 주문테이블1 = new OrderTable();
-        OrderTable 주문테이블2 = new OrderTable();
-        TableGroup tableGroup = new TableGroup(1L, new OrderTables(Arrays.asList(주문테이블1, 주문테이블2)));
+        TableGroup tableGroup = new TableGroup(1L);
         OrderTable orderTable = new OrderTable(tableGroup.getId(), 2, true);
 
         assertThatThrownBy(() -> orderTable.changeEmpty(expectedEmpty))

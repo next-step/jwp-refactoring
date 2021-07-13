@@ -1,7 +1,7 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.order.exception.AlreadyCompletionException;
-import kitchenpos.table.domain.OrderTable;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -14,13 +14,13 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private OrderTable orderTable;
-
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
+    private Long orderTableId;
 
+    @CreatedDate
+    @Column(updatable = false)
     private LocalDateTime orderedTime;
 
     @Embedded
@@ -29,9 +29,9 @@ public class Order {
     protected Order() {
     }
 
-    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+    public Order(Long id, Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
         this.id = id;
-        this.orderTable = orderTable;
+        this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderLineItems = new OrderLineItems(orderLineItems);
     }
@@ -40,8 +40,8 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
-    public Order(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
-        this(null, orderTable, orderStatus, orderLineItems);
+    public Order(Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        this(null, orderTableId, orderStatus, orderLineItems);
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
@@ -59,8 +59,8 @@ public class Order {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {

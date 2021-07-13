@@ -1,6 +1,5 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.table.exception.IllegalOrderTableException;
 import kitchenpos.table.exception.IllegalOrderTablesSizeException;
 import org.springframework.util.CollectionUtils;
 
@@ -14,9 +13,11 @@ import java.util.stream.Collectors;
 
 @Embeddable
 public class OrderTables {
-
     @OneToMany
-    private final List<OrderTable> orderTables;
+    private List<OrderTable> orderTables;
+
+    protected OrderTables() {
+    }
 
     public OrderTables(List<OrderTable> orderTables) {
         validateOrderTablesSize(orderTables);
@@ -44,21 +45,18 @@ public class OrderTables {
             return;
         }
 
-        if (hasCookingOrMealOrder()) {
-            throw new IllegalOrderTableException();
-        }
-
         for (final OrderTable orderTable : orderTables) {
             orderTable.upgroup();
         }
     }
 
-    private boolean hasCookingOrMealOrder() {
-        return orderTables.stream().anyMatch(orderTable -> !orderTable.isCompletedOrders());
-    }
-
     public int size() {
         return orderTables.size();
+    }
+
+    public void grouped(Long tableGroupId) {
+        orderTables.stream()
+                  .forEach(orderTable -> orderTable.grouped(tableGroupId));
     }
 
     @Override
