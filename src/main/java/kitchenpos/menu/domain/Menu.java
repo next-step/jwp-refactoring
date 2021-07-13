@@ -60,16 +60,8 @@ public class Menu {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
     }
 
     public Price getPrice() {
@@ -80,15 +72,7 @@ public class Menu {
         return menuGroup;
     }
 
-    public void setMenuGroup(final MenuGroup menuGroup) {
-        this.menuGroup = menuGroup;
-    }
-
     public MenuProducts getMenuProducts() {
         return menuProducts;
-    }
-
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
-        this.menuProducts = MenuProducts.of(menuProducts);
     }
 }

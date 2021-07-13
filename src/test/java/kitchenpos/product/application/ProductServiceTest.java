@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
@@ -34,13 +34,13 @@ class ProductServiceTest {
     @Test
     void 상품_등록() {
         //Given
-        when(productRepository.save(후라이드)).thenReturn(후라이드);
+        when(productRepository.save(any())).thenReturn(후라이드);
 
         //When
         ProductResponse 생성된_상품 = productService.create(후라이드);
 
         //Then
-        assertThat(생성된_상품.getName()).isEqualTo(후라이드.getName());
+        verify(productRepository, times(1)).save(any());
     }
 
     @DisplayName("상품 목록을 조회한다")
@@ -54,8 +54,6 @@ class ProductServiceTest {
         List<ProductResponse> 조회된_상품_목록 = productService.list();
 
         //Then
-        assertThat(조회된_상품_목록).isNotNull()
-                .hasSize(조회된_상품_목록.size())
-                .containsExactly(ProductResponse.of(후라이드), ProductResponse.of(양념치킨));
+        verify(productRepository,times(1)).findAll();
     }
 }

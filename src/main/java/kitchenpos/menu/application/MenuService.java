@@ -17,6 +17,7 @@ import static kitchenpos.common.Message.ERROR_MENUGROUP_NOT_FOUND;
 import static kitchenpos.common.Message.ERROR_PRODUCT_NOT_FOUND;
 
 @Service
+@Transactional
 public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
@@ -32,7 +33,6 @@ public class MenuService {
         this.productRepository = productRepository;
     }
 
-    @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
 
         MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
@@ -74,6 +74,7 @@ public class MenuService {
         return products;
     }
 
+    @Transactional(readOnly = true)
     public List<MenuResponse> list() {
         final List<Menu> menus = menuRepository.findAll();
         return MenuResponse.ofList(menus);

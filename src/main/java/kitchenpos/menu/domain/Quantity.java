@@ -10,7 +10,6 @@ public class Quantity {
     private Long quantity;
 
     protected Quantity() {
-
     }
 
     private Quantity(Long quantity) {

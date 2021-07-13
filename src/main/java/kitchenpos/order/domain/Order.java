@@ -71,16 +71,8 @@ public class Order {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public OrderTable getOrderTable() {
         return orderTable;
-    }
-
-    public void setOrderTable(final OrderTable orderTable) {
-        this.orderTable = orderTable;
     }
 
     public OrderStatus getOrderStatus() {

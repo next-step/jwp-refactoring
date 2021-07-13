@@ -11,12 +11,12 @@ public class MenuProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
 
-    @ManyToOne
-    @Column(name = "menu_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_id")
     private Menu menu;
 
-    @ManyToOne
-    @Column(name = "product_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
     private Product product;
 
     @Embedded
@@ -52,10 +52,6 @@ public class MenuProduct {
 
     public Menu getMenu() {
         return menu;
-    }
-
-    public void setMenu(final Menu menu) {
-        this.menu = menu;
     }
 
     public Product getProduct() {
