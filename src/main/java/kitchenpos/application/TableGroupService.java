@@ -46,12 +46,10 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         final TableGroup tableGroup = findTableGroupById(tableGroupId);
-        final List<OrderTable> orderTables = tableService.findAllByTableGroup(tableGroup);
 
-        orderService.validateOrderStatusNotIn(orderTables, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
+        orderService.validateOrderStatusNotIn(tableGroup.getOrderTables(), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
 
         tableGroup.ungroup();
-        tableGroupRepository.delete(tableGroup);
     }
 
     public TableGroup findTableGroupById(Long id) {
@@ -60,8 +58,8 @@ public class TableGroupService {
 
     private void validateOrderTableEmpty(List<OrderTable> savedOrderTables) {
         for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup())) {
-                throw new OrderTableException("주문 테이블이 비어있지 않습니다");
+            if ((!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup())) && savedOrderTable.getOrderTables().size() < 2 ) {
+                throw new OrderTableException("주문 테이블이 비어있거나 2개미만입니다");
             }
         }
     }

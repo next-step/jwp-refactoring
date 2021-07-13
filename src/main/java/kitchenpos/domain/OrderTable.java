@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import java.util.List;
 import kitchenpos.advice.exception.OrderTableException;
 
 import javax.persistence.*;
@@ -49,6 +50,10 @@ public class OrderTable {
 
     public TableGroup getTableGroup() {
         return tableGroup;
+    }
+
+    public List<OrderTable> getOrderTables() {
+        return tableGroup.getOrderTables();
     }
 
     public int getNumberOfGuests() {

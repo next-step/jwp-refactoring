@@ -43,7 +43,7 @@ public class TableService {
         orderService.validateOrderStatusNotIn(savedOrderTable, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
         savedOrderTable.updateEmpty(orderTableRequest.getEmpty());
 
-        return orderTableRepository.save(savedOrderTable);
+        return savedOrderTable;
     }
 
     @Transactional
@@ -55,7 +55,7 @@ public class TableService {
         validateOrderTableIsEmpty(savedOrderTable);
 
         savedOrderTable.updateNumberOfGuests(numberOfGuests);
-        return orderTableRepository.save(savedOrderTable);
+        return savedOrderTable;
     }
 
     public List<OrderTable> findAllByIdIn(List<Long> orderTableIds) {
