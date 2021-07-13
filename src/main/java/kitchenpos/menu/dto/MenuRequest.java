@@ -38,7 +38,7 @@ public class MenuRequest {
 		return menuProductRequests;
 	}
 
-	public Menu toMenu(MenuGroup menuGroup, MenuProducts menuProducts) {
-		return new Menu(name, new Price(BigDecimal.valueOf(price)), menuGroup, menuProducts);
+	public Menu toMenu(MenuGroup menuGroup) {
+		return new Menu(name, new Price(BigDecimal.valueOf(price)), menuGroup);
 	}
 }

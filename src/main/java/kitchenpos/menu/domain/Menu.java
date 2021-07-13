@@ -34,47 +34,30 @@ public class Menu {
 	@JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"), nullable = false)
 	private MenuGroup menuGroup;
 
-	@Embedded
-	private MenuProducts menuProducts;
-
 	protected Menu() {
 
 	}
 
-	public Menu(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        validate(price, menuGroup, menuProducts);
+	public Menu(String name, Price price, MenuGroup menuGroup) {
+		validate(price, menuGroup);
 		this.name = name;
 		this.price = price;
 		this.menuGroup = menuGroup;
-		this.menuProducts = menuProducts;
 	}
 
-	public Menu(long id, String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
-		this(name, price, menuGroup, menuProducts);
+	public Menu(long id, String name, Price price, MenuGroup menuGroup) {
+		this(name, price, menuGroup);
 		this.id = id;
 	}
 
-	private void validate(Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+	private void validate(Price price, MenuGroup menuGroup) {
 		validateMenuGroup(menuGroup);
-		validateMenuProducts(menuProducts);
-        validatePrice(price, menuProducts);
+
 	}
 
 	private void validateMenuGroup(MenuGroup menuGroup) {
 		if (Objects.isNull(menuGroup)) {
 			throw new MenuException("메뉴 그룹이 비워져 있습니다.");
-		}
-	}
-
-	private void validateMenuProducts(MenuProducts menuProducts) {
-		if (Objects.isNull(menuProducts)) {
-			throw new MenuException("메뉴 상품들이 하나도 존재하지 않습니다.");
-		}
-	}
-
-	private void validatePrice(Price price, MenuProducts menuProducts) {
-		if (price.compareTo(menuProducts.getSumMenuProductPrice()) > 0) {
-			throw new MenuException("메뉴의 가격이 메뉴 상품들의 총합보다 클 수 없습니다.");
 		}
 	}
 
@@ -92,10 +75,6 @@ public class Menu {
 
 	public MenuGroup getMenuGroup() {
 		return menuGroup;
-	}
-
-	public MenuProducts getMenuProducts() {
-		return menuProducts;
 	}
 
 }

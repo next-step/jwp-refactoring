@@ -34,8 +34,7 @@ public class OrderTest {
 		MenuGroup menuGroup = new MenuGroup(1L, "메뉴그룹");
 		Product product = new Product(1L, "상품이름", new Price(new BigDecimal(1000)));
 		MenuProduct menuProduct = new MenuProduct(1L, product, new Quantity(1));
-		menu = new Menu(1L, "메뉴", new Price(new BigDecimal(1000)), menuGroup,
-			new MenuProducts(Arrays.asList(menuProduct)));
+		menu = new Menu(1L, "메뉴", new Price(new BigDecimal(1000)), menuGroup);
 	}
 
 	@DisplayName("주문 생성 테스트")

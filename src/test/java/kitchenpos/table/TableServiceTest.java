@@ -72,8 +72,7 @@ public class TableServiceTest {
 		후라이드치킨 = new Product(2L, "후라이드치킨", new Price(BigDecimal.valueOf(1000)));
 		양념_반_치킨 = new MenuProduct(1L, 양념치킨, new Quantity(1));
 		후라이드_반_치킨 = new MenuProduct(2L, 후라이드치킨, new Quantity(1));
-		양념반_후라이드반 = new Menu(1L, "양념반 후라이드반", new Price(BigDecimal.valueOf(2000)), 치킨,
-			new MenuProducts(Arrays.asList(양념_반_치킨, 후라이드_반_치킨)));
+		양념반_후라이드반 = new Menu(1L, "양념반 후라이드반", new Price(BigDecimal.valueOf(2000)), 치킨);
 
 		주문항목1 = OrderServiceTest.주문항목생성(양념반_후라이드반, new Quantity(1), 1L);
 		주문항목2 = OrderServiceTest.주문항목생성(양념반_후라이드반, new Quantity(1), 2L);

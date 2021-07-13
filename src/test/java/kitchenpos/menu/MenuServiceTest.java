@@ -15,24 +15,24 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProductRepository;
-import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.domain.Price;
+import kitchenpos.menu.domain.Product;
+import kitchenpos.menu.domain.ProductRepository;
 import kitchenpos.menu.domain.Quantity;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.exception.MenuException;
 import kitchenpos.menu.exception.PriceException;
-import kitchenpos.menu.domain.Product;
-import kitchenpos.menu.domain.ProductRepository;
 
 @DisplayName("메뉴 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -45,10 +45,7 @@ public class MenuServiceTest {
 	private MenuGroupRepository menuGroupRepository;
 
 	@Mock
-	private MenuProductRepository menuProductRepository;
-
-	@Mock
-	private ProductRepository productRepository;
+	private ApplicationEventPublisher eventPublisher;
 
 	@InjectMocks
 	private MenuService menuService;
@@ -67,20 +64,17 @@ public class MenuServiceTest {
 		후라이드치킨 = new Product(2L, "후라이드치킨", new Price(BigDecimal.valueOf(1000)));
 		양념_반_치킨 = new MenuProduct(1L, 양념치킨, new Quantity(1));
 		후라이드_반_치킨 = new MenuProduct(2L, 후라이드치킨, new Quantity(1));
-		양념반_후라이드반 = new Menu(1L, "양념반 후라이드반", new Price(BigDecimal.valueOf(2000)), 치킨,
-			new MenuProducts(Arrays.asList(양념_반_치킨, 후라이드_반_치킨)));
+		양념반_후라이드반 = new Menu(1L, "양념반 후라이드반", new Price(BigDecimal.valueOf(2000)), 치킨);
 	}
 
 	@DisplayName("메뉴를 생성한다")
 	@Test
 	void 메뉴를_생성한다() {
-		MenuProductRequest 양념_반_치킨_요청 = new MenuProductRequest(1L, 1L,1);
+		MenuProductRequest 양념_반_치킨_요청 = new MenuProductRequest(1L, 1L, 1);
 		MenuProductRequest 후라이드_반_치킨_요청 = new MenuProductRequest(2L, 1L, 1);
 		MenuRequest 양념반_후라이드_반_요청 = new MenuRequest("치킨", 2000, 1L, Arrays.asList(양념_반_치킨_요청, 후라이드_반_치킨_요청));
 
 		given(menuGroupRepository.findById(치킨.getId())).willReturn(Optional.of(치킨));
-		given(productRepository.findById(양념치킨.getId())).willReturn(Optional.ofNullable(양념치킨));
-		given(productRepository.findById(후라이드치킨.getId())).willReturn(Optional.ofNullable(후라이드치킨));
 		given(menuRepository.save(any())).willReturn(양념반_후라이드반);
 
 		MenuResponse created = menuService.create(양념반_후라이드_반_요청);
@@ -92,13 +86,11 @@ public class MenuServiceTest {
 	@Test
 	void 메뉴_생성_메뉴의_가격은_0보다_커야_한다() {
 
-		MenuProductRequest 양념_반_치킨_요청 = new MenuProductRequest(1L, 1L,1);
+		MenuProductRequest 양념_반_치킨_요청 = new MenuProductRequest(1L, 1L, 1);
 		MenuProductRequest 후라이드_반_치킨_요청 = new MenuProductRequest(2L, 1L, 1);
 		MenuRequest 양념반_후라이드_반_요청 = new MenuRequest("치킨", -1000, 1L, Arrays.asList(양념_반_치킨_요청, 후라이드_반_치킨_요청));
 
 		given(menuGroupRepository.findById(치킨.getId())).willReturn(Optional.of(치킨));
-		given(productRepository.findById(1L)).willReturn(Optional.of(양념치킨));
-		given(productRepository.findById(2L)).willReturn(Optional.of(후라이드치킨));
 
 		assertThatThrownBy(() -> {
 			menuService.create(양념반_후라이드_반_요청);
@@ -121,21 +113,6 @@ public class MenuServiceTest {
 
 	}
 
-	@DisplayName("메뉴 생성 - 메뉴 가격보다 메뉴의 메뉴 상품 리스트의 가격의 합이 크면 안된다.")
-	@Test
-	void 메뉴_생성_메뉴_가격보다_메뉴의_메뉴_상품_리스트의_가격의_합이_크면_안된다() {
-		MenuProductRequest 양념_반_치킨_요청 = new MenuProductRequest(1L, 1L, 1);
-		MenuProductRequest 후라이드_반_치킨_요청 = new MenuProductRequest(2L, 1L, 1);
-		MenuRequest 양념반_후라이드_반_요청 = new MenuRequest("치킨", 3000, 1L, Arrays.asList(양념_반_치킨_요청, 후라이드_반_치킨_요청));
-
-		given(menuGroupRepository.findById(치킨.getId())).willReturn(Optional.of(치킨));
-		given(productRepository.findById(1L)).willReturn(Optional.of(양념치킨));
-		given(productRepository.findById(2L)).willReturn(Optional.of(후라이드치킨));
-
-		assertThatThrownBy(() -> {
-			menuService.create(양념반_후라이드_반_요청);
-		}).isInstanceOf(MenuException.class);
-	}
 
 
 	@DisplayName("메뉴 생성 - 메뉴 리스트를 조회한다")
@@ -156,7 +133,6 @@ public class MenuServiceTest {
 	private void 메뉴_생성_확인(MenuResponse created, Menu expected) {
 		assertThat(created.getId()).isEqualTo(expected.getId());
 		assertThat(created.getMenuGroupResponse().getId()).isEqualTo(expected.getMenuGroup().getId());
-		assertThat(created.getMenuProductResponses()).isNotNull();
 		assertThat(created.getPrice()).isEqualTo(expected.getPrice().value());
 		assertThat(created.getName()).isEqualTo(expected.getName());
 	}
