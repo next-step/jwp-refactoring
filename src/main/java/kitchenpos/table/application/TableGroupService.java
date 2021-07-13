@@ -4,13 +4,11 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.exception.NotFoundOrder;
 import kitchenpos.order.exception.NotFoundOrderTable;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.table.domain.*;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
+import kitchenpos.table.exception.NotExistOrderTable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,8 +32,8 @@ public class TableGroupService {
         final List<Long> orderTableIds = tableGroupRequest.getOrderTableIds();
         final List<OrderTable> orderTables = orderTableRepository.findAllByIdIn(orderTableIds)
                 .orElseThrow(() -> new NotFoundOrderTable());
-        TableGroup persistTableGroup = tableGroupRequest.toTableGroup(orderTables);
-        final TableGroup savedTableGroup = tableGroupRepository.save(persistTableGroup);
+        TableGroup tableGroup = toTableGroup(orderTables, tableGroupRequest);
+        final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
         return TableGroupResponse.of(savedTableGroup);
     }
 
@@ -53,5 +51,12 @@ public class TableGroupService {
         return orderTables.stream()
                 .map(orderTable -> OrderTableResponse.of(orderTable))
                 .collect(Collectors.toList());
+    }
+
+    private TableGroup toTableGroup(List<OrderTable> orderTables, TableGroupRequest tableGroupRequest) {
+        if (!tableGroupRequest.isSameOrderTableCount(orderTables.size())) {
+            throw new NotExistOrderTable();
+        }
+        return new TableGroup(new OrderTables(orderTables));
     }
 }

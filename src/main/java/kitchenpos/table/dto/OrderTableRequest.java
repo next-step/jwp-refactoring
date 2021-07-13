@@ -1,7 +1,5 @@
 package kitchenpos.table.dto;
 
-import kitchenpos.table.domain.OrderTable;
-
 public class OrderTableRequest {
     private Long id;
     private int numberOfGuests;
@@ -16,10 +14,6 @@ public class OrderTableRequest {
 
     public OrderTableRequest(int numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
-    }
-
-    public OrderTable toOrderTable(){
-        return new OrderTable(numberOfGuests);
     }
 
     public int getNumberOfGuests() {

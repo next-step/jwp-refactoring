@@ -9,6 +9,7 @@ import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.order.exception.NotFoundOrder;
 import kitchenpos.order.exception.NotFoundOrderTable;
 import kitchenpos.table.exception.NotChangeToEmptyThatCookingOrMealTable;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +28,8 @@ public class TableService {
     }
 
     public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
-        OrderTable persistOrderTable = orderTableRepository.save(orderTableRequest.toOrderTable());
+        OrderTable orderTable = toOrderTable(orderTableRequest.getNumberOfGuests());
+        OrderTable persistOrderTable = orderTableRepository.save(orderTable);
         return OrderTableResponse.of(persistOrderTable);
     }
 
@@ -52,5 +54,9 @@ public class TableService {
         OrderTable orderTable = orderTableRepository.findById(orderTableId).orElseThrow(() -> new NotFoundOrderTable());
         orderTable.changeNumberOfGuests(orderTableRequest.getNumberOfGuests());
         return OrderTableResponse.of(orderTable);
+    }
+
+    private OrderTable toOrderTable(int numberOfGuests) {
+        return new OrderTable(numberOfGuests);
     }
 }

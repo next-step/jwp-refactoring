@@ -59,7 +59,7 @@ public class TableServiceTest {
     void 테이블_등록() {
         // when
         // 주문 테이블 등록 요청
-        OrderTable orderTable = firstOrderTableRequest.toOrderTable();
+        OrderTable orderTable = new OrderTable(10);
         when(orderTableRepository.save(orderTable)).thenReturn(orderTable);
         OrderTableResponse expected = tableService.create(firstOrderTableRequest);
 
@@ -74,8 +74,8 @@ public class TableServiceTest {
     void 테이블_리스트_조회() {
         // given
         // 주문 테이블 저장되어 있음
-        OrderTable firstOrderTable = firstOrderTableRequest.toOrderTable();
-        OrderTable secondOrderTable = firstOrderTableRequest.toOrderTable();
+        OrderTable firstOrderTable = new OrderTable(10);
+        OrderTable secondOrderTable = new OrderTable(10);
 
         // when
         // 주문 테이블 리스트 조회함
@@ -105,7 +105,7 @@ public class TableServiceTest {
     void isOrderTalbleOfGroupTable_exception() {
         // give
         // 해당 주문 테이블은 단체 테이블임
-        OrderTable firstOrderTable = firstOrderTableRequest.toOrderTable();
+        OrderTable firstOrderTable = new OrderTable(10);
         TableGroup tableGroup = new TableGroup(new OrderTables(Arrays.asList(firstOrderTable)));
         firstOrderTable.changeTableGroupId(tableGroup);
 
@@ -138,7 +138,7 @@ public class TableServiceTest {
     void isCookingOrMealingOrderTable_exception() {
         // give
         // 해당 주문 테이블 생성되어 있음
-        OrderTable firstOrderTable = firstOrderTableRequest.toOrderTable();
+        OrderTable firstOrderTable = new OrderTable(10);
 
         // and
         // 주문 메뉴 및 테이블 생성되어 있음
@@ -165,7 +165,7 @@ public class TableServiceTest {
     void 주문_테이블_정상_변경() {
         // give
         // 주문 테이블 등록되어 있음
-        OrderTable firstOrderTable = firstOrderTableRequest.toOrderTable();
+        OrderTable firstOrderTable = new OrderTable(10);
 
         // and
         // 주문 메뉴 및 테이블 생성되어 있음
