@@ -2,8 +2,8 @@ package kitchenpos.order.ui;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.value.OrderStatus;
+import kitchenpos.order.domain.entity.OrderTable;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +15,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.nio.charset.StandardCharsets;
@@ -36,8 +35,6 @@ class OrderRestControllerTest {
     OrderRestController orderRestController;
     @Autowired
     ObjectMapper objectMapper;
-    @Autowired
-    WebApplicationContext webApplicationContext;
 
     OrderRequest 주문_리퀘스트;
     OrderLineItemRequest 오더라인아이템_리퀘스트;
@@ -45,7 +42,7 @@ class OrderRestControllerTest {
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+        mockMvc = MockMvcBuilders.standaloneSetup(orderRestController)
                 .addFilter(new CharacterEncodingFilter(StandardCharsets.UTF_8.name(), true))
                 .alwaysDo(print())
                 .build();
@@ -121,7 +118,7 @@ class OrderRestControllerTest {
             mockMvc.perform(post("/api/orders")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(requestBody))
-                    .andExpect(status().is5xxServerError());
+                    .andExpect(status().isBadRequest());
         } catch (Exception e) {
             assertThat(e.getCause()).isInstanceOf(IllegalArgumentException.class);
         }

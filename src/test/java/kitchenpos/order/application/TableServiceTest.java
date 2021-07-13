@@ -1,7 +1,11 @@
 package kitchenpos.order.application;
 
-import kitchenpos.order.application.TableService;
-import kitchenpos.order.domain.*;
+import kitchenpos.order.domain.entity.OrderRepository;
+import kitchenpos.order.domain.entity.OrderTable;
+import kitchenpos.order.domain.entity.OrderTableRepository;
+import kitchenpos.order.domain.entity.TableGroup;
+import kitchenpos.order.domain.value.NumberOfGuests;
+import kitchenpos.order.domain.value.OrderStatus;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,28 +41,27 @@ class TableServiceTest {
     OrderTable 주문테이블_인원변경테이블;
 
     long 존재하지않는아이디;
-    private OrderTableRequest 주문테이블_테이블1_리퀘스트;
+    OrderTableRequest 주문테이블_테이블1_리퀘스트;
     OrderTableRequest 주문테이블_상태변경테이블_리퀘스트;
+    OrderTableRequest 주문테이블_인원변경테이블_리퀘스트;
+
     @BeforeEach
     void setUp() {
         존재하지않는아이디 = 99L;
 
         TableGroup 테이블그룹 = new TableGroup();
 
-        주문테이블_테이블1 = new OrderTable(1L,3,false);
-        //주문테이블_테이블1.setId(1L);
+        주문테이블_테이블1 = new OrderTable(1L, NumberOfGuests.of(3),false);
 
         주문테이블_테이블1_리퀘스트 = new OrderTableRequest();
 
-        주문테이블_테이블2 = new OrderTable(1L,3,true);
-        //주문테이블_테이블2.setId(2L);
+        주문테이블_테이블2 = new OrderTable(1L,NumberOfGuests.of(3),true);
 
         주문테이블_상태변경테이블 = new OrderTable();
-        //주문테이블_상태변경테이블.setEmpty(false);
 
-        주문테이블_인원변경테이블 = new OrderTable(1L,4,false);
-        //주문테이블_인원변경테이블.setNumberOfGuests(4);
+        주문테이블_인원변경테이블 = new OrderTable(1L,NumberOfGuests.of(4),false);
 
+        주문테이블_인원변경테이블_리퀘스트 = new OrderTableRequest(1L,4,false);
 
         주문테이블_상태변경테이블_리퀘스트 = new OrderTableRequest(1L,3,false);
     }
@@ -70,7 +73,7 @@ class TableServiceTest {
         when(orderTableRepository.save(any())).thenReturn(주문테이블_테이블1);
 
         //when
-        OrderTableResponse createdOrderTable = tableService.create_re(주문테이블_테이블1_리퀘스트);
+        OrderTableResponse createdOrderTable = tableService.create(주문테이블_테이블1_리퀘스트);
 
         //then
         assertThat(createdOrderTable.getId()).isEqualTo(주문테이블_테이블1.getId());
@@ -83,7 +86,7 @@ class TableServiceTest {
         when(orderTableRepository.findAll()).thenReturn(Arrays.asList(주문테이블_테이블1, 주문테이블_테이블2));
 
         //when
-        List<OrderTableResponse> orderTables = tableService.list_re();
+        List<OrderTableResponse> orderTables = tableService.list();
 
         //then
         assertThat(orderTables.stream().map(OrderTableResponse::getId))
@@ -104,7 +107,7 @@ class TableServiceTest {
         when(orderTableRepository.save(주문테이블_테이블1)).thenReturn(주문테이블_테이블1);
 
         //when
-        OrderTableResponse changedOrderTable = tableService.changeEmpty_re(주문테이블_테이블1.getId(), 주문테이블_상태변경테이블_리퀘스트);
+        OrderTableResponse changedOrderTable = tableService.changeEmpty(주문테이블_테이블1.getId(), 주문테이블_상태변경테이블_리퀘스트);
 
         //then
         assertThat(changedOrderTable.isEmpty()).isFalse();
@@ -114,7 +117,7 @@ class TableServiceTest {
     @DisplayName("존재하지않는 테이블의 상태변경은 실패한다.")
     void changeEmpty_with_exception_when_not_exist_orderTableId_re() {
         //when && then
-        assertThatThrownBy(() -> tableService.changeEmpty_re(존재하지않는아이디, 주문테이블_상태변경테이블_리퀘스트))
+        assertThatThrownBy(() -> tableService.changeEmpty(존재하지않는아이디, 주문테이블_상태변경테이블_리퀘스트))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -123,7 +126,7 @@ class TableServiceTest {
     void changeEmpty_with_exception_re() {
         OrderTableRequest 주문테이블_상태변경테이블 = new OrderTableRequest(1L,3,false);
         //when && then
-        assertThatThrownBy(() -> tableService.changeEmpty_re(주문테이블_테이블1.getId(), 주문테이블_상태변경테이블_리퀘스트))
+        assertThatThrownBy(() -> tableService.changeEmpty(주문테이블_테이블1.getId(), 주문테이블_상태변경테이블_리퀘스트))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -137,7 +140,7 @@ class TableServiceTest {
                 .thenReturn(true);
 
         //when && then
-        assertThatThrownBy(() -> tableService.changeEmpty_re(주문테이블_테이블1.getId(), 주문테이블_상태변경테이블_리퀘스트))
+        assertThatThrownBy(() -> tableService.changeEmpty(주문테이블_테이블1.getId(), 주문테이블_상태변경테이블_리퀘스트))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -149,7 +152,7 @@ class TableServiceTest {
         when(orderTableRepository.save(주문테이블_테이블1)).thenReturn(주문테이블_테이블1);
 
         //when
-        OrderTable changedOrderTable = tableService.changeNumberOfGuests_re(주문테이블_테이블1.getId(), 주문테이블_인원변경테이블);
+        OrderTableResponse changedOrderTable = tableService.changeNumberOfGuests(주문테이블_테이블1.getId(), 주문테이블_인원변경테이블_리퀘스트);
 
         //then
         assertThat(changedOrderTable.getNumberOfGuests()).isEqualTo(4);
@@ -162,7 +165,7 @@ class TableServiceTest {
         //주문테이블_인원변경테이블.setNumberOfGuests(-1);
 
         //when && then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests_re(주문테이블_테이블1.getId(), 주문테이블_인원변경테이블))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(주문테이블_테이블1.getId(), 주문테이블_인원변경테이블_리퀘스트))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -170,7 +173,7 @@ class TableServiceTest {
     @DisplayName("없는테이블의 인원을 변경할 경우 변경은 실패한다.")
     void changeNumberOfGuests_with_exception_when_not_exist_orderTableId_re() {
         //when && then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests_re(존재하지않는아이디, 주문테이블_인원변경테이블))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(존재하지않는아이디, 주문테이블_인원변경테이블_리퀘스트))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -183,7 +186,7 @@ class TableServiceTest {
         when(orderTableRepository.findById(주문테이블_테이블2.getId())).thenReturn(Optional.of(주문테이블_테이블2));
 
         //when && then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests_re(주문테이블_테이블2.getId(), 주문테이블_인원변경테이블))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(주문테이블_테이블2.getId(), 주문테이블_인원변경테이블_리퀘스트))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

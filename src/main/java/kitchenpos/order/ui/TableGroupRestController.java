@@ -35,7 +35,6 @@ public class TableGroupRestController {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity handleIllegalArgsException(IllegalArgumentException e) {
-        e.printStackTrace();
         return ResponseEntity.badRequest().build();
     }
 }

@@ -1,6 +1,7 @@
-package kitchenpos.order.domain;
+package kitchenpos.order.domain.entity;
 
 import kitchenpos.menu.domain.entity.Menu;
+import kitchenpos.order.domain.value.Quantity;
 
 import javax.persistence.*;
 
@@ -24,16 +25,16 @@ public class OrderLineItem {
     public OrderLineItem() {
     }
 
-    public OrderLineItem(Long seq, Order order, Menu menu, Long quantity) {
+    public OrderLineItem(Long seq, Order order, Menu menu, Quantity quantity) {
         this.seq = seq;
         this.order = order;
         this.menu = menu;
-        this.quantity = Quantity.of(quantity);
+        this.quantity = quantity;
     }
 
-    public OrderLineItem(Menu menu, long quantity) {
+    public OrderLineItem(Menu menu, Quantity quantity) {
         this.menu = menu;
-        this.quantity = Quantity.of(quantity);
+        this.quantity = quantity;
     }
 
     public Long getSeq() {

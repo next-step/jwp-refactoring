@@ -2,7 +2,9 @@ package kitchenpos.order.application;
 
 import kitchenpos.menu.domain.entity.Menu;
 import kitchenpos.menu.domain.entity.MenuRepository;
-import kitchenpos.order.domain.*;
+import kitchenpos.order.domain.entity.*;
+import kitchenpos.order.domain.value.OrderLineItems;
+import kitchenpos.order.domain.value.Quantity;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import org.springframework.stereotype.Service;
@@ -16,21 +18,19 @@ import java.util.stream.Collectors;
 public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
-    private final OrderLineItemRepository orderLineItemRepository;
     private final OrderTableRepository orderTableRepository;
 
     public OrderService(
-            MenuRepository menuRepository, OrderRepository orderRepository, OrderLineItemRepository orderLineItemRepository, OrderTableRepository orderTableRepository) {
+            MenuRepository menuRepository, OrderRepository orderRepository, OrderTableRepository orderTableRepository) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
-        this.orderLineItemRepository = orderLineItemRepository;
         this.orderTableRepository = orderTableRepository;
     }
 
     public OrderResponse create(final OrderRequest orderRequest) {
         OrderTable orderTable = findOrderTable(orderRequest);
         List<OrderLineItem> orderLineItems = findOrderLineItems(orderRequest);
-        Order order = new Order(orderTable, orderLineItems);
+        Order order = new Order(orderTable, new OrderLineItems(orderLineItems));
         return OrderResponse.of(orderRepository.save(order));
     }
 
@@ -40,7 +40,7 @@ public class OrderService {
                 .map(orderLineItemRequest -> {
                     Menu menu = menuRepository.findById(orderLineItemRequest.getMenuId())
                             .orElseThrow(IllegalArgumentException::new);
-                    return new OrderLineItem(menu, orderLineItemRequest.getQuantity());
+                    return new OrderLineItem(menu, Quantity.of(orderLineItemRequest.getQuantity()));
                 }).collect(Collectors.toList());
     }
 

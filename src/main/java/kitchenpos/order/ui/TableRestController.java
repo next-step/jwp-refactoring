@@ -1,7 +1,7 @@
 package kitchenpos.order.ui;
 
 import kitchenpos.order.application.TableService;
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.entity.OrderTable;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +20,7 @@ public class TableRestController {
 
     @PostMapping("/api/tables")
     public ResponseEntity<OrderTableResponse> create(@RequestBody final OrderTableRequest orderTableRequest) {
-        final OrderTableResponse created = tableService.create_re(orderTableRequest);
+        final OrderTableResponse created = tableService.create(orderTableRequest);
         final URI uri = URI.create("/api/tables/" + created.getId());
         return ResponseEntity.created(uri)
                 .body(created)
@@ -30,7 +30,7 @@ public class TableRestController {
     @GetMapping("/api/tables")
     public ResponseEntity<List<OrderTableResponse>> list() {
         return ResponseEntity.ok()
-                .body(tableService.list_re())
+                .body(tableService.list())
                 ;
     }
 
@@ -40,19 +40,17 @@ public class TableRestController {
             @RequestBody final OrderTableRequest orderTableRequest
     ) {
         return ResponseEntity.ok()
-                .body(tableService.changeEmpty_re(orderTableId, orderTableRequest))
+                .body(tableService.changeEmpty(orderTableId, orderTableRequest))
                 ;
     }
 
     @PutMapping("/api/tables/{orderTableId}/number-of-guests")
-    public ResponseEntity<OrderTable> changeNumberOfGuests(
+    public ResponseEntity<OrderTableResponse> changeNumberOfGuests(
             @PathVariable final Long orderTableId,
-            @RequestBody final OrderTable orderTable
+            @RequestBody final OrderTableRequest orderTable
     ) {
         return ResponseEntity.ok()
-                .body(tableService.changeNumberOfGuests_re(orderTableId, orderTable))
+                .body(tableService.changeNumberOfGuests(orderTableId, orderTable))
                 ;
     }
-
-
 }

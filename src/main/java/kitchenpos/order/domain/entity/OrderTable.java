@@ -1,4 +1,6 @@
-package kitchenpos.order.domain;
+package kitchenpos.order.domain.entity;
+
+import kitchenpos.order.domain.value.NumberOfGuests;
 
 import javax.persistence.*;
 
@@ -7,26 +9,34 @@ public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne
     @JoinColumn(name = "table_group_id")
     private TableGroup tableGroup;
-    private int numberOfGuests;
+
+    @Embedded
+    private NumberOfGuests numberOfGuests;
     private boolean empty;
 
     public OrderTable() {
     }
 
-    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, TableGroup tableGroup, NumberOfGuests numberOfGuests, boolean empty) {
         this.id = id;
         this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
 
-    public OrderTable(Long id, int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, NumberOfGuests numberOfGuests, boolean empty) {
         this.id = id;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
+    }
+
+    public OrderTable(NumberOfGuests numberOfGuests) {
+        this.numberOfGuests = numberOfGuests;
+        this.empty = false;
     }
 
     public Long getId() {
@@ -37,7 +47,7 @@ public class OrderTable {
         return tableGroup;
     }
 
-    public int getNumberOfGuests() {
+    public NumberOfGuests getNumberOfGuests() {
         return numberOfGuests;
     }
 
@@ -49,15 +59,15 @@ public class OrderTable {
         this.tableGroup = tableGroup;
     }
 
-    public void setTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
+    public void unGroup() {
+        this.tableGroup = null;
     }
 
-    public void setEmpty(boolean empty) {
+    public void changeEmpty(boolean empty) {
         this.empty = empty;
     }
 
-    public void changeNumberOfGuests(int numberOfGuests) {
+    public void changeNumberOfGuests(NumberOfGuests numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
     }
 }

@@ -1,6 +1,6 @@
 package kitchenpos.order.dto;
 
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.entity.OrderTable;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,7 +21,7 @@ public class OrderTableResponse {
 
     public static OrderTableResponse of(OrderTable orderTable) {
         return new OrderTableResponse(orderTable.getId(),
-                orderTable.getNumberOfGuests(),
+                orderTable.getNumberOfGuests().getValue(),
                 orderTable.isEmpty());
     }
 

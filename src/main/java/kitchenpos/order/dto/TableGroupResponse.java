@@ -1,6 +1,6 @@
 package kitchenpos.order.dto;
 
-import kitchenpos.order.domain.TableGroup;
+import kitchenpos.order.domain.entity.TableGroup;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class TableGroupResponse {
 
     public static TableGroupResponse of(TableGroup tableGroup) {
         return new TableGroupResponse(tableGroup.getId(),
-                OrderTableResponse.ofList(tableGroup.getOrderTables()));
+                OrderTableResponse.ofList(tableGroup.getOrderTables().getValue()));
     }
 
     public Long getId() {

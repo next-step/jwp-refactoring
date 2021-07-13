@@ -2,7 +2,10 @@ package kitchenpos.order.application;
 
 import kitchenpos.menu.domain.entity.Menu;
 import kitchenpos.menu.domain.entity.MenuRepository;
-import kitchenpos.order.domain.*;
+import kitchenpos.order.domain.entity.*;
+import kitchenpos.order.domain.value.OrderLineItems;
+import kitchenpos.order.domain.value.OrderStatus;
+import kitchenpos.order.domain.value.Quantity;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
@@ -49,12 +52,12 @@ class OrderServiceTest {
     @BeforeEach
     void setUp() {
         메뉴_후라이드_후라이드 = new Menu();
-        주문라인아이템 = new OrderLineItem(1L, null, 메뉴_후라이드_후라이드, 1L);
+        주문라인아이템 = new OrderLineItem(1L, null, 메뉴_후라이드_후라이드, Quantity.of(1L));
         주문라인아이템_리퀘스트 = new OrderLineItemRequest(1L, 1L, 999L, 1L);
         주문테이블 = new OrderTable();
-        주문 = new Order(1L, 주문테이블, OrderStatus.MEAL.name(), Arrays.asList(주문라인아이템));
+        주문 = new Order(1L, 주문테이블, OrderStatus.MEAL.name(), new OrderLineItems(Arrays.asList(주문라인아이템)));
         주문_리퀘스트 = new OrderRequest(1L, 주문테이블.getId(), Arrays.asList(주문라인아이템_리퀘스트));
-        주문_변경 = new Order(1L, 주문테이블, OrderStatus.COMPLETION.name(), Arrays.asList(주문라인아이템));
+        주문_변경 = new Order(1L, 주문테이블, OrderStatus.COMPLETION.name(), new OrderLineItems(Arrays.asList(주문라인아이템)));
         주문_변경_리퀘스트 = new OrderRequest(OrderStatus.COMPLETION.name());
     }
 
@@ -149,7 +152,7 @@ class OrderServiceTest {
     @DisplayName("주문상태가 계산완료인경우 주문 상태 변경을 실패한다.")
     void changeOrderStatus_with_exception_when_order_status_is_completion() {
         //given
-        주문 = new Order(1L, 주문테이블, OrderStatus.COMPLETION.name(), Arrays.asList(주문라인아이템));
+        주문 = new Order(1L, 주문테이블, OrderStatus.COMPLETION.name(), new OrderLineItems(Arrays.asList(주문라인아이템)));
         주문_리퀘스트 = new OrderRequest(1L, 주문테이블.getId(), OrderStatus.COMPLETION.name(), Arrays.asList(주문라인아이템_리퀘스트));
 
         //when

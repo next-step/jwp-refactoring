@@ -1,6 +1,8 @@
 package kitchenpos.order.application;
 
-import kitchenpos.order.domain.*;
+import kitchenpos.order.domain.entity.*;
+import kitchenpos.order.domain.value.OrderStatus;
+import kitchenpos.order.domain.value.OrderTables;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.TableGroupRequest;
 import kitchenpos.order.dto.TableGroupResponse;
@@ -26,12 +28,12 @@ public class TableGroupService {
         this.tableGroupRepository = tableGroupRepository;
     }
 
-    public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
+    public TableGroupResponse create(TableGroupRequest tableGroupRequest) {
         validateOrderTableCountSmallerThanTwo(tableGroupRequest);
         List<Long> orderTableIds = getOrderTableIds(tableGroupRequest);
         List<OrderTable> orderTables = orderTableRepository.findAllById(orderTableIds);
         validateOrderTable(tableGroupRequest, orderTables);
-        TableGroup tableGroup = new TableGroup(orderTables);
+        TableGroup tableGroup = new TableGroup(new OrderTables(orderTables));
         return TableGroupResponse.of(tableGroupRepository.save(tableGroup));
     }
 
@@ -43,18 +45,14 @@ public class TableGroupService {
 
     private void validateOrderTableInTableGroup(List<OrderTable> orderTables) {
         if (orderTables.stream()
-                .filter(orderTable -> Objects.nonNull(orderTable.getTableGroup()))
-                .findAny()
-                .isPresent()) {
+                .anyMatch(orderTable -> Objects.nonNull(orderTable.getTableGroup()))) {
             throw new IllegalArgumentException();
         }
     }
 
     private void validateOrderTableIsNotEmpty(List<OrderTable> orderTables) {
         if (orderTables.stream()
-                .filter(orderTable -> !orderTable.isEmpty())
-                .findAny()
-                .isPresent()) {
+                .anyMatch(orderTable -> !orderTable.isEmpty())) {
             throw new IllegalArgumentException();
         }
     }
@@ -77,23 +75,29 @@ public class TableGroupService {
                 .collect(Collectors.toList());
     }
 
-    public void ungroup(final java.lang.Long tableGroupId) {
-        TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
-                .orElseThrow(IllegalArgumentException::new);
-        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroup.getId());
+    public void ungroup(Long tableGroupId) {
+        TableGroup tableGroup = findTableGroup(tableGroupId);
+        List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroup.getId());
+        List<Long> orderTableIds = getOrderTableIds(orderTables);
+        validateOrderStatus(orderTableIds);
+        orderTables.forEach(OrderTable::unGroup);
+    }
 
-        final List<java.lang.Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-
+    private void validateOrderStatus(List<Long> orderTableIds) {
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
                 orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
             throw new IllegalArgumentException();
         }
+    }
 
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.setTableGroup(null);
-            orderTableRepository.save(orderTable);
-        }
+    private TableGroup findTableGroup(Long tableGroupId) {
+        return tableGroupRepository.findById(tableGroupId)
+                .orElseThrow(IllegalArgumentException::new);
+    }
+
+    private List<Long> getOrderTableIds(List<OrderTable> orderTables) {
+        return orderTables.stream()
+                .map(OrderTable::getId)
+                .collect(Collectors.toList());
     }
 }

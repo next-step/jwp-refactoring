@@ -1,10 +1,11 @@
 package kitchenpos.order.ui;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.order.application.TableGroupService;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.TableGroup;
+import kitchenpos.order.domain.entity.OrderTable;
+import kitchenpos.order.domain.entity.TableGroup;
+import kitchenpos.order.domain.value.NumberOfGuests;
+import kitchenpos.order.domain.value.OrderTables;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.TableGroupRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -51,14 +52,14 @@ class TableGroupRestControllerTest {
                 .alwaysDo(print())
                 .build();
 
-        테이블1 = new OrderTable(4L, 테이블그룹, 4, true);
-        테이블2 = new OrderTable(5L, 테이블그룹, 4, true);
+        테이블1 = new OrderTable(4L, 테이블그룹, NumberOfGuests.of(4), true);
+        테이블2 = new OrderTable(5L, 테이블그룹, NumberOfGuests.of(4), true);
 
         테이블_손님이_존재 = new OrderTable();
 
         테이블_단체테이블에_속해있는 = new OrderTable();
 
-        테이블그룹 = new TableGroup(Arrays.asList(테이블1, 테이블2));
+        테이블그룹 = new TableGroup(new OrderTables(Arrays.asList(테이블1, 테이블2)));
 
     }
 

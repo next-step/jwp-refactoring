@@ -1,6 +1,7 @@
-package kitchenpos.order.domain;
+package kitchenpos.order.domain.entity;
 
-import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.domain.value.OrderLineItems;
+import kitchenpos.order.domain.value.OrderStatus;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -21,26 +22,24 @@ public class Order {
 
     private LocalDateTime orderedTime = LocalDateTime.now();
 
-    @OneToMany(mappedBy = "order")
-    private List<OrderLineItem> orderLineItems;
+    @Embedded
+    private OrderLineItems orderLineItems;
 
     public Order() {
     }
 
-
-
-    public Order(Long id, OrderTable orderTable, String orderStatus, List<OrderLineItem> orderLineItems) {
+    public Order(Long id, OrderTable orderTable, String orderStatus, OrderLineItems orderLineItems) {
         this.id = id;
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderLineItems = orderLineItems;
-        orderLineItems.forEach(orderLineItem -> orderLineItem.toOrder(this));
+        orderLineItems.toOrder(this);
     }
 
-    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+    public Order(OrderTable orderTable, OrderLineItems orderLineItems) {
         this.orderTable = orderTable;
         this.orderLineItems = orderLineItems;
-        orderLineItems.forEach(orderLineItem -> orderLineItem.toOrder(this));
+        orderLineItems.toOrder(this);
     }
 
     public Long getId() {
@@ -59,10 +58,6 @@ public class Order {
         return orderedTime;
     }
 
-    public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
-    }
-
     public void changeOrderStatus(String orderStatus) {
         validateOrderStatus();
         this.orderStatus = orderStatus;
@@ -72,5 +67,9 @@ public class Order {
         if (this.orderStatus.equals(OrderStatus.COMPLETION.name())) {
             throw new IllegalArgumentException();
         }
+    }
+
+    public List<OrderLineItem> getOrderLineItemList() {
+        return orderLineItems.getValue();
     }
 }

@@ -38,10 +38,9 @@ class TableRestControllerTest {
     OrderTableRequest 오더테이블_리퀘스트;
 
     long 테이블_존재하지않는_테이블아이디 = 999L;
-    long 테이블_그룹아이디가_존재하는_테이블아이디 = 98L;
+    long 테이블_그룹아이디가_존재하는_테이블아이디 = 108L;
     long 테이블_조리중인_테이블아이디 = 2L;
     long 테이블_인원변경할_테이블아이디 = 98L;
-    long 테이블_상태변경할_테이블아이디 = 7L;
 
     @BeforeEach
     void setUp() {
@@ -49,24 +48,20 @@ class TableRestControllerTest {
                 .addFilter(new CharacterEncodingFilter(StandardCharsets.UTF_8.name(), true))
                 .alwaysDo(print())
                 .build();
-
-        오더테이블_리퀘스트 = new OrderTableRequest();
-        //오더테이블.setId(100L);
-        //오더테이블.setNumberOfGuests(3);
     }
 
     @Test
     @DisplayName("테이블을 생성한다.")
     void create() throws Exception {
         //given
+        OrderTableRequest 오더테이블_리퀘스트 = new OrderTableRequest();
         String requestBody = objectMapper.writeValueAsString(오더테이블_리퀘스트);
 
         //when && then
         mockMvc.perform(post("/api/tables")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestBody))
-                .andExpect(status().isCreated())
-                .andExpect(content().string(containsString("\"id\":100")));
+                .andExpect(status().isCreated());
     }
 
     @Test
@@ -81,7 +76,7 @@ class TableRestControllerTest {
     @DisplayName("테이블의 상태를 변경한다.")
     void changeEmpty() throws Exception {
         //given
-        오더테이블_리퀘스트 = new OrderTableRequest(1L,3,true);
+        오더테이블_리퀘스트 = new OrderTableRequest(8L,3,true);
         String requestBody = objectMapper.writeValueAsString(오더테이블_리퀘스트);
 
         //when && then
@@ -126,7 +121,7 @@ class TableRestControllerTest {
     @DisplayName("테이블 인원을 변경한다.")
     void changeNumberOfGuests() throws Exception {
         //given
-        오더테이블_리퀘스트 = new OrderTableRequest(테이블_인원변경할_테이블아이디,4,true);
+        오더테이블_리퀘스트 = new OrderTableRequest(테이블_인원변경할_테이블아이디,44,true);
 
         String requestBody = objectMapper.writeValueAsString(오더테이블_리퀘스트);
 

@@ -1,6 +1,8 @@
 package kitchenpos.order.application;
 
-import kitchenpos.order.domain.*;
+import kitchenpos.order.domain.entity.*;
+import kitchenpos.order.domain.value.NumberOfGuests;
+import kitchenpos.order.domain.value.OrderTables;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.TableGroupRequest;
 import kitchenpos.order.dto.TableGroupResponse;
@@ -44,12 +46,12 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        오더테이블_테이블1 = new OrderTable(1L, null,4, true);
+        오더테이블_테이블1 = new OrderTable(1L, null, NumberOfGuests.of(44), true);
         오더테이블_테이블1_리퀘스트 = new OrderTableRequest(1L, null, 3, true);
-        오더테이블_테이블2 = new OrderTable(2L, null,3, true);
+        오더테이블_테이블2 = new OrderTable(2L, null,NumberOfGuests.of(33), true);
         오더테이블_테이블2_리퀘스트 = new OrderTableRequest(2L, null, 3, true);
 
-        테이블그룹_테이블1_테이블2 = new TableGroup(1L, Arrays.asList(오더테이블_테이블1, 오더테이블_테이블2));
+        테이블그룹_테이블1_테이블2 = new TableGroup(1L, new OrderTables(Arrays.asList(오더테이블_테이블1, 오더테이블_테이블2)));
         테이블그룹_테이블1_테이블2_리퀘스트 = new TableGroupRequest(Arrays.asList(오더테이블_테이블1_리퀘스트, 오더테이블_테이블2_리퀘스트));
 
         테이블그룹_테이블1_리퀘스트 = new TableGroupRequest(Arrays.asList(오더테이블_테이블1_리퀘스트));
@@ -95,7 +97,7 @@ class TableGroupServiceTest {
     void create_with_exception_when_orderTable_is_not_empty() {
         //given
         오더테이블_테이블2_리퀘스트 = new OrderTableRequest(2L, null, 3, false);
-        오더테이블_테이블2 = new OrderTable(2L, 4, false);
+        오더테이블_테이블2 = new OrderTable(2L, NumberOfGuests.of(4), false);
         when(orderTableRepository.findAllById(Arrays.asList(오더테이블_테이블1.getId(), 오더테이블_테이블2.getId()))).thenReturn(Arrays.asList(오더테이블_테이블1, 오더테이블_테이블2));
         //when(tableGroupRepository.save(any())).thenReturn(테이블그룹_테이블1_테이블2);
 
@@ -109,7 +111,7 @@ class TableGroupServiceTest {
     void create_with_exception_when_has_table_group() {
         //given
         TableGroup tableGroup = new TableGroup();
-        오더테이블_테이블2 = new OrderTable(2L, tableGroup, 4, true);
+        오더테이블_테이블2 = new OrderTable(2L, tableGroup, NumberOfGuests.of(4), true);
 
         when(orderTableRepository.findAllById(anyList())).thenReturn(Arrays.asList(오더테이블_테이블1, 오더테이블_테이블2));
 

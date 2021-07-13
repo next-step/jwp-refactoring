@@ -1,39 +1,40 @@
-package kitchenpos.order.domain;
+package kitchenpos.order.domain.entity;
+
+import kitchenpos.order.domain.value.OrderTables;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 public class TableGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private LocalDateTime createdDate = LocalDateTime.now();
 
-    @OneToMany(mappedBy = "tableGroup")
-    private List<OrderTable> orderTables;
+    @Embedded
+    private OrderTables orderTables;
 
     public TableGroup() {
     }
 
-    public TableGroup(List<OrderTable> orderTables) {
+    public TableGroup(OrderTables orderTables) {
         this.orderTables = orderTables;
-        orderTables.forEach(orderTable -> orderTable.toTableGroup(this));
+        orderTables.toTableGroup(this);
     }
 
-    public TableGroup(Long id, List<OrderTable> orderTables) {
+    public TableGroup(Long id, OrderTables orderTables) {
         this.id = id;
         this.orderTables = orderTables;
-        orderTables.forEach(orderTable -> orderTable.toTableGroup(this));
     }
-
 
     public Long getId() {
         return id;
     }
 
-    public List<OrderTable> getOrderTables() {
+    public OrderTables getOrderTables() {
         return orderTables;
     }
+
 }

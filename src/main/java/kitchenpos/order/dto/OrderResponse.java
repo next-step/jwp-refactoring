@@ -1,6 +1,6 @@
 package kitchenpos.order.dto;
 
-import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.entity.Order;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,7 +29,7 @@ public class OrderResponse {
                 order.getOrderTable().getId(),
                 order.getOrderStatus(),
                 order.getOrderedTime(),
-                OrderLineItemResponse.ofList(order.getOrderLineItems()));
+                OrderLineItemResponse.ofList(order.getOrderLineItemList()));
     }
 
     public static List<OrderResponse> ofList(List<Order> orders) {
