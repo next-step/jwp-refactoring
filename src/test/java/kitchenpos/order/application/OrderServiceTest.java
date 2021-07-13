@@ -74,9 +74,9 @@ class OrderServiceTest {
         new주문테이블 = new OrderTable(2L, 1L, 4, false);
         주문테이블묶음 = new OrderTables(Arrays.asList(주문테이블, new주문테이블));
         테이블그룹 = new TableGroup(1L);
-        주문 = new Order(1L, 주문테이블, OrderStatus.COOKING, 주문내역들);
+        주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING, 주문내역들);
         주문요청 = new OrderRequest(주문테이블.getId(), 주문내역들);
-        다른주문 = new Order(2L, new주문테이블, OrderStatus.MEAL, 주문내역들);
+        다른주문 = new Order(2L, OrderStatus.MEAL, 주문내역들);
     }
 
     @DisplayName("주문을 등록한다.")
@@ -191,7 +191,7 @@ class OrderServiceTest {
     void fail_changeOrderStatus2() {
         String changedStatus = OrderStatus.COMPLETION.name();
         OrderStatusRequest orderStatusRequest = new OrderStatusRequest(changedStatus);
-        Order order = new Order(1L, 주문테이블, OrderStatus.COMPLETION, 주문내역들);
+        Order order = new Order(주문테이블.getId(), 1L, OrderStatus.COMPLETION, 주문내역들);
         given(orderRepository.findById(anyLong())).willReturn(Optional.ofNullable(order));
 
         assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), orderStatusRequest))
