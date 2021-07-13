@@ -30,6 +30,6 @@ subprojects {
 
 project(':web') {
     dependencies {
-        compile project(':domain')
+        implementation project(':domain')
     }
 }
