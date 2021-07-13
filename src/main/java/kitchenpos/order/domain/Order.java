@@ -3,6 +3,7 @@ package kitchenpos.order.domain;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,8 +14,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import org.springframework.util.CollectionUtils;
 
 @Entity
 @Table(name = "orders")
@@ -60,7 +59,7 @@ public class Order {
 	}
 
 	private void validateEmptyOrderItems(List<OrderLineItem> orderLineItems) {
-		if (CollectionUtils.isEmpty(orderLineItems)) {
+		if (Objects.isNull(orderLineItems) || orderLineItems.isEmpty()) {
 			throw new IllegalArgumentException("주문 항목을 구성해야 주문이 가능합니다.");
 		}
 	}

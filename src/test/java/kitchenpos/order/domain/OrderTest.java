@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,6 +34,21 @@ class OrderTest {
 			new Order(orderTable.getId(), OrderStatus.COMPLETION, LocalDateTime.of(2021, 7, 4, 0, 0), null);
 		}).isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("주문 항목을 구성해야 주문이 가능합니다.");
+	}
+
+	@DisplayName("정상적인 주문 생성 테스트")
+	@Test
+	void testOrder() {
+		List<OrderLineItem> orderLineItems = new ArrayList<>();
+		OrderLineItem orderLineItem = new OrderLineItem(null, 1L, 1L);
+		orderLineItems.add(orderLineItem);
+
+		LocalDateTime orderedDate = LocalDateTime.of(2021, 7, 4, 0, 0);
+		Order actual = new Order(1L, OrderStatus.COOKING, orderedDate, orderLineItems);
+
+		assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
+		assertThat(actual.getOrderedTime()).isEqualTo(orderedDate);
+		assertThat(actual.getOrderLineItems()).containsExactly(orderLineItem);
 	}
 
 }
