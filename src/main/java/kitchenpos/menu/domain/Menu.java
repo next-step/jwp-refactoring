@@ -51,7 +51,7 @@ public class Menu {
 
     public List<Long> getProductIds() {
         return menuProducts.list().stream()
-                .map(menuProduct -> menuProduct.getProduct().getId())
+                .map(menuProduct -> menuProduct.getProductId())
                 .collect(Collectors.toList());
     }
 

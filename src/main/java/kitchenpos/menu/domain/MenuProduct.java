@@ -38,10 +38,11 @@ public class MenuProduct {
         this.quantity = quantity;
     }
 
-    public Product getProduct() {
-        return product;
+    public Long getProductId() {
+        return product.getId();
     }
 
+    //TODO : Product와 느슨한 결합으로 변경하는 방법을 고민해보기
     Price calculate() {
         return product.getPrice().times(quantity);
     }
