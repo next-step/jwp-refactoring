@@ -3,9 +3,7 @@ package kitchenpos.order.application;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.exception.NotFoundMenuException;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItemRepository;
-import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.exception.NotEqualsOrderCountAndMenuCount;
@@ -39,7 +37,9 @@ public class OrderService {
         }
         final OrderTable orderTable = findOrderTable(orderRequest.getOrderTableId());
         List<Menu> menus = findMenusByIds(menuIds);
-        final Order persistOrder = orderRepository.save(orderRequest.toOrder(orderTable, menus));
+        List<OrderLineItem> orderLineItems = toOrderLineItem(menus, orderRequest);
+        Order order = toOrder(orderTable, orderLineItems);
+        final Order persistOrder = orderRepository.save(order);
         return OrderResponse.of(persistOrder);
     }
 
@@ -68,5 +68,23 @@ public class OrderService {
             throw new IllegalArgumentException();
         }
         return orderTable;
+    }
+
+    private Order toOrder(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        return new Order(orderTable, new OrderLineItems(orderLineItems));
+    }
+
+    private List<OrderLineItem> toOrderLineItem(List<Menu> menus, OrderRequest orderRequest) {
+        return menus.stream()
+                .map(menu -> findOrderLineItem(menu, orderRequest))
+                .collect(Collectors.toList());
+    }
+
+    private OrderLineItem findOrderLineItem(Menu menus, OrderRequest orderRequest) {
+        return orderRequest.getOrderLineItemRequests().stream()
+                .filter(orderLineItemRequest -> orderLineItemRequest.getMenuId() == menus.getId())
+                .map(orderLineItemRequest -> new OrderLineItem(menus, orderLineItemRequest.getQuantity()))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
     }
 }

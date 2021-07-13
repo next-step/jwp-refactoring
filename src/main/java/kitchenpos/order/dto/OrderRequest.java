@@ -24,25 +24,6 @@ public class OrderRequest {
         this.orderLineItemRequests = orderLineItemRequests;
     }
 
-    public Order toOrder(OrderTable orderTable, List<Menu> menus) {
-        List<OrderLineItem> orderLineItems = toOrderLineItem(menus);
-        return new Order(orderTable, new OrderLineItems(orderLineItems));
-    }
-
-    private List<OrderLineItem> toOrderLineItem(List<Menu> menus) {
-        return menus.stream()
-                .map(this::findOrderLineItem)
-                .collect(Collectors.toList());
-    }
-
-    private OrderLineItem findOrderLineItem(Menu menus) {
-        return orderLineItemRequests.stream()
-                .filter(orderLineItemRequest -> orderLineItemRequest.getMenuId() == menus.getId())
-                .map(orderLineItemRequest -> new OrderLineItem(menus, orderLineItemRequest.getQuantity()))
-                .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
-    }
-
     public List<Long> getMenuIds() {
         if(CollectionUtils.isEmpty(orderLineItemRequests)){
             throw new EmptyOrderLineItemsException();
@@ -58,6 +39,10 @@ public class OrderRequest {
 
     public Long getOrderTableId() {
         return orderTableId;
+    }
+
+    public List<OrderLineItemRequest> getOrderLineItemRequests() {
+        return orderLineItemRequests;
     }
 
     @Override

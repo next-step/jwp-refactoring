@@ -50,7 +50,7 @@ public class MenuService {
         return products;
     }
 
-    public Menu toMenu(List<MenuProduct> menuProductList, MenuGroup menuGroup, MenuRequest menuRequest) {
+    private Menu toMenu(List<MenuProduct> menuProductList, MenuGroup menuGroup, MenuRequest menuRequest) {
         MenuProducts menuProducts = new MenuProducts(menuProductList);
         Price price = new Price(menuRequest.getPrice());
         return new Menu(menuRequest.getName(), price, menuGroup, menuProducts);
