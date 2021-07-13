@@ -5,6 +5,7 @@ import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.exception.NotFoundMenuGroupException;
 import kitchenpos.menu.exception.NotFoundProductException;
+import kitchenpos.wrap.Price;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +28,9 @@ public class MenuService {
     public MenuResponse create(final MenuRequest menuRequest) {
         MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId()).orElseThrow(() -> new NotFoundMenuGroupException());
         List<Product> products = findAllProductByIds(menuRequest.getProductIds());
-        Menu persistMenu = menuRepository.save(menuRequest.toMenu(products, menuGroup));
+        List<MenuProduct> menuProducts = toMenuProduct(products, menuRequest);
+        Menu menu = toMenu(menuProducts, menuGroup, menuRequest);
+        Menu persistMenu = menuRepository.save(menu);
         return MenuResponse.of(persistMenu);
     }
 
@@ -41,9 +44,29 @@ public class MenuService {
 
     private List<Product> findAllProductByIds(List<Long> productIds) {
         List<Product> products = productRepository.findAllByIdIn(productIds).orElseThrow(() -> new NotFoundProductException());
-        if(products.size() != productIds.size()){
+        if (products.size() != productIds.size()) {
             throw new NotFoundProductException();
         }
         return products;
+    }
+
+    public Menu toMenu(List<MenuProduct> menuProductList, MenuGroup menuGroup, MenuRequest menuRequest) {
+        MenuProducts menuProducts = new MenuProducts(menuProductList);
+        Price price = new Price(menuRequest.getPrice());
+        return new Menu(menuRequest.getName(), price, menuGroup, menuProducts);
+    }
+
+    private List<MenuProduct> toMenuProduct(List<Product> products, MenuRequest menuRequest) {
+        return products.stream()
+                .map(product -> findMenuProduct(product, menuRequest))
+                .collect(Collectors.toList());
+    }
+
+    private MenuProduct findMenuProduct(Product product, MenuRequest menuRequest) {
+        return menuRequest.getMenuProductRequests().stream()
+                .filter(menuProductRequest -> menuProductRequest.getProductId() == product.getId())
+                .map(menuProductRequest -> new MenuProduct(product, menuProductRequest.getQuantity()))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
     }
 }
