@@ -36,7 +36,7 @@ public class Order {
     @Column(name = "ordered_time", nullable = false)
     private LocalDateTime orderedTime = LocalDateTime.now();;
 
-    @Embedded // 양방향
+    @Embedded
     private OrderLineItems orderLineItems = new OrderLineItems();
 
     protected Order() {
