@@ -4,14 +4,14 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class NumberOdGuests {
+public class NumberOfGuests {
     @Column(name = "number_of_guests")
     private int numberOfGuests;
 
-    protected NumberOdGuests() {
+    protected NumberOfGuests() {
     }
 
-    public NumberOdGuests(final int numberOfGuests) {
+    public NumberOfGuests(final int numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
     }
 

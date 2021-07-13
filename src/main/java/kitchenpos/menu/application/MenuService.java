@@ -1,6 +1,5 @@
 package kitchenpos.menu.application;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,7 +40,7 @@ public class MenuService {
         Menu menu = menuRepository.save(new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup));
         menuRequest.getMenuProductRequests()
                 .forEach(menuProductRequest -> menu.addMenuProduct(createMenuProduct(menu, menuProductRequest)));
-        validateMenuPriceIsLessThanOrEqualToTotalProductPrice(menu);
+        menu.validateMenuPrice();
         return MenuResponse.of(menu);
     }
 
@@ -60,12 +59,5 @@ public class MenuService {
     private MenuProduct createMenuProduct(Menu menu, MenuProductRequest menuProductRequest) {
         Product product = productService.findById(menuProductRequest.getProductId());
         return new MenuProduct(menu, product, menuProductRequest.getQuantity());
-    }
-
-    private void validateMenuPriceIsLessThanOrEqualToTotalProductPrice(Menu menu) {
-        BigDecimal reduce = menu.getMenuProducts().getTotalProductPrice();
-        if (menu.isMenuPriceGreaterThan(reduce)) {
-            throw new IllegalArgumentException("메뉴 급액이 제품 합계금액보다 클 수 없습니다.");
-        }
     }
 }

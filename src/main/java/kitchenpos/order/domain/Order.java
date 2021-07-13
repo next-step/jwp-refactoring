@@ -15,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import kitchenpos.order.exception.CannotChangeOrderStatusException;
 import kitchenpos.table.domain.OrderTable;
 
 @Entity
@@ -37,8 +38,8 @@ public class Order {
     public Order() {
     }
 
-    public Order(OrderStatus orderStatus, LocalDateTime orderedTime, OrderTable orderTable) {
-        this.orderStatus = orderStatus;
+    public Order(LocalDateTime orderedTime, OrderTable orderTable) {
+        this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = orderedTime;
         this.orderTable = orderTable;
         this.orderLineItems = new OrderLineItems();
@@ -69,10 +70,17 @@ public class Order {
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
+        validateOrderStatusIsCompleted();
         this.orderStatus = orderStatus;
     }
 
     public OrderTable getOrderTable() {
         return orderTable;
+    }
+
+    private void validateOrderStatusIsCompleted() {
+        if (orderStatus.equals(OrderStatus.COMPLETION)) {
+            throw new CannotChangeOrderStatusException("주문상태가 COMPLETION 인 건은 상태수정이 불가능합니다.");
+        }
     }
 }

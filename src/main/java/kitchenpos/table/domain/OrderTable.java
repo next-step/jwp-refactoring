@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import kitchenpos.table.exception.TableGroupAlreadyExistsException;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 @Entity
@@ -23,14 +24,14 @@ public class OrderTable {
     @JoinColumn(name = "table_group_id")
     private TableGroup tableGroup;
     @Embedded
-    private NumberOdGuests numberOfGuests;
+    private NumberOfGuests numberOfGuests;
     private boolean empty;
 
     public OrderTable() {
     }
 
     public OrderTable(int numberOfGuests, boolean empty) {
-        this.numberOfGuests = new NumberOdGuests(numberOfGuests);
+        this.numberOfGuests = new NumberOfGuests(numberOfGuests);
         this.empty = empty;
     }
 
@@ -55,7 +56,7 @@ public class OrderTable {
         this.tableGroup = tableGroup;
     }
 
-    public NumberOdGuests getNumberOfGuests() {
+    public NumberOfGuests getNumberOfGuests() {
         return numberOfGuests;
     }
 
@@ -68,10 +69,17 @@ public class OrderTable {
     }
 
     public void changeEmpty(boolean empty) {
+        validateHasTabledGroup();
         this.empty = empty;
     }
 
     public void changeNumberOfGuests(final int numberOfGuests) {
         this.numberOfGuests.changeNumberOfGuests(numberOfGuests);
+    }
+
+    private void validateHasTabledGroup() {
+        if (hasTableGroup()) {
+            throw new TableGroupAlreadyExistsException();
+        }
     }
 }

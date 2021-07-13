@@ -84,8 +84,8 @@ class OrderTableRepositoryTest {
     void findByTableGroupId() {
         // given
         TableGroup tableGroup = new TableGroup();
-        OrderTable orderTable1 = new OrderTable(3, false);
-        OrderTable orderTable2 = new OrderTable(3, false);
+        OrderTable orderTable1 = new OrderTable(3, true);
+        OrderTable orderTable2 = new OrderTable(3, true);
         orderTableRepository.saveAll(Arrays.asList(orderTable1, orderTable2));
         tableGroup.addOrderTable(orderTable1);
         tableGroup.addOrderTable(orderTable2);

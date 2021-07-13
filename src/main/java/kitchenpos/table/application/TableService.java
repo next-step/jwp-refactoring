@@ -13,7 +13,6 @@ import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.exception.NonEmptyOrderTableNotFoundException;
 import kitchenpos.table.exception.OrderTableNotFoundException;
-import kitchenpos.table.exception.TableGroupAlreadyExistsException;
 
 @Service
 @Transactional
@@ -42,8 +41,7 @@ public class TableService {
     }
 
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
-        OrderTable savedOrderTable = orderTableRepository.findByIdAndEmptyIsFalse(orderTableId)
-                .orElseThrow(() -> new NonEmptyOrderTableNotFoundException("비어있지 않은 테이블 대상이 존재하지 않습니다. 입력 ID : " + orderTableId));
+        OrderTable savedOrderTable = findOrderTableByIdAndEmptyIsFalse(orderTableId);
         savedOrderTable.changeNumberOfGuests(orderTableRequest.getNumberOfGuests());
         return OrderTableResponse.of(savedOrderTable);
     }
@@ -53,22 +51,19 @@ public class TableService {
     }
 
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
-        final OrderTable savedOrderTable = getOrderTable(orderTableId);
+        final OrderTable savedOrderTable = findOrderTableById(orderTableId);
         orderService.validateExistsOrderStatusIsCookingANdMeal(orderTableId);
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
         return OrderTableResponse.of(savedOrderTable);
     }
 
-    private OrderTable getOrderTable(Long orderTableId) {
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
+    public OrderTable findOrderTableById(Long orderTableId) {
+        return orderTableRepository.findById(orderTableId)
                 .orElseThrow(() -> new OrderTableNotFoundException("대상 주문테이블이 존재하지 않습니다. 입력 ID : " + orderTableId));
-        validateHasTabledGroup(savedOrderTable);
-        return savedOrderTable;
     }
 
-    private void validateHasTabledGroup(OrderTable savedOrderTable) {
-        if (savedOrderTable.hasTableGroup()) {
-            throw new TableGroupAlreadyExistsException();
-        }
+    public OrderTable findOrderTableByIdAndEmptyIsFalse(Long orderTableId) {
+        return orderTableRepository.findByIdAndEmptyIsFalse(orderTableId)
+                .orElseThrow(() -> new NonEmptyOrderTableNotFoundException("비어있지 않은 테이블 대상이 존재하지 않습니다. 입력 ID : " + orderTableId));
     }
 }

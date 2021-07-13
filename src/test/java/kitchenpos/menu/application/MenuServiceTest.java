@@ -158,29 +158,6 @@ class MenuServiceTest {
                     // then
                     assertThatThrownBy(() -> menuService.create(menuRequest))
                             .isInstanceOf(ProductNotFoundException.class);
-                }),
-                dynamicTest("메뉴에 포함된 상품의 가격 X 개수의 합계 금액이 메뉴의 가격보다 작을 경우 오류 발생함.", () -> {
-                    // given
-                    // given
-                    MenuGroup menuGroup = new MenuGroup("A");
-                    MenuProductRequest menuProductRequest1 = new MenuProductRequest(2L, 1L);
-                    MenuProductRequest menuProductRequest2 = new MenuProductRequest(3L, 1L);
-                    MenuRequest menuRequest = new MenuRequest("Aa", BigDecimal.valueOf(13000.00), 4L,
-                            Arrays.asList(menuProductRequest1, menuProductRequest2));
-                    // and
-                    Product product1 = new Product("a", BigDecimal.valueOf(8000.00));
-                    Product product2 = new Product("b", BigDecimal.valueOf(4000.00));
-                    Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup);
-                    // and
-                    given(menuGroupService.findById(4L)).willReturn(menuGroup);
-                    given(menuRepository.save(any(Menu.class))).willReturn(menu);
-                    given(productService.findById(2L)).willReturn(product1);
-                    given(productService.findById(3L)).willReturn(product2);
-
-                    // then
-                    assertThatThrownBy(() -> menuService.create(menuRequest))
-                            .isInstanceOf(IllegalArgumentException.class)
-                            .hasMessage("메뉴 급액이 제품 합계금액보다 클 수 없습니다.");
                 })
         );
     }

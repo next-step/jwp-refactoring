@@ -107,7 +107,7 @@ class TableGroupServiceTest {
                     // then
                     assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
                             .isInstanceOf(MisMatchedOrderTablesSizeException.class)
-                            .hasMessage("입력된 항목과 조회결과가 일치하지 않습니다. size1 : 1, size2 : 2");
+                            .hasMessage("입력된 항목과 조회결과가 일치하지 않습니다.");
                 }),
                 dynamicTest("단체지정 테이블 중 비어있지 않은 테이블이 존재할 경우 오류 발생.", () -> {
                     // given

@@ -20,7 +20,7 @@ class TableGroupRepositoryTest {
     @Test
     @DisplayName("기본 저장 확인")
     void save() {
-        OrderTable orderTable = orderTableRepository.save(new OrderTable(3, false));
+        OrderTable orderTable = orderTableRepository.save(new OrderTable(3, true));
         TableGroup tableGroup1 = new TableGroup();
         tableGroup1.addOrderTable(orderTable);
         TableGroup tableGroup = tableGroupRepository.save(tableGroup1);

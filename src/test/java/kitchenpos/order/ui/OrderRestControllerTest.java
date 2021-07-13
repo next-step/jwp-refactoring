@@ -69,7 +69,7 @@ class OrderRestControllerTest extends MockMvcControllerTest {
         // given
         OrderLineItemRequest orderLineItemRequest1 = new OrderLineItemRequest(1L, 1L);
         OrderRequest orderRequest = new OrderRequest(OrderStatus.COOKING, 1L, Arrays.asList(orderLineItemRequest1));
-        Order order = new Order(OrderStatus.COOKING, LocalDateTime.now(), new OrderTable(3, false));
+        Order order = new Order(LocalDateTime.now(), new OrderTable(3, false));
         order.addOrderLineItem(new OrderLineItem(order, menu, 3L));
         OrderResponse orderResponse = OrderResponse.of(order);
         given(orderService.create(any(OrderRequest.class))).willReturn(orderResponse);
@@ -89,7 +89,7 @@ class OrderRestControllerTest extends MockMvcControllerTest {
     @DisplayName("주문 목록을 조회할 수 있다.")
     void retrieve_orderList() throws Exception {
         // given
-        Order order = new Order(OrderStatus.COOKING, LocalDateTime.now(), new OrderTable(3, false));
+        Order order = new Order(LocalDateTime.now(), new OrderTable(3, false));
         order.addOrderLineItem(new OrderLineItem(order, menu, 3L));
         OrderResponse orderResponse = OrderResponse.of(order);
         given(orderService.findAllOrders()).willReturn(Arrays.asList(orderResponse));
@@ -108,7 +108,8 @@ class OrderRestControllerTest extends MockMvcControllerTest {
     void change_orderStatus() throws Exception {
         // given
         OrderRequest orderRequest = new OrderRequest(OrderStatus.MEAL, 1L, new ArrayList<>());
-        Order order = new Order(OrderStatus.MEAL, LocalDateTime.now(), new OrderTable(3, false));
+        Order order = new Order(LocalDateTime.now(), new OrderTable(3, false));
+        order.changeOrderStatus(OrderStatus.MEAL);
         order.addOrderLineItem(new OrderLineItem(order, menu, 3L));
         OrderResponse orderResponse = OrderResponse.of(order);
         given(orderService.changeOrderStatus(anyLong(), any(OrderRequest.class))).willReturn(orderResponse);

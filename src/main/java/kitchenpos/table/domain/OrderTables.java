@@ -38,7 +38,15 @@ public class OrderTables {
                 .collect(Collectors.toList());
     }
 
+    public List<OrderTable> getOrderTables() {
+        return orderTables;
+    }
+
     public void ungroupOrderTables() {
         this.orderTables.forEach(orderTable -> orderTable.setTableGroup(null));
+    }
+
+    public boolean isSameSize(int size) {
+        return this.orderTables.size() == size;
     }
 }
