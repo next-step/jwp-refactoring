@@ -4,6 +4,7 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class Quantity {
+
     private Long quantity;
 
     private Quantity() {
@@ -17,7 +18,7 @@ public class Quantity {
         return new Quantity(quantity);
     }
 
-    public Long getValue(){
+    public Long getValue() {
         return this.quantity;
     }
 }

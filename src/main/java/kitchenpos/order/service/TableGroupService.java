@@ -1,18 +1,27 @@
 package kitchenpos.order.service;
 
-import kitchenpos.order.domain.entity.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import kitchenpos.order.domain.entity.OrderRepository;
+import kitchenpos.order.domain.entity.OrderTable;
+import kitchenpos.order.domain.entity.OrderTableRepository;
+import kitchenpos.order.domain.entity.TableGroup;
+import kitchenpos.order.domain.entity.TableGroupRepository;
 import kitchenpos.order.domain.value.OrderStatus;
 import kitchenpos.order.domain.value.OrderTables;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.TableGroupRequest;
 import kitchenpos.order.dto.TableGroupResponse;
+import kitchenpos.order.exception.NotFoundOrderTableException;
+import kitchenpos.order.exception.NotFoundTableGroupException;
+import kitchenpos.order.exception.OrderStatusInCookingOrMealException;
+import kitchenpos.order.exception.OrderTableCountException;
+import kitchenpos.order.exception.OrderTableHasTableGroupException;
+import kitchenpos.order.exception.OrderTableIsNotEmptyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -22,7 +31,8 @@ public class TableGroupService {
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(OrderRepository orderRepository, OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository) {
+    public TableGroupService(OrderRepository orderRepository,
+        OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository) {
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
@@ -37,47 +47,50 @@ public class TableGroupService {
         return TableGroupResponse.of(tableGroupRepository.save(tableGroup));
     }
 
-    private void validateOrderTable(TableGroupRequest tableGroupRequest, List<OrderTable> orderTables) {
+    private void validateOrderTable(TableGroupRequest tableGroupRequest,
+        List<OrderTable> orderTables) {
         validateOrderTableCount(tableGroupRequest, orderTables);
         validateOrderTableIsNotEmpty(orderTables);
-        validateOrderTableInTableGroup(orderTables);
+        validateOrderTableHasTableGroup(orderTables);
     }
 
-    private void validateOrderTableInTableGroup(List<OrderTable> orderTables) {
+    private void validateOrderTableHasTableGroup(List<OrderTable> orderTables) {
         if (orderTables.stream()
-                .anyMatch(orderTable -> Objects.nonNull(orderTable.getTableGroup()))) {
-            throw new IllegalArgumentException();
+            .anyMatch(orderTable -> Objects.nonNull(orderTable.getTableGroup()))) {
+            throw new OrderTableHasTableGroupException();
         }
     }
 
     private void validateOrderTableIsNotEmpty(List<OrderTable> orderTables) {
         if (orderTables.stream()
-                .anyMatch(orderTable -> !orderTable.isEmpty())) {
-            throw new IllegalArgumentException();
+            .anyMatch(orderTable -> !orderTable.isEmpty())) {
+            throw new OrderTableIsNotEmptyException();
         }
     }
 
-    private void validateOrderTableCount(TableGroupRequest tableGroupRequest, List<OrderTable> orderTables) {
+    private void validateOrderTableCount(TableGroupRequest tableGroupRequest,
+        List<OrderTable> orderTables) {
         if (tableGroupRequest.getOrderTables().size() != orderTables.size()) {
-            throw new IllegalArgumentException();
+            throw new NotFoundOrderTableException();
         }
     }
 
     private void validateOrderTableCountSmallerThanTwo(TableGroupRequest tableGroupRequest) {
         if (tableGroupRequest.getOrderTables().size() < 2) {
-            throw new IllegalArgumentException();
+            throw new OrderTableCountException();
         }
     }
 
     private List<Long> getOrderTableIds(TableGroupRequest tableGroupRequest) {
         return tableGroupRequest.getOrderTables()
-                .stream().map(OrderTableRequest::getId)
-                .collect(Collectors.toList());
+            .stream().map(OrderTableRequest::getId)
+            .collect(Collectors.toList());
     }
 
     public void ungroup(Long tableGroupId) {
         TableGroup tableGroup = findTableGroup(tableGroupId);
-        List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroup.getId());
+        List<OrderTable> orderTables = orderTableRepository
+            .findAllByTableGroupId(tableGroup.getId());
         List<Long> orderTableIds = getOrderTableIds(orderTables);
         validateOrderStatus(orderTableIds);
         orderTables.forEach(OrderTable::unGroup);
@@ -85,19 +98,19 @@ public class TableGroupService {
 
     private void validateOrderStatus(List<Long> orderTableIds) {
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
+            orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+            throw new OrderStatusInCookingOrMealException();
         }
     }
 
     private TableGroup findTableGroup(Long tableGroupId) {
         return tableGroupRepository.findById(tableGroupId)
-                .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(NotFoundTableGroupException::new);
     }
 
     private List<Long> getOrderTableIds(List<OrderTable> orderTables) {
         return orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
+            .map(OrderTable::getId)
+            .collect(Collectors.toList());
     }
 }

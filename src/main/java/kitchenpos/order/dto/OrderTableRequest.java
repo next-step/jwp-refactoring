@@ -1,6 +1,7 @@
 package kitchenpos.order.dto;
 
 public class OrderTableRequest {
+
     private Long id;
     private Long tableGroupId;
     private int numberOfGuests;

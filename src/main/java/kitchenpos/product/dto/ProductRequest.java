@@ -3,6 +3,7 @@ package kitchenpos.product.dto;
 import java.math.BigDecimal;
 
 public class ProductRequest {
+
     private Long id;
     private String name;
     private BigDecimal price;

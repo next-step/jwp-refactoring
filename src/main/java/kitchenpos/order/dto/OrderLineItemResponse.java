@@ -1,11 +1,11 @@
 package kitchenpos.order.dto;
 
-import kitchenpos.order.domain.entity.OrderLineItem;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import kitchenpos.order.domain.entity.OrderLineItem;
 
 public class OrderLineItemResponse {
+
     private Long seq;
     private Long orderId;
     private Long menuId;
@@ -23,15 +23,15 @@ public class OrderLineItemResponse {
 
     public static OrderLineItemResponse of(OrderLineItem orderLineItem) {
         return new OrderLineItemResponse(orderLineItem.getSeq(),
-                orderLineItem.getOrder().getId(),
-                orderLineItem.getMenu().getId(),
-                orderLineItem.getQuantity().getValue());
+            orderLineItem.getOrder().getId(),
+            orderLineItem.getMenu().getId(),
+            orderLineItem.getQuantity().getValue());
     }
 
     public static List<OrderLineItemResponse> ofList(List<OrderLineItem> orderLineItems) {
         return orderLineItems.stream()
-                .map(OrderLineItemResponse::of)
-                .collect(Collectors.toList());
+            .map(OrderLineItemResponse::of)
+            .collect(Collectors.toList());
     }
 
     public Long getSeq() {

@@ -1,15 +1,23 @@
 package kitchenpos.order.domain.entity;
 
-import kitchenpos.order.domain.value.OrderLineItems;
-import kitchenpos.order.domain.value.OrderStatus;
-
-import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import kitchenpos.order.domain.value.OrderLineItems;
+import kitchenpos.order.domain.value.OrderStatus;
+import kitchenpos.order.exception.OrderStatusCompletionException;
 
 @Entity
 @Table(name = "orders")
 public class Order {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,7 +36,8 @@ public class Order {
     public Order() {
     }
 
-    public Order(Long id, OrderTable orderTable, String orderStatus, OrderLineItems orderLineItems) {
+    public Order(Long id, OrderTable orderTable, String orderStatus,
+        OrderLineItems orderLineItems) {
         this.id = id;
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
@@ -65,7 +74,7 @@ public class Order {
 
     private void validateOrderStatus() {
         if (this.orderStatus.equals(OrderStatus.COMPLETION.name())) {
-            throw new IllegalArgumentException();
+            throw new OrderStatusCompletionException();
         }
     }
 

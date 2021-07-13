@@ -1,12 +1,16 @@
 package kitchenpos.product.domain.entity;
 
-import kitchenpos.product.domain.value.Price;
-
-import javax.persistence.*;
 import java.math.BigDecimal;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import kitchenpos.product.domain.value.Price;
 
 @Entity
 public class Product {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

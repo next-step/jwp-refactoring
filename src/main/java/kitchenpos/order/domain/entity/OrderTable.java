@@ -1,11 +1,17 @@
 package kitchenpos.order.domain.entity;
 
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import kitchenpos.order.domain.value.NumberOfGuests;
-
-import javax.persistence.*;
 
 @Entity
 public class OrderTable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,7 +27,8 @@ public class OrderTable {
     public OrderTable() {
     }
 
-    public OrderTable(Long id, TableGroup tableGroup, NumberOfGuests numberOfGuests, boolean empty) {
+    public OrderTable(Long id, TableGroup tableGroup, NumberOfGuests numberOfGuests,
+        boolean empty) {
         this.id = id;
         this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;

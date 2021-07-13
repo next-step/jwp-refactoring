@@ -1,11 +1,11 @@
 package kitchenpos.order.dto;
 
-import kitchenpos.order.domain.entity.OrderTable;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import kitchenpos.order.domain.entity.OrderTable;
 
 public class OrderTableResponse {
+
     private Long id;
     private int numberOfGuests;
     private boolean empty;
@@ -21,14 +21,14 @@ public class OrderTableResponse {
 
     public static OrderTableResponse of(OrderTable orderTable) {
         return new OrderTableResponse(orderTable.getId(),
-                orderTable.getNumberOfGuests().getValue(),
-                orderTable.isEmpty());
+            orderTable.getNumberOfGuests().getValue(),
+            orderTable.isEmpty());
     }
 
     public static List<OrderTableResponse> ofList(List<OrderTable> orderTables) {
         return orderTables.stream()
-                .map(OrderTableResponse::of)
-                .collect(Collectors.toList());
+            .map(OrderTableResponse::of)
+            .collect(Collectors.toList());
     }
 
     public Long getId() {
